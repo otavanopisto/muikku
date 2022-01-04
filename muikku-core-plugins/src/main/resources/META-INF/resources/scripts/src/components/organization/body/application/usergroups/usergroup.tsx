@@ -9,7 +9,7 @@ import { StateType } from "~/reducers";
 import UserGroupDialog from "~/components/organization/dialogs/edit-usergroup";
 import {
   ApplicationListItem,
-  ApplicationListItemHeader,
+  ApplicationListItemHeader
 } from "~/components/general/application-list";
 import { UserGroupType } from "~/reducers/user-index";
 
@@ -19,14 +19,14 @@ interface CourseProps {
   usergroup: UserGroupType;
 }
 
-interface CourseState { }
+interface CourseState {}
 
 class Workspace extends React.Component<CourseProps, CourseState> {
   constructor(props: CourseProps) {
     super(props);
 
     this.state = {
-      expanded: false,
+      expanded: false
     };
   }
 
@@ -55,7 +55,7 @@ class Workspace extends React.Component<CourseProps, CourseState> {
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    status: state.status,
+    status: state.status
   };
 }
 

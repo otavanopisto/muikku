@@ -1,44 +1,55 @@
-import Dialog from '~/components/general/dialog';
-import * as React from 'react';
-import {connect, Dispatch} from 'react-redux';
-import Link from '~/components/general/link';
-import {i18nType} from '~/reducers/base/i18n';
-import {StateType} from '~/reducers';
-import '~/sass/elements/form-elements.scss';
-import '~/sass/elements/form.scss';
-import '~/sass/elements/buttons.scss';
-import '~/sass/elements/image-editor.scss';
-import Button, { ButtonPill } from '~/components/general/button';
-import ImageEditor, { ImageEditorRetrieverType } from '~/components/general/image-editor';
-import { displayNotification, DisplayNotificationTriggerType } from '~/actions/base/notifications';
-import { bindActionCreators } from 'redux';
-let Slider = require('react-rangeslider').default;
-import '~/sass/elements/rangeslider.scss';
-import { uploadProfileImage, UploadProfileImageTriggerType } from '~/actions/main-function/profile';
+import Dialog from "~/components/general/dialog";
+import * as React from "react";
+import { connect, Dispatch } from "react-redux";
+import Link from "~/components/general/link";
+import { i18nType } from "~/reducers/base/i18n";
+import { StateType } from "~/reducers";
+import "~/sass/elements/form-elements.scss";
+import "~/sass/elements/form.scss";
+import "~/sass/elements/buttons.scss";
+import "~/sass/elements/image-editor.scss";
+import Button, { ButtonPill } from "~/components/general/button";
+import ImageEditor, {
+  ImageEditorRetrieverType
+} from "~/components/general/image-editor";
+import {
+  displayNotification,
+  DisplayNotificationTriggerType
+} from "~/actions/base/notifications";
+import { bindActionCreators } from "redux";
+let Slider = require("react-rangeslider").default;
+import "~/sass/elements/rangeslider.scss";
+import {
+  uploadProfileImage,
+  UploadProfileImageTriggerType
+} from "~/actions/main-function/profile";
 
 interface UploadImageDialogProps {
-  i18n: i18nType,
-  displayNotification: DisplayNotificationTriggerType,
-  uploadProfileImage: UploadProfileImageTriggerType,
+  i18n: i18nType;
+  displayNotification: DisplayNotificationTriggerType;
+  uploadProfileImage: UploadProfileImageTriggerType;
 
-  b64?: string,
-  file?: File,
-  src?: string,
+  b64?: string;
+  file?: File;
+  src?: string;
 
-  isOpen: boolean,
-  onClose: ()=>any
+  isOpen: boolean;
+  onClose: () => any;
 }
 
 interface UploadImageDialogState {
-  locked: boolean,
+  locked: boolean;
 
-  scale: number,
-  angle: number
+  scale: number;
+  angle: number;
 }
 
-class UploadImageDialog extends React.Component<UploadImageDialogProps, UploadImageDialogState> {
+class UploadImageDialog extends React.Component<
+  UploadImageDialogProps,
+  UploadImageDialogState
+> {
   private retriever: ImageEditorRetrieverType;
-  constructor(props: UploadImageDialogProps){
+  constructor(props: UploadImageDialogProps) {
     super(props);
 
     this.upload = this.upload.bind(this);
@@ -51,86 +62,124 @@ class UploadImageDialog extends React.Component<UploadImageDialogProps, UploadIm
       locked: false,
       scale: 100,
       angle: 0
-    }
+    };
   }
-  upload(closeDialog: ()=>any){
-    this.setState({locked: true});
+  upload(closeDialog: () => any) {
+    this.setState({ locked: true });
     this.props.uploadProfileImage({
       croppedB64: this.retriever.getAsDataURL(),
       originalB64: !this.props.src ? this.props.b64 : null,
       file: !this.props.src ? this.props.file : null,
-      success: ()=>{
+      success: () => {
         closeDialog();
-        this.setState({locked: false});
+        this.setState({ locked: false });
       },
-      fail: ()=>{
-        this.setState({locked: false});
+      fail: () => {
+        this.setState({ locked: false });
       }
-    })
+    });
   }
-  rotate(){
+  rotate() {
     let nAngle = this.state.angle + 90;
-    if (nAngle === 360){
+    if (nAngle === 360) {
       nAngle = 0;
     }
 
-    this.setState({angle: nAngle})
+    this.setState({ angle: nAngle });
   }
-  showLoadError(){
-    this.props.displayNotification(this.props.i18n.text.get("plugin.profile.errormessage.profileImage.loadFailed"), 'error');
+  showLoadError() {
+    this.props.displayNotification(
+      this.props.i18n.text.get(
+        "plugin.profile.errormessage.profileImage.loadFailed"
+      ),
+      "error"
+    );
   }
-  onChangeScale(newValue: number){
+  onChangeScale(newValue: number) {
     this.setState({
       scale: newValue
     });
   }
-  getRetriever(retriever: ImageEditorRetrieverType){
+  getRetriever(retriever: ImageEditorRetrieverType) {
     this.retriever = retriever;
   }
-  render(){
-    let content = (closeDialog: ()=>any)=><div>
-      <ImageEditor className="image-editor image-editor--profile" onInitializedGetRetriever={this.getRetriever}
-       dataURL={this.props.src || this.props.b64} onLoadError={this.showLoadError} ratio={1}
-       scale={this.state.scale/100} angle={this.state.angle} displayBoxWidth={250}/>
-      <div className="dialog__image-tools">
-        <div className="dialog__slider">
-          <Slider
-            value={this.state.scale}
-            orientation="horizontal"
-            max={200}
-            min={100}
-            onChange={this.onChangeScale}
-          />
+  render() {
+    let content = (closeDialog: () => any) => (
+      <div>
+        <ImageEditor
+          className="image-editor image-editor--profile"
+          onInitializedGetRetriever={this.getRetriever}
+          dataURL={this.props.src || this.props.b64}
+          onLoadError={this.showLoadError}
+          ratio={1}
+          scale={this.state.scale / 100}
+          angle={this.state.angle}
+          displayBoxWidth={250}
+        />
+        <div className="dialog__image-tools">
+          <div className="dialog__slider">
+            <Slider
+              value={this.state.scale}
+              orientation="horizontal"
+              max={200}
+              min={100}
+              onChange={this.onChangeScale}
+            />
+          </div>
+          <ButtonPill icon="spinner" onClick={this.rotate} />
         </div>
-        <ButtonPill icon="spinner" onClick={this.rotate}/>
       </div>
-    </div>;
-    let footer = (closeDialog: ()=>any)=>{
-      return <div className="dialog__button-set">
-        <Button buttonModifiers={["execute","standard-ok"]} onClick={this.upload.bind(this, closeDialog)} disabled={this.state.locked}>
-          {this.props.i18n.text.get('plugin.profile.changeImage.dialog.saveButton.label')}
-        </Button>
-        <Button buttonModifiers={["cancel","standard-cancel"]} onClick={closeDialog} disabled={this.state.locked}>
-          {this.props.i18n.text.get('plugin.profile.changeImage.dialog.cancelButton.label')}
-        </Button>
-      </div>
-    }
-    return <Dialog isOpen={this.props.isOpen} title={this.props.i18n.text.get('plugin.profile.changeImage.dialog.title')}
-      content={content} footer={footer} modifier="upload-image" onClose={this.props.onClose}/>
+    );
+    let footer = (closeDialog: () => any) => {
+      return (
+        <div className="dialog__button-set">
+          <Button
+            buttonModifiers={["execute", "standard-ok"]}
+            onClick={this.upload.bind(this, closeDialog)}
+            disabled={this.state.locked}
+          >
+            {this.props.i18n.text.get(
+              "plugin.profile.changeImage.dialog.saveButton.label"
+            )}
+          </Button>
+          <Button
+            buttonModifiers={["cancel", "standard-cancel"]}
+            onClick={closeDialog}
+            disabled={this.state.locked}
+          >
+            {this.props.i18n.text.get(
+              "plugin.profile.changeImage.dialog.cancelButton.label"
+            )}
+          </Button>
+        </div>
+      );
+    };
+    return (
+      <Dialog
+        isOpen={this.props.isOpen}
+        title={this.props.i18n.text.get(
+          "plugin.profile.changeImage.dialog.title"
+        )}
+        content={content}
+        footer={footer}
+        modifier="upload-image"
+        onClose={this.props.onClose}
+      />
+    );
   }
 }
 
-function mapStateToProps(state: StateType){
+function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n
-  }
-};
+  };
+}
 
-function mapDispatchToProps(dispatch: Dispatch<any>){
-  return bindActionCreators({displayNotification, uploadProfileImage}, dispatch);
-};
+function mapDispatchToProps(dispatch: Dispatch<any>) {
+  return bindActionCreators(
+    { displayNotification, uploadProfileImage },
+    dispatch
+  );
+}
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(UploadImageDialog);
+export default connect(mapStateToProps, mapDispatchToProps)(UploadImageDialog);

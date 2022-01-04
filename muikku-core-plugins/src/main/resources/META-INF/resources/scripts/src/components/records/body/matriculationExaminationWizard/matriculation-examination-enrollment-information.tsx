@@ -11,13 +11,13 @@ import { SavingDraftInfo } from "./saving-draft-info";
 import { ExamEnrollmentDegreeStructure } from "../../../../@types/shared";
 import {
   getDefaultNextTerm,
-  getDefaultPastTerm,
+  getDefaultPastTerm
 } from "../../../../helper-functions/matriculation-functions";
 import {
   SUBJECT_MAP,
   FINNISH_SUBJECTS,
   ACADEMIC_SUBJECTS,
-  ADVANCED_SUBJECTS,
+  ADVANCED_SUBJECTS
 } from "./index";
 
 import {
@@ -25,13 +25,13 @@ import {
   ExaminationInformation,
   ExaminationEnrolledSubject,
   ExaminationFinishedSubject,
-  ExaminationPlannedSubject,
+  ExaminationPlannedSubject
 } from "../../../../@types/shared";
 
 import {
   resolveCurrentTerm,
   getNextTermOptions,
-  getPastTermOptions,
+  getPastTermOptions
 } from "../../../../helper-functions/matriculation-functions";
 
 /**
@@ -93,7 +93,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
       guidanceCounselor: "",
       ssn: null,
       date: "",
-      degreeStructure: ExamEnrollmentDegreeStructure.PRE2022,
+      degreeStructure: ExamEnrollmentDegreeStructure.PRE2022
     };
 
     this.isValidated = this.isValidated.bind(this);
@@ -292,7 +292,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
       ["UE", "ET", "YO", "KE", "GE", "TT"],
       ["RUA", "RUB"],
       ["PS", "FI", "HI", "FY", "BI"],
-      ["MAA", "MAB"],
+      ["MAA", "MAB"]
     ];
 
     const subjectCodes: string[] = [];
@@ -481,7 +481,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
 
     const modifiedExamination: ExaminationInformation = {
       ...examination,
-      [key]: value,
+      [key]: value
     };
 
     onChange(modifiedExamination);
@@ -499,12 +499,12 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
       subject: this.getDefaultSubject(this.getEnrolledSubjects()),
       mandatory: "true",
       repeat: "false",
-      status: "ENROLLED",
+      status: "ENROLLED"
     });
 
     const modifiedExamination: ExaminationInformation = {
       ...examination,
-      enrolledAttendances,
+      enrolledAttendances
     };
 
     onChange(modifiedExamination);
@@ -523,12 +523,12 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
       subject: this.getDefaultSubject(this.getFinishedSubjects()),
       mandatory: "false",
       grade: "UNKNOWN",
-      status: "FINISHED",
+      status: "FINISHED"
     });
 
     const modifiedExamination: ExaminationInformation = {
       ...examination,
-      finishedAttendances,
+      finishedAttendances
     };
 
     onChange(modifiedExamination);
@@ -546,12 +546,12 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
       term: getDefaultNextTerm().value,
       subject: this.getDefaultSubject(this.getPlannedSubjects()),
       mandatory: "true",
-      status: "PLANNED",
+      status: "PLANNED"
     });
 
     const modifiedExamination: ExaminationInformation = {
       ...examination,
-      plannedAttendances,
+      plannedAttendances
     };
 
     onChange(modifiedExamination);
@@ -569,7 +569,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
 
     const modifiedExamination: ExaminationInformation = {
       ...examination,
-      enrolledAttendances,
+      enrolledAttendances
     };
 
     onChange(modifiedExamination);
@@ -587,7 +587,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
 
     const modifiedExamination: ExaminationInformation = {
       ...examination,
-      finishedAttendances,
+      finishedAttendances
     };
 
     onChange(modifiedExamination);
@@ -604,7 +604,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
 
     const modifiedExamination: ExaminationInformation = {
       ...examination,
-      plannedAttendances,
+      plannedAttendances
     };
 
     onChange(modifiedExamination);
@@ -621,7 +621,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
 
     const modifiedExamination: ExaminationInformation = {
       ...examination,
-      enrolledAttendances: examinationSubjectList,
+      enrolledAttendances: examinationSubjectList
     };
 
     onChange(modifiedExamination);
@@ -638,7 +638,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
 
     const modifiedExamination: ExaminationInformation = {
       ...examination,
-      finishedAttendances: examinationSubjectList,
+      finishedAttendances: examinationSubjectList
     };
 
     onChange(modifiedExamination);
@@ -655,7 +655,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
 
     const modifiedExamination: ExaminationInformation = {
       ...examination,
-      plannedAttendances: examinationSubjectList,
+      plannedAttendances: examinationSubjectList
     };
 
     onChange(modifiedExamination);
@@ -683,7 +683,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
       numMandatoryCourses,
       enrolledAttendances,
       plannedAttendances,
-      finishedAttendances,
+      finishedAttendances
     } = this.state;
 
     return (

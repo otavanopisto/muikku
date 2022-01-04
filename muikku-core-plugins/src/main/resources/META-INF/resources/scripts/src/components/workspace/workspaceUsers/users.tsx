@@ -15,7 +15,7 @@ import "~/sass/elements/avatar.scss";
 import { getName } from "~/util/modifiers";
 import {
   ContactRecipientType,
-  ShortWorkspaceUserWithActiveStatusType,
+  ShortWorkspaceUserWithActiveStatusType
 } from "~/reducers/user-index";
 import { getWorkspaceMessage } from "~/components/workspace/workspaceHome/teachers";
 import Tabs, { MobileOnlyTabs } from "~/components/general/tabs";
@@ -23,7 +23,7 @@ import ApplicationPanel from "~/components/general/application-panel/application
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import ApplicationList, {
   ApplicationListItem,
-  ApplicationListItemContentWrapper,
+  ApplicationListItemContentWrapper
 } from "~/components/general/application-list";
 import Avatar from "~/components/general/avatar";
 import DeactivateReactivateUserDialog from "./dialogs/deactivate-reactivate-user";
@@ -33,7 +33,7 @@ import PagerV2 from "~/components/general/pagerV2";
 import {
   loadStaffMembersOfWorkspace,
   loadStudentsOfWorkspace,
-  LoadUsersOfWorkspaceTriggerType,
+  LoadUsersOfWorkspaceTriggerType
 } from "~/actions/workspaces";
 
 /**
@@ -86,7 +86,7 @@ class WorkspaceUsers extends React.Component<
       currentStaffPage: 1,
       currentActiveStudentPage: 1,
       currentInactiveStudentPage: 1,
-      studentCurrentBeingToggledStatus: null,
+      studentCurrentBeingToggledStatus: null
     };
 
     this.onSendMessageTo = this.onSendMessageTo.bind(this);
@@ -109,7 +109,7 @@ class WorkspaceUsers extends React.Component<
    */
   onSendMessageTo(student: ShortWorkspaceUserWithActiveStatusType) {
     this.setState({
-      studentCurrentlyBeingSentMessage: student,
+      studentCurrentlyBeingSentMessage: student
     });
   }
 
@@ -118,7 +118,7 @@ class WorkspaceUsers extends React.Component<
    */
   removeStudentBeingSentMessage() {
     this.setState({
-      studentCurrentlyBeingSentMessage: null,
+      studentCurrentlyBeingSentMessage: null
     });
   }
 
@@ -128,7 +128,7 @@ class WorkspaceUsers extends React.Component<
    */
   onTabChange(id: "ACTIVE" | "INACTIVE") {
     this.setState({
-      activeTab: id,
+      activeTab: id
     });
   }
 
@@ -143,8 +143,8 @@ class WorkspaceUsers extends React.Component<
         q: query,
         active: true,
         firstResult: 0,
-        maxResults: this.usersPerPage,
-      },
+        maxResults: this.usersPerPage
+      }
     });
     this.props.loadStudents({
       workspace: this.props.workspace,
@@ -152,14 +152,14 @@ class WorkspaceUsers extends React.Component<
         q: query,
         active: false,
         firstResult: 0,
-        maxResults: this.usersPerPage,
-      },
+        maxResults: this.usersPerPage
+      }
     });
 
     this.setState({
       currentSearch: query,
       currentActiveStudentPage: 1,
-      currentInactiveStudentPage: 1,
+      currentInactiveStudentPage: 1
     });
   }
 
@@ -168,7 +168,7 @@ class WorkspaceUsers extends React.Component<
    */
   removeStudentBeingToggledStatus() {
     this.setState({
-      studentCurrentBeingToggledStatus: null,
+      studentCurrentBeingToggledStatus: null
     });
     this.loadInActiveStudents(1);
     this.loadActiveStudents(1);
@@ -182,7 +182,7 @@ class WorkspaceUsers extends React.Component<
     student: ShortWorkspaceUserWithActiveStatusType
   ) {
     this.setState({
-      studentCurrentBeingToggledStatus: student,
+      studentCurrentBeingToggledStatus: student
     });
   }
 
@@ -196,8 +196,8 @@ class WorkspaceUsers extends React.Component<
       payload: {
         q: "",
         firstResult: (page - 1) * this.usersPerPage,
-        maxResults: this.usersPerPage,
-      },
+        maxResults: this.usersPerPage
+      }
     };
     this.props.loadStaffMembers(data);
     this.setState({ currentStaffPage: page });
@@ -215,8 +215,8 @@ class WorkspaceUsers extends React.Component<
         q: "",
         active: active,
         firstResult: (page - 1) * this.usersPerPage,
-        maxResults: this.usersPerPage,
-      },
+        maxResults: this.usersPerPage
+      }
     };
     this.props.loadStudents(data);
   };
@@ -295,8 +295,8 @@ class WorkspaceUsers extends React.Component<
       type: "user",
       value: {
         id: this.state.studentCurrentlyBeingSentMessage.userEntityId,
-        name: getName(this.state.studentCurrentlyBeingSentMessage, true),
-      },
+        name: getName(this.state.studentCurrentlyBeingSentMessage, true)
+      }
     };
     const staffPager =
       this.allStaffPages > 1 ? (
@@ -341,9 +341,9 @@ class WorkspaceUsers extends React.Component<
                         type: "staff",
                         value: {
                           id: staff.userEntityId,
-                          name: getName(staff, true),
-                        },
-                      },
+                          name: getName(staff, true)
+                        }
+                      }
                     ]}
                     initialSubject={getWorkspaceMessage(
                       this.props.i18n,
@@ -468,7 +468,7 @@ class WorkspaceUsers extends React.Component<
                       ) : null}
                     </ApplicationList>
                   );
-                },
+                }
               },
               {
                 id: "INACTIVE",
@@ -522,8 +522,8 @@ class WorkspaceUsers extends React.Component<
                       ) : null}
                     </ApplicationList>
                   );
-                },
-              },
+                }
+              }
             ]}
           />
         </ApplicationSubPanel>
@@ -567,7 +567,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     workspace: state.workspaces.currentWorkspace,
-    status: state.status,
+    status: state.status
   };
 }
 
@@ -579,7 +579,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     {
       loadStaffMembers: loadStaffMembersOfWorkspace,
-      loadStudents: loadStudentsOfWorkspace,
+      loadStudents: loadStudentsOfWorkspace
     },
     dispatch
   );

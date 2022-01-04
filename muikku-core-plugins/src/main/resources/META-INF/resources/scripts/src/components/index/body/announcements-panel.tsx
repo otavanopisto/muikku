@@ -4,7 +4,7 @@ import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
 import {
   AnnouncementListType,
-  AnnouncementType,
+  AnnouncementType
 } from "~/reducers/announcements";
 
 import "~/sass/elements/item-list.scss";
@@ -39,7 +39,7 @@ class AnnouncementsPanel extends React.Component<
     this.state = {
       itemsPerPage: 10,
       currentPage: 0,
-      announcements: props.announcements,
+      announcements: props.announcements
     };
   }
 
@@ -57,7 +57,7 @@ class AnnouncementsPanel extends React.Component<
       JSON.stringify(this.props.announcements)
     ) {
       this.setState({
-        announcements: this.props.announcements,
+        announcements: this.props.announcements
       });
     }
   }
@@ -69,7 +69,7 @@ class AnnouncementsPanel extends React.Component<
    */
   handlePageChange = (selectedItem: { selected: number }) => {
     this.setState({
-      currentPage: selectedItem.selected,
+      currentPage: selectedItem.selected
     });
   };
 
@@ -235,7 +235,7 @@ function mapStateToProps(state: StateType) {
   return {
     status: state.status,
     i18n: state.i18n,
-    announcements: state.announcements.announcements,
+    announcements: state.announcements.announcements
   };
 }
 

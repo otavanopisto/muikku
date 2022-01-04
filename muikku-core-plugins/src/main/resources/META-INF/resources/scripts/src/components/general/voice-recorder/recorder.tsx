@@ -34,7 +34,7 @@ interface RecorderProps {
 function Recorder(props: RecorderProps) {
   const { recorderState, ...handlers }: UseRecorder = useRecorder({
     status: props.status,
-    values: props.values,
+    values: props.values
   });
 
   const { recordings, deleteAudio } = useRecordingsList(recorderState.values);
@@ -66,7 +66,7 @@ function Recorder(props: RecorderProps) {
         const object: AudioAssessment = {
           name: record.name,
           id: record.id,
-          contentType: record.contentType,
+          contentType: record.contentType
         };
 
         return object;
@@ -96,9 +96,9 @@ function Recorder(props: RecorderProps) {
               text: {
                 className: "voice-recorder__file-record-percentage",
                 style: {
-                  right: "100%",
-                },
-              },
+                  right: "100%"
+                }
+              }
             }}
             strokeWidth={1}
             easing="easeInOut"
@@ -131,7 +131,7 @@ function Recorder(props: RecorderProps) {
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    status: state.status,
+    status: state.status
   };
 }
 

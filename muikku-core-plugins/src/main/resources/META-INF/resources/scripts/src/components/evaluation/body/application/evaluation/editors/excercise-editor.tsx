@@ -4,7 +4,7 @@ import { i18nType } from "~/reducers/base/i18n";
 import {
   MaterialEvaluationType,
   MaterialAssignmentType,
-  MaterialCompositeRepliesType,
+  MaterialCompositeRepliesType
 } from "~/reducers/workspaces/index";
 import { EvaluationState } from "~/reducers/main-function/evaluation/index";
 import { StatusType } from "~/reducers/base/status";
@@ -12,7 +12,7 @@ import {
   AudioAssessment,
   AssignmentEvaluationSupplementationRequest,
   AssignmentEvaluationGradeRequest,
-  AssignmentEvaluationSaveReturn,
+  AssignmentEvaluationSaveReturn
 } from "~/@types/evaluation";
 import SessionStateComponent from "~/components/general/session-state-component";
 import CKEditor from "~/components/general/ckeditor";
@@ -28,7 +28,7 @@ import { displayNotification } from "~/actions/base/notifications";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import {
   UpdateCurrentStudentEvaluationCompositeRepliesData,
-  updateCurrentStudentCompositeRepliesData,
+  updateCurrentStudentCompositeRepliesData
 } from "~/actions/main-function/evaluation/evaluationActions";
 import WarningDialog from "../../../../dialogs/close-warning";
 
@@ -96,7 +96,7 @@ class ExcerciseEditor extends SessionStateComponent<
             compositeReplies.evaluationInfo &&
             compositeReplies.evaluationInfo.type === "INCOMPLETE",
 
-          draftId,
+          draftId
         },
         draftId
       ),
@@ -106,7 +106,7 @@ class ExcerciseEditor extends SessionStateComponent<
         compositeReplies.evaluationInfo.audioAssessments !== null
           ? compositeReplies.evaluationInfo.audioAssessments
           : [],
-      locked: false,
+      locked: false
     };
   }
 
@@ -126,7 +126,7 @@ class ExcerciseEditor extends SessionStateComponent<
           needsSupplementation:
             compositeReplies &&
             compositeReplies.evaluationInfo &&
-            compositeReplies.evaluationInfo.type === "INCOMPLETE",
+            compositeReplies.evaluationInfo.type === "INCOMPLETE"
         },
         this.state.draftId
       ),
@@ -135,7 +135,7 @@ class ExcerciseEditor extends SessionStateComponent<
         compositeReplies.evaluationInfo.audioAssessments &&
         compositeReplies.evaluationInfo.audioAssessments !== null
           ? compositeReplies.evaluationInfo.audioAssessments
-          : [],
+          : []
     });
   };
 
@@ -164,7 +164,7 @@ class ExcerciseEditor extends SessionStateComponent<
       data;
 
     this.setState({
-      locked: true,
+      locked: true
     });
 
     if (this.props.onClose) {
@@ -178,7 +178,7 @@ class ExcerciseEditor extends SessionStateComponent<
           userEntityId,
           workspaceMaterialId,
           {
-            ...dataToSave,
+            ...dataToSave
           }
         ),
         "callback"
@@ -186,13 +186,13 @@ class ExcerciseEditor extends SessionStateComponent<
         await mApi().workspace.workspaces.compositeReplies.cacheClear();
 
         this.setState({
-          locked: false,
+          locked: false
         });
 
         this.props.updateCurrentStudentCompositeRepliesData({
           workspaceId: workspaceEntityId,
           userEntityId: userEntityId,
-          workspaceMaterialId: workspaceMaterialId,
+          workspaceMaterialId: workspaceMaterialId
         });
 
         this.props.updateMaterialEvaluationData(data);
@@ -207,7 +207,7 @@ class ExcerciseEditor extends SessionStateComponent<
       );
 
       this.setState({
-        locked: false,
+        locked: false
       });
     }
   };
@@ -227,7 +227,7 @@ class ExcerciseEditor extends SessionStateComponent<
       data;
 
     this.setState({
-      locked: true,
+      locked: true
     });
 
     if (this.props.onClose) {
@@ -240,7 +240,7 @@ class ExcerciseEditor extends SessionStateComponent<
           userEntityId,
           workspaceMaterialId,
           {
-            ...dataToSave,
+            ...dataToSave
           }
         ),
         "callback"
@@ -255,11 +255,11 @@ class ExcerciseEditor extends SessionStateComponent<
         this.props.updateCurrentStudentCompositeRepliesData({
           workspaceId: workspaceEntityId,
           userEntityId: userEntityId,
-          workspaceMaterialId: workspaceMaterialId,
+          workspaceMaterialId: workspaceMaterialId
         });
 
         this.setState({
-          locked: false,
+          locked: false
         });
       });
     } catch (error) {
@@ -272,7 +272,7 @@ class ExcerciseEditor extends SessionStateComponent<
       );
 
       this.setState({
-        locked: false,
+        locked: false
       });
     }
   };
@@ -301,9 +301,9 @@ class ExcerciseEditor extends SessionStateComponent<
           gradeIdentifier: null,
           verbalAssessment: this.state.literalEvaluation,
           assessmentDate: new Date().getTime(),
-          audioAssessments: this.state.audioAssessments,
+          audioAssessments: this.state.audioAssessments
         },
-        materialId: this.props.materialAssignment.materialId,
+        materialId: this.props.materialAssignment.materialId
       });
     } else {
       this.saveAssignmentEvaluationSupplementationToServer({
@@ -319,9 +319,9 @@ class ExcerciseEditor extends SessionStateComponent<
             this.props.evaluations.evaluationSelectedAssessmentId.userEntityId,
           workspaceMaterialId: this.props.materialAssignment.id.toString(),
           requestDate: new Date().getTime(),
-          requestText: this.state.literalEvaluation,
+          requestText: this.state.literalEvaluation
         },
-        materialId: this.props.materialAssignment.materialId,
+        materialId: this.props.materialAssignment.materialId
       });
     }
   };
@@ -340,7 +340,7 @@ class ExcerciseEditor extends SessionStateComponent<
         {
           literalEvaluation: compositeReplies.evaluationInfo.text,
           needsSupplementation:
-            compositeReplies.evaluationInfo.type === "INCOMPLETE",
+            compositeReplies.evaluationInfo.type === "INCOMPLETE"
         },
         this.state.draftId
       );
@@ -348,7 +348,7 @@ class ExcerciseEditor extends SessionStateComponent<
       this.setStateAndClear(
         {
           literalEvaluation: "",
-          needsSupplementation: false,
+          needsSupplementation: false
         },
         this.state.draftId
       );
@@ -362,7 +362,7 @@ class ExcerciseEditor extends SessionStateComponent<
   handleCKEditorChange = (e: string) => {
     this.setStateAndStore(
       {
-        literalEvaluation: e,
+        literalEvaluation: e
       },
       this.state.draftId
     );
@@ -377,7 +377,7 @@ class ExcerciseEditor extends SessionStateComponent<
   ) => {
     this.setStateAndStore(
       {
-        needsSupplementation: e.target.checked,
+        needsSupplementation: e.target.checked
       },
       this.state.draftId
     );
@@ -389,7 +389,7 @@ class ExcerciseEditor extends SessionStateComponent<
    */
   handleAudioAssessmentChange = (audioAssessments: AudioAssessment[]) => {
     this.setState({
-      audioAssessments: audioAssessments,
+      audioAssessments: audioAssessments
     });
   };
 
@@ -487,7 +487,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     status: state.status,
-    evaluations: state.evaluations,
+    evaluations: state.evaluations
   };
 }
 

@@ -1,52 +1,59 @@
 import * as React from "react";
-import Toolbar, { MathFieldCommandType } from './toolbar';
-import Field from './field';
+import Toolbar, { MathFieldCommandType } from "./toolbar";
+import Field from "./field";
 
 interface MathFieldProps {
-  className?: string,
-  formulaClassName: string,
-  toolbarClassName: string,
-  editorClassName: string,
-  imageClassName: string,
-  value: string,
-  onChange: (value: string)=>any,
+  className?: string;
+  formulaClassName: string;
+  toolbarClassName: string;
+  editorClassName: string;
+  imageClassName: string;
+  value: string;
+  onChange: (value: string) => any;
   i18n: {
-    symbols: string,
-    relations: string,
-    geometryAndVectors: string,
-    setTheoryNotation: string,
-    mathFormulas: string,
-    operators: string,
-    image: string,
-  },
-  toolbarAlwaysVisible?: boolean,
-  dontLoadACE?: boolean,
-  dontLoadMQ?: boolean,
-  readOnly?: boolean
-  userId: number,
+    symbols: string;
+    relations: string;
+    geometryAndVectors: string;
+    setTheoryNotation: string;
+    mathFormulas: string;
+    operators: string;
+    image: string;
+  };
+  toolbarAlwaysVisible?: boolean;
+  dontLoadACE?: boolean;
+  dontLoadMQ?: boolean;
+  readOnly?: boolean;
+  userId: number;
 }
 
 interface MathFieldState {
-  isFocused: boolean,
-  expandMath: boolean
+  isFocused: boolean;
+  expandMath: boolean;
 }
 
-const ACE_DEFAULT_SRC = "https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.1/ace.js";
-const ACE_MODE_SRC = "https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.1/mode-latex.js";
+const ACE_DEFAULT_SRC =
+  "https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.1/ace.js";
+const ACE_MODE_SRC =
+  "https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.1/mode-latex.js";
 
-const MQ_DEFAULT_SRC = "//cdn.muikkuverkko.fi/libs/mathquill/0.10.1/mathquill.min.js";
-const MQ_DEFAULT_CSS = "//cdn.muikkuverkko.fi/libs/mathquill/0.10.1/mathquill.css";
+const MQ_DEFAULT_SRC =
+  "//cdn.muikkuverkko.fi/libs/mathquill/0.10.1/mathquill.min.js";
+const MQ_DEFAULT_CSS =
+  "//cdn.muikkuverkko.fi/libs/mathquill/0.10.1/mathquill.css";
 
-export default class MathField extends React.Component<MathFieldProps, MathFieldState> {
+export default class MathField extends React.Component<
+  MathFieldProps,
+  MathFieldState
+> {
   private loadedAce: boolean;
   private loadedMq: boolean;
-  constructor(props: MathFieldProps){
+  constructor(props: MathFieldProps) {
     super(props);
 
     this.state = {
       isFocused: false,
       expandMath: false
-    }
+    };
 
     this.onFocusField = this.onFocusField.bind(this);
     this.onBlurField = this.onBlurField.bind(this);
@@ -61,36 +68,40 @@ export default class MathField extends React.Component<MathFieldProps, MathField
 
     this.checkLoadingOfAceAndMQ(props);
   }
-  checkLoadingOfAceAndMQ(props: MathFieldProps){
-    if (!this.loadedAce && !props.dontLoadACE){
+  checkLoadingOfAceAndMQ(props: MathFieldProps) {
+    if (!this.loadedAce && !props.dontLoadACE) {
       this.loadedAce = true;
 
-      const existantScript = document.querySelector("script[src=" + JSON.stringify(ACE_DEFAULT_SRC) + "]");
+      const existantScript = document.querySelector(
+        "script[src=" + JSON.stringify(ACE_DEFAULT_SRC) + "]"
+      );
       if (!existantScript) {
-        let script = document.createElement('script');
+        let script = document.createElement("script");
         script.src = ACE_DEFAULT_SRC;
         script.async = true;
-        script.onload = ()=>{
-          let script2 = document.createElement('script');
+        script.onload = () => {
+          let script2 = document.createElement("script");
           script2.src = ACE_MODE_SRC;
           script2.async = true;
           document.head.appendChild(script2);
-        }
+        };
         document.head.appendChild(script);
       }
     }
 
-    if (!props.dontLoadMQ && !this.loadedMq){
+    if (!props.dontLoadMQ && !this.loadedMq) {
       this.loadedMq = true;
 
-      const existantScript = document.querySelector("script[src=" + JSON.stringify(MQ_DEFAULT_SRC) + "]");
+      const existantScript = document.querySelector(
+        "script[src=" + JSON.stringify(MQ_DEFAULT_SRC) + "]"
+      );
       if (!existantScript) {
-        let script = document.createElement('script');
+        let script = document.createElement("script");
         script.src = MQ_DEFAULT_SRC;
         script.async = true;
         document.head.appendChild(script);
 
-        let css = document.createElement('link');
+        let css = document.createElement("link");
         css.rel = "stylesheet";
         css.type = "text/css";
         css.href = MQ_DEFAULT_CSS;
@@ -98,23 +109,23 @@ export default class MathField extends React.Component<MathFieldProps, MathField
       }
     }
   }
-  componentWillReceiveProps(nextProps: MathFieldProps){
-    this.checkLoadingOfAceAndMQ(nextProps)
+  componentWillReceiveProps(nextProps: MathFieldProps) {
+    this.checkLoadingOfAceAndMQ(nextProps);
   }
-  onFocusField(){
+  onFocusField() {
     //This is triggered when the field itself gains focus
     //makes the thing set the state to focused so as to show the toolbar
     //it triggers several times
-    if (!this.state.isFocused){
+    if (!this.state.isFocused) {
       this.setState({
         isFocused: true
       });
     }
   }
-  onCommand(command: MathFieldCommandType){
+  onCommand(command: MathFieldCommandType) {
     (this.refs.input as Field).execute(command);
   }
-  onBlurField(){
+  onBlurField() {
     //When the field blurs happens it can be real or fake
     //the unselect function allows me to unselect the selection of an equation in the field
     //I should trigger it if I am going to really remove the focus
@@ -122,22 +133,22 @@ export default class MathField extends React.Component<MathFieldProps, MathField
       isFocused: false
     });
   }
-  cancelBlur(){
+  cancelBlur() {
     //this gets triggered once we have a mousedown event (before the blur)
     //on the toolbar, so we want to cancel it
     (this.refs.input as Field).focus();
   }
-  openMathExpanded(){
+  openMathExpanded() {
     this.setState({
       expandMath: true
     });
   }
-  closeMathExpanded(){
+  closeMathExpanded() {
     this.setState({
       expandMath: false
     });
   }
-  createNewLatex(){
+  createNewLatex() {
     //this will trigger the onLatexModeOpen from the Field so the toolbar will react after all
     (this.refs.input as Field).createNewLatex();
   }
@@ -149,21 +160,47 @@ export default class MathField extends React.Component<MathFieldProps, MathField
     e.target.value = null;
     (this.refs.input as Field).insertImage(file);
   }
-  getBase():HTMLElement {
+  getBase(): HTMLElement {
     return this.refs["base"] as HTMLElement;
   }
-  render(){
-    return <div ref="base">
-     <Toolbar isOpen={this.props.toolbarAlwaysVisible || this.state.isFocused} onToolbarAction={this.cancelBlur}
-      className={this.props.toolbarClassName} i18n={this.props.i18n} onCommand={this.onCommand}
-      onRequestToOpenMathMode={this.createNewLatex} isMathExpanded={this.state.expandMath} onRequestImage={this.requestImage}/>
-     <Field className={this.props.className} onFocus={this.onFocusField} onBlur={this.onBlurField}
-       onChange={this.props.onChange} value={this.props.value} formulaClassName={this.props.formulaClassName}
-       editorClassName={this.props.editorClassName} toolbarClassName={this.props.toolbarClassName}
-       onLatexModeOpen={this.openMathExpanded} onLatexModeClose={this.closeMathExpanded}
-       ref="input" latexPlaceholderText="LaTeX" readOnly={this.props.readOnly}
-       imageClassName={this.props.imageClassName} userId={this.props.userId}/>
-      <input type="file" onChange={this.onImageRequested} style={{display: "none"}} ref="imginput" accept="image/*"/>
-    </div>
+  render() {
+    return (
+      <div ref="base">
+        <Toolbar
+          isOpen={this.props.toolbarAlwaysVisible || this.state.isFocused}
+          onToolbarAction={this.cancelBlur}
+          className={this.props.toolbarClassName}
+          i18n={this.props.i18n}
+          onCommand={this.onCommand}
+          onRequestToOpenMathMode={this.createNewLatex}
+          isMathExpanded={this.state.expandMath}
+          onRequestImage={this.requestImage}
+        />
+        <Field
+          className={this.props.className}
+          onFocus={this.onFocusField}
+          onBlur={this.onBlurField}
+          onChange={this.props.onChange}
+          value={this.props.value}
+          formulaClassName={this.props.formulaClassName}
+          editorClassName={this.props.editorClassName}
+          toolbarClassName={this.props.toolbarClassName}
+          onLatexModeOpen={this.openMathExpanded}
+          onLatexModeClose={this.closeMathExpanded}
+          ref="input"
+          latexPlaceholderText="LaTeX"
+          readOnly={this.props.readOnly}
+          imageClassName={this.props.imageClassName}
+          userId={this.props.userId}
+        />
+        <input
+          type="file"
+          onChange={this.onImageRequested}
+          style={{ display: "none" }}
+          ref="imginput"
+          accept="image/*"
+        />
+      </div>
+    );
   }
 }

@@ -3,11 +3,11 @@ import { connect, Dispatch } from "react-redux";
 import Dialog, {
   DialogRow,
   DialogRowHeader,
-  DialogRowContent,
+  DialogRowContent
 } from "~/components/general/dialog";
 import {
   FormWizardActions,
-  InputFormElement,
+  InputFormElement
 } from "~/components/general/form-element";
 import {
   loadSelectorStudents,
@@ -15,19 +15,19 @@ import {
   LoadUsersTriggerType,
   loadUserGroups,
   createUsergroup,
-  CreateUsergroupTriggerType,
+  CreateUsergroupTriggerType
 } from "~/actions/main-function/users";
 import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
 import { bindActionCreators } from "redux";
 import AutofillSelector, {
-  UiSelectItem,
+  UiSelectItem
 } from "~/components/base/input-select-autofill";
 import { SelectItem } from "~/actions/workspaces/index";
 import {
   CreateUserGroupType,
   UpdateUserGroupStateType,
-  UsersSelectType,
+  UsersSelectType
 } from "~/reducers/main-function/users";
 import { TagItem } from "~/components/general/tag-input";
 
@@ -85,13 +85,13 @@ class OrganizationNewUserGroup extends React.Component<
       currentStep: 1,
       executing: false,
       validation: {
-        nameValid: 2,
+        nameValid: 2
       },
       usergroupUpdated: false,
       studentsAdded: false,
       studentsRemoved: false,
       staffAdded: false,
-      staffRemoved: false,
+      staffRemoved: false
     };
 
     this.doStaffSearch = this.doStaffSearch.bind(this);
@@ -112,7 +112,7 @@ class OrganizationNewUserGroup extends React.Component<
   selectStudent(student: SelectItem) {
     let newAddState = this.state.addStudents.concat(student);
     this.setState({
-      addStudents: newAddState,
+      addStudents: newAddState
     });
   }
 
@@ -121,7 +121,7 @@ class OrganizationNewUserGroup extends React.Component<
       (aStudent) => aStudent.id !== student.id
     );
     this.setState({
-      addStudents: newAddState,
+      addStudents: newAddState
     });
   }
 
@@ -132,7 +132,7 @@ class OrganizationNewUserGroup extends React.Component<
   selectStaff(staff: SelectItem) {
     let newAddState = this.state.addStaff.concat(staff);
     this.setState({
-      addStaff: newAddState,
+      addStaff: newAddState
     });
   }
 
@@ -141,7 +141,7 @@ class OrganizationNewUserGroup extends React.Component<
       (aStaff) => aStaff.id !== staff.id
     );
     this.setState({
-      addStaff: newAddState,
+      addStaff: newAddState
     });
   }
 
@@ -169,7 +169,7 @@ class OrganizationNewUserGroup extends React.Component<
       studentsAdded: false,
       studentsRemoved: false,
       staffAdded: false,
-      staffRemoved: false,
+      staffRemoved: false
     });
   }
 
@@ -180,7 +180,7 @@ class OrganizationNewUserGroup extends React.Component<
   nextStep() {
     if (this.state.usergroupName === "") {
       let validation: ValidationType = Object.assign(this.state.validation, {
-        nameValid: 0,
+        nameValid: 0
       });
       this.setState({ locked: true, validation });
     } else {
@@ -197,7 +197,7 @@ class OrganizationNewUserGroup extends React.Component<
   saveUsergroup(closeDialog: () => any) {
     this.setState({
       locked: true,
-      executing: true,
+      executing: true
     });
 
     let payload: CreateUserGroupType;
@@ -205,7 +205,7 @@ class OrganizationNewUserGroup extends React.Component<
 
     payload = {
       name: this.state.usergroupName,
-      isGuidanceGroup: this.state.isGuidanceGroup,
+      isGuidanceGroup: this.state.isGuidanceGroup
     };
 
     if (this.state.addStudents.length !== 0) {
@@ -232,17 +232,17 @@ class OrganizationNewUserGroup extends React.Component<
       progress: (state: UpdateUserGroupStateType) => {
         if (state === "update-group") {
           this.setState({
-            usergroupUpdated: true,
+            usergroupUpdated: true
           });
         }
         if (state === "add-users") {
           this.setState({
-            studentsAdded: true,
+            studentsAdded: true
           });
         }
         if (state === "remove-users") {
           this.setState({
-            studentsRemoved: true,
+            studentsRemoved: true
           });
         }
         if (state === "done") {
@@ -259,7 +259,7 @@ class OrganizationNewUserGroup extends React.Component<
 
       fail: () => {
         closeDialog();
-      },
+      }
     });
   }
 
@@ -315,7 +315,7 @@ class OrganizationNewUserGroup extends React.Component<
             id: student.id,
             label: student.firstName + " " + student.lastName,
             icon: "user",
-            type: "student",
+            type: "student"
           };
         });
         return (
@@ -352,7 +352,7 @@ class OrganizationNewUserGroup extends React.Component<
           return {
             id: staff.id,
             label: staff.firstName + " " + staff.lastName,
-            icon: "user",
+            icon: "user"
           };
         });
         return (
@@ -429,7 +429,7 @@ class OrganizationNewUserGroup extends React.Component<
                     const tag = {
                       node: student.label,
                       value: student,
-                      icon: student.icon,
+                      icon: student.icon
                     };
                     return (
                       <TagItem
@@ -462,7 +462,7 @@ class OrganizationNewUserGroup extends React.Component<
                     const tag = {
                       node: staff.label,
                       value: staff,
-                      icon: staff.icon,
+                      icon: staff.icon
                     };
                     return (
                       <TagItem
@@ -594,7 +594,7 @@ class OrganizationNewUserGroup extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    users: state.userSelect,
+    users: state.userSelect
   };
 }
 
@@ -604,7 +604,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
       loadStudents: loadSelectorStudents,
       loadStaff: loadSelectorStaff,
       loadUserGroups,
-      createOrganizationUsergroup: createUsergroup,
+      createOrganizationUsergroup: createUsergroup
     },
     dispatch
   );

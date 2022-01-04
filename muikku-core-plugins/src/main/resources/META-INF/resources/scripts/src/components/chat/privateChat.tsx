@@ -1,37 +1,39 @@
-import * as React from 'react'
-import mApi from '~/lib/mApi';
-import '~/sass/elements/chat.scss';
-import '~/sass/elements/wcag.scss';
-import { IBareMessageType } from './chat';
-import { ChatMessage } from './chatMessage';
-import promisify from '~/util/promisify';
-import { i18nType } from '~/reducers/base/i18n';
+import * as React from "react";
+import mApi from "~/lib/mApi";
+import "~/sass/elements/chat.scss";
+import "~/sass/elements/wcag.scss";
+import { IBareMessageType } from "./chat";
+import { ChatMessage } from "./chatMessage";
+import promisify from "~/util/promisify";
+import { i18nType } from "~/reducers/base/i18n";
 
 interface IPrivateChatProps {
-  initializingStanza: Element,
-  leaveChat: () => void,
-  connection: Strophe.Connection,
-  jid: string,
-  i18n: i18nType,
+  initializingStanza: Element;
+  leaveChat: () => void;
+  connection: Strophe.Connection;
+  jid: string;
+  i18n: i18nType;
 }
 
 interface IPrivateChatState {
-  nick: string,
-  messages: IBareMessageType[],
+  nick: string;
+  messages: IBareMessageType[];
   minimized: boolean;
   messageNotification: boolean;
   targetPrescense: "away" | "chat" | "dnd" | "xa";
-  isStudent: boolean,
-  currentMessageToBeSent: string,
-  loadingMessages: boolean,
-  canLoadMoreMessages: boolean,
-  lastMessageStamp: string,
+  isStudent: boolean;
+  currentMessageToBeSent: string;
+  loadingMessages: boolean;
+  canLoadMoreMessages: boolean;
+  lastMessageStamp: string;
 }
 
 const roleNode = document.querySelector('meta[name="muikku:role"]');
 
-export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChatState> {
-
+export class PrivateChat extends React.Component<
+  IPrivateChatProps,
+  IPrivateChatState
+> {
   private messagesListenerHandler: any = null;
   private presenceListenerHandler: any = null;
   private isFocused: boolean = false;
@@ -45,15 +47,17 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
     this.state = {
       nick: null,
       messages: [],
-      minimized: JSON.parse(window.sessionStorage.getItem("minimizedChats") || "[]").includes(props.jid),
+      minimized: JSON.parse(
+        window.sessionStorage.getItem("minimizedChats") || "[]"
+      ).includes(props.jid),
       messageNotification: !!this.props.initializingStanza,
       currentMessageToBeSent: "",
       targetPrescense: "xa",
       isStudent: roleNode.getAttribute("value") === "STUDENT",
       loadingMessages: false,
       canLoadMoreMessages: true,
-      lastMessageStamp: null,
-    }
+      lastMessageStamp: null
+    };
 
     this.messagesEnd = React.createRef();
     this.chatRef = React.createRef<HTMLDivElement>();
@@ -74,8 +78,24 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
   }
 
   componentDidMount() {
-    this.messagesListenerHandler = this.props.connection.addHandler(this.onPrivateChatMessage, null, "message", "chat", null, this.props.jid, { matchBare: true });
-    this.presenceListenerHandler = this.props.connection.addHandler(this.onPresence, null, "presence", null, null, this.props.jid, { matchBare: true });
+    this.messagesListenerHandler = this.props.connection.addHandler(
+      this.onPrivateChatMessage,
+      null,
+      "message",
+      "chat",
+      null,
+      this.props.jid,
+      { matchBare: true }
+    );
+    this.presenceListenerHandler = this.props.connection.addHandler(
+      this.onPresence,
+      null,
+      "presence",
+      null,
+      null,
+      this.props.jid,
+      { matchBare: true }
+    );
 
     if (this.props.initializingStanza) {
       // this.onPrivateChatMessage(this.props.initializingStanza);
@@ -87,18 +107,23 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
   }
 
   async obtainNick() {
-    const user: any = (await promisify(mApi().chat.userInfo.read(this.props.jid.split("@")[0],{}), "callback")()) as any;
+    const user: any = (await promisify(
+      mApi().chat.userInfo.read(this.props.jid.split("@")[0], {}),
+      "callback"
+    )()) as any;
     this.setState({
-      nick: user.name,
+      nick: user.name
     });
   }
 
   requestPrescense() {
-    this.props.connection.send($pres({
-      from: this.props.connection.jid,
-      to: this.props.jid,
-      type: "probe",
-    }));
+    this.props.connection.send(
+      $pres({
+        from: this.props.connection.jid,
+        to: this.props.jid,
+        type: "probe"
+      })
+    );
   }
 
   componentWillUnmount() {
@@ -110,7 +135,7 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
     this.isFocused = true;
     if (this.state.messageNotification) {
       this.setState({
-        messageNotification: false,
+        messageNotification: false
       });
     }
   }
@@ -121,7 +146,7 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
 
   setCurrentMessageToBeSent(e: React.ChangeEvent<HTMLTextAreaElement>) {
     this.setState({
-      currentMessageToBeSent: e.target.value,
+      currentMessageToBeSent: e.target.value
     });
   }
 
@@ -131,11 +156,16 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
     const text = this.state.currentMessageToBeSent.trim();
 
     if (text) {
-      this.props.connection.send($msg({
-        from: this.props.connection.jid,
-        to: this.props.jid,
-        type: "chat",
-      }).c("body", text).up().c('active', { xmlns: 'http://jabber.org/protocol/chatstates' }));
+      this.props.connection.send(
+        $msg({
+          from: this.props.connection.jid,
+          to: this.props.jid,
+          type: "chat"
+        })
+          .c("body", text)
+          .up()
+          .c("active", { xmlns: "http://jabber.org/protocol/chatstates" })
+      );
 
       const newMessage: IBareMessageType = {
         nick: null,
@@ -146,13 +176,16 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
         isSelf: true,
         action: null,
         deleted: false,
-        edited: null,
-      }
+        edited: null
+      };
 
-      this.setState({
-        currentMessageToBeSent: "",
-        messages: [...this.state.messages, newMessage]
-      }, this.scrollToBottom.bind(this, "smooth"));
+      this.setState(
+        {
+          currentMessageToBeSent: "",
+          messages: [...this.state.messages, newMessage]
+        },
+        this.scrollToBottom.bind(this, "smooth")
+      );
     }
   }
 
@@ -182,16 +215,17 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
         isSelf: userId === this.props.connection.jid.split("@")[0],
         action: null,
         deleted: false,
-        edited: null,
+        edited: null
       };
 
       const newMessagesList = [...this.state.messages, messageReceived];
-      this.setState({
-        messages: newMessagesList,
-        messageNotification: this.state.messageNotification || (
-          !this.isFocused
-        ),
-      }, this.scrollToBottom.bind(this, "smooth"));
+      this.setState(
+        {
+          messages: newMessagesList,
+          messageNotification: this.state.messageNotification || !this.isFocused
+        },
+        this.scrollToBottom.bind(this, "smooth")
+      );
     }
 
     return true;
@@ -206,14 +240,19 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
     }
   }
   toggleMinimizeChats() {
-    let minimizedChatList: string[] = JSON.parse(window.sessionStorage.getItem("minimizedChats") || "[]");
+    let minimizedChatList: string[] = JSON.parse(
+      window.sessionStorage.getItem("minimizedChats") || "[]"
+    );
     const newMinimized = !this.state.minimized;
 
     this.isScrollDetached = false;
-    this.setState({
-      minimized: newMinimized,
-      messageNotification: false,
-    }, this.scrollToBottom.bind(this, "auto"));
+    this.setState(
+      {
+        minimized: newMinimized,
+        messageNotification: false
+      },
+      this.scrollToBottom.bind(this, "auto")
+    );
 
     if (newMinimized) {
       minimizedChatList.push(this.props.jid);
@@ -221,21 +260,25 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
       minimizedChatList = minimizedChatList.filter((r) => r !== this.props.jid);
     }
 
-    window.sessionStorage.setItem("minimizedChats", JSON.stringify(minimizedChatList));
+    window.sessionStorage.setItem(
+      "minimizedChats",
+      JSON.stringify(minimizedChatList)
+    );
   }
   onPresence(stanza: Element) {
     const show = stanza.querySelector("show");
     const precense: any = show ? show.textContent : "chat";
 
     this.setState({
-      targetPrescense: precense,
+      targetPrescense: precense
     });
 
     return true;
   }
   checkScrollDetachment(e: React.UIEvent<HTMLDivElement>) {
     if (this.chatRef.current) {
-      const isScrolledToBottom = this.chatRef.current.scrollTop ===
+      const isScrolledToBottom =
+        this.chatRef.current.scrollTop ===
         this.chatRef.current.scrollHeight - this.chatRef.current.offsetHeight;
       this.isScrollDetached = !isScrolledToBottom;
     }
@@ -256,16 +299,18 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
     }
 
     this.setState({
-      loadingMessages: true,
+      loadingMessages: true
     });
 
     const stanza = $iq({
-      type: "set",
-    }).c("query", {
-      xmlns: "otavanopisto:chat:history",
-    }).c("type", {}, "chat")
-    .c("with", {}, this.props.jid)
-    .c("max", {}, "25");
+      type: "set"
+    })
+      .c("query", {
+        xmlns: "otavanopisto:chat:history"
+      })
+      .c("type", {}, "chat")
+      .c("with", {}, this.props.jid)
+      .c("max", {}, "25");
 
     if (this.state.lastMessageStamp) {
       stanza.c("before", {}, this.state.lastMessageStamp);
@@ -273,8 +318,11 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
 
     this.props.connection.sendIQ(stanza, (answerStanza: Element) => {
       let lastMessageStamp: string = null;
-      const allMessagesLoaded: boolean = answerStanza.querySelector("query").getAttribute("complete") === "true";
-      const newMessages = Array.from(answerStanza.querySelectorAll("historyMessage")).map((historyMessage: Element, index: number) => {
+      const allMessagesLoaded: boolean =
+        answerStanza.querySelector("query").getAttribute("complete") === "true";
+      const newMessages = Array.from(
+        answerStanza.querySelectorAll("historyMessage")
+      ).map((historyMessage: Element, index: number) => {
         const stanzaId: string = null;
         const stamp = historyMessage.querySelector("timestamp").textContent;
 
@@ -282,10 +330,14 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
           lastMessageStamp = stamp;
         }
 
-        const nick = historyMessage.querySelector("toJID").textContent.split("/")[1];
+        const nick = historyMessage
+          .querySelector("toJID")
+          .textContent.split("/")[1];
         const message = historyMessage.querySelector("message").textContent;
         const date = new Date(stamp);
-        const userId = historyMessage.querySelector("fromJID").textContent.split("@")[0];
+        const userId = historyMessage
+          .querySelector("fromJID")
+          .textContent.split("@")[0];
 
         const messageReceived: IBareMessageType = {
           nick,
@@ -296,7 +348,7 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
           isSelf: userId === this.props.connection.jid.split("@")[0],
           action: null,
           deleted: false,
-          edited: null,
+          edited: null
         };
 
         return messageReceived;
@@ -304,73 +356,117 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
 
       if (lastMessageStamp) {
         this.setState({
-          lastMessageStamp,
+          lastMessageStamp
         });
       }
 
       if (newMessages.length) {
-        const oldScrollHeight = this.chatRef.current && this.chatRef.current.scrollHeight;
+        const oldScrollHeight =
+          this.chatRef.current && this.chatRef.current.scrollHeight;
         // most likely 0, but who knows, fast fingers
-        const oldScrollTop = this.chatRef.current && this.chatRef.current.scrollTop;
+        const oldScrollTop =
+          this.chatRef.current && this.chatRef.current.scrollTop;
 
-        this.setState({
-          messages: [...newMessages, ...this.state.messages],
-        }, () => {
-          if (!this.isScrollDetached) {
-            this.scrollToBottom("auto");
-          } else if (this.chatRef.current) {
-            const currentScrollHeight = this.chatRef.current.scrollHeight;
-            const diff = currentScrollHeight - oldScrollHeight;
-            this.chatRef.current.scrollTop = diff + oldScrollTop;
+        this.setState(
+          {
+            messages: [...newMessages, ...this.state.messages]
+          },
+          () => {
+            if (!this.isScrollDetached) {
+              this.scrollToBottom("auto");
+            } else if (this.chatRef.current) {
+              const currentScrollHeight = this.chatRef.current.scrollHeight;
+              const diff = currentScrollHeight - oldScrollHeight;
+              this.chatRef.current.scrollTop = diff + oldScrollTop;
+            }
+            this.setState({
+              loadingMessages: false,
+              canLoadMoreMessages: !allMessagesLoaded
+            });
           }
-          this.setState({
-            loadingMessages: false,
-            canLoadMoreMessages: !allMessagesLoaded,
-          });
-        });
+        );
       } else {
         this.setState({
           loadingMessages: false,
-          canLoadMoreMessages: false,
+          canLoadMoreMessages: false
         });
       }
     });
   }
   render() {
     return (
-      <div className={`chat__panel-wrapper ${this.state.minimized ? "chat__panel-wrapper--reorder" : ""}`}>
+      <div
+        className={`chat__panel-wrapper ${
+          this.state.minimized ? "chat__panel-wrapper--reorder" : ""
+        }`}
+      >
         {this.state.minimized === true ? (
-          <div onClick={this.toggleMinimizeChats} className={this.state.messageNotification ? "chat__minimized chat__minimized--private chat__nofication--private" : "chat__minimized chat__minimized--private"}>
+          <div
+            onClick={this.toggleMinimizeChats}
+            className={
+              this.state.messageNotification
+                ? "chat__minimized chat__minimized--private chat__nofication--private"
+                : "chat__minimized chat__minimized--private"
+            }
+          >
             <div className="chat__minimized-title">
               {/* ToDo: Add this back when we can show users presence to each other
               <span className={"chat__online-indicator chat__online-indicator--" + this.state.targetPrescense}></span>
               */}
               <span className="chat__target-nickname">{this.state.nick}</span>
             </div>
-            <div onClick={this.props.leaveChat} className="chat__button chat__button--close icon-cross"></div>
+            <div
+              onClick={this.props.leaveChat}
+              className="chat__button chat__button--close icon-cross"
+            ></div>
           </div>
         ) : (
           <div className="chat__panel chat__panel--private">
             <div className="chat__panel-header chat__panel-header--private">
-                <div className="chat__panel-header-title">
-                  <span className={"chat__online-indicator chat__online-indicator--" + this.state.targetPrescense}></span>
-                  <span className="chat__target-nickname">{this.state.nick}</span>
-                </div>
-                <div onClick={this.toggleMinimizeChats} className="chat__button chat__button--minimize icon-minus"></div>
-                <div onClick={this.props.leaveChat} className="chat__button chat__button--close icon-cross"></div>
+              <div className="chat__panel-header-title">
+                <span
+                  className={
+                    "chat__online-indicator chat__online-indicator--" +
+                    this.state.targetPrescense
+                  }
+                ></span>
+                <span className="chat__target-nickname">{this.state.nick}</span>
+              </div>
+              <div
+                onClick={this.toggleMinimizeChats}
+                className="chat__button chat__button--minimize icon-minus"
+              ></div>
+              <div
+                onClick={this.props.leaveChat}
+                className="chat__button chat__button--close icon-cross"
+              ></div>
             </div>
 
             <div className="chat__panel-body chat__panel-body--chatroom">
-              <div className="chat__messages-container chat__messages-container--private" onScroll={this.checkScrollDetachment} ref={this.chatRef}>
-                  {this.state.messages.map((message, index) => <ChatMessage
+              <div
+                className="chat__messages-container chat__messages-container--private"
+                onScroll={this.checkScrollDetachment}
+                ref={this.chatRef}
+              >
+                {this.state.messages.map((message, index) => (
+                  <ChatMessage
                     key={index}
                     chatType="private"
                     canToggleInfo={!this.state.isStudent}
-                    message={message} i18n={this.props.i18n} />)}
-                <div className="chat__messages-last-message" ref={this.messagesEnd}></div>
+                    message={message}
+                    i18n={this.props.i18n}
+                  />
+                ))}
+                <div
+                  className="chat__messages-last-message"
+                  ref={this.messagesEnd}
+                ></div>
               </div>
             </div>
-            <form className="chat__panel-footer chat__panel-footer--chatroom" onSubmit={this.sendMessage}>
+            <form
+              className="chat__panel-footer chat__panel-footer--chatroom"
+              onSubmit={this.sendMessage}
+            >
               {/* Need wcag.scss from another WIP branch
                <label htmlFor={`sendPrivateChatMessage-${this.props.jid.split("@")[0]}`} className="visually-hidden">{this.props.i18n.text.get("plugin.wcag.sendMessage.label")}</label> */}
               <textarea
@@ -382,12 +478,19 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
                 onChange={this.setCurrentMessageToBeSent}
                 onFocus={this.onTextFieldFocus}
                 onBlur={this.onTextFieldBlur}
-                  ref={ref => ref && ref.focus()}/>
-              <button className="chat__submit chat__submit--send-muc-message chat__submit--send-muc-message-private" type="submit" value=""><span className="icon-arrow-right"></span></button>
+                ref={(ref) => ref && ref.focus()}
+              />
+              <button
+                className="chat__submit chat__submit--send-muc-message chat__submit--send-muc-message-private"
+                type="submit"
+                value=""
+              >
+                <span className="icon-arrow-right"></span>
+              </button>
             </form>
           </div>
         )}
       </div>
-    )
+    );
   }
 }

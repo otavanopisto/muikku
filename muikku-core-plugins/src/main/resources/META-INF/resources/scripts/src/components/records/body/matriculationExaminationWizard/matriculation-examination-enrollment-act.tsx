@@ -3,7 +3,7 @@ import "~/sass/elements/matriculation.scss";
 import {
   ExaminationInformation,
   ExaminationAttentionInformation,
-  SaveState,
+  SaveState
 } from "../../../../@types/shared";
 import { Textarea } from "./textarea";
 import { TextField } from "./textfield";
@@ -46,7 +46,7 @@ export class MatrMatriculationExaminationEnrollmentAct extends React.Component<
 
     const modifiedExamination: ExaminationInformation = {
       ...examination,
-      [key]: value,
+      [key]: value
     };
 
     onChange(modifiedExamination);

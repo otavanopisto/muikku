@@ -1,8 +1,7 @@
 import { ActionType } from "~/actions";
 import { i18nType } from "~/reducers/base/i18n";
 
-import { UserGroupType, UserType } from '~/reducers/user-index';
-
+import { UserGroupType, UserType } from "~/reducers/user-index";
 
 export type MessagesStateType = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";
 export type MessagesSearchResultFolderType = "INBOX" | "TRASH" | "SENT";
@@ -24,16 +23,16 @@ export interface MessageSearchResult {
     labelName: string;
   }>;
   sender: {
-    userEntityId: number,
-    firstName: string,
-    lastName: string,
-    nickName: string,
-  },
-  senderId: number,
-  tags: any,
-  recipients?: Array<MessageRecepientType>,
-  userGroupRecipients?: Array<UserGroupType>,
-  workspaceRecipients?: Array<MessageWorkspaceRecipientType>,
+    userEntityId: number;
+    firstName: string;
+    lastName: string;
+    nickName: string;
+  };
+  senderId: number;
+  tags: any;
+  recipients?: Array<MessageRecepientType>;
+  userGroupRecipients?: Array<UserGroupType>;
+  workspaceRecipients?: Array<MessageWorkspaceRecipientType>;
 }
 export interface MessageThreadLabelType {
   id: number;
@@ -54,21 +53,21 @@ export interface MessageThreadLabelUpdateType {
 export type MessageThreadLabelListType = Array<MessageThreadLabelType>;
 
 export interface MessageThreadType {
-  caption: string,
-  categoryName: "message",
-  communicatorMessageId: number,
-  created: string,
-  id: number,
-  labels: MessageThreadLabelListType,
-  messageCountInThread: number,
-  recipientCount?: number,
-  recipients?: Array<MessageRecepientType>,
-  sender: UserType,
-  senderId: number,
-  tags: any,
-  threadLatestMessageDate: string,
-  unreadMessagesInThread: boolean,
-  userGroupRecipients?: Array<UserGroupType>,
+  caption: string;
+  categoryName: "message";
+  communicatorMessageId: number;
+  created: string;
+  id: number;
+  labels: MessageThreadLabelListType;
+  messageCountInThread: number;
+  recipientCount?: number;
+  recipients?: Array<MessageRecepientType>;
+  sender: UserType;
+  senderId: number;
+  tags: any;
+  threadLatestMessageDate: string;
+  unreadMessagesInThread: boolean;
+  userGroupRecipients?: Array<UserGroupType>;
   workspaceRecipients?: Array<{
     archetype: string;
     workspaceEntityId: number;
@@ -96,19 +95,19 @@ export interface MessageThreadExpandedType {
   labels: MessageThreadLabelListType;
 }
 export interface MessageType {
-  caption: string,
-  categoryName: "message",
-  communicatorMessageId: number,
-  content: string,
-  created: string,
-  id: number,
-  recipientCount: number,
-  recipients: Array<MessageRecepientType>,
-  sender: UserType,
-  senderId: number,
-  tags: any,
-  userGroupRecipients: Array<UserGroupType>,
-  workspaceRecipients: Array<MessageWorkspaceRecipientType>
+  caption: string;
+  categoryName: "message";
+  communicatorMessageId: number;
+  content: string;
+  created: string;
+  id: number;
+  recipientCount: number;
+  recipients: Array<MessageRecepientType>;
+  sender: UserType;
+  senderId: number;
+  tags: any;
+  userGroupRecipients: Array<UserGroupType>;
+  workspaceRecipients: Array<MessageWorkspaceRecipientType>;
 }
 export interface MessageRecepientType {
   communicatorMessageId: number;
@@ -164,7 +163,7 @@ const defaultNavigation: MessagesNavigationItemListType = [
     icon: "folder",
     text(i18n: i18nType): string {
       return i18n.text.get("plugin.communicator.category.title.inbox");
-    },
+    }
   },
   {
     location: "unread",
@@ -173,7 +172,7 @@ const defaultNavigation: MessagesNavigationItemListType = [
     icon: "folder",
     text(i18n: i18nType): string {
       return i18n.text.get("plugin.communicator.category.title.unread");
-    },
+    }
   },
   {
     location: "sent",
@@ -182,7 +181,7 @@ const defaultNavigation: MessagesNavigationItemListType = [
     icon: "folder",
     text(i18n: i18nType): string {
       return i18n.text.get("plugin.communicator.category.title.sent");
-    },
+    }
   },
   {
     location: "trash",
@@ -191,8 +190,8 @@ const defaultNavigation: MessagesNavigationItemListType = [
     icon: "trash-alt",
     text(i18n: i18nType): string {
       return i18n.text.get("plugin.communicator.category.title.trash");
-    },
-  },
+    }
+  }
 ];
 
 export interface MessagesType {
@@ -265,31 +264,31 @@ export default function messages(
     query: null,
 
     unreadThreadCount: 0,
-    navigation: defaultNavigation,
+    navigation: defaultNavigation
   },
   action: ActionType
 ): MessagesType {
   if (action.type === "UPDATE_MESSAGE_THREADS") {
     return Object.assign({}, state, {
-      threads: <MessageThreadListType>action.payload,
+      threads: <MessageThreadListType>action.payload
     });
   } else if (action.type === "UPDATE_UNREAD_MESSAGE_THREADS_COUNT") {
     return Object.assign({}, state, {
-      unreadThreadCount: <number>action.payload,
+      unreadThreadCount: <number>action.payload
     });
   } else if (action.type === "UPDATE_MESSAGES_NAVIGATION_LABELS") {
     return Object.assign({}, state, {
       navigation: defaultNavigation
         .concat(<MessagesNavigationItemListType>action.payload)
-        .sort(sortNavigationItems),
+        .sort(sortNavigationItems)
     });
   } else if (action.type === "ADD_MESSAGES_NAVIGATION_LABEL") {
     return Object.assign({}, state, {
       navigation: state.navigation
         .concat(<MessagesNavigationItemListType>[
-          <MessagesNavigationItemType>action.payload,
+          <MessagesNavigationItemType>action.payload
         ])
-        .sort(sortNavigationItems),
+        .sort(sortNavigationItems)
     });
   } else if (action.type === "DELETE_MESSAGE_THREADS_NAVIGATION_LABEL") {
     return Object.assign({}, state, {
@@ -297,7 +296,7 @@ export default function messages(
         .filter((item: MessagesNavigationItemType) => {
           return item.id !== action.payload.labelId;
         })
-        .sort(sortNavigationItems),
+        .sort(sortNavigationItems)
     });
   } else if (action.type === "UPDATE_MESSAGES_NAVIGATION_LABEL") {
     return Object.assign({}, state, {
@@ -312,7 +311,7 @@ export default function messages(
             <MessagesNavigationItemUpdateType>action.payload.update
           );
         })
-        .sort(sortNavigationItems),
+        .sort(sortNavigationItems)
     });
   } else if (action.type === "UPDATE_MESSAGES_STATE") {
     let newState: MessagesStateType = action.payload;
@@ -326,7 +325,7 @@ export default function messages(
         : state.selectedThreads,
       selectedThreadsIds: state.toggleSelectAllMessageItemsActive
         ? newAllProperties.threads.map((thread) => thread.communicatorMessageId)
-        : state.selectedThreadsIds,
+        : state.selectedThreadsIds
     });
   } else if (action.type === "UPDATE_SELECTED_MESSAGE_THREADS") {
     let newThreads: MessageThreadListType = action.payload;
@@ -334,19 +333,17 @@ export default function messages(
       selectedThreads: newThreads,
       selectedThreadsIds: newThreads.map(
         (s: MessageThreadType) => s.communicatorMessageId
-      ),
+      )
     });
   } else if (action.type === "ADD_TO_MESSAGES_SELECTED_THREADS") {
     let newThread: MessageThreadType = action.payload;
     return Object.assign({}, state, {
       selectedThreads: state.selectedThreads.concat([newThread]),
       selectedThreadsIds: state.selectedThreadsIds.concat([
-        newThread.communicatorMessageId,
+        newThread.communicatorMessageId
       ]),
       toggleSelectAllMessageItemsActive:
-        state.selectedThreads.length === state.threads.length - 1
-          ? true
-          : false,
+        state.selectedThreads.length === state.threads.length - 1 ? true : false
     });
   } else if (action.type === "REMOVE_FROM_MESSAGES_SELECTED_THREADS") {
     return Object.assign({}, state, {
@@ -361,7 +358,7 @@ export default function messages(
       selectedThreadsIds: state.selectedThreadsIds.filter((id: number) => {
         return id !== action.payload.communicatorMessageId;
       }),
-      toggleSelectAllMessageItemsActive: false,
+      toggleSelectAllMessageItemsActive: false
     });
   } else if (action.type === "UPDATE_ONE_MESSAGE_THREAD") {
     let update: MessageThreadUpdateType = action.payload.update;
@@ -384,7 +381,7 @@ export default function messages(
           return newThread;
         }
         return thread;
-      }),
+      })
     });
   } else if (action.type === "LOCK_TOOLBAR") {
     return Object.assign({}, state, { toolbarLock: true });
@@ -398,7 +395,7 @@ export default function messages(
         action.payload.communicatorMessageId
     ) {
       newCurrent = Object.assign(newCurrent, {
-        labels: newCurrent.labels.concat([action.payload.label]),
+        labels: newCurrent.labels.concat([action.payload.label])
       });
     }
 
@@ -415,7 +412,7 @@ export default function messages(
               )
             ) {
               return Object.assign({}, selectedThread, {
-                labels: selectedThread.labels.concat([action.payload.label]),
+                labels: selectedThread.labels.concat([action.payload.label])
               });
             } else {
               return selectedThread;
@@ -434,7 +431,7 @@ export default function messages(
             )
           ) {
             return Object.assign({}, thread, {
-              labels: thread.labels.concat([action.payload.label]),
+              labels: thread.labels.concat([action.payload.label])
             });
           } else {
             return thread;
@@ -442,7 +439,7 @@ export default function messages(
         }
         return thread;
       }),
-      currentThread: newCurrent,
+      currentThread: newCurrent
     });
   } else if (action.type === "UPDATE_MESSAGE_THREAD_DROP_LABEL") {
     let newCurrent = state.currentThread;
@@ -454,7 +451,7 @@ export default function messages(
       newCurrent = Object.assign(newCurrent, {
         labels: newCurrent.labels.filter(
           (label) => label.labelId !== action.payload.label.labelId
-        ),
+        )
       });
     }
 
@@ -468,7 +465,7 @@ export default function messages(
             return Object.assign({}, selectedThread, {
               labels: selectedThread.labels.filter(
                 (label) => label.labelId !== action.payload.label.labelId
-              ),
+              )
             });
           }
           return selectedThread;
@@ -481,12 +478,12 @@ export default function messages(
           return Object.assign({}, thread, {
             labels: thread.labels.filter(
               (label) => label.labelId !== action.payload.label.labelId
-            ),
+            )
           });
         }
         return thread;
       }),
-      currentThread: newCurrent,
+      currentThread: newCurrent
     });
   } else if (action.type === "DELETE_MESSAGE_THREAD") {
     return Object.assign({}, state, {
@@ -505,11 +502,11 @@ export default function messages(
       }),
       selectedThreadsIds: state.selectedThreadsIds.filter((id: number) => {
         return id !== action.payload.communicatorMessageId;
-      }),
+      })
     });
   } else if (action.type === "SET_CURRENT_MESSAGE_THREAD") {
     return Object.assign({}, state, {
-      currentThread: <MessageThreadExpandedType>action.payload,
+      currentThread: <MessageThreadExpandedType>action.payload
     });
   } else if (action.type === "UPDATE_ONE_LABEL_FROM_ALL_MESSAGE_THREADS") {
     let update: MessageThreadLabelUpdateType = action.payload.update;
@@ -522,7 +519,7 @@ export default function messages(
                 return Object.assign({}, label, update);
               }
               return label;
-            }),
+            })
           });
         }
       ),
@@ -533,7 +530,7 @@ export default function messages(
               return Object.assign({}, label, update);
             }
             return label;
-          }),
+          })
         });
       }),
       currentThread: state.currentThread
@@ -543,9 +540,9 @@ export default function messages(
                 return Object.assign({}, label, update);
               }
               return label;
-            }),
+            })
           })
-        : state.currentThread,
+        : state.currentThread
     });
   } else if (action.type === "REMOVE_ONE_LABEL_FROM_ALL_MESSAGE_THREADS") {
     return Object.assign({}, state, {
@@ -554,7 +551,7 @@ export default function messages(
           return Object.assign({}, selectedThread, {
             labels: selectedThread.labels.filter(
               (label) => label.labelId !== action.payload.labelId
-            ),
+            )
           });
         }
       ),
@@ -562,27 +559,27 @@ export default function messages(
         return Object.assign({}, thread, {
           labels: thread.labels.filter(
             (label) => label.labelId !== action.payload.labelId
-          ),
+          )
         });
       }),
       currentThread: state.currentThread
         ? Object.assign({}, state.currentThread, {
             labels: state.currentThread.labels.filter(
               (label) => label.labelId !== action.payload.labelId
-            ),
+            )
           })
-        : state.currentThread,
+        : state.currentThread
     });
   } else if (action.type === "PUSH_ONE_MESSAGE_THREAD_FIRST") {
     let newThreads: MessageThreadListType = state.threads.filter(
       (m) => m.communicatorMessageId !== action.payload.communicatorMessageId
     );
     return Object.assign({}, state, {
-      threads: [<MessageThreadType>action.payload].concat(newThreads),
+      threads: [<MessageThreadType>action.payload].concat(newThreads)
     });
   } else if (action.type === "UPDATE_MESSAGES_SIGNATURE") {
     return Object.assign({}, state, {
-      signature: <MessageSignatureType>action.payload,
+      signature: <MessageSignatureType>action.payload
     });
   } else if (action.type === "PUSH_MESSAGE_LAST_IN_CURRENT_THREAD") {
     if (!state.currentThread) {
@@ -591,19 +588,20 @@ export default function messages(
     return Object.assign({}, state, {
       currentThread: Object.assign({}, state.currentThread, {
         messages: state.currentThread.messages.concat([
-          <MessageType>action.payload,
-        ]),
-      }),
+          <MessageType>action.payload
+        ])
+      })
     });
   } else if (action.type === "TOGGLE_ALL_MESSAGE_ITEMS") {
     return Object.assign({}, state, {
-      toggleSelectAllMessageItemsActive: !state.toggleSelectAllMessageItemsActive,
+      toggleSelectAllMessageItemsActive:
+        !state.toggleSelectAllMessageItemsActive,
       selectedThreads: !state.toggleSelectAllMessageItemsActive
         ? state.threads
         : [],
       selectedThreadsIds: !state.toggleSelectAllMessageItemsActive
         ? state.threads.map((thread) => thread.communicatorMessageId)
-        : [],
+        : []
     });
   }
   return state;

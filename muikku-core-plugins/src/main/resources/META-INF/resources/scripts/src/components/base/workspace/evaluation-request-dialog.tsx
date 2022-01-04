@@ -10,7 +10,7 @@ import { bindActionCreators } from "redux";
 import { WorkspaceType } from "~/reducers/workspaces";
 import {
   RequestAssessmentAtWorkspaceTriggerType,
-  requestAssessmentAtWorkspace,
+  requestAssessmentAtWorkspace
 } from "~/actions/workspaces";
 import { StatusType } from "~/reducers/base/status";
 
@@ -49,7 +49,7 @@ class EvaluationRequestDialog extends React.Component<
     super(props);
     this.state = {
       locked: false,
-      message: "",
+      message: ""
     };
 
     this.updateMessage = this.updateMessage.bind(this);
@@ -70,22 +70,22 @@ class EvaluationRequestDialog extends React.Component<
    */
   request(closeDialog: () => any) {
     this.setState({
-      locked: true,
+      locked: true
     });
     this.props.requestAssessmentAtWorkspace({
       workspace: this.props.workspace,
       text: this.state.message,
       success: () => {
         this.setState({
-          locked: false,
+          locked: false
         });
         closeDialog();
       },
       fail: () => {
         this.setState({
-          locked: false,
+          locked: false
         });
-      },
+      }
     });
   }
 
@@ -177,7 +177,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     workspace: state.workspaces.currentWorkspace,
-    status: state.status,
+    status: state.status
   };
 }
 

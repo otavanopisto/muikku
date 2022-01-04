@@ -11,13 +11,13 @@ import { cleanWorkspaceAndSupplementationDrafts } from "../../../../dialogs/dele
 import Button from "~/components/general/button";
 import {
   UpdateWorkspaceSupplementation,
-  updateWorkspaceSupplementationToServer,
+  updateWorkspaceSupplementationToServer
 } from "~/actions/main-function/evaluation/evaluationActions";
 import "~/sass/elements/evaluation.scss";
 import { i18nType } from "~/reducers/base/i18n";
 import {
   UpdateNeedsReloadEvaluationRequests,
-  updateNeedsReloadEvaluationRequests,
+  updateNeedsReloadEvaluationRequests
 } from "~/actions/main-function/evaluation/evaluationActions";
 import "~/sass/elements/form-elements.scss";
 import { LocaleListType } from "~/reducers/base/locales";
@@ -108,22 +108,22 @@ class SupplementationEditor extends SessionStateComponent<
         ...this.getRecoverStoredState(
           {
             literalEvaluation: latestEvent.text,
-            draftId,
+            draftId
           },
           draftId
         ),
-        locked: false,
+        locked: false
       };
     } else {
       this.state = {
         ...this.getRecoverStoredState(
           {
             literalEvaluation: "",
-            draftId,
+            draftId
           },
           draftId
         ),
-        locked: false,
+        locked: false
       };
     }
   }
@@ -153,7 +153,7 @@ class SupplementationEditor extends SessionStateComponent<
           {
             literalEvaluation:
               evaluationAssessmentEvents.data &&
-              evaluationAssessmentEvents.data[latestIndex].text,
+              evaluationAssessmentEvents.data[latestIndex].text
           },
           this.state.draftId
         )
@@ -162,7 +162,7 @@ class SupplementationEditor extends SessionStateComponent<
       this.setState(
         this.getRecoverStoredState(
           {
-            literalEvaluation: "",
+            literalEvaluation: ""
           },
           this.state.draftId
         )
@@ -194,7 +194,7 @@ class SupplementationEditor extends SessionStateComponent<
         type: "new",
         workspaceSupplementation: {
           requestDate: new Date().getTime().toString(),
-          requestText: this.state.literalEvaluation,
+          requestText: this.state.literalEvaluation
         },
         onSuccess: () => {
           cleanWorkspaceAndSupplementationDrafts(this.state.draftId);
@@ -204,7 +204,7 @@ class SupplementationEditor extends SessionStateComponent<
            */
           this.setStateAndClear(
             {
-              literalEvaluation: "",
+              literalEvaluation: ""
             },
             this.state.draftId
           );
@@ -218,7 +218,7 @@ class SupplementationEditor extends SessionStateComponent<
         onFail: () => {
           this.setState({ locked: false });
           onClose();
-        },
+        }
       });
     } else {
       /**
@@ -246,7 +246,7 @@ class SupplementationEditor extends SessionStateComponent<
           requestDate:
             evaluationAssessmentEvents.data &&
             evaluationAssessmentEvents.data[latestIndex].date,
-          requestText: this.state.literalEvaluation,
+          requestText: this.state.literalEvaluation
         },
         onSuccess: () => {
           cleanWorkspaceAndSupplementationDrafts(this.state.draftId);
@@ -256,7 +256,7 @@ class SupplementationEditor extends SessionStateComponent<
            */
           this.setStateAndClear(
             {
-              literalEvaluation: "",
+              literalEvaluation: ""
             },
             this.state.draftId
           );
@@ -269,7 +269,7 @@ class SupplementationEditor extends SessionStateComponent<
         onFail: () => {
           this.setState({ locked: false });
           onClose();
-        },
+        }
       });
     }
   };
@@ -300,7 +300,7 @@ class SupplementationEditor extends SessionStateComponent<
         {
           literalEvaluation:
             evaluationAssessmentEvents.data &&
-            evaluationAssessmentEvents.data[latestIndex].text,
+            evaluationAssessmentEvents.data[latestIndex].text
         },
         this.state.draftId
       );
@@ -310,7 +310,7 @@ class SupplementationEditor extends SessionStateComponent<
        */
       this.setStateAndClear(
         {
-          literalEvaluation: "",
+          literalEvaluation: ""
         },
         this.state.draftId
       );
@@ -384,7 +384,7 @@ function mapStateToProps(state: StateType) {
     i18n: state.i18n,
     status: state.status,
     evaluations: state.evaluations,
-    locale: state.locales,
+    locale: state.locales
   };
 }
 
@@ -396,7 +396,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     {
       updateWorkspaceSupplementationToServer,
-      updateNeedsReloadEvaluationRequests,
+      updateNeedsReloadEvaluationRequests
     },
     dispatch
   );

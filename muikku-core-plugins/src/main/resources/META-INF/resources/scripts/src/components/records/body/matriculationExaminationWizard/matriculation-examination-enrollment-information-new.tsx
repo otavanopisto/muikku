@@ -9,14 +9,14 @@ import Button from "~/components/general/button";
 import { HOPSType } from "../../../../reducers/main-function/hops";
 import {
   getDefaultNextTerm,
-  getDefaultPastTerm,
+  getDefaultPastTerm
 } from "../../../../helper-functions/matriculation-functions";
 import {
   SUBJECT_MAP,
   FINNISH_SUBJECTS,
   ACADEMIC_SUBJECTS,
   ADVANCED_SUBJECTS,
-  EXAMINATION_SUCCESS_GRADES_MAP,
+  EXAMINATION_SUCCESS_GRADES_MAP
 } from "./index";
 
 import {
@@ -25,13 +25,13 @@ import {
   ExaminationEnrolledSubject,
   ExaminationFinishedSubject,
   ExaminationPlannedSubject,
-  ExaminationFunding,
+  ExaminationFunding
 } from "../../../../@types/shared";
 
 import {
   resolveCurrentTerm,
   getNextTermOptions,
-  getPastTermOptions,
+  getPastTermOptions
 } from "../../../../helper-functions/matriculation-functions";
 import { SavingDraftError } from "./saving-draft-error";
 import { SavingDraftInfo } from "./saving-draft-info";
@@ -88,11 +88,11 @@ const REQUIRED_GROUPS = [
     "LAC",
     "SM_DC",
     "SM_ICC",
-    "SM_QC",
+    "SM_QC"
   ],
   ["MAA", "RUA", "ENA", "RAA", "ESA", "SAA", "VEA"],
   ["UE", "ET", "YO", "KE", "GE", "TT", "PS", "FI", "HI", "FY", "BI"],
-  ["MAA", "MAB"],
+  ["MAA", "MAB"]
 ];
 
 /**
@@ -146,7 +146,7 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
       guidanceCounselor: "",
       ssn: null,
       date: "",
-      degreeStructure: ExamEnrollmentDegreeStructure.PRE2022,
+      degreeStructure: ExamEnrollmentDegreeStructure.PRE2022
     };
 
     this.isValidated = this.isValidated.bind(this);
@@ -294,7 +294,7 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
   getNonDuplicateAttendanceEnrolledAndPlannedExcludingNotSucceed = () => {
     const attendances = [
       ...this.state.enrolledAttendances,
-      ...this.state.plannedAttendances,
+      ...this.state.plannedAttendances
     ];
 
     const succesfullyFinishedExams = this.getSuccesfulFinishedExams();
@@ -374,7 +374,7 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
   getNonRenewableForFreeFinishedAttendances = () => {
     return [
       ...this.getSuccesfulFinishedExams(),
-      ...this.getFailedExamsBySomeOtherReason(),
+      ...this.getFailedExamsBySomeOtherReason()
     ];
   };
 
@@ -614,7 +614,7 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
       ["UE", "ET", "YO", "KE", "GE", "TT"],
       ["RUA", "RUB"],
       ["PS", "FI", "HI", "FY", "BI"],
-      ["MAA", "MAB"],
+      ["MAA", "MAB"]
     ];
 
     const subjectCodes: string[] = [];
@@ -818,12 +818,12 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
       mandatory: "false",
       repeat: "false",
       status: "ENROLLED",
-      funding,
+      funding
     });
 
     let modifiedExamination: ExaminationInformation = {
       ...examination,
-      enrolledAttendances,
+      enrolledAttendances
     };
 
     /* modifiedExamination = {
@@ -857,12 +857,12 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
       mandatory: "false",
       grade: "",
       status: "FINISHED",
-      funding,
+      funding
     });
 
     let modifiedExamination: ExaminationInformation = {
       ...examination,
-      finishedAttendances,
+      finishedAttendances
     };
 
     /* modifiedExamination = {
@@ -885,12 +885,12 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
       term: getDefaultNextTerm().value,
       subject: this.getDefaultSubject(this.getPlannedSubjects()),
       mandatory: "false",
-      status: "PLANNED",
+      status: "PLANNED"
     });
 
     const modifiedExamination: ExaminationInformation = {
       ...examination,
-      plannedAttendances,
+      plannedAttendances
     };
 
     onChange(modifiedExamination);
@@ -908,7 +908,7 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
 
     let modifiedExamination: ExaminationInformation = {
       ...examination,
-      enrolledAttendances,
+      enrolledAttendances
     };
 
     /* modifiedExamination = {
@@ -931,7 +931,7 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
 
     let modifiedExamination: ExaminationInformation = {
       ...examination,
-      finishedAttendances,
+      finishedAttendances
     };
 
     /* modifiedExamination = {
@@ -953,7 +953,7 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
 
     const modifiedExamination: ExaminationInformation = {
       ...examination,
-      plannedAttendances,
+      plannedAttendances
     };
 
     onChange(modifiedExamination);
@@ -973,7 +973,7 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
 
     let modifiedExamination: ExaminationInformation = {
       ...examination,
-      [key]: value,
+      [key]: value
     };
 
     /**
@@ -992,15 +992,15 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
         finishedAttendances: modifiedExamination.finishedAttendances.map(
           (fSubject) => ({
             ...fSubject,
-            funding: ExaminationFunding.SELF_FUNDED,
+            funding: ExaminationFunding.SELF_FUNDED
           })
         ),
         enrolledAttendances: modifiedExamination.enrolledAttendances.map(
           (eSubject) => ({
             ...eSubject,
-            funding: ExaminationFunding.SELF_FUNDED,
+            funding: ExaminationFunding.SELF_FUNDED
           })
-        ),
+        )
       };
     }
     if (
@@ -1012,15 +1012,15 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
         finishedAttendances: modifiedExamination.finishedAttendances.map(
           (fSubject) => ({
             ...fSubject,
-            funding: "",
+            funding: ""
           })
         ),
         enrolledAttendances: modifiedExamination.enrolledAttendances.map(
           (eSubject) => ({
             ...eSubject,
-            funding: "",
+            funding: ""
           })
-        ),
+        )
       };
     }
 
@@ -1038,7 +1038,7 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
 
     let modifiedExamination: ExaminationInformation = {
       ...examination,
-      enrolledAttendances: examinationSubjectList,
+      enrolledAttendances: examinationSubjectList
     };
 
     /* modifiedExamination = {
@@ -1060,7 +1060,7 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
 
     let modifiedExamination: ExaminationInformation = {
       ...examination,
-      finishedAttendances: examinationSubjectList,
+      finishedAttendances: examinationSubjectList
     };
 
     /* modifiedExamination = {
@@ -1082,7 +1082,7 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
 
     const modifiedExamination: ExaminationInformation = {
       ...examination,
-      plannedAttendances: examinationSubjectList,
+      plannedAttendances: examinationSubjectList
     };
 
     onChange(modifiedExamination);
@@ -1111,7 +1111,7 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
       numMandatoryCourses,
       enrolledAttendances,
       plannedAttendances,
-      finishedAttendances,
+      finishedAttendances
     } = this.state;
 
     return (

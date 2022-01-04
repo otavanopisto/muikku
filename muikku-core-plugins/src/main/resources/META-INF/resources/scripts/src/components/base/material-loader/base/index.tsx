@@ -1,29 +1,33 @@
-import TextField from '../fields/text-field';
-import SelectField from '../fields/select-field';
-import MultiSelectField from '../fields/multiselect-field';
-import MemoField from '../fields/memo-field';
-import * as React from 'react';
-import $ from '~/lib/jquery';
-import { i18nType } from '~/reducers/base/i18n';
-import FileField from '../fields/file-field';
-import ConnectField from '../fields/connect-field';
-import OrganizerField from '../fields/organizer-field';
-import AudioField from '../fields/audio-field';
-import SorterField from '../fields/sorter-field';
-import { StatusType } from '~/reducers/base/status';
-import Image from '../static/image';
-import WordDefinition from '../static/word-definition';
-import IFrame from '../static/iframe';
-import { extractDataSet, HTMLToReactComponentRule } from '~/util/modifiers';
-import MathField from '../fields/math-field';
-import { MaterialCompositeRepliesType, WorkspaceType, MaterialContentNodeType } from '~/reducers/workspaces';
-import { WebsocketStateType } from '~/reducers/util/websocket';
-import Link from '~/components/base/material-loader/static/link';
+import TextField from "../fields/text-field";
+import SelectField from "../fields/select-field";
+import MultiSelectField from "../fields/multiselect-field";
+import MemoField from "../fields/memo-field";
+import * as React from "react";
+import $ from "~/lib/jquery";
+import { i18nType } from "~/reducers/base/i18n";
+import FileField from "../fields/file-field";
+import ConnectField from "../fields/connect-field";
+import OrganizerField from "../fields/organizer-field";
+import AudioField from "../fields/audio-field";
+import SorterField from "../fields/sorter-field";
+import { StatusType } from "~/reducers/base/status";
+import Image from "../static/image";
+import WordDefinition from "../static/word-definition";
+import IFrame from "../static/iframe";
+import { extractDataSet, HTMLToReactComponentRule } from "~/util/modifiers";
+import MathField from "../fields/math-field";
+import {
+  MaterialCompositeRepliesType,
+  WorkspaceType,
+  MaterialContentNodeType
+} from "~/reducers/workspaces";
+import { WebsocketStateType } from "~/reducers/util/websocket";
+import Link from "~/components/base/material-loader/static/link";
 import { HTMLtoReactComponent } from "~/util/modifiers";
-import Table from '~/components/base/material-loader/static/table';
-import MathJAX from '~/components/base/material-loader/static/mathjax';
-import { UsedAs, FieldStateStatus } from '~/@types/shared';
-import { AudioPoolComponent } from '~/components/general/audio-pool-component';
+import Table from "~/components/base/material-loader/static/table";
+import MathJAX from "~/components/base/material-loader/static/mathjax";
+import { UsedAs, FieldStateStatus } from "~/@types/shared";
+import { AudioPoolComponent } from "~/components/general/audio-pool-component";
 
 //These are all our supported objects as for now
 const objects: { [key: string]: any } = {
@@ -37,43 +41,52 @@ const objects: { [key: string]: any } = {
   "application/vnd.muikku.field.audio": AudioField,
   "application/vnd.muikku.field.sorter": SorterField,
   "application/vnd.muikku.field.mathexercise": MathField
-}
+};
 
 // Wheteher the object can check or not for an answer
 const answerCheckables: { [key: string]: (params: any) => boolean } = {
   "application/vnd.muikku.field.text": (params: any) => {
-    return params.content && params.content.rightAnswers.filter((option: any) => option.correct).lenght;
+    return (
+      params.content &&
+      params.content.rightAnswers.filter((option: any) => option.correct).lenght
+    );
   },
   "application/vnd.muikku.field.select": (params: any) => {
-    return params.content && params.content.options.filter((option: any) => option.correct).lenght;
+    return (
+      params.content &&
+      params.content.options.filter((option: any) => option.correct).lenght
+    );
   },
   "application/vnd.muikku.field.multiselect": (params: any) => {
-    return params.content && params.content.options.filter((option: any) => option.correct).lenght;
+    return (
+      params.content &&
+      params.content.options.filter((option: any) => option.correct).lenght
+    );
   },
   "application/vnd.muikku.field.connect": () => true,
   "application/vnd.muikku.field.organizer": () => true,
   "application/vnd.muikku.field.sorter": () => true
-}
+};
 
 interface BaseProps {
-  material: MaterialContentNodeType,
-  i18n: i18nType,
-  status: StatusType,
-  workspace: WorkspaceType,
-  websocketState: WebsocketStateType,
-  answerable: boolean,
+  material: MaterialContentNodeType;
+  i18n: i18nType;
+  status: StatusType;
+  workspace: WorkspaceType;
+  websocketState: WebsocketStateType;
+  answerable: boolean;
 
-  compositeReplies?: MaterialCompositeRepliesType,
-  readOnly?: boolean,
+  compositeReplies?: MaterialCompositeRepliesType;
+  readOnly?: boolean;
 
-  onConfirmedAndSyncedModification?: () => any,
-  onModification?: () => any,
-  displayCorrectAnswers: boolean,
-  checkAnswers: boolean,
-  onAnswerChange: (name: string, status: boolean) => any,
-  onAnswerCheckableChange: (status: boolean) => any,
+  onConfirmedAndSyncedModification?: () => any;
+  onModification?: () => any;
+  displayCorrectAnswers: boolean;
+  checkAnswers: boolean;
+  onAnswerChange: (name: string, status: boolean) => any;
+  onAnswerCheckableChange: (status: boolean) => any;
   usedAs: UsedAs;
-  invisible: boolean,
+  invisible: boolean;
 }
 
 interface BaseState {
@@ -91,10 +104,10 @@ const TIME_IT_WAITS_TO_TRIGGER_A_CHANGE_EVENT_IF_NO_OTHER_CHANGE_EVENT_IS_IN_QUE
 // there are some of them which shouldn't
 // but hey that's the case
 function preprocessor($html: any): any {
-  $html.find('img').each(function () {
-    if (!$(this).parent('figure').length) {
-      let elem = document.createElement('span');
-      elem.className = 'image';
+  $html.find("img").each(function () {
+    if (!$(this).parent("figure").length) {
+      let elem = document.createElement("span");
+      elem.className = "image";
 
       $(this).replaceWith(elem);
       const src = this.getAttribute("src");
@@ -113,12 +126,11 @@ function preprocessor($html: any): any {
     }
   });
 
-  $html.find('audio').each(function () {
+  $html.find("audio").each(function () {
     $(this).attr("preload", "metadata");
-  })
+  });
 
-  $html.find('source').each(function () {
-
+  $html.find("source").each(function () {
     // This is done because there will be a bunch of 404's if the src is left untouched - the original url for the audio file src is incomplete as it's missing section/material_page path
 
     const src = this.getAttribute("src");
@@ -127,8 +139,7 @@ function preprocessor($html: any): any {
       this.dataset.original = src;
       $(this).removeAttr("src");
     }
-  }
-  );
+  });
 
   $html.find("a figure").each(function () {
     // removing old style images wrapped in a link
@@ -166,17 +177,17 @@ function preprocessor($html: any): any {
  * @param state
  * @returns
  */
-export function createFieldSavedStateClass (state: FieldStateStatus){
+export function createFieldSavedStateClass(state: FieldStateStatus) {
   let fieldSavedStateClass = "";
-    if (state === "ERROR") {
-      fieldSavedStateClass = "state-ERROR";
-    } else if (state === "SAVING") {
-      fieldSavedStateClass = "state-SAVING";
-    } else if (state === "SAVED") {
-      fieldSavedStateClass = "state-SAVED";
-    }
+  if (state === "ERROR") {
+    fieldSavedStateClass = "state-ERROR";
+  } else if (state === "SAVING") {
+    fieldSavedStateClass = "state-SAVING";
+  } else if (state === "SAVED") {
+    fieldSavedStateClass = "state-SAVED";
+  }
 
-return fieldSavedStateClass
+  return fieldSavedStateClass;
 }
 
 export default class Base extends React.Component<BaseProps, BaseState> {
@@ -185,29 +196,31 @@ export default class Base extends React.Component<BaseProps, BaseState> {
   // whenever a field changes we save it as timeout not to send every keystroke to the server
   // every keystroke cancels the previous timeout given by the TIME_IT_TAKES_FOR_AN_ANSWER_TO_BE_SAVED_WHILE_THE_USER_MODIFIES_IT
   private timeoutChangeRegistry: {
-    [name: string]: NodeJS.Timer
-  }
+    [name: string]: NodeJS.Timer;
+  };
   // once a change is emitted to the server we set a timeout to consider the field unsynced (Say if lost connection)
   // which would unsync the specific field, the timeout is triggered if it is not cancelled within the
   // TIME_IT_TAKES_FOR_AN_ANSWER_TO_BE_CONSIDERED_UNSYNCED_IF_SERVER_DOES_NOT_REPLY
   private timeoutConnectionFailedRegistry: {
-    [name: string]: NodeJS.Timer
-  }
+    [name: string]: NodeJS.Timer;
+  };
 
   // This is a helper utility which saves the context of a react component during the change because we handle
   // its sync and unsync state here, so we save it for name, these are page specific so they don't collide
   // as every page has its own base.tsx
   private nameContextRegistry: {
-    [name: string]: React.Component<any, any>
-  }
+    [name: string]: React.Component<any, any>;
+  };
 
   constructor(props: BaseProps) {
     super(props);
 
     // We preprocess the html
     this.state = {
-      elements: preprocessor($(props.material.html)).toArray() as Array<HTMLElement>,
-    }
+      elements: preprocessor(
+        $(props.material.html)
+      ).toArray() as Array<HTMLElement>
+    };
 
     // prepare the registries
     this.timeoutChangeRegistry = {};
@@ -233,9 +246,11 @@ export default class Base extends React.Component<BaseProps, BaseState> {
    */
   componentWillReceiveProps(nextProps: BaseProps) {
     if (nextProps.material.html !== this.props.material.html) {
-      const elements = preprocessor($(nextProps.material.html)).toArray() as Array<HTMLElement>;
+      const elements = preprocessor(
+        $(nextProps.material.html)
+      ).toArray() as Array<HTMLElement>;
       this.setState({
-        elements,
+        elements
       });
 
       this.setupEverything(this.props, elements);
@@ -252,18 +267,28 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     this.answerCheckable = false;
 
     // First we find all the interactive
-    $(elements).find("object").addBack("object").each((index: number, element: HTMLElement) => {
-      // We get the object element as in, the react component that it will be replaced with
-      const rElement: React.ReactElement<any> = this.getObjectElement(element, props);
+    $(elements)
+      .find("object")
+      .addBack("object")
+      .each((index: number, element: HTMLElement) => {
+        // We get the object element as in, the react component that it will be replaced with
+        const rElement: React.ReactElement<any> = this.getObjectElement(
+          element,
+          props
+        );
 
-      const newAnswerCheckableState = answerCheckables[element.getAttribute("type")] &&
-        answerCheckables[element.getAttribute("type")](rElement.props);
-      if (newAnswerCheckableState && !this.answerCheckable) {
-        this.answerCheckable = true;
-      }
-    });
+        const newAnswerCheckableState =
+          answerCheckables[element.getAttribute("type")] &&
+          answerCheckables[element.getAttribute("type")](rElement.props);
+        if (newAnswerCheckableState && !this.answerCheckable) {
+          this.answerCheckable = true;
+        }
+      });
 
-    if (this.props.onAnswerCheckableChange && originalAnswerCheckable !== this.answerCheckable) {
+    if (
+      this.props.onAnswerCheckableChange &&
+      originalAnswerCheckable !== this.answerCheckable
+    ) {
       this.props.onAnswerCheckableChange(this.answerCheckable);
     }
   }
@@ -273,8 +298,14 @@ export default class Base extends React.Component<BaseProps, BaseState> {
   componentWillMount() {
     // When we mount we need to register the websocket event for the answer saved
     if (this.props.websocketState.websocket) {
-      this.props.websocketState.websocket.addEventCallback("workspace:field-answer-saved", this.onAnswerSavedAtServer);
-      this.props.websocketState.websocket.addEventCallback("workspace:field-answer-error", this.onAnswerSavedAtServer);
+      this.props.websocketState.websocket.addEventCallback(
+        "workspace:field-answer-saved",
+        this.onAnswerSavedAtServer
+      );
+      this.props.websocketState.websocket.addEventCallback(
+        "workspace:field-answer-error",
+        this.onAnswerSavedAtServer
+      );
     }
   }
 
@@ -284,8 +315,14 @@ export default class Base extends React.Component<BaseProps, BaseState> {
   componentWillUnmount() {
     // and we unregister that on unmount and of course unmount all the will be orphaned react components in the dom
     if (this.props.websocketState.websocket) {
-      this.props.websocketState.websocket.removeEventCallback("workspace:field-answer-saved", this.onAnswerSavedAtServer);
-      this.props.websocketState.websocket.removeEventCallback("workspace:field-answer-error", this.onAnswerSavedAtServer);
+      this.props.websocketState.websocket.removeEventCallback(
+        "workspace:field-answer-saved",
+        this.onAnswerSavedAtServer
+      );
+      this.props.websocketState.websocket.removeEventCallback(
+        "workspace:field-answer-error",
+        this.onAnswerSavedAtServer
+      );
     }
   }
   /**
@@ -299,8 +336,12 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     // we check the data for a match for this specific page, given that a lot of callbacks will be registered
     // and we are going to get all those events indiscrimately of wheter which page it belongs to as we are
     // registering this event on all the field-answer-saved events
-    if (actualData.materialId === this.props.material.materialId && actualData.workspaceMaterialId === this.props.material.workspaceMaterialId &&
-      actualData.workspaceEntityId === this.props.workspace.id) {
+    if (
+      actualData.materialId === this.props.material.materialId &&
+      actualData.workspaceMaterialId ===
+        this.props.material.workspaceMaterialId &&
+      actualData.workspaceEntityId === this.props.workspace.id
+    ) {
       // We clear the timeout that would mark the field as unsynced given the time had passed
       clearTimeout(this.timeoutConnectionFailedRegistry[actualData.fieldName]);
       delete this.timeoutConnectionFailedRegistry[actualData.fieldName];
@@ -309,7 +350,10 @@ export default class Base extends React.Component<BaseProps, BaseState> {
       if (actualData.error) {
         console.error && console.error(actualData.error);
         // we get the context and check whether it's synced
-        this.nameContextRegistry[actualData.fieldName].setState({ synced: false, syncError: actualData.error });
+        this.nameContextRegistry[actualData.fieldName].setState({
+          synced: false,
+          syncError: actualData.error
+        });
         return;
       }
 
@@ -325,7 +369,10 @@ export default class Base extends React.Component<BaseProps, BaseState> {
           this.nameContextRegistry[actualData.fieldName].state.syncError
         ) {
           // we make it synced then and the user is happy can keep typing
-          this.nameContextRegistry[actualData.fieldName].setState({ synced: true, syncError: null });
+          this.nameContextRegistry[actualData.fieldName].setState({
+            synced: true,
+            syncError: null
+          });
         }
       }
     }
@@ -338,13 +385,21 @@ export default class Base extends React.Component<BaseProps, BaseState> {
    * @param key
    * @returns
    */
-  getObjectElement(element: HTMLElement, props: BaseProps = this.props, key?: number) {
+  getObjectElement(
+    element: HTMLElement,
+    props: BaseProps = this.props,
+    key?: number
+  ) {
     // So we check from our objects we have on top, to see what class we are getting
     let ActualElement = objects[element.getAttribute("type")];
 
     // This is here in case we get some brand new stuff, it should never come here
     if (!ActualElement) {
-      return <span>Invalid Element {element.getAttribute("type")} {element.innerHTML}</span>;
+      return (
+        <span>
+          Invalid Element {element.getAttribute("type")} {element.innerHTML}
+        </span>
+      );
     }
 
     // So now we get the parameters of that thing, due to all the updates we gotta unify here
@@ -360,8 +415,9 @@ export default class Base extends React.Component<BaseProps, BaseState> {
       try {
         // Then we try to parse the content if there's a content, hmmm
         // some fields come differently but hey this works out
-        parameters["content"] = parameters["content"] && JSON.parse(parameters["content"]);
-      } catch (e) { }
+        parameters["content"] =
+          parameters["content"] && JSON.parse(parameters["content"]);
+      } catch (e) {}
     }
 
     if (!parameters["type"]) {
@@ -385,13 +441,20 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     // We set the value if we have one in composite replies
     parameters["initialValue"] = null;
     if (props.compositeReplies && props.compositeReplies.answers) {
-      parameters["initialValue"] = props.compositeReplies.answers.find((answer) => {
-        return answer.fieldName === (parameters.content && parameters.content.name);
-      });
+      parameters["initialValue"] = props.compositeReplies.answers.find(
+        (answer) => {
+          return (
+            answer.fieldName === (parameters.content && parameters.content.name)
+          );
+        }
+      );
     }
 
     // And sometimes the value comes weird in a .value field so we pick that one if its there
-    if (parameters["initialValue"] && typeof parameters["initialValue"].value !== "undefined") {
+    if (
+      parameters["initialValue"] &&
+      typeof parameters["initialValue"].value !== "undefined"
+    ) {
       parameters["initialValue"] = parameters["initialValue"].value;
     }
 
@@ -406,7 +469,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     parameters["userId"] = props.status.userId;
 
     // and we return that thing
-    return <ActualElement {...parameters} key={key} />
+    return <ActualElement {...parameters} key={key} />;
   }
 
   /**
@@ -416,7 +479,11 @@ export default class Base extends React.Component<BaseProps, BaseState> {
    * @param newValue
    * @returns
    */
-  onValueChange(context: React.Component<any, any>, name: string, newValue: any) {
+  onValueChange(
+    context: React.Component<any, any>,
+    name: string,
+    newValue: any
+  ) {
     if (!this.props.websocketState.websocket) {
       // can't do anything if no websocket
       return;
@@ -444,7 +511,6 @@ export default class Base extends React.Component<BaseProps, BaseState> {
 
     // and set a new timeout to change given the TIME_IT_TAKES_FOR_AN_ANSWER_TO_BE_SAVED_WHILE_THE_USER_MODIFIES_IT
     this.timeoutChangeRegistry[name] = setTimeout(() => {
-
       // Tell the server thru the websocket to save
       let messageData = JSON.stringify({
         answer: newValue,
@@ -456,8 +522,20 @@ export default class Base extends React.Component<BaseProps, BaseState> {
         workspaceMaterialId: this.props.material.workspaceMaterialId,
         userEntityId: this.props.status.userId
       });
-      let stackId = name + "-" + this.props.workspace.id + "-" + this.props.material.workspaceMaterialId + "-" + this.props.material.materialId;
-      this.props.websocketState.websocket.sendMessage("workspace:field-answer-save", messageData, null, stackId);
+      let stackId =
+        name +
+        "-" +
+        this.props.workspace.id +
+        "-" +
+        this.props.material.workspaceMaterialId +
+        "-" +
+        this.props.material.materialId;
+      this.props.websocketState.websocket.sendMessage(
+        "workspace:field-answer-save",
+        messageData,
+        null,
+        stackId
+      );
       // We set no callback onsent
       // and for the stackId we use this unique id that should represent the only field
       // remember that base.tsx represents a specific page so a name in the registry here suffices
@@ -471,7 +549,12 @@ export default class Base extends React.Component<BaseProps, BaseState> {
       // for considering the answer unsynced if the server does not reply
       this.timeoutConnectionFailedRegistry[name] = setTimeout(() => {
         // Takes too long so we queue the message again
-        this.props.websocketState.websocket.queueMessage("workspace:field-answer-save", messageData, null, stackId);
+        this.props.websocketState.websocket.queueMessage(
+          "workspace:field-answer-save",
+          messageData,
+          null,
+          stackId
+        );
         context.setState({ syncError: "server does not reply" });
       }, TIME_IT_TAKES_FOR_AN_ANSWER_TO_BE_CONSIDERED_FAILED_IF_SERVER_DOES_NOT_REPLY) as any;
     }, TIME_IT_WAITS_TO_TRIGGER_A_CHANGE_EVENT_IF_NO_OTHER_CHANGE_EVENT_IS_IN_QUEUE) as any;
@@ -482,13 +565,18 @@ export default class Base extends React.Component<BaseProps, BaseState> {
    * @returns
    */
   render() {
-    const path = "/workspace/" + this.props.workspace.urlName + "/materials/" + this.props.material.path;
+    const path =
+      "/workspace/" +
+      this.props.workspace.urlName +
+      "/materials/" +
+      this.props.material.path;
     const invisible = this.props.invisible;
     const i18n = this.props.i18n;
 
     const processingRules: HTMLToReactComponentRule[] = [
       {
-        shouldProcessHTMLElement: (tagname, element) => tagname === "object" && objects[element.getAttribute("type")],
+        shouldProcessHTMLElement: (tagname, element) =>
+          tagname === "object" && objects[element.getAttribute("type")],
         processingFunction: (tag, props, children, element) => {
           return this.getObjectElement(element, this.props, props.key);
         }
@@ -498,18 +586,39 @@ export default class Base extends React.Component<BaseProps, BaseState> {
         preventChildProcessing: true,
         processingFunction: (tag, props, children, element) => {
           const dataset = extractDataSet(element);
-          return (<IFrame key={props.key} element={element} path={path} invisible={invisible} dataset={dataset} i18n={i18n} />);
+          return (
+            <IFrame
+              key={props.key}
+              element={element}
+              path={path}
+              invisible={invisible}
+              dataset={dataset}
+              i18n={i18n}
+            />
+          );
         }
       },
       {
-        shouldProcessHTMLElement: (tagname, element) => !!(tagname === "mark" && element.dataset.muikkuWordDefinition),
+        shouldProcessHTMLElement: (tagname, element) =>
+          !!(tagname === "mark" && element.dataset.muikkuWordDefinition),
         processingFunction: (tag, props, children, element) => {
           const dataset = extractDataSet(element);
-          return (<WordDefinition key={props.key} invisible={invisible} dataset={dataset} i18n={i18n}>{children}</WordDefinition>);
+          return (
+            <WordDefinition
+              key={props.key}
+              invisible={invisible}
+              dataset={dataset}
+              i18n={i18n}
+            >
+              {children}
+            </WordDefinition>
+          );
         }
       },
       {
-        shouldProcessHTMLElement: (tagname, element) => (tagname === "figure" || tagname === "span") && element.classList.contains("image"),
+        shouldProcessHTMLElement: (tagname, element) =>
+          (tagname === "figure" || tagname === "span") &&
+          element.classList.contains("image"),
         preventChildProcessing: true,
         processingFunction: (tag, props, children, element) => {
           const dataset = extractDataSet(element);
@@ -525,28 +634,52 @@ export default class Base extends React.Component<BaseProps, BaseState> {
             />
           );
         },
-        id: "image-rule",
+        id: "image-rule"
       },
       {
-        shouldProcessHTMLElement: (tagname, element) => tagname === "span" && element.classList.contains("math-tex"),
+        shouldProcessHTMLElement: (tagname, element) =>
+          tagname === "span" && element.classList.contains("math-tex"),
         processingFunction: (tag, props, children, element) => {
-          return <MathJAX key={props.key} invisible={invisible} children={children} />;
-        },
+          return (
+            <MathJAX
+              key={props.key}
+              invisible={invisible}
+              children={children}
+            />
+          );
+        }
       },
       {
-        shouldProcessHTMLElement: (tagname, element) => !!(tagname === "a" && (element as HTMLAnchorElement).href),
+        shouldProcessHTMLElement: (tagname, element) =>
+          !!(tagname === "a" && (element as HTMLAnchorElement).href),
         id: "link-rule",
         preventChildProcessing: true,
         processingFunction: (tag, props, children, element) => {
           const dataset = extractDataSet(element);
-          return <Link key={props.key} element={element} path={path} dataset={dataset} i18n={i18n} processingRules={processingRules} />;
-        },
+          return (
+            <Link
+              key={props.key}
+              element={element}
+              path={path}
+              dataset={dataset}
+              i18n={i18n}
+              processingRules={processingRules}
+            />
+          );
+        }
       },
       {
         shouldProcessHTMLElement: (tagname) => tagname === "table",
         processingFunction: (tagname, props, children, element) => {
-          return <Table key={props.key} element={element} props={props} children={children} />;
-        },
+          return (
+            <Table
+              key={props.key}
+              element={element}
+              props={props}
+              children={children}
+            />
+          );
+        }
       },
       {
         shouldProcessHTMLElement: (tagname) => tagname === "audio",
@@ -554,7 +687,11 @@ export default class Base extends React.Component<BaseProps, BaseState> {
           props.preload = "metadata";
         },
         processingFunction: (tag, props, children, element) => {
-          return (<AudioPoolComponent {...props} invisible={invisible}>{children}</AudioPoolComponent>);
+          return (
+            <AudioPoolComponent {...props} invisible={invisible}>
+              {children}
+            </AudioPoolComponent>
+          );
         }
       },
       {
@@ -562,10 +699,17 @@ export default class Base extends React.Component<BaseProps, BaseState> {
         preprocessReactProperties: (tag, props, children, element) => {
           const dataset = extractDataSet(element);
           const src = dataset.original || "";
-          const isAbsolute = (src.indexOf('/') == 0) || (src.indexOf('mailto:') == 0) ||
-            (src.indexOf('data:') == 0) || (src.match("^(?:[a-zA-Z]+:)?\/\/"));
+          const isAbsolute =
+            src.indexOf("/") == 0 ||
+            src.indexOf("mailto:") == 0 ||
+            src.indexOf("data:") == 0 ||
+            src.match("^(?:[a-zA-Z]+:)?//");
           if (!isAbsolute) {
-            const path = "/workspace/" + this.props.workspace.urlName + "/materials/" + this.props.material.path;
+            const path =
+              "/workspace/" +
+              this.props.workspace.urlName +
+              "/materials/" +
+              this.props.material.path;
             props.src = path + "/" + src;
           }
         }
@@ -574,10 +718,12 @@ export default class Base extends React.Component<BaseProps, BaseState> {
 
     // This is all there is we just glue the HTML in there
     // and pick out the content from there
-    return <div className="material-page__content rich-text">
-      {this.state.elements.map((rootElement, index) => {
-        return HTMLtoReactComponent(rootElement, processingRules, index);
-      })}
-    </div>;
+    return (
+      <div className="material-page__content rich-text">
+        {this.state.elements.map((rootElement, index) => {
+          return HTMLtoReactComponent(rootElement, processingRules, index);
+        })}
+      </div>
+    );
   }
 }

@@ -11,21 +11,18 @@ import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
 import { GuiderUserLabelType } from "~/reducers/main-function/guider";
 import InputContactsAutofill from "~/components/base/input-contacts-autofill";
-import {
-  UserIndexType,
-  ContactRecipientType,
-} from "~/reducers/user-index";
+import { UserIndexType, ContactRecipientType } from "~/reducers/user-index";
 import promisify from "~/util/promisify";
 import {
   displayNotification,
-  DisplayNotificationTriggerType,
+  DisplayNotificationTriggerType
 } from "~/actions/base/notifications";
 import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
-import { getName } from '~/util/modifiers';
+import { getName } from "~/util/modifiers";
 
 const KEYCODES = {
-  ENTER: 13,
+  ENTER: 13
 };
 
 interface GuiderLabelShareDialogProps {
@@ -58,7 +55,7 @@ class GuiderLabelShareDialog extends React.Component<
     this.sharesResult = [];
 
     this.state = {
-      selectedItems: [],
+      selectedItems: []
     };
   }
 
@@ -85,11 +82,11 @@ class GuiderLabelShareDialog extends React.Component<
             value: {
               id: result.user.userIdentifier,
               email: "unknown",
-              name: getName(result.user, true),
-            },
+              name: getName(result.user, true)
+            }
           };
         })
-        .filter((r: ContactRecipientType) => r !== null),
+        .filter((r: ContactRecipientType) => r !== null)
     });
   }
 
@@ -123,7 +120,7 @@ class GuiderLabelShareDialog extends React.Component<
           await promisify(
             mApi().user.flags.shares.create(this.props.label.id, {
               flagId: this.props.label.id,
-              userIdentifier: member.value.id,
+              userIdentifier: member.value.id
             }),
             "callback"
           )();
@@ -232,7 +229,7 @@ class GuiderLabelShareDialog extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    userIndex: state.userIndex,
+    userIndex: state.userIndex
   };
 }
 

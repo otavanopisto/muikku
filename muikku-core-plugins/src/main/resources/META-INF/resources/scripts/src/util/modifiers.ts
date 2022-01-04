@@ -1,65 +1,71 @@
-import * as React from 'react';
-import { UserType, UserWithSchoolDataType, UserStaffType } from '~/reducers/user-index';
-import $ from '~/lib/jquery';
-import { MaterialContentNodeListType } from '~/reducers/workspaces';
+import * as React from "react";
+import {
+  UserType,
+  UserWithSchoolDataType,
+  UserStaffType
+} from "~/reducers/user-index";
+import $ from "~/lib/jquery";
+import { MaterialContentNodeListType } from "~/reducers/workspaces";
 
 function escapeRegExp(str: string) {
   return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
 }
 
-function intersectTwo(a: any[], b: any[]){
-  return a.filter(function(n) {
+function intersectTwo(a: any[], b: any[]) {
+  return a.filter(function (n) {
     return b.indexOf(n) > -1;
   });
 }
 
-function differenceTwo(a: any[], b: any[]){
-  let inAButNotInB = a.filter(function(n) {
+function differenceTwo(a: any[], b: any[]) {
+  let inAButNotInB = a.filter(function (n) {
     return b.indexOf(n) === -1;
   });
-  let inBButNotInA = b.filter(function(n) {
+  let inBButNotInA = b.filter(function (n) {
     return a.indexOf(n) === -1;
   });
   return inAButNotInB.concat(inBButNotInA);
 }
 
-export function filterMatch(string: string, filter: string){
+export function filterMatch(string: string, filter: string) {
   return string.match(new RegExp(escapeRegExp(filter), "i"));
 }
 
-export function filterHighlight(string: string, filter: string){
-  if (filter === ""){
-    return React.createElement(
-        "span",
-        {},
-        string
-    );
+export function filterHighlight(string: string, filter: string) {
+  if (filter === "") {
+    return React.createElement("span", {}, string);
   }
-  let accumulator:Array<Array<any>> = [[]];
-  string.split(new RegExp("(" + escapeRegExp(filter) + "|\\s)", "i")).forEach((element, index)=>{
-    if (element === ""){
-      return;
-    } else if (element === " "){
-      accumulator.push([]);
-    } else if (element.toLocaleLowerCase() === filter.toLocaleLowerCase()) {
-      accumulator[accumulator.length - 1].push(React.createElement(
-          "span",
-          { key: index, className: 'form-element__autocomplete-highlight'},
-          element
-      ))
-    } else {
-      accumulator[accumulator.length - 1].push(element);
-    }
-  });
+  let accumulator: Array<Array<any>> = [[]];
+  string
+    .split(new RegExp("(" + escapeRegExp(filter) + "|\\s)", "i"))
+    .forEach((element, index) => {
+      if (element === "") {
+        return;
+      } else if (element === " ") {
+        accumulator.push([]);
+      } else if (element.toLocaleLowerCase() === filter.toLocaleLowerCase()) {
+        accumulator[accumulator.length - 1].push(
+          React.createElement(
+            "span",
+            { key: index, className: "form-element__autocomplete-highlight" },
+            element
+          )
+        );
+      } else {
+        accumulator[accumulator.length - 1].push(element);
+      }
+    });
 
-  let spans = accumulator.map((childMap, index)=>React.createElement("span",{key: index},...childMap));
-  let newChild:Array<any> = [];
-  spans.forEach((s, index)=>{
+  let spans = accumulator.map((childMap, index) =>
+    React.createElement("span", { key: index }, ...childMap)
+  );
+  let newChild: Array<any> = [];
+  spans.forEach((s, index) => {
     newChild.push(s);
-    if (index !== spans.length - 1){
+    if (index !== spans.length - 1) {
       newChild.push(" ");
     }
-  })
+  });
   return newChild;
 }
 
@@ -81,7 +87,7 @@ export function hexToColorInt(hexColor: string) {
   let b = 255;
 
   if (hexColor) {
-    if (hexColor.length == 7){
+    if (hexColor.length == 7) {
       hexColor = hexColor.slice(1);
     }
 
@@ -93,113 +99,127 @@ export function hexToColorInt(hexColor: string) {
   return (r << 16) + (g << 8) + b;
 }
 
-export function intersect(...elements:any[]){
-  if (elements.length === 1){
+export function intersect(...elements: any[]) {
+  if (elements.length === 1) {
     return elements[0];
   }
 
   return elements.reduce(intersectTwo);
 }
 
-export function difference(...elements:any[]){
-  if (elements.length === 1){
+export function difference(...elements: any[]) {
+  if (elements.length === 1) {
     return [];
   }
 
   return elements.reduce(differenceTwo);
 }
 
-export function flatten(...elements:any[]){
-  if (elements.length === 1){
+export function flatten(...elements: any[]) {
+  if (elements.length === 1) {
     return elements[0];
-  } else if (elements.length === 0){
+  } else if (elements.length === 0) {
     return [];
   }
 
-  return elements.reduce((a, b)=>{
+  return elements.reduce((a, b) => {
     return a.concat(b);
   });
 }
 
-export function escapeHTML(str: string){
-  return str.replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&apos;');
+export function escapeHTML(str: string) {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
 }
 
-export function unescapeHTML(str: string){
+export function unescapeHTML(str: string) {
   const doc = new DOMParser().parseFromString(str, "text/html");
   return doc.documentElement.textContent;
 }
 
-export function getName(user: any, hasFullNamePermission: boolean){
-  if (!user){
+export function getName(user: any, hasFullNamePermission: boolean) {
+  if (!user) {
     return "";
   }
   let userText = "";
 
-  if (user.firstName && (hasFullNamePermission || !user.nickName)){
+  if (user.firstName && (hasFullNamePermission || !user.nickName)) {
     userText += user.firstName;
   }
 
-  if (user.nickName && hasFullNamePermission){
+  if (user.nickName && hasFullNamePermission) {
     userText += (userText ? ' "' : '"') + user.nickName + '"';
-  } else if (user.nickName) {
-    userText += (userText ? ' ' : '') + user.nickName;
+  } else if (user.nickName) {
+    userText += (userText ? " " : "") + user.nickName;
   }
 
-  if (user.lastName){
-    userText += (userText ? ' ' : '') + user.lastName;
+  if (user.lastName) {
+    userText += (userText ? " " : "") + user.lastName;
   }
 
   return userText;
 }
 
-export function getUserImageUrl(user: UserType | number, type?: number | string, version?: number){
-  let id:Number;
-  if (typeof user === "number"){
+export function getUserImageUrl(
+  user: UserType | number,
+  type?: number | string,
+  version?: number
+) {
+  let id: Number;
+  if (typeof user === "number") {
     id = user;
   } else {
     id = user.id;
   }
-  return `/rest/user/files/user/${id}/identifier/profile-image-${type || 96}?v=${version || 1}`
+  return `/rest/user/files/user/${id}/identifier/profile-image-${
+    type || 96
+  }?v=${version || 1}`;
 }
 
-export function shortenGrade(grade: string){
+export function shortenGrade(grade: string) {
   if (grade === null) {
     return "";
   }
-  if ("" + parseInt(grade) === grade){
+  if ("" + parseInt(grade) === grade) {
     return grade;
   }
   return grade[0];
 }
 
-export function getShortenGradeExtension(grade: string){
+export function getShortenGradeExtension(grade: string) {
   if (grade === null) {
     return "";
   }
-  if ("" + parseInt(grade) === grade){
+  if ("" + parseInt(grade) === grade) {
     return "";
   }
   return " - " + grade;
 }
 
 export function hashCode(str: string) {
-  var hash = 0, i, chr;
+  var hash = 0,
+    i,
+    chr;
   if (str.length === 0) return hash;
   for (i = 0; i < str.length; i++) {
-    chr   = str.charCodeAt(i);
-    hash  = ((hash << 5) - hash) + chr;
+    chr = str.charCodeAt(i);
+    hash = (hash << 5) - hash + chr;
     hash |= 0; // Convert to 32bit integer
   }
   return hash;
 }
 
-export function resize(img: HTMLImageElement, width: number, mimeType?: string, quality?: number) {
-  let canvas = document.createElement('canvas');
+export function resize(
+  img: HTMLImageElement,
+  width: number,
+  mimeType?: string,
+  quality?: number
+) {
+  let canvas = document.createElement("canvas");
   let ctx = canvas.getContext("2d");
 
   // set size proportional to image
@@ -207,8 +227,17 @@ export function resize(img: HTMLImageElement, width: number, mimeType?: string, 
   canvas.height = canvas.width * (img.height / img.width);
 
   // step 3, resize to final size
-  ctx.drawImage(img, 0, 0, img.width, img.height,
-  0, 0, canvas.width, canvas.height);
+  ctx.drawImage(
+    img,
+    0,
+    0,
+    img.width,
+    img.height,
+    0,
+    0,
+    canvas.width,
+    canvas.height
+  );
 
   return canvas.toDataURL(mimeType || "image/jpeg", quality || 0.9);
 }
@@ -231,85 +260,93 @@ export function shuffle(oArray: Array<any>) {
   return array;
 }
 
-type TypescriptBuggyTakeThisCallbackComeOn =  (element:any)=>any;
+type TypescriptBuggyTakeThisCallbackComeOn = (element: any) => any;
 
-export function arrayToObject(array: Array<any>, propertyName: string, propertyValue?: string | TypescriptBuggyTakeThisCallbackComeOn) {
-  let obj:any = {};
-  array.forEach((element: any)=>{
-    obj[element[propertyName]] = propertyValue ? (typeof propertyValue === "string" ? element[propertyValue] : propertyValue(element)) : element;
+export function arrayToObject(
+  array: Array<any>,
+  propertyName: string,
+  propertyValue?: string | TypescriptBuggyTakeThisCallbackComeOn
+) {
+  let obj: any = {};
+  array.forEach((element: any) => {
+    obj[element[propertyName]] = propertyValue
+      ? typeof propertyValue === "string"
+        ? element[propertyValue]
+        : propertyValue(element)
+      : element;
   });
   return obj;
 }
 
-const translations:any = {
-  "width": "width",
-  "class": "className",
-  "id": "id",
-  "name": "name",
-  "src": "src",
-  "height": "height",
-  "href": "href",
-  "target": "target",
-  "alt": "alt",
-  "title": "title",
-  "dir": "dir",
-  "lang": "lang",
-  "hreflang": "hrefLang",
-  "charset": "charSet",
-  "download": "download",
-  "rel": "rel",
-  "type": "type",
-  "media": "media",
-  "wrap": "wrap",
-  "start": "start",
-  "reversed": "reversed",
+const translations: any = {
+  width: "width",
+  class: "className",
+  id: "id",
+  name: "name",
+  src: "src",
+  height: "height",
+  href: "href",
+  target: "target",
+  alt: "alt",
+  title: "title",
+  dir: "dir",
+  lang: "lang",
+  hreflang: "hrefLang",
+  charset: "charSet",
+  download: "download",
+  rel: "rel",
+  type: "type",
+  media: "media",
+  wrap: "wrap",
+  start: "start",
+  reversed: "reversed",
 
   // Iframe  specific
-  "scrolling": "scrolling",
-  "frameborder": "frameBorder",
-  "allowfullscreen": "allowFullScreen",
-  "allow": "allow",
-  "loading": "loading",
+  scrolling: "scrolling",
+  frameborder: "frameBorder",
+  allowfullscreen: "allowFullScreen",
+  allow: "allow",
+  loading: "loading",
 
   // Table specefic
-  "cellspacing": "cellSpacing", // Deprecated, Table
-  "cellpadding": "cellPadding", // Deprecated, Table
-  "span": "span",
-  "summary": "summary", // Deprecated, Table
-  "colspan": "colSpan",
-  "rowspan": "rowSpan",
-  "scope": "scope",
-  "headers": "headers",
+  cellspacing: "cellSpacing", // Deprecated, Table
+  cellpadding: "cellPadding", // Deprecated, Table
+  span: "span",
+  summary: "summary", // Deprecated, Table
+  colspan: "colSpan",
+  rowspan: "rowSpan",
+  scope: "scope",
+  headers: "headers",
 
   // Audio/video specific
-  "autoplay": "autoPlay",
-  "capture": "capture",
-  "controls": "controls",
-  "loop": "loop",
-  "role": "role",
-  "label": "label",
-  "default": "default",
-  "kind": "kind",
-  "srclang": "srcLang",
-  "controlsList": "controlsList",
+  autoplay: "autoPlay",
+  capture: "capture",
+  controls: "controls",
+  loop: "loop",
+  role: "role",
+  label: "label",
+  default: "default",
+  kind: "kind",
+  srclang: "srcLang",
+  controlsList: "controlsList",
 
   // Form specific
-  "required": "required",
-  "rows": "rows",
-  "cols": "cols",
-  "tabindex": "tabIndex",
-  "hidden": "hidden",
-  "list": "list",
-  "value": "value",
-  "selected": "selected",
-  "checked": "checked",
-  "disabled": "disabled",
-  "readonly": "readOnly",
-  "size": "size",
-  "placeholder": "placeholder",
-  "multiple": "multiple",
-  "accept": "accept",
-}
+  required: "required",
+  rows: "rows",
+  cols: "cols",
+  tabindex: "tabIndex",
+  hidden: "hidden",
+  list: "list",
+  value: "value",
+  selected: "selected",
+  checked: "checked",
+  disabled: "disabled",
+  readonly: "readOnly",
+  size: "size",
+  placeholder: "placeholder",
+  multiple: "multiple",
+  accept: "accept"
+};
 
 /**
  * Converts a style property string into a camel case based one
@@ -334,10 +371,10 @@ function convertStylePropertyToCamelCase(str: string) {
       .map((word) => word[0].toUpperCase() + word.slice(1))
       .join("")
   );
-};
+}
 
-export function CSSStyleDeclarationToObject(declaraion: CSSStyleDeclaration){
-  const result:any = {};
+export function CSSStyleDeclarationToObject(declaraion: CSSStyleDeclaration) {
+  const result: any = {};
   for (let i = 0; i < declaraion.length; i++) {
     const item = declaraion.item(i);
     result[convertStylePropertyToCamelCase(item)] = (declaraion as any)[item];
@@ -348,73 +385,95 @@ export function CSSStyleDeclarationToObject(declaraion: CSSStyleDeclaration){
 export interface HTMLToReactComponentRule {
   shouldProcessHTMLElement: (tag: string, element: HTMLElement) => boolean;
   preventChildProcessing?: boolean;
-  processingFunction?: (tag: string, props: any, children: Array<any>, element: HTMLElement) => any;
-  preprocessReactProperties?: (tag: string, props: any, children: Array<any>, element: HTMLElement) => string | void;
+  processingFunction?: (
+    tag: string,
+    props: any,
+    children: Array<any>,
+    element: HTMLElement
+  ) => any;
+  preprocessReactProperties?: (
+    tag: string,
+    props: any,
+    children: Array<any>,
+    element: HTMLElement
+  ) => string | void;
   preprocessElement?: (element: HTMLElement) => string | void;
   id?: string;
 }
 
-export function HTMLtoReactComponent(element: HTMLElement, rules?: HTMLToReactComponentRule[], key?: number):any {
+export function HTMLtoReactComponent(
+  element: HTMLElement,
+  rules?: HTMLToReactComponentRule[],
+  key?: number
+): any {
   if (element.nodeType === 3) {
     return element.textContent;
   }
 
   let tagname = element.tagName.toLowerCase();
-  const matchingRule = rules.find((r) => r.shouldProcessHTMLElement(tagname, element));
+  const matchingRule = rules.find((r) =>
+    r.shouldProcessHTMLElement(tagname, element)
+  );
 
   if (matchingRule && matchingRule.preprocessElement) {
     tagname = matchingRule.preprocessElement(element) || tagname;
   }
 
-  const defaultProcesser = (tag: string, props:any, children:Array<any>)=>React.createElement(tag,props,children);
+  const defaultProcesser = (tag: string, props: any, children: Array<any>) =>
+    React.createElement(tag, props, children);
 
-  const actualProcesser = matchingRule ?
-    (matchingRule.processingFunction || defaultProcesser) :
-    defaultProcesser;
+  const actualProcesser = matchingRule
+    ? matchingRule.processingFunction || defaultProcesser
+    : defaultProcesser;
 
-  const props:any = {
-    key,
-  }
-  Array.from(element.attributes).forEach((attr:Attr)=>{
-    if (translations[attr.name]){
-      props[translations[attr.name]] = attr.value
+  const props: any = {
+    key
+  };
+  Array.from(element.attributes).forEach((attr: Attr) => {
+    if (translations[attr.name]) {
+      props[translations[attr.name]] = attr.value;
     }
   });
-  if (element.style.cssText){
+  if (element.style.cssText) {
     props.style = CSSStyleDeclarationToObject(element.style);
   }
-  const shouldProcessChildren = matchingRule ? !matchingRule.preventChildProcessing : true;
-  let children = shouldProcessChildren ? Array.from(element.childNodes).map((node, index)=>{
-    if (node instanceof HTMLElement){
-      return HTMLtoReactComponent(node, rules, index)
-    }
-    return node.textContent;
-  }) : [];
+  const shouldProcessChildren = matchingRule
+    ? !matchingRule.preventChildProcessing
+    : true;
+  let children = shouldProcessChildren
+    ? Array.from(element.childNodes).map((node, index) => {
+        if (node instanceof HTMLElement) {
+          return HTMLtoReactComponent(node, rules, index);
+        }
+        return node.textContent;
+      })
+    : [];
 
   if (matchingRule && matchingRule.preprocessReactProperties) {
-    tagname = matchingRule.preprocessReactProperties(tagname, props, children, element) || tagname;
+    tagname =
+      matchingRule.preprocessReactProperties(
+        tagname,
+        props,
+        children,
+        element
+      ) || tagname;
   }
 
   const finalChildren = children.length === 0 ? null : children;
 
-  return actualProcesser(
-    tagname,
-    props,
-    finalChildren,
-    element
-  );
+  return actualProcesser(tagname, props, finalChildren, element);
 }
 
-export function extractDataSet(element: HTMLElement):any{
-  let finalThing:any = {
-     ...element.dataset
+export function extractDataSet(element: HTMLElement): any {
+  let finalThing: any = {
+    ...element.dataset
   };
-  Array.from(element.childNodes).map((node, index)=>{
-    if (node instanceof HTMLElement){
+  Array.from(element.childNodes).map((node, index) => {
+    if (node instanceof HTMLElement) {
       finalThing = {
         ...finalThing,
         ...extractDataSet(node)
-      }
+      };
     }
   });
 
@@ -422,30 +481,49 @@ export function extractDataSet(element: HTMLElement):any{
 }
 
 export function guidGenerator() {
-  let S4 = function() {
-     return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+  let S4 = function () {
+    return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
   };
-  return (S4()+S4()+"."+S4()+"."+S4()+"."+S4()+"."+S4()+S4()+S4());
+  return (
+    S4() +
+    S4() +
+    "." +
+    S4() +
+    "." +
+    S4() +
+    "." +
+    S4() +
+    "." +
+    S4() +
+    S4() +
+    S4()
+  );
 }
 
-export function scrollToSection(anchor: string, onScrollToSection?: ()=>any, scrollPadding?: number, disableAnimate?: boolean, disableAnchorSet?: boolean) {
+export function scrollToSection(
+  anchor: string,
+  onScrollToSection?: () => any,
+  scrollPadding?: number,
+  disableAnimate?: boolean,
+  disableAnchorSet?: boolean
+) {
   let actualAnchor = anchor + ',[data-id="' + anchor.replace("#", "") + '"]';
   try {
-    if (!$(actualAnchor).size()){
-      if (!disableAnchorSet){
-        if (anchor[0] === "#"){
+    if (!$(actualAnchor).size()) {
+      if (!disableAnchorSet) {
+        if (anchor[0] === "#") {
           window.location.hash = anchor;
-        } else  {
+        } else {
           window.location.href = anchor;
         }
       }
       return;
     }
-  } catch (err){
-    if (!disableAnchorSet){
-      if (anchor[0] === "#"){
+  } catch (err) {
+    if (!disableAnchorSet) {
+      if (anchor[0] === "#") {
         window.location.hash = anchor;
-      } else  {
+      } else {
         window.location.href = anchor;
       }
     }
@@ -456,29 +534,37 @@ export function scrollToSection(anchor: string, onScrollToSection?: ()=>any, scr
   let scrollTop = $(actualAnchor).offset().top - topOffset;
 
   onScrollToSection && onScrollToSection();
-  if (disableAnimate){
-    $('html, body').scrollTop(scrollTop);
+  if (disableAnimate) {
+    $("html, body").scrollTop(scrollTop);
   } else {
-    $('html, body').stop().animate({
-      scrollTop : scrollTop
-    }, {
-      duration : 500,
-      easing : "easeInOutQuad"
-    });
+    $("html, body").stop().animate(
+      {
+        scrollTop: scrollTop
+      },
+      {
+        duration: 500,
+        easing: "easeInOutQuad"
+      }
+    );
   }
 
-  if (!disableAnchorSet){
-    setTimeout(()=>{
-      if (anchor[0] === "#"){
+  if (!disableAnchorSet) {
+    setTimeout(() => {
+      if (anchor[0] === "#") {
         window.location.hash = anchor;
-      } else  {
+      } else {
         window.location.href = anchor;
       }
     }, 500);
   }
 }
 
-export function repairContentNodes(base: MaterialContentNodeListType, pathRepair?: string, pathRepairId?: number, parentNodeId?: number): MaterialContentNodeListType {
+export function repairContentNodes(
+  base: MaterialContentNodeListType,
+  pathRepair?: string,
+  pathRepairId?: number,
+  parentNodeId?: number
+): MaterialContentNodeListType {
   if (base === null) {
     return null;
   }
@@ -486,7 +572,8 @@ export function repairContentNodes(base: MaterialContentNodeListType, pathRepair
   return base.map((cn, index) => {
     const nextSibling = base[index + 1];
     const nextSiblingId = nextSibling ? nextSibling.workspaceMaterialId : null;
-    const parentId = typeof parentNodeId !== "number" ? cn.parentId : parentNodeId;
+    const parentId =
+      typeof parentNodeId !== "number" ? cn.parentId : parentNodeId;
     let path = cn.path;
     if (pathRepair && pathRepairId === cn.workspaceMaterialId) {
       path = pathRepair;
@@ -495,24 +582,35 @@ export function repairContentNodes(base: MaterialContentNodeListType, pathRepair
       splitted.shift();
       path = [pathRepair, ...splitted].join("/");
     }
-    const children = cn.children && cn.children.length ? repairContentNodes(cn.children, pathRepair, pathRepairId, cn.workspaceMaterialId) : cn.children;
+    const children =
+      cn.children && cn.children.length
+        ? repairContentNodes(
+            cn.children,
+            pathRepair,
+            pathRepairId,
+            cn.workspaceMaterialId
+          )
+        : cn.children;
 
     return {
       ...cn,
       nextSiblingId,
       parentId,
       children,
-      path,
-    }
+      path
+    };
   });
 }
 
 export function validURL(str: string) {
-  var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
-    '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
-    '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
-    '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
-    '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
-    '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+  var pattern = new RegExp(
+    "^(https?:\\/\\/)?" + // protocol
+      "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
+      "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
+      "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
+      "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
+      "(\\#[-a-z\\d_]*)?$",
+    "i"
+  ); // fragment locator
   return !!pattern.test(str);
 }

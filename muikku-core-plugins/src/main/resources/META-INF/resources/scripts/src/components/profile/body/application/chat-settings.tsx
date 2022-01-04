@@ -7,12 +7,12 @@ import {
   saveProfileProperty,
   SaveProfilePropertyTriggerType,
   updateProfileChatSettings,
-  UpdateProfileChatSettingsTriggerType,
+  UpdateProfileChatSettingsTriggerType
 } from "~/actions/main-function/profile";
 import { bindActionCreators, Dispatch } from "redux";
 import {
   displayNotification,
-  DisplayNotificationTriggerType,
+  DisplayNotificationTriggerType
 } from "~/actions/base/notifications";
 import Button from "~/components/general/button";
 import { StatusType } from "~/reducers/base/status";
@@ -64,7 +64,7 @@ class ChatSettings extends React.Component<
         null,
       chatNickname:
         (props.profile.chatSettings && props.profile.chatSettings.nick) || "",
-      locked: false,
+      locked: false
     };
   }
 
@@ -81,14 +81,14 @@ class ChatSettings extends React.Component<
           nextProps.profile.chatSettings.visibility)
     ) {
       this.setState({
-        chatVisibility: nextProps.profile.chatSettings.visibility,
+        chatVisibility: nextProps.profile.chatSettings.visibility
       });
     } else if (
       !nextProps.profile.chatSettings ||
       typeof nextProps.profile.chatSettings.visibility === "undefined"
     ) {
       this.setState({
-        chatVisibility: "DISABLED",
+        chatVisibility: "DISABLED"
       });
     }
 
@@ -100,7 +100,7 @@ class ChatSettings extends React.Component<
           nextProps.profile.chatSettings.nick)
     ) {
       this.setState({
-        chatNickname: nextProps.profile.chatSettings.nick,
+        chatNickname: nextProps.profile.chatSettings.nick
       });
     }
   }
@@ -124,7 +124,7 @@ class ChatSettings extends React.Component<
             visibility: this.state.chatVisibility,
             nick: this.state.chatNickname,
             success: executor.succeeded,
-            fail: executor.failed,
+            fail: executor.failed
           });
         }
       )
@@ -152,7 +152,7 @@ class ChatSettings extends React.Component<
    */
   onChatVisibilityChange(e: React.ChangeEvent<HTMLSelectElement>) {
     this.setState({
-      chatVisibility: e.target.value,
+      chatVisibility: e.target.value
     });
   }
 
@@ -162,7 +162,7 @@ class ChatSettings extends React.Component<
    */
   onChatNicknameChange(e: React.ChangeEvent<HTMLInputElement>) {
     this.setState({
-      chatNickname: e.target.value,
+      chatNickname: e.target.value
     });
   }
 
@@ -268,7 +268,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     profile: state.profile,
-    status: state.status,
+    status: state.status
   };
 }
 

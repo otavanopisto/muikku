@@ -1,33 +1,23 @@
-import * as React from 'react';
-import {StateType} from '~/reducers';
-import {connect, Dispatch} from 'react-redux';
+import * as React from "react";
+import { StateType } from "~/reducers";
+import { connect, Dispatch } from "react-redux";
 
-interface ReportsProps {
-}
+interface ReportsProps {}
 
-interface ReportsState {
-}
-
-
+interface ReportsState {}
 
 class Reports extends React.Component<ReportsProps, ReportsState> {
-  render(){
-    return (
-        <div></div>
-    );
+  render() {
+    return <div></div>;
   }
 }
 
-function mapStateToProps(state: StateType){
-  return {
-  }
-};
-
-function mapDispatchToProps(dispatch: Dispatch<any>){
+function mapStateToProps(state: StateType) {
   return {};
-};
+}
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Reports);
+function mapDispatchToProps(dispatch: Dispatch<any>) {
+  return {};
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Reports);

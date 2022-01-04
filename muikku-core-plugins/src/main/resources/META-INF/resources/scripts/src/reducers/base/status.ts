@@ -119,7 +119,7 @@ export default function status(
       (workspaceIdNode && parseInt(workspaceIdNode.getAttribute("value"))) ||
       null,
     canCurrentWorkspaceSignup: false,
-    hopsEnabled: false, // /user/property/hops.enabled
+    hopsEnabled: false // /user/property/hops.enabled
   },
   action: ActionType
 ): StatusType {
@@ -137,7 +137,7 @@ export default function status(
     return {
       ...state,
       hasImage: action.payload,
-      imgVersion: new Date().getTime(),
+      imgVersion: new Date().getTime()
     };
   } else if (action.type === "UPDATE_STATUS") {
     const actionPayloadWoPermissions = { ...action.payload };
@@ -157,7 +157,7 @@ export default function status(
     return {
       ...state,
       ...actionPayloadWoPermissions,
-      permissions: { ...state.permissions, ...action.payload.permissions },
+      permissions: { ...state.permissions, ...action.payload.permissions }
     };
   }
   return state;

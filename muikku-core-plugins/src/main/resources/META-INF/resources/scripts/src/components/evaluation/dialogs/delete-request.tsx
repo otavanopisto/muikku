@@ -11,7 +11,7 @@ import "~/sass/elements/form.scss";
 import { AssessmentRequest } from "../../../@types/evaluation";
 import {
   deleteAssessmentRequest,
-  DeleteAssessmentRequest,
+  DeleteAssessmentRequest
 } from "../../../actions/main-function/evaluation/evaluationActions";
 
 /**
@@ -54,7 +54,7 @@ class DeleteRequestDialog extends React.Component<
    */
   createHtmlMarkup = (htmlString: string) => {
     return {
-      __html: htmlString,
+      __html: htmlString
     };
   };
 
@@ -64,7 +64,7 @@ class DeleteRequestDialog extends React.Component<
    */
   deleteRequest(closeDialog: () => any) {
     this.props.deleteAssessmentRequest({
-      workspaceUserEntityId: this.props.workspaceUserEntityId,
+      workspaceUserEntityId: this.props.workspaceUserEntityId
     });
     closeDialog();
   }
@@ -152,7 +152,7 @@ class DeleteRequestDialog extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18n: state.i18n
   };
 }
 

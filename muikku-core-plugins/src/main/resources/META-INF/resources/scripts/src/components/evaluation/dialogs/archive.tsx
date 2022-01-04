@@ -12,19 +12,19 @@ import { AssessmentRequest } from "../../../@types/evaluation";
 import { EvaluationState } from "../../../reducers/main-function/evaluation/index";
 import {
   UpdateNeedsReloadEvaluationRequests,
-  updateNeedsReloadEvaluationRequests,
+  updateNeedsReloadEvaluationRequests
 } from "../../../actions/main-function/evaluation/evaluationActions";
 import {
   LoadEvaluationAssessmentRequest,
-  loadEvaluationAssessmentRequestsFromServer,
+  loadEvaluationAssessmentRequestsFromServer
 } from "../../../actions/main-function/evaluation/evaluationActions";
 import {
   LoadEvaluationAssessmentEvent,
-  loadEvaluationAssessmentEventsFromServer,
+  loadEvaluationAssessmentEventsFromServer
 } from "../../../actions/main-function/evaluation/evaluationActions";
 import {
   ArchiveStudent,
-  archiveStudent,
+  archiveStudent
 } from "../../../actions/main-function/evaluation/evaluationActions";
 
 /**
@@ -72,7 +72,7 @@ class ArchiveDialog extends React.Component<
    */
   createHtmlMarkup = (htmlString: string) => {
     return {
-      __html: htmlString,
+      __html: htmlString
     };
   };
 
@@ -92,12 +92,12 @@ class ArchiveDialog extends React.Component<
         } else {
           this.props.updateNeedsReloadEvaluationRequests({ value: true });
           this.props.loadEvaluationAssessmentEventsFromServer({
-            assessment: this.props.evaluations.evaluationSelectedAssessmentId,
+            assessment: this.props.evaluations.evaluationSelectedAssessmentId
           });
         }
 
         onClose && onClose();
-      },
+      }
     });
   }
 
@@ -180,7 +180,7 @@ class ArchiveDialog extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    evaluations: state.evaluations,
+    evaluations: state.evaluations
   };
 }
 
@@ -194,7 +194,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
       archiveStudent,
       loadEvaluationAssessmentEventsFromServer,
       loadEvaluationAssessmentRequestsFromServer,
-      updateNeedsReloadEvaluationRequests,
+      updateNeedsReloadEvaluationRequests
     },
     dispatch
   );

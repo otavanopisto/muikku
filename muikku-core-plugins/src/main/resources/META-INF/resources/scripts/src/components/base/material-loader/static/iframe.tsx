@@ -1,20 +1,23 @@
 import * as React from "react";
 import { prepareH5POn } from "~/lib/h5p";
 import { i18nType } from "~/reducers/base/i18n";
-import { HTMLtoReactComponent, HTMLToReactComponentRule } from "~/util/modifiers";
+import {
+  HTMLtoReactComponent,
+  HTMLToReactComponentRule
+} from "~/util/modifiers";
 
 interface IframeProps {
-  element: HTMLElement,
-  path: string,
+  element: HTMLElement;
+  path: string;
   dataset: {
     //two versions of data
-    url?: string
-  },
-  i18n: i18nType
-  invisible?: boolean,
+    url?: string;
+  };
+  i18n: i18nType;
+  invisible?: boolean;
 }
 
-export default class Iframe extends React.Component<IframeProps, {}>{
+export default class Iframe extends React.Component<IframeProps, {}> {
   private mainParentRef: React.RefObject<HTMLDivElement>;
   private loadedH5P: boolean = false;
   constructor(props: IframeProps) {
@@ -32,7 +35,9 @@ export default class Iframe extends React.Component<IframeProps, {}>{
   }
   loadH5PIfNecessary() {
     if (!this.loadedH5P) {
-      const iframe = this.mainParentRef.current && this.mainParentRef.current.querySelector("iframe");
+      const iframe =
+        this.mainParentRef.current &&
+        this.mainParentRef.current.querySelector("iframe");
       if (iframe) {
         iframe.addEventListener("load", () => {
           prepareH5POn(iframe);
@@ -52,16 +57,36 @@ export default class Iframe extends React.Component<IframeProps, {}>{
           if (this.props.invisible) {
             const isYoutube = elementProps.src.includes("//www.youtube.com");
             if (isYoutube) {
-              return <span style={{ height: elementProps.height + "px" || "160px", width: "100%", paddingTop: "56.25%", position: "relative", display: "block" }} />
+              return (
+                <span
+                  style={{
+                    height: elementProps.height + "px" || "160px",
+                    width: "100%",
+                    paddingTop: "56.25%",
+                    position: "relative",
+                    display: "block"
+                  }}
+                />
+              );
             } else {
-              return <span style={{ height: elementProps.height + "px" || "160px", display: "block" }} />
+              return (
+                <span
+                  style={{
+                    height: elementProps.height + "px" || "160px",
+                    display: "block"
+                  }}
+                />
+              );
             }
           }
 
           if (this.props.dataset.url || elementProps.src) {
             const src = this.props.dataset.url || elementProps.src;
-            const isAbsolute = (src.indexOf('/') == 0) || (src.indexOf('mailto:') == 0) ||
-              (src.indexOf('data:') == 0) || (src.match("^(?:[a-zA-Z]+:)?\/\/"));
+            const isAbsolute =
+              src.indexOf("/") == 0 ||
+              src.indexOf("mailto:") == 0 ||
+              src.indexOf("data:") == 0 ||
+              src.match("^(?:[a-zA-Z]+:)?//");
             if (!isAbsolute) {
               elementProps.src = this.props.path + "/" + src;
             } else {
@@ -71,15 +96,18 @@ export default class Iframe extends React.Component<IframeProps, {}>{
 
           const iframeProps = { ...elementProps };
           const isYoutube = elementProps.src.includes("//www.youtube.com");
-          let containerStyle: any = { height: elementProps.height + "px" || "160px", width: "100%" };
+          let containerStyle: any = {
+            height: elementProps.height + "px" || "160px",
+            width: "100%"
+          };
           delete iframeProps.height;
           if (isYoutube) {
             delete iframeProps.width;
             containerStyle = {
               ...containerStyle,
               paddingTop: "56.25%",
-              position: "relative",
-            }
+              position: "relative"
+            };
             iframeProps.allowFullScreen = true;
             iframeProps.style = {
               position: "absolute",
@@ -88,21 +116,26 @@ export default class Iframe extends React.Component<IframeProps, {}>{
               left: 0,
               right: 0,
               width: "100%",
-              height: "100%",
-            }
+              height: "100%"
+            };
           } else {
             iframeProps.style = {
               maxWidth: "100%",
               height: "100%",
-              width: !iframeProps.width ? "100%" : null,
-            }
+              width: !iframeProps.width ? "100%" : null
+            };
           }
-          return <span className="material-page__iframe-wrapper" style={containerStyle}>
-            <Tag {...iframeProps}>{children}</Tag>
-          </span>
+          return (
+            <span
+              className="material-page__iframe-wrapper"
+              style={containerStyle}
+            >
+              <Tag {...iframeProps}>{children}</Tag>
+            </span>
+          );
         }
       }
-    ]
+    ];
 
     return HTMLtoReactComponent(this.props.element, iframeOnlySpecificRules);
   }

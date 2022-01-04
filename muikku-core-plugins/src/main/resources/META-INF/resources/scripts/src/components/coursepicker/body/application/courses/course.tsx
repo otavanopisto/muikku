@@ -14,7 +14,7 @@ import {
   ApplicationListItem,
   ApplicationListItemHeader,
   ApplicationListItemBody,
-  ApplicationListItemFooter,
+  ApplicationListItemFooter
 } from "~/components/general/application-list";
 import Button from "~/components/general/button";
 import WorkspaceSignupDialog from "../../../dialogs/workspace-signup";
@@ -41,7 +41,7 @@ class Course extends React.Component<CourseProps, CourseState> {
     this.state = {
       expanded: false,
       canSignUp: undefined,
-      loading: false,
+      loading: false
     };
 
     this.toggleExpanded = this.toggleExpanded.bind(this);
@@ -57,14 +57,14 @@ class Course extends React.Component<CourseProps, CourseState> {
      */
     if (this.state.canSignUp !== undefined) {
       this.setState({
-        expanded: !this.state.expanded,
+        expanded: !this.state.expanded
       });
     } else {
-    /**
-     * Otherwise we get requested data from api
-     */
+      /**
+       * Otherwise we get requested data from api
+       */
       this.setState({
-        loading: true,
+        loading: true
       });
 
       const canSignUp = await this.checkSignUpStatus();
@@ -77,7 +77,7 @@ class Course extends React.Component<CourseProps, CourseState> {
         this.setState({
           expanded: true,
           canSignUp,
-          loading: false,
+          loading: false
         });
       }, 500);
     }
@@ -140,7 +140,7 @@ class Course extends React.Component<CourseProps, CourseState> {
               <article
                 className="rich-text"
                 dangerouslySetInnerHTML={{
-                  __html: this.props.workspace.description,
+                  __html: this.props.workspace.description
                 }}
               ></article>
             </ApplicationListItemBody>
@@ -149,7 +149,7 @@ class Course extends React.Component<CourseProps, CourseState> {
                 aria-label={this.props.workspace.name}
                 buttonModifiers={[
                   "primary-function-content ",
-                  "coursepicker-course-action",
+                  "coursepicker-course-action"
                 ]}
                 href={`${this.props.status.contextPath}/workspace/${this.props.workspace.urlName}`}
               >
@@ -165,7 +165,7 @@ class Course extends React.Component<CourseProps, CourseState> {
                     aria-label={this.props.workspace.name}
                     buttonModifiers={[
                       "primary-function-content",
-                      "coursepicker-course-action",
+                      "coursepicker-course-action"
                     ]}
                   >
                     {this.props.i18n.text.get(
@@ -192,7 +192,7 @@ class Course extends React.Component<CourseProps, CourseState> {
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    status: state.status,
+    status: state.status
   };
 }
 

@@ -7,7 +7,7 @@ import { bindActionCreators } from "redux";
 import CKEditor from "~/components/general/ckeditor";
 import {
   modifyReplyFromCurrentThread,
-  ModifyReplyFromCurrentThreadTriggerType,
+  ModifyReplyFromCurrentThreadTriggerType
 } from "~/actions/discussion";
 import { StateType } from "~/reducers";
 import SessionStateComponent from "~/components/general/session-state-component";
@@ -56,7 +56,7 @@ class ModifyThreadReplyDrawer extends SessionStateComponent<
     this.state = this.getRecoverStoredState(
       {
         locked: false,
-        text: props.reply.message,
+        text: props.reply.message
       },
       props.reply.id
     );
@@ -68,7 +68,7 @@ class ModifyThreadReplyDrawer extends SessionStateComponent<
   checkAgainstStoredState() {
     this.checkStoredAgainstThisState(
       {
-        text: this.props.reply.message,
+        text: this.props.reply.message
       },
       this.props.reply.id
     );
@@ -80,7 +80,7 @@ class ModifyThreadReplyDrawer extends SessionStateComponent<
   clearUp() {
     this.setStateAndClear(
       {
-        text: this.props.reply.message,
+        text: this.props.reply.message
       },
       this.props.reply.id
     );
@@ -95,7 +95,7 @@ class ModifyThreadReplyDrawer extends SessionStateComponent<
       this.setState(
         this.getRecoverStoredState(
           {
-            text: nextProps.reply.message,
+            text: nextProps.reply.message
           },
           nextProps.reply.id
         )
@@ -116,7 +116,7 @@ class ModifyThreadReplyDrawer extends SessionStateComponent<
    */
   modifyReply() {
     this.setState({
-      locked: true,
+      locked: true
     });
     this.props.modifyReplyFromCurrentThread({
       reply: this.props.reply,
@@ -125,14 +125,14 @@ class ModifyThreadReplyDrawer extends SessionStateComponent<
         this.props.onClickCancel && this.props.onClickCancel();
         this.justClear(["text"], this.props.reply.id);
         this.setState({
-          locked: false,
+          locked: false
         });
       },
       fail: () => {
         this.setState({
-          locked: false,
+          locked: false
         });
-      },
+      }
     });
   }
 
@@ -212,12 +212,8 @@ class ModifyThreadReplyDrawer extends SessionStateComponent<
             <header className="env-dialog__header">
               {this.props.i18n.text.get("plugin.discussion.editmessage.topic")}
             </header>
-            <section className="env-dialog__body">
-              {content}
-            </section>
-            <footer className="env-dialog__footer">
-              {footer}
-            </footer>
+            <section className="env-dialog__body">{content}</section>
+            <footer className="env-dialog__footer">{footer}</footer>
           </div>
         </section>
       </div>
@@ -231,7 +227,7 @@ class ModifyThreadReplyDrawer extends SessionStateComponent<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18n: state.i18n
   };
 }
 

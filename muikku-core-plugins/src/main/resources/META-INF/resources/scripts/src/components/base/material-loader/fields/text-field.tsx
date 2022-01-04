@@ -72,7 +72,7 @@ export default class TextField extends React.Component<
       // the intial answer state is totally unknown, not UNKNOWN but literally unknown if it's even UNKNOWN
       answerState: null,
 
-      fieldSavedState: null,
+      fieldSavedState: null
     };
 
     this.onInputChange = this.onInputChange.bind(this);
@@ -83,7 +83,7 @@ export default class TextField extends React.Component<
    * onFieldSavedStateChange
    * @param savedState
    */
-  onFieldSavedStateChange(savedState: FieldStateStatus){
+  onFieldSavedStateChange(savedState: FieldStateStatus) {
     this.setState({
       fieldSavedState: savedState
     });
@@ -123,7 +123,7 @@ export default class TextField extends React.Component<
       this.props.onChange(this, this.props.content.name, e.target.value);
     this.setState(
       {
-        value: e.target.value,
+        value: e.target.value
       },
       this.checkAnswers
     );
@@ -149,7 +149,7 @@ export default class TextField extends React.Component<
       // the answer state is UNKNOWN
       if (this.state.answerState !== "UNKNOWN") {
         this.setState({
-          answerState: "UNKNOWN",
+          answerState: "UNKNOWN"
         });
         // The rightness is sent as unknown to the function
         this.props.onAnswerChange(this.props.content.name, null);
@@ -185,12 +185,12 @@ export default class TextField extends React.Component<
     // Now we compare and call the rightness change function
     if (isCorrect && this.state.answerState !== "PASS") {
       this.setState({
-        answerState: "PASS",
+        answerState: "PASS"
       });
       this.props.onAnswerChange(this.props.content.name, true);
     } else if (!isCorrect && this.state.answerState !== "FAIL") {
       this.setState({
-        answerState: "FAIL",
+        answerState: "FAIL"
       });
       this.props.onAnswerChange(this.props.content.name, false);
     }
@@ -302,20 +302,20 @@ export default class TextField extends React.Component<
 
     const textfieldStyle = {
       width: textfieldWidth,
-      "box-sizing": "content-box",
+      "box-sizing": "content-box"
     };
 
     const doNotInjectStyles = {
       injectStyles: false,
-      minWidth: textfieldWidth,
+      minWidth: textfieldWidth
     } as any;
 
     const wrapperStyle = {
-      display: "inherit",
+      display: "inherit"
     };
 
     const objectStyle = {
-      boxSizing: "content-box",
+      boxSizing: "content-box"
     };
 
     // The state of the whole field
@@ -416,11 +416,15 @@ export default class TextField extends React.Component<
       );
     }
 
-    let fieldSavedStateClass = createFieldSavedStateClass(this.state.fieldSavedState);
+    let fieldSavedStateClass = createFieldSavedStateClass(
+      this.state.fieldSavedState
+    );
 
     // Standard modifiable version
     return (
-      <span className={`material-page__textfield-wrapper ${fieldSavedStateClass}`}>
+      <span
+        className={`material-page__textfield-wrapper ${fieldSavedStateClass}`}
+      >
         <Synchronizer
           synced={this.state.synced}
           syncError={this.state.syncError}

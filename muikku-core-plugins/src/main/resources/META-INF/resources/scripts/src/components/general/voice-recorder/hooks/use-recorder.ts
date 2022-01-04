@@ -3,7 +3,7 @@ import {
   Recorder,
   MediaRecorderEvent,
   AudioTrack,
-  Interval,
+  Interval
 } from "../../../../@types/recorder";
 import $ from "~/lib/jquery";
 import { saveRecording, startRecording } from "../handlers/recorder-controls";
@@ -20,7 +20,7 @@ const initialState: Recorder = {
   mediaStream: null,
   mediaRecorder: null,
   audio: null,
-  values: [],
+  values: []
 };
 
 /**
@@ -56,9 +56,9 @@ export default function useRecorder(props: UseRecorderProps) {
                 name: value.name,
                 contentType: value.contentType,
                 id: value.id,
-                url: `/rest/workspace/materialevaluationaudioassessment/${value.id}`,
+                url: `/rest/workspace/materialevaluationaudioassessment/${value.id}`
               } as RecordValue)
-          ),
+          )
         };
       });
     }
@@ -80,7 +80,7 @@ export default function useRecorder(props: UseRecorderProps) {
           if (prevState.seconds < MAX_RECORDER_TIME) {
             return {
               ...prevState,
-              seconds: prevState.seconds + 1,
+              seconds: prevState.seconds + 1
             };
           } else {
             return prevState;
@@ -101,10 +101,9 @@ export default function useRecorder(props: UseRecorderProps) {
       if (prevState.mediaStream) {
         return {
           ...prevState,
-          mediaRecorder: new MediaRecorder(prevState.mediaStream),
+          mediaRecorder: new MediaRecorder(prevState.mediaStream)
         };
-      }
-      else {
+      } else {
         return prevState;
       }
     });
@@ -139,7 +138,7 @@ export default function useRecorder(props: UseRecorderProps) {
             return {
               ...initialState,
               audio: window.URL.createObjectURL(blob),
-              values: newValues,
+              values: newValues
             };
           } else {
             return initialState;
@@ -152,7 +151,7 @@ export default function useRecorder(props: UseRecorderProps) {
             url: URL.createObjectURL(blob),
             contentType: blob.type,
             uploading: true,
-            progress: 0,
+            progress: 0
           },
           newValues
         );
@@ -200,7 +199,7 @@ export default function useRecorder(props: UseRecorderProps) {
           return {
             ...initialState,
             audio: window.URL.createObjectURL(valueToSave.blob),
-            values: updatedAllValues,
+            values: updatedAllValues
           };
         });
       },
@@ -218,7 +217,7 @@ export default function useRecorder(props: UseRecorderProps) {
           return {
             ...initialState,
             audio: window.URL.createObjectURL(valueToSave.blob),
-            values: updatedAllValues,
+            values: updatedAllValues
           };
         });
       },
@@ -246,7 +245,7 @@ export default function useRecorder(props: UseRecorderProps) {
                 return {
                   ...prevState,
                   audio: window.URL.createObjectURL(valueToSave.blob),
-                  values: updatedAllValues,
+                  values: updatedAllValues
                 };
               });
             }
@@ -258,7 +257,7 @@ export default function useRecorder(props: UseRecorderProps) {
 
       cache: false,
       contentType: false,
-      processData: false,
+      processData: false
     });
   };
 
@@ -266,6 +265,6 @@ export default function useRecorder(props: UseRecorderProps) {
     recorderState,
     startRecording: () => startRecording(setRecorderState),
     cancelRecording: () => setRecorderState(initialState),
-    saveRecording: () => saveRecording(recorderState.mediaRecorder),
+    saveRecording: () => saveRecording(recorderState.mediaRecorder)
   };
 }

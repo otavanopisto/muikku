@@ -30,7 +30,7 @@ interface RecordProps
  * defaultRecordtProps
  */
 const defaultRecordtProps = {
-  noDeleteFunctions: false,
+  noDeleteFunctions: false
 };
 
 /**
@@ -98,9 +98,9 @@ function Record(props: RecordProps) {
                 text: {
                   className: "voice-recorder__file-record-percentage",
                   style: {
-                    right: "100%",
-                  },
-                },
+                    right: "100%"
+                  }
+                }
               }}
               strokeWidth={1}
               easing="easeInOut"
@@ -130,7 +130,7 @@ function Record(props: RecordProps) {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18n: state.i18n
   };
 }
 

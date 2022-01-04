@@ -18,7 +18,7 @@ import "~/sass/elements/workspace-assessment.scss";
 import ApplicationList, {
   ApplicationListItem,
   ApplicationListItemBody,
-  ApplicationListItemHeader,
+  ApplicationListItemHeader
 } from "~/components/general/application-list";
 import { StatusType } from "~/reducers/base/status";
 
@@ -264,7 +264,7 @@ class CurrentRecord extends React.Component<
                           <article
                             className="application-list__item-content-body application-list__item-content-body--journal-entry rich-text"
                             dangerouslySetInnerHTML={{
-                              __html: journal.content,
+                              __html: journal.content
                             }}
                           ></article>
                         </ApplicationListItemBody>
@@ -285,7 +285,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     records: state.records,
-    status: state.status,
+    status: state.status
   };
 }
 

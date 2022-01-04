@@ -1,8 +1,8 @@
-import notifications from './base/notifications';
-import locales from './base/locales';
-import status from './base/status';
-import i18n from './base/i18n';
-import {combineReducers} from 'redux';
+import notifications from "./base/notifications";
+import locales from "./base/locales";
+import status from "./base/status";
+import i18n from "./base/i18n";
+import { combineReducers } from "redux";
 
 export default combineReducers({
   notifications,

@@ -12,8 +12,11 @@ export default class Navigation extends React.Component<
   NavigationState
 > {
   render() {
-
-    return (<nav className="menu-wrapper menu-wrapper--aside">{this.props.children}</nav>);
+    return (
+      <nav className="menu-wrapper menu-wrapper--aside">
+        {this.props.children}
+      </nav>
+    );
   }
 }
 
@@ -30,7 +33,8 @@ export class NavigationTopic extends React.Component<
 > {
   render() {
     const listClassNameModifier = this.props.classModifier
-      ? "menu--" + this.props.classModifier : "";
+      ? "menu--" + this.props.classModifier
+      : "";
 
     return (
       <ul className={`menu ${listClassNameModifier}`}>
@@ -109,13 +113,9 @@ export class NavigationElement extends React.Component<
     return (
       <li className="menu__item">
         <Link
-          className={`menu__item-link ${
-            this.props.isActive ? "active" : ""
-          } ${this.props.className ? this.props.className : ""} ${(
-            modifiers || []
-          )
-            .map((s) => `menu__item-link--${s}`)
-            .join(" ")}`}
+          className={`menu__item-link ${this.props.isActive ? "active" : ""} ${
+            this.props.className ? this.props.className : ""
+          } ${(modifiers || []).map((s) => `menu__item-link--${s}`).join(" ")}`}
           onScrollToSection={this.props.onScrollToSection}
           scrollPadding={this.props.scrollPadding}
           disableScroll={this.props.disableScroll}

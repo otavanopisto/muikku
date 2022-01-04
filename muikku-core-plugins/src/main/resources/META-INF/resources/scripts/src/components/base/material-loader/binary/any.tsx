@@ -4,12 +4,17 @@ import Link from "~/components/general/link";
 import { i18nType } from "~/reducers/base/i18n";
 
 export default function Any(props: {
-  material: MaterialContentNodeType,
-  i18n: i18nType,
+  material: MaterialContentNodeType;
+  i18n: i18nType;
 }) {
-  return <div>
-    <Link href={`/rest/materials/binary/${props.material.materialId}/content`} openInNewTab={props.material.title}>
-      {props.i18n.text.get("plugin.workspace.materials.binaryDownload")}
-    </Link>
-  </div>
+  return (
+    <div>
+      <Link
+        href={`/rest/materials/binary/${props.material.materialId}/content`}
+        openInNewTab={props.material.title}
+      >
+        {props.i18n.text.get("plugin.workspace.materials.binaryDownload")}
+      </Link>
+    </div>
+  );
 }

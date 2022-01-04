@@ -5,12 +5,12 @@ import "~/sass/elements/item-list.scss";
 import { StateType } from "~/reducers";
 import NavigationMenu, {
   NavigationTopic,
-  NavigationElement,
+  NavigationElement
 } from "~/components/general/navigation";
 import { EvaluationState } from "~/reducers/main-function/evaluation/index";
 import {
   SetEvaluationSelectedWorkspace,
-  setSelectedWorkspaceId,
+  setSelectedWorkspaceId
 } from "~/actions/main-function/evaluation/evaluationActions";
 import { bindActionCreators } from "redux";
 import { i18nType } from "~/reducers/base/i18n";
@@ -139,7 +139,7 @@ function mapStateToProps(state: StateType) {
   return {
     evaluations: state.evaluations,
     i18n: state.i18n,
-    currentWorkspace: state.workspaces.currentWorkspace,
+    currentWorkspace: state.workspaces.currentWorkspace
   };
 }
 

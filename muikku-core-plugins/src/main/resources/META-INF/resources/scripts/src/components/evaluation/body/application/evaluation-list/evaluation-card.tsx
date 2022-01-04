@@ -5,13 +5,13 @@ import DeleteRequestDialog from "../../../dialogs/delete-request";
 import {
   AssessmentRequest,
   EvaluationImportantStatus,
-  UpdateImportanceObject,
+  UpdateImportanceObject
 } from "~/@types/evaluation";
 import * as moment from "moment";
 import {
   SetEvaluationSelectedWorkspace,
   LoadEvaluationAssessmentRequest,
-  loadEvaluationAssessmentRequestsFromServer,
+  loadEvaluationAssessmentRequestsFromServer
 } from "~/actions/main-function/evaluation/evaluationActions";
 import { bindActionCreators } from "redux";
 import { connect, Dispatch } from "react-redux";
@@ -80,12 +80,12 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
         updateImportances = {
           importantAssessments: {
             key: "important-evaluation-requests",
-            value: updatedImportAssessmentList.join(","),
+            value: updatedImportAssessmentList.join(",")
           },
           unimportantAssessments: {
             key: "unimportant-evaluation-requests",
-            value: updatedUnimportAssessmentList.join(","),
-          },
+            value: updatedUnimportAssessmentList.join(",")
+          }
         };
       } else if (status === "important") {
         /**
@@ -99,12 +99,12 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
         updateImportances = {
           importantAssessments: {
             key: "important-evaluation-requests",
-            value: updatedImportAssessmentList.join(","),
+            value: updatedImportAssessmentList.join(",")
           },
           unimportantAssessments: {
             key: "unimportant-evaluation-requests",
-            value: updatedUnimportAssessmentList.join(","),
-          },
+            value: updatedUnimportAssessmentList.join(",")
+          }
         };
       } else if (status === "unimportant") {
         /**
@@ -119,12 +119,12 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
         updateImportances = {
           importantAssessments: {
             key: "important-evaluation-requests",
-            value: updatedImportAssessmentList.join(","),
+            value: updatedImportAssessmentList.join(",")
           },
           unimportantAssessments: {
             key: "unimportant-evaluation-requests",
-            value: updatedUnimportAssessmentList.join(","),
-          },
+            value: updatedUnimportAssessmentList.join(",")
+          }
         };
       }
 
@@ -358,7 +358,7 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18n: state.i18n
   };
 }
 

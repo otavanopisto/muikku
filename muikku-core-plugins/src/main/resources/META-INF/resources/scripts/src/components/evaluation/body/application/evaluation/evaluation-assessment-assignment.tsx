@@ -6,7 +6,7 @@ import {
   MaterialContentNodeType,
   MaterialAssignmentType,
   MaterialCompositeRepliesType,
-  MaterialEvaluationType,
+  MaterialEvaluationType
 } from "~/reducers/workspaces/index";
 import "~/sass/elements/evaluation.scss";
 import { AnyActionType } from "~/actions/index";
@@ -22,7 +22,7 @@ import { StateType } from "~/reducers/index";
 import { i18nType } from "~/reducers/base/i18n";
 import {
   UpdateOpenedAssignmentEvaluationId,
-  updateOpenedAssignmentEvaluation,
+  updateOpenedAssignmentEvaluation
 } from "~/actions/main-function/evaluation/evaluationActions";
 import { EvaluationState } from "~/reducers/main-function/evaluation";
 import promisify from "~/util/promisify";
@@ -79,7 +79,7 @@ class EvaluationAssessmentAssignment extends React.Component<
       openContent: false,
       isLoading: false,
       materialNode: undefined,
-      showCloseEditorWarning: false,
+      showCloseEditorWarning: false
     };
   }
 
@@ -98,7 +98,7 @@ class EvaluationAssessmentAssignment extends React.Component<
       }
 
       this.setState({
-        openContent: this.props.open,
+        openContent: this.props.open
       });
     }
   }
@@ -120,7 +120,7 @@ class EvaluationAssessmentAssignment extends React.Component<
       evaluations.evaluationSelectedAssessmentId.userEntityId;
 
     this.setState({
-      isLoading: true,
+      isLoading: true
     });
 
     const sleep = await this.sleep(1000);
@@ -137,7 +137,7 @@ class EvaluationAssessmentAssignment extends React.Component<
             workspace.id,
             assigment.id,
             {
-              userEntityId,
+              userEntityId
             }
           ),
           "callback"
@@ -146,17 +146,17 @@ class EvaluationAssessmentAssignment extends React.Component<
         let loadedMaterial: MaterialContentNodeType = Object.assign(material, {
           evaluation: evaluation[0],
           assignment: this.props.assigment,
-          path: this.props.assigment.path,
+          path: this.props.assigment.path
         });
 
         return loadedMaterial;
       })(),
-      sleep,
+      sleep
     ]);
 
     this.setState({
       isLoading: false,
-      materialNode: loadedMaterial,
+      materialNode: loadedMaterial
     });
   };
 
@@ -171,7 +171,7 @@ class EvaluationAssessmentAssignment extends React.Component<
      * Get initial values that needs to be updated
      */
     let updatedMaterial: MaterialContentNodeType = {
-      ...this.state.materialNode,
+      ...this.state.materialNode
     };
 
     let gradeId = null;
@@ -213,11 +213,11 @@ class EvaluationAssessmentAssignment extends React.Component<
       gradeSchoolDataSource: gradeDataSource,
       gradingScaleIdentifier: gradeScaleId,
       gradingScaleSchoolDataSource: gradeScaleDataSource,
-      passed: assigmentSaveReturn.passing,
+      passed: assigmentSaveReturn.passing
     };
 
     this.setState({
-      materialNode: updatedMaterial,
+      materialNode: updatedMaterial
     });
   };
 
@@ -228,7 +228,7 @@ class EvaluationAssessmentAssignment extends React.Component<
    */
   createHtmlMarkup = (htmlString: string) => {
     return {
-      __html: htmlString,
+      __html: htmlString
     };
   };
 
@@ -254,7 +254,7 @@ class EvaluationAssessmentAssignment extends React.Component<
     this.setState({
       openDrawer: false,
       openAssignmentType: undefined,
-      showCloseEditorWarning: false,
+      showCloseEditorWarning: false
     });
   };
 
@@ -277,7 +277,7 @@ class EvaluationAssessmentAssignment extends React.Component<
       this.setState(
         {
           openDrawer: true,
-          openAssignmentType: assignmentType,
+          openAssignmentType: assignmentType
         },
         () => this.handleExecuteScrollToElement()
       );
@@ -301,7 +301,7 @@ class EvaluationAssessmentAssignment extends React.Component<
    */
   handleAudioAssessmentChange = () => {
     this.setState({
-      showCloseEditorWarning: true,
+      showCloseEditorWarning: true
     });
   };
 
@@ -506,7 +506,7 @@ class EvaluationAssessmentAssignment extends React.Component<
         (aAssessment) =>
           ({
             ...aAssessment,
-            url: `/rest/workspace/materialevaluationaudioassessment/${aAssessment.id}`,
+            url: `/rest/workspace/materialevaluationaudioassessment/${aAssessment.id}`
           } as RecordValue)
       );
 
@@ -711,7 +711,7 @@ class EvaluationAssessmentAssignment extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    evaluations: state.evaluations,
+    evaluations: state.evaluations
   };
 }
 

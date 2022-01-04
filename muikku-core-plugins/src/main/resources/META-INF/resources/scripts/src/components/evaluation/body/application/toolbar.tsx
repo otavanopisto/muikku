@@ -12,11 +12,11 @@ import { EvaluationState } from "~/reducers/main-function/evaluation/index";
 import { EvaluationFilters } from "~/@types/evaluation";
 import {
   SetEvaluationFilters,
-  setEvaluationFilters,
+  setEvaluationFilters
 } from "~/actions/main-function/evaluation/evaluationActions";
 import {
   UpdateEvaluationSearch,
-  updateEvaluationSearch,
+  updateEvaluationSearch
 } from "~/actions/main-function/evaluation/evaluationActions";
 
 interface EvaluationToolbarProps {
@@ -57,7 +57,7 @@ class EvaluationToolbar extends React.Component<
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const updatedFilters: EvaluationFilters = {
         ...this.props.evaluations.evaluationFilters,
-        [filter]: e.target.checked,
+        [filter]: e.target.checked
       };
 
       this.props.setEvaluationFilters({ evaluationFilters: updatedFilters });
@@ -122,7 +122,7 @@ class EvaluationToolbar extends React.Component<
             "plugin.evaluation.workspace.filter.checkbox.noevaluation"
           )}
         </label>
-      </div>,
+      </div>
     ];
 
     return (
@@ -152,7 +152,7 @@ class EvaluationToolbar extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    evaluations: state.evaluations,
+    evaluations: state.evaluations
   };
 }
 

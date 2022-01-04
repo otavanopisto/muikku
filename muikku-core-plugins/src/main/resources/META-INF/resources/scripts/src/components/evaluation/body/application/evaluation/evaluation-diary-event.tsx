@@ -20,7 +20,7 @@ const EvaluationDiaryEvent: React.FC<EvaluationDiaryEventProps> = ({
   created,
   open,
   onClickOpen,
-  id,
+  id
 }) => {
   const [height, setHeight] = React.useState<0 | "auto">(0);
 
@@ -38,7 +38,7 @@ const EvaluationDiaryEvent: React.FC<EvaluationDiaryEventProps> = ({
    */
   const createHtmlMarkup = (htmlString: string) => {
     return {
-      __html: htmlString,
+      __html: htmlString
     };
   };
 

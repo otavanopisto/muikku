@@ -1,43 +1,47 @@
-import actions from '../actions/base/notifications';
-import {Store} from 'react-redux';
-import $ from '~/lib/jquery';
-import mApi from '~/lib/mApi';
-import { Action } from 'redux';
-import { WebsocketStateType } from '~/reducers/util/websocket';
+import actions from "../actions/base/notifications";
+import { Store } from "react-redux";
+import $ from "~/lib/jquery";
+import mApi from "~/lib/mApi";
+import { Action } from "redux";
+import { WebsocketStateType } from "~/reducers/util/websocket";
 
 type ListenerType = {
-    [name: string]: {
-      actions?: Array<Function>,
-      callbacks?: Array<Function>
-    }
-  }
+  [name: string]: {
+    actions?: Array<Function>;
+    callbacks?: Array<Function>;
+  };
+};
 
 export default class MuikkuWebsocket {
-  private options:any;
-  private ticket:any;
-  private webSocket:WebSocket;
-  private socketOpen:boolean;
-  private reconnecting:boolean;
-  private reconnectRetries:number;
-  private messagesPending:{
-    eventType: string,
-    data: any,
-    onSent?: ()=>any,
-    stackId?: string
+  private options: any;
+  private ticket: any;
+  private webSocket: WebSocket;
+  private socketOpen: boolean;
+  private reconnecting: boolean;
+  private reconnectRetries: number;
+  private messagesPending: {
+    eventType: string;
+    data: any;
+    onSent?: () => any;
+    stackId?: string;
   }[];
-  private pingHandler:any;
-  private waitingPong:boolean;
-  private gotPong:boolean;
-  private discarded:boolean;
-  private listeners:ListenerType;
-  private baseListeners:ListenerType;
+  private pingHandler: any;
+  private waitingPong: boolean;
+  private gotPong: boolean;
+  private discarded: boolean;
+  private listeners: ListenerType;
+  private baseListeners: ListenerType;
   private store: Store<any>;
   private reconnectHandler: NodeJS.Timer;
 
-  constructor(store: Store<any>, listeners: ListenerType, options={
-    reconnectInterval: 10000,
-    pingInterval: 5000
-  }) {
+  constructor(
+    store: Store<any>,
+    listeners: ListenerType,
+    options = {
+      reconnectInterval: 10000,
+      pingInterval: 5000
+    }
+  ) {
     this.options = options;
 
     this.ticket = null;
@@ -54,30 +58,35 @@ export default class MuikkuWebsocket {
     this.baseListeners = listeners;
     this.store = store;
 
-    this.getTicket((ticket: any)=> {
+    this.getTicket((ticket: any) => {
       if (this.ticket) {
         this.openWebSocket();
       }
     });
 
     this.store.dispatch({
-      'type': 'INITIALIZE_WEBSOCKET',
-      'payload': this
+      type: "INITIALIZE_WEBSOCKET",
+      payload: this
     });
 
     $(window).on("beforeunload", this.onBeforeWindowUnload.bind(this));
   }
 
-  sendMessage(eventType: string, data: any, onSent?: ()=>any, stackId?: string){
+  sendMessage(
+    eventType: string,
+    data: any,
+    onSent?: () => any,
+    stackId?: string
+  ) {
     if (this.socketOpen && !this.reconnecting) {
-
       // Check if message queue already has this message. This can happen if it was previously
       // sent to the server but the server failed to respond within two seconds, causing that
       // message to be added to queue. Since the message we are sending now is the latest,
       // clear the previous one from the queue so that it doesn't accidentally overwrite this
       // message later (if we lose connection and restore it)
 
-      let index = stackId && this.messagesPending.findIndex((m)=>m.stackId === stackId);
+      let index =
+        stackId && this.messagesPending.findIndex((m) => m.stackId === stackId);
       if (typeof index === "number" && index !== -1) {
         this.messagesPending.splice(index, 1);
       }
@@ -85,46 +94,54 @@ export default class MuikkuWebsocket {
       // Send message
 
       try {
-        this.webSocket.send(JSON.stringify({
-          eventType: eventType,
-          data: data
-        }));
-        let websocketState:WebsocketStateType = this.store.getState().websocket;
-        this.messagesPending.length === 0 && !websocketState.synchronized && this.trigger("webSocketSync");
+        this.webSocket.send(
+          JSON.stringify({
+            eventType: eventType,
+            data: data
+          })
+        );
+        let websocketState: WebsocketStateType =
+          this.store.getState().websocket;
+        this.messagesPending.length === 0 &&
+          !websocketState.synchronized &&
+          this.trigger("webSocketSync");
         onSent && onSent();
-      }
-      catch (e) {
-        if (eventType != 'ping:ping') {
+      } catch (e) {
+        if (eventType != "ping:ping") {
           this.queueMessage(eventType, data, onSent, stackId);
         }
         this.trigger("webSocketDesync");
       }
-    }
-    else {
-      if (eventType != 'ping:ping') {
+    } else {
+      if (eventType != "ping:ping") {
         this.queueMessage(eventType, data, onSent, stackId);
       }
       this.trigger("webSocketDesync");
     }
   }
 
-  queueMessage(eventType: string, data: any, onSent?: ()=>any, stackId?: string){
-    let index = stackId && this.messagesPending.findIndex((m)=>m.stackId === stackId);
+  queueMessage(
+    eventType: string,
+    data: any,
+    onSent?: () => any,
+    stackId?: string
+  ) {
+    let index =
+      stackId && this.messagesPending.findIndex((m) => m.stackId === stackId);
     let message = {
       eventType,
       data,
       onSent,
       stackId
     };
-    if (typeof index === "number" && index !== -1){
-      this.messagesPending[index] = message
-    }
-    else {
+    if (typeof index === "number" && index !== -1) {
+      this.messagesPending[index] = message;
+    } else {
       this.messagesPending.push(message);
     }
   }
 
-  addEventListener(event: string, actionCreator: Function){
+  addEventListener(event: string, actionCreator: Function) {
     let evtListeners = this.listeners[event] || {
       actions: [],
       callbacks: []
@@ -134,14 +151,14 @@ export default class MuikkuWebsocket {
     return this;
   }
 
-  removeEventCallback(event: string, actionCreator: Function){
+  removeEventCallback(event: string, actionCreator: Function) {
     let index = this.listeners[event].callbacks.indexOf(actionCreator);
-    if (index !== -1){
+    if (index !== -1) {
       this.listeners[event].callbacks.splice(index, 1);
     }
   }
 
-  addEventCallback(event: string, action: Function){
+  addEventCallback(event: string, action: Function) {
     let evtListeners = this.listeners[event] || {
       actions: [],
       callbacks: []
@@ -151,36 +168,35 @@ export default class MuikkuWebsocket {
     return this;
   }
 
-  restoreEventListeners(){
+  restoreEventListeners() {
     this.listeners = this.baseListeners;
     return this;
   }
 
-  trigger(event: any, data: any=null){
+  trigger(event: any, data: any = null) {
     this.store.dispatch({
-      'type': 'WEBSOCKET_EVENT',
-      'payload': {
+      type: "WEBSOCKET_EVENT",
+      payload: {
         event,
         data
       }
     });
 
-    if (this.listeners[event]){
+    if (this.listeners[event]) {
       let listeners = this.listeners[event].actions;
-      if (listeners){
-        for (let action of listeners){
-          if (typeof action === "function"){
+      if (listeners) {
+        for (let action of listeners) {
+          if (typeof action === "function") {
             this.store.dispatch(action());
-          }
-          else {
+          } else {
             this.store.dispatch(action);
           }
         }
       }
 
       let otherListeners = this.listeners[event].callbacks;
-      if (otherListeners){
-        for (let callback of otherListeners){
+      if (otherListeners) {
+        for (let callback of otherListeners) {
           callback(data);
         }
       }
@@ -196,49 +212,55 @@ export default class MuikkuWebsocket {
     if (this.ticket) {
       // We have a ticket, so we need to validate it before using it
       $.ajax({
-        url: '/rest/websocket/ticket/' + this.ticket + '/check',
-        type: 'GET',
+        url: "/rest/websocket/ticket/" + this.ticket + "/check",
+        type: "GET",
         cache: false,
-        success: function(data:any, textStatus:any, jqXHR:any) {
+        success: function (data: any, textStatus: any, jqXHR: any) {
           callback(this.ticket);
         },
-        error: $.proxy(function(jqXHR:any) {
+        error: $.proxy(function (jqXHR: any) {
           if (jqXHR.status == 403) {
             // According to server, we are no longer logged in. Stop everything, user needs to login again
             // TODO localization
-            this.store.dispatch(actions.displayNotification("Muikku-istuntosi on vanhentunut. Jos olet vastaamassa tehtäviin, kopioi varmuuden vuoksi vastauksesi talteen omalle koneellesi ja kirjaudu uudelleen sisään.", 'error') as Action);
+            this.store.dispatch(
+              actions.displayNotification(
+                "Muikku-istuntosi on vanhentunut. Jos olet vastaamassa tehtäviin, kopioi varmuuden vuoksi vastauksesi talteen omalle koneellesi ja kirjaudu uudelleen sisään.",
+                "error"
+              ) as Action
+            );
             this.ticket = null;
             this.discarded = true;
             this.discardCurrentWebSocket(true);
             callback();
-          }
-          else if (jqXHR.status == 404) {
+          } else if (jqXHR.status == 404) {
             // Ticket no longer passes validation but we are still logged in, so try to renew the ticket
-            this.createTicket((ticket: any)=>{
+            this.createTicket((ticket: any) => {
               this.ticket = ticket;
               callback(ticket);
             });
-          }
-          else if (jqXHR.status == 502) {
+          } else if (jqXHR.status == 502) {
             // Server is down. Stop everything, user needs to reload page
             // TODO localization
-            this.store.dispatch(actions.displayNotification("Muikkuun ei saada yhteyttä. Jos olet vastaamassa tehtäviin, kopioi varmuuden vuoksi vastauksesi talteen omalle koneellesi ja lataa sivu uudelleen.", 'error') as Action);
+            this.store.dispatch(
+              actions.displayNotification(
+                "Muikkuun ei saada yhteyttä. Jos olet vastaamassa tehtäviin, kopioi varmuuden vuoksi vastauksesi talteen omalle koneellesi ja lataa sivu uudelleen.",
+                "error"
+              ) as Action
+            );
             this.ticket = null;
             this.discarded = true;
             this.discardCurrentWebSocket(true);
             callback();
-          }
-          else {
+          } else {
             // Something else happened. Carry on since we're most likely reconnecting anyway
             this.ticket = null;
             callback();
           }
         }, this)
       });
-    }
-    else {
+    } else {
       // Create new ticket
-      this.createTicket((ticket: any)=>{
+      this.createTicket((ticket: any) => {
         this.ticket = ticket;
         callback(ticket);
       });
@@ -251,13 +273,13 @@ export default class MuikkuWebsocket {
       callback();
     }
     $.ajax({
-      url: '/rest/websocket/ticket',
-      type: 'GET',
-      dataType: 'text',
-      success: function(data:any, textStatus:any, jqXHR:any) {
+      url: "/rest/websocket/ticket",
+      type: "GET",
+      dataType: "text",
+      success: function (data: any, textStatus: any, jqXHR: any) {
         callback(data);
       },
-      error: function(jqXHR:any) {
+      error: function (jqXHR: any) {
         callback();
       }
     });
@@ -294,8 +316,10 @@ export default class MuikkuWebsocket {
 
   openWebSocket() {
     let host = window.location.host;
-    let secure = location.protocol == 'https:';
-    this.webSocket = this.createWebSocket((secure ? 'wss://' : 'ws://') + host + '/ws/socket/' + this.ticket);
+    let secure = location.protocol == "https:";
+    this.webSocket = this.createWebSocket(
+      (secure ? "wss://" : "ws://") + host + "/ws/socket/" + this.ticket
+    );
     if (this.webSocket) {
       this.webSocket.onmessage = this.onWebSocketMessage.bind(this);
       this.webSocket.onerror = this.onWebSocketError.bind(this);
@@ -304,17 +328,16 @@ export default class MuikkuWebsocket {
   }
 
   createWebSocket(url: string) {
-    if ((typeof (<any>window).WebSocket) !== 'undefined') {
+    if (typeof (<any>window).WebSocket !== "undefined") {
       return new WebSocket(url);
-    }
-    else if ((typeof (<any>window).MozWebSocket) !== 'undefined') {
+    } else if (typeof (<any>window).MozWebSocket !== "undefined") {
       return new (<any>window).MozWebSocket(url);
     }
     return null;
   }
 
   startPinging() {
-    this.pingHandler = setInterval(()=>{
+    this.pingHandler = setInterval(() => {
       // Skip just in case we would be closed or reconnecting
       if (!this.socketOpen || this.reconnecting || this.discarded) {
         return;
@@ -324,14 +347,12 @@ export default class MuikkuWebsocket {
         this.waitingPong = true;
         this.gotPong = false;
         this.sendMessage("ping:ping", {});
-      }
-      else if (this.gotPong) {
+      } else if (this.gotPong) {
         // Sent ping, got pong, just keep it up
         this.waitingPong = true;
         this.gotPong = false;
         this.sendMessage("ping:ping", {});
-      }
-      else {
+      } else {
         // Didn't get a pong to our latest ping in five seconds, reconnect
         if (!this.reconnecting && !this.discarded) {
           this.startReconnecting();
@@ -360,7 +381,7 @@ export default class MuikkuWebsocket {
     if (this.discarded) {
       return;
     }
-    this.getTicket((ticket: any)=>{
+    this.getTicket((ticket: any) => {
       if (this.ticket) {
         // Re-acquired ticket, ditch reconnect handler and open socket
         if (this.reconnectHandler) {
@@ -368,18 +389,22 @@ export default class MuikkuWebsocket {
           this.reconnectHandler = null;
         }
         this.openWebSocket();
-      }
-      else {
+      } else {
         this.reconnectRetries++;
-        if (this.reconnectRetries == 12) { // two minutes have passed, let's give up
+        if (this.reconnectRetries == 12) {
+          // two minutes have passed, let's give up
           this.discarded = true;
           this.discardCurrentWebSocket(true);
           // TODO localization
-          this.store.dispatch(actions.displayNotification("Muikkuun ei saada yhteyttä. Ole hyvä ja lataa sivu uudelleen. Jos olet vastaamassa tehtäviin, kopioi varmuuden vuoksi vastauksesi talteen omalle koneellesi.", 'error') as Action);
-        }
-        else {
+          this.store.dispatch(
+            actions.displayNotification(
+              "Muikkuun ei saada yhteyttä. Ole hyvä ja lataa sivu uudelleen. Jos olet vastaamassa tehtäviin, kopioi varmuuden vuoksi vastauksesi talteen omalle koneellesi.",
+              "error"
+            ) as Action
+          );
+        } else {
           // Reconnect retry failed, retry after reconnectInterval
-          this.reconnectHandler = setTimeout(()=>{
+          this.reconnectHandler = setTimeout(() => {
             this.reconnect();
           }, this.options.reconnectInterval) as any;
         }
@@ -387,7 +412,7 @@ export default class MuikkuWebsocket {
     });
   }
 
-  discardCurrentWebSocket(resetReconnectionParams:boolean) {
+  discardCurrentWebSocket(resetReconnectionParams: boolean) {
     // Inform everyone we're no longer open for business...
     let wasOpen = this.socketOpen;
     this.socketOpen = false;
@@ -399,7 +424,7 @@ export default class MuikkuWebsocket {
     this.waitingPong = false;
     this.gotPong = false;
 
-      // ...and detach possible reconnect handler...
+    // ...and detach possible reconnect handler...
     if (this.reconnectHandler) {
       clearTimeout(this.reconnectHandler);
       this.reconnectHandler = null;
@@ -417,8 +442,7 @@ export default class MuikkuWebsocket {
       if (wasOpen) {
         try {
           this.webSocket.close();
-        }
-        catch (e) {
+        } catch (e) {
           // Ignore exceptions related to closing a WebSocket
         }
       }
@@ -429,10 +453,9 @@ export default class MuikkuWebsocket {
   onWebSocketMessage(event: any) {
     let message = JSON.parse(event.data);
     let eventType = message.eventType;
-    if (eventType == 'ping:pong') {
+    if (eventType == "ping:pong") {
       this.gotPong = true;
-    }
-    else {
+    } else {
       this.trigger(eventType, message.data);
     }
   }
@@ -441,5 +464,4 @@ export default class MuikkuWebsocket {
     this.discarded = true;
     this.discardCurrentWebSocket(true);
   }
-
 }

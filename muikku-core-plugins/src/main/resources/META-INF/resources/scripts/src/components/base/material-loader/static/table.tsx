@@ -3,13 +3,13 @@ import { i18nType } from "~/reducers/base/i18n";
 import { HTMLtoReactComponent } from "~/util/modifiers";
 
 interface TableProps {
-  element: HTMLElement,
-  props: any,
-  children: any,
+  element: HTMLElement;
+  props: any;
+  children: any;
 }
 
-export default class Table extends React.Component<TableProps, {}>{
-  constructor(props: TableProps){
+export default class Table extends React.Component<TableProps, {}> {
+  constructor(props: TableProps) {
     super(props);
   }
   componentDidMount() {
@@ -20,7 +20,11 @@ export default class Table extends React.Component<TableProps, {}>{
     (this.refs["table"] as any).border = (this.props.element as any).border;
     (this.refs["table"] as any).align = (this.props.element as any).align;
   }
-  render (){
-    return <table ref="table" {...this.props.props}>{this.props.children}</table>
+  render() {
+    return (
+      <table ref="table" {...this.props.props}>
+        {this.props.children}
+      </table>
+    );
   }
 }

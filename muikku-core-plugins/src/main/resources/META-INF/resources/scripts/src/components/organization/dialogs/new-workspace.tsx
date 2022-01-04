@@ -1,63 +1,98 @@
-import * as React from 'react';
-import { connect, Dispatch } from 'react-redux';
-import Dialog, { DialogRow, DialogRowHeader, DialogRowContent } from '~/components/general/dialog';
-import { FormWizardActions, InputFormElement, SearchFormElement, DateFormElement } from '~/components/general/form-element';
-import { loadSelectorStaff, loadSelectorStudents, LoadUsersTriggerType, loadSelectorUserGroups } from '~/actions/main-function/users';
-import { loadTemplatesFromServer, LoadTemplatesFromServerTriggerType, loadWorkspacesFromServer, LoadWorkspacesFromServerTriggerType, CreateWorkspaceTriggerType, createWorkspace, CreateWorkspaceStateType } from '~/actions/workspaces';
-import { i18nType } from '~/reducers/base/i18n';
-import { StateType } from '~/reducers';
-import { bindActionCreators } from 'redux';
-import ApplicationList, { ApplicationListItemContentWrapper, ApplicationListItem, ApplicationListItemHeader } from '~/components/general/application-list';
-import AutofillSelector, { UiSelectItem } from '~/components/base/input-select-autofill';
-import { SelectItem } from '~/actions/workspaces/index';
-import { UsersSelectType } from '~/reducers/main-function/users';
-import { CreateWorkspaceType, WorkspaceType, WorkspaceAccessType, WorkspacesActiveFiltersType } from '~/reducers/workspaces';
-import '~/sass/elements/course.scss';
-import { TagItem } from '~/components/general/tag-input';
+import * as React from "react";
+import { connect, Dispatch } from "react-redux";
+import Dialog, {
+  DialogRow,
+  DialogRowHeader,
+  DialogRowContent
+} from "~/components/general/dialog";
+import {
+  FormWizardActions,
+  InputFormElement,
+  SearchFormElement,
+  DateFormElement
+} from "~/components/general/form-element";
+import {
+  loadSelectorStaff,
+  loadSelectorStudents,
+  LoadUsersTriggerType,
+  loadSelectorUserGroups
+} from "~/actions/main-function/users";
+import {
+  loadTemplatesFromServer,
+  LoadTemplatesFromServerTriggerType,
+  loadWorkspacesFromServer,
+  LoadWorkspacesFromServerTriggerType,
+  CreateWorkspaceTriggerType,
+  createWorkspace,
+  CreateWorkspaceStateType
+} from "~/actions/workspaces";
+import { i18nType } from "~/reducers/base/i18n";
+import { StateType } from "~/reducers";
+import { bindActionCreators } from "redux";
+import ApplicationList, {
+  ApplicationListItemContentWrapper,
+  ApplicationListItem,
+  ApplicationListItemHeader
+} from "~/components/general/application-list";
+import AutofillSelector, {
+  UiSelectItem
+} from "~/components/base/input-select-autofill";
+import { SelectItem } from "~/actions/workspaces/index";
+import { UsersSelectType } from "~/reducers/main-function/users";
+import {
+  CreateWorkspaceType,
+  WorkspaceType,
+  WorkspaceAccessType,
+  WorkspacesActiveFiltersType
+} from "~/reducers/workspaces";
+import "~/sass/elements/course.scss";
+import { TagItem } from "~/components/general/tag-input";
 
 interface ValidationType {
-  templateSelected: boolean,
-  nameValid: number,
-  nameExtensionValid: 2
+  templateSelected: boolean;
+  nameValid: number;
+  nameExtensionValid: 2;
 }
 
 interface OrganizationNewWorkspaceProps {
-  children?: React.ReactElement<any>,
-  i18n: i18nType,
-  data?: CreateWorkspaceType,
-  users: UsersSelectType,
-  templates: WorkspaceType[],
-  activeFilters: WorkspacesActiveFiltersType,
-  loadStudents: LoadUsersTriggerType,
-  loadStaff: LoadUsersTriggerType,
-  loadUserGroups: LoadUsersTriggerType,
-  loadTemplates: LoadTemplatesFromServerTriggerType
-  createWorkspace: CreateWorkspaceTriggerType,
-  loadWorkspaces: LoadWorkspacesFromServerTriggerType
+  children?: React.ReactElement<any>;
+  i18n: i18nType;
+  data?: CreateWorkspaceType;
+  users: UsersSelectType;
+  templates: WorkspaceType[];
+  activeFilters: WorkspacesActiveFiltersType;
+  loadStudents: LoadUsersTriggerType;
+  loadStaff: LoadUsersTriggerType;
+  loadUserGroups: LoadUsersTriggerType;
+  loadTemplates: LoadTemplatesFromServerTriggerType;
+  createWorkspace: CreateWorkspaceTriggerType;
+  loadWorkspaces: LoadWorkspacesFromServerTriggerType;
 }
 
 interface OrganizationNewWorkspaceState {
-  template: SelectItem,
-  templateSearch: string,
-  workspaceName: string,
-  workspaceAccess: WorkspaceAccessType,
-  beginDate: any,
-  endDate: any,
-  workspaceNameExtension: string,
-  locked: boolean,
-  currentStep: number,
-  selectedStaff: UiSelectItem[],
-  selectedStudents: UiSelectItem[],
-  executing: boolean,
-  validation: ValidationType,
-  workspaceCreated: boolean,
-  studentsAdded: boolean,
-  detailsAdded: boolean,
-  staffAdded: boolean,
+  template: SelectItem;
+  templateSearch: string;
+  workspaceName: string;
+  workspaceAccess: WorkspaceAccessType;
+  beginDate: any;
+  endDate: any;
+  workspaceNameExtension: string;
+  locked: boolean;
+  currentStep: number;
+  selectedStaff: UiSelectItem[];
+  selectedStudents: UiSelectItem[];
+  executing: boolean;
+  validation: ValidationType;
+  workspaceCreated: boolean;
+  studentsAdded: boolean;
+  detailsAdded: boolean;
+  staffAdded: boolean;
 }
 
-class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceProps, OrganizationNewWorkspaceState> {
-
+class OrganizationNewWorkspace extends React.Component<
+  OrganizationNewWorkspaceProps,
+  OrganizationNewWorkspaceState
+> {
   private totalSteps: number;
 
   constructor(props: OrganizationNewWorkspaceProps) {
@@ -87,7 +122,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
       workspaceCreated: false,
       studentsAdded: false,
       detailsAdded: false,
-      staffAdded: false,
+      staffAdded: false
     };
 
     // TODO: amount of these methods can be halved
@@ -114,18 +149,32 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
   }
 
   selectTemplate(e: React.ChangeEvent<HTMLInputElement>) {
-    let validation: ValidationType = Object.assign(this.state.validation, { templateSelected: true });
-    this.setState({ validation, locked: false, template: { id: parseInt(e.target.value), label: e.target.name }, workspaceName: e.target.name });
+    let validation: ValidationType = Object.assign(this.state.validation, {
+      templateSelected: true
+    });
+    this.setState({
+      validation,
+      locked: false,
+      template: { id: parseInt(e.target.value), label: e.target.name },
+      workspaceName: e.target.name
+    });
   }
 
-  selectTemplateMobile =  (template:WorkspaceType ) => {
-    let validation: ValidationType = Object.assign(this.state.validation, { templateSelected: true });
-    this.setState({ validation, locked: false, template: { id: template.id, label: template.name }, workspaceName: template.name });
-  }
+  selectTemplateMobile = (template: WorkspaceType) => {
+    let validation: ValidationType = Object.assign(this.state.validation, {
+      templateSelected: true
+    });
+    this.setState({
+      validation,
+      locked: false,
+      template: { id: template.id, label: template.name },
+      workspaceName: template.name
+    });
+  };
 
   doStudentSearch(q: string) {
-    this.props.loadStudents({payload:{q}});
-    this.props.loadUserGroups({payload:{q}});
+    this.props.loadStudents({ payload: { q } });
+    this.props.loadUserGroups({ payload: { q } });
   }
 
   selectStudent(student: SelectItem) {
@@ -134,12 +183,14 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
   }
 
   deleteStudent(student: SelectItem) {
-    let newState = this.state.selectedStudents.filter(selectedItem => selectedItem.id !== student.id);
+    let newState = this.state.selectedStudents.filter(
+      (selectedItem) => selectedItem.id !== student.id
+    );
     this.setState({ selectedStudents: newState });
   }
 
   doStaffSearch(q: string) {
-    this.props.loadStaff({payload:{q}});
+    this.props.loadStaff({ payload: { q } });
   }
 
   selectStaff(staff: SelectItem) {
@@ -148,7 +199,9 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
   }
 
   deleteStaff(staff: SelectItem) {
-    let newState = this.state.selectedStaff.filter(selectedItem => selectedItem.id !== staff.id);
+    let newState = this.state.selectedStaff.filter(
+      (selectedItem) => selectedItem.id !== staff.id
+    );
     this.setState({ selectedStaff: newState });
   }
 
@@ -169,7 +222,10 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
   }
 
   handleDateChange(dateKey: string, newDate: any) {
-    this.setState({ [dateKey]: newDate } as Pick<OrganizationNewWorkspaceState, keyof OrganizationNewWorkspaceState>)
+    this.setState({ [dateKey]: newDate } as Pick<
+      OrganizationNewWorkspaceState,
+      keyof OrganizationNewWorkspaceState
+    >);
   }
 
   clearComponentState() {
@@ -192,7 +248,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
       workspaceCreated: false,
       detailsAdded: false,
       studentsAdded: false,
-      staffAdded: false,
+      staffAdded: false
     });
   }
 
@@ -204,7 +260,9 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
     if (this.state.validation.templateSelected === false) {
       this.setState({ locked: true });
     } else if (this.state.workspaceName === "") {
-      let validation: ValidationType = Object.assign(this.state.validation, { nameValid: 0 });
+      let validation: ValidationType = Object.assign(this.state.validation, {
+        nameValid: 0
+      });
       this.setState({ locked: true, validation });
     } else {
       let nextStep = this.state.currentStep + 1;
@@ -218,7 +276,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
   }
 
   getLocaledDate(date: any) {
-    return date.locale(this.props.i18n.time.getLocale()).format('L')
+    return date.locale(this.props.i18n.time.getLocale()).format("L");
   }
 
   saveWorkspace(closeDialog: () => any) {
@@ -252,9 +310,13 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
         } else if (state === "add-teachers") {
           this.setState({
             staffAdded: true
-          })
+          });
         } else if (state === "done") {
-          setTimeout(() => this.props.loadWorkspaces(this.props.activeFilters, true, true), 2000);
+          setTimeout(
+            () =>
+              this.props.loadWorkspaces(this.props.activeFilters, true, true),
+            2000
+          );
         }
       },
       success: () => {
@@ -267,200 +329,543 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
   }
 
   wizardSteps(page: number) {
-
     switch (page) {
       case 1:
-
-        return <form>
-          <DialogRow>
-            <DialogRowHeader title={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.step1.title', page + "/" + this.totalSteps)} description={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.step1.description')} />
-          </DialogRow>
-          <DialogRow modifiers="new-workspace" >
-            <SearchFormElement value={this.state.templateSearch} id="OrganizationTemplateSearch" placeholder={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.search.templates.placeholder')} name="template-search" updateField={this.doTemplateSearch}></SearchFormElement>
-          </DialogRow >
-          <DialogRow modifiers="new-workspace">
-            <ApplicationList modifiers="workspace-templates">
-              {this.props.templates.length > 0 ?
-                this.props.templates.map((template: WorkspaceType) => {
-                  const templateSelected = this.state.template && this.state.template.id === template.id;
-                  let aside = <input key={template.id} type="radio" checked={templateSelected} onChange={this.selectTemplate} name={template.name} value={template.id} />;
-                  return <ApplicationListItem onClick={this.selectTemplateMobile.bind(this, template)} className={`course ${templateSelected? "selected" : ""}`}  key={template.id}>
-                    <ApplicationListItemContentWrapper asideModifiers="course" aside={aside}>
-                      <ApplicationListItemHeader  modifiers="course">
-                        <span className="application-list__header-primary">{template.name}</span>
-                        <span className="application-list__header-secondary">{template.educationTypeName}</span>
-                      </ApplicationListItemHeader>
-                    </ApplicationListItemContentWrapper>
-                  </ApplicationListItem>
-                })
-                : <div className="empty">{this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.templates.empty')}</div>}
-            </ApplicationList>
-          </DialogRow>
-        </form >;
+        return (
+          <form>
+            <DialogRow>
+              <DialogRowHeader
+                title={this.props.i18n.text.get(
+                  "plugin.organization.workspaces.addWorkspace.step1.title",
+                  page + "/" + this.totalSteps
+                )}
+                description={this.props.i18n.text.get(
+                  "plugin.organization.workspaces.addWorkspace.step1.description"
+                )}
+              />
+            </DialogRow>
+            <DialogRow modifiers="new-workspace">
+              <SearchFormElement
+                value={this.state.templateSearch}
+                id="OrganizationTemplateSearch"
+                placeholder={this.props.i18n.text.get(
+                  "plugin.organization.workspaces.addWorkspace.search.templates.placeholder"
+                )}
+                name="template-search"
+                updateField={this.doTemplateSearch}
+              ></SearchFormElement>
+            </DialogRow>
+            <DialogRow modifiers="new-workspace">
+              <ApplicationList modifiers="workspace-templates">
+                {this.props.templates.length > 0 ? (
+                  this.props.templates.map((template: WorkspaceType) => {
+                    const templateSelected =
+                      this.state.template &&
+                      this.state.template.id === template.id;
+                    let aside = (
+                      <input
+                        key={template.id}
+                        type="radio"
+                        checked={templateSelected}
+                        onChange={this.selectTemplate}
+                        name={template.name}
+                        value={template.id}
+                      />
+                    );
+                    return (
+                      <ApplicationListItem
+                        onClick={this.selectTemplateMobile.bind(this, template)}
+                        className={`course ${
+                          templateSelected ? "selected" : ""
+                        }`}
+                        key={template.id}
+                      >
+                        <ApplicationListItemContentWrapper
+                          asideModifiers="course"
+                          aside={aside}
+                        >
+                          <ApplicationListItemHeader modifiers="course">
+                            <span className="application-list__header-primary">
+                              {template.name}
+                            </span>
+                            <span className="application-list__header-secondary">
+                              {template.educationTypeName}
+                            </span>
+                          </ApplicationListItemHeader>
+                        </ApplicationListItemContentWrapper>
+                      </ApplicationListItem>
+                    );
+                  })
+                ) : (
+                  <div className="empty">
+                    {this.props.i18n.text.get(
+                      "plugin.organization.workspaces.addWorkspace.templates.empty"
+                    )}
+                  </div>
+                )}
+              </ApplicationList>
+            </DialogRow>
+          </form>
+        );
       case 2:
-        return <form>
-          <DialogRow>
-            <DialogRowHeader title={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.step2.title', page + "/" + this.totalSteps)} description={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.step2.description')} />
-          </DialogRow>
-          <DialogRow modifiers="new-workspace">
-            <InputFormElement id="workspaceName" modifiers="workspace-name" mandatory={true} updateField={this.setWorkspaceName} valid={this.state.validation.nameValid} name="workspaceName" label={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.name.label')} value={this.state.workspaceName}></InputFormElement>
-            <InputFormElement id="workspaceExtension" modifiers="dialog-workspace-name-extension" updateField={this.setWorkspaceNameExtension} valid={this.state.validation.nameExtensionValid} name="workspaceNameExtension" label={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.nameExtension.label')} value={this.state.workspaceNameExtension}></InputFormElement>
-          </DialogRow>
-          <DialogRow modifiers="new-workspace">
-            <DateFormElement id="workspaceBeginDate" modifiers="organization-workspace-date" maxDate={this.state.endDate} updateField={this.handleDateChange.bind(this, "beginDate")} locale={this.props.i18n.time.getLocale()} selected={this.state.beginDate} labels={{ label: this.props.i18n.text.get("plugin.organization.workspaces.editWorkspace.beginDate.label") }} />
-            <DateFormElement id="workspaceEndDate" modifiers="organization-workspace-date" minDate={this.state.beginDate} updateField={this.handleDateChange.bind(this, "endDate")} locale={this.props.i18n.time.getLocale()} selected={this.state.endDate} labels={{ label: this.props.i18n.text.get("plugin.organization.workspaces.editWorkspace.endDate.label") }} />
-          </DialogRow>
-          <DialogRow modifiers="new-workspace">
-            <fieldset>
-              <legend className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.settings.access")}</legend>
-              <div className="application-sub-panel__item-data application-sub-panel__item-data--workspace-management">
-                <div className="form-element form-element--checkbox-radiobutton">
-                  <input id="access-members" name="access-members" type="radio"
-                    checked={this.state.workspaceAccess === "MEMBERS_ONLY"}
-                    onChange={this.setWorkspaceAccess.bind(this, "MEMBERS_ONLY")} />
-                  <label htmlFor="access-members">{this.props.i18n.text.get("plugin.workspace.management.settings.access.membersOnly")}</label>
+        return (
+          <form>
+            <DialogRow>
+              <DialogRowHeader
+                title={this.props.i18n.text.get(
+                  "plugin.organization.workspaces.addWorkspace.step2.title",
+                  page + "/" + this.totalSteps
+                )}
+                description={this.props.i18n.text.get(
+                  "plugin.organization.workspaces.addWorkspace.step2.description"
+                )}
+              />
+            </DialogRow>
+            <DialogRow modifiers="new-workspace">
+              <InputFormElement
+                id="workspaceName"
+                modifiers="workspace-name"
+                mandatory={true}
+                updateField={this.setWorkspaceName}
+                valid={this.state.validation.nameValid}
+                name="workspaceName"
+                label={this.props.i18n.text.get(
+                  "plugin.organization.workspaces.addWorkspace.name.label"
+                )}
+                value={this.state.workspaceName}
+              ></InputFormElement>
+              <InputFormElement
+                id="workspaceExtension"
+                modifiers="dialog-workspace-name-extension"
+                updateField={this.setWorkspaceNameExtension}
+                valid={this.state.validation.nameExtensionValid}
+                name="workspaceNameExtension"
+                label={this.props.i18n.text.get(
+                  "plugin.organization.workspaces.addWorkspace.nameExtension.label"
+                )}
+                value={this.state.workspaceNameExtension}
+              ></InputFormElement>
+            </DialogRow>
+            <DialogRow modifiers="new-workspace">
+              <DateFormElement
+                id="workspaceBeginDate"
+                modifiers="organization-workspace-date"
+                maxDate={this.state.endDate}
+                updateField={this.handleDateChange.bind(this, "beginDate")}
+                locale={this.props.i18n.time.getLocale()}
+                selected={this.state.beginDate}
+                labels={{
+                  label: this.props.i18n.text.get(
+                    "plugin.organization.workspaces.editWorkspace.beginDate.label"
+                  )
+                }}
+              />
+              <DateFormElement
+                id="workspaceEndDate"
+                modifiers="organization-workspace-date"
+                minDate={this.state.beginDate}
+                updateField={this.handleDateChange.bind(this, "endDate")}
+                locale={this.props.i18n.time.getLocale()}
+                selected={this.state.endDate}
+                labels={{
+                  label: this.props.i18n.text.get(
+                    "plugin.organization.workspaces.editWorkspace.endDate.label"
+                  )
+                }}
+              />
+            </DialogRow>
+            <DialogRow modifiers="new-workspace">
+              <fieldset>
+                <legend className="application-sub-panel__item-header">
+                  {this.props.i18n.text.get(
+                    "plugin.workspace.management.settings.access"
+                  )}
+                </legend>
+                <div className="application-sub-panel__item-data application-sub-panel__item-data--workspace-management">
+                  <div className="form-element form-element--checkbox-radiobutton">
+                    <input
+                      id="access-members"
+                      name="access-members"
+                      type="radio"
+                      checked={this.state.workspaceAccess === "MEMBERS_ONLY"}
+                      onChange={this.setWorkspaceAccess.bind(
+                        this,
+                        "MEMBERS_ONLY"
+                      )}
+                    />
+                    <label htmlFor="access-members">
+                      {this.props.i18n.text.get(
+                        "plugin.workspace.management.settings.access.membersOnly"
+                      )}
+                    </label>
+                  </div>
+                  <div className="form-element form-element--checkbox-radiobutton">
+                    <input
+                      id="access-loggedin"
+                      name="access-loggedin"
+                      type="radio"
+                      checked={this.state.workspaceAccess === "LOGGED_IN"}
+                      onChange={this.setWorkspaceAccess.bind(this, "LOGGED_IN")}
+                    />
+                    <label htmlFor="access-loggedin">
+                      {this.props.i18n.text.get(
+                        "plugin.workspace.management.settings.access.loggedIn"
+                      )}
+                    </label>
+                  </div>
+                  <div className="form-element form-element--checkbox-radiobutton">
+                    <input
+                      id="access-anyone"
+                      name="access-anyone"
+                      type="radio"
+                      checked={this.state.workspaceAccess === "ANYONE"}
+                      onChange={this.setWorkspaceAccess.bind(this, "ANYONE")}
+                    />
+                    <label htmlFor="access-anyone">
+                      {this.props.i18n.text.get(
+                        "plugin.workspace.management.settings.access.anyone"
+                      )}
+                    </label>
+                  </div>
                 </div>
-                <div className="form-element form-element--checkbox-radiobutton">
-                  <input id="access-loggedin" name="access-loggedin" type="radio"
-                    checked={this.state.workspaceAccess === "LOGGED_IN"}
-                    onChange={this.setWorkspaceAccess.bind(this, "LOGGED_IN")} />
-                  <label htmlFor="access-loggedin">{this.props.i18n.text.get("plugin.workspace.management.settings.access.loggedIn")}</label>
-                </div>
-                <div className="form-element form-element--checkbox-radiobutton">
-                  <input id="access-anyone" name="access-anyone" type="radio"
-                    checked={this.state.workspaceAccess === "ANYONE"}
-                    onChange={this.setWorkspaceAccess.bind(this, "ANYONE")} />
-                  <label htmlFor="access-anyone">{this.props.i18n.text.get("plugin.workspace.management.settings.access.anyone")}</label>
-                </div>
-              </div>
-            </fieldset>
-          </DialogRow>
-        </form>
+              </fieldset>
+            </DialogRow>
+          </form>
+        );
       case 3:
-        let students: UiSelectItem[] = this.props.users.students.map(student => {
-          return { id: student.id, label: student.firstName + " " + student.lastName, icon: "user", type: "student" }
-        });
+        let students: UiSelectItem[] = this.props.users.students.map(
+          (student) => {
+            return {
+              id: student.id,
+              label: student.firstName + " " + student.lastName,
+              icon: "user",
+              type: "student"
+            };
+          }
+        );
 
-        let groups: UiSelectItem[] = this.props.users.userGroups.map(group => {
-          return { id: group.id, label: group.name, icon: "users", type: "student-group" }
-        });
+        let groups: UiSelectItem[] = this.props.users.userGroups.map(
+          (group) => {
+            return {
+              id: group.id,
+              label: group.name,
+              icon: "users",
+              type: "student-group"
+            };
+          }
+        );
 
         let allItems = students.concat(groups);
 
-        return <DialogRow>
+        return (
           <DialogRow>
-            <DialogRowHeader title={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.step3.title', page + "/" + this.totalSteps)} description={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.step3.description')} />
+            <DialogRow>
+              <DialogRowHeader
+                title={this.props.i18n.text.get(
+                  "plugin.organization.workspaces.addWorkspace.step3.title",
+                  page + "/" + this.totalSteps
+                )}
+                description={this.props.i18n.text.get(
+                  "plugin.organization.workspaces.addWorkspace.step3.description"
+                )}
+              />
+            </DialogRow>
+            <DialogRow>
+              <AutofillSelector
+                identifier="addNewWorkspaceStudents"
+                modifier="add-students"
+                loader={this.doStudentSearch}
+                placeholder={this.props.i18n.text.get(
+                  "plugin.organization.workspaces.addWorkspace.search.students.placeholder"
+                )}
+                selectedItems={this.state.selectedStudents}
+                searchItems={allItems}
+                onDelete={this.deleteStudent}
+                onSelect={this.selectStudent}
+              />
+            </DialogRow>
           </DialogRow>
-          <DialogRow>
-            <AutofillSelector identifier="addNewWorkspaceStudents" modifier="add-students"
-              loader={this.doStudentSearch}
-              placeholder={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.search.students.placeholder')}
-              selectedItems={this.state.selectedStudents} searchItems={allItems} onDelete={this.deleteStudent} onSelect={this.selectStudent} />
-          </DialogRow>
-        </DialogRow>;
+        );
       case 4:
+        let staffSearchItems: UiSelectItem[] = this.props.users.staff.map(
+          (staff) => {
+            return {
+              id: staff.id,
+              label: staff.firstName + " " + staff.lastName,
+              icon: "user",
+              type: "staff"
+            };
+          }
+        );
 
-        let staffSearchItems: UiSelectItem[] = this.props.users.staff.map(staff => {
-          return { id: staff.id, label: staff.firstName + " " + staff.lastName, icon: "user", type: "staff" }
-        });
-
-        return <DialogRow>
+        return (
           <DialogRow>
-            <DialogRowHeader title={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.step4.title', page + "/" + this.totalSteps)} description={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.step4.description')} />
+            <DialogRow>
+              <DialogRowHeader
+                title={this.props.i18n.text.get(
+                  "plugin.organization.workspaces.addWorkspace.step4.title",
+                  page + "/" + this.totalSteps
+                )}
+                description={this.props.i18n.text.get(
+                  "plugin.organization.workspaces.addWorkspace.step4.description"
+                )}
+              />
+            </DialogRow>
+            <DialogRow>
+              <AutofillSelector
+                identifier="addNewWorkspaceTeachers"
+                modifier="add-teachers"
+                loader={this.doStaffSearch}
+                placeholder={this.props.i18n.text.get(
+                  "plugin.organization.workspaces.addWorkspace.search.teachers.placeholder"
+                )}
+                selectedItems={this.state.selectedStaff}
+                searchItems={staffSearchItems}
+                onDelete={this.deleteStaff}
+                onSelect={this.selectStaff}
+              />
+            </DialogRow>
           </DialogRow>
-          <DialogRow>
-            <AutofillSelector identifier="addNewWorkspaceTeachers" modifier="add-teachers"
-              loader={this.doStaffSearch}
-              placeholder={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.search.teachers.placeholder')}
-              selectedItems={this.state.selectedStaff} searchItems={staffSearchItems} onDelete={this.deleteStaff} onSelect={this.selectStaff} />
-          </DialogRow>
-        </DialogRow>;
+        );
       case 5:
-        return <DialogRow modifiers="new-workspace-summary">
-          <DialogRow>
-            <DialogRowHeader title={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.step5.title', page + "/" + this.totalSteps)} description={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.step5.description')} />
-          </DialogRow>
+        return (
+          <DialogRow modifiers="new-workspace-summary">
+            <DialogRow>
+              <DialogRowHeader
+                title={this.props.i18n.text.get(
+                  "plugin.organization.workspaces.addWorkspace.step5.title",
+                  page + "/" + this.totalSteps
+                )}
+                description={this.props.i18n.text.get(
+                  "plugin.organization.workspaces.addWorkspace.step5.description"
+                )}
+              />
+            </DialogRow>
 
-          <DialogRow>
-            <DialogRowHeader modifiers="new-workspace" title={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.summary.label.template')} />
-            <DialogRowContent modifiers="summary">
-              {this.state.template.label && this.state.template.label !== "" ?
-                <div>{this.state.template.label}</div>
-                : <div>{this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.summary.empty.template')}</div>}
-            </DialogRowContent>
+            <DialogRow>
+              <DialogRowHeader
+                modifiers="new-workspace"
+                title={this.props.i18n.text.get(
+                  "plugin.organization.workspaces.addWorkspace.summary.label.template"
+                )}
+              />
+              <DialogRowContent modifiers="summary">
+                {this.state.template.label &&
+                this.state.template.label !== "" ? (
+                  <div>{this.state.template.label}</div>
+                ) : (
+                  <div>
+                    {this.props.i18n.text.get(
+                      "plugin.organization.workspaces.addWorkspace.summary.empty.template"
+                    )}
+                  </div>
+                )}
+              </DialogRowContent>
+            </DialogRow>
+            <DialogRow>
+              <DialogRowHeader
+                modifiers="new-workspace"
+                title={this.props.i18n.text.get(
+                  "plugin.organization.workspaces.addWorkspace.summary.label.workspaceName"
+                )}
+              />
+              <DialogRowContent modifiers="summary">
+                {this.state.workspaceName !== "" ? (
+                  <div>
+                    {this.state.workspaceName}{" "}
+                    {this.state.workspaceNameExtension
+                      ? "(" + this.state.workspaceNameExtension + ")"
+                      : null}
+                  </div>
+                ) : (
+                  <div>
+                    {this.props.i18n.text.get(
+                      "plugin.organization.workspaces.addWorkspace.summary.empty.workspaceName"
+                    )}
+                  </div>
+                )}
+              </DialogRowContent>
+            </DialogRow>
+            <DialogRow>
+              <DialogRowHeader
+                modifiers="new-workspace"
+                title={this.props.i18n.text.get(
+                  "plugin.organization.workspaces.editWorkspace.summary.label.dates"
+                )}
+              />
+              <DialogRowContent modifiers="summary-dates">
+                <span>
+                  {this.state.beginDate
+                    ? this.getLocaledDate(this.state.beginDate)
+                    : this.props.i18n.text.get(
+                        "plugin.organization.workspaces.editWorkspace.summary.beginDate.empty"
+                      )}
+                </span>
+                <span>
+                  {this.state.endDate
+                    ? this.getLocaledDate(this.state.endDate)
+                    : this.props.i18n.text.get(
+                        "plugin.organization.workspaces.editWorkspace.summary.endDate.empty"
+                      )}
+                </span>
+              </DialogRowContent>
+            </DialogRow>
+            <DialogRow>
+              <DialogRowHeader
+                modifiers="new-workspace"
+                title={this.props.i18n.text.get(
+                  "plugin.organization.workspaces.addWorkspace.summary.label.students"
+                )}
+              />
+              <DialogRowContent modifiers="summary">
+                {this.state.selectedStudents.length > 0 ? (
+                  this.state.selectedStudents.map((student) => {
+                    const tag = {
+                      node: student.label,
+                      value: student,
+                      icon: student.icon
+                    };
+                    return (
+                      <TagItem
+                        modifier="selected-recipient"
+                        key={"selectedStudent" + student.id}
+                        tag={tag}
+                        onDelete={this.deleteStudent}
+                      ></TagItem>
+                    );
+                  })
+                ) : (
+                  <div>
+                    {this.props.i18n.text.get(
+                      "plugin.organization.workspaces.addWorkspace.summary.empty.students"
+                    )}
+                  </div>
+                )}
+              </DialogRowContent>
+            </DialogRow>
+            <DialogRow>
+              <DialogRowHeader
+                modifiers="new-workspace"
+                title={this.props.i18n.text.get(
+                  "plugin.organization.workspaces.addWorkspace.summary.label.teachers"
+                )}
+              />
+              <DialogRowContent modifiers="summary">
+                {this.state.selectedStaff.length > 0 ? (
+                  this.state.selectedStaff.map((staff) => {
+                    const tag = {
+                      node: staff.label,
+                      value: staff,
+                      icon: staff.icon
+                    };
+                    return (
+                      <TagItem
+                        modifier="selected-recipient"
+                        key={"selectStaff" + staff.id}
+                        tag={tag}
+                        onDelete={this.deleteStaff}
+                      ></TagItem>
+                    );
+                  })
+                ) : (
+                  <div>
+                    {this.props.i18n.text.get(
+                      "plugin.organization.workspaces.addWorkspace.summary.empty.teachers"
+                    )}
+                  </div>
+                )}
+              </DialogRowContent>
+            </DialogRow>
           </DialogRow>
-          <DialogRow>
-            <DialogRowHeader modifiers="new-workspace" title={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.summary.label.workspaceName')} />
-            <DialogRowContent modifiers="summary">
-              {this.state.workspaceName !== "" ?
-                <div>{this.state.workspaceName} {this.state.workspaceNameExtension ? "(" + this.state.workspaceNameExtension + ")" : null}</div>
-                : <div>{this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.summary.empty.workspaceName')}</div>}
-            </DialogRowContent>
-          </DialogRow>
-          <DialogRow>
-            <DialogRowHeader modifiers="new-workspace" title={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.label.dates')} />
-            <DialogRowContent modifiers="summary-dates">
-              <span>{this.state.beginDate ? this.getLocaledDate(this.state.beginDate) : this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.beginDate.empty')}</span>
-              <span>{this.state.endDate ? this.getLocaledDate(this.state.endDate) : this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.endDate.empty')}</span>
-            </DialogRowContent>
-          </DialogRow>
-          <DialogRow>
-            <DialogRowHeader modifiers="new-workspace" title={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.summary.label.students')} />
-            <DialogRowContent modifiers="summary">
-              {this.state.selectedStudents.length > 0 ?
-                this.state.selectedStudents.map((student) => {
-                  const tag = {
-                    node: student.label,
-                    value: student,
-                    icon: student.icon,
-                  }
-                  return <TagItem modifier="selected-recipient" key={"selectedStudent" + student.id} tag={tag} onDelete={this.deleteStudent}></TagItem>
-                }) : <div>{this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.summary.empty.students')}</div>}
-            </DialogRowContent>
-          </DialogRow>
-          <DialogRow>
-            <DialogRowHeader modifiers="new-workspace" title={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.summary.label.teachers')} />
-            <DialogRowContent modifiers="summary">
-              {this.state.selectedStaff.length > 0 ?
-                this.state.selectedStaff.map((staff) => {
-                  const tag = {
-                    node: staff.label,
-                    value: staff,
-                    icon: staff.icon,
-                  }
-                  return <TagItem modifier="selected-recipient" key={"selectStaff" + staff.id} tag={tag} onDelete={this.deleteStaff}></TagItem>
-                }) : <div>{this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.summary.empty.teachers')}</div>}
-            </DialogRowContent>
-          </DialogRow>
-        </DialogRow>;
-      default: return <div>EMPTY</div>
+        );
+      default:
+        return <div>EMPTY</div>;
     }
   }
 
   render() {
-    let content = (closePortal: () => any) => this.wizardSteps(this.state.currentStep);
-    let executeContent = <div><div className={`dialog__executer ${this.state.workspaceCreated === true ? "state-DONE" : ""}`}>{this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.summary.execute.createWorkspace')}</div>
-      <div className={`dialog__executer ${this.state.detailsAdded === true ? "state-DONE" : ""}`}>{this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.summary.execute.addDetails')}</div>
-      <div className={`dialog__executer ${this.state.studentsAdded === true ? "state-DONE" : ""}`}>{this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.summary.execute.addStudents')}</div>
-      <div className={`dialog__executer ${this.state.staffAdded === true ? "state-DONE" : ""}`}>{this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.summary.execute.addTeachers')}</div>
-    </div>;
-    let footer = (closePortal: () => any) => <FormWizardActions locked={this.state.locked}
-      currentStep={this.state.currentStep} totalSteps={this.totalSteps}
-      executeLabel={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.execute.label')}
-      nextLabel={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.next.label')}
-      lastLabel={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.last.label')}
-      cancelLabel={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.cancel.label')}
-      executeClick={this.saveWorkspace.bind(this, closePortal)}
-      nextClick={this.nextStep.bind(this)}
-      lastClick={this.lastStep.bind(this)}
-      cancelClick={this.cancelDialog.bind(this, closePortal)} />;
+    let content = (closePortal: () => any) =>
+      this.wizardSteps(this.state.currentStep);
+    let executeContent = (
+      <div>
+        <div
+          className={`dialog__executer ${
+            this.state.workspaceCreated === true ? "state-DONE" : ""
+          }`}
+        >
+          {this.props.i18n.text.get(
+            "plugin.organization.workspaces.addWorkspace.summary.execute.createWorkspace"
+          )}
+        </div>
+        <div
+          className={`dialog__executer ${
+            this.state.detailsAdded === true ? "state-DONE" : ""
+          }`}
+        >
+          {this.props.i18n.text.get(
+            "plugin.organization.workspaces.addWorkspace.summary.execute.addDetails"
+          )}
+        </div>
+        <div
+          className={`dialog__executer ${
+            this.state.studentsAdded === true ? "state-DONE" : ""
+          }`}
+        >
+          {this.props.i18n.text.get(
+            "plugin.organization.workspaces.addWorkspace.summary.execute.addStudents"
+          )}
+        </div>
+        <div
+          className={`dialog__executer ${
+            this.state.staffAdded === true ? "state-DONE" : ""
+          }`}
+        >
+          {this.props.i18n.text.get(
+            "plugin.organization.workspaces.addWorkspace.summary.execute.addTeachers"
+          )}
+        </div>
+      </div>
+    );
+    let footer = (closePortal: () => any) => (
+      <FormWizardActions
+        locked={this.state.locked}
+        currentStep={this.state.currentStep}
+        totalSteps={this.totalSteps}
+        executeLabel={this.props.i18n.text.get(
+          "plugin.organization.workspaces.addWorkspace.execute.label"
+        )}
+        nextLabel={this.props.i18n.text.get(
+          "plugin.organization.workspaces.addWorkspace.next.label"
+        )}
+        lastLabel={this.props.i18n.text.get(
+          "plugin.organization.workspaces.addWorkspace.last.label"
+        )}
+        cancelLabel={this.props.i18n.text.get(
+          "plugin.organization.workspaces.addWorkspace.cancel.label"
+        )}
+        executeClick={this.saveWorkspace.bind(this, closePortal)}
+        nextClick={this.nextStep.bind(this)}
+        lastClick={this.lastStep.bind(this)}
+        cancelClick={this.cancelDialog.bind(this, closePortal)}
+      />
+    );
 
-    return (<Dialog executing={this.state.executing} executeOnOpen={this.props.loadTemplates} onClose={this.clearComponentState} executeContent={executeContent} footer={footer} modifier="new-workspace"
-      title={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.title')}
-      content={content} >
-      {this.props.children}
-    </Dialog>
-    )
+    return (
+      <Dialog
+        executing={this.state.executing}
+        executeOnOpen={this.props.loadTemplates}
+        onClose={this.clearComponentState}
+        executeContent={executeContent}
+        footer={footer}
+        modifier="new-workspace"
+        title={this.props.i18n.text.get(
+          "plugin.organization.workspaces.addWorkspace.title"
+        )}
+        content={content}
+      >
+        {this.props.children}
+      </Dialog>
+    );
   }
 }
 
@@ -469,19 +874,22 @@ function mapStateToProps(state: StateType) {
     i18n: state.i18n,
     users: state.userSelect,
     templates: state.organizationWorkspaces.templateWorkspaces
-  }
-};
+  };
+}
 
 function mapDispatchToProps(dispatch: Dispatch<any>) {
-  return bindActionCreators({
-    loadStaff: loadSelectorStaff,
-    loadStudents: loadSelectorStudents,
-    loadUserGroups: loadSelectorUserGroups,
-    loadTemplates: loadTemplatesFromServer,
-    createWorkspace,
-    loadWorkspaces: loadWorkspacesFromServer
-  }, dispatch);
-};
+  return bindActionCreators(
+    {
+      loadStaff: loadSelectorStaff,
+      loadStudents: loadSelectorStudents,
+      loadUserGroups: loadSelectorUserGroups,
+      loadTemplates: loadTemplatesFromServer,
+      createWorkspace,
+      loadWorkspaces: loadWorkspacesFromServer
+    },
+    dispatch
+  );
+}
 
 export default connect(
   mapStateToProps,

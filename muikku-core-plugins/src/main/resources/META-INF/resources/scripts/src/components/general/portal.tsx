@@ -1,28 +1,32 @@
-import * as React from 'react';
-import {unstable_renderSubtreeIntoContainer, unmountComponentAtNode, findDOMNode} from 'react-dom';
+import * as React from "react";
+import {
+  unstable_renderSubtreeIntoContainer,
+  unmountComponentAtNode,
+  findDOMNode
+} from "react-dom";
 
 const KEYCODES = {
   ESCAPE: 27
 };
 
 interface PortalProps {
-  children?: any,
-  openByClickOn?: React.ReactElement<any>,
-  openByHoverOn?: React.ReactElement<any>,
+  children?: any;
+  openByClickOn?: React.ReactElement<any>;
+  openByHoverOn?: React.ReactElement<any>;
   openByHoverIsClickToo?: boolean;
-  closeOnEsc?: boolean,
-  closeOnOutsideClick?: boolean,
-  closeOnScroll?: boolean,
-  onOpen?(e: HTMLElement):any,
-  onClose?():any,
-  beforeClose?(e: HTMLElement, resetPortalState: ()=>any): any,
-  onKeyStroke?(keyCode: number, closePortal: ()=>any): any,
-  onWrapperKeyDown?(e: React.KeyboardEvent): any,
-  isOpen?: boolean
+  closeOnEsc?: boolean;
+  closeOnOutsideClick?: boolean;
+  closeOnScroll?: boolean;
+  onOpen?(e: HTMLElement): any;
+  onClose?(): any;
+  beforeClose?(e: HTMLElement, resetPortalState: () => any): any;
+  onKeyStroke?(keyCode: number, closePortal: () => any): any;
+  onWrapperKeyDown?(e: React.KeyboardEvent): any;
+  isOpen?: boolean;
 }
 
 interface PortalState {
-  active: boolean
+  active: boolean;
 }
 
 export default class Portal extends React.Component<PortalProps, PortalState> {
@@ -47,45 +51,54 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
 
   componentDidMount() {
     if (this.props.closeOnEsc) {
-      document.addEventListener('keydown', this.handleKeydown);
+      document.addEventListener("keydown", this.handleKeydown);
     }
 
     if (this.props.closeOnOutsideClick) {
-      document.addEventListener('mouseup', this.handleOutsideMouseClick);
-      document.addEventListener('touchstart', this.handleOutsideMouseClick);
+      document.addEventListener("mouseup", this.handleOutsideMouseClick);
+      document.addEventListener("touchstart", this.handleOutsideMouseClick);
     }
 
     if (this.props.closeOnScroll) {
-      document.addEventListener('scroll', this.handleOutsideMouseClick);
+      document.addEventListener("scroll", this.handleOutsideMouseClick);
     }
 
-    if (this.props.isOpen === true){
+    if (this.props.isOpen === true) {
       this.openPortal();
     }
   }
 
   componentWillUpdate(nextProps: PortalProps, nextState: PortalState) {
-    if (nextProps.isOpen === true && !this.props.isOpen && !this.state.active && !this.isClosing){
+    if (
+      nextProps.isOpen === true &&
+      !this.props.isOpen &&
+      !this.state.active &&
+      !this.isClosing
+    ) {
       this.openPortal(nextProps);
-    } else if (nextProps.isOpen === false && this.state.active && !this.isClosing){
+    } else if (
+      nextProps.isOpen === false &&
+      this.state.active &&
+      !this.isClosing
+    ) {
       this.closePortal();
-    } else if (nextState.active){
+    } else if (nextState.active) {
       this.renderPortal(nextProps);
     }
   }
 
   componentWillUnmount() {
     if (this.props.closeOnEsc) {
-      document.removeEventListener('keydown', this.handleKeydown);
+      document.removeEventListener("keydown", this.handleKeydown);
     }
 
     if (this.props.closeOnOutsideClick) {
-      document.removeEventListener('mouseup', this.handleOutsideMouseClick);
-      document.removeEventListener('touchstart', this.handleOutsideMouseClick);
+      document.removeEventListener("mouseup", this.handleOutsideMouseClick);
+      document.removeEventListener("touchstart", this.handleOutsideMouseClick);
     }
 
     if (this.props.closeOnScroll) {
-      document.removeEventListener('scroll', this.handleOutsideMouseClick);
+      document.removeEventListener("scroll", this.handleOutsideMouseClick);
     }
 
     this.isUnmounted = true;
@@ -177,20 +190,23 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
   handleKeydown(e: KeyboardEvent) {
     if (e.keyCode === KEYCODES.ESCAPE && this.state.active) {
       this.closePortal();
-    } else if (this.state.active){
-      this.props.onKeyStroke && this.props.onKeyStroke(e.keyCode, this.closePortal);
+    } else if (this.state.active) {
+      this.props.onKeyStroke &&
+        this.props.onKeyStroke(e.keyCode, this.closePortal);
     }
   }
 
-  renderPortal(props: PortalProps, isOpening:boolean = false) {
+  renderPortal(props: PortalProps, isOpening: boolean = false) {
     if (!this.node) {
-      this.node = document.createElement('div');
+      this.node = document.createElement("div");
       document.body.appendChild(this.node);
     }
 
     this.portal = unstable_renderSubtreeIntoContainer(
       this,
-      typeof props.children === "function" ? props.children(this.closePortal) : props.children,
+      typeof props.children === "function"
+        ? props.children(this.closePortal)
+        : props.children,
       this.node
     );
 
@@ -203,7 +219,7 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
     if (this.props.openByClickOn) {
       return React.cloneElement(this.props.openByClickOn, {
         onClick: this.handleWrapperClick,
-        onKeyDown: this.handleWrapperKeyDown,
+        onKeyDown: this.handleWrapperKeyDown
       });
     } else if (this.props.openByHoverOn && this.props.openByHoverIsClickToo) {
       return React.cloneElement(this.props.openByHoverOn, {
@@ -212,14 +228,14 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
         onClick: this.handleWrapperClick,
         onFocus: this.handleWrapperClick,
         onBlur: this.handleOutsideMouseClick,
-        onKeyDown: this.handleWrapperKeyDown,
+        onKeyDown: this.handleWrapperKeyDown
       });
     } else if (this.props.openByHoverOn) {
       return React.cloneElement(this.props.openByHoverOn, {
         onMouseEnter: this.handleWrapperClick,
         onMouseLeave: this.handleOutsideMouseClick,
         onFocus: this.handleWrapperClick,
-        onBlur: this.handleOutsideMouseClick,
+        onBlur: this.handleOutsideMouseClick
       });
     }
     return null;

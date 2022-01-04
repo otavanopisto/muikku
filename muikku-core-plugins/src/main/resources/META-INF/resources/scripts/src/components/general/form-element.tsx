@@ -21,7 +21,7 @@ interface FormElementProps {
   label?: string;
 }
 
-interface FormElementState { }
+interface FormElementState {}
 
 export default class FormElement extends React.Component<
   FormElementProps,
@@ -38,10 +38,11 @@ export default class FormElement extends React.Component<
         : [this.props.modifiers];
     return (
       <div
-        className={`form-element ${this.props.modifiers
+        className={`form-element ${
+          this.props.modifiers
             ? modifiers.map((m) => `form-element--${m}`).join(" ")
             : ""
-          }`}
+        }`}
       >
         {this.props.label ? (
           <div className="form-element__label">{this.props.label}</div>
@@ -56,7 +57,7 @@ interface FormElementRowProps {
   modifiers?: string | Array<string>;
 }
 
-interface FormElementRowState { }
+interface FormElementRowState {}
 
 export class formElementRow extends React.Component<
   FormElementRowProps,
@@ -69,10 +70,11 @@ export class formElementRow extends React.Component<
         : [this.props.modifiers];
     return (
       <div
-        className={`form-element__row ${this.props.modifiers
+        className={`form-element__row ${
+          this.props.modifiers
             ? modifiers.map((m) => `form-element__row--${m}`).join(" ")
             : ""
-          }`}
+        }`}
       >
         {this.props.children}
       </div>
@@ -91,7 +93,7 @@ interface FormActionsProps {
   customButton?: React.ReactElement<any>;
 }
 
-interface FormActionsState { }
+interface FormActionsState {}
 
 export class FormActionsElement extends React.Component<
   FormActionsProps,
@@ -108,10 +110,11 @@ export class FormActionsElement extends React.Component<
         : [this.props.modifiers];
     return (
       <div
-        className={`form-element__actions ${this.props.modifiers
+        className={`form-element__actions ${
+          this.props.modifiers
             ? modifiers.map((m) => `form-element__actions--${m}`).join(" ")
             : ""
-          }`}
+        }`}
       >
         <Button
           buttonModifiers="form-element-execute"
@@ -172,12 +175,13 @@ export class FormWizardActions extends React.Component<
 
     return (
       <div
-        className={`form-element__actions-container ${this.props.modifiers
+        className={`form-element__actions-container ${
+          this.props.modifiers
             ? modifiers
-              .map((m) => `form-element__actions-container--${m}`)
-              .join(" ")
+                .map((m) => `form-element__actions-container--${m}`)
+                .join(" ")
             : ""
-          }`}
+        }`}
       >
         {onLastStep ? (
           <div className="form-element__actions">
@@ -262,7 +266,7 @@ export class SearchFormElement extends React.Component<
     super(props);
     this.delay = this.props.delay >= 0 ? this.props.delay : 400;
     this.state = {
-      value: this.props.value ? this.props.value : "",
+      value: this.props.value ? this.props.value : ""
     };
     this.updateSearchField = this.updateSearchField.bind(this);
     this.clearSearchField = this.clearSearchField.bind(this);
@@ -296,10 +300,11 @@ export class SearchFormElement extends React.Component<
         : [this.props.modifiers];
     return (
       <div
-        className={`form-element form-element--search ${this.props.modifiers
+        className={`form-element form-element--search ${
+          this.props.modifiers
             ? modifiers.map((m) => `form-element--${m}`).join(" ")
             : ""
-          } ${this.props.className ? this.props.className : ""}`}
+        } ${this.props.className ? this.props.className : ""}`}
       >
         <label htmlFor={this.props.id} className="visually-hidden">
           {this.props.placeholder}
@@ -311,16 +316,18 @@ export class SearchFormElement extends React.Component<
           onBlur={this.props.onBlur}
           name={this.props.name}
           value={this.state.value}
-          className={`form-element__input form-element__input--search ${this.props.modifiers
+          className={`form-element__input form-element__input--search ${
+            this.props.modifiers
               ? modifiers.map((m) => `form-element__input--${m}`).join(" ")
               : ""
-            }`}
+          }`}
           placeholder={this.props.placeholder}
           onChange={this.updateSearchField}
         />
         <div
-          className={`form-element__input-decoration--clear-search icon-cross ${this.props.value.length > 0 ? "active" : ""
-            }`}
+          className={`form-element__input-decoration--clear-search icon-cross ${
+            this.props.value.length > 0 ? "active" : ""
+          }`}
           onClick={this.clearSearchField}
         ></div>
         <div className="form-element__input-decoration--search icon-search"></div>
@@ -358,7 +365,7 @@ export class InputFormElement extends React.Component<
     // 0 = invalid, 1 = valid, 2 = neutral
     this.state = {
       valid: this.props.valid != null ? this.props.valid : 2,
-      value: this.props.value ? this.props.value : "",
+      value: this.props.value ? this.props.value : ""
     };
   }
 
@@ -399,10 +406,11 @@ export class InputFormElement extends React.Component<
         : [this.props.modifiers];
     return (
       <div
-        className={`form-element ${this.props.modifiers
+        className={`form-element ${
+          this.props.modifiers
             ? modifiers.map((m) => `form-element--${m}`).join(" ")
             : ""
-          }`}
+        }`}
       >
         <label htmlFor={this.props.id} className="form-element__label">
           {this.props.label}
@@ -412,15 +420,17 @@ export class InputFormElement extends React.Component<
           value={this.state.value}
           name={this.props.name}
           type={this.props.type ? this.props.type : "text"}
-          className={`form-element__input ${this.props.modifiers
+          className={`form-element__input ${
+            this.props.modifiers
               ? modifiers.map((m) => `form-element__input--${m}`).join(" ")
               : ""
-            } ${this.state.valid !== 2
+          } ${
+            this.state.valid !== 2
               ? this.state.valid == 1
                 ? "VALID"
                 : "INVALID"
               : ""
-            }`}
+          }`}
           onChange={this.updateInputField}
           checked={this.props.checked}
         />
@@ -458,7 +468,7 @@ export class SelectFormElement extends React.Component<
 
     this.state = {
       valid: this.props.valid != null ? this.props.valid : 2,
-      value: this.props.value ? this.props.value : "",
+      value: this.props.value ? this.props.value : ""
     };
   }
 
@@ -492,10 +502,11 @@ export class SelectFormElement extends React.Component<
         : [this.props.modifiers];
     return (
       <div
-        className={`form-element ${this.props.modifiers
+        className={`form-element ${
+          this.props.modifiers
             ? modifiers.map((m) => `form-element--${m}`).join(" ")
             : ""
-          }`}
+        }`}
       >
         <label htmlFor={this.props.id} className="form-element__label">
           {this.props.label}
@@ -504,15 +515,17 @@ export class SelectFormElement extends React.Component<
           id={this.props.id}
           value={this.state.value}
           name={this.props.name}
-          className={`form-element__select ${this.props.modifiers
+          className={`form-element__select ${
+            this.props.modifiers
               ? modifiers.map((m) => `form-element__select--${m}`).join(" ")
               : ""
-            } ${this.state.valid !== 2
+          } ${
+            this.state.valid !== 2
               ? this.state.valid == 1
                 ? "VALID"
                 : "INVALID"
               : ""
-            }`}
+          }`}
           onChange={this.updateSelectField}
         >
           {this.props.children}
@@ -549,13 +562,14 @@ export class EmailFormElement extends React.Component<
 
     this.state = {
       value: this.props.value ? this.props.value : "",
-      valid: this.props.valid != null ? this.props.valid : 2,
+      valid: this.props.valid != null ? this.props.valid : 2
     };
   }
 
   updateInputField(e: React.ChangeEvent<HTMLInputElement>) {
     let value = e.target.value;
-    const emailRegExp = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+    const emailRegExp =
+      /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
     let valid = false;
     this.setState({ value: value });
 
@@ -584,10 +598,11 @@ export class EmailFormElement extends React.Component<
         : [this.props.modifiers];
     return (
       <div
-        className={`form-element ${this.props.modifiers
+        className={`form-element ${
+          this.props.modifiers
             ? modifiers.map((m) => `form-element--${m}`).join(" ")
             : ""
-          }`}
+        }`}
       >
         <label htmlFor="emailField" className="form-element__label">
           {this.props.label}
@@ -597,15 +612,17 @@ export class EmailFormElement extends React.Component<
           value={this.state.value}
           name="email"
           type="text"
-          className={`form-element__input ${this.props.modifiers
+          className={`form-element__input ${
+            this.props.modifiers
               ? modifiers.map((m) => `form-element__input--${m}`).join(" ")
               : ""
-            } ${this.state.valid !== 2
+          } ${
+            this.state.valid !== 2
               ? this.state.valid == 1
                 ? "VALID"
                 : "INVALID"
               : ""
-            }`}
+          }`}
           onChange={this.updateInputField}
         />
       </div>
@@ -639,7 +656,7 @@ export class SSNFormElement extends React.Component<
 
     this.state = {
       value: this.props.value ? this.props.value : "",
-      valid: this.props.valid != null ? this.props.valid : 2,
+      valid: this.props.valid != null ? this.props.valid : 2
     };
   }
 
@@ -690,10 +707,11 @@ export class SSNFormElement extends React.Component<
         : [this.props.modifiers];
     return (
       <div
-        className={`form-element ${this.props.modifiers
+        className={`form-element ${
+          this.props.modifiers
             ? modifiers.map((m) => `form-element--${m}`).join(" ")
             : ""
-          }`}
+        }`}
       >
         <label htmlFor="SSNField" className="form-element__label">
           {this.props.label}
@@ -703,15 +721,17 @@ export class SSNFormElement extends React.Component<
           value={this.state.value}
           name="ssn"
           type="text"
-          className={`form-element__input ${this.props.modifiers
+          className={`form-element__input ${
+            this.props.modifiers
               ? modifiers.map((m) => `form-element__input--${m}`).join(" ")
               : ""
-            } ${this.state.valid !== 2
+          } ${
+            this.state.valid !== 2
               ? this.state.valid == 1
                 ? "VALID"
                 : "INVALID"
               : ""
-            }`}
+          }`}
           onChange={this.updateInputField}
         />
       </div>
@@ -758,10 +778,11 @@ export class DateFormElement extends React.Component<
 
     return (
       <div
-        className={`form-element ${this.props.modifiers
+        className={`form-element ${
+          this.props.modifiers
             ? modifiers.map((m) => `form-element--${m}`).join(" ")
             : ""
-          }`}
+        }`}
       >
         {this.props.labels.label ? (
           <label htmlFor={this.props.id} className="form-element__label">
@@ -774,10 +795,11 @@ export class DateFormElement extends React.Component<
         )}
         <DatePicker
           id={this.props.id}
-          className={`form-element__input ${this.props.modifiers
+          className={`form-element__input ${
+            this.props.modifiers
               ? modifiers.map((m) => `form-element__input--${m}`).join(" ")
               : ""
-            }`}
+          }`}
           placeholderText={this.props.labels.placeholder}
           onChange={this.updateInputField}
           maxDate={this.props.maxDate}

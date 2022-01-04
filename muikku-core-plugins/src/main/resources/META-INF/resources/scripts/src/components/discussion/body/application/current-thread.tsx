@@ -4,7 +4,7 @@ import {
   DiscussionType,
   DiscussionUserType,
   DiscussionThreadReplyType,
-  DiscussionThreadReplyListType,
+  DiscussionThreadReplyListType
 } from "~/reducers/discussion";
 import { Dispatch, connect } from "react-redux";
 import Link from "~/components/general/link";
@@ -21,7 +21,7 @@ import {
   DiscussionCurrentThreadElement,
   DiscussionThreadHeader,
   DiscussionThreadBody,
-  DiscussionThreadFooter,
+  DiscussionThreadFooter
 } from "./threads/threads";
 import ReplyThreadDrawer from "./reply-thread-drawer";
 import DiscussionThreadReply from "./discussion-thread-reply";
@@ -59,7 +59,7 @@ class CurrentThread extends React.Component<
     super(props);
 
     this.state = {
-      hiddenParentsLists: [],
+      hiddenParentsLists: []
     };
   }
 
@@ -99,7 +99,7 @@ class CurrentThread extends React.Component<
       this.setState({
         hiddenParentsLists: this.state.hiddenParentsLists.filter(
           (id) => id !== parentId
-        ),
+        )
       });
     } else {
       const updatedList = [...this.state.hiddenParentsLists];
@@ -107,7 +107,7 @@ class CurrentThread extends React.Component<
       updatedList.push(parentId);
 
       this.setState({
-        hiddenParentsLists: updatedList,
+        hiddenParentsLists: updatedList
       });
     }
   };
@@ -120,7 +120,7 @@ class CurrentThread extends React.Component<
     (type: "answer" | "modify" | "quote") =>
     (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
       this.setState({
-        openReplyType: type !== this.state.openReplyType ? type : undefined,
+        openReplyType: type !== this.state.openReplyType ? type : undefined
       });
     };
 
@@ -129,7 +129,7 @@ class CurrentThread extends React.Component<
    */
   handleOnCancelClick = () => {
     this.setState({
-      openReplyType: undefined,
+      openReplyType: undefined
     });
   };
 
@@ -245,7 +245,7 @@ class CurrentThread extends React.Component<
                 <div
                   className="rich-text"
                   dangerouslySetInnerHTML={{
-                    __html: this.props.discussion.current.message,
+                    __html: this.props.discussion.current.message
                   }}
                 ></div>
                 {this.props.discussion.current.created !==
@@ -427,7 +427,7 @@ function mapStateToProps(state: StateType) {
     discussion: state.discussion,
     userId: state.status.userId,
     permissions: state.status.permissions,
-    status: state.status,
+    status: state.status
   };
 }
 

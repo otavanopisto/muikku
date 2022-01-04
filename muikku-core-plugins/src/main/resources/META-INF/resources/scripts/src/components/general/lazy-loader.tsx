@@ -1,16 +1,16 @@
-import * as React from 'react';
+import * as React from "react";
 import { v4 } from "uuid";
 
 interface LazyLoaderProps {
-  className: string,
-  width?: string | number,
-  height?: string | number,
-  useChildrenAsLazy?: boolean,
-  children?: any,
+  className: string;
+  width?: string | number;
+  height?: string | number;
+  useChildrenAsLazy?: boolean;
+  children?: any;
 }
 
 interface LazyLoaderState {
-  loaded: boolean
+  loaded: boolean;
 }
 
 let hasBeenToggledBefore = false;
@@ -20,9 +20,12 @@ let hasBeenToggledBefore = false;
   setTimeout(() => {
     hasBeenToggledBefore = true;
   }, 100);
-}
+};
 
-export default class LazyLoader extends React.Component<LazyLoaderProps, LazyLoaderState>{
+export default class LazyLoader extends React.Component<
+  LazyLoaderProps,
+  LazyLoaderState
+> {
   private hasBeenForcefullyToggled: boolean = false;
   private id: string = "L" + v4().replace(/-/g, "");
   private calculatedHeight: number;
@@ -32,7 +35,7 @@ export default class LazyLoader extends React.Component<LazyLoaderProps, LazyLoa
 
     this.state = {
       loaded: false
-    }
+    };
 
     this.checkWhetherInView = this.checkWhetherInView.bind(this);
     this.onScroll = this.onScroll.bind(this);
@@ -40,18 +43,18 @@ export default class LazyLoader extends React.Component<LazyLoaderProps, LazyLoa
   }
   componentDidMount() {
     this.checkWhetherInView();
-    window.addEventListener('scroll', this.onScroll);
+    window.addEventListener("scroll", this.onScroll);
     window.addEventListener("CHECK_LAZY", this.checkWhetherInView);
     window.addEventListener("TOGGLE_LAZY", this.toggleLazy);
   }
   toggleLazy() {
     this.hasBeenForcefullyToggled = true;
 
-    const lazyComponent = (this.refs["lazycomponent"] as HTMLDivElement);
+    const lazyComponent = this.refs["lazycomponent"] as HTMLDivElement;
     this.calculatedHeight = lazyComponent ? lazyComponent.offsetHeight : null;
 
     this.setState({
-      loaded: !hasBeenToggledBefore ? true : !this.state.loaded,
+      loaded: !hasBeenToggledBefore ? true : !this.state.loaded
     });
   }
   componentDidUpdate(prevProps: LazyLoaderProps, prevState: LazyLoaderState) {
@@ -59,11 +62,26 @@ export default class LazyLoader extends React.Component<LazyLoaderProps, LazyLoa
       this.checkWhetherInView();
     }
 
-    if (this.state.loaded !== prevState.loaded && this.hasBeenForcefullyToggled) {
-      const lazyComponent = (this.refs["lazycomponent"] as HTMLDivElement);
-      const newCalculatedHeight = lazyComponent ? lazyComponent.offsetHeight : null;
-      if (newCalculatedHeight && this.calculatedHeight && newCalculatedHeight !== this.calculatedHeight) {
-        console.warn("Lazy element " + this.id + " when toggled became off by " + (newCalculatedHeight - this.calculatedHeight) + "px");
+    if (
+      this.state.loaded !== prevState.loaded &&
+      this.hasBeenForcefullyToggled
+    ) {
+      const lazyComponent = this.refs["lazycomponent"] as HTMLDivElement;
+      const newCalculatedHeight = lazyComponent
+        ? lazyComponent.offsetHeight
+        : null;
+      if (
+        newCalculatedHeight &&
+        this.calculatedHeight &&
+        newCalculatedHeight !== this.calculatedHeight
+      ) {
+        console.warn(
+          "Lazy element " +
+            this.id +
+            " when toggled became off by " +
+            (newCalculatedHeight - this.calculatedHeight) +
+            "px"
+        );
         this.calculatedHeight = newCalculatedHeight;
       }
     }
@@ -100,7 +118,7 @@ export default class LazyLoader extends React.Component<LazyLoaderProps, LazyLoa
     this.checkWhetherInView();
   }
   componentWillUnmount() {
-    window.removeEventListener('scroll', this.onScroll);
+    window.removeEventListener("scroll", this.onScroll);
     window.removeEventListener("CHECK_LAZY", this.checkWhetherInView);
     window.removeEventListener("TOGGLE_LAZY", this.toggleLazy);
   }
@@ -114,24 +132,25 @@ export default class LazyLoader extends React.Component<LazyLoaderProps, LazyLoa
       }
 
       if (this.hasBeenForcefullyToggled) {
-        return <div
-          ref="lazycomponent"
-          data-lazycomponent="true"
-          id={this.id}
-        >
-          {toRender}
-        </div>
+        return (
+          <div ref="lazycomponent" data-lazycomponent="true" id={this.id}>
+            {toRender}
+          </div>
+        );
       } else {
         return toRender;
       }
     }
-    return <div ref="lazycomponent"
-      data-lazycomponent="true"
-      className={this.props.className}
-      style={{ width: this.props.width, height: this.props.height }}
-      id={this.id}
-    >
-      {this.props.useChildrenAsLazy ? this.props.children(false) : null}
-    </div>
+    return (
+      <div
+        ref="lazycomponent"
+        data-lazycomponent="true"
+        className={this.props.className}
+        style={{ width: this.props.width, height: this.props.height }}
+        id={this.id}
+      >
+        {this.props.useChildrenAsLazy ? this.props.children(false) : null}
+      </div>
+    );
   }
 }

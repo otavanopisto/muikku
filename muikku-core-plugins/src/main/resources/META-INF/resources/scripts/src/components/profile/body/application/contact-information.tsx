@@ -12,12 +12,12 @@ import {
   updateProfileAddress,
   UpdateProfileAddressTriggerType,
   updateProfileChatSettings,
-  UpdateProfileChatSettingsTriggerType,
+  UpdateProfileChatSettingsTriggerType
 } from "~/actions/main-function/profile";
 import { bindActionCreators, Dispatch } from "redux";
 import {
   displayNotification,
-  DisplayNotificationTriggerType,
+  DisplayNotificationTriggerType
 } from "~/actions/base/notifications";
 import { SimpleActionExecutor } from "~/actions/executor";
 
@@ -71,7 +71,7 @@ class ContactInformation extends React.Component<
       city: "",
       country: "",
       municipality: "",
-      locked: false,
+      locked: false
     };
   }
 
@@ -86,7 +86,7 @@ class ContactInformation extends React.Component<
         nextProps.profile.properties["profile-phone"]
     ) {
       this.setState({
-        phoneNumber: nextProps.profile.properties["profile-phone"],
+        phoneNumber: nextProps.profile.properties["profile-phone"]
       });
     }
 
@@ -104,7 +104,7 @@ class ContactInformation extends React.Component<
           street: address.street || "",
           postalCode: address.postalCode || "",
           city: address.city || "",
-          country: address.country || "",
+          country: address.country || ""
         });
       }
     }
@@ -115,7 +115,7 @@ class ContactInformation extends React.Component<
         JSON.stringify(this.props.profile.student)
     ) {
       this.setState({
-        municipality: nextProps.profile.student.municipality || "",
+        municipality: nextProps.profile.student.municipality || ""
       });
     }
   }
@@ -136,7 +136,7 @@ class ContactInformation extends React.Component<
             key: "profile-phone",
             value: this.state.phoneNumber.trim(),
             success: executor.succeeded,
-            fail: executor.failed,
+            fail: executor.failed
           });
         }
       )
@@ -148,7 +148,7 @@ class ContactInformation extends React.Component<
           country: this.state.country,
           municipality: this.state.municipality,
           success: executor.succeeded,
-          fail: executor.failed,
+          fail: executor.failed
         });
       })
       .onAllSucceed(() => {
@@ -185,7 +185,10 @@ class ContactInformation extends React.Component<
    * @returns JSX.Element
    */
   public render() {
-    if (this.props.profile.location !== "contact" || !this.props.status.profile) {
+    if (
+      this.props.profile.location !== "contact" ||
+      !this.props.status.profile
+    ) {
       return null;
     }
 
@@ -375,7 +378,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     profile: state.profile,
-    status: state.status,
+    status: state.status
   };
 }
 
@@ -385,7 +388,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
       saveProfileProperty,
       displayNotification,
       updateProfileChatSettings,
-      updateProfileAddress,
+      updateProfileAddress
     },
     dispatch
   );

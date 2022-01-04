@@ -7,7 +7,7 @@ import { SearchFormElement } from "~/components/general/form-element";
 import ApplicationList, {
   ApplicationListItemContentWrapper,
   ApplicationListItem,
-  ApplicationListItemHeader,
+  ApplicationListItemHeader
 } from "~/components/general/application-list";
 import Tabs, { TabType } from "~/components/general/tabs";
 import { createAllTabs } from "~/helper-functions/tabs";
@@ -59,7 +59,7 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
   onOpen(element: HTMLElement) {
     setTimeout(() => {
       this.setState({
-        visible: true,
+        visible: true
       });
     }, 10);
     this.props.executeOnOpen && this.props.executeOnOpen();
@@ -76,7 +76,7 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
 
   beforeClose(DOMNode: HTMLElement, removeFromDOM: () => any) {
     this.setState({
-      visible: false,
+      visible: false
     });
     if (this.props.disableScroll == true) {
       document.body.style.overflow = "auto";
@@ -316,7 +316,7 @@ export class DialogRemoveUsers extends React.Component<
       removeUsersPage: [],
       activeTab: this.props.identifier + "-ALL",
       currentAllPage: 1,
-      currentRemovePage: 1,
+      currentRemovePage: 1
     };
 
     this.onTabChange = this.onTabChange.bind(this);
@@ -369,7 +369,7 @@ export class DialogRemoveUsers extends React.Component<
   turnSelectToUiSelectItem(user: SelectItem) {
     return {
       ...user,
-      icon: "user",
+      icon: "user"
     } as UiSelectItem;
   }
 
@@ -416,7 +416,7 @@ export class DialogRemoveUsers extends React.Component<
    */
   onTabChange(identifier: string) {
     this.setState({
-      activeTab: identifier,
+      activeTab: identifier
     });
   }
 
@@ -525,7 +525,7 @@ export class DialogRemoveUsers extends React.Component<
               </DialogRow>
             </DialogRow>
           );
-        },
+        }
       },
       {
         id: this.props.identifier + "-REMOVE",
@@ -604,8 +604,8 @@ export class DialogRemoveUsers extends React.Component<
               </DialogRow>
             </DialogRow>
           );
-        },
-      },
+        }
+      }
     ];
 
     return (

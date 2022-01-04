@@ -50,9 +50,9 @@
 //}
 
 import * as React from "react";
-import $ from '~/lib/jquery';
+import $ from "~/lib/jquery";
 import mApi from "~/lib/mApi";
-import {i18nType} from '~/reducers/base/i18n';
+import { i18nType } from "~/reducers/base/i18n";
 
 interface MatriculationLinkProps {
   i18n: i18nType;
@@ -60,7 +60,7 @@ interface MatriculationLinkProps {
 
 interface MatriculationLinkState {
   enabled: boolean;
-  exams: CurrentExam[]
+  exams: CurrentExam[];
 }
 
 interface CurrentExam {
@@ -70,7 +70,10 @@ interface CurrentExam {
   eligible: boolean;
 }
 
-export class MatriculationLink extends React.Component<MatriculationLinkProps, MatriculationLinkState> {
+export class MatriculationLink extends React.Component<
+  MatriculationLinkProps,
+  MatriculationLinkState
+> {
   private _isMounted: boolean;
 
   constructor(props: MatriculationLinkProps) {
@@ -85,15 +88,17 @@ export class MatriculationLink extends React.Component<MatriculationLinkProps, M
   public componentDidMount() {
     this._isMounted = true;
     if ("matriculation" in mApi()) {
-      mApi().matriculation.exams.read({}).callback((err: any, data: CurrentExam[]) => {
-        if (err) {
-          return;
-        }
+      mApi()
+        .matriculation.exams.read({})
+        .callback((err: any, data: CurrentExam[]) => {
+          if (err) {
+            return;
+          }
 
-        if (data && this._isMounted) {
-          this.setState({ exams: data, enabled: true });
-        }
-      });
+          if (data && this._isMounted) {
+            this.setState({ exams: data, enabled: true });
+          }
+        });
     }
   }
 
@@ -106,15 +111,20 @@ export class MatriculationLink extends React.Component<MatriculationLinkProps, M
       return null;
     }
 
-    return <div className="application-sub-panel application-sub-panel--matriculation-enrollment">
-    {
-      this.state.exams
-        .filter((exam) => exam.eligible === true)
-        .map((exam, i) =>
-          <a key={i} className="link link--matriculation-enrollment" href={"/matriculation-enrollment/" + exam.id}>{this.props.i18n.text.get("plugin.records.matriculationLink")}</a>
-        )
-    }
-    </div>
+    return (
+      <div className="application-sub-panel application-sub-panel--matriculation-enrollment">
+        {this.state.exams
+          .filter((exam) => exam.eligible === true)
+          .map((exam, i) => (
+            <a
+              key={i}
+              className="link link--matriculation-enrollment"
+              href={"/matriculation-enrollment/" + exam.id}
+            >
+              {this.props.i18n.text.get("plugin.records.matriculationLink")}
+            </a>
+          ))}
+      </div>
+    );
   }
-
 }

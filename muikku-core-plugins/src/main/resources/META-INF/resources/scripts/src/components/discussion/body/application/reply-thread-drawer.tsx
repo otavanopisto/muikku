@@ -2,7 +2,7 @@ import { i18nType } from "~/reducers/base/i18n";
 import * as React from "react";
 import {
   DiscussionThreadType,
-  DiscussionThreadReplyType,
+  DiscussionThreadReplyType
 } from "~/reducers/discussion";
 import { Dispatch, connect } from "react-redux";
 import { AnyActionType } from "~/actions";
@@ -12,7 +12,7 @@ import Link from "~/components/general/link";
 import EnvironmentDialog from "~/components/general/environment-dialog";
 import {
   replyToCurrentDiscussionThread,
-  ReplyToCurrentDiscussionThreadTriggerType,
+  ReplyToCurrentDiscussionThreadTriggerType
 } from "~/actions/discussion";
 import { StateType } from "~/reducers";
 import SessionStateComponent from "~/components/general/session-state-component";
@@ -66,7 +66,7 @@ class ReplyThreadDrawer extends SessionStateComponent<
               "</strong></p>" +
               props.quote +
               "</blockquote> <p></p>"
-            : "",
+            : ""
       },
       props.currentId +
         (props.quote ? "-q" : "") +
@@ -100,7 +100,7 @@ class ReplyThreadDrawer extends SessionStateComponent<
               "</strong></p>" +
               this.props.quote +
               "</blockquote> <p></p>"
-            : "",
+            : ""
       },
       this.props.currentId +
         (this.props.quote ? "-q" : "") +
@@ -114,7 +114,7 @@ class ReplyThreadDrawer extends SessionStateComponent<
    */
   createReply() {
     this.setState({
-      locked: true,
+      locked: true
     });
     this.props.replyToCurrentDiscussionThread({
       parentId:
@@ -133,7 +133,7 @@ class ReplyThreadDrawer extends SessionStateComponent<
                   this.props.quote +
                   "</blockquote> <p></p>"
                 : "",
-            locked: false,
+            locked: false
           },
           this.props.currentId +
             (this.props.quote ? "-q" : "") +
@@ -142,9 +142,9 @@ class ReplyThreadDrawer extends SessionStateComponent<
       },
       fail: () => {
         this.setState({
-          locked: false,
+          locked: false
         });
-      },
+      }
     });
   }
 
@@ -219,14 +219,12 @@ class ReplyThreadDrawer extends SessionStateComponent<
         <section className="env-dialog__wrapper">
           <div className="env-dialog__content">
             <header className="env-dialog__header">
-              {this.props.i18n.text.get("plugin.discussion.answertomessage.topic")}
+              {this.props.i18n.text.get(
+                "plugin.discussion.answertomessage.topic"
+              )}
             </header>
-            <section className="env-dialog__body">
-              {content}
-            </section>
-            <footer className="env-dialog__footer">
-              {footer}
-            </footer>
+            <section className="env-dialog__body">{content}</section>
+            <footer className="env-dialog__footer">{footer}</footer>
           </div>
         </section>
       </div>
@@ -237,7 +235,7 @@ class ReplyThreadDrawer extends SessionStateComponent<
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    currentId: state.discussion.current.id,
+    currentId: state.discussion.current.id
   };
 }
 

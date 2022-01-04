@@ -2,46 +2,49 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
 import { Dispatch } from "redux";
-import { StateType } from '~/reducers';
-import mApi from '~/lib/mApi';
+import { StateType } from "~/reducers";
+import mApi from "~/lib/mApi";
 import MatriculationSubjectType from "./matriculation-subject-type";
-import Link from '~/components/general/link';
-import '~/sass/elements/wcag.scss';
-import Button from '~/components/general/button';
+import Link from "~/components/general/link";
+import "~/sass/elements/wcag.scss";
+import Button from "~/components/general/button";
 
 /**
  * Interface representing MatriculationSubjectsList component properties
  *
-  */
+ */
 interface MatriculationSubjectsListProps {
-  initialMatriculationSubjects?: string[],
-  onMatriculationSubjectsChange: (matriculationSubjects: string[]) => void,
-  i18n: i18nType
+  initialMatriculationSubjects?: string[];
+  onMatriculationSubjectsChange: (matriculationSubjects: string[]) => void;
+  i18n: i18nType;
 }
 
 /**
  * Interface representing MatriculationSubjectsList component state
  *
-  */
+ */
 interface MatriculationSubjectsListState {
-  matriculationSubjects: MatriculationSubjectType[]
-  selectedMatriculationSubjects: string[]
-  loading: boolean
+  matriculationSubjects: MatriculationSubjectType[];
+  selectedMatriculationSubjects: string[];
+  loading: boolean;
 }
 
 /**
  * MatriculationSubjectsList component
  *
-  */
-class MatriculationSubjectsList extends React.Component<MatriculationSubjectsListProps, MatriculationSubjectsListState> {
-  constructor(props: MatriculationSubjectsListProps){
+ */
+class MatriculationSubjectsList extends React.Component<
+  MatriculationSubjectsListProps,
+  MatriculationSubjectsListState
+> {
+  constructor(props: MatriculationSubjectsListProps) {
     super(props);
 
     this.state = {
       matriculationSubjects: [],
       selectedMatriculationSubjects: [""],
       loading: false
-    }
+    };
   }
 
   /**
@@ -52,9 +55,11 @@ class MatriculationSubjectsList extends React.Component<MatriculationSubjectsLis
    * @param selectedSubjects selected subjects
    */
   notifyMatriculationSubjectChange(selectedSubjects: string[]) {
-    this.props.onMatriculationSubjectsChange(selectedSubjects.filter((selectedSubject) => {
-      return !!selectedSubject;
-    }));
+    this.props.onMatriculationSubjectsChange(
+      selectedSubjects.filter((selectedSubject) => {
+        return !!selectedSubject;
+      })
+    );
   }
 
   /**
@@ -63,7 +68,10 @@ class MatriculationSubjectsList extends React.Component<MatriculationSubjectsLis
    * @param index list index
    * @param e event
    */
-  handleMatriculationSubjectChange(index: number, e: React.ChangeEvent<HTMLInputElement> ) {
+  handleMatriculationSubjectChange(
+    index: number,
+    e: React.ChangeEvent<HTMLInputElement>
+  ) {
     const selectedSubjects = [...this.state.selectedMatriculationSubjects];
     selectedSubjects[index] = e.target.value;
 
@@ -109,8 +117,10 @@ class MatriculationSubjectsList extends React.Component<MatriculationSubjectsLis
    * @returns subject name or empty string if not found
    */
   getMatriculationSubjectNameByCode = (code: string): string => {
-    return this.props.i18n.text.get(`plugin.records.hops.matriculationSubject.${code}`);
-  }
+    return this.props.i18n.text.get(
+      `plugin.records.hops.matriculationSubject.${code}`
+    );
+  };
 
   /**
    * Component did mount life-cycle method
@@ -123,16 +133,20 @@ class MatriculationSubjectsList extends React.Component<MatriculationSubjectsLis
         loading: true
       });
 
-      mApi().records.matriculationSubjects.read()
-        .callback((err: Error, matriculationSubjects: MatriculationSubjectType[])=>{
-          if (!err) {
-            this.setState({
-              matriculationSubjects: matriculationSubjects,
-              loading: false,
-              selectedMatriculationSubjects: this.props.initialMatriculationSubjects || [""]
-            });
+      mApi()
+        .records.matriculationSubjects.read()
+        .callback(
+          (err: Error, matriculationSubjects: MatriculationSubjectType[]) => {
+            if (!err) {
+              this.setState({
+                matriculationSubjects: matriculationSubjects,
+                loading: false,
+                selectedMatriculationSubjects: this.props
+                  .initialMatriculationSubjects || [""]
+              });
+            }
           }
-        });
+        );
     }
   }
 
@@ -141,48 +155,105 @@ class MatriculationSubjectsList extends React.Component<MatriculationSubjectsLis
    *
    * Renders component
    */
-  render(){
+  render() {
     if (this.state.loading) {
-      return (<div className="loader">{this.props.i18n.text.get("plugin.records.hops.goals.matriculationSubjectLoading")}</div>);
-    }
-
-    const matriculationSubjectInputs = this.state.selectedMatriculationSubjects.map((subject: string, index: number) => {
       return (
-        <div className="form-element__dropdown-selection-container"  key={index}>
-          <label htmlFor={`matriculationSubject` + index} className="visually-hidden">{this.props.i18n.text.get("plugin.wcag.matriculationSubjectSelect.label")}</label>
-          <select id={`matriculationSubject` + index} className="form-element__select form-element__select--matriculation-exam" value={subject} onChange={this.handleMatriculationSubjectChange.bind( this, index )}>
-            <option disabled value="">{this.props.i18n.text.get("plugin.records.hops.goals.matriculationSubjectChoose")}</option>
-            {this.state.matriculationSubjects.map(( subject: MatriculationSubjectType, index: number ) => {
-              return <option key={index} value={subject.code}>{this.getMatriculationSubjectNameByCode(subject.code)}</option>
-            })}
-          </select>
-          <Button buttonModifiers={["primary-function-content", "remove-subject-row"]} onClick={this.handleMatriculationSubjectRemove.bind(this, index)}>{this.props.i18n.text.get("plugin.records.hops.goals.matriculationSubjectRemove")}</Button>
+        <div className="loader">
+          {this.props.i18n.text.get(
+            "plugin.records.hops.goals.matriculationSubjectLoading"
+          )}
         </div>
       );
-    });
+    }
+
+    const matriculationSubjectInputs =
+      this.state.selectedMatriculationSubjects.map(
+        (subject: string, index: number) => {
+          return (
+            <div
+              className="form-element__dropdown-selection-container"
+              key={index}
+            >
+              <label
+                htmlFor={`matriculationSubject` + index}
+                className="visually-hidden"
+              >
+                {this.props.i18n.text.get(
+                  "plugin.wcag.matriculationSubjectSelect.label"
+                )}
+              </label>
+              <select
+                id={`matriculationSubject` + index}
+                className="form-element__select form-element__select--matriculation-exam"
+                value={subject}
+                onChange={this.handleMatriculationSubjectChange.bind(
+                  this,
+                  index
+                )}
+              >
+                <option disabled value="">
+                  {this.props.i18n.text.get(
+                    "plugin.records.hops.goals.matriculationSubjectChoose"
+                  )}
+                </option>
+                {this.state.matriculationSubjects.map(
+                  (subject: MatriculationSubjectType, index: number) => {
+                    return (
+                      <option key={index} value={subject.code}>
+                        {this.getMatriculationSubjectNameByCode(subject.code)}
+                      </option>
+                    );
+                  }
+                )}
+              </select>
+              <Button
+                buttonModifiers={[
+                  "primary-function-content",
+                  "remove-subject-row"
+                ]}
+                onClick={this.handleMatriculationSubjectRemove.bind(
+                  this,
+                  index
+                )}
+              >
+                {this.props.i18n.text.get(
+                  "plugin.records.hops.goals.matriculationSubjectRemove"
+                )}
+              </Button>
+            </div>
+          );
+        }
+      );
 
     return (
       <div className="form-element__custom-element">
         {matriculationSubjectInputs}
         <div className="form-element__button-container">
-          <Button buttonModifiers={["primary-function-content", "add-subject-row"]} onClick={this.handleMatriculationSubjectAdd.bind(this)}>{this.props.i18n.text.get("plugin.records.hops.goals.matriculationSubjectAdd")}</Button>
+          <Button
+            buttonModifiers={["primary-function-content", "add-subject-row"]}
+            onClick={this.handleMatriculationSubjectAdd.bind(this)}
+          >
+            {this.props.i18n.text.get(
+              "plugin.records.hops.goals.matriculationSubjectAdd"
+            )}
+          </Button>
         </div>
       </div>
     );
   }
 }
 
-function mapStateToProps( state: StateType ) {
+function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n
-  }
-};
+  };
+}
 
-function mapDispatchToProps( dispatch: Dispatch<any> ) {
-  return {}
-};
+function mapDispatchToProps(dispatch: Dispatch<any>) {
+  return {};
+}
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)( MatriculationSubjectsList );
+)(MatriculationSubjectsList);

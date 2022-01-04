@@ -20,6 +20,6 @@ export default function useRecordingsList(records: RecordValue[] | null) {
 
   return {
     recordings,
-    deleteAudio: (audioKey: string) => deleteAudio(audioKey, setRecordings),
+    deleteAudio: (audioKey: string) => deleteAudio(audioKey, setRecordings)
   };
 }

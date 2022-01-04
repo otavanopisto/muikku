@@ -9,7 +9,7 @@ import { StatusType } from "~/reducers/base/status";
 import { EvaluationState } from "~/reducers/main-function/evaluation/index";
 import {
   SetEvaluationSelectedWorkspace,
-  setSelectedWorkspaceId,
+  setSelectedWorkspaceId
 } from "~/actions/main-function/evaluation/evaluationActions";
 import { bindActionCreators } from "redux";
 import EvaluationSorters from "./application/evaluation-list/evaluation-sorters";
@@ -56,7 +56,7 @@ class EvaluationApplication extends React.Component<
       workspaceId:
         e.currentTarget.value === ""
           ? undefined
-          : parseInt(e.currentTarget.value),
+          : parseInt(e.currentTarget.value)
     });
   };
 
@@ -161,7 +161,7 @@ function mapStateToProps(state: StateType) {
     i18n: state.i18n,
     status: state.status,
     evaluations: state.evaluations,
-    currentWorkspace: state.workspaces.currentWorkspace,
+    currentWorkspace: state.workspaces.currentWorkspace
   };
 }
 

@@ -11,7 +11,7 @@ const resolveTerm = (from: moment.Moment): Term => {
   return {
     value: (quarter < 3 ? "SPRING" : "AUTUMN") + from.year(),
     name: (quarter < 3 ? "Kevät " : "Syksy ") + from.year(),
-    adessive: (quarter < 3 ? "keväällä " : "syksyllä ") + from.year(),
+    adessive: (quarter < 3 ? "keväällä " : "syksyllä ") + from.year()
   };
 };
 

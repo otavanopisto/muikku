@@ -12,7 +12,7 @@ import "~/sass/elements/avatar.scss";
 import {
   DiscussionType,
   DiscussionThreadType,
-  DiscussionUserType,
+  DiscussionUserType
 } from "~/reducers/discussion";
 import BodyScrollKeeper from "~/components/general/body-scroll-keeper";
 import { StateType } from "~/reducers";
@@ -22,7 +22,7 @@ import {
   DiscussionThread,
   DiscussionThreadHeader,
   DiscussionThreadBody,
-  DiscussionThreadFooter,
+  DiscussionThreadFooter
 } from "./threads/threads";
 import { StatusType } from "~/reducers/base/status";
 import Avatar from "~/components/general/avatar";
@@ -257,7 +257,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     discussion: state.discussion,
-    status: state.status,
+    status: state.status
   };
 }
 

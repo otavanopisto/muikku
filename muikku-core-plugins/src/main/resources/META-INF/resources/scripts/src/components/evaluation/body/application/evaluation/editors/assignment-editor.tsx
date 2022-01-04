@@ -9,7 +9,7 @@ import { AnyActionType } from "~/actions/index";
 import { EvaluationState } from "~/reducers/main-function/evaluation/index";
 import {
   MaterialAssignmentType,
-  MaterialEvaluationType,
+  MaterialEvaluationType
 } from "~/reducers/workspaces/index";
 import { MaterialCompositeRepliesType } from "~/reducers/workspaces/index";
 import Button from "~/components/general/button";
@@ -17,7 +17,7 @@ import { StatusType } from "~/reducers/base/status";
 import { i18nType } from "~/reducers/base/i18n";
 import {
   UpdateCurrentStudentEvaluationCompositeRepliesData,
-  updateCurrentStudentCompositeRepliesData,
+  updateCurrentStudentCompositeRepliesData
 } from "~/actions/main-function/evaluation/evaluationActions";
 import "~/sass/elements/form-elements.scss";
 import Recorder from "~/components/general/voice-recorder/recorder";
@@ -30,7 +30,7 @@ import notificationActions from "~/actions/base/notifications";
 import {
   AssignmentEvaluationGradeRequest,
   AssignmentEvaluationSaveReturn,
-  AssignmentEvaluationSupplementationRequest,
+  AssignmentEvaluationSupplementationRequest
 } from "~/@types/evaluation";
 import promisify from "~/util/promisify";
 import WarningDialog from "../../../../dialogs/close-warning";
@@ -112,7 +112,7 @@ class AssignmentEditor extends SessionStateComponent<
               ? "INCOMPLETE"
               : "GRADED",
           grade: grade,
-          draftId,
+          draftId
         },
         draftId
       ),
@@ -122,7 +122,7 @@ class AssignmentEditor extends SessionStateComponent<
         compositeReplies.evaluationInfo.audioAssessments !== null
           ? compositeReplies.evaluationInfo.audioAssessments
           : [],
-      locked: false,
+      locked: false
     };
   }
 
@@ -175,7 +175,7 @@ class AssignmentEditor extends SessionStateComponent<
             compositeReplies.evaluationInfo.type === "INCOMPLETE"
               ? "INCOMPLETE"
               : "GRADED",
-          grade: grade,
+          grade: grade
         },
         this.state.draftId
       ),
@@ -184,7 +184,7 @@ class AssignmentEditor extends SessionStateComponent<
         compositeReplies.evaluationInfo.audioAssessments &&
         compositeReplies.evaluationInfo.audioAssessments !== null
           ? compositeReplies.evaluationInfo.audioAssessments
-          : [],
+          : []
     });
   };
 
@@ -211,7 +211,7 @@ class AssignmentEditor extends SessionStateComponent<
     defaultGrade: string;
   }) => {
     this.setState({
-      locked: true,
+      locked: true
     });
 
     const {
@@ -219,7 +219,7 @@ class AssignmentEditor extends SessionStateComponent<
       userEntityId,
       workspaceMaterialId,
       dataToSave,
-      defaultGrade,
+      defaultGrade
     } = data;
 
     try {
@@ -229,7 +229,7 @@ class AssignmentEditor extends SessionStateComponent<
           userEntityId,
           workspaceMaterialId,
           {
-            ...dataToSave,
+            ...dataToSave
           }
         ),
         "callback"
@@ -239,7 +239,7 @@ class AssignmentEditor extends SessionStateComponent<
         this.props.updateCurrentStudentCompositeRepliesData({
           workspaceId: workspaceEntityId,
           userEntityId: userEntityId,
-          workspaceMaterialId: workspaceMaterialId,
+          workspaceMaterialId: workspaceMaterialId
         });
 
         this.props.updateMaterialEvaluationData(data);
@@ -253,7 +253,7 @@ class AssignmentEditor extends SessionStateComponent<
         }
 
         this.setState({
-          locked: false,
+          locked: false
         });
       });
     } catch (error) {
@@ -266,7 +266,7 @@ class AssignmentEditor extends SessionStateComponent<
       );
 
       this.setState({
-        locked: false,
+        locked: false
       });
     }
   };
@@ -288,11 +288,11 @@ class AssignmentEditor extends SessionStateComponent<
       userEntityId,
       workspaceMaterialId,
       dataToSave,
-      defaultGrade,
+      defaultGrade
     } = data;
 
     this.setState({
-      locked: true,
+      locked: true
     });
 
     try {
@@ -302,7 +302,7 @@ class AssignmentEditor extends SessionStateComponent<
           userEntityId,
           workspaceMaterialId,
           {
-            ...dataToSave,
+            ...dataToSave
           }
         ),
         "callback"
@@ -317,7 +317,7 @@ class AssignmentEditor extends SessionStateComponent<
         this.props.updateCurrentStudentCompositeRepliesData({
           workspaceId: workspaceEntityId,
           userEntityId: userEntityId,
-          workspaceMaterialId: workspaceMaterialId,
+          workspaceMaterialId: workspaceMaterialId
         });
 
         if (this.props.onAssigmentSave) {
@@ -329,7 +329,7 @@ class AssignmentEditor extends SessionStateComponent<
         }
 
         this.setState({
-          locked: false,
+          locked: false
         });
       });
     } catch (error) {
@@ -342,7 +342,7 @@ class AssignmentEditor extends SessionStateComponent<
       );
 
       this.setState({
-        locked: false,
+        locked: false
       });
     }
   };
@@ -379,10 +379,10 @@ class AssignmentEditor extends SessionStateComponent<
           gradeIdentifier: this.state.grade,
           verbalAssessment: this.state.literalEvaluation,
           assessmentDate: new Date().getTime(),
-          audioAssessments: this.state.audioAssessments,
+          audioAssessments: this.state.audioAssessments
         },
         materialId: this.props.materialAssignment.materialId,
-        defaultGrade,
+        defaultGrade
       });
     } else if (this.state.assignmentEvaluationType === "INCOMPLETE") {
       this.saveAssignmentEvaluationSupplementationToServer({
@@ -398,10 +398,10 @@ class AssignmentEditor extends SessionStateComponent<
             this.props.evaluations.evaluationSelectedAssessmentId.userEntityId,
           workspaceMaterialId: this.props.materialAssignment.id.toString(),
           requestDate: new Date().getTime(),
-          requestText: this.state.literalEvaluation,
+          requestText: this.state.literalEvaluation
         },
         materialId: this.props.materialAssignment.materialId,
-        defaultGrade,
+        defaultGrade
       });
     }
   };
@@ -427,7 +427,7 @@ class AssignmentEditor extends SessionStateComponent<
           assignmentEvaluationType:
             compositeReplies.evaluationInfo.type === "INCOMPLETE"
               ? "INCOMPLETE"
-              : "GRADED",
+              : "GRADED"
         },
         this.state.draftId
       );
@@ -436,7 +436,7 @@ class AssignmentEditor extends SessionStateComponent<
         {
           literalEvaluation: "",
           grade: `${evaluationGradeSystem[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`,
-          assignmentEvaluationType: "GRADED",
+          assignmentEvaluationType: "GRADED"
         },
         this.state.draftId
       );
@@ -450,7 +450,7 @@ class AssignmentEditor extends SessionStateComponent<
   handleCKEditorChange = (e: string) => {
     this.setStateAndStore(
       {
-        literalEvaluation: e,
+        literalEvaluation: e
       },
       this.state.draftId
     );
@@ -470,7 +470,7 @@ class AssignmentEditor extends SessionStateComponent<
     this.setStateAndStore(
       {
         assignmentEvaluationType: e.target.value,
-        grade: defaultGrade,
+        grade: defaultGrade
       },
       this.state.draftId
     );
@@ -483,7 +483,7 @@ class AssignmentEditor extends SessionStateComponent<
   handleSelectGradeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     this.setStateAndStore(
       {
-        grade: e.currentTarget.value,
+        grade: e.currentTarget.value
       },
       this.state.draftId
     );
@@ -495,7 +495,7 @@ class AssignmentEditor extends SessionStateComponent<
    */
   handleAudioAssessmentChange = (audioAssessments: AudioAssessment[]) => {
     this.setState({
-      audioAssessments: audioAssessments,
+      audioAssessments: audioAssessments
     });
   };
 
@@ -684,7 +684,7 @@ function mapStateToProps(state: StateType) {
     i18n: state.i18n,
     status: state.status,
     evaluations: state.evaluations,
-    locale: state.locales,
+    locale: state.locales
   };
 }
 
@@ -695,7 +695,7 @@ function mapStateToProps(state: StateType) {
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     {
-      updateCurrentStudentCompositeRepliesData,
+      updateCurrentStudentCompositeRepliesData
     },
     dispatch
   );

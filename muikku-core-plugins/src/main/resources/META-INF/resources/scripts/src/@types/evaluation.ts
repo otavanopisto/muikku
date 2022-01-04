@@ -3,7 +3,7 @@ import {
   WorkspaceJournalListType,
   MaterialContentNodeListType,
   MaterialCompositeRepliesType,
-  MaterialAssignmentType,
+  MaterialAssignmentType
 } from "../reducers/workspaces/index";
 /**
  * EvaluationEnum
@@ -13,7 +13,7 @@ export enum EvaluationEnum {
   EVALUATION_FAIL = "EVALUATION_FAIL",
   EVALUATION_IMPROVED = "EVALUATION_IMPROVED",
   EVALUATION_REQUEST = "EVALUATION_REQUEST",
-  SUPPLEMENTATION_REQUEST = "SUPPLEMENTATION_REQUEST",
+  SUPPLEMENTATION_REQUEST = "SUPPLEMENTATION_REQUEST"
 }
 
 /**
@@ -21,7 +21,7 @@ export enum EvaluationEnum {
  */
 export enum EvaluationAssignmentContentViewRestrict {
   NONE = "NONE",
-  LOGGED_IN = "LOGGED_IN",
+  LOGGED_IN = "LOGGED_IN"
 }
 
 /**

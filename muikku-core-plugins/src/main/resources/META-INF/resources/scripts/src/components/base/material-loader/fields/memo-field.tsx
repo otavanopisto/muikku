@@ -59,13 +59,13 @@ const ckEditorConfig = {
   toolbar: [
     {
       name: "basicstyles",
-      items: ["Bold", "Italic", "Underline", "Strike", "RemoveFormat"],
+      items: ["Bold", "Italic", "Underline", "Strike", "RemoveFormat"]
     },
     { name: "clipboard", items: ["Cut", "Copy", "Paste", "Undo", "Redo"] },
     { name: "links", items: ["Link"] },
     {
       name: "insert",
-      items: ["Image", "Table", "Muikku-mathjax", "Smiley", "SpecialChar"],
+      items: ["Image", "Table", "Muikku-mathjax", "Smiley", "SpecialChar"]
     },
     { name: "colors", items: ["TextColor", "BGColor"] },
     { name: "styles", items: ["Format"] },
@@ -79,14 +79,14 @@ const ckEditorConfig = {
         "Blockquote",
         "JustifyLeft",
         "JustifyCenter",
-        "JustifyRight",
-      ],
+        "JustifyRight"
+      ]
     },
-    { name: "tools", items: ["Maximize"] },
+    { name: "tools", items: ["Maximize"] }
   ],
   removePlugins: "image,exportpdf",
   extraPlugins: "image2,widget,lineutils,autogrow,muikku-mathjax,divarea",
-  resize_enabled: true,
+  resize_enabled: true
 };
 
 /**
@@ -139,7 +139,7 @@ export default class MemoField extends React.Component<
       synced: true,
       syncError: null,
 
-      fieldSavedState: null,
+      fieldSavedState: null
     };
 
     this.onInputChange = this.onInputChange.bind(this);
@@ -151,7 +151,7 @@ export default class MemoField extends React.Component<
    * onFieldSavedStateChange
    * @param savedState
    */
-  onFieldSavedStateChange(savedState: FieldStateStatus){
+  onFieldSavedStateChange(savedState: FieldStateStatus) {
     this.setState({
       fieldSavedState: savedState
     });
@@ -187,7 +187,7 @@ export default class MemoField extends React.Component<
     this.setState({
       value: e.target.value,
       words: wordCount(e.target.value),
-      characters: characterCount(e.target.value),
+      characters: characterCount(e.target.value)
     });
 
     //we call the on change
@@ -206,7 +206,7 @@ export default class MemoField extends React.Component<
     this.setState({
       value,
       words: wordCount(rawText),
-      characters: characterCount(rawText),
+      characters: characterCount(rawText)
     });
 
     this.props.onChange &&
@@ -344,11 +344,15 @@ export default class MemoField extends React.Component<
       }
     }
 
-    let fieldSavedStateClass = createFieldSavedStateClass(this.state.fieldSavedState);
+    let fieldSavedStateClass = createFieldSavedStateClass(
+      this.state.fieldSavedState
+    );
 
     // and here the element itself
     return (
-      <span className={`material-page__memofield-wrapper ${fieldSavedStateClass}`}>
+      <span
+        className={`material-page__memofield-wrapper ${fieldSavedStateClass}`}
+      >
         <Synchronizer
           synced={this.state.synced}
           syncError={this.state.syncError}

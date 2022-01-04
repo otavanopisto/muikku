@@ -63,25 +63,26 @@ class WarningDialog extends React.Component<
             onClick={this.handleContinueClick.bind(this, closeDialog)}
           >
             {this.props.i18n.text.get(
-          "plugin.evaluation.evaluationModal.unsavedVerbalRecordings.proceedButton"
-        )}
+              "plugin.evaluation.evaluationModal.unsavedVerbalRecordings.proceedButton"
+            )}
           </Button>
           <Button
             buttonModifiers={["cancel", "standard-cancel"]}
             onClick={closeDialog}
           >
             {this.props.i18n.text.get(
-          "plugin.evaluation.evaluationModal.unsavedVerbalRecordings.cancelButton"
-        )}
+              "plugin.evaluation.evaluationModal.unsavedVerbalRecordings.cancelButton"
+            )}
           </Button>
         </div>
       );
     };
     const content = (closeDialog: () => any) => {
       return (
-        <div>{this.props.i18n.text.get(
-          "plugin.evaluation.evaluationModal.unsavedVerbalRecordings.description"
-        )}
+        <div>
+          {this.props.i18n.text.get(
+            "plugin.evaluation.evaluationModal.unsavedVerbalRecordings.description"
+          )}
         </div>
       );
     };
@@ -110,7 +111,7 @@ class WarningDialog extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18n: state.i18n
   };
 }
 

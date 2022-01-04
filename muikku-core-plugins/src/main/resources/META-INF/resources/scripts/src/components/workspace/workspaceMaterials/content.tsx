@@ -7,7 +7,7 @@ import {
   WorkspaceType,
   MaterialCompositeRepliesListType,
   MaterialContentNodeType,
-  WorkspaceEditModeStateType,
+  WorkspaceEditModeStateType
 } from "~/reducers/workspaces";
 import ProgressData from "../progressData";
 
@@ -22,7 +22,7 @@ import {
   updateWorkspaceMaterialContentNode,
   UpdateWorkspaceMaterialContentNodeTriggerType,
   setWholeWorkspaceMaterials,
-  SetWholeWorkspaceMaterialsTriggerType,
+  SetWholeWorkspaceMaterialsTriggerType
 } from "~/actions/workspaces";
 import { repairContentNodes } from "~/util/modifiers";
 
@@ -77,7 +77,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
     super(props);
 
     this.state = {
-      materials: props.materials,
+      materials: props.materials
     };
 
     this.originalMaterials = props.materials;
@@ -108,7 +108,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
    */
   componentWillReceiveProps(nextProps: ContentProps) {
     this.setState({
-      materials: nextProps.materials,
+      materials: nextProps.materials
     });
   }
 
@@ -124,7 +124,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
         element.scrollIntoView({
           behavior: "smooth",
           block: "nearest",
-          inline: "start",
+          inline: "start"
         });
       }
     }
@@ -154,7 +154,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
     );
 
     this.setState({
-      materials: contentNodesRepaired,
+      materials: contentNodesRepaired
     });
 
     this.storedLastUpdateServerExecution = () => {
@@ -163,13 +163,13 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
         material,
         update: {
           parentId: update.parentId,
-          nextSiblingId: update.nextSiblingId,
+          nextSiblingId: update.nextSiblingId
         },
         success: () => {
           this.props.setWholeWorkspaceMaterials(contentNodesRepaired);
           this.originalMaterials = contentNodesRepaired;
         },
-        dontTriggerReducerActions: true,
+        dontTriggerReducerActions: true
       });
     };
   }
@@ -191,12 +191,12 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
     const newMaterialState = [...this.state.materials];
     newMaterialState[parentBaseIndex] = {
       ...newMaterialState[parentBaseIndex],
-      children: [...newMaterialState[parentBaseIndex].children],
+      children: [...newMaterialState[parentBaseIndex].children]
     };
     newMaterialState[parentBaseIndex].children.splice(baseIndex, 1);
     newMaterialState[parentTargetBeforeIndex] = {
       ...newMaterialState[parentTargetBeforeIndex],
-      children: [...newMaterialState[parentTargetBeforeIndex].children],
+      children: [...newMaterialState[parentTargetBeforeIndex].children]
     };
     if (targetBeforeIndex === null) {
       newMaterialState[parentTargetBeforeIndex].children.push(
@@ -237,7 +237,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
 
     this.setState(
       {
-        materials: repariedNodes,
+        materials: repariedNodes
       },
       () => {
         if (parentBaseIndex !== parentTargetBeforeIndex) {
@@ -256,13 +256,13 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
         material,
         update: {
           parentId: update.parentId,
-          nextSiblingId: update.nextSiblingId,
+          nextSiblingId: update.nextSiblingId
         },
         success: () => {
           this.props.setWholeWorkspaceMaterials(repariedNodes);
           this.originalMaterials = repariedNodes;
         },
-        dontTriggerReducerActions: true,
+        dontTriggerReducerActions: true
       });
     };
   }
@@ -617,7 +617,7 @@ function mapStateToProps(state: StateType) {
     workspace: state.workspaces.currentWorkspace,
     workspaceEditMode: state.workspaces.editMode,
     isLoggedIn: state.status.loggedIn,
-    isStudent: state.status.loggedIn && state.status.isStudent,
+    isStudent: state.status.loggedIn && state.status.isStudent
   };
 }
 
@@ -634,5 +634,5 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps, null, {
-  withRef: true,
+  withRef: true
 })(ContentComponent);

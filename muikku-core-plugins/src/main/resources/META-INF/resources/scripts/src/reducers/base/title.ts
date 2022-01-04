@@ -1,7 +1,7 @@
-import {ActionType} from "~/actions";
+import { ActionType } from "~/actions";
 
-export default function title(state: string="", action: ActionType): string {
-  if (action.type === "UPDATE_TITLE"){
+export default function title(state: string = "", action: ActionType): string {
+  if (action.type === "UPDATE_TITLE") {
     let newValue: string = action.payload;
     document.title = "Muikku - " + newValue;
     return newValue;

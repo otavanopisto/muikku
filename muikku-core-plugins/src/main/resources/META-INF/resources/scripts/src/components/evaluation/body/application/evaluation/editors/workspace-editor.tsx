@@ -8,7 +8,7 @@ import { EvaluationState } from "~/reducers/main-function/evaluation/index";
 import { bindActionCreators } from "redux";
 import {
   UpdateWorkspaceEvaluation,
-  updateWorkspaceEvaluationToServer,
+  updateWorkspaceEvaluationToServer
 } from "~/actions/main-function/evaluation/evaluationActions";
 import SessionStateComponent from "~/components/general/session-state-component";
 import { cleanWorkspaceAndSupplementationDrafts } from "../../../../dialogs/delete";
@@ -19,7 +19,7 @@ import { BilledPrice, EvaluationEnum } from "~/@types/evaluation";
 import { i18nType } from "~/reducers/base/i18n";
 import {
   UpdateNeedsReloadEvaluationRequests,
-  updateNeedsReloadEvaluationRequests,
+  updateNeedsReloadEvaluationRequests
 } from "~/actions/main-function/evaluation/evaluationActions";
 import "~/sass/elements/form-elements.scss";
 import { LocaleListType } from "~/reducers/base/locales";
@@ -83,7 +83,7 @@ class WorkspaceEditor extends SessionStateComponent<
       evaluationAssessmentEvents,
       evaluationSelectedAssessmentId,
       basePrice,
-      evaluationGradeSystem,
+      evaluationGradeSystem
     } = props.evaluations;
 
     /**
@@ -148,11 +148,11 @@ class WorkspaceEditor extends SessionStateComponent<
             literalEvaluation: latestEvent.text,
             draftId,
             basePriceFromServer: basePrice.data,
-            grade: `${usedGrade.dataSource}-${usedGrade.id}`,
+            grade: `${usedGrade.dataSource}-${usedGrade.id}`
           },
           draftId
         ),
-        locked: false,
+        locked: false
       };
     } else {
       this.state = {
@@ -161,11 +161,11 @@ class WorkspaceEditor extends SessionStateComponent<
             literalEvaluation: "",
             draftId,
             basePriceFromServer: basePrice.data,
-            grade: `${evaluationGradeSystem[0].grades[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`,
+            grade: `${evaluationGradeSystem[0].grades[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`
           },
           draftId
         ),
-        locked: false,
+        locked: false
       };
     }
   }
@@ -261,7 +261,7 @@ class WorkspaceEditor extends SessionStateComponent<
               existingBilledPriceObject,
               selectedPriceOption: existingBilledPriceObject
                 ? existingBilledPriceObject.price.toString()
-                : undefined,
+                : undefined
             },
             this.state.draftId
           )
@@ -275,7 +275,7 @@ class WorkspaceEditor extends SessionStateComponent<
             {
               literalEvaluation: "",
               grade: `${evaluationGradeSystem[0].grades[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`,
-              selectedPriceOption: defaultPrice,
+              selectedPriceOption: defaultPrice
             },
             this.state.draftId
           )
@@ -290,7 +290,7 @@ class WorkspaceEditor extends SessionStateComponent<
           {
             literalEvaluation: "",
             grade: `${evaluationGradeSystem[0].grades[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`,
-            selectedPriceOption: defaultPrice,
+            selectedPriceOption: defaultPrice
           },
           this.state.draftId
         )
@@ -314,7 +314,7 @@ class WorkspaceEditor extends SessionStateComponent<
     await promisify(
       mApi().worklist.billedPrice.read({
         workspaceEntityId: selectedWorkspaceId,
-        assessmentIdentifier,
+        assessmentIdentifier
       }),
       "callback"
     )().then(
@@ -368,11 +368,11 @@ class WorkspaceEditor extends SessionStateComponent<
       type = "new",
       status,
       onClose,
-      onSuccesfulSave,
+      onSuccesfulSave
     } = this.props;
 
     this.setState({
-      locked: true,
+      locked: true
     });
 
     const { evaluationAssessmentEvents } = evaluations;
@@ -403,13 +403,13 @@ class WorkspaceEditor extends SessionStateComponent<
             gradingScaleIdentifier: `${usedGradeSystem.dataSource}-${usedGradeSystem.id}`,
             gradeIdentifier: grade,
             verbalAssessment: literalEvaluation,
-            assessmentDate: new Date().getTime().toString(),
+            assessmentDate: new Date().getTime().toString()
           },
           onSuccess: () => {
             cleanWorkspaceAndSupplementationDrafts(this.state.draftId);
             this.setStateAndClear(
               {
-                literalEvaluation: "",
+                literalEvaluation: ""
               },
               this.state.draftId
             );
@@ -419,17 +419,17 @@ class WorkspaceEditor extends SessionStateComponent<
             onSuccesfulSave && onSuccesfulSave();
 
             this.setState({
-              locked: false,
+              locked: false
             });
 
             onClose && onClose();
           },
           onFail: () => {
             this.setState({
-              locked: false,
+              locked: false
             });
             onClose();
-          },
+          }
         });
       } else {
         /**
@@ -454,13 +454,13 @@ class WorkspaceEditor extends SessionStateComponent<
             gradingScaleIdentifier: `${usedGradeSystem.dataSource}-${usedGradeSystem.id}`,
             gradeIdentifier: grade,
             verbalAssessment: literalEvaluation,
-            assessmentDate: latestEvent.date,
+            assessmentDate: latestEvent.date
           },
           onSuccess: () => {
             cleanWorkspaceAndSupplementationDrafts(this.state.draftId);
             this.setStateAndClear(
               {
-                literalEvaluation: "",
+                literalEvaluation: ""
               },
               this.state.draftId
             );
@@ -470,17 +470,17 @@ class WorkspaceEditor extends SessionStateComponent<
             onSuccesfulSave && onSuccesfulSave();
 
             this.setState({
-              locked: false,
+              locked: false
             });
 
             onClose && onClose();
           },
           onFail: () => {
             this.setState({
-              locked: false,
+              locked: false
             });
             onClose();
-          },
+          }
         });
       }
     } else {
@@ -500,13 +500,13 @@ class WorkspaceEditor extends SessionStateComponent<
           gradingScaleIdentifier: `${usedGradeSystem.dataSource}-${usedGradeSystem.id}`,
           gradeIdentifier: grade,
           verbalAssessment: literalEvaluation,
-          assessmentDate: new Date().getTime().toString(),
+          assessmentDate: new Date().getTime().toString()
         },
         onSuccess: () => {
           cleanWorkspaceAndSupplementationDrafts(this.state.draftId);
           this.setStateAndClear(
             {
-              literalEvaluation: "",
+              literalEvaluation: ""
             },
             this.state.draftId
           );
@@ -517,7 +517,7 @@ class WorkspaceEditor extends SessionStateComponent<
 
           onClose && onClose();
         },
-        onFail: () => onClose(),
+        onFail: () => onClose()
       });
     }
   };
@@ -550,7 +550,7 @@ class WorkspaceEditor extends SessionStateComponent<
             grade: latestEvent.gradeIdentifier.split("@")[1],
             selectedPriceOption: this.state.existingBilledPriceObject
               ? this.state.existingBilledPriceObject.price.toString()
-              : undefined,
+              : undefined
           },
           this.state.draftId
         );
@@ -591,7 +591,7 @@ class WorkspaceEditor extends SessionStateComponent<
           {
             literalEvaluation: "",
             grade: `${evaluationGradeSystem[0].grades[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`,
-            selectedPriceOption: billingPrice,
+            selectedPriceOption: billingPrice
           },
           this.state.draftId
         );
@@ -603,7 +603,7 @@ class WorkspaceEditor extends SessionStateComponent<
           grade: `${evaluationGradeSystem[0].grades[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`,
           selectedPriceOption: this.state.basePriceFromServer
             ? this.state.basePriceFromServer.toString()
-            : undefined,
+            : undefined
         },
         this.state.draftId
       );
@@ -707,7 +707,7 @@ class WorkspaceEditor extends SessionStateComponent<
         name: `${i18n.text.get(
           "plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingOptionFull"
         )} ${basePriceFromServer.toFixed(2)} €`,
-        value: basePriceFromServer,
+        value: basePriceFromServer
       });
 
       /**
@@ -718,7 +718,7 @@ class WorkspaceEditor extends SessionStateComponent<
           name: `${i18n.text.get(
             "plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingOptionHalf"
           )} ${(basePriceFromServer / 2).toFixed(2)} €`,
-          value: basePriceFromServer / 2,
+          value: basePriceFromServer / 2
         });
       }
 
@@ -729,7 +729,7 @@ class WorkspaceEditor extends SessionStateComponent<
         name: `${i18n.text.get(
           "plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingOptionNone"
         )} 0,00 €`,
-        value: 0,
+        value: 0
       });
 
       /**
@@ -753,7 +753,7 @@ class WorkspaceEditor extends SessionStateComponent<
             name: `${i18n.text.get(
               "plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingOptionCustom"
             )} ${this.state.existingBilledPriceObject.price.toFixed(2)}`,
-            value: this.state.existingBilledPriceObject.price,
+            value: this.state.existingBilledPriceObject.price
           });
         }
       }
@@ -924,7 +924,7 @@ function mapStateToProps(state: StateType) {
     i18n: state.i18n,
     status: state.status,
     evaluations: state.evaluations,
-    locale: state.locales,
+    locale: state.locales
   };
 }
 

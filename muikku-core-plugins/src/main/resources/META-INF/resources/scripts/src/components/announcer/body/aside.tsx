@@ -3,7 +3,7 @@ import { connect, Dispatch } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
 import {
   AnnouncementsType,
-  AnnouncerNavigationItemType,
+  AnnouncerNavigationItemType
 } from "~/reducers/announcements";
 import { StateType } from "~/reducers";
 
@@ -23,24 +23,24 @@ class NavigationAside extends React.Component<
   NavigationAsideProps,
   NavigationAsideState
 > {
-
   /**
    * render
    * @returns
    */
   render() {
-    const navigationElementList: JSX.Element[] = this.props.announcements.navigation.map(
-      (navItem: AnnouncerNavigationItemType) => (
-        <NavigationElement
-          key={navItem.id}
-          isActive={this.props.announcements.location === navItem.location}
-          hash={navItem.location}
-          icon={navItem.icon}
-        >
-          {navItem.text(this.props.i18n)}
-        </NavigationElement>
-      )
-    );
+    const navigationElementList: JSX.Element[] =
+      this.props.announcements.navigation.map(
+        (navItem: AnnouncerNavigationItemType) => (
+          <NavigationElement
+            key={navItem.id}
+            isActive={this.props.announcements.location === navItem.location}
+            hash={navItem.location}
+            icon={navItem.icon}
+          >
+            {navItem.text(this.props.i18n)}
+          </NavigationElement>
+        )
+      );
 
     return (
       <Navigation>
@@ -62,7 +62,7 @@ class NavigationAside extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    announcements: state.announcements,
+    announcements: state.announcements
   };
 }
 

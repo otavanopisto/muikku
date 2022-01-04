@@ -1,37 +1,40 @@
-import * as React from 'react';
-import Autocomplete from '~/components/general/autocomplete';
-import TagInput from '~/components/general/tag-input';
-import { filterHighlight } from '~/util/modifiers';
-import '~/sass/elements/autocomplete.scss';
-import '~/sass/elements/glyph.scss';
-import { SelectItem } from '~/actions/workspaces/index';
+import * as React from "react";
+import Autocomplete from "~/components/general/autocomplete";
+import TagInput from "~/components/general/tag-input";
+import { filterHighlight } from "~/util/modifiers";
+import "~/sass/elements/autocomplete.scss";
+import "~/sass/elements/glyph.scss";
+import { SelectItem } from "~/actions/workspaces/index";
 
 export interface UiSelectItem extends SelectItem {
-  icon?: string,
+  icon?: string;
 }
 
 export interface AutofillSelectorProps {
-  placeholder?: string,
-  label?: string,
-  modifier: string,
-  identifier: string,
-  searchItems: UiSelectItem[],
-  selectedItems: UiSelectItem[],
-  autofocus?: boolean,
-  onDelete: (select: SelectItem) => any,
-  onSelect: (select: SelectItem) => any,
-  loader?: (searchString: string) => any
+  placeholder?: string;
+  label?: string;
+  modifier: string;
+  identifier: string;
+  searchItems: UiSelectItem[];
+  selectedItems: UiSelectItem[];
+  autofocus?: boolean;
+  onDelete: (select: SelectItem) => any;
+  onSelect: (select: SelectItem) => any;
+  loader?: (searchString: string) => any;
 }
 
 export interface AutofillSelectorState {
-  searchItems: UiSelectItem[],
-  selectedItems: UiSelectItem[],
-  textInput: string,
-  autocompleteOpened: boolean,
-  isFocused: boolean
+  searchItems: UiSelectItem[];
+  selectedItems: UiSelectItem[];
+  textInput: string;
+  autocompleteOpened: boolean;
+  isFocused: boolean;
 }
 
-export default class AutofillSelector extends React.Component<AutofillSelectorProps, AutofillSelectorState> {
+export default class AutofillSelector extends React.Component<
+  AutofillSelectorProps,
+  AutofillSelectorState
+> {
   private blurTimeout: NodeJS.Timer;
   private activeSearchTimeout: NodeJS.Timer;
   constructor(props: AutofillSelectorProps) {
@@ -43,7 +46,7 @@ export default class AutofillSelector extends React.Component<AutofillSelectorPr
       textInput: "",
       autocompleteOpened: false,
       isFocused: this.props.autofocus === true
-    }
+    };
 
     this.blurTimeout = null;
     this.onInputChange = this.onInputChange.bind(this);
@@ -55,12 +58,15 @@ export default class AutofillSelector extends React.Component<AutofillSelectorPr
 
   componentWillReceiveProps(nextProps: AutofillSelectorProps) {
     if (nextProps.selectedItems !== this.props.selectedItems) {
-      this.setState({ selectedItems: nextProps.selectedItems })
+      this.setState({ selectedItems: nextProps.selectedItems });
     }
   }
 
   onInputBlur(e: React.FocusEvent<any>) {
-    this.blurTimeout = setTimeout(() => this.setState({ isFocused: false }), 100);
+    this.blurTimeout = setTimeout(
+      () => this.setState({ isFocused: false }),
+      100
+    );
   }
 
   onInputFocus(e: React.FocusEvent<any>) {
@@ -82,50 +88,77 @@ export default class AutofillSelector extends React.Component<AutofillSelectorPr
   onAutocompleteItemClick(item: UiSelectItem, selected: boolean) {
     if (!selected) {
       this.props.onSelect(item);
-      this.setState({ isFocused: true, autocompleteOpened: false, textInput: "" });
-
+      this.setState({
+        isFocused: true,
+        autocompleteOpened: false,
+        textInput: ""
+      });
     }
   }
 
   render() {
-    let selectedItems = this.props.selectedItems && this.props.selectedItems.map((item) => {
+    let selectedItems =
+      this.props.selectedItems &&
+      this.props.selectedItems.map((item) => {
+        return {
+          node: (
+            <span className="autocomplete__selected-item">
+              {item.icon ? (
+                <span
+                  className={`glyph glyph--selected-recipient icon-${item.icon}`}
+                />
+              ) : null}
+              {item.label}
+            </span>
+          ),
+          value: item,
+          disabled: item.disabled ? item.disabled : false
+        };
+      });
+
+    let autocompleteItems = this.props.searchItems.map((item) => {
+      let node = (
+        <div className="autocomplete__recipient">
+          {item.icon ? (
+            <span
+              className={`glyph glyph--selected-recipient icon-${item.icon}`}
+            />
+          ) : null}
+          {filterHighlight(item.label, this.state.textInput)}
+        </div>
+      );
+
       return {
-        node: <span className="autocomplete__selected-item">
-          {item.icon ?
-            <span className={`glyph glyph--selected-recipient icon-${item.icon}`} />
-            : null}
-          {
-            item.label
-          }
-        </span>,
         value: item,
-        disabled: item.disabled ? item.disabled : false
+        selected: !!this.state.selectedItems.find(
+          (selectedItem) => selectedItem.id === item.id
+        ),
+        node
       };
     });
 
-    let autocompleteItems = this.props.searchItems.map((item) => {
-      let node = <div className="autocomplete__recipient">
-        {item.icon ?
-          <span className={`glyph glyph--selected-recipient icon-${item.icon}`} />
-          : null}
-        {
-          filterHighlight(item.label, this.state.textInput)
-        }
-      </div>;
-
-      return {
-        value: item,
-        selected: !!this.state.selectedItems.find(selectedItem => selectedItem.id === item.id),
-        node
-      }
-    });
-
-    return <Autocomplete items={autocompleteItems} onItemClick={this.onAutocompleteItemClick}
-      opened={this.state.autocompleteOpened} modifier={this.props.modifier}>
-      <TagInput identifier={this.props.identifier} ref="taginput" modifier={this.props.modifier}
-        isFocused={this.state.isFocused} onBlur={this.onInputBlur} onFocus={this.onInputFocus}
-        label={this.props.label} placeholder={this.props.placeholder}
-        tags={selectedItems} onInputDataChange={this.onInputChange} inputValue={this.state.textInput} onDelete={this.props.onDelete} />
-    </Autocomplete>
+    return (
+      <Autocomplete
+        items={autocompleteItems}
+        onItemClick={this.onAutocompleteItemClick}
+        opened={this.state.autocompleteOpened}
+        modifier={this.props.modifier}
+      >
+        <TagInput
+          identifier={this.props.identifier}
+          ref="taginput"
+          modifier={this.props.modifier}
+          isFocused={this.state.isFocused}
+          onBlur={this.onInputBlur}
+          onFocus={this.onInputFocus}
+          label={this.props.label}
+          placeholder={this.props.placeholder}
+          tags={selectedItems}
+          onInputDataChange={this.onInputChange}
+          inputValue={this.state.textInput}
+          onDelete={this.props.onDelete}
+        />
+      </Autocomplete>
+    );
   }
 }

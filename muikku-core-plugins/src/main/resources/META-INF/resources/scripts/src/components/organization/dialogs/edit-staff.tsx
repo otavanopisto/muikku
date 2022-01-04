@@ -6,11 +6,11 @@ import {
   EmailFormElement,
   InputFormElement,
   SSNFormElement,
-  SelectFormElement,
+  SelectFormElement
 } from "~/components/general/form-element";
 import {
   updateStaffmember,
-  UpdateStaffmemberTriggerType,
+  UpdateStaffmemberTriggerType
 } from "~/actions/main-function/users";
 import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
@@ -49,12 +49,12 @@ class OrganizationUser extends React.Component<
         role: this.props.data.role,
         firstName: this.props.data.firstName,
         lastName: this.props.data.lastName,
-        email: this.props.data.email,
+        email: this.props.data.email
       },
       locked: false,
       firstNameValid: 2,
       lastNameValid: 2,
-      emailValid: 2,
+      emailValid: 2
     };
     this.updateField = this.updateField.bind(this);
     this.saveUser = this.saveUser.bind(this);
@@ -71,7 +71,7 @@ class OrganizationUser extends React.Component<
     this.setState({
       firstNameValid: 2,
       lastNameValid: 2,
-      emailValid: 2,
+      emailValid: 2
     });
     closeDialog();
   }
@@ -101,7 +101,7 @@ class OrganizationUser extends React.Component<
 
     if (valid) {
       this.setState({
-        locked: true,
+        locked: true
       });
 
       let data = {
@@ -109,7 +109,7 @@ class OrganizationUser extends React.Component<
         firstName: this.state.user.firstName,
         lastName: this.state.user.lastName,
         email: this.state.user.email,
-        role: this.state.user.role,
+        role: this.state.user.role
       };
 
       this.props.updateStaffmember({
@@ -119,13 +119,13 @@ class OrganizationUser extends React.Component<
             locked: false,
             firstNameValid: 2,
             lastNameValid: 2,
-            emailValid: 2,
+            emailValid: 2
           });
           closeDialog();
         },
         fail: () => {
           closeDialog();
-        },
+        }
       });
     }
   }
@@ -228,7 +228,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     status: state.status,
-    studyprogrammes: state.studyprogrammes,
+    studyprogrammes: state.studyprogrammes
   };
 }
 

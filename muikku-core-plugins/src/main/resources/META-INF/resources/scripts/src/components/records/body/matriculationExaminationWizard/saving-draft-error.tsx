@@ -10,7 +10,7 @@ interface SavingDraftErrorProps {
  * @returns JSX.Element
  */
 export const SavingDraftError: React.FC<SavingDraftErrorProps> = ({
-  draftSaveErrorMsg,
+  draftSaveErrorMsg
 }) => (
   <div
     className={`matriculation__saving-draft matriculation__saving-draft--error ${

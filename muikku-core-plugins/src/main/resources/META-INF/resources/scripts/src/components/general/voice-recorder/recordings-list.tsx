@@ -21,7 +21,7 @@ export interface RecordingsListProps {
  * defaultRecordListProps
  */
 const defaultRecordListProps = {
-  noDeleteFunctions: false,
+  noDeleteFunctions: false
 };
 
 /**
@@ -58,7 +58,7 @@ function RecordingsList(props: RecordingsListProps) {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18n: state.i18n
   };
 }
 

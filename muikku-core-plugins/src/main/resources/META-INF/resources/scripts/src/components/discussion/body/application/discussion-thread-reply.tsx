@@ -2,7 +2,7 @@ import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
 import {
   DiscussionUserType,
-  DiscussionThreadReplyType,
+  DiscussionThreadReplyType
 } from "~/reducers/discussion";
 import { Dispatch, connect } from "react-redux";
 import Link from "~/components/general/link";
@@ -17,7 +17,7 @@ import {
   DiscussionCurrentThreadElement,
   DiscussionThreadHeader,
   DiscussionThreadBody,
-  DiscussionThreadFooter,
+  DiscussionThreadFooter
 } from "./threads/threads";
 import ReplyThreadDrawer from "./reply-thread-drawer";
 import ModifyThreadReplyDrawer from "./modify-reply-thread-drawer";
@@ -62,7 +62,7 @@ class DiscussionThreadReply extends React.Component<
     (type: "answer" | "modify" | "quote") =>
     (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
       this.setState({
-        openReplyType: type !== this.state.openReplyType ? type : undefined,
+        openReplyType: type !== this.state.openReplyType ? type : undefined
       });
     };
 
@@ -71,7 +71,7 @@ class DiscussionThreadReply extends React.Component<
    */
   handleOnCancelClick = () => {
     this.setState({
-      openReplyType: undefined,
+      openReplyType: undefined
     });
   };
 
@@ -90,7 +90,7 @@ class DiscussionThreadReply extends React.Component<
       canEditMessage,
       parentHasHiddenSiblings,
       threadLocked,
-      onHideShowSubRepliesClick,
+      onHideShowSubRepliesClick
     } = this.props;
 
     return (
@@ -240,7 +240,7 @@ class DiscussionThreadReply extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    status: state.status,
+    status: state.status
   };
 }
 

@@ -10,7 +10,7 @@ import "~/sass/elements/form.scss";
 import { EvaluationState } from "../../../reducers/main-function/evaluation/index";
 import {
   RemoveWorkspaceEvent,
-  removeWorkspaceEventFromServer,
+  removeWorkspaceEventFromServer
 } from "../../../actions/main-function/evaluation/evaluationActions";
 import { i18nType } from "../../../reducers/base/i18n";
 import { EvaluationEvent } from "~/@types/evaluation";
@@ -66,7 +66,7 @@ class DeleteDialog extends React.Component<
 
         closeDialog();
       },
-      onFail: () => closeDialog(),
+      onFail: () => closeDialog()
     });
   }
 
@@ -243,7 +243,7 @@ export const cleanWorkspaceAndSupplementationDrafts = (draftId: string) => {
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    evaluations: state.evaluations,
+    evaluations: state.evaluations
   };
 }
 

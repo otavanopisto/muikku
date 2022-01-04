@@ -84,7 +84,7 @@ class Pager extends React.Component<PagerProps, PagerState> {
                 </div>,
                 <div role="none" className="pager__item pager__item--gap">
                   ...
-                </div>,
+                </div>
               ]
             : null}
           {Array.from(
@@ -137,7 +137,7 @@ class Pager extends React.Component<PagerProps, PagerState> {
                   aria-label={this.props.i18n.text.get(
                     "plugin.wcag.pager.next10.label"
                   )}
-                />,
+                />
               ]
             : null}
         </div>
@@ -148,7 +148,7 @@ class Pager extends React.Component<PagerProps, PagerState> {
 
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18n: state.i18n
   };
 }
 

@@ -10,7 +10,7 @@ import {
   YOType,
   YOEligibilityType,
   YOEligibilityStatusType,
-  SubjectEligibilitySubjectsType,
+  SubjectEligibilitySubjectsType
 } from "~/reducers/main-function/records/yo";
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
@@ -43,7 +43,7 @@ class YO extends React.Component<YOProps, YOState> {
     super(props);
 
     this.state = {
-      succesfulEnrollments: [],
+      succesfulEnrollments: []
     };
   }
 
@@ -194,7 +194,7 @@ class YO extends React.Component<YOProps, YOState> {
                           this.props.yo.eligibility.coursesRequired,
                           this.props.yo.eligibility.creditPoints,
                           this.props.yo.eligibility.creditPointsRequired
-                        ),
+                        )
                       }}
                     />
                     {this.props.yo.enrollment.length > 0 && (
@@ -233,7 +233,7 @@ function mapStateToProps(state: StateType) {
     records: state.records,
     hops: state.hops,
     yo: state.yo,
-    eligibilitySubjects: state.eligibilitySubjects,
+    eligibilitySubjects: state.eligibilitySubjects
   };
 }
 

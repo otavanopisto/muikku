@@ -9,7 +9,7 @@ import mApi from "~/lib/mApi";
 import {
   WorkspaceType,
   MaterialContentNodeType,
-  MaterialCompositeRepliesType,
+  MaterialCompositeRepliesType
 } from "~/reducers/workspaces";
 import promisify from "~/util/promisify";
 
@@ -27,11 +27,11 @@ import {
   UpdateWorkspaceMaterialContentNodeTriggerType,
   updateWorkspaceMaterialContentNode,
   requestWorkspaceMaterialContentNodeAttachments,
-  RequestWorkspaceMaterialContentNodeAttachmentsTriggerType,
+  RequestWorkspaceMaterialContentNodeAttachmentsTriggerType
 } from "~/actions/workspaces";
 import {
   DisplayNotificationTriggerType,
-  displayNotification,
+  displayNotification
 } from "~/actions/base/notifications";
 
 import "~/sass/elements/rich-text.scss";
@@ -66,7 +66,7 @@ const STATES = [
     "success-state": "SUBMITTED",
 
     //Whether or not the fields are read only
-    "fields-read-only": false,
+    "fields-read-only": false
   },
   {
     "assignment-type": "EXERCISE",
@@ -82,7 +82,7 @@ const STATES = [
     "button-disabled": false,
 
     //This is for when the fields are modified, the exercise rolls back to be answered rather than submitted
-    "modify-state": "ANSWERED",
+    "modify-state": "ANSWERED"
   },
   {
     "assignment-type": "EVALUATED",
@@ -93,7 +93,7 @@ const STATES = [
     "success-text": "plugin.workspace.materialsLoader.assignmentSubmitted",
     "button-disabled": false,
     "success-state": "SUBMITTED",
-    "fields-read-only": false,
+    "fields-read-only": false
   },
   {
     "assignment-type": "EVALUATED",
@@ -103,7 +103,7 @@ const STATES = [
     "success-text": "plugin.workspace.materialsLoader.assignmentWithdrawn",
     "button-disabled": false,
     "success-state": "WITHDRAWN",
-    "fields-read-only": true,
+    "fields-read-only": true
   },
   {
     "assignment-type": "EVALUATED",
@@ -113,7 +113,7 @@ const STATES = [
     "success-text": "plugin.workspace.materialsLoader.assignmentWithdrawn",
     "button-disabled": false,
     "success-state": "WITHDRAWN",
-    "fields-read-only": true,
+    "fields-read-only": true
   },
   {
     "assignment-type": "EVALUATED",
@@ -123,7 +123,7 @@ const STATES = [
     "success-text": "plugin.workspace.materialsLoader.assignmentUpdated",
     "button-disabled": false,
     "success-state": "SUBMITTED",
-    "fields-read-only": false,
+    "fields-read-only": false
   },
   {
     "assignment-type": "EVALUATED",
@@ -131,8 +131,8 @@ const STATES = [
     "button-class": "muikku-evaluated-assignment",
     "button-text": "plugin.workspace.materialsLoader.evaluatedAssignmentButton",
     "button-disabled": true,
-    "fields-read-only": true,
-  },
+    "fields-read-only": true
+  }
 ];
 
 export interface MaterialLoaderProps {
@@ -259,7 +259,7 @@ class MaterialLoader extends React.Component<
   private answerRegistrySync: { [name: string]: any };
 
   static defaultProps: DefaultMaterialLoaderProps = {
-    usedAs: "default",
+    usedAs: "default"
   };
 
   constructor(props: MaterialLoaderProps) {
@@ -279,7 +279,7 @@ class MaterialLoader extends React.Component<
       answerCheckable: true,
 
       //The rightness registry start empty
-      answerRegistry: {},
+      answerRegistry: {}
     };
 
     //A sync version of the answer registry, it can change so fast
@@ -327,7 +327,7 @@ class MaterialLoader extends React.Component<
   componentDidMount() {
     this.setState({
       answersVisible: this.props.answersVisible && this.props.answersVisible,
-      answersChecked: this.props.answersVisible && this.props.answersVisible,
+      answersChecked: this.props.answersVisible && this.props.answersVisible
     });
 
     //create the composite replies if using the boolean flag
@@ -369,13 +369,13 @@ class MaterialLoader extends React.Component<
             //We set the answers visible and checked
             this.setState({
               answersVisible: true,
-              answersChecked: true,
+              answersChecked: true
             });
           } else {
             //Otherwise the answers only get checked, this is for example
             //For the ON_REQUEST or NEVER types
             this.setState({
-              answersChecked: true,
+              answersChecked: true
             });
           }
           //If the opposite is true and they are not with the checks-answers flags but they are currently checked
@@ -386,7 +386,7 @@ class MaterialLoader extends React.Component<
           //hide all that, and answersVisible too, it might be active too
           this.setState({
             answersVisible: false,
-            answersChecked: false,
+            answersChecked: false
           });
         }
       }
@@ -395,7 +395,11 @@ class MaterialLoader extends React.Component<
   async create() {
     const { usedAs = "default", userEntityId } = this.props;
 
-    let userEntityIdToLoad = parseInt(document.querySelector('meta[name="muikku:loggedUserId"]').getAttribute("value"));
+    let userEntityIdToLoad = parseInt(
+      document
+        .querySelector('meta[name="muikku:loggedUserId"]')
+        .getAttribute("value")
+    );
 
     if (usedAs === "evaluationTool" && userEntityId) {
       userEntityIdToLoad = userEntityId;
@@ -431,7 +435,7 @@ class MaterialLoader extends React.Component<
 
       this.setState({
         compositeRepliesInState,
-        compositeRepliesInStateLoaded: true,
+        compositeRepliesInStateLoaded: true
       });
     }
   }
@@ -469,7 +473,7 @@ class MaterialLoader extends React.Component<
   //Toggles answers visible or not
   toggleAnswersVisible() {
     this.setState({
-      answersVisible: !this.state.answersVisible,
+      answersVisible: !this.state.answersVisible
     });
 
     this.props.onToggleAnswersVisible && this.props.onToggleAnswersVisible();
@@ -493,7 +497,7 @@ class MaterialLoader extends React.Component<
     }
     let newObj: any = { ...this.answerRegistrySync };
     this.setState({
-      answerRegistry: newObj,
+      answerRegistry: newObj
     });
 
     this.props.onAnswerChange && this.props.onAnswerChange(name, value);
@@ -562,7 +566,7 @@ class MaterialLoader extends React.Component<
           onAnswerChange: this.onAnswerChange,
           onAnswerCheckableChange: this.onAnswerCheckableChange,
           onPushAnswer: this.onPushAnswer,
-          onToggleAnswersVisible: this.toggleAnswersVisible,
+          onToggleAnswersVisible: this.toggleAnswersVisible
         },
         this.state,
         this.stateConfiguration
@@ -581,7 +585,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     status: state.status,
-    websocket: state.websocket,
+    websocket: state.websocket
   };
 }
 
@@ -592,7 +596,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
       setWorkspaceMaterialEditorState,
       updateWorkspaceMaterialContentNode,
       displayNotification,
-      requestWorkspaceMaterialContentNodeAttachments,
+      requestWorkspaceMaterialContentNodeAttachments
     },
     dispatch
   );

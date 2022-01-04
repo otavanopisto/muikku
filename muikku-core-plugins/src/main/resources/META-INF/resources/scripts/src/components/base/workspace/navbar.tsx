@@ -15,17 +15,17 @@ import Dropdown from "~/components/general/dropdown";
 import {
   WorkspaceType,
   WorkspaceAssessementStateType,
-  WorkspaceEditModeStateType,
+  WorkspaceEditModeStateType
 } from "~/reducers/workspaces";
 import Navigation, {
   NavigationTopic,
-  NavigationElement,
+  NavigationElement
 } from "~/components/general/navigation";
 import EvaluationRequestDialog from "./evaluation-request-dialog";
 import EvaluationCancelDialog from "./evaluation-cancel-dialog";
 import {
   UpdateWorkspaceEditModeStateTriggerType,
-  updateWorkspaceEditModeState,
+  updateWorkspaceEditModeState
 } from "~/actions/workspaces";
 import { bindActionCreators } from "redux";
 import workspace from "~/components/guider/body/application/current-student/workspaces/workspace";
@@ -141,7 +141,7 @@ class WorkspaceNavbar extends React.Component<
 
     this.state = {
       requestEvaluationOpen: false,
-      requestCancelOpen: false,
+      requestCancelOpen: false
     };
 
     this.onRequestEvaluationOrCancel =
@@ -151,7 +151,7 @@ class WorkspaceNavbar extends React.Component<
   toggleEditModeActive() {
     this.props.updateWorkspaceEditModeState(
       {
-        active: !this.props.workspaceEditMode.active,
+        active: !this.props.workspaceEditMode.active
       },
       true
     );
@@ -163,13 +163,13 @@ class WorkspaceNavbar extends React.Component<
       case "pending_pass":
       case "pending_fail":
         this.setState({
-          requestCancelOpen: true,
+          requestCancelOpen: true
         });
         break;
       case "unassessed":
       default:
         this.setState({
-          requestEvaluationOpen: true,
+          requestEvaluationOpen: true
         });
         break;
     }
@@ -183,7 +183,7 @@ class WorkspaceNavbar extends React.Component<
         href: "/workspace/" + this.props.workspaceUrl + "/workspace-management",
         icon: "cogs",
         to: true,
-        condition: this.props.status.permissions.WORKSPACE_MANAGE_WORKSPACE,
+        condition: this.props.status.permissions.WORKSPACE_MANAGE_WORKSPACE
       },
       {
         modifier: "home",
@@ -192,7 +192,7 @@ class WorkspaceNavbar extends React.Component<
         href: "/workspace/" + this.props.workspaceUrl,
         icon: "home",
         to: true,
-        condition: this.props.status.permissions.WORKSPACE_HOME_VISIBLE,
+        condition: this.props.status.permissions.WORKSPACE_HOME_VISIBLE
       },
       {
         modifier: "help",
@@ -201,7 +201,7 @@ class WorkspaceNavbar extends React.Component<
         href: "/workspace/" + this.props.workspaceUrl + "/help",
         icon: "question",
         to: true,
-        condition: this.props.status.permissions.WORKSPACE_GUIDES_VISIBLE,
+        condition: this.props.status.permissions.WORKSPACE_GUIDES_VISIBLE
       },
       {
         modifier: "materials",
@@ -210,7 +210,7 @@ class WorkspaceNavbar extends React.Component<
         href: "/workspace/" + this.props.workspaceUrl + "/materials",
         icon: "leanpub",
         to: true,
-        condition: this.props.status.permissions.WORKSPACE_MATERIALS_VISIBLE,
+        condition: this.props.status.permissions.WORKSPACE_MATERIALS_VISIBLE
       },
       {
         modifier: "discussion",
@@ -219,7 +219,7 @@ class WorkspaceNavbar extends React.Component<
         href: "/workspace/" + this.props.workspaceUrl + "/discussions",
         icon: "bubbles",
         to: true,
-        condition: this.props.status.permissions.WORKSPACE_DISCUSSIONS_VISIBLE,
+        condition: this.props.status.permissions.WORKSPACE_DISCUSSIONS_VISIBLE
       },
       {
         modifier: "users",
@@ -228,7 +228,7 @@ class WorkspaceNavbar extends React.Component<
         href: "/workspace/" + this.props.workspaceUrl + "/users",
         icon: "users",
         to: true,
-        condition: this.props.status.permissions.WORKSPACE_USERS_VISIBLE,
+        condition: this.props.status.permissions.WORKSPACE_USERS_VISIBLE
       },
       {
         modifier: "journal",
@@ -237,7 +237,7 @@ class WorkspaceNavbar extends React.Component<
         href: "/workspace/" + this.props.workspaceUrl + "/journal",
         icon: "book",
         to: true,
-        condition: this.props.status.permissions.WORKSPACE_JOURNAL_VISIBLE,
+        condition: this.props.status.permissions.WORKSPACE_JOURNAL_VISIBLE
       },
       {
         modifier: "announcer",
@@ -246,7 +246,7 @@ class WorkspaceNavbar extends React.Component<
         href: "/workspace/" + this.props.workspaceUrl + "/announcer",
         icon: "paper-plane",
         to: true,
-        condition: this.props.status.permissions.WORKSPACE_ANNOUNCER_TOOL,
+        condition: this.props.status.permissions.WORKSPACE_ANNOUNCER_TOOL
       },
       {
         modifier: "evaluation",
@@ -255,8 +255,8 @@ class WorkspaceNavbar extends React.Component<
         href: "/workspace/" + this.props.workspaceUrl + "/evaluation",
         icon: "evaluate",
         to: true,
-        condition: this.props.status.permissions.WORKSPACE_ACCESS_EVALUATION,
-      },
+        condition: this.props.status.permissions.WORKSPACE_ACCESS_EVALUATION
+      }
     ];
 
     let assessmentRequestItem =
@@ -297,7 +297,7 @@ class WorkspaceNavbar extends React.Component<
                   )}`}
                 ></Link>
               </Dropdown>
-            ),
+            )
           }
         : null;
 
@@ -410,7 +410,7 @@ class WorkspaceNavbar extends React.Component<
                     ) : null}
                   </Link>
                 </Dropdown>
-              ),
+              )
             };
           })
         )}
@@ -430,7 +430,7 @@ class WorkspaceNavbar extends React.Component<
                       )}
                     </span>
                   </Link>
-                </ForgotPasswordDialog>,
+                </ForgotPasswordDialog>
               ]
         }
         menuItems={[assessmentRequestMenuItem].concat(
@@ -475,7 +475,7 @@ class WorkspaceNavbar extends React.Component<
             isOpen={this.state.requestCancelOpen}
             key="evaluation-cancel-dialog"
             onClose={() => this.setState({ requestCancelOpen: false })}
-          />,
+          />
         ]}
       />
     );
@@ -488,7 +488,7 @@ function mapStateToProps(state: StateType) {
     status: state.status,
     title: state.title,
     currentWorkspace: state.workspaces.currentWorkspace,
-    workspaceEditMode: state.workspaces.editMode,
+    workspaceEditMode: state.workspaces.editMode
   };
 }
 

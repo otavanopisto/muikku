@@ -1,25 +1,25 @@
 class StringStorage {
-  private ns:string;
+  private ns: string;
 
-  constructor(namespace: string){
+  constructor(namespace: string) {
     this.ns = namespace;
   }
   save(key: string, value: string): void {
-    if (!localStorage){
+    if (!localStorage) {
       return;
     }
 
     localStorage.setItem(this.ns + "." + key, value);
   }
   recover(key: string): any {
-    if (!localStorage){
+    if (!localStorage) {
       return null;
     }
 
     return localStorage.getItem(this.ns + "." + key);
   }
   clear(key: string): void {
-    if (!localStorage){
+    if (!localStorage) {
       return;
     }
 

@@ -1,54 +1,58 @@
-import Websocket from '~/util/websocket';
-import mApi from '~/lib/mApi';
-import {Action} from 'redux';
-import { updateUnreadMessageThreadsCount } from '~/actions/main-function/messages';
-import { StateType } from '~/reducers';
-import { Store } from 'redux';
-import { loadStatus, loadWorkspaceStatus } from '~/actions/base/status';
+import Websocket from "~/util/websocket";
+import mApi from "~/lib/mApi";
+import { Action } from "redux";
+import { updateUnreadMessageThreadsCount } from "~/actions/main-function/messages";
+import { StateType } from "~/reducers";
+import { Store } from "redux";
+import { loadStatus, loadWorkspaceStatus } from "~/actions/base/status";
 
-function getOptionValue(option: boolean){
-  if (typeof option === "undefined"){
+function getOptionValue(option: boolean) {
+  if (typeof option === "undefined") {
     return true;
   }
   return option;
 }
 
-export default async function(store: Store<StateType>, options: {
-  setupMessages?: boolean,
-  setupWorkspacePermissions?: boolean,
-} = {}){
-  let state:StateType = store.getState();
+export default async function (
+  store: Store<StateType>,
+  options: {
+    setupMessages?: boolean;
+    setupWorkspacePermissions?: boolean;
+  } = {}
+) {
+  let state: StateType = store.getState();
 
   let actionsAndCallbacks = {};
-  if (getOptionValue(options.setupMessages)){
+  if (getOptionValue(options.setupMessages)) {
     actionsAndCallbacks = {
-        "Communicator:newmessagereceived": {
-          actions: [updateUnreadMessageThreadsCount],
-          callbacks: [()=>mApi().communicator.cacheClear()]
-        },
-        "Communicator:messageread": {
-          actions: [updateUnreadMessageThreadsCount],
-          callbacks: [()=>mApi().communicator.cacheClear()]
-        },
-        "Communicator:threaddeleted": {
-          actions: [updateUnreadMessageThreadsCount],
-          callbacks: [()=>mApi().communicator.cacheClear()]
-        }
-      };
+      "Communicator:newmessagereceived": {
+        actions: [updateUnreadMessageThreadsCount],
+        callbacks: [() => mApi().communicator.cacheClear()]
+      },
+      "Communicator:messageread": {
+        actions: [updateUnreadMessageThreadsCount],
+        callbacks: [() => mApi().communicator.cacheClear()]
+      },
+      "Communicator:threaddeleted": {
+        actions: [updateUnreadMessageThreadsCount],
+        callbacks: [() => mApi().communicator.cacheClear()]
+      }
+    };
   }
 
   let websocket = new Websocket(store, actionsAndCallbacks);
 
   if (state.status.isActiveUser) {
-    getOptionValue(options.setupMessages) && store.dispatch(<Action>updateUnreadMessageThreadsCount());
+    getOptionValue(options.setupMessages) &&
+      store.dispatch(<Action>updateUnreadMessageThreadsCount());
   }
 
   if (!options.setupWorkspacePermissions) {
     return new Promise((resolve) => {
       const resolveFn = () => {
         resolve(websocket);
-      }
-      store.dispatch(<Action> loadStatus(resolveFn));
+      };
+      store.dispatch(<Action>loadStatus(resolveFn));
     });
   } else {
     return new Promise((resolve) => {
@@ -58,9 +62,9 @@ export default async function(store: Store<StateType>, options: {
         if (loadedTotal === 2) {
           resolve(websocket);
         }
-      }
-      store.dispatch(<Action> loadStatus(resolveFn));
-      store.dispatch(<Action> loadWorkspaceStatus(resolveFn));
+      };
+      store.dispatch(<Action>loadStatus(resolveFn));
+      store.dispatch(<Action>loadWorkspaceStatus(resolveFn));
     });
   }
 }

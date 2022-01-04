@@ -1,27 +1,31 @@
-import * as React from 'react';
+import * as React from "react";
 import { Redirect } from "react-router-dom";
 
-import '~/sass/elements/link.scss';
-import { scrollToSection } from '~/util/modifiers';
+import "~/sass/elements/link.scss";
+import { scrollToSection } from "~/util/modifiers";
 
-interface LinkProps extends React.DetailedHTMLProps<React.AnchorHTMLAttributes<HTMLAnchorElement>, HTMLAnchorElement> {
-  disablePropagation?: boolean,
-  disabled?: boolean,
-  as?: string,
-  href?: string,
-  title?: string,
-  to?: string,
-  className?: string,
-  openInNewTab?: string,
-  onScrollToSection?: () => any,
-  scrollPadding?: number,
-  disableScroll?: boolean,
-  disableSmoothScroll?: boolean,
+interface LinkProps
+  extends React.DetailedHTMLProps<
+    React.AnchorHTMLAttributes<HTMLAnchorElement>,
+    HTMLAnchorElement
+  > {
+  disablePropagation?: boolean;
+  disabled?: boolean;
+  as?: string;
+  href?: string;
+  title?: string;
+  to?: string;
+  className?: string;
+  openInNewTab?: string;
+  onScrollToSection?: () => any;
+  scrollPadding?: number;
+  disableScroll?: boolean;
+  disableSmoothScroll?: boolean;
 }
 
 interface LinkState {
-  active: boolean,
-  redirect: boolean
+  active: boolean;
+  redirect: boolean;
 }
 
 export default class Link extends React.Component<LinkProps, LinkState> {
@@ -40,7 +44,7 @@ export default class Link extends React.Component<LinkProps, LinkState> {
     this.state = {
       active: false,
       redirect: false
-    }
+    };
 
     this.touchCordX = null;
     this.touchCordY = null;
@@ -56,11 +60,16 @@ export default class Link extends React.Component<LinkProps, LinkState> {
     }
 
     if (!this.props.to) {
-      if (this.props.href && this.props.href[0] === '#') {
+      if (this.props.href && this.props.href[0] === "#") {
         if (this.props.disableScroll) {
           window.location.hash = this.props.href;
         } else {
-          scrollToSection(this.props.href, this.props.onScrollToSection, this.props.scrollPadding, this.props.disableSmoothScroll);
+          scrollToSection(
+            this.props.href,
+            this.props.onScrollToSection,
+            this.props.scrollPadding,
+            this.props.disableSmoothScroll
+          );
         }
       } else if (this.props.href) {
         if (this.props.openInNewTab) {
@@ -100,7 +109,10 @@ export default class Link extends React.Component<LinkProps, LinkState> {
       let X = e.changedTouches[0].pageX;
       let Y = e.changedTouches[0].pageY;
 
-      if (Math.abs(X - this.touchCordX) >= 5 || Math.abs(X - this.touchCordY) >= 5) {
+      if (
+        Math.abs(X - this.touchCordX) >= 5 ||
+        Math.abs(X - this.touchCordY) >= 5
+      ) {
         this.setState({ active: false });
       }
     }
@@ -130,10 +142,10 @@ export default class Link extends React.Component<LinkProps, LinkState> {
   }
   render() {
     if (this.state.redirect) {
-      return <Redirect push to={this.props.to} />
+      return <Redirect push to={this.props.to} />;
     }
 
-    let Element: any = this.props.as || 'a';
+    let Element: any = this.props.as || "a";
     let elementProps: LinkProps = Object.assign({}, this.props);
     delete elementProps["disablePropagation"];
     delete elementProps["disabled"];
@@ -146,17 +158,30 @@ export default class Link extends React.Component<LinkProps, LinkState> {
     delete elementProps["disableSmoothScroll"];
 
     if (
-      (
-        elementProps.href == null && Element === 'a' && typeof elementProps.tabIndex === "undefined"
-      ) ||
-      typeof elementProps.tabIndex === "undefined" && Element !== "a"
+      (elementProps.href == null &&
+        Element === "a" &&
+        typeof elementProps.tabIndex === "undefined") ||
+      (typeof elementProps.tabIndex === "undefined" && Element !== "a")
     ) {
       elementProps.tabIndex = 0;
     }
 
-    return <Element ref="element" {...elementProps} onKeyDown={this.onKeyDown}
-      className={(this.props.className || "") + (this.state.active ? " active" : "") + (this.props.disabled ? " disabled" : "")}
-      onClick={this.onClick} onTouchStart={this.onTouchStart} onTouchEnd={this.onTouchEnd} onTouchMove={this.onTouchMove} />
+    return (
+      <Element
+        ref="element"
+        {...elementProps}
+        onKeyDown={this.onKeyDown}
+        className={
+          (this.props.className || "") +
+          (this.state.active ? " active" : "") +
+          (this.props.disabled ? " disabled" : "")
+        }
+        onClick={this.onClick}
+        onTouchStart={this.onTouchStart}
+        onTouchEnd={this.onTouchEnd}
+        onTouchMove={this.onTouchMove}
+      />
+    );
   }
   getElement(): HTMLElement {
     return this.refs["element"] as HTMLElement;

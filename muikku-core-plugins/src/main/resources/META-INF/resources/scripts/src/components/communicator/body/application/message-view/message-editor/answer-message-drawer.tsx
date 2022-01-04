@@ -5,7 +5,7 @@ import { StateType } from "~/reducers";
 import { AnyActionType } from "~/actions/index";
 import {
   SendMessageTriggerType,
-  sendMessage,
+  sendMessage
 } from "~/actions/main-function/messages/index";
 import { MessageSignatureType } from "~/reducers/main-function/messages";
 import { ContactRecipientType } from "~/reducers/user-index";
@@ -18,9 +18,9 @@ import SessionStateComponent from "~/components/general/session-state-component"
 import promisify from "~/util/promisify";
 import mApi from "~/lib/mApi";
 
-import '~/sass/elements/form-elements.scss';
-import '~/sass/elements/form.scss';
-import '~/sass/elements/environment-dialog.scss';
+import "~/sass/elements/form-elements.scss";
+import "~/sass/elements/form.scss";
+import "~/sass/elements/environment-dialog.scss";
 
 interface AnswerMessageDrawerProps {
   replyThreadId?: number;
@@ -57,7 +57,7 @@ class AnswerMessageDrawer extends SessionStateComponent<
     super(
       props,
       "communicator-new-message" +
-      (props.extraNamespace ? "-" + props.extraNamespace : "")
+        (props.extraNamespace ? "-" + props.extraNamespace : "")
     );
 
     this.onCKEditorChange = this.onCKEditorChange.bind(this);
@@ -74,7 +74,7 @@ class AnswerMessageDrawer extends SessionStateComponent<
         selectedItems: props.initialSelectedItems || [],
         subject: props.initialSubject || "",
         locked: false,
-        includesSignature: true,
+        includesSignature: true
       },
       getStateIdentifier(props)
     );
@@ -90,7 +90,7 @@ class AnswerMessageDrawer extends SessionStateComponent<
         selectedItems: this.props.initialSelectedItems || [],
         subject: this.props.initialSubject || "",
         locked: false,
-        includesSignature: true,
+        includesSignature: true
       },
       getStateIdentifier(this.props)
     );
@@ -136,7 +136,7 @@ class AnswerMessageDrawer extends SessionStateComponent<
    */
   sendMessage() {
     this.setState({
-      locked: true,
+      locked: true
     });
     this.props.sendMessage({
       to: this.state.selectedItems,
@@ -144,9 +144,9 @@ class AnswerMessageDrawer extends SessionStateComponent<
       text:
         this.props.signature && this.state.includesSignature
           ? this.state.text +
-          '<i class="mf-signature">' +
-          this.props.signature.signature +
-          "</i>"
+            '<i class="mf-signature">' +
+            this.props.signature.signature +
+            "</i>"
           : this.state.text,
       success: () => {
         this.props.onClickCancel && this.props.onClickCancel();
@@ -159,17 +159,17 @@ class AnswerMessageDrawer extends SessionStateComponent<
             text: this.props.initialMessage || "",
             selectedItems: this.props.initialSelectedItems || [],
             subject: this.props.initialSubject || "",
-            locked: false,
+            locked: false
           },
           getStateIdentifier(this.props)
         );
       },
       fail: () => {
         this.setState({
-          locked: false,
+          locked: false
         });
       },
-      replyThreadId: this.props.replyThreadId,
+      replyThreadId: this.props.replyThreadId
     });
   }
 
@@ -193,7 +193,7 @@ class AnswerMessageDrawer extends SessionStateComponent<
         text: this.props.initialMessage || "",
         selectedItems: this.props.initialSelectedItems || [],
         subject: this.props.initialSubject || "",
-        locked: false,
+        locked: false
       },
       getStateIdentifier(this.props)
     );
@@ -208,17 +208,17 @@ class AnswerMessageDrawer extends SessionStateComponent<
       studentsLoader: (searchString: string) =>
         promisify(
           mApi().communicator.recipientsUsersSearch.read({
-            q: searchString,
+            q: searchString
           }),
           "callback"
         ),
       workspacesLoader: (searchString: string) =>
         promisify(
           mApi().communicator.recipientsWorkspacesSearch.read({
-            q: searchString,
+            q: searchString
           }),
           "callback"
-        ),
+        )
     };
   }
 
@@ -319,7 +319,7 @@ class AnswerMessageDrawer extends SessionStateComponent<
               <i
                 className="mf-signature"
                 dangerouslySetInnerHTML={{
-                  __html: this.props.signature.signature,
+                  __html: this.props.signature.signature
                 }}
               />
             </span>
@@ -367,14 +367,12 @@ class AnswerMessageDrawer extends SessionStateComponent<
         <section className="env-dialog__wrapper">
           <div className="env-dialog__content">
             <header className="env-dialog__header">
-              {this.props.i18n.text.get("plugin.communicator.answertomessage.label")}
+              {this.props.i18n.text.get(
+                "plugin.communicator.answertomessage.label"
+              )}
             </header>
-            <section className="env-dialog__body">
-              {content}
-            </section>
-            <footer className="env-dialog__footer">
-              {footer}
-            </footer>
+            <section className="env-dialog__body">{content}</section>
+            <footer className="env-dialog__footer">{footer}</footer>
           </div>
         </section>
       </div>
@@ -404,7 +402,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     signature: state.messages && state.messages.signature,
-    status: state.status,
+    status: state.status
   };
 }
 

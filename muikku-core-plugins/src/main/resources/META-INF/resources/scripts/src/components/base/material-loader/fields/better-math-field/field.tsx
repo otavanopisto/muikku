@@ -1,38 +1,46 @@
 import * as React from "react";
-import { MathFieldCommandType } from './toolbar';
+import { MathFieldCommandType } from "./toolbar";
 import { toSVG, loadMathJax, getMQInterface } from "~/lib/mathjax";
-import loadingImage from './loading-image';
-import warningImage from './warning-image';
+import loadingImage from "./loading-image";
+import warningImage from "./warning-image";
 
 const TIMEOUT_FOR_BLUR_EVENT = 10;
 const TIMEOUT_FOR_CANCELLING_BLUR = 300;
 
 interface FieldProps {
-  className?: string,
-  formulaClassName: string,
-  imageClassName: string,
-  editorClassName: string,
-  toolbarClassName: string,
-  value: string,
-  latexPlaceholderText: string,
-  onChange: (str: string) => any,
-  onBlur: () => any,
-  onFocus: () => any,
-  onLatexModeOpen: () => any,
-  onLatexModeClose: () => any,
-  readOnly?: boolean,
-  userId: number,
+  className?: string;
+  formulaClassName: string;
+  imageClassName: string;
+  editorClassName: string;
+  toolbarClassName: string;
+  value: string;
+  latexPlaceholderText: string;
+  onChange: (str: string) => any;
+  onBlur: () => any;
+  onFocus: () => any;
+  onLatexModeOpen: () => any;
+  onLatexModeClose: () => any;
+  readOnly?: boolean;
+  userId: number;
 }
 
-interface FieldState {
-}
+interface FieldState {}
 
-function checkIsParentOrSelf(element: HTMLElement, comparer: HTMLElement | string): boolean {
-  if (typeof comparer === "string" ? element && element.className.indexOf(comparer) !== -1 : element === comparer) {
+function checkIsParentOrSelf(
+  element: HTMLElement,
+  comparer: HTMLElement | string
+): boolean {
+  if (
+    typeof comparer === "string"
+      ? element && element.className.indexOf(comparer) !== -1
+      : element === comparer
+  ) {
     return true;
   }
 
-  return element.parentElement ? checkIsParentOrSelf(element.parentElement, comparer) : false;
+  return element.parentElement
+    ? checkIsParentOrSelf(element.parentElement, comparer)
+    : false;
 }
 
 export default class MathField extends React.Component<FieldProps, FieldState> {
@@ -70,7 +78,8 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     this.checkTheFocus = this.checkTheFocus.bind(this);
     this.onAceEditorFocus = this.onAceEditorFocus.bind(this);
     this.onAceEditorInput = this.onAceEditorInput.bind(this);
-    this.onDeleteSomethingInMathMode = this.onDeleteSomethingInMathMode.bind(this);
+    this.onDeleteSomethingInMathMode =
+      this.onDeleteSomethingInMathMode.bind(this);
     this.handleDrops = this.handleDrops.bind(this);
   }
   shouldComponentUpdate() {
@@ -85,9 +94,11 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     document.execCommand("enableObjectResizing", false, "false");
 
     if (!this.props.readOnly) {
-      document.body.addEventListener('click', this.handleAllClicks);
-    }else {
-      (this.refs.input as HTMLElement).classList.add("material-page__mathfield--readonly");
+      document.body.addEventListener("click", this.handleAllClicks);
+    } else {
+      (this.refs.input as HTMLElement).classList.add(
+        "material-page__mathfield--readonly"
+      );
     }
   }
   componentWillReceiveProps(nextProps: FieldProps) {
@@ -96,16 +107,18 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     }
 
     if (nextProps.readOnly !== this.props.readOnly) {
-
       if (nextProps.readOnly) {
-
-        (this.refs.input as HTMLElement).classList.add("material-page__mathfield--readonly");
+        (this.refs.input as HTMLElement).classList.add(
+          "material-page__mathfield--readonly"
+        );
         (this.refs.input as HTMLElement).removeAttribute("contentEditable");
-        document.body.removeEventListener('click', this.handleAllClicks);
+        document.body.removeEventListener("click", this.handleAllClicks);
       } else {
-        (this.refs.input as HTMLElement).classList.remove("material-page__mathfield--readonly");
+        (this.refs.input as HTMLElement).classList.remove(
+          "material-page__mathfield--readonly"
+        );
         (this.refs.input as HTMLElement).contentEditable = "true";
-        document.body.addEventListener('click', this.handleAllClicks);
+        document.body.addEventListener("click", this.handleAllClicks);
       }
     }
 
@@ -123,17 +136,24 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
 
     // straightforward process we find all the formulas and convert it to svg
     (this.refs.input as HTMLInputElement).innerHTML = this.value;
-    Array.from((this.refs.input as HTMLInputElement).querySelectorAll("." + this.props.formulaClassName)).forEach((element: HTMLElement) => {
+    Array.from(
+      (this.refs.input as HTMLInputElement).querySelectorAll(
+        "." + this.props.formulaClassName
+      )
+    ).forEach((element: HTMLElement) => {
       toSVG(element, warningImage, null, loadingImage);
     });
 
     this.imgUrls = [];
-    Array.from((this.refs.input as HTMLInputElement).querySelectorAll("img." + this.props.imageClassName)).forEach((element: HTMLImageElement) => {
+    Array.from(
+      (this.refs.input as HTMLInputElement).querySelectorAll(
+        "img." + this.props.imageClassName
+      )
+    ).forEach((element: HTMLImageElement) => {
       this.imgUrls.push(element.src);
     });
   }
   onFocusField(e: React.FocusEvent<any>) {
-
     if (this.isBlurDelayed) {
       this.cancelBlur = true;
     }
@@ -142,14 +162,20 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     // because blur lags when the selectedfield is open, we can use it to figure out if mathquill has the focus
     // and cancel the blur event, this would only active if I was on ace editor before
     let target = e.target;
-    if (this.selectedMathField && checkIsParentOrSelf(target as HTMLElement, this.selectedMathField.el())) {
+    if (
+      this.selectedMathField &&
+      checkIsParentOrSelf(target as HTMLElement, this.selectedMathField.el())
+    ) {
       this.isOnAceEditor = false;
     }
 
     // On focus field gets called every time the contenteditable gains focus
     // Because there might be elements inside the contenteditable like an image that represents an equation
     // we might check whether the element that allowed us to gain focus was a formula
-    if (this.lastMouseedDownElement && this.lastMouseedDownElement.className === this.props.formulaClassName) {
+    if (
+      this.lastMouseedDownElement &&
+      this.lastMouseedDownElement.className === this.props.formulaClassName
+    ) {
       let elem = this.lastMouseedDownElement;
       this.lastMouseedDownElement = null;
       // And we select it
@@ -174,14 +200,16 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
   calculateOutput() {
     const oldImgUrls = this.imgUrls;
     this.imgUrls = [];
-    this.value = Array.from((this.refs.input as HTMLDivElement).childNodes).map((node) => {
-      if (node.nodeType === Node.TEXT_NODE) {
-        return node.textContent;
-      } else if (node.nodeType === Node.COMMENT_NODE) {
-        return "";
-      }
-      return this.convertToText(node as HTMLElement);
-    }).join("");
+    this.value = Array.from((this.refs.input as HTMLDivElement).childNodes)
+      .map((node) => {
+        if (node.nodeType === Node.TEXT_NODE) {
+          return node.textContent;
+        } else if (node.nodeType === Node.COMMENT_NODE) {
+          return "";
+        }
+        return this.convertToText(node as HTMLElement);
+      })
+      .join("");
     this.findLostImages(oldImgUrls);
     return;
   }
@@ -194,22 +222,27 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
       if (!latex.startsWith("\\(")) {
         latex = "\\(" + latex + "\\)";
       }
-      return `<span class="${this.props.formulaClassName}">${latex}</span>`
+      return `<span class="${this.props.formulaClassName}">${latex}</span>`;
     }
     const isImg = node.tagName === "IMG";
-    const isRawImg = isImg && node.classList.contains(this.props.imageClassName);
+    const isRawImg =
+      isImg && node.classList.contains(this.props.imageClassName);
     if (isRawImg) {
       this.imgUrls.push((node as HTMLImageElement).src);
       return node.outerHTML;
     }
-    let kids = !isImg ? Array.from(node.childNodes).map((node) => {
-      if (node.nodeType === Node.TEXT_NODE) {
-        return node.textContent;
-      } else if (node.nodeType === Node.COMMENT_NODE) {
-        return "";
-      }
-      return this.convertToText(node as HTMLElement);
-    }).join("") : (node as HTMLImageElement).alt;
+    let kids = !isImg
+      ? Array.from(node.childNodes)
+          .map((node) => {
+            if (node.nodeType === Node.TEXT_NODE) {
+              return node.textContent;
+            } else if (node.nodeType === Node.COMMENT_NODE) {
+              return "";
+            }
+            return this.convertToText(node as HTMLElement);
+          })
+          .join("")
+      : (node as HTMLImageElement).alt;
 
     // add the delimiters if necessary
     if (isImg && (node as HTMLImageElement).alt && kids) {
@@ -222,7 +255,9 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
       return "";
     }
 
-    let tag = !(node as HTMLImageElement).alt ? node.tagName.toLowerCase() : "span";
+    let tag = !(node as HTMLImageElement).alt
+      ? node.tagName.toLowerCase()
+      : "span";
     let extras = "";
     if (node.className) {
       extras += ' class="' + node.className + '"';
@@ -255,7 +290,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
       this.unselect();
       (this.refs.input as HTMLElement).classList.remove("focused");
       this.props.onBlur();
-    }
+    };
 
     if (this.cancelBlur) {
       this.cancelBlur = false;
@@ -353,7 +388,10 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
         }
       } else {
         this.aceEditor.focus();
-        this.aceEditor.session.insert(this.aceEditor.getCursorPosition(), command.latexText);
+        this.aceEditor.session.insert(
+          this.aceEditor.getCursorPosition(),
+          command.latexText
+        );
       }
 
       // Trigger an onchange event as these are not figured by the contenteditable
@@ -362,13 +400,19 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     }
   }
   createNewLatex() {
-    document.execCommand("insertHTML", false, `<img class="${this.props.formulaClassName}"/>`);
-    let image: HTMLImageElement = (this.refs.input as HTMLDivElement).querySelector("img:not([alt]):not([src])") as HTMLImageElement;
+    document.execCommand(
+      "insertHTML",
+      false,
+      `<img class="${this.props.formulaClassName}"/>`
+    );
+    let image: HTMLImageElement = (
+      this.refs.input as HTMLDivElement
+    ).querySelector("img:not([alt]):not([src])") as HTMLImageElement;
     this.selectFormula(image);
   }
   async deleteImage(url: string) {
     return await fetch(url, {
-      method: "DELETE",
+      method: "DELETE"
     });
   }
   async insertImage(file: File) {
@@ -377,17 +421,22 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     formData.append("name", file.name);
     const result = await fetch("/rest/workspace/userfiles", {
       method: "POST",
-      body: formData,
+      body: formData
     });
 
     if (result.status === 200) {
       const fileNameAsStored = await result.text();
       const url = `/rest/workspace/userfiles/${this.props.userId}/file/${fileNameAsStored}`;
-      document.execCommand("insertHTML", false, `<img class="${this.props.imageClassName}" src="${url}"/>`);
+      document.execCommand(
+        "insertHTML",
+        false,
+        `<img class="${this.props.imageClassName}" src="${url}"/>`
+      );
     }
   }
   handleDrops(e: React.DragEvent) {
-    const file = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+    const file =
+      e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
     e.stopPropagation();
     e.preventDefault();
     if (file.type.startsWith("image")) {
@@ -395,7 +444,6 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     }
   }
   selectFormula(target: HTMLImageElement) {
-
     // Sometimes select formula might trigger with the same formula in that case
     // just cancel it out, this might happen eg, with the focus and handle all clicks that both
     // detect the event on first click
@@ -417,33 +465,40 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
 
     let selectedFormulaContentUndelimited = this.selectedFormula.alt || "";
     if (selectedFormulaContentUndelimited.startsWith("\\(")) {
-      selectedFormulaContentUndelimited = selectedFormulaContentUndelimited.substr(2);
+      selectedFormulaContentUndelimited =
+        selectedFormulaContentUndelimited.substr(2);
     }
     if (selectedFormulaContentUndelimited.endsWith("\\)")) {
-      selectedFormulaContentUndelimited = selectedFormulaContentUndelimited.substr(0, selectedFormulaContentUndelimited.length - 2);
+      selectedFormulaContentUndelimited =
+        selectedFormulaContentUndelimited.substr(
+          0,
+          selectedFormulaContentUndelimited.length - 2
+        );
     }
 
     // Now we do all this garbage of
     // creating the component by hand
-    this.selectedMathFieldContainer = document.createElement('div');
+    this.selectedMathFieldContainer = document.createElement("div");
     this.selectedMathFieldContainer.setAttribute("contenteditable", "false");
     this.selectedMathFieldContainer.className = this.props.editorClassName;
 
-    let newElement = document.createElement('span');
+    let newElement = document.createElement("span");
     newElement.textContent = selectedFormulaContentUndelimited;
 
-    let actualContainerForTheMathField = document.createElement('div');
-    actualContainerForTheMathField.className = this.props.editorClassName + "--formula-container";
+    let actualContainerForTheMathField = document.createElement("div");
+    actualContainerForTheMathField.className =
+      this.props.editorClassName + "--formula-container";
 
     actualContainerForTheMathField.appendChild(newElement);
     this.selectedMathFieldContainer.appendChild(actualContainerForTheMathField);
 
-    let editorContainer = document.createElement('div');
-    editorContainer.className = this.props.editorClassName + "--formula-text-editor";
+    let editorContainer = document.createElement("div");
+    editorContainer.className =
+      this.props.editorClassName + "--formula-text-editor";
 
-    let editor = document.createElement('div');
+    let editor = document.createElement("div");
     editor.style.position = "absolute";
-    editor.style.width = "100%"
+    editor.style.width = "100%";
     editor.style.height = "100%";
     editor.textContent = selectedFormulaContentUndelimited;
 
@@ -451,7 +506,10 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
 
     this.selectedMathFieldContainer.appendChild(editorContainer);
 
-    this.selectedFormula.parentElement.replaceChild(this.selectedMathFieldContainer, this.selectedFormula);
+    this.selectedFormula.parentElement.replaceChild(
+      this.selectedMathFieldContainer,
+      this.selectedFormula
+    );
 
     // Now we create the math field from the span in the middle
     this.selectedMathField = this.MQInterface().MathField(newElement);
@@ -493,13 +551,16 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     let shouldShow = !this.aceEditor.session.getValue().length;
     let node = this.aceEditor.renderer.emptyMessageNode;
     if (!shouldShow && node) {
-      this.aceEditor.renderer.scroller.removeChild(this.aceEditor.renderer.emptyMessageNode);
+      this.aceEditor.renderer.scroller.removeChild(
+        this.aceEditor.renderer.emptyMessageNode
+      );
       this.aceEditor.renderer.emptyMessageNode = null;
     } else if (shouldShow && !node) {
-      node = this.aceEditor.renderer.emptyMessageNode = document.createElement("div");
+      node = this.aceEditor.renderer.emptyMessageNode =
+        document.createElement("div");
       node.textContent = this.props.latexPlaceholderText;
-      node.className = "ace_invisible ace_emptyMessage"
-      node.style.padding = "0 9px"
+      node.className = "ace_invisible ace_emptyMessage";
+      node.style.padding = "0 9px";
       this.aceEditor.renderer.scroller.appendChild(node);
     }
   }
@@ -508,7 +569,10 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     let clickedTarget: HTMLElement = e.target as HTMLElement;
 
     // If we didn't click a formula  we need to check whether this is the field
-    let areWeInsideTheElement = checkIsParentOrSelf(clickedTarget, this.refs.input as HTMLElement);
+    let areWeInsideTheElement = checkIsParentOrSelf(
+      clickedTarget,
+      this.refs.input as HTMLElement
+    );
 
     // If this is the field
     if (areWeInsideTheElement) {
@@ -521,7 +585,9 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
         this.selectFormula(clickedTarget as HTMLImageElement);
       } else {
         // we might check wheter we are inside the formula editor
-        let areWeInsideFormulaEditor = this.selectedMathFieldContainer && checkIsParentOrSelf(clickedTarget, this.selectedMathFieldContainer);
+        let areWeInsideFormulaEditor =
+          this.selectedMathFieldContainer &&
+          checkIsParentOrSelf(clickedTarget, this.selectedMathFieldContainer);
 
         // if we are not, yet we clicked somewhere in the contenteditable
         // we just unselect it
@@ -549,21 +615,25 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
   }
   unselect(focusAfterImage?: boolean, selectAfterUnselect?: boolean) {
     if (this.selectedFormula) {
-
       let latex = this.selectedMathField.latex();
       if (latex.trim() === "") {
-        this.selectedMathFieldContainer.parentElement.removeChild(this.selectedMathFieldContainer);
+        this.selectedMathFieldContainer.parentElement.removeChild(
+          this.selectedMathFieldContainer
+        );
       } else {
-        this.selectedMathFieldContainer.parentElement.replaceChild(this.selectedFormula, this.selectedMathFieldContainer);
+        this.selectedMathFieldContainer.parentElement.replaceChild(
+          this.selectedFormula,
+          this.selectedMathFieldContainer
+        );
         if (this.changedSelected) {
           this.selectedFormula.alt = latex;
           let cb = (newImage: HTMLImageElement) => {
             if (focusAfterImage) {
               this.focus();
-              let range = document.createRange()
+              let range = document.createRange();
               range.setStartAfter(newImage);
-              const sel = window.getSelection()
-              sel.removeAllRanges()
+              const sel = window.getSelection();
+              sel.removeAllRanges();
               sel.addRange(range);
             }
           };
@@ -586,7 +656,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     }
   }
   componentWillUnmount() {
-    document.body.removeEventListener('click', this.handleAllClicks);
+    document.body.removeEventListener("click", this.handleAllClicks);
   }
   checkTheFocus(e: React.MouseEvent<any>) {
     if (this.props.readOnly) {
@@ -595,15 +665,18 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     this.lastMouseedDownElement = e.target as HTMLElement;
   }
   render() {
-    return <div className={this.props.className}
-      contentEditable={!this.props.readOnly}
-      spellCheck={false}
-      onFocus={this.onFocusField}
-      onDrop={this.handleDrops}
-      ref="input"
-      onBlur={this.onBlurField}
-      onInput={this.onChange}
-      onMouseDown={this.checkTheFocus}
-    />
+    return (
+      <div
+        className={this.props.className}
+        contentEditable={!this.props.readOnly}
+        spellCheck={false}
+        onFocus={this.onFocusField}
+        onDrop={this.handleDrops}
+        ref="input"
+        onBlur={this.onBlurField}
+        onInput={this.onChange}
+        onMouseDown={this.checkTheFocus}
+      />
+    );
   }
 }

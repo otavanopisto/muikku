@@ -41,7 +41,7 @@ export class SimpleActionExecutor {
     this.done();
   }
 
-  public failed() {
+  public failed() {
     this.executed++;
     this.fails++;
 

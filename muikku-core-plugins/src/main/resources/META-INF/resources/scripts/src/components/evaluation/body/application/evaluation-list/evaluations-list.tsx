@@ -12,7 +12,7 @@ import {
   SetEvaluationSelectedWorkspace,
   setSelectedWorkspaceId,
   SaveEvaluationSortFunction,
-  saveEvaluationSortFunctionToServer,
+  saveEvaluationSortFunctionToServer
 } from "~/actions/main-function/evaluation/evaluationActions";
 import { UpdateImportanceObject } from "~/@types/evaluation";
 import { i18nType } from "~/reducers/base/i18n";
@@ -68,7 +68,7 @@ export class EvaluationList extends React.Component<
          */
         const sortFunction: EvaluationSort = {
           key: sortKey,
-          value: "no-sort",
+          value: "no-sort"
         };
 
         this.props.saveEvaluationSortFunctionToServer({ sortFunction });
@@ -78,7 +78,7 @@ export class EvaluationList extends React.Component<
          */
         const sortFunction: EvaluationSort = {
           key: sortKey,
-          value: sortBy,
+          value: sortBy
         };
 
         this.props.saveEvaluationSortFunctionToServer({ sortFunction });
@@ -95,13 +95,13 @@ export class EvaluationList extends React.Component<
       evaluated,
       notEvaluated,
       assessmentRequest,
-      supplementationRequest,
+      supplementationRequest
     } = this.props.evaluations.evaluationFilters;
     const {
       importantRequests,
       unimportantRequests,
       evaluationSearch,
-      evaluationSort,
+      evaluationSort
     } = this.props.evaluations;
 
     let filteredAssessment = assessments;
@@ -344,7 +344,7 @@ export class EvaluationList extends React.Component<
     return [
       ...importantAssessmentSelected,
       ...notImportantNorUnimportant,
-      ...unimportantAssessmentSelected,
+      ...unimportantAssessmentSelected
     ];
   };
 
@@ -355,7 +355,7 @@ export class EvaluationList extends React.Component<
   handleUpdateImportance = (object: UpdateImportanceObject) => {
     this.props.updateImportance({
       importantAssessments: object.importantAssessments,
-      unimportantAssessments: object.unimportantAssessments,
+      unimportantAssessments: object.unimportantAssessments
     });
   };
 
@@ -383,7 +383,7 @@ export class EvaluationList extends React.Component<
       evaluationRequests,
       importantRequests,
       unimportantRequests,
-      selectedWorkspaceId,
+      selectedWorkspaceId
     } = this.props.evaluations;
 
     /**
@@ -511,7 +511,7 @@ const byDate = (ascending: boolean) => {
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    evaluations: state.evaluations,
+    evaluations: state.evaluations
   };
 }
 
@@ -525,7 +525,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
     {
       setSelectedWorkspaceId,
       updateImportance,
-      saveEvaluationSortFunctionToServer,
+      saveEvaluationSortFunctionToServer
     },
     dispatch
   );

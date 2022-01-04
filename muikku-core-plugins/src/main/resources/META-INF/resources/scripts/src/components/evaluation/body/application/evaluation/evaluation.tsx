@@ -10,7 +10,7 @@ import EvaluationAssessmentAssignment from "./evaluation-assessment-assignment";
 import {
   AssessmentRequest,
   EvaluationEnum,
-  EvaluationWorkspace,
+  EvaluationWorkspace
 } from "~/@types/evaluation";
 import EvaluationDiaryEvent from "./evaluation-diary-event";
 import WorkspaceEditor from "./editors/workspace-editor";
@@ -24,13 +24,13 @@ import {
   LoadEvaluationAssessmentRequest,
   LoadEvaluationAssessmentEvent,
   loadEvaluationAssessmentRequestsFromServer,
-  loadEvaluationAssessmentEventsFromServer,
+  loadEvaluationAssessmentEventsFromServer
 } from "~/actions/main-function/evaluation/evaluationActions";
 import "~/sass/elements/assignment.scss";
 import "~/sass/elements/empty.scss";
 import {
   MaterialCompositeRepliesType,
-  WorkspaceType,
+  WorkspaceType
 } from "~/reducers/workspaces";
 import Link from "~/components/general/link";
 
@@ -76,7 +76,7 @@ export const CKEditorConfig = (locale: string) => ({
   toolbar: [
     {
       name: "clipboard",
-      items: ["Cut", "Copy", "Paste", "-", "Undo", "Redo"],
+      items: ["Cut", "Copy", "Paste", "-", "Undo", "Redo"]
     },
     {
       name: "basicstyles",
@@ -88,8 +88,8 @@ export const CKEditorConfig = (locale: string) => ({
         "Subscript",
         "Superscript",
         "-",
-        "RemoveFormat",
-      ],
+        "RemoveFormat"
+      ]
     },
     "/",
     {
@@ -101,8 +101,8 @@ export const CKEditorConfig = (locale: string) => ({
         "Muikku-mathjax",
         "Table",
         "Smiley",
-        "SpecialChar",
-      ],
+        "SpecialChar"
+      ]
     },
     { name: "links", items: ["Link", "Unlink"] },
     { name: "colors", items: ["TextColor", "BGColor"] },
@@ -123,14 +123,14 @@ export const CKEditorConfig = (locale: string) => ({
         "JustifyBlock",
         "-",
         "BidiLtr",
-        "BidiRtl",
-      ],
+        "BidiRtl"
+      ]
     },
-    { name: "tools", items: ["Maximize"] },
+    { name: "tools", items: ["Maximize"] }
   ],
   removePlugins: "image,exportpdf",
   resize_enabled: true,
-  extraPlugins: "divarea,image2,muikku-mathjax",
+  extraPlugins: "divarea,image2,muikku-mathjax"
 });
 
 export class Evaluation extends React.Component<
@@ -153,7 +153,7 @@ export class Evaluation extends React.Component<
       openAllMaterialContent: false,
       listOfDiaryIds: [],
       listOfAssignmentIds: [],
-      diaryFetched: false,
+      diaryFetched: false
     };
   }
 
@@ -178,7 +178,7 @@ export class Evaluation extends React.Component<
 
       this.setState({
         diaryFetched: true,
-        listOfDiaryIds: numberList,
+        listOfDiaryIds: numberList
       });
     }
   }
@@ -255,7 +255,7 @@ export class Evaluation extends React.Component<
    */
   handleOpenWorkspaceEvaluationDrawer = () => {
     this.setState({
-      showWorkspaceEvaluationDrawer: true,
+      showWorkspaceEvaluationDrawer: true
     });
   };
 
@@ -267,11 +267,11 @@ export class Evaluation extends React.Component<
       this.setState({
         eventByIdOpened: undefined,
         edit: false,
-        showWorkspaceEvaluationDrawer: false,
+        showWorkspaceEvaluationDrawer: false
       });
     } else {
       this.setState({
-        showWorkspaceEvaluationDrawer: false,
+        showWorkspaceEvaluationDrawer: false
       });
     }
   };
@@ -281,7 +281,7 @@ export class Evaluation extends React.Component<
    */
   handleOpenWorkspaceSupplementationEvaluationDrawer = () => {
     this.setState({
-      showWorkspaceSupplemenationDrawer: true,
+      showWorkspaceSupplemenationDrawer: true
     });
   };
 
@@ -293,11 +293,11 @@ export class Evaluation extends React.Component<
       this.setState({
         eventByIdOpened: undefined,
         edit: false,
-        showWorkspaceSupplemenationDrawer: false,
+        showWorkspaceSupplemenationDrawer: false
       });
     } else {
       this.setState({
-        showWorkspaceSupplemenationDrawer: false,
+        showWorkspaceSupplemenationDrawer: false
       });
     }
   };
@@ -307,7 +307,7 @@ export class Evaluation extends React.Component<
    */
   handleOpenContent = () => {
     this.setState({
-      showContent: !this.state.showContent,
+      showContent: !this.state.showContent
     });
   };
 
@@ -316,7 +316,7 @@ export class Evaluation extends React.Component<
    */
   handleOpenArchiveStudentDialog = () => {
     this.setState({
-      archiveStudentDialog: true,
+      archiveStudentDialog: true
     });
   };
 
@@ -325,10 +325,10 @@ export class Evaluation extends React.Component<
    */
   handleCloseArchiveStudentDialog = () => {
     this.setState({
-      archiveStudentDialog: false,
+      archiveStudentDialog: false
     });
     this.props.loadEvaluationAssessmentEventsFromServer({
-      assessment: this.props.evaluation.evaluationSelectedAssessmentId,
+      assessment: this.props.evaluation.evaluationSelectedAssessmentId
     });
   };
 
@@ -343,13 +343,13 @@ export class Evaluation extends React.Component<
         this.setState({
           edit: true,
           showWorkspaceSupplemenationDrawer: true,
-          eventByIdOpened: eventId,
+          eventByIdOpened: eventId
         });
       } else {
         this.setState({
           edit: true,
           showWorkspaceEvaluationDrawer: true,
-          eventByIdOpened: eventId,
+          eventByIdOpened: eventId
         });
       }
     };
@@ -359,7 +359,7 @@ export class Evaluation extends React.Component<
    */
   handleCloseAllDiaryEntriesClick = () => {
     this.setState({
-      listOfDiaryIds: [],
+      listOfDiaryIds: []
     });
   };
 
@@ -376,7 +376,7 @@ export class Evaluation extends React.Component<
       );
 
       this.setState({
-        listOfDiaryIds: numberList,
+        listOfDiaryIds: numberList
       });
     }
   };
@@ -386,7 +386,7 @@ export class Evaluation extends React.Component<
    */
   handleCloseAllMaterialContentClick = () => {
     this.setState({
-      listOfAssignmentIds: [],
+      listOfAssignmentIds: []
     });
   };
 
@@ -404,7 +404,7 @@ export class Evaluation extends React.Component<
         );
 
       this.setState({
-        listOfAssignmentIds: numberList,
+        listOfAssignmentIds: numberList
       });
     }
   };
@@ -419,7 +419,7 @@ export class Evaluation extends React.Component<
     );
 
     this.setState({
-      listOfAssignmentIds,
+      listOfAssignmentIds
     });
   };
 
@@ -439,7 +439,7 @@ export class Evaluation extends React.Component<
     }
 
     this.setState({
-      listOfDiaryIds: updatedList,
+      listOfDiaryIds: updatedList
     });
   };
 
@@ -459,7 +459,7 @@ export class Evaluation extends React.Component<
     }
 
     this.setState({
-      listOfAssignmentIds: updatedList,
+      listOfAssignmentIds: updatedList
     });
   };
 
@@ -555,7 +555,7 @@ export class Evaluation extends React.Component<
       )
     ) {
       workspaces.push({
-        ...this.props.currentWorkspace,
+        ...this.props.currentWorkspace
       } as EvaluationWorkspace);
     }
 
@@ -844,7 +844,7 @@ function mapStateToProps(state: StateType) {
     i18n: state.i18n,
     status: state.status,
     evaluation: state.evaluations,
-    currentWorkspace: state.workspaces.currentWorkspace,
+    currentWorkspace: state.workspaces.currentWorkspace
   };
 }
 
@@ -856,7 +856,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     {
       loadEvaluationAssessmentRequestsFromServer,
-      loadEvaluationAssessmentEventsFromServer,
+      loadEvaluationAssessmentEventsFromServer
     },
     dispatch
   );

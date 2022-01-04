@@ -14,7 +14,7 @@ import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
 import {
   signupIntoWorkspace,
-  SignupIntoWorkspaceTriggerType,
+  SignupIntoWorkspaceTriggerType
 } from "~/actions/workspaces";
 import { bindActionCreators } from "redux";
 import { WorkspaceType } from "~/reducers/workspaces";
@@ -57,7 +57,7 @@ class WorkspaceSignupDialog extends React.Component<
     super(props);
     this.state = {
       locked: false,
-      message: "",
+      message: ""
     };
 
     this.updateMessage = this.updateMessage.bind(this);
@@ -88,7 +88,7 @@ class WorkspaceSignupDialog extends React.Component<
       fail: () => {
         this.setState({ locked: false });
       },
-      message: this.state.message,
+      message: this.state.message
     });
   }
 
@@ -181,7 +181,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     status: state.status,
-    currentWorkspace: state.workspaces.currentWorkspace,
+    currentWorkspace: state.workspaces.currentWorkspace
   };
 }
 

@@ -10,7 +10,7 @@ import { i18nType } from "~/reducers/base/i18n";
 import { DiscussionType, DiscussionThreadType } from "~/reducers/discussion";
 import {
   modifyDiscussionThread,
-  ModifyDiscussionThreadTriggerType,
+  ModifyDiscussionThreadTriggerType
 } from "~/actions/discussion";
 import { StateType } from "~/reducers";
 import SessionStateComponent from "~/components/general/session-state-component";
@@ -63,7 +63,7 @@ class ModifyThreadDrawer extends SessionStateComponent<
         title: props.thread.title,
         locked: false,
         threadPinned: props.thread.sticky,
-        threadLocked: props.thread.locked,
+        threadLocked: props.thread.locked
       },
       props.thread.id
     );
@@ -86,7 +86,7 @@ class ModifyThreadDrawer extends SessionStateComponent<
         text: this.props.thread.message,
         title: this.props.thread.title,
         threadPinned: this.props.thread.sticky,
-        threadLocked: this.props.thread.locked,
+        threadLocked: this.props.thread.locked
       },
       this.props.thread.id
     );
@@ -109,7 +109,7 @@ class ModifyThreadDrawer extends SessionStateComponent<
         text: this.props.thread.message,
         title: this.props.thread.title,
         threadPinned: this.props.thread.sticky,
-        threadLocked: this.props.thread.locked,
+        threadLocked: this.props.thread.locked
       },
       this.props.thread.id
     );
@@ -142,7 +142,7 @@ class ModifyThreadDrawer extends SessionStateComponent<
       },
       fail: () => {
         this.setState({ locked: false });
-      },
+      }
     });
   }
 
@@ -186,7 +186,7 @@ class ModifyThreadDrawer extends SessionStateComponent<
             text: nextProps.thread.message,
             title: nextProps.thread.title,
             threadPinned: nextProps.thread.sticky,
-            threadLocked: nextProps.thread.locked,
+            threadLocked: nextProps.thread.locked
           },
           nextProps.thread.id
         )
@@ -336,12 +336,8 @@ class ModifyThreadDrawer extends SessionStateComponent<
             <header className="env-dialog__header">
               {this.props.i18n.text.get("plugin.discussion.editmessage.topic")}
             </header>
-            <section className="env-dialog__body">
-              {content}
-            </section>
-            <footer className="env-dialog__footer">
-              {footer}
-            </footer>
+            <section className="env-dialog__body">{content}</section>
+            <footer className="env-dialog__footer">{footer}</footer>
           </div>
         </section>
       </div>
@@ -353,7 +349,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     discussion: state.discussion,
-    status: state.status,
+    status: state.status
   };
 }
 

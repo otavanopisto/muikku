@@ -6,7 +6,7 @@ import Avatar from "~/components/general/avatar";
 import {
   ApplicationListItem,
   ApplicationListItemContentWrapper,
-  ApplicationListItemContentData,
+  ApplicationListItemContentData
 } from "~/components/general/application-list";
 
 interface UserProps {

@@ -34,7 +34,7 @@ const defaultPagerV2Props = {
   containerClassName: "pager__body",
   pageClassName: "pager__item",
   activeClassName: "pager__item pager__item--current",
-  breakClassName: "pager__item pager__item--gap",
+  breakClassName: "pager__item pager__item--gap"
 };
 
 /**
@@ -82,7 +82,7 @@ const PagerV2: React.FC<PagerV2Props> = (props) => {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    i18n: state.i18n
   };
 }
 

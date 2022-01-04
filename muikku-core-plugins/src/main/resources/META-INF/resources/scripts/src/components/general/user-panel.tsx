@@ -9,13 +9,13 @@ import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import ApplicationList, {
   ApplicationListItem,
   ApplicationListItemContentWrapper,
-  ApplicationListItemContentData,
+  ApplicationListItemContentData
 } from "~/components/general/application-list";
 
 import "~/sass/elements/application-list.scss";
 import {
   UserPanelUsersType,
-  UsersListType,
+  UsersListType
 } from "~/reducers/main-function/users";
 import PagerV2 from "~/components/general/pagerV2";
 
@@ -60,7 +60,7 @@ export default class UserPanel extends React.Component<
     this.getToPage = this.getToPage.bind(this);
     this.state = {
       currentPage: 1,
-      pages: Math.ceil(this.props.users.totalHitCount / this.usersPerPage),
+      pages: Math.ceil(this.props.users.totalHitCount / this.usersPerPage)
     };
   }
 
@@ -75,7 +75,7 @@ export default class UserPanel extends React.Component<
       }
 
       this.setState({
-        pages: Math.ceil(this.props.users.totalHitCount / this.usersPerPage),
+        pages: Math.ceil(this.props.users.totalHitCount / this.usersPerPage)
       });
     }
   }
@@ -126,7 +126,7 @@ export default class UserPanel extends React.Component<
                   email: user.email,
                   id: user.id,
                   role: user.role ? user.role : "STUDENT",
-                  studyProgrammeIdentifier: user.studyProgrammeIdentifier,
+                  studyProgrammeIdentifier: user.studyProgrammeIdentifier
                 };
                 let actions =
                   data.role == "STUDENT" ? (

@@ -1,15 +1,32 @@
-import notificationActions from '~/actions/base/notifications';
-import promisify from '~/util/promisify';
-import mApi, { MApiError } from '~/lib/mApi';
-import { AnyActionType } from '~/actions';
-import { StateType } from '~/reducers';
-import { WorkspacesActiveFiltersType, WorkspacesType, WorkspacesStateType, WorkspacesPatchType, WorkspaceType, WorkspaceListType, WorkspaceJournalListType, WorkspaceUpdateType, organizationWorkspaces } from '~/reducers/workspaces';
+import notificationActions from "~/actions/base/notifications";
+import promisify from "~/util/promisify";
+import mApi, { MApiError } from "~/lib/mApi";
+import { AnyActionType } from "~/actions";
+import { StateType } from "~/reducers";
+import {
+  WorkspacesActiveFiltersType,
+  WorkspacesType,
+  WorkspacesStateType,
+  WorkspacesPatchType,
+  WorkspaceType,
+  WorkspaceListType,
+  WorkspaceJournalListType,
+  WorkspaceUpdateType,
+  organizationWorkspaces
+} from "~/reducers/workspaces";
 
 //HELPERS
 const MAX_LOADED_AT_ONCE = 26;
 const MAX_JOURNAL_LOADED_AT_ONCE = 10;
 
-export async function loadWorkspacesHelper(filters: WorkspacesActiveFiltersType | null, initial: boolean, refresh: boolean, loadOrganizationWorkspaces: boolean, dispatch: (arg: AnyActionType) => any, getState: () => StateType) {
+export async function loadWorkspacesHelper(
+  filters: WorkspacesActiveFiltersType | null,
+  initial: boolean,
+  refresh: boolean,
+  loadOrganizationWorkspaces: boolean,
+  dispatch: (arg: AnyActionType) => any,
+  getState: () => StateType
+) {
   let state: StateType = getState();
 
   // This "WorkspacesType" annoys me. It's used in the organization workspaces,
@@ -23,13 +40,20 @@ export async function loadWorkspacesHelper(filters: WorkspacesActiveFiltersType 
     workspaces = state.organizationWorkspaces;
   }
 
-  let hasEvaluationFees: boolean = state.userIndex &&
+  let hasEvaluationFees: boolean =
+    state.userIndex &&
     state.userIndex.usersBySchoolData[state.status.userSchoolDataIdentifier] &&
-    state.userIndex.usersBySchoolData[state.status.userSchoolDataIdentifier].hasEvaluationFees;
+    state.userIndex.usersBySchoolData[state.status.userSchoolDataIdentifier]
+      .hasEvaluationFees;
 
   //Avoid loading courses again for the first time if it's the same location
 
-  if (initial && filters === workspaces.activeFilters && workspaces.state === "READY" && !refresh) {
+  if (
+    initial &&
+    filters === workspaces.activeFilters &&
+    workspaces.state === "READY" &&
+    !refresh
+  ) {
     return;
   }
 
@@ -50,7 +74,7 @@ export async function loadWorkspacesHelper(filters: WorkspacesActiveFiltersType 
   let newWorkspacesPropsWhileLoading: WorkspacesPatchType = {
     state: workspacesNextstate,
     activeFilters: actualFilters
-  }
+  };
 
   if (!loadOrganizationWorkspaces === true) {
     dispatch({
@@ -79,13 +103,26 @@ export async function loadWorkspacesHelper(filters: WorkspacesActiveFiltersType 
   } else if (actualFilters.baseFilter === "UNPUBLISHED") {
     publicity = "ONLY_UNPUBLISHED";
     // When state filter has unpublished and published selected (this is possible in organization management)
-  } else if (loadOrganizationWorkspaces && actualFilters.stateFilters && actualFilters.stateFilters.includes("PUBLISHED") && actualFilters.stateFilters.includes("UNPUBLISHED")) {
+  } else if (
+    loadOrganizationWorkspaces &&
+    actualFilters.stateFilters &&
+    actualFilters.stateFilters.includes("PUBLISHED") &&
+    actualFilters.stateFilters.includes("UNPUBLISHED")
+  ) {
     publicity = "LIST_ALL";
     // When state filter has only unpublished selected (this is possible in organization management)
-  } else if (loadOrganizationWorkspaces && actualFilters.stateFilters && actualFilters.stateFilters.includes("UNPUBLISHED")) {
+  } else if (
+    loadOrganizationWorkspaces &&
+    actualFilters.stateFilters &&
+    actualFilters.stateFilters.includes("UNPUBLISHED")
+  ) {
     publicity = "ONLY_UNPUBLISHED";
     // When state filter has only published selected (this is possible in organization management)
-  } else if (loadOrganizationWorkspaces && actualFilters.stateFilters && actualFilters.stateFilters.includes("PUBLISHED")) {
+  } else if (
+    loadOrganizationWorkspaces &&
+    actualFilters.stateFilters &&
+    actualFilters.stateFilters.includes("PUBLISHED")
+  ) {
     publicity = "ONLY_PUBLISHED";
   } else if (loadOrganizationWorkspaces) {
     publicity = "LIST_ALL";
@@ -104,8 +141,8 @@ export async function loadWorkspacesHelper(filters: WorkspacesActiveFiltersType 
       educationTypes: actualFilters.educationFilters,
       curriculums: actualFilters.curriculumFilters,
       organizations: actualFilters.organizationFilters,
-      publicity,
-    }
+      publicity
+    };
   } else {
     params = {
       firstResult,
@@ -116,7 +153,7 @@ export async function loadWorkspacesHelper(filters: WorkspacesActiveFiltersType 
       curriculums: actualFilters.curriculumFilters,
       organizations: actualFilters.organizationFilters,
       publicity
-    }
+    };
   }
 
   if (actualFilters.query) {
@@ -124,11 +161,21 @@ export async function loadWorkspacesHelper(filters: WorkspacesActiveFiltersType 
   }
 
   try {
-
-    let nWorkspaces: WorkspaceListType = loadOrganizationWorkspaces ?
-      <WorkspaceListType>await promisify(mApi().organizationWorkspaceManagement.workspaces.cacheClear().read(params), 'callback')()
-      :
-      <WorkspaceListType>await promisify(mApi().coursepicker.workspaces.cacheClear().read(params), 'callback')();
+    let nWorkspaces: WorkspaceListType = loadOrganizationWorkspaces
+      ? <WorkspaceListType>(
+          await promisify(
+            mApi()
+              .organizationWorkspaceManagement.workspaces.cacheClear()
+              .read(params),
+            "callback"
+          )()
+        )
+      : <WorkspaceListType>(
+          await promisify(
+            mApi().coursepicker.workspaces.cacheClear().read(params),
+            "callback"
+          )()
+        );
 
     //TODO why in the world does the server return nothing rather than an empty array?
     //remove this hack fix the server side
@@ -145,9 +192,11 @@ export async function loadWorkspacesHelper(filters: WorkspacesActiveFiltersType 
 
     let payload: WorkspacesPatchType = {
       state: "READY",
-      availableWorkspaces: (concat ? workspaces.availableWorkspaces.concat(actualWorkspaces) : actualWorkspaces),
+      availableWorkspaces: concat
+        ? workspaces.availableWorkspaces.concat(actualWorkspaces)
+        : actualWorkspaces,
       hasMore
-    }
+    };
 
     //And there it goes
 
@@ -167,7 +216,12 @@ export async function loadWorkspacesHelper(filters: WorkspacesActiveFiltersType 
       throw err;
     }
     //Error :(
-    dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.coursepicker.errormessage.courseLoad"), 'error'));
+    dispatch(
+      notificationActions.displayNotification(
+        getState().i18n.text.get("plugin.coursepicker.errormessage.courseLoad"),
+        "error"
+      )
+    );
     dispatch({
       type: "UPDATE_WORKSPACES_STATE",
       payload: <WorkspacesStateType>"ERROR"
@@ -175,7 +229,12 @@ export async function loadWorkspacesHelper(filters: WorkspacesActiveFiltersType 
   }
 }
 
-export async function loadCurrentWorkspaceJournalsHelper(userEntityId: number | null, initial: boolean, dispatch: (arg: AnyActionType) => any, getState: () => StateType) {
+export async function loadCurrentWorkspaceJournalsHelper(
+  userEntityId: number | null,
+  initial: boolean,
+  dispatch: (arg: AnyActionType) => any,
+  getState: () => StateType
+) {
   let state: StateType = getState();
   let currentWorkspace = state.workspaces.currentWorkspace;
 
@@ -189,7 +248,9 @@ export async function loadCurrentWorkspaceJournalsHelper(userEntityId: number | 
     journalNextstate = "LOADING_MORE";
   }
 
-  const currentJournals = currentWorkspace.journals ? currentWorkspace.journals.journals : [];
+  const currentJournals = currentWorkspace.journals
+    ? currentWorkspace.journals.journals
+    : [];
   dispatch({
     type: "UPDATE_WORKSPACE",
     payload: {
@@ -197,7 +258,9 @@ export async function loadCurrentWorkspaceJournalsHelper(userEntityId: number | 
       update: {
         journals: {
           journals: currentJournals,
-          hasMore: (currentWorkspace.journals && currentWorkspace.journals.hasMore) || false,
+          hasMore:
+            (currentWorkspace.journals && currentWorkspace.journals.hasMore) ||
+            false,
           userEntityId,
           state: journalNextstate
         }
@@ -208,17 +271,25 @@ export async function loadCurrentWorkspaceJournalsHelper(userEntityId: number | 
   let workspaceId = currentWorkspace.id;
 
   let params: any = {
-    firstResult: initial ? 0 : (currentWorkspace.journals && currentWorkspace.journals.journals.length || 0),
+    firstResult: initial
+      ? 0
+      : (currentWorkspace.journals &&
+          currentWorkspace.journals.journals.length) ||
+        0,
     maxResults: MAX_JOURNAL_LOADED_AT_ONCE + 1
-  }
+  };
 
   if (userEntityId) {
     params.userEntityId = userEntityId;
   }
 
   try {
-    let journals: WorkspaceJournalListType =
-      <WorkspaceJournalListType>await promisify(mApi().workspace.workspaces.journal.read(workspaceId, params), 'callback')();
+    let journals: WorkspaceJournalListType = <WorkspaceJournalListType>(
+      await promisify(
+        mApi().workspace.workspaces.journal.read(workspaceId, params),
+        "callback"
+      )()
+    );
 
     //update current workspace again in case
     currentWorkspace = getState().workspaces.currentWorkspace;
@@ -238,7 +309,9 @@ export async function loadCurrentWorkspaceJournalsHelper(userEntityId: number | 
         original: currentWorkspace,
         update: {
           journals: {
-            journals: concat ? currentJournals.concat(actualJournals) : actualJournals,
+            journals: concat
+              ? currentJournals.concat(actualJournals)
+              : actualJournals,
             hasMore,
             userEntityId,
             state: <WorkspacesStateType>"READY"
@@ -254,15 +327,27 @@ export async function loadCurrentWorkspaceJournalsHelper(userEntityId: number | 
     currentWorkspace = getState().workspaces.currentWorkspace;
 
     //Error :(
-    dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.workspace.journal.notification.viewLoadError"), 'error'));
+    dispatch(
+      notificationActions.displayNotification(
+        getState().i18n.text.get(
+          "plugin.workspace.journal.notification.viewLoadError"
+        ),
+        "error"
+      )
+    );
     dispatch({
       type: "UPDATE_WORKSPACE",
       payload: {
         original: currentWorkspace,
         update: {
           journals: {
-            journals: currentWorkspace.journals ? currentWorkspace.journals.journals : [],
-            hasMore: (currentWorkspace.journals && currentWorkspace.journals.hasMore) || false,
+            journals: currentWorkspace.journals
+              ? currentWorkspace.journals.journals
+              : [],
+            hasMore:
+              (currentWorkspace.journals &&
+                currentWorkspace.journals.hasMore) ||
+              false,
             userEntityId,
             state: <WorkspacesStateType>"ERROR"
           }
@@ -271,4 +356,3 @@ export async function loadCurrentWorkspaceJournalsHelper(userEntityId: number | 
     });
   }
 }
-

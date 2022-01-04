@@ -8,12 +8,12 @@ import mApi from "~/lib/mApi";
 import { ProfileType } from "~/reducers/main-function/profile";
 import {
   loadProfileUsername,
-  LoadProfileUsernameTriggerType,
+  LoadProfileUsernameTriggerType
 } from "~/actions/main-function/profile";
 import { bindActionCreators, Dispatch } from "redux";
 import {
   displayNotification,
-  DisplayNotificationTriggerType,
+  DisplayNotificationTriggerType
 } from "~/actions/base/notifications";
 
 /**
@@ -54,7 +54,7 @@ class Security extends React.Component<SecurityProps, SecurityState> {
       oldPassword: "",
       newPassword: "",
       newPasswordConfirm: "",
-      locked: false,
+      locked: false
     };
 
     this.update = this.update.bind(this);
@@ -71,7 +71,7 @@ class Security extends React.Component<SecurityProps, SecurityState> {
       nextProps.profile.username !== this.state.username
     ) {
       this.setState({
-        username: nextProps.profile.username,
+        username: nextProps.profile.username
       });
     }
   }
@@ -104,20 +104,20 @@ class Security extends React.Component<SecurityProps, SecurityState> {
     }
 
     this.setState({
-      locked: true,
+      locked: true
     });
 
     let values = {
       oldPassword: this.state.oldPassword,
       username: this.state.username,
-      newPassword: this.state.newPassword,
+      newPassword: this.state.newPassword
     };
 
     mApi()
       .userplugin.credentials.update(values)
       .callback((err: any, result: any) => {
         this.setState({
-          locked: false,
+          locked: false
         });
 
         if (err) {
@@ -297,7 +297,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     profile: state.profile,
-    status: state.status,
+    status: state.status
   };
 }
 

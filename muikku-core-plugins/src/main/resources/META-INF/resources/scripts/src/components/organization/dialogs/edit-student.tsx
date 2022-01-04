@@ -6,11 +6,11 @@ import {
   EmailFormElement,
   InputFormElement,
   SSNFormElement,
-  SelectFormElement,
+  SelectFormElement
 } from "~/components/general/form-element";
 import {
   updateStudent,
-  UpdateStudentTriggerType,
+  UpdateStudentTriggerType
 } from "~/actions/main-function/users";
 import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
@@ -54,14 +54,14 @@ class OrganizationUser extends React.Component<
         firstName: this.props.data.firstName,
         lastName: this.props.data.lastName,
         email: this.props.data.email,
-        SSN: this.props.data.ssn,
+        SSN: this.props.data.ssn
       },
       locked: false,
       editUser: false,
       firstNameValid: 2,
       lastNameValid: 2,
       emailValid: 2,
-      studyProgrammeIdentifierValid: 2,
+      studyProgrammeIdentifierValid: 2
     };
     this.updateField = this.updateField.bind(this);
     this.saveUser = this.saveUser.bind(this);
@@ -80,7 +80,7 @@ class OrganizationUser extends React.Component<
       firstNameValid: 2,
       lastNameValid: 2,
       emailValid: 2,
-      studyProgrammeIdentifierValid: 2,
+      studyProgrammeIdentifierValid: 2
     });
     closeDialog();
   }
@@ -89,7 +89,7 @@ class OrganizationUser extends React.Component<
     let valid = true;
 
     this.setState({
-      locked: true,
+      locked: true
     });
 
     if (
@@ -130,7 +130,7 @@ class OrganizationUser extends React.Component<
         lastName: this.state.user.lastName,
         email: this.state.user.email,
         ssn: this.state.user.ssn,
-        studyProgrammeIdentifier: this.state.user.studyProgrammeIdentifier,
+        studyProgrammeIdentifier: this.state.user.studyProgrammeIdentifier
       };
 
       this.props.updateStudent({
@@ -142,12 +142,12 @@ class OrganizationUser extends React.Component<
             firstNameValid: 2,
             lastNameValid: 2,
             emailValid: 2,
-            studyProgrammeIdentifierValid: 2,
+            studyProgrammeIdentifierValid: 2
           });
         },
         fail: () => {
           closeDialog();
-        },
+        }
       });
     }
   }
@@ -257,7 +257,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     status: state.status,
-    studyprogrammes: state.studyprogrammes,
+    studyprogrammes: state.studyprogrammes
   };
 }
 

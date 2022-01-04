@@ -1,10 +1,18 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators, Dispatch } from "redux";
-import { InsertProfileWorklistItemTriggerType, insertProfileWorklistItem, loadProfileWorklistSection, LoadProfileWorklistSectionTriggerType } from "~/actions/main-function/profile";
+import {
+  InsertProfileWorklistItemTriggerType,
+  insertProfileWorklistItem,
+  loadProfileWorklistSection,
+  LoadProfileWorklistSectionTriggerType
+} from "~/actions/main-function/profile";
 import { StateType } from "~/reducers";
 import { i18nType } from "~/reducers/base/i18n";
-import { ProfileType, WorklistTemplate } from "~/reducers/main-function/profile";
+import {
+  ProfileType,
+  WorklistTemplate
+} from "~/reducers/main-function/profile";
 import WorkListEditable from "./components/work-list-editable";
 import moment from "~/lib/moment";
 import { StatusType } from "~/reducers/base/status";
@@ -18,9 +26,9 @@ const daysInCurrentMonth = today.date();
 const currentMonthDayLimit: number = 10;
 
 interface IWorkListProps {
-  i18n: i18nType,
-  profile: ProfileType,
-  status: StatusType,
+  i18n: i18nType;
+  profile: ProfileType;
+  status: StatusType;
   insertProfileWorklistItem: InsertProfileWorklistItemTriggerType;
   loadProfileWorklistSection: LoadProfileWorklistSectionTriggerType;
 }
@@ -36,8 +44,8 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
 
     this.state = {
       currentTemplate: null,
-      openedSections: [],
-    }
+      openedSections: []
+    };
 
     this.insertNew = this.insertNew.bind(this);
     this.toggleSection = this.toggleSection.bind(this);
@@ -45,9 +53,13 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
   }
 
   public componentDidUpdate(prevProps: IWorkListProps) {
-    if (!this.state.currentTemplate && this.props.profile.worklistTemplates !== prevProps.profile.worklistTemplates) {
+    if (
+      !this.state.currentTemplate &&
+      this.props.profile.worklistTemplates !==
+        prevProps.profile.worklistTemplates
+    ) {
       this.setState({
-        currentTemplate: this.props.profile.worklistTemplates[0],
+        currentTemplate: this.props.profile.worklistTemplates[0]
       });
     }
 
@@ -76,7 +88,7 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
         description: data.description,
         billingNumber: data.billingNumber,
         success: () => resolve(true),
-        fail: () => resolve(false),
+        fail: () => resolve(false)
       });
     });
   }
@@ -92,86 +104,118 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
 
     this.props.loadProfileWorklistSection(index);
     const sectionToOpen = this.props.profile.worklist[index];
-    const hasItInIt = this.state.openedSections.some((n) => n === sectionToOpen.summary.beginDate);
+    const hasItInIt = this.state.openedSections.some(
+      (n) => n === sectionToOpen.summary.beginDate
+    );
     if (!hasItInIt) {
       this.setState({
-        openedSections: [...this.state.openedSections, sectionToOpen.summary.beginDate],
+        openedSections: [
+          ...this.state.openedSections,
+          sectionToOpen.summary.beginDate
+        ]
       });
     } else {
       this.setState({
-        openedSections: this.state.openedSections.filter((s) => s !== sectionToOpen.summary.beginDate),
+        openedSections: this.state.openedSections.filter(
+          (s) => s !== sectionToOpen.summary.beginDate
+        )
       });
     }
   }
 
   public onSelect(e: React.ChangeEvent<HTMLSelectElement>) {
-    const newTemplate = this.props.profile.worklistTemplates.find((t) => t.id.toString() === e.target.value);
+    const newTemplate = this.props.profile.worklistTemplates.find(
+      (t) => t.id.toString() === e.target.value
+    );
     this.setState({
-      currentTemplate: newTemplate,
+      currentTemplate: newTemplate
     });
   }
 
   public render() {
-    if (this.props.profile.location !== "work" || !this.props.status.permissions.WORKLIST_AVAILABLE) {
+    if (
+      this.props.profile.location !== "work" ||
+      !this.props.status.permissions.WORKLIST_AVAILABLE
+    ) {
       return null;
     }
 
     // let's get the first day of the previous month
-    const previousMonthsFirstDay = moment().subtract(1, 'months').startOf("month");
+    const previousMonthsFirstDay = moment()
+      .subtract(1, "months")
+      .startOf("month");
 
     // let's get the first day of the current month
     const currentMonthsFirstDay = moment().startOf("month");
 
-    const sections = (
+    const sections =
+      this.props.profile.worklist &&
+      this.props.profile.worklist.map((section, index) => {
+        return (
+          <WorkListSection
+            currentMonthDayLimit={currentMonthDayLimit}
+            currentMonthsFirstDay={currentMonthsFirstDay}
+            daysInCurrentMonth={daysInCurrentMonth}
+            i18n={this.props.i18n}
+            isExpanded={this.state.openedSections.includes(
+              section.summary.beginDate
+            )}
+            onToggleSection={this.toggleSection.bind(this, index)}
+            previousMonthsFirstDay={previousMonthsFirstDay}
+            section={section}
+            key={section.summary.beginDate}
+          />
+        );
+      });
 
-      this.props.profile.worklist && this.props.profile.worklist.map((section, index) => {
-        return <WorkListSection
-          currentMonthDayLimit={currentMonthDayLimit}
-          currentMonthsFirstDay={currentMonthsFirstDay}
-          daysInCurrentMonth={daysInCurrentMonth}
-          i18n={this.props.i18n}
-          isExpanded={this.state.openedSections.includes(section.summary.beginDate)}
-          onToggleSection={this.toggleSection.bind(this, index)}
-          previousMonthsFirstDay={previousMonthsFirstDay}
-          section={section}
-          key={section.summary.beginDate}
-        />
-      })
-    );
-
-    return <section>
-      <form onSubmit={this.onFormSubmit}>
-        <h2 className="application-panel__content-header">{this.props.i18n.text.get('plugin.profile.titles.worklist')}</h2>
-        <div className="application-sub-panel application-sub-panel--worklist">
-          <h3 className="application-sub-panel__header">{this.props.i18n.text.get('plugin.profile.worklist.addNewEntry')}</h3>
-          <div className="application-sub-panel__body">
-            <WorkListEditable
-              base={this.state.currentTemplate}
-              currentMonthDayLimit={currentMonthDayLimit}
-              onSubmit={this.insertNew}
-              isEditMode={false}
-              resetOnSubmit={true}>
-              <select
-                className="form-element__select form-element__select--worklist-template"
-                value={(this.state.currentTemplate && this.state.currentTemplate.id) || ""}
-                onChange={this.onSelect}>
-                {this.props.profile.worklistTemplates && this.props.profile.worklistTemplates.map((v) => {
-                  return (
-                    <option value={v.id} key={v.id}>
-                      {v.description}
-                    </option>
-                  );
-                })}
-              </select>
-            </WorkListEditable>
+    return (
+      <section>
+        <form onSubmit={this.onFormSubmit}>
+          <h2 className="application-panel__content-header">
+            {this.props.i18n.text.get("plugin.profile.titles.worklist")}
+          </h2>
+          <div className="application-sub-panel application-sub-panel--worklist">
+            <h3 className="application-sub-panel__header">
+              {this.props.i18n.text.get("plugin.profile.worklist.addNewEntry")}
+            </h3>
+            <div className="application-sub-panel__body">
+              <WorkListEditable
+                base={this.state.currentTemplate}
+                currentMonthDayLimit={currentMonthDayLimit}
+                onSubmit={this.insertNew}
+                isEditMode={false}
+                resetOnSubmit={true}
+              >
+                <select
+                  className="form-element__select form-element__select--worklist-template"
+                  value={
+                    (this.state.currentTemplate &&
+                      this.state.currentTemplate.id) ||
+                    ""
+                  }
+                  onChange={this.onSelect}
+                >
+                  {this.props.profile.worklistTemplates &&
+                    this.props.profile.worklistTemplates.map((v) => {
+                      return (
+                        <option value={v.id} key={v.id}>
+                          {v.description}
+                        </option>
+                      );
+                    })}
+                </select>
+              </WorkListEditable>
+            </div>
           </div>
-        </div>
-        <div className="application-sub-panel__panels-wrapper">
-          <h3 className="application-sub-panel__header">{this.props.i18n.text.get('plugin.profile.worklist.addedEntries')}</h3>
-          {sections && sections.reverse()}
-        </div>
-      </form>
-    </section>;
+          <div className="application-sub-panel__panels-wrapper">
+            <h3 className="application-sub-panel__header">
+              {this.props.i18n.text.get("plugin.profile.worklist.addedEntries")}
+            </h3>
+            {sections && sections.reverse()}
+          </div>
+        </form>
+      </section>
+    );
   }
 }
 
@@ -179,15 +223,15 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     profile: state.profile,
-    status: state.status,
-  }
-};
+    status: state.status
+  };
+}
 
 function mapDispatchToProps(dispatch: Dispatch<any>) {
-  return bindActionCreators({ insertProfileWorklistItem, loadProfileWorklistSection }, dispatch);
-};
+  return bindActionCreators(
+    { insertProfileWorklistItem, loadProfileWorklistSection },
+    dispatch
+  );
+}
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(WorkList);
+export default connect(mapStateToProps, mapDispatchToProps)(WorkList);

@@ -8,11 +8,11 @@ import {
   MaterialContentNodeType,
   WorkspaceType,
   MaterialCompositeRepliesType,
-  WorkspaceEditModeStateType,
+  WorkspaceEditModeStateType
 } from "~/reducers/workspaces";
 import {
   setCurrentWorkspace,
-  SetCurrentWorkspaceTriggerType,
+  SetCurrentWorkspaceTriggerType
 } from "~/actions/workspaces";
 import { bindActionCreators } from "redux";
 import { MaterialLoaderEditorButtonSet } from "~/components/base/material-loader/editor-buttonset";
@@ -53,7 +53,7 @@ class WorkspaceMaterial extends React.Component<
     //to refresh the activity and that's because we are forcing it to do so
     this.props.setCurrentWorkspace({
       workspaceId: this.props.workspace.id,
-      refreshActivity: true,
+      refreshActivity: true
     });
   }
   render() {
@@ -133,7 +133,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     workspaceEditMode: state.workspaces.editMode,
-    status: state.status,
+    status: state.status
   };
 }
 

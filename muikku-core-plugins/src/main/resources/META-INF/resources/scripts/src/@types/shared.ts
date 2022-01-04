@@ -45,7 +45,7 @@ export type attendanceStatus = "ENROLLED" | "FINISHED" | "PLANNED";
 export enum ExaminationFunding {
   SELF_FUNDED = "SELF_FUNDED",
   COMPULSORYEDUCATION_FREE = "COMPULSORYEDUCATION_FREE",
-  COMPULSORYEDUCATION_FREE_RETRY = "COMPULSORYEDUCATION_FREE_RETRY",
+  COMPULSORYEDUCATION_FREE_RETRY = "COMPULSORYEDUCATION_FREE_RETRY"
 }
 
 /**
@@ -53,7 +53,7 @@ export enum ExaminationFunding {
  */
 export enum ExamEnrollmentDegreeStructure {
   PRE2022 = "PRE2022",
-  POST2022 = "POST2022",
+  POST2022 = "POST2022"
 }
 
 /**
@@ -75,7 +75,7 @@ export interface ExaminationSubject {
  */
 export interface ExaminationInformation
   extends MatriculationStudent,
-  MatriculationStudentExamination {
+    MatriculationStudentExamination {
   date: string;
 }
 

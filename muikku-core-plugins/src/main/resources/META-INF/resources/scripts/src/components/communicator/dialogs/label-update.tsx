@@ -1,46 +1,57 @@
-import * as React from 'react';
-import Dialog from '~/components/general/dialog';
-import Link from '~/components/general/link';
-import {updateMessagesNavigationLabel, removeMessagesNavigationLabel, UpdateMessagesNavigationLabelTriggerType, RemoveMessagesNavigationLabelTriggerType} from '~/actions/main-function/messages';
-import { MessagesType, MessagesNavigationItemType } from '~/reducers/main-function/messages';
-import {connect, Dispatch} from 'react-redux';
-import {bindActionCreators} from 'redux';
+import * as React from "react";
+import Dialog from "~/components/general/dialog";
+import Link from "~/components/general/link";
+import {
+  updateMessagesNavigationLabel,
+  removeMessagesNavigationLabel,
+  UpdateMessagesNavigationLabelTriggerType,
+  RemoveMessagesNavigationLabelTriggerType
+} from "~/actions/main-function/messages";
+import {
+  MessagesType,
+  MessagesNavigationItemType
+} from "~/reducers/main-function/messages";
+import { connect, Dispatch } from "react-redux";
+import { bindActionCreators } from "redux";
 import { ChromePicker, ColorState } from "react-color";
-import {AnyActionType} from '~/actions';
-import {i18nType } from '~/reducers/base/i18n';
-import {StateType} from '~/reducers';
+import { AnyActionType } from "~/actions";
+import { i18nType } from "~/reducers/base/i18n";
+import { StateType } from "~/reducers";
 
-import '~/sass/elements/form-elements.scss';
-import '~/sass/elements/form.scss';
-import Button from '~/components/general/button';
-import '~/sass/elements/glyph.scss';
-import '~/sass/elements/color-picker.scss';
+import "~/sass/elements/form-elements.scss";
+import "~/sass/elements/form.scss";
+import Button from "~/components/general/button";
+import "~/sass/elements/glyph.scss";
+import "~/sass/elements/color-picker.scss";
 
 const KEYCODES = {
   ENTER: 13
-}
+};
 
 interface CommunicatorLabelUpdateDialogProps {
-  children: React.ReactElement<any>,
-  label: MessagesNavigationItemType,
-  isOpen?: boolean,
-  onClose?: ()=>any,
-  i18n: i18nType,
-  messages: MessagesType,
-  updateMessagesNavigationLabel: UpdateMessagesNavigationLabelTriggerType,
-  removeMessagesNavigationLabel: RemoveMessagesNavigationLabelTriggerType
+  children: React.ReactElement<any>;
+  label: MessagesNavigationItemType;
+  isOpen?: boolean;
+  onClose?: () => any;
+  i18n: i18nType;
+  messages: MessagesType;
+  updateMessagesNavigationLabel: UpdateMessagesNavigationLabelTriggerType;
+  removeMessagesNavigationLabel: RemoveMessagesNavigationLabelTriggerType;
 }
 
 interface CommunicatorLabelUpdateDialogState {
-  displayColorPicker: boolean,
-  color: string,
-  name: string,
-  removed: boolean,
-  locked: boolean
+  displayColorPicker: boolean;
+  color: string;
+  name: string;
+  removed: boolean;
+  locked: boolean;
 }
 
-class CommunicatorLabelUpdateDialog extends React.Component<CommunicatorLabelUpdateDialogProps, CommunicatorLabelUpdateDialogState> {
-  constructor(props: CommunicatorLabelUpdateDialogProps){
+class CommunicatorLabelUpdateDialog extends React.Component<
+  CommunicatorLabelUpdateDialogProps,
+  CommunicatorLabelUpdateDialogState
+> {
+  constructor(props: CommunicatorLabelUpdateDialogProps) {
     super(props);
 
     this.onColorChange = this.onColorChange.bind(this);
@@ -58,55 +69,63 @@ class CommunicatorLabelUpdateDialog extends React.Component<CommunicatorLabelUpd
       name: props.label.text(props.i18n),
       removed: false,
       locked: false
-    }
+    };
   }
   onHandleClick = () => {
-    this.setState({ displayColorPicker: !this.state.displayColorPicker })
-  }
+    this.setState({ displayColorPicker: !this.state.displayColorPicker });
+  };
   onHandleClose = () => {
-    this.setState({ displayColorPicker: false })
-  }
-  handleKeydown(code: number, closeDialog: ()=>any){
-    if (code === KEYCODES.ENTER){
+    this.setState({ displayColorPicker: false });
+  };
+  handleKeydown(code: number, closeDialog: () => any) {
+    if (code === KEYCODES.ENTER) {
       this.update(closeDialog);
     }
   }
-  componentWillReceiveProps(nextProps: CommunicatorLabelUpdateDialogProps){
-    if (nextProps.label.id !== this.props.label.id){
+  componentWillReceiveProps(nextProps: CommunicatorLabelUpdateDialogProps) {
+    if (nextProps.label.id !== this.props.label.id) {
       this.resetState(null, nextProps);
     }
   }
-  resetState(e:HTMLElement, props=this.props):void{
-    this.setState({color: props.label.color, removed: false, name: props.label.text(props.i18n)});
+  resetState(e: HTMLElement, props = this.props): void {
+    this.setState({
+      color: props.label.color,
+      removed: false,
+      name: props.label.text(props.i18n)
+    });
   }
-  onColorChange(color: ColorState){
-    if (this.state.removed){
+  onColorChange(color: ColorState) {
+    if (this.state.removed) {
       return;
     }
-    this.setState({color: color.hex});
+    this.setState({ color: color.hex });
   }
-  onNameChange(e: React.ChangeEvent<HTMLInputElement>){
-    this.setState({name: e.target.value});
+  onNameChange(e: React.ChangeEvent<HTMLInputElement>) {
+    this.setState({ name: e.target.value });
   }
-  removeLabel(){
-    this.setState({removed: true});
+  removeLabel() {
+    this.setState({ removed: true });
   }
-  update(closeDialog: ()=>any){
-    if (this.state.locked){
+  update(closeDialog: () => any) {
+    if (this.state.locked) {
       return;
     }
-    let success = ()=>{
+    let success = () => {
       this.setState({
         locked: false
       });
       closeDialog();
-    }
-    let fail = ()=>{
+    };
+    let fail = () => {
       this.setState({
         locked: false
       });
-    }
-    if ((this.state.name !== this.props.label.text(this.props.i18n) || this.state.color !== this.props.label.color) && !this.state.removed){
+    };
+    if (
+      (this.state.name !== this.props.label.text(this.props.i18n) ||
+        this.state.color !== this.props.label.color) &&
+      !this.state.removed
+    ) {
       this.setState({
         locked: true
       });
@@ -114,75 +133,152 @@ class CommunicatorLabelUpdateDialog extends React.Component<CommunicatorLabelUpd
         label: this.props.label,
         newName: this.state.name,
         newColor: this.state.color,
-        success, fail
+        success,
+        fail
       });
-    } else if (this.state.removed){
+    } else if (this.state.removed) {
       this.setState({
         locked: true
       });
       this.props.removeMessagesNavigationLabel({
         label: this.props.label,
-        success, fail
+        success,
+        fail
       });
     } else {
       closeDialog();
     }
   }
-  render(){
-    let footer = (closeDialog: ()=>any)=>{
-      return <div className="dialog__button-set">
-        <Button buttonModifiers={["success","standard-ok"]} disabled={this.state.locked} onClick={this.update.bind(this, closeDialog)}>
-          {this.props.i18n.text.get('plugin.communicator.label.edit.button.send')}
-        </Button>
-        <Button buttonModifiers={["cancel", "standard-cancel"]} disabled={this.state.locked} onClick={closeDialog}>
-         {this.props.i18n.text.get('plugin.communicator.label.edit.button.cancel')}
-        </Button>
-         <Button buttonModifiers={["fatal","communicator-remove-label"]} disabled={this.state.removed || this.state.locked} onClick={this.removeLabel}>
-           {this.state.removed ? this.props.i18n.text.get('plugin.communicator.label.edit.button.removed') : this.props.i18n.text.get('plugin.communicator.label.edit.button.remove')}
-         </Button>
-      </div>
-    }
-    let sliderPicker = <ChromePicker disableAlpha color={this.state.removed ? "#aaa" : this.state.color} onChange={this.onColorChange}/>
-    let content = (closeDialog: ()=>any)=>{
+  render() {
+    let footer = (closeDialog: () => any) => {
       return (
-        <div className="dialog__content-row dialog__content-row--label" style={{opacity: this.state.removed ? 0.5 : null}}>
+        <div className="dialog__button-set">
+          <Button
+            buttonModifiers={["success", "standard-ok"]}
+            disabled={this.state.locked}
+            onClick={this.update.bind(this, closeDialog)}
+          >
+            {this.props.i18n.text.get(
+              "plugin.communicator.label.edit.button.send"
+            )}
+          </Button>
+          <Button
+            buttonModifiers={["cancel", "standard-cancel"]}
+            disabled={this.state.locked}
+            onClick={closeDialog}
+          >
+            {this.props.i18n.text.get(
+              "plugin.communicator.label.edit.button.cancel"
+            )}
+          </Button>
+          <Button
+            buttonModifiers={["fatal", "communicator-remove-label"]}
+            disabled={this.state.removed || this.state.locked}
+            onClick={this.removeLabel}
+          >
+            {this.state.removed
+              ? this.props.i18n.text.get(
+                  "plugin.communicator.label.edit.button.removed"
+                )
+              : this.props.i18n.text.get(
+                  "plugin.communicator.label.edit.button.remove"
+                )}
+          </Button>
+        </div>
+      );
+    };
+    let sliderPicker = (
+      <ChromePicker
+        disableAlpha
+        color={this.state.removed ? "#aaa" : this.state.color}
+        onChange={this.onColorChange}
+      />
+    );
+    let content = (closeDialog: () => any) => {
+      return (
+        <div
+          className="dialog__content-row dialog__content-row--label"
+          style={{ opacity: this.state.removed ? 0.5 : null }}
+        >
           <div className="dialog__container dialog__container--color-picker">
-            <div className="dialog__icon-container" style={{borderColor: this.state.removed ? "#aaa" : this.state.color}} onClick={ this.onHandleClick }>
-              <span className={`glyph icon-${this.props.label.icon}`} style={{color: this.state.removed ? "#aaa" : this.state.color}}/>
+            <div
+              className="dialog__icon-container"
+              style={{
+                borderColor: this.state.removed ? "#aaa" : this.state.color
+              }}
+              onClick={this.onHandleClick}
+            >
+              <span
+                className={`glyph icon-${this.props.label.icon}`}
+                style={{
+                  color: this.state.removed ? "#aaa" : this.state.color
+                }}
+              />
             </div>
-            {this.state.displayColorPicker ? <div className="color-picker">
-              <div className="color-picker-overlay" onClick={ this.onHandleClose }/>
-              {sliderPicker}
-            </div> : null}
+            {this.state.displayColorPicker ? (
+              <div className="color-picker">
+                <div
+                  className="color-picker-overlay"
+                  onClick={this.onHandleClose}
+                />
+                {sliderPicker}
+              </div>
+            ) : null}
           </div>
           <div className="dialog__container dialog__container--label-form">
             <div className="form-element form-element--edit-label">
-              <label htmlFor="communicatorLabelName">{this.props.i18n.text.get('plugin.communicator.label.editLabelDialog.name')}</label>
-              <input id="communicatorLabelName" placeholder={this.props.i18n.text.get('plugin.communicator.label.editLabelDialog.name')} value={this.state.name}
+              <label htmlFor="communicatorLabelName">
+                {this.props.i18n.text.get(
+                  "plugin.communicator.label.editLabelDialog.name"
+                )}
+              </label>
+              <input
+                id="communicatorLabelName"
+                placeholder={this.props.i18n.text.get(
+                  "plugin.communicator.label.editLabelDialog.name"
+                )}
+                value={this.state.name}
                 className="form-element__input form-element__input--communicator-label-name"
                 disabled={this.state.removed}
-                onChange={this.onNameChange}/>
+                onChange={this.onNameChange}
+              />
             </div>
           </div>
         </div>
-      )
-    }
-    return <Dialog isOpen={this.props.isOpen} onClose={this.props.onClose} onKeyStroke={this.handleKeydown} onOpen={this.resetState} modifier="communicator-edit-label"
-     title={this.props.i18n.text.get('plugin.communicator.label.edit.caption')}
-     content={content} footer={footer}>{this.props.children}</Dialog>
+      );
+    };
+    return (
+      <Dialog
+        isOpen={this.props.isOpen}
+        onClose={this.props.onClose}
+        onKeyStroke={this.handleKeydown}
+        onOpen={this.resetState}
+        modifier="communicator-edit-label"
+        title={this.props.i18n.text.get(
+          "plugin.communicator.label.edit.caption"
+        )}
+        content={content}
+        footer={footer}
+      >
+        {this.props.children}
+      </Dialog>
+    );
   }
 }
 
-function mapStateToProps(state: StateType){
+function mapStateToProps(state: StateType) {
   return {
     messages: state.messages,
     i18n: state.i18n
-  }
-};
+  };
+}
 
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>){
-  return bindActionCreators({updateMessagesNavigationLabel, removeMessagesNavigationLabel}, dispatch);
-};
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+  return bindActionCreators(
+    { updateMessagesNavigationLabel, removeMessagesNavigationLabel },
+    dispatch
+  );
+}
 
 export default connect(
   mapStateToProps,

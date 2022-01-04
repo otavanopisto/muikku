@@ -9,7 +9,7 @@ import "~/sass/elements/item-list.scss";
 import { StateType } from "~/reducers";
 import Navigation, {
   NavigationTopic,
-  NavigationElement,
+  NavigationElement
 } from "~/components/general/navigation";
 import { WorkspaceType } from "../../../../reducers/workspaces/index";
 import { StatusType } from "../../../../reducers/base/status";
@@ -17,15 +17,15 @@ import { getName } from "../../../../util/modifiers";
 import { bindActionCreators } from "redux";
 import {
   loadStudentsOfWorkspace,
-  loadCurrentWorkspaceJournalsFromServer,
+  loadCurrentWorkspaceJournalsFromServer
 } from "~/actions/workspaces";
 import {
   LoadUsersOfWorkspaceTriggerType,
-  LoadCurrentWorkspaceJournalsFromServerTriggerType,
+  LoadCurrentWorkspaceJournalsFromServerTriggerType
 } from "../../../../actions/workspaces/index";
 import {
   WorkspaceStudentListType,
-  ShortWorkspaceUserWithActiveStatusType,
+  ShortWorkspaceUserWithActiveStatusType
 } from "../../../../reducers/user-index";
 
 interface NavigationAsideProps {
@@ -48,7 +48,7 @@ class NavigationAside extends React.Component<
     super(props);
 
     this.state = {
-      students: null,
+      students: null
     };
   }
 
@@ -163,7 +163,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     workspace: state.workspaces.currentWorkspace,
-    status: state.status,
+    status: state.status
   };
 }
 
@@ -176,7 +176,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     {
       loadStudents: loadStudentsOfWorkspace,
-      loadCurrentWorkspaceJournalsFromServer,
+      loadCurrentWorkspaceJournalsFromServer
     },
     dispatch
   );

@@ -80,7 +80,7 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
    */
   const createHtmlMarkup = (htmlString: string) => {
     return {
-      __html: htmlString,
+      __html: htmlString
     };
   };
 
@@ -271,7 +271,7 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    evaluations: state.evaluations,
+    evaluations: state.evaluations
   };
 }
 

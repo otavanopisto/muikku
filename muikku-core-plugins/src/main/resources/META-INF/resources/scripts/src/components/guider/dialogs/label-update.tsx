@@ -15,7 +15,7 @@ import {
   UpdateGuiderFilterLabelTriggerType,
   RemoveGuiderFilterLabelTriggerType,
   updateGuiderFilterLabel,
-  removeGuiderFilterLabel,
+  removeGuiderFilterLabel
 } from "~/actions/main-function/guider";
 import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
@@ -29,9 +29,9 @@ import InputContactsAutofill from "~/components/base/input-contacts-autofill";
 import { displayNotification } from "~/actions/base/notifications";
 import { DisplayNotificationTriggerType } from "../../../actions/base/notifications";
 
-import { getName } from '~/util/modifiers';
+import { getName } from "~/util/modifiers";
 const KEYCODES = {
-  ENTER: 13,
+  ENTER: 13
 };
 
 interface SharedFlagUser {
@@ -100,7 +100,7 @@ class GuiderLabelUpdateDialog extends React.Component<
       description: props.label.description,
       removed: false,
       locked: false,
-      selectedItems: [],
+      selectedItems: []
     };
   }
 
@@ -124,7 +124,7 @@ class GuiderLabelUpdateDialog extends React.Component<
       color: props.label.color,
       removed: false,
       name: props.label.name,
-      description: props.label.description,
+      description: props.label.description
     });
 
     await this.getShares();
@@ -144,10 +144,10 @@ class GuiderLabelUpdateDialog extends React.Component<
               name: getName(result.user, true),
               email: "unknown",
               identifier: result.user.userIdentifier
-            },
+            }
           };
         })
-        .filter((r: ContactRecipientType) => r !== null),
+        .filter((r: ContactRecipientType) => r !== null)
     });
   };
 
@@ -184,7 +184,7 @@ class GuiderLabelUpdateDialog extends React.Component<
 
         if (removeCurrentLocation) {
           const newLocationData = Object.assign({}, locationData, {
-            l: labelIds.filter((id) => id !== this.props.label.id),
+            l: labelIds.filter((id) => id !== this.props.label.id)
           });
           window.location.hash =
             "#?" +
@@ -216,14 +216,14 @@ class GuiderLabelUpdateDialog extends React.Component<
      */
     const fail = () => {
       this.setState({
-        locked: false,
+        locked: false
       });
     };
 
     this.props.removeGuiderFilterLabel({
       label: this.props.label,
       success,
-      fail,
+      fail
     });
 
     onClose();
@@ -241,7 +241,7 @@ class GuiderLabelUpdateDialog extends React.Component<
       if (wasAdded) {
         await mApi().user.flags.shares.create(this.props.label.id, {
           flagId: this.props.label.id,
-          userIdentifier: member.value.identifier,
+          userIdentifier: member.value.identifier
         });
       }
     });
@@ -268,7 +268,7 @@ class GuiderLabelUpdateDialog extends React.Component<
         pr2.catch((error) =>
           this.props.displayNotification(error.message, "error")
         )
-      ),
+      )
     ]);
   };
 
@@ -334,7 +334,7 @@ class GuiderLabelUpdateDialog extends React.Component<
           // and turn the object into a querystring again
 
           const newLocationData = Object.assign({}, locationData, {
-            l: labelIds.filter((id) => id !== this.props.label.id),
+            l: labelIds.filter((id) => id !== this.props.label.id)
           });
           window.location.hash =
             "#?" +
@@ -343,7 +343,7 @@ class GuiderLabelUpdateDialog extends React.Component<
       }
 
       this.setState({
-        locked: false,
+        locked: false
       });
       closeDialog();
     };
@@ -353,7 +353,7 @@ class GuiderLabelUpdateDialog extends React.Component<
      */
     const fail = () => {
       this.setState({
-        locked: false,
+        locked: false
       });
     };
 
@@ -364,7 +364,7 @@ class GuiderLabelUpdateDialog extends React.Component<
       !this.state.removed
     ) {
       this.setState({
-        locked: true,
+        locked: true
       });
       this.props.updateGuiderFilterLabel({
         label: this.props.label,
@@ -372,11 +372,11 @@ class GuiderLabelUpdateDialog extends React.Component<
         description: this.state.description,
         color: this.state.color,
         success,
-        fail,
+        fail
       });
     } else if (this.state.removed) {
       this.setState({
-        locked: true,
+        locked: true
       });
 
       /**
@@ -394,14 +394,14 @@ class GuiderLabelUpdateDialog extends React.Component<
           this.props.removeGuiderFilterLabel({
             label: this.props.label,
             success,
-            fail,
+            fail
           })
         );
       } else {
         this.props.removeGuiderFilterLabel({
           label: this.props.label,
           success,
-          fail,
+          fail
         });
       }
     } else {
@@ -509,14 +509,14 @@ class GuiderLabelUpdateDialog extends React.Component<
             <div
               className="dialog__icon-container"
               style={{
-                borderColor: this.state.removed ? "#aaa" : this.state.color,
+                borderColor: this.state.removed ? "#aaa" : this.state.color
               }}
               onClick={this.onHandleClick}
             >
               <span
                 className={`glyph icon-flag`}
                 style={{
-                  color: this.state.removed ? "#aaa" : this.state.color,
+                  color: this.state.removed ? "#aaa" : this.state.color
                 }}
               />
             </div>
@@ -628,11 +628,11 @@ class GuiderLabelUpdateDialog extends React.Component<
               >
                 {this.state.removed
                   ? this.props.i18n.text.get(
-                    "plugin.guider.flags.confirmFlagDelete.deleted"
-                  )
+                      "plugin.guider.flags.confirmFlagDelete.deleted"
+                    )
                   : this.props.i18n.text.get(
-                    "plugin.guider.flags.removeFlag.label"
-                  )}
+                      "plugin.guider.flags.removeFlag.label"
+                    )}
               </Button>
             ) : (
               <Button
@@ -642,11 +642,11 @@ class GuiderLabelUpdateDialog extends React.Component<
               >
                 {this.state.removed
                   ? this.props.i18n.text.get(
-                    "plugin.guider.flags.confirmFlagDelete.deleted"
-                  )
+                      "plugin.guider.flags.confirmFlagDelete.deleted"
+                    )
                   : this.props.i18n.text.get(
-                    "plugin.guider.flags.removeFlag.label"
-                  )}
+                      "plugin.guider.flags.removeFlag.label"
+                    )}
               </Button>
             )}
           </div>
@@ -655,7 +655,9 @@ class GuiderLabelUpdateDialog extends React.Component<
             <div className="dialog__state state-INFO">
               <div className="dialog__state-icon icon-notification"></div>
               <div className="dialog__state-text">
-                {this.props.i18n.text.get("plugin.guider.flags.unableToDeleteFlag.description")}
+                {this.props.i18n.text.get(
+                  "plugin.guider.flags.unableToDeleteFlag.description"
+                )}
               </div>
             </div>
           )}

@@ -1,14 +1,21 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { StateType } from "~/reducers";
-import { StoredWorklistItem, WorklistBillingState } from "~/reducers/main-function/profile";
-import { ButtonPill } from '~/components/general/button';
-import '~/sass/elements/datepicker/datepicker.scss';
-import '~/sass/elements/glyph.scss';
+import {
+  StoredWorklistItem,
+  WorklistBillingState
+} from "~/reducers/main-function/profile";
+import { ButtonPill } from "~/components/general/button";
+import "~/sass/elements/datepicker/datepicker.scss";
+import "~/sass/elements/glyph.scss";
 import { i18nType } from "~/reducers/base/i18n";
 import WorkListEditable from "./work-list-editable";
-import { DeleteProfileWorklistItemTriggerType, deleteProfileWorklistItem,
-  editProfileWorklistItem, EditProfileWorklistItemTriggerType} from "~/actions/main-function/profile";
+import {
+  DeleteProfileWorklistItemTriggerType,
+  deleteProfileWorklistItem,
+  editProfileWorklistItem,
+  EditProfileWorklistItemTriggerType
+} from "~/actions/main-function/profile";
 import { bindActionCreators } from "redux";
 import DeleteWorklistItemDialog from "../../../dialogs/delete-worklist-item";
 import moment from "~/lib/moment";
@@ -43,7 +50,10 @@ interface WorksListEditableState {
 /**
  * The worklist row that shows the row of a worklist item
  */
-class WorkListRow extends React.Component<WorkListRowProps, WorksListEditableState> {
+class WorkListRow extends React.Component<
+  WorkListRowProps,
+  WorksListEditableState
+> {
   constructor(props: WorkListRowProps) {
     super(props);
 
@@ -54,8 +64,8 @@ class WorkListRow extends React.Component<WorkListRowProps, WorksListEditableSta
 
     this.state = {
       editMode: false,
-      isDeleteDialogOpen: false,
-    }
+      isDeleteDialogOpen: false
+    };
   }
 
   /**
@@ -63,7 +73,7 @@ class WorkListRow extends React.Component<WorkListRowProps, WorksListEditableSta
    */
   public toggleEditMode() {
     this.setState({
-      editMode: !this.state.editMode,
+      editMode: !this.state.editMode
     });
   }
 
@@ -91,24 +101,24 @@ class WorkListRow extends React.Component<WorkListRowProps, WorksListEditableSta
           r(true);
 
           this.setState({
-            editMode: false,
+            editMode: false
           });
         },
         fail: () => {
           r(false);
-        },
+        }
       });
     });
   }
   public closeDeleteDialog() {
     this.setState({
-      isDeleteDialogOpen: false,
-    })
+      isDeleteDialogOpen: false
+    });
   }
   public onDelete() {
     this.setState({
-      isDeleteDialogOpen: true,
-    })
+      isDeleteDialogOpen: true
+    });
   }
   public render() {
     if (this.state.editMode) {
@@ -132,15 +142,20 @@ class WorkListRow extends React.Component<WorkListRowProps, WorksListEditableSta
     const dayOfCurrentMonth = moment().date();
     // whether the entry represents the current month or the previous month
     const isCurrentMonth = itemEntryDateAsMoment.isSame(today, "month");
-    const isPreviousMonth = itemEntryDateAsMoment.isSame(previousMonth, "month");
+    const isPreviousMonth = itemEntryDateAsMoment.isSame(
+      previousMonth,
+      "month"
+    );
 
     // the rule for can be edited it must not be paid or approved
     // it must be current month, or if it's previous month the current month
     // should be less than 10 days or whatever the limit is specified
-    const canBeEdited = (
+    const canBeEdited =
       this.props.item.state !== WorklistBillingState.PAID &&
-      this.props.item.state !== WorklistBillingState.APPROVED
-    ) && (isCurrentMonth || (isPreviousMonth && dayOfCurrentMonth <= this.props.currentMonthDayLimit));
+      this.props.item.state !== WorklistBillingState.APPROVED &&
+      (isCurrentMonth ||
+        (isPreviousMonth &&
+          dayOfCurrentMonth <= this.props.currentMonthDayLimit));
 
     // grabbing these states
     let entryStateText;
@@ -148,27 +163,37 @@ class WorkListRow extends React.Component<WorkListRowProps, WorksListEditableSta
     let entryStateClass;
     switch (this.props.item.state) {
       case "ENTERED":
-        entryStateText = this.props.i18n.text.get("plugin.profile.worklist.states.ENTERED")
+        entryStateText = this.props.i18n.text.get(
+          "plugin.profile.worklist.states.ENTERED"
+        );
         entryStateIcon = "icon-check";
         entryStateClass = "state-ENTERED";
         break;
       case "PROPOSED":
-        entryStateText = this.props.i18n.text.get("plugin.profile.worklist.states.PROPOSED")
+        entryStateText = this.props.i18n.text.get(
+          "plugin.profile.worklist.states.PROPOSED"
+        );
         entryStateIcon = "icon-thumb-up";
         entryStateClass = "state-PROPOSED";
         break;
       case "APPROVED":
-        entryStateText = this.props.i18n.text.get("plugin.profile.worklist.states.APPROVED")
+        entryStateText = this.props.i18n.text.get(
+          "plugin.profile.worklist.states.APPROVED"
+        );
         entryStateIcon = "icon-thumb-up";
         entryStateClass = "state-APPROVED";
         break;
       case "PAID":
-        entryStateText = this.props.i18n.text.get("plugin.profile.worklist.states.PAID")
+        entryStateText = this.props.i18n.text.get(
+          "plugin.profile.worklist.states.PAID"
+        );
         entryStateIcon = "icon-lock";
         entryStateClass = "state-PAID";
         break;
       default:
-        entryStateText = this.props.i18n.text.get("plugin.profile.worklist.states.ENTERED")
+        entryStateText = this.props.i18n.text.get(
+          "plugin.profile.worklist.states.ENTERED"
+        );
         entryStateIcon = "icon-check";
         entryStateClass = "state-ENTERED";
         break;
@@ -177,7 +202,10 @@ class WorkListRow extends React.Component<WorkListRowProps, WorksListEditableSta
     return (
       <div className="application-sub-panel__multiple-items application-sub-panel__multiple-items--list-mode">
         <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-description">
-          <span title={entryStateText} className={`glyph glyph--worklist-state-indicator ${entryStateClass} ${entryStateIcon}`}></span>
+          <span
+            title={entryStateText}
+            className={`glyph glyph--worklist-state-indicator ${entryStateClass} ${entryStateIcon}`}
+          ></span>
           {this.props.item.description}
         </div>
         <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-date">
@@ -189,14 +217,26 @@ class WorkListRow extends React.Component<WorkListRowProps, WorksListEditableSta
         <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-factor">
           {this.props.item.factor}
         </div>
-        {
-          canBeEdited ?
+        {canBeEdited ? (
           <div className="application-sub-panel__multiple-item-container  application-sub-panel__multiple-item-container--worklist-actions">
-            {this.props.item.editableFields.length > 0 && <ButtonPill buttonModifiers="edit-worklist-entry" icon="pencil" onClick={this.toggleEditMode} />}
-            {this.props.item.removable && <ButtonPill buttonModifiers="delete-worklist-entry" icon="trash" onClick={this.onDelete} />}
-          </div> :
-          <div className="application-sub-panel__multiple-item-container  application-sub-panel__multiple-item-container--worklist-actions"/>
-        }
+            {this.props.item.editableFields.length > 0 && (
+              <ButtonPill
+                buttonModifiers="edit-worklist-entry"
+                icon="pencil"
+                onClick={this.toggleEditMode}
+              />
+            )}
+            {this.props.item.removable && (
+              <ButtonPill
+                buttonModifiers="delete-worklist-entry"
+                icon="trash"
+                onClick={this.onDelete}
+              />
+            )}
+          </div>
+        ) : (
+          <div className="application-sub-panel__multiple-item-container  application-sub-panel__multiple-item-container--worklist-actions" />
+        )}
 
         <DeleteWorklistItemDialog
           isOpen={this.state.isDeleteDialogOpen}
@@ -210,15 +250,15 @@ class WorkListRow extends React.Component<WorkListRowProps, WorksListEditableSta
 
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
-  }
-};
+    i18n: state.i18n
+  };
+}
 
 function mapDispatchToProps(dispatch: Dispatch<any>) {
-  return bindActionCreators({deleteProfileWorklistItem, editProfileWorklistItem}, dispatch);
-};
+  return bindActionCreators(
+    { deleteProfileWorklistItem, editProfileWorklistItem },
+    dispatch
+  );
+}
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(WorkListRow);
+export default connect(mapStateToProps, mapDispatchToProps)(WorkListRow);

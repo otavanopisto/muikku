@@ -10,7 +10,7 @@ import { getName, filterHighlight } from "~/util/modifiers";
 import {
   ApplicationListItem,
   ApplicationListItemContentWrapper,
-  ApplicationListItemContentActions,
+  ApplicationListItemContentActions
 } from "~/components/general/application-list";
 
 interface workspaceUserProps {

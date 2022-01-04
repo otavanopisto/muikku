@@ -20,7 +20,7 @@ import {
   LoadEvaluationCompositeReplies,
   loadEvaluationCompositeRepliesFromServer,
   UpdateEvaluationSelectedAssessment,
-  updateSelectedAssessment,
+  updateSelectedAssessment
 } from "~/actions/main-function/evaluation/evaluationActions";
 
 /**
@@ -69,17 +69,17 @@ class EvaluateDialog extends React.Component<
     this.props.updateSelectedAssessment({ assessment });
     this.props.loadEvaluationCompositeRepliesFromServer({
       userEntityId: this.props.assessment.userEntityId,
-      workspaceId: assessment.workspaceEntityId,
+      workspaceId: assessment.workspaceEntityId
     });
     this.props.loadCurrentStudentAssigmentsData({
-      workspaceId: assessment.workspaceEntityId,
+      workspaceId: assessment.workspaceEntityId
     });
     this.props.loadEvaluationSelectedAssessmentStudyDiaryEventsFromServer({
-      assessment,
+      assessment
     });
 
     this.props.loadBasePriceFromServer({
-      workspaceEntityId: assessment.workspaceEntityId,
+      workspaceEntityId: assessment.workspaceEntityId
     });
   };
 
@@ -126,7 +126,7 @@ class EvaluateDialog extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    status: state.status,
+    status: state.status
   };
 }
 
@@ -142,7 +142,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
 
       loadEvaluationCompositeRepliesFromServer,
       loadEvaluationSelectedAssessmentStudyDiaryEventsFromServer,
-      loadBasePriceFromServer,
+      loadBasePriceFromServer
     },
     dispatch
   );

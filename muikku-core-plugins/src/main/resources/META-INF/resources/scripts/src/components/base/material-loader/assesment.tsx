@@ -38,7 +38,7 @@ export function MaterialLoaderAssesment(props: MaterialLoaderAssesmentProps) {
           id: aAssessment.id,
           name: aAssessment.name,
           contentType: aAssessment.contentType,
-          url: `/rest/workspace/materialevaluationaudioassessment/${aAssessment.id}`,
+          url: `/rest/workspace/materialevaluationaudioassessment/${aAssessment.id}`
         } as RecordValue)
     );
 

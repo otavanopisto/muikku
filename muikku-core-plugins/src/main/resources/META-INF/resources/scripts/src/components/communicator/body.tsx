@@ -1,31 +1,34 @@
-import MainFunctionNavbar from '~/components/base/main-function/navbar';
-import Application from './body/application';
-import Aside from './body/aside';
+import MainFunctionNavbar from "~/components/base/main-function/navbar";
+import Application from "./body/application";
+import Aside from "./body/aside";
 
-import * as React from 'react';
+import * as React from "react";
 
-interface CommunicatorBodyProps {
+interface CommunicatorBodyProps {}
 
-}
+interface CommunicatorBodyState {}
 
-interface CommunicatorBodyState {
-
-}
-
-export default class CommunicatorBody extends React.Component<CommunicatorBodyProps,CommunicatorBodyState> {
-  constructor(props: CommunicatorBodyProps){
+export default class CommunicatorBody extends React.Component<
+  CommunicatorBodyProps,
+  CommunicatorBodyState
+> {
+  constructor(props: CommunicatorBodyProps) {
     super(props);
 
     this.openSignatureDialog = this.openSignatureDialog.bind(this);
   }
-  openSignatureDialog(){
-    return (this.refs["application"] as any).getWrappedInstance().openDialogSignature();
+  openSignatureDialog() {
+    return (this.refs["application"] as any)
+      .getWrappedInstance()
+      .openDialogSignature();
   }
-  render(){
-    let aside = <Aside openSignatureDialog={this.openSignatureDialog}/>
-    return (<div>
-      <MainFunctionNavbar activeTrail="communicator" navigation={aside}/>
-      <Application aside={aside} ref="application"/>
-    </div>);
+  render() {
+    let aside = <Aside openSignatureDialog={this.openSignatureDialog} />;
+    return (
+      <div>
+        <MainFunctionNavbar activeTrail="communicator" navigation={aside} />
+        <Application aside={aside} ref="application" />
+      </div>
+    );
   }
 }

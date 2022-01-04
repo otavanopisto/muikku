@@ -13,7 +13,7 @@ import {
   UsersType,
   UserGroupsType,
   UsersSelectType,
-  StudyprogrammeTypes,
+  StudyprogrammeTypes
 } from "./main-function/users";
 import { UserIndexType } from "./user-index";
 import { DiscussionType } from "./discussion";
@@ -21,12 +21,12 @@ import { GuiderType } from "./main-function/guider";
 import { SummaryType } from "./main-function/records/summary";
 import {
   YOType,
-  SubjectEligibilitySubjectsType,
+  SubjectEligibilitySubjectsType
 } from "./main-function/records/yo";
 import { RecordsType } from "./main-function/records";
 import { ErrorType } from "./base/error";
 import { ProfileType } from "./main-function/profile";
-import { OrganizationSummaryType } from "./organization/summary"
+import { OrganizationSummaryType } from "./organization/summary";
 import { EvaluationState } from "./main-function/evaluation/index";
 
 export interface StateType {
@@ -49,7 +49,7 @@ export interface StateType {
   userSelect?: UsersSelectType;
   userGroups?: UserGroupsType;
   workspaces?: WorkspacesType;
-  organizationSummary?: OrganizationSummaryType,
+  organizationSummary?: OrganizationSummaryType;
   organizationWorkspaces?: WorkspacesType;
   organizationUsers?: UsersType;
   discussion?: DiscussionType;

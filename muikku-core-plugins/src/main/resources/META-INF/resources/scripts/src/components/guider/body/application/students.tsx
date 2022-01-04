@@ -20,7 +20,7 @@ import {
   addToGuiderSelectedStudents,
   removeFromGuiderSelectedStudents,
   AddToGuiderSelectedStudentsTriggerType,
-  RemoveFromGuiderSelectedStudentsTriggerType,
+  RemoveFromGuiderSelectedStudentsTriggerType
 } from "~/actions/main-function/guider";
 import BodyScrollKeeper from "~/components/general/body-scroll-keeper";
 import Student from "./students/student";
@@ -29,10 +29,10 @@ import {
   GuiderStudentsStateType,
   GuiderStudentUserProfileType,
   GuiderStudentType,
-  GuiderType,
+  GuiderType
 } from "~/reducers/main-function/guider";
 import ApplicationList, {
-  ApplicationListItem,
+  ApplicationListItem
 } from "~/components/general/application-list";
 
 interface GuiderStudentsProps {
@@ -140,7 +140,7 @@ class GuiderStudents extends BodyScrollLoader<
                       student={student}
                     />
                   );
-                },
+                }
               };
             }
           )}
@@ -156,7 +156,7 @@ function mapStateToProps(state: StateType) {
     guiderStudentsState: state.guider.state,
     guiderStudentsHasMore: state.guider.hasMore,
     guiderStudentsCurrent: state.guider.currentStudent,
-    guider: state.guider,
+    guider: state.guider
   };
 }
 
@@ -165,7 +165,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
     {
       loadMoreStudents,
       addToGuiderSelectedStudents,
-      removeFromGuiderSelectedStudents,
+      removeFromGuiderSelectedStudents
     },
     dispatch
   );

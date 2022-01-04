@@ -27,7 +27,7 @@ export class MatriculationExaminationEnrollmentInfo extends React.Component<
     super(props);
 
     this.state = {
-      usingNewSystem: false,
+      usingNewSystem: false
     };
   }
 
@@ -49,7 +49,7 @@ export class MatriculationExaminationEnrollmentInfo extends React.Component<
   ) => {
     if (this.props !== prevProps) {
       this.setState({
-        usingNewSystem: this.props.usingNewSystem,
+        usingNewSystem: this.props.usingNewSystem
       });
     }
   };

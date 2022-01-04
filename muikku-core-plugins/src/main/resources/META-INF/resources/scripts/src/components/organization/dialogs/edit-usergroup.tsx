@@ -4,11 +4,11 @@ import Dialog, {
   DialogRow,
   DialogRowHeader,
   DialogRowContent,
-  DialogRemoveUsers,
+  DialogRemoveUsers
 } from "~/components/general/dialog";
 import {
   FormWizardActions,
-  InputFormElement,
+  InputFormElement
 } from "~/components/general/form-element";
 import {
   loadSelectorStudents,
@@ -20,13 +20,13 @@ import {
   loadAllCurrentUserGroupStaff,
   loadUserGroups,
   updateUsergroup,
-  UpdateUsergroupTriggerType,
+  UpdateUsergroupTriggerType
 } from "~/actions/main-function/users";
 import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
 import { bindActionCreators } from "redux";
 import AutofillSelector, {
-  UiSelectItem,
+  UiSelectItem
 } from "~/components/base/input-select-autofill";
 import { SelectItem } from "~/actions/workspaces/index";
 import {
@@ -35,7 +35,7 @@ import {
   PagingEnvironmentUserListType,
   ModifyUserGroupUsersType,
   UpdateUserGroupStateType,
-  CurrentUserGroupType,
+  CurrentUserGroupType
 } from "~/reducers/main-function/users";
 import { UserGroupType, UserType } from "~/reducers/user-index";
 import { TagItem } from "~/components/general/tag-input";
@@ -112,14 +112,14 @@ class OrganizationEditUsergroup extends React.Component<
       currentStep: 1,
       executing: false,
       validation: {
-        nameValid: 2,
+        nameValid: 2
       },
 
       userGroupUpdated: false,
       studentsAdded: false,
       studentsRemoved: false,
       staffAdded: false,
-      staffRemoved: false,
+      staffRemoved: false
     };
 
     this.goToPage = this.goToPage.bind(this);
@@ -153,8 +153,8 @@ class OrganizationEditUsergroup extends React.Component<
         q: query,
         firstResult: pageStart,
         maxResults: this.usersPerPage,
-        userGroupIds: [this.props.usergroup.id],
-      },
+        userGroupIds: [this.props.usergroup.id]
+      }
     });
   }
 
@@ -184,16 +184,16 @@ class OrganizationEditUsergroup extends React.Component<
         q,
         userGroupIds: [this.props.usergroup.id],
         firstResult: 0,
-        maxResults: 5,
+        maxResults: 5
       },
       success: (users: PagingEnvironmentUserListType) => {
         this.setState({
           pages: {
             ...this.state.pages,
-            [type]: Math.ceil(users.totalHitCount / this.usersPerPage),
-          },
+            [type]: Math.ceil(users.totalHitCount / this.usersPerPage)
+          }
         });
-      },
+      }
     });
   }
 
@@ -206,8 +206,8 @@ class OrganizationEditUsergroup extends React.Component<
         label: users[i].firstName + " " + users[i].lastName,
         variables: {
           identifier: users[i].userEntityId,
-          boolean: users[i].hasImage,
-        },
+          boolean: users[i].hasImage
+        }
       };
       selectItems.push(item);
     }
@@ -217,7 +217,7 @@ class OrganizationEditUsergroup extends React.Component<
 
   doUserGroupStudentSearch(q: string) {
     this.setState({
-      searchValues: { ...this.state.searchValues, ["students"]: q },
+      searchValues: { ...this.state.searchValues, ["students"]: q }
     });
     clearTimeout(this.searchTimer);
     this.searchTimer = setTimeout(
@@ -233,7 +233,7 @@ class OrganizationEditUsergroup extends React.Component<
 
   doUserGroupStaffSearch(q: string) {
     this.setState({
-      searchValues: { ...this.state.searchValues, ["staff"]: q },
+      searchValues: { ...this.state.searchValues, ["staff"]: q }
     });
     clearTimeout(this.searchTimer);
     this.searchTimer = setTimeout(
@@ -254,7 +254,7 @@ class OrganizationEditUsergroup extends React.Component<
       ? this.state.removeStudents.filter((rStudent) => rStudent.id !== usr.id)
       : this.state.removeStudents.concat(usr);
     this.setState({
-      removeStudents: newRemoveState,
+      removeStudents: newRemoveState
     });
   }
 
@@ -265,7 +265,7 @@ class OrganizationEditUsergroup extends React.Component<
       ? this.state.removeStaff.filter((rStaff) => rStaff.id !== usr.id)
       : this.state.removeStaff.concat(usr);
     this.setState({
-      removeStaff: newRemoveState,
+      removeStaff: newRemoveState
     });
   }
 
@@ -320,7 +320,7 @@ class OrganizationEditUsergroup extends React.Component<
       studentsAdded: false,
       studentsRemoved: false,
       staffAdded: false,
-      staffRemoved: false,
+      staffRemoved: false
     });
   }
 
@@ -337,7 +337,7 @@ class OrganizationEditUsergroup extends React.Component<
     }
     if (this.state.userGroupName === "") {
       let validation: ValidationType = Object.assign(this.state.validation, {
-        nameValid: 0,
+        nameValid: 0
       });
       this.setState({ locked: true, validation });
     } else {
@@ -354,7 +354,7 @@ class OrganizationEditUsergroup extends React.Component<
   saveUsergroup(closeDialog: () => any) {
     this.setState({
       locked: true,
-      executing: true,
+      executing: true
     });
 
     let update: UpdateUserGroupType;
@@ -370,7 +370,7 @@ class OrganizationEditUsergroup extends React.Component<
         name: this.state.userGroupName,
         // We get a number, but need it to be a string
         identifier: groupIdentifier,
-        isGuidanceGroup: this.state.isGuidanceGroup,
+        isGuidanceGroup: this.state.isGuidanceGroup
       };
     }
 
@@ -379,7 +379,7 @@ class OrganizationEditUsergroup extends React.Component<
         groupIdentifier: groupIdentifier,
         userIdentifiers: this.state.addStudents.map(
           (student) => student.id as string
-        ),
+        )
       };
     }
 
@@ -388,7 +388,7 @@ class OrganizationEditUsergroup extends React.Component<
         groupIdentifier: groupIdentifier,
         userIdentifiers: this.state.removeStudents.map(
           (student) => student.id as string
-        ),
+        )
       };
     }
 
@@ -398,7 +398,7 @@ class OrganizationEditUsergroup extends React.Component<
           groupIdentifier: groupIdentifier,
           userIdentifiers: this.state.addStaff.map(
             (staff) => staff.id as string
-          ),
+          )
         };
       } else {
         addUsers.userIdentifiers = addUsers.userIdentifiers.concat(
@@ -413,7 +413,7 @@ class OrganizationEditUsergroup extends React.Component<
           groupIdentifier: groupIdentifier,
           userIdentifiers: this.state.removeStaff.map(
             (staff) => staff.id as string
-          ),
+          )
         };
       } else {
         removeUsers.userIdentifiers = removeUsers.userIdentifiers.concat(
@@ -429,17 +429,17 @@ class OrganizationEditUsergroup extends React.Component<
       progress: (state: UpdateUserGroupStateType) => {
         if (state === "update-group") {
           this.setState({
-            userGroupUpdated: true,
+            userGroupUpdated: true
           });
         }
         if (state === "add-users") {
           this.setState({
-            studentsAdded: true,
+            studentsAdded: true
           });
         }
         if (state === "remove-users") {
           this.setState({
-            studentsRemoved: true,
+            studentsRemoved: true
           });
         }
         if (state === "done") {
@@ -456,7 +456,7 @@ class OrganizationEditUsergroup extends React.Component<
 
       fail: () => {
         closeDialog();
-      },
+      }
     });
   }
 
@@ -513,7 +513,7 @@ class OrganizationEditUsergroup extends React.Component<
             id: student.id,
             label: student.firstName + " " + student.lastName,
             icon: "user",
-            type: "student",
+            type: "student"
           };
         });
         return (
@@ -602,7 +602,7 @@ class OrganizationEditUsergroup extends React.Component<
           return {
             id: staff.id,
             label: staff.firstName + " " + staff.lastName,
-            icon: "user",
+            icon: "user"
           };
         });
         return (
@@ -733,7 +733,7 @@ class OrganizationEditUsergroup extends React.Component<
                     const tag = {
                       node: student.label,
                       value: student,
-                      icon: student.icon,
+                      icon: student.icon
                     };
                     return (
                       <TagItem
@@ -766,7 +766,7 @@ class OrganizationEditUsergroup extends React.Component<
                     const tag = {
                       node: staff.label,
                       value: staff,
-                      icon: staff.icon,
+                      icon: staff.icon
                     };
                     return (
                       <TagItem
@@ -799,7 +799,7 @@ class OrganizationEditUsergroup extends React.Component<
                     const tag = {
                       node: student.label,
                       value: student,
-                      icon: student.icon,
+                      icon: student.icon
                     };
                     return (
                       <TagItem
@@ -832,7 +832,7 @@ class OrganizationEditUsergroup extends React.Component<
                     const tag = {
                       node: staff.label,
                       value: staff,
-                      icon: staff.icon,
+                      icon: staff.icon
                     };
                     return (
                       <TagItem
@@ -967,7 +967,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     users: state.userSelect,
-    currentUserGroup: state.userGroups.currentUserGroup,
+    currentUserGroup: state.userGroups.currentUserGroup
   };
 }
 
@@ -980,7 +980,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
       updateOrganizationUsergroup: updateUsergroup,
       loadAllCurrentUserGroupStaff,
       loadAllCurrentUserGroupStudents,
-      setCurrentUserGroup,
+      setCurrentUserGroup
     },
     dispatch
   );

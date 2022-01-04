@@ -1,7 +1,11 @@
 import * as React from "react";
 import * as uuid from "uuid";
 
-interface IAudioPoolComponentProps extends React.DetailedHTMLProps<React.AudioHTMLAttributes<HTMLAudioElement>, HTMLAudioElement> {
+interface IAudioPoolComponentProps
+  extends React.DetailedHTMLProps<
+    React.AudioHTMLAttributes<HTMLAudioElement>,
+    HTMLAudioElement
+  > {
   invisible?: boolean;
 }
 
@@ -10,9 +14,12 @@ interface IAudioPoolComponentState {
   killed: boolean;
 }
 
-(window as any).AUDIOPOOL = {}
+(window as any).AUDIOPOOL = {};
 
-export class AudioPoolComponent extends React.Component<IAudioPoolComponentProps, IAudioPoolComponentState> {
+export class AudioPoolComponent extends React.Component<
+  IAudioPoolComponentProps,
+  IAudioPoolComponentState
+> {
   private univId: string;
   private audioRef: React.RefObject<HTMLAudioElement>;
   constructor(props: IAudioPoolComponentProps) {
@@ -27,7 +34,7 @@ export class AudioPoolComponent extends React.Component<IAudioPoolComponentProps
 
     this.state = {
       key: "std",
-      killed: false,
+      killed: false
     };
   }
   public initialSetup() {
@@ -43,8 +50,8 @@ export class AudioPoolComponent extends React.Component<IAudioPoolComponentProps
         // a hack of a property that says if it's playing
         // but in reality just specified if once it started
         // playing because there's no way to know
-        playing: false,
-      }
+        playing: false
+      };
     }
   }
   componentDidMount() {
@@ -57,26 +64,31 @@ export class AudioPoolComponent extends React.Component<IAudioPoolComponentProps
     (window as any).AUDIOPOOL[this.univId].playing = false;
     // first we kill the standard to remove
     // the sources as well as its children
-    this.setState({
-      killed: true,
-    }, () => {
-      // now we call it to load with the new missing source
-      this.audioRef.current.load();
+    this.setState(
+      {
+        killed: true
+      },
+      () => {
+        // now we call it to load with the new missing source
+        this.audioRef.current.load();
 
-      // now we want to remove the whole element
-      // with the new key this will cause that to happen
-      this.setState({
-        key: "killed",
-      }, () => {
-
-        // now we want to restore it back to original
-        // and all buffering should've been cancelled
-        this.setState({
-          key: "std",
-          killed: false,
-        })
-      });
-    });
+        // now we want to remove the whole element
+        // with the new key this will cause that to happen
+        this.setState(
+          {
+            key: "killed"
+          },
+          () => {
+            // now we want to restore it back to original
+            // and all buffering should've been cancelled
+            this.setState({
+              key: "std",
+              killed: false
+            });
+          }
+        );
+      }
+    );
   }
   public killEverything() {
     this.initialSetup();
@@ -93,11 +105,12 @@ export class AudioPoolComponent extends React.Component<IAudioPoolComponentProps
       if (key === this.univId) {
         return;
       }
-      (window as any).AUDIOPOOL[key].playing && (window as any).AUDIOPOOL[key].component.kill();
+      (window as any).AUDIOPOOL[key].playing &&
+        (window as any).AUDIOPOOL[key].component.kill();
     });
   }
   public render() {
-    const newProps = {...this.props};
+    const newProps = { ...this.props };
     delete newProps.invisible;
 
     if (this.props.invisible || this.state.killed) {
@@ -106,12 +119,15 @@ export class AudioPoolComponent extends React.Component<IAudioPoolComponentProps
     }
 
     if (this.state.killed) {
-      return (
-        <audio {...newProps} key={this.state.key} ref={this.audioRef}/>
-      );
-    };
+      return <audio {...newProps} key={this.state.key} ref={this.audioRef} />;
+    }
     return (
-      <audio {...this.props} key={this.state.key} ref={this.audioRef} onPlay={this.killEverything}/>
-    )
+      <audio
+        {...this.props}
+        key={this.state.key}
+        ref={this.audioRef}
+        onPlay={this.killEverything}
+      />
+    );
   }
 }
