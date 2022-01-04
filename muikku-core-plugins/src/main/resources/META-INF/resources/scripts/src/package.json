@@ -20,7 +20,7 @@
     "@types/react-datepicker": "^0.55.1",
     "@types/react-dom": "^16.9.6",
     "@types/react-input-autosize": "^2.0.2",
-    "@types/react-paginate": "^7.1.0",
+    "@types/react-paginate": "^7.1.1",
     "@types/react-redux": "^5.0.9",
     "@types/react-router-dom": "^4.2.7",
     "@types/react-textarea-autosize": "^4.3.5",
