@@ -54,7 +54,7 @@ class MatriculationSubjectsList extends React.Component<
    */
   notifyMatriculationSubjectChange(selectedSubjects: string[]) {
     this.props.onMatriculationSubjectsChange(
-      selectedSubjects.filter((selectedSubject) => !!selectedSubject),
+      selectedSubjects.filter((selectedSubject) => !!selectedSubject)
     );
   }
 
@@ -66,7 +66,7 @@ class MatriculationSubjectsList extends React.Component<
    */
   handleMatriculationSubjectChange(
     index: number,
-    e: React.ChangeEvent<HTMLInputElement>,
+    e: React.ChangeEvent<HTMLInputElement>
   ) {
     const selectedSubjects = [...this.state.selectedMatriculationSubjects];
     selectedSubjects[index] = e.target.value;
@@ -114,7 +114,7 @@ class MatriculationSubjectsList extends React.Component<
    */
   getMatriculationSubjectNameByCode = (code: string): string =>
     this.props.i18n.text.get(
-      `plugin.records.hops.matriculationSubject.${code}`,
+      `plugin.records.hops.matriculationSubject.${code}`
     );
 
   /**
@@ -140,7 +140,7 @@ class MatriculationSubjectsList extends React.Component<
                   .initialMatriculationSubjects || [""],
               });
             }
-          },
+          }
         );
     }
   }
@@ -155,7 +155,7 @@ class MatriculationSubjectsList extends React.Component<
       return (
         <div className="loader">
           {this.props.i18n.text.get(
-            "plugin.records.hops.goals.matriculationSubjectLoading",
+            "plugin.records.hops.goals.matriculationSubjectLoading"
           )}
         </div>
       );
@@ -173,7 +173,7 @@ class MatriculationSubjectsList extends React.Component<
               className="visually-hidden"
             >
               {this.props.i18n.text.get(
-                "plugin.wcag.matriculationSubjectSelect.label",
+                "plugin.wcag.matriculationSubjectSelect.label"
               )}
             </label>
             <select
@@ -184,7 +184,7 @@ class MatriculationSubjectsList extends React.Component<
             >
               <option disabled value="">
                 {this.props.i18n.text.get(
-                  "plugin.records.hops.goals.matriculationSubjectChoose",
+                  "plugin.records.hops.goals.matriculationSubjectChoose"
                 )}
               </option>
               {this.state.matriculationSubjects.map(
@@ -192,7 +192,7 @@ class MatriculationSubjectsList extends React.Component<
                   <option key={index} value={subject.code}>
                     {this.getMatriculationSubjectNameByCode(subject.code)}
                   </option>
-                ),
+                )
               )}
             </select>
             <Button
@@ -203,11 +203,11 @@ class MatriculationSubjectsList extends React.Component<
               onClick={this.handleMatriculationSubjectRemove.bind(this, index)}
             >
               {this.props.i18n.text.get(
-                "plugin.records.hops.goals.matriculationSubjectRemove",
+                "plugin.records.hops.goals.matriculationSubjectRemove"
               )}
             </Button>
           </div>
-        ),
+        )
       );
 
     return (
@@ -219,7 +219,7 @@ class MatriculationSubjectsList extends React.Component<
             onClick={this.handleMatriculationSubjectAdd.bind(this)}
           >
             {this.props.i18n.text.get(
-              "plugin.records.hops.goals.matriculationSubjectAdd",
+              "plugin.records.hops.goals.matriculationSubjectAdd"
             )}
           </Button>
         </div>
@@ -240,5 +240,5 @@ function mapDispatchToProps() {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(MatriculationSubjectsList);

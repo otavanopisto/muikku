@@ -144,7 +144,7 @@ export default function guider(
     toggleAllStudentsActive: false,
     currentStudent: null,
   },
-  action: ActionType,
+  action: ActionType
 ): GuiderType {
   if (action.type === "LOCK_TOOLBAR") {
     return Object.assign({}, state, {
@@ -174,10 +174,10 @@ export default function guider(
     const student: GuiderStudentType = action.payload;
     return Object.assign({}, state, {
       selectedStudents: state.selectedStudents.filter(
-        (s) => s.id !== student.id,
+        (s) => s.id !== student.id
       ),
       selectedStudentsIds: state.selectedStudentsIds.filter(
-        (id) => id !== student.id,
+        (id) => id !== student.id
       ),
     });
   } else if (action.type === "SET_CURRENT_GUIDER_STUDENT") {
@@ -216,7 +216,7 @@ export default function guider(
         state.currentStudent && Object.assign({}, state.currentStudent);
       if (newCurrent && newCurrent.labels) {
         newCurrent.labels = newCurrent.labels.filter(
-          (label) => label.id !== action.payload.label.id,
+          (label) => label.id !== action.payload.label.id
         );
       }
     }
@@ -230,7 +230,7 @@ export default function guider(
         } else {
           return Object.assign({}, student, {
             flags: student.flags.filter(
-              (label) => label.id !== action.payload.label.id,
+              (label) => label.id !== action.payload.label.id
             ),
           });
         }
@@ -245,7 +245,7 @@ export default function guider(
     });
   } else if (action.type === "UPDATE_ONE_GUIDER_LABEL_FROM_ALL_STUDENTS") {
     const mapFnStudentLabel = function (
-      label: GuiderStudentUserProfileLabelType,
+      label: GuiderStudentUserProfileLabelType
     ) {
       if (label.flagId === action.payload.labelId) {
         return Object.assign({}, label, action.payload.update);
@@ -272,7 +272,7 @@ export default function guider(
     });
   } else if (action.type === "DELETE_ONE_GUIDER_LABEL_FROM_ALL_STUDENTS") {
     const filterFnStudentLabel = function (
-      label: GuiderStudentUserProfileLabelType,
+      label: GuiderStudentUserProfileLabelType
     ) {
       return label.flagId !== action.payload;
     };
@@ -304,7 +304,7 @@ export default function guider(
     return Object.assign({}, state, {
       currentStudent: Object.assign({}, state.currentStudent, {
         files: state.currentStudent.files.filter(
-          (f) => f.id !== action.payload.id,
+          (f) => f.id !== action.payload.id
         ),
       }),
     });
@@ -351,7 +351,7 @@ export default function guider(
     return Object.assign({}, state, {
       availableFilters: Object.assign({}, state.availableFilters, {
         labels: state.availableFilters.labels.filter(
-          (label) => label.id !== action.payload,
+          (label) => label.id !== action.payload
         ),
       }),
     });

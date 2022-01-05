@@ -22,7 +22,7 @@ export async function loadWorkspacesHelper(
   refresh: boolean,
   loadOrganizationWorkspaces: boolean,
   dispatch: (arg: AnyActionType) => any,
-  getState: () => StateType,
+  getState: () => StateType
 ) {
   const state: StateType = getState();
 
@@ -158,13 +158,13 @@ export async function loadWorkspacesHelper(
             mApi()
               .organizationWorkspaceManagement.workspaces.cacheClear()
               .read(params),
-            "callback",
+            "callback"
           )()
         )
       : <WorkspaceListType>(
           await promisify(
             mApi().coursepicker.workspaces.cacheClear().read(params),
-            "callback",
+            "callback"
           )()
         );
 
@@ -210,8 +210,8 @@ export async function loadWorkspacesHelper(
     dispatch(
       notificationActions.displayNotification(
         getState().i18n.text.get("plugin.coursepicker.errormessage.courseLoad"),
-        "error",
-      ),
+        "error"
+      )
     );
     dispatch({
       type: "UPDATE_WORKSPACES_STATE",
@@ -224,7 +224,7 @@ export async function loadCurrentWorkspaceJournalsHelper(
   userEntityId: number | null,
   initial: boolean,
   dispatch: (arg: AnyActionType) => any,
-  getState: () => StateType,
+  getState: () => StateType
 ) {
   const state: StateType = getState();
   let currentWorkspace = state.workspaces.currentWorkspace;
@@ -278,7 +278,7 @@ export async function loadCurrentWorkspaceJournalsHelper(
     const journals: WorkspaceJournalListType = <WorkspaceJournalListType>(
       await promisify(
         mApi().workspace.workspaces.journal.read(workspaceId, params),
-        "callback",
+        "callback"
       )()
     );
 
@@ -321,10 +321,10 @@ export async function loadCurrentWorkspaceJournalsHelper(
     dispatch(
       notificationActions.displayNotification(
         getState().i18n.text.get(
-          "plugin.workspace.journal.notification.viewLoadError",
+          "plugin.workspace.journal.notification.viewLoadError"
         ),
-        "error",
-      ),
+        "error"
+      )
     );
     dispatch({
       type: "UPDATE_WORKSPACE",

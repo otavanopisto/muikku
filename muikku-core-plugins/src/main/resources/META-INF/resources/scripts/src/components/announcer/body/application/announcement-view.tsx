@@ -52,10 +52,10 @@ class AnnouncementView extends React.Component<
             <ApplicationListHeaderPrimary modifiers="announcement-meta">
               <ApplicationListItemDate
                 startDate={this.props.i18n.time.format(
-                  this.props.announcements.current.startDate,
+                  this.props.announcements.current.startDate
                 )}
                 endDate={this.props.i18n.time.format(
-                  this.props.announcements.current.endDate,
+                  this.props.announcements.current.endDate
                 )}
               />
             </ApplicationListHeaderPrimary>
@@ -73,7 +73,7 @@ class AnnouncementView extends React.Component<
                           : null}
                       </span>
                     </span>
-                  ),
+                  )
                 )}
                 {this.props.announcements.current.userGroupEntityIds.map(
                   (userGroupId) => {
@@ -88,7 +88,7 @@ class AnnouncementView extends React.Component<
                         </span>
                       </span>
                     );
-                  },
+                  }
                 )}
               </div>
             ) : null}

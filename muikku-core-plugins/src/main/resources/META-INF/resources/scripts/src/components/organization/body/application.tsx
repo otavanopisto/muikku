@@ -151,7 +151,7 @@ class OrganizationManagementApplication extends React.Component<
             value={this.state.workspaceSearchFieldValue}
             id="organizationWorkpaceSearch"
             placeholder={this.props.i18n.text.get(
-              "plugin.organization.workspaces.search.placeholder",
+              "plugin.organization.workspaces.search.placeholder"
             )}
             name="organization-workspace-search"
             updateField={this.doWorkspaceSearch}
@@ -167,7 +167,7 @@ class OrganizationManagementApplication extends React.Component<
             value={this.state.userSearchFieldValue}
             id="organizationUserSearch"
             placeholder={this.props.i18n.text.get(
-              "plugin.organization.users.search.placeholder",
+              "plugin.organization.users.search.placeholder"
             )}
             name="organization-user-search"
             updateField={this.doUserSearch}
@@ -183,7 +183,7 @@ class OrganizationManagementApplication extends React.Component<
             value={this.state.userGroupSearchFieldValue}
             id="oganizationUserGroupSearch"
             placeholder={this.props.i18n.text.get(
-              "plugin.organization.userGroups.search.placeholder",
+              "plugin.organization.userGroups.search.placeholder"
             )}
             name="organization-user-group-search"
             updateField={this.doUserGroupSearch}
@@ -202,7 +202,7 @@ class OrganizationManagementApplication extends React.Component<
           {
             id: "SUMMARY",
             name: this.props.i18n.text.get(
-              "plugin.organization.tab.title.summary",
+              "plugin.organization.tab.title.summary"
             ),
             component: () => (
               <ApplicationPanelBody modifier="tabs" children={<Summary />} />
@@ -211,7 +211,7 @@ class OrganizationManagementApplication extends React.Component<
           {
             id: "USERS",
             name: this.props.i18n.text.get(
-              "plugin.organization.tab.title.users",
+              "plugin.organization.tab.title.users"
             ),
             mobileAction: usersPrimaryActionMobile,
             component: () => (
@@ -226,7 +226,7 @@ class OrganizationManagementApplication extends React.Component<
           {
             id: "USERSGROUPS",
             name: this.props.i18n.text.get(
-              "plugin.organization.tab.title.userGroups",
+              "plugin.organization.tab.title.userGroups"
             ),
             mobileAction: userGroupsPrimaryActionMobile,
             component: () => (
@@ -241,7 +241,7 @@ class OrganizationManagementApplication extends React.Component<
           {
             id: "COURSES",
             name: this.props.i18n.text.get(
-              "plugin.organization.tab.title.courses",
+              "plugin.organization.tab.title.courses"
             ),
             mobileAction: coursesPrimaryActionMobile,
             component: () => (
@@ -277,10 +277,10 @@ function mapStateToProps(state: StateType) {
 const mapDispatchToProps = (dispatch: Dispatch<any>) =>
   bindActionCreators(
     { loadUsers, loadWorkspaces: loadWorkspacesFromServer, loadUserGroups },
-    dispatch,
+    dispatch
   );
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(OrganizationManagementApplication);

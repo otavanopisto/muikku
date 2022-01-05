@@ -134,7 +134,7 @@ class CurrentStudentStatistics extends React.Component<
 
     //NOTE: Data can be filtered here also (Option 2)
     const sortedKeys = Array.from(chartDataMap.keys()).sort((a, b) =>
-      a > b ? 1 : -1,
+      a > b ? 1 : -1
     );
     const data: any = [];
     sortedKeys.forEach((key) => {

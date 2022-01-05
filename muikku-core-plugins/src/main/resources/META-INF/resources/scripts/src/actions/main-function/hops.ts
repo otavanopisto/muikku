@@ -30,7 +30,7 @@ export type UPDATE_HOPS_STATUS = SpecificActionType<
 const updateHops: UpdateHopsTriggerType = function updateHops(callback) {
   return async (
     dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType,
+    getState: () => StateType
   ) => {
     try {
       if (getState().hops.status !== "WAIT") {
@@ -69,10 +69,10 @@ const updateHops: UpdateHopsTriggerType = function updateHops(callback) {
       dispatch(
         actions.displayNotification(
           getState().i18n.text.get(
-            "plugin.records.hops.errormessage.hopsLoadFailed",
+            "plugin.records.hops.errormessage.hopsLoadFailed"
           ),
-          "error",
-        ),
+          "error"
+        )
       );
       dispatch({
         type: "UPDATE_HOPS_STATUS",
@@ -85,7 +85,7 @@ const updateHops: UpdateHopsTriggerType = function updateHops(callback) {
 const setHopsTo: SetHopsToTriggerType = function setHopsTo(newHops) {
   return async (
     dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType,
+    getState: () => StateType
   ) => {
     try {
       dispatch({
@@ -101,10 +101,10 @@ const setHopsTo: SetHopsToTriggerType = function setHopsTo(newHops) {
       dispatch(
         actions.displayNotification(
           getState().i18n.text.get(
-            "plugin.records.hops.errormessage.hopsUpdateFailed",
+            "plugin.records.hops.errormessage.hopsUpdateFailed"
           ),
-          "error",
-        ),
+          "error"
+        )
       );
     }
   };

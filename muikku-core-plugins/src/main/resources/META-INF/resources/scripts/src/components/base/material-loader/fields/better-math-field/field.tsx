@@ -28,7 +28,7 @@ interface FieldState {}
 
 function checkIsParentOrSelf(
   element: HTMLElement,
-  comparer: HTMLElement | string,
+  comparer: HTMLElement | string
 ): boolean {
   if (
     typeof comparer === "string"
@@ -97,7 +97,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
       document.body.addEventListener("click", this.handleAllClicks);
     } else {
       (this.refs.input as HTMLElement).classList.add(
-        "material-page__mathfield--readonly",
+        "material-page__mathfield--readonly"
       );
     }
   }
@@ -109,13 +109,13 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     if (nextProps.readOnly !== this.props.readOnly) {
       if (nextProps.readOnly) {
         (this.refs.input as HTMLElement).classList.add(
-          "material-page__mathfield--readonly",
+          "material-page__mathfield--readonly"
         );
         (this.refs.input as HTMLElement).removeAttribute("contentEditable");
         document.body.removeEventListener("click", this.handleAllClicks);
       } else {
         (this.refs.input as HTMLElement).classList.remove(
-          "material-page__mathfield--readonly",
+          "material-page__mathfield--readonly"
         );
         (this.refs.input as HTMLElement).contentEditable = "true";
         document.body.addEventListener("click", this.handleAllClicks);
@@ -138,8 +138,8 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     (this.refs.input as HTMLInputElement).innerHTML = this.value;
     Array.from(
       (this.refs.input as HTMLInputElement).querySelectorAll(
-        "." + this.props.formulaClassName,
-      ),
+        "." + this.props.formulaClassName
+      )
     ).forEach((element: HTMLElement) => {
       toSVG(element, warningImage, null, loadingImage);
     });
@@ -147,8 +147,8 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     this.imgUrls = [];
     Array.from(
       (this.refs.input as HTMLInputElement).querySelectorAll(
-        "img." + this.props.imageClassName,
-      ),
+        "img." + this.props.imageClassName
+      )
     ).forEach((element: HTMLImageElement) => {
       this.imgUrls.push(element.src);
     });
@@ -390,7 +390,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
         this.aceEditor.focus();
         this.aceEditor.session.insert(
           this.aceEditor.getCursorPosition(),
-          command.latexText,
+          command.latexText
         );
       }
 
@@ -403,7 +403,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     document.execCommand(
       "insertHTML",
       false,
-      `<img class="${this.props.formulaClassName}"/>`,
+      `<img class="${this.props.formulaClassName}"/>`
     );
     const image: HTMLImageElement = (
       this.refs.input as HTMLDivElement
@@ -430,7 +430,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
       document.execCommand(
         "insertHTML",
         false,
-        `<img class="${this.props.imageClassName}" src="${url}"/>`,
+        `<img class="${this.props.imageClassName}" src="${url}"/>`
       );
     }
   }
@@ -472,7 +472,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
       selectedFormulaContentUndelimited =
         selectedFormulaContentUndelimited.substr(
           0,
-          selectedFormulaContentUndelimited.length - 2,
+          selectedFormulaContentUndelimited.length - 2
         );
     }
 
@@ -508,7 +508,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
 
     this.selectedFormula.parentElement.replaceChild(
       this.selectedMathFieldContainer,
-      this.selectedFormula,
+      this.selectedFormula
     );
 
     // Now we create the math field from the span in the middle
@@ -552,7 +552,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     let node = this.aceEditor.renderer.emptyMessageNode;
     if (!shouldShow && node) {
       this.aceEditor.renderer.scroller.removeChild(
-        this.aceEditor.renderer.emptyMessageNode,
+        this.aceEditor.renderer.emptyMessageNode
       );
       this.aceEditor.renderer.emptyMessageNode = null;
     } else if (shouldShow && !node) {
@@ -571,7 +571,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     // If we didn't click a formula  we need to check whether this is the field
     const areWeInsideTheElement = checkIsParentOrSelf(
       clickedTarget,
-      this.refs.input as HTMLElement,
+      this.refs.input as HTMLElement
     );
 
     // If this is the field
@@ -618,12 +618,12 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
       const latex = this.selectedMathField.latex();
       if (latex.trim() === "") {
         this.selectedMathFieldContainer.parentElement.removeChild(
-          this.selectedMathFieldContainer,
+          this.selectedMathFieldContainer
         );
       } else {
         this.selectedMathFieldContainer.parentElement.replaceChild(
           this.selectedFormula,
-          this.selectedMathFieldContainer,
+          this.selectedMathFieldContainer
         );
         if (this.changedSelected) {
           this.selectedFormula.alt = latex;

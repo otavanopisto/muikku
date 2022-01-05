@@ -18,7 +18,7 @@ export default class FrontpageVideos extends React.Component<
         id="videos"
         className="screen-container__section"
         aria-label={this.props.i18n.text.get(
-          "plugin.wcag.frontPageSectionVideosLabel",
+          "plugin.wcag.frontPageSectionVideosLabel"
         )}
       >
         <Carousel

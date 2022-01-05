@@ -25,7 +25,7 @@ class MatriculationEligibilityRow extends React.Component<
 
   getMatriculationSubjectNameByCode = (code: string): string =>
     this.props.i18n.text.get(
-      `plugin.records.hops.matriculationSubject.${code}`,
+      `plugin.records.hops.matriculationSubject.${code}`
     );
 
   render() {
@@ -40,10 +40,10 @@ class MatriculationEligibilityRow extends React.Component<
         >
           {this.props.subject.eligibility === "ELIGIBLE"
             ? this.props.i18n.text.get(
-                "plugin.records.hops.matriculationEligibleText.true.short",
+                "plugin.records.hops.matriculationEligibleText.true.short"
               )
             : this.props.i18n.text.get(
-                "plugin.records.hops.matriculationEligibleText.false.short",
+                "plugin.records.hops.matriculationEligibleText.false.short"
               )}
         </div>
         <div className="application-sub-panel__summary-item-label">
@@ -55,7 +55,7 @@ class MatriculationEligibilityRow extends React.Component<
             __html: this.props.i18n.text.get(
               "plugin.records.hops.matriculationEligibleTooltip",
               this.props.subject.acceptedCount,
-              this.props.subject.requiredCount,
+              this.props.subject.requiredCount
             ),
           }}
         />
@@ -76,5 +76,5 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(MatriculationEligibilityRow);

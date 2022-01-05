@@ -96,7 +96,7 @@ export default function records(
     currentStatus: "WAIT",
     curriculums: [],
   },
-  action: ActionType,
+  action: ActionType
 ): RecordsType {
   if (action.type === "UPDATE_RECORDS_ALL_STUDENT_USERS_DATA") {
     return Object.assign({}, state, {

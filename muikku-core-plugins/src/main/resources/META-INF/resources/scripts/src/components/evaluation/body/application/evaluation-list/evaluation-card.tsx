@@ -70,11 +70,11 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
        */
       if (status === important) {
         updatedImportAssessmentList = updatedImportAssessmentList.filter(
-          (item) => item !== rest.workspaceUserEntityId,
+          (item) => item !== rest.workspaceUserEntityId
         );
 
         updatedUnimportAssessmentList = updatedUnimportAssessmentList.filter(
-          (item) => item !== rest.workspaceUserEntityId,
+          (item) => item !== rest.workspaceUserEntityId
         );
 
         updateImportances = {
@@ -93,7 +93,7 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
          */
         updatedImportAssessmentList.push(rest.workspaceUserEntityId);
         updatedUnimportAssessmentList = updatedUnimportAssessmentList.filter(
-          (item) => item !== rest.workspaceUserEntityId,
+          (item) => item !== rest.workspaceUserEntityId
         );
 
         updateImportances = {
@@ -111,7 +111,7 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
          * As above
          */
         updatedImportAssessmentList = updatedImportAssessmentList.filter(
-          (item) => item !== rest.workspaceUserEntityId,
+          (item) => item !== rest.workspaceUserEntityId
         );
 
         updatedUnimportAssessmentList.push(rest.workspaceUserEntityId);
@@ -144,7 +144,7 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
    * Handles workspacename click. It "filters" every assessments by that workspace
    */
   const handleWorkspaceNameClick = (
-    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
   ) => {
     setSelectedWorkspaceId({ workspaceId: rest.workspaceEntityId });
   };
@@ -241,7 +241,7 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
       <DeleteRequestDialog {...rest}>
         <ButtonPill
           aria-label={i18n.text.get(
-            "plugin.evaluation.card.button.deleteRequest.title",
+            "plugin.evaluation.card.button.deleteRequest.title"
           )}
           buttonModifiers="archive"
           icon="archive"
@@ -253,7 +253,7 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
       <ArchiveDialog place="card" {...rest}>
         <ButtonPill
           aria-label={i18n.text.get(
-            "plugin.evaluation.card.button.archiveButtonLabel",
+            "plugin.evaluation.card.button.archiveButtonLabel"
           )}
           buttonModifiers="archive"
           icon="archive"
@@ -318,7 +318,7 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
         <div className="evaluation-card__button-set">
           <IconButton
             aria-label={i18n.text.get(
-              "plugin.evaluation.card.button.markImportantButtonLabel",
+              "plugin.evaluation.card.button.markImportantButtonLabel"
             )}
             onClick={handleImportanceClick("important")}
             buttonModifiers={["important", evaluationImportantClassesMod]}
@@ -326,7 +326,7 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
           />
           <IconButton
             aria-label={i18n.text.get(
-              "plugin.evaluation.card.button.markNonImportantButtonLabel",
+              "plugin.evaluation.card.button.markNonImportantButtonLabel"
             )}
             onClick={handleImportanceClick("unimportant")}
             buttonModifiers={["unimportant", evaluationUnimportantClassesMod]}
@@ -340,7 +340,7 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
           <EvaluateDialog assessment={rest} onClose={handleDialogClose}>
             <ButtonPill
               aria-label={i18n.text.get(
-                "plugin.evaluation.card.button.evaluateButtonLabel",
+                "plugin.evaluation.card.button.evaluateButtonLabel"
               )}
               buttonModifiers="evaluate"
               icon="evaluate"
@@ -369,7 +369,7 @@ function mapStateToProps(state: StateType) {
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     { loadEvaluationAssessmentRequestsFromServer },
-    dispatch,
+    dispatch
   );
 }
 

@@ -21,7 +21,7 @@ export async function loadStudentsHelper(
   filters: GuiderActiveFiltersType | null,
   initial: boolean,
   dispatch: (arg: AnyActionType) => any,
-  getState: () => StateType,
+  getState: () => StateType
 ) {
   dispatch({
     type: "SET_CURRENT_GUIDER_STUDENT",
@@ -84,7 +84,7 @@ export async function loadStudentsHelper(
     let students: GuiderStudentListType = <GuiderStudentListType>(
       await promisify(
         mApi().guider.students.cacheClear().read(params),
-        "callback",
+        "callback"
       )()
     );
 
@@ -123,8 +123,8 @@ export async function loadStudentsHelper(
     dispatch(
       notificationActions.displayNotification(
         getState().i18n.text.get("plugin.guider.errormessage.users"),
-        "error",
-      ),
+        "error"
+      )
     );
     dispatch({
       type: "UPDATE_GUIDER_STATE",

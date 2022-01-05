@@ -67,7 +67,7 @@ class GuiderToolbar extends React.Component<
   getBackByHash(): string {
     const locationData = queryString.parse(
       document.location.hash.split("?")[1] || "",
-      { arrayFormat: "bracket" },
+      { arrayFormat: "bracket" }
     );
     delete locationData.c;
     const newHash =
@@ -100,7 +100,7 @@ class GuiderToolbar extends React.Component<
     });
     const locationData = queryString.parse(
       document.location.hash.split("?")[1] || "",
-      { arrayFormat: "bracket" },
+      { arrayFormat: "bracket" }
     );
     locationData.q = query;
     window.location.hash =
@@ -133,7 +133,7 @@ class GuiderToolbar extends React.Component<
    */
 
   turnSelectedUsersToContacts = (
-    users: GuiderStudentListType,
+    users: GuiderStudentListType
   ): ContactRecipientType[] => {
     const contacts: ContactRecipientType[] = [];
     users.map((user) => {
@@ -159,7 +159,7 @@ class GuiderToolbar extends React.Component<
     // We need the arrays of ids for comparison from the dialog and the redux state
 
     const selectedUserIds: number[] = selectedUsers.map(
-      (student) => student.value.id,
+      (student) => student.value.id
     );
     const guiderSelectedStudentsIds: number[] =
       this.props.guider.selectedStudents.map((student) => student.userEntityId);
@@ -177,7 +177,7 @@ class GuiderToolbar extends React.Component<
     // Check if the leftover id is actually a user in the redux state and if it is, remove it
 
     const selectedUser = this.props.guider.selectedStudents.find(
-      (user) => user.userEntityId === remainingStudentsId,
+      (user) => user.userEntityId === remainingStudentsId
     );
     const isGuiderSelectedStudent = !!selectedUser;
 
@@ -204,7 +204,7 @@ class GuiderToolbar extends React.Component<
                 refreshInitialSelectedItemsOnOpen
                 onRecipientChange={this.onContactsChange}
                 initialSelectedItems={this.turnSelectedUsersToContacts(
-                  this.props.guider.selectedStudents,
+                  this.props.guider.selectedStudents
                 )}
               >
                 <ButtonPill
@@ -231,7 +231,7 @@ class GuiderToolbar extends React.Component<
                 onFocus={this.onInputFocus}
                 onBlur={this.onInputBlur}
                 placeholder={this.props.i18n.text.get(
-                  "plugin.guider.search.placeholder",
+                  "plugin.guider.search.placeholder"
                 )}
                 value={this.state.searchquery}
               />
@@ -257,7 +257,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
       removeFromGuiderSelectedStudents,
       toggleAllStudents,
     },
-    dispatch,
+    dispatch
   );
 }
 

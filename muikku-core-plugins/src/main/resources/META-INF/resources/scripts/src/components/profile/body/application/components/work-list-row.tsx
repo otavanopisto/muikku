@@ -144,7 +144,7 @@ class WorkListRow extends React.Component<
     const isCurrentMonth = itemEntryDateAsMoment.isSame(today, "month");
     const isPreviousMonth = itemEntryDateAsMoment.isSame(
       previousMonth,
-      "month",
+      "month"
     );
 
     // the rule for can be edited it must not be paid or approved
@@ -164,35 +164,35 @@ class WorkListRow extends React.Component<
     switch (this.props.item.state) {
       case "ENTERED":
         entryStateText = this.props.i18n.text.get(
-          "plugin.profile.worklist.states.ENTERED",
+          "plugin.profile.worklist.states.ENTERED"
         );
         entryStateIcon = "icon-check";
         entryStateClass = "state-ENTERED";
         break;
       case "PROPOSED":
         entryStateText = this.props.i18n.text.get(
-          "plugin.profile.worklist.states.PROPOSED",
+          "plugin.profile.worklist.states.PROPOSED"
         );
         entryStateIcon = "icon-thumb-up";
         entryStateClass = "state-PROPOSED";
         break;
       case "APPROVED":
         entryStateText = this.props.i18n.text.get(
-          "plugin.profile.worklist.states.APPROVED",
+          "plugin.profile.worklist.states.APPROVED"
         );
         entryStateIcon = "icon-thumb-up";
         entryStateClass = "state-APPROVED";
         break;
       case "PAID":
         entryStateText = this.props.i18n.text.get(
-          "plugin.profile.worklist.states.PAID",
+          "plugin.profile.worklist.states.PAID"
         );
         entryStateIcon = "icon-lock";
         entryStateClass = "state-PAID";
         break;
       default:
         entryStateText = this.props.i18n.text.get(
-          "plugin.profile.worklist.states.ENTERED",
+          "plugin.profile.worklist.states.ENTERED"
         );
         entryStateIcon = "icon-check";
         entryStateClass = "state-ENTERED";
@@ -257,7 +257,7 @@ function mapStateToProps(state: StateType) {
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     { deleteProfileWorklistItem, editProfileWorklistItem },
-    dispatch,
+    dispatch
   );
 }
 

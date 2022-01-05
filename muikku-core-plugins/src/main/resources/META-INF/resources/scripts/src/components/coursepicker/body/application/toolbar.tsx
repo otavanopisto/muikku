@@ -48,7 +48,7 @@ class CoursepickerToolbar extends React.Component<
     });
     const locationData = queryString.parse(
       document.location.hash.split("?")[1] || "",
-      { arrayFormat: "bracket" },
+      { arrayFormat: "bracket" }
     );
     locationData.q = query;
     window.location.hash =
@@ -86,7 +86,7 @@ class CoursepickerToolbar extends React.Component<
             onFocus={this.onInputFocus}
             onBlur={this.onInputBlur}
             placeholder={this.props.i18n.text.get(
-              "plugin.coursepicker.search.placeholder",
+              "plugin.coursepicker.search.placeholder"
             )}
             value={this.state.searchquery}
           />
@@ -109,5 +109,5 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(CoursepickerToolbar);

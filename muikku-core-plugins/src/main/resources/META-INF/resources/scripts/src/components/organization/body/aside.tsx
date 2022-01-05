@@ -38,5 +38,5 @@ function mapDispatchToProps() {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(OrganizationManagementAside);

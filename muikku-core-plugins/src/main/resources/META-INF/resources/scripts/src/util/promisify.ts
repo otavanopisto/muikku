@@ -24,7 +24,7 @@ export function promisifyNewConstructor(
   Constructor: any,
   onload: string,
   onerror: string,
-  setupAttributes?: { [attr: string]: any },
+  setupAttributes?: { [attr: string]: any }
 ) {
   return function (...args: any[]) {
     return new Promise(function (resolve, reject) {

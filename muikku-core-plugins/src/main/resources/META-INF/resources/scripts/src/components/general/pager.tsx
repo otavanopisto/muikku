@@ -69,7 +69,7 @@ class Pager extends React.Component<PagerProps, PagerState> {
                   className="pager__item pager__item--less icon-arrow-left"
                   onClick={this.props.onClick.bind(null, pagerLessNumber)}
                   aria-label={this.props.i18n.text.get(
-                    "plugin.wcag.pager.prev10.label",
+                    "plugin.wcag.pager.prev10.label"
                   )}
                 />,
                 <div
@@ -77,7 +77,7 @@ class Pager extends React.Component<PagerProps, PagerState> {
                   className="pager__item pager__item--first"
                   onClick={this.props.onClick.bind(null, 1)}
                   aria-label={this.props.i18n.text.get(
-                    "plugin.wcag.pager.goToPage.label",
+                    "plugin.wcag.pager.goToPage.label"
                   )}
                 >
                   1
@@ -89,7 +89,7 @@ class Pager extends React.Component<PagerProps, PagerState> {
             : null}
           {Array.from(
             new Array(rightPage - leftPage + 1),
-            (x, i) => leftPage + i,
+            (x, i) => leftPage + i
           ).map((page) => (
             <div
               tabIndex={0}
@@ -117,7 +117,7 @@ class Pager extends React.Component<PagerProps, PagerState> {
                   className="pager__item pager__item--last"
                   onClick={this.props.onClick.bind(null, this.props.pages)}
                   aria-label={this.props.i18n.text.get(
-                    "plugin.wcag.pager.goToPage.label",
+                    "plugin.wcag.pager.goToPage.label"
                   )}
                 >
                   {this.props.pages}
@@ -127,7 +127,7 @@ class Pager extends React.Component<PagerProps, PagerState> {
                   className="pager__item pager__item--more icon-arrow-right"
                   onClick={this.props.onClick.bind(null, pagerMoreNumber)}
                   aria-label={this.props.i18n.text.get(
-                    "plugin.wcag.pager.next10.label",
+                    "plugin.wcag.pager.next10.label"
                   )}
                 />,
               ]

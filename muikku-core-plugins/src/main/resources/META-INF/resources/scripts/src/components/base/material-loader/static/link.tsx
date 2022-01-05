@@ -22,7 +22,7 @@ export default class Link extends React.Component<LinkProps, {}> {
   }
   render() {
     const newRules = this.props.processingRules.filter(
-      (r) => r.id !== "link-rule",
+      (r) => r.id !== "link-rule"
     );
     newRules.push({
       shouldProcessHTMLElement: (tag, element) =>

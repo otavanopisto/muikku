@@ -20,7 +20,7 @@ interface MathFieldProps {
   onChange?: (
     context: React.Component<any, any>,
     name: string,
-    newValue: any,
+    newValue: any
   ) => any;
 }
 
@@ -108,7 +108,7 @@ export default class TextField extends React.Component<
     // this means old formulas will 100% fail to parse
 
     const fieldSavedStateClass = createFieldSavedStateClass(
-      this.state.fieldSavedState,
+      this.state.fieldSavedState
     );
 
     return (
@@ -133,25 +133,25 @@ export default class TextField extends React.Component<
           toolbarClassName="material-page__mathfield-toolbar"
           i18n={{
             symbols: this.props.i18n.text.get(
-              "plugin.workspace.mathField.symbols",
+              "plugin.workspace.mathField.symbols"
             ),
             relations: this.props.i18n.text.get(
-              "plugin.workspace.mathField.relations",
+              "plugin.workspace.mathField.relations"
             ),
             geometryAndVectors: this.props.i18n.text.get(
-              "plugin.workspace.mathField.geometryAndVectors",
+              "plugin.workspace.mathField.geometryAndVectors"
             ),
             setTheoryNotation: this.props.i18n.text.get(
-              "plugin.workspace.mathField.setTheoryNotation",
+              "plugin.workspace.mathField.setTheoryNotation"
             ),
             mathFormulas: this.props.i18n.text.get(
-              "plugin.workspace.mathField.addMathFormula",
+              "plugin.workspace.mathField.addMathFormula"
             ),
             operators: this.props.i18n.text.get(
-              "plugin.workspace.mathField.operators",
+              "plugin.workspace.mathField.operators"
             ),
             image: this.props.i18n.text.get(
-              "plugin.workspace.mathField.addImage",
+              "plugin.workspace.mathField.addImage"
             ),
           }}
           readOnly={this.props.readOnly}

@@ -63,7 +63,7 @@ class CommunicatorApplication extends React.Component<
             >
               <span>
                 {this.props.i18n.text.get(
-                  "plugin.communicator.settings.signature",
+                  "plugin.communicator.settings.signature"
                 )}
               </span>
             </Link>

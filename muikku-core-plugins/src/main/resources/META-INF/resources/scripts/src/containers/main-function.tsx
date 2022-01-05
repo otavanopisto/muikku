@@ -171,17 +171,17 @@ export default class MainFunction extends React.Component<
           arrayFormat: "bracket",
         }),
         false,
-        false,
+        false
       );
     } else if (window.location.pathname.includes("/communicator")) {
       this.loadCommunicatorData(
-        window.location.hash.replace("#", "").split("/"),
+        window.location.hash.replace("#", "").split("/")
       );
     } else if (window.location.pathname.includes("/discussion")) {
       this.loadDiscussionData(window.location.hash.replace("#", "").split("/"));
     } else if (window.location.pathname.includes("/announcements")) {
       this.loadAnnouncementsData(
-        parseInt(window.location.hash.replace("#", "")),
+        parseInt(window.location.hash.replace("#", ""))
       );
     } else if (window.location.pathname.includes("/announcer")) {
       this.loadAnnouncerData(window.location.hash.replace("#", "").split("/"));
@@ -195,7 +195,7 @@ export default class MainFunction extends React.Component<
           arrayFormat: "bracket",
         }),
         true,
-        false,
+        false
       );
     } else if (window.location.pathname.includes("/profile")) {
       this.loadProfileData(window.location.hash.replace("#", "").split("?")[0]);
@@ -234,26 +234,26 @@ export default class MainFunction extends React.Component<
     if (window.location.hash.replace("#", "").indexOf("userprofile") === 0) {
       this.props.store.dispatch(
         loadStudent(
-          decodeURIComponent(window.location.hash.split("/")[1]).split('"')[0],
-        ) as Action,
+          decodeURIComponent(window.location.hash.split("/")[1]).split('"')[0]
+        ) as Action
       );
       return;
     }
     const originalData: any = queryString.parse(
       window.location.hash.split("?")[1] || "",
-      { arrayFormat: "bracket" },
+      { arrayFormat: "bracket" }
     );
 
     if (!originalData.c) {
       const filters: GuiderActiveFiltersType = {
         workspaceFilters: (originalData.w || []).map((num: string) =>
-          parseInt(num),
+          parseInt(num)
         ),
         labelFilters: (originalData.l || []).map((num: string) =>
-          parseInt(num),
+          parseInt(num)
         ),
         userGroupFilters: (originalData.u || []).map((num: string) =>
-          parseInt(num),
+          parseInt(num)
         ),
         query: originalData.q || "",
       };
@@ -276,7 +276,7 @@ export default class MainFunction extends React.Component<
 
     if (!givenLocation && !originalData.w) {
       this.props.store.dispatch(
-        setLocationToSummaryInTranscriptOfRecords() as Action,
+        setLocationToSummaryInTranscriptOfRecords() as Action
       );
       this.props.store.dispatch(updateSummary() as Action);
     } else if (!givenLocation) {
@@ -284,43 +284,43 @@ export default class MainFunction extends React.Component<
         setCurrentStudentUserViewAndWorkspace(
           parseInt(originalData.u),
           originalData.i,
-          parseInt(originalData.w),
-        ) as Action,
+          parseInt(originalData.w)
+        ) as Action
       );
     } else if (givenLocation === "records") {
       this.props.store.dispatch(
-        updateAllStudentUsersAndSetViewToRecords() as Action,
+        updateAllStudentUsersAndSetViewToRecords() as Action
       );
     } else if (givenLocation === "vops") {
       this.props.store.dispatch(
-        setLocationToVopsInTranscriptOfRecords() as Action,
+        setLocationToVopsInTranscriptOfRecords() as Action
       );
       this.props.store.dispatch(updateVops() as Action);
     } else if (givenLocation === "hops") {
       this.props.store.dispatch(
-        setLocationToHopsInTranscriptOfRecords() as Action,
+        setLocationToHopsInTranscriptOfRecords() as Action
       );
       this.props.store.dispatch(updateHops() as Action);
     } else if (givenLocation === "yo") {
       this.props.store.dispatch(
-        setLocationToYoInTranscriptOfRecords() as Action,
+        setLocationToYoInTranscriptOfRecords() as Action
       );
       this.props.store.dispatch(
         updateHops(() => {
           this.props.store.dispatch(updateYO() as Action);
           this.props.store.dispatch(
-            updateMatriculationSubjectEligibility() as Action,
+            updateMatriculationSubjectEligibility() as Action
           );
-        }) as Action,
+        }) as Action
       );
     } else if (givenLocation === "summary") {
       this.props.store.dispatch(
-        setLocationToSummaryInTranscriptOfRecords() as Action,
+        setLocationToSummaryInTranscriptOfRecords() as Action
       );
       this.props.store.dispatch(updateSummary() as Action);
     } else if (givenLocation === "statistics") {
       this.props.store.dispatch(
-        setLocationToStatisticsInTranscriptOfRecords() as Action,
+        setLocationToStatisticsInTranscriptOfRecords() as Action
       );
       this.props.store.dispatch(updateStatistics() as Action);
     }
@@ -352,8 +352,8 @@ export default class MainFunction extends React.Component<
       this.props.store.dispatch(
         loadAnnouncement(
           actualLocation[0],
-          parseInt(actualLocation[1]),
-        ) as Action,
+          parseInt(actualLocation[1])
+        ) as Action
       );
     }
   }
@@ -377,7 +377,7 @@ export default class MainFunction extends React.Component<
         loadDiscussionThreadsFromServer({
           areaId: parseInt(location[0]) || null,
           page: parseInt(location[1]) || 1,
-        }) as Action,
+        }) as Action
       );
     } else {
       //There will always be an areaId and page designed #1/2/3 where then 3 is the threaid
@@ -388,7 +388,7 @@ export default class MainFunction extends React.Component<
           page: parseInt(location[1]),
           threadId: parseInt(location[2]),
           threadPage: parseInt(location[3]) || 1,
-        }) as Action,
+        }) as Action
       );
     }
   }
@@ -399,7 +399,7 @@ export default class MainFunction extends React.Component<
   loadCoursePickerData(
     originalData: any,
     isOrganization: boolean,
-    refresh: boolean,
+    refresh: boolean
   ) {
     const filters: WorkspacesActiveFiltersType = {
       educationFilters: originalData.e || [],
@@ -411,7 +411,7 @@ export default class MainFunction extends React.Component<
       baseFilter: originalData.b || "ALL_COURSES",
     };
     this.props.store.dispatch(
-      loadWorkspacesFromServer(filters, isOrganization, refresh) as Action,
+      loadWorkspacesFromServer(filters, isOrganization, refresh) as Action
     );
   }
 
@@ -421,11 +421,11 @@ export default class MainFunction extends React.Component<
   loadCommunicatorData(location: string[]) {
     if (location.length === 1) {
       this.props.store.dispatch(
-        loadMessageThreads(location[0], null) as Action,
+        loadMessageThreads(location[0], null) as Action
       );
     } else {
       this.props.store.dispatch(
-        loadMessageThread(location[0], parseInt(location[1])) as Action,
+        loadMessageThread(location[0], parseInt(location[1])) as Action
       );
     }
   }
@@ -439,24 +439,24 @@ export default class MainFunction extends React.Component<
     if (this.itsFirstTime) {
       this.props.websocket && this.props.websocket.restoreEventListeners();
       this.props.store.dispatch(
-        loadUserWorkspaceCurriculumFiltersFromServer(false) as Action,
+        loadUserWorkspaceCurriculumFiltersFromServer(false) as Action
       );
       this.props.store.dispatch(
-        loadUserWorkspaceEducationFiltersFromServer(false) as Action,
+        loadUserWorkspaceEducationFiltersFromServer(false) as Action
       );
       this.props.store.dispatch(
-        loadUserWorkspaceOrganizationFiltersFromServer() as Action,
+        loadUserWorkspaceOrganizationFiltersFromServer() as Action
       );
       this.props.store.dispatch(
         titleActions.updateTitle(
           this.props.store
             .getState()
-            .i18n.text.get("plugin.coursepicker.pageTitle"),
-        ),
+            .i18n.text.get("plugin.coursepicker.pageTitle")
+        )
       );
       const currentLocationData = queryString.parse(
         window.location.hash.split("?")[1] || "",
-        { arrayFormat: "bracket" },
+        { arrayFormat: "bracket" }
       );
       const currentLocationHasData =
         Object.keys(currentLocationData).length > 0 ? true : false;
@@ -496,7 +496,7 @@ export default class MainFunction extends React.Component<
           this.props.store.dispatch(
             loadLoggedUser((user: UserType) => {
               loadCoursepickerDataByUser(user);
-            }) as Action,
+            }) as Action
           );
         } else {
           const user =
@@ -526,18 +526,18 @@ export default class MainFunction extends React.Component<
           .restoreEventListeners()
           .addEventListener(
             "Communicator:newmessagereceived",
-            loadLastMessageThreadsFromServer.bind(null, 6),
+            loadLastMessageThreadsFromServer.bind(null, 6)
           );
       this.props.store.dispatch(
-        loadAnnouncementsAsAClient({ loadUserGroups: false }) as Action,
+        loadAnnouncementsAsAClient({ loadUserGroups: false }) as Action
       );
       this.props.store.dispatch(loadLastWorkspaceFromServer() as Action);
       this.props.store.dispatch(loadUserWorkspacesFromServer() as Action);
       this.props.store.dispatch(loadLastMessageThreadsFromServer(6) as Action);
       this.props.store.dispatch(
         titleActions.updateTitle(
-          this.props.store.getState().i18n.text.get("plugin.site.title"),
-        ),
+          this.props.store.getState().i18n.text.get("plugin.site.title")
+        )
       );
       this.loadChatSettings();
     }
@@ -558,7 +558,7 @@ export default class MainFunction extends React.Component<
           name: this.props.store
             .getState()
             .i18n.text.get(
-              "plugin.organization.filters.workspaceState.unpublished.label",
+              "plugin.organization.filters.workspaceState.unpublished.label"
             ),
         },
         {
@@ -566,7 +566,7 @@ export default class MainFunction extends React.Component<
           name: this.props.store
             .getState()
             .i18n.text.get(
-              "plugin.organization.filters.workspaceState.published.label",
+              "plugin.organization.filters.workspaceState.published.label"
             ),
         },
       ];
@@ -574,23 +574,23 @@ export default class MainFunction extends React.Component<
         titleActions.updateTitle(
           this.props.store
             .getState()
-            .i18n.text.get("plugin.organization.pageTitle"),
-        ),
+            .i18n.text.get("plugin.organization.pageTitle")
+        )
       );
       this.props.websocket && this.props.websocket.restoreEventListeners();
       this.props.store.dispatch(
-        setWorkspaceStateFilters(true, stateFilters) as Action,
+        setWorkspaceStateFilters(true, stateFilters) as Action
       );
       this.props.store.dispatch(
-        loadUserWorkspaceCurriculumFiltersFromServer(true) as Action,
+        loadUserWorkspaceCurriculumFiltersFromServer(true) as Action
       );
       this.props.store.dispatch(
-        loadUserWorkspaceEducationFiltersFromServer(true) as Action,
+        loadUserWorkspaceEducationFiltersFromServer(true) as Action
       );
       this.props.store.dispatch(loadOrganizationSummary() as Action);
       const currentLocationData = queryString.parse(
         window.location.hash.split("?")[1] || "",
-        { arrayFormat: "bracket" },
+        { arrayFormat: "bracket" }
       );
       const currentLocationHasData =
         Object.keys(currentLocationData).length > 0 ? true : false;
@@ -628,7 +628,7 @@ export default class MainFunction extends React.Component<
           this.props.store.dispatch(
             loadLoggedUser((user: UserType) => {
               loadWorkspacesByUser(user);
-            }) as Action,
+            }) as Action
           );
         } else {
           const user =
@@ -644,12 +644,12 @@ export default class MainFunction extends React.Component<
       this.props.store.dispatch(
         loadUsers({
           payload: { q: "", firstResult: 0, maxResults: 10 },
-        }) as Action,
+        }) as Action
       );
       this.props.store.dispatch(
         loadUserGroups({
           payload: { q: "", firstResult: 0, maxResults: 25 },
-        }) as Action,
+        }) as Action
       );
       this.props.store.dispatch(loadStudyprogrammes() as Action);
       this.loadChatSettings();
@@ -668,21 +668,21 @@ export default class MainFunction extends React.Component<
           .restoreEventListeners()
           .addEventListener(
             "Communicator:newmessagereceived",
-            loadNewlyReceivedMessage,
+            loadNewlyReceivedMessage
           );
 
       this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
       this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
       this.loadlib(
-        `//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`,
+        `//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`
       );
 
       this.props.store.dispatch(
         titleActions.updateTitle(
           this.props.store
             .getState()
-            .i18n.text.get("plugin.communicator.pageTitle"),
-        ),
+            .i18n.text.get("plugin.communicator.pageTitle")
+        )
       );
       this.props.store.dispatch(loadSignature() as Action);
 
@@ -692,7 +692,7 @@ export default class MainFunction extends React.Component<
           if (currentLocation[0].includes("label")) {
             this.loadCommunicatorData(currentLocation);
           }
-        }) as Action,
+        }) as Action
       );
 
       if (!window.location.hash) {
@@ -721,13 +721,13 @@ export default class MainFunction extends React.Component<
       this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
       this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
       this.loadlib(
-        `//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`,
+        `//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`
       );
 
       this.props.store.dispatch(
         titleActions.updateTitle(
-          this.props.store.getState().i18n.text.get("plugin.forum.pageTitle"),
-        ),
+          this.props.store.getState().i18n.text.get("plugin.forum.pageTitle")
+        )
       );
 
       this.props.store.dispatch(setDiscussionWorkpaceId(null) as Action);
@@ -739,7 +739,7 @@ export default class MainFunction extends React.Component<
             .replace("#", "")
             .split("/");
           this.loadDiscussionData(currentLocation);
-        }) as Action,
+        }) as Action
       );
 
       this.loadChatSettings();
@@ -758,19 +758,19 @@ export default class MainFunction extends React.Component<
         titleActions.updateTitle(
           this.props.store
             .getState()
-            .i18n.text.get("plugin.announcements.pageTitle"),
-        ),
+            .i18n.text.get("plugin.announcements.pageTitle")
+        )
       );
       this.props.store.dispatch(
         loadAnnouncementsAsAClient(
           { hideWorkspaceAnnouncements: "false" },
           (announcements: AnnouncementListType) => {
             announcements;
-          },
-        ) as Action,
+          }
+        ) as Action
       );
       this.loadAnnouncementsData(
-        parseInt(window.location.hash.replace("#", "")),
+        parseInt(window.location.hash.replace("#", ""))
       );
 
       this.loadChatSettings();
@@ -790,22 +790,22 @@ export default class MainFunction extends React.Component<
       this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
       this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
       this.loadlib(
-        `//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`,
+        `//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`
       );
 
       this.props.store.dispatch(
         titleActions.updateTitle(
           this.props.store
             .getState()
-            .i18n.text.get("plugin.announcer.pageTitle"),
-        ),
+            .i18n.text.get("plugin.announcer.pageTitle")
+        )
       );
 
       if (!window.location.hash) {
         window.location.hash = "#active";
       } else {
         this.loadAnnouncerData(
-          window.location.hash.replace("#", "").split("/"),
+          window.location.hash.replace("#", "").split("/")
         );
       }
 
@@ -824,15 +824,15 @@ export default class MainFunction extends React.Component<
       this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
       this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
       this.loadlib(
-        `//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`,
+        `//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`
       );
 
       this.props.websocket && this.props.websocket.restoreEventListeners();
 
       this.props.store.dispatch(
         titleActions.updateTitle(
-          this.props.store.getState().i18n.text.get("plugin.guider.guider"),
-        ),
+          this.props.store.getState().i18n.text.get("plugin.guider.guider")
+        )
       );
       this.props.store.dispatch(updateLabelFilters() as Action);
       this.props.store.dispatch(updateWorkspaceFilters() as Action);
@@ -855,8 +855,8 @@ export default class MainFunction extends React.Component<
 
       this.props.store.dispatch(
         titleActions.updateTitle(
-          this.props.store.getState().i18n.text.get("plugin.profile.profile"),
-        ),
+          this.props.store.getState().i18n.text.get("plugin.profile.profile")
+        )
       );
 
       this.props.store.dispatch(loadProfileUsername() as Action);
@@ -873,7 +873,7 @@ export default class MainFunction extends React.Component<
         window.location.hash = "#general";
       } else {
         this.loadProfileData(
-          window.location.hash.replace("#", "").split("?")[0],
+          window.location.hash.replace("#", "").split("?")[0]
         );
       }
     }
@@ -890,17 +890,17 @@ export default class MainFunction extends React.Component<
       this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
       this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
       this.loadlib(
-        `//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`,
+        `//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`
       );
 
       this.props.websocket && this.props.websocket.restoreEventListeners();
       this.props.store.dispatch(
         titleActions.updateTitle(
-          this.props.store.getState().i18n.text.get("plugin.records.pageTitle"),
-        ),
+          this.props.store.getState().i18n.text.get("plugin.records.pageTitle")
+        )
       );
       this.props.store.dispatch(
-        loadUserWorkspaceCurriculumFiltersFromServer(false) as Action,
+        loadUserWorkspaceCurriculumFiltersFromServer(false) as Action
       );
       this.props.store.dispatch(updateTranscriptOfRecordsFiles() as Action);
       this.loadRecordsData(window.location.hash.replace("#", "").split("?"));
@@ -919,7 +919,7 @@ export default class MainFunction extends React.Component<
       this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
       this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
       this.loadlib(
-        `//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`,
+        `//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`
       );
 
       this.props.websocket && this.props.websocket.restoreEventListeners();
@@ -927,24 +927,24 @@ export default class MainFunction extends React.Component<
         titleActions.updateTitle(
           this.props.store
             .getState()
-            .i18n.text.get("plugin.evaluation.evaluation"),
-        ),
+            .i18n.text.get("plugin.evaluation.evaluation")
+        )
       );
       this.props.store.dispatch(
-        loadEvaluationAssessmentRequestsFromServer() as Action,
+        loadEvaluationAssessmentRequestsFromServer() as Action
       );
       this.props.store.dispatch(loadEvaluationWorkspacesFromServer() as Action);
       this.props.store.dispatch(
-        loadListOfImportantAssessmentIdsFromServer() as Action,
+        loadListOfImportantAssessmentIdsFromServer() as Action
       );
       this.props.store.dispatch(
-        loadListOfUnimportantAssessmentIdsFromServer() as Action,
+        loadListOfUnimportantAssessmentIdsFromServer() as Action
       );
       this.props.store.dispatch(
-        loadEvaluationGradingSystemFromServer() as Action,
+        loadEvaluationGradingSystemFromServer() as Action
       );
       this.props.store.dispatch(
-        loadEvaluationSortFunctionFromServer() as Action,
+        loadEvaluationSortFunctionFromServer() as Action
       );
       this.loadChatSettings();
     }

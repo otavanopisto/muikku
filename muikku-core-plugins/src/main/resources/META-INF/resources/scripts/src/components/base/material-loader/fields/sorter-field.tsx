@@ -28,7 +28,7 @@ interface SorterFieldProps {
   onChange?: (
     context: React.Component<any, any>,
     name: string,
-    newValue: any,
+    newValue: any
   ) => any;
   i18n: i18nType;
 
@@ -75,7 +75,7 @@ export default class SorterField extends React.Component<
         .map(
           (v: string) =>
             this.props.content &&
-            this.props.content.items.find((i) => i.id === v),
+            this.props.content.items.find((i) => i.id === v)
         )
         .filter((v: any) => !!v);
       const itemsSuffled = shuffle(props.content.items) || [];
@@ -128,7 +128,7 @@ export default class SorterField extends React.Component<
    */
   shouldComponentUpdate(
     nextProps: SorterFieldProps,
-    nextState: SorterFieldState,
+    nextState: SorterFieldState
   ) {
     return (
       !equals(nextProps.content, this.props.content) ||
@@ -154,7 +154,7 @@ export default class SorterField extends React.Component<
   swap(
     triggerChange: boolean,
     itemA: SorterFieldItemType,
-    itemB: SorterFieldItemType,
+    itemB: SorterFieldItemType
   ) {
     if (itemA.id === itemB.id) {
       return;
@@ -174,7 +174,7 @@ export default class SorterField extends React.Component<
       this.props.onChange(
         this,
         this.props.content.name,
-        JSON.stringify(items.map((item) => item.id)),
+        JSON.stringify(items.map((item) => item.id))
       );
     }
 
@@ -183,7 +183,7 @@ export default class SorterField extends React.Component<
       {
         items,
       },
-      this.checkAnswers,
+      this.checkAnswers
     );
   }
 
@@ -208,7 +208,7 @@ export default class SorterField extends React.Component<
           answer.id === item.id ||
           item.name.toLocaleLowerCase() === answer.name.toLocaleLowerCase();
         return isAnswerProper ? "PASS" : "FAIL";
-      },
+      }
     );
 
     // We check if the new state is different before update
@@ -284,7 +284,7 @@ export default class SorterField extends React.Component<
       this.props.onChange(
         this,
         this.props.content.name,
-        JSON.stringify(this.state.items.map((item) => item.id)),
+        JSON.stringify(this.state.items.map((item) => item.id))
       );
   }
 
@@ -315,7 +315,7 @@ export default class SorterField extends React.Component<
         <span className="material-page__field-answer-examples material-page__field-answer-examples--sorterfield">
           <span className="material-page__field-answer-examples-title">
             {this.props.i18n.text.get(
-              "plugin.workspace.assigment.checkAnswers.correctSummary.title",
+              "plugin.workspace.assigment.checkAnswers.correctSummary.title"
             )}
           </span>
           {this.props.content.items.map((answer, index) => (
@@ -373,7 +373,7 @@ export default class SorterField extends React.Component<
       : "";
 
     const fieldSavedStateClass = createFieldSavedStateClass(
-      this.state.fieldSavedState,
+      this.state.fieldSavedState
     );
 
     // we use that element and the class to create the field

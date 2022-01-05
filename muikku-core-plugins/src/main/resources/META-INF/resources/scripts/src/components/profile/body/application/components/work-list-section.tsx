@@ -14,7 +14,7 @@ import { i18nType } from "~/reducers/base/i18n";
 function sortBy(
   data: StoredWorklistItem[],
   property: string,
-  direction: "asc" | "desc",
+  direction: "asc" | "desc"
 ): StoredWorklistItem[] {
   const actualProperty = property || "entryDate";
 
@@ -58,7 +58,7 @@ export function WorkListSection(props: WorkListSectionProps) {
         setSortByDirection("asc");
       }
     },
-    [sortByProperty, sortByDirection],
+    [sortByProperty, sortByDirection]
   );
 
   const hasData = !!props.section.items;
@@ -73,7 +73,7 @@ export function WorkListSection(props: WorkListSectionProps) {
               item={item}
               currentMonthDayLimit={props.currentMonthDayLimit}
             />
-          ),
+          )
         )
       : null;
 
@@ -89,7 +89,7 @@ export function WorkListSection(props: WorkListSectionProps) {
     <div className="application-sub-panel__item application-sub-panel__item--worklist-total">
       <div className="application-sub-panel__item-title application-sub-panel__item-title--worklist-total">
         {props.i18n.text.get(
-          "plugin.profile.worklist.worklistEntriesTotalValueLabel",
+          "plugin.profile.worklist.worklistEntriesTotalValueLabel"
         )}
       </div>
       <div className="application-sub-panel__item-data  application-sub-panel__item-data--worklist-total">
@@ -105,12 +105,12 @@ export function WorkListSection(props: WorkListSectionProps) {
 
   // check if section is for previous month entries
   const sectionIsPreviousMonth = moment(props.section.summary.beginDate).isSame(
-    props.previousMonthsFirstDay,
+    props.previousMonthsFirstDay
   );
 
   // check if section is for current month entries
   const sectionIsCurrentMonth = moment(props.section.summary.beginDate).isSame(
-    props.currentMonthsFirstDay,
+    props.currentMonthsFirstDay
   );
 
   // check if current months date is 10th or less so user can still submit previous months etries
@@ -122,7 +122,7 @@ export function WorkListSection(props: WorkListSectionProps) {
     <SubmitWorklistItemsDialog summary={props.section.summary}>
       <Link className="link link--submit-worklist-approval">
         {props.i18n.text.get(
-          "plugin.profile.worklist.submitWorklistForApproval",
+          "plugin.profile.worklist.submitWorklistForApproval"
         )}
       </Link>
     </SubmitWorklistItemsDialog>

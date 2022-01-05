@@ -58,7 +58,7 @@ class DeleteJournal extends React.Component<
     const content = (closeDialog: () => any) => (
       <div>
         {this.props.i18n.text.get(
-          "plugin.workspace.journal.deleteEntry.dialog.description",
+          "plugin.workspace.journal.deleteEntry.dialog.description"
         )}
       </div>
     );
@@ -71,7 +71,7 @@ class DeleteJournal extends React.Component<
           disabled={this.state.locked}
         >
           {this.props.i18n.text.get(
-            "plugin.workspace.journal.deleteEntry.dialog.deleteButton",
+            "plugin.workspace.journal.deleteEntry.dialog.deleteButton"
           )}
         </Button>
         <Button
@@ -79,7 +79,7 @@ class DeleteJournal extends React.Component<
           onClick={closeDialog}
         >
           {this.props.i18n.text.get(
-            "plugin.workspace.journal.deleteEntry.dialog.cancelButton",
+            "plugin.workspace.journal.deleteEntry.dialog.cancelButton"
           )}
         </Button>
       </div>
@@ -89,7 +89,7 @@ class DeleteJournal extends React.Component<
       <Dialog
         modifier="delete-journal"
         title={this.props.i18n.text.get(
-          "plugin.workspace.journal.deleteEntry.dialog.title",
+          "plugin.workspace.journal.deleteEntry.dialog.title"
         )}
         content={content}
         footer={footer}
@@ -109,7 +109,7 @@ function mapStateToProps(state: StateType) {
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     { deleteWorkspaceJournalInCurrentWorkspace },
-    dispatch,
+    dispatch
   );
 }
 

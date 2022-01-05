@@ -50,7 +50,7 @@ class ModifyThreadReply extends SessionStateComponent<
         locked: false,
         text: props.reply.message,
       },
-      props.reply.id,
+      props.reply.id
     );
   }
   checkAgainstStoredState() {
@@ -58,7 +58,7 @@ class ModifyThreadReply extends SessionStateComponent<
       {
         text: this.props.reply.message,
       },
-      this.props.reply.id,
+      this.props.reply.id
     );
   }
   clearUp() {
@@ -66,7 +66,7 @@ class ModifyThreadReply extends SessionStateComponent<
       {
         text: this.props.reply.message,
       },
-      this.props.reply.id,
+      this.props.reply.id
     );
   }
   componentWillReceiveProps(nextProps: ModifyThreadReplyProps) {
@@ -76,8 +76,8 @@ class ModifyThreadReply extends SessionStateComponent<
           {
             text: nextProps.reply.message,
           },
-          nextProps.reply.id,
-        ),
+          nextProps.reply.id
+        )
       );
     }
   }
@@ -116,7 +116,7 @@ class ModifyThreadReply extends SessionStateComponent<
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
             {this.props.i18n.text.get(
-              "plugin.discussion.createmessage.content",
+              "plugin.discussion.createmessage.content"
             )}
           </label>
           <CKEditor
@@ -153,7 +153,7 @@ class ModifyThreadReply extends SessionStateComponent<
             disabled={this.state.locked}
           >
             {this.props.i18n.text.get(
-              "plugin.discussion.createmessage.clearDraft",
+              "plugin.discussion.createmessage.clearDraft"
             )}
           </Button>
         ) : null}

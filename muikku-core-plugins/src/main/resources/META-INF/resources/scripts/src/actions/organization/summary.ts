@@ -49,7 +49,7 @@ const loadOrganizationSummary: LoadSummaryTriggerType =
   function loadOrganizationSummary() {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       try {
         dispatch({
@@ -61,7 +61,7 @@ const loadOrganizationSummary: LoadSummaryTriggerType =
           payload: <OrganizationSummaryWorkspaceDataType>(
             await promisify(
               mApi().organizationWorkspaceManagement.overview.read(),
-              "callback",
+              "callback"
             )()
           ),
         });
@@ -70,7 +70,7 @@ const loadOrganizationSummary: LoadSummaryTriggerType =
           payload: <OrganizationSummaryStudentsDataType>(
             await promisify(
               mApi().organizationUserManagement.studentsSummary.read(),
-              "callback",
+              "callback"
             )()
           ),
         });
@@ -79,7 +79,7 @@ const loadOrganizationSummary: LoadSummaryTriggerType =
           payload: <OrganizationSummaryContactDataType>(
             await promisify(
               mApi().organizationUserManagement.contactPersons.read(),
-              "callback",
+              "callback"
             )()
           ),
         });
@@ -92,10 +92,7 @@ const loadOrganizationSummary: LoadSummaryTriggerType =
           throw err;
         }
         dispatch(
-          actions.displayNotification(
-            getState().i18n.text.get("todo"),
-            "error",
-          ),
+          actions.displayNotification(getState().i18n.text.get("todo"), "error")
         );
         dispatch({
           type: "UPDATE_SUMMARY_STATUS",

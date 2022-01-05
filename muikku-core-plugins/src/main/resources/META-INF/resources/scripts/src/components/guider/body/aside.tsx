@@ -30,7 +30,7 @@ class NavigationAside extends React.Component<
   render() {
     const locationData = queryString.parse(
       document.location.hash.split("?")[1] || "",
-      { arrayFormat: "bracket" },
+      { arrayFormat: "bracket" }
     );
     return (
       <Navigation>
@@ -42,24 +42,24 @@ class NavigationAside extends React.Component<
               (label: GuiderUserLabelType) => {
                 const isActive =
                   this.props.guider.activeFilters.labelFilters.includes(
-                    label.id,
+                    label.id
                   );
                 const hash = isActive
                   ? queryString.stringify(
                       Object.assign({}, locationData, {
                         c: "",
                         l: (locationData.l || []).filter(
-                          (i: string) => parseInt(i) !== label.id,
+                          (i: string) => parseInt(i) !== label.id
                         ),
                       }),
-                      { arrayFormat: "bracket" },
+                      { arrayFormat: "bracket" }
                     )
                   : queryString.stringify(
                       Object.assign({}, locationData, {
                         c: "",
                         l: (locationData.l || []).concat(label.id),
                       }),
-                      { arrayFormat: "bracket" },
+                      { arrayFormat: "bracket" }
                     );
                 return (
                   <NavigationElement
@@ -76,7 +76,7 @@ class NavigationAside extends React.Component<
                     {label.name}
                   </NavigationElement>
                 );
-              },
+              }
             )}
           </NavigationTopic>
         ) : null}
@@ -87,24 +87,24 @@ class NavigationAside extends React.Component<
             (workspace: GuiderWorkspaceType) => {
               const isActive =
                 this.props.guider.activeFilters.workspaceFilters.includes(
-                  workspace.id,
+                  workspace.id
                 );
               const hash = isActive
                 ? queryString.stringify(
                     Object.assign({}, locationData, {
                       c: "",
                       w: (locationData.w || []).filter(
-                        (w: string) => parseInt(w) !== workspace.id,
+                        (w: string) => parseInt(w) !== workspace.id
                       ),
                     }),
-                    { arrayFormat: "bracket" },
+                    { arrayFormat: "bracket" }
                   )
                 : queryString.stringify(
                     Object.assign({}, locationData, {
                       c: "",
                       w: (locationData.w || []).concat(workspace.id),
                     }),
-                    { arrayFormat: "bracket" },
+                    { arrayFormat: "bracket" }
                   );
               return (
                 <NavigationElement
@@ -120,7 +120,7 @@ class NavigationAside extends React.Component<
                       : "")}
                 </NavigationElement>
               );
-            },
+            }
           )}
         </NavigationTopic>
         <NavigationTopic
@@ -130,24 +130,24 @@ class NavigationAside extends React.Component<
             (userGroup: UserGroupType) => {
               const isActive =
                 this.props.guider.activeFilters.userGroupFilters.includes(
-                  userGroup.id,
+                  userGroup.id
                 );
               const hash = isActive
                 ? queryString.stringify(
                     Object.assign({}, locationData, {
                       c: "",
                       u: (locationData.u || []).filter(
-                        (u: string) => parseInt(u) !== userGroup.id,
+                        (u: string) => parseInt(u) !== userGroup.id
                       ),
                     }),
-                    { arrayFormat: "bracket" },
+                    { arrayFormat: "bracket" }
                   )
                 : queryString.stringify(
                     Object.assign({}, locationData, {
                       c: "",
                       u: (locationData.u || []).concat(userGroup.id),
                     }),
-                    { arrayFormat: "bracket" },
+                    { arrayFormat: "bracket" }
                   );
               return (
                 <NavigationElement
@@ -160,7 +160,7 @@ class NavigationAside extends React.Component<
                   {userGroup.name}
                 </NavigationElement>
               );
-            },
+            }
           )}
         </NavigationTopic>
       </Navigation>

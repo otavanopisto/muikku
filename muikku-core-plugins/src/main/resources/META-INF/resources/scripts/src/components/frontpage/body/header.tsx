@@ -26,10 +26,10 @@ export default class FrontpageHero extends React.Component<
             <Bubble
               modifier="application"
               title={this.props.i18n.text.get(
-                "plugin.header.studentApplicationBubble.title",
+                "plugin.header.studentApplicationBubble.title"
               )}
               content={this.props.i18n.text.get(
-                "plugin.header.studentApplicationBubble.description",
+                "plugin.header.studentApplicationBubble.description"
               )}
             >
               <Button
@@ -38,7 +38,7 @@ export default class FrontpageHero extends React.Component<
                 openInNewTab="_blank"
               >
                 {this.props.i18n.text.get(
-                  "plugin.header.studentApplicationBubble.link",
+                  "plugin.header.studentApplicationBubble.link"
                 )}
               </Button>
             </Bubble>
@@ -64,10 +64,10 @@ export default class FrontpageHero extends React.Component<
             <Bubble
               modifier="goto-materials"
               title={this.props.i18n.text.get(
-                "plugin.header.openMaterialsBubble.title",
+                "plugin.header.openMaterialsBubble.title"
               )}
               content={this.props.i18n.text.get(
-                "plugin.header.openMaterialsBubble.description",
+                "plugin.header.openMaterialsBubble.description"
               )}
             >
               <Button
@@ -75,7 +75,7 @@ export default class FrontpageHero extends React.Component<
                 href="/coursepicker"
               >
                 {this.props.i18n.text.get(
-                  "plugin.header.openMaterialsBubble.link",
+                  "plugin.header.openMaterialsBubble.link"
                 )}
               </Button>
             </Bubble>

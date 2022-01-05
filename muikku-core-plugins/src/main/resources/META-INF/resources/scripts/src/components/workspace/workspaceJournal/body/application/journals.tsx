@@ -71,7 +71,7 @@ class WorkspaceJournals extends BodyScrollLoader<
             {this.props.status.isStudent
               ? this.props.i18n.text.get("plugin.workspace.journal.noEntries")
               : this.props.i18n.text.get(
-                  "plugin.workspace.journal.studentHasNoEntries",
+                  "plugin.workspace.journal.studentHasNoEntries"
                 )}
           </span>
         </div>
@@ -109,7 +109,7 @@ function mapStateToProps(state: StateType) {
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     { loadMoreCurrentWorkspaceJournalsFromServer },
-    dispatch,
+    dispatch
   );
 }
 

@@ -188,15 +188,15 @@ export default class Workspace extends React.Component<
   onHashChange() {
     if (window.location.pathname.includes("/discussion")) {
       this.loadWorkspaceDiscussionData(
-        window.location.hash.replace("#", "").split("/"),
+        window.location.hash.replace("#", "").split("/")
       );
     } else if (window.location.pathname.includes("/announcements")) {
       this.loadWorkspaceAnnouncementsData(
-        parseInt(window.location.hash.replace("#", "")),
+        parseInt(window.location.hash.replace("#", ""))
       );
     } else if (window.location.pathname.includes("/announcer")) {
       this.loadWorkspaceAnnouncerData(
-        window.location.hash.replace("#", "").split("/"),
+        window.location.hash.replace("#", "").split("/")
       );
     } else if (window.location.pathname.includes("/materials")) {
       const hashvalue = window.location.hash.replace("#", "");
@@ -220,7 +220,7 @@ export default class Workspace extends React.Component<
         ) {
           this.loadWorkspaceMaterialsData(
             this.props.store.getState().workspaces.currentMaterials[0]
-              .children[0].workspaceMaterialId,
+              .children[0].workspaceMaterialId
           );
         }
       }
@@ -229,7 +229,7 @@ export default class Workspace extends React.Component<
       if (!hashvalue.startsWith("s-")) {
         if (window.location.hash.replace("#", "")) {
           this.loadWorkspaceHelpData(
-            parseInt(window.location.hash.replace("#", "").replace("p-", "")),
+            parseInt(window.location.hash.replace("#", "").replace("p-", ""))
           );
         } else if (
           this.props.store.getState().workspaces.currentMaterials &&
@@ -238,7 +238,7 @@ export default class Workspace extends React.Component<
         ) {
           this.loadWorkspaceHelpData(
             this.props.store.getState().workspaces.currentMaterials[0]
-              .children[0].workspaceMaterialId,
+              .children[0].workspaceMaterialId
           );
         }
       }
@@ -269,7 +269,7 @@ export default class Workspace extends React.Component<
         state.workspaces.currentMaterials[0].children[0]
       ) {
         this.loadWorkspaceMaterialsData(
-          state.workspaces.currentMaterials[0].children[0].workspaceMaterialId,
+          state.workspaces.currentMaterials[0].children[0].workspaceMaterialId
         );
 
         if (state.workspaces.currentWorkspace.isCourseMember) {
@@ -279,7 +279,7 @@ export default class Workspace extends React.Component<
               workspaceName: state.workspaces.currentWorkspace.name,
               materialName:
                 state.workspaces.currentMaterials[0].children[0].title,
-            }) as Action,
+            }) as Action
           );
         }
       }
@@ -296,7 +296,7 @@ export default class Workspace extends React.Component<
         history.pushState(
           null,
           null,
-          location.origin + location.pathname + newHash,
+          location.origin + location.pathname + newHash
         );
         if (element) {
           element.id = "p-" + newId;
@@ -309,7 +309,7 @@ export default class Workspace extends React.Component<
         let indexFound = -1;
         const materialChapter = state.workspaces.currentMaterials.find((m) => {
           const index = m.children.findIndex(
-            (s) => s.workspaceMaterialId === newId,
+            (s) => s.workspaceMaterialId === newId
           );
           if (index !== -1) {
             indexFound = index;
@@ -322,7 +322,7 @@ export default class Workspace extends React.Component<
               url: location.origin + location.pathname + newHash,
               workspaceName: state.workspaces.currentWorkspace.name,
               materialName: materialChapter.children[indexFound].title,
-            }) as Action,
+            }) as Action
           );
         }
       }
@@ -344,7 +344,7 @@ export default class Workspace extends React.Component<
         state.workspaces.currentHelp[0].children[0]
       ) {
         this.loadWorkspaceHelpData(
-          state.workspaces.currentHelp[0].children[0].workspaceMaterialId,
+          state.workspaces.currentHelp[0].children[0].workspaceMaterialId
         );
       }
     } else {
@@ -380,7 +380,7 @@ export default class Workspace extends React.Component<
         `//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`,
         () => {
           (window as any).CKEDITOR.disableAutoInline = true;
-        },
+        }
       );
 
       const state = this.props.store.getState();
@@ -391,12 +391,12 @@ export default class Workspace extends React.Component<
           success: (workspace) => {
             if (!workspace.staffMembers && state.status.loggedIn) {
               this.props.store.dispatch(
-                loadStaffMembersOfWorkspace({ workspace }) as Action,
+                loadStaffMembersOfWorkspace({ workspace }) as Action
               );
             }
             this.props.store.dispatch(titleActions.updateTitle(workspace.name));
           },
-        }) as Action,
+        }) as Action
       );
 
       if (
@@ -408,7 +408,7 @@ export default class Workspace extends React.Component<
           loadAnnouncementsAsAClient({
             hideEnvironmentAnnouncements: "true",
             workspaceEntityId: state.status.currentWorkspaceId,
-          }) as Action,
+          }) as Action
         );
       }
 
@@ -435,21 +435,21 @@ export default class Workspace extends React.Component<
         `//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`,
         () => {
           (window as any).CKEDITOR.disableAutoInline = true;
-        },
+        }
       );
 
       const state = this.props.store.getState();
       this.props.store.dispatch(
         titleActions.updateTitle(
-          state.i18n.text.get("plugin.workspace.helpPage.title"),
-        ),
+          state.i18n.text.get("plugin.workspace.helpPage.title")
+        )
       );
       this.props.store.dispatch(
         setCurrentWorkspace({
           workspaceId: state.status.currentWorkspaceId,
           loadDetails:
             state.status.permissions.WORKSPACE_VIEW_WORKSPACE_DETAILS,
-        }) as Action,
+        }) as Action
       );
       this.props.store.dispatch(
         loadWholeWorkspaceHelp(
@@ -461,12 +461,12 @@ export default class Workspace extends React.Component<
             } else if (window.location.hash.replace("#", "")) {
               this.loadWorkspaceHelpData(
                 parseInt(
-                  window.location.hash.replace("#", "").replace("p-", ""),
-                ),
+                  window.location.hash.replace("#", "").replace("p-", "")
+                )
               );
             }
-          },
-        ) as Action,
+          }
+        ) as Action
       );
 
       this.loadChatSettings();
@@ -496,22 +496,22 @@ export default class Workspace extends React.Component<
         `//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`,
         () => {
           (window as any).CKEDITOR.disableAutoInline = true;
-        },
+        }
       );
 
       const state = this.props.store.getState();
       this.props.store.dispatch(
         titleActions.updateTitle(
-          state.i18n.text.get("plugin.workspace.discussions.pageTitle"),
-        ),
+          state.i18n.text.get("plugin.workspace.discussions.pageTitle")
+        )
       );
       this.props.store.dispatch(
         setCurrentWorkspace({
           workspaceId: state.status.currentWorkspaceId,
-        }) as Action,
+        }) as Action
       );
       this.props.store.dispatch(
-        setDiscussionWorkpaceId(state.status.currentWorkspaceId) as Action,
+        setDiscussionWorkpaceId(state.status.currentWorkspaceId) as Action
       );
       this.props.store.dispatch(
         loadDiscussionAreasFromServer(() => {
@@ -520,7 +520,7 @@ export default class Workspace extends React.Component<
             .replace("#", "")
             .split("/");
           this.loadWorkspaceDiscussionData(currentLocation);
-        }) as Action,
+        }) as Action
       );
 
       this.loadChatSettings();
@@ -546,8 +546,8 @@ export default class Workspace extends React.Component<
       const state = this.props.store.getState();
       this.props.store.dispatch(
         titleActions.updateTitle(
-          state.i18n.text.get("plugin.workspace.announcements.pageTitle"),
-        ),
+          state.i18n.text.get("plugin.workspace.announcements.pageTitle")
+        )
       );
 
       //Maybe we shouldn't load again, but whatever, maybe it updates
@@ -555,11 +555,11 @@ export default class Workspace extends React.Component<
         loadAnnouncementsAsAClient({
           hideEnvironmentAnnouncements: "true",
           workspaceEntityId: state.status.currentWorkspaceId,
-        }) as Action,
+        }) as Action
       );
 
       this.loadWorkspaceAnnouncementsData(
-        parseInt(window.location.hash.replace("#", "")),
+        parseInt(window.location.hash.replace("#", ""))
       );
 
       this.loadChatSettings();
@@ -587,26 +587,26 @@ export default class Workspace extends React.Component<
         `//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`,
         () => {
           (window as any).CKEDITOR.disableAutoInline = true;
-        },
+        }
       );
 
       const state = this.props.store.getState();
       this.props.store.dispatch(
         titleActions.updateTitle(
-          state.i18n.text.get("plugin.workspace.announcer.pageTitle"),
-        ),
+          state.i18n.text.get("plugin.workspace.announcer.pageTitle")
+        )
       );
       this.props.store.dispatch(
         setCurrentWorkspace({
           workspaceId: state.status.currentWorkspaceId,
-        }) as Action,
+        }) as Action
       );
 
       if (!window.location.hash) {
         window.location.hash = "#active";
       } else {
         this.loadWorkspaceAnnouncerData(
-          window.location.hash.replace("#", "").split("/"),
+          window.location.hash.replace("#", "").split("/")
         );
       }
 
@@ -641,7 +641,7 @@ export default class Workspace extends React.Component<
         loadDiscussionThreadsFromServer({
           areaId: parseInt(location[0]) || null,
           page: parseInt(location[1]) || 1,
-        }) as Action,
+        }) as Action
       );
     } else {
       //There will always be an areaId and page designed #1/2/3 where then 3 is the threaid
@@ -652,7 +652,7 @@ export default class Workspace extends React.Component<
           page: parseInt(location[1]),
           threadId: parseInt(location[2]),
           threadPage: parseInt(location[3]) || 1,
-        }) as Action,
+        }) as Action
       );
     }
   }
@@ -676,16 +676,16 @@ export default class Workspace extends React.Component<
       this.props.store.dispatch(
         loadAnnouncements(
           actualLocation[0],
-          state.status.currentWorkspaceId,
-        ) as Action,
+          state.status.currentWorkspaceId
+        ) as Action
       );
     } else {
       this.props.store.dispatch(
         loadAnnouncement(
           actualLocation[0],
           parseInt(actualLocation[1]),
-          state.status.currentWorkspaceId,
-        ) as Action,
+          state.status.currentWorkspaceId
+        ) as Action
       );
     }
   }
@@ -697,7 +697,7 @@ export default class Workspace extends React.Component<
   loadWorkspaceMaterialsData(id: number): void {
     if (id) {
       this.props.store.dispatch(
-        setCurrentWorkspaceMaterialsActiveNodeId(id) as Action,
+        setCurrentWorkspaceMaterialsActiveNodeId(id) as Action
       );
     }
   }
@@ -709,7 +709,7 @@ export default class Workspace extends React.Component<
   loadWorkspaceHelpData(id: number): void {
     if (id) {
       this.props.store.dispatch(
-        setCurrentWorkspaceMaterialsActiveNodeId(id) as Action,
+        setCurrentWorkspaceMaterialsActiveNodeId(id) as Action
       );
     }
   }
@@ -729,7 +729,7 @@ export default class Workspace extends React.Component<
         `//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`,
         () => {
           (window as any).CKEDITOR.disableAutoInline = true;
-        },
+        }
       );
 
       const hasLocationHashAndWillHaveToScrollIntoPosition =
@@ -744,20 +744,20 @@ export default class Workspace extends React.Component<
       const state = this.props.store.getState();
       this.props.store.dispatch(
         titleActions.updateTitle(
-          state.i18n.text.get("plugin.workspace.materials.pageTitle"),
-        ),
+          state.i18n.text.get("plugin.workspace.materials.pageTitle")
+        )
       );
       this.props.store.dispatch(
         setCurrentWorkspace({
           workspaceId: state.status.currentWorkspaceId,
           loadDetails:
             state.status.permissions.WORKSPACE_VIEW_WORKSPACE_DETAILS,
-        }) as Action,
+        }) as Action
       );
       this.props.store.dispatch(
         loadWorkspaceCompositeMaterialReplies(
-          state.status.currentWorkspaceId,
-        ) as Action,
+          state.status.currentWorkspaceId
+        ) as Action
       );
       this.props.store.dispatch(
         loadWholeWorkspaceMaterials(
@@ -771,7 +771,7 @@ export default class Workspace extends React.Component<
               result[0].children[0]
             ) {
               this.loadWorkspaceMaterialsData(
-                result[0].children[0].workspaceMaterialId,
+                result[0].children[0].workspaceMaterialId
               );
             } else if (hasLocationHashAndWillHaveToScrollIntoPosition) {
               // this is executing on first time
@@ -832,12 +832,12 @@ export default class Workspace extends React.Component<
 
               this.loadWorkspaceMaterialsData(
                 parseInt(
-                  window.location.hash.replace("#", "").replace("p-", ""),
-                ),
+                  window.location.hash.replace("#", "").replace("p-", "")
+                )
               );
             }
-          },
-        ) as Action,
+          }
+        ) as Action
       );
 
       if (
@@ -849,22 +849,22 @@ export default class Workspace extends React.Component<
           this.props.store.dispatch(
             displayNotification(
               state.i18n.text.get(
-                "plugin.workspace.materials.cannotSignUpWarning",
+                "plugin.workspace.materials.cannotSignUpWarning"
               ),
-              "notice",
-            ) as Action,
+              "notice"
+            ) as Action
           );
         } else {
           this.props.store.dispatch(
             displayNotification(
               state.i18n.text.get(
-                "plugin.workspace.materials.notSignedUpWarning",
+                "plugin.workspace.materials.notSignedUpWarning"
               ) +
                 ` <a href="#signup">${state.i18n.text.get(
-                  "plugin.workspace.materials.notSignedUpWarningLink",
+                  "plugin.workspace.materials.notSignedUpWarningLink"
                 )}</a>`,
-              "notice",
-            ) as Action,
+              "notice"
+            ) as Action
           );
         }
       }
@@ -900,14 +900,14 @@ export default class Workspace extends React.Component<
         `//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`,
         () => {
           (window as any).CKEDITOR.disableAutoInline = true;
-        },
+        }
       );
 
       const state = this.props.store.getState();
       this.props.store.dispatch(
         titleActions.updateTitle(
-          state.i18n.text.get("plugin.workspace.users.pageTitle"),
-        ),
+          state.i18n.text.get("plugin.workspace.users.pageTitle")
+        )
       );
       this.props.store.dispatch(
         setCurrentWorkspace({
@@ -915,7 +915,7 @@ export default class Workspace extends React.Component<
           success: (workspace) => {
             if (!workspace.staffMembers && state.status.loggedIn) {
               this.props.store.dispatch(
-                loadStaffMembersOfWorkspace({ workspace }) as Action,
+                loadStaffMembersOfWorkspace({ workspace }) as Action
               );
             }
             if (
@@ -931,7 +931,7 @@ export default class Workspace extends React.Component<
                     maxResults: 10,
                     active: true,
                   },
-                }) as Action,
+                }) as Action
               );
               this.props.store.dispatch(
                 loadStudentsOfWorkspace({
@@ -942,11 +942,11 @@ export default class Workspace extends React.Component<
                     maxResults: 10,
                     active: false,
                   },
-                }) as Action,
+                }) as Action
               );
             }
           },
-        }) as Action,
+        }) as Action
       );
 
       this.loadChatSettings();
@@ -973,14 +973,14 @@ export default class Workspace extends React.Component<
         `//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`,
         () => {
           (window as any).CKEDITOR.disableAutoInline = true;
-        },
+        }
       );
 
       const state = this.props.store.getState();
       this.props.store.dispatch(
         titleActions.updateTitle(
-          state.i18n.text.get("plugin.workspace.journal.pageTitle"),
-        ),
+          state.i18n.text.get("plugin.workspace.journal.pageTitle")
+        )
       );
       this.props.store.dispatch(
         setCurrentWorkspace({
@@ -994,24 +994,24 @@ export default class Workspace extends React.Component<
                 loadStudentsOfWorkspace({
                   workspace,
                   payload: { q: "", maxResults: 500 },
-                }) as Action,
+                }) as Action
               );
             }
             if (!workspace.journals) {
               if (state.status.permissions.WORSKPACE_LIST_WORKSPACE_MEMBERS) {
                 this.props.store.dispatch(
-                  loadCurrentWorkspaceJournalsFromServer() as Action,
+                  loadCurrentWorkspaceJournalsFromServer() as Action
                 );
               } else {
                 this.props.store.dispatch(
                   loadCurrentWorkspaceJournalsFromServer(
-                    state.status.userId,
-                  ) as Action,
+                    state.status.userId
+                  ) as Action
                 );
               }
             }
           },
-        }) as Action,
+        }) as Action
       );
       this.loadChatSettings();
     }
@@ -1037,14 +1037,14 @@ export default class Workspace extends React.Component<
         `//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`,
         () => {
           (window as any).CKEDITOR.disableAutoInline = true;
-        },
+        }
       );
 
       const state = this.props.store.getState();
       this.props.store.dispatch(
         titleActions.updateTitle(
-          state.i18n.text.get("plugin.workspace.management.pageTitle"),
-        ),
+          state.i18n.text.get("plugin.workspace.management.pageTitle")
+        )
       );
       this.props.store.dispatch(loadWorkspaceTypes() as Action);
       this.props.store.dispatch(
@@ -1052,16 +1052,16 @@ export default class Workspace extends React.Component<
           workspaceId: state.status.currentWorkspaceId,
           success: () => {
             this.props.store.dispatch(
-              loadCurrentWorkspaceUserGroupPermissions() as Action,
+              loadCurrentWorkspaceUserGroupPermissions() as Action
             );
             if (state.status.permissions.WORKSPACE_VIEW_WORKSPACE_DETAILS) {
               this.props.store.dispatch(
-                loadWorkspaceDetailsInCurrentWorkspace() as Action,
+                loadWorkspaceDetailsInCurrentWorkspace() as Action
               );
             }
             this.props.store.dispatch(loadWorkspaceChatStatus() as Action);
           },
-        }) as Action,
+        }) as Action
       );
 
       this.loadChatSettings();
@@ -1087,18 +1087,18 @@ export default class Workspace extends React.Component<
       const state = this.props.store.getState();
       this.props.store.dispatch(
         titleActions.updateTitle(
-          state.i18n.text.get("plugin.workspace.permissions.pageTitle"),
-        ),
+          state.i18n.text.get("plugin.workspace.permissions.pageTitle")
+        )
       );
       this.props.store.dispatch(
         setCurrentWorkspace({
           workspaceId: state.status.currentWorkspaceId,
           success: () => {
             this.props.store.dispatch(
-              loadCurrentWorkspaceUserGroupPermissions() as Action,
+              loadCurrentWorkspaceUserGroupPermissions() as Action
             );
           },
-        }) as Action,
+        }) as Action
       );
 
       this.loadChatSettings();
@@ -1126,7 +1126,7 @@ export default class Workspace extends React.Component<
       this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
       this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
       this.loadlib(
-        `//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`,
+        `//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`
       );
 
       this.props.websocket && this.props.websocket.restoreEventListeners();
@@ -1134,43 +1134,43 @@ export default class Workspace extends React.Component<
         titleActions.updateTitle(
           this.props.store
             .getState()
-            .i18n.text.get("plugin.evaluation.evaluation"),
-        ),
+            .i18n.text.get("plugin.evaluation.evaluation")
+        )
       );
       this.props.store.dispatch(
         setCurrentWorkspace({
           workspaceId: state.status.currentWorkspaceId,
           success: (workspace) => {
             this.props.store.dispatch(
-              loadCurrentWorkspaceUserGroupPermissions() as Action,
+              loadCurrentWorkspaceUserGroupPermissions() as Action
             );
 
             this.props.store.dispatch(
-              loadEvaluationAssessmentRequestsFromServer(true) as Action,
+              loadEvaluationAssessmentRequestsFromServer(true) as Action
             );
             this.props.store.dispatch(
-              loadEvaluationWorkspacesFromServer() as Action,
+              loadEvaluationWorkspacesFromServer() as Action
             );
             this.props.store.dispatch(
-              loadListOfImportantAssessmentIdsFromServer() as Action,
+              loadListOfImportantAssessmentIdsFromServer() as Action
             );
             this.props.store.dispatch(
-              loadListOfUnimportantAssessmentIdsFromServer() as Action,
+              loadListOfUnimportantAssessmentIdsFromServer() as Action
             );
             this.props.store.dispatch(
-              loadEvaluationGradingSystemFromServer() as Action,
+              loadEvaluationGradingSystemFromServer() as Action
             );
             this.props.store.dispatch(
-              loadEvaluationSortFunctionFromServer() as Action,
+              loadEvaluationSortFunctionFromServer() as Action
             );
 
             this.props.store.dispatch(
               setSelectedWorkspaceId({
                 workspaceId: workspace.id,
-              }) as Action,
+              }) as Action
             );
           },
-        }) as Action,
+        }) as Action
       );
 
       this.loadChatSettings();

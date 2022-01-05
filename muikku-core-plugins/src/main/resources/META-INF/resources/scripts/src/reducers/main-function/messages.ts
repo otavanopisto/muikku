@@ -229,7 +229,7 @@ export interface MessagesPatchType {
 
 function sortNavigationItems(
   itemA: MessagesNavigationItemType,
-  itemB: MessagesNavigationItemType,
+  itemB: MessagesNavigationItemType
 ) {
   if (itemA.type !== "label" && itemB.type !== "label") {
     return 0;
@@ -266,7 +266,7 @@ export default function messages(
     unreadThreadCount: 0,
     navigation: defaultNavigation,
   },
-  action: ActionType,
+  action: ActionType
 ): MessagesType {
   if (action.type === "UPDATE_MESSAGE_THREADS") {
     return Object.assign({}, state, {
@@ -295,7 +295,7 @@ export default function messages(
       navigation: state.navigation
         .filter(
           (item: MessagesNavigationItemType) =>
-            item.id !== action.payload.labelId,
+            item.id !== action.payload.labelId
         )
         .sort(sortNavigationItems),
     });
@@ -309,7 +309,7 @@ export default function messages(
           return Object.assign(
             {},
             item,
-            <MessagesNavigationItemUpdateType>action.payload.update,
+            <MessagesNavigationItemUpdateType>action.payload.update
           );
         })
         .sort(sortNavigationItems),
@@ -333,7 +333,7 @@ export default function messages(
     return Object.assign({}, state, {
       selectedThreads: newThreads,
       selectedThreadsIds: newThreads.map(
-        (s: MessageThreadType) => s.communicatorMessageId,
+        (s: MessageThreadType) => s.communicatorMessageId
       ),
     });
   } else if (action.type === "ADD_TO_MESSAGES_SELECTED_THREADS") {
@@ -353,10 +353,10 @@ export default function messages(
       selectedThreads: state.selectedThreads.filter(
         (selectedThread: MessageThreadType) =>
           selectedThread.communicatorMessageId !==
-          action.payload.communicatorMessageId,
+          action.payload.communicatorMessageId
       ),
       selectedThreadsIds: state.selectedThreadsIds.filter(
-        (id: number) => id !== action.payload.communicatorMessageId,
+        (id: number) => id !== action.payload.communicatorMessageId
       ),
       toggleSelectAllMessageItemsActive: false,
     });
@@ -374,7 +374,7 @@ export default function messages(
             return newThread;
           }
           return selectedThread;
-        },
+        }
       ),
       threads: state.threads.map((thread: MessageThreadType) => {
         if (thread.communicatorMessageId === oldThread.communicatorMessageId) {
@@ -408,7 +408,7 @@ export default function messages(
           ) {
             if (
               !selectedThread.labels.find(
-                (label) => label.labelId === action.payload.label.labelId,
+                (label) => label.labelId === action.payload.label.labelId
               )
             ) {
               return Object.assign({}, selectedThread, {
@@ -419,7 +419,7 @@ export default function messages(
             }
           }
           return selectedThread;
-        },
+        }
       ),
       threads: state.threads.map((thread: MessageThreadType) => {
         if (
@@ -427,7 +427,7 @@ export default function messages(
         ) {
           if (
             !thread.labels.find(
-              (label) => label.labelId === action.payload.label.labelId,
+              (label) => label.labelId === action.payload.label.labelId
             )
           ) {
             return Object.assign({}, thread, {
@@ -450,7 +450,7 @@ export default function messages(
     ) {
       newCurrent = Object.assign(newCurrent, {
         labels: newCurrent.labels.filter(
-          (label) => label.labelId !== action.payload.label.labelId,
+          (label) => label.labelId !== action.payload.label.labelId
         ),
       });
     }
@@ -464,12 +464,12 @@ export default function messages(
           ) {
             return Object.assign({}, selectedThread, {
               labels: selectedThread.labels.filter(
-                (label) => label.labelId !== action.payload.label.labelId,
+                (label) => label.labelId !== action.payload.label.labelId
               ),
             });
           }
           return selectedThread;
-        },
+        }
       ),
       threads: state.threads.map((thread: MessageThreadType) => {
         if (
@@ -477,7 +477,7 @@ export default function messages(
         ) {
           return Object.assign({}, thread, {
             labels: thread.labels.filter(
-              (label) => label.labelId !== action.payload.label.labelId,
+              (label) => label.labelId !== action.payload.label.labelId
             ),
           });
         }
@@ -490,14 +490,14 @@ export default function messages(
       selectedThreads: state.selectedThreads.filter(
         (selectedThread: MessageThreadType) =>
           selectedThread.communicatorMessageId !==
-          action.payload.communicatorMessageId,
+          action.payload.communicatorMessageId
       ),
       threads: state.threads.filter(
         (thread: MessageThreadType) =>
-          thread.communicatorMessageId !== action.payload.communicatorMessageId,
+          thread.communicatorMessageId !== action.payload.communicatorMessageId
       ),
       selectedThreadsIds: state.selectedThreadsIds.filter(
-        (id: number) => id !== action.payload.communicatorMessageId,
+        (id: number) => id !== action.payload.communicatorMessageId
       ),
     });
   } else if (action.type === "SET_CURRENT_MESSAGE_THREAD") {
@@ -516,7 +516,7 @@ export default function messages(
               }
               return label;
             }),
-          }),
+          })
       ),
       threads: state.threads.map((thread: MessageThreadType) =>
         Object.assign({}, thread, {
@@ -526,7 +526,7 @@ export default function messages(
             }
             return label;
           }),
-        }),
+        })
       ),
       currentThread: state.currentThread
         ? Object.assign({}, state.currentThread, {
@@ -545,28 +545,28 @@ export default function messages(
         (selectedThread: MessageThreadType) =>
           Object.assign({}, selectedThread, {
             labels: selectedThread.labels.filter(
-              (label) => label.labelId !== action.payload.labelId,
+              (label) => label.labelId !== action.payload.labelId
             ),
-          }),
+          })
       ),
       threads: state.threads.map((thread: MessageThreadType) =>
         Object.assign({}, thread, {
           labels: thread.labels.filter(
-            (label) => label.labelId !== action.payload.labelId,
+            (label) => label.labelId !== action.payload.labelId
           ),
-        }),
+        })
       ),
       currentThread: state.currentThread
         ? Object.assign({}, state.currentThread, {
             labels: state.currentThread.labels.filter(
-              (label) => label.labelId !== action.payload.labelId,
+              (label) => label.labelId !== action.payload.labelId
             ),
           })
         : state.currentThread,
     });
   } else if (action.type === "PUSH_ONE_MESSAGE_THREAD_FIRST") {
     const newThreads: MessageThreadListType = state.threads.filter(
-      (m) => m.communicatorMessageId !== action.payload.communicatorMessageId,
+      (m) => m.communicatorMessageId !== action.payload.communicatorMessageId
     );
     return Object.assign({}, state, {
       threads: [<MessageThreadType>action.payload].concat(newThreads),

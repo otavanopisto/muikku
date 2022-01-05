@@ -45,7 +45,7 @@ function CourseActivityRow(props: {
         props.conditionalAttributeLocale,
         (props.workspace as any)[props.mainAttribute][
           props.conditionalAttribute
-        ],
+        ]
       );
     } else {
       output = (props.workspace as any)[props.mainAttribute][
@@ -62,14 +62,14 @@ function CourseActivityRow(props: {
           props.i18n.time.format(
             (props.workspace as any)[props.mainAttribute][
               props.givenDateAttribute
-            ],
-          ),
+            ]
+          )
         );
       } else {
         output += props.i18n.time.format(
           (props.workspace as any)[props.mainAttribute][
             props.givenDateAttribute
-          ],
+          ]
         );
       }
     }
@@ -88,7 +88,7 @@ function CourseActivityRow(props: {
 
 function getWorkspaceAssessmentsAndPercents(
   props: StudentWorkspaceProps,
-  workspace: WorkspaceType,
+  workspace: WorkspaceType
 ) {
   if (
     workspace.studentActivity.assessmentState &&
@@ -101,11 +101,11 @@ function getWorkspaceAssessmentsAndPercents(
             props.i18n.text.get(
               "plugin.guider.evaluated",
               props.i18n.time.format(
-                workspace.studentActivity.assessmentState.date,
-              ),
+                workspace.studentActivity.assessmentState.date
+              )
             ) +
             getShortenGradeExtension(
-              workspace.studentActivity.assessmentState.grade,
+              workspace.studentActivity.assessmentState.grade
             )
           }
           className={`application-list__indicator-badge application-list__indicator-badge--course application-list__indicator-badge--course-in-guider ${
@@ -126,7 +126,7 @@ function getWorkspaceAssessmentsAndPercents(
     const status = props.i18n.text.get(
       workspace.studentActivity.assessmentState.state === "incomplete"
         ? "plugin.guider.workspace.incomplete"
-        : "plugin.guider.workspace.failed",
+        : "plugin.guider.workspace.failed"
     );
     return (
       <span className="application-list__header-secondary">
@@ -134,7 +134,7 @@ function getWorkspaceAssessmentsAndPercents(
           className="workspace-activity__assignment-done-percent"
           title={props.i18n.text.get(
             "plugin.guider.headerEvaluatedTitle",
-            workspace.studentActivity.evaluablesDonePercent,
+            workspace.studentActivity.evaluablesDonePercent
           )}
         >
           {workspace.studentActivity.evaluablesDonePercent}%
@@ -144,7 +144,7 @@ function getWorkspaceAssessmentsAndPercents(
           className="workspace-activity__exercise-done-percent"
           title={props.i18n.text.get(
             "plugin.guider.headerExercisesTitle",
-            workspace.studentActivity.exercisesDonePercent,
+            workspace.studentActivity.exercisesDonePercent
           )}
         >
           {workspace.studentActivity.exercisesDonePercent}%
@@ -154,8 +154,8 @@ function getWorkspaceAssessmentsAndPercents(
             props.i18n.text.get(
               "plugin.guider.evaluated",
               props.i18n.time.format(
-                workspace.studentActivity.assessmentState.date,
-              ),
+                workspace.studentActivity.assessmentState.date
+              )
             ) +
             " - " +
             status
@@ -177,7 +177,7 @@ function getWorkspaceAssessmentsAndPercents(
           className="workspace-activity__assignment-done-percent"
           title={props.i18n.text.get(
             "plugin.guider.headerEvaluatedTitle",
-            workspace.studentActivity.evaluablesDonePercent,
+            workspace.studentActivity.evaluablesDonePercent
           )}
         >
           {workspace.studentActivity.evaluablesDonePercent}%
@@ -187,7 +187,7 @@ function getWorkspaceAssessmentsAndPercents(
           className="workspace-activity__exercise-done-percent"
           title={props.i18n.text.get(
             "plugin.guider.headerExercisesTitle",
-            workspace.studentActivity.exercisesDonePercent,
+            workspace.studentActivity.exercisesDonePercent
           )}
         >
           {workspace.studentActivity.exercisesDonePercent}%
@@ -248,7 +248,7 @@ class StudentWorkspace extends React.Component<
       resultingStateText +=
         " - " +
         this.props.i18n.time.format(
-          workspace.studentActivity.assessmentState.date,
+          workspace.studentActivity.assessmentState.date
         );
     }
 
@@ -292,7 +292,7 @@ class StudentWorkspace extends React.Component<
                 <div className="application-sub-panel__item-title">
                   {" "}
                   {this.props.i18n.text.get(
-                    "plugin.guider.assessmentStateLabel",
+                    "plugin.guider.assessmentStateLabel"
                   )}
                 </div>
                 <div className="application-sub-panel__item-data">

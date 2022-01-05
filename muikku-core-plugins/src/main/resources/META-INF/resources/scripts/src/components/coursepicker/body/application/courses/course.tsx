@@ -92,7 +92,7 @@ class Course extends React.Component<CourseProps, CourseState> {
   checkSignUpStatus = async (): Promise<boolean> =>
     (await promisify(
       mApi().coursepicker.workspaces.canSignup.read(this.props.workspace.id),
-      "callback",
+      "callback"
     )()) as boolean;
 
   /**
@@ -125,7 +125,7 @@ class Course extends React.Component<CourseProps, CourseState> {
             <span
               className="application-list__fee-indicatoricon-coin-euro icon-coin-euro"
               title={this.props.i18n.text.get(
-                "plugin.coursepicker.course.evaluationhasfee",
+                "plugin.coursepicker.course.evaluationhasfee"
               )}
             />
           ) : null}
@@ -155,7 +155,7 @@ class Course extends React.Component<CourseProps, CourseState> {
                 {this.props.workspace.isCourseMember
                   ? this.props.i18n.text.get("plugin.coursepicker.course.goto")
                   : this.props.i18n.text.get(
-                      "plugin.coursepicker.course.checkout",
+                      "plugin.coursepicker.course.checkout"
                     )}
               </Button>
               {this.state.canSignUp && this.props.status.loggedIn ? (
@@ -168,7 +168,7 @@ class Course extends React.Component<CourseProps, CourseState> {
                     ]}
                   >
                     {this.props.i18n.text.get(
-                      "plugin.coursepicker.course.signup",
+                      "plugin.coursepicker.course.signup"
                     )}
                   </Button>
                 </WorkspaceSignupDialog>

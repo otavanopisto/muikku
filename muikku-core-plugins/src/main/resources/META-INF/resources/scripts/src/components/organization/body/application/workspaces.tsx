@@ -29,7 +29,7 @@ interface OrganizationWorkspacesProps {
 }
 
 const OrganizationWorkspaces: React.FC<OrganizationWorkspacesProps> = (
-  props,
+  props
 ) => {
   const {
     workspacesState,
@@ -40,7 +40,7 @@ const OrganizationWorkspaces: React.FC<OrganizationWorkspacesProps> = (
   const loadMoreWorkspacesRef = useInfinityScroll(
     workspacesHasMore,
     workspacesState,
-    loadMoreOrganizationWorkspacesFromServer,
+    loadMoreOrganizationWorkspacesFromServer
   );
   if (workspacesState === "LOADING") {
     return null;
@@ -49,7 +49,7 @@ const OrganizationWorkspaces: React.FC<OrganizationWorkspacesProps> = (
       <div className="empty">
         <span>
           {props.i18n.text.get(
-            "plugin.organization.workspaces.error.loadError",
+            "plugin.organization.workspaces.error.loadError"
           )}
         </span>
       </div>
@@ -59,7 +59,7 @@ const OrganizationWorkspaces: React.FC<OrganizationWorkspacesProps> = (
       <div className="empty">
         <span>
           {props.i18n.text.get(
-            "plugin.organization.workspaces.searchResult.empty",
+            "plugin.organization.workspaces.searchResult.empty"
           )}
         </span>
       </div>
@@ -103,11 +103,11 @@ function mapStateToProps(state: StateType) {
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     { loadMoreOrganizationWorkspacesFromServer },
-    dispatch,
+    dispatch
   );
 }
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(OrganizationWorkspaces);

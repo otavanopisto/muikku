@@ -67,8 +67,8 @@ class NavigationAside extends React.Component<
             (student, index, array) =>
               array.findIndex(
                 (otherStudent) =>
-                  otherStudent.userEntityId === student.userEntityId,
-              ) === index,
+                  otherStudent.userEntityId === student.userEntityId
+              ) === index
           )
         : [];
     } else {
@@ -110,9 +110,9 @@ class NavigationAside extends React.Component<
         onClick={this.handleOnStudentClick(null)}
       >
         {this.props.i18n.text.get(
-          "plugin.workspace.journal.studentFilter.showAll",
+          "plugin.workspace.journal.studentFilter.showAll"
         )}
-      </NavigationElement>,
+      </NavigationElement>
     );
 
     filteredStudents.length > 0 &&
@@ -128,8 +128,8 @@ class NavigationAside extends React.Component<
             onClick={this.handleOnStudentClick(student.userEntityId)}
           >
             {`${student.firstName} ${student.lastName}`}
-          </NavigationElement>,
-        ),
+          </NavigationElement>
+        )
       );
 
     return (
@@ -137,7 +137,7 @@ class NavigationAside extends React.Component<
         {!this.props.status.isStudent && (
           <NavigationTopic
             name={this.props.i18n.text.get(
-              "plugin.organization.workspaces.editWorkspace.users.tab.workspaceStudents.title",
+              "plugin.organization.workspaces.editWorkspace.users.tab.workspaceStudents.title"
             )}
           >
             {navigationElementList}
@@ -172,7 +172,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
       loadStudents: loadStudentsOfWorkspace,
       loadCurrentWorkspaceJournalsFromServer,
     },
-    dispatch,
+    dispatch
   );
 }
 

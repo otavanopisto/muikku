@@ -44,7 +44,7 @@ interface OrganizerFieldProps {
   onChange?: (
     context: React.Component<any, any>,
     name: string,
-    newValue: any,
+    newValue: any
   ) => any;
   i18n: i18nType;
 
@@ -169,7 +169,7 @@ export default class OrganizerField extends React.Component<
    */
   shouldComponentUpdate(
     nextProps: OrganizerFieldProps,
-    nextState: OrganizerFieldState,
+    nextState: OrganizerFieldState
   ) {
     return (
       !equals(nextProps.content, this.props.content) ||
@@ -204,7 +204,7 @@ export default class OrganizerField extends React.Component<
     Object.keys(this.state.boxes).forEach((boxId) => {
       // We find the correlation from the results as they are given by the properties
       const categoryTermCorrelation = this.props.content.categoryTerms.find(
-        (categoryTerm) => categoryTerm.category === boxId,
+        (categoryTerm) => categoryTerm.category === boxId
       );
       // We create an array with all the elements ids that are supposed to be in that cateogory
       const elementsLeft = new Set(categoryTermCorrelation.terms);
@@ -273,7 +273,7 @@ export default class OrganizerField extends React.Component<
    */
   componentDidUpdate(
     prevProps: OrganizerFieldProps,
-    prevState: OrganizerFieldState,
+    prevState: OrganizerFieldState
   ) {
     this.checkAnswers();
   }
@@ -308,7 +308,7 @@ export default class OrganizerField extends React.Component<
           useList: [...this.state.useList, termId],
           selectedItemId: null,
         },
-        this.checkAnswers,
+        this.checkAnswers
       );
 
       // Call the onchange function stringifying as usual
@@ -316,7 +316,7 @@ export default class OrganizerField extends React.Component<
         this.props.onChange(
           this,
           this.props.content.name,
-          JSON.stringify(nBox),
+          JSON.stringify(nBox)
         );
     }
   }
@@ -351,7 +351,7 @@ export default class OrganizerField extends React.Component<
         boxes: nBox,
         useList: newUseList,
       },
-      this.checkAnswers,
+      this.checkAnswers
     );
 
     // Call the onchange function stringifying as usual
@@ -466,7 +466,7 @@ export default class OrganizerField extends React.Component<
       : "";
 
     const fieldSavedStateClass = createFieldSavedStateClass(
-      this.state.fieldSavedState,
+      this.state.fieldSavedState
     );
 
     // we add that class name in our component
@@ -576,7 +576,7 @@ export default class OrganizerField extends React.Component<
                           {this.state.terms[missingTermId]}
                         </StrMathJAX>
                       </span>
-                    ),
+                    )
                   );
               }
 
@@ -622,7 +622,7 @@ export default class OrganizerField extends React.Component<
                               onClick={this.deleteTermFromBox.bind(
                                 this,
                                 category.id,
-                                termId,
+                                termId
                               )}
                               className="material-page__organizerfield-term-icon icon-cross"
                             ></span>

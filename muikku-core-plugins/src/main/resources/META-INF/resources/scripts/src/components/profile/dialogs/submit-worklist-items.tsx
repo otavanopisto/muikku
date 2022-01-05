@@ -46,7 +46,7 @@ class SubmitWorklistItemsDialog extends React.Component<
       <div>
         <span>
           {this.props.i18n.text.get(
-            "plugin.profile.worklist.submitForApproval.dialog.description",
+            "plugin.profile.worklist.submitForApproval.dialog.description"
           )}
         </span>
       </div>
@@ -58,7 +58,7 @@ class SubmitWorklistItemsDialog extends React.Component<
           onClick={this.submit.bind(this, closeDialog)}
         >
           {this.props.i18n.text.get(
-            "plugin.profile.worklist.submitForApproval.dialog.button.submitLabel",
+            "plugin.profile.worklist.submitForApproval.dialog.button.submitLabel"
           )}
         </Button>
         <Button
@@ -66,7 +66,7 @@ class SubmitWorklistItemsDialog extends React.Component<
           onClick={closeDialog}
         >
           {this.props.i18n.text.get(
-            "plugin.profile.worklist.submitForApproval.dialog.button.cancelLabel",
+            "plugin.profile.worklist.submitForApproval.dialog.button.cancelLabel"
           )}
         </Button>
       </div>
@@ -74,7 +74,7 @@ class SubmitWorklistItemsDialog extends React.Component<
     return (
       <Dialog
         title={this.props.i18n.text.get(
-          "plugin.profile.worklist.submitForApproval.dialog.title",
+          "plugin.profile.worklist.submitForApproval.dialog.title"
         )}
         content={content}
         footer={footer}
@@ -98,5 +98,5 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(SubmitWorklistItemsDialog);

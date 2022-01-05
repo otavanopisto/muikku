@@ -77,18 +77,18 @@ class ProfileItem extends React.Component<ProfileItemProps, ProfileItemState> {
           tabIndex={0}
           aria-haspopup="true"
           aria-label={this.props.i18n.text.get(
-            "plugin.wcag.profileMenu.aria.label",
+            "plugin.wcag.profileMenu.aria.label"
           )}
         >
           {this.props.status.hasImage ? (
             <img
               alt={this.props.i18n.text.get(
-                "plugin.profileBadge.links.profileImageAtl",
+                "plugin.profileBadge.links.profileImageAtl"
               )}
               src={getUserImageUrl(
                 this.props.status.userId,
                 null,
-                this.props.status.imgVersion,
+                this.props.status.imgVersion
               )}
               className="button-image"
             />

@@ -25,7 +25,7 @@ interface SelectFieldProps {
   onChange?: (
     context: React.Component<any, any>,
     name: string,
-    newValue: any,
+    newValue: any
   ) => any;
 
   usedAs: UsedAs;
@@ -107,7 +107,7 @@ export default class SelectField extends React.Component<
    */
   shouldComponentUpdate(
     nextProps: SelectFieldProps,
-    nextState: SelectFieldState,
+    nextState: SelectFieldState
   ) {
     return (
       !equals(nextProps.content, this.props.content) ||
@@ -135,7 +135,7 @@ export default class SelectField extends React.Component<
 
     // So just like text-field, there might be no right answer
     const actuallyCorrectAnswers = this.props.content.options.filter(
-      (a) => a.correct,
+      (a) => a.correct
     );
     if (!actuallyCorrectAnswers.length) {
       // And equally we just call the state UNKNOWN
@@ -259,7 +259,7 @@ export default class SelectField extends React.Component<
     if (this.props.displayCorrectAnswers) {
       // find the correct answers from the list
       const correctAnswersFound = this.props.content.options.filter(
-        (a) => a.correct,
+        (a) => a.correct
       );
       // if we have some correct answers
       if (correctAnswersFound.length) {
@@ -271,7 +271,7 @@ export default class SelectField extends React.Component<
           <span className="material-page__field-answer-examples">
             <span className="material-page__field-answer-examples-title">
               {this.props.i18n.text.get(
-                "plugin.workspace.assigment.checkAnswers.correctSummary.title",
+                "plugin.workspace.assigment.checkAnswers.correctSummary.title"
               )}
             </span>
             {correctAnswersFound.map((answer, index) => (
@@ -299,7 +299,7 @@ export default class SelectField extends React.Component<
           <span className="material-page__field-answer-examples">
             <span className="material-page__field-answer-examples-title">
               {this.props.i18n.text.get(
-                "plugin.workspace.assigment.checkAnswers.detailsSummary.title",
+                "plugin.workspace.assigment.checkAnswers.detailsSummary.title"
               )}
             </span>
             <span className="material-page__field-answer-example">
@@ -311,7 +311,7 @@ export default class SelectField extends React.Component<
     }
 
     const fieldSavedStateClass = createFieldSavedStateClass(
-      this.state.fieldSavedState,
+      this.state.fieldSavedState
     );
 
     // The classname that represents the state of the whole field

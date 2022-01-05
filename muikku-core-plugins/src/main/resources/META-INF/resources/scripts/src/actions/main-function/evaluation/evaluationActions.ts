@@ -380,7 +380,7 @@ const loadEvaluationGradingSystemFromServer: LoadEvaluationSystem =
   function loadEvaluationGradingSystemFromServer() {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       const state = getState();
 
@@ -396,7 +396,7 @@ const loadEvaluationGradingSystemFromServer: LoadEvaluationSystem =
       try {
         GradingSystems = (await promisify(
           mApi().evaluation.compositeGradingScales.read(),
-          "callback",
+          "callback"
         )()) as EvaluationGradeSystem[];
 
         dispatch({
@@ -419,10 +419,10 @@ const loadEvaluationGradingSystemFromServer: LoadEvaluationSystem =
           notificationActions.displayNotification(
             state.i18n.text.get(
               "plugin.evaluation.notifications.gradesystem.error",
-              err.message,
+              err.message
             ),
-            "error",
-          ),
+            "error"
+          )
         );
         dispatch({
           type: "UPDATE_EVALUATION_STATE",
@@ -440,7 +440,7 @@ const loadEvaluationAssessmentRequestsFromServer: LoadEvaluationAssessmentReques
   function loadEvaluationAssessmentRequestsFromServer(useFromWorkspace) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       const state = getState();
 
@@ -459,19 +459,19 @@ const loadEvaluationAssessmentRequestsFromServer: LoadEvaluationAssessmentReques
             mApi().evaluation.compositeAssessmentRequests.read({
               workspaceEntityId: state.evaluations.selectedWorkspaceId,
             }),
-            "callback",
+            "callback"
           )()) as AssessmentRequest[];
         } else if (useFromWorkspace && state.workspaces.currentWorkspace.id) {
           evaluationAssessmentRequests = (await promisify(
             mApi().evaluation.compositeAssessmentRequests.read({
               workspaceEntityId: state.workspaces.currentWorkspace.id,
             }),
-            "callback",
+            "callback"
           )()) as AssessmentRequest[];
         } else {
           evaluationAssessmentRequests = (await promisify(
             mApi().evaluation.compositeAssessmentRequests.read({}),
-            "callback",
+            "callback"
           )()) as AssessmentRequest[];
         }
 
@@ -493,10 +493,10 @@ const loadEvaluationAssessmentRequestsFromServer: LoadEvaluationAssessmentReques
           notificationActions.displayNotification(
             state.i18n.text.get(
               "plugin.evaluation.notifications.evaluationRequest.error",
-              err.message,
+              err.message
             ),
-            "error",
-          ),
+            "error"
+          )
         );
         dispatch({
           type: "UPDATE_EVALUATION_REQUESTS_STATE",
@@ -514,7 +514,7 @@ const loadEvaluationWorkspacesFromServer: LoadEvaluationWorkspaces =
   function loadEvaluationWorkspacesFromServer() {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       const state = getState();
 
@@ -532,7 +532,7 @@ const loadEvaluationWorkspacesFromServer: LoadEvaluationWorkspaces =
           mApi().workspace.workspaces.read({
             userId: state.status.userId,
           }),
-          "callback",
+          "callback"
         )()) as EvaluationWorkspace[];
 
         dispatch({
@@ -555,10 +555,10 @@ const loadEvaluationWorkspacesFromServer: LoadEvaluationWorkspaces =
           notificationActions.displayNotification(
             state.i18n.text.get(
               "plugin.evaluation.notifications.workspaces.error",
-              err.message,
+              err.message
             ),
-            "error",
-          ),
+            "error"
+          )
         );
         dispatch({
           type: "UPDATE_EVALUATION_STATE",
@@ -576,7 +576,7 @@ const loadListOfImportantAssessmentIdsFromServer: LoadEvaluationImportantAssessm
   function loadListOfImportantAssessmentIdsFromServer() {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       const state = getState();
 
@@ -592,7 +592,7 @@ const loadListOfImportantAssessmentIdsFromServer: LoadEvaluationImportantAssessm
       try {
         evaluationImportantAssessmentRequests = (await promisify(
           mApi().user.property.read("important-evaluation-requests"),
-          "callback",
+          "callback"
         )()) as EvaluationStatus;
 
         dispatch({
@@ -615,10 +615,10 @@ const loadListOfImportantAssessmentIdsFromServer: LoadEvaluationImportantAssessm
           notificationActions.displayNotification(
             state.i18n.text.get(
               "plugin.evaluation.notifications.important.error",
-              err.message,
+              err.message
             ),
-            "error",
-          ),
+            "error"
+          )
         );
         dispatch({
           type: "UPDATE_EVALUATION_STATE",
@@ -636,7 +636,7 @@ const loadListOfUnimportantAssessmentIdsFromServer: LoadEvaluationUnimportantAss
   function loadListOfUnimportantAssessmentIdsFromServer() {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       const state = getState();
 
@@ -652,7 +652,7 @@ const loadListOfUnimportantAssessmentIdsFromServer: LoadEvaluationUnimportantAss
       try {
         evaluationUnimportantAssessmentRequests = (await promisify(
           mApi().user.property.read("unimportant-evaluation-requests"),
-          "callback",
+          "callback"
         )()) as EvaluationStatus;
 
         dispatch({
@@ -675,10 +675,10 @@ const loadListOfUnimportantAssessmentIdsFromServer: LoadEvaluationUnimportantAss
           notificationActions.displayNotification(
             state.i18n.text.get(
               "plugin.evaluation.notifications.unimportant.error",
-              err.message,
+              err.message
             ),
-            "error",
-          ),
+            "error"
+          )
         );
         dispatch({
           type: "UPDATE_EVALUATION_STATE",
@@ -695,7 +695,7 @@ const loadEvaluationSortFunctionFromServer: LoadEvaluationSortFunction =
   function loadEvaluationSortFunction() {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       const state = getState();
 
@@ -717,7 +717,7 @@ const loadEvaluationSortFunctionFromServer: LoadEvaluationSortFunction =
 
         evaluationSortFunction = (await promisify(
           mApi().user.property.read(sortFunction),
-          "callback",
+          "callback"
         )()) as EvaluationSort;
 
         dispatch({
@@ -740,10 +740,10 @@ const loadEvaluationSortFunctionFromServer: LoadEvaluationSortFunction =
           notificationActions.displayNotification(
             state.i18n.text.get(
               "plugin.evaluation.notifications.sort.error",
-              err.message,
+              err.message
             ),
-            "error",
-          ),
+            "error"
+          )
         );
         dispatch({
           type: "UPDATE_EVALUATION_STATE",
@@ -760,7 +760,7 @@ const loadEvaluationAssessmentEventsFromServer: LoadEvaluationAssessmentEvent =
   function loadEvaluationAssessmentEventsFromServer(data) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       const state = getState();
 
@@ -774,9 +774,9 @@ const loadEvaluationAssessmentEventsFromServer: LoadEvaluationAssessmentEvent =
       try {
         evaluationAssessmentEvents = (await promisify(
           mApi().evaluation.workspaceuser.events.read(
-            data.assessment.workspaceUserEntityId,
+            data.assessment.workspaceUserEntityId
           ),
-          "callback",
+          "callback"
         )()) as EvaluationEvent[];
 
         dispatch({
@@ -799,10 +799,10 @@ const loadEvaluationAssessmentEventsFromServer: LoadEvaluationAssessmentEvent =
           notificationActions.displayNotification(
             state.i18n.text.get(
               "plugin.evaluation.notifications.events.error",
-              err.message,
+              err.message
             ),
-            "error",
-          ),
+            "error"
+          )
         );
         dispatch({
           type: "UPDATE_EVALUATION_CURRENT_EVENTS_STATE",
@@ -819,7 +819,7 @@ const loadEvaluationSelectedAssessmentStudyDiaryEventsFromServer: LoadEvaluation
   function loadEvaluationSelectedAssessmentStudyDiaryEventsFromServer(data) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       const state = getState();
 
@@ -838,9 +838,9 @@ const loadEvaluationSelectedAssessmentStudyDiaryEventsFromServer: LoadEvaluation
               userEntityId: data.assessment.userEntityId,
               firstResult: 0,
               maxResults: 512,
-            },
+            }
           ),
-          "callback",
+          "callback"
         )()) as EvaluationStudyDiaryEvent[] | [];
 
         dispatch({
@@ -861,10 +861,10 @@ const loadEvaluationSelectedAssessmentStudyDiaryEventsFromServer: LoadEvaluation
           notificationActions.displayNotification(
             state.i18n.text.get(
               "plugin.evaluation.notifications.diaryEvents.error",
-              err.message,
+              err.message
             ),
-            "error",
-          ),
+            "error"
+          )
         );
         dispatch({
           type: "UPDATE_CURRENT_SELECTED_EVALUATION_DIARY_DATA_STATE",
@@ -891,7 +891,7 @@ const LoadBilledPriceFromServer: LoadBilledPrice =
           mApi().worklist.basePrice.read({
             workspaceEntityId: data.workspaceEntityId,
           }),
-          "callback",
+          "callback"
         )()) as number;
 
         dispatch({
@@ -929,7 +929,7 @@ const loadEvaluationCompositeRepliesFromServer: LoadEvaluationCompositeReplies =
   }) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       const state = getState();
 
@@ -945,7 +945,7 @@ const loadEvaluationCompositeRepliesFromServer: LoadEvaluationCompositeReplies =
           mApi().workspace.workspaces.compositeReplies.read(workspaceId, {
             userEntityId,
           }),
-          "callback",
+          "callback"
         )()) as MaterialCompositeRepliesType[];
 
         dispatch({
@@ -964,10 +964,10 @@ const loadEvaluationCompositeRepliesFromServer: LoadEvaluationCompositeReplies =
           notificationActions.displayNotification(
             state.i18n.text.get(
               "plugin.evaluation.notifications.assignmentdata.error",
-              err.message,
+              err.message
             ),
-            "error",
-          ),
+            "error"
+          )
         );
 
         dispatch({
@@ -986,7 +986,7 @@ const saveEvaluationSortFunctionToServer: SaveEvaluationSortFunction =
   function saveEvaluationSortFunctionToServer(data) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       const state = getState();
 
@@ -1002,7 +1002,7 @@ const saveEvaluationSortFunctionToServer: SaveEvaluationSortFunction =
       try {
         evaluationSortFunction = (await promisify(
           mApi().user.property.create(data.sortFunction),
-          "callback",
+          "callback"
         )()) as EvaluationSort;
 
         dispatch({
@@ -1023,10 +1023,10 @@ const saveEvaluationSortFunctionToServer: SaveEvaluationSortFunction =
           notificationActions.displayNotification(
             state.i18n.text.get(
               "plugin.evaluation.notifications.saveSort.error",
-              err.message,
+              err.message
             ),
-            "error",
-          ),
+            "error"
+          )
         );
         dispatch({
           type: "UPDATE_EVALUATION_STATE",
@@ -1050,7 +1050,7 @@ const updateWorkspaceEvaluationToServer: UpdateWorkspaceEvaluation =
   }) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       const state = getState();
 
@@ -1069,9 +1069,9 @@ const updateWorkspaceEvaluationToServer: UpdateWorkspaceEvaluation =
                 .workspaceUserEntityId,
               {
                 ...workspaceEvaluation,
-              },
+              }
             ),
-            "callback",
+            "callback"
           )().then((data: WorkspaceEvaluationSaveReturn) => {
             onSuccess();
 
@@ -1080,7 +1080,7 @@ const updateWorkspaceEvaluationToServer: UpdateWorkspaceEvaluation =
                 updateBillingToServer({
                   assessmentIdentifier: data.identifier,
                   price: billingPrice.toString(),
-                }),
+                })
               );
             }
           });
@@ -1089,10 +1089,10 @@ const updateWorkspaceEvaluationToServer: UpdateWorkspaceEvaluation =
             notificationActions.displayNotification(
               state.i18n.text.get(
                 "plugin.evaluation.notifications.createEvaluation.error",
-                err.message,
+                err.message
               ),
-              "error",
-            ),
+              "error"
+            )
           );
 
           dispatch({
@@ -1111,9 +1111,9 @@ const updateWorkspaceEvaluationToServer: UpdateWorkspaceEvaluation =
 
               {
                 ...workspaceEvaluation,
-              },
+              }
             ),
-            "callback",
+            "callback"
           )().then((data: WorkspaceEvaluationSaveReturn) => {
             onSuccess();
 
@@ -1122,7 +1122,7 @@ const updateWorkspaceEvaluationToServer: UpdateWorkspaceEvaluation =
                 updateBillingToServer({
                   assessmentIdentifier: data.identifier,
                   price: billingPrice,
-                }),
+                })
               );
             }
           });
@@ -1131,10 +1131,10 @@ const updateWorkspaceEvaluationToServer: UpdateWorkspaceEvaluation =
             notificationActions.displayNotification(
               state.i18n.text.get(
                 "plugin.evaluation.notifications.updateEvaluation.error",
-                err.message,
+                err.message
               ),
-              "error",
-            ),
+              "error"
+            )
           );
 
           dispatch({
@@ -1161,7 +1161,7 @@ const updateWorkspaceSupplementationToServer: UpdateWorkspaceSupplementation =
   }) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       const state = getState();
 
@@ -1173,14 +1173,14 @@ const updateWorkspaceSupplementationToServer: UpdateWorkspaceSupplementation =
                 .workspaceUserEntityId,
               {
                 ...workspaceSupplementation,
-              },
+              }
             ),
-            "callback",
+            "callback"
           )().then(() => {
             dispatch(
               loadEvaluationAssessmentEventsFromServer({
                 assessment: state.evaluations.evaluationSelectedAssessmentId,
-              }),
+              })
             );
 
             onSuccess();
@@ -1190,10 +1190,10 @@ const updateWorkspaceSupplementationToServer: UpdateWorkspaceSupplementation =
             notificationActions.displayNotification(
               state.i18n.text.get(
                 "plugin.evaluation.notifications.updateSupplementation.error",
-                error.message,
+                error.message
               ),
-              "error",
-            ),
+              "error"
+            )
           );
 
           onFail();
@@ -1206,14 +1206,14 @@ const updateWorkspaceSupplementationToServer: UpdateWorkspaceSupplementation =
                 .workspaceUserEntityId,
               {
                 ...workspaceSupplementation,
-              },
+              }
             ),
-            "callback",
+            "callback"
           )().then(() => {
             dispatch(
               loadEvaluationAssessmentEventsFromServer({
                 assessment: state.evaluations.evaluationSelectedAssessmentId,
-              }),
+              })
             );
 
             onSuccess();
@@ -1223,10 +1223,10 @@ const updateWorkspaceSupplementationToServer: UpdateWorkspaceSupplementation =
             notificationActions.displayNotification(
               state.i18n.text.get(
                 "plugin.evaluation.notifications.updateSupplementation.error",
-                error.message,
+                error.message
               ),
-              "error",
-            ),
+              "error"
+            )
           );
 
           dispatch({
@@ -1253,7 +1253,7 @@ const removeWorkspaceEventFromServer: RemoveWorkspaceEvent =
   }) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       const state = getState();
 
@@ -1274,14 +1274,14 @@ const removeWorkspaceEventFromServer: RemoveWorkspaceEvent =
             mApi().evaluation.workspaceuser.workspaceassessment.del(
               state.evaluations.evaluationSelectedAssessmentId
                 .workspaceUserEntityId,
-              identifier,
+              identifier
             ),
-            "callback",
+            "callback"
           )().then(() => {
             dispatch(
               loadEvaluationAssessmentEventsFromServer({
                 assessment: state.evaluations.evaluationSelectedAssessmentId,
-              }),
+              })
             );
 
             dispatch({
@@ -1296,10 +1296,10 @@ const removeWorkspaceEventFromServer: RemoveWorkspaceEvent =
             notificationActions.displayNotification(
               state.i18n.text.get(
                 "plugin.evaluation.notifications.removeEvent.error",
-                error.message,
+                error.message
               ),
-              "error",
-            ),
+              "error"
+            )
           );
 
           dispatch({
@@ -1315,14 +1315,14 @@ const removeWorkspaceEventFromServer: RemoveWorkspaceEvent =
             mApi().evaluation.workspaceuser.supplementationrequest.del(
               state.evaluations.evaluationSelectedAssessmentId
                 .workspaceUserEntityId,
-              identifier,
+              identifier
             ),
-            "callback",
+            "callback"
           )().then(() => {
             dispatch(
               loadEvaluationAssessmentEventsFromServer({
                 assessment: state.evaluations.evaluationSelectedAssessmentId,
-              }),
+              })
             );
 
             dispatch({
@@ -1337,10 +1337,10 @@ const removeWorkspaceEventFromServer: RemoveWorkspaceEvent =
             notificationActions.displayNotification(
               state.i18n.text.get(
                 "plugin.evaluation.notifications.removeEvent.error",
-                error.message,
+                error.message
               ),
-              "error",
-            ),
+              "error"
+            )
           );
 
           dispatch({
@@ -1363,7 +1363,7 @@ const loadCurrentStudentAssigmentsData: LoadEvaluationCurrentStudentAssigments =
   function loadCurrentStudentAssigmentsData({ workspaceId }) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       const state = getState();
 
@@ -1380,7 +1380,7 @@ const loadCurrentStudentAssigmentsData: LoadEvaluationCurrentStudentAssigments =
                 mApi().workspace.workspaces.materials.read(workspaceId, {
                   assignmentType: "EXERCISE",
                 }),
-                "callback",
+                "callback"
               )() || [];
 
             const assignmentsEvaluated =
@@ -1388,7 +1388,7 @@ const loadCurrentStudentAssigmentsData: LoadEvaluationCurrentStudentAssigments =
                 mApi().workspace.workspaces.materials.read(workspaceId, {
                   assignmentType: "EVALUATED",
                 }),
-                "callback",
+                "callback"
               )() || [];
 
             const assignments = [
@@ -1417,10 +1417,10 @@ const loadCurrentStudentAssigmentsData: LoadEvaluationCurrentStudentAssigments =
           notificationActions.displayNotification(
             state.i18n.text.get(
               "plugin.evaluation.notifications.assignmentdata.error",
-              err.message,
+              err.message
             ),
-            "error",
-          ),
+            "error"
+          )
         );
 
         dispatch({
@@ -1439,7 +1439,7 @@ const updateCurrentStudentCompositeRepliesData: UpdateCurrentStudentEvaluationCo
   function updateCurrentStudentEvaluationData(data) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       const state = getState();
 
@@ -1461,15 +1461,15 @@ const updateCurrentStudentCompositeRepliesData: UpdateCurrentStudentEvaluationCo
           mApi().workspace.workspaces.user.workspacematerial.compositeReply.read(
             data.workspaceId,
             data.userEntityId,
-            data.workspaceMaterialId,
+            data.workspaceMaterialId
           ),
-          "callback",
+          "callback"
         )()) as MaterialCompositeRepliesType;
 
         const index = updatedCompositeReplies.findIndex(
           (item) =>
             item.workspaceMaterialId ===
-            updatedCompositeReply.workspaceMaterialId,
+            updatedCompositeReply.workspaceMaterialId
         );
 
         updatedCompositeReplies[index] = {
@@ -1485,10 +1485,10 @@ const updateCurrentStudentCompositeRepliesData: UpdateCurrentStudentEvaluationCo
           notificationActions.displayNotification(
             state.i18n.text.get(
               "plugin.evaluation.notifications.assignmentdata.error",
-              err.message,
+              err.message
             ),
-            "error",
-          ),
+            "error"
+          )
         );
       }
     };
@@ -1533,7 +1533,7 @@ const updateBillingToServer: UpdateEvaluationEvent =
   function updateBillingToServer(data) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       const state = getState();
 
@@ -1547,9 +1547,9 @@ const updateBillingToServer: UpdateEvaluationEvent =
               workspaceEntityId:
                 state.evaluations.evaluationSelectedAssessmentId
                   .workspaceEntityId,
-            },
+            }
           ),
-          "callback",
+          "callback"
         )();
 
         dispatch({
@@ -1561,10 +1561,10 @@ const updateBillingToServer: UpdateEvaluationEvent =
           notificationActions.displayNotification(
             state.i18n.text.get(
               "plugin.evaluation.notifications.updatepricing.error",
-              error.message,
+              error.message
             ),
-            "error",
-          ),
+            "error"
+          )
         );
 
         dispatch({
@@ -1590,7 +1590,7 @@ const updateSelectedAssessment: UpdateEvaluationSelectedAssessment =
       dispatch(
         loadEvaluationAssessmentEventsFromServer({
           assessment: data.assessment,
-        }),
+        })
       );
     };
   };
@@ -1616,7 +1616,7 @@ const updateEvaluationSearch: UpdateEvaluationSearch =
 const updateImportance: UpdateImportance = function updateImportance(data) {
   return async (
     dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType,
+    getState: () => StateType
   ) => {
     let updateImportanceObject: UpdateImportanceObject;
 
@@ -1635,7 +1635,7 @@ const updateImportance: UpdateImportance = function updateImportance(data) {
           key: data.importantAssessments.key,
           value: data.importantAssessments.value,
         }),
-        "callback",
+        "callback"
       )()) as EvaluationImportance;
 
       const unimportance = (await promisify(
@@ -1643,7 +1643,7 @@ const updateImportance: UpdateImportance = function updateImportance(data) {
           key: data.unimportantAssessments.key,
           value: data.unimportantAssessments.value,
         }),
-        "callback",
+        "callback"
       )()) as EvaluationImportance;
 
       updateImportanceObject = {
@@ -1671,10 +1671,10 @@ const updateImportance: UpdateImportance = function updateImportance(data) {
         notificationActions.displayNotification(
           state.i18n.text.get(
             "plugin.evaluation.notifications.saveImportance.error",
-            err.message,
+            err.message
           ),
-          "error",
-        ),
+          "error"
+        )
       );
       dispatch({
         type: "UPDATE_EVALUATION_STATE",
@@ -1706,16 +1706,16 @@ const deleteAssessmentRequest: DeleteAssessmentRequest =
   function deleteAssessmentRequest({ workspaceUserEntityId }) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       const state = getState();
 
       try {
         await promisify(
           mApi().evaluation.workspaceuser.evaluationrequestarchive.update(
-            workspaceUserEntityId,
+            workspaceUserEntityId
           ),
-          "callback",
+          "callback"
         )().then(() => {
           dispatch(loadEvaluationAssessmentRequestsFromServer());
         });
@@ -1724,10 +1724,10 @@ const deleteAssessmentRequest: DeleteAssessmentRequest =
           notificationActions.displayNotification(
             state.i18n.text.get(
               "plugin.evaluation.notifications.deleteRequest.error",
-              error.message,
+              error.message
             ),
-            "error",
-          ),
+            "error"
+          )
         );
       }
     };
@@ -1744,7 +1744,7 @@ const archiveStudent: ArchiveStudent = function archiveStudent({
 }) {
   return async (
     dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType,
+    getState: () => StateType
   ) => {
     const state = getState();
 
@@ -1752,9 +1752,9 @@ const archiveStudent: ArchiveStudent = function archiveStudent({
       await promisify(
         mApi().workspace.workspaces.students.read(
           workspaceEntityId,
-          workspaceUserEntityId,
+          workspaceUserEntityId
         ),
-        "callback",
+        "callback"
       )().then(async (workspaceUserEntity: WorkspaceUserEntity) => {
         workspaceUserEntity.active = false;
 
@@ -1762,9 +1762,9 @@ const archiveStudent: ArchiveStudent = function archiveStudent({
           mApi().workspace.workspaces.students.update(
             workspaceEntityId,
             workspaceUserEntityId,
-            workspaceUserEntity,
+            workspaceUserEntity
           ),
-          "callback",
+          "callback"
         )().then(() => {
           onSuccess && onSuccess();
         });
@@ -1774,10 +1774,10 @@ const archiveStudent: ArchiveStudent = function archiveStudent({
         notificationActions.displayNotification(
           state.i18n.text.get(
             "plugin.evaluation.notifications.archiveStudent.error",
-            error.message,
+            error.message
           ),
-          "error",
-        ),
+          "error"
+        )
       );
     }
   };
@@ -1800,14 +1800,14 @@ const loadBasePriceFromServer: LoadBasePrice =
         mApi().worklist.basePrice.read({
           workspaceEntityId: workspaceEntityId,
         }),
-        "callback",
+        "callback"
       )().then(
         (data) => {
           basePrice = data as number;
         },
         () => {
           basePrice = undefined;
-        },
+        }
       );
 
       dispatch({

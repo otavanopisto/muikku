@@ -158,7 +158,7 @@ class CommunicatorLabelUpdateDialog extends React.Component<
           onClick={this.update.bind(this, closeDialog)}
         >
           {this.props.i18n.text.get(
-            "plugin.communicator.label.edit.button.send",
+            "plugin.communicator.label.edit.button.send"
           )}
         </Button>
         <Button
@@ -167,7 +167,7 @@ class CommunicatorLabelUpdateDialog extends React.Component<
           onClick={closeDialog}
         >
           {this.props.i18n.text.get(
-            "plugin.communicator.label.edit.button.cancel",
+            "plugin.communicator.label.edit.button.cancel"
           )}
         </Button>
         <Button
@@ -177,10 +177,10 @@ class CommunicatorLabelUpdateDialog extends React.Component<
         >
           {this.state.removed
             ? this.props.i18n.text.get(
-                "plugin.communicator.label.edit.button.removed",
+                "plugin.communicator.label.edit.button.removed"
               )
             : this.props.i18n.text.get(
-                "plugin.communicator.label.edit.button.remove",
+                "plugin.communicator.label.edit.button.remove"
               )}
         </Button>
       </div>
@@ -226,13 +226,13 @@ class CommunicatorLabelUpdateDialog extends React.Component<
           <div className="form-element form-element--edit-label">
             <label htmlFor="communicatorLabelName">
               {this.props.i18n.text.get(
-                "plugin.communicator.label.editLabelDialog.name",
+                "plugin.communicator.label.editLabelDialog.name"
               )}
             </label>
             <input
               id="communicatorLabelName"
               placeholder={this.props.i18n.text.get(
-                "plugin.communicator.label.editLabelDialog.name",
+                "plugin.communicator.label.editLabelDialog.name"
               )}
               value={this.state.name}
               className="form-element__input form-element__input--communicator-label-name"
@@ -251,7 +251,7 @@ class CommunicatorLabelUpdateDialog extends React.Component<
         onOpen={this.resetState}
         modifier="communicator-edit-label"
         title={this.props.i18n.text.get(
-          "plugin.communicator.label.edit.caption",
+          "plugin.communicator.label.edit.caption"
         )}
         content={content}
         footer={footer}
@@ -272,11 +272,11 @@ function mapStateToProps(state: StateType) {
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     { updateMessagesNavigationLabel, removeMessagesNavigationLabel },
-    dispatch,
+    dispatch
   );
 }
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(CommunicatorLabelUpdateDialog);

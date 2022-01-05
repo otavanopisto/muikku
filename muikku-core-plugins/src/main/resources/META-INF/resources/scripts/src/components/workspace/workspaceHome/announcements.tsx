@@ -35,7 +35,7 @@ class WorkspaceAnnouncements extends React.Component<
             <div className="panel__header-icon panel__header-icon--workspace-announcements icon-paper-plane"></div>
             <h2 className="panel__header-title">
               {this.props.i18n.text.get(
-                "plugin.workspace.index.announcementsTitle",
+                "plugin.workspace.index.announcementsTitle"
               )}
             </h2>
           </div>
@@ -71,7 +71,7 @@ class WorkspaceAnnouncements extends React.Component<
           ) : (
             <div className="panel__body panel__body--empty">
               {this.props.i18n.text.get(
-                "plugin.workspace.index.announcementsEmpty",
+                "plugin.workspace.index.announcementsEmpty"
               )}
             </div>
           )}
@@ -97,5 +97,5 @@ function mapDispatchToProps() {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(WorkspaceAnnouncements);

@@ -39,15 +39,15 @@ class DeleteMessageDialog extends React.Component<
       }
       this.props.displayNotification(
         this.props.i18n.text.get(
-          "plugin.chat.notification.messageDeleteSuccess",
+          "plugin.chat.notification.messageDeleteSuccess"
         ),
-        "success",
+        "success"
       );
       this.props.onDelete();
     } catch {
       this.props.displayNotification(
         this.props.i18n.text.get("plugin.chat.notification.messageDeleteFail"),
-        "error",
+        "error"
       );
     }
   }
@@ -60,7 +60,7 @@ class DeleteMessageDialog extends React.Component<
         <span
           dangerouslySetInnerHTML={{
             __html: this.props.i18n.text.get(
-              "plugin.chat.messages.deleteMessageDesc",
+              "plugin.chat.messages.deleteMessageDesc"
             ),
           }}
         ></span>
@@ -87,7 +87,7 @@ class DeleteMessageDialog extends React.Component<
         isOpen={this.props.isOpen}
         onClose={this.props.onClose}
         title={this.props.i18n.text.get(
-          "plugin.chat.messages.deleteMessageTitle",
+          "plugin.chat.messages.deleteMessageTitle"
         )}
         content={content}
         footer={footer}
@@ -109,5 +109,5 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(DeleteMessageDialog);

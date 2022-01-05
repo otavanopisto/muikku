@@ -52,7 +52,7 @@ class WorkspaceJournalApplication extends React.Component<
 
   render() {
     const title = this.props.i18n.text.get(
-      "plugin.workspace.journal.pageTitle",
+      "plugin.workspace.journal.pageTitle"
     );
     const toolbar = <Toolbar />;
     let primaryOption;
@@ -73,7 +73,7 @@ class WorkspaceJournalApplication extends React.Component<
             >
               <option value="">
                 {this.props.i18n.text.get(
-                  "plugin.workspace.journal.studentFilter.showAll",
+                  "plugin.workspace.journal.studentFilter.showAll"
                 )}
               </option>
               {(this.props.workspace.students.results || [])
@@ -81,8 +81,8 @@ class WorkspaceJournalApplication extends React.Component<
                   (student, index, array) =>
                     array.findIndex(
                       (otherStudent) =>
-                        otherStudent.userEntityId === student.userEntityId,
-                    ) === index,
+                        otherStudent.userEntityId === student.userEntityId
+                    ) === index
                 )
                 .map((student) => (
                   <option
@@ -98,7 +98,7 @@ class WorkspaceJournalApplication extends React.Component<
           <NewJournal>
             <Button buttonModifiers="primary-function">
               {this.props.i18n.text.get(
-                "plugin.workspace.journal.newEntryButton.label",
+                "plugin.workspace.journal.newEntryButton.label"
               )}
             </Button>
           </NewJournal>
@@ -137,11 +137,11 @@ function mapStateToProps(state: StateType) {
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     { loadCurrentWorkspaceJournalsFromServer },
-    dispatch,
+    dispatch
   );
 }
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(WorkspaceJournalApplication);

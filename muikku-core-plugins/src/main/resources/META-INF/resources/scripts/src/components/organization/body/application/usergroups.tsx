@@ -24,14 +24,14 @@ interface OrganizationUserGroupsProps {
 }
 
 const OrganizationUserGroups: React.FC<OrganizationUserGroupsProps> = (
-  props,
+  props
 ) => {
   const { userGroups, userGroupsState, userGroupsHasMore, loadMoreUserGroups } =
     props;
   const lastUserGroupRef = useInfinityScroll(
     userGroupsHasMore,
     userGroupsState,
-    loadMoreUserGroups,
+    loadMoreUserGroups
   );
 
   if (userGroupsState === "LOADING") {
@@ -41,7 +41,7 @@ const OrganizationUserGroups: React.FC<OrganizationUserGroupsProps> = (
       <div className="empty">
         <span>
           {props.i18n.text.get(
-            "plugin.organization.userGroups.error.loadError",
+            "plugin.organization.userGroups.error.loadError"
           )}
         </span>
       </div>
@@ -51,7 +51,7 @@ const OrganizationUserGroups: React.FC<OrganizationUserGroupsProps> = (
       <div className="empty">
         <span>
           {props.i18n.text.get(
-            "plugin.organization.userGroups.searchResult.empty",
+            "plugin.organization.userGroups.searchResult.empty"
           )}
         </span>
       </div>
@@ -101,5 +101,5 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(OrganizationUserGroups);

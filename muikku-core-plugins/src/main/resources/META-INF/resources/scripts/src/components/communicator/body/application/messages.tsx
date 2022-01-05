@@ -145,8 +145,8 @@ class CommunicatorMessages extends BodyScrollLoader<
       .filter(
         (w, pos, self) =>
           self.findIndex(
-            (w2) => w2.workspaceEntityId === w.workspaceEntityId,
-          ) === pos,
+            (w2) => w2.workspaceEntityId === w.workspaceEntityId
+          ) === pos
       )
       .map((workspace) => <span>{workspace.workspaceName}</span>);
 
@@ -157,7 +157,7 @@ class CommunicatorMessages extends BodyScrollLoader<
     ];
   }
   setCurrentThread(
-    threadOrSearchResult: MessageThreadType | MessageSearchResult,
+    threadOrSearchResult: MessageThreadType | MessageSearchResult
   ) {
     window.location.hash =
       window.location.hash.split("/")[0] +
@@ -197,15 +197,15 @@ class CommunicatorMessages extends BodyScrollLoader<
             let messageFolder;
             if (message.folder === "INBOX") {
               messageFolder = this.props.i18n.text.get(
-                "plugin.communicator.category.title.inbox",
+                "plugin.communicator.category.title.inbox"
               );
             } else if (message.folder === "SENT") {
               messageFolder = this.props.i18n.text.get(
-                "plugin.communicator.category.title.sent",
+                "plugin.communicator.category.title.sent"
               );
             } else {
               messageFolder = this.props.i18n.text.get(
-                "plugin.communicator.category.title.trash",
+                "plugin.communicator.category.title.trash"
               );
             }
 
@@ -235,7 +235,7 @@ class CommunicatorMessages extends BodyScrollLoader<
                         >
                           {getName(
                             recipient as any,
-                            !this.props.status.isStudent,
+                            !this.props.status.isStudent
                           )}
                         </span>
                       ))}
@@ -315,7 +315,7 @@ class CommunicatorMessages extends BodyScrollLoader<
         >
           {this.props.threads.map((thread, index: number) => {
             const isSelected: boolean = this.props.selectedThreadsIds.includes(
-              thread.communicatorMessageId,
+              thread.communicatorMessageId
             );
             return {
               as: ApplicationListItem,
@@ -326,18 +326,18 @@ class CommunicatorMessages extends BodyScrollLoader<
               }`,
               onSelect: this.props.addToMessagesSelectedThreads.bind(
                 null,
-                thread,
+                thread
               ),
               onDeselect: this.props.removeFromMessagesSelectedThreads.bind(
                 null,
-                thread,
+                thread
               ),
               onEnter: this.setCurrentThread.bind(this, thread),
               isSelected,
               key: thread.communicatorMessageId,
               wcagLabel: thread.unreadMessagesInThread
                 ? this.props.i18n.text.get(
-                    "plugin.wcag.messageUnread.aria.label",
+                    "plugin.wcag.messageUnread.aria.label"
                   )
                 : null,
               checkboxId: `messageSelect-${index}`,
@@ -351,7 +351,7 @@ class CommunicatorMessages extends BodyScrollLoader<
                         className="visually-hidden"
                       >
                         {this.props.i18n.text.get(
-                          "plugin.wcag.messageSelect.label",
+                          "plugin.wcag.messageSelect.label"
                         )}
                       </label>
                       {checkbox}
@@ -369,12 +369,12 @@ class CommunicatorMessages extends BodyScrollLoader<
                       <span
                         className="message__recipients"
                         aria-label={this.props.i18n.text.get(
-                          "plugin.wcag.messageSender.aria.label",
+                          "plugin.wcag.messageSender.aria.label"
                         )}
                       >
                         {this.getThreadUserNames(
                           thread,
-                          this.props.status.userId,
+                          this.props.status.userId
                         )}
                       </span>
                     </div>
@@ -382,7 +382,7 @@ class CommunicatorMessages extends BodyScrollLoader<
                       <div
                         className="application-list__item-counter"
                         aria-label={this.props.i18n.text.get(
-                          "plugin.wcag.messageCount.aria.label",
+                          "plugin.wcag.messageCount.aria.label"
                         )}
                       >
                         {thread.messageCountInThread}
@@ -391,11 +391,11 @@ class CommunicatorMessages extends BodyScrollLoader<
                     <div
                       className="application-list__header-item-date"
                       aria-label={this.props.i18n.text.get(
-                        "plugin.wcag.messageSendDate.aria.label",
+                        "plugin.wcag.messageSendDate.aria.label"
                       )}
                     >
                       {this.props.i18n.time.format(
-                        thread.threadLatestMessageDate,
+                        thread.threadLatestMessageDate
                       )}
                     </div>
                   </ApplicationListItemHeader>
@@ -403,7 +403,7 @@ class CommunicatorMessages extends BodyScrollLoader<
                     <span
                       className="application-list__header-item-body"
                       aria-label={this.props.i18n.text.get(
-                        "plugin.wcag.messageBody.aria.label",
+                        "plugin.wcag.messageBody.aria.label"
                       )}
                     >
                       {thread.caption}
@@ -417,7 +417,7 @@ class CommunicatorMessages extends BodyScrollLoader<
                             className="label"
                             key={label.id}
                             aria-label={this.props.i18n.text.get(
-                              "plugin.wcag.messageLabel.aria.label",
+                              "plugin.wcag.messageLabel.aria.label"
                             )}
                           >
                             <span
@@ -466,11 +466,11 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
       removeFromMessagesSelectedThreads,
       addToMessagesSelectedThreads,
     },
-    dispatch,
+    dispatch
   );
 }
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(CommunicatorMessages);

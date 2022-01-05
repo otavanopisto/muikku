@@ -71,9 +71,9 @@ class UpdateUsernamePasswordDialog extends React.Component<
     if (newPassword1 && newPassword2 == "") {
       this.props.displayNotification(
         this.props.i18n.text.get(
-          "plugin.profile.changePassword.dialog.notif.emptypass",
+          "plugin.profile.changePassword.dialog.notif.emptypass"
         ),
-        "error",
+        "error"
       );
       return;
     }
@@ -81,9 +81,9 @@ class UpdateUsernamePasswordDialog extends React.Component<
     if (newPassword1 !== newPassword2) {
       this.props.displayNotification(
         this.props.i18n.text.get(
-          "plugin.profile.changePassword.dialog.notif.failconfirm",
+          "plugin.profile.changePassword.dialog.notif.failconfirm"
         ),
-        "error",
+        "error"
       );
       return;
     }
@@ -109,16 +109,16 @@ class UpdateUsernamePasswordDialog extends React.Component<
           if (result.status === 403) {
             this.props.displayNotification(
               this.props.i18n.text.get(
-                "plugin.profile.changePassword.dialog.notif.unauthorized",
+                "plugin.profile.changePassword.dialog.notif.unauthorized"
               ),
-              "error",
+              "error"
             );
           } else if (result.status === 409) {
             this.props.displayNotification(
               this.props.i18n.text.get(
-                "plugin.profile.changePassword.dialog.notif.alreadyinuse",
+                "plugin.profile.changePassword.dialog.notif.alreadyinuse"
               ),
-              "error",
+              "error"
             );
           } else {
             this.props.displayNotification(err.message, "error");
@@ -134,16 +134,16 @@ class UpdateUsernamePasswordDialog extends React.Component<
           if (values.newPassword === "") {
             this.props.displayNotification(
               this.props.i18n.text.get(
-                "plugin.profile.changePassword.dialog.notif.username.successful",
+                "plugin.profile.changePassword.dialog.notif.username.successful"
               ),
-              "success",
+              "success"
             );
           } else {
             this.props.displayNotification(
               this.props.i18n.text.get(
-                "plugin.profile.changePassword.dialog.notif.successful",
+                "plugin.profile.changePassword.dialog.notif.successful"
               ),
-              "success",
+              "success"
             );
           }
 
@@ -163,14 +163,14 @@ class UpdateUsernamePasswordDialog extends React.Component<
       <div>
         <p>
           {this.props.i18n.text.get(
-            "plugin.profile.changePassword.dialog.desription",
+            "plugin.profile.changePassword.dialog.desription"
           )}
         </p>
         <form>
           <div className="form-element form-element--profile">
             <label htmlFor="profileUsername" className="form-element__label">
               {this.props.i18n.text.get(
-                "plugin.profile.changePassword.dialog.usernameField.label",
+                "plugin.profile.changePassword.dialog.usernameField.label"
               )}
             </label>
             <input
@@ -184,7 +184,7 @@ class UpdateUsernamePasswordDialog extends React.Component<
           <div className="form-element form-element--profile">
             <label htmlFor="profileOldPassword" className="form-element__label">
               {this.props.i18n.text.get(
-                "plugin.profile.changePassword.dialog.oldPasswordField.label",
+                "plugin.profile.changePassword.dialog.oldPasswordField.label"
               )}
             </label>
             <input
@@ -201,7 +201,7 @@ class UpdateUsernamePasswordDialog extends React.Component<
               className="form-element__label"
             >
               {this.props.i18n.text.get(
-                "plugin.profile.changePassword.dialog.newPasswordField1.label",
+                "plugin.profile.changePassword.dialog.newPasswordField1.label"
               )}
             </label>
             <input
@@ -218,7 +218,7 @@ class UpdateUsernamePasswordDialog extends React.Component<
               className="form-element__label"
             >
               {this.props.i18n.text.get(
-                "plugin.profile.changePassword.dialog.newPasswordField2.label",
+                "plugin.profile.changePassword.dialog.newPasswordField2.label"
               )}
             </label>
             <input
@@ -244,7 +244,7 @@ class UpdateUsernamePasswordDialog extends React.Component<
           disabled={this.state.locked}
         >
           {this.props.i18n.text.get(
-            "plugin.profile.changePassword.dialog.button.saveLabel",
+            "plugin.profile.changePassword.dialog.button.saveLabel"
           )}
         </Button>
         <Button
@@ -253,7 +253,7 @@ class UpdateUsernamePasswordDialog extends React.Component<
           disabled={this.state.locked}
         >
           {this.props.i18n.text.get(
-            "plugin.profile.changePassword.dialog.button.cancelLabel",
+            "plugin.profile.changePassword.dialog.button.cancelLabel"
           )}
         </Button>
       </div>
@@ -261,7 +261,7 @@ class UpdateUsernamePasswordDialog extends React.Component<
     return (
       <Dialog
         title={this.props.i18n.text.get(
-          "plugin.profile.changePassword.dialog.title",
+          "plugin.profile.changePassword.dialog.title"
         )}
         content={content}
         footer={footer}
@@ -283,11 +283,11 @@ function mapStateToProps(state: StateType) {
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     { displayNotification, loadProfileUsername },
-    dispatch,
+    dispatch
   );
 }
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(UpdateUsernamePasswordDialog);

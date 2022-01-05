@@ -39,7 +39,7 @@ class NavigationAside extends React.Component<
           >
             {navItem.text(this.props.i18n)}
           </NavigationElement>
-        ),
+        )
       );
 
     return (

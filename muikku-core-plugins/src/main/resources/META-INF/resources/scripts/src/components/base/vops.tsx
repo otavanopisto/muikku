@@ -84,7 +84,7 @@ class Vops extends React.Component<VopsProps, VopsState> {
           <div className="vops__legend">
             <div className="vops__legend-topic">
               {this.props.i18n.text.get(
-                "plugin.records.studyplan.legend.title.shapes",
+                "plugin.records.studyplan.legend.title.shapes"
               )}
             </div>
             <div className="vops__legend-items">
@@ -92,7 +92,7 @@ class Vops extends React.Component<VopsProps, VopsState> {
                 <div className="vops__item vops__item--mandatory"></div>
                 <div className="vops__legend-item-text">
                   {this.props.i18n.text.get(
-                    "plugin.records.studyplan.legend.title.mandatory",
+                    "plugin.records.studyplan.legend.title.mandatory"
                   )}
                 </div>
               </div>
@@ -100,7 +100,7 @@ class Vops extends React.Component<VopsProps, VopsState> {
                 <div className="vops__item vops__item--optional-national"></div>
                 <div className="vops__legend-item-text">
                   {this.props.i18n.text.get(
-                    "plugin.records.studyplan.legend.title.optional.national",
+                    "plugin.records.studyplan.legend.title.optional.national"
                   )}
                 </div>
               </div>
@@ -108,14 +108,14 @@ class Vops extends React.Component<VopsProps, VopsState> {
                 <div className="vops__item vops__item--optional-school"></div>
                 <div className="vops__legend-item-text">
                   {this.props.i18n.text.get(
-                    "plugin.records.studyplan.legend.title.optional.school",
+                    "plugin.records.studyplan.legend.title.optional.school"
                   )}
                 </div>
               </div>
             </div>
             <div className="vops__legend-topic">
               {this.props.i18n.text.get(
-                "plugin.records.studyplan.legend.title.colors",
+                "plugin.records.studyplan.legend.title.colors"
               )}
             </div>
             <div className="vops__legend-items">
@@ -123,7 +123,7 @@ class Vops extends React.Component<VopsProps, VopsState> {
                 <div className="vops__item"></div>
                 <div className="vops__legend-item-text">
                   {this.props.i18n.text.get(
-                    "plugin.records.studyplan.legend.title.neutral",
+                    "plugin.records.studyplan.legend.title.neutral"
                   )}
                 </div>
               </div>
@@ -131,7 +131,7 @@ class Vops extends React.Component<VopsProps, VopsState> {
                 <div className="vops__item vops__item--incomplete"></div>
                 <div className="vops__legend-item-text">
                   {this.props.i18n.text.get(
-                    "plugin.records.studyplan.legend.title.incomplete",
+                    "plugin.records.studyplan.legend.title.incomplete"
                   )}
                 </div>
               </div>
@@ -139,7 +139,7 @@ class Vops extends React.Component<VopsProps, VopsState> {
                 <div className="vops__item vops__item--planned"></div>
                 <div className="vops__legend-item-text">
                   {this.props.i18n.text.get(
-                    "plugin.records.studyplan.legend.title.planned",
+                    "plugin.records.studyplan.legend.title.planned"
                   )}
                 </div>
               </div>
@@ -147,7 +147,7 @@ class Vops extends React.Component<VopsProps, VopsState> {
                 <div className="vops__item vops__item--passed"></div>
                 <div className="vops__legend-item-text">
                   {this.props.i18n.text.get(
-                    "plugin.records.studyplan.legend.title.passed",
+                    "plugin.records.studyplan.legend.title.passed"
                   )}
                 </div>
               </div>
@@ -155,7 +155,7 @@ class Vops extends React.Component<VopsProps, VopsState> {
                 <div className="vops__item vops__item--enrolled"></div>
                 <div className="vops__legend-item-text">
                   {this.props.i18n.text.get(
-                    "plugin.records.studyplan.legend.title.enrolled",
+                    "plugin.records.studyplan.legend.title.enrolled"
                   )}
                 </div>
               </div>
@@ -163,7 +163,7 @@ class Vops extends React.Component<VopsProps, VopsState> {
                 <div className="vops__item vops__item--failed"></div>
                 <div className="vops__legend-item-text">
                   {this.props.i18n.text.get(
-                    "plugin.records.studyplan.legend.title.failed",
+                    "plugin.records.studyplan.legend.title.failed"
                   )}
                 </div>
               </div>

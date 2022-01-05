@@ -65,7 +65,7 @@ class WorkspaceHomeHeader extends React.Component<
           <div className="meta__item">
             <span className="meta__item-label">
               {this.props.i18n.text.get(
-                "plugin.workspace.index.courseLengthLabel",
+                "plugin.workspace.index.courseLengthLabel"
               )}
             </span>
             <span className="meta__item-description">
@@ -74,7 +74,7 @@ class WorkspaceHomeHeader extends React.Component<
                     "plugin.workspace.index.courseLength",
                     this.props.workspace.additionalInfo.courseLength,
                     this.props.workspace.additionalInfo.courseLengthSymbol
-                      .symbol,
+                      .symbol
                   )
                 : null}
             </span>
@@ -82,7 +82,7 @@ class WorkspaceHomeHeader extends React.Component<
           <div className="meta__item">
             <span className="meta__item-label">
               {this.props.i18n.text.get(
-                "plugin.workspace.index.courseSubjectLabel",
+                "plugin.workspace.index.courseSubjectLabel"
               )}
             </span>
             <span className="meta__item-description">
@@ -96,7 +96,7 @@ class WorkspaceHomeHeader extends React.Component<
             <div className="meta__item">
               <span className="meta__item-label">
                 {this.props.i18n.text.get(
-                  "plugin.workspace.index.courseTypeLabel",
+                  "plugin.workspace.index.courseTypeLabel"
                 )}
               </span>
               <span className="meta__item-description">
@@ -110,18 +110,18 @@ class WorkspaceHomeHeader extends React.Component<
             <div className="meta__item">
               <span className="meta__item-label">
                 {this.props.i18n.text.get(
-                  "plugin.workspace.index.courseDatesLabel",
+                  "plugin.workspace.index.courseDatesLabel"
                 )}
               </span>
               <span className="meta__item-description">
                 {this.props.i18n.text.get(
                   "plugin.workspace.index.courseDates",
                   this.props.i18n.time.format(
-                    this.props.workspace.additionalInfo.beginDate,
+                    this.props.workspace.additionalInfo.beginDate
                   ),
                   this.props.i18n.time.format(
-                    this.props.workspace.additionalInfo.endDate,
-                  ),
+                    this.props.workspace.additionalInfo.endDate
+                  )
                 )}
               </span>
             </div>
@@ -131,7 +131,7 @@ class WorkspaceHomeHeader extends React.Component<
               <ProgressData
                 modifier="workspace-home"
                 title={this.props.i18n.text.get(
-                  "plugin.workspace.index.courseProgressLabel",
+                  "plugin.workspace.index.courseProgressLabel"
                 )}
                 i18n={this.props.i18n}
                 activity={this.props.workspace.studentActivity}
@@ -158,5 +158,5 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(WorkspaceHomeHeader);

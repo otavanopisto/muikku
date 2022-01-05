@@ -40,7 +40,7 @@ class DeleteImageDialog extends React.Component<
       <div>
         <span>
           {this.props.i18n.text.get(
-            "plugin.profile.deleteImage.dialog.description",
+            "plugin.profile.deleteImage.dialog.description"
           )}
         </span>
       </div>
@@ -52,7 +52,7 @@ class DeleteImageDialog extends React.Component<
           onClick={this.delete.bind(this, closeDialog)}
         >
           {this.props.i18n.text.get(
-            "plugin.profile.deleteImage.dialog.button.deleteLabel",
+            "plugin.profile.deleteImage.dialog.button.deleteLabel"
           )}
         </Button>
         <Button
@@ -60,7 +60,7 @@ class DeleteImageDialog extends React.Component<
           onClick={closeDialog}
         >
           {this.props.i18n.text.get(
-            "plugin.profile.deleteImage.dialog.button.cancelLabel",
+            "plugin.profile.deleteImage.dialog.button.cancelLabel"
           )}
         </Button>
       </div>
@@ -70,7 +70,7 @@ class DeleteImageDialog extends React.Component<
         isOpen={this.props.isOpen}
         onClose={this.props.onClose}
         title={this.props.i18n.text.get(
-          "plugin.profile.deleteImage.dialog.title",
+          "plugin.profile.deleteImage.dialog.title"
         )}
         content={content}
         footer={footer}

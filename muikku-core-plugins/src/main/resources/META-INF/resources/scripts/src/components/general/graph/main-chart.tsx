@@ -130,7 +130,7 @@ class CurrentStudentStatistics extends React.Component<
     } else {
       if (this.state.filteredWorkspaces.length == 0) {
         this.props.workspaces.map((workspace) =>
-          filteredWorkspaces.push(workspace.id),
+          filteredWorkspaces.push(workspace.id)
         );
       }
     }
@@ -185,13 +185,13 @@ class CurrentStudentStatistics extends React.Component<
         prior = new Date(
           today.getFullYear(),
           today.getMonth() - 3,
-          today.getDate(),
+          today.getDate()
         );
       else
         prior = new Date(
           today.getFullYear() - 1,
           today.getMonth() + 9,
-          today.getDate(),
+          today.getDate()
         );
       e.chart.zoomToDates(prior, today);
     }
@@ -309,7 +309,7 @@ class CurrentStudentStatistics extends React.Component<
 
     //NOTE: Data can be filtered here also (Option 2)
     const sortedKeys = Array.from(chartDataMap.keys()).sort((a, b) =>
-      a > b ? 1 : -1,
+      a > b ? 1 : -1
     );
     const data: any = [];
     sortedKeys.forEach((key) => {
@@ -439,7 +439,7 @@ class CurrentStudentStatistics extends React.Component<
         id: "EVALUATION_GOTINCOMPLETED",
         balloonText:
           this.props.i18n.text.get(
-            "plugin.guider.evaluation-incompletedLabel",
+            "plugin.guider.evaluation-incompletedLabel"
           ) + " <b>[[EVALUATION_GOTINCOMPLETED]]</b>",
         bullet: "square",
         bulletSize: 12,

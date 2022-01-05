@@ -44,7 +44,7 @@ class DeleteRoomDialog extends React.Component<
         mApi().chat.publicRoom.del({
           name: this.props.chat.roomJID.split("@")[0],
         }),
-        "callback",
+        "callback"
       )();
       if (!this.unmounted) {
         closeDialog();
@@ -52,18 +52,18 @@ class DeleteRoomDialog extends React.Component<
       this.props.displayNotification(
         this.props.i18n.text.get(
           "plugin.chat.notification.roomDeleteSuccess",
-          this.props.chat.roomName,
+          this.props.chat.roomName
         ),
-        "success",
+        "success"
       );
       this.props.onDelete();
     } catch {
       this.props.displayNotification(
         this.props.i18n.text.get(
           "plugin.chat.notification.roomDeleteFail",
-          this.props.chat.roomName,
+          this.props.chat.roomName
         ),
-        "error",
+        "error"
       );
     }
   }
@@ -77,7 +77,7 @@ class DeleteRoomDialog extends React.Component<
           dangerouslySetInnerHTML={{
             __html: this.props.i18n.text.get(
               "plugin.chat.rooms.deleteRoomDesc",
-              this.props.chat.roomName,
+              this.props.chat.roomName
             ),
           }}
         ></span>

@@ -140,19 +140,19 @@ class OrganizationUser extends React.Component<
             name="role"
             modifiers="new-user"
             label={this.props.i18n.text.get(
-              "plugin.organization.users.addUser.label.role",
+              "plugin.organization.users.addUser.label.role"
             )}
             updateField={this.updateField}
             value={this.props.data.role}
           >
             <option value="MANAGER">
               {this.props.i18n.text.get(
-                "plugin.organization.users.role.MANAGER",
+                "plugin.organization.users.role.MANAGER"
               )}
             </option>
             <option value="TEACHER">
               {this.props.i18n.text.get(
-                "plugin.organization.users.role.TEACHER",
+                "plugin.organization.users.role.TEACHER"
               )}
             </option>
           </SelectFormElement>
@@ -166,7 +166,7 @@ class OrganizationUser extends React.Component<
             valid={this.state.firstNameValid}
             mandatory={true}
             label={this.props.i18n.text.get(
-              "plugin.organization.users.addUser.label.firstName",
+              "plugin.organization.users.addUser.label.firstName"
             )}
             updateField={this.updateField}
           />
@@ -178,7 +178,7 @@ class OrganizationUser extends React.Component<
             valid={this.state.lastNameValid}
             mandatory={true}
             label={this.props.i18n.text.get(
-              "plugin.organization.users.addUser.label.lastName",
+              "plugin.organization.users.addUser.label.lastName"
             )}
             updateField={this.updateField}
           />
@@ -189,7 +189,7 @@ class OrganizationUser extends React.Component<
             mandatory={true}
             updateField={this.updateField}
             label={this.props.i18n.text.get(
-              "plugin.organization.users.addUser.label.email",
+              "plugin.organization.users.addUser.label.email"
             )}
           />
         </DialogRow>
@@ -200,10 +200,10 @@ class OrganizationUser extends React.Component<
       <FormActionsElement
         locked={this.state.locked}
         executeLabel={this.props.i18n.text.get(
-          "plugin.organization.users.editUser.execute",
+          "plugin.organization.users.editUser.execute"
         )}
         cancelLabel={this.props.i18n.text.get(
-          "plugin.organization.users.addUser.cancel",
+          "plugin.organization.users.addUser.cancel"
         )}
         executeClick={this.saveUser.bind(this, closePortal)}
         cancelClick={this.cancelDialog.bind(this, closePortal)}
@@ -214,7 +214,7 @@ class OrganizationUser extends React.Component<
       <Dialog
         modifier="new-user"
         title={this.props.i18n.text.get(
-          "plugin.organization.users.editUser.title",
+          "plugin.organization.users.editUser.title"
         )}
         content={content}
         footer={footer}

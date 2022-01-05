@@ -42,7 +42,7 @@ class DeleteWorklistItemDialog extends React.Component<
       <div>
         <span>
           {this.props.i18n.text.get(
-            "plugin.profile.worklist.delete.dialog.description",
+            "plugin.profile.worklist.delete.dialog.description"
           )}
         </span>
       </div>
@@ -54,7 +54,7 @@ class DeleteWorklistItemDialog extends React.Component<
           onClick={this.delete.bind(this, closeDialog)}
         >
           {this.props.i18n.text.get(
-            "plugin.profile.worklist.delete.dialog.button.deleteLabel",
+            "plugin.profile.worklist.delete.dialog.button.deleteLabel"
           )}
         </Button>
         <Button
@@ -62,7 +62,7 @@ class DeleteWorklistItemDialog extends React.Component<
           onClick={closeDialog}
         >
           {this.props.i18n.text.get(
-            "plugin.profile.worklist.delete.dialog.button.cancelLabel",
+            "plugin.profile.worklist.delete.dialog.button.cancelLabel"
           )}
         </Button>
       </div>
@@ -72,7 +72,7 @@ class DeleteWorklistItemDialog extends React.Component<
         isOpen={this.props.isOpen}
         onClose={this.props.onClose}
         title={this.props.i18n.text.get(
-          "plugin.profile.worklist.delete.dialog.title",
+          "plugin.profile.worklist.delete.dialog.title"
         )}
         content={content}
         footer={footer}
@@ -94,5 +94,5 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(DeleteWorklistItemDialog);

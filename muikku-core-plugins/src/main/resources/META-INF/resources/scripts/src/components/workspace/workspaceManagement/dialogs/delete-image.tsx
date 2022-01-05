@@ -43,9 +43,9 @@ class DeleteImageDialog extends React.Component<
       success: () => {
         this.props.displayNotification(
           this.props.i18n.text.get(
-            "plugin.workspace.management.notification.coverImage.deleted",
+            "plugin.workspace.management.notification.coverImage.deleted"
           ),
-          "success",
+          "success"
         );
         this.props.onDelete();
       },
@@ -56,7 +56,7 @@ class DeleteImageDialog extends React.Component<
     const content = (closeDialog: () => any) => (
       <div>
         {this.props.i18n.text.get(
-          "plugin.workspace.management.deleteImage.dialog.description",
+          "plugin.workspace.management.deleteImage.dialog.description"
         )}
       </div>
     );
@@ -67,7 +67,7 @@ class DeleteImageDialog extends React.Component<
           onClick={this.deleteImage.bind(this, closeDialog)}
         >
           {this.props.i18n.text.get(
-            "plugin.workspace.management.deleteImage.dialog.deleteButton.label",
+            "plugin.workspace.management.deleteImage.dialog.deleteButton.label"
           )}
         </Button>
         <Button
@@ -75,7 +75,7 @@ class DeleteImageDialog extends React.Component<
           onClick={closeDialog}
         >
           {this.props.i18n.text.get(
-            "plugin.workspace.management.deleteImage.dialog.cancelButton.label",
+            "plugin.workspace.management.deleteImage.dialog.cancelButton.label"
           )}
         </Button>
       </div>
@@ -84,7 +84,7 @@ class DeleteImageDialog extends React.Component<
       <Dialog
         isOpen={this.props.isOpen}
         title={this.props.i18n.text.get(
-          "plugin.workspace.management.changeImage.dialog.title",
+          "plugin.workspace.management.changeImage.dialog.title"
         )}
         content={content}
         footer={footer}
@@ -104,7 +104,7 @@ function mapStateToProps(state: StateType) {
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     { displayNotification, updateCurrentWorkspaceImagesB64 },
-    dispatch,
+    dispatch
   );
 }
 

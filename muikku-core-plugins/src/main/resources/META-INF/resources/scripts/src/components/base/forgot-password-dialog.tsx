@@ -55,17 +55,17 @@ class ForgotPasswordDialog extends React.Component<
     if (!this.state.email) {
       this.props.displayNotification(
         this.props.i18n.text.get(
-          "plugin.forgotpassword.forgotPasswordDialog.email.required",
+          "plugin.forgotpassword.forgotPasswordDialog.email.required"
         ),
-        "error",
+        "error"
       );
       return;
     } else if (!emailRegexValidator.test(this.state.email)) {
       this.props.displayNotification(
         this.props.i18n.text.get(
-          "plugin.forgotpassword.forgotPasswordDialog.email.invalid",
+          "plugin.forgotpassword.forgotPasswordDialog.email.invalid"
         ),
-        "error",
+        "error"
       );
       return;
     }
@@ -73,14 +73,14 @@ class ForgotPasswordDialog extends React.Component<
     try {
       const result = await promisify(
         mApi().forgotpassword.reset.read({ email: this.state.email }),
-        "callback",
+        "callback"
       )();
       this.props.displayNotification(
         this.props.i18n.text.get(
           "plugin.forgotPassword.forgotPasswordDialog.mailSent",
-          this.state.email,
+          this.state.email
         ),
-        "success",
+        "success"
       );
       this.setState({
         email: "",
@@ -93,9 +93,9 @@ class ForgotPasswordDialog extends React.Component<
       this.props.displayNotification(
         this.props.i18n.text.get(
           "plugin.forgotpassword.forgotPasswordDialog.noUserFound",
-          this.state.email,
+          this.state.email
         ),
-        "error",
+        "error"
       );
     }
   }
@@ -103,7 +103,7 @@ class ForgotPasswordDialog extends React.Component<
     const content = (closeDialog: () => any) => (
       <div>
         {this.props.i18n.text.get(
-          "plugin.forgotpassword.forgotPasswordDialog.instructions",
+          "plugin.forgotpassword.forgotPasswordDialog.instructions"
         )}
         <br />
         <br />
@@ -117,7 +117,7 @@ class ForgotPasswordDialog extends React.Component<
               htmlFor="forgotpassword-email"
             >
               {this.props.i18n.text.get(
-                "plugin.forgotpassword.forgotPasswordDialog.email",
+                "plugin.forgotpassword.forgotPasswordDialog.email"
               )}
             </label>
             <input
@@ -138,7 +138,7 @@ class ForgotPasswordDialog extends React.Component<
           onClick={closeDialog}
         >
           {this.props.i18n.text.get(
-            "plugin.forgotpassword.forgotPasswordDialog.cancelButtonLabel",
+            "plugin.forgotpassword.forgotPasswordDialog.cancelButtonLabel"
           )}
         </Link>
         <Link
@@ -146,7 +146,7 @@ class ForgotPasswordDialog extends React.Component<
           onClick={this.resetPassword.bind(this, closeDialog)}
         >
           {this.props.i18n.text.get(
-            "plugin.forgotpassword.forgotPasswordDialog.sendButtonLabel",
+            "plugin.forgotpassword.forgotPasswordDialog.sendButtonLabel"
           )}
         </Link>
       </div>
@@ -154,7 +154,7 @@ class ForgotPasswordDialog extends React.Component<
     return (
       <Dialog
         title={this.props.i18n.text.get(
-          "plugin.forgotpassword.forgotPasswordDialog.title",
+          "plugin.forgotpassword.forgotPasswordDialog.title"
         )}
         content={content}
         footer={footer}
@@ -182,5 +182,5 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(ForgotPasswordDialog);

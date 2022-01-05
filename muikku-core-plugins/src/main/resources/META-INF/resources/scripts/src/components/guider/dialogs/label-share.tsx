@@ -79,7 +79,7 @@ class GuiderLabelShareDialog extends React.Component<
               email: "unknown",
               name: getName(result.user, true),
             },
-          }),
+          })
         )
         .filter((r: ContactRecipientType) => r !== null),
     });
@@ -93,7 +93,7 @@ class GuiderLabelShareDialog extends React.Component<
     try {
       this.sharesResult = await promisify(
         mApi().user.flags.shares.read(this.props.label.id),
-        "callback",
+        "callback"
       )();
       this.updateSharesState();
     } catch (e) {
@@ -108,7 +108,7 @@ class GuiderLabelShareDialog extends React.Component<
   share(closeDialog: () => any) {
     this.state.selectedItems.forEach(async (member: ContactRecipientType) => {
       const wasAdded = !this.sharesResult.find(
-        (share: any) => share.userIdentifier === member.value.id,
+        (share: any) => share.userIdentifier === member.value.id
       );
       if (wasAdded) {
         try {
@@ -117,7 +117,7 @@ class GuiderLabelShareDialog extends React.Component<
               flagId: this.props.label.id,
               userIdentifier: member.value.id,
             }),
-            "callback",
+            "callback"
           )();
         } catch (e) {
           this.props.displayNotification(e.message, "error");
@@ -128,13 +128,13 @@ class GuiderLabelShareDialog extends React.Component<
     this.sharesResult.forEach(async (share: any) => {
       const wasRemoved = !this.state.selectedItems.find(
         (member: ContactRecipientType) =>
-          member.value.id === share.userIdentifier,
+          member.value.id === share.userIdentifier
       );
       if (wasRemoved) {
         try {
           await promisify(
             mApi().user.flags.shares.del(this.props.label.id, share.id),
-            "callback",
+            "callback"
           )();
         } catch (e) {
           this.props.displayNotification(e.message, "error");
@@ -164,7 +164,7 @@ class GuiderLabelShareDialog extends React.Component<
           onClick={closeDialog}
         >
           {this.props.i18n.text.get(
-            "plugin.guider.flags.editFlagDialog.cancel",
+            "plugin.guider.flags.editFlagDialog.cancel"
           )}
         </Button>
         <Button
@@ -198,7 +198,7 @@ class GuiderLabelShareDialog extends React.Component<
         modifier="guider-share-label"
         title={this.props.i18n.text.get(
           "plugin.guider.flags.shareFlagDialog.title",
-          this.props.label.name,
+          this.props.label.name
         )}
         content={content}
         footer={footer}
@@ -232,5 +232,5 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(GuiderLabelShareDialog);

@@ -11,7 +11,7 @@ import { MatriculationExaminationFinishedInputGroup } from "./matriculation-exam
  */
 interface MatriculationExaminationFinishedAttendesListProps {
   onChange?: (
-    modifiedExaminationCompletedSubjectList: ExaminationFinishedSubject[],
+    modifiedExaminationCompletedSubjectList: ExaminationFinishedSubject[]
   ) => any;
   readOnly?: boolean;
   enrolledAttendances?: ExaminationEnrolledSubject[];
@@ -59,11 +59,11 @@ export const MatriculationExaminationFinishedAttendesList: React.FC<
    * @param index
    */
   const handleMatriculationExaminationSubjectGroupChange = <
-    T extends keyof ExaminationFinishedSubject,
+    T extends keyof ExaminationFinishedSubject
   >(
     key: T,
     value: ExaminationFinishedSubject[T],
-    index: number,
+    index: number
   ) => {
     const modifiedExaminationFinishedList = examinationFinishedList;
 
@@ -76,7 +76,7 @@ export const MatriculationExaminationFinishedAttendesList: React.FC<
    * List of selected subject string keys
    */
   const selectedSubjects = examinationFinishedList.map(
-    (sSubject) => sSubject.subject,
+    (sSubject) => sSubject.subject
   );
 
   return (

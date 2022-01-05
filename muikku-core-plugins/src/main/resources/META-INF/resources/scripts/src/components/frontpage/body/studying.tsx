@@ -23,7 +23,7 @@ export default class FrontpageStudying extends React.Component<
         id="studying"
         className="screen-container__section"
         aria-label={this.props.i18n.text.get(
-          "plugin.wcag.frontPageSectionStudyingLabel",
+          "plugin.wcag.frontPageSectionStudyingLabel"
         )}
       >
         <h2 className="screen-container__header">
@@ -44,7 +44,7 @@ export default class FrontpageStudying extends React.Component<
                 </div>
                 <div className="card__text">
                   {this.props.i18n.text.get(
-                    "plugin.studying.nettilukio.description",
+                    "plugin.studying.nettilukio.description"
                   )}
                 </div>
               </div>
@@ -73,12 +73,12 @@ export default class FrontpageStudying extends React.Component<
               <div className="card__content">
                 <div className="card__title card__title--frontpage-secondary-school">
                   {this.props.i18n.text.get(
-                    "plugin.studying.nettiperuskoulu.title",
+                    "plugin.studying.nettiperuskoulu.title"
                   )}
                 </div>
                 <div className="card__text">
                   {this.props.i18n.text.get(
-                    "plugin.studying.nettiperuskoulu.description",
+                    "plugin.studying.nettiperuskoulu.description"
                   )}
                 </div>
               </div>
@@ -92,7 +92,7 @@ export default class FrontpageStudying extends React.Component<
                   ]}
                 >
                   {this.props.i18n.text.get(
-                    "plugin.studying.nettiperuskoulu.link",
+                    "plugin.studying.nettiperuskoulu.link"
                   )}
                 </Button>
               </div>
@@ -109,12 +109,12 @@ export default class FrontpageStudying extends React.Component<
               <div className="card__content">
                 <div className="card__title card__title--frontpage-open-materials">
                   {this.props.i18n.text.get(
-                    "plugin.studying.aineopiskelu.title",
+                    "plugin.studying.aineopiskelu.title"
                   )}
                 </div>
                 <div className="card__text">
                   {this.props.i18n.text.get(
-                    "plugin.studying.aineopiskelu.description",
+                    "plugin.studying.aineopiskelu.description"
                   )}
                 </div>
               </div>
@@ -128,7 +128,7 @@ export default class FrontpageStudying extends React.Component<
                   ]}
                 >
                   {this.props.i18n.text.get(
-                    "plugin.studying.nettilukio.aineopiskelu.link",
+                    "plugin.studying.nettilukio.aineopiskelu.link"
                   )}
                 </Button>
                 <Button
@@ -140,7 +140,7 @@ export default class FrontpageStudying extends React.Component<
                   ]}
                 >
                   {this.props.i18n.text.get(
-                    "plugin.studying.nettiperuskoulu.aineopiskelu.link",
+                    "plugin.studying.nettiperuskoulu.aineopiskelu.link"
                   )}
                 </Button>
               </div>

@@ -13,13 +13,13 @@ import "babel-polyfill";
 export default async function runApp(
   reducer: Reducer<any>,
   App: any,
-  beforeCreateApp?: (store: Store<StateType>) => Promise<any> | any,
+  beforeCreateApp?: (store: Store<StateType>) => Promise<any> | any
 ): Promise<Store<StateType>> {
   let store: Store<StateType>;
   if (process.env["NODE_ENV"] !== "production") {
     store = createStore(
       reducer,
-      composeWithDevTools(applyMiddleware(thunk, logger)),
+      composeWithDevTools(applyMiddleware(thunk, logger))
     );
   } else {
     store = createStore(reducer, applyMiddleware(thunk));
@@ -58,9 +58,9 @@ export default async function runApp(
     React.createElement(
       Provider,
       { store: store },
-      React.createElement(App, { store: store, ...props }),
+      React.createElement(App, { store: store, ...props })
     ),
-    document.querySelector("#app"),
+    document.querySelector("#app")
   );
 
   return newStore;

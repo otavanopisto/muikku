@@ -47,11 +47,11 @@ export type SET_USER_BY_SCHOOL_DATA_INDEX = SpecificActionType<
 const fetchingStateUser: { [index: number]: boolean } = {};
 const fetchingStateUserBySchoolData: { [index: string]: boolean } = {};
 const loadLoggedUser: LoadLoggedUserTriggerType = function loadLoggedUser(
-  callback,
+  callback
 ) {
   return async (
     dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType,
+    getState: () => StateType
   ) => {
     const state = getState();
 
@@ -92,7 +92,7 @@ const loadUserGroupIndex: LoadUserGroupIndexTriggerType =
   function loadUserGroupIndex(groupId) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       const state = getState();
       const currentGroupInfo = state.userIndex.groups[groupId];
@@ -110,7 +110,7 @@ const loadUserGroupIndex: LoadUserGroupIndexTriggerType =
             value:
               (await promisify(
                 mApi().usergroup.groups.read(groupId),
-                "callback",
+                "callback"
               )()) || 0,
           },
         });

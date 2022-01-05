@@ -85,9 +85,9 @@ export class AudioPoolComponent extends React.Component<
               key: "std",
               killed: false,
             });
-          },
+          }
         );
-      },
+      }
     );
   }
   public killEverything() {

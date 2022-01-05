@@ -22,7 +22,7 @@ class StudiesEnded extends React.Component<
           <div className="panel__header-icon panel__header-icon--studies-ended icon-blocked"></div>
           <h2 className="panel__header-title">
             {this.props.i18n.text.get(
-              "plugin.frontpage.inactiveStudent.messageTitle",
+              "plugin.frontpage.inactiveStudent.messageTitle"
             )}
           </h2>
         </div>
@@ -30,7 +30,7 @@ class StudiesEnded extends React.Component<
           className="panel__body panel__body--studies-ended"
           dangerouslySetInnerHTML={{
             __html: this.props.i18n.text.get(
-              "plugin.frontpage.inactiveStudent.messageContent",
+              "plugin.frontpage.inactiveStudent.messageContent"
             ),
           }}
         ></div>

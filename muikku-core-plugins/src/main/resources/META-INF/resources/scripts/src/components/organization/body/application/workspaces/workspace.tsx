@@ -82,7 +82,7 @@ class Workspace extends React.Component<CourseProps, CourseState> {
                 <div>
                   <label>
                     {this.props.i18n.text.get(
-                      "plugin.organization.workspaces.workspace.educationType.title",
+                      "plugin.organization.workspaces.workspace.educationType.title"
                     )}
                   </label>
                   <span>{this.props.workspace.educationTypeName}</span>
@@ -90,7 +90,7 @@ class Workspace extends React.Component<CourseProps, CourseState> {
                 <div>
                   <label>
                     {this.props.i18n.text.get(
-                      "plugin.organization.workspaces.workspace.teachers.title",
+                      "plugin.organization.workspaces.workspace.teachers.title"
                     )}
                   </label>
                   <span className="application-list__item-body">
@@ -111,7 +111,7 @@ class Workspace extends React.Component<CourseProps, CourseState> {
                 <div>
                   <label>
                     {this.props.i18n.text.get(
-                      "plugin.organization.workspaces.workspace.studentCount.title",
+                      "plugin.organization.workspaces.workspace.studentCount.title"
                     )}
                   </label>
                   <span>{this.props.workspace.studentCount}</span>
@@ -119,7 +119,7 @@ class Workspace extends React.Component<CourseProps, CourseState> {
               </div>
               <label>
                 {this.props.i18n.text.get(
-                  "plugin.organization.workspaces.workspace.description.title",
+                  "plugin.organization.workspaces.workspace.description.title"
                 )}
               </label>
               <article
@@ -139,7 +139,7 @@ class Workspace extends React.Component<CourseProps, CourseState> {
                 href={`${this.props.status.contextPath}/workspace/${this.props.workspace.urlName}`}
               >
                 {this.props.i18n.text.get(
-                  "plugin.organization.workspaces.workspace.goto",
+                  "plugin.organization.workspaces.workspace.goto"
                 )}
               </Button>
             </ApplicationListItemFooter>

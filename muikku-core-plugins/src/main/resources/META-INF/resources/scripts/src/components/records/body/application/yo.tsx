@@ -84,14 +84,14 @@ class YO extends React.Component<YOProps, YOState> {
           ) : (
             <div>
               {this.props.i18n.text.get(
-                "plugin.records.yo.noMatriculationSubjectsSelected",
+                "plugin.records.yo.noMatriculationSubjectsSelected"
               )}
             </div>
           )
         ) : (
           <div>
             {this.props.i18n.text.get(
-              "plugin.records.yo.participationRights.loading",
+              "plugin.records.yo.participationRights.loading"
             )}
           </div>
         );
@@ -109,7 +109,7 @@ class YO extends React.Component<YOProps, YOState> {
                     <div className="application-sub-panel__notification-content">
                       <span className="application-sub-panel__notification-content-title">
                         {this.props.i18n.text.get(
-                          "plugin.records.yo.button.signUp.hasAssigned",
+                          "plugin.records.yo.button.signUp.hasAssigned"
                         )}
                       </span>
                     </div>
@@ -118,13 +118,13 @@ class YO extends React.Component<YOProps, YOState> {
                         <>
                           <span className="application-sub-panel__notification-content-label">
                             {i18n.text.get(
-                              "plugin.records.matriculation.enrollmentDate",
+                              "plugin.records.matriculation.enrollmentDate"
                             )}
                           </span>
 
                           <span className="application-sub-panel__notification-content-data">
                             {new Date(exam.enrollmentDate).toLocaleDateString(
-                              "fi-Fi",
+                              "fi-Fi"
                             )}
                           </span>
                         </>
@@ -144,12 +144,12 @@ class YO extends React.Component<YOProps, YOState> {
                       <Button className="button button--yo-signup">
                         {this.props.i18n.text.get(
                           "plugin.records.yo.button.signUp.active",
-                          new Date(exam.ends).toLocaleDateString("fi-Fi"),
+                          new Date(exam.ends).toLocaleDateString("fi-Fi")
                         )}
                       </Button>
                     </MatriculationExaminationWizardDialog>
                   </div>
-                ),
+                )
               )
           : null;
 
@@ -170,7 +170,7 @@ class YO extends React.Component<YOProps, YOState> {
                   <div className="application-sub-panel__notification-item">
                     <div className="application-sub-panel__notification-body">
                       {this.props.i18n.text.get(
-                        "plugin.records.yo.abiStatus.content.finished",
+                        "plugin.records.yo.abiStatus.content.finished"
                       )}
                     </div>
                     {this.props.yo.enrollment.length > 0 && (
@@ -191,7 +191,7 @@ class YO extends React.Component<YOProps, YOState> {
                           this.props.yo.eligibility.coursesCompleted,
                           this.props.yo.eligibility.coursesRequired,
                           this.props.yo.eligibility.creditPoints,
-                          this.props.yo.eligibility.creditPointsRequired,
+                          this.props.yo.eligibility.creditPointsRequired
                         ),
                       }}
                     />
@@ -208,7 +208,7 @@ class YO extends React.Component<YOProps, YOState> {
           <div className="application-sub-panel  application-sub-panel--yo-status-container">
             <div className="application-sub-panel__header">
               {this.props.i18n.text.get(
-                "plugin.records.yo.participationRights.title",
+                "plugin.records.yo.participationRights.title"
               )}
             </div>
             <div className="application-sub-panel__body application-sub-panel__body--studies-yo-subjects">

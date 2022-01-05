@@ -110,8 +110,8 @@ class Message extends React.Component<MessageProps, MessageState> {
       .filter(
         (w, pos, self) =>
           self.findIndex(
-            (w2) => w2.workspaceEntityId === w.workspaceEntityId,
-          ) === pos,
+            (w2) => w2.workspaceEntityId === w.workspaceEntityId
+          ) === pos
       )
       .map((workspace) => <span>{workspace.workspaceName}</span>);
 
@@ -182,13 +182,13 @@ class Message extends React.Component<MessageProps, MessageState> {
               studiesEnded: r.studiesEnded,
               archived: r.archived,
             },
-          }),
+          })
         )
         .filter(
           (user) =>
             user.value.id !== this.props.status.userId &&
             user.value.studiesEnded !== true &&
-            user.value.archived !== true,
+            user.value.archived !== true
         );
 
     /**
@@ -199,15 +199,15 @@ class Message extends React.Component<MessageProps, MessageState> {
         (ug): ContactRecipientType => ({
           type: "usergroup",
           value: ug,
-        }),
+        })
       );
 
     const workspaceRecepientsFiltered =
       this.props.message.workspaceRecipients.filter(
         (w, pos, self) =>
           self.findIndex(
-            (w2) => w2.workspaceEntityId === w.workspaceEntityId,
-          ) === pos,
+            (w2) => w2.workspaceEntityId === w.workspaceEntityId
+          ) === pos
       );
 
     /**
@@ -221,7 +221,7 @@ class Message extends React.Component<MessageProps, MessageState> {
             id: w.workspaceEntityId,
             name: w.workspaceName,
           },
-        }),
+        })
       );
 
     /**
@@ -247,12 +247,12 @@ class Message extends React.Component<MessageProps, MessageState> {
         .concat(
           this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING
             ? (userGroupList as any)
-            : [],
+            : []
         )
         .concat(
           this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING
             ? (workspaceList as any)
-            : [],
+            : []
         )
         .filter((t) => t.value.id !== this.props.status.userId);
     }
@@ -266,12 +266,12 @@ class Message extends React.Component<MessageProps, MessageState> {
       .concat(
         this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING
           ? (userGroupList as any)
-          : [],
+          : []
       )
       .concat(
         this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING
           ? (workspaceList as any)
-          : [],
+          : []
       )
       .filter((t) => t.value.id !== senderObject.value.id)
       .concat(senderObject as any)
@@ -285,7 +285,7 @@ class Message extends React.Component<MessageProps, MessageState> {
               <span
                 className="application-list__item-header-main-content application-list__item-header-main-content--communicator-sender"
                 aria-label={this.props.i18n.text.get(
-                  "plugin.wcag.messageSender.aria.label",
+                  "plugin.wcag.messageSender.aria.label"
                 )}
               >
                 {this.getMessageSender(this.props.message.sender)}
@@ -293,7 +293,7 @@ class Message extends React.Component<MessageProps, MessageState> {
               <span
                 className="application-list__item-header-main-content application-list__item-header-main-content--communicator-recipients"
                 aria-label={this.props.i18n.text.get(
-                  "plugin.wcag.messageRecipients.aria.label",
+                  "plugin.wcag.messageRecipients.aria.label"
                 )}
               >
                 {this.getMessageRecipients(this.props.message)}
@@ -302,7 +302,7 @@ class Message extends React.Component<MessageProps, MessageState> {
             <div className="application-list__item-header-aside application-list__item-header-aside--communicator-message-time">
               <span
                 aria-label={this.props.i18n.text.get(
-                  "plugin.wcag.messageSendDate.aria.label",
+                  "plugin.wcag.messageSendDate.aria.label"
                 )}
               >
                 {this.props.i18n.time.format(this.props.message.created)}
@@ -317,7 +317,7 @@ class Message extends React.Component<MessageProps, MessageState> {
                     className="label"
                     key={label.id}
                     aria-label={this.props.i18n.text.get(
-                      "plugin.wcag.messageLabel.aria.label",
+                      "plugin.wcag.messageLabel.aria.label"
                     )}
                   >
                     <span
@@ -333,7 +333,7 @@ class Message extends React.Component<MessageProps, MessageState> {
         <div
           className="application-list__item-body application-list__item-body--communicator-message-thread"
           aria-label={this.props.i18n.text.get(
-            "plugin.wcag.messageContent.aria.label",
+            "plugin.wcag.messageContent.aria.label"
           )}
         >
           <header className="application-list__item-content-header">
@@ -369,7 +369,7 @@ class Message extends React.Component<MessageProps, MessageState> {
         <div
           className="application-list__item-body application-list__item-body--communicator-message-thread"
           aria-label={this.props.i18n.text.get(
-            "plugin.wcag.messageContent.aria.label",
+            "plugin.wcag.messageContent.aria.label"
           )}
         >
           <div className="application-list__item-content-body">
@@ -382,7 +382,7 @@ class Message extends React.Component<MessageProps, MessageState> {
                 initialSelectedItems={replyTarget}
                 initialSubject={this.props.i18n.text.get(
                   "plugin.communicator.createmessage.title.replySubject",
-                  this.props.message.caption,
+                  this.props.message.caption
                 )}
               />
             ) : null}
@@ -397,7 +397,7 @@ class Message extends React.Component<MessageProps, MessageState> {
                 replyToAll
                 initialSubject={this.props.i18n.text.get(
                   "plugin.communicator.createmessage.title.replySubject",
-                  this.props.message.caption,
+                  this.props.message.caption
                 )}
               />
             ) : null}

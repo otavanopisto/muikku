@@ -61,7 +61,7 @@ interface WorkspaceNavbarState {
 
 function getTextForAssessmentState(
   state: WorkspaceAssessementStateType,
-  i18n: i18nType,
+  i18n: i18nType
 ) {
   let text;
   switch (state) {
@@ -153,7 +153,7 @@ class WorkspaceNavbar extends React.Component<
       {
         active: !this.props.workspaceEditMode.active,
       },
-      true,
+      true
     );
   }
   onRequestEvaluationOrCancel(state: string) {
@@ -272,7 +272,7 @@ class WorkspaceNavbar extends React.Component<
                 content={getTextForAssessmentState(
                   this.props.currentWorkspace.studentAssessments
                     .assessmentState,
-                  this.props.i18n,
+                  this.props.i18n
                 )}
               >
                 <Link
@@ -281,19 +281,19 @@ class WorkspaceNavbar extends React.Component<
                   onClick={this.onRequestEvaluationOrCancel.bind(
                     this,
                     this.props.currentWorkspace.studentAssessments
-                      .assessmentState,
+                      .assessmentState
                   )}
                   aria-label={getTextForAssessmentState(
                     this.props.currentWorkspace.studentAssessments
                       .assessmentState,
-                    this.props.i18n,
+                    this.props.i18n
                   )}
                   className={`link link--icon link--workspace-assessment link--workspace-assessment-${getClassNameForAssessmentState(
                     this.props.currentWorkspace.studentAssessments
-                      .assessmentState,
+                      .assessmentState
                   )} link--workspace-navbar icon-assessment-${getIconForAssessmentState(
                     this.props.currentWorkspace.studentAssessments
-                      .assessmentState,
+                      .assessmentState
                   )}`}
                 ></Link>
               </Dropdown>
@@ -305,19 +305,19 @@ class WorkspaceNavbar extends React.Component<
       <Link
         onClick={this.onRequestEvaluationOrCancel.bind(
           this,
-          this.props.currentWorkspace.studentAssessments.assessmentState,
+          this.props.currentWorkspace.studentAssessments.assessmentState
         )}
         className="link link--full link--menu link--assessment-request"
       >
         <span
           className={`link__icon icon-assessment-${getIconForAssessmentState(
-            this.props.currentWorkspace.studentAssessments.assessmentState,
+            this.props.currentWorkspace.studentAssessments.assessmentState
           )}`}
         />
         <span className="link--menu__text">
           {getTextForAssessmentState(
             this.props.currentWorkspace.studentAssessments.assessmentState,
-            this.props.i18n,
+            this.props.i18n
           )}
         </span>
       </Link>
@@ -334,7 +334,7 @@ class WorkspaceNavbar extends React.Component<
         <span key="edit-mode-switch">
           <label htmlFor="editingMasterSwitch" className="visually-hidden">
             {this.props.i18n.text.get(
-              "plugin.wcag.mainNavigation.editingMasterSwitch",
+              "plugin.wcag.mainNavigation.editingMasterSwitch"
             )}
           </label>
           <input
@@ -394,7 +394,7 @@ class WorkspaceNavbar extends React.Component<
                     aria-label={
                       this.props.activeTrail == item.trail
                         ? this.props.i18n.text.get(
-                            "plugin.wcag.mainNavigation.currentPage.aria.label",
+                            "plugin.wcag.mainNavigation.currentPage.aria.label"
                           ) +
                           " " +
                           this.props.i18n.text.get(item.text)
@@ -412,7 +412,7 @@ class WorkspaceNavbar extends React.Component<
                 </Dropdown>
               ),
             };
-          }),
+          })
         )}
         defaultOptions={
           this.props.status.loggedIn
@@ -426,7 +426,7 @@ class WorkspaceNavbar extends React.Component<
                   <Link className="link link--forgot-password link--forgot-password-main-function">
                     <span>
                       {this.props.i18n.text.get(
-                        "plugin.forgotpassword.forgotLink",
+                        "plugin.forgotpassword.forgotLink"
                       )}
                     </span>
                   </Link>
@@ -463,7 +463,7 @@ class WorkspaceNavbar extends React.Component<
                 </span>
               </Link>
             );
-          }),
+          })
         )}
         extraContent={[
           <EvaluationRequestDialog

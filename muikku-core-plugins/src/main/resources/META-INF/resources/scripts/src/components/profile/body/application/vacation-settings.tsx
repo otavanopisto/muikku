@@ -97,7 +97,7 @@ class VacationSettings extends React.Component<
     ) {
       this.setState({
         profileVacationStart: moment(
-          nextProps.profile.properties["profile-vacation-start"],
+          nextProps.profile.properties["profile-vacation-start"]
         ),
       });
     }
@@ -109,7 +109,7 @@ class VacationSettings extends React.Component<
     ) {
       this.setState({
         profileVacationEnd: moment(
-          nextProps.profile.properties["profile-vacation-end"],
+          nextProps.profile.properties["profile-vacation-end"]
         ),
       });
     }
@@ -212,7 +212,7 @@ class VacationSettings extends React.Component<
             success: executor.succeeded,
             fail: executor.failed,
           });
-        },
+        }
       )
       .addAction(
         !this.props.status.isStudent &&
@@ -227,7 +227,7 @@ class VacationSettings extends React.Component<
             success: executor.succeeded,
             fail: executor.failed,
           });
-        },
+        }
       )
       .addAction(
         !this.props.status.isStudent &&
@@ -240,7 +240,7 @@ class VacationSettings extends React.Component<
             success: executor.succeeded,
             fail: executor.failed,
           });
-        },
+        }
       )
       .addAction(
         !this.props.status.isStudent &&
@@ -253,7 +253,7 @@ class VacationSettings extends React.Component<
             success: executor.succeeded,
             fail: executor.failed,
           });
-        },
+        }
       )
       .addAction(
         !this.props.status.isStudent &&
@@ -266,12 +266,12 @@ class VacationSettings extends React.Component<
             success: executor.succeeded,
             fail: executor.failed,
           });
-        },
+        }
       )
       .onAllSucceed(() => {
         this.props.displayNotification(
           this.props.i18n.text.get("plugin.profile.properties.saved"),
-          "success",
+          "success"
         );
 
         this.setState({
@@ -281,7 +281,7 @@ class VacationSettings extends React.Component<
       .onOneFails(() => {
         this.props.displayNotification(
           this.props.i18n.text.get("plugin.profile.properties.failed"),
-          "error",
+          "error"
         );
 
         this.setState({
@@ -313,7 +313,7 @@ class VacationSettings extends React.Component<
                   className="application-sub-panel__item-title"
                 >
                   {this.props.i18n.text.get(
-                    "plugin.profile.awayStartDate.label",
+                    "plugin.profile.awayStartDate.label"
                   )}
                 </label>
                 <div className="application-sub-panel__item-data form-element">
@@ -322,7 +322,7 @@ class VacationSettings extends React.Component<
                     className="form-element__input"
                     onChange={this.handleDateChange.bind(
                       this,
-                      "profileVacationStart",
+                      "profileVacationStart"
                     )}
                     maxDate={this.state.profileVacationEnd || null}
                     locale={this.props.i18n.time.getLocale()}
@@ -344,7 +344,7 @@ class VacationSettings extends React.Component<
                     className="form-element__input"
                     onChange={this.handleDateChange.bind(
                       this,
-                      "profileVacationEnd",
+                      "profileVacationEnd"
                     )}
                     minDate={this.state.profileVacationStart || null}
                     locale={this.props.i18n.time.getLocale()}
@@ -379,13 +379,13 @@ class VacationSettings extends React.Component<
                       className="application-sub-panel__item-label "
                     >
                       {this.props.i18n.text.get(
-                        "plugin.profile.vacationAutoReply.label",
+                        "plugin.profile.vacationAutoReply.label"
                       )}
                     </label>
                   </div>
                   <div className="application-sub-panel__item-description">
                     {this.props.i18n.text.get(
-                      "plugin.profile.vacationAutoReply.description",
+                      "plugin.profile.vacationAutoReply.description"
                     )}
                   </div>
                 </div>
@@ -405,7 +405,7 @@ class VacationSettings extends React.Component<
                     className="application-sub-panel__item-title"
                   >
                     {this.props.i18n.text.get(
-                      "plugin.profile.vacationAutoReplySubject.label",
+                      "plugin.profile.vacationAutoReplySubject.label"
                     )}
                   </label>
                   <div className="application-sub-panel__item-data form-element">
@@ -434,7 +434,7 @@ class VacationSettings extends React.Component<
                     className="application-sub-panel__item-title"
                   >
                     {this.props.i18n.text.get(
-                      "plugin.profile.vacationAutoReplyMsg.label",
+                      "plugin.profile.vacationAutoReplyMsg.label"
                     )}
                   </label>
                   <div className="application-sub-panel__item-data form-element">
@@ -484,7 +484,7 @@ function mapStateToProps(state: StateType) {
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     { saveProfileProperty, displayNotification, updateProfileChatSettings },
-    dispatch,
+    dispatch
   );
 }
 

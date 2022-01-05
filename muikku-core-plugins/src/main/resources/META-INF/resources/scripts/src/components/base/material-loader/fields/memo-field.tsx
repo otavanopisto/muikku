@@ -25,7 +25,7 @@ interface MemoFieldProps {
   onChange?: (
     context: React.Component<any, any>,
     name: string,
-    newValue: any,
+    newValue: any
   ) => any;
 
   displayCorrectAnswers?: boolean;
@@ -228,7 +228,7 @@ export default class MemoField extends React.Component<
         <span className="material-page__field-answer-examples material-page__field-answer-examples--memofield">
           <span className="material-page__field-answer-examples-title material-page__field-answer-examples-title--memofield">
             {this.props.i18n.text.get(
-              "plugin.workspace.assigment.checkAnswers.detailsSummary.title",
+              "plugin.workspace.assigment.checkAnswers.detailsSummary.title"
             )}
           </span>
           <span className="material-page__field-answer-example">
@@ -345,7 +345,7 @@ export default class MemoField extends React.Component<
     }
 
     const fieldSavedStateClass = createFieldSavedStateClass(
-      this.state.fieldSavedState,
+      this.state.fieldSavedState
     );
 
     // and here the element itself
@@ -372,7 +372,7 @@ export default class MemoField extends React.Component<
           <span className="material-page__character-count-container">
             <span className="material-page__character-count-title">
               {this.props.i18n.text.get(
-                "plugin.workspace.memoField.characterCount",
+                "plugin.workspace.memoField.characterCount"
               )}
             </span>
             <span className="material-page__character-count">

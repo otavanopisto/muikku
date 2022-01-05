@@ -80,7 +80,7 @@ export default class LazyLoader extends React.Component<
             this.id +
             " when toggled became off by " +
             (newCalculatedHeight - this.calculatedHeight) +
-            "px",
+            "px"
         );
         this.calculatedHeight = newCalculatedHeight;
       }

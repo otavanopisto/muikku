@@ -57,7 +57,7 @@ class ProfilePicture extends React.Component<
           src: null,
         });
       },
-      false,
+      false
     );
 
     if (file) {
@@ -72,7 +72,7 @@ class ProfilePicture extends React.Component<
       src: getUserImageUrl(
         this.props.status.userId,
         "original",
-        this.props.status.imgVersion,
+        this.props.status.imgVersion
       ),
       isImageDialogOpen: true,
       b64: null,
@@ -114,7 +114,7 @@ class ProfilePicture extends React.Component<
                     ? `url("${getUserImageUrl(
                         this.props.status.userId,
                         256,
-                        this.props.status.imgVersion,
+                        this.props.status.imgVersion
                       )}")`
                     : null,
                 }}
@@ -124,7 +124,7 @@ class ProfilePicture extends React.Component<
                   htmlFor="profilePictureUpload"
                 >
                   {this.props.i18n.text.get(
-                    "plugin.wcag.profile.uploadPicture.label",
+                    "plugin.wcag.profile.uploadPicture.label"
                   )}
                 </label>
                 <input

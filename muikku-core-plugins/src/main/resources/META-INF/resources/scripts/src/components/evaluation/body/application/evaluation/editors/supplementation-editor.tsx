@@ -90,7 +90,7 @@ class SupplementationEditor extends SessionStateComponent<
        */
       if (this.props.eventId) {
         latestEvent = evaluationAssessmentEvents.data.find(
-          (eItem) => eItem.identifier === this.props.eventId,
+          (eItem) => eItem.identifier === this.props.eventId
         );
       }
 
@@ -110,7 +110,7 @@ class SupplementationEditor extends SessionStateComponent<
             literalEvaluation: latestEvent.text,
             draftId,
           },
-          draftId,
+          draftId
         ),
         locked: false,
       };
@@ -121,7 +121,7 @@ class SupplementationEditor extends SessionStateComponent<
             literalEvaluation: "",
             draftId,
           },
-          draftId,
+          draftId
         ),
         locked: false,
       };
@@ -144,7 +144,7 @@ class SupplementationEditor extends SessionStateComponent<
          * If editing existing event, we need to find that specific event from event list by its' id
          */
         latestIndex = evaluationAssessmentEvents.data.findIndex(
-          (eItem) => eItem.identifier === this.props.eventId,
+          (eItem) => eItem.identifier === this.props.eventId
         );
       }
 
@@ -155,8 +155,8 @@ class SupplementationEditor extends SessionStateComponent<
               evaluationAssessmentEvents.data &&
               evaluationAssessmentEvents.data[latestIndex].text,
           },
-          this.state.draftId,
-        ),
+          this.state.draftId
+        )
       );
     } else {
       this.setState(
@@ -164,8 +164,8 @@ class SupplementationEditor extends SessionStateComponent<
           {
             literalEvaluation: "",
           },
-          this.state.draftId,
-        ),
+          this.state.draftId
+        )
       );
     }
   };
@@ -182,7 +182,7 @@ class SupplementationEditor extends SessionStateComponent<
    * handleEvaluationSupplementationSave
    */
   handleEvaluationSupplementationSave = (
-    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
   ) => {
     const { evaluations, type = "new", onClose } = this.props;
     const { evaluationAssessmentEvents } = evaluations;
@@ -206,7 +206,7 @@ class SupplementationEditor extends SessionStateComponent<
             {
               literalEvaluation: "",
             },
-            this.state.draftId,
+            this.state.draftId
           );
 
           this.props.updateNeedsReloadEvaluationRequests({ value: true });
@@ -233,7 +233,7 @@ class SupplementationEditor extends SessionStateComponent<
          * If editing existing event, we need to find that specific event from event list by its' id
          */
         latestIndex = evaluationAssessmentEvents.data.findIndex(
-          (eItem) => eItem.identifier === this.props.eventId,
+          (eItem) => eItem.identifier === this.props.eventId
         );
       }
 
@@ -258,7 +258,7 @@ class SupplementationEditor extends SessionStateComponent<
             {
               literalEvaluation: "",
             },
-            this.state.draftId,
+            this.state.draftId
           );
           this.props.updateNeedsReloadEvaluationRequests({ value: true });
 
@@ -289,7 +289,7 @@ class SupplementationEditor extends SessionStateComponent<
          * If editing existing event, we need to find that specific event from event list by its' id
          */
         latestIndex = evaluationAssessmentEvents.data.findIndex(
-          (eItem) => eItem.identifier === this.props.eventId,
+          (eItem) => eItem.identifier === this.props.eventId
         );
       }
 
@@ -302,7 +302,7 @@ class SupplementationEditor extends SessionStateComponent<
             evaluationAssessmentEvents.data &&
             evaluationAssessmentEvents.data[latestIndex].text,
         },
-        this.state.draftId,
+        this.state.draftId
       );
     } else {
       /**
@@ -312,7 +312,7 @@ class SupplementationEditor extends SessionStateComponent<
         {
           literalEvaluation: "",
         },
-        this.state.draftId,
+        this.state.draftId
       );
     }
   };
@@ -346,7 +346,7 @@ class SupplementationEditor extends SessionStateComponent<
             disabled={this.state.locked}
           >
             {this.props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.workspaceEvaluationForm.saveButtonLabel",
+              "plugin.evaluation.evaluationModal.workspaceEvaluationForm.saveButtonLabel"
             )}
           </Button>
           <Button
@@ -355,7 +355,7 @@ class SupplementationEditor extends SessionStateComponent<
             buttonModifiers="evaluate-cancel"
           >
             {this.props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel",
+              "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel"
             )}
           </Button>
           {this.recovered && (
@@ -365,7 +365,7 @@ class SupplementationEditor extends SessionStateComponent<
               onClick={this.handleDeleteEditorDraft}
             >
               {this.props.i18n.text.get(
-                "plugin.evaluation.evaluationModal.workspaceEvaluationForm.deleteDraftButtonLabel",
+                "plugin.evaluation.evaluationModal.workspaceEvaluationForm.deleteDraftButtonLabel"
               )}
             </Button>
           )}
@@ -398,11 +398,11 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
       updateWorkspaceSupplementationToServer,
       updateNeedsReloadEvaluationRequests,
     },
-    dispatch,
+    dispatch
   );
 }
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(SupplementationEditor);

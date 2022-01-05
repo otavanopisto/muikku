@@ -42,14 +42,14 @@ class ContinueStudiesPanel extends React.Component<
           </div>
           <div className="panel__body-content panel__body-content--continue-studies">
             {this.props.i18n.text.get(
-              "plugin.frontPage.latestWorkspace.material.part1",
+              "plugin.frontPage.latestWorkspace.material.part1"
             )}{" "}
             <span className="panel__body-highlight">
               {this.props.lastWorkspace.materialName}.
             </span>{" "}
             <Link className="link" href={this.props.lastWorkspace.url}>
               {this.props.i18n.text.get(
-                "plugin.frontPage.latestWorkspace.continueStudiesLink",
+                "plugin.frontPage.latestWorkspace.continueStudiesLink"
               )}
             </Link>
           </div>
@@ -73,5 +73,5 @@ function mapDispatchToProps() {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(ContinueStudiesPanel);

@@ -65,7 +65,7 @@ class CurrentStudent extends React.Component<
         <object
           className="avatar-container"
           data={getUserImageUrl(
-            this.props.guider.currentStudent.basic.userEntityId,
+            this.props.guider.currentStudent.basic.userEntityId
           )}
           type="image/jpeg"
         >
@@ -80,7 +80,7 @@ class CurrentStudent extends React.Component<
           <div className="application-sub-panel__header-main application-sub-panel__header-main--guider-profile-student-email">
             {(defaultEmailAddress && defaultEmailAddress.address) ||
               this.props.i18n.text.get(
-                "plugin.guider.user.details.label.unknown.email",
+                "plugin.guider.user.details.label.unknown.email"
               )}
           </div>
         </div>
@@ -101,7 +101,7 @@ class CurrentStudent extends React.Component<
             ></span>
             <span className="label__text">{label.flagName}</span>
           </span>
-        ),
+        )
       );
 
     const studentBasicInfo = this.props.guider.currentStudent.basic && (
@@ -109,14 +109,14 @@ class CurrentStudent extends React.Component<
         <div className="application-sub-panel__item">
           <div className="application-sub-panel__item-title">
             {this.props.i18n.text.get(
-              "plugin.guider.user.details.label.studyStartDateTitle",
+              "plugin.guider.user.details.label.studyStartDateTitle"
             )}
           </div>
           <div className="application-sub-panel__item-data">
             <span className="application-sub-panel__single-entry">
               {this.props.guider.currentStudent.basic.studyStartDate
                 ? this.props.i18n.time.format(
-                    this.props.guider.currentStudent.basic.studyStartDate,
+                    this.props.guider.currentStudent.basic.studyStartDate
                   )
                 : "-"}
             </span>
@@ -125,14 +125,14 @@ class CurrentStudent extends React.Component<
         <div className="application-sub-panel__item">
           <div className="application-sub-panel__item-title">
             {this.props.i18n.text.get(
-              "plugin.guider.user.details.label.studyEndDateTitle",
+              "plugin.guider.user.details.label.studyEndDateTitle"
             )}
           </div>
           <div className="application-sub-panel__item-data">
             <span className="application-sub-panel__single-entry">
               {this.props.guider.currentStudent.basic.studyEndDate
                 ? this.props.i18n.time.format(
-                    this.props.guider.currentStudent.basic.studyEndDate,
+                    this.props.guider.currentStudent.basic.studyEndDate
                   )
                 : "-"}
             </span>
@@ -141,14 +141,14 @@ class CurrentStudent extends React.Component<
         <div className="application-sub-panel__item">
           <div className="application-sub-panel__item-title">
             {this.props.i18n.text.get(
-              "plugin.guider.user.details.label.studyTimeEndTitle",
+              "plugin.guider.user.details.label.studyTimeEndTitle"
             )}
           </div>
           <div className="application-sub-panel__item-data">
             <span className="application-sub-panel__single-entry">
               {this.props.guider.currentStudent.basic.studyTimeEnd
                 ? this.props.i18n.time.format(
-                    this.props.guider.currentStudent.basic.studyTimeEnd,
+                    this.props.guider.currentStudent.basic.studyTimeEnd
                   )
                 : "-"}
             </span>
@@ -158,7 +158,7 @@ class CurrentStudent extends React.Component<
           <div className="application-sub-panel__item">
             <div className="application-sub-panel__item-title">
               {this.props.i18n.text.get(
-                "plugin.guider.user.details.label.email",
+                "plugin.guider.user.details.label.email"
               )}
             </div>
             <div className="application-sub-panel__item-data">
@@ -175,7 +175,7 @@ class CurrentStudent extends React.Component<
               ) : (
                 <span className="application-sub-panel__single-entry">
                   {this.props.i18n.text.get(
-                    "plugin.guider.user.details.label.unknown.email",
+                    "plugin.guider.user.details.label.unknown.email"
                   )}
                 </span>
               )}
@@ -186,7 +186,7 @@ class CurrentStudent extends React.Component<
           <div className="application-sub-panel__item">
             <div className="application-sub-panel__item-title">
               {this.props.i18n.text.get(
-                "plugin.guider.user.details.label.phoneNumber",
+                "plugin.guider.user.details.label.phoneNumber"
               )}
             </div>
             <div className="application-sub-panel__item-data">
@@ -203,7 +203,7 @@ class CurrentStudent extends React.Component<
               ) : (
                 <span className="application-sub-panel__single-entry">
                   {this.props.i18n.text.get(
-                    "plugin.guider.user.details.label.unknown.phoneNumber",
+                    "plugin.guider.user.details.label.unknown.phoneNumber"
                   )}
                 </span>
               )}
@@ -213,14 +213,14 @@ class CurrentStudent extends React.Component<
         <div className="application-sub-panel__item">
           <div className="application-sub-panel__item-title">
             {this.props.i18n.text.get(
-              "plugin.guider.user.details.label.school",
+              "plugin.guider.user.details.label.school"
             )}
           </div>
           <div className="application-sub-panel__item-data">
             <span className="application-sub-panel__single-entry">
               {this.props.guider.currentStudent.basic.school ||
                 this.props.i18n.text.get(
-                  "plugin.guider.user.details.label.unknown.school",
+                  "plugin.guider.user.details.label.unknown.school"
                 )}
             </span>
           </div>
@@ -229,7 +229,7 @@ class CurrentStudent extends React.Component<
           <div className="application-sub-panel__item">
             <div className="application-sub-panel__item-title">
               {this.props.i18n.text.get(
-                "plugin.guider.user.details.label.studentgroups",
+                "plugin.guider.user.details.label.studentgroups"
               )}
             </div>
             <div className="application-sub-panel__item-data">
@@ -245,7 +245,7 @@ class CurrentStudent extends React.Component<
               ) : (
                 <span className="application-sub-panel__single-entry">
                   {this.props.i18n.text.get(
-                    "plugin.guider.user.details.label.nostudentgroups",
+                    "plugin.guider.user.details.label.nostudentgroups"
                   )}
                 </span>
               )}
@@ -256,7 +256,7 @@ class CurrentStudent extends React.Component<
           <div className="application-sub-panel__item">
             <div className="application-sub-panel__item-title">
               {this.props.i18n.text.get(
-                "plugin.guider.user.details.label.lastLogin",
+                "plugin.guider.user.details.label.lastLogin"
               )}
             </div>
             <div className="application-sub-panel__item-data">
@@ -264,7 +264,7 @@ class CurrentStudent extends React.Component<
                 {this.props.guider.currentStudent.basic.lastLogin
                   ? this.props.i18n.time.format(
                       this.props.guider.currentStudent.basic.lastLogin,
-                      "LLL",
+                      "LLL"
                     )
                   : "-"}
               </span>
@@ -280,7 +280,7 @@ class CurrentStudent extends React.Component<
               >
                 <div className="application-sub-panel__item-title ">
                   {this.props.i18n.text.get(
-                    "plugin.guider.user." + notification,
+                    "plugin.guider.user." + notification
                   )}
                 </div>
                 <div className="application-sub-panel__item-data">
@@ -288,12 +288,12 @@ class CurrentStudent extends React.Component<
                     {this.props.i18n.time.format(
                       (this.props.guider.currentStudent.notifications as any)[
                         notification
-                      ],
+                      ]
                     )}
                   </span>
                 </div>
               </div>;
-            },
+            }
           )}
       </div>
     );
@@ -321,7 +321,7 @@ class CurrentStudent extends React.Component<
       formData.append("description", "");
       formData.append(
         "userIdentifier",
-        this.props.guider.currentStudent.basic.id,
+        this.props.guider.currentStudent.basic.id
       );
     };
 
@@ -335,10 +335,10 @@ class CurrentStudent extends React.Component<
             this.props.addFileToCurrentStudent(data);
           }}
           hintText={this.props.i18n.text.get(
-            "plugin.guider.user.details.files.hint",
+            "plugin.guider.user.details.files.hint"
           )}
           fileTooLargeErrorText={this.props.i18n.text.get(
-            "plugin.guider.user.details.files.fileFieldUpload.fileSizeTooLarge",
+            "plugin.guider.user.details.files.fileFieldUpload.fileSizeTooLarge"
           )}
           files={this.props.guider.currentStudent.files}
           fileIdKey="id"
@@ -347,16 +347,16 @@ class CurrentStudent extends React.Component<
           deleteDialogElement={FileDeleteDialog}
           modifier="guider"
           emptyText={this.props.i18n.text.get(
-            "plugin.guider.user.details.files.empty",
+            "plugin.guider.user.details.files.empty"
           )}
           uploadingTextProcesser={(percent: number) =>
             this.props.i18n.text.get(
               "plugin.guider.user.details.files.uploading",
-              percent,
+              percent
             )
           }
           notificationOfSuccessText={this.props.i18n.text.get(
-            "plugin.guider.fileUpload.successful",
+            "plugin.guider.fileUpload.successful"
           )}
           displayNotificationOnSuccess
         />
@@ -433,7 +433,7 @@ function mapStateToProps(state: StateType) {
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     { addFileToCurrentStudent, displayNotification },
-    dispatch,
+    dispatch
   );
 }
 

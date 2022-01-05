@@ -128,7 +128,7 @@ export default function announcements(
     navigation: defaultNavigation,
     workspaceId: null,
   },
-  action: ActionType,
+  action: ActionType
 ): AnnouncementsType {
   if (action.type === "UPDATE_ANNOUNCEMENTS") {
     return Object.assign({}, state, { announcements: action.payload });
@@ -153,10 +153,10 @@ export default function announcements(
   } else if (action.type === "REMOVE_FROM_ANNOUNCEMENTS_SELECTED") {
     return Object.assign({}, state, {
       selected: state.selected.filter(
-        (selected: AnnouncementType) => selected.id !== action.payload.id,
+        (selected: AnnouncementType) => selected.id !== action.payload.id
       ),
       selectedIds: state.selectedIds.filter(
-        (id: number) => id !== action.payload.id,
+        (id: number) => id !== action.payload.id
       ),
     });
   } else if (action.type === "UPDATE_ONE_ANNOUNCEMENT") {
@@ -165,7 +165,7 @@ export default function announcements(
     const newAnnouncement: AnnouncementType = Object.assign(
       {},
       oldAnnouncement,
-      update,
+      update
     );
     let newCurrent = state.current;
     if (newCurrent && newCurrent.id === newAnnouncement.id) {
@@ -184,7 +184,7 @@ export default function announcements(
             return newAnnouncement;
           }
           return announcement;
-        },
+        }
       ),
       current: newCurrent,
     });
@@ -195,14 +195,14 @@ export default function announcements(
   } else if (action.type === "DELETE_ANNOUNCEMENT") {
     return Object.assign({}, state, {
       selected: state.selected.filter(
-        (selected: AnnouncementType) => selected.id !== action.payload.id,
+        (selected: AnnouncementType) => selected.id !== action.payload.id
       ),
       announcements: state.announcements.filter(
         (announcement: AnnouncementType) =>
-          announcement.id !== action.payload.id,
+          announcement.id !== action.payload.id
       ),
       selectedIds: state.selectedIds.filter(
-        (id: number) => id !== action.payload.id,
+        (id: number) => id !== action.payload.id
       ),
     });
   } else if (action.type === "SET_CURRENT_ANNOUNCEMENT") {

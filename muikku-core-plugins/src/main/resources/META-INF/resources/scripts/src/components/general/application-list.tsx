@@ -166,7 +166,7 @@ export class ApplicationListItemHeader extends React.Component<
   render() {
     const newProps: ApplicationListItemHeaderProps = Object.assign(
       {},
-      this.props,
+      this.props
     );
     const modifiers =
       this.props.modifiers && this.props.modifiers instanceof Array
@@ -253,7 +253,7 @@ export class ApplicationListItemBody extends React.Component<
         : [this.props.modifiers];
     const newProps: ApplicationListItemHeaderProps = Object.assign(
       {},
-      this.props,
+      this.props
     );
     delete newProps["modifiers"];
     return (
@@ -317,7 +317,7 @@ export class ApplicationListItemFooter extends React.Component<
   render() {
     const newProps: ApplicationListItemHeaderProps = Object.assign(
       {},
-      this.props,
+      this.props
     );
     const modifiers =
       this.props.modifiers && this.props.modifiers instanceof Array
@@ -360,7 +360,7 @@ export class ApplicationListItemContentContainer extends React.Component<
   render() {
     const newProps: ApplicationListItemHeaderProps = Object.assign(
       {},
-      this.props,
+      this.props
     );
     const modifiers =
       this.props.modifiers && this.props.modifiers instanceof Array
@@ -409,7 +409,7 @@ export class ApplicationListItemContentWrapper extends React.Component<
   render() {
     const newProps: ApplicationListItemHeaderProps = Object.assign(
       {},
-      this.props,
+      this.props
     );
     const modifiers =
       this.props.modifiers && this.props.modifiers instanceof Array

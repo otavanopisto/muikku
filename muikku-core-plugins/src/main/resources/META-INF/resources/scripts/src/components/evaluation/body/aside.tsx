@@ -120,7 +120,7 @@ class NavigationAside extends React.Component<
       <NavigationMenu>
         <NavigationTopic
           name={this.props.i18n.text.get(
-            "plugin.evaluation.filter.viewSelection",
+            "plugin.evaluation.filter.viewSelection"
           )}
         >
           {renderAllNavigationElements}

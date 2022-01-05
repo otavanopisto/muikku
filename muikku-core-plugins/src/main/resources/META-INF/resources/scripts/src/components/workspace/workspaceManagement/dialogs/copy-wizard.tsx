@@ -32,7 +32,7 @@ class CopyWizardDialog extends React.Component<
       <Dialog
         disableScroll={true}
         title={this.props.i18n.text.get(
-          "plugin.workspace.management.copyWorkspace",
+          "plugin.workspace.management.copyWorkspace"
         )}
         content={content}
         modifier={["wizard", "copy-workspace"]}

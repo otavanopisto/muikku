@@ -65,7 +65,7 @@ class ModifyThreadDrawer extends SessionStateComponent<
         threadPinned: props.thread.sticky,
         threadLocked: props.thread.locked,
       },
-      props.thread.id,
+      props.thread.id
     );
 
     this.togglePinned = this.togglePinned.bind(this);
@@ -88,7 +88,7 @@ class ModifyThreadDrawer extends SessionStateComponent<
         threadPinned: this.props.thread.sticky,
         threadLocked: this.props.thread.locked,
       },
-      this.props.thread.id,
+      this.props.thread.id
     );
   }
 
@@ -111,7 +111,7 @@ class ModifyThreadDrawer extends SessionStateComponent<
         threadPinned: this.props.thread.sticky,
         threadLocked: this.props.thread.locked,
       },
-      this.props.thread.id,
+      this.props.thread.id
     );
   }
 
@@ -135,7 +135,7 @@ class ModifyThreadDrawer extends SessionStateComponent<
         this.props.onClickCancel && this.props.onClickCancel();
         this.justClear(
           ["text", "title", "threadPinned", "threadLocked"],
-          this.props.thread.id,
+          this.props.thread.id
         );
         this.setState({ locked: false });
         closeDialog();
@@ -160,7 +160,7 @@ class ModifyThreadDrawer extends SessionStateComponent<
   togglePinned() {
     this.setStateAndStore(
       { threadPinned: !this.state.threadPinned },
-      this.props.thread.id,
+      this.props.thread.id
     );
   }
 
@@ -170,7 +170,7 @@ class ModifyThreadDrawer extends SessionStateComponent<
   toggleLocked() {
     this.setStateAndStore(
       { threadLocked: !this.state.threadLocked },
-      this.props.thread.id,
+      this.props.thread.id
     );
   }
 
@@ -188,8 +188,8 @@ class ModifyThreadDrawer extends SessionStateComponent<
             threadPinned: nextProps.thread.sticky,
             threadLocked: nextProps.thread.locked,
           },
-          nextProps.thread.id,
-        ),
+          nextProps.thread.id
+        )
       );
     }
   }
@@ -220,14 +220,14 @@ class ModifyThreadDrawer extends SessionStateComponent<
           <div className="env-dialog__form-element-container">
             <label htmlFor="messageTitle" className="env-dialog__label">
               {this.props.i18n.text.get(
-                "plugin.discussion.createmessage.title",
+                "plugin.discussion.createmessage.title"
               )}
             </label>
             <input
               id="messageTitle"
               className="env-dialog__input env-dialog__input--new-discussion-thread-title"
               placeholder={this.props.i18n.text.get(
-                "plugin.discussion.createmessage.title",
+                "plugin.discussion.createmessage.title"
               )}
               value={this.state.title}
               onChange={this.onTitleChange}
@@ -254,7 +254,7 @@ class ModifyThreadDrawer extends SessionStateComponent<
                 className="env-dialog__input-label"
               >
                 {this.props.i18n.text.get(
-                  "plugin.discussion.createmessage.pinned",
+                  "plugin.discussion.createmessage.pinned"
                 )}
               </label>
             </div>
@@ -271,7 +271,7 @@ class ModifyThreadDrawer extends SessionStateComponent<
                 className="env-dialog__input-label"
               >
                 {this.props.i18n.text.get(
-                  "plugin.discussion.createmessage.locked",
+                  "plugin.discussion.createmessage.locked"
                 )}
               </label>
             </div>
@@ -282,7 +282,7 @@ class ModifyThreadDrawer extends SessionStateComponent<
           <div className="env-dialog__form-element-container">
             <label className="env-dialog__label">
               {this.props.i18n.text.get(
-                "plugin.discussion.createmessage.content",
+                "plugin.discussion.createmessage.content"
               )}
             </label>
             <CKEditor
@@ -322,7 +322,7 @@ class ModifyThreadDrawer extends SessionStateComponent<
             disabled={this.state.locked}
           >
             {this.props.i18n.text.get(
-              "plugin.discussion.createmessage.clearDraft",
+              "plugin.discussion.createmessage.clearDraft"
             )}
           </Button>
         ) : null}

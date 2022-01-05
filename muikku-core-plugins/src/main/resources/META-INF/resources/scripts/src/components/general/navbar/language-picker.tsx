@@ -46,7 +46,7 @@ class LanguagePicker extends React.Component<
           tabIndex={0}
           aria-haspopup="true"
           aria-label={this.props.i18n.text.get(
-            "plugin.wcag.localeMenu.aria.label",
+            "plugin.wcag.localeMenu.aria.label"
           )}
         >
           <span

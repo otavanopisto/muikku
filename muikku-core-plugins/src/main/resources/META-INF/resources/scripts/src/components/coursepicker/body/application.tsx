@@ -37,7 +37,7 @@ class CoursepickerApplication extends React.Component<
   onCoursepickerFilterChange(e: React.ChangeEvent<HTMLSelectElement>) {
     const locationData = queryString.parse(
       document.location.hash.split("?")[1] || "",
-      { arrayFormat: "bracket" },
+      { arrayFormat: "bracket" }
     );
     locationData.b = e.target.value;
     window.location.hash =
@@ -75,7 +75,7 @@ class CoursepickerApplication extends React.Component<
                     {this.props.i18n.text.get(filterTranslationString[filter])}
                   </option>
                 );
-              },
+              }
             )}
           </select>
         ) : (
@@ -120,5 +120,5 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(CoursepickerApplication);

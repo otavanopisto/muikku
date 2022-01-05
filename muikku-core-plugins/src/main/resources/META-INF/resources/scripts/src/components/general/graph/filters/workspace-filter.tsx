@@ -35,7 +35,7 @@ class WorkspaceFilter extends React.Component<WorkspaceFilterProps> {
             ? this.props.i18n.text.get("plugin.guider.charts.filters.showAll")
             : this.props.i18n.text.get("plugin.guider.charts.filters.hideAll")}
         </a>
-      </div>,
+      </div>
     );
     this.props.workspaces.map((workspace) => {
       const ifChecked = !this.props.filteredWorkspaces.includes(workspace.id);
@@ -59,7 +59,7 @@ class WorkspaceFilter extends React.Component<WorkspaceFilterProps> {
           >
             {workspace.name}
           </label>
-        </div>,
+        </div>
       );
     });
 
@@ -83,11 +83,11 @@ class WorkspaceFilter extends React.Component<WorkspaceFilterProps> {
               ? "Show all"
               : "Hide all"}
           </a>
-        </div>,
+        </div>
       );
       this.props.completedWorkspaces.map((workspace) => {
         const ifChecked = !this.props.filteredCompletedWorkspaces.includes(
-          workspace.id,
+          workspace.id
         );
         const modificator = workspace.isEmpty ? "-empty" : "";
         items.push(
@@ -109,7 +109,7 @@ class WorkspaceFilter extends React.Component<WorkspaceFilterProps> {
             >
               {workspace.name}
             </label>
-          </div>,
+          </div>
         );
       });
     }

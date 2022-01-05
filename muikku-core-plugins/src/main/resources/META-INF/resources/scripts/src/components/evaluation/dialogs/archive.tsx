@@ -119,7 +119,7 @@ class ArchiveDialog extends React.Component<
           onClick={this.archiveStudent.bind(this, closeDialog)}
         >
           {this.props.i18n.text.get(
-            "plugin.evaluation.evaluationModal.archiveStudent.confirmationDialog.buttonArchiveLabel",
+            "plugin.evaluation.evaluationModal.archiveStudent.confirmationDialog.buttonArchiveLabel"
           )}
         </Button>
         <Button
@@ -128,10 +128,10 @@ class ArchiveDialog extends React.Component<
         >
           {this.props.place === "card"
             ? this.props.i18n.text.get(
-                "plugin.evaluation.evaluationModal.archiveStudent.confirmationDialog.buttonNoLabel",
+                "plugin.evaluation.evaluationModal.archiveStudent.confirmationDialog.buttonNoLabel"
               )
             : this.props.i18n.text.get(
-                "plugin.evaluation.evaluationModal.archiveRequest.confirmationDialog.noLabel",
+                "plugin.evaluation.evaluationModal.archiveRequest.confirmationDialog.noLabel"
               )}
         </Button>
       </div>
@@ -146,8 +146,8 @@ class ArchiveDialog extends React.Component<
         dangerouslySetInnerHTML={this.createHtmlMarkup(
           this.props.i18n.text.get(
             "plugin.evaluation.evaluationModal.archiveStudent.confirmationDialog.description",
-            studentNameString,
-          ),
+            studentNameString
+          )
         )}
       />
     );
@@ -156,7 +156,7 @@ class ArchiveDialog extends React.Component<
         isOpen={this.props.isOpen}
         modifier="evaluation-archive-student"
         title={this.props.i18n.text.get(
-          "plugin.evaluation.evaluationModal.archiveStudent.confirmationDialog.title",
+          "plugin.evaluation.evaluationModal.archiveStudent.confirmationDialog.title"
         )}
         content={content}
         footer={footer}
@@ -190,7 +190,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
       loadEvaluationAssessmentRequestsFromServer,
       updateNeedsReloadEvaluationRequests,
     },
-    dispatch,
+    dispatch
   );
 }
 

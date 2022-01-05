@@ -244,7 +244,7 @@ const removeFileFromCurrentStudent: RemoveFileFromCurrentStudentTriggerType =
   function removeFileFromCurrentStudent(file) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       try {
         await promisify(mApi().guider.files.del(file.id), "callback")();
@@ -259,10 +259,10 @@ const removeFileFromCurrentStudent: RemoveFileFromCurrentStudentTriggerType =
         dispatch(
           notificationActions.displayNotification(
             getState().i18n.text.get(
-              "plugin.guider.errormessage.fileRemoveFailed",
+              "plugin.guider.errormessage.fileRemoveFailed"
             ),
-            "error",
-          ),
+            "error"
+          )
         );
       }
     };
@@ -296,7 +296,7 @@ const removeFromGuiderSelectedStudents: RemoveFromGuiderSelectedStudentsTriggerT
 const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
   return async (
     dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType,
+    getState: () => StateType
   ) => {
     try {
       const currentUserSchoolDataIdentifier =
@@ -319,11 +319,11 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
               type: "SET_CURRENT_GUIDER_STUDENT_PROP",
               payload: { property: "basic", value: basic },
             });
-          },
+          }
         ),
         promisify(
           mApi().usergroup.groups.read({ userIdentifier: id }),
-          "callback",
+          "callback"
         )().then((usergroups: UserGroupType[]) => {
           dispatch({
             type: "SET_CURRENT_GUIDER_STUDENT_PROP",
@@ -334,7 +334,7 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
           mApi().user.students.flags.read(id, {
             ownerIdentifier: currentUserSchoolDataIdentifier,
           }),
-          "callback",
+          "callback"
         )().then((labels: Array<GuiderStudentUserProfileLabelType>) => {
           dispatch({
             type: "SET_CURRENT_GUIDER_STUDENT_PROP",
@@ -343,7 +343,7 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
         }),
         promisify(
           mApi().user.students.phoneNumbers.read(id),
-          "callback",
+          "callback"
         )().then((phoneNumbers: Array<StudentUserProfilePhoneType>) => {
           dispatch({
             type: "SET_CURRENT_GUIDER_STUDENT_PROP",
@@ -356,7 +356,7 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
               type: "SET_CURRENT_GUIDER_STUDENT_PROP",
               payload: { property: "emails", value: emails },
             });
-          },
+          }
         ),
         promisify(mApi().user.students.addresses.read(id), "callback")().then(
           (addresses: Array<StudentUserAddressType>) => {
@@ -364,7 +364,7 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
               type: "SET_CURRENT_GUIDER_STUDENT_PROP",
               payload: { property: "addresses", value: addresses },
             });
-          },
+          }
         ),
         promisify(mApi().guider.users.files.read(id), "callback")().then(
           (files: Array<UserFileType>) => {
@@ -372,7 +372,7 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
               type: "SET_CURRENT_GUIDER_STUDENT_PROP",
               payload: { property: "files", value: files },
             });
-          },
+          }
         ),
         // Removed until it works correctly
         // VOPS disabled until studies view redesign
@@ -387,11 +387,11 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
               type: "SET_CURRENT_GUIDER_STUDENT_PROP",
               payload: { property: "hops", value: hops },
             });
-          },
+          }
         ),
         promisify(
           mApi().guider.users.latestNotifications.read(id),
-          "callback",
+          "callback"
         )().then((notifications: GuiderNotificationStudentsDataType) => {
           dispatch({
             type: "SET_CURRENT_GUIDER_STUDENT_PROP",
@@ -403,7 +403,7 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
             userIdentifier: id,
             includeInactiveWorkspaces: true,
           }),
-          "callback",
+          "callback"
         )().then(async (workspaces: WorkspaceListType) => {
           if (workspaces && workspaces.length) {
             await Promise.all([
@@ -414,12 +414,12 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
                   >await promisify(
                     mApi().guider.workspaces.studentactivity.read(
                       workspace.id,
-                      id,
+                      id
                     ),
-                    "callback",
+                    "callback"
                   )();
                   workspaces[index].studentActivity = activity;
-                }),
+                })
               ),
               Promise.all(
                 workspaces.map(async (workspace, index) => {
@@ -428,12 +428,12 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
                   >await promisify(
                     mApi().workspace.workspaces.forumStatistics.read(
                       workspace.id,
-                      { userIdentifier: id },
+                      { userIdentifier: id }
                     ),
-                    "callback",
+                    "callback"
                   )();
                   workspaces[index].forumStatistics = statistics;
-                }),
+                })
               ),
               Promise.all(
                 workspaces.map(async (workspace, index) => {
@@ -444,11 +444,11 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
                         from: new Date(new Date().getFullYear() - 2, 0),
                         to: new Date(),
                       }),
-                      "callback",
+                      "callback"
                     )()
                   );
                   workspaces[index].activityLogs = activityLogs;
-                }),
+                })
               ),
             ]);
           }
@@ -462,7 +462,7 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
             from: new Date(new Date().getFullYear() - 2, 0),
             to: new Date(),
           }),
-          "callback",
+          "callback"
         )().then((activityLogs: ActivityLogType[]) => {
           dispatch({
             type: "SET_CURRENT_GUIDER_STUDENT_PROP",
@@ -487,8 +487,8 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
       dispatch(
         notificationActions.displayNotification(
           getState().i18n.text.get("plugin.guider.errormessage.user"),
-          "error",
-        ),
+          "error"
+        )
       );
       dispatch({
         type: "UPDATE_GUIDER_ALL_PROPS",
@@ -509,16 +509,16 @@ async function removeLabelFromUserUtil(
   flags: Array<GuiderStudentUserProfileLabelType>,
   label: GuiderUserLabelType,
   dispatch: (arg: AnyActionType) => any,
-  getState: () => StateType,
+  getState: () => StateType
 ) {
   try {
     const relationLabel: GuiderStudentUserProfileLabelType = flags.find(
-      (flag) => flag.flagId === label.id,
+      (flag) => flag.flagId === label.id
     );
     if (relationLabel) {
       await promisify(
         mApi().user.students.flags.del(student.id, relationLabel.id),
-        "callback",
+        "callback"
       )();
       dispatch({
         type: "REMOVE_GUIDER_LABEL_FROM_USER",
@@ -535,8 +535,8 @@ async function removeLabelFromUserUtil(
     dispatch(
       notificationActions.displayNotification(
         getState().i18n.text.get("plugin.guider.errormessage.label.remove"),
-        "error",
-      ),
+        "error"
+      )
     );
   }
 }
@@ -546,11 +546,11 @@ async function addLabelToUserUtil(
   flags: Array<GuiderStudentUserProfileLabelType>,
   label: GuiderUserLabelType,
   dispatch: (arg: AnyActionType) => any,
-  getState: () => StateType,
+  getState: () => StateType
 ) {
   try {
     const relationLabel: GuiderStudentUserProfileLabelType = flags.find(
-      (flag) => flag.flagId === label.id,
+      (flag) => flag.flagId === label.id
     );
     if (!relationLabel) {
       const createdLabelRelation: GuiderStudentUserProfileLabelType = <
@@ -560,7 +560,7 @@ async function addLabelToUserUtil(
           flagId: label.id,
           studentIdentifier: student.id,
         }),
-        "callback",
+        "callback"
       )();
       dispatch({
         type: "ADD_GUIDER_LABEL_TO_USER",
@@ -577,8 +577,8 @@ async function addLabelToUserUtil(
     dispatch(
       notificationActions.displayNotification(
         getState().i18n.text.get("plugin.guider.errormessage.label.add"),
-        "error",
-      ),
+        "error"
+      )
     );
   }
 }
@@ -587,7 +587,7 @@ const addGuiderLabelToCurrentUser: AddGuiderLabelToCurrentUserTriggerType =
   function addGuiderLabelToCurrentUser(label) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       const guider: GuiderType = getState().guider;
       const student = guider.currentStudent;
@@ -596,7 +596,7 @@ const addGuiderLabelToCurrentUser: AddGuiderLabelToCurrentUserTriggerType =
         student.labels,
         label,
         dispatch,
-        getState,
+        getState
       );
     };
   };
@@ -605,7 +605,7 @@ const removeGuiderLabelFromCurrentUser: RemoveGuiderLabelFromCurrentUserTriggerT
   function removeGuiderLabelFromCurrentUser(label) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       const guider: GuiderType = getState().guider;
       const student = guider.currentStudent;
@@ -614,7 +614,7 @@ const removeGuiderLabelFromCurrentUser: RemoveGuiderLabelFromCurrentUserTriggerT
         student.labels,
         label,
         dispatch,
-        getState,
+        getState
       );
     };
   };
@@ -623,7 +623,7 @@ const addGuiderLabelToSelectedUsers: AddGuiderLabelToSelectedUsersTriggerType =
   function addGuiderLabelToSelectedUsers(label) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       const guider: GuiderType = getState().guider;
       guider.selectedStudents.forEach((student: GuiderStudentType) => {
@@ -636,7 +636,7 @@ const removeGuiderLabelFromSelectedUsers: RemoveGuiderLabelFromSelectedUsersTrig
   function removeGuiderLabelFromSelectedUsers(label) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       const guider: GuiderType = getState().guider;
       guider.selectedStudents.forEach((student: GuiderStudentType) => {
@@ -645,7 +645,7 @@ const removeGuiderLabelFromSelectedUsers: RemoveGuiderLabelFromSelectedUsersTrig
           student.flags,
           label,
           dispatch,
-          getState,
+          getState
         );
       });
     };
@@ -655,7 +655,7 @@ const updateLabelFilters: UpdateLabelFiltersTriggerType =
   function updateLabelFilters() {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       const currentUser = getState().status.userSchoolDataIdentifier;
       try {
@@ -665,7 +665,7 @@ const updateLabelFilters: UpdateLabelFiltersTriggerType =
               mApi().user.flags.read({
                 ownerIdentifier: currentUser,
               }),
-              "callback",
+              "callback"
             )() || [],
         });
       } catch (err) {
@@ -675,8 +675,8 @@ const updateLabelFilters: UpdateLabelFiltersTriggerType =
         dispatch(
           notificationActions.displayNotification(
             getState().i18n.text.get("plugin.guider.errormessage.labels"),
-            "error",
-          ),
+            "error"
+          )
         );
       }
     };
@@ -686,7 +686,7 @@ const updateWorkspaceFilters: UpdateWorkspaceFiltersTriggerType =
   function updateWorkspaceFilters() {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       const currentUser = getState().status.userSchoolDataIdentifier;
       try {
@@ -699,7 +699,7 @@ const updateWorkspaceFilters: UpdateWorkspaceFiltersTriggerType =
                 maxResults: 500,
                 orderBy: "alphabet",
               }),
-              "callback",
+              "callback"
             )() || [],
         });
       } catch (err) {
@@ -709,8 +709,8 @@ const updateWorkspaceFilters: UpdateWorkspaceFiltersTriggerType =
         dispatch(
           notificationActions.displayNotification(
             getState().i18n.text.get("plugin.guider.errormessage.workspaces"),
-            "error",
-          ),
+            "error"
+          )
         );
       }
     };
@@ -720,7 +720,7 @@ const updateUserGroupFilters: UpdateWorkspaceFiltersTriggerType =
   function updateUserGroupFilters() {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       const currentUser = getState().status.userSchoolDataIdentifier;
       try {
@@ -731,7 +731,7 @@ const updateUserGroupFilters: UpdateWorkspaceFiltersTriggerType =
                 userIdentifier: currentUser,
                 maxResults: 500,
               }),
-              "callback",
+              "callback"
             )() || [],
         });
       } catch (err) {
@@ -741,8 +741,8 @@ const updateUserGroupFilters: UpdateWorkspaceFiltersTriggerType =
         dispatch(
           notificationActions.displayNotification(
             getState().i18n.text.get("plugin.guider.errormessage.userGroups"),
-            "error",
-          ),
+            "error"
+          )
         );
       }
     };
@@ -752,16 +752,16 @@ const createGuiderFilterLabel: CreateGuiderFilterLabelTriggerType =
   function createGuiderFilterLabel(name) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       if (!name) {
         return dispatch(
           notificationActions.displayNotification(
             getState().i18n.text.get(
-              "plugin.guider.errormessage.createUpdateLabels.missing.title",
+              "plugin.guider.errormessage.createUpdateLabels.missing.title"
             ),
-            "error",
-          ),
+            "error"
+          )
         );
       }
 
@@ -791,8 +791,8 @@ const createGuiderFilterLabel: CreateGuiderFilterLabelTriggerType =
         dispatch(
           notificationActions.displayNotification(
             getState().i18n.text.get("plugin.guider.errormessage.label.create"),
-            "error",
-          ),
+            "error"
+          )
         );
       }
     };
@@ -802,17 +802,17 @@ const updateGuiderFilterLabel: UpdateGuiderFilterLabelTriggerType =
   function updateGuiderFilterLabel(data) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       if (!data.name) {
         data.fail && data.fail();
         return dispatch(
           notificationActions.displayNotification(
             getState().i18n.text.get(
-              "plugin.guider.errormessage.createUpdateLabels.missing.title",
+              "plugin.guider.errormessage.createUpdateLabels.missing.title"
             ),
-            "error",
-          ),
+            "error"
+          )
         );
       }
 
@@ -825,7 +825,7 @@ const updateGuiderFilterLabel: UpdateGuiderFilterLabelTriggerType =
       try {
         await promisify(
           mApi().user.flags.update(data.label.id, newLabel),
-          "callback",
+          "callback"
         )();
         dispatch({
           type: "UPDATE_GUIDER_AVAILABLE_FILTER_LABEL",
@@ -857,8 +857,8 @@ const updateGuiderFilterLabel: UpdateGuiderFilterLabelTriggerType =
         dispatch(
           notificationActions.displayNotification(
             getState().i18n.text.get("plugin.guider.errormessage.label.update"),
-            "error",
-          ),
+            "error"
+          )
         );
       }
     };
@@ -868,7 +868,7 @@ const removeGuiderFilterLabel: RemoveGuiderFilterLabelTriggerType =
   function removeGuiderFilterLabel(data) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       try {
         await promisify(mApi().user.flags.del(data.label.id), "callback")();
@@ -889,8 +889,8 @@ const removeGuiderFilterLabel: RemoveGuiderFilterLabelTriggerType =
         dispatch(
           notificationActions.displayNotification(
             getState().i18n.text.get("plugin.guider.errormessage.label.remove"),
-            "error",
-          ),
+            "error"
+          )
         );
       }
     };

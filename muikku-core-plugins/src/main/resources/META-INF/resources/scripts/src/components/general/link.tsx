@@ -68,7 +68,7 @@ export default class Link extends React.Component<LinkProps, LinkState> {
             this.props.href,
             this.props.onScrollToSection,
             this.props.scrollPadding,
-            this.props.disableSmoothScroll,
+            this.props.disableSmoothScroll
           );
         }
       } else if (this.props.href) {

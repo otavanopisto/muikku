@@ -19,7 +19,7 @@ interface DroppableState {}
 
 function checkIsParentOrSelf(
   element: HTMLElement,
-  comparer: HTMLElement,
+  comparer: HTMLElement
 ): boolean {
   if (element === comparer) {
     return true;
@@ -224,7 +224,7 @@ export default class Draggable extends React.Component<
       !force &&
       !checkIsParentOrSelf(
         e.target as HTMLElement,
-        handleElement as HTMLElement,
+        handleElement as HTMLElement
       )
     ) {
       return;
@@ -295,7 +295,7 @@ export default class Draggable extends React.Component<
         },
         display: style.display,
       },
-      queueJax,
+      queueJax
     );
   }
   onMove(e: MouseEvent | TouchEvent) {
@@ -374,7 +374,7 @@ export default class Draggable extends React.Component<
             isDragging: false,
             disableSwiper: false,
           },
-          queueJax,
+          queueJax
         );
       } else {
         this.props.interactionGroup &&
@@ -385,7 +385,7 @@ export default class Draggable extends React.Component<
             isDragging: false,
             disableSwiper: false,
           },
-          queueJax,
+          queueJax
         );
       }
     }
@@ -426,7 +426,7 @@ export default class Draggable extends React.Component<
         const xOverlap = Math.max(
           0,
           Math.min(draggableBox.right, otherBox.right) -
-            Math.max(draggableBox.left, otherBox.left),
+            Math.max(draggableBox.left, otherBox.left)
         );
         if (!xOverlap) {
           return;
@@ -434,7 +434,7 @@ export default class Draggable extends React.Component<
         const yOverlap = Math.max(
           0,
           Math.min(draggableBox.bottom, otherBox.bottom) -
-            Math.max(draggableBox.top, otherBox.top),
+            Math.max(draggableBox.top, otherBox.top)
         );
         if (!yOverlap) {
           return;

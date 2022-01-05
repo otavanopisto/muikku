@@ -86,7 +86,7 @@ export default class Image extends React.Component<ImageProps, ImageState> {
   }
   render() {
     const newRules = this.props.processingRules.filter(
-      (r) => r.id !== "image-rule",
+      (r) => r.id !== "image-rule"
     );
     newRules.push({
       shouldProcessHTMLElement: (tag, element) =>
@@ -103,7 +103,7 @@ export default class Image extends React.Component<ImageProps, ImageState> {
               <span className="image__details-container">
                 <span className="image__details-label">
                   {this.props.i18n.text.get(
-                    "plugin.workspace.materials.detailsSourceLabel",
+                    "plugin.workspace.materials.detailsSourceLabel"
                   )}{" "}
                 </span>
                 {this.props.dataset.source || this.props.dataset.sourceUrl ? (
@@ -161,7 +161,7 @@ export default class Image extends React.Component<ImageProps, ImageState> {
                   )
                 ) : null}
               </span>
-            </span>,
+            </span>
           );
         }
 

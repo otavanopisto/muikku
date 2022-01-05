@@ -21,7 +21,7 @@ export default class FrontpageInstagram extends React.Component<
         id="instagram"
         className="screen-container__section"
         aria-label={this.props.i18n.text.get(
-          "plugin.wcag.frontPageSectionInstagramLabel",
+          "plugin.wcag.frontPageSectionInstagramLabel"
         )}
       >
         <h2 className="screen-container__header">
@@ -59,11 +59,11 @@ export default class FrontpageInstagram extends React.Component<
                     </div>
                     <div className="card__meta-body-description">
                       {this.props.i18n.text.get(
-                        "plugin.studying.nettilukio.title",
+                        "plugin.studying.nettilukio.title"
                       )}{" "}
                       /{" "}
                       {this.props.i18n.text.get(
-                        "plugin.studying.nettiperuskoulu.title",
+                        "plugin.studying.nettiperuskoulu.title"
                       )}
                     </div>
                   </div>

@@ -38,7 +38,7 @@ export default function organizationSummary(
     workspaces: null,
     contacts: [],
   },
-  action: ActionType,
+  action: ActionType
 ): OrganizationSummaryType {
   if (action.type === "UPDATE_SUMMARY_STATUS") {
     return Object.assign({}, state, {

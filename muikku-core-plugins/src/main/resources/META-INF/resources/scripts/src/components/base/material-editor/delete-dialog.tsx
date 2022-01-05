@@ -74,7 +74,7 @@ class DeleteWorkspaceMaterialDialog extends React.Component<
           {this.props.i18n.text.get(
             this.props.isSection
               ? "plugin.workspace.materialsManagement.confirmSectionDelete.text"
-              : "plugin.workspace.materialsManagement.confirmDelete.text",
+              : "plugin.workspace.materialsManagement.confirmDelete.text"
           )}
         </span>
       </div>
@@ -90,7 +90,7 @@ class DeleteWorkspaceMaterialDialog extends React.Component<
           {this.props.i18n.text.get(
             this.props.isSection
               ? "plugin.workspace.materialsManagement.confirmSectionDelete.confirmButton"
-              : "plugin.workspace.materialsManagement.confirmDelete.confirmButton",
+              : "plugin.workspace.materialsManagement.confirmDelete.confirmButton"
           )}
         </Button>
         <Button
@@ -101,7 +101,7 @@ class DeleteWorkspaceMaterialDialog extends React.Component<
           {this.props.i18n.text.get(
             this.props.isSection
               ? "plugin.workspace.materialsManagement.confirmSectionDelete.cancelButton"
-              : "plugin.workspace.materialsManagement.confirmDelete.cancelButton",
+              : "plugin.workspace.materialsManagement.confirmDelete.cancelButton"
           )}
         </Button>
       </div>
@@ -113,7 +113,7 @@ class DeleteWorkspaceMaterialDialog extends React.Component<
         title={this.props.i18n.text.get(
           this.props.isSection
             ? "plugin.workspace.materialsManagement.confirmSectionDelete.title"
-            : "plugin.workspace.materialsManagement.confirmDelete.title",
+            : "plugin.workspace.materialsManagement.confirmDelete.title"
         )}
         content={content}
         footer={footer}
@@ -137,5 +137,5 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(DeleteWorkspaceMaterialDialog);

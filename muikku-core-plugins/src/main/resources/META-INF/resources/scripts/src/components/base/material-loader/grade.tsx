@@ -19,7 +19,7 @@ export function MaterialLoaderGrade(props: MaterialLoaderGradeProps) {
         <span className="material-page__assignment-assessment-grade-data material-page__assignment-assessment-grade-data--incomplete">
           {" "}
           {props.i18n.text.get(
-            "plugin.workspace.materialsLoader.evaluation.grade.incomplete",
+            "plugin.workspace.materialsLoader.evaluation.grade.incomplete"
           )}
         </span>
       </div>
@@ -34,7 +34,7 @@ export function MaterialLoaderGrade(props: MaterialLoaderGradeProps) {
     <div className="material-page__assignment-assessment-grade">
       <span className="material-page__assignment-assessment-grade-label">
         {props.i18n.text.get(
-          "plugin.workspace.materialsLoader.evaluation.grade.label",
+          "plugin.workspace.materialsLoader.evaluation.grade.label"
         )}
         :
       </span>

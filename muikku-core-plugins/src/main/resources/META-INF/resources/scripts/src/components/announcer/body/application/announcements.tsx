@@ -76,15 +76,15 @@ class Announcements extends React.Component<
                 className,
                 onSelect: this.props.addToAnnouncementsSelected.bind(
                   null,
-                  announcement,
+                  announcement
                 ),
                 onDeselect: this.props.removeFromAnnouncementsSelected.bind(
                   null,
-                  announcement,
+                  announcement
                 ),
                 onEnter: this.setCurrentAnnouncement.bind(this, announcement),
                 isSelected: this.props.announcements.selectedIds.includes(
-                  announcement.id,
+                  announcement.id
                 ),
                 key: announcement.id,
                 checkboxId: `announcementSelect-${announcement.id}`,
@@ -99,7 +99,7 @@ class Announcements extends React.Component<
                           className="visually-hidden"
                         >
                           {this.props.i18n.text.get(
-                            "plugin.wcag.announcementSelect.label",
+                            "plugin.wcag.announcementSelect.label"
                           )}
                         </label>
                         {checkbox}
@@ -110,10 +110,10 @@ class Announcements extends React.Component<
                       <ApplicationListHeaderPrimary>
                         <ApplicationListItemDate
                           startDate={this.props.i18n.time.format(
-                            announcement.startDate,
+                            announcement.startDate
                           )}
                           endDate={this.props.i18n.time.format(
-                            announcement.endDate,
+                            announcement.endDate
                           )}
                         />
                       </ApplicationListHeaderPrimary>
@@ -161,7 +161,7 @@ class Announcements extends React.Component<
                           className="link link--application-list-item-footer"
                         >
                           {this.props.i18n.text.get(
-                            "plugin.announcer.link.edit",
+                            "plugin.announcer.link.edit"
                           )}
                         </Link>
                       </NewEditAnnouncement>
@@ -172,7 +172,7 @@ class Announcements extends React.Component<
                             className="link link--application-list-item-footer"
                           >
                             {this.props.i18n.text.get(
-                              "plugin.announcer.link.delete",
+                              "plugin.announcer.link.delete"
                             )}
                           </Link>
                         </DeleteAnnouncementDialog>
@@ -181,7 +181,7 @@ class Announcements extends React.Component<
                   </ApplicationListItemContentWrapper>
                 ),
               };
-            },
+            }
           )}
         </SelectableList>
       </BodyScrollKeeper>
@@ -204,7 +204,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
       addToAnnouncementsSelected,
       removeFromAnnouncementsSelected,
     },
-    dispatch,
+    dispatch
   );
 }
 

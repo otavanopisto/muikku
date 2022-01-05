@@ -47,7 +47,7 @@ export function MaterialLoaderTitle(props: MaterialLoaderTitleProps) {
           {props.i18n.text.get(
             "plugin.workspace.materials." +
               materialPageType +
-              "HiddenButAnswered",
+              "HiddenButAnswered"
           )}
         </div>
       ) : null}

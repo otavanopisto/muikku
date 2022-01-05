@@ -52,7 +52,7 @@ export default class FrontpageFooter extends React.Component<
               >
                 <span className="visually-hidden">Otavia </span>
                 {this.props.i18n.text.get(
-                  "plugin.footer.ooPrivacyPolicy.label",
+                  "plugin.footer.ooPrivacyPolicy.label"
                 )}
               </a>
             </p>
@@ -64,7 +64,7 @@ export default class FrontpageFooter extends React.Component<
                 rel="noreferrer"
               >
                 {this.props.i18n.text.get(
-                  "plugin.footer.accesibilityStatement.text",
+                  "plugin.footer.accesibilityStatement.text"
                 )}
               </a>
             </p>
@@ -105,7 +105,7 @@ export default class FrontpageFooter extends React.Component<
             >
               (<span className="visually-hidden">Plagscan </span>
               {this.props.i18n.text.get(
-                "plugin.footer.plagScanPrivacyPolicy.label",
+                "plugin.footer.plagScanPrivacyPolicy.label"
               )}
               ).
             </a>

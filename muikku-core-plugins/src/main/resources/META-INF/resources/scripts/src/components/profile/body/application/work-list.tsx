@@ -105,7 +105,7 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
     this.props.loadProfileWorklistSection(index);
     const sectionToOpen = this.props.profile.worklist[index];
     const hasItInIt = this.state.openedSections.some(
-      (n) => n === sectionToOpen.summary.beginDate,
+      (n) => n === sectionToOpen.summary.beginDate
     );
     if (!hasItInIt) {
       this.setState({
@@ -117,7 +117,7 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
     } else {
       this.setState({
         openedSections: this.state.openedSections.filter(
-          (s) => s !== sectionToOpen.summary.beginDate,
+          (s) => s !== sectionToOpen.summary.beginDate
         ),
       });
     }
@@ -125,7 +125,7 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
 
   public onSelect(e: React.ChangeEvent<HTMLSelectElement>) {
     const newTemplate = this.props.profile.worklistTemplates.find(
-      (t) => t.id.toString() === e.target.value,
+      (t) => t.id.toString() === e.target.value
     );
     this.setState({
       currentTemplate: newTemplate,
@@ -157,7 +157,7 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
           daysInCurrentMonth={daysInCurrentMonth}
           i18n={this.props.i18n}
           isExpanded={this.state.openedSections.includes(
-            section.summary.beginDate,
+            section.summary.beginDate
           )}
           onToggleSection={this.toggleSection.bind(this, index)}
           previousMonthsFirstDay={previousMonthsFirstDay}
@@ -226,7 +226,7 @@ function mapStateToProps(state: StateType) {
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     { insertProfileWorklistItem, loadProfileWorklistSection },
-    dispatch,
+    dispatch
   );
 }
 

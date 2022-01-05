@@ -102,7 +102,7 @@ export default function discussion(
     currentReplies: [],
     areas: [],
   },
-  action: ActionType,
+  action: ActionType
 ): DiscussionType {
   if (action.type === "UPDATE_DISCUSSION_THREADS_STATE") {
     const newState: DiscussionStateType = action.payload;
@@ -151,7 +151,7 @@ export default function discussion(
             return reply;
           }
           return action.payload;
-        },
+        }
       ),
     });
   } else if (action.type === "UPDATE_DISCUSSION_AREAS") {

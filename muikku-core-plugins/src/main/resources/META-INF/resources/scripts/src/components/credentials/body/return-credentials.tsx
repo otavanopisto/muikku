@@ -63,9 +63,9 @@ class ReturnCredentials extends React.Component<
     if (userName == "") {
       this.props.displayNotification(
         this.props.i18n.text.get(
-          "plugin.forgotpassword.changeCredentials.messages.error.empty.username",
+          "plugin.forgotpassword.changeCredentials.messages.error.empty.username"
         ),
-        "error",
+        "error"
       );
       return;
     }
@@ -73,9 +73,9 @@ class ReturnCredentials extends React.Component<
     if (newPassword1 !== newPassword2) {
       this.props.displayNotification(
         this.props.i18n.text.get(
-          "plugin.forgotpassword.changeCredentials.messages.error.passwordsDontMatch",
+          "plugin.forgotpassword.changeCredentials.messages.error.passwordsDontMatch"
         ),
-        "error",
+        "error"
       );
       return;
     }
@@ -83,9 +83,9 @@ class ReturnCredentials extends React.Component<
     if (newPassword1 == "" || newPassword2 == "") {
       this.props.displayNotification(
         this.props.i18n.text.get(
-          "plugin.forgotpassword.changeCredentials.messages.error.empty.passwords",
+          "plugin.forgotpassword.changeCredentials.messages.error.empty.passwords"
         ),
-        "error",
+        "error"
       );
       return;
     }
@@ -111,7 +111,7 @@ class ReturnCredentials extends React.Component<
             <div className="form-element form-element--forgot-password">
               <label htmlFor="resetCredentialsUsername">
                 {this.props.i18n.text.get(
-                  "plugin.forgotpassword.changeCredentials.input.name",
+                  "plugin.forgotpassword.changeCredentials.input.name"
                 )}
               </label>
               <input
@@ -127,7 +127,7 @@ class ReturnCredentials extends React.Component<
             <div className="form-element form-element--forgot-password">
               <label htmlFor="resetCredentialsPassword1">
                 {this.props.i18n.text.get(
-                  "plugin.forgotpassword.changeCredentials.input.password1",
+                  "plugin.forgotpassword.changeCredentials.input.password1"
                 )}
               </label>
               <input
@@ -143,7 +143,7 @@ class ReturnCredentials extends React.Component<
             <div className="form-element form-element--forgot-password">
               <label htmlFor="resetCredentialsPassword2">
                 {this.props.i18n.text.get(
-                  "plugin.forgotpassword.changeCredentials.input.password2",
+                  "plugin.forgotpassword.changeCredentials.input.password2"
                 )}
               </label>
               <input
@@ -162,7 +162,7 @@ class ReturnCredentials extends React.Component<
                 buttonModifiers="reset-password"
               >
                 {this.props.i18n.text.get(
-                  "plugin.forgotpassword.changeCredentials.button",
+                  "plugin.forgotpassword.changeCredentials.button"
                 )}
               </Button>
             </div>
@@ -172,7 +172,7 @@ class ReturnCredentials extends React.Component<
         <div className="credentials__changed">
           <div className="credentials__changed-message">
             {this.props.i18n.text.get(
-              "plugin.forgotpassword.changeCredentials.messages.success.loginFromCredentials",
+              "plugin.forgotpassword.changeCredentials.messages.success.loginFromCredentials"
             )}
           </div>
           <div className="credentials__changed-action">
@@ -194,7 +194,7 @@ function mapStateToProps(state: StateType) {
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     { displayNotification, updateCredentials },
-    dispatch,
+    dispatch
   );
 }
 

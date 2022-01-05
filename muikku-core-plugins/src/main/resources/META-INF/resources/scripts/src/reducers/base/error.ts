@@ -10,7 +10,7 @@ export default function error(
     title: null,
     description: null,
   },
-  action: ActionType,
+  action: ActionType
 ): ErrorType {
   if (action.type === "UPDATE_ERROR") {
     return action.payload;

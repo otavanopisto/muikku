@@ -53,7 +53,7 @@ class CheckContactInfoDialog extends React.Component<
       try {
         const user: UserWithSchoolDataType = (await promisify(
           mApi().user.students.read(this.props.status.userSchoolDataIdentifier),
-          "callback",
+          "callback"
         )()) as UserWithSchoolDataType;
         if (!user || (user.updatedByStudent && !FORCE_OPEN)) {
           return;
@@ -61,9 +61,9 @@ class CheckContactInfoDialog extends React.Component<
 
         const addresses: Array<StudentUserAddressType> = (await promisify(
           mApi().user.students.addresses.read(
-            this.props.status.userSchoolDataIdentifier,
+            this.props.status.userSchoolDataIdentifier
           ),
-          "callback",
+          "callback"
         )()) as Array<StudentUserAddressType>;
         let address = null;
         for (let i = 0; i < addresses.length; i++) {
@@ -101,9 +101,9 @@ class CheckContactInfoDialog extends React.Component<
         mApi().user.students.addresses.update(
           this.props.status.userSchoolDataIdentifier,
           this.state.address.identifier,
-          this.state.address,
+          this.state.address
         ),
-        "callback",
+        "callback"
       )();
     } catch (err) {
       this.props.displayNotification(err.message, "error");
@@ -114,19 +114,19 @@ class CheckContactInfoDialog extends React.Component<
       <div>
         <div>
           {this.props.i18n.text.get(
-            "plugin.frontPage.checkContactInfo.dialog.description",
+            "plugin.frontPage.checkContactInfo.dialog.description"
           )}
         </div>
         <dl>
           <dt>
             {this.props.i18n.text.get(
-              "plugin.frontPage.checkContactInfo.dialog.street",
+              "plugin.frontPage.checkContactInfo.dialog.street"
             )}
           </dt>
           <dd>{this.state.address.street ? this.state.address.street : "-"}</dd>
           <dt>
             {this.props.i18n.text.get(
-              "plugin.frontPage.checkContactInfo.dialog.postalCode",
+              "plugin.frontPage.checkContactInfo.dialog.postalCode"
             )}
           </dt>
           <dd>
@@ -136,13 +136,13 @@ class CheckContactInfoDialog extends React.Component<
           </dd>
           <dt>
             {this.props.i18n.text.get(
-              "plugin.frontPage.checkContactInfo.dialog.city",
+              "plugin.frontPage.checkContactInfo.dialog.city"
             )}
           </dt>
           <dd>{this.state.address.city ? this.state.address.city : "-"}</dd>
           <dt>
             {this.props.i18n.text.get(
-              "plugin.frontPage.checkContactInfo.dialog.country",
+              "plugin.frontPage.checkContactInfo.dialog.country"
             )}
           </dt>
           <dd>
@@ -150,7 +150,7 @@ class CheckContactInfoDialog extends React.Component<
           </dd>
           <dt>
             {this.props.i18n.text.get(
-              "plugin.frontPage.checkContactInfo.dialog.municipality",
+              "plugin.frontPage.checkContactInfo.dialog.municipality"
             )}
           </dt>
           <dd>
@@ -167,7 +167,7 @@ class CheckContactInfoDialog extends React.Component<
           onClick={this.confirmContactInfo}
         >
           {this.props.i18n.text.get(
-            "plugin.frontPage.checkContactInfo.dialog.button.confirmLabel",
+            "plugin.frontPage.checkContactInfo.dialog.button.confirmLabel"
           )}
         </Link>
         <Link
@@ -175,7 +175,7 @@ class CheckContactInfoDialog extends React.Component<
           href="/profile"
         >
           {this.props.i18n.text.get(
-            "plugin.frontPage.checkContactInfo.dialog.button.okLabel",
+            "plugin.frontPage.checkContactInfo.dialog.button.okLabel"
           )}
         </Link>
       </div>
@@ -183,7 +183,7 @@ class CheckContactInfoDialog extends React.Component<
     return (
       <Dialog
         title={this.props.i18n.text.get(
-          "plugin.frontPage.checkContactInfo.dialog.title",
+          "plugin.frontPage.checkContactInfo.dialog.title"
         )}
         content={content}
         footer={footer}
@@ -207,5 +207,5 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(CheckContactInfoDialog);

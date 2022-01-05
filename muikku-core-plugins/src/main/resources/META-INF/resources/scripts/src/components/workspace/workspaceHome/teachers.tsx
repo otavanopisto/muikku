@@ -27,7 +27,7 @@ export function getWorkspaceMessage(
   i18n: i18nType,
   status: StatusType,
   workspace: WorkspaceType,
-  html?: boolean,
+  html?: boolean
 ) {
   if (!workspace) {
     return "";
@@ -93,7 +93,7 @@ class WorkspaceTeachers extends React.Component<
                 if (teacher.properties["profile-vacation-end"]) {
                   // we must check for the ending
                   const vacationEndsAt = moment(
-                    teacher.properties["profile-vacation-end"],
+                    teacher.properties["profile-vacation-end"]
                   );
                   const today = moment();
                   // if it's before or it's today then we display, otherwise nope
@@ -133,16 +133,16 @@ class WorkspaceTeachers extends React.Component<
                       {displayVacationPeriod ? (
                         <div className="item-list__user-vacation-period">
                           {this.props.i18n.text.get(
-                            "plugin.workspace.index.teachersVacationPeriod.label",
+                            "plugin.workspace.index.teachersVacationPeriod.label"
                           )}
                           &nbsp;
                           {this.props.i18n.time.format(
-                            teacher.properties["profile-vacation-start"],
+                            teacher.properties["profile-vacation-start"]
                           )}
                           {teacher.properties["profile-vacation-end"]
                             ? "–" +
                               this.props.i18n.time.format(
-                                teacher.properties["profile-vacation-end"],
+                                teacher.properties["profile-vacation-end"]
                               )
                             : null}
                         </div>
@@ -161,18 +161,18 @@ class WorkspaceTeachers extends React.Component<
                         initialSubject={getWorkspaceMessage(
                           this.props.i18n,
                           this.props.status,
-                          this.props.workspace,
+                          this.props.workspace
                         )}
                         initialMessage={getWorkspaceMessage(
                           this.props.i18n,
                           this.props.status,
                           this.props.workspace,
-                          true,
+                          true
                         )}
                       >
                         <Button buttonModifiers={["info", "contact-teacher"]}>
                           {this.props.i18n.text.get(
-                            "plugin.workspace.index.message.label",
+                            "plugin.workspace.index.message.label"
                           )}
                         </Button>
                       </CommunicatorNewMessage>

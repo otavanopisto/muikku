@@ -103,7 +103,7 @@ class DiscussionNewArea extends SessionStateComponent<
         <div className="env-dialog__form-element-container">
           <label htmlFor="forumAreaDescription" className="env-dialog__label">
             {this.props.i18n.text.get(
-              "plugin.discussion.createarea.description",
+              "plugin.discussion.createarea.description"
             )}
           </label>
           <textarea
@@ -138,7 +138,7 @@ class DiscussionNewArea extends SessionStateComponent<
             disabled={this.state.locked}
           >
             {this.props.i18n.text.get(
-              "plugin.discussion.createmessage.clearDraft",
+              "plugin.discussion.createmessage.clearDraft"
             )}
           </Button>
         ) : null}

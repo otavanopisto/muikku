@@ -161,7 +161,7 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
    * @param prevState
    */
   componentDidUpdate = (
-    prevProps: MatriculationExaminationEnrollmentInformationNewProps,
+    prevProps: MatriculationExaminationEnrollmentInformationNewProps
   ) => {
     if (this.props !== prevProps) {
       this.setState(this.props.examination);
@@ -235,7 +235,7 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
     const attendances = [].concat(this.state.enrolledAttendances);
 
     const attendedSubjects = attendances.map(
-      (attendance) => attendance.subject,
+      (attendance) => attendance.subject
     );
 
     this.state.finishedAttendances.forEach((finishedAttendance) => {
@@ -253,11 +253,11 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
   getNonDuplicateAttendanceEnrolledAndPlanned = () => {
     const attendances = [].concat(
       this.state.enrolledAttendances,
-      this.state.plannedAttendances,
+      this.state.plannedAttendances
     );
 
     const attendedSubjects = attendances.map(
-      (attendance) => attendance.subject,
+      (attendance) => attendance.subject
     );
 
     this.state.finishedAttendances.forEach((finishedAttendance) => {
@@ -287,7 +287,7 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
     this.state.finishedAttendances
       .filter(
         (fAttendance) =>
-          succesfullyFinishedExams.indexOf(fAttendance.subject) !== -1,
+          succesfullyFinishedExams.indexOf(fAttendance.subject) !== -1
       )
       .forEach((finishedAttendance) => {
         if (attendedSubjects.indexOf(finishedAttendance.subject) === -1) {
@@ -375,7 +375,7 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
    */
   getAmountOfFinnishAttendances = () =>
     this.getNonDuplicateAttendanceEnrolledAndPlanned().filter(
-      (attendance) => FINNISH_SUBJECTS.indexOf(attendance.subject) !== -1,
+      (attendance) => FINNISH_SUBJECTS.indexOf(attendance.subject) !== -1
     ).length;
 
   /**
@@ -388,7 +388,7 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
     this.getNonDuplicateAttendanceEnrolledAndPlanned().map((attendance) => {
       if (FINNISH_SUBJECTS.includes(attendance.subject)) {
         const index = FINNISH_SUBJECTS.findIndex(
-          (item) => item === attendance.subject,
+          (item) => item === attendance.subject
         );
 
         array.push(FINNISH_SUBJECTS[index]);
@@ -405,7 +405,7 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
    */
   getAmountOfAdvancedSubjectAttendances = () =>
     this.getNonDuplicateAttendanceEnrolledAndPlanned().filter(
-      (attendance) => ADVANCED_SUBJECTS.indexOf(attendance.subject) !== -1,
+      (attendance) => ADVANCED_SUBJECTS.indexOf(attendance.subject) !== -1
     ).length;
 
   /**
@@ -497,7 +497,7 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
    */
   getAmountOfMandatoryAdvancedSubjectAttendances() {
     return this.getNonDuplicateAttendanceEnrolledAndPlanned().filter(
-      (attendance) => ADVANCED_SUBJECTS.indexOf(attendance.subject) !== -1,
+      (attendance) => ADVANCED_SUBJECTS.indexOf(attendance.subject) !== -1
     ).length;
   }
 
@@ -703,7 +703,7 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
       this.state.enrolledAttendances.filter(
         (attendance) =>
           attendance.repeat === "false" &&
-          finishedSubjects.indexOf(attendance.subject) != -1,
+          finishedSubjects.indexOf(attendance.subject) != -1
       ).length > 0
     );
   };
@@ -928,7 +928,7 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
    */
   onExaminationInformationChange = <T extends keyof ExaminationInformation>(
     key: T,
-    value: ExaminationInformation[T],
+    value: ExaminationInformation[T]
   ) => {
     const { examination, onChange } = this.props;
     const { degreeType } = this.state;
@@ -955,13 +955,13 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
           (fSubject) => ({
             ...fSubject,
             funding: ExaminationFunding.SELF_FUNDED,
-          }),
+          })
         ),
         enrolledAttendances: modifiedExamination.enrolledAttendances.map(
           (eSubject) => ({
             ...eSubject,
             funding: ExaminationFunding.SELF_FUNDED,
-          }),
+          })
         ),
       };
     }
@@ -975,13 +975,13 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
           (fSubject) => ({
             ...fSubject,
             funding: "",
-          }),
+          })
         ),
         enrolledAttendances: modifiedExamination.enrolledAttendances.map(
           (eSubject) => ({
             ...eSubject,
             funding: "",
-          }),
+          })
         ),
       };
     }
@@ -994,7 +994,7 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
    * @param examinationSubjectList
    */
   handleExaminationEnrolledAttendSubjectListChange = (
-    examinationSubjectList: ExaminationEnrolledSubject[],
+    examinationSubjectList: ExaminationEnrolledSubject[]
   ) => {
     const { examination, onChange } = this.props;
 
@@ -1016,7 +1016,7 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
    * @param examinationSubjectList
    */
   handleExaminationFinishedSubjectListChange = (
-    examinationSubjectList: ExaminationFinishedSubject[],
+    examinationSubjectList: ExaminationFinishedSubject[]
   ) => {
     const { examination, onChange } = this.props;
 
@@ -1038,7 +1038,7 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
    * @param examinationSubjectList
    */
   handleExaminationPlannedSubjectListChange = (
-    examinationSubjectList: ExaminationPlannedSubject[],
+    examinationSubjectList: ExaminationPlannedSubject[]
   ) => {
     const { examination, onChange } = this.props;
 
@@ -1160,7 +1160,7 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
                 onChange={(e) =>
                   this.onExaminationInformationChange(
                     "changedContactInfo",
-                    e.target.value,
+                    e.target.value
                   )
                 }
                 rows={5}
@@ -1194,7 +1194,7 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
                 onChange={(e) =>
                   this.onExaminationInformationChange(
                     "enrollAs",
-                    e.currentTarget.value,
+                    e.currentTarget.value
                   )
                 }
                 value={enrollAs}
@@ -1213,7 +1213,7 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
                 onChange={(e) =>
                   this.onExaminationInformationChange(
                     "numMandatoryCourses",
-                    e.target.value,
+                    e.target.value
                   )
                 }
                 label="Pakollisia kursseja suoritettuna"
@@ -1229,7 +1229,7 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
                 onChange={(e) =>
                   this.onExaminationInformationChange(
                     "degreeType",
-                    e.currentTarget.value,
+                    e.currentTarget.value
                   )
                 }
                 value={degreeType}
@@ -1280,7 +1280,7 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
                 onChange={(e) =>
                   this.onExaminationInformationChange(
                     "restartExam",
-                    e.target.checked,
+                    e.target.checked
                   )
                 }
                 checked={Boolean(restartExam)}

@@ -21,7 +21,7 @@ const MAX_LOADED_AT_ONCE = 30;
 //This is a server-side issue, just why we have different paths for different things.
 export function getApiId(
   item: MessagesNavigationItemType,
-  weirdSecondVersion = false,
+  weirdSecondVersion = false
 ) {
   if (item.type === "folder") {
     switch (item.id) {
@@ -49,7 +49,7 @@ export async function loadMessagesHelper(
   query: string | null,
   initial: boolean,
   dispatch: (arg: AnyActionType) => any,
-  getState: () => StateType,
+  getState: () => StateType
 ) {
   //Remove the current message
   dispatch({
@@ -92,7 +92,7 @@ export async function loadMessagesHelper(
 
   //We get the navigation location item
   const item = state.messages.navigation.find(
-    (item) => item.location === actualLocation,
+    (item) => item.location === actualLocation
   );
   if (!item) {
     return dispatch({
@@ -157,21 +157,21 @@ export async function loadMessagesHelper(
       results = <MessageSearchResult[]>(
         await promisify(
           mApi().communicator.searchItems.cacheClear().read(queryParams),
-          "callback",
+          "callback"
         )()
       );
     } else if (item.type !== "label") {
       results = <MessageThreadListType>(
         await promisify(
           mApi().communicator[getApiId(item)].read(params),
-          "callback",
+          "callback"
         )()
       );
     } else {
       results = <MessageThreadListType>(
         await promisify(
           mApi().communicator.userLabels.messages.read(item.id, params),
-          "callback",
+          "callback"
         )()
       );
     }
@@ -220,10 +220,10 @@ export async function loadMessagesHelper(
     dispatch(
       notificationActions.displayNotification(
         getState().i18n.text.get(
-          "plugin.communicator.errormessage.msgsLoadFailed",
+          "plugin.communicator.errormessage.msgsLoadFailed"
         ),
-        "error",
-      ),
+        "error"
+      )
     );
     if (internalLastLoadId === loadId) {
       dispatch({
@@ -238,11 +238,11 @@ export async function setLabelStatusCurrentMessage(
   label: MessageThreadLabelType,
   isToAddLabel: boolean,
   dispatch: (arg: AnyActionType) => any,
-  getState: () => StateType,
+  getState: () => StateType
 ) {
   const state = getState();
   const messageLabel = state.messages.currentThread.labels.find(
-    (mlabel: MessageThreadLabelType) => mlabel.labelId === label.id,
+    (mlabel: MessageThreadLabelType) => mlabel.labelId === label.id
   );
   const communicatorMessageId =
     state.messages.currentThread.messages[0].communicatorMessageId;
@@ -255,7 +255,7 @@ export async function setLabelStatusCurrentMessage(
         mApi().communicator.messages.labels.create(communicatorMessageId, {
           labelId: label.id,
         }),
-        "callback",
+        "callback"
       )();
       dispatch({
         type: "UPDATE_MESSAGE_THREAD_ADD_LABEL",
@@ -269,18 +269,18 @@ export async function setLabelStatusCurrentMessage(
         dispatch(
           notificationActions.displayNotification(
             getState().i18n.text.get(
-              "plugin.communicator.errormessage.labelDoesNotExist",
+              "plugin.communicator.errormessage.labelDoesNotExist"
             ),
-            "error",
-          ),
+            "error"
+          )
         );
       } else {
         await promisify(
           mApi().communicator.messages.labels.del(
             communicatorMessageId,
-            messageLabel.id,
+            messageLabel.id
           ),
-          "callback",
+          "callback"
         )();
         dispatch({
           type: "UPDATE_MESSAGE_THREAD_DROP_LABEL",
@@ -295,10 +295,10 @@ export async function setLabelStatusCurrentMessage(
     dispatch(
       notificationActions.displayNotification(
         getState().i18n.text.get(
-          "plugin.communicator.errormessage.labelingFailed",
+          "plugin.communicator.errormessage.labelingFailed"
         ),
-        "error",
-      ),
+        "error"
+      )
     );
   }
 }
@@ -307,13 +307,13 @@ export function setLabelStatusSelectedMessages(
   label: MessageThreadLabelType,
   isToAddLabel: boolean,
   dispatch: (arg: AnyActionType) => any,
-  getState: () => StateType,
+  getState: () => StateType
 ) {
   const state = getState();
 
   state.messages.selectedThreads.forEach(async (thread: MessageThreadType) => {
     const threadLabel = thread.labels.find(
-      (mlabel) => mlabel.labelId === label.id,
+      (mlabel) => mlabel.labelId === label.id
     );
 
     try {
@@ -325,9 +325,9 @@ export function setLabelStatusSelectedMessages(
             thread.communicatorMessageId,
             {
               labelId: label.id,
-            },
+            }
           ),
-          "callback",
+          "callback"
         )();
         dispatch({
           type: "UPDATE_MESSAGE_THREAD_ADD_LABEL",
@@ -342,18 +342,18 @@ export function setLabelStatusSelectedMessages(
           dispatch(
             notificationActions.displayNotification(
               getState().i18n.text.get(
-                "plugin.communicator.errormessage.labelDoesNotExist",
+                "plugin.communicator.errormessage.labelDoesNotExist"
               ),
-              "error",
-            ),
+              "error"
+            )
           );
         } else {
           await promisify(
             mApi().communicator.messages.labels.del(
               thread.communicatorMessageId,
-              threadLabel.id,
+              threadLabel.id
             ),
-            "callback",
+            "callback"
           )();
           dispatch({
             type: "UPDATE_MESSAGE_THREAD_DROP_LABEL",
@@ -368,10 +368,10 @@ export function setLabelStatusSelectedMessages(
       dispatch(
         notificationActions.displayNotification(
           getState().i18n.text.get(
-            "plugin.communicator.errormessage.labelingFailed",
+            "plugin.communicator.errormessage.labelingFailed"
           ),
-          "error",
-        ),
+          "error"
+        )
       );
     }
   });

@@ -42,7 +42,7 @@ class WorkspacesAside extends React.Component<
   render() {
     const locationData = queryString.parse(
       document.location.hash.split("?")[1] || "",
-      { arrayFormat: "bracket" },
+      { arrayFormat: "bracket" }
     );
     return (
       <Navigation>
@@ -53,7 +53,7 @@ class WorkspacesAside extends React.Component<
             (educationType: WorkspaceEducationFilterType) => {
               const isActive =
                 this.props.workspaces.activeFilters.educationFilters.includes(
-                  educationType.identifier,
+                  educationType.identifier
                 );
               const hash =
                 "?" +
@@ -61,18 +61,18 @@ class WorkspacesAside extends React.Component<
                   ? queryString.stringify(
                       Object.assign({}, locationData, {
                         e: (locationData.e || []).filter(
-                          (i: string) => i !== educationType.identifier,
+                          (i: string) => i !== educationType.identifier
                         ),
                       }),
-                      { arrayFormat: "bracket" },
+                      { arrayFormat: "bracket" }
                     )
                   : queryString.stringify(
                       Object.assign({}, locationData, {
                         e: (locationData.e || []).concat(
-                          educationType.identifier,
+                          educationType.identifier
                         ),
                       }),
-                      { arrayFormat: "bracket" },
+                      { arrayFormat: "bracket" }
                     ));
               return (
                 <NavigationElement
@@ -83,19 +83,19 @@ class WorkspacesAside extends React.Component<
                   {educationType.name}
                 </NavigationElement>
               );
-            },
+            }
           )}
         </NavigationTopic>
         <NavigationTopic
           name={this.props.i18n.text.get(
-            "plugin.coursepicker.filters.curriculum",
+            "plugin.coursepicker.filters.curriculum"
           )}
         >
           {this.props.workspaces.availableFilters.curriculums.map(
             (curriculum: WorkspaceCurriculumFilterType) => {
               const isActive =
                 this.props.workspaces.activeFilters.curriculumFilters.includes(
-                  curriculum.identifier,
+                  curriculum.identifier
                 );
               const hash =
                 "?" +
@@ -103,16 +103,16 @@ class WorkspacesAside extends React.Component<
                   ? queryString.stringify(
                       Object.assign({}, locationData, {
                         c: (locationData.c || []).filter(
-                          (c: string) => c !== curriculum.identifier,
+                          (c: string) => c !== curriculum.identifier
                         ),
                       }),
-                      { arrayFormat: "bracket" },
+                      { arrayFormat: "bracket" }
                     )
                   : queryString.stringify(
                       Object.assign({}, locationData, {
                         c: (locationData.c || []).concat(curriculum.identifier),
                       }),
-                      { arrayFormat: "bracket" },
+                      { arrayFormat: "bracket" }
                     ));
               return (
                 <NavigationElement
@@ -123,19 +123,19 @@ class WorkspacesAside extends React.Component<
                   {curriculum.name}
                 </NavigationElement>
               );
-            },
+            }
           )}
         </NavigationTopic>
         <NavigationTopic
           name={this.props.i18n.text.get(
-            "plugin.organization.filters.published.title",
+            "plugin.organization.filters.published.title"
           )}
         >
           {this.props.workspaces.availableFilters.stateFilters.map(
             (stateFilter) => {
               const isActive =
                 this.props.workspaces.activeFilters.stateFilters.includes(
-                  stateFilter.identifier,
+                  stateFilter.identifier
                 );
               const hash =
                 "?" +
@@ -143,18 +143,18 @@ class WorkspacesAside extends React.Component<
                   ? queryString.stringify(
                       Object.assign({}, locationData, {
                         p: (locationData.p || []).filter(
-                          (i: string) => i !== stateFilter.identifier,
+                          (i: string) => i !== stateFilter.identifier
                         ),
                       }),
-                      { arrayFormat: "bracket" },
+                      { arrayFormat: "bracket" }
                     )
                   : queryString.stringify(
                       Object.assign({}, locationData, {
                         p: (locationData.p || []).concat(
-                          stateFilter.identifier,
+                          stateFilter.identifier
                         ),
                       }),
-                      { arrayFormat: "bracket" },
+                      { arrayFormat: "bracket" }
                     ));
               return (
                 <NavigationElement
@@ -165,7 +165,7 @@ class WorkspacesAside extends React.Component<
                   {stateFilter.name}
                 </NavigationElement>
               );
-            },
+            }
           )}
         </NavigationTopic>
       </Navigation>

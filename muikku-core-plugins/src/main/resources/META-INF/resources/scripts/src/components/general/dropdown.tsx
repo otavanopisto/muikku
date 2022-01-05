@@ -152,7 +152,7 @@ export default class Dropdown extends React.Component<
         forcedWidth,
         visible: true,
       },
-      this.props.onOpen,
+      this.props.onOpen
     );
   }
   onClose() {
@@ -261,7 +261,7 @@ export default class Dropdown extends React.Component<
   render() {
     let elementCloned: React.ReactElement<any> = React.cloneElement(
       this.props.children as any,
-      { ref: "activator" },
+      { ref: "activator" }
     );
     const portalProps: any = {};
     if (!this.props.openByHover) {
@@ -328,7 +328,7 @@ export default class Dropdown extends React.Component<
                   {
                     id: this.id + "-item-" + index,
                     onKeyDown: this.onItemKeyDown,
-                  },
+                  }
                 );
 
                 return (

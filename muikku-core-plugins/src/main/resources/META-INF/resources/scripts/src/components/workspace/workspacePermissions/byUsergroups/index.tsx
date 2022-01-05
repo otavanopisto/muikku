@@ -34,7 +34,7 @@ class PermissionsByUsergroups extends React.Component<
       <ContentPanel
         modifier="permissions-by-usergroup"
         title={this.props.i18n.text.get(
-          "plugin.workspace.permissions.viewTitle",
+          "plugin.workspace.permissions.viewTitle"
         )}
         ref="content-panel"
       >
@@ -42,13 +42,13 @@ class PermissionsByUsergroups extends React.Component<
           <div>
             <div>
               {this.props.i18n.text.get(
-                "plugin.workspace.permissions.usergroupsColumn.label",
+                "plugin.workspace.permissions.usergroupsColumn.label"
               )}
             </div>
             {PERMISSIONS_TO_EXTRACT.map((pte) => (
               <div key={pte}>
                 {this.props.i18n.text.get(
-                  "plugin.workspace.permissions.label." + pte,
+                  "plugin.workspace.permissions.label." + pte
                 )}
               </div>
             ))}
@@ -67,7 +67,7 @@ class PermissionsByUsergroups extends React.Component<
                       onChange={this.togglePermissionIn.bind(
                         this,
                         permission,
-                        pte,
+                        pte
                       )}
                     />
                   </div>
@@ -93,5 +93,5 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(PermissionsByUsergroups);

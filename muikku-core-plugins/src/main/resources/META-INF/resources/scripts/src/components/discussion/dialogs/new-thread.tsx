@@ -55,7 +55,7 @@ class DicussionNewThread extends SessionStateComponent<
           (props.discussion.areas[0] && props.discussion.areas[0].id),
       },
       props.discussion.areaId ||
-        (props.discussion.areas[0] && props.discussion.areas[0].id),
+        (props.discussion.areas[0] && props.discussion.areas[0].id)
     );
 
     this.togglePinned = this.togglePinned.bind(this);
@@ -74,7 +74,7 @@ class DicussionNewThread extends SessionStateComponent<
         threadPinned: false,
         threadLocked: false,
       },
-      this.state.selectedAreaId,
+      this.state.selectedAreaId
     );
   }
   clearUp() {
@@ -85,7 +85,7 @@ class DicussionNewThread extends SessionStateComponent<
         threadPinned: false,
         threadLocked: false,
       },
-      this.state.selectedAreaId,
+      this.state.selectedAreaId
     );
   }
   onCKEditorChange(text: string) {
@@ -110,7 +110,7 @@ class DicussionNewThread extends SessionStateComponent<
             threadLocked: false,
             threadPinned: false,
           },
-          this.state.selectedAreaId,
+          this.state.selectedAreaId
         );
         closeDialog();
       },
@@ -127,13 +127,13 @@ class DicussionNewThread extends SessionStateComponent<
   togglePinned() {
     this.setStateAndStore(
       { threadPinned: !this.state.threadPinned },
-      this.state.selectedAreaId,
+      this.state.selectedAreaId
     );
   }
   toggleLocked() {
     this.setStateAndStore(
       { threadLocked: !this.state.threadLocked },
-      this.state.selectedAreaId,
+      this.state.selectedAreaId
     );
   }
   componentWillReceiveProps(nextProps: DicussionNewThreadProps) {
@@ -156,8 +156,8 @@ class DicussionNewThread extends SessionStateComponent<
                 nextProps.discussion.areas[0].id),
           },
           nextProps.discussion.areaId ||
-            (nextProps.discussion.areas[0] && nextProps.discussion.areas[0].id),
-        ),
+            (nextProps.discussion.areas[0] && nextProps.discussion.areas[0].id)
+        )
       );
     }
   }
@@ -165,7 +165,7 @@ class DicussionNewThread extends SessionStateComponent<
     const newSelectedAreaId = parseInt(e.target.value);
     this.justClear(
       ["text", "title", "threadPinned", "threadLocked"],
-      this.state.selectedAreaId,
+      this.state.selectedAreaId
     );
     this.setStateAndStore(
       this.getRecoverStoredState(
@@ -175,9 +175,9 @@ class DicussionNewThread extends SessionStateComponent<
           threadPinned: this.state.threadPinned,
           threadLocked: this.state.threadLocked,
         },
-        newSelectedAreaId,
+        newSelectedAreaId
       ),
-      newSelectedAreaId,
+      newSelectedAreaId
     );
     this.setState({
       selectedAreaId: newSelectedAreaId,
@@ -239,7 +239,7 @@ class DicussionNewThread extends SessionStateComponent<
             />
             <label htmlFor="messagePinned" className="env-dialog__input-label">
               {this.props.i18n.text.get(
-                "plugin.discussion.createmessage.pinned",
+                "plugin.discussion.createmessage.pinned"
               )}
             </label>
           </div>
@@ -253,7 +253,7 @@ class DicussionNewThread extends SessionStateComponent<
             />
             <label htmlFor="messageLocked" className="env-dialog__input-label">
               {this.props.i18n.text.get(
-                "plugin.discussion.createmessage.locked",
+                "plugin.discussion.createmessage.locked"
               )}
             </label>
           </div>
@@ -268,7 +268,7 @@ class DicussionNewThread extends SessionStateComponent<
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
             {this.props.i18n.text.get(
-              "plugin.discussion.createmessage.content",
+              "plugin.discussion.createmessage.content"
             )}
           </label>
           <CKEditor
@@ -304,7 +304,7 @@ class DicussionNewThread extends SessionStateComponent<
             disabled={this.state.locked}
           >
             {this.props.i18n.text.get(
-              "plugin.discussion.createmessage.clearDraft",
+              "plugin.discussion.createmessage.clearDraft"
             )}
           </Button>
         ) : null}
@@ -314,7 +314,7 @@ class DicussionNewThread extends SessionStateComponent<
       <EnvironmentDialog
         modifier="new-message"
         title={this.props.i18n.text.get(
-          "plugin.discussion.createmessage.topic",
+          "plugin.discussion.createmessage.topic"
         )}
         content={content}
         footer={footer}

@@ -63,7 +63,7 @@ class LastMessagesPanel extends React.Component<
         ) : (
           <div className="panel__body panel__body--empty">
             {this.props.i18n.text.get(
-              "plugin.frontPage.latestMessages.noMessages",
+              "plugin.frontPage.latestMessages.noMessages"
             )}
           </div>
         )}

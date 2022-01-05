@@ -51,7 +51,7 @@ class DeactivateReactivateUserDialog extends React.Component<
             this.props.user.active
               ? "plugin.workspace.users.student.archiveDialog.description"
               : "plugin.workspace.users.student.unarchiveDialog.description",
-            getName(this.props.user, true),
+            getName(this.props.user, true)
           )}
         </span>
       </div>
@@ -69,7 +69,7 @@ class DeactivateReactivateUserDialog extends React.Component<
           {this.props.i18n.text.get(
             this.props.user.active
               ? "plugin.workspace.users.student.archiveDialog.archiveButton"
-              : "plugin.workspace.users.student.unarchiveDialog.archiveButton",
+              : "plugin.workspace.users.student.unarchiveDialog.archiveButton"
           )}
         </Button>
         <Button
@@ -79,7 +79,7 @@ class DeactivateReactivateUserDialog extends React.Component<
           {this.props.i18n.text.get(
             this.props.user.active
               ? "plugin.workspace.users.student.archiveDialog.cancelButton"
-              : "plugin.workspace.users.student.unarchiveDialog.cancelButton",
+              : "plugin.workspace.users.student.unarchiveDialog.cancelButton"
           )}
         </Button>
       </div>
@@ -91,7 +91,7 @@ class DeactivateReactivateUserDialog extends React.Component<
         title={this.props.i18n.text.get(
           this.props.user.active
             ? "plugin.workspace.users.student.archiveDialog.title"
-            : "plugin.workspace.users.student.unarchiveDialog.title",
+            : "plugin.workspace.users.student.unarchiveDialog.title"
         )}
         content={content}
         footer={footer}
@@ -111,11 +111,11 @@ function mapStateToProps(state: StateType) {
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     { toggleActiveStateOfStudentOfWorkspace },
-    dispatch,
+    dispatch
   );
 }
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(DeactivateReactivateUserDialog);

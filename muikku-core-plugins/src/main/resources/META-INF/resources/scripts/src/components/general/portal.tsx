@@ -207,7 +207,7 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
       typeof props.children === "function"
         ? props.children(this.closePortal)
         : props.children,
-      this.node,
+      this.node
     );
 
     if (isOpening) {

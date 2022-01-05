@@ -48,7 +48,7 @@ class FileDeleteDialog extends React.Component<
           onClick={this.deleteFile.bind(this, closeDialog)}
         >
           {this.props.i18n.text.get(
-            "plugin.guider.flags.deleteAttachmentDialog.yes",
+            "plugin.guider.flags.deleteAttachmentDialog.yes"
           )}
         </Button>
         <Button
@@ -56,7 +56,7 @@ class FileDeleteDialog extends React.Component<
           onClick={closeDialog}
         >
           {this.props.i18n.text.get(
-            "plugin.guider.flags.deleteAttachmentDialog.no",
+            "plugin.guider.flags.deleteAttachmentDialog.no"
           )}
         </Button>
       </div>
@@ -64,7 +64,7 @@ class FileDeleteDialog extends React.Component<
     const content = (closeDialog: () => any) => (
       <div>
         {this.props.i18n.text.get(
-          "plugin.guider.flags.deleteAttachmentDialog.description",
+          "plugin.guider.flags.deleteAttachmentDialog.description"
         )}
       </div>
     );
@@ -74,7 +74,7 @@ class FileDeleteDialog extends React.Component<
         onClose={this.props.onClose}
         modifier="guider-delete-file"
         title={this.props.i18n.text.get(
-          "plugin.guider.flags.deleteAttachmentDialog.title",
+          "plugin.guider.flags.deleteAttachmentDialog.title"
         )}
         content={content}
         footer={footer}

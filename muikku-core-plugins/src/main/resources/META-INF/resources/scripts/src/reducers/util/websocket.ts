@@ -22,7 +22,7 @@ export default function websocket(
     synchronized: true,
     websocket: null,
   },
-  action: ActionType,
+  action: ActionType
 ): WebsocketStateType {
   if (
     action.type === "WEBSOCKET_EVENT" &&

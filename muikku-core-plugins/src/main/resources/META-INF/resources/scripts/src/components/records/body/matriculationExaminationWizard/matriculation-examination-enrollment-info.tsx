@@ -42,7 +42,7 @@ export class MatriculationExaminationEnrollmentInfo extends React.Component<
    * @param prevState
    */
   componentDidUpdate = (
-    prevProps: MatriculationExaminationEnrollmentInfoProps,
+    prevProps: MatriculationExaminationEnrollmentInfoProps
   ) => {
     if (this.props !== prevProps) {
       this.setState({

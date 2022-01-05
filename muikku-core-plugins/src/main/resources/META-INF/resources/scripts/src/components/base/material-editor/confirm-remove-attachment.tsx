@@ -68,7 +68,7 @@ class ConfirmRemoveAttachment extends React.Component<
       <div>
         <span>
           {this.props.i18n.text.get(
-            "plugin.guider.flags.deleteAttachmentDialog.description",
+            "plugin.guider.flags.deleteAttachmentDialog.description"
           )}
         </span>
       </div>
@@ -82,7 +82,7 @@ class ConfirmRemoveAttachment extends React.Component<
           disabled={this.state.locked}
         >
           {this.props.i18n.text.get(
-            "plugin.guider.flags.deleteAttachmentDialog.yes",
+            "plugin.guider.flags.deleteAttachmentDialog.yes"
           )}
         </Button>
         <Button
@@ -91,7 +91,7 @@ class ConfirmRemoveAttachment extends React.Component<
           disabled={this.state.locked}
         >
           {this.props.i18n.text.get(
-            "plugin.guider.flags.deleteAttachmentDialog.no",
+            "plugin.guider.flags.deleteAttachmentDialog.no"
           )}
         </Button>
       </div>
@@ -101,7 +101,7 @@ class ConfirmRemoveAttachment extends React.Component<
       <Dialog
         modifier="confirm-remove-answer-dialog"
         title={this.props.i18n.text.get(
-          "plugin.guider.flags.deleteAttachmentDialog.title",
+          "plugin.guider.flags.deleteAttachmentDialog.title"
         )}
         content={content}
         footer={footer}
@@ -125,5 +125,5 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(ConfirmRemoveAttachment);

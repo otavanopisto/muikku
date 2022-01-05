@@ -5,11 +5,11 @@ export interface SpecificActionType<ActionType, PayloadType> {
 
 type AsyncDeferredAction = (
   dispatch: (arg: AnyActionType) => any,
-  getState: () => any,
+  getState: () => any
 ) => Promise<void>;
 type DeferredAction = (
   dispatch: (arg: AnyActionType) => any,
-  getState: () => any,
+  getState: () => any
 ) => any;
 
 import { SET_LOCALE } from "./base/locales";

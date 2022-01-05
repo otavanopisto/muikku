@@ -30,7 +30,7 @@ interface ConnectFieldProps {
   onChange?: (
     context: React.Component<any, any>,
     name: string,
-    newValue: any,
+    newValue: any
   ) => any;
   i18n: i18nType;
 
@@ -105,12 +105,12 @@ export default class ConnectField extends React.Component<
         // now for some reason we might have uncomplete values
         if (!counterpartId) {
           counterpartId = shuffledCounterparts.find(
-            (c) => !usedCounterparts.includes(c.name),
+            (c) => !usedCounterparts.includes(c.name)
           ).name;
           usedCounterparts.push(counterpartId);
         }
         const counterpart = props.content.counterparts.find(
-          (c) => c.name === counterpartId,
+          (c) => c.name === counterpartId
         );
         counterparts.push(counterpart);
       });
@@ -167,7 +167,7 @@ export default class ConnectField extends React.Component<
    */
   shouldComponentUpdate(
     nextProps: ConnectFieldProps,
-    nextState: ConnectFieldState,
+    nextState: ConnectFieldState
   ) {
     return (
       !equals(nextProps.content, this.props.content) ||
@@ -209,7 +209,7 @@ export default class ConnectField extends React.Component<
       this.props.onChange(
         this,
         this.props.content.name,
-        JSON.stringify(newValue),
+        JSON.stringify(newValue)
       );
     }
   }
@@ -231,7 +231,7 @@ export default class ConnectField extends React.Component<
         const counterpart = this.state.counterparts[index];
         // check whether the connection matches
         const connection = this.props.content.connections.find(
-          (connection) => connection.field === field.name,
+          (connection) => connection.field === field.name
         );
         // and return pass or fail
 
@@ -242,29 +242,28 @@ export default class ConnectField extends React.Component<
         }
 
         const allCounterpartsWithTheSameValue = this.state.counterparts.filter(
-          (cp) => cp.text.toLowerCase() === counterpart.text.toLowerCase(),
+          (cp) => cp.text.toLowerCase() === counterpart.text.toLowerCase()
         );
         const allCounterpartsMatchingNameList =
           allCounterpartsWithTheSameValue.map((cp) => cp.name);
 
         // We try to find all the fields that share the same written text as our field
         const allFieldsWithTheSameValue = this.state.fields.filter(
-          (f2) =>
-            f2.text.toLocaleLowerCase() === field.text.toLocaleLowerCase(),
+          (f2) => f2.text.toLocaleLowerCase() === field.text.toLocaleLowerCase()
         );
         // now we find all the connections for each one of those fields
         const allConnectionsForTheSameFieldName = allFieldsWithTheSameValue
           .map((f2) =>
-            this.props.content.connections.find((c2) => c2.field === f2.name),
+            this.props.content.connections.find((c2) => c2.field === f2.name)
           )
           .filter((c2) => !!c2);
         // we check if the counterpart we have matches one of those connections
         const counterpartIsOneOfThoseConnections =
           allConnectionsForTheSameFieldName.some((c2) =>
-            allCounterpartsMatchingNameList.includes(c2.counterpart),
+            allCounterpartsMatchingNameList.includes(c2.counterpart)
           );
         return counterpartIsOneOfThoseConnections ? "PASS" : "FAIL";
-      },
+      }
     );
 
     // if the new state does not equal the current set the state
@@ -307,7 +306,7 @@ export default class ConnectField extends React.Component<
    */
   componentDidUpdate(
     prevProps: ConnectFieldProps,
-    prevState: ConnectFieldState,
+    prevState: ConnectFieldState
   ) {
     this.checkAnswers();
   }
@@ -322,7 +321,7 @@ export default class ConnectField extends React.Component<
   swapField(
     executeTriggerChangeFunction: boolean,
     fielda: FieldType,
-    fieldb: FieldType,
+    fieldb: FieldType
   ) {
     // if the same then it's pointless
     if (fielda.name === fieldb.name) {
@@ -341,7 +340,7 @@ export default class ConnectField extends React.Component<
           return f;
         }),
       },
-      executeTriggerChangeFunction ? this.triggerChange : null,
+      executeTriggerChangeFunction ? this.triggerChange : null
     );
   }
 
@@ -355,7 +354,7 @@ export default class ConnectField extends React.Component<
   swapCounterpart(
     executeTriggerChangeFunction: boolean,
     fielda: FieldType,
-    fieldb: FieldType,
+    fieldb: FieldType
   ) {
     if (fielda.name === fieldb.name) {
       return;
@@ -371,7 +370,7 @@ export default class ConnectField extends React.Component<
           return f;
         }),
       },
-      executeTriggerChangeFunction ? this.triggerChange : null,
+      executeTriggerChangeFunction ? this.triggerChange : null
     );
   }
 
@@ -390,7 +389,7 @@ export default class ConnectField extends React.Component<
     executeTriggerChangeFunction: boolean,
     field: FieldType,
     isCounterpart: boolean,
-    index: number,
+    index: number
   ) {
     // if by the time this function runs there is no selected field
     // then we just set the state that this one is the first selected
@@ -416,7 +415,7 @@ export default class ConnectField extends React.Component<
         this.swapCounterpart(
           executeTriggerChangeFunction,
           this.state.selectedField,
-          field,
+          field
         );
 
         // however we need to figure out for the edited things
@@ -441,7 +440,7 @@ export default class ConnectField extends React.Component<
         this.swapField(
           executeTriggerChangeFunction,
           this.state.selectedField,
-          field,
+          field
         );
 
         const diametricOpposite =
@@ -475,7 +474,7 @@ export default class ConnectField extends React.Component<
         this.swapCounterpart(
           executeTriggerChangeFunction,
           counterpart,
-          opposite,
+          opposite
         );
 
         // we delete all the opposites from the edited list
@@ -545,7 +544,7 @@ export default class ConnectField extends React.Component<
       : "";
 
     const fieldSavedStateClass = createFieldSavedStateClass(
-      this.state.fieldSavedState,
+      this.state.fieldSavedState
     );
 
     return (
@@ -672,9 +671,9 @@ export default class ConnectField extends React.Component<
                         f.name ===
                         (
                           this.props.content.connections.find(
-                            (c) => c.counterpart === field.name,
+                            (c) => c.counterpart === field.name
                           ) || { field: null }
-                        ).field,
+                        ).field
                     ) + 1}
                   </span>
                 );
@@ -707,7 +706,7 @@ export default class ConnectField extends React.Component<
                       true,
                       data.field,
                       data.isCounterpart,
-                      data.index,
+                      data.index
                     )
                   }
                   className={className}

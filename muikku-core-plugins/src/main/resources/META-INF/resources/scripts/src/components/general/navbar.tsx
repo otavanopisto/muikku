@@ -56,7 +56,7 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
           }`}
           id="stick"
           aria-label={this.props.i18n.text.get(
-            "plugin.wcag.mainNavigation.aria.label",
+            "plugin.wcag.mainNavigation.aria.label"
           )}
         >
           <div className="navbar__wrapper">
@@ -75,7 +75,7 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
                     }`}
                     width="175"
                     alt={this.props.i18n.text.get(
-                      "plugin.site.logo.linkBackToFrontPage",
+                      "plugin.site.logo.linkBackToFrontPage"
                     )}
                   />
                 </a>
@@ -85,7 +85,7 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
               className="navbar__items"
               role="menubar"
               aria-label={this.props.i18n.text.get(
-                "plugin.wcag.mainNavigation.aria.label",
+                "plugin.wcag.mainNavigation.aria.label"
               )}
             >
               <li
@@ -129,7 +129,7 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
               className="navbar__default-options"
               role="menubar"
               aria-label={this.props.i18n.text.get(
-                "plugin.wcag.alternateNavigation.aria.label",
+                "plugin.wcag.alternateNavigation.aria.label"
               )}
             >
               {this.props.defaultOptions}

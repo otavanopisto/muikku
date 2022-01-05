@@ -25,16 +25,16 @@ export interface LoadCrendentialsTriggerType {
 }
 
 const loadCredentials: LoadCrendentialsTriggerType = function loadCredentials(
-  secret,
+  secret
 ) {
   return async (
     dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType,
+    getState: () => StateType
   ) => {
     try {
       const data: any = await promisify(
         mApi().forgotpassword.credentialReset.read(secret),
-        "callback",
+        "callback"
       )();
       dispatch({
         type: "LOAD_CREDENTIALS",
@@ -47,17 +47,17 @@ const loadCredentials: LoadCrendentialsTriggerType = function loadCredentials(
     } catch (err) {
       if (!(err instanceof MApiError)) {
         return dispatch(
-          notificationActions.displayNotification(err.message, "error"),
+          notificationActions.displayNotification(err.message, "error")
         );
       }
       return dispatch(
         notificationActions.displayNotification(
           getState().i18n.text.get(
             "plugin.forgotpassword.changeCredentials.messages.error.hashLoadFailed",
-            err.message,
+            err.message
           ),
-          "error",
-        ),
+          "error"
+        )
       );
     }
   };
@@ -67,7 +67,7 @@ const updateCredentials: UpdateCredentialsTriggerType =
   function updateCredentials(credentials) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       try {
         mApi()
@@ -80,15 +80,15 @@ const updateCredentials: UpdateCredentialsTriggerType =
         dispatch(
           notificationActions.displayNotification(
             getState().i18n.text.get(
-              "plugin.forgotpassword.changeCredentials.messages.success.credentialsReset",
+              "plugin.forgotpassword.changeCredentials.messages.success.credentialsReset"
             ),
-            "success",
-          ),
+            "success"
+          )
         );
       } catch (err) {
         if (err) {
           return dispatch(
-            notificationActions.displayNotification(err.message, "error"),
+            notificationActions.displayNotification(err.message, "error")
           );
         }
       }

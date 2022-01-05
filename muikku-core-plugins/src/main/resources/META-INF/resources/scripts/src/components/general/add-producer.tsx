@@ -40,7 +40,7 @@ export default class AddProducer extends React.Component<
     });
   }
   checkIfEnterKeyIsPressedAndAddProducer(
-    e: React.KeyboardEvent<HTMLInputElement>,
+    e: React.KeyboardEvent<HTMLInputElement>
   ) {
     const input = this.state.currentInputValue;
     if (e.keyCode == 13 && input.length > 2) {
@@ -87,7 +87,7 @@ export default class AddProducer extends React.Component<
               htmlFor={this.props.wcagLabel && this.props.wcagLabel}
             >
               {this.props.i18n.text.get(
-                "plugin.workspace.materialsManagement.editorView.addProducers.placeHolder",
+                "plugin.workspace.materialsManagement.editorView.addProducers.placeHolder"
               )}
             </label>
             <input
@@ -102,7 +102,7 @@ export default class AddProducer extends React.Component<
               onKeyUp={this.checkIfEnterKeyIsPressedAndAddProducer}
               onChange={this.updateInputValue}
               placeholder={this.props.i18n.text.get(
-                "plugin.workspace.materialsManagement.editorView.addProducers.placeHolder",
+                "plugin.workspace.materialsManagement.editorView.addProducers.placeHolder"
               )}
               type="text"
             />

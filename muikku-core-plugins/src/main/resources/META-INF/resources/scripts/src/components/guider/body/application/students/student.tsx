@@ -41,7 +41,7 @@ class Student extends React.Component<StudentProps, StudentState> {
    */
 
   getSudentStudyTimeState = (
-    student: GuiderStudentType,
+    student: GuiderStudentType
   ): StudentStudyTimeState => {
     if (student.studyTimeEnd) {
       const studyTimeEnd = moment(student.studyTimeEnd);
@@ -96,7 +96,7 @@ class Student extends React.Component<StudentProps, StudentState> {
                 <span className="label__text">
                   {this.props.i18n.text.get(
                     "plugin.guider.user.state." + studyTimeEndState,
-                    moment(this.props.student.studyTimeEnd).format("LL"),
+                    moment(this.props.student.studyTimeEnd).format("LL")
                   )}{" "}
                 </span>
               </div>
@@ -111,7 +111,7 @@ class Student extends React.Component<StudentProps, StudentState> {
                       ></span>
                       <span className="label__text">{flag.flagName}</span>
                     </div>
-                  ),
+                  )
                 )
               : null}
           </div>

@@ -64,7 +64,7 @@ class EvaluateDialog extends React.Component<
    * handleUpdateSelectAssessmentId
    */
   handleUpdateSelectAssessmentOnDialogOpen = (
-    assessment: AssessmentRequest,
+    assessment: AssessmentRequest
   ): any => {
     this.props.updateSelectedAssessment({ assessment });
     this.props.loadEvaluationCompositeRepliesFromServer({
@@ -142,7 +142,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
       loadEvaluationSelectedAssessmentStudyDiaryEventsFromServer,
       loadBasePriceFromServer,
     },
-    dispatch,
+    dispatch
   );
 }
 

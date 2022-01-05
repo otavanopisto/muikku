@@ -79,7 +79,7 @@ class DiscussionDeleteThreadComponent extends React.Component<
         {this.props.reply
           ? this.props.i18n.text.get("plugin.discussion.removeReply.text")
           : this.props.i18n.text.get(
-              "plugin.discussion.confirmThreadRemovalDialog.text",
+              "plugin.discussion.confirmThreadRemovalDialog.text"
             )}
       </div>
     );
@@ -92,7 +92,7 @@ class DiscussionDeleteThreadComponent extends React.Component<
           disabled={this.state.locked}
         >
           {this.props.i18n.text.get(
-            "plugin.discussion.confirmThreadRemovalDialog.confirmButton",
+            "plugin.discussion.confirmThreadRemovalDialog.confirmButton"
           )}
         </Button>
         <Button
@@ -100,7 +100,7 @@ class DiscussionDeleteThreadComponent extends React.Component<
           onClick={closeDialog}
         >
           {this.props.i18n.text.get(
-            "plugin.discussion.confirmThreadRemovalDialog.cancelButton",
+            "plugin.discussion.confirmThreadRemovalDialog.cancelButton"
           )}
         </Button>
       </div>
@@ -132,11 +132,11 @@ function mapStateToProps(state: StateType) {
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     { deleteCurrentDiscussionThread, deleteDiscussionThreadReplyFromCurrent },
-    dispatch,
+    dispatch
   );
 }
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(DiscussionDeleteThreadComponent);

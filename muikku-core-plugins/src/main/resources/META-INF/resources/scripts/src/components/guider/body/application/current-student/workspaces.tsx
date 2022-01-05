@@ -28,7 +28,7 @@ class CurrentStudentWorkspaces extends React.Component<
             .sort((a, b) =>
               ("" + a.name).localeCompare(b.name, this.props.locale, {
                 sensitivity: "base",
-              }),
+              })
             )
             .map((workspace) => (
               <Workspace workspace={workspace} key={workspace.id} />
@@ -59,5 +59,5 @@ function mapDispatchToProps() {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(CurrentStudentWorkspaces);

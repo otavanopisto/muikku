@@ -143,12 +143,12 @@ class FileUploader extends React.Component<
       this.props.displayNotificationOnError &&
         this.props.displayNotification(
           this.props.fileTooLargeErrorText,
-          "error",
+          "error"
         );
       this.props.onFileError &&
         this.props.onFileError(
           file,
-          new Error(this.props.fileTooLargeErrorText),
+          new Error(this.props.fileTooLargeErrorText)
         );
       return;
     }
@@ -180,7 +180,7 @@ class FileUploader extends React.Component<
           this.props.displayNotificationOnSuccess &&
             this.props.displayNotification(
               this.props.notificationOfSuccessText,
-              "success",
+              "success"
             );
           this.props.onFileSuccess &&
             this.props.onFileSuccess(file, actualData);
@@ -211,7 +211,7 @@ class FileUploader extends React.Component<
             (evt: any) => {
               if (evt.lengthComputable) {
                 const currentIndex = this.state.uploadingValues.findIndex(
-                  (f) => f.file === file,
+                  (f) => f.file === file
                 );
                 //we calculate the percent
                 const percentComplete = evt.loaded / evt.total;
@@ -229,7 +229,7 @@ class FileUploader extends React.Component<
                 });
               }
             },
-            false,
+            false
           );
           return xhr;
         },
@@ -266,7 +266,7 @@ class FileUploader extends React.Component<
             //we tell this to process the file
             this.processFileAt(realIndex);
           });
-        },
+        }
       );
     }
   }
@@ -430,13 +430,13 @@ class FileUploader extends React.Component<
               trailWidth={1}
               svgStyle={{ width: "100%", height: "4px" }}
               text={this.props.uploadingTextProcesser(
-                Math.round(uploadingFile.progress * 100),
+                Math.round(uploadingFile.progress * 100)
               )}
               progress={uploadingFile.progress}
             />
           </span>
         );
-      },
+      }
     );
 
     const DialogDeleteElement = this.props.deleteDialogElement;

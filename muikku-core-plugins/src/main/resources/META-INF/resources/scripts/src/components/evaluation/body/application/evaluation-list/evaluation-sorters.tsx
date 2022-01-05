@@ -110,12 +110,12 @@ class EvaluationSorters extends React.Component<
           openByHover
           key="amount-asc"
           content={this.props.i18n.text.get(
-            "plugin.evaluation.sorter.byDate.ascending",
+            "plugin.evaluation.sorter.byDate.ascending"
           )}
         >
           <ButtonPill
             aria-label={this.props.i18n.text.get(
-              "plugin.evaluation.sorter.byDate.ascending",
+              "plugin.evaluation.sorter.byDate.ascending"
             )}
             onClick={this.handleClickSorter("sort-amount-asc")}
             buttonModifiers={[
@@ -130,12 +130,12 @@ class EvaluationSorters extends React.Component<
           openByHover
           key="amount-desc"
           content={this.props.i18n.text.get(
-            "plugin.evaluation.sorter.byDate.descending",
+            "plugin.evaluation.sorter.byDate.descending"
           )}
         >
           <ButtonPill
             aria-label={this.props.i18n.text.get(
-              "plugin.evaluation.sorter.byDate.descending",
+              "plugin.evaluation.sorter.byDate.descending"
             )}
             onClick={this.handleClickSorter("sort-amount-desc")}
             buttonModifiers={[
@@ -150,12 +150,12 @@ class EvaluationSorters extends React.Component<
           openByHover
           key="alpha-asc"
           content={this.props.i18n.text.get(
-            "plugin.evaluation.sorter.byLastname.ascending",
+            "plugin.evaluation.sorter.byLastname.ascending"
           )}
         >
           <ButtonPill
             aria-label={this.props.i18n.text.get(
-              "plugin.evaluation.sorter.byLastname.ascending",
+              "plugin.evaluation.sorter.byLastname.ascending"
             )}
             onClick={this.handleClickSorter("sort-alpha-asc")}
             buttonModifiers={[
@@ -170,12 +170,12 @@ class EvaluationSorters extends React.Component<
           openByHover
           key="alpha-desc"
           content={this.props.i18n.text.get(
-            "plugin.evaluation.sorter.byLastname.descending",
+            "plugin.evaluation.sorter.byLastname.descending"
           )}
         >
           <ButtonPill
             aria-label={this.props.i18n.text.get(
-              "plugin.evaluation.sorter.byLastname.descending",
+              "plugin.evaluation.sorter.byLastname.descending"
             )}
             onClick={this.handleClickSorter("sort-alpha-desc")}
             buttonModifiers={[
@@ -192,12 +192,12 @@ class EvaluationSorters extends React.Component<
               openByHover
               key="workspace-alpha-asc"
               content={this.props.i18n.text.get(
-                "plugin.evaluation.sorter.byWorkspace.ascending",
+                "plugin.evaluation.sorter.byWorkspace.ascending"
               )}
             >
               <ButtonPill
                 aria-label={this.props.i18n.text.get(
-                  "plugin.evaluation.sorter.byWorkspace.ascending",
+                  "plugin.evaluation.sorter.byWorkspace.ascending"
                 )}
                 onClick={this.handleClickSorter("sort-workspace-alpha-asc")}
                 buttonModifiers={[
@@ -212,12 +212,12 @@ class EvaluationSorters extends React.Component<
               openByHover
               key="workspace-alpha-desc"
               content={this.props.i18n.text.get(
-                "plugin.evaluation.sorter.byWorkspace.descending",
+                "plugin.evaluation.sorter.byWorkspace.descending"
               )}
             >
               <ButtonPill
                 aria-label={this.props.i18n.text.get(
-                  "plugin.evaluation.sorter.byWorkspace.descending",
+                  "plugin.evaluation.sorter.byWorkspace.descending"
                 )}
                 onClick={this.handleClickSorter("sort-workspace-alpha-desc")}
                 buttonModifiers={[

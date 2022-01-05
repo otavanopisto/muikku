@@ -31,7 +31,7 @@ export class MathJaxCollector {
       ]);
     } else {
       console.warn(
-        "Attempted to execute the mathjax collector in a non existant component",
+        "Attempted to execute the mathjax collector in a non existant component"
       );
     }
   }

@@ -41,7 +41,7 @@ export default function hops(
     eligibility: null,
     value: null,
   },
-  action: ActionType,
+  action: ActionType
 ): HOPSType {
   if (action.type === "UPDATE_HOPS_STATUS") {
     return Object.assign({}, state, {

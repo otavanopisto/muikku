@@ -208,7 +208,7 @@ export default function userIndex(
     groups: {},
     usersBySchoolData: {},
   },
-  action: ActionType,
+  action: ActionType
 ): UserIndexType {
   if (action.type === "SET_USER_INDEX") {
     const prop: { [index: number]: UserType } = {};

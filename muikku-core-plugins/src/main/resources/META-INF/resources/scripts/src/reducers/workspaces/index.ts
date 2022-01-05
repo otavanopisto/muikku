@@ -539,7 +539,7 @@ function processWorkspaceToHaveNewAssessmentStateAndDate(
   date: string,
   assessmentRequestObject: WorkspaceAssessmentRequestType,
   deleteAssessmentRequestObject: boolean,
-  workspace: WorkspaceType,
+  workspace: WorkspaceType
 ) {
   const replacement =
     workspace && workspace.id === id ? { ...workspace } : workspace;
@@ -564,7 +564,7 @@ function processWorkspaceToHaveNewAssessmentStateAndDate(
     }
     if (replacement.assessmentRequests) {
       const index = replacement.assessmentRequests.findIndex(
-        (r) => r.id === assessmentRequestObject.id,
+        (r) => r.id === assessmentRequestObject.id
       );
       replacement.assessmentRequests = [...replacement.assessmentRequests];
       if (index !== -1) {
@@ -638,7 +638,7 @@ export default function workspaces(
       canSetTitle: true,
     },
   },
-  action: ActionType,
+  action: ActionType
 ): WorkspacesType {
   if (action.type === "UPDATE_USER_WORKSPACES") {
     return <WorkspacesType>Object.assign({}, state, {
@@ -661,7 +661,7 @@ export default function workspaces(
         action.payload.newAssessmentRequest ||
           action.payload.oldAssessmentRequestToDelete,
         !!action.payload.oldAssessmentRequestToDelete,
-        state.currentWorkspace,
+        state.currentWorkspace
       ),
       availableWorkspaces: state.availableWorkspaces.map(
         processWorkspaceToHaveNewAssessmentStateAndDate.bind(
@@ -669,8 +669,8 @@ export default function workspaces(
           action.payload.workspace.id,
           action.payload.newState,
           action.payload.newDate,
-          action.payload.newAssessmentRequest,
-        ),
+          action.payload.newAssessmentRequest
+        )
       ),
       userWorkspaces: state.userWorkspaces.map(
         processWorkspaceToHaveNewAssessmentStateAndDate.bind(
@@ -678,8 +678,8 @@ export default function workspaces(
           action.payload.workspace.id,
           action.payload.newState,
           action.payload.newDate,
-          action.payload.newAssessmentRequest,
-        ),
+          action.payload.newAssessmentRequest
+        )
       ),
     });
   } else if (
@@ -771,7 +771,7 @@ export default function workspaces(
           return { ...compositeReplies, ...action.payload };
         }
         return compositeReplies;
-      },
+      }
     );
     if (!wasUpdated) {
       newCurrentMaterialsReplies = newCurrentMaterialsReplies.concat([
@@ -899,7 +899,7 @@ export default function workspaces(
     const mapMaterial = (
       m: MaterialContentNodeType,
       index: number,
-      arr: Array<MaterialContentNodeType>,
+      arr: Array<MaterialContentNodeType>
     ) => {
       const nextSiblingId = arr[index + 1]
         ? arr[index + 1].workspaceMaterialId
@@ -976,15 +976,14 @@ export default function workspaces(
        * Finding index of section that is getting new page
        */
       const targetIndex = targetArray.findIndex(
-        (cn) => cn.workspaceMaterialId === insertedContentNode.parentId,
+        (cn) => cn.workspaceMaterialId === insertedContentNode.parentId
       );
 
       /**
        * Finding index of that children that will be follewd by new pages
        */
       const targetChildrenIndex = targetArray[targetIndex].children.findIndex(
-        (node) =>
-          node.workspaceMaterialId === insertedContentNode.nextSiblingId,
+        (node) => node.workspaceMaterialId === insertedContentNode.nextSiblingId
       );
 
       if (targetChildrenIndex !== -1) {
@@ -995,7 +994,7 @@ export default function workspaces(
         targetArray[targetIndex].children.splice(
           targetChildrenIndex,
           0,
-          insertedContentNode,
+          insertedContentNode
         );
       } else {
         /**
@@ -1005,7 +1004,7 @@ export default function workspaces(
       }
     } else if (insertedContentNode.nextSiblingId) {
       const siblingIndex = targetArray.findIndex(
-        (cn) => cn.workspaceMaterialId === insertedContentNode.nextSiblingId,
+        (cn) => cn.workspaceMaterialId === insertedContentNode.nextSiblingId
       );
       targetArray.splice(siblingIndex, 0, insertedContentNode);
     } else {
@@ -1029,12 +1028,12 @@ export default function workspaces(
       currentMaterials: repairContentNodes(
         state.currentMaterials,
         action.payload.newPath,
-        action.payload.material.workspaceMaterialId,
+        action.payload.material.workspaceMaterialId
       ),
       currentHelp: repairContentNodes(
         state.currentHelp,
         action.payload.newPath,
-        action.payload.material.workspaceMaterialId,
+        action.payload.material.workspaceMaterialId
       ),
     };
   } else if (action.type === "UPDATE_WORKSPACES_EDIT_MODE_STATE") {
@@ -1064,7 +1063,7 @@ export function organizationWorkspaces(
     toolbarLock: false,
     types: null,
   },
-  action: ActionType,
+  action: ActionType
 ): WorkspacesType {
   if (
     action.type ===

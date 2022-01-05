@@ -46,7 +46,7 @@ function isScrolledIntoView(el: HTMLElement) {
   const elemBottom = rect.bottom;
 
   const element = document.querySelector(
-    ".content-panel__navigation",
+    ".content-panel__navigation"
   ) as HTMLElement;
 
   if (element) {
@@ -103,13 +103,13 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
     newMaterialState.splice(
       targetBeforeIndex,
       0,
-      this.state.materials[baseIndex],
+      this.state.materials[baseIndex]
     );
     const contentNodesRepaired = repairContentNodes(newMaterialState);
 
     const material = this.state.materials[baseIndex];
     const update = contentNodesRepaired.find(
-      (cn) => cn.workspaceMaterialId === material.workspaceMaterialId,
+      (cn) => cn.workspaceMaterialId === material.workspaceMaterialId
     );
 
     this.setState(
@@ -129,14 +129,14 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
           },
           dontTriggerReducerActions: true,
         });
-      },
+      }
     );
   }
   hotInsertBeforeSubnode(
     parentBaseIndex: number,
     baseIndex: number,
     parentTargetBeforeIndex: number,
-    targetBeforeIndex: number,
+    targetBeforeIndex: number
   ) {
     // TODO do the action update here for server side update
     const newMaterialState = [...this.state.materials];
@@ -151,19 +151,19 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
     };
     if (targetBeforeIndex === null) {
       newMaterialState[parentTargetBeforeIndex].children.push(
-        this.state.materials[parentBaseIndex].children[baseIndex],
+        this.state.materials[parentBaseIndex].children[baseIndex]
       );
     } else if (parentBaseIndex === parentTargetBeforeIndex) {
       newMaterialState[parentTargetBeforeIndex].children.splice(
         targetBeforeIndex,
         0,
-        this.state.materials[parentBaseIndex].children[baseIndex],
+        this.state.materials[parentBaseIndex].children[baseIndex]
       );
     } else {
       newMaterialState[parentTargetBeforeIndex].children.splice(
         targetBeforeIndex,
         0,
-        this.state.materials[parentBaseIndex].children[baseIndex],
+        this.state.materials[parentBaseIndex].children[baseIndex]
       );
     }
 
@@ -175,7 +175,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
     const material = this.state.materials[parentBaseIndex].children[baseIndex];
     const update = repariedNodes[parentTargetBeforeIndex].children.find(
       (cn: MaterialContentNodeType) =>
-        cn.workspaceMaterialId === material.workspaceMaterialId,
+        cn.workspaceMaterialId === material.workspaceMaterialId
     );
 
     this.setState(
@@ -203,54 +203,54 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
           },
           dontTriggerReducerActions: true,
         });
-      },
+      }
     );
   }
   onInteractionBetweenSections(
     base: MaterialContentNodeType,
-    target: MaterialContentNodeType,
+    target: MaterialContentNodeType
   ) {
     this.hotInsertBeforeSection(
       this.state.materials.findIndex(
-        (m) => m.workspaceMaterialId === base.workspaceMaterialId,
+        (m) => m.workspaceMaterialId === base.workspaceMaterialId
       ),
       this.state.materials.findIndex(
-        (m) => m.workspaceMaterialId === target.workspaceMaterialId,
-      ),
+        (m) => m.workspaceMaterialId === target.workspaceMaterialId
+      )
     );
   }
   onInteractionBetweenSubnodes(
     base: MaterialContentNodeType,
-    target: MaterialContentNodeType | number,
+    target: MaterialContentNodeType | number
   ) {
     const parentBaseIndex = this.state.materials.findIndex(
-      (m) => m.workspaceMaterialId === base.parentId,
+      (m) => m.workspaceMaterialId === base.parentId
     );
     const baseIndex = this.state.materials[parentBaseIndex].children.findIndex(
-      (m) => m.workspaceMaterialId === base.workspaceMaterialId,
+      (m) => m.workspaceMaterialId === base.workspaceMaterialId
     );
     if (typeof target === "number") {
       this.hotInsertBeforeSubnode(
         parentBaseIndex,
         baseIndex,
         this.state.materials.findIndex((m) => m.workspaceMaterialId === target),
-        null,
+        null
       );
       return;
     }
     const parentTargetBeforeIndex = this.state.materials.findIndex(
-      (m) => m.workspaceMaterialId === target.parentId,
+      (m) => m.workspaceMaterialId === target.parentId
     );
     const targetBeforeIndex = this.state.materials[
       parentTargetBeforeIndex
     ].children.findIndex(
-      (m) => m.workspaceMaterialId === target.workspaceMaterialId,
+      (m) => m.workspaceMaterialId === target.workspaceMaterialId
     );
     this.hotInsertBeforeSubnode(
       parentBaseIndex,
       baseIndex,
       parentTargetBeforeIndex,
-      targetBeforeIndex,
+      targetBeforeIndex
     );
   }
   render() {
@@ -263,7 +263,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
     return (
       <Toc
         tocTitle={this.props.i18n.text.get(
-          "plugin.workspace.materials.tocTitle",
+          "plugin.workspace.materials.tocTitle"
         )}
       >
         {this.state.materials.map((node, nodeIndex) => {
@@ -276,7 +276,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
             : null;
           const iconTitle: string = isSectionViewRestrictedVisible
             ? this.props.i18n.text.get(
-                "plugin.workspace.materialViewRestricted",
+                "plugin.workspace.materialViewRestricted"
               )
             : null;
           const className: string = isSectionViewRestrictedVisible
@@ -320,7 +320,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
                     : null;
                   const iconTitle: string = isViewRestrictedVisible
                     ? this.props.i18n.text.get(
-                        "plugin.workspace.materialViewRestricted",
+                        "plugin.workspace.materialViewRestricted"
                       )
                     : null;
                   const className: string = isViewRestrictedVisible
@@ -365,7 +365,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
                         handleSelector=".toc__item--drag-handle"
                         onInteractionWith={this.onInteractionBetweenSubnodes.bind(
                           this,
-                          subnode,
+                          subnode
                         )}
                         ref={`draggable-${nodeIndex}-${subnode.workspaceMaterialId}`}
                         enableTouch={this.props.enableTouch}
@@ -386,7 +386,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
                     ></Droppable>
                   ) : (
                     []
-                  ),
+                  )
                 )}
             </TocTopic>
           );
@@ -406,7 +406,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
                 handleSelector=".toc__section--drag-handle"
                 onInteractionWith={this.onInteractionBetweenSections.bind(
                   this,
-                  node,
+                  node
                 )}
                 enableTouch={this.props.enableTouch}
               >
@@ -436,7 +436,7 @@ function mapStateToProps(state: StateType) {
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     { updateWorkspaceMaterialContentNode, setWholeWorkspaceHelp },
-    dispatch,
+    dispatch
   );
 }
 

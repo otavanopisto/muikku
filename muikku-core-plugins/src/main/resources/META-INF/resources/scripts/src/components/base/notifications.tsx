@@ -72,7 +72,7 @@ function mapStateToProps(state: StateType) {
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     { hideNotification, displayNotification },
-    dispatch,
+    dispatch
   );
 }
 

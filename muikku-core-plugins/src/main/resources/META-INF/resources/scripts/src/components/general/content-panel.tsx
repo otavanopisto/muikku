@@ -89,7 +89,7 @@ export default class ContentPanel extends React.Component<
   onTouchEnd(e: React.TouchEvent<any>) {
     const width = (
       document.querySelector(
-        ".content-panel__navigation-content",
+        ".content-panel__navigation-content"
       ) as HTMLElement
     ).offsetWidth;
     const diff = this.state.drag;

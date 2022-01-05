@@ -158,7 +158,7 @@ export class MobileOnlyTabs extends React.Component<MobileOnlyTabsProps, {}> {
           {this.props.tabs
             .filter(
               (t) =>
-                this.props.renderAllComponents || t.id === this.props.activeTab,
+                this.props.renderAllComponents || t.id === this.props.activeTab
             )
             .map((t) => (
               <div

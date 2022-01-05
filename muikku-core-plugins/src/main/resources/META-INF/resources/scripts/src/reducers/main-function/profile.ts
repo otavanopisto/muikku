@@ -80,7 +80,7 @@ export default function profile(
     worklistTemplates: null,
     worklist: null,
   },
-  action: ActionType,
+  action: ActionType
 ): ProfileType {
   if (action.type === "SET_PROFILE_USER_PROPERTY") {
     const newProperties = { ...state.properties };

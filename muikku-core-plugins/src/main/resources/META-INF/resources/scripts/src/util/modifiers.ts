@@ -44,8 +44,8 @@ export function filterHighlight(string: string, filter: string) {
           React.createElement(
             "span",
             { key: index, className: "form-element__autocomplete-highlight" },
-            element,
-          ),
+            element
+          )
         );
       } else {
         accumulator[accumulator.length - 1].push(element);
@@ -53,7 +53,7 @@ export function filterHighlight(string: string, filter: string) {
     });
 
   const spans = accumulator.map((childMap, index) =>
-    React.createElement("span", { key: index }, ...childMap),
+    React.createElement("span", { key: index }, ...childMap)
   );
   const newChild: Array<any> = [];
   spans.forEach((s, index) => {
@@ -161,7 +161,7 @@ export function getName(user: any, hasFullNamePermission: boolean) {
 export function getUserImageUrl(
   user: UserType | number,
   type?: number | string,
-  version?: number,
+  version?: number
 ) {
   let id: number;
   if (typeof user === "number") {
@@ -211,7 +211,7 @@ export function resize(
   img: HTMLImageElement,
   width: number,
   mimeType?: string,
-  quality?: number,
+  quality?: number
 ) {
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
@@ -230,7 +230,7 @@ export function resize(
     0,
     0,
     canvas.width,
-    canvas.height,
+    canvas.height
   );
 
   return canvas.toDataURL(mimeType || "image/jpeg", quality || 0.9);
@@ -259,7 +259,7 @@ type TypescriptBuggyTakeThisCallbackComeOn = (element: any) => any;
 export function arrayToObject(
   array: Array<any>,
   propertyName: string,
-  propertyValue?: string | TypescriptBuggyTakeThisCallbackComeOn,
+  propertyValue?: string | TypescriptBuggyTakeThisCallbackComeOn
 ) {
   const obj: any = {};
   array.forEach((element: any) => {
@@ -383,13 +383,13 @@ export interface HTMLToReactComponentRule {
     tag: string,
     props: any,
     children: Array<any>,
-    element: HTMLElement,
+    element: HTMLElement
   ) => any;
   preprocessReactProperties?: (
     tag: string,
     props: any,
     children: Array<any>,
-    element: HTMLElement,
+    element: HTMLElement
   ) => string | void;
   preprocessElement?: (element: HTMLElement) => string | void;
   id?: string;
@@ -398,7 +398,7 @@ export interface HTMLToReactComponentRule {
 export function HTMLtoReactComponent(
   element: HTMLElement,
   rules?: HTMLToReactComponentRule[],
-  key?: number,
+  key?: number
 ): any {
   if (element.nodeType === 3) {
     return element.textContent;
@@ -406,7 +406,7 @@ export function HTMLtoReactComponent(
 
   let tagname = element.tagName.toLowerCase();
   const matchingRule = rules.find((r) =>
-    r.shouldProcessHTMLElement(tagname, element),
+    r.shouldProcessHTMLElement(tagname, element)
   );
 
   if (matchingRule && matchingRule.preprocessElement) {
@@ -449,7 +449,7 @@ export function HTMLtoReactComponent(
         tagname,
         props,
         children,
-        element,
+        element
       ) || tagname;
   }
 
@@ -499,7 +499,7 @@ export function scrollToSection(
   onScrollToSection?: () => any,
   scrollPadding?: number,
   disableAnimate?: boolean,
-  disableAnchorSet?: boolean,
+  disableAnchorSet?: boolean
 ) {
   const actualAnchor = anchor + ',[data-id="' + anchor.replace("#", "") + '"]';
   try {
@@ -538,7 +538,7 @@ export function scrollToSection(
       {
         duration: 500,
         easing: "easeInOutQuad",
-      },
+      }
     );
   }
 
@@ -557,7 +557,7 @@ export function repairContentNodes(
   base: MaterialContentNodeListType,
   pathRepair?: string,
   pathRepairId?: number,
-  parentNodeId?: number,
+  parentNodeId?: number
 ): MaterialContentNodeListType {
   if (base === null) {
     return null;
@@ -582,7 +582,7 @@ export function repairContentNodes(
             cn.children,
             pathRepair,
             pathRepairId,
-            cn.workspaceMaterialId,
+            cn.workspaceMaterialId
           )
         : cn.children;
 
@@ -604,7 +604,7 @@ export function validURL(str: string) {
       "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
       "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
       "(\\#[-a-z\\d_]*)?$",
-    "i",
+    "i"
   ); // fragment locator
   return !!pattern.test(str);
 }

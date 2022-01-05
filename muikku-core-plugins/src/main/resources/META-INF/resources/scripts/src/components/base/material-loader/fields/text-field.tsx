@@ -25,7 +25,7 @@ interface TextFieldProps {
   onChange?: (
     context: React.Component<any, any>,
     name: string,
-    newValue: any,
+    newValue: any
   ) => any;
   readOnly?: boolean;
   initialValue?: string;
@@ -125,7 +125,7 @@ export default class TextField extends React.Component<
       {
         value: e.target.value,
       },
-      this.checkAnswers,
+      this.checkAnswers
     );
   }
 
@@ -235,7 +235,7 @@ export default class TextField extends React.Component<
     ) {
       // find the actually correct answers
       let actuallyCorrectAnswers = this.props.content.rightAnswers.filter(
-        (a) => a.correct,
+        (a) => a.correct
       );
       // answers are example is for language, this happens if we have no correct answers
       let answersAreExample = false;
@@ -252,7 +252,7 @@ export default class TextField extends React.Component<
             {this.props.i18n.text.get(
               answersAreExample
                 ? "plugin.workspace.assigment.checkAnswers.detailsSummary.title"
-                : "plugin.workspace.assigment.checkAnswers.correctSummary.title",
+                : "plugin.workspace.assigment.checkAnswers.correctSummary.title"
             )}
           </span>
           {actuallyCorrectAnswers.map((answer, index) => (
@@ -417,7 +417,7 @@ export default class TextField extends React.Component<
     }
 
     const fieldSavedStateClass = createFieldSavedStateClass(
-      this.state.fieldSavedState,
+      this.state.fieldSavedState
     );
 
     // Standard modifiable version

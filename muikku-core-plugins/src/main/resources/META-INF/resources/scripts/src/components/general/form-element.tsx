@@ -280,7 +280,7 @@ export class SearchFormElement extends React.Component<
     if (this.delay > 0) {
       this.searchTimer = setTimeout(
         this.props.updateField.bind(null, value) as any,
-        this.delay,
+        this.delay
       );
     } else {
       this.props.updateField(value);

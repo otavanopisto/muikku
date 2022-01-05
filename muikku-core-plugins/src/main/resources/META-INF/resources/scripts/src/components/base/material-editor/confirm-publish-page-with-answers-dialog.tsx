@@ -80,7 +80,7 @@ class ConfirmPublishPageWithAnswersDialog extends React.Component<
       <div>
         <span>
           {this.props.i18n.text.get(
-            "plugin.workspace.materialsManagement.confirmPublishPageWithAnswers.text",
+            "plugin.workspace.materialsManagement.confirmPublishPageWithAnswers.text"
           )}
         </span>
       </div>
@@ -94,7 +94,7 @@ class ConfirmPublishPageWithAnswersDialog extends React.Component<
           disabled={this.state.locked}
         >
           {this.props.i18n.text.get(
-            "plugin.workspace.materialsManagement.confirmPublishPageWithAnswers.confirmButton",
+            "plugin.workspace.materialsManagement.confirmPublishPageWithAnswers.confirmButton"
           )}
         </Button>
         <Button
@@ -103,7 +103,7 @@ class ConfirmPublishPageWithAnswersDialog extends React.Component<
           disabled={this.state.locked}
         >
           {this.props.i18n.text.get(
-            "plugin.workspace.materialsManagement.confirmPublishPageWithAnswers.cancelButton",
+            "plugin.workspace.materialsManagement.confirmPublishPageWithAnswers.cancelButton"
           )}
         </Button>
       </div>
@@ -115,7 +115,7 @@ class ConfirmPublishPageWithAnswersDialog extends React.Component<
         isOpen={this.props.materialEditor.showRemoveAnswersDialogForPublish}
         onClose={this.cancel}
         title={this.props.i18n.text.get(
-          "plugin.workspace.materialsManagement.confirmPublishPageWithAnswers.title",
+          "plugin.workspace.materialsManagement.confirmPublishPageWithAnswers.title"
         )}
         content={content}
         footer={footer}
@@ -134,11 +134,11 @@ function mapStateToProps(state: StateType) {
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     { setWorkspaceMaterialEditorState, updateWorkspaceMaterialContentNode },
-    dispatch,
+    dispatch
   );
 }
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(ConfirmPublishPageWithAnswersDialog);

@@ -110,7 +110,7 @@ class UpdateAddressDialog extends React.Component<
       <div>
         <p>
           {this.props.i18n.text.get(
-            "plugin.profile.changeAddressMunicipality.dialog.desription",
+            "plugin.profile.changeAddressMunicipality.dialog.desription"
           )}
         </p>
         <form>
@@ -120,7 +120,7 @@ class UpdateAddressDialog extends React.Component<
               className="form-element__label"
             >
               {this.props.i18n.text.get(
-                "plugin.profile.changeAddressMunicipality.dialog.streetField.label",
+                "plugin.profile.changeAddressMunicipality.dialog.streetField.label"
               )}
             </label>
             <input
@@ -135,7 +135,7 @@ class UpdateAddressDialog extends React.Component<
           <div className="form-element form-element--profile">
             <label htmlFor="profilePostalCode" className="form-element__label">
               {this.props.i18n.text.get(
-                "plugin.profile.changeAddressMunicipality.dialog.postalCodeField.label",
+                "plugin.profile.changeAddressMunicipality.dialog.postalCodeField.label"
               )}
             </label>
             <input
@@ -150,7 +150,7 @@ class UpdateAddressDialog extends React.Component<
           <div className="form-element form-element--profile">
             <label htmlFor="profileCity" className="form-element__label">
               {this.props.i18n.text.get(
-                "plugin.profile.changeAddressMunicipality.dialog.cityField.label",
+                "plugin.profile.changeAddressMunicipality.dialog.cityField.label"
               )}
             </label>
             <input
@@ -165,7 +165,7 @@ class UpdateAddressDialog extends React.Component<
           <div className="form-element form-element--profile">
             <label htmlFor="profileCountry" className="form-element__label">
               {this.props.i18n.text.get(
-                "plugin.profile.changeAddressMunicipality.dialog.countryField.label",
+                "plugin.profile.changeAddressMunicipality.dialog.countryField.label"
               )}
             </label>
             <input
@@ -183,7 +183,7 @@ class UpdateAddressDialog extends React.Component<
               className="form-element__label"
             >
               {this.props.i18n.text.get(
-                "plugin.profile.changeAddressMunicipality.dialog.municipalityField.label",
+                "plugin.profile.changeAddressMunicipality.dialog.municipalityField.label"
               )}
             </label>
             <input
@@ -206,7 +206,7 @@ class UpdateAddressDialog extends React.Component<
           disabled={this.state.locked}
         >
           {this.props.i18n.text.get(
-            "plugin.profile.changeAddressMunicipality.dialog.button.saveLabel",
+            "plugin.profile.changeAddressMunicipality.dialog.button.saveLabel"
           )}
         </Button>
         <Button
@@ -215,7 +215,7 @@ class UpdateAddressDialog extends React.Component<
           disabled={this.state.locked}
         >
           {this.props.i18n.text.get(
-            "plugin.profile.changeAddressMunicipality.dialog.button.cancelLabel",
+            "plugin.profile.changeAddressMunicipality.dialog.button.cancelLabel"
           )}
         </Button>
       </div>
@@ -223,7 +223,7 @@ class UpdateAddressDialog extends React.Component<
     return (
       <Dialog
         title={this.props.i18n.text.get(
-          "plugin.profile.changeAddressMunicipality.dialog.title",
+          "plugin.profile.changeAddressMunicipality.dialog.title"
         )}
         content={content}
         footer={footer}
@@ -245,11 +245,11 @@ function mapStateToProps(state: StateType) {
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     { displayNotification, updateProfileAddress },
-    dispatch,
+    dispatch
   );
 }
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(UpdateAddressDialog);

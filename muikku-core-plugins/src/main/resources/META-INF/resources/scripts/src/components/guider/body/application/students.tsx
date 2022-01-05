@@ -69,7 +69,7 @@ class GuiderStudents extends BodyScrollLoader<
   onStudentClick(student: GuiderStudentType) {
     const locationData = queryString.parse(
       document.location.hash.split("?")[1] || "",
-      { arrayFormat: "bracket" },
+      { arrayFormat: "bracket" }
     );
     locationData.c = student.id;
     window.location.hash =
@@ -113,18 +113,18 @@ class GuiderStudents extends BodyScrollLoader<
           {this.props.guider.students.map(
             (student: GuiderStudentType, index: number) => {
               const isSelected = this.props.guider.selectedStudentsIds.includes(
-                student.id,
+                student.id
               );
               return {
                 as: ApplicationListItem,
                 className: "user user--guider",
                 onSelect: this.props.addToGuiderSelectedStudents.bind(
                   null,
-                  student,
+                  student
                 ),
                 onDeselect: this.props.removeFromGuiderSelectedStudents.bind(
                   null,
-                  student,
+                  student
                 ),
                 onEnter: this.onStudentClick.bind(this, student),
                 isSelected,
@@ -139,7 +139,7 @@ class GuiderStudents extends BodyScrollLoader<
                   />
                 ),
               };
-            },
+            }
           )}
         </SelectableList>
       </BodyScrollKeeper>
@@ -164,7 +164,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
       addToGuiderSelectedStudents,
       removeFromGuiderSelectedStudents,
     },
-    dispatch,
+    dispatch
   );
 }
 

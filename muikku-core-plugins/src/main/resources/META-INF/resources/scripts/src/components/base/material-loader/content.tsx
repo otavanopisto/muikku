@@ -32,7 +32,7 @@ function onConfirmedAndSyncedModification(props: MaterialLoaderContentProps) {
       props.material.workspaceMaterialId,
       compositeReplies && compositeReplies.workspaceMaterialReplyId,
       props.stateConfiguration["success-text"] &&
-        props.i18n.text.get(props.stateConfiguration["success-text"]),
+        props.i18n.text.get(props.stateConfiguration["success-text"])
     );
   }
 }
@@ -56,7 +56,7 @@ function onModification(props: MaterialLoaderContentProps) {
       compositeReplies && compositeReplies.workspaceMaterialReplyId,
       props.stateConfiguration["success-text"] &&
         props.i18n.text.get(props.stateConfiguration["success-text"]),
-      props.onAssignmentStateModified,
+      props.onAssignmentStateModified
     );
   }
 }
@@ -88,7 +88,7 @@ export function MaterialLoaderContent(props: MaterialLoaderContentProps) {
             websocketState={props.websocket}
             onConfirmedAndSyncedModification={onConfirmedAndSyncedModification.bind(
               this,
-              props,
+              props
             )}
             onModification={onModification.bind(this, props)}
             readOnly={

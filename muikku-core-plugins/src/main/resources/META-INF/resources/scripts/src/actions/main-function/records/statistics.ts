@@ -24,7 +24,7 @@ const updateStatistics: UpdateStatisticsTriggerType =
   function updateStatistics() {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       try {
         dispatch({
@@ -38,10 +38,10 @@ const updateStatistics: UpdateStatisticsTriggerType =
         dispatch(
           actions.displayNotification(
             getState().i18n.text.get(
-              "plugin.records.statistics.errormessage.statisticsUpdateFailed",
+              "plugin.records.statistics.errormessage.statisticsUpdateFailed"
             ),
-            "error",
-          ),
+            "error"
+          )
         );
       }
     };

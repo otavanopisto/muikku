@@ -98,7 +98,7 @@ class AnnouncementsPanel extends React.Component<
      */
     const currentAnnouncements = announcements.slice(
       offset,
-      offset + itemsPerPage,
+      offset + itemsPerPage
     );
 
     /**
@@ -156,7 +156,7 @@ class AnnouncementsPanel extends React.Component<
             </span>
           </Link>
         );
-      },
+      }
     );
 
     /**
@@ -207,11 +207,11 @@ class AnnouncementsPanel extends React.Component<
           <div
             className="panel__body panel__body--empty"
             aria-label={this.props.i18n.text.get(
-              "plugin.frontPage.announcementPanel.ariaLabel.announcement.panel",
+              "plugin.frontPage.announcementPanel.ariaLabel.announcement.panel"
             )}
           >
             {this.props.i18n.text.get(
-              "plugin.frontPage.announcements.noAnnouncements",
+              "plugin.frontPage.announcements.noAnnouncements"
             )}
           </div>
         )}

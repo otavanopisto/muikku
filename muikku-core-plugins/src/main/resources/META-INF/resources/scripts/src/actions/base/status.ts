@@ -32,7 +32,7 @@ export interface LoadWorkspaceStatusInfoType {
 
 async function loadWhoAMI(
   dispatch: (arg: AnyActionType) => any,
-  whoAmIReadyCb: () => void,
+  whoAmIReadyCb: () => void
 ) {
   const whoAmI = <WhoAmIType>(
     await promisify(mApi().user.whoami.read(), "callback")()
@@ -46,30 +46,30 @@ async function loadWhoAMI(
       hasImage: whoAmI.hasImage,
       permissions: {
         ANNOUNCER_CAN_PUBLISH_ENVIRONMENT: whoAmI.permissions.includes(
-          "CREATE_ANNOUNCEMENT",
+          "CREATE_ANNOUNCEMENT"
         ),
         ANNOUNCER_CAN_PUBLISH_GROUPS: whoAmI.permissions.includes(
-          "CREATE_ANNOUNCEMENT",
+          "CREATE_ANNOUNCEMENT"
         ),
         ANNOUNCER_CAN_PUBLISH_WORKSPACES: true,
         ANNOUNCER_TOOL: whoAmI.permissions.includes("ANNOUNCER_TOOL"),
         COMMUNICATOR_GROUP_MESSAGING: whoAmI.permissions.includes(
-          "COMMUNICATOR_GROUP_MESSAGING",
+          "COMMUNICATOR_GROUP_MESSAGING"
         ),
         EVALUATION_VIEW_INDEX: whoAmI.permissions.includes("ACCESS_EVALUATION"),
         FORUM_LOCK_STICKY_PERMISSION: whoAmI.permissions.includes(
-          "FORUM_LOCK_OR_STICKIFY_MESSAGES",
+          "FORUM_LOCK_OR_STICKIFY_MESSAGES"
         ),
         FORUM_SHOW_FULL_NAME_PERMISSION: whoAmI.permissions.includes(
-          "FORUM_SHOW_FULL_NAMES",
+          "FORUM_SHOW_FULL_NAMES"
         ),
         FORUM_UPDATEENVIRONMENTFORUM: whoAmI.permissions.includes(
-          "FORUM_UPDATEENVIRONMENTFORUM",
+          "FORUM_UPDATEENVIRONMENTFORUM"
         ),
         GUIDER_VIEW: whoAmI.permissions.includes("GUIDER_VIEW"),
         ORGANIZATION_VIEW: whoAmI.permissions.includes("ORGANIZATION_VIEW"),
         TRANSCRIPT_OF_RECORDS_VIEW: whoAmI.permissions.includes(
-          "TRANSCRIPT_OF_RECORDS_VIEW",
+          "TRANSCRIPT_OF_RECORDS_VIEW"
         ),
       },
       profile: {
@@ -145,7 +145,7 @@ async function loadForumIsAvailable(dispatch: (arg: AnyActionType) => any) {
     ? <any>(
         await promisify(
           mApi().forum.environmentAreaPermissions.read(),
-          "callback",
+          "callback"
         )()
       )
     : null;
@@ -179,18 +179,18 @@ async function loadHopsEnabled(dispatch: (arg: AnyActionType) => any) {
 async function loadWorkspacePermissions(
   workspaceId: number,
   dispatch: (arg: AnyActionType) => any,
-  readyCb: () => void,
+  readyCb: () => void
 ) {
   const permissions = <string[]>(
     await promisify(
       mApi().workspace.workspaces.permissions.read(workspaceId),
-      "callback",
+      "callback"
     )()
   );
   const canCurrentWorkspaceSignup = <boolean>(
     await promisify(
       mApi().coursepicker.workspaces.canSignup.read(workspaceId),
-      "callback",
+      "callback"
     )()
   );
 
@@ -199,58 +199,58 @@ async function loadWorkspacePermissions(
     payload: {
       permissions: {
         WORKSPACE_ACCESS_EVALUATION: permissions.includes(
-          "ACCESS_WORKSPACE_EVALUATION",
+          "ACCESS_WORKSPACE_EVALUATION"
         ),
         WORKSPACE_ANNOUNCER_TOOL: permissions.includes(
-          "WORKSPACE_ANNOUNCER_TOOL",
+          "WORKSPACE_ANNOUNCER_TOOL"
         ),
         WORKSPACE_CAN_PUBLISH: permissions.includes("PUBLISH_WORKSPACE"),
         WORKSPACE_DELETE_FORUM_THREAD: permissions.includes(
-          "FORUM_DELETE_WORKSPACE_MESSAGES",
+          "FORUM_DELETE_WORKSPACE_MESSAGES"
         ),
         WORKSPACE_DISCUSSIONS_VISIBLE: permissions.includes(
-          "FORUM_ACCESSWORKSPACEFORUMS",
+          "FORUM_ACCESSWORKSPACEFORUMS"
         ),
         WORKSPACE_GUIDES_VISIBLE: true,
         WORKSPACE_HOME_VISIBLE: true,
         WORKSPACE_IS_WORKSPACE_STUDENT: permissions.includes(
-          "IS_WORKSPACE_STUDENT",
+          "IS_WORKSPACE_STUDENT"
         ),
         WORKSPACE_JOURNAL_VISIBLE: permissions.includes(
-          "ACCESS_WORKSPACE_JOURNAL",
+          "ACCESS_WORKSPACE_JOURNAL"
         ),
         WORKSPACE_LIST_WORKSPACE_ANNOUNCEMENTS: permissions.includes(
-          "LIST_WORKSPACE_ANNOUNCEMENTS",
+          "LIST_WORKSPACE_ANNOUNCEMENTS"
         ),
         WORKSPACE_MANAGE_PERMISSIONS: permissions.includes(
-          "WORKSPACE_MANAGE_PERMISSIONS",
+          "WORKSPACE_MANAGE_PERMISSIONS"
         ),
         WORKSPACE_MANAGE_WORKSPACE: permissions.includes("MANAGE_WORKSPACE"),
         WORKSPACE_MANAGE_WORKSPACE_DETAILS: permissions.includes(
-          "MANAGE_WORKSPACE_DETAILS",
+          "MANAGE_WORKSPACE_DETAILS"
         ),
         WORKSPACE_MANAGE_WORKSPACE_FRONTPAGE: permissions.includes(
-          "MANAGE_WORKSPACE_FRONTPAGE",
+          "MANAGE_WORKSPACE_FRONTPAGE"
         ),
         WORKSPACE_MANAGE_WORKSPACE_HELP: permissions.includes(
-          "MANAGE_WORKSPACE_HELP",
+          "MANAGE_WORKSPACE_HELP"
         ),
         WORKSPACE_MANAGE_WORKSPACE_MATERIALS: permissions.includes(
-          "MANAGE_WORKSPACE_MATERIALS",
+          "MANAGE_WORKSPACE_MATERIALS"
         ),
         WORKSPACE_MATERIALS_VISIBLE: true,
         WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT: permissions.includes(
-          "REQUEST_WORKSPACE_ASSESSMENT",
+          "REQUEST_WORKSPACE_ASSESSMENT"
         ),
         WORKSPACE_SIGNUP: permissions.includes("WORKSPACE_SIGNUP"),
         WORKSPACE_USERS_VISIBLE: permissions.includes(
-          "MANAGE_WORKSPACE_MEMBERS",
+          "MANAGE_WORKSPACE_MEMBERS"
         ),
         WORKSPACE_VIEW_WORKSPACE_DETAILS: permissions.includes(
-          "VIEW_WORKSPACE_DETAILS",
+          "VIEW_WORKSPACE_DETAILS"
         ),
         WORSKPACE_LIST_WORKSPACE_MEMBERS: permissions.includes(
-          "LIST_WORKSPACE_MEMBERS",
+          "LIST_WORKSPACE_MEMBERS"
         ),
       },
       canCurrentWorkspaceSignup,
@@ -261,7 +261,7 @@ async function loadWorkspacePermissions(
 }
 
 const loadStatus: LoadStatusType = function loadStatus(
-  whoAmIReadyCb: () => void,
+  whoAmIReadyCb: () => void
 ) {
   return async (dispatch: (arg: AnyActionType) => any) => {
     loadWhoAMI(dispatch, whoAmIReadyCb);
@@ -277,7 +277,7 @@ const loadWorkspaceStatus: LoadWorkspaceStatusInfoType =
   function loadWorkspaceStatusInfo(readyCb: () => void) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       const worspaceId = getState().status.currentWorkspaceId;
       loadWorkspacePermissions(worspaceId, dispatch, readyCb);

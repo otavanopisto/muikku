@@ -50,7 +50,7 @@ class NewEditJournal extends SessionStateComponent<
         title: props.journal ? props.journal.title : "",
         locked: false,
       },
-      props.journal ? props.journal.id : "",
+      props.journal ? props.journal.id : ""
     );
   }
 
@@ -64,7 +64,7 @@ class NewEditJournal extends SessionStateComponent<
           title: this.props.journal.title,
           text: this.props.journal.content,
         },
-        this.props.journal.id,
+        this.props.journal.id
       );
     } else {
       this.checkStoredAgainstThisState(
@@ -72,7 +72,7 @@ class NewEditJournal extends SessionStateComponent<
           title: "",
           text: "",
         },
-        "",
+        ""
       );
     }
   }
@@ -95,7 +95,7 @@ class NewEditJournal extends SessionStateComponent<
        */
       this.setStateAndClear(
         { title: this.props.journal.title, text: this.props.journal.content },
-        this.props.journal.id,
+        this.props.journal.id
       );
     }
   }
@@ -112,8 +112,8 @@ class NewEditJournal extends SessionStateComponent<
             title: nextProps.journal.title,
             text: nextProps.journal.content,
           },
-          nextProps.journal.id,
-        ),
+          nextProps.journal.id
+        )
       );
     } else if (!nextProps.journal && this.props.journal) {
       this.setState(
@@ -122,8 +122,8 @@ class NewEditJournal extends SessionStateComponent<
             title: "",
             text: "",
           },
-          "",
-        ),
+          ""
+        )
       );
     }
   }
@@ -135,7 +135,7 @@ class NewEditJournal extends SessionStateComponent<
   onCKEditorChange(text: string) {
     this.setStateAndStore(
       { text },
-      this.props.journal ? this.props.journal.id : "",
+      this.props.journal ? this.props.journal.id : ""
     );
   }
 
@@ -149,7 +149,7 @@ class NewEditJournal extends SessionStateComponent<
 
     this.setStateAndStore(
       { title },
-      this.props.journal ? this.props.journal.id : "",
+      this.props.journal ? this.props.journal.id : ""
     );
   }
 
@@ -170,7 +170,7 @@ class NewEditJournal extends SessionStateComponent<
               text: "",
               locked: false,
             },
-            "",
+            ""
           );
           closeDialog();
         },
@@ -189,7 +189,7 @@ class NewEditJournal extends SessionStateComponent<
               ...this.state,
               locked: false,
             },
-            this.props.journal.id,
+            this.props.journal.id
           );
           closeDialog();
         },
@@ -209,12 +209,12 @@ class NewEditJournal extends SessionStateComponent<
       ? this.props.i18n.text.get("plugin.workspace.journal.editEntry.title") +
         " - " +
         this.props.i18n.text.get(
-          "plugin.communicator.createmessage.title.content",
+          "plugin.communicator.createmessage.title.content"
         )
       : this.props.i18n.text.get("plugin.workspace.journal.newEntry.title") +
         " - " +
         this.props.i18n.text.get(
-          "plugin.communicator.createmessage.title.content",
+          "plugin.communicator.createmessage.title.content"
         );
 
     const content = (closeDialog: () => any) => [
@@ -222,7 +222,7 @@ class NewEditJournal extends SessionStateComponent<
         <div className="env-dialog__form-element-container">
           <label htmlFor="journalTitle" className="env-dialog__label">
             {this.props.i18n.text.get(
-              "plugin.workspace.journal.entry.title.label",
+              "plugin.workspace.journal.entry.title.label"
             )}
           </label>
           <input
@@ -240,7 +240,7 @@ class NewEditJournal extends SessionStateComponent<
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
             {this.props.i18n.text.get(
-              "plugin.workspace.journal.entry.content.label",
+              "plugin.workspace.journal.entry.content.label"
             )}
           </label>
           <CKEditor editorTitle={editorTitle} onChange={this.onCKEditorChange}>
@@ -258,7 +258,7 @@ class NewEditJournal extends SessionStateComponent<
           disabled={this.state.locked}
         >
           {this.props.i18n.text.get(
-            "plugin.workspace.journal.save.button.label",
+            "plugin.workspace.journal.save.button.label"
           )}
         </Button>
         <Button
@@ -267,7 +267,7 @@ class NewEditJournal extends SessionStateComponent<
           disabled={this.state.locked}
         >
           {this.props.i18n.text.get(
-            "plugin.workspace.journal.cancel.button.label",
+            "plugin.workspace.journal.cancel.button.label"
           )}
         </Button>
         {this.recovered ? (
@@ -277,7 +277,7 @@ class NewEditJournal extends SessionStateComponent<
             disabled={this.state.locked}
           >
             {this.props.i18n.text.get(
-              "plugin.announcer.createannouncement.button.clearDraft",
+              "plugin.announcer.createannouncement.button.clearDraft"
             )}
           </Button>
         ) : null}
@@ -291,10 +291,10 @@ class NewEditJournal extends SessionStateComponent<
         title={
           this.props.journal
             ? this.props.i18n.text.get(
-                "plugin.workspace.journal.editEntry.title",
+                "plugin.workspace.journal.editEntry.title"
               )
             : this.props.i18n.text.get(
-                "plugin.workspace.journal.newEntry.title",
+                "plugin.workspace.journal.newEntry.title"
               )
         }
         content={content}
@@ -328,7 +328,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
       createWorkspaceJournalForCurrentWorkspace,
       updateWorkspaceJournalInCurrentWorkspace,
     },
-    dispatch,
+    dispatch
   );
 }
 

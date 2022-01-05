@@ -108,7 +108,7 @@ class WorkspaceSignupDialog extends React.Component<
             {this.props.i18n.text.get(
               "plugin.workspaceSignUp.courseDescription",
               workspaceToUse.name,
-              workspaceToUse.nameExtension || "",
+              workspaceToUse.nameExtension || ""
             )}
           </div>
           {hasFees ? (
@@ -127,7 +127,7 @@ class WorkspaceSignupDialog extends React.Component<
             <p>
               <label htmlFor="signUpMessage">
                 {this.props.i18n.text.get(
-                  "plugin.workspaceSignUp.messageLabel",
+                  "plugin.workspaceSignUp.messageLabel"
                 )}
               </label>
               <textarea
@@ -191,5 +191,5 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(WorkspaceSignupDialog);

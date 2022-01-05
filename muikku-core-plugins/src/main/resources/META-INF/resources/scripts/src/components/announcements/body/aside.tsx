@@ -76,7 +76,7 @@ class AnnouncementsAside extends React.Component<
                     </span>
                   </Link>
                 );
-              },
+              }
             )}
           </div>
         ) : (

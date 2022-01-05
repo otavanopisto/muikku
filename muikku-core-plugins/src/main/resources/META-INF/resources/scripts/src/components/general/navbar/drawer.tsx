@@ -180,7 +180,7 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
                   width="157"
                   height="56"
                   alt={this.props.i18n.text.get(
-                    "plugin.site.logo.linkBackToFrontPage",
+                    "plugin.site.logo.linkBackToFrontPage"
                   )}
                 />
               </Link>
@@ -218,7 +218,7 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
                           src={getUserImageUrl(
                             this.props.status.userId,
                             null,
-                            this.props.status.imgVersion,
+                            this.props.status.imgVersion
                           )}
                           className="button-image"
                         />
@@ -227,7 +227,7 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
                       )}
                       <span className="menu__item-link-text">
                         {this.props.i18n.text.get(
-                          "plugin.profileBadge.links.personalInfo",
+                          "plugin.profileBadge.links.personalInfo"
                         )}
                       </span>
                     </Link>
@@ -242,7 +242,7 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
                       <span className="menu__item-link-icon icon-question" />
                       <span className="menu__item-link-text">
                         {this.props.i18n.text.get(
-                          "plugin.profileBadge.links.userGuide",
+                          "plugin.profileBadge.links.userGuide"
                         )}
                       </span>
                     </Link>
@@ -257,7 +257,7 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
                       <span className="menu__item-link-icon icon-support"></span>
                       <span className="menu__item-link-text">
                         {this.props.i18n.text.get(
-                          "plugin.profileBadge.links.helpdesk",
+                          "plugin.profileBadge.links.helpdesk"
                         )}
                       </span>
                     </Link>
@@ -272,7 +272,7 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
                       <span className="menu__item-link-icon icon-sign-out"></span>
                       <span className="menu__item-link-text">
                         {this.props.i18n.text.get(
-                          "plugin.profileBadge.links.logout",
+                          "plugin.profileBadge.links.logout"
                         )}
                       </span>
                     </Link>

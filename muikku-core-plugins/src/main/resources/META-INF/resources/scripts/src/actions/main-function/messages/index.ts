@@ -157,7 +157,7 @@ const updateUnreadMessageThreadsCount: UpdateMessageThreadsCountTriggerType =
   function updateUnreadMessageThreadsCount() {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       if (!getState().status.loggedIn) {
         return;
@@ -169,7 +169,7 @@ const updateUnreadMessageThreadsCount: UpdateMessageThreadsCountTriggerType =
           payload: <number>(
             ((await promisify(
               mApi().communicator.receiveditemscount.cacheClear().read(),
-              "callback",
+              "callback"
             )()) || 0)
           ),
         });
@@ -180,10 +180,10 @@ const updateUnreadMessageThreadsCount: UpdateMessageThreadsCountTriggerType =
         dispatch(
           displayNotification(
             getState().i18n.text.get(
-              "plugin.communicator.errormessage.unreadMessageCount",
+              "plugin.communicator.errormessage.unreadMessageCount"
             ),
-            "error",
-          ),
+            "error"
+          )
         );
       }
     };
@@ -197,7 +197,7 @@ const loadLastMessageThreadsFromServer: LoadLastMessageThreadsFromSeverTriggerTy
   function loadLastMessageThreadsFromServer(maxResults) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       try {
         dispatch({
@@ -207,7 +207,7 @@ const loadLastMessageThreadsFromServer: LoadLastMessageThreadsFromSeverTriggerTy
               firstResult: 0,
               maxResults: maxResults,
             }),
-            "callback",
+            "callback"
           )(),
         });
       } catch (err) {
@@ -217,10 +217,10 @@ const loadLastMessageThreadsFromServer: LoadLastMessageThreadsFromSeverTriggerTy
         dispatch(
           displayNotification(
             getState().i18n.text.get(
-              "plugin.communicator.errormessage.lastMessageLoad",
+              "plugin.communicator.errormessage.lastMessageLoad"
             ),
-            "error",
-          ),
+            "error"
+          )
         );
       }
     };
@@ -278,7 +278,7 @@ export interface ToggleMessageThreadReadStatusTriggerType {
     thread: MessageThreadType | number,
     markAsStatus?: boolean,
     dontLockToolbar?: boolean,
-    callback?: () => any,
+    callback?: () => any
   ): AnyActionType;
 }
 
@@ -351,37 +351,37 @@ const sendMessage: SendMessageTriggerType = function sendMessage(message) {
 
   return async (
     dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType,
+    getState: () => StateType
   ) => {
     if (!message.subject) {
       message.fail && message.fail();
       return dispatch(
         displayNotification(
           getState().i18n.text.get(
-            "plugin.communicator.errormessage.createMessage.missing.subject",
+            "plugin.communicator.errormessage.createMessage.missing.subject"
           ),
-          "error",
-        ),
+          "error"
+        )
       );
     } else if (!message.text) {
       message.fail && message.fail();
       return dispatch(
         displayNotification(
           getState().i18n.text.get(
-            "plugin.communicator.errormessage.createMessage.missing.content",
+            "plugin.communicator.errormessage.createMessage.missing.content"
           ),
-          "error",
-        ),
+          "error"
+        )
       );
     } else if (!message.to.length) {
       message.fail && message.fail();
       return dispatch(
         displayNotification(
           getState().i18n.text.get(
-            "plugin.communicator.errormessage.createMessage.missing.recipients",
+            "plugin.communicator.errormessage.createMessage.missing.recipients"
           ),
-          "error",
-        ),
+          "error"
+        )
       );
     }
 
@@ -391,14 +391,14 @@ const sendMessage: SendMessageTriggerType = function sendMessage(message) {
         result = <MessageType>(
           await promisify(
             mApi().communicator.messages.create(message.replyThreadId, data),
-            "callback",
+            "callback"
           )()
         );
       } else {
         result = <MessageType>(
           await promisify(
             mApi().communicator.messages.create(data),
-            "callback",
+            "callback"
           )()
         );
       }
@@ -414,7 +414,7 @@ const sendMessage: SendMessageTriggerType = function sendMessage(message) {
         //First lets check and update the thread count in case the thread is there somewhere for that specific message
         const thread: MessageThreadType = state.messages.threads.find(
           (thread) =>
-            thread.communicatorMessageId === result.communicatorMessageId,
+            thread.communicatorMessageId === result.communicatorMessageId
         );
         if (thread) {
           const newCount = thread.messageCountInThread + 1;
@@ -436,7 +436,7 @@ const sendMessage: SendMessageTriggerType = function sendMessage(message) {
           state.messages.location === "unread";
         const weAreOneOfTheRecepients = result.recipients.find(
           (recipient: MessageRecepientType) =>
-            recipient.userEntityId === status.userId,
+            recipient.userEntityId === status.userId
         );
         const isInboxOrUnreadAndWeAreOneOfTheRecepients =
           isInboxOrUnread && weAreOneOfTheRecepients;
@@ -449,7 +449,7 @@ const sendMessage: SendMessageTriggerType = function sendMessage(message) {
         //if we are in sent location or are one of the recipients then the message should become the first one
         if (weAreInSentLocation || isInboxOrUnreadAndWeAreOneOfTheRecepients) {
           const item = state.messages.navigation.find(
-            (item) => item.location === state.messages.location,
+            (item) => item.location === state.messages.location
           );
           if (!item) {
             return;
@@ -465,7 +465,7 @@ const sendMessage: SendMessageTriggerType = function sendMessage(message) {
             const threads: MessageThreadListType = <MessageThreadListType>(
               await promisify(
                 mApi().communicator[getApiId(item)].read(params),
-                "callback",
+                "callback"
               )()
             );
             if (threads[0]) {
@@ -506,10 +506,10 @@ const sendMessage: SendMessageTriggerType = function sendMessage(message) {
       dispatch(
         displayNotification(
           getState().i18n.text.get(
-            "plugin.communicator.infomessage.newMessage.success",
+            "plugin.communicator.infomessage.newMessage.success"
           ),
-          "success",
-        ),
+          "success"
+        )
       );
     } catch (err) {
       if (!(err instanceof MApiError)) {
@@ -518,10 +518,10 @@ const sendMessage: SendMessageTriggerType = function sendMessage(message) {
       dispatch(
         displayNotification(
           getState().i18n.text.get(
-            "plugin.communicator.errormessage.sendFailed",
+            "plugin.communicator.errormessage.sendFailed"
           ),
-          "error",
-        ),
+          "error"
+        )
       );
       message.fail && message.fail();
     }
@@ -587,11 +587,11 @@ const toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType =
     threadOrId,
     markAsStatus,
     dontLockToolbar = false,
-    callback,
+    callback
   ) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       if (!dontLockToolbar) {
         dispatch({
@@ -603,17 +603,17 @@ const toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType =
       const state = getState();
 
       const item = state.messages.navigation.find(
-        (item) => item.location === state.messages.location,
+        (item) => item.location === state.messages.location
       );
       if (!item) {
         //TODO translate this
         dispatch(
           displayNotification(
             getState().i18n.text.get(
-              "plugin.communicator.errormessage.badLocation",
+              "plugin.communicator.errormessage.badLocation"
             ),
-            "error",
-          ),
+            "error"
+          )
         );
         dispatch({
           type: "UNLOCK_TOOLBAR",
@@ -626,7 +626,7 @@ const toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType =
       let communicatorMessageId: number = null;
       if (typeof threadOrId === "number") {
         actualThread = state.messages.threads.find(
-          (t) => t.communicatorMessageId === threadOrId,
+          (t) => t.communicatorMessageId === threadOrId
         );
         communicatorMessageId = threadOrId;
       } else {
@@ -656,9 +656,9 @@ const toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType =
         ) {
           await promisify(
             mApi().communicator[getApiId(item)].markasread.create(
-              communicatorMessageId,
+              communicatorMessageId
             ),
-            "callback",
+            "callback"
           )();
         } else if (
           (actualThread && !actualThread.unreadMessagesInThread) ||
@@ -666,9 +666,9 @@ const toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType =
         ) {
           await promisify(
             mApi().communicator[getApiId(item)].markasunread.create(
-              communicatorMessageId,
+              communicatorMessageId
             ),
-            "callback",
+            "callback"
           )();
         }
         dispatch(updateUnreadMessageThreadsCount());
@@ -679,10 +679,10 @@ const toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType =
         dispatch(
           displayNotification(
             getState().i18n.text.get(
-              "plugin.communicator.errormessage.changeStatusFailed",
+              "plugin.communicator.errormessage.changeStatusFailed"
             ),
-            "error",
-          ),
+            "error"
+          )
         );
         if (actualThread) {
           dispatch({
@@ -744,7 +744,7 @@ const deleteSelectedMessageThreads: DeleteSelectedMessageThreadsTriggerType =
   function deleteSelectedMessageThreads() {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       dispatch({
         type: "LOCK_TOOLBAR",
@@ -754,17 +754,17 @@ const deleteSelectedMessageThreads: DeleteSelectedMessageThreadsTriggerType =
       const state = getState();
 
       const item = state.messages.navigation.find(
-        (item) => item.location === state.messages.location,
+        (item) => item.location === state.messages.location
       );
       if (!item) {
         //TODO translate this
         dispatch(
           displayNotification(
             getState().i18n.text.get(
-              "plugin.communicator.errormessage.badLocation",
+              "plugin.communicator.errormessage.badLocation"
             ),
-            "error",
-          ),
+            "error"
+          )
         );
         dispatch({
           type: "UNLOCK_TOOLBAR",
@@ -778,9 +778,9 @@ const deleteSelectedMessageThreads: DeleteSelectedMessageThreadsTriggerType =
           try {
             await promisify(
               mApi().communicator[getApiId(item)].del(
-                thread.communicatorMessageId,
+                thread.communicatorMessageId
               ),
-              "callback",
+              "callback"
             )();
             dispatch({
               type: "DELETE_MESSAGE_THREAD",
@@ -793,13 +793,13 @@ const deleteSelectedMessageThreads: DeleteSelectedMessageThreadsTriggerType =
             dispatch(
               displayNotification(
                 getState().i18n.text.get(
-                  "plugin.communicator.errormessage.deleteFailed",
+                  "plugin.communicator.errormessage.deleteFailed"
                 ),
-                "error",
-              ),
+                "error"
+              )
             );
           }
-        }),
+        })
       );
 
       mApi().communicator[getApiId(item)].cacheClear();
@@ -815,7 +815,7 @@ const deleteCurrentMessageThread: DeleteCurrentMessageThreadTriggerType =
   function deleteCurrentMessageThread() {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       dispatch({
         type: "LOCK_TOOLBAR",
@@ -825,17 +825,17 @@ const deleteCurrentMessageThread: DeleteCurrentMessageThreadTriggerType =
       const state = getState();
 
       const item = state.messages.navigation.find(
-        (item) => item.location === state.messages.location,
+        (item) => item.location === state.messages.location
       );
       if (!item) {
         //TODO translate this
         dispatch(
           displayNotification(
             getState().i18n.text.get(
-              "plugin.communicator.errormessage.badLocation",
+              "plugin.communicator.errormessage.badLocation"
             ),
-            "error",
-          ),
+            "error"
+          )
         );
         dispatch({
           type: "UNLOCK_TOOLBAR",
@@ -850,12 +850,11 @@ const deleteCurrentMessageThread: DeleteCurrentMessageThreadTriggerType =
       try {
         await promisify(
           mApi().communicator[getApiId(item)].del(communicatorMessageId),
-          "callback",
+          "callback"
         )();
         const toDeleteMessageThread: MessageThreadType =
           state.messages.threads.find(
-            (message) =>
-              message.communicatorMessageId === communicatorMessageId,
+            (message) => message.communicatorMessageId === communicatorMessageId
           );
         if (toDeleteMessageThread) {
           dispatch({
@@ -870,10 +869,10 @@ const deleteCurrentMessageThread: DeleteCurrentMessageThreadTriggerType =
         dispatch(
           displayNotification(
             getState().i18n.text.get(
-              "plugin.communicator.errormessage.deleteFailed",
+              "plugin.communicator.errormessage.deleteFailed"
             ),
-            "error",
-          ),
+            "error"
+          )
         );
       }
 
@@ -896,22 +895,22 @@ const loadMessageThread: LoadMessageThreadTriggerType =
   function loadMessageThread(location, messageId) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       const state = getState();
 
       const item = state.messages.navigation.find(
-        (item) => item.location === location,
+        (item) => item.location === location
       );
       if (!item) {
         //TODO translate this
         dispatch(
           displayNotification(
             getState().i18n.text.get(
-              "plugin.communicator.errormessage.badLocation",
+              "plugin.communicator.errormessage.badLocation"
             ),
-            "error",
-          ),
+            "error"
+          )
         );
         return;
       }
@@ -922,14 +921,14 @@ const loadMessageThread: LoadMessageThreadTriggerType =
           currentThread = <MessageThreadExpandedType>(
             await promisify(
               mApi().communicator[getApiId(item, true)].read(messageId),
-              "callback",
+              "callback"
             )()
           );
         } else {
           currentThread = <MessageThreadExpandedType>(
             await promisify(
               mApi().communicator.userLabels.messages.read(item.id, messageId),
-              "callback",
+              "callback"
             )()
           );
         }
@@ -947,10 +946,10 @@ const loadMessageThread: LoadMessageThreadTriggerType =
         dispatch(
           displayNotification(
             getState().i18n.text.get(
-              "plugin.communicator.errormessage.threadLoadFailed",
+              "plugin.communicator.errormessage.threadLoadFailed"
             ),
-            "error",
-          ),
+            "error"
+          )
         );
       }
 
@@ -959,8 +958,8 @@ const loadMessageThread: LoadMessageThreadTriggerType =
           toggleMessageThreadReadStatus(
             currentThread.messages[0].communicatorMessageId,
             true,
-            true,
-          ),
+            true
+          )
         );
       }
     };
@@ -970,7 +969,7 @@ const loadNewlyReceivedMessage: LoadNewlyReceivedMessageTriggerType =
   function loadNewlyReceivedMessage() {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       const state = getState();
 
@@ -979,7 +978,7 @@ const loadNewlyReceivedMessage: LoadNewlyReceivedMessageTriggerType =
         state.messages.location === "inbox"
       ) {
         const item = state.messages.navigation.find(
-          (item) => item.location === state.messages.location,
+          (item) => item.location === state.messages.location
         );
 
         if (!item) {
@@ -996,7 +995,7 @@ const loadNewlyReceivedMessage: LoadNewlyReceivedMessageTriggerType =
           const threads: MessageThreadListType = <MessageThreadListType>(
             await promisify(
               mApi().communicator[getApiId(item)].read(params),
-              "callback",
+              "callback"
             )()
           );
           if (threads[0]) {
@@ -1013,9 +1012,9 @@ const loadNewlyReceivedMessage: LoadNewlyReceivedMessageTriggerType =
                 await promisify(
                   mApi().communicator.communicatormessages.read(
                     threads[0].id,
-                    params,
+                    params
                   ),
-                  "callback",
+                  "callback"
                 )()
               );
               dispatch({
@@ -1034,10 +1033,10 @@ const loadNewlyReceivedMessage: LoadNewlyReceivedMessageTriggerType =
           dispatch(
             displayNotification(
               getState().i18n.text.get(
-                "plugin.communicator.errormessage.receivedFailed",
+                "plugin.communicator.errormessage.receivedFailed"
               ),
-              "error",
-            ),
+              "error"
+            )
           );
         }
       }
@@ -1047,7 +1046,7 @@ const loadNewlyReceivedMessage: LoadNewlyReceivedMessageTriggerType =
 const loadSignature: LoadSignatureTriggerType = function loadSignature() {
   return async (
     dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType,
+    getState: () => StateType
   ) => {
     try {
       const signatures: Array<MessageSignatureType> = <
@@ -1066,17 +1065,17 @@ const loadSignature: LoadSignatureTriggerType = function loadSignature() {
       dispatch(
         displayNotification(
           getState().i18n.text.get(
-            "plugin.communicator.errormessage.signatureLoadFailed",
+            "plugin.communicator.errormessage.signatureLoadFailed"
           ),
-          "error",
-        ),
+          "error"
+        )
       );
     }
   };
 };
 
 const updateSignature: UpdateSignatureTriggerType = function updateSignature(
-  newSignature,
+  newSignature
 ) {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => any) => {
     const state = getState();
@@ -1092,9 +1091,9 @@ const updateSignature: UpdateSignatureTriggerType = function updateSignature(
           await promisify(
             mApi().communicator.signatures.update(
               state.messages.signature.id,
-              nSignatureShape,
+              nSignatureShape
             ),
-            "callback",
+            "callback"
           )()
         );
         dispatch({
@@ -1108,7 +1107,7 @@ const updateSignature: UpdateSignatureTriggerType = function updateSignature(
               name: "standard",
               signature: newSignature,
             }),
-            "callback",
+            "callback"
           )()
         );
         dispatch({
@@ -1118,7 +1117,7 @@ const updateSignature: UpdateSignatureTriggerType = function updateSignature(
       } else {
         await promisify(
           mApi().communicator.signatures.del(state.messages.signature.id),
-          "callback",
+          "callback"
         )();
         dispatch({
           type: "UPDATE_MESSAGES_SIGNATURE",
@@ -1132,10 +1131,10 @@ const updateSignature: UpdateSignatureTriggerType = function updateSignature(
       dispatch(
         displayNotification(
           getState().i18n.text.get(
-            "plugin.communicator.errormessage.signatureUpdateFailed",
+            "plugin.communicator.errormessage.signatureUpdateFailed"
           ),
-          "error",
-        ),
+          "error"
+        )
       );
     }
   };
@@ -1171,7 +1170,7 @@ const loadMessagesNavigationLabels: LoadMessagesNavigationLabelsTriggerType =
   function loadMessagesNavigationLabels(callback) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => any,
+      getState: () => any
     ) => {
       try {
         const labels: LabelListType = <LabelListType>(
@@ -1198,10 +1197,10 @@ const loadMessagesNavigationLabels: LoadMessagesNavigationLabelsTriggerType =
         dispatch(
           displayNotification(
             getState().i18n.text.get(
-              "plugin.communicator.errormessage.labelsLoadFailed",
+              "plugin.communicator.errormessage.labelsLoadFailed"
             ),
-            "error",
-          ),
+            "error"
+          )
         );
       }
     };
@@ -1211,16 +1210,16 @@ const addMessagesNavigationLabel: AddMessagesNavigationLabelTriggerType =
   function addMessagesNavigationLabel(name) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => any,
+      getState: () => any
     ) => {
       if (!name) {
         return dispatch(
           displayNotification(
             getState().i18n.text.get(
-              "plugin.communicator.errormessage.createUpdateLabels.missing.title",
+              "plugin.communicator.errormessage.createUpdateLabels.missing.title"
             ),
-            "error",
-          ),
+            "error"
+          )
         );
       }
 
@@ -1234,7 +1233,7 @@ const addMessagesNavigationLabel: AddMessagesNavigationLabelTriggerType =
         const newLabel: LabelType = <LabelType>(
           await promisify(
             mApi().communicator.userLabels.create(label),
-            "callback",
+            "callback"
           )()
         );
         dispatch({
@@ -1257,10 +1256,10 @@ const addMessagesNavigationLabel: AddMessagesNavigationLabelTriggerType =
         dispatch(
           displayNotification(
             getState().i18n.text.get(
-              "plugin.communicator.errormessage.label.createFailed",
+              "plugin.communicator.errormessage.label.createFailed"
             ),
-            "error",
-          ),
+            "error"
+          )
         );
       }
     };
@@ -1270,17 +1269,17 @@ const updateMessagesNavigationLabel: UpdateMessagesNavigationLabelTriggerType =
   function updateMessagesNavigationLabel(data) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => any,
+      getState: () => any
     ) => {
       if (!data.newName) {
         data.fail && data.fail();
         return dispatch(
           displayNotification(
             getState().i18n.text.get(
-              "plugin.communicator.errormessage.createUpdateLabels.missing.title",
+              "plugin.communicator.errormessage.createUpdateLabels.missing.title"
             ),
-            "error",
-          ),
+            "error"
+          )
         );
       }
 
@@ -1293,7 +1292,7 @@ const updateMessagesNavigationLabel: UpdateMessagesNavigationLabelTriggerType =
       try {
         await promisify(
           mApi().communicator.userLabels.update(data.label.id, newLabelData),
-          "callback",
+          "callback"
         )();
         dispatch({
           type: "UPDATE_ONE_LABEL_FROM_ALL_MESSAGE_THREADS",
@@ -1324,10 +1323,10 @@ const updateMessagesNavigationLabel: UpdateMessagesNavigationLabelTriggerType =
         dispatch(
           displayNotification(
             getState().i18n.text.get(
-              "plugin.communicator.errormessage.label.updateFailed",
+              "plugin.communicator.errormessage.label.updateFailed"
             ),
-            "error",
-          ),
+            "error"
+          )
         );
       }
     };
@@ -1337,12 +1336,12 @@ const removeMessagesNavigationLabel: RemoveMessagesNavigationLabelTriggerType =
   function removeMessagesNavigationLabel(data) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       try {
         await promisify(
           mApi().communicator.userLabels.del(data.label.id),
-          "callback",
+          "callback"
         )();
         const { messages } = getState();
 
@@ -1372,10 +1371,10 @@ const removeMessagesNavigationLabel: RemoveMessagesNavigationLabelTriggerType =
         dispatch(
           displayNotification(
             getState().i18n.text.get(
-              "plugin.communicator.errormessage.label.deleteFailed",
+              "plugin.communicator.errormessage.label.deleteFailed"
             ),
-            "error",
-          ),
+            "error"
+          )
         );
       }
     };
@@ -1385,7 +1384,7 @@ const restoreSelectedMessageThreads: RestoreSelectedMessageThreadsTriggerType =
   function restoreSelectedMessageThreads() {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       dispatch({
         type: "LOCK_TOOLBAR",
@@ -1395,17 +1394,17 @@ const restoreSelectedMessageThreads: RestoreSelectedMessageThreadsTriggerType =
       const state = getState();
 
       const item = state.messages.navigation.find(
-        (item) => item.location === state.messages.location,
+        (item) => item.location === state.messages.location
       );
       if (!item) {
         //TODO translate this
         dispatch(
           displayNotification(
             getState().i18n.text.get(
-              "plugin.communicator.errormessage.badLocation",
+              "plugin.communicator.errormessage.badLocation"
             ),
-            "error",
-          ),
+            "error"
+          )
         );
         dispatch({
           type: "UNLOCK_TOOLBAR",
@@ -1419,9 +1418,9 @@ const restoreSelectedMessageThreads: RestoreSelectedMessageThreadsTriggerType =
           try {
             await promisify(
               mApi().communicator[getApiId(item)].restore.update(
-                thread.communicatorMessageId,
+                thread.communicatorMessageId
               ),
-              "callback",
+              "callback"
             )();
             dispatch({
               type: "DELETE_MESSAGE_THREAD",
@@ -1434,13 +1433,13 @@ const restoreSelectedMessageThreads: RestoreSelectedMessageThreadsTriggerType =
             dispatch(
               displayNotification(
                 getState().i18n.text.get(
-                  "plugin.communicator.errormessage.msgRestoreFailed",
+                  "plugin.communicator.errormessage.msgRestoreFailed"
                 ),
-                "error",
-              ),
+                "error"
+              )
             );
           }
-        }),
+        })
       );
 
       mApi().communicator[getApiId(item)].cacheClear();
@@ -1456,7 +1455,7 @@ const restoreCurrentMessageThread: RestoreCurrentMessageThreadTriggerType =
   function restoreCurrentMessageThread() {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       dispatch({
         type: "LOCK_TOOLBAR",
@@ -1466,16 +1465,16 @@ const restoreCurrentMessageThread: RestoreCurrentMessageThreadTriggerType =
       const state = getState();
 
       const item = state.messages.navigation.find(
-        (item) => item.location === state.messages.location,
+        (item) => item.location === state.messages.location
       );
       if (!item) {
         dispatch(
           displayNotification(
             getState().i18n.text.get(
-              "plugin.communicator.errormessage.badLocation",
+              "plugin.communicator.errormessage.badLocation"
             ),
-            "error",
-          ),
+            "error"
+          )
         );
         dispatch({
           type: "UNLOCK_TOOLBAR",
@@ -1490,14 +1489,13 @@ const restoreCurrentMessageThread: RestoreCurrentMessageThreadTriggerType =
       try {
         await promisify(
           mApi().communicator[getApiId(item)].restore.update(
-            communicatorMessageId,
+            communicatorMessageId
           ),
-          "callback",
+          "callback"
         )();
         const toDeleteMessageThread: MessageThreadType =
           state.messages.threads.find(
-            (message) =>
-              message.communicatorMessageId === communicatorMessageId,
+            (message) => message.communicatorMessageId === communicatorMessageId
           );
         if (toDeleteMessageThread) {
           dispatch({
@@ -1512,8 +1510,8 @@ const restoreCurrentMessageThread: RestoreCurrentMessageThreadTriggerType =
         dispatch(
           displayNotification(
             getState().i18n.text.get("currentThreadRestoreFailed"),
-            "error",
-          ),
+            "error"
+          )
         );
       }
 

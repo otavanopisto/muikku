@@ -205,11 +205,11 @@ export default class CKEditor extends React.Component<
       // We rely on this when we use editor parent container's height as a starting point for cke height calculations
       const ckeTopHeight =
         instance.container.$.querySelector(
-          ".cke_inner",
+          ".cke_inner"
         ).childNodes[0].getBoundingClientRect().height;
       const ckeBottomHeight =
         instance.container.$.querySelector(
-          ".cke_inner",
+          ".cke_inner"
         ).childNodes[2].getBoundingClientRect().height;
 
       // We use generic 2px all around border and that value (times 2)) has to be retracted from the height calculations also

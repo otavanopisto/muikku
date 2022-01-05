@@ -39,7 +39,7 @@ export default class MuikkuWebsocket {
     options = {
       reconnectInterval: 10000,
       pingInterval: 5000,
-    },
+    }
   ) {
     this.options = options;
 
@@ -75,7 +75,7 @@ export default class MuikkuWebsocket {
     eventType: string,
     data: any,
     onSent?: () => any,
-    stackId?: string,
+    stackId?: string
   ) {
     if (this.socketOpen && !this.reconnecting) {
       // Check if message queue already has this message. This can happen if it was previously
@@ -97,7 +97,7 @@ export default class MuikkuWebsocket {
           JSON.stringify({
             eventType: eventType,
             data: data,
-          }),
+          })
         );
         const websocketState: WebsocketStateType =
           this.store.getState().websocket;
@@ -123,7 +123,7 @@ export default class MuikkuWebsocket {
     eventType: string,
     data: any,
     onSent?: () => any,
-    stackId?: string,
+    stackId?: string
   ) {
     const index =
       stackId && this.messagesPending.findIndex((m) => m.stackId === stackId);
@@ -224,8 +224,8 @@ export default class MuikkuWebsocket {
             this.store.dispatch(
               actions.displayNotification(
                 "Muikku-istuntosi on vanhentunut. Jos olet vastaamassa tehtäviin, kopioi varmuuden vuoksi vastauksesi talteen omalle koneellesi ja kirjaudu uudelleen sisään.",
-                "error",
-              ) as Action,
+                "error"
+              ) as Action
             );
             this.ticket = null;
             this.discarded = true;
@@ -243,8 +243,8 @@ export default class MuikkuWebsocket {
             this.store.dispatch(
               actions.displayNotification(
                 "Muikkuun ei saada yhteyttä. Jos olet vastaamassa tehtäviin, kopioi varmuuden vuoksi vastauksesi talteen omalle koneellesi ja lataa sivu uudelleen.",
-                "error",
-              ) as Action,
+                "error"
+              ) as Action
             );
             this.ticket = null;
             this.discarded = true;
@@ -317,7 +317,7 @@ export default class MuikkuWebsocket {
     const host = window.location.host;
     const secure = location.protocol == "https:";
     this.webSocket = this.createWebSocket(
-      (secure ? "wss://" : "ws://") + host + "/ws/socket/" + this.ticket,
+      (secure ? "wss://" : "ws://") + host + "/ws/socket/" + this.ticket
     );
     if (this.webSocket) {
       this.webSocket.onmessage = this.onWebSocketMessage.bind(this);
@@ -398,8 +398,8 @@ export default class MuikkuWebsocket {
           this.store.dispatch(
             actions.displayNotification(
               "Muikkuun ei saada yhteyttä. Ole hyvä ja lataa sivu uudelleen. Jos olet vastaamassa tehtäviin, kopioi varmuuden vuoksi vastauksesi talteen omalle koneellesi.",
-              "error",
-            ) as Action,
+              "error"
+            ) as Action
           );
         } else {
           // Reconnect retry failed, retry after reconnectInterval

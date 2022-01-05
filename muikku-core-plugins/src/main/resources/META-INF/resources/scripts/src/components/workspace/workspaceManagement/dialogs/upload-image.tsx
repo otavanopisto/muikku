@@ -66,14 +66,14 @@ class UploadImageDialog extends React.Component<
       success: () => {
         this.props.displayNotification(
           this.props.i18n.text.get(
-            "plugin.workspace.management.notification.coverImage.saved",
+            "plugin.workspace.management.notification.coverImage.saved"
           ),
-          "success",
+          "success"
         );
         this.props.onImageChange(
           this.retriever.getAsDataURL(),
           !this.props.src ? this.props.b64 : null,
-          !this.props.src ? this.props.file : null,
+          !this.props.src ? this.props.file : null
         );
       },
     });
@@ -89,9 +89,9 @@ class UploadImageDialog extends React.Component<
   showLoadError() {
     this.props.displayNotification(
       this.props.i18n.text.get(
-        "plugin.workspace.management.notification.failedToLoadImage",
+        "plugin.workspace.management.notification.failedToLoadImage"
       ),
-      "error",
+      "error"
     );
   }
   onChangeScale(newValue: number) {
@@ -142,7 +142,7 @@ class UploadImageDialog extends React.Component<
           onClick={this.acceptImage.bind(this, closeDialog)}
         >
           {this.props.i18n.text.get(
-            "plugin.workspace.management.changeImage.dialog.saveButton.label",
+            "plugin.workspace.management.changeImage.dialog.saveButton.label"
           )}
         </Button>
         <Button
@@ -150,7 +150,7 @@ class UploadImageDialog extends React.Component<
           onClick={closeDialog}
         >
           {this.props.i18n.text.get(
-            "plugin.workspace.management.changeImage.dialog.cancelButton.label",
+            "plugin.workspace.management.changeImage.dialog.cancelButton.label"
           )}
         </Button>
       </div>
@@ -159,7 +159,7 @@ class UploadImageDialog extends React.Component<
       <Dialog
         isOpen={this.props.isOpen}
         title={this.props.i18n.text.get(
-          "plugin.workspace.management.changeImage.dialog.title",
+          "plugin.workspace.management.changeImage.dialog.title"
         )}
         content={content}
         footer={footer}
@@ -179,7 +179,7 @@ function mapStateToProps(state: StateType) {
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     { displayNotification, updateCurrentWorkspaceImagesB64 },
-    dispatch,
+    dispatch
   );
 }
 

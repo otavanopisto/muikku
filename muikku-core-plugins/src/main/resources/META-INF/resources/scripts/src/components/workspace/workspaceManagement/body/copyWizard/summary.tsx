@@ -30,14 +30,14 @@ export default class Step extends React.Component<StepProps, StepState> {
       <div className="wizard__content">
         <h2>
           {this.props.i18n.text.get(
-            "plugin.workspacecopywizard.summaryPage.title",
+            "plugin.workspacecopywizard.summaryPage.title"
           )}
         </h2>
 
         <div className="wizard__summary-row">
           <label>
             {this.props.i18n.text.get(
-              "plugin.workspacecopywizard.doCopyButton.label",
+              "plugin.workspacecopywizard.doCopyButton.label"
             )}
           </label>
           <p>
@@ -46,7 +46,7 @@ export default class Step extends React.Component<StepProps, StepState> {
                 ? "plugin.workspacecopywizard.summarySteps.copyWorkspaceName"
                 : "plugin.workspacecopywizard.summarySteps.copyWorkspaceNameWithExtension",
               this.props.getStore().name,
-              nameExtension,
+              nameExtension
             )}
           </p>
         </div>
@@ -60,8 +60,8 @@ export default class Step extends React.Component<StepProps, StepState> {
               beginDate
                 ? this.props.i18n.time.format(beginDate)
                 : this.props.i18n.text.get(
-                    "plugin.workspacecopywizard.workspaceStartDate.empty.label",
-                  ),
+                    "plugin.workspacecopywizard.workspaceStartDate.empty.label"
+                  )
             )}
           </p>
           <p>
@@ -70,8 +70,8 @@ export default class Step extends React.Component<StepProps, StepState> {
               endDate
                 ? this.props.i18n.time.format(endDate)
                 : this.props.i18n.text.get(
-                    "plugin.workspacecopywizard.workspaceEndDate.empty.label",
-                  ),
+                    "plugin.workspacecopywizard.workspaceEndDate.empty.label"
+                  )
             )}
           </p>
         </div>
@@ -80,7 +80,7 @@ export default class Step extends React.Component<StepProps, StepState> {
             {this.props.getStore().copyDiscussionAreas ? (
               <li>
                 {this.props.i18n.text.get(
-                  "plugin.workspacecopywizard.summarySteps.copyDiscussionAreas",
+                  "plugin.workspacecopywizard.summarySteps.copyDiscussionAreas"
                 )}
               </li>
             ) : null}
@@ -89,14 +89,14 @@ export default class Step extends React.Component<StepProps, StepState> {
                 {this.props.i18n.text.get(
                   copyMaterials === "CLONE"
                     ? "plugin.workspacecopywizard.summarySteps.copyMaterials"
-                    : "plugin.workspacecopywizard.summarySteps.copyMaterialsLink",
+                    : "plugin.workspacecopywizard.summarySteps.copyMaterialsLink"
                 )}
               </li>
             ) : null}
             {this.props.getStore().copyBackgroundPicture ? (
               <li>
                 {this.props.i18n.text.get(
-                  "plugin.workspacecopywizard.summarySteps.copyFiles",
+                  "plugin.workspacecopywizard.summarySteps.copyFiles"
                 )}
               </li>
             ) : null}
@@ -109,7 +109,7 @@ export default class Step extends React.Component<StepProps, StepState> {
               onClick={this.props.onDone}
             >
               {this.props.i18n.text.get(
-                "plugin.workspacecopywizard.closeWizardButton.label",
+                "plugin.workspacecopywizard.closeWizardButton.label"
               )}
             </Button>
             <Button
@@ -117,7 +117,7 @@ export default class Step extends React.Component<StepProps, StepState> {
               href={`/workspace/${this.props.resultingWorkspace.urlName}`}
             >
               {this.props.i18n.text.get(
-                "plugin.workspacecopywizard.gotToWorkspaceMuikkuButton.label",
+                "plugin.workspacecopywizard.gotToWorkspaceMuikkuButton.label"
               )}
             </Button>
             <Button
@@ -126,7 +126,7 @@ export default class Step extends React.Component<StepProps, StepState> {
               openInNewTab="_blank"
             >
               {this.props.i18n.text.get(
-                "plugin.workspacecopywizard.gotToWorkspacePyramusButton.label",
+                "plugin.workspacecopywizard.gotToWorkspacePyramusButton.label"
               )}
             </Button>
           </div>

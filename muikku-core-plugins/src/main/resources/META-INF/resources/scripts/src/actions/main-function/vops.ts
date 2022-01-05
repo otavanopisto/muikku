@@ -18,7 +18,7 @@ export type UPDATE_VOPS_STATUS = SpecificActionType<
 const updateVops: UpdateVopsTriggerType = function updateVops() {
   return async (
     dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType,
+    getState: () => StateType
   ) => {
     try {
       if (getState().vops.status !== "WAIT") {
@@ -46,10 +46,10 @@ const updateVops: UpdateVopsTriggerType = function updateVops() {
       dispatch(
         actions.displayNotification(
           getState().i18n.text.get(
-            "plugin.records.vops.errormessage.vopsLoadFailed",
+            "plugin.records.vops.errormessage.vopsLoadFailed"
           ),
-          "error",
-        ),
+          "error"
+        )
       );
       dispatch({
         type: "UPDATE_VOPS_STATUS",

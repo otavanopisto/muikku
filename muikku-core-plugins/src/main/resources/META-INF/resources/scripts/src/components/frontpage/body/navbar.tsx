@@ -61,7 +61,7 @@ class FrontpageNavbar extends React.Component<
               >
                 <span>
                   {this.props.i18n.text.get(
-                    "plugin.navigation.link.organization",
+                    "plugin.navigation.link.organization"
                   )}
                 </span>
               </Link>
@@ -86,7 +86,7 @@ class FrontpageNavbar extends React.Component<
               >
                 <span>
                   {this.props.i18n.text.get(
-                    "plugin.navigation.link.openMaterials",
+                    "plugin.navigation.link.openMaterials"
                   )}
                 </span>
               </Link>

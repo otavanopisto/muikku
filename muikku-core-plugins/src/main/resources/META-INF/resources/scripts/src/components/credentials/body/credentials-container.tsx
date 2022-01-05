@@ -26,7 +26,7 @@ export default class CredentialsContainer extends React.Component<
       <div className="credentials__container">
         <div className="credentials__header">
           {this.props.i18n.text.get(
-            "plugin.forgotpassword.changeCredentials.title",
+            "plugin.forgotpassword.changeCredentials.title"
           )}
         </div>
         <div className="credentials__body">{this.props.children}</div>

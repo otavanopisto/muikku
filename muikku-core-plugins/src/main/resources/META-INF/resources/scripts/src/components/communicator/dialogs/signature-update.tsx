@@ -73,12 +73,12 @@ class CommunicatorSignatureUpdateDialog extends React.Component<
           onClick={this.update.bind(this, closeDialog)}
         >
           {this.props.i18n.text.get(
-            "plugin.communicator.settings.signature.create",
+            "plugin.communicator.settings.signature.create"
           )}
         </Button>
         <Button buttonModifiers="dialog-cancel" onClick={closeDialog}>
           {this.props.i18n.text.get(
-            "plugin.communicator.confirmSignatureRemovalDialog.cancelButton",
+            "plugin.communicator.confirmSignatureRemovalDialog.cancelButton"
           )}
         </Button>
       </div>
@@ -100,7 +100,7 @@ class CommunicatorSignatureUpdateDialog extends React.Component<
         onOpen={this.resetState}
         modifier="update-signature"
         title={this.props.i18n.text.get(
-          "plugin.communicator.settings.signature",
+          "plugin.communicator.settings.signature"
         )}
         content={content}
         footer={footer}
@@ -124,5 +124,5 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(CommunicatorSignatureUpdateDialog);

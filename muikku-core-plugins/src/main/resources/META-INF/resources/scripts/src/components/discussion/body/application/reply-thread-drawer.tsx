@@ -70,7 +70,7 @@ class ReplyThreadDrawer extends SessionStateComponent<
       },
       props.currentId +
         (props.quote ? "-q" : "") +
-        (props.reply ? "-" + props.reply.id : ""),
+        (props.reply ? "-" + props.reply.id : "")
     );
   }
 
@@ -83,7 +83,7 @@ class ReplyThreadDrawer extends SessionStateComponent<
       { text },
       this.props.currentId +
         (this.props.quote ? "-q" : "") +
-        (this.props.reply ? "-" + this.props.reply.id : ""),
+        (this.props.reply ? "-" + this.props.reply.id : "")
     );
   }
 
@@ -104,7 +104,7 @@ class ReplyThreadDrawer extends SessionStateComponent<
       },
       this.props.currentId +
         (this.props.quote ? "-q" : "") +
-        (this.props.reply ? "-" + this.props.reply.id : ""),
+        (this.props.reply ? "-" + this.props.reply.id : "")
     );
   }
 
@@ -137,7 +137,7 @@ class ReplyThreadDrawer extends SessionStateComponent<
           },
           this.props.currentId +
             (this.props.quote ? "-q" : "") +
-            (this.props.reply ? "-" + this.props.reply.id : ""),
+            (this.props.reply ? "-" + this.props.reply.id : "")
         );
       },
       fail: () => {
@@ -170,7 +170,7 @@ class ReplyThreadDrawer extends SessionStateComponent<
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
             {this.props.i18n.text.get(
-              "plugin.discussion.createmessage.content",
+              "plugin.discussion.createmessage.content"
             )}
           </label>
           <CKEditor
@@ -207,7 +207,7 @@ class ReplyThreadDrawer extends SessionStateComponent<
             disabled={this.state.locked}
           >
             {this.props.i18n.text.get(
-              "plugin.discussion.createmessage.clearDraft",
+              "plugin.discussion.createmessage.clearDraft"
             )}
           </Button>
         ) : null}
@@ -220,7 +220,7 @@ class ReplyThreadDrawer extends SessionStateComponent<
           <div className="env-dialog__content">
             <header className="env-dialog__header">
               {this.props.i18n.text.get(
-                "plugin.discussion.answertomessage.topic",
+                "plugin.discussion.answertomessage.topic"
               )}
             </header>
             <section className="env-dialog__body">{content}</section>

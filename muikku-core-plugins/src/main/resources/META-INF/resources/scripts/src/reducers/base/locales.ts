@@ -17,11 +17,11 @@ export default function locales(
       $("#language-picker a").map((index: number, element: HTMLElement) => ({
         name: $(element).text().trim(),
         locale: $(element).data("locale"),
-      })),
+      }))
     ),
     current: $("#locale").text(),
   },
-  action: ActionType,
+  action: ActionType
 ): LocaleListType {
   if (action.type === "SET_LOCALE") {
     $('#language-picker a[data-locale="' + action.payload + '"]').click();

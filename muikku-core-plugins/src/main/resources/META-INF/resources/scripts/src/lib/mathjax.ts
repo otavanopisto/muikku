@@ -41,7 +41,7 @@ export const MATHJAXSRC =
 
 export function loadMathJax() {
   const mathjaxScriptTag = document.querySelector(
-    `script[src="${MATHJAXSRC}"]`,
+    `script[src="${MATHJAXSRC}"]`
   );
   if (mathjaxScriptTag || (window as any).MathJax) {
     return;
@@ -64,11 +64,11 @@ export function toSVG(
   errorSrc: string,
   cb?: (element: HTMLImageElement) => any,
   placeholderSrc?: string,
-  placeholderCb?: (element: HTMLImageElement) => any,
+  placeholderCb?: (element: HTMLImageElement) => any
 ) {
   if (!(window as any).MathJax) {
     queue.push(
-      toSVG.bind(this, element, errorSrc, cb, placeholderSrc, placeholderCb),
+      toSVG.bind(this, element, errorSrc, cb, placeholderSrc, placeholderCb)
     );
     return;
   }

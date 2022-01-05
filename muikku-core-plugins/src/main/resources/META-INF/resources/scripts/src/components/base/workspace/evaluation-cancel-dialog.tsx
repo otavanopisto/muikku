@@ -63,7 +63,7 @@ class EvaluationCancelDialog extends React.Component<
       <div>
         <span>
           {this.props.i18n.text.get(
-            "plugin.workspace.evaluation.cancelEvaluation.description",
+            "plugin.workspace.evaluation.cancelEvaluation.description"
           )}
         </span>
       </div>
@@ -77,7 +77,7 @@ class EvaluationCancelDialog extends React.Component<
           disabled={this.state.locked}
         >
           {this.props.i18n.text.get(
-            "plugin.workspace.evaluation.cancelEvaluation.cancelRequestButton",
+            "plugin.workspace.evaluation.cancelEvaluation.cancelRequestButton"
           )}
         </Button>
         <Button
@@ -86,7 +86,7 @@ class EvaluationCancelDialog extends React.Component<
           disabled={this.state.locked}
         >
           {this.props.i18n.text.get(
-            "plugin.workspace.evaluation.cancelEvaluation.cancelButton",
+            "plugin.workspace.evaluation.cancelEvaluation.cancelButton"
           )}
         </Button>
       </div>
@@ -96,7 +96,7 @@ class EvaluationCancelDialog extends React.Component<
       <Dialog
         modifier="evaluation-cancel-dialog"
         title={this.props.i18n.text.get(
-          "plugin.workspace.evaluation.cancelEvaluation.title",
+          "plugin.workspace.evaluation.cancelEvaluation.title"
         )}
         content={content}
         footer={footer}
@@ -120,5 +120,5 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(EvaluationCancelDialog);

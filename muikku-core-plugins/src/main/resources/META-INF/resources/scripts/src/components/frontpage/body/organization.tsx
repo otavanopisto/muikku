@@ -24,7 +24,7 @@ export default class FrontpageOrganization extends React.Component<
         id="organization"
         className="screen-container__section"
         aria-label={this.props.i18n.text.get(
-          "plugin.wcag.frontPageSectionOrganizationLabel",
+          "plugin.wcag.frontPageSectionOrganizationLabel"
         )}
       >
         <div className="card card--frontpage-organization">
@@ -68,7 +68,7 @@ export default class FrontpageOrganization extends React.Component<
                   className="ordered-container__subcontainer-content ordered-container__subcontainer-content--organization-description"
                   dangerouslySetInnerHTML={{
                     __html: this.props.i18n.text.get(
-                      "plugin.organization.description",
+                      "plugin.organization.description"
                     ),
                   }}
                 ></div>

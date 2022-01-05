@@ -5,7 +5,7 @@ import Link from "~/components/general/link";
 type MaterialLoaderProducersLicenseProps = MaterialLoaderProps;
 
 export function MaterialLoaderProducersLicense(
-  props: MaterialLoaderProducersLicenseProps,
+  props: MaterialLoaderProducersLicenseProps
 ) {
   if (
     !(

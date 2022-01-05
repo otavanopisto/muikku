@@ -51,7 +51,7 @@ interface AssignmentEditorProps {
   showAudioAssessmentWarningOnClose: boolean;
   onAudioAssessmentChange: () => void;
   updateMaterialEvaluationData: (
-    assigmentSaveReturn: AssignmentEvaluationSaveReturn,
+    assigmentSaveReturn: AssignmentEvaluationSaveReturn
   ) => void;
   updateCurrentStudentCompositeRepliesData: UpdateCurrentStudentEvaluationCompositeRepliesData;
   onClose?: () => void;
@@ -114,7 +114,7 @@ class AssignmentEditor extends SessionStateComponent<
           grade: grade,
           draftId,
         },
-        draftId,
+        draftId
       ),
       audioAssessments:
         compositeReplies.evaluationInfo &&
@@ -177,7 +177,7 @@ class AssignmentEditor extends SessionStateComponent<
               : "GRADED",
           grade: grade,
         },
-        this.state.draftId,
+        this.state.draftId
       ),
       audioAssessments:
         compositeReplies.evaluationInfo &&
@@ -190,7 +190,7 @@ class AssignmentEditor extends SessionStateComponent<
 
   componentDidUpdate = (
     prevProps: AssignmentEditorProps,
-    prevState: AssignmentEditorState,
+    prevState: AssignmentEditorState
   ) => {
     if (
       this.state.audioAssessments.length !== prevState.audioAssessments.length
@@ -230,9 +230,9 @@ class AssignmentEditor extends SessionStateComponent<
           workspaceMaterialId,
           {
             ...dataToSave,
-          },
+          }
         ),
-        "callback",
+        "callback"
       )().then(async (data: AssignmentEvaluationSaveReturn) => {
         await mApi().workspace.workspaces.compositeReplies.cacheClear();
 
@@ -260,9 +260,9 @@ class AssignmentEditor extends SessionStateComponent<
       notificationActions.displayNotification(
         this.props.i18n.text.get(
           "plugin.evaluation.notifications.saveAssigmentGrade.error",
-          error.message,
+          error.message
         ),
-        "error",
+        "error"
       );
 
       this.setState({
@@ -303,9 +303,9 @@ class AssignmentEditor extends SessionStateComponent<
           workspaceMaterialId,
           {
             ...dataToSave,
-          },
+          }
         ),
-        "callback",
+        "callback"
       )().then(async () => {
         await mApi().workspace.workspaces.compositeReplies.cacheClear();
 
@@ -336,9 +336,9 @@ class AssignmentEditor extends SessionStateComponent<
       notificationActions.displayNotification(
         this.props.i18n.text.get(
           "plugin.evaluation.notifications.saveAssigmentSupplementation.error",
-          error.message,
+          error.message
         ),
-        "error",
+        "error"
       );
 
       this.setState({
@@ -352,7 +352,7 @@ class AssignmentEditor extends SessionStateComponent<
    * @param e
    */
   handleSaveAssignment = async (
-    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
   ) => {
     const { evaluationGradeSystem } = this.props.evaluations;
     const { grade } = this.state;
@@ -429,7 +429,7 @@ class AssignmentEditor extends SessionStateComponent<
               ? "INCOMPLETE"
               : "GRADED",
         },
-        this.state.draftId,
+        this.state.draftId
       );
     } else {
       this.setStateAndClear(
@@ -438,7 +438,7 @@ class AssignmentEditor extends SessionStateComponent<
           grade: `${evaluationGradeSystem[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`,
           assignmentEvaluationType: "GRADED",
         },
-        this.state.draftId,
+        this.state.draftId
       );
     }
   };
@@ -452,7 +452,7 @@ class AssignmentEditor extends SessionStateComponent<
       {
         literalEvaluation: e,
       },
-      this.state.draftId,
+      this.state.draftId
     );
   };
 
@@ -461,7 +461,7 @@ class AssignmentEditor extends SessionStateComponent<
    * @param e
    */
   handleAssignmentEvaluationChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
+    e: React.ChangeEvent<HTMLInputElement>
   ) => {
     const { evaluationGradeSystem } = this.props.evaluations;
 
@@ -472,7 +472,7 @@ class AssignmentEditor extends SessionStateComponent<
         assignmentEvaluationType: e.target.value,
         grade: defaultGrade,
       },
-      this.state.draftId,
+      this.state.draftId
     );
   };
 
@@ -485,7 +485,7 @@ class AssignmentEditor extends SessionStateComponent<
       {
         grade: e.currentTarget.value,
       },
-      this.state.draftId,
+      this.state.draftId
     );
   };
 
@@ -543,7 +543,7 @@ class AssignmentEditor extends SessionStateComponent<
               className="evaluation-modal__evaluate-drawer-row-label"
             >
               {this.props.i18n.text.get(
-                "plugin.evaluation.evaluationModal.audioAssessments",
+                "plugin.evaluation.evaluationModal.audioAssessments"
               )}
             </label>
             <Recorder
@@ -556,7 +556,7 @@ class AssignmentEditor extends SessionStateComponent<
         <div className="evaluation-modal__evaluate-drawer-row form-element">
           <label className="evaluation-modal__evaluate-drawer-row-label">
             {this.props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.assignmentEvaluationForm.assessmentEvaluateLabel",
+              "plugin.evaluation.evaluationModal.assignmentEvaluationForm.assessmentEvaluateLabel"
             )}
           </label>
           <div className="evaluation-modal__evaluate-drawer-row-data">
@@ -571,7 +571,7 @@ class AssignmentEditor extends SessionStateComponent<
               />
               <label htmlFor="assignmentEvaluationTypeGRADED">
                 {this.props.i18n.text.get(
-                  "plugin.evaluation.evaluationModal.assignmentGradeLabel",
+                  "plugin.evaluation.evaluationModal.assignmentGradeLabel"
                 )}
               </label>
             </div>
@@ -586,7 +586,7 @@ class AssignmentEditor extends SessionStateComponent<
               />
               <label htmlFor="assignmentEvaluationTypeINCOMPLETE">
                 {this.props.i18n.text.get(
-                  "plugin.evaluation.evaluationModal.assignmentEvaluatedIncompleteLabel",
+                  "plugin.evaluation.evaluationModal.assignmentEvaluatedIncompleteLabel"
                 )}
               </label>
             </div>
@@ -598,7 +598,7 @@ class AssignmentEditor extends SessionStateComponent<
             className="evaluation-modal__evaluate-drawer-row-label"
           >
             {this.props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.assignmentGradeLabel",
+              "plugin.evaluation.evaluationModal.assignmentGradeLabel"
             )}
           </label>
 
@@ -622,7 +622,7 @@ class AssignmentEditor extends SessionStateComponent<
             disabled={this.state.locked}
           >
             {this.props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.workspaceEvaluationForm.saveButtonLabel",
+              "plugin.evaluation.evaluationModal.workspaceEvaluationForm.saveButtonLabel"
             )}
           </Button>
           {this.props.showAudioAssessmentWarningOnClose ? (
@@ -632,7 +632,7 @@ class AssignmentEditor extends SessionStateComponent<
                 disabled={this.state.locked}
               >
                 {this.props.i18n.text.get(
-                  "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel",
+                  "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel"
                 )}
               </Button>
             </WarningDialog>
@@ -643,7 +643,7 @@ class AssignmentEditor extends SessionStateComponent<
               buttonModifiers="evaluate-cancel"
             >
               {this.props.i18n.text.get(
-                "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel",
+                "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel"
               )}
             </Button>
           )}
@@ -655,7 +655,7 @@ class AssignmentEditor extends SessionStateComponent<
               onClick={this.handleDeleteEditorDraft}
             >
               {this.props.i18n.text.get(
-                "plugin.evaluation.evaluationModal.workspaceEvaluationForm.deleteDraftButtonLabel",
+                "plugin.evaluation.evaluationModal.workspaceEvaluationForm.deleteDraftButtonLabel"
               )}
             </Button>
           )}
@@ -687,7 +687,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
     {
       updateCurrentStudentCompositeRepliesData,
     },
-    dispatch,
+    dispatch
   );
 }
 

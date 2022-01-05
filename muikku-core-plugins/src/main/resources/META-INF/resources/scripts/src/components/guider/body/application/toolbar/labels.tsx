@@ -77,7 +77,7 @@ class GuiderToolbarLabels extends React.Component<
                 onChange={this.updateLabelFilter}
                 type="text"
                 placeholder={this.props.i18n.text.get(
-                  "plugin.guider.flags.create.textfield.placeholder",
+                  "plugin.guider.flags.create.textfield.placeholder"
                 )}
               />
             </div>,
@@ -85,7 +85,7 @@ class GuiderToolbarLabels extends React.Component<
               className="link link--full link--new"
               onClick={this.props.createGuiderFilterLabel.bind(
                 null,
-                this.state.labelFilter,
+                this.state.labelFilter
               )}
             >
               {this.props.i18n.text.get("plugin.guider.flags.create")}
@@ -106,11 +106,11 @@ class GuiderToolbarLabels extends React.Component<
                       !isSelected
                         ? this.props.addGuiderLabelToCurrentUser.bind(
                             null,
-                            label,
+                            label
                           )
                         : this.props.removeGuiderLabelFromCurrentUser.bind(
                             null,
-                            label,
+                            label
                           )
                     }
                   >
@@ -123,7 +123,7 @@ class GuiderToolbarLabels extends React.Component<
                     </span>
                   </Link>
                 );
-              }),
+              })
           )}
         >
           <ButtonPill
@@ -141,7 +141,7 @@ class GuiderToolbarLabels extends React.Component<
 
     if (isAtLeastOneSelected) {
       const partialIds = this.props.guider.selectedStudents.map(
-        (student: GuiderStudentType) => student.flags.map((l) => l.flagId),
+        (student: GuiderStudentType) => student.flags.map((l) => l.flagId)
       );
       allInCommon = intersect(...partialIds);
       onlyInSome = difference(allInCommon, flatten(...partialIds));
@@ -158,7 +158,7 @@ class GuiderToolbarLabels extends React.Component<
               onChange={this.updateLabelFilter}
               type="text"
               placeholder={this.props.i18n.text.get(
-                "plugin.guider.flags.create.textfield.placeholder",
+                "plugin.guider.flags.create.textfield.placeholder"
               )}
             />
           </div>,
@@ -166,7 +166,7 @@ class GuiderToolbarLabels extends React.Component<
             className="link link--full"
             onClick={this.props.createGuiderFilterLabel.bind(
               null,
-              this.state.labelFilter,
+              this.state.labelFilter
             )}
           >
             {this.props.i18n.text.get("plugin.guider.flags.create")}
@@ -177,7 +177,7 @@ class GuiderToolbarLabels extends React.Component<
             .map((label) => {
               const isSelected = allInCommon.includes(label.id as number);
               const isPartiallySelected = onlyInSome.includes(
-                label.id as number,
+                label.id as number
               );
               return (
                 <Link
@@ -189,11 +189,11 @@ class GuiderToolbarLabels extends React.Component<
                     !isSelected || isPartiallySelected
                       ? this.props.addGuiderLabelToSelectedUsers.bind(
                           null,
-                          label,
+                          label
                         )
                       : this.props.removeGuiderLabelFromSelectedUsers.bind(
                           null,
-                          label,
+                          label
                         )
                   }
                 >
@@ -206,7 +206,7 @@ class GuiderToolbarLabels extends React.Component<
                   </span>
                 </Link>
               );
-            }),
+            })
         )}
       >
         <ButtonPill buttonModifiers="flag" icon="flag" />
@@ -231,11 +231,11 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
       addGuiderLabelToSelectedUsers,
       removeGuiderLabelFromSelectedUsers,
     },
-    dispatch,
+    dispatch
   );
 }
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(GuiderToolbarLabels);

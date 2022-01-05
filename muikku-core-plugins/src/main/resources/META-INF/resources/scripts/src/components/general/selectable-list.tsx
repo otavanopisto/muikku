@@ -181,7 +181,7 @@ export default class SelectableList extends React.Component<
             ? this.props.selectModeModifiers instanceof Array
               ? this.props.selectModeModifiers
               : [this.props.selectModeModifiers]
-            : [],
+            : []
         )
       : null;
     const rootProps: any = {};
@@ -234,7 +234,7 @@ export default class SelectableList extends React.Component<
                     onChange={this.onCheckBoxItemChange.bind(this, child)}
                     onClick={this.onCheckBoxItemClick}
                   />
-                ),
+                )
               )}
             </GivenElement>
           );

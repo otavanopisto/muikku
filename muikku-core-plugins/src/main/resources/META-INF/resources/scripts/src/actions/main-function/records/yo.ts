@@ -54,7 +54,7 @@ const updateMatriculationSubjectEligibility: UpdateMatriculationSubjectEligibili
   function updateMatriculationSubjectEligibility() {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       try {
         dispatch({
@@ -68,7 +68,7 @@ const updateMatriculationSubjectEligibility: UpdateMatriculationSubjectEligibili
 
         const subjects: Array<YOMatriculationSubjectType> = (await promisify(
           mApi().records.matriculationSubjects.read(),
-          "callback",
+          "callback"
         )()) as Array<YOMatriculationSubjectType>;
         const selectedSubjects: Array<YOMatriculationSubjectType> = [];
 
@@ -87,7 +87,7 @@ const updateMatriculationSubjectEligibility: UpdateMatriculationSubjectEligibili
                 mApi().records.matriculationEligibility.read({
                   subjectCode: subject.subjectCode,
                 }),
-                "callback",
+                "callback"
               )();
               const subjectEligibilityData = {
                 subjectCode: subject.subjectCode,
@@ -110,13 +110,13 @@ const updateMatriculationSubjectEligibility: UpdateMatriculationSubjectEligibili
                 actions.displayNotification(
                   getState().i18n.text.get(
                     "plugin.records.yo.errormessage.eligibilityUpdateFailedOnSubject",
-                    subject.subjectCode,
+                    subject.subjectCode
                   ),
-                  "error",
-                ),
+                  "error"
+                )
               );
             }
-          }),
+          })
         );
 
         dispatch({
@@ -135,10 +135,10 @@ const updateMatriculationSubjectEligibility: UpdateMatriculationSubjectEligibili
         dispatch(
           actions.displayNotification(
             getState().i18n.text.get(
-              "plugin.records.yo.errormessage.eligibilityUpdateFailed",
+              "plugin.records.yo.errormessage.eligibilityUpdateFailed"
             ),
-            "error",
-          ),
+            "error"
+          )
         );
       }
     };
@@ -147,14 +147,14 @@ const updateMatriculationSubjectEligibility: UpdateMatriculationSubjectEligibili
 const updateYO: updateYOTriggerType = function updateYO() {
   return async (
     dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType,
+    getState: () => StateType
   ) => {
     try {
       //      let exams:any =  await promisify (mApi().matriculation.exams.read({}), 'callback')();
       //      let now: Number = new Date().getTime();
       const matriculationExamData: any = await promisify(
         mApi().matriculation.exams.read({}),
-        "callback",
+        "callback"
       )();
 
       dispatch({
@@ -171,7 +171,7 @@ const updateYO: updateYOTriggerType = function updateYO() {
         mApi().records.matriculationSubjects.read({
           matriculationSubjectsLoaded: true,
         }),
-        "callback",
+        "callback"
       )()) as YOMatriculationSubjectType;
 
       dispatch({
@@ -183,9 +183,9 @@ const updateYO: updateYOTriggerType = function updateYO() {
         mApi().records.studentMatriculationEligibility.read(
           document
             .querySelector('meta[name="muikku:loggedUser"]')
-            .getAttribute("value"),
+            .getAttribute("value")
         ),
-        "callback",
+        "callback"
       )();
       const eligibilityStatus = eligibility.status;
       const eligibilityData: YOEligibilityType = {
@@ -216,10 +216,10 @@ const updateYO: updateYOTriggerType = function updateYO() {
       dispatch(
         actions.displayNotification(
           getState().i18n.text.get(
-            "plugin.records.yo.errormessage.yoUpdateFailed",
+            "plugin.records.yo.errormessage.yoUpdateFailed"
           ),
-          "error",
-        ),
+          "error"
+        )
       );
     }
   };

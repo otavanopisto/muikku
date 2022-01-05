@@ -37,7 +37,7 @@ interface AudioFieldProps {
   onChange?: (
     context: React.Component<any, any>,
     name: string,
-    newValue: any,
+    newValue: any
   ) => any;
 
   invisible?: boolean;
@@ -137,7 +137,7 @@ export default class AudioField extends React.Component<
    */
   shouldComponentUpdate(
     nextProps: AudioFieldProps,
-    nextState: AudioFieldState,
+    nextState: AudioFieldState
   ) {
     return (
       !equals(nextProps.content, this.props.content) ||
@@ -210,7 +210,7 @@ export default class AudioField extends React.Component<
           // and we tell it to process the last file
           // just like a file would
           this.processFileAt(this.state.values.length - 1);
-        },
+        }
       );
     });
 
@@ -264,7 +264,7 @@ export default class AudioField extends React.Component<
       {
         values: newValues,
       },
-      this.checkDoneAndRunOnChange,
+      this.checkDoneAndRunOnChange
     );
   }
 
@@ -326,7 +326,7 @@ export default class AudioField extends React.Component<
           {
             values: newValues,
           },
-          this.checkDoneAndRunOnChange,
+          this.checkDoneAndRunOnChange
         );
       },
       // in case of error
@@ -339,7 +339,7 @@ export default class AudioField extends React.Component<
           {
             values: newValues,
           },
-          this.checkDoneAndRunOnChange,
+          this.checkDoneAndRunOnChange
         );
       },
       xhr: () => {
@@ -358,7 +358,7 @@ export default class AudioField extends React.Component<
               });
             }
           },
-          false,
+          false
         );
         return xhr;
       },
@@ -397,7 +397,7 @@ export default class AudioField extends React.Component<
             name,
             contentType,
           };
-        }),
+        })
     );
 
     // and trigger onchange
@@ -464,7 +464,7 @@ export default class AudioField extends React.Component<
               <Link
                 className="material-page__audiofield-download-file-button icon-download"
                 title={this.props.i18n.text.get(
-                  "plugin.workspace.audioField.downloadLink",
+                  "plugin.workspace.audioField.downloadLink"
                 )}
                 href={value.url}
                 openInNewTab={value.name}
@@ -477,7 +477,7 @@ export default class AudioField extends React.Component<
                   <Link
                     className="material-page__audiofield-remove-file-button icon-trash"
                     title={this.props.i18n.text.get(
-                      "plugin.workspace.audioField.removeLink",
+                      "plugin.workspace.audioField.removeLink"
                     )}
                   />
                 </ConfirmRemoveDialog>
@@ -490,7 +490,7 @@ export default class AudioField extends React.Component<
             <span className="material-page__audiofield-file-container">
               <span className="material-page__audiofield-file material-page__audiofield-file--FAILED-TO-UPLOAD">
                 {this.props.i18n.text.get(
-                  "plugin.workspace.audioField.uploadFailed",
+                  "plugin.workspace.audioField.uploadFailed"
                 )}
               </span>
             </span>
@@ -529,7 +529,7 @@ export default class AudioField extends React.Component<
                   svgStyle={{ width: "100%", height: "4px" }}
                   text={this.props.i18n.text.get(
                     "plugin.workspace.audioField.statusUploading",
-                    Math.round(value.progress * 100),
+                    Math.round(value.progress * 100)
                   )}
                   progress={value.progress}
                 />
@@ -578,7 +578,7 @@ export default class AudioField extends React.Component<
                     moment("2015-01-01")
                       .startOf("day")
                       .seconds(MAX_RECORDING_TIME_IN_SECONDS)
-                      .format("mm:ss"),
+                      .format("mm:ss")
                   )}
                   progress={this.state.time / MAX_RECORDING_TIME_IN_SECONDS}
                 />
@@ -594,7 +594,7 @@ export default class AudioField extends React.Component<
       : "";
 
     const fieldSavedStateClass = createFieldSavedStateClass(
-      this.state.fieldSavedState,
+      this.state.fieldSavedState
     );
 
     // and this is the container
@@ -626,7 +626,7 @@ export default class AudioField extends React.Component<
                 >
                   <span className="material-page__audiofield-start-record-label">
                     {this.props.i18n.text.get(
-                      "plugin.workspace.audioField.startLink",
+                      "plugin.workspace.audioField.startLink"
                     )}
                   </span>
                 </Link>
@@ -637,7 +637,7 @@ export default class AudioField extends React.Component<
                 >
                   <span className="material-page__audiofield-stop-record-label">
                     {this.props.i18n.text.get(
-                      "plugin.workspace.audioField.stopLink",
+                      "plugin.workspace.audioField.stopLink"
                     )}
                   </span>
                 </Link>
@@ -645,13 +645,13 @@ export default class AudioField extends React.Component<
               {!this.state.recording ? (
                 <span className="material-page__audiofield-description material-page__audiofield-description--start-recording">
                   {this.props.i18n.text.get(
-                    "plugin.workspace.audioField.startRecordingHint",
+                    "plugin.workspace.audioField.startRecordingHint"
                   )}
                 </span>
               ) : (
                 <span className="material-page__audiofield-description material-page__audiofield-description--stop-recording">
                   {this.props.i18n.text.get(
-                    "plugin.workspace.audioField.stopRecordingHint",
+                    "plugin.workspace.audioField.stopRecordingHint"
                   )}
                 </span>
               )}

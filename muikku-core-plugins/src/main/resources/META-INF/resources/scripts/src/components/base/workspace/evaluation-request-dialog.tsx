@@ -100,19 +100,19 @@ class EvaluationRequestDialog extends React.Component<
       <div>
         <div className="dialog__content-row">
           {this.props.i18n.text.get(
-            "plugin.workspace.evaluation.requestEvaluation.description",
+            "plugin.workspace.evaluation.requestEvaluation.description"
           )}
         </div>
         {hasFees ? (
           <div className="dialog__content-row">
             <label>
               {this.props.i18n.text.get(
-                "plugin.workspace.evaluation.requestEvaluation.evaluationHasFee.label",
+                "plugin.workspace.evaluation.requestEvaluation.evaluationHasFee.label"
               )}
             </label>
             <p>
               {this.props.i18n.text.get(
-                "plugin.workspace.evaluation.requestEvaluation.evaluationHasFee.content",
+                "plugin.workspace.evaluation.requestEvaluation.evaluationHasFee.content"
               )}
             </p>
           </div>
@@ -137,7 +137,7 @@ class EvaluationRequestDialog extends React.Component<
           disabled={this.state.locked}
         >
           {this.props.i18n.text.get(
-            "plugin.workspace.evaluation.requestEvaluation.requestButton",
+            "plugin.workspace.evaluation.requestEvaluation.requestButton"
           )}
         </Button>
         <Button
@@ -146,7 +146,7 @@ class EvaluationRequestDialog extends React.Component<
           disabled={this.state.locked}
         >
           {this.props.i18n.text.get(
-            "plugin.workspace.evaluation.requestEvaluation.cancelButton",
+            "plugin.workspace.evaluation.requestEvaluation.cancelButton"
           )}
         </Button>
       </div>
@@ -156,7 +156,7 @@ class EvaluationRequestDialog extends React.Component<
       <Dialog
         modifier="evaluation-request-dialog"
         title={this.props.i18n.text.get(
-          "plugin.workspace.evaluation.requestEvaluation.title",
+          "plugin.workspace.evaluation.requestEvaluation.title"
         )}
         content={content}
         footer={footer}
@@ -189,5 +189,5 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(EvaluationRequestDialog);

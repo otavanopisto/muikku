@@ -37,7 +37,7 @@ class DescriptionPanel extends React.Component<
           <div className="panel__header-icon panel__header-icon--workspace-description icon-books"></div>
           <h2 className="panel__header-title">
             {this.props.i18n.text.get(
-              "plugin.workspace.index.descriptionTitle",
+              "plugin.workspace.index.descriptionTitle"
             )}
           </h2>
         </div>

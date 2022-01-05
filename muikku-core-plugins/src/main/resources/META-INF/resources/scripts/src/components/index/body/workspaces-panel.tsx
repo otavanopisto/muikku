@@ -47,7 +47,7 @@ class WorkspacesPanel extends React.Component<
                       return 1;
                     }
                     return 0;
-                  },
+                  }
                 )
                 .map((workspace: WorkspaceType) => (
                   <Link
@@ -72,21 +72,21 @@ class WorkspacesPanel extends React.Component<
             {this.props.status.isStudent ? (
               <div>
                 {this.props.i18n.text.get(
-                  "plugin.frontPage.workspaces.noWorkspaces.part1",
+                  "plugin.frontPage.workspaces.noWorkspaces.part1"
                 )}
                 <Link href="/coursepicker">
                   {this.props.i18n.text.get(
-                    "plugin.frontPage.workspaces.noWorkspaces.coursepicker",
+                    "plugin.frontPage.workspaces.noWorkspaces.coursepicker"
                   )}
                 </Link>{" "}
                 {this.props.i18n.text.get(
-                  "plugin.frontPage.workspaces.noWorkspaces.part2",
+                  "plugin.frontPage.workspaces.noWorkspaces.part2"
                 )}
               </div>
             ) : (
               <div>
                 {this.props.i18n.text.get(
-                  "plugin.frontPage.workspaces.noWorkspaces.teacher",
+                  "plugin.frontPage.workspaces.noWorkspaces.teacher"
                 )}
               </div>
             )}

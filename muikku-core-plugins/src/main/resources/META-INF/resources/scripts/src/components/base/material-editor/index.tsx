@@ -63,7 +63,7 @@ const CKEditorConfig = (
   contextPath: string,
   workspace: WorkspaceType,
   materialNode: MaterialContentNodeType,
-  disablePlugins: boolean,
+  disablePlugins: boolean
 ) => ({
   uploadUrl: `/materialAttachmentUploadServlet/workspace/${workspace.urlName}/materials/${materialNode.path}`,
   linkShowTargetTab: true,
@@ -273,7 +273,7 @@ class MaterialEditor extends React.Component<
       setTimeout(() => {
         this.props.requestWorkspaceMaterialContentNodeAttachments(
           this.props.editorState.currentNodeWorkspace,
-          this.props.editorState.currentNodeValue,
+          this.props.editorState.currentNodeValue
         );
       }, 3000);
     }
@@ -499,19 +499,19 @@ class MaterialEditor extends React.Component<
       case "Help":
         localeString = isRestricted
           ? this.props.i18n.text.get(
-              "plugin.workspace.helpManagement.disableViewRestrictionPageTooltip",
+              "plugin.workspace.helpManagement.disableViewRestrictionPageTooltip"
             )
           : this.props.i18n.text.get(
-              "plugin.workspace.helpManagement.enableViewRestrictionPageTooltip",
+              "plugin.workspace.helpManagement.enableViewRestrictionPageTooltip"
             );
         break;
       case "Materials":
         localeString = isRestricted
           ? this.props.i18n.text.get(
-              "plugin.workspace.materialsManagement.disableViewRestrictionPageTooltip",
+              "plugin.workspace.materialsManagement.disableViewRestrictionPageTooltip"
             )
           : this.props.i18n.text.get(
-              "plugin.workspace.materialsManagement.enableViewRestrictionPageTooltip",
+              "plugin.workspace.materialsManagement.enableViewRestrictionPageTooltip"
             );
         break;
       default:
@@ -532,7 +532,7 @@ class MaterialEditor extends React.Component<
       contentType: string;
       progress: number;
       file: File;
-    }[],
+    }[]
   ) => {
     this.setState({
       uploadingValues: updatedValues,
@@ -546,7 +546,7 @@ class MaterialEditor extends React.Component<
    */
   handleUploadingTextProcesser = (percent: number) => `
       ${this.props.i18n.text.get(
-        "plugin.guider.user.details.files.uploading",
+        "plugin.guider.user.details.files.uploading"
       )} ${percent}%`;
 
   /**
@@ -580,7 +580,7 @@ class MaterialEditor extends React.Component<
             contentType: file.type,
             progress: 0,
             file,
-          })),
+          }))
         ),
         success: () => {
           this.setState({
@@ -593,7 +593,7 @@ class MaterialEditor extends React.Component<
           });
         },
       },
-      this.updateUploadingValues,
+      this.updateUploadingValues
     );
   }
 
@@ -640,7 +640,7 @@ class MaterialEditor extends React.Component<
       if (
         !equals(
           (this.props.editorState.currentNodeValue as any)[point],
-          (this.props.editorState.currentDraftNodeValue as any)[point],
+          (this.props.editorState.currentDraftNodeValue as any)[point]
         )
       ) {
         canPublish = true;
@@ -702,15 +702,15 @@ class MaterialEditor extends React.Component<
       !this.props.editorState.currentDraftNodeValue.correctAnswers ||
       this.props.editorState.currentDraftNodeValue.correctAnswers === "ALWAYS"
         ? this.props.i18n.text.get(
-            "plugin.workspace.materialsManagement.showAlwaysCorrectAnswersPageTooltip",
+            "plugin.workspace.materialsManagement.showAlwaysCorrectAnswersPageTooltip"
           )
         : this.props.editorState.currentDraftNodeValue.correctAnswers ===
           "ON_REQUEST"
         ? this.props.i18n.text.get(
-            "plugin.workspace.materialsManagement.showOnRequestCorrectAnswersPageTooltip",
+            "plugin.workspace.materialsManagement.showOnRequestCorrectAnswersPageTooltip"
           )
         : this.props.i18n.text.get(
-            "plugin.workspace.materialsManagement.showNeverCorrectAnswersPageTooltip",
+            "plugin.workspace.materialsManagement.showNeverCorrectAnswersPageTooltip"
           );
 
     const canRestrictViewLocale =
@@ -728,10 +728,10 @@ class MaterialEditor extends React.Component<
               content={
                 isHidden
                   ? this.props.i18n.text.get(
-                      "plugin.workspace.materialsManagement.showPageTooltip",
+                      "plugin.workspace.materialsManagement.showPageTooltip"
                     )
                   : this.props.i18n.text.get(
-                      "plugin.workspace.materialsManagement.hidePageTooltip",
+                      "plugin.workspace.materialsManagement.hidePageTooltip"
                     )
               }
             >
@@ -760,7 +760,7 @@ class MaterialEditor extends React.Component<
               openByHover
               modifier="material-management-tooltip"
               content={this.props.i18n.text.get(
-                "plugin.workspace.materialsManagement.changeAssesmentTypePageTooltip",
+                "plugin.workspace.materialsManagement.changeAssesmentTypePageTooltip"
               )}
             >
               <ButtonPill
@@ -797,7 +797,7 @@ class MaterialEditor extends React.Component<
               openByHover
               modifier="material-management-tooltip"
               content={this.props.i18n.text.get(
-                "plugin.workspace.materialsManagement.publishPageTooltip",
+                "plugin.workspace.materialsManagement.publishPageTooltip"
               )}
             >
               <ButtonPill
@@ -812,7 +812,7 @@ class MaterialEditor extends React.Component<
               openByHover
               modifier="material-management-tooltip"
               content={this.props.i18n.text.get(
-                "plugin.workspace.materialsManagement.revertToPublishedPageTooltip",
+                "plugin.workspace.materialsManagement.revertToPublishedPageTooltip"
               )}
             >
               <ButtonPill
@@ -832,7 +832,7 @@ class MaterialEditor extends React.Component<
                 openByHover
                 modifier="material-management-tooltip"
                 content={this.props.i18n.text.get(
-                  "plugin.workspace.materialsManagement.deletePageTooltip",
+                  "plugin.workspace.materialsManagement.deletePageTooltip"
                 )}
               >
                 <ButtonPill
@@ -866,7 +866,7 @@ class MaterialEditor extends React.Component<
         type: "material-editor",
         mobileAction: closeDialog,
         name: this.props.i18n.text.get(
-          "plugin.workspace.materialsManagement.editorView.tabs.label.content",
+          "plugin.workspace.materialsManagement.editorView.tabs.label.content"
         ),
         component: () => (
           <div className="material-editor__content-wrapper">
@@ -895,7 +895,7 @@ class MaterialEditor extends React.Component<
                     this.props.status.contextPath,
                     this.props.editorState.currentNodeWorkspace,
                     this.props.editorState.currentDraftNodeValue,
-                    this.props.editorState.disablePlugins,
+                    this.props.editorState.disablePlugins
                   )}
                   onChange={this.updateContent}
                   onDrop={this.refreshAttachments}
@@ -918,7 +918,7 @@ class MaterialEditor extends React.Component<
         type: "material-editor",
         mobileAction: closeDialog,
         name: this.props.i18n.text.get(
-          "plugin.workspace.materialsManagement.editorView.tabs.label.metadata",
+          "plugin.workspace.materialsManagement.editorView.tabs.label.metadata"
         ),
         component: () => (
           <div className="material-editor__content-wrapper">
@@ -928,7 +928,7 @@ class MaterialEditor extends React.Component<
               <div className="material-editor__sub-section">
                 <h3 className="material-editor__sub-title">
                   {this.props.i18n.text.get(
-                    "plugin.workspace.materialsManagement.editorView.subTitle.producers",
+                    "plugin.workspace.materialsManagement.editorView.subTitle.producers"
                   )}
                 </h3>
                 {this.props.editorState.currentDraftNodeValue.producers ? (
@@ -951,14 +951,14 @@ class MaterialEditor extends React.Component<
               <div className="material-editor__sub-section">
                 <h3 className="material-editor__sub-title">
                   {this.props.i18n.text.get(
-                    "plugin.workspace.materialsManagement.editorView.subTitle.license",
+                    "plugin.workspace.materialsManagement.editorView.subTitle.license"
                   )}
                 </h3>
                 <div className="material-editor__add-license-container">
                   <LicenseSelector
                     wcagLabel="materialLicense"
                     wcagDesc={this.props.i18n.text.get(
-                      "plugin.wcag.materialLicense.label",
+                      "plugin.wcag.materialLicense.label"
                     )}
                     modifier="material-editor"
                     value={this.props.editorState.currentDraftNodeValue.license}
@@ -979,7 +979,7 @@ class MaterialEditor extends React.Component<
         type: "material-editor",
         mobileAction: closeDialog,
         name: this.props.i18n.text.get(
-          "plugin.workspace.materialsManagement.editorView.tabs.label.attachments",
+          "plugin.workspace.materialsManagement.editorView.tabs.label.attachments"
         ),
         component: () => (
           <div className="material-editor__content-wrapper">
@@ -991,7 +991,7 @@ class MaterialEditor extends React.Component<
               modifier="material-editor"
               displayNotificationOnError
               fileTooLargeErrorText={this.props.i18n.text.get(
-                "plugin.workspace.fileFieldUpload.fileSizeTooLarge",
+                "plugin.workspace.fileFieldUpload.fileSizeTooLarge"
               )}
               files={
                 this.props.editorState.currentNodeValue.childrenAttachments
@@ -1003,17 +1003,17 @@ class MaterialEditor extends React.Component<
               }
               deleteDialogElement={ConfirmRemoveAttachment}
               hintText={this.props.i18n.text.get(
-                "plugin.workspace.fileField.fieldHint",
+                "plugin.workspace.fileField.fieldHint"
               )}
               deleteFileText={this.props.i18n.text.get(
-                "plugin.workspace.fileField.removeLink",
+                "plugin.workspace.fileField.removeLink"
               )}
               downloadFileText={this.props.i18n.text.get(
-                "plugin.workspace.fileField.downloadLink",
+                "plugin.workspace.fileField.downloadLink"
               )}
               showURL
               notificationOfSuccessText={this.props.i18n.text.get(
-                "plugin.workspace.fileFieldUpload.uploadSuccessful",
+                "plugin.workspace.fileFieldUpload.uploadSuccessful"
               )}
               displayNotificationOnSuccess
               uploadingTextProcesser={this.handleUploadingTextProcesser}
@@ -1075,7 +1075,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
       createWorkspaceMaterialAttachment,
       requestWorkspaceMaterialContentNodeAttachments,
     },
-    dispatch,
+    dispatch
   );
 }
 

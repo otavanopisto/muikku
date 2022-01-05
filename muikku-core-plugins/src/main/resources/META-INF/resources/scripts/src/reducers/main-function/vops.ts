@@ -37,7 +37,7 @@ export default function vops(
     status: "WAIT",
     value: null,
   },
-  action: ActionType,
+  action: ActionType
 ): VOPSType {
   if (action.type === "UPDATE_VOPS_STATUS") {
     return Object.assign({}, state, {

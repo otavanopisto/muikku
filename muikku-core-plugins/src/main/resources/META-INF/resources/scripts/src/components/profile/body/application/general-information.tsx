@@ -43,7 +43,7 @@ class GeneralInformation extends React.Component<
     const studyTimeEndValues = [];
     if (this.props.status.profile.studyTimeEnd) {
       studyTimeEndValues.push(
-        this.props.i18n.time.format(this.props.status.profile.studyTimeEnd),
+        this.props.i18n.time.format(this.props.status.profile.studyTimeEnd)
       );
       if (this.props.status.profile.studyTimeLeftStr) {
         studyTimeEndValues.push(this.props.status.profile.studyTimeLeftStr);
@@ -55,7 +55,7 @@ class GeneralInformation extends React.Component<
         <form>
           <h2 className="application-panel__content-header">
             {this.props.i18n.text.get(
-              "plugin.profile.titles.generalInformation",
+              "plugin.profile.titles.generalInformation"
             )}
           </h2>
           <div className="application-sub-panel">
@@ -67,7 +67,7 @@ class GeneralInformation extends React.Component<
                 condition={!!this.props.status.profile.studyStartDate}
                 label="plugin.profile.studyStartDateLabel"
                 value={this.props.i18n.time.format(
-                  this.props.status.profile.studyStartDate,
+                  this.props.status.profile.studyStartDate
                 )}
               />
               <ProfileProperty

@@ -105,7 +105,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
     section: MaterialContentNodeType,
     nextSection: MaterialContentNodeType,
     nextSibling: MaterialContentNodeType,
-    includesSection: boolean,
+    includesSection: boolean
   ) {
     const materialManagementItemsOptions: Array<any> = [
       {
@@ -170,7 +170,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
   }
   createPage(
     section: MaterialContentNodeType,
-    nextSibling: MaterialContentNodeType,
+    nextSibling: MaterialContentNodeType
   ) {
     this.props.createWorkspaceMaterialContentNode(
       {
@@ -179,17 +179,17 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
         parentMaterial: section,
         nextSibling,
         title: this.props.i18n.text.get(
-          "plugin.workspace.materialsManagement.newPageTitle",
+          "plugin.workspace.materialsManagement.newPageTitle"
         ),
         makeFolder: false,
       },
-      "help",
+      "help"
     );
   }
   createPageFromBinary(
     section: MaterialContentNodeType,
     nextSibling: MaterialContentNodeType,
-    e: React.ChangeEvent<HTMLInputElement>,
+    e: React.ChangeEvent<HTMLInputElement>
   ) {
     this.props.createWorkspaceMaterialContentNode(
       {
@@ -201,7 +201,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
         file: e.target.files[0],
         makeFolder: false,
       },
-      "help",
+      "help"
     );
   }
   createSection(nextSibling: MaterialContentNodeType) {
@@ -211,16 +211,16 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
         rootParentId: this.props.workspace.details.helpFolderId,
         nextSibling,
         title: this.props.i18n.text.get(
-          "plugin.workspace.materialsManagement.newPageTitle",
+          "plugin.workspace.materialsManagement.newPageTitle"
         ),
         makeFolder: true,
       },
-      "help",
+      "help"
     );
   }
   pastePage(
     section: MaterialContentNodeType,
-    nextSibling: MaterialContentNodeType,
+    nextSibling: MaterialContentNodeType
   ) {
     const workspaceMaterialCopiedId =
       localStorage.getItem("workspace-material-copied-id") || null;
@@ -238,7 +238,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
           copyWorkspaceId: parseInt(workspaceCopiedId),
           makeFolder: false,
         },
-        "help",
+        "help"
       );
     }
   }
@@ -340,7 +340,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
             openByHover
             modifier="material-management-tooltip"
             content={this.props.i18n.text.get(
-              "plugin.workspace.materialsManagement.createChapterTooltip",
+              "plugin.workspace.materialsManagement.createChapterTooltip"
             )}
           >
             <ButtonPill
@@ -356,7 +356,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
       this.props.materials.length === 0 ? (
         <div className="material-page material-page--empty">
           {this.props.i18n.text.get(
-            "plugin.workspace.materialsManagement.empty",
+            "plugin.workspace.materialsManagement.empty"
           )}
         </div>
       ) : null;
@@ -376,7 +376,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
               openByHover
               modifier="material-management-tooltip"
               content={this.props.i18n.text.get(
-                "plugin.workspace.materialsManagement.createChapterTooltip",
+                "plugin.workspace.materialsManagement.createChapterTooltip"
               )}
             >
               <ButtonPill
@@ -385,7 +385,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
                 onClick={this.createSection.bind(this, section)}
               />
             </Dropdown>
-          </div>,
+          </div>
         );
       }
 
@@ -399,7 +399,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
               section,
               nextSection,
               null,
-              true,
+              true
             ).map((item) => (closeDropdown: () => any) => {
               if (item.file) {
                 return (
@@ -465,7 +465,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
                   section,
                   nextSection,
                   nextSibling,
-                  false,
+                  false
                 ).map((item) => (closeDropdown: () => any) => {
                   if (item.file) {
                     return (
@@ -505,7 +505,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
                   icon="plus"
                 />
               </Dropdown>
-            </div>,
+            </div>
           );
         }
 
@@ -560,7 +560,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
                   openByHover
                   modifier="material-management-tooltip"
                   content={this.props.i18n.text.get(
-                    "plugin.workspace.materialsManagement.editChapterTooltip",
+                    "plugin.workspace.materialsManagement.editChapterTooltip"
                   )}
                 >
                   <ButtonPill
@@ -575,10 +575,10 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
                   content={
                     section.hidden
                       ? this.props.i18n.text.get(
-                          "plugin.workspace.materialsManagement.showChapterTooltip",
+                          "plugin.workspace.materialsManagement.showChapterTooltip"
                         )
                       : this.props.i18n.text.get(
-                          "plugin.workspace.materialsManagement.hideChapterTooltip",
+                          "plugin.workspace.materialsManagement.hideChapterTooltip"
                         )
                   }
                 >
@@ -599,7 +599,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
               <article className="material-page">
                 <div className="material-page__content material-page__content--view-restricted">
                   {this.props.i18n.text.get(
-                    "plugin.workspace.materialViewRestricted",
+                    "plugin.workspace.materialViewRestricted"
                   )}
                 </div>
               </article>
@@ -607,7 +607,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
           ) : null}
           {sectionSpecificContentData}
           {lastManagementOptionsWithinSectionItem}
-        </section>,
+        </section>
       );
     });
 
@@ -647,7 +647,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
       createWorkspaceMaterialContentNode,
       updateWorkspaceMaterialContentNode,
     },
-    dispatch,
+    dispatch
   );
 }
 

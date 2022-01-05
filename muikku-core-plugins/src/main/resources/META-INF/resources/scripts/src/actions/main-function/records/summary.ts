@@ -28,7 +28,7 @@ export interface UpdateSummaryTriggerType {
 const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
   return async (
     dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType,
+    getState: () => StateType
   ) => {
     try {
       dispatch({
@@ -42,7 +42,7 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
       /* We need completed courses from Eligibility */
       const eligibility: any = await promisify(
         mApi().records.studentMatriculationEligibility.read(pyramusId),
-        "callback",
+        "callback"
       )();
 
       /* We need past month activity */
@@ -51,7 +51,7 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
           from: new Date(new Date().setMonth(new Date().getMonth() - 1)),
           to: new Date(),
         }),
-        "callback",
+        "callback"
       )();
 
       /* We need returned exercises and evaluated courses */
@@ -61,13 +61,13 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
       /* Student's study time */
       const studentsDetails: any = await promisify(
         mApi().user.students.read(pyramusId),
-        "callback",
+        "callback"
       )();
 
       /* Student's user groups */
       const studentsUserGroups: any = await promisify(
         mApi().usergroup.groups.read({ userIdentifier: pyramusId }),
-        "callback",
+        "callback"
       )();
 
       const studentsStudentCouncelors: any = [];
@@ -80,7 +80,7 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
         studentsUserGroups
           .filter(
             (studentsUserGroup: any) =>
-              studentsUserGroup.isGuidanceGroup == true,
+              studentsUserGroup.isGuidanceGroup == true
           )
           .forEach(function (studentsUserGroup: any) {
             mApi()
@@ -94,7 +94,7 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
                     !studentsStudentCouncelors.some(
                       (existingStudentCouncelor: any) =>
                         existingStudentCouncelor.userEntityId ==
-                        studentsStudentCouncelor.userEntityId,
+                        studentsStudentCouncelor.userEntityId
                     )
                   ) {
                     studentsStudentCouncelors.push(studentsStudentCouncelor);
@@ -111,7 +111,7 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
 
       /* Getting past the object with keys */
       const activityArrays: any = Object.keys(activityLogs).map(
-        (key) => activityLogs[key],
+        (key) => activityLogs[key]
       );
 
       /* Picking the done exercises and evaluated courses from the objects */
@@ -131,7 +131,7 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
           userIdentifier: pyramusId,
           includeInactiveWorkspaces: true,
         }),
-        "callback",
+        "callback"
       )();
 
       if (workspaces && workspaces.length) {
@@ -143,12 +143,12 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
               >await promisify(
                 mApi().guider.workspaces.studentactivity.read(
                   workspace.id,
-                  pyramusId,
+                  pyramusId
                 ),
-                "callback",
+                "callback"
               )();
               workspaces[index].studentActivity = activity;
-            }),
+            })
           ),
           Promise.all(
             workspaces.map(async (workspace: any, index: any) => {
@@ -158,10 +158,10 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
                 mApi().workspace.workspaces.forumStatistics.read(workspace.id, {
                   userIdentifier: pyramusId,
                 }),
-                "callback",
+                "callback"
               )();
               workspaces[index].forumStatistics = statistics;
-            }),
+            })
           ),
           Promise.all(
             workspaces.map(async (workspace: any, index: any) => {
@@ -172,11 +172,11 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
                     from: new Date(new Date().getFullYear() - 2, 0),
                     to: new Date(),
                   }),
-                  "callback",
+                  "callback"
                 )()
               );
               workspaces[index].activityLogs = courseActivity;
-            }),
+            })
           ),
         ]);
       }
@@ -213,10 +213,10 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
       dispatch(
         actions.displayNotification(
           getState().i18n.text.get(
-            "plugin.records.summary.errormessage.summaryUpdateFailed",
+            "plugin.records.summary.errormessage.summaryUpdateFailed"
           ),
-          "error",
-        ),
+          "error"
+        )
       );
     }
   };

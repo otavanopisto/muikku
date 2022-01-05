@@ -65,7 +65,7 @@ export default class AutofillSelector extends React.Component<
   onInputBlur(e: React.FocusEvent<any>) {
     this.blurTimeout = setTimeout(
       () => this.setState({ isFocused: false }),
-      100,
+      100
     );
   }
 
@@ -129,7 +129,7 @@ export default class AutofillSelector extends React.Component<
       return {
         value: item,
         selected: !!this.state.selectedItems.find(
-          (selectedItem) => selectedItem.id === item.id,
+          (selectedItem) => selectedItem.id === item.id
         ),
         node,
       };

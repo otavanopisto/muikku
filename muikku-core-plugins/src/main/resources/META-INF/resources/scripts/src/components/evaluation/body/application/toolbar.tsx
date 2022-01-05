@@ -78,7 +78,7 @@ class EvaluationToolbar extends React.Component<
         />
         <label htmlFor="filterEvaluated">
           {this.props.i18n.text.get(
-            "plugin.evaluation.workspace.filter.checkbox.evaluated",
+            "plugin.evaluation.workspace.filter.checkbox.evaluated"
           )}
         </label>
       </div>,
@@ -91,7 +91,7 @@ class EvaluationToolbar extends React.Component<
         />
         <label htmlFor="filterAssessmentRequest">
           {this.props.i18n.text.get(
-            "plugin.evaluation.workspace.filter.checkbox.requestEvaluation",
+            "plugin.evaluation.workspace.filter.checkbox.requestEvaluation"
           )}
         </label>
       </div>,
@@ -106,7 +106,7 @@ class EvaluationToolbar extends React.Component<
         />
         <label htmlFor="filterSupplementationRequest">
           {this.props.i18n.text.get(
-            "plugin.evaluation.workspace.filter.checkbox.hasSupplementationRequest",
+            "plugin.evaluation.workspace.filter.checkbox.hasSupplementationRequest"
           )}
         </label>
       </div>,
@@ -119,7 +119,7 @@ class EvaluationToolbar extends React.Component<
         />
         <label htmlFor="filterNotEvaluated">
           {this.props.i18n.text.get(
-            "plugin.evaluation.workspace.filter.checkbox.noevaluation",
+            "plugin.evaluation.workspace.filter.checkbox.noevaluation"
           )}
         </label>
       </div>,
@@ -164,7 +164,7 @@ function mapStateToProps(state: StateType) {
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     { updateEvaluationSearch, setEvaluationFilters },
-    dispatch,
+    dispatch
   );
 }
 

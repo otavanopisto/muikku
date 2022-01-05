@@ -29,7 +29,7 @@ interface MatriculationExaminationEnrolledInputGroupProps {
   onSubjectGroupChange: <T extends keyof ExaminationEnrolledSubject>(
     key: T,
     value: ExaminationEnrolledSubject[T],
-    index: number,
+    index: number
   ) => void;
   onClickDeleteRow: (index: number) => (e: React.MouseEvent) => void;
 }
@@ -177,7 +177,7 @@ interface MatriculationExaminationFinishedInputGroupProps {
   onSubjectGroupChange: <T extends keyof ExaminationFinishedSubject>(
     key: T,
     value: ExaminationFinishedSubject[T],
-    index: number,
+    index: number
   ) => void;
   onClickDeleteRow: (index: number) => (e: React.MouseEvent) => void;
 }
@@ -239,7 +239,7 @@ export const MatriculationExaminationFinishedInputGroup: React.FC<
             enrolledAttendances.filter(
               (era) =>
                 era.subject === subject.subject &&
-                era.mandatory != subject.mandatory,
+                era.mandatory != subject.mandatory
             ).length > 0
               ? " matriculation__form-element-container--mandatory-conflict"
               : ""
@@ -319,7 +319,7 @@ interface MatriculationExaminationPlannedInputGroupProps {
   onSubjectGroupChange: <T extends keyof ExaminationPlannedSubject>(
     key: T,
     value: ExaminationPlannedSubject[T],
-    index: number,
+    index: number
   ) => void;
   onClickDeleteRow: (index: number) => (e: React.MouseEvent) => void;
 }

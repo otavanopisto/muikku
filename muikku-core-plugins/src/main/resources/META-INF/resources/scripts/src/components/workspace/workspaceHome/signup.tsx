@@ -32,7 +32,7 @@ class SignUpPanel extends React.Component<SignUpPanelProps, SignUpPanelState> {
         <div className="panel__body">
           <div className="panel__body-content panel__body-content--signup">
             {this.props.i18n.text.get(
-              "plugin.workspace.logInGuidingInformation",
+              "plugin.workspace.logInGuidingInformation"
             )}
           </div>
           <div className="panel__body-footer">

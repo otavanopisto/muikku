@@ -62,7 +62,7 @@ export default function yo(
     eligibility: null,
     eligibilityStatus: null,
   },
-  action: ActionType,
+  action: ActionType
 ): YOType {
   if (action.type === "UPDATE_STUDIES_YO_STATUS") {
     return Object.assign({}, state, {
@@ -93,7 +93,7 @@ export function eligibilitySubjects(
     status: "WAIT",
     subjects: [],
   },
-  action: ActionType,
+  action: ActionType
 ): SubjectEligibilitySubjectsType {
   if (action.type === "UPDATE_STUDIES_SUBJECT_ELIGIBILITY") {
     return Object.assign({}, state, {

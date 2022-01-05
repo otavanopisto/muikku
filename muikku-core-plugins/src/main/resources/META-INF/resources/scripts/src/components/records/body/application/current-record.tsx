@@ -110,28 +110,28 @@ class CurrentRecord extends React.Component<
                   <div className="workspace-assessment__date">
                     <span className="workspace-assessment__date-label">
                       {this.props.i18n.text.get(
-                        "plugin.records.workspace.assessment.date.label",
+                        "plugin.records.workspace.assessment.date.label"
                       )}
                       :
                     </span>
                     <span className="workspace-assessment__date-data">
                       {this.props.i18n.time.format(
                         this.props.records.current.workspace
-                          .studentAssessmentState.date,
+                          .studentAssessmentState.date
                       )}
                     </span>
                   </div>
                   <div className="workspace-assessment__grade">
                     <span className="workspace-assessment__grade-label">
                       {this.props.i18n.text.get(
-                        "plugin.records.workspace.assessment.grade.label",
+                        "plugin.records.workspace.assessment.grade.label"
                       )}
                       :
                     </span>
                     <span className="workspace-assessment__grade-data">
                       {assessmentIsIncomplete
                         ? this.props.i18n.text.get(
-                            "plugin.records.workspace.assessment.grade.incomplete.data",
+                            "plugin.records.workspace.assessment.grade.incomplete.data"
                           )
                         : this.props.records.current.workspace
                             .studentAssessmentState.grade}
@@ -140,7 +140,7 @@ class CurrentRecord extends React.Component<
                   <div className="workspace-assessment__literal">
                     <div className="workspace-assessment__literal-label">
                       {this.props.i18n.text.get(
-                        "plugin.records.workspace.assessment.literal.label",
+                        "plugin.records.workspace.assessment.literal.label"
                       )}
                       :
                     </div>
@@ -160,21 +160,21 @@ class CurrentRecord extends React.Component<
                   <div className="workspace-assessment__date">
                     <span className="workspace-assessment__date-label">
                       {this.props.i18n.text.get(
-                        "plugin.records.workspace.assessment.date.label",
+                        "plugin.records.workspace.assessment.date.label"
                       )}
                       :
                     </span>
                     <span className="workspace-assessment__date-data">
                       {this.props.i18n.time.format(
                         this.props.records.current.workspace
-                          .studentAssessmentState.date,
+                          .studentAssessmentState.date
                       )}
                     </span>
                   </div>
                   <div className="workspace-assessment__literal">
                     <div className="workspace-assessment__literal-label">
                       {this.props.i18n.text.get(
-                        "plugin.records.workspace.assessment.request.label",
+                        "plugin.records.workspace.assessment.request.label"
                       )}
                       :
                     </div>
@@ -201,7 +201,7 @@ class CurrentRecord extends React.Component<
                     this.props.records.current &&
                     this.props.records.current.compositeReplies.find(
                       (cItem) =>
-                        cItem.workspaceMaterialId === material.assignment.id,
+                        cItem.workspaceMaterialId === material.assignment.id
                     );
 
                   if (compositeReply && compositeReply.submitted !== null) {
@@ -252,7 +252,7 @@ class CurrentRecord extends React.Component<
                           <span>
                             {this.props.i18n.time.format(
                               journal.created,
-                              "L LT",
+                              "L LT"
                             )}
                           </span>
                         </div>

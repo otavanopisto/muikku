@@ -84,7 +84,7 @@ export class ChatMessage extends React.Component<
       } else {
         const user: IChatUserInfoType = (await promisify(
           mApi().chat.userInfo.read(this.props.message.userId, {}),
-          "callback",
+          "callback"
         )()) as any;
         USER_INFO_CACHE[this.props.message.userId] = user;
         userName = user.name;
@@ -147,7 +147,7 @@ export class ChatMessage extends React.Component<
         },
         () => {
           this.contentEditableRef.current.focus();
-        },
+        }
       );
     }
   }
@@ -247,7 +247,7 @@ export class ChatMessage extends React.Component<
                         <span className={`link__icon icon-${item.icon}`}></span>
                         <span>{this.props.i18n.text.get(item.text)}</span>
                       </Link>
-                    ),
+                    )
                 )}
               >
                 <span className="chat__message-action icon-more_vert"></span>
@@ -272,12 +272,12 @@ export class ChatMessage extends React.Component<
                 onClick={this.toggleMessageEditMode}
               >
                 {this.props.i18n.text.get(
-                  "plugin.chat.messages.editMessage.cancelLink",
+                  "plugin.chat.messages.editMessage.cancelLink"
                 )}
               </span>
               <span>
                 {this.props.i18n.text.get(
-                  "plugin.chat.messages.editMessage.orText",
+                  "plugin.chat.messages.editMessage.orText"
                 )}
               </span>
               <span
@@ -285,7 +285,7 @@ export class ChatMessage extends React.Component<
                 onClick={this.onMessageEdited}
               >
                 {this.props.i18n.text.get(
-                  "plugin.chat.messages.editMessage.saveLink",
+                  "plugin.chat.messages.editMessage.saveLink"
                 )}
               </span>
             </div>
@@ -296,7 +296,7 @@ export class ChatMessage extends React.Component<
               {this.props.message.deleted ? (
                 <i>
                   {this.props.i18n.text.get(
-                    "plugin.chat.messages.messageIsDeleted",
+                    "plugin.chat.messages.messageIsDeleted"
                   )}
                 </i>
               ) : (
@@ -306,7 +306,7 @@ export class ChatMessage extends React.Component<
                 <div className="chat__message-edited-info">
                   {this.props.i18n.text.get("plugin.chat.messages.edited")}{" "}
                   {this.props.i18n.time.formatDaily(
-                    this.props.message.edited.timestamp,
+                    this.props.message.edited.timestamp
                   )}
                 </div>
               )}

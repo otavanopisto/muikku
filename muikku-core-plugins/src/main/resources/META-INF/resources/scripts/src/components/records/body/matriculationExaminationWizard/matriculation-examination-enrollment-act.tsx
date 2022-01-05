@@ -36,7 +36,7 @@ export class MatrMatriculationExaminationEnrollmentAct extends React.Component<
    */
   onExaminationInformationChange = <T extends keyof ExaminationInformation>(
     key: T,
-    value: ExaminationInformation[T],
+    value: ExaminationInformation[T]
   ) => {
     const { examination, onChange } = this.props;
 
@@ -70,7 +70,7 @@ export class MatrMatriculationExaminationEnrollmentAct extends React.Component<
                 onChange={(e) =>
                   this.onExaminationInformationChange(
                     "location",
-                    e.currentTarget.value,
+                    e.currentTarget.value
                   )
                 }
                 value={location === "Mikkeli" ? "Mikkeli" : ""}
@@ -95,7 +95,7 @@ export class MatrMatriculationExaminationEnrollmentAct extends React.Component<
                     onChange={(e) =>
                       this.onExaminationInformationChange(
                         "location",
-                        e.currentTarget.value,
+                        e.currentTarget.value
                       )
                     }
                   />
@@ -124,7 +124,7 @@ export class MatrMatriculationExaminationEnrollmentAct extends React.Component<
                 onChange={(e) =>
                   this.onExaminationInformationChange(
                     "message",
-                    e.currentTarget.value,
+                    e.currentTarget.value
                   )
                 }
                 value={message}
@@ -139,7 +139,7 @@ export class MatrMatriculationExaminationEnrollmentAct extends React.Component<
                 onChange={(e) =>
                   this.onExaminationInformationChange(
                     "canPublishName",
-                    e.currentTarget.value,
+                    e.currentTarget.value
                   )
                 }
                 value={canPublishName}

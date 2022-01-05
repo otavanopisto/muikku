@@ -67,7 +67,7 @@ function Record(props: RecordProps) {
         <Link
           className="voice-recorder__download-button icon-download"
           title={props.i18n.text.get(
-            "plugin.workspace.audioField.downloadLink",
+            "plugin.workspace.audioField.downloadLink"
           )}
           href={record.url}
           openInNewTab={record.name}
@@ -77,7 +77,7 @@ function Record(props: RecordProps) {
             <Link
               className="voice-recorder__remove-button icon-trash"
               title={props.i18n.text.get(
-                "plugin.workspace.audioField.removeLink",
+                "plugin.workspace.audioField.removeLink"
               )}
             />
           </DeleteDialog>

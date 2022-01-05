@@ -18,7 +18,7 @@ export default async function (
   options: {
     setupMessages?: boolean;
     setupWorkspacePermissions?: boolean;
-  } = {},
+  } = {}
 ) {
   const state: StateType = store.getState();
 

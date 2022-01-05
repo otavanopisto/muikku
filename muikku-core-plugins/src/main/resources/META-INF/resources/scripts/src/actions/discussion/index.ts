@@ -157,7 +157,7 @@ const loadDiscussionThreadsFromServer: loadDiscussionThreadsFromServerTriggerTyp
   function loadDiscussionThreadsFromServer(data) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       //Remove the current message
       if (!data.notRemoveCurrent) {
@@ -198,7 +198,7 @@ const loadDiscussionThreadsFromServer: loadDiscussionThreadsFromServerTriggerTyp
           let allThreadNumber = 0;
           if (data.areaId) {
             const area: DiscussionAreaType = discussion.areas.find(
-              (area: DiscussionAreaType) => area.id === data.areaId,
+              (area: DiscussionAreaType) => area.id === data.areaId
             );
             allThreadNumber = area.numThreads;
           } else {
@@ -231,16 +231,16 @@ const loadDiscussionThreadsFromServer: loadDiscussionThreadsFromServerTriggerTyp
                   ? mApi().workspace.workspaces.forumAreas.threads.read(
                       discussion.workspaceId,
                       data.areaId,
-                      params,
+                      params
                     )
                   : mApi().workspace.workspaces.forumLatest.read(
                       discussion.workspaceId,
-                      params,
+                      params
                     )
                 : data.areaId
                 ? mApi().forum.areas.threads.read(data.areaId, params)
                 : mApi().forum.latest.read(params),
-              "callback",
+              "callback"
             )();
 
             //Create the payload for updating all the communicator properties
@@ -262,14 +262,14 @@ const loadDiscussionThreadsFromServer: loadDiscussionThreadsFromServerTriggerTyp
             }
             //Error :(
             dispatch(
-              notificationActions.displayNotification(err.message, "error"),
+              notificationActions.displayNotification(err.message, "error")
             );
             dispatch({
               type: "UPDATE_DISCUSSION_THREADS_STATE",
               payload: <DiscussionStateType>"ERROR",
             });
           }
-        }),
+        })
       );
     };
   };
@@ -278,27 +278,27 @@ const createDiscussionThread: CreateDiscussionThreadTriggerType =
   function createDiscussionThread(data) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       if (!data.title) {
         data.fail && data.fail();
         return dispatch(
           notificationActions.displayNotification(
             getState().i18n.text.get(
-              "plugin.discussion.errormessage.createMessage.missing.title",
+              "plugin.discussion.errormessage.createMessage.missing.title"
             ),
-            "error",
-          ),
+            "error"
+          )
         );
       } else if (!data.message) {
         data.fail && data.fail();
         return dispatch(
           notificationActions.displayNotification(
             getState().i18n.text.get(
-              "plugin.discussion.errormessage.createMessage.missing.content",
+              "plugin.discussion.errormessage.createMessage.missing.content"
             ),
-            "error",
-          ),
+            "error"
+          )
         );
       }
 
@@ -317,10 +317,10 @@ const createDiscussionThread: CreateDiscussionThreadTriggerType =
               ? mApi().workspace.workspaces.forumAreas.threads.create(
                   discussion.workspaceId,
                   data.forumAreaId,
-                  params,
+                  params
                 )
               : mApi().forum.areas.threads.create(data.forumAreaId, params),
-            "callback",
+            "callback"
           )()
         );
 
@@ -362,27 +362,27 @@ const modifyDiscussionThread: ModifyDiscussionThreadTriggerType =
   function modifyDiscussionThread(data) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       if (!data.title) {
         data.fail && data.fail();
         return dispatch(
           notificationActions.displayNotification(
             getState().i18n.text.get(
-              "plugin.discussion.errormessage.createMessage.missing.title",
+              "plugin.discussion.errormessage.createMessage.missing.title"
             ),
-            "error",
-          ),
+            "error"
+          )
         );
       } else if (!data.message) {
         data.fail && data.fail();
         return dispatch(
           notificationActions.displayNotification(
             getState().i18n.text.get(
-              "plugin.discussion.errormessage.createMessage.missing.content",
+              "plugin.discussion.errormessage.createMessage.missing.content"
             ),
-            "error",
-          ),
+            "error"
+          )
         );
       }
 
@@ -401,14 +401,14 @@ const modifyDiscussionThread: ModifyDiscussionThreadTriggerType =
                   discussion.workspaceId,
                   data.thread.forumAreaId,
                   data.thread.id,
-                  payload,
+                  payload
                 )
               : mApi().forum.areas.threads.update(
                   data.thread.forumAreaId,
                   data.thread.id,
-                  payload,
+                  payload
                 ),
-            "callback",
+            "callback"
           )()
         );
         dispatch({
@@ -422,7 +422,7 @@ const modifyDiscussionThread: ModifyDiscussionThreadTriggerType =
             page: discussionState.page,
             forceRefresh: true,
             notRemoveCurrent: true,
-          }),
+          })
         );
 
         data.success && data.success();
@@ -440,7 +440,7 @@ const loadDiscussionThreadFromServer: LoadDiscussionThreadFromServerTriggerType 
   function loadDiscussionThreadFromServer(data) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       const state = getState();
       const discussion: DiscussionType = state.discussion;
@@ -472,7 +472,7 @@ const loadDiscussionThreadFromServer: LoadDiscussionThreadFromServerTriggerType 
 
       try {
         let newCurrentThread: DiscussionThreadType = discussion.threads.find(
-          (thread) => thread.id === data.threadId,
+          (thread) => thread.id === data.threadId
         );
 
         if (!newCurrentThread || data.forceRefresh) {
@@ -482,10 +482,10 @@ const loadDiscussionThreadFromServer: LoadDiscussionThreadFromServerTriggerType 
                 ? mApi().workspace.workspaces.forumAreas.threads.read(
                     discussion.workspaceId,
                     data.areaId,
-                    data.threadId,
+                    data.threadId
                   )
                 : mApi().forum.areas.threads.read(data.areaId, data.threadId),
-              "callback",
+              "callback"
             )()
           );
         }
@@ -506,14 +506,14 @@ const loadDiscussionThreadFromServer: LoadDiscussionThreadFromServerTriggerType 
                 discussion.workspaceId,
                 data.areaId,
                 data.threadId,
-                params,
+                params
               )
             : mApi().forum.areas.threads.replies.read(
                 data.areaId,
                 data.threadId,
-                params,
+                params
               ),
-          "callback",
+          "callback"
         )();
 
         const newThreads: DiscussionThreadListType =
@@ -567,7 +567,7 @@ const replyToCurrentDiscussionThread: ReplyToCurrentDiscussionThreadTriggerType 
   function replyToDiscussionThread(data) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       const payload: any = {
         message: data.message,
@@ -590,7 +590,7 @@ const replyToCurrentDiscussionThread: ReplyToCurrentDiscussionThreadTriggerType 
             success: data.success,
             fail: data.fail,
             forceRefresh: true,
-          }),
+          })
         );
       } catch (err) {
         if (!(err instanceof MApiError)) {
@@ -606,7 +606,7 @@ const deleteCurrentDiscussionThread: DeleteCurrentDiscussionThreadTriggerType =
   function deleteCurrentDiscussionThread(data) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       const state = getState();
       const discussion: DiscussionType = state.discussion;
@@ -617,20 +617,20 @@ const deleteCurrentDiscussionThread: DeleteCurrentDiscussionThreadTriggerType =
             ? mApi().workspace.workspaces.forumAreas.threads.del(
                 discussion.workspaceId,
                 discussion.current.forumAreaId,
-                discussion.current.id,
+                discussion.current.id
               )
             : mApi().forum.areas.threads.del(
                 discussion.current.forumAreaId,
-                discussion.current.id,
+                discussion.current.id
               ),
-          "callback",
+          "callback"
         )();
         dispatch(
           loadDiscussionThreadsFromServer({
             areaId: discussion.areaId,
             page: discussion.page,
             forceRefresh: true,
-          }),
+          })
         );
 
         //TODO same hacky method to trigger the goback event
@@ -663,7 +663,7 @@ const deleteDiscussionThreadReplyFromCurrent: DeleteDiscussionThreadReplyFromCur
   function deleteDiscussionThreadReplyFromCurrent(data) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       const state = getState();
       const discussion: DiscussionType = state.discussion;
@@ -675,14 +675,14 @@ const deleteDiscussionThreadReplyFromCurrent: DeleteDiscussionThreadReplyFromCur
                 discussion.workspaceId,
                 discussion.current.forumAreaId,
                 discussion.current.id,
-                data.reply.id,
+                data.reply.id
               )
             : mApi().forum.areas.threads.replies.del(
                 discussion.current.forumAreaId,
                 discussion.current.id,
-                data.reply.id,
+                data.reply.id
               ),
-          "callback",
+          "callback"
         )();
 
         dispatch(
@@ -691,7 +691,7 @@ const deleteDiscussionThreadReplyFromCurrent: DeleteDiscussionThreadReplyFromCur
             threadId: discussion.current.id,
             success: data.success,
             fail: data.fail,
-          }),
+          })
         );
       } catch (err) {
         if (!(err instanceof MApiError)) {
@@ -700,10 +700,10 @@ const deleteDiscussionThreadReplyFromCurrent: DeleteDiscussionThreadReplyFromCur
         dispatch(
           notificationActions.displayNotification(
             getState().i18n.text.get(
-              "plugin.discussion.errormessage.deleteReply",
+              "plugin.discussion.errormessage.deleteReply"
             ),
-            "error",
-          ),
+            "error"
+          )
         );
         data.fail && data.fail();
       }
@@ -714,7 +714,7 @@ const modifyReplyFromCurrentThread: ModifyReplyFromCurrentThreadTriggerType =
   function modifyReplyFromCurrentThread(data) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       const state = getState();
       const discussion: DiscussionType = state.discussion;
@@ -731,15 +731,15 @@ const modifyReplyFromCurrentThread: ModifyReplyFromCurrentThreadTriggerType =
                   discussion.current.forumAreaId,
                   discussion.current.id,
                   data.reply.id,
-                  newReplyMod,
+                  newReplyMod
                 )
               : mApi().forum.areas.threads.replies.update(
                   discussion.current.forumAreaId,
                   discussion.current.id,
                   data.reply.id,
-                  newReplyMod,
+                  newReplyMod
                 ),
-            "callback",
+            "callback"
           )()
         );
 
@@ -767,7 +767,7 @@ const loadDiscussionAreasFromServer: LoadDiscussionAreasFromServerTriggerType =
   function loadDiscussionAreasFromServer(callback) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       const discussion: DiscussionType = getState().discussion;
       try {
@@ -777,10 +777,10 @@ const loadDiscussionAreasFromServer: LoadDiscussionAreasFromServerTriggerType =
             await promisify(
               discussion.workspaceId
                 ? mApi().workspace.workspaces.forumAreas.read(
-                    discussion.workspaceId,
+                    discussion.workspaceId
                   )
                 : mApi().forum.areas.read(),
-              "callback",
+              "callback"
             )()
           ),
         });
@@ -807,17 +807,17 @@ const createDiscussionArea: CreateDiscussionAreaTriggerType =
   function createDiscussionArea(data) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       if (!data.name) {
         data.fail && data.fail();
         return dispatch(
           notificationActions.displayNotification(
             getState().i18n.text.get(
-              "plugin.discussion.errormessage.createForumArea.missing.areaName",
+              "plugin.discussion.errormessage.createForumArea.missing.areaName"
             ),
-            "error",
-          ),
+            "error"
+          )
         );
       }
 
@@ -832,10 +832,10 @@ const createDiscussionArea: CreateDiscussionAreaTriggerType =
             discussion.workspaceId
               ? mApi().workspace.workspaces.forumAreas.create(
                   discussion.workspaceId,
-                  params,
+                  params
                 )
               : mApi().forum.areas.create(params),
-            "callback",
+            "callback"
           )()
         );
         dispatch({
@@ -868,17 +868,17 @@ const updateDiscussionArea: UpdateDiscussionAreaTriggerType =
   function updateDiscussionArea(data) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       if (!data.name) {
         data.fail && data.fail();
         return dispatch(
           notificationActions.displayNotification(
             getState().i18n.text.get(
-              "plugin.discussion.errormessage.createForumArea.missing.areaName",
+              "plugin.discussion.errormessage.createForumArea.missing.areaName"
             ),
-            "error",
-          ),
+            "error"
+          )
         );
       }
 
@@ -893,10 +893,10 @@ const updateDiscussionArea: UpdateDiscussionAreaTriggerType =
             ? mApi().workspace.workspaces.forumAreas.update(
                 discussion.workspaceId,
                 data.id,
-                params,
+                params
               )
             : mApi().forum.areas.update(data.id, params),
-          "callback",
+          "callback"
         )();
         dispatch({
           type: "UPDATE_DISCUSSION_AREA",
@@ -927,7 +927,7 @@ const deleteDiscussionArea: DeleteDiscussionAreaTriggerType =
   function deleteDiscussionArea(data) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       try {
         const discussion: DiscussionType = getState().discussion;
@@ -935,10 +935,10 @@ const deleteDiscussionArea: DeleteDiscussionAreaTriggerType =
           discussion.workspaceId
             ? mApi().workspace.workspaces.forumAreas.del(
                 discussion.workspaceId,
-                data.id,
+                data.id
               )
             : mApi().forum.areas.del(data.id),
-          "callback",
+          "callback"
         )();
         location.hash = "";
         dispatch({

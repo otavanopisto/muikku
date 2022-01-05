@@ -14,7 +14,7 @@ export default function credentials(
     username: "",
     state: "LOADING",
   },
-  action: ActionType,
+  action: ActionType
 ): CredentialsType {
   if (action.type === "LOAD_CREDENTIALS") {
     return Object.assign({}, state, action.payload);

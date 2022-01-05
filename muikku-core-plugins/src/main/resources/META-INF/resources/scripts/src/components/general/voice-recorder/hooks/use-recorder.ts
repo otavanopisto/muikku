@@ -56,7 +56,7 @@ export default function useRecorder(props: UseRecorderProps) {
               contentType: value.contentType,
               id: value.id,
               url: `/rest/workspace/materialevaluationaudioassessment/${value.id}`,
-            } as RecordValue),
+            } as RecordValue)
         ),
       }));
     }
@@ -151,7 +151,7 @@ export default function useRecorder(props: UseRecorderProps) {
             uploading: true,
             progress: 0,
           },
-          newValues,
+          newValues
         );
       };
     }
@@ -167,7 +167,7 @@ export default function useRecorder(props: UseRecorderProps) {
 
   const processFileAt = (
     valueToSave: RecordValue,
-    initialValue: RecordValue[],
+    initialValue: RecordValue[]
   ) => {
     const newValue = { ...valueToSave };
     //create the form data
@@ -232,7 +232,7 @@ export default function useRecorder(props: UseRecorderProps) {
               const newValueSavedToServer: RecordValue[] = [{ ...newValue }];
 
               const updatedAllValues = initialValue.concat(
-                newValueSavedToServer,
+                newValueSavedToServer
               );
 
               setRecorderState((prevState) => ({
@@ -242,7 +242,7 @@ export default function useRecorder(props: UseRecorderProps) {
               }));
             }
           },
-          false,
+          false
         );
         return xhr;
       },

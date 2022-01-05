@@ -26,7 +26,7 @@ interface MultiSelectFieldProps {
   onChange?: (
     context: React.Component<any, any>,
     name: string,
-    newValue: any,
+    newValue: any
   ) => any;
   i18n: i18nType;
 
@@ -101,7 +101,7 @@ export default class MultiSelectField extends React.Component<
    */
   shouldComponentUpdate(
     nextProps: MultiSelectFieldProps,
-    nextState: MultiSelectFieldState,
+    nextState: MultiSelectFieldState
   ) {
     return (
       !equals(nextProps.content, this.props.content) ||
@@ -129,7 +129,7 @@ export default class MultiSelectField extends React.Component<
 
     // let's find the actually correct answers from an array
     const actuallyCorrectAnswers = this.props.content.options.filter(
-      (a) => a.correct,
+      (a) => a.correct
     );
 
     // we might not really have any real correct answer
@@ -190,7 +190,7 @@ export default class MultiSelectField extends React.Component<
    */
   componentDidUpdate(
     prevProps: MultiSelectFieldProps,
-    prevState: MultiSelectFieldState,
+    prevState: MultiSelectFieldState
   ) {
     this.checkAnswers();
   }
@@ -225,7 +225,7 @@ export default class MultiSelectField extends React.Component<
       this.props.onChange(
         this,
         this.props.content.name,
-        JSON.stringify(nValues),
+        JSON.stringify(nValues)
       );
 
     // we set the new state and check for rightness afterwards
@@ -233,7 +233,7 @@ export default class MultiSelectField extends React.Component<
       {
         values: nValues,
       },
-      this.checkAnswers,
+      this.checkAnswers
     );
   }
 
@@ -262,7 +262,7 @@ export default class MultiSelectField extends React.Component<
     ) {
       // check for the correct answers we found
       const correctAnswersFound = this.props.content.options.filter(
-        (a) => a.correct,
+        (a) => a.correct
       );
       // if we got some in there
       if (correctAnswersFound.length) {
@@ -271,7 +271,7 @@ export default class MultiSelectField extends React.Component<
           <span className="material-page__field-answer-examples">
             <span className="material-page__field-answer-examples-title">
               {this.props.i18n.text.get(
-                "plugin.workspace.assigment.checkAnswers.correctSummary.title",
+                "plugin.workspace.assigment.checkAnswers.correctSummary.title"
               )}
             </span>
             {correctAnswersFound.map((answer, index) => (
@@ -300,7 +300,7 @@ export default class MultiSelectField extends React.Component<
           <span className="material-page__field-answer-examples">
             <span className="material-page__field-answer-examples-title">
               {this.props.i18n.text.get(
-                "plugin.workspace.assigment.checkAnswers.detailsSummary.title",
+                "plugin.workspace.assigment.checkAnswers.detailsSummary.title"
               )}
             </span>
             <span className="material-page__field-answer-example">
@@ -354,7 +354,7 @@ export default class MultiSelectField extends React.Component<
         : "";
 
     const fieldSavedStateClass = createFieldSavedStateClass(
-      this.state.fieldSavedState,
+      this.state.fieldSavedState
     );
 
     // and we render

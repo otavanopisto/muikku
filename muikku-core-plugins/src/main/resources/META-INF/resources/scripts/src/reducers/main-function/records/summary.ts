@@ -45,7 +45,7 @@ export default function summary(
     status: "WAIT",
     data: null,
   },
-  action: ActionType,
+  action: ActionType
 ): SummaryType {
   if (action.type === "UPDATE_STUDIES_SUMMARY_STATUS") {
     return Object.assign({}, state, {

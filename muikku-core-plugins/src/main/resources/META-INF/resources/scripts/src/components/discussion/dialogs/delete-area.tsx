@@ -55,7 +55,7 @@ class DiscussionDeleteArea extends React.Component<
   }
   render() {
     const area = this.props.discussion.areas.find(
-      (area) => area.id === this.props.discussion.areaId,
+      (area) => area.id === this.props.discussion.areaId
     );
     if (!area) {
       return this.props.children;
@@ -109,5 +109,5 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(DiscussionDeleteArea);

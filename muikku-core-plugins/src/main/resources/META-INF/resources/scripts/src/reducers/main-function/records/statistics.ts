@@ -18,7 +18,7 @@ export default function statistics(
     status: "WAIT",
     value: null,
   },
-  action: ActionType,
+  action: ActionType
 ): StatisticsType {
   if (action.type === "UPDATE_STUDIES_STATISTICS_STATUS") {
     return Object.assign({}, state, {

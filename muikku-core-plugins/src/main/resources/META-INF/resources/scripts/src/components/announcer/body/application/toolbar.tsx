@@ -77,7 +77,7 @@ class AnnouncerToolbar extends React.Component<
       history.replaceState(
         "",
         "",
-        location.hash.split("/")[0] + "/" + announcement.id,
+        location.hash.split("/")[0] + "/" + announcement.id
       );
       window.dispatchEvent(new HashChangeEvent("hashchange"));
     } else {
@@ -107,7 +107,7 @@ class AnnouncerToolbar extends React.Component<
       //this is why we had to have notOverrideCurrent in the reducers, it's such a mess
       const currentIndex: number =
         this.props.announcements.announcements.findIndex(
-          (a: AnnouncementType) => a.id === this.props.announcements.current.id,
+          (a: AnnouncementType) => a.id === this.props.announcements.current.id
         );
       let next: AnnouncementType = null;
       let prev: AnnouncementType = null;
@@ -130,7 +130,7 @@ class AnnouncerToolbar extends React.Component<
               <span className="application-panel__tool-icon icon-folder"></span>
               <span className="application-panel__tool-title">
                 {this.props.i18n.text.get(
-                  "plugin.announcer.cat." + this.props.announcements.location,
+                  "plugin.announcer.cat." + this.props.announcements.location
                 )}
               </span>
             </div>
@@ -181,7 +181,7 @@ class AnnouncerToolbar extends React.Component<
               <span className="glyph application-panel__tool-icon icon-folder"></span>
               <span className="application-panel__tool-title">
                 {this.props.i18n.text.get(
-                  "plugin.announcer.cat." + this.props.announcements.location,
+                  "plugin.announcer.cat." + this.props.announcements.location
                 )}
               </span>
             </div>
@@ -221,7 +221,7 @@ function mapStateToProps(state: StateType) {
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     { updateAnnouncement, removeFromAnnouncementsSelected },
-    dispatch,
+    dispatch
   );
 }
 

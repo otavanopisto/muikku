@@ -24,17 +24,17 @@ class License extends React.Component<LicenseProps, LicenseState> {
     if (
       this.props.workspace.materialDefaultLicense &&
       this.props.workspace.materialDefaultLicense.includes(
-        "creativecommons.org",
+        "creativecommons.org"
       )
     ) {
       materialLicenseIcons.push("cc");
       if (
         this.props.workspace.materialDefaultLicense.includes(
-          "creativecommons.org/licenses/",
+          "creativecommons.org/licenses/"
         )
       ) {
         const license = this.props.workspace.materialDefaultLicense.match(
-          "creativecommons.org/licenses/(.*)/",
+          "creativecommons.org/licenses/(.*)/"
         )[1];
         if (license) {
           if (license.includes("by")) {
@@ -52,7 +52,7 @@ class License extends React.Component<LicenseProps, LicenseState> {
         }
       } else if (
         this.props.workspace.materialDefaultLicense.includes(
-          "creativecommons.org/publicdomain/",
+          "creativecommons.org/publicdomain/"
         )
       ) {
         materialLicenseIcons.push("cc-zero");

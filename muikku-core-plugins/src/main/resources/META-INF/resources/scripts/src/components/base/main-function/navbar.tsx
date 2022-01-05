@@ -166,7 +166,7 @@ class MainFunctionNavbar extends React.Component<
                   aria-label={
                     this.props.activeTrail == item.trail
                       ? this.props.i18n.text.get(
-                          "plugin.wcag.mainNavigation.currentPage.aria.label",
+                          "plugin.wcag.mainNavigation.currentPage.aria.label"
                         ) +
                         " " +
                         this.props.i18n.text.get(item.text)
@@ -194,13 +194,13 @@ class MainFunctionNavbar extends React.Component<
                   <Link
                     className="link link--forgot-password link--forgot-password-main-function"
                     aria-label={this.props.i18n.text.get(
-                      "plugin.forgotpassword.forgotLink",
+                      "plugin.forgotpassword.forgotLink"
                     )}
                     role="menuitem"
                   >
                     <span>
                       {this.props.i18n.text.get(
-                        "plugin.forgotpassword.forgotLink",
+                        "plugin.forgotpassword.forgotLink"
                       )}
                     </span>
                   </Link>

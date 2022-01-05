@@ -20,7 +20,7 @@ export async function loadAnnouncementsHelper(
   notOverrideCurrent: boolean,
   force: boolean,
   dispatch: (arg: AnyActionType) => any,
-  getState: () => StateType,
+  getState: () => StateType
 ) {
   if (!notOverrideCurrent) {
     //Remove the current announcement
@@ -57,7 +57,7 @@ export async function loadAnnouncementsHelper(
 
   //We get the navigation location item
   const item: AnnouncerNavigationItemType = navigation.find(
-    (item) => item.location === actualLocation,
+    (item) => item.location === actualLocation
   );
   if (!item) {
     return dispatch({
@@ -96,7 +96,7 @@ export async function loadAnnouncementsHelper(
       await promisify(mApi().announcer.announcements.read(params), "callback")()
     );
     announcements.forEach((a) =>
-      a.userGroupEntityIds.forEach((id) => dispatch(loadUserGroupIndex(id))),
+      a.userGroupEntityIds.forEach((id) => dispatch(loadUserGroupIndex(id)))
     );
 
     //Create the payload for updating all the announcer properties
@@ -123,10 +123,10 @@ export async function loadAnnouncementsHelper(
     dispatch(
       notificationActions.displayNotification(
         getState().i18n.text.get(
-          "plugin.announcer.errormessage.loadAnnouncements",
+          "plugin.announcer.errormessage.loadAnnouncements"
         ),
-        "error",
-      ),
+        "error"
+      )
     );
     dispatch({
       type: "UPDATE_ANNOUNCEMENTS_STATE",

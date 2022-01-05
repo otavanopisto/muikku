@@ -261,7 +261,7 @@ class ManagementPanel extends React.Component<
     });
   }
   updateCurrentWorkspaceProducerInputValue(
-    e: React.ChangeEvent<HTMLInputElement>,
+    e: React.ChangeEvent<HTMLInputElement>
   ) {
     this.setState({
       currentWorkspaceProducerInputValue: e.target.value,
@@ -274,7 +274,7 @@ class ManagementPanel extends React.Component<
   }
 
   checkIfEnterKeyIsPressedAndAddProducer(
-    e: React.KeyboardEvent<HTMLInputElement>,
+    e: React.KeyboardEvent<HTMLInputElement>
   ) {
     if (e.keyCode == 13) {
       this.addProducer(this.state.currentWorkspaceProducerInputValue);
@@ -295,7 +295,7 @@ class ManagementPanel extends React.Component<
   removeProducer(index: number) {
     this.setState({
       workspaceProducers: this.state.workspaceProducers.filter(
-        (p, i) => i !== index,
+        (p, i) => i !== index
       ),
     });
   }
@@ -332,7 +332,7 @@ class ManagementPanel extends React.Component<
           newWorkspaceImageSrc: null,
         });
       },
-      false,
+      false
     );
 
     if (file) {
@@ -394,9 +394,9 @@ class ManagementPanel extends React.Component<
       success: () => {
         this.props.displayNotification(
           this.props.i18n.text.get(
-            "plugin.workspace.management.notification.coverImage.saved",
+            "plugin.workspace.management.notification.coverImage.saved"
           ),
-          "success",
+          "success"
         );
       },
     });
@@ -444,7 +444,7 @@ class ManagementPanel extends React.Component<
     if (!equals(workspaceMaterialProducers, this.props.workspace.producers)) {
       payload = Object.assign(
         { producers: workspaceMaterialProducers },
-        payload,
+        payload
       );
     }
 
@@ -491,7 +491,7 @@ class ManagementPanel extends React.Component<
 
       this.state.workspacePermissions.forEach((permission) => {
         const originalPermission = this.props.workspace.permissions.find(
-          (p) => p.userGroupEntityId === permission.userGroupEntityId,
+          (p) => p.userGroupEntityId === permission.userGroupEntityId
         );
         if (!equals(originalPermission, permission)) {
           permissionsArray.push(permission);
@@ -506,9 +506,9 @@ class ManagementPanel extends React.Component<
       success: () => {
         this.props.displayNotification(
           this.props.i18n.text.get(
-            "plugin.workspace.management.notification.save.successful",
+            "plugin.workspace.management.notification.save.successful"
           ),
-          "success",
+          "success"
         );
         this.setState({
           locked: false,
@@ -535,13 +535,13 @@ class ManagementPanel extends React.Component<
         <ApplicationPanel
           modifier="workspace-management"
           title={this.props.i18n.text.get(
-            "plugin.workspace.management.pageTitle",
+            "plugin.workspace.management.pageTitle"
           )}
         >
           <section className="application-sub-panel application-sub-panel--workspace-settings">
             <h2 className="application-sub-panel__header application-sub-panel__header--workspace-settings">
               {this.props.i18n.text.get(
-                "plugin.workspace.management.title.basicInfo",
+                "plugin.workspace.management.title.basicInfo"
               )}
             </h2>
             <div className="application-sub-panel__body application-sub-panel__body--workspace-settings">
@@ -552,7 +552,7 @@ class ManagementPanel extends React.Component<
                     className="application-sub-panel__item-header"
                   >
                     {this.props.i18n.text.get(
-                      "plugin.workspace.management.title.basicInfo.name",
+                      "plugin.workspace.management.title.basicInfo.name"
                     )}
                   </label>
                   <input
@@ -574,13 +574,13 @@ class ManagementPanel extends React.Component<
                       className="link link--workspace-management"
                     >
                       {this.props.i18n.text.get(
-                        "plugin.workspace.management.viewInPyramus",
+                        "plugin.workspace.management.viewInPyramus"
                       )}
                     </Link>
                     <CopyWizardDialog>
                       <Link className="link link--workspace-management">
                         {this.props.i18n.text.get(
-                          "plugin.workspace.management.copyWorkspace",
+                          "plugin.workspace.management.copyWorkspace"
                         )}
                       </Link>
                     </CopyWizardDialog>
@@ -591,12 +591,12 @@ class ManagementPanel extends React.Component<
                 <div className="application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-description">
                   <label className="application-sub-panel__item-header">
                     {this.props.i18n.text.get(
-                      "plugin.workspace.management.title.basicInfo.description",
+                      "plugin.workspace.management.title.basicInfo.description"
                     )}
                   </label>
                   <CKEditor
                     editorTitle={this.props.i18n.text.get(
-                      "plugin.wcag.workspaceDescription.label",
+                      "plugin.wcag.workspaceDescription.label"
                     )}
                     onChange={this.onDescriptionChange}
                   >
@@ -609,7 +609,7 @@ class ManagementPanel extends React.Component<
           <section className="application-sub-panel application-sub-panel--workspace-settings application-sub-panel--workspace-image-settings">
             <h2 className="application-sub-panel__header application-sub-panel__header--workspace-settings application-sub-panel__header--workspace-image-settings">
               {this.props.i18n.text.get(
-                "plugin.workspace.management.imageSectionTitle",
+                "plugin.workspace.management.imageSectionTitle"
               )}
             </h2>
             <div className="application-sub-panel__body application-sub-panel__body--workspace-settings">
@@ -623,7 +623,7 @@ class ManagementPanel extends React.Component<
                 >
                   <label className="visually-hidden" htmlFor="workspaceImage">
                     {this.props.i18n.text.get(
-                      "plugin.wcag.workspaceImage.label",
+                      "plugin.wcag.workspaceImage.label"
                     )}
                   </label>
                   <input
@@ -653,7 +653,7 @@ class ManagementPanel extends React.Component<
                   ) : (
                     <div className="change-image__default-content">
                       {this.props.i18n.text.get(
-                        "plugin.workspace.management.changeImage.defaultImageInfo",
+                        "plugin.workspace.management.changeImage.defaultImageInfo"
                       )}
                     </div>
                   )}
@@ -679,7 +679,7 @@ class ManagementPanel extends React.Component<
           <section className="application-sub-panel application-sub-panel--workspace-settings">
             <h2 className="application-sub-panel__header application-sub-panel__header--workspace-settings">
               {this.props.i18n.text.get(
-                "plugin.workspace.management.workspaceVisibilitySectionTitle",
+                "plugin.workspace.management.workspaceVisibilitySectionTitle"
               )}
             </h2>
             <div className="application-sub-panel__body application-sub-panel__body--workspace-settings">
@@ -687,7 +687,7 @@ class ManagementPanel extends React.Component<
                 <fieldset>
                   <legend className="application-sub-panel__item-header">
                     {this.props.i18n.text.get(
-                      "plugin.workspace.management.settings.publicity",
+                      "plugin.workspace.management.settings.publicity"
                     )}
                   </legend>
                   <div className="application-sub-panel__item-data application-sub-panel__item-data--workspace-management">
@@ -701,7 +701,7 @@ class ManagementPanel extends React.Component<
                       />
                       <label htmlFor="workspacePublish">
                         {this.props.i18n.text.get(
-                          "plugin.workspace.management.settings.publicity.publish",
+                          "plugin.workspace.management.settings.publicity.publish"
                         )}
                       </label>
                     </div>
@@ -713,12 +713,12 @@ class ManagementPanel extends React.Component<
                         checked={this.state.workspacePublished === false}
                         onChange={this.setWorkspacePublishedTo.bind(
                           this,
-                          false,
+                          false
                         )}
                       />
                       <label htmlFor="workspaceUnpublish">
                         {this.props.i18n.text.get(
-                          "plugin.workspace.management.settings.publicity.unpublish",
+                          "plugin.workspace.management.settings.publicity.unpublish"
                         )}
                       </label>
                     </div>
@@ -729,7 +729,7 @@ class ManagementPanel extends React.Component<
                 <fieldset>
                   <legend className="application-sub-panel__item-header">
                     {this.props.i18n.text.get(
-                      "plugin.workspace.management.settings.access",
+                      "plugin.workspace.management.settings.access"
                     )}
                   </legend>
                   <div className="application-sub-panel__item-data application-sub-panel__item-data--workspace-management">
@@ -741,12 +741,12 @@ class ManagementPanel extends React.Component<
                         checked={this.state.workspaceAccess === "MEMBERS_ONLY"}
                         onChange={this.setWorkspaceAccessTo.bind(
                           this,
-                          "MEMBERS_ONLY",
+                          "MEMBERS_ONLY"
                         )}
                       />
                       <label htmlFor="workspaceAccessMembers">
                         {this.props.i18n.text.get(
-                          "plugin.workspace.management.settings.access.membersOnly",
+                          "plugin.workspace.management.settings.access.membersOnly"
                         )}
                       </label>
                     </div>
@@ -758,12 +758,12 @@ class ManagementPanel extends React.Component<
                         checked={this.state.workspaceAccess === "LOGGED_IN"}
                         onChange={this.setWorkspaceAccessTo.bind(
                           this,
-                          "LOGGED_IN",
+                          "LOGGED_IN"
                         )}
                       />
                       <label htmlFor="workspaceAccessLoggedin">
                         {this.props.i18n.text.get(
-                          "plugin.workspace.management.settings.access.loggedIn",
+                          "plugin.workspace.management.settings.access.loggedIn"
                         )}
                       </label>
                     </div>
@@ -775,12 +775,12 @@ class ManagementPanel extends React.Component<
                         checked={this.state.workspaceAccess === "ANYONE"}
                         onChange={this.setWorkspaceAccessTo.bind(
                           this,
-                          "ANYONE",
+                          "ANYONE"
                         )}
                       />
                       <label htmlFor="workspaceAccessAnyone">
                         {this.props.i18n.text.get(
-                          "plugin.workspace.management.settings.access.anyone",
+                          "plugin.workspace.management.settings.access.anyone"
                         )}
                       </label>
                     </div>
@@ -792,7 +792,7 @@ class ManagementPanel extends React.Component<
           <section className="application-sub-panel application-sub-panel--workspace-settings">
             <h2 className="application-sub-panel__header application-sub-panel__header--workspace-settings">
               {this.props.i18n.text.get(
-                "plugin.workspace.management.additionalInfoSectionTitle",
+                "plugin.workspace.management.additionalInfoSectionTitle"
               )}
             </h2>
             <div className="application-sub-panel__body application-sub-panel__body--workspace-settings">
@@ -802,7 +802,7 @@ class ManagementPanel extends React.Component<
                   className="application-sub-panel__item-header"
                 >
                   {this.props.i18n.text.get(
-                    "plugin.workspace.management.additionalInfo.nameExtension",
+                    "plugin.workspace.management.additionalInfo.nameExtension"
                   )}
                 </label>
                 <input
@@ -820,7 +820,7 @@ class ManagementPanel extends React.Component<
                   className="application-sub-panel__item-header"
                 >
                   {this.props.i18n.text.get(
-                    "plugin.workspace.management.additionalInfo.courseType",
+                    "plugin.workspace.management.additionalInfo.courseType"
                   )}
                 </label>
                 <select
@@ -844,7 +844,7 @@ class ManagementPanel extends React.Component<
                   className="application-sub-panel__item-header"
                 >
                   {this.props.i18n.text.get(
-                    "plugin.workspace.management.additionalInfo.startDate",
+                    "plugin.workspace.management.additionalInfo.startDate"
                   )}
                 </label>
                 <DatePicker
@@ -862,7 +862,7 @@ class ManagementPanel extends React.Component<
                   className="application-sub-panel__item-header"
                 >
                   {this.props.i18n.text.get(
-                    "plugin.workspace.management.additionalInfo.endDate",
+                    "plugin.workspace.management.additionalInfo.endDate"
                   )}
                 </label>
                 <DatePicker
@@ -879,14 +879,14 @@ class ManagementPanel extends React.Component<
           <section className="form-element application-sub-panel application-sub-panel--workspace-settings">
             <h2 className="application-sub-panel__header application-sub-panel__header--workspace-settings">
               {this.props.i18n.text.get(
-                "plugin.workspace.management.workspaceLicenceSectionTitle",
+                "plugin.workspace.management.workspaceLicenceSectionTitle"
               )}
             </h2>
             <div className="application-sub-panel__body application-sub-panel__body--workspace-settings">
               <LicenseSelector
                 wcagLabel="workspaceLicense"
                 wcagDesc={this.props.i18n.text.get(
-                  "plugin.wcag.workspaceLicense.label",
+                  "plugin.wcag.workspaceLicense.label"
                 )}
                 modifier="workspace-management"
                 value={this.state.workspaceLicense}
@@ -898,7 +898,7 @@ class ManagementPanel extends React.Component<
           <section className="form-element  application-sub-panel application-sub-panel--workspace-settings">
             <h2 className="application-sub-panel__header application-sub-panel__header--workspace-settings">
               {this.props.i18n.text.get(
-                "plugin.workspace.management.workspaceProducersSectionTitle",
+                "plugin.workspace.management.workspaceProducersSectionTitle"
               )}
             </h2>
             {this.state.workspaceProducers ? (
@@ -917,7 +917,7 @@ class ManagementPanel extends React.Component<
             <section className="application-sub-panel application-sub-panel--workspace-settings">
               <h2 className="application-sub-panel__header application-sub-panel__header--workspace-settings">
                 {this.props.i18n.text.get(
-                  "plugin.workspace.management.workspaceChatSectionTitle",
+                  "plugin.workspace.management.workspaceChatSectionTitle"
                 )}
               </h2>
               <div className="application-sub-panel__body application-sub-panel__body--workspace-settings">
@@ -925,7 +925,7 @@ class ManagementPanel extends React.Component<
                   <fieldset>
                     <legend className="application-sub-panel__item-header">
                       {this.props.i18n.text.get(
-                        "plugin.workspace.management.settings.status",
+                        "plugin.workspace.management.settings.status"
                       )}
                     </legend>
                     <div className="application-sub-panel__item-data application-sub-panel__item-data--workspace-management">
@@ -937,12 +937,12 @@ class ManagementPanel extends React.Component<
                           checked={this.state.workspaceChatStatus === "ENABLED"}
                           onChange={this.setWorkspaceChatTo.bind(
                             this,
-                            "ENABLED",
+                            "ENABLED"
                           )}
                         />
                         <label htmlFor="chatEnabled">
                           {this.props.i18n.text.get(
-                            "plugin.workspace.management.settings.chatEnabled",
+                            "plugin.workspace.management.settings.chatEnabled"
                           )}
                         </label>
                       </div>
@@ -956,12 +956,12 @@ class ManagementPanel extends React.Component<
                           }
                           onChange={this.setWorkspaceChatTo.bind(
                             this,
-                            "DISABLED",
+                            "DISABLED"
                           )}
                         />
                         <label htmlFor="chatDisabled">
                           {this.props.i18n.text.get(
-                            "plugin.workspace.management.settings.chatDisabled",
+                            "plugin.workspace.management.settings.chatDisabled"
                           )}
                         </label>
                       </div>
@@ -974,7 +974,7 @@ class ManagementPanel extends React.Component<
           <section className="form-element  application-sub-panel application-sub-panel--workspace-settings">
             <h2 className="application-sub-panel__header application-sub-panel__header--workspace-settings">
               {this.props.i18n.text.get(
-                "plugin.workspace.permissions.viewTitle",
+                "plugin.workspace.permissions.viewTitle"
               )}
             </h2>
             <div className="application-sub-panel__body application-sub-panel__body--workspace-settings">
@@ -984,7 +984,7 @@ class ManagementPanel extends React.Component<
                 modifiers="subpanel-search"
                 name="workspace-permissions"
                 placeholder={this.props.i18n.text.get(
-                  "plugin.workspace.permissions.searchUsergroups",
+                  "plugin.workspace.permissions.searchUsergroups"
                 )}
                 value={this.state.workspaceUsergroupNameFilter}
                 updateField={this.updateWorkspaceUsergroupNameFilter}
@@ -994,7 +994,7 @@ class ManagementPanel extends React.Component<
                 <fieldset>
                   <legend className="application-sub-panel__item-header">
                     {this.props.i18n.text.get(
-                      "plugin.workspace.permissions.usergroupsColumn.label",
+                      "plugin.workspace.permissions.usergroupsColumn.label"
                     )}
                   </legend>
 
@@ -1011,8 +1011,8 @@ class ManagementPanel extends React.Component<
                     .filter((permission) =>
                       filterMatch(
                         permission.userGroupName,
-                        this.state.workspaceUsergroupNameFilter,
-                      ),
+                        this.state.workspaceUsergroupNameFilter
+                      )
                     )
                     .map((permission) => (
                       <span
@@ -1028,7 +1028,7 @@ class ManagementPanel extends React.Component<
                             onChange={this.togglePermissionIn.bind(
                               this,
                               permission,
-                              pte,
+                              pte
                             )}
                           />
                         ))}
@@ -1037,7 +1037,7 @@ class ManagementPanel extends React.Component<
                         >
                           {filterHighlight(
                             permission.userGroupName,
-                            this.state.workspaceUsergroupNameFilter,
+                            this.state.workspaceUsergroupNameFilter
                           )}
                         </label>
                       </span>
@@ -1054,7 +1054,7 @@ class ManagementPanel extends React.Component<
                 onClick={this.save}
               >
                 {this.props.i18n.text.get(
-                  "plugin.workspace.management.workspaceButtons.save",
+                  "plugin.workspace.management.workspaceButtons.save"
                 )}
               </Button>
             </div>
@@ -1083,7 +1083,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
       updateWorkspaceDetailsForCurrentWorkspace,
       displayNotification,
     },
-    dispatch,
+    dispatch
   );
 }
 

@@ -45,7 +45,7 @@ export default function ProfileProperty(props: {
               <span className="application-sub-panel__single-entry" key={v.key}>
                 {v.value}
               </span>
-            ),
+            )
           )
         )}
       </div>

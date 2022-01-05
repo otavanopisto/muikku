@@ -334,7 +334,7 @@ export class DialogRemoveUsers extends React.Component<
   componentDidMount() {
     this.refreshRemoveUserpage(
       this.state.currentRemovePage,
-      this.props.removeUsers,
+      this.props.removeUsers
     );
     this.goToAllUsersPage(this.state.currentAllPage);
   }
@@ -348,7 +348,7 @@ export class DialogRemoveUsers extends React.Component<
     if (this.props.removeUsers.length !== nextProps.removeUsers.length) {
       this.refreshRemoveUserpage(
         this.state.currentRemovePage,
-        nextProps.removeUsers,
+        nextProps.removeUsers
       );
     }
   }
@@ -458,7 +458,7 @@ export class DialogRemoveUsers extends React.Component<
                       classState={
                         this.checkUserInRemoveList(
                           user.id as string,
-                          this.props.removeUsers,
+                          this.props.removeUsers
                         )
                           ? "disabled"
                           : ""
@@ -523,7 +523,7 @@ export class DialogRemoveUsers extends React.Component<
         name: this.props.removeTabTitle,
         component: () => {
           const removePages = Math.ceil(
-            this.props.removeUsers.length / this.maxRemoveUsersPerPage,
+            this.props.removeUsers.length / this.maxRemoveUsersPerPage
           );
           return (
             <DialogRow>

@@ -179,7 +179,7 @@ class WorkspaceUsers extends React.Component<
    * @param student
    */
   setStudentBeingToggledStatus(
-    student: ShortWorkspaceUserWithActiveStatusType,
+    student: ShortWorkspaceUserWithActiveStatusType
   ) {
     this.setState({
       studentCurrentBeingToggledStatus: student,
@@ -270,17 +270,17 @@ class WorkspaceUsers extends React.Component<
   UNSAFE_componentWillReceiveProps(nextProps: WorkspaceUsersProps) {
     if (nextProps.workspace && nextProps.workspace.staffMembers) {
       this.allStaffPages = Math.ceil(
-        nextProps.workspace.staffMembers.totalHitCount / this.usersPerPage,
+        nextProps.workspace.staffMembers.totalHitCount / this.usersPerPage
       );
     }
     if (nextProps.workspace && nextProps.workspace.students) {
       this.allActiveStudentsPages = Math.ceil(
-        nextProps.workspace.students.totalHitCount / this.usersPerPage,
+        nextProps.workspace.students.totalHitCount / this.usersPerPage
       );
     }
     if (nextProps.workspace && nextProps.workspace.inactiveStudents) {
       this.allInActiveStudentsPages = Math.ceil(
-        nextProps.workspace.inactiveStudents.totalHitCount / this.usersPerPage,
+        nextProps.workspace.inactiveStudents.totalHitCount / this.usersPerPage
       );
     }
   }
@@ -321,7 +321,7 @@ class WorkspaceUsers extends React.Component<
         <ApplicationSubPanel
           modifier="workspace-users"
           title={this.props.i18n.text.get(
-            "plugin.workspace.users.teachers.title",
+            "plugin.workspace.users.teachers.title"
           )}
           i18n={this.props.i18n}
         >
@@ -348,13 +348,13 @@ class WorkspaceUsers extends React.Component<
                     initialSubject={getWorkspaceMessage(
                       this.props.i18n,
                       this.props.status,
-                      this.props.workspace,
+                      this.props.workspace
                     )}
                     initialMessage={getWorkspaceMessage(
                       this.props.i18n,
                       this.props.status,
                       this.props.workspace,
-                      true,
+                      true
                     )}
                   >
                     <IconButton
@@ -397,7 +397,7 @@ class WorkspaceUsers extends React.Component<
           modifier="workspace-users"
           i18n={this.props.i18n}
           title={this.props.i18n.text.get(
-            "plugin.workspace.users.students.title",
+            "plugin.workspace.users.students.title"
           )}
         >
           <SearchFormElement
@@ -407,7 +407,7 @@ class WorkspaceUsers extends React.Component<
             id="WorkspaceUserFilter"
             name="workspace-user-filter"
             placeholder={this.props.i18n.text.get(
-              "plugin.workspace.users.students.searchStudents",
+              "plugin.workspace.users.students.searchStudents"
             )}
           />
           <MobileOnlyTabs
@@ -418,7 +418,7 @@ class WorkspaceUsers extends React.Component<
               {
                 id: "ACTIVE",
                 name: this.props.i18n.text.get(
-                  "plugin.workspace.users.students.link.active",
+                  "plugin.workspace.users.students.link.active"
                 ),
                 type: "workspace-students",
                 component: () => {
@@ -430,7 +430,7 @@ class WorkspaceUsers extends React.Component<
                         highlight={this.state.currentSearch}
                         onSetToggleStatus={this.setStudentBeingToggledStatus.bind(
                           this,
-                          s,
+                          s
                         )}
                         key={s.workspaceUserEntityId}
                         student={s}
@@ -461,7 +461,7 @@ class WorkspaceUsers extends React.Component<
                         ) : (
                           <div className="loaded-empty">
                             {this.props.i18n.text.get(
-                              "plugin.workspaces.users.activeStudents.empty",
+                              "plugin.workspaces.users.activeStudents.empty"
                             )}
                           </div>
                         )
@@ -473,7 +473,7 @@ class WorkspaceUsers extends React.Component<
               {
                 id: "INACTIVE",
                 name: this.props.i18n.text.get(
-                  "plugin.workspace.users.students.link.inactive",
+                  "plugin.workspace.users.students.link.inactive"
                 ),
                 type: "workspace-students",
                 component: () => {
@@ -484,7 +484,7 @@ class WorkspaceUsers extends React.Component<
                       <WorkspaceUser
                         onSetToggleStatus={this.setStudentBeingToggledStatus.bind(
                           this,
-                          s,
+                          s
                         )}
                         highlight={this.state.currentSearch}
                         key={s.workspaceUserEntityId}
@@ -515,7 +515,7 @@ class WorkspaceUsers extends React.Component<
                         ) : (
                           <div className="loaded-empty">
                             {this.props.i18n.text.get(
-                              "plugin.workspaces.users.inActiveStudents.empty",
+                              "plugin.workspaces.users.inActiveStudents.empty"
                             )}
                           </div>
                         )
@@ -537,13 +537,13 @@ class WorkspaceUsers extends React.Component<
             initialSubject={getWorkspaceMessage(
               this.props.i18n,
               this.props.status,
-              this.props.workspace,
+              this.props.workspace
             )}
             initialMessage={getWorkspaceMessage(
               this.props.i18n,
               this.props.status,
               this.props.workspace,
-              true,
+              true
             )}
           />
         ) : null}
@@ -581,7 +581,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
       loadStaffMembers: loadStaffMembersOfWorkspace,
       loadStudents: loadStudentsOfWorkspace,
     },
-    dispatch,
+    dispatch
   );
 }
 

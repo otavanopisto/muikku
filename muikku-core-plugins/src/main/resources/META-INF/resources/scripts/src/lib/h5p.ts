@@ -12,7 +12,7 @@ const actionHandlers: any = {};
 actionHandlers.hello = (
   iframe: HTMLIFrameElement,
   data: any,
-  respond: Function,
+  respond: Function
 ) => {
   // Make iframe responsive
   iframe.style.width = "100%";
@@ -48,7 +48,7 @@ actionHandlers.hello = (
 actionHandlers.prepareResize = (
   iframe: HTMLIFrameElement,
   data: any,
-  respond: Function,
+  respond: Function
 ) => {
   // Do not resize unless page and scrolling differs
   if (
@@ -115,11 +115,11 @@ window.addEventListener(
           data.action = action;
           data.context = "h5p";
           (event.source.postMessage as any)(data, event.origin);
-        },
+        }
       );
     }
   },
-  false,
+  false
 );
 
 // Let h5p iframes know we're ready!

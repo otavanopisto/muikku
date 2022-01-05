@@ -49,7 +49,7 @@ class DiscussionModifyArea extends SessionStateComponent<
     this.checkAgainstStoredState = this.checkAgainstStoredState.bind(this);
 
     const area = this.props.discussion.areas.find(
-      (area) => area.id === this.props.discussion.areaId,
+      (area) => area.id === this.props.discussion.areaId
     );
     this.state = this.getRecoverStoredState(
       {
@@ -57,48 +57,48 @@ class DiscussionModifyArea extends SessionStateComponent<
         description: (area && area.description) || "",
         locked: false,
       },
-      this.props.discussion.areaId,
+      this.props.discussion.areaId
     );
   }
   clearUp() {
     const area = this.props.discussion.areas.find(
-      (area) => area.id === this.props.discussion.areaId,
+      (area) => area.id === this.props.discussion.areaId
     );
     this.setStateAndClear(
       {
         name: (area && area.name) || "",
         description: (area && area.description) || "",
       },
-      this.props.discussion.areaId,
+      this.props.discussion.areaId
     );
   }
   checkAgainstStoredState() {
     const area = this.props.discussion.areas.find(
-      (area) => area.id === this.props.discussion.areaId,
+      (area) => area.id === this.props.discussion.areaId
     );
     this.checkStoredAgainstThisState(
       {
         name: (area && area.name) || "",
         description: (area && area.description) || "",
       },
-      this.props.discussion.areaId,
+      this.props.discussion.areaId
     );
   }
   onDescriptionChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
     this.setStateAndStore(
       { description: e.target.value },
-      this.props.discussion.areaId,
+      this.props.discussion.areaId
     );
   }
   onNameChange(e: React.ChangeEvent<HTMLInputElement>) {
     this.setStateAndStore(
       { name: e.target.value },
-      this.props.discussion.areaId,
+      this.props.discussion.areaId
     );
   }
   componentWillReceiveProps(nextProps: DiscussionModifyAreaProps) {
     const area = nextProps.discussion.areas.find(
-      (area) => area.id === nextProps.discussion.areaId,
+      (area) => area.id === nextProps.discussion.areaId
     );
 
     this.setState(
@@ -107,8 +107,8 @@ class DiscussionModifyArea extends SessionStateComponent<
           name: (area && area.name) || "",
           description: (area && area.description) || "",
         },
-        nextProps.discussion.areaId,
-      ),
+        nextProps.discussion.areaId
+      )
     );
   }
   modifyArea(closeDialog: () => any) {
@@ -128,7 +128,7 @@ class DiscussionModifyArea extends SessionStateComponent<
   }
   render() {
     const area = this.props.discussion.areas.find(
-      (area) => area.id === this.props.discussion.areaId,
+      (area) => area.id === this.props.discussion.areaId
     );
     if (!area) {
       return this.props.children;
@@ -145,7 +145,7 @@ class DiscussionModifyArea extends SessionStateComponent<
             type="text"
             className="env-dialog__input env-dialog__input--new-discussion-area-name"
             placeholder={this.props.i18n.text.get(
-              "plugin.discussion.editArea.name",
+              "plugin.discussion.editArea.name"
             )}
             value={this.state.name}
             onChange={this.onNameChange}
@@ -223,5 +223,5 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(DiscussionModifyArea);

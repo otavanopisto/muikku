@@ -209,7 +209,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     // We preprocess the html
     this.state = {
       elements: preprocessor(
-        $(props.material.html),
+        $(props.material.html)
       ).toArray() as Array<HTMLElement>,
     };
 
@@ -238,7 +238,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
   componentWillReceiveProps(nextProps: BaseProps) {
     if (nextProps.material.html !== this.props.material.html) {
       const elements = preprocessor(
-        $(nextProps.material.html),
+        $(nextProps.material.html)
       ).toArray() as Array<HTMLElement>;
       this.setState({
         elements,
@@ -265,7 +265,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
         // We get the object element as in, the react component that it will be replaced with
         const rElement: React.ReactElement<any> = this.getObjectElement(
           element,
-          props,
+          props
         );
 
         const newAnswerCheckableState =
@@ -291,11 +291,11 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     if (this.props.websocketState.websocket) {
       this.props.websocketState.websocket.addEventCallback(
         "workspace:field-answer-saved",
-        this.onAnswerSavedAtServer,
+        this.onAnswerSavedAtServer
       );
       this.props.websocketState.websocket.addEventCallback(
         "workspace:field-answer-error",
-        this.onAnswerSavedAtServer,
+        this.onAnswerSavedAtServer
       );
     }
   }
@@ -308,11 +308,11 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     if (this.props.websocketState.websocket) {
       this.props.websocketState.websocket.removeEventCallback(
         "workspace:field-answer-saved",
-        this.onAnswerSavedAtServer,
+        this.onAnswerSavedAtServer
       );
       this.props.websocketState.websocket.removeEventCallback(
         "workspace:field-answer-error",
-        this.onAnswerSavedAtServer,
+        this.onAnswerSavedAtServer
       );
     }
   }
@@ -379,7 +379,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
   getObjectElement(
     element: HTMLElement,
     props: BaseProps = this.props,
-    key?: number,
+    key?: number
   ) {
     // So we check from our objects we have on top, to see what class we are getting
     const ActualElement = objects[element.getAttribute("type")];
@@ -434,7 +434,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     if (props.compositeReplies && props.compositeReplies.answers) {
       parameters["initialValue"] = props.compositeReplies.answers.find(
         (answer) =>
-          answer.fieldName === (parameters.content && parameters.content.name),
+          answer.fieldName === (parameters.content && parameters.content.name)
       );
     }
 
@@ -470,7 +470,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
   onValueChange(
     context: React.Component<any, any>,
     name: string,
-    newValue: any,
+    newValue: any
   ) {
     if (!this.props.websocketState.websocket) {
       // can't do anything if no websocket
@@ -522,7 +522,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
         "workspace:field-answer-save",
         messageData,
         null,
-        stackId,
+        stackId
       );
       // We set no callback onsent
       // and for the stackId we use this unique id that should represent the only field
@@ -541,7 +541,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
           "workspace:field-answer-save",
           messageData,
           null,
-          stackId,
+          stackId
         );
         context.setState({ syncError: "server does not reply" });
       }, TIME_IT_TAKES_FOR_AN_ANSWER_TO_BE_CONSIDERED_FAILED_IF_SERVER_DOES_NOT_REPLY) as any;
@@ -698,7 +698,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     return (
       <div className="material-page__content rich-text">
         {this.state.elements.map((rootElement, index) =>
-          HTMLtoReactComponent(rootElement, processingRules, index),
+          HTMLtoReactComponent(rootElement, processingRules, index)
         )}
       </div>
     );

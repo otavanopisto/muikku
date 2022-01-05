@@ -216,7 +216,7 @@ export interface MaterialLoaderProps {
   children?: (
     props: MaterialLoaderProps,
     state: MaterialLoaderState,
-    stateConfiguration: any,
+    stateConfiguration: any
   ) => any;
 }
 
@@ -298,7 +298,7 @@ class MaterialLoader extends React.Component<
       this.stateConfiguration = STATES.filter(
         (state: any) =>
           //by assignment type first
-          state["assignment-type"] === props.material.assignmentType,
+          state["assignment-type"] === props.material.assignmentType
       ).find((state: any) => {
         //then by state, if no composite reply is given assume UNANSWERED
         const stateRequired =
@@ -337,7 +337,7 @@ class MaterialLoader extends React.Component<
   }
   componentWillUpdate(
     nextProps: MaterialLoaderProps,
-    nextState: MaterialLoaderState,
+    nextState: MaterialLoaderState
   ) {
     //if the component will update we need to do some changes if it's gonna be answerable
     //and there's a material
@@ -349,7 +349,7 @@ class MaterialLoader extends React.Component<
       //The state configuration
       this.stateConfiguration = STATES.filter(
         (state: any) =>
-          state["assignment-type"] === nextProps.material.assignmentType,
+          state["assignment-type"] === nextProps.material.assignmentType
       ).find((state: any) => {
         const stateRequired =
           (compositeReplies && compositeReplies.state) || "UNANSWERED";
@@ -401,7 +401,7 @@ class MaterialLoader extends React.Component<
     let userEntityIdToLoad = parseInt(
       document
         .querySelector('meta[name="muikku:loggedUserId"]')
-        .getAttribute("value"),
+        .getAttribute("value")
     );
 
     if (usedAs === "evaluationTool" && userEntityId) {
@@ -420,9 +420,9 @@ class MaterialLoader extends React.Component<
           mApi().workspace.workspaces.materials.compositeMaterialReplies.read(
             this.props.workspace.id,
             this.props.material.assignment.id,
-            { userEntityId: userEntityIdToLoad },
+            { userEntityId: userEntityIdToLoad }
           ),
-          "callback",
+          "callback"
         )()) as MaterialCompositeRepliesType;
 
         materialRepliesCache[
@@ -467,7 +467,7 @@ class MaterialLoader extends React.Component<
         compositeReplies && compositeReplies.workspaceMaterialReplyId,
         this.stateConfiguration["success-text"] &&
           this.props.i18n.text.get(this.stateConfiguration["success-text"]),
-        this.props.onAssignmentStateModified,
+        this.props.onAssignmentStateModified
       );
     }
 
@@ -572,7 +572,7 @@ class MaterialLoader extends React.Component<
           onToggleAnswersVisible: this.toggleAnswersVisible,
         },
         this.state,
-        this.stateConfiguration,
+        this.stateConfiguration
       );
     }
 
@@ -601,7 +601,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
       displayNotification,
       requestWorkspaceMaterialContentNodeAttachments,
     },
-    dispatch,
+    dispatch
   );
 }
 

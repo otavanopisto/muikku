@@ -75,10 +75,10 @@ class DeleteAnnouncementDialog extends React.Component<
       <div>
         {this.props.announcement
           ? this.props.i18n.text.get(
-              "plugin.announcer.deleteDialog.description",
+              "plugin.announcer.deleteDialog.description"
             )
           : this.props.i18n.text.get(
-              "plugin.announcer.deleteDialog.description",
+              "plugin.announcer.deleteDialog.description"
             )}
       </div>
     );
@@ -91,7 +91,7 @@ class DeleteAnnouncementDialog extends React.Component<
           disabled={this.state.locked}
         >
           {this.props.i18n.text.get(
-            "plugin.announcer.deleteDialog.deleteButton.label",
+            "plugin.announcer.deleteDialog.deleteButton.label"
           )}
         </Button>
         <Button
@@ -99,7 +99,7 @@ class DeleteAnnouncementDialog extends React.Component<
           onClick={closeDialog}
         >
           {this.props.i18n.text.get(
-            "plugin.announcer.deleteDialog.cancelButton.label",
+            "plugin.announcer.deleteDialog.cancelButton.label"
           )}
         </Button>
       </div>
@@ -127,11 +127,11 @@ function mapStateToProps(state: StateType) {
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     { deleteSelectedAnnouncements, deleteAnnouncement },
-    dispatch,
+    dispatch
   );
 }
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(DeleteAnnouncementDialog);

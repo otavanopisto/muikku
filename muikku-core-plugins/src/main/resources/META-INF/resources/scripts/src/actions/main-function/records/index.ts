@@ -85,7 +85,7 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
   function updateAllStudentUsersAndSetViewToRecords() {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       try {
         dispatch({
@@ -118,7 +118,7 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
             includeInactiveStudents: true,
             maxResults: 20,
           }),
-          "callback",
+          "callback"
         )()) as Array<UserWithSchoolDataType>;
 
         //Then we sort them, alphabetically, using the id, these ids are like PYRAMUS-1 PYRAMUS-42 we want
@@ -144,14 +144,14 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
                 orderBy: "alphabet",
                 maxResults: 500,
               }),
-              "callback",
-            )(),
-          ),
+              "callback"
+            )()
+          )
         )) as Array<Array<WorkspaceType>>;
         //Now there's this weird thing that it won't give you an empty array if there are no workspaces found, it will instead
         //Give a no response, so we check wheter there was a no response aka undefined and we replace that with an emtpy array
         workspaces = workspaces.map((workspaceSet) =>
-          !workspaceSet ? [] : workspaceSet,
+          !workspaceSet ? [] : workspaceSet
         );
 
         //the same way we get all the transfer credits for each user, which is an array of array of transfer credits
@@ -160,9 +160,9 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
             users.map((user) =>
               promisify(
                 mApi().user.students.transferCredits.read(user.id),
-                "callback",
-              )(),
-            ),
+                "callback"
+              )()
+            )
           )) as Array<Array<TransferCreditType>>;
 
         //now this is kinna funny here we need to get the workspace evaluation data, wheter it's the final or current data
@@ -180,19 +180,19 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
                 >await promisify(
                   mApi().workspace.workspaces.students.assessmentstate.read(
                     workspace.id,
-                    user.id,
+                    user.id
                   ),
-                  "callback",
+                  "callback"
                 )();
                 workspace.studentActivity = <WorkspaceStudentActivityType>(
                   await promisify(
                     mApi().guider.workspaces.activity.read(workspace.id),
-                    "callback",
+                    "callback"
                   )()
                 );
-              }),
+              })
             );
-          }),
+          })
         );
 
         //so now we are here, we need to get the data and order it, this is the weird part
@@ -258,7 +258,7 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
 
                 //We fetch the given id
                 return curriculumIdentifier;
-              },
+              }
             );
 
             //we do virtually the same for the transfer credits
@@ -276,11 +276,11 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
                   };
                 } else {
                   recordById[curriculumIdentifier].transferCredits.push(
-                    transferCredit,
+                    transferCredit
                   );
                 }
                 return curriculumIdentifier;
-              },
+              }
             );
 
             //now here we need to order, the curriculum identifier of the user always goes first
@@ -299,13 +299,13 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
             resultingData[index].records = workspaceOrder
               .map(
                 (curriculumIdentifier: string) =>
-                  recordById[curriculumIdentifier],
+                  recordById[curriculumIdentifier]
               )
               .concat([defaultRecords])
               .filter(
                 (record: RecordGroupType) =>
                   record &&
-                  record.workspaces.length + record.transferCredits.length,
+                  record.workspaces.length + record.transferCredits.length
               );
           }
         });
@@ -326,10 +326,10 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
         dispatch(
           actions.displayNotification(
             getState().i18n.text.get(
-              "plugin.records.errormessage.recordsLoadFailed ",
+              "plugin.records.errormessage.recordsLoadFailed "
             ),
-            "error",
-          ),
+            "error"
+          )
         );
         dispatch({
           type: "UPDATE_RECORDS_ALL_STUDENT_USERS_DATA_STATUS",
@@ -343,11 +343,11 @@ const setCurrentStudentUserViewAndWorkspace: SetCurrentStudentUserViewAndWorkspa
   function setCurrentStudentUserViewAndWorkspace(
     userEntityId,
     userId,
-    workspaceId,
+    workspaceId
   ) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       try {
         dispatch({
@@ -376,16 +376,16 @@ const setCurrentStudentUserViewAndWorkspace: SetCurrentStudentUserViewAndWorkspa
                             return true;
                           }
                           return false;
-                        },
-                      ),
-                  ),
+                        }
+                      )
+                  )
               );
 
               if (!wasFoundInMemory) {
                 workspace = <WorkspaceType>(
                   await promisify(
                     mApi().workspace.workspaces.read(workspaceId),
-                    "callback",
+                    "callback"
                   )()
                 );
                 workspace.studentAssessmentState = <
@@ -393,14 +393,14 @@ const setCurrentStudentUserViewAndWorkspace: SetCurrentStudentUserViewAndWorkspa
                 >await promisify(
                   mApi().workspace.workspaces.students.assessmentstate.read(
                     workspace.id,
-                    userId,
+                    userId
                   ),
-                  "callback",
+                  "callback"
                 )();
                 workspace.studentActivity = <WorkspaceStudentActivityType>(
                   await promisify(
                     mApi().guider.workspaces.activity.read(workspace.id),
-                    "callback",
+                    "callback"
                   )()
                 );
               }
@@ -415,7 +415,7 @@ const setCurrentStudentUserViewAndWorkspace: SetCurrentStudentUserViewAndWorkspa
                   firstResult: 0,
                   maxResults: 512,
                 }),
-                "callback",
+                "callback"
               )();
               return journals;
             })(),
@@ -426,7 +426,7 @@ const setCurrentStudentUserViewAndWorkspace: SetCurrentStudentUserViewAndWorkspa
                   mApi().workspace.workspaces.materials.read(workspaceId, {
                     assignmentType: "EVALUATED",
                   }),
-                  "callback",
+                  "callback"
                 )() || [];
 
               let materials: Array<MaterialContentNodeType>;
@@ -436,9 +436,9 @@ const setCurrentStudentUserViewAndWorkspace: SetCurrentStudentUserViewAndWorkspa
                   assignments.map((assignment) =>
                     promisify(
                       mApi().materials.html.read(assignment.materialId),
-                      "callback",
-                    )(),
-                  ),
+                      "callback"
+                    )()
+                  )
                 ),
                 Promise.all(
                   assignments.map((assignment) =>
@@ -448,14 +448,14 @@ const setCurrentStudentUserViewAndWorkspace: SetCurrentStudentUserViewAndWorkspa
                         assignment.id,
                         {
                           userEntityId,
-                        },
+                        }
                       ),
-                      "callback",
+                      "callback"
                     )().then(
                       (evaluations: Array<MaterialEvaluationType>) =>
-                        evaluations[0],
-                    ),
-                  ),
+                        evaluations[0]
+                    )
+                  )
                 ),
               ]);
 
@@ -466,8 +466,8 @@ const setCurrentStudentUserViewAndWorkspace: SetCurrentStudentUserViewAndWorkspa
                       evaluation: evaluations[index],
                       assignment: assignments[index],
                       path: assignments[index].path,
-                    },
-                  ),
+                    }
+                  )
               );
             })(),
 
@@ -478,9 +478,9 @@ const setCurrentStudentUserViewAndWorkspace: SetCurrentStudentUserViewAndWorkspa
                     workspaceId,
                     {
                       userEntityId,
-                    },
+                    }
                   ),
-                  "callback",
+                  "callback"
                 )() || [];
 
               return compositeRepliesList;
@@ -507,10 +507,10 @@ const setCurrentStudentUserViewAndWorkspace: SetCurrentStudentUserViewAndWorkspa
         dispatch(
           actions.displayNotification(
             getState().i18n.text.get(
-              "plugin.records.errormessage.userWorkspaceLoadFailed",
+              "plugin.records.errormessage.userWorkspaceLoadFailed"
             ),
-            "error",
-          ),
+            "error"
+          )
         );
         dispatch({
           type: "UPDATE_RECORDS_CURRENT_STUDENT_AND_WORKSPACE_STATUS",
@@ -564,14 +564,14 @@ const updateTranscriptOfRecordsFiles: UpdateTranscriptOfRecordsFilesTriggerType 
   function updateTranscriptOfRecordsFiles() {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType,
+      getState: () => StateType
     ) => {
       const files: Array<UserFileType> = <Array<UserFileType>>(
         await promisify(
           mApi().guider.users.files.read(
-            getState().status.userSchoolDataIdentifier,
+            getState().status.userSchoolDataIdentifier
           ),
-          "callback",
+          "callback"
         )()
       );
 

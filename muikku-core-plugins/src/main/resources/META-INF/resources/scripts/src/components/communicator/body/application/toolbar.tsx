@@ -121,7 +121,7 @@ class CommunicatorToolbar extends React.Component<
       history.replaceState(
         "",
         "",
-        location.hash.split("/")[0] + "/" + messageId,
+        location.hash.split("/")[0] + "/" + messageId
       );
       window.dispatchEvent(new HashChangeEvent("hashchange"));
     } else {
@@ -160,7 +160,7 @@ class CommunicatorToolbar extends React.Component<
   }
   componentWillUpdate(
     nextProps: CommunicatorToolbarProps,
-    nextState: CommunicatorToolbarState,
+    nextState: CommunicatorToolbarState
   ) {
     if (
       nextProps.messages.currentThread !== this.props.messages.currentThread
@@ -181,7 +181,7 @@ class CommunicatorToolbar extends React.Component<
   toggleCurrentMessageReadStatus() {
     this.props.toggleMessageThreadReadStatus(
       this.props.messages.currentThread.messages[0].communicatorMessageId,
-      !this.state.isCurrentRead,
+      !this.state.isCurrentRead
     );
     this.setState({
       isCurrentRead: !this.state.isCurrentRead,
@@ -197,7 +197,7 @@ class CommunicatorToolbar extends React.Component<
 
   render() {
     const currentLocation = this.props.messages.navigation.find(
-      (item) => item.location === this.props.messages.location,
+      (item) => item.location === this.props.messages.location
     );
 
     if (!currentLocation) {
@@ -258,7 +258,7 @@ class CommunicatorToolbar extends React.Component<
                     onChange={this.updateLabelFilter}
                     type="text"
                     placeholder={this.props.i18n.text.get(
-                      "plugin.communicator.label.create.textfield.placeholder",
+                      "plugin.communicator.label.create.textfield.placeholder"
                     )}
                   />
                 </div>,
@@ -276,13 +276,13 @@ class CommunicatorToolbar extends React.Component<
                       item.type === "label" &&
                       filterMatch(
                         item.text(this.props.i18n),
-                        this.state.labelFilter,
-                      ),
+                        this.state.labelFilter
+                      )
                   )
                   .map((label) => {
                     const isSelected =
                       this.props.messages.currentThread.labels.find(
-                        (l) => l.labelId === label.id,
+                        (l) => l.labelId === label.id
                       );
                     return (
                       <Link
@@ -294,11 +294,11 @@ class CommunicatorToolbar extends React.Component<
                           !isSelected
                             ? this.props.addLabelToCurrentMessageThread.bind(
                                 null,
-                                label,
+                                label
                               )
                             : this.props.removeLabelFromCurrentMessageThread.bind(
                                 null,
-                                label,
+                                label
                               )
                         }
                       >
@@ -309,12 +309,12 @@ class CommunicatorToolbar extends React.Component<
                         <span className="link__text">
                           {filterHighlight(
                             label.text(this.props.i18n),
-                            this.state.labelFilter,
+                            this.state.labelFilter
                           )}
                         </span>
                       </Link>
                     );
-                  }),
+                  })
               )}
             >
               <ButtonPill buttonModifiers="label" icon="tag" />
@@ -342,7 +342,7 @@ class CommunicatorToolbar extends React.Component<
               }
               onClick={this.loadMessage.bind(
                 this,
-                this.props.messages.currentThread.newerThreadId,
+                this.props.messages.currentThread.newerThreadId
               )}
             />
             <ButtonPill
@@ -353,7 +353,7 @@ class CommunicatorToolbar extends React.Component<
               }
               onClick={this.loadMessage.bind(
                 this,
-                this.props.messages.currentThread.olderThreadId,
+                this.props.messages.currentThread.olderThreadId
               )}
             />
           </ApplicationPanelToolbarActionsAside>
@@ -368,7 +368,7 @@ class CommunicatorToolbar extends React.Component<
     if (isAtLeastOneSelected) {
       const partialIds: Array<Array<number>> =
         this.props.messages.selectedThreads.map((thread) =>
-          thread.labels.map((l) => l.labelId),
+          thread.labels.map((l) => l.labelId)
         );
       allInCommon = intersect(...partialIds);
       onlyInSome = difference(allInCommon, flatten(...partialIds));
@@ -423,7 +423,7 @@ class CommunicatorToolbar extends React.Component<
                 onChange={this.updateLabelFilter}
                 type="text"
                 placeholder={this.props.i18n.text.get(
-                  "plugin.communicator.label.create.textfield.placeholder",
+                  "plugin.communicator.label.create.textfield.placeholder"
                 )}
               />
             </div>,
@@ -441,13 +441,13 @@ class CommunicatorToolbar extends React.Component<
                   item.type === "label" &&
                   filterMatch(
                     item.text(this.props.i18n),
-                    this.state.labelFilter,
-                  ),
+                    this.state.labelFilter
+                  )
               )
               .map((label) => {
                 const isSelected = allInCommon.includes(label.id as number);
                 const isPartiallySelected = onlyInSome.includes(
-                  label.id as number,
+                  label.id as number
                 );
                 return (
                   <Link
@@ -461,11 +461,11 @@ class CommunicatorToolbar extends React.Component<
                       !isSelected || isPartiallySelected
                         ? this.props.addLabelToSelectedMessageThreads.bind(
                             null,
-                            label,
+                            label
                           )
                         : this.props.removeLabelFromSelectedMessageThreads.bind(
                             null,
-                            label,
+                            label
                           )
                     }
                   >
@@ -476,12 +476,12 @@ class CommunicatorToolbar extends React.Component<
                     <span className="link__text">
                       {filterHighlight(
                         label.text(this.props.i18n),
-                        this.state.labelFilter,
+                        this.state.labelFilter
                       )}
                     </span>
                   </Link>
                 );
-              }),
+              })
           )}
         >
           <ButtonPill buttonModifiers="label" icon="tag" />
@@ -502,7 +502,7 @@ class CommunicatorToolbar extends React.Component<
                 ? null
                 : this.props.toggleMessageThreadsReadStatus.bind(
                     null,
-                    this.props.messages.selectedThreads,
+                    this.props.messages.selectedThreads
                   )
             }
           />
@@ -516,7 +516,7 @@ class CommunicatorToolbar extends React.Component<
           onFocus={this.onInputFocus}
           onBlur={this.onInputBlur}
           placeholder={this.props.i18n.text.get(
-            "plugin.communicator.search.placeholder",
+            "plugin.communicator.search.placeholder"
           )}
           value={this.state.searchquery}
         />
@@ -549,11 +549,11 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
       loadMessageThreads,
       toggleAllMessageItems,
     },
-    dispatch,
+    dispatch
   );
 }
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(CommunicatorToolbar);

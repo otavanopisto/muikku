@@ -73,7 +73,7 @@ export default class MathField extends React.Component<
       this.loadedAce = true;
 
       const existantScript = document.querySelector(
-        "script[src=" + JSON.stringify(ACE_DEFAULT_SRC) + "]",
+        "script[src=" + JSON.stringify(ACE_DEFAULT_SRC) + "]"
       );
       if (!existantScript) {
         const script = document.createElement("script");
@@ -93,7 +93,7 @@ export default class MathField extends React.Component<
       this.loadedMq = true;
 
       const existantScript = document.querySelector(
-        "script[src=" + JSON.stringify(MQ_DEFAULT_SRC) + "]",
+        "script[src=" + JSON.stringify(MQ_DEFAULT_SRC) + "]"
       );
       if (!existantScript) {
         const script = document.createElement("script");

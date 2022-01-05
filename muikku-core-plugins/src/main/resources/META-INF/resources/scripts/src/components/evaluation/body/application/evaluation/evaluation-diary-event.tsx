@@ -51,7 +51,7 @@ const EvaluationDiaryEvent: React.FC<EvaluationDiaryEventProps> = ({
   };
 
   const formatedDate = `${moment(created).format("l")} - ${moment(
-    created,
+    created
   ).format("LT")} `;
 
   return (

@@ -48,7 +48,7 @@ export class PrivateChat extends React.Component<
       nick: null,
       messages: [],
       minimized: JSON.parse(
-        window.sessionStorage.getItem("minimizedChats") || "[]",
+        window.sessionStorage.getItem("minimizedChats") || "[]"
       ).includes(props.jid),
       messageNotification: !!this.props.initializingStanza,
       currentMessageToBeSent: "",
@@ -85,7 +85,7 @@ export class PrivateChat extends React.Component<
       "chat",
       null,
       this.props.jid,
-      { matchBare: true },
+      { matchBare: true }
     );
     this.presenceListenerHandler = this.props.connection.addHandler(
       this.onPresence,
@@ -94,7 +94,7 @@ export class PrivateChat extends React.Component<
       null,
       null,
       this.props.jid,
-      { matchBare: true },
+      { matchBare: true }
     );
 
     if (this.props.initializingStanza) {
@@ -109,7 +109,7 @@ export class PrivateChat extends React.Component<
   async obtainNick() {
     const user: any = (await promisify(
       mApi().chat.userInfo.read(this.props.jid.split("@")[0], {}),
-      "callback",
+      "callback"
     )()) as any;
     this.setState({
       nick: user.name,
@@ -122,7 +122,7 @@ export class PrivateChat extends React.Component<
         from: this.props.connection.jid,
         to: this.props.jid,
         type: "probe",
-      }),
+      })
     );
   }
 
@@ -164,7 +164,7 @@ export class PrivateChat extends React.Component<
         })
           .c("body", text)
           .up()
-          .c("active", { xmlns: "http://jabber.org/protocol/chatstates" }),
+          .c("active", { xmlns: "http://jabber.org/protocol/chatstates" })
       );
 
       const newMessage: IBareMessageType = {
@@ -184,7 +184,7 @@ export class PrivateChat extends React.Component<
           currentMessageToBeSent: "",
           messages: [...this.state.messages, newMessage],
         },
-        this.scrollToBottom.bind(this, "smooth"),
+        this.scrollToBottom.bind(this, "smooth")
       );
     }
   }
@@ -225,7 +225,7 @@ export class PrivateChat extends React.Component<
           messageNotification:
             this.state.messageNotification || !this.isFocused,
         },
-        this.scrollToBottom.bind(this, "smooth"),
+        this.scrollToBottom.bind(this, "smooth")
       );
     }
 
@@ -242,7 +242,7 @@ export class PrivateChat extends React.Component<
   }
   toggleMinimizeChats() {
     let minimizedChatList: string[] = JSON.parse(
-      window.sessionStorage.getItem("minimizedChats") || "[]",
+      window.sessionStorage.getItem("minimizedChats") || "[]"
     );
     const newMinimized = !this.state.minimized;
 
@@ -252,7 +252,7 @@ export class PrivateChat extends React.Component<
         minimized: newMinimized,
         messageNotification: false,
       },
-      this.scrollToBottom.bind(this, "auto"),
+      this.scrollToBottom.bind(this, "auto")
     );
 
     if (newMinimized) {
@@ -263,7 +263,7 @@ export class PrivateChat extends React.Component<
 
     window.sessionStorage.setItem(
       "minimizedChats",
-      JSON.stringify(minimizedChatList),
+      JSON.stringify(minimizedChatList)
     );
   }
   onPresence(stanza: Element) {
@@ -322,7 +322,7 @@ export class PrivateChat extends React.Component<
       const allMessagesLoaded: boolean =
         answerStanza.querySelector("query").getAttribute("complete") === "true";
       const newMessages = Array.from(
-        answerStanza.querySelectorAll("historyMessage"),
+        answerStanza.querySelectorAll("historyMessage")
       ).map((historyMessage: Element, index: number) => {
         const stanzaId: string = null;
         const stamp = historyMessage.querySelector("timestamp").textContent;
@@ -384,7 +384,7 @@ export class PrivateChat extends React.Component<
               loadingMessages: false,
               canLoadMoreMessages: !allMessagesLoaded,
             });
-          },
+          }
         );
       } else {
         this.setState({

@@ -11,7 +11,7 @@ export interface i18nType {
     formatDaily(
       data?: Date | string,
       todayFormat?: string,
-      otherDayFormat?: string,
+      otherDayFormat?: string
     ): string;
     subtract(date?: Date | string, input?: number, value?: string): string;
     add(date?: Date | string, input?: number, value?: string): string;
@@ -59,7 +59,7 @@ export default function i18n(
         return lang.toLowerCase();
       },
     },
-  },
+  }
 ): i18nType {
   return state;
 }

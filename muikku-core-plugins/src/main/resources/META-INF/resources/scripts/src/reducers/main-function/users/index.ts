@@ -118,7 +118,7 @@ export default function users(
       totalHitCount: null,
     },
   },
-  action: ActionType,
+  action: ActionType
 ): UsersType {
   if (action.type === "UPDATE_STUDENT_USERS") {
     return Object.assign({}, state, {
@@ -141,7 +141,7 @@ export function userGroups(
     searchString: "",
     currentPayload: null,
   },
-  action: ActionType,
+  action: ActionType
 ): UserGroupsType {
   if (action.type === "UPDATE_USER_GROUPS") {
     return Object.assign({}, state, {
@@ -177,7 +177,7 @@ export function userSelect(
     staff: [],
     userGroups: [],
   },
-  action: ActionType,
+  action: ActionType
 ): UsersSelectType {
   if (action.type === "UPDATE_STUDENT_SELECTOR") {
     return Object.assign({}, state, {
@@ -207,7 +207,7 @@ export function studyprogrammes(
     list: [],
     status: "WAIT",
   },
-  action: ActionType,
+  action: ActionType
 ): StudyprogrammeTypes {
   if (action.type === "UPDATE_STUDYPROGRAMME_TYPES") {
     return Object.assign({}, state, {

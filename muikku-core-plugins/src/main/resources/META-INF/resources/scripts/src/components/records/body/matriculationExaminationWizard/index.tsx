@@ -199,7 +199,7 @@ class MatriculationExaminationWizard extends React.Component<
   componentDidMount() {
     fetch(
       `/rest/matriculation/exams/${this.props.examId}/initialData/${this.props.status.userSchoolDataIdentifier}`,
-      { credentials: "include" },
+      { credentials: "include" }
     )
       .then((response) => response.json())
       .then((data: MatriculationStudent) => {
@@ -211,7 +211,7 @@ class MatriculationExaminationWizard extends React.Component<
               ...data,
             },
           }),
-          () => this.fetchSavedEnrollment(),
+          () => this.fetchSavedEnrollment()
         );
       });
   }
@@ -222,7 +222,7 @@ class MatriculationExaminationWizard extends React.Component<
   fetchSavedEnrollment() {
     fetch(
       `/rest/matriculation/exams/${this.props.examId}/savedEnrollments/${this.props.status.userSchoolDataIdentifier}`,
-      { credentials: "include" },
+      { credentials: "include" }
     )
       .then((response) => {
         if (response.status == 404) {
@@ -330,7 +330,7 @@ class MatriculationExaminationWizard extends React.Component<
       {
         credentials: "include",
         ...requestOptions,
-      },
+      }
     )
       .then(async (response) => {
         if (response.ok) {
@@ -537,7 +537,7 @@ class MatriculationExaminationWizard extends React.Component<
    * @param examination
    */
   handleExaminationInformationChange = (
-    examination: ExaminationInformation,
+    examination: ExaminationInformation
   ) => {
     this.setState({
       examinationInformation: examination,
@@ -560,7 +560,7 @@ class MatriculationExaminationWizard extends React.Component<
     }
 
     const selectedEnrollment = this.props.yo.enrollment.find(
-      (enrollment) => enrollment.id === this.props.examId,
+      (enrollment) => enrollment.id === this.props.examId
     );
 
     const endDate = moment(selectedEnrollment.ends).format("LL");
@@ -667,10 +667,10 @@ class MatriculationExaminationWizard extends React.Component<
             nextButtonCls="button button--wizard"
             backButtonCls="button button--wizard"
             nextButtonText={this.props.i18n.text.get(
-              "plugin.workspace.management.wizard.button.next",
+              "plugin.workspace.management.wizard.button.next"
             )}
             backButtonText={this.props.i18n.text.get(
-              "plugin.workspace.management.wizard.button.prev",
+              "plugin.workspace.management.wizard.button.prev"
             )}
             onStepChange={this.handleStepChange(steps)}
           />
@@ -706,5 +706,5 @@ function mapDispatchToProps() {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(MatriculationExaminationWizard);

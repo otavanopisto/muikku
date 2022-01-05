@@ -96,7 +96,7 @@ class WorkListEditable extends React.Component<
   }
   public setupState(
     props: WorkListEditableProps = this.props,
-    setupPhase = false,
+    setupPhase = false
   ): WorksListEditableState {
     const newState: WorksListEditableState = {
       description: "",
@@ -168,7 +168,7 @@ class WorkListEditable extends React.Component<
           <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-template form-element">
             <label className="application-sub-panel__item-title">
               {this.props.i18n.text.get(
-                "plugin.profile.worklist.template.label",
+                "plugin.profile.worklist.template.label"
               )}
             </label>
             <div className="application-sub-panel__item-data">
@@ -180,7 +180,7 @@ class WorkListEditable extends React.Component<
           {!this.props.isEditMode && (
             <label className="application-sub-panel__item-title">
               {this.props.i18n.text.get(
-                "plugin.profile.worklist.description.label",
+                "plugin.profile.worklist.description.label"
               )}
             </label>
           )}
@@ -193,7 +193,7 @@ class WorkListEditable extends React.Component<
               disabled={
                 this.props.base &&
                 !this.props.base.editableFields.includes(
-                  EditableField.DESCRIPTION,
+                  EditableField.DESCRIPTION
                 )
               }
             />
@@ -210,7 +210,7 @@ class WorkListEditable extends React.Component<
               disabled={
                 this.props.base &&
                 !this.props.base.editableFields.includes(
-                  EditableField.ENTRYDATE,
+                  EditableField.ENTRYDATE
                 )
               }
               id={"date-" + (this.props.base && this.props.base.id)}

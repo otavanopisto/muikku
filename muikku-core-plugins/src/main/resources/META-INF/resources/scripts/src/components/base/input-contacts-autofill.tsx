@@ -114,7 +114,7 @@ export default class c extends React.Component<
   onInputBlur(e: React.FocusEvent<any>) {
     this.blurTimeout = setTimeout(
       () => this.setState({ isFocused: false }),
-      100,
+      100
     ) as any;
   }
   onInputFocus(e: React.FocusEvent<any>) {
@@ -128,7 +128,7 @@ export default class c extends React.Component<
     if (textInput) {
       this.activeSearchTimeout = setTimeout(
         this.autocompleteDataFromServer.bind(this, textInput),
-        100,
+        100
       ) as any;
     } else {
       this.setState({
@@ -149,10 +149,10 @@ export default class c extends React.Component<
             mApi().user.users.read({
               q: textInput,
               onlyDefaultUsers: checkHasPermission(
-                this.props.userPermissionIsOnlyDefaultUsers,
+                this.props.userPermissionIsOnlyDefaultUsers
               ),
             }),
-            "callback",
+            "callback"
           );
     const getUserGroupsLoader = () =>
       loaders.userGroupsLoader
@@ -161,7 +161,7 @@ export default class c extends React.Component<
             mApi().usergroup.groups.read({
               q: textInput,
             }),
-            "callback",
+            "callback"
           );
     const getWorkspacesLoader = () =>
       loaders.workspacesLoader
@@ -170,10 +170,10 @@ export default class c extends React.Component<
             mApi().coursepicker.workspaces.read({
               q: textInput,
               myWorkspaces: checkHasPermission(
-                this.props.workspacePermissionIsOnlyMyWorkspaces,
+                this.props.workspacePermissionIsOnlyMyWorkspaces
               ),
             }),
-            "callback",
+            "callback"
           );
     const getStaffLoader = () =>
       loaders.staffLoader
@@ -182,7 +182,7 @@ export default class c extends React.Component<
             mApi().user.staffMembers.read({
               q: textInput,
             }),
-            "callback",
+            "callback"
           );
 
     const searchResults = await Promise.all([
@@ -216,7 +216,7 @@ export default class c extends React.Component<
           name: getName(item, this.props.showFullNames),
           email: item.email,
         },
-      }),
+      })
     );
     const userGroupItems: ContactRecipientType[] = searchResults[1].map(
       (item: UserGroupType): ContactRecipientType => ({
@@ -226,7 +226,7 @@ export default class c extends React.Component<
           name: item.name,
           organization: item.organization,
         },
-      }),
+      })
     );
     const workspaceItems: ContactRecipientType[] = searchResults[2].map(
       (item: WorkspaceType): ContactRecipientType => ({
@@ -237,7 +237,7 @@ export default class c extends React.Component<
             item.name +
             (item.nameExtension ? " (" + item.nameExtension + ")" : ""),
         },
-      }),
+      })
     );
     const staffItems: ContactRecipientType[] = searchResults[3].map(
       (item: UserStaffType): ContactRecipientType => ({
@@ -248,7 +248,7 @@ export default class c extends React.Component<
           email: item.email,
           identifier: item.id,
         },
-      }),
+      })
     );
     const allItems: ContactRecipientType[] = userItems
       .concat(userGroupItems)
@@ -267,14 +267,14 @@ export default class c extends React.Component<
     const nfilteredValue = this.state.selectedItems.filter(
       (selectedItem) =>
         selectedItem.type !== item.type ||
-        selectedItem.value.id !== item.value.id,
+        selectedItem.value.id !== item.value.id
     );
     this.setState(
       {
         selectedItems: nfilteredValue,
         isFocused: true,
       },
-      this.setBodyMargin,
+      this.setBodyMargin
     );
 
     this.props.onChange(nfilteredValue);
@@ -291,7 +291,7 @@ export default class c extends React.Component<
           textInput: "",
           isFocused: true,
         },
-        this.setBodyMargin,
+        this.setBodyMargin
       );
       this.props.onChange(nvalue);
     } else {
@@ -383,7 +383,7 @@ export default class c extends React.Component<
         selected: !!this.state.selectedItems.find(
           (selectedItem) =>
             selectedItem.type === item.type &&
-            selectedItem.value.id === item.value.id,
+            selectedItem.value.id === item.value.id
         ),
         node,
       };

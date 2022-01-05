@@ -38,7 +38,7 @@ class MessageView extends React.Component<MessageViewProps, MessageViewState> {
       history.replaceState(
         "",
         "",
-        location.hash.split("/")[0] + "/" + messageId,
+        location.hash.split("/")[0] + "/" + messageId
       );
       window.dispatchEvent(new HashChangeEvent("hashchange"));
     } else {
@@ -56,11 +56,11 @@ class MessageView extends React.Component<MessageViewProps, MessageViewState> {
         hasPrev={!!this.props.messages.currentThread.olderThreadId}
         goForward={this.loadMessage.bind(
           this,
-          this.props.messages.currentThread.newerThreadId,
+          this.props.messages.currentThread.newerThreadId
         )}
         goBackwards={this.loadMessage.bind(
           this,
-          this.props.messages.currentThread.olderThreadId,
+          this.props.messages.currentThread.olderThreadId
         )}
       >
         <div className="application-list">

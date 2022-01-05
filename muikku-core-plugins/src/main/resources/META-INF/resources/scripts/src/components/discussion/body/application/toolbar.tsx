@@ -63,7 +63,7 @@ class CommunicatorToolbar extends React.Component<
   render() {
     if (this.props.discussion.current) {
       const currentArea = this.props.discussion.areas.find(
-        (area) => area.id === this.props.discussion.current.forumAreaId,
+        (area) => area.id === this.props.discussion.current.forumAreaId
       );
       return (
         <div className="application-panel__toolbar">
@@ -153,5 +153,5 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(CommunicatorToolbar);

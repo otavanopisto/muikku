@@ -5,7 +5,7 @@ export interface ImageEditorRetrieverType {
   getAsBlob: (
     callback: (result: Blob | null) => void,
     mimeType?: string,
-    quality?: number,
+    quality?: number
   ) => void;
 }
 
@@ -255,25 +255,25 @@ export default class ImageEditor extends React.Component<
       .drawImage(
         this.canvas,
         -this.state.relativeOffsetX,
-        -this.state.relativeOffsetY,
+        -this.state.relativeOffsetY
       );
     return tempCanvas;
   }
   getAsDataURL(mimeType?: string, quality?: number) {
     return this.getResized().toDataURL(
       mimeType || "image/jpeg",
-      quality || 0.9,
+      quality || 0.9
     );
   }
   getAsBlob(
     callback: (result: Blob | null) => void,
     mimeType?: string,
-    quality?: number,
+    quality?: number
   ) {
     return this.getResized().toBlob(
       callback,
       mimeType || "image/jpeg",
-      quality || 0.9,
+      quality || 0.9
     );
   }
   onTouchStart(e: React.TouchEvent<any>) {
@@ -356,7 +356,7 @@ export default class ImageEditor extends React.Component<
         backgroundPosition:
           this.state.offsetX + "px " + this.state.offsetY + "px",
       },
-      this.props.style || {},
+      this.props.style || {}
     );
 
     return (

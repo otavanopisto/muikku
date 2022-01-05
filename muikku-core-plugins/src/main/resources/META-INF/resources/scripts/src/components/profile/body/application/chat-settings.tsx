@@ -126,12 +126,12 @@ class ChatSettings extends React.Component<
             success: executor.succeeded,
             fail: executor.failed,
           });
-        },
+        }
       )
       .onAllSucceed(() => {
         this.props.displayNotification(
           this.props.i18n.text.get("plugin.profile.properties.saved"),
-          "success",
+          "success"
         );
 
         this.setState({ locked: false });
@@ -139,7 +139,7 @@ class ChatSettings extends React.Component<
       .onOneFails(() => {
         this.props.displayNotification(
           this.props.i18n.text.get("plugin.profile.properties.failed"),
-          "error",
+          "error"
         );
 
         this.setState({ locked: false });
@@ -206,7 +206,7 @@ class ChatSettings extends React.Component<
                   >
                     <option value="VISIBLE_TO_ALL">
                       {this.props.i18n.text.get(
-                        "plugin.profile.chat.visibleToAll",
+                        "plugin.profile.chat.visibleToAll"
                       )}
                     </option>
                     <option value="DISABLED">
@@ -238,7 +238,7 @@ class ChatSettings extends React.Component<
                 </div>
                 <div className="application-sub-panel__item-description">
                   {this.props.i18n.text.get(
-                    "plugin.profile.chat.setNickDescription",
+                    "plugin.profile.chat.setNickDescription"
                   )}
                 </div>
               </div>
@@ -279,7 +279,7 @@ function mapStateToProps(state: StateType) {
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     { saveProfileProperty, displayNotification, updateProfileChatSettings },
-    dispatch,
+    dispatch
   );
 }
 

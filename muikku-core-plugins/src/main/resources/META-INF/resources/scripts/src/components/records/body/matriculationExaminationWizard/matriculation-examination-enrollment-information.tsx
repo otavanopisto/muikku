@@ -112,7 +112,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
    * @param prevState
    */
   componentDidUpdate = (
-    prevProps: MatriculationExaminationEnrollmentInformationProps,
+    prevProps: MatriculationExaminationEnrollmentInformationProps
   ) => {
     if (this.props !== prevProps) {
       this.setState(this.props.examination);
@@ -179,10 +179,10 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
   getNonDuplicateAttendances() {
     const attendances = [].concat(
       this.state.enrolledAttendances,
-      this.state.plannedAttendances,
+      this.state.plannedAttendances
     );
     const attendedSubjects = attendances.map(
-      (attendance) => attendance.subject,
+      (attendance) => attendance.subject
     );
 
     this.state.finishedAttendances.forEach((finishedAttendance) => {
@@ -203,7 +203,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
    */
   getAmountOfFinnishAttendances() {
     return this.getNonDuplicateAttendances().filter(
-      (attendance) => FINNISH_SUBJECTS.indexOf(attendance.subject) !== -1,
+      (attendance) => FINNISH_SUBJECTS.indexOf(attendance.subject) !== -1
     ).length;
   }
 
@@ -216,7 +216,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
    */
   getAmountOfMandatoryAttendances() {
     return this.getNonDuplicateAttendances().filter(
-      (attendance) => attendance.mandatory === "true",
+      (attendance) => attendance.mandatory === "true"
     ).length;
   }
 
@@ -231,7 +231,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
     return this.getNonDuplicateAttendances().filter(
       (attendance) =>
         attendance.mandatory === "true" &&
-        ACADEMIC_SUBJECTS.indexOf(attendance.subject) !== -1,
+        ACADEMIC_SUBJECTS.indexOf(attendance.subject) !== -1
     ).length;
   }
 
@@ -246,7 +246,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
     return this.getNonDuplicateAttendances().filter(
       (attendance) =>
         attendance.mandatory === "true" &&
-        ADVANCED_SUBJECTS.indexOf(attendance.subject) !== -1,
+        ADVANCED_SUBJECTS.indexOf(attendance.subject) !== -1
     ).length;
   }
 
@@ -394,7 +394,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
       this.state.enrolledAttendances.filter(
         (attendance) =>
           attendance.repeat === "false" &&
-          finishedSubjects.indexOf(attendance.subject) != -1,
+          finishedSubjects.indexOf(attendance.subject) != -1
       ).length > 0
     );
   };
@@ -406,7 +406,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
     this.state.finishedAttendances.filter(
       (fin) =>
         fin.subject === attendance.subject &&
-        fin.mandatory != attendance.mandatory,
+        fin.mandatory != attendance.mandatory
     ).length > 0;
 
   /**
@@ -415,7 +415,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
   hasMandatoryConflicts = () => {
     const attendances = [].concat(
       this.state.enrolledAttendances,
-      this.state.plannedAttendances,
+      this.state.plannedAttendances
     );
     return (
       attendances.filter(
@@ -423,8 +423,8 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
           this.state.finishedAttendances.filter(
             (fin) =>
               fin.subject === attendance.subject &&
-              fin.mandatory != attendance.mandatory,
-          ).length > 0,
+              fin.mandatory != attendance.mandatory
+          ).length > 0
       ).length > 0
     );
   };
@@ -450,7 +450,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
    */
   handleExaminationInformationChange = <T extends keyof ExaminationInformation>(
     key: T,
-    value: ExaminationInformation[T],
+    value: ExaminationInformation[T]
   ) => {
     const { examination, onChange } = this.props;
 
@@ -590,7 +590,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
    * @param examinationSubjectList
    */
   handleExaminationEnrolledAttendSubjectListChange = (
-    examinationSubjectList: ExaminationEnrolledSubject[],
+    examinationSubjectList: ExaminationEnrolledSubject[]
   ) => {
     const { examination, onChange } = this.props;
 
@@ -607,7 +607,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
    * @param examinationSubjectList
    */
   handleExaminationFinishedSubjectListChange = (
-    examinationSubjectList: ExaminationFinishedSubject[],
+    examinationSubjectList: ExaminationFinishedSubject[]
   ) => {
     const { examination, onChange } = this.props;
 
@@ -624,7 +624,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
    * @param examinationSubjectList
    */
   handleExaminationPlannedSubjectListChange = (
-    examinationSubjectList: ExaminationPlannedSubject[],
+    examinationSubjectList: ExaminationPlannedSubject[]
   ) => {
     const { examination, onChange } = this.props;
 
@@ -746,7 +746,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
                 onChange={(e) =>
                   this.handleExaminationInformationChange(
                     "changedContactInfo",
-                    e.target.value,
+                    e.target.value
                   )
                 }
                 rows={5}
@@ -767,7 +767,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
                 onChange={(e) =>
                   this.handleExaminationInformationChange(
                     "guider",
-                    e.target.value,
+                    e.target.value
                   )
                 }
                 label="Ohjaaja"
@@ -783,7 +783,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
                 onChange={(e) =>
                   this.handleExaminationInformationChange(
                     "enrollAs",
-                    e.currentTarget.value,
+                    e.currentTarget.value
                   )
                 }
                 value={enrollAs}
@@ -802,7 +802,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
                 onChange={(e) =>
                   this.handleExaminationInformationChange(
                     "numMandatoryCourses",
-                    e.target.value,
+                    e.target.value
                   )
                 }
                 label="Pakollisia kursseja suoritettuna"
@@ -818,7 +818,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
                 onChange={(e) =>
                   this.handleExaminationInformationChange(
                     "degreeType",
-                    e.currentTarget.value,
+                    e.currentTarget.value
                   )
                 }
                 value={degreeType}
@@ -870,7 +870,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
                 onChange={(e) =>
                   this.handleExaminationInformationChange(
                     "restartExam",
-                    e.target.checked,
+                    e.target.checked
                   )
                 }
                 checked={Boolean(restartExam)}

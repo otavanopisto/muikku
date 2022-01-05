@@ -51,7 +51,7 @@ export default class MathFieldToolbar extends React.Component<
   }
   triggerCommandOn(
     s: SpecialCharacterType | LatexCommandType,
-    e: React.ChangeEvent<any>,
+    e: React.ChangeEvent<any>
   ) {
     e.preventDefault();
 
@@ -106,7 +106,7 @@ export default class MathFieldToolbar extends React.Component<
               <div className={this.props.className + "-symbol-group-content"}>
                 {(c.characters as any)
                   .filter((s: SpecialCharacterType) =>
-                    !this.state.isExpanded ? s.popular : true,
+                    !this.state.isExpanded ? s.popular : true
                   )
                   .map((s: SpecialCharacterType) => (
                     <ToolbarButton

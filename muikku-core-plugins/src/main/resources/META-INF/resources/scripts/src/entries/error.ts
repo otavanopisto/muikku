@@ -18,6 +18,6 @@ import { updateError } from "~/actions/base/error";
     updateError({
       title: (window as any).MUIKKU_ERROR_TITLE,
       description: (window as any).MUIKKU_ERROR_DESCRIPTION,
-    }),
+    })
   );
 })();

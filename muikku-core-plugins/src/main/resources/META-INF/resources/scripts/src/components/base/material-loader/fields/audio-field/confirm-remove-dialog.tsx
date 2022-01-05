@@ -44,7 +44,7 @@ class ConfirmRemoveDialog extends React.Component<
       <div>
         <span>
           {this.props.i18n.text.get(
-            "plugin.workspace.materials.assignmentAudioAttachment.removeDialog.description",
+            "plugin.workspace.materials.assignmentAudioAttachment.removeDialog.description"
           )}
         </span>
       </div>
@@ -58,7 +58,7 @@ class ConfirmRemoveDialog extends React.Component<
           disabled={this.state.locked}
         >
           {this.props.i18n.text.get(
-            "plugin.workspace.materials.assignmentAudioAttachment.removeDialog.removeButtonLabel",
+            "plugin.workspace.materials.assignmentAudioAttachment.removeDialog.removeButtonLabel"
           )}
         </Button>
         <Button
@@ -67,7 +67,7 @@ class ConfirmRemoveDialog extends React.Component<
           disabled={this.state.locked}
         >
           {this.props.i18n.text.get(
-            "plugin.workspace.materials.assignmentAudioAttachment.removeDialog.cancelButtonLabel",
+            "plugin.workspace.materials.assignmentAudioAttachment.removeDialog.cancelButtonLabel"
           )}
         </Button>
       </div>
@@ -77,7 +77,7 @@ class ConfirmRemoveDialog extends React.Component<
       <Dialog
         modifier="confirm-remove-answer-dialog"
         title={this.props.i18n.text.get(
-          "plugin.workspace.materials.assignmentAudioAttachment.removeDialog.title",
+          "plugin.workspace.materials.assignmentAudioAttachment.removeDialog.title"
         )}
         content={content}
         footer={footer}
@@ -100,5 +100,5 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(ConfirmRemoveDialog);

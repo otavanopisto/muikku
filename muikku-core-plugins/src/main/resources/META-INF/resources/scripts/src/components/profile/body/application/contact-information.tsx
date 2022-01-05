@@ -138,7 +138,7 @@ class ContactInformation extends React.Component<
             success: executor.succeeded,
             fail: executor.failed,
           });
-        },
+        }
       )
       .addAction(this.props.status.isStudent, () => {
         this.props.updateProfileAddress({
@@ -156,7 +156,7 @@ class ContactInformation extends React.Component<
 
         this.props.displayNotification(
           this.props.i18n.text.get("plugin.profile.properties.saved"),
-          "success",
+          "success"
         );
       })
       .onOneFails(() => {
@@ -164,7 +164,7 @@ class ContactInformation extends React.Component<
 
         this.props.displayNotification(
           this.props.i18n.text.get("plugin.profile.properties.failed"),
-          "error",
+          "error"
         );
       });
   }
@@ -197,7 +197,7 @@ class ContactInformation extends React.Component<
         <form>
           <h2 className="application-panel__content-header">
             {this.props.i18n.text.get(
-              "plugin.profile.titles.contactInformation",
+              "plugin.profile.titles.contactInformation"
             )}
           </h2>
           <div className="application-sub-panel">
@@ -219,7 +219,7 @@ class ContactInformation extends React.Component<
                     className="application-sub-panel__item-title"
                   >
                     {this.props.i18n.text.get(
-                      "plugin.profile.changeAddressMunicipality.dialog.streetField.label",
+                      "plugin.profile.changeAddressMunicipality.dialog.streetField.label"
                     )}
                   </label>
                   <div className="application-sub-panel__item-data form-element">
@@ -242,7 +242,7 @@ class ContactInformation extends React.Component<
                     className="application-sub-panel__item-title"
                   >
                     {this.props.i18n.text.get(
-                      "plugin.profile.changeAddressMunicipality.dialog.postalCodeField.label",
+                      "plugin.profile.changeAddressMunicipality.dialog.postalCodeField.label"
                     )}
                   </label>
                   <div className="application-sub-panel__item-data form-element">
@@ -265,7 +265,7 @@ class ContactInformation extends React.Component<
                     className="application-sub-panel__item-title"
                   >
                     {this.props.i18n.text.get(
-                      "plugin.profile.changeAddressMunicipality.dialog.cityField.label",
+                      "plugin.profile.changeAddressMunicipality.dialog.cityField.label"
                     )}
                   </label>
                   <div className="application-sub-panel__item-data form-element">
@@ -288,7 +288,7 @@ class ContactInformation extends React.Component<
                     className="application-sub-panel__item-title"
                   >
                     {this.props.i18n.text.get(
-                      "plugin.profile.changeAddressMunicipality.dialog.countryField.label",
+                      "plugin.profile.changeAddressMunicipality.dialog.countryField.label"
                     )}
                   </label>
                   <div className="application-sub-panel__item-data form-element">
@@ -311,7 +311,7 @@ class ContactInformation extends React.Component<
                     className="application-sub-panel__item-title"
                   >
                     {this.props.i18n.text.get(
-                      "plugin.profile.changeAddressMunicipality.dialog.municipalityField.label",
+                      "plugin.profile.changeAddressMunicipality.dialog.municipalityField.label"
                     )}
                   </label>
                   <div className="application-sub-panel__item-data form-element">
@@ -341,7 +341,7 @@ class ContactInformation extends React.Component<
                     className="application-sub-panel__item-title"
                   >
                     {this.props.i18n.text.get(
-                      "plugin.profile.phoneNumber.label",
+                      "plugin.profile.phoneNumber.label"
                     )}
                   </label>
                   <div className="application-sub-panel__item-data form-element">
@@ -390,7 +390,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
       updateProfileChatSettings,
       updateProfileAddress,
     },
-    dispatch,
+    dispatch
   );
 }
 

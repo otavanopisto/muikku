@@ -94,7 +94,7 @@ class DeleteRequestDialog extends React.Component<
           onClick={this.deleteRequest.bind(this, closeDialog)}
         >
           {this.props.i18n.text.get(
-            "plugin.evaluation.evaluationModal.archiveRequest.confirmationDialog.buttonArchiveLabel",
+            "plugin.evaluation.evaluationModal.archiveRequest.confirmationDialog.buttonArchiveLabel"
           )}
         </Button>
         <Button
@@ -102,7 +102,7 @@ class DeleteRequestDialog extends React.Component<
           onClick={closeDialog}
         >
           {this.props.i18n.text.get(
-            "plugin.evaluation.evaluationModal.archiveRequest.confirmationDialog.buttonNoLabel",
+            "plugin.evaluation.evaluationModal.archiveRequest.confirmationDialog.buttonNoLabel"
           )}
         </Button>
       </div>
@@ -117,8 +117,8 @@ class DeleteRequestDialog extends React.Component<
           this.props.i18n.text.get(
             "plugin.evaluation.evaluationModal.archiveRequest.confirmationDialog.description",
             studentNameString,
-            workspaceNameString,
-          ),
+            workspaceNameString
+          )
         )}
       />
     );
@@ -128,7 +128,7 @@ class DeleteRequestDialog extends React.Component<
         onClose={this.props.onClose}
         modifier="evaluation-archive-request"
         title={this.props.i18n.text.get(
-          "plugin.evaluation.evaluationModal.archiveRequest.confirmationDialog.title",
+          "plugin.evaluation.evaluationModal.archiveRequest.confirmationDialog.title"
         )}
         content={content}
         footer={footer}
@@ -159,5 +159,5 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(DeleteRequestDialog);

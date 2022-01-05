@@ -143,7 +143,7 @@ class CopyWizard extends React.Component<CopyWizardProps, CopyWizardState> {
     const steps = [
       {
         name: this.props.i18n.text.get(
-          "plugin.workspace.management.wizard.step1",
+          "plugin.workspace.management.wizard.step1"
         ),
         component: <Step1 {...props} />,
       },
@@ -153,13 +153,13 @@ class CopyWizard extends React.Component<CopyWizardProps, CopyWizardState> {
     //the action is completed, I guess this stepzilla thing is kind of funny
     steps.push({
       name: this.props.i18n.text.get(
-        "plugin.workspace.management.wizard.step6",
+        "plugin.workspace.management.wizard.step6"
       ),
       component: <Step2 {...props} />,
     });
     steps.push({
       name: this.props.i18n.text.get(
-        "plugin.workspace.management.wizard.finalStep",
+        "plugin.workspace.management.wizard.finalStep"
       ),
       component: <Step2 {...props} />,
     });
@@ -176,15 +176,15 @@ class CopyWizard extends React.Component<CopyWizardProps, CopyWizardState> {
             preventEnterSubmission={true}
             prevBtnOnLastStep={true}
             nextTextOnFinalActionStep={this.props.i18n.text.get(
-              "plugin.workspace.management.copyWorkspace",
+              "plugin.workspace.management.copyWorkspace"
             )}
             nextButtonCls="button button--wizard"
             backButtonCls="button button--wizard"
             nextButtonText={this.props.i18n.text.get(
-              "plugin.workspace.management.wizard.button.next",
+              "plugin.workspace.management.wizard.button.next"
             )}
             backButtonText={this.props.i18n.text.get(
-              "plugin.workspace.management.wizard.button.prev",
+              "plugin.workspace.management.wizard.button.prev"
             )}
             onStepChange={this.checkLastStep.bind(this, steps)}
           />

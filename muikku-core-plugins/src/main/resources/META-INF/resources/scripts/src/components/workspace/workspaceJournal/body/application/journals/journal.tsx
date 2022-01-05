@@ -36,7 +36,7 @@ class Journal extends React.Component<JournalProps, JournalState> {
     const student =
       this.props.workspace.students &&
       this.props.workspace.students.results.find(
-        (s) => s.userEntityId === this.props.journal.userEntityId,
+        (s) => s.userEntityId === this.props.journal.userEntityId
       );
     return (
       <ApplicationListItem className="journal">
@@ -88,7 +88,7 @@ class Journal extends React.Component<JournalProps, JournalState> {
                 className="link link--application-list-item-footer"
               >
                 {this.props.i18n.text.get(
-                  "plugin.workspace.journal.editEntryButton.label",
+                  "plugin.workspace.journal.editEntryButton.label"
                 )}
               </Link>
             </EditJournal>
@@ -98,7 +98,7 @@ class Journal extends React.Component<JournalProps, JournalState> {
                 className="link link--application-list-item-footer"
               >
                 {this.props.i18n.text.get(
-                  "plugin.workspace.journal.deleteEntryButton.label",
+                  "plugin.workspace.journal.deleteEntryButton.label"
                 )}
               </Link>
             </DeleteJournal>

@@ -89,9 +89,9 @@ class UploadImageDialog extends React.Component<
   showLoadError() {
     this.props.displayNotification(
       this.props.i18n.text.get(
-        "plugin.profile.errormessage.profileImage.loadFailed",
+        "plugin.profile.errormessage.profileImage.loadFailed"
       ),
-      "error",
+      "error"
     );
   }
   onChangeScale(newValue: number) {
@@ -137,7 +137,7 @@ class UploadImageDialog extends React.Component<
           disabled={this.state.locked}
         >
           {this.props.i18n.text.get(
-            "plugin.profile.changeImage.dialog.saveButton.label",
+            "plugin.profile.changeImage.dialog.saveButton.label"
           )}
         </Button>
         <Button
@@ -146,7 +146,7 @@ class UploadImageDialog extends React.Component<
           disabled={this.state.locked}
         >
           {this.props.i18n.text.get(
-            "plugin.profile.changeImage.dialog.cancelButton.label",
+            "plugin.profile.changeImage.dialog.cancelButton.label"
           )}
         </Button>
       </div>
@@ -155,7 +155,7 @@ class UploadImageDialog extends React.Component<
       <Dialog
         isOpen={this.props.isOpen}
         title={this.props.i18n.text.get(
-          "plugin.profile.changeImage.dialog.title",
+          "plugin.profile.changeImage.dialog.title"
         )}
         content={content}
         footer={footer}
@@ -175,7 +175,7 @@ function mapStateToProps(state: StateType) {
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     { displayNotification, uploadProfileImage },
-    dispatch,
+    dispatch
   );
 }
 

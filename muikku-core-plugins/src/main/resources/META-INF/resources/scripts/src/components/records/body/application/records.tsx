@@ -42,7 +42,7 @@ const storedCurriculumIndex: any = {};
 
 function getEvaluationRequestIfAvailable(
   props: RecordsProps,
-  workspace: WorkspaceType,
+  workspace: WorkspaceType
 ) {
   let assesmentState: WorkspaceAssessementStateType;
   let assesmentDate: string;
@@ -69,7 +69,7 @@ function getEvaluationRequestIfAvailable(
       <span
         title={props.i18n.text.get(
           "plugin.records.workspace.pending",
-          props.i18n.time.format(assesmentDate),
+          props.i18n.time.format(assesmentDate)
         )}
         className="application-list__indicator-badge application-list__indicator-badge--evaluation-request icon-assessment-pending"
       ></span>
@@ -80,7 +80,7 @@ function getEvaluationRequestIfAvailable(
 
 function getTransferCreditValue(
   props: RecordsProps,
-  transferCredit: TransferCreditType,
+  transferCredit: TransferCreditType
 ) {
   // this shouldn't come to this, but just in case
   if (transferCredit === null) {
@@ -92,7 +92,7 @@ function getTransferCreditValue(
       title={
         props.i18n.text.get(
           "plugin.records.transferCreditsDate",
-          props.i18n.time.format(transferCredit.date),
+          props.i18n.time.format(transferCredit.date)
         ) + getShortenGradeExtension(transferCredit.grade)
       }
       className={`application-list__indicator-badge application-list__indicator-badge-course ${
@@ -114,7 +114,7 @@ function getAssessments(props: RecordsProps, workspace: WorkspaceType) {
         title={
           props.i18n.text.get(
             "plugin.records.workspace.evaluated",
-            props.i18n.time.format(workspace.studentAssessmentState.date),
+            props.i18n.time.format(workspace.studentAssessmentState.date)
           ) + getShortenGradeExtension(workspace.studentAssessmentState.grade)
         }
         className={`application-list__indicator-badge application-list__indicator-badge--course ${
@@ -134,14 +134,14 @@ function getAssessments(props: RecordsProps, workspace: WorkspaceType) {
     const status = props.i18n.text.get(
       workspace.studentAssessmentState.state === "incomplete"
         ? "plugin.records.workspace.incomplete"
-        : "plugin.records.workspace.failed",
+        : "plugin.records.workspace.failed"
     );
     return (
       <span
         title={
           props.i18n.text.get(
             "plugin.records.workspace.evaluated",
-            props.i18n.time.format(workspace.studentAssessmentState.date),
+            props.i18n.time.format(workspace.studentAssessmentState.date)
           ) +
           " - " +
           status
@@ -176,7 +176,7 @@ function getActivity(props: RecordsProps, workspace: WorkspaceType) {
         <div
           title={props.i18n.text.get(
             "plugin.records.workspace.activity.assignment.title",
-            workspace.studentActivity.evaluablesDonePercent,
+            workspace.studentActivity.evaluablesDonePercent
           )}
           className="activity-badge__item activity-badge__item--assignment"
         >
@@ -194,7 +194,7 @@ function getActivity(props: RecordsProps, workspace: WorkspaceType) {
         <div
           title={props.i18n.text.get(
             "plugin.records.workspace.activity.exercise.title",
-            workspace.studentActivity.exercisesDonePercent,
+            workspace.studentActivity.exercisesDonePercent
           )}
           className="activity-badge__item activity-badge__item--exercise"
         >
@@ -311,7 +311,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                         <div
                           onClick={this.sortWorkspaces.bind(
                             this,
-                            record.workspaces,
+                            record.workspaces
                           )}
                           className="application-list__header-container application-list__header-container--sorter"
                         >
@@ -354,7 +354,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                             onClick={this.goToWorkspace.bind(
                               this,
                               user,
-                              workspace,
+                              workspace
                             )}
                           >
                             <ApplicationListItemHeader
@@ -371,7 +371,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                               <div className="application-list__header-secondary">
                                 {getEvaluationRequestIfAvailable(
                                   this.props,
-                                  workspace,
+                                  workspace
                                 )}
                                 {getAssessments(this.props, workspace)}
                                 {getActivity(this.props, workspace)}
@@ -385,12 +385,12 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                           className="application-list__header-container application-list__header-container--sorter"
                           onClick={this.sortRecords.bind(
                             this,
-                            record.transferCredits,
+                            record.transferCredits
                           )}
                         >
                           <h3 className="application-list__header application-list__header--sorter">
                             {this.props.i18n.text.get(
-                              "plugin.records.transferCredits",
+                              "plugin.records.transferCredits"
                             )}{" "}
                             {record.groupCurriculumIdentifier
                               ? storedCurriculumIndex[

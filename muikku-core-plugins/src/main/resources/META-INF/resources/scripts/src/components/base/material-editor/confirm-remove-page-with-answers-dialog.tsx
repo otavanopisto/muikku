@@ -81,7 +81,7 @@ class ConfirmDeletePageWithAnswersDialog extends React.Component<
       <div>
         <span>
           {this.props.i18n.text.get(
-            "plugin.workspace.materialsManagement.confirmRemovePageWithAnswers.text",
+            "plugin.workspace.materialsManagement.confirmRemovePageWithAnswers.text"
           )}
         </span>
       </div>
@@ -95,7 +95,7 @@ class ConfirmDeletePageWithAnswersDialog extends React.Component<
           disabled={this.state.locked}
         >
           {this.props.i18n.text.get(
-            "plugin.workspace.materialsManagement.confirmRemovePageWithAnswers.confirmButton",
+            "plugin.workspace.materialsManagement.confirmRemovePageWithAnswers.confirmButton"
           )}
         </Button>
         <Button
@@ -104,7 +104,7 @@ class ConfirmDeletePageWithAnswersDialog extends React.Component<
           disabled={this.state.locked}
         >
           {this.props.i18n.text.get(
-            "plugin.workspace.materialsManagement.confirmRemovePageWithAnswers.cancelButton",
+            "plugin.workspace.materialsManagement.confirmRemovePageWithAnswers.cancelButton"
           )}
         </Button>
       </div>
@@ -116,7 +116,7 @@ class ConfirmDeletePageWithAnswersDialog extends React.Component<
         isOpen={this.props.materialEditor.showRemoveAnswersDialogForDelete}
         onClose={this.cancel}
         title={this.props.i18n.text.get(
-          "plugin.workspace.materialsManagement.confirmRemovePageWithAnswers.title",
+          "plugin.workspace.materialsManagement.confirmRemovePageWithAnswers.title"
         )}
         content={content}
         footer={footer}
@@ -135,11 +135,11 @@ function mapStateToProps(state: StateType) {
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     { setWorkspaceMaterialEditorState, deleteWorkspaceMaterialContentNode },
-    dispatch,
+    dispatch
   );
 }
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(ConfirmDeletePageWithAnswersDialog);

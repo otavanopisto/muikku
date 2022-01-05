@@ -63,7 +63,7 @@ class DeleteDialog extends React.Component<
           onClick={this.handleDeleteAudioFieldClick.bind(this, closeDialog)}
         >
           {this.props.i18n.text.get(
-            "plugin.evaluation.evaluationModal.audioAssessments.removeDialog.removeButton",
+            "plugin.evaluation.evaluationModal.audioAssessments.removeDialog.removeButton"
           )}
         </Button>
         <Button
@@ -71,7 +71,7 @@ class DeleteDialog extends React.Component<
           onClick={closeDialog}
         >
           {this.props.i18n.text.get(
-            "plugin.evaluation.evaluationModal.audioAssessments.removeDialog.cancelButton",
+            "plugin.evaluation.evaluationModal.audioAssessments.removeDialog.cancelButton"
           )}
         </Button>
       </div>
@@ -79,7 +79,7 @@ class DeleteDialog extends React.Component<
     const content = (closeDialog: () => any) => (
       <div>
         {this.props.i18n.text.get(
-          "plugin.evaluation.evaluationModal.audioAssessments.removeDialog.description",
+          "plugin.evaluation.evaluationModal.audioAssessments.removeDialog.description"
         )}
       </div>
     );
@@ -89,7 +89,7 @@ class DeleteDialog extends React.Component<
         onClose={this.props.onClose}
         modifier="evaluation-remove-assessment"
         title={this.props.i18n.text.get(
-          "plugin.evaluation.evaluationModal.audioAssessments.removeDialog.title",
+          "plugin.evaluation.evaluationModal.audioAssessments.removeDialog.title"
         )}
         content={content}
         footer={footer}

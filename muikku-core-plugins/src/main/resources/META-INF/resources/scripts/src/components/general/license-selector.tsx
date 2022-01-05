@@ -195,13 +195,13 @@ export class LicenseSelector extends React.Component<
       ? newLicense.propertiesDefault
       : {};
     this.props.onChange(
-      newLicense.value ? newLicense.value(newPropertyValues) : "",
+      newLicense.value ? newLicense.value(newPropertyValues) : ""
     );
   }
   setAPropertyAndTriggerChange(
     properties: any,
     propertyId: string,
-    e: React.ChangeEvent<HTMLInputElement>,
+    e: React.ChangeEvent<HTMLInputElement>
   ) {
     const currentLicense = LICENSES.find((v) => v.validate(this.props.value));
 
@@ -277,7 +277,7 @@ export class LicenseSelector extends React.Component<
                           onChange={this.setAPropertyAndTriggerChange.bind(
                             this,
                             currentPropertyValues,
-                            property.id,
+                            property.id
                           )}
                         />
                         <label htmlFor={property.id + index}>
@@ -298,7 +298,7 @@ export class LicenseSelector extends React.Component<
               htmlFor="workspace-license-link-or-text"
             >
               {this.props.i18n.text.get(
-                "plugin.workspace.materialsManagement.editorView.license.textOrLink",
+                "plugin.workspace.materialsManagement.editorView.license.textOrLink"
               )}
             </label>
             <input

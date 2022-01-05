@@ -72,7 +72,7 @@ class CommunicatorNewMessage extends SessionStateComponent<
     super(
       props,
       "communicator-new-message" +
-        (props.extraNamespace ? "-" + props.extraNamespace : ""),
+        (props.extraNamespace ? "-" + props.extraNamespace : "")
     );
 
     this.onCKEditorChange = this.onCKEditorChange.bind(this);
@@ -91,7 +91,7 @@ class CommunicatorNewMessage extends SessionStateComponent<
         locked: false,
         includesSignature: true,
       },
-      getStateIdentifier(props),
+      getStateIdentifier(props)
     );
   }
 
@@ -107,14 +107,14 @@ class CommunicatorNewMessage extends SessionStateComponent<
         locked: false,
         includesSignature: true,
       },
-      getStateIdentifier(this.props),
+      getStateIdentifier(this.props)
     );
 
     if (this.props.refreshInitialSelectedItemsOnOpen) {
       // Get selectedItems from the stored state
       const storedSelectedItemsState = this.getRecoverStoredState(
         { selectedItems: [] },
-        getStateIdentifier(this.props),
+        getStateIdentifier(this.props)
       );
 
       // Combine stored items with the newly selected
@@ -125,7 +125,7 @@ class CommunicatorNewMessage extends SessionStateComponent<
 
       // Remove duplicates through Set
       const combinedSelectedUniqueIds = new Set(
-        combinedSelectedItems.map((item) => item.value.id),
+        combinedSelectedItems.map((item) => item.value.id)
       );
 
       // Convert the Set to an Array
@@ -138,8 +138,8 @@ class CommunicatorNewMessage extends SessionStateComponent<
       for (let i = 0; i < newCombinedSelectedIds.length; i++) {
         newSelectedItems.push(
           combinedSelectedItems.find(
-            (item) => item.value.id === newCombinedSelectedIds[i],
-          ),
+            (item) => item.value.id === newCombinedSelectedIds[i]
+          )
         );
       }
 
@@ -179,7 +179,7 @@ class CommunicatorNewMessage extends SessionStateComponent<
   onSubjectChange(e: React.ChangeEvent<HTMLInputElement>) {
     this.setStateAndStore(
       { subject: e.target.value },
-      getStateIdentifier(this.props),
+      getStateIdentifier(this.props)
     );
   }
 
@@ -214,7 +214,7 @@ class CommunicatorNewMessage extends SessionStateComponent<
             subject: this.props.initialSubject || "",
             locked: false,
           },
-          getStateIdentifier(this.props),
+          getStateIdentifier(this.props)
         );
       },
       fail: () => {
@@ -249,7 +249,7 @@ class CommunicatorNewMessage extends SessionStateComponent<
         locked: false,
         receivedSelectedItems: false,
       },
-      getStateIdentifier(this.props),
+      getStateIdentifier(this.props)
     );
   }
 
@@ -264,14 +264,14 @@ class CommunicatorNewMessage extends SessionStateComponent<
           mApi().communicator.recipientsUsersSearch.read({
             q: searchString,
           }),
-          "callback",
+          "callback"
         ),
       workspacesLoader: (searchString: string) =>
         promisify(
           mApi().communicator.recipientsWorkspacesSearch.read({
             q: searchString,
           }),
-          "callback",
+          "callback"
         ),
     };
   }
@@ -285,7 +285,7 @@ class CommunicatorNewMessage extends SessionStateComponent<
       this.props.i18n.text.get("plugin.communicator.createmessage.label") +
       " - " +
       this.props.i18n.text.get(
-        "plugin.communicator.createmessage.title.content",
+        "plugin.communicator.createmessage.title.content"
       );
 
     const content = (closeDialog: () => any) => [
@@ -302,10 +302,10 @@ class CommunicatorNewMessage extends SessionStateComponent<
           this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING
         }
         placeholder={this.props.i18n.text.get(
-          "plugin.communicator.createmessage.title.recipients",
+          "plugin.communicator.createmessage.title.recipients"
         )}
         label={this.props.i18n.text.get(
-          "plugin.communicator.createmessage.title.recipients",
+          "plugin.communicator.createmessage.title.recipients"
         )}
         selectedItems={this.state.selectedItems}
         onChange={this.setSelectedItems}
@@ -315,7 +315,7 @@ class CommunicatorNewMessage extends SessionStateComponent<
         <div className="env-dialog__form-element-container">
           <label htmlFor="messageTitle" className="env-dialog__label">
             {this.props.i18n.text.get(
-              "plugin.communicator.createmessage.title.subject",
+              "plugin.communicator.createmessage.title.subject"
             )}
           </label>
           <input
@@ -335,7 +335,7 @@ class CommunicatorNewMessage extends SessionStateComponent<
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
             {this.props.i18n.text.get(
-              "plugin.communicator.createmessage.title.content",
+              "plugin.communicator.createmessage.title.content"
             )}
           </label>
           <CKEditor editorTitle={editorTitle} onChange={this.onCKEditorChange}>
@@ -357,7 +357,7 @@ class CommunicatorNewMessage extends SessionStateComponent<
           />
           <label htmlFor="messageSignature" className="env-dialog__input-label">
             {this.props.i18n.text.get(
-              "plugin.communicator.createmessage.checkbox.signature",
+              "plugin.communicator.createmessage.checkbox.signature"
             )}
           </label>
           <span className="env-dialog__input-description">
@@ -379,7 +379,7 @@ class CommunicatorNewMessage extends SessionStateComponent<
           disabled={this.state.locked}
         >
           {this.props.i18n.text.get(
-            "plugin.communicator.createmessage.button.send",
+            "plugin.communicator.createmessage.button.send"
           )}
         </Button>
         <Button
@@ -388,7 +388,7 @@ class CommunicatorNewMessage extends SessionStateComponent<
           disabled={this.state.locked}
         >
           {this.props.i18n.text.get(
-            "plugin.communicator.createmessage.button.cancel",
+            "plugin.communicator.createmessage.button.cancel"
           )}
         </Button>
         {this.recovered ? (
@@ -398,7 +398,7 @@ class CommunicatorNewMessage extends SessionStateComponent<
             disabled={this.state.locked}
           >
             {this.props.i18n.text.get(
-              "plugin.communicator.createmessage.button.clearDraft",
+              "plugin.communicator.createmessage.button.clearDraft"
             )}
           </Button>
         ) : null}
@@ -409,7 +409,7 @@ class CommunicatorNewMessage extends SessionStateComponent<
       <EnvironmentDialog
         modifier="new-message"
         title={this.props.i18n.text.get(
-          "plugin.communicator.createmessage.label",
+          "plugin.communicator.createmessage.label"
         )}
         content={content}
         footer={footer}
@@ -447,5 +447,5 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(CommunicatorNewMessage);

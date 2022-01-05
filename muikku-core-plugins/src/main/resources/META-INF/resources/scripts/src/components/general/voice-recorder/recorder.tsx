@@ -113,7 +113,7 @@ function Recorder(props: RecorderProps) {
                 .startOf("day")
                 .seconds(seconds)
                 .format("mm:ss"),
-              moment("2015-01-01").startOf("day").seconds(300).format("mm:ss"),
+              moment("2015-01-01").startOf("day").seconds(300).format("mm:ss")
             )}
             progress={seconds / 300}
           />

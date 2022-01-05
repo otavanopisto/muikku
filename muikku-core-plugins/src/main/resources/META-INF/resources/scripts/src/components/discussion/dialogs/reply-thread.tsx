@@ -62,7 +62,7 @@ class ReplyThread extends SessionStateComponent<
       },
       props.currentId +
         (props.quote ? "-q" : "") +
-        (props.reply ? "-" + props.reply.id : ""),
+        (props.reply ? "-" + props.reply.id : "")
     );
   }
   onCKEditorChange(text: string) {
@@ -70,7 +70,7 @@ class ReplyThread extends SessionStateComponent<
       { text },
       this.props.currentId +
         (this.props.quote ? "-q" : "") +
-        (this.props.reply ? "-" + this.props.reply.id : ""),
+        (this.props.reply ? "-" + this.props.reply.id : "")
     );
   }
   clearUp() {
@@ -87,7 +87,7 @@ class ReplyThread extends SessionStateComponent<
       },
       this.props.currentId +
         (this.props.quote ? "-q" : "") +
-        (this.props.reply ? "-" + this.props.reply.id : ""),
+        (this.props.reply ? "-" + this.props.reply.id : "")
     );
   }
   createReply(closeDialog: () => any) {
@@ -115,7 +115,7 @@ class ReplyThread extends SessionStateComponent<
           },
           this.props.currentId +
             (this.props.quote ? "-q" : "") +
-            (this.props.reply ? "-" + this.props.reply.id : ""),
+            (this.props.reply ? "-" + this.props.reply.id : "")
         );
       },
       fail: () => {
@@ -140,8 +140,8 @@ class ReplyThread extends SessionStateComponent<
           },
           this.props.currentId +
             "-q" +
-            (this.props.reply ? "-" + this.props.reply.id : ""),
-        ),
+            (this.props.reply ? "-" + this.props.reply.id : "")
+        )
       );
     } else {
       this.checkStoredAgainstThisState(
@@ -157,7 +157,7 @@ class ReplyThread extends SessionStateComponent<
         },
         this.props.currentId +
           (this.props.quote ? "-q" : "") +
-          (this.props.reply ? "-" + this.props.reply.id : ""),
+          (this.props.reply ? "-" + this.props.reply.id : "")
       );
     }
   }
@@ -172,7 +172,7 @@ class ReplyThread extends SessionStateComponent<
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
             {this.props.i18n.text.get(
-              "plugin.discussion.createmessage.content",
+              "plugin.discussion.createmessage.content"
             )}
           </label>
           <CKEditor
@@ -209,7 +209,7 @@ class ReplyThread extends SessionStateComponent<
             disabled={this.state.locked}
           >
             {this.props.i18n.text.get(
-              "plugin.discussion.createmessage.clearDraft",
+              "plugin.discussion.createmessage.clearDraft"
             )}
           </Button>
         ) : null}

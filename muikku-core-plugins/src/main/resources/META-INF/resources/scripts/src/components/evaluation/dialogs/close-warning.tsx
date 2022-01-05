@@ -62,7 +62,7 @@ class WarningDialog extends React.Component<
           onClick={this.handleContinueClick.bind(this, closeDialog)}
         >
           {this.props.i18n.text.get(
-            "plugin.evaluation.evaluationModal.unsavedVerbalRecordings.proceedButton",
+            "plugin.evaluation.evaluationModal.unsavedVerbalRecordings.proceedButton"
           )}
         </Button>
         <Button
@@ -70,7 +70,7 @@ class WarningDialog extends React.Component<
           onClick={closeDialog}
         >
           {this.props.i18n.text.get(
-            "plugin.evaluation.evaluationModal.unsavedVerbalRecordings.cancelButton",
+            "plugin.evaluation.evaluationModal.unsavedVerbalRecordings.cancelButton"
           )}
         </Button>
       </div>
@@ -78,7 +78,7 @@ class WarningDialog extends React.Component<
     const content = (closeDialog: () => any) => (
       <div>
         {this.props.i18n.text.get(
-          "plugin.evaluation.evaluationModal.unsavedVerbalRecordings.description",
+          "plugin.evaluation.evaluationModal.unsavedVerbalRecordings.description"
         )}
       </div>
     );
@@ -88,7 +88,7 @@ class WarningDialog extends React.Component<
         onClose={this.props.onClose}
         modifier="evaluation-remove-assessment"
         title={this.props.i18n.text.get(
-          "plugin.evaluation.evaluationModal.unsavedVerbalRecordings.title",
+          "plugin.evaluation.evaluationModal.unsavedVerbalRecordings.title"
         )}
         content={content}
         footer={footer}
