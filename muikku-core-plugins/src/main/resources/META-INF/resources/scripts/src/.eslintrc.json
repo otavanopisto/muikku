@@ -44,12 +44,7 @@
         "argsIgnorePattern": "^_"
       }
     ],
-    "@typescript-eslint/no-empty-interface": [
-      "error",
-      {
-        "allowSingleExtends": true
-      }
-    ],
+    "@typescript-eslint/no-empty-interface": 0,
     "no-unused-vars": "off",
     "no-var": 1
   }
