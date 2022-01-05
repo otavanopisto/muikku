@@ -19,7 +19,7 @@ export default class OverflowDetector extends React.Component<
     super(props);
 
     this.state = {
-      overflown: false
+      overflown: false,
     };
 
     this.checkOverflown = this.checkOverflown.bind(this);
@@ -31,17 +31,17 @@ export default class OverflowDetector extends React.Component<
     this.checkOverflown();
   }
   checkOverflown() {
-    let element: HTMLElement = this.refs["element"] as HTMLElement;
-    let overflown = element.scrollHeight > element.offsetHeight;
+    const element: HTMLElement = this.refs["element"] as HTMLElement;
+    const overflown = element.scrollHeight > element.offsetHeight;
     if (this.state.overflown !== overflown) {
       this.setState({
-        overflown
+        overflown,
       });
     }
   }
   render() {
-    let Element: any = this.props.as;
-    let givenProps: OverflowDetectorProps = Object.assign({}, this.props);
+    const Element: any = this.props.as;
+    const givenProps: OverflowDetectorProps = Object.assign({}, this.props);
     delete givenProps["classNameWhenOverflown"];
     delete givenProps["className"];
     delete givenProps["as"];

@@ -9,16 +9,16 @@ import { i18nType } from "~/reducers/base/i18n";
 import Course from "./courses/course";
 import { StateType } from "~/reducers";
 import ApplicationList, {
-  ApplicationListItem
+  ApplicationListItem,
 } from "~/components/general/application-list";
 import {
   loadMoreWorkspacesFromServer,
-  LoadMoreWorkspacesFromServerTriggerType
+  LoadMoreWorkspacesFromServerTriggerType,
 } from "~/actions/workspaces";
 import {
   WorkspacesStateType,
   WorkspaceListType,
-  WorkspaceType
+  WorkspaceType,
 } from "~/reducers/workspaces";
 
 interface CoursepickerWorkspacesProps {
@@ -69,9 +69,9 @@ class CoursepickerWorkspaces extends BodyScrollLoader<
 
     return (
       <ApplicationList>
-        {this.props.workspaces.map((workspace: WorkspaceType) => {
-          return <Course key={workspace.id} workspace={workspace} />;
-        })}
+        {this.props.workspaces.map((workspace: WorkspaceType) => (
+          <Course key={workspace.id} workspace={workspace} />
+        ))}
         {this.props.workspacesState === "LOADING_MORE" ? (
           <ApplicationListItem className="loader-empty" />
         ) : null}
@@ -85,7 +85,7 @@ function mapStateToProps(state: StateType) {
     i18n: state.i18n,
     workspacesState: state.workspaces.state,
     workspacesHasMore: state.workspaces.hasMore,
-    workspaces: state.workspaces.availableWorkspaces
+    workspaces: state.workspaces.availableWorkspaces,
   };
 }
 
@@ -95,5 +95,5 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(CoursepickerWorkspaces);

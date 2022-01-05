@@ -9,7 +9,7 @@ import { MatrMatriculationExaminationEnrollmentAct as Step3 } from "./matriculat
 import { MatriculationExaminationEnrollmentSummary as Step4 } from "./matriculation-examination-enrollment-summary";
 import { MatriculationExaminationEnrollmentSummaryNew as Step4New } from "./matriculation-examination-enrollment-summary-new";
 import { MatriculationExaminationEnrollmentCompleted as Step5 } from "./matriculation-examination-enrollment-completed";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 
 const StepZilla = require("react-stepzilla").default;
 import "~/sass/elements/wizard.scss";
@@ -19,23 +19,20 @@ import {
   SaveState,
   ExaminationSubject,
   MatriculationExaminationApplication,
-  ExaminationGrade
-} from "../../../../@types/shared";
-import { StatusType } from "../../../../reducers/base/status";
-import { HOPSType } from "../../../../reducers/main-function/hops";
-import {
-  ExamEnrollmentDegreeStructure,
-  ExaminationFunding
-} from "../../../../@types/shared";
-import { YOType } from "../../../../reducers/main-function/records/yo";
+  ExaminationGrade,
+} from "~/@types/shared";
+import { StatusType } from "~/reducers/base/status";
+import { HOPSType } from "~/reducers/main-function/hops";
+import { ExamEnrollmentDegreeStructure } from "~/@types/shared";
+import { YOType } from "~/reducers/main-function/records/yo";
 import {
   MatriculationExaminationDraft,
-  ExaminationInformation
-} from "../../../../@types/shared";
+  ExaminationInformation,
+} from "~/@types/shared";
 import {
   MatriculationStudent,
-  MatriculationStudentExamination
-} from "../../../../@types/shared";
+  MatriculationStudentExamination,
+} from "~/@types/shared";
 
 moment.locale("fi");
 
@@ -50,7 +47,7 @@ export const ACADEMIC_SUBJECTS = [
   "FI",
   "HI",
   "FY",
-  "BI"
+  "BI",
 ];
 export const ADVANCED_SUBJECTS = [
   "MAA",
@@ -59,7 +56,7 @@ export const ADVANCED_SUBJECTS = [
   "RAA",
   "ESA",
   "SAA",
-  "VEA"
+  "VEA",
 ];
 
 export const FINNISH_SUBJECTS = ["AI", "S2"];
@@ -96,7 +93,7 @@ export const SUBJECT_MAP: ExaminationSubject = {
   LAC: "Latina, C-taso",
   SM_DC: "Pohjoissaame, C-taso",
   SM_ICC: "Inarinsaame, C-taso",
-  SM_QC: "Koltansaame, C-taso"
+  SM_QC: "Koltansaame, C-taso",
 };
 
 export const EXAMINATION_GRADES_MAP: ExaminationGrade = {
@@ -108,7 +105,7 @@ export const EXAMINATION_GRADES_MAP: ExaminationGrade = {
   MAGNA_CUM_LAUDE_APPROBATUR: "M (Magna cum laude approbatur)",
   EXIMIA_CUM_LAUDE_APPROBATUR: "E (Eximia cum laude approbatur)",
   LAUDATUR: "L (Laudatur)",
-  UNKNOWN: "Ei vielä tiedossa"
+  UNKNOWN: "Ei vielä tiedossa",
 };
 
 export const EXAMINATION_SUCCESS_GRADES_MAP = [
@@ -117,7 +114,7 @@ export const EXAMINATION_SUCCESS_GRADES_MAP = [
   "CUM_LAUDE_APPROBATUR",
   "MAGNA_CUM_LAUDE_APPROBATUR",
   "EXIMIA_CUM_LAUDE_APPROBATUR",
-  "LAUDATUR"
+  "LAUDATUR",
 ];
 
 interface MatriculationExaminationWizardProps {
@@ -191,8 +188,8 @@ class MatriculationExaminationWizard extends React.Component<
           "." +
           (date.getMonth() + 1) +
           "." +
-          date.getFullYear()
-      }
+          date.getFullYear(),
+      },
     };
   }
 
@@ -202,21 +199,19 @@ class MatriculationExaminationWizard extends React.Component<
   componentDidMount() {
     fetch(
       `/rest/matriculation/exams/${this.props.examId}/initialData/${this.props.status.userSchoolDataIdentifier}`,
-      { credentials: "include" }
+      { credentials: "include" },
     )
-      .then((response) => {
-        return response.json();
-      })
+      .then((response) => response.json())
       .then((data: MatriculationStudent) => {
         this.setState(
           (prevState) => ({
             initialized: false,
             examinationInformation: {
               ...prevState.examinationInformation,
-              ...data
-            }
+              ...data,
+            },
           }),
-          () => this.fetchSavedEnrollment()
+          () => this.fetchSavedEnrollment(),
         );
       });
   }
@@ -227,7 +222,7 @@ class MatriculationExaminationWizard extends React.Component<
   fetchSavedEnrollment() {
     fetch(
       `/rest/matriculation/exams/${this.props.examId}/savedEnrollments/${this.props.status.userSchoolDataIdentifier}`,
-      { credentials: "include" }
+      { credentials: "include" },
     )
       .then((response) => {
         if (response.status == 404) {
@@ -242,8 +237,8 @@ class MatriculationExaminationWizard extends React.Component<
           examinationInformation: {
             ...prevState.examinationInformation,
             ...data,
-            restartExam: data.restartExam === "true" ? true : false
-          }
+            restartExam: data.restartExam === "true" ? true : false,
+          },
         }));
       });
   }
@@ -256,7 +251,7 @@ class MatriculationExaminationWizard extends React.Component<
     ...this.state.examinationInformation,
     enrolledAttendances: [],
     plannedAttendances: [],
-    finishedAttendances: []
+    finishedAttendances: [],
   });
 
   /**
@@ -287,7 +282,7 @@ class MatriculationExaminationWizard extends React.Component<
    */
   saveDraft = async () => {
     this.setState({
-      saveState: "SAVING_DRAFT"
+      saveState: "SAVING_DRAFT",
     });
 
     const {
@@ -303,7 +298,7 @@ class MatriculationExaminationWizard extends React.Component<
       enrollAs,
       guider,
       changedContactInfo,
-      degreeStructure
+      degreeStructure,
     } = this.state.examinationInformation;
 
     const matriculationForm: MatriculationExaminationDraft = {
@@ -319,44 +314,44 @@ class MatriculationExaminationWizard extends React.Component<
       enrolledAttendances,
       plannedAttendances,
       finishedAttendances,
-      degreeStructure
+      degreeStructure,
     };
 
     const requestOptions = {
       method: "PUT",
       headers: {
-        "Content-Type": "application/json; charset=utf-8"
+        "Content-Type": "application/json; charset=utf-8",
       },
-      body: JSON.stringify(matriculationForm)
+      body: JSON.stringify(matriculationForm),
     };
 
     await fetch(
       `/rest/matriculation/exams/${this.props.examId}/savedEnrollments/${this.props.status.userSchoolDataIdentifier}`,
       {
         credentials: "include",
-        ...requestOptions
-      }
+        ...requestOptions,
+      },
     )
       .then(async (response) => {
         if (response.ok) {
           await this.sleep(3000);
 
           this.setState({
-            saveState: "DRAFT_SAVED"
+            saveState: "DRAFT_SAVED",
           });
 
           await this.sleep(3000);
 
           this.setState({
-            saveState: undefined
+            saveState: undefined,
           });
 
           return response.json();
         }
         throw new Error();
       })
-      .catch((error) => {
-        let errMsg =
+      .catch(() => {
+        const errMsg =
           "Lomakkeen välitallennus epäonnistui, palaa Muikun etusivulle ja varmista, että olet kirjautunut sisään.";
         this.handleErrorMsg(errMsg);
       });
@@ -367,7 +362,7 @@ class MatriculationExaminationWizard extends React.Component<
    */
   submit = () => {
     this.setState({
-      saveState: "IN_PROGRESS"
+      saveState: "IN_PROGRESS",
     });
 
     const {
@@ -391,7 +386,7 @@ class MatriculationExaminationWizard extends React.Component<
       location,
       studentIdentifier,
       canPublishName,
-      degreeStructure
+      degreeStructure,
     } = this.state.examinationInformation;
 
     let modifiedMessage = message;
@@ -412,7 +407,7 @@ class MatriculationExaminationWizard extends React.Component<
       year: null,
       term: null,
       status: aSubject.status,
-      funding: aSubject.funding
+      funding: aSubject.funding,
     }));
 
     /**
@@ -425,7 +420,7 @@ class MatriculationExaminationWizard extends React.Component<
       term: fsubject.term ? fsubject.term.substring(0, 6) : null,
       status: fsubject.status,
       grade: fsubject.grade,
-      funding: fsubject.funding
+      funding: fsubject.funding,
     }));
 
     /**
@@ -436,7 +431,7 @@ class MatriculationExaminationWizard extends React.Component<
       mandatory: pSubject.mandatory === "true",
       year: pSubject.term ? Number(pSubject.term.substring(6)) : null,
       term: pSubject.term ? pSubject.term.substring(0, 6) : null,
-      status: pSubject.status
+      status: pSubject.status,
     }));
 
     const matriculationForm: MatriculationExaminationApplication = {
@@ -462,21 +457,21 @@ class MatriculationExaminationWizard extends React.Component<
       attendances: [
         ...attendedSubjectListParsed,
         ...finishedSubjectListParsed,
-        ...plannedSubjectListParsed
-      ]
+        ...plannedSubjectListParsed,
+      ],
     };
 
     const requestOptions = {
       method: "POST",
       headers: {
-        "Content-Type": "application/json; charset=utf-8"
+        "Content-Type": "application/json; charset=utf-8",
       },
-      body: JSON.stringify(matriculationForm)
+      body: JSON.stringify(matriculationForm),
     };
 
     fetch(`/rest/matriculation/exams/${this.props.examId}/enrollments`, {
       credentials: "include",
-      ...requestOptions
+      ...requestOptions,
     })
       .then((response) => {
         if (response.ok) {
@@ -485,7 +480,7 @@ class MatriculationExaminationWizard extends React.Component<
           throw new Error();
         }
       })
-      .catch((error) => {
+      .catch(() => {
         this.setState({ saveState: "FAILED" });
       });
   };
@@ -497,7 +492,7 @@ class MatriculationExaminationWizard extends React.Component<
   handleErrorMsg = (msg: string) => {
     this.setState({
       saveState: undefined,
-      errorMsg: msg
+      errorMsg: msg,
     });
   };
 
@@ -512,8 +507,8 @@ class MatriculationExaminationWizard extends React.Component<
         ...this.resetExaminationInformationAttendances(),
         degreeStructure: usingNewSystem
           ? ExamEnrollmentDegreeStructure.POST2022
-          : ExamEnrollmentDegreeStructure.PRE2022
-      }
+          : ExamEnrollmentDegreeStructure.PRE2022,
+      },
     });
 
     if (this.draftTimer) {
@@ -542,10 +537,10 @@ class MatriculationExaminationWizard extends React.Component<
    * @param examination
    */
   handleExaminationInformationChange = (
-    examination: ExaminationInformation
+    examination: ExaminationInformation,
   ) => {
     this.setState({
-      examinationInformation: examination
+      examinationInformation: examination,
     });
 
     if (this.draftTimer) {
@@ -565,7 +560,7 @@ class MatriculationExaminationWizard extends React.Component<
     }
 
     const selectedEnrollment = this.props.yo.enrollment.find(
-      (enrollment) => enrollment.id === this.props.examId
+      (enrollment) => enrollment.id === this.props.examId,
     );
 
     const endDate = moment(selectedEnrollment.ends).format("LL");
@@ -590,7 +585,7 @@ class MatriculationExaminationWizard extends React.Component<
             }
             endDate={endDate}
           />
-        )
+        ),
       },
       {
         name: "Opiskelijatiedot",
@@ -613,7 +608,7 @@ class MatriculationExaminationWizard extends React.Component<
               saveState={this.state.saveState}
               draftSaveErrorMsg={this.state.errorMsg}
             />
-          )
+          ),
       },
       {
         name: "Suorituspaikka",
@@ -624,7 +619,7 @@ class MatriculationExaminationWizard extends React.Component<
             saveState={this.state.saveState}
             draftSaveErrorMsg={this.state.errorMsg}
           />
-        )
+        ),
       },
       {
         name: "Yhteenveto",
@@ -642,7 +637,7 @@ class MatriculationExaminationWizard extends React.Component<
               saveState={this.state.saveState}
               draftSaveErrorMsg={this.state.errorMsg}
             />
-          )
+          ),
       },
       {
         name: "Valmis",
@@ -653,8 +648,8 @@ class MatriculationExaminationWizard extends React.Component<
             onDone={this.props.onDone}
             updateEnrollemnts={this.props.updateEnrollemnts}
           />
-        )
-      }
+        ),
+      },
     ];
 
     return (
@@ -672,10 +667,10 @@ class MatriculationExaminationWizard extends React.Component<
             nextButtonCls="button button--wizard"
             backButtonCls="button button--wizard"
             nextButtonText={this.props.i18n.text.get(
-              "plugin.workspace.management.wizard.button.next"
+              "plugin.workspace.management.wizard.button.next",
             )}
             backButtonText={this.props.i18n.text.get(
-              "plugin.workspace.management.wizard.button.prev"
+              "plugin.workspace.management.wizard.button.prev",
             )}
             onStepChange={this.handleStepChange(steps)}
           />
@@ -696,7 +691,7 @@ function mapStateToProps(state: StateType) {
     workspace: state.workspaces && state.workspaces.currentWorkspace,
     status: state.status,
     hops: state.hops,
-    yo: state.yo
+    yo: state.yo,
   };
 }
 
@@ -705,11 +700,11 @@ function mapStateToProps(state: StateType) {
  * @param dispatch
  * @returns
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps() {
   return {};
 }
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(MatriculationExaminationWizard);

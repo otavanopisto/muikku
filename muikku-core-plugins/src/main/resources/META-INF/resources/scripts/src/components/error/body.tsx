@@ -42,7 +42,7 @@ class ErrorBody extends React.Component<ErrorBodyProps, ErrorBodyState> {
 
 function mapStateToProps(state: StateType) {
   return {
-    error: state.error
+    error: state.error,
   };
 }
 

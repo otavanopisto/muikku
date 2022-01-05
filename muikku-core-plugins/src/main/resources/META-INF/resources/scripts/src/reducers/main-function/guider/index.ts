@@ -5,14 +5,13 @@ import {
   StudentUserProfileEmailType,
   StudentUserProfilePhoneType,
   StudentUserAddressType,
-  UserGroupType
+  UserGroupType,
 } from "~/reducers/user-index";
 import {
   WorkspaceType,
   WorkspaceListType,
-  ActivityLogType
+  ActivityLogType,
 } from "~/reducers/workspaces";
-import { VOPSDataType } from "~/reducers/main-function/vops";
 import { HOPSDataType } from "~/reducers/main-function/hops";
 
 export interface GuiderUserLabelType {
@@ -113,8 +112,8 @@ export interface GuiderStudentUserProfileLabelType {
 }
 
 function sortLabels(labelA: GuiderUserLabelType, labelB: GuiderUserLabelType) {
-  let labelAUpperCase = labelA.name.toUpperCase();
-  let labelBUpperCase = labelB.name.toUpperCase();
+  const labelAUpperCase = labelA.name.toUpperCase();
+  const labelBUpperCase = labelB.name.toUpperCase();
   return labelAUpperCase < labelBUpperCase
     ? -1
     : labelAUpperCase > labelBUpperCase
@@ -129,13 +128,13 @@ export default function guider(
     availableFilters: {
       labels: [],
       workspaces: [],
-      userGroups: []
+      userGroups: [],
     },
     activeFilters: {
       workspaceFilters: [],
       labelFilters: [],
       userGroupFilters: [],
-      query: ""
+      query: "",
     },
     students: [],
     hasMore: false,
@@ -143,62 +142,62 @@ export default function guider(
     selectedStudents: [],
     selectedStudentsIds: [],
     toggleAllStudentsActive: false,
-    currentStudent: null
+    currentStudent: null,
   },
-  action: ActionType
+  action: ActionType,
 ): GuiderType {
   if (action.type === "LOCK_TOOLBAR") {
     return Object.assign({}, state, {
-      toolbarLock: true
+      toolbarLock: true,
     });
   } else if (action.type === "UNLOCK_TOOLBAR") {
     return Object.assign({}, state, {
-      toolbarLock: false
+      toolbarLock: false,
     });
   } else if (action.type === "UPDATE_GUIDER_ACTIVE_FILTERS") {
     return Object.assign({}, state, {
-      activeFilters: action.payload
+      activeFilters: action.payload,
     });
   } else if (action.type === "UPDATE_GUIDER_ALL_PROPS") {
     return Object.assign({}, state, action.payload);
   } else if (action.type === "UPDATE_GUIDER_STATE") {
     return Object.assign({}, state, {
-      state: action.payload
+      state: action.payload,
     });
   } else if (action.type === "ADD_TO_GUIDER_SELECTED_STUDENTS") {
-    let student: GuiderStudentType = action.payload;
+    const student: GuiderStudentType = action.payload;
     return Object.assign({}, state, {
       selectedStudents: state.selectedStudents.concat([student]),
-      selectedStudentsIds: state.selectedStudentsIds.concat([student.id])
+      selectedStudentsIds: state.selectedStudentsIds.concat([student.id]),
     });
   } else if (action.type === "REMOVE_FROM_GUIDER_SELECTED_STUDENTS") {
-    let student: GuiderStudentType = action.payload;
+    const student: GuiderStudentType = action.payload;
     return Object.assign({}, state, {
       selectedStudents: state.selectedStudents.filter(
-        (s) => s.id !== student.id
+        (s) => s.id !== student.id,
       ),
       selectedStudentsIds: state.selectedStudentsIds.filter(
-        (id) => id !== student.id
-      )
+        (id) => id !== student.id,
+      ),
     });
   } else if (action.type === "SET_CURRENT_GUIDER_STUDENT") {
     return Object.assign({}, state, {
-      currentStudent: action.payload
+      currentStudent: action.payload,
     });
   } else if (action.type === "SET_CURRENT_GUIDER_STUDENT_EMPTY_LOAD") {
     return Object.assign({}, state, {
       currentStudent: {},
-      currentState: "LOADING"
+      currentState: "LOADING",
     });
   } else if (action.type === "SET_CURRENT_GUIDER_STUDENT_PROP") {
-    let obj: any = {};
+    const obj: any = {};
     obj[action.payload.property] = action.payload.value;
     return Object.assign({}, state, {
-      currentStudent: Object.assign({}, state.currentStudent, obj)
+      currentStudent: Object.assign({}, state.currentStudent, obj),
     });
   } else if (action.type === "UPDATE_CURRENT_GUIDER_STUDENT_STATE") {
     return Object.assign({}, state, {
-      currentState: action.payload
+      currentState: action.payload,
     });
   } else if (
     action.type === "ADD_GUIDER_LABEL_TO_USER" ||
@@ -216,23 +215,23 @@ export default function guider(
       newCurrent =
         state.currentStudent && Object.assign({}, state.currentStudent);
       if (newCurrent && newCurrent.labels) {
-        newCurrent.labels = newCurrent.labels.filter((label) => {
-          return label.id !== action.payload.label.id;
-        });
+        newCurrent.labels = newCurrent.labels.filter(
+          (label) => label.id !== action.payload.label.id,
+        );
       }
     }
 
-    let mapFn = function (student: GuiderStudentType) {
+    const mapFn = function (student: GuiderStudentType) {
       if (student.id === action.payload.studentId) {
         if (action.type === "ADD_GUIDER_LABEL_TO_USER") {
           return Object.assign({}, student, {
-            flags: student.flags.concat([action.payload.label])
+            flags: student.flags.concat([action.payload.label]),
           });
         } else {
           return Object.assign({}, student, {
-            flags: student.flags.filter((label) => {
-              return label.id !== action.payload.label.id;
-            })
+            flags: student.flags.filter(
+              (label) => label.id !== action.payload.label.id,
+            ),
           });
         }
       }
@@ -242,98 +241,98 @@ export default function guider(
     return Object.assign({}, state, {
       students: state.students.map(mapFn),
       selectedStudents: state.selectedStudents.map(mapFn),
-      currentStudent: newCurrent
+      currentStudent: newCurrent,
     });
   } else if (action.type === "UPDATE_ONE_GUIDER_LABEL_FROM_ALL_STUDENTS") {
-    let mapFnStudentLabel = function (
-      label: GuiderStudentUserProfileLabelType
+    const mapFnStudentLabel = function (
+      label: GuiderStudentUserProfileLabelType,
     ) {
       if (label.flagId === action.payload.labelId) {
         return Object.assign({}, label, action.payload.update);
       }
       return label;
     };
-    let mapFn = function (student: GuiderStudentType) {
+    const mapFn = function (student: GuiderStudentType) {
       return Object.assign({}, student, {
-        flags: student.flags.map(mapFnStudentLabel)
+        flags: student.flags.map(mapFnStudentLabel),
       });
     };
 
     let newCurrent = state.currentStudent;
     if (newCurrent) {
       newCurrent = Object.assign({}, state.currentStudent, {
-        labels: state.currentStudent.labels.map(mapFnStudentLabel)
+        labels: state.currentStudent.labels.map(mapFnStudentLabel),
       });
     }
 
     return Object.assign({}, state, {
       students: state.students.map(mapFn),
       selectedStudents: state.selectedStudents.map(mapFn),
-      currentStudent: newCurrent
+      currentStudent: newCurrent,
     });
   } else if (action.type === "DELETE_ONE_GUIDER_LABEL_FROM_ALL_STUDENTS") {
-    let filterFnStudentLabel = function (
-      label: GuiderStudentUserProfileLabelType
+    const filterFnStudentLabel = function (
+      label: GuiderStudentUserProfileLabelType,
     ) {
       return label.flagId !== action.payload;
     };
-    let mapFn = function (student: GuiderStudentType) {
+    const mapFn = function (student: GuiderStudentType) {
       return Object.assign({}, student, {
-        flags: student.flags.filter(filterFnStudentLabel)
+        flags: student.flags.filter(filterFnStudentLabel),
       });
     };
 
     let newCurrent = state.currentStudent;
     if (newCurrent) {
       newCurrent = Object.assign({}, state.currentStudent, {
-        labels: state.currentStudent.labels.filter(filterFnStudentLabel)
+        labels: state.currentStudent.labels.filter(filterFnStudentLabel),
       });
     }
 
     return Object.assign({}, state, {
       students: state.students.map(mapFn),
       selectedStudents: state.selectedStudents.map(mapFn),
-      currentStudent: newCurrent
+      currentStudent: newCurrent,
     });
   } else if (action.type === "ADD_FILE_TO_CURRENT_STUDENT") {
     return Object.assign({}, state, {
       currentStudent: Object.assign({}, state.currentStudent, {
-        files: state.currentStudent.files.concat([action.payload])
-      })
+        files: state.currentStudent.files.concat([action.payload]),
+      }),
     });
   } else if (action.type === "REMOVE_FILE_FROM_CURRENT_STUDENT") {
     return Object.assign({}, state, {
       currentStudent: Object.assign({}, state.currentStudent, {
         files: state.currentStudent.files.filter(
-          (f) => f.id !== action.payload.id
-        )
-      })
+          (f) => f.id !== action.payload.id,
+        ),
+      }),
     });
   } else if (action.type === "UPDATE_GUIDER_AVAILABLE_FILTERS_LABELS") {
     return Object.assign({}, state, {
       availableFilters: Object.assign({}, state.availableFilters, {
-        labels: action.payload.sort(sortLabels)
-      })
+        labels: action.payload.sort(sortLabels),
+      }),
     });
   } else if (action.type === "UPDATE_GUIDER_AVAILABLE_FILTERS_WORKSPACES") {
     return Object.assign({}, state, {
       availableFilters: Object.assign({}, state.availableFilters, {
-        workspaces: action.payload
-      })
+        workspaces: action.payload,
+      }),
     });
   } else if (action.type === "UPDATE_GUIDER_AVAILABLE_FILTERS_USERGROUPS") {
     return Object.assign({}, state, {
       availableFilters: Object.assign({}, state.availableFilters, {
-        userGroups: action.payload
-      })
+        userGroups: action.payload,
+      }),
     });
   } else if (action.type === "UPDATE_GUIDER_AVAILABLE_FILTERS_ADD_LABEL") {
     return Object.assign({}, state, {
       availableFilters: Object.assign({}, state.availableFilters, {
         labels: state.availableFilters.labels
           .concat([action.payload])
-          .sort(sortLabels)
-      })
+          .sort(sortLabels),
+      }),
     });
   } else if (action.type === "UPDATE_GUIDER_AVAILABLE_FILTER_LABEL") {
     return Object.assign({}, state, {
@@ -345,16 +344,16 @@ export default function guider(
             }
             return label;
           })
-          .sort(sortLabels)
-      })
+          .sort(sortLabels),
+      }),
     });
   } else if (action.type === "DELETE_GUIDER_AVAILABLE_FILTER_LABEL") {
     return Object.assign({}, state, {
       availableFilters: Object.assign({}, state.availableFilters, {
-        labels: state.availableFilters.labels.filter((label) => {
-          return label.id !== action.payload;
-        })
-      })
+        labels: state.availableFilters.labels.filter(
+          (label) => label.id !== action.payload,
+        ),
+      }),
     });
   } else if (action.type === "TOGGLE_ALL_STUDENTS") {
     return Object.assign({}, state, {
@@ -362,7 +361,7 @@ export default function guider(
       selectedStudents: !state.toggleAllStudentsActive ? state.students : [],
       selectedStudentsIds: !state.toggleAllStudentsActive
         ? state.students.map((student) => student.id)
-        : []
+        : [],
     });
   }
   return state;

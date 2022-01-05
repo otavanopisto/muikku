@@ -25,7 +25,7 @@ interface SelectFieldProps {
   onChange?: (
     context: React.Component<any, any>,
     name: string,
-    newValue: any
+    newValue: any,
   ) => any;
 
   usedAs: UsedAs;
@@ -74,7 +74,7 @@ export default class SelectField extends React.Component<
       // We dunno what the answer state is
       answerState: null,
 
-      fieldSavedState: null
+      fieldSavedState: null,
     };
   }
 
@@ -84,7 +84,7 @@ export default class SelectField extends React.Component<
    */
   onFieldSavedStateChange(savedState: FieldStateStatus) {
     this.setState({
-      fieldSavedState: savedState
+      fieldSavedState: savedState,
     });
   }
 
@@ -107,7 +107,7 @@ export default class SelectField extends React.Component<
    */
   shouldComponentUpdate(
     nextProps: SelectFieldProps,
-    nextState: SelectFieldState
+    nextState: SelectFieldState,
   ) {
     return (
       !equals(nextProps.content, this.props.content) ||
@@ -134,14 +134,14 @@ export default class SelectField extends React.Component<
     }
 
     // So just like text-field, there might be no right answer
-    let actuallyCorrectAnswers = this.props.content.options.filter(
-      (a) => a.correct
+    const actuallyCorrectAnswers = this.props.content.options.filter(
+      (a) => a.correct,
     );
     if (!actuallyCorrectAnswers.length) {
       // And equally we just call the state UNKNOWN
       if (this.state.answerState !== "UNKNOWN") {
         this.setState({
-          answerState: "UNKNOWN"
+          answerState: "UNKNOWN",
         });
         // And call a answer change for it to be unknown
         this.props.onAnswerChange(this.props.content.name, null);
@@ -165,13 +165,13 @@ export default class SelectField extends React.Component<
     // We update accordingly only if the answer has changed
     if (isCorrect && this.state.answerState !== "PASS") {
       this.setState({
-        answerState: "PASS"
+        answerState: "PASS",
       });
       // and call the function accordingly
       this.props.onAnswerChange(this.props.content.name, true);
     } else if (!isCorrect && this.state.answerState !== "FAIL") {
       this.setState({
-        answerState: "FAIL"
+        answerState: "FAIL",
       });
       this.props.onAnswerChange(this.props.content.name, false);
     }
@@ -223,29 +223,27 @@ export default class SelectField extends React.Component<
 
       return (
         <span className="material-page__radiobutton-wrapper" ref="base">
-          {this.props.content.options.map((o) => {
-            return (
-              <span
-                className={`material-page__radiobutton-items-wrapper material-page__radiobutton-items-wrapper--${
-                  this.props.content.listType === "radio-horizontal"
-                    ? "horizontal"
-                    : "vertical"
-                }`}
-                key={o.name}
-              >
-                <span className="material-page__radiobutton-item-container">
-                  <input
-                    className="material-page__radiobutton"
-                    type="radio"
-                    disabled
-                  />
-                  <label className="material-page__checkable-label">
-                    {o.text}
-                  </label>
-                </span>
+          {this.props.content.options.map((o) => (
+            <span
+              className={`material-page__radiobutton-items-wrapper material-page__radiobutton-items-wrapper--${
+                this.props.content.listType === "radio-horizontal"
+                  ? "horizontal"
+                  : "vertical"
+              }`}
+              key={o.name}
+            >
+              <span className="material-page__radiobutton-item-container">
+                <input
+                  className="material-page__radiobutton"
+                  type="radio"
+                  disabled
+                />
+                <label className="material-page__checkable-label">
+                  {o.text}
+                </label>
               </span>
-            );
-          })}
+            </span>
+          ))}
         </span>
       );
     }
@@ -260,8 +258,8 @@ export default class SelectField extends React.Component<
     // Note that a state of UNKNOWN also goes through here, but not a state of PASS
     if (this.props.displayCorrectAnswers) {
       // find the correct answers from the list
-      let correctAnswersFound = this.props.content.options.filter(
-        (a) => a.correct
+      const correctAnswersFound = this.props.content.options.filter(
+        (a) => a.correct,
       );
       // if we have some correct answers
       if (correctAnswersFound.length) {
@@ -273,7 +271,7 @@ export default class SelectField extends React.Component<
           <span className="material-page__field-answer-examples">
             <span className="material-page__field-answer-examples-title">
               {this.props.i18n.text.get(
-                "plugin.workspace.assigment.checkAnswers.correctSummary.title"
+                "plugin.workspace.assigment.checkAnswers.correctSummary.title",
               )}
             </span>
             {correctAnswersFound.map((answer, index) => (
@@ -301,7 +299,7 @@ export default class SelectField extends React.Component<
           <span className="material-page__field-answer-examples">
             <span className="material-page__field-answer-examples-title">
               {this.props.i18n.text.get(
-                "plugin.workspace.assigment.checkAnswers.detailsSummary.title"
+                "plugin.workspace.assigment.checkAnswers.detailsSummary.title",
               )}
             </span>
             <span className="material-page__field-answer-example">
@@ -312,12 +310,12 @@ export default class SelectField extends React.Component<
       }
     }
 
-    let fieldSavedStateClass = createFieldSavedStateClass(
-      this.state.fieldSavedState
+    const fieldSavedStateClass = createFieldSavedStateClass(
+      this.state.fieldSavedState,
     );
 
     // The classname that represents the state of the whole field
-    let fieldStateAfterCheck =
+    const fieldStateAfterCheck =
       this.state.answerState !== "UNKNOWN" &&
       this.props.displayCorrectAnswers &&
       this.props.checkAnswers
@@ -331,7 +329,7 @@ export default class SelectField extends React.Component<
       this.props.content.listType === "dropdown" ||
       this.props.content.listType === "list"
     ) {
-      let selectFieldType =
+      const selectFieldType =
         this.props.content.listType === "list" ? "list" : "dropdown";
       return (
         <span
@@ -357,17 +355,15 @@ export default class SelectField extends React.Component<
             {this.props.content.listType === "dropdown" ? (
               <option value="" />
             ) : null}
-            {this.props.content.options.map((o) => {
-              return (
-                <option
-                  className="material-page__selectfield-item-container"
-                  key={o.name}
-                  value={o.name}
-                >
-                  {o.text}
-                </option>
-              );
-            })}
+            {this.props.content.options.map((o) => (
+              <option
+                className="material-page__selectfield-item-container"
+                key={o.name}
+                value={o.name}
+              >
+                {o.text}
+              </option>
+            ))}
           </select>
           {correctAnswersummaryComponent}
         </span>
@@ -394,7 +390,7 @@ export default class SelectField extends React.Component<
         >
           {this.props.content.options.map((o) => {
             // lets generate unique id for labels and radio buttons
-            let uniqueElementID = "rb-" + uuid.v4();
+            const uniqueElementID = "rb-" + uuid.v4();
             return (
               <span
                 className="material-page__radiobutton-item-container"

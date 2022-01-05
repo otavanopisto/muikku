@@ -100,34 +100,34 @@ export default function discussion(
     currentPage: 1,
     currentTotalPages: 1,
     currentReplies: [],
-    areas: []
+    areas: [],
   },
-  action: ActionType
+  action: ActionType,
 ): DiscussionType {
   if (action.type === "UPDATE_DISCUSSION_THREADS_STATE") {
-    let newState: DiscussionStateType = action.payload;
+    const newState: DiscussionStateType = action.payload;
     return Object.assign({}, state, { state: newState });
   } else if (action.type === "UPDATE_DISCUSSION_CURRENT_THREAD_STATE") {
-    let newState: DiscussionStateType = action.payload;
+    const newState: DiscussionStateType = action.payload;
     return Object.assign({}, state, { currentState: newState });
   } else if (action.type === "UPDATE_DISCUSSION_THREADS_ALL_PROPERTIES") {
-    let newAllProperties: DiscussionPatchType = action.payload;
+    const newAllProperties: DiscussionPatchType = action.payload;
     return Object.assign({}, state, newAllProperties);
   } else if (action.type === "PUSH_DISCUSSION_THREAD_FIRST") {
     return Object.assign({}, state, {
-      threads: [action.payload].concat(state.threads)
+      threads: [action.payload].concat(state.threads),
     });
   } else if (action.type === "SET_CURRENT_DISCUSSION_THREAD") {
     return Object.assign({}, state, {
-      current: action.payload
+      current: action.payload,
     });
   } else if (action.type === "SET_TOTAL_DISCUSSION_PAGES") {
     return Object.assign({}, state, {
-      totalPages: action.payload
+      totalPages: action.payload,
     });
   } else if (action.type === "SET_TOTAL_DISCUSSION_THREAD_PAGES") {
     return Object.assign({}, state, {
-      currentTotalPages: action.payload
+      currentTotalPages: action.payload,
     });
   } else if (action.type === "UPDATE_DISCUSSION_THREAD") {
     let newCurrent = state.current;
@@ -141,10 +141,9 @@ export default function discussion(
           return thread;
         }
         return action.payload;
-      })
+      }),
     });
   } else if (action.type === "UPDATE_DISCUSSION_THREAD_REPLY") {
-    let newCurrent = state.current;
     return Object.assign({}, state, {
       currentReplies: state.currentReplies.map(
         (reply: DiscussionThreadReplyType) => {
@@ -152,14 +151,16 @@ export default function discussion(
             return reply;
           }
           return action.payload;
-        }
-      )
+        },
+      ),
     });
   } else if (action.type === "UPDATE_DISCUSSION_AREAS") {
-    let newAreas: DiscussionAreaListType = action.payload;
+    const newAreas: DiscussionAreaListType = action.payload;
     return Object.assign({}, state, { areas: newAreas });
   } else if (action.type === "PUSH_DISCUSSION_AREA_LAST") {
-    let newAreas: DiscussionAreaListType = state.areas.concat([action.payload]);
+    const newAreas: DiscussionAreaListType = state.areas.concat([
+      action.payload,
+    ]);
     return Object.assign({}, state, { areas: newAreas });
   } else if (action.type === "UPDATE_DISCUSSION_AREA") {
     return Object.assign({}, state, {
@@ -168,11 +169,11 @@ export default function discussion(
           return Object.assign({}, area, action.payload.update);
         }
         return area;
-      })
+      }),
     });
   } else if (action.type === "DELETE_DISCUSSION_AREA") {
     return Object.assign({}, state, {
-      areas: state.areas.filter((area) => area.id !== action.payload)
+      areas: state.areas.filter((area) => area.id !== action.payload),
     });
   } else if (action.type === "SET_DISCUSSION_WORKSPACE_ID") {
     return Object.assign({}, state, { workspaceId: action.payload });

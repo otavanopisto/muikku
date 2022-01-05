@@ -13,7 +13,7 @@ export default class GuiderBody extends React.Component<
   GuiderBodyState
 > {
   render() {
-    let aside = <Aside />;
+    const aside = <Aside />;
     return (
       <div>
         <MainFunctionNavbar activeTrail="guider" navigation={aside} />

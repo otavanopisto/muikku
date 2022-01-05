@@ -7,7 +7,7 @@ import ApplicationList, {
   ApplicationListItemContentWrapper,
   ApplicationListItemHeader,
   ApplicationListItemBody,
-  ApplicationListItemFooter
+  ApplicationListItemFooter,
 } from "~/components/general/application-list";
 
 export class DiscussionThreads extends React.Component<{}, {}> {
@@ -128,7 +128,7 @@ export class DiscussionCurrentThreadElement extends React.Component<
   {}
 > {
   render() {
-    let baseMod = this.props.isOpMessage
+    const baseMod = this.props.isOpMessage
       ? "discussion-message"
       : this.props.isReplyOfReply
       ? "discussion-reply-of-reply"

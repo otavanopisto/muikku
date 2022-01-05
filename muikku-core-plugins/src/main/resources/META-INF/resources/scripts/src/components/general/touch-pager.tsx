@@ -36,7 +36,7 @@ export default class TouchPager extends React.Component<
     this.closeInterval = null;
 
     this.state = {
-      drag: 0
+      drag: 0,
     };
   }
   onTouchStart(e: React.TouchEvent<any>) {
@@ -58,17 +58,17 @@ export default class TouchPager extends React.Component<
         (this.refs["centerContainer"] as HTMLElement).offsetWidth;
     }
     this.setState({
-      drag: -diff
+      drag: -diff,
     });
   }
-  onTouchEnd(e: React.TouchEvent<any>) {
-    let allDrag = Math.abs(this.state.drag);
-    let totalDrag = (this.refs["centerContainer"] as HTMLElement).offsetWidth;
-    let sign = Math.sign(this.state.drag);
+  onTouchEnd() {
+    const allDrag = Math.abs(this.state.drag);
+    const totalDrag = (this.refs["centerContainer"] as HTMLElement).offsetWidth;
+    const sign = Math.sign(this.state.drag);
 
-    let closeToNext = allDrag >= totalDrag / 3;
+    const closeToNext = allDrag >= totalDrag / 3;
     this.closeInterval = setInterval(() => {
-      let absoluteDrag = Math.abs(this.state.drag);
+      const absoluteDrag = Math.abs(this.state.drag);
       if (absoluteDrag === (closeToNext ? totalDrag : 0)) {
         clearTimeout(this.closeInterval);
         if (closeToNext) {
@@ -88,7 +88,7 @@ export default class TouchPager extends React.Component<
         newValue = totalDrag;
       }
       this.setState({
-        drag: sign * newValue
+        drag: sign * newValue,
       });
     }, 10) as any;
   }
@@ -117,7 +117,7 @@ export default class TouchPager extends React.Component<
             height: "100%",
             right: "100%",
             width: "100%",
-            transform: `translateX(${this.state.drag}px)`
+            transform: `translateX(${this.state.drag}px)`,
           }}
         >
           {this.props.prev}
@@ -130,7 +130,7 @@ export default class TouchPager extends React.Component<
             height: "100%",
             left: "100%",
             width: "100%",
-            transform: `translateX(${this.state.drag}px)`
+            transform: `translateX(${this.state.drag}px)`,
           }}
         >
           {this.props.next}

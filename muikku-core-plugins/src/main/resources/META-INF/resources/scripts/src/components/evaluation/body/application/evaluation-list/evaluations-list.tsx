@@ -12,7 +12,7 @@ import {
   SetEvaluationSelectedWorkspace,
   setSelectedWorkspaceId,
   SaveEvaluationSortFunction,
-  saveEvaluationSortFunctionToServer
+  saveEvaluationSortFunctionToServer,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import { UpdateImportanceObject } from "~/@types/evaluation";
 import { i18nType } from "~/reducers/base/i18n";
@@ -68,7 +68,7 @@ export class EvaluationList extends React.Component<
          */
         const sortFunction: EvaluationSort = {
           key: sortKey,
-          value: "no-sort"
+          value: "no-sort",
         };
 
         this.props.saveEvaluationSortFunctionToServer({ sortFunction });
@@ -78,7 +78,7 @@ export class EvaluationList extends React.Component<
          */
         const sortFunction: EvaluationSort = {
           key: sortKey,
-          value: sortBy
+          value: sortBy,
         };
 
         this.props.saveEvaluationSortFunctionToServer({ sortFunction });
@@ -95,13 +95,13 @@ export class EvaluationList extends React.Component<
       evaluated,
       notEvaluated,
       assessmentRequest,
-      supplementationRequest
+      supplementationRequest,
     } = this.props.evaluations.evaluationFilters;
     const {
       importantRequests,
       unimportantRequests,
       evaluationSearch,
-      evaluationSort
+      evaluationSort,
     } = this.props.evaluations;
 
     let filteredAssessment = assessments;
@@ -120,7 +120,7 @@ export class EvaluationList extends React.Component<
     if (evaluationSort !== undefined) {
       filteredAssessment = this.sortAssessmentsBySortBy(
         filteredAssessment,
-        evaluationSort.value
+        evaluationSort.value,
       );
     }
 
@@ -158,22 +158,22 @@ export class EvaluationList extends React.Component<
 
     if (evaluationFilters.evaluated) {
       filteredAssessments = filteredAssessments.filter(
-        (aItem) => aItem.evaluationDate !== null
+        (aItem) => aItem.evaluationDate !== null,
       );
     }
     if (evaluationFilters.assessmentRequest) {
       filteredAssessments = filteredAssessments.filter(
-        (aItem) => aItem.assessmentRequestDate !== null
+        (aItem) => aItem.assessmentRequestDate !== null,
       );
     }
     if (evaluationFilters.supplementationRequest) {
       filteredAssessments = filteredAssessments.filter(
-        (aItem) => aItem.evaluationDate && !aItem.graded
+        (aItem) => aItem.evaluationDate && !aItem.graded,
       );
     }
     if (evaluationFilters.notEvaluated) {
       filteredAssessments = filteredAssessments.filter(
-        (aItem) => aItem.evaluationDate === null
+        (aItem) => aItem.evaluationDate === null,
       );
     }
 
@@ -186,26 +186,26 @@ export class EvaluationList extends React.Component<
    */
   sortAssessmentsBySortBy = (
     assessments: AssessmentRequest[],
-    sortBy: SortBy
+    sortBy: SortBy,
   ) => {
-    let filteredBySortAssessments = assessments;
+    const filteredBySortAssessments = assessments;
 
     switch (sortBy) {
       case "no-sort":
         filteredBySortAssessments.sort((a, b) =>
-          b.lastName.localeCompare(a.lastName)
+          b.lastName.localeCompare(a.lastName),
         );
         break;
 
       case "sort-alpha-asc":
         filteredBySortAssessments.sort((a, b) =>
-          a.lastName.localeCompare(b.lastName)
+          a.lastName.localeCompare(b.lastName),
         );
         break;
 
       case "sort-alpha-desc":
         filteredBySortAssessments.sort((a, b) =>
-          b.lastName.localeCompare(a.lastName)
+          b.lastName.localeCompare(a.lastName),
         );
         break;
 
@@ -219,19 +219,19 @@ export class EvaluationList extends React.Component<
 
       case "sort-workspace-alpha-asc":
         filteredBySortAssessments.sort((a, b) =>
-          a.lastName.localeCompare(b.lastName)
+          a.lastName.localeCompare(b.lastName),
         );
         break;
 
       case "sort-workspace-alpha-desc":
         filteredBySortAssessments.sort((a, b) =>
-          b.lastName.localeCompare(a.lastName)
+          b.lastName.localeCompare(a.lastName),
         );
         break;
 
       default:
         filteredBySortAssessments.sort((a, b) =>
-          b.lastName.localeCompare(a.lastName)
+          b.lastName.localeCompare(a.lastName),
         );
         break;
     }
@@ -265,7 +265,7 @@ export class EvaluationList extends React.Component<
       for (const element1 of studentName) {
         if (
           element1.includes(
-            this.props.evaluations.evaluationSearch.toLowerCase()
+            this.props.evaluations.evaluationSearch.toLowerCase(),
           )
         ) {
           return aItem;
@@ -278,7 +278,7 @@ export class EvaluationList extends React.Component<
       for (const element2 of workspace) {
         if (
           element2.includes(
-            this.props.evaluations.evaluationSearch.toLowerCase()
+            this.props.evaluations.evaluationSearch.toLowerCase(),
           )
         ) {
           return aItem;
@@ -301,14 +301,14 @@ export class EvaluationList extends React.Component<
      * Filtering assessments that are marked as important
      */
     let importantAssessmentSelected = assessments.filter((item) =>
-      importantRequests.includes(item.workspaceUserEntityId)
+      importantRequests.includes(item.workspaceUserEntityId),
     );
 
     /**
      * Filtering assessments that are marked as unmportant
      */
     let unimportantAssessmentSelected = assessments.filter((item) =>
-      unimportantRequests.includes(item.workspaceUserEntityId)
+      unimportantRequests.includes(item.workspaceUserEntityId),
     );
 
     /**
@@ -317,7 +317,7 @@ export class EvaluationList extends React.Component<
     let notImportantNorUnimportant = assessments.filter(
       (item) =>
         !importantRequests.includes(item.workspaceUserEntityId) &&
-        !unimportantRequests.includes(item.workspaceUserEntityId)
+        !unimportantRequests.includes(item.workspaceUserEntityId),
     );
 
     /**
@@ -326,15 +326,15 @@ export class EvaluationList extends React.Component<
     if (evaluationSort !== undefined) {
       importantAssessmentSelected = this.sortAssessmentsBySortBy(
         importantAssessmentSelected,
-        evaluationSort.value
+        evaluationSort.value,
       );
       unimportantAssessmentSelected = this.sortAssessmentsBySortBy(
         unimportantAssessmentSelected,
-        evaluationSort.value
+        evaluationSort.value,
       );
       notImportantNorUnimportant = this.sortAssessmentsBySortBy(
         notImportantNorUnimportant,
-        evaluationSort.value
+        evaluationSort.value,
       );
     }
 
@@ -344,7 +344,7 @@ export class EvaluationList extends React.Component<
     return [
       ...importantAssessmentSelected,
       ...notImportantNorUnimportant,
-      ...unimportantAssessmentSelected
+      ...unimportantAssessmentSelected,
     ];
   };
 
@@ -355,7 +355,7 @@ export class EvaluationList extends React.Component<
   handleUpdateImportance = (object: UpdateImportanceObject) => {
     this.props.updateImportance({
       importantAssessments: object.importantAssessments,
-      unimportantAssessments: object.unimportantAssessments
+      unimportantAssessments: object.unimportantAssessments,
     });
   };
 
@@ -383,7 +383,7 @@ export class EvaluationList extends React.Component<
       evaluationRequests,
       importantRequests,
       unimportantRequests,
-      selectedWorkspaceId
+      selectedWorkspaceId,
     } = this.props.evaluations;
 
     /**
@@ -401,7 +401,7 @@ export class EvaluationList extends React.Component<
        * with corresponding messages
        */
       const filteredAssessment = this.filterAndSortAssessments(
-        evaluationRequests.data
+        evaluationRequests.data,
       );
 
       /**
@@ -447,10 +447,10 @@ export class EvaluationList extends React.Component<
             <span>
               {selectedWorkspaceId === undefined
                 ? this.props.i18n.text.get(
-                    "plugin.evaluation.cardlist.allrequesthandled"
+                    "plugin.evaluation.cardlist.allrequesthandled",
                   )
                 : this.props.i18n.text.get(
-                    "plugin.evaluation.cardlist.noStudentsAtWorkspace"
+                    "plugin.evaluation.cardlist.noStudentsAtWorkspace",
                   )}
             </span>
           </div>
@@ -463,7 +463,7 @@ export class EvaluationList extends React.Component<
           <div className="empty">
             <span>
               {this.props.i18n.text.get(
-                "plugin.evaluation.cardlist.noRequestWithFilters"
+                "plugin.evaluation.cardlist.noRequestWithFilters",
               )}
             </span>
           </div>
@@ -480,8 +480,8 @@ export class EvaluationList extends React.Component<
  * @param ascending
  * @returns
  */
-const byDate = (ascending: boolean) => {
-  return (a: AssessmentRequest, b: AssessmentRequest) => {
+const byDate =
+  (ascending: boolean) => (a: AssessmentRequest, b: AssessmentRequest) => {
     // equal items sort equally
     if (a.assessmentRequestDate === b.assessmentRequestDate) {
       return 0;
@@ -501,7 +501,6 @@ const byDate = (ascending: boolean) => {
       return a.assessmentRequestDate < b.assessmentRequestDate ? 1 : -1;
     }
   };
-};
 
 /**
  * mapStateToProps
@@ -511,7 +510,7 @@ const byDate = (ascending: boolean) => {
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    evaluations: state.evaluations
+    evaluations: state.evaluations,
   };
 }
 
@@ -525,9 +524,9 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
     {
       setSelectedWorkspaceId,
       updateImportance,
-      saveEvaluationSortFunctionToServer
+      saveEvaluationSortFunctionToServer,
     },
-    dispatch
+    dispatch,
   );
 }
 

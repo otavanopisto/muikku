@@ -44,26 +44,26 @@ class CommunicatorToolbar extends React.Component<
     //TODO this is a retarded way to do things if we ever update to a SPA
     //it's a hacky mechanism to make history awesome, once we use a router it gotta be fixed
     if (history.replaceState) {
-      let canGoBack =
+      const canGoBack =
         (!document.referrer ||
           document.referrer.indexOf(window.location.host) !== -1) &&
         history.length;
       if (canGoBack) {
         history.back();
       } else {
-        let splitted = location.hash.split("/");
+        const splitted = location.hash.split("/");
         history.replaceState("", "", splitted[0] + "/" + splitted[1]);
         window.dispatchEvent(new HashChangeEvent("hashchange"));
       }
     } else {
-      let splitted = location.hash.split("/");
+      const splitted = location.hash.split("/");
       location.hash = splitted[0] + "/" + splitted[1];
     }
   }
   render() {
     if (this.props.discussion.current) {
-      let currentArea = this.props.discussion.areas.find(
-        (area) => area.id === this.props.discussion.current.forumAreaId
+      const currentArea = this.props.discussion.areas.find(
+        (area) => area.id === this.props.discussion.current.forumAreaId,
       );
       return (
         <div className="application-panel__toolbar">
@@ -143,7 +143,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     discussion: state.discussion,
-    status: state.status
+    status: state.status,
   };
 }
 
@@ -153,5 +153,5 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(CommunicatorToolbar);

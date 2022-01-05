@@ -14,7 +14,7 @@ import AnimateHeight from "react-animate-height";
 import "~/sass/elements/voice-recorder.scss";
 import { AudioAssessment } from "../../../@types/evaluation";
 import useRecordingsList from "./hooks/user-recordings-list";
-let ProgressBarLine = require("react-progress-bar.js").Line;
+const ProgressBarLine = require("react-progress-bar.js").Line;
 
 /**
  * RecorderProps
@@ -34,7 +34,7 @@ interface RecorderProps {
 function Recorder(props: RecorderProps) {
   const { recorderState, ...handlers }: UseRecorder = useRecorder({
     status: props.status,
-    values: props.values
+    values: props.values,
   });
 
   const { recordings, deleteAudio } = useRecordingsList(recorderState.values);
@@ -62,11 +62,11 @@ function Recorder(props: RecorderProps) {
       JSON.stringify(props.values) !== JSON.stringify(recordings) &&
       !firstUpdate.current
     ) {
-      let audioAssessments = recordings.map((record) => {
+      const audioAssessments = recordings.map((record) => {
         const object: AudioAssessment = {
           name: record.name,
           id: record.id,
-          contentType: record.contentType
+          contentType: record.contentType,
         };
 
         return object;
@@ -96,9 +96,9 @@ function Recorder(props: RecorderProps) {
               text: {
                 className: "voice-recorder__file-record-percentage",
                 style: {
-                  right: "100%"
-                }
-              }
+                  right: "100%",
+                },
+              },
             }}
             strokeWidth={1}
             easing="easeInOut"
@@ -113,7 +113,7 @@ function Recorder(props: RecorderProps) {
                 .startOf("day")
                 .seconds(seconds)
                 .format("mm:ss"),
-              moment("2015-01-01").startOf("day").seconds(300).format("mm:ss")
+              moment("2015-01-01").startOf("day").seconds(300).format("mm:ss"),
             )}
             progress={seconds / 300}
           />
@@ -131,7 +131,7 @@ function Recorder(props: RecorderProps) {
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    status: state.status
+    status: state.status,
   };
 }
 

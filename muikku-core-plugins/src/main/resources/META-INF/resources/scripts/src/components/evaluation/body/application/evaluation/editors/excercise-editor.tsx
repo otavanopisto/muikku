@@ -4,7 +4,7 @@ import { i18nType } from "~/reducers/base/i18n";
 import {
   MaterialEvaluationType,
   MaterialAssignmentType,
-  MaterialCompositeRepliesType
+  MaterialCompositeRepliesType,
 } from "~/reducers/workspaces/index";
 import { EvaluationState } from "~/reducers/main-function/evaluation/index";
 import { StatusType } from "~/reducers/base/status";
@@ -12,7 +12,7 @@ import {
   AudioAssessment,
   AssignmentEvaluationSupplementationRequest,
   AssignmentEvaluationGradeRequest,
-  AssignmentEvaluationSaveReturn
+  AssignmentEvaluationSaveReturn,
 } from "~/@types/evaluation";
 import SessionStateComponent from "~/components/general/session-state-component";
 import CKEditor from "~/components/general/ckeditor";
@@ -28,7 +28,7 @@ import { displayNotification } from "~/actions/base/notifications";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import {
   UpdateCurrentStudentEvaluationCompositeRepliesData,
-  updateCurrentStudentCompositeRepliesData
+  updateCurrentStudentCompositeRepliesData,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import WarningDialog from "../../../../dialogs/close-warning";
 
@@ -43,7 +43,7 @@ interface AssignmentEditorProps {
   evaluations: EvaluationState;
   status: StatusType;
   updateMaterialEvaluationData: (
-    assigmentSaveReturn: AssignmentEvaluationSaveReturn
+    assigmentSaveReturn: AssignmentEvaluationSaveReturn,
   ) => void;
   onAudioAssessmentChange: () => void;
   showAudioAssessmentWarningOnClose: boolean;
@@ -82,7 +82,7 @@ class ExcerciseEditor extends SessionStateComponent<
     const { compositeReplies } = props;
     const { evaluationSelectedAssessmentId } = props.evaluations;
 
-    let draftId = `${evaluationSelectedAssessmentId.userEntityId}-${props.materialAssignment.id}`;
+    const draftId = `${evaluationSelectedAssessmentId.userEntityId}-${props.materialAssignment.id}`;
 
     this.state = {
       ...this.getRecoverStoredState(
@@ -96,9 +96,9 @@ class ExcerciseEditor extends SessionStateComponent<
             compositeReplies.evaluationInfo &&
             compositeReplies.evaluationInfo.type === "INCOMPLETE",
 
-          draftId
+          draftId,
         },
-        draftId
+        draftId,
       ),
       audioAssessments:
         compositeReplies.evaluationInfo &&
@@ -106,7 +106,7 @@ class ExcerciseEditor extends SessionStateComponent<
         compositeReplies.evaluationInfo.audioAssessments !== null
           ? compositeReplies.evaluationInfo.audioAssessments
           : [],
-      locked: false
+      locked: false,
     };
   }
 
@@ -126,22 +126,22 @@ class ExcerciseEditor extends SessionStateComponent<
           needsSupplementation:
             compositeReplies &&
             compositeReplies.evaluationInfo &&
-            compositeReplies.evaluationInfo.type === "INCOMPLETE"
+            compositeReplies.evaluationInfo.type === "INCOMPLETE",
         },
-        this.state.draftId
+        this.state.draftId,
       ),
       audioAssessments:
         compositeReplies.evaluationInfo &&
         compositeReplies.evaluationInfo.audioAssessments &&
         compositeReplies.evaluationInfo.audioAssessments !== null
           ? compositeReplies.evaluationInfo.audioAssessments
-          : []
+          : [],
     });
   };
 
   componentDidUpdate = (
     prevProps: AssignmentEditorProps,
-    prevState: AssignmentEditorState
+    prevState: AssignmentEditorState,
   ) => {
     if (
       this.state.audioAssessments.length !== prevState.audioAssessments.length
@@ -164,7 +164,7 @@ class ExcerciseEditor extends SessionStateComponent<
       data;
 
     this.setState({
-      locked: true
+      locked: true,
     });
 
     if (this.props.onClose) {
@@ -178,21 +178,21 @@ class ExcerciseEditor extends SessionStateComponent<
           userEntityId,
           workspaceMaterialId,
           {
-            ...dataToSave
-          }
+            ...dataToSave,
+          },
         ),
-        "callback"
+        "callback",
       )().then(async (data: AssignmentEvaluationSaveReturn) => {
         await mApi().workspace.workspaces.compositeReplies.cacheClear();
 
         this.setState({
-          locked: false
+          locked: false,
         });
 
         this.props.updateCurrentStudentCompositeRepliesData({
           workspaceId: workspaceEntityId,
           userEntityId: userEntityId,
-          workspaceMaterialId: workspaceMaterialId
+          workspaceMaterialId: workspaceMaterialId,
         });
 
         this.props.updateMaterialEvaluationData(data);
@@ -201,13 +201,13 @@ class ExcerciseEditor extends SessionStateComponent<
       this.props.displayNotification(
         this.props.i18n.text.get(
           "plugin.evaluation.notifications.saveAssigmentGrade.error",
-          error.message
+          error.message,
         ),
-        "error"
+        "error",
       );
 
       this.setState({
-        locked: false
+        locked: false,
       });
     }
   };
@@ -227,7 +227,7 @@ class ExcerciseEditor extends SessionStateComponent<
       data;
 
     this.setState({
-      locked: true
+      locked: true,
     });
 
     if (this.props.onClose) {
@@ -240,10 +240,10 @@ class ExcerciseEditor extends SessionStateComponent<
           userEntityId,
           workspaceMaterialId,
           {
-            ...dataToSave
-          }
+            ...dataToSave,
+          },
         ),
-        "callback"
+        "callback",
       )().then(async () => {
         await mApi().workspace.workspaces.compositeReplies.cacheClear();
 
@@ -255,24 +255,24 @@ class ExcerciseEditor extends SessionStateComponent<
         this.props.updateCurrentStudentCompositeRepliesData({
           workspaceId: workspaceEntityId,
           userEntityId: userEntityId,
-          workspaceMaterialId: workspaceMaterialId
+          workspaceMaterialId: workspaceMaterialId,
         });
 
         this.setState({
-          locked: false
+          locked: false,
         });
       });
     } catch (error) {
       this.props.displayNotification(
         this.props.i18n.text.get(
           "plugin.evaluation.notifications.saveAssigmentSupplementation.error",
-          error.message
+          error.message,
         ),
-        "error"
+        "error",
       );
 
       this.setState({
-        locked: false
+        locked: false,
       });
     }
   };
@@ -282,7 +282,7 @@ class ExcerciseEditor extends SessionStateComponent<
    * @param e
    */
   handleSaveAssignment = (
-    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
   ) => {
     /**
      * Backend endpoint is different for normal grade evalution and supplementation
@@ -301,9 +301,9 @@ class ExcerciseEditor extends SessionStateComponent<
           gradeIdentifier: null,
           verbalAssessment: this.state.literalEvaluation,
           assessmentDate: new Date().getTime(),
-          audioAssessments: this.state.audioAssessments
+          audioAssessments: this.state.audioAssessments,
         },
-        materialId: this.props.materialAssignment.materialId
+        materialId: this.props.materialAssignment.materialId,
       });
     } else {
       this.saveAssignmentEvaluationSupplementationToServer({
@@ -319,9 +319,9 @@ class ExcerciseEditor extends SessionStateComponent<
             this.props.evaluations.evaluationSelectedAssessmentId.userEntityId,
           workspaceMaterialId: this.props.materialAssignment.id.toString(),
           requestDate: new Date().getTime(),
-          requestText: this.state.literalEvaluation
+          requestText: this.state.literalEvaluation,
         },
-        materialId: this.props.materialAssignment.materialId
+        materialId: this.props.materialAssignment.materialId,
       });
     }
   };
@@ -340,17 +340,17 @@ class ExcerciseEditor extends SessionStateComponent<
         {
           literalEvaluation: compositeReplies.evaluationInfo.text,
           needsSupplementation:
-            compositeReplies.evaluationInfo.type === "INCOMPLETE"
+            compositeReplies.evaluationInfo.type === "INCOMPLETE",
         },
-        this.state.draftId
+        this.state.draftId,
       );
     } else {
       this.setStateAndClear(
         {
           literalEvaluation: "",
-          needsSupplementation: false
+          needsSupplementation: false,
         },
-        this.state.draftId
+        this.state.draftId,
       );
     }
   };
@@ -362,9 +362,9 @@ class ExcerciseEditor extends SessionStateComponent<
   handleCKEditorChange = (e: string) => {
     this.setStateAndStore(
       {
-        literalEvaluation: e
+        literalEvaluation: e,
       },
-      this.state.draftId
+      this.state.draftId,
     );
   };
 
@@ -373,13 +373,13 @@ class ExcerciseEditor extends SessionStateComponent<
    * @param e
    */
   handleAssignmentEvaluationChange = (
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     this.setStateAndStore(
       {
-        needsSupplementation: e.target.checked
+        needsSupplementation: e.target.checked,
       },
-      this.state.draftId
+      this.state.draftId,
     );
   };
 
@@ -389,7 +389,7 @@ class ExcerciseEditor extends SessionStateComponent<
    */
   handleAudioAssessmentChange = (audioAssessments: AudioAssessment[]) => {
     this.setState({
-      audioAssessments: audioAssessments
+      audioAssessments: audioAssessments,
     });
   };
 
@@ -419,7 +419,7 @@ class ExcerciseEditor extends SessionStateComponent<
               className="evaluation-modal__evaluate-drawer-row-label"
             >
               {this.props.i18n.text.get(
-                "plugin.evaluation.evaluationModal.audioAssessments"
+                "plugin.evaluation.evaluationModal.audioAssessments",
               )}
             </label>
             <Recorder
@@ -436,7 +436,7 @@ class ExcerciseEditor extends SessionStateComponent<
             disabled={this.state.locked}
           >
             {this.props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.workspaceEvaluationForm.saveButtonLabel"
+              "plugin.evaluation.evaluationModal.workspaceEvaluationForm.saveButtonLabel",
             )}
           </Button>
           {this.props.showAudioAssessmentWarningOnClose ? (
@@ -446,7 +446,7 @@ class ExcerciseEditor extends SessionStateComponent<
                 disabled={this.state.locked}
               >
                 {this.props.i18n.text.get(
-                  "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel"
+                  "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel",
                 )}
               </Button>
             </WarningDialog>
@@ -457,7 +457,7 @@ class ExcerciseEditor extends SessionStateComponent<
               disabled={this.state.locked}
             >
               {this.props.i18n.text.get(
-                "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel"
+                "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel",
               )}
             </Button>
           )}
@@ -469,7 +469,7 @@ class ExcerciseEditor extends SessionStateComponent<
               disabled={this.state.locked}
             >
               {this.props.i18n.text.get(
-                "plugin.evaluation.evaluationModal.workspaceEvaluationForm.deleteDraftButtonLabel"
+                "plugin.evaluation.evaluationModal.workspaceEvaluationForm.deleteDraftButtonLabel",
               )}
             </Button>
           )}
@@ -487,7 +487,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     status: state.status,
-    evaluations: state.evaluations
+    evaluations: state.evaluations,
   };
 }
 
@@ -498,7 +498,7 @@ function mapStateToProps(state: StateType) {
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     { updateCurrentStudentCompositeRepliesData, displayNotification },
-    dispatch
+    dispatch,
   );
 }
 

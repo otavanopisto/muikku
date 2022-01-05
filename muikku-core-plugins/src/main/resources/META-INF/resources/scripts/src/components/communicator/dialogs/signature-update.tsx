@@ -7,7 +7,7 @@ import { AnyActionType } from "~/actions";
 import { bindActionCreators } from "redux";
 import {
   updateSignature,
-  UpdateSignatureTriggerType
+  UpdateSignatureTriggerType,
 } from "~/actions/main-function/messages";
 import { MessageSignatureType } from "~/reducers/main-function/messages";
 import { i18nType } from "~/reducers/base/i18n";
@@ -17,7 +17,7 @@ import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
 
 const KEYCODES = {
-  ENTER: 13
+  ENTER: 13,
 };
 
 interface CommunicatorSignatureUpdateDialogProps {
@@ -45,7 +45,7 @@ class CommunicatorSignatureUpdateDialog extends React.Component<
     this.update = this.update.bind(this);
 
     this.state = {
-      signature: props.signature ? props.signature.signature : ""
+      signature: props.signature ? props.signature.signature : "",
     };
   }
   handleKeydown(code: number, closeDialog: () => any) {
@@ -58,7 +58,7 @@ class CommunicatorSignatureUpdateDialog extends React.Component<
   }
   resetState() {
     this.setState({
-      signature: this.props.signature ? this.props.signature.signature : ""
+      signature: this.props.signature ? this.props.signature.signature : "",
     });
   }
   update(closeDialog: () => any) {
@@ -66,36 +66,32 @@ class CommunicatorSignatureUpdateDialog extends React.Component<
     closeDialog();
   }
   render() {
-    let footer = (closeDialog: () => any) => {
-      return (
-        <div className="env-dialog__actions">
-          <Button
-            buttonModifiers="dialog-execute"
-            onClick={this.update.bind(this, closeDialog)}
-          >
-            {this.props.i18n.text.get(
-              "plugin.communicator.settings.signature.create"
-            )}
-          </Button>
-          <Button buttonModifiers="dialog-cancel" onClick={closeDialog}>
-            {this.props.i18n.text.get(
-              "plugin.communicator.confirmSignatureRemovalDialog.cancelButton"
-            )}
-          </Button>
+    const footer = (closeDialog: () => any) => (
+      <div className="env-dialog__actions">
+        <Button
+          buttonModifiers="dialog-execute"
+          onClick={this.update.bind(this, closeDialog)}
+        >
+          {this.props.i18n.text.get(
+            "plugin.communicator.settings.signature.create",
+          )}
+        </Button>
+        <Button buttonModifiers="dialog-cancel" onClick={closeDialog}>
+          {this.props.i18n.text.get(
+            "plugin.communicator.confirmSignatureRemovalDialog.cancelButton",
+          )}
+        </Button>
+      </div>
+    );
+    const content = (closeDialog: () => any) => (
+      <div className="env-dialog__row">
+        <div className="env-dialog__form-element-container">
+          <CKEditor onChange={this.onCKEditorChange} autofocus>
+            {this.state.signature}
+          </CKEditor>
         </div>
-      );
-    };
-    let content = (closeDialog: () => any) => {
-      return (
-        <div className="env-dialog__row">
-          <div className="env-dialog__form-element-container">
-            <CKEditor onChange={this.onCKEditorChange} autofocus>
-              {this.state.signature}
-            </CKEditor>
-          </div>
-        </div>
-      );
-    };
+      </div>
+    );
     return (
       <EnvironmentDialog
         onClose={this.props.onClose}
@@ -104,7 +100,7 @@ class CommunicatorSignatureUpdateDialog extends React.Component<
         onOpen={this.resetState}
         modifier="update-signature"
         title={this.props.i18n.text.get(
-          "plugin.communicator.settings.signature"
+          "plugin.communicator.settings.signature",
         )}
         content={content}
         footer={footer}
@@ -118,7 +114,7 @@ class CommunicatorSignatureUpdateDialog extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     signature: state.messages.signature,
-    i18n: state.i18n
+    i18n: state.i18n,
   };
 }
 
@@ -128,5 +124,5 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(CommunicatorSignatureUpdateDialog);

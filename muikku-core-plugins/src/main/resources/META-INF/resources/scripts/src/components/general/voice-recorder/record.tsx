@@ -10,7 +10,7 @@ import AnimateHeight from "react-animate-height";
 import DeleteDialog from "./dialogs/delete-warning";
 import { AudioPoolComponent } from "../audio-pool-component";
 
-let ProgressBarLine = require("react-progress-bar.js").Line;
+const ProgressBarLine = require("react-progress-bar.js").Line;
 
 /**
  * RecordProps
@@ -30,7 +30,7 @@ interface RecordProps
  * defaultRecordtProps
  */
 const defaultRecordtProps = {
-  noDeleteFunctions: false
+  noDeleteFunctions: false,
 };
 
 /**
@@ -67,7 +67,7 @@ function Record(props: RecordProps) {
         <Link
           className="voice-recorder__download-button icon-download"
           title={props.i18n.text.get(
-            "plugin.workspace.audioField.downloadLink"
+            "plugin.workspace.audioField.downloadLink",
           )}
           href={record.url}
           openInNewTab={record.name}
@@ -77,7 +77,7 @@ function Record(props: RecordProps) {
             <Link
               className="voice-recorder__remove-button icon-trash"
               title={props.i18n.text.get(
-                "plugin.workspace.audioField.removeLink"
+                "plugin.workspace.audioField.removeLink",
               )}
             />
           </DeleteDialog>
@@ -98,9 +98,9 @@ function Record(props: RecordProps) {
                 text: {
                   className: "voice-recorder__file-record-percentage",
                   style: {
-                    right: "100%"
-                  }
-                }
+                    right: "100%",
+                  },
+                },
               }}
               strokeWidth={1}
               easing="easeInOut"
@@ -130,7 +130,7 @@ function Record(props: RecordProps) {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n
+    i18n: state.i18n,
   };
 }
 

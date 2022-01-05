@@ -1,13 +1,8 @@
 import Workspace from "./workspaces/workspace";
 import * as React from "react";
-import { Dispatch } from "redux";
 import { connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
-import {
-  GuiderCurrentStudentStateType,
-  GuiderStudentUserProfileType,
-  GuiderType
-} from "~/reducers/main-function/guider";
+import { GuiderType } from "~/reducers/main-function/guider";
 import { StateType } from "~/reducers";
 
 import "~/sass/elements/application-list.scss";
@@ -30,14 +25,14 @@ class CurrentStudentWorkspaces extends React.Component<
       this.props.guider.currentStudent.workspaces.length ? (
         <div className="application-list">
           {this.props.guider.currentStudent.workspaces
-            .sort((a, b) => {
-              return ("" + a.name).localeCompare(b.name, this.props.locale, {
-                sensitivity: "base"
-              });
-            })
-            .map((workspace) => {
-              return <Workspace workspace={workspace} key={workspace.id} />;
-            })}
+            .sort((a, b) =>
+              ("" + a.name).localeCompare(b.name, this.props.locale, {
+                sensitivity: "base",
+              }),
+            )
+            .map((workspace) => (
+              <Workspace workspace={workspace} key={workspace.id} />
+            ))}
         </div>
       ) : (
         <div className="empty">
@@ -54,15 +49,15 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     guider: state.guider,
-    locale: state.locales.current
+    locale: state.locales.current,
   };
 }
 
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps() {
   return {};
 }
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(CurrentStudentWorkspaces);

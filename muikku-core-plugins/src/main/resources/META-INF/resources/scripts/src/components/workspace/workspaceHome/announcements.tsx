@@ -2,7 +2,7 @@ import { WorkspaceType } from "~/reducers/workspaces";
 import { AnnouncementListType } from "~/reducers/announcements";
 import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import Link from "~/components/general/link";
 import { StatusType } from "~/reducers/base/status";
 import { StateType } from "~/reducers";
@@ -35,7 +35,7 @@ class WorkspaceAnnouncements extends React.Component<
             <div className="panel__header-icon panel__header-icon--workspace-announcements icon-paper-plane"></div>
             <h2 className="panel__header-title">
               {this.props.i18n.text.get(
-                "plugin.workspace.index.announcementsTitle"
+                "plugin.workspace.index.announcementsTitle",
               )}
             </h2>
           </div>
@@ -71,7 +71,7 @@ class WorkspaceAnnouncements extends React.Component<
           ) : (
             <div className="panel__body panel__body--empty">
               {this.props.i18n.text.get(
-                "plugin.workspace.index.announcementsEmpty"
+                "plugin.workspace.index.announcementsEmpty",
               )}
             </div>
           )}
@@ -87,15 +87,15 @@ function mapStateToProps(state: StateType) {
     i18n: state.i18n,
     workspace: state.workspaces.currentWorkspace,
     announcements: state.announcements.announcements,
-    status: state.status
+    status: state.status,
   };
 }
 
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps() {
   return {};
 }
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(WorkspaceAnnouncements);

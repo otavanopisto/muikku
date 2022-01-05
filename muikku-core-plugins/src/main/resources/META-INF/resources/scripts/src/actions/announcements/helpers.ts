@@ -5,7 +5,7 @@ import {
   AnnouncementListType,
   AnnouncementsPatchType,
   AnnouncerNavigationItemListType,
-  AnnouncerNavigationItemType
+  AnnouncerNavigationItemType,
 } from "~/reducers/announcements";
 import { StatusType } from "~/reducers/base/status";
 import promisify from "~/util/promisify";
@@ -14,33 +14,31 @@ import notificationActions from "~/actions/base/notifications";
 import { StateType } from "~/reducers";
 import { loadUserGroupIndex } from "~/actions/user-index";
 
-const MAX_LOADED_AT_ONCE = 30;
-
 export async function loadAnnouncementsHelper(
   location: string | null,
   workspaceId: number,
   notOverrideCurrent: boolean,
   force: boolean,
   dispatch: (arg: AnyActionType) => any,
-  getState: () => StateType
+  getState: () => StateType,
 ) {
   if (!notOverrideCurrent) {
     //Remove the current announcement
     dispatch({
       type: "SET_CURRENT_ANNOUNCEMENT",
-      payload: null
+      payload: null,
     });
   }
 
-  let state = getState();
-  let navigation: AnnouncerNavigationItemListType =
+  const state = getState();
+  const navigation: AnnouncerNavigationItemListType =
     state.announcements.navigation;
-  let announcements: AnnouncementsType = state.announcements;
-  let status: StatusType = state.status;
-  let actualLocation: string = location || announcements.location;
+  const announcements: AnnouncementsType = state.announcements;
+  const status: StatusType = state.status;
+  const actualLocation: string = location || announcements.location;
 
-  let isForceDefined = typeof force === "boolean";
-  let isForceEnforced = force;
+  const isForceDefined = typeof force === "boolean";
+  const isForceEnforced = force;
 
   //Avoid loading announcements if it's the same location
   if (
@@ -54,24 +52,24 @@ export async function loadAnnouncementsHelper(
   //We set this state to loading
   dispatch({
     type: "UPDATE_ANNOUNCEMENTS_STATE",
-    payload: <AnnouncementsStateType>"LOADING"
+    payload: <AnnouncementsStateType>"LOADING",
   });
 
   //We get the navigation location item
-  let item: AnnouncerNavigationItemType = navigation.find((item) => {
-    return item.location === actualLocation;
-  });
+  const item: AnnouncerNavigationItemType = navigation.find(
+    (item) => item.location === actualLocation,
+  );
   if (!item) {
     return dispatch({
       type: "UPDATE_ANNOUNCEMENTS_STATE",
-      payload: <AnnouncementsStateType>"ERROR"
+      payload: <AnnouncementsStateType>"ERROR",
     });
   }
 
-  let params: any = {
+  const params: any = {
     onlyEditable: true,
     hideEnvironmentAnnouncements:
-      !status.permissions.ANNOUNCER_CAN_PUBLISH_ENVIRONMENT
+      !status.permissions.ANNOUNCER_CAN_PUBLISH_ENVIRONMENT,
   };
   if (workspaceId) {
     params.workspaceEntityId = workspaceId;
@@ -94,28 +92,28 @@ export async function loadAnnouncementsHelper(
   }
 
   try {
-    let announcements: AnnouncementListType = <AnnouncementListType>(
+    const announcements: AnnouncementListType = <AnnouncementListType>(
       await promisify(mApi().announcer.announcements.read(params), "callback")()
     );
     announcements.forEach((a) =>
-      a.userGroupEntityIds.forEach((id) => dispatch(loadUserGroupIndex(id)))
+      a.userGroupEntityIds.forEach((id) => dispatch(loadUserGroupIndex(id))),
     );
 
     //Create the payload for updating all the announcer properties
-    let properLocation = location || item.location;
-    let payload: AnnouncementsPatchType = {
+    const properLocation = location || item.location;
+    const payload: AnnouncementsPatchType = {
       state: "READY",
       announcements,
       location: properLocation,
       selected: [],
       selectedIds: [],
-      workspaceId: workspaceId || null
+      workspaceId: workspaceId || null,
     };
 
     //And there it goes
     dispatch({
       type: "UPDATE_ANNOUNCEMENTS_ALL_PROPERTIES",
-      payload
+      payload,
     });
   } catch (err) {
     if (!(err instanceof MApiError)) {
@@ -125,14 +123,14 @@ export async function loadAnnouncementsHelper(
     dispatch(
       notificationActions.displayNotification(
         getState().i18n.text.get(
-          "plugin.announcer.errormessage.loadAnnouncements"
+          "plugin.announcer.errormessage.loadAnnouncements",
         ),
-        "error"
-      )
+        "error",
+      ),
     );
     dispatch({
       type: "UPDATE_ANNOUNCEMENTS_STATE",
-      payload: <AnnouncementsStateType>"ERROR"
+      payload: <AnnouncementsStateType>"ERROR",
     });
   }
 }

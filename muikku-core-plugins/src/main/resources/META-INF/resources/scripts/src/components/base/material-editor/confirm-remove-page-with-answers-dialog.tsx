@@ -12,13 +12,13 @@ import { bindActionCreators } from "redux";
 import {
   WorkspaceType,
   MaterialContentNodeType,
-  WorkspaceMaterialEditorType
+  WorkspaceMaterialEditorType,
 } from "~/reducers/workspaces";
 import {
   setWorkspaceMaterialEditorState,
   SetWorkspaceMaterialEditorStateTriggerType,
   deleteWorkspaceMaterialContentNode,
-  DeleteWorkspaceMaterialContentNodeTriggerType
+  DeleteWorkspaceMaterialContentNodeTriggerType,
 } from "~/actions/workspaces";
 
 interface ConfirmDeletePageWithAnswersDialogProps {
@@ -40,7 +40,7 @@ class ConfirmDeletePageWithAnswersDialog extends React.Component<
   constructor(props: ConfirmDeletePageWithAnswersDialogProps) {
     super(props);
     this.state = {
-      locked: false
+      locked: false,
     };
 
     this.cancel = this.cancel.bind(this);
@@ -48,7 +48,7 @@ class ConfirmDeletePageWithAnswersDialog extends React.Component<
   }
   confirm(closeDialog: () => any) {
     this.setState({
-      locked: true
+      locked: true,
     });
 
     this.props.deleteWorkspaceMaterialContentNode({
@@ -57,60 +57,58 @@ class ConfirmDeletePageWithAnswersDialog extends React.Component<
       removeAnswers: true,
       success: () => {
         this.setState({
-          locked: false
+          locked: false,
         });
         this.props.onDeleteSuccess();
         closeDialog();
       },
       fail: () => {
         this.setState({
-          locked: false
+          locked: false,
         });
-      }
+      },
     });
   }
   cancel(closeDialog?: () => any) {
     closeDialog && closeDialog();
     this.props.setWorkspaceMaterialEditorState({
       ...this.props.materialEditor,
-      showRemoveAnswersDialogForDelete: false
+      showRemoveAnswersDialogForDelete: false,
     });
   }
   render() {
-    let content = (closeDialog: () => any) => (
+    const content = (closeDialog: () => any) => (
       <div>
         <span>
           {this.props.i18n.text.get(
-            "plugin.workspace.materialsManagement.confirmRemovePageWithAnswers.text"
+            "plugin.workspace.materialsManagement.confirmRemovePageWithAnswers.text",
           )}
         </span>
       </div>
     );
 
-    let footer = (closeDialog: () => any) => {
-      return (
-        <div className="dialog__button-set">
-          <Button
-            buttonModifiers={["standard-ok", "fatal"]}
-            onClick={this.confirm.bind(this, closeDialog)}
-            disabled={this.state.locked}
-          >
-            {this.props.i18n.text.get(
-              "plugin.workspace.materialsManagement.confirmRemovePageWithAnswers.confirmButton"
-            )}
-          </Button>
-          <Button
-            buttonModifiers={["cancel", "standard-cancel"]}
-            onClick={this.cancel.bind(this, closeDialog)}
-            disabled={this.state.locked}
-          >
-            {this.props.i18n.text.get(
-              "plugin.workspace.materialsManagement.confirmRemovePageWithAnswers.cancelButton"
-            )}
-          </Button>
-        </div>
-      );
-    };
+    const footer = (closeDialog: () => any) => (
+      <div className="dialog__button-set">
+        <Button
+          buttonModifiers={["standard-ok", "fatal"]}
+          onClick={this.confirm.bind(this, closeDialog)}
+          disabled={this.state.locked}
+        >
+          {this.props.i18n.text.get(
+            "plugin.workspace.materialsManagement.confirmRemovePageWithAnswers.confirmButton",
+          )}
+        </Button>
+        <Button
+          buttonModifiers={["cancel", "standard-cancel"]}
+          onClick={this.cancel.bind(this, closeDialog)}
+          disabled={this.state.locked}
+        >
+          {this.props.i18n.text.get(
+            "plugin.workspace.materialsManagement.confirmRemovePageWithAnswers.cancelButton",
+          )}
+        </Button>
+      </div>
+    );
 
     return (
       <Dialog
@@ -118,7 +116,7 @@ class ConfirmDeletePageWithAnswersDialog extends React.Component<
         isOpen={this.props.materialEditor.showRemoveAnswersDialogForDelete}
         onClose={this.cancel}
         title={this.props.i18n.text.get(
-          "plugin.workspace.materialsManagement.confirmRemovePageWithAnswers.title"
+          "plugin.workspace.materialsManagement.confirmRemovePageWithAnswers.title",
         )}
         content={content}
         footer={footer}
@@ -130,18 +128,18 @@ class ConfirmDeletePageWithAnswersDialog extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    materialEditor: state.workspaces.materialEditor
+    materialEditor: state.workspaces.materialEditor,
   };
 }
 
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     { setWorkspaceMaterialEditorState, deleteWorkspaceMaterialContentNode },
-    dispatch
+    dispatch,
   );
 }
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(ConfirmDeletePageWithAnswersDialog);

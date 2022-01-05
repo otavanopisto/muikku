@@ -28,7 +28,7 @@ interface SorterFieldProps {
   onChange?: (
     context: React.Component<any, any>,
     name: string,
-    newValue: any
+    newValue: any,
   ) => any;
   i18n: i18nType;
 
@@ -75,10 +75,10 @@ export default class SorterField extends React.Component<
         .map(
           (v: string) =>
             this.props.content &&
-            this.props.content.items.find((i) => i.id === v)
+            this.props.content.items.find((i) => i.id === v),
         )
         .filter((v: any) => !!v);
-      let itemsSuffled = shuffle(props.content.items) || [];
+      const itemsSuffled = shuffle(props.content.items) || [];
       itemsSuffled.forEach((i) => {
         if (!items.find((si) => si.id === i.id)) {
           items.push(i);
@@ -101,7 +101,7 @@ export default class SorterField extends React.Component<
       // initial answer state is not known
       answerState: null,
 
-      fieldSavedState: null
+      fieldSavedState: null,
     };
 
     this.swap = this.swap.bind(this);
@@ -116,7 +116,7 @@ export default class SorterField extends React.Component<
    */
   onFieldSavedStateChange(savedState: FieldStateStatus) {
     this.setState({
-      fieldSavedState: savedState
+      fieldSavedState: savedState,
     });
   }
 
@@ -128,7 +128,7 @@ export default class SorterField extends React.Component<
    */
   shouldComponentUpdate(
     nextProps: SorterFieldProps,
-    nextState: SorterFieldState
+    nextState: SorterFieldState,
   ) {
     return (
       !equals(nextProps.content, this.props.content) ||
@@ -154,14 +154,14 @@ export default class SorterField extends React.Component<
   swap(
     triggerChange: boolean,
     itemA: SorterFieldItemType,
-    itemB: SorterFieldItemType
+    itemB: SorterFieldItemType,
   ) {
     if (itemA.id === itemB.id) {
       return;
     }
 
     // this is a basic function for swapping
-    let items = this.state.items.map((item) => {
+    const items = this.state.items.map((item) => {
       if (item.id === itemA.id) {
         return itemB;
       } else if (item.id === itemB.id) {
@@ -174,16 +174,16 @@ export default class SorterField extends React.Component<
       this.props.onChange(
         this,
         this.props.content.name,
-        JSON.stringify(items.map((item) => item.id))
+        JSON.stringify(items.map((item) => item.id)),
       );
     }
 
     // items are update with the swapped version, and after that's done we check for rightness
     this.setState(
       {
-        items
+        items,
       },
-      this.checkAnswers
+      this.checkAnswers,
     );
   }
 
@@ -198,29 +198,29 @@ export default class SorterField extends React.Component<
     }
 
     // ok so now we loop per item
-    let newanswerState: Array<"PASS" | "FAIL"> = this.state.items.map(
+    const newanswerState: Array<"PASS" | "FAIL"> = this.state.items.map(
       (item, index) => {
         // we check the answer from the property of the content, using the index we get what
         // element had to be in that specific index
-        let answer = this.props.content.items[index];
+        const answer = this.props.content.items[index];
         // if the ids are equal then the answer was correct
-        let isAnswerProper =
+        const isAnswerProper =
           answer.id === item.id ||
           item.name.toLocaleLowerCase() === answer.name.toLocaleLowerCase();
         return isAnswerProper ? "PASS" : "FAIL";
-      }
+      },
     );
 
     // We check if the new state is different before update
     if (!equals(newanswerState, this.state.answerState)) {
       this.setState({
-        answerState: newanswerState
+        answerState: newanswerState,
       });
     }
 
     // In this case whether it overall right or not depends son whether
     // one of them failed, so we check
-    let isCorrect = !newanswerState.includes("FAIL");
+    const isCorrect = !newanswerState.includes("FAIL");
     // If we have no answer state to compare with, we just send the result
     if (!this.state.answerState) {
       this.props.onAnswerChange(this.props.content.name, isCorrect);
@@ -228,7 +228,7 @@ export default class SorterField extends React.Component<
     }
 
     // Otherwise we compare and update accordingly only when necessary
-    let wasCorrect = !this.state.answerState.includes("FAIL");
+    const wasCorrect = !this.state.answerState.includes("FAIL");
     if (isCorrect && !wasCorrect) {
       this.props.onAnswerChange(this.props.content.name, true);
     } else if (!isCorrect && wasCorrect) {
@@ -261,13 +261,13 @@ export default class SorterField extends React.Component<
     if (this.state.selectedItem) {
       this.swap(true, item, this.state.selectedItem);
       this.setState({
-        selectedItem: null
+        selectedItem: null,
       });
       return;
     }
 
     this.setState({
-      selectedItem: item
+      selectedItem: item,
     });
   }
 
@@ -276,7 +276,7 @@ export default class SorterField extends React.Component<
    */
   cancelSelectedItem() {
     this.setState({
-      selectedItem: null
+      selectedItem: null,
     });
 
     // if we got on change we call it and we remember to stringify the answer because it wants strings
@@ -284,7 +284,7 @@ export default class SorterField extends React.Component<
       this.props.onChange(
         this,
         this.props.content.name,
-        JSON.stringify(this.state.items.map((item) => item.id))
+        JSON.stringify(this.state.items.map((item) => item.id)),
       );
   }
 
@@ -296,12 +296,12 @@ export default class SorterField extends React.Component<
     if (!this.props.content) {
       return null;
     }
-    let elementClassName =
+    const elementClassName =
       this.props.content.orientation === "vertical" ? "vertical" : "horizontal";
 
     // The summary for the correct answers
     let correctAnswersummaryComponent = null;
-    let answerIsBeingCheckedAndItisCorrect =
+    const answerIsBeingCheckedAndItisCorrect =
       this.props.checkAnswers &&
       this.state.answerState &&
       !this.state.answerState.includes("FAIL");
@@ -315,7 +315,7 @@ export default class SorterField extends React.Component<
         <span className="material-page__field-answer-examples material-page__field-answer-examples--sorterfield">
           <span className="material-page__field-answer-examples-title">
             {this.props.i18n.text.get(
-              "plugin.workspace.assigment.checkAnswers.correctSummary.title"
+              "plugin.workspace.assigment.checkAnswers.correctSummary.title",
             )}
           </span>
           {this.props.content.items.map((answer, index) => (
@@ -331,7 +331,7 @@ export default class SorterField extends React.Component<
     }
 
     if (this.props.invisible) {
-      let filler = this.state.items.map((i, index) => {
+      const filler = this.state.items.map((i, index) => {
         let text = i.name;
         if (index === 0 && this.props.content.capitalize) {
           text = text.charAt(0).toUpperCase() + text.slice(1);
@@ -358,7 +358,7 @@ export default class SorterField extends React.Component<
     }
 
     // Lets get the class name to match the state of the entire field if necessary
-    let fieldStateAfterCheck =
+    const fieldStateAfterCheck =
       this.props.displayCorrectAnswers &&
       this.props.checkAnswers &&
       this.state.answerState
@@ -368,12 +368,12 @@ export default class SorterField extends React.Component<
         : "";
 
     // if elements is disabled
-    let elementDisabledStateClassName = this.props.readOnly
+    const elementDisabledStateClassName = this.props.readOnly
       ? "material-page__taskfield-disabled"
       : "";
 
-    let fieldSavedStateClass = createFieldSavedStateClass(
-      this.state.fieldSavedState
+    const fieldSavedStateClass = createFieldSavedStateClass(
+      this.state.fieldSavedState,
     );
 
     // we use that element and the class to create the field
@@ -401,7 +401,7 @@ export default class SorterField extends React.Component<
             // this only happens if the answer is wrong total because otherwise is right and it's unecessary
             // we set them up so that they show each if they are right or wrong
 
-            let itemStateAfterCheck =
+            const itemStateAfterCheck =
               this.props.displayCorrectAnswers &&
               this.props.checkAnswers &&
               !answerIsBeingCheckedAndItisCorrect &&

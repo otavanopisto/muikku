@@ -19,7 +19,7 @@ class WorkspaceFilter extends React.Component<WorkspaceFilterProps> {
     super(props);
   }
   render() {
-    let items: JSX.Element[] = [];
+    const items: JSX.Element[] = [];
     items.push(
       <div className="filter-category" key="activeWorkspaces">
         <span className="filter-category__label">
@@ -35,11 +35,11 @@ class WorkspaceFilter extends React.Component<WorkspaceFilterProps> {
             ? this.props.i18n.text.get("plugin.guider.charts.filters.showAll")
             : this.props.i18n.text.get("plugin.guider.charts.filters.hideAll")}
         </a>
-      </div>
+      </div>,
     );
     this.props.workspaces.map((workspace) => {
-      let ifChecked = !this.props.filteredWorkspaces.includes(workspace.id);
-      let modificator = workspace.isEmpty ? "-empty" : "";
+      const ifChecked = !this.props.filteredWorkspaces.includes(workspace.id);
+      const modificator = workspace.isEmpty ? "-empty" : "";
       items.push(
         <div
           className={"filter-item filter-item--workspaces" + modificator}
@@ -59,7 +59,7 @@ class WorkspaceFilter extends React.Component<WorkspaceFilterProps> {
           >
             {workspace.name}
           </label>
-        </div>
+        </div>,
       );
     });
 
@@ -83,13 +83,13 @@ class WorkspaceFilter extends React.Component<WorkspaceFilterProps> {
               ? "Show all"
               : "Hide all"}
           </a>
-        </div>
+        </div>,
       );
       this.props.completedWorkspaces.map((workspace) => {
-        let ifChecked = !this.props.filteredCompletedWorkspaces.includes(
-          workspace.id
+        const ifChecked = !this.props.filteredCompletedWorkspaces.includes(
+          workspace.id,
         );
-        let modificator = workspace.isEmpty ? "-empty" : "";
+        const modificator = workspace.isEmpty ? "-empty" : "";
         items.push(
           <div
             className={"filter-item filter-item--workspaces" + modificator}
@@ -109,7 +109,7 @@ class WorkspaceFilter extends React.Component<WorkspaceFilterProps> {
             >
               {workspace.name}
             </label>
-          </div>
+          </div>,
         );
       });
     }
@@ -126,7 +126,7 @@ class WorkspaceFilter extends React.Component<WorkspaceFilterProps> {
 
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n
+    i18n: state.i18n,
   };
 }
 

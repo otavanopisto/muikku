@@ -2,7 +2,7 @@ import LanguagePicker from "./navbar/language-picker";
 import ProfileItem from "./navbar/profile-item";
 import Drawer from "./navbar/drawer";
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
 import Dropdown from "~/components/general/dropdown";
@@ -34,17 +34,17 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
     this.openMenu = this.openMenu.bind(this);
     this.closeMenu = this.closeMenu.bind(this);
     this.state = {
-      isMenuOpen: false
+      isMenuOpen: false,
     };
   }
   openMenu() {
     this.setState({
-      isMenuOpen: true
+      isMenuOpen: true,
     });
   }
   closeMenu() {
     this.setState({
-      isMenuOpen: false
+      isMenuOpen: false,
     });
   }
   render() {
@@ -56,7 +56,7 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
           }`}
           id="stick"
           aria-label={this.props.i18n.text.get(
-            "plugin.wcag.mainNavigation.aria.label"
+            "plugin.wcag.mainNavigation.aria.label",
           )}
         >
           <div className="navbar__wrapper">
@@ -75,7 +75,7 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
                     }`}
                     width="175"
                     alt={this.props.i18n.text.get(
-                      "plugin.site.logo.linkBackToFrontPage"
+                      "plugin.site.logo.linkBackToFrontPage",
                     )}
                   />
                 </a>
@@ -85,7 +85,7 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
               className="navbar__items"
               role="menubar"
               aria-label={this.props.i18n.text.get(
-                "plugin.wcag.mainNavigation.aria.label"
+                "plugin.wcag.mainNavigation.aria.label",
               )}
             >
               <li
@@ -129,7 +129,7 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
               className="navbar__default-options"
               role="menubar"
               aria-label={this.props.i18n.text.get(
-                "plugin.wcag.alternateNavigation.aria.label"
+                "plugin.wcag.alternateNavigation.aria.label",
               )}
             >
               {this.props.defaultOptions}
@@ -162,11 +162,11 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
 
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n
+    i18n: state.i18n,
   };
 }
 
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps() {
   return {};
 }
 

@@ -33,47 +33,43 @@ class ProfileItem extends React.Component<ProfileItemProps, ProfileItemState> {
         icon: "user",
         text: "plugin.profileBadge.links.personalInfo",
         href: "/profile",
-        to: this.props.isProfileContainedInThisApp
+        to: this.props.isProfileContainedInThisApp,
       },
       {
         icon: "question",
         text: "plugin.profileBadge.links.userGuide",
         href: "https://otavanopisto.muikkuverkko.fi/workspace/ohjeet/materials",
-        openInNewTab: "_blank"
+        openInNewTab: "_blank",
       },
       {
         icon: "support",
         text: "plugin.profileBadge.links.helpdesk",
-        href: "mailto:helpdesk@muikkuverkko.fi"
+        href: "mailto:helpdesk@muikkuverkko.fi",
       },
       {
         icon: "sign-out",
         text: "plugin.profileBadge.links.logout",
-        onClick: this.props.logout
-      }
+        onClick: this.props.logout,
+      },
     ];
     return (
       <Dropdown
         modifier="profile"
-        items={items.map((item) => {
-          return (closeDropdown: () => any) => {
-            return (
-              <Link
-                href={item.href}
-                to={item.to ? item.href : null}
-                className={`link link--full link--profile-dropdown`}
-                onClick={(...args: any[]) => {
-                  closeDropdown();
-                  item.onClick && item.onClick(...args);
-                }}
-                openInNewTab={item.openInNewTab}
-              >
-                <span className={`link__icon icon-${item.icon}`}></span>
-                <span>{this.props.i18n.text.get(item.text)}</span>
-              </Link>
-            );
-          };
-        })}
+        items={items.map((item) => (closeDropdown: () => any) => (
+          <Link
+            href={item.href}
+            to={item.to ? item.href : null}
+            className={`link link--full link--profile-dropdown`}
+            onClick={(...args: any[]) => {
+              closeDropdown();
+              item.onClick && item.onClick(...args);
+            }}
+            openInNewTab={item.openInNewTab}
+          >
+            <span className={`link__icon icon-${item.icon}`}></span>
+            <span>{this.props.i18n.text.get(item.text)}</span>
+          </Link>
+        ))}
       >
         <Link
           className="button-pill button-pill--profile"
@@ -81,18 +77,18 @@ class ProfileItem extends React.Component<ProfileItemProps, ProfileItemState> {
           tabIndex={0}
           aria-haspopup="true"
           aria-label={this.props.i18n.text.get(
-            "plugin.wcag.profileMenu.aria.label"
+            "plugin.wcag.profileMenu.aria.label",
           )}
         >
           {this.props.status.hasImage ? (
             <img
               alt={this.props.i18n.text.get(
-                "plugin.profileBadge.links.profileImageAtl"
+                "plugin.profileBadge.links.profileImageAtl",
               )}
               src={getUserImageUrl(
                 this.props.status.userId,
                 null,
-                this.props.status.imgVersion
+                this.props.status.imgVersion,
               )}
               className="button-image"
             />
@@ -110,7 +106,7 @@ class ProfileItem extends React.Component<ProfileItemProps, ProfileItemState> {
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    status: state.status
+    status: state.status,
   };
 }
 

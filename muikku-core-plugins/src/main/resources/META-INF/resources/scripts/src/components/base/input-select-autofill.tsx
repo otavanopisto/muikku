@@ -45,7 +45,7 @@ export default class AutofillSelector extends React.Component<
       selectedItems: props.selectedItems || [],
       textInput: "",
       autocompleteOpened: false,
-      isFocused: this.props.autofocus === true
+      isFocused: this.props.autofocus === true,
     };
 
     this.blurTimeout = null;
@@ -65,7 +65,7 @@ export default class AutofillSelector extends React.Component<
   onInputBlur(e: React.FocusEvent<any>) {
     this.blurTimeout = setTimeout(
       () => this.setState({ isFocused: false }),
-      100
+      100,
     );
   }
 
@@ -75,7 +75,7 @@ export default class AutofillSelector extends React.Component<
   }
 
   onInputChange(e: React.ChangeEvent<HTMLInputElement>) {
-    let textInput = e.target.value;
+    const textInput = e.target.value;
     this.setState({ autocompleteOpened: true, textInput: textInput });
     clearTimeout(this.activeSearchTimeout);
     if (textInput) {
@@ -91,33 +91,31 @@ export default class AutofillSelector extends React.Component<
       this.setState({
         isFocused: true,
         autocompleteOpened: false,
-        textInput: ""
+        textInput: "",
       });
     }
   }
 
   render() {
-    let selectedItems =
+    const selectedItems =
       this.props.selectedItems &&
-      this.props.selectedItems.map((item) => {
-        return {
-          node: (
-            <span className="autocomplete__selected-item">
-              {item.icon ? (
-                <span
-                  className={`glyph glyph--selected-recipient icon-${item.icon}`}
-                />
-              ) : null}
-              {item.label}
-            </span>
-          ),
-          value: item,
-          disabled: item.disabled ? item.disabled : false
-        };
-      });
+      this.props.selectedItems.map((item) => ({
+        node: (
+          <span className="autocomplete__selected-item">
+            {item.icon ? (
+              <span
+                className={`glyph glyph--selected-recipient icon-${item.icon}`}
+              />
+            ) : null}
+            {item.label}
+          </span>
+        ),
+        value: item,
+        disabled: item.disabled ? item.disabled : false,
+      }));
 
-    let autocompleteItems = this.props.searchItems.map((item) => {
-      let node = (
+    const autocompleteItems = this.props.searchItems.map((item) => {
+      const node = (
         <div className="autocomplete__recipient">
           {item.icon ? (
             <span
@@ -131,9 +129,9 @@ export default class AutofillSelector extends React.Component<
       return {
         value: item,
         selected: !!this.state.selectedItems.find(
-          (selectedItem) => selectedItem.id === item.id
+          (selectedItem) => selectedItem.id === item.id,
         ),
-        node
+        node,
       };
     });
 

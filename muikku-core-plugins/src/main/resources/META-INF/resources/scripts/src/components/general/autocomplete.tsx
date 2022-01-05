@@ -27,7 +27,7 @@ export default class Autocomplete extends React.Component<
     this.onItemClick = this.onItemClick.bind(this);
 
     this.state = {
-      maxHeight: null
+      maxHeight: null,
     };
   }
   onItemClick(value: any, selected: boolean, e: Event) {
@@ -36,19 +36,20 @@ export default class Autocomplete extends React.Component<
   }
   componentWillReceiveProps(nextProps: AutocompleteProps) {
     if (nextProps.opened && !this.props.opened) {
-      let autocomplete: HTMLDivElement = this.refs[
+      const autocomplete: HTMLDivElement = this.refs[
         "autocomplete"
       ] as HTMLDivElement;
       this.setState({
         maxHeight:
           window.innerHeight -
-          (autocomplete.getBoundingClientRect().top + autocomplete.offsetHeight)
+          (autocomplete.getBoundingClientRect().top +
+            autocomplete.offsetHeight),
       });
     }
   }
   render() {
-    let style: any = {
-      maxHeight: this.state.maxHeight
+    const style: any = {
+      maxHeight: this.state.maxHeight,
     };
     if (this.props.pixelsOffset) {
       style.top = this.props.pixelsOffset;
@@ -61,25 +62,19 @@ export default class Autocomplete extends React.Component<
       >
         {this.props.items.length && this.props.opened ? (
           <div className="autocomplete__list" style={style}>
-            {this.props.items.map((item, index) => {
-              return (
-                <div
-                  key={
-                    typeof item.value.id === "undefined" ? index : item.value.id
-                  }
-                  className={`autocomplete__list-item ${
-                    item.selected ? "selected" : ""
-                  }`}
-                  onClick={this.onItemClick.bind(
-                    this,
-                    item.value,
-                    item.selected
-                  )}
-                >
-                  {item.node}
-                </div>
-              );
-            })}
+            {this.props.items.map((item, index) => (
+              <div
+                key={
+                  typeof item.value.id === "undefined" ? index : item.value.id
+                }
+                className={`autocomplete__list-item ${
+                  item.selected ? "selected" : ""
+                }`}
+                onClick={this.onItemClick.bind(this, item.value, item.selected)}
+              >
+                {item.node}
+              </div>
+            ))}
           </div>
         ) : null}
         <div className="autocomplete__input" ref="input">

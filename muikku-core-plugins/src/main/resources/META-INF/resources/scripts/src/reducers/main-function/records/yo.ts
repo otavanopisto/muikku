@@ -60,29 +60,29 @@ export default function yo(
     enrollment: null,
     subjects: null,
     eligibility: null,
-    eligibilityStatus: null
+    eligibilityStatus: null,
   },
-  action: ActionType
+  action: ActionType,
 ): YOType {
   if (action.type === "UPDATE_STUDIES_YO_STATUS") {
     return Object.assign({}, state, {
-      status: action.payload
+      status: action.payload,
     });
   } else if (action.type === "UPDATE_STUDIES_YO") {
     return Object.assign({}, state, {
-      enrollment: action.payload
+      enrollment: action.payload,
     });
   } else if (action.type === "UPDATE_STUDIES_YO_SUBJECTS") {
     return Object.assign({}, state, {
-      subjects: action.payload
+      subjects: action.payload,
     });
   } else if (action.type === "UPDATE_STUDIES_YO_ELIGIBILITY_STATUS") {
     return Object.assign({}, state, {
-      eligibilityStatus: action.payload
+      eligibilityStatus: action.payload,
     });
   } else if (action.type === "UPDATE_STUDIES_YO_ELIGIBILITY") {
     return Object.assign({}, state, {
-      eligibility: action.payload
+      eligibility: action.payload,
     });
   }
   return state;
@@ -91,18 +91,18 @@ export default function yo(
 export function eligibilitySubjects(
   state: SubjectEligibilitySubjectsType = {
     status: "WAIT",
-    subjects: []
+    subjects: [],
   },
-  action: ActionType
+  action: ActionType,
 ): SubjectEligibilitySubjectsType {
   if (action.type === "UPDATE_STUDIES_SUBJECT_ELIGIBILITY") {
     return Object.assign({}, state, {
-      subjects: action.payload
+      subjects: action.payload,
     });
   }
   if (action.type === "UPDATE_STUDIES_SUBJECT_ELIGIBILITY_STATUS") {
     return Object.assign({}, state, {
-      status: action.payload
+      status: action.payload,
     });
   }
   return state;

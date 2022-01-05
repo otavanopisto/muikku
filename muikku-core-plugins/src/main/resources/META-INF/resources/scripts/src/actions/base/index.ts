@@ -5,5 +5,5 @@ import status from "./status";
 export default {
   locales,
   notifications,
-  status
+  status,
 };

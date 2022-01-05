@@ -16,17 +16,17 @@ export interface StatisticsType {
 export default function statistics(
   state: StatisticsType = {
     status: "WAIT",
-    value: null
+    value: null,
   },
-  action: ActionType
+  action: ActionType,
 ): StatisticsType {
   if (action.type === "UPDATE_STUDIES_STATISTICS_STATUS") {
     return Object.assign({}, state, {
-      status: action.payload
+      status: action.payload,
     });
   } else if (action.type === "UPDATE_STUDIES_STATISTICS") {
     return Object.assign({}, state, {
-      value: action.payload
+      value: action.payload,
     });
   }
   return state;

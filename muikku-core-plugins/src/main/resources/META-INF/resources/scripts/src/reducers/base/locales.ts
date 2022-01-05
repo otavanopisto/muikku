@@ -14,16 +14,14 @@ export interface LocaleListType {
 export default function locales(
   state = {
     available: $.makeArray(
-      $("#language-picker a").map((index: number, element: HTMLElement) => {
-        return {
-          name: $(element).text().trim(),
-          locale: $(element).data("locale")
-        };
-      })
+      $("#language-picker a").map((index: number, element: HTMLElement) => ({
+        name: $(element).text().trim(),
+        locale: $(element).data("locale"),
+      })),
     ),
-    current: $("#locale").text()
+    current: $("#locale").text(),
   },
-  action: ActionType
+  action: ActionType,
 ): LocaleListType {
   if (action.type === "SET_LOCALE") {
     $('#language-picker a[data-locale="' + action.payload + '"]').click();

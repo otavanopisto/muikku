@@ -7,12 +7,12 @@ import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
-import { EvaluationState } from "../../../reducers/main-function/evaluation/index";
+import { EvaluationState } from "~/reducers/main-function/evaluation/index";
 import {
   RemoveWorkspaceEvent,
-  removeWorkspaceEventFromServer
-} from "../../../actions/main-function/evaluation/evaluationActions";
-import { i18nType } from "../../../reducers/base/i18n";
+  removeWorkspaceEventFromServer,
+} from "~/actions/main-function/evaluation/evaluationActions";
+import { i18nType } from "~/reducers/base/i18n";
 import { EvaluationEvent } from "~/@types/evaluation";
 
 /**
@@ -66,7 +66,7 @@ class DeleteDialog extends React.Component<
 
         closeDialog();
       },
-      onFail: () => closeDialog()
+      onFail: () => closeDialog(),
     });
   }
 
@@ -79,46 +79,42 @@ class DeleteDialog extends React.Component<
 
     const studentNameString = `${evaluationSelectedAssessmentId.lastName}, ${evaluationSelectedAssessmentId.firstName}`;
 
-    const footer = (closeDialog: () => any) => {
-      return (
-        <div className="dialog__button-set">
-          <Button
-            buttonModifiers={["fatal", "standard-ok"]}
-            onClick={this.handleDeleteEventClick.bind(this, closeDialog)}
-          >
-            {this.props.i18n.text.get(
-              "plugin.evaluation.workspaceEvaluationDialog.removeDialog.removeButton",
-              studentNameString
-            )}
-          </Button>
-          <Button
-            buttonModifiers={["cancel", "standard-cancel"]}
-            onClick={closeDialog}
-          >
-            {this.props.i18n.text.get(
-              "plugin.evaluation.workspaceEvaluationDialog.removeDialog.cancelButton"
-            )}
-          </Button>
-        </div>
-      );
-    };
-    const content = (closeDialog: () => any) => {
-      return (
-        <div>
+    const footer = (closeDialog: () => any) => (
+      <div className="dialog__button-set">
+        <Button
+          buttonModifiers={["fatal", "standard-ok"]}
+          onClick={this.handleDeleteEventClick.bind(this, closeDialog)}
+        >
           {this.props.i18n.text.get(
-            "plugin.evaluation.workspaceEvaluationDialog.removeDialog.description",
-            studentNameString
+            "plugin.evaluation.workspaceEvaluationDialog.removeDialog.removeButton",
+            studentNameString,
           )}
-        </div>
-      );
-    };
+        </Button>
+        <Button
+          buttonModifiers={["cancel", "standard-cancel"]}
+          onClick={closeDialog}
+        >
+          {this.props.i18n.text.get(
+            "plugin.evaluation.workspaceEvaluationDialog.removeDialog.cancelButton",
+          )}
+        </Button>
+      </div>
+    );
+    const content = (closeDialog: () => any) => (
+      <div>
+        {this.props.i18n.text.get(
+          "plugin.evaluation.workspaceEvaluationDialog.removeDialog.description",
+          studentNameString,
+        )}
+      </div>
+    );
     return (
       <Dialog
         isOpen={this.props.isOpen}
         onClose={this.props.onClose}
         modifier="evaluation-remove-assessment"
         title={this.props.i18n.text.get(
-          "plugin.evaluation.workspaceEvaluationDialog.removeDialog.title"
+          "plugin.evaluation.workspaceEvaluationDialog.removeDialog.title",
         )}
         content={content}
         footer={footer}
@@ -135,61 +131,61 @@ class DeleteDialog extends React.Component<
  */
 export const cleanWorkspaceAndSupplementationDrafts = (draftId: string) => {
   const supplementationEditorEditLiteralEvaluation = localStorage.getItem(
-    `supplementation-editor-edit.${draftId}.literalEvaluation`
+    `supplementation-editor-edit.${draftId}.literalEvaluation`,
   );
 
   const supplementationEditorNewLiteralEvaluation = localStorage.getItem(
-    `supplementation-editor-new.${draftId}.literalEvaluation`
+    `supplementation-editor-new.${draftId}.literalEvaluation`,
   );
 
   const workspaceEditorEditLiteralEvaluation = localStorage.getItem(
-    `workspace-editor-edit.${draftId}.literalEvaluation`
+    `workspace-editor-edit.${draftId}.literalEvaluation`,
   );
 
   const workspaceEditorEditGrade = localStorage.getItem(
-    `workspace-editor-edit.${draftId}.grade`
+    `workspace-editor-edit.${draftId}.grade`,
   );
 
   const workspaceEditorEditBasePrice = localStorage.getItem(
-    `workspace-editor-edit.${draftId}.basePrice`
+    `workspace-editor-edit.${draftId}.basePrice`,
   );
 
   const workspaceEditorEditSelectedPriceOption = localStorage.getItem(
-    `workspace-editor-edit.${draftId}.selectedPriceOption`
+    `workspace-editor-edit.${draftId}.selectedPriceOption`,
   );
 
   const workspaceEditorEditExistingBilledPriceObject = localStorage.getItem(
-    `workspace-editor-edit.${draftId}.existingBilledPriceObject`
+    `workspace-editor-edit.${draftId}.existingBilledPriceObject`,
   );
 
   const workspaceEditorNewLiteralEvaluation = localStorage.getItem(
-    `workspace-editor-new.${draftId}.literalEvaluation`
+    `workspace-editor-new.${draftId}.literalEvaluation`,
   );
 
   const workspaceEditorNewGrade = localStorage.getItem(
-    `workspace-editor-new.${draftId}.grade`
+    `workspace-editor-new.${draftId}.grade`,
   );
 
   const workspaceEditorNewBasePrice = localStorage.getItem(
-    `workspace-editor-new.${draftId}.basePrice`
+    `workspace-editor-new.${draftId}.basePrice`,
   );
 
   const workspaceEditorNewSelectedPriceOption = localStorage.getItem(
-    `workspace-editor-new.${draftId}.selectedPriceOption`
+    `workspace-editor-new.${draftId}.selectedPriceOption`,
   );
 
   const workspaceEditorNewExistingBilledPriceObject = localStorage.getItem(
-    `workspace-editor-new.${draftId}.existingBilledPriceObject`
+    `workspace-editor-new.${draftId}.existingBilledPriceObject`,
   );
 
   if (supplementationEditorEditLiteralEvaluation !== null) {
     localStorage.removeItem(
-      `supplementation-editor-edit.${draftId}.literalEvaluation`
+      `supplementation-editor-edit.${draftId}.literalEvaluation`,
     );
   }
   if (supplementationEditorNewLiteralEvaluation !== null) {
     localStorage.removeItem(
-      `supplementation-editor-new.${draftId}.literalEvaluation`
+      `supplementation-editor-new.${draftId}.literalEvaluation`,
     );
   }
 
@@ -201,15 +197,15 @@ export const cleanWorkspaceAndSupplementationDrafts = (draftId: string) => {
     workspaceEditorEditExistingBilledPriceObject !== null
   ) {
     localStorage.removeItem(
-      `workspace-editor-edit.${draftId}.literalEvaluation`
+      `workspace-editor-edit.${draftId}.literalEvaluation`,
     );
     localStorage.removeItem(`workspace-editor-edit.${draftId}.grade`);
     localStorage.removeItem(
-      `workspace-editor-edit.${draftId}.selectedPriceOption`
+      `workspace-editor-edit.${draftId}.selectedPriceOption`,
     );
     localStorage.removeItem(`workspace-editor-edit.${draftId}.basePrice`);
     localStorage.removeItem(
-      `workspace-editor-edit.${draftId}.existingBilledPriceObject`
+      `workspace-editor-edit.${draftId}.existingBilledPriceObject`,
     );
   }
 
@@ -221,15 +217,15 @@ export const cleanWorkspaceAndSupplementationDrafts = (draftId: string) => {
     workspaceEditorNewExistingBilledPriceObject !== null
   ) {
     localStorage.removeItem(
-      `workspace-editor-new.${draftId}.literalEvaluation`
+      `workspace-editor-new.${draftId}.literalEvaluation`,
     );
     localStorage.removeItem(`workspace-editor-new.${draftId}.grade`);
     localStorage.removeItem(
-      `workspace-editor-new.${draftId}.selectedPriceOption`
+      `workspace-editor-new.${draftId}.selectedPriceOption`,
     );
     localStorage.removeItem(`workspace-editor-new.${draftId}.basePrice`);
     localStorage.removeItem(
-      `workspace-editor-new.${draftId}.existingBilledPriceObject`
+      `workspace-editor-new.${draftId}.existingBilledPriceObject`,
     );
   }
 };
@@ -243,7 +239,7 @@ export const cleanWorkspaceAndSupplementationDrafts = (draftId: string) => {
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    evaluations: state.evaluations
+    evaluations: state.evaluations,
   };
 }
 

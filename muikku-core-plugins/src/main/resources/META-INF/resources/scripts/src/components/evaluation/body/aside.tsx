@@ -5,12 +5,12 @@ import "~/sass/elements/item-list.scss";
 import { StateType } from "~/reducers";
 import NavigationMenu, {
   NavigationTopic,
-  NavigationElement
+  NavigationElement,
 } from "~/components/general/navigation";
 import { EvaluationState } from "~/reducers/main-function/evaluation/index";
 import {
   SetEvaluationSelectedWorkspace,
-  setSelectedWorkspaceId
+  setSelectedWorkspaceId,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import { bindActionCreators } from "redux";
 import { i18nType } from "~/reducers/base/i18n";
@@ -51,10 +51,9 @@ class NavigationAside extends React.Component<
    * handleNavigationWorkspaceClick
    * @param workspaceId
    */
-  handleNavigationWorkspaceClick =
-    (workspaceId?: number) => (e: React.MouseEvent) => {
-      this.props.setSelectedWorkspaceId({ workspaceId });
-    };
+  handleNavigationWorkspaceClick = (workspaceId?: number) => () => {
+    this.props.setSelectedWorkspaceId({ workspaceId });
+  };
 
   /**
    * Component render method
@@ -83,7 +82,7 @@ class NavigationAside extends React.Component<
     /**
      * Mapped workspaces as NavigationElement
      */
-    const renderNavigationWorkspaceElements = workspaces.map((wItem, i) => (
+    const renderNavigationWorkspaceElements = workspaces.map((wItem) => (
       <NavigationElement
         modifiers="aside-navigation"
         key={wItem.id}
@@ -121,7 +120,7 @@ class NavigationAside extends React.Component<
       <NavigationMenu>
         <NavigationTopic
           name={this.props.i18n.text.get(
-            "plugin.evaluation.filter.viewSelection"
+            "plugin.evaluation.filter.viewSelection",
           )}
         >
           {renderAllNavigationElements}
@@ -139,7 +138,7 @@ function mapStateToProps(state: StateType) {
   return {
     evaluations: state.evaluations,
     i18n: state.i18n,
-    currentWorkspace: state.workspaces.currentWorkspace
+    currentWorkspace: state.workspaces.currentWorkspace,
   };
 }
 

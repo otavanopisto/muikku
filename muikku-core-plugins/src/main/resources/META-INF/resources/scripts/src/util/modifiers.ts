@@ -1,9 +1,5 @@
 import * as React from "react";
-import {
-  UserType,
-  UserWithSchoolDataType,
-  UserStaffType
-} from "~/reducers/user-index";
+import { UserType } from "~/reducers/user-index";
 import $ from "~/lib/jquery";
 import { MaterialContentNodeListType } from "~/reducers/workspaces";
 
@@ -18,10 +14,10 @@ function intersectTwo(a: any[], b: any[]) {
 }
 
 function differenceTwo(a: any[], b: any[]) {
-  let inAButNotInB = a.filter(function (n) {
+  const inAButNotInB = a.filter(function (n) {
     return b.indexOf(n) === -1;
   });
-  let inBButNotInA = b.filter(function (n) {
+  const inBButNotInA = b.filter(function (n) {
     return a.indexOf(n) === -1;
   });
   return inAButNotInB.concat(inBButNotInA);
@@ -35,7 +31,7 @@ export function filterHighlight(string: string, filter: string) {
   if (filter === "") {
     return React.createElement("span", {}, string);
   }
-  let accumulator: Array<Array<any>> = [[]];
+  const accumulator: Array<Array<any>> = [[]];
   string
     .split(new RegExp("(" + escapeRegExp(filter) + "|\\s)", "i"))
     .forEach((element, index) => {
@@ -48,18 +44,18 @@ export function filterHighlight(string: string, filter: string) {
           React.createElement(
             "span",
             { key: index, className: "form-element__autocomplete-highlight" },
-            element
-          )
+            element,
+          ),
         );
       } else {
         accumulator[accumulator.length - 1].push(element);
       }
     });
 
-  let spans = accumulator.map((childMap, index) =>
-    React.createElement("span", { key: index }, ...childMap)
+  const spans = accumulator.map((childMap, index) =>
+    React.createElement("span", { key: index }, ...childMap),
   );
-  let newChild: Array<any> = [];
+  const newChild: Array<any> = [];
   spans.forEach((s, index) => {
     newChild.push(s);
     if (index !== spans.length - 1) {
@@ -70,13 +66,13 @@ export function filterHighlight(string: string, filter: string) {
 }
 
 export function colorIntToHex(color: number) {
-  let b = (color & 255).toString(16);
-  let g = ((color >> 8) & 255).toString(16);
-  let r = ((color >> 16) & 255).toString(16);
+  const b = (color & 255).toString(16);
+  const g = ((color >> 8) & 255).toString(16);
+  const r = ((color >> 16) & 255).toString(16);
 
-  let rStr = r.length == 1 ? "0" + r : r;
-  let gStr = g.length == 1 ? "0" + g : g;
-  let bStr = b.length == 1 ? "0" + b : b;
+  const rStr = r.length == 1 ? "0" + r : r;
+  const gStr = g.length == 1 ? "0" + g : g;
+  const bStr = b.length == 1 ? "0" + b : b;
 
   return "#" + rStr + gStr + bStr;
 }
@@ -122,9 +118,7 @@ export function flatten(...elements: any[]) {
     return [];
   }
 
-  return elements.reduce((a, b) => {
-    return a.concat(b);
-  });
+  return elements.reduce((a, b) => a.concat(b));
 }
 
 export function escapeHTML(str: string) {
@@ -167,9 +161,9 @@ export function getName(user: any, hasFullNamePermission: boolean) {
 export function getUserImageUrl(
   user: UserType | number,
   type?: number | string,
-  version?: number
+  version?: number,
 ) {
-  let id: Number;
+  let id: number;
   if (typeof user === "number") {
     id = user;
   } else {
@@ -201,7 +195,7 @@ export function getShortenGradeExtension(grade: string) {
 }
 
 export function hashCode(str: string) {
-  var hash = 0,
+  let hash = 0,
     i,
     chr;
   if (str.length === 0) return hash;
@@ -217,10 +211,10 @@ export function resize(
   img: HTMLImageElement,
   width: number,
   mimeType?: string,
-  quality?: number
+  quality?: number,
 ) {
-  let canvas = document.createElement("canvas");
-  let ctx = canvas.getContext("2d");
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
 
   // set size proportional to image
   canvas.width = width;
@@ -236,14 +230,14 @@ export function resize(
     0,
     0,
     canvas.width,
-    canvas.height
+    canvas.height,
   );
 
   return canvas.toDataURL(mimeType || "image/jpeg", quality || 0.9);
 }
 
 export function shuffle(oArray: Array<any>) {
-  let array = [...oArray];
+  const array = [...oArray];
 
   let currentIndex = array.length;
   let temporaryValue;
@@ -265,9 +259,9 @@ type TypescriptBuggyTakeThisCallbackComeOn = (element: any) => any;
 export function arrayToObject(
   array: Array<any>,
   propertyName: string,
-  propertyValue?: string | TypescriptBuggyTakeThisCallbackComeOn
+  propertyValue?: string | TypescriptBuggyTakeThisCallbackComeOn,
 ) {
-  let obj: any = {};
+  const obj: any = {};
   array.forEach((element: any) => {
     obj[element[propertyName]] = propertyValue
       ? typeof propertyValue === "string"
@@ -345,7 +339,7 @@ const translations: any = {
   size: "size",
   placeholder: "placeholder",
   multiple: "multiple",
-  accept: "accept"
+  accept: "accept",
 };
 
 /**
@@ -389,13 +383,13 @@ export interface HTMLToReactComponentRule {
     tag: string,
     props: any,
     children: Array<any>,
-    element: HTMLElement
+    element: HTMLElement,
   ) => any;
   preprocessReactProperties?: (
     tag: string,
     props: any,
     children: Array<any>,
-    element: HTMLElement
+    element: HTMLElement,
   ) => string | void;
   preprocessElement?: (element: HTMLElement) => string | void;
   id?: string;
@@ -404,7 +398,7 @@ export interface HTMLToReactComponentRule {
 export function HTMLtoReactComponent(
   element: HTMLElement,
   rules?: HTMLToReactComponentRule[],
-  key?: number
+  key?: number,
 ): any {
   if (element.nodeType === 3) {
     return element.textContent;
@@ -412,7 +406,7 @@ export function HTMLtoReactComponent(
 
   let tagname = element.tagName.toLowerCase();
   const matchingRule = rules.find((r) =>
-    r.shouldProcessHTMLElement(tagname, element)
+    r.shouldProcessHTMLElement(tagname, element),
   );
 
   if (matchingRule && matchingRule.preprocessElement) {
@@ -427,7 +421,7 @@ export function HTMLtoReactComponent(
     : defaultProcesser;
 
   const props: any = {
-    key
+    key,
   };
   Array.from(element.attributes).forEach((attr: Attr) => {
     if (translations[attr.name]) {
@@ -440,7 +434,7 @@ export function HTMLtoReactComponent(
   const shouldProcessChildren = matchingRule
     ? !matchingRule.preventChildProcessing
     : true;
-  let children = shouldProcessChildren
+  const children = shouldProcessChildren
     ? Array.from(element.childNodes).map((node, index) => {
         if (node instanceof HTMLElement) {
           return HTMLtoReactComponent(node, rules, index);
@@ -455,7 +449,7 @@ export function HTMLtoReactComponent(
         tagname,
         props,
         children,
-        element
+        element,
       ) || tagname;
   }
 
@@ -466,13 +460,13 @@ export function HTMLtoReactComponent(
 
 export function extractDataSet(element: HTMLElement): any {
   let finalThing: any = {
-    ...element.dataset
+    ...element.dataset,
   };
-  Array.from(element.childNodes).map((node, index) => {
+  Array.from(element.childNodes).map((node) => {
     if (node instanceof HTMLElement) {
       finalThing = {
         ...finalThing,
-        ...extractDataSet(node)
+        ...extractDataSet(node),
       };
     }
   });
@@ -481,7 +475,7 @@ export function extractDataSet(element: HTMLElement): any {
 }
 
 export function guidGenerator() {
-  let S4 = function () {
+  const S4 = function () {
     return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
   };
   return (
@@ -505,9 +499,9 @@ export function scrollToSection(
   onScrollToSection?: () => any,
   scrollPadding?: number,
   disableAnimate?: boolean,
-  disableAnchorSet?: boolean
+  disableAnchorSet?: boolean,
 ) {
-  let actualAnchor = anchor + ',[data-id="' + anchor.replace("#", "") + '"]';
+  const actualAnchor = anchor + ',[data-id="' + anchor.replace("#", "") + '"]';
   try {
     if (!$(actualAnchor).size()) {
       if (!disableAnchorSet) {
@@ -530,8 +524,8 @@ export function scrollToSection(
     return;
   }
 
-  let topOffset = scrollPadding || 90;
-  let scrollTop = $(actualAnchor).offset().top - topOffset;
+  const topOffset = scrollPadding || 90;
+  const scrollTop = $(actualAnchor).offset().top - topOffset;
 
   onScrollToSection && onScrollToSection();
   if (disableAnimate) {
@@ -539,12 +533,12 @@ export function scrollToSection(
   } else {
     $("html, body").stop().animate(
       {
-        scrollTop: scrollTop
+        scrollTop: scrollTop,
       },
       {
         duration: 500,
-        easing: "easeInOutQuad"
-      }
+        easing: "easeInOutQuad",
+      },
     );
   }
 
@@ -563,7 +557,7 @@ export function repairContentNodes(
   base: MaterialContentNodeListType,
   pathRepair?: string,
   pathRepairId?: number,
-  parentNodeId?: number
+  parentNodeId?: number,
 ): MaterialContentNodeListType {
   if (base === null) {
     return null;
@@ -588,7 +582,7 @@ export function repairContentNodes(
             cn.children,
             pathRepair,
             pathRepairId,
-            cn.workspaceMaterialId
+            cn.workspaceMaterialId,
           )
         : cn.children;
 
@@ -597,20 +591,20 @@ export function repairContentNodes(
       nextSiblingId,
       parentId,
       children,
-      path
+      path,
     };
   });
 }
 
 export function validURL(str: string) {
-  var pattern = new RegExp(
+  const pattern = new RegExp(
     "^(https?:\\/\\/)?" + // protocol
       "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
       "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
       "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
       "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
       "(\\#[-a-z\\d_]*)?$",
-    "i"
+    "i",
   ); // fragment locator
   return !!pattern.test(str);
 }

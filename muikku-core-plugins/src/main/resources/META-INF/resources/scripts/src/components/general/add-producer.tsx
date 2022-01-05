@@ -1,5 +1,4 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/add-producer.scss";
 import "~/sass/elements/wcag.scss";
@@ -26,7 +25,7 @@ export default class AddProducer extends React.Component<
     super(props);
 
     this.state = {
-      currentInputValue: ""
+      currentInputValue: "",
     };
 
     this.updateInputValue = this.updateInputValue.bind(this);
@@ -37,20 +36,20 @@ export default class AddProducer extends React.Component<
   }
   updateInputValue(e: React.ChangeEvent<HTMLInputElement>) {
     this.setState({
-      currentInputValue: e.target.value
+      currentInputValue: e.target.value,
     });
   }
   checkIfEnterKeyIsPressedAndAddProducer(
-    e: React.KeyboardEvent<HTMLInputElement>
+    e: React.KeyboardEvent<HTMLInputElement>,
   ) {
-    let input = this.state.currentInputValue;
+    const input = this.state.currentInputValue;
     if (e.keyCode == 13 && input.length > 2) {
       this.props.addProducer(this.state.currentInputValue);
       this.clearInputValue();
     }
   }
   addProducerByClick() {
-    let input = this.state.currentInputValue;
+    const input = this.state.currentInputValue;
     if (input.length > 2) {
       this.props.addProducer(this.state.currentInputValue);
       this.clearInputValue();
@@ -58,7 +57,7 @@ export default class AddProducer extends React.Component<
   }
   clearInputValue() {
     this.setState({
-      currentInputValue: ""
+      currentInputValue: "",
     });
   }
   removeProducerByClick(index: number) {
@@ -88,7 +87,7 @@ export default class AddProducer extends React.Component<
               htmlFor={this.props.wcagLabel && this.props.wcagLabel}
             >
               {this.props.i18n.text.get(
-                "plugin.workspace.materialsManagement.editorView.addProducers.placeHolder"
+                "plugin.workspace.materialsManagement.editorView.addProducers.placeHolder",
               )}
             </label>
             <input
@@ -103,7 +102,7 @@ export default class AddProducer extends React.Component<
               onKeyUp={this.checkIfEnterKeyIsPressedAndAddProducer}
               onChange={this.updateInputValue}
               placeholder={this.props.i18n.text.get(
-                "plugin.workspace.materialsManagement.editorView.addProducers.placeHolder"
+                "plugin.workspace.materialsManagement.editorView.addProducers.placeHolder",
               )}
               type="text"
             />
@@ -118,20 +117,18 @@ export default class AddProducer extends React.Component<
           </div>
         </div>
         <div className="add-producer__list-container">
-          {this.props.producers.map((p: any, index: number) => {
-            return (
-              <div
-                className="add-producer__producer-list-item"
-                key={"producer-" + index}
-              >
-                {p.name}
-                <span
-                  className="add-producer__remove-producer icon-cross"
-                  onClick={this.removeProducerByClick.bind(this, index)}
-                ></span>
-              </div>
-            );
-          })}
+          {this.props.producers.map((p: any, index: number) => (
+            <div
+              className="add-producer__producer-list-item"
+              key={"producer-" + index}
+            >
+              {p.name}
+              <span
+                className="add-producer__remove-producer icon-cross"
+                onClick={this.removeProducerByClick.bind(this, index)}
+              ></span>
+            </div>
+          ))}
         </div>
       </div>
     );

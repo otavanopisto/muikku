@@ -52,7 +52,7 @@ export default class MathField extends React.Component<
 
     this.state = {
       isFocused: false,
-      expandMath: false
+      expandMath: false,
     };
 
     this.onFocusField = this.onFocusField.bind(this);
@@ -73,14 +73,14 @@ export default class MathField extends React.Component<
       this.loadedAce = true;
 
       const existantScript = document.querySelector(
-        "script[src=" + JSON.stringify(ACE_DEFAULT_SRC) + "]"
+        "script[src=" + JSON.stringify(ACE_DEFAULT_SRC) + "]",
       );
       if (!existantScript) {
-        let script = document.createElement("script");
+        const script = document.createElement("script");
         script.src = ACE_DEFAULT_SRC;
         script.async = true;
         script.onload = () => {
-          let script2 = document.createElement("script");
+          const script2 = document.createElement("script");
           script2.src = ACE_MODE_SRC;
           script2.async = true;
           document.head.appendChild(script2);
@@ -93,15 +93,15 @@ export default class MathField extends React.Component<
       this.loadedMq = true;
 
       const existantScript = document.querySelector(
-        "script[src=" + JSON.stringify(MQ_DEFAULT_SRC) + "]"
+        "script[src=" + JSON.stringify(MQ_DEFAULT_SRC) + "]",
       );
       if (!existantScript) {
-        let script = document.createElement("script");
+        const script = document.createElement("script");
         script.src = MQ_DEFAULT_SRC;
         script.async = true;
         document.head.appendChild(script);
 
-        let css = document.createElement("link");
+        const css = document.createElement("link");
         css.rel = "stylesheet";
         css.type = "text/css";
         css.href = MQ_DEFAULT_CSS;
@@ -118,7 +118,7 @@ export default class MathField extends React.Component<
     //it triggers several times
     if (!this.state.isFocused) {
       this.setState({
-        isFocused: true
+        isFocused: true,
       });
     }
   }
@@ -130,7 +130,7 @@ export default class MathField extends React.Component<
     //the unselect function allows me to unselect the selection of an equation in the field
     //I should trigger it if I am going to really remove the focus
     this.setState({
-      isFocused: false
+      isFocused: false,
     });
   }
   cancelBlur() {
@@ -140,12 +140,12 @@ export default class MathField extends React.Component<
   }
   openMathExpanded() {
     this.setState({
-      expandMath: true
+      expandMath: true,
     });
   }
   closeMathExpanded() {
     this.setState({
-      expandMath: false
+      expandMath: false,
     });
   }
   createNewLatex() {

@@ -12,7 +12,7 @@ import "~/sass/elements/avatar.scss";
 import {
   DiscussionType,
   DiscussionThreadType,
-  DiscussionUserType
+  DiscussionUserType,
 } from "~/reducers/discussion";
 import BodyScrollKeeper from "~/components/general/body-scroll-keeper";
 import { StateType } from "~/reducers";
@@ -22,7 +22,7 @@ import {
   DiscussionThread,
   DiscussionThreadHeader,
   DiscussionThreadBody,
-  DiscussionThreadFooter
+  DiscussionThreadFooter,
 } from "./threads/threads";
 import { StatusType } from "~/reducers/base/status";
 import Avatar from "~/components/general/avatar";
@@ -161,7 +161,7 @@ class DDiscussionThreads extends React.Component<
                     hasImage={user.hasImage}
                     userCategory={userCategory}
                     avatarAriaLabel={this.props.i18n.text.get(
-                      "plugin.wcag.userAvatar.label"
+                      "plugin.wcag.userAvatar.label",
                     )}
                   />
                 );
@@ -202,7 +202,7 @@ class DDiscussionThreads extends React.Component<
                         {user &&
                           getName(
                             user,
-                            this.props.status.permissions.FORUM_SHOW_FULL_NAMES
+                            this.props.status.permissions.FORUM_SHOW_FULL_NAMES,
                           )}
                         , {this.props.i18n.time.format(thread.created)}
                       </span>
@@ -211,7 +211,7 @@ class DDiscussionThreads extends React.Component<
                       <div className="application-list__item-counter-container">
                         <span className="application-list__item-counter-title">
                           {this.props.i18n.text.get(
-                            "plugin.discussion.titleText.replyCount"
+                            "plugin.discussion.titleText.replyCount",
                           )}{" "}
                         </span>
                         <span className="application-list__item-counter">
@@ -221,7 +221,7 @@ class DDiscussionThreads extends React.Component<
                       <div className="application-list__item-date">
                         <span>
                           {this.props.i18n.text.get(
-                            "plugin.discussion.titleText.lastMessage"
+                            "plugin.discussion.titleText.lastMessage",
                           )}{" "}
                           {this.props.i18n.time.format(thread.updated)}
                         </span>
@@ -230,7 +230,7 @@ class DDiscussionThreads extends React.Component<
                   </DiscussionThreadFooter>
                 </DiscussionThread>
               );
-            }
+            },
           )}
           <PagerV2
             previousLabel=""
@@ -257,7 +257,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     discussion: state.discussion,
-    status: state.status
+    status: state.status,
   };
 }
 

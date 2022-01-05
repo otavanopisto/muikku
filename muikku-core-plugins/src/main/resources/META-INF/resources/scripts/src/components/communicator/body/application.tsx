@@ -34,24 +34,24 @@ class CommunicatorApplication extends React.Component<
     this.closeDialogSignature = this.closeDialogSignature.bind(this);
 
     this.state = {
-      updateSignatureDialogOpened: false
+      updateSignatureDialogOpened: false,
     };
   }
   openDialogSignature(closeDropdown?: () => any) {
     this.setState({
-      updateSignatureDialogOpened: true
+      updateSignatureDialogOpened: true,
     });
     closeDropdown && closeDropdown();
   }
   closeDialogSignature() {
     this.setState({
-      updateSignatureDialogOpened: false
+      updateSignatureDialogOpened: false,
     });
   }
 
   render() {
-    let title = this.props.i18n.text.get("plugin.communicator.pageTitle");
-    let icon = (
+    const title = this.props.i18n.text.get("plugin.communicator.pageTitle");
+    const icon = (
       <Dropdown
         modifier="main-functions-settings"
         items={[
@@ -63,24 +63,24 @@ class CommunicatorApplication extends React.Component<
             >
               <span>
                 {this.props.i18n.text.get(
-                  "plugin.communicator.settings.signature"
+                  "plugin.communicator.settings.signature",
                 )}
               </span>
             </Link>
-          )
+          ),
         ]}
       >
         <ButtonPill buttonModifiers="settings" icon="cog" />
       </Dropdown>
     );
-    let primaryOption = (
+    const primaryOption = (
       <NewMessage>
         <Button buttonModifiers="primary-function">
           {this.props.i18n.text.get("plugin.communicator.newMessage.label")}
         </Button>
       </NewMessage>
     );
-    let toolbar = <Toolbar />;
+    const toolbar = <Toolbar />;
 
     //The message view actually appears on top and it's not a replacement, this makes it easier to go back without having to refresh from the server
     return (
@@ -110,7 +110,7 @@ class CommunicatorApplication extends React.Component<
 
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n
+    i18n: state.i18n,
   };
 }
 
@@ -119,5 +119,5 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps, null, {
-  withRef: true
+  withRef: true,
 })(CommunicatorApplication);

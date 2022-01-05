@@ -3,7 +3,7 @@ import { connect, Dispatch } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
 import {
   AnnouncementsType,
-  AnnouncerNavigationItemType
+  AnnouncerNavigationItemType,
 } from "~/reducers/announcements";
 import { StateType } from "~/reducers";
 
@@ -39,7 +39,7 @@ class NavigationAside extends React.Component<
           >
             {navItem.text(this.props.i18n)}
           </NavigationElement>
-        )
+        ),
       );
 
     return (
@@ -62,7 +62,7 @@ class NavigationAside extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    announcements: state.announcements
+    announcements: state.announcements,
   };
 }
 

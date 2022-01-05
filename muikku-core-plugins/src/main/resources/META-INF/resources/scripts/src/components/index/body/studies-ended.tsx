@@ -1,6 +1,6 @@
 import * as React from "react";
 import { StateType } from "reducers";
-import { Dispatch, connect } from "react-redux";
+import { connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/rich-text.scss";
 import "~/sass/elements/panel.scss";
@@ -22,7 +22,7 @@ class StudiesEnded extends React.Component<
           <div className="panel__header-icon panel__header-icon--studies-ended icon-blocked"></div>
           <h2 className="panel__header-title">
             {this.props.i18n.text.get(
-              "plugin.frontpage.inactiveStudent.messageTitle"
+              "plugin.frontpage.inactiveStudent.messageTitle",
             )}
           </h2>
         </div>
@@ -30,8 +30,8 @@ class StudiesEnded extends React.Component<
           className="panel__body panel__body--studies-ended"
           dangerouslySetInnerHTML={{
             __html: this.props.i18n.text.get(
-              "plugin.frontpage.inactiveStudent.messageContent"
-            )
+              "plugin.frontpage.inactiveStudent.messageContent",
+            ),
           }}
         ></div>
       </div>
@@ -41,11 +41,11 @@ class StudiesEnded extends React.Component<
 
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n
+    i18n: state.i18n,
   };
 }
 
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps() {
   return {};
 }
 

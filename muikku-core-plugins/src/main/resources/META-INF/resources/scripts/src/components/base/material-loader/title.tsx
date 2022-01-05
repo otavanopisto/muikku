@@ -11,7 +11,7 @@ function stopPropagation(e: React.MouseEvent<HTMLDivElement>) {
 }
 
 export function MaterialLoaderTitle(props: MaterialLoaderTitleProps) {
-  let hidden = props.material.hidden || (props.folder && props.folder.hidden);
+  const hidden = props.material.hidden || (props.folder && props.folder.hidden);
 
   if (props.isInFrontPage) {
     return null;
@@ -47,7 +47,7 @@ export function MaterialLoaderTitle(props: MaterialLoaderTitleProps) {
           {props.i18n.text.get(
             "plugin.workspace.materials." +
               materialPageType +
-              "HiddenButAnswered"
+              "HiddenButAnswered",
           )}
         </div>
       ) : null}

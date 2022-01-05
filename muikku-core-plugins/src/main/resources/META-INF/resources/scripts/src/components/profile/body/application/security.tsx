@@ -8,12 +8,12 @@ import mApi from "~/lib/mApi";
 import { ProfileType } from "~/reducers/main-function/profile";
 import {
   loadProfileUsername,
-  LoadProfileUsernameTriggerType
+  LoadProfileUsernameTriggerType,
 } from "~/actions/main-function/profile";
 import { bindActionCreators, Dispatch } from "redux";
 import {
   displayNotification,
-  DisplayNotificationTriggerType
+  DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 
 /**
@@ -54,7 +54,7 @@ class Security extends React.Component<SecurityProps, SecurityState> {
       oldPassword: "",
       newPassword: "",
       newPasswordConfirm: "",
-      locked: false
+      locked: false,
     };
 
     this.update = this.update.bind(this);
@@ -71,7 +71,7 @@ class Security extends React.Component<SecurityProps, SecurityState> {
       nextProps.profile.username !== this.state.username
     ) {
       this.setState({
-        username: nextProps.profile.username
+        username: nextProps.profile.username,
       });
     }
   }
@@ -80,15 +80,15 @@ class Security extends React.Component<SecurityProps, SecurityState> {
    * update
    */
   public update() {
-    let newPassword1 = this.state.newPassword;
-    let newPassword2 = this.state.newPasswordConfirm;
+    const newPassword1 = this.state.newPassword;
+    const newPassword2 = this.state.newPasswordConfirm;
 
     if (newPassword1 && newPassword2 == "") {
       this.props.displayNotification(
         this.props.i18n.text.get(
-          "plugin.profile.changePassword.dialog.notif.emptypass"
+          "plugin.profile.changePassword.dialog.notif.emptypass",
         ),
-        "error"
+        "error",
       );
       return;
     }
@@ -96,44 +96,44 @@ class Security extends React.Component<SecurityProps, SecurityState> {
     if (newPassword1 !== newPassword2) {
       this.props.displayNotification(
         this.props.i18n.text.get(
-          "plugin.profile.changePassword.dialog.notif.failconfirm"
+          "plugin.profile.changePassword.dialog.notif.failconfirm",
         ),
-        "error"
+        "error",
       );
       return;
     }
 
     this.setState({
-      locked: true
+      locked: true,
     });
 
-    let values = {
+    const values = {
       oldPassword: this.state.oldPassword,
       username: this.state.username,
-      newPassword: this.state.newPassword
+      newPassword: this.state.newPassword,
     };
 
     mApi()
       .userplugin.credentials.update(values)
       .callback((err: any, result: any) => {
         this.setState({
-          locked: false
+          locked: false,
         });
 
         if (err) {
           if (result.status === 403) {
             this.props.displayNotification(
               this.props.i18n.text.get(
-                "plugin.profile.changePassword.dialog.notif.unauthorized"
+                "plugin.profile.changePassword.dialog.notif.unauthorized",
               ),
-              "error"
+              "error",
             );
           } else if (result.status === 409) {
             this.props.displayNotification(
               this.props.i18n.text.get(
-                "plugin.profile.changePassword.dialog.notif.alreadyinuse"
+                "plugin.profile.changePassword.dialog.notif.alreadyinuse",
               ),
-              "error"
+              "error",
             );
           } else {
             this.props.displayNotification(err.message, "error");
@@ -142,16 +142,16 @@ class Security extends React.Component<SecurityProps, SecurityState> {
           if (values.newPassword === "") {
             this.props.displayNotification(
               this.props.i18n.text.get(
-                "plugin.profile.changePassword.dialog.notif.username.successful"
+                "plugin.profile.changePassword.dialog.notif.username.successful",
               ),
-              "success"
+              "success",
             );
           } else {
             this.props.displayNotification(
               this.props.i18n.text.get(
-                "plugin.profile.changePassword.dialog.notif.successful"
+                "plugin.profile.changePassword.dialog.notif.successful",
               ),
-              "success"
+              "success",
             );
           }
 
@@ -166,7 +166,7 @@ class Security extends React.Component<SecurityProps, SecurityState> {
    * @param e
    */
   updateField(field: string, e: React.ChangeEvent<HTMLInputElement>) {
-    let nField: any = {};
+    const nField: any = {};
     nField[field] = e.target.value;
     this.setState(nField);
   }
@@ -194,7 +194,7 @@ class Security extends React.Component<SecurityProps, SecurityState> {
                   className="application-sub-panel__item-title"
                 >
                   {this.props.i18n.text.get(
-                    "plugin.profile.changePassword.dialog.usernameField.label"
+                    "plugin.profile.changePassword.dialog.usernameField.label",
                   )}
                 </label>
                 <div className="application-sub-panel__item-data form-element">
@@ -214,7 +214,7 @@ class Security extends React.Component<SecurityProps, SecurityState> {
                   className="application-sub-panel__item-title"
                 >
                   {this.props.i18n.text.get(
-                    "plugin.profile.changePassword.dialog.oldPasswordField.label"
+                    "plugin.profile.changePassword.dialog.oldPasswordField.label",
                   )}
                 </label>
                 <div className="application-sub-panel__item-data form-element">
@@ -234,7 +234,7 @@ class Security extends React.Component<SecurityProps, SecurityState> {
                   className="application-sub-panel__item-title"
                 >
                   {this.props.i18n.text.get(
-                    "plugin.profile.changePassword.dialog.newPasswordField1.label"
+                    "plugin.profile.changePassword.dialog.newPasswordField1.label",
                   )}
                 </label>
                 <div className="application-sub-panel__item-data form-element">
@@ -254,7 +254,7 @@ class Security extends React.Component<SecurityProps, SecurityState> {
                   className="application-sub-panel__item-title"
                 >
                   {this.props.i18n.text.get(
-                    "plugin.profile.changePassword.dialog.newPasswordField2.label"
+                    "plugin.profile.changePassword.dialog.newPasswordField2.label",
                   )}
                 </label>
                 <div className="application-sub-panel__item-data form-element">
@@ -297,7 +297,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     profile: state.profile,
-    status: state.status
+    status: state.status,
   };
 }
 
@@ -308,7 +308,7 @@ function mapStateToProps(state: StateType) {
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     { displayNotification, loadProfileUsername },
-    dispatch
+    dispatch,
   );
 }
 

@@ -5,7 +5,6 @@ import mainFunctionDefault from "~/util/base-main-function";
 
 import titleActions from "~/actions/base/title";
 
-import { Action } from "redux";
 import { updateError } from "~/actions/base/error";
 
 (async () => {
@@ -18,7 +17,7 @@ import { updateError } from "~/actions/base/error";
   store.dispatch(
     updateError({
       title: (window as any).MUIKKU_ERROR_TITLE,
-      description: (window as any).MUIKKU_ERROR_DESCRIPTION
-    })
+      description: (window as any).MUIKKU_ERROR_DESCRIPTION,
+    }),
   );
 })();

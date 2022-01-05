@@ -1,5 +1,5 @@
 import { StateType } from "~/reducers";
-import { Dispatch, connect } from "react-redux";
+import { connect } from "react-redux";
 import * as React from "react";
 import { WorkspaceType } from "~/reducers/workspaces";
 import { i18nType } from "~/reducers/base/i18n";
@@ -20,21 +20,21 @@ class License extends React.Component<LicenseProps, LicenseState> {
       return null;
     }
 
-    let materialLicenseIcons = [];
+    const materialLicenseIcons = [];
     if (
       this.props.workspace.materialDefaultLicense &&
       this.props.workspace.materialDefaultLicense.includes(
-        "creativecommons.org"
+        "creativecommons.org",
       )
     ) {
       materialLicenseIcons.push("cc");
       if (
         this.props.workspace.materialDefaultLicense.includes(
-          "creativecommons.org/licenses/"
+          "creativecommons.org/licenses/",
         )
       ) {
-        let license = this.props.workspace.materialDefaultLicense.match(
-          "creativecommons.org/licenses/(.*)/"
+        const license = this.props.workspace.materialDefaultLicense.match(
+          "creativecommons.org/licenses/(.*)/",
         )[1];
         if (license) {
           if (license.includes("by")) {
@@ -52,7 +52,7 @@ class License extends React.Component<LicenseProps, LicenseState> {
         }
       } else if (
         this.props.workspace.materialDefaultLicense.includes(
-          "creativecommons.org/publicdomain/"
+          "creativecommons.org/publicdomain/",
         )
       ) {
         materialLicenseIcons.push("cc-zero");
@@ -93,11 +93,11 @@ class License extends React.Component<LicenseProps, LicenseState> {
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    workspace: state.workspaces.currentWorkspace
+    workspace: state.workspaces.currentWorkspace,
   };
 }
 
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps() {
   return {};
 }
 

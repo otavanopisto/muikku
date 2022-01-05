@@ -148,16 +148,14 @@ export class TagItems extends React.Component<TagItemsProps, TagItemsState> {
         }`}
       >
         {this.props.tags &&
-          this.props.tags.map((tag, index) => {
-            return (
-              <TagItem
-                key={this.props.identifier + index}
-                icon={this.props.icon}
-                tag={tag}
-                onDelete={this.props.onDelete}
-              />
-            );
-          })}
+          this.props.tags.map((tag, index) => (
+            <TagItem
+              key={this.props.identifier + index}
+              icon={this.props.icon}
+              tag={tag}
+              onDelete={this.props.onDelete}
+            />
+          ))}
       </div>
     );
   }

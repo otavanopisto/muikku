@@ -20,9 +20,9 @@ export default function websocket(
   state: WebsocketStateType = {
     connected: false,
     synchronized: true,
-    websocket: null
+    websocket: null,
   },
-  action: ActionType
+  action: ActionType,
 ): WebsocketStateType {
   if (
     action.type === "WEBSOCKET_EVENT" &&

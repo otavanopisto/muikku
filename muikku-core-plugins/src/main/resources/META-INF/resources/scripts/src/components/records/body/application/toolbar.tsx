@@ -1,9 +1,7 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
-import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
 import Link from "~/components/general/link";
 import { i18nType } from "~/reducers/base/i18n";
-import * as queryString from "query-string";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/application-panel.scss";
 import "~/sass/elements/buttons.scss";
@@ -24,18 +22,17 @@ class StudiesToolbar extends React.Component<
   StudiesToolbarProps,
   StudiesToolbarState
 > {
-  private searchTimer: number;
   constructor(props: StudiesToolbarProps) {
     super(props);
     this.onGoBackClick = this.onGoBackClick.bind(this);
   }
 
-  onGoBackClick(e: React.MouseEvent<HTMLAnchorElement>) {
+  onGoBackClick() {
     //TODO this is a retarded way to do things if we ever update to a SPA
     //it's a hacky mechanism to make history awesome, once we use a router it gotta be fixed
 
     if (history.replaceState) {
-      let canGoBack =
+      const canGoBack =
         (!document.referrer ||
           document.referrer.indexOf(window.location.host) !== -1) &&
         history.length;
@@ -71,11 +68,11 @@ class StudiesToolbar extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    records: (state as any).records
+    records: (state as any).records,
   };
 }
 
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps() {
   return {};
 }
 

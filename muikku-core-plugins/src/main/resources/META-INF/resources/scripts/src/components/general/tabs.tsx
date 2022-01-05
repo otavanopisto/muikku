@@ -44,16 +44,16 @@ export const Tabs: React.FC<TabsProps> = (props) => {
     onTabChange,
     tabs,
     children,
-    allTabs
+    allTabs,
   } = props;
 
   const a11yConfig = {
-    enabled: true
+    enabled: true,
   };
 
   const paginationConfig = {
     el: ".tabs__pagination-container",
-    modifierClass: "tabs__pagination-container--"
+    modifierClass: "tabs__pagination-container--",
   };
 
   const nextSlide = allTabs[allTabs.indexOf(activeTab) + 1];
@@ -66,21 +66,17 @@ export const Tabs: React.FC<TabsProps> = (props) => {
           modifier ? "tabs__tab-labels--" + modifier : ""
         }`}
       >
-        {tabs.map((tab: TabType) => {
-          return (
-            <div
-              className={`tabs__tab ${
-                modifier ? "tabs__tab--" + modifier : ""
-              } ${tab.type ? "tabs__tab--" + tab.type : ""} ${
-                tab.id === activeTab ? "active" : ""
-              }`}
-              key={tab.id}
-              onClick={onTabChange.bind(this, tab.id)}
-            >
-              {tab.name}
-            </div>
-          );
-        })}
+        {tabs.map((tab: TabType) => (
+          <div
+            className={`tabs__tab ${modifier ? "tabs__tab--" + modifier : ""} ${
+              tab.type ? "tabs__tab--" + tab.type : ""
+            } ${tab.id === activeTab ? "active" : ""}`}
+            key={tab.id}
+            onClick={onTabChange.bind(this, tab.id)}
+          >
+            {tab.name}
+          </div>
+        ))}
         {children}
       </div>
       <div className="tabs__tab-data-container">
@@ -129,44 +125,40 @@ export class MobileOnlyTabs extends React.Component<MobileOnlyTabsProps, {}> {
     return (
       <div className="tabs">
         <div className="tabs__tab-labels tabs__tab-labels--mobile">
-          {this.props.tabs.map((tab, index) => {
-            return (
-              <div
-                className={`tabs__tab tabs__tab--mobile-only-tab ${
-                  this.props.modifier ? "tabs__tab--" + this.props.modifier : ""
-                } ${tab.type ? "tabs__tab--" + tab.type : ""} ${
-                  tab.id === this.props.activeTab ? "active" : ""
-                }`}
-                key={tab.id}
-                onClick={this.props.onTabChange.bind(this, tab.id)}
-              >
-                {tab.name}
-              </div>
-            );
-          })}
+          {this.props.tabs.map((tab) => (
+            <div
+              className={`tabs__tab tabs__tab--mobile-only-tab ${
+                this.props.modifier ? "tabs__tab--" + this.props.modifier : ""
+              } ${tab.type ? "tabs__tab--" + tab.type : ""} ${
+                tab.id === this.props.activeTab ? "active" : ""
+              }`}
+              key={tab.id}
+              onClick={this.props.onTabChange.bind(this, tab.id)}
+            >
+              {tab.name}
+            </div>
+          ))}
         </div>
         <div className="tabs__tab-labels tabs__tab-labels--desktop">
-          {this.props.tabs.map((tab, index) => {
-            return (
-              <div
-                className={`tabs__tab tabs__tab--mobile-only-tab ${
-                  this.props.modifier ? "tabs__tab--" + this.props.modifier : ""
-                } ${tab.type ? "tabs__tab--" + tab.type : ""} ${
-                  tab.id === this.props.activeTab ? "active" : ""
-                }`}
-                key={tab.id}
-                onClick={this.props.onTabChange.bind(this, tab.id)}
-              >
-                {tab.name}
-              </div>
-            );
-          })}
+          {this.props.tabs.map((tab) => (
+            <div
+              className={`tabs__tab tabs__tab--mobile-only-tab ${
+                this.props.modifier ? "tabs__tab--" + this.props.modifier : ""
+              } ${tab.type ? "tabs__tab--" + tab.type : ""} ${
+                tab.id === this.props.activeTab ? "active" : ""
+              }`}
+              key={tab.id}
+              onClick={this.props.onTabChange.bind(this, tab.id)}
+            >
+              {tab.name}
+            </div>
+          ))}
         </div>
         <div className="tabs__tab-data-container tabs__tab-data-container--mobile-tabs">
           {this.props.tabs
             .filter(
               (t) =>
-                this.props.renderAllComponents || t.id === this.props.activeTab
+                this.props.renderAllComponents || t.id === this.props.activeTab,
             )
             .map((t) => (
               <div
@@ -191,7 +183,7 @@ export class MobileOnlyTabs extends React.Component<MobileOnlyTabsProps, {}> {
 
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n
+    i18n: state.i18n,
   };
 }
 

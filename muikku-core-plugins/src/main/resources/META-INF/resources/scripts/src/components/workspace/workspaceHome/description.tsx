@@ -1,12 +1,11 @@
 import { StateType } from "~/reducers";
-import { Dispatch, connect } from "react-redux";
+import { connect } from "react-redux";
 import * as React from "react";
 import {
   WorkspaceType,
-  WorkspaceEditModeStateType
+  WorkspaceEditModeStateType,
 } from "~/reducers/workspaces";
 import { i18nType } from "~/reducers/base/i18n";
-import { StatusType } from "~/reducers/base/status";
 
 import "~/sass/elements/panel.scss";
 import "~/sass/elements/item-list.scss";
@@ -38,7 +37,7 @@ class DescriptionPanel extends React.Component<
           <div className="panel__header-icon panel__header-icon--workspace-description icon-books"></div>
           <h2 className="panel__header-title">
             {this.props.i18n.text.get(
-              "plugin.workspace.index.descriptionTitle"
+              "plugin.workspace.index.descriptionTitle",
             )}
           </h2>
         </div>
@@ -59,20 +58,18 @@ class DescriptionPanel extends React.Component<
               canEditContent
               canSetTitle={false}
             >
-              {(props, state, stateConfiguration) => {
-                return (
-                  <div>
-                    <MaterialLoaderEditorButtonSet {...props} {...state} />
-                    <MaterialLoaderTitle {...props} {...state} />
-                    <MaterialLoaderContent
-                      {...props}
-                      {...state}
-                      stateConfiguration={stateConfiguration}
-                    />
-                    <MaterialLoaderProducersLicense {...props} {...state} />
-                  </div>
-                );
-              }}
+              {(props, state, stateConfiguration) => (
+                <div>
+                  <MaterialLoaderEditorButtonSet {...props} {...state} />
+                  <MaterialLoaderTitle {...props} {...state} />
+                  <MaterialLoaderContent
+                    {...props}
+                    {...state}
+                    stateConfiguration={stateConfiguration}
+                  />
+                  <MaterialLoaderProducersLicense {...props} {...state} />
+                </div>
+              )}
             </MaterialLoader>
           )}
         </div>
@@ -85,11 +82,11 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     workspace: state.workspaces.currentWorkspace,
-    workspaceEditMode: state.workspaces.editMode
+    workspaceEditMode: state.workspaces.editMode,
   };
 }
 
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps() {
   return {};
 }
 

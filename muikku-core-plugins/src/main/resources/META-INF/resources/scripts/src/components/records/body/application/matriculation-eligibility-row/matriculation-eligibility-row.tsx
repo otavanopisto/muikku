@@ -3,16 +3,7 @@ import { connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
 import { Dispatch, bindActionCreators } from "redux";
 import { StateType } from "~/reducers";
-import {
-  SubjectEligibilityType,
-  EligibleStatusType
-} from "~/reducers/main-function/records/yo";
-import {
-  updateMatriculationSubjectEligibility,
-  UpdateMatriculationSubjectEligibilityTriggerType
-} from "~/actions/main-function/records/yo";
-import mApi, { MApiError } from "~/lib/mApi";
-import promisify from "~/util/promisify";
+import { SubjectEligibilityType } from "~/reducers/main-function/records/yo";
 import "~/sass/elements/application-sub-panel.scss";
 
 interface MatriculationEligibilityRowProps {
@@ -32,11 +23,10 @@ class MatriculationEligibilityRow extends React.Component<
     super(props);
   }
 
-  getMatriculationSubjectNameByCode = (code: string): string => {
-    return this.props.i18n.text.get(
-      `plugin.records.hops.matriculationSubject.${code}`
+  getMatriculationSubjectNameByCode = (code: string): string =>
+    this.props.i18n.text.get(
+      `plugin.records.hops.matriculationSubject.${code}`,
     );
-  };
 
   render() {
     return (
@@ -50,10 +40,10 @@ class MatriculationEligibilityRow extends React.Component<
         >
           {this.props.subject.eligibility === "ELIGIBLE"
             ? this.props.i18n.text.get(
-                "plugin.records.hops.matriculationEligibleText.true.short"
+                "plugin.records.hops.matriculationEligibleText.true.short",
               )
             : this.props.i18n.text.get(
-                "plugin.records.hops.matriculationEligibleText.false.short"
+                "plugin.records.hops.matriculationEligibleText.false.short",
               )}
         </div>
         <div className="application-sub-panel__summary-item-label">
@@ -65,8 +55,8 @@ class MatriculationEligibilityRow extends React.Component<
             __html: this.props.i18n.text.get(
               "plugin.records.hops.matriculationEligibleTooltip",
               this.props.subject.acceptedCount,
-              this.props.subject.requiredCount
-            )
+              this.props.subject.requiredCount,
+            ),
           }}
         />
       </div>
@@ -76,7 +66,7 @@ class MatriculationEligibilityRow extends React.Component<
 
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n
+    i18n: state.i18n,
   };
 }
 
@@ -86,5 +76,5 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(MatriculationEligibilityRow);

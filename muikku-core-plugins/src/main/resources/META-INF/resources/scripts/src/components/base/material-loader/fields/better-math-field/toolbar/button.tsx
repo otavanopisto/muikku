@@ -23,7 +23,7 @@ export default class ToolbarButton extends React.Component<
     super(props);
 
     this.state = {
-      tooltipVisible: false
+      tooltipVisible: false,
     };
 
     this.toggleTooltip = this.toggleTooltip.bind(this);
@@ -35,7 +35,7 @@ export default class ToolbarButton extends React.Component<
   }
   toggleTooltip(to: boolean) {
     this.setState({
-      tooltipVisible: to
+      tooltipVisible: to,
     });
   }
   onTouchStart(e: React.TouchEvent<any>) {

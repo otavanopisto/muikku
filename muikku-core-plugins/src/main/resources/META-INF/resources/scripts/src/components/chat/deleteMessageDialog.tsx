@@ -7,7 +7,7 @@ import "~/sass/elements/buttons.scss";
 import Button from "~/components/general/button";
 import {
   displayNotification,
-  DisplayNotificationTriggerType
+  DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 import { bindActionCreators } from "redux";
 
@@ -26,7 +26,7 @@ class DeleteMessageDialog extends React.Component<
   DeleteMessageDialogProps,
   DeleteMessageDialogState
 > {
-  private unmounted: boolean = false;
+  private unmounted = false;
   constructor(props: DeleteMessageDialogProps) {
     super(props);
 
@@ -39,15 +39,15 @@ class DeleteMessageDialog extends React.Component<
       }
       this.props.displayNotification(
         this.props.i18n.text.get(
-          "plugin.chat.notification.messageDeleteSuccess"
+          "plugin.chat.notification.messageDeleteSuccess",
         ),
-        "success"
+        "success",
       );
       this.props.onDelete();
     } catch {
       this.props.displayNotification(
         this.props.i18n.text.get("plugin.chat.notification.messageDeleteFail"),
-        "error"
+        "error",
       );
     }
   }
@@ -55,41 +55,39 @@ class DeleteMessageDialog extends React.Component<
     this.unmounted = true;
   }
   render() {
-    let content = (closeDialog: () => any) => (
+    const content = (closeDialog: () => any) => (
       <div>
         <span
           dangerouslySetInnerHTML={{
             __html: this.props.i18n.text.get(
-              "plugin.chat.messages.deleteMessageDesc"
-            )
+              "plugin.chat.messages.deleteMessageDesc",
+            ),
           }}
         ></span>
       </div>
     );
-    let footer = (closeDialog: () => any) => {
-      return (
-        <div className="dialog__button-set">
-          <Button
-            buttonModifiers={["fatal", "standard-ok"]}
-            onClick={this.delete.bind(this, closeDialog)}
-          >
-            {this.props.i18n.text.get("plugin.chat.button.deleteRMessage")}
-          </Button>
-          <Button
-            buttonModifiers={["cancel", "standard-cancel"]}
-            onClick={closeDialog}
-          >
-            {this.props.i18n.text.get("plugin.chat.button.cancel")}
-          </Button>
-        </div>
-      );
-    };
+    const footer = (closeDialog: () => any) => (
+      <div className="dialog__button-set">
+        <Button
+          buttonModifiers={["fatal", "standard-ok"]}
+          onClick={this.delete.bind(this, closeDialog)}
+        >
+          {this.props.i18n.text.get("plugin.chat.button.deleteRMessage")}
+        </Button>
+        <Button
+          buttonModifiers={["cancel", "standard-cancel"]}
+          onClick={closeDialog}
+        >
+          {this.props.i18n.text.get("plugin.chat.button.cancel")}
+        </Button>
+      </div>
+    );
     return (
       <Dialog
         isOpen={this.props.isOpen}
         onClose={this.props.onClose}
         title={this.props.i18n.text.get(
-          "plugin.chat.messages.deleteMessageTitle"
+          "plugin.chat.messages.deleteMessageTitle",
         )}
         content={content}
         footer={footer}
@@ -101,7 +99,7 @@ class DeleteMessageDialog extends React.Component<
 
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n
+    i18n: state.i18n,
   };
 }
 
@@ -111,5 +109,5 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(DeleteMessageDialog);

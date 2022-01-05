@@ -10,12 +10,12 @@ import {
   saveProfileProperty,
   SaveProfilePropertyTriggerType,
   updateProfileChatSettings,
-  UpdateProfileChatSettingsTriggerType
+  UpdateProfileChatSettingsTriggerType,
 } from "~/actions/main-function/profile";
 import { bindActionCreators } from "redux";
 import {
   displayNotification,
-  DisplayNotificationTriggerType
+  DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 import Button from "~/components/general/button";
 import moment from "~/lib/moment";
@@ -73,7 +73,7 @@ class VacationSettings extends React.Component<
         props.profile.properties["communicator-auto-reply-subject"] || "",
       vacationAutoReplyMsg:
         props.profile.properties["communicator-auto-reply-msg"] || "",
-      locked: false
+      locked: false,
     };
 
     this.handleDateChange = this.handleDateChange.bind(this);
@@ -97,8 +97,8 @@ class VacationSettings extends React.Component<
     ) {
       this.setState({
         profileVacationStart: moment(
-          nextProps.profile.properties["profile-vacation-start"]
-        )
+          nextProps.profile.properties["profile-vacation-start"],
+        ),
       });
     }
 
@@ -109,8 +109,8 @@ class VacationSettings extends React.Component<
     ) {
       this.setState({
         profileVacationEnd: moment(
-          nextProps.profile.properties["profile-vacation-end"]
-        )
+          nextProps.profile.properties["profile-vacation-end"],
+        ),
       });
     }
 
@@ -121,7 +121,7 @@ class VacationSettings extends React.Component<
     ) {
       this.setState({
         vacationAutoReply:
-          nextProps.profile.properties["communicator-auto-reply"]
+          nextProps.profile.properties["communicator-auto-reply"],
       });
     }
 
@@ -132,7 +132,7 @@ class VacationSettings extends React.Component<
     ) {
       this.setState({
         vacationAutoReplySubject:
-          nextProps.profile.properties["communicator-auto-reply-subject"]
+          nextProps.profile.properties["communicator-auto-reply-subject"],
       });
     }
 
@@ -143,7 +143,7 @@ class VacationSettings extends React.Component<
     ) {
       this.setState({
         vacationAutoReplyMsg:
-          nextProps.profile.properties["communicator-auto-reply-msg"]
+          nextProps.profile.properties["communicator-auto-reply-msg"],
       });
     }
   }
@@ -154,7 +154,7 @@ class VacationSettings extends React.Component<
    * @param newDate
    */
   handleDateChange(stateLocation: string, newDate: any) {
-    let nState: any = {};
+    const nState: any = {};
     nState[stateLocation] = newDate;
     (this.setState as any)(nState);
   }
@@ -165,7 +165,7 @@ class VacationSettings extends React.Component<
    */
   onVacationAutoReplyChange(e: React.ChangeEvent<HTMLInputElement>) {
     this.setState({
-      vacationAutoReply: e.target.checked ? "ENABLED" : ""
+      vacationAutoReply: e.target.checked ? "ENABLED" : "",
     });
   }
 
@@ -175,7 +175,7 @@ class VacationSettings extends React.Component<
    */
   onVacationAutoReplySubjectChange(e: React.ChangeEvent<HTMLInputElement>) {
     this.setState({
-      vacationAutoReplySubject: e.target.value
+      vacationAutoReplySubject: e.target.value,
     });
   }
 
@@ -185,7 +185,7 @@ class VacationSettings extends React.Component<
    */
   onVacationAutoReplyMsgChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
     this.setState({
-      vacationAutoReplyMsg: e.target.value
+      vacationAutoReplyMsg: e.target.value,
     });
   }
 
@@ -194,7 +194,7 @@ class VacationSettings extends React.Component<
    */
   save() {
     this.setState({
-      locked: true
+      locked: true,
     });
 
     const executor = new SimpleActionExecutor();
@@ -210,9 +210,9 @@ class VacationSettings extends React.Component<
               ? this.state.profileVacationStart.toISOString()
               : null,
             success: executor.succeeded,
-            fail: executor.failed
+            fail: executor.failed,
           });
-        }
+        },
       )
       .addAction(
         !this.props.status.isStudent &&
@@ -225,9 +225,9 @@ class VacationSettings extends React.Component<
               ? this.state.profileVacationEnd.toISOString()
               : null,
             success: executor.succeeded,
-            fail: executor.failed
+            fail: executor.failed,
           });
-        }
+        },
       )
       .addAction(
         !this.props.status.isStudent &&
@@ -238,9 +238,9 @@ class VacationSettings extends React.Component<
             key: "communicator-auto-reply",
             value: this.state.vacationAutoReply,
             success: executor.succeeded,
-            fail: executor.failed
+            fail: executor.failed,
           });
-        }
+        },
       )
       .addAction(
         !this.props.status.isStudent &&
@@ -251,9 +251,9 @@ class VacationSettings extends React.Component<
             key: "communicator-auto-reply-subject",
             value: this.state.vacationAutoReplySubject,
             success: executor.succeeded,
-            fail: executor.failed
+            fail: executor.failed,
           });
-        }
+        },
       )
       .addAction(
         !this.props.status.isStudent &&
@@ -264,28 +264,28 @@ class VacationSettings extends React.Component<
             key: "communicator-auto-reply-msg",
             value: this.state.vacationAutoReplyMsg,
             success: executor.succeeded,
-            fail: executor.failed
+            fail: executor.failed,
           });
-        }
+        },
       )
       .onAllSucceed(() => {
         this.props.displayNotification(
           this.props.i18n.text.get("plugin.profile.properties.saved"),
-          "success"
+          "success",
         );
 
         this.setState({
-          locked: false
+          locked: false,
         });
       })
       .onOneFails(() => {
         this.props.displayNotification(
           this.props.i18n.text.get("plugin.profile.properties.failed"),
-          "error"
+          "error",
         );
 
         this.setState({
-          locked: false
+          locked: false,
         });
       });
   }
@@ -313,7 +313,7 @@ class VacationSettings extends React.Component<
                   className="application-sub-panel__item-title"
                 >
                   {this.props.i18n.text.get(
-                    "plugin.profile.awayStartDate.label"
+                    "plugin.profile.awayStartDate.label",
                   )}
                 </label>
                 <div className="application-sub-panel__item-data form-element">
@@ -322,7 +322,7 @@ class VacationSettings extends React.Component<
                     className="form-element__input"
                     onChange={this.handleDateChange.bind(
                       this,
-                      "profileVacationStart"
+                      "profileVacationStart",
                     )}
                     maxDate={this.state.profileVacationEnd || null}
                     locale={this.props.i18n.time.getLocale()}
@@ -344,7 +344,7 @@ class VacationSettings extends React.Component<
                     className="form-element__input"
                     onChange={this.handleDateChange.bind(
                       this,
-                      "profileVacationEnd"
+                      "profileVacationEnd",
                     )}
                     minDate={this.state.profileVacationStart || null}
                     locale={this.props.i18n.time.getLocale()}
@@ -379,13 +379,13 @@ class VacationSettings extends React.Component<
                       className="application-sub-panel__item-label "
                     >
                       {this.props.i18n.text.get(
-                        "plugin.profile.vacationAutoReply.label"
+                        "plugin.profile.vacationAutoReply.label",
                       )}
                     </label>
                   </div>
                   <div className="application-sub-panel__item-description">
                     {this.props.i18n.text.get(
-                      "plugin.profile.vacationAutoReply.description"
+                      "plugin.profile.vacationAutoReply.description",
                     )}
                   </div>
                 </div>
@@ -405,7 +405,7 @@ class VacationSettings extends React.Component<
                     className="application-sub-panel__item-title"
                   >
                     {this.props.i18n.text.get(
-                      "plugin.profile.vacationAutoReplySubject.label"
+                      "plugin.profile.vacationAutoReplySubject.label",
                     )}
                   </label>
                   <div className="application-sub-panel__item-data form-element">
@@ -434,7 +434,7 @@ class VacationSettings extends React.Component<
                     className="application-sub-panel__item-title"
                   >
                     {this.props.i18n.text.get(
-                      "plugin.profile.vacationAutoReplyMsg.label"
+                      "plugin.profile.vacationAutoReplyMsg.label",
                     )}
                   </label>
                   <div className="application-sub-panel__item-data form-element">
@@ -473,7 +473,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     profile: state.profile,
-    status: state.status
+    status: state.status,
   };
 }
 
@@ -484,7 +484,7 @@ function mapStateToProps(state: StateType) {
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     { saveProfileProperty, displayNotification, updateProfileChatSettings },
-    dispatch
+    dispatch,
   );
 }
 

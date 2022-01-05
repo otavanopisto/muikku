@@ -3,7 +3,7 @@ import { StateType } from "~/reducers";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import ApplicationList, {
-  ApplicationListItem
+  ApplicationListItem,
 } from "~/components/general/application-list";
 import useInfinityScroll from "~/hooks/useInfinityScroll";
 import Workspace from "./workspaces/workspace";
@@ -11,14 +11,13 @@ import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/ref-wrapper.scss";
 import {
   loadMoreOrganizationWorkspacesFromServer,
-  LoadMoreWorkspacesFromServerTriggerType
+  LoadMoreWorkspacesFromServerTriggerType,
 } from "~/actions/workspaces";
-import Button from "~/components/general/button";
 
 import {
   WorkspacesStateType,
   WorkspaceType,
-  WorkspaceListType
+  WorkspaceListType,
 } from "~/reducers/workspaces";
 
 interface OrganizationWorkspacesProps {
@@ -30,19 +29,18 @@ interface OrganizationWorkspacesProps {
 }
 
 const OrganizationWorkspaces: React.FC<OrganizationWorkspacesProps> = (
-  props
+  props,
 ) => {
   const {
-    i18n,
     workspacesState,
     workspacesHasMore,
     loadMoreOrganizationWorkspacesFromServer,
-    workspaces
+    workspaces,
   } = props;
   const loadMoreWorkspacesRef = useInfinityScroll(
     workspacesHasMore,
     workspacesState,
-    loadMoreOrganizationWorkspacesFromServer
+    loadMoreOrganizationWorkspacesFromServer,
   );
   if (workspacesState === "LOADING") {
     return null;
@@ -51,7 +49,7 @@ const OrganizationWorkspaces: React.FC<OrganizationWorkspacesProps> = (
       <div className="empty">
         <span>
           {props.i18n.text.get(
-            "plugin.organization.workspaces.error.loadError"
+            "plugin.organization.workspaces.error.loadError",
           )}
         </span>
       </div>
@@ -61,7 +59,7 @@ const OrganizationWorkspaces: React.FC<OrganizationWorkspacesProps> = (
       <div className="empty">
         <span>
           {props.i18n.text.get(
-            "plugin.organization.workspaces.searchResult.empty"
+            "plugin.organization.workspaces.searchResult.empty",
           )}
         </span>
       </div>
@@ -98,18 +96,18 @@ function mapStateToProps(state: StateType) {
     i18n: state.i18n,
     workspacesState: state.organizationWorkspaces.state,
     workspacesHasMore: state.organizationWorkspaces.hasMore,
-    workspaces: state.organizationWorkspaces.availableWorkspaces
+    workspaces: state.organizationWorkspaces.availableWorkspaces,
   };
 }
 
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     { loadMoreOrganizationWorkspacesFromServer },
-    dispatch
+    dispatch,
   );
 }
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(OrganizationWorkspaces);

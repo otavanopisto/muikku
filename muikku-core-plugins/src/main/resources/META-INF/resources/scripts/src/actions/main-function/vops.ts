@@ -9,15 +9,16 @@ export interface UpdateVopsTriggerType {
   (): AnyActionType;
 }
 
-export interface UPDATE_VOPS
-  extends SpecificActionType<"UPDATE_VOPS", VOPSDataType> {}
-export interface UPDATE_VOPS_STATUS
-  extends SpecificActionType<"UPDATE_VOPS_STATUS", VOPSStatusType> {}
+export type UPDATE_VOPS = SpecificActionType<"UPDATE_VOPS", VOPSDataType>;
+export type UPDATE_VOPS_STATUS = SpecificActionType<
+  "UPDATE_VOPS_STATUS",
+  VOPSStatusType
+>;
 
-let updateVops: UpdateVopsTriggerType = function updateVops() {
+const updateVops: UpdateVopsTriggerType = function updateVops() {
   return async (
     dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType
+    getState: () => StateType,
   ) => {
     try {
       if (getState().vops.status !== "WAIT") {
@@ -25,18 +26,18 @@ let updateVops: UpdateVopsTriggerType = function updateVops() {
       }
       dispatch({
         type: "UPDATE_VOPS_STATUS",
-        payload: <VOPSStatusType>"LOADING"
+        payload: <VOPSStatusType>"LOADING",
       });
-      let userId = getState().status.userSchoolDataIdentifier;
+      const userId = getState().status.userSchoolDataIdentifier;
       dispatch({
         type: "UPDATE_VOPS",
         payload: <VOPSDataType>(
           await promisify(mApi().records.vops.read(userId), "callback")()
-        )
+        ),
       });
       dispatch({
         type: "UPDATE_VOPS_STATUS",
-        payload: <VOPSStatusType>"READY"
+        payload: <VOPSStatusType>"READY",
       });
     } catch (err) {
       if (!(err instanceof MApiError)) {
@@ -45,14 +46,14 @@ let updateVops: UpdateVopsTriggerType = function updateVops() {
       dispatch(
         actions.displayNotification(
           getState().i18n.text.get(
-            "plugin.records.vops.errormessage.vopsLoadFailed"
+            "plugin.records.vops.errormessage.vopsLoadFailed",
           ),
-          "error"
-        )
+          "error",
+        ),
       );
       dispatch({
         type: "UPDATE_VOPS_STATUS",
-        payload: <VOPSStatusType>"ERROR"
+        payload: <VOPSStatusType>"ERROR",
       });
     }
   };

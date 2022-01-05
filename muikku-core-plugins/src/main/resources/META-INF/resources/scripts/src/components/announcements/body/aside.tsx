@@ -30,7 +30,7 @@ class AnnouncementsAside extends React.Component<
           <div className="item-list item-list--panel-announcements">
             {this.props.announcements.announcements.map(
               (announcement: AnnouncementType) => {
-                let extraWorkspaces =
+                const extraWorkspaces =
                   announcement.workspaces && announcement.workspaces.length
                     ? announcement.workspaces.length - 1
                     : 0;
@@ -76,7 +76,7 @@ class AnnouncementsAside extends React.Component<
                     </span>
                   </Link>
                 );
-              }
+              },
             )}
           </div>
         ) : (
@@ -90,7 +90,7 @@ class AnnouncementsAside extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    announcements: state.announcements
+    announcements: state.announcements,
   };
 }
 

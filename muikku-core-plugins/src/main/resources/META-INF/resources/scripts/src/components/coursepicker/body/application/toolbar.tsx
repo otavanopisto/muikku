@@ -8,7 +8,7 @@ import "~/sass/elements/wcag.scss";
 import { StateType } from "~/reducers";
 import {
   ApplicationPanelToolbar,
-  ApplicationPanelToolbarActionsMain
+  ApplicationPanelToolbarActionsMain,
 } from "~/components/general/application-panel/application-panel";
 import { WorkspacesType } from "~/reducers/workspaces";
 import { SearchFormElement } from "~/components/general/form-element";
@@ -33,7 +33,7 @@ class CoursepickerToolbar extends React.Component<
 
     this.state = {
       searchquery: this.props.workspaces.activeFilters.query || "",
-      focused: false
+      focused: false,
     };
 
     this.updateSearchWithQuery = this.updateSearchWithQuery.bind(this);
@@ -44,11 +44,11 @@ class CoursepickerToolbar extends React.Component<
 
   updateSearchWithQuery(query: string) {
     this.setState({
-      searchquery: query
+      searchquery: query,
     });
-    let locationData = queryString.parse(
+    const locationData = queryString.parse(
       document.location.hash.split("?")[1] || "",
-      { arrayFormat: "bracket" }
+      { arrayFormat: "bracket" },
     );
     locationData.q = query;
     window.location.hash =
@@ -62,7 +62,7 @@ class CoursepickerToolbar extends React.Component<
         this.state.searchquery
     ) {
       this.setState({
-        searchquery: nextProps.workspaces.activeFilters.query || ""
+        searchquery: nextProps.workspaces.activeFilters.query || "",
       });
     }
   }
@@ -86,7 +86,7 @@ class CoursepickerToolbar extends React.Component<
             onFocus={this.onInputFocus}
             onBlur={this.onInputBlur}
             placeholder={this.props.i18n.text.get(
-              "plugin.coursepicker.search.placeholder"
+              "plugin.coursepicker.search.placeholder",
             )}
             value={this.state.searchquery}
           />
@@ -99,7 +99,7 @@ class CoursepickerToolbar extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    workspaces: state.workspaces
+    workspaces: state.workspaces,
   };
 }
 
@@ -109,5 +109,5 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(CoursepickerToolbar);

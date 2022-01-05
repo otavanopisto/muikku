@@ -1,6 +1,6 @@
 import * as React from "react";
 import "~/sass/elements/matriculation.scss";
-import { ExaminationInformation, SaveState } from "../../../../@types/shared";
+import { ExaminationInformation, SaveState } from "~/@types/shared";
 import { Textarea } from "./textarea";
 import { TextField } from "./textfield";
 import { MatriculationExaminationFinishedAttendesList } from "./matriculationExaminationSelectLists/matriculation-examination-finished-attendes-list";
@@ -8,12 +8,11 @@ import { MatriculationExaminationEnrolledAttendesList } from "./matriculationExa
 import { MatriculationExaminationPlannedAttendesList } from "./matriculationExaminationSelectLists/matriculation-examination-planned-attendes-list";
 import { SavingDraftError } from "./saving-draft-error";
 import { SavingDraftInfo } from "./saving-draft-info";
-import { HOPSType } from "../../../../reducers/main-function/hops";
-import { resolveCurrentTerm } from "../../../../helper-functions/matriculation-functions";
+import { resolveCurrentTerm } from "~/helper-functions/matriculation-functions";
 import {
   getNextTermOptions,
-  getPastTermOptions
-} from "../../../../helper-functions/matriculation-functions";
+  getPastTermOptions,
+} from "~/helper-functions/matriculation-functions";
 
 interface MatriculationExaminationEnrollmentSummaryProps {
   examination: ExaminationInformation;
@@ -49,7 +48,7 @@ export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
     numMandatoryCourses,
     enrolledAttendances,
     plannedAttendances,
-    finishedAttendances
+    finishedAttendances,
   } = props.examination;
 
   const { saveState, draftSaveErrorMsg } = props;

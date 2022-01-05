@@ -21,7 +21,7 @@ export default class Synchronizer extends React.PureComponent<
     super(props);
 
     this.state = {
-      displaySyncedMessage: false
+      displaySyncedMessage: false,
     };
   }
 
@@ -32,12 +32,12 @@ export default class Synchronizer extends React.PureComponent<
   componentWillReceiveProps(nextProps: SynchronizerProps) {
     if (nextProps.synced && !this.props.synced && !nextProps.syncError) {
       this.setState({
-        displaySyncedMessage: true
+        displaySyncedMessage: true,
       });
 
       setTimeout(() => {
         this.setState({
-          displaySyncedMessage: false
+          displaySyncedMessage: false,
         });
       }, 1000);
     }
@@ -61,7 +61,7 @@ export default class Synchronizer extends React.PureComponent<
     if (this.props.syncError) {
       message = this.props.i18n.text.get(
         "plugin.workspace.materials.answerSavingFailed",
-        this.props.syncError
+        this.props.syncError,
       );
       modifier = "error";
       this.props.onFieldSavedStateChange
@@ -69,7 +69,7 @@ export default class Synchronizer extends React.PureComponent<
         : null;
     } else if (!this.props.synced) {
       message = this.props.i18n.text.get(
-        "plugin.workspace.materials.answerSavingLabel"
+        "plugin.workspace.materials.answerSavingLabel",
       );
       modifier = "saving";
       this.props.onFieldSavedStateChange
@@ -77,7 +77,7 @@ export default class Synchronizer extends React.PureComponent<
         : null;
     } else if (this.state.displaySyncedMessage) {
       message = this.props.i18n.text.get(
-        "plugin.workspace.materials.answerSavedLabel"
+        "plugin.workspace.materials.answerSavedLabel",
       );
       modifier = "saved";
       this.props.onFieldSavedStateChange

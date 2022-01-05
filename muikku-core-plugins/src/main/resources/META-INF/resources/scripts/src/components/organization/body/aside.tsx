@@ -1,7 +1,5 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
-import { bindActionCreators } from "redux";
-import Link from "~/components/general/link";
+import { connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/item-list.scss";
@@ -30,15 +28,15 @@ class OrganizationManagementAside extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    announcements: state.announcements
+    announcements: state.announcements,
   };
 }
 
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps() {
   return {};
 }
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(OrganizationManagementAside);

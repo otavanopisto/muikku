@@ -16,8 +16,8 @@ export default class UserCredentials extends React.Component<
   {}
 > {
   componentDidMount() {
-    let param = new URLSearchParams(location.search);
-    let hash: string = param.get("h");
+    const param = new URLSearchParams(location.search);
+    const hash: string = param.get("h");
     this.props.store.dispatch(loadCredentials(hash) as Action);
   }
 

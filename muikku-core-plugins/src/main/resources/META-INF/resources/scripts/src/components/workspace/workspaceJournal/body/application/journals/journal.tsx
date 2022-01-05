@@ -1,6 +1,5 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
-import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
 import Link from "~/components/general/link";
 
 import { i18nType } from "~/reducers/base/i18n";
@@ -14,9 +13,9 @@ import {
   ApplicationListItem,
   ApplicationListItemHeader,
   ApplicationListItemBody,
-  ApplicationListItemFooter
+  ApplicationListItemFooter,
 } from "~/components/general/application-list";
-import Button from "~/components/general/button";
+
 import { WorkspaceType, WorkspaceJournalType } from "~/reducers/workspaces";
 import Avatar from "~/components/general/avatar";
 import { getName } from "~/util/modifiers";
@@ -34,10 +33,10 @@ interface JournalState {}
 
 class Journal extends React.Component<JournalProps, JournalState> {
   render() {
-    let student =
+    const student =
       this.props.workspace.students &&
       this.props.workspace.students.results.find(
-        (s) => s.userEntityId === this.props.journal.userEntityId
+        (s) => s.userEntityId === this.props.journal.userEntityId,
       );
     return (
       <ApplicationListItem className="journal">
@@ -89,7 +88,7 @@ class Journal extends React.Component<JournalProps, JournalState> {
                 className="link link--application-list-item-footer"
               >
                 {this.props.i18n.text.get(
-                  "plugin.workspace.journal.editEntryButton.label"
+                  "plugin.workspace.journal.editEntryButton.label",
                 )}
               </Link>
             </EditJournal>
@@ -99,7 +98,7 @@ class Journal extends React.Component<JournalProps, JournalState> {
                 className="link link--application-list-item-footer"
               >
                 {this.props.i18n.text.get(
-                  "plugin.workspace.journal.deleteEntryButton.label"
+                  "plugin.workspace.journal.deleteEntryButton.label",
                 )}
               </Link>
             </DeleteJournal>
@@ -114,11 +113,11 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     workspace: state.workspaces.currentWorkspace,
-    status: state.status
+    status: state.status,
   };
 }
 
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps() {
   return {};
 }
 

@@ -1,16 +1,15 @@
 import { SpecificActionType } from "~/actions";
 import { ErrorType } from "~/reducers/base/error";
-export interface UPDATE_ERROR
-  extends SpecificActionType<"UPDATE_ERROR", ErrorType> {}
+export type UPDATE_ERROR = SpecificActionType<"UPDATE_ERROR", ErrorType>;
 
 export interface UpdateErrorTriggerType {
   (error: ErrorType): UPDATE_ERROR;
 }
 
-let updateError: UpdateErrorTriggerType = function updateError(error) {
+const updateError: UpdateErrorTriggerType = function updateError(error) {
   return {
     type: "UPDATE_ERROR",
-    payload: error
+    payload: error,
   };
 };
 

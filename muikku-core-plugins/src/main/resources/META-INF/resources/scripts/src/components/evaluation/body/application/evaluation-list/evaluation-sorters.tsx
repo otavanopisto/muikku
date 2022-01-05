@@ -13,7 +13,7 @@ import { SortBy, EvaluationSort } from "~/@types/evaluation";
 import { EvaluationState } from "~/reducers/main-function/evaluation/index";
 import {
   SaveEvaluationSortFunction,
-  saveEvaluationSortFunctionToServer
+  saveEvaluationSortFunctionToServer,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import Dropdown from "~/components/general/dropdown";
 import { ButtonPill } from "~/components/general/button";
@@ -66,7 +66,7 @@ class EvaluationSorters extends React.Component<
          */
         const sortFunction: EvaluationSort = {
           key: sortKey,
-          value: "no-sort"
+          value: "no-sort",
         };
 
         this.props.saveEvaluationSortFunctionToServer({ sortFunction });
@@ -76,7 +76,7 @@ class EvaluationSorters extends React.Component<
          */
         const sortFunction: EvaluationSort = {
           key: sortKey,
-          value: sortBy
+          value: sortBy,
         };
 
         this.props.saveEvaluationSortFunctionToServer({ sortFunction });
@@ -110,17 +110,17 @@ class EvaluationSorters extends React.Component<
           openByHover
           key="amount-asc"
           content={this.props.i18n.text.get(
-            "plugin.evaluation.sorter.byDate.ascending"
+            "plugin.evaluation.sorter.byDate.ascending",
           )}
         >
           <ButtonPill
             aria-label={this.props.i18n.text.get(
-              "plugin.evaluation.sorter.byDate.ascending"
+              "plugin.evaluation.sorter.byDate.ascending",
             )}
             onClick={this.handleClickSorter("sort-amount-asc")}
             buttonModifiers={[
               "sorter",
-              this.buildSorterClass("sort-amount-asc")
+              this.buildSorterClass("sort-amount-asc"),
             ]}
             icon="sort-amount-asc"
           />
@@ -130,17 +130,17 @@ class EvaluationSorters extends React.Component<
           openByHover
           key="amount-desc"
           content={this.props.i18n.text.get(
-            "plugin.evaluation.sorter.byDate.descending"
+            "plugin.evaluation.sorter.byDate.descending",
           )}
         >
           <ButtonPill
             aria-label={this.props.i18n.text.get(
-              "plugin.evaluation.sorter.byDate.descending"
+              "plugin.evaluation.sorter.byDate.descending",
             )}
             onClick={this.handleClickSorter("sort-amount-desc")}
             buttonModifiers={[
               "sorter",
-              this.buildSorterClass("sort-amount-desc")
+              this.buildSorterClass("sort-amount-desc"),
             ]}
             icon="sort-amount-desc"
           />
@@ -150,17 +150,17 @@ class EvaluationSorters extends React.Component<
           openByHover
           key="alpha-asc"
           content={this.props.i18n.text.get(
-            "plugin.evaluation.sorter.byLastname.ascending"
+            "plugin.evaluation.sorter.byLastname.ascending",
           )}
         >
           <ButtonPill
             aria-label={this.props.i18n.text.get(
-              "plugin.evaluation.sorter.byLastname.ascending"
+              "plugin.evaluation.sorter.byLastname.ascending",
             )}
             onClick={this.handleClickSorter("sort-alpha-asc")}
             buttonModifiers={[
               "sorter",
-              this.buildSorterClass("sort-alpha-asc")
+              this.buildSorterClass("sort-alpha-asc"),
             ]}
             icon="sort-alpha-asc"
           />
@@ -170,17 +170,17 @@ class EvaluationSorters extends React.Component<
           openByHover
           key="alpha-desc"
           content={this.props.i18n.text.get(
-            "plugin.evaluation.sorter.byLastname.descending"
+            "plugin.evaluation.sorter.byLastname.descending",
           )}
         >
           <ButtonPill
             aria-label={this.props.i18n.text.get(
-              "plugin.evaluation.sorter.byLastname.descending"
+              "plugin.evaluation.sorter.byLastname.descending",
             )}
             onClick={this.handleClickSorter("sort-alpha-desc")}
             buttonModifiers={[
               "sorter",
-              this.buildSorterClass("sort-alpha-desc")
+              this.buildSorterClass("sort-alpha-desc"),
             ]}
             icon="sort-alpha-desc"
           />
@@ -192,17 +192,17 @@ class EvaluationSorters extends React.Component<
               openByHover
               key="workspace-alpha-asc"
               content={this.props.i18n.text.get(
-                "plugin.evaluation.sorter.byWorkspace.ascending"
+                "plugin.evaluation.sorter.byWorkspace.ascending",
               )}
             >
               <ButtonPill
                 aria-label={this.props.i18n.text.get(
-                  "plugin.evaluation.sorter.byWorkspace.ascending"
+                  "plugin.evaluation.sorter.byWorkspace.ascending",
                 )}
                 onClick={this.handleClickSorter("sort-workspace-alpha-asc")}
                 buttonModifiers={[
                   "sorter",
-                  this.buildSorterClass("sort-workspace-alpha-asc")
+                  this.buildSorterClass("sort-workspace-alpha-asc"),
                 ]}
                 icon="sort-asc"
               />
@@ -212,17 +212,17 @@ class EvaluationSorters extends React.Component<
               openByHover
               key="workspace-alpha-desc"
               content={this.props.i18n.text.get(
-                "plugin.evaluation.sorter.byWorkspace.descending"
+                "plugin.evaluation.sorter.byWorkspace.descending",
               )}
             >
               <ButtonPill
                 aria-label={this.props.i18n.text.get(
-                  "plugin.evaluation.sorter.byWorkspace.descending"
+                  "plugin.evaluation.sorter.byWorkspace.descending",
                 )}
                 onClick={this.handleClickSorter("sort-workspace-alpha-desc")}
                 buttonModifiers={[
                   "sorter",
-                  this.buildSorterClass("sort-workspace-alpha-desc")
+                  this.buildSorterClass("sort-workspace-alpha-desc"),
                 ]}
                 icon="sort-desc"
               />
@@ -241,7 +241,7 @@ class EvaluationSorters extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    evaluations: state.evaluations
+    evaluations: state.evaluations,
   };
 }
 

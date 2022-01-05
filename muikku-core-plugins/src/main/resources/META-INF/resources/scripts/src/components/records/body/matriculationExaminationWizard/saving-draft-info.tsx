@@ -11,7 +11,7 @@ interface SavingDraftIntoProps {
  * @returns JSX.Element
  */
 export const SavingDraftInfo: React.FC<SavingDraftIntoProps> = ({
-  saveState
+  saveState,
 }) => (
   <div
     className={`matriculation__saving-draft matriculation__saving-draft--info ${

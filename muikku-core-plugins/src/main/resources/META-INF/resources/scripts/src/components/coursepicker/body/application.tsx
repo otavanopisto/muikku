@@ -35,9 +35,9 @@ class CoursepickerApplication extends React.Component<
   }
 
   onCoursepickerFilterChange(e: React.ChangeEvent<HTMLSelectElement>) {
-    let locationData = queryString.parse(
+    const locationData = queryString.parse(
       document.location.hash.split("?")[1] || "",
-      { arrayFormat: "bracket" }
+      { arrayFormat: "bracket" },
     );
     locationData.b = e.target.value;
     window.location.hash =
@@ -45,15 +45,15 @@ class CoursepickerApplication extends React.Component<
   }
 
   render() {
-    let filterTranslationString = {
+    const filterTranslationString = {
       ALL_COURSES: "plugin.coursepicker.allcourses",
       MY_COURSES: "plugin.coursepicker.owncourses",
-      UNPUBLISHED: "plugin.coursepicker.unpublished"
+      UNPUBLISHED: "plugin.coursepicker.unpublished",
     };
 
-    let title = this.props.i18n.text.get("plugin.coursepicker.pageTitle");
-    let toolbar = <Toolbar />;
-    let primaryOption = (
+    const title = this.props.i18n.text.get("plugin.coursepicker.pageTitle");
+    const toolbar = <Toolbar />;
+    const primaryOption = (
       <div className="form-element form-element--main-action">
         <label htmlFor="selectCourses" className="visually-hidden">
           {this.props.i18n.text.get("plugin.coursepicker.select.label")}
@@ -75,7 +75,7 @@ class CoursepickerApplication extends React.Component<
                     {this.props.i18n.text.get(filterTranslationString[filter])}
                   </option>
                 );
-              }
+              },
             )}
           </select>
         ) : (
@@ -110,7 +110,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     workspaces: state.workspaces,
-    status: state.status
+    status: state.status,
   };
 }
 
@@ -120,5 +120,5 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(CoursepickerApplication);

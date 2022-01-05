@@ -1,5 +1,5 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
 import { StateType } from "reducers";
 import { StatusType } from "~/reducers/base/status";
@@ -49,11 +49,11 @@ class ProfileApplication extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    status: state.status
+    status: state.status,
   };
 }
 
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps() {
   return {};
 }
 

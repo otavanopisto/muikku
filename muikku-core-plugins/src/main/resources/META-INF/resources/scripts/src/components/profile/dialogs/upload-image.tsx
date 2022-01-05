@@ -1,7 +1,6 @@
 import Dialog from "~/components/general/dialog";
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import Link from "~/components/general/link";
 import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
 import "~/sass/elements/form-elements.scss";
@@ -10,18 +9,18 @@ import "~/sass/elements/buttons.scss";
 import "~/sass/elements/image-editor.scss";
 import Button, { ButtonPill } from "~/components/general/button";
 import ImageEditor, {
-  ImageEditorRetrieverType
+  ImageEditorRetrieverType,
 } from "~/components/general/image-editor";
 import {
   displayNotification,
-  DisplayNotificationTriggerType
+  DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 import { bindActionCreators } from "redux";
-let Slider = require("react-rangeslider").default;
+const Slider = require("react-rangeslider").default;
 import "~/sass/elements/rangeslider.scss";
 import {
   uploadProfileImage,
-  UploadProfileImageTriggerType
+  UploadProfileImageTriggerType,
 } from "~/actions/main-function/profile";
 
 interface UploadImageDialogProps {
@@ -61,7 +60,7 @@ class UploadImageDialog extends React.Component<
     this.state = {
       locked: false,
       scale: 100,
-      angle: 0
+      angle: 0,
     };
   }
   upload(closeDialog: () => any) {
@@ -76,7 +75,7 @@ class UploadImageDialog extends React.Component<
       },
       fail: () => {
         this.setState({ locked: false });
-      }
+      },
     });
   }
   rotate() {
@@ -90,21 +89,21 @@ class UploadImageDialog extends React.Component<
   showLoadError() {
     this.props.displayNotification(
       this.props.i18n.text.get(
-        "plugin.profile.errormessage.profileImage.loadFailed"
+        "plugin.profile.errormessage.profileImage.loadFailed",
       ),
-      "error"
+      "error",
     );
   }
   onChangeScale(newValue: number) {
     this.setState({
-      scale: newValue
+      scale: newValue,
     });
   }
   getRetriever(retriever: ImageEditorRetrieverType) {
     this.retriever = retriever;
   }
   render() {
-    let content = (closeDialog: () => any) => (
+    const content = (closeDialog: () => any) => (
       <div>
         <ImageEditor
           className="image-editor image-editor--profile"
@@ -130,35 +129,33 @@ class UploadImageDialog extends React.Component<
         </div>
       </div>
     );
-    let footer = (closeDialog: () => any) => {
-      return (
-        <div className="dialog__button-set">
-          <Button
-            buttonModifiers={["execute", "standard-ok"]}
-            onClick={this.upload.bind(this, closeDialog)}
-            disabled={this.state.locked}
-          >
-            {this.props.i18n.text.get(
-              "plugin.profile.changeImage.dialog.saveButton.label"
-            )}
-          </Button>
-          <Button
-            buttonModifiers={["cancel", "standard-cancel"]}
-            onClick={closeDialog}
-            disabled={this.state.locked}
-          >
-            {this.props.i18n.text.get(
-              "plugin.profile.changeImage.dialog.cancelButton.label"
-            )}
-          </Button>
-        </div>
-      );
-    };
+    const footer = (closeDialog: () => any) => (
+      <div className="dialog__button-set">
+        <Button
+          buttonModifiers={["execute", "standard-ok"]}
+          onClick={this.upload.bind(this, closeDialog)}
+          disabled={this.state.locked}
+        >
+          {this.props.i18n.text.get(
+            "plugin.profile.changeImage.dialog.saveButton.label",
+          )}
+        </Button>
+        <Button
+          buttonModifiers={["cancel", "standard-cancel"]}
+          onClick={closeDialog}
+          disabled={this.state.locked}
+        >
+          {this.props.i18n.text.get(
+            "plugin.profile.changeImage.dialog.cancelButton.label",
+          )}
+        </Button>
+      </div>
+    );
     return (
       <Dialog
         isOpen={this.props.isOpen}
         title={this.props.i18n.text.get(
-          "plugin.profile.changeImage.dialog.title"
+          "plugin.profile.changeImage.dialog.title",
         )}
         content={content}
         footer={footer}
@@ -171,14 +168,14 @@ class UploadImageDialog extends React.Component<
 
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n
+    i18n: state.i18n,
   };
 }
 
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     { displayNotification, uploadProfileImage },
-    dispatch
+    dispatch,
   );
 }
 

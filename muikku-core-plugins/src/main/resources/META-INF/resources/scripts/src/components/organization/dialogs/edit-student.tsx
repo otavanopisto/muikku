@@ -5,12 +5,10 @@ import {
   FormActionsElement,
   EmailFormElement,
   InputFormElement,
-  SSNFormElement,
-  SelectFormElement
 } from "~/components/general/form-element";
 import {
   updateStudent,
-  UpdateStudentTriggerType
+  UpdateStudentTriggerType,
 } from "~/actions/main-function/users";
 import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
@@ -54,14 +52,14 @@ class OrganizationUser extends React.Component<
         firstName: this.props.data.firstName,
         lastName: this.props.data.lastName,
         email: this.props.data.email,
-        SSN: this.props.data.ssn
+        SSN: this.props.data.ssn,
       },
       locked: false,
       editUser: false,
       firstNameValid: 2,
       lastNameValid: 2,
       emailValid: 2,
-      studyProgrammeIdentifierValid: 2
+      studyProgrammeIdentifierValid: 2,
     };
     this.updateField = this.updateField.bind(this);
     this.saveUser = this.saveUser.bind(this);
@@ -69,9 +67,11 @@ class OrganizationUser extends React.Component<
 
   updateField(value: string, valid: boolean, name: string) {
     clearTimeout(this.editTimer);
-    let fieldName = name;
-    let fieldValue = valid ? value : "";
-    let newState = Object.assign(this.state.user, { [fieldName]: fieldValue });
+    const fieldName = name;
+    const fieldValue = valid ? value : "";
+    const newState = Object.assign(this.state.user, {
+      [fieldName]: fieldValue,
+    });
     this.setState({ user: newState });
   }
 
@@ -80,7 +80,7 @@ class OrganizationUser extends React.Component<
       firstNameValid: 2,
       lastNameValid: 2,
       emailValid: 2,
-      studyProgrammeIdentifierValid: 2
+      studyProgrammeIdentifierValid: 2,
     });
     closeDialog();
   }
@@ -89,7 +89,7 @@ class OrganizationUser extends React.Component<
     let valid = true;
 
     this.setState({
-      locked: true
+      locked: true,
     });
 
     if (
@@ -124,13 +124,13 @@ class OrganizationUser extends React.Component<
     // SSN for user is optional at this point, so we don't validate. Only we do is set it to "" if it's not a valid SSN
 
     if (valid) {
-      let data = {
+      const data = {
         firstName: this.state.user.firstName,
         identifier: this.props.data.id,
         lastName: this.state.user.lastName,
         email: this.state.user.email,
         ssn: this.state.user.ssn,
-        studyProgrammeIdentifier: this.state.user.studyProgrammeIdentifier
+        studyProgrammeIdentifier: this.state.user.studyProgrammeIdentifier,
       };
 
       this.props.updateStudent({
@@ -142,18 +142,18 @@ class OrganizationUser extends React.Component<
             firstNameValid: 2,
             lastNameValid: 2,
             emailValid: 2,
-            studyProgrammeIdentifierValid: 2
+            studyProgrammeIdentifierValid: 2,
           });
         },
         fail: () => {
           closeDialog();
-        }
+        },
       });
     }
   }
 
   render() {
-    let content = (closePortal: () => any) => (
+    const content = (closeDialog: () => any) => (
       <div>
         <DialogRow modifiers="new-user">
           <InputFormElement
@@ -164,7 +164,7 @@ class OrganizationUser extends React.Component<
             valid={this.state.firstNameValid}
             mandatory={true}
             label={this.props.i18n.text.get(
-              "plugin.organization.users.addUser.label.firstName"
+              "plugin.organization.users.addUser.label.firstName",
             )}
             updateField={this.updateField}
           />
@@ -176,7 +176,7 @@ class OrganizationUser extends React.Component<
             valid={this.state.lastNameValid}
             mandatory={true}
             label={this.props.i18n.text.get(
-              "plugin.organization.users.addUser.label.lastName"
+              "plugin.organization.users.addUser.label.lastName",
             )}
             updateField={this.updateField}
           />
@@ -187,7 +187,7 @@ class OrganizationUser extends React.Component<
             mandatory={true}
             updateField={this.updateField}
             label={this.props.i18n.text.get(
-              "plugin.organization.users.addUser.label.email"
+              "plugin.organization.users.addUser.label.email",
             )}
           />
         </DialogRow>
@@ -224,14 +224,14 @@ class OrganizationUser extends React.Component<
       </div>
     );
 
-    let footer = (closePortal: () => any) => (
+    const footer = (closePortal: () => any) => (
       <FormActionsElement
         locked={this.state.locked}
         executeLabel={this.props.i18n.text.get(
-          "plugin.organization.users.editUser.execute"
+          "plugin.organization.users.editUser.execute",
         )}
         cancelLabel={this.props.i18n.text.get(
-          "plugin.organization.users.addUser.cancel"
+          "plugin.organization.users.addUser.cancel",
         )}
         executeClick={this.saveUser.bind(this, closePortal)}
         cancelClick={this.cancelDialog.bind(this, closePortal)}
@@ -242,7 +242,7 @@ class OrganizationUser extends React.Component<
       <Dialog
         modifier="new-user"
         title={this.props.i18n.text.get(
-          "plugin.organization.users.editUser.title"
+          "plugin.organization.users.editUser.title",
         )}
         content={content}
         footer={footer}
@@ -257,7 +257,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     status: state.status,
-    studyprogrammes: state.studyprogrammes
+    studyprogrammes: state.studyprogrammes,
   };
 }
 

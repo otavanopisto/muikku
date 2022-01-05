@@ -1,6 +1,5 @@
 import * as React from "react";
 import Dialog from "~/components/general/dialog";
-import Link from "~/components/general/link";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { i18nType } from "~/reducers/base/i18n";
@@ -10,16 +9,12 @@ import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import {
   removeFileFromCurrentStudent,
-  RemoveFileFromCurrentStudentTriggerType
+  RemoveFileFromCurrentStudentTriggerType,
 } from "~/actions/main-function/guider";
 import { UserFileType } from "~/reducers/user-index";
 
 import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
-
-const KEYCODES = {
-  ENTER: 13
-};
 
 interface FileDeleteDialogProps {
   children: React.ReactElement<any>;
@@ -46,44 +41,40 @@ class FileDeleteDialog extends React.Component<
     closeDialog();
   }
   render() {
-    let footer = (closeDialog: () => any) => {
-      return (
-        <div className="dialog__button-set">
-          <Button
-            buttonModifiers={["fatal", "standard-ok"]}
-            onClick={this.deleteFile.bind(this, closeDialog)}
-          >
-            {this.props.i18n.text.get(
-              "plugin.guider.flags.deleteAttachmentDialog.yes"
-            )}
-          </Button>
-          <Button
-            buttonModifiers={["cancel", "standard-cancel"]}
-            onClick={closeDialog}
-          >
-            {this.props.i18n.text.get(
-              "plugin.guider.flags.deleteAttachmentDialog.no"
-            )}
-          </Button>
-        </div>
-      );
-    };
-    let content = (closeDialog: () => any) => {
-      return (
-        <div>
+    const footer = (closeDialog: () => any) => (
+      <div className="dialog__button-set">
+        <Button
+          buttonModifiers={["fatal", "standard-ok"]}
+          onClick={this.deleteFile.bind(this, closeDialog)}
+        >
           {this.props.i18n.text.get(
-            "plugin.guider.flags.deleteAttachmentDialog.description"
+            "plugin.guider.flags.deleteAttachmentDialog.yes",
           )}
-        </div>
-      );
-    };
+        </Button>
+        <Button
+          buttonModifiers={["cancel", "standard-cancel"]}
+          onClick={closeDialog}
+        >
+          {this.props.i18n.text.get(
+            "plugin.guider.flags.deleteAttachmentDialog.no",
+          )}
+        </Button>
+      </div>
+    );
+    const content = (closeDialog: () => any) => (
+      <div>
+        {this.props.i18n.text.get(
+          "plugin.guider.flags.deleteAttachmentDialog.description",
+        )}
+      </div>
+    );
     return (
       <Dialog
         isOpen={this.props.isOpen}
         onClose={this.props.onClose}
         modifier="guider-delete-file"
         title={this.props.i18n.text.get(
-          "plugin.guider.flags.deleteAttachmentDialog.title"
+          "plugin.guider.flags.deleteAttachmentDialog.title",
         )}
         content={content}
         footer={footer}
@@ -96,7 +87,7 @@ class FileDeleteDialog extends React.Component<
 
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n
+    i18n: state.i18n,
   };
 }
 

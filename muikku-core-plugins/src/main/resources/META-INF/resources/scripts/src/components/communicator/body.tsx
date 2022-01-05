@@ -23,7 +23,7 @@ export default class CommunicatorBody extends React.Component<
       .openDialogSignature();
   }
   render() {
-    let aside = <Aside openSignatureDialog={this.openSignatureDialog} />;
+    const aside = <Aside openSignatureDialog={this.openSignatureDialog} />;
     return (
       <div>
         <MainFunctionNavbar activeTrail="communicator" navigation={aside} />

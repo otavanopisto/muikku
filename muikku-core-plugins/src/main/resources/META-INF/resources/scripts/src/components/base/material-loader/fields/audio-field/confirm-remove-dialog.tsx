@@ -26,7 +26,7 @@ class ConfirmRemoveDialog extends React.Component<
   constructor(props: ConfirmRemoveDialogProps) {
     super(props);
     this.state = {
-      locked: false
+      locked: false,
     };
 
     this.cancel = this.cancel.bind(this);
@@ -40,46 +40,44 @@ class ConfirmRemoveDialog extends React.Component<
     closeDialog();
   }
   render() {
-    let content = (closeDialog: () => any) => (
+    const content = (closeDialog: () => any) => (
       <div>
         <span>
           {this.props.i18n.text.get(
-            "plugin.workspace.materials.assignmentAudioAttachment.removeDialog.description"
+            "plugin.workspace.materials.assignmentAudioAttachment.removeDialog.description",
           )}
         </span>
       </div>
     );
 
-    let footer = (closeDialog: () => any) => {
-      return (
-        <div className="dialog__button-set">
-          <Button
-            buttonModifiers={["standard-ok", "fatal"]}
-            onClick={this.confirm.bind(this, closeDialog)}
-            disabled={this.state.locked}
-          >
-            {this.props.i18n.text.get(
-              "plugin.workspace.materials.assignmentAudioAttachment.removeDialog.removeButtonLabel"
-            )}
-          </Button>
-          <Button
-            buttonModifiers={["standard-cancel", "cancel"]}
-            onClick={this.cancel.bind(this, closeDialog)}
-            disabled={this.state.locked}
-          >
-            {this.props.i18n.text.get(
-              "plugin.workspace.materials.assignmentAudioAttachment.removeDialog.cancelButtonLabel"
-            )}
-          </Button>
-        </div>
-      );
-    };
+    const footer = (closeDialog: () => any) => (
+      <div className="dialog__button-set">
+        <Button
+          buttonModifiers={["standard-ok", "fatal"]}
+          onClick={this.confirm.bind(this, closeDialog)}
+          disabled={this.state.locked}
+        >
+          {this.props.i18n.text.get(
+            "plugin.workspace.materials.assignmentAudioAttachment.removeDialog.removeButtonLabel",
+          )}
+        </Button>
+        <Button
+          buttonModifiers={["standard-cancel", "cancel"]}
+          onClick={this.cancel.bind(this, closeDialog)}
+          disabled={this.state.locked}
+        >
+          {this.props.i18n.text.get(
+            "plugin.workspace.materials.assignmentAudioAttachment.removeDialog.cancelButtonLabel",
+          )}
+        </Button>
+      </div>
+    );
 
     return (
       <Dialog
         modifier="confirm-remove-answer-dialog"
         title={this.props.i18n.text.get(
-          "plugin.workspace.materials.assignmentAudioAttachment.removeDialog.title"
+          "plugin.workspace.materials.assignmentAudioAttachment.removeDialog.title",
         )}
         content={content}
         footer={footer}
@@ -92,7 +90,7 @@ class ConfirmRemoveDialog extends React.Component<
 
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n
+    i18n: state.i18n,
   };
 }
 
@@ -102,5 +100,5 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(ConfirmRemoveDialog);

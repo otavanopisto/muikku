@@ -13,10 +13,10 @@ function toggleVisiblePageStatus(props: EditorButtonSetProps) {
     workspace: props.workspace,
     material: props.material,
     update: {
-      hidden: !props.material.hidden
+      hidden: !props.material.hidden,
     },
     isDraft: false,
-    updateLinked: true
+    updateLinked: true,
   });
 }
 
@@ -27,7 +27,7 @@ function startupEditor(props: EditorButtonSetProps) {
   ) {
     props.requestWorkspaceMaterialContentNodeAttachments(
       props.workspace,
-      props.material
+      props.material,
     );
   }
   props.setWorkspaceMaterialEditorState(
@@ -79,25 +79,25 @@ function startupEditor(props: EditorButtonSetProps) {
       showRemoveAnswersDialogForPublish: false,
       showRemoveAnswersDialogForDelete: false,
       showUpdateLinkedMaterialsDialogForPublish: false,
-      showUpdateLinkedMaterialsDialogForPublishCount: 0
+      showUpdateLinkedMaterialsDialogForPublishCount: 0,
     },
-    true
+    true,
   );
 }
 
 function copyPage(props: EditorButtonSetProps) {
   localStorage.setItem(
     "workspace-material-copied-id",
-    props.material.workspaceMaterialId.toString(10)
+    props.material.workspaceMaterialId.toString(10),
   );
   localStorage.setItem("workspace-copied-id", props.workspace.id.toString(10));
 
   props.displayNotification(
     props.i18n.text.get(
       "plugin.workspace.materialsManagement.materialCopiedToClipboardMessage",
-      props.material.title
+      props.material.title,
     ),
-    "success"
+    "success",
   );
 }
 
@@ -126,7 +126,7 @@ export function MaterialLoaderEditorButtonSet(props: EditorButtonSetProps) {
         openByHover
         modifier="material-management-tooltip"
         content={props.i18n.text.get(
-          "plugin.workspace.materialsManagement.editPageTooltip"
+          "plugin.workspace.materialsManagement.editPageTooltip",
         )}
       >
         <ButtonPill
@@ -140,7 +140,7 @@ export function MaterialLoaderEditorButtonSet(props: EditorButtonSetProps) {
           openByHover
           modifier="material-management-tooltip"
           content={props.i18n.text.get(
-            "plugin.workspace.materialsManagement.copyPageTooltip"
+            "plugin.workspace.materialsManagement.copyPageTooltip",
           )}
         >
           <ButtonPill
@@ -157,10 +157,10 @@ export function MaterialLoaderEditorButtonSet(props: EditorButtonSetProps) {
           content={
             props.material.hidden
               ? props.i18n.text.get(
-                  "plugin.workspace.materialsManagement.showPageTooltip"
+                  "plugin.workspace.materialsManagement.showPageTooltip",
                 )
               : props.i18n.text.get(
-                  "plugin.workspace.materialsManagement.hidePageTooltip"
+                  "plugin.workspace.materialsManagement.hidePageTooltip",
                 )
           }
         >

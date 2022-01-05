@@ -7,7 +7,7 @@ import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
-import { i18nType } from "../../../../reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18n";
 
 /**
  * DeleteDialogProps
@@ -56,44 +56,40 @@ class DeleteDialog extends React.Component<
    * @returns JSX.Element
    */
   render() {
-    const footer = (closeDialog: () => any) => {
-      return (
-        <div className="dialog__button-set">
-          <Button
-            buttonModifiers={["fatal", "standard-ok"]}
-            onClick={this.handleDeleteAudioFieldClick.bind(this, closeDialog)}
-          >
-            {this.props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.audioAssessments.removeDialog.removeButton"
-            )}
-          </Button>
-          <Button
-            buttonModifiers={["cancel", "standard-cancel"]}
-            onClick={closeDialog}
-          >
-            {this.props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.audioAssessments.removeDialog.cancelButton"
-            )}
-          </Button>
-        </div>
-      );
-    };
-    const content = (closeDialog: () => any) => {
-      return (
-        <div>
+    const footer = (closeDialog: () => any) => (
+      <div className="dialog__button-set">
+        <Button
+          buttonModifiers={["fatal", "standard-ok"]}
+          onClick={this.handleDeleteAudioFieldClick.bind(this, closeDialog)}
+        >
           {this.props.i18n.text.get(
-            "plugin.evaluation.evaluationModal.audioAssessments.removeDialog.description"
+            "plugin.evaluation.evaluationModal.audioAssessments.removeDialog.removeButton",
           )}
-        </div>
-      );
-    };
+        </Button>
+        <Button
+          buttonModifiers={["cancel", "standard-cancel"]}
+          onClick={closeDialog}
+        >
+          {this.props.i18n.text.get(
+            "plugin.evaluation.evaluationModal.audioAssessments.removeDialog.cancelButton",
+          )}
+        </Button>
+      </div>
+    );
+    const content = (closeDialog: () => any) => (
+      <div>
+        {this.props.i18n.text.get(
+          "plugin.evaluation.evaluationModal.audioAssessments.removeDialog.description",
+        )}
+      </div>
+    );
     return (
       <Dialog
         isOpen={this.props.isOpen}
         onClose={this.props.onClose}
         modifier="evaluation-remove-assessment"
         title={this.props.i18n.text.get(
-          "plugin.evaluation.evaluationModal.audioAssessments.removeDialog.title"
+          "plugin.evaluation.evaluationModal.audioAssessments.removeDialog.title",
         )}
         content={content}
         footer={footer}
@@ -112,7 +108,7 @@ class DeleteDialog extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n
+    i18n: state.i18n,
   };
 }
 

@@ -8,58 +8,57 @@ import {
   AnnouncementListType,
   AnnouncementType,
   AnnouncementUpdateType,
-  AnnouncementsType
+  AnnouncementsType,
 } from "~/reducers/announcements";
 import { loadAnnouncementsHelper } from "./helpers";
-import { AnnouncerNavigationItemListType } from "~/reducers/announcements";
 import moment from "~/lib/moment";
 import { StateType } from "~/reducers";
 import { loadUserGroupIndex } from "~/actions/user-index";
 
-export interface UPDATE_ANNOUNCEMENTS_STATE
-  extends SpecificActionType<
-    "UPDATE_ANNOUNCEMENTS_STATE",
-    AnnouncementsStateType
-  > {}
-export interface UPDATE_ANNOUNCEMENTS_ALL_PROPERTIES
-  extends SpecificActionType<
-    "UPDATE_ANNOUNCEMENTS_ALL_PROPERTIES",
-    AnnouncementsPatchType
-  > {}
-export interface UPDATE_SELECTED_ANNOUNCEMENTS
-  extends SpecificActionType<
-    "UPDATE_SELECTED_ANNOUNCEMENTS",
-    AnnouncementListType
-  > {}
-export interface ADD_TO_ANNOUNCEMENTS_SELECTED
-  extends SpecificActionType<
-    "ADD_TO_ANNOUNCEMENTS_SELECTED",
-    AnnouncementType
-  > {}
-export interface REMOVE_FROM_ANNOUNCEMENTS_SELECTED
-  extends SpecificActionType<
-    "REMOVE_FROM_ANNOUNCEMENTS_SELECTED",
-    AnnouncementType
-  > {}
-export interface SET_CURRENT_ANNOUNCEMENT
-  extends SpecificActionType<"SET_CURRENT_ANNOUNCEMENT", AnnouncementType> {}
-export interface UPDATE_ONE_ANNOUNCEMENT
-  extends SpecificActionType<
-    "UPDATE_ONE_ANNOUNCEMENT",
-    {
-      update: AnnouncementUpdateType;
-      announcement: AnnouncementType;
-    }
-  > {}
-export interface DELETE_ANNOUNCEMENT
-  extends SpecificActionType<"DELETE_ANNOUNCEMENT", AnnouncementType> {}
-export interface UPDATE_ANNOUNCEMENTS
-  extends SpecificActionType<"UPDATE_ANNOUNCEMENTS", AnnouncementListType> {}
+export type UPDATE_ANNOUNCEMENTS_STATE = SpecificActionType<
+  "UPDATE_ANNOUNCEMENTS_STATE",
+  AnnouncementsStateType
+>;
+export type UPDATE_ANNOUNCEMENTS_ALL_PROPERTIES = SpecificActionType<
+  "UPDATE_ANNOUNCEMENTS_ALL_PROPERTIES",
+  AnnouncementsPatchType
+>;
+export type UPDATE_SELECTED_ANNOUNCEMENTS = SpecificActionType<
+  "UPDATE_SELECTED_ANNOUNCEMENTS",
+  AnnouncementListType
+>;
+export type ADD_TO_ANNOUNCEMENTS_SELECTED = SpecificActionType<
+  "ADD_TO_ANNOUNCEMENTS_SELECTED",
+  AnnouncementType
+>;
+export type REMOVE_FROM_ANNOUNCEMENTS_SELECTED = SpecificActionType<
+  "REMOVE_FROM_ANNOUNCEMENTS_SELECTED",
+  AnnouncementType
+>;
+export type SET_CURRENT_ANNOUNCEMENT = SpecificActionType<
+  "SET_CURRENT_ANNOUNCEMENT",
+  AnnouncementType
+>;
+export type UPDATE_ONE_ANNOUNCEMENT = SpecificActionType<
+  "UPDATE_ONE_ANNOUNCEMENT",
+  {
+    update: AnnouncementUpdateType;
+    announcement: AnnouncementType;
+  }
+>;
+export type DELETE_ANNOUNCEMENT = SpecificActionType<
+  "DELETE_ANNOUNCEMENT",
+  AnnouncementType
+>;
+export type UPDATE_ANNOUNCEMENTS = SpecificActionType<
+  "UPDATE_ANNOUNCEMENTS",
+  AnnouncementListType
+>;
 
 export interface LoadAnnouncementsAsAClientTriggerType {
   (
     options?: any,
-    callback?: (announcements: AnnouncementListType) => any
+    callback?: (announcements: AnnouncementListType) => any,
   ): AnyActionType;
 }
 
@@ -69,7 +68,7 @@ export interface LoadAnnouncementsTriggerType {
     location: string,
     workspaceId?: number,
     notOverrideCurrent?: boolean,
-    force?: boolean
+    force?: boolean,
   ): AnyActionType;
 }
 
@@ -77,7 +76,7 @@ export interface LoadAnnouncementTriggerType {
   (
     location: string,
     announcementId: number,
-    workspaceId?: number
+    workspaceId?: number,
   ): AnyActionType;
 }
 
@@ -132,46 +131,46 @@ export interface CreateAnnouncementTriggerType {
 function validateAnnouncement(
   dispatch: (arg: AnyActionType) => any,
   getState: () => StateType,
-  announcement: AnnouncementGeneratorType
+  announcement: AnnouncementGeneratorType,
 ) {
   if (!announcement.caption) {
     dispatch(
       notificationActions.displayNotification(
         getState().i18n.text.get(
-          "plugin.announcer.errormessage.createAnnouncement.missing.caption"
+          "plugin.announcer.errormessage.createAnnouncement.missing.caption",
         ),
-        "error"
-      )
+        "error",
+      ),
     );
     return false;
   } else if (!announcement.content) {
     dispatch(
       notificationActions.displayNotification(
         getState().i18n.text.get(
-          "plugin.announcer.errormessage.createAnnouncement.missing.content"
+          "plugin.announcer.errormessage.createAnnouncement.missing.content",
         ),
-        "error"
-      )
+        "error",
+      ),
     );
     return false;
   } else if (!announcement.endDate) {
     dispatch(
       notificationActions.displayNotification(
         getState().i18n.text.get(
-          "plugin.announcer.errormessage.createAnnouncement.missing.endDate"
+          "plugin.announcer.errormessage.createAnnouncement.missing.endDate",
         ),
-        "error"
-      )
+        "error",
+      ),
     );
     return false;
   } else if (!announcement.startDate) {
     dispatch(
       notificationActions.displayNotification(
         getState().i18n.text.get(
-          "plugin.announcer.errormessage.createAnnouncement.missing.startDate"
+          "plugin.announcer.errormessage.createAnnouncement.missing.startDate",
         ),
-        "error"
-      )
+        "error",
+      ),
     );
     return false;
   }
@@ -179,41 +178,41 @@ function validateAnnouncement(
   return true;
 }
 
-let loadAnnouncements: LoadAnnouncementsTriggerType =
+const loadAnnouncements: LoadAnnouncementsTriggerType =
   function loadAnnouncements(location, workspaceId, notOverrideCurrent, force) {
     return loadAnnouncementsHelper.bind(
       this,
       location,
       workspaceId,
       notOverrideCurrent,
-      force
+      force,
     );
   };
 
-let loadAnnouncement: LoadAnnouncementTriggerType = function loadAnnouncement(
+const loadAnnouncement: LoadAnnouncementTriggerType = function loadAnnouncement(
   location,
   announcementId,
-  workspaceId
+  workspaceId,
 ) {
   return async (
     dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType
+    getState: () => StateType,
   ) => {
-    let state = getState();
+    const state = getState();
 
     let announcement: AnnouncementType = state.announcements.announcements.find(
-      (a: AnnouncementType) => a.id === announcementId
+      (a: AnnouncementType) => a.id === announcementId,
     );
     try {
       if (!announcement) {
         announcement = <AnnouncementType>(
           await promisify(
             mApi().announcer.announcements.read(announcementId),
-            "callback"
+            "callback",
           )()
         );
         announcement.userGroupEntityIds.forEach((id) =>
-          dispatch(loadUserGroupIndex(id))
+          dispatch(loadUserGroupIndex(id)),
         );
         //TODO we should be able to get the information of wheter there is an announcement later or not, trace all this
         //and remove the unnecessary code
@@ -224,7 +223,7 @@ let loadAnnouncement: LoadAnnouncementTriggerType = function loadAnnouncement(
         // load the user group entities if not loaded for that announcement
         // this doe not reload if it's found
         announcement.userGroupEntityIds.forEach((id) =>
-          dispatch(loadUserGroupIndex(id))
+          dispatch(loadUserGroupIndex(id)),
         );
       }
 
@@ -232,8 +231,8 @@ let loadAnnouncement: LoadAnnouncementTriggerType = function loadAnnouncement(
         type: "UPDATE_ANNOUNCEMENTS_ALL_PROPERTIES",
         payload: {
           location,
-          current: announcement
-        }
+          current: announcement,
+        },
       });
     } catch (err) {
       if (!(err instanceof MApiError)) {
@@ -242,64 +241,64 @@ let loadAnnouncement: LoadAnnouncementTriggerType = function loadAnnouncement(
       dispatch(
         notificationActions.displayNotification(
           getState().i18n.text.get(
-            "plugin.announcer.errormessage.loadAnnouncement"
+            "plugin.announcer.errormessage.loadAnnouncement",
           ),
-          "error"
-        )
+          "error",
+        ),
       );
     }
   };
 };
 
-let addToAnnouncementsSelected: AddToAnnouncementsSelectedTriggerType =
+const addToAnnouncementsSelected: AddToAnnouncementsSelectedTriggerType =
   function addToAnnouncementsSelected(announcement) {
     return {
       type: "ADD_TO_ANNOUNCEMENTS_SELECTED",
-      payload: announcement
+      payload: announcement,
     };
   };
 
-let removeFromAnnouncementsSelected: RemoveFromAnnouncementsSelectedTriggerType =
+const removeFromAnnouncementsSelected: RemoveFromAnnouncementsSelectedTriggerType =
   function removeFromAnnouncementsSelected(announcement) {
     return {
       type: "REMOVE_FROM_ANNOUNCEMENTS_SELECTED",
-      payload: announcement
+      payload: announcement,
     };
   };
 
-let updateAnnouncement: UpdateAnnouncementTriggerType =
+const updateAnnouncement: UpdateAnnouncementTriggerType =
   function updateAnnouncement(data) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType
+      getState: () => StateType,
     ) => {
-      let state = getState();
-      let announcements: AnnouncementsType = state.announcements;
+      const state = getState();
+      const announcements: AnnouncementsType = state.announcements;
 
       if (!validateAnnouncement(dispatch, getState, data.announcement)) {
         return data.fail && data.fail();
       }
 
       try {
-        let nAnnouncement: AnnouncementType = Object.assign(
+        const nAnnouncement: AnnouncementType = Object.assign(
           {},
           data.announcement,
-          data.update
+          data.update,
         );
         await promisify(
           mApi().announcer.announcements.update(
             data.announcement.id,
-            nAnnouncement
+            nAnnouncement,
           ),
-          "callback"
+          "callback",
         )();
 
-        let diff = moment(nAnnouncement.endDate).diff(moment(), "days");
+        const diff = moment(nAnnouncement.endDate).diff(moment(), "days");
         if (announcements.location !== "active" && diff >= 0) {
           if (data.cancelRedirect) {
             dispatch({
               type: "DELETE_ANNOUNCEMENT",
-              payload: data.announcement
+              payload: data.announcement,
             });
             return;
           }
@@ -308,7 +307,7 @@ let updateAnnouncement: UpdateAnnouncementTriggerType =
           if (data.cancelRedirect) {
             dispatch({
               type: "DELETE_ANNOUNCEMENT",
-              payload: data.announcement
+              payload: data.announcement,
             });
             return;
           }
@@ -320,11 +319,11 @@ let updateAnnouncement: UpdateAnnouncementTriggerType =
               update: <AnnouncementUpdateType>(
                 await promisify(
                   mApi().announcer.announcements.read(data.announcement.id),
-                  "callback"
+                  "callback",
                 )()
               ),
-              announcement: data.announcement
-            }
+              announcement: data.announcement,
+            },
           });
         }
         data.success && data.success();
@@ -335,33 +334,32 @@ let updateAnnouncement: UpdateAnnouncementTriggerType =
         dispatch(
           notificationActions.displayNotification(
             getState().i18n.text.get(
-              "plugin.announcer.errormessage.updateAnnouncement"
+              "plugin.announcer.errormessage.updateAnnouncement",
             ),
-            "error"
-          )
+            "error",
+          ),
         );
         data.fail && data.fail();
       }
     };
   };
 
-let deleteAnnouncement: DeleteAnnouncementTriggerType =
+const deleteAnnouncement: DeleteAnnouncementTriggerType =
   function deleteAnnouncement(data) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType
+      getState: () => StateType,
     ) => {
-      let state = getState();
-      let announcements: AnnouncementsType = state.announcements;
+      const state = getState();
 
       try {
         await promisify(
           mApi().announcer.announcements.del(data.announcement.id),
-          "callback"
+          "callback",
         )();
         dispatch({
           type: "DELETE_ANNOUNCEMENT",
-          payload: data.announcement
+          payload: data.announcement,
         });
         data.success();
       } catch (err) {
@@ -373,25 +371,25 @@ let deleteAnnouncement: DeleteAnnouncementTriggerType =
     };
   };
 
-let deleteSelectedAnnouncements: DeleteSelectedAnnouncementsTriggerType =
+const deleteSelectedAnnouncements: DeleteSelectedAnnouncementsTriggerType =
   function deleteSelectedAnnouncements() {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType
+      getState: () => StateType,
     ) => {
-      let state = getState();
-      let announcements: AnnouncementsType = state.announcements;
+      const state = getState();
+      const announcements: AnnouncementsType = state.announcements;
 
       await Promise.all(
         announcements.selected.map(async (announcement) => {
           try {
             await promisify(
               mApi().announcer.announcements.del(announcement.id),
-              "callback"
+              "callback",
             )();
             dispatch({
               type: "DELETE_ANNOUNCEMENT",
-              payload: announcement
+              payload: announcement,
             });
           } catch (err) {
             if (!(err instanceof MApiError)) {
@@ -400,25 +398,25 @@ let deleteSelectedAnnouncements: DeleteSelectedAnnouncementsTriggerType =
             dispatch(
               notificationActions.displayNotification(
                 getState().i18n.text.get(
-                  "plugin.announcer.errormessage.deleteAnnouncement"
+                  "plugin.announcer.errormessage.deleteAnnouncement",
                 ),
-                "error"
-              )
+                "error",
+              ),
             );
           }
-        })
+        }),
       );
     };
   };
 
-let createAnnouncement: CreateAnnouncementTriggerType =
+const createAnnouncement: CreateAnnouncementTriggerType =
   function createAnnouncement(data) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType
+      getState: () => StateType,
     ) => {
-      let state = getState();
-      let announcements: AnnouncementsType = state.announcements;
+      const state = getState();
+      const announcements: AnnouncementsType = state.announcements;
 
       if (!validateAnnouncement(dispatch, getState, data.announcement)) {
         return data.fail && data.fail();
@@ -427,10 +425,10 @@ let createAnnouncement: CreateAnnouncementTriggerType =
       try {
         await promisify(
           mApi().announcer.announcements.create(data.announcement),
-          "callback"
+          "callback",
         )();
 
-        let diff = moment(data.announcement.endDate).diff(moment(), "days");
+        const diff = moment(data.announcement.endDate).diff(moment(), "days");
         if (announcements.location !== "active" && diff >= 0) {
           location.hash = "#active";
         } else if (announcements.location !== "past" && diff < 0) {
@@ -443,8 +441,8 @@ let createAnnouncement: CreateAnnouncementTriggerType =
               announcements.location,
               announcements.workspaceId,
               true,
-              true
-            )
+              true,
+            ),
           );
         }
         data.success();
@@ -455,60 +453,60 @@ let createAnnouncement: CreateAnnouncementTriggerType =
         dispatch(
           notificationActions.displayNotification(
             getState().i18n.text.get(
-              "plugin.announcer.errormessage.createAnnouncement"
+              "plugin.announcer.errormessage.createAnnouncement",
             ),
-            "error"
-          )
+            "error",
+          ),
         );
         data.fail();
       }
     };
   };
 
-let loadAnnouncementsAsAClient: LoadAnnouncementsAsAClientTriggerType =
+const loadAnnouncementsAsAClient: LoadAnnouncementsAsAClientTriggerType =
   function loadAnnouncementsFromServer(
     options = { hideWorkspaceAnnouncements: "false", loadUserGroups: true },
-    callback
+    callback,
   ) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType
+      getState: () => StateType,
     ) => {
       try {
         dispatch({
           type: "UPDATE_ANNOUNCEMENTS_STATE",
-          payload: <AnnouncementsStateType>"LOADING"
+          payload: <AnnouncementsStateType>"LOADING",
         });
 
         const loadUserGroups = options.loadUserGroups;
         delete options.loadUserGroups;
 
-        let announcements: AnnouncementListType = <AnnouncementListType>(
+        const announcements: AnnouncementListType = <AnnouncementListType>(
           await promisify(
             mApi().announcer.announcements.read(options),
-            "callback"
+            "callback",
           )()
         );
         if (loadUserGroups) {
           announcements.forEach((a) =>
             a.userGroupEntityIds.forEach((id) =>
-              dispatch(loadUserGroupIndex(id))
-            )
+              dispatch(loadUserGroupIndex(id)),
+            ),
           );
         }
 
-        let payload: AnnouncementsPatchType = {
+        const payload: AnnouncementsPatchType = {
           state: "READY",
           announcements,
           location: null,
           selected: [],
-          selectedIds: []
+          selectedIds: [],
         };
 
         //And there it goes
         dispatch({
           type: "UPDATE_ANNOUNCEMENTS_ALL_PROPERTIES",
-          payload
+          payload,
         });
 
         callback && callback(announcements);
@@ -519,10 +517,10 @@ let loadAnnouncementsAsAClient: LoadAnnouncementsAsAClientTriggerType =
         dispatch(
           notificationActions.displayNotification(
             getState().i18n.text.get(
-              "plugin.announcer.errormessage.loadAnnouncements"
+              "plugin.announcer.errormessage.loadAnnouncements",
             ),
-            "error"
-          )
+            "error",
+          ),
         );
       }
     };
@@ -537,7 +535,7 @@ export {
   deleteSelectedAnnouncements,
   deleteAnnouncement,
   createAnnouncement,
-  loadAnnouncementsAsAClient
+  loadAnnouncementsAsAClient,
 };
 export default {
   loadAnnouncements,
@@ -548,5 +546,5 @@ export default {
   deleteSelectedAnnouncements,
   deleteAnnouncement,
   createAnnouncement,
-  loadAnnouncementsAsAClient
+  loadAnnouncementsAsAClient,
 };

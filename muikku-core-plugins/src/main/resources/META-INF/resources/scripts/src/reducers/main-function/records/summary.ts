@@ -43,17 +43,17 @@ export interface GraphDataType {
 export default function summary(
   state: SummaryType = {
     status: "WAIT",
-    data: null
+    data: null,
   },
-  action: ActionType
+  action: ActionType,
 ): SummaryType {
   if (action.type === "UPDATE_STUDIES_SUMMARY_STATUS") {
     return Object.assign({}, state, {
-      status: action.payload
+      status: action.payload,
     });
   } else if (action.type === "UPDATE_STUDIES_SUMMARY") {
     return Object.assign({}, state, {
-      data: action.payload
+      data: action.payload,
     });
   }
   return state;

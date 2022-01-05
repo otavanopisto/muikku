@@ -111,22 +111,22 @@ export default function users(
   state: UsersType = {
     students: {
       results: [],
-      totalHitCount: null
+      totalHitCount: null,
     },
     staff: {
       results: [],
-      totalHitCount: null
-    }
+      totalHitCount: null,
+    },
   },
-  action: ActionType
+  action: ActionType,
 ): UsersType {
   if (action.type === "UPDATE_STUDENT_USERS") {
     return Object.assign({}, state, {
-      students: action.payload
+      students: action.payload,
     });
   } else if (action.type === "UPDATE_STAFF_USERS") {
     return Object.assign({}, state, {
-      staff: action.payload
+      staff: action.payload,
     });
   }
   return state;
@@ -139,33 +139,33 @@ export function userGroups(
     state: "LOADING",
     hasMore: false,
     searchString: "",
-    currentPayload: null
+    currentPayload: null,
   },
-  action: ActionType
+  action: ActionType,
 ): UserGroupsType {
   if (action.type === "UPDATE_USER_GROUPS") {
     return Object.assign({}, state, {
-      list: action.payload
+      list: action.payload,
     });
   } else if (action.type === "LOAD_MORE_USER_GROUPS") {
     return Object.assign({}, state, {
-      list: state.list.concat(action.payload)
+      list: state.list.concat(action.payload),
     });
   } else if (action.type === "UPDATE_CURRENT_USER_GROUP") {
     return Object.assign({}, state, {
-      currentUserGroup: action.payload
+      currentUserGroup: action.payload,
     });
   } else if (action.type === "UPDATE_USER_GROUPS_STATE") {
     return Object.assign({}, state, {
-      state: action.payload
+      state: action.payload,
     });
   } else if (action.type === "UPDATE_HAS_MORE_USERGROUPS") {
     return Object.assign({}, state, {
-      hasMore: action.payload
+      hasMore: action.payload,
     });
   } else if (action.type === "SET_CURRENT_PAYLOAD") {
     return Object.assign({}, state, {
-      currentPayload: action.payload
+      currentPayload: action.payload,
     });
   }
   return state;
@@ -175,21 +175,21 @@ export function userSelect(
   state: UsersSelectType = {
     students: [],
     staff: [],
-    userGroups: []
+    userGroups: [],
   },
-  action: ActionType
+  action: ActionType,
 ): UsersSelectType {
   if (action.type === "UPDATE_STUDENT_SELECTOR") {
     return Object.assign({}, state, {
-      students: action.payload
+      students: action.payload,
     });
   } else if (action.type === "UPDATE_STAFF_SELECTOR") {
     return Object.assign({}, state, {
-      staff: action.payload
+      staff: action.payload,
     });
   } else if (action.type === "UPDATE_GROUP_SELECTOR") {
     return Object.assign({}, state, {
-      userGroups: action.payload
+      userGroups: action.payload,
     });
   } else if (action.type === "CLEAR_USER_SELECTOR") {
     return Object.assign({}, state, action.payload);
@@ -205,18 +205,18 @@ export function userSelect(
 export function studyprogrammes(
   state: StudyprogrammeTypes = {
     list: [],
-    status: "WAIT"
+    status: "WAIT",
   },
-  action: ActionType
+  action: ActionType,
 ): StudyprogrammeTypes {
   if (action.type === "UPDATE_STUDYPROGRAMME_TYPES") {
     return Object.assign({}, state, {
-      list: action.payload
+      list: action.payload,
     });
   }
   if (action.type === "UPDATE_STUDYPROGRAMME_STATUS_TYPE") {
     return Object.assign({}, state, {
-      status: action.payload
+      status: action.payload,
     });
   }
   return state;

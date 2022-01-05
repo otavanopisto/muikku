@@ -10,7 +10,7 @@ import {
   createWorkspaceMaterialAttachment,
   CreateWorkspaceMaterialAttachmentTriggerType,
   RequestWorkspaceMaterialContentNodeAttachmentsTriggerType,
-  requestWorkspaceMaterialContentNodeAttachments
+  requestWorkspaceMaterialContentNodeAttachments,
 } from "~/actions/workspaces";
 import { connect, Dispatch } from "react-redux";
 import { StateType } from "~/reducers";
@@ -18,7 +18,7 @@ import i18n, { i18nType } from "~/reducers/base/i18n";
 import {
   WorkspaceMaterialEditorType,
   WorkspaceType,
-  MaterialContentNodeType
+  MaterialContentNodeType,
 } from "~/reducers/workspaces";
 import Button, { ButtonPill } from "~/components/general/button";
 import CKEditor from "~/components/general/ckeditor";
@@ -63,7 +63,7 @@ const CKEditorConfig = (
   contextPath: string,
   workspace: WorkspaceType,
   materialNode: MaterialContentNodeType,
-  disablePlugins: boolean
+  disablePlugins: boolean,
 ) => ({
   uploadUrl: `/materialAttachmentUploadServlet/workspace/${workspace.urlName}/materials/${materialNode.path}`,
   linkShowTargetTab: true,
@@ -83,7 +83,7 @@ const CKEditorConfig = (
     "fr:Ranska",
     "it:Italia",
     "la:Latina",
-    "el:Kreikka"
+    "el:Kreikka",
   ],
   stylesSet:
     "workspace-material-styles:" +
@@ -106,8 +106,8 @@ const CKEditorConfig = (
         "PasteFromWord",
         "-",
         "Undo",
-        "Redo"
-      ]
+        "Redo",
+      ],
     },
     {
       name: "editing",
@@ -121,8 +121,8 @@ const CKEditorConfig = (
         "-",
         "Language",
         "-",
-        "A11ychecker"
-      ]
+        "A11ychecker",
+      ],
     },
     {
       name: "basicstyles",
@@ -134,8 +134,8 @@ const CKEditorConfig = (
         "Subscript",
         "Superscript",
         "-",
-        "RemoveFormat"
-      ]
+        "RemoveFormat",
+      ],
     },
     "/",
     { name: "styles", items: ["Styles", "Format"] },
@@ -150,8 +150,8 @@ const CKEditorConfig = (
         "Iframe",
         "Smiley",
         "SpecialChar",
-        "CreateDiv"
-      ]
+        "CreateDiv",
+      ],
     },
     { name: "links", items: ["Link", "Unlink", "Anchor"] },
     { name: "colors", items: ["TextColor", "BGColor"] },
@@ -167,8 +167,8 @@ const CKEditorConfig = (
         "muikku-connectfield",
         "muikku-organizerfield",
         "muikku-sorterfield",
-        "muikku-mathexercisefield"
-      ]
+        "muikku-mathexercisefield",
+      ],
     },
     {
       name: "paragraph",
@@ -185,16 +185,16 @@ const CKEditorConfig = (
         "JustifyBlock",
         "-",
         "BidiLtr",
-        "BidiRtl"
-      ]
+        "BidiRtl",
+      ],
     },
-    { name: "tools", items: ["Maximize", "ShowBlocks", "-", "About"] }
+    { name: "tools", items: ["Maximize", "ShowBlocks", "-", "About"] },
   ],
   resize_enabled: false,
   removePlugins: "image,exportpdf",
   extraPlugins: disablePlugins
     ? "divarea,language,oembed,audio,image2,muikku-embedded,muikku-image-details,muikku-image-target,muikku-word-definition,muikku-audio-defaults,muikku-image-target,widget,lineutils,filetools,uploadwidget,uploadimage,muikku-mathjax"
-    : "divarea,language,oembed,audio,image2,muikku-embedded,muikku-image-details,muikku-image-target,muikku-word-definition,muikku-audio-defaults,muikku-image-target,widget,lineutils,filetools,uploadwidget,uploadimage,muikku-fields,muikku-textfield,muikku-memofield,muikku-filefield,muikku-audiofield,muikku-selection,muikku-connectfield,muikku-organizerfield,muikku-sorterfield,muikku-mathexercisefield,muikku-mathjax"
+    : "divarea,language,oembed,audio,image2,muikku-embedded,muikku-image-details,muikku-image-target,muikku-word-definition,muikku-audio-defaults,muikku-image-target,widget,lineutils,filetools,uploadwidget,uploadimage,muikku-fields,muikku-textfield,muikku-memofield,muikku-filefield,muikku-audiofield,muikku-selection,muikku-connectfield,muikku-organizerfield,muikku-sorterfield,muikku-mathexercisefield,muikku-mathjax",
 });
 
 // First we need to modify the material content nodes end point to be able to receive hidden
@@ -231,7 +231,7 @@ class MaterialEditor extends React.Component<
       uploadingValues: [],
       tab: "content",
       producerEntryName: "",
-      height: 0
+      height: 0,
     };
   }
 
@@ -239,7 +239,7 @@ class MaterialEditor extends React.Component<
    * componentDidMount
    */
   componentDidMount() {
-    let offset: number = 40;
+    const offset = 40;
     this.updateHeight(offset);
     window.addEventListener("resize", () => this.updateHeight(offset));
   }
@@ -256,7 +256,7 @@ class MaterialEditor extends React.Component<
    * @param offset
    */
   updateHeight(offset?: number) {
-    let heightOffset: number = offset ? offset : 0;
+    const heightOffset: number = offset ? offset : 0;
     this.setState({ height: window.innerHeight - heightOffset });
   }
 
@@ -273,7 +273,7 @@ class MaterialEditor extends React.Component<
       setTimeout(() => {
         this.props.requestWorkspaceMaterialContentNodeAttachments(
           this.props.editorState.currentNodeWorkspace,
-          this.props.editorState.currentNodeValue
+          this.props.editorState.currentNodeValue,
         );
       }, 3000);
     }
@@ -287,9 +287,9 @@ class MaterialEditor extends React.Component<
       workspace: this.props.editorState.currentNodeWorkspace,
       material: this.props.editorState.currentDraftNodeValue,
       update: {
-        hidden: !this.props.editorState.currentDraftNodeValue.hidden
+        hidden: !this.props.editorState.currentDraftNodeValue.hidden,
       },
-      isDraft: true
+      isDraft: true,
     });
   }
 
@@ -304,9 +304,9 @@ class MaterialEditor extends React.Component<
         viewRestrict:
           this.props.editorState.currentDraftNodeValue.viewRestrict === "NONE"
             ? "LOGGED_IN"
-            : "NONE"
+            : "NONE",
       },
-      isDraft: true
+      isDraft: true,
     });
   }
 
@@ -324,9 +324,9 @@ class MaterialEditor extends React.Component<
           : this.props.editorState.currentDraftNodeValue.assignmentType ===
             "EXERCISE"
           ? "EVALUATED"
-          : null
+          : null,
       },
-      isDraft: true
+      isDraft: true,
     });
   }
 
@@ -346,9 +346,9 @@ class MaterialEditor extends React.Component<
             : this.props.editorState.currentDraftNodeValue.correctAnswers ===
               "ON_REQUEST"
             ? "NEVER"
-            : "ALWAYS"
+            : "ALWAYS",
       },
-      isDraft: true
+      isDraft: true,
     });
   }
 
@@ -361,9 +361,9 @@ class MaterialEditor extends React.Component<
       workspace: this.props.editorState.currentNodeWorkspace,
       material: this.props.editorState.currentDraftNodeValue,
       update: {
-        title: e.target.value
+        title: e.target.value,
       },
-      isDraft: true
+      isDraft: true,
     });
   }
 
@@ -381,9 +381,9 @@ class MaterialEditor extends React.Component<
       workspace: this.props.editorState.currentNodeWorkspace,
       material: this.props.editorState.currentDraftNodeValue,
       update: {
-        html: content
+        html: content,
       },
-      isDraft: true
+      isDraft: true,
     });
   }
 
@@ -393,11 +393,11 @@ class MaterialEditor extends React.Component<
   close() {
     this.props.setWorkspaceMaterialEditorState({
       ...this.props.editorState,
-      opened: false
+      opened: false,
     });
     this.setState({
       tab: "content",
-      producerEntryName: ""
+      producerEntryName: "",
     });
   }
 
@@ -408,7 +408,7 @@ class MaterialEditor extends React.Component<
     this.props.updateWorkspaceMaterialContentNode({
       workspace: this.props.editorState.currentNodeWorkspace,
       material: this.props.editorState.currentNodeValue,
-      update: this.props.editorState.currentDraftNodeValue
+      update: this.props.editorState.currentDraftNodeValue,
     });
   }
 
@@ -420,7 +420,7 @@ class MaterialEditor extends React.Component<
       workspace: this.props.editorState.currentNodeWorkspace,
       material: this.props.editorState.currentDraftNodeValue,
       update: this.props.editorState.currentNodeValue,
-      isDraft: true
+      isDraft: true,
     });
   }
 
@@ -430,7 +430,7 @@ class MaterialEditor extends React.Component<
    */
   removeProducer(index: number) {
     const newProducers = [
-      ...(this.props.editorState.currentDraftNodeValue.producers || [])
+      ...(this.props.editorState.currentDraftNodeValue.producers || []),
     ];
     newProducers.splice(index, 1);
 
@@ -438,9 +438,9 @@ class MaterialEditor extends React.Component<
       workspace: this.props.editorState.currentNodeWorkspace,
       material: this.props.editorState.currentDraftNodeValue,
       update: {
-        producers: newProducers
+        producers: newProducers,
       },
-      isDraft: true
+      isDraft: true,
     });
   }
 
@@ -450,25 +450,25 @@ class MaterialEditor extends React.Component<
    */
   addProducer(name: string) {
     const newProducers = [
-      ...(this.props.editorState.currentDraftNodeValue.producers || [])
+      ...(this.props.editorState.currentDraftNodeValue.producers || []),
     ];
     newProducers.push({
       id: null,
       name,
-      materialId: this.props.editorState.currentDraftNodeValue.id
+      materialId: this.props.editorState.currentDraftNodeValue.id,
     });
 
     this.setState({
-      producerEntryName: ""
+      producerEntryName: "",
     });
 
     this.props.updateWorkspaceMaterialContentNode({
       workspace: this.props.editorState.currentNodeWorkspace,
       material: this.props.editorState.currentDraftNodeValue,
       update: {
-        producers: newProducers
+        producers: newProducers,
       },
-      isDraft: true
+      isDraft: true,
     });
   }
 
@@ -481,9 +481,9 @@ class MaterialEditor extends React.Component<
       workspace: this.props.editorState.currentNodeWorkspace,
       material: this.props.editorState.currentDraftNodeValue,
       update: {
-        license: newLicense
+        license: newLicense,
       },
-      isDraft: true
+      isDraft: true,
     });
   }
 
@@ -499,19 +499,19 @@ class MaterialEditor extends React.Component<
       case "Help":
         localeString = isRestricted
           ? this.props.i18n.text.get(
-              "plugin.workspace.helpManagement.disableViewRestrictionPageTooltip"
+              "plugin.workspace.helpManagement.disableViewRestrictionPageTooltip",
             )
           : this.props.i18n.text.get(
-              "plugin.workspace.helpManagement.enableViewRestrictionPageTooltip"
+              "plugin.workspace.helpManagement.enableViewRestrictionPageTooltip",
             );
         break;
       case "Materials":
         localeString = isRestricted
           ? this.props.i18n.text.get(
-              "plugin.workspace.materialsManagement.disableViewRestrictionPageTooltip"
+              "plugin.workspace.materialsManagement.disableViewRestrictionPageTooltip",
             )
           : this.props.i18n.text.get(
-              "plugin.workspace.materialsManagement.enableViewRestrictionPageTooltip"
+              "plugin.workspace.materialsManagement.enableViewRestrictionPageTooltip",
             );
         break;
       default:
@@ -532,10 +532,10 @@ class MaterialEditor extends React.Component<
       contentType: string;
       progress: number;
       file: File;
-    }[]
+    }[],
   ) => {
     this.setState({
-      uploadingValues: updatedValues
+      uploadingValues: updatedValues,
     });
   };
 
@@ -544,12 +544,10 @@ class MaterialEditor extends React.Component<
    * @param percent
    * @returns progress string
    */
-  handleUploadingTextProcesser = (percent: number) => {
-    return `
+  handleUploadingTextProcesser = (percent: number) => `
       ${this.props.i18n.text.get(
-        "plugin.guider.user.details.files.uploading"
+        "plugin.guider.user.details.files.uploading",
       )} ${percent}%`;
-  };
 
   /**
    * onClickClose
@@ -577,27 +575,25 @@ class MaterialEditor extends React.Component<
         material: this.props.editorState.currentNodeValue,
         files: Array.from(e.target.files),
         uploadingValues: [...this.state.uploadingValues].concat(
-          Array.from(e.target.files).map((file) => {
-            return {
-              name: file.name,
-              contentType: file.type,
-              progress: 0,
-              file
-            };
-          })
+          Array.from(e.target.files).map((file) => ({
+            name: file.name,
+            contentType: file.type,
+            progress: 0,
+            file,
+          })),
         ),
         success: () => {
           this.setState({
-            uploadingValues: []
+            uploadingValues: [],
           });
         },
         fail: () => {
           this.setState({
-            uploadingValues: []
+            uploadingValues: [],
           });
-        }
+        },
       },
-      this.updateUploadingValues
+      this.updateUploadingValues,
     );
   }
 
@@ -637,14 +633,14 @@ class MaterialEditor extends React.Component<
       "producers",
       "title",
       "type",
-      "viewRestrict"
+      "viewRestrict",
     ];
     let canPublish = false;
-    for (let point of comparerPoints) {
+    for (const point of comparerPoints) {
       if (
         !equals(
           (this.props.editorState.currentNodeValue as any)[point],
-          (this.props.editorState.currentDraftNodeValue as any)[point]
+          (this.props.editorState.currentDraftNodeValue as any)[point],
         )
       ) {
         canPublish = true;
@@ -654,7 +650,7 @@ class MaterialEditor extends React.Component<
 
     const publishModifiers = [
       "material-editor-publish-page",
-      "material-editor"
+      "material-editor",
     ];
     const revertModifiers = ["material-editor-revert-page", "material-editor"];
     if (!canPublish) {
@@ -668,7 +664,7 @@ class MaterialEditor extends React.Component<
         this.props.editorState.parentNodeValue.hidden);
     const hideShowButtonModifiers = [
       "material-editor-show-hide-page",
-      "material-editor"
+      "material-editor",
     ];
     if (isHidden) {
       hideShowButtonModifiers.push("material-editor-disabled");
@@ -680,7 +676,7 @@ class MaterialEditor extends React.Component<
       this.props.editorState.currentDraftNodeValue.viewRestrict === "LOGGED_IN";
     const viewRestrictionButtonModifiers = [
       "material-editor-restrict-page",
-      "material-editor"
+      "material-editor",
     ];
     if (isViewRestricted) {
       viewRestrictionButtonModifiers.push("material-editor-disabled");
@@ -700,27 +696,27 @@ class MaterialEditor extends React.Component<
     const correctAnswersModifiers = [
       "material-editor-change-answer-reveal-type",
       "material-editor",
-      "material-editor-" + exerciseRevealType
+      "material-editor-" + exerciseRevealType,
     ];
     const correctAnswersTooltips =
       !this.props.editorState.currentDraftNodeValue.correctAnswers ||
       this.props.editorState.currentDraftNodeValue.correctAnswers === "ALWAYS"
         ? this.props.i18n.text.get(
-            "plugin.workspace.materialsManagement.showAlwaysCorrectAnswersPageTooltip"
+            "plugin.workspace.materialsManagement.showAlwaysCorrectAnswersPageTooltip",
           )
         : this.props.editorState.currentDraftNodeValue.correctAnswers ===
           "ON_REQUEST"
         ? this.props.i18n.text.get(
-            "plugin.workspace.materialsManagement.showOnRequestCorrectAnswersPageTooltip"
+            "plugin.workspace.materialsManagement.showOnRequestCorrectAnswersPageTooltip",
           )
         : this.props.i18n.text.get(
-            "plugin.workspace.materialsManagement.showNeverCorrectAnswersPageTooltip"
+            "plugin.workspace.materialsManagement.showNeverCorrectAnswersPageTooltip",
           );
 
     const canRestrictViewLocale =
       this.buildRestrictViewLocale(isViewRestricted);
 
-    let editorButtonSet = (
+    const editorButtonSet = (
       <div className="material-editor__buttonset">
         <div className="material-editor__buttonset-primary">
           {this.props.editorState.canHide &&
@@ -732,10 +728,10 @@ class MaterialEditor extends React.Component<
               content={
                 isHidden
                   ? this.props.i18n.text.get(
-                      "plugin.workspace.materialsManagement.showPageTooltip"
+                      "plugin.workspace.materialsManagement.showPageTooltip",
                     )
                   : this.props.i18n.text.get(
-                      "plugin.workspace.materialsManagement.hidePageTooltip"
+                      "plugin.workspace.materialsManagement.hidePageTooltip",
                     )
               }
             >
@@ -764,14 +760,14 @@ class MaterialEditor extends React.Component<
               openByHover
               modifier="material-management-tooltip"
               content={this.props.i18n.text.get(
-                "plugin.workspace.materialsManagement.changeAssesmentTypePageTooltip"
+                "plugin.workspace.materialsManagement.changeAssesmentTypePageTooltip",
               )}
             >
               <ButtonPill
                 buttonModifiers={[
                   "material-editor-change-page-type",
                   "material-editor",
-                  assignmentPageType
+                  assignmentPageType,
                 ]}
                 icon="puzzle"
                 onClick={this.cycleAssignmentType}
@@ -801,7 +797,7 @@ class MaterialEditor extends React.Component<
               openByHover
               modifier="material-management-tooltip"
               content={this.props.i18n.text.get(
-                "plugin.workspace.materialsManagement.publishPageTooltip"
+                "plugin.workspace.materialsManagement.publishPageTooltip",
               )}
             >
               <ButtonPill
@@ -816,7 +812,7 @@ class MaterialEditor extends React.Component<
               openByHover
               modifier="material-management-tooltip"
               content={this.props.i18n.text.get(
-                "plugin.workspace.materialsManagement.revertToPublishedPageTooltip"
+                "plugin.workspace.materialsManagement.revertToPublishedPageTooltip",
               )}
             >
               <ButtonPill
@@ -836,13 +832,13 @@ class MaterialEditor extends React.Component<
                 openByHover
                 modifier="material-management-tooltip"
                 content={this.props.i18n.text.get(
-                  "plugin.workspace.materialsManagement.deletePageTooltip"
+                  "plugin.workspace.materialsManagement.deletePageTooltip",
                 )}
               >
                 <ButtonPill
                   buttonModifiers={[
                     "material-editor-delete-page",
-                    "material-editor"
+                    "material-editor",
                   ]}
                   icon="trash"
                 />
@@ -857,7 +853,7 @@ class MaterialEditor extends React.Component<
       <ButtonPill
         buttonModifiers={[
           "material-page-close-editor",
-          "material-page-close-mobile-editor"
+          "material-page-close-mobile-editor",
         ]}
         onClick={this.onClickClose}
         icon="arrow-left"
@@ -870,7 +866,7 @@ class MaterialEditor extends React.Component<
         type: "material-editor",
         mobileAction: closeDialog,
         name: this.props.i18n.text.get(
-          "plugin.workspace.materialsManagement.editorView.tabs.label.content"
+          "plugin.workspace.materialsManagement.editorView.tabs.label.content",
         ),
         component: () => (
           <div className="material-editor__content-wrapper">
@@ -899,7 +895,7 @@ class MaterialEditor extends React.Component<
                     this.props.status.contextPath,
                     this.props.editorState.currentNodeWorkspace,
                     this.props.editorState.currentDraftNodeValue,
-                    this.props.editorState.disablePlugins
+                    this.props.editorState.disablePlugins,
                   )}
                   onChange={this.updateContent}
                   onDrop={this.refreshAttachments}
@@ -909,8 +905,8 @@ class MaterialEditor extends React.Component<
               </div>
             ) : null}
           </div>
-        )
-      }
+        ),
+      },
     ];
 
     if (
@@ -922,7 +918,7 @@ class MaterialEditor extends React.Component<
         type: "material-editor",
         mobileAction: closeDialog,
         name: this.props.i18n.text.get(
-          "plugin.workspace.materialsManagement.editorView.tabs.label.metadata"
+          "plugin.workspace.materialsManagement.editorView.tabs.label.metadata",
         ),
         component: () => (
           <div className="material-editor__content-wrapper">
@@ -932,7 +928,7 @@ class MaterialEditor extends React.Component<
               <div className="material-editor__sub-section">
                 <h3 className="material-editor__sub-title">
                   {this.props.i18n.text.get(
-                    "plugin.workspace.materialsManagement.editorView.subTitle.producers"
+                    "plugin.workspace.materialsManagement.editorView.subTitle.producers",
                   )}
                 </h3>
                 {this.props.editorState.currentDraftNodeValue.producers ? (
@@ -955,14 +951,14 @@ class MaterialEditor extends React.Component<
               <div className="material-editor__sub-section">
                 <h3 className="material-editor__sub-title">
                   {this.props.i18n.text.get(
-                    "plugin.workspace.materialsManagement.editorView.subTitle.license"
+                    "plugin.workspace.materialsManagement.editorView.subTitle.license",
                   )}
                 </h3>
                 <div className="material-editor__add-license-container">
                   <LicenseSelector
                     wcagLabel="materialLicense"
                     wcagDesc={this.props.i18n.text.get(
-                      "plugin.wcag.materialLicense.label"
+                      "plugin.wcag.materialLicense.label",
                     )}
                     modifier="material-editor"
                     value={this.props.editorState.currentDraftNodeValue.license}
@@ -973,7 +969,7 @@ class MaterialEditor extends React.Component<
               </div>
             ) : null}
           </div>
-        )
+        ),
       });
     }
 
@@ -983,7 +979,7 @@ class MaterialEditor extends React.Component<
         type: "material-editor",
         mobileAction: closeDialog,
         name: this.props.i18n.text.get(
-          "plugin.workspace.materialsManagement.editorView.tabs.label.attachments"
+          "plugin.workspace.materialsManagement.editorView.tabs.label.attachments",
         ),
         component: () => (
           <div className="material-editor__content-wrapper">
@@ -995,7 +991,7 @@ class MaterialEditor extends React.Component<
               modifier="material-editor"
               displayNotificationOnError
               fileTooLargeErrorText={this.props.i18n.text.get(
-                "plugin.workspace.fileFieldUpload.fileSizeTooLarge"
+                "plugin.workspace.fileFieldUpload.fileSizeTooLarge",
               )}
               files={
                 this.props.editorState.currentNodeValue.childrenAttachments
@@ -1007,23 +1003,23 @@ class MaterialEditor extends React.Component<
               }
               deleteDialogElement={ConfirmRemoveAttachment}
               hintText={this.props.i18n.text.get(
-                "plugin.workspace.fileField.fieldHint"
+                "plugin.workspace.fileField.fieldHint",
               )}
               deleteFileText={this.props.i18n.text.get(
-                "plugin.workspace.fileField.removeLink"
+                "plugin.workspace.fileField.removeLink",
               )}
               downloadFileText={this.props.i18n.text.get(
-                "plugin.workspace.fileField.downloadLink"
+                "plugin.workspace.fileField.downloadLink",
               )}
               showURL
               notificationOfSuccessText={this.props.i18n.text.get(
-                "plugin.workspace.fileFieldUpload.uploadSuccessful"
+                "plugin.workspace.fileFieldUpload.uploadSuccessful",
               )}
               displayNotificationOnSuccess
               uploadingTextProcesser={this.handleUploadingTextProcesser}
             />
           </div>
-        )
+        ),
       });
     }
 
@@ -1063,7 +1059,7 @@ function mapStateToProps(state: StateType) {
     i18n: state.i18n,
     editorState: state.workspaces.materialEditor,
     status: state.status,
-    locale: state.locales
+    locale: state.locales,
   };
 }
 
@@ -1077,9 +1073,9 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
       setWorkspaceMaterialEditorState,
       updateWorkspaceMaterialContentNode,
       createWorkspaceMaterialAttachment,
-      requestWorkspaceMaterialContentNodeAttachments
+      requestWorkspaceMaterialContentNodeAttachments,
     },
-    dispatch
+    dispatch,
   );
 }
 

@@ -26,7 +26,7 @@ export default class LazyLoader extends React.Component<
   LazyLoaderProps,
   LazyLoaderState
 > {
-  private hasBeenForcefullyToggled: boolean = false;
+  private hasBeenForcefullyToggled = false;
   private id: string = "L" + v4().replace(/-/g, "");
   private calculatedHeight: number;
 
@@ -34,7 +34,7 @@ export default class LazyLoader extends React.Component<
     super(props);
 
     this.state = {
-      loaded: false
+      loaded: false,
     };
 
     this.checkWhetherInView = this.checkWhetherInView.bind(this);
@@ -54,7 +54,7 @@ export default class LazyLoader extends React.Component<
     this.calculatedHeight = lazyComponent ? lazyComponent.offsetHeight : null;
 
     this.setState({
-      loaded: !hasBeenToggledBefore ? true : !this.state.loaded
+      loaded: !hasBeenToggledBefore ? true : !this.state.loaded,
     });
   }
   componentDidUpdate(prevProps: LazyLoaderProps, prevState: LazyLoaderState) {
@@ -80,7 +80,7 @@ export default class LazyLoader extends React.Component<
             this.id +
             " when toggled became off by " +
             (newCalculatedHeight - this.calculatedHeight) +
-            "px"
+            "px",
         );
         this.calculatedHeight = newCalculatedHeight;
       }
@@ -94,17 +94,17 @@ export default class LazyLoader extends React.Component<
       return;
     }
 
-    let el: HTMLDivElement = this.refs["lazycomponent"] as HTMLDivElement;
+    const el: HTMLDivElement = this.refs["lazycomponent"] as HTMLDivElement;
 
-    let rect = el.getBoundingClientRect();
-    let elemTop = rect.top;
-    let elemBottom = rect.bottom;
+    const rect = el.getBoundingClientRect();
+    const elemTop = rect.top;
+    const elemBottom = rect.bottom;
 
-    let isVisible = elemTop < window.innerHeight && elemBottom >= 0;
+    const isVisible = elemTop < window.innerHeight && elemBottom >= 0;
 
     if (isVisible) {
       this.setState({
-        loaded: true
+        loaded: true,
       });
     }
   }

@@ -60,7 +60,7 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
       visible: props.open,
       dragging: false,
       drag: null,
-      open: props.open
+      open: props.open,
     };
   }
   componentWillReceiveProps(nextProps: DrawerProps) {
@@ -80,8 +80,8 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
   }
   onTouchMove(e: React.TouchEvent<any>) {
     let diffX = e.changedTouches[0].pageX - this.touchCordX;
-    let diffY = e.changedTouches[0].pageY - this.touchCordY;
-    let absoluteDifferenceX = Math.abs(diffX - this.state.drag);
+    const diffY = e.changedTouches[0].pageY - this.touchCordY;
+    const absoluteDifferenceX = Math.abs(diffX - this.state.drag);
     this.touchMovementX += absoluteDifferenceX;
 
     if (diffX > 0) {
@@ -103,14 +103,14 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
     e.preventDefault();
   }
   onTouchEnd(e: React.TouchEvent<any>) {
-    let width = $(this.refs["menuContainer"]).width();
-    let diff = this.state.drag;
-    let movement = this.touchMovementX;
+    const width = $(this.refs["menuContainer"]).width();
+    const diff = this.state.drag;
+    const movement = this.touchMovementX;
 
-    let menuHasSlidedEnoughForClosing = Math.abs(diff) >= width * 0.33;
-    let youJustClickedTheOverlay =
+    const menuHasSlidedEnoughForClosing = Math.abs(diff) >= width * 0.33;
+    const youJustClickedTheOverlay =
       e.target === this.refs["menu"] && movement <= 5;
-    let youJustClickedALink =
+    const youJustClickedALink =
       checkLinkClicked(e.target as HTMLElement) && movement <= 5;
 
     this.setState({ dragging: false });
@@ -134,8 +134,8 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
     $(document.body).css({ overflow: "hidden" });
   }
   closeByOverlay(e: React.MouseEvent<any>) {
-    let isOverlay = e.target === e.currentTarget;
-    let isLink = checkLinkClicked(e.target as HTMLElement);
+    const isOverlay = e.target === e.currentTarget;
+    const isLink = checkLinkClicked(e.target as HTMLElement);
     if (!this.state.dragging && (isOverlay || isLink)) {
       this.close();
     }
@@ -180,7 +180,7 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
                   width="157"
                   height="56"
                   alt={this.props.i18n.text.get(
-                    "plugin.site.logo.linkBackToFrontPage"
+                    "plugin.site.logo.linkBackToFrontPage",
                   )}
                 />
               </Link>
@@ -218,7 +218,7 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
                           src={getUserImageUrl(
                             this.props.status.userId,
                             null,
-                            this.props.status.imgVersion
+                            this.props.status.imgVersion,
                           )}
                           className="button-image"
                         />
@@ -227,7 +227,7 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
                       )}
                       <span className="menu__item-link-text">
                         {this.props.i18n.text.get(
-                          "plugin.profileBadge.links.personalInfo"
+                          "plugin.profileBadge.links.personalInfo",
                         )}
                       </span>
                     </Link>
@@ -242,7 +242,7 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
                       <span className="menu__item-link-icon icon-question" />
                       <span className="menu__item-link-text">
                         {this.props.i18n.text.get(
-                          "plugin.profileBadge.links.userGuide"
+                          "plugin.profileBadge.links.userGuide",
                         )}
                       </span>
                     </Link>
@@ -257,7 +257,7 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
                       <span className="menu__item-link-icon icon-support"></span>
                       <span className="menu__item-link-text">
                         {this.props.i18n.text.get(
-                          "plugin.profileBadge.links.helpdesk"
+                          "plugin.profileBadge.links.helpdesk",
                         )}
                       </span>
                     </Link>
@@ -272,7 +272,7 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
                       <span className="menu__item-link-icon icon-sign-out"></span>
                       <span className="menu__item-link-text">
                         {this.props.i18n.text.get(
-                          "plugin.profileBadge.links.logout"
+                          "plugin.profileBadge.links.logout",
                         )}
                       </span>
                     </Link>
@@ -290,7 +290,7 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    status: state.status
+    status: state.status,
   };
 }
 

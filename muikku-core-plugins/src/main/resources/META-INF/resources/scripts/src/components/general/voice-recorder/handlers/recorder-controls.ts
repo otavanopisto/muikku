@@ -3,16 +3,14 @@ import { SetRecorder } from "~/@types/recorder";
 export async function startRecording(setRecorderState: SetRecorder) {
   try {
     const stream: MediaStream = await navigator.mediaDevices.getUserMedia({
-      audio: true
+      audio: true,
     });
 
-    setRecorderState((prevState) => {
-      return {
-        ...prevState,
-        initRecording: true,
-        mediaStream: stream
-      };
-    });
+    setRecorderState((prevState) => ({
+      ...prevState,
+      initRecording: true,
+      mediaStream: stream,
+    }));
   } catch (err) {}
 }
 

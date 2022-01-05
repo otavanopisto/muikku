@@ -21,7 +21,7 @@ interface FileFieldProps {
   onChange?: (
     context: React.Component<any, any>,
     name: string,
-    newValue: any
+    newValue: any,
   ) => any;
 
   invisible?: boolean;
@@ -61,7 +61,7 @@ export default class FileField extends React.Component<
       synced: true,
       syncError: null,
 
-      fieldSavedState: null
+      fieldSavedState: null,
     };
 
     this.onFileAdded = this.onFileAdded.bind(this);
@@ -76,7 +76,7 @@ export default class FileField extends React.Component<
    */
   onFieldSavedStateChange(savedState: FieldStateStatus) {
     this.setState({
-      fieldSavedState: savedState
+      fieldSavedState: savedState,
     });
   }
 
@@ -106,15 +106,15 @@ export default class FileField extends React.Component<
       {
         fileId: data.fileId,
         name: file.name,
-        contentType: data.fileContentType || file.type
-      }
+        contentType: data.fileContentType || file.type,
+      },
     ];
 
     this.setState(
       {
-        values: newValues
+        values: newValues,
       },
-      this.checkDoneAndRunOnChange
+      this.checkDoneAndRunOnChange,
     );
   }
 
@@ -129,15 +129,15 @@ export default class FileField extends React.Component<
 
     // ok now that all is done we need to filter what failed to upload, and otherwise
     // set the fileId name and content type from the value as the value for the result
-    let result = JSON.stringify(
+    const result = JSON.stringify(
       this.state.values.map((value) => {
-        let { fileId, name, contentType } = value;
+        const { fileId, name, contentType } = value;
         return {
           fileId,
           name,
-          contentType
+          contentType,
         };
-      })
+      }),
     );
 
     // call onchange
@@ -149,12 +149,12 @@ export default class FileField extends React.Component<
    * @param index
    */
   removeFileAt(index: number) {
-    let newValues = this.state.values.filter((a, i) => i !== index);
+    const newValues = this.state.values.filter((a, i) => i !== index);
     this.setState(
       {
-        values: newValues
+        values: newValues,
       },
-      this.checkDoneAndRunOnChange
+      this.checkDoneAndRunOnChange,
     );
   }
 
@@ -172,20 +172,17 @@ export default class FileField extends React.Component<
    * @returns
    */
   render() {
-    // this is the data that it has already created
-    let dataInContainer = null;
-
     // if elements is disabled
-    let ElementDisabledState = this.props.readOnly
+    const ElementDisabledState = this.props.readOnly
       ? "material-page__taskfield-disabled"
       : "";
 
-    let formDataGenerator = (file: File, formData: FormData) => {
+    const formDataGenerator = (file: File, formData: FormData) => {
       formData.append("file", file);
     };
 
-    let fieldSavedStateClass = createFieldSavedStateClass(
-      this.state.fieldSavedState
+    const fieldSavedStateClass = createFieldSavedStateClass(
+      this.state.fieldSavedState,
     );
 
     // and this is the container
@@ -214,16 +211,16 @@ export default class FileField extends React.Component<
               this.onFileAdded(file, data);
             }}
             hintText={this.props.i18n.text.get(
-              "plugin.workspace.fileField.fieldHint"
+              "plugin.workspace.fileField.fieldHint",
             )}
             fileTooLargeErrorText={this.props.i18n.text.get(
-              "plugin.workspace.fileFieldUpload.fileSizeTooLarge"
+              "plugin.workspace.fileFieldUpload.fileSizeTooLarge",
             )}
             deleteFileText={this.props.i18n.text.get(
-              "plugin.workspace.fileField.removeLink"
+              "plugin.workspace.fileField.removeLink",
             )}
             downloadFileText={this.props.i18n.text.get(
-              "plugin.workspace.fileField.downloadLink"
+              "plugin.workspace.fileField.downloadLink",
             )}
             files={this.state.values}
             fileIdKey="fileId"
@@ -236,7 +233,7 @@ export default class FileField extends React.Component<
               this.props.i18n.text.get("plugin.workspace.fileField.zipFileName")
             }
             fileDownloadAllLabel={this.props.i18n.text.get(
-              "plugin.workspace.fileField.downloadAllLink"
+              "plugin.workspace.fileField.downloadAllLink",
             )}
             deleteDialogElement={ConfirmRemoveDialog}
             deleteDialogElementProps={{ onConfirm: this.removeFile }}
@@ -244,12 +241,12 @@ export default class FileField extends React.Component<
             uploadingTextProcesser={(percent: number) =>
               this.props.i18n.text.get(
                 "plugin.workspace.fileField.statusUploading",
-                percent
+                percent,
               )
             }
             invisible={this.props.invisible}
             notificationOfSuccessText={this.props.i18n.text.get(
-              "plugin.workspace.fileFieldUpload.uploadSuccessful"
+              "plugin.workspace.fileFieldUpload.uploadSuccessful",
             )}
             displayNotificationOnSuccess
           />

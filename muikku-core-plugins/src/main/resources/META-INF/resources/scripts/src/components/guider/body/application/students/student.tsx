@@ -3,12 +3,12 @@ import * as React from "react";
 import { getName } from "~/util/modifiers";
 import {
   GuiderStudentType,
-  GuiderStudentUserProfileLabelType
+  GuiderStudentUserProfileLabelType,
 } from "~/reducers/main-function/guider";
 import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
 import { StateType } from "~/reducers";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import moment from "~/lib/moment";
 import "~/sass/elements/label.scss";
 import "~/sass/elements/user.scss";
@@ -17,7 +17,7 @@ import "~/sass/elements/wcag.scss";
 import {
   ApplicationListItemContentWrapper,
   ApplicationListItemHeader,
-  ApplicationListItemFooter
+  ApplicationListItemFooter,
 } from "~/components/general/application-list";
 
 type StudentStudyTimeState = "ONGOING" | "ENDING" | "ENDED";
@@ -41,7 +41,7 @@ class Student extends React.Component<StudentProps, StudentState> {
    */
 
   getSudentStudyTimeState = (
-    student: GuiderStudentType
+    student: GuiderStudentType,
   ): StudentStudyTimeState => {
     if (student.studyTimeEnd) {
       const studyTimeEnd = moment(student.studyTimeEnd);
@@ -96,24 +96,22 @@ class Student extends React.Component<StudentProps, StudentState> {
                 <span className="label__text">
                   {this.props.i18n.text.get(
                     "plugin.guider.user.state." + studyTimeEndState,
-                    moment(this.props.student.studyTimeEnd).format("LL")
+                    moment(this.props.student.studyTimeEnd).format("LL"),
                   )}{" "}
                 </span>
               </div>
             ) : null}
             {this.props.student.flags.length
               ? this.props.student.flags.map(
-                  (flag: GuiderStudentUserProfileLabelType) => {
-                    return (
-                      <div className="label" key={flag.id}>
-                        <span
-                          className="label__icon icon-flag"
-                          style={{ color: flag.flagColor }}
-                        ></span>
-                        <span className="label__text">{flag.flagName}</span>
-                      </div>
-                    );
-                  }
+                  (flag: GuiderStudentUserProfileLabelType) => (
+                    <div className="label" key={flag.id}>
+                      <span
+                        className="label__icon icon-flag"
+                        style={{ color: flag.flagColor }}
+                      ></span>
+                      <span className="label__text">{flag.flagName}</span>
+                    </div>
+                  ),
                 )
               : null}
           </div>
@@ -126,7 +124,7 @@ class Student extends React.Component<StudentProps, StudentState> {
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    status: state.status
+    status: state.status,
   };
 }
 

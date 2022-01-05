@@ -25,7 +25,7 @@ interface MemoFieldProps {
   onChange?: (
     context: React.Component<any, any>,
     name: string,
-    newValue: any
+    newValue: any,
   ) => any;
 
   displayCorrectAnswers?: boolean;
@@ -59,13 +59,13 @@ const ckEditorConfig = {
   toolbar: [
     {
       name: "basicstyles",
-      items: ["Bold", "Italic", "Underline", "Strike", "RemoveFormat"]
+      items: ["Bold", "Italic", "Underline", "Strike", "RemoveFormat"],
     },
     { name: "clipboard", items: ["Cut", "Copy", "Paste", "Undo", "Redo"] },
     { name: "links", items: ["Link"] },
     {
       name: "insert",
-      items: ["Image", "Table", "Muikku-mathjax", "Smiley", "SpecialChar"]
+      items: ["Image", "Table", "Muikku-mathjax", "Smiley", "SpecialChar"],
     },
     { name: "colors", items: ["TextColor", "BGColor"] },
     { name: "styles", items: ["Format"] },
@@ -79,14 +79,14 @@ const ckEditorConfig = {
         "Blockquote",
         "JustifyLeft",
         "JustifyCenter",
-        "JustifyRight"
-      ]
+        "JustifyRight",
+      ],
     },
-    { name: "tools", items: ["Maximize"] }
+    { name: "tools", items: ["Maximize"] },
   ],
   removePlugins: "image,exportpdf",
   extraPlugins: "image2,widget,lineutils,autogrow,muikku-mathjax,divarea",
-  resize_enabled: true
+  resize_enabled: true,
 };
 
 /**
@@ -120,9 +120,9 @@ export default class MemoField extends React.Component<
     super(props);
 
     //get the initial value
-    let value = props.initialValue || "";
+    const value = props.initialValue || "";
     // and get the raw text if it's richedit
-    let rawText = this.props.content
+    const rawText = this.props.content
       ? this.props.content.richedit
         ? $(value).text()
         : value
@@ -139,7 +139,7 @@ export default class MemoField extends React.Component<
       synced: true,
       syncError: null,
 
-      fieldSavedState: null
+      fieldSavedState: null,
     };
 
     this.onInputChange = this.onInputChange.bind(this);
@@ -153,7 +153,7 @@ export default class MemoField extends React.Component<
    */
   onFieldSavedStateChange(savedState: FieldStateStatus) {
     this.setState({
-      fieldSavedState: savedState
+      fieldSavedState: savedState,
     });
   }
 
@@ -187,7 +187,7 @@ export default class MemoField extends React.Component<
     this.setState({
       value: e.target.value,
       words: wordCount(e.target.value),
-      characters: characterCount(e.target.value)
+      characters: characterCount(e.target.value),
     });
 
     //we call the on change
@@ -201,12 +201,12 @@ export default class MemoField extends React.Component<
    */
   onCKEditorChange(value: string) {
     // we need the raw text
-    let rawText = $(value).text();
+    const rawText = $(value).text();
     // and update the state
     this.setState({
       value,
       words: wordCount(rawText),
-      characters: characterCount(rawText)
+      characters: characterCount(rawText),
     });
 
     this.props.onChange &&
@@ -228,7 +228,7 @@ export default class MemoField extends React.Component<
         <span className="material-page__field-answer-examples material-page__field-answer-examples--memofield">
           <span className="material-page__field-answer-examples-title material-page__field-answer-examples-title--memofield">
             {this.props.i18n.text.get(
-              "plugin.workspace.assigment.checkAnswers.detailsSummary.title"
+              "plugin.workspace.assigment.checkAnswers.detailsSummary.title",
             )}
           </span>
           <span className="material-page__field-answer-example">
@@ -278,7 +278,7 @@ export default class MemoField extends React.Component<
 
     // now we need the field
     let field;
-    let minRows =
+    const minRows =
       this.props.content.rows &&
       this.props.content.rows !== "" &&
       !isNaN(Number(this.props.content.rows))
@@ -344,8 +344,8 @@ export default class MemoField extends React.Component<
       }
     }
 
-    let fieldSavedStateClass = createFieldSavedStateClass(
-      this.state.fieldSavedState
+    const fieldSavedStateClass = createFieldSavedStateClass(
+      this.state.fieldSavedState,
     );
 
     // and here the element itself
@@ -372,7 +372,7 @@ export default class MemoField extends React.Component<
           <span className="material-page__character-count-container">
             <span className="material-page__character-count-title">
               {this.props.i18n.text.get(
-                "plugin.workspace.memoField.characterCount"
+                "plugin.workspace.memoField.characterCount",
               )}
             </span>
             <span className="material-page__character-count">

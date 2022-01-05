@@ -36,9 +36,9 @@ export class PrivateChat extends React.Component<
 > {
   private messagesListenerHandler: any = null;
   private presenceListenerHandler: any = null;
-  private isFocused: boolean = false;
+  private isFocused = false;
   private messagesEnd: React.RefObject<HTMLDivElement>;
-  private isScrollDetached: boolean = false;
+  private isScrollDetached = false;
   private chatRef: React.RefObject<HTMLDivElement>;
 
   constructor(props: IPrivateChatProps) {
@@ -48,7 +48,7 @@ export class PrivateChat extends React.Component<
       nick: null,
       messages: [],
       minimized: JSON.parse(
-        window.sessionStorage.getItem("minimizedChats") || "[]"
+        window.sessionStorage.getItem("minimizedChats") || "[]",
       ).includes(props.jid),
       messageNotification: !!this.props.initializingStanza,
       currentMessageToBeSent: "",
@@ -56,7 +56,7 @@ export class PrivateChat extends React.Component<
       isStudent: roleNode.getAttribute("value") === "STUDENT",
       loadingMessages: false,
       canLoadMoreMessages: true,
-      lastMessageStamp: null
+      lastMessageStamp: null,
     };
 
     this.messagesEnd = React.createRef();
@@ -85,7 +85,7 @@ export class PrivateChat extends React.Component<
       "chat",
       null,
       this.props.jid,
-      { matchBare: true }
+      { matchBare: true },
     );
     this.presenceListenerHandler = this.props.connection.addHandler(
       this.onPresence,
@@ -94,7 +94,7 @@ export class PrivateChat extends React.Component<
       null,
       null,
       this.props.jid,
-      { matchBare: true }
+      { matchBare: true },
     );
 
     if (this.props.initializingStanza) {
@@ -109,10 +109,10 @@ export class PrivateChat extends React.Component<
   async obtainNick() {
     const user: any = (await promisify(
       mApi().chat.userInfo.read(this.props.jid.split("@")[0], {}),
-      "callback"
+      "callback",
     )()) as any;
     this.setState({
-      nick: user.name
+      nick: user.name,
     });
   }
 
@@ -121,8 +121,8 @@ export class PrivateChat extends React.Component<
       $pres({
         from: this.props.connection.jid,
         to: this.props.jid,
-        type: "probe"
-      })
+        type: "probe",
+      }),
     );
   }
 
@@ -135,7 +135,7 @@ export class PrivateChat extends React.Component<
     this.isFocused = true;
     if (this.state.messageNotification) {
       this.setState({
-        messageNotification: false
+        messageNotification: false,
       });
     }
   }
@@ -146,7 +146,7 @@ export class PrivateChat extends React.Component<
 
   setCurrentMessageToBeSent(e: React.ChangeEvent<HTMLTextAreaElement>) {
     this.setState({
-      currentMessageToBeSent: e.target.value
+      currentMessageToBeSent: e.target.value,
     });
   }
 
@@ -160,11 +160,11 @@ export class PrivateChat extends React.Component<
         $msg({
           from: this.props.connection.jid,
           to: this.props.jid,
-          type: "chat"
+          type: "chat",
         })
           .c("body", text)
           .up()
-          .c("active", { xmlns: "http://jabber.org/protocol/chatstates" })
+          .c("active", { xmlns: "http://jabber.org/protocol/chatstates" }),
       );
 
       const newMessage: IBareMessageType = {
@@ -176,15 +176,15 @@ export class PrivateChat extends React.Component<
         isSelf: true,
         action: null,
         deleted: false,
-        edited: null
+        edited: null,
       };
 
       this.setState(
         {
           currentMessageToBeSent: "",
-          messages: [...this.state.messages, newMessage]
+          messages: [...this.state.messages, newMessage],
         },
-        this.scrollToBottom.bind(this, "smooth")
+        this.scrollToBottom.bind(this, "smooth"),
       );
     }
   }
@@ -215,16 +215,17 @@ export class PrivateChat extends React.Component<
         isSelf: userId === this.props.connection.jid.split("@")[0],
         action: null,
         deleted: false,
-        edited: null
+        edited: null,
       };
 
       const newMessagesList = [...this.state.messages, messageReceived];
       this.setState(
         {
           messages: newMessagesList,
-          messageNotification: this.state.messageNotification || !this.isFocused
+          messageNotification:
+            this.state.messageNotification || !this.isFocused,
         },
-        this.scrollToBottom.bind(this, "smooth")
+        this.scrollToBottom.bind(this, "smooth"),
       );
     }
 
@@ -241,7 +242,7 @@ export class PrivateChat extends React.Component<
   }
   toggleMinimizeChats() {
     let minimizedChatList: string[] = JSON.parse(
-      window.sessionStorage.getItem("minimizedChats") || "[]"
+      window.sessionStorage.getItem("minimizedChats") || "[]",
     );
     const newMinimized = !this.state.minimized;
 
@@ -249,9 +250,9 @@ export class PrivateChat extends React.Component<
     this.setState(
       {
         minimized: newMinimized,
-        messageNotification: false
+        messageNotification: false,
       },
-      this.scrollToBottom.bind(this, "auto")
+      this.scrollToBottom.bind(this, "auto"),
     );
 
     if (newMinimized) {
@@ -262,7 +263,7 @@ export class PrivateChat extends React.Component<
 
     window.sessionStorage.setItem(
       "minimizedChats",
-      JSON.stringify(minimizedChatList)
+      JSON.stringify(minimizedChatList),
     );
   }
   onPresence(stanza: Element) {
@@ -270,7 +271,7 @@ export class PrivateChat extends React.Component<
     const precense: any = show ? show.textContent : "chat";
 
     this.setState({
-      targetPrescense: precense
+      targetPrescense: precense,
     });
 
     return true;
@@ -299,14 +300,14 @@ export class PrivateChat extends React.Component<
     }
 
     this.setState({
-      loadingMessages: true
+      loadingMessages: true,
     });
 
     const stanza = $iq({
-      type: "set"
+      type: "set",
     })
       .c("query", {
-        xmlns: "otavanopisto:chat:history"
+        xmlns: "otavanopisto:chat:history",
       })
       .c("type", {}, "chat")
       .c("with", {}, this.props.jid)
@@ -321,7 +322,7 @@ export class PrivateChat extends React.Component<
       const allMessagesLoaded: boolean =
         answerStanza.querySelector("query").getAttribute("complete") === "true";
       const newMessages = Array.from(
-        answerStanza.querySelectorAll("historyMessage")
+        answerStanza.querySelectorAll("historyMessage"),
       ).map((historyMessage: Element, index: number) => {
         const stanzaId: string = null;
         const stamp = historyMessage.querySelector("timestamp").textContent;
@@ -348,7 +349,7 @@ export class PrivateChat extends React.Component<
           isSelf: userId === this.props.connection.jid.split("@")[0],
           action: null,
           deleted: false,
-          edited: null
+          edited: null,
         };
 
         return messageReceived;
@@ -356,7 +357,7 @@ export class PrivateChat extends React.Component<
 
       if (lastMessageStamp) {
         this.setState({
-          lastMessageStamp
+          lastMessageStamp,
         });
       }
 
@@ -369,7 +370,7 @@ export class PrivateChat extends React.Component<
 
         this.setState(
           {
-            messages: [...newMessages, ...this.state.messages]
+            messages: [...newMessages, ...this.state.messages],
           },
           () => {
             if (!this.isScrollDetached) {
@@ -381,14 +382,14 @@ export class PrivateChat extends React.Component<
             }
             this.setState({
               loadingMessages: false,
-              canLoadMoreMessages: !allMessagesLoaded
+              canLoadMoreMessages: !allMessagesLoaded,
             });
-          }
+          },
         );
       } else {
         this.setState({
           loadingMessages: false,
-          canLoadMoreMessages: false
+          canLoadMoreMessages: false,
         });
       }
     });

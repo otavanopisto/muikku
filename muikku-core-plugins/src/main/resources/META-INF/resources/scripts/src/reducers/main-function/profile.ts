@@ -2,7 +2,7 @@ import { ActionType } from "~/actions";
 import {
   StudentUserAddressType,
   UserWithSchoolDataType,
-  UserChatSettingsType
+  UserChatSettingsType,
 } from "~/reducers/user-index";
 
 export enum EditableField {
@@ -10,14 +10,14 @@ export enum EditableField {
   DESCRIPTION = "DESCRIPTION",
   PRICE = "PRICE",
   FACTOR = "FACTOR",
-  BILLING_NUMBER = "BILLING_NUMBER"
+  BILLING_NUMBER = "BILLING_NUMBER",
 }
 
 export enum WorklistBillingState {
   ENTERED = "ENTERED",
   PROPOSED = "PROPOSED",
   APPROVED = "APPROVED",
-  PAID = "PAID"
+  PAID = "PAID",
 }
 
 export interface WorklistTemplate {
@@ -78,67 +78,67 @@ export default function profile(
     chatSettings: null,
     location: null,
     worklistTemplates: null,
-    worklist: null
+    worklist: null,
   },
-  action: ActionType
+  action: ActionType,
 ): ProfileType {
   if (action.type === "SET_PROFILE_USER_PROPERTY") {
-    let newProperties = { ...state.properties };
+    const newProperties = { ...state.properties };
     newProperties[action.payload.key] = action.payload.value;
     return {
       ...state,
       ...{
-        properties: newProperties
-      }
+        properties: newProperties,
+      },
     };
   } else if (action.type === "SET_PROFILE_USERNAME") {
     return {
       ...state,
       ...{
-        username: action.payload
-      }
+        username: action.payload,
+      },
     };
   } else if (action.type === "SET_PROFILE_ADDRESSES") {
     return {
       ...state,
       ...{
-        addresses: action.payload
-      }
+        addresses: action.payload,
+      },
     };
   } else if (action.type === "SET_PROFILE_STUDENT") {
     return {
       ...state,
       ...{
-        student: action.payload
-      }
+        student: action.payload,
+      },
     };
   } else if (action.type === "SET_PROFILE_CHAT_SETTINGS") {
     return {
       ...state,
       ...{
-        chatSettings: action.payload
-      }
+        chatSettings: action.payload,
+      },
     };
   } else if (action.type === "SET_PROFILE_LOCATION") {
     return {
       ...state,
       ...{
-        location: action.payload
-      }
+        location: action.payload,
+      },
     };
   } else if (action.type === "SET_WORKLIST_TEMPLATES") {
     return {
       ...state,
       ...{
-        worklistTemplates: action.payload
-      }
+        worklistTemplates: action.payload,
+      },
     };
   } else if (action.type === "SET_WORKLIST") {
     return {
       ...state,
       ...{
-        worklist: action.payload
-      }
+        worklist: action.payload,
+      },
     };
   }
   return state;

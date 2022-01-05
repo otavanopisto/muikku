@@ -1,6 +1,5 @@
 import * as React from "react";
 import Dialog from "~/components/general/dialog";
-import Link from "~/components/general/link";
 import { StateType } from "reducers";
 import { connect } from "react-redux";
 import Button from "~/components/general/button";
@@ -19,32 +18,26 @@ class EnrollmentDialog extends React.Component<
   EnrollmentDialogState
 > {
   render() {
-    let footer = (closeDialog: () => any) => {
-      return (
-        <div className="dialog__button-set">
-          <Button href="/" buttonModifiers={["info", "standard-ok"]}>
-            {this.props.i18n.text.get("plugin.workspace.logInGuidingLink")}
-          </Button>
+    const footer = () => (
+      <div className="dialog__button-set">
+        <Button href="/" buttonModifiers={["info", "standard-ok"]}>
+          {this.props.i18n.text.get("plugin.workspace.logInGuidingLink")}
+        </Button>
+      </div>
+    );
+    const content = (closeDialog: () => any) => (
+      <div className="dialog__content-row dialog__content-row--label">
+        <img
+          src="/gfx/icons/64x64/certificate.png"
+          alt="Enrollment logo"
+          title="Enrollment logo"
+          className="logo--enrollment-logo"
+        />
+        <div className="dialog__content-column">
+          {this.props.i18n.text.get("plugin.workspace.logInGuidingInformation")}
         </div>
-      );
-    };
-    let content = (closeDialog: () => any) => {
-      return (
-        <div className="dialog__content-row dialog__content-row--label">
-          <img
-            src="/gfx/icons/64x64/certificate.png"
-            alt="Enrollment logo"
-            title="Enrollment logo"
-            className="logo--enrollment-logo"
-          />
-          <div className="dialog__content-column">
-            {this.props.i18n.text.get(
-              "plugin.workspace.logInGuidingInformation"
-            )}
-          </div>
-        </div>
-      );
-    };
+      </div>
+    );
     return (
       <Dialog
         closeOnOverlayClick={false}
@@ -61,7 +54,7 @@ class EnrollmentDialog extends React.Component<
 
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n
+    i18n: state.i18n,
   };
 }
 

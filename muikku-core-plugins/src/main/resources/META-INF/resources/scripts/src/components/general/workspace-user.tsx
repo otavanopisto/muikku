@@ -10,7 +10,7 @@ import { getName, filterHighlight } from "~/util/modifiers";
 import {
   ApplicationListItem,
   ApplicationListItemContentWrapper,
-  ApplicationListItemContentActions
+  ApplicationListItemContentActions,
 } from "~/components/general/application-list";
 
 interface workspaceUserProps {
@@ -24,7 +24,7 @@ interface workspaceUserProps {
 }
 
 export default function WorkspaceUser(props: workspaceUserProps) {
-  let actionButtons = props.student.active ? (
+  const actionButtons = props.student.active ? (
     <ApplicationListItemContentActions>
       <IconButton
         buttonModifiers="workspace-users-contact"

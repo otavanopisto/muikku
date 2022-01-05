@@ -12,11 +12,11 @@ import { bindActionCreators } from "redux";
 import {
   WorkspaceType,
   MaterialContentNodeType,
-  WorkspaceMaterialEditorType
+  WorkspaceMaterialEditorType,
 } from "~/reducers/workspaces";
 import {
   deleteWorkspaceMaterialContentNode,
-  DeleteWorkspaceMaterialContentNodeTriggerType
+  DeleteWorkspaceMaterialContentNodeTriggerType,
 } from "~/actions/workspaces";
 
 interface DeleteWorkspaceMaterialDialogProps {
@@ -40,74 +40,72 @@ class DeleteWorkspaceMaterialDialog extends React.Component<
   constructor(props: DeleteWorkspaceMaterialDialogProps) {
     super(props);
     this.state = {
-      locked: false
+      locked: false,
     };
 
     this.delete = this.delete.bind(this);
   }
   delete(closeDialog: () => any) {
     this.setState({
-      locked: true
+      locked: true,
     });
     this.props.deleteWorkspaceMaterialContentNode({
       material: this.props.material,
       workspace: this.props.materialEditor.currentNodeWorkspace,
       success: () => {
         this.setState({
-          locked: false
+          locked: false,
         });
         closeDialog();
         this.props.onDeleteSuccess();
       },
       fail: () => {
         this.setState({
-          locked: false
+          locked: false,
         });
         closeDialog();
-      }
+      },
     });
   }
   render() {
-    let content = (closeDialog: () => any) => (
+    const content = (closeDialog: () => any) => (
       <div>
         <span>
           {this.props.i18n.text.get(
             this.props.isSection
               ? "plugin.workspace.materialsManagement.confirmSectionDelete.text"
-              : "plugin.workspace.materialsManagement.confirmDelete.text"
+              : "plugin.workspace.materialsManagement.confirmDelete.text",
           )}
         </span>
       </div>
     );
 
-    let footer = (closeDialog: () => any) => {
-      return (
-        <div className="dialog__button-set">
-          <Button
-            buttonModifiers={["standard-ok", "fatal"]}
-            onClick={this.delete.bind(this, closeDialog)}
-            disabled={this.state.locked}
-          >
-            {this.props.i18n.text.get(
-              this.props.isSection
-                ? "plugin.workspace.materialsManagement.confirmSectionDelete.confirmButton"
-                : "plugin.workspace.materialsManagement.confirmDelete.confirmButton"
-            )}
-          </Button>
-          <Button
-            buttonModifiers={["cancel", "standard-cancel"]}
-            onClick={closeDialog}
-            disabled={this.state.locked}
-          >
-            {this.props.i18n.text.get(
-              this.props.isSection
-                ? "plugin.workspace.materialsManagement.confirmSectionDelete.cancelButton"
-                : "plugin.workspace.materialsManagement.confirmDelete.cancelButton"
-            )}
-          </Button>
-        </div>
-      );
-    };
+    const footer = (closeDialog: () => any) => (
+      <div className="dialog__button-set">
+        <Button
+          buttonModifiers={["standard-ok", "fatal"]}
+          onClick={this.delete.bind(this, closeDialog)}
+          disabled={this.state.locked}
+        >
+          {this.props.i18n.text.get(
+            this.props.isSection
+              ? "plugin.workspace.materialsManagement.confirmSectionDelete.confirmButton"
+              : "plugin.workspace.materialsManagement.confirmDelete.confirmButton",
+          )}
+        </Button>
+        <Button
+          buttonModifiers={["cancel", "standard-cancel"]}
+          onClick={closeDialog}
+          disabled={this.state.locked}
+        >
+          {this.props.i18n.text.get(
+            this.props.isSection
+              ? "plugin.workspace.materialsManagement.confirmSectionDelete.cancelButton"
+              : "plugin.workspace.materialsManagement.confirmDelete.cancelButton",
+          )}
+        </Button>
+      </div>
+    );
 
     return (
       <Dialog
@@ -115,7 +113,7 @@ class DeleteWorkspaceMaterialDialog extends React.Component<
         title={this.props.i18n.text.get(
           this.props.isSection
             ? "plugin.workspace.materialsManagement.confirmSectionDelete.title"
-            : "plugin.workspace.materialsManagement.confirmDelete.title"
+            : "plugin.workspace.materialsManagement.confirmDelete.title",
         )}
         content={content}
         footer={footer}
@@ -129,7 +127,7 @@ class DeleteWorkspaceMaterialDialog extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    materialEditor: state.workspaces.materialEditor
+    materialEditor: state.workspaces.materialEditor,
   };
 }
 
@@ -139,5 +137,5 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(DeleteWorkspaceMaterialDialog);

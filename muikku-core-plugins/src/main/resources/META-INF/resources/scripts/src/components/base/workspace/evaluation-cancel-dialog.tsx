@@ -12,7 +12,7 @@ import { bindActionCreators } from "redux";
 import { WorkspaceType } from "~/reducers/workspaces";
 import {
   cancelAssessmentAtWorkspace,
-  CancelAssessmentAtWorkspaceTriggerType
+  CancelAssessmentAtWorkspaceTriggerType,
 } from "~/actions/workspaces";
 
 interface EvaluationCancelDialogProps {
@@ -34,71 +34,69 @@ class EvaluationCancelDialog extends React.Component<
   constructor(props: EvaluationCancelDialogProps) {
     super(props);
     this.state = {
-      locked: false
+      locked: false,
     };
 
     this.cancel = this.cancel.bind(this);
   }
   cancel(closeDialog: () => any) {
     this.setState({
-      locked: true
+      locked: true,
     });
     this.props.cancelAssessmentAtWorkspace({
       workspace: this.props.workspace,
       success: () => {
         this.setState({
-          locked: false
+          locked: false,
         });
         closeDialog();
       },
       fail: () => {
         this.setState({
-          locked: false
+          locked: false,
         });
-      }
+      },
     });
   }
   render() {
-    let content = (closeDialog: () => any) => (
+    const content = (closeDialog: () => any) => (
       <div>
         <span>
           {this.props.i18n.text.get(
-            "plugin.workspace.evaluation.cancelEvaluation.description"
+            "plugin.workspace.evaluation.cancelEvaluation.description",
           )}
         </span>
       </div>
     );
 
-    let footer = (closeDialog: () => any) => {
-      return (
-        <div className="dialog__button-set">
-          <Button
-            buttonModifiers={["standard-ok", "warn"]}
-            onClick={this.cancel.bind(this, closeDialog)}
-            disabled={this.state.locked}
-          >
-            {this.props.i18n.text.get(
-              "plugin.workspace.evaluation.cancelEvaluation.cancelRequestButton"
-            )}
-          </Button>
-          <Button
-            buttonModifiers={["standard-cancel", "cancel"]}
-            onClick={closeDialog}
-            disabled={this.state.locked}
-          >
-            {this.props.i18n.text.get(
-              "plugin.workspace.evaluation.cancelEvaluation.cancelButton"
-            )}
-          </Button>
-        </div>
-      );
-    };
+    const footer = (closeDialog: () => any) => (
+      <div className="dialog__button-set">
+        <Button
+          buttonModifiers={["standard-ok", "warn"]}
+          onClick={this.cancel.bind(this, closeDialog)}
+          disabled={this.state.locked}
+        >
+          {this.props.i18n.text.get(
+            "plugin.workspace.evaluation.cancelEvaluation.cancelRequestButton",
+          )}
+        </Button>
+        <Button
+          buttonModifiers={["standard-cancel", "cancel"]}
+          onClick={closeDialog}
+          disabled={this.state.locked}
+        >
+          {this.props.i18n.text.get(
+            "plugin.workspace.evaluation.cancelEvaluation.cancelButton",
+          )}
+        </Button>
+      </div>
+    );
 
     return (
       <Dialog
         modifier="evaluation-cancel-dialog"
         title={this.props.i18n.text.get(
-          "plugin.workspace.evaluation.cancelEvaluation.title"
+          "plugin.workspace.evaluation.cancelEvaluation.title",
         )}
         content={content}
         footer={footer}
@@ -112,7 +110,7 @@ class EvaluationCancelDialog extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    workspace: state.workspaces.currentWorkspace
+    workspace: state.workspaces.currentWorkspace,
   };
 }
 
@@ -122,5 +120,5 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(EvaluationCancelDialog);

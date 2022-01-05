@@ -6,7 +6,7 @@ import { StateType } from "~/reducers";
 import "~/sass/elements/buttons.scss";
 import {
   deleteProfileImage,
-  DeleteProfileImageTriggerType
+  DeleteProfileImageTriggerType,
 } from "~/actions/main-function/profile";
 import { bindActionCreators } from "redux";
 import Button from "~/components/general/button";
@@ -36,43 +36,41 @@ class DeleteImageDialog extends React.Component<
     closeDialog();
   }
   render() {
-    let content = (closeDialog: () => any) => (
+    const content = (closeDialog: () => any) => (
       <div>
         <span>
           {this.props.i18n.text.get(
-            "plugin.profile.deleteImage.dialog.description"
+            "plugin.profile.deleteImage.dialog.description",
           )}
         </span>
       </div>
     );
-    let footer = (closeDialog: () => any) => {
-      return (
-        <div className="dialog__button-set">
-          <Button
-            buttonModifiers={["fatal", "standard-ok"]}
-            onClick={this.delete.bind(this, closeDialog)}
-          >
-            {this.props.i18n.text.get(
-              "plugin.profile.deleteImage.dialog.button.deleteLabel"
-            )}
-          </Button>
-          <Button
-            buttonModifiers={["cancel", "standard-cancel"]}
-            onClick={closeDialog}
-          >
-            {this.props.i18n.text.get(
-              "plugin.profile.deleteImage.dialog.button.cancelLabel"
-            )}
-          </Button>
-        </div>
-      );
-    };
+    const footer = (closeDialog: () => any) => (
+      <div className="dialog__button-set">
+        <Button
+          buttonModifiers={["fatal", "standard-ok"]}
+          onClick={this.delete.bind(this, closeDialog)}
+        >
+          {this.props.i18n.text.get(
+            "plugin.profile.deleteImage.dialog.button.deleteLabel",
+          )}
+        </Button>
+        <Button
+          buttonModifiers={["cancel", "standard-cancel"]}
+          onClick={closeDialog}
+        >
+          {this.props.i18n.text.get(
+            "plugin.profile.deleteImage.dialog.button.cancelLabel",
+          )}
+        </Button>
+      </div>
+    );
     return (
       <Dialog
         isOpen={this.props.isOpen}
         onClose={this.props.onClose}
         title={this.props.i18n.text.get(
-          "plugin.profile.deleteImage.dialog.title"
+          "plugin.profile.deleteImage.dialog.title",
         )}
         content={content}
         footer={footer}
@@ -84,7 +82,7 @@ class DeleteImageDialog extends React.Component<
 
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n
+    i18n: state.i18n,
   };
 }
 

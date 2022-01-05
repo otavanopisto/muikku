@@ -5,13 +5,13 @@ import DeleteRequestDialog from "../../../dialogs/delete-request";
 import {
   AssessmentRequest,
   EvaluationImportantStatus,
-  UpdateImportanceObject
+  UpdateImportanceObject,
 } from "~/@types/evaluation";
 import * as moment from "moment";
 import {
   SetEvaluationSelectedWorkspace,
   LoadEvaluationAssessmentRequest,
-  loadEvaluationAssessmentRequestsFromServer
+  loadEvaluationAssessmentRequestsFromServer,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import { bindActionCreators } from "redux";
 import { connect, Dispatch } from "react-redux";
@@ -70,22 +70,22 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
        */
       if (status === important) {
         updatedImportAssessmentList = updatedImportAssessmentList.filter(
-          (item) => item !== rest.workspaceUserEntityId
+          (item) => item !== rest.workspaceUserEntityId,
         );
 
         updatedUnimportAssessmentList = updatedUnimportAssessmentList.filter(
-          (item) => item !== rest.workspaceUserEntityId
+          (item) => item !== rest.workspaceUserEntityId,
         );
 
         updateImportances = {
           importantAssessments: {
             key: "important-evaluation-requests",
-            value: updatedImportAssessmentList.join(",")
+            value: updatedImportAssessmentList.join(","),
           },
           unimportantAssessments: {
             key: "unimportant-evaluation-requests",
-            value: updatedUnimportAssessmentList.join(",")
-          }
+            value: updatedUnimportAssessmentList.join(","),
+          },
         };
       } else if (status === "important") {
         /**
@@ -93,25 +93,25 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
          */
         updatedImportAssessmentList.push(rest.workspaceUserEntityId);
         updatedUnimportAssessmentList = updatedUnimportAssessmentList.filter(
-          (item) => item !== rest.workspaceUserEntityId
+          (item) => item !== rest.workspaceUserEntityId,
         );
 
         updateImportances = {
           importantAssessments: {
             key: "important-evaluation-requests",
-            value: updatedImportAssessmentList.join(",")
+            value: updatedImportAssessmentList.join(","),
           },
           unimportantAssessments: {
             key: "unimportant-evaluation-requests",
-            value: updatedUnimportAssessmentList.join(",")
-          }
+            value: updatedUnimportAssessmentList.join(","),
+          },
         };
       } else if (status === "unimportant") {
         /**
          * As above
          */
         updatedImportAssessmentList = updatedImportAssessmentList.filter(
-          (item) => item !== rest.workspaceUserEntityId
+          (item) => item !== rest.workspaceUserEntityId,
         );
 
         updatedUnimportAssessmentList.push(rest.workspaceUserEntityId);
@@ -119,12 +119,12 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
         updateImportances = {
           importantAssessments: {
             key: "important-evaluation-requests",
-            value: updatedImportAssessmentList.join(",")
+            value: updatedImportAssessmentList.join(","),
           },
           unimportantAssessments: {
             key: "unimportant-evaluation-requests",
-            value: updatedUnimportAssessmentList.join(",")
-          }
+            value: updatedUnimportAssessmentList.join(","),
+          },
         };
       }
 
@@ -144,7 +144,7 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
    * Handles workspacename click. It "filters" every assessments by that workspace
    */
   const handleWorkspaceNameClick = (
-    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
   ) => {
     setSelectedWorkspaceId({ workspaceId: rest.workspaceEntityId });
   };
@@ -241,7 +241,7 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
       <DeleteRequestDialog {...rest}>
         <ButtonPill
           aria-label={i18n.text.get(
-            "plugin.evaluation.card.button.deleteRequest.title"
+            "plugin.evaluation.card.button.deleteRequest.title",
           )}
           buttonModifiers="archive"
           icon="archive"
@@ -253,7 +253,7 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
       <ArchiveDialog place="card" {...rest}>
         <ButtonPill
           aria-label={i18n.text.get(
-            "plugin.evaluation.card.button.archiveButtonLabel"
+            "plugin.evaluation.card.button.archiveButtonLabel",
           )}
           buttonModifiers="archive"
           icon="archive"
@@ -318,7 +318,7 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
         <div className="evaluation-card__button-set">
           <IconButton
             aria-label={i18n.text.get(
-              "plugin.evaluation.card.button.markImportantButtonLabel"
+              "plugin.evaluation.card.button.markImportantButtonLabel",
             )}
             onClick={handleImportanceClick("important")}
             buttonModifiers={["important", evaluationImportantClassesMod]}
@@ -326,7 +326,7 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
           />
           <IconButton
             aria-label={i18n.text.get(
-              "plugin.evaluation.card.button.markNonImportantButtonLabel"
+              "plugin.evaluation.card.button.markNonImportantButtonLabel",
             )}
             onClick={handleImportanceClick("unimportant")}
             buttonModifiers={["unimportant", evaluationUnimportantClassesMod]}
@@ -340,7 +340,7 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
           <EvaluateDialog assessment={rest} onClose={handleDialogClose}>
             <ButtonPill
               aria-label={i18n.text.get(
-                "plugin.evaluation.card.button.evaluateButtonLabel"
+                "plugin.evaluation.card.button.evaluateButtonLabel",
               )}
               buttonModifiers="evaluate"
               icon="evaluate"
@@ -358,7 +358,7 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n
+    i18n: state.i18n,
   };
 }
 
@@ -369,7 +369,7 @@ function mapStateToProps(state: StateType) {
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     { loadEvaluationAssessmentRequestsFromServer },
-    dispatch
+    dispatch,
   );
 }
 

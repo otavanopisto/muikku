@@ -34,7 +34,7 @@ export class AudioPoolComponent extends React.Component<
 
     this.state = {
       key: "std",
-      killed: false
+      killed: false,
     };
   }
   public initialSetup() {
@@ -50,7 +50,7 @@ export class AudioPoolComponent extends React.Component<
         // a hack of a property that says if it's playing
         // but in reality just specified if once it started
         // playing because there's no way to know
-        playing: false
+        playing: false,
       };
     }
   }
@@ -66,7 +66,7 @@ export class AudioPoolComponent extends React.Component<
     // the sources as well as its children
     this.setState(
       {
-        killed: true
+        killed: true,
       },
       () => {
         // now we call it to load with the new missing source
@@ -76,18 +76,18 @@ export class AudioPoolComponent extends React.Component<
         // with the new key this will cause that to happen
         this.setState(
           {
-            key: "killed"
+            key: "killed",
           },
           () => {
             // now we want to restore it back to original
             // and all buffering should've been cancelled
             this.setState({
               key: "std",
-              killed: false
+              killed: false,
             });
-          }
+          },
         );
-      }
+      },
     );
   }
   public killEverything() {

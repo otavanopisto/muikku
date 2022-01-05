@@ -5,7 +5,7 @@ import { StateType } from "~/reducers";
 import { AnyActionType } from "~/actions/index";
 import {
   SendMessageTriggerType,
-  sendMessage
+  sendMessage,
 } from "~/actions/main-function/messages/index";
 import { MessageSignatureType } from "~/reducers/main-function/messages";
 import { ContactRecipientType } from "~/reducers/user-index";
@@ -57,7 +57,7 @@ class AnswerMessageDrawer extends SessionStateComponent<
     super(
       props,
       "communicator-new-message" +
-        (props.extraNamespace ? "-" + props.extraNamespace : "")
+        (props.extraNamespace ? "-" + props.extraNamespace : ""),
     );
 
     this.onCKEditorChange = this.onCKEditorChange.bind(this);
@@ -74,9 +74,9 @@ class AnswerMessageDrawer extends SessionStateComponent<
         selectedItems: props.initialSelectedItems || [],
         subject: props.initialSubject || "",
         locked: false,
-        includesSignature: true
+        includesSignature: true,
       },
-      getStateIdentifier(props)
+      getStateIdentifier(props),
     );
   }
 
@@ -90,9 +90,9 @@ class AnswerMessageDrawer extends SessionStateComponent<
         selectedItems: this.props.initialSelectedItems || [],
         subject: this.props.initialSubject || "",
         locked: false,
-        includesSignature: true
+        includesSignature: true,
       },
-      getStateIdentifier(this.props)
+      getStateIdentifier(this.props),
     );
 
     this.props.onOpen && this.props.onOpen();
@@ -126,7 +126,7 @@ class AnswerMessageDrawer extends SessionStateComponent<
   onSubjectChange(e: React.ChangeEvent<HTMLInputElement>) {
     this.setStateAndStore(
       { subject: e.target.value },
-      getStateIdentifier(this.props)
+      getStateIdentifier(this.props),
     );
   }
 
@@ -136,7 +136,7 @@ class AnswerMessageDrawer extends SessionStateComponent<
    */
   sendMessage() {
     this.setState({
-      locked: true
+      locked: true,
     });
     this.props.sendMessage({
       to: this.state.selectedItems,
@@ -159,17 +159,17 @@ class AnswerMessageDrawer extends SessionStateComponent<
             text: this.props.initialMessage || "",
             selectedItems: this.props.initialSelectedItems || [],
             subject: this.props.initialSubject || "",
-            locked: false
+            locked: false,
           },
-          getStateIdentifier(this.props)
+          getStateIdentifier(this.props),
         );
       },
       fail: () => {
         this.setState({
-          locked: false
+          locked: false,
         });
       },
-      replyThreadId: this.props.replyThreadId
+      replyThreadId: this.props.replyThreadId,
     });
   }
 
@@ -193,9 +193,9 @@ class AnswerMessageDrawer extends SessionStateComponent<
         text: this.props.initialMessage || "",
         selectedItems: this.props.initialSelectedItems || [],
         subject: this.props.initialSubject || "",
-        locked: false
+        locked: false,
       },
-      getStateIdentifier(this.props)
+      getStateIdentifier(this.props),
     );
   }
 
@@ -208,17 +208,17 @@ class AnswerMessageDrawer extends SessionStateComponent<
       studentsLoader: (searchString: string) =>
         promisify(
           mApi().communicator.recipientsUsersSearch.read({
-            q: searchString
+            q: searchString,
           }),
-          "callback"
+          "callback",
         ),
       workspacesLoader: (searchString: string) =>
         promisify(
           mApi().communicator.recipientsWorkspacesSearch.read({
-            q: searchString
+            q: searchString,
           }),
-          "callback"
-        )
+          "callback",
+        ),
     };
   }
 
@@ -230,13 +230,13 @@ class AnswerMessageDrawer extends SessionStateComponent<
   };
 
   render() {
-    let editorTitle =
+    const editorTitle =
       this.props.i18n.text.get("plugin.communicator.answertomessage.label") +
       " - " +
       this.props.i18n.text.get(
-        "plugin.communicator.createmessage.title.content"
+        "plugin.communicator.createmessage.title.content",
       );
-    let content = (
+    const content = (closeDialog: () => any) => (
       <>
         <InputContactsAutofill
           identifier="communicatorRecipients"
@@ -250,10 +250,10 @@ class AnswerMessageDrawer extends SessionStateComponent<
             this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING
           }
           placeholder={this.props.i18n.text.get(
-            "plugin.communicator.createmessage.title.recipients"
+            "plugin.communicator.createmessage.title.recipients",
           )}
           label={this.props.i18n.text.get(
-            "plugin.communicator.createmessage.title.recipients"
+            "plugin.communicator.createmessage.title.recipients",
           )}
           selectedItems={this.state.selectedItems}
           onChange={this.setSelectedItems}
@@ -264,7 +264,7 @@ class AnswerMessageDrawer extends SessionStateComponent<
           <div className="env-dialog__form-element-container">
             <label htmlFor="messageTitle" className="env-dialog__label">
               {this.props.i18n.text.get(
-                "plugin.communicator.createmessage.title.subject"
+                "plugin.communicator.createmessage.title.subject",
               )}
             </label>
             <input
@@ -284,7 +284,7 @@ class AnswerMessageDrawer extends SessionStateComponent<
           <div className="env-dialog__form-element-container">
             <label className="env-dialog__label">
               {this.props.i18n.text.get(
-                "plugin.communicator.createmessage.title.content"
+                "plugin.communicator.createmessage.title.content",
               )}
             </label>
             <CKEditor
@@ -312,14 +312,14 @@ class AnswerMessageDrawer extends SessionStateComponent<
               className="env-dialog__input-label"
             >
               {this.props.i18n.text.get(
-                "plugin.communicator.createmessage.checkbox.signature"
+                "plugin.communicator.createmessage.checkbox.signature",
               )}
             </label>
             <span className="env-dialog__input-description">
               <i
                 className="mf-signature"
                 dangerouslySetInnerHTML={{
-                  __html: this.props.signature.signature
+                  __html: this.props.signature.signature,
                 }}
               />
             </span>
@@ -328,7 +328,7 @@ class AnswerMessageDrawer extends SessionStateComponent<
       </>
     );
 
-    let footer = (
+    const footer = (
       <div className="env-dialog__actions">
         <Button
           buttonModifiers="dialog-execute"
@@ -336,7 +336,7 @@ class AnswerMessageDrawer extends SessionStateComponent<
           disabled={this.state.locked}
         >
           {this.props.i18n.text.get(
-            "plugin.communicator.createmessage.button.send"
+            "plugin.communicator.createmessage.button.send",
           )}
         </Button>
         <Button
@@ -345,7 +345,7 @@ class AnswerMessageDrawer extends SessionStateComponent<
           onClick={this.handleCancelClick}
         >
           {this.props.i18n.text.get(
-            "plugin.communicator.createmessage.button.cancel"
+            "plugin.communicator.createmessage.button.cancel",
           )}
         </Button>
         {this.recovered ? (
@@ -355,7 +355,7 @@ class AnswerMessageDrawer extends SessionStateComponent<
             disabled={this.state.locked}
           >
             {this.props.i18n.text.get(
-              "plugin.communicator.createmessage.button.clearDraft"
+              "plugin.communicator.createmessage.button.clearDraft",
             )}
           </Button>
         ) : null}
@@ -368,7 +368,7 @@ class AnswerMessageDrawer extends SessionStateComponent<
           <div className="env-dialog__content">
             <header className="env-dialog__header">
               {this.props.i18n.text.get(
-                "plugin.communicator.answertomessage.label"
+                "plugin.communicator.answertomessage.label",
               )}
             </header>
             <section className="env-dialog__body">{content}</section>
@@ -402,7 +402,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     signature: state.messages && state.messages.signature,
-    status: state.status
+    status: state.status,
   };
 }
 
@@ -417,5 +417,5 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(AnswerMessageDrawer);

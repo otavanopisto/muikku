@@ -21,7 +21,7 @@ interface EvaluationEventContentCardProps extends EvaluationEvent {
   evaluations: EvaluationState;
   onClickEdit: (
     eventId: string,
-    supplementation?: boolean
+    supplementation?: boolean,
   ) => (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void;
 }
 
@@ -32,8 +32,6 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
   i18n,
   showDeleteAndModify,
   onClickEdit,
-  evaluations,
-  children,
   ...event
 }) => {
   const [height, setHeight] = React.useState<0 | "auto">(0);
@@ -78,11 +76,9 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
    * createHtmlMarkup
    * @param htmlString
    */
-  const createHtmlMarkup = (htmlString: string) => {
-    return {
-      __html: htmlString
-    };
-  };
+  const createHtmlMarkup = (htmlString: string) => ({
+    __html: htmlString,
+  });
 
   /**
    * handleOpenContentClick
@@ -91,13 +87,13 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
     setHeight(height === 0 ? "auto" : 0);
   };
 
-  let arrowClasses =
+  const arrowClasses =
     height === 0
       ? `evaluation-modal__event-arrow ${arrowClassMod(
-          type
+          type,
         )} evaluation-modal__event-arrow--right `
       : `evaluation-modal__event-arrow ${arrowClassMod(
-          type
+          type,
         )} evaluation-modal__event-arrow--down `;
 
   /**
@@ -112,11 +108,11 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
           <div className="evaluation-modal__event-meta">
             <span className="evaluation-modal__event-author">{author}</span>{" "}
             {i18n.text.get(
-              "plugin.evaluation.evaluationModal.events.evaluationRequest.1"
+              "plugin.evaluation.evaluationModal.events.evaluationRequest.1",
             )}{" "}
             <span className="evaluation-modal__event-type state-REQUESTED">
               {i18n.text.get(
-                "plugin.evaluation.evaluationModal.events.evaluationRequest.2"
+                "plugin.evaluation.evaluationModal.events.evaluationRequest.2",
               )}
             </span>
           </div>
@@ -128,11 +124,11 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
             <div className="evaluation-modal__event-meta">
               <span className="evaluation-modal__event-author">{author}</span>{" "}
               {i18n.text.get(
-                "plugin.evaluation.evaluationModal.events.gradePass.1"
+                "plugin.evaluation.evaluationModal.events.gradePass.1",
               )}{" "}
               <span className="evaluation-modal__event-type state-PASSED">
                 {i18n.text.get(
-                  "plugin.evaluation.evaluationModal.events.gradePass.2"
+                  "plugin.evaluation.evaluationModal.events.gradePass.2",
                 )}
               </span>
             </div>
@@ -150,11 +146,11 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
             <div className="evaluation-modal__event-meta">
               <span className="evaluation-modal__event-author">{author}</span>{" "}
               {i18n.text.get(
-                "plugin.evaluation.evaluationModal.events.gradeFail.1"
+                "plugin.evaluation.evaluationModal.events.gradeFail.1",
               )}{" "}
               <span className="evaluation-modal__event-type state-FAILED">
                 {i18n.text.get(
-                  "plugin.evaluation.evaluationModal.events.gradeFail.2"
+                  "plugin.evaluation.evaluationModal.events.gradeFail.2",
                 )}
               </span>
             </div>
@@ -172,11 +168,11 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
             <div className="evaluation-modal__event-meta">
               <span className="evaluation-modal__event-author">{author}</span>{" "}
               {i18n.text.get(
-                "plugin.evaluation.evaluationModal.events.gradeImproved.1"
+                "plugin.evaluation.evaluationModal.events.gradeImproved.1",
               )}{" "}
               <span className="evaluation-modal__event-type state-IMPROVED">
                 {i18n.text.get(
-                  "plugin.evaluation.evaluationModal.events.gradeImproved.2"
+                  "plugin.evaluation.evaluationModal.events.gradeImproved.2",
                 )}
               </span>
             </div>
@@ -194,11 +190,11 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
             <div className="evaluation-modal__event-meta">
               <span className="evaluation-modal__event-author">{author}</span>{" "}
               {i18n.text.get(
-                "plugin.evaluation.evaluationModal.events.supplementationRequest.1"
+                "plugin.evaluation.evaluationModal.events.supplementationRequest.1",
               )}{" "}
               <span className="evaluation-modal__event-type state-INCOMPLETE">
                 {i18n.text.get(
-                  "plugin.evaluation.evaluationModal.events.supplementationRequest.2"
+                  "plugin.evaluation.evaluationModal.events.supplementationRequest.2",
                 )}
               </span>
             </div>
@@ -243,17 +239,17 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
               className="link link--evaluation-event-edit"
               onClick={onClickEdit(
                 identifier,
-                type === EvaluationEnum.SUPPLEMENTATION_REQUEST
+                type === EvaluationEnum.SUPPLEMENTATION_REQUEST,
               )}
             >
               {i18n.text.get(
-                "plugin.evaluation.evaluationModal.events.editButton"
+                "plugin.evaluation.evaluationModal.events.editButton",
               )}
             </Link>
             <DeleteDialog eventData={event}>
               <Link className="link link--evaluation-event-delete">
                 {i18n.text.get(
-                  "plugin.evaluation.evaluationModal.events.deleteButton"
+                  "plugin.evaluation.evaluationModal.events.deleteButton",
                 )}
               </Link>
             </DeleteDialog>
@@ -271,7 +267,7 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    evaluations: state.evaluations
+    evaluations: state.evaluations,
   };
 }
 
@@ -285,5 +281,5 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(EvaluationEventContentCard);

@@ -10,16 +10,15 @@ import "~/sass/elements/loaders.scss";
 import "~/sass/elements/journal.scss";
 
 import BodyScrollLoader from "~/components/general/body-scroll-loader";
-import SelectableList from "~/components/general/selectable-list";
 import Journal from "./journals/journal";
 import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
 import ApplicationList, {
-  ApplicationListItem
+  ApplicationListItem,
 } from "~/components/general/application-list";
 import {
   loadMoreCurrentWorkspaceJournalsFromServer,
-  LoadMoreCurrentWorkspaceJournalsFromServerTriggerType
+  LoadMoreCurrentWorkspaceJournalsFromServerTriggerType,
 } from "~/actions/workspaces";
 import { WorkspacesStateType, WorkspaceType } from "~/reducers/workspaces";
 
@@ -72,7 +71,7 @@ class WorkspaceJournals extends BodyScrollLoader<
             {this.props.status.isStudent
               ? this.props.i18n.text.get("plugin.workspace.journal.noEntries")
               : this.props.i18n.text.get(
-                  "plugin.workspace.journal.studentHasNoEntries"
+                  "plugin.workspace.journal.studentHasNoEntries",
                 )}
           </span>
         </div>
@@ -80,9 +79,9 @@ class WorkspaceJournals extends BodyScrollLoader<
     }
     return (
       <ApplicationList>
-        {this.props.workspace.journals.journals.map((journal) => {
-          return <Journal key={journal.id} journal={journal} />;
-        })}
+        {this.props.workspace.journals.journals.map((journal) => (
+          <Journal key={journal.id} journal={journal} />
+        ))}
         {this.props.workspaceJournalsState === "LOADING_MORE" ? (
           <ApplicationListItem className="loader-empty" />
         ) : null}
@@ -103,14 +102,14 @@ function mapStateToProps(state: StateType) {
       state.workspaces.currentWorkspace.journals &&
       state.workspaces.currentWorkspace.journals.hasMore,
     workspace: state.workspaces.currentWorkspace,
-    status: state.status
+    status: state.status,
   };
 }
 
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     { loadMoreCurrentWorkspaceJournalsFromServer },
-    dispatch
+    dispatch,
   );
 }
 

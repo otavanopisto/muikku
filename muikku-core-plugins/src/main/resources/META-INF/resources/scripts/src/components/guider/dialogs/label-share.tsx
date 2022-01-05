@@ -1,6 +1,5 @@
 import * as React from "react";
 import Dialog from "~/components/general/dialog";
-import Link from "~/components/general/link";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AnyActionType } from "~/actions";
@@ -15,15 +14,11 @@ import { UserIndexType, ContactRecipientType } from "~/reducers/user-index";
 import promisify from "~/util/promisify";
 import {
   displayNotification,
-  DisplayNotificationTriggerType
+  DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
 import { getName } from "~/util/modifiers";
-
-const KEYCODES = {
-  ENTER: 13
-};
 
 interface GuiderLabelShareDialogProps {
   children: React.ReactElement<any>;
@@ -55,7 +50,7 @@ class GuiderLabelShareDialog extends React.Component<
     this.sharesResult = [];
 
     this.state = {
-      selectedItems: []
+      selectedItems: [],
     };
   }
 
@@ -65,7 +60,7 @@ class GuiderLabelShareDialog extends React.Component<
    */
   componentWillReceiveProps(nextProps: GuiderLabelShareDialogProps) {
     if (nextProps.userIndex !== this.props.userIndex) {
-      this.updateSharesState(nextProps);
+      this.updateSharesState();
     }
   }
 
@@ -73,20 +68,20 @@ class GuiderLabelShareDialog extends React.Component<
    * updateSharesState
    * @param props
    */
-  updateSharesState(props = this.props) {
+  updateSharesState() {
     this.setState({
       selectedItems: this.sharesResult
-        .map((result: any): ContactRecipientType => {
-          return {
+        .map(
+          (result: any): ContactRecipientType => ({
             type: "staff",
             value: {
               id: result.user.userIdentifier,
               email: "unknown",
-              name: getName(result.user, true)
-            }
-          };
-        })
-        .filter((r: ContactRecipientType) => r !== null)
+              name: getName(result.user, true),
+            },
+          }),
+        )
+        .filter((r: ContactRecipientType) => r !== null),
     });
   }
 
@@ -98,7 +93,7 @@ class GuiderLabelShareDialog extends React.Component<
     try {
       this.sharesResult = await promisify(
         mApi().user.flags.shares.read(this.props.label.id),
-        "callback"
+        "callback",
       )();
       this.updateSharesState();
     } catch (e) {
@@ -112,17 +107,17 @@ class GuiderLabelShareDialog extends React.Component<
    */
   share(closeDialog: () => any) {
     this.state.selectedItems.forEach(async (member: ContactRecipientType) => {
-      let wasAdded = !this.sharesResult.find((share: any) => {
-        return share.userIdentifier === member.value.id;
-      });
+      const wasAdded = !this.sharesResult.find(
+        (share: any) => share.userIdentifier === member.value.id,
+      );
       if (wasAdded) {
         try {
           await promisify(
             mApi().user.flags.shares.create(this.props.label.id, {
               flagId: this.props.label.id,
-              userIdentifier: member.value.id
+              userIdentifier: member.value.id,
             }),
-            "callback"
+            "callback",
           )();
         } catch (e) {
           this.props.displayNotification(e.message, "error");
@@ -131,16 +126,15 @@ class GuiderLabelShareDialog extends React.Component<
     });
 
     this.sharesResult.forEach(async (share: any) => {
-      let wasRemoved = !this.state.selectedItems.find(
-        (member: ContactRecipientType) => {
-          return member.value.id === share.userIdentifier;
-        }
+      const wasRemoved = !this.state.selectedItems.find(
+        (member: ContactRecipientType) =>
+          member.value.id === share.userIdentifier,
       );
       if (wasRemoved) {
         try {
           await promisify(
             mApi().user.flags.shares.del(this.props.label.id, share.id),
-            "callback"
+            "callback",
           )();
         } catch (e) {
           this.props.displayNotification(e.message, "error");
@@ -163,45 +157,39 @@ class GuiderLabelShareDialog extends React.Component<
    * @returns
    */
   render() {
-    let footer = (closeDialog: () => any) => {
-      return (
-        <div className="dialog__button-set">
-          <Button
-            buttonModifiers={["cancel", "standard-cancel"]}
-            onClick={closeDialog}
-          >
-            {this.props.i18n.text.get(
-              "plugin.guider.flags.editFlagDialog.cancel"
-            )}
-          </Button>
-          <Button
-            buttonModifiers={["success", "standard-ok"]}
-            onClick={this.share.bind(this, closeDialog)}
-          >
-            {this.props.i18n.text.get(
-              "plugin.guider.flags.shareFlagDialog.save"
-            )}
-          </Button>
-        </div>
-      );
-    };
-    let content = (closeDialog: () => any) => {
-      return (
-        <InputContactsAutofill
-          identifier="guiderLabelShare"
-          modifier="guider"
-          onChange={this.onSharedMembersChange}
-          selectedItems={this.state.selectedItems}
-          hasGroupPermission={false}
-          hasUserPermission={false}
-          hasWorkspacePermission={false}
-          hasStaffPermission
-          autofocus
-          showEmails={false}
-          showFullNames
-        />
-      );
-    };
+    const footer = (closeDialog: () => any) => (
+      <div className="dialog__button-set">
+        <Button
+          buttonModifiers={["cancel", "standard-cancel"]}
+          onClick={closeDialog}
+        >
+          {this.props.i18n.text.get(
+            "plugin.guider.flags.editFlagDialog.cancel",
+          )}
+        </Button>
+        <Button
+          buttonModifiers={["success", "standard-ok"]}
+          onClick={this.share.bind(this, closeDialog)}
+        >
+          {this.props.i18n.text.get("plugin.guider.flags.shareFlagDialog.save")}
+        </Button>
+      </div>
+    );
+    const content = (closeDialog: () => any) => (
+      <InputContactsAutofill
+        identifier="guiderLabelShare"
+        modifier="guider"
+        onChange={this.onSharedMembersChange}
+        selectedItems={this.state.selectedItems}
+        hasGroupPermission={false}
+        hasUserPermission={false}
+        hasWorkspacePermission={false}
+        hasStaffPermission
+        autofocus
+        showEmails={false}
+        showFullNames
+      />
+    );
     return (
       <Dialog
         isOpen={this.props.isOpen}
@@ -210,7 +198,7 @@ class GuiderLabelShareDialog extends React.Component<
         modifier="guider-share-label"
         title={this.props.i18n.text.get(
           "plugin.guider.flags.shareFlagDialog.title",
-          this.props.label.name
+          this.props.label.name,
         )}
         content={content}
         footer={footer}
@@ -229,7 +217,7 @@ class GuiderLabelShareDialog extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    userIndex: state.userIndex
+    userIndex: state.userIndex,
   };
 }
 
@@ -244,5 +232,5 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(GuiderLabelShareDialog);

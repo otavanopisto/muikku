@@ -1,7 +1,6 @@
 import { i18nType } from "~/reducers/base/i18n";
 import * as React from "react";
 import { WorkspaceType } from "~/reducers/workspaces";
-import { Dispatch } from "redux";
 import { connect } from "react-redux";
 import { StateType } from "~/reducers";
 import Dropdown from "~/components/general/dropdown";
@@ -12,7 +11,7 @@ import "~/sass/elements/course.scss";
 import "~/sass/elements/workspace-activity.scss";
 import {
   ApplicationListItem,
-  ApplicationListItemHeader
+  ApplicationListItemHeader,
 } from "~/components/general/application-list";
 import { getShortenGradeExtension, shortenGrade } from "~/util/modifiers";
 
@@ -46,7 +45,7 @@ function CourseActivityRow(props: {
         props.conditionalAttributeLocale,
         (props.workspace as any)[props.mainAttribute][
           props.conditionalAttribute
-        ]
+        ],
       );
     } else {
       output = (props.workspace as any)[props.mainAttribute][
@@ -63,14 +62,14 @@ function CourseActivityRow(props: {
           props.i18n.time.format(
             (props.workspace as any)[props.mainAttribute][
               props.givenDateAttribute
-            ]
-          )
+            ],
+          ),
         );
       } else {
         output += props.i18n.time.format(
           (props.workspace as any)[props.mainAttribute][
             props.givenDateAttribute
-          ]
+          ],
         );
       }
     }
@@ -89,7 +88,7 @@ function CourseActivityRow(props: {
 
 function getWorkspaceAssessmentsAndPercents(
   props: StudentWorkspaceProps,
-  workspace: WorkspaceType
+  workspace: WorkspaceType,
 ) {
   if (
     workspace.studentActivity.assessmentState &&
@@ -102,11 +101,11 @@ function getWorkspaceAssessmentsAndPercents(
             props.i18n.text.get(
               "plugin.guider.evaluated",
               props.i18n.time.format(
-                workspace.studentActivity.assessmentState.date
-              )
+                workspace.studentActivity.assessmentState.date,
+              ),
             ) +
             getShortenGradeExtension(
-              workspace.studentActivity.assessmentState.grade
+              workspace.studentActivity.assessmentState.grade,
             )
           }
           className={`application-list__indicator-badge application-list__indicator-badge--course application-list__indicator-badge--course-in-guider ${
@@ -124,10 +123,10 @@ function getWorkspaceAssessmentsAndPercents(
     workspace.studentActivity.assessmentState &&
     workspace.studentActivity.assessmentState.state === "incomplete"
   ) {
-    let status = props.i18n.text.get(
+    const status = props.i18n.text.get(
       workspace.studentActivity.assessmentState.state === "incomplete"
         ? "plugin.guider.workspace.incomplete"
-        : "plugin.guider.workspace.failed"
+        : "plugin.guider.workspace.failed",
     );
     return (
       <span className="application-list__header-secondary">
@@ -135,7 +134,7 @@ function getWorkspaceAssessmentsAndPercents(
           className="workspace-activity__assignment-done-percent"
           title={props.i18n.text.get(
             "plugin.guider.headerEvaluatedTitle",
-            workspace.studentActivity.evaluablesDonePercent
+            workspace.studentActivity.evaluablesDonePercent,
           )}
         >
           {workspace.studentActivity.evaluablesDonePercent}%
@@ -145,7 +144,7 @@ function getWorkspaceAssessmentsAndPercents(
           className="workspace-activity__exercise-done-percent"
           title={props.i18n.text.get(
             "plugin.guider.headerExercisesTitle",
-            workspace.studentActivity.exercisesDonePercent
+            workspace.studentActivity.exercisesDonePercent,
           )}
         >
           {workspace.studentActivity.exercisesDonePercent}%
@@ -155,8 +154,8 @@ function getWorkspaceAssessmentsAndPercents(
             props.i18n.text.get(
               "plugin.guider.evaluated",
               props.i18n.time.format(
-                workspace.studentActivity.assessmentState.date
-              )
+                workspace.studentActivity.assessmentState.date,
+              ),
             ) +
             " - " +
             status
@@ -178,7 +177,7 @@ function getWorkspaceAssessmentsAndPercents(
           className="workspace-activity__assignment-done-percent"
           title={props.i18n.text.get(
             "plugin.guider.headerEvaluatedTitle",
-            workspace.studentActivity.evaluablesDonePercent
+            workspace.studentActivity.evaluablesDonePercent,
           )}
         >
           {workspace.studentActivity.evaluablesDonePercent}%
@@ -188,7 +187,7 @@ function getWorkspaceAssessmentsAndPercents(
           className="workspace-activity__exercise-done-percent"
           title={props.i18n.text.get(
             "plugin.guider.headerExercisesTitle",
-            workspace.studentActivity.exercisesDonePercent
+            workspace.studentActivity.exercisesDonePercent,
           )}
         >
           {workspace.studentActivity.exercisesDonePercent}%
@@ -206,18 +205,18 @@ class StudentWorkspace extends React.Component<
     super(props);
 
     this.state = {
-      activitiesVisible: false
+      activitiesVisible: false,
     };
 
     this.toggleActivitiesVisible = this.toggleActivitiesVisible.bind(this);
   }
   toggleActivitiesVisible() {
     this.setState({
-      activitiesVisible: !this.state.activitiesVisible
+      activitiesVisible: !this.state.activitiesVisible,
     });
   }
   render() {
-    let workspace = this.props.workspace;
+    const workspace = this.props.workspace;
 
     let stateText;
     let extraClasses = "";
@@ -249,7 +248,7 @@ class StudentWorkspace extends React.Component<
       resultingStateText +=
         " - " +
         this.props.i18n.time.format(
-          workspace.studentActivity.assessmentState.date
+          workspace.studentActivity.assessmentState.date,
         );
     }
 
@@ -278,7 +277,9 @@ class StudentWorkspace extends React.Component<
           <Dropdown
             persistent
             modifier={"workspace-chart workspace-" + workspace.id}
-            items={[<WorkspaceChart workspace={workspace} />]}
+            items={[
+              <WorkspaceChart key={workspace.id} workspace={workspace} />,
+            ]}
           >
             <span className="icon-statistics chart__activator chart__activator--workspace-chart"></span>
           </Dropdown>
@@ -291,7 +292,7 @@ class StudentWorkspace extends React.Component<
                 <div className="application-sub-panel__item-title">
                   {" "}
                   {this.props.i18n.text.get(
-                    "plugin.guider.assessmentStateLabel"
+                    "plugin.guider.assessmentStateLabel",
                   )}
                 </div>
                 <div className="application-sub-panel__item-data">
@@ -412,11 +413,11 @@ class StudentWorkspace extends React.Component<
 
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n
+    i18n: state.i18n,
   };
 }
 
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps() {
   return {};
 }
 

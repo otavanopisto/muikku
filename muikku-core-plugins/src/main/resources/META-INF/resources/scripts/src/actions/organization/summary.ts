@@ -6,7 +6,7 @@ import { StateType } from "~/reducers";
 import {
   OrganizationSummaryWorkspaceDataType,
   OrganizationSummaryStudentsDataType,
-  OrganizationSummaryContactDataType
+  OrganizationSummaryContactDataType,
 } from "~/reducers/organization/summary";
 
 export interface LoadSummaryTriggerType {
@@ -19,26 +19,22 @@ export type OrganizationSummaryStatusType =
   | "READY"
   | "ERROR";
 
-export interface LOAD_WORKSPACE_SUMMARY
-  extends SpecificActionType<
-    "LOAD_WORKSPACE_SUMMARY",
-    OrganizationSummaryWorkspaceDataType
-  > {}
-export interface LOAD_STUDENT_SUMMARY
-  extends SpecificActionType<
-    "LOAD_STUDENT_SUMMARY",
-    OrganizationSummaryStudentsDataType
-  > {}
-export interface LOAD_ORGANIZATION_CONTACTS
-  extends SpecificActionType<
-    "LOAD_ORGANIZATION_CONTACTS",
-    OrganizationSummaryContactDataType
-  > {}
-export interface UPDATE_SUMMARY_STATUS
-  extends SpecificActionType<
-    "UPDATE_SUMMARY_STATUS",
-    OrganizationSummaryStatusType
-  > {}
+export type LOAD_WORKSPACE_SUMMARY = SpecificActionType<
+  "LOAD_WORKSPACE_SUMMARY",
+  OrganizationSummaryWorkspaceDataType
+>;
+export type LOAD_STUDENT_SUMMARY = SpecificActionType<
+  "LOAD_STUDENT_SUMMARY",
+  OrganizationSummaryStudentsDataType
+>;
+export type LOAD_ORGANIZATION_CONTACTS = SpecificActionType<
+  "LOAD_ORGANIZATION_CONTACTS",
+  OrganizationSummaryContactDataType
+>;
+export type UPDATE_SUMMARY_STATUS = SpecificActionType<
+  "UPDATE_SUMMARY_STATUS",
+  OrganizationSummaryStatusType
+>;
 
 // julkaistut/julkaisemattomat kurssit:
 // mApi().organizationWorkspaceManagement.overview.read()
@@ -49,58 +45,61 @@ export interface UPDATE_SUMMARY_STATUS
 // yhteyshenkilöt
 // mApi().organizationUserManagement.contactPersons.read()
 
-let loadOrganizationSummary: LoadSummaryTriggerType =
+const loadOrganizationSummary: LoadSummaryTriggerType =
   function loadOrganizationSummary() {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType
+      getState: () => StateType,
     ) => {
       try {
         dispatch({
           type: "UPDATE_SUMMARY_STATUS",
-          payload: <OrganizationSummaryStatusType>"LOADING"
+          payload: <OrganizationSummaryStatusType>"LOADING",
         });
         dispatch({
           type: "LOAD_WORKSPACE_SUMMARY",
           payload: <OrganizationSummaryWorkspaceDataType>(
             await promisify(
               mApi().organizationWorkspaceManagement.overview.read(),
-              "callback"
+              "callback",
             )()
-          )
+          ),
         });
         dispatch({
           type: "LOAD_STUDENT_SUMMARY",
           payload: <OrganizationSummaryStudentsDataType>(
             await promisify(
               mApi().organizationUserManagement.studentsSummary.read(),
-              "callback"
+              "callback",
             )()
-          )
+          ),
         });
         dispatch({
           type: "LOAD_ORGANIZATION_CONTACTS",
           payload: <OrganizationSummaryContactDataType>(
             await promisify(
               mApi().organizationUserManagement.contactPersons.read(),
-              "callback"
+              "callback",
             )()
-          )
+          ),
         });
         dispatch({
           type: "UPDATE_SUMMARY_STATUS",
-          payload: <OrganizationSummaryStatusType>"READY"
+          payload: <OrganizationSummaryStatusType>"READY",
         });
       } catch (err) {
         if (!(err instanceof MApiError)) {
           throw err;
         }
         dispatch(
-          actions.displayNotification(getState().i18n.text.get("todo"), "error")
+          actions.displayNotification(
+            getState().i18n.text.get("todo"),
+            "error",
+          ),
         );
         dispatch({
           type: "UPDATE_SUMMARY_STATUS",
-          payload: <OrganizationSummaryStatusType>"ERROR"
+          payload: <OrganizationSummaryStatusType>"ERROR",
         });
       }
     };

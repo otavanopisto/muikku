@@ -13,5 +13,5 @@ export default combineReducers({
   status,
   title,
   messages,
-  error
+  error,
 });

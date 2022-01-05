@@ -13,7 +13,7 @@ import {
   deleteSelectedAnnouncements,
   deleteAnnouncement,
   DeleteSelectedAnnouncementsTriggerType,
-  DeleteAnnouncementTriggerType
+  DeleteAnnouncementTriggerType,
 } from "~/actions/announcements";
 import { AnnouncementType } from "reducers/announcements";
 import { StateType } from "~/reducers";
@@ -41,7 +41,7 @@ class DeleteAnnouncementDialog extends React.Component<
     this.deleteAnnouncement = this.deleteAnnouncement.bind(this);
 
     this.state = {
-      locked: false
+      locked: false,
     };
   }
   deleteAnnouncement(closeDialog: () => any) {
@@ -62,7 +62,7 @@ class DeleteAnnouncementDialog extends React.Component<
         },
         fail: () => {
           this.setState({ locked: false });
-        }
+        },
       });
     } else {
       this.props.deleteSelectedAnnouncements();
@@ -71,41 +71,39 @@ class DeleteAnnouncementDialog extends React.Component<
     }
   }
   render() {
-    let content = (closeDialog: () => any) => (
+    const content = (closeDialog: () => any) => (
       <div>
         {this.props.announcement
           ? this.props.i18n.text.get(
-              "plugin.announcer.deleteDialog.description"
+              "plugin.announcer.deleteDialog.description",
             )
           : this.props.i18n.text.get(
-              "plugin.announcer.deleteDialog.description"
+              "plugin.announcer.deleteDialog.description",
             )}
       </div>
     );
 
-    let footer = (closeDialog: () => any) => {
-      return (
-        <div className="dialog__button-set">
-          <Button
-            buttonModifiers={["fatal", "standard-ok"]}
-            onClick={this.deleteAnnouncement.bind(this, closeDialog)}
-            disabled={this.state.locked}
-          >
-            {this.props.i18n.text.get(
-              "plugin.announcer.deleteDialog.deleteButton.label"
-            )}
-          </Button>
-          <Button
-            buttonModifiers={["cancel", "standard-cancel"]}
-            onClick={closeDialog}
-          >
-            {this.props.i18n.text.get(
-              "plugin.announcer.deleteDialog.cancelButton.label"
-            )}
-          </Button>
-        </div>
-      );
-    };
+    const footer = (closeDialog: () => any) => (
+      <div className="dialog__button-set">
+        <Button
+          buttonModifiers={["fatal", "standard-ok"]}
+          onClick={this.deleteAnnouncement.bind(this, closeDialog)}
+          disabled={this.state.locked}
+        >
+          {this.props.i18n.text.get(
+            "plugin.announcer.deleteDialog.deleteButton.label",
+          )}
+        </Button>
+        <Button
+          buttonModifiers={["cancel", "standard-cancel"]}
+          onClick={closeDialog}
+        >
+          {this.props.i18n.text.get(
+            "plugin.announcer.deleteDialog.cancelButton.label",
+          )}
+        </Button>
+      </div>
+    );
 
     return (
       <Dialog
@@ -122,18 +120,18 @@ class DeleteAnnouncementDialog extends React.Component<
 
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n
+    i18n: state.i18n,
   };
 }
 
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     { deleteSelectedAnnouncements, deleteAnnouncement },
-    dispatch
+    dispatch,
   );
 }
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(DeleteAnnouncementDialog);

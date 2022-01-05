@@ -13,7 +13,7 @@ export default class CoursepickerBody extends React.Component<
   CoursepickerBodyState
 > {
   render() {
-    let aside = <Aside />;
+    const aside = <Aside />;
     return (
       <div>
         <MainFunctionNavbar activeTrail="coursepicker" navigation={aside} />

@@ -25,80 +25,82 @@ class Feed extends React.Component<FeedProps, FeedState> {
   render() {
     return (
       <ul className="feed">
-        {this.props.entries.map((entry, index) => {
-          return (
-            <li className="feed__item" key={entry.link}>
-              <div className="feed__item-aside">
-                {entry.image ? (
-                  <img
-                    className="feed__item-image"
-                    src={entry.image}
-                    alt=""
-                    role="presentation"
-                  />
-                ) : entry.feed === "nettilukio" ? (
-                  <img
-                    className="feed__item-image feed__item-image--empty"
-                    src="/gfx/kuva_nettilukio-feed.png"
-                  />
-                ) : (
-                  <img
-                    className="feed__item-image feed__item-image--empty"
-                    src="/gfx/kuva_nettiperuskoulu-feed.png"
-                    alt=""
-                    role="presentation"
-                  />
-                )}
-              </div>
-              <div className="feed__item-body">
+        {this.props.entries.map((entry) => (
+          <li className="feed__item" key={entry.link}>
+            <div className="feed__item-aside">
+              {entry.image ? (
+                <img
+                  className="feed__item-image"
+                  src={entry.image}
+                  alt=""
+                  role="presentation"
+                />
+              ) : entry.feed === "nettilukio" ? (
+                <img
+                  className="feed__item-image feed__item-image--empty"
+                  src="/gfx/kuva_nettilukio-feed.png"
+                />
+              ) : (
+                <img
+                  className="feed__item-image feed__item-image--empty"
+                  src="/gfx/kuva_nettiperuskoulu-feed.png"
+                  alt=""
+                  role="presentation"
+                />
+              )}
+            </div>
+            <div className="feed__item-body">
+              {entry.feed === "nettilukio" ? (
+                <a
+                  className="feed__item-title feed__item-title--nettilukio"
+                  href={entry.link}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {entry.title}
+                </a>
+              ) : (
+                <a
+                  className="feed__item-title feed__item-title--nettiperuskoulu"
+                  href={entry.link}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {entry.title}
+                </a>
+              )}
+              <div
+                className="feed__item-description"
+                dangerouslySetInnerHTML={{ __html: entry.description }}
+              />
+              <div className="feed__item-meta">
+                <span className="feed__item-date">
+                  {this.props.i18n.time.format(entry.publicationDate)}
+                </span>{" "}
+                -{" "}
                 {entry.feed === "nettilukio" ? (
                   <a
-                    className="feed__item-title feed__item-title--nettilukio"
-                    href={entry.link}
+                    href="https://nettilukio.fi"
                     target="_blank"
+                    className="feed__item-label feed__item-label--nettilukio"
+                    rel="noreferrer"
                   >
-                    {entry.title}
+                    nettilukio.fi
                   </a>
                 ) : (
                   <a
-                    className="feed__item-title feed__item-title--nettiperuskoulu"
-                    href={entry.link}
+                    href="https://nettiperuskoulu.fi"
                     target="_blank"
+                    className="feed__item-label feed__item-label--nettiperuskoulu"
+                    rel="noreferrer"
                   >
-                    {entry.title}
+                    nettiperuskoulu.fi
                   </a>
                 )}
-                <div
-                  className="feed__item-description"
-                  dangerouslySetInnerHTML={{ __html: entry.description }}
-                />
-                <div className="feed__item-meta">
-                  <span className="feed__item-date">
-                    {this.props.i18n.time.format(entry.publicationDate)}
-                  </span>{" "}
-                  -{" "}
-                  {entry.feed === "nettilukio" ? (
-                    <a
-                      href="https://nettilukio.fi"
-                      target="_blank"
-                      className="feed__item-label feed__item-label--nettilukio"
-                    >
-                      nettilukio.fi
-                    </a>
-                  ) : (
-                    <a
-                      href="https://nettiperuskoulu.fi"
-                      target="_blank"
-                      className="feed__item-label feed__item-label--nettiperuskoulu"
-                    >
-                      nettiperuskoulu.fi
-                    </a>
-                  )}
-                </div>
               </div>
-            </li>
-          );
-        })}
+            </div>
+          </li>
+        ))}
       </ul>
     );
   }
@@ -106,11 +108,11 @@ class Feed extends React.Component<FeedProps, FeedState> {
 
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n
+    i18n: state.i18n,
   };
 }
 
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps() {
   return {};
 }
 

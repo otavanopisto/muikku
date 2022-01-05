@@ -19,7 +19,7 @@ import MathField from "../fields/math-field";
 import {
   MaterialCompositeRepliesType,
   WorkspaceType,
-  MaterialContentNodeType
+  MaterialContentNodeType,
 } from "~/reducers/workspaces";
 import { WebsocketStateType } from "~/reducers/util/websocket";
 import Link from "~/components/base/material-loader/static/link";
@@ -40,32 +40,23 @@ const objects: { [key: string]: any } = {
   "application/vnd.muikku.field.organizer": OrganizerField,
   "application/vnd.muikku.field.audio": AudioField,
   "application/vnd.muikku.field.sorter": SorterField,
-  "application/vnd.muikku.field.mathexercise": MathField
+  "application/vnd.muikku.field.mathexercise": MathField,
 };
 
 // Wheteher the object can check or not for an answer
 const answerCheckables: { [key: string]: (params: any) => boolean } = {
-  "application/vnd.muikku.field.text": (params: any) => {
-    return (
-      params.content &&
-      params.content.rightAnswers.filter((option: any) => option.correct).lenght
-    );
-  },
-  "application/vnd.muikku.field.select": (params: any) => {
-    return (
-      params.content &&
-      params.content.options.filter((option: any) => option.correct).lenght
-    );
-  },
-  "application/vnd.muikku.field.multiselect": (params: any) => {
-    return (
-      params.content &&
-      params.content.options.filter((option: any) => option.correct).lenght
-    );
-  },
+  "application/vnd.muikku.field.text": (params: any) =>
+    params.content &&
+    params.content.rightAnswers.filter((option: any) => option.correct).lenght,
+  "application/vnd.muikku.field.select": (params: any) =>
+    params.content &&
+    params.content.options.filter((option: any) => option.correct).lenght,
+  "application/vnd.muikku.field.multiselect": (params: any) =>
+    params.content &&
+    params.content.options.filter((option: any) => option.correct).lenght,
   "application/vnd.muikku.field.connect": () => true,
   "application/vnd.muikku.field.organizer": () => true,
-  "application/vnd.muikku.field.sorter": () => true
+  "application/vnd.muikku.field.sorter": () => true,
 };
 
 interface BaseProps {
@@ -106,7 +97,7 @@ const TIME_IT_WAITS_TO_TRIGGER_A_CHANGE_EVENT_IF_NO_OTHER_CHANGE_EVENT_IS_IN_QUE
 function preprocessor($html: any): any {
   $html.find("img").each(function () {
     if (!$(this).parent("figure").length) {
-      let elem = document.createElement("span");
+      const elem = document.createElement("span");
       elem.className = "image";
 
       $(this).replaceWith(elem);
@@ -149,7 +140,7 @@ function preprocessor($html: any): any {
 
   const $newHTML = $html.map(function () {
     if (this.tagName === "TABLE") {
-      let elem = document.createElement("div");
+      const elem = document.createElement("div");
       elem.className = "material-page__table-wrapper";
       elem.appendChild(this);
       return elem;
@@ -162,7 +153,7 @@ function preprocessor($html: any): any {
       return;
     }
 
-    let elem = document.createElement("div");
+    const elem = document.createElement("div");
     elem.className = "material-page__table-wrapper";
 
     $(this).replaceWith(elem);
@@ -218,8 +209,8 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     // We preprocess the html
     this.state = {
       elements: preprocessor(
-        $(props.material.html)
-      ).toArray() as Array<HTMLElement>
+        $(props.material.html),
+      ).toArray() as Array<HTMLElement>,
     };
 
     // prepare the registries
@@ -247,10 +238,10 @@ export default class Base extends React.Component<BaseProps, BaseState> {
   componentWillReceiveProps(nextProps: BaseProps) {
     if (nextProps.material.html !== this.props.material.html) {
       const elements = preprocessor(
-        $(nextProps.material.html)
+        $(nextProps.material.html),
       ).toArray() as Array<HTMLElement>;
       this.setState({
-        elements
+        elements,
       });
 
       this.setupEverything(this.props, elements);
@@ -263,7 +254,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
    * @param elements
    */
   setupEverything(props: BaseProps = this.props, elements: Array<HTMLElement>) {
-    let originalAnswerCheckable = this.answerCheckable;
+    const originalAnswerCheckable = this.answerCheckable;
     this.answerCheckable = false;
 
     // First we find all the interactive
@@ -274,7 +265,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
         // We get the object element as in, the react component that it will be replaced with
         const rElement: React.ReactElement<any> = this.getObjectElement(
           element,
-          props
+          props,
         );
 
         const newAnswerCheckableState =
@@ -300,11 +291,11 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     if (this.props.websocketState.websocket) {
       this.props.websocketState.websocket.addEventCallback(
         "workspace:field-answer-saved",
-        this.onAnswerSavedAtServer
+        this.onAnswerSavedAtServer,
       );
       this.props.websocketState.websocket.addEventCallback(
         "workspace:field-answer-error",
-        this.onAnswerSavedAtServer
+        this.onAnswerSavedAtServer,
       );
     }
   }
@@ -317,11 +308,11 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     if (this.props.websocketState.websocket) {
       this.props.websocketState.websocket.removeEventCallback(
         "workspace:field-answer-saved",
-        this.onAnswerSavedAtServer
+        this.onAnswerSavedAtServer,
       );
       this.props.websocketState.websocket.removeEventCallback(
         "workspace:field-answer-error",
-        this.onAnswerSavedAtServer
+        this.onAnswerSavedAtServer,
       );
     }
   }
@@ -332,7 +323,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
    */
   onAnswerSavedAtServer(data: any) {
     // For some reason the data comes as string
-    let actualData = JSON.parse(data);
+    const actualData = JSON.parse(data);
     // we check the data for a match for this specific page, given that a lot of callbacks will be registered
     // and we are going to get all those events indiscrimately of wheter which page it belongs to as we are
     // registering this event on all the field-answer-saved events
@@ -352,7 +343,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
         // we get the context and check whether it's synced
         this.nameContextRegistry[actualData.fieldName].setState({
           synced: false,
-          syncError: actualData.error
+          syncError: actualData.error,
         });
         return;
       }
@@ -371,7 +362,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
           // we make it synced then and the user is happy can keep typing
           this.nameContextRegistry[actualData.fieldName].setState({
             synced: true,
-            syncError: null
+            syncError: null,
           });
         }
       }
@@ -388,10 +379,10 @@ export default class Base extends React.Component<BaseProps, BaseState> {
   getObjectElement(
     element: HTMLElement,
     props: BaseProps = this.props,
-    key?: number
+    key?: number,
   ) {
     // So we check from our objects we have on top, to see what class we are getting
-    let ActualElement = objects[element.getAttribute("type")];
+    const ActualElement = objects[element.getAttribute("type")];
 
     // This is here in case we get some brand new stuff, it should never come here
     if (!ActualElement) {
@@ -403,7 +394,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     }
 
     // So now we get the parameters of that thing, due to all the updates we gotta unify here
-    let parameters: { [key: string]: any } = {};
+    const parameters: { [key: string]: any } = {};
     // basically we need to get all the params
     element.querySelectorAll("param").forEach((node) => {
       // and add the value to a list of parameters
@@ -442,11 +433,8 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     parameters["initialValue"] = null;
     if (props.compositeReplies && props.compositeReplies.answers) {
       parameters["initialValue"] = props.compositeReplies.answers.find(
-        (answer) => {
-          return (
-            answer.fieldName === (parameters.content && parameters.content.name)
-          );
-        }
+        (answer) =>
+          answer.fieldName === (parameters.content && parameters.content.name),
       );
     }
 
@@ -482,7 +470,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
   onValueChange(
     context: React.Component<any, any>,
     name: string,
-    newValue: any
+    newValue: any,
   ) {
     if (!this.props.websocketState.websocket) {
       // can't do anything if no websocket
@@ -512,7 +500,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     // and set a new timeout to change given the TIME_IT_TAKES_FOR_AN_ANSWER_TO_BE_SAVED_WHILE_THE_USER_MODIFIES_IT
     this.timeoutChangeRegistry[name] = setTimeout(() => {
       // Tell the server thru the websocket to save
-      let messageData = JSON.stringify({
+      const messageData = JSON.stringify({
         answer: newValue,
         // I have no idea what this is for
         embedId: "",
@@ -520,9 +508,9 @@ export default class Base extends React.Component<BaseProps, BaseState> {
         fieldName: name,
         workspaceEntityId: this.props.workspace.id,
         workspaceMaterialId: this.props.material.workspaceMaterialId,
-        userEntityId: this.props.status.userId
+        userEntityId: this.props.status.userId,
       });
-      let stackId =
+      const stackId =
         name +
         "-" +
         this.props.workspace.id +
@@ -534,7 +522,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
         "workspace:field-answer-save",
         messageData,
         null,
-        stackId
+        stackId,
       );
       // We set no callback onsent
       // and for the stackId we use this unique id that should represent the only field
@@ -553,7 +541,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
           "workspace:field-answer-save",
           messageData,
           null,
-          stackId
+          stackId,
         );
         context.setState({ syncError: "server does not reply" });
       }, TIME_IT_TAKES_FOR_AN_ANSWER_TO_BE_CONSIDERED_FAILED_IF_SERVER_DOES_NOT_REPLY) as any;
@@ -577,9 +565,8 @@ export default class Base extends React.Component<BaseProps, BaseState> {
       {
         shouldProcessHTMLElement: (tagname, element) =>
           tagname === "object" && objects[element.getAttribute("type")],
-        processingFunction: (tag, props, children, element) => {
-          return this.getObjectElement(element, this.props, props.key);
-        }
+        processingFunction: (tag, props, children, element) =>
+          this.getObjectElement(element, this.props, props.key),
       },
       {
         shouldProcessHTMLElement: (tagname) => tagname === "iframe",
@@ -596,7 +583,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
               i18n={i18n}
             />
           );
-        }
+        },
       },
       {
         shouldProcessHTMLElement: (tagname, element) =>
@@ -613,7 +600,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
               {children}
             </WordDefinition>
           );
-        }
+        },
       },
       {
         shouldProcessHTMLElement: (tagname, element) =>
@@ -634,20 +621,14 @@ export default class Base extends React.Component<BaseProps, BaseState> {
             />
           );
         },
-        id: "image-rule"
+        id: "image-rule",
       },
       {
         shouldProcessHTMLElement: (tagname, element) =>
           tagname === "span" && element.classList.contains("math-tex"),
-        processingFunction: (tag, props, children, element) => {
-          return (
-            <MathJAX
-              key={props.key}
-              invisible={invisible}
-              children={children}
-            />
-          );
-        }
+        processingFunction: (tag, props, children, element) => (
+          <MathJAX key={props.key} invisible={invisible} children={children} />
+        ),
       },
       {
         shouldProcessHTMLElement: (tagname, element) =>
@@ -666,33 +647,29 @@ export default class Base extends React.Component<BaseProps, BaseState> {
               processingRules={processingRules}
             />
           );
-        }
+        },
       },
       {
         shouldProcessHTMLElement: (tagname) => tagname === "table",
-        processingFunction: (tagname, props, children, element) => {
-          return (
-            <Table
-              key={props.key}
-              element={element}
-              props={props}
-              children={children}
-            />
-          );
-        }
+        processingFunction: (tagname, props, children, element) => (
+          <Table
+            key={props.key}
+            element={element}
+            props={props}
+            children={children}
+          />
+        ),
       },
       {
         shouldProcessHTMLElement: (tagname) => tagname === "audio",
         preprocessReactProperties: (tag, props, children, element) => {
           props.preload = "metadata";
         },
-        processingFunction: (tag, props, children, element) => {
-          return (
-            <AudioPoolComponent {...props} invisible={invisible}>
-              {children}
-            </AudioPoolComponent>
-          );
-        }
+        processingFunction: (tag, props, children, element) => (
+          <AudioPoolComponent {...props} invisible={invisible}>
+            {children}
+          </AudioPoolComponent>
+        ),
       },
       {
         shouldProcessHTMLElement: (tagname) => tagname === "source",
@@ -712,17 +689,17 @@ export default class Base extends React.Component<BaseProps, BaseState> {
               this.props.material.path;
             props.src = path + "/" + src;
           }
-        }
-      }
+        },
+      },
     ];
 
     // This is all there is we just glue the HTML in there
     // and pick out the content from there
     return (
       <div className="material-page__content rich-text">
-        {this.state.elements.map((rootElement, index) => {
-          return HTMLtoReactComponent(rootElement, processingRules, index);
-        })}
+        {this.state.elements.map((rootElement, index) =>
+          HTMLtoReactComponent(rootElement, processingRules, index),
+        )}
       </div>
     );
   }

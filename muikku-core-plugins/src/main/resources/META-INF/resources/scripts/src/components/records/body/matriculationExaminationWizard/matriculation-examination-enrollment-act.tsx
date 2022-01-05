@@ -1,10 +1,6 @@
 import * as React from "react";
 import "~/sass/elements/matriculation.scss";
-import {
-  ExaminationInformation,
-  ExaminationAttentionInformation,
-  SaveState
-} from "../../../../@types/shared";
+import { ExaminationInformation, SaveState } from "~/@types/shared";
 import { Textarea } from "./textarea";
 import { TextField } from "./textfield";
 import { SavingDraftError } from "./saving-draft-error";
@@ -40,13 +36,13 @@ export class MatrMatriculationExaminationEnrollmentAct extends React.Component<
    */
   onExaminationInformationChange = <T extends keyof ExaminationInformation>(
     key: T,
-    value: ExaminationInformation[T]
+    value: ExaminationInformation[T],
   ) => {
     const { examination, onChange } = this.props;
 
     const modifiedExamination: ExaminationInformation = {
       ...examination,
-      [key]: value
+      [key]: value,
     };
 
     onChange(modifiedExamination);
@@ -74,7 +70,7 @@ export class MatrMatriculationExaminationEnrollmentAct extends React.Component<
                 onChange={(e) =>
                   this.onExaminationInformationChange(
                     "location",
-                    e.currentTarget.value
+                    e.currentTarget.value,
                   )
                 }
                 value={location === "Mikkeli" ? "Mikkeli" : ""}
@@ -99,7 +95,7 @@ export class MatrMatriculationExaminationEnrollmentAct extends React.Component<
                     onChange={(e) =>
                       this.onExaminationInformationChange(
                         "location",
-                        e.currentTarget.value
+                        e.currentTarget.value,
                       )
                     }
                   />
@@ -128,7 +124,7 @@ export class MatrMatriculationExaminationEnrollmentAct extends React.Component<
                 onChange={(e) =>
                   this.onExaminationInformationChange(
                     "message",
-                    e.currentTarget.value
+                    e.currentTarget.value,
                   )
                 }
                 value={message}
@@ -143,7 +139,7 @@ export class MatrMatriculationExaminationEnrollmentAct extends React.Component<
                 onChange={(e) =>
                   this.onExaminationInformationChange(
                     "canPublishName",
-                    e.currentTarget.value
+                    e.currentTarget.value,
                   )
                 }
                 value={canPublishName}

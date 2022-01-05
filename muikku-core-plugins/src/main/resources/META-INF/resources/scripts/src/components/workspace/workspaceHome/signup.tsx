@@ -1,5 +1,5 @@
 import { StateType } from "~/reducers";
-import { Dispatch, connect } from "react-redux";
+import { connect } from "react-redux";
 import * as React from "react";
 import { WorkspaceType } from "~/reducers/workspaces";
 import { i18nType } from "~/reducers/base/i18n";
@@ -32,7 +32,7 @@ class SignUpPanel extends React.Component<SignUpPanelProps, SignUpPanelState> {
         <div className="panel__body">
           <div className="panel__body-content panel__body-content--signup">
             {this.props.i18n.text.get(
-              "plugin.workspace.logInGuidingInformation"
+              "plugin.workspace.logInGuidingInformation",
             )}
           </div>
           <div className="panel__body-footer">
@@ -50,11 +50,11 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     workspace: state.workspaces.currentWorkspace,
-    status: state.status
+    status: state.status,
   };
 }
 
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps() {
   return {};
 }
 

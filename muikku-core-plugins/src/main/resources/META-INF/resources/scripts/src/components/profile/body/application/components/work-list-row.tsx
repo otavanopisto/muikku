@@ -3,7 +3,7 @@ import { connect, Dispatch } from "react-redux";
 import { StateType } from "~/reducers";
 import {
   StoredWorklistItem,
-  WorklistBillingState
+  WorklistBillingState,
 } from "~/reducers/main-function/profile";
 import { ButtonPill } from "~/components/general/button";
 import "~/sass/elements/datepicker/datepicker.scss";
@@ -14,7 +14,7 @@ import {
   DeleteProfileWorklistItemTriggerType,
   deleteProfileWorklistItem,
   editProfileWorklistItem,
-  EditProfileWorklistItemTriggerType
+  EditProfileWorklistItemTriggerType,
 } from "~/actions/main-function/profile";
 import { bindActionCreators } from "redux";
 import DeleteWorklistItemDialog from "../../../dialogs/delete-worklist-item";
@@ -32,7 +32,7 @@ interface WorkListRowProps {
   item: StoredWorklistItem;
   deleteProfileWorklistItem: DeleteProfileWorklistItemTriggerType;
   editProfileWorklistItem: EditProfileWorklistItemTriggerType;
-  currentMonthDayLimit: Number;
+  currentMonthDayLimit: number;
 }
 
 interface WorksListEditableState {
@@ -64,7 +64,7 @@ class WorkListRow extends React.Component<
 
     this.state = {
       editMode: false,
-      isDeleteDialogOpen: false
+      isDeleteDialogOpen: false,
     };
   }
 
@@ -73,7 +73,7 @@ class WorkListRow extends React.Component<
    */
   public toggleEditMode() {
     this.setState({
-      editMode: !this.state.editMode
+      editMode: !this.state.editMode,
     });
   }
 
@@ -101,23 +101,23 @@ class WorkListRow extends React.Component<
           r(true);
 
           this.setState({
-            editMode: false
+            editMode: false,
           });
         },
         fail: () => {
           r(false);
-        }
+        },
       });
     });
   }
   public closeDeleteDialog() {
     this.setState({
-      isDeleteDialogOpen: false
+      isDeleteDialogOpen: false,
     });
   }
   public onDelete() {
     this.setState({
-      isDeleteDialogOpen: true
+      isDeleteDialogOpen: true,
     });
   }
   public render() {
@@ -144,7 +144,7 @@ class WorkListRow extends React.Component<
     const isCurrentMonth = itemEntryDateAsMoment.isSame(today, "month");
     const isPreviousMonth = itemEntryDateAsMoment.isSame(
       previousMonth,
-      "month"
+      "month",
     );
 
     // the rule for can be edited it must not be paid or approved
@@ -164,35 +164,35 @@ class WorkListRow extends React.Component<
     switch (this.props.item.state) {
       case "ENTERED":
         entryStateText = this.props.i18n.text.get(
-          "plugin.profile.worklist.states.ENTERED"
+          "plugin.profile.worklist.states.ENTERED",
         );
         entryStateIcon = "icon-check";
         entryStateClass = "state-ENTERED";
         break;
       case "PROPOSED":
         entryStateText = this.props.i18n.text.get(
-          "plugin.profile.worklist.states.PROPOSED"
+          "plugin.profile.worklist.states.PROPOSED",
         );
         entryStateIcon = "icon-thumb-up";
         entryStateClass = "state-PROPOSED";
         break;
       case "APPROVED":
         entryStateText = this.props.i18n.text.get(
-          "plugin.profile.worklist.states.APPROVED"
+          "plugin.profile.worklist.states.APPROVED",
         );
         entryStateIcon = "icon-thumb-up";
         entryStateClass = "state-APPROVED";
         break;
       case "PAID":
         entryStateText = this.props.i18n.text.get(
-          "plugin.profile.worklist.states.PAID"
+          "plugin.profile.worklist.states.PAID",
         );
         entryStateIcon = "icon-lock";
         entryStateClass = "state-PAID";
         break;
       default:
         entryStateText = this.props.i18n.text.get(
-          "plugin.profile.worklist.states.ENTERED"
+          "plugin.profile.worklist.states.ENTERED",
         );
         entryStateIcon = "icon-check";
         entryStateClass = "state-ENTERED";
@@ -250,14 +250,14 @@ class WorkListRow extends React.Component<
 
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n
+    i18n: state.i18n,
   };
 }
 
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     { deleteProfileWorklistItem, editProfileWorklistItem },
-    dispatch
+    dispatch,
   );
 }
 

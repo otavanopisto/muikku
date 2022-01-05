@@ -29,7 +29,7 @@ export default class ApplicationPanelBody extends React.Component<
       toolbar,
       children,
       asideAfter,
-      asideBefore
+      asideBefore,
     } = this.props;
 
     return (

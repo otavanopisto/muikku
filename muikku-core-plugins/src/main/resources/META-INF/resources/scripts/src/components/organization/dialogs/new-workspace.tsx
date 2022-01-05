@@ -3,19 +3,19 @@ import { connect, Dispatch } from "react-redux";
 import Dialog, {
   DialogRow,
   DialogRowHeader,
-  DialogRowContent
+  DialogRowContent,
 } from "~/components/general/dialog";
 import {
   FormWizardActions,
   InputFormElement,
   SearchFormElement,
-  DateFormElement
+  DateFormElement,
 } from "~/components/general/form-element";
 import {
   loadSelectorStaff,
   loadSelectorStudents,
   LoadUsersTriggerType,
-  loadSelectorUserGroups
+  loadSelectorUserGroups,
 } from "~/actions/main-function/users";
 import {
   loadTemplatesFromServer,
@@ -24,7 +24,7 @@ import {
   LoadWorkspacesFromServerTriggerType,
   CreateWorkspaceTriggerType,
   createWorkspace,
-  CreateWorkspaceStateType
+  CreateWorkspaceStateType,
 } from "~/actions/workspaces";
 import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
@@ -32,10 +32,10 @@ import { bindActionCreators } from "redux";
 import ApplicationList, {
   ApplicationListItemContentWrapper,
   ApplicationListItem,
-  ApplicationListItemHeader
+  ApplicationListItemHeader,
 } from "~/components/general/application-list";
 import AutofillSelector, {
-  UiSelectItem
+  UiSelectItem,
 } from "~/components/base/input-select-autofill";
 import { SelectItem } from "~/actions/workspaces/index";
 import { UsersSelectType } from "~/reducers/main-function/users";
@@ -43,7 +43,7 @@ import {
   CreateWorkspaceType,
   WorkspaceType,
   WorkspaceAccessType,
-  WorkspacesActiveFiltersType
+  WorkspacesActiveFiltersType,
 } from "~/reducers/workspaces";
 import "~/sass/elements/course.scss";
 import { TagItem } from "~/components/general/tag-input";
@@ -107,7 +107,7 @@ class OrganizationNewWorkspace extends React.Component<
       endDate: null,
       template: {
         id: null,
-        label: ""
+        label: "",
       },
       selectedStaff: [],
       selectedStudents: [],
@@ -117,12 +117,12 @@ class OrganizationNewWorkspace extends React.Component<
       validation: {
         templateSelected: false,
         nameValid: 2,
-        nameExtensionValid: 2
+        nameExtensionValid: 2,
       },
       workspaceCreated: false,
       studentsAdded: false,
       detailsAdded: false,
-      staffAdded: false
+      staffAdded: false,
     };
 
     // TODO: amount of these methods can be halved
@@ -149,26 +149,26 @@ class OrganizationNewWorkspace extends React.Component<
   }
 
   selectTemplate(e: React.ChangeEvent<HTMLInputElement>) {
-    let validation: ValidationType = Object.assign(this.state.validation, {
-      templateSelected: true
+    const validation: ValidationType = Object.assign(this.state.validation, {
+      templateSelected: true,
     });
     this.setState({
       validation,
       locked: false,
       template: { id: parseInt(e.target.value), label: e.target.name },
-      workspaceName: e.target.name
+      workspaceName: e.target.name,
     });
   }
 
   selectTemplateMobile = (template: WorkspaceType) => {
-    let validation: ValidationType = Object.assign(this.state.validation, {
-      templateSelected: true
+    const validation: ValidationType = Object.assign(this.state.validation, {
+      templateSelected: true,
     });
     this.setState({
       validation,
       locked: false,
       template: { id: template.id, label: template.name },
-      workspaceName: template.name
+      workspaceName: template.name,
     });
   };
 
@@ -178,13 +178,13 @@ class OrganizationNewWorkspace extends React.Component<
   }
 
   selectStudent(student: SelectItem) {
-    let newState = this.state.selectedStudents.concat(student);
+    const newState = this.state.selectedStudents.concat(student);
     this.setState({ selectedStudents: newState });
   }
 
   deleteStudent(student: SelectItem) {
-    let newState = this.state.selectedStudents.filter(
-      (selectedItem) => selectedItem.id !== student.id
+    const newState = this.state.selectedStudents.filter(
+      (selectedItem) => selectedItem.id !== student.id,
     );
     this.setState({ selectedStudents: newState });
   }
@@ -194,13 +194,13 @@ class OrganizationNewWorkspace extends React.Component<
   }
 
   selectStaff(staff: SelectItem) {
-    let newState = this.state.selectedStaff.concat(staff);
+    const newState = this.state.selectedStaff.concat(staff);
     this.setState({ selectedStaff: newState });
   }
 
   deleteStaff(staff: SelectItem) {
-    let newState = this.state.selectedStaff.filter(
-      (selectedItem) => selectedItem.id !== staff.id
+    const newState = this.state.selectedStaff.filter(
+      (selectedItem) => selectedItem.id !== staff.id,
     );
     this.setState({ selectedStaff: newState });
   }
@@ -234,7 +234,7 @@ class OrganizationNewWorkspace extends React.Component<
       validation: {
         templateSelected: false,
         nameValid: 2,
-        nameExtensionValid: 2
+        nameExtensionValid: 2,
       },
       locked: true,
       beginDate: null,
@@ -248,7 +248,7 @@ class OrganizationNewWorkspace extends React.Component<
       workspaceCreated: false,
       detailsAdded: false,
       studentsAdded: false,
-      staffAdded: false
+      staffAdded: false,
     });
   }
 
@@ -260,18 +260,18 @@ class OrganizationNewWorkspace extends React.Component<
     if (this.state.validation.templateSelected === false) {
       this.setState({ locked: true });
     } else if (this.state.workspaceName === "") {
-      let validation: ValidationType = Object.assign(this.state.validation, {
-        nameValid: 0
+      const validation: ValidationType = Object.assign(this.state.validation, {
+        nameValid: 0,
       });
       this.setState({ locked: true, validation });
     } else {
-      let nextStep = this.state.currentStep + 1;
+      const nextStep = this.state.currentStep + 1;
       this.setState({ locked: false, currentStep: nextStep });
     }
   }
 
   lastStep() {
-    let lastStep = this.state.currentStep - 1;
+    const lastStep = this.state.currentStep - 1;
     this.setState({ currentStep: lastStep });
   }
 
@@ -282,7 +282,7 @@ class OrganizationNewWorkspace extends React.Component<
   saveWorkspace(closeDialog: () => any) {
     this.setState({
       locked: true,
-      executing: true
+      executing: true,
     });
 
     this.props.createWorkspace({
@@ -297,25 +297,25 @@ class OrganizationNewWorkspace extends React.Component<
       progress: (state: CreateWorkspaceStateType) => {
         if (state === "workspace-create") {
           this.setState({
-            workspaceCreated: true
+            workspaceCreated: true,
           });
         } else if (state === "add-details") {
           this.setState({
-            detailsAdded: true
+            detailsAdded: true,
           });
         } else if (state === "add-students") {
           this.setState({
-            studentsAdded: true
+            studentsAdded: true,
           });
         } else if (state === "add-teachers") {
           this.setState({
-            staffAdded: true
+            staffAdded: true,
           });
         } else if (state === "done") {
           setTimeout(
             () =>
               this.props.loadWorkspaces(this.props.activeFilters, true, true),
-            2000
+            2000,
           );
         }
       },
@@ -324,7 +324,7 @@ class OrganizationNewWorkspace extends React.Component<
       },
       fail: () => {
         closeDialog();
-      }
+      },
     });
   }
 
@@ -337,10 +337,10 @@ class OrganizationNewWorkspace extends React.Component<
               <DialogRowHeader
                 title={this.props.i18n.text.get(
                   "plugin.organization.workspaces.addWorkspace.step1.title",
-                  page + "/" + this.totalSteps
+                  page + "/" + this.totalSteps,
                 )}
                 description={this.props.i18n.text.get(
-                  "plugin.organization.workspaces.addWorkspace.step1.description"
+                  "plugin.organization.workspaces.addWorkspace.step1.description",
                 )}
               />
             </DialogRow>
@@ -349,7 +349,7 @@ class OrganizationNewWorkspace extends React.Component<
                 value={this.state.templateSearch}
                 id="OrganizationTemplateSearch"
                 placeholder={this.props.i18n.text.get(
-                  "plugin.organization.workspaces.addWorkspace.search.templates.placeholder"
+                  "plugin.organization.workspaces.addWorkspace.search.templates.placeholder",
                 )}
                 name="template-search"
                 updateField={this.doTemplateSearch}
@@ -362,7 +362,7 @@ class OrganizationNewWorkspace extends React.Component<
                     const templateSelected =
                       this.state.template &&
                       this.state.template.id === template.id;
-                    let aside = (
+                    const aside = (
                       <input
                         key={template.id}
                         type="radio"
@@ -399,7 +399,7 @@ class OrganizationNewWorkspace extends React.Component<
                 ) : (
                   <div className="empty">
                     {this.props.i18n.text.get(
-                      "plugin.organization.workspaces.addWorkspace.templates.empty"
+                      "plugin.organization.workspaces.addWorkspace.templates.empty",
                     )}
                   </div>
                 )}
@@ -414,10 +414,10 @@ class OrganizationNewWorkspace extends React.Component<
               <DialogRowHeader
                 title={this.props.i18n.text.get(
                   "plugin.organization.workspaces.addWorkspace.step2.title",
-                  page + "/" + this.totalSteps
+                  page + "/" + this.totalSteps,
                 )}
                 description={this.props.i18n.text.get(
-                  "plugin.organization.workspaces.addWorkspace.step2.description"
+                  "plugin.organization.workspaces.addWorkspace.step2.description",
                 )}
               />
             </DialogRow>
@@ -430,7 +430,7 @@ class OrganizationNewWorkspace extends React.Component<
                 valid={this.state.validation.nameValid}
                 name="workspaceName"
                 label={this.props.i18n.text.get(
-                  "plugin.organization.workspaces.addWorkspace.name.label"
+                  "plugin.organization.workspaces.addWorkspace.name.label",
                 )}
                 value={this.state.workspaceName}
               ></InputFormElement>
@@ -441,7 +441,7 @@ class OrganizationNewWorkspace extends React.Component<
                 valid={this.state.validation.nameExtensionValid}
                 name="workspaceNameExtension"
                 label={this.props.i18n.text.get(
-                  "plugin.organization.workspaces.addWorkspace.nameExtension.label"
+                  "plugin.organization.workspaces.addWorkspace.nameExtension.label",
                 )}
                 value={this.state.workspaceNameExtension}
               ></InputFormElement>
@@ -456,8 +456,8 @@ class OrganizationNewWorkspace extends React.Component<
                 selected={this.state.beginDate}
                 labels={{
                   label: this.props.i18n.text.get(
-                    "plugin.organization.workspaces.editWorkspace.beginDate.label"
-                  )
+                    "plugin.organization.workspaces.editWorkspace.beginDate.label",
+                  ),
                 }}
               />
               <DateFormElement
@@ -469,8 +469,8 @@ class OrganizationNewWorkspace extends React.Component<
                 selected={this.state.endDate}
                 labels={{
                   label: this.props.i18n.text.get(
-                    "plugin.organization.workspaces.editWorkspace.endDate.label"
-                  )
+                    "plugin.organization.workspaces.editWorkspace.endDate.label",
+                  ),
                 }}
               />
             </DialogRow>
@@ -478,7 +478,7 @@ class OrganizationNewWorkspace extends React.Component<
               <fieldset>
                 <legend className="application-sub-panel__item-header">
                   {this.props.i18n.text.get(
-                    "plugin.workspace.management.settings.access"
+                    "plugin.workspace.management.settings.access",
                   )}
                 </legend>
                 <div className="application-sub-panel__item-data application-sub-panel__item-data--workspace-management">
@@ -490,12 +490,12 @@ class OrganizationNewWorkspace extends React.Component<
                       checked={this.state.workspaceAccess === "MEMBERS_ONLY"}
                       onChange={this.setWorkspaceAccess.bind(
                         this,
-                        "MEMBERS_ONLY"
+                        "MEMBERS_ONLY",
                       )}
                     />
                     <label htmlFor="access-members">
                       {this.props.i18n.text.get(
-                        "plugin.workspace.management.settings.access.membersOnly"
+                        "plugin.workspace.management.settings.access.membersOnly",
                       )}
                     </label>
                   </div>
@@ -509,7 +509,7 @@ class OrganizationNewWorkspace extends React.Component<
                     />
                     <label htmlFor="access-loggedin">
                       {this.props.i18n.text.get(
-                        "plugin.workspace.management.settings.access.loggedIn"
+                        "plugin.workspace.management.settings.access.loggedIn",
                       )}
                     </label>
                   </div>
@@ -523,7 +523,7 @@ class OrganizationNewWorkspace extends React.Component<
                     />
                     <label htmlFor="access-anyone">
                       {this.props.i18n.text.get(
-                        "plugin.workspace.management.settings.access.anyone"
+                        "plugin.workspace.management.settings.access.anyone",
                       )}
                     </label>
                   </div>
@@ -533,29 +533,25 @@ class OrganizationNewWorkspace extends React.Component<
           </form>
         );
       case 3:
-        let students: UiSelectItem[] = this.props.users.students.map(
-          (student) => {
-            return {
-              id: student.id,
-              label: student.firstName + " " + student.lastName,
-              icon: "user",
-              type: "student"
-            };
-          }
+        const students: UiSelectItem[] = this.props.users.students.map(
+          (student) => ({
+            id: student.id,
+            label: student.firstName + " " + student.lastName,
+            icon: "user",
+            type: "student",
+          }),
         );
 
-        let groups: UiSelectItem[] = this.props.users.userGroups.map(
-          (group) => {
-            return {
-              id: group.id,
-              label: group.name,
-              icon: "users",
-              type: "student-group"
-            };
-          }
+        const groups: UiSelectItem[] = this.props.users.userGroups.map(
+          (group) => ({
+            id: group.id,
+            label: group.name,
+            icon: "users",
+            type: "student-group",
+          }),
         );
 
-        let allItems = students.concat(groups);
+        const allItems = students.concat(groups);
 
         return (
           <DialogRow>
@@ -563,10 +559,10 @@ class OrganizationNewWorkspace extends React.Component<
               <DialogRowHeader
                 title={this.props.i18n.text.get(
                   "plugin.organization.workspaces.addWorkspace.step3.title",
-                  page + "/" + this.totalSteps
+                  page + "/" + this.totalSteps,
                 )}
                 description={this.props.i18n.text.get(
-                  "plugin.organization.workspaces.addWorkspace.step3.description"
+                  "plugin.organization.workspaces.addWorkspace.step3.description",
                 )}
               />
             </DialogRow>
@@ -576,7 +572,7 @@ class OrganizationNewWorkspace extends React.Component<
                 modifier="add-students"
                 loader={this.doStudentSearch}
                 placeholder={this.props.i18n.text.get(
-                  "plugin.organization.workspaces.addWorkspace.search.students.placeholder"
+                  "plugin.organization.workspaces.addWorkspace.search.students.placeholder",
                 )}
                 selectedItems={this.state.selectedStudents}
                 searchItems={allItems}
@@ -587,15 +583,13 @@ class OrganizationNewWorkspace extends React.Component<
           </DialogRow>
         );
       case 4:
-        let staffSearchItems: UiSelectItem[] = this.props.users.staff.map(
-          (staff) => {
-            return {
-              id: staff.id,
-              label: staff.firstName + " " + staff.lastName,
-              icon: "user",
-              type: "staff"
-            };
-          }
+        const staffSearchItems: UiSelectItem[] = this.props.users.staff.map(
+          (staff) => ({
+            id: staff.id,
+            label: staff.firstName + " " + staff.lastName,
+            icon: "user",
+            type: "staff",
+          }),
         );
 
         return (
@@ -604,10 +598,10 @@ class OrganizationNewWorkspace extends React.Component<
               <DialogRowHeader
                 title={this.props.i18n.text.get(
                   "plugin.organization.workspaces.addWorkspace.step4.title",
-                  page + "/" + this.totalSteps
+                  page + "/" + this.totalSteps,
                 )}
                 description={this.props.i18n.text.get(
-                  "plugin.organization.workspaces.addWorkspace.step4.description"
+                  "plugin.organization.workspaces.addWorkspace.step4.description",
                 )}
               />
             </DialogRow>
@@ -617,7 +611,7 @@ class OrganizationNewWorkspace extends React.Component<
                 modifier="add-teachers"
                 loader={this.doStaffSearch}
                 placeholder={this.props.i18n.text.get(
-                  "plugin.organization.workspaces.addWorkspace.search.teachers.placeholder"
+                  "plugin.organization.workspaces.addWorkspace.search.teachers.placeholder",
                 )}
                 selectedItems={this.state.selectedStaff}
                 searchItems={staffSearchItems}
@@ -634,10 +628,10 @@ class OrganizationNewWorkspace extends React.Component<
               <DialogRowHeader
                 title={this.props.i18n.text.get(
                   "plugin.organization.workspaces.addWorkspace.step5.title",
-                  page + "/" + this.totalSteps
+                  page + "/" + this.totalSteps,
                 )}
                 description={this.props.i18n.text.get(
-                  "plugin.organization.workspaces.addWorkspace.step5.description"
+                  "plugin.organization.workspaces.addWorkspace.step5.description",
                 )}
               />
             </DialogRow>
@@ -646,7 +640,7 @@ class OrganizationNewWorkspace extends React.Component<
               <DialogRowHeader
                 modifiers="new-workspace"
                 title={this.props.i18n.text.get(
-                  "plugin.organization.workspaces.addWorkspace.summary.label.template"
+                  "plugin.organization.workspaces.addWorkspace.summary.label.template",
                 )}
               />
               <DialogRowContent modifiers="summary">
@@ -656,7 +650,7 @@ class OrganizationNewWorkspace extends React.Component<
                 ) : (
                   <div>
                     {this.props.i18n.text.get(
-                      "plugin.organization.workspaces.addWorkspace.summary.empty.template"
+                      "plugin.organization.workspaces.addWorkspace.summary.empty.template",
                     )}
                   </div>
                 )}
@@ -666,7 +660,7 @@ class OrganizationNewWorkspace extends React.Component<
               <DialogRowHeader
                 modifiers="new-workspace"
                 title={this.props.i18n.text.get(
-                  "plugin.organization.workspaces.addWorkspace.summary.label.workspaceName"
+                  "plugin.organization.workspaces.addWorkspace.summary.label.workspaceName",
                 )}
               />
               <DialogRowContent modifiers="summary">
@@ -680,7 +674,7 @@ class OrganizationNewWorkspace extends React.Component<
                 ) : (
                   <div>
                     {this.props.i18n.text.get(
-                      "plugin.organization.workspaces.addWorkspace.summary.empty.workspaceName"
+                      "plugin.organization.workspaces.addWorkspace.summary.empty.workspaceName",
                     )}
                   </div>
                 )}
@@ -690,7 +684,7 @@ class OrganizationNewWorkspace extends React.Component<
               <DialogRowHeader
                 modifiers="new-workspace"
                 title={this.props.i18n.text.get(
-                  "plugin.organization.workspaces.editWorkspace.summary.label.dates"
+                  "plugin.organization.workspaces.editWorkspace.summary.label.dates",
                 )}
               />
               <DialogRowContent modifiers="summary-dates">
@@ -698,14 +692,14 @@ class OrganizationNewWorkspace extends React.Component<
                   {this.state.beginDate
                     ? this.getLocaledDate(this.state.beginDate)
                     : this.props.i18n.text.get(
-                        "plugin.organization.workspaces.editWorkspace.summary.beginDate.empty"
+                        "plugin.organization.workspaces.editWorkspace.summary.beginDate.empty",
                       )}
                 </span>
                 <span>
                   {this.state.endDate
                     ? this.getLocaledDate(this.state.endDate)
                     : this.props.i18n.text.get(
-                        "plugin.organization.workspaces.editWorkspace.summary.endDate.empty"
+                        "plugin.organization.workspaces.editWorkspace.summary.endDate.empty",
                       )}
                 </span>
               </DialogRowContent>
@@ -714,7 +708,7 @@ class OrganizationNewWorkspace extends React.Component<
               <DialogRowHeader
                 modifiers="new-workspace"
                 title={this.props.i18n.text.get(
-                  "plugin.organization.workspaces.addWorkspace.summary.label.students"
+                  "plugin.organization.workspaces.addWorkspace.summary.label.students",
                 )}
               />
               <DialogRowContent modifiers="summary">
@@ -723,7 +717,7 @@ class OrganizationNewWorkspace extends React.Component<
                     const tag = {
                       node: student.label,
                       value: student,
-                      icon: student.icon
+                      icon: student.icon,
                     };
                     return (
                       <TagItem
@@ -737,7 +731,7 @@ class OrganizationNewWorkspace extends React.Component<
                 ) : (
                   <div>
                     {this.props.i18n.text.get(
-                      "plugin.organization.workspaces.addWorkspace.summary.empty.students"
+                      "plugin.organization.workspaces.addWorkspace.summary.empty.students",
                     )}
                   </div>
                 )}
@@ -747,7 +741,7 @@ class OrganizationNewWorkspace extends React.Component<
               <DialogRowHeader
                 modifiers="new-workspace"
                 title={this.props.i18n.text.get(
-                  "plugin.organization.workspaces.addWorkspace.summary.label.teachers"
+                  "plugin.organization.workspaces.addWorkspace.summary.label.teachers",
                 )}
               />
               <DialogRowContent modifiers="summary">
@@ -756,7 +750,7 @@ class OrganizationNewWorkspace extends React.Component<
                     const tag = {
                       node: staff.label,
                       value: staff,
-                      icon: staff.icon
+                      icon: staff.icon,
                     };
                     return (
                       <TagItem
@@ -770,7 +764,7 @@ class OrganizationNewWorkspace extends React.Component<
                 ) : (
                   <div>
                     {this.props.i18n.text.get(
-                      "plugin.organization.workspaces.addWorkspace.summary.empty.teachers"
+                      "plugin.organization.workspaces.addWorkspace.summary.empty.teachers",
                     )}
                   </div>
                 )}
@@ -784,9 +778,10 @@ class OrganizationNewWorkspace extends React.Component<
   }
 
   render() {
-    let content = (closePortal: () => any) =>
+    const content = (closeDialog: () => any) =>
       this.wizardSteps(this.state.currentStep);
-    let executeContent = (
+
+    const executeContent = (
       <div>
         <div
           className={`dialog__executer ${
@@ -794,7 +789,7 @@ class OrganizationNewWorkspace extends React.Component<
           }`}
         >
           {this.props.i18n.text.get(
-            "plugin.organization.workspaces.addWorkspace.summary.execute.createWorkspace"
+            "plugin.organization.workspaces.addWorkspace.summary.execute.createWorkspace",
           )}
         </div>
         <div
@@ -803,7 +798,7 @@ class OrganizationNewWorkspace extends React.Component<
           }`}
         >
           {this.props.i18n.text.get(
-            "plugin.organization.workspaces.addWorkspace.summary.execute.addDetails"
+            "plugin.organization.workspaces.addWorkspace.summary.execute.addDetails",
           )}
         </div>
         <div
@@ -812,7 +807,7 @@ class OrganizationNewWorkspace extends React.Component<
           }`}
         >
           {this.props.i18n.text.get(
-            "plugin.organization.workspaces.addWorkspace.summary.execute.addStudents"
+            "plugin.organization.workspaces.addWorkspace.summary.execute.addStudents",
           )}
         </div>
         <div
@@ -821,27 +816,27 @@ class OrganizationNewWorkspace extends React.Component<
           }`}
         >
           {this.props.i18n.text.get(
-            "plugin.organization.workspaces.addWorkspace.summary.execute.addTeachers"
+            "plugin.organization.workspaces.addWorkspace.summary.execute.addTeachers",
           )}
         </div>
       </div>
     );
-    let footer = (closePortal: () => any) => (
+    const footer = (closePortal: () => any) => (
       <FormWizardActions
         locked={this.state.locked}
         currentStep={this.state.currentStep}
         totalSteps={this.totalSteps}
         executeLabel={this.props.i18n.text.get(
-          "plugin.organization.workspaces.addWorkspace.execute.label"
+          "plugin.organization.workspaces.addWorkspace.execute.label",
         )}
         nextLabel={this.props.i18n.text.get(
-          "plugin.organization.workspaces.addWorkspace.next.label"
+          "plugin.organization.workspaces.addWorkspace.next.label",
         )}
         lastLabel={this.props.i18n.text.get(
-          "plugin.organization.workspaces.addWorkspace.last.label"
+          "plugin.organization.workspaces.addWorkspace.last.label",
         )}
         cancelLabel={this.props.i18n.text.get(
-          "plugin.organization.workspaces.addWorkspace.cancel.label"
+          "plugin.organization.workspaces.addWorkspace.cancel.label",
         )}
         executeClick={this.saveWorkspace.bind(this, closePortal)}
         nextClick={this.nextStep.bind(this)}
@@ -859,7 +854,7 @@ class OrganizationNewWorkspace extends React.Component<
         footer={footer}
         modifier="new-workspace"
         title={this.props.i18n.text.get(
-          "plugin.organization.workspaces.addWorkspace.title"
+          "plugin.organization.workspaces.addWorkspace.title",
         )}
         content={content}
       >
@@ -873,7 +868,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     users: state.userSelect,
-    templates: state.organizationWorkspaces.templateWorkspaces
+    templates: state.organizationWorkspaces.templateWorkspaces,
   };
 }
 
@@ -885,13 +880,13 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
       loadUserGroups: loadSelectorUserGroups,
       loadTemplates: loadTemplatesFromServer,
       createWorkspace,
-      loadWorkspaces: loadWorkspacesFromServer
+      loadWorkspaces: loadWorkspacesFromServer,
     },
-    dispatch
+    dispatch,
   );
 }
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(OrganizationNewWorkspace);

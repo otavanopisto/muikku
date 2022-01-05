@@ -5,9 +5,9 @@ import { MathJaxCollector } from "./mathjax-collector";
 const baseConfig = {
   showMathMenu: true,
   tex2jax: {
-    inlineMath: [["\\(", "\\)"]]
+    inlineMath: [["\\(", "\\)"]],
   },
-  skipStartupTypeset: true
+  skipStartupTypeset: true,
 };
 
 interface MathJaxPreviewProps {
@@ -23,12 +23,12 @@ const MathjaxReactLoader = (props: MathJaxPreviewProps) => {
   const { script, config, className, math, style } = { ...props };
   const previewRef = useRef<HTMLDivElement>();
   const [loadingState, setLoadingState] = useState(
-    (window as any).MathJax ? "loaded" : "loading"
+    (window as any).MathJax ? "loaded" : "loading",
   );
 
   useEffect(() => {
     let mathjaxScriptTag: HTMLScriptElement = document.querySelector(
-      `script[src="${script}"]`
+      `script[src="${script}"]`,
     );
     if (!mathjaxScriptTag) {
       mathjaxScriptTag = document.createElement("script");

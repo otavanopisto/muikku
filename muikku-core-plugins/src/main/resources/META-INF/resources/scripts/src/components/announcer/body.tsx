@@ -13,7 +13,7 @@ export default class AnnouncerBody extends React.Component<
   AnnouncerBodyState
 > {
   render() {
-    let aside = <Aside />;
+    const aside = <Aside />;
     return (
       <div>
         <MainFunctionNavbar activeTrail="announcer" navigation={aside} />

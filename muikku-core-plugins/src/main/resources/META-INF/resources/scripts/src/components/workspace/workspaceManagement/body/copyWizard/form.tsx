@@ -33,49 +33,49 @@ export default class Step extends React.Component<StepProps, StepState> {
 
   updateNameExtension(e: React.ChangeEvent<HTMLInputElement>) {
     this.props.updateStore({
-      nameExtension: e.target.value || null
+      nameExtension: e.target.value || null,
     });
   }
   updateName(e: React.ChangeEvent<HTMLInputElement>) {
     this.props.updateStore({
-      name: e.target.value
+      name: e.target.value,
     });
   }
   updateStartDate(newDate: any) {
     this.props.updateStore({
-      beginDate: newDate
+      beginDate: newDate,
     });
   }
   updateEndDate(newDate: any) {
     this.props.updateStore({
-      endDate: newDate
+      endDate: newDate,
     });
   }
   onDescriptionChange(text: string) {
     this.props.updateStore({
-      description: text
+      description: text,
     });
   }
   toggleCopyMaterials() {
     this.props.updateStore({
       copyMaterials:
-        this.props.getStore().copyMaterials === "NO" ? "CLONE" : "NO"
+        this.props.getStore().copyMaterials === "NO" ? "CLONE" : "NO",
     });
   }
   toggleCopyBackgroundPicture() {
     this.props.updateStore({
-      copyBackgroundPicture: !this.props.getStore().copyBackgroundPicture
+      copyBackgroundPicture: !this.props.getStore().copyBackgroundPicture,
     });
   }
   toggleCopyDiscussionAreas() {
     this.props.updateStore({
-      copyDiscussionAreas: !this.props.getStore().copyDiscussionAreas
+      copyDiscussionAreas: !this.props.getStore().copyDiscussionAreas,
     });
   }
   switchBetweenCloneAndLink() {
     this.props.updateStore({
       copyMaterials:
-        this.props.getStore().copyMaterials === "CLONE" ? "LINK" : "CLONE"
+        this.props.getStore().copyMaterials === "CLONE" ? "LINK" : "CLONE",
     });
   }
 
@@ -93,7 +93,7 @@ export default class Step extends React.Component<StepProps, StepState> {
             />
             <label htmlFor="copyMaterialsAsClone">
               {this.props.i18n.text.get(
-                "plugin.workspacecopywizard.workspaceMaterials.copyMaterials.label"
+                "plugin.workspacecopywizard.workspaceMaterials.copyMaterials.label",
               )}
             </label>
           </div>
@@ -107,7 +107,7 @@ export default class Step extends React.Component<StepProps, StepState> {
             />
             <label htmlFor="copyMaterialsAsLink">
               {this.props.i18n.text.get(
-                "plugin.workspacecopywizard.workspaceMaterials.linkMaterials.label"
+                "plugin.workspacecopywizard.workspaceMaterials.linkMaterials.label",
               )}
             </label>
           </div>
@@ -122,7 +122,7 @@ export default class Step extends React.Component<StepProps, StepState> {
               <div className="form-element form-element--workspace-name">
                 <label htmlFor="workspaceName">
                   {this.props.i18n.text.get(
-                    "plugin.workspacecopywizard.workspaceName.label"
+                    "plugin.workspacecopywizard.workspaceName.label",
                   )}
                 </label>
                 <input
@@ -137,7 +137,7 @@ export default class Step extends React.Component<StepProps, StepState> {
               <div className="form-element form-element--workspace-name-extension">
                 <label htmlFor="workspaceExtension">
                   {this.props.i18n.text.get(
-                    "plugin.workspacecopywizard.workspaceExtension.label"
+                    "plugin.workspacecopywizard.workspaceExtension.label",
                   )}
                 </label>
                 <input
@@ -152,7 +152,7 @@ export default class Step extends React.Component<StepProps, StepState> {
               <div className="form-element form-element__copy-workspace-start-date">
                 <label htmlFor="workspaceStartDate">
                   {this.props.i18n.text.get(
-                    "plugin.workspacecopywizard.workspaceStartDate.label"
+                    "plugin.workspacecopywizard.workspaceStartDate.label",
                   )}
                 </label>
                 <DatePicker
@@ -167,7 +167,7 @@ export default class Step extends React.Component<StepProps, StepState> {
               <div className="form-element form-element__copy-workspace-end-date">
                 <label htmlFor="workspaceEndDate">
                   {this.props.i18n.text.get(
-                    "plugin.workspacecopywizard.workspaceEndDate.label"
+                    "plugin.workspacecopywizard.workspaceEndDate.label",
                   )}
                 </label>
                 <DatePicker
@@ -186,12 +186,12 @@ export default class Step extends React.Component<StepProps, StepState> {
               <div className="form-element form-element__copy-workspace-ckeditor">
                 <label>
                   {this.props.i18n.text.get(
-                    "plugin.workspacecopywizard.workspaceDescription.label"
+                    "plugin.workspacecopywizard.workspaceDescription.label",
                   )}
                 </label>
                 <CKEditor
                   editorTitle={this.props.i18n.text.get(
-                    "plugin.workspacecopywizard.workspaceDescription.label"
+                    "plugin.workspacecopywizard.workspaceDescription.label",
                   )}
                   onChange={this.onDescriptionChange}
                 >
@@ -204,7 +204,7 @@ export default class Step extends React.Component<StepProps, StepState> {
         <fieldset>
           <legend className="form__fieldset-header">
             {this.props.i18n.text.get(
-              "plugin.workspacecopywizard.workspaceOtherSettings.label"
+              "plugin.workspacecopywizard.workspaceOtherSettings.label",
             )}
           </legend>
           <div className="form__row form__row--wizard">
@@ -217,7 +217,7 @@ export default class Step extends React.Component<StepProps, StepState> {
               />
               <label htmlFor="copyMaterials">
                 {this.props.i18n.text.get(
-                  "plugin.workspacecopywizard.workspaceMaterials.label"
+                  "plugin.workspacecopywizard.workspaceMaterials.label",
                 )}
               </label>
             </div>
@@ -230,7 +230,7 @@ export default class Step extends React.Component<StepProps, StepState> {
               />
               <label htmlFor="copyBackground">
                 {this.props.i18n.text.get(
-                  "plugin.workspacecopywizard.workspaceFiles.label"
+                  "plugin.workspacecopywizard.workspaceFiles.label",
                 )}
               </label>
             </div>
@@ -243,7 +243,7 @@ export default class Step extends React.Component<StepProps, StepState> {
               />
               <label htmlFor="copyDiscussion">
                 {this.props.i18n.text.get(
-                  "plugin.workspacecopywizard.workspaceDiscussionsAreas.label"
+                  "plugin.workspacecopywizard.workspaceDiscussionsAreas.label",
                 )}
               </label>
             </div>

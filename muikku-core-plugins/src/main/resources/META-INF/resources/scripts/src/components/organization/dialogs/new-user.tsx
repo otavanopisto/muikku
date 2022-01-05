@@ -6,16 +6,14 @@ import {
   EmailFormElement,
   InputFormElement,
   SSNFormElement,
-  SelectFormElement
+  SelectFormElement,
 } from "~/components/general/form-element";
 import {
   createStudent,
   createStaffmember,
   CreateStaffmemberTriggerType,
-  CreateStudentTriggerType
+  CreateStudentTriggerType,
 } from "~/actions/main-function/users";
-import { AnyActionType } from "~/actions";
-import notificationActions from "~/actions/base/notifications";
 import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
@@ -53,14 +51,14 @@ class OrganizationUser extends React.Component<
     super(props);
     this.state = {
       user: {
-        role: "STUDENT"
+        role: "STUDENT",
       },
       locked: false,
       executing: false,
       firstNameValid: 2,
       lastNameValid: 2,
       emailValid: 2,
-      studyProgrammeIdentifierValid: 2
+      studyProgrammeIdentifierValid: 2,
     };
     this.updateField = this.updateField.bind(this);
     this.saveUser = this.saveUser.bind(this);
@@ -68,9 +66,11 @@ class OrganizationUser extends React.Component<
   }
 
   updateField(value: string, valid: boolean, name: string) {
-    let fieldName = name;
-    let fieldValue = valid ? value : "";
-    let newState = Object.assign(this.state.user, { [fieldName]: fieldValue });
+    const fieldName = name;
+    const fieldValue = valid ? value : "";
+    const newState = Object.assign(this.state.user, {
+      [fieldName]: fieldValue,
+    });
     this.setState({ user: newState });
   }
 
@@ -78,14 +78,14 @@ class OrganizationUser extends React.Component<
     this.setState({
       user: {
         role: "STUDENT",
-        studyProgrammeIdentifier: this.props.studyprogrammes.list[0].identifier
+        studyProgrammeIdentifier: this.props.studyprogrammes.list[0].identifier,
       },
       firstNameValid: 2,
       lastNameValid: 2,
       emailValid: 2,
       studyProgrammeIdentifierValid: 2,
       locked: false,
-      executing: false
+      executing: false,
     });
   }
 
@@ -131,15 +131,15 @@ class OrganizationUser extends React.Component<
       if (valid) {
         this.setState({
           locked: true,
-          executing: true
+          executing: true,
         });
 
-        let data = {
+        const data = {
           firstName: this.state.user.firstName,
           lastName: this.state.user.lastName,
           email: this.state.user.email,
           ssn: this.state.user.ssn ? this.state.user.ssn : "",
-          studyProgrammeIdentifier: this.state.user.studyProgrammeIdentifier
+          studyProgrammeIdentifier: this.state.user.studyProgrammeIdentifier,
         };
 
         this.props.createStudent({
@@ -149,21 +149,21 @@ class OrganizationUser extends React.Component<
           },
           fail: () => {
             closeDialog();
-          }
+          },
         });
       }
     } else {
       if (valid) {
         this.setState({
           locked: true,
-          executing: true
+          executing: true,
         });
 
-        let data = {
+        const data = {
           firstName: this.state.user.firstName,
           lastName: this.state.user.lastName,
           email: this.state.user.email,
-          role: this.state.user.role
+          role: this.state.user.role,
         };
 
         this.props.createStaffmember({
@@ -174,20 +174,20 @@ class OrganizationUser extends React.Component<
               firstNameValid: 2,
               lastNameValid: 2,
               emailValid: 2,
-              studyProgrammeIdentifierValid: 2
+              studyProgrammeIdentifierValid: 2,
             });
             closeDialog();
           },
           fail: () => {
             closeDialog();
-          }
+          },
         });
       }
     }
   }
 
   render() {
-    let content = (closePortal: () => any) => (
+    const content = (closeDialog: () => any) => (
       <div>
         <DialogRow modifiers="new-user">
           <SelectFormElement
@@ -195,23 +195,23 @@ class OrganizationUser extends React.Component<
             name="role"
             modifiers="new-user"
             label={this.props.i18n.text.get(
-              "plugin.organization.users.addUser.label.role"
+              "plugin.organization.users.addUser.label.role",
             )}
             updateField={this.updateField}
           >
             <option value="STUDENT">
               {this.props.i18n.text.get(
-                "plugin.organization.users.role.STUDENT"
+                "plugin.organization.users.role.STUDENT",
               )}
             </option>
             <option value="MANAGER">
               {this.props.i18n.text.get(
-                "plugin.organization.users.role.MANAGER"
+                "plugin.organization.users.role.MANAGER",
               )}
             </option>
             <option value="TEACHER">
               {this.props.i18n.text.get(
-                "plugin.organization.users.role.TEACHER"
+                "plugin.organization.users.role.TEACHER",
               )}
             </option>
           </SelectFormElement>
@@ -225,7 +225,7 @@ class OrganizationUser extends React.Component<
             valid={this.state.firstNameValid}
             mandatory={true}
             label={this.props.i18n.text.get(
-              "plugin.organization.users.addUser.label.firstName"
+              "plugin.organization.users.addUser.label.firstName",
             )}
             updateField={this.updateField}
           />
@@ -237,7 +237,7 @@ class OrganizationUser extends React.Component<
             valid={this.state.lastNameValid}
             mandatory={true}
             label={this.props.i18n.text.get(
-              "plugin.organization.users.addUser.label.lastName"
+              "plugin.organization.users.addUser.label.lastName",
             )}
             updateField={this.updateField}
           />
@@ -248,7 +248,7 @@ class OrganizationUser extends React.Component<
             mandatory={true}
             updateField={this.updateField}
             label={this.props.i18n.text.get(
-              "plugin.organization.users.addUser.label.email"
+              "plugin.organization.users.addUser.label.email",
             )}
           />
         </DialogRow>
@@ -257,7 +257,7 @@ class OrganizationUser extends React.Component<
             <SSNFormElement
               modifiers="new-user"
               label={this.props.i18n.text.get(
-                "plugin.organization.users.addUser.label.SSN"
+                "plugin.organization.users.addUser.label.SSN",
               )}
               updateField={this.updateField}
             />
@@ -268,35 +268,33 @@ class OrganizationUser extends React.Component<
               name="studyProgrammeIdentifier"
               modifiers="new-user"
               label={this.props.i18n.text.get(
-                "plugin.organization.users.addUser.label.studyprogramme"
+                "plugin.organization.users.addUser.label.studyprogramme",
               )}
               updateField={this.updateField}
             >
               {this.props.studyprogrammes &&
-                this.props.studyprogrammes.list.map((studyprogramme) => {
-                  return (
-                    <option
-                      key={studyprogramme.identifier}
-                      value={studyprogramme.identifier}
-                    >
-                      {studyprogramme.name}
-                    </option>
-                  );
-                })}
+                this.props.studyprogrammes.list.map((studyprogramme) => (
+                  <option
+                    key={studyprogramme.identifier}
+                    value={studyprogramme.identifier}
+                  >
+                    {studyprogramme.name}
+                  </option>
+                ))}
             </SelectFormElement>
           </DialogRow>
         ) : null}
       </div>
     );
 
-    let footer = (closePortal: () => any) => (
+    const footer = (closePortal: () => any) => (
       <FormActionsElement
         locked={this.state.locked}
         executeLabel={this.props.i18n.text.get(
-          "plugin.organization.users.addUser.execute"
+          "plugin.organization.users.addUser.execute",
         )}
         cancelLabel={this.props.i18n.text.get(
-          "plugin.organization.users.addUser.cancel"
+          "plugin.organization.users.addUser.cancel",
         )}
         executeClick={this.saveUser.bind(this, closePortal)}
         cancelClick={this.cancelDialog.bind(this, closePortal)}
@@ -309,7 +307,7 @@ class OrganizationUser extends React.Component<
         executing={this.state.executing}
         modifier="new-user"
         title={this.props.i18n.text.get(
-          "plugin.organization.users.addUser.title"
+          "plugin.organization.users.addUser.title",
         )}
         content={content}
         footer={footer}
@@ -324,7 +322,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     status: state.status,
-    studyprogrammes: state.studyprogrammes
+    studyprogrammes: state.studyprogrammes,
   };
 }
 

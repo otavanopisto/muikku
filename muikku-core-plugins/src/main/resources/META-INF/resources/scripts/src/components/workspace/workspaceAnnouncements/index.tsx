@@ -1,6 +1,4 @@
 import WorkspaceNavbar from "~/components/base/workspace/navbar";
-import ScreenContainer from "~/components/general/screen-container";
-
 import * as React from "react";
 import Application from "~/components/announcements/body/application";
 import Aside from "~/components/announcements/body/aside";
@@ -24,7 +22,7 @@ export default class WorkspaceAnnouncementsBody extends React.Component<
     (this.refs.content as any).getWrappedInstance().refresh();
   }
   render() {
-    let aside = <Aside />;
+    const aside = <Aside />;
     return (
       <div>
         <WorkspaceNavbar

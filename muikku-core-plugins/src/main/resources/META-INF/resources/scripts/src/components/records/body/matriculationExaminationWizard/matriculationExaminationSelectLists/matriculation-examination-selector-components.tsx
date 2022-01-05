@@ -1,5 +1,4 @@
 import * as React from "react";
-import { ExaminationSubject } from "~/@types/shared";
 import "~/sass/elements/matriculation.scss";
 import "~/sass/elements/wcag.scss";
 import Button from "~/components/general/button";
@@ -8,7 +7,7 @@ import { ExaminationFunding } from "../../../../../@types/shared";
 import {
   ExaminationEnrolledSubject,
   ExaminationFinishedSubject,
-  ExaminationPlannedSubject
+  ExaminationPlannedSubject,
 } from "../../../../../@types/shared";
 
 /**
@@ -30,7 +29,7 @@ interface MatriculationExaminationEnrolledInputGroupProps {
   onSubjectGroupChange: <T extends keyof ExaminationEnrolledSubject>(
     key: T,
     value: ExaminationEnrolledSubject[T],
-    index: number
+    index: number,
   ) => void;
   onClickDeleteRow: (index: number) => (e: React.MouseEvent) => void;
 }
@@ -52,7 +51,6 @@ export const MatriculationExaminationEnrolledInputGroup: React.FC<
     isConflictingRepeat,
     isConflictingMandatory,
     readOnly,
-    children,
     ...useSelectProps
   } = props;
 
@@ -179,7 +177,7 @@ interface MatriculationExaminationFinishedInputGroupProps {
   onSubjectGroupChange: <T extends keyof ExaminationFinishedSubject>(
     key: T,
     value: ExaminationFinishedSubject[T],
-    index: number
+    index: number,
   ) => void;
   onClickDeleteRow: (index: number) => (e: React.MouseEvent) => void;
 }
@@ -199,7 +197,6 @@ export const MatriculationExaminationFinishedInputGroup: React.FC<
     onSubjectGroupChange,
     onClickDeleteRow,
     readOnly,
-    children,
     ...useSelectsProps
   } = props;
 
@@ -239,12 +236,11 @@ export const MatriculationExaminationFinishedInputGroup: React.FC<
         <div
           className={`matriculation__form-element-container matriculation__form-element-container--input${
             !readOnly &&
-            enrolledAttendances.filter((era) => {
-              return (
+            enrolledAttendances.filter(
+              (era) =>
                 era.subject === subject.subject &&
-                era.mandatory != subject.mandatory
-              );
-            }).length > 0
+                era.mandatory != subject.mandatory,
+            ).length > 0
               ? " matriculation__form-element-container--mandatory-conflict"
               : ""
           } `}
@@ -323,7 +319,7 @@ interface MatriculationExaminationPlannedInputGroupProps {
   onSubjectGroupChange: <T extends keyof ExaminationPlannedSubject>(
     key: T,
     value: ExaminationPlannedSubject[T],
-    index: number
+    index: number,
   ) => void;
   onClickDeleteRow: (index: number) => (e: React.MouseEvent) => void;
 }
@@ -342,7 +338,6 @@ export const MatriculationExaminationPlannedInputGroup: React.FC<
     onSubjectGroupChange,
     onClickDeleteRow,
     readOnly,
-    children,
     ...useSelectsProps
   } = props;
 
@@ -643,62 +638,54 @@ const FundingSelect: React.FC<FundingSelectProps> = ({
   isFailedBefore,
   isSucceedBefore,
   ...selectProps
-}) => {
-  return (
-    <>
-      {i == 0 ? (
-        <label
-          id={`matriculationGradeSelectLabel${modifier}`}
-          className="matriculation__label"
-        >
-          Rahoitus
-        </label>
-      ) : null}
-      <select
-        aria-labelledby={`matriculationGradeSelectLabel${modifier}`}
-        {...selectProps}
-        disabled={selectProps.disabled}
-        className="matriculation__select"
+}) => (
+  <>
+    {i == 0 ? (
+      <label
+        id={`matriculationGradeSelectLabel${modifier}`}
+        className="matriculation__label"
       >
-        {isSucceedBefore ? (
-          <>
-            <option value="">Valitse...</option>
-            <option value={ExaminationFunding.SELF_FUNDED}>
-              Itserahoitettu
-            </option>
-          </>
-        ) : null}
+        Rahoitus
+      </label>
+    ) : null}
+    <select
+      aria-labelledby={`matriculationGradeSelectLabel${modifier}`}
+      {...selectProps}
+      disabled={selectProps.disabled}
+      className="matriculation__select"
+    >
+      {isSucceedBefore ? (
+        <>
+          <option value="">Valitse...</option>
+          <option value={ExaminationFunding.SELF_FUNDED}>Itserahoitettu</option>
+        </>
+      ) : null}
 
-        {isFailedBefore ? (
-          <>
-            <option value="">Valitse...</option>
-            <option value={ExaminationFunding.SELF_FUNDED}>
-              Itserahoitettu
-            </option>
-            <option value={ExaminationFunding.COMPULSORYEDUCATION_FREE_RETRY}>
-              Maksuton ylioppilaskoe (uusinta)
-            </option>
-          </>
-        ) : null}
+      {isFailedBefore ? (
+        <>
+          <option value="">Valitse...</option>
+          <option value={ExaminationFunding.SELF_FUNDED}>Itserahoitettu</option>
+          <option value={ExaminationFunding.COMPULSORYEDUCATION_FREE_RETRY}>
+            Maksuton ylioppilaskoe (uusinta)
+          </option>
+        </>
+      ) : null}
 
-        {!isFailedBefore && !isSucceedBefore ? (
-          <>
-            <option value="">Valitse...</option>
-            <option value={ExaminationFunding.SELF_FUNDED}>
-              Itserahoitettu
-            </option>
-            <option value={ExaminationFunding.COMPULSORYEDUCATION_FREE}>
-              Maksuton ylioppilaskoe
-            </option>
-            <option value={ExaminationFunding.COMPULSORYEDUCATION_FREE_RETRY}>
-              Maksuton ylioppilaskoe (uusinta)
-            </option>
-          </>
-        ) : null}
-      </select>
-    </>
-  );
-};
+      {!isFailedBefore && !isSucceedBefore ? (
+        <>
+          <option value="">Valitse...</option>
+          <option value={ExaminationFunding.SELF_FUNDED}>Itserahoitettu</option>
+          <option value={ExaminationFunding.COMPULSORYEDUCATION_FREE}>
+            Maksuton ylioppilaskoe
+          </option>
+          <option value={ExaminationFunding.COMPULSORYEDUCATION_FREE_RETRY}>
+            Maksuton ylioppilaskoe (uusinta)
+          </option>
+        </>
+      ) : null}
+    </select>
+  </>
+);
 
 interface FailedReasonSelectProps
   extends React.SelectHTMLAttributes<HTMLSelectElement> {
@@ -706,7 +693,7 @@ interface FailedReasonSelectProps
   modifier: string;
 }
 
-const FailedReasonSelect: React.FC<FailedReasonSelectProps> = ({
+export const FailedReasonSelect: React.FC<FailedReasonSelectProps> = ({
   i,
   modifier,
   ...selectProps

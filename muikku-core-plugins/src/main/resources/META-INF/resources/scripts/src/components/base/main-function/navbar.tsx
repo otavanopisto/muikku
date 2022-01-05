@@ -50,7 +50,7 @@ class MainFunctionNavbar extends React.Component<
         icon: "home",
         // Go to frontpage if not logged in
         to: this.props.status.loggedIn,
-        condition: true
+        condition: true,
       },
       {
         modifier: "coursepicker",
@@ -59,7 +59,7 @@ class MainFunctionNavbar extends React.Component<
         href: "/coursepicker",
         icon: "books",
         to: true,
-        condition: true
+        condition: true,
       },
       {
         modifier: "communicator",
@@ -69,7 +69,7 @@ class MainFunctionNavbar extends React.Component<
         icon: "envelope",
         condition: this.props.status.isActiveUser && this.props.status.loggedIn,
         to: true,
-        badge: this.props.messageCount
+        badge: this.props.messageCount,
       },
       {
         modifier: "discussion",
@@ -81,7 +81,7 @@ class MainFunctionNavbar extends React.Component<
         condition:
           this.props.status.isActiveUser &&
           this.props.status.loggedIn &&
-          this.props.status.permissions.FORUM_ACCESSENVIRONMENTFORUM
+          this.props.status.permissions.FORUM_ACCESSENVIRONMENTFORUM,
       },
       {
         modifier: "guider",
@@ -90,7 +90,7 @@ class MainFunctionNavbar extends React.Component<
         href: "/guider",
         icon: "users",
         to: true,
-        condition: this.props.status.permissions.GUIDER_VIEW
+        condition: this.props.status.permissions.GUIDER_VIEW,
       },
       {
         modifier: "records",
@@ -99,7 +99,7 @@ class MainFunctionNavbar extends React.Component<
         href: "/records",
         icon: "profile",
         to: true,
-        condition: this.props.status.permissions.TRANSCRIPT_OF_RECORDS_VIEW
+        condition: this.props.status.permissions.TRANSCRIPT_OF_RECORDS_VIEW,
       },
       {
         modifier: "announcer",
@@ -108,7 +108,7 @@ class MainFunctionNavbar extends React.Component<
         href: "/announcer",
         icon: "paper-plane",
         to: true,
-        condition: this.props.status.permissions.ANNOUNCER_TOOL
+        condition: this.props.status.permissions.ANNOUNCER_TOOL,
       },
       {
         modifier: "evaluation",
@@ -118,7 +118,7 @@ class MainFunctionNavbar extends React.Component<
         icon: "evaluate",
         to: true,
         condition: this.props.status.permissions.EVALUATION_VIEW_INDEX,
-        openInNewTab: "_blank"
+        openInNewTab: "_blank",
       },
       {
         modifier: "organization",
@@ -127,8 +127,8 @@ class MainFunctionNavbar extends React.Component<
         href: "/organization",
         icon: "board",
         to: true,
-        condition: this.props.status.permissions.ORGANIZATION_VIEW
-      }
+        condition: this.props.status.permissions.ORGANIZATION_VIEW,
+      },
     ];
 
     return (
@@ -166,7 +166,7 @@ class MainFunctionNavbar extends React.Component<
                   aria-label={
                     this.props.activeTrail == item.trail
                       ? this.props.i18n.text.get(
-                          "plugin.wcag.mainNavigation.currentPage.aria.label"
+                          "plugin.wcag.mainNavigation.currentPage.aria.label",
                         ) +
                         " " +
                         this.props.i18n.text.get(item.text)
@@ -182,7 +182,7 @@ class MainFunctionNavbar extends React.Component<
                   ) : null}
                 </Link>
               </Dropdown>
-            )
+            ),
           };
         })}
         defaultOptions={
@@ -194,17 +194,17 @@ class MainFunctionNavbar extends React.Component<
                   <Link
                     className="link link--forgot-password link--forgot-password-main-function"
                     aria-label={this.props.i18n.text.get(
-                      "plugin.forgotpassword.forgotLink"
+                      "plugin.forgotpassword.forgotLink",
                     )}
                     role="menuitem"
                   >
                     <span>
                       {this.props.i18n.text.get(
-                        "plugin.forgotpassword.forgotLink"
+                        "plugin.forgotpassword.forgotLink",
                       )}
                     </span>
                   </Link>
-                </ForgotPasswordDialog>
+                </ForgotPasswordDialog>,
               ]
         }
         menuItems={itemData.map((item: ItemDataElement) => {
@@ -244,12 +244,10 @@ function mapStateToProps(state: StateType) {
     i18n: state.i18n,
     status: state.status,
     messageCount: state.messages.unreadThreadCount,
-    title: state.title
+    title: state.title,
   };
 }
 
-const mapDispatchToProps = (dispatch: Dispatch<any>) => {
-  return {};
-};
+const mapDispatchToProps = (dispatch: Dispatch<any>) => ({});
 
 export default connect(mapStateToProps, mapDispatchToProps)(MainFunctionNavbar);

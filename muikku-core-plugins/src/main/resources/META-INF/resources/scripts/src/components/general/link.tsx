@@ -43,7 +43,7 @@ export default class Link extends React.Component<LinkProps, LinkState> {
 
     this.state = {
       active: false,
-      redirect: false
+      redirect: false,
     };
 
     this.touchCordX = null;
@@ -68,7 +68,7 @@ export default class Link extends React.Component<LinkProps, LinkState> {
             this.props.href,
             this.props.onScrollToSection,
             this.props.scrollPadding,
-            this.props.disableSmoothScroll
+            this.props.disableSmoothScroll,
           );
         }
       } else if (this.props.href) {
@@ -106,8 +106,7 @@ export default class Link extends React.Component<LinkProps, LinkState> {
   }
   onTouchMove(e: React.TouchEvent<HTMLAnchorElement>) {
     if (this.state.active) {
-      let X = e.changedTouches[0].pageX;
-      let Y = e.changedTouches[0].pageY;
+      const X = e.changedTouches[0].pageX;
 
       if (
         Math.abs(X - this.touchCordX) >= 5 ||
@@ -121,7 +120,7 @@ export default class Link extends React.Component<LinkProps, LinkState> {
       this.props.onTouchMove(e);
     }
   }
-  onTouchEnd(e: React.TouchEvent<any>, re: any) {
+  onTouchEnd(e: React.TouchEvent<any>) {
     if (!this.props.disabled) {
       this.setState({ active: false });
     }
@@ -145,8 +144,8 @@ export default class Link extends React.Component<LinkProps, LinkState> {
       return <Redirect push to={this.props.to} />;
     }
 
-    let Element: any = this.props.as || "a";
-    let elementProps: LinkProps = Object.assign({}, this.props);
+    const Element: any = this.props.as || "a";
+    const elementProps: LinkProps = Object.assign({}, this.props);
     delete elementProps["disablePropagation"];
     delete elementProps["disabled"];
     delete elementProps["to"];

@@ -8,7 +8,7 @@ import { MatriculationExaminationEnrolledInputGroup } from "./matriculation-exam
  */
 interface MatriculationExaminationEnrolledAttendesListProps {
   onChange?: (
-    modifiedExaminationAttendedSubjectList: ExaminationEnrolledSubject[]
+    modifiedExaminationAttendedSubjectList: ExaminationEnrolledSubject[],
   ) => void;
   readOnly?: boolean;
   useSubjectSelect?: boolean;
@@ -28,7 +28,7 @@ const defaultUseSelectsProps = {
   useSubjectSelect: true,
   useMandatorySelect: true,
   useRepeatSelect: true,
-  useFundingSelect: false
+  useFundingSelect: false,
 };
 
 /**
@@ -48,7 +48,6 @@ export const MatriculationExaminationEnrolledAttendesList: React.FC<
     succesFinishedList,
     conflictingAttendancesGroup,
     onDeleteRow,
-    children,
     readOnly,
     ...rest
   } = props;
@@ -60,13 +59,13 @@ export const MatriculationExaminationEnrolledAttendesList: React.FC<
    * @param index
    */
   const handleMatriculationExaminationSubjectGroupChange = <
-    T extends keyof ExaminationEnrolledSubject
+    T extends keyof ExaminationEnrolledSubject,
   >(
     key: T,
     value: ExaminationEnrolledSubject[T],
-    index: number
+    index: number,
   ) => {
-    let modifiedExaminationEnrolledList = examinationEnrolledList;
+    const modifiedExaminationEnrolledList = examinationEnrolledList;
 
     modifiedExaminationEnrolledList[index][key] = value;
 
@@ -77,7 +76,7 @@ export const MatriculationExaminationEnrolledAttendesList: React.FC<
    * List of selected subject string keys
    */
   const selectedSubjects = examinationEnrolledList.map(
-    (sSubject) => sSubject.subject
+    (sSubject) => sSubject.subject,
   );
 
   return (
@@ -89,7 +88,7 @@ export const MatriculationExaminationEnrolledAttendesList: React.FC<
         const conflictedCourse =
           conflictingAttendancesGroup &&
           conflictingAttendancesGroup.some(
-            (r) => r.indexOf(subject.subject) >= 0
+            (r) => r.indexOf(subject.subject) >= 0,
           );
 
         const failedBefore =

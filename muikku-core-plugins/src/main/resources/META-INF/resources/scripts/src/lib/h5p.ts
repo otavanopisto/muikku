@@ -12,7 +12,7 @@ const actionHandlers: any = {};
 actionHandlers.hello = (
   iframe: HTMLIFrameElement,
   data: any,
-  respond: Function
+  respond: Function,
 ) => {
   // Make iframe responsive
   iframe.style.width = "100%";
@@ -48,7 +48,7 @@ actionHandlers.hello = (
 actionHandlers.prepareResize = (
   iframe: HTMLIFrameElement,
   data: any,
-  respond: Function
+  respond: Function,
 ) => {
   // Do not resize unless page and scrolling differs
   if (
@@ -90,8 +90,8 @@ window.addEventListener(
     }
 
     // Find out who sent the message
-    let iframe,
-      iframes = document.getElementsByTagName("iframe");
+    let iframe;
+    const iframes = document.getElementsByTagName("iframe");
     for (let i = 0; i < iframes.length; i++) {
       if (iframes[i].contentWindow === event.source) {
         iframe = iframes[i];
@@ -115,18 +115,18 @@ window.addEventListener(
           data.action = action;
           data.context = "h5p";
           (event.source.postMessage as any)(data, event.origin);
-        }
+        },
       );
     }
   },
-  false
+  false,
 );
 
 // Let h5p iframes know we're ready!
 export function prepareH5POn(iframe: HTMLIFrameElement) {
   const ready = {
     context: "h5p",
-    action: "ready"
+    action: "ready",
   };
   if (iframe.src.indexOf("h5p") !== -1) {
     iframe.contentWindow.postMessage(ready, "*");

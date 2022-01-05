@@ -8,13 +8,13 @@ import "~/sass/elements/item-list.scss";
 import { StateType } from "~/reducers";
 import Navigation, {
   NavigationTopic,
-  NavigationElement
+  NavigationElement,
 } from "~/components/general/navigation";
 import {
   WorkspacesType,
   WorkspaceEducationFilterType,
   WorkspaceCurriculumFilterType,
-  WorkspaceOrganizationFilterType
+  WorkspaceOrganizationFilterType,
 } from "~/reducers/workspaces";
 
 interface NavigationAsideProps {
@@ -34,9 +34,9 @@ class NavigationAside extends React.Component<
    * @returns
    */
   render() {
-    let locationData = queryString.parse(
+    const locationData = queryString.parse(
       document.location.hash.split("?")[1] || "",
-      { arrayFormat: "bracket" }
+      { arrayFormat: "bracket" },
     );
 
     return (
@@ -46,28 +46,28 @@ class NavigationAside extends React.Component<
         >
           {this.props.workspaces.availableFilters.educationTypes.map(
             (educationType: WorkspaceEducationFilterType) => {
-              let isActive =
+              const isActive =
                 this.props.workspaces.activeFilters.educationFilters.includes(
-                  educationType.identifier
+                  educationType.identifier,
                 );
-              let hash =
+              const hash =
                 "?" +
                 (isActive
                   ? queryString.stringify(
                       Object.assign({}, locationData, {
                         e: (locationData.e || []).filter(
-                          (i: string) => i !== educationType.identifier
-                        )
+                          (i: string) => i !== educationType.identifier,
+                        ),
                       }),
-                      { arrayFormat: "bracket" }
+                      { arrayFormat: "bracket" },
                     )
                   : queryString.stringify(
                       Object.assign({}, locationData, {
                         e: (locationData.e || []).concat(
-                          educationType.identifier
-                        )
+                          educationType.identifier,
+                        ),
                       }),
-                      { arrayFormat: "bracket" }
+                      { arrayFormat: "bracket" },
                     ));
               return (
                 <NavigationElement
@@ -78,36 +78,36 @@ class NavigationAside extends React.Component<
                   {educationType.name}
                 </NavigationElement>
               );
-            }
+            },
           )}
         </NavigationTopic>
         <NavigationTopic
           name={this.props.i18n.text.get(
-            "plugin.coursepicker.filters.curriculum"
+            "plugin.coursepicker.filters.curriculum",
           )}
         >
           {this.props.workspaces.availableFilters.curriculums.map(
             (curriculum: WorkspaceCurriculumFilterType) => {
-              let isActive =
+              const isActive =
                 this.props.workspaces.activeFilters.curriculumFilters.includes(
-                  curriculum.identifier
+                  curriculum.identifier,
                 );
-              let hash =
+              const hash =
                 "?" +
                 (isActive
                   ? queryString.stringify(
                       Object.assign({}, locationData, {
                         c: (locationData.c || []).filter(
-                          (c: string) => c !== curriculum.identifier
-                        )
+                          (c: string) => c !== curriculum.identifier,
+                        ),
                       }),
-                      { arrayFormat: "bracket" }
+                      { arrayFormat: "bracket" },
                     )
                   : queryString.stringify(
                       Object.assign({}, locationData, {
-                        c: (locationData.c || []).concat(curriculum.identifier)
+                        c: (locationData.c || []).concat(curriculum.identifier),
                       }),
-                      { arrayFormat: "bracket" }
+                      { arrayFormat: "bracket" },
                     ));
               return (
                 <NavigationElement
@@ -118,39 +118,39 @@ class NavigationAside extends React.Component<
                   {curriculum.name}
                 </NavigationElement>
               );
-            }
+            },
           )}
         </NavigationTopic>
         {this.props.workspaces.availableFilters.organizations.length > 1 ? (
           <NavigationTopic
             name={this.props.i18n.text.get(
-              "plugin.coursepicker.filters.organization"
+              "plugin.coursepicker.filters.organization",
             )}
           >
             {this.props.workspaces.availableFilters.organizations.map(
               (organization: WorkspaceOrganizationFilterType) => {
-                let isActive =
+                const isActive =
                   this.props.workspaces.activeFilters.organizationFilters.includes(
-                    organization.identifier
+                    organization.identifier,
                   );
-                let hash =
+                const hash =
                   "?" +
                   (isActive
                     ? queryString.stringify(
                         Object.assign({}, locationData, {
                           o: (locationData.o || []).filter(
-                            (o: string) => o !== organization.identifier
-                          )
+                            (o: string) => o !== organization.identifier,
+                          ),
                         }),
-                        { arrayFormat: "bracket" }
+                        { arrayFormat: "bracket" },
                       )
                     : queryString.stringify(
                         Object.assign({}, locationData, {
                           o: (locationData.o || []).concat(
-                            organization.identifier
-                          )
+                            organization.identifier,
+                          ),
                         }),
-                        { arrayFormat: "bracket" }
+                        { arrayFormat: "bracket" },
                       ));
                 return (
                   <NavigationElement
@@ -161,7 +161,7 @@ class NavigationAside extends React.Component<
                     {organization.name}
                   </NavigationElement>
                 );
-              }
+              },
             )}
           </NavigationTopic>
         ) : null}
@@ -174,7 +174,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     workspaces: state.workspaces,
-    status: state.status
+    status: state.status,
   };
 }
 

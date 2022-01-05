@@ -1,6 +1,5 @@
 import WorkspaceNavbar from "~/components/base/workspace/navbar";
-import HoverButton from "~/components/general/hover-button";
-import ScreenContainer from "~/components/general/screen-container";
+
 import Application from "./body/application";
 import Aside from "./body/aside";
 
@@ -28,7 +27,7 @@ export default class WorkspaceJournalBody extends React.Component<
     (this.refs.content as any).getWrappedInstance().refresh();
   }
   render() {
-    let aside = <Aside />;
+    const aside = <Aside />;
     return (
       <div>
         <WorkspaceNavbar

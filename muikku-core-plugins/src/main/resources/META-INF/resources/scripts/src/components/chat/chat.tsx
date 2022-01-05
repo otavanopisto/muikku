@@ -14,7 +14,7 @@ import Link from "~/components/general/link";
 import Dropdown from "~/components/general/dropdown";
 import {
   displayNotification,
-  DisplayNotificationTriggerType
+  DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 import { bindActionCreators } from "redux";
 
@@ -146,7 +146,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
       roomDescField: "",
       // roomPersistent: false,
 
-      missingFields: false
+      missingFields: false,
     };
 
     this.toggleControlBox = this.toggleControlBox.bind(this);
@@ -174,13 +174,13 @@ class Chat extends React.Component<IChatProps, IChatState> {
 
   public updateRoomNameField(e: React.ChangeEvent<HTMLInputElement>) {
     this.setState({
-      roomNameField: e.target.value
+      roomNameField: e.target.value,
     });
   }
 
   public updateRoomDescField(e: React.ChangeEvent<HTMLTextAreaElement>) {
     this.setState({
-      roomDescField: e.target.value
+      roomDescField: e.target.value,
     });
   }
 
@@ -194,7 +194,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
     const newRooms = [...this.state.availableMucRooms];
     newRooms[index] = chat;
     this.setState({
-      availableMucRooms: newRooms
+      availableMucRooms: newRooms,
     });
   }
 
@@ -215,9 +215,9 @@ class Chat extends React.Component<IChatProps, IChatState> {
         const chatRoom: IChatRoomType = (await promisify(
           mApi().chat.publicRoom.create({
             title: roomName,
-            description: roomDesc
+            description: roomDesc,
           }),
-          "callback"
+          "callback",
         )()) as IChatRoomType;
         const roomJID =
           chatRoom.name + "@conference." + this.state.connectionHostname;
@@ -228,22 +228,22 @@ class Chat extends React.Component<IChatProps, IChatState> {
                 roomDesc: chatRoom.description,
                 roomName: chatRoom.title,
                 roomJID,
-                newest: true
-              }
-            ])
+                newest: true,
+              },
+            ]),
           },
-          this.joinChatRoom.bind(this, roomJID)
+          this.joinChatRoom.bind(this, roomJID),
         );
       } catch (err) {
         this.props.displayNotification(
           this.props.i18n.text.get("plugin.chat.notification.roomCreateFail"),
-          "error"
+          "error",
         );
       }
       this.toggleCreateChatRoomForm();
     } else {
       this.setState({
-        missingFields: true
+        missingFields: true,
       });
     }
   }
@@ -252,12 +252,12 @@ class Chat extends React.Component<IChatProps, IChatState> {
   toggleControlBox() {
     if (this.state.showControlBox) {
       this.setState({
-        showControlBox: false
+        showControlBox: false,
       });
       window.sessionStorage.setItem("showControlBox", "false");
     } else {
       this.setState({
-        showControlBox: true
+        showControlBox: true,
       });
       window.sessionStorage.setItem("showControlBox", "true");
     }
@@ -268,8 +268,8 @@ class Chat extends React.Component<IChatProps, IChatState> {
 
     this.setState({
       availableMucRooms: this.state.availableMucRooms.filter(
-        (r) => r.roomJID !== roomJID
-      )
+        (r) => r.roomJID !== roomJID,
+      ),
     });
   }
 
@@ -277,11 +277,11 @@ class Chat extends React.Component<IChatProps, IChatState> {
   toggleCreateChatRoomForm() {
     if (!this.state.showNewRoomForm) {
       this.setState({
-        showNewRoomForm: true
+        showNewRoomForm: true,
       });
     } else {
       this.setState({
-        showNewRoomForm: false
+        showNewRoomForm: false,
       });
     }
   }
@@ -304,7 +304,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
     const newJoin: IOpenChatJID = {
       type: "user",
       jid,
-      initStanza: initStanza || null
+      initStanza: initStanza || null,
     };
 
     // Lets push jid to openChatList and set it to this.state.openChats
@@ -313,41 +313,37 @@ class Chat extends React.Component<IChatProps, IChatState> {
     window.sessionStorage.setItem(
       "openChats",
       JSON.stringify(
-        newJIDS.map((j) => {
-          return {
-            ...j,
-            initStanza: null
-          };
-        })
-      )
+        newJIDS.map((j) => ({
+          ...j,
+          initStanza: null,
+        })),
+      ),
     );
 
     this.setState({
-      openChatsJIDS: newJIDS
+      openChatsJIDS: newJIDS,
     });
   }
 
   public leavePrivateChat(jid: string) {
     const filteredJIDS = this.state.openChatsJIDS.filter(
-      (item) => item.type !== "user" || item.jid !== jid
+      (item) => item.type !== "user" || item.jid !== jid,
     );
 
     // Set the filtered openChatList to sessionStorage
     window.sessionStorage.setItem(
       "openChats",
       JSON.stringify(
-        filteredJIDS.map((j) => {
-          return {
-            ...j,
-            initStanza: null
-          };
-        })
-      )
+        filteredJIDS.map((j) => ({
+          ...j,
+          initStanza: null,
+        })),
+      ),
     );
 
     // Set filtered and current openChatList to this.state.openChats
     this.setState({
-      openChatsJIDS: filteredJIDS
+      openChatsJIDS: filteredJIDS,
     });
   }
 
@@ -355,7 +351,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
     // already joined
     if (
       this.state.openChatsJIDS.find(
-        (r) => r.type === "muc" && r.jid === roomJID
+        (r) => r.type === "muc" && r.jid === roomJID,
       )
     ) {
       return;
@@ -363,7 +359,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
 
     const newJoin: IOpenChatJID = {
       type: "muc",
-      jid: roomJID
+      jid: roomJID,
     };
 
     // Lets push RoomJid to openChatList and set it to this.state.openChats
@@ -372,41 +368,37 @@ class Chat extends React.Component<IChatProps, IChatState> {
     window.sessionStorage.setItem(
       "openChats",
       JSON.stringify(
-        newJIDS.map((j) => {
-          return {
-            ...j,
-            initStanza: null
-          };
-        })
-      )
+        newJIDS.map((j) => ({
+          ...j,
+          initStanza: null,
+        })),
+      ),
     );
 
     this.setState({
-      openChatsJIDS: newJIDS
+      openChatsJIDS: newJIDS,
     });
   }
 
   public leaveChatRoom(roomJID: string) {
     const filteredJIDS = this.state.openChatsJIDS.filter(
-      (item) => item.type !== "muc" || item.jid !== roomJID
+      (item) => item.type !== "muc" || item.jid !== roomJID,
     );
 
     // Set the filtered openChatList to sessionStorage
     window.sessionStorage.setItem(
       "openChats",
       JSON.stringify(
-        filteredJIDS.map((j) => {
-          return {
-            ...j,
-            initStanza: null
-          };
-        })
-      )
+        filteredJIDS.map((j) => ({
+          ...j,
+          initStanza: null,
+        })),
+      ),
     );
 
     // Set filtered and current openChatList to this.state.openChats
     this.setState({
-      openChatsJIDS: filteredJIDS
+      openChatsJIDS: filteredJIDS,
     });
   }
 
@@ -415,7 +407,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
     // Check whether current roomJID is allready part of openChatList
     if (
       this.state.openChatsJIDS.find(
-        (r) => r.type === "muc" && r.jid === roomJID
+        (r) => r.type === "muc" && r.jid === roomJID,
       )
     ) {
       this.leaveChatRoom(roomJID);
@@ -425,22 +417,22 @@ class Chat extends React.Component<IChatProps, IChatState> {
   }
   getWorkspaceMucRooms() {
     return this.state.availableMucRooms.filter((room) =>
-      room.roomJID.startsWith("workspace-")
+      room.roomJID.startsWith("workspace-"),
     );
   }
   getNotWorkspaceMucRooms() {
     return this.state.availableMucRooms.filter(
-      (room) => !room.roomJID.startsWith("workspace-")
+      (room) => !room.roomJID.startsWith("workspace-"),
     );
   }
   setUserAvailability(newStatus: string) {
     this.state.connection.send($pres().c("show", {}, newStatus));
     this.setState({
-      selectedUserPresence: newStatus as any
+      selectedUserPresence: newStatus as any,
     });
     window.sessionStorage.setItem(
       "selectedUserPresence",
-      JSON.stringify(newStatus)
+      JSON.stringify(newStatus),
     );
   }
   setUserAvailabilityDropdown() {
@@ -449,26 +441,26 @@ class Chat extends React.Component<IChatProps, IChatState> {
         icon: "user",
         text: "plugin.chat.state.chat",
         onClick: this.setUserAvailability.bind(this, "chat"),
-        modifier: "chat"
+        modifier: "chat",
       },
       {
         icon: "user",
         text: "plugin.chat.state.away",
         onClick: this.setUserAvailability.bind(this, "away"),
-        modifier: "away"
+        modifier: "away",
       },
       {
         icon: "user",
         text: "plugin.chat.state.dnd",
         onClick: this.setUserAvailability.bind(this, "dnd"),
-        modifier: "dnd"
+        modifier: "dnd",
       },
       {
         icon: "user",
         text: "plugin.chat.state.xa",
         onClick: this.setUserAvailability.bind(this, "xa"),
-        modifier: "xa"
-      }
+        modifier: "xa",
+      },
     ];
     return setUserAvailabilityItems;
   }
@@ -505,7 +497,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
     if (status === Strophe.Status.ATTACHED) {
       // We are atached. Send presence to server so it knows we're online
       this.state.connection.send(
-        $pres().c("show", {}, this.state.selectedUserPresence)
+        $pres().c("show", {}, this.state.selectedUserPresence),
       );
     }
     // I believe strophe retries automatically so disconnected does not need to be tried
@@ -515,7 +507,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
     const stanza = $iq({
       from: this.state.connection.jid,
       to: "conference." + this.state.connectionHostname,
-      type: "get"
+      type: "get",
     }).c("query", { xmlns: Strophe.NS.DISCO_ITEMS });
     this.state.connection.sendIQ(stanza, (answerStanza: Element) => {
       const rooms = answerStanza.querySelectorAll("query item");
@@ -524,13 +516,13 @@ class Chat extends React.Component<IChatProps, IChatState> {
         const roomJID = n.getAttribute("jid");
         const roomName = n.getAttribute("name");
         const existsAlreadyIndex = currentRooms.findIndex(
-          (r) => r.roomJID === roomJID
+          (r) => r.roomJID === roomJID,
         );
         if (existsAlreadyIndex >= 0) {
           const newReplacement: IAvailableChatRoomType = {
             roomJID,
             roomName,
-            roomDesc: currentRooms[existsAlreadyIndex].roomDesc
+            roomDesc: currentRooms[existsAlreadyIndex].roomDesc,
             // roomPersistent: currentRooms[existsAlreadyIndex].roomPersistent,
           };
           currentRooms[existsAlreadyIndex] = newReplacement;
@@ -538,7 +530,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
           currentRooms.push({
             roomJID,
             roomName,
-            roomDesc: null
+            roomDesc: null,
             // roomPersistent: null,
           });
         }
@@ -546,8 +538,8 @@ class Chat extends React.Component<IChatProps, IChatState> {
 
       this.setState({
         availableMucRooms: currentRooms.sort((a, b) =>
-          a.roomName.toLowerCase().localeCompare(b.roomName.toLowerCase())
-        )
+          a.roomName.toLowerCase().localeCompare(b.roomName.toLowerCase()),
+        ),
       });
     });
   }
@@ -559,13 +551,13 @@ class Chat extends React.Component<IChatProps, IChatState> {
     const stanza = $iq({
       from: this.state.connection.jid,
       to: room.roomJID,
-      type: "get"
+      type: "get",
     }).c("query", { xmlns: Strophe.NS.DISCO_INFO });
 
     this.state.connection.sendIQ(stanza, (answerStanza: Element) => {
       const fields = answerStanza.querySelectorAll("query field");
       const newRoom = {
-        ...room
+        ...room,
       };
       fields.forEach((field) => {
         // muc#roominfo_description
@@ -579,14 +571,14 @@ class Chat extends React.Component<IChatProps, IChatState> {
 
       const newAvailableMucRooms = [...this.state.availableMucRooms];
       const indexOfIt = newAvailableMucRooms.findIndex(
-        (r) => r.roomJID === room.roomJID
+        (r) => r.roomJID === room.roomJID,
       );
       if (indexOfIt === -1) {
         return;
       }
       newAvailableMucRooms[indexOfIt] = newRoom;
       this.setState({
-        availableMucRooms: newAvailableMucRooms
+        availableMucRooms: newAvailableMucRooms,
       });
     });
   }
@@ -595,7 +587,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
 
     if (
       !this.state.openChatsJIDS.find(
-        (s) => s.jid !== userFrom && s.type === "user"
+        (s) => s.jid !== userFrom && s.type === "user",
       )
     ) {
       this.joinPrivateChat(userFrom, stanza);
@@ -605,7 +597,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
   }
   public stopChat() {
     this.setState({
-      isInitialized: false
+      isInitialized: false,
     });
 
     this.state.connection &&
@@ -616,12 +608,12 @@ class Chat extends React.Component<IChatProps, IChatState> {
   }
   async initialize() {
     this.setState({
-      isInitialized: true
+      isInitialized: true,
     });
 
-    let session = window.sessionStorage.getItem("strophe-bosh-session");
-    let prebindSessionHost = window.sessionStorage.getItem(
-      "strophe-bosh-hostname"
+    const session = window.sessionStorage.getItem("strophe-bosh-session");
+    const prebindSessionHost = window.sessionStorage.getItem(
+      "strophe-bosh-hostname",
     );
     const expectedId =
       (this.state.isStudent ? "muikku-student-" : "muikku-staff-") +
@@ -648,7 +640,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
 
     const connection = new Strophe.Connection(
       "https://" + (prebind.hostname || prebindSessionHost) + "/http-bind/",
-      { keepalive: true }
+      { keepalive: true },
     );
 
     this.messagesListenerHandler = connection.addHandler(
@@ -657,13 +649,13 @@ class Chat extends React.Component<IChatProps, IChatState> {
       "message",
       "chat",
       null,
-      null
+      null,
     );
 
     this.setState(
       {
         connection,
-        connectionHostname: prebind.hostname || prebindSessionHost
+        connectionHostname: prebind.hostname || prebindSessionHost,
       },
       () => {
         (window as any).ON_LOGOUT = this.stopChat;
@@ -676,12 +668,12 @@ class Chat extends React.Component<IChatProps, IChatState> {
             prebind.jid,
             prebind.sid,
             prebind.rid.toString(),
-            this.onConnectionStatusChanged
+            this.onConnectionStatusChanged,
           );
         }
 
         this.listExistantChatRooms();
-      }
+      },
     );
   }
   render() {
@@ -705,9 +697,9 @@ class Chat extends React.Component<IChatProps, IChatState> {
               <Dropdown
                 alignSelf="left"
                 modifier="chat"
-                items={this.setUserAvailabilityDropdown().map((item) => {
-                  return (closeDropdown: () => any) => {
-                    return (
+                items={this.setUserAvailabilityDropdown().map(
+                  (item) => (closeDropdown: () => any) =>
+                    (
                       <Link
                         className={`link link--full link--chat-dropdown link--chat-availability-${item.modifier}`}
                         onClick={(...args: any[]) => {
@@ -718,9 +710,8 @@ class Chat extends React.Component<IChatProps, IChatState> {
                         <span className={`link__icon icon-${item.icon}`}></span>
                         <span>{this.props.i18n.text.get(item.text)}</span>
                       </Link>
-                    );
-                  };
-                })}
+                    ),
+                )}
               >
                 <span
                   className={`chat__button chat__button--availability chat__button--availability-${this.state.selectedUserPresence} icon-user`}
@@ -750,11 +741,11 @@ class Chat extends React.Component<IChatProps, IChatState> {
                     <Room
                       requestExtraInfoAboutRoom={this.requestExtraInfoAboutRoom.bind(
                         this,
-                        chat
+                        chat,
                       )}
                       toggleJoinLeaveChatRoom={this.toggleJoinLeaveChatRoom.bind(
                         this,
-                        chat.roomJID
+                        chat.roomJID,
                       )}
                       key={i}
                       chat={chat}
@@ -776,12 +767,12 @@ class Chat extends React.Component<IChatProps, IChatState> {
                     <Room
                       requestExtraInfoAboutRoom={this.requestExtraInfoAboutRoom.bind(
                         this,
-                        chat
+                        chat,
                       )}
                       modifier="workspace"
                       toggleJoinLeaveChatRoom={this.toggleJoinLeaveChatRoom.bind(
                         this,
-                        chat.roomJID
+                        chat.roomJID,
                       )}
                       key={i}
                       chat={chat}
@@ -840,20 +831,20 @@ class Chat extends React.Component<IChatProps, IChatState> {
                         className="chat__submit chat__submit--new-room"
                         type="submit"
                         value={this.props.i18n.text.get(
-                          "plugin.chat.button.addRoom"
+                          "plugin.chat.button.addRoom",
                         )}
                       />
                       <div className="chat__subpanel-row chat__subpanel-row--mandatory">
                         *-
                         {this.props.i18n.text.get(
-                          "plugin.chat.room.mandatoryFields"
+                          "plugin.chat.room.mandatoryFields",
                         )}
                       </div>
                       {this.state.missingFields ? (
                         <div className="chat__subpanel-row chat__subpanel-row--emessage">
                           <p>
                             {this.props.i18n.text.get(
-                              "plugin.chat.room.missingFields"
+                              "plugin.chat.room.missingFields",
                             )}
                           </p>
                         </div>
@@ -870,13 +861,13 @@ class Chat extends React.Component<IChatProps, IChatState> {
         <div className="chat__chatrooms-container">
           {this.state.availableMucRooms.map((chat, i) =>
             this.state.openChatsJIDS.find(
-              (r) => r.type === "muc" && r.jid === chat.roomJID
+              (r) => r.type === "muc" && r.jid === chat.roomJID,
             ) ? (
               <Groupchat
                 removeChatRoom={this.removeChatRoom.bind(this, chat.roomJID)}
                 requestExtraInfoAboutRoom={this.requestExtraInfoAboutRoom.bind(
                   this,
-                  chat
+                  chat,
                 )}
                 presence={this.state.selectedUserPresence}
                 connection={this.state.connection}
@@ -889,7 +880,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
                 i18n={this.props.i18n}
                 active={chat.newest && chat.newest}
               />
-            ) : null
+            ) : null,
           )}
 
           {this.state.openChatsJIDS
@@ -914,7 +905,7 @@ function mapStateToProps(state: StateType) {
   return {
     currentLocale: state.locales.current,
     settings: state.profile.chatSettings,
-    i18n: state.i18n
+    i18n: state.i18n,
   };
 }
 

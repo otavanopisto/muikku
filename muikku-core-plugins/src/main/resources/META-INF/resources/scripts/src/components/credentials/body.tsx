@@ -34,7 +34,7 @@ class CredentialsBody extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    credentials: state.credentials
+    credentials: state.credentials,
   };
 }
 

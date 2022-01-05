@@ -2,7 +2,6 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import * as queryString from "query-string";
-import User from "~/components/general/user";
 import { i18nType } from "~/reducers/base/i18n";
 
 import "~/sass/elements/empty.scss";
@@ -20,7 +19,7 @@ import {
   addToGuiderSelectedStudents,
   removeFromGuiderSelectedStudents,
   AddToGuiderSelectedStudentsTriggerType,
-  RemoveFromGuiderSelectedStudentsTriggerType
+  RemoveFromGuiderSelectedStudentsTriggerType,
 } from "~/actions/main-function/guider";
 import BodyScrollKeeper from "~/components/general/body-scroll-keeper";
 import Student from "./students/student";
@@ -29,10 +28,10 @@ import {
   GuiderStudentsStateType,
   GuiderStudentUserProfileType,
   GuiderStudentType,
-  GuiderType
+  GuiderType,
 } from "~/reducers/main-function/guider";
 import ApplicationList, {
-  ApplicationListItem
+  ApplicationListItem,
 } from "~/components/general/application-list";
 
 interface GuiderStudentsProps {
@@ -68,9 +67,9 @@ class GuiderStudents extends BodyScrollLoader<
   }
 
   onStudentClick(student: GuiderStudentType) {
-    let locationData = queryString.parse(
+    const locationData = queryString.parse(
       document.location.hash.split("?")[1] || "",
-      { arrayFormat: "bracket" }
+      { arrayFormat: "bracket" },
     );
     locationData.c = student.id;
     window.location.hash =
@@ -113,36 +112,34 @@ class GuiderStudents extends BodyScrollLoader<
         >
           {this.props.guider.students.map(
             (student: GuiderStudentType, index: number) => {
-              let isSelected = this.props.guider.selectedStudentsIds.includes(
-                student.id
+              const isSelected = this.props.guider.selectedStudentsIds.includes(
+                student.id,
               );
               return {
                 as: ApplicationListItem,
                 className: "user user--guider",
                 onSelect: this.props.addToGuiderSelectedStudents.bind(
                   null,
-                  student
+                  student,
                 ),
                 onDeselect: this.props.removeFromGuiderSelectedStudents.bind(
                   null,
-                  student
+                  student,
                 ),
                 onEnter: this.onStudentClick.bind(this, student),
                 isSelected,
                 key: student.id,
                 checkboxId: `user-select-${index}`,
                 checkboxClassName: "user__selector",
-                contents: (checkbox: React.ReactElement<any>) => {
-                  return (
-                    <Student
-                      index={index}
-                      checkbox={checkbox}
-                      student={student}
-                    />
-                  );
-                }
+                contents: (checkbox: React.ReactElement<any>) => (
+                  <Student
+                    index={index}
+                    checkbox={checkbox}
+                    student={student}
+                  />
+                ),
               };
-            }
+            },
           )}
         </SelectableList>
       </BodyScrollKeeper>
@@ -156,7 +153,7 @@ function mapStateToProps(state: StateType) {
     guiderStudentsState: state.guider.state,
     guiderStudentsHasMore: state.guider.hasMore,
     guiderStudentsCurrent: state.guider.currentStudent,
-    guider: state.guider
+    guider: state.guider,
   };
 }
 
@@ -165,9 +162,9 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
     {
       loadMoreStudents,
       addToGuiderSelectedStudents,
-      removeFromGuiderSelectedStudents
+      removeFromGuiderSelectedStudents,
     },
-    dispatch
+    dispatch,
   );
 }
 

@@ -7,11 +7,11 @@ import {
   MaterialContentNodeListType,
   MaterialContentNodeType,
   MaterialCompositeRepliesListType,
-  WorkspaceEditModeStateType
+  WorkspaceEditModeStateType,
 } from "~/reducers/workspaces";
 
 import ContentPanel, {
-  ContentPanelItem
+  ContentPanelItem,
 } from "~/components/general/content-panel";
 import ProgressData from "../../progressData";
 
@@ -26,7 +26,7 @@ import {
   createWorkspaceMaterialContentNode,
   CreateWorkspaceMaterialContentNodeTriggerType,
   updateWorkspaceMaterialContentNode,
-  UpdateWorkspaceMaterialContentNodeTriggerType
+  UpdateWorkspaceMaterialContentNodeTriggerType,
 } from "~/actions/workspaces";
 import { Redirect } from "react-router-dom";
 
@@ -64,7 +64,7 @@ class WorkspaceMaterials extends React.Component<
 
     this.state = {
       defaultOffset: DEFAULT_OFFSET,
-      redirect: null
+      redirect: null,
     };
 
     this.onOpenNavigation = this.onOpenNavigation.bind(this);
@@ -80,12 +80,12 @@ class WorkspaceMaterials extends React.Component<
     this.getFlattenedMaterials(props);
   }
   componentDidMount() {
-    let defaultOffset =
+    const defaultOffset =
       ((document.querySelector("#stick") as HTMLElement) || ({} as any))
         .offsetHeight || DEFAULT_OFFSET;
     if (defaultOffset !== this.state.defaultOffset) {
       this.setState({
-        defaultOffset
+        defaultOffset,
       });
     }
 
@@ -104,42 +104,42 @@ class WorkspaceMaterials extends React.Component<
       workspace: this.props.workspace,
       material: section,
       update: {
-        hidden: !section.hidden
+        hidden: !section.hidden,
       },
-      isDraft: false
+      isDraft: false,
     });
   }
   getMaterialsOptionListDropdown(
     section: MaterialContentNodeType,
     nextSection: MaterialContentNodeType,
     nextSibling: MaterialContentNodeType,
-    includesSection: boolean
+    includesSection: boolean,
   ) {
     const materialManagementItemsOptions: Array<any> = [
       {
         icon: "plus",
         text: "plugin.workspace.materialsManagement.createChapterTooltip",
         onClick: this.createSection.bind(this, nextSection),
-        file: false
+        file: false,
       },
       {
         icon: "plus",
         text: "plugin.workspace.materialsManagement.createPageTooltip",
         onClick: this.createPage.bind(this, section, nextSibling),
-        file: false
+        file: false,
       },
       {
         icon: "paste",
         text: "plugin.workspace.materialsManagement.pastePageTooltip",
         onClick: this.pastePage.bind(this, section, nextSibling),
-        file: false
+        file: false,
       },
       {
         icon: "attachment",
         text: "plugin.workspace.materialsManagement.attachFileTooltip",
         onChange: this.createPageFromBinary.bind(this, section, nextSibling),
-        file: true
-      }
+        file: true,
+      },
     ];
 
     if (!includesSection) {
@@ -173,12 +173,12 @@ class WorkspaceMaterials extends React.Component<
       showRemoveAnswersDialogForDelete: false,
       showUpdateLinkedMaterialsDialogForPublish: false,
       showUpdateLinkedMaterialsDialogForPublishCount: 0,
-      canSetTitle: true
+      canSetTitle: true,
     });
   }
   createPage(
     section: MaterialContentNodeType,
-    nextSibling: MaterialContentNodeType
+    nextSibling: MaterialContentNodeType,
   ) {
     this.props.createWorkspaceMaterialContentNode(
       {
@@ -187,17 +187,17 @@ class WorkspaceMaterials extends React.Component<
         parentMaterial: section,
         nextSibling,
         title: this.props.i18n.text.get(
-          "plugin.workspace.materialsManagement.newPageTitle"
+          "plugin.workspace.materialsManagement.newPageTitle",
         ),
-        makeFolder: false
+        makeFolder: false,
       },
-      "materials"
+      "materials",
     );
   }
   createPageFromBinary(
     section: MaterialContentNodeType,
     nextSibling: MaterialContentNodeType,
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement>,
   ) {
     this.props.createWorkspaceMaterialContentNode(
       {
@@ -207,9 +207,9 @@ class WorkspaceMaterials extends React.Component<
         nextSibling,
         title: e.target.files[0].name,
         file: e.target.files[0],
-        makeFolder: false
+        makeFolder: false,
       },
-      "materials"
+      "materials",
     );
   }
   createSection(nextSibling: MaterialContentNodeType) {
@@ -219,16 +219,16 @@ class WorkspaceMaterials extends React.Component<
         rootParentId: this.props.workspace.details.rootFolderId,
         nextSibling,
         title: this.props.i18n.text.get(
-          "plugin.workspace.materialsManagement.newPageTitle"
+          "plugin.workspace.materialsManagement.newPageTitle",
         ),
-        makeFolder: true
+        makeFolder: true,
       },
-      "materials"
+      "materials",
     );
   }
   pastePage(
     section: MaterialContentNodeType,
-    nextSibling: MaterialContentNodeType
+    nextSibling: MaterialContentNodeType,
   ) {
     const workspaceMaterialCopiedId =
       localStorage.getItem("workspace-material-copied-id") || null;
@@ -244,9 +244,9 @@ class WorkspaceMaterials extends React.Component<
           nextSibling,
           copyMaterialId: parseInt(workspaceMaterialCopiedId),
           copyWorkspaceId: parseInt(workspaceCopiedId),
-          makeFolder: false
+          makeFolder: false,
         },
-        "materials"
+        "materials",
       );
     }
   }
@@ -268,7 +268,7 @@ class WorkspaceMaterials extends React.Component<
     if ((window as any).IGNORE_SCROLL_EVENTS) {
       return;
     }
-    let newActive: number = this.getActive();
+    const newActive: number = this.getActive();
     if (newActive !== this.props.activeNodeId) {
       this.props.onActiveNodeIdChange(newActive);
     }
@@ -278,22 +278,22 @@ class WorkspaceMaterials extends React.Component<
     let winner: number = null;
 
     //when you are at the bottom the active is the last one
-    let isAllTheWayToTheBottom =
+    const isAllTheWayToTheBottom =
       document.documentElement.scrollHeight -
         document.documentElement.scrollTop ===
       document.documentElement.clientHeight;
     if (!isAllTheWayToTheBottom) {
       let winnerTop: number = null;
       let winnerVisibleWeight: number = null;
-      for (let refKey of Object.keys(this.refs)) {
-        let refKeyInt = parseInt(refKey);
+      for (const refKey of Object.keys(this.refs)) {
+        const refKeyInt = parseInt(refKey);
         if (!refKeyInt) {
           continue;
         }
-        let element = (this.refs[refKey] as ContentPanelItem).getComponent();
-        let elementTop = element.getBoundingClientRect().top;
-        let elementBottom = element.getBoundingClientRect().bottom;
-        let isVisible =
+        const element = (this.refs[refKey] as ContentPanelItem).getComponent();
+        const elementTop = element.getBoundingClientRect().top;
+        const elementBottom = element.getBoundingClientRect().bottom;
+        const isVisible =
           elementTop < window.innerHeight &&
           elementBottom >=
             (document.querySelector("#stick") as HTMLElement).offsetHeight;
@@ -348,7 +348,7 @@ class WorkspaceMaterials extends React.Component<
             openByHover
             modifier="material-management-tooltip"
             content={this.props.i18n.text.get(
-              "plugin.workspace.materialsManagement.createChapterTooltip"
+              "plugin.workspace.materialsManagement.createChapterTooltip",
             )}
           >
             <ButtonPill
@@ -364,7 +364,7 @@ class WorkspaceMaterials extends React.Component<
       this.props.materials.length === 0 ? (
         <div className="material-page material-page--empty">
           {this.props.i18n.text.get(
-            "plugin.workspace.materialsManagement.empty"
+            "plugin.workspace.materialsManagement.empty",
           )}
         </div>
       ) : null;
@@ -384,7 +384,7 @@ class WorkspaceMaterials extends React.Component<
               openByHover
               modifier="material-management-tooltip"
               content={this.props.i18n.text.get(
-                "plugin.workspace.materialsManagement.createChapterTooltip"
+                "plugin.workspace.materialsManagement.createChapterTooltip",
               )}
             >
               <ButtonPill
@@ -393,7 +393,7 @@ class WorkspaceMaterials extends React.Component<
                 onClick={this.createSection.bind(this, section)}
               />
             </Dropdown>
-          </div>
+          </div>,
         );
       }
 
@@ -407,41 +407,39 @@ class WorkspaceMaterials extends React.Component<
               section,
               nextSection,
               null,
-              true
-            ).map((item) => {
-              return (closeDropdown: () => any) => {
-                if (item.file) {
-                  return (
-                    <label
-                      htmlFor="baseFileInput"
-                      className={`link link--full link--material-management-dropdown`}
-                    >
-                      <input
-                        type="file"
-                        id="baseFileInput"
-                        onChange={(e) => {
-                          closeDropdown();
-                          item.onChange && item.onChange(e);
-                        }}
-                      />
-                      <span className={`link__icon icon-${item.icon}`}></span>
-                      <span>{this.props.i18n.text.get(item.text)}</span>
-                    </label>
-                  );
-                }
+              true,
+            ).map((item) => (closeDropdown: () => any) => {
+              if (item.file) {
                 return (
-                  <Link
+                  <label
+                    htmlFor="baseFileInput"
                     className={`link link--full link--material-management-dropdown`}
-                    onClick={() => {
-                      closeDropdown();
-                      item.onClick && item.onClick();
-                    }}
                   >
+                    <input
+                      type="file"
+                      id="baseFileInput"
+                      onChange={(e) => {
+                        closeDropdown();
+                        item.onChange && item.onChange(e);
+                      }}
+                    />
                     <span className={`link__icon icon-${item.icon}`}></span>
                     <span>{this.props.i18n.text.get(item.text)}</span>
-                  </Link>
+                  </label>
                 );
-              };
+              }
+              return (
+                <Link
+                  className={`link link--full link--material-management-dropdown`}
+                  onClick={() => {
+                    closeDropdown();
+                    item.onClick && item.onClick();
+                  }}
+                >
+                  <span className={`link__icon icon-${item.icon}`}></span>
+                  <span>{this.props.i18n.text.get(item.text)}</span>
+                </Link>
+              );
             })}
           >
             <ButtonPill
@@ -475,43 +473,39 @@ class WorkspaceMaterials extends React.Component<
                   section,
                   nextSection,
                   nextSibling,
-                  false
-                ).map((item) => {
-                  return (closeDropdown: () => any) => {
-                    if (item.file) {
-                      return (
-                        <label
-                          htmlFor={node.workspaceMaterialId + "-input"}
-                          className={`link link--full link--material-management-dropdown`}
-                        >
-                          <input
-                            type="file"
-                            id={node.workspaceMaterialId + "-input"}
-                            onChange={(e) => {
-                              closeDropdown();
-                              item.onChange && item.onChange(e);
-                            }}
-                          />
-                          <span
-                            className={`link__icon icon-${item.icon}`}
-                          ></span>
-                          <span>{this.props.i18n.text.get(item.text)}</span>
-                        </label>
-                      );
-                    }
+                  false,
+                ).map((item) => (closeDropdown: () => any) => {
+                  if (item.file) {
                     return (
-                      <Link
+                      <label
+                        htmlFor={node.workspaceMaterialId + "-input"}
                         className={`link link--full link--material-management-dropdown`}
-                        onClick={() => {
-                          closeDropdown();
-                          item.onClick && item.onClick();
-                        }}
                       >
+                        <input
+                          type="file"
+                          id={node.workspaceMaterialId + "-input"}
+                          onChange={(e) => {
+                            closeDropdown();
+                            item.onChange && item.onChange(e);
+                          }}
+                        />
                         <span className={`link__icon icon-${item.icon}`}></span>
                         <span>{this.props.i18n.text.get(item.text)}</span>
-                      </Link>
+                      </label>
                     );
-                  };
+                  }
+                  return (
+                    <Link
+                      className={`link link--full link--material-management-dropdown`}
+                      onClick={() => {
+                        closeDropdown();
+                        item.onClick && item.onClick();
+                      }}
+                    >
+                      <span className={`link__icon icon-${item.icon}`}></span>
+                      <span>{this.props.i18n.text.get(item.text)}</span>
+                    </Link>
+                  );
                 })}
               >
                 <ButtonPill
@@ -519,7 +513,7 @@ class WorkspaceMaterials extends React.Component<
                   icon="plus"
                 />
               </Dropdown>
-            </div>
+            </div>,
           );
         }
 
@@ -528,7 +522,7 @@ class WorkspaceMaterials extends React.Component<
           this.props.workspace &&
           this.props.materialReplies &&
           this.props.materialReplies.find(
-            (reply) => reply.workspaceMaterialId === node.workspaceMaterialId
+            (reply) => reply.workspaceMaterialId === node.workspaceMaterialId,
           );
 
         if (node.hidden && compositeReplies) {
@@ -536,7 +530,7 @@ class WorkspaceMaterials extends React.Component<
             compositeReplies && compositeReplies.submitted !== null;
         }
 
-        let material =
+        const material =
           !this.props.workspace ||
           !this.props.materialReplies ||
           (!isEditable && node.hidden && !showEvenIfHidden) ? null : (
@@ -547,7 +541,7 @@ class WorkspaceMaterials extends React.Component<
               <div
                 id={"p-" + node.workspaceMaterialId}
                 style={{
-                  transform: "translateY(" + -this.state.defaultOffset + "px)"
+                  transform: "translateY(" + -this.state.defaultOffset + "px)",
                 }}
               />
               {/*TOP OF THE PAGE*/}
@@ -576,7 +570,7 @@ class WorkspaceMaterials extends React.Component<
           <div
             id={"s-" + section.workspaceMaterialId}
             style={{
-              transform: "translateY(" + -this.state.defaultOffset + "px)"
+              transform: "translateY(" + -this.state.defaultOffset + "px)",
             }}
           />
           {/*TOP OF THE CHAPTER*/}
@@ -591,7 +585,7 @@ class WorkspaceMaterials extends React.Component<
                   openByHover
                   modifier="material-management-tooltip"
                   content={this.props.i18n.text.get(
-                    "plugin.workspace.materialsManagement.editChapterTooltip"
+                    "plugin.workspace.materialsManagement.editChapterTooltip",
                   )}
                 >
                   <ButtonPill
@@ -606,10 +600,10 @@ class WorkspaceMaterials extends React.Component<
                   content={
                     section.hidden
                       ? this.props.i18n.text.get(
-                          "plugin.workspace.materialsManagement.showChapterTooltip"
+                          "plugin.workspace.materialsManagement.showChapterTooltip",
                         )
                       : this.props.i18n.text.get(
-                          "plugin.workspace.materialsManagement.hideChapterTooltip"
+                          "plugin.workspace.materialsManagement.hideChapterTooltip",
                         )
                   }
                 >
@@ -630,7 +624,7 @@ class WorkspaceMaterials extends React.Component<
               <article className="material-page">
                 <div className="material-page__content material-page__content--view-restricted">
                   {this.props.i18n.text.get(
-                    "plugin.workspace.materialViewRestricted"
+                    "plugin.workspace.materialViewRestricted",
                   )}
                 </div>
               </article>
@@ -638,16 +632,16 @@ class WorkspaceMaterials extends React.Component<
           ) : null}
           {sectionSpecificContentData}
           {lastManagementOptionsWithinSectionItem}
-        </section>
+        </section>,
       );
     });
 
-    let progressData =
+    const progressData =
       this.props.workspace && this.props.workspace.studentActivity ? (
         <ProgressData
           modifier="workspace-materials"
           title={this.props.i18n.text.get(
-            "plugin.workspace.index.courseProgressLabel"
+            "plugin.workspace.index.courseProgressLabel",
           )}
           i18n={this.props.i18n}
           activity={this.props.workspace.studentActivity}
@@ -662,7 +656,7 @@ class WorkspaceMaterials extends React.Component<
           modifier="materials"
           navigation={this.props.navigation}
           title={this.props.i18n.text.get(
-            "plugin.workspace.materials.pageTitle"
+            "plugin.workspace.materials.pageTitle",
           )}
           ref="content-panel"
         >
@@ -683,7 +677,7 @@ function mapStateToProps(state: StateType) {
     materialReplies: state.workspaces.currentMaterialsReplies,
     activeNodeId: state.workspaces.currentMaterialsActiveNodeId,
     workspaceEditMode: state.workspaces.editMode,
-    isLoggedIn: state.status.loggedIn
+    isLoggedIn: state.status.loggedIn,
   };
 }
 
@@ -692,12 +686,12 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
     {
       setWorkspaceMaterialEditorState,
       createWorkspaceMaterialContentNode,
-      updateWorkspaceMaterialContentNode
+      updateWorkspaceMaterialContentNode,
     },
-    dispatch
+    dispatch,
   );
 }
 
 export default connect(mapStateToProps, mapDispatchToProps, null, {
-  withRef: true
+  withRef: true,
 })(WorkspaceMaterials);

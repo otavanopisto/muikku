@@ -20,7 +20,7 @@ const EvaluationDiaryEvent: React.FC<EvaluationDiaryEventProps> = ({
   created,
   open,
   onClickOpen,
-  id
+  id,
 }) => {
   const [height, setHeight] = React.useState<0 | "auto">(0);
 
@@ -36,11 +36,9 @@ const EvaluationDiaryEvent: React.FC<EvaluationDiaryEventProps> = ({
    * This should sanitize html
    * @param htmlString string that contains html
    */
-  const createHtmlMarkup = (htmlString: string) => {
-    return {
-      __html: htmlString
-    };
-  };
+  const createHtmlMarkup = (htmlString: string) => ({
+    __html: htmlString,
+  });
 
   /**
    * handleOpenContentClick
@@ -53,7 +51,7 @@ const EvaluationDiaryEvent: React.FC<EvaluationDiaryEventProps> = ({
   };
 
   const formatedDate = `${moment(created).format("l")} - ${moment(
-    created
+    created,
   ).format("LT")} `;
 
   return (

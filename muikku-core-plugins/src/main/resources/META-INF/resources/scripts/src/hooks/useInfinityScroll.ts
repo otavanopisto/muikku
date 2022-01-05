@@ -14,7 +14,7 @@ import { LoadingState } from "~/@types/shared";
 const useInfinityScroll = (
   hasMore: boolean,
   state: LoadingState,
-  loadMore: () => void
+  loadMore: () => void,
 ) => {
   const observer = useRef<IntersectionObserver>();
   return useCallback(
@@ -35,7 +35,7 @@ const useInfinityScroll = (
       });
       observer.current.observe(node);
     },
-    [hasMore, state]
+    [hasMore, state],
   );
 };
 export default useInfinityScroll;

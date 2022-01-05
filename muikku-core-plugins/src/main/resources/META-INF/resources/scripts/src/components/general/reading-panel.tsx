@@ -29,7 +29,7 @@ export default class ReadingPanel extends React.Component<
 
     this.state = {
       sticky: false,
-      remainingHeight: null
+      remainingHeight: null,
     };
   }
   componentDidMount() {

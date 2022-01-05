@@ -16,16 +16,12 @@ export default class FrontpageInstagram extends React.Component<
   FrontpageInstagramState
 > {
   render() {
-    const INSTAGRAM_ID = "11359596292";
-    const THUMBNAIL_WIDTH = 640;
-    const PHOTO_COUNT = 12;
-
     return (
       <section
         id="instagram"
         className="screen-container__section"
         aria-label={this.props.i18n.text.get(
-          "plugin.wcag.frontPageSectionInstagramLabel"
+          "plugin.wcag.frontPageSectionInstagramLabel",
         )}
       >
         <h2 className="screen-container__header">
@@ -40,6 +36,7 @@ export default class FrontpageInstagram extends React.Component<
                     <a
                       href="https://www.instagram.com/muikkuofficial/"
                       target="_blank"
+                      rel="noreferrer"
                     >
                       <span className="card__meta-aside-logo icon-instagram">
                         <span className="visually-hidden">
@@ -54,6 +51,7 @@ export default class FrontpageInstagram extends React.Component<
                         className="card__meta-body-link card__meta-body-link--instagram"
                         href="https://www.instagram.com/muikkuofficial/"
                         target="_blank"
+                        rel="noreferrer"
                       >
                         <span className="visually-hidden">Instagram </span>
                         muikkuofficial
@@ -61,11 +59,11 @@ export default class FrontpageInstagram extends React.Component<
                     </div>
                     <div className="card__meta-body-description">
                       {this.props.i18n.text.get(
-                        "plugin.studying.nettilukio.title"
+                        "plugin.studying.nettilukio.title",
                       )}{" "}
                       /{" "}
                       {this.props.i18n.text.get(
-                        "plugin.studying.nettiperuskoulu.title"
+                        "plugin.studying.nettiperuskoulu.title",
                       )}
                     </div>
                   </div>

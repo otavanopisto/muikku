@@ -79,7 +79,7 @@ class Announcement extends React.Component<
           <section
             className="article__body rich-text"
             dangerouslySetInnerHTML={{
-              __html: this.props.announcement.content
+              __html: this.props.announcement.content,
             }}
           ></section>
         </article>
@@ -92,7 +92,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     announcement: state.announcements.current,
-    userIndex: state.userIndex
+    userIndex: state.userIndex,
   };
 }
 

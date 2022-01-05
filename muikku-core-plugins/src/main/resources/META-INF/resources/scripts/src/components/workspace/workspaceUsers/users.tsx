@@ -15,15 +15,15 @@ import "~/sass/elements/avatar.scss";
 import { getName } from "~/util/modifiers";
 import {
   ContactRecipientType,
-  ShortWorkspaceUserWithActiveStatusType
+  ShortWorkspaceUserWithActiveStatusType,
 } from "~/reducers/user-index";
 import { getWorkspaceMessage } from "~/components/workspace/workspaceHome/teachers";
-import Tabs, { MobileOnlyTabs } from "~/components/general/tabs";
+import { MobileOnlyTabs } from "~/components/general/tabs";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import ApplicationList, {
   ApplicationListItem,
-  ApplicationListItemContentWrapper
+  ApplicationListItemContentWrapper,
 } from "~/components/general/application-list";
 import Avatar from "~/components/general/avatar";
 import DeactivateReactivateUserDialog from "./dialogs/deactivate-reactivate-user";
@@ -33,7 +33,7 @@ import PagerV2 from "~/components/general/pagerV2";
 import {
   loadStaffMembersOfWorkspace,
   loadStudentsOfWorkspace,
-  LoadUsersOfWorkspaceTriggerType
+  LoadUsersOfWorkspaceTriggerType,
 } from "~/actions/workspaces";
 
 /**
@@ -67,10 +67,10 @@ class WorkspaceUsers extends React.Component<
   WorkspaceUsersProps,
   WorkspaceUsersState
 > {
-  private usersPerPage: number = 10;
-  private allStaffPages: number = 0;
-  private allActiveStudentsPages: number = 0;
-  private allInActiveStudentsPages: number = 0;
+  private usersPerPage = 10;
+  private allStaffPages = 0;
+  private allActiveStudentsPages = 0;
+  private allInActiveStudentsPages = 0;
 
   /**
    * Constructor method
@@ -86,7 +86,7 @@ class WorkspaceUsers extends React.Component<
       currentStaffPage: 1,
       currentActiveStudentPage: 1,
       currentInactiveStudentPage: 1,
-      studentCurrentBeingToggledStatus: null
+      studentCurrentBeingToggledStatus: null,
     };
 
     this.onSendMessageTo = this.onSendMessageTo.bind(this);
@@ -109,7 +109,7 @@ class WorkspaceUsers extends React.Component<
    */
   onSendMessageTo(student: ShortWorkspaceUserWithActiveStatusType) {
     this.setState({
-      studentCurrentlyBeingSentMessage: student
+      studentCurrentlyBeingSentMessage: student,
     });
   }
 
@@ -118,7 +118,7 @@ class WorkspaceUsers extends React.Component<
    */
   removeStudentBeingSentMessage() {
     this.setState({
-      studentCurrentlyBeingSentMessage: null
+      studentCurrentlyBeingSentMessage: null,
     });
   }
 
@@ -128,7 +128,7 @@ class WorkspaceUsers extends React.Component<
    */
   onTabChange(id: "ACTIVE" | "INACTIVE") {
     this.setState({
-      activeTab: id
+      activeTab: id,
     });
   }
 
@@ -143,8 +143,8 @@ class WorkspaceUsers extends React.Component<
         q: query,
         active: true,
         firstResult: 0,
-        maxResults: this.usersPerPage
-      }
+        maxResults: this.usersPerPage,
+      },
     });
     this.props.loadStudents({
       workspace: this.props.workspace,
@@ -152,14 +152,14 @@ class WorkspaceUsers extends React.Component<
         q: query,
         active: false,
         firstResult: 0,
-        maxResults: this.usersPerPage
-      }
+        maxResults: this.usersPerPage,
+      },
     });
 
     this.setState({
       currentSearch: query,
       currentActiveStudentPage: 1,
-      currentInactiveStudentPage: 1
+      currentInactiveStudentPage: 1,
     });
   }
 
@@ -168,7 +168,7 @@ class WorkspaceUsers extends React.Component<
    */
   removeStudentBeingToggledStatus() {
     this.setState({
-      studentCurrentBeingToggledStatus: null
+      studentCurrentBeingToggledStatus: null,
     });
     this.loadInActiveStudents(1);
     this.loadActiveStudents(1);
@@ -179,10 +179,10 @@ class WorkspaceUsers extends React.Component<
    * @param student
    */
   setStudentBeingToggledStatus(
-    student: ShortWorkspaceUserWithActiveStatusType
+    student: ShortWorkspaceUserWithActiveStatusType,
   ) {
     this.setState({
-      studentCurrentBeingToggledStatus: student
+      studentCurrentBeingToggledStatus: student,
     });
   }
 
@@ -196,8 +196,8 @@ class WorkspaceUsers extends React.Component<
       payload: {
         q: "",
         firstResult: (page - 1) * this.usersPerPage,
-        maxResults: this.usersPerPage
-      }
+        maxResults: this.usersPerPage,
+      },
     };
     this.props.loadStaffMembers(data);
     this.setState({ currentStaffPage: page });
@@ -215,8 +215,8 @@ class WorkspaceUsers extends React.Component<
         q: "",
         active: active,
         firstResult: (page - 1) * this.usersPerPage,
-        maxResults: this.usersPerPage
-      }
+        maxResults: this.usersPerPage,
+      },
     };
     this.props.loadStudents(data);
   };
@@ -270,17 +270,17 @@ class WorkspaceUsers extends React.Component<
   UNSAFE_componentWillReceiveProps(nextProps: WorkspaceUsersProps) {
     if (nextProps.workspace && nextProps.workspace.staffMembers) {
       this.allStaffPages = Math.ceil(
-        nextProps.workspace.staffMembers.totalHitCount / this.usersPerPage
+        nextProps.workspace.staffMembers.totalHitCount / this.usersPerPage,
       );
     }
     if (nextProps.workspace && nextProps.workspace.students) {
       this.allActiveStudentsPages = Math.ceil(
-        nextProps.workspace.students.totalHitCount / this.usersPerPage
+        nextProps.workspace.students.totalHitCount / this.usersPerPage,
       );
     }
     if (nextProps.workspace && nextProps.workspace.inactiveStudents) {
       this.allInActiveStudentsPages = Math.ceil(
-        nextProps.workspace.inactiveStudents.totalHitCount / this.usersPerPage
+        nextProps.workspace.inactiveStudents.totalHitCount / this.usersPerPage,
       );
     }
   }
@@ -295,8 +295,8 @@ class WorkspaceUsers extends React.Component<
       type: "user",
       value: {
         id: this.state.studentCurrentlyBeingSentMessage.userEntityId,
-        name: getName(this.state.studentCurrentlyBeingSentMessage, true)
-      }
+        name: getName(this.state.studentCurrentlyBeingSentMessage, true),
+      },
     };
     const staffPager =
       this.allStaffPages > 1 ? (
@@ -321,7 +321,7 @@ class WorkspaceUsers extends React.Component<
         <ApplicationSubPanel
           modifier="workspace-users"
           title={this.props.i18n.text.get(
-            "plugin.workspace.users.teachers.title"
+            "plugin.workspace.users.teachers.title",
           )}
           i18n={this.props.i18n}
         >
@@ -341,20 +341,20 @@ class WorkspaceUsers extends React.Component<
                         type: "staff",
                         value: {
                           id: staff.userEntityId,
-                          name: getName(staff, true)
-                        }
-                      }
+                          name: getName(staff, true),
+                        },
+                      },
                     ]}
                     initialSubject={getWorkspaceMessage(
                       this.props.i18n,
                       this.props.status,
-                      this.props.workspace
+                      this.props.workspace,
                     )}
                     initialMessage={getWorkspaceMessage(
                       this.props.i18n,
                       this.props.status,
                       this.props.workspace,
-                      true
+                      true,
                     )}
                   >
                     <IconButton
@@ -397,7 +397,7 @@ class WorkspaceUsers extends React.Component<
           modifier="workspace-users"
           i18n={this.props.i18n}
           title={this.props.i18n.text.get(
-            "plugin.workspace.users.students.title"
+            "plugin.workspace.users.students.title",
           )}
         >
           <SearchFormElement
@@ -407,7 +407,7 @@ class WorkspaceUsers extends React.Component<
             id="WorkspaceUserFilter"
             name="workspace-user-filter"
             placeholder={this.props.i18n.text.get(
-              "plugin.workspace.users.students.searchStudents"
+              "plugin.workspace.users.students.searchStudents",
             )}
           />
           <MobileOnlyTabs
@@ -418,7 +418,7 @@ class WorkspaceUsers extends React.Component<
               {
                 id: "ACTIVE",
                 name: this.props.i18n.text.get(
-                  "plugin.workspace.users.students.link.active"
+                  "plugin.workspace.users.students.link.active",
                 ),
                 type: "workspace-students",
                 component: () => {
@@ -430,7 +430,7 @@ class WorkspaceUsers extends React.Component<
                         highlight={this.state.currentSearch}
                         onSetToggleStatus={this.setStudentBeingToggledStatus.bind(
                           this,
-                          s
+                          s,
                         )}
                         key={s.workspaceUserEntityId}
                         student={s}
@@ -461,19 +461,19 @@ class WorkspaceUsers extends React.Component<
                         ) : (
                           <div className="loaded-empty">
                             {this.props.i18n.text.get(
-                              "plugin.workspaces.users.activeStudents.empty"
+                              "plugin.workspaces.users.activeStudents.empty",
                             )}
                           </div>
                         )
                       ) : null}
                     </ApplicationList>
                   );
-                }
+                },
               },
               {
                 id: "INACTIVE",
                 name: this.props.i18n.text.get(
-                  "plugin.workspace.users.students.link.inactive"
+                  "plugin.workspace.users.students.link.inactive",
                 ),
                 type: "workspace-students",
                 component: () => {
@@ -484,7 +484,7 @@ class WorkspaceUsers extends React.Component<
                       <WorkspaceUser
                         onSetToggleStatus={this.setStudentBeingToggledStatus.bind(
                           this,
-                          s
+                          s,
                         )}
                         highlight={this.state.currentSearch}
                         key={s.workspaceUserEntityId}
@@ -515,15 +515,15 @@ class WorkspaceUsers extends React.Component<
                         ) : (
                           <div className="loaded-empty">
                             {this.props.i18n.text.get(
-                              "plugin.workspaces.users.inActiveStudents.empty"
+                              "plugin.workspaces.users.inActiveStudents.empty",
                             )}
                           </div>
                         )
                       ) : null}
                     </ApplicationList>
                   );
-                }
-              }
+                },
+              },
             ]}
           />
         </ApplicationSubPanel>
@@ -537,13 +537,13 @@ class WorkspaceUsers extends React.Component<
             initialSubject={getWorkspaceMessage(
               this.props.i18n,
               this.props.status,
-              this.props.workspace
+              this.props.workspace,
             )}
             initialMessage={getWorkspaceMessage(
               this.props.i18n,
               this.props.status,
               this.props.workspace,
-              true
+              true,
             )}
           />
         ) : null}
@@ -567,7 +567,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     workspace: state.workspaces.currentWorkspace,
-    status: state.status
+    status: state.status,
   };
 }
 
@@ -579,9 +579,9 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     {
       loadStaffMembers: loadStaffMembersOfWorkspace,
-      loadStudents: loadStudentsOfWorkspace
+      loadStudents: loadStudentsOfWorkspace,
     },
-    dispatch
+    dispatch,
   );
 }
 

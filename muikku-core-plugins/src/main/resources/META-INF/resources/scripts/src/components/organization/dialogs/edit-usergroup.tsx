@@ -4,11 +4,11 @@ import Dialog, {
   DialogRow,
   DialogRowHeader,
   DialogRowContent,
-  DialogRemoveUsers
+  DialogRemoveUsers,
 } from "~/components/general/dialog";
 import {
   FormWizardActions,
-  InputFormElement
+  InputFormElement,
 } from "~/components/general/form-element";
 import {
   loadSelectorStudents,
@@ -20,13 +20,13 @@ import {
   loadAllCurrentUserGroupStaff,
   loadUserGroups,
   updateUsergroup,
-  UpdateUsergroupTriggerType
+  UpdateUsergroupTriggerType,
 } from "~/actions/main-function/users";
 import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
 import { bindActionCreators } from "redux";
 import AutofillSelector, {
-  UiSelectItem
+  UiSelectItem,
 } from "~/components/base/input-select-autofill";
 import { SelectItem } from "~/actions/workspaces/index";
 import {
@@ -35,7 +35,7 @@ import {
   PagingEnvironmentUserListType,
   ModifyUserGroupUsersType,
   UpdateUserGroupStateType,
-  CurrentUserGroupType
+  CurrentUserGroupType,
 } from "~/reducers/main-function/users";
 import { UserGroupType, UserType } from "~/reducers/user-index";
 import { TagItem } from "~/components/general/tag-input";
@@ -91,8 +91,8 @@ class OrganizationEditUsergroup extends React.Component<
   OrganizationEditUsergroupProps,
   OrganizationEditUsergroupState
 > {
-  private totalSteps: number = 6;
-  private usersPerPage: number = 5;
+  private totalSteps = 6;
+  private usersPerPage = 5;
   private searchTimer: NodeJS.Timer;
 
   constructor(props: OrganizationEditUsergroupProps) {
@@ -112,14 +112,14 @@ class OrganizationEditUsergroup extends React.Component<
       currentStep: 1,
       executing: false,
       validation: {
-        nameValid: 2
+        nameValid: 2,
       },
 
       userGroupUpdated: false,
       studentsAdded: false,
       studentsRemoved: false,
       staffAdded: false,
-      staffRemoved: false
+      staffRemoved: false,
     };
 
     this.goToPage = this.goToPage.bind(this);
@@ -147,19 +147,19 @@ class OrganizationEditUsergroup extends React.Component<
   }
 
   goToPage(n: number, loader: LoadUsersTriggerType, query: string) {
-    let pageStart: number = (n - 1) * this.usersPerPage;
+    const pageStart: number = (n - 1) * this.usersPerPage;
     loader({
       payload: {
         q: query,
         firstResult: pageStart,
         maxResults: this.usersPerPage,
-        userGroupIds: [this.props.usergroup.id]
-      }
+        userGroupIds: [this.props.usergroup.id],
+      },
     });
   }
 
   goToStudentPage(n: number) {
-    let query: string =
+    const query: string =
       this.state.searchValues && this.state.searchValues.staff
         ? this.state.searchValues.staff
         : null;
@@ -167,7 +167,7 @@ class OrganizationEditUsergroup extends React.Component<
   }
 
   goToStaffPage(n: number) {
-    let query: string =
+    const query: string =
       this.state.searchValues && this.state.searchValues.staff
         ? this.state.searchValues.staff
         : null;
@@ -177,37 +177,37 @@ class OrganizationEditUsergroup extends React.Component<
   doUserGroupUsersSearch(
     loader: LoadUsersTriggerType,
     q: string,
-    type: UserCategoriesType
+    type: UserCategoriesType,
   ) {
     loader({
       payload: {
         q,
         userGroupIds: [this.props.usergroup.id],
         firstResult: 0,
-        maxResults: 5
+        maxResults: 5,
       },
       success: (users: PagingEnvironmentUserListType) => {
         this.setState({
           pages: {
             ...this.state.pages,
-            [type]: Math.ceil(users.totalHitCount / this.usersPerPage)
-          }
+            [type]: Math.ceil(users.totalHitCount / this.usersPerPage),
+          },
         });
-      }
+      },
     });
   }
 
   turnUsersToSelectItems(users: UserType[]) {
-    let selectItems: SelectItem[] = [];
+    const selectItems: SelectItem[] = [];
 
     for (let i = 0; i < users.length; i++) {
-      let item: SelectItem = {
+      const item: SelectItem = {
         id: users[i].id,
         label: users[i].firstName + " " + users[i].lastName,
         variables: {
           identifier: users[i].userEntityId,
-          boolean: users[i].hasImage
-        }
+          boolean: users[i].hasImage,
+        },
       };
       selectItems.push(item);
     }
@@ -217,7 +217,7 @@ class OrganizationEditUsergroup extends React.Component<
 
   doUserGroupStudentSearch(q: string) {
     this.setState({
-      searchValues: { ...this.state.searchValues, ["students"]: q }
+      searchValues: { ...this.state.searchValues, ["students"]: q },
     });
     clearTimeout(this.searchTimer);
     this.searchTimer = setTimeout(
@@ -225,15 +225,15 @@ class OrganizationEditUsergroup extends React.Component<
         null,
         this.props.loadAllCurrentUserGroupStudents,
         q,
-        "students"
+        "students",
       ) as any,
-      400
+      400,
     );
   }
 
   doUserGroupStaffSearch(q: string) {
     this.setState({
-      searchValues: { ...this.state.searchValues, ["staff"]: q }
+      searchValues: { ...this.state.searchValues, ["staff"]: q },
     });
     clearTimeout(this.searchTimer);
     this.searchTimer = setTimeout(
@@ -241,31 +241,31 @@ class OrganizationEditUsergroup extends React.Component<
         null,
         this.props.loadAllCurrentUserGroupStaff,
         q,
-        "staff"
+        "staff",
       ) as any,
-      400
+      400,
     );
   }
 
   toggleStudentRemove(usr: UiSelectItem) {
-    let newRemoveState = this.state.removeStudents.some(
-      (rStudent) => rStudent.id === usr.id
+    const newRemoveState = this.state.removeStudents.some(
+      (rStudent) => rStudent.id === usr.id,
     )
       ? this.state.removeStudents.filter((rStudent) => rStudent.id !== usr.id)
       : this.state.removeStudents.concat(usr);
     this.setState({
-      removeStudents: newRemoveState
+      removeStudents: newRemoveState,
     });
   }
 
   toggleStaffRemove(usr: UiSelectItem) {
-    let newRemoveState = this.state.removeStaff.some(
-      (rStaff) => rStaff.id === usr.id
+    const newRemoveState = this.state.removeStaff.some(
+      (rStaff) => rStaff.id === usr.id,
     )
       ? this.state.removeStaff.filter((rStaff) => rStaff.id !== usr.id)
       : this.state.removeStaff.concat(usr);
     this.setState({
-      removeStaff: newRemoveState
+      removeStaff: newRemoveState,
     });
   }
 
@@ -276,7 +276,7 @@ class OrganizationEditUsergroup extends React.Component<
 
   deleteStudent(student: SelectItem) {
     const newAddState = this.state.addStudents.filter(
-      (std) => std.id !== student.id
+      (std) => std.id !== student.id,
     );
     this.setState({ addStudents: newAddState });
   }
@@ -292,7 +292,7 @@ class OrganizationEditUsergroup extends React.Component<
 
   deleteStaff(staff: SelectItem) {
     const newAddState = this.state.addStaff.filter(
-      (stf) => stf.id !== staff.id
+      (stf) => stf.id !== staff.id,
     );
     this.setState({ addStaff: newAddState });
   }
@@ -320,7 +320,7 @@ class OrganizationEditUsergroup extends React.Component<
       studentsAdded: false,
       studentsRemoved: false,
       staffAdded: false,
-      staffRemoved: false
+      staffRemoved: false,
     });
   }
 
@@ -336,31 +336,31 @@ class OrganizationEditUsergroup extends React.Component<
       this.doUserGroupStaffSearch("");
     }
     if (this.state.userGroupName === "") {
-      let validation: ValidationType = Object.assign(this.state.validation, {
-        nameValid: 0
+      const validation: ValidationType = Object.assign(this.state.validation, {
+        nameValid: 0,
       });
       this.setState({ locked: true, validation });
     } else {
-      let nextStep = this.state.currentStep + 1;
+      const nextStep = this.state.currentStep + 1;
       this.setState({ locked: false, currentStep: nextStep });
     }
   }
 
   lastStep() {
-    let lastStep = this.state.currentStep - 1;
+    const lastStep = this.state.currentStep - 1;
     this.setState({ currentStep: lastStep });
   }
 
   saveUsergroup(closeDialog: () => any) {
     this.setState({
       locked: true,
-      executing: true
+      executing: true,
     });
 
     let update: UpdateUserGroupType;
     let addUsers: ModifyUserGroupUsersType;
     let removeUsers: ModifyUserGroupUsersType;
-    let groupIdentifier: string = this.props.usergroup.id.toString();
+    const groupIdentifier: string = this.props.usergroup.id.toString();
 
     if (
       this.props.usergroup.name !== this.state.userGroupName ||
@@ -370,7 +370,7 @@ class OrganizationEditUsergroup extends React.Component<
         name: this.state.userGroupName,
         // We get a number, but need it to be a string
         identifier: groupIdentifier,
-        isGuidanceGroup: this.state.isGuidanceGroup
+        isGuidanceGroup: this.state.isGuidanceGroup,
       };
     }
 
@@ -378,8 +378,8 @@ class OrganizationEditUsergroup extends React.Component<
       addUsers = {
         groupIdentifier: groupIdentifier,
         userIdentifiers: this.state.addStudents.map(
-          (student) => student.id as string
-        )
+          (student) => student.id as string,
+        ),
       };
     }
 
@@ -387,8 +387,8 @@ class OrganizationEditUsergroup extends React.Component<
       removeUsers = {
         groupIdentifier: groupIdentifier,
         userIdentifiers: this.state.removeStudents.map(
-          (student) => student.id as string
-        )
+          (student) => student.id as string,
+        ),
       };
     }
 
@@ -397,12 +397,12 @@ class OrganizationEditUsergroup extends React.Component<
         addUsers = {
           groupIdentifier: groupIdentifier,
           userIdentifiers: this.state.addStaff.map(
-            (staff) => staff.id as string
-          )
+            (staff) => staff.id as string,
+          ),
         };
       } else {
         addUsers.userIdentifiers = addUsers.userIdentifiers.concat(
-          this.state.addStaff.map((staff) => staff.id as string)
+          this.state.addStaff.map((staff) => staff.id as string),
         );
       }
     }
@@ -412,12 +412,12 @@ class OrganizationEditUsergroup extends React.Component<
         removeUsers = {
           groupIdentifier: groupIdentifier,
           userIdentifiers: this.state.removeStaff.map(
-            (staff) => staff.id as string
-          )
+            (staff) => staff.id as string,
+          ),
         };
       } else {
         removeUsers.userIdentifiers = removeUsers.userIdentifiers.concat(
-          this.state.removeStaff.map((staff) => staff.id as string)
+          this.state.removeStaff.map((staff) => staff.id as string),
         );
       }
     }
@@ -429,23 +429,23 @@ class OrganizationEditUsergroup extends React.Component<
       progress: (state: UpdateUserGroupStateType) => {
         if (state === "update-group") {
           this.setState({
-            userGroupUpdated: true
+            userGroupUpdated: true,
           });
         }
         if (state === "add-users") {
           this.setState({
-            studentsAdded: true
+            studentsAdded: true,
           });
         }
         if (state === "remove-users") {
           this.setState({
-            studentsRemoved: true
+            studentsRemoved: true,
           });
         }
         if (state === "done") {
           setTimeout(
             () => this.props.loadUserGroups({ payload: { q: "" } }),
-            2000
+            2000,
           );
         }
       },
@@ -456,7 +456,7 @@ class OrganizationEditUsergroup extends React.Component<
 
       fail: () => {
         closeDialog();
-      }
+      },
     });
   }
 
@@ -469,10 +469,10 @@ class OrganizationEditUsergroup extends React.Component<
               <DialogRowHeader
                 title={this.props.i18n.text.get(
                   "plugin.organization.userGroups.dialogs.edit.step1.title",
-                  page + "/" + this.totalSteps
+                  page + "/" + this.totalSteps,
                 )}
                 description={this.props.i18n.text.get(
-                  "plugin.organization.userGroups.dialogs.edit.step1.description"
+                  "plugin.organization.userGroups.dialogs.edit.step1.description",
                 )}
               />
             </DialogRow>
@@ -486,7 +486,7 @@ class OrganizationEditUsergroup extends React.Component<
                   valid={this.state.validation.nameValid}
                   name="userGroupName"
                   label={this.props.i18n.text.get(
-                    "plugin.organization.userGroups.dialogs.name.label"
+                    "plugin.organization.userGroups.dialogs.name.label",
                   )}
                   value={this.state.userGroupName}
                 ></InputFormElement>
@@ -495,7 +495,7 @@ class OrganizationEditUsergroup extends React.Component<
                 <InputFormElement
                   id="isGuidanceGroup"
                   label={this.props.i18n.text.get(
-                    "plugin.organization.userGroups.dialogs.guidanceSelect.label"
+                    "plugin.organization.userGroups.dialogs.guidanceSelect.label",
                   )}
                   name="is-guidance-group"
                   value={this.props.usergroup.name}
@@ -508,24 +508,22 @@ class OrganizationEditUsergroup extends React.Component<
           </DialogRow>
         );
       case 2:
-        let students = this.props.users.students.map((student) => {
-          return {
-            id: student.id,
-            label: student.firstName + " " + student.lastName,
-            icon: "user",
-            type: "student"
-          };
-        });
+        const students = this.props.users.students.map((student) => ({
+          id: student.id,
+          label: student.firstName + " " + student.lastName,
+          icon: "user",
+          type: "student",
+        }));
         return (
           <DialogRow>
             <DialogRow>
               <DialogRowHeader
                 title={this.props.i18n.text.get(
                   "plugin.organization.userGroups.dialogs.edit.step2.title",
-                  page + "/" + this.totalSteps
+                  page + "/" + this.totalSteps,
                 )}
                 description={this.props.i18n.text.get(
-                  "plugin.organization.userGroups.dialogs.edit.step2.description"
+                  "plugin.organization.userGroups.dialogs.edit.step2.description",
                 )}
               />
             </DialogRow>
@@ -535,7 +533,7 @@ class OrganizationEditUsergroup extends React.Component<
                 modifier="add-students"
                 loader={this.doStudentSearch}
                 placeholder={this.props.i18n.text.get(
-                  "plugin.organization.userGroups.dialogs.search.students.placeholder"
+                  "plugin.organization.userGroups.dialogs.search.students.placeholder",
                 )}
                 selectedItems={this.state.addStudents}
                 searchItems={students}
@@ -546,10 +544,10 @@ class OrganizationEditUsergroup extends React.Component<
           </DialogRow>
         );
       case 3:
-        let studentGroupStudents =
+        const studentGroupStudents =
           this.props.currentUserGroup && this.props.currentUserGroup.students
             ? this.turnUsersToSelectItems(
-                this.props.currentUserGroup.students.results
+                this.props.currentUserGroup.students.results,
               )
             : [];
         return (
@@ -558,17 +556,17 @@ class OrganizationEditUsergroup extends React.Component<
               <DialogRowHeader
                 title={this.props.i18n.text.get(
                   "plugin.organization.userGroups.dialogs.edit.step3.title",
-                  page + "/" + this.totalSteps
+                  page + "/" + this.totalSteps,
                 )}
                 description={this.props.i18n.text.get(
-                  "plugin.organization.userGroups.dialogs.edit.step3.description"
+                  "plugin.organization.userGroups.dialogs.edit.step3.description",
                 )}
               />
             </DialogRow>
             <DialogRemoveUsers
               users={studentGroupStudents}
               placeholder={this.props.i18n.text.get(
-                "plugin.organization.userGroups.dialogs.search.groupStudents.placeholder"
+                "plugin.organization.userGroups.dialogs.search.groupStudents.placeholder",
               )}
               removeUsers={this.state.removeStudents}
               pages={
@@ -578,13 +576,13 @@ class OrganizationEditUsergroup extends React.Component<
               }
               identifier={"userGroup" + this.props.usergroup.id + "Students"}
               allTabTitle={this.props.i18n.text.get(
-                "plugin.organization.userGroups.dialogs.users.tab.groupStudents.title"
+                "plugin.organization.userGroups.dialogs.users.tab.groupStudents.title",
               )}
               removeTabTitle={this.props.i18n.text.get(
-                "plugin.organization.userGroups.dialogs.users.tab.removeStudents.title"
+                "plugin.organization.userGroups.dialogs.users.tab.removeStudents.title",
               )}
               onEmptyTitle={this.props.i18n.text.get(
-                "plugin.organization.userGroups.dialogs.users.empty"
+                "plugin.organization.userGroups.dialogs.users.empty",
               )}
               searchValue={
                 this.state.searchValues && this.state.searchValues.students
@@ -598,23 +596,21 @@ class OrganizationEditUsergroup extends React.Component<
           </DialogRow>
         );
       case 4:
-        let staffSearchItems = this.props.users.staff.map((staff) => {
-          return {
-            id: staff.id,
-            label: staff.firstName + " " + staff.lastName,
-            icon: "user"
-          };
-        });
+        const staffSearchItems = this.props.users.staff.map((staff) => ({
+          id: staff.id,
+          label: staff.firstName + " " + staff.lastName,
+          icon: "user",
+        }));
         return (
           <DialogRow>
             <DialogRow>
               <DialogRowHeader
                 title={this.props.i18n.text.get(
                   "plugin.organization.userGroups.dialogs.edit.step4.title",
-                  page + "/" + this.totalSteps
+                  page + "/" + this.totalSteps,
                 )}
                 description={this.props.i18n.text.get(
-                  "plugin.organization.userGroups.dialogs.edit.step4.description"
+                  "plugin.organization.userGroups.dialogs.edit.step4.description",
                 )}
               />
             </DialogRow>
@@ -624,7 +620,7 @@ class OrganizationEditUsergroup extends React.Component<
                 modifier="add-teachers"
                 loader={this.doStaffSearch}
                 placeholder={this.props.i18n.text.get(
-                  "plugin.organization.userGroups.dialogs.search.staff.placeholder"
+                  "plugin.organization.userGroups.dialogs.search.staff.placeholder",
                 )}
                 selectedItems={this.state.addStaff}
                 searchItems={staffSearchItems}
@@ -635,10 +631,10 @@ class OrganizationEditUsergroup extends React.Component<
           </DialogRow>
         );
       case 5:
-        let studentGroupStaff =
+        const studentGroupStaff =
           this.props.currentUserGroup && this.props.currentUserGroup.staff
             ? this.turnUsersToSelectItems(
-                this.props.currentUserGroup.staff.results
+                this.props.currentUserGroup.staff.results,
               )
             : [];
         return (
@@ -647,17 +643,17 @@ class OrganizationEditUsergroup extends React.Component<
               <DialogRowHeader
                 title={this.props.i18n.text.get(
                   "plugin.organization.userGroups.dialogs.edit.step5.title",
-                  page + "/" + this.totalSteps
+                  page + "/" + this.totalSteps,
                 )}
                 description={this.props.i18n.text.get(
-                  "plugin.organization.userGroups.dialogs.edit.step5.description"
+                  "plugin.organization.userGroups.dialogs.edit.step5.description",
                 )}
               />
             </DialogRow>
             <DialogRemoveUsers
               users={studentGroupStaff}
               placeholder={this.props.i18n.text.get(
-                "plugin.organization.userGroups.dialogs.search.groupStaff.placeholder"
+                "plugin.organization.userGroups.dialogs.search.groupStaff.placeholder",
               )}
               removeUsers={this.state.removeStaff}
               pages={
@@ -667,13 +663,13 @@ class OrganizationEditUsergroup extends React.Component<
               }
               identifier={"userGroup" + this.props.usergroup.id + "Staff"}
               allTabTitle={this.props.i18n.text.get(
-                "plugin.organization.userGroups.dialogs.users.tab.groupStaff.title"
+                "plugin.organization.userGroups.dialogs.users.tab.groupStaff.title",
               )}
               removeTabTitle={this.props.i18n.text.get(
-                "plugin.organization.userGroups.dialogs.users.tab.removeStaff.title"
+                "plugin.organization.userGroups.dialogs.users.tab.removeStaff.title",
               )}
               onEmptyTitle={this.props.i18n.text.get(
-                "plugin.organization.userGroups.dialogs.users.empty"
+                "plugin.organization.userGroups.dialogs.users.empty",
               )}
               searchValue={
                 this.state.searchValues && this.state.searchValues.staff
@@ -693,10 +689,10 @@ class OrganizationEditUsergroup extends React.Component<
               <DialogRowHeader
                 title={this.props.i18n.text.get(
                   "plugin.organization.userGroups.dialogs.edit.step6.title",
-                  page + "/" + this.totalSteps
+                  page + "/" + this.totalSteps,
                 )}
                 description={this.props.i18n.text.get(
-                  "plugin.organization.userGroups.dialogs.edit.step6.description"
+                  "plugin.organization.userGroups.dialogs.edit.step6.description",
                 )}
               />
             </DialogRow>
@@ -704,7 +700,7 @@ class OrganizationEditUsergroup extends React.Component<
               <DialogRowHeader
                 modifiers="new-workspace"
                 title={this.props.i18n.text.get(
-                  "plugin.organization.userGroups.dialogs.summary.label.userGroupName"
+                  "plugin.organization.userGroups.dialogs.summary.label.userGroupName",
                 )}
               />
               <DialogRowContent modifiers="new-workspace">
@@ -713,7 +709,7 @@ class OrganizationEditUsergroup extends React.Component<
                   {this.state.isGuidanceGroup
                     ? " (" +
                       this.props.i18n.text.get(
-                        "plugin.organization.userGroups.dialogs.summary.label.isGuidanceGroup"
+                        "plugin.organization.userGroups.dialogs.summary.label.isGuidanceGroup",
                       ) +
                       ")"
                     : ""}
@@ -724,7 +720,7 @@ class OrganizationEditUsergroup extends React.Component<
               <DialogRowHeader
                 modifiers="new-workspace"
                 title={this.props.i18n.text.get(
-                  "plugin.organization.userGroups.dialogs.summary.label.addStudents"
+                  "plugin.organization.userGroups.dialogs.summary.label.addStudents",
                 )}
               />
               <DialogRowContent modifiers="new-workspace">
@@ -733,7 +729,7 @@ class OrganizationEditUsergroup extends React.Component<
                     const tag = {
                       node: student.label,
                       value: student,
-                      icon: student.icon
+                      icon: student.icon,
                     };
                     return (
                       <TagItem
@@ -747,7 +743,7 @@ class OrganizationEditUsergroup extends React.Component<
                 ) : (
                   <div>
                     {this.props.i18n.text.get(
-                      "plugin.organization.userGroups.dialogs.summary.empty.students"
+                      "plugin.organization.userGroups.dialogs.summary.empty.students",
                     )}
                   </div>
                 )}
@@ -757,7 +753,7 @@ class OrganizationEditUsergroup extends React.Component<
               <DialogRowHeader
                 modifiers="new-workspace"
                 title={this.props.i18n.text.get(
-                  "plugin.organization.userGroups.dialogs.summary.label.addStaff"
+                  "plugin.organization.userGroups.dialogs.summary.label.addStaff",
                 )}
               />
               <DialogRowContent modifiers="new-workspace">
@@ -766,7 +762,7 @@ class OrganizationEditUsergroup extends React.Component<
                     const tag = {
                       node: staff.label,
                       value: staff,
-                      icon: staff.icon
+                      icon: staff.icon,
                     };
                     return (
                       <TagItem
@@ -780,7 +776,7 @@ class OrganizationEditUsergroup extends React.Component<
                 ) : (
                   <div>
                     {this.props.i18n.text.get(
-                      "plugin.organization.userGroups.dialogs.summary.empty.staff"
+                      "plugin.organization.userGroups.dialogs.summary.empty.staff",
                     )}
                   </div>
                 )}
@@ -790,7 +786,7 @@ class OrganizationEditUsergroup extends React.Component<
               <DialogRowHeader
                 modifiers="new-workspace"
                 title={this.props.i18n.text.get(
-                  "plugin.organization.userGroups.dialogs.summary.label.removeStudents"
+                  "plugin.organization.userGroups.dialogs.summary.label.removeStudents",
                 )}
               />
               <DialogRowContent modifiers="new-workspace">
@@ -799,7 +795,7 @@ class OrganizationEditUsergroup extends React.Component<
                     const tag = {
                       node: student.label,
                       value: student,
-                      icon: student.icon
+                      icon: student.icon,
                     };
                     return (
                       <TagItem
@@ -813,7 +809,7 @@ class OrganizationEditUsergroup extends React.Component<
                 ) : (
                   <div>
                     {this.props.i18n.text.get(
-                      "plugin.organization.userGroups.dialogs.summary.empty.students"
+                      "plugin.organization.userGroups.dialogs.summary.empty.students",
                     )}
                   </div>
                 )}
@@ -823,7 +819,7 @@ class OrganizationEditUsergroup extends React.Component<
               <DialogRowHeader
                 modifiers="new-workspace"
                 title={this.props.i18n.text.get(
-                  "plugin.organization.userGroups.dialogs.summary.label.removeStaff"
+                  "plugin.organization.userGroups.dialogs.summary.label.removeStaff",
                 )}
               />
               <DialogRowContent modifiers="new-workspace">
@@ -832,7 +828,7 @@ class OrganizationEditUsergroup extends React.Component<
                     const tag = {
                       node: staff.label,
                       value: staff,
-                      icon: staff.icon
+                      icon: staff.icon,
                     };
                     return (
                       <TagItem
@@ -846,7 +842,7 @@ class OrganizationEditUsergroup extends React.Component<
                 ) : (
                   <div>
                     {this.props.i18n.text.get(
-                      "plugin.organization.userGroups.dialogs.summary.empty.staff"
+                      "plugin.organization.userGroups.dialogs.summary.empty.staff",
                     )}
                   </div>
                 )}
@@ -860,9 +856,10 @@ class OrganizationEditUsergroup extends React.Component<
   }
 
   render() {
-    let content = (closePortal: () => any) =>
+    const content = (closePortal: () => any) =>
       this.wizardSteps(this.state.currentStep);
-    let executeContent = (
+
+    const executeContent = (
       <div>
         <div
           className={`dialog__executer ${
@@ -872,7 +869,7 @@ class OrganizationEditUsergroup extends React.Component<
           }`}
         >
           {this.props.i18n.text.get(
-            "plugin.organization.userGroups.dialogs.summary.execute.updateUserGroup"
+            "plugin.organization.userGroups.dialogs.summary.execute.updateUserGroup",
           )}
         </div>
         <div
@@ -883,7 +880,7 @@ class OrganizationEditUsergroup extends React.Component<
           }`}
         >
           {this.props.i18n.text.get(
-            "plugin.organization.userGroups.dialogs.summary.execute.addStudents"
+            "plugin.organization.userGroups.dialogs.summary.execute.addStudents",
           )}
         </div>
         <div
@@ -894,7 +891,7 @@ class OrganizationEditUsergroup extends React.Component<
           }`}
         >
           {this.props.i18n.text.get(
-            "plugin.organization.userGroups.dialogs.summary.execute.removeStudents"
+            "plugin.organization.userGroups.dialogs.summary.execute.removeStudents",
           )}
         </div>
         <div
@@ -903,7 +900,7 @@ class OrganizationEditUsergroup extends React.Component<
           }`}
         >
           {this.props.i18n.text.get(
-            "plugin.organization.userGroups.dialogs.summary.execute.addStaff"
+            "plugin.organization.userGroups.dialogs.summary.execute.addStaff",
           )}
         </div>
         <div
@@ -914,28 +911,28 @@ class OrganizationEditUsergroup extends React.Component<
           }`}
         >
           {this.props.i18n.text.get(
-            "plugin.organization.userGroups.dialogs.summary.execute.removeStaff"
+            "plugin.organization.userGroups.dialogs.summary.execute.removeStaff",
           )}
         </div>
       </div>
     );
 
-    let footer = (closePortal: () => any) => (
+    const footer = (closePortal: () => any) => (
       <FormWizardActions
         locked={this.state.locked}
         currentStep={this.state.currentStep}
         totalSteps={this.totalSteps}
         executeLabel={this.props.i18n.text.get(
-          "plugin.organization.userGroups.dialogs.edit.execute.label"
+          "plugin.organization.userGroups.dialogs.edit.execute.label",
         )}
         nextLabel={this.props.i18n.text.get(
-          "plugin.organization.userGroups.dialogs.next.label"
+          "plugin.organization.userGroups.dialogs.next.label",
         )}
         lastLabel={this.props.i18n.text.get(
-          "plugin.organization.userGroups.dialogs.last.label"
+          "plugin.organization.userGroups.dialogs.last.label",
         )}
         cancelLabel={this.props.i18n.text.get(
-          "plugin.organization.userGroups.dialogs.cancel.label"
+          "plugin.organization.userGroups.dialogs.cancel.label",
         )}
         executeClick={this.saveUsergroup.bind(this, closePortal)}
         nextClick={this.nextStep.bind(this)}
@@ -953,7 +950,7 @@ class OrganizationEditUsergroup extends React.Component<
         modifier="edit-user-group"
         title={this.props.i18n.text.get(
           "plugin.organization.userGroups.dialogs.edit.title",
-          this.props.usergroup.name
+          this.props.usergroup.name,
         )}
         content={content}
       >
@@ -967,7 +964,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     users: state.userSelect,
-    currentUserGroup: state.userGroups.currentUserGroup
+    currentUserGroup: state.userGroups.currentUserGroup,
   };
 }
 
@@ -980,13 +977,13 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
       updateOrganizationUsergroup: updateUsergroup,
       loadAllCurrentUserGroupStaff,
       loadAllCurrentUserGroupStudents,
-      setCurrentUserGroup
+      setCurrentUserGroup,
     },
-    dispatch
+    dispatch,
   );
 }
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(OrganizationEditUsergroup);

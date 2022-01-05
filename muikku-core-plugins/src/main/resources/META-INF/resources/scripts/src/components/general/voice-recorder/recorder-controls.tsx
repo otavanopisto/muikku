@@ -26,7 +26,7 @@ export interface RecorderControlsProps {
 function RecorderControls({
   recorderState,
   handlers,
-  i18n
+  i18n,
 }: RecorderControlsProps) {
   const { initRecording } = recorderState;
   const { startRecording, saveRecording } = handlers;
@@ -75,7 +75,7 @@ function RecorderControls({
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n
+    i18n: state.i18n,
   };
 }
 

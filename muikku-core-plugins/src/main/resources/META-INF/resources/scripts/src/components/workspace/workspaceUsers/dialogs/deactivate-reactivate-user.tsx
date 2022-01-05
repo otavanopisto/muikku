@@ -8,7 +8,7 @@ import { bindActionCreators } from "redux";
 import Button from "~/components/general/button";
 import {
   toggleActiveStateOfStudentOfWorkspace,
-  ToggleActiveStateOfStudentOfWorkspaceTriggerType
+  ToggleActiveStateOfStudentOfWorkspaceTriggerType,
 } from "~/actions/workspaces";
 import { ShortWorkspaceUserWithActiveStatusType } from "~/reducers/user-index";
 import { getName } from "~/util/modifiers";
@@ -40,52 +40,50 @@ class DeactivateReactivateUserDialog extends React.Component<
     this.props.toggleActiveStateOfStudentOfWorkspace({
       workspace: this.props.workspace,
       student: this.props.user,
-      success: closeDialog
+      success: closeDialog,
     });
   }
   render() {
-    let content = (closeDialog: () => any) => (
+    const content = (closeDialog: () => any) => (
       <div>
         <span>
           {this.props.i18n.text.get(
             this.props.user.active
               ? "plugin.workspace.users.student.archiveDialog.description"
               : "plugin.workspace.users.student.unarchiveDialog.description",
-            getName(this.props.user, true)
+            getName(this.props.user, true),
           )}
         </span>
       </div>
     );
-    let footer = (closeDialog: () => any) => {
-      return (
-        <div className="dialog__button-set">
-          <Button
-            buttonModifiers={
-              this.props.user.active
-                ? ["fatal", "standard-ok"]
-                : ["execute", "standard-ok"]
-            }
-            onClick={this.toggleActiveStatus.bind(this, closeDialog)}
-          >
-            {this.props.i18n.text.get(
-              this.props.user.active
-                ? "plugin.workspace.users.student.archiveDialog.archiveButton"
-                : "plugin.workspace.users.student.unarchiveDialog.archiveButton"
-            )}
-          </Button>
-          <Button
-            buttonModifiers={["cancel", "standard-cancel"]}
-            onClick={closeDialog}
-          >
-            {this.props.i18n.text.get(
-              this.props.user.active
-                ? "plugin.workspace.users.student.archiveDialog.cancelButton"
-                : "plugin.workspace.users.student.unarchiveDialog.cancelButton"
-            )}
-          </Button>
-        </div>
-      );
-    };
+    const footer = (closeDialog: () => any) => (
+      <div className="dialog__button-set">
+        <Button
+          buttonModifiers={
+            this.props.user.active
+              ? ["fatal", "standard-ok"]
+              : ["execute", "standard-ok"]
+          }
+          onClick={this.toggleActiveStatus.bind(this, closeDialog)}
+        >
+          {this.props.i18n.text.get(
+            this.props.user.active
+              ? "plugin.workspace.users.student.archiveDialog.archiveButton"
+              : "plugin.workspace.users.student.unarchiveDialog.archiveButton",
+          )}
+        </Button>
+        <Button
+          buttonModifiers={["cancel", "standard-cancel"]}
+          onClick={closeDialog}
+        >
+          {this.props.i18n.text.get(
+            this.props.user.active
+              ? "plugin.workspace.users.student.archiveDialog.cancelButton"
+              : "plugin.workspace.users.student.unarchiveDialog.cancelButton",
+          )}
+        </Button>
+      </div>
+    );
     return (
       <Dialog
         isOpen={this.props.isOpen}
@@ -93,7 +91,7 @@ class DeactivateReactivateUserDialog extends React.Component<
         title={this.props.i18n.text.get(
           this.props.user.active
             ? "plugin.workspace.users.student.archiveDialog.title"
-            : "plugin.workspace.users.student.unarchiveDialog.title"
+            : "plugin.workspace.users.student.unarchiveDialog.title",
         )}
         content={content}
         footer={footer}
@@ -106,18 +104,18 @@ class DeactivateReactivateUserDialog extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    workspace: state.workspaces.currentWorkspace
+    workspace: state.workspaces.currentWorkspace,
   };
 }
 
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     { toggleActiveStateOfStudentOfWorkspace },
-    dispatch
+    dispatch,
   );
 }
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(DeactivateReactivateUserDialog);

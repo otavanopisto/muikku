@@ -2,7 +2,7 @@ import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
 import {
   HTMLtoReactComponent,
-  HTMLToReactComponentRule
+  HTMLToReactComponentRule,
 } from "~/util/modifiers";
 import Zoom from "~/components/general/zoom";
 
@@ -39,7 +39,7 @@ export default class Image extends React.Component<ImageProps, ImageState> {
 
     this.state = {
       predictedHeight: null,
-      maxWidth: null
+      maxWidth: null,
     };
 
     if (!isNaN(aspectRatio) && isFinite(aspectRatio)) {
@@ -70,7 +70,7 @@ export default class Image extends React.Component<ImageProps, ImageState> {
         isFinite(predictedHeight)
       ) {
         this.setState({
-          predictedHeight
+          predictedHeight,
         });
       }
     }
@@ -86,7 +86,7 @@ export default class Image extends React.Component<ImageProps, ImageState> {
   }
   render() {
     const newRules = this.props.processingRules.filter(
-      (r) => r.id !== "image-rule"
+      (r) => r.id !== "image-rule",
     );
     newRules.push({
       shouldProcessHTMLElement: (tag, element) =>
@@ -103,12 +103,16 @@ export default class Image extends React.Component<ImageProps, ImageState> {
               <span className="image__details-container">
                 <span className="image__details-label">
                   {this.props.i18n.text.get(
-                    "plugin.workspace.materials.detailsSourceLabel"
+                    "plugin.workspace.materials.detailsSourceLabel",
                   )}{" "}
                 </span>
                 {this.props.dataset.source || this.props.dataset.sourceUrl ? (
                   this.props.dataset.sourceUrl ? (
-                    <a href={this.props.dataset.sourceUrl} target="_blank">
+                    <a
+                      href={this.props.dataset.sourceUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
                       {this.props.dataset.source ||
                         this.props.dataset.sourceUrl}
                     </a>
@@ -122,7 +126,11 @@ export default class Image extends React.Component<ImageProps, ImageState> {
                 ) : null}
                 {this.props.dataset.author || this.props.dataset.authorUrl ? (
                   this.props.dataset.authorUrl ? (
-                    <a href={this.props.dataset.authorUrl} target="_blank">
+                    <a
+                      href={this.props.dataset.authorUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
                       {this.props.dataset.author ||
                         this.props.dataset.authorUrl}
                     </a>
@@ -140,7 +148,11 @@ export default class Image extends React.Component<ImageProps, ImageState> {
                 ) : null}
                 {this.props.dataset.license || this.props.dataset.licenseUrl ? (
                   this.props.dataset.licenseUrl ? (
-                    <a href={this.props.dataset.licenseUrl} target="_blank">
+                    <a
+                      href={this.props.dataset.licenseUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
                       {this.props.dataset.license ||
                         this.props.dataset.licenseUrl}
                     </a>
@@ -149,7 +161,7 @@ export default class Image extends React.Component<ImageProps, ImageState> {
                   )
                 ) : null}
               </span>
-            </span>
+            </span>,
           );
         }
 
@@ -178,7 +190,7 @@ export default class Image extends React.Component<ImageProps, ImageState> {
         ) {
           props.style.margin = "10px 0 10px 15px";
         }
-      }
+      },
     });
 
     newRules.push({
@@ -217,7 +229,7 @@ export default class Image extends React.Component<ImageProps, ImageState> {
             <Tag {...props}>{children}</Tag>
           </Zoom>
         );
-      }
+      },
     });
 
     return HTMLtoReactComponent(this.props.element, newRules);

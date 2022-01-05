@@ -1,5 +1,5 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
 import { TranscriptOfRecordLocationType } from "~/reducers/main-function/records";
 import { StateType } from "~/reducers";
@@ -27,22 +27,22 @@ class StudiesPrimaryOption extends React.Component<
   }
 
   render() {
-    let sections = [
+    const sections = [
       {
         name: this.props.i18n.text.get("plugin.records.category.records"),
         hash: "",
-        enabled: true
+        enabled: true,
       },
       {
         name: this.props.i18n.text.get("plugin.records.category.hops"),
         hash: "hops",
-        enabled: this.props.isHopsEnabled
+        enabled: this.props.isHopsEnabled,
       },
       {
         name: this.props.i18n.text.get("plugin.records.category.vops"),
         hash: "vops",
-        enabled: this.props.isHopsEnabled
-      }
+        enabled: this.props.isHopsEnabled,
+      },
     ];
     return (
       <div className="application-panel__toolbar">
@@ -73,15 +73,15 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     location: state.records.location,
-    isHopsEnabled: state.status.hopsEnabled
+    isHopsEnabled: state.status.hopsEnabled,
   };
 }
 
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps() {
   return {};
 }
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(StudiesPrimaryOption);

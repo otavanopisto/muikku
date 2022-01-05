@@ -19,7 +19,7 @@ export default class FrontpageFeed extends React.Component<
     super(props);
 
     this.state = {
-      entries: []
+      entries: [],
     };
   }
   componentDidMount() {

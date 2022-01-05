@@ -1,6 +1,5 @@
 import moment from "~/lib/moment";
 import getLocaleText from "~/lib/getLocaleText";
-import { ActionType } from "~/actions";
 
 export interface i18nType {
   text: {
@@ -12,7 +11,7 @@ export interface i18nType {
     formatDaily(
       data?: Date | string,
       todayFormat?: string,
-      otherDayFormat?: string
+      otherDayFormat?: string,
     ): string;
     subtract(date?: Date | string, input?: number, value?: string): string;
     add(date?: Date | string, input?: number, value?: string): string;
@@ -29,9 +28,9 @@ export default function i18n(
   state = {
     text: {
       get(key: string, ...args: (string | number)[]): string {
-        let text = getLocaleText(key, args);
+        const text = getLocaleText(key, args);
         return text;
-      }
+      },
     },
     time: {
       format(date = new Date(), format = "L") {
@@ -58,10 +57,9 @@ export default function i18n(
       },
       getLocale() {
         return lang.toLowerCase();
-      }
-    }
+      },
+    },
   },
-  action: ActionType
 ): i18nType {
   return state;
 }

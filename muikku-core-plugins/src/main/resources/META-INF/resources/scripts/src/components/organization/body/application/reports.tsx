@@ -1,6 +1,5 @@
 import * as React from "react";
-import { StateType } from "~/reducers";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 
 interface ReportsProps {}
 
@@ -12,11 +11,11 @@ class Reports extends React.Component<ReportsProps, ReportsState> {
   }
 }
 
-function mapStateToProps(state: StateType) {
+function mapStateToProps() {
   return {};
 }
 
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps() {
   return {};
 }
 

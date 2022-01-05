@@ -1,7 +1,6 @@
 import actions from "../actions/base/notifications";
 import { Store } from "react-redux";
 import $ from "~/lib/jquery";
-import mApi from "~/lib/mApi";
 import { Action } from "redux";
 import { WebsocketStateType } from "~/reducers/util/websocket";
 
@@ -39,8 +38,8 @@ export default class MuikkuWebsocket {
     listeners: ListenerType,
     options = {
       reconnectInterval: 10000,
-      pingInterval: 5000
-    }
+      pingInterval: 5000,
+    },
   ) {
     this.options = options;
 
@@ -58,7 +57,7 @@ export default class MuikkuWebsocket {
     this.baseListeners = listeners;
     this.store = store;
 
-    this.getTicket((ticket: any) => {
+    this.getTicket(() => {
       if (this.ticket) {
         this.openWebSocket();
       }
@@ -66,7 +65,7 @@ export default class MuikkuWebsocket {
 
     this.store.dispatch({
       type: "INITIALIZE_WEBSOCKET",
-      payload: this
+      payload: this,
     });
 
     $(window).on("beforeunload", this.onBeforeWindowUnload.bind(this));
@@ -76,7 +75,7 @@ export default class MuikkuWebsocket {
     eventType: string,
     data: any,
     onSent?: () => any,
-    stackId?: string
+    stackId?: string,
   ) {
     if (this.socketOpen && !this.reconnecting) {
       // Check if message queue already has this message. This can happen if it was previously
@@ -85,7 +84,7 @@ export default class MuikkuWebsocket {
       // clear the previous one from the queue so that it doesn't accidentally overwrite this
       // message later (if we lose connection and restore it)
 
-      let index =
+      const index =
         stackId && this.messagesPending.findIndex((m) => m.stackId === stackId);
       if (typeof index === "number" && index !== -1) {
         this.messagesPending.splice(index, 1);
@@ -97,10 +96,10 @@ export default class MuikkuWebsocket {
         this.webSocket.send(
           JSON.stringify({
             eventType: eventType,
-            data: data
-          })
+            data: data,
+          }),
         );
-        let websocketState: WebsocketStateType =
+        const websocketState: WebsocketStateType =
           this.store.getState().websocket;
         this.messagesPending.length === 0 &&
           !websocketState.synchronized &&
@@ -124,15 +123,15 @@ export default class MuikkuWebsocket {
     eventType: string,
     data: any,
     onSent?: () => any,
-    stackId?: string
+    stackId?: string,
   ) {
-    let index =
+    const index =
       stackId && this.messagesPending.findIndex((m) => m.stackId === stackId);
-    let message = {
+    const message = {
       eventType,
       data,
       onSent,
-      stackId
+      stackId,
     };
     if (typeof index === "number" && index !== -1) {
       this.messagesPending[index] = message;
@@ -142,9 +141,9 @@ export default class MuikkuWebsocket {
   }
 
   addEventListener(event: string, actionCreator: Function) {
-    let evtListeners = this.listeners[event] || {
+    const evtListeners = this.listeners[event] || {
       actions: [],
-      callbacks: []
+      callbacks: [],
     };
     evtListeners.actions.push(actionCreator);
     this.listeners[event] = evtListeners;
@@ -152,16 +151,16 @@ export default class MuikkuWebsocket {
   }
 
   removeEventCallback(event: string, actionCreator: Function) {
-    let index = this.listeners[event].callbacks.indexOf(actionCreator);
+    const index = this.listeners[event].callbacks.indexOf(actionCreator);
     if (index !== -1) {
       this.listeners[event].callbacks.splice(index, 1);
     }
   }
 
   addEventCallback(event: string, action: Function) {
-    let evtListeners = this.listeners[event] || {
+    const evtListeners = this.listeners[event] || {
       actions: [],
-      callbacks: []
+      callbacks: [],
     };
     evtListeners.callbacks.push(action);
     this.listeners[event] = evtListeners;
@@ -178,14 +177,14 @@ export default class MuikkuWebsocket {
       type: "WEBSOCKET_EVENT",
       payload: {
         event,
-        data
-      }
+        data,
+      },
     });
 
     if (this.listeners[event]) {
-      let listeners = this.listeners[event].actions;
+      const listeners = this.listeners[event].actions;
       if (listeners) {
-        for (let action of listeners) {
+        for (const action of listeners) {
           if (typeof action === "function") {
             this.store.dispatch(action());
           } else {
@@ -194,9 +193,9 @@ export default class MuikkuWebsocket {
         }
       }
 
-      let otherListeners = this.listeners[event].callbacks;
+      const otherListeners = this.listeners[event].callbacks;
       if (otherListeners) {
-        for (let callback of otherListeners) {
+        for (const callback of otherListeners) {
           callback(data);
         }
       }
@@ -215,7 +214,7 @@ export default class MuikkuWebsocket {
         url: "/rest/websocket/ticket/" + this.ticket + "/check",
         type: "GET",
         cache: false,
-        success: function (data: any, textStatus: any, jqXHR: any) {
+        success: function () {
           callback(this.ticket);
         },
         error: $.proxy(function (jqXHR: any) {
@@ -225,8 +224,8 @@ export default class MuikkuWebsocket {
             this.store.dispatch(
               actions.displayNotification(
                 "Muikku-istuntosi on vanhentunut. Jos olet vastaamassa tehtäviin, kopioi varmuuden vuoksi vastauksesi talteen omalle koneellesi ja kirjaudu uudelleen sisään.",
-                "error"
-              ) as Action
+                "error",
+              ) as Action,
             );
             this.ticket = null;
             this.discarded = true;
@@ -244,8 +243,8 @@ export default class MuikkuWebsocket {
             this.store.dispatch(
               actions.displayNotification(
                 "Muikkuun ei saada yhteyttä. Jos olet vastaamassa tehtäviin, kopioi varmuuden vuoksi vastauksesi talteen omalle koneellesi ja lataa sivu uudelleen.",
-                "error"
-              ) as Action
+                "error",
+              ) as Action,
             );
             this.ticket = null;
             this.discarded = true;
@@ -256,7 +255,7 @@ export default class MuikkuWebsocket {
             this.ticket = null;
             callback();
           }
-        }, this)
+        }, this),
       });
     } else {
       // Create new ticket
@@ -276,12 +275,12 @@ export default class MuikkuWebsocket {
       url: "/rest/websocket/ticket",
       type: "GET",
       dataType: "text",
-      success: function (data: any, textStatus: any, jqXHR: any) {
+      success: function (data: any) {
         callback(data);
       },
-      error: function (jqXHR: any) {
+      error: function () {
         callback();
-      }
+      },
     });
   }
 
@@ -300,7 +299,7 @@ export default class MuikkuWebsocket {
 
     // If we have queued messages, send them now
     while (this.socketOpen && this.messagesPending.length) {
-      let message = this.messagesPending.shift();
+      const message = this.messagesPending.shift();
       this.sendMessage(message.eventType, message.data, message.onSent);
     }
 
@@ -315,10 +314,10 @@ export default class MuikkuWebsocket {
   }
 
   openWebSocket() {
-    let host = window.location.host;
-    let secure = location.protocol == "https:";
+    const host = window.location.host;
+    const secure = location.protocol == "https:";
     this.webSocket = this.createWebSocket(
-      (secure ? "wss://" : "ws://") + host + "/ws/socket/" + this.ticket
+      (secure ? "wss://" : "ws://") + host + "/ws/socket/" + this.ticket,
     );
     if (this.webSocket) {
       this.webSocket.onmessage = this.onWebSocketMessage.bind(this);
@@ -381,7 +380,7 @@ export default class MuikkuWebsocket {
     if (this.discarded) {
       return;
     }
-    this.getTicket((ticket: any) => {
+    this.getTicket(() => {
       if (this.ticket) {
         // Re-acquired ticket, ditch reconnect handler and open socket
         if (this.reconnectHandler) {
@@ -399,8 +398,8 @@ export default class MuikkuWebsocket {
           this.store.dispatch(
             actions.displayNotification(
               "Muikkuun ei saada yhteyttä. Ole hyvä ja lataa sivu uudelleen. Jos olet vastaamassa tehtäviin, kopioi varmuuden vuoksi vastauksesi talteen omalle koneellesi.",
-              "error"
-            ) as Action
+              "error",
+            ) as Action,
           );
         } else {
           // Reconnect retry failed, retry after reconnectInterval
@@ -414,7 +413,7 @@ export default class MuikkuWebsocket {
 
   discardCurrentWebSocket(resetReconnectionParams: boolean) {
     // Inform everyone we're no longer open for business...
-    let wasOpen = this.socketOpen;
+    const wasOpen = this.socketOpen;
     this.socketOpen = false;
 
     // ...and stop pinging...
@@ -451,8 +450,8 @@ export default class MuikkuWebsocket {
   }
 
   onWebSocketMessage(event: any) {
-    let message = JSON.parse(event.data);
-    let eventType = message.eventType;
+    const message = JSON.parse(event.data);
+    const eventType = message.eventType;
     if (eventType == "ping:pong") {
       this.gotPong = true;
     } else {

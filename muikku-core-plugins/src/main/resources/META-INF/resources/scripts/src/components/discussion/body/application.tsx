@@ -28,9 +28,9 @@ class DiscussionApplication extends React.Component<
     super(props);
   }
   render() {
-    let title = this.props.i18n.text.get("plugin.forum.pageTitle");
-    let toolbar = <Toolbar />;
-    let primaryOption =
+    const title = this.props.i18n.text.get("plugin.forum.pageTitle");
+    const toolbar = <Toolbar />;
+    const primaryOption =
       !this.props.discussion.current &&
       this.props.discussion.areas.length > 0 ? (
         <NewThread>
@@ -39,7 +39,7 @@ class DiscussionApplication extends React.Component<
           </Button>
         </NewThread>
       ) : null;
-    let primaryOptionMobile =
+    const primaryOptionMobile =
       this.props.discussion.areas.length > 0 ? (
         <NewThread>
           <HoverButton icon="plus" modifier="new-message" />
@@ -66,7 +66,7 @@ class DiscussionApplication extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    discussion: state.discussion
+    discussion: state.discussion,
   };
 }
 
@@ -76,5 +76,5 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(DiscussionApplication);

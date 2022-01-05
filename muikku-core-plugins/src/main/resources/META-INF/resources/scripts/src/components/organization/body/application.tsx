@@ -4,7 +4,7 @@ import { bindActionCreators } from "redux";
 import { StateType } from "~/reducers";
 import ApplicationPanel, {
   ApplicationPanelToolbar,
-  ApplicationPanelToolbarActionsMain
+  ApplicationPanelToolbarActionsMain,
 } from "~/components/general/application-panel/application-panel";
 import { SearchFormElement } from "~/components/general/form-element";
 import ApplicationPanelBody from "~/components/general/application-panel/components/application-panel-body";
@@ -25,12 +25,12 @@ import "~/sass/elements/loaders.scss";
 import {
   LoadUsersTriggerType,
   loadUsers,
-  loadUserGroups
+  loadUserGroups,
 } from "~/actions/main-function/users";
 import { WorkspacesActiveFiltersType } from "~/reducers/workspaces";
 import {
   loadWorkspacesFromServer,
-  LoadWorkspacesFromServerTriggerType
+  LoadWorkspacesFromServerTriggerType,
 } from "~/actions/workspaces";
 
 type OrganizationTabs = "SUMMARY" | "USERS" | "USERGROUPS" | "COURSES";
@@ -61,7 +61,7 @@ class OrganizationManagementApplication extends React.Component<
       activeTab: "SUMMARY",
       workspaceSearchFieldValue: "",
       userSearchFieldValue: "",
-      userGroupSearchFieldValue: ""
+      userGroupSearchFieldValue: "",
     };
     this.onTabChange = this.onTabChange.bind(this);
     this.doUserSearch = this.doUserSearch.bind(this);
@@ -71,7 +71,7 @@ class OrganizationManagementApplication extends React.Component<
 
   onTabChange(id: OrganizationTabs) {
     this.setState({
-      activeTab: id
+      activeTab: id,
     });
   }
 
@@ -86,7 +86,7 @@ class OrganizationManagementApplication extends React.Component<
   }
 
   doWorkspaceSearch(value: string) {
-    let filters: WorkspacesActiveFiltersType = {
+    const filters: WorkspacesActiveFiltersType = {
       educationFilters: this.props.activeFilters.educationFilters
         ? this.props.activeFilters.educationFilters
         : [],
@@ -101,7 +101,7 @@ class OrganizationManagementApplication extends React.Component<
         : [],
       templates: "ONLY_WORKSPACES",
       query: value,
-      baseFilter: "ALL_COURSES"
+      baseFilter: "ALL_COURSES",
     };
 
     this.props.loadWorkspaces(filters, true, false);
@@ -109,49 +109,49 @@ class OrganizationManagementApplication extends React.Component<
   }
 
   render() {
-    let title = (
+    const title = (
       <h2 className="application-panel__header-title">
         {this.props.i18n.text.get("plugin.organization.pageTitle")}
       </h2>
     );
-    let usersPrimaryAction = (
+    const usersPrimaryAction = (
       <UserDialog>
         <ButtonPill buttonModifiers="organization" icon="plus" />
       </UserDialog>
     );
-    let usersPrimaryActionMobile = (
+    const usersPrimaryActionMobile = (
       <UserDialog>
         <ButtonPill icon="plus" buttonModifiers="organization" />
       </UserDialog>
     );
-    let userGroupsPrimaryAction = (
+    const userGroupsPrimaryAction = (
       <UserGroupDialog>
         <ButtonPill buttonModifiers="organization" icon="plus" />
       </UserGroupDialog>
     );
-    let userGroupsPrimaryActionMobile = (
+    const userGroupsPrimaryActionMobile = (
       <UserGroupDialog>
         <ButtonPill buttonModifiers="organization" icon="plus" />
       </UserGroupDialog>
     );
-    let coursesPrimaryAction = (
+    const coursesPrimaryAction = (
       <WorkspaceDialog activeFilters={this.props.activeFilters}>
         <ButtonPill buttonModifiers="organization" icon="plus" />
       </WorkspaceDialog>
     );
-    let coursesPrimaryActionMobile = (
+    const coursesPrimaryActionMobile = (
       <WorkspaceDialog activeFilters={this.props.activeFilters}>
         <ButtonPill icon="plus" buttonModifiers="organization" />
       </WorkspaceDialog>
     );
-    let coursesToolbar = (
+    const coursesToolbar = (
       <ApplicationPanelToolbar>
         <ApplicationPanelToolbarActionsMain modifier="organization-tab-search">
           <SearchFormElement
             value={this.state.workspaceSearchFieldValue}
             id="organizationWorkpaceSearch"
             placeholder={this.props.i18n.text.get(
-              "plugin.organization.workspaces.search.placeholder"
+              "plugin.organization.workspaces.search.placeholder",
             )}
             name="organization-workspace-search"
             updateField={this.doWorkspaceSearch}
@@ -160,14 +160,14 @@ class OrganizationManagementApplication extends React.Component<
       </ApplicationPanelToolbar>
     );
 
-    let usersToolbar = (
+    const usersToolbar = (
       <ApplicationPanelToolbar>
         <ApplicationPanelToolbarActionsMain>
           <SearchFormElement
             value={this.state.userSearchFieldValue}
             id="organizationUserSearch"
             placeholder={this.props.i18n.text.get(
-              "plugin.organization.users.search.placeholder"
+              "plugin.organization.users.search.placeholder",
             )}
             name="organization-user-search"
             updateField={this.doUserSearch}
@@ -176,14 +176,14 @@ class OrganizationManagementApplication extends React.Component<
       </ApplicationPanelToolbar>
     );
 
-    let userGroupsToolbar = (
+    const userGroupsToolbar = (
       <ApplicationPanelToolbar>
         <ApplicationPanelToolbarActionsMain>
           <SearchFormElement
             value={this.state.userGroupSearchFieldValue}
             id="oganizationUserGroupSearch"
             placeholder={this.props.i18n.text.get(
-              "plugin.organization.userGroups.search.placeholder"
+              "plugin.organization.userGroups.search.placeholder",
             )}
             name="organization-user-group-search"
             updateField={this.doUserGroupSearch}
@@ -202,16 +202,16 @@ class OrganizationManagementApplication extends React.Component<
           {
             id: "SUMMARY",
             name: this.props.i18n.text.get(
-              "plugin.organization.tab.title.summary"
+              "plugin.organization.tab.title.summary",
             ),
             component: () => (
               <ApplicationPanelBody modifier="tabs" children={<Summary />} />
-            )
+            ),
           },
           {
             id: "USERS",
             name: this.props.i18n.text.get(
-              "plugin.organization.tab.title.users"
+              "plugin.organization.tab.title.users",
             ),
             mobileAction: usersPrimaryActionMobile,
             component: () => (
@@ -221,12 +221,12 @@ class OrganizationManagementApplication extends React.Component<
                 modifier="tabs"
                 children={<Users />}
               />
-            )
+            ),
           },
           {
             id: "USERSGROUPS",
             name: this.props.i18n.text.get(
-              "plugin.organization.tab.title.userGroups"
+              "plugin.organization.tab.title.userGroups",
             ),
             mobileAction: userGroupsPrimaryActionMobile,
             component: () => (
@@ -236,12 +236,12 @@ class OrganizationManagementApplication extends React.Component<
                 modifier="tabs"
                 children={<UserGroups />}
               />
-            )
+            ),
           },
           {
             id: "COURSES",
             name: this.props.i18n.text.get(
-              "plugin.organization.tab.title.courses"
+              "plugin.organization.tab.title.courses",
             ),
             mobileAction: coursesPrimaryActionMobile,
             component: () => (
@@ -252,8 +252,8 @@ class OrganizationManagementApplication extends React.Component<
                 asideBefore={<WorkspacesAside />}
                 children={<OrganizationWorkspaces />}
               />
-            )
-          }
+            ),
+          },
         ]}
       />
     );
@@ -270,18 +270,17 @@ class OrganizationManagementApplication extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    activeFilters: state.organizationWorkspaces.activeFilters
+    activeFilters: state.organizationWorkspaces.activeFilters,
   };
 }
 
-const mapDispatchToProps = (dispatch: Dispatch<any>) => {
-  return bindActionCreators(
+const mapDispatchToProps = (dispatch: Dispatch<any>) =>
+  bindActionCreators(
     { loadUsers, loadWorkspaces: loadWorkspacesFromServer, loadUserGroups },
-    dispatch
+    dispatch,
   );
-};
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(OrganizationManagementApplication);

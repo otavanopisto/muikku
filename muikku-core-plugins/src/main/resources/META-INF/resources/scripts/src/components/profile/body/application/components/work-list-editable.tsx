@@ -6,7 +6,7 @@ import { LocaleListType } from "~/reducers/base/locales";
 import {
   EditableField,
   StoredWorklistItem,
-  WorklistTemplate
+  WorklistTemplate,
 } from "~/reducers/main-function/profile";
 import { ButtonPill } from "~/components/general/button";
 import DatePicker from "react-datepicker";
@@ -20,7 +20,7 @@ const startOfPreviousMonth = startOfCurrentMonth
   .clone()
   .subtract(1, "months")
   .startOf("month");
-const dayOfCurrentMonth: Number = moment(new Date()).date();
+const dayOfCurrentMonth: number = moment(new Date()).date();
 
 interface WorkListEditableProps {
   i18n: i18nType;
@@ -37,7 +37,7 @@ interface WorkListEditableProps {
   resetOnSubmit: boolean;
   base: WorklistTemplate | StoredWorklistItem;
   isEditMode: boolean;
-  currentMonthDayLimit: Number;
+  currentMonthDayLimit: number;
 }
 
 interface WorksListEditableState {
@@ -71,7 +71,7 @@ class WorkListEditable extends React.Component<
       date,
       price,
       factor,
-      billingNumber: this.props.base.billingNumber
+      billingNumber: this.props.base.billingNumber,
     });
 
     if (submitStatus && this.props.resetOnSubmit) {
@@ -96,13 +96,13 @@ class WorkListEditable extends React.Component<
   }
   public setupState(
     props: WorkListEditableProps = this.props,
-    setupPhase: boolean = false
+    setupPhase = false,
   ): WorksListEditableState {
     const newState: WorksListEditableState = {
       description: "",
       date: null,
       factor: "",
-      price: ""
+      price: "",
     };
     if (props.base && props.base.description) {
       newState.description = props.base.description;
@@ -139,12 +139,12 @@ class WorkListEditable extends React.Component<
   }
   public updateOne(which: string, e: React.ChangeEvent<HTMLInputElement>) {
     this.setState({
-      [which]: e.target.value
+      [which]: e.target.value,
     } as any);
   }
   public handleDateChange(which: string, newDate: any) {
     this.setState({
-      [which]: newDate
+      [which]: newDate,
     } as any);
   }
   public render() {
@@ -168,7 +168,7 @@ class WorkListEditable extends React.Component<
           <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-template form-element">
             <label className="application-sub-panel__item-title">
               {this.props.i18n.text.get(
-                "plugin.profile.worklist.template.label"
+                "plugin.profile.worklist.template.label",
               )}
             </label>
             <div className="application-sub-panel__item-data">
@@ -180,7 +180,7 @@ class WorkListEditable extends React.Component<
           {!this.props.isEditMode && (
             <label className="application-sub-panel__item-title">
               {this.props.i18n.text.get(
-                "plugin.profile.worklist.description.label"
+                "plugin.profile.worklist.description.label",
               )}
             </label>
           )}
@@ -193,7 +193,7 @@ class WorkListEditable extends React.Component<
               disabled={
                 this.props.base &&
                 !this.props.base.editableFields.includes(
-                  EditableField.DESCRIPTION
+                  EditableField.DESCRIPTION,
                 )
               }
             />
@@ -210,7 +210,7 @@ class WorkListEditable extends React.Component<
               disabled={
                 this.props.base &&
                 !this.props.base.editableFields.includes(
-                  EditableField.ENTRYDATE
+                  EditableField.ENTRYDATE,
                 )
               }
               id={"date-" + (this.props.base && this.props.base.id)}
@@ -306,11 +306,11 @@ class WorkListEditable extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     locales: state.locales,
-    i18n: state.i18n
+    i18n: state.i18n,
   };
 }
 
-function mapDispatchToProps(dispatch: React.Dispatch<any>) {
+function mapDispatchToProps() {
   return {};
 }
 

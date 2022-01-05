@@ -15,7 +15,7 @@ import ApplicationList, {
   ApplicationListItemHeader,
   ApplicationListHeaderPrimary,
   ApplicationListItemBody,
-  ApplicationListItemDate
+  ApplicationListItemDate,
 } from "~/components/general/application-list";
 import { AnnouncementsType } from "~/reducers/announcements";
 import { UserIndexType } from "~/reducers/user-index";
@@ -52,10 +52,10 @@ class AnnouncementView extends React.Component<
             <ApplicationListHeaderPrimary modifiers="announcement-meta">
               <ApplicationListItemDate
                 startDate={this.props.i18n.time.format(
-                  this.props.announcements.current.startDate
+                  this.props.announcements.current.startDate,
                 )}
                 endDate={this.props.i18n.time.format(
-                  this.props.announcements.current.endDate
+                  this.props.announcements.current.endDate,
                 )}
               />
             </ApplicationListHeaderPrimary>
@@ -73,7 +73,7 @@ class AnnouncementView extends React.Component<
                           : null}
                       </span>
                     </span>
-                  )
+                  ),
                 )}
                 {this.props.announcements.current.userGroupEntityIds.map(
                   (userGroupId) => {
@@ -88,7 +88,7 @@ class AnnouncementView extends React.Component<
                         </span>
                       </span>
                     );
-                  }
+                  },
                 )}
               </div>
             ) : null}
@@ -109,7 +109,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     announcements: state.announcements,
-    userIndex: state.userIndex
+    userIndex: state.userIndex,
   };
 }
 

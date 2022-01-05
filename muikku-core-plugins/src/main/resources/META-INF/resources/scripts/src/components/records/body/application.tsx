@@ -1,5 +1,5 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
 import { i18nType } from "reducers/base/i18n";
 import Records from "./application/records";
@@ -26,7 +26,7 @@ class StudiesApplication extends React.Component<
   }
 
   render() {
-    let title = (
+    const title = (
       <h1 className="application-panel__header-title">
         {this.props.i18n.text.get("plugin.records.pageTitle")}
       </h1>
@@ -52,11 +52,11 @@ class StudiesApplication extends React.Component<
 
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n
+    i18n: state.i18n,
   };
 }
 
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps() {
   return {};
 }
 

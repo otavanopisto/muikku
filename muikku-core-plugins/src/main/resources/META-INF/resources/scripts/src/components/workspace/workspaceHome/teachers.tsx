@@ -1,5 +1,5 @@
 import { StateType } from "~/reducers";
-import { Dispatch, connect } from "react-redux";
+import { connect } from "react-redux";
 import * as React from "react";
 import { WorkspaceType } from "~/reducers/workspaces";
 import { i18nType } from "~/reducers/base/i18n";
@@ -27,7 +27,7 @@ export function getWorkspaceMessage(
   i18n: i18nType,
   status: StatusType,
   workspace: WorkspaceType,
-  html?: boolean
+  html?: boolean,
 ) {
   if (!workspace) {
     return "";
@@ -39,9 +39,9 @@ export function getWorkspaceMessage(
     (workspace.nameExtension ? " (" + workspace.nameExtension + ")" : "");
 
   if (html) {
-    let url = window.location.href;
-    let arr = url.split("/");
-    let server = arr[0] + "//" + arr[2];
+    const url = window.location.href;
+    const arr = url.split("/");
+    const server = arr[0] + "//" + arr[2];
 
     pretext = "<p></p>";
     text =
@@ -93,7 +93,7 @@ class WorkspaceTeachers extends React.Component<
                 if (teacher.properties["profile-vacation-end"]) {
                   // we must check for the ending
                   const vacationEndsAt = moment(
-                    teacher.properties["profile-vacation-end"]
+                    teacher.properties["profile-vacation-end"],
                   );
                   const today = moment();
                   // if it's before or it's today then we display, otherwise nope
@@ -133,16 +133,16 @@ class WorkspaceTeachers extends React.Component<
                       {displayVacationPeriod ? (
                         <div className="item-list__user-vacation-period">
                           {this.props.i18n.text.get(
-                            "plugin.workspace.index.teachersVacationPeriod.label"
+                            "plugin.workspace.index.teachersVacationPeriod.label",
                           )}
                           &nbsp;
                           {this.props.i18n.time.format(
-                            teacher.properties["profile-vacation-start"]
+                            teacher.properties["profile-vacation-start"],
                           )}
                           {teacher.properties["profile-vacation-end"]
                             ? "–" +
                               this.props.i18n.time.format(
-                                teacher.properties["profile-vacation-end"]
+                                teacher.properties["profile-vacation-end"],
                               )
                             : null}
                         </div>
@@ -154,25 +154,25 @@ class WorkspaceTeachers extends React.Component<
                             type: "staff",
                             value: {
                               id: teacher.userEntityId,
-                              name: getName(teacher, true)
-                            }
-                          }
+                              name: getName(teacher, true),
+                            },
+                          },
                         ]}
                         initialSubject={getWorkspaceMessage(
                           this.props.i18n,
                           this.props.status,
-                          this.props.workspace
+                          this.props.workspace,
                         )}
                         initialMessage={getWorkspaceMessage(
                           this.props.i18n,
                           this.props.status,
                           this.props.workspace,
-                          true
+                          true,
                         )}
                       >
                         <Button buttonModifiers={["info", "contact-teacher"]}>
                           {this.props.i18n.text.get(
-                            "plugin.workspace.index.message.label"
+                            "plugin.workspace.index.message.label",
                           )}
                         </Button>
                       </CommunicatorNewMessage>
@@ -196,11 +196,11 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     workspace: state.workspaces.currentWorkspace,
-    status: state.status
+    status: state.status,
   };
 }
 
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps() {
   return {};
 }
 

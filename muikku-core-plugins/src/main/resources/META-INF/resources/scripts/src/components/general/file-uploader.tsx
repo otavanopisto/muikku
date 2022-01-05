@@ -7,7 +7,7 @@ import { Dispatch, connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import {
   displayNotification,
-  DisplayNotificationTriggerType
+  DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 const ProgressBarLine = require("react-progress-bar.js").Line;
 import * as uuid from "uuid";
@@ -73,7 +73,7 @@ class FileUploader extends React.Component<
     super(props);
 
     this.state = {
-      uploadingValues: []
+      uploadingValues: [],
     };
 
     this.onFileInputChange = this.onFileInputChange.bind(this);
@@ -84,21 +84,18 @@ class FileUploader extends React.Component<
   componentDidMount = () => {
     if (this.props.uploadingValues) {
       this.setState({
-        uploadingValues: this.props.uploadingValues
+        uploadingValues: this.props.uploadingValues,
       });
     }
   };
 
-  componentDidUpdate = (
-    prevProps: FileUploaderProps,
-    prevState: FileUploaderState
-  ) => {
+  componentDidUpdate = (prevProps: FileUploaderProps) => {
     if (
       JSON.stringify(prevProps.uploadingValues) !==
       JSON.stringify(this.props.uploadingValues)
     ) {
       this.setState({
-        uploadingValues: this.props.uploadingValues
+        uploadingValues: this.props.uploadingValues,
       });
     }
   };
@@ -108,12 +105,12 @@ class FileUploader extends React.Component<
    * @param index
    */
   removeFailedFileAt(index: number) {
-    let newValues = [...this.state.uploadingValues];
+    const newValues = [...this.state.uploadingValues];
     newValues.splice(index, 1);
 
     //and call set state
     this.setState({
-      uploadingValues: newValues
+      uploadingValues: newValues,
     });
   }
 
@@ -123,9 +120,9 @@ class FileUploader extends React.Component<
    */
   processFileAt(index: number) {
     //first we create a new form data
-    let formData = new FormData();
+    const formData = new FormData();
     //get the file from that index
-    let file =
+    const file =
       this.state.uploadingValues[index] &&
       this.state.uploadingValues[index].file &&
       this.state.uploadingValues[index].file;
@@ -133,25 +130,25 @@ class FileUploader extends React.Component<
 
     if (file && file.size >= MAX_BYTES) {
       //on error we do similarly that on success
-      let newValues = [...this.state.uploadingValues];
+      const newValues = [...this.state.uploadingValues];
       const successIndex = newValues.findIndex((f) => f.file === file);
       newValues[successIndex] = { ...this.state.uploadingValues[successIndex] };
       newValues[successIndex].failed = true;
 
       //and call set state
       this.setState({
-        uploadingValues: newValues
+        uploadingValues: newValues,
       });
 
       this.props.displayNotificationOnError &&
         this.props.displayNotification(
           this.props.fileTooLargeErrorText,
-          "error"
+          "error",
         );
       this.props.onFileError &&
         this.props.onFileError(
           file,
-          new Error(this.props.fileTooLargeErrorText)
+          new Error(this.props.fileTooLargeErrorText),
         );
       return;
     }
@@ -172,33 +169,33 @@ class FileUploader extends React.Component<
             actualData = JSON.parse(data);
           } catch (err) {}
           //make a copy of the values
-          let newValues = [...this.state.uploadingValues];
+          const newValues = [...this.state.uploadingValues];
           const successIndex = newValues.findIndex((f) => f.file === file);
           newValues.splice(successIndex, 1);
 
           //and call set state
           this.setState({
-            uploadingValues: newValues
+            uploadingValues: newValues,
           });
           this.props.displayNotificationOnSuccess &&
             this.props.displayNotification(
               this.props.notificationOfSuccessText,
-              "success"
+              "success",
             );
           this.props.onFileSuccess &&
             this.props.onFileSuccess(file, actualData);
         },
         error: (xhr: any, err: Error) => {
           //on error we do similarly that on success
-          let newValues = [...this.state.uploadingValues];
+          const newValues = [...this.state.uploadingValues];
           const successIndex = newValues.findIndex((f) => f.file === file);
           newValues[successIndex] = {
-            ...this.state.uploadingValues[successIndex]
+            ...this.state.uploadingValues[successIndex],
           };
           newValues[successIndex].failed = true;
           //and call set state
           this.setState({
-            uploadingValues: newValues
+            uploadingValues: newValues,
           });
 
           this.props.displayNotificationOnError &&
@@ -207,38 +204,38 @@ class FileUploader extends React.Component<
         },
         xhr: () => {
           //we need to get the upload progress
-          let xhr = new (window as any).XMLHttpRequest();
+          const xhr = new (window as any).XMLHttpRequest();
           //Upload progress
           xhr.upload.addEventListener(
             "progress",
             (evt: any) => {
               if (evt.lengthComputable) {
                 const currentIndex = this.state.uploadingValues.findIndex(
-                  (f) => f.file === file
+                  (f) => f.file === file,
                 );
                 //we calculate the percent
-                let percentComplete = evt.loaded / evt.total;
+                const percentComplete = evt.loaded / evt.total;
                 //make a copy of the values
-                let newValues = [...this.state.uploadingValues];
+                const newValues = [...this.state.uploadingValues];
                 //find it at that specific index and make a copy
                 newValues[currentIndex] = {
-                  ...this.state.uploadingValues[currentIndex]
+                  ...this.state.uploadingValues[currentIndex],
                 };
                 //and set the new progress
                 newValues[currentIndex].progress = percentComplete;
                 //set the state for that new progress
                 this.setState({
-                  uploadingValues: newValues
+                  uploadingValues: newValues,
                 });
               }
             },
-            false
+            false,
           );
           return xhr;
         },
         cache: false,
         contentType: false,
-        processData: false
+        processData: false,
       });
     }
   }
@@ -251,27 +248,25 @@ class FileUploader extends React.Component<
     if (this.props.onFileInputChange) {
       this.props.onFileInputChange(e);
     } else {
-      let newValues = Array.from(e.target.files).map((file) => {
-        return {
-          name: file.name,
-          contentType: file.type,
-          progress: 0,
-          file
-        };
-      });
+      const newValues = Array.from(e.target.files).map((file) => ({
+        name: file.name,
+        contentType: file.type,
+        progress: 0,
+        file,
+      }));
       //let's get the original size of the array that we currently got
-      let originalLenght = this.state.uploadingValues.length;
+      const originalLenght = this.state.uploadingValues.length;
       this.setState(
         { uploadingValues: this.state.uploadingValues.concat(newValues) },
         () => {
           //we are going to loop thru those newly added values
           newValues.forEach((value, index) => {
             //we get the real index
-            let realIndex = index + originalLenght;
+            const realIndex = index + originalLenght;
             //we tell this to process the file
             this.processFileAt(realIndex);
           });
-        }
+        },
       );
     }
   }
@@ -302,7 +297,7 @@ class FileUploader extends React.Component<
         </span>
       ) : null;
 
-    let uniqueElementID = "file-uploader__hint-" + uuid.v4();
+    const uniqueElementID = "file-uploader__hint-" + uuid.v4();
     if (this.props.invisible) {
       return (
         <span
@@ -423,9 +418,9 @@ class FileUploader extends React.Component<
                 text: {
                   className: "file-uploader__item-upload-percentage",
                   style: {
-                    right: "100%"
-                  }
-                }
+                    right: "100%",
+                  },
+                },
               }}
               strokeWidth={1}
               easing="easeInOut"
@@ -435,13 +430,13 @@ class FileUploader extends React.Component<
               trailWidth={1}
               svgStyle={{ width: "100%", height: "4px" }}
               text={this.props.uploadingTextProcesser(
-                Math.round(uploadingFile.progress * 100)
+                Math.round(uploadingFile.progress * 100),
               )}
               progress={uploadingFile.progress}
             />
           </span>
         );
-      }
+      },
     );
 
     const DialogDeleteElement = this.props.deleteDialogElement;
@@ -563,7 +558,7 @@ class FileUploader extends React.Component<
  * mapStateToProps
  * @param state
  */
-function mapStateToProps(state: StateType) {
+function mapStateToProps() {
   return {};
 }
 

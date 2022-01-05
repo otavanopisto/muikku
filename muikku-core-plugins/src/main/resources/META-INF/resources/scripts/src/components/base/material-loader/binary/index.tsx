@@ -11,7 +11,7 @@ const registry = {
   "^image/": Image,
   pdf$: Pdf,
   "x-shockwave-flash$": Flash,
-  "^audio/": Audio
+  "^audio/": Audio,
 };
 
 export default function BinaryMaterialLoader(props: {

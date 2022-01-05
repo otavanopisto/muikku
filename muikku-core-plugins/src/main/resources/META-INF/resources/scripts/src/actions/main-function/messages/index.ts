@@ -16,7 +16,7 @@ import {
   MessageRecepientType,
   MessagesNavigationItemType,
   LabelListType,
-  LabelType
+  LabelType,
 } from "~/reducers/main-function/messages";
 import { displayNotification } from "~/actions/base/notifications";
 import { hexToColorInt, colorIntToHex } from "~/util/modifiers";
@@ -24,150 +24,140 @@ import {
   getApiId,
   loadMessagesHelper,
   setLabelStatusCurrentMessage,
-  setLabelStatusSelectedMessages
+  setLabelStatusSelectedMessages,
 } from "./helpers";
-import { ContactRecipientType, UserStaffType } from "~/reducers/user-index";
+import { ContactRecipientType } from "~/reducers/user-index";
 import { StatusType } from "~/reducers/base/status";
 
 export interface UpdateMessageThreadsCountTriggerType {
   (): AnyActionType;
 }
 
-export interface TOGGLE_ALL_MESSAGE_ITEMS
-  extends SpecificActionType<"TOGGLE_ALL_MESSAGE_ITEMS", undefined> {}
-export interface UPDATE_UNREAD_MESSAGE_THREADS_COUNT
-  extends SpecificActionType<"UPDATE_UNREAD_MESSAGE_THREADS_COUNT", number> {}
-export interface UPDATE_MESSAGE_THREADS
-  extends SpecificActionType<"UPDATE_MESSAGE_THREADS", MessageThreadListType> {}
-export interface SET_CURRENT_MESSAGE_THREAD
-  extends SpecificActionType<
-    "SET_CURRENT_MESSAGE_THREAD",
-    MessageThreadExpandedType
-  > {}
-export interface UPDATE_MESSAGES_STATE
-  extends SpecificActionType<"UPDATE_MESSAGES_STATE", MessagesStateType> {}
-export interface UPDATE_MESSAGES_ALL_PROPERTIES
-  extends SpecificActionType<
-    "UPDATE_MESSAGES_ALL_PROPERTIES",
-    MessagesPatchType
-  > {}
-export interface UPDATE_MESSAGE_THREAD_ADD_LABEL
-  extends SpecificActionType<
-    "UPDATE_MESSAGE_THREAD_ADD_LABEL",
-    {
-      communicatorMessageId: number;
-      label: MessageThreadLabelType;
-    }
-  > {}
-export interface UPDATE_MESSAGE_THREAD_DROP_LABEL
-  extends SpecificActionType<
-    "UPDATE_MESSAGE_THREAD_DROP_LABEL",
-    {
-      communicatorMessageId: number;
-      label: MessageThreadLabelType;
-    }
-  > {}
-export interface PUSH_ONE_MESSAGE_THREAD_FIRST
-  extends SpecificActionType<
-    "PUSH_ONE_MESSAGE_THREAD_FIRST",
-    MessageThreadType
-  > {}
-export interface LOCK_TOOLBAR
-  extends SpecificActionType<"LOCK_TOOLBAR", null> {}
-export interface UNLOCK_TOOLBAR
-  extends SpecificActionType<"UNLOCK_TOOLBAR", null> {}
-export interface UPDATE_ONE_MESSAGE_THREAD
-  extends SpecificActionType<
-    "UPDATE_ONE_MESSAGE_THREAD",
-    {
-      thread: MessageThreadType;
-      update: MessageThreadUpdateType;
-    }
-  > {}
-export interface UPDATE_MESSAGES_SIGNATURE
-  extends SpecificActionType<
-    "UPDATE_MESSAGES_SIGNATURE",
-    MessageSignatureType
-  > {}
-export interface DELETE_MESSAGE_THREAD
-  extends SpecificActionType<"DELETE_MESSAGE_THREAD", MessageThreadType> {}
-export interface UPDATE_SELECTED_MESSAGE_THREADS
-  extends SpecificActionType<
-    "UPDATE_SELECTED_MESSAGE_THREADS",
-    MessageThreadListType
-  > {}
-export interface ADD_TO_MESSAGES_SELECTED_THREADS
-  extends SpecificActionType<
-    "ADD_TO_MESSAGES_SELECTED_THREADS",
-    MessageThreadType
-  > {}
-export interface ADD_TO_ALL_MESSAGES_SELECTED_THREADS
-  extends SpecificActionType<
-    "ADD_TO_ALL_MESSAGES_SELECTED_THREADS",
-    MessageThreadType
-  > {}
-export interface REMOVE_FROM_MESSAGES_SELECTED_THREADS
-  extends SpecificActionType<
-    "REMOVE_FROM_MESSAGES_SELECTED_THREADS",
-    MessageThreadType
-  > {}
-export interface PUSH_MESSAGE_LAST_IN_CURRENT_THREAD
-  extends SpecificActionType<
-    "PUSH_MESSAGE_LAST_IN_CURRENT_THREAD",
-    MessageType
-  > {}
-export interface UPDATE_MESSAGES_NAVIGATION_LABELS
-  extends SpecificActionType<
-    "UPDATE_MESSAGES_NAVIGATION_LABELS",
-    MessagesNavigationItemListType
-  > {}
-export interface ADD_MESSAGES_NAVIGATION_LABEL
-  extends SpecificActionType<
-    "ADD_MESSAGES_NAVIGATION_LABEL",
-    MessagesNavigationItemType
-  > {}
-export interface UPDATE_ONE_LABEL_FROM_ALL_MESSAGE_THREADS
-  extends SpecificActionType<
-    "UPDATE_ONE_LABEL_FROM_ALL_MESSAGE_THREADS",
-    {
-      labelId: number;
-      update: {
-        labelName: string;
-        labelColor: number;
-      };
-    }
-  > {}
-export interface UPDATE_MESSAGES_NAVIGATION_LABEL
-  extends SpecificActionType<
-    "UPDATE_MESSAGES_NAVIGATION_LABEL",
-    {
-      labelId: number;
-      update: {
-        text: () => string;
-        color: string;
-      };
-    }
-  > {}
-export interface DELETE_MESSAGE_THREADS_NAVIGATION_LABEL
-  extends SpecificActionType<
-    "DELETE_MESSAGE_THREADS_NAVIGATION_LABEL",
-    {
-      labelId: number;
-    }
-  > {}
-export interface REMOVE_ONE_LABEL_FROM_ALL_MESSAGE_THREADS
-  extends SpecificActionType<
-    "REMOVE_ONE_LABEL_FROM_ALL_MESSAGE_THREADS",
-    {
-      labelId: number;
-    }
-  > {}
+export type TOGGLE_ALL_MESSAGE_ITEMS = SpecificActionType<
+  "TOGGLE_ALL_MESSAGE_ITEMS",
+  undefined
+>;
+export type UPDATE_UNREAD_MESSAGE_THREADS_COUNT = SpecificActionType<
+  "UPDATE_UNREAD_MESSAGE_THREADS_COUNT",
+  number
+>;
+export type UPDATE_MESSAGE_THREADS = SpecificActionType<
+  "UPDATE_MESSAGE_THREADS",
+  MessageThreadListType
+>;
+export type SET_CURRENT_MESSAGE_THREAD = SpecificActionType<
+  "SET_CURRENT_MESSAGE_THREAD",
+  MessageThreadExpandedType
+>;
+export type UPDATE_MESSAGES_STATE = SpecificActionType<
+  "UPDATE_MESSAGES_STATE",
+  MessagesStateType
+>;
+export type UPDATE_MESSAGES_ALL_PROPERTIES = SpecificActionType<
+  "UPDATE_MESSAGES_ALL_PROPERTIES",
+  MessagesPatchType
+>;
+export type UPDATE_MESSAGE_THREAD_ADD_LABEL = SpecificActionType<
+  "UPDATE_MESSAGE_THREAD_ADD_LABEL",
+  {
+    communicatorMessageId: number;
+    label: MessageThreadLabelType;
+  }
+>;
+export type UPDATE_MESSAGE_THREAD_DROP_LABEL = SpecificActionType<
+  "UPDATE_MESSAGE_THREAD_DROP_LABEL",
+  {
+    communicatorMessageId: number;
+    label: MessageThreadLabelType;
+  }
+>;
+export type PUSH_ONE_MESSAGE_THREAD_FIRST = SpecificActionType<
+  "PUSH_ONE_MESSAGE_THREAD_FIRST",
+  MessageThreadType
+>;
+export type LOCK_TOOLBAR = SpecificActionType<"LOCK_TOOLBAR", null>;
+export type UNLOCK_TOOLBAR = SpecificActionType<"UNLOCK_TOOLBAR", null>;
+export type UPDATE_ONE_MESSAGE_THREAD = SpecificActionType<
+  "UPDATE_ONE_MESSAGE_THREAD",
+  {
+    thread: MessageThreadType;
+    update: MessageThreadUpdateType;
+  }
+>;
+export type UPDATE_MESSAGES_SIGNATURE = SpecificActionType<
+  "UPDATE_MESSAGES_SIGNATURE",
+  MessageSignatureType
+>;
+export type DELETE_MESSAGE_THREAD = SpecificActionType<
+  "DELETE_MESSAGE_THREAD",
+  MessageThreadType
+>;
+export type UPDATE_SELECTED_MESSAGE_THREADS = SpecificActionType<
+  "UPDATE_SELECTED_MESSAGE_THREADS",
+  MessageThreadListType
+>;
+export type ADD_TO_MESSAGES_SELECTED_THREADS = SpecificActionType<
+  "ADD_TO_MESSAGES_SELECTED_THREADS",
+  MessageThreadType
+>;
+export type ADD_TO_ALL_MESSAGES_SELECTED_THREADS = SpecificActionType<
+  "ADD_TO_ALL_MESSAGES_SELECTED_THREADS",
+  MessageThreadType
+>;
+export type REMOVE_FROM_MESSAGES_SELECTED_THREADS = SpecificActionType<
+  "REMOVE_FROM_MESSAGES_SELECTED_THREADS",
+  MessageThreadType
+>;
+export type PUSH_MESSAGE_LAST_IN_CURRENT_THREAD = SpecificActionType<
+  "PUSH_MESSAGE_LAST_IN_CURRENT_THREAD",
+  MessageType
+>;
+export type UPDATE_MESSAGES_NAVIGATION_LABELS = SpecificActionType<
+  "UPDATE_MESSAGES_NAVIGATION_LABELS",
+  MessagesNavigationItemListType
+>;
+export type ADD_MESSAGES_NAVIGATION_LABEL = SpecificActionType<
+  "ADD_MESSAGES_NAVIGATION_LABEL",
+  MessagesNavigationItemType
+>;
+export type UPDATE_ONE_LABEL_FROM_ALL_MESSAGE_THREADS = SpecificActionType<
+  "UPDATE_ONE_LABEL_FROM_ALL_MESSAGE_THREADS",
+  {
+    labelId: number;
+    update: {
+      labelName: string;
+      labelColor: number;
+    };
+  }
+>;
+export type UPDATE_MESSAGES_NAVIGATION_LABEL = SpecificActionType<
+  "UPDATE_MESSAGES_NAVIGATION_LABEL",
+  {
+    labelId: number;
+    update: {
+      text: () => string;
+      color: string;
+    };
+  }
+>;
+export type DELETE_MESSAGE_THREADS_NAVIGATION_LABEL = SpecificActionType<
+  "DELETE_MESSAGE_THREADS_NAVIGATION_LABEL",
+  {
+    labelId: number;
+  }
+>;
+export type REMOVE_ONE_LABEL_FROM_ALL_MESSAGE_THREADS = SpecificActionType<
+  "REMOVE_ONE_LABEL_FROM_ALL_MESSAGE_THREADS",
+  {
+    labelId: number;
+  }
+>;
 
-let updateUnreadMessageThreadsCount: UpdateMessageThreadsCountTriggerType =
+const updateUnreadMessageThreadsCount: UpdateMessageThreadsCountTriggerType =
   function updateUnreadMessageThreadsCount() {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType
+      getState: () => StateType,
     ) => {
       if (!getState().status.loggedIn) {
         return;
@@ -179,9 +169,9 @@ let updateUnreadMessageThreadsCount: UpdateMessageThreadsCountTriggerType =
           payload: <number>(
             ((await promisify(
               mApi().communicator.receiveditemscount.cacheClear().read(),
-              "callback"
+              "callback",
             )()) || 0)
-          )
+          ),
         });
       } catch (err) {
         if (!(err instanceof MApiError)) {
@@ -190,10 +180,10 @@ let updateUnreadMessageThreadsCount: UpdateMessageThreadsCountTriggerType =
         dispatch(
           displayNotification(
             getState().i18n.text.get(
-              "plugin.communicator.errormessage.unreadMessageCount"
+              "plugin.communicator.errormessage.unreadMessageCount",
             ),
-            "error"
-          )
+            "error",
+          ),
         );
       }
     };
@@ -203,11 +193,11 @@ export interface LoadLastMessageThreadsFromSeverTriggerType {
   (maxResults: number): AnyActionType;
 }
 
-let loadLastMessageThreadsFromServer: LoadLastMessageThreadsFromSeverTriggerType =
+const loadLastMessageThreadsFromServer: LoadLastMessageThreadsFromSeverTriggerType =
   function loadLastMessageThreadsFromServer(maxResults) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType
+      getState: () => StateType,
     ) => {
       try {
         dispatch({
@@ -215,10 +205,10 @@ let loadLastMessageThreadsFromServer: LoadLastMessageThreadsFromSeverTriggerType
           payload: <MessageThreadListType>await promisify(
             mApi().communicator.items.read({
               firstResult: 0,
-              maxResults: maxResults
+              maxResults: maxResults,
             }),
-            "callback"
-          )()
+            "callback",
+          )(),
         });
       } catch (err) {
         if (!(err instanceof MApiError)) {
@@ -227,10 +217,10 @@ let loadLastMessageThreadsFromServer: LoadLastMessageThreadsFromSeverTriggerType
         dispatch(
           displayNotification(
             getState().i18n.text.get(
-              "plugin.communicator.errormessage.lastMessageLoad"
+              "plugin.communicator.errormessage.lastMessageLoad",
             ),
-            "error"
-          )
+            "error",
+          ),
         );
       }
     };
@@ -288,7 +278,7 @@ export interface ToggleMessageThreadReadStatusTriggerType {
     thread: MessageThreadType | number,
     markAsStatus?: boolean,
     dontLockToolbar?: boolean,
-    callback?: () => any
+    callback?: () => any,
   ): AnyActionType;
 }
 
@@ -333,19 +323,19 @@ export interface ToggleSelectAllMessageThreadsTriggerType {
 }
 
 /////////////////// ACTUAL DEFINITIONS
-let toggleAllMessageItems: ToggleSelectAllMessageThreadsTriggerType =
+const toggleAllMessageItems: ToggleSelectAllMessageThreadsTriggerType =
   function toggleAllMessageItems() {
     return {
       type: "TOGGLE_ALL_MESSAGE_ITEMS",
-      payload: null
+      payload: null,
     };
   };
 
-let sendMessage: SendMessageTriggerType = function sendMessage(message) {
-  let recepientWorkspaces = message.to
+const sendMessage: SendMessageTriggerType = function sendMessage(message) {
+  const recepientWorkspaces = message.to
     .filter((x) => x.type === "workspace")
     .map((x) => x.value.id);
-  let data = {
+  const data = {
     caption: message.subject,
     content: message.text,
     categoryName: "message",
@@ -356,42 +346,42 @@ let sendMessage: SendMessageTriggerType = function sendMessage(message) {
       .filter((x) => x.type === "usergroup")
       .map((x) => x.value.id),
     recipientStudentsWorkspaceIds: recepientWorkspaces,
-    recipientTeachersWorkspaceIds: recepientWorkspaces
+    recipientTeachersWorkspaceIds: recepientWorkspaces,
   };
 
   return async (
     dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType
+    getState: () => StateType,
   ) => {
     if (!message.subject) {
       message.fail && message.fail();
       return dispatch(
         displayNotification(
           getState().i18n.text.get(
-            "plugin.communicator.errormessage.createMessage.missing.subject"
+            "plugin.communicator.errormessage.createMessage.missing.subject",
           ),
-          "error"
-        )
+          "error",
+        ),
       );
     } else if (!message.text) {
       message.fail && message.fail();
       return dispatch(
         displayNotification(
           getState().i18n.text.get(
-            "plugin.communicator.errormessage.createMessage.missing.content"
+            "plugin.communicator.errormessage.createMessage.missing.content",
           ),
-          "error"
-        )
+          "error",
+        ),
       );
     } else if (!message.to.length) {
       message.fail && message.fail();
       return dispatch(
         displayNotification(
           getState().i18n.text.get(
-            "plugin.communicator.errormessage.createMessage.missing.recipients"
+            "plugin.communicator.errormessage.createMessage.missing.recipients",
           ),
-          "error"
-        )
+          "error",
+        ),
       );
     }
 
@@ -401,14 +391,14 @@ let sendMessage: SendMessageTriggerType = function sendMessage(message) {
         result = <MessageType>(
           await promisify(
             mApi().communicator.messages.create(message.replyThreadId, data),
-            "callback"
+            "callback",
           )()
         );
       } else {
         result = <MessageType>(
           await promisify(
             mApi().communicator.messages.create(data),
-            "callback"
+            "callback",
           )()
         );
       }
@@ -417,25 +407,25 @@ let sendMessage: SendMessageTriggerType = function sendMessage(message) {
       mApi().communicator.sentitems.cacheClear();
       message.success && message.success();
 
-      let state = getState();
-      let status: StatusType = state.status;
+      const state = getState();
+      const status: StatusType = state.status;
 
       if (state.messages) {
         //First lets check and update the thread count in case the thread is there somewhere for that specific message
-        let thread: MessageThreadType = state.messages.threads.find(
+        const thread: MessageThreadType = state.messages.threads.find(
           (thread) =>
-            thread.communicatorMessageId === result.communicatorMessageId
+            thread.communicatorMessageId === result.communicatorMessageId,
         );
         if (thread) {
-          let newCount = thread.messageCountInThread + 1;
+          const newCount = thread.messageCountInThread + 1;
           dispatch({
             type: "UPDATE_ONE_MESSAGE_THREAD",
             payload: {
               thread,
               update: {
-                messageCountInThread: newCount
-              }
-            }
+                messageCountInThread: newCount,
+              },
+            },
           });
         }
 
@@ -445,9 +435,8 @@ let sendMessage: SendMessageTriggerType = function sendMessage(message) {
           state.messages.location === "inbox" ||
           state.messages.location === "unread";
         const weAreOneOfTheRecepients = result.recipients.find(
-          (recipient: MessageRecepientType) => {
-            return recipient.userEntityId === status.userId;
-          }
+          (recipient: MessageRecepientType) =>
+            recipient.userEntityId === status.userId,
         );
         const isInboxOrUnreadAndWeAreOneOfTheRecepients =
           isInboxOrUnread && weAreOneOfTheRecepients;
@@ -459,24 +448,24 @@ let sendMessage: SendMessageTriggerType = function sendMessage(message) {
 
         //if we are in sent location or are one of the recipients then the message should become the first one
         if (weAreInSentLocation || isInboxOrUnreadAndWeAreOneOfTheRecepients) {
-          let item = state.messages.navigation.find((item) => {
-            return item.location === state.messages.location;
-          });
+          const item = state.messages.navigation.find(
+            (item) => item.location === state.messages.location,
+          );
           if (!item) {
             return;
           }
-          let params = {
+          const params = {
             firstResult: 0,
-            maxResults: 1
+            maxResults: 1,
           };
 
           //we basically conduct a search for the first result which should be our thread
 
           try {
-            let threads: MessageThreadListType = <MessageThreadListType>(
+            const threads: MessageThreadListType = <MessageThreadListType>(
               await promisify(
                 mApi().communicator[getApiId(item)].read(params),
-                "callback"
+                "callback",
               )()
             );
             if (threads[0]) {
@@ -484,16 +473,11 @@ let sendMessage: SendMessageTriggerType = function sendMessage(message) {
                 threads[0].communicatorMessageId !==
                 result.communicatorMessageId
               ) {
-                console.warn(
-                  "Mismatch between result of new thread and thread itself",
-                  threads[0].communicatorMessageId,
-                  result.communicatorMessageId
-                );
                 return;
               }
               dispatch({
                 type: "PUSH_ONE_MESSAGE_THREAD_FIRST",
-                payload: threads[0]
+                payload: threads[0],
               });
 
               if (
@@ -514,7 +498,7 @@ let sendMessage: SendMessageTriggerType = function sendMessage(message) {
         if (weJustSentThatMessageAndWeAreInCurrent) {
           dispatch({
             type: "PUSH_MESSAGE_LAST_IN_CURRENT_THREAD",
-            payload: result
+            payload: result,
           });
         }
       }
@@ -522,10 +506,10 @@ let sendMessage: SendMessageTriggerType = function sendMessage(message) {
       dispatch(
         displayNotification(
           getState().i18n.text.get(
-            "plugin.communicator.infomessage.newMessage.success"
+            "plugin.communicator.infomessage.newMessage.success",
           ),
-          "success"
-        )
+          "success",
+        ),
       );
     } catch (err) {
       if (!(err instanceof MApiError)) {
@@ -534,106 +518,106 @@ let sendMessage: SendMessageTriggerType = function sendMessage(message) {
       dispatch(
         displayNotification(
           getState().i18n.text.get(
-            "plugin.communicator.errormessage.sendFailed"
+            "plugin.communicator.errormessage.sendFailed",
           ),
-          "error"
-        )
+          "error",
+        ),
       );
       message.fail && message.fail();
     }
   };
 };
 
-let loadMessageThreads: LoadMessageThreadsTriggerType =
+const loadMessageThreads: LoadMessageThreadsTriggerType =
   function loadMessageThreads(location, query) {
     return loadMessagesHelper.bind(this, location, query, true);
   };
 
-let updateMessagesSelectedThreads: UpdateMessagesSelectedThreads =
+const updateMessagesSelectedThreads: UpdateMessagesSelectedThreads =
   function updateMessagesSelectedThreads(threads) {
     return {
       type: "UPDATE_SELECTED_MESSAGE_THREADS",
-      payload: threads
+      payload: threads,
     };
   };
 
-let addToMessagesSelectedThreads: AddToMessagesSelectedThreadsTriggerType =
+const addToMessagesSelectedThreads: AddToMessagesSelectedThreadsTriggerType =
   function addToMessagesSelectedThreads(thread) {
     return {
       type: "ADD_TO_MESSAGES_SELECTED_THREADS",
-      payload: thread
+      payload: thread,
     };
   };
 
-let removeFromMessagesSelectedThreads: RemoveFromMessagesSelectedThreadsTriggerType =
+const removeFromMessagesSelectedThreads: RemoveFromMessagesSelectedThreadsTriggerType =
   function removeFromMessagesSelectedThreads(thread) {
     return {
       type: "REMOVE_FROM_MESSAGES_SELECTED_THREADS",
-      payload: thread
+      payload: thread,
     };
   };
 
-let loadMoreMessageThreads: LoadMoreMessageThreadsTriggerType =
+const loadMoreMessageThreads: LoadMoreMessageThreadsTriggerType =
   function loadMoreMessageThreads() {
     return loadMessagesHelper.bind(this, null, null, false);
   };
 
-let addLabelToSelectedMessageThreads: AddLabelToSelectedMessageThreadsTriggerType =
+const addLabelToSelectedMessageThreads: AddLabelToSelectedMessageThreadsTriggerType =
   function addLabelToSelectedMessageThreads(label) {
     return setLabelStatusSelectedMessages.bind(this, label, true);
   };
 
-let removeLabelFromSelectedMessageThreads: RemoveLabelFromSelectedMessageThreadsTriggerType =
+const removeLabelFromSelectedMessageThreads: RemoveLabelFromSelectedMessageThreadsTriggerType =
   function removeLabelFromSelectedMessageThreads(label) {
     return setLabelStatusSelectedMessages.bind(this, label, false);
   };
 
-let addLabelToCurrentMessageThread: AddLabelToCurrentMessageThreadTriggerType =
+const addLabelToCurrentMessageThread: AddLabelToCurrentMessageThreadTriggerType =
   function addLabelToCurrentMessageThread(label) {
     return setLabelStatusCurrentMessage.bind(this, label, true);
   };
 
-let removeLabelFromCurrentMessageThread: RemoveLabelFromCurrentMessageThreadTriggerType =
+const removeLabelFromCurrentMessageThread: RemoveLabelFromCurrentMessageThreadTriggerType =
   function removeLabelFromCurrentMessageThread(label) {
     return setLabelStatusCurrentMessage.bind(this, label, false);
   };
 
-let toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType =
+const toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType =
   function toggleMessageThreadReadStatus(
     threadOrId,
     markAsStatus,
     dontLockToolbar = false,
-    callback
+    callback,
   ) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType
+      getState: () => StateType,
     ) => {
       if (!dontLockToolbar) {
         dispatch({
           type: "LOCK_TOOLBAR",
-          payload: null
+          payload: null,
         });
       }
 
-      let state = getState();
+      const state = getState();
 
-      let item = state.messages.navigation.find((item) => {
-        return item.location === state.messages.location;
-      });
+      const item = state.messages.navigation.find(
+        (item) => item.location === state.messages.location,
+      );
       if (!item) {
         //TODO translate this
         dispatch(
           displayNotification(
             getState().i18n.text.get(
-              "plugin.communicator.errormessage.badLocation"
+              "plugin.communicator.errormessage.badLocation",
             ),
-            "error"
-          )
+            "error",
+          ),
         );
         dispatch({
           type: "UNLOCK_TOOLBAR",
-          payload: null
+          payload: null,
         });
         return;
       }
@@ -642,7 +626,7 @@ let toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType =
       let communicatorMessageId: number = null;
       if (typeof threadOrId === "number") {
         actualThread = state.messages.threads.find(
-          (t) => t.communicatorMessageId === threadOrId
+          (t) => t.communicatorMessageId === threadOrId,
         );
         communicatorMessageId = threadOrId;
       } else {
@@ -659,9 +643,9 @@ let toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType =
               unreadMessagesInThread:
                 typeof markAsStatus === "boolean"
                   ? !markAsStatus
-                  : !actualThread.unreadMessagesInThread
-            }
-          }
+                  : !actualThread.unreadMessagesInThread,
+            },
+          },
         });
       }
 
@@ -672,9 +656,9 @@ let toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType =
         ) {
           await promisify(
             mApi().communicator[getApiId(item)].markasread.create(
-              communicatorMessageId
+              communicatorMessageId,
             ),
-            "callback"
+            "callback",
           )();
         } else if (
           (actualThread && !actualThread.unreadMessagesInThread) ||
@@ -682,9 +666,9 @@ let toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType =
         ) {
           await promisify(
             mApi().communicator[getApiId(item)].markasunread.create(
-              communicatorMessageId
+              communicatorMessageId,
             ),
-            "callback"
+            "callback",
           )();
         }
         dispatch(updateUnreadMessageThreadsCount());
@@ -695,10 +679,10 @@ let toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType =
         dispatch(
           displayNotification(
             getState().i18n.text.get(
-              "plugin.communicator.errormessage.changeStatusFailed"
+              "plugin.communicator.errormessage.changeStatusFailed",
             ),
-            "error"
-          )
+            "error",
+          ),
         );
         if (actualThread) {
           dispatch({
@@ -706,9 +690,9 @@ let toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType =
             payload: {
               thread: actualThread,
               update: {
-                unreadMessagesInThread: actualThread.unreadMessagesInThread
-              }
-            }
+                unreadMessagesInThread: actualThread.unreadMessagesInThread,
+              },
+            },
           });
         }
       }
@@ -718,7 +702,7 @@ let toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType =
       if (!dontLockToolbar) {
         dispatch({
           type: "UNLOCK_TOOLBAR",
-          payload: null
+          payload: null,
         });
       }
 
@@ -726,25 +710,22 @@ let toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType =
     };
   };
 
-let toggleMessageThreadsReadStatus: ToggleMessageThreadsReadStatusTriggerType =
+const toggleMessageThreadsReadStatus: ToggleMessageThreadsReadStatusTriggerType =
   function toggleMessageThreadsReadStatus(threads) {
-    return async (
-      dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType
-    ) => {
+    return async (dispatch: (arg: AnyActionType) => any) => {
       dispatch({
         type: "LOCK_TOOLBAR",
-        payload: null
+        payload: null,
       });
 
       let done = 0;
       threads.forEach((thread) => {
-        let cb = () => {
+        const cb = () => {
           done++;
           if (done === threads.length) {
             dispatch({
               type: "UNLOCK_TOOLBAR",
-              payload: null
+              payload: null,
             });
           }
         };
@@ -759,35 +740,35 @@ let toggleMessageThreadsReadStatus: ToggleMessageThreadsReadStatusTriggerType =
     };
   };
 
-let deleteSelectedMessageThreads: DeleteSelectedMessageThreadsTriggerType =
+const deleteSelectedMessageThreads: DeleteSelectedMessageThreadsTriggerType =
   function deleteSelectedMessageThreads() {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType
+      getState: () => StateType,
     ) => {
       dispatch({
         type: "LOCK_TOOLBAR",
-        payload: null
+        payload: null,
       });
 
-      let state = getState();
+      const state = getState();
 
-      let item = state.messages.navigation.find((item) => {
-        return item.location === state.messages.location;
-      });
+      const item = state.messages.navigation.find(
+        (item) => item.location === state.messages.location,
+      );
       if (!item) {
         //TODO translate this
         dispatch(
           displayNotification(
             getState().i18n.text.get(
-              "plugin.communicator.errormessage.badLocation"
+              "plugin.communicator.errormessage.badLocation",
             ),
-            "error"
-          )
+            "error",
+          ),
         );
         dispatch({
           type: "UNLOCK_TOOLBAR",
-          payload: null
+          payload: null,
         });
         return;
       }
@@ -797,13 +778,13 @@ let deleteSelectedMessageThreads: DeleteSelectedMessageThreadsTriggerType =
           try {
             await promisify(
               mApi().communicator[getApiId(item)].del(
-                thread.communicatorMessageId
+                thread.communicatorMessageId,
               ),
-              "callback"
+              "callback",
             )();
             dispatch({
               type: "DELETE_MESSAGE_THREAD",
-              payload: thread
+              payload: thread,
             });
           } catch (err) {
             if (!(err instanceof MApiError)) {
@@ -812,73 +793,74 @@ let deleteSelectedMessageThreads: DeleteSelectedMessageThreadsTriggerType =
             dispatch(
               displayNotification(
                 getState().i18n.text.get(
-                  "plugin.communicator.errormessage.deleteFailed"
+                  "plugin.communicator.errormessage.deleteFailed",
                 ),
-                "error"
-              )
+                "error",
+              ),
             );
           }
-        })
+        }),
       );
 
       mApi().communicator[getApiId(item)].cacheClear();
       dispatch({
         type: "UNLOCK_TOOLBAR",
-        payload: null
+        payload: null,
       });
       dispatch(updateUnreadMessageThreadsCount());
     };
   };
 
-let deleteCurrentMessageThread: DeleteCurrentMessageThreadTriggerType =
+const deleteCurrentMessageThread: DeleteCurrentMessageThreadTriggerType =
   function deleteCurrentMessageThread() {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType
+      getState: () => StateType,
     ) => {
       dispatch({
         type: "LOCK_TOOLBAR",
-        payload: null
+        payload: null,
       });
 
-      let state = getState();
+      const state = getState();
 
-      let item = state.messages.navigation.find((item) => {
-        return item.location === state.messages.location;
-      });
+      const item = state.messages.navigation.find(
+        (item) => item.location === state.messages.location,
+      );
       if (!item) {
         //TODO translate this
         dispatch(
           displayNotification(
             getState().i18n.text.get(
-              "plugin.communicator.errormessage.badLocation"
+              "plugin.communicator.errormessage.badLocation",
             ),
-            "error"
-          )
+            "error",
+          ),
         );
         dispatch({
           type: "UNLOCK_TOOLBAR",
-          payload: null
+          payload: null,
         });
         return;
       }
 
-      let communicatorMessageId =
+      const communicatorMessageId =
         state.messages.currentThread.messages[0].communicatorMessageId;
 
       try {
         await promisify(
           mApi().communicator[getApiId(item)].del(communicatorMessageId),
-          "callback"
+          "callback",
         )();
-        let toDeleteMessageThread: MessageThreadType =
+        const toDeleteMessageThread: MessageThreadType =
           state.messages.threads.find(
-            (message) => message.communicatorMessageId === communicatorMessageId
+            (message) =>
+              message.communicatorMessageId === communicatorMessageId,
           );
         if (toDeleteMessageThread) {
           dispatch({
             type: "DELETE_MESSAGE_THREAD",
-            payload: toDeleteMessageThread
+            payload: toDeleteMessageThread,
           });
         }
       } catch (err) {
@@ -888,17 +870,17 @@ let deleteCurrentMessageThread: DeleteCurrentMessageThreadTriggerType =
         dispatch(
           displayNotification(
             getState().i18n.text.get(
-              "plugin.communicator.errormessage.deleteFailed"
+              "plugin.communicator.errormessage.deleteFailed",
             ),
-            "error"
-          )
+            "error",
+          ),
         );
       }
 
       mApi().communicator[getApiId(item)].cacheClear();
       dispatch({
         type: "UNLOCK_TOOLBAR",
-        payload: null
+        payload: null,
       });
 
       //SADLY the current message doesn't have a mention on wheter
@@ -910,26 +892,26 @@ let deleteCurrentMessageThread: DeleteCurrentMessageThreadTriggerType =
     };
   };
 
-let loadMessageThread: LoadMessageThreadTriggerType =
+const loadMessageThread: LoadMessageThreadTriggerType =
   function loadMessageThread(location, messageId) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType
+      getState: () => StateType,
     ) => {
-      let state = getState();
+      const state = getState();
 
-      let item = state.messages.navigation.find((item) => {
-        return item.location === location;
-      });
+      const item = state.messages.navigation.find(
+        (item) => item.location === location,
+      );
       if (!item) {
         //TODO translate this
         dispatch(
           displayNotification(
             getState().i18n.text.get(
-              "plugin.communicator.errormessage.badLocation"
+              "plugin.communicator.errormessage.badLocation",
             ),
-            "error"
-          )
+            "error",
+          ),
         );
         return;
       }
@@ -940,14 +922,14 @@ let loadMessageThread: LoadMessageThreadTriggerType =
           currentThread = <MessageThreadExpandedType>(
             await promisify(
               mApi().communicator[getApiId(item, true)].read(messageId),
-              "callback"
+              "callback",
             )()
           );
         } else {
           currentThread = <MessageThreadExpandedType>(
             await promisify(
               mApi().communicator.userLabels.messages.read(item.id, messageId),
-              "callback"
+              "callback",
             )()
           );
         }
@@ -955,8 +937,8 @@ let loadMessageThread: LoadMessageThreadTriggerType =
           type: "UPDATE_MESSAGES_ALL_PROPERTIES",
           payload: {
             currentThread: currentThread,
-            location
-          }
+            location,
+          },
         });
       } catch (err) {
         if (!(err instanceof MApiError)) {
@@ -965,10 +947,10 @@ let loadMessageThread: LoadMessageThreadTriggerType =
         dispatch(
           displayNotification(
             getState().i18n.text.get(
-              "plugin.communicator.errormessage.threadLoadFailed"
+              "plugin.communicator.errormessage.threadLoadFailed",
             ),
-            "error"
-          )
+            "error",
+          ),
         );
       }
 
@@ -977,68 +959,68 @@ let loadMessageThread: LoadMessageThreadTriggerType =
           toggleMessageThreadReadStatus(
             currentThread.messages[0].communicatorMessageId,
             true,
-            true
-          )
+            true,
+          ),
         );
       }
     };
   };
 
-let loadNewlyReceivedMessage: LoadNewlyReceivedMessageTriggerType =
+const loadNewlyReceivedMessage: LoadNewlyReceivedMessageTriggerType =
   function loadNewlyReceivedMessage() {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType
+      getState: () => StateType,
     ) => {
-      let state = getState();
+      const state = getState();
 
       if (
         state.messages.location === "unread" ||
         state.messages.location === "inbox"
       ) {
-        let item = state.messages.navigation.find((item) => {
-          return item.location === state.messages.location;
-        });
+        const item = state.messages.navigation.find(
+          (item) => item.location === state.messages.location,
+        );
 
         if (!item) {
           return;
         }
 
-        let params = {
+        const params = {
           firstResult: 0,
           maxResults: 1,
-          onlyUnread: true
+          onlyUnread: true,
         };
 
         try {
-          let threads: MessageThreadListType = <MessageThreadListType>(
+          const threads: MessageThreadListType = <MessageThreadListType>(
             await promisify(
               mApi().communicator[getApiId(item)].read(params),
-              "callback"
+              "callback",
             )()
           );
           if (threads[0]) {
             dispatch({
               type: "PUSH_ONE_MESSAGE_THREAD_FIRST",
-              payload: threads[0]
+              payload: threads[0],
             });
             if (
               state.messages.currentThread &&
               state.messages.currentThread.messages[0].communicatorMessageId ===
                 threads[0].communicatorMessageId
             ) {
-              let result: MessageType = <MessageType>(
+              const result: MessageType = <MessageType>(
                 await promisify(
                   mApi().communicator.communicatormessages.read(
                     threads[0].id,
-                    params
+                    params,
                   ),
-                  "callback"
+                  "callback",
                 )()
               );
               dispatch({
                 type: "PUSH_MESSAGE_LAST_IN_CURRENT_THREAD",
-                payload: result
+                payload: result,
               });
               if (threads[0].unreadMessagesInThread) {
                 dispatch(toggleMessageThreadReadStatus(threads[0], true, true));
@@ -1052,29 +1034,29 @@ let loadNewlyReceivedMessage: LoadNewlyReceivedMessageTriggerType =
           dispatch(
             displayNotification(
               getState().i18n.text.get(
-                "plugin.communicator.errormessage.receivedFailed"
+                "plugin.communicator.errormessage.receivedFailed",
               ),
-              "error"
-            )
+              "error",
+            ),
           );
         }
       }
     };
   };
 
-let loadSignature: LoadSignatureTriggerType = function loadSignature() {
+const loadSignature: LoadSignatureTriggerType = function loadSignature() {
   return async (
     dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType
+    getState: () => StateType,
   ) => {
     try {
-      let signatures: Array<MessageSignatureType> = <
+      const signatures: Array<MessageSignatureType> = <
         Array<MessageSignatureType>
       >await promisify(mApi().communicator.signatures.read(), "callback")();
       if (signatures.length > 0) {
         dispatch({
           type: "UPDATE_MESSAGES_SIGNATURE",
-          payload: signatures[0]
+          payload: signatures[0],
         });
       }
     } catch (err) {
@@ -1084,63 +1066,63 @@ let loadSignature: LoadSignatureTriggerType = function loadSignature() {
       dispatch(
         displayNotification(
           getState().i18n.text.get(
-            "plugin.communicator.errormessage.signatureLoadFailed"
+            "plugin.communicator.errormessage.signatureLoadFailed",
           ),
-          "error"
-        )
+          "error",
+        ),
       );
     }
   };
 };
 
-let updateSignature: UpdateSignatureTriggerType = function updateSignature(
-  newSignature
+const updateSignature: UpdateSignatureTriggerType = function updateSignature(
+  newSignature,
 ) {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => any) => {
-    let state = getState();
+    const state = getState();
 
     try {
       if (newSignature && state.messages.signature) {
-        let nSignatureShape: MessageSignatureType = <MessageSignatureType>{
+        const nSignatureShape: MessageSignatureType = <MessageSignatureType>{
           id: state.messages.signature.id,
           name: state.messages.signature.name,
-          signature: newSignature
+          signature: newSignature,
         };
-        let payload: MessageSignatureType = <MessageSignatureType>(
+        const payload: MessageSignatureType = <MessageSignatureType>(
           await promisify(
             mApi().communicator.signatures.update(
               state.messages.signature.id,
-              nSignatureShape
+              nSignatureShape,
             ),
-            "callback"
+            "callback",
           )()
         );
         dispatch({
           type: "UPDATE_MESSAGES_SIGNATURE",
-          payload
+          payload,
         });
       } else if (newSignature) {
-        let payload: MessageSignatureType = <MessageSignatureType>(
+        const payload: MessageSignatureType = <MessageSignatureType>(
           await promisify(
             mApi().communicator.signatures.create({
               name: "standard",
-              signature: newSignature
+              signature: newSignature,
             }),
-            "callback"
+            "callback",
           )()
         );
         dispatch({
           type: "UPDATE_MESSAGES_SIGNATURE",
-          payload
+          payload,
         });
       } else {
         await promisify(
           mApi().communicator.signatures.del(state.messages.signature.id),
-          "callback"
+          "callback",
         )();
         dispatch({
           type: "UPDATE_MESSAGES_SIGNATURE",
-          payload: null
+          payload: null,
         });
       }
     } catch (err) {
@@ -1150,10 +1132,10 @@ let updateSignature: UpdateSignatureTriggerType = function updateSignature(
       dispatch(
         displayNotification(
           getState().i18n.text.get(
-            "plugin.communicator.errormessage.signatureUpdateFailed"
+            "plugin.communicator.errormessage.signatureUpdateFailed",
           ),
-          "error"
-        )
+          "error",
+        ),
       );
     }
   };
@@ -1185,30 +1167,28 @@ export interface RemoveMessagesNavigationLabelTriggerType {
   }): AnyActionType;
 }
 
-let loadMessagesNavigationLabels: LoadMessagesNavigationLabelsTriggerType =
+const loadMessagesNavigationLabels: LoadMessagesNavigationLabelsTriggerType =
   function loadMessagesNavigationLabels(callback) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => any
+      getState: () => any,
     ) => {
       try {
-        let labels: LabelListType = <LabelListType>(
+        const labels: LabelListType = <LabelListType>(
           await promisify(mApi().communicator.userLabels.read(), "callback")()
         );
         dispatch({
           type: "UPDATE_MESSAGES_NAVIGATION_LABELS",
-          payload: labels.map((label: LabelType) => {
-            return {
-              location: "label-" + label.id,
-              id: label.id,
-              type: "label",
-              icon: "tag",
-              text() {
-                return label.name;
-              },
-              color: colorIntToHex(label.color)
-            };
-          })
+          payload: labels.map((label: LabelType) => ({
+            location: "label-" + label.id,
+            id: label.id,
+            type: "label",
+            icon: "tag",
+            text() {
+              return label.name;
+            },
+            color: colorIntToHex(label.color),
+          })),
         });
         callback && callback();
       } catch (err) {
@@ -1218,43 +1198,43 @@ let loadMessagesNavigationLabels: LoadMessagesNavigationLabelsTriggerType =
         dispatch(
           displayNotification(
             getState().i18n.text.get(
-              "plugin.communicator.errormessage.labelsLoadFailed"
+              "plugin.communicator.errormessage.labelsLoadFailed",
             ),
-            "error"
-          )
+            "error",
+          ),
         );
       }
     };
   };
 
-let addMessagesNavigationLabel: AddMessagesNavigationLabelTriggerType =
+const addMessagesNavigationLabel: AddMessagesNavigationLabelTriggerType =
   function addMessagesNavigationLabel(name) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => any
+      getState: () => any,
     ) => {
       if (!name) {
         return dispatch(
           displayNotification(
             getState().i18n.text.get(
-              "plugin.communicator.errormessage.createUpdateLabels.missing.title"
+              "plugin.communicator.errormessage.createUpdateLabels.missing.title",
             ),
-            "error"
-          )
+            "error",
+          ),
         );
       }
 
-      let color = Math.round(Math.random() * 16777215);
-      let label = {
+      const color = Math.round(Math.random() * 16777215);
+      const label = {
         name,
-        color
+        color,
       };
 
       try {
-        let newLabel: LabelType = <LabelType>(
+        const newLabel: LabelType = <LabelType>(
           await promisify(
             mApi().communicator.userLabels.create(label),
-            "callback"
+            "callback",
           )()
         );
         dispatch({
@@ -1267,8 +1247,8 @@ let addMessagesNavigationLabel: AddMessagesNavigationLabelTriggerType =
             text() {
               return newLabel.name;
             },
-            color: colorIntToHex(newLabel.color)
-          }
+            color: colorIntToHex(newLabel.color),
+          },
         });
       } catch (err) {
         if (!(err instanceof MApiError)) {
@@ -1277,43 +1257,43 @@ let addMessagesNavigationLabel: AddMessagesNavigationLabelTriggerType =
         dispatch(
           displayNotification(
             getState().i18n.text.get(
-              "plugin.communicator.errormessage.label.createFailed"
+              "plugin.communicator.errormessage.label.createFailed",
             ),
-            "error"
-          )
+            "error",
+          ),
         );
       }
     };
   };
 
-let updateMessagesNavigationLabel: UpdateMessagesNavigationLabelTriggerType =
+const updateMessagesNavigationLabel: UpdateMessagesNavigationLabelTriggerType =
   function updateMessagesNavigationLabel(data) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => any
+      getState: () => any,
     ) => {
       if (!data.newName) {
         data.fail && data.fail();
         return dispatch(
           displayNotification(
             getState().i18n.text.get(
-              "plugin.communicator.errormessage.createUpdateLabels.missing.title"
+              "plugin.communicator.errormessage.createUpdateLabels.missing.title",
             ),
-            "error"
-          )
+            "error",
+          ),
         );
       }
 
-      let newLabelData = {
+      const newLabelData = {
         name: data.newName,
         color: hexToColorInt(data.newColor),
-        id: data.label.id
+        id: data.label.id,
       };
 
       try {
         await promisify(
           mApi().communicator.userLabels.update(data.label.id, newLabelData),
-          "callback"
+          "callback",
         )();
         dispatch({
           type: "UPDATE_ONE_LABEL_FROM_ALL_MESSAGE_THREADS",
@@ -1321,9 +1301,9 @@ let updateMessagesNavigationLabel: UpdateMessagesNavigationLabelTriggerType =
             labelId: <number>data.label.id,
             update: {
               labelName: newLabelData.name,
-              labelColor: newLabelData.color
-            }
-          }
+              labelColor: newLabelData.color,
+            },
+          },
         });
         dispatch({
           type: "UPDATE_MESSAGES_NAVIGATION_LABEL",
@@ -1331,9 +1311,9 @@ let updateMessagesNavigationLabel: UpdateMessagesNavigationLabelTriggerType =
             labelId: <number>data.label.id,
             update: {
               text: () => newLabelData.name,
-              color: data.newColor
-            }
-          }
+              color: data.newColor,
+            },
+          },
         });
         data.success && data.success();
       } catch (err) {
@@ -1344,27 +1324,27 @@ let updateMessagesNavigationLabel: UpdateMessagesNavigationLabelTriggerType =
         dispatch(
           displayNotification(
             getState().i18n.text.get(
-              "plugin.communicator.errormessage.label.updateFailed"
+              "plugin.communicator.errormessage.label.updateFailed",
             ),
-            "error"
-          )
+            "error",
+          ),
         );
       }
     };
   };
 
-let removeMessagesNavigationLabel: RemoveMessagesNavigationLabelTriggerType =
+const removeMessagesNavigationLabel: RemoveMessagesNavigationLabelTriggerType =
   function removeMessagesNavigationLabel(data) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType
+      getState: () => StateType,
     ) => {
       try {
         await promisify(
           mApi().communicator.userLabels.del(data.label.id),
-          "callback"
+          "callback",
         )();
-        let { messages } = getState();
+        const { messages } = getState();
 
         //Notice this is an external trigger, not the nicest thing, but as long as we use hash navigation, meh
         if (messages.location === data.label.location) {
@@ -1374,14 +1354,14 @@ let removeMessagesNavigationLabel: RemoveMessagesNavigationLabelTriggerType =
         dispatch({
           type: "DELETE_MESSAGE_THREADS_NAVIGATION_LABEL",
           payload: {
-            labelId: <number>data.label.id
-          }
+            labelId: <number>data.label.id,
+          },
         });
         dispatch({
           type: "REMOVE_ONE_LABEL_FROM_ALL_MESSAGE_THREADS",
           payload: {
-            labelId: <number>data.label.id
-          }
+            labelId: <number>data.label.id,
+          },
         });
         data.success && data.success();
       } catch (err) {
@@ -1392,44 +1372,44 @@ let removeMessagesNavigationLabel: RemoveMessagesNavigationLabelTriggerType =
         dispatch(
           displayNotification(
             getState().i18n.text.get(
-              "plugin.communicator.errormessage.label.deleteFailed"
+              "plugin.communicator.errormessage.label.deleteFailed",
             ),
-            "error"
-          )
+            "error",
+          ),
         );
       }
     };
   };
 
-let restoreSelectedMessageThreads: RestoreSelectedMessageThreadsTriggerType =
+const restoreSelectedMessageThreads: RestoreSelectedMessageThreadsTriggerType =
   function restoreSelectedMessageThreads() {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType
+      getState: () => StateType,
     ) => {
       dispatch({
         type: "LOCK_TOOLBAR",
-        payload: null
+        payload: null,
       });
 
-      let state = getState();
+      const state = getState();
 
-      let item = state.messages.navigation.find((item) => {
-        return item.location === state.messages.location;
-      });
+      const item = state.messages.navigation.find(
+        (item) => item.location === state.messages.location,
+      );
       if (!item) {
         //TODO translate this
         dispatch(
           displayNotification(
             getState().i18n.text.get(
-              "plugin.communicator.errormessage.badLocation"
+              "plugin.communicator.errormessage.badLocation",
             ),
-            "error"
-          )
+            "error",
+          ),
         );
         dispatch({
           type: "UNLOCK_TOOLBAR",
-          payload: null
+          payload: null,
         });
         return;
       }
@@ -1439,13 +1419,13 @@ let restoreSelectedMessageThreads: RestoreSelectedMessageThreadsTriggerType =
           try {
             await promisify(
               mApi().communicator[getApiId(item)].restore.update(
-                thread.communicatorMessageId
+                thread.communicatorMessageId,
               ),
-              "callback"
+              "callback",
             )();
             dispatch({
               type: "DELETE_MESSAGE_THREAD",
-              payload: thread
+              payload: thread,
             });
           } catch (err) {
             if (!(err instanceof MApiError)) {
@@ -1454,74 +1434,75 @@ let restoreSelectedMessageThreads: RestoreSelectedMessageThreadsTriggerType =
             dispatch(
               displayNotification(
                 getState().i18n.text.get(
-                  "plugin.communicator.errormessage.msgRestoreFailed"
+                  "plugin.communicator.errormessage.msgRestoreFailed",
                 ),
-                "error"
-              )
+                "error",
+              ),
             );
           }
-        })
+        }),
       );
 
       mApi().communicator[getApiId(item)].cacheClear();
       dispatch({
         type: "UNLOCK_TOOLBAR",
-        payload: null
+        payload: null,
       });
       dispatch(updateUnreadMessageThreadsCount());
     };
   };
 
-let restoreCurrentMessageThread: RestoreCurrentMessageThreadTriggerType =
+const restoreCurrentMessageThread: RestoreCurrentMessageThreadTriggerType =
   function restoreCurrentMessageThread() {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType
+      getState: () => StateType,
     ) => {
       dispatch({
         type: "LOCK_TOOLBAR",
-        payload: null
+        payload: null,
       });
 
-      let state = getState();
+      const state = getState();
 
-      let item = state.messages.navigation.find((item) => {
-        return item.location === state.messages.location;
-      });
+      const item = state.messages.navigation.find(
+        (item) => item.location === state.messages.location,
+      );
       if (!item) {
         dispatch(
           displayNotification(
             getState().i18n.text.get(
-              "plugin.communicator.errormessage.badLocation"
+              "plugin.communicator.errormessage.badLocation",
             ),
-            "error"
-          )
+            "error",
+          ),
         );
         dispatch({
           type: "UNLOCK_TOOLBAR",
-          payload: null
+          payload: null,
         });
         return;
       }
 
-      let communicatorMessageId =
+      const communicatorMessageId =
         state.messages.currentThread.messages[0].communicatorMessageId;
 
       try {
         await promisify(
           mApi().communicator[getApiId(item)].restore.update(
-            communicatorMessageId
+            communicatorMessageId,
           ),
-          "callback"
+          "callback",
         )();
-        let toDeleteMessageThread: MessageThreadType =
+        const toDeleteMessageThread: MessageThreadType =
           state.messages.threads.find(
-            (message) => message.communicatorMessageId === communicatorMessageId
+            (message) =>
+              message.communicatorMessageId === communicatorMessageId,
           );
         if (toDeleteMessageThread) {
           dispatch({
             type: "DELETE_MESSAGE_THREAD",
-            payload: toDeleteMessageThread
+            payload: toDeleteMessageThread,
           });
         }
       } catch (err) {
@@ -1531,15 +1512,15 @@ let restoreCurrentMessageThread: RestoreCurrentMessageThreadTriggerType =
         dispatch(
           displayNotification(
             getState().i18n.text.get("currentThreadRestoreFailed"),
-            "error"
-          )
+            "error",
+          ),
         );
       }
 
       mApi().communicator[getApiId(item)].cacheClear();
       dispatch({
         type: "UNLOCK_TOOLBAR",
-        payload: null
+        payload: null,
       });
 
       //SADLY the current message doesn't have a mention on wheter
@@ -1578,5 +1559,5 @@ export {
   removeMessagesNavigationLabel,
   restoreSelectedMessageThreads,
   restoreCurrentMessageThread,
-  toggleAllMessageItems
+  toggleAllMessageItems,
 };

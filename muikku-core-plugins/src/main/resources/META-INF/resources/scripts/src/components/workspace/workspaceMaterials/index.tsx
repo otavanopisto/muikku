@@ -33,7 +33,7 @@ export default class WorkspaceMaterialsBody extends React.Component<
     (this.refs.content as any).getWrappedInstance().refresh();
   }
   render() {
-    let navigationComponent = <TableOfContentsComponent ref="content" />;
+    const navigationComponent = <TableOfContentsComponent ref="content" />;
     return (
       <div>
         <WorkspaceNavbar

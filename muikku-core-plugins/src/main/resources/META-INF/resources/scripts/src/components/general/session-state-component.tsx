@@ -20,7 +20,7 @@ export default class SessionStateComponent<P, S> extends React.Component<P, S> {
       internalStorage = this.storage.namespace(namespace + "");
     }
 
-    let nnewState: any = newState;
+    const nnewState: any = newState;
     Object.keys(nnewState).forEach((key) => {
       internalStorage.save(key, JSON.stringify(nnewState[key]));
     });
@@ -32,9 +32,9 @@ export default class SessionStateComponent<P, S> extends React.Component<P, S> {
       internalStorage = this.storage.namespace(namespace + "");
     }
 
-    let baseSerialized = JSON.stringify(base);
+    const baseSerialized = JSON.stringify(base);
 
-    let result: any = base;
+    const result: any = base;
     Object.keys(result).forEach((key) => {
       result[key] = JSON.parse(internalStorage.recover(key)) || result[key];
     });
@@ -49,21 +49,21 @@ export default class SessionStateComponent<P, S> extends React.Component<P, S> {
       internalStorage = this.storage.namespace(namespace + "");
     }
 
-    let baseSerialized = JSON.stringify(base);
+    const baseSerialized = JSON.stringify(base);
 
-    let result: any = base;
+    const result: any = base;
     Object.keys(result).forEach((key) => {
       result[key] = JSON.parse(internalStorage.recover(key)) || result[key];
     });
 
-    let recovered = JSON.stringify(result) !== baseSerialized;
+    const recovered = JSON.stringify(result) !== baseSerialized;
     if (this.recovered !== recovered) {
       this.recovered = recovered;
 
       this.forceUpdate();
     }
   }
-  forceRecovered(newRecovered: boolean = true) {
+  forceRecovered(newRecovered = true) {
     if (this.recovered !== newRecovered) {
       this.recovered = newRecovered;
 
@@ -92,7 +92,7 @@ export default class SessionStateComponent<P, S> extends React.Component<P, S> {
       internalStorage.clear(key);
     });
 
-    let newRecovered = false;
+    const newRecovered = false;
     if (this.recovered !== newRecovered) {
       this.recovered = newRecovered;
 

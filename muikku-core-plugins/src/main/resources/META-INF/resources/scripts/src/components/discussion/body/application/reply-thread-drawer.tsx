@@ -2,7 +2,7 @@ import { i18nType } from "~/reducers/base/i18n";
 import * as React from "react";
 import {
   DiscussionThreadType,
-  DiscussionThreadReplyType
+  DiscussionThreadReplyType,
 } from "~/reducers/discussion";
 import { Dispatch, connect } from "react-redux";
 import { AnyActionType } from "~/actions";
@@ -12,7 +12,7 @@ import Link from "~/components/general/link";
 import EnvironmentDialog from "~/components/general/environment-dialog";
 import {
   replyToCurrentDiscussionThread,
-  ReplyToCurrentDiscussionThreadTriggerType
+  ReplyToCurrentDiscussionThreadTriggerType,
 } from "~/actions/discussion";
 import { StateType } from "~/reducers";
 import SessionStateComponent from "~/components/general/session-state-component";
@@ -66,11 +66,11 @@ class ReplyThreadDrawer extends SessionStateComponent<
               "</strong></p>" +
               props.quote +
               "</blockquote> <p></p>"
-            : ""
+            : "",
       },
       props.currentId +
         (props.quote ? "-q" : "") +
-        (props.reply ? "-" + props.reply.id : "")
+        (props.reply ? "-" + props.reply.id : ""),
     );
   }
 
@@ -83,7 +83,7 @@ class ReplyThreadDrawer extends SessionStateComponent<
       { text },
       this.props.currentId +
         (this.props.quote ? "-q" : "") +
-        (this.props.reply ? "-" + this.props.reply.id : "")
+        (this.props.reply ? "-" + this.props.reply.id : ""),
     );
   }
 
@@ -100,11 +100,11 @@ class ReplyThreadDrawer extends SessionStateComponent<
               "</strong></p>" +
               this.props.quote +
               "</blockquote> <p></p>"
-            : ""
+            : "",
       },
       this.props.currentId +
         (this.props.quote ? "-q" : "") +
-        (this.props.reply ? "-" + this.props.reply.id : "")
+        (this.props.reply ? "-" + this.props.reply.id : ""),
     );
   }
 
@@ -114,7 +114,7 @@ class ReplyThreadDrawer extends SessionStateComponent<
    */
   createReply() {
     this.setState({
-      locked: true
+      locked: true,
     });
     this.props.replyToCurrentDiscussionThread({
       parentId:
@@ -133,18 +133,18 @@ class ReplyThreadDrawer extends SessionStateComponent<
                   this.props.quote +
                   "</blockquote> <p></p>"
                 : "",
-            locked: false
+            locked: false,
           },
           this.props.currentId +
             (this.props.quote ? "-q" : "") +
-            (this.props.reply ? "-" + this.props.reply.id : "")
+            (this.props.reply ? "-" + this.props.reply.id : ""),
         );
       },
       fail: () => {
         this.setState({
-          locked: false
+          locked: false,
         });
-      }
+      },
     });
   }
 
@@ -160,17 +160,17 @@ class ReplyThreadDrawer extends SessionStateComponent<
    * @returns JSX.Element
    */
   render() {
-    let editorTitle =
+    const editorTitle =
       this.props.i18n.text.get("plugin.discussion.answertomessage.topic") +
       " - " +
       this.props.i18n.text.get("plugin.discussion.createmessage.content");
 
-    let content = (
+    const content = (
       <div className="env-dialog__row env-dialog__row--ckeditor">
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
             {this.props.i18n.text.get(
-              "plugin.discussion.createmessage.content"
+              "plugin.discussion.createmessage.content",
             )}
           </label>
           <CKEditor
@@ -184,7 +184,7 @@ class ReplyThreadDrawer extends SessionStateComponent<
       </div>
     );
 
-    let footer = (
+    const footer = (
       <div className="env-dialog__actions">
         <Button
           buttonModifiers="dialog-execute"
@@ -207,7 +207,7 @@ class ReplyThreadDrawer extends SessionStateComponent<
             disabled={this.state.locked}
           >
             {this.props.i18n.text.get(
-              "plugin.discussion.createmessage.clearDraft"
+              "plugin.discussion.createmessage.clearDraft",
             )}
           </Button>
         ) : null}
@@ -220,7 +220,7 @@ class ReplyThreadDrawer extends SessionStateComponent<
           <div className="env-dialog__content">
             <header className="env-dialog__header">
               {this.props.i18n.text.get(
-                "plugin.discussion.answertomessage.topic"
+                "plugin.discussion.answertomessage.topic",
               )}
             </header>
             <section className="env-dialog__body">{content}</section>
@@ -235,7 +235,7 @@ class ReplyThreadDrawer extends SessionStateComponent<
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    currentId: state.discussion.current.id
+    currentId: state.discussion.current.id,
   };
 }
 

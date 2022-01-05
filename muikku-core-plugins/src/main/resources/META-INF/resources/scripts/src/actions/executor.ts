@@ -1,10 +1,10 @@
 export class SimpleActionExecutor {
   private oneFails: () => void;
   private allSucceeds: () => void;
-  private totals: number = 0;
-  private executed: number = 0;
-  private success: number = 0;
-  private fails: number = 0;
+  private totals = 0;
+  private executed = 0;
+  private success = 0;
+  private fails = 0;
 
   constructor() {
     this.succeeded = this.succeeded.bind(this);

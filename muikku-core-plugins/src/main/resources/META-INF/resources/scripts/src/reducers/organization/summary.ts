@@ -36,25 +36,25 @@ export default function organizationSummary(
     status: "WAITING",
     students: null,
     workspaces: null,
-    contacts: []
+    contacts: [],
   },
-  action: ActionType
+  action: ActionType,
 ): OrganizationSummaryType {
   if (action.type === "UPDATE_SUMMARY_STATUS") {
     return Object.assign({}, state, {
-      status: action.payload
+      status: action.payload,
     });
   } else if (action.type === "LOAD_ORGANIZATION_CONTACTS") {
     return Object.assign({}, state, {
-      contacts: action.payload
+      contacts: action.payload,
     });
   } else if (action.type === "LOAD_WORKSPACE_SUMMARY") {
     return Object.assign({}, state, {
-      workspaces: action.payload
+      workspaces: action.payload,
     });
   } else if (action.type === "LOAD_STUDENT_SUMMARY") {
     return Object.assign({}, state, {
-      students: action.payload
+      students: action.payload,
     });
   }
   return state;

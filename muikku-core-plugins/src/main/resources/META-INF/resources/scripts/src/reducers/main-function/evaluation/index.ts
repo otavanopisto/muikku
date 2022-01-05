@@ -9,7 +9,7 @@ import {
   EvaluationSort,
   EvaluationAssigmentData,
   EvaluationEvent,
-  EvaluationStudyDiaryEvent
+  EvaluationStudyDiaryEvent,
 } from "../../../@types/evaluation";
 
 interface EvaluationStateAndData<T> {
@@ -54,7 +54,7 @@ export const initialState: EvaluationState = {
   evaluationGradeSystem: [],
   evaluationRequests: {
     state: "LOADING",
-    data: undefined
+    data: undefined,
   },
   evaluationWorkspaces: [],
   selectedWorkspaceId: undefined,
@@ -64,11 +64,11 @@ export const initialState: EvaluationState = {
     evaluated: false,
     notEvaluated: false,
     assessmentRequest: false,
-    supplementationRequest: false
+    supplementationRequest: false,
   },
   evaluationAssessmentEvents: {
     state: "LOADING",
-    data: undefined
+    data: undefined,
   },
   evaluationSelectedAssessmentId: undefined,
   evaluationCurrentStudentAssigments: { state: "LOADING", data: undefined },
@@ -76,14 +76,14 @@ export const initialState: EvaluationState = {
   evaluationBilledPrice: undefined,
   evaluationDiaryEntries: {
     state: "LOADING",
-    data: undefined
+    data: undefined,
   },
   evaluationCompositeReplies: { state: "LOADING", data: undefined },
   needsReloadEvaluationRequests: false,
   basePrice: {
     state: "LOADING",
-    data: undefined
-  }
+    data: undefined,
+  },
 };
 
 /**
@@ -95,27 +95,27 @@ export const initialState: EvaluationState = {
 export default function evaluations(state = initialState, action: ActionType) {
   if (action.type === "UPDATE_EVALUATION_STATE") {
     return Object.assign({}, state, {
-      status: action.payload
+      status: action.payload,
     });
   } else if (action.type === "SET_IMPORTANT_ASSESSMENTS") {
     return Object.assign({}, state, {
       importantRequests: action.payload.value
         ? action.payload.value.split(",").map((item) => parseInt(item))
-        : []
+        : [],
     });
   } else if (action.type === "SET_UNIMPORTANT_ASSESSMENTS") {
     return Object.assign({}, state, {
       unimportantRequests: action.payload.value
         ? action.payload.value.split(",").map((item) => parseInt(item))
-        : []
+        : [],
     });
   } else if (action.type === "SET_EVALUATION_WORKSPACES") {
     return Object.assign({}, state, {
-      evaluationWorkspaces: action.payload
+      evaluationWorkspaces: action.payload,
     });
   } else if (action.type === "SET_EVALUATION_GRADE_SYSTEM") {
     return Object.assign({}, state, {
-      evaluationGradeSystem: action.payload
+      evaluationGradeSystem: action.payload,
     });
   } else if (action.type === "SET_EVALUATION_SELECTED_WORKSPACE") {
     return Object.assign({}, state, {
@@ -123,19 +123,19 @@ export default function evaluations(state = initialState, action: ActionType) {
       evaluationFilters:
         action.payload === undefined
           ? initialState.evaluationFilters
-          : state.evaluationFilters
+          : state.evaluationFilters,
     });
   } else if (action.type === "UPDATE_EVALUATION_SEARCH") {
     return Object.assign({}, state, {
-      evaluationSearch: action.payload
+      evaluationSearch: action.payload,
     });
   } else if (action.type === "SET_EVALUATION_SORT_FUNCTION") {
     return Object.assign({}, state, {
-      evaluationSort: action.payload
+      evaluationSort: action.payload,
     });
   } else if (action.type === "SET_EVALUATION_FILTERS") {
     return Object.assign({}, state, {
-      evaluationFilters: action.payload
+      evaluationFilters: action.payload,
     });
   } else if (action.type === "UPDATE_EVALUATION_IMPORTANCE") {
     return Object.assign({}, state, {
@@ -148,47 +148,47 @@ export default function evaluations(state = initialState, action: ActionType) {
         ? action.payload.unimportantAssessments.value
             .split(",")
             .map((item) => parseInt(item))
-        : []
+        : [],
     });
   } else if (action.type === "UPDATE_EVALUATION_SELECTED_ASSESSMENT") {
     return Object.assign({}, state, {
-      evaluationSelectedAssessmentId: action.payload
+      evaluationSelectedAssessmentId: action.payload,
     });
   } else if (action.type === "UPDATE_OPENED_ASSIGNMENTS_EVALUATION") {
     return Object.assign({}, state, {
-      openedAssignmentEvaluationId: action.payload
+      openedAssignmentEvaluationId: action.payload,
     });
   } else if (action.type === "SET_EVALUATION_BILLED_PRICE") {
     return Object.assign({}, state, {
-      openedAssignmentEvaluationId: action.payload
+      openedAssignmentEvaluationId: action.payload,
     });
   } else if (action.type === "SET_EVALUATION_COMPOSITE_REPLIES") {
     return Object.assign({}, state, {
       evaluationCompositeReplies: {
         state: state.evaluationCompositeReplies.state,
-        data: action.payload
-      }
+        data: action.payload,
+      },
     });
   } else if (action.type === "UPDATE_EVALUATION_COMPOSITE_REPLIES_STATE") {
     return Object.assign({}, state, {
       evaluationCompositeReplies: {
         state: action.payload,
-        data: state.evaluationCompositeReplies.data
-      }
+        data: state.evaluationCompositeReplies.data,
+      },
     });
   } else if (action.type === "SET_EVALUATION_SELECTED_ASSESSMENT_EVENTS") {
     return Object.assign({}, state, {
       evaluationAssessmentEvents: {
         state: state.evaluationAssessmentEvents.state,
-        data: action.payload
-      }
+        data: action.payload,
+      },
     });
   } else if (action.type === "UPDATE_EVALUATION_CURRENT_EVENTS_STATE") {
     return Object.assign({}, state, {
       evaluationAssessmentEvents: {
         state: action.payload,
-        data: state.evaluationAssessmentEvents.data
-      }
+        data: state.evaluationAssessmentEvents.data,
+      },
     });
   } else if (
     action.type === "SET_EVALUATION_SELECTED_ASSESSMENT_STUDY_DIARY_EVENTS"
@@ -196,8 +196,8 @@ export default function evaluations(state = initialState, action: ActionType) {
     return Object.assign({}, state, {
       evaluationDiaryEntries: {
         state: state.evaluationDiaryEntries.state,
-        data: action.payload
-      }
+        data: action.payload,
+      },
     });
   } else if (
     action.type === "UPDATE_CURRENT_SELECTED_EVALUATION_DIARY_DATA_STATE"
@@ -205,15 +205,15 @@ export default function evaluations(state = initialState, action: ActionType) {
     return Object.assign({}, state, {
       evaluationDiaryEntries: {
         state: action.payload,
-        data: state.evaluationDiaryEntries.data
-      }
+        data: state.evaluationDiaryEntries.data,
+      },
     });
   } else if (action.type === "SET_EVALUATION_SELECTED_ASSESSMENT_ASSIGNMENTS") {
     return Object.assign({}, state, {
       evaluationCurrentStudentAssigments: {
         state: state.evaluationCurrentStudentAssigments.state,
-        data: action.payload
-      }
+        data: action.payload,
+      },
     });
   } else if (
     action.type === "UPDATE_EVALUATION_SELECTED_ASSESSMENT_ASSIGNMENTS_STATE"
@@ -221,35 +221,35 @@ export default function evaluations(state = initialState, action: ActionType) {
     return Object.assign({}, state, {
       evaluationCurrentStudentAssigments: {
         state: action.payload,
-        data: state.evaluationCurrentStudentAssigments.data
-      }
+        data: state.evaluationCurrentStudentAssigments.data,
+      },
     });
   } else if (action.type === "SET_EVALUATION_ASESSESSMENTS") {
     return Object.assign({}, state, {
       evaluationRequests: {
         state: state.evaluationRequests.state,
-        data: action.payload
-      }
+        data: action.payload,
+      },
     });
   } else if (action.type === "UPDATE_EVALUATION_REQUESTS_STATE") {
     return Object.assign({}, state, {
       needsReloadEvaluationRequests: false,
       evaluationRequests: {
         state: action.payload,
-        data: state.evaluationRequests.data
-      }
+        data: state.evaluationRequests.data,
+      },
     });
   } else if (action.type === "UPDATE_NEEDS_RELOAD_EVALUATION_REQUESTS") {
     return Object.assign({}, state, {
-      needsReloadEvaluationRequests: action.payload
+      needsReloadEvaluationRequests: action.payload,
     });
   } else if (action.type === "SET_BASE_PRICE") {
     return Object.assign({}, state, {
-      basePrice: { state: state.basePrice.state, data: action.payload }
+      basePrice: { state: state.basePrice.state, data: action.payload },
     });
   } else if (action.type === "UPDATE_BASE_PRICE_STATE") {
     return Object.assign({}, state, {
-      basePrice: { state: action.payload, data: state.basePrice.data }
+      basePrice: { state: action.payload, data: state.basePrice.data },
     });
   }
   return state;

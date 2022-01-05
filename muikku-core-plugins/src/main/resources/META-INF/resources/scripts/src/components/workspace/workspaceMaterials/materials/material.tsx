@@ -8,11 +8,11 @@ import {
   MaterialContentNodeType,
   WorkspaceType,
   MaterialCompositeRepliesType,
-  WorkspaceEditModeStateType
+  WorkspaceEditModeStateType,
 } from "~/reducers/workspaces";
 import {
   setCurrentWorkspace,
-  SetCurrentWorkspaceTriggerType
+  SetCurrentWorkspaceTriggerType,
 } from "~/actions/workspaces";
 import { bindActionCreators } from "redux";
 import { MaterialLoaderEditorButtonSet } from "~/components/base/material-loader/editor-buttonset";
@@ -55,7 +55,7 @@ class WorkspaceMaterial extends React.Component<
     //to refresh the activity and that's because we are forcing it to do so
     this.props.setCurrentWorkspace({
       workspaceId: this.props.workspace.id,
-      refreshActivity: true
+      refreshActivity: true,
     });
   }
   render() {
@@ -73,8 +73,8 @@ class WorkspaceMaterial extends React.Component<
         this.props.compositeReplies.state === "FAILED" ||
         this.props.compositeReplies.state === "WITHDRAWN");
     const isBinary = this.props.materialContentNode.type === "binary";
-    let evalStateClassName: string = "";
-    let evalStateIcon: string = "";
+    let evalStateClassName = "";
+    let evalStateIcon = "";
     if (this.props.compositeReplies) {
       switch (this.props.compositeReplies.state) {
         case "INCOMPLETE":
@@ -103,70 +103,66 @@ class WorkspaceMaterial extends React.Component<
         useChildrenAsLazy={true}
         className="material-lazy-loader-container"
       >
-        {(loaded: boolean) => {
-          return (
-            <MaterialLoader
-              canPublish
-              canRevert
-              canCopy={!isBinary}
-              canHide
-              canDelete
-              canRestrictView
-              canChangePageType={!isBinary}
-              canChangeExerciseType={!isBinary}
-              canSetLicense={!isBinary}
-              canSetProducers={!isBinary}
-              canAddAttachments={!isBinary}
-              canEditContent={!isBinary}
-              folder={this.props.folder}
-              editable={this.props.workspaceEditMode.active}
-              material={this.props.materialContentNode}
-              workspace={this.props.workspace}
-              compositeReplies={this.props.compositeReplies}
-              answerable={this.props.status.loggedIn}
-              readOnly={!this.props.status.loggedIn}
-              onAssignmentStateModified={this.updateWorkspaceActivity}
-              invisible={!loaded}
-              isViewRestricted={this.props.isViewRestricted}
-            >
-              {(props, state, stateConfiguration) => {
-                return (
-                  <div>
-                    <MaterialLoaderEditorButtonSet {...props} {...state} />
-                    <MaterialLoaderTitle {...props} {...state} />
-                    <MaterialLoaderContent
-                      {...props}
-                      {...state}
-                      stateConfiguration={stateConfiguration}
-                    />
-                    <div className="material-page__de-floater"></div>
-                    {!isEvaluatedAsPassed ? (
-                      <MaterialLoaderButtons
-                        {...props}
-                        {...state}
-                        stateConfiguration={stateConfiguration}
-                      />
-                    ) : null}
-                    <MaterialLoaderCorrectAnswerCounter {...props} {...state} />
-                    {isAssignment && hasEvaluation ? (
-                      <div
-                        className={`material-page__assignment-assessment ${evalStateClassName}`}
-                      >
-                        <div
-                          className={`material-page__assignment-assessment-icon ${evalStateIcon}`}
-                        ></div>
-                        <MaterialLoaderDate {...props} {...state} />
-                        <MaterialLoaderGrade {...props} {...state} />
-                        <MaterialLoaderAssesment {...props} {...state} />
-                      </div>
-                    ) : null}
-                    <MaterialLoaderProducersLicense {...props} {...state} />
+        {(loaded: boolean) => (
+          <MaterialLoader
+            canPublish
+            canRevert
+            canCopy={!isBinary}
+            canHide
+            canDelete
+            canRestrictView
+            canChangePageType={!isBinary}
+            canChangeExerciseType={!isBinary}
+            canSetLicense={!isBinary}
+            canSetProducers={!isBinary}
+            canAddAttachments={!isBinary}
+            canEditContent={!isBinary}
+            folder={this.props.folder}
+            editable={this.props.workspaceEditMode.active}
+            material={this.props.materialContentNode}
+            workspace={this.props.workspace}
+            compositeReplies={this.props.compositeReplies}
+            answerable={this.props.status.loggedIn}
+            readOnly={!this.props.status.loggedIn}
+            onAssignmentStateModified={this.updateWorkspaceActivity}
+            invisible={!loaded}
+            isViewRestricted={this.props.isViewRestricted}
+          >
+            {(props, state, stateConfiguration) => (
+              <div>
+                <MaterialLoaderEditorButtonSet {...props} {...state} />
+                <MaterialLoaderTitle {...props} {...state} />
+                <MaterialLoaderContent
+                  {...props}
+                  {...state}
+                  stateConfiguration={stateConfiguration}
+                />
+                <div className="material-page__de-floater"></div>
+                {!isEvaluatedAsPassed ? (
+                  <MaterialLoaderButtons
+                    {...props}
+                    {...state}
+                    stateConfiguration={stateConfiguration}
+                  />
+                ) : null}
+                <MaterialLoaderCorrectAnswerCounter {...props} {...state} />
+                {isAssignment && hasEvaluation ? (
+                  <div
+                    className={`material-page__assignment-assessment ${evalStateClassName}`}
+                  >
+                    <div
+                      className={`material-page__assignment-assessment-icon ${evalStateIcon}`}
+                    ></div>
+                    <MaterialLoaderDate {...props} {...state} />
+                    <MaterialLoaderGrade {...props} {...state} />
+                    <MaterialLoaderAssesment {...props} {...state} />
                   </div>
-                );
-              }}
-            </MaterialLoader>
-          );
-        }}
+                ) : null}
+                <MaterialLoaderProducersLicense {...props} {...state} />
+              </div>
+            )}
+          </MaterialLoader>
+        )}
       </LazyLoader>
     );
   }
@@ -176,7 +172,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     workspaceEditMode: state.workspaces.editMode,
-    status: state.status
+    status: state.status,
   };
 }
 

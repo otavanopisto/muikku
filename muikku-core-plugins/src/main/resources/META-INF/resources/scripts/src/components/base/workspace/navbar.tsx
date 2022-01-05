@@ -15,17 +15,17 @@ import Dropdown from "~/components/general/dropdown";
 import {
   WorkspaceType,
   WorkspaceAssessementStateType,
-  WorkspaceEditModeStateType
+  WorkspaceEditModeStateType,
 } from "~/reducers/workspaces";
 import Navigation, {
   NavigationTopic,
-  NavigationElement
+  NavigationElement,
 } from "~/components/general/navigation";
 import EvaluationRequestDialog from "./evaluation-request-dialog";
 import EvaluationCancelDialog from "./evaluation-cancel-dialog";
 import {
   UpdateWorkspaceEditModeStateTriggerType,
-  updateWorkspaceEditModeState
+  updateWorkspaceEditModeState,
 } from "~/actions/workspaces";
 import { bindActionCreators } from "redux";
 import workspace from "~/components/guider/body/application/current-student/workspaces/workspace";
@@ -61,7 +61,7 @@ interface WorkspaceNavbarState {
 
 function getTextForAssessmentState(
   state: WorkspaceAssessementStateType,
-  i18n: i18nType
+  i18n: i18nType,
 ) {
   let text;
   switch (state) {
@@ -141,7 +141,7 @@ class WorkspaceNavbar extends React.Component<
 
     this.state = {
       requestEvaluationOpen: false,
-      requestCancelOpen: false
+      requestCancelOpen: false,
     };
 
     this.onRequestEvaluationOrCancel =
@@ -151,9 +151,9 @@ class WorkspaceNavbar extends React.Component<
   toggleEditModeActive() {
     this.props.updateWorkspaceEditModeState(
       {
-        active: !this.props.workspaceEditMode.active
+        active: !this.props.workspaceEditMode.active,
       },
-      true
+      true,
     );
   }
   onRequestEvaluationOrCancel(state: string) {
@@ -163,13 +163,13 @@ class WorkspaceNavbar extends React.Component<
       case "pending_pass":
       case "pending_fail":
         this.setState({
-          requestCancelOpen: true
+          requestCancelOpen: true,
         });
         break;
       case "unassessed":
       default:
         this.setState({
-          requestEvaluationOpen: true
+          requestEvaluationOpen: true,
         });
         break;
     }
@@ -183,7 +183,7 @@ class WorkspaceNavbar extends React.Component<
         href: "/workspace/" + this.props.workspaceUrl + "/workspace-management",
         icon: "cogs",
         to: true,
-        condition: this.props.status.permissions.WORKSPACE_MANAGE_WORKSPACE
+        condition: this.props.status.permissions.WORKSPACE_MANAGE_WORKSPACE,
       },
       {
         modifier: "home",
@@ -192,7 +192,7 @@ class WorkspaceNavbar extends React.Component<
         href: "/workspace/" + this.props.workspaceUrl,
         icon: "home",
         to: true,
-        condition: this.props.status.permissions.WORKSPACE_HOME_VISIBLE
+        condition: this.props.status.permissions.WORKSPACE_HOME_VISIBLE,
       },
       {
         modifier: "help",
@@ -201,7 +201,7 @@ class WorkspaceNavbar extends React.Component<
         href: "/workspace/" + this.props.workspaceUrl + "/help",
         icon: "question",
         to: true,
-        condition: this.props.status.permissions.WORKSPACE_GUIDES_VISIBLE
+        condition: this.props.status.permissions.WORKSPACE_GUIDES_VISIBLE,
       },
       {
         modifier: "materials",
@@ -210,7 +210,7 @@ class WorkspaceNavbar extends React.Component<
         href: "/workspace/" + this.props.workspaceUrl + "/materials",
         icon: "leanpub",
         to: true,
-        condition: this.props.status.permissions.WORKSPACE_MATERIALS_VISIBLE
+        condition: this.props.status.permissions.WORKSPACE_MATERIALS_VISIBLE,
       },
       {
         modifier: "discussion",
@@ -219,7 +219,7 @@ class WorkspaceNavbar extends React.Component<
         href: "/workspace/" + this.props.workspaceUrl + "/discussions",
         icon: "bubbles",
         to: true,
-        condition: this.props.status.permissions.WORKSPACE_DISCUSSIONS_VISIBLE
+        condition: this.props.status.permissions.WORKSPACE_DISCUSSIONS_VISIBLE,
       },
       {
         modifier: "users",
@@ -228,7 +228,7 @@ class WorkspaceNavbar extends React.Component<
         href: "/workspace/" + this.props.workspaceUrl + "/users",
         icon: "users",
         to: true,
-        condition: this.props.status.permissions.WORKSPACE_USERS_VISIBLE
+        condition: this.props.status.permissions.WORKSPACE_USERS_VISIBLE,
       },
       {
         modifier: "journal",
@@ -237,7 +237,7 @@ class WorkspaceNavbar extends React.Component<
         href: "/workspace/" + this.props.workspaceUrl + "/journal",
         icon: "book",
         to: true,
-        condition: this.props.status.permissions.WORKSPACE_JOURNAL_VISIBLE
+        condition: this.props.status.permissions.WORKSPACE_JOURNAL_VISIBLE,
       },
       {
         modifier: "announcer",
@@ -246,7 +246,7 @@ class WorkspaceNavbar extends React.Component<
         href: "/workspace/" + this.props.workspaceUrl + "/announcer",
         icon: "paper-plane",
         to: true,
-        condition: this.props.status.permissions.WORKSPACE_ANNOUNCER_TOOL
+        condition: this.props.status.permissions.WORKSPACE_ANNOUNCER_TOOL,
       },
       {
         modifier: "evaluation",
@@ -255,11 +255,11 @@ class WorkspaceNavbar extends React.Component<
         href: "/workspace/" + this.props.workspaceUrl + "/evaluation",
         icon: "evaluate",
         to: true,
-        condition: this.props.status.permissions.WORKSPACE_ACCESS_EVALUATION
-      }
+        condition: this.props.status.permissions.WORKSPACE_ACCESS_EVALUATION,
+      },
     ];
 
-    let assessmentRequestItem =
+    const assessmentRequestItem =
       this.props.currentWorkspace &&
       this.props.status.permissions.WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT
         ? {
@@ -272,7 +272,7 @@ class WorkspaceNavbar extends React.Component<
                 content={getTextForAssessmentState(
                   this.props.currentWorkspace.studentAssessments
                     .assessmentState,
-                  this.props.i18n
+                  this.props.i18n,
                 )}
               >
                 <Link
@@ -281,49 +281,49 @@ class WorkspaceNavbar extends React.Component<
                   onClick={this.onRequestEvaluationOrCancel.bind(
                     this,
                     this.props.currentWorkspace.studentAssessments
-                      .assessmentState
+                      .assessmentState,
                   )}
                   aria-label={getTextForAssessmentState(
                     this.props.currentWorkspace.studentAssessments
                       .assessmentState,
-                    this.props.i18n
+                    this.props.i18n,
                   )}
                   className={`link link--icon link--workspace-assessment link--workspace-assessment-${getClassNameForAssessmentState(
                     this.props.currentWorkspace.studentAssessments
-                      .assessmentState
+                      .assessmentState,
                   )} link--workspace-navbar icon-assessment-${getIconForAssessmentState(
                     this.props.currentWorkspace.studentAssessments
-                      .assessmentState
+                      .assessmentState,
                   )}`}
                 ></Link>
               </Dropdown>
-            )
+            ),
           }
         : null;
 
-    let assessmentRequestMenuItem = assessmentRequestItem ? (
+    const assessmentRequestMenuItem = assessmentRequestItem ? (
       <Link
         onClick={this.onRequestEvaluationOrCancel.bind(
           this,
-          this.props.currentWorkspace.studentAssessments.assessmentState
+          this.props.currentWorkspace.studentAssessments.assessmentState,
         )}
         className="link link--full link--menu link--assessment-request"
       >
         <span
           className={`link__icon icon-assessment-${getIconForAssessmentState(
-            this.props.currentWorkspace.studentAssessments.assessmentState
+            this.props.currentWorkspace.studentAssessments.assessmentState,
           )}`}
         />
         <span className="link--menu__text">
           {getTextForAssessmentState(
             this.props.currentWorkspace.studentAssessments.assessmentState,
-            this.props.i18n
+            this.props.i18n,
           )}
         </span>
       </Link>
     ) : null;
 
-    let trueNavigation: Array<React.ReactElement<any>> = [];
+    const trueNavigation: Array<React.ReactElement<any>> = [];
     if (this.props.navigation) {
       trueNavigation.push(this.props.navigation);
     }
@@ -334,7 +334,7 @@ class WorkspaceNavbar extends React.Component<
         <span key="edit-mode-switch">
           <label htmlFor="editingMasterSwitch" className="visually-hidden">
             {this.props.i18n.text.get(
-              "plugin.wcag.mainNavigation.editingMasterSwitch"
+              "plugin.wcag.mainNavigation.editingMasterSwitch",
             )}
           </label>
           <input
@@ -353,7 +353,7 @@ class WorkspaceNavbar extends React.Component<
       );
     }
 
-    let navbarModifiers = this.props.workspaceEditMode.active
+    const navbarModifiers = this.props.workspaceEditMode.active
       ? "workspace-edit-mode"
       : "workspace";
 
@@ -394,7 +394,7 @@ class WorkspaceNavbar extends React.Component<
                     aria-label={
                       this.props.activeTrail == item.trail
                         ? this.props.i18n.text.get(
-                            "plugin.wcag.mainNavigation.currentPage.aria.label"
+                            "plugin.wcag.mainNavigation.currentPage.aria.label",
                           ) +
                           " " +
                           this.props.i18n.text.get(item.text)
@@ -410,9 +410,9 @@ class WorkspaceNavbar extends React.Component<
                     ) : null}
                   </Link>
                 </Dropdown>
-              )
+              ),
             };
-          })
+          }),
         )}
         defaultOptions={
           this.props.status.loggedIn
@@ -426,11 +426,11 @@ class WorkspaceNavbar extends React.Component<
                   <Link className="link link--forgot-password link--forgot-password-main-function">
                     <span>
                       {this.props.i18n.text.get(
-                        "plugin.forgotpassword.forgotLink"
+                        "plugin.forgotpassword.forgotLink",
                       )}
                     </span>
                   </Link>
-                </ForgotPasswordDialog>
+                </ForgotPasswordDialog>,
               ]
         }
         menuItems={[assessmentRequestMenuItem].concat(
@@ -463,7 +463,7 @@ class WorkspaceNavbar extends React.Component<
                 </span>
               </Link>
             );
-          })
+          }),
         )}
         extraContent={[
           <EvaluationRequestDialog
@@ -475,7 +475,7 @@ class WorkspaceNavbar extends React.Component<
             isOpen={this.state.requestCancelOpen}
             key="evaluation-cancel-dialog"
             onClose={() => this.setState({ requestCancelOpen: false })}
-          />
+          />,
         ]}
       />
     );
@@ -488,12 +488,11 @@ function mapStateToProps(state: StateType) {
     status: state.status,
     title: state.title,
     currentWorkspace: state.workspaces.currentWorkspace,
-    workspaceEditMode: state.workspaces.editMode
+    workspaceEditMode: state.workspaces.editMode,
   };
 }
 
-const mapDispatchToProps = (dispatch: Dispatch<any>) => {
-  return bindActionCreators({ updateWorkspaceEditModeState }, dispatch);
-};
+const mapDispatchToProps = (dispatch: Dispatch<any>) =>
+  bindActionCreators({ updateWorkspaceEditModeState }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(WorkspaceNavbar);

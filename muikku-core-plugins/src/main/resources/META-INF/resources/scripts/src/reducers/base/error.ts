@@ -8,9 +8,9 @@ export interface ErrorType {
 export default function error(
   state: ErrorType = {
     title: null,
-    description: null
+    description: null,
   },
-  action: ActionType
+  action: ActionType,
 ): ErrorType {
   if (action.type === "UPDATE_ERROR") {
     return action.payload;

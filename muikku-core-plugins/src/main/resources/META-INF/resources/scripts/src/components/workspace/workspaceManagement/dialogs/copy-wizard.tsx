@@ -1,7 +1,6 @@
 import Dialog from "~/components/general/dialog";
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
-import Link from "~/components/general/link";
+import { connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
@@ -24,19 +23,16 @@ class CopyWizardDialog extends React.Component<
   CopyWizardDialogState
 > {
   render() {
-    let content = (closeDialog: () => any) => (
+    const content = (closeDialog: () => any) => (
       <div>
         <CopyWizard onDone={closeDialog} />
       </div>
     );
-    let footer = (closeDialog: () => any) => {
-      return <div className="dialog__button-set"></div>;
-    };
     return (
       <Dialog
         disableScroll={true}
         title={this.props.i18n.text.get(
-          "plugin.workspace.management.copyWorkspace"
+          "plugin.workspace.management.copyWorkspace",
         )}
         content={content}
         modifier={["wizard", "copy-workspace"]}
@@ -49,11 +45,11 @@ class CopyWizardDialog extends React.Component<
 
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n
+    i18n: state.i18n,
   };
 }
 
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps() {
   return {};
 }
 

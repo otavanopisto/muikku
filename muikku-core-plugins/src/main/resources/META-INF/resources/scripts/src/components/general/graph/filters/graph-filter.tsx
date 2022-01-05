@@ -18,14 +18,14 @@ class GraphFilter extends React.Component<GraphFilterProps> {
   }
 
   dropdownFilter() {
-    let modificator = this.props.modificator || "";
+    const modificator = this.props.modificator || "";
     if (modificator === "-dropdown-only" || modificator === "") {
       return (
         <Dropdown
           persistent
           modifier={"graph-filter" + modificator}
           items={this.props.graphs.map((graph) => {
-            let ifChecked = !this.props.filteredGraphs.includes(graph);
+            const ifChecked = !this.props.filteredGraphs.includes(graph);
             return (
               <div
                 className={"filter-item filter-item--" + graph}
@@ -61,14 +61,14 @@ class GraphFilter extends React.Component<GraphFilterProps> {
   }
 
   listFilter() {
-    let modificator = this.props.modificator || "";
+    const modificator = this.props.modificator || "";
     if (modificator === "-list-only" || modificator === "") {
       return (
         <div
           className={"filter-items filter-items--graph-filter" + modificator}
         >
           {this.props.graphs.map((graph) => {
-            let ifChecked = !this.props.filteredGraphs.includes(graph);
+            const ifChecked = !this.props.filteredGraphs.includes(graph);
             return (
               <div
                 className={"filter-item filter-item--" + graph}
@@ -108,7 +108,7 @@ class GraphFilter extends React.Component<GraphFilterProps> {
 
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n
+    i18n: state.i18n,
   };
 }
 

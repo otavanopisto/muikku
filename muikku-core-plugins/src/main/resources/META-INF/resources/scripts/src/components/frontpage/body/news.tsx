@@ -22,7 +22,7 @@ export default class FrontpageNews extends React.Component<
         role="feed"
         className="screen-container__section"
         aria-label={this.props.i18n.text.get(
-          "plugin.wcag.frontPageSectionNewsLabel"
+          "plugin.wcag.frontPageSectionNewsLabel",
         )}
       >
         <h2 className="screen-container__header">

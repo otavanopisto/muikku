@@ -18,29 +18,29 @@ export default async function (
   options: {
     setupMessages?: boolean;
     setupWorkspacePermissions?: boolean;
-  } = {}
+  } = {},
 ) {
-  let state: StateType = store.getState();
+  const state: StateType = store.getState();
 
   let actionsAndCallbacks = {};
   if (getOptionValue(options.setupMessages)) {
     actionsAndCallbacks = {
       "Communicator:newmessagereceived": {
         actions: [updateUnreadMessageThreadsCount],
-        callbacks: [() => mApi().communicator.cacheClear()]
+        callbacks: [() => mApi().communicator.cacheClear()],
       },
       "Communicator:messageread": {
         actions: [updateUnreadMessageThreadsCount],
-        callbacks: [() => mApi().communicator.cacheClear()]
+        callbacks: [() => mApi().communicator.cacheClear()],
       },
       "Communicator:threaddeleted": {
         actions: [updateUnreadMessageThreadsCount],
-        callbacks: [() => mApi().communicator.cacheClear()]
-      }
+        callbacks: [() => mApi().communicator.cacheClear()],
+      },
     };
   }
 
-  let websocket = new Websocket(store, actionsAndCallbacks);
+  const websocket = new Websocket(store, actionsAndCallbacks);
 
   if (state.status.isActiveUser) {
     getOptionValue(options.setupMessages) &&

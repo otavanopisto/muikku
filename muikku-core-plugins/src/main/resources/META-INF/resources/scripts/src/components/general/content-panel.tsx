@@ -50,7 +50,7 @@ export default class ContentPanel extends React.Component<
       visible: false,
       dragging: false,
       drag: null,
-      open: false
+      open: false,
     };
   }
 
@@ -64,8 +64,8 @@ export default class ContentPanel extends React.Component<
   }
   onTouchMove(e: React.TouchEvent<any>) {
     let diffX = e.changedTouches[0].pageX - this.touchCordX;
-    let diffY = e.changedTouches[0].pageY - this.touchCordY;
-    let absoluteDifferenceX = Math.abs(diffX - this.state.drag);
+    const diffY = e.changedTouches[0].pageY - this.touchCordY;
+    const absoluteDifferenceX = Math.abs(diffX - this.state.drag);
     this.touchMovementX += absoluteDifferenceX;
 
     if (diffX < 0) {
@@ -87,18 +87,18 @@ export default class ContentPanel extends React.Component<
     e.preventDefault();
   }
   onTouchEnd(e: React.TouchEvent<any>) {
-    let width = (
+    const width = (
       document.querySelector(
-        ".content-panel__navigation-content"
+        ".content-panel__navigation-content",
       ) as HTMLElement
     ).offsetWidth;
-    let diff = this.state.drag;
-    let movement = this.touchMovementX;
+    const diff = this.state.drag;
+    const movement = this.touchMovementX;
 
-    let menuHasSlidedEnoughForClosing = Math.abs(diff) >= width * 0.33;
-    let youJustClickedTheOverlay =
+    const menuHasSlidedEnoughForClosing = Math.abs(diff) >= width * 0.33;
+    const youJustClickedTheOverlay =
       e.target === this.refs["menu-overlay"] && movement <= 5;
-    let youJustClickedALink =
+    const youJustClickedALink =
       checkLinkClicked(e.target as HTMLElement) && movement <= 5;
 
     this.setState({ dragging: false });
@@ -123,8 +123,8 @@ export default class ContentPanel extends React.Component<
     $(document.body).css({ overflow: "hidden" });
   }
   closeNavigationByOverlay(e: React.MouseEvent<any>) {
-    let isOverlay = e.target === e.currentTarget;
-    let isLink = checkLinkClicked(e.target as HTMLElement);
+    const isOverlay = e.target === e.currentTarget;
+    const isLink = checkLinkClicked(e.target as HTMLElement);
     if (!this.state.dragging && (isOverlay || isLink)) {
       this.closeNavigation();
     }
@@ -182,7 +182,7 @@ export default class ContentPanel extends React.Component<
                   <div
                     className="content-panel__navigation-content"
                     style={{
-                      right: this.state.drag !== null ? -this.state.drag : null
+                      right: this.state.drag !== null ? -this.state.drag : null,
                     }}
                   >
                     {this.props.navigation}

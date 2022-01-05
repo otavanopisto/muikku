@@ -10,7 +10,7 @@ import mApi from "~/lib/mApi";
 import promisify from "~/util/promisify";
 import {
   displayNotification,
-  DisplayNotificationTriggerType
+  DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 import { bindActionCreators } from "redux";
 
@@ -32,7 +32,7 @@ class DeleteRoomDialog extends React.Component<
   DeleteRoomDialogProps,
   DeleteRoomDialogState
 > {
-  private unmounted: boolean = false;
+  private unmounted = false;
   constructor(props: DeleteRoomDialogProps) {
     super(props);
 
@@ -42,9 +42,9 @@ class DeleteRoomDialog extends React.Component<
     try {
       await promisify(
         mApi().chat.publicRoom.del({
-          name: this.props.chat.roomJID.split("@")[0]
+          name: this.props.chat.roomJID.split("@")[0],
         }),
-        "callback"
+        "callback",
       )();
       if (!this.unmounted) {
         closeDialog();
@@ -52,18 +52,18 @@ class DeleteRoomDialog extends React.Component<
       this.props.displayNotification(
         this.props.i18n.text.get(
           "plugin.chat.notification.roomDeleteSuccess",
-          this.props.chat.roomName
+          this.props.chat.roomName,
         ),
-        "success"
+        "success",
       );
       this.props.onDelete();
     } catch {
       this.props.displayNotification(
         this.props.i18n.text.get(
           "plugin.chat.notification.roomDeleteFail",
-          this.props.chat.roomName
+          this.props.chat.roomName,
         ),
-        "error"
+        "error",
       );
     }
   }
@@ -71,36 +71,34 @@ class DeleteRoomDialog extends React.Component<
     this.unmounted = true;
   }
   render() {
-    let content = (closeDialog: () => any) => (
+    const content = (closeDialog: () => any) => (
       <div>
         <span
           dangerouslySetInnerHTML={{
             __html: this.props.i18n.text.get(
               "plugin.chat.rooms.deleteRoomDesc",
-              this.props.chat.roomName
-            )
+              this.props.chat.roomName,
+            ),
           }}
         ></span>
       </div>
     );
-    let footer = (closeDialog: () => any) => {
-      return (
-        <div className="dialog__button-set">
-          <Button
-            buttonModifiers={["fatal", "standard-ok"]}
-            onClick={this.delete.bind(this, closeDialog)}
-          >
-            {this.props.i18n.text.get("plugin.chat.button.deleteRoom")}
-          </Button>
-          <Button
-            buttonModifiers={["cancel", "standard-cancel"]}
-            onClick={closeDialog}
-          >
-            {this.props.i18n.text.get("plugin.chat.button.cancel")}
-          </Button>
-        </div>
-      );
-    };
+    const footer = (closeDialog: () => any) => (
+      <div className="dialog__button-set">
+        <Button
+          buttonModifiers={["fatal", "standard-ok"]}
+          onClick={this.delete.bind(this, closeDialog)}
+        >
+          {this.props.i18n.text.get("plugin.chat.button.deleteRoom")}
+        </Button>
+        <Button
+          buttonModifiers={["cancel", "standard-cancel"]}
+          onClick={closeDialog}
+        >
+          {this.props.i18n.text.get("plugin.chat.button.cancel")}
+        </Button>
+      </div>
+    );
     return (
       <Dialog
         isOpen={this.props.isOpen}
@@ -116,7 +114,7 @@ class DeleteRoomDialog extends React.Component<
 
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n
+    i18n: state.i18n,
   };
 }
 

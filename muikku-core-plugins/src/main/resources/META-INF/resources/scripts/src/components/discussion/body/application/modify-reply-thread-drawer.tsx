@@ -7,7 +7,7 @@ import { bindActionCreators } from "redux";
 import CKEditor from "~/components/general/ckeditor";
 import {
   modifyReplyFromCurrentThread,
-  ModifyReplyFromCurrentThreadTriggerType
+  ModifyReplyFromCurrentThreadTriggerType,
 } from "~/actions/discussion";
 import { StateType } from "~/reducers";
 import SessionStateComponent from "~/components/general/session-state-component";
@@ -56,9 +56,9 @@ class ModifyThreadReplyDrawer extends SessionStateComponent<
     this.state = this.getRecoverStoredState(
       {
         locked: false,
-        text: props.reply.message
+        text: props.reply.message,
       },
-      props.reply.id
+      props.reply.id,
     );
   }
 
@@ -68,9 +68,9 @@ class ModifyThreadReplyDrawer extends SessionStateComponent<
   checkAgainstStoredState() {
     this.checkStoredAgainstThisState(
       {
-        text: this.props.reply.message
+        text: this.props.reply.message,
       },
-      this.props.reply.id
+      this.props.reply.id,
     );
   }
 
@@ -80,9 +80,9 @@ class ModifyThreadReplyDrawer extends SessionStateComponent<
   clearUp() {
     this.setStateAndClear(
       {
-        text: this.props.reply.message
+        text: this.props.reply.message,
       },
-      this.props.reply.id
+      this.props.reply.id,
     );
   }
 
@@ -95,10 +95,10 @@ class ModifyThreadReplyDrawer extends SessionStateComponent<
       this.setState(
         this.getRecoverStoredState(
           {
-            text: nextProps.reply.message
+            text: nextProps.reply.message,
           },
-          nextProps.reply.id
-        )
+          nextProps.reply.id,
+        ),
       );
     }
   }
@@ -116,7 +116,7 @@ class ModifyThreadReplyDrawer extends SessionStateComponent<
    */
   modifyReply() {
     this.setState({
-      locked: true
+      locked: true,
     });
     this.props.modifyReplyFromCurrentThread({
       reply: this.props.reply,
@@ -125,14 +125,14 @@ class ModifyThreadReplyDrawer extends SessionStateComponent<
         this.props.onClickCancel && this.props.onClickCancel();
         this.justClear(["text"], this.props.reply.id);
         this.setState({
-          locked: false
+          locked: false,
         });
       },
       fail: () => {
         this.setState({
-          locked: false
+          locked: false,
         });
-      }
+      },
     });
   }
 
@@ -145,7 +145,7 @@ class ModifyThreadReplyDrawer extends SessionStateComponent<
    * @returns JSX.Element
    */
   render() {
-    let editorTitle =
+    const editorTitle =
       this.props.i18n.text.get("plugin.discussion.editmessage.topic") +
       " - " +
       this.props.i18n.text.get("plugin.discussion.createmessage.content");
@@ -153,12 +153,12 @@ class ModifyThreadReplyDrawer extends SessionStateComponent<
     /**
      * content
      */
-    let content = (
+    const content = (
       <div className="env-dialog__row env-dialog__row--ckeditor">
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
             {this.props.i18n.text.get(
-              "plugin.discussion.createmessage.content"
+              "plugin.discussion.createmessage.content",
             )}
           </label>
           <CKEditor
@@ -175,7 +175,7 @@ class ModifyThreadReplyDrawer extends SessionStateComponent<
     /**
      * footer
      */
-    let footer = (
+    const footer = (
       <div className="env-dialog__actions">
         <Button
           buttonModifiers="dialog-execute"
@@ -198,7 +198,7 @@ class ModifyThreadReplyDrawer extends SessionStateComponent<
             disabled={this.state.locked}
           >
             {this.props.i18n.text.get(
-              "plugin.discussion.createmessage.clearDraft"
+              "plugin.discussion.createmessage.clearDraft",
             )}
           </Button>
         ) : null}
@@ -227,7 +227,7 @@ class ModifyThreadReplyDrawer extends SessionStateComponent<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n
+    i18n: state.i18n,
   };
 }
 
@@ -241,5 +241,5 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(ModifyThreadReplyDrawer);

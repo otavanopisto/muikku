@@ -1,7 +1,7 @@
 import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import "~/sass/elements/pager.scss";
 import "~/sass/elements/wcag.scss";
 import ReactPaginateForked, { ReactPaginateForkProps } from "react-paginate";
@@ -34,7 +34,7 @@ const defaultPagerV2Props = {
   containerClassName: "pager__body",
   pageClassName: "pager__item",
   activeClassName: "pager__item pager__item--current",
-  breakClassName: "pager__item pager__item--gap"
+  breakClassName: "pager__item pager__item--gap",
 };
 
 /**
@@ -82,7 +82,7 @@ const PagerV2: React.FC<PagerV2Props> = (props) => {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n
+    i18n: state.i18n,
   };
 }
 
@@ -90,7 +90,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps() {
   return {};
 }
 

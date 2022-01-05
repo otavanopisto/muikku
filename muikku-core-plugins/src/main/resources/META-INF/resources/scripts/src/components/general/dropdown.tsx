@@ -4,7 +4,6 @@ import { findDOMNode } from "react-dom";
 import $ from "~/lib/jquery";
 import "~/sass/elements/dropdown.scss";
 import * as uuid from "uuid";
-import Flash from "../base/material-loader/binary/flash";
 
 type itemType2 = (closeDropdown: () => any) => any;
 
@@ -38,7 +37,7 @@ export default class Dropdown extends React.Component<
   DropdownState
 > {
   private id: string;
-  private isUnmounted: boolean = false;
+  private isUnmounted = false;
   constructor(props: DropdownProps) {
     super(props);
     this.onOpen = this.onOpen.bind(this);
@@ -57,10 +56,10 @@ export default class Dropdown extends React.Component<
       arrowTop: null,
       reverseArrow: false,
       forcedWidth: null,
-      visible: false
+      visible: false,
     };
   }
-  onOpen(DOMNode: HTMLElement) {
+  onOpen() {
     if (this.isUnmounted) {
       return;
     }
@@ -151,9 +150,9 @@ export default class Dropdown extends React.Component<
         arrowTop,
         reverseArrow,
         forcedWidth,
-        visible: true
+        visible: true,
       },
-      this.props.onOpen
+      this.props.onOpen,
     );
   }
   onClose() {
@@ -167,7 +166,7 @@ export default class Dropdown extends React.Component<
     }
 
     this.setState({
-      visible: false
+      visible: false,
     });
     setTimeout(() => {
       removeFromDOM();
@@ -176,7 +175,7 @@ export default class Dropdown extends React.Component<
           return;
         }
         this.setState({
-          forcedWidth: null
+          forcedWidth: null,
         });
       }, 10);
     }, 300);
@@ -220,7 +219,7 @@ export default class Dropdown extends React.Component<
         ctrlKey: false,
         shiftKey: false,
         metaKey: false,
-        key: "Tab"
+        key: "Tab",
       });
       document.dispatchEvent(keyboardEvent);
       return;
@@ -241,7 +240,7 @@ export default class Dropdown extends React.Component<
     }
   }
   focusIndex(n: number) {
-    let id = this.id + "-item-" + n;
+    const id = this.id + "-item-" + n;
     let element = document.querySelector("#" + id) as HTMLElement;
     if (n === -1 && !element) {
       element = this.refs["activator"] as any;
@@ -262,9 +261,9 @@ export default class Dropdown extends React.Component<
   render() {
     let elementCloned: React.ReactElement<any> = React.cloneElement(
       this.props.children as any,
-      { ref: "activator" }
+      { ref: "activator" },
     );
-    let portalProps: any = {};
+    const portalProps: any = {};
     if (!this.props.openByHover) {
       portalProps.openByClickOn = elementCloned;
     } else {
@@ -277,7 +276,7 @@ export default class Dropdown extends React.Component<
           "aria-autocomplete": "list",
           "aria-owns": this.id + "-menu",
           "aria-haspopup": true,
-          "aria-expanded": this.state.visible
+          "aria-expanded": this.state.visible,
         });
       }
       portalProps.openByHoverOn = elementCloned;
@@ -304,7 +303,7 @@ export default class Dropdown extends React.Component<
             position: "fixed",
             top: this.state.top,
             left: this.state.left,
-            width: this.state.forcedWidth
+            width: this.state.forcedWidth,
           }}
           className={`dropdown ${
             this.props.modifier ? "dropdown--" + this.props.modifier : ""
@@ -317,7 +316,7 @@ export default class Dropdown extends React.Component<
               left: this.state.arrowLeft,
               right: this.state.arrowRight,
               top: this.state.arrowTop,
-              transform: this.state.reverseArrow ? "scaleY(-1)" : null
+              transform: this.state.reverseArrow ? "scaleY(-1)" : null,
             }}
           ></span>
           <div className="dropdown__container">
@@ -328,8 +327,8 @@ export default class Dropdown extends React.Component<
                   typeof item === "function" ? item(this.close) : item,
                   {
                     id: this.id + "-item-" + index,
-                    onKeyDown: this.onItemKeyDown
-                  }
+                    onKeyDown: this.onItemKeyDown,
+                  },
                 );
 
                 return (

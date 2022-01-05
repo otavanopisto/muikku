@@ -11,13 +11,13 @@ import { cleanWorkspaceAndSupplementationDrafts } from "../../../../dialogs/dele
 import Button from "~/components/general/button";
 import {
   UpdateWorkspaceSupplementation,
-  updateWorkspaceSupplementationToServer
+  updateWorkspaceSupplementationToServer,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import "~/sass/elements/evaluation.scss";
 import { i18nType } from "~/reducers/base/i18n";
 import {
   UpdateNeedsReloadEvaluationRequests,
-  updateNeedsReloadEvaluationRequests
+  updateNeedsReloadEvaluationRequests,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import "~/sass/elements/form-elements.scss";
 import { LocaleListType } from "~/reducers/base/locales";
@@ -90,7 +90,7 @@ class SupplementationEditor extends SessionStateComponent<
        */
       if (this.props.eventId) {
         latestEvent = evaluationAssessmentEvents.data.find(
-          (eItem) => eItem.identifier === this.props.eventId
+          (eItem) => eItem.identifier === this.props.eventId,
         );
       }
 
@@ -108,22 +108,22 @@ class SupplementationEditor extends SessionStateComponent<
         ...this.getRecoverStoredState(
           {
             literalEvaluation: latestEvent.text,
-            draftId
+            draftId,
           },
-          draftId
+          draftId,
         ),
-        locked: false
+        locked: false,
       };
     } else {
       this.state = {
         ...this.getRecoverStoredState(
           {
             literalEvaluation: "",
-            draftId
+            draftId,
           },
-          draftId
+          draftId,
         ),
-        locked: false
+        locked: false,
       };
     }
   }
@@ -144,7 +144,7 @@ class SupplementationEditor extends SessionStateComponent<
          * If editing existing event, we need to find that specific event from event list by its' id
          */
         latestIndex = evaluationAssessmentEvents.data.findIndex(
-          (eItem) => eItem.identifier === this.props.eventId
+          (eItem) => eItem.identifier === this.props.eventId,
         );
       }
 
@@ -153,19 +153,19 @@ class SupplementationEditor extends SessionStateComponent<
           {
             literalEvaluation:
               evaluationAssessmentEvents.data &&
-              evaluationAssessmentEvents.data[latestIndex].text
+              evaluationAssessmentEvents.data[latestIndex].text,
           },
-          this.state.draftId
-        )
+          this.state.draftId,
+        ),
       );
     } else {
       this.setState(
         this.getRecoverStoredState(
           {
-            literalEvaluation: ""
+            literalEvaluation: "",
           },
-          this.state.draftId
-        )
+          this.state.draftId,
+        ),
       );
     }
   };
@@ -182,7 +182,7 @@ class SupplementationEditor extends SessionStateComponent<
    * handleEvaluationSupplementationSave
    */
   handleEvaluationSupplementationSave = (
-    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
   ) => {
     const { evaluations, type = "new", onClose } = this.props;
     const { evaluationAssessmentEvents } = evaluations;
@@ -194,7 +194,7 @@ class SupplementationEditor extends SessionStateComponent<
         type: "new",
         workspaceSupplementation: {
           requestDate: new Date().getTime().toString(),
-          requestText: this.state.literalEvaluation
+          requestText: this.state.literalEvaluation,
         },
         onSuccess: () => {
           cleanWorkspaceAndSupplementationDrafts(this.state.draftId);
@@ -204,9 +204,9 @@ class SupplementationEditor extends SessionStateComponent<
            */
           this.setStateAndClear(
             {
-              literalEvaluation: ""
+              literalEvaluation: "",
             },
-            this.state.draftId
+            this.state.draftId,
           );
 
           this.props.updateNeedsReloadEvaluationRequests({ value: true });
@@ -218,7 +218,7 @@ class SupplementationEditor extends SessionStateComponent<
         onFail: () => {
           this.setState({ locked: false });
           onClose();
-        }
+        },
       });
     } else {
       /**
@@ -233,7 +233,7 @@ class SupplementationEditor extends SessionStateComponent<
          * If editing existing event, we need to find that specific event from event list by its' id
          */
         latestIndex = evaluationAssessmentEvents.data.findIndex(
-          (eItem) => eItem.identifier === this.props.eventId
+          (eItem) => eItem.identifier === this.props.eventId,
         );
       }
 
@@ -246,7 +246,7 @@ class SupplementationEditor extends SessionStateComponent<
           requestDate:
             evaluationAssessmentEvents.data &&
             evaluationAssessmentEvents.data[latestIndex].date,
-          requestText: this.state.literalEvaluation
+          requestText: this.state.literalEvaluation,
         },
         onSuccess: () => {
           cleanWorkspaceAndSupplementationDrafts(this.state.draftId);
@@ -256,9 +256,9 @@ class SupplementationEditor extends SessionStateComponent<
            */
           this.setStateAndClear(
             {
-              literalEvaluation: ""
+              literalEvaluation: "",
             },
-            this.state.draftId
+            this.state.draftId,
           );
           this.props.updateNeedsReloadEvaluationRequests({ value: true });
 
@@ -269,7 +269,7 @@ class SupplementationEditor extends SessionStateComponent<
         onFail: () => {
           this.setState({ locked: false });
           onClose();
-        }
+        },
       });
     }
   };
@@ -289,7 +289,7 @@ class SupplementationEditor extends SessionStateComponent<
          * If editing existing event, we need to find that specific event from event list by its' id
          */
         latestIndex = evaluationAssessmentEvents.data.findIndex(
-          (eItem) => eItem.identifier === this.props.eventId
+          (eItem) => eItem.identifier === this.props.eventId,
         );
       }
 
@@ -300,9 +300,9 @@ class SupplementationEditor extends SessionStateComponent<
         {
           literalEvaluation:
             evaluationAssessmentEvents.data &&
-            evaluationAssessmentEvents.data[latestIndex].text
+            evaluationAssessmentEvents.data[latestIndex].text,
         },
-        this.state.draftId
+        this.state.draftId,
       );
     } else {
       /**
@@ -310,9 +310,9 @@ class SupplementationEditor extends SessionStateComponent<
        */
       this.setStateAndClear(
         {
-          literalEvaluation: ""
+          literalEvaluation: "",
         },
-        this.state.draftId
+        this.state.draftId,
       );
     }
   };
@@ -346,7 +346,7 @@ class SupplementationEditor extends SessionStateComponent<
             disabled={this.state.locked}
           >
             {this.props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.workspaceEvaluationForm.saveButtonLabel"
+              "plugin.evaluation.evaluationModal.workspaceEvaluationForm.saveButtonLabel",
             )}
           </Button>
           <Button
@@ -355,7 +355,7 @@ class SupplementationEditor extends SessionStateComponent<
             buttonModifiers="evaluate-cancel"
           >
             {this.props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel"
+              "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel",
             )}
           </Button>
           {this.recovered && (
@@ -365,7 +365,7 @@ class SupplementationEditor extends SessionStateComponent<
               onClick={this.handleDeleteEditorDraft}
             >
               {this.props.i18n.text.get(
-                "plugin.evaluation.evaluationModal.workspaceEvaluationForm.deleteDraftButtonLabel"
+                "plugin.evaluation.evaluationModal.workspaceEvaluationForm.deleteDraftButtonLabel",
               )}
             </Button>
           )}
@@ -384,7 +384,7 @@ function mapStateToProps(state: StateType) {
     i18n: state.i18n,
     status: state.status,
     evaluations: state.evaluations,
-    locale: state.locales
+    locale: state.locales,
   };
 }
 
@@ -396,13 +396,13 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     {
       updateWorkspaceSupplementationToServer,
-      updateNeedsReloadEvaluationRequests
+      updateNeedsReloadEvaluationRequests,
     },
-    dispatch
+    dispatch,
   );
 }
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(SupplementationEditor);

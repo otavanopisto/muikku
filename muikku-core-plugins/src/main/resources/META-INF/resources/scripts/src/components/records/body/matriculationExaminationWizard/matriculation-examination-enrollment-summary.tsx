@@ -11,7 +11,7 @@ import { SavingDraftInfo } from "./saving-draft-info";
 import { resolveCurrentTerm } from "../../../../helper-functions/matriculation-functions";
 import {
   getNextTermOptions,
-  getPastTermOptions
+  getPastTermOptions,
 } from "../../../../helper-functions/matriculation-functions";
 
 interface MatriculationExaminationEnrollmentSummaryProps {
@@ -48,7 +48,7 @@ export const MatriculationExaminationEnrollmentSummary: React.FC<
     numMandatoryCourses,
     enrolledAttendances,
     plannedAttendances,
-    finishedAttendances
+    finishedAttendances,
   } = props.examination;
 
   const { saveState, draftSaveErrorMsg } = props;

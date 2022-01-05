@@ -8,11 +8,8 @@ import {
   WorkspacesType,
   WorkspacesStateType,
   WorkspacesPatchType,
-  WorkspaceType,
   WorkspaceListType,
   WorkspaceJournalListType,
-  WorkspaceUpdateType,
-  organizationWorkspaces
 } from "~/reducers/workspaces";
 
 //HELPERS
@@ -25,9 +22,9 @@ export async function loadWorkspacesHelper(
   refresh: boolean,
   loadOrganizationWorkspaces: boolean,
   dispatch: (arg: AnyActionType) => any,
-  getState: () => StateType
+  getState: () => StateType,
 ) {
-  let state: StateType = getState();
+  const state: StateType = getState();
 
   // This "WorkspacesType" annoys me. It's used in the organization workspaces,
   // which have type "OrganizationWorkspacesType",
@@ -40,13 +37,7 @@ export async function loadWorkspacesHelper(
     workspaces = state.organizationWorkspaces;
   }
 
-  let hasEvaluationFees: boolean =
-    state.userIndex &&
-    state.userIndex.usersBySchoolData[state.status.userSchoolDataIdentifier] &&
-    state.userIndex.usersBySchoolData[state.status.userSchoolDataIdentifier]
-      .hasEvaluationFees;
-
-  //Avoid loading courses again for the first time if it's the same location
+  // Avoid loading courses again for the first time if it's the same location
 
   if (
     initial &&
@@ -57,7 +48,7 @@ export async function loadWorkspacesHelper(
     return;
   }
 
-  let actualFilters = filters || workspaces.activeFilters;
+  const actualFilters = filters || workspaces.activeFilters;
 
   let workspacesNextstate: WorkspacesStateType;
 
@@ -71,28 +62,28 @@ export async function loadWorkspacesHelper(
     workspacesNextstate = "LOADING_MORE";
   }
 
-  let newWorkspacesPropsWhileLoading: WorkspacesPatchType = {
+  const newWorkspacesPropsWhileLoading: WorkspacesPatchType = {
     state: workspacesNextstate,
-    activeFilters: actualFilters
+    activeFilters: actualFilters,
   };
 
   if (!loadOrganizationWorkspaces === true) {
     dispatch({
       type: "UPDATE_WORKSPACES_ALL_PROPS",
-      payload: newWorkspacesPropsWhileLoading
+      payload: newWorkspacesPropsWhileLoading,
     });
   } else {
     dispatch({
       type: "UPDATE_ORGANIZATION_WORKSPACES_ALL_PROPS",
-      payload: newWorkspacesPropsWhileLoading
+      payload: newWorkspacesPropsWhileLoading,
     });
   }
 
   //Generate the api query, our first result in the messages that we have loaded
-  let firstResult = initial ? 0 : workspaces.availableWorkspaces.length;
+  const firstResult = initial ? 0 : workspaces.availableWorkspaces.length;
   //We only concat if it is not the initial, that means adding to the next messages
-  let concat = !initial;
-  let maxResults = MAX_LOADED_AT_ONCE + 1;
+  const concat = !initial;
+  const maxResults = MAX_LOADED_AT_ONCE + 1;
   let myWorkspaces = false;
   let publicity = "ONLY_PUBLISHED";
 
@@ -141,7 +132,7 @@ export async function loadWorkspacesHelper(
       educationTypes: actualFilters.educationFilters,
       curriculums: actualFilters.curriculumFilters,
       organizations: actualFilters.organizationFilters,
-      publicity
+      publicity,
     };
   } else {
     params = {
@@ -152,7 +143,7 @@ export async function loadWorkspacesHelper(
       educationTypes: actualFilters.educationFilters,
       curriculums: actualFilters.curriculumFilters,
       organizations: actualFilters.organizationFilters,
-      publicity
+      publicity,
     };
   }
 
@@ -167,35 +158,35 @@ export async function loadWorkspacesHelper(
             mApi()
               .organizationWorkspaceManagement.workspaces.cacheClear()
               .read(params),
-            "callback"
+            "callback",
           )()
         )
       : <WorkspaceListType>(
           await promisify(
             mApi().coursepicker.workspaces.cacheClear().read(params),
-            "callback"
+            "callback",
           )()
         );
 
     //TODO why in the world does the server return nothing rather than an empty array?
     //remove this hack fix the server side
     nWorkspaces = nWorkspaces || [];
-    let hasMore: boolean = nWorkspaces.length === MAX_LOADED_AT_ONCE + 1;
+    const hasMore: boolean = nWorkspaces.length === MAX_LOADED_AT_ONCE + 1;
 
     //This is because of the array is actually a reference to a cached array
     //so we rather make a copy otherwise you'll mess up the cache :/
-    let actualWorkspaces = nWorkspaces.concat([]);
+    const actualWorkspaces = nWorkspaces.concat([]);
     if (hasMore) {
       //we got to get rid of that extra loaded message
       actualWorkspaces.pop();
     }
 
-    let payload: WorkspacesPatchType = {
+    const payload: WorkspacesPatchType = {
       state: "READY",
       availableWorkspaces: concat
         ? workspaces.availableWorkspaces.concat(actualWorkspaces)
         : actualWorkspaces,
-      hasMore
+      hasMore,
     };
 
     //And there it goes
@@ -203,12 +194,12 @@ export async function loadWorkspacesHelper(
     if (loadOrganizationWorkspaces === true) {
       dispatch({
         type: "UPDATE_ORGANIZATION_WORKSPACES_ALL_PROPS",
-        payload
+        payload,
       });
     } else {
       dispatch({
         type: "UPDATE_WORKSPACES_ALL_PROPS",
-        payload
+        payload,
       });
     }
   } catch (err) {
@@ -219,12 +210,12 @@ export async function loadWorkspacesHelper(
     dispatch(
       notificationActions.displayNotification(
         getState().i18n.text.get("plugin.coursepicker.errormessage.courseLoad"),
-        "error"
-      )
+        "error",
+      ),
     );
     dispatch({
       type: "UPDATE_WORKSPACES_STATE",
-      payload: <WorkspacesStateType>"ERROR"
+      payload: <WorkspacesStateType>"ERROR",
     });
   }
 }
@@ -233,9 +224,9 @@ export async function loadCurrentWorkspaceJournalsHelper(
   userEntityId: number | null,
   initial: boolean,
   dispatch: (arg: AnyActionType) => any,
-  getState: () => StateType
+  getState: () => StateType,
 ) {
-  let state: StateType = getState();
+  const state: StateType = getState();
   let currentWorkspace = state.workspaces.currentWorkspace;
 
   let journalNextstate: WorkspacesStateType;
@@ -262,21 +253,21 @@ export async function loadCurrentWorkspaceJournalsHelper(
             (currentWorkspace.journals && currentWorkspace.journals.hasMore) ||
             false,
           userEntityId,
-          state: journalNextstate
-        }
-      }
-    }
+          state: journalNextstate,
+        },
+      },
+    },
   });
 
-  let workspaceId = currentWorkspace.id;
+  const workspaceId = currentWorkspace.id;
 
-  let params: any = {
+  const params: any = {
     firstResult: initial
       ? 0
       : (currentWorkspace.journals &&
           currentWorkspace.journals.journals.length) ||
         0,
-    maxResults: MAX_JOURNAL_LOADED_AT_ONCE + 1
+    maxResults: MAX_JOURNAL_LOADED_AT_ONCE + 1,
   };
 
   if (userEntityId) {
@@ -284,20 +275,20 @@ export async function loadCurrentWorkspaceJournalsHelper(
   }
 
   try {
-    let journals: WorkspaceJournalListType = <WorkspaceJournalListType>(
+    const journals: WorkspaceJournalListType = <WorkspaceJournalListType>(
       await promisify(
         mApi().workspace.workspaces.journal.read(workspaceId, params),
-        "callback"
+        "callback",
       )()
     );
 
     //update current workspace again in case
     currentWorkspace = getState().workspaces.currentWorkspace;
 
-    let concat = !initial;
-    let hasMore: boolean = journals.length === MAX_JOURNAL_LOADED_AT_ONCE + 1;
+    const concat = !initial;
+    const hasMore: boolean = journals.length === MAX_JOURNAL_LOADED_AT_ONCE + 1;
 
-    let actualJournals = journals.concat([]);
+    const actualJournals = journals.concat([]);
     if (hasMore) {
       //we got to get rid of that extra loaded message
       actualJournals.pop();
@@ -314,10 +305,10 @@ export async function loadCurrentWorkspaceJournalsHelper(
               : actualJournals,
             hasMore,
             userEntityId,
-            state: <WorkspacesStateType>"READY"
-          }
-        }
-      }
+            state: <WorkspacesStateType>"READY",
+          },
+        },
+      },
     });
   } catch (err) {
     if (!(err instanceof MApiError)) {
@@ -330,10 +321,10 @@ export async function loadCurrentWorkspaceJournalsHelper(
     dispatch(
       notificationActions.displayNotification(
         getState().i18n.text.get(
-          "plugin.workspace.journal.notification.viewLoadError"
+          "plugin.workspace.journal.notification.viewLoadError",
         ),
-        "error"
-      )
+        "error",
+      ),
     );
     dispatch({
       type: "UPDATE_WORKSPACE",
@@ -349,10 +340,10 @@ export async function loadCurrentWorkspaceJournalsHelper(
                 currentWorkspace.journals.hasMore) ||
               false,
             userEntityId,
-            state: <WorkspacesStateType>"ERROR"
-          }
-        }
-      }
+            state: <WorkspacesStateType>"ERROR",
+          },
+        },
+      },
     });
   }
 }

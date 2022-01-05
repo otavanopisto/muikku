@@ -2,10 +2,10 @@ import * as React from "react";
 import { MaterialLoaderProps } from "~/components/base/material-loader";
 import Link from "~/components/general/link";
 
-interface MaterialLoaderProducersLicenseProps extends MaterialLoaderProps {}
+type MaterialLoaderProducersLicenseProps = MaterialLoaderProps;
 
 export function MaterialLoaderProducersLicense(
-  props: MaterialLoaderProducersLicenseProps
+  props: MaterialLoaderProducersLicenseProps,
 ) {
   if (
     !(
@@ -16,8 +16,8 @@ export function MaterialLoaderProducersLicense(
     return null;
   }
 
-  let license = props.material.license;
-  let hasLink = props.material.license
+  const license = props.material.license;
+  const hasLink = props.material.license
     ? props.material.license.indexOf("http://") === 0 ||
       props.material.license.indexOf("https://") === 0
     : false;

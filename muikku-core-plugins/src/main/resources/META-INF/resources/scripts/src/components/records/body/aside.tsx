@@ -1,17 +1,15 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
-import Link from "~/components/general/link";
+import { connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/item-list.scss";
 import {
   TranscriptOfRecordLocationType,
-  RecordsType
+  RecordsType,
 } from "~/reducers/main-function/records";
 import { StateType } from "~/reducers";
 import NavigationMenu, {
-  NavigationTopic,
-  NavigationElement
+  NavigationElement,
 } from "~/components/general/navigation";
 import { HOPSType } from "~/reducers/main-function/hops";
 import { StatusType } from "~/reducers/base/status";
@@ -60,40 +58,38 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
   }
 
   render() {
-    let sections = [
+    const sections = [
       {
         name: this.props.i18n.text.get("plugin.records.category.summary"),
-        hash: "summary"
+        hash: "summary",
       },
       {
         name: this.props.i18n.text.get("plugin.records.category.records"),
-        hash: "records"
+        hash: "records",
       },
       {
         name: this.props.i18n.text.get("plugin.records.category.hops"),
-        hash: "hops"
+        hash: "hops",
       },
       {
         name: this.props.i18n.text.get("plugin.records.category.yo"),
-        hash: "yo"
-      }
+        hash: "yo",
+      },
     ];
 
     return (
       <NavigationMenu>
         {sections
           .filter((section) => this.isVisible(section.hash))
-          .map((item, index) => {
-            return (
-              <NavigationElement
-                isActive={this.props.location === item.hash}
-                hash={item.hash}
-                key={index}
-              >
-                {item.name}
-              </NavigationElement>
-            );
-          })}
+          .map((item, index) => (
+            <NavigationElement
+              isActive={this.props.location === item.hash}
+              hash={item.hash}
+              key={index}
+            >
+              {item.name}
+            </NavigationElement>
+          ))}
       </NavigationMenu>
     );
   }
@@ -105,11 +101,11 @@ function mapStateToProps(state: StateType) {
     location: state.records.location,
     hops: state.hops,
     records: state.records,
-    status: state.status
+    status: state.status,
   };
 }
 
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps() {
   return {};
 }
 

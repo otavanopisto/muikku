@@ -10,7 +10,7 @@ import { i18nType } from "~/reducers/base/i18n";
 import { DiscussionType, DiscussionThreadType } from "~/reducers/discussion";
 import {
   modifyDiscussionThread,
-  ModifyDiscussionThreadTriggerType
+  ModifyDiscussionThreadTriggerType,
 } from "~/actions/discussion";
 import { StateType } from "~/reducers";
 import SessionStateComponent from "~/components/general/session-state-component";
@@ -63,9 +63,9 @@ class ModifyThreadDrawer extends SessionStateComponent<
         title: props.thread.title,
         locked: false,
         threadPinned: props.thread.sticky,
-        threadLocked: props.thread.locked
+        threadLocked: props.thread.locked,
       },
-      props.thread.id
+      props.thread.id,
     );
 
     this.togglePinned = this.togglePinned.bind(this);
@@ -86,9 +86,9 @@ class ModifyThreadDrawer extends SessionStateComponent<
         text: this.props.thread.message,
         title: this.props.thread.title,
         threadPinned: this.props.thread.sticky,
-        threadLocked: this.props.thread.locked
+        threadLocked: this.props.thread.locked,
       },
-      this.props.thread.id
+      this.props.thread.id,
     );
   }
 
@@ -109,9 +109,9 @@ class ModifyThreadDrawer extends SessionStateComponent<
         text: this.props.thread.message,
         title: this.props.thread.title,
         threadPinned: this.props.thread.sticky,
-        threadLocked: this.props.thread.locked
+        threadLocked: this.props.thread.locked,
       },
-      this.props.thread.id
+      this.props.thread.id,
     );
   }
 
@@ -135,14 +135,14 @@ class ModifyThreadDrawer extends SessionStateComponent<
         this.props.onClickCancel && this.props.onClickCancel();
         this.justClear(
           ["text", "title", "threadPinned", "threadLocked"],
-          this.props.thread.id
+          this.props.thread.id,
         );
         this.setState({ locked: false });
         closeDialog();
       },
       fail: () => {
         this.setState({ locked: false });
-      }
+      },
     });
   }
 
@@ -160,7 +160,7 @@ class ModifyThreadDrawer extends SessionStateComponent<
   togglePinned() {
     this.setStateAndStore(
       { threadPinned: !this.state.threadPinned },
-      this.props.thread.id
+      this.props.thread.id,
     );
   }
 
@@ -170,7 +170,7 @@ class ModifyThreadDrawer extends SessionStateComponent<
   toggleLocked() {
     this.setStateAndStore(
       { threadLocked: !this.state.threadLocked },
-      this.props.thread.id
+      this.props.thread.id,
     );
   }
 
@@ -186,10 +186,10 @@ class ModifyThreadDrawer extends SessionStateComponent<
             text: nextProps.thread.message,
             title: nextProps.thread.title,
             threadPinned: nextProps.thread.sticky,
-            threadLocked: nextProps.thread.locked
+            threadLocked: nextProps.thread.locked,
           },
-          nextProps.thread.id
-        )
+          nextProps.thread.id,
+        ),
       );
     }
   }
@@ -206,12 +206,12 @@ class ModifyThreadDrawer extends SessionStateComponent<
    * @returns JSX.Element
    */
   render() {
-    let editorTitle =
+    const editorTitle =
       this.props.i18n.text.get("plugin.discussion.editmessage.topic") +
       " - " +
       this.props.i18n.text.get("plugin.discussion.createmessage.content");
 
-    let content = (
+    const content = (
       <>
         <div
           key="1"
@@ -220,14 +220,14 @@ class ModifyThreadDrawer extends SessionStateComponent<
           <div className="env-dialog__form-element-container">
             <label htmlFor="messageTitle" className="env-dialog__label">
               {this.props.i18n.text.get(
-                "plugin.discussion.createmessage.title"
+                "plugin.discussion.createmessage.title",
               )}
             </label>
             <input
               id="messageTitle"
               className="env-dialog__input env-dialog__input--new-discussion-thread-title"
               placeholder={this.props.i18n.text.get(
-                "plugin.discussion.createmessage.title"
+                "plugin.discussion.createmessage.title",
               )}
               value={this.state.title}
               onChange={this.onTitleChange}
@@ -254,7 +254,7 @@ class ModifyThreadDrawer extends SessionStateComponent<
                 className="env-dialog__input-label"
               >
                 {this.props.i18n.text.get(
-                  "plugin.discussion.createmessage.pinned"
+                  "plugin.discussion.createmessage.pinned",
                 )}
               </label>
             </div>
@@ -271,7 +271,7 @@ class ModifyThreadDrawer extends SessionStateComponent<
                 className="env-dialog__input-label"
               >
                 {this.props.i18n.text.get(
-                  "plugin.discussion.createmessage.locked"
+                  "plugin.discussion.createmessage.locked",
                 )}
               </label>
             </div>
@@ -282,7 +282,7 @@ class ModifyThreadDrawer extends SessionStateComponent<
           <div className="env-dialog__form-element-container">
             <label className="env-dialog__label">
               {this.props.i18n.text.get(
-                "plugin.discussion.createmessage.content"
+                "plugin.discussion.createmessage.content",
               )}
             </label>
             <CKEditor
@@ -299,7 +299,7 @@ class ModifyThreadDrawer extends SessionStateComponent<
     /**
      * footer
      */
-    let footer = (
+    const footer = (
       <div className="env-dialog__actions">
         <Button
           buttonModifiers="dialog-execute"
@@ -322,7 +322,7 @@ class ModifyThreadDrawer extends SessionStateComponent<
             disabled={this.state.locked}
           >
             {this.props.i18n.text.get(
-              "plugin.discussion.createmessage.clearDraft"
+              "plugin.discussion.createmessage.clearDraft",
             )}
           </Button>
         ) : null}
@@ -349,7 +349,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     discussion: state.discussion,
-    status: state.status
+    status: state.status,
   };
 }
 

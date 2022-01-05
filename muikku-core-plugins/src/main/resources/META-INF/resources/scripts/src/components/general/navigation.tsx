@@ -79,13 +79,13 @@ export class NavigationElement extends React.Component<
   render() {
     let editableComponent = null;
 
-    let modifiers: Array<string> =
+    const modifiers: Array<string> =
       typeof this.props.modifiers === "string"
         ? [this.props.modifiers]
         : this.props.modifiers;
 
     if (this.props.isEditable && this.props.editableWrapper) {
-      let EditableWrapper = this.props.editableWrapper;
+      const EditableWrapper = this.props.editableWrapper;
       editableComponent = (
         <EditableWrapper {...this.props.editableWrapperArgs}>
           <ButtonPill

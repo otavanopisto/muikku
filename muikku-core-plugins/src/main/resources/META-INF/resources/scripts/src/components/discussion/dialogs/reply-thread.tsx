@@ -2,7 +2,7 @@ import { i18nType } from "~/reducers/base/i18n";
 import * as React from "react";
 import {
   DiscussionThreadType,
-  DiscussionThreadReplyType
+  DiscussionThreadReplyType,
 } from "~/reducers/discussion";
 import { Dispatch, connect } from "react-redux";
 import { AnyActionType } from "~/actions";
@@ -12,7 +12,7 @@ import Link from "~/components/general/link";
 import EnvironmentDialog from "~/components/general/environment-dialog";
 import {
   replyToCurrentDiscussionThread,
-  ReplyToCurrentDiscussionThreadTriggerType
+  ReplyToCurrentDiscussionThreadTriggerType,
 } from "~/actions/discussion";
 import { StateType } from "~/reducers";
 import SessionStateComponent from "~/components/general/session-state-component";
@@ -58,11 +58,11 @@ class ReplyThread extends SessionStateComponent<
               "</strong></p>" +
               props.quote +
               "</blockquote> <p></p>"
-            : ""
+            : "",
       },
       props.currentId +
         (props.quote ? "-q" : "") +
-        (props.reply ? "-" + props.reply.id : "")
+        (props.reply ? "-" + props.reply.id : ""),
     );
   }
   onCKEditorChange(text: string) {
@@ -70,7 +70,7 @@ class ReplyThread extends SessionStateComponent<
       { text },
       this.props.currentId +
         (this.props.quote ? "-q" : "") +
-        (this.props.reply ? "-" + this.props.reply.id : "")
+        (this.props.reply ? "-" + this.props.reply.id : ""),
     );
   }
   clearUp() {
@@ -83,16 +83,16 @@ class ReplyThread extends SessionStateComponent<
               "</strong></p>" +
               this.props.quote +
               "</blockquote> <p></p>"
-            : ""
+            : "",
       },
       this.props.currentId +
         (this.props.quote ? "-q" : "") +
-        (this.props.reply ? "-" + this.props.reply.id : "")
+        (this.props.reply ? "-" + this.props.reply.id : ""),
     );
   }
   createReply(closeDialog: () => any) {
     this.setState({
-      locked: true
+      locked: true,
     });
     this.props.replyToCurrentDiscussionThread({
       parentId:
@@ -111,18 +111,18 @@ class ReplyThread extends SessionStateComponent<
                   this.props.quote +
                   "</blockquote> <p></p>"
                 : "",
-            locked: false
+            locked: false,
           },
           this.props.currentId +
             (this.props.quote ? "-q" : "") +
-            (this.props.reply ? "-" + this.props.reply.id : "")
+            (this.props.reply ? "-" + this.props.reply.id : ""),
         );
       },
       fail: () => {
         this.setState({
-          locked: false
+          locked: false,
         });
-      }
+      },
     });
   }
   onDialogOpen() {
@@ -136,12 +136,12 @@ class ReplyThread extends SessionStateComponent<
               this.props.quoteAuthor +
               "</strong></p>" +
               this.props.quote +
-              "</blockquote> <p></p>"
+              "</blockquote> <p></p>",
           },
           this.props.currentId +
             "-q" +
-            (this.props.reply ? "-" + this.props.reply.id : "")
-        )
+            (this.props.reply ? "-" + this.props.reply.id : ""),
+        ),
       );
     } else {
       this.checkStoredAgainstThisState(
@@ -153,26 +153,26 @@ class ReplyThread extends SessionStateComponent<
                 "</strong></p>" +
                 this.props.quote +
                 "</blockquote> <p></p>"
-              : ""
+              : "",
         },
         this.props.currentId +
           (this.props.quote ? "-q" : "") +
-          (this.props.reply ? "-" + this.props.reply.id : "")
+          (this.props.reply ? "-" + this.props.reply.id : ""),
       );
     }
   }
   render() {
-    let editorTitle =
+    const editorTitle =
       this.props.i18n.text.get("plugin.discussion.reply.topic") +
       " - " +
       this.props.i18n.text.get("plugin.discussion.createmessage.content");
 
-    let content = (closeDialog: () => any) => [
+    const content = (closeDialog: () => any) => [
       <div className="env-dialog__row env-dialog__row--ckeditor" key="1">
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
             {this.props.i18n.text.get(
-              "plugin.discussion.createmessage.content"
+              "plugin.discussion.createmessage.content",
             )}
           </label>
           <CKEditor
@@ -184,39 +184,37 @@ class ReplyThread extends SessionStateComponent<
             {this.state.text}
           </CKEditor>
         </div>
-      </div>
+      </div>,
     ];
-    let footer = (closeDialog: () => any) => {
-      return (
-        <div className="env-dialog__actions">
+    const footer = (closeDialog: () => any) => (
+      <div className="env-dialog__actions">
+        <Button
+          buttonModifiers="dialog-execute"
+          onClick={this.createReply.bind(this, closeDialog)}
+          disabled={this.state.locked}
+        >
+          {this.props.i18n.text.get("plugin.discussion.createmessage.send")}
+        </Button>
+        <Button
+          buttonModifiers="dialog-cancel"
+          onClick={closeDialog}
+          disabled={this.state.locked}
+        >
+          {this.props.i18n.text.get("plugin.discussion.createmessage.cancel")}
+        </Button>
+        {this.recovered ? (
           <Button
-            buttonModifiers="dialog-execute"
-            onClick={this.createReply.bind(this, closeDialog)}
+            buttonModifiers="dialog-clear"
+            onClick={this.clearUp}
             disabled={this.state.locked}
           >
-            {this.props.i18n.text.get("plugin.discussion.createmessage.send")}
+            {this.props.i18n.text.get(
+              "plugin.discussion.createmessage.clearDraft",
+            )}
           </Button>
-          <Button
-            buttonModifiers="dialog-cancel"
-            onClick={closeDialog}
-            disabled={this.state.locked}
-          >
-            {this.props.i18n.text.get("plugin.discussion.createmessage.cancel")}
-          </Button>
-          {this.recovered ? (
-            <Button
-              buttonModifiers="dialog-clear"
-              onClick={this.clearUp}
-              disabled={this.state.locked}
-            >
-              {this.props.i18n.text.get(
-                "plugin.discussion.createmessage.clearDraft"
-              )}
-            </Button>
-          ) : null}
-        </div>
-      );
-    };
+        ) : null}
+      </div>
+    );
 
     return (
       <EnvironmentDialog
@@ -235,7 +233,7 @@ class ReplyThread extends SessionStateComponent<
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    currentId: state.discussion.current.id
+    currentId: state.discussion.current.id,
   };
 }
 

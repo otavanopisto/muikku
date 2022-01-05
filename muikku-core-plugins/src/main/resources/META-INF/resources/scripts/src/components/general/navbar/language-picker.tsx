@@ -28,19 +28,17 @@ class LanguagePicker extends React.Component<
     return (
       <Dropdown
         modifier="language-picker"
-        items={this.props.locales.available.map((locale) => {
-          return (
-            <Link
-              className={`link link--full link--language-picker-dropdown`}
-              onClick={this.props.setLocale.bind(this, locale.locale)}
-              role="menuitem"
-            >
-              <span className={`link__locale link__locale--${locale.locale}`}>
-                {locale.name}
-              </span>
-            </Link>
-          );
-        })}
+        items={this.props.locales.available.map((locale) => (
+          <Link
+            className={`link link--full link--language-picker-dropdown`}
+            onClick={this.props.setLocale.bind(this, locale.locale)}
+            role="menuitem"
+          >
+            <span className={`link__locale link__locale--${locale.locale}`}>
+              {locale.name}
+            </span>
+          </Link>
+        ))}
       >
         <Link
           className={`button-pill button-pill--current-language`}
@@ -48,7 +46,7 @@ class LanguagePicker extends React.Component<
           tabIndex={0}
           aria-haspopup="true"
           aria-label={this.props.i18n.text.get(
-            "plugin.wcag.localeMenu.aria.label"
+            "plugin.wcag.localeMenu.aria.label",
           )}
         >
           <span
@@ -65,12 +63,11 @@ class LanguagePicker extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    locales: state.locales
+    locales: state.locales,
   };
 }
 
-const mapDispatchToProps = (dispatch: Dispatch<any>) => {
-  return bindActionCreators({ setLocale }, dispatch);
-};
+const mapDispatchToProps = (dispatch: Dispatch<any>) =>
+  bindActionCreators({ setLocale }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(LanguagePicker);

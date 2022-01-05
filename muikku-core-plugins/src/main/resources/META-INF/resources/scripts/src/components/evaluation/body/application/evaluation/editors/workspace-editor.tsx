@@ -8,7 +8,7 @@ import { EvaluationState } from "~/reducers/main-function/evaluation/index";
 import { bindActionCreators } from "redux";
 import {
   UpdateWorkspaceEvaluation,
-  updateWorkspaceEvaluationToServer
+  updateWorkspaceEvaluationToServer,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import SessionStateComponent from "~/components/general/session-state-component";
 import { cleanWorkspaceAndSupplementationDrafts } from "../../../../dialogs/delete";
@@ -19,7 +19,7 @@ import { BilledPrice, EvaluationEnum } from "~/@types/evaluation";
 import { i18nType } from "~/reducers/base/i18n";
 import {
   UpdateNeedsReloadEvaluationRequests,
-  updateNeedsReloadEvaluationRequests
+  updateNeedsReloadEvaluationRequests,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import "~/sass/elements/form-elements.scss";
 import { LocaleListType } from "~/reducers/base/locales";
@@ -83,7 +83,7 @@ class WorkspaceEditor extends SessionStateComponent<
       evaluationAssessmentEvents,
       evaluationSelectedAssessmentId,
       basePrice,
-      evaluationGradeSystem
+      evaluationGradeSystem,
     } = props.evaluations;
 
     /**
@@ -112,7 +112,7 @@ class WorkspaceEditor extends SessionStateComponent<
        */
       if (this.props.eventId) {
         latestEvent = evaluationAssessmentEvents.data.find(
-          (eItem) => eItem.identifier === this.props.eventId
+          (eItem) => eItem.identifier === this.props.eventId,
         );
       }
 
@@ -126,7 +126,8 @@ class WorkspaceEditor extends SessionStateComponent<
        */
       const usedGradeSystem = evaluationGradeSystem.find(
         (gSystem) =>
-          gSystem.id === latestEvent.gradeIdentifier.split("@")[0].split("-")[1]
+          gSystem.id ===
+          latestEvent.gradeIdentifier.split("@")[0].split("-")[1],
       );
 
       /**
@@ -134,7 +135,7 @@ class WorkspaceEditor extends SessionStateComponent<
        */
       const usedGrade = usedGradeSystem.grades.find(
         (grade) =>
-          grade.id === latestEvent.gradeIdentifier.split("@")[1].split("-")[1]
+          grade.id === latestEvent.gradeIdentifier.split("@")[1].split("-")[1],
       );
 
       /**
@@ -148,11 +149,11 @@ class WorkspaceEditor extends SessionStateComponent<
             literalEvaluation: latestEvent.text,
             draftId,
             basePriceFromServer: basePrice.data,
-            grade: `${usedGrade.dataSource}-${usedGrade.id}`
+            grade: `${usedGrade.dataSource}-${usedGrade.id}`,
           },
-          draftId
+          draftId,
         ),
-        locked: false
+        locked: false,
       };
     } else {
       this.state = {
@@ -161,11 +162,11 @@ class WorkspaceEditor extends SessionStateComponent<
             literalEvaluation: "",
             draftId,
             basePriceFromServer: basePrice.data,
-            grade: `${evaluationGradeSystem[0].grades[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`
+            grade: `${evaluationGradeSystem[0].grades[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`,
           },
-          draftId
+          draftId,
         ),
-        locked: false
+        locked: false,
       };
     }
   }
@@ -221,7 +222,7 @@ class WorkspaceEditor extends SessionStateComponent<
          */
         if (this.props.eventId) {
           latestEvent = evaluationAssessmentEvents.data.find(
-            (eItem) => eItem.identifier === this.props.eventId
+            (eItem) => eItem.identifier === this.props.eventId,
           );
         }
 
@@ -233,7 +234,7 @@ class WorkspaceEditor extends SessionStateComponent<
          * billing enabled we don't show any pricing options etc...
          */
         existingBilledPriceObject = await this.loadExistingBilledPrice(
-          latestEvent.identifier
+          latestEvent.identifier,
         );
 
         /**
@@ -242,7 +243,7 @@ class WorkspaceEditor extends SessionStateComponent<
         const usedGradeSystem = evaluationGradeSystem.find(
           (gSystem) =>
             gSystem.id ===
-            latestEvent.gradeIdentifier.split("@")[0].split("-")[1]
+            latestEvent.gradeIdentifier.split("@")[0].split("-")[1],
         );
 
         /**
@@ -250,7 +251,8 @@ class WorkspaceEditor extends SessionStateComponent<
          */
         const usedGrade = usedGradeSystem.grades.find(
           (grade) =>
-            grade.id === latestEvent.gradeIdentifier.split("@")[1].split("-")[1]
+            grade.id ===
+            latestEvent.gradeIdentifier.split("@")[1].split("-")[1],
         );
 
         this.setState(
@@ -261,10 +263,10 @@ class WorkspaceEditor extends SessionStateComponent<
               existingBilledPriceObject,
               selectedPriceOption: existingBilledPriceObject
                 ? existingBilledPriceObject.price.toString()
-                : undefined
+                : undefined,
             },
-            this.state.draftId
-          )
+            this.state.draftId,
+          ),
         );
       } else {
         /**
@@ -275,10 +277,10 @@ class WorkspaceEditor extends SessionStateComponent<
             {
               literalEvaluation: "",
               grade: `${evaluationGradeSystem[0].grades[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`,
-              selectedPriceOption: defaultPrice
+              selectedPriceOption: defaultPrice,
             },
-            this.state.draftId
-          )
+            this.state.draftId,
+          ),
         );
       }
     } else {
@@ -290,10 +292,10 @@ class WorkspaceEditor extends SessionStateComponent<
           {
             literalEvaluation: "",
             grade: `${evaluationGradeSystem[0].grades[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`,
-            selectedPriceOption: defaultPrice
+            selectedPriceOption: defaultPrice,
           },
-          this.state.draftId
-        )
+          this.state.draftId,
+        ),
       );
     }
   };
@@ -303,7 +305,7 @@ class WorkspaceEditor extends SessionStateComponent<
    * @returns exixting billed price object
    */
   loadExistingBilledPrice = async (
-    assessmentIdentifier: string
+    assessmentIdentifier: string,
   ): Promise<BilledPrice | undefined> => {
     const { selectedWorkspaceId } = this.props.evaluations;
 
@@ -314,16 +316,16 @@ class WorkspaceEditor extends SessionStateComponent<
     await promisify(
       mApi().worklist.billedPrice.read({
         workspaceEntityId: selectedWorkspaceId,
-        assessmentIdentifier
+        assessmentIdentifier,
       }),
-      "callback"
+      "callback",
     )().then(
       (data) => {
         existingBilledPriceObject = data as BilledPrice;
       },
       (reject) => {
         existingBilledPriceObject = undefined;
-      }
+      },
     );
 
     return existingBilledPriceObject;
@@ -352,7 +354,7 @@ class WorkspaceEditor extends SessionStateComponent<
   handleSelectPriceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     this.setStateAndStore(
       { selectedPriceOption: e.target.value },
-      this.state.draftId
+      this.state.draftId,
     );
   };
 
@@ -361,23 +363,23 @@ class WorkspaceEditor extends SessionStateComponent<
    * @param e
    */
   handleEvaluationSave = (
-    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
   ) => {
     const {
       evaluations,
       type = "new",
       status,
       onClose,
-      onSuccesfulSave
+      onSuccesfulSave,
     } = this.props;
 
     this.setState({
-      locked: true
+      locked: true,
     });
 
     const { evaluationAssessmentEvents } = evaluations;
     const { literalEvaluation, grade } = this.state;
-    let billingPrice = this.state.selectedPriceOption;
+    const billingPrice = this.state.selectedPriceOption;
 
     const usedGradeSystem = this.getUsedGradingScaleByGradeId(grade);
 
@@ -403,15 +405,15 @@ class WorkspaceEditor extends SessionStateComponent<
             gradingScaleIdentifier: `${usedGradeSystem.dataSource}-${usedGradeSystem.id}`,
             gradeIdentifier: grade,
             verbalAssessment: literalEvaluation,
-            assessmentDate: new Date().getTime().toString()
+            assessmentDate: new Date().getTime().toString(),
           },
           onSuccess: () => {
             cleanWorkspaceAndSupplementationDrafts(this.state.draftId);
             this.setStateAndClear(
               {
-                literalEvaluation: ""
+                literalEvaluation: "",
               },
-              this.state.draftId
+              this.state.draftId,
             );
 
             this.props.updateNeedsReloadEvaluationRequests({ value: true });
@@ -419,17 +421,17 @@ class WorkspaceEditor extends SessionStateComponent<
             onSuccesfulSave && onSuccesfulSave();
 
             this.setState({
-              locked: false
+              locked: false,
             });
 
             onClose && onClose();
           },
           onFail: () => {
             this.setState({
-              locked: false
+              locked: false,
             });
             onClose();
-          }
+          },
         });
       } else {
         /**
@@ -437,7 +439,7 @@ class WorkspaceEditor extends SessionStateComponent<
          */
         if (this.props.eventId) {
           latestEvent = evaluationAssessmentEvents.data.find(
-            (eItem) => eItem.identifier === this.props.eventId
+            (eItem) => eItem.identifier === this.props.eventId,
           );
         }
 
@@ -454,15 +456,15 @@ class WorkspaceEditor extends SessionStateComponent<
             gradingScaleIdentifier: `${usedGradeSystem.dataSource}-${usedGradeSystem.id}`,
             gradeIdentifier: grade,
             verbalAssessment: literalEvaluation,
-            assessmentDate: latestEvent.date
+            assessmentDate: latestEvent.date,
           },
           onSuccess: () => {
             cleanWorkspaceAndSupplementationDrafts(this.state.draftId);
             this.setStateAndClear(
               {
-                literalEvaluation: ""
+                literalEvaluation: "",
               },
-              this.state.draftId
+              this.state.draftId,
             );
 
             this.props.updateNeedsReloadEvaluationRequests({ value: true });
@@ -470,17 +472,17 @@ class WorkspaceEditor extends SessionStateComponent<
             onSuccesfulSave && onSuccesfulSave();
 
             this.setState({
-              locked: false
+              locked: false,
             });
 
             onClose && onClose();
           },
           onFail: () => {
             this.setState({
-              locked: false
+              locked: false,
             });
             onClose();
-          }
+          },
         });
       }
     } else {
@@ -500,15 +502,15 @@ class WorkspaceEditor extends SessionStateComponent<
           gradingScaleIdentifier: `${usedGradeSystem.dataSource}-${usedGradeSystem.id}`,
           gradeIdentifier: grade,
           verbalAssessment: literalEvaluation,
-          assessmentDate: new Date().getTime().toString()
+          assessmentDate: new Date().getTime().toString(),
         },
         onSuccess: () => {
           cleanWorkspaceAndSupplementationDrafts(this.state.draftId);
           this.setStateAndClear(
             {
-              literalEvaluation: ""
+              literalEvaluation: "",
             },
-            this.state.draftId
+            this.state.draftId,
           );
 
           this.props.updateNeedsReloadEvaluationRequests({ value: true });
@@ -517,7 +519,7 @@ class WorkspaceEditor extends SessionStateComponent<
 
           onClose && onClose();
         },
-        onFail: () => onClose()
+        onFail: () => onClose(),
       });
     }
   };
@@ -550,9 +552,9 @@ class WorkspaceEditor extends SessionStateComponent<
             grade: latestEvent.gradeIdentifier.split("@")[1],
             selectedPriceOption: this.state.existingBilledPriceObject
               ? this.state.existingBilledPriceObject.price.toString()
-              : undefined
+              : undefined,
           },
-          this.state.draftId
+          this.state.draftId,
         );
       } else {
         /**
@@ -591,9 +593,9 @@ class WorkspaceEditor extends SessionStateComponent<
           {
             literalEvaluation: "",
             grade: `${evaluationGradeSystem[0].grades[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`,
-            selectedPriceOption: billingPrice
+            selectedPriceOption: billingPrice,
           },
-          this.state.draftId
+          this.state.draftId,
         );
       }
     } else {
@@ -603,9 +605,9 @@ class WorkspaceEditor extends SessionStateComponent<
           grade: `${evaluationGradeSystem[0].grades[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`,
           selectedPriceOption: this.state.basePriceFromServer
             ? this.state.basePriceFromServer.toString()
-            : undefined
+            : undefined,
         },
-        this.state.draftId
+        this.state.draftId,
       );
     }
   };
@@ -615,13 +617,10 @@ class WorkspaceEditor extends SessionStateComponent<
    * @param type
    * @returns boolean if graded
    */
-  isGraded = (type: EvaluationEnum) => {
-    return (
-      type === EvaluationEnum.EVALUATION_PASS ||
-      type === EvaluationEnum.EVALUATION_FAIL ||
-      type === EvaluationEnum.EVALUATION_IMPROVED
-    );
-  };
+  isGraded = (type: EvaluationEnum) =>
+    type === EvaluationEnum.EVALUATION_PASS ||
+    type === EvaluationEnum.EVALUATION_FAIL ||
+    type === EvaluationEnum.EVALUATION_IMPROVED;
 
   /**
    * hasGradedEvaluations
@@ -671,7 +670,7 @@ class WorkspaceEditor extends SessionStateComponent<
      */
     if (this.props.eventId && type === "edit") {
       latestEvent = evaluationAssessmentEvents.data.find(
-        (eItem) => eItem.identifier === this.props.eventId
+        (eItem) => eItem.identifier === this.props.eventId,
       );
     }
 
@@ -687,7 +686,7 @@ class WorkspaceEditor extends SessionStateComponent<
     /**
      * Default options
      */
-    let priceOptionsArray: EvaluationPriceObject[] = [];
+    const priceOptionsArray: EvaluationPriceObject[] = [];
 
     /**
      * Check if base price is loaded
@@ -705,9 +704,9 @@ class WorkspaceEditor extends SessionStateComponent<
        */
       priceOptionsArray.push({
         name: `${i18n.text.get(
-          "plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingOptionFull"
+          "plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingOptionFull",
         )} ${basePriceFromServer.toFixed(2)} €`,
-        value: basePriceFromServer
+        value: basePriceFromServer,
       });
 
       /**
@@ -716,9 +715,9 @@ class WorkspaceEditor extends SessionStateComponent<
       if (!isRaised) {
         priceOptionsArray.push({
           name: `${i18n.text.get(
-            "plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingOptionHalf"
+            "plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingOptionHalf",
           )} ${(basePriceFromServer / 2).toFixed(2)} €`,
-          value: basePriceFromServer / 2
+          value: basePriceFromServer / 2,
         });
       }
 
@@ -727,9 +726,9 @@ class WorkspaceEditor extends SessionStateComponent<
        */
       priceOptionsArray.push({
         name: `${i18n.text.get(
-          "plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingOptionNone"
+          "plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingOptionNone",
         )} 0,00 €`,
-        value: 0
+        value: 0,
       });
 
       /**
@@ -751,9 +750,9 @@ class WorkspaceEditor extends SessionStateComponent<
            */
           priceOptionsArray.push({
             name: `${i18n.text.get(
-              "plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingOptionCustom"
+              "plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingOptionCustom",
             )} ${this.state.existingBilledPriceObject.price.toFixed(2)}`,
-            value: this.state.existingBilledPriceObject.price
+            value: this.state.existingBilledPriceObject.price,
           });
         }
       }
@@ -767,13 +766,13 @@ class WorkspaceEditor extends SessionStateComponent<
    * @returns List of options
    */
   renderSelectOptions = (): JSX.Element[] | undefined => {
-    let parsedOptions = this.parsePriceOptions();
+    const parsedOptions = this.parsePriceOptions();
 
     if (parsedOptions === undefined) {
       return undefined;
     }
 
-    let options: JSX.Element[] = parsedOptions.map((item) => (
+    const options: JSX.Element[] = parsedOptions.map((item) => (
       <option key={item.value} value={item.value.toString()}>
         {item.name}
       </option>
@@ -795,25 +794,15 @@ class WorkspaceEditor extends SessionStateComponent<
       existingBilledPriceObject && !existingBilledPriceObject.editable;
 
     const renderGradingOptions =
-      this.props.evaluations.evaluationGradeSystem.map((gScale) => {
-        return (
-          <optgroup
-            key={`${gScale.dataSource}-${gScale.id}`}
-            label={gScale.name}
-          >
-            {gScale.grades.map((grade) => {
-              return (
-                <option
-                  key={grade.id}
-                  value={`${gScale.dataSource}-${grade.id}`}
-                >
-                  {grade.name}
-                </option>
-              );
-            })}
-          </optgroup>
-        );
-      });
+      this.props.evaluations.evaluationGradeSystem.map((gScale) => (
+        <optgroup key={`${gScale.dataSource}-${gScale.id}`} label={gScale.name}>
+          {gScale.grades.map((grade) => (
+            <option key={grade.id} value={`${gScale.dataSource}-${grade.id}`}>
+              {grade.name}
+            </option>
+          ))}
+        </optgroup>
+      ));
 
     return (
       <>
@@ -838,7 +827,7 @@ class WorkspaceEditor extends SessionStateComponent<
             className="evaluation-modal__evaluate-drawer-row-label"
           >
             {this.props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.assignmentGradeLabel"
+              "plugin.evaluation.evaluationModal.assignmentGradeLabel",
             )}
           </label>
           <select
@@ -864,7 +853,7 @@ class WorkspaceEditor extends SessionStateComponent<
               className="evaluation-modal__evaluate-drawer-row-label"
             >
               {this.props.i18n.text.get(
-                "plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingLabel"
+                "plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingLabel",
               )}
             </label>
             <select
@@ -886,7 +875,7 @@ class WorkspaceEditor extends SessionStateComponent<
             disabled={this.state.locked}
           >
             {this.props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.workspaceEvaluationForm.saveButtonLabel"
+              "plugin.evaluation.evaluationModal.workspaceEvaluationForm.saveButtonLabel",
             )}
           </Button>
           <Button
@@ -895,7 +884,7 @@ class WorkspaceEditor extends SessionStateComponent<
             buttonModifiers="evaluate-cancel"
           >
             {this.props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel"
+              "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel",
             )}
           </Button>
           {this.recovered && (
@@ -905,7 +894,7 @@ class WorkspaceEditor extends SessionStateComponent<
               disabled={this.state.locked}
             >
               {this.props.i18n.text.get(
-                "plugin.evaluation.evaluationModal.workspaceEvaluationForm.deleteDraftButtonLabel"
+                "plugin.evaluation.evaluationModal.workspaceEvaluationForm.deleteDraftButtonLabel",
               )}
             </Button>
           )}
@@ -924,7 +913,7 @@ function mapStateToProps(state: StateType) {
     i18n: state.i18n,
     status: state.status,
     evaluations: state.evaluations,
-    locale: state.locales
+    locale: state.locales,
   };
 }
 
@@ -935,7 +924,7 @@ function mapStateToProps(state: StateType) {
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     { updateWorkspaceEvaluationToServer, updateNeedsReloadEvaluationRequests },
-    dispatch
+    dispatch,
   );
 }
 

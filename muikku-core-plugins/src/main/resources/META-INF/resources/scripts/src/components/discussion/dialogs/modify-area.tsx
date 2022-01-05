@@ -7,7 +7,7 @@ import { AnyActionType } from "~/actions";
 import { i18nType } from "~/reducers/base/i18n";
 import {
   DiscussionAreaListType,
-  DiscussionAreaType
+  DiscussionAreaType,
 } from "~/reducers/discussion";
 import { DiscussionType } from "~/reducers/discussion";
 import SessionStateComponent from "~/components/general/session-state-component";
@@ -18,7 +18,7 @@ import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
 import {
   updateDiscussionArea,
-  UpdateDiscussionAreaTriggerType
+  UpdateDiscussionAreaTriggerType,
 } from "~/actions/discussion";
 import { StateType } from "~/reducers";
 
@@ -48,67 +48,67 @@ class DiscussionModifyArea extends SessionStateComponent<
     this.clearUp = this.clearUp.bind(this);
     this.checkAgainstStoredState = this.checkAgainstStoredState.bind(this);
 
-    let area = this.props.discussion.areas.find(
-      (area) => area.id === this.props.discussion.areaId
+    const area = this.props.discussion.areas.find(
+      (area) => area.id === this.props.discussion.areaId,
     );
     this.state = this.getRecoverStoredState(
       {
         name: (area && area.name) || "",
         description: (area && area.description) || "",
-        locked: false
+        locked: false,
       },
-      this.props.discussion.areaId
+      this.props.discussion.areaId,
     );
   }
   clearUp() {
-    let area = this.props.discussion.areas.find(
-      (area) => area.id === this.props.discussion.areaId
+    const area = this.props.discussion.areas.find(
+      (area) => area.id === this.props.discussion.areaId,
     );
     this.setStateAndClear(
       {
         name: (area && area.name) || "",
-        description: (area && area.description) || ""
+        description: (area && area.description) || "",
       },
-      this.props.discussion.areaId
+      this.props.discussion.areaId,
     );
   }
   checkAgainstStoredState() {
-    let area = this.props.discussion.areas.find(
-      (area) => area.id === this.props.discussion.areaId
+    const area = this.props.discussion.areas.find(
+      (area) => area.id === this.props.discussion.areaId,
     );
     this.checkStoredAgainstThisState(
       {
         name: (area && area.name) || "",
-        description: (area && area.description) || ""
+        description: (area && area.description) || "",
       },
-      this.props.discussion.areaId
+      this.props.discussion.areaId,
     );
   }
   onDescriptionChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
     this.setStateAndStore(
       { description: e.target.value },
-      this.props.discussion.areaId
+      this.props.discussion.areaId,
     );
   }
   onNameChange(e: React.ChangeEvent<HTMLInputElement>) {
     this.setStateAndStore(
       { name: e.target.value },
-      this.props.discussion.areaId
+      this.props.discussion.areaId,
     );
   }
   componentWillReceiveProps(nextProps: DiscussionModifyAreaProps) {
-    let area = nextProps.discussion.areas.find(
-      (area) => area.id === nextProps.discussion.areaId
+    const area = nextProps.discussion.areas.find(
+      (area) => area.id === nextProps.discussion.areaId,
     );
 
     this.setState(
       this.getRecoverStoredState(
         {
           name: (area && area.name) || "",
-          description: (area && area.description) || ""
+          description: (area && area.description) || "",
         },
-        nextProps.discussion.areaId
-      )
+        nextProps.discussion.areaId,
+      ),
     );
   }
   modifyArea(closeDialog: () => any) {
@@ -123,18 +123,18 @@ class DiscussionModifyArea extends SessionStateComponent<
       },
       fail: () => {
         this.setState({ locked: false });
-      }
+      },
     });
   }
   render() {
-    let area = this.props.discussion.areas.find(
-      (area) => area.id === this.props.discussion.areaId
+    const area = this.props.discussion.areas.find(
+      (area) => area.id === this.props.discussion.areaId,
     );
     if (!area) {
       return this.props.children;
     }
 
-    let content = (closeDialog: () => any) => [
+    const content = (closeDialog: () => any) => [
       <div className="env-dialog__row" key="1">
         <div className="env-dialog__form-element-container">
           <label htmlFor="forumAreaName" className="env-dialog__label">
@@ -145,7 +145,7 @@ class DiscussionModifyArea extends SessionStateComponent<
             type="text"
             className="env-dialog__input env-dialog__input--new-discussion-area-name"
             placeholder={this.props.i18n.text.get(
-              "plugin.discussion.editArea.name"
+              "plugin.discussion.editArea.name",
             )}
             value={this.state.name}
             onChange={this.onNameChange}
@@ -165,40 +165,36 @@ class DiscussionModifyArea extends SessionStateComponent<
             value={this.state.description}
           />
         </div>
-      </div>
+      </div>,
     ];
 
-    let footer = (closeDialog: () => any) => {
-      return (
-        <div className="env-dialog__actions">
+    const footer = (closeDialog: () => any) => (
+      <div className="env-dialog__actions">
+        <Button
+          buttonModifiers="dialog-execute"
+          onClick={this.modifyArea.bind(this, closeDialog)}
+          disabled={this.state.locked}
+        >
+          {this.props.i18n.text.get("plugin.discussion.editArea.send")}
+        </Button>
+        <Button
+          buttonModifiers="dialog-cancel"
+          onClick={closeDialog}
+          disabled={this.state.locked}
+        >
+          {this.props.i18n.text.get("plugin.discussion.editArea.cancel")}
+        </Button>
+        {this.recovered ? (
           <Button
-            buttonModifiers="dialog-execute"
-            onClick={this.modifyArea.bind(this, closeDialog)}
+            buttonModifiers="dialog-clear"
+            onClick={this.clearUp}
             disabled={this.state.locked}
           >
-            {this.props.i18n.text.get("plugin.discussion.editArea.send")}
+            {this.props.i18n.text.get("plugin.discussion.editArea.clearDraft")}
           </Button>
-          <Button
-            buttonModifiers="dialog-cancel"
-            onClick={closeDialog}
-            disabled={this.state.locked}
-          >
-            {this.props.i18n.text.get("plugin.discussion.editArea.cancel")}
-          </Button>
-          {this.recovered ? (
-            <Button
-              buttonModifiers="dialog-clear"
-              onClick={this.clearUp}
-              disabled={this.state.locked}
-            >
-              {this.props.i18n.text.get(
-                "plugin.discussion.editArea.clearDraft"
-              )}
-            </Button>
-          ) : null}
-        </div>
-      );
-    };
+        ) : null}
+      </div>
+    );
 
     return (
       <EnvironmentDialog
@@ -217,7 +213,7 @@ class DiscussionModifyArea extends SessionStateComponent<
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    discussion: state.discussion
+    discussion: state.discussion,
   };
 }
 
@@ -227,5 +223,5 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(DiscussionModifyArea);

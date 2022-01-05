@@ -8,11 +8,11 @@ import { bindActionCreators } from "redux";
 import Button from "~/components/general/button";
 import {
   WorklistBillingState,
-  WorklistItemsSummary
+  WorklistItemsSummary,
 } from "~/reducers/main-function/profile";
 import {
   UpdateProfileWorklistItemsStateTriggerType,
-  updateProfileWorklistItemsState
+  updateProfileWorklistItemsState,
 } from "~/actions/main-function/profile";
 
 interface SubmitWorklistItemsDialogProps {
@@ -38,45 +38,43 @@ class SubmitWorklistItemsDialog extends React.Component<
       beginDate: this.props.summary.beginDate,
       endDate: this.props.summary.endDate,
       state: WorklistBillingState.PROPOSED,
-      success: closeDialog
+      success: closeDialog,
     });
   }
   render() {
-    let content = (closeDialog: () => any) => (
+    const content = (closeDialog: () => any) => (
       <div>
         <span>
           {this.props.i18n.text.get(
-            "plugin.profile.worklist.submitForApproval.dialog.description"
+            "plugin.profile.worklist.submitForApproval.dialog.description",
           )}
         </span>
       </div>
     );
-    let footer = (closeDialog: () => any) => {
-      return (
-        <div className="dialog__button-set">
-          <Button
-            buttonModifiers={["success", "standard-ok"]}
-            onClick={this.submit.bind(this, closeDialog)}
-          >
-            {this.props.i18n.text.get(
-              "plugin.profile.worklist.submitForApproval.dialog.button.submitLabel"
-            )}
-          </Button>
-          <Button
-            buttonModifiers={["cancel", "standard-cancel"]}
-            onClick={closeDialog}
-          >
-            {this.props.i18n.text.get(
-              "plugin.profile.worklist.submitForApproval.dialog.button.cancelLabel"
-            )}
-          </Button>
-        </div>
-      );
-    };
+    const footer = (closeDialog: () => any) => (
+      <div className="dialog__button-set">
+        <Button
+          buttonModifiers={["success", "standard-ok"]}
+          onClick={this.submit.bind(this, closeDialog)}
+        >
+          {this.props.i18n.text.get(
+            "plugin.profile.worklist.submitForApproval.dialog.button.submitLabel",
+          )}
+        </Button>
+        <Button
+          buttonModifiers={["cancel", "standard-cancel"]}
+          onClick={closeDialog}
+        >
+          {this.props.i18n.text.get(
+            "plugin.profile.worklist.submitForApproval.dialog.button.cancelLabel",
+          )}
+        </Button>
+      </div>
+    );
     return (
       <Dialog
         title={this.props.i18n.text.get(
-          "plugin.profile.worklist.submitForApproval.dialog.title"
+          "plugin.profile.worklist.submitForApproval.dialog.title",
         )}
         content={content}
         footer={footer}
@@ -90,7 +88,7 @@ class SubmitWorklistItemsDialog extends React.Component<
 
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n
+    i18n: state.i18n,
   };
 }
 
@@ -100,5 +98,5 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(SubmitWorklistItemsDialog);

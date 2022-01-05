@@ -1,7 +1,7 @@
 import * as React from "react";
 import {
   UserWithSchoolDataType,
-  StudentUserAddressType
+  StudentUserAddressType,
 } from "~/reducers/user-index";
 import { StateType } from "reducers";
 import { Dispatch, connect } from "react-redux";
@@ -13,7 +13,7 @@ import Link from "~/components/general/link";
 import Dialog from "~/components/general/dialog";
 import {
   displayNotification,
-  DisplayNotificationTriggerType
+  DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 
 import "~/sass/elements/buttons.scss";
@@ -42,7 +42,7 @@ class CheckContactInfoDialog extends React.Component<
     this.state = {
       user: null,
       address: null,
-      isOpen: false
+      isOpen: false,
     };
 
     this.closeDialog = this.closeDialog.bind(this);
@@ -51,19 +51,19 @@ class CheckContactInfoDialog extends React.Component<
   async componentDidMount() {
     if (this.props.status.isStudent) {
       try {
-        let user: UserWithSchoolDataType = (await promisify(
+        const user: UserWithSchoolDataType = (await promisify(
           mApi().user.students.read(this.props.status.userSchoolDataIdentifier),
-          "callback"
+          "callback",
         )()) as UserWithSchoolDataType;
         if (!user || (user.updatedByStudent && !FORCE_OPEN)) {
           return;
         }
 
-        let addresses: Array<StudentUserAddressType> = (await promisify(
+        const addresses: Array<StudentUserAddressType> = (await promisify(
           mApi().user.students.addresses.read(
-            this.props.status.userSchoolDataIdentifier
+            this.props.status.userSchoolDataIdentifier,
           ),
-          "callback"
+          "callback",
         )()) as Array<StudentUserAddressType>;
         let address = null;
         for (let i = 0; i < addresses.length; i++) {
@@ -84,14 +84,14 @@ class CheckContactInfoDialog extends React.Component<
         this.setState({
           user,
           address,
-          isOpen: true
+          isOpen: true,
         });
       } catch (e) {}
     }
   }
   closeDialog() {
     this.setState({
-      isOpen: false
+      isOpen: false,
     });
   }
   async confirmContactInfo() {
@@ -101,32 +101,32 @@ class CheckContactInfoDialog extends React.Component<
         mApi().user.students.addresses.update(
           this.props.status.userSchoolDataIdentifier,
           this.state.address.identifier,
-          this.state.address
+          this.state.address,
         ),
-        "callback"
+        "callback",
       )();
     } catch (err) {
       this.props.displayNotification(err.message, "error");
     }
   }
   render() {
-    let content = (closeDialog: () => any) => (
+    const content = (closeDialog: () => any) => (
       <div>
         <div>
           {this.props.i18n.text.get(
-            "plugin.frontPage.checkContactInfo.dialog.description"
+            "plugin.frontPage.checkContactInfo.dialog.description",
           )}
         </div>
         <dl>
           <dt>
             {this.props.i18n.text.get(
-              "plugin.frontPage.checkContactInfo.dialog.street"
+              "plugin.frontPage.checkContactInfo.dialog.street",
             )}
           </dt>
           <dd>{this.state.address.street ? this.state.address.street : "-"}</dd>
           <dt>
             {this.props.i18n.text.get(
-              "plugin.frontPage.checkContactInfo.dialog.postalCode"
+              "plugin.frontPage.checkContactInfo.dialog.postalCode",
             )}
           </dt>
           <dd>
@@ -136,13 +136,13 @@ class CheckContactInfoDialog extends React.Component<
           </dd>
           <dt>
             {this.props.i18n.text.get(
-              "plugin.frontPage.checkContactInfo.dialog.city"
+              "plugin.frontPage.checkContactInfo.dialog.city",
             )}
           </dt>
           <dd>{this.state.address.city ? this.state.address.city : "-"}</dd>
           <dt>
             {this.props.i18n.text.get(
-              "plugin.frontPage.checkContactInfo.dialog.country"
+              "plugin.frontPage.checkContactInfo.dialog.country",
             )}
           </dt>
           <dd>
@@ -150,7 +150,7 @@ class CheckContactInfoDialog extends React.Component<
           </dd>
           <dt>
             {this.props.i18n.text.get(
-              "plugin.frontPage.checkContactInfo.dialog.municipality"
+              "plugin.frontPage.checkContactInfo.dialog.municipality",
             )}
           </dt>
           <dd>
@@ -160,32 +160,30 @@ class CheckContactInfoDialog extends React.Component<
       </div>
     );
 
-    let footer = (closeDialog: () => any) => {
-      return (
-        <div className="dialog__button-set">
-          <Link
-            className="button button--success button--standard-ok"
-            onClick={this.confirmContactInfo}
-          >
-            {this.props.i18n.text.get(
-              "plugin.frontPage.checkContactInfo.dialog.button.confirmLabel"
-            )}
-          </Link>
-          <Link
-            className="button button--error button--standard-ok"
-            href="/profile"
-          >
-            {this.props.i18n.text.get(
-              "plugin.frontPage.checkContactInfo.dialog.button.okLabel"
-            )}
-          </Link>
-        </div>
-      );
-    };
+    const footer = (closeDialog: () => any) => (
+      <div className="dialog__button-set">
+        <Link
+          className="button button--success button--standard-ok"
+          onClick={this.confirmContactInfo}
+        >
+          {this.props.i18n.text.get(
+            "plugin.frontPage.checkContactInfo.dialog.button.confirmLabel",
+          )}
+        </Link>
+        <Link
+          className="button button--error button--standard-ok"
+          href="/profile"
+        >
+          {this.props.i18n.text.get(
+            "plugin.frontPage.checkContactInfo.dialog.button.okLabel",
+          )}
+        </Link>
+      </div>
+    );
     return (
       <Dialog
         title={this.props.i18n.text.get(
-          "plugin.frontPage.checkContactInfo.dialog.title"
+          "plugin.frontPage.checkContactInfo.dialog.title",
         )}
         content={content}
         footer={footer}
@@ -199,7 +197,7 @@ class CheckContactInfoDialog extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    status: state.status
+    status: state.status,
   };
 }
 
@@ -209,5 +207,5 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(CheckContactInfoDialog);

@@ -1,19 +1,16 @@
-import Link from "../../general/link";
+import Link from "~/components/general/link";
 import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
 import {
   AnnouncementListType,
-  AnnouncementType
+  AnnouncementType,
 } from "~/reducers/announcements";
-
 import "~/sass/elements/item-list.scss";
 import "~/sass/elements/panel.scss";
 import "~/sass/elements/label.scss";
-import ReactPaginate from "react-paginate";
-import { StateType } from "../../../reducers/index";
-import { connect, Dispatch } from "react-redux";
-import ReactPaginateForked from "react-paginate";
+import { StateType } from "~/reducers/index";
+import { connect } from "react-redux";
 import PagerV2 from "~/components/general/pagerV2";
 
 interface AnnouncementsPanelProps {
@@ -39,7 +36,7 @@ class AnnouncementsPanel extends React.Component<
     this.state = {
       itemsPerPage: 10,
       currentPage: 0,
-      announcements: props.announcements
+      announcements: props.announcements,
     };
   }
 
@@ -48,16 +45,13 @@ class AnnouncementsPanel extends React.Component<
    * @param prevProps
    * @param prevState
    */
-  componentDidUpdate(
-    prevProps: AnnouncementsPanelProps,
-    prevState: AnnouncementsPanelState
-  ) {
+  componentDidUpdate(prevProps: AnnouncementsPanelProps) {
     if (
       JSON.stringify(prevProps.announcements) !==
       JSON.stringify(this.props.announcements)
     ) {
       this.setState({
-        announcements: this.props.announcements
+        announcements: this.props.announcements,
       });
     }
   }
@@ -69,7 +63,7 @@ class AnnouncementsPanel extends React.Component<
    */
   handlePageChange = (selectedItem: { selected: number }) => {
     this.setState({
-      currentPage: selectedItem.selected
+      currentPage: selectedItem.selected,
     });
   };
 
@@ -104,7 +98,7 @@ class AnnouncementsPanel extends React.Component<
      */
     const currentAnnouncements = announcements.slice(
       offset,
-      offset + itemsPerPage
+      offset + itemsPerPage,
     );
 
     /**
@@ -162,7 +156,7 @@ class AnnouncementsPanel extends React.Component<
             </span>
           </Link>
         );
-      }
+      },
     );
 
     /**
@@ -213,11 +207,11 @@ class AnnouncementsPanel extends React.Component<
           <div
             className="panel__body panel__body--empty"
             aria-label={this.props.i18n.text.get(
-              "plugin.frontPage.announcementPanel.ariaLabel.announcement.panel"
+              "plugin.frontPage.announcementPanel.ariaLabel.announcement.panel",
             )}
           >
             {this.props.i18n.text.get(
-              "plugin.frontPage.announcements.noAnnouncements"
+              "plugin.frontPage.announcements.noAnnouncements",
             )}
           </div>
         )}
@@ -235,7 +229,7 @@ function mapStateToProps(state: StateType) {
   return {
     status: state.status,
     i18n: state.i18n,
-    announcements: state.announcements.announcements
+    announcements: state.announcements.announcements,
   };
 }
 
@@ -244,7 +238,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch
  * @returns
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps() {
   return {};
 }
 

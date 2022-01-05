@@ -16,7 +16,7 @@ export default class ScreenContainer extends React.Component<
     super(props);
   }
   render() {
-    let modifiers: Array<string> =
+    const modifiers: Array<string> =
       typeof this.props.viewModifiers === "string"
         ? [this.props.viewModifiers]
         : this.props.viewModifiers;

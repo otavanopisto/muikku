@@ -1,8 +1,5 @@
 import * as React from "react";
-import {
-  ExaminationPlannedSubject,
-  ExaminationEnrolledSubject
-} from "../../../../../@types/shared";
+import { ExaminationPlannedSubject } from "../../../../../@types/shared";
 import { MatriculationExaminationPlannedInputGroup } from "./matriculation-examination-selector-components";
 
 /**
@@ -10,7 +7,7 @@ import { MatriculationExaminationPlannedInputGroup } from "./matriculation-exami
  */
 interface MatriculationExaminationPlannedAttendesListProps {
   onChange?: (
-    modifiedExaminationFutureSubjectList: ExaminationPlannedSubject[]
+    modifiedExaminationFutureSubjectList: ExaminationPlannedSubject[],
   ) => void;
   readOnly?: boolean;
   useTermSelect?: boolean;
@@ -24,7 +21,7 @@ interface MatriculationExaminationPlannedAttendesListProps {
 const defaultUseSelectProps = {
   useTermSelect: true,
   useSubjectSelect: true,
-  useMandatorySelect: true
+  useMandatorySelect: true,
 };
 
 /**
@@ -43,7 +40,6 @@ export const MatriculationExaminationPlannedAttendesList: React.FC<
     nextOptions,
     onDeleteRow,
     readOnly,
-    children,
     ...useSelectProps
   } = props;
 
@@ -54,13 +50,13 @@ export const MatriculationExaminationPlannedAttendesList: React.FC<
    * @param index
    */
   const handleMatriculationExaminationSubjectGroupChange = <
-    T extends keyof ExaminationPlannedSubject
+    T extends keyof ExaminationPlannedSubject,
   >(
     key: T,
     value: ExaminationPlannedSubject[T],
-    index: number
+    index: number,
   ) => {
-    let modifiedExaminationPlannedList = examinationPlannedList;
+    const modifiedExaminationPlannedList = examinationPlannedList;
 
     modifiedExaminationPlannedList[index][key] = value;
 
@@ -71,7 +67,7 @@ export const MatriculationExaminationPlannedAttendesList: React.FC<
    * List of selected subject string keys
    */
   const selectedPlannedSubjects = examinationPlannedList.map(
-    (sSubject) => sSubject.subject
+    (sSubject) => sSubject.subject,
   );
 
   return (

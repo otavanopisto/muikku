@@ -1,5 +1,4 @@
 import * as React from "react";
-import { SaveState } from "~/@types/shared";
 
 interface SavingDraftErrorProps {
   draftSaveErrorMsg: string;
@@ -10,7 +9,7 @@ interface SavingDraftErrorProps {
  * @returns JSX.Element
  */
 export const SavingDraftError: React.FC<SavingDraftErrorProps> = ({
-  draftSaveErrorMsg
+  draftSaveErrorMsg,
 }) => (
   <div
     className={`matriculation__saving-draft matriculation__saving-draft--error ${

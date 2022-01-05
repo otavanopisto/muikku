@@ -20,7 +20,7 @@ interface MathFieldProps {
   onChange?: (
     context: React.Component<any, any>,
     name: string,
-    newValue: any
+    newValue: any,
   ) => any;
 }
 
@@ -52,7 +52,7 @@ export default class TextField extends React.Component<
       synced: true,
       syncError: null,
 
-      fieldSavedState: null
+      fieldSavedState: null,
     };
 
     this.setValue = this.setValue.bind(this);
@@ -65,7 +65,7 @@ export default class TextField extends React.Component<
    */
   onFieldSavedStateChange(savedState: FieldStateStatus) {
     this.setState({
-      fieldSavedState: savedState
+      fieldSavedState: savedState,
     });
   }
 
@@ -92,7 +92,7 @@ export default class TextField extends React.Component<
    */
   setValue(newValue: string) {
     this.setState({
-      value: newValue
+      value: newValue,
     });
     this.props.onChange &&
       this.props.onChange(this, this.props.content.name, newValue);
@@ -107,8 +107,8 @@ export default class TextField extends React.Component<
     // backwards compability has been broken since you changed the class name from muikku-math-exercise-formula to material-page__mathfield-formula
     // this means old formulas will 100% fail to parse
 
-    let fieldSavedStateClass = createFieldSavedStateClass(
-      this.state.fieldSavedState
+    const fieldSavedStateClass = createFieldSavedStateClass(
+      this.state.fieldSavedState,
     );
 
     return (
@@ -133,26 +133,26 @@ export default class TextField extends React.Component<
           toolbarClassName="material-page__mathfield-toolbar"
           i18n={{
             symbols: this.props.i18n.text.get(
-              "plugin.workspace.mathField.symbols"
+              "plugin.workspace.mathField.symbols",
             ),
             relations: this.props.i18n.text.get(
-              "plugin.workspace.mathField.relations"
+              "plugin.workspace.mathField.relations",
             ),
             geometryAndVectors: this.props.i18n.text.get(
-              "plugin.workspace.mathField.geometryAndVectors"
+              "plugin.workspace.mathField.geometryAndVectors",
             ),
             setTheoryNotation: this.props.i18n.text.get(
-              "plugin.workspace.mathField.setTheoryNotation"
+              "plugin.workspace.mathField.setTheoryNotation",
             ),
             mathFormulas: this.props.i18n.text.get(
-              "plugin.workspace.mathField.addMathFormula"
+              "plugin.workspace.mathField.addMathFormula",
             ),
             operators: this.props.i18n.text.get(
-              "plugin.workspace.mathField.operators"
+              "plugin.workspace.mathField.operators",
             ),
             image: this.props.i18n.text.get(
-              "plugin.workspace.mathField.addImage"
-            )
+              "plugin.workspace.mathField.addImage",
+            ),
           }}
           readOnly={this.props.readOnly}
           dontLoadACE={this.props.readOnly}

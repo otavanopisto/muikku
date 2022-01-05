@@ -10,7 +10,7 @@ import {
   ContactRecipientType,
   UserGroupType,
   UserType,
-  UserStaffType
+  UserStaffType,
 } from "~/reducers/user-index";
 import "~/sass/elements/autocomplete.scss";
 import "~/sass/elements/glyph.scss";
@@ -74,7 +74,7 @@ export default class c extends React.Component<
       textInput: "",
       autocompleteOpened: false,
 
-      isFocused: this.props.autofocus === true
+      isFocused: this.props.autofocus === true,
     };
 
     this.blurTimeout = null;
@@ -98,15 +98,15 @@ export default class c extends React.Component<
   }
 
   setBodyMargin() {
-    let selectedHeight = (
+    const selectedHeight = (
       this.refs["taginput"] as TagInput
     ).getSelectedHeight();
-    let prevSelectedHeight = this.selectedHeight;
-    let currentBodyMargin = parseFloat(document.body.style.marginBottom);
-    let defaultBodyMargin = currentBodyMargin - prevSelectedHeight;
+    const prevSelectedHeight = this.selectedHeight;
+    const currentBodyMargin = parseFloat(document.body.style.marginBottom);
+    const defaultBodyMargin = currentBodyMargin - prevSelectedHeight;
 
     if (selectedHeight !== this.selectedHeight) {
-      let bodyMargin = defaultBodyMargin + selectedHeight + "px";
+      const bodyMargin = defaultBodyMargin + selectedHeight + "px";
       document.body.style.marginBottom = bodyMargin;
       this.selectedHeight = selectedHeight;
     }
@@ -114,7 +114,7 @@ export default class c extends React.Component<
   onInputBlur(e: React.FocusEvent<any>) {
     this.blurTimeout = setTimeout(
       () => this.setState({ isFocused: false }),
-      100
+      100,
     ) as any;
   }
   onInputFocus(e: React.FocusEvent<any>) {
@@ -122,74 +122,70 @@ export default class c extends React.Component<
     this.setState({ isFocused: true });
   }
   onInputChange(e: React.ChangeEvent<HTMLInputElement>) {
-    let textInput = e.target.value;
+    const textInput = e.target.value;
     this.setState({ textInput, autocompleteOpened: true });
     clearTimeout(this.activeSearchTimeout);
     if (textInput) {
       this.activeSearchTimeout = setTimeout(
         this.autocompleteDataFromServer.bind(this, textInput),
-        100
+        100,
       ) as any;
     } else {
       this.setState({
-        autocompleteSearchItems: []
+        autocompleteSearchItems: [],
       });
     }
   }
 
   async autocompleteDataFromServer(textInput: string) {
-    let searchId = new Date().getTime();
+    const searchId = new Date().getTime();
     this.activeSearchId = searchId;
-    let loaders = this.props.loaders || {};
+    const loaders = this.props.loaders || {};
 
-    let getStudentsLoader = () => {
-      return loaders.studentsLoader
+    const getStudentsLoader = () =>
+      loaders.studentsLoader
         ? loaders.studentsLoader(textInput)
         : promisify(
             mApi().user.users.read({
               q: textInput,
               onlyDefaultUsers: checkHasPermission(
-                this.props.userPermissionIsOnlyDefaultUsers
-              )
+                this.props.userPermissionIsOnlyDefaultUsers,
+              ),
             }),
-            "callback"
+            "callback",
           );
-    };
-    let getUserGroupsLoader = () => {
-      return loaders.userGroupsLoader
+    const getUserGroupsLoader = () =>
+      loaders.userGroupsLoader
         ? loaders.userGroupsLoader(textInput)
         : promisify(
             mApi().usergroup.groups.read({
-              q: textInput
+              q: textInput,
             }),
-            "callback"
+            "callback",
           );
-    };
-    let getWorkspacesLoader = () => {
-      return loaders.workspacesLoader
+    const getWorkspacesLoader = () =>
+      loaders.workspacesLoader
         ? loaders.workspacesLoader(textInput)
         : promisify(
             mApi().coursepicker.workspaces.read({
               q: textInput,
               myWorkspaces: checkHasPermission(
-                this.props.workspacePermissionIsOnlyMyWorkspaces
-              )
+                this.props.workspacePermissionIsOnlyMyWorkspaces,
+              ),
             }),
-            "callback"
+            "callback",
           );
-    };
-    let getStaffLoader = () => {
-      return loaders.staffLoader
+    const getStaffLoader = () =>
+      loaders.staffLoader
         ? loaders.staffLoader(textInput)
         : promisify(
             mApi().user.staffMembers.read({
-              q: textInput
+              q: textInput,
             }),
-            "callback"
+            "callback",
           );
-    };
 
-    let searchResults = await Promise.all([
+    const searchResults = await Promise.all([
       checkHasPermission(this.props.hasUserPermission)
         ? getStudentsLoader()()
             .then((result: any[]) => result || [])
@@ -209,52 +205,52 @@ export default class c extends React.Component<
         ? getStaffLoader()()
             .then((result: WorkspaceStaffListType) => result.results || [])
             .catch((err: any): any[] => [])
-        : []
+        : [],
     ]);
 
-    let userItems: ContactRecipientType[] = searchResults[0].map(
+    const userItems: ContactRecipientType[] = searchResults[0].map(
       (item: UserType): ContactRecipientType => ({
         type: "user",
         value: {
           id: item.id,
           name: getName(item, this.props.showFullNames),
-          email: item.email
-        }
-      })
+          email: item.email,
+        },
+      }),
     );
-    let userGroupItems: ContactRecipientType[] = searchResults[1].map(
+    const userGroupItems: ContactRecipientType[] = searchResults[1].map(
       (item: UserGroupType): ContactRecipientType => ({
         type: "usergroup",
         value: {
           id: item.id,
           name: item.name,
-          organization: item.organization
-        }
-      })
+          organization: item.organization,
+        },
+      }),
     );
-    let workspaceItems: ContactRecipientType[] = searchResults[2].map(
+    const workspaceItems: ContactRecipientType[] = searchResults[2].map(
       (item: WorkspaceType): ContactRecipientType => ({
         type: "workspace",
         value: {
           id: item.id,
           name:
             item.name +
-            (item.nameExtension ? " (" + item.nameExtension + ")" : "")
-        }
-      })
+            (item.nameExtension ? " (" + item.nameExtension + ")" : ""),
+        },
+      }),
     );
-    let staffItems: ContactRecipientType[] = searchResults[3].map(
+    const staffItems: ContactRecipientType[] = searchResults[3].map(
       (item: UserStaffType): ContactRecipientType => ({
         type: "staff",
         value: {
           id: item.userEntityId,
           name: getName(item, this.props.showFullNames),
           email: item.email,
-          identifier: item.id
-        }
-      })
+          identifier: item.id,
+        },
+      }),
     );
-    let allItems: ContactRecipientType[] = userItems
+    const allItems: ContactRecipientType[] = userItems
       .concat(userGroupItems)
       .concat(workspaceItems)
       .concat(staffItems);
@@ -262,23 +258,23 @@ export default class c extends React.Component<
     //ensuring that the current search is the last search
     if (this.activeSearchId === searchId) {
       this.setState({
-        autocompleteSearchItems: allItems
+        autocompleteSearchItems: allItems,
       });
     }
   }
   onDelete(item: ContactRecipientType) {
     clearTimeout(this.blurTimeout);
-    let nfilteredValue = this.state.selectedItems.filter(
+    const nfilteredValue = this.state.selectedItems.filter(
       (selectedItem) =>
         selectedItem.type !== item.type ||
-        selectedItem.value.id !== item.value.id
+        selectedItem.value.id !== item.value.id,
     );
     this.setState(
       {
         selectedItems: nfilteredValue,
-        isFocused: true
+        isFocused: true,
       },
-      this.setBodyMargin
+      this.setBodyMargin,
     );
 
     this.props.onChange(nfilteredValue);
@@ -287,15 +283,15 @@ export default class c extends React.Component<
     clearTimeout(this.blurTimeout);
     this.setBodyMargin;
     if (!selected) {
-      let nvalue = this.state.selectedItems.concat([item]);
+      const nvalue = this.state.selectedItems.concat([item]);
       this.setState(
         {
           selectedItems: nvalue,
           autocompleteOpened: false,
           textInput: "",
-          isFocused: true
+          isFocused: true,
         },
-        this.setBodyMargin
+        this.setBodyMargin,
       );
       this.props.onChange(nvalue);
     } else {
@@ -304,14 +300,14 @@ export default class c extends React.Component<
   }
 
   componentDidMount() {
-    let selectedHeight = (
+    const selectedHeight = (
       this.refs["taginput"] as TagInput
     ).getSelectedHeight();
     this.selectedHeight = selectedHeight;
   }
 
   render() {
-    let selectedItems = this.state.selectedItems.map((item) => {
+    const selectedItems = this.state.selectedItems.map((item) => {
       if (item.type === "user" || item.type === "staff") {
         return {
           node: (
@@ -323,7 +319,7 @@ export default class c extends React.Component<
               ) : null}
             </span>
           ),
-          value: item
+          value: item,
         };
       } else if (item.type === "usergroup") {
         return {
@@ -336,7 +332,7 @@ export default class c extends React.Component<
                 : ""}
             </span>
           ),
-          value: item
+          value: item,
         };
       } else if (item.type === "workspace") {
         return {
@@ -346,12 +342,12 @@ export default class c extends React.Component<
               {item.value.name}
             </span>
           ),
-          value: item
+          value: item,
         };
       }
     });
 
-    let autocompleteItems = this.state.autocompleteSearchItems.map((item) => {
+    const autocompleteItems = this.state.autocompleteSearchItems.map((item) => {
       let node;
       if (item.type === "user" || item.type === "staff") {
         node = (
@@ -387,9 +383,9 @@ export default class c extends React.Component<
         selected: !!this.state.selectedItems.find(
           (selectedItem) =>
             selectedItem.type === item.type &&
-            selectedItem.value.id === item.value.id
+            selectedItem.value.id === item.value.id,
         ),
-        node
+        node,
       };
     });
 

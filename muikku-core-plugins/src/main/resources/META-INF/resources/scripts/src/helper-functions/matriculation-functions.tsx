@@ -11,7 +11,7 @@ const resolveTerm = (from: moment.Moment): Term => {
   return {
     value: (quarter < 3 ? "SPRING" : "AUTUMN") + from.year(),
     name: (quarter < 3 ? "Kevät " : "Syksy ") + from.year(),
-    adessive: (quarter < 3 ? "keväällä " : "syksyllä ") + from.year()
+    adessive: (quarter < 3 ? "keväällä " : "syksyllä ") + from.year(),
   };
 };
 
@@ -19,9 +19,7 @@ const resolveTerm = (from: moment.Moment): Term => {
  * Resolves current term
  * @returns {object} term details
  */
-export const resolveCurrentTerm = () => {
-  return resolveTerm(moment().add(6, "months"));
-};
+export const resolveCurrentTerm = () => resolveTerm(moment().add(6, "months"));
 
 /**
  * Resolves given number of terms starting from given date
@@ -44,24 +42,20 @@ const resolveTerms = (from: moment.Moment, count: number) => {
  * @param {array} terms terms
  * @returns {array} term options
  */
-const getTermOptions = (terms: Term[]) => {
-  return terms.map((term, i) => {
-    return (
-      <option key={i} value={term.value}>
-        {term.name}
-      </option>
-    );
-  });
-};
+const getTermOptions = (terms: Term[]) =>
+  terms.map((term, i) => (
+    <option key={i} value={term.value}>
+      {term.name}
+    </option>
+  ));
 
 /**
  * Resolves past 6 terms
  *
  * @returns {array} terms
  */
-export const getPastTerms = () => {
-  return resolveTerms(moment().subtract(2.5, "years"), 6);
-};
+export const getPastTerms = () =>
+  resolveTerms(moment().subtract(2.5, "years"), 6);
 
 /**
  * Resolves next 3 terms
@@ -69,18 +63,14 @@ export const getPastTerms = () => {
  * @param {number} count count of terms to be resolved
  * @returns {array} terms
  */
-export const getNextTerms = () => {
-  return resolveTerms(moment().add(1, "years"), 3);
-};
+export const getNextTerms = () => resolveTerms(moment().add(1, "years"), 3);
 
 /**
  * Resolves past 6 term options
  *
  * @returns {array} term options
  */
-export const getPastTermOptions = () => {
-  return getTermOptions(getPastTerms());
-};
+export const getPastTermOptions = () => getTermOptions(getPastTerms());
 
 /**
  * Resolves next 3 term options
@@ -88,24 +78,18 @@ export const getPastTermOptions = () => {
  * @param {number} count count of terms to be resolved
  * @returns {array} term options
  */
-export const getNextTermOptions = () => {
-  return getTermOptions(getNextTerms());
-};
+export const getNextTermOptions = () => getTermOptions(getNextTerms());
 
 /**
  * Returns default past term
  *
  * @return default past term
  */
-export const getDefaultPastTerm = () => {
-  return getPastTerms()[0];
-};
+export const getDefaultPastTerm = () => getPastTerms()[0];
 
 /**
  * Returns default next term
  *
  * @return default next term
  */
-export const getDefaultNextTerm = () => {
-  return getNextTerms()[0];
-};
+export const getDefaultNextTerm = () => getNextTerms()[0];

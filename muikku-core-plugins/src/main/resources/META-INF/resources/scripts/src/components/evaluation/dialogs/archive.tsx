@@ -12,19 +12,19 @@ import { AssessmentRequest } from "../../../@types/evaluation";
 import { EvaluationState } from "../../../reducers/main-function/evaluation/index";
 import {
   UpdateNeedsReloadEvaluationRequests,
-  updateNeedsReloadEvaluationRequests
+  updateNeedsReloadEvaluationRequests,
 } from "../../../actions/main-function/evaluation/evaluationActions";
 import {
   LoadEvaluationAssessmentRequest,
-  loadEvaluationAssessmentRequestsFromServer
+  loadEvaluationAssessmentRequestsFromServer,
 } from "../../../actions/main-function/evaluation/evaluationActions";
 import {
   LoadEvaluationAssessmentEvent,
-  loadEvaluationAssessmentEventsFromServer
+  loadEvaluationAssessmentEventsFromServer,
 } from "../../../actions/main-function/evaluation/evaluationActions";
 import {
   ArchiveStudent,
-  archiveStudent
+  archiveStudent,
 } from "../../../actions/main-function/evaluation/evaluationActions";
 
 /**
@@ -70,17 +70,15 @@ class ArchiveDialog extends React.Component<
    * This should sanitize html
    * @param htmlString string that contains html
    */
-  createHtmlMarkup = (htmlString: string) => {
-    return {
-      __html: htmlString
-    };
-  };
+  createHtmlMarkup = (htmlString: string) => ({
+    __html: htmlString,
+  });
 
   /**
    * deleteRequest
    * @param closeDialog
    */
-  archiveStudent(closeDialog: () => any) {
+  archiveStudent() {
     const { workspaceUserEntityId, workspaceEntityId, onClose } = this.props;
 
     this.props.archiveStudent({
@@ -92,12 +90,12 @@ class ArchiveDialog extends React.Component<
         } else {
           this.props.updateNeedsReloadEvaluationRequests({ value: true });
           this.props.loadEvaluationAssessmentEventsFromServer({
-            assessment: this.props.evaluations.evaluationSelectedAssessmentId
+            assessment: this.props.evaluations.evaluationSelectedAssessmentId,
           });
         }
 
         onClose && onClose();
-      }
+      },
     });
   }
 
@@ -114,55 +112,51 @@ class ArchiveDialog extends React.Component<
      * footer
      * @param closeDialog
      */
-    const footer = (closeDialog: () => any) => {
-      return (
-        <div className="dialog__button-set">
-          <Button
-            buttonModifiers={["fatal", "standard-ok"]}
-            onClick={this.archiveStudent.bind(this, closeDialog)}
-          >
-            {this.props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.archiveStudent.confirmationDialog.buttonArchiveLabel"
-            )}
-          </Button>
-          <Button
-            buttonModifiers={["cancel", "standard-cancel"]}
-            onClick={this.props.onClose ? this.props.onClose : closeDialog}
-          >
-            {this.props.place === "card"
-              ? this.props.i18n.text.get(
-                  "plugin.evaluation.evaluationModal.archiveStudent.confirmationDialog.buttonNoLabel"
-                )
-              : this.props.i18n.text.get(
-                  "plugin.evaluation.evaluationModal.archiveRequest.confirmationDialog.noLabel"
-                )}
-          </Button>
-        </div>
-      );
-    };
+    const footer = (closeDialog: () => any) => (
+      <div className="dialog__button-set">
+        <Button
+          buttonModifiers={["fatal", "standard-ok"]}
+          onClick={this.archiveStudent.bind(this, closeDialog)}
+        >
+          {this.props.i18n.text.get(
+            "plugin.evaluation.evaluationModal.archiveStudent.confirmationDialog.buttonArchiveLabel",
+          )}
+        </Button>
+        <Button
+          buttonModifiers={["cancel", "standard-cancel"]}
+          onClick={this.props.onClose ? this.props.onClose : closeDialog}
+        >
+          {this.props.place === "card"
+            ? this.props.i18n.text.get(
+                "plugin.evaluation.evaluationModal.archiveStudent.confirmationDialog.buttonNoLabel",
+              )
+            : this.props.i18n.text.get(
+                "plugin.evaluation.evaluationModal.archiveRequest.confirmationDialog.noLabel",
+              )}
+        </Button>
+      </div>
+    );
 
     /**
      * content
      * @param closeDialog
      */
-    const content = () => {
-      return (
-        <div
-          dangerouslySetInnerHTML={this.createHtmlMarkup(
-            this.props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.archiveStudent.confirmationDialog.description",
-              studentNameString
-            )
-          )}
-        />
-      );
-    };
+    const content = (closeDialog: () => any) => (
+      <div
+        dangerouslySetInnerHTML={this.createHtmlMarkup(
+          this.props.i18n.text.get(
+            "plugin.evaluation.evaluationModal.archiveStudent.confirmationDialog.description",
+            studentNameString,
+          ),
+        )}
+      />
+    );
     return (
       <Dialog
         isOpen={this.props.isOpen}
         modifier="evaluation-archive-student"
         title={this.props.i18n.text.get(
-          "plugin.evaluation.evaluationModal.archiveStudent.confirmationDialog.title"
+          "plugin.evaluation.evaluationModal.archiveStudent.confirmationDialog.title",
         )}
         content={content}
         footer={footer}
@@ -180,7 +174,7 @@ class ArchiveDialog extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    evaluations: state.evaluations
+    evaluations: state.evaluations,
   };
 }
 
@@ -194,9 +188,9 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
       archiveStudent,
       loadEvaluationAssessmentEventsFromServer,
       loadEvaluationAssessmentRequestsFromServer,
-      updateNeedsReloadEvaluationRequests
+      updateNeedsReloadEvaluationRequests,
     },
-    dispatch
+    dispatch,
   );
 }
 

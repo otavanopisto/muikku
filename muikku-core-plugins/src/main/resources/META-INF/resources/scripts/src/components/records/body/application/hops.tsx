@@ -34,7 +34,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
     clearTimeout(this.timeout);
     this.timeout = setTimeout(
       this.props.setHopsTo.bind(null, hops),
-      1000
+      1000,
     ) as any;
   }
   render() {
@@ -71,7 +71,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     records: (state as any).records,
-    hops: state.hops
+    hops: state.hops,
   };
 }
 

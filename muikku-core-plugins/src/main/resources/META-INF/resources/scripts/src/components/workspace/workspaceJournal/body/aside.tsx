@@ -1,32 +1,26 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import Link from "~/components/general/link";
 import { i18nType } from "~/reducers/base/i18n";
-import * as queryString from "query-string";
 
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/item-list.scss";
 import { StateType } from "~/reducers";
 import Navigation, {
   NavigationTopic,
-  NavigationElement
+  NavigationElement,
 } from "~/components/general/navigation";
-import { WorkspaceType } from "../../../../reducers/workspaces/index";
-import { StatusType } from "../../../../reducers/base/status";
-import { getName } from "../../../../util/modifiers";
+import { WorkspaceType } from "~/reducers/workspaces/index";
+import { StatusType } from "~/reducers/base/status";
 import { bindActionCreators } from "redux";
 import {
   loadStudentsOfWorkspace,
-  loadCurrentWorkspaceJournalsFromServer
+  loadCurrentWorkspaceJournalsFromServer,
 } from "~/actions/workspaces";
 import {
   LoadUsersOfWorkspaceTriggerType,
-  LoadCurrentWorkspaceJournalsFromServerTriggerType
-} from "../../../../actions/workspaces/index";
-import {
-  WorkspaceStudentListType,
-  ShortWorkspaceUserWithActiveStatusType
-} from "../../../../reducers/user-index";
+  LoadCurrentWorkspaceJournalsFromServerTriggerType,
+} from "~/actions/workspaces/index";
+import { WorkspaceStudentListType } from "~/reducers/user-index";
 
 interface NavigationAsideProps {
   i18n: i18nType;
@@ -48,7 +42,7 @@ class NavigationAside extends React.Component<
     super(props);
 
     this.state = {
-      students: null
+      students: null,
     };
   }
 
@@ -57,7 +51,7 @@ class NavigationAside extends React.Component<
    * @param id
    * @returns
    */
-  handleOnStudentClick = (id: number | null) => (e: React.MouseEvent) => {
+  handleOnStudentClick = (id: number | null) => () => {
     this.props.loadCurrentWorkspaceJournalsFromServer(id);
   };
 
@@ -73,8 +67,8 @@ class NavigationAside extends React.Component<
             (student, index, array) =>
               array.findIndex(
                 (otherStudent) =>
-                  otherStudent.userEntityId === student.userEntityId
-              ) === index
+                  otherStudent.userEntityId === student.userEntityId,
+              ) === index,
           )
         : [];
     } else {
@@ -101,12 +95,12 @@ class NavigationAside extends React.Component<
     /**
      * If all student is showed
      */
-    let allSelected =
+    const allSelected =
       workspace !== null &&
       workspace.journals !== null &&
       workspace.journals.userEntityId === null;
 
-    let navigationElementList: JSX.Element[] = [];
+    const navigationElementList: JSX.Element[] = [];
 
     navigationElementList.push(
       <NavigationElement
@@ -116,9 +110,9 @@ class NavigationAside extends React.Component<
         onClick={this.handleOnStudentClick(null)}
       >
         {this.props.i18n.text.get(
-          "plugin.workspace.journal.studentFilter.showAll"
+          "plugin.workspace.journal.studentFilter.showAll",
         )}
-      </NavigationElement>
+      </NavigationElement>,
     );
 
     filteredStudents.length > 0 &&
@@ -134,8 +128,8 @@ class NavigationAside extends React.Component<
             onClick={this.handleOnStudentClick(student.userEntityId)}
           >
             {`${student.firstName} ${student.lastName}`}
-          </NavigationElement>
-        )
+          </NavigationElement>,
+        ),
       );
 
     return (
@@ -143,7 +137,7 @@ class NavigationAside extends React.Component<
         {!this.props.status.isStudent && (
           <NavigationTopic
             name={this.props.i18n.text.get(
-              "plugin.organization.workspaces.editWorkspace.users.tab.workspaceStudents.title"
+              "plugin.organization.workspaces.editWorkspace.users.tab.workspaceStudents.title",
             )}
           >
             {navigationElementList}
@@ -163,7 +157,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     workspace: state.workspaces.currentWorkspace,
-    status: state.status
+    status: state.status,
   };
 }
 
@@ -176,9 +170,9 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     {
       loadStudents: loadStudentsOfWorkspace,
-      loadCurrentWorkspaceJournalsFromServer
+      loadCurrentWorkspaceJournalsFromServer,
     },
-    dispatch
+    dispatch,
   );
 }
 

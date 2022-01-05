@@ -1,19 +1,19 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
 import * as queryString from "query-string";
 import "~/sass/elements/item-list.scss";
 import {
   GuiderUserLabelType,
   GuiderWorkspaceType,
-  GuiderType
+  GuiderType,
 } from "~/reducers/main-function/guider";
 import { UserGroupType } from "~/reducers/user-index";
 import LabelUpdateDialog from "../dialogs/label-update";
 import { StateType } from "~/reducers";
 import Navigation, {
   NavigationTopic,
-  NavigationElement
+  NavigationElement,
 } from "~/components/general/navigation";
 
 interface NavigationProps {
@@ -28,9 +28,9 @@ class NavigationAside extends React.Component<
   NavigationState
 > {
   render() {
-    let locationData = queryString.parse(
+    const locationData = queryString.parse(
       document.location.hash.split("?")[1] || "",
-      { arrayFormat: "bracket" }
+      { arrayFormat: "bracket" },
     );
     return (
       <Navigation>
@@ -40,26 +40,26 @@ class NavigationAside extends React.Component<
           >
             {this.props.guider.availableFilters.labels.map(
               (label: GuiderUserLabelType) => {
-                let isActive =
+                const isActive =
                   this.props.guider.activeFilters.labelFilters.includes(
-                    label.id
+                    label.id,
                   );
-                let hash = isActive
+                const hash = isActive
                   ? queryString.stringify(
                       Object.assign({}, locationData, {
                         c: "",
                         l: (locationData.l || []).filter(
-                          (i: string) => parseInt(i) !== label.id
-                        )
+                          (i: string) => parseInt(i) !== label.id,
+                        ),
                       }),
-                      { arrayFormat: "bracket" }
+                      { arrayFormat: "bracket" },
                     )
                   : queryString.stringify(
                       Object.assign({}, locationData, {
                         c: "",
-                        l: (locationData.l || []).concat(label.id)
+                        l: (locationData.l || []).concat(label.id),
                       }),
-                      { arrayFormat: "bracket" }
+                      { arrayFormat: "bracket" },
                     );
                 return (
                   <NavigationElement
@@ -76,7 +76,7 @@ class NavigationAside extends React.Component<
                     {label.name}
                   </NavigationElement>
                 );
-              }
+              },
             )}
           </NavigationTopic>
         ) : null}
@@ -85,26 +85,26 @@ class NavigationAside extends React.Component<
         >
           {this.props.guider.availableFilters.workspaces.map(
             (workspace: GuiderWorkspaceType) => {
-              let isActive =
+              const isActive =
                 this.props.guider.activeFilters.workspaceFilters.includes(
-                  workspace.id
+                  workspace.id,
                 );
-              let hash = isActive
+              const hash = isActive
                 ? queryString.stringify(
                     Object.assign({}, locationData, {
                       c: "",
                       w: (locationData.w || []).filter(
-                        (w: string) => parseInt(w) !== workspace.id
-                      )
+                        (w: string) => parseInt(w) !== workspace.id,
+                      ),
                     }),
-                    { arrayFormat: "bracket" }
+                    { arrayFormat: "bracket" },
                   )
                 : queryString.stringify(
                     Object.assign({}, locationData, {
                       c: "",
-                      w: (locationData.w || []).concat(workspace.id)
+                      w: (locationData.w || []).concat(workspace.id),
                     }),
-                    { arrayFormat: "bracket" }
+                    { arrayFormat: "bracket" },
                   );
               return (
                 <NavigationElement
@@ -120,7 +120,7 @@ class NavigationAside extends React.Component<
                       : "")}
                 </NavigationElement>
               );
-            }
+            },
           )}
         </NavigationTopic>
         <NavigationTopic
@@ -128,26 +128,26 @@ class NavigationAside extends React.Component<
         >
           {this.props.guider.availableFilters.userGroups.map(
             (userGroup: UserGroupType) => {
-              let isActive =
+              const isActive =
                 this.props.guider.activeFilters.userGroupFilters.includes(
-                  userGroup.id
+                  userGroup.id,
                 );
-              let hash = isActive
+              const hash = isActive
                 ? queryString.stringify(
                     Object.assign({}, locationData, {
                       c: "",
                       u: (locationData.u || []).filter(
-                        (u: string) => parseInt(u) !== userGroup.id
-                      )
+                        (u: string) => parseInt(u) !== userGroup.id,
+                      ),
                     }),
-                    { arrayFormat: "bracket" }
+                    { arrayFormat: "bracket" },
                   )
                 : queryString.stringify(
                     Object.assign({}, locationData, {
                       c: "",
-                      u: (locationData.u || []).concat(userGroup.id)
+                      u: (locationData.u || []).concat(userGroup.id),
                     }),
-                    { arrayFormat: "bracket" }
+                    { arrayFormat: "bracket" },
                   );
               return (
                 <NavigationElement
@@ -160,7 +160,7 @@ class NavigationAside extends React.Component<
                   {userGroup.name}
                 </NavigationElement>
               );
-            }
+            },
           )}
         </NavigationTopic>
       </Navigation>
@@ -171,11 +171,11 @@ class NavigationAside extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    guider: state.guider
+    guider: state.guider,
   };
 }
 
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps() {
   return {};
 }
 

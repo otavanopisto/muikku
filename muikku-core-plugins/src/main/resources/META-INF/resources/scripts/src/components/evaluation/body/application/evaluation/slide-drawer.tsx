@@ -14,7 +14,7 @@ export interface SlideDrawerProps {
 }
 
 const defaultProps = {
-  showWarning: false
+  showWarning: false,
 };
 
 /**

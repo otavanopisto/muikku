@@ -10,7 +10,7 @@ export default class EvaluationBody extends React.Component<{}, {}> {
   }
 
   render() {
-    let aside = <Aside />;
+    const aside = <Aside />;
 
     return (
       <div>

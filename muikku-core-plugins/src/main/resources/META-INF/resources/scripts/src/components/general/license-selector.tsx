@@ -18,10 +18,10 @@ interface LicenseSelectorState {
   text: string;
 }
 
-let CC_URL_PREFIX_SSL = "https://creativecommons.org/licenses/";
-let CC_URL_PREFIX_NOSSL = "http://creativecommons.org/licenses/";
-let CC0_URL_SSL = "https://creativecommons.org/publicdomain/zero/1.0/";
-let CC0_URL_NOSSL = "http://creativecommons.org/publicdomain/zero/1.0/";
+const CC_URL_PREFIX_SSL = "https://creativecommons.org/licenses/";
+const CC_URL_PREFIX_NOSSL = "http://creativecommons.org/licenses/";
+const CC0_URL_SSL = "https://creativecommons.org/publicdomain/zero/1.0/";
+const CC0_URL_NOSSL = "http://creativecommons.org/publicdomain/zero/1.0/";
 
 interface CCPropsType {
   allowModifications: null | "nd" | "sa";
@@ -35,17 +35,17 @@ const CCPROPS = [
     values: [
       {
         value: null,
-        i18n: "plugin.workspace.materialsManagement.editorView.license.selection.yes"
+        i18n: "plugin.workspace.materialsManagement.editorView.license.selection.yes",
       },
       {
         value: "nd",
-        i18n: "plugin.workspace.materialsManagement.editorView.license.selection.no"
+        i18n: "plugin.workspace.materialsManagement.editorView.license.selection.no",
       },
       {
         value: "sa",
-        i18n: "plugin.workspace.materialsManagement.editorView.license.selection.shareAlike"
-      }
-    ]
+        i18n: "plugin.workspace.materialsManagement.editorView.license.selection.shareAlike",
+      },
+    ],
   },
   {
     id: "commercialUse",
@@ -53,20 +53,20 @@ const CCPROPS = [
     values: [
       {
         value: null,
-        i18n: "plugin.workspace.materialsManagement.editorView.license.selection.yes"
+        i18n: "plugin.workspace.materialsManagement.editorView.license.selection.yes",
       },
       {
         value: "nc",
-        i18n: "plugin.workspace.materialsManagement.editorView.license.selection.no"
-      }
-    ]
-  }
+        i18n: "plugin.workspace.materialsManagement.editorView.license.selection.no",
+      },
+    ],
+  },
 ];
 
 const CCPROPSPARSER = function (value: string): CCPropsType {
-  let result: CCPropsType = {
+  const result: CCPropsType = {
     allowModifications: null,
-    commercialUse: null
+    commercialUse: null,
   };
   if (value.indexOf("-nd") !== -1) {
     result.allowModifications = "nd";
@@ -81,7 +81,7 @@ const CCPROPSPARSER = function (value: string): CCPropsType {
 
 const CCPROPSDEF: CCPropsType = {
   allowModifications: "sa",
-  commercialUse: "nc"
+  commercialUse: "nc",
 };
 
 const CCVALIDATE = function (version: string, value: string) {
@@ -96,8 +96,8 @@ const CCVALIDATE = function (version: string, value: string) {
 };
 
 const CCVALUE = function (version: string, properties: CCPropsType) {
-  let cu = properties.commercialUse;
-  let am = properties.allowModifications;
+  const cu = properties.commercialUse;
+  const am = properties.allowModifications;
   return `${CC_URL_PREFIX_SSL}by${cu ? "-" + cu : ""}${
     am ? "-" + am : ""
   }/${version}`;
@@ -132,7 +132,7 @@ const LICENSES: Array<LicenseType> = [
     propertiesParser: CCPROPSPARSER,
     propertiesDefault: CCPROPSDEF,
     validate: CCVALIDATE.bind(null, "4.0"),
-    value: CCVALUE.bind(null, "4.0")
+    value: CCVALUE.bind(null, "4.0"),
   },
   {
     id: "CC3",
@@ -141,26 +141,26 @@ const LICENSES: Array<LicenseType> = [
     propertiesParser: CCPROPSPARSER,
     propertiesDefault: CCPROPSDEF,
     validate: CCVALIDATE.bind(null, "3.0"),
-    value: CCVALUE.bind(null, "3.0")
+    value: CCVALUE.bind(null, "3.0"),
   },
   {
     id: "CC0",
     i18n: "plugin.workspace.materialsManagement.editorView.license.cc0",
     value: () => CC0_URL_SSL,
     validate: (value: string) =>
-      value === CC0_URL_SSL || value === CC0_URL_NOSSL
+      value === CC0_URL_SSL || value === CC0_URL_NOSSL,
   },
   {
     id: "text_or_link",
     i18n: "plugin.workspace.materialsManagement.editorView.license.textOrLink",
-    validate: (value: string) => typeof value === "string"
+    validate: (value: string) => typeof value === "string",
   },
   {
     id: "none",
     i18n: "plugin.workspace.materialsManagement.editorView.license.none",
     value: () => null,
-    validate: () => true
-  }
+    validate: () => true,
+  },
 ];
 
 export class LicenseSelector extends React.Component<
@@ -170,10 +170,9 @@ export class LicenseSelector extends React.Component<
   constructor(props: LicenseSelectorProps) {
     super(props);
 
-    let currentLicense = LICENSES.find((v) => v.validate(props.value));
     this.state = {
       text: props.value || "",
-      valid: true
+      valid: true,
     };
 
     this.onChangeLicenseType = this.onChangeLicenseType.bind(this);
@@ -183,42 +182,41 @@ export class LicenseSelector extends React.Component<
   }
   componentWillReceiveProps(nextProps: LicenseSelectorProps) {
     if (nextProps.value !== this.state.text) {
-      let nextLicense = LICENSES.find((v) => v.validate(nextProps.value));
       this.setState({
         text: nextProps.value || "",
-        valid: true
+        valid: true,
       });
     }
   }
   onChangeLicenseType(e: React.ChangeEvent<HTMLSelectElement>) {
-    let newLicense = LICENSES.find((v) => v.id === e.target.value);
+    const newLicense = LICENSES.find((v) => v.id === e.target.value);
 
-    let newPropertyValues = newLicense.propertiesDefault
+    const newPropertyValues = newLicense.propertiesDefault
       ? newLicense.propertiesDefault
       : {};
     this.props.onChange(
-      newLicense.value ? newLicense.value(newPropertyValues) : ""
+      newLicense.value ? newLicense.value(newPropertyValues) : "",
     );
   }
   setAPropertyAndTriggerChange(
     properties: any,
     propertyId: string,
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement>,
   ) {
-    let currentLicense = LICENSES.find((v) => v.validate(this.props.value));
+    const currentLicense = LICENSES.find((v) => v.validate(this.props.value));
 
-    let propertyValue = e.target.value || null;
-    let nProps = { ...properties };
+    const propertyValue = e.target.value || null;
+    const nProps = { ...properties };
     nProps[propertyId] = propertyValue;
 
     this.props.onChange(currentLicense.value(nProps));
   }
   onChangeText(e: React.ChangeEvent<HTMLInputElement>) {
-    let currentLicense = LICENSES.find((v) => v.validate(this.props.value));
-    let valid = currentLicense.validate(e.target.value);
+    const currentLicense = LICENSES.find((v) => v.validate(this.props.value));
+    const valid = currentLicense.validate(e.target.value);
     this.setState({
       text: e.target.value,
-      valid
+      valid,
     });
 
     if (valid) {
@@ -226,8 +224,8 @@ export class LicenseSelector extends React.Component<
     }
   }
   render() {
-    let currentLicense = LICENSES.find((v) => v.validate(this.props.value));
-    let currentPropertyValues = currentLicense.propertiesParser
+    const currentLicense = LICENSES.find((v) => v.validate(this.props.value));
+    const currentPropertyValues = currentLicense.propertiesParser
       ? currentLicense.propertiesParser(this.props.value)
       : {};
     return (
@@ -279,7 +277,7 @@ export class LicenseSelector extends React.Component<
                           onChange={this.setAPropertyAndTriggerChange.bind(
                             this,
                             currentPropertyValues,
-                            property.id
+                            property.id,
                           )}
                         />
                         <label htmlFor={property.id + index}>
@@ -300,7 +298,7 @@ export class LicenseSelector extends React.Component<
               htmlFor="workspace-license-link-or-text"
             >
               {this.props.i18n.text.get(
-                "plugin.workspace.materialsManagement.editorView.license.textOrLink"
+                "plugin.workspace.materialsManagement.editorView.license.textOrLink",
               )}
             </label>
             <input

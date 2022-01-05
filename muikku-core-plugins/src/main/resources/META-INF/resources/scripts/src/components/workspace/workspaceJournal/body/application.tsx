@@ -2,8 +2,6 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
 import HoverButton from "~/components/general/hover-button";
-import Dropdown from "~/components/general/dropdown";
-import Link from "~/components/general/link";
 import Toolbar from "./application/toolbar";
 import WorkspaceJournals from "./application/journals";
 import { i18nType } from "~/reducers/base/i18n";
@@ -22,7 +20,7 @@ import Button from "~/components/general/button";
 import { bindActionCreators } from "redux";
 import {
   loadCurrentWorkspaceJournalsFromServer,
-  LoadCurrentWorkspaceJournalsFromServerTriggerType
+  LoadCurrentWorkspaceJournalsFromServerTriggerType,
 } from "~/actions/workspaces";
 import NewJournal from "~/components/workspace/workspaceJournal/dialogs/new-edit-journal";
 
@@ -48,13 +46,15 @@ class WorkspaceJournalApplication extends React.Component<
   }
 
   onWorkspaceJournalFilterChange(e: React.ChangeEvent<HTMLSelectElement>) {
-    let newValue = parseInt(e.target.value) || null;
+    const newValue = parseInt(e.target.value) || null;
     this.props.loadCurrentWorkspaceJournalsFromServer(newValue);
   }
 
   render() {
-    let title = this.props.i18n.text.get("plugin.workspace.journal.pageTitle");
-    let toolbar = <Toolbar />;
+    const title = this.props.i18n.text.get(
+      "plugin.workspace.journal.pageTitle",
+    );
+    const toolbar = <Toolbar />;
     let primaryOption;
     if (this.props.workspace) {
       primaryOption =
@@ -73,34 +73,32 @@ class WorkspaceJournalApplication extends React.Component<
             >
               <option value="">
                 {this.props.i18n.text.get(
-                  "plugin.workspace.journal.studentFilter.showAll"
+                  "plugin.workspace.journal.studentFilter.showAll",
                 )}
               </option>
               {(this.props.workspace.students.results || [])
                 .filter(
                   (student, index, array) =>
                     array.findIndex(
-                      (otherStudent, otherIndex) =>
-                        otherStudent.userEntityId === student.userEntityId
-                    ) === index
+                      (otherStudent) =>
+                        otherStudent.userEntityId === student.userEntityId,
+                    ) === index,
                 )
-                .map((student) => {
-                  return (
-                    <option
-                      key={student.userEntityId}
-                      value={student.userEntityId}
-                    >
-                      {getName(student, true)}
-                    </option>
-                  );
-                })}
+                .map((student) => (
+                  <option
+                    key={student.userEntityId}
+                    value={student.userEntityId}
+                  >
+                    {getName(student, true)}
+                  </option>
+                ))}
             </select>
           </div>
         ) : (
           <NewJournal>
             <Button buttonModifiers="primary-function">
               {this.props.i18n.text.get(
-                "plugin.workspace.journal.newEntryButton.label"
+                "plugin.workspace.journal.newEntryButton.label",
               )}
             </Button>
           </NewJournal>
@@ -132,18 +130,18 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     workspace: state.workspaces.currentWorkspace,
-    status: state.status
+    status: state.status,
   };
 }
 
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     { loadCurrentWorkspaceJournalsFromServer },
-    dispatch
+    dispatch,
   );
 }
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(WorkspaceJournalApplication);

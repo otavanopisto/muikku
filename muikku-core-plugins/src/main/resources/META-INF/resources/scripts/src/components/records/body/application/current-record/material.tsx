@@ -12,7 +12,7 @@ import { MaterialLoaderDate } from "~/components/base/material-loader/date";
 import {
   ApplicationListItem,
   ApplicationListItemHeader,
-  ApplicationListItemBody
+  ApplicationListItemBody,
 } from "~/components/general/application-list";
 
 interface MaterialProps {
@@ -36,7 +36,7 @@ export default class Material extends React.Component<
     this.toggleOpened = this.toggleOpened.bind(this);
 
     this.state = {
-      opened: false
+      opened: false,
     };
   }
   componentWillReceiveProps(nextProps: MaterialProps) {
@@ -44,7 +44,7 @@ export default class Material extends React.Component<
       nextProps.material.assignment.id !== this.props.material.assignment.id
     ) {
       this.setState({
-        opened: false
+        opened: false,
       });
     }
   }
@@ -52,7 +52,7 @@ export default class Material extends React.Component<
     this.setState({ opened: !this.state.opened });
   }
   render() {
-    let evaluation = this.props.material.evaluation;
+    const evaluation = this.props.material.evaluation;
     return (
       <ApplicationListItem
         key={this.props.material.id}
@@ -97,9 +97,9 @@ export default class Material extends React.Component<
               modifiers="studies-material-page"
             >
               {(props, state, stateConfiguration) => {
-                let evalStateClassName: string = "";
-                let evalStateIcon: string = "";
-                let hasEvaluation =
+                let evalStateClassName = "";
+                let evalStateIcon = "";
+                const hasEvaluation =
                   props.compositeReplies &&
                   (props.compositeReplies.state === "PASSED" ||
                     props.compositeReplies.state === "FAILED");

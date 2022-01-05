@@ -5,7 +5,7 @@ export interface ImageEditorRetrieverType {
   getAsBlob: (
     callback: (result: Blob | null) => void,
     mimeType?: string,
-    quality?: number
+    quality?: number,
   ) => void;
 }
 
@@ -52,7 +52,7 @@ export default class ImageEditor extends React.Component<
   private canvas: HTMLCanvasElement;
   constructor(props: ImageEditorProps) {
     super(props);
-    let state: ImageEditorState = {
+    const state: ImageEditorState = {
       offsetX: 0,
       offsetY: 0,
       displayWidth: 0,
@@ -60,7 +60,7 @@ export default class ImageEditor extends React.Component<
       displayBoxWidth: null,
       displayBoxHeight: null,
 
-      b64: null
+      b64: null,
     };
 
     if (this.props.displayBoxWidth) {
@@ -94,7 +94,7 @@ export default class ImageEditor extends React.Component<
     this.props.onInitializedGetRetriever &&
       this.props.onInitializedGetRetriever({
         getAsBlob: this.getAsBlob.bind(this),
-        getAsDataURL: this.getAsDataURL.bind(this)
+        getAsDataURL: this.getAsDataURL.bind(this),
       });
   }
   componentWillUnmount() {
@@ -136,7 +136,7 @@ export default class ImageEditor extends React.Component<
     if (!props) {
       props = this.props;
     }
-    let widthAndHeightReversed = props.angle === 90 || props.angle === 270;
+    const widthAndHeightReversed = props.angle === 90 || props.angle === 270;
     this.canvas.width = widthAndHeightReversed
       ? this.image.height
       : this.image.width;
@@ -157,12 +157,12 @@ export default class ImageEditor extends React.Component<
       drawPositionX = -this.image.width;
     }
 
-    let radians = props.angle * (Math.PI / 180);
+    const radians = props.angle * (Math.PI / 180);
     this.canvasContext.rotate(radians);
     this.canvasContext.drawImage(this.image, drawPositionX, drawPositionY);
 
     this.setState({
-      b64: this.canvas.toDataURL("image/jpeg", 0.9)
+      b64: this.canvas.toDataURL("image/jpeg", 0.9),
     });
 
     this.canvasContext.restore();
@@ -176,9 +176,9 @@ export default class ImageEditor extends React.Component<
       props = this.props;
     }
 
-    let nstate: ImageEditorState = {
+    const nstate: ImageEditorState = {
       width: this.canvas.width || 0,
-      height: this.canvas.height || 0
+      height: this.canvas.height || 0,
     };
 
     //Calculate the display box width and height
@@ -192,7 +192,7 @@ export default class ImageEditor extends React.Component<
     }
 
     //Calculate the image display width and height in relation to the displaybox and the scale
-    let actualImageRatio = this.canvas.width / this.canvas.height;
+    const actualImageRatio = this.canvas.width / this.canvas.height;
     if (props.ratio < actualImageRatio) {
       nstate.displayHeight = nstate.displayBoxHeight * props.scale;
       nstate.displayWidth =
@@ -208,14 +208,14 @@ export default class ImageEditor extends React.Component<
     nstate.offsetY = this.state.offsetY;
 
     //Check if offsets are out of bound
-    let diffDisplayX = nstate.displayBoxWidth - nstate.displayWidth;
+    const diffDisplayX = nstate.displayBoxWidth - nstate.displayWidth;
     if (nstate.offsetX < diffDisplayX) {
       nstate.offsetX = diffDisplayX;
     } else if (nstate.offsetX > 0) {
       nstate.offsetX = 0;
     }
 
-    let diffDisplayY = nstate.displayBoxHeight - nstate.displayHeight;
+    const diffDisplayY = nstate.displayBoxHeight - nstate.displayHeight;
     if (nstate.offsetY < diffDisplayY) {
       nstate.offsetY = diffDisplayY;
     } else if (nstate.offsetY > 0) {
@@ -247,7 +247,7 @@ export default class ImageEditor extends React.Component<
     this.setState(nstate);
   }
   getResized() {
-    let tempCanvas = document.createElement("canvas");
+    const tempCanvas = document.createElement("canvas");
     tempCanvas.width = this.state.relativeDisplayedWidth;
     tempCanvas.height = this.state.relativeDisplayedHeight;
     tempCanvas
@@ -255,44 +255,44 @@ export default class ImageEditor extends React.Component<
       .drawImage(
         this.canvas,
         -this.state.relativeOffsetX,
-        -this.state.relativeOffsetY
+        -this.state.relativeOffsetY,
       );
     return tempCanvas;
   }
   getAsDataURL(mimeType?: string, quality?: number) {
     return this.getResized().toDataURL(
       mimeType || "image/jpeg",
-      quality || 0.9
+      quality || 0.9,
     );
   }
   getAsBlob(
     callback: (result: Blob | null) => void,
     mimeType?: string,
-    quality?: number
+    quality?: number,
   ) {
     return this.getResized().toBlob(
       callback,
       mimeType || "image/jpeg",
-      quality || 0.9
+      quality || 0.9,
     );
   }
   onTouchStart(e: React.TouchEvent<any>) {
-    let touch = e.changedTouches[0];
+    const touch = e.changedTouches[0];
     this.touchFromX = parseInt(touch.clientX as any);
     this.touchFromY = parseInt(touch.clientY as any);
   }
   onTouchMove(e: React.TouchEvent<any>) {
     e.preventDefault();
-    let touch = e.changedTouches[0];
-    let diffX = this.touchFromX - parseInt(touch.clientX as any);
-    let diffY = this.touchFromY - parseInt(touch.clientY as any);
+    const touch = e.changedTouches[0];
+    const diffX = this.touchFromX - parseInt(touch.clientX as any);
+    const diffY = this.touchFromY - parseInt(touch.clientY as any);
     this.touchFromX = parseInt(touch.clientX as any);
     this.touchFromY = parseInt(touch.clientY as any);
     this.applyOffset(diffX, diffY);
   }
   onMouseDown(e: React.MouseEvent<any>) {
     this.mouseEvent = true;
-    let mouse = e;
+    const mouse = e;
     this.mouseFromX = parseInt(mouse.clientX as any);
     this.mouseFromY = parseInt(mouse.clientY as any);
   }
@@ -300,14 +300,14 @@ export default class ImageEditor extends React.Component<
     if (!this.mouseEvent) {
       return;
     }
-    let mouse = e;
-    let diffX = this.mouseFromX - parseInt(mouse.clientX as any);
-    let diffY = this.mouseFromY - parseInt(mouse.clientY as any);
+    const mouse = e;
+    const diffX = this.mouseFromX - parseInt(mouse.clientX as any);
+    const diffY = this.mouseFromY - parseInt(mouse.clientY as any);
     this.mouseFromX = parseInt(mouse.clientX as any);
     this.mouseFromY = parseInt(mouse.clientY as any);
     this.applyOffset(diffX, diffY);
   }
-  onMouseUp(e: React.MouseEvent<any>) {
+  onMouseUp() {
     this.mouseEvent = false;
   }
   applyOffset(diffX: number, diffY: number) {
@@ -316,14 +316,14 @@ export default class ImageEditor extends React.Component<
     let nOffsetY = this.state.offsetY - diffY;
 
     //Calculate the difference from the displayBox
-    let diffDisplayX = this.state.displayBoxWidth - this.state.displayWidth;
+    const diffDisplayX = this.state.displayBoxWidth - this.state.displayWidth;
     if (nOffsetX < diffDisplayX) {
       nOffsetX = diffDisplayX;
     } else if (nOffsetX > 0) {
       nOffsetX = 0;
     }
 
-    let diffDisplayY = this.state.displayBoxHeight - this.state.displayHeight;
+    const diffDisplayY = this.state.displayBoxHeight - this.state.displayHeight;
     if (nOffsetY < diffDisplayY) {
       nOffsetY = diffDisplayY;
     } else if (nOffsetY > 0) {
@@ -331,10 +331,10 @@ export default class ImageEditor extends React.Component<
     }
 
     //Calculate the relative values in relation to the image scale
-    let relativeOffsetY =
+    const relativeOffsetY =
       (this.state.relativeDisplayedHeight / this.state.displayBoxHeight) *
       -nOffsetY;
-    let relativeOffsetX =
+    const relativeOffsetX =
       (this.state.relativeDisplayedWidth / this.state.displayBoxWidth) *
       -nOffsetX;
 
@@ -342,11 +342,11 @@ export default class ImageEditor extends React.Component<
       offsetX: nOffsetX,
       offsetY: nOffsetY,
       relativeOffsetX,
-      relativeOffsetY
+      relativeOffsetY,
     });
   }
   render() {
-    let displayBoxStyle = Object.assign(
+    const displayBoxStyle = Object.assign(
       {
         width: this.state.displayBoxWidth,
         height: this.state.displayBoxHeight,
@@ -354,9 +354,9 @@ export default class ImageEditor extends React.Component<
         backgroundSize:
           this.state.displayWidth + "px " + this.state.displayHeight + "px",
         backgroundPosition:
-          this.state.offsetX + "px " + this.state.offsetY + "px"
+          this.state.offsetX + "px " + this.state.offsetY + "px",
       },
-      this.props.style || {}
+      this.props.style || {},
     );
 
     return (

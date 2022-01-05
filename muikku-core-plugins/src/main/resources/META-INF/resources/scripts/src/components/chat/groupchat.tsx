@@ -9,7 +9,7 @@ import {
   IBareMessageActionType,
   IBareMessageType,
   IChatOccupant,
-  IChatRoomType
+  IChatRoomType,
 } from "./chat";
 import { ChatMessage } from "./chatMessage";
 import DeleteRoomDialog from "./deleteMUCDialog";
@@ -71,10 +71,10 @@ export class Groupchat extends React.Component<
   private messagesListenerHandler: any = null;
   private presenceListenerHandler: any = null;
   private messagesEnd: React.RefObject<HTMLDivElement>;
-  private isScrollDetached: boolean = false;
+  private isScrollDetached = false;
   private chatRef: React.RefObject<HTMLDivElement>;
   private chatWrapperRef: React.RefObject<HTMLDivElement>;
-  private unmounted: boolean = false;
+  private unmounted = false;
 
   constructor(props: IGroupChatProps) {
     super(props);
@@ -88,7 +88,7 @@ export class Groupchat extends React.Component<
       isModerator: false,
       showRoomInfo: false,
       minimized: JSON.parse(
-        window.sessionStorage.getItem("minimizedChats") || "[]"
+        window.sessionStorage.getItem("minimizedChats") || "[]",
       ).includes(props.chat.roomJID),
       occupants: [],
       showOccupantsList: false,
@@ -106,7 +106,7 @@ export class Groupchat extends React.Component<
 
       deleteMUCDialogOpen: false,
 
-      active: false
+      active: false,
     };
 
     this.messagesEnd = React.createRef();
@@ -145,7 +145,7 @@ export class Groupchat extends React.Component<
 
     if (!this.unmounted) {
       this.setState({
-        deleteMUCDialogOpen: !this.state.deleteMUCDialogOpen
+        deleteMUCDialogOpen: !this.state.deleteMUCDialogOpen,
       });
     }
   }
@@ -162,7 +162,7 @@ export class Groupchat extends React.Component<
    */
   updateRoomNameField(e: React.ChangeEvent<HTMLInputElement>) {
     this.setState({
-      roomNameField: e.target.value
+      roomNameField: e.target.value,
     });
   }
 
@@ -171,7 +171,7 @@ export class Groupchat extends React.Component<
    */
   updateRoomDescField(e: React.ChangeEvent<HTMLTextAreaElement>) {
     this.setState({
-      roomDescField: e.target.value
+      roomDescField: e.target.value,
     });
   }
 
@@ -181,7 +181,7 @@ export class Groupchat extends React.Component<
    */
   setCurrentMessageToBeSent(e: React.ChangeEvent<HTMLTextAreaElement>) {
     this.setState({
-      currentMessageToBeSent: e.target.value
+      currentMessageToBeSent: e.target.value,
     });
   }
 
@@ -199,15 +199,15 @@ export class Groupchat extends React.Component<
         $msg({
           from: this.props.connection.jid,
           to: this.props.chat.roomJID,
-          type: "groupchat"
-        }).c("body", text)
+          type: "groupchat",
+        }).c("body", text),
       );
 
       this.setState(
         {
-          currentMessageToBeSent: ""
+          currentMessageToBeSent: "",
         },
-        this.scrollToBottom.bind(this, "smooth")
+        this.scrollToBottom.bind(this, "smooth"),
       );
     }
   }
@@ -222,8 +222,8 @@ export class Groupchat extends React.Component<
       $msg({
         from: this.props.connection.jid,
         to: this.props.chat.roomJID,
-        type: "groupchat"
-      }).c("body", { "otavanopisto-delete": stanzaId })
+        type: "groupchat",
+      }).c("body", { "otavanopisto-delete": stanzaId }),
     );
   }
 
@@ -241,8 +241,8 @@ export class Groupchat extends React.Component<
         $msg({
           from: this.props.connection.jid,
           to: this.props.chat.roomJID,
-          type: "groupchat"
-        }).c("body", { "otavanopisto-edit": stanzaId }, text)
+          type: "groupchat",
+        }).c("body", { "otavanopisto-edit": stanzaId }, text),
       );
     }
   }
@@ -258,7 +258,7 @@ export class Groupchat extends React.Component<
     const chat: IAvailableChatRoomType = {
       ...this.props.chat,
       roomName: this.state.roomNameField,
-      roomDesc: this.state.roomDescField
+      roomDesc: this.state.roomDescField,
     };
 
     try {
@@ -266,9 +266,9 @@ export class Groupchat extends React.Component<
         mApi().chat.publicRoom.update({
           title: chat.roomName,
           description: chat.roomDesc,
-          name: Strophe.getNodeFromJid(chat.roomJID)
+          name: Strophe.getNodeFromJid(chat.roomJID),
         }),
-        "callback"
+        "callback",
       )()) as IChatRoomType;
 
       chat.roomName = chatRoom.title;
@@ -276,13 +276,13 @@ export class Groupchat extends React.Component<
 
       this.setState({
         updateFailed: false,
-        openChatSettings: false
+        openChatSettings: false,
       });
 
       this.props.onUpdateChatRoomConfig(chat);
     } catch {
       this.setState({
-        updateFailed: true
+        updateFailed: true,
       });
     }
   }
@@ -293,7 +293,7 @@ export class Groupchat extends React.Component<
   public toggleChatRoomSettings() {
     this.setState({
       openChatSettings: !this.state.openChatSettings,
-      updateFailed: false
+      updateFailed: false,
     });
     this.props.requestExtraInfoAboutRoom();
   }
@@ -304,16 +304,16 @@ export class Groupchat extends React.Component<
   toggleMinimizeChats() {
     const roomJID = this.props.chat.roomJID;
     let minimizedRoomList: string[] = JSON.parse(
-      window.sessionStorage.getItem("minimizedChats") || "[]"
+      window.sessionStorage.getItem("minimizedChats") || "[]",
     );
     const newMinimized = !this.state.minimized;
 
     this.isScrollDetached = false;
     this.setState(
       {
-        minimized: newMinimized
+        minimized: newMinimized,
       },
-      this.scrollToBottom.bind(this, "auto")
+      this.scrollToBottom.bind(this, "auto"),
     );
 
     if (newMinimized) {
@@ -324,7 +324,7 @@ export class Groupchat extends React.Component<
 
     window.sessionStorage.setItem(
       "minimizedChats",
-      JSON.stringify(minimizedRoomList)
+      JSON.stringify(minimizedRoomList),
     );
   }
 
@@ -333,7 +333,7 @@ export class Groupchat extends React.Component<
    */
   async toggleOccupantsList() {
     this.setState({
-      showOccupantsList: !this.state.showOccupantsList
+      showOccupantsList: !this.state.showOccupantsList,
     });
   }
 
@@ -371,12 +371,12 @@ export class Groupchat extends React.Component<
     if (prevProps.chat && this.props.chat) {
       if (prevProps.chat.roomName !== this.props.chat.roomName) {
         this.setState({
-          roomNameField: this.props.chat.roomName || ""
+          roomNameField: this.props.chat.roomName || "",
         });
       }
       if (prevProps.chat.roomDesc !== this.props.chat.roomDesc) {
         this.setState({
-          roomDescField: this.props.chat.roomDesc || ""
+          roomDescField: this.props.chat.roomDesc || "",
         });
       }
       // if (prevProps.chat.roomPersistent !== this.props.chat.roomPersistent) {
@@ -417,7 +417,7 @@ export class Groupchat extends React.Component<
       if (editForId || deleteForId) {
         action = {
           editForId,
-          deleteForId
+          deleteForId,
         };
       }
 
@@ -444,7 +444,7 @@ export class Groupchat extends React.Component<
       if (!userId) {
         // we might not find it, if occupants is not ready
         const groupChatOccupant = this.state.occupants.find(
-          (o) => o.occupant.nick === fromNick
+          (o) => o.occupant.nick === fromNick,
         );
         // whenever occupants get added this should be fixed
         if (groupChatOccupant) {
@@ -461,16 +461,16 @@ export class Groupchat extends React.Component<
         isSelf: userId === this.props.connection.jid.split("@")[0],
         action,
         deleted: false,
-        edited: null
+        edited: null,
       };
 
       const newMessagesList = [...this.state.messages, messageReceived];
       this.setState(
         {
           messages: newMessagesList,
-          processedMessages: this.processMessages(newMessagesList)
+          processedMessages: this.processMessages(newMessagesList),
         },
-        this.scrollToBottom.bind(this, "smooth")
+        this.scrollToBottom.bind(this, "smooth"),
       );
     }
 
@@ -505,12 +505,12 @@ export class Groupchat extends React.Component<
     const role: any = item.getAttribute("role");
 
     if (stanza.getAttribute("type") === "unavailable") {
-      const newOccupants = this.state.occupants.filter((o) => {
-        return o.occupant.userId !== userId;
-      });
+      const newOccupants = this.state.occupants.filter(
+        (o) => o.occupant.userId !== userId,
+      );
 
       this.setState({
-        occupants: newOccupants
+        occupants: newOccupants,
       });
 
       if (userId === this.props.connection.jid.split("@")[0]) {
@@ -526,10 +526,10 @@ export class Groupchat extends React.Component<
           precense,
           userId,
           isStaff: userJIDBare.startsWith("muikku-staff"),
-          jid: userJIDBare
+          jid: userJIDBare,
         },
         affilation,
-        role
+        role,
       };
 
       if (groupOccupant.occupant.isSelf) {
@@ -537,7 +537,7 @@ export class Groupchat extends React.Component<
           isOwner: groupOccupant.affilation === "owner",
           isModerator:
             groupOccupant.role === "moderator" ||
-            groupOccupant.affilation === "owner"
+            groupOccupant.affilation === "owner",
         });
       }
 
@@ -548,7 +548,7 @@ export class Groupchat extends React.Component<
             userId: groupOccupant.occupant.userId,
             isSelf:
               groupOccupant.occupant.userId ===
-              this.props.connection.jid.split("@")[0]
+              this.props.connection.jid.split("@")[0],
           } as IBareMessageType;
         }
 
@@ -572,7 +572,7 @@ export class Groupchat extends React.Component<
       this.setState({
         occupants: newOccupants,
         messages: newChatMessages,
-        processedMessages: this.processMessages(newChatMessages)
+        processedMessages: this.processMessages(newChatMessages),
       });
     }
 
@@ -592,7 +592,7 @@ export class Groupchat extends React.Component<
       "groupchat",
       null,
       roomJID,
-      { matchBare: true }
+      { matchBare: true },
     );
     this.presenceListenerHandler = props.connection.addHandler(
       this.onPresence,
@@ -601,7 +601,7 @@ export class Groupchat extends React.Component<
       null,
       null,
       roomJID,
-      { matchBare: true }
+      { matchBare: true },
     );
 
     if (!props.nick) {
@@ -621,7 +621,7 @@ export class Groupchat extends React.Component<
     // XEP-0045: 7.2 Entering a Room
     const presStanza = $pres({
       from: props.connection.jid,
-      to: roomJID + "/" + props.nick
+      to: roomJID + "/" + props.nick,
     })
       .c("x", { xmlns: Strophe.NS.MUC })
       .up()
@@ -644,12 +644,12 @@ export class Groupchat extends React.Component<
     const presStanza = $pres({
       from: props.connection.jid,
       to: roomJID + "/" + props.nick,
-      type: "unavailable"
+      type: "unavailable",
     });
 
     this.setState({
       messages: [],
-      processedMessages: []
+      processedMessages: [],
     });
 
     props.connection.send(presStanza);
@@ -661,7 +661,7 @@ export class Groupchat extends React.Component<
   componentDidMount() {
     if (this.props.active) {
       this.setState({
-        active: true
+        active: true,
       });
     }
 
@@ -725,17 +725,17 @@ export class Groupchat extends React.Component<
     const standardMessages = messages.filter((m) => !m.action);
     const result: IBareMessageType[] = standardMessages.map((m) => {
       const shouldDelete = actionMessages.some(
-        (a) => a.action.deleteForId === m.stanzaId
+        (a) => a.action.deleteForId === m.stanzaId,
       );
       if (shouldDelete) {
         const newMessage: IBareMessageType = {
           ...m,
-          deleted: true
+          deleted: true,
         };
         return newMessage;
       }
       const foundActions = actionMessages.filter(
-        (a) => a.action.editForId === m.stanzaId
+        (a) => a.action.editForId === m.stanzaId,
       );
       if (!foundActions.length) {
         return m;
@@ -744,7 +744,7 @@ export class Groupchat extends React.Component<
       const lastAction = foundActions[foundActions.length - 1];
       const newMessage: IBareMessageType = {
         ...m,
-        edited: lastAction
+        edited: lastAction,
       };
       newMessage.message = lastAction.message;
 
@@ -763,20 +763,20 @@ export class Groupchat extends React.Component<
     }
 
     this.setState({
-      loadingMessages: true
+      loadingMessages: true,
     });
 
-    let newMessages: IBareMessageType[] = [];
+    const newMessages: IBareMessageType[] = [];
     let processedNewMessages: IBareMessageType[] = [];
     let thereIsNoMore = false;
     let beforeLastMessageStamp: string = null;
 
     while (processedNewMessages.length < 25 && !thereIsNoMore) {
       const stanza = $iq({
-        type: "set"
+        type: "set",
       })
         .c("query", {
-          xmlns: "otavanopisto:chat:history"
+          xmlns: "otavanopisto:chat:history",
         })
         .c("type", {}, "groupchat")
         .c("with", {}, this.props.chat.roomJID)
@@ -787,7 +787,7 @@ export class Groupchat extends React.Component<
         stanza.c(
           "before",
           {},
-          beforeLastMessageStamp || this.state.lastMessageStamp
+          beforeLastMessageStamp || this.state.lastMessageStamp,
         );
       }
 
@@ -809,13 +809,13 @@ export class Groupchat extends React.Component<
 
           const editForId = messageElement.getAttribute("otavanopisto-edit");
           const deleteForId = messageElement.getAttribute(
-            "otavanopisto-delete"
+            "otavanopisto-delete",
           );
           let action: IBareMessageActionType = null;
           if (editForId || deleteForId) {
             action = {
               editForId,
-              deleteForId
+              deleteForId,
             };
           }
 
@@ -844,11 +844,11 @@ export class Groupchat extends React.Component<
             isSelf: userId === this.props.connection.jid.split("@")[0],
             action,
             deleted: false,
-            edited: null
+            edited: null,
           };
 
           newMessages.push(messageReceived);
-        }
+        },
       );
 
       processedNewMessages = this.processMessages(newMessages);
@@ -856,7 +856,7 @@ export class Groupchat extends React.Component<
 
     if (beforeLastMessageStamp) {
       this.setState({
-        lastMessageStamp: beforeLastMessageStamp
+        lastMessageStamp: beforeLastMessageStamp,
       });
     }
 
@@ -870,7 +870,7 @@ export class Groupchat extends React.Component<
       this.setState(
         {
           messages: newMessages,
-          processedMessages: processedNewMessages
+          processedMessages: processedNewMessages,
         },
         () => {
           if (!this.isScrollDetached) {
@@ -882,14 +882,14 @@ export class Groupchat extends React.Component<
           }
           this.setState({
             loadingMessages: false,
-            canLoadMoreMessages: !thereIsNoMore
+            canLoadMoreMessages: !thereIsNoMore,
           });
-        }
+        },
       );
     } else {
       this.setState({
         loadingMessages: false,
-        canLoadMoreMessages: false
+        canLoadMoreMessages: false,
       });
     }
   }
@@ -899,15 +899,17 @@ export class Groupchat extends React.Component<
    * @returns JSX.Element
    */
   render() {
-    let chatRoomTypeClassName = this.props.chat.roomJID.startsWith("workspace-")
+    const chatRoomTypeClassName = this.props.chat.roomJID.startsWith(
+      "workspace-",
+    )
       ? "workspace"
       : "other";
 
     const staffOccupants = this.state.occupants.filter(
-      (o) => o.occupant.isStaff
+      (o) => o.occupant.isStaff,
     );
     const studentOccupants = this.state.occupants.filter(
-      (o) => !o.occupant.isStaff
+      (o) => !o.occupant.isStaff,
     );
 
     return (
@@ -1033,7 +1035,7 @@ export class Groupchat extends React.Component<
                         className={`chat__submit chat__submit--room-settings-${chatRoomTypeClassName}`}
                         type="submit"
                         value={this.props.i18n.text.get(
-                          "plugin.chat.button.save"
+                          "plugin.chat.button.save",
                         )}
                       ></input>
                       {!this.props.chat.roomJID.startsWith("workspace-") && (
@@ -1042,7 +1044,7 @@ export class Groupchat extends React.Component<
                           onClick={this.toggleDeleteMUCDialog}
                         >
                           {this.props.i18n.text.get(
-                            "plugin.chat.button.deleteRoom"
+                            "plugin.chat.button.deleteRoom",
                           )}
                         </button>
                       )}
@@ -1083,7 +1085,7 @@ export class Groupchat extends React.Component<
                     {staffOccupants.length > 0 ? (
                       <div className="chat__occupants-title">
                         {this.props.i18n.text.get(
-                          "plugin.chat.occupants.staff"
+                          "plugin.chat.occupants.staff",
                         )}
                       </div>
                     ) : (
@@ -1092,13 +1094,14 @@ export class Groupchat extends React.Component<
                     {staffOccupants.map((staffOccupant) => (
                       <div
                         title={this.props.i18n.text.get(
-                          "plugin.chat.state." + staffOccupant.occupant.precense
+                          "plugin.chat.state." +
+                            staffOccupant.occupant.precense,
                         )}
                         className="chat__occupants-item chat__occupants-item--has-access-to-pm"
                         onClick={this.props.joinPrivateChat.bind(
                           null,
                           staffOccupant.occupant.jid,
-                          null
+                          null,
                         )}
                         key={staffOccupant.occupant.userId}
                       >
@@ -1116,7 +1119,7 @@ export class Groupchat extends React.Component<
                     {studentOccupants.length > 0 ? (
                       <div className="chat__occupants-title">
                         {this.props.i18n.text.get(
-                          "plugin.chat.occupants.students"
+                          "plugin.chat.occupants.students",
                         )}
                       </div>
                     ) : (
@@ -1126,7 +1129,7 @@ export class Groupchat extends React.Component<
                       <div
                         title={this.props.i18n.text.get(
                           "plugin.chat.state." +
-                            studentOccupant.occupant.precense
+                            studentOccupant.occupant.precense,
                         )}
                         className={`chat__occupants-item ${
                           !this.state.isStudent &&
@@ -1138,7 +1141,7 @@ export class Groupchat extends React.Component<
                             : this.props.joinPrivateChat.bind(
                                 this,
                                 studentOccupant.occupant.jid,
-                                null
+                                null,
                               )
                         }
                         key={studentOccupant.occupant.userId}

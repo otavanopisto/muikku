@@ -9,7 +9,7 @@ import "~/sass/elements/wizard.scss";
 import {
   copyCurrentWorkspace,
   CopyCurrentWorkspaceTriggerType,
-  CopyCurrentWorkspaceStepType
+  CopyCurrentWorkspaceStepType,
 } from "~/actions/workspaces";
 import { connect, Dispatch } from "react-redux";
 import { StateType } from "~/reducers";
@@ -62,9 +62,9 @@ class CopyWizard extends React.Component<CopyWizardProps, CopyWizardState> {
             : null,
         copyDiscussionAreas: false,
         copyMaterials: "CLONE",
-        copyBackgroundPicture: true
+        copyBackgroundPicture: true,
       },
-      locked: false
+      locked: false,
     };
 
     this.getStore = this.getStore.bind(this);
@@ -81,14 +81,14 @@ class CopyWizard extends React.Component<CopyWizardProps, CopyWizardState> {
     this.setState({
       store: {
         ...this.state.store,
-        ...update
-      }
+        ...update,
+      },
     });
   }
 
   copyWorkspace() {
     this.setState({
-      locked: true
+      locked: true,
     });
 
     this.props.copyCurrentWorkspace({
@@ -108,19 +108,19 @@ class CopyWizard extends React.Component<CopyWizardProps, CopyWizardState> {
       copyBackgroundPicture: this.state.store.copyBackgroundPicture,
       success: (step, workspace) => {
         this.setState({
-          step
+          step,
         });
         if (step === "done") {
           this.setState({
-            resultingWorkspace: workspace
+            resultingWorkspace: workspace,
           });
         }
       },
       fail: () => {
         this.setState({
-          locked: false
+          locked: false,
         });
-      }
+      },
     });
   }
 
@@ -138,30 +138,30 @@ class CopyWizard extends React.Component<CopyWizardProps, CopyWizardState> {
       workspace: this.props.workspace,
       onDone: this.props.onDone,
       resultingWorkspace: this.state.resultingWorkspace,
-      step: this.state.step
+      step: this.state.step,
     };
     const steps = [
       {
         name: this.props.i18n.text.get(
-          "plugin.workspace.management.wizard.step1"
+          "plugin.workspace.management.wizard.step1",
         ),
-        component: <Step1 {...props} />
-      }
+        component: <Step1 {...props} />,
+      },
     ];
 
     //The reason step 6 is twice is so that the user can review before
     //the action is completed, I guess this stepzilla thing is kind of funny
     steps.push({
       name: this.props.i18n.text.get(
-        "plugin.workspace.management.wizard.step6"
+        "plugin.workspace.management.wizard.step6",
       ),
-      component: <Step2 {...props} />
+      component: <Step2 {...props} />,
     });
     steps.push({
       name: this.props.i18n.text.get(
-        "plugin.workspace.management.wizard.finalStep"
+        "plugin.workspace.management.wizard.finalStep",
       ),
-      component: <Step2 {...props} />
+      component: <Step2 {...props} />,
     });
 
     // https://github.com/newbreedofgeek/react-stepzilla/blob/master/src/examples/i18n/Example.js
@@ -176,15 +176,15 @@ class CopyWizard extends React.Component<CopyWizardProps, CopyWizardState> {
             preventEnterSubmission={true}
             prevBtnOnLastStep={true}
             nextTextOnFinalActionStep={this.props.i18n.text.get(
-              "plugin.workspace.management.copyWorkspace"
+              "plugin.workspace.management.copyWorkspace",
             )}
             nextButtonCls="button button--wizard"
             backButtonCls="button button--wizard"
             nextButtonText={this.props.i18n.text.get(
-              "plugin.workspace.management.wizard.button.next"
+              "plugin.workspace.management.wizard.button.next",
             )}
             backButtonText={this.props.i18n.text.get(
-              "plugin.workspace.management.wizard.button.prev"
+              "plugin.workspace.management.wizard.button.prev",
             )}
             onStepChange={this.checkLastStep.bind(this, steps)}
           />
@@ -197,7 +197,7 @@ class CopyWizard extends React.Component<CopyWizardProps, CopyWizardState> {
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    workspace: state.workspaces && state.workspaces.currentWorkspace
+    workspace: state.workspaces && state.workspaces.currentWorkspace,
   };
 }
 

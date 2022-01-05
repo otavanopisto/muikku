@@ -40,7 +40,7 @@ class FrontpageNavbar extends React.Component<
                   {this.props.i18n.text.get("plugin.navigation.link.studying")}
                 </span>
               </Link>
-            )
+            ),
           },
           {
             modifier: "news",
@@ -50,7 +50,7 @@ class FrontpageNavbar extends React.Component<
                   {this.props.i18n.text.get("plugin.navigation.link.news")}
                 </span>
               </Link>
-            )
+            ),
           },
           {
             modifier: "organization",
@@ -61,11 +61,11 @@ class FrontpageNavbar extends React.Component<
               >
                 <span>
                   {this.props.i18n.text.get(
-                    "plugin.navigation.link.organization"
+                    "plugin.navigation.link.organization",
                   )}
                 </span>
               </Link>
-            )
+            ),
           },
           {
             modifier: "contact",
@@ -75,7 +75,7 @@ class FrontpageNavbar extends React.Component<
                   {this.props.i18n.text.get("plugin.navigation.link.contact")}
                 </span>
               </Link>
-            )
+            ),
           },
           {
             modifier: "open-materials",
@@ -86,12 +86,12 @@ class FrontpageNavbar extends React.Component<
               >
                 <span>
                   {this.props.i18n.text.get(
-                    "plugin.navigation.link.openMaterials"
+                    "plugin.navigation.link.openMaterials",
                   )}
                 </span>
               </Link>
-            )
-          }
+            ),
+          },
         ]}
         defaultOptions={[
           <LoginButton key="0" />,
@@ -101,7 +101,7 @@ class FrontpageNavbar extends React.Component<
                 {this.props.i18n.text.get("plugin.forgotpassword.forgotLink")}
               </span>
             </Link>
-          </ForgotPasswordDialog>
+          </ForgotPasswordDialog>,
         ]}
         menuItems={[
           <Link href="#studying" className="link link--full">
@@ -131,7 +131,7 @@ class FrontpageNavbar extends React.Component<
             <span>
               {this.props.i18n.text.get("plugin.navigation.link.openMaterials")}
             </span>
-          </Link>
+          </Link>,
         ]}
       />
     );
@@ -140,11 +140,11 @@ class FrontpageNavbar extends React.Component<
 
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n
+    i18n: state.i18n,
   };
 }
 
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps() {
   return {};
 }
 

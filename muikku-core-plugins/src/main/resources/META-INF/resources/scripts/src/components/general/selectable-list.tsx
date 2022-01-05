@@ -53,7 +53,7 @@ export default class SelectableList extends React.Component<
     this.touchModeTimeout = null;
     this.firstWasJustSelected = false;
     this.state = {
-      touchMode: false
+      touchMode: false,
     };
 
     this.toggleSelectMode = this.toggleSelectMode.bind(this);
@@ -87,7 +87,7 @@ export default class SelectableList extends React.Component<
         this.toggleSelectMode(item);
         this.firstWasJustSelected = true;
         this.setState({
-          touchMode: true
+          touchMode: true,
         });
       }, 600) as any;
     }
@@ -97,7 +97,7 @@ export default class SelectableList extends React.Component<
     this.initialTime = new Date().getTime();
     this.touchScreenDetected = true;
   }
-  onTouchMoveItem(item: SelectableItem, e: React.TouchEvent<any>) {
+  onTouchMoveItem(e: React.TouchEvent<any>) {
     this.lastXPos = e.touches[0].pageX;
     this.lastYPos = e.touches[0].pageY;
 
@@ -109,14 +109,14 @@ export default class SelectableList extends React.Component<
       this.cancelSelection = true;
     }
   }
-  onTouchEndItem(item: SelectableItem, e: React.TouchEvent<any>) {
+  onTouchEndItem(item: SelectableItem) {
     clearTimeout(this.touchModeTimeout);
 
     if (this.cancelSelection) {
       return;
     }
 
-    let currentTime = new Date().getTime();
+    const currentTime = new Date().getTime();
     if (currentTime - this.initialTime <= 300 && !this.state.touchMode) {
       item.onEnter();
       return;
@@ -129,7 +129,7 @@ export default class SelectableList extends React.Component<
         this.props.children.filter((c) => c.isSelected).length === 1
       ) {
         this.setState({
-          touchMode: false
+          touchMode: false,
         });
       }
     } else if (this.firstWasJustSelected) {
@@ -150,7 +150,7 @@ export default class SelectableList extends React.Component<
       item.onEnter();
     }
   }
-  onCheckBoxItemChange(item: SelectableItem, e: React.MouseEvent<any>) {
+  onCheckBoxItemChange(item: SelectableItem) {
     this.toggleSelectMode(item);
   }
   onCheckBoxItemClick(e: React.MouseEvent<any>) {
@@ -164,13 +164,13 @@ export default class SelectableList extends React.Component<
         !this.props.children.find((child: SelectableItem) => child.isSelected))
     ) {
       this.setState({
-        touchMode: false
+        touchMode: false,
       });
     }
   }
   render() {
-    let RootElement = this.props.as || "div";
-    let modifiers = this.props.as
+    const RootElement = this.props.as || "div";
+    const modifiers = this.props.as
       ? (this.props.modifiers
           ? this.props.modifiers instanceof Array
             ? this.props.modifiers
@@ -181,10 +181,10 @@ export default class SelectableList extends React.Component<
             ? this.props.selectModeModifiers instanceof Array
               ? this.props.selectModeModifiers
               : [this.props.selectModeModifiers]
-            : []
+            : [],
         )
       : null;
-    let rootProps: any = {};
+    const rootProps: any = {};
     if (modifiers) {
       rootProps.modifiers = modifiers;
     }
@@ -198,17 +198,9 @@ export default class SelectableList extends React.Component<
         }`}
       >
         {this.props.children.map((child: SelectableItem) => {
-          let GivenElement = child.as || "div";
-          let givenModifiers = child.as
-            ? (child.modifiers
-                ? child.modifiers instanceof Array
-                  ? child.modifiers
-                  : [child.modifiers]
-                : []
-              ).concat(child.notSelectable ? [child.notSelectableModifier] : [])
-            : null;
+          const GivenElement = child.as || "div";
 
-          let givenElementProps: any = {};
+          const givenElementProps: any = {};
           if (modifiers) {
             givenElementProps.modifiers = modifiers;
           }
@@ -242,7 +234,7 @@ export default class SelectableList extends React.Component<
                     onChange={this.onCheckBoxItemChange.bind(this, child)}
                     onClick={this.onCheckBoxItemClick}
                   />
-                )
+                ),
               )}
             </GivenElement>
           );

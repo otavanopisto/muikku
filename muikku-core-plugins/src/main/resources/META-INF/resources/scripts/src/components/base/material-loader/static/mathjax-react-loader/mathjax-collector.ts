@@ -27,11 +27,11 @@ export class MathJaxCollector {
       (window as any).MathJax.Hub.Queue([
         "Typeset",
         (window as any).MathJax.Hub,
-        this.element
+        this.element,
       ]);
     } else {
       console.warn(
-        "Attempted to execute the mathjax collector in a non existant component"
+        "Attempted to execute the mathjax collector in a non existant component",
       );
     }
   }

@@ -10,7 +10,7 @@ function reactivationDelayWrapper(
   onClickFn: (...args: any[]) => any,
   ...args: any[]
 ) {
-  let currentCall = new Date().getTime();
+  const currentCall = new Date().getTime();
   if (currentCall - reactivationDelayLastCalled >= REACTIVATION_DELAY) {
     onClickFn(...args);
   }
@@ -38,13 +38,13 @@ interface ButtonState {}
 
 export default class Button extends React.Component<ButtonProps, ButtonState> {
   render() {
-    let Element: any = this.props.buttonAs || Link;
-    let elementProps: any = Object.assign({}, this.props);
+    const Element: any = this.props.buttonAs || Link;
+    const elementProps: any = Object.assign({}, this.props);
     delete elementProps["buttonAs"];
     delete elementProps["buttonModifiers"];
     delete elementProps["className"];
 
-    let modifiers: Array<string> =
+    const modifiers: Array<string> =
       typeof this.props.buttonModifiers === "string"
         ? [this.props.buttonModifiers]
         : this.props.buttonModifiers;
@@ -68,13 +68,13 @@ export default class Button extends React.Component<ButtonProps, ButtonState> {
 
 export class ButtonSocial extends React.Component<ButtonProps, ButtonState> {
   render() {
-    let Element = this.props.buttonAs || Link;
-    let elementProps: any = Object.assign({}, this.props);
+    const Element = this.props.buttonAs || Link;
+    const elementProps: any = Object.assign({}, this.props);
     delete elementProps["buttonAs"];
     delete elementProps["buttonModifiers"];
     delete elementProps["className"];
 
-    let modifiers: Array<string> =
+    const modifiers: Array<string> =
       typeof this.props.buttonModifiers === "string"
         ? [this.props.buttonModifiers]
         : this.props.buttonModifiers;
@@ -102,14 +102,14 @@ interface ButtonPillProps extends ButtonProps {
 
 export class ButtonPill extends React.Component<ButtonPillProps, ButtonState> {
   render() {
-    let Element = this.props.buttonAs || Link;
-    let elementProps: any = Object.assign({}, this.props);
+    const Element = this.props.buttonAs || Link;
+    const elementProps: any = Object.assign({}, this.props);
     delete elementProps["buttonAs"];
     delete elementProps["buttonModifiers"];
     delete elementProps["className"];
     delete elementProps["icon"];
 
-    let modifiers: Array<string> =
+    const modifiers: Array<string> =
       typeof this.props.buttonModifiers === "string"
         ? [this.props.buttonModifiers]
         : this.props.buttonModifiers;
@@ -142,14 +142,14 @@ interface IconButtonProps extends ButtonProps {
 
 export class IconButton extends React.Component<IconButtonProps, ButtonState> {
   render() {
-    let Element = this.props.buttonAs || Link;
-    let elementProps: any = Object.assign({}, this.props);
+    const Element = this.props.buttonAs || Link;
+    const elementProps: any = Object.assign({}, this.props);
     delete elementProps["buttonAs"];
     delete elementProps["buttonModifiers"];
     delete elementProps["className"];
     delete elementProps["icon"];
 
-    let modifiers: Array<string> =
+    const modifiers: Array<string> =
       typeof this.props.buttonModifiers === "string"
         ? [this.props.buttonModifiers]
         : this.props.buttonModifiers;

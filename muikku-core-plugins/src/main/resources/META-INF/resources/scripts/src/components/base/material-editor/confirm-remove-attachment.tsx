@@ -12,11 +12,11 @@ import { bindActionCreators } from "redux";
 import {
   WorkspaceType,
   MaterialContentNodeType,
-  WorkspaceMaterialEditorType
+  WorkspaceMaterialEditorType,
 } from "~/reducers/workspaces";
 import {
   deleteWorkspaceMaterialContentNode,
-  DeleteWorkspaceMaterialContentNodeTriggerType
+  DeleteWorkspaceMaterialContentNodeTriggerType,
 } from "~/actions/workspaces";
 
 interface ConfirmRemoveAttachmentProps {
@@ -38,7 +38,7 @@ class ConfirmRemoveAttachment extends React.Component<
   constructor(props: ConfirmRemoveAttachmentProps) {
     super(props);
     this.state = {
-      locked: false
+      locked: false,
     };
 
     this.cancel = this.cancel.bind(this);
@@ -46,7 +46,7 @@ class ConfirmRemoveAttachment extends React.Component<
   }
   confirm(closeDialog: () => any) {
     this.setState({
-      locked: true
+      locked: true,
     });
 
     this.props.deleteWorkspaceMaterialContentNode({
@@ -55,55 +55,53 @@ class ConfirmRemoveAttachment extends React.Component<
       removeAnswers: false,
       fail: () => {
         this.setState({
-          locked: false
+          locked: false,
         });
-      }
+      },
     });
   }
   cancel(closeDialog?: () => any) {
     closeDialog && closeDialog();
   }
   render() {
-    let content = (closeDialog: () => any) => (
+    const content = (closeDialog: () => any) => (
       <div>
         <span>
           {this.props.i18n.text.get(
-            "plugin.guider.flags.deleteAttachmentDialog.description"
+            "plugin.guider.flags.deleteAttachmentDialog.description",
           )}
         </span>
       </div>
     );
 
-    let footer = (closeDialog: () => any) => {
-      return (
-        <div className="dialog__button-set">
-          <Button
-            buttonModifiers={["standard-ok", "fatal"]}
-            onClick={this.confirm.bind(this, closeDialog)}
-            disabled={this.state.locked}
-          >
-            {this.props.i18n.text.get(
-              "plugin.guider.flags.deleteAttachmentDialog.yes"
-            )}
-          </Button>
-          <Button
-            buttonModifiers={["cancel", "standard-cancel"]}
-            onClick={this.cancel.bind(this, closeDialog)}
-            disabled={this.state.locked}
-          >
-            {this.props.i18n.text.get(
-              "plugin.guider.flags.deleteAttachmentDialog.no"
-            )}
-          </Button>
-        </div>
-      );
-    };
+    const footer = (closeDialog: () => any) => (
+      <div className="dialog__button-set">
+        <Button
+          buttonModifiers={["standard-ok", "fatal"]}
+          onClick={this.confirm.bind(this, closeDialog)}
+          disabled={this.state.locked}
+        >
+          {this.props.i18n.text.get(
+            "plugin.guider.flags.deleteAttachmentDialog.yes",
+          )}
+        </Button>
+        <Button
+          buttonModifiers={["cancel", "standard-cancel"]}
+          onClick={this.cancel.bind(this, closeDialog)}
+          disabled={this.state.locked}
+        >
+          {this.props.i18n.text.get(
+            "plugin.guider.flags.deleteAttachmentDialog.no",
+          )}
+        </Button>
+      </div>
+    );
 
     return (
       <Dialog
         modifier="confirm-remove-answer-dialog"
         title={this.props.i18n.text.get(
-          "plugin.guider.flags.deleteAttachmentDialog.title"
+          "plugin.guider.flags.deleteAttachmentDialog.title",
         )}
         content={content}
         footer={footer}
@@ -117,7 +115,7 @@ class ConfirmRemoveAttachment extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    materialEditor: state.workspaces.materialEditor
+    materialEditor: state.workspaces.materialEditor,
   };
 }
 
@@ -127,5 +125,5 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(ConfirmRemoveAttachment);

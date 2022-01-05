@@ -15,7 +15,7 @@ import "~/sass/elements/form.scss";
 
 import {
   createDiscussionArea,
-  CreateDiscussionAreaTriggerType
+  CreateDiscussionAreaTriggerType,
 } from "~/actions/discussion";
 import { StateType } from "~/reducers";
 
@@ -47,19 +47,19 @@ class DiscussionNewArea extends SessionStateComponent<
     this.state = this.getRecoverStoredState({
       name: "",
       description: "",
-      locked: false
+      locked: false,
     });
   }
   checkAgainstStoredState() {
     this.checkStoredAgainstThisState({
       name: "",
-      description: ""
+      description: "",
     });
   }
   clearUp() {
     this.setStateAndClear({
       name: "",
-      description: ""
+      description: "",
     });
   }
   onDescriptionChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
@@ -79,11 +79,11 @@ class DiscussionNewArea extends SessionStateComponent<
       },
       fail: () => {
         this.setState({ locked: false });
-      }
+      },
     });
   }
   render() {
-    let content = (closeDialog: () => any) => [
+    const content = (closeDialog: () => any) => [
       <div className="env-dialog__row" key="1">
         <div className="env-dialog__form-element-container">
           <label htmlFor="forumAreaName" className="env-dialog__label">
@@ -103,7 +103,7 @@ class DiscussionNewArea extends SessionStateComponent<
         <div className="env-dialog__form-element-container">
           <label htmlFor="forumAreaDescription" className="env-dialog__label">
             {this.props.i18n.text.get(
-              "plugin.discussion.createarea.description"
+              "plugin.discussion.createarea.description",
             )}
           </label>
           <textarea
@@ -113,39 +113,37 @@ class DiscussionNewArea extends SessionStateComponent<
             value={this.state.description}
           />
         </div>
-      </div>
+      </div>,
     ];
-    let footer = (closeDialog: () => any) => {
-      return (
-        <div className="env-dialog__actions">
+    const footer = (closeDialog: () => any) => (
+      <div className="env-dialog__actions">
+        <Button
+          buttonModifiers="dialog-execute"
+          onClick={this.createArea.bind(this, closeDialog)}
+          disabled={this.state.locked}
+        >
+          {this.props.i18n.text.get("plugin.discussion.createarea.send")}
+        </Button>
+        <Button
+          buttonModifiers="dialog-cancel"
+          onClick={closeDialog}
+          disabled={this.state.locked}
+        >
+          {this.props.i18n.text.get("plugin.discussion.createarea.cancel")}
+        </Button>
+        {this.recovered ? (
           <Button
-            buttonModifiers="dialog-execute"
-            onClick={this.createArea.bind(this, closeDialog)}
+            buttonModifiers="dialog-clear"
+            onClick={this.clearUp}
             disabled={this.state.locked}
           >
-            {this.props.i18n.text.get("plugin.discussion.createarea.send")}
+            {this.props.i18n.text.get(
+              "plugin.discussion.createmessage.clearDraft",
+            )}
           </Button>
-          <Button
-            buttonModifiers="dialog-cancel"
-            onClick={closeDialog}
-            disabled={this.state.locked}
-          >
-            {this.props.i18n.text.get("plugin.discussion.createarea.cancel")}
-          </Button>
-          {this.recovered ? (
-            <Button
-              buttonModifiers="dialog-clear"
-              onClick={this.clearUp}
-              disabled={this.state.locked}
-            >
-              {this.props.i18n.text.get(
-                "plugin.discussion.createmessage.clearDraft"
-              )}
-            </Button>
-          ) : null}
-        </div>
-      );
-    };
+        ) : null}
+      </div>
+    );
 
     return (
       <EnvironmentDialog
@@ -163,7 +161,7 @@ class DiscussionNewArea extends SessionStateComponent<
 
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n
+    i18n: state.i18n,
   };
 }
 

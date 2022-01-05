@@ -12,12 +12,12 @@ import {
   updateProfileAddress,
   UpdateProfileAddressTriggerType,
   updateProfileChatSettings,
-  UpdateProfileChatSettingsTriggerType
+  UpdateProfileChatSettingsTriggerType,
 } from "~/actions/main-function/profile";
 import { bindActionCreators, Dispatch } from "redux";
 import {
   displayNotification,
-  DisplayNotificationTriggerType
+  DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 import { SimpleActionExecutor } from "~/actions/executor";
 
@@ -71,7 +71,7 @@ class ContactInformation extends React.Component<
       city: "",
       country: "",
       municipality: "",
-      locked: false
+      locked: false,
     };
   }
 
@@ -86,7 +86,7 @@ class ContactInformation extends React.Component<
         nextProps.profile.properties["profile-phone"]
     ) {
       this.setState({
-        phoneNumber: nextProps.profile.properties["profile-phone"]
+        phoneNumber: nextProps.profile.properties["profile-phone"],
       });
     }
 
@@ -104,7 +104,7 @@ class ContactInformation extends React.Component<
           street: address.street || "",
           postalCode: address.postalCode || "",
           city: address.city || "",
-          country: address.country || ""
+          country: address.country || "",
         });
       }
     }
@@ -115,7 +115,7 @@ class ContactInformation extends React.Component<
         JSON.stringify(this.props.profile.student)
     ) {
       this.setState({
-        municipality: nextProps.profile.student.municipality || ""
+        municipality: nextProps.profile.student.municipality || "",
       });
     }
   }
@@ -136,9 +136,9 @@ class ContactInformation extends React.Component<
             key: "profile-phone",
             value: this.state.phoneNumber.trim(),
             success: executor.succeeded,
-            fail: executor.failed
+            fail: executor.failed,
           });
-        }
+        },
       )
       .addAction(this.props.status.isStudent, () => {
         this.props.updateProfileAddress({
@@ -148,7 +148,7 @@ class ContactInformation extends React.Component<
           country: this.state.country,
           municipality: this.state.municipality,
           success: executor.succeeded,
-          fail: executor.failed
+          fail: executor.failed,
         });
       })
       .onAllSucceed(() => {
@@ -156,7 +156,7 @@ class ContactInformation extends React.Component<
 
         this.props.displayNotification(
           this.props.i18n.text.get("plugin.profile.properties.saved"),
-          "success"
+          "success",
         );
       })
       .onOneFails(() => {
@@ -164,7 +164,7 @@ class ContactInformation extends React.Component<
 
         this.props.displayNotification(
           this.props.i18n.text.get("plugin.profile.properties.failed"),
-          "error"
+          "error",
         );
       });
   }
@@ -175,7 +175,7 @@ class ContactInformation extends React.Component<
    * @param e
    */
   updateField(field: string, e: React.ChangeEvent<HTMLInputElement>) {
-    let nField: any = {};
+    const nField: any = {};
     nField[field] = e.target.value;
     this.setState(nField);
   }
@@ -197,7 +197,7 @@ class ContactInformation extends React.Component<
         <form>
           <h2 className="application-panel__content-header">
             {this.props.i18n.text.get(
-              "plugin.profile.titles.contactInformation"
+              "plugin.profile.titles.contactInformation",
             )}
           </h2>
           <div className="application-sub-panel">
@@ -219,7 +219,7 @@ class ContactInformation extends React.Component<
                     className="application-sub-panel__item-title"
                   >
                     {this.props.i18n.text.get(
-                      "plugin.profile.changeAddressMunicipality.dialog.streetField.label"
+                      "plugin.profile.changeAddressMunicipality.dialog.streetField.label",
                     )}
                   </label>
                   <div className="application-sub-panel__item-data form-element">
@@ -242,7 +242,7 @@ class ContactInformation extends React.Component<
                     className="application-sub-panel__item-title"
                   >
                     {this.props.i18n.text.get(
-                      "plugin.profile.changeAddressMunicipality.dialog.postalCodeField.label"
+                      "plugin.profile.changeAddressMunicipality.dialog.postalCodeField.label",
                     )}
                   </label>
                   <div className="application-sub-panel__item-data form-element">
@@ -265,7 +265,7 @@ class ContactInformation extends React.Component<
                     className="application-sub-panel__item-title"
                   >
                     {this.props.i18n.text.get(
-                      "plugin.profile.changeAddressMunicipality.dialog.cityField.label"
+                      "plugin.profile.changeAddressMunicipality.dialog.cityField.label",
                     )}
                   </label>
                   <div className="application-sub-panel__item-data form-element">
@@ -288,7 +288,7 @@ class ContactInformation extends React.Component<
                     className="application-sub-panel__item-title"
                   >
                     {this.props.i18n.text.get(
-                      "plugin.profile.changeAddressMunicipality.dialog.countryField.label"
+                      "plugin.profile.changeAddressMunicipality.dialog.countryField.label",
                     )}
                   </label>
                   <div className="application-sub-panel__item-data form-element">
@@ -311,7 +311,7 @@ class ContactInformation extends React.Component<
                     className="application-sub-panel__item-title"
                   >
                     {this.props.i18n.text.get(
-                      "plugin.profile.changeAddressMunicipality.dialog.municipalityField.label"
+                      "plugin.profile.changeAddressMunicipality.dialog.municipalityField.label",
                     )}
                   </label>
                   <div className="application-sub-panel__item-data form-element">
@@ -341,7 +341,7 @@ class ContactInformation extends React.Component<
                     className="application-sub-panel__item-title"
                   >
                     {this.props.i18n.text.get(
-                      "plugin.profile.phoneNumber.label"
+                      "plugin.profile.phoneNumber.label",
                     )}
                   </label>
                   <div className="application-sub-panel__item-data form-element">
@@ -378,7 +378,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     profile: state.profile,
-    status: state.status
+    status: state.status,
   };
 }
 
@@ -388,9 +388,9 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
       saveProfileProperty,
       displayNotification,
       updateProfileChatSettings,
-      updateProfileAddress
+      updateProfileAddress,
     },
-    dispatch
+    dispatch,
   );
 }
 

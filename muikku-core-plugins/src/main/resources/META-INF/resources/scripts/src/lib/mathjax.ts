@@ -14,7 +14,7 @@ export const MATHJAXCONFIG = {
     "MathMenu.js",
     "MathZoom.js",
     "fast-preview.js",
-    "AssistiveMML.js"
+    "AssistiveMML.js",
   ],
   TeX: {
     extensions: [
@@ -22,8 +22,8 @@ export const MATHJAXCONFIG = {
       "AMSsymbols.js",
       "noErrors.js",
       "noUndefined.js",
-      "mhchem.js"
-    ]
+      "mhchem.js",
+    ],
   },
   SVG: {
     useFontCache: true,
@@ -32,8 +32,8 @@ export const MATHJAXCONFIG = {
     EqnDelay: 0,
     font: "STIX-Web",
     scale: "80",
-    lineBreaks: { automatic: true }
-  }
+    lineBreaks: { automatic: true },
+  },
 };
 
 export const MATHJAXSRC =
@@ -41,12 +41,12 @@ export const MATHJAXSRC =
 
 export function loadMathJax() {
   const mathjaxScriptTag = document.querySelector(
-    `script[src="${MATHJAXSRC}"]`
+    `script[src="${MATHJAXSRC}"]`,
   );
   if (mathjaxScriptTag || (window as any).MathJax) {
     return;
   }
-  let script = document.createElement("script");
+  const script = document.createElement("script");
   script.src = MATHJAXSRC;
   script.async = true;
   script.onload = () => {
@@ -64,11 +64,11 @@ export function toSVG(
   errorSrc: string,
   cb?: (element: HTMLImageElement) => any,
   placeholderSrc?: string,
-  placeholderCb?: (element: HTMLImageElement) => any
+  placeholderCb?: (element: HTMLImageElement) => any,
 ) {
   if (!(window as any).MathJax) {
     queue.push(
-      toSVG.bind(this, element, errorSrc, cb, placeholderSrc, placeholderCb)
+      toSVG.bind(this, element, errorSrc, cb, placeholderSrc, placeholderCb),
     );
     return;
   }
@@ -77,7 +77,7 @@ export function toSVG(
     formula = "\\(" + formula + "\\)";
   }
 
-  let container = document.createElement("div");
+  const container = document.createElement("div");
   container.textContent = formula.replace(/\\sum/g, "\\displaystyle\\sum");
   container.style.visibility = "hidden";
   document.body.appendChild(container);
@@ -85,7 +85,7 @@ export function toSVG(
   let actualUsedElementInTheDOM = element;
   const actualParentElement = element.parentElement;
   if (placeholderSrc && !(element as HTMLImageElement).src) {
-    let placeholderImage = (element as HTMLImageElement).alt
+    const placeholderImage = (element as HTMLImageElement).alt
       ? (element as HTMLImageElement)
       : document.createElement("img");
     placeholderImage.alt = formula;
@@ -100,13 +100,13 @@ export function toSVG(
   (window as any).MathJax.Hub.Queue([
     "Typeset",
     (window as any).MathJax.Hub,
-    container
+    container,
   ]);
   (window as any).MathJax.Hub.Queue(() => {
     document.body.removeChild(container);
 
-    let mjOut = container.getElementsByTagName("svg")[0];
-    let newImage = (element as HTMLImageElement).alt
+    const mjOut = container.getElementsByTagName("svg")[0];
+    const newImage = (element as HTMLImageElement).alt
       ? (element as HTMLImageElement)
       : document.createElement("img");
     newImage.alt = formula;

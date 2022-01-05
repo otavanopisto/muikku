@@ -6,11 +6,11 @@ import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
 import {
   displayNotification,
-  DisplayNotificationTriggerType
+  DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 import {
   updateCredentials,
-  UpdateCredentialsTriggerType
+  UpdateCredentialsTriggerType,
 } from "~/actions/base/credentials";
 import { CredentialsType } from "~/reducers/base/credentials";
 import { i18nType } from "~/reducers/base/i18n";
@@ -42,30 +42,30 @@ class ReturnCredentials extends React.Component<
       username: "",
       newPassword: "",
       newPasswordConfirm: "",
-      locked: false
+      locked: false,
     };
   }
 
   componentWillReceiveProps() {
     this.setState({
-      username: this.props.credentials.username
+      username: this.props.credentials.username,
     });
   }
   handleNewCredentials() {
-    let newPassword1 = this.state.newPassword;
-    let newPassword2 = this.state.newPasswordConfirm;
-    let userName = this.state.username;
-    let newUserCredentials = {
+    const newPassword1 = this.state.newPassword;
+    const newPassword2 = this.state.newPasswordConfirm;
+    const userName = this.state.username;
+    const newUserCredentials = {
       username: this.state.username,
       password: this.state.newPassword,
-      secret: this.props.credentials.secret
+      secret: this.props.credentials.secret,
     };
     if (userName == "") {
       this.props.displayNotification(
         this.props.i18n.text.get(
-          "plugin.forgotpassword.changeCredentials.messages.error.empty.username"
+          "plugin.forgotpassword.changeCredentials.messages.error.empty.username",
         ),
-        "error"
+        "error",
       );
       return;
     }
@@ -73,9 +73,9 @@ class ReturnCredentials extends React.Component<
     if (newPassword1 !== newPassword2) {
       this.props.displayNotification(
         this.props.i18n.text.get(
-          "plugin.forgotpassword.changeCredentials.messages.error.passwordsDontMatch"
+          "plugin.forgotpassword.changeCredentials.messages.error.passwordsDontMatch",
         ),
-        "error"
+        "error",
       );
       return;
     }
@@ -83,22 +83,22 @@ class ReturnCredentials extends React.Component<
     if (newPassword1 == "" || newPassword2 == "") {
       this.props.displayNotification(
         this.props.i18n.text.get(
-          "plugin.forgotpassword.changeCredentials.messages.error.empty.passwords"
+          "plugin.forgotpassword.changeCredentials.messages.error.empty.passwords",
         ),
-        "error"
+        "error",
       );
       return;
     }
 
     this.setState({
-      locked: true
+      locked: true,
     });
 
     this.props.updateCredentials(newUserCredentials);
   }
 
   updateField(field: string, e: React.ChangeEvent<HTMLInputElement>) {
-    let nField: any = {};
+    const nField: any = {};
     nField[field] = e.target.value;
     this.setState(nField);
   }
@@ -111,7 +111,7 @@ class ReturnCredentials extends React.Component<
             <div className="form-element form-element--forgot-password">
               <label htmlFor="resetCredentialsUsername">
                 {this.props.i18n.text.get(
-                  "plugin.forgotpassword.changeCredentials.input.name"
+                  "plugin.forgotpassword.changeCredentials.input.name",
                 )}
               </label>
               <input
@@ -127,7 +127,7 @@ class ReturnCredentials extends React.Component<
             <div className="form-element form-element--forgot-password">
               <label htmlFor="resetCredentialsPassword1">
                 {this.props.i18n.text.get(
-                  "plugin.forgotpassword.changeCredentials.input.password1"
+                  "plugin.forgotpassword.changeCredentials.input.password1",
                 )}
               </label>
               <input
@@ -143,7 +143,7 @@ class ReturnCredentials extends React.Component<
             <div className="form-element form-element--forgot-password">
               <label htmlFor="resetCredentialsPassword2">
                 {this.props.i18n.text.get(
-                  "plugin.forgotpassword.changeCredentials.input.password2"
+                  "plugin.forgotpassword.changeCredentials.input.password2",
                 )}
               </label>
               <input
@@ -162,7 +162,7 @@ class ReturnCredentials extends React.Component<
                 buttonModifiers="reset-password"
               >
                 {this.props.i18n.text.get(
-                  "plugin.forgotpassword.changeCredentials.button"
+                  "plugin.forgotpassword.changeCredentials.button",
                 )}
               </Button>
             </div>
@@ -172,7 +172,7 @@ class ReturnCredentials extends React.Component<
         <div className="credentials__changed">
           <div className="credentials__changed-message">
             {this.props.i18n.text.get(
-              "plugin.forgotpassword.changeCredentials.messages.success.loginFromCredentials"
+              "plugin.forgotpassword.changeCredentials.messages.success.loginFromCredentials",
             )}
           </div>
           <div className="credentials__changed-action">
@@ -187,14 +187,14 @@ class ReturnCredentials extends React.Component<
 
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n
+    i18n: state.i18n,
   };
 }
 
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     { displayNotification, updateCredentials },
-    dispatch
+    dispatch,
   );
 }
 

@@ -3,7 +3,7 @@ import { SelectItem } from "~/actions/workspaces/index";
 import {
   UserStaffType,
   WorkspaceStaffListType,
-  WorkspaceStudentListType
+  WorkspaceStudentListType,
 } from "~/reducers/user-index";
 import { repairContentNodes } from "~/util/modifiers";
 import { AudioAssessment } from "../../@types/evaluation";
@@ -539,9 +539,9 @@ function processWorkspaceToHaveNewAssessmentStateAndDate(
   date: string,
   assessmentRequestObject: WorkspaceAssessmentRequestType,
   deleteAssessmentRequestObject: boolean,
-  workspace: WorkspaceType
+  workspace: WorkspaceType,
 ) {
-  let replacement =
+  const replacement =
     workspace && workspace.id === id ? { ...workspace } : workspace;
   if (replacement && replacement.id === id) {
     if (replacement.studentActivity) {
@@ -550,8 +550,8 @@ function processWorkspaceToHaveNewAssessmentStateAndDate(
         assessmentState: {
           ...replacement.studentActivity.assessmentState,
           date,
-          state: assessmentState
-        }
+          state: assessmentState,
+        },
       };
     }
     if (replacement.studentAssessments) {
@@ -559,12 +559,12 @@ function processWorkspaceToHaveNewAssessmentStateAndDate(
         ...replacement.studentAssessments,
         assessmentState,
         assessmentStateDate: date,
-        assessments: replacement.studentAssessments.assessments
+        assessments: replacement.studentAssessments.assessments,
       };
     }
     if (replacement.assessmentRequests) {
-      let index = replacement.assessmentRequests.findIndex(
-        (r) => r.id === assessmentRequestObject.id
+      const index = replacement.assessmentRequests.findIndex(
+        (r) => r.id === assessmentRequestObject.id,
       );
       replacement.assessmentRequests = [...replacement.assessmentRequests];
       if (index !== -1) {
@@ -595,7 +595,7 @@ export default function workspaces(
       educationTypes: [],
       curriculums: [],
       organizations: [],
-      baseFilters: ["ALL_COURSES", "MY_COURSES", "UNPUBLISHED"]
+      baseFilters: ["ALL_COURSES", "MY_COURSES", "UNPUBLISHED"],
     },
     state: "LOADING",
     activeFilters: {
@@ -604,7 +604,7 @@ export default function workspaces(
       organizationFilters: [],
       templates: "ONLY_WORKSPACES",
       query: "",
-      baseFilter: "ALL_COURSES"
+      baseFilter: "ALL_COURSES",
     },
     hasMore: false,
     toolbarLock: false,
@@ -612,7 +612,7 @@ export default function workspaces(
     types: null,
     editMode: {
       active: false,
-      available: false
+      available: false,
     },
     materialEditor: {
       currentNodeWorkspace: null,
@@ -635,22 +635,22 @@ export default function workspaces(
       showRemoveAnswersDialogForDelete: false,
       showUpdateLinkedMaterialsDialogForPublish: false,
       showUpdateLinkedMaterialsDialogForPublishCount: 0,
-      canSetTitle: true
-    }
+      canSetTitle: true,
+    },
   },
-  action: ActionType
+  action: ActionType,
 ): WorkspacesType {
   if (action.type === "UPDATE_USER_WORKSPACES") {
     return <WorkspacesType>Object.assign({}, state, {
-      userWorkspaces: action.payload
+      userWorkspaces: action.payload,
     });
   } else if (action.type === "UPDATE_LAST_WORKSPACE") {
     return Object.assign({}, state, {
-      lastWorkspace: <WorkspaceMaterialReferenceType>action.payload
+      lastWorkspace: <WorkspaceMaterialReferenceType>action.payload,
     });
   } else if (action.type === "SET_CURRENT_WORKSPACE") {
     return Object.assign({}, state, {
-      currentWorkspace: <WorkspaceType>action.payload
+      currentWorkspace: <WorkspaceType>action.payload,
     });
   } else if (action.type === "UPDATE_WORKSPACE_ASSESSMENT_STATE") {
     return Object.assign({}, state, {
@@ -661,7 +661,7 @@ export default function workspaces(
         action.payload.newAssessmentRequest ||
           action.payload.oldAssessmentRequestToDelete,
         !!action.payload.oldAssessmentRequestToDelete,
-        state.currentWorkspace
+        state.currentWorkspace,
       ),
       availableWorkspaces: state.availableWorkspaces.map(
         processWorkspaceToHaveNewAssessmentStateAndDate.bind(
@@ -669,8 +669,8 @@ export default function workspaces(
           action.payload.workspace.id,
           action.payload.newState,
           action.payload.newDate,
-          action.payload.newAssessmentRequest
-        )
+          action.payload.newAssessmentRequest,
+        ),
       ),
       userWorkspaces: state.userWorkspaces.map(
         processWorkspaceToHaveNewAssessmentStateAndDate.bind(
@@ -678,51 +678,51 @@ export default function workspaces(
           action.payload.workspace.id,
           action.payload.newState,
           action.payload.newDate,
-          action.payload.newAssessmentRequest
-        )
-      )
+          action.payload.newAssessmentRequest,
+        ),
+      ),
     });
   } else if (
     action.type === "UPDATE_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES"
   ) {
     return Object.assign({}, state, {
       availableFilters: Object.assign({}, state.availableFilters, {
-        educationTypes: action.payload
-      })
+        educationTypes: action.payload,
+      }),
     });
   } else if (
     action.type === "UPDATE_WORKSPACES_AVAILABLE_FILTERS_STATE_TYPES"
   ) {
     return Object.assign({}, state, {
       availableFilters: Object.assign({}, state.availableFilters, {
-        stateFilters: action.payload
-      })
+        stateFilters: action.payload,
+      }),
     });
   } else if (
     action.type === "UPDATE_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS"
   ) {
     return Object.assign({}, state, {
       availableFilters: Object.assign({}, state.availableFilters, {
-        curriculums: action.payload
-      })
+        curriculums: action.payload,
+      }),
     });
   } else if (
     action.type === "UPDATE_WORKSPACES_AVAILABLE_FILTERS_ORGANIZATIONS"
   ) {
     return Object.assign({}, state, {
       availableFilters: Object.assign({}, state.availableFilters, {
-        organizations: action.payload
-      })
+        organizations: action.payload,
+      }),
     });
   } else if (action.type === "UPDATE_WORKSPACES_ACTIVE_FILTERS") {
     return Object.assign({}, state, {
-      activeFilters: action.payload
+      activeFilters: action.payload,
     });
   } else if (action.type === "UPDATE_WORKSPACES_ALL_PROPS") {
     return Object.assign({}, state, action.payload);
   } else if (action.type === "UPDATE_WORKSPACES_STATE") {
     return Object.assign({}, state, {
-      state: action.payload
+      state: action.payload,
     });
   } else if (action.type === "UPDATE_WORKSPACE") {
     let newCurrent = state.currentWorkspace;
@@ -742,7 +742,7 @@ export default function workspaces(
           return { ...w, ...action.payload.update };
         }
         return w;
-      })
+      }),
     });
   } else if (action.type === "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS") {
     return { ...state, currentMaterials: action.payload };
@@ -771,11 +771,11 @@ export default function workspaces(
           return { ...compositeReplies, ...action.payload };
         }
         return compositeReplies;
-      }
+      },
     );
     if (!wasUpdated) {
       newCurrentMaterialsReplies = newCurrentMaterialsReplies.concat([
-        <MaterialCompositeRepliesType>action.payload
+        <MaterialCompositeRepliesType>action.payload,
       ]);
     }
     return { ...state, currentMaterialsReplies: newCurrentMaterialsReplies };
@@ -792,10 +792,10 @@ export default function workspaces(
       newCurrentWorkspace = { ...newCurrentWorkspace };
       newCurrentWorkspace.contentDescription = {
         ...newCurrentWorkspace.contentDescription,
-        ...action.payload.update
+        ...action.payload.update,
       };
     }
-    let mapMaterial = (m: MaterialContentNodeType) => {
+    const mapMaterial = (m: MaterialContentNodeType) => {
       if (action.payload.isDraft) {
         return m;
       }
@@ -813,7 +813,7 @@ export default function workspaces(
 
       const newM: MaterialContentNodeType = {
         ...m,
-        children: m.children ? m.children.map(mapMaterial) : m.children
+        children: m.children ? m.children.map(mapMaterial) : m.children,
       };
       if (newM.childrenAttachments) {
         newM.childrenAttachments = newM.childrenAttachments.map(mapMaterial);
@@ -832,7 +832,7 @@ export default function workspaces(
       newEditor = { ...newEditor };
       newEditor.currentNodeValue = {
         ...newEditor.currentNodeValue,
-        ...action.payload.update
+        ...action.payload.update,
       };
     } else if (
       !action.payload.isDraft &&
@@ -844,7 +844,7 @@ export default function workspaces(
       newEditor = { ...newEditor };
       newEditor.parentNodeValue = {
         ...newEditor.parentNodeValue,
-        ...action.payload.update
+        ...action.payload.update,
       };
     } else if (
       action.payload.isDraft &&
@@ -856,7 +856,7 @@ export default function workspaces(
       newEditor = { ...newEditor };
       newEditor.currentDraftNodeValue = {
         ...newEditor.currentDraftNodeValue,
-        ...action.payload.update
+        ...action.payload.update,
       };
     }
     newEditor.showRemoveAnswersDialogForPublish =
@@ -875,10 +875,10 @@ export default function workspaces(
       currentHelp: state.currentHelp
         ? state.currentHelp.map(mapMaterial)
         : state.currentHelp,
-      materialEditor: newEditor
+      materialEditor: newEditor,
     };
   } else if (action.type === "DELETE_MATERIAL_CONTENT_NODE") {
-    let filterMaterial = (m: MaterialContentNodeType) => {
+    const filterMaterial = (m: MaterialContentNodeType) => {
       // Sometimes I get id sometimes workspaceMaterialId, super inconsistent
       if (
         typeof m.id !== "undefined" &&
@@ -896,10 +896,10 @@ export default function workspaces(
 
       return true;
     };
-    let mapMaterial = (
+    const mapMaterial = (
       m: MaterialContentNodeType,
       index: number,
-      arr: Array<MaterialContentNodeType>
+      arr: Array<MaterialContentNodeType>,
     ) => {
       const nextSiblingId = arr[index + 1]
         ? arr[index + 1].workspaceMaterialId
@@ -909,7 +909,7 @@ export default function workspaces(
         nextSiblingId,
         children: m.children
           ? m.children.filter(filterMaterial).map(mapMaterial)
-          : m.children
+          : m.children,
       };
       if (newM.childrenAttachments) {
         newM.childrenAttachments =
@@ -932,7 +932,7 @@ export default function workspaces(
         parentNodeValue: null,
         currentNodeWorkspace: null,
         opened: false,
-        ...newEditor
+        ...newEditor,
       };
     }
     if (
@@ -953,14 +953,14 @@ export default function workspaces(
       currentHelp: state.currentHelp
         ? state.currentHelp.filter(filterMaterial).map(mapMaterial)
         : state.currentHelp,
-      materialEditor: newEditor
+      materialEditor: newEditor,
     };
   } else if (action.type === "INSERT_MATERIAL_CONTENT_NODE") {
     const apiPath = action.payload.apiPath;
-    let insertedContentNode: MaterialContentNodeType =
+    const insertedContentNode: MaterialContentNodeType =
       action.payload.nodeContent;
 
-    let targetArray =
+    const targetArray =
       apiPath === "help" ? [...state.currentHelp] : [...state.currentMaterials];
 
     /**
@@ -976,14 +976,15 @@ export default function workspaces(
        * Finding index of section that is getting new page
        */
       const targetIndex = targetArray.findIndex(
-        (cn) => cn.workspaceMaterialId === insertedContentNode.parentId
+        (cn) => cn.workspaceMaterialId === insertedContentNode.parentId,
       );
 
       /**
        * Finding index of that children that will be follewd by new pages
        */
       const targetChildrenIndex = targetArray[targetIndex].children.findIndex(
-        (node) => node.workspaceMaterialId === insertedContentNode.nextSiblingId
+        (node) =>
+          node.workspaceMaterialId === insertedContentNode.nextSiblingId,
       );
 
       if (targetChildrenIndex !== -1) {
@@ -994,7 +995,7 @@ export default function workspaces(
         targetArray[targetIndex].children.splice(
           targetChildrenIndex,
           0,
-          insertedContentNode
+          insertedContentNode,
         );
       } else {
         /**
@@ -1004,7 +1005,7 @@ export default function workspaces(
       }
     } else if (insertedContentNode.nextSiblingId) {
       const siblingIndex = targetArray.findIndex(
-        (cn) => cn.workspaceMaterialId === insertedContentNode.nextSiblingId
+        (cn) => cn.workspaceMaterialId === insertedContentNode.nextSiblingId,
       );
       targetArray.splice(siblingIndex, 0, insertedContentNode);
     } else {
@@ -1014,12 +1015,12 @@ export default function workspaces(
     if (apiPath === "help") {
       return {
         ...state,
-        currentHelp: repairContentNodes(targetArray)
+        currentHelp: repairContentNodes(targetArray),
       };
     } else {
       return {
         ...state,
-        currentMaterials: repairContentNodes(targetArray)
+        currentMaterials: repairContentNodes(targetArray),
       };
     }
   } else if (action.type === "UPDATE_PATH_FROM_MATERIAL_CONTENT_NODES") {
@@ -1028,13 +1029,13 @@ export default function workspaces(
       currentMaterials: repairContentNodes(
         state.currentMaterials,
         action.payload.newPath,
-        action.payload.material.workspaceMaterialId
+        action.payload.material.workspaceMaterialId,
       ),
       currentHelp: repairContentNodes(
         state.currentHelp,
         action.payload.newPath,
-        action.payload.material.workspaceMaterialId
-      )
+        action.payload.material.workspaceMaterialId,
+      ),
     };
   } else if (action.type === "UPDATE_WORKSPACES_EDIT_MODE_STATE") {
     return { ...state, editMode: { ...state.editMode, ...action.payload } };
@@ -1050,20 +1051,20 @@ export function organizationWorkspaces(
     availableFilters: {
       educationTypes: [],
       curriculums: [],
-      stateFilters: []
+      stateFilters: [],
     },
     state: "LOADING",
     activeFilters: {
       educationFilters: [],
       curriculumFilters: [],
       stateFilters: [],
-      query: ""
+      query: "",
     },
     hasMore: false,
     toolbarLock: false,
-    types: null
+    types: null,
   },
-  action: ActionType
+  action: ActionType,
 ): WorkspacesType {
   if (
     action.type ===
@@ -1071,8 +1072,8 @@ export function organizationWorkspaces(
   ) {
     return Object.assign({}, state, {
       availableFilters: Object.assign({}, state.availableFilters, {
-        educationTypes: action.payload
-      })
+        educationTypes: action.payload,
+      }),
     });
   } else if (
     action.type ===
@@ -1080,8 +1081,8 @@ export function organizationWorkspaces(
   ) {
     return Object.assign({}, state, {
       availableFilters: Object.assign({}, state.availableFilters, {
-        stateFilters: action.payload
-      })
+        stateFilters: action.payload,
+      }),
     });
   } else if (
     action.type ===
@@ -1089,32 +1090,32 @@ export function organizationWorkspaces(
   ) {
     return Object.assign({}, state, {
       availableFilters: Object.assign({}, state.availableFilters, {
-        curriculums: action.payload
-      })
+        curriculums: action.payload,
+      }),
     });
   } else if (action.type === "UPDATE_ORGANIZATION_WORKSPACES_ALL_PROPS") {
     return Object.assign({}, state, action.payload);
   } else if (action.type === "UPDATE_ORGANIZATION_WORKSPACES_ACTIVE_FILTERS") {
     return Object.assign({}, state, {
-      activeFilters: action.payload
+      activeFilters: action.payload,
     });
   } else if (action.type === "UPDATE_ORGANIZATION_WORKSPACES_STATE") {
     return Object.assign({}, state, {
-      state: action.payload
+      state: action.payload,
     });
   } else if (action.type === "UPDATE_ORGANIZATION_TEMPLATES") {
     return Object.assign({}, state, {
-      templateWorkspaces: action.payload
+      templateWorkspaces: action.payload,
     });
   } else if (action.type === "UPDATE_ORGANIZATION_SELECTED_WORKSPACE") {
-    let newCurrent = state.currentWorkspace;
+    const newCurrent = state.currentWorkspace;
     if (newCurrent && newCurrent.id === action.payload.id) {
       return Object.assign({}, state, {
-        currentWorkspace: { ...newCurrent, ...action.payload }
+        currentWorkspace: { ...newCurrent, ...action.payload },
       });
     } else {
       return Object.assign({}, state, {
-        currentWorkspace: action.payload
+        currentWorkspace: action.payload,
       });
     }
   }

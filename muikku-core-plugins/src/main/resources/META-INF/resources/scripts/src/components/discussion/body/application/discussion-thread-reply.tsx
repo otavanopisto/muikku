@@ -2,7 +2,7 @@ import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
 import {
   DiscussionUserType,
-  DiscussionThreadReplyType
+  DiscussionThreadReplyType,
 } from "~/reducers/discussion";
 import { Dispatch, connect } from "react-redux";
 import Link from "~/components/general/link";
@@ -17,7 +17,7 @@ import {
   DiscussionCurrentThreadElement,
   DiscussionThreadHeader,
   DiscussionThreadBody,
-  DiscussionThreadFooter
+  DiscussionThreadFooter,
 } from "./threads/threads";
 import ReplyThreadDrawer from "./reply-thread-drawer";
 import ModifyThreadReplyDrawer from "./modify-reply-thread-drawer";
@@ -35,7 +35,7 @@ interface DiscussionThreadReplyProps {
   parentHasHiddenSiblings: boolean;
   threadLocked: boolean;
   onHideShowSubRepliesClick?: (
-    parentId: number
+    parentId: number,
   ) => (e: React.MouseEvent) => void;
 }
 
@@ -62,7 +62,7 @@ class DiscussionThreadReply extends React.Component<
     (type: "answer" | "modify" | "quote") =>
     (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
       this.setState({
-        openReplyType: type !== this.state.openReplyType ? type : undefined
+        openReplyType: type !== this.state.openReplyType ? type : undefined,
       });
     };
 
@@ -71,7 +71,7 @@ class DiscussionThreadReply extends React.Component<
    */
   handleOnCancelClick = () => {
     this.setState({
-      openReplyType: undefined
+      openReplyType: undefined,
     });
   };
 
@@ -90,7 +90,7 @@ class DiscussionThreadReply extends React.Component<
       canEditMessage,
       parentHasHiddenSiblings,
       threadLocked,
-      onHideShowSubRepliesClick
+      onHideShowSubRepliesClick,
     } = this.props;
 
     return (
@@ -122,7 +122,7 @@ class DiscussionThreadReply extends React.Component<
                 <div className="rich-text">
                   [
                   {this.props.i18n.text.get(
-                    "plugin.discussion.infomessage.message.removed"
+                    "plugin.discussion.infomessage.message.removed",
                   )}
                   ]
                 </div>
@@ -136,7 +136,7 @@ class DiscussionThreadReply extends React.Component<
                 <span className="application-list__item-edited">
                   {this.props.i18n.text.get(
                     "plugin.discussion.content.isEdited",
-                    this.props.i18n.time.format(discussionItem.lastModified)
+                    this.props.i18n.time.format(discussionItem.lastModified),
                   )}
                 </span>
               ) : null}
@@ -151,7 +151,7 @@ class DiscussionThreadReply extends React.Component<
                     onClick={this.handleOnReplyClick("answer")}
                   >
                     {this.props.i18n.text.get(
-                      "plugin.discussion.reply.message"
+                      "plugin.discussion.reply.message",
                     )}
                   </Link>
                 ) : null}
@@ -183,7 +183,7 @@ class DiscussionThreadReply extends React.Component<
                       className="link link--application-list-item-footer"
                     >
                       {this.props.i18n.text.get(
-                        "plugin.discussion.reply.delete"
+                        "plugin.discussion.reply.delete",
                       )}
                     </Link>
                   </DeleteThreadComponent>
@@ -197,10 +197,10 @@ class DiscussionThreadReply extends React.Component<
                   >
                     {parentHasHiddenSiblings
                       ? this.props.i18n.text.get(
-                          "plugin.discussion.reply.showAllReplies"
+                          "plugin.discussion.reply.showAllReplies",
                         )
                       : this.props.i18n.text.get(
-                          "plugin.discussion.reply.hideAllReplies"
+                          "plugin.discussion.reply.hideAllReplies",
                         )}
                   </Link>
                 ) : null}
@@ -222,7 +222,7 @@ class DiscussionThreadReply extends React.Component<
             quote={discussionItem.message}
             quoteAuthor={getName(
               user,
-              this.props.status.permissions.FORUM_SHOW_FULL_NAMES
+              this.props.status.permissions.FORUM_SHOW_FULL_NAMES,
             )}
             onClickCancel={this.handleOnCancelClick}
           />
@@ -240,7 +240,7 @@ class DiscussionThreadReply extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    status: state.status
+    status: state.status,
   };
 }
 
@@ -255,5 +255,5 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(DiscussionThreadReply);

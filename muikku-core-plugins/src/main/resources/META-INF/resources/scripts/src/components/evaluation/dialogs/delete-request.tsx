@@ -11,7 +11,7 @@ import "~/sass/elements/form.scss";
 import { AssessmentRequest } from "../../../@types/evaluation";
 import {
   deleteAssessmentRequest,
-  DeleteAssessmentRequest
+  DeleteAssessmentRequest,
 } from "../../../actions/main-function/evaluation/evaluationActions";
 
 /**
@@ -52,11 +52,9 @@ class DeleteRequestDialog extends React.Component<
    * This should sanitize html
    * @param htmlString string that contains html
    */
-  createHtmlMarkup = (htmlString: string) => {
-    return {
-      __html: htmlString
-    };
-  };
+  createHtmlMarkup = (htmlString: string) => ({
+    __html: htmlString,
+  });
 
   /**
    * deleteRequest
@@ -64,7 +62,7 @@ class DeleteRequestDialog extends React.Component<
    */
   deleteRequest(closeDialog: () => any) {
     this.props.deleteAssessmentRequest({
-      workspaceUserEntityId: this.props.workspaceUserEntityId
+      workspaceUserEntityId: this.props.workspaceUserEntityId,
     });
     closeDialog();
   }
@@ -89,53 +87,48 @@ class DeleteRequestDialog extends React.Component<
      * footer
      * @param closeDialog
      */
-    const footer = (closeDialog: () => any) => {
-      return (
-        <div className="dialog__button-set">
-          <Button
-            buttonModifiers={["fatal", "standard-ok"]}
-            onClick={this.deleteRequest.bind(this, closeDialog)}
-          >
-            {this.props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.archiveRequest.confirmationDialog.buttonArchiveLabel"
-            )}
-          </Button>
-          <Button
-            buttonModifiers={["cancel", "standard-cancel"]}
-            onClick={closeDialog}
-          >
-            {this.props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.archiveRequest.confirmationDialog.buttonNoLabel"
-            )}
-          </Button>
-        </div>
-      );
-    };
+    const footer = (closeDialog: () => any) => (
+      <div className="dialog__button-set">
+        <Button
+          buttonModifiers={["fatal", "standard-ok"]}
+          onClick={this.deleteRequest.bind(this, closeDialog)}
+        >
+          {this.props.i18n.text.get(
+            "plugin.evaluation.evaluationModal.archiveRequest.confirmationDialog.buttonArchiveLabel",
+          )}
+        </Button>
+        <Button
+          buttonModifiers={["cancel", "standard-cancel"]}
+          onClick={closeDialog}
+        >
+          {this.props.i18n.text.get(
+            "plugin.evaluation.evaluationModal.archiveRequest.confirmationDialog.buttonNoLabel",
+          )}
+        </Button>
+      </div>
+    );
 
     /**
      * content
-     * @param closeDialog
      */
-    const content = (closeDialog: () => any) => {
-      return (
-        <div
-          dangerouslySetInnerHTML={this.createHtmlMarkup(
-            this.props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.archiveRequest.confirmationDialog.description",
-              studentNameString,
-              workspaceNameString
-            )
-          )}
-        />
-      );
-    };
+    const content = (closeDialog: () => any) => (
+      <div
+        dangerouslySetInnerHTML={this.createHtmlMarkup(
+          this.props.i18n.text.get(
+            "plugin.evaluation.evaluationModal.archiveRequest.confirmationDialog.description",
+            studentNameString,
+            workspaceNameString,
+          ),
+        )}
+      />
+    );
     return (
       <Dialog
         isOpen={this.props.isOpen}
         onClose={this.props.onClose}
         modifier="evaluation-archive-request"
         title={this.props.i18n.text.get(
-          "plugin.evaluation.evaluationModal.archiveRequest.confirmationDialog.title"
+          "plugin.evaluation.evaluationModal.archiveRequest.confirmationDialog.title",
         )}
         content={content}
         footer={footer}
@@ -152,7 +145,7 @@ class DeleteRequestDialog extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n
+    i18n: state.i18n,
   };
 }
 
@@ -166,5 +159,5 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(DeleteRequestDialog);

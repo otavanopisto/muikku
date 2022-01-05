@@ -10,7 +10,7 @@ import { bindActionCreators } from "redux";
 import { WorkspaceType } from "~/reducers/workspaces";
 import {
   RequestAssessmentAtWorkspaceTriggerType,
-  requestAssessmentAtWorkspace
+  requestAssessmentAtWorkspace,
 } from "~/actions/workspaces";
 import { StatusType } from "~/reducers/base/status";
 
@@ -49,7 +49,7 @@ class EvaluationRequestDialog extends React.Component<
     super(props);
     this.state = {
       locked: false,
-      message: ""
+      message: "",
     };
 
     this.updateMessage = this.updateMessage.bind(this);
@@ -70,22 +70,22 @@ class EvaluationRequestDialog extends React.Component<
    */
   request(closeDialog: () => any) {
     this.setState({
-      locked: true
+      locked: true,
     });
     this.props.requestAssessmentAtWorkspace({
       workspace: this.props.workspace,
       text: this.state.message,
       success: () => {
         this.setState({
-          locked: false
+          locked: false,
         });
         closeDialog();
       },
       fail: () => {
         this.setState({
-          locked: false
+          locked: false,
         });
-      }
+      },
     });
   }
 
@@ -96,23 +96,23 @@ class EvaluationRequestDialog extends React.Component<
   render() {
     const hasFees = this.props.status.hasFees;
 
-    let content = (closeDialog: () => any) => (
+    const content = (closeDialog: () => any) => (
       <div>
         <div className="dialog__content-row">
           {this.props.i18n.text.get(
-            "plugin.workspace.evaluation.requestEvaluation.description"
+            "plugin.workspace.evaluation.requestEvaluation.description",
           )}
         </div>
         {hasFees ? (
           <div className="dialog__content-row">
             <label>
               {this.props.i18n.text.get(
-                "plugin.workspace.evaluation.requestEvaluation.evaluationHasFee.label"
+                "plugin.workspace.evaluation.requestEvaluation.evaluationHasFee.label",
               )}
             </label>
             <p>
               {this.props.i18n.text.get(
-                "plugin.workspace.evaluation.requestEvaluation.evaluationHasFee.content"
+                "plugin.workspace.evaluation.requestEvaluation.evaluationHasFee.content",
               )}
             </p>
           </div>
@@ -129,36 +129,34 @@ class EvaluationRequestDialog extends React.Component<
       </div>
     );
 
-    let footer = (closeDialog: () => any) => {
-      return (
-        <div className="dialog__button-set">
-          <Button
-            buttonModifiers={["standard-ok", "execute"]}
-            onClick={this.request.bind(this, closeDialog)}
-            disabled={this.state.locked}
-          >
-            {this.props.i18n.text.get(
-              "plugin.workspace.evaluation.requestEvaluation.requestButton"
-            )}
-          </Button>
-          <Button
-            buttonModifiers={["standard-cancel", "cancel"]}
-            onClick={closeDialog}
-            disabled={this.state.locked}
-          >
-            {this.props.i18n.text.get(
-              "plugin.workspace.evaluation.requestEvaluation.cancelButton"
-            )}
-          </Button>
-        </div>
-      );
-    };
+    const footer = (closeDialog: () => any) => (
+      <div className="dialog__button-set">
+        <Button
+          buttonModifiers={["standard-ok", "execute"]}
+          onClick={this.request.bind(this, closeDialog)}
+          disabled={this.state.locked}
+        >
+          {this.props.i18n.text.get(
+            "plugin.workspace.evaluation.requestEvaluation.requestButton",
+          )}
+        </Button>
+        <Button
+          buttonModifiers={["standard-cancel", "cancel"]}
+          onClick={closeDialog}
+          disabled={this.state.locked}
+        >
+          {this.props.i18n.text.get(
+            "plugin.workspace.evaluation.requestEvaluation.cancelButton",
+          )}
+        </Button>
+      </div>
+    );
 
     return (
       <Dialog
         modifier="evaluation-request-dialog"
         title={this.props.i18n.text.get(
-          "plugin.workspace.evaluation.requestEvaluation.title"
+          "plugin.workspace.evaluation.requestEvaluation.title",
         )}
         content={content}
         footer={footer}
@@ -177,7 +175,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     workspace: state.workspaces.currentWorkspace,
-    status: state.status
+    status: state.status,
   };
 }
 
@@ -191,5 +189,5 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(EvaluationRequestDialog);

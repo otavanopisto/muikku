@@ -18,7 +18,7 @@ function onConfirmedAndSyncedModification(props: MaterialLoaderContentProps) {
   //What we basically want to do this is because when the websocket gets called
   //the state gets changed to ANSWERED from UNANSWERED but our client side
   //tree is not aware of this change
-  let compositeReplies = props.compositeReplies;
+  const compositeReplies = props.compositeReplies;
   //So we check if it is UNASWERED or has no reply in which case is unanswered too
   if (!compositeReplies || compositeReplies.state === "UNANSWERED") {
     //We make the call using true to avoid the server call since that would be redundant
@@ -32,7 +32,7 @@ function onConfirmedAndSyncedModification(props: MaterialLoaderContentProps) {
       props.material.workspaceMaterialId,
       compositeReplies && compositeReplies.workspaceMaterialReplyId,
       props.stateConfiguration["success-text"] &&
-        props.i18n.text.get(props.stateConfiguration["success-text"])
+        props.i18n.text.get(props.stateConfiguration["success-text"]),
     );
   }
 }
@@ -40,7 +40,7 @@ function onConfirmedAndSyncedModification(props: MaterialLoaderContentProps) {
 function onModification(props: MaterialLoaderContentProps) {
   //We use this function to basically modify the state with the modify state
   //Currently only used in exercises when the modify state sends them back to be answered
-  let compositeReplies = props.compositeReplies;
+  const compositeReplies = props.compositeReplies;
   if (
     props.stateConfiguration &&
     props.stateConfiguration["modify-state"] &&
@@ -56,7 +56,7 @@ function onModification(props: MaterialLoaderContentProps) {
       compositeReplies && compositeReplies.workspaceMaterialReplyId,
       props.stateConfiguration["success-text"] &&
         props.i18n.text.get(props.stateConfiguration["success-text"]),
-      props.onAssignmentStateModified
+      props.onAssignmentStateModified,
     );
   }
 }
@@ -88,7 +88,7 @@ export function MaterialLoaderContent(props: MaterialLoaderContentProps) {
             websocketState={props.websocket}
             onConfirmedAndSyncedModification={onConfirmedAndSyncedModification.bind(
               this,
-              props
+              props,
             )}
             onModification={onModification.bind(this, props)}
             readOnly={

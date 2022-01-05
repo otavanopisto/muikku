@@ -11,7 +11,7 @@ import userIndex from "./user-index";
 import organizationUsers, {
   studyprogrammes,
   userSelect,
-  userGroups
+  userGroups,
 } from "./main-function/users";
 import discussion from "~/reducers/discussion";
 import guider from "./main-function/guider";
@@ -51,5 +51,5 @@ export default combineReducers({
   discussion,
   guider,
   profile,
-  evaluations
+  evaluations,
 });

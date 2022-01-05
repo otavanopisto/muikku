@@ -55,44 +55,40 @@ class WarningDialog extends React.Component<
    * @returns JSX.Element
    */
   render() {
-    const footer = (closeDialog: () => any) => {
-      return (
-        <div className="dialog__button-set">
-          <Button
-            buttonModifiers={["fatal", "standard-ok"]}
-            onClick={this.handleContinueClick.bind(this, closeDialog)}
-          >
-            {this.props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.unsavedVerbalRecordings.proceedButton"
-            )}
-          </Button>
-          <Button
-            buttonModifiers={["cancel", "standard-cancel"]}
-            onClick={closeDialog}
-          >
-            {this.props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.unsavedVerbalRecordings.cancelButton"
-            )}
-          </Button>
-        </div>
-      );
-    };
-    const content = (closeDialog: () => any) => {
-      return (
-        <div>
+    const footer = (closeDialog: () => any) => (
+      <div className="dialog__button-set">
+        <Button
+          buttonModifiers={["fatal", "standard-ok"]}
+          onClick={this.handleContinueClick.bind(this, closeDialog)}
+        >
           {this.props.i18n.text.get(
-            "plugin.evaluation.evaluationModal.unsavedVerbalRecordings.description"
+            "plugin.evaluation.evaluationModal.unsavedVerbalRecordings.proceedButton",
           )}
-        </div>
-      );
-    };
+        </Button>
+        <Button
+          buttonModifiers={["cancel", "standard-cancel"]}
+          onClick={closeDialog}
+        >
+          {this.props.i18n.text.get(
+            "plugin.evaluation.evaluationModal.unsavedVerbalRecordings.cancelButton",
+          )}
+        </Button>
+      </div>
+    );
+    const content = (closeDialog: () => any) => (
+      <div>
+        {this.props.i18n.text.get(
+          "plugin.evaluation.evaluationModal.unsavedVerbalRecordings.description",
+        )}
+      </div>
+    );
     return (
       <Dialog
         isOpen={this.props.isOpen}
         onClose={this.props.onClose}
         modifier="evaluation-remove-assessment"
         title={this.props.i18n.text.get(
-          "plugin.evaluation.evaluationModal.unsavedVerbalRecordings.title"
+          "plugin.evaluation.evaluationModal.unsavedVerbalRecordings.title",
         )}
         content={content}
         footer={footer}
@@ -111,7 +107,7 @@ class WarningDialog extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n
+    i18n: state.i18n,
   };
 }
 

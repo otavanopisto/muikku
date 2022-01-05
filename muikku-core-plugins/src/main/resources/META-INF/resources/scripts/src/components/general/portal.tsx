@@ -2,11 +2,11 @@ import * as React from "react";
 import {
   unstable_renderSubtreeIntoContainer,
   unmountComponentAtNode,
-  findDOMNode
+  findDOMNode,
 } from "react-dom";
 
 const KEYCODES = {
-  ESCAPE: 27
+  ESCAPE: 27,
 };
 
 interface PortalProps {
@@ -178,7 +178,7 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
       e.stopPropagation();
       this.closePortal();
     }
-    let node: Node = e.target as Node;
+    const node: Node = e.target as Node;
     if (root.contains(node)) {
       return;
     }
@@ -196,7 +196,7 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
     }
   }
 
-  renderPortal(props: PortalProps, isOpening: boolean = false) {
+  renderPortal(props: PortalProps, isOpening = false) {
     if (!this.node) {
       this.node = document.createElement("div");
       document.body.appendChild(this.node);
@@ -207,7 +207,7 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
       typeof props.children === "function"
         ? props.children(this.closePortal)
         : props.children,
-      this.node
+      this.node,
     );
 
     if (isOpening) {
@@ -219,7 +219,7 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
     if (this.props.openByClickOn) {
       return React.cloneElement(this.props.openByClickOn, {
         onClick: this.handleWrapperClick,
-        onKeyDown: this.handleWrapperKeyDown
+        onKeyDown: this.handleWrapperKeyDown,
       });
     } else if (this.props.openByHoverOn && this.props.openByHoverIsClickToo) {
       return React.cloneElement(this.props.openByHoverOn, {
@@ -228,14 +228,14 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
         onClick: this.handleWrapperClick,
         onFocus: this.handleWrapperClick,
         onBlur: this.handleOutsideMouseClick,
-        onKeyDown: this.handleWrapperKeyDown
+        onKeyDown: this.handleWrapperKeyDown,
       });
     } else if (this.props.openByHoverOn) {
       return React.cloneElement(this.props.openByHoverOn, {
         onMouseEnter: this.handleWrapperClick,
         onMouseLeave: this.handleOutsideMouseClick,
         onFocus: this.handleWrapperClick,
-        onBlur: this.handleOutsideMouseClick
+        onBlur: this.handleOutsideMouseClick,
       });
     }
     return null;

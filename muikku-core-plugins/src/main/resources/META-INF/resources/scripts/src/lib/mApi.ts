@@ -7,6 +7,6 @@ export class MApiError extends Error {
 
 (<any>window).MAPI_OVERRIDE_RETURN_ACTUAL_ERRORS = true;
 (<any>window).MAPI_OVERRIDE_RETURN_ACTUAL_ERRORS_W_CLASS = MApiError;
-let mApi = (<any>window).mApi;
+const mApi = (<any>window).mApi;
 
 export default mApi;

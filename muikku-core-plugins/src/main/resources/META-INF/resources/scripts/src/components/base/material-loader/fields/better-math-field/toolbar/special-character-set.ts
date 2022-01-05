@@ -51,8 +51,8 @@ export default [
       { character: "Ω", latexCommand: "\\Omega" },
       { character: "ω", latexCommand: "\\omega" },
       { character: "∂", latexCommand: "\\partial" },
-      { character: "φ", latexCommand: "\\varphi" }
-    ]
+      { character: "φ", latexCommand: "\\varphi" },
+    ],
   },
   {
     label: "relations",
@@ -68,8 +68,8 @@ export default [
       { character: "≢", latexCommand: "\\not\\equiv" },
       { character: "∘", latexCommand: "\\circ" },
       { character: "…", latexCommand: "\\ldots" },
-      { character: "∝", latexCommand: "\\propto" }
-    ]
+      { character: "∝", latexCommand: "\\propto" },
+    ],
   },
   {
     label: "geometryAndVectors",
@@ -85,8 +85,8 @@ export default [
       { character: "↘", latexCommand: "\\searrow" },
       { character: "↓", latexCommand: "\\downarrow" },
       { character: "↔", latexCommand: "\\leftrightarrow" },
-      { character: "⊥", latexCommand: "\\perp" }
-    ]
+      { character: "⊥", latexCommand: "\\perp" },
+    ],
   },
   {
     label: "setTheoryNotation",
@@ -110,7 +110,7 @@ export default [
       { character: "∅", latexCommand: "\\empty" },
       { character: "∧", latexCommand: "\\and" },
       { character: "∨", latexCommand: "\\or" },
-      { character: "¬" }
-    ]
-  }
+      { character: "¬" },
+    ],
+  },
 ];

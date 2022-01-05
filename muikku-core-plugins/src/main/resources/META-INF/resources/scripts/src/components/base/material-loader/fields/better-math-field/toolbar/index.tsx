@@ -1,6 +1,6 @@
 import * as React from "react";
 import specialCharacters, {
-  SpecialCharacterType
+  SpecialCharacterType,
 } from "./special-character-set";
 import latexCommands, { LatexCommandType } from "./latex-command-set";
 import ToolbarButton from "./button";
@@ -43,7 +43,7 @@ export default class MathFieldToolbar extends React.Component<
     super(props);
 
     this.state = {
-      isExpanded: false
+      isExpanded: false,
     };
 
     this.triggerCommandOn = this.triggerCommandOn.bind(this);
@@ -51,7 +51,7 @@ export default class MathFieldToolbar extends React.Component<
   }
   triggerCommandOn(
     s: SpecialCharacterType | LatexCommandType,
-    e: React.ChangeEvent<any>
+    e: React.ChangeEvent<any>,
   ) {
     e.preventDefault();
 
@@ -64,7 +64,7 @@ export default class MathFieldToolbar extends React.Component<
           (s as SpecialCharacterType).latexCommand ||
           (s as SpecialCharacterType).character,
         html: (s as SpecialCharacterType).character,
-        useWrite: true
+        useWrite: true,
       });
       return;
     }
@@ -73,12 +73,12 @@ export default class MathFieldToolbar extends React.Component<
       latex: (s as LatexCommandType).action,
       latexText:
         (s as LatexCommandType).label || (s as LatexCommandType).action,
-      useWrite: (s as LatexCommandType).useWrite
+      useWrite: (s as LatexCommandType).useWrite,
     });
   }
   toggleIsExpanded() {
     this.setState({
-      isExpanded: !this.state.isExpanded
+      isExpanded: !this.state.isExpanded,
     });
   }
   render() {
@@ -106,7 +106,7 @@ export default class MathFieldToolbar extends React.Component<
               <div className={this.props.className + "-symbol-group-content"}>
                 {(c.characters as any)
                   .filter((s: SpecialCharacterType) =>
-                    !this.state.isExpanded ? s.popular : true
+                    !this.state.isExpanded ? s.popular : true,
                   )
                   .map((s: SpecialCharacterType) => (
                     <ToolbarButton

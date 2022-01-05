@@ -10,7 +10,7 @@ import EvaluationAssessmentAssignment from "./evaluation-assessment-assignment";
 import {
   AssessmentRequest,
   EvaluationEnum,
-  EvaluationWorkspace
+  EvaluationWorkspace,
 } from "~/@types/evaluation";
 import EvaluationDiaryEvent from "./evaluation-diary-event";
 import WorkspaceEditor from "./editors/workspace-editor";
@@ -24,13 +24,13 @@ import {
   LoadEvaluationAssessmentRequest,
   LoadEvaluationAssessmentEvent,
   loadEvaluationAssessmentRequestsFromServer,
-  loadEvaluationAssessmentEventsFromServer
+  loadEvaluationAssessmentEventsFromServer,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import "~/sass/elements/assignment.scss";
 import "~/sass/elements/empty.scss";
 import {
   MaterialCompositeRepliesType,
-  WorkspaceType
+  WorkspaceType,
 } from "~/reducers/workspaces";
 import Link from "~/components/general/link";
 
@@ -76,7 +76,7 @@ export const CKEditorConfig = (locale: string) => ({
   toolbar: [
     {
       name: "clipboard",
-      items: ["Cut", "Copy", "Paste", "-", "Undo", "Redo"]
+      items: ["Cut", "Copy", "Paste", "-", "Undo", "Redo"],
     },
     {
       name: "basicstyles",
@@ -88,8 +88,8 @@ export const CKEditorConfig = (locale: string) => ({
         "Subscript",
         "Superscript",
         "-",
-        "RemoveFormat"
-      ]
+        "RemoveFormat",
+      ],
     },
     "/",
     {
@@ -101,8 +101,8 @@ export const CKEditorConfig = (locale: string) => ({
         "Muikku-mathjax",
         "Table",
         "Smiley",
-        "SpecialChar"
-      ]
+        "SpecialChar",
+      ],
     },
     { name: "links", items: ["Link", "Unlink"] },
     { name: "colors", items: ["TextColor", "BGColor"] },
@@ -123,14 +123,14 @@ export const CKEditorConfig = (locale: string) => ({
         "JustifyBlock",
         "-",
         "BidiLtr",
-        "BidiRtl"
-      ]
+        "BidiRtl",
+      ],
     },
-    { name: "tools", items: ["Maximize"] }
+    { name: "tools", items: ["Maximize"] },
   ],
   removePlugins: "image,exportpdf",
   resize_enabled: true,
-  extraPlugins: "divarea,image2,muikku-mathjax"
+  extraPlugins: "divarea,image2,muikku-mathjax",
 });
 
 export class Evaluation extends React.Component<
@@ -153,7 +153,7 @@ export class Evaluation extends React.Component<
       openAllMaterialContent: false,
       listOfDiaryIds: [],
       listOfAssignmentIds: [],
-      diaryFetched: false
+      diaryFetched: false,
     };
   }
 
@@ -162,10 +162,7 @@ export class Evaluation extends React.Component<
    * @param prevProps
    * @param prevState
    */
-  componentDidUpdate(
-    prevProps: EvaluationDrawerProps,
-    prevState: EvaluationDrawerState
-  ) {
+  componentDidUpdate() {
     if (
       !this.state.diaryFetched &&
       this.props.evaluation.evaluationDiaryEntries &&
@@ -173,12 +170,12 @@ export class Evaluation extends React.Component<
       this.props.evaluation.evaluationDiaryEntries.state === "READY"
     ) {
       const numberList = this.props.evaluation.evaluationDiaryEntries.data.map(
-        (item) => item.id
+        (item) => item.id,
       );
 
       this.setState({
         diaryFetched: true,
-        listOfDiaryIds: numberList
+        listOfDiaryIds: numberList,
       });
     }
   }
@@ -245,17 +242,15 @@ export class Evaluation extends React.Component<
    * @returns boolean whether to show assignment or not
    */
   showAsHiddenEvaluationAssignment = (
-    compositeReply?: MaterialCompositeRepliesType
-  ): boolean => {
-    return compositeReply && compositeReply.submitted !== null;
-  };
+    compositeReply?: MaterialCompositeRepliesType,
+  ): boolean => compositeReply && compositeReply.submitted !== null;
 
   /**
    * handleOpenDrawer
    */
   handleOpenWorkspaceEvaluationDrawer = () => {
     this.setState({
-      showWorkspaceEvaluationDrawer: true
+      showWorkspaceEvaluationDrawer: true,
     });
   };
 
@@ -267,11 +262,11 @@ export class Evaluation extends React.Component<
       this.setState({
         eventByIdOpened: undefined,
         edit: false,
-        showWorkspaceEvaluationDrawer: false
+        showWorkspaceEvaluationDrawer: false,
       });
     } else {
       this.setState({
-        showWorkspaceEvaluationDrawer: false
+        showWorkspaceEvaluationDrawer: false,
       });
     }
   };
@@ -281,7 +276,7 @@ export class Evaluation extends React.Component<
    */
   handleOpenWorkspaceSupplementationEvaluationDrawer = () => {
     this.setState({
-      showWorkspaceSupplemenationDrawer: true
+      showWorkspaceSupplemenationDrawer: true,
     });
   };
 
@@ -293,11 +288,11 @@ export class Evaluation extends React.Component<
       this.setState({
         eventByIdOpened: undefined,
         edit: false,
-        showWorkspaceSupplemenationDrawer: false
+        showWorkspaceSupplemenationDrawer: false,
       });
     } else {
       this.setState({
-        showWorkspaceSupplemenationDrawer: false
+        showWorkspaceSupplemenationDrawer: false,
       });
     }
   };
@@ -307,7 +302,7 @@ export class Evaluation extends React.Component<
    */
   handleOpenContent = () => {
     this.setState({
-      showContent: !this.state.showContent
+      showContent: !this.state.showContent,
     });
   };
 
@@ -316,7 +311,7 @@ export class Evaluation extends React.Component<
    */
   handleOpenArchiveStudentDialog = () => {
     this.setState({
-      archiveStudentDialog: true
+      archiveStudentDialog: true,
     });
   };
 
@@ -325,10 +320,10 @@ export class Evaluation extends React.Component<
    */
   handleCloseArchiveStudentDialog = () => {
     this.setState({
-      archiveStudentDialog: false
+      archiveStudentDialog: false,
     });
     this.props.loadEvaluationAssessmentEventsFromServer({
-      assessment: this.props.evaluation.evaluationSelectedAssessmentId
+      assessment: this.props.evaluation.evaluationSelectedAssessmentId,
     });
   };
 
@@ -336,30 +331,28 @@ export class Evaluation extends React.Component<
    * handleClickEdit
    * @param supplementation
    */
-  handleClickEdit =
-    (eventId: string, supplementation?: boolean) =>
-    (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-      if (supplementation) {
-        this.setState({
-          edit: true,
-          showWorkspaceSupplemenationDrawer: true,
-          eventByIdOpened: eventId
-        });
-      } else {
-        this.setState({
-          edit: true,
-          showWorkspaceEvaluationDrawer: true,
-          eventByIdOpened: eventId
-        });
-      }
-    };
+  handleClickEdit = (eventId: string, supplementation?: boolean) => () => {
+    if (supplementation) {
+      this.setState({
+        edit: true,
+        showWorkspaceSupplemenationDrawer: true,
+        eventByIdOpened: eventId,
+      });
+    } else {
+      this.setState({
+        edit: true,
+        showWorkspaceEvaluationDrawer: true,
+        eventByIdOpened: eventId,
+      });
+    }
+  };
 
   /**
    * handleCloseAllDiaryEntries
    */
   handleCloseAllDiaryEntriesClick = () => {
     this.setState({
-      listOfDiaryIds: []
+      listOfDiaryIds: [],
     });
   };
 
@@ -372,11 +365,11 @@ export class Evaluation extends React.Component<
       this.props.evaluation.evaluationDiaryEntries.data
     ) {
       const numberList = this.props.evaluation.evaluationDiaryEntries.data.map(
-        (item) => item.id
+        (item) => item.id,
       );
 
       this.setState({
-        listOfDiaryIds: numberList
+        listOfDiaryIds: numberList,
       });
     }
   };
@@ -386,7 +379,7 @@ export class Evaluation extends React.Component<
    */
   handleCloseAllMaterialContentClick = () => {
     this.setState({
-      listOfAssignmentIds: []
+      listOfAssignmentIds: [],
     });
   };
 
@@ -400,11 +393,11 @@ export class Evaluation extends React.Component<
     ) {
       const numberList =
         this.props.evaluation.evaluationCurrentStudentAssigments.data.assigments.map(
-          (item) => item.id
+          (item) => item.id,
         );
 
       this.setState({
-        listOfAssignmentIds: numberList
+        listOfAssignmentIds: numberList,
       });
     }
   };
@@ -415,11 +408,11 @@ export class Evaluation extends React.Component<
    */
   handleCloseSpecificMaterialContent = (materialId: number) => {
     const listOfAssignmentIds = this.state.listOfAssignmentIds.filter(
-      (id) => id !== materialId
+      (id) => id !== materialId,
     );
 
     this.setState({
-      listOfAssignmentIds
+      listOfAssignmentIds,
     });
   };
 
@@ -428,7 +421,7 @@ export class Evaluation extends React.Component<
    * @param id
    */
   handleOpenDiaryEntryClick = (id: number) => {
-    let updatedList = [...this.state.listOfDiaryIds];
+    const updatedList = [...this.state.listOfDiaryIds];
 
     const index = updatedList.findIndex((itemId) => itemId === id);
 
@@ -439,7 +432,7 @@ export class Evaluation extends React.Component<
     }
 
     this.setState({
-      listOfDiaryIds: updatedList
+      listOfDiaryIds: updatedList,
     });
   };
 
@@ -448,7 +441,7 @@ export class Evaluation extends React.Component<
    * @param id
    */
   handleOpenMaterialClick = (id: number) => {
-    let updatedList = [...this.state.listOfAssignmentIds];
+    const updatedList = [...this.state.listOfAssignmentIds];
 
     const index = updatedList.findIndex((itemId) => itemId === id);
 
@@ -459,7 +452,7 @@ export class Evaluation extends React.Component<
     }
 
     this.setState({
-      listOfAssignmentIds: updatedList
+      listOfAssignmentIds: updatedList,
     });
   };
 
@@ -489,7 +482,7 @@ export class Evaluation extends React.Component<
         <div className="empty">
           <span>
             {this.props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.noJournals"
+              "plugin.evaluation.evaluationModal.noJournals",
             )}
           </span>
         </div>
@@ -501,9 +494,9 @@ export class Evaluation extends React.Component<
      * that were added before new "request" that students may request...
      * We pass it to evaluation event card component
      */
-    let latestEvaluatedEventIndex = this.getLatestEvaluatedEventIndex();
+    const latestEvaluatedEventIndex = this.getLatestEvaluatedEventIndex();
 
-    let lastEvaluatedEventIndex = this.getLastEvaluatedEventIndex();
+    const lastEvaluatedEventIndex = this.getLastEvaluatedEventIndex();
 
     /**
      * evaluationEventContentCards
@@ -535,7 +528,7 @@ export class Evaluation extends React.Component<
         <div className="empty">
           <span>
             {this.props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.noEvents"
+              "plugin.evaluation.evaluationModal.noEvents",
             )}
           </span>
         </div>
@@ -551,11 +544,11 @@ export class Evaluation extends React.Component<
     if (
       this.props.currentWorkspace &&
       !this.props.evaluation.evaluationWorkspaces.some(
-        (eWorkspace) => eWorkspace.id === this.props.currentWorkspace.id
+        (eWorkspace) => eWorkspace.id === this.props.currentWorkspace.id,
       )
     ) {
       workspaces.push({
-        ...this.props.currentWorkspace
+        ...this.props.currentWorkspace,
       } as EvaluationWorkspace);
     }
 
@@ -575,7 +568,7 @@ export class Evaluation extends React.Component<
               this.props.evaluation.evaluationCompositeReplies &&
               this.props.evaluation.evaluationCompositeReplies.data &&
               this.props.evaluation.evaluationCompositeReplies.data.find(
-                (cReply) => cReply.workspaceMaterialId === item.id
+                (cReply) => cReply.workspaceMaterialId === item.id,
               );
 
             let showAsHidden = false;
@@ -600,7 +593,7 @@ export class Evaluation extends React.Component<
               (eWorkspace) =>
                 eWorkspace.id ===
                 this.props.evaluation.evaluationSelectedAssessmentId
-                  .workspaceEntityId
+                  .workspaceEntityId,
             );
 
             const open = this.state.listOfAssignmentIds.includes(item.id);
@@ -617,13 +610,13 @@ export class Evaluation extends React.Component<
                 onSave={this.handleCloseSpecificMaterialContent}
               />
             );
-          }
+          },
         )
       ) : (
         <div className="empty">
           <span>
             {this.props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.noAssignmentsTitle"
+              "plugin.evaluation.evaluationModal.noAssignmentsTitle",
             )}
           </span>
         </div>
@@ -646,7 +639,7 @@ export class Evaluation extends React.Component<
               <div className="evaluation-modal__content-title">
                 <>
                   {this.props.i18n.text.get(
-                    "plugin.evaluation.evaluationModal.assignmentsTitle"
+                    "plugin.evaluation.evaluationModal.assignmentsTitle",
                   )}
                   {this.props.evaluation.evaluationCurrentStudentAssigments
                     .state === "READY" &&
@@ -658,7 +651,7 @@ export class Evaluation extends React.Component<
                         onClick={this.handleCloseAllMaterialContentClick}
                       >
                         {this.props.i18n.text.get(
-                          "plugin.evaluation.evaluationModal.closeAll"
+                          "plugin.evaluation.evaluationModal.closeAll",
                         )}
                       </Link>
                       <Link
@@ -666,7 +659,7 @@ export class Evaluation extends React.Component<
                         onClick={this.handleOpenAllMaterialContentClick}
                       >
                         {this.props.i18n.text.get(
-                          "plugin.evaluation.evaluationModal.openAll"
+                          "plugin.evaluation.evaluationModal.openAll",
                         )}
                       </Link>
                     </div>
@@ -688,7 +681,7 @@ export class Evaluation extends React.Component<
               <div className="evaluation-modal__content-title">
                 <>
                   {this.props.i18n.text.get(
-                    "plugin.evaluation.evaluationModal.journalTitle"
+                    "plugin.evaluation.evaluationModal.journalTitle",
                   )}
                   {this.props.evaluation.evaluationDiaryEntries.state ===
                   "READY" ? (
@@ -698,7 +691,7 @@ export class Evaluation extends React.Component<
                         onClick={this.handleCloseAllDiaryEntriesClick}
                       >
                         {this.props.i18n.text.get(
-                          "plugin.evaluation.evaluationModal.closeAll"
+                          "plugin.evaluation.evaluationModal.closeAll",
                         )}
                       </Link>
                       <Link
@@ -706,7 +699,7 @@ export class Evaluation extends React.Component<
                         onClick={this.handleOpenAllDiaryEntriesClick}
                       >
                         {this.props.i18n.text.get(
-                          "plugin.evaluation.evaluationModal.openAll"
+                          "plugin.evaluation.evaluationModal.openAll",
                         )}
                       </Link>
                     </div>
@@ -734,7 +727,7 @@ export class Evaluation extends React.Component<
             <div className="evaluation-modal__content">
               <div className="evaluation-modal__content-title">
                 {this.props.i18n.text.get(
-                  "plugin.evaluation.evaluationModal.events.title"
+                  "plugin.evaluation.evaluationModal.events.title",
                 )}
               </div>
               <div className="evaluation-modal__content-body">
@@ -747,7 +740,7 @@ export class Evaluation extends React.Component<
 
                 <SlideDrawer
                   title={this.props.i18n.text.get(
-                    "plugin.evaluation.evaluationModal.workspaceEvaluationForm.title"
+                    "plugin.evaluation.evaluationModal.workspaceEvaluationForm.title",
                   )}
                   modifiers={["workspace"]}
                   show={this.state.showWorkspaceEvaluationDrawer}
@@ -756,7 +749,7 @@ export class Evaluation extends React.Component<
                   <WorkspaceEditor
                     eventId={this.state.eventByIdOpened}
                     editorLabel={this.props.i18n.text.get(
-                      "plugin.evaluation.evaluationModal.workspaceEvaluationForm.literalAssessmentLabel"
+                      "plugin.evaluation.evaluationModal.workspaceEvaluationForm.literalAssessmentLabel",
                     )}
                     onClose={this.handleWorkspaceEvaluationCloseDrawer}
                     type={this.state.edit ? "edit" : "new"}
@@ -766,7 +759,7 @@ export class Evaluation extends React.Component<
 
                 <SlideDrawer
                   title={this.props.i18n.text.get(
-                    "plugin.evaluation.evaluationModal.workspaceEvaluationForm.supplementationTitle"
+                    "plugin.evaluation.evaluationModal.workspaceEvaluationForm.supplementationTitle",
                   )}
                   modifiers={["supplementation"]}
                   show={this.state.showWorkspaceSupplemenationDrawer}
@@ -777,7 +770,7 @@ export class Evaluation extends React.Component<
                   <SupplementationEditor
                     eventId={this.state.eventByIdOpened}
                     editorLabel={this.props.i18n.text.get(
-                      "plugin.evaluation.evaluationModal.workspaceEvaluationForm.literalSupplementationLabel"
+                      "plugin.evaluation.evaluationModal.workspaceEvaluationForm.literalSupplementationLabel",
                     )}
                     onClose={
                       this.handleWorkspaceSupplementationEvaluationCloseDrawer
@@ -799,10 +792,10 @@ export class Evaluation extends React.Component<
                 >
                   {isEvaluated
                     ? this.props.i18n.text.get(
-                        "plugin.evaluation.evaluationModal.events.improvedGradeButton"
+                        "plugin.evaluation.evaluationModal.events.improvedGradeButton",
                       )
                     : this.props.i18n.text.get(
-                        "plugin.evaluation.evaluationModal.events.gradeButton"
+                        "plugin.evaluation.evaluationModal.events.gradeButton",
                       )}
                 </Button>
                 <Button
@@ -817,7 +810,7 @@ export class Evaluation extends React.Component<
                   }
                 >
                   {this.props.i18n.text.get(
-                    "plugin.evaluation.evaluationModal.events.supplementationButton"
+                    "plugin.evaluation.evaluationModal.events.supplementationButton",
                   )}
                 </Button>
               </div>
@@ -844,7 +837,7 @@ function mapStateToProps(state: StateType) {
     i18n: state.i18n,
     status: state.status,
     evaluation: state.evaluations,
-    currentWorkspace: state.workspaces.currentWorkspace
+    currentWorkspace: state.workspaces.currentWorkspace,
   };
 }
 
@@ -856,9 +849,9 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     {
       loadEvaluationAssessmentRequestsFromServer,
-      loadEvaluationAssessmentEventsFromServer
+      loadEvaluationAssessmentEventsFromServer,
     },
-    dispatch
+    dispatch,
   );
 }
 

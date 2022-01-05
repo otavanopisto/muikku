@@ -1,11 +1,11 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/item-list.scss";
 import { StateType } from "~/reducers";
 import NavigationMenu, {
-  NavigationElement
+  NavigationElement,
 } from "~/components/general/navigation";
 import { StatusType } from "~/reducers/base/status";
 
@@ -43,48 +43,46 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
   }
 
   render() {
-    let sections = [
+    const sections = [
       {
         name: this.props.i18n.text.get("plugin.profile.category.general"),
-        hash: "general"
+        hash: "general",
       },
       {
         name: this.props.i18n.text.get("plugin.profile.category.contact"),
-        hash: "contact"
+        hash: "contact",
       },
       {
         name: this.props.i18n.text.get("plugin.profile.category.security"),
-        hash: "security"
+        hash: "security",
       },
       {
         name: this.props.i18n.text.get("plugin.profile.category.vacation"),
-        hash: "vacation"
+        hash: "vacation",
       },
       {
         name: this.props.i18n.text.get("plugin.profile.category.chat"),
-        hash: "chat"
+        hash: "chat",
       },
       {
         name: this.props.i18n.text.get("plugin.profile.category.work"),
-        hash: "work"
-      }
+        hash: "work",
+      },
     ];
 
     return (
       <NavigationMenu>
         {sections
           .filter((section) => this.isVisible(section.hash))
-          .map((item, index) => {
-            return (
-              <NavigationElement
-                isActive={this.props.location === item.hash}
-                hash={item.hash}
-                key={index}
-              >
-                {item.name}
-              </NavigationElement>
-            );
-          })}
+          .map((item, index) => (
+            <NavigationElement
+              isActive={this.props.location === item.hash}
+              hash={item.hash}
+              key={index}
+            >
+              {item.name}
+            </NavigationElement>
+          ))}
       </NavigationMenu>
     );
   }
@@ -94,11 +92,11 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     location: state.profile.location,
-    status: state.status
+    status: state.status,
   };
 }
 
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps() {
   return {};
 }
 

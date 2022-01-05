@@ -6,15 +6,11 @@ import {
   WorkspaceType,
   MaterialContentNodeListType,
   MaterialContentNodeType,
-  MaterialCompositeRepliesListType,
-  WorkspaceEditModeStateType
+  WorkspaceEditModeStateType,
 } from "~/reducers/workspaces";
-
 import ContentPanel, {
-  ContentPanelItem
+  ContentPanelItem,
 } from "~/components/general/content-panel";
-import ProgressData from "../../progressData";
-
 import HelpMaterial from "./help-material-page";
 import { ButtonPill } from "~/components/general/button";
 import Dropdown from "~/components/general/dropdown";
@@ -26,7 +22,7 @@ import {
   createWorkspaceMaterialContentNode,
   CreateWorkspaceMaterialContentNodeTriggerType,
   updateWorkspaceMaterialContentNode,
-  UpdateWorkspaceMaterialContentNodeTriggerType
+  UpdateWorkspaceMaterialContentNodeTriggerType,
 } from "~/actions/workspaces";
 import { Redirect } from "react-router-dom";
 
@@ -60,7 +56,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
 
     this.state = {
       defaultOffset: DEFAULT_OFFSET,
-      redirect: null
+      redirect: null,
     };
 
     this.onOpenNavigation = this.onOpenNavigation.bind(this);
@@ -76,12 +72,12 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
     this.getFlattenedMaterials(props);
   }
   componentDidMount() {
-    let defaultOffset =
+    const defaultOffset =
       ((document.querySelector("#stick") as HTMLElement) || ({} as any))
         .offsetHeight || DEFAULT_OFFSET;
     if (defaultOffset !== this.state.defaultOffset) {
       this.setState({
-        defaultOffset
+        defaultOffset,
       });
     }
 
@@ -100,42 +96,42 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
       workspace: this.props.workspace,
       material: section,
       update: {
-        hidden: !section.hidden
+        hidden: !section.hidden,
       },
-      isDraft: false
+      isDraft: false,
     });
   }
   getMaterialsOptionListDropdown(
     section: MaterialContentNodeType,
     nextSection: MaterialContentNodeType,
     nextSibling: MaterialContentNodeType,
-    includesSection: boolean
+    includesSection: boolean,
   ) {
     const materialManagementItemsOptions: Array<any> = [
       {
         icon: "plus",
         text: "plugin.workspace.materialsManagement.createChapterTooltip",
         onClick: this.createSection.bind(this, nextSection),
-        file: false
+        file: false,
       },
       {
         icon: "plus",
         text: "plugin.workspace.materialsManagement.createPageTooltip",
         onClick: this.createPage.bind(this, section, nextSibling),
-        file: false
+        file: false,
       },
       {
         icon: "paste",
         text: "plugin.workspace.materialsManagement.pastePageTooltip",
         onClick: this.pastePage.bind(this, section, nextSibling),
-        file: false
+        file: false,
       },
       {
         icon: "attachment",
         text: "plugin.workspace.materialsManagement.attachFileTooltip",
         onChange: this.createPageFromBinary.bind(this, section, nextSibling),
-        file: true
-      }
+        file: true,
+      },
     ];
 
     if (!includesSection) {
@@ -169,12 +165,12 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
       showRemoveAnswersDialogForDelete: false,
       showUpdateLinkedMaterialsDialogForPublish: false,
       showUpdateLinkedMaterialsDialogForPublishCount: 0,
-      canSetTitle: true
+      canSetTitle: true,
     });
   }
   createPage(
     section: MaterialContentNodeType,
-    nextSibling: MaterialContentNodeType
+    nextSibling: MaterialContentNodeType,
   ) {
     this.props.createWorkspaceMaterialContentNode(
       {
@@ -183,17 +179,17 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
         parentMaterial: section,
         nextSibling,
         title: this.props.i18n.text.get(
-          "plugin.workspace.materialsManagement.newPageTitle"
+          "plugin.workspace.materialsManagement.newPageTitle",
         ),
-        makeFolder: false
+        makeFolder: false,
       },
-      "help"
+      "help",
     );
   }
   createPageFromBinary(
     section: MaterialContentNodeType,
     nextSibling: MaterialContentNodeType,
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement>,
   ) {
     this.props.createWorkspaceMaterialContentNode(
       {
@@ -203,9 +199,9 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
         nextSibling,
         title: e.target.files[0].name,
         file: e.target.files[0],
-        makeFolder: false
+        makeFolder: false,
       },
-      "help"
+      "help",
     );
   }
   createSection(nextSibling: MaterialContentNodeType) {
@@ -215,16 +211,16 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
         rootParentId: this.props.workspace.details.helpFolderId,
         nextSibling,
         title: this.props.i18n.text.get(
-          "plugin.workspace.materialsManagement.newPageTitle"
+          "plugin.workspace.materialsManagement.newPageTitle",
         ),
-        makeFolder: true
+        makeFolder: true,
       },
-      "help"
+      "help",
     );
   }
   pastePage(
     section: MaterialContentNodeType,
-    nextSibling: MaterialContentNodeType
+    nextSibling: MaterialContentNodeType,
   ) {
     const workspaceMaterialCopiedId =
       localStorage.getItem("workspace-material-copied-id") || null;
@@ -240,9 +236,9 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
           nextSibling,
           copyMaterialId: parseInt(workspaceMaterialCopiedId),
           copyWorkspaceId: parseInt(workspaceCopiedId),
-          makeFolder: false
+          makeFolder: false,
         },
-        "help"
+        "help",
       );
     }
   }
@@ -264,7 +260,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
     if ((window as any).IGNORE_SCROLL_EVENTS) {
       return;
     }
-    let newActive: number = this.getActive();
+    const newActive: number = this.getActive();
     if (newActive !== this.props.activeNodeId) {
       this.props.onActiveNodeIdChange(newActive);
     }
@@ -274,22 +270,22 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
     let winner: number = null;
 
     //when you are at the bottom the active is the last one
-    let isAllTheWayToTheBottom =
+    const isAllTheWayToTheBottom =
       document.documentElement.scrollHeight -
         document.documentElement.scrollTop ===
       document.documentElement.clientHeight;
     if (!isAllTheWayToTheBottom) {
       let winnerTop: number = null;
       let winnerVisibleWeight: number = null;
-      for (let refKey of Object.keys(this.refs)) {
-        let refKeyInt = parseInt(refKey);
+      for (const refKey of Object.keys(this.refs)) {
+        const refKeyInt = parseInt(refKey);
         if (!refKeyInt) {
           continue;
         }
-        let element = (this.refs[refKey] as ContentPanelItem).getComponent();
-        let elementTop = element.getBoundingClientRect().top;
-        let elementBottom = element.getBoundingClientRect().bottom;
-        let isVisible =
+        const element = (this.refs[refKey] as ContentPanelItem).getComponent();
+        const elementTop = element.getBoundingClientRect().top;
+        const elementBottom = element.getBoundingClientRect().bottom;
+        const isVisible =
           elementTop < window.innerHeight &&
           elementBottom >=
             (document.querySelector("#stick") as HTMLElement).offsetHeight;
@@ -344,7 +340,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
             openByHover
             modifier="material-management-tooltip"
             content={this.props.i18n.text.get(
-              "plugin.workspace.materialsManagement.createChapterTooltip"
+              "plugin.workspace.materialsManagement.createChapterTooltip",
             )}
           >
             <ButtonPill
@@ -360,7 +356,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
       this.props.materials.length === 0 ? (
         <div className="material-page material-page--empty">
           {this.props.i18n.text.get(
-            "plugin.workspace.materialsManagement.empty"
+            "plugin.workspace.materialsManagement.empty",
           )}
         </div>
       ) : null;
@@ -380,7 +376,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
               openByHover
               modifier="material-management-tooltip"
               content={this.props.i18n.text.get(
-                "plugin.workspace.materialsManagement.createChapterTooltip"
+                "plugin.workspace.materialsManagement.createChapterTooltip",
               )}
             >
               <ButtonPill
@@ -389,7 +385,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
                 onClick={this.createSection.bind(this, section)}
               />
             </Dropdown>
-          </div>
+          </div>,
         );
       }
 
@@ -403,41 +399,39 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
               section,
               nextSection,
               null,
-              true
-            ).map((item) => {
-              return (closeDropdown: () => any) => {
-                if (item.file) {
-                  return (
-                    <label
-                      htmlFor="baseFileInput"
-                      className={`link link--full link--material-management-dropdown`}
-                    >
-                      <input
-                        type="file"
-                        id="baseFileInput"
-                        onChange={(e) => {
-                          closeDropdown();
-                          item.onChange && item.onChange(e);
-                        }}
-                      />
-                      <span className={`link__icon icon-${item.icon}`}></span>
-                      <span>{this.props.i18n.text.get(item.text)}</span>
-                    </label>
-                  );
-                }
+              true,
+            ).map((item) => (closeDropdown: () => any) => {
+              if (item.file) {
                 return (
-                  <Link
+                  <label
+                    htmlFor="baseFileInput"
                     className={`link link--full link--material-management-dropdown`}
-                    onClick={() => {
-                      closeDropdown();
-                      item.onClick && item.onClick();
-                    }}
                   >
+                    <input
+                      type="file"
+                      id="baseFileInput"
+                      onChange={(e) => {
+                        closeDropdown();
+                        item.onChange && item.onChange(e);
+                      }}
+                    />
                     <span className={`link__icon icon-${item.icon}`}></span>
                     <span>{this.props.i18n.text.get(item.text)}</span>
-                  </Link>
+                  </label>
                 );
-              };
+              }
+              return (
+                <Link
+                  className={`link link--full link--material-management-dropdown`}
+                  onClick={() => {
+                    closeDropdown();
+                    item.onClick && item.onClick();
+                  }}
+                >
+                  <span className={`link__icon icon-${item.icon}`}></span>
+                  <span>{this.props.i18n.text.get(item.text)}</span>
+                </Link>
+              );
             })}
           >
             <ButtonPill
@@ -471,43 +465,39 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
                   section,
                   nextSection,
                   nextSibling,
-                  false
-                ).map((item) => {
-                  return (closeDropdown: () => any) => {
-                    if (item.file) {
-                      return (
-                        <label
-                          htmlFor={node.workspaceMaterialId + "-input"}
-                          className={`link link--full link--material-management-dropdown`}
-                        >
-                          <input
-                            type="file"
-                            id={node.workspaceMaterialId + "-input"}
-                            onChange={(e) => {
-                              closeDropdown();
-                              item.onChange && item.onChange(e);
-                            }}
-                          />
-                          <span
-                            className={`link__icon icon-${item.icon}`}
-                          ></span>
-                          <span>{this.props.i18n.text.get(item.text)}</span>
-                        </label>
-                      );
-                    }
+                  false,
+                ).map((item) => (closeDropdown: () => any) => {
+                  if (item.file) {
                     return (
-                      <Link
+                      <label
+                        htmlFor={node.workspaceMaterialId + "-input"}
                         className={`link link--full link--material-management-dropdown`}
-                        onClick={() => {
-                          closeDropdown();
-                          item.onClick && item.onClick();
-                        }}
                       >
+                        <input
+                          type="file"
+                          id={node.workspaceMaterialId + "-input"}
+                          onChange={(e) => {
+                            closeDropdown();
+                            item.onChange && item.onChange(e);
+                          }}
+                        />
                         <span className={`link__icon icon-${item.icon}`}></span>
                         <span>{this.props.i18n.text.get(item.text)}</span>
-                      </Link>
+                      </label>
                     );
-                  };
+                  }
+                  return (
+                    <Link
+                      className={`link link--full link--material-management-dropdown`}
+                      onClick={() => {
+                        closeDropdown();
+                        item.onClick && item.onClick();
+                      }}
+                    >
+                      <span className={`link__icon icon-${item.icon}`}></span>
+                      <span>{this.props.i18n.text.get(item.text)}</span>
+                    </Link>
+                  );
                 })}
               >
                 <ButtonPill
@@ -515,11 +505,11 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
                   icon="plus"
                 />
               </Dropdown>
-            </div>
+            </div>,
           );
         }
 
-        let material =
+        const material =
           !this.props.workspace || (!isEditable && node.hidden) ? null : (
             <ContentPanelItem
               ref={node.workspaceMaterialId + ""}
@@ -528,7 +518,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
               <div
                 id={"p-" + node.workspaceMaterialId}
                 style={{
-                  transform: "translateY(" + -this.state.defaultOffset + "px)"
+                  transform: "translateY(" + -this.state.defaultOffset + "px)",
                 }}
               />
               {/*TOP OF THE PAGE*/}
@@ -555,7 +545,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
           <div
             id={"s-" + section.workspaceMaterialId}
             style={{
-              transform: "translateY(" + -this.state.defaultOffset + "px)"
+              transform: "translateY(" + -this.state.defaultOffset + "px)",
             }}
           />
           {/*TOP OF THE CHAPTER*/}
@@ -570,7 +560,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
                   openByHover
                   modifier="material-management-tooltip"
                   content={this.props.i18n.text.get(
-                    "plugin.workspace.materialsManagement.editChapterTooltip"
+                    "plugin.workspace.materialsManagement.editChapterTooltip",
                   )}
                 >
                   <ButtonPill
@@ -585,10 +575,10 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
                   content={
                     section.hidden
                       ? this.props.i18n.text.get(
-                          "plugin.workspace.materialsManagement.showChapterTooltip"
+                          "plugin.workspace.materialsManagement.showChapterTooltip",
                         )
                       : this.props.i18n.text.get(
-                          "plugin.workspace.materialsManagement.hideChapterTooltip"
+                          "plugin.workspace.materialsManagement.hideChapterTooltip",
                         )
                   }
                 >
@@ -609,7 +599,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
               <article className="material-page">
                 <div className="material-page__content material-page__content--view-restricted">
                   {this.props.i18n.text.get(
-                    "plugin.workspace.materialViewRestricted"
+                    "plugin.workspace.materialViewRestricted",
                   )}
                 </div>
               </article>
@@ -617,7 +607,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
           ) : null}
           {sectionSpecificContentData}
           {lastManagementOptionsWithinSectionItem}
-        </section>
+        </section>,
       );
     });
 
@@ -646,7 +636,7 @@ function mapStateToProps(state: StateType) {
     materials: state.workspaces.currentHelp,
     activeNodeId: state.workspaces.currentMaterialsActiveNodeId,
     workspaceEditMode: state.workspaces.editMode,
-    isLoggedIn: state.status.loggedIn
+    isLoggedIn: state.status.loggedIn,
   };
 }
 
@@ -655,12 +645,12 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
     {
       setWorkspaceMaterialEditorState,
       createWorkspaceMaterialContentNode,
-      updateWorkspaceMaterialContentNode
+      updateWorkspaceMaterialContentNode,
     },
-    dispatch
+    dispatch,
   );
 }
 
 export default connect(mapStateToProps, mapDispatchToProps, null, {
-  withRef: true
+  withRef: true,
 })(Help);

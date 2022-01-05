@@ -8,7 +8,7 @@ import { UsersType } from "~/reducers/main-function/users";
 import {
   LoadUsersTriggerType,
   loadStudents,
-  loadStaff
+  loadStaff,
 } from "~/actions/main-function/users";
 
 interface OrganizationUsersProps {
@@ -32,13 +32,13 @@ class OrganizationUsers extends React.Component<
 
   staffPanelPageChange(q: string, first: number, max: number) {
     this.props.loadStaff({
-      payload: { q, firstResult: first, maxResults: max }
+      payload: { q, firstResult: first, maxResults: max },
     });
   }
 
   studentPanelPageChange(q: string, first: number, max: number) {
     this.props.loadStudents({
-      payload: { q, firstResult: first, maxResults: max }
+      payload: { q, firstResult: first, maxResults: max },
     });
   }
 
@@ -71,7 +71,7 @@ class OrganizationUsers extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    users: state.organizationUsers
+    users: state.organizationUsers,
   };
 }
 

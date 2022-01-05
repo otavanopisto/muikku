@@ -1,11 +1,9 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
-import { Dispatch } from "redux";
 import { StateType } from "~/reducers";
 import mApi from "~/lib/mApi";
 import MatriculationSubjectType from "./matriculation-subject-type";
-import Link from "~/components/general/link";
 import "~/sass/elements/wcag.scss";
 import Button from "~/components/general/button";
 
@@ -43,7 +41,7 @@ class MatriculationSubjectsList extends React.Component<
     this.state = {
       matriculationSubjects: [],
       selectedMatriculationSubjects: [""],
-      loading: false
+      loading: false,
     };
   }
 
@@ -56,9 +54,7 @@ class MatriculationSubjectsList extends React.Component<
    */
   notifyMatriculationSubjectChange(selectedSubjects: string[]) {
     this.props.onMatriculationSubjectsChange(
-      selectedSubjects.filter((selectedSubject) => {
-        return !!selectedSubject;
-      })
+      selectedSubjects.filter((selectedSubject) => !!selectedSubject),
     );
   }
 
@@ -70,13 +66,13 @@ class MatriculationSubjectsList extends React.Component<
    */
   handleMatriculationSubjectChange(
     index: number,
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement>,
   ) {
     const selectedSubjects = [...this.state.selectedMatriculationSubjects];
     selectedSubjects[index] = e.target.value;
 
     this.setState({
-      selectedMatriculationSubjects: selectedSubjects
+      selectedMatriculationSubjects: selectedSubjects,
     });
 
     this.notifyMatriculationSubjectChange(selectedSubjects);
@@ -92,7 +88,7 @@ class MatriculationSubjectsList extends React.Component<
     selectedSubjects.splice(index, 1);
 
     this.setState({
-      selectedMatriculationSubjects: selectedSubjects
+      selectedMatriculationSubjects: selectedSubjects,
     });
 
     this.notifyMatriculationSubjectChange(selectedSubjects);
@@ -106,7 +102,7 @@ class MatriculationSubjectsList extends React.Component<
     selectedSubjects.push("");
 
     this.setState({
-      selectedMatriculationSubjects: selectedSubjects
+      selectedMatriculationSubjects: selectedSubjects,
     });
   }
 
@@ -116,11 +112,10 @@ class MatriculationSubjectsList extends React.Component<
    * @param code matriculation subject code
    * @returns subject name or empty string if not found
    */
-  getMatriculationSubjectNameByCode = (code: string): string => {
-    return this.props.i18n.text.get(
-      `plugin.records.hops.matriculationSubject.${code}`
+  getMatriculationSubjectNameByCode = (code: string): string =>
+    this.props.i18n.text.get(
+      `plugin.records.hops.matriculationSubject.${code}`,
     );
-  };
 
   /**
    * Component did mount life-cycle method
@@ -130,7 +125,7 @@ class MatriculationSubjectsList extends React.Component<
   componentDidMount() {
     if (!this.state.loading) {
       this.setState({
-        loading: true
+        loading: true,
       });
 
       mApi()
@@ -142,10 +137,10 @@ class MatriculationSubjectsList extends React.Component<
                 matriculationSubjects: matriculationSubjects,
                 loading: false,
                 selectedMatriculationSubjects: this.props
-                  .initialMatriculationSubjects || [""]
+                  .initialMatriculationSubjects || [""],
               });
             }
-          }
+          },
         );
     }
   }
@@ -160,7 +155,7 @@ class MatriculationSubjectsList extends React.Component<
       return (
         <div className="loader">
           {this.props.i18n.text.get(
-            "plugin.records.hops.goals.matriculationSubjectLoading"
+            "plugin.records.hops.goals.matriculationSubjectLoading",
           )}
         </div>
       );
@@ -168,61 +163,51 @@ class MatriculationSubjectsList extends React.Component<
 
     const matriculationSubjectInputs =
       this.state.selectedMatriculationSubjects.map(
-        (subject: string, index: number) => {
-          return (
-            <div
-              className="form-element__dropdown-selection-container"
-              key={index}
+        (subject: string, index: number) => (
+          <div
+            className="form-element__dropdown-selection-container"
+            key={index}
+          >
+            <label
+              htmlFor={`matriculationSubject` + index}
+              className="visually-hidden"
             >
-              <label
-                htmlFor={`matriculationSubject` + index}
-                className="visually-hidden"
-              >
+              {this.props.i18n.text.get(
+                "plugin.wcag.matriculationSubjectSelect.label",
+              )}
+            </label>
+            <select
+              id={`matriculationSubject` + index}
+              className="form-element__select form-element__select--matriculation-exam"
+              value={subject}
+              onChange={this.handleMatriculationSubjectChange.bind(this, index)}
+            >
+              <option disabled value="">
                 {this.props.i18n.text.get(
-                  "plugin.wcag.matriculationSubjectSelect.label"
+                  "plugin.records.hops.goals.matriculationSubjectChoose",
                 )}
-              </label>
-              <select
-                id={`matriculationSubject` + index}
-                className="form-element__select form-element__select--matriculation-exam"
-                value={subject}
-                onChange={this.handleMatriculationSubjectChange.bind(
-                  this,
-                  index
-                )}
-              >
-                <option disabled value="">
-                  {this.props.i18n.text.get(
-                    "plugin.records.hops.goals.matriculationSubjectChoose"
-                  )}
-                </option>
-                {this.state.matriculationSubjects.map(
-                  (subject: MatriculationSubjectType, index: number) => {
-                    return (
-                      <option key={index} value={subject.code}>
-                        {this.getMatriculationSubjectNameByCode(subject.code)}
-                      </option>
-                    );
-                  }
-                )}
-              </select>
-              <Button
-                buttonModifiers={[
-                  "primary-function-content",
-                  "remove-subject-row"
-                ]}
-                onClick={this.handleMatriculationSubjectRemove.bind(
-                  this,
-                  index
-                )}
-              >
-                {this.props.i18n.text.get(
-                  "plugin.records.hops.goals.matriculationSubjectRemove"
-                )}
-              </Button>
-            </div>
-          );
-        }
+              </option>
+              {this.state.matriculationSubjects.map(
+                (subject: MatriculationSubjectType, index: number) => (
+                  <option key={index} value={subject.code}>
+                    {this.getMatriculationSubjectNameByCode(subject.code)}
+                  </option>
+                ),
+              )}
+            </select>
+            <Button
+              buttonModifiers={[
+                "primary-function-content",
+                "remove-subject-row",
+              ]}
+              onClick={this.handleMatriculationSubjectRemove.bind(this, index)}
+            >
+              {this.props.i18n.text.get(
+                "plugin.records.hops.goals.matriculationSubjectRemove",
+              )}
+            </Button>
+          </div>
+        ),
       );
 
     return (
@@ -234,7 +219,7 @@ class MatriculationSubjectsList extends React.Component<
             onClick={this.handleMatriculationSubjectAdd.bind(this)}
           >
             {this.props.i18n.text.get(
-              "plugin.records.hops.goals.matriculationSubjectAdd"
+              "plugin.records.hops.goals.matriculationSubjectAdd",
             )}
           </Button>
         </div>
@@ -245,15 +230,15 @@ class MatriculationSubjectsList extends React.Component<
 
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n
+    i18n: state.i18n,
   };
 }
 
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps() {
   return {};
 }
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(MatriculationSubjectsList);

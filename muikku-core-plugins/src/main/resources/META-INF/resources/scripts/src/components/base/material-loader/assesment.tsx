@@ -6,7 +6,7 @@ import { RecordValue } from "../../../@types/recorder";
 /**
  * MaterialLoaderAssesmentProps
  */
-interface MaterialLoaderAssesmentProps extends MaterialLoaderProps {}
+type MaterialLoaderAssesmentProps = MaterialLoaderProps;
 
 /**
  * MaterialLoaderAssesment
@@ -38,15 +38,15 @@ export function MaterialLoaderAssesment(props: MaterialLoaderAssesmentProps) {
           id: aAssessment.id,
           name: aAssessment.name,
           contentType: aAssessment.contentType,
-          url: `/rest/workspace/materialevaluationaudioassessment/${aAssessment.id}`
-        } as RecordValue)
+          url: `/rest/workspace/materialevaluationaudioassessment/${aAssessment.id}`,
+        } as RecordValue),
     );
 
   return (
     <div className="material-page__assignment-assessment-literal">
       <div className="material-page__assignment-assessment-literal-label">
         {props.i18n.text.get(
-          "plugin.workspace.materialsLoader.evaluation.literal.label"
+          "plugin.workspace.materialsLoader.evaluation.literal.label",
         )}
         :
       </div>
@@ -59,7 +59,7 @@ export function MaterialLoaderAssesment(props: MaterialLoaderAssesmentProps) {
         <>
           <div className="material-page__assignment-assessment-verbal-label">
             {props.i18n.text.get(
-              "plugin.workspace.materialsLoader.evaluation.verbal.label"
+              "plugin.workspace.materialsLoader.evaluation.verbal.label",
             )}
             :
           </div>

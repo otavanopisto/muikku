@@ -2,7 +2,7 @@ import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
 import {
   HTMLtoReactComponent,
-  HTMLToReactComponentRule
+  HTMLToReactComponentRule,
 } from "~/util/modifiers";
 
 interface LinkProps {
@@ -22,16 +22,13 @@ export default class Link extends React.Component<LinkProps, {}> {
   }
   render() {
     const newRules = this.props.processingRules.filter(
-      (r) => r.id !== "link-rule"
+      (r) => r.id !== "link-rule",
     );
     newRules.push({
-      shouldProcessHTMLElement: (tag, element) => {
-        return (
-          tag === "a" &&
-          element.getAttribute("href") &&
-          element.getAttribute("href")[0] !== "#"
-        );
-      },
+      shouldProcessHTMLElement: (tag, element) =>
+        tag === "a" &&
+        element.getAttribute("href") &&
+        element.getAttribute("href")[0] !== "#",
       preprocessReactProperties: (tag, props, children, element) => {
         const isAbsolute =
           props.href.indexOf("/") == 0 ||
@@ -41,7 +38,7 @@ export default class Link extends React.Component<LinkProps, {}> {
         if (!isAbsolute) {
           props.href = this.props.path + "/" + props.href;
         }
-      }
+      },
     });
     return HTMLtoReactComponent(this.props.element, newRules);
   }

@@ -60,19 +60,17 @@ export class EvaluationMaterial extends React.Component<
         usedAs={"evaluationTool"}
         userEntityId={this.props.userEntityId}
       >
-        {(props, state, stateConfiguration) => {
-          return (
-            <div className="evaluation-modal__item-body">
-              <MaterialLoaderContent
-                {...props}
-                {...state}
-                stateConfiguration={stateConfiguration}
-              />
+        {(props, state, stateConfiguration) => (
+          <div className="evaluation-modal__item-body">
+            <MaterialLoaderContent
+              {...props}
+              {...state}
+              stateConfiguration={stateConfiguration}
+            />
 
-              <MaterialLoaderCorrectAnswerCounter {...props} {...state} />
-            </div>
-          );
-        }}
+            <MaterialLoaderCorrectAnswerCounter {...props} {...state} />
+          </div>
+        )}
       </MaterialLoader>
     );
   }
@@ -84,7 +82,7 @@ export class EvaluationMaterial extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n
+    i18n: state.i18n,
   };
 }
 

@@ -2,7 +2,7 @@ import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
 import Link from "~/components/general/link";
 import $ from "~/lib/jquery";
-let ProgressBarLine = require("react-progress-bar.js").Line;
+const ProgressBarLine = require("react-progress-bar.js").Line;
 import moment from "~/lib/moment";
 import { StatusType } from "reducers/base/status";
 import equals = require("deep-equal");
@@ -16,7 +16,7 @@ import { createFieldSavedStateClass } from "../../base/index";
 // the media recorder is polyfilled
 // if it's not there
 if (!(window as any).MediaRecorder) {
-  let script = document.createElement("script");
+  const script = document.createElement("script");
   // CONTEXTPATHREMOVED
   script.src =
     "/javax.faces.resource/scripts/dist/polyfill-mediarecorder.js.jsf";
@@ -37,7 +37,7 @@ interface AudioFieldProps {
   onChange?: (
     context: React.Component<any, any>,
     name: string,
-    newValue: any
+    newValue: any,
   ) => any;
 
   invisible?: boolean;
@@ -95,12 +95,10 @@ export default class AudioField extends React.Component<
       values: (
         (props.initialValue && (JSON.parse(props.initialValue) || [])) ||
         []
-      ).map((a: any) => {
-        return {
-          ...a,
-          url: `/rest/workspace/audioanswer/${a.id}`
-        };
-      }),
+      ).map((a: any) => ({
+        ...a,
+        url: `/rest/workspace/audioanswer/${a.id}`,
+      })),
 
       // modified synced and syncerror are false, true and null by default
       modified: false,
@@ -110,7 +108,7 @@ export default class AudioField extends React.Component<
       fieldSavedState: null,
 
       // so even
-      supportsMediaAPI: this.getSupportsMediaAPI
+      supportsMediaAPI: this.getSupportsMediaAPI,
     };
 
     this.start = this.start.bind(this);
@@ -127,7 +125,7 @@ export default class AudioField extends React.Component<
    */
   onFieldSavedStateChange(savedState: FieldStateStatus) {
     this.setState({
-      fieldSavedState: savedState
+      fieldSavedState: savedState,
     });
   }
 
@@ -139,7 +137,7 @@ export default class AudioField extends React.Component<
    */
   shouldComponentUpdate(
     nextProps: AudioFieldProps,
-    nextState: AudioFieldState
+    nextState: AudioFieldState,
   ) {
     return (
       !equals(nextProps.content, this.props.content) ||
@@ -180,7 +178,7 @@ export default class AudioField extends React.Component<
       this.stream =
         this.stream ||
         (await navigator.mediaDevices.getUserMedia({
-          audio: true
+          audio: true,
         }));
     } catch (err) {
       console.error(err.stack);
@@ -192,7 +190,7 @@ export default class AudioField extends React.Component<
     // and add a event listener on dataavaliable
     this.recorder.addEventListener("dataavailable", (e: Event) => {
       // where we take the blob generated
-      let blob = (e as any).data as Blob;
+      const blob = (e as any).data as Blob;
 
       // set the state as that blob, with the given local blob url
       // the content type and the fact that is uploading
@@ -204,15 +202,15 @@ export default class AudioField extends React.Component<
               blob,
               url: URL.createObjectURL(blob),
               contentType: blob.type,
-              uploading: true
-            }
-          ])
+              uploading: true,
+            },
+          ]),
         },
         () => {
           // and we tell it to process the last file
           // just like a file would
           this.processFileAt(this.state.values.length - 1);
-        }
+        },
       );
     });
 
@@ -221,17 +219,17 @@ export default class AudioField extends React.Component<
     // and set the time
     this.setState({
       recording: true,
-      time: 0
+      time: 0,
     });
     // set a interval every second
     // just to check the time and update the timer
     this.interval = setInterval(() => {
-      let nTime = this.state.time + 1;
+      const nTime = this.state.time + 1;
       if (nTime === MAX_RECORDING_TIME_IN_SECONDS) {
         this.stop();
       }
       this.setState({
-        time: nTime
+        time: nTime,
       });
     }, 1000) as any;
   }
@@ -252,7 +250,7 @@ export default class AudioField extends React.Component<
 
     // and stop the fact it is recording
     this.setState({
-      recording: false
+      recording: false,
     });
   }
 
@@ -264,9 +262,9 @@ export default class AudioField extends React.Component<
     const newValues = this.state.values.filter((a, i) => i !== index);
     this.setState(
       {
-        values: newValues
+        values: newValues,
       },
-      this.checkDoneAndRunOnChange
+      this.checkDoneAndRunOnChange,
     );
   }
 
@@ -276,22 +274,20 @@ export default class AudioField extends React.Component<
    */
   onFileChanged(e: React.ChangeEvent<HTMLInputElement>) {
     // we do it similarly to the file field
-    let newValues = Array.from(e.target.files).map((file) => {
-      return {
-        name: file.name,
-        contentType: file.type,
-        uploading: true,
-        progress: 0,
-        file,
-        url: URL.createObjectURL(file)
-      };
-    });
+    const newValues = Array.from(e.target.files).map((file) => ({
+      name: file.name,
+      contentType: file.type,
+      uploading: true,
+      progress: 0,
+      file,
+      url: URL.createObjectURL(file),
+    }));
 
     // check the method at the file field for an in depth explanation
-    let originalLenght = this.state.values.length;
+    const originalLenght = this.state.values.length;
     this.setState({ values: this.state.values.concat(newValues) }, () => {
       newValues.forEach((value, index) => {
-        let realIndex = index + originalLenght;
+        const realIndex = index + originalLenght;
         this.processFileAt(realIndex);
       });
     });
@@ -303,10 +299,10 @@ export default class AudioField extends React.Component<
    */
   processFileAt(index: number) {
     // create the form data
-    let formData = new FormData();
+    const formData = new FormData();
     // the file can be the file itself as it was given or the blob as given by the steam
     // both different types
-    let file: any =
+    const file: any =
       this.state.values[index].file || this.state.values[index].blob;
     // we add it to the file
     formData.append("file", file);
@@ -317,7 +313,7 @@ export default class AudioField extends React.Component<
       data: formData,
       success: (data: any) => {
         // we change this
-        let newValues = [...this.state.values];
+        const newValues = [...this.state.values];
         newValues[index] = { ...this.state.values[index] };
         newValues[index].uploading = false;
         newValues[index].id = data.fileId;
@@ -328,47 +324,47 @@ export default class AudioField extends React.Component<
 
         this.setState(
           {
-            values: newValues
+            values: newValues,
           },
-          this.checkDoneAndRunOnChange
+          this.checkDoneAndRunOnChange,
         );
       },
       // in case of error
       error: (xhr: any, err: Error) => {
-        let newValues = [...this.state.values];
+        const newValues = [...this.state.values];
         newValues[index] = { ...this.state.values[index] };
         newValues[index].uploading = false;
         newValues[index].failed = true;
         this.setState(
           {
-            values: newValues
+            values: newValues,
           },
-          this.checkDoneAndRunOnChange
+          this.checkDoneAndRunOnChange,
         );
       },
       xhr: () => {
-        let xhr = new (window as any).XMLHttpRequest();
+        const xhr = new (window as any).XMLHttpRequest();
         // Upload progress same as in the file field
         xhr.upload.addEventListener(
           "progress",
           (evt: any) => {
             if (evt.lengthComputable) {
-              let percentComplete = evt.loaded / evt.total;
-              let newValues = [...this.state.values];
+              const percentComplete = evt.loaded / evt.total;
+              const newValues = [...this.state.values];
               newValues[index] = { ...this.state.values[index] };
               newValues[index].progress = percentComplete;
               this.setState({
-                values: newValues
+                values: newValues,
               });
             }
           },
-          false
+          false,
         );
         return xhr;
       },
       cache: false,
       contentType: false,
-      processData: false
+      processData: false,
     });
   }
 
@@ -381,7 +377,7 @@ export default class AudioField extends React.Component<
       return;
     }
     // if something is uploading, wait
-    for (let value of this.state.values) {
+    for (const value of this.state.values) {
       if (value.uploading) {
         return;
       }
@@ -391,19 +387,17 @@ export default class AudioField extends React.Component<
     }
 
     // get the result
-    let result = JSON.stringify(
+    const result = JSON.stringify(
       this.state.values
-        .filter((value) => {
-          return !value.failed;
-        })
+        .filter((value) => !value.failed)
         .map((value) => {
-          let { id, name, contentType } = value;
+          const { id, name, contentType } = value;
           return {
             id,
             name,
-            contentType
+            contentType,
           };
-        })
+        }),
     );
 
     // and trigger onchange
@@ -419,15 +413,13 @@ export default class AudioField extends React.Component<
       let emptyData = null;
       if (this.state.values.length) {
         // we need to map them
-        emptyData = this.state.values.map((value, index) => {
+        emptyData = this.state.values.map((value, index) => (
           // if the value is not uploading, we set it as static
-          return (
-            <span
-              className="material-page__audiofield-file-container"
-              key={index}
-            />
-          );
-        });
+          <span
+            className="material-page__audiofield-file-container"
+            key={index}
+          />
+        ));
       }
       return (
         <span className="material-page__audiofield-wrapper">
@@ -472,7 +464,7 @@ export default class AudioField extends React.Component<
               <Link
                 className="material-page__audiofield-download-file-button icon-download"
                 title={this.props.i18n.text.get(
-                  "plugin.workspace.audioField.downloadLink"
+                  "plugin.workspace.audioField.downloadLink",
                 )}
                 href={value.url}
                 openInNewTab={value.name}
@@ -485,7 +477,7 @@ export default class AudioField extends React.Component<
                   <Link
                     className="material-page__audiofield-remove-file-button icon-trash"
                     title={this.props.i18n.text.get(
-                      "plugin.workspace.audioField.removeLink"
+                      "plugin.workspace.audioField.removeLink",
                     )}
                   />
                 </ConfirmRemoveDialog>
@@ -498,7 +490,7 @@ export default class AudioField extends React.Component<
             <span className="material-page__audiofield-file-container">
               <span className="material-page__audiofield-file material-page__audiofield-file--FAILED-TO-UPLOAD">
                 {this.props.i18n.text.get(
-                  "plugin.workspace.audioField.uploadFailed"
+                  "plugin.workspace.audioField.uploadFailed",
                 )}
               </span>
             </span>
@@ -524,9 +516,9 @@ export default class AudioField extends React.Component<
                       className:
                         "material-page__audiofield-file-upload-percentage",
                       style: {
-                        right: "100%"
-                      }
-                    }
+                        right: "100%",
+                      },
+                    },
                   }}
                   strokeWidth={1}
                   easing="easeInOut"
@@ -537,7 +529,7 @@ export default class AudioField extends React.Component<
                   svgStyle={{ width: "100%", height: "4px" }}
                   text={this.props.i18n.text.get(
                     "plugin.workspace.audioField.statusUploading",
-                    Math.round(value.progress * 100)
+                    Math.round(value.progress * 100),
                   )}
                   progress={value.progress}
                 />
@@ -566,9 +558,9 @@ export default class AudioField extends React.Component<
                       className:
                         "material-page__audiofield-file-record-percentage",
                       style: {
-                        right: "100%"
-                      }
-                    }
+                        right: "100%",
+                      },
+                    },
                   }}
                   strokeWidth={1}
                   easing="easeInOut"
@@ -586,7 +578,7 @@ export default class AudioField extends React.Component<
                     moment("2015-01-01")
                       .startOf("day")
                       .seconds(MAX_RECORDING_TIME_IN_SECONDS)
-                      .format("mm:ss")
+                      .format("mm:ss"),
                   )}
                   progress={this.state.time / MAX_RECORDING_TIME_IN_SECONDS}
                 />
@@ -597,12 +589,12 @@ export default class AudioField extends React.Component<
     }
 
     // if elements is disabled
-    let ElementDisabledState = this.props.readOnly
+    const ElementDisabledState = this.props.readOnly
       ? "material-page__taskfield-disabled"
       : "";
 
-    let fieldSavedStateClass = createFieldSavedStateClass(
-      this.state.fieldSavedState
+    const fieldSavedStateClass = createFieldSavedStateClass(
+      this.state.fieldSavedState,
     );
 
     // and this is the container
@@ -634,7 +626,7 @@ export default class AudioField extends React.Component<
                 >
                   <span className="material-page__audiofield-start-record-label">
                     {this.props.i18n.text.get(
-                      "plugin.workspace.audioField.startLink"
+                      "plugin.workspace.audioField.startLink",
                     )}
                   </span>
                 </Link>
@@ -645,7 +637,7 @@ export default class AudioField extends React.Component<
                 >
                   <span className="material-page__audiofield-stop-record-label">
                     {this.props.i18n.text.get(
-                      "plugin.workspace.audioField.stopLink"
+                      "plugin.workspace.audioField.stopLink",
                     )}
                   </span>
                 </Link>
@@ -653,13 +645,13 @@ export default class AudioField extends React.Component<
               {!this.state.recording ? (
                 <span className="material-page__audiofield-description material-page__audiofield-description--start-recording">
                   {this.props.i18n.text.get(
-                    "plugin.workspace.audioField.startRecordingHint"
+                    "plugin.workspace.audioField.startRecordingHint",
                   )}
                 </span>
               ) : (
                 <span className="material-page__audiofield-description material-page__audiofield-description--stop-recording">
                   {this.props.i18n.text.get(
-                    "plugin.workspace.audioField.stopRecordingHint"
+                    "plugin.workspace.audioField.stopRecordingHint",
                   )}
                 </span>
               )}

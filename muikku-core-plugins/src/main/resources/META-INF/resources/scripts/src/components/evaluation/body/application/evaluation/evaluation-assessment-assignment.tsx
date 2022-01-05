@@ -6,7 +6,7 @@ import {
   MaterialContentNodeType,
   MaterialAssignmentType,
   MaterialCompositeRepliesType,
-  MaterialEvaluationType
+  MaterialEvaluationType,
 } from "~/reducers/workspaces/index";
 import "~/sass/elements/evaluation.scss";
 import { AnyActionType } from "~/actions/index";
@@ -22,7 +22,7 @@ import { StateType } from "~/reducers/index";
 import { i18nType } from "~/reducers/base/i18n";
 import {
   UpdateOpenedAssignmentEvaluationId,
-  updateOpenedAssignmentEvaluation
+  updateOpenedAssignmentEvaluation,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import { EvaluationState } from "~/reducers/main-function/evaluation";
 import promisify from "~/util/promisify";
@@ -79,7 +79,7 @@ class EvaluationAssessmentAssignment extends React.Component<
       openContent: false,
       isLoading: false,
       materialNode: undefined,
-      showCloseEditorWarning: false
+      showCloseEditorWarning: false,
     };
   }
 
@@ -90,7 +90,7 @@ class EvaluationAssessmentAssignment extends React.Component<
    */
   componentDidUpdate(
     prevProps: EvaluationAssessmentAssignmentProps,
-    prevState: EvaluationAssessmentAssignmentState
+    prevState: EvaluationAssessmentAssignmentState,
   ) {
     if (this.props.open !== prevState.openContent) {
       if (this.props.open && prevState.materialNode === undefined) {
@@ -98,7 +98,7 @@ class EvaluationAssessmentAssignment extends React.Component<
       }
 
       this.setState({
-        openContent: this.props.open
+        openContent: this.props.open,
       });
     }
   }
@@ -120,43 +120,46 @@ class EvaluationAssessmentAssignment extends React.Component<
       evaluations.evaluationSelectedAssessmentId.userEntityId;
 
     this.setState({
-      isLoading: true
+      isLoading: true,
     });
 
     const sleep = await this.sleep(1000);
 
-    let [loadedMaterial] = await Promise.all([
+    const [loadedMaterial] = await Promise.all([
       (async () => {
-        let material = (await promisify(
+        const material = (await promisify(
           mApi().materials.html.read(assigment.materialId),
-          "callback"
+          "callback",
         )()) as MaterialContentNodeType;
 
-        let evaluation = (await promisify(
+        const evaluation = (await promisify(
           mApi().workspace.workspaces.materials.evaluations.read(
             workspace.id,
             assigment.id,
             {
-              userEntityId
-            }
+              userEntityId,
+            },
           ),
-          "callback"
+          "callback",
         )()) as MaterialEvaluationType[];
 
-        let loadedMaterial: MaterialContentNodeType = Object.assign(material, {
-          evaluation: evaluation[0],
-          assignment: this.props.assigment,
-          path: this.props.assigment.path
-        });
+        const loadedMaterial: MaterialContentNodeType = Object.assign(
+          material,
+          {
+            evaluation: evaluation[0],
+            assignment: this.props.assigment,
+            path: this.props.assigment.path,
+          },
+        );
 
         return loadedMaterial;
       })(),
-      sleep
+      sleep,
     ]);
 
     this.setState({
       isLoading: false,
-      materialNode: loadedMaterial
+      materialNode: loadedMaterial,
     });
   };
 
@@ -165,13 +168,13 @@ class EvaluationAssessmentAssignment extends React.Component<
    * @param data
    */
   updateMaterialEvaluationData = (
-    assigmentSaveReturn: AssignmentEvaluationSaveReturn
+    assigmentSaveReturn: AssignmentEvaluationSaveReturn,
   ) => {
     /**
      * Get initial values that needs to be updated
      */
-    let updatedMaterial: MaterialContentNodeType = {
-      ...this.state.materialNode
+    const updatedMaterial: MaterialContentNodeType = {
+      ...this.state.materialNode,
     };
 
     let gradeId = null;
@@ -213,11 +216,11 @@ class EvaluationAssessmentAssignment extends React.Component<
       gradeSchoolDataSource: gradeDataSource,
       gradingScaleIdentifier: gradeScaleId,
       gradingScaleSchoolDataSource: gradeScaleDataSource,
-      passed: assigmentSaveReturn.passing
+      passed: assigmentSaveReturn.passing,
     };
 
     this.setState({
-      materialNode: updatedMaterial
+      materialNode: updatedMaterial,
     });
   };
 
@@ -226,11 +229,9 @@ class EvaluationAssessmentAssignment extends React.Component<
    * This should sanitize html
    * @param htmlString string that contains html
    */
-  createHtmlMarkup = (htmlString: string) => {
-    return {
-      __html: htmlString
-    };
-  };
+  createHtmlMarkup = (htmlString: string) => ({
+    __html: htmlString,
+  });
 
   /**
    * toggleOpened
@@ -254,7 +255,7 @@ class EvaluationAssessmentAssignment extends React.Component<
     this.setState({
       openDrawer: false,
       openAssignmentType: undefined,
-      showCloseEditorWarning: false
+      showCloseEditorWarning: false,
     });
   };
 
@@ -262,8 +263,7 @@ class EvaluationAssessmentAssignment extends React.Component<
    * handleOpenSlideDrawer
    */
   handleOpenSlideDrawer =
-    (assignmentId: number, assignmentType: "EVALUATED" | "EXERCISE") =>
-    (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    (assignmentId: number, assignmentType: "EVALUATED" | "EXERCISE") => () => {
       if (
         this.props.evaluations.openedAssignmentEvaluationId !== assignmentId
       ) {
@@ -277,9 +277,9 @@ class EvaluationAssessmentAssignment extends React.Component<
       this.setState(
         {
           openDrawer: true,
-          openAssignmentType: assignmentType
+          openAssignmentType: assignmentType,
         },
-        () => this.handleExecuteScrollToElement()
+        () => this.handleExecuteScrollToElement(),
       );
     };
 
@@ -301,7 +301,7 @@ class EvaluationAssessmentAssignment extends React.Component<
    */
   handleAudioAssessmentChange = () => {
     this.setState({
-      showCloseEditorWarning: true
+      showCloseEditorWarning: true,
     });
   };
 
@@ -420,7 +420,7 @@ class EvaluationAssessmentAssignment extends React.Component<
             <div className="evaluation-modal__item-meta-item">
               <span className="evaluation-modal__item-meta-item-data">
                 {this.props.i18n.text.get(
-                  "plugin.evaluation.evaluationModal.assignmentNotDoneLabel"
+                  "plugin.evaluation.evaluationModal.assignmentNotDoneLabel",
                 )}
               </span>
             </div>
@@ -429,7 +429,7 @@ class EvaluationAssessmentAssignment extends React.Component<
               <div className="evaluation-modal__item-meta-item">
                 <span className="evaluation-modal__item-meta-item-label">
                   {this.props.i18n.text.get(
-                    "plugin.evaluation.evaluationModal.assignmentDoneLabel"
+                    "plugin.evaluation.evaluationModal.assignmentDoneLabel",
                   )}
                 </span>
                 <span className="evaluation-modal__item-meta-item-data">
@@ -443,7 +443,7 @@ class EvaluationAssessmentAssignment extends React.Component<
             <div className="evaluation-modal__item-meta-item">
               <span className="evaluation-modal__item-meta-item-label">
                 {this.props.i18n.text.get(
-                  "plugin.evaluation.evaluationModal.assignmentEvaluatedLabel"
+                  "plugin.evaluation.evaluationModal.assignmentEvaluatedLabel",
                 )}
               </span>
               <span className="evaluation-modal__item-meta-item-data">
@@ -456,7 +456,7 @@ class EvaluationAssessmentAssignment extends React.Component<
             <div className="evaluation-modal__item-meta-item">
               <span className="evaluation-modal__item-meta-item-label">
                 {this.props.i18n.text.get(
-                  "plugin.evaluation.evaluationModal.assignmentGradeLabel"
+                  "plugin.evaluation.evaluationModal.assignmentGradeLabel",
                 )}
               </span>
               <span
@@ -473,7 +473,7 @@ class EvaluationAssessmentAssignment extends React.Component<
                 className={`evaluation-modal__item-meta-item-data evaluation-modal__item-meta-item-data--grade ${assignmentGradeClassMod}`}
               >
                 {this.props.i18n.text.get(
-                  "plugin.evaluation.evaluationModal.assignmentEvaluatedIncompleteLabel"
+                  "plugin.evaluation.evaluationModal.assignmentEvaluatedIncompleteLabel",
                 )}
               </span>
             </div>
@@ -485,7 +485,7 @@ class EvaluationAssessmentAssignment extends React.Component<
                 className={`evaluation-modal__item-meta-item-data evaluation-modal__item-meta-item-data--grade ${assignmentGradeClassMod}`}
               >
                 {this.props.i18n.text.get(
-                  "plugin.evaluation.evaluationModal.assignmentEvaluatedIncompleteDoneLabel"
+                  "plugin.evaluation.evaluationModal.assignmentEvaluatedIncompleteDoneLabel",
                 )}
               </span>
             </div>
@@ -506,8 +506,8 @@ class EvaluationAssessmentAssignment extends React.Component<
         (aAssessment) =>
           ({
             ...aAssessment,
-            url: `/rest/workspace/materialevaluationaudioassessment/${aAssessment.id}`
-          } as RecordValue)
+            url: `/rest/workspace/materialevaluationaudioassessment/${aAssessment.id}`,
+          } as RecordValue),
       );
 
     let contentOpen: string | number = 0;
@@ -525,9 +525,7 @@ class EvaluationAssessmentAssignment extends React.Component<
       contentOpen = "auto";
     }
 
-    const invisible = contentOpen === 0;
-
-    let evaluatedFunctionClassMod =
+    const evaluatedFunctionClassMod =
       this.assignmentFunctionClass(compositeReply);
     let evaluationTitleClassMod = "";
 
@@ -569,7 +567,7 @@ class EvaluationAssessmentAssignment extends React.Component<
             {showAsHidden && (
               <div className="evaluation-modal__item-hidden">
                 {this.props.i18n.text.get(
-                  `plugin.evaluation.evaluationModal.${materialPageType}HiddenButAnswered`
+                  `plugin.evaluation.evaluationModal.${materialPageType}HiddenButAnswered`,
                 )}
               </div>
             )}
@@ -584,11 +582,11 @@ class EvaluationAssessmentAssignment extends React.Component<
               compositeReply.state !== "WITHDRAWN" ? (
                 <ButtonPill
                   aria-label={this.props.i18n.text.get(
-                    "plugin.evaluation.evaluationModal.evaluateAssignmentButtonTitle"
+                    "plugin.evaluation.evaluationModal.evaluateAssignmentButtonTitle",
                   )}
                   onClick={this.handleOpenSlideDrawer(
                     this.props.assigment.id,
-                    this.props.assigment.assignmentType
+                    this.props.assigment.assignmentType,
                   )}
                   buttonModifiers={["evaluate"]}
                   icon="evaluate"
@@ -622,7 +620,7 @@ class EvaluationAssessmentAssignment extends React.Component<
                   this.state.showCloseEditorWarning
                 }
                 editorLabel={this.props.i18n.text.get(
-                  "plugin.evaluation.assignmentEvaluationDialog.literalAssessment"
+                  "plugin.evaluation.assignmentEvaluationDialog.literalAssessment",
                 )}
                 materialEvaluation={this.state.materialNode.evaluation}
                 materialAssignment={this.state.materialNode.assignment}
@@ -637,7 +635,7 @@ class EvaluationAssessmentAssignment extends React.Component<
                   this.state.showCloseEditorWarning
                 }
                 editorLabel={this.props.i18n.text.get(
-                  "plugin.evaluation.assignmentEvaluationDialog.literalAssessment"
+                  "plugin.evaluation.assignmentEvaluationDialog.literalAssessment",
                 )}
                 materialEvaluation={this.state.materialNode.evaluation}
                 materialAssignment={this.state.materialNode.assignment}
@@ -658,14 +656,14 @@ class EvaluationAssessmentAssignment extends React.Component<
                 <div className="evaluation-modal__item-literal-assessment">
                   <div className="evaluation-modal__item-literal-assessment-label">
                     {this.props.i18n.text.get(
-                      "plugin.evaluation.evaluationModal.assignmentLiteralEvaluationLabel"
+                      "plugin.evaluation.evaluationModal.assignmentLiteralEvaluationLabel",
                     )}
                   </div>
 
                   <div
                     className="evaluation-modal__item-literal-assessment-data rich-text rich-text--evaluation-literal"
                     dangerouslySetInnerHTML={this.createHtmlMarkup(
-                      compositeReply.evaluationInfo.text
+                      compositeReply.evaluationInfo.text,
                     )}
                   />
                 </div>
@@ -675,7 +673,7 @@ class EvaluationAssessmentAssignment extends React.Component<
                 <div className="evaluation-modal__item-verbal-assessment">
                   <div className="evaluation-modal__item-verbal-assessment-label">
                     {this.props.i18n.text.get(
-                      "plugin.evaluation.evaluationModal.audioAssessments"
+                      "plugin.evaluation.evaluationModal.audioAssessments",
                     )}
                   </div>
                   <div className="voice-container">
@@ -711,7 +709,7 @@ class EvaluationAssessmentAssignment extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    evaluations: state.evaluations
+    evaluations: state.evaluations,
   };
 }
 
@@ -725,5 +723,5 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(EvaluationAssessmentAssignment);

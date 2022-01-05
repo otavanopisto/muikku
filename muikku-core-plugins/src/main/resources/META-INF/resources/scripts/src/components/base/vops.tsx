@@ -21,14 +21,14 @@ const CLASS_TRANSLATIONS: {
     FAILED: "failed",
     PLANNED: "planned",
     MARKED_INCOMPLETE: "incomplete",
-    ASSESSED: "passed"
+    ASSESSED: "passed",
   },
   mandatorities: {
     MANDATORY: "mandatory",
     SCHOOL_LEVEL_OPTIONAL: "optional-school",
     UNSPECIFIED_OPTIONAL: "optional-school",
-    NATIONAL_LEVEL_OPTIONAL: "optional-national"
-  }
+    NATIONAL_LEVEL_OPTIONAL: "optional-national",
+  },
 };
 
 interface VopsProps {
@@ -48,16 +48,16 @@ class Vops extends React.Component<VopsProps, VopsState> {
     this.toggleLegend = this.toggleLegend.bind(this);
 
     this.state = {
-      legendOpened: false
+      legendOpened: false,
     };
   }
   toggleLegend() {
     this.setState({
-      legendOpened: !this.state.legendOpened
+      legendOpened: !this.state.legendOpened,
     });
   }
   render() {
-    let data = this.props.data || this.props.defaultData;
+    const data = this.props.data || this.props.defaultData;
     if (!data.optedIn) {
       return null;
     }
@@ -84,7 +84,7 @@ class Vops extends React.Component<VopsProps, VopsState> {
           <div className="vops__legend">
             <div className="vops__legend-topic">
               {this.props.i18n.text.get(
-                "plugin.records.studyplan.legend.title.shapes"
+                "plugin.records.studyplan.legend.title.shapes",
               )}
             </div>
             <div className="vops__legend-items">
@@ -92,7 +92,7 @@ class Vops extends React.Component<VopsProps, VopsState> {
                 <div className="vops__item vops__item--mandatory"></div>
                 <div className="vops__legend-item-text">
                   {this.props.i18n.text.get(
-                    "plugin.records.studyplan.legend.title.mandatory"
+                    "plugin.records.studyplan.legend.title.mandatory",
                   )}
                 </div>
               </div>
@@ -100,7 +100,7 @@ class Vops extends React.Component<VopsProps, VopsState> {
                 <div className="vops__item vops__item--optional-national"></div>
                 <div className="vops__legend-item-text">
                   {this.props.i18n.text.get(
-                    "plugin.records.studyplan.legend.title.optional.national"
+                    "plugin.records.studyplan.legend.title.optional.national",
                   )}
                 </div>
               </div>
@@ -108,14 +108,14 @@ class Vops extends React.Component<VopsProps, VopsState> {
                 <div className="vops__item vops__item--optional-school"></div>
                 <div className="vops__legend-item-text">
                   {this.props.i18n.text.get(
-                    "plugin.records.studyplan.legend.title.optional.school"
+                    "plugin.records.studyplan.legend.title.optional.school",
                   )}
                 </div>
               </div>
             </div>
             <div className="vops__legend-topic">
               {this.props.i18n.text.get(
-                "plugin.records.studyplan.legend.title.colors"
+                "plugin.records.studyplan.legend.title.colors",
               )}
             </div>
             <div className="vops__legend-items">
@@ -123,7 +123,7 @@ class Vops extends React.Component<VopsProps, VopsState> {
                 <div className="vops__item"></div>
                 <div className="vops__legend-item-text">
                   {this.props.i18n.text.get(
-                    "plugin.records.studyplan.legend.title.neutral"
+                    "plugin.records.studyplan.legend.title.neutral",
                   )}
                 </div>
               </div>
@@ -131,7 +131,7 @@ class Vops extends React.Component<VopsProps, VopsState> {
                 <div className="vops__item vops__item--incomplete"></div>
                 <div className="vops__legend-item-text">
                   {this.props.i18n.text.get(
-                    "plugin.records.studyplan.legend.title.incomplete"
+                    "plugin.records.studyplan.legend.title.incomplete",
                   )}
                 </div>
               </div>
@@ -139,7 +139,7 @@ class Vops extends React.Component<VopsProps, VopsState> {
                 <div className="vops__item vops__item--planned"></div>
                 <div className="vops__legend-item-text">
                   {this.props.i18n.text.get(
-                    "plugin.records.studyplan.legend.title.planned"
+                    "plugin.records.studyplan.legend.title.planned",
                   )}
                 </div>
               </div>
@@ -147,7 +147,7 @@ class Vops extends React.Component<VopsProps, VopsState> {
                 <div className="vops__item vops__item--passed"></div>
                 <div className="vops__legend-item-text">
                   {this.props.i18n.text.get(
-                    "plugin.records.studyplan.legend.title.passed"
+                    "plugin.records.studyplan.legend.title.passed",
                   )}
                 </div>
               </div>
@@ -155,7 +155,7 @@ class Vops extends React.Component<VopsProps, VopsState> {
                 <div className="vops__item vops__item--enrolled"></div>
                 <div className="vops__legend-item-text">
                   {this.props.i18n.text.get(
-                    "plugin.records.studyplan.legend.title.enrolled"
+                    "plugin.records.studyplan.legend.title.enrolled",
                   )}
                 </div>
               </div>
@@ -163,7 +163,7 @@ class Vops extends React.Component<VopsProps, VopsState> {
                 <div className="vops__item vops__item--failed"></div>
                 <div className="vops__legend-item-text">
                   {this.props.i18n.text.get(
-                    "plugin.records.studyplan.legend.title.failed"
+                    "plugin.records.studyplan.legend.title.failed",
                   )}
                 </div>
               </div>
@@ -176,58 +176,54 @@ class Vops extends React.Component<VopsProps, VopsState> {
               <div className="vops__row-item vops__row-item--text-primary">
                 {this.props.i18n.text.get("plugin.records.title.subject")}
               </div>
-              {Array.from(Array(MAX_ROW_SIZE)).map((item, index) => {
-                return (
-                  <div
-                    className="vops__row-item vops__row-item--text"
-                    key={index}
-                  >
-                    {index + 1}
-                  </div>
-                );
-              })}
+              {Array.from(Array(MAX_ROW_SIZE)).map((item, index) => (
+                <div
+                  className="vops__row-item vops__row-item--text"
+                  key={index}
+                >
+                  {index + 1}
+                </div>
+              ))}
             </div>
 
-            {data.rows.map((row) => {
-              return (
-                <div className="vops__row" key={row.subjectIdentifier}>
-                  <div className="vops__row-item vops__row-item--text-primary">
-                    {row.subject}
-                  </div>
-                  {row.items.map((item, index) => {
-                    if (item.placeholder) {
-                      return (
-                        <div
-                          className="vops__row-item"
-                          key={"PLACEHOLDER" + index}
-                        >
-                          <div className="vops__item vops__item--placeholder"></div>
-                        </div>
-                      );
-                    }
-                    let vopsClassNameSubType = "";
-                    if (CLASS_TRANSLATIONS.states[item.state]) {
-                      vopsClassNameSubType +=
-                        "vops__item--" +
-                        CLASS_TRANSLATIONS.states[item.state] +
-                        " ";
-                    }
-                    if (CLASS_TRANSLATIONS.mandatorities[item.mandatority]) {
-                      vopsClassNameSubType +=
-                        "vops__item--" +
-                        CLASS_TRANSLATIONS.mandatorities[item.mandatority];
-                    }
+            {data.rows.map((row) => (
+              <div className="vops__row" key={row.subjectIdentifier}>
+                <div className="vops__row-item vops__row-item--text-primary">
+                  {row.subject}
+                </div>
+                {row.items.map((item, index) => {
+                  if (item.placeholder) {
                     return (
-                      <div className="vops__row-item" key={item.courseNumber}>
-                        <div
-                          className={`vops__item ${vopsClassNameSubType}`}
-                        ></div>
+                      <div
+                        className="vops__row-item"
+                        key={"PLACEHOLDER" + index}
+                      >
+                        <div className="vops__item vops__item--placeholder"></div>
                       </div>
                     );
-                  })}
-                </div>
-              );
-            })}
+                  }
+                  let vopsClassNameSubType = "";
+                  if (CLASS_TRANSLATIONS.states[item.state]) {
+                    vopsClassNameSubType +=
+                      "vops__item--" +
+                      CLASS_TRANSLATIONS.states[item.state] +
+                      " ";
+                  }
+                  if (CLASS_TRANSLATIONS.mandatorities[item.mandatority]) {
+                    vopsClassNameSubType +=
+                      "vops__item--" +
+                      CLASS_TRANSLATIONS.mandatorities[item.mandatority];
+                  }
+                  return (
+                    <div className="vops__row-item" key={item.courseNumber}>
+                      <div
+                        className={`vops__item ${vopsClassNameSubType}`}
+                      ></div>
+                    </div>
+                  );
+                })}
+              </div>
+            ))}
           </div>
         </div>
       </div>
@@ -238,7 +234,7 @@ class Vops extends React.Component<VopsProps, VopsState> {
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    defaultData: state.vops && state.vops.value
+    defaultData: state.vops && state.vops.value,
   };
 }
 

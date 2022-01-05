@@ -36,8 +36,8 @@ export default function ProfileProperty(props: {
             {props.value}
           </span>
         ) : (
-          props.value.map((v) => {
-            return typeof v === "string" ? (
+          props.value.map((v) =>
+            typeof v === "string" ? (
               <span className="application-sub-panel__single-entry" key={v}>
                 {v}
               </span>
@@ -45,8 +45,8 @@ export default function ProfileProperty(props: {
               <span className="application-sub-panel__single-entry" key={v.key}>
                 {v.value}
               </span>
-            );
-          })
+            ),
+          )
         )}
       </div>
     </div>

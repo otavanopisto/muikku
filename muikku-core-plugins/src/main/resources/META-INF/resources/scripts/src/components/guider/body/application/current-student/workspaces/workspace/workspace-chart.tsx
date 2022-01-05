@@ -1,6 +1,5 @@
 import { i18nType } from "~/reducers/base/i18n";
 import * as React from "react";
-import { Dispatch } from "redux";
 import { connect } from "react-redux";
 import { StateType } from "~/reducers";
 import { WorkspaceType } from "~/reducers/workspaces";
@@ -33,10 +32,10 @@ interface WorkspaceChartData {
 enum Graph {
   WORKSPACE_VISIT = "visits",
   MATERIAL_ASSIGNMENTDONE = "assignments",
-  MATERIAL_EXERCISEDONE = "exercises"
+  MATERIAL_EXERCISEDONE = "exercises",
 }
 
-let ignoreZoomed: boolean = true;
+let ignoreZoomed = true;
 let zoomStartDate: Date = null;
 let zoomEndDate: Date = null;
 
@@ -51,7 +50,7 @@ class CurrentStudentStatistics extends React.Component<
     this.zoomApplyHandler = this.zoomApplyHandler.bind(this);
     this.state = {
       amChartsLoaded: AmCharts !== null,
-      filteredGraphs: []
+      filteredGraphs: [],
     };
     if (!this.state.amChartsLoaded) {
       this.loadAmCharts();
@@ -61,11 +60,11 @@ class CurrentStudentStatistics extends React.Component<
   }
 
   loadAmCharts() {
-    let amcharts = document.createElement("script");
+    const amcharts = document.createElement("script");
     amcharts.src = "https://www.amcharts.com/lib/3/amcharts.js";
     amcharts.async = true;
     amcharts.onload = () => {
-      let serial = document.createElement("script");
+      const serial = document.createElement("script");
       serial.src = "https://www.amcharts.com/lib/3/serial.js";
       serial.async = true;
       serial.onload = () => {
@@ -79,7 +78,7 @@ class CurrentStudentStatistics extends React.Component<
 
   GraphFilterHandler(graph: Graph) {
     const filteredGraphs = this.state.filteredGraphs.slice();
-    let index = filteredGraphs.indexOf(graph);
+    const index = filteredGraphs.indexOf(graph);
     if (index > -1) {
       filteredGraphs.splice(index, 1);
     } else {
@@ -108,15 +107,15 @@ class CurrentStudentStatistics extends React.Component<
     }
 
     //NOTE: The filtered data can be cut here. (Option 1)
-    let chartDataMap = new Map<string, WorkspaceChartData>();
+    const chartDataMap = new Map<string, WorkspaceChartData>();
     chartDataMap.set(new Date().toISOString().slice(0, 10), {
       MATERIAL_ASSIGNMENTDONE: 0,
       MATERIAL_EXERCISEDONE: 0,
-      WORKSPACE_VISIT: 0
+      WORKSPACE_VISIT: 0,
     });
     this.props.workspace.activityLogs.map((log) => {
-      let date = log.timestamp.slice(0, 10);
-      let entry = chartDataMap.get(date) || {};
+      const date = log.timestamp.slice(0, 10);
+      const entry = chartDataMap.get(date) || {};
       switch (log.type) {
         case "EVALUATION_REQUESTED":
         case "EVALUATION_GOTINCOMPLETED":
@@ -134,17 +133,17 @@ class CurrentStudentStatistics extends React.Component<
     });
 
     //NOTE: Data can be filtered here also (Option 2)
-    let sortedKeys = Array.from(chartDataMap.keys()).sort((a, b) => {
-      return a > b ? 1 : -1;
-    });
-    let data = new Array();
+    const sortedKeys = Array.from(chartDataMap.keys()).sort((a, b) =>
+      a > b ? 1 : -1,
+    );
+    const data: any = [];
     sortedKeys.forEach((key) => {
-      let value = chartDataMap.get(key);
+      const value = chartDataMap.get(key);
       data.push({ date: key, ...value });
     });
 
     //NOTE: Here the graphs are filtered. May be not optimal, since it is the end part of the data processing (Option 3)
-    let graphs = new Array();
+    const graphs = [];
 
     if (!this.state.filteredGraphs.includes(Graph.WORKSPACE_VISIT)) {
       graphs.push({
@@ -160,7 +159,7 @@ class CurrentStudentStatistics extends React.Component<
         stackable: false,
         clustered: false,
         columnWidth: 0.6,
-        valueField: "WORKSPACE_VISIT"
+        valueField: "WORKSPACE_VISIT",
       });
     }
 
@@ -177,7 +176,7 @@ class CurrentStudentStatistics extends React.Component<
         type: "column",
         clustered: false,
         columnWidth: 0.4,
-        valueField: "MATERIAL_ASSIGNMENTDONE"
+        valueField: "MATERIAL_ASSIGNMENTDONE",
       });
     }
 
@@ -194,21 +193,21 @@ class CurrentStudentStatistics extends React.Component<
         type: "column",
         clustered: false,
         columnWidth: 0.4,
-        valueField: "MATERIAL_EXERCISEDONE"
+        valueField: "MATERIAL_EXERCISEDONE",
       });
     }
-    let valueAxes = [
+    const valueAxes = [
       {
         stackType: graphs.length > 1 ? "regular" : "none",
         unit: "",
         position: "left",
         title: "",
         integersOnly: true,
-        minimum: 0
-      }
+        minimum: 0,
+      },
     ];
 
-    let config = {
+    const config = {
       theme: "none",
       type: "serial",
       minMarginLeft: 50,
@@ -223,10 +222,10 @@ class CurrentStudentStatistics extends React.Component<
         parseDates: true,
         dashLength: 1,
         minorGridEnabled: true,
-        gridPosition: "start"
+        gridPosition: "start",
       },
       categoryAxesSettings: {
-        minPeriod: "DD"
+        minPeriod: "DD",
       },
       chartScrollbar: {
         oppositeAxis: false,
@@ -240,36 +239,36 @@ class CurrentStudentStatistics extends React.Component<
         selectedGraphFillAlpha: 0,
         selectedGraphLineAlpha: 1,
         autoGridCount: true,
-        color: "#AAAAAA"
+        color: "#AAAAAA",
       },
       chartCursor: {
         categoryBalloonDateFormat: "YYYY-MM-DD",
         categoryBalloonColor: "#009FE3",
-        cursorColor: "#000"
+        cursorColor: "#000",
       },
       listeners: [
         {
           event: "zoomed",
-          method: this.zoomSaveHandler
+          method: this.zoomSaveHandler,
         },
         {
           event: "dataUpdated",
-          method: this.zoomApplyHandler
-        }
+          method: this.zoomApplyHandler,
+        },
       ],
       valueAxes: valueAxes,
       graphs: graphs,
       dataProvider: data,
       export: {
-        enabled: true
-      }
+        enabled: true,
+      },
     };
     ignoreZoomed = true;
     //Maybe it is possible to use show/hide graph without re-render. requires accessing the graph and call for a method. Responsiveness not through react re-render only?
-    let showGraphs: string[] = [
+    const showGraphs: string[] = [
       Graph.WORKSPACE_VISIT,
       Graph.MATERIAL_ASSIGNMENTDONE,
-      Graph.MATERIAL_EXERCISEDONE
+      Graph.MATERIAL_EXERCISEDONE,
     ];
     return (
       <div className="react-required-container">
@@ -294,7 +293,7 @@ class CurrentStudentStatistics extends React.Component<
 
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n
+    i18n: state.i18n,
   };
 }
 

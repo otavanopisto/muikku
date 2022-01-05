@@ -10,7 +10,7 @@ import "~/sass/elements/item-list.scss";
 
 import Navigation, {
   NavigationTopic,
-  NavigationElement
+  NavigationElement,
 } from "~/components/general/navigation";
 
 interface NavigationProps {
@@ -31,24 +31,22 @@ class NavigationAside extends React.Component<
         <NavigationTopic
           name={this.props.i18n.text.get("plugin.communicator.folders.title")}
         >
-          {this.props.messages.navigation.map((item) => {
-            return (
-              <NavigationElement
-                iconColor={item.color}
-                icon={item.icon}
-                key={item.id}
-                isActive={this.props.messages.location === item.location}
-                hash={item.location}
-                editableWrapper={LabelUpdateDialog}
-                editableWrapperArgs={
-                  item.type === "label" ? { label: item } : null
-                }
-                isEditable={item.type === "label"}
-              >
-                {item.text(this.props.i18n)}
-              </NavigationElement>
-            );
-          })}
+          {this.props.messages.navigation.map((item) => (
+            <NavigationElement
+              iconColor={item.color}
+              icon={item.icon}
+              key={item.id}
+              isActive={this.props.messages.location === item.location}
+              hash={item.location}
+              editableWrapper={LabelUpdateDialog}
+              editableWrapperArgs={
+                item.type === "label" ? { label: item } : null
+              }
+              isEditable={item.type === "label"}
+            >
+              {item.text(this.props.i18n)}
+            </NavigationElement>
+          ))}
         </NavigationTopic>
         <NavigationTopic
           name={this.props.i18n.text.get("plugin.communicator.settings.topic")}
@@ -70,7 +68,7 @@ class NavigationAside extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    messages: state.messages
+    messages: state.messages,
   };
 }
 

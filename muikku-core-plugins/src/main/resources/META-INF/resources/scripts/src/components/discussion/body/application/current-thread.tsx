@@ -4,7 +4,7 @@ import {
   DiscussionType,
   DiscussionUserType,
   DiscussionThreadReplyType,
-  DiscussionThreadReplyListType
+  DiscussionThreadReplyListType,
 } from "~/reducers/discussion";
 import { Dispatch, connect } from "react-redux";
 import Link from "~/components/general/link";
@@ -21,7 +21,7 @@ import {
   DiscussionCurrentThreadElement,
   DiscussionThreadHeader,
   DiscussionThreadBody,
-  DiscussionThreadFooter
+  DiscussionThreadFooter,
 } from "./threads/threads";
 import ReplyThreadDrawer from "./reply-thread-drawer";
 import DiscussionThreadReply from "./discussion-thread-reply";
@@ -59,7 +59,7 @@ class CurrentThread extends React.Component<
     super(props);
 
     this.state = {
-      hiddenParentsLists: []
+      hiddenParentsLists: [],
     };
   }
 
@@ -98,8 +98,8 @@ class CurrentThread extends React.Component<
     if (this.state.hiddenParentsLists.includes(parentId)) {
       this.setState({
         hiddenParentsLists: this.state.hiddenParentsLists.filter(
-          (id) => id !== parentId
-        )
+          (id) => id !== parentId,
+        ),
       });
     } else {
       const updatedList = [...this.state.hiddenParentsLists];
@@ -107,7 +107,7 @@ class CurrentThread extends React.Component<
       updatedList.push(parentId);
 
       this.setState({
-        hiddenParentsLists: updatedList
+        hiddenParentsLists: updatedList,
       });
     }
   };
@@ -120,7 +120,7 @@ class CurrentThread extends React.Component<
     (type: "answer" | "modify" | "quote") =>
     (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
       this.setState({
-        openReplyType: type !== this.state.openReplyType ? type : undefined
+        openReplyType: type !== this.state.openReplyType ? type : undefined,
       });
     };
 
@@ -129,7 +129,7 @@ class CurrentThread extends React.Component<
    */
   handleOnCancelClick = () => {
     this.setState({
-      openReplyType: undefined
+      openReplyType: undefined,
     });
   };
 
@@ -173,7 +173,7 @@ class CurrentThread extends React.Component<
           hasImage={userCreator.hasImage}
           userCategory={userCategory}
           avatarAriaLabel={this.props.i18n.text.get(
-            "plugin.wcag.userAvatar.label"
+            "plugin.wcag.userAvatar.label",
           )}
         />
       );
@@ -221,7 +221,7 @@ class CurrentThread extends React.Component<
             aside={
               <span>
                 {this.props.i18n.time.format(
-                  this.props.discussion.current.created
+                  this.props.discussion.current.created,
                 )}
               </span>
             }
@@ -229,7 +229,7 @@ class CurrentThread extends React.Component<
             <span className="application-list__item-header-main-content application-list__item-header-main-content--discussion-message-creator">
               {getName(
                 userCreator,
-                this.props.status.permissions.FORUM_SHOW_FULL_NAMES
+                this.props.status.permissions.FORUM_SHOW_FULL_NAMES,
               )}
             </span>
           </DiscussionThreadHeader>
@@ -245,7 +245,7 @@ class CurrentThread extends React.Component<
                 <div
                   className="rich-text"
                   dangerouslySetInnerHTML={{
-                    __html: this.props.discussion.current.message
+                    __html: this.props.discussion.current.message,
                   }}
                 ></div>
                 {this.props.discussion.current.created !==
@@ -254,8 +254,8 @@ class CurrentThread extends React.Component<
                     {this.props.i18n.text.get(
                       "plugin.discussion.content.isEdited",
                       this.props.i18n.time.format(
-                        this.props.discussion.current.lastModified
-                      )
+                        this.props.discussion.current.lastModified,
+                      ),
                     )}
                   </span>
                 ) : null}
@@ -268,7 +268,7 @@ class CurrentThread extends React.Component<
                       onClick={this.handleOnReplyClick("answer")}
                     >
                       {this.props.i18n.text.get(
-                        "plugin.discussion.reply.message"
+                        "plugin.discussion.reply.message",
                       )}
                     </Link>
                   ) : null}
@@ -278,7 +278,7 @@ class CurrentThread extends React.Component<
                       onClick={this.handleOnReplyClick("quote")}
                     >
                       {this.props.i18n.text.get(
-                        "plugin.discussion.reply.quote"
+                        "plugin.discussion.reply.quote",
                       )}
                     </Link>
                   ) : null}
@@ -294,7 +294,7 @@ class CurrentThread extends React.Component<
                     <DeleteThreadComponent>
                       <Link className="link link--application-list-item-footer">
                         {this.props.i18n.text.get(
-                          "plugin.discussion.reply.delete"
+                          "plugin.discussion.reply.delete",
                         )}
                       </Link>
                     </DeleteThreadComponent>
@@ -313,7 +313,7 @@ class CurrentThread extends React.Component<
               quote={this.props.discussion.current.message}
               quoteAuthor={getName(
                 userCreator,
-                this.props.status.permissions.FORUM_SHOW_FULL_NAMES
+                this.props.status.permissions.FORUM_SHOW_FULL_NAMES,
               )}
               onClickCancel={this.handleOnCancelClick}
             />
@@ -373,7 +373,7 @@ class CurrentThread extends React.Component<
              * Checks if element parent has hide its siblings
              */
             const isHiddenElement = this.state.hiddenParentsLists.includes(
-              reply.parentReplyId
+              reply.parentReplyId,
             );
 
             /**
@@ -397,7 +397,7 @@ class CurrentThread extends React.Component<
                 onHideShowSubRepliesClick={this.onHideShowSubRepliesClick}
               />
             );
-          }
+          },
         )}
 
         <PagerV2
@@ -427,7 +427,7 @@ function mapStateToProps(state: StateType) {
     discussion: state.discussion,
     userId: state.status.userId,
     permissions: state.status.permissions,
-    status: state.status
+    status: state.status,
   };
 }
 

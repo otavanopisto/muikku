@@ -1,12 +1,11 @@
 import * as React from "react";
 import { UserType } from "~/reducers/user-index";
-import { i18nType } from "~/reducers/base/i18n";
 import { getName } from "~/util/modifiers";
 import Avatar from "~/components/general/avatar";
 import {
   ApplicationListItem,
   ApplicationListItemContentWrapper,
-  ApplicationListItemContentData
+  ApplicationListItemContentData,
 } from "~/components/general/application-list";
 
 interface UserProps {

@@ -1,5 +1,4 @@
 import WorkspaceNavbar from "~/components/base/workspace/navbar";
-import ScreenContainer from "~/components/general/screen-container";
 
 import * as React from "react";
 import Application from "~/components/discussion/body/application";

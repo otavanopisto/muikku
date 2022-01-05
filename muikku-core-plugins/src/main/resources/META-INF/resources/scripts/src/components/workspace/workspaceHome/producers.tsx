@@ -1,9 +1,8 @@
 import { StateType } from "~/reducers";
-import { Dispatch, connect } from "react-redux";
+import { connect } from "react-redux";
 import * as React from "react";
 import { WorkspaceType } from "~/reducers/workspaces";
 import { i18nType } from "~/reducers/base/i18n";
-import Link from "~/components/general/link";
 
 import "~/sass/elements/producers.scss";
 
@@ -48,11 +47,11 @@ class Producers extends React.Component<ProducersProps, ProducersState> {
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    workspace: state.workspaces.currentWorkspace
+    workspace: state.workspaces.currentWorkspace,
   };
 }
 
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps() {
   return {};
 }
 

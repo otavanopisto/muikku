@@ -8,5 +8,5 @@ export default combineReducers({
   credentials,
   notifications,
   i18n,
-  locales
+  locales,
 });

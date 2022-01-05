@@ -266,7 +266,7 @@ export class SearchFormElement extends React.Component<
     super(props);
     this.delay = this.props.delay >= 0 ? this.props.delay : 400;
     this.state = {
-      value: this.props.value ? this.props.value : ""
+      value: this.props.value ? this.props.value : "",
     };
     this.updateSearchField = this.updateSearchField.bind(this);
     this.clearSearchField = this.clearSearchField.bind(this);
@@ -275,12 +275,12 @@ export class SearchFormElement extends React.Component<
 
   updateSearchField(e: React.ChangeEvent<HTMLInputElement>) {
     clearTimeout(this.searchTimer);
-    let value = e.target.value;
+    const value = e.target.value;
     this.setState({ value: value });
     if (this.delay > 0) {
       this.searchTimer = setTimeout(
         this.props.updateField.bind(null, value) as any,
-        this.delay
+        this.delay,
       );
     } else {
       this.props.updateField(value);
@@ -365,13 +365,13 @@ export class InputFormElement extends React.Component<
     // 0 = invalid, 1 = valid, 2 = neutral
     this.state = {
       valid: this.props.valid != null ? this.props.valid : 2,
-      value: this.props.value ? this.props.value : ""
+      value: this.props.value ? this.props.value : "",
     };
   }
 
   updateInputField(e: React.ChangeEvent<HTMLInputElement>) {
-    let value = e.target.value;
-    let name = e.target.name;
+    const value = e.target.value;
+    const name = e.target.name;
     let valid = false;
 
     if (this.props.mandatory != null && this.props.mandatory == true) {
@@ -468,7 +468,7 @@ export class SelectFormElement extends React.Component<
 
     this.state = {
       valid: this.props.valid != null ? this.props.valid : 2,
-      value: this.props.value ? this.props.value : ""
+      value: this.props.value ? this.props.value : "",
     };
   }
 
@@ -562,12 +562,12 @@ export class EmailFormElement extends React.Component<
 
     this.state = {
       value: this.props.value ? this.props.value : "",
-      valid: this.props.valid != null ? this.props.valid : 2
+      valid: this.props.valid != null ? this.props.valid : 2,
     };
   }
 
   updateInputField(e: React.ChangeEvent<HTMLInputElement>) {
-    let value = e.target.value;
+    const value = e.target.value;
     const emailRegExp =
       /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
     let valid = false;
@@ -656,7 +656,7 @@ export class SSNFormElement extends React.Component<
 
     this.state = {
       value: this.props.value ? this.props.value : "",
-      valid: this.props.valid != null ? this.props.valid : 2
+      valid: this.props.valid != null ? this.props.valid : 2,
     };
   }
 

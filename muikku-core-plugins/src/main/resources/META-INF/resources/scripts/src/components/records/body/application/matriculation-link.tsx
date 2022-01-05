@@ -50,7 +50,6 @@
 //}
 
 import * as React from "react";
-import $ from "~/lib/jquery";
 import mApi from "~/lib/mApi";
 import { i18nType } from "~/reducers/base/i18n";
 
@@ -64,9 +63,9 @@ interface MatriculationLinkState {
 }
 
 interface CurrentExam {
-  id: Number;
-  starts: Number;
-  ends: Number;
+  id: number;
+  starts: number;
+  ends: number;
   eligible: boolean;
 }
 
@@ -81,7 +80,7 @@ export class MatriculationLink extends React.Component<
     this._isMounted = false;
     this.state = {
       enabled: false,
-      exams: []
+      exams: [],
     };
   }
 

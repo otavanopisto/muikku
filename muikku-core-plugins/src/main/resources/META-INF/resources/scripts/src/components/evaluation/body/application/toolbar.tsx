@@ -12,11 +12,11 @@ import { EvaluationState } from "~/reducers/main-function/evaluation/index";
 import { EvaluationFilters } from "~/@types/evaluation";
 import {
   SetEvaluationFilters,
-  setEvaluationFilters
+  setEvaluationFilters,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import {
   UpdateEvaluationSearch,
-  updateEvaluationSearch
+  updateEvaluationSearch,
 } from "~/actions/main-function/evaluation/evaluationActions";
 
 interface EvaluationToolbarProps {
@@ -57,7 +57,7 @@ class EvaluationToolbar extends React.Component<
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const updatedFilters: EvaluationFilters = {
         ...this.props.evaluations.evaluationFilters,
-        [filter]: e.target.checked
+        [filter]: e.target.checked,
       };
 
       this.props.setEvaluationFilters({ evaluationFilters: updatedFilters });
@@ -78,7 +78,7 @@ class EvaluationToolbar extends React.Component<
         />
         <label htmlFor="filterEvaluated">
           {this.props.i18n.text.get(
-            "plugin.evaluation.workspace.filter.checkbox.evaluated"
+            "plugin.evaluation.workspace.filter.checkbox.evaluated",
           )}
         </label>
       </div>,
@@ -91,7 +91,7 @@ class EvaluationToolbar extends React.Component<
         />
         <label htmlFor="filterAssessmentRequest">
           {this.props.i18n.text.get(
-            "plugin.evaluation.workspace.filter.checkbox.requestEvaluation"
+            "plugin.evaluation.workspace.filter.checkbox.requestEvaluation",
           )}
         </label>
       </div>,
@@ -106,7 +106,7 @@ class EvaluationToolbar extends React.Component<
         />
         <label htmlFor="filterSupplementationRequest">
           {this.props.i18n.text.get(
-            "plugin.evaluation.workspace.filter.checkbox.hasSupplementationRequest"
+            "plugin.evaluation.workspace.filter.checkbox.hasSupplementationRequest",
           )}
         </label>
       </div>,
@@ -119,10 +119,10 @@ class EvaluationToolbar extends React.Component<
         />
         <label htmlFor="filterNotEvaluated">
           {this.props.i18n.text.get(
-            "plugin.evaluation.workspace.filter.checkbox.noevaluation"
+            "plugin.evaluation.workspace.filter.checkbox.noevaluation",
           )}
         </label>
-      </div>
+      </div>,
     ];
 
     return (
@@ -152,7 +152,7 @@ class EvaluationToolbar extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    evaluations: state.evaluations
+    evaluations: state.evaluations,
   };
 }
 
@@ -164,7 +164,7 @@ function mapStateToProps(state: StateType) {
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     { updateEvaluationSearch, setEvaluationFilters },
-    dispatch
+    dispatch,
   );
 }
 

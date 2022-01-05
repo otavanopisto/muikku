@@ -15,7 +15,7 @@ import {
   createAnnouncement,
   CreateAnnouncementTriggerType,
   updateAnnouncement,
-  UpdateAnnouncementTriggerType
+  UpdateAnnouncementTriggerType,
 } from "~/actions/announcements";
 import { StateType } from "~/reducers";
 import SessionStateComponent from "~/components/general/session-state-component";
@@ -64,22 +64,24 @@ class NewEditAnnouncement extends SessionStateComponent<
 
     this.baseAnnouncementCurrentTarget = props.announcement
       ? props.announcement.workspaces
-          .map((w) => {
-            //NOTE this workspace type is incomplete, but should do the job regardless
-            return {
-              type: "workspace",
-              value: w
-            } as ContactRecipientType;
-          })
+          .map(
+            (w) =>
+              //NOTE this workspace type is incomplete, but should do the job regardless
+              ({
+                type: "workspace",
+                value: w,
+              } as ContactRecipientType),
+          )
           .concat(
             props.announcement.userGroupEntityIds
               .filter((id) => props.userIndex.groups[id])
-              .map((id) => {
-                return {
-                  type: "usergroup",
-                  value: props.userIndex.groups[id]
-                } as ContactRecipientType;
-              }) as any
+              .map(
+                (id) =>
+                  ({
+                    type: "usergroup",
+                    value: props.userIndex.groups[id],
+                  } as ContactRecipientType),
+              ) as any,
           )
       : this.getPredefinedWorkspaceByIdToConcat(props);
 
@@ -91,15 +93,15 @@ class NewEditAnnouncement extends SessionStateComponent<
         locked: false,
         startDate: props.announcement
           ? props.i18n.time.getLocalizedMoment(
-              this.props.announcement.startDate
+              this.props.announcement.startDate,
             )
           : props.i18n.time.getLocalizedMoment(),
         endDate: props.announcement
           ? props.i18n.time.getLocalizedMoment(this.props.announcement.endDate)
-          : props.i18n.time.getLocalizedMoment().add(1, "day")
+          : props.i18n.time.getLocalizedMoment().add(1, "day"),
       },
       (props.announcement ? props.announcement.id + "-" : "") +
-        (props.workspaceId || "")
+        (props.workspaceId || ""),
     );
   }
   checkAgainstStoredState() {
@@ -109,19 +111,19 @@ class NewEditAnnouncement extends SessionStateComponent<
           subject: this.props.announcement.caption,
           text: this.props.announcement.content,
           startDate: this.props.i18n.time.getLocalizedMoment(
-            this.props.announcement.startDate
+            this.props.announcement.startDate,
           ),
           endDate: this.props.i18n.time.getLocalizedMoment(
-            this.props.announcement.endDate
-          )
+            this.props.announcement.endDate,
+          ),
         },
-        this.props.announcement.id + "-" + (this.props.workspaceId || "")
+        this.props.announcement.id + "-" + (this.props.workspaceId || ""),
       );
 
-      let userGroupEntityIds = this.state.currentTarget
+      const userGroupEntityIds = this.state.currentTarget
         .filter((w) => w.type === "usergroup")
         .map((w) => (w.value as any).id);
-      let workspaceEntityIds = this.state.currentTarget
+      const workspaceEntityIds = this.state.currentTarget
         .filter((w) => w.type === "workspace")
         .map((w) => (w.value as any).id);
 
@@ -140,9 +142,9 @@ class NewEditAnnouncement extends SessionStateComponent<
           text: "",
           currentTarget: this.getPredefinedWorkspaceByIdToConcat(this.props),
           startDate: this.props.i18n.time.getLocalizedMoment(),
-          endDate: this.props.i18n.time.getLocalizedMoment().add(1, "day")
+          endDate: this.props.i18n.time.getLocalizedMoment().add(1, "day"),
         },
-        this.props.workspaceId || ""
+        this.props.workspaceId || "",
       );
     }
   }
@@ -156,32 +158,33 @@ class NewEditAnnouncement extends SessionStateComponent<
           text: "",
           startDate: this.props.i18n.time.getLocalizedMoment(),
           endDate: this.props.i18n.time.getLocalizedMoment().add(1, "day"),
-          currentTarget: this.baseAnnouncementCurrentTarget
+          currentTarget: this.baseAnnouncementCurrentTarget,
         },
-        this.props.workspaceId || ""
+        this.props.workspaceId || "",
       );
     } else {
       this.baseAnnouncementCurrentTarget =
-        this.props.announcement.workspaces.map((w) => {
-          //NOTE this workspace type is incomplete, but should do the job regardless
-          return {
-            type: "workspace",
-            value: w
-          } as ContactRecipientType;
-        });
+        this.props.announcement.workspaces.map(
+          (w) =>
+            //NOTE this workspace type is incomplete, but should do the job regardless
+            ({
+              type: "workspace",
+              value: w,
+            } as ContactRecipientType),
+        );
       this.setStateAndClear(
         {
           subject: this.props.announcement.caption,
           text: this.props.announcement.content,
           currentTarget: this.baseAnnouncementCurrentTarget,
           startDate: this.props.i18n.time.getLocalizedMoment(
-            this.props.announcement.startDate
+            this.props.announcement.startDate,
           ),
           endDate: this.props.i18n.time.getLocalizedMoment(
-            this.props.announcement.endDate
-          )
+            this.props.announcement.endDate,
+          ),
         },
-        this.props.announcement.id + "-" + (this.props.workspaceId || "")
+        this.props.announcement.id + "-" + (this.props.workspaceId || ""),
       );
     }
   }
@@ -190,7 +193,7 @@ class NewEditAnnouncement extends SessionStateComponent<
       return [];
     }
 
-    let workpaceFound =
+    const workpaceFound =
       props.workspaces &&
       props.workspaces.currentWorkspace &&
       props.workspaces.currentWorkspace.id === props.workspaceId
@@ -204,8 +207,8 @@ class NewEditAnnouncement extends SessionStateComponent<
       return [
         {
           type: "workspace",
-          value: workpaceFound
-        } as ContactRecipientType
+          value: workpaceFound,
+        } as ContactRecipientType,
       ];
     }
 
@@ -219,31 +222,33 @@ class NewEditAnnouncement extends SessionStateComponent<
       (!this.props.announcement && nextProps.announcement) ||
       (nextProps.userIndex !== this.props.userIndex && nextProps.announcement)
     ) {
-      let prevBaseAnnouncementCurrentTarget =
+      const prevBaseAnnouncementCurrentTarget =
         this.baseAnnouncementCurrentTarget;
       this.baseAnnouncementCurrentTarget = nextProps.announcement.workspaces
-        .map((w) => {
-          //NOTE this workspace type is incomplete, but should do the job regardless
-          return {
-            type: "workspace",
-            value: w
-          } as ContactRecipientType;
-        })
+        .map(
+          (w) =>
+            //NOTE this workspace type is incomplete, but should do the job regardless
+            ({
+              type: "workspace",
+              value: w,
+            } as ContactRecipientType),
+        )
         .concat(
           nextProps.announcement.userGroupEntityIds
             .filter((id) => nextProps.userIndex.groups[id])
-            .map((id) => {
-              return {
-                type: "usergroup",
-                value: nextProps.userIndex.groups[id]
-              } as ContactRecipientType;
-            }) as any
+            .map(
+              (id) =>
+                ({
+                  type: "usergroup",
+                  value: nextProps.userIndex.groups[id],
+                } as ContactRecipientType),
+            ) as any,
         );
 
       if (
         equals(
           prevBaseAnnouncementCurrentTarget,
-          this.baseAnnouncementCurrentTarget
+          this.baseAnnouncementCurrentTarget,
         ) &&
         equals(this.props.announcement, nextProps.announcement)
       ) {
@@ -257,14 +262,14 @@ class NewEditAnnouncement extends SessionStateComponent<
             text: nextProps.announcement.content,
             currentTarget: this.baseAnnouncementCurrentTarget,
             startDate: nextProps.i18n.time.getLocalizedMoment(
-              nextProps.announcement.startDate
+              nextProps.announcement.startDate,
             ),
             endDate: nextProps.i18n.time.getLocalizedMoment(
-              nextProps.announcement.endDate
-            )
+              nextProps.announcement.endDate,
+            ),
           },
-          nextProps.announcement.id + "-" + (nextProps.workspaceId || "")
-        )
+          nextProps.announcement.id + "-" + (nextProps.workspaceId || ""),
+        ),
       );
     } else if (this.props.announcement && !nextProps.announcement) {
       this.baseAnnouncementCurrentTarget =
@@ -277,10 +282,10 @@ class NewEditAnnouncement extends SessionStateComponent<
             text: "",
             currentTarget: this.baseAnnouncementCurrentTarget,
             startDate: nextProps.i18n.time.getLocalizedMoment(),
-            endDate: nextProps.i18n.time.getLocalizedMoment().add(1, "day")
+            endDate: nextProps.i18n.time.getLocalizedMoment().add(1, "day"),
           },
-          nextProps.workspaceId || ""
-        )
+          nextProps.workspaceId || "",
+        ),
       );
     } else if (
       nextProps.workspaceId !== this.props.workspaceId ||
@@ -294,10 +299,10 @@ class NewEditAnnouncement extends SessionStateComponent<
       this.setState(
         this.getRecoverStoredState(
           {
-            currentTarget: this.baseAnnouncementCurrentTarget
+            currentTarget: this.baseAnnouncementCurrentTarget,
           },
-          nextProps.workspaceId || ""
-        )
+          nextProps.workspaceId || "",
+        ),
       );
     }
   }
@@ -305,21 +310,21 @@ class NewEditAnnouncement extends SessionStateComponent<
     this.setStateAndStore(
       { text },
       (this.props.announcement ? this.props.announcement.id + "-" : "") +
-        (this.props.workspaceId || "")
+        (this.props.workspaceId || ""),
     );
   }
   setTargetItems(currentTarget: TargetItemsListType) {
     this.setStateAndStore(
       { currentTarget },
       (this.props.announcement ? this.props.announcement.id + "-" : "") +
-        (this.props.workspaceId || "")
+        (this.props.workspaceId || ""),
     );
   }
   onSubjectChange(e: React.ChangeEvent<HTMLInputElement>) {
     this.setStateAndStore(
       { subject: e.target.value },
       (this.props.announcement ? this.props.announcement.id + "-" : "") +
-        (this.props.workspaceId || "")
+        (this.props.workspaceId || ""),
     );
   }
   createOrModifyAnnouncement(closeDialog: () => any) {
@@ -341,21 +346,21 @@ class NewEditAnnouncement extends SessionStateComponent<
             .map((w) => (w.value as any).id),
           workspaceEntityIds: this.state.currentTarget
             .filter((w) => w.type === "workspace")
-            .map((w) => (w.value as any).id)
+            .map((w) => (w.value as any).id),
         },
         success: () => {
           this.setStateAndClear(
             {
               ...this.state,
-              locked: false
+              locked: false,
             },
-            this.props.announcement.id + "-" + (this.props.workspaceId || "")
+            this.props.announcement.id + "-" + (this.props.workspaceId || ""),
           );
           closeDialog();
         },
         fail: () => {
           this.setState({ locked: false });
-        }
+        },
       });
     } else {
       this.props.createAnnouncement({
@@ -372,7 +377,7 @@ class NewEditAnnouncement extends SessionStateComponent<
             .map((w) => (w.value as any).id),
           workspaceEntityIds: this.state.currentTarget
             .filter((w) => w.type === "workspace")
-            .map((w) => (w.value as any).id)
+            .map((w) => (w.value as any).id),
         },
         success: () => {
           this.setStateAndClear(
@@ -382,25 +387,27 @@ class NewEditAnnouncement extends SessionStateComponent<
               text: "",
               startDate: this.props.i18n.time.getLocalizedMoment(),
               endDate: this.props.i18n.time.getLocalizedMoment().add(1, "day"),
-              currentTarget: this.getPredefinedWorkspaceByIdToConcat(this.props)
+              currentTarget: this.getPredefinedWorkspaceByIdToConcat(
+                this.props,
+              ),
             },
-            this.props.workspaceId || ""
+            this.props.workspaceId || "",
           );
           closeDialog();
         },
         fail: () => {
           this.setState({ locked: false });
-        }
+        },
       });
     }
   }
   handleDateChange(stateLocation: string, newDate: any) {
-    let nState: any = {};
+    const nState: any = {};
     nState[stateLocation] = newDate;
     (this.setStateAndClear as any)(
       nState,
       (this.props.announcement ? this.props.announcement.id + "-" : "") +
-        (this.props.workspaceId || "")
+        (this.props.workspaceId || ""),
     );
   }
   render() {
@@ -410,18 +417,18 @@ class NewEditAnnouncement extends SessionStateComponent<
         this.props.i18n.text.get("plugin.announcer.editannouncement.topic") +
         " - " +
         this.props.i18n.text.get(
-          "plugin.announcer.createannouncement.content.label"
+          "plugin.announcer.createannouncement.content.label",
         );
     } else {
       editorTitle =
         this.props.i18n.text.get("plugin.announcer.createannouncement.topic") +
         " - " +
         this.props.i18n.text.get(
-          "plugin.announcer.createannouncement.content.label"
+          "plugin.announcer.createannouncement.content.label",
         );
     }
 
-    let content = (closeDialog: () => any) => [
+    const content = (closeDialog: () => any) => [
       // FOR DESIGN CHECK https://github.com/Hacker0x01/react-datepicker
       <div
         className="env-dialog__row env-dialog__row--new-announcement-options"
@@ -430,7 +437,7 @@ class NewEditAnnouncement extends SessionStateComponent<
         <div className="env-dialog__form-element-container env-dialog__form-element-container--datepicker">
           <label htmlFor="announcementStartSate" className="env-dialog__label">
             {this.props.i18n.text.get(
-              "plugin.announcer.createannouncement.startdate.label"
+              "plugin.announcer.createannouncement.startdate.label",
             )}
           </label>
           <DatePicker
@@ -444,7 +451,7 @@ class NewEditAnnouncement extends SessionStateComponent<
         <div className="env-dialog__form-element-container env-dialog__form-element-container--datepicker">
           <label htmlFor="announcementEndDate" className="env-dialog__label">
             {this.props.i18n.text.get(
-              "plugin.announcer.createannouncement.enddate.label"
+              "plugin.announcer.createannouncement.enddate.label",
             )}
           </label>
           <DatePicker
@@ -475,17 +482,17 @@ class NewEditAnnouncement extends SessionStateComponent<
         autofocus={!this.props.announcement}
         showFullNames={false}
         placeholder={this.props.i18n.text.get(
-          "plugin.announcer.createannouncement.target.placeholder"
+          "plugin.announcer.createannouncement.target.placeholder",
         )}
         label={this.props.i18n.text.get(
-          "plugin.announcer.createannouncement.target.label"
+          "plugin.announcer.createannouncement.target.label",
         )}
       />,
       <div className="env-dialog__row" key="annnouncement-edit-3">
         <div className="env-dialog__form-element-container  env-dialog__form-element-container--title">
           <label htmlFor="announcementTitle" className="env-dialog__label">
             {this.props.i18n.text.get(
-              "plugin.announcer.createannouncement.title.label"
+              "plugin.announcer.createannouncement.title.label",
             )}
           </label>
           <input
@@ -505,52 +512,50 @@ class NewEditAnnouncement extends SessionStateComponent<
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
             {this.props.i18n.text.get(
-              "plugin.announcer.createannouncement.content.label"
+              "plugin.announcer.createannouncement.content.label",
             )}
           </label>
           <CKEditor editorTitle={editorTitle} onChange={this.onCKEditorChange}>
             {this.state.text}
           </CKEditor>
         </div>
-      </div>
+      </div>,
     ];
-    let footer = (closeDialog: () => any) => {
-      return (
-        <div className="env-dialog__actions">
+    const footer = (closeDialog: () => any) => (
+      <div className="env-dialog__actions">
+        <Button
+          className="button button--dialog-execute"
+          onClick={this.createOrModifyAnnouncement.bind(this, closeDialog)}
+          disabled={this.state.locked}
+        >
+          {this.props.i18n.text.get(
+            this.props.announcement
+              ? "plugin.announcer.editannouncement.button.send"
+              : "plugin.announcer.createannouncement.button.send",
+          )}
+        </Button>
+        <Button
+          buttonModifiers="dialog-cancel"
+          onClick={closeDialog}
+          disabled={this.state.locked}
+        >
+          {this.props.i18n.text.get(
+            "plugin.announcer.createannouncement.button.cancel",
+          )}
+        </Button>
+        {this.recovered ? (
           <Button
-            className="button button--dialog-execute"
-            onClick={this.createOrModifyAnnouncement.bind(this, closeDialog)}
+            buttonModifiers="dialog-clear"
+            onClick={this.clearUp}
             disabled={this.state.locked}
           >
             {this.props.i18n.text.get(
-              this.props.announcement
-                ? "plugin.announcer.editannouncement.button.send"
-                : "plugin.announcer.createannouncement.button.send"
+              "plugin.announcer.createannouncement.button.clearDraft",
             )}
           </Button>
-          <Button
-            buttonModifiers="dialog-cancel"
-            onClick={closeDialog}
-            disabled={this.state.locked}
-          >
-            {this.props.i18n.text.get(
-              "plugin.announcer.createannouncement.button.cancel"
-            )}
-          </Button>
-          {this.recovered ? (
-            <Button
-              buttonModifiers="dialog-clear"
-              onClick={this.clearUp}
-              disabled={this.state.locked}
-            >
-              {this.props.i18n.text.get(
-                "plugin.announcer.createannouncement.button.clearDraft"
-              )}
-            </Button>
-          ) : null}
-        </div>
-      );
-    };
+        ) : null}
+      </div>
+    );
 
     return (
       <EnvironmentDialog
@@ -559,10 +564,10 @@ class NewEditAnnouncement extends SessionStateComponent<
         title={
           this.props.announcement
             ? this.props.i18n.text.get(
-                "plugin.announcer.editannouncement.topic"
+                "plugin.announcer.editannouncement.topic",
               )
             : this.props.i18n.text.get(
-                "plugin.announcer.createannouncement.topic"
+                "plugin.announcer.createannouncement.topic",
               )
         }
         content={content}
@@ -584,18 +589,18 @@ function mapStateToProps(state: StateType) {
     //it needs to be fetched from somewhere, this is set by default
     //when loading
     workspaceId: state.announcements.workspaceId,
-    workspaces: state.workspaces
+    workspaces: state.workspaces,
   };
 }
 
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     { createAnnouncement, updateAnnouncement },
-    dispatch
+    dispatch,
   );
 }
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(NewEditAnnouncement);

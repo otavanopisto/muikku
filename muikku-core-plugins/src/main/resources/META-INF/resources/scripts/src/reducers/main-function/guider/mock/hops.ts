@@ -17,5 +17,5 @@ export default {
   science: "BI",
   religion: "UE",
   additionalInfo: null,
-  optedIn: true
+  optedIn: true,
 };

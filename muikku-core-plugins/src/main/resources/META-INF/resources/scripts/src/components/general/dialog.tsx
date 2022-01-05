@@ -7,7 +7,7 @@ import { SearchFormElement } from "~/components/general/form-element";
 import ApplicationList, {
   ApplicationListItemContentWrapper,
   ApplicationListItem,
-  ApplicationListItemHeader
+  ApplicationListItemHeader,
 } from "~/components/general/application-list";
 import Tabs, { TabType } from "~/components/general/tabs";
 import { createAllTabs } from "~/helper-functions/tabs";
@@ -22,9 +22,9 @@ interface DialogProps {
   executing?: boolean;
   executeContent?: React.ReactElement<any>;
   modifier?: string | Array<string>;
-  content: any;
+  content: (closePortal: () => void) => JSX.Element | JSX.Element[];
   disableScroll?: boolean;
-  footer?: (closePortal: () => any) => any;
+  footer?: (closePortal: () => void) => JSX.Element;
   onOpen?: (e?: HTMLElement) => any;
   executeOnOpen?: () => any;
   onClose?: () => any;
@@ -59,7 +59,7 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
   onOpen(element: HTMLElement) {
     setTimeout(() => {
       this.setState({
-        visible: true
+        visible: true,
       });
     }, 10);
     this.props.executeOnOpen && this.props.executeOnOpen();
@@ -68,15 +68,15 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
       document.body.style.overflow = "hidden";
     }
     if (element.childNodes && element.childNodes[0]) {
-      let el = element.childNodes[0].firstChild as HTMLElement;
-      let marginOffset = 20;
+      const el = element.childNodes[0].firstChild as HTMLElement;
+      const marginOffset = 20;
       document.body.style.marginBottom = el.offsetHeight - marginOffset + "px";
     }
   }
 
   beforeClose(DOMNode: HTMLElement, removeFromDOM: () => any) {
     this.setState({
-      visible: false
+      visible: false,
     });
     if (this.props.disableScroll == true) {
       document.body.style.overflow = "auto";
@@ -101,7 +101,7 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
         closeOnEsc
       >
         {(closePortal: () => any) => {
-          let modifiers: Array<string> =
+          const modifiers: Array<string> =
             typeof this.props.modifier === "string"
               ? [this.props.modifier]
               : this.props.modifier;
@@ -178,7 +178,7 @@ interface DialogRowState {}
 
 export class DialogRow extends React.Component<DialogRowProps, DialogRowState> {
   render() {
-    let modifiers =
+    const modifiers =
       this.props.modifiers && this.props.modifiers instanceof Array
         ? this.props.modifiers
         : [this.props.modifiers];
@@ -209,7 +209,7 @@ export class DialogRowHeader extends React.Component<
   DialogRowHeaderState
 > {
   render() {
-    let modifiers =
+    const modifiers =
       this.props.modifiers && this.props.modifiers instanceof Array
         ? this.props.modifiers
         : [this.props.modifiers];
@@ -261,7 +261,7 @@ export class DialogRowContent extends React.Component<
   DialogRowContentState
 > {
   render() {
-    let modifiers =
+    const modifiers =
       this.props.modifiers && this.props.modifiers instanceof Array
         ? this.props.modifiers
         : [this.props.modifiers];
@@ -316,7 +316,7 @@ export class DialogRemoveUsers extends React.Component<
       removeUsersPage: [],
       activeTab: this.props.identifier + "-ALL",
       currentAllPage: 1,
-      currentRemovePage: 1
+      currentRemovePage: 1,
     };
 
     this.onTabChange = this.onTabChange.bind(this);
@@ -334,7 +334,7 @@ export class DialogRemoveUsers extends React.Component<
   componentDidMount() {
     this.refreshRemoveUserpage(
       this.state.currentRemovePage,
-      this.props.removeUsers
+      this.props.removeUsers,
     );
     this.goToAllUsersPage(this.state.currentAllPage);
   }
@@ -344,14 +344,11 @@ export class DialogRemoveUsers extends React.Component<
    * @param nextProps
    * @param nextState
    */
-  UNSAFE_componentWillReceiveProps(
-    nextProps: DialogRemoveUsersProps,
-    nextState: DialogRemoveUsersState
-  ) {
+  UNSAFE_componentWillReceiveProps(nextProps: DialogRemoveUsersProps) {
     if (this.props.removeUsers.length !== nextProps.removeUsers.length) {
       this.refreshRemoveUserpage(
         this.state.currentRemovePage,
-        nextProps.removeUsers
+        nextProps.removeUsers,
       );
     }
   }
@@ -369,13 +366,13 @@ export class DialogRemoveUsers extends React.Component<
   turnSelectToUiSelectItem(user: SelectItem) {
     return {
       ...user,
-      icon: "user"
+      icon: "user",
     } as UiSelectItem;
   }
 
   refreshRemoveUserpage(page: number, removeUsers: UiSelectItem[]) {
-    let pageStart: number = (page - 1) * this.maxRemoveUsersPerPage;
-    let pageEnd: number = pageStart + this.maxRemoveUsersPerPage;
+    const pageStart: number = (page - 1) * this.maxRemoveUsersPerPage;
+    const pageEnd: number = pageStart + this.maxRemoveUsersPerPage;
     let newRemoveUsers: UiSelectItem[] = [];
 
     for (let i = pageStart; i < pageEnd; i++) {
@@ -406,7 +403,7 @@ export class DialogRemoveUsers extends React.Component<
   // So we need the digits from the end of the string for the avatar
 
   getNumberFromUserId = (id: string): number => {
-    const digitRegEx: RegExp = /\d+/;
+    const digitRegEx = /\d+/;
     return parseInt(digitRegEx.exec(id)[0]);
   };
 
@@ -416,7 +413,7 @@ export class DialogRemoveUsers extends React.Component<
    */
   onTabChange(identifier: string) {
     this.setState({
-      activeTab: identifier
+      activeTab: identifier,
     });
   }
 
@@ -441,145 +438,135 @@ export class DialogRemoveUsers extends React.Component<
       {
         id: this.props.identifier + "-ALL",
         name: this.props.allTabTitle,
-        component: () => {
-          return (
-            <DialogRow modifiers="user-search">
-              <form>
-                <SearchFormElement
-                  name="search-user-group-users"
-                  placeholder={this.props.placeholder}
-                  value={this.props.searchValue}
-                  id="searchUserGroupUsers"
-                  updateField={this.props.searchUsers}
-                />
-              </form>
-              <DialogRow>
-                <ApplicationList modifiers="dialog-users">
-                  {this.props.users.length > 0 ? (
-                    this.props.users.map((user: SelectItem) => {
-                      return (
-                        <ApplicationListItem
-                          className="course"
-                          classState={
-                            this.checkUserInRemoveList(
-                              user.id as string,
-                              this.props.removeUsers
-                            )
-                              ? "disabled"
-                              : ""
-                          }
-                          key={"all-" + user.id}
-                        >
-                          <ApplicationListItemContentWrapper
-                            modifiers="dialog-remove-users"
-                            asideModifiers="user"
-                            aside={
-                              <Avatar
-                                id={
-                                  user.variables && user.variables.identifier
-                                    ? (user.variables.identifier as number)
-                                    : this.getNumberFromUserId(
-                                        user.id as string
-                                      )
-                                }
-                                hasImage={
-                                  user.variables && user.variables.boolean
-                                    ? user.variables.boolean
-                                    : false
-                                }
-                                firstName={user.label}
-                                size="small"
-                              />
+        component: () => (
+          <DialogRow modifiers="user-search">
+            <form>
+              <SearchFormElement
+                name="search-user-group-users"
+                placeholder={this.props.placeholder}
+                value={this.props.searchValue}
+                id="searchUserGroupUsers"
+                updateField={this.props.searchUsers}
+              />
+            </form>
+            <DialogRow>
+              <ApplicationList modifiers="dialog-users">
+                {this.props.users.length > 0 ? (
+                  this.props.users.map((user: SelectItem) => (
+                    <ApplicationListItem
+                      className="course"
+                      classState={
+                        this.checkUserInRemoveList(
+                          user.id as string,
+                          this.props.removeUsers,
+                        )
+                          ? "disabled"
+                          : ""
+                      }
+                      key={"all-" + user.id}
+                    >
+                      <ApplicationListItemContentWrapper
+                        modifiers="dialog-remove-users"
+                        asideModifiers="user"
+                        aside={
+                          <Avatar
+                            id={
+                              user.variables && user.variables.identifier
+                                ? (user.variables.identifier as number)
+                                : this.getNumberFromUserId(user.id as string)
                             }
-                          >
-                            <ApplicationListItemHeader
-                              onClick={this.toggleUserRemoved.bind(this, user)}
-                              modifiers="course"
-                            >
-                              <span className="application-list__header-primary">
-                                {user.label}
-                              </span>
-                              <span className="application-list__header-secondary"></span>
-                            </ApplicationListItemHeader>
-                          </ApplicationListItemContentWrapper>
-                        </ApplicationListItem>
-                      );
-                    })
-                  ) : (
-                    <div className="empty">{this.props.onEmptyTitle}</div>
-                  )}
-                </ApplicationList>
-              </DialogRow>
-              <DialogRow>
-                <PagerV2
-                  previousLabel=""
-                  nextLabel=""
-                  breakLabel="..."
-                  initialPage={this.state.currentAllPage - 1}
-                  forcePage={this.state.currentAllPage - 1}
-                  marginPagesDisplayed={1}
-                  pageCount={this.props.pages}
-                  pageRangeDisplayed={2}
-                  onPageChange={this.handleAllUsersPagerChange}
-                />
-              </DialogRow>
+                            hasImage={
+                              user.variables && user.variables.boolean
+                                ? user.variables.boolean
+                                : false
+                            }
+                            firstName={user.label}
+                            size="small"
+                          />
+                        }
+                      >
+                        <ApplicationListItemHeader
+                          onClick={this.toggleUserRemoved.bind(this, user)}
+                          modifiers="course"
+                        >
+                          <span className="application-list__header-primary">
+                            {user.label}
+                          </span>
+                          <span className="application-list__header-secondary"></span>
+                        </ApplicationListItemHeader>
+                      </ApplicationListItemContentWrapper>
+                    </ApplicationListItem>
+                  ))
+                ) : (
+                  <div className="empty">{this.props.onEmptyTitle}</div>
+                )}
+              </ApplicationList>
             </DialogRow>
-          );
-        }
+            <DialogRow>
+              <PagerV2
+                previousLabel=""
+                nextLabel=""
+                breakLabel="..."
+                initialPage={this.state.currentAllPage - 1}
+                forcePage={this.state.currentAllPage - 1}
+                marginPagesDisplayed={1}
+                pageCount={this.props.pages}
+                pageRangeDisplayed={2}
+                onPageChange={this.handleAllUsersPagerChange}
+              />
+            </DialogRow>
+          </DialogRow>
+        ),
       },
       {
         id: this.props.identifier + "-REMOVE",
         name: this.props.removeTabTitle,
         component: () => {
-          let removePages = Math.ceil(
-            this.props.removeUsers.length / this.maxRemoveUsersPerPage
+          const removePages = Math.ceil(
+            this.props.removeUsers.length / this.maxRemoveUsersPerPage,
           );
           return (
             <DialogRow>
               <DialogRow>
                 <ApplicationList modifiers="dialog-remove-users">
                   {this.state.removeUsersPage.length > 0 ? (
-                    this.state.removeUsersPage.map((user: UiSelectItem) => {
-                      return (
-                        <ApplicationListItem
-                          className="course"
-                          key={"remove-" + user.id}
+                    this.state.removeUsersPage.map((user: UiSelectItem) => (
+                      <ApplicationListItem
+                        className="course"
+                        key={"remove-" + user.id}
+                      >
+                        <ApplicationListItemContentWrapper
+                          modifiers="dialog-remove-users"
+                          asideModifiers="user"
+                          aside={
+                            <Avatar
+                              id={
+                                user.variables && user.variables.identifier
+                                  ? (user.variables.identifier as number)
+                                  : this.getNumberFromUserId(user.id as string)
+                              }
+                              hasImage={
+                                user.variables && user.variables.boolean
+                                  ? user.variables.boolean
+                                  : false
+                              }
+                              firstName={user.label}
+                              size="small"
+                            />
+                          }
                         >
-                          <ApplicationListItemContentWrapper
-                            modifiers="dialog-remove-users"
-                            asideModifiers="user"
-                            aside={
-                              <Avatar
-                                id={
-                                  user.variables && user.variables.identifier
-                                    ? (user.variables.identifier as number)
-                                    : this.getNumberFromUserId(
-                                        user.id as string
-                                      )
-                                }
-                                hasImage={
-                                  user.variables && user.variables.boolean
-                                    ? user.variables.boolean
-                                    : false
-                                }
-                                firstName={user.label}
-                                size="small"
-                              />
-                            }
+                          <ApplicationListItemHeader
+                            onClick={this.toggleUserRemoved.bind(this, user)}
+                            modifiers="course"
                           >
-                            <ApplicationListItemHeader
-                              onClick={this.toggleUserRemoved.bind(this, user)}
-                              modifiers="course"
-                            >
-                              <span className="application-list__header-primary">
-                                {user.label}
-                              </span>
-                              <span className="application-list__header-secondary"></span>
-                            </ApplicationListItemHeader>
-                          </ApplicationListItemContentWrapper>
-                        </ApplicationListItem>
-                      );
-                    })
+                            <span className="application-list__header-primary">
+                              {user.label}
+                            </span>
+                            <span className="application-list__header-secondary"></span>
+                          </ApplicationListItemHeader>
+                        </ApplicationListItemContentWrapper>
+                      </ApplicationListItem>
+                    ))
                   ) : (
                     <div className="empty">{this.props.onEmptyTitle}</div>
                   )}
@@ -604,8 +591,8 @@ export class DialogRemoveUsers extends React.Component<
               </DialogRow>
             </DialogRow>
           );
-        }
-      }
+        },
+      },
     ];
 
     return (

@@ -1,8 +1,6 @@
 import * as React from "react";
 import "~/sass/elements/matriculation.scss";
-import { StateType } from "../../../../reducers/index";
-import { HOPSType } from "../../../../reducers/main-function/hops";
-import { SaveState } from "../../../../@types/shared";
+import { SaveState } from "~/@types/shared";
 import { SavingDraftError } from "./saving-draft-error";
 import { SavingDraftInfo } from "./saving-draft-info";
 
@@ -27,7 +25,7 @@ export class MatriculationExaminationEnrollmentInfo extends React.Component<
     super(props);
 
     this.state = {
-      usingNewSystem: false
+      usingNewSystem: false,
     };
   }
 
@@ -45,11 +43,10 @@ export class MatriculationExaminationEnrollmentInfo extends React.Component<
    */
   componentDidUpdate = (
     prevProps: MatriculationExaminationEnrollmentInfoProps,
-    prevState: MatriculationExaminationEnrollmentInfoState
   ) => {
     if (this.props !== prevProps) {
       this.setState({
-        usingNewSystem: this.props.usingNewSystem
+        usingNewSystem: this.props.usingNewSystem,
       });
     }
   };

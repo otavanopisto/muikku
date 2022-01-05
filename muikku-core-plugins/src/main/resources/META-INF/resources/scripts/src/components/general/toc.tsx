@@ -1,6 +1,4 @@
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18n";
-import { ButtonPill } from "~/components/general/button";
 import Link from "~/components/general/link";
 import "~/sass/elements/toc.scss";
 

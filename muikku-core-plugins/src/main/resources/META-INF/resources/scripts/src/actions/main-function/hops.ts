@@ -5,14 +5,9 @@ import mApi, { MApiError } from "~/lib/mApi";
 import {
   HOPSDataType,
   HOPSStatusType,
-  HOPSEligibilityType
+  HOPSEligibilityType,
 } from "~/reducers/main-function/hops";
 import { StateType } from "~/reducers";
-import {
-  YOMatriculationSubjectType,
-  SubjectEligibilityType,
-  EligibleStatusType
-} from "~/reducers/main-function/records/yo";
 
 export interface UpdateHopsTriggerType {
   (callback?: () => void): AnyActionType;
@@ -22,17 +17,20 @@ export interface SetHopsToTriggerType {
   (newHops: HOPSDataType): AnyActionType;
 }
 
-export interface UPDATE_HOPS
-  extends SpecificActionType<"UPDATE_HOPS", HOPSDataType> {}
-export interface UPDATE_HOPS_ELIGIBILITY
-  extends SpecificActionType<"UPDATE_HOPS_ELIGIBILITY", HOPSEligibilityType> {}
-export interface UPDATE_HOPS_STATUS
-  extends SpecificActionType<"UPDATE_HOPS_STATUS", HOPSStatusType> {}
+export type UPDATE_HOPS = SpecificActionType<"UPDATE_HOPS", HOPSDataType>;
+export type UPDATE_HOPS_ELIGIBILITY = SpecificActionType<
+  "UPDATE_HOPS_ELIGIBILITY",
+  HOPSEligibilityType
+>;
+export type UPDATE_HOPS_STATUS = SpecificActionType<
+  "UPDATE_HOPS_STATUS",
+  HOPSStatusType
+>;
 
-let updateHops: UpdateHopsTriggerType = function updateHops(callback) {
+const updateHops: UpdateHopsTriggerType = function updateHops(callback) {
   return async (
     dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType
+    getState: () => StateType,
   ) => {
     try {
       if (getState().hops.status !== "WAIT") {
@@ -41,10 +39,10 @@ let updateHops: UpdateHopsTriggerType = function updateHops(callback) {
       }
       dispatch({
         type: "UPDATE_HOPS_STATUS",
-        payload: <HOPSStatusType>"LOADING"
+        payload: <HOPSStatusType>"LOADING",
       });
 
-      let hops = <HOPSDataType>(
+      const hops = <HOPSDataType>(
         await promisify(mApi().records.hops.read(), "callback")()
       );
 
@@ -52,15 +50,15 @@ let updateHops: UpdateHopsTriggerType = function updateHops(callback) {
         type: "UPDATE_HOPS_ELIGIBILITY",
         payload: <HOPSEligibilityType>(
           await promisify(mApi().records.hopseligibility.read(), "callback")()
-        )
+        ),
       });
       dispatch({
         type: "UPDATE_HOPS",
-        payload: hops
+        payload: hops,
       });
       dispatch({
         type: "UPDATE_HOPS_STATUS",
-        payload: <HOPSStatusType>"READY"
+        payload: <HOPSStatusType>"READY",
       });
 
       callback && callback();
@@ -71,30 +69,30 @@ let updateHops: UpdateHopsTriggerType = function updateHops(callback) {
       dispatch(
         actions.displayNotification(
           getState().i18n.text.get(
-            "plugin.records.hops.errormessage.hopsLoadFailed"
+            "plugin.records.hops.errormessage.hopsLoadFailed",
           ),
-          "error"
-        )
+          "error",
+        ),
       );
       dispatch({
         type: "UPDATE_HOPS_STATUS",
-        payload: <HOPSStatusType>"ERROR"
+        payload: <HOPSStatusType>"ERROR",
       });
     }
   };
 };
 
-let setHopsTo: SetHopsToTriggerType = function setHopsTo(newHops) {
+const setHopsTo: SetHopsToTriggerType = function setHopsTo(newHops) {
   return async (
     dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType
+    getState: () => StateType,
   ) => {
     try {
       dispatch({
         type: "UPDATE_HOPS",
         payload: <HOPSDataType>(
           await promisify(mApi().records.hops.update(newHops), "callback")()
-        )
+        ),
       });
     } catch (err) {
       if (!(err instanceof MApiError)) {
@@ -103,10 +101,10 @@ let setHopsTo: SetHopsToTriggerType = function setHopsTo(newHops) {
       dispatch(
         actions.displayNotification(
           getState().i18n.text.get(
-            "plugin.records.hops.errormessage.hopsUpdateFailed"
+            "plugin.records.hops.errormessage.hopsUpdateFailed",
           ),
-          "error"
-        )
+          "error",
+        ),
       );
     }
   };

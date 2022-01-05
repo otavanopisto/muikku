@@ -9,13 +9,13 @@ import "~/sass/elements/buttons.scss";
 import "~/sass/elements/form-elements.scss";
 import {
   GuiderType,
-  GuiderStudentListType
+  GuiderStudentListType,
 } from "~/reducers/main-function/guider";
 import { StateType } from "~/reducers";
 import {
   ApplicationPanelToolbar,
   ApplicationPanelToolbarActionsMain,
-  ApplicationPanelToolsContainer
+  ApplicationPanelToolsContainer,
 } from "~/components/general/application-panel/application-panel";
 import { ButtonPill } from "~/components/general/button";
 import { SearchFormElement } from "~/components/general/form-element";
@@ -28,7 +28,7 @@ import {
   removeFromGuiderSelectedStudents,
   RemoveFromGuiderSelectedStudentsTriggerType,
   toggleAllStudents,
-  ToggleAllStudentsTriggerType
+  ToggleAllStudentsTriggerType,
 } from "~/actions/main-function/guider";
 import { bindActionCreators } from "redux";
 
@@ -54,7 +54,7 @@ class GuiderToolbar extends React.Component<
 
     this.state = {
       searchquery: this.props.guider.activeFilters.query || "",
-      focused: false
+      focused: false,
     };
 
     this.updateSearchWithQuery = this.updateSearchWithQuery.bind(this);
@@ -65,21 +65,21 @@ class GuiderToolbar extends React.Component<
   }
 
   getBackByHash(): string {
-    let locationData = queryString.parse(
+    const locationData = queryString.parse(
       document.location.hash.split("?")[1] || "",
-      { arrayFormat: "bracket" }
+      { arrayFormat: "bracket" },
     );
     delete locationData.c;
-    let newHash =
+    const newHash =
       "#?" + queryString.stringify(locationData, { arrayFormat: "bracket" });
     return newHash;
   }
 
-  onGoBackClick(e: React.MouseEvent<HTMLAnchorElement>) {
+  onGoBackClick() {
     //TODO this is a retarded way to do things if we ever update to a SPA
     //it's a hacky mechanism to make history awesome, once we use a router it gotta be fixed
     if (history.replaceState) {
-      let canGoBack =
+      const canGoBack =
         (!document.referrer ||
           document.referrer.indexOf(window.location.host) !== -1) &&
         history.length;
@@ -96,11 +96,11 @@ class GuiderToolbar extends React.Component<
 
   updateSearchWithQuery(query: string) {
     this.setState({
-      searchquery: query
+      searchquery: query,
     });
-    let locationData = queryString.parse(
+    const locationData = queryString.parse(
       document.location.hash.split("?")[1] || "",
-      { arrayFormat: "bracket" }
+      { arrayFormat: "bracket" },
     );
     locationData.q = query;
     window.location.hash =
@@ -113,7 +113,7 @@ class GuiderToolbar extends React.Component<
       (nextProps.guider.activeFilters.query || "") !== this.state.searchquery
     ) {
       this.setState({
-        searchquery: nextProps.guider.activeFilters.query || ""
+        searchquery: nextProps.guider.activeFilters.query || "",
       });
     }
   }
@@ -133,9 +133,9 @@ class GuiderToolbar extends React.Component<
    */
 
   turnSelectedUsersToContacts = (
-    users: GuiderStudentListType
+    users: GuiderStudentListType,
   ): ContactRecipientType[] => {
-    let contacts: ContactRecipientType[] = [];
+    const contacts: ContactRecipientType[] = [];
     users.map((user) => {
       contacts.push({
         type: "user",
@@ -143,8 +143,8 @@ class GuiderToolbar extends React.Component<
           id: user.userEntityId,
           name: getName(user, !this.props.status.isStudent),
           identifier: user.id,
-          email: user.email
-        }
+          email: user.email,
+        },
       });
     });
     return contacts;
@@ -159,7 +159,7 @@ class GuiderToolbar extends React.Component<
     // We need the arrays of ids for comparison from the dialog and the redux state
 
     const selectedUserIds: number[] = selectedUsers.map(
-      (student) => student.value.id
+      (student) => student.value.id,
     );
     const guiderSelectedStudentsIds: number[] =
       this.props.guider.selectedStudents.map((student) => student.userEntityId);
@@ -177,7 +177,7 @@ class GuiderToolbar extends React.Component<
     // Check if the leftover id is actually a user in the redux state and if it is, remove it
 
     const selectedUser = this.props.guider.selectedStudents.find(
-      (user) => user.userEntityId === remainingStudentsId
+      (user) => user.userEntityId === remainingStudentsId,
     );
     const isGuiderSelectedStudent = !!selectedUser;
 
@@ -204,7 +204,7 @@ class GuiderToolbar extends React.Component<
                 refreshInitialSelectedItemsOnOpen
                 onRecipientChange={this.onContactsChange}
                 initialSelectedItems={this.turnSelectedUsersToContacts(
-                  this.props.guider.selectedStudents
+                  this.props.guider.selectedStudents,
                 )}
               >
                 <ButtonPill
@@ -231,7 +231,7 @@ class GuiderToolbar extends React.Component<
                 onFocus={this.onInputFocus}
                 onBlur={this.onInputBlur}
                 placeholder={this.props.i18n.text.get(
-                  "plugin.guider.search.placeholder"
+                  "plugin.guider.search.placeholder",
                 )}
                 value={this.state.searchquery}
               />
@@ -247,7 +247,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     guider: state.guider,
-    status: state.status
+    status: state.status,
   };
 }
 
@@ -255,9 +255,9 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     {
       removeFromGuiderSelectedStudents,
-      toggleAllStudents
+      toggleAllStudents,
     },
-    dispatch
+    dispatch,
   );
 }
 

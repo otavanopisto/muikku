@@ -14,14 +14,14 @@ import NewEditAnnouncement from "../../dialogs/new-edit-announcement";
 import {
   ApplicationPanelToolbar,
   ApplicationPanelToolbarActionsMain,
-  ApplicationPanelToolbarActionsAside
+  ApplicationPanelToolbarActionsAside,
 } from "~/components/general/application-panel/application-panel";
 import { ButtonPill } from "~/components/general/button";
 import {
   updateAnnouncement,
   UpdateAnnouncementTriggerType,
   RemoveFromAnnouncementsSelectedTriggerType,
-  removeFromAnnouncementsSelected
+  removeFromAnnouncementsSelected,
 } from "~/actions/announcements";
 
 interface AnnouncerToolbarProps {
@@ -50,8 +50,8 @@ class AnnouncerToolbar extends React.Component<
     this.props.updateAnnouncement({
       announcement: this.props.announcements.current,
       update: {
-        archived: false
-      }
+        archived: false,
+      },
     });
   }
   restoreSelectedAnnouncements() {
@@ -59,9 +59,9 @@ class AnnouncerToolbar extends React.Component<
       this.props.updateAnnouncement({
         announcement,
         update: {
-          archived: false
+          archived: false,
         },
-        cancelRedirect: true
+        cancelRedirect: true,
       });
       this.props.removeFromAnnouncementsSelected(announcement);
     });
@@ -77,7 +77,7 @@ class AnnouncerToolbar extends React.Component<
       history.replaceState(
         "",
         "",
-        location.hash.split("/")[0] + "/" + announcement.id
+        location.hash.split("/")[0] + "/" + announcement.id,
       );
       window.dispatchEvent(new HashChangeEvent("hashchange"));
     } else {
@@ -88,7 +88,7 @@ class AnnouncerToolbar extends React.Component<
     //TODO this is a retarded way to do things if we ever update to a SPA
     //it's a hacky mechanism to make history awesome, once we use a router it gotta be fixed
     if (history.replaceState) {
-      let canGoBack =
+      const canGoBack =
         document.referrer.indexOf(window.location.host) !== -1 &&
         history.length;
       if (canGoBack) {
@@ -105,9 +105,9 @@ class AnnouncerToolbar extends React.Component<
     if (this.props.announcements.current) {
       //TODO this should be done more efficiently but the information is not included in the announcement
       //this is why we had to have notOverrideCurrent in the reducers, it's such a mess
-      let currentIndex: number =
+      const currentIndex: number =
         this.props.announcements.announcements.findIndex(
-          (a: AnnouncementType) => a.id === this.props.announcements.current.id
+          (a: AnnouncementType) => a.id === this.props.announcements.current.id,
         );
       let next: AnnouncementType = null;
       let prev: AnnouncementType = null;
@@ -130,7 +130,7 @@ class AnnouncerToolbar extends React.Component<
               <span className="application-panel__tool-icon icon-folder"></span>
               <span className="application-panel__tool-title">
                 {this.props.i18n.text.get(
-                  "plugin.announcer.cat." + this.props.announcements.location
+                  "plugin.announcer.cat." + this.props.announcements.location,
                 )}
               </span>
             </div>
@@ -181,7 +181,7 @@ class AnnouncerToolbar extends React.Component<
               <span className="glyph application-panel__tool-icon icon-folder"></span>
               <span className="application-panel__tool-title">
                 {this.props.i18n.text.get(
-                  "plugin.announcer.cat." + this.props.announcements.location
+                  "plugin.announcer.cat." + this.props.announcements.location,
                 )}
               </span>
             </div>
@@ -214,14 +214,14 @@ class AnnouncerToolbar extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    announcements: state.announcements
+    announcements: state.announcements,
   };
 }
 
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     { updateAnnouncement, removeFromAnnouncementsSelected },
-    dispatch
+    dispatch,
   );
 }
 

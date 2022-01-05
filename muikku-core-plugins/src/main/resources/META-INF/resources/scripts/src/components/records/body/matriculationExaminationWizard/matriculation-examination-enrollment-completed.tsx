@@ -97,7 +97,7 @@ export class MatriculationExaminationEnrollmentCompleted extends React.Component
       ),
       SAVING_DRAFT: null,
       DRAFT_SAVED: null,
-      undefined: null
+      undefined: null,
     }[saveState]);
 
   render() {

@@ -23,7 +23,7 @@ import {
   AddToAnnouncementsSelectedTriggerType,
   RemoveFromAnnouncementsSelectedTriggerType,
   removeFromAnnouncementsSelected,
-  addToAnnouncementsSelected
+  addToAnnouncementsSelected,
 } from "~/actions/announcements";
 import DeleteAnnouncementDialog from "../../dialogs/delete-announcement";
 import ApplicationList, {
@@ -33,7 +33,7 @@ import ApplicationList, {
   ApplicationListItemBody,
   ApplicationListItemHeader,
   ApplicationListHeaderPrimary,
-  ApplicationListItemDate
+  ApplicationListItemDate,
 } from "~/components/general/application-list";
 import { UserIndexType } from "~/reducers/user-index";
 
@@ -68,7 +68,7 @@ class Announcements extends React.Component<
         >
           {this.props.announcements.announcements.map(
             (announcement: AnnouncementType) => {
-              let className = announcement.workspaces.length
+              const className = announcement.workspaces.length
                 ? "announcement announcement--workspace"
                 : "announcement announcement--environment";
               return {
@@ -76,116 +76,112 @@ class Announcements extends React.Component<
                 className,
                 onSelect: this.props.addToAnnouncementsSelected.bind(
                   null,
-                  announcement
+                  announcement,
                 ),
                 onDeselect: this.props.removeFromAnnouncementsSelected.bind(
                   null,
-                  announcement
+                  announcement,
                 ),
                 onEnter: this.setCurrentAnnouncement.bind(this, announcement),
                 isSelected: this.props.announcements.selectedIds.includes(
-                  announcement.id
+                  announcement.id,
                 ),
                 key: announcement.id,
                 checkboxId: `announcementSelect-${announcement.id}`,
                 checkboxClassName: "announcement__selector",
-                contents: (checkbox: React.ReactElement<any>) => {
-                  return (
-                    <ApplicationListItemContentWrapper
-                      className="announcement__content"
-                      aside={
-                        <div className="announcement__select-container">
-                          <label
-                            htmlFor={`announcementSelect-` + announcement.id}
-                            className="visually-hidden"
-                          >
-                            {this.props.i18n.text.get(
-                              "plugin.wcag.announcementSelect.label"
-                            )}
-                          </label>
-                          {checkbox}
-                        </div>
-                      }
-                    >
-                      <ApplicationListItemHeader>
-                        <ApplicationListHeaderPrimary>
-                          <ApplicationListItemDate
-                            startDate={this.props.i18n.time.format(
-                              announcement.startDate
-                            )}
-                            endDate={this.props.i18n.time.format(
-                              announcement.endDate
-                            )}
-                          />
-                        </ApplicationListHeaderPrimary>
-                      </ApplicationListItemHeader>
-                      <ApplicationListItemBody header={announcement.caption} />
-                      {announcement.workspaces.length !== 0 ||
-                      announcement.userGroupEntityIds.length !== 0 ? (
-                        <div className="labels item-list__announcement-workspaces">
-                          {announcement.workspaces.map((workspace) => {
-                            if (announcement.workspaces.length !== 0) {
-                              return (
-                                <span className="label" key={workspace.id}>
-                                  <span className="label__icon label__icon--announcement-workspace icon-books"></span>
-                                  <span className="label__text label__text--announcement-workspace">
-                                    {workspace.name}{" "}
-                                    {workspace.nameExtension
-                                      ? "(" + workspace.nameExtension + ")"
-                                      : null}
-                                  </span>
-                                </span>
-                              );
-                            }
-                          })}
-                          {announcement.userGroupEntityIds.map(
-                            (userGroupId) => {
-                              if (this.props.userIndex.groups[userGroupId]) {
-                                return (
-                                  <span className="label" key={userGroupId}>
-                                    <span className="label__icon label__icon--announcement-usergroup icon-users"></span>
-                                    <span className="label__text label__text--announcement-usergroup">
-                                      {
-                                        this.props.userIndex.groups[userGroupId]
-                                          .name
-                                      }
-                                    </span>
-                                  </span>
-                                );
-                              }
-                            }
+                contents: (checkbox: React.ReactElement<any>) => (
+                  <ApplicationListItemContentWrapper
+                    className="announcement__content"
+                    aside={
+                      <div className="announcement__select-container">
+                        <label
+                          htmlFor={`announcementSelect-` + announcement.id}
+                          className="visually-hidden"
+                        >
+                          {this.props.i18n.text.get(
+                            "plugin.wcag.announcementSelect.label",
                           )}
-                        </div>
-                      ) : null}
-                      <ApplicationListItemFooter modifiers="announcement-actions">
-                        <NewEditAnnouncement announcement={announcement}>
+                        </label>
+                        {checkbox}
+                      </div>
+                    }
+                  >
+                    <ApplicationListItemHeader>
+                      <ApplicationListHeaderPrimary>
+                        <ApplicationListItemDate
+                          startDate={this.props.i18n.time.format(
+                            announcement.startDate,
+                          )}
+                          endDate={this.props.i18n.time.format(
+                            announcement.endDate,
+                          )}
+                        />
+                      </ApplicationListHeaderPrimary>
+                    </ApplicationListItemHeader>
+                    <ApplicationListItemBody header={announcement.caption} />
+                    {announcement.workspaces.length !== 0 ||
+                    announcement.userGroupEntityIds.length !== 0 ? (
+                      <div className="labels item-list__announcement-workspaces">
+                        {announcement.workspaces.map((workspace) => {
+                          if (announcement.workspaces.length !== 0) {
+                            return (
+                              <span className="label" key={workspace.id}>
+                                <span className="label__icon label__icon--announcement-workspace icon-books"></span>
+                                <span className="label__text label__text--announcement-workspace">
+                                  {workspace.name}{" "}
+                                  {workspace.nameExtension
+                                    ? "(" + workspace.nameExtension + ")"
+                                    : null}
+                                </span>
+                              </span>
+                            );
+                          }
+                        })}
+                        {announcement.userGroupEntityIds.map((userGroupId) => {
+                          if (this.props.userIndex.groups[userGroupId]) {
+                            return (
+                              <span className="label" key={userGroupId}>
+                                <span className="label__icon label__icon--announcement-usergroup icon-users"></span>
+                                <span className="label__text label__text--announcement-usergroup">
+                                  {
+                                    this.props.userIndex.groups[userGroupId]
+                                      .name
+                                  }
+                                </span>
+                              </span>
+                            );
+                          }
+                        })}
+                      </div>
+                    ) : null}
+                    <ApplicationListItemFooter modifiers="announcement-actions">
+                      <NewEditAnnouncement announcement={announcement}>
+                        <Link
+                          tabIndex={0}
+                          className="link link--application-list-item-footer"
+                        >
+                          {this.props.i18n.text.get(
+                            "plugin.announcer.link.edit",
+                          )}
+                        </Link>
+                      </NewEditAnnouncement>
+                      {this.props.announcements.location !== "archived" ? (
+                        <DeleteAnnouncementDialog announcement={announcement}>
                           <Link
                             tabIndex={0}
                             className="link link--application-list-item-footer"
                           >
                             {this.props.i18n.text.get(
-                              "plugin.announcer.link.edit"
+                              "plugin.announcer.link.delete",
                             )}
                           </Link>
-                        </NewEditAnnouncement>
-                        {this.props.announcements.location !== "archived" ? (
-                          <DeleteAnnouncementDialog announcement={announcement}>
-                            <Link
-                              tabIndex={0}
-                              className="link link--application-list-item-footer"
-                            >
-                              {this.props.i18n.text.get(
-                                "plugin.announcer.link.delete"
-                              )}
-                            </Link>
-                          </DeleteAnnouncementDialog>
-                        ) : null}
-                      </ApplicationListItemFooter>
-                    </ApplicationListItemContentWrapper>
-                  );
-                }
+                        </DeleteAnnouncementDialog>
+                      ) : null}
+                    </ApplicationListItemFooter>
+                  </ApplicationListItemContentWrapper>
+                ),
               };
-            }
+            },
           )}
         </SelectableList>
       </BodyScrollKeeper>
@@ -198,7 +194,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     announcements: state.announcements,
-    userIndex: state.userIndex
+    userIndex: state.userIndex,
   };
 }
 
@@ -206,9 +202,9 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     {
       addToAnnouncementsSelected,
-      removeFromAnnouncementsSelected
+      removeFromAnnouncementsSelected,
     },
-    dispatch
+    dispatch,
   );
 }
 

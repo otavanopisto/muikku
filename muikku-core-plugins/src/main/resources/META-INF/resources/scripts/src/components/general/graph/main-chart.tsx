@@ -6,7 +6,6 @@
 
 import { i18nType } from "~/reducers/base/i18n";
 import * as React from "react";
-import { Dispatch } from "redux";
 import { connect } from "react-redux";
 import { StateType } from "~/reducers";
 import { WorkspaceListType, ActivityLogType } from "~/reducers/workspaces";
@@ -64,11 +63,11 @@ enum Graph {
   EVALUATION_REQUESTED = "evaluation-requested",
   EVALUATION_PASSED = "evaluation-passed",
   EVALUATION_FAILED = "evaluation-failed",
-  EVALUATION_INCOMPLETED = "evaluation-incompleted"
+  EVALUATION_INCOMPLETED = "evaluation-incompleted",
 }
 
 // some stored global variables for this chart
-let ignoreZoomed: boolean = true;
+let ignoreZoomed = true;
 let zoomStartDate: Date = null;
 let zoomEndDate: Date = null;
 
@@ -88,7 +87,7 @@ class CurrentStudentStatistics extends React.Component<
       amChartsLoaded: (window as any).AmCharts != null,
       filteredWorkspaces: [],
       filteredCompletedWorkspaces: [],
-      filteredGraphs: [] // Graph.FORUM_NEWMESSAGE
+      filteredGraphs: [], // Graph.FORUM_NEWMESSAGE
     };
 
     if (!this.state.amChartsLoaded) {
@@ -99,15 +98,15 @@ class CurrentStudentStatistics extends React.Component<
   }
 
   loadAmCharts() {
-    let amcharts = document.createElement("script");
+    const amcharts = document.createElement("script");
     amcharts.src = "https://www.amcharts.com/lib/3/amcharts.js";
     amcharts.async = true;
     amcharts.onload = () => {
-      let serial = document.createElement("script");
+      const serial = document.createElement("script");
       serial.src = "https://www.amcharts.com/lib/3/serial.js";
       serial.async = true;
       serial.onload = () => {
-        let language = document.createElement("script");
+        const language = document.createElement("script");
         language.src = "https://www.amcharts.com/lib/3/lang/fi.js";
         language.async = true;
         language.onload = () => {
@@ -131,7 +130,7 @@ class CurrentStudentStatistics extends React.Component<
     } else {
       if (this.state.filteredWorkspaces.length == 0) {
         this.props.workspaces.map((workspace) =>
-          filteredWorkspaces.push(workspace.id)
+          filteredWorkspaces.push(workspace.id),
         );
       }
     }
@@ -181,18 +180,18 @@ class CurrentStudentStatistics extends React.Component<
       e.chart.zoomToDates(zoomStartDate, zoomEndDate);
     } else {
       let prior: Date;
-      let today: Date = new Date();
+      const today: Date = new Date();
       if (today.getMonth() >= 3)
         prior = new Date(
           today.getFullYear(),
           today.getMonth() - 3,
-          today.getDate()
+          today.getDate(),
         );
       else
         prior = new Date(
           today.getFullYear() - 1,
           today.getMonth() + 9,
-          today.getDate()
+          today.getDate(),
         );
       e.chart.zoomToDates(prior, today);
     }
@@ -206,18 +205,18 @@ class CurrentStudentStatistics extends React.Component<
     //NOTE: For the sake of keeping the same chart borders it might be wise to leave the data rows with 0 values, but keep date points.
 
     // here we are mapping the chart data to a map that will be used to render the chaart
-    let chartDataMap = new Map<string, MainChartData>();
+    const chartDataMap = new Map<string, MainChartData>();
     chartDataMap.set(new Date().toISOString().slice(0, 10), {
       SESSION_LOGGEDIN: 0,
       WORKSPACE_VISIT: 0,
       MATERIAL_EXERCISEDONE: 0,
       MATERIAL_ASSIGNMENTDONE: 0,
-      FORUM_NEWMESSAGE: 0
+      FORUM_NEWMESSAGE: 0,
     });
     if (this.props.activityLogs) {
       this.props.activityLogs.map((log) => {
-        let date = log.timestamp.slice(0, 10);
-        let entry = chartDataMap.get(date) || {};
+        const date = log.timestamp.slice(0, 10);
+        const entry = chartDataMap.get(date) || {};
         switch (log.type) {
           case "SESSION_LOGGEDIN":
             entry.SESSION_LOGGEDIN = entry.SESSION_LOGGEDIN + 1 || 1;
@@ -253,18 +252,18 @@ class CurrentStudentStatistics extends React.Component<
     }
 
     // here we are grabbing the workspace chart specific data
-    let workspaces: { id: number; name: string; isEmpty: boolean }[] = [];
+    const workspaces: { id: number; name: string; isEmpty: boolean }[] = [];
     if (this.props.workspaces) {
       this.props.workspaces.map((workspace) => {
         workspaces.push({
           id: workspace.id,
           name: workspace.name,
-          isEmpty: workspace.activityLogs.length == 0
+          isEmpty: workspace.activityLogs.length == 0,
         });
         if (!this.state.filteredWorkspaces.includes(workspace.id)) {
           workspace.activityLogs.map((log) => {
-            let date = log.timestamp.slice(0, 10);
-            let entry = chartDataMap.get(date) || {};
+            const date = log.timestamp.slice(0, 10);
+            const entry = chartDataMap.get(date) || {};
             switch (log.type) {
               case "EVALUATION_REQUESTED":
                 entry.EVALUATION_REQUESTED =
@@ -302,21 +301,24 @@ class CurrentStudentStatistics extends React.Component<
       });
     }
     //TODO: load and parse completed workspaces
-    let completedWorkspaces: { id: number; name: string; isEmpty: boolean }[] =
-      [];
+    const completedWorkspaces: {
+      id: number;
+      name: string;
+      isEmpty: boolean;
+    }[] = [];
 
     //NOTE: Data can be filtered here also (Option 2)
-    let sortedKeys = Array.from(chartDataMap.keys()).sort((a, b) => {
-      return a > b ? 1 : -1;
-    });
-    let data = new Array();
+    const sortedKeys = Array.from(chartDataMap.keys()).sort((a, b) =>
+      a > b ? 1 : -1,
+    );
+    const data: any = [];
     sortedKeys.forEach((key) => {
-      let value = chartDataMap.get(key);
+      const value = chartDataMap.get(key);
       data.push({ date: key, ...value });
     });
 
     //NOTE: Here the graphs are filtered. May be not optimal, since it is the end part of the data processing (Option 3)
-    let graphs = new Array();
+    const graphs = [];
     if (!this.state.filteredGraphs.includes(Graph.MATERIAL_ASSIGNMENTDONE)) {
       graphs.push({
         id: "MATERIAL_ASSIGNMENTDONE",
@@ -330,7 +332,7 @@ class CurrentStudentStatistics extends React.Component<
         type: "column",
         clustered: false,
         columnWidth: 0.7,
-        valueField: "MATERIAL_ASSIGNMENTDONE"
+        valueField: "MATERIAL_ASSIGNMENTDONE",
       });
     }
 
@@ -347,7 +349,7 @@ class CurrentStudentStatistics extends React.Component<
         type: "column",
         clustered: false,
         columnWidth: 0.7,
-        valueField: "MATERIAL_EXERCISEDONE"
+        valueField: "MATERIAL_EXERCISEDONE",
       });
     }
 
@@ -365,7 +367,7 @@ class CurrentStudentStatistics extends React.Component<
         stackable: false,
         clustered: false,
         columnWidth: 0.4,
-        valueField: "FORUM_NEWMESSAGE"
+        valueField: "FORUM_NEWMESSAGE",
       });
     }
 
@@ -386,7 +388,7 @@ class CurrentStudentStatistics extends React.Component<
         stackable: false,
         clustered: false,
         columnWidth: 0.7,
-        valueField: "SESSION_LOGGEDIN"
+        valueField: "SESSION_LOGGEDIN",
       });
     }
 
@@ -407,7 +409,7 @@ class CurrentStudentStatistics extends React.Component<
         stackable: false,
         clustered: false,
         columnWidth: 0.9,
-        valueField: "WORKSPACE_VISIT"
+        valueField: "WORKSPACE_VISIT",
       });
     }
 
@@ -428,7 +430,7 @@ class CurrentStudentStatistics extends React.Component<
         stackable: false,
         clustered: false,
         columnWidth: 0.9,
-        valueField: "EVALUATION_REQUESTED"
+        valueField: "EVALUATION_REQUESTED",
       });
     }
 
@@ -437,7 +439,7 @@ class CurrentStudentStatistics extends React.Component<
         id: "EVALUATION_GOTINCOMPLETED",
         balloonText:
           this.props.i18n.text.get(
-            "plugin.guider.evaluation-incompletedLabel"
+            "plugin.guider.evaluation-incompletedLabel",
           ) + " <b>[[EVALUATION_GOTINCOMPLETED]]</b>",
         bullet: "square",
         bulletSize: 12,
@@ -450,7 +452,7 @@ class CurrentStudentStatistics extends React.Component<
         stackable: false,
         clustered: false,
         columnWidth: 0.9,
-        valueField: "EVALUATION_GOTINCOMPLETED"
+        valueField: "EVALUATION_GOTINCOMPLETED",
       });
     }
 
@@ -471,7 +473,7 @@ class CurrentStudentStatistics extends React.Component<
         stackable: false,
         clustered: false,
         columnWidth: 0.9,
-        valueField: "EVALUATION_GOTPASSED"
+        valueField: "EVALUATION_GOTPASSED",
       });
     }
 
@@ -493,27 +495,27 @@ class CurrentStudentStatistics extends React.Component<
         stackable: false,
         clustered: false,
         columnWidth: 0.9,
-        valueField: "EVALUATION_GOTFAILED"
+        valueField: "EVALUATION_GOTFAILED",
       });
     }
 
     //TODO: set to if certain graphs not filtered
-    let stacked: boolean =
+    const stacked: boolean =
       !this.state.filteredGraphs.includes(Graph.MATERIAL_ASSIGNMENTDONE) ||
       !this.state.filteredGraphs.includes(Graph.MATERIAL_EXERCISEDONE);
-    let valueAxes = [
+    const valueAxes = [
       {
         stackType: stacked ? "regular" : "none",
         unit: "",
         position: "left",
         title: "",
         integersOnly: true,
-        minimum: 0
-      }
+        minimum: 0,
+      },
     ];
 
     // general config about the chart
-    let config = {
+    const config = {
       theme: "none",
       type: "serial",
       language: "fi",
@@ -529,10 +531,10 @@ class CurrentStudentStatistics extends React.Component<
         parseDates: true,
         dashLength: 1,
         minorGridEnabled: true,
-        gridPosition: "start"
+        gridPosition: "start",
       },
       categoryAxesSettings: {
-        minPeriod: "DD"
+        minPeriod: "DD",
       },
       chartScrollbar: {
         oppositeAxis: false,
@@ -546,33 +548,33 @@ class CurrentStudentStatistics extends React.Component<
         selectedGraphFillAlpha: 0,
         selectedGraphLineAlpha: 1,
         autoGridCount: true,
-        color: "#AAAAAA"
+        color: "#AAAAAA",
       },
       chartCursor: {
         categoryBalloonDateFormat: "DD.MM.YYYY",
         categoryBalloonColor: "#009FE3",
-        cursorColor: "#000"
+        cursorColor: "#000",
       },
       listeners: [
         {
           event: "zoomed",
-          method: this.zoomSaveHandler
+          method: this.zoomSaveHandler,
         },
         {
           event: "dataUpdated",
-          method: this.zoomApplyHandler
-        }
+          method: this.zoomApplyHandler,
+        },
       ],
       valueAxes: valueAxes,
       graphs: graphs,
       dataProvider: data,
       export: {
-        enabled: true
-      }
+        enabled: true,
+      },
     };
     ignoreZoomed = true;
     //Maybe it is possible to use show/hide graph without re-render. requires accessing the graph and call for a method. Responsiveness not through react re-render only?
-    let showGraphs: string[] = [
+    const showGraphs: string[] = [
       Graph.SESSION_LOGGEDIN,
       Graph.MATERIAL_ASSIGNMENTDONE,
       Graph.MATERIAL_EXERCISEDONE,
@@ -581,7 +583,7 @@ class CurrentStudentStatistics extends React.Component<
       Graph.EVALUATION_REQUESTED,
       Graph.EVALUATION_PASSED,
       Graph.EVALUATION_FAILED,
-      Graph.EVALUATION_INCOMPLETED
+      Graph.EVALUATION_INCOMPLETED,
     ];
     return (
       <div className="application-sub-panel__body">
@@ -608,7 +610,7 @@ class CurrentStudentStatistics extends React.Component<
 
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n
+    i18n: state.i18n,
   };
 }
 

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { StateType } from "~/reducers";
-import { Dispatch, connect } from "react-redux";
+import { connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
 import { ProfileType } from "~/reducers/main-function/profile";
@@ -34,7 +34,7 @@ class ProfilePicture extends React.Component<
 
     this.state = {
       isImageDialogOpen: false,
-      deleteImageDialogOpen: false
+      deleteImageDialogOpen: false,
     };
 
     this.readFile = this.readFile.bind(this);
@@ -42,8 +42,8 @@ class ProfilePicture extends React.Component<
     this.deleteCurrentImage = this.deleteCurrentImage.bind(this);
   }
   readFile(e: React.ChangeEvent<HTMLInputElement>) {
-    let file = e.target.files[0];
-    let reader = new FileReader();
+    const file = e.target.files[0];
+    const reader = new FileReader();
 
     e.target.value = "";
 
@@ -54,10 +54,10 @@ class ProfilePicture extends React.Component<
           b64: reader.result as string,
           file,
           isImageDialogOpen: true,
-          src: null
+          src: null,
         });
       },
-      false
+      false,
     );
 
     if (file) {
@@ -72,11 +72,11 @@ class ProfilePicture extends React.Component<
       src: getUserImageUrl(
         this.props.status.userId,
         "original",
-        this.props.status.imgVersion
+        this.props.status.imgVersion,
       ),
       isImageDialogOpen: true,
       b64: null,
-      file: null
+      file: null,
     });
   }
   deleteCurrentImage(e: React.MouseEvent<HTMLAnchorElement>) {
@@ -84,7 +84,7 @@ class ProfilePicture extends React.Component<
     e.preventDefault();
 
     this.setState({
-      deleteImageDialogOpen: true
+      deleteImageDialogOpen: true,
     });
   }
   render() {
@@ -114,9 +114,9 @@ class ProfilePicture extends React.Component<
                     ? `url("${getUserImageUrl(
                         this.props.status.userId,
                         256,
-                        this.props.status.imgVersion
+                        this.props.status.imgVersion,
                       )}")`
-                    : null
+                    : null,
                 }}
               >
                 <label
@@ -124,7 +124,7 @@ class ProfilePicture extends React.Component<
                   htmlFor="profilePictureUpload"
                 >
                   {this.props.i18n.text.get(
-                    "plugin.wcag.profile.uploadPicture.label"
+                    "plugin.wcag.profile.uploadPicture.label",
                   )}
                 </label>
                 <input
@@ -174,11 +174,11 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     status: state.status,
-    profile: state.profile
+    profile: state.profile,
   };
 }
 
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps() {
   return {};
 }
 

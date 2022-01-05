@@ -48,10 +48,11 @@ export default class FrontpageFooter extends React.Component<
                 href="https://drive.google.com/file/d/1rcKBLel8fXZdwiqgBcZdu4MKTRHeyEHy/view?usp=sharing"
                 target="_blank"
                 className="link link--privacy-policy"
+                rel="noreferrer"
               >
                 <span className="visually-hidden">Otavia </span>
                 {this.props.i18n.text.get(
-                  "plugin.footer.ooPrivacyPolicy.label"
+                  "plugin.footer.ooPrivacyPolicy.label",
                 )}
               </a>
             </p>
@@ -60,9 +61,10 @@ export default class FrontpageFooter extends React.Component<
                 href="https://docs.google.com/document/d/1EXS3TroGTNAq9N8bV1pK6W2byKntZpHudBHH3NBGgXY/edit?usp=sharing"
                 target="_blank"
                 className="link link--accessibility-statement"
+                rel="noreferrer"
               >
                 {this.props.i18n.text.get(
-                  "plugin.footer.accesibilityStatement.text"
+                  "plugin.footer.accesibilityStatement.text",
                 )}
               </a>
             </p>
@@ -88,6 +90,7 @@ export default class FrontpageFooter extends React.Component<
               href="https://www.plagscan.com"
               className="link link--plagscan-logo"
               target="_blank"
+              rel="noreferrer"
             >
               <img src="/gfx/plagscan-logo-white.png" alt="Plagscan logo" />
             </a>
@@ -98,10 +101,11 @@ export default class FrontpageFooter extends React.Component<
               href="https://drive.google.com/file/d/1IDQWdh2N1EoaJe60uS1m9tyY5znaohzz/view?usp=sharing"
               target="_blank"
               className="link link--plagscan-privacy-policy"
+              rel="noreferrer"
             >
               (<span className="visually-hidden">Plagscan </span>
               {this.props.i18n.text.get(
-                "plugin.footer.plagScanPrivacyPolicy.label"
+                "plugin.footer.plagScanPrivacyPolicy.label",
               )}
               ).
             </a>

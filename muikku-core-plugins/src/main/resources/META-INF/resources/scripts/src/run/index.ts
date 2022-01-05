@@ -13,19 +13,19 @@ import "babel-polyfill";
 export default async function runApp(
   reducer: Reducer<any>,
   App: any,
-  beforeCreateApp?: (store: Store<StateType>) => Promise<any> | any
+  beforeCreateApp?: (store: Store<StateType>) => Promise<any> | any,
 ): Promise<Store<StateType>> {
   let store: Store<StateType>;
   if (process.env["NODE_ENV"] !== "production") {
     store = createStore(
       reducer,
-      composeWithDevTools(applyMiddleware(thunk, logger))
+      composeWithDevTools(applyMiddleware(thunk, logger)),
     );
   } else {
     store = createStore(reducer, applyMiddleware(thunk));
   }
 
-  let newStore: Store<StateType> = {
+  const newStore: Store<StateType> = {
     dispatch(action: any) {
       if (typeof action === "function") {
         return action(store.dispatch, store.getState);
@@ -41,10 +41,10 @@ export default async function runApp(
     },
     replaceReducer(...args: any[]) {
       return (store.replaceReducer as any)(...args);
-    }
+    },
   };
 
-  let preApp: HTMLElement = <HTMLElement>document.querySelector("#loading");
+  const preApp: HTMLElement = <HTMLElement>document.querySelector("#loading");
   if (preApp) {
     preApp.style.display = "none";
   }
@@ -53,14 +53,14 @@ export default async function runApp(
     (window as any).STORE_DEBUG = store;
   }
 
-  let props: any = beforeCreateApp ? await beforeCreateApp(newStore) : {};
+  const props: any = beforeCreateApp ? await beforeCreateApp(newStore) : {};
   render(
     React.createElement(
       Provider,
       { store: store },
-      React.createElement(App, { store: store, ...props })
+      React.createElement(App, { store: store, ...props }),
     ),
-    document.querySelector("#app")
+    document.querySelector("#app"),
   );
 
   return newStore;

@@ -1,6 +1,5 @@
 import * as React from "react";
 import AceEditor from "react-ace";
-import brace from "brace";
 
 import "brace/mode/html";
 import "brace/theme/github";
@@ -24,29 +23,29 @@ export default class Playground extends React.Component<
     this.reloadStylesheets = this.reloadStylesheets.bind(this);
     this.showURLEncoded = this.showURLEncoded.bind(this);
 
-    let data = window.location.hash.replace("#", "").split("?")[1];
+    const data = window.location.hash.replace("#", "").split("?")[1];
     let def;
     if (data) {
-      let url = new (window as any).URL("http://__playground?" + data);
+      const url = new (window as any).URL("http://__playground?" + data);
       def = url.searchParams.get("__playground");
     }
 
     this.state = {
       html: def || localStorage.getItem("HTML") || "",
-      codeDisplayed: true
+      codeDisplayed: true,
     };
   }
   reloadStylesheets() {
-    let links = document.getElementsByTagName("link");
+    const links = document.getElementsByTagName("link");
     for (let i = 0; i < links.length; i++) {
-      let link = links[i];
+      const link = links[i];
       if (link.rel === "stylesheet") {
         link.href += "?";
       }
     }
   }
   showURLEncoded() {
-    let text = encodeURIComponent(this.state.html);
+    const text = encodeURIComponent(this.state.html);
     let newHash = location.hash;
     if (newHash && newHash.indexOf("?")) {
       newHash += "&__playground=" + text;
@@ -55,7 +54,7 @@ export default class Playground extends React.Component<
     } else {
       newHash += "#?__playground=" + text;
     }
-    let url =
+    const url =
       location.protocol +
       "//" +
       location.host +
@@ -80,9 +79,9 @@ export default class Playground extends React.Component<
     localStorage.setItem("HTML", newHTML);
   }
   render() {
-    let style = { width: "100%", height: "100%" };
-    let codeThingStyle = {
-      position: "fixed" as "fixed",
+    const style = { width: "100%", height: "100%" };
+    const codeThingStyle = {
+      position: "fixed" as const,
       width: "35%",
       height: "100%",
       display: this.state.codeDisplayed ? "block" : "none",
@@ -90,7 +89,7 @@ export default class Playground extends React.Component<
       right: 0,
       top: 0,
       borderLeft: "solid 1px #ccc",
-      zIndex: 99999999999
+      zIndex: 99999999999,
     };
     return (
       <div style={Object.assign(style, { zIndex: 99999999999 })}>

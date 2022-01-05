@@ -8,5 +8,5 @@ export default combineReducers({
   notifications,
   i18n,
   locales,
-  status
+  status,
 });

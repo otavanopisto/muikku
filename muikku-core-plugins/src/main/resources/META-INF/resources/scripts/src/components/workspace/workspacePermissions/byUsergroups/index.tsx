@@ -4,10 +4,8 @@ import { Dispatch, connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/form-elements.scss";
 
-import ContentPanel, {
-  ContentPanelItem
-} from "~/components/general/content-panel";
-import { WorkspaceType, WorkspacePermissionsType } from "~/reducers/workspaces";
+import ContentPanel from "~/components/general/content-panel";
+import { WorkspaceType } from "~/reducers/workspaces";
 import { bindActionCreators } from "redux";
 
 interface PermissionsByUsergroupsProps {
@@ -28,10 +26,7 @@ class PermissionsByUsergroups extends React.Component<
 
     this.togglePermissionIn = this.togglePermissionIn.bind(this);
   }
-  togglePermissionIn(
-    permission: WorkspacePermissionsType,
-    valueToToggle: string
-  ) {
+  togglePermissionIn() {
     //this.props.updateCurrentWorkspaceUserGroupPermission(permission, valueToToggle);
   }
   render() {
@@ -39,7 +34,7 @@ class PermissionsByUsergroups extends React.Component<
       <ContentPanel
         modifier="permissions-by-usergroup"
         title={this.props.i18n.text.get(
-          "plugin.workspace.permissions.viewTitle"
+          "plugin.workspace.permissions.viewTitle",
         )}
         ref="content-panel"
       >
@@ -47,40 +42,38 @@ class PermissionsByUsergroups extends React.Component<
           <div>
             <div>
               {this.props.i18n.text.get(
-                "plugin.workspace.permissions.usergroupsColumn.label"
+                "plugin.workspace.permissions.usergroupsColumn.label",
               )}
             </div>
-            {PERMISSIONS_TO_EXTRACT.map((pte, index) => (
+            {PERMISSIONS_TO_EXTRACT.map((pte) => (
               <div key={pte}>
                 {this.props.i18n.text.get(
-                  "plugin.workspace.permissions.label." + pte
+                  "plugin.workspace.permissions.label." + pte,
                 )}
               </div>
             ))}
           </div>
           {this.props.workspace &&
             this.props.workspace.permissions &&
-            this.props.workspace.permissions.map((permission) => {
-              return (
-                <div key={permission.userGroupEntityId}>
-                  <div>{permission.userGroupName}</div>
-                  {PERMISSIONS_TO_EXTRACT.map((pte, index) => (
-                    <div key={pte}>
-                      <input
-                        className="form-element"
-                        type="checkbox"
-                        checked={permission.canSignup}
-                        onChange={this.togglePermissionIn.bind(
-                          this,
-                          permission,
-                          pte
-                        )}
-                      />
-                    </div>
-                  ))}
-                </div>
-              );
-            })}
+            this.props.workspace.permissions.map((permission) => (
+              <div key={permission.userGroupEntityId}>
+                <div>{permission.userGroupName}</div>
+                {PERMISSIONS_TO_EXTRACT.map((pte) => (
+                  <div key={pte}>
+                    <input
+                      className="form-element"
+                      type="checkbox"
+                      checked={permission.canSignup}
+                      onChange={this.togglePermissionIn.bind(
+                        this,
+                        permission,
+                        pte,
+                      )}
+                    />
+                  </div>
+                ))}
+              </div>
+            ))}
         </div>
       </ContentPanel>
     );
@@ -90,7 +83,7 @@ class PermissionsByUsergroups extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    workspace: state.workspaces.currentWorkspace
+    workspace: state.workspaces.currentWorkspace,
   };
 }
 
@@ -100,5 +93,5 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(PermissionsByUsergroups);

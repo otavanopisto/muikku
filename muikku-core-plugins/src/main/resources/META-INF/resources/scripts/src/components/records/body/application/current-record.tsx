@@ -1,7 +1,5 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
-import { bindActionCreators } from "redux";
-import Link from "~/components/general/link";
+import { connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
 import "~/sass/elements/link.scss";
@@ -18,7 +16,7 @@ import "~/sass/elements/workspace-assessment.scss";
 import ApplicationList, {
   ApplicationListItem,
   ApplicationListItemBody,
-  ApplicationListItemHeader
+  ApplicationListItemHeader,
 } from "~/components/general/application-list";
 import { StatusType } from "~/reducers/base/status";
 
@@ -82,7 +80,7 @@ class CurrentRecord extends React.Component<
       }
     }
 
-    let literalAssessment =
+    const literalAssessment =
       this.props.records.current.workspace.studentAssessmentState &&
       this.props.records.current.workspace.studentAssessmentState.text
         ? this.props.records.current.workspace.studentAssessmentState.text
@@ -112,28 +110,28 @@ class CurrentRecord extends React.Component<
                   <div className="workspace-assessment__date">
                     <span className="workspace-assessment__date-label">
                       {this.props.i18n.text.get(
-                        "plugin.records.workspace.assessment.date.label"
+                        "plugin.records.workspace.assessment.date.label",
                       )}
                       :
                     </span>
                     <span className="workspace-assessment__date-data">
                       {this.props.i18n.time.format(
                         this.props.records.current.workspace
-                          .studentAssessmentState.date
+                          .studentAssessmentState.date,
                       )}
                     </span>
                   </div>
                   <div className="workspace-assessment__grade">
                     <span className="workspace-assessment__grade-label">
                       {this.props.i18n.text.get(
-                        "plugin.records.workspace.assessment.grade.label"
+                        "plugin.records.workspace.assessment.grade.label",
                       )}
                       :
                     </span>
                     <span className="workspace-assessment__grade-data">
                       {assessmentIsIncomplete
                         ? this.props.i18n.text.get(
-                            "plugin.records.workspace.assessment.grade.incomplete.data"
+                            "plugin.records.workspace.assessment.grade.incomplete.data",
                           )
                         : this.props.records.current.workspace
                             .studentAssessmentState.grade}
@@ -142,7 +140,7 @@ class CurrentRecord extends React.Component<
                   <div className="workspace-assessment__literal">
                     <div className="workspace-assessment__literal-label">
                       {this.props.i18n.text.get(
-                        "plugin.records.workspace.assessment.literal.label"
+                        "plugin.records.workspace.assessment.literal.label",
                       )}
                       :
                     </div>
@@ -162,21 +160,21 @@ class CurrentRecord extends React.Component<
                   <div className="workspace-assessment__date">
                     <span className="workspace-assessment__date-label">
                       {this.props.i18n.text.get(
-                        "plugin.records.workspace.assessment.date.label"
+                        "plugin.records.workspace.assessment.date.label",
                       )}
                       :
                     </span>
                     <span className="workspace-assessment__date-data">
                       {this.props.i18n.time.format(
                         this.props.records.current.workspace
-                          .studentAssessmentState.date
+                          .studentAssessmentState.date,
                       )}
                     </span>
                   </div>
                   <div className="workspace-assessment__literal">
                     <div className="workspace-assessment__literal-label">
                       {this.props.i18n.text.get(
-                        "plugin.records.workspace.assessment.request.label"
+                        "plugin.records.workspace.assessment.request.label",
                       )}
                       :
                     </div>
@@ -203,7 +201,7 @@ class CurrentRecord extends React.Component<
                     this.props.records.current &&
                     this.props.records.current.compositeReplies.find(
                       (cItem) =>
-                        cItem.workspaceMaterialId === material.assignment.id
+                        cItem.workspaceMaterialId === material.assignment.id,
                     );
 
                   if (compositeReply && compositeReply.submitted !== null) {
@@ -239,38 +237,36 @@ class CurrentRecord extends React.Component<
             <div className="application-sub-panel__body application-sub-panel__body--studies-journal-entries">
               <div className="application-list">
                 <div className="application-list_item-wrapper">
-                  {this.props.records.current.journals.map((journal) => {
-                    return (
-                      <ApplicationListItem
-                        className="journal journal--studies"
-                        key={journal.id}
-                      >
-                        <ApplicationListItemHeader className="application-list__item-header--journal-entry">
-                          <div className="application-list__item-header-main application-list__item-header-main--journal-entry">
-                            <span className="application-list__item-header-main-content application-list__item-header-main-content--journal-entry-title">
-                              {journal.title}
-                            </span>
-                          </div>
-                          <div className="application-list__item-header-aside">
-                            <span>
-                              {this.props.i18n.time.format(
-                                journal.created,
-                                "L LT"
-                              )}
-                            </span>
-                          </div>
-                        </ApplicationListItemHeader>
-                        <ApplicationListItemBody className="application-list__item-body">
-                          <article
-                            className="application-list__item-content-body application-list__item-content-body--journal-entry rich-text"
-                            dangerouslySetInnerHTML={{
-                              __html: journal.content
-                            }}
-                          ></article>
-                        </ApplicationListItemBody>
-                      </ApplicationListItem>
-                    );
-                  })}
+                  {this.props.records.current.journals.map((journal) => (
+                    <ApplicationListItem
+                      className="journal journal--studies"
+                      key={journal.id}
+                    >
+                      <ApplicationListItemHeader className="application-list__item-header--journal-entry">
+                        <div className="application-list__item-header-main application-list__item-header-main--journal-entry">
+                          <span className="application-list__item-header-main-content application-list__item-header-main-content--journal-entry-title">
+                            {journal.title}
+                          </span>
+                        </div>
+                        <div className="application-list__item-header-aside">
+                          <span>
+                            {this.props.i18n.time.format(
+                              journal.created,
+                              "L LT",
+                            )}
+                          </span>
+                        </div>
+                      </ApplicationListItemHeader>
+                      <ApplicationListItemBody className="application-list__item-body">
+                        <article
+                          className="application-list__item-content-body application-list__item-content-body--journal-entry rich-text"
+                          dangerouslySetInnerHTML={{
+                            __html: journal.content,
+                          }}
+                        ></article>
+                      </ApplicationListItemBody>
+                    </ApplicationListItem>
+                  ))}
                 </div>
               </div>
             </div>
@@ -285,11 +281,11 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     records: state.records,
-    status: state.status
+    status: state.status,
   };
 }
 
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps() {
   return {};
 }
 

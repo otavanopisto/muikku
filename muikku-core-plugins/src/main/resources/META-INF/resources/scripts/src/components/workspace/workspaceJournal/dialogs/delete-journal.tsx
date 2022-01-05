@@ -8,14 +8,13 @@ import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AnyActionType } from "~/actions";
 import { i18nType } from "~/reducers/base/i18n";
-import Link from "~/components/general/link";
 import Dialog from "~/components/general/dialog";
 import Button from "~/components/general/button";
 import { StateType } from "~/reducers";
 import { WorkspaceJournalType } from "~/reducers/workspaces";
 import {
   deleteWorkspaceJournalInCurrentWorkspace,
-  DeleteWorkspaceJournalInCurrentWorkspaceTriggerType
+  DeleteWorkspaceJournalInCurrentWorkspaceTriggerType,
 } from "~/actions/workspaces";
 
 interface DeleteJournalProps {
@@ -39,7 +38,7 @@ class DeleteJournal extends React.Component<
     this.deleteJournal = this.deleteJournal.bind(this);
 
     this.state = {
-      locked: false
+      locked: false,
     };
   }
   deleteJournal(closeDialog: () => any) {
@@ -52,47 +51,45 @@ class DeleteJournal extends React.Component<
       },
       fail: () => {
         this.setState({ locked: false });
-      }
+      },
     });
   }
   render() {
-    let content = (closeDialog: () => any) => (
+    const content = (closeDialog: () => any) => (
       <div>
         {this.props.i18n.text.get(
-          "plugin.workspace.journal.deleteEntry.dialog.description"
+          "plugin.workspace.journal.deleteEntry.dialog.description",
         )}
       </div>
     );
 
-    let footer = (closeDialog: () => any) => {
-      return (
-        <div className="dialog__button-set">
-          <Button
-            buttonModifiers={["fatal", "standard-ok"]}
-            onClick={this.deleteJournal.bind(this, closeDialog)}
-            disabled={this.state.locked}
-          >
-            {this.props.i18n.text.get(
-              "plugin.workspace.journal.deleteEntry.dialog.deleteButton"
-            )}
-          </Button>
-          <Button
-            buttonModifiers={["cancel", "standard-cancel"]}
-            onClick={closeDialog}
-          >
-            {this.props.i18n.text.get(
-              "plugin.workspace.journal.deleteEntry.dialog.cancelButton"
-            )}
-          </Button>
-        </div>
-      );
-    };
+    const footer = (closeDialog: () => any) => (
+      <div className="dialog__button-set">
+        <Button
+          buttonModifiers={["fatal", "standard-ok"]}
+          onClick={this.deleteJournal.bind(this, closeDialog)}
+          disabled={this.state.locked}
+        >
+          {this.props.i18n.text.get(
+            "plugin.workspace.journal.deleteEntry.dialog.deleteButton",
+          )}
+        </Button>
+        <Button
+          buttonModifiers={["cancel", "standard-cancel"]}
+          onClick={closeDialog}
+        >
+          {this.props.i18n.text.get(
+            "plugin.workspace.journal.deleteEntry.dialog.cancelButton",
+          )}
+        </Button>
+      </div>
+    );
 
     return (
       <Dialog
         modifier="delete-journal"
         title={this.props.i18n.text.get(
-          "plugin.workspace.journal.deleteEntry.dialog.title"
+          "plugin.workspace.journal.deleteEntry.dialog.title",
         )}
         content={content}
         footer={footer}
@@ -105,14 +102,14 @@ class DeleteJournal extends React.Component<
 
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n
+    i18n: state.i18n,
   };
 }
 
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     { deleteWorkspaceJournalInCurrentWorkspace },
-    dispatch
+    dispatch,
   );
 }
 

@@ -11,7 +11,7 @@ import { i18nType } from "~/reducers/base/i18n";
 import * as React from "react";
 
 import { StateType } from "~/reducers";
-import { Dispatch, connect } from "react-redux";
+import { connect } from "react-redux";
 import { StatusType } from "~/reducers/base/status";
 import StudiesEnded from "./body/studies-ended";
 
@@ -58,11 +58,11 @@ class IndexBody extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    status: state.status
+    status: state.status,
   };
 }
 
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps() {
   return {};
 }
 

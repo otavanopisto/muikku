@@ -6,7 +6,7 @@ import * as React from "react";
 
 export default class RecordsBody extends React.Component<{}, {}> {
   render() {
-    let aside = <Aside />;
+    const aside = <Aside />;
     return (
       <div>
         <MainFunctionNavbar activeTrail="records" navigation={aside} />

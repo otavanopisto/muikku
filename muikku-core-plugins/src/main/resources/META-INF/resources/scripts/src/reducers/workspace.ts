@@ -27,5 +27,5 @@ export default combineReducers({
   announcements,
   discussion,
   userIndex,
-  evaluations
+  evaluations,
 });

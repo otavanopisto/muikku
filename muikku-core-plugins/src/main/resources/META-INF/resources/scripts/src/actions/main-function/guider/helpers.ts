@@ -10,7 +10,7 @@ import {
   GuiderActiveFiltersType,
   GuiderStudentsStateType,
   GuiderStudentListType,
-  GuiderPatchType
+  GuiderPatchType,
 } from "~/reducers/main-function/guider";
 import { StateType } from "~/reducers";
 
@@ -21,16 +21,16 @@ export async function loadStudentsHelper(
   filters: GuiderActiveFiltersType | null,
   initial: boolean,
   dispatch: (arg: AnyActionType) => any,
-  getState: () => StateType
+  getState: () => StateType,
 ) {
   dispatch({
     type: "SET_CURRENT_GUIDER_STUDENT",
-    payload: null
+    payload: null,
   });
 
-  let state = getState();
-  let guider: GuiderType = state.guider;
-  let flagOwnerIdentifier: string = state.status.userSchoolDataIdentifier;
+  const state = getState();
+  const guider: GuiderType = state.guider;
+  const flagOwnerIdentifier: string = state.status.userSchoolDataIdentifier;
 
   //Avoid loading courses again for the first time if it's the same location
   if (
@@ -41,7 +41,7 @@ export async function loadStudentsHelper(
     return;
   }
 
-  let actualFilters = filters || guider.activeFilters;
+  const actualFilters = filters || guider.activeFilters;
 
   let guiderStudentsNextState: GuiderStudentsStateType;
   //If it's for the first time
@@ -57,23 +57,23 @@ export async function loadStudentsHelper(
     type: "UPDATE_GUIDER_ALL_PROPS",
     payload: {
       state: guiderStudentsNextState,
-      activeFilters: actualFilters
-    }
+      activeFilters: actualFilters,
+    },
   });
 
   //Generate the api query, our first result in the messages that we have loaded
-  let firstResult = initial ? 0 : guider.students.length;
+  const firstResult = initial ? 0 : guider.students.length;
   //We only concat if it is not the initial, that means adding to the next messages
-  let concat = !initial;
-  let maxResults = MAX_LOADED_AT_ONCE + 1;
+  const concat = !initial;
+  const maxResults = MAX_LOADED_AT_ONCE + 1;
 
-  let params = {
+  const params = {
     firstResult,
     maxResults,
     flags: actualFilters.labelFilters,
     workspaceIds: actualFilters.workspaceFilters,
     userGroupIds: actualFilters.userGroupFilters,
-    flagOwnerIdentifier
+    flagOwnerIdentifier,
   };
 
   if (actualFilters.query) {
@@ -84,36 +84,36 @@ export async function loadStudentsHelper(
     let students: GuiderStudentListType = <GuiderStudentListType>(
       await promisify(
         mApi().guider.students.cacheClear().read(params),
-        "callback"
+        "callback",
       )()
     );
 
     //TODO why in the world does the server return nothing rather than an empty array?
     //remove this hack fix the server side
     students = students || [];
-    let hasMore: boolean = students.length === MAX_LOADED_AT_ONCE + 1;
+    const hasMore: boolean = students.length === MAX_LOADED_AT_ONCE + 1;
 
     //This is because of the array is actually a reference to a cached array
     //so we rather make a copy otherwise you'll mess up the cache :/
-    let actualStudents = students.concat([]);
+    const actualStudents = students.concat([]);
     if (hasMore) {
       //we got to get rid of that extra loaded message
       actualStudents.pop();
     }
 
     //Create the payload for updating all the communicator properties
-    let payload: GuiderPatchType = {
+    const payload: GuiderPatchType = {
       state: "READY",
       students: concat
         ? guider.students.concat(actualStudents)
         : actualStudents,
-      hasMore
+      hasMore,
     };
 
     //And there it goes
     dispatch({
       type: "UPDATE_GUIDER_ALL_PROPS",
-      payload
+      payload,
     });
   } catch (err) {
     if (!(err instanceof MApiError)) {
@@ -123,12 +123,12 @@ export async function loadStudentsHelper(
     dispatch(
       notificationActions.displayNotification(
         getState().i18n.text.get("plugin.guider.errormessage.users"),
-        "error"
-      )
+        "error",
+      ),
     );
     dispatch({
       type: "UPDATE_GUIDER_STATE",
-      payload: <GuiderStudentsStateType>"ERROR"
+      payload: <GuiderStudentsStateType>"ERROR",
     });
   }
 }

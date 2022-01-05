@@ -26,7 +26,7 @@ interface MultiSelectFieldProps {
   onChange?: (
     context: React.Component<any, any>,
     name: string,
-    newValue: any
+    newValue: any,
   ) => any;
   i18n: i18nType;
 
@@ -65,7 +65,7 @@ export default class MultiSelectField extends React.Component<
     this.onFieldSavedStateChange = this.onFieldSavedStateChange.bind(this);
 
     // We get the values and parse it from the initial value which is a string
-    let values: Array<string> = ((props.initialValue &&
+    const values: Array<string> = ((props.initialValue &&
       JSON.parse(props.initialValue)) ||
       []) as Array<string>;
     this.state = {
@@ -79,7 +79,7 @@ export default class MultiSelectField extends React.Component<
       // answer state is null
       answerState: null,
 
-      fieldSavedState: null
+      fieldSavedState: null,
     };
   }
 
@@ -89,7 +89,7 @@ export default class MultiSelectField extends React.Component<
    */
   onFieldSavedStateChange(savedState: FieldStateStatus) {
     this.setState({
-      fieldSavedState: savedState
+      fieldSavedState: savedState,
     });
   }
 
@@ -101,7 +101,7 @@ export default class MultiSelectField extends React.Component<
    */
   shouldComponentUpdate(
     nextProps: MultiSelectFieldProps,
-    nextState: MultiSelectFieldState
+    nextState: MultiSelectFieldState,
   ) {
     return (
       !equals(nextProps.content, this.props.content) ||
@@ -128,8 +128,8 @@ export default class MultiSelectField extends React.Component<
     }
 
     // let's find the actually correct answers from an array
-    let actuallyCorrectAnswers = this.props.content.options.filter(
-      (a) => a.correct
+    const actuallyCorrectAnswers = this.props.content.options.filter(
+      (a) => a.correct,
     );
 
     // we might not really have any real correct answer
@@ -137,7 +137,7 @@ export default class MultiSelectField extends React.Component<
       // So we handle accordingly
       if (this.state.answerState !== "UNKNOWN") {
         this.setState({
-          answerState: "UNKNOWN"
+          answerState: "UNKNOWN",
         });
         this.props.onAnswerChange(this.props.content.name, null);
       }
@@ -145,22 +145,21 @@ export default class MultiSelectField extends React.Component<
     }
 
     // So we calculate the answer state of each field to see what we got
-    let newanswerState: Array<"PASS" | "FAIL"> = this.props.content.options.map(
-      (option, index) => {
-        let isDefinedAsCorrect = this.state.values.includes(option.name);
+    const newanswerState: Array<"PASS" | "FAIL"> =
+      this.props.content.options.map((option) => {
+        const isDefinedAsCorrect = this.state.values.includes(option.name);
         return option.correct === isDefinedAsCorrect ? "PASS" : "FAIL";
-      }
-    );
+      });
 
     // if it's different from our previous we update accordingly
     if (!equals(newanswerState, this.state.answerState)) {
       this.setState({
-        answerState: newanswerState
+        answerState: newanswerState,
       });
     }
 
     // Checking whether we got right in general
-    let isCorrect = !newanswerState.includes("FAIL");
+    const isCorrect = !newanswerState.includes("FAIL");
     // if we had no previous answer state or it was unknown
     if (!this.state.answerState || this.state.answerState === "UNKNOWN") {
       // we just make it new
@@ -169,7 +168,7 @@ export default class MultiSelectField extends React.Component<
     }
 
     // check the previous state and compare to send an update only if necessary
-    let wasCorrect = !this.state.answerState.includes("FAIL");
+    const wasCorrect = !this.state.answerState.includes("FAIL");
     if (isCorrect && !wasCorrect) {
       this.props.onAnswerChange(this.props.content.name, true);
     } else if (!isCorrect && wasCorrect) {
@@ -191,7 +190,7 @@ export default class MultiSelectField extends React.Component<
    */
   componentDidUpdate(
     prevProps: MultiSelectFieldProps,
-    prevState: MultiSelectFieldState
+    prevState: MultiSelectFieldState,
   ) {
     this.checkAnswers();
   }
@@ -226,15 +225,15 @@ export default class MultiSelectField extends React.Component<
       this.props.onChange(
         this,
         this.props.content.name,
-        JSON.stringify(nValues)
+        JSON.stringify(nValues),
       );
 
     // we set the new state and check for rightness afterwards
     this.setState(
       {
-        values: nValues
+        values: nValues,
       },
-      this.checkAnswers
+      this.checkAnswers,
     );
   }
 
@@ -250,7 +249,7 @@ export default class MultiSelectField extends React.Component<
     // the summary component if necessary
     let correctAnswersummaryComponent = null;
     // The answer is right if it is not unknown and has no fails in it
-    let answerIsBeingCheckedAndItisCorrect =
+    const answerIsBeingCheckedAndItisCorrect =
       this.props.checkAnswers &&
       this.state.answerState &&
       this.state.answerState !== "UNKNOWN" &&
@@ -262,8 +261,8 @@ export default class MultiSelectField extends React.Component<
       !answerIsBeingCheckedAndItisCorrect
     ) {
       // check for the correct answers we found
-      let correctAnswersFound = this.props.content.options.filter(
-        (a) => a.correct
+      const correctAnswersFound = this.props.content.options.filter(
+        (a) => a.correct,
       );
       // if we got some in there
       if (correctAnswersFound.length) {
@@ -272,7 +271,7 @@ export default class MultiSelectField extends React.Component<
           <span className="material-page__field-answer-examples">
             <span className="material-page__field-answer-examples-title">
               {this.props.i18n.text.get(
-                "plugin.workspace.assigment.checkAnswers.correctSummary.title"
+                "plugin.workspace.assigment.checkAnswers.correctSummary.title",
               )}
             </span>
             {correctAnswersFound.map((answer, index) => (
@@ -301,7 +300,7 @@ export default class MultiSelectField extends React.Component<
           <span className="material-page__field-answer-examples">
             <span className="material-page__field-answer-examples-title">
               {this.props.i18n.text.get(
-                "plugin.workspace.assigment.checkAnswers.detailsSummary.title"
+                "plugin.workspace.assigment.checkAnswers.detailsSummary.title",
               )}
             </span>
             <span className="material-page__field-answer-example">
@@ -322,23 +321,21 @@ export default class MultiSelectField extends React.Component<
                 : "vertical"
             }`}
           >
-            {this.props.content.options.map((o, index) => {
-              return (
-                <span
-                  key={o.name}
-                  className="material-page__checkbox-item-container"
-                >
-                  <input
-                    className="material-page__checkbox"
-                    type="checkbox"
-                    disabled
-                  />
-                  <label className="material-page__checkable-label">
-                    {o.text}
-                  </label>
-                </span>
-              );
-            })}
+            {this.props.content.options.map((o, index) => (
+              <span
+                key={o.name}
+                className="material-page__checkbox-item-container"
+              >
+                <input
+                  className="material-page__checkbox"
+                  type="checkbox"
+                  disabled
+                />
+                <label className="material-page__checkable-label">
+                  {o.text}
+                </label>
+              </span>
+            ))}
           </span>
           {correctAnswersummaryComponent}
         </span>
@@ -346,7 +343,7 @@ export default class MultiSelectField extends React.Component<
     }
 
     // the classname we add to the element itself depending to the state, and only available if we check answers
-    let fieldStateAfterCheck =
+    const fieldStateAfterCheck =
       this.props.displayCorrectAnswers &&
       this.props.checkAnswers &&
       this.state.answerState &&
@@ -356,8 +353,8 @@ export default class MultiSelectField extends React.Component<
           : "correct-answer"
         : "";
 
-    let fieldSavedStateClass = createFieldSavedStateClass(
-      this.state.fieldSavedState
+    const fieldSavedStateClass = createFieldSavedStateClass(
+      this.state.fieldSavedState,
     );
 
     // and we render
@@ -390,7 +387,7 @@ export default class MultiSelectField extends React.Component<
               }
             }
             // lets generate unique id for labels and checkboxes
-            let uniqueElementID = "cb-" + uuid.v4();
+            const uniqueElementID = "cb-" + uuid.v4();
             return (
               <span
                 key={o.name}

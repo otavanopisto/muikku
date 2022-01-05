@@ -2,8 +2,8 @@ import * as React from "react";
 import "~/sass/elements/matriculation.scss";
 import {
   ExaminationFinishedSubject,
-  ExaminationEnrolledSubject
-} from "../../../../../@types/shared";
+  ExaminationEnrolledSubject,
+} from "~/@types/shared";
 import { MatriculationExaminationFinishedInputGroup } from "./matriculation-examination-selector-components";
 
 /**
@@ -11,7 +11,7 @@ import { MatriculationExaminationFinishedInputGroup } from "./matriculation-exam
  */
 interface MatriculationExaminationFinishedAttendesListProps {
   onChange?: (
-    modifiedExaminationCompletedSubjectList: ExaminationFinishedSubject[]
+    modifiedExaminationCompletedSubjectList: ExaminationFinishedSubject[],
   ) => any;
   readOnly?: boolean;
   enrolledAttendances?: ExaminationEnrolledSubject[];
@@ -31,7 +31,7 @@ const defaultUseSelectProps = {
   useSubjectSelect: true,
   useMandatorySelect: true,
   useGradeSelect: true,
-  useFundingSelect: false
+  useFundingSelect: false,
 };
 
 /**
@@ -48,7 +48,6 @@ export const MatriculationExaminationFinishedAttendesList: React.FC<
   pastOptions,
   onDeleteRow,
   readOnly,
-  children,
   ...useSelectProps
 }) => {
   useSelectProps = { ...defaultUseSelectProps, ...useSelectProps };
@@ -60,13 +59,13 @@ export const MatriculationExaminationFinishedAttendesList: React.FC<
    * @param index
    */
   const handleMatriculationExaminationSubjectGroupChange = <
-    T extends keyof ExaminationFinishedSubject
+    T extends keyof ExaminationFinishedSubject,
   >(
     key: T,
     value: ExaminationFinishedSubject[T],
-    index: number
+    index: number,
   ) => {
-    let modifiedExaminationFinishedList = examinationFinishedList;
+    const modifiedExaminationFinishedList = examinationFinishedList;
 
     modifiedExaminationFinishedList[index][key] = value;
 
@@ -77,7 +76,7 @@ export const MatriculationExaminationFinishedAttendesList: React.FC<
    * List of selected subject string keys
    */
   const selectedSubjects = examinationFinishedList.map(
-    (sSubject) => sSubject.subject
+    (sSubject) => sSubject.subject,
   );
 
   return (

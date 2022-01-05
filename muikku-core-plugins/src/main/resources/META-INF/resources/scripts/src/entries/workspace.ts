@@ -12,7 +12,7 @@ runApp(reducer, App, async (store) => {
 
   if (store.getState().status.permissions.WORKSPACE_MANAGE_WORKSPACE) {
     store.dispatch(
-      <Action>updateWorkspaceEditModeState({ available: true }, true)
+      <Action>updateWorkspaceEditModeState({ available: true }, true),
     );
   } else {
     store.subscribe(() => {
@@ -22,7 +22,7 @@ runApp(reducer, App, async (store) => {
         (!state.workspaces.editMode || !state.workspaces.editMode.available)
       ) {
         store.dispatch(
-          <Action>updateWorkspaceEditModeState({ available: true }, true)
+          <Action>updateWorkspaceEditModeState({ available: true }, true),
         );
       }
     });
@@ -31,7 +31,7 @@ runApp(reducer, App, async (store) => {
   if (store.getState().status.loggedIn) {
     websocket = await mainFunctionDefault(store, {
       setupMessages: false,
-      setupWorkspacePermissions: true
+      setupWorkspacePermissions: true,
     });
   }
   return { websocket };

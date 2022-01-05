@@ -19,7 +19,7 @@ const defaultNavigation: AnnouncerNavigationItemListType = [
     icon: "folder",
     text(i18n: i18nType): string {
       return i18n.text.get("plugin.announcer.cat.active");
-    }
+    },
   },
   {
     location: "past",
@@ -27,7 +27,7 @@ const defaultNavigation: AnnouncerNavigationItemListType = [
     icon: "folder",
     text(i18n: i18nType): string {
       return i18n.text.get("plugin.announcer.cat.past");
-    }
+    },
   },
   {
     location: "mine",
@@ -35,7 +35,7 @@ const defaultNavigation: AnnouncerNavigationItemListType = [
     icon: "folder",
     text(i18n: i18nType): string {
       return i18n.text.get("plugin.announcer.cat.mine");
-    }
+    },
   },
   {
     location: "archived",
@@ -43,8 +43,8 @@ const defaultNavigation: AnnouncerNavigationItemListType = [
     icon: "trash-alt",
     text(i18n: i18nType): string {
       return i18n.text.get("plugin.announcer.cat.archived");
-    }
-  }
+    },
+  },
 ];
 
 export interface AnnouncementType {
@@ -126,46 +126,46 @@ export default function announcements(
     location: "",
     toolbarLock: false,
     navigation: defaultNavigation,
-    workspaceId: null
+    workspaceId: null,
   },
-  action: ActionType
+  action: ActionType,
 ): AnnouncementsType {
   if (action.type === "UPDATE_ANNOUNCEMENTS") {
     return Object.assign({}, state, { announcements: action.payload });
   } else if (action.type === "UPDATE_ANNOUNCEMENTS_STATE") {
-    let newState: AnnouncementsStateType = action.payload;
+    const newState: AnnouncementsStateType = action.payload;
     return Object.assign({}, state, { state: newState });
   } else if (action.type === "UPDATE_ANNOUNCEMENTS_ALL_PROPERTIES") {
-    let newAllProperties: AnnouncementsPatchType = action.payload;
+    const newAllProperties: AnnouncementsPatchType = action.payload;
     return Object.assign({}, state, newAllProperties);
   } else if (action.type === "UPDATE_SELECTED_ANNOUNCEMENTS") {
-    let newAnnouncements: AnnouncementListType = action.payload;
+    const newAnnouncements: AnnouncementListType = action.payload;
     return Object.assign({}, state, {
       selected: newAnnouncements,
-      selectedIds: newAnnouncements.map((s: AnnouncementType) => s.id)
+      selectedIds: newAnnouncements.map((s: AnnouncementType) => s.id),
     });
   } else if (action.type === "ADD_TO_ANNOUNCEMENTS_SELECTED") {
-    let newAnnouncement: AnnouncementType = action.payload;
+    const newAnnouncement: AnnouncementType = action.payload;
     return Object.assign({}, state, {
       selected: state.selected.concat([newAnnouncement]),
-      selectedIds: state.selectedIds.concat([newAnnouncement.id])
+      selectedIds: state.selectedIds.concat([newAnnouncement.id]),
     });
   } else if (action.type === "REMOVE_FROM_ANNOUNCEMENTS_SELECTED") {
     return Object.assign({}, state, {
-      selected: state.selected.filter((selected: AnnouncementType) => {
-        return selected.id !== action.payload.id;
-      }),
-      selectedIds: state.selectedIds.filter((id: number) => {
-        return id !== action.payload.id;
-      })
+      selected: state.selected.filter(
+        (selected: AnnouncementType) => selected.id !== action.payload.id,
+      ),
+      selectedIds: state.selectedIds.filter(
+        (id: number) => id !== action.payload.id,
+      ),
     });
   } else if (action.type === "UPDATE_ONE_ANNOUNCEMENT") {
-    let update: AnnouncementUpdateType = action.payload.update;
-    let oldAnnouncement: AnnouncementType = action.payload.announcement;
-    let newAnnouncement: AnnouncementType = Object.assign(
+    const update: AnnouncementUpdateType = action.payload.update;
+    const oldAnnouncement: AnnouncementType = action.payload.announcement;
+    const newAnnouncement: AnnouncementType = Object.assign(
       {},
       oldAnnouncement,
-      update
+      update,
     );
     let newCurrent = state.current;
     if (newCurrent && newCurrent.id === newAnnouncement.id) {
@@ -184,9 +184,9 @@ export default function announcements(
             return newAnnouncement;
           }
           return announcement;
-        }
+        },
       ),
-      current: newCurrent
+      current: newCurrent,
     });
   } else if (action.type === "LOCK_TOOLBAR") {
     return Object.assign({}, state, { toolbarLock: true });
@@ -194,17 +194,16 @@ export default function announcements(
     return Object.assign({}, state, { toolbarLock: false });
   } else if (action.type === "DELETE_ANNOUNCEMENT") {
     return Object.assign({}, state, {
-      selected: state.selected.filter((selected: AnnouncementType) => {
-        return selected.id !== action.payload.id;
-      }),
-      announcements: state.announcements.filter(
-        (announcement: AnnouncementType) => {
-          return announcement.id !== action.payload.id;
-        }
+      selected: state.selected.filter(
+        (selected: AnnouncementType) => selected.id !== action.payload.id,
       ),
-      selectedIds: state.selectedIds.filter((id: number) => {
-        return id !== action.payload.id;
-      })
+      announcements: state.announcements.filter(
+        (announcement: AnnouncementType) =>
+          announcement.id !== action.payload.id,
+      ),
+      selectedIds: state.selectedIds.filter(
+        (id: number) => id !== action.payload.id,
+      ),
     });
   } else if (action.type === "SET_CURRENT_ANNOUNCEMENT") {
     return Object.assign({}, state, { current: action.payload });

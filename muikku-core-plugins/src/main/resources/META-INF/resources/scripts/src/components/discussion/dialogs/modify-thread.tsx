@@ -12,7 +12,7 @@ import {
   createDiscussionThread,
   CreateDiscussionThreadTriggerType,
   modifyDiscussionThread,
-  ModifyDiscussionThreadTriggerType
+  ModifyDiscussionThreadTriggerType,
 } from "~/actions/discussion";
 import { StateType } from "~/reducers";
 import SessionStateComponent from "~/components/general/session-state-component";
@@ -52,9 +52,9 @@ class ModifyThread extends SessionStateComponent<
         title: props.thread.title,
         locked: false,
         threadPinned: props.thread.sticky,
-        threadLocked: props.thread.locked
+        threadLocked: props.thread.locked,
       },
-      props.thread.id
+      props.thread.id,
     );
 
     this.togglePinned = this.togglePinned.bind(this);
@@ -71,9 +71,9 @@ class ModifyThread extends SessionStateComponent<
         text: this.props.thread.message,
         title: this.props.thread.title,
         threadPinned: this.props.thread.sticky,
-        threadLocked: this.props.thread.locked
+        threadLocked: this.props.thread.locked,
       },
-      this.props.thread.id
+      this.props.thread.id,
     );
   }
   onCKEditorChange(text: string) {
@@ -85,9 +85,9 @@ class ModifyThread extends SessionStateComponent<
         text: this.props.thread.message,
         title: this.props.thread.title,
         threadPinned: this.props.thread.sticky,
-        threadLocked: this.props.thread.locked
+        threadLocked: this.props.thread.locked,
       },
-      this.props.thread.id
+      this.props.thread.id,
     );
   }
   modifyThread(closeDialog: () => any) {
@@ -105,14 +105,14 @@ class ModifyThread extends SessionStateComponent<
       success: () => {
         this.justClear(
           ["text", "title", "threadPinned", "threadLocked"],
-          this.props.thread.id
+          this.props.thread.id,
         );
         this.setState({ locked: false });
         closeDialog();
       },
       fail: () => {
         this.setState({ locked: false });
-      }
+      },
     });
   }
   onTitleChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -121,13 +121,13 @@ class ModifyThread extends SessionStateComponent<
   togglePinned() {
     this.setStateAndStore(
       { threadPinned: !this.state.threadPinned },
-      this.props.thread.id
+      this.props.thread.id,
     );
   }
   toggleLocked() {
     this.setStateAndStore(
       { threadLocked: !this.state.threadLocked },
-      this.props.thread.id
+      this.props.thread.id,
     );
   }
   componentWillReceiveProps(nextProps: ModifyThreadProps) {
@@ -138,20 +138,20 @@ class ModifyThread extends SessionStateComponent<
             text: nextProps.thread.message,
             title: nextProps.thread.title,
             threadPinned: nextProps.thread.sticky,
-            threadLocked: nextProps.thread.locked
+            threadLocked: nextProps.thread.locked,
           },
-          nextProps.thread.id
-        )
+          nextProps.thread.id,
+        ),
       );
     }
   }
   render() {
-    let editorTitle =
+    const editorTitle =
       this.props.i18n.text.get("plugin.discussion.editmessage.topic") +
       " - " +
       this.props.i18n.text.get("plugin.discussion.createmessage.content");
 
-    let content = (closeDialog: () => any) => [
+    const content = (closeDialog: () => any) => [
       <div
         key="1"
         className="env-dialog__row env-dialog__row--new-discussion-options"
@@ -164,7 +164,7 @@ class ModifyThread extends SessionStateComponent<
             id="messageTitle"
             className="env-dialog__input env-dialog__input--new-discussion-thread-title"
             placeholder={this.props.i18n.text.get(
-              "plugin.discussion.createmessage.title"
+              "plugin.discussion.createmessage.title",
             )}
             value={this.state.title}
             onChange={this.onTitleChange}
@@ -187,7 +187,7 @@ class ModifyThread extends SessionStateComponent<
             />
             <label htmlFor="messagePinned" className="env-dialog__input-label">
               {this.props.i18n.text.get(
-                "plugin.discussion.createmessage.pinned"
+                "plugin.discussion.createmessage.pinned",
               )}
             </label>
           </div>
@@ -201,7 +201,7 @@ class ModifyThread extends SessionStateComponent<
             />
             <label htmlFor="messageLocked" className="env-dialog__input-label">
               {this.props.i18n.text.get(
-                "plugin.discussion.createmessage.locked"
+                "plugin.discussion.createmessage.locked",
               )}
             </label>
           </div>
@@ -211,7 +211,7 @@ class ModifyThread extends SessionStateComponent<
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
             {this.props.i18n.text.get(
-              "plugin.discussion.createmessage.content"
+              "plugin.discussion.createmessage.content",
             )}
           </label>
           <CKEditor
@@ -222,39 +222,37 @@ class ModifyThread extends SessionStateComponent<
             {this.state.text}
           </CKEditor>
         </div>
-      </div>
+      </div>,
     ];
-    let footer = (closeDialog: () => any) => {
-      return (
-        <div className="env-dialog__actions">
+    const footer = (closeDialog: () => any) => (
+      <div className="env-dialog__actions">
+        <Button
+          buttonModifiers="dialog-execute"
+          onClick={this.modifyThread.bind(this, closeDialog)}
+          disabled={this.state.locked}
+        >
+          {this.props.i18n.text.get("plugin.discussion.createmessage.send")}
+        </Button>
+        <Button
+          buttonModifiers="dialog-cancel"
+          onClick={closeDialog}
+          disabled={this.state.locked}
+        >
+          {this.props.i18n.text.get("plugin.discussion.createmessage.cancel")}
+        </Button>
+        {this.recovered ? (
           <Button
-            buttonModifiers="dialog-execute"
-            onClick={this.modifyThread.bind(this, closeDialog)}
+            buttonModifiers="dialog-clear"
+            onClick={this.clearUp}
             disabled={this.state.locked}
           >
-            {this.props.i18n.text.get("plugin.discussion.createmessage.send")}
+            {this.props.i18n.text.get(
+              "plugin.discussion.createmessage.clearDraft",
+            )}
           </Button>
-          <Button
-            buttonModifiers="dialog-cancel"
-            onClick={closeDialog}
-            disabled={this.state.locked}
-          >
-            {this.props.i18n.text.get("plugin.discussion.createmessage.cancel")}
-          </Button>
-          {this.recovered ? (
-            <Button
-              buttonModifiers="dialog-clear"
-              onClick={this.clearUp}
-              disabled={this.state.locked}
-            >
-              {this.props.i18n.text.get(
-                "plugin.discussion.createmessage.clearDraft"
-              )}
-            </Button>
-          ) : null}
-        </div>
-      );
-    };
+        ) : null}
+      </div>
+    );
 
     return (
       <EnvironmentDialog
@@ -274,7 +272,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     discussion: state.discussion,
-    status: state.status
+    status: state.status,
   };
 }
 

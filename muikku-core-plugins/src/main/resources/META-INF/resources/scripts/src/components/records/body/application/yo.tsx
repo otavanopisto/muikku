@@ -1,6 +1,6 @@
 import * as React from "react";
-import { connect, Dispatch, Store } from "react-redux";
-import { bindActionCreators, Action } from "redux";
+import { connect, Dispatch } from "react-redux";
+import { bindActionCreators } from "redux";
 import { i18nType } from "~/reducers/base/i18n";
 import { RecordsType } from "~/reducers/main-function/records";
 import Button from "~/components/general/button";
@@ -10,7 +10,7 @@ import {
   YOType,
   YOEligibilityType,
   YOEligibilityStatusType,
-  SubjectEligibilitySubjectsType
+  SubjectEligibilitySubjectsType,
 } from "~/reducers/main-function/records/yo";
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
@@ -34,7 +34,7 @@ interface YOProps {
 interface YOState {
   eligibility?: YOEligibilityType;
   eligibilityStatus?: YOEligibilityStatusType;
-  err?: String;
+  err?: string;
   succesfulEnrollments: number[];
 }
 
@@ -43,7 +43,7 @@ class YO extends React.Component<YOProps, YOState> {
     super(props);
 
     this.state = {
-      succesfulEnrollments: []
+      succesfulEnrollments: [],
     };
   }
 
@@ -63,7 +63,7 @@ class YO extends React.Component<YOProps, YOState> {
    * @returns JSX.Element
    */
   render() {
-    let i18n = this.props.i18n;
+    const i18n = this.props.i18n;
 
     if (
       this.props.records.location !== "yo" ||
@@ -75,25 +75,23 @@ class YO extends React.Component<YOProps, YOState> {
       const selectedMatriculationSubjects =
         this.props.eligibilitySubjects.status == "READY" ? (
           this.props.eligibilitySubjects.subjects.length > 0 ? (
-            this.props.eligibilitySubjects.subjects.map((subject, index) => {
-              return (
-                <MatriculationEligibilityRow
-                  key={subject.subjectCode + index}
-                  subject={subject}
-                />
-              );
-            })
+            this.props.eligibilitySubjects.subjects.map((subject, index) => (
+              <MatriculationEligibilityRow
+                key={subject.subjectCode + index}
+                subject={subject}
+              />
+            ))
           ) : (
             <div>
               {this.props.i18n.text.get(
-                "plugin.records.yo.noMatriculationSubjectsSelected"
+                "plugin.records.yo.noMatriculationSubjectsSelected",
               )}
             </div>
           )
         ) : (
           <div>
             {this.props.i18n.text.get(
-              "plugin.records.yo.participationRights.loading"
+              "plugin.records.yo.participationRights.loading",
             )}
           </div>
         );
@@ -104,14 +102,14 @@ class YO extends React.Component<YOProps, YOState> {
         this.props.yo.enrollment != null
           ? this.props.yo.enrollment
               .filter((exam) => exam.eligible == true)
-              .map((exam) => {
-                return this.state.succesfulEnrollments.includes(exam.id) ||
-                  exam.enrolled ? (
+              .map((exam) =>
+                this.state.succesfulEnrollments.includes(exam.id) ||
+                exam.enrolled ? (
                   <div key={exam.id}>
                     <div className="application-sub-panel__notification-content">
                       <span className="application-sub-panel__notification-content-title">
                         {this.props.i18n.text.get(
-                          "plugin.records.yo.button.signUp.hasAssigned"
+                          "plugin.records.yo.button.signUp.hasAssigned",
                         )}
                       </span>
                     </div>
@@ -120,13 +118,13 @@ class YO extends React.Component<YOProps, YOState> {
                         <>
                           <span className="application-sub-panel__notification-content-label">
                             {i18n.text.get(
-                              "plugin.records.matriculation.enrollmentDate"
+                              "plugin.records.matriculation.enrollmentDate",
                             )}
                           </span>
 
                           <span className="application-sub-panel__notification-content-data">
                             {new Date(exam.enrollmentDate).toLocaleDateString(
-                              "fi-Fi"
+                              "fi-Fi",
                             )}
                           </span>
                         </>
@@ -146,13 +144,13 @@ class YO extends React.Component<YOProps, YOState> {
                       <Button className="button button--yo-signup">
                         {this.props.i18n.text.get(
                           "plugin.records.yo.button.signUp.active",
-                          new Date(exam.ends).toLocaleDateString("fi-Fi")
+                          new Date(exam.ends).toLocaleDateString("fi-Fi"),
                         )}
                       </Button>
                     </MatriculationExaminationWizardDialog>
                   </div>
-                );
-              })
+                ),
+              )
           : null;
 
       return (
@@ -172,7 +170,7 @@ class YO extends React.Component<YOProps, YOState> {
                   <div className="application-sub-panel__notification-item">
                     <div className="application-sub-panel__notification-body">
                       {this.props.i18n.text.get(
-                        "plugin.records.yo.abiStatus.content.finished"
+                        "plugin.records.yo.abiStatus.content.finished",
                       )}
                     </div>
                     {this.props.yo.enrollment.length > 0 && (
@@ -193,8 +191,8 @@ class YO extends React.Component<YOProps, YOState> {
                           this.props.yo.eligibility.coursesCompleted,
                           this.props.yo.eligibility.coursesRequired,
                           this.props.yo.eligibility.creditPoints,
-                          this.props.yo.eligibility.creditPointsRequired
-                        )
+                          this.props.yo.eligibility.creditPointsRequired,
+                        ),
                       }}
                     />
                     {this.props.yo.enrollment.length > 0 && (
@@ -210,7 +208,7 @@ class YO extends React.Component<YOProps, YOState> {
           <div className="application-sub-panel  application-sub-panel--yo-status-container">
             <div className="application-sub-panel__header">
               {this.props.i18n.text.get(
-                "plugin.records.yo.participationRights.title"
+                "plugin.records.yo.participationRights.title",
               )}
             </div>
             <div className="application-sub-panel__body application-sub-panel__body--studies-yo-subjects">
@@ -233,7 +231,7 @@ function mapStateToProps(state: StateType) {
     records: state.records,
     hops: state.hops,
     yo: state.yo,
-    eligibilitySubjects: state.eligibilitySubjects
+    eligibilitySubjects: state.eligibilitySubjects,
   };
 }
 

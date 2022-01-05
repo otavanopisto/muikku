@@ -5,13 +5,13 @@ import {
   InsertProfileWorklistItemTriggerType,
   insertProfileWorklistItem,
   loadProfileWorklistSection,
-  LoadProfileWorklistSectionTriggerType
+  LoadProfileWorklistSectionTriggerType,
 } from "~/actions/main-function/profile";
 import { StateType } from "~/reducers";
 import { i18nType } from "~/reducers/base/i18n";
 import {
   ProfileType,
-  WorklistTemplate
+  WorklistTemplate,
 } from "~/reducers/main-function/profile";
 import WorkListEditable from "./components/work-list-editable";
 import moment from "~/lib/moment";
@@ -23,7 +23,7 @@ const today = moment();
 const daysInCurrentMonth = today.date();
 
 // This sets the date limit of the current month when it is not possible to add new entries to the previous month
-const currentMonthDayLimit: number = 10;
+const currentMonthDayLimit = 10;
 
 interface IWorkListProps {
   i18n: i18nType;
@@ -44,7 +44,7 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
 
     this.state = {
       currentTemplate: null,
-      openedSections: []
+      openedSections: [],
     };
 
     this.insertNew = this.insertNew.bind(this);
@@ -59,7 +59,7 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
         prevProps.profile.worklistTemplates
     ) {
       this.setState({
-        currentTemplate: this.props.profile.worklistTemplates[0]
+        currentTemplate: this.props.profile.worklistTemplates[0],
       });
     }
 
@@ -88,7 +88,7 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
         description: data.description,
         billingNumber: data.billingNumber,
         success: () => resolve(true),
-        fail: () => resolve(false)
+        fail: () => resolve(false),
       });
     });
   }
@@ -105,30 +105,30 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
     this.props.loadProfileWorklistSection(index);
     const sectionToOpen = this.props.profile.worklist[index];
     const hasItInIt = this.state.openedSections.some(
-      (n) => n === sectionToOpen.summary.beginDate
+      (n) => n === sectionToOpen.summary.beginDate,
     );
     if (!hasItInIt) {
       this.setState({
         openedSections: [
           ...this.state.openedSections,
-          sectionToOpen.summary.beginDate
-        ]
+          sectionToOpen.summary.beginDate,
+        ],
       });
     } else {
       this.setState({
         openedSections: this.state.openedSections.filter(
-          (s) => s !== sectionToOpen.summary.beginDate
-        )
+          (s) => s !== sectionToOpen.summary.beginDate,
+        ),
       });
     }
   }
 
   public onSelect(e: React.ChangeEvent<HTMLSelectElement>) {
     const newTemplate = this.props.profile.worklistTemplates.find(
-      (t) => t.id.toString() === e.target.value
+      (t) => t.id.toString() === e.target.value,
     );
     this.setState({
-      currentTemplate: newTemplate
+      currentTemplate: newTemplate,
     });
   }
 
@@ -150,23 +150,21 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
 
     const sections =
       this.props.profile.worklist &&
-      this.props.profile.worklist.map((section, index) => {
-        return (
-          <WorkListSection
-            currentMonthDayLimit={currentMonthDayLimit}
-            currentMonthsFirstDay={currentMonthsFirstDay}
-            daysInCurrentMonth={daysInCurrentMonth}
-            i18n={this.props.i18n}
-            isExpanded={this.state.openedSections.includes(
-              section.summary.beginDate
-            )}
-            onToggleSection={this.toggleSection.bind(this, index)}
-            previousMonthsFirstDay={previousMonthsFirstDay}
-            section={section}
-            key={section.summary.beginDate}
-          />
-        );
-      });
+      this.props.profile.worklist.map((section, index) => (
+        <WorkListSection
+          currentMonthDayLimit={currentMonthDayLimit}
+          currentMonthsFirstDay={currentMonthsFirstDay}
+          daysInCurrentMonth={daysInCurrentMonth}
+          i18n={this.props.i18n}
+          isExpanded={this.state.openedSections.includes(
+            section.summary.beginDate,
+          )}
+          onToggleSection={this.toggleSection.bind(this, index)}
+          previousMonthsFirstDay={previousMonthsFirstDay}
+          section={section}
+          key={section.summary.beginDate}
+        />
+      ));
 
     return (
       <section>
@@ -196,13 +194,11 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
                   onChange={this.onSelect}
                 >
                   {this.props.profile.worklistTemplates &&
-                    this.props.profile.worklistTemplates.map((v) => {
-                      return (
-                        <option value={v.id} key={v.id}>
-                          {v.description}
-                        </option>
-                      );
-                    })}
+                    this.props.profile.worklistTemplates.map((v) => (
+                      <option value={v.id} key={v.id}>
+                        {v.description}
+                      </option>
+                    ))}
                 </select>
               </WorkListEditable>
             </div>
@@ -223,14 +219,14 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     profile: state.profile,
-    status: state.status
+    status: state.status,
   };
 }
 
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     { insertProfileWorklistItem, loadProfileWorklistSection },
-    dispatch
+    dispatch,
   );
 }
 

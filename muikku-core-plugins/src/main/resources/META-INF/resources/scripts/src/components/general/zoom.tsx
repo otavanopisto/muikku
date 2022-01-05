@@ -15,7 +15,7 @@ export default class Zoom extends React.Component<ZoomProps, ZoomState> {
     super(props);
 
     this.state = {
-      zoomed: false
+      zoomed: false,
     };
     this.toggleZoom = this.toggleZoom.bind(this);
     this.toggleBodyScroll = this.toggleBodyScroll.bind(this);
@@ -29,7 +29,7 @@ export default class Zoom extends React.Component<ZoomProps, ZoomState> {
   }
   toggleZoom() {
     this.setState({
-      zoomed: !this.state.zoomed
+      zoomed: !this.state.zoomed,
     });
     this.toggleBodyScroll();
   }

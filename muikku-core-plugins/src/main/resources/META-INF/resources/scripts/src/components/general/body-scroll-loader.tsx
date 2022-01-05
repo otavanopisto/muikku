@@ -34,12 +34,12 @@ export default class BodyScrollLoader<T, S> extends React.Component<T, S> {
     const isReady = isReadyByState || isReadyByFunction;
     const hasMore = hasMoreByFunction || hasMoreByState;
     if (isReady && hasMore) {
-      let scrollBottomRemaining =
+      const scrollBottomRemaining =
         document.documentElement.scrollHeight -
         ((document.body.scrollTop || document.documentElement.scrollTop) +
           document.documentElement.offsetHeight);
       if (scrollBottomRemaining <= 100) {
-        let currentlyCalled = new Date().getTime();
+        const currentlyCalled = new Date().getTime();
         if (currentlyCalled - this.lastTimeCalledLoadMore < 300) {
           return;
         }
@@ -70,7 +70,7 @@ export default class BodyScrollLoader<T, S> extends React.Component<T, S> {
     const isReady = isReadyByState || isReadyByFunction;
     const hasMore = hasMoreByFunction || hasMoreByState;
     if (isReady && hasMore) {
-      let doesNotHaveScrollBar =
+      const doesNotHaveScrollBar =
         document.documentElement.scrollHeight ===
         document.documentElement.offsetHeight;
       if (doesNotHaveScrollBar) {
@@ -83,7 +83,7 @@ export default class BodyScrollLoader<T, S> extends React.Component<T, S> {
     }
     this.checkCanLoadMore();
   }
-  onScroll(e: Event) {
+  onScroll() {
     this.checkCanLoadMore();
   }
   componentDidMount() {

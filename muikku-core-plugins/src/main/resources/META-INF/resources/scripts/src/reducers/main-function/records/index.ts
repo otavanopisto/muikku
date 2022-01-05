@@ -5,7 +5,7 @@ import {
   WorkspaceCurriculumFilterListType,
   WorkspaceJournalListType,
   MaterialContentNodeListType,
-  MaterialCompositeRepliesType
+  MaterialCompositeRepliesType,
 } from "~/reducers/workspaces";
 
 export interface TransferCreditType {
@@ -94,41 +94,41 @@ export default function records(
     files: null,
     current: null,
     currentStatus: "WAIT",
-    curriculums: []
+    curriculums: [],
   },
-  action: ActionType
+  action: ActionType,
 ): RecordsType {
   if (action.type === "UPDATE_RECORDS_ALL_STUDENT_USERS_DATA") {
     return Object.assign({}, state, {
-      userData: action.payload
+      userData: action.payload,
     });
   } else if (action.type === "UPDATE_RECORDS_ALL_STUDENT_USERS_DATA_STATUS") {
     return Object.assign({}, state, {
-      userDataStatus: action.payload
+      userDataStatus: action.payload,
     });
   } else if (action.type === "UPDATE_RECORDS_LOCATION") {
     return Object.assign({}, state, {
-      location: action.payload
+      location: action.payload,
     });
   } else if (
     action.type === "UPDATE_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS"
   ) {
     return Object.assign({}, state, {
-      curriculums: action.payload
+      curriculums: action.payload,
     });
   } else if (
     action.type === "UPDATE_RECORDS_CURRENT_STUDENT_AND_WORKSPACE_STATUS"
   ) {
     return Object.assign({}, state, {
-      currentStatus: action.payload
+      currentStatus: action.payload,
     });
   } else if (action.type === "UPDATE_RECORDS_CURRENT_STUDENT_AND_WORKSPACE") {
     return Object.assign({}, state, {
-      current: action.payload
+      current: action.payload,
     });
   } else if (action.type === "UPDATE_RECORDS_SET_FILES") {
     return Object.assign({}, state, {
-      files: action.payload
+      files: action.payload,
     });
   }
   return state;

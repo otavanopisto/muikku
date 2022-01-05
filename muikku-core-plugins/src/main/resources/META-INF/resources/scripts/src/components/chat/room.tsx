@@ -17,7 +17,7 @@ export class Room extends React.Component<IRoomProps, IRoomState> {
   constructor(props: any) {
     super(props);
     this.state = {
-      showRoomInfo: false
+      showRoomInfo: false,
     };
     this.toggleRoomInfo = this.toggleRoomInfo.bind(this);
   }
@@ -25,16 +25,16 @@ export class Room extends React.Component<IRoomProps, IRoomState> {
     if (!this.state.showRoomInfo) {
       this.props.requestExtraInfoAboutRoom();
       this.setState({
-        showRoomInfo: true
+        showRoomInfo: true,
       });
     } else {
       this.setState({
-        showRoomInfo: false
+        showRoomInfo: false,
       });
     }
   }
   render() {
-    let roomActionModifier = this.props.modifier
+    const roomActionModifier = this.props.modifier
       ? "chat__controlbox-room-action--" + this.props.modifier
       : "";
     return (

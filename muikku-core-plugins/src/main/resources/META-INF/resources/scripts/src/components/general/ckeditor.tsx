@@ -39,9 +39,9 @@ const PLUGINS = {
   "muikku-word-definition": "/scripts/ckplugins/muikku-word-definition/",
   "muikku-audio-defaults": "/scripts/ckplugins/muikku-audio-defaults/",
   "muikku-image-target": "/scripts/ckplugins/muikku-image-target/",
-  "muikku-embedded": "/scripts/ckplugins/muikku-embedded/"
+  "muikku-embedded": "/scripts/ckplugins/muikku-embedded/",
 };
-let pluginsLoaded: any = {};
+const pluginsLoaded: any = {};
 
 interface CKEditorProps {
   configuration?: any;
@@ -68,7 +68,7 @@ const extraConfig = (props: CKEditorProps) => ({
   toolbar: [
     {
       name: "basicstyles",
-      items: ["Bold", "Italic", "Underline", "Strike", "RemoveFormat"]
+      items: ["Bold", "Italic", "Underline", "Strike", "RemoveFormat"],
     },
     { name: "links", items: ["Link"] },
     { name: "insert", items: ["Image", "Smiley", "SpecialChar"] },
@@ -84,16 +84,16 @@ const extraConfig = (props: CKEditorProps) => ({
         "Blockquote",
         "JustifyLeft",
         "JustifyCenter",
-        "JustifyRight"
-      ]
+        "JustifyRight",
+      ],
     },
-    { name: "tools", items: ["Maximize"] }
+    { name: "tools", items: ["Maximize"] },
   ],
   resize_enabled: true,
   uploadUrl: "/communicatorAttachmentUploadServlet",
   extraPlugins:
     "widget,lineutils,filetools,notification,notificationaggregator,uploadwidget,uploadimage,divarea",
-  removePlugins: "exportpdf"
+  removePlugins: "exportpdf",
 });
 
 export default class CKEditor extends React.Component<
@@ -132,7 +132,7 @@ export default class CKEditor extends React.Component<
     if (!instance) {
       return;
     }
-    let data = instance.getData();
+    const data = instance.getData();
     if (data !== this.currentData) {
       this.currentData = data;
       props.onChange(data);
@@ -151,8 +151,8 @@ export default class CKEditor extends React.Component<
     this.timeoutProps = null;
     this.previouslyAppliedConfig = configObj;
 
-    let allPlugins = configObj.extraPlugins.split(",");
-    for (let plugin of allPlugins) {
+    const allPlugins = configObj.extraPlugins.split(",");
+    for (const plugin of allPlugins) {
       if (!pluginsLoaded[plugin]) {
         if ((PLUGINS as any)[plugin]) {
           getCKEDITOR().plugins.addExternal(plugin, (PLUGINS as any)[plugin]);
@@ -192,7 +192,7 @@ export default class CKEditor extends React.Component<
         setTimeout(this.onDataChange, 2000);
         setTimeout(this.onDataChange, 3000);
       });
-      let instance = getCKEDITOR().instances[this.name];
+      const instance = getCKEDITOR().instances[this.name];
       this.enableCancelChangeTrigger();
 
       // Height can be given from the ancestor or from instance container.
@@ -205,11 +205,11 @@ export default class CKEditor extends React.Component<
       // We rely on this when we use editor parent container's height as a starting point for cke height calculations
       const ckeTopHeight =
         instance.container.$.querySelector(
-          ".cke_inner"
+          ".cke_inner",
         ).childNodes[0].getBoundingClientRect().height;
       const ckeBottomHeight =
         instance.container.$.querySelector(
-          ".cke_inner"
+          ".cke_inner",
         ).childNodes[2].getBoundingClientRect().height;
 
       // We use generic 2px all around border and that value (times 2)) has to be retracted from the height calculations also
@@ -230,13 +230,13 @@ export default class CKEditor extends React.Component<
 
       // CKeditor offset from top when ancestor height is given, when there's no ancestor height provided, it is supposed no offset is needed
 
-      let contentElementOffset: number = this.props.ancestorHeight
+      const contentElementOffset: number = this.props.ancestorHeight
         ? document.getElementById(contentElementId).offsetTop
         : 0;
 
       // Calculate the height
 
-      let contentHeight: number = height - contentElementOffset;
+      const contentHeight: number = height - contentElementOffset;
 
       // Resize
       instance.resize("100%", contentHeight, true);
@@ -282,9 +282,9 @@ export default class CKEditor extends React.Component<
       return;
     }
 
-    let configObj = {
+    const configObj = {
       ...extraConfig(nextProps),
-      ...(nextProps.configuration || {})
+      ...(nextProps.configuration || {}),
     };
 
     if (!equals(configObj, this.previouslyAppliedConfig)) {

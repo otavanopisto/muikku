@@ -5,20 +5,20 @@ import mApi, { MApiError } from "~/lib/mApi";
 import {
   StudentUserAddressType,
   UserWithSchoolDataType,
-  UserChatSettingsType
+  UserChatSettingsType,
 } from "~/reducers/user-index";
 import { StateType } from "~/reducers";
 import { resize } from "~/util/modifiers";
 import {
   updateStatusProfile,
-  updateStatusHasImage
+  updateStatusHasImage,
 } from "~/actions/base/status";
 import {
   StoredWorklistItem,
   WorklistBillingState,
   WorklistItemsSummary,
   WorklistSection,
-  WorklistTemplate
+  WorklistTemplate,
 } from "~/reducers/main-function/profile";
 import moment from "~/lib/moment";
 
@@ -82,14 +82,13 @@ export interface DeleteProfileImageTriggerType {
   (): AnyActionType;
 }
 
-export interface SET_PROFILE_USER_PROPERTY
-  extends SpecificActionType<
-    "SET_PROFILE_USER_PROPERTY",
-    {
-      key: string;
-      value: string;
-    }
-  > {}
+export type SET_PROFILE_USER_PROPERTY = SpecificActionType<
+  "SET_PROFILE_USER_PROPERTY",
+  {
+    key: string;
+    value: string;
+  }
+>;
 
 export interface SetProfileLocationTriggerType {
   (location: string): AnyActionType;
@@ -151,45 +150,50 @@ export interface LoadProfileWorklistSectionTriggerType {
   (index: number, refresh?: boolean): AnyActionType;
 }
 
-export interface SET_PROFILE_USERNAME
-  extends SpecificActionType<"SET_PROFILE_USERNAME", string> {}
-export interface SET_PROFILE_LOCATION
-  extends SpecificActionType<"SET_PROFILE_LOCATION", string> {}
-export interface SET_PROFILE_ADDRESSES
-  extends SpecificActionType<
-    "SET_PROFILE_ADDRESSES",
-    Array<StudentUserAddressType>
-  > {}
-export interface SET_PROFILE_STUDENT
-  extends SpecificActionType<"SET_PROFILE_STUDENT", UserWithSchoolDataType> {}
-export interface SET_PROFILE_CHAT_SETTINGS
-  extends SpecificActionType<
-    "SET_PROFILE_CHAT_SETTINGS",
-    UserChatSettingsType
-  > {}
-export interface SET_WORKLIST_TEMPLATES
-  extends SpecificActionType<
-    "SET_WORKLIST_TEMPLATES",
-    Array<WorklistTemplate>
-  > {}
-export interface SET_WORKLIST
-  extends SpecificActionType<"SET_WORKLIST", Array<WorklistSection>> {}
+export type SET_PROFILE_USERNAME = SpecificActionType<
+  "SET_PROFILE_USERNAME",
+  string
+>;
+export type SET_PROFILE_LOCATION = SpecificActionType<
+  "SET_PROFILE_LOCATION",
+  string
+>;
+export type SET_PROFILE_ADDRESSES = SpecificActionType<
+  "SET_PROFILE_ADDRESSES",
+  Array<StudentUserAddressType>
+>;
+export type SET_PROFILE_STUDENT = SpecificActionType<
+  "SET_PROFILE_STUDENT",
+  UserWithSchoolDataType
+>;
+export type SET_PROFILE_CHAT_SETTINGS = SpecificActionType<
+  "SET_PROFILE_CHAT_SETTINGS",
+  UserChatSettingsType
+>;
+export type SET_WORKLIST_TEMPLATES = SpecificActionType<
+  "SET_WORKLIST_TEMPLATES",
+  Array<WorklistTemplate>
+>;
+export type SET_WORKLIST = SpecificActionType<
+  "SET_WORKLIST",
+  Array<WorklistSection>
+>;
 
-let loadProfilePropertiesSet: LoadProfilePropertiesSetTriggerType =
+const loadProfilePropertiesSet: LoadProfilePropertiesSetTriggerType =
   function loadProfilePropertiesSet() {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType
+      getState: () => StateType,
     ) => {
-      let state = getState();
+      const state = getState();
 
       try {
-        let properties: any = await promisify(
+        const properties: any = await promisify(
           mApi().user.properties.read(state.status.userId, {
             properties:
-              "profile-phone,profile-vacation-start,profile-vacation-end,communicator-auto-reply,communicator-auto-reply-msg,communicator-auto-reply-subject"
+              "profile-phone,profile-vacation-start,profile-vacation-end,communicator-auto-reply,communicator-auto-reply-msg,communicator-auto-reply-subject",
           }),
-          "callback"
+          "callback",
         )();
 
         properties.forEach((property: any) => {
@@ -197,8 +201,8 @@ let loadProfilePropertiesSet: LoadProfilePropertiesSetTriggerType =
             type: "SET_PROFILE_USER_PROPERTY",
             payload: {
               key: property.key,
-              value: property.value
-            }
+              value: property.value,
+            },
           });
         });
       } catch (err) {
@@ -209,19 +213,16 @@ let loadProfilePropertiesSet: LoadProfilePropertiesSetTriggerType =
     };
   };
 
-let saveProfileProperty: SaveProfilePropertyTriggerType =
+const saveProfileProperty: SaveProfilePropertyTriggerType =
   function saveProfileProperty(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType
-    ) => {
+    return async (dispatch: (arg: AnyActionType) => any) => {
       try {
         const prop = { key: data.key, value: data.value };
         await promisify(mApi().user.property.create(prop), "callback")();
 
         dispatch({
           type: "SET_PROFILE_USER_PROPERTY",
-          payload: prop
+          payload: prop,
         });
 
         data.success && data.success();
@@ -235,24 +236,19 @@ let saveProfileProperty: SaveProfilePropertyTriggerType =
     };
   };
 
-let loadProfileUsername: LoadProfileUsernameTriggerType =
+const loadProfileUsername: LoadProfileUsernameTriggerType =
   function loadProfileUsername() {
-    return async (
-      dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType
-    ) => {
-      let state = getState();
-
+    return async (dispatch: (arg: AnyActionType) => any) => {
       try {
-        let credentials: any = await promisify(
+        const credentials: any = await promisify(
           mApi().userplugin.credentials.read(),
-          "callback"
+          "callback",
         )();
 
         if (credentials && credentials.username) {
           dispatch({
             type: "SET_PROFILE_USERNAME",
-            payload: credentials.username
+            payload: credentials.username,
           });
         }
       } catch (err) {
@@ -263,35 +259,35 @@ let loadProfileUsername: LoadProfileUsernameTriggerType =
     };
   };
 
-let loadProfileAddress: LoadProfileAddressTriggerType =
+const loadProfileAddress: LoadProfileAddressTriggerType =
   function loadProfileAddress() {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType
+      getState: () => StateType,
     ) => {
-      let state = getState();
+      const state = getState();
 
       try {
-        let identifier = state.status.userSchoolDataIdentifier;
-        let addresses: Array<StudentUserAddressType> = <
+        const identifier = state.status.userSchoolDataIdentifier;
+        const addresses: Array<StudentUserAddressType> = <
           Array<StudentUserAddressType>
         >await promisify(
           mApi().user.students.addresses.read(identifier),
-          "callback"
+          "callback",
         )();
 
-        let student: UserWithSchoolDataType = <UserWithSchoolDataType>(
+        const student: UserWithSchoolDataType = <UserWithSchoolDataType>(
           await promisify(mApi().user.students.read(identifier), "callback")()
         );
 
         dispatch({
           type: "SET_PROFILE_ADDRESSES",
-          payload: addresses
+          payload: addresses,
         });
 
         dispatch({
           type: "SET_PROFILE_STUDENT",
-          payload: student
+          payload: student,
         });
       } catch (err) {
         if (!(err instanceof MApiError)) {
@@ -301,17 +297,17 @@ let loadProfileAddress: LoadProfileAddressTriggerType =
     };
   };
 
-let updateProfileAddress: UpdateProfileAddressTriggerType =
+const updateProfileAddress: UpdateProfileAddressTriggerType =
   function updateProfileAddress(data) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType
+      getState: () => StateType,
     ) => {
-      let state = getState();
+      const state = getState();
 
       try {
         if (data.municipality && data.municipality !== "") {
-          let student: UserWithSchoolDataType = { ...state.profile.student };
+          const student: UserWithSchoolDataType = { ...state.profile.student };
           student.municipality = data.municipality;
 
           dispatch({
@@ -319,9 +315,9 @@ let updateProfileAddress: UpdateProfileAddressTriggerType =
             payload: <UserWithSchoolDataType>(
               await promisify(
                 mApi().user.students.update(student.id, student),
-                "callback"
+                "callback",
               )()
-            )
+            ),
           });
         }
 
@@ -330,50 +326,49 @@ let updateProfileAddress: UpdateProfileAddressTriggerType =
           address = state.profile.addresses[0];
         }
 
-        let nAddress: StudentUserAddressType = {
+        const nAddress: StudentUserAddressType = {
           ...address,
           ...{
             city: data.city,
             country: data.country,
             postalCode: data.postalCode,
-            street: data.street
-          }
+            street: data.street,
+          },
         };
 
-        let nAddressAsSaidFromServer: StudentUserAddressType = <
+        const nAddressAsSaidFromServer: StudentUserAddressType = <
           StudentUserAddressType
         >await promisify(
           mApi().user.students.addresses.update(
             state.status.userSchoolDataIdentifier,
             nAddress.identifier,
-            nAddress
+            nAddress,
           ),
-          "callback"
+          "callback",
         )();
 
-        let newAddresses = state.profile.addresses.map((a) =>
+        const newAddresses = state.profile.addresses.map((a) =>
           a.identifier === nAddressAsSaidFromServer.identifier
             ? nAddressAsSaidFromServer
-            : a
+            : a,
         );
 
         dispatch({
           type: "SET_PROFILE_ADDRESSES",
-          payload: newAddresses
+          payload: newAddresses,
         });
 
         dispatch(
           updateStatusProfile({
             ...state.status.profile,
-            addresses: newAddresses.map((address) => {
-              return (
+            addresses: newAddresses.map(
+              (address) =>
                 (address.street ? address.street + " " : "") +
                 (address.postalCode ? address.postalCode + " " : "") +
                 (address.city ? address.city + " " : "") +
-                (address.country ? address.country + " " : "")
-              );
-            })
-          })
+                (address.country ? address.country + " " : ""),
+            ),
+          }),
         );
 
         data.success && data.success();
@@ -387,34 +382,34 @@ let updateProfileAddress: UpdateProfileAddressTriggerType =
     };
   };
 
-let loadProfileChatSettings: LoadProfileChatSettingsTriggerType =
+const loadProfileChatSettings: LoadProfileChatSettingsTriggerType =
   function loadProfileChatSettings() {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType
+      getState: () => StateType,
     ) => {
       const state = getState();
       if (state.profile.chatSettings) {
         return;
       }
       try {
-        let chatSettings: any = await promisify(
+        const chatSettings: any = await promisify(
           mApi().chat.settings.cacheClear().read(),
-          "callback"
+          "callback",
         )();
 
         if (chatSettings && chatSettings.visibility) {
           dispatch({
             type: "SET_PROFILE_CHAT_SETTINGS",
-            payload: chatSettings
+            payload: chatSettings,
           });
         } else {
           dispatch({
             type: "SET_PROFILE_CHAT_SETTINGS",
             payload: {
               visibility: "DISABLED",
-              nick: null
-            }
+              nick: null,
+            },
           });
         }
       } catch (err) {
@@ -425,30 +420,27 @@ let loadProfileChatSettings: LoadProfileChatSettingsTriggerType =
             type: "SET_PROFILE_CHAT_SETTINGS",
             payload: {
               visibility: "DISABLED",
-              nick: null
-            }
+              nick: null,
+            },
           });
         }
       }
     };
   };
 
-let updateProfileChatSettings: UpdateProfileChatSettingsTriggerType =
+const updateProfileChatSettings: UpdateProfileChatSettingsTriggerType =
   function updateProfileChatSettings(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType
-    ) => {
+    return async (dispatch: (arg: AnyActionType) => any) => {
       try {
         const request = await fetch("/rest/chat/settings", {
           method: "PUT",
           body: JSON.stringify({
             visibility: data.visibility,
-            nick: data.nick
+            nick: data.nick,
           }),
           headers: {
-            "Content-Type": "application/json"
-          }
+            "Content-Type": "application/json",
+          },
         });
         const status = request.status;
         if (status === 200) {
@@ -456,7 +448,7 @@ let updateProfileChatSettings: UpdateProfileChatSettingsTriggerType =
 
           dispatch({
             type: "SET_PROFILE_CHAT_SETTINGS",
-            payload: <UserChatSettingsType>json
+            payload: <UserChatSettingsType>json,
           });
 
           data.success && data.success();
@@ -477,14 +469,12 @@ let updateProfileChatSettings: UpdateProfileChatSettingsTriggerType =
 
 const imageSizes = [96, 256];
 
-let uploadProfileImage: UploadProfileImageTriggerType =
+const uploadProfileImage: UploadProfileImageTriggerType =
   function uploadProfileImage(data) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType
+      getState: () => StateType,
     ) => {
-      let state = getState();
-
       try {
         if (data.originalB64) {
           await promisify(
@@ -493,31 +483,31 @@ let uploadProfileImage: UploadProfileImageTriggerType =
               base64Data: data.originalB64,
               identifier: "profile-image-original",
               name: data.file.name,
-              visibility: "PUBLIC"
+              visibility: "PUBLIC",
             }),
-            "callback"
+            "callback",
           )();
         }
 
-        let image: HTMLImageElement = <HTMLImageElement>(
+        const image: HTMLImageElement = <HTMLImageElement>(
           await promisifyNewConstructor(Image, "onload", "onerror", {
-            src: data.croppedB64
+            src: data.croppedB64,
           })()
         );
 
-        let done = 0;
+        const done = 0;
 
         for (let i = 0; i < imageSizes.length; i++) {
-          let size = imageSizes[i];
+          const size = imageSizes[i];
           await promisify(
             mApi().user.files.create({
               contentType: "image/jpeg",
               base64Data: resize(image, size),
               identifier: "profile-image-" + size,
               name: "profile-" + size + ".jpg",
-              visibility: "PUBLIC"
+              visibility: "PUBLIC",
             }),
-            "callback"
+            "callback",
           )();
         }
 
@@ -525,10 +515,10 @@ let uploadProfileImage: UploadProfileImageTriggerType =
         dispatch(
           actions.displayNotification(
             getState().i18n.text.get(
-              "plugin.profile.changeImage.dialog.notif.successful"
+              "plugin.profile.changeImage.dialog.notif.successful",
             ),
-            "success"
-          )
+            "success",
+          ),
         );
 
         data.success && data.success();
@@ -539,31 +529,31 @@ let uploadProfileImage: UploadProfileImageTriggerType =
         dispatch(
           actions.displayNotification(
             getState().i18n.text.get(
-              "plugin.profile.changeImage.dialog.notif.error"
+              "plugin.profile.changeImage.dialog.notif.error",
             ),
-            "error"
-          )
+            "error",
+          ),
         );
         data.fail && data.fail();
       }
     };
   };
 
-let deleteProfileImage: DeleteProfileImageTriggerType =
+const deleteProfileImage: DeleteProfileImageTriggerType =
   function deleteProfileImage() {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType
+      getState: () => StateType,
     ) => {
-      let state = getState();
-      let allImagesToDelete = ["original", ...imageSizes];
+      const state = getState();
+      const allImagesToDelete = ["original", ...imageSizes];
 
       try {
         for (let i = 0; i < allImagesToDelete.length; i++) {
-          let identifier = `profile-image-${allImagesToDelete[i]}`;
+          const identifier = `profile-image-${allImagesToDelete[i]}`;
           await promisify(
             mApi().user.files.identifier.del(state.status.userId, identifier),
-            "callback"
+            "callback",
           )();
         }
 
@@ -575,10 +565,10 @@ let deleteProfileImage: DeleteProfileImageTriggerType =
         dispatch(
           actions.displayNotification(
             getState().i18n.text.get(
-              "plugin.profile.errormessage.profileImage.remove"
+              "plugin.profile.errormessage.profileImage.remove",
             ),
-            "error"
-          )
+            "error",
+          ),
         );
       }
     };
@@ -588,7 +578,7 @@ const setProfileLocation: SetProfileLocationTriggerType =
   function setProfileLocation(location: string) {
     return {
       type: "SET_PROFILE_LOCATION",
-      payload: location
+      payload: location,
     };
   };
 
@@ -596,9 +586,9 @@ const insertProfileWorklistItem: InsertProfileWorklistItemTriggerType =
   function insertProfileWorklistItem(data) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType
+      getState: () => StateType,
     ) => {
-      let state = getState();
+      const state = getState();
 
       if (!state.profile || !state.profile.worklist) {
         return;
@@ -607,12 +597,12 @@ const insertProfileWorklistItem: InsertProfileWorklistItemTriggerType =
       try {
         const worklistItem: StoredWorklistItem = (await promisify(
           mApi().worklist.worklistItems.create(data),
-          "callback"
+          "callback",
         )()) as StoredWorklistItem;
 
         let displayName = state.i18n.time.format(
           worklistItem.entryDate,
-          "MMMM YYYY"
+          "MMMM YYYY",
         );
         displayName = displayName[0].toUpperCase() + displayName.substr(1);
 
@@ -624,19 +614,19 @@ const insertProfileWorklistItem: InsertProfileWorklistItemTriggerType =
             .endOf("month")
             .format("YYYY-MM-DD"),
           displayName,
-          count: 1
+          count: 1,
         };
 
         const currWorklist = getState().profile.worklist;
         const matchingSummaryIndex = currWorklist.findIndex(
-          (f) => f.summary.beginDate === expectedSummary.beginDate
+          (f) => f.summary.beginDate === expectedSummary.beginDate,
         );
         if (matchingSummaryIndex === -1) {
           const newWorklist = [...currWorklist];
           const entryDate = moment(worklistItem.entryDate).startOf("month");
-          const itemWithMoreIndex = newWorklist.findIndex((p) => {
-            return moment(p.summary.beginDate).isAfter(entryDate);
-          });
+          const itemWithMoreIndex = newWorklist.findIndex((p) =>
+            moment(p.summary.beginDate).isAfter(entryDate),
+          );
 
           // we can add it here right away because not finding
           // the worklist summary thing means that it was just
@@ -644,18 +634,18 @@ const insertProfileWorklistItem: InsertProfileWorklistItemTriggerType =
           if (itemWithMoreIndex === -1) {
             newWorklist.push({
               summary: expectedSummary,
-              items: [worklistItem]
+              items: [worklistItem],
             });
           } else {
             newWorklist.splice(itemWithMoreIndex, 0, {
               summary: expectedSummary,
-              items: [worklistItem]
+              items: [worklistItem],
             });
           }
 
           dispatch({
             type: "SET_WORKLIST",
-            payload: newWorklist
+            payload: newWorklist,
           });
         } else {
           const newSummary = { ...currWorklist[matchingSummaryIndex] };
@@ -665,9 +655,9 @@ const insertProfileWorklistItem: InsertProfileWorklistItemTriggerType =
           // item if there are items already rather than null
           // in which case it hasn't been loaded
           if (newSummary.items) {
-            const itemWithMoreIndex = newSummary.items.findIndex((p) => {
-              return moment(p.entryDate).isAfter(worklistItem.entryDate);
-            });
+            const itemWithMoreIndex = newSummary.items.findIndex((p) =>
+              moment(p.entryDate).isAfter(worklistItem.entryDate),
+            );
 
             if (itemWithMoreIndex === -1) {
               newSummary.items = [...newSummary.items, worklistItem];
@@ -681,7 +671,7 @@ const insertProfileWorklistItem: InsertProfileWorklistItemTriggerType =
 
           dispatch({
             type: "SET_WORKLIST",
-            payload: newWorklist
+            payload: newWorklist,
           });
         }
         data.success && data.success();
@@ -693,8 +683,8 @@ const insertProfileWorklistItem: InsertProfileWorklistItemTriggerType =
         dispatch(
           actions.displayNotification(
             getState().i18n.text.get("plugin.profile.errormessage.worklist"),
-            "error"
-          )
+            "error",
+          ),
         );
       }
     };
@@ -704,9 +694,9 @@ const deleteProfileWorklistItem: DeleteProfileWorklistItemTriggerType =
   function deleteProfileWorklistItem(data) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType
+      getState: () => StateType,
     ) => {
-      let state = getState();
+      const state = getState();
 
       if (!state.profile || !state.profile.worklist) {
         return;
@@ -715,7 +705,7 @@ const deleteProfileWorklistItem: DeleteProfileWorklistItemTriggerType =
       try {
         await promisify(
           mApi().worklist.worklistItems.del(data.item),
-          "callback"
+          "callback",
         )();
         const expectedSummaryBeginDate = moment(data.item.entryDate)
           .startOf("month")
@@ -723,7 +713,7 @@ const deleteProfileWorklistItem: DeleteProfileWorklistItemTriggerType =
 
         const currWorklist = getState().profile.worklist;
         const matchingSummaryIndex = currWorklist.findIndex(
-          (f) => f.summary.beginDate === expectedSummaryBeginDate
+          (f) => f.summary.beginDate === expectedSummaryBeginDate,
         );
         if (matchingSummaryIndex !== -1) {
           const newSummary = { ...currWorklist[matchingSummaryIndex] };
@@ -731,15 +721,15 @@ const deleteProfileWorklistItem: DeleteProfileWorklistItemTriggerType =
 
           if (newSummary.items) {
             newSummary.items = newSummary.items.filter(
-              (i) => i.id !== data.item.id
+              (i) => i.id !== data.item.id,
             );
           }
 
           let newWorklist: WorklistSection[];
           if (newSummary.summary.count === 0) {
-            newWorklist = currWorklist.filter((i, index) => {
-              return index !== matchingSummaryIndex;
-            });
+            newWorklist = currWorklist.filter(
+              (i, index) => index !== matchingSummaryIndex,
+            );
           } else {
             newWorklist = [...currWorklist];
             newWorklist[matchingSummaryIndex] = newSummary;
@@ -747,7 +737,7 @@ const deleteProfileWorklistItem: DeleteProfileWorklistItemTriggerType =
 
           dispatch({
             type: "SET_WORKLIST",
-            payload: newWorklist
+            payload: newWorklist,
           });
         }
         data.success && data.success();
@@ -759,8 +749,8 @@ const deleteProfileWorklistItem: DeleteProfileWorklistItemTriggerType =
         dispatch(
           actions.displayNotification(
             getState().i18n.text.get("plugin.profile.errormessage.worklist"),
-            "error"
-          )
+            "error",
+          ),
         );
       }
     };
@@ -781,9 +771,9 @@ const editProfileWorklistItem: EditProfileWorklistItemTriggerType =
 
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType
+      getState: () => StateType,
     ) => {
-      let state = getState();
+      const state = getState();
 
       if (!state.profile || !state.profile.worklist) {
         return;
@@ -797,9 +787,9 @@ const editProfileWorklistItem: EditProfileWorklistItemTriggerType =
             description: data.description,
             price: data.price,
             factor: data.factor,
-            billingNumber: data.billingNumber
+            billingNumber: data.billingNumber,
           }),
-          "callback"
+          "callback",
         )()) as StoredWorklistItem;
 
         const expectedSummaryBeginDate = moment(newWorklistItem.entryDate)
@@ -808,7 +798,7 @@ const editProfileWorklistItem: EditProfileWorklistItemTriggerType =
 
         const currWorklist = getState().profile.worklist;
         const matchingSummaryIndex = currWorklist.findIndex(
-          (f) => f.summary.beginDate === expectedSummaryBeginDate
+          (f) => f.summary.beginDate === expectedSummaryBeginDate,
         );
         if (
           matchingSummaryIndex !== -1 &&
@@ -824,9 +814,9 @@ const editProfileWorklistItem: EditProfileWorklistItemTriggerType =
             return true;
           });
 
-          const itemWithMoreIndex = newItems.findIndex((p) => {
-            return moment(p.entryDate).isAfter(newWorklistItem.entryDate);
-          });
+          const itemWithMoreIndex = newItems.findIndex((p) =>
+            moment(p.entryDate).isAfter(newWorklistItem.entryDate),
+          );
 
           if (itemWithMoreIndex === -1) {
             newItems = [...newItems, newWorklistItem];
@@ -841,7 +831,7 @@ const editProfileWorklistItem: EditProfileWorklistItemTriggerType =
 
           dispatch({
             type: "SET_WORKLIST",
-            payload: newWorklist
+            payload: newWorklist,
           });
         }
         data.success && data.success();
@@ -853,8 +843,8 @@ const editProfileWorklistItem: EditProfileWorklistItemTriggerType =
         dispatch(
           actions.displayNotification(
             getState().i18n.text.get("plugin.profile.errormessage.worklist"),
-            "error"
-          )
+            "error",
+          ),
         );
       }
     };
@@ -864,9 +854,9 @@ const loadProfileWorklistTemplates: LoadProfileWorklistTemplatesTriggerType =
   function loadProfileWorklistTemplates() {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType
+      getState: () => StateType,
     ) => {
-      let state = getState();
+      const state = getState();
 
       if (state.profile && state.profile.worklistTemplates) {
         return;
@@ -875,11 +865,11 @@ const loadProfileWorklistTemplates: LoadProfileWorklistTemplatesTriggerType =
       try {
         const templates = await promisify(
           mApi().worklist.templates.read(),
-          "callback"
+          "callback",
         )();
         dispatch({
           type: "SET_WORKLIST_TEMPLATES",
-          payload: <Array<WorklistTemplate>>templates
+          payload: <Array<WorklistTemplate>>templates,
         });
       } catch (err) {
         if (!(err instanceof MApiError)) {
@@ -888,8 +878,8 @@ const loadProfileWorklistTemplates: LoadProfileWorklistTemplatesTriggerType =
         dispatch(
           actions.displayNotification(
             getState().i18n.text.get("plugin.profile.errormessage.worklist"),
-            "error"
-          )
+            "error",
+          ),
         );
       }
     };
@@ -897,13 +887,13 @@ const loadProfileWorklistTemplates: LoadProfileWorklistTemplatesTriggerType =
 
 const loadProfileWorklistSections: LoadProfileWorklistSectionsTriggerType =
   function loadProfileWorklistSections(
-    cb?: (d: Array<WorklistSection>) => void
+    cb?: (d: Array<WorklistSection>) => void,
   ) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType
+      getState: () => StateType,
     ) => {
-      let state = getState();
+      const state = getState();
 
       if (state.profile && state.profile.worklist) {
         return;
@@ -912,19 +902,17 @@ const loadProfileWorklistSections: LoadProfileWorklistSectionsTriggerType =
       try {
         const summaries: Array<WorklistItemsSummary> = (await promisify(
           mApi().worklist.worklistSummary.read({
-            owner: state.status.userSchoolDataIdentifier
+            owner: state.status.userSchoolDataIdentifier,
           }),
-          "callback"
+          "callback",
         )()) as any;
-        const payload = summaries.map((s) => {
-          return {
-            summary: s,
-            items: null
-          };
-        });
+        const payload = summaries.map((s) => ({
+          summary: s,
+          items: null,
+        }));
         dispatch({
           type: "SET_WORKLIST",
-          payload
+          payload,
         });
         cb && cb(payload);
       } catch (err) {
@@ -934,8 +922,8 @@ const loadProfileWorklistSections: LoadProfileWorklistSectionsTriggerType =
         dispatch(
           actions.displayNotification(
             getState().i18n.text.get("plugin.profile.errormessage.worklist"),
-            "error"
-          )
+            "error",
+          ),
         );
       }
     };
@@ -945,9 +933,9 @@ const loadProfileWorklistSection: LoadProfileWorklistSectionTriggerType =
   function loadProfileWorklistSection(index: number, refresh?: boolean) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType
+      getState: () => StateType,
     ) => {
-      let state = getState();
+      const state = getState();
 
       if (
         !state.profile ||
@@ -964,16 +952,16 @@ const loadProfileWorklistSection: LoadProfileWorklistSectionTriggerType =
           mApi().worklist.worklistItems.read({
             owner: state.status.userSchoolDataIdentifier,
             beginDate: summary.beginDate,
-            endDate: summary.endDate
+            endDate: summary.endDate,
           }),
-          "callback"
+          "callback",
         )()) as any;
         const newWorkList = [...getState().profile.worklist];
         newWorkList[index] = { ...newWorkList[index], items };
 
         dispatch({
           type: "SET_WORKLIST",
-          payload: newWorkList
+          payload: newWorkList,
         });
       } catch (err) {
         if (!(err instanceof MApiError)) {
@@ -982,8 +970,8 @@ const loadProfileWorklistSection: LoadProfileWorklistSectionTriggerType =
         dispatch(
           actions.displayNotification(
             getState().i18n.text.get("plugin.profile.errormessage.worklist"),
-            "error"
-          )
+            "error",
+          ),
         );
       }
     };
@@ -993,9 +981,9 @@ const updateProfileWorklistItemsState: UpdateProfileWorklistItemsStateTriggerTyp
   function updateProfileWorklistItemsState(data) {
     return async (
       dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType
+      getState: () => StateType,
     ) => {
-      let state = getState();
+      const state = getState();
 
       if (!state.profile || !state.profile.worklist) {
         return;
@@ -1007,9 +995,9 @@ const updateProfileWorklistItemsState: UpdateProfileWorklistItemsStateTriggerTyp
             userIdentifier: state.status.userSchoolDataIdentifier,
             beginDate: data.beginDate,
             endDate: data.endDate,
-            state: data.state
+            state: data.state,
           }),
-          "callback"
+          "callback",
         )()) as any;
 
         // create a new worklist where we would replace the old worklist items with
@@ -1018,7 +1006,7 @@ const updateProfileWorklistItemsState: UpdateProfileWorklistItemsStateTriggerTyp
           if (newWorklistGroup.items) {
             newWorklistGroup.items = newWorklistGroup.items.map((i) => {
               const foundInUpdate = updatedItems.find(
-                (updatedItem) => updatedItem.id === i.id
+                (updatedItem) => updatedItem.id === i.id,
               );
               // we merge the data in case, as there had been issues with incomplete data from
               // the update that is partial
@@ -1030,7 +1018,7 @@ const updateProfileWorklistItemsState: UpdateProfileWorklistItemsStateTriggerTyp
 
         dispatch({
           type: "SET_WORKLIST",
-          payload: newWorkList
+          payload: newWorkList,
         });
 
         data.success && data.success();
@@ -1041,8 +1029,8 @@ const updateProfileWorklistItemsState: UpdateProfileWorklistItemsStateTriggerTyp
         dispatch(
           actions.displayNotification(
             getState().i18n.text.get("plugin.profile.errormessage.worklist"),
-            "error"
-          )
+            "error",
+          ),
         );
         data.fail && data.fail();
       }
@@ -1066,5 +1054,5 @@ export {
   insertProfileWorklistItem,
   deleteProfileWorklistItem,
   editProfileWorklistItem,
-  updateProfileWorklistItemsState
+  updateProfileWorklistItemsState,
 };

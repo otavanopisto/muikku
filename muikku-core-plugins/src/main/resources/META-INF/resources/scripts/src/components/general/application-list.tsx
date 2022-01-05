@@ -19,7 +19,7 @@ export default class ApplicationList extends React.Component<
   ApplicationListState
 > {
   render() {
-    let modifiers =
+    const modifiers =
       this.props.modifiers && this.props.modifiers instanceof Array
         ? this.props.modifiers
         : [this.props.modifiers];
@@ -78,8 +78,8 @@ export class ApplicationListItem extends React.Component<
   ApplicationListItemState
 > {
   render() {
-    let newProps: ApplicationListItemProps = Object.assign({}, this.props);
-    let modifiers =
+    const newProps: ApplicationListItemProps = Object.assign({}, this.props);
+    const modifiers =
       this.props.modifiers && this.props.modifiers instanceof Array
         ? this.props.modifiers
         : [this.props.modifiers];
@@ -124,7 +124,7 @@ export class ApplicationListItemDate extends React.Component<
   ApplicationListItemDateState
 > {
   render() {
-    let modifiers =
+    const modifiers =
       this.props.modifiers && this.props.modifiers instanceof Array
         ? this.props.modifiers
         : [this.props.modifiers];
@@ -164,11 +164,11 @@ export class ApplicationListItemHeader extends React.Component<
   ApplicationListItemHeaderState
 > {
   render() {
-    let newProps: ApplicationListItemHeaderProps = Object.assign(
+    const newProps: ApplicationListItemHeaderProps = Object.assign(
       {},
-      this.props
+      this.props,
     );
-    let modifiers =
+    const modifiers =
       this.props.modifiers && this.props.modifiers instanceof Array
         ? this.props.modifiers
         : [this.props.modifiers];
@@ -208,7 +208,7 @@ export class ApplicationListHeaderPrimary extends React.Component<
   ApplicationListHeaderPrimaryState
 > {
   render() {
-    let modifiers =
+    const modifiers =
       this.props.modifiers && this.props.modifiers instanceof Array
         ? this.props.modifiers
         : [this.props.modifiers];
@@ -247,13 +247,13 @@ export class ApplicationListItemBody extends React.Component<
   ApplicationListItemBodyState
 > {
   render() {
-    let modifiers =
+    const modifiers =
       this.props.modifiers && this.props.modifiers instanceof Array
         ? this.props.modifiers
         : [this.props.modifiers];
-    let newProps: ApplicationListItemHeaderProps = Object.assign(
+    const newProps: ApplicationListItemHeaderProps = Object.assign(
       {},
-      this.props
+      this.props,
     );
     delete newProps["modifiers"];
     return (
@@ -315,11 +315,11 @@ export class ApplicationListItemFooter extends React.Component<
   ApplicationListItemFooterState
 > {
   render() {
-    let newProps: ApplicationListItemHeaderProps = Object.assign(
+    const newProps: ApplicationListItemHeaderProps = Object.assign(
       {},
-      this.props
+      this.props,
     );
-    let modifiers =
+    const modifiers =
       this.props.modifiers && this.props.modifiers instanceof Array
         ? this.props.modifiers
         : [this.props.modifiers];
@@ -358,11 +358,11 @@ export class ApplicationListItemContentContainer extends React.Component<
   ApplicationListItemContentContainerState
 > {
   render() {
-    let newProps: ApplicationListItemHeaderProps = Object.assign(
+    const newProps: ApplicationListItemHeaderProps = Object.assign(
       {},
-      this.props
+      this.props,
     );
-    let modifiers =
+    const modifiers =
       this.props.modifiers && this.props.modifiers instanceof Array
         ? this.props.modifiers
         : [this.props.modifiers];
@@ -409,7 +409,7 @@ export class ApplicationListItemContentWrapper extends React.Component<
   render() {
     const newProps: ApplicationListItemHeaderProps = Object.assign(
       {},
-      this.props
+      this.props,
     );
     const modifiers =
       this.props.modifiers && this.props.modifiers instanceof Array
@@ -423,10 +423,6 @@ export class ApplicationListItemContentWrapper extends React.Component<
       this.props.mainModifiers && this.props.mainModifiers instanceof Array
         ? this.props.mainModifiers
         : [this.props.mainModifiers];
-    const actionModifiers =
-      this.props.actionModifiers && this.props.actionModifiers instanceof Array
-        ? this.props.actionModifiers
-        : [this.props.actionModifiers];
 
     delete (newProps as any)["modifiers"];
     delete (newProps as any)["asideModifiers"];
@@ -488,7 +484,7 @@ interface ApplicationListItemContentActionsProps {
 
 export class ApplicationListItemContentActions extends React.Component<ApplicationListItemContentActionsProps> {
   render() {
-    let modifiers =
+    const modifiers =
       this.props.modifiers && this.props.modifiers instanceof Array
         ? this.props.modifiers
         : [this.props.modifiers];
@@ -522,7 +518,7 @@ export class ApplicationListItemContentData extends React.Component<
   ApplicationListItemContentDataState
 > {
   render() {
-    let modifiers =
+    const modifiers =
       this.props.modifiers && this.props.modifiers instanceof Array
         ? this.props.modifiers
         : [this.props.modifiers];

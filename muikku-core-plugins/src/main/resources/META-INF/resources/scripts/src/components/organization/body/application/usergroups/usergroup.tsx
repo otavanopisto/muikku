@@ -1,5 +1,5 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/course.scss";
 import "~/sass/elements/rich-text.scss";
@@ -9,7 +9,7 @@ import { StateType } from "~/reducers";
 import UserGroupDialog from "~/components/organization/dialogs/edit-usergroup";
 import {
   ApplicationListItem,
-  ApplicationListItemHeader
+  ApplicationListItemHeader,
 } from "~/components/general/application-list";
 import { UserGroupType } from "~/reducers/user-index";
 
@@ -26,12 +26,12 @@ class Workspace extends React.Component<CourseProps, CourseState> {
     super(props);
 
     this.state = {
-      expanded: false
+      expanded: false,
     };
   }
 
   render() {
-    let actions = (
+    const actions = (
       <div>
         <UserGroupDialog usergroup={this.props.usergroup}>
           <span className="icon-pencil"></span>
@@ -55,11 +55,11 @@ class Workspace extends React.Component<CourseProps, CourseState> {
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    status: state.status
+    status: state.status,
   };
 }
 
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps() {
   return {};
 }
 

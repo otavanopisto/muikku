@@ -10,7 +10,7 @@ import { AnyActionType } from "~/actions";
 import { i18nType } from "~/reducers/base/i18n";
 import {
   DiscussionThreadType,
-  DiscussionThreadReplyType
+  DiscussionThreadReplyType,
 } from "~/reducers/discussion";
 import Link from "~/components/general/link";
 import Dialog from "~/components/general/dialog";
@@ -19,7 +19,7 @@ import {
   DeleteCurrentDiscussionThreadTriggerType,
   DeleteDiscussionThreadReplyFromCurrentTriggerType,
   deleteCurrentDiscussionThread,
-  deleteDiscussionThreadReplyFromCurrent
+  deleteDiscussionThreadReplyFromCurrent,
 } from "~/actions/discussion";
 import { StateType } from "~/reducers";
 
@@ -45,7 +45,7 @@ class DiscussionDeleteThreadComponent extends React.Component<
     this.deleteComponent = this.deleteComponent.bind(this);
 
     this.state = {
-      locked: false
+      locked: false,
     };
   }
   deleteComponent(closeDialog: () => any) {
@@ -58,7 +58,7 @@ class DiscussionDeleteThreadComponent extends React.Component<
         },
         fail: () => {
           this.setState({ locked: false });
-        }
+        },
       });
     } else {
       this.props.deleteDiscussionThreadReplyFromCurrent({
@@ -69,44 +69,42 @@ class DiscussionDeleteThreadComponent extends React.Component<
         },
         fail: () => {
           this.setState({ locked: false });
-        }
+        },
       });
     }
   }
   render() {
-    let content = (closeDialog: () => any) => (
+    const content = (closeDialog: () => any) => (
       <div>
         {this.props.reply
           ? this.props.i18n.text.get("plugin.discussion.removeReply.text")
           : this.props.i18n.text.get(
-              "plugin.discussion.confirmThreadRemovalDialog.text"
+              "plugin.discussion.confirmThreadRemovalDialog.text",
             )}
       </div>
     );
 
-    let footer = (closeDialog: () => any) => {
-      return (
-        <div className="dialog__button-set">
-          <Button
-            buttonModifiers={["fatal", "standard-ok"]}
-            onClick={this.deleteComponent.bind(this, closeDialog)}
-            disabled={this.state.locked}
-          >
-            {this.props.i18n.text.get(
-              "plugin.discussion.confirmThreadRemovalDialog.confirmButton"
-            )}
-          </Button>
-          <Button
-            buttonModifiers={["cancel", "standard-cancel"]}
-            onClick={closeDialog}
-          >
-            {this.props.i18n.text.get(
-              "plugin.discussion.confirmThreadRemovalDialog.cancelButton"
-            )}
-          </Button>
-        </div>
-      );
-    };
+    const footer = (closeDialog: () => any) => (
+      <div className="dialog__button-set">
+        <Button
+          buttonModifiers={["fatal", "standard-ok"]}
+          onClick={this.deleteComponent.bind(this, closeDialog)}
+          disabled={this.state.locked}
+        >
+          {this.props.i18n.text.get(
+            "plugin.discussion.confirmThreadRemovalDialog.confirmButton",
+          )}
+        </Button>
+        <Button
+          buttonModifiers={["cancel", "standard-cancel"]}
+          onClick={closeDialog}
+        >
+          {this.props.i18n.text.get(
+            "plugin.discussion.confirmThreadRemovalDialog.cancelButton",
+          )}
+        </Button>
+      </div>
+    );
 
     return (
       <Dialog
@@ -127,18 +125,18 @@ class DiscussionDeleteThreadComponent extends React.Component<
 
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n
+    i18n: state.i18n,
   };
 }
 
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     { deleteCurrentDiscussionThread, deleteDiscussionThreadReplyFromCurrent },
-    dispatch
+    dispatch,
   );
 }
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(DiscussionDeleteThreadComponent);

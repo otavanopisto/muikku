@@ -1,9 +1,9 @@
 import * as React from "react";
 import { StateType } from "~/reducers";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
 import ApplicationSubPanel, {
-  ApplicationSubPanelItem
+  ApplicationSubPanelItem,
 } from "~/components/general/application-sub-panel";
 import { OrganizationSummaryType } from "~/reducers/organization/summary";
 
@@ -82,27 +82,27 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
           i18n={this.props.i18n}
           modifier="organization-summary"
           title={this.props.i18n.text.get(
-            "plugin.organization.summary.info.title"
+            "plugin.organization.summary.info.title",
           )}
         >
           <ApplicationSubPanelItem
             modifier="organization-summary"
             title={this.props.i18n.text.get(
-              "plugin.organization.summary.info.subtitle.activeInactive"
+              "plugin.organization.summary.info.subtitle.activeInactive",
             )}
           >
             <ApplicationSubPanelItem.Content modifier="primary">
               {this.props.i18n.text.get(
                 "plugin.organization.summary.info.workspaces.publishedUnpublished.text",
                 summary.workspaces && summary.workspaces.publishedCount,
-                summary.workspaces && summary.workspaces.unpublishedCount
+                summary.workspaces && summary.workspaces.unpublishedCount,
               )}
             </ApplicationSubPanelItem.Content>
             <ApplicationSubPanelItem.Content modifier="primary">
               {this.props.i18n.text.get(
                 "plugin.organization.summary.info.students.activeInactive.text",
                 summary.students && summary.students.activeStudents,
-                summary.students && summary.students.inactiveStudents
+                summary.students && summary.students.inactiveStudents,
               )}
             </ApplicationSubPanelItem.Content>
           </ApplicationSubPanelItem>
@@ -111,7 +111,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
           i18n={this.props.i18n}
           modifier="organization-summary"
           title={this.props.i18n.text.get(
-            "plugin.organization.summary.contact.title"
+            "plugin.organization.summary.contact.title",
           )}
         >
           {this.props.summary.contacts.map((contact) => (
@@ -119,7 +119,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
               key={"contact-" + contact.id}
               modifier="organization-contact-information"
               title={this.props.i18n.text.get(
-                "plugin.organization.summary.contact.subtitle." + contact.type
+                "plugin.organization.summary.contact.subtitle." + contact.type,
               )}
             >
               <ApplicationSubPanelItem.Content modifier="organization-contact-information">
@@ -138,11 +138,11 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    summary: state.organizationSummary
+    summary: state.organizationSummary,
   };
 }
 
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps() {
   return {};
 }
 

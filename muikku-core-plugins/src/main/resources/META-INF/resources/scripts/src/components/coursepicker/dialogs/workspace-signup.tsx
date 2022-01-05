@@ -14,7 +14,7 @@ import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
 import {
   signupIntoWorkspace,
-  SignupIntoWorkspaceTriggerType
+  SignupIntoWorkspaceTriggerType,
 } from "~/actions/workspaces";
 import { bindActionCreators } from "redux";
 import { WorkspaceType } from "~/reducers/workspaces";
@@ -57,7 +57,7 @@ class WorkspaceSignupDialog extends React.Component<
     super(props);
     this.state = {
       locked: false,
-      message: ""
+      message: "",
     };
 
     this.updateMessage = this.updateMessage.bind(this);
@@ -88,7 +88,7 @@ class WorkspaceSignupDialog extends React.Component<
       fail: () => {
         this.setState({ locked: false });
       },
-      message: this.state.message
+      message: this.state.message,
     });
   }
 
@@ -101,14 +101,14 @@ class WorkspaceSignupDialog extends React.Component<
 
     const hasFees = this.props.status.hasFees;
 
-    let content = (closeDialog: () => any) => (
+    const content = (closeDialog: () => any) => (
       <div>
         <div>
           <div className="dialog__content-row">
             {this.props.i18n.text.get(
               "plugin.workspaceSignUp.courseDescription",
               workspaceToUse.name,
-              workspaceToUse.nameExtension || ""
+              workspaceToUse.nameExtension || "",
             )}
           </div>
           {hasFees ? (
@@ -127,7 +127,7 @@ class WorkspaceSignupDialog extends React.Component<
             <p>
               <label htmlFor="signUpMessage">
                 {this.props.i18n.text.get(
-                  "plugin.workspaceSignUp.messageLabel"
+                  "plugin.workspaceSignUp.messageLabel",
                 )}
               </label>
               <textarea
@@ -142,21 +142,17 @@ class WorkspaceSignupDialog extends React.Component<
       </div>
     );
 
-    let footer = (closeDialog: () => any) => {
-      return (
-        <div className="dialog__button-set">
-          <Button
-            buttonModifiers={["standard-ok", "info"]}
-            onClick={this.signup.bind(this, closeDialog)}
-            disabled={this.state.locked}
-          >
-            {this.props.i18n.text.get(
-              "plugin.workspaceSignUp.signupButtonLabel"
-            )}
-          </Button>
-        </div>
-      );
-    };
+    const footer = (closeDialog: () => any) => (
+      <div className="dialog__button-set">
+        <Button
+          buttonModifiers={["standard-ok", "info"]}
+          onClick={this.signup.bind(this, closeDialog)}
+          disabled={this.state.locked}
+        >
+          {this.props.i18n.text.get("plugin.workspaceSignUp.signupButtonLabel")}
+        </Button>
+      </div>
+    );
 
     return (
       <Dialog
@@ -181,7 +177,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     status: state.status,
-    currentWorkspace: state.workspaces.currentWorkspace
+    currentWorkspace: state.workspaces.currentWorkspace,
   };
 }
 
@@ -195,5 +191,5 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(WorkspaceSignupDialog);

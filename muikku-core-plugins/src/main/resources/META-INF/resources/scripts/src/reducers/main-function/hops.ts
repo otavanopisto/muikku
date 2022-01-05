@@ -39,21 +39,21 @@ export default function hops(
   state: HOPSType = {
     status: "WAIT",
     eligibility: null,
-    value: null
+    value: null,
   },
-  action: ActionType
+  action: ActionType,
 ): HOPSType {
   if (action.type === "UPDATE_HOPS_STATUS") {
     return Object.assign({}, state, {
-      status: action.payload
+      status: action.payload,
     });
   } else if (action.type === "UPDATE_HOPS") {
     return Object.assign({}, state, {
-      value: action.payload
+      value: action.payload,
     });
   } else if (action.type === "UPDATE_HOPS_ELIGIBILITY") {
     return Object.assign({}, state, {
-      eligibility: action.payload
+      eligibility: action.payload,
     });
   }
   return state;

@@ -24,7 +24,7 @@ import {
   addToMessagesSelectedThreads,
   LoadMoreMessageThreadsTriggerType,
   RemoveFromMessagesSelectedThreadsTriggerType,
-  AddToMessagesSelectedThreadsTriggerType
+  AddToMessagesSelectedThreadsTriggerType,
 } from "~/actions/main-function/messages";
 import {
   MessageThreadListType,
@@ -32,14 +32,14 @@ import {
   MessageThreadExpandedType,
   MessageThreadType,
   MessagesType,
-  MessageSearchResult
+  MessageSearchResult,
 } from "~/reducers/main-function/messages";
 import ApplicationList, {
   ApplicationListItemContentWrapper,
   ApplicationListItemHeader,
   ApplicationListItemBody,
   ApplicationListItemFooter,
-  ApplicationListItem
+  ApplicationListItem,
 } from "~/components/general/application-list";
 import { StatusType } from "~/reducers/base/status";
 
@@ -110,7 +110,7 @@ class CommunicatorMessages extends BodyScrollLoader<
       );
     }
 
-    let messageRecipientsList = thread.recipients.map((recipient) => {
+    const messageRecipientsList = thread.recipients.map((recipient) => {
       if (recipient.userEntityId === userId) {
         return (
           <span>
@@ -137,30 +137,27 @@ class CommunicatorMessages extends BodyScrollLoader<
       );
     });
 
-    let userGroupRecipientsList = thread.userGroupRecipients.map((group) => {
-      return <span>{group.name}</span>;
-    });
+    const userGroupRecipientsList = thread.userGroupRecipients.map((group) => (
+      <span>{group.name}</span>
+    ));
 
-    let workspaceRecipientsList = thread.workspaceRecipients
-      .filter((w, pos, self) => {
-        return (
+    const workspaceRecipientsList = thread.workspaceRecipients
+      .filter(
+        (w, pos, self) =>
           self.findIndex(
-            (w2) => w2.workspaceEntityId === w.workspaceEntityId
-          ) === pos
-        );
-      })
-      .map((workspace) => {
-        return <span>{workspace.workspaceName}</span>;
-      });
+            (w2) => w2.workspaceEntityId === w.workspaceEntityId,
+          ) === pos,
+      )
+      .map((workspace) => <span>{workspace.workspaceName}</span>);
 
     return [
       messageRecipientsList,
       userGroupRecipientsList,
-      workspaceRecipientsList
+      workspaceRecipientsList,
     ];
   }
   setCurrentThread(
-    threadOrSearchResult: MessageThreadType | MessageSearchResult
+    threadOrSearchResult: MessageThreadType | MessageSearchResult,
   ) {
     window.location.hash =
       window.location.hash.split("/")[0] +
@@ -200,15 +197,15 @@ class CommunicatorMessages extends BodyScrollLoader<
             let messageFolder;
             if (message.folder === "INBOX") {
               messageFolder = this.props.i18n.text.get(
-                "plugin.communicator.category.title.inbox"
+                "plugin.communicator.category.title.inbox",
               );
             } else if (message.folder === "SENT") {
               messageFolder = this.props.i18n.text.get(
-                "plugin.communicator.category.title.sent"
+                "plugin.communicator.category.title.sent",
               );
             } else {
               messageFolder = this.props.i18n.text.get(
-                "plugin.communicator.category.title.trash"
+                "plugin.communicator.category.title.trash",
               );
             }
 
@@ -231,39 +228,33 @@ class CommunicatorMessages extends BodyScrollLoader<
                       {message.sender.lastName}
                     </span>
                     <span className="application-list__header-recipients">
-                      {message.recipients.map((recipient) => {
-                        return (
-                          <span
-                            className="application-list__header-recipient"
-                            key={recipient.userEntityId}
-                          >
-                            {getName(
-                              recipient as any,
-                              !this.props.status.isStudent
-                            )}
-                          </span>
-                        );
-                      })}
-                      {message.userGroupRecipients.map((userGroupRecepient) => {
-                        return (
-                          <span
-                            className="application-list__header-recipient"
-                            key={userGroupRecepient.id}
-                          >
-                            {userGroupRecepient.name}
-                          </span>
-                        );
-                      })}
-                      {message.workspaceRecipients.map((workspaceRecepient) => {
-                        return (
-                          <span
-                            className="application-list__header-recipient"
-                            key={workspaceRecepient.workspaceEntityId}
-                          >
-                            {workspaceRecepient.workspaceName}
-                          </span>
-                        );
-                      })}
+                      {message.recipients.map((recipient) => (
+                        <span
+                          className="application-list__header-recipient"
+                          key={recipient.userEntityId}
+                        >
+                          {getName(
+                            recipient as any,
+                            !this.props.status.isStudent,
+                          )}
+                        </span>
+                      ))}
+                      {message.userGroupRecipients.map((userGroupRecepient) => (
+                        <span
+                          className="application-list__header-recipient"
+                          key={userGroupRecepient.id}
+                        >
+                          {userGroupRecepient.name}
+                        </span>
+                      ))}
+                      {message.workspaceRecipients.map((workspaceRecepient) => (
+                        <span
+                          className="application-list__header-recipient"
+                          key={workspaceRecepient.workspaceEntityId}
+                        >
+                          {workspaceRecepient.workspaceName}
+                        </span>
+                      ))}
                     </span>
                   </div>
                   <div className="application-list__header-item-date">
@@ -286,21 +277,19 @@ class CommunicatorMessages extends BodyScrollLoader<
                     ) : null}
                     {message.labels.length ? (
                       <div className="labels__wrapper">
-                        {message.labels.map((label) => {
-                          return (
-                            <span className="label" key={label.id}>
-                              <span
-                                className="label__icon icon-tag"
-                                style={{
-                                  color: colorIntToHex(label.labelColor)
-                                }}
-                              ></span>
-                              <span className="label__text">
-                                {label.labelName}
-                              </span>
+                        {message.labels.map((label) => (
+                          <span className="label" key={label.id}>
+                            <span
+                              className="label__icon icon-tag"
+                              style={{
+                                color: colorIntToHex(label.labelColor),
+                              }}
+                            ></span>
+                            <span className="label__text">
+                              {label.labelName}
                             </span>
-                          );
-                        })}
+                          </span>
+                        ))}
                       </div>
                     ) : null}
                   </div>
@@ -325,8 +314,8 @@ class CommunicatorMessages extends BodyScrollLoader<
           dataState={this.props.state}
         >
           {this.props.threads.map((thread, index: number) => {
-            let isSelected: boolean = this.props.selectedThreadsIds.includes(
-              thread.communicatorMessageId
+            const isSelected: boolean = this.props.selectedThreadsIds.includes(
+              thread.communicatorMessageId,
             );
             return {
               as: ApplicationListItem,
@@ -337,120 +326,116 @@ class CommunicatorMessages extends BodyScrollLoader<
               }`,
               onSelect: this.props.addToMessagesSelectedThreads.bind(
                 null,
-                thread
+                thread,
               ),
               onDeselect: this.props.removeFromMessagesSelectedThreads.bind(
                 null,
-                thread
+                thread,
               ),
               onEnter: this.setCurrentThread.bind(this, thread),
               isSelected,
               key: thread.communicatorMessageId,
               wcagLabel: thread.unreadMessagesInThread
                 ? this.props.i18n.text.get(
-                    "plugin.wcag.messageUnread.aria.label"
+                    "plugin.wcag.messageUnread.aria.label",
                   )
                 : null,
               checkboxId: `messageSelect-${index}`,
               checkboxClassName: "message__selector",
-              contents: (checkbox: React.ReactElement<any>) => {
-                return (
-                  <ApplicationListItemContentWrapper
-                    aside={
-                      <div className="message__select-container">
-                        <label
-                          htmlFor={`messageSelect-` + index}
-                          className="visually-hidden"
-                        >
-                          {this.props.i18n.text.get(
-                            "plugin.wcag.messageSelect.label"
-                          )}
-                        </label>
-                        {checkbox}
-                      </div>
-                    }
-                  >
-                    <ApplicationListItemHeader modifiers="communicator-message">
-                      <div
-                        className={`application-list__header-primary ${
-                          thread.unreadMessagesInThread
-                            ? "application-list__header-primary--highlight"
-                            : ""
-                        }`}
+              contents: (checkbox: React.ReactElement<any>) => (
+                <ApplicationListItemContentWrapper
+                  aside={
+                    <div className="message__select-container">
+                      <label
+                        htmlFor={`messageSelect-` + index}
+                        className="visually-hidden"
                       >
-                        <span
-                          className="message__recipients"
-                          aria-label={this.props.i18n.text.get(
-                            "plugin.wcag.messageSender.aria.label"
-                          )}
-                        >
-                          {this.getThreadUserNames(
-                            thread,
-                            this.props.status.userId
-                          )}
-                        </span>
-                      </div>
-                      {thread.messageCountInThread > 1 ? (
-                        <div
-                          className="application-list__item-counter"
-                          aria-label={this.props.i18n.text.get(
-                            "plugin.wcag.messageCount.aria.label"
-                          )}
-                        >
-                          {thread.messageCountInThread}
-                        </div>
-                      ) : null}
-                      <div
-                        className="application-list__header-item-date"
-                        aria-label={this.props.i18n.text.get(
-                          "plugin.wcag.messageSendDate.aria.label"
+                        {this.props.i18n.text.get(
+                          "plugin.wcag.messageSelect.label",
                         )}
-                      >
-                        {this.props.i18n.time.format(
-                          thread.threadLatestMessageDate
-                        )}
-                      </div>
-                    </ApplicationListItemHeader>
-                    <ApplicationListItemBody modifiers="communicator-message">
+                      </label>
+                      {checkbox}
+                    </div>
+                  }
+                >
+                  <ApplicationListItemHeader modifiers="communicator-message">
+                    <div
+                      className={`application-list__header-primary ${
+                        thread.unreadMessagesInThread
+                          ? "application-list__header-primary--highlight"
+                          : ""
+                      }`}
+                    >
                       <span
-                        className="application-list__header-item-body"
+                        className="message__recipients"
                         aria-label={this.props.i18n.text.get(
-                          "plugin.wcag.messageBody.aria.label"
+                          "plugin.wcag.messageSender.aria.label",
                         )}
                       >
-                        {thread.caption}
+                        {this.getThreadUserNames(
+                          thread,
+                          this.props.status.userId,
+                        )}
                       </span>
-                    </ApplicationListItemBody>
-                    {thread.labels.length ? (
-                      <ApplicationListItemFooter modifiers="communicator-message-labels">
-                        <div className="labels">
-                          {thread.labels.map((label) => {
-                            return (
-                              <span
-                                className="label"
-                                key={label.id}
-                                aria-label={this.props.i18n.text.get(
-                                  "plugin.wcag.messageLabel.aria.label"
-                                )}
-                              >
-                                <span
-                                  className="label__icon icon-tag"
-                                  style={{
-                                    color: colorIntToHex(label.labelColor)
-                                  }}
-                                ></span>
-                                <span className="label__text">
-                                  {label.labelName}
-                                </span>
-                              </span>
-                            );
-                          })}
-                        </div>
-                      </ApplicationListItemFooter>
+                    </div>
+                    {thread.messageCountInThread > 1 ? (
+                      <div
+                        className="application-list__item-counter"
+                        aria-label={this.props.i18n.text.get(
+                          "plugin.wcag.messageCount.aria.label",
+                        )}
+                      >
+                        {thread.messageCountInThread}
+                      </div>
                     ) : null}
-                  </ApplicationListItemContentWrapper>
-                );
-              }
+                    <div
+                      className="application-list__header-item-date"
+                      aria-label={this.props.i18n.text.get(
+                        "plugin.wcag.messageSendDate.aria.label",
+                      )}
+                    >
+                      {this.props.i18n.time.format(
+                        thread.threadLatestMessageDate,
+                      )}
+                    </div>
+                  </ApplicationListItemHeader>
+                  <ApplicationListItemBody modifiers="communicator-message">
+                    <span
+                      className="application-list__header-item-body"
+                      aria-label={this.props.i18n.text.get(
+                        "plugin.wcag.messageBody.aria.label",
+                      )}
+                    >
+                      {thread.caption}
+                    </span>
+                  </ApplicationListItemBody>
+                  {thread.labels.length ? (
+                    <ApplicationListItemFooter modifiers="communicator-message-labels">
+                      <div className="labels">
+                        {thread.labels.map((label) => (
+                          <span
+                            className="label"
+                            key={label.id}
+                            aria-label={this.props.i18n.text.get(
+                              "plugin.wcag.messageLabel.aria.label",
+                            )}
+                          >
+                            <span
+                              className="label__icon icon-tag"
+                              style={{
+                                color: colorIntToHex(label.labelColor),
+                              }}
+                            ></span>
+                            <span className="label__text">
+                              {label.labelName}
+                            </span>
+                          </span>
+                        ))}
+                      </div>
+                    </ApplicationListItemFooter>
+                  ) : null}
+                </ApplicationListItemContentWrapper>
+              ),
             };
           })}
         </SelectableList>
@@ -470,7 +455,7 @@ function mapStateToProps(state: StateType) {
     currentThread: state.messages.currentThread,
     messages: state.messages,
     i18n: state.i18n,
-    status: state.status
+    status: state.status,
   };
 }
 
@@ -479,13 +464,13 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
     {
       loadMoreMessageThreads,
       removeFromMessagesSelectedThreads,
-      addToMessagesSelectedThreads
+      addToMessagesSelectedThreads,
     },
-    dispatch
+    dispatch,
   );
 }
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(CommunicatorMessages);

@@ -12,14 +12,14 @@ export default function credentials(
   state: CredentialsType = {
     secret: "",
     username: "",
-    state: "LOADING"
+    state: "LOADING",
   },
-  action: ActionType
+  action: ActionType,
 ): CredentialsType {
   if (action.type === "LOAD_CREDENTIALS") {
     return Object.assign({}, state, action.payload);
   } else if (action.type === "CREDENTIALS_STATE") {
-    let newState: CredentialsStateType = action.payload;
+    const newState: CredentialsStateType = action.payload;
     return Object.assign({}, state, { state: newState });
   }
 
