@@ -233,6 +233,9 @@ export class FormWizardActions extends React.Component<
   }
 }
 
+/**
+ * SearchFormElementProps
+ */
 interface SearchFormElementProps {
   updateField: (value: string) => any;
   value: string;
@@ -246,10 +249,16 @@ interface SearchFormElementProps {
   delay?: number;
 }
 
+/**
+ * SearchFormElementState
+ */
 interface SearchFormElementState {
   value: string;
 }
 
+/**
+ * SearchFormElement
+ */
 export class SearchFormElement extends React.Component<
   SearchFormElementProps,
   SearchFormElementState
@@ -258,6 +267,10 @@ export class SearchFormElement extends React.Component<
   private searchTimer: NodeJS.Timer;
   private delay: number;
 
+  /**
+   * constructor method
+   * @param props
+   */
   constructor(props: SearchFormElementProps) {
     super(props);
     this.delay = this.props.delay >= 0 ? this.props.delay : 400;
@@ -269,6 +282,30 @@ export class SearchFormElement extends React.Component<
     this.searchInput = React.createRef();
   }
 
+  /**
+   * componentDidUpdate
+   * @param prevProps
+   * @param prevState
+   * @param snapshot
+   */
+  componentDidUpdate(
+    prevProps: Readonly<SearchFormElementProps>,
+    prevState: Readonly<SearchFormElementState>,
+    snapshot?: any
+  ): void {
+    if (prevProps.value !== this.props.value) {
+      if (this.state.value !== this.props.value) {
+        this.setState({
+          value: this.props.value,
+        });
+      }
+    }
+  }
+
+  /**
+   * updateSearchField
+   * @param e
+   */
   updateSearchField(e: React.ChangeEvent<HTMLInputElement>) {
     clearTimeout(this.searchTimer);
     let value = e.target.value;
@@ -283,12 +320,19 @@ export class SearchFormElement extends React.Component<
     }
   }
 
+  /**
+   * clearSearchField
+   */
   clearSearchField() {
     this.props.updateField("");
     this.setState({ value: "" });
     this.searchInput.current.focus();
   }
 
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     const modifiers =
       this.props.modifiers && this.props.modifiers instanceof Array
@@ -296,10 +340,11 @@ export class SearchFormElement extends React.Component<
         : [this.props.modifiers];
     return (
       <div
-        className={`form-element form-element--search ${this.props.modifiers
+        className={`form-element form-element--search ${
+          this.props.modifiers
             ? modifiers.map((m) => `form-element--${m}`).join(" ")
             : ""
-          } ${this.props.className ? this.props.className : ""}`}
+        } ${this.props.className ? this.props.className : ""}`}
       >
         <label htmlFor={this.props.id} className="visually-hidden">
           {this.props.placeholder}
@@ -311,16 +356,18 @@ export class SearchFormElement extends React.Component<
           onBlur={this.props.onBlur}
           name={this.props.name}
           value={this.state.value}
-          className={`form-element__input form-element__input--search ${this.props.modifiers
+          className={`form-element__input form-element__input--search ${
+            this.props.modifiers
               ? modifiers.map((m) => `form-element__input--${m}`).join(" ")
               : ""
-            }`}
+          }`}
           placeholder={this.props.placeholder}
           onChange={this.updateSearchField}
         />
         <div
-          className={`form-element__input-decoration--clear-search icon-cross ${this.props.value.length > 0 ? "active" : ""
-            }`}
+          className={`form-element__input-decoration--clear-search icon-cross ${
+            this.props.value.length > 0 ? "active" : ""
+          }`}
           onClick={this.clearSearchField}
         ></div>
         <div className="form-element__input-decoration--search icon-search"></div>

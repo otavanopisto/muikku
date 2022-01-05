@@ -319,17 +319,6 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       locked: true
     });
 
-    let totals = 0;
-    let done = 0;
-    let onDone = () => {
-      done++;
-
-      if (done === totals) {
-        this.setState({
-          locked: false
-        });
-      }
-    }
     let payload: WorkspaceUpdateType = {};
     let workspaceUpdate: WorkspaceUpdateType = {
       name: this.state.workspaceName,
@@ -351,14 +340,12 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
     }
 
     if (!equals(workspaceUpdate, currentWorkspaceAsUpdate)) {
-      totals++;
       payload = Object.assign(workspaceUpdate, payload);
     }
 
     let workspaceMaterialProducers = this.state.workspaceProducers;
 
     if (!equals(workspaceMaterialProducers, this.props.workspace.producers)) {
-      totals++;
       payload = Object.assign({ producers: workspaceMaterialProducers }, payload);
     }
 
@@ -367,7 +354,6 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
     let currentWorkspaceChatStatus = this.props.workspace.chatStatus;
 
     if (!equals(workspaceChatStatus, currentWorkspaceChatStatus)) {
-      totals++;
       payload = Object.assign({ chatStatus: workspaceChatStatus }, payload);
     }
 
@@ -384,15 +370,14 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
     let currentWorkspaceAsDetails: WorkspaceDetailsType = {
       externalViewUrl: this.props.workspace.details.externalViewUrl,
       typeId: this.props.workspace.details.typeId,
-      beginDate: this.props.workspace.details.beginDate,
-      endDate: this.props.workspace.details.endDate,
+      beginDate: moment(this.props.workspace.details.beginDate).toISOString(),
+      endDate: moment(this.props.workspace.details.endDate).toISOString(),
       rootFolderId: this.props.workspace.details.rootFolderId,
       helpFolderId: this.props.workspace.details.helpFolderId,
       indexFolderId: this.props.workspace.details.indexFolderId,
     }
 
     if (!equals(workspaceDetails, currentWorkspaceAsDetails)) {
-      totals++;
       payload = Object.assign({ details: workspaceDetails }, payload);
     }
 
@@ -402,7 +387,6 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       this.state.workspacePermissions.forEach((permission) => {
         const originalPermission = this.props.workspace.permissions.find(p => p.userGroupEntityId === permission.userGroupEntityId);
         if (!equals(originalPermission, permission)) {
-          totals++;
           permissionsArray.push(permission);
         }
       });
@@ -414,12 +398,16 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       update: payload,
       success: () => {
         this.props.displayNotification(this.props.i18n.text.get("plugin.workspace.management.notification.save.successful"), "success");
-        onDone();
+        this.setState({
+          locked: false
+        });
       },
-      fail: onDone
+      fail: () => {
+        this.setState({
+          locked: false
+        });
+      }
     });
-
-    onDone();
   }
 
   render() {

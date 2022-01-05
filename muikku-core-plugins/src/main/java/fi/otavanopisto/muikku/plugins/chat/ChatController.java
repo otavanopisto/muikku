@@ -42,10 +42,10 @@ public class ChatController {
   @Inject
   private WorkspaceChatSettingsDAO workspaceChatSettingsDAO;
   
-  public boolean isChatActive() {
+  public boolean isChatAvailable() {
     if (sessionController.isLoggedIn()) {
       
-      // Chat is always active for admins
+      // Chat is always available for admins
       
       EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUser());
       if (roleEntity != null && roleEntity.getArchetype() == EnvironmentRoleArchetype.ADMINISTRATOR) {

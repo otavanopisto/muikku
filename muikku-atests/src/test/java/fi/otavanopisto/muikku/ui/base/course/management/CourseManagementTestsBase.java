@@ -97,8 +97,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
         
         String payload = objectMapper.writeValueAsString(new WebhookCourseCreatePayload(course.getId()));
         TestUtilities.webhookCall("http://dev.muikku.fi:" + System.getProperty("it.port.http") + "/pyramus/webhook", payload);
-        
-        waitForClickable(".application-sub-pane__button-container .button");
+
         scrollIntoView(".application-sub-pane__button-container .button");
         waitAndClick(".application-sub-pane__button-container .button");
         waitForVisible(".notification-queue__items");
@@ -197,7 +196,6 @@ public class CourseManagementTestsBase extends AbstractUITest {
         waitAndClick("input[name=\"workspace-name-extension\"]");
         clearElement("input[name=\"workspace-name-extension\"]");
         sendKeys("input[name=\"workspace-name-extension\"]", "For Test");
-        waitForClickable(".application-sub-pane__button-container .button");
         scrollIntoView(".application-sub-pane__button-container .button");
         waitAndClick(".application-sub-pane__button-container .button");
         waitForVisible(".notification-queue__items");
@@ -347,7 +345,6 @@ public class CourseManagementTestsBase extends AbstractUITest {
         waitForPresent(".license-selector select");
         scrollIntoView(".license-selector select");
         selectOption(".license-selector select", "CC3");
-        waitForClickable(".application-sub-pane__button-container .button");
         scrollIntoView(".application-sub-pane__button-container .button");
         waitAndClick(".application-sub-pane__button-container .button");
         waitForVisible(".notification-queue__items");
@@ -399,7 +396,6 @@ public class CourseManagementTestsBase extends AbstractUITest {
         selectAllAndClear("input[name=\"add-producer\"]");
         sendKeys("input[name=\"add-producer\"]", "Mr. Tester");
         findElementByCssSelector("input[name=\"add-producer\"]").sendKeys(Keys.RETURN);
-        waitForClickable(".application-sub-pane__button-container .button");
         scrollIntoView(".application-sub-pane__button-container .button");
         waitAndClick(".application-sub-pane__button-container .button");
         waitForVisible(".notification-queue__items");
@@ -436,9 +432,9 @@ public class CourseManagementTestsBase extends AbstractUITest {
       CourseSignupStudyProgramme signupStudyProgramme = new CourseSignupStudyProgramme(1l, 4l, 1l, "welp", null);
       mockBuilder
         .addStaffMember(admin)
-        .mockLogin(admin)
         .addCourse(course1)
         .addSignupStudyProgramme(signupStudyProgramme)
+        .mockLogin(admin)
         .build();
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
@@ -452,7 +448,6 @@ public class CourseManagementTestsBase extends AbstractUITest {
         waitForPresent("input#usergroup1");
         scrollIntoView("input#usergroup1");
         waitAndClick("input#usergroup1");
-        waitForClickable(".application-sub-pane__button-container .button");
         scrollIntoView(".application-sub-pane__button-container .button");
         waitAndClick(".application-sub-pane__button-container .button");
         waitForVisible(".notification-queue__items");

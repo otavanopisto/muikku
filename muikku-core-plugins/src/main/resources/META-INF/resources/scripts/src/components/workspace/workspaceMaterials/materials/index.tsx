@@ -365,8 +365,14 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
           </div>);
         }
 
-        let compositeReplies = this.props.workspace && this.props.materialReplies && this.props.materialReplies.find((reply)=>reply.workspaceMaterialId === node.workspaceMaterialId);
-        let material = !this.props.workspace || !this.props.materialReplies || (!isEditable && node.hidden) ? null :
+        let showEvenIfHidden = false;
+        const compositeReplies = this.props.workspace && this.props.materialReplies && this.props.materialReplies.find((reply)=>reply.workspaceMaterialId === node.workspaceMaterialId);
+
+        if(node.hidden && compositeReplies){
+          showEvenIfHidden = compositeReplies && compositeReplies.submitted !== null
+        }
+
+        let material = !this.props.workspace || !this.props.materialReplies || (!isEditable && node.hidden && !showEvenIfHidden) ? null :
           <ContentPanelItem ref={node.workspaceMaterialId + ""} key={node.workspaceMaterialId + ""}>
             <div id={"p-" + node.workspaceMaterialId} style={{transform: "translateY(" + (-this.state.defaultOffset) + "px)"}}/>
             {/*TOP OF THE PAGE*/}
@@ -376,6 +382,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
               workspace={this.props.workspace}
               compositeReplies={compositeReplies}
               isViewRestricted={materialIsViewRestricted}
+              showEvenIfHidden={showEvenIfHidden}
              />
           </ContentPanelItem>;
         sectionSpecificContentData.push(material);
@@ -388,7 +395,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
       results.push(<section key={"section-" + section.workspaceMaterialId} className="content-panel__chapter">
         <div id={"s-" + section.workspaceMaterialId} style={{transform: "translateY(" + (-this.state.defaultOffset) + "px)"}}/>
         {/*TOP OF THE CHAPTER*/}
-        <h2 className={`content-panel__chapter-title ${section.hidden ? "content-panel__chapter-title--hidden" : ""}`}>
+        <h2 className={`content-panel__chapter-title ${section.hidden ? "state-HIDDEN" : ""}`}>
           {isEditable ?
             <div className="material-admin-panel material-admin-panel--chapter-functions">
               <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.editChapterTooltip")}>

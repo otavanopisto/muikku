@@ -706,8 +706,6 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     getWebDriver().findElement(By.linkText(text)).click();
   }
   
-//  Deprecate this. I don't see any reason to do this more complicated than necessary.
-//  See waitAndClick as it is now.
   protected void waitForClickable(final String selector) {
     new WebDriverWait(getWebDriver(), Duration.ofSeconds(60)).until(new ExpectedCondition<Boolean>() {
       public Boolean apply(WebDriver driver) {
@@ -717,8 +715,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
             return ExpectedConditions.elementToBeClickable(elements.get(0)).apply(driver) != null;
           }
         } catch (Exception e) {
-        }
-        
+        } 
         return false;
       }
     });
@@ -867,6 +864,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void waitAndClickWithAction(String selector) {
+    waitForPresent(selector);
     new Actions(getWebDriver()).moveToElement(getWebDriver().findElement(By.cssSelector(selector))).click().perform();    
   }
 
@@ -882,10 +880,12 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void scrollIntoView(String selector) {
+    waitForPresent(selector);
     ((JavascriptExecutor) getWebDriver()).executeScript(String.format("document.querySelectorAll('%s').item(0).scrollIntoView(true);", selector));
   }
   
   protected void scrollTo(String selector, int offset) {
+    waitForPresent(selector);
     ((JavascriptExecutor) getWebDriver()).executeScript(String.format(""
         + "var elPos = document.querySelectorAll('%s').item(0).getBoundingClientRect().top;"
         + "var offsetPosition = elPos - %d;"
@@ -952,6 +952,12 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
 
   protected void assertTextIgnoreCase(String selector, String text) {
     waitForPresent(selector);
+    String actual = StringUtils.lowerCase(getWebDriver().findElement(By.cssSelector(selector)).getText());
+    assertEquals(StringUtils.lowerCase(text), actual);
+  }
+
+  protected void assertTextIgnoreCase(String selector, String text, int timeOut) {
+    waitForPresent(selector, timeOut);
     String actual = StringUtils.lowerCase(getWebDriver().findElement(By.cssSelector(selector)).getText());
     assertEquals(StringUtils.lowerCase(text), actual);
   }
@@ -1316,7 +1322,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   
   protected Workspace createWorkspace(Course course, Boolean published) throws Exception {
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-
+    
     Workspace payload = new Workspace(null, course.getName(), null, "PYRAMUS", String.valueOf(course.getId()), published);
     Response response = asAdmin()
       .contentType("application/json")

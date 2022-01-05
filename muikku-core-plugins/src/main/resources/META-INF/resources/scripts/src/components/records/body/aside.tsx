@@ -36,11 +36,11 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
   isVisible(hash: string) {
     switch (hash) {
       case "hops":
-        return this.props.status.isActiveUser && !this.props.records.studyEndDate && this.props.hops.eligibility && this.props.hops.eligibility.upperSecondarySchoolCurriculum === true;
+        return this.props.status.isActiveUser && this.props.hops.eligibility && this.props.hops.eligibility.upperSecondarySchoolCurriculum === true;
       case "vops":
       case "yo":
         const yoVisibleValues = ["yes", "maybe"];
-        return this.props.status.isActiveUser && this.props.hops.value && yoVisibleValues.indexOf(this.props.hops.value.goalMatriculationExam) > -1 && !this.props.records.studyEndDate;
+        return this.props.status.isActiveUser && this.props.hops.value && yoVisibleValues.indexOf(this.props.hops.value.goalMatriculationExam) > -1;
 
     }
 

@@ -395,7 +395,7 @@ class MaterialLoader extends React.Component<
   async create() {
     const { usedAs = "default", userEntityId } = this.props;
 
-    let userEntityIdToLoad = (window as any).MUIKKU_LOGGED_USER_ID;
+    let userEntityIdToLoad = parseInt(document.querySelector('meta[name="muikku:loggedUserId"]').getAttribute("value"));
 
     if (usedAs === "evaluationTool" && userEntityId) {
       userEntityIdToLoad = userEntityId;
@@ -544,9 +544,9 @@ class MaterialLoader extends React.Component<
       modifiers || []
     )
       .map((s) => `material-page--${s}`)
-      .join(" ")} ${isHidden ? "material-page--hidden" : ""}`;
+      .join(" ")} ${isHidden ? "state-HIDDEN" : ""}`;
     if (compositeReplies && compositeReplies.state) {
-      className += " material-page--" + compositeReplies.state;
+      className += " state-" + compositeReplies.state;
     }
 
     let content = null;

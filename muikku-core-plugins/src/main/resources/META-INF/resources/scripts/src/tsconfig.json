@@ -4,6 +4,7 @@
 		"allowJs": true,
 		"sourceMap": true,
 		"skipLibCheck": true,
+    "skipDefaultLibCheck": true,
 		"noImplicitAny": true,
 		"module": "commonjs",
 		"target": "es5",
@@ -11,6 +12,7 @@
 		"emitDecoratorMetadata": true,
 		"experimentalDecorators": true,
 		"allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
 		"lib": [
 			"dom",
 			"es2016"

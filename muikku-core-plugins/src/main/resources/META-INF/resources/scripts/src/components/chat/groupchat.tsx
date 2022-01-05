@@ -56,6 +56,8 @@ interface IGroupChatState {
   active: boolean;
 }
 
+const roleNode = document.querySelector('meta[name="muikku:role"]');
+
 export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState> {
 
   private messagesListenerHandler: any = null;
@@ -73,7 +75,7 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
       messages: [],
       processedMessages: [],
       openChatSettings: false,
-      isStudent: (window as any).MUIKKU_IS_STUDENT,
+      isStudent: roleNode.getAttribute("value") === "STUDENT",
       isOwner: false,
       isModerator: false,
       showRoomInfo: false,

@@ -22,6 +22,9 @@ interface ProfileApplicationState {
 
 class ProfileApplication extends React.Component<ProfileApplicationProps, ProfileApplicationState> {
   render(){
+    if (!this.props.status.profile) {
+      return null;
+    }
     return (<div className="application-panel-wrapper">
       <ApplicationPanel
         modifier="profile"
