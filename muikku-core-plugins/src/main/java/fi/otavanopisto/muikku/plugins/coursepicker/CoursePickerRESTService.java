@@ -382,28 +382,15 @@ public class CoursePickerRESTService extends PluginRESTService {
                 String description = (String) result.get("description");
                 boolean isCourseMember = getIsAlreadyOnWorkspace(workspaceEntity);
                 String educationTypeId = (String) result.get("educationTypeIdentifier");
-                String educationTypeName = null;
+                String educationTypeName = (String) result.get("educationTypeName");
                 Mandatority mandatority = null;
 
                 if (StringUtils.isNotBlank(educationTypeId)) {
-                  EducationType educationType = null;
-                  SchoolDataIdentifier educationTypeIdentifier = SchoolDataIdentifier.fromId(educationTypeId);
-                  if (educationTypeIdentifier == null) {
-                    logger.severe(String.format("Malformatted educationTypeIdentifier %s", educationTypeId));
-                  } else {
-                    educationType = courseMetaController.findEducationType(educationTypeIdentifier.getDataSource(), educationTypeIdentifier.getIdentifier());
-                  }
-                  
-                  if (educationType != null) {
-                    educationTypeName = educationType.getName();
-                  }
-                  
                   SchoolDataIdentifier educationSubtypeId = SchoolDataIdentifier.fromId((String) result.get("educationSubtypeIdentifier"));
                   
                   if (educationSubtypeId != null) {
                     mandatority = getMandatority(educationSubtypeId); 
                   }
-                  
                 }
   
                 if (StringUtils.isNotBlank(name)) {
