@@ -50,13 +50,6 @@
         "allowSingleExtends": true
       }
     ],
-    "@typescript-eslint/no-explicit-any": [
-      1,
-      {
-        "fixToUnknown": true,
-        "ignoreRestArgs": false
-      }
-    ],
     "no-unused-vars": "off",
     "no-var": 1
   }
