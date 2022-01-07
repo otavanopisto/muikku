@@ -3,7 +3,6 @@ import {
   NotificationSeverityType,
   NotificationType,
 } from "~/reducers/base/notifications";
-import { StateType } from "reducers";
 
 export type ADD_NOTIFICATION = SpecificActionType<
   "ADD_NOTIFICATION",

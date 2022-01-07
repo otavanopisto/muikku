@@ -507,7 +507,7 @@ class OrganizationEditUsergroup extends React.Component<
             </form>
           </DialogRow>
         );
-      case 2:
+      case 2: {
         const students = this.props.users.students.map((student) => ({
           id: student.id,
           label: student.firstName + " " + student.lastName,
@@ -543,7 +543,8 @@ class OrganizationEditUsergroup extends React.Component<
             </DialogRow>
           </DialogRow>
         );
-      case 3:
+      }
+      case 3: {
         const studentGroupStudents =
           this.props.currentUserGroup && this.props.currentUserGroup.students
             ? this.turnUsersToSelectItems(
@@ -595,7 +596,8 @@ class OrganizationEditUsergroup extends React.Component<
             />
           </DialogRow>
         );
-      case 4:
+      }
+      case 4: {
         const staffSearchItems = this.props.users.staff.map((staff) => ({
           id: staff.id,
           label: staff.firstName + " " + staff.lastName,
@@ -630,7 +632,8 @@ class OrganizationEditUsergroup extends React.Component<
             </DialogRow>
           </DialogRow>
         );
-      case 5:
+      }
+      case 5: {
         const studentGroupStaff =
           this.props.currentUserGroup && this.props.currentUserGroup.staff
             ? this.turnUsersToSelectItems(
@@ -682,6 +685,7 @@ class OrganizationEditUsergroup extends React.Component<
             />
           </DialogRow>
         );
+      }
       case 6:
         return (
           <DialogRow modifiers="edit-workspace-summary">

@@ -12,7 +12,7 @@ interface WordDefinitionProps {
 
 export default class WordDefinition extends React.Component<
   WordDefinitionProps,
-  {}
+  Record<string, unknown>
 > {
   constructor(props: WordDefinitionProps) {
     super(props);

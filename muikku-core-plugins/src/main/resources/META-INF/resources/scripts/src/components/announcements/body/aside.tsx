@@ -1,15 +1,12 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { bindActionCreators } from "redux";
 import Link from "~/components/general/link";
 import { i18nType } from "~/reducers/base/i18n";
 import { AnnouncementType, AnnouncementsType } from "~/reducers/announcements";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/item-list.scss";
 import { StateType } from "~/reducers";
-
 import "~/sass/elements/label.scss";
-
 import "~/sass/elements/item-list.scss";
 
 interface AnnouncementsAsideProps {

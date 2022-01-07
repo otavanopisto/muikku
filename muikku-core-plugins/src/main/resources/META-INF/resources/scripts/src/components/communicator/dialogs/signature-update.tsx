@@ -1,6 +1,5 @@
 import * as React from "react";
 import EnvironmentDialog from "~/components/general/environment-dialog";
-import Link from "~/components/general/link";
 import CKEditor from "~/components/general/ckeditor";
 import { connect, Dispatch } from "react-redux";
 import { AnyActionType } from "~/actions";

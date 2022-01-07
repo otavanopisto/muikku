@@ -1,3 +1,9 @@
+/* eslint-disable react/no-string-refs */
+
+/**
+ * Deprecated resfs should be refactored
+ */
+
 import * as React from "react";
 import Autocomplete from "~/components/general/autocomplete";
 import TagInput from "~/components/general/tag-input";

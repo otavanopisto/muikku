@@ -1,6 +1,10 @@
+/* eslint-disable react/no-string-refs */
+
+/**
+ * Deprecated refs should be refactored
+ */
+
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18n";
-import { HTMLtoReactComponent } from "~/util/modifiers";
 
 interface TableProps {
   element: HTMLElement;
@@ -8,7 +12,10 @@ interface TableProps {
   children: any;
 }
 
-export default class Table extends React.Component<TableProps, {}> {
+export default class Table extends React.Component<
+  TableProps,
+  Record<string, unknown>
+> {
   constructor(props: TableProps) {
     super(props);
   }

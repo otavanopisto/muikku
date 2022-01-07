@@ -1,6 +1,5 @@
 import MainFunctionNavbar from "~/components/base/main-function/navbar";
 import * as React from "react";
-import Playground from "../__playground";
 import Application from "./body/application";
 import Aside from "./body/aside";
 

@@ -1,3 +1,9 @@
+/* eslint-disable react/no-string-refs */
+
+/**
+ * Depcrecated refs should be refactored
+ */
+
 import * as React from "react";
 import $ from "~/lib/jquery";
 import { guidGenerator } from "~/util/modifiers";

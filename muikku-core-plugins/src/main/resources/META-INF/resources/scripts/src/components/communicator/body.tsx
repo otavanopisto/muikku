@@ -1,18 +1,20 @@
+/* eslint-disable react/no-string-refs */
+
+/**
+ * Deprecated refs should be refactored
+ */
+
 import MainFunctionNavbar from "~/components/base/main-function/navbar";
 import Application from "./body/application";
 import Aside from "./body/aside";
 
 import * as React from "react";
 
-interface CommunicatorBodyProps {}
-
-interface CommunicatorBodyState {}
-
 export default class CommunicatorBody extends React.Component<
-  CommunicatorBodyProps,
-  CommunicatorBodyState
+  Record<string, unknown>,
+  Record<string, unknown>
 > {
-  constructor(props: CommunicatorBodyProps) {
+  constructor(props: Record<string, unknown>) {
     super(props);
 
     this.openSignatureDialog = this.openSignatureDialog.bind(this);

@@ -22,9 +22,10 @@ interface NavigationProps {
   records: RecordsType;
 }
 
-interface NavigationState {}
-
-class Navigation extends React.Component<NavigationProps, NavigationState> {
+class Navigation extends React.Component<
+  NavigationProps,
+  Record<string, unknown>
+> {
   constructor(props: NavigationProps) {
     super(props);
   }
@@ -45,12 +46,11 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
         );
       case "vops":
       case "yo":
-        const yoVisibleValues = ["yes", "maybe"];
         return (
           this.props.status.isActiveUser &&
           this.props.hops.value &&
-          yoVisibleValues.indexOf(this.props.hops.value.goalMatriculationExam) >
-            -1
+          (this.props.hops.value.goalMatriculationExam === "yes" ||
+            this.props.hops.value.goalMatriculationExam === "maybe")
         );
     }
 

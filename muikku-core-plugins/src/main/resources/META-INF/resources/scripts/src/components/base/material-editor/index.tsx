@@ -1,5 +1,4 @@
 import * as React from "react";
-import Portal from "~/components/general/portal";
 import "~/sass/elements/material-editor.scss";
 import { bindActionCreators } from "redux";
 import {
@@ -14,13 +13,13 @@ import {
 } from "~/actions/workspaces";
 import { connect, Dispatch } from "react-redux";
 import { StateType } from "~/reducers";
-import i18n, { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18n";
 import {
   WorkspaceMaterialEditorType,
   WorkspaceType,
   MaterialContentNodeType,
 } from "~/reducers/workspaces";
-import Button, { ButtonPill } from "~/components/general/button";
+import { ButtonPill } from "~/components/general/button";
 import CKEditor from "~/components/general/ckeditor";
 import { StatusType } from "~/reducers/base/status";
 import { LocaleListType } from "~/reducers/base/locales";
@@ -36,7 +35,6 @@ import { createAllTabs } from "~/helper-functions/tabs";
 import AddProducer from "~/components/general/add-producer";
 import { LicenseSelector } from "~/components/general/license-selector";
 import FileUploader from "~/components/general/file-uploader";
-import Link from "~/components/general/link";
 import { PageLocation, UploadingValue } from "~/@types/shared";
 
 interface MaterialEditorProps {

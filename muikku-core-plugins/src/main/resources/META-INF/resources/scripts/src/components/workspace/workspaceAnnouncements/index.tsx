@@ -1,3 +1,9 @@
+/* eslint-disable react/no-string-refs */
+
+/**
+ * Depcrecated refs should be refactored
+ */
+
 import WorkspaceNavbar from "~/components/base/workspace/navbar";
 import * as React from "react";
 import Application from "~/components/announcements/body/application";
@@ -7,11 +13,9 @@ interface WorkspaceAnnouncementsBodyProps {
   workspaceUrl: string;
 }
 
-interface WorkspaceAnnouncementsBodyState {}
-
 export default class WorkspaceAnnouncementsBody extends React.Component<
   WorkspaceAnnouncementsBodyProps,
-  WorkspaceAnnouncementsBodyState
+  Record<string, unknown>
 > {
   constructor(props: WorkspaceAnnouncementsBodyProps) {
     super(props);

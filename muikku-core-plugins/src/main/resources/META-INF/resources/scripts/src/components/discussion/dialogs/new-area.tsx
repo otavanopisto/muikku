@@ -1,18 +1,15 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
-import Link from "~/components/general/link";
 import EnvironmentDialog from "~/components/general/environment-dialog";
 import { AnyActionType } from "~/actions";
 import { i18nType } from "~/reducers/base/i18n";
 import SessionStateComponent from "~/components/general/session-state-component";
 import Button from "~/components/general/button";
-
 import "~/sass/elements/link.scss";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
-
 import {
   createDiscussionArea,
   CreateDiscussionAreaTriggerType,

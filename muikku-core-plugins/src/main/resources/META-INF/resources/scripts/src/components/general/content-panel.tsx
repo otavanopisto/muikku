@@ -1,3 +1,9 @@
+/* eslint-disable react/no-string-refs */
+
+/**
+ * Depcrecated refs should be refactored
+ */
+
 import * as React from "react";
 import $ from "~/lib/jquery";
 
@@ -202,7 +208,10 @@ export default class ContentPanel extends React.Component<
   }
 }
 
-export class ContentPanelItem extends React.Component<{}, {}> {
+export class ContentPanelItem extends React.Component<
+  Record<string, unknown>,
+  Record<string, unknown>
+> {
   render() {
     return (
       <div ref="component" className="content-panel__item">

@@ -569,6 +569,7 @@ export class EmailFormElement extends React.Component<
   updateInputField(e: React.ChangeEvent<HTMLInputElement>) {
     const value = e.target.value;
     const emailRegExp =
+      // eslint-disable-next-line no-useless-escape
       /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
     let valid = false;
     this.setState({ value: value });

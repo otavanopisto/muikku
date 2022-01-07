@@ -1,5 +1,10 @@
-import WorkspaceNavbar from "~/components/base/workspace/navbar";
+/* eslint-disable react/no-string-refs */
 
+/**
+ * Depcrecated refs should be refactored
+ */
+
+import WorkspaceNavbar from "~/components/base/workspace/navbar";
 import * as React from "react";
 import Application from "~/components/discussion/body/application";
 
@@ -7,11 +12,9 @@ interface WorkspaceDiscussionBodyProps {
   workspaceUrl: string;
 }
 
-interface WorkspaceDiscussionBodyState {}
-
 export default class WorkspaceDiscussionBody extends React.Component<
   WorkspaceDiscussionBodyProps,
-  WorkspaceDiscussionBodyState
+  Record<string, unknown>
 > {
   constructor(props: WorkspaceDiscussionBodyProps) {
     super(props);

@@ -1,3 +1,9 @@
+/* eslint-disable react/no-string-refs */
+
+/**
+ * Depcrecated refs should be refactored
+ */
+
 import * as React from "react";
 import { CarouselProvider, Slider, Slide, DotGroup } from "pure-react-carousel";
 import "pure-react-carousel/dist/react-carousel.es.css";
@@ -37,7 +43,10 @@ export default class Carousel extends React.Component<
   }
 }
 
-export class CarouselItem extends React.Component<{ index: number }, {}> {
+export class CarouselItem extends React.Component<
+  { index: number },
+  Record<string, unknown>
+> {
   render() {
     return (
       <Slide index={this.props.index}>
@@ -47,7 +56,10 @@ export class CarouselItem extends React.Component<{ index: number }, {}> {
   }
 }
 
-export class CarouselVideoItem extends React.Component<{ index: number }, {}> {
+export class CarouselVideoItem extends React.Component<
+  { index: number },
+  Record<string, unknown>
+> {
   render() {
     return (
       <Slide index={this.props.index}>

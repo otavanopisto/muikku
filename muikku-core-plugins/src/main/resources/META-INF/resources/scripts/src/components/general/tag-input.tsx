@@ -1,3 +1,9 @@
+/* eslint-disable react/no-string-refs */
+
+/**
+ * Depcrecated refs should be refactored
+ */
+
 import * as React from "react";
 import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/tag-input.scss";

@@ -1,5 +1,16 @@
+/**
+ * Try catching seems to be still in proggress state.
+ * It should have better error handling without consoles
+ *
+ * Needs fixing at some point
+ */
+
 import { SetRecorder } from "~/@types/recorder";
 
+/**
+ * startRecording
+ * @param setRecorderState
+ */
 export async function startRecording(setRecorderState: SetRecorder) {
   try {
     const stream: MediaStream = await navigator.mediaDevices.getUserMedia({
@@ -11,6 +22,7 @@ export async function startRecording(setRecorderState: SetRecorder) {
       initRecording: true,
       mediaStream: stream,
     }));
+    // eslint-disable-next-line no-empty
   } catch (err) {}
 }
 

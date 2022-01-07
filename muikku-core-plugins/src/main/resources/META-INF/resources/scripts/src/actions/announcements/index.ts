@@ -350,8 +350,6 @@ const deleteAnnouncement: DeleteAnnouncementTriggerType =
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
     ) => {
-      const state = getState();
-
       try {
         await promisify(
           mApi().announcer.announcements.del(data.announcement.id),

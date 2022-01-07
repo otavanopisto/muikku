@@ -495,8 +495,6 @@ const uploadProfileImage: UploadProfileImageTriggerType =
           })()
         );
 
-        const done = 0;
-
         for (let i = 0; i < imageSizes.length; i++) {
           const size = imageSizes[i];
           await promisify(

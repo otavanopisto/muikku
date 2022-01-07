@@ -1,7 +1,11 @@
+/* eslint-disable react/no-string-refs */
+
+/**
+ * Depcrecated refs should be refactored
+ */
+
 import WorkspaceNavbar from "~/components/base/workspace/navbar";
-
 import * as React from "react";
-
 import Help from "./help";
 import MaterialEditor from "~/components/base/material-editor";
 import TableOfContentsComponent from "./content";

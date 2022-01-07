@@ -72,6 +72,7 @@ const updateCredentials: UpdateCredentialsTriggerType =
       try {
         mApi()
           .forgotpassword.credentialReset.create(credentials)
+          // eslint-disable-next-line @typescript-eslint/no-empty-function
           .callback(() => {});
         dispatch({
           type: "CREDENTIALS_STATE",

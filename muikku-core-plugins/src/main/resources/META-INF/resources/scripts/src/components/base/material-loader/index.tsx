@@ -1,3 +1,9 @@
+/* eslint-disable react/no-string-refs */
+
+/**
+ * Deprecated refs should be reractored
+ */
+
 //NOTE this is a sandbox file, because the code in the material loader is so complex I created this self contained
 //blackbox environment that makes it so that the material loader behaves like one component, this is bad because
 //it does not have the same capabilities and efficiency as the other components, and cannot be easily modified

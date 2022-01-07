@@ -4,6 +4,12 @@ import $ from "~/lib/jquery";
 import { MaterialContentNodeListType } from "~/reducers/workspaces";
 
 function escapeRegExp(str: string) {
+  /**
+   * This regExp need some kind of rethinking because linter is giving
+   * error how it is composed
+   */
+
+  // eslint-disable-next-line no-useless-escape
   return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
 }
 

@@ -9,7 +9,10 @@ interface MathJaxProps {
   children: React.ReactNode;
 }
 
-export default class MathJAX extends React.Component<MathJaxProps, {}> {
+export default class MathJAX extends React.Component<
+  MathJaxProps,
+  Record<string, unknown>
+> {
   constructor(props: MathJaxProps) {
     super(props);
   }

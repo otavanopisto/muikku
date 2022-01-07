@@ -1,3 +1,9 @@
+/* eslint-disable react/no-string-refs */
+
+/**
+ * Depcrecated refs should be refactored
+ */
+
 import equals = require("deep-equal");
 import * as React from "react";
 import getCKEDITOR, { CKEDITOR_VERSION } from "~/lib/ckeditor";

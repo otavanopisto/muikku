@@ -213,6 +213,7 @@ class MainFunctionNavbar extends React.Component<
           }
           return (
             <Link
+              key={item.modifier}
               openInNewTab={item.openInNewTab}
               to={item.to ? item.href : null}
               href={item.href}

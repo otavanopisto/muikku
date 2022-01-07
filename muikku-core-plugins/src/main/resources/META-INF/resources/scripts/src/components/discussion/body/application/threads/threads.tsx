@@ -1,6 +1,5 @@
 import "~/sass/elements/application-list.scss";
 import "~/sass/elements/message.scss";
-
 import * as React from "react";
 import ApplicationList, {
   ApplicationListItem,
@@ -10,18 +9,32 @@ import ApplicationList, {
   ApplicationListItemFooter,
 } from "~/components/general/application-list";
 
-export class DiscussionThreads extends React.Component<{}, {}> {
+/**
+ * DiscussionThreads
+ */
+export class DiscussionThreads extends React.Component<
+  Record<string, unknown>,
+  Record<string, unknown>
+> {
   render() {
     return <ApplicationList>{this.props.children}</ApplicationList>;
   }
 }
 
+/**
+ * DiscussionThreadProps
+ */
+interface DiscussionThreadProps {
+  onClick: (event: React.MouseEvent<HTMLDivElement>) => any;
+  avatar: JSX.Element;
+}
+
+/**
+ * DiscussionThread
+ */
 export class DiscussionThread extends React.Component<
-  {
-    onClick: (event: React.MouseEvent<HTMLDivElement>) => any;
-    avatar: JSX.Element;
-  },
-  {}
+  DiscussionThreadProps,
+  Record<string, unknown>
 > {
   render() {
     return (
@@ -41,11 +54,19 @@ export class DiscussionThread extends React.Component<
   }
 }
 
+/**
+ * DiscussionThreadHeaderProps
+ */
+interface DiscussionThreadHeaderProps {
+  aside?: React.ReactNode;
+}
+
+/**
+ * DiscussionThreadHeader
+ */
 export class DiscussionThreadHeader extends React.Component<
-  {
-    aside?: React.ReactNode;
-  },
-  {}
+  DiscussionThreadHeaderProps,
+  Record<string, unknown>
 > {
   render() {
     if (this.props.aside) {
@@ -68,7 +89,13 @@ export class DiscussionThreadHeader extends React.Component<
   }
 }
 
-export class DiscussionThreadBody extends React.Component<{}, {}> {
+/**
+ * DiscussionThreadBody
+ */
+export class DiscussionThreadBody extends React.Component<
+  Record<string, unknown>,
+  Record<string, unknown>
+> {
   render() {
     return (
       <ApplicationListItemBody>{this.props.children}</ApplicationListItemBody>
@@ -76,11 +103,19 @@ export class DiscussionThreadBody extends React.Component<{}, {}> {
   }
 }
 
+/**
+ * DiscussionThreadFooterProps
+ */
+interface DiscussionThreadFooterProps {
+  hasActions?: boolean;
+}
+
+/**
+ * DiscussionThreadFooter
+ */
 export class DiscussionThreadFooter extends React.Component<
-  {
-    hasActions?: boolean;
-  },
-  {}
+  DiscussionThreadFooterProps,
+  Record<string, unknown>
 > {
   render() {
     return (
@@ -91,13 +126,21 @@ export class DiscussionThreadFooter extends React.Component<
   }
 }
 
+/**
+ * DiscussionCurrentThreadProps
+ */
+interface DiscussionCurrentThreadProps {
+  title: React.ReactNode;
+  sticky: boolean;
+  locked: boolean;
+}
+
+/**
+ * DiscussionCurrentThread
+ */
 export class DiscussionCurrentThread extends React.Component<
-  {
-    title: React.ReactNode;
-    sticky: boolean;
-    locked: boolean;
-  },
-  {}
+  DiscussionCurrentThreadProps,
+  Record<string, unknown>
 > {
   render() {
     return (
@@ -117,15 +160,23 @@ export class DiscussionCurrentThread extends React.Component<
   }
 }
 
+/**
+ * DiscussionCurrentThreadElementProps
+ */
+interface DiscussionCurrentThreadElementProps {
+  isOpMessage?: boolean;
+  isReplyOfReply?: boolean;
+  isReply?: boolean;
+  avatar: any;
+  hidden: boolean;
+}
+
+/**
+ * DiscussionCurrentThreadElement
+ */
 export class DiscussionCurrentThreadElement extends React.Component<
-  {
-    isOpMessage?: boolean;
-    isReplyOfReply?: boolean;
-    isReply?: boolean;
-    avatar: any;
-    hidden: boolean;
-  },
-  {}
+  DiscussionCurrentThreadElementProps,
+  Record<string, unknown>
 > {
   render() {
     const baseMod = this.props.isOpMessage

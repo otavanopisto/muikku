@@ -16,7 +16,10 @@ interface LinkProps {
   processingRules: HTMLToReactComponentRule[];
 }
 
-export default class Link extends React.Component<LinkProps, {}> {
+export default class Link extends React.Component<
+  LinkProps,
+  Record<string, unknown>
+> {
   constructor(props: LinkProps) {
     super(props);
   }

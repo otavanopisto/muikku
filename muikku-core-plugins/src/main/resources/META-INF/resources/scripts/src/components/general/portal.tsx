@@ -1,3 +1,9 @@
+/* eslint-disable react/no-find-dom-node */
+
+/**
+ * Deprecated findReactDom should be refactored
+ */
+
 import * as React from "react";
 import {
   unstable_renderSubtreeIntoContainer,

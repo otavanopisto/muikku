@@ -1,12 +1,15 @@
+/* eslint-disable react/no-string-refs */
+
+/**
+ * Depcrecated refs should be refactored
+ */
+
 import WorkspaceNavbar from "~/components/base/workspace/navbar";
-
 import * as React from "react";
-
 import Materials from "./materials";
 import MaterialEditor from "~/components/base/material-editor";
 import SignupDialog from "~/components/coursepicker/dialogs/workspace-signup";
 import TableOfContentsComponent from "./content";
-
 import EnrollmentDialog from "../enrollment-dialog";
 
 interface WorkspaceMaterialsBodyProps {
@@ -18,11 +21,9 @@ interface WorkspaceMaterialsBodyProps {
   onCloseSignupDialog: () => void;
 }
 
-interface WorkspaceMaterialsBodyState {}
-
 export default class WorkspaceMaterialsBody extends React.Component<
   WorkspaceMaterialsBodyProps,
-  WorkspaceMaterialsBodyState
+  Record<string, unknown>
 > {
   constructor(props: WorkspaceMaterialsBodyProps) {
     super(props);

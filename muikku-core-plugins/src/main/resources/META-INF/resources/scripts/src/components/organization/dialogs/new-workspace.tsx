@@ -532,7 +532,7 @@ class OrganizationNewWorkspace extends React.Component<
             </DialogRow>
           </form>
         );
-      case 3:
+      case 3: {
         const students: UiSelectItem[] = this.props.users.students.map(
           (student) => ({
             id: student.id,
@@ -582,7 +582,8 @@ class OrganizationNewWorkspace extends React.Component<
             </DialogRow>
           </DialogRow>
         );
-      case 4:
+      }
+      case 4: {
         const staffSearchItems: UiSelectItem[] = this.props.users.staff.map(
           (staff) => ({
             id: staff.id,
@@ -621,6 +622,7 @@ class OrganizationNewWorkspace extends React.Component<
             </DialogRow>
           </DialogRow>
         );
+      }
       case 5:
         return (
           <DialogRow modifiers="new-workspace-summary">

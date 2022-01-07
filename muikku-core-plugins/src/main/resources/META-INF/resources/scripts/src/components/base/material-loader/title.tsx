@@ -6,9 +6,9 @@ interface MaterialLoaderTitleProps extends MaterialLoaderProps {
   i18n: i18nType;
 }
 
-function stopPropagation(e: React.MouseEvent<HTMLDivElement>) {
+/* function stopPropagation(e: React.MouseEvent<HTMLDivElement>) {
   e.stopPropagation();
-}
+} */
 
 export function MaterialLoaderTitle(props: MaterialLoaderTitleProps) {
   const hidden = props.material.hidden || (props.folder && props.folder.hidden);
@@ -25,8 +25,8 @@ export function MaterialLoaderTitle(props: MaterialLoaderTitleProps) {
     );
   }
 
-  const modifiers: Array<string> =
-    typeof props.modifiers === "string" ? [props.modifiers] : props.modifiers;
+  /*   const modifiers: Array<string> =
+    typeof props.modifiers === "string" ? [props.modifiers] : props.modifiers; */
 
   const materialPageType = props.material.assignmentType
     ? props.material.assignmentType === "EXERCISE"

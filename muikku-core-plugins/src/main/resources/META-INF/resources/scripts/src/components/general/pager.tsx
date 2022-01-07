@@ -65,6 +65,7 @@ class Pager extends React.Component<PagerProps, PagerState> {
           {isPagerLessVisible
             ? [
                 <div
+                  key="prev-label"
                   tabIndex={0}
                   className="pager__item pager__item--less icon-arrow-left"
                   onClick={this.props.onClick.bind(null, pagerLessNumber)}
@@ -73,6 +74,7 @@ class Pager extends React.Component<PagerProps, PagerState> {
                   )}
                 />,
                 <div
+                  key="go-to-label"
                   tabIndex={0}
                   className="pager__item pager__item--first"
                   onClick={this.props.onClick.bind(null, 1)}
@@ -82,7 +84,11 @@ class Pager extends React.Component<PagerProps, PagerState> {
                 >
                   1
                 </div>,
-                <div role="none" className="pager__item pager__item--gap">
+                <div
+                  key="gap-left"
+                  role="none"
+                  className="pager__item pager__item--gap"
+                >
                   ...
                 </div>,
               ]
@@ -109,10 +115,15 @@ class Pager extends React.Component<PagerProps, PagerState> {
           ))}
           {isPagerMoreVisible
             ? [
-                <div role="none" className="pager__item pager__item--gap">
+                <div
+                  key="gap-right"
+                  role="none"
+                  className="pager__item pager__item--gap"
+                >
                   ...
                 </div>,
                 <div
+                  key="go-to-label"
                   tabIndex={0}
                   className="pager__item pager__item--last"
                   onClick={this.props.onClick.bind(null, this.props.pages)}
@@ -123,6 +134,7 @@ class Pager extends React.Component<PagerProps, PagerState> {
                   {this.props.pages}
                 </div>,
                 <div
+                  key="next-label"
                   tabIndex={0}
                   className="pager__item pager__item--more icon-arrow-right"
                   onClick={this.props.onClick.bind(null, pagerMoreNumber)}

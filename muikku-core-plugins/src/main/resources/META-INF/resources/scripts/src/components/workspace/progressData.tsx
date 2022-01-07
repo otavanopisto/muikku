@@ -2,6 +2,7 @@ import { WorkspaceStudentActivityType } from "~/reducers/workspaces";
 import { i18nType } from "reducers/base/i18n";
 import * as React from "react";
 import Dropdown from "~/components/general/dropdown";
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const ProgressBarCircle = require("react-progress-bar.js").Circle;
 
 import "~/sass/elements/workspace-activity.scss";
@@ -14,7 +15,7 @@ export default class ProgressData extends React.Component<
     title?: string;
     modifier?: string;
   },
-  {}
+  Record<string, unknown>
 > {
   render() {
     if (!this.props.activity) {

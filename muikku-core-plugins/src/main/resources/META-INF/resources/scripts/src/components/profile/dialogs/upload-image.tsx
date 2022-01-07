@@ -16,6 +16,7 @@ import {
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 import { bindActionCreators } from "redux";
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const Slider = require("react-rangeslider").default;
 import "~/sass/elements/rangeslider.scss";
 import {

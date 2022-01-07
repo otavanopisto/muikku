@@ -1,6 +1,5 @@
 import * as React from "react";
 import Dialog from "~/components/general/dialog";
-import Link from "~/components/general/link";
 import {
   updateMessagesNavigationLabel,
   removeMessagesNavigationLabel,

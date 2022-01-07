@@ -652,7 +652,7 @@ class OrganizationEditWorkspace extends React.Component<
             </DialogRow>
           </form>
         );
-      case 2:
+      case 2: {
         const students = this.props.users.students.map((student) => ({
           id: student.id,
           label: student.firstName + " " + student.lastName,
@@ -697,7 +697,8 @@ class OrganizationEditWorkspace extends React.Component<
             </DialogRow>
           </form>
         );
-      case 3:
+      }
+      case 3: {
         const workspaceStudents =
           this.props.currentWorkspace.students &&
           this.props.currentWorkspace.students.results
@@ -752,7 +753,8 @@ class OrganizationEditWorkspace extends React.Component<
             </DialogRow>
           </form>
         );
-      case 4:
+      }
+      case 4: {
         const staffSearchItems = this.props.users.staff.map((staff) => ({
           id: staff.id,
           label: staff.firstName + " " + staff.lastName,
@@ -787,7 +789,8 @@ class OrganizationEditWorkspace extends React.Component<
             </DialogRow>
           </form>
         );
-      case 5:
+      }
+      case 5: {
         const workspaceStaff =
           this.props.currentWorkspace.staffMembers &&
           this.props.currentWorkspace.staffMembers.results
@@ -842,6 +845,7 @@ class OrganizationEditWorkspace extends React.Component<
             </DialogRow>
           </form>
         );
+      }
       case 6:
         return (
           <DialogRow modifiers="edit-workspace-summary">

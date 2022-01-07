@@ -2,19 +2,14 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { colorIntToHex, getName } from "~/util/modifiers";
-import equals = require("deep-equal");
-
 import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
-
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
 import "~/sass/elements/application-list.scss";
-
 import "~/sass/elements/label.scss";
 import "~/sass/elements/message.scss";
 import "~/sass/elements/wcag.scss";
-
 import BodyScrollLoader from "~/components/general/body-scroll-loader";
 import BodyScrollKeeper from "~/components/general/body-scroll-keeper";
 import SelectableList from "~/components/general/selectable-list";
@@ -113,32 +108,37 @@ class CommunicatorMessages extends BodyScrollLoader<
     const messageRecipientsList = thread.recipients.map((recipient) => {
       if (recipient.userEntityId === userId) {
         return (
-          <span>
+          <span key={recipient.recipientId}>
             {this.props.i18n.text.get("plugin.communicator.sender.self")}
           </span>
         );
       }
       if (recipient.archived === true) {
         return (
-          <span className="message__user-archived">
+          <span key={recipient.recipientId} className="message__user-archived">
             {this.props.i18n.text.get("plugin.communicator.sender.archived")}
           </span>
         );
       }
       if (recipient.studiesEnded === true) {
         return (
-          <span className="message__user-studies-ended">
+          <span
+            key={recipient.recipientId}
+            className="message__user-studies-ended"
+          >
             {getName(recipient as any, !this.props.status.isStudent)}
           </span>
         );
       }
       return (
-        <span>{getName(recipient as any, !this.props.status.isStudent)}</span>
+        <span key={recipient.recipientId}>
+          {getName(recipient as any, !this.props.status.isStudent)}
+        </span>
       );
     });
 
     const userGroupRecipientsList = thread.userGroupRecipients.map((group) => (
-      <span>{group.name}</span>
+      <span key={group.id}>{group.name}</span>
     ));
 
     const workspaceRecipientsList = thread.workspaceRecipients
@@ -148,7 +148,9 @@ class CommunicatorMessages extends BodyScrollLoader<
             (w2) => w2.workspaceEntityId === w.workspaceEntityId
           ) === pos
       )
-      .map((workspace) => <span>{workspace.workspaceName}</span>);
+      .map((workspace) => (
+        <span key={workspace.workspaceEntityId}>{workspace.workspaceName}</span>
+      ));
 
     return [
       messageRecipientsList,

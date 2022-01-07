@@ -2,6 +2,7 @@ import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
 import Link from "~/components/general/link";
 import $ from "~/lib/jquery";
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const ProgressBarLine = require("react-progress-bar.js").Line;
 import moment from "~/lib/moment";
 import { StatusType } from "reducers/base/status";
@@ -181,6 +182,7 @@ export default class AudioField extends React.Component<
           audio: true,
         }));
     } catch (err) {
+      // eslint-disable-next-line no-console
       console.error(err.stack);
       return;
     }

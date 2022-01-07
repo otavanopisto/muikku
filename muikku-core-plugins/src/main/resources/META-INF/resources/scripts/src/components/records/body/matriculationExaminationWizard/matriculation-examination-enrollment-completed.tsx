@@ -12,7 +12,7 @@ interface MatriculationExaminationEnrollmentCompletedProps {
 
 export class MatriculationExaminationEnrollmentCompleted extends React.Component<
   MatriculationExaminationEnrollmentCompletedProps,
-  {}
+  Record<string, unknown>
 > {
   constructor(props: MatriculationExaminationEnrollmentCompletedProps) {
     super(props);

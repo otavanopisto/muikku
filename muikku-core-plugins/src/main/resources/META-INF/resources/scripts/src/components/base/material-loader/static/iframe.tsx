@@ -17,7 +17,10 @@ interface IframeProps {
   invisible?: boolean;
 }
 
-export default class Iframe extends React.Component<IframeProps, {}> {
+export default class Iframe extends React.Component<
+  IframeProps,
+  Record<string, unknown>
+> {
   private mainParentRef: React.RefObject<HTMLDivElement>;
   private loadedH5P = false;
   constructor(props: IframeProps) {

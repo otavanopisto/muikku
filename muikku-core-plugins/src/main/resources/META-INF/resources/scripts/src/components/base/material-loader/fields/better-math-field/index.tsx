@@ -1,3 +1,9 @@
+/* eslint-disable react/no-string-refs */
+
+/**
+ * Deprecated refs should be reractored
+ */
+
 import * as React from "react";
 import Toolbar, { MathFieldCommandType } from "./toolbar";
 import Field from "./field";

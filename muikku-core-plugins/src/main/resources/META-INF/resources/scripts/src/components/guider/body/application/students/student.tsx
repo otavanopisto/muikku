@@ -37,9 +37,8 @@ class Student extends React.Component<StudentProps, StudentState> {
    * getSudentStudyTimeState
    *
    * @param student
-   * @returns StudentStudytimeState "ENDED" | "ENDING" | "ONGOING"
+   * @returns StudentStudytimeState "ENDED" | "ENDING" | "ONGOING"
    */
-
   getSudentStudyTimeState = (
     student: GuiderStudentType
   ): StudentStudyTimeState => {

@@ -37,7 +37,8 @@ class Notifications extends React.Component<
             {this.props.notifications.map((notification: NotificationType) => (
               <div
                 role={
-                  notification.severity === "error" || "warning"
+                  notification.severity === "error" ||
+                  notification.severity === "warning"
                     ? "alertdialog"
                     : null
                 }

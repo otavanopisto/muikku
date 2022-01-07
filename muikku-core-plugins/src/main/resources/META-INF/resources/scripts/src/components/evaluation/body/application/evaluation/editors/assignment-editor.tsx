@@ -214,13 +214,8 @@ class AssignmentEditor extends SessionStateComponent<
       locked: true,
     });
 
-    const {
-      workspaceEntityId,
-      userEntityId,
-      workspaceMaterialId,
-      dataToSave,
-      defaultGrade,
-    } = data;
+    const { workspaceEntityId, userEntityId, workspaceMaterialId, dataToSave } =
+      data;
 
     try {
       await promisify(
@@ -283,13 +278,8 @@ class AssignmentEditor extends SessionStateComponent<
     materialId: number;
     defaultGrade: string;
   }) => {
-    const {
-      workspaceEntityId,
-      userEntityId,
-      workspaceMaterialId,
-      dataToSave,
-      defaultGrade,
-    } = data;
+    const { workspaceEntityId, userEntityId, workspaceMaterialId, dataToSave } =
+      data;
 
     this.setState({
       locked: true,

@@ -1,3 +1,14 @@
+/* eslint-disable react/no-string-refs */
+/* eslint-disable @typescript-eslint/ban-types */
+
+/**
+ * Component needs refactoring related to how it handles refs because
+ * current ref system it is using has been deprecated and should be change
+ * to use new way how React handles those.
+ *
+ * Function type should be change to more specific type
+ */
+
 import * as React from "react";
 import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";

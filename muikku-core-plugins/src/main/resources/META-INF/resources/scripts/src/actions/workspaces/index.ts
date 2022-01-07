@@ -3457,6 +3457,7 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
             if (message.reason === "CONTAINS_ANSWERS") {
               showRemoveAnswersDialogForPublish = true;
             }
+            // eslint-disable-next-line no-empty
           } catch (e) {}
         }
 
@@ -3539,6 +3540,7 @@ const deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTrig
                 })
               );
             }
+            // eslint-disable-next-line no-empty
           } catch (e) {}
         }
 

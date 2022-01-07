@@ -3,7 +3,13 @@ import Body from "../components/frontpage/body";
 import * as React from "react";
 import "~/sass/util/base.scss";
 
-export default class IndexFrontpage extends React.Component<{}, {}> {
+/**
+ * IndexFrontpage
+ */
+export default class IndexFrontpage extends React.Component<
+  Record<string, unknown>,
+  Record<string, unknown>
+> {
   render() {
     return (
       <div id="root">

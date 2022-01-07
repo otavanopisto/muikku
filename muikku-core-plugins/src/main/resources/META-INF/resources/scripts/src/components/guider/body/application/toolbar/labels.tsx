@@ -70,7 +70,7 @@ class GuiderToolbarLabels extends React.Component<
         <Dropdown
           modifier="guider-labels"
           items={[
-            <div className="form-element">
+            <div key="update-label" className="form-element">
               <input
                 className="form-element__input"
                 value={this.state.labelFilter}
@@ -82,6 +82,7 @@ class GuiderToolbarLabels extends React.Component<
               />
             </div>,
             <Link
+              key="link-new"
               className="link link--full link--new"
               onClick={this.props.createGuiderFilterLabel.bind(
                 null,
@@ -97,8 +98,10 @@ class GuiderToolbarLabels extends React.Component<
                 const isSelected = (
                   this.props.guider.currentStudent.labels || []
                 ).find((l) => l.flagId === label.id);
+
                 return (
                   <Link
+                    key={label.id}
                     className={`link link--full link--guider-label-dropdown ${
                       isSelected ? "selected" : ""
                     }`}
@@ -151,7 +154,7 @@ class GuiderToolbarLabels extends React.Component<
       <Dropdown
         modifier="guider-labels"
         items={[
-          <div className="form-element">
+          <div key="" className="form-element">
             <input
               className="form-element__input"
               value={this.state.labelFilter}
@@ -163,6 +166,7 @@ class GuiderToolbarLabels extends React.Component<
             />
           </div>,
           <span
+            key="create-label"
             className="link link--full"
             onClick={this.props.createGuiderFilterLabel.bind(
               null,
@@ -179,8 +183,10 @@ class GuiderToolbarLabels extends React.Component<
               const isPartiallySelected = onlyInSome.includes(
                 label.id as number
               );
+
               return (
                 <Link
+                  key={label.id}
                   className={`link link--full link--guider-label-dropdown ${
                     isSelected ? "selected" : ""
                   } ${isPartiallySelected ? "semi-selected" : ""}`}

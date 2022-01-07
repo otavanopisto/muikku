@@ -1,3 +1,9 @@
+/* eslint-disable react/no-string-refs */
+
+/**
+ * Depcrecated refs should be refactored
+ */
+
 import * as React from "react";
 import Link from "~/components/general/link";
 import "~/sass/elements/toc.scss";
@@ -6,9 +12,10 @@ interface TocProps {
   tocTitle?: string;
 }
 
-interface TocState {}
-
-export default class Toc extends React.Component<TocProps, TocState> {
+export default class Toc extends React.Component<
+  TocProps,
+  Record<string, unknown>
+> {
   render() {
     return (
       <div className="toc">

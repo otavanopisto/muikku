@@ -120,7 +120,10 @@ export const Tabs: React.FC<TabsProps> = (props) => {
   );
 };
 
-export class MobileOnlyTabs extends React.Component<MobileOnlyTabsProps, {}> {
+export class MobileOnlyTabs extends React.Component<
+  MobileOnlyTabsProps,
+  Record<string, unknown>
+> {
   render() {
     return (
       <div className="tabs">

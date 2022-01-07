@@ -114,7 +114,7 @@ interface MainFunctionProps {
 
 export default class MainFunction extends React.Component<
   MainFunctionProps,
-  {}
+  Record<string, unknown>
 > {
   private prevPathName: string;
   private itsFirstTime: boolean;

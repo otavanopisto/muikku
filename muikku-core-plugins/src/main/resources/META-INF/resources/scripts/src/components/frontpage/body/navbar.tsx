@@ -3,7 +3,7 @@ import Link from "../../general/link";
 import LoginButton from "../../base/login-button";
 import ForgotPasswordDialog from "../../base/forgot-password-dialog";
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
 
@@ -104,27 +104,32 @@ class FrontpageNavbar extends React.Component<
           </ForgotPasswordDialog>,
         ]}
         menuItems={[
-          <Link href="#studying" className="link link--full">
+          <Link key="studying" href="#studying" className="link link--full">
             <span>
               {this.props.i18n.text.get("plugin.navigation.link.studying")}
             </span>
           </Link>,
-          <Link href="#news" className="link link--full">
+          <Link key="news" href="#news" className="link link--full">
             <span>
               {this.props.i18n.text.get("plugin.navigation.link.news")}
             </span>
           </Link>,
-          <Link href="#organization" className="link link--full">
+          <Link
+            key="organization"
+            href="#organization"
+            className="link link--full"
+          >
             <span>
               {this.props.i18n.text.get("plugin.navigation.link.organization")}
             </span>
           </Link>,
-          <Link href="#contact" className="link link--full">
+          <Link key="contact" href="#contact" className="link link--full">
             <span>
               {this.props.i18n.text.get("plugin.navigation.link.contact")}
             </span>
           </Link>,
           <Link
+            key="coursepicker"
             href="/coursepicker"
             className="link link--highlight link--full"
           >

@@ -1,15 +1,17 @@
+/* eslint-disable react/no-string-refs */
+
+/**
+ * Depcrecated refs should be refactored
+ */
+
 import Link from "~/components/general/link";
 import * as React from "react";
 import { ButtonPill } from "~/components/general/button";
 import "~/sass/elements/item-list.scss";
 
-interface NavigationProps {}
-
-interface NavigationState {}
-
 export default class Navigation extends React.Component<
-  NavigationProps,
-  NavigationState
+  Record<string, unknown>,
+  Record<string, unknown>
 > {
   render() {
     return (

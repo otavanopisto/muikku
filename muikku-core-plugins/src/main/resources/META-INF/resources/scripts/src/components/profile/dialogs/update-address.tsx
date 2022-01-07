@@ -97,7 +97,7 @@ class UpdateAddressDialog extends React.Component<
       success: () => {
         closeDialog();
       },
-      fail: () => {},
+      fail: () => undefined,
     });
   }
   updateField(field: string, e: React.ChangeEvent<HTMLInputElement>) {

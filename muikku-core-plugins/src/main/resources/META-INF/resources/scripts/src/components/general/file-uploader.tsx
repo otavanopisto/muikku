@@ -2,16 +2,17 @@ import * as React from "react";
 import $ from "~/lib/jquery";
 import "~/sass/elements/file-uploader.scss";
 import Link from "~/components/general/link";
-import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
-const ProgressBarLine = require("react-progress-bar.js").Line;
 import * as uuid from "uuid";
 import { UploadingValue } from "../../@types/shared";
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const ProgressBarLine = require("react-progress-bar.js").Line;
 
 /**
  * FileUploaderProps
@@ -165,9 +166,9 @@ class FileUploader extends React.Component<
         data: formData,
         success: (data: any) => {
           let actualData = data;
-          try {
-            actualData = JSON.parse(data);
-          } catch (err) {}
+
+          actualData = JSON.parse(data);
+
           //make a copy of the values
           const newValues = [...this.state.uploadingValues];
           const successIndex = newValues.findIndex((f) => f.file === file);

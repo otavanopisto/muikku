@@ -63,10 +63,14 @@ export const CKEditorConfig = (locale: string) => ({
   linkShowTargetTab: true,
   allowedContent: true, // disable content filtering to preserve all formatting of imported documents; fix for #263
   entities: false,
+  // eslint-disable-next-line camelcase
   entities_latin: false,
+  // eslint-disable-next-line camelcase
   entities_greek: false,
   language: locale,
+  // eslint-disable-next-line camelcase
   format_tags: "p;h3;h4",
+  // eslint-disable-next-line camelcase
   colorButton_colors:
     "000000,800000,8B4513,2F4F4F,008080,000080,4B0082,B22222,A52A2A,DAA520,006400,40E0D0,0000CD,800080,808080,FF0000,FF8C00,FFD700,008000,00FFFF,0000FF,EE82EE,A9A9A9,FFA07A,FFA500,FFFF00,00FF00,AFEEEE,ADD8E6,DDA0DD,D3D3D3,FFF0F5,FAEBD7,FFFFE0,F0FFF0,F0FFFF,F0F8FF,E6E6FA,FFFFFF",
   height: 400,
@@ -129,6 +133,7 @@ export const CKEditorConfig = (locale: string) => ({
     { name: "tools", items: ["Maximize"] },
   ],
   removePlugins: "image,exportpdf",
+  // eslint-disable-next-line camelcase
   resize_enabled: true,
   extraPlugins: "divarea,image2,muikku-mathjax",
 });

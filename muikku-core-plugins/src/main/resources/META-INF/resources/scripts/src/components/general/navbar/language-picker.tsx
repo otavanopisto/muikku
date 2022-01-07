@@ -30,6 +30,7 @@ class LanguagePicker extends React.Component<
         modifier="language-picker"
         items={this.props.locales.available.map((locale) => (
           <Link
+            key={locale.name}
             className={`link link--full link--language-picker-dropdown`}
             onClick={this.props.setLocale.bind(this, locale.locale)}
             role="menuitem"

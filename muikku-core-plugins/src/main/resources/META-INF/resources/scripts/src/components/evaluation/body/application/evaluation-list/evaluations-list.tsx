@@ -455,19 +455,6 @@ export class EvaluationList extends React.Component<
             </span>
           </div>
         );
-      } else if (evaluationRequests.data.length <= 0) {
-        /**
-         * Otherwise check if filtered list is empty and give message about that
-         */
-        renderEvaluationCardList = (
-          <div className="empty">
-            <span>
-              {this.props.i18n.text.get(
-                "plugin.evaluation.cardlist.noRequestWithFilters"
-              )}
-            </span>
-          </div>
-        );
       }
 
       return <>{renderEvaluationCardList}</>;

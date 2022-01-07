@@ -1,31 +1,28 @@
 import MainFunctionNavbar from "../base/main-function/navbar";
 import ScreenContainer from "../general/screen-container";
-
 import AnnouncementsPanel from "./body/announcements-panel";
 import ContinueStudiesPanel from "./body/continue-studies-panel";
 import ImportantPanel from "./body/important-panel";
 import LastMessagesPanel from "./body/latest-messages-panel";
 import WorkspacesPanel from "./body/workspaces-panel";
 import { i18nType } from "~/reducers/base/i18n";
-
 import * as React from "react";
-
 import { StateType } from "~/reducers";
 import { connect } from "react-redux";
 import { StatusType } from "~/reducers/base/status";
 import StudiesEnded from "./body/studies-ended";
-
 import CheckContactInfoDialog from "~/components/base/check-contact-info-dialog";
-
 import "~/sass/elements/wcag.scss";
+
+interface IndexBodyProps {
+  status: StatusType;
+  i18n: i18nType;
+}
 
 //TODO css get rid of ordered container
 class IndexBody extends React.Component<
-  {
-    status: StatusType;
-    i18n: i18nType;
-  },
-  {}
+  IndexBodyProps,
+  Record<string, unknown>
 > {
   render() {
     return (

@@ -28,6 +28,7 @@ interface ForgotPasswordDialogState {
 }
 
 const emailRegexValidator =
+  // eslint-disable-next-line no-useless-escape
   /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 
 class ForgotPasswordDialog extends React.Component<

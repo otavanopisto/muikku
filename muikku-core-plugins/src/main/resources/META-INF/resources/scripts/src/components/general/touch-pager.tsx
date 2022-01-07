@@ -1,5 +1,10 @@
-import * as React from "react";
+/* eslint-disable react/no-string-refs */
 
+/**
+ * Depcrecated refs should be refactored
+ */
+
+import * as React from "react";
 import "~/sass/elements/touch-pager.scss";
 
 interface TouchPagerProps {

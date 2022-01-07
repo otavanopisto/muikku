@@ -30,6 +30,12 @@
     "react/prop-types": "off",
     "react/jsx-filename-extension": [1, { "extensions": [".tsx", ".jsx"] }],
     "react/no-deprecated": 1,
+    "react/no-children-prop": [
+      1,
+      {
+        "allowFunctions": true
+      }
+    ],
     "react-hooks/rules-of-hooks": 2,
     "react-hooks/exhaustive-deps": 1,
     "prettier/prettier": [
@@ -41,7 +47,7 @@
     "@typescript-eslint/no-unused-vars": [
       1,
       {
-        "argsIgnorePattern": "^_"
+        "args": "none"
       }
     ],
     "@typescript-eslint/no-empty-interface": 0,

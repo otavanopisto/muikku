@@ -1,10 +1,13 @@
-import WorkspaceNavbar from "~/components/base/workspace/navbar";
+/* eslint-disable react/no-string-refs */
 
+/**
+ * Depcrecated refs should be refactored
+ */
+
+import WorkspaceNavbar from "~/components/base/workspace/navbar";
 import Application from "./body/application";
 import Aside from "./body/aside";
-
 import * as React from "react";
-
 import "~/sass/elements/panel.scss";
 import "~/sass/elements/footer.scss";
 
@@ -12,11 +15,9 @@ interface WorkspaceJournalBodyProps {
   workspaceUrl: string;
 }
 
-interface WorkspaceJournalBodyState {}
-
 export default class WorkspaceJournalBody extends React.Component<
   WorkspaceJournalBodyProps,
-  WorkspaceJournalBodyState
+  Record<string, unknown>
 > {
   constructor(props: WorkspaceJournalBodyProps) {
     super(props);

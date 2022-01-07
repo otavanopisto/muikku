@@ -251,7 +251,7 @@ class CommunicatorToolbar extends React.Component<
             <Dropdown
               modifier="communicator-labels"
               items={[
-                <div className="form-element">
+                <div key="update-label" className="form-element">
                   <input
                     className="form-element__input"
                     value={this.state.labelFilter}
@@ -263,6 +263,7 @@ class CommunicatorToolbar extends React.Component<
                   />
                 </div>,
                 <Link
+                  key="new-link"
                   tabIndex={0}
                   className="link link--full link--new"
                   onClick={this.onCreateNewLabel}
@@ -286,6 +287,7 @@ class CommunicatorToolbar extends React.Component<
                       );
                     return (
                       <Link
+                        key={label.id}
                         tabIndex={0}
                         className={`link link--full link--communicator-label-dropdown ${
                           isSelected ? "selected" : ""
@@ -416,7 +418,7 @@ class CommunicatorToolbar extends React.Component<
           onClose={this.resetLabelFilter}
           modifier="communicator-labels"
           items={[
-            <div className="form-element">
+            <div key="update-label" className="form-element">
               <input
                 className="form-element__input"
                 value={this.state.labelFilter}
@@ -428,6 +430,7 @@ class CommunicatorToolbar extends React.Component<
               />
             </div>,
             <Link
+              key="new-label"
               tabIndex={0}
               className="link link--full"
               onClick={this.onCreateNewLabel}
@@ -451,6 +454,7 @@ class CommunicatorToolbar extends React.Component<
                 );
                 return (
                   <Link
+                    key={label.id}
                     tabIndex={0}
                     className={`link link--full link--communicator-label-dropdown ${
                       isSelected ? "selected" : ""

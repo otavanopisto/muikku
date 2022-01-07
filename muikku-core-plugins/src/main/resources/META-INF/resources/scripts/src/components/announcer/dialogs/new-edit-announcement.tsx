@@ -22,7 +22,6 @@ import SessionStateComponent from "~/components/general/session-state-component"
 import Button from "~/components/general/button";
 import { StatusType } from "~/reducers/base/status";
 import equals = require("deep-equal");
-import { webworker } from "webpack";
 
 type TargetItemsListType = Array<ContactRecipientType>;
 

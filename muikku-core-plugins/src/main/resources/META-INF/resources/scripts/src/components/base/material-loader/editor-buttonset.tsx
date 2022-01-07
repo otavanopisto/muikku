@@ -1,5 +1,4 @@
 import * as React from "react";
-import { MaterialContentNodeType, WorkspaceType } from "~/reducers/workspaces";
 import { MaterialLoaderProps } from "~/components/base/material-loader";
 import Dropdown from "~/components/general/dropdown";
 import { ButtonPill } from "~/components/general/button";

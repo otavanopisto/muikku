@@ -1,3 +1,9 @@
+/* eslint-disable @typescript-eslint/ban-types */
+
+/**
+ *Function type should be change to more specific type
+ */
+
 import actions from "../actions/base/notifications";
 import { Store } from "react-redux";
 import $ from "~/lib/jquery";

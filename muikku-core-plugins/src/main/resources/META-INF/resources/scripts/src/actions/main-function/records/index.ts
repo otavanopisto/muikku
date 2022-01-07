@@ -431,6 +431,7 @@ const setCurrentStudentUserViewAndWorkspace: SetCurrentStudentUserViewAndWorkspa
 
               let materials: Array<MaterialContentNodeType>;
               let evaluations: Array<MaterialEvaluationType>;
+              // eslint-disable-next-line prefer-const
               [materials, evaluations] = <any>await Promise.all([
                 Promise.all(
                   assignments.map((assignment) =>

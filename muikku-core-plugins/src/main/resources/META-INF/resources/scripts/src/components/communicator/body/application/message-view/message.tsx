@@ -1,4 +1,3 @@
-import NewMessage from "../../../dialogs/new-message";
 import * as React from "react";
 import {
   MessageType,
@@ -103,7 +102,7 @@ class Message extends React.Component<MessageProps, MessageState> {
     });
 
     const userGroupRecipientsList = message.userGroupRecipients.map((group) => (
-      <span>{group.name}</span>
+      <span key={group.id}>{group.name}</span>
     ));
 
     const workspaceRecipientsList = message.workspaceRecipients
@@ -113,7 +112,9 @@ class Message extends React.Component<MessageProps, MessageState> {
             (w2) => w2.workspaceEntityId === w.workspaceEntityId
           ) === pos
       )
-      .map((workspace) => <span>{workspace.workspaceName}</span>);
+      .map((workspace) => (
+        <span key={workspace.workspaceEntityId}>{workspace.workspaceName}</span>
+      ));
 
     return [
       messageRecipientsList,
@@ -237,7 +238,7 @@ class Message extends React.Component<MessageProps, MessageState> {
      * replyTarget can have multiple recipients IF message sender is the same as currently logged in user
      * AND message has been sent to multiple recipients AND currently logged in user has permissions to
      * send the message to said recipients.
-     * The last filter will filter out currently logged in user from userGroupList and workspaceList so
+     * The last filter will filter out currently logged in user from userGroupList and workspaceList so
      * user cannot send messages to him self.
      */
 

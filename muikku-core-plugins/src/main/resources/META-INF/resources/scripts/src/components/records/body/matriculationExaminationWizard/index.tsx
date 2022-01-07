@@ -11,7 +11,9 @@ import { MatriculationExaminationEnrollmentSummaryNew as Step4New } from "./matr
 import { MatriculationExaminationEnrollmentCompleted as Step5 } from "./matriculation-examination-enrollment-completed";
 import { connect } from "react-redux";
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const StepZilla = require("react-stepzilla").default;
+
 import "~/sass/elements/wizard.scss";
 import { StateType } from "~/reducers";
 import "~/sass/elements/matriculation.scss";

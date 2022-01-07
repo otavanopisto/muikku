@@ -1,3 +1,9 @@
+/* eslint-disable react/no-string-refs */
+
+/**
+ * Depcrecated refs should be refactored
+ */
+
 import WorkspaceNavbar from "~/components/base/workspace/navbar";
 import ScreenContainer from "~/components/general/screen-container";
 import * as React from "react";
@@ -18,11 +24,9 @@ interface WorkspaceHomeBodyProps {
   workspaceUrl: string;
 }
 
-interface WorkspaceHomeBodyState {}
-
 export default class WorkspaceHomeBody extends React.Component<
   WorkspaceHomeBodyProps,
-  WorkspaceHomeBodyState
+  Record<string, unknown>
 > {
   constructor(props: WorkspaceHomeBodyProps) {
     super(props);

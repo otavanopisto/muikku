@@ -308,7 +308,7 @@ class OrganizationNewUserGroup extends React.Component<
             </form>
           </DialogRow>
         );
-      case 2:
+      case 2: {
         const students = this.props.users.students.map((student) => ({
           id: student.id,
           label: student.firstName + " " + student.lastName,
@@ -344,7 +344,8 @@ class OrganizationNewUserGroup extends React.Component<
             </DialogRow>
           </DialogRow>
         );
-      case 3:
+      }
+      case 3: {
         const staffSearchItems = this.props.users.staff.map((staff) => ({
           id: staff.id,
           label: staff.firstName + " " + staff.lastName,
@@ -377,6 +378,7 @@ class OrganizationNewUserGroup extends React.Component<
             </DialogRow>
           </DialogRow>
         );
+      }
       case 4:
         return (
           <DialogRow modifiers="edit-workspace-summary">

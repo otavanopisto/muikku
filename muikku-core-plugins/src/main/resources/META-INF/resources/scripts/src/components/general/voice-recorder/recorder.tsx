@@ -14,6 +14,7 @@ import AnimateHeight from "react-animate-height";
 import "~/sass/elements/voice-recorder.scss";
 import { AudioAssessment } from "../../../@types/evaluation";
 import useRecordingsList from "./hooks/user-recordings-list";
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const ProgressBarLine = require("react-progress-bar.js").Line;
 
 /**

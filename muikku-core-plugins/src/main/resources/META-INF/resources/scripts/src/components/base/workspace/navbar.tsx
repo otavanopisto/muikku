@@ -17,10 +17,6 @@ import {
   WorkspaceAssessementStateType,
   WorkspaceEditModeStateType,
 } from "~/reducers/workspaces";
-import Navigation, {
-  NavigationTopic,
-  NavigationElement,
-} from "~/components/general/navigation";
 import EvaluationRequestDialog from "./evaluation-request-dialog";
 import EvaluationCancelDialog from "./evaluation-cancel-dialog";
 import {
@@ -28,7 +24,6 @@ import {
   updateWorkspaceEditModeState,
 } from "~/actions/workspaces";
 import { bindActionCreators } from "redux";
-import workspace from "~/components/guider/body/application/current-student/workspaces/workspace";
 
 interface ItemDataElement {
   modifier: string;
@@ -157,7 +152,6 @@ class WorkspaceNavbar extends React.Component<
     );
   }
   onRequestEvaluationOrCancel(state: string) {
-    let text;
     switch (state) {
       case "pending":
       case "pending_pass":
@@ -440,6 +434,7 @@ class WorkspaceNavbar extends React.Component<
             }
             return (
               <Link
+                key={item.modifier}
                 href={this.props.activeTrail !== item.trail ? item.href : null}
                 to={
                   item.to && this.props.activeTrail !== item.trail

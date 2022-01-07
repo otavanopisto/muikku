@@ -205,7 +205,9 @@ class OrganizationManagementApplication extends React.Component<
               "plugin.organization.tab.title.summary"
             ),
             component: () => (
-              <ApplicationPanelBody modifier="tabs" children={<Summary />} />
+              <ApplicationPanelBody modifier="tabs">
+                <Summary />
+              </ApplicationPanelBody>
             ),
           },
           {
@@ -219,8 +221,9 @@ class OrganizationManagementApplication extends React.Component<
                 primaryOption={usersPrimaryAction}
                 toolbar={usersToolbar}
                 modifier="tabs"
-                children={<Users />}
-              />
+              >
+                <Users />
+              </ApplicationPanelBody>
             ),
           },
           {
@@ -234,8 +237,9 @@ class OrganizationManagementApplication extends React.Component<
                 primaryOption={userGroupsPrimaryAction}
                 toolbar={userGroupsToolbar}
                 modifier="tabs"
-                children={<UserGroups />}
-              />
+              >
+                <UserGroups />
+              </ApplicationPanelBody>
             ),
           },
           {
@@ -250,8 +254,9 @@ class OrganizationManagementApplication extends React.Component<
                 toolbar={coursesToolbar}
                 modifier="tabs"
                 asideBefore={<WorkspacesAside />}
-                children={<OrganizationWorkspaces />}
-              />
+              >
+                <OrganizationWorkspaces />
+              </ApplicationPanelBody>
             ),
           },
         ]}

@@ -30,6 +30,7 @@ export class MathJaxCollector {
         this.element,
       ]);
     } else {
+      // eslint-disable-next-line no-console
       console.warn(
         "Attempted to execute the mathjax collector in a non existant component"
       );

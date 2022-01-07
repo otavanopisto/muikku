@@ -8,11 +8,7 @@ import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AnyActionType } from "~/actions";
 import { i18nType } from "~/reducers/base/i18n";
-import {
-  DiscussionThreadType,
-  DiscussionThreadReplyType,
-} from "~/reducers/discussion";
-import Link from "~/components/general/link";
+import { DiscussionThreadReplyType } from "~/reducers/discussion";
 import Dialog from "~/components/general/dialog";
 import Button from "~/components/general/button";
 import {

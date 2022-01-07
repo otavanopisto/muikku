@@ -2,7 +2,6 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
 import { CredentialsType } from "~/reducers/base/credentials";
-import $ from "~/lib/jquery";
 import ReturnCredentials from "./body/return-credentials";
 import CredentialsContainer from "./body/credentials-container";
 import CredentialsHero from "./body/credentials-hero";

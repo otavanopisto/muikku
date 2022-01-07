@@ -34,7 +34,9 @@ export function getApiId(
       case "trash":
         return "trash";
     }
+    // eslint-disable-next-line no-console
     if (console && console.warn) {
+      // eslint-disable-next-line no-console
       console.warn("Invalid navigation item location", item);
     }
   } else {

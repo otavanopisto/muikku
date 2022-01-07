@@ -2,15 +2,11 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import CKEditor from "~/components/general/ckeditor";
-import Link from "~/components/general/link";
-import InputContactsAutofill from "~/components/base/input-contacts-autofill";
 import EnvironmentDialog from "~/components/general/environment-dialog";
 import { AnyActionType } from "~/actions";
 import { i18nType } from "~/reducers/base/i18n";
 import { DiscussionType, DiscussionThreadType } from "~/reducers/discussion";
 import {
-  createDiscussionThread,
-  CreateDiscussionThreadTriggerType,
   modifyDiscussionThread,
   ModifyDiscussionThreadTriggerType,
 } from "~/actions/discussion";

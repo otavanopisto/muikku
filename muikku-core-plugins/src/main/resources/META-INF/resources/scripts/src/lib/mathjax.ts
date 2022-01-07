@@ -1,3 +1,9 @@
+/* eslint-disable @typescript-eslint/ban-types */
+
+/**
+ * Function type should be change to more specific type
+ */
+
 export function queueJax() {
   if ((window as any).MathJax) {
     (window as any).MathJax.Hub.Queue(["Typeset", (window as any).MathJax.Hub]);

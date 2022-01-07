@@ -2,13 +2,11 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { getName } from "~/util/modifiers";
 import { i18nType } from "~/reducers/base/i18n";
-
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
 import "~/sass/elements/rich-text.scss";
 import "~/sass/elements/discussion.scss";
 import "~/sass/elements/avatar.scss";
-
 import {
   DiscussionType,
   DiscussionThreadType,
@@ -26,7 +24,6 @@ import {
 } from "./threads/threads";
 import { StatusType } from "~/reducers/base/status";
 import Avatar from "~/components/general/avatar";
-import ReactPaginateForked from "react-paginate";
 import PagerV2 from "~/components/general/pagerV2";
 
 /**

@@ -1,3 +1,9 @@
+/* eslint-disable @typescript-eslint/ban-types */
+
+/**
+ * Function type should be change to more specific type
+ */
+
 // Map actions to handlers
 const actionHandlers: any = {};
 

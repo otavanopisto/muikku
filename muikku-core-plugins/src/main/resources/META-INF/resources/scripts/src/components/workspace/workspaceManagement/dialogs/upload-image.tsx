@@ -20,6 +20,8 @@ import {
   updateCurrentWorkspaceImagesB64,
   UpdateCurrentWorkspaceImagesB64TriggerType,
 } from "~/actions/workspaces";
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const Slider = require("react-rangeslider").default;
 import "~/sass/elements/rangeslider.scss";
 

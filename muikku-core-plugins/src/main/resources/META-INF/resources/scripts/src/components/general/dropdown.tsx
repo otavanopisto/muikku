@@ -1,3 +1,17 @@
+/* eslint-disable react/no-find-dom-node */
+/* eslint-disable react/no-string-refs */
+
+/* eslint-disable @typescript-eslint/ban-types */
+
+/**
+ * Component needs refactoring related to how it handles refs because
+ * current ref system it is using has been deprecated and should be change
+ * to use new way how React handles those.
+ *
+ * Also using findDOMNode has been deprecated and doesn't work with functional
+ * component. Should be refactored also
+ */
+
 import Portal from "./portal";
 import * as React from "react";
 import { findDOMNode } from "react-dom";

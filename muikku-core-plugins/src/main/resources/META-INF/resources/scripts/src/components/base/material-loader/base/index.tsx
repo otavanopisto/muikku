@@ -408,6 +408,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
         // some fields come differently but hey this works out
         parameters["content"] =
           parameters["content"] && JSON.parse(parameters["content"]);
+        // eslint-disable-next-line no-empty
       } catch (e) {}
     }
 

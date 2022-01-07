@@ -1,14 +1,10 @@
 import { i18nType } from "~/reducers/base/i18n";
 import * as React from "react";
-import {
-  DiscussionThreadType,
-  DiscussionThreadReplyType,
-} from "~/reducers/discussion";
+import { DiscussionThreadReplyType } from "~/reducers/discussion";
 import { Dispatch, connect } from "react-redux";
 import { AnyActionType } from "~/actions";
 import { bindActionCreators } from "redux";
 import CKEditor from "~/components/general/ckeditor";
-import Link from "~/components/general/link";
 import EnvironmentDialog from "~/components/general/environment-dialog";
 import {
   modifyReplyFromCurrentThread,

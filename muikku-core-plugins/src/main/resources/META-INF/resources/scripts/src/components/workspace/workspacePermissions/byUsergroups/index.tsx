@@ -1,3 +1,9 @@
+/* eslint-disable react/no-string-refs */
+
+/**
+ * Depcrecated refs should be refactored
+ */
+
 import * as React from "react";
 import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
@@ -13,13 +19,11 @@ interface PermissionsByUsergroupsProps {
   workspace: WorkspaceType;
 }
 
-interface PermissionsByUsergroupsState {}
-
 const PERMISSIONS_TO_EXTRACT = ["WORKSPACE_SIGNUP"];
 
 class PermissionsByUsergroups extends React.Component<
   PermissionsByUsergroupsProps,
-  PermissionsByUsergroupsState
+  Record<string, unknown>
 > {
   constructor(props: PermissionsByUsergroupsProps) {
     super(props);

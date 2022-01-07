@@ -69,7 +69,7 @@ class EvaluationToolbar extends React.Component<
    */
   render() {
     const checkboxes = [
-      <div className="filter-item">
+      <div key="evaluated" className="filter-item">
         <input
           onChange={this.handleCheckboxClick("evaluated")}
           checked={this.props.evaluations.evaluationFilters.evaluated}
@@ -82,7 +82,7 @@ class EvaluationToolbar extends React.Component<
           )}
         </label>
       </div>,
-      <div className="filter-item">
+      <div key="requestEvaluation" className="filter-item">
         <input
           onChange={this.handleCheckboxClick("assessmentRequest")}
           checked={this.props.evaluations.evaluationFilters.assessmentRequest}
@@ -95,7 +95,7 @@ class EvaluationToolbar extends React.Component<
           )}
         </label>
       </div>,
-      <div className="filter-item">
+      <div key="hasSupplementationRequest" className="filter-item">
         <input
           onChange={this.handleCheckboxClick("supplementationRequest")}
           checked={
@@ -110,7 +110,7 @@ class EvaluationToolbar extends React.Component<
           )}
         </label>
       </div>,
-      <div className="filter-item">
+      <div key="noevaluation" className="filter-item">
         <input
           onChange={this.handleCheckboxClick("notEvaluated")}
           checked={this.props.evaluations.evaluationFilters.notEvaluated}

@@ -1,6 +1,4 @@
 import * as React from "react";
-import mApi from "~/lib/mApi";
-import promisify from "~/util/promisify";
 import "~/sass/elements/credentials.scss";
 import { i18nType } from "~/reducers/base/i18n";
 
