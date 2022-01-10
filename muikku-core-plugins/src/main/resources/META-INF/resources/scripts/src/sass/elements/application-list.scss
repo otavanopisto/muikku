@@ -150,8 +150,8 @@
   flex-flow: column wrap;
 }
 
-.application-list__header-primary-title {
-  padding: 0 0 5px 0;
+.application-list__header-primary-title {
+  padding: 0 0 5px;
 }
 
 .application-list__header-primary-description {
@@ -161,7 +161,7 @@
 
 .application-list__header-primary-meta {
   font-size: 0.75rem;
-  padding: 0 0 5px 0;
+  padding: 0 0 5px;
 
   span {
     display: inline-block;

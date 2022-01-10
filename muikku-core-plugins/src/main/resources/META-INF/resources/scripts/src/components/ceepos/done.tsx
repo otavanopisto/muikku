@@ -140,7 +140,6 @@ class CeeposDone extends React.Component<CeeposDoneProps, CeeposDoneState> {
       );
     }
 
-
     return (
       <div className="card-wrapper">
         <div className="card card--ceepos">
