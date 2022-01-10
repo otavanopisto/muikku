@@ -69,7 +69,7 @@ public class CeeposDoneViewBackingBean {
     
     logger.info(String.format("Ceepos order %s: Status %d reference %s", id, status, reference));
 
-    // Hash validation (TODO restore)
+    // Hash validation
     
     StringBuilder sb = new StringBuilder();
     sb.append(StringUtils.defaultIfEmpty(id, ""));
