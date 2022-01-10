@@ -38,10 +38,10 @@ import fi.otavanopisto.muikku.users.UserEntityName;
 public class StudyTimeNotificationStrategy extends AbstractTimedNotificationStrategy {
 
   private static final int FIRST_RESULT = 0;
-  private static final int MAX_RESULTS = NumberUtils.createInteger(System.getProperty("muikku.timednotifications.studytime.maxresults", "200"));
+  private static final int MAX_RESULTS = NumberUtils.createInteger(System.getProperty("muikku.timednotifications.studytime.maxresults", "20"));
   private static final int DAYS_UNTIL_FIRST_NOTIFICATION = NumberUtils.createInteger(System.getProperty("muikku.timednotifications.studytime.daysuntilfirstnotification", "60"));
   private static final int NOTIFICATION_THRESHOLD_DAYS_LEFT = NumberUtils.createInteger(System.getProperty("muikku.timednotifications.studytime.notificationthreshold", "30"));
-  private static final long NOTIFICATION_CHECK_FREQ = NumberUtils.createLong(System.getProperty("muikku.timednotifications.studytime.checkfreq", "15000"));//"1800000"));
+  private static final long NOTIFICATION_CHECK_FREQ = NumberUtils.createLong(System.getProperty("muikku.timednotifications.studytime.checkfreq", "1800000"));
   
   @Inject
   private StudyTimeLeftNotificationController studyTimeLeftNotificationController;
