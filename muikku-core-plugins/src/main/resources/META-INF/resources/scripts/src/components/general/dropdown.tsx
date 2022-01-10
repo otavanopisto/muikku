@@ -57,6 +57,7 @@ export default class Dropdown extends React.Component<DropdownProps, DropdownSta
       visible: false,
     }
   }
+
   onOpen(DOMNode: HTMLElement) {
     if (this.isUnmounted) {
       return;
@@ -70,7 +71,6 @@ export default class Dropdown extends React.Component<DropdownProps, DropdownSta
     const $target = $(activator);
     const $arrow = $(this.refs["arrow"]);
     const $dropdown = $(this.refs["dropdown"]);
-
     const position = activator.getBoundingClientRect();
     const windowWidth = $(window).width();
     const windowHeight = $(window).height();
@@ -80,6 +80,7 @@ export default class Dropdown extends React.Component<DropdownProps, DropdownSta
     const notEnoughSpaceInBottom = spaceLeftInBottom < $dropdown.outerHeight() + 5;
 
     let left = null;
+
     if (this.props.alignSelf === 'left') {
       left = position.left;
     } else if (this.props.alignSelf === 'center') {
@@ -138,6 +139,7 @@ export default class Dropdown extends React.Component<DropdownProps, DropdownSta
 
     this.setState({ top, left, arrowLeft, arrowRight, arrowTop, reverseArrow, forcedWidth, visible: true }, this.props.onOpen);
   }
+
   onClose() {
     if (this.props.onClose) {
       this.props.onClose();
@@ -166,7 +168,7 @@ export default class Dropdown extends React.Component<DropdownProps, DropdownSta
   close() {
     (this.refs["portal"] as Portal).closePortal();
   }
-  componentWillUnmount() {
+  componentWillUnmount() {
     this.isUnmounted = true;
   }
   onKeyDown(e: React.KeyboardEvent) {

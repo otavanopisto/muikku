@@ -25,6 +25,8 @@ import { GuiderType, GuiderStudentUserProfileLabelType } from '~/reducers/main-f
 import NewMessage from '~/components/communicator/dialogs/new-message';
 import { ButtonPill } from '~/components/general/button';
 import GuiderToolbarLabels from './toolbar/labels';
+import GuidanceEvent from './toolbar/guidance-event';
+
 
 interface CurrentStudentProps {
   i18n: i18nType,
@@ -75,7 +77,9 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
         }]}>
           <ButtonPill icon="envelope" buttonModifiers={["new-message", "guider-student"]} />
         </NewMessage>
-        <ButtonPill icon="bubbles" buttonModifiers={["new-message", "guider-student"]} />
+        <GuidanceEvent>
+          <ButtonPill icon="bubbles" buttonModifiers={["new-message", "guider-student"]} />
+        </GuidanceEvent>
       </div>
     </div >
 
