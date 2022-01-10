@@ -14,7 +14,6 @@ export interface UPDATE_CEEPOS_PURCHASE extends SpecificActionType<"UPDATE_CEEPO
 export interface UPDATE_CEEPOS_STATE extends SpecificActionType<"UPDATE_CEEPOS_STATE", CeeposStateStatusType> { }
 export interface UPDATE_CEEPOS_PAY_STATUS extends SpecificActionType<"UPDATE_CEEPOS_PAY_STATUS", CeeposPayStatusCodeType> { }
 
-
 let loadCeeposPurchase: LoadCeeposPurchaseTriggerType = function loadCeeposPurchase(purchaseId) {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
