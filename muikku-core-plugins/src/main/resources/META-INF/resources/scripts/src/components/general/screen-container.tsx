@@ -1,20 +1,38 @@
 import * as React from "react";
 import "~/sass/elements/screen-container.scss";
 
+/**
+ * ScreenContainerProps
+ */
 interface ScreenContainerProps {
   children?: any;
   viewModifiers?: string | Array<string>;
 }
 
+/**
+ * ScreenContainerState
+ */
 interface ScreenContainerState {}
 
+/**
+ * ScreenContainer
+ */
 export default class ScreenContainer extends React.Component<
   ScreenContainerProps,
   ScreenContainerState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: ScreenContainerProps) {
     super(props);
   }
+
+  /**
+   * render
+   * @returns JSX.Element
+   */
   render() {
     const modifiers: Array<string> =
       typeof this.props.viewModifiers === "string"

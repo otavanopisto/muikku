@@ -6,31 +6,53 @@ import DatePicker from "react-datepicker";
 
 // Either label or placeholder is mandatory because of wcag
 
+/**
+ * FormElementLabel
+ */
 export type FormElementLabel = {
   label: string;
   placeholder?: string;
 };
 
+/**
+ * FormElementPlaceholder
+ */
 export type FormElementPlaceholder = {
   label?: string;
   placeholder: string;
 };
 
+/**
+ * FormElementProps
+ */
 interface FormElementProps {
   modifiers?: string | Array<string>;
   label?: string;
 }
 
+/**
+ * FormElementState
+ */
 interface FormElementState {}
 
+/**
+ * FormElement
+ */
 export default class FormElement extends React.Component<
   FormElementProps,
   FormElementState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: FormElementProps) {
     super(props);
   }
 
+  /**
+   * Component render method
+   */
   render() {
     const modifiers =
       this.props.modifiers && this.props.modifiers instanceof Array
@@ -53,16 +75,28 @@ export default class FormElement extends React.Component<
   }
 }
 
+/**
+ * FormElementRowProps
+ */
 interface FormElementRowProps {
   modifiers?: string | Array<string>;
 }
 
+/**
+ * FormElementRowState
+ */
 interface FormElementRowState {}
 
+/**
+ * formElementRow
+ */
 export class formElementRow extends React.Component<
   FormElementRowProps,
   FormElementRowState
 > {
+  /**
+   * Component render method
+   */
   render() {
     const modifiers =
       this.props.modifiers && this.props.modifiers instanceof Array
@@ -82,6 +116,9 @@ export class formElementRow extends React.Component<
   }
 }
 
+/**
+ * FormActionsProps
+ */
 interface FormActionsProps {
   executeLabel: string;
   cancelLabel: string;
@@ -93,16 +130,29 @@ interface FormActionsProps {
   customButton?: React.ReactElement<any>;
 }
 
+/**
+ * FormActionsState
+ */
 interface FormActionsState {}
 
+/**
+ * FormActionsElement
+ */
 export class FormActionsElement extends React.Component<
   FormActionsProps,
   FormActionsState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: FormActionsProps) {
     super(props);
   }
 
+  /**
+   * Component render method
+   */
   render() {
     const modifiers =
       this.props.modifiers && this.props.modifiers instanceof Array
@@ -135,7 +185,9 @@ export class FormActionsElement extends React.Component<
     );
   }
 }
-
+/**
+ * FormWizardActionsProps
+ */
 interface FormWizardActionsProps {
   executeLabel: string;
   cancelLabel: string;
@@ -152,18 +204,31 @@ interface FormWizardActionsProps {
   modifiers?: string | Array<string>;
 }
 
+/**
+ * FormWizardActionsState
+ */
 interface FormWizardActionsState {
   lastStep: boolean;
 }
 
+/**
+ * FormWizardActions
+ */
 export class FormWizardActions extends React.Component<
   FormWizardActionsProps,
   FormWizardActionsState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: FormWizardActionsProps) {
     super(props);
   }
 
+  /**
+   * Component render method
+   */
   render() {
     const modifiers =
       this.props.modifiers && this.props.modifiers instanceof Array
@@ -237,6 +302,9 @@ export class FormWizardActions extends React.Component<
   }
 }
 
+/**
+ * SearchFormElementProps
+ */
 interface SearchFormElementProps {
   updateField: (value: string) => any;
   value: string;
@@ -250,10 +318,16 @@ interface SearchFormElementProps {
   delay?: number;
 }
 
+/**
+ * SearchFormElementState
+ */
 interface SearchFormElementState {
   value: string;
 }
 
+/**
+ * SearchFormElement
+ */
 export class SearchFormElement extends React.Component<
   SearchFormElementProps,
   SearchFormElementState
@@ -262,6 +336,10 @@ export class SearchFormElement extends React.Component<
   private searchTimer: NodeJS.Timer;
   private delay: number;
 
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: SearchFormElementProps) {
     super(props);
     this.delay = this.props.delay >= 0 ? this.props.delay : 400;
@@ -273,6 +351,10 @@ export class SearchFormElement extends React.Component<
     this.searchInput = React.createRef();
   }
 
+  /**
+   * updateSearchField
+   * @param e e
+   */
   updateSearchField(e: React.ChangeEvent<HTMLInputElement>) {
     clearTimeout(this.searchTimer);
     const value = e.target.value;
@@ -287,12 +369,18 @@ export class SearchFormElement extends React.Component<
     }
   }
 
+  /**
+   * clearSearchField
+   */
   clearSearchField() {
     this.props.updateField("");
     this.setState({ value: "" });
     this.searchInput.current.focus();
   }
 
+  /**
+   * Component render method
+   */
   render() {
     const modifiers =
       this.props.modifiers && this.props.modifiers instanceof Array
@@ -336,6 +424,9 @@ export class SearchFormElement extends React.Component<
   }
 }
 
+/**
+ * InputFormElementProps
+ */
 interface InputFormElementProps {
   label: string;
   name: string;
@@ -349,15 +440,25 @@ interface InputFormElementProps {
   modifiers?: string | Array<string>;
 }
 
+/**
+ * InputFormElementState
+ */
 interface InputFormElementState {
   value: string;
   valid: number;
 }
 
+/**
+ * InputFormElement
+ */
 export class InputFormElement extends React.Component<
   InputFormElementProps,
   InputFormElementState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: InputFormElementProps) {
     super(props);
     this.updateInputField = this.updateInputField.bind(this);
@@ -369,6 +470,20 @@ export class InputFormElement extends React.Component<
     };
   }
 
+  /**
+   * componentDidUpdate
+   * @param prevProps prevProps
+   */
+  componentDidUpdate(prevProps: any) {
+    if (this.props.valid !== prevProps.valid) {
+      this.setState({ valid: this.props.valid });
+    }
+  }
+
+  /**
+   * updateInputField
+   * @param e e
+   */
   updateInputField(e: React.ChangeEvent<HTMLInputElement>) {
     const value = e.target.value;
     const name = e.target.name;
@@ -393,12 +508,9 @@ export class InputFormElement extends React.Component<
     }
   }
 
-  componentDidUpdate(prevProps: any) {
-    if (this.props.valid !== prevProps.valid) {
-      this.setState({ valid: this.props.valid });
-    }
-  }
-
+  /**
+   * Component render method
+   */
   render() {
     const modifiers =
       this.props.modifiers && this.props.modifiers instanceof Array
@@ -439,6 +551,9 @@ export class InputFormElement extends React.Component<
   }
 }
 
+/**
+ * SelectFormElementProps
+ */
 interface SelectFormElementProps {
   label: string;
   name: string;
@@ -451,15 +566,25 @@ interface SelectFormElementProps {
   updateField: (value: string, valid: boolean, name: string) => any;
 }
 
+/**
+ * SelectFormElementState
+ */
 interface SelectFormElementState {
   valid: number;
   value: string;
 }
 
+/**
+ * SelectFormElement
+ */
 export class SelectFormElement extends React.Component<
   SelectFormElementProps,
   SelectFormElementState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: SelectFormElementProps) {
     super(props);
     this.updateSelectField = this.updateSelectField.bind(this);
@@ -472,6 +597,20 @@ export class SelectFormElement extends React.Component<
     };
   }
 
+  /**
+   * componentDidUpdate
+   * @param prevProps prevProps
+   */
+  componentDidUpdate(prevProps: any) {
+    if (this.props.valid !== prevProps.valid) {
+      this.setState({ valid: this.props.valid });
+    }
+  }
+
+  /**
+   * updateSelectField
+   * @param e e
+   */
   updateSelectField(e: React.ChangeEvent<HTMLSelectElement>) {
     const name = e.target.name;
     const value = e.target.value;
@@ -489,12 +628,9 @@ export class SelectFormElement extends React.Component<
     this.props.updateField(value, valid, name);
   }
 
-  componentDidUpdate(prevProps: any) {
-    if (this.props.valid !== prevProps.valid) {
-      this.setState({ valid: this.props.valid });
-    }
-  }
-
+  /**
+   * Component render method
+   */
   render() {
     const modifiers =
       this.props.modifiers && this.props.modifiers instanceof Array
@@ -535,6 +671,9 @@ export class SelectFormElement extends React.Component<
   }
 }
 
+/**
+ *EmailFormElementProps
+ */
 interface EmailFormElementProps {
   label: string;
   value?: string;
@@ -544,15 +683,25 @@ interface EmailFormElementProps {
   valid?: number;
 }
 
+/**
+ *EmailFormElementState
+ */
 interface EmailFormElementState {
   valid: number;
   value: string;
 }
 
+/**
+ *EmailFormElement
+ */
 export class EmailFormElement extends React.Component<
   EmailFormElementProps,
   EmailFormElementState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: EmailFormElementProps) {
     super(props);
     this.updateInputField = this.updateInputField.bind(this);
@@ -566,6 +715,20 @@ export class EmailFormElement extends React.Component<
     };
   }
 
+  /**
+   * componentDidUpdate
+   * @param prevProps prevProps
+   */
+  componentDidUpdate(prevProps: any) {
+    if (this.props.valid !== prevProps.valid) {
+      this.setState({ valid: this.props.valid });
+    }
+  }
+
+  /**
+   * updateInputField
+   * @param e e
+   */
   updateInputField(e: React.ChangeEvent<HTMLInputElement>) {
     const value = e.target.value;
     const emailRegExp =
@@ -586,12 +749,9 @@ export class EmailFormElement extends React.Component<
     this.props.updateField(value, valid, e.target.name);
   }
 
-  componentDidUpdate(prevProps: any) {
-    if (this.props.valid !== prevProps.valid) {
-      this.setState({ valid: this.props.valid });
-    }
-  }
-
+  /**
+   * Component render method
+   */
   render() {
     const modifiers =
       this.props.modifiers && this.props.modifiers instanceof Array
@@ -631,6 +791,9 @@ export class EmailFormElement extends React.Component<
   }
 }
 
+/**
+ *SSNFormElementProps
+ */
 interface SSNFormElementProps {
   label: string;
   value?: string;
@@ -640,15 +803,25 @@ interface SSNFormElementProps {
   valid?: number;
 }
 
+/**
+ *SSNFormElementState
+ */
 interface SSNFormElementState {
   valid: number;
   value: string;
 }
 
+/**
+ *SSNFormElement
+ */
 export class SSNFormElement extends React.Component<
   SSNFormElementProps,
   SSNFormElementState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: SSNFormElementProps) {
     super(props);
     this.updateInputField = this.updateInputField.bind(this);
@@ -661,6 +834,20 @@ export class SSNFormElement extends React.Component<
     };
   }
 
+  /**
+   * componentDidUpdate
+   * @param prevProps prevProps
+   */
+  componentDidUpdate(prevProps: any) {
+    if (this.props.valid !== prevProps.valid) {
+      this.setState({ valid: this.props.valid });
+    }
+  }
+
+  /**
+   * updateInputField
+   * @param e e
+   */
   updateInputField(e: React.ChangeEvent<HTMLInputElement>) {
     let valid = false;
     const value = e.target.value.trim();
@@ -695,12 +882,9 @@ export class SSNFormElement extends React.Component<
     this.props.updateField(value, valid, e.target.name);
   }
 
-  componentDidUpdate(prevProps: any) {
-    if (this.props.valid !== prevProps.valid) {
-      this.setState({ valid: this.props.valid });
-    }
-  }
-
+  /**
+   * Component render method
+   */
   render() {
     const modifiers =
       this.props.modifiers && this.props.modifiers instanceof Array
@@ -740,6 +924,9 @@ export class SSNFormElement extends React.Component<
   }
 }
 
+/**
+ * DateFormElementProps
+ */
 interface DateFormElementProps {
   labels: FormElementLabel | FormElementPlaceholder;
   id: string;
@@ -754,23 +941,40 @@ interface DateFormElementProps {
   modifiers?: string | Array<string>;
 }
 
+/**
+ * DateFormElementState
+ */
 interface DateFormElementState {
   value: string;
 }
 
+/**
+ *DateFormElement
+ */
 export class DateFormElement extends React.Component<
   DateFormElementProps,
   DateFormElementState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: DateFormElementProps) {
     super(props);
     this.updateInputField = this.updateInputField.bind(this);
   }
 
+  /**
+   * updateInputField
+   * @param newDate newDate
+   */
   updateInputField(newDate: any) {
     this.props.updateField(newDate);
   }
 
+  /**
+   * Component render method
+   */
   render() {
     const modifiers =
       this.props.modifiers && this.props.modifiers instanceof Array

@@ -6,9 +6,11 @@ import { connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
 import Dropdown from "~/components/general/dropdown";
-
 import "~/sass/elements/navbar.scss";
 
+/**
+ * NavbarProps
+ */
 interface NavbarProps {
   modifier: string;
   navbarItems: {
@@ -24,11 +26,21 @@ interface NavbarProps {
   isProfileContainedInThisApp: boolean;
 }
 
+/**
+ * NavbarState
+ */
 interface NavbarState {
   isMenuOpen: boolean;
 }
 
+/**
+ * Navbar
+ */
 class Navbar extends React.Component<NavbarProps, NavbarState> {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: NavbarProps) {
     super(props);
     this.openMenu = this.openMenu.bind(this);
@@ -37,16 +49,29 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
       isMenuOpen: false,
     };
   }
+
+  /**
+   * openMenu
+   */
   openMenu() {
     this.setState({
       isMenuOpen: true,
     });
   }
+
+  /**
+   * closeMenu
+   */
   closeMenu() {
     this.setState({
       isMenuOpen: false,
     });
   }
+
+  /**
+   * render
+   * @returns JSX.Element
+   */
   render() {
     return (
       <div>
@@ -160,12 +185,21 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ * @returns object
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @returns object
+ */
 function mapDispatchToProps() {
   return {};
 }

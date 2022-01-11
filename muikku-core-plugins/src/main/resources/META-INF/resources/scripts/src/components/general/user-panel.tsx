@@ -46,7 +46,7 @@ export default class UserPanel extends React.Component<
 
   /**
    * constructor
-   * @param props
+   * @param props props
    */
   constructor(props: UserPanelProps) {
     super(props);
@@ -60,7 +60,7 @@ export default class UserPanel extends React.Component<
 
   /**
    * componentDidUpdate
-   * @param prevProps
+   * @param prevProps prevProps
    */
   componentDidUpdate(prevProps: UserPanelProps) {
     if (prevProps.users.totalHitCount !== this.props.users.totalHitCount) {
@@ -76,7 +76,7 @@ export default class UserPanel extends React.Component<
 
   /**
    * getToPage
-   * @param n
+   * @param n page number
    */
   getToPage(n: number) {
     const pageStart: number = (n - 1) * this.usersPerPage;
@@ -92,7 +92,9 @@ export default class UserPanel extends React.Component<
   /**
    * handles page changes,
    * sets selected page as currentPage to state
-   * @param event
+   * @param selectedItem selectedItem object
+   * @param selectedItem.selected page number
+   * @returns getToPage
    */
   handlePagerChange = (selectedItem: { selected: number }) =>
     this.getToPage(selectedItem.selected + 1);

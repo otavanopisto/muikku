@@ -4,6 +4,9 @@ import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/license-selector.scss";
 import "~/sass/elements/wcag.scss";
 
+/**
+ * LicenseSelectorProps
+ */
 interface LicenseSelectorProps {
   value: string;
   modifier?: string;
@@ -13,6 +16,9 @@ interface LicenseSelectorProps {
   wcagDesc?: string;
 }
 
+/**
+ * LicenseSelectorState
+ */
 interface LicenseSelectorState {
   valid: boolean;
   text: string;
@@ -23,6 +29,9 @@ const CC_URL_PREFIX_NOSSL = "http://creativecommons.org/licenses/";
 const CC0_URL_SSL = "https://creativecommons.org/publicdomain/zero/1.0/";
 const CC0_URL_NOSSL = "http://creativecommons.org/publicdomain/zero/1.0/";
 
+/**
+ * CCPropsType
+ */
 interface CCPropsType {
   allowModifications: null | "nd" | "sa";
   commercialUse: null | "nc";
@@ -63,6 +72,11 @@ const CCPROPS = [
   },
 ];
 
+/**
+ * CCPROPSPARSER
+ * @param value value
+ * @returns CCPropsType object
+ */
 const CCPROPSPARSER = function (value: string): CCPropsType {
   const result: CCPropsType = {
     allowModifications: null,
@@ -84,6 +98,12 @@ const CCPROPSDEF: CCPropsType = {
   commercialUse: "nc",
 };
 
+/**
+ * CCVALIDATE
+ * @param version v
+ * @param value v
+ * @returns boolean
+ */
 const CCVALIDATE = function (version: string, value: string) {
   if (value === null) {
     return false;
@@ -95,6 +115,12 @@ const CCVALIDATE = function (version: string, value: string) {
   );
 };
 
+/**
+ * CCVALUE
+ * @param version v
+ * @param properties p
+ * @returns string
+ */
 const CCVALUE = function (version: string, properties: CCPropsType) {
   const cu = properties.commercialUse;
   const am = properties.allowModifications;
@@ -103,17 +129,26 @@ const CCVALUE = function (version: string, properties: CCPropsType) {
   }/${version}`;
 };
 
+/**
+ * LicensePropertyValueType
+ */
 interface LicensePropertyValueType {
   value: string;
   i18n: string;
 }
 
+/**
+ * LicensePropertyType
+ */
 interface LicensePropertyType {
   id: string;
   i18n: string;
   values: Array<LicensePropertyValueType>;
 }
 
+/**
+ * LicenseType
+ */
 interface LicenseType {
   id: string;
   i18n: string;
@@ -146,27 +181,39 @@ const LICENSES: Array<LicenseType> = [
   {
     id: "CC0",
     i18n: "plugin.workspace.materialsManagement.editorView.license.cc0",
+    // eslint-disable-next-line
     value: () => CC0_URL_SSL,
+    // eslint-disable-next-line
     validate: (value: string) =>
       value === CC0_URL_SSL || value === CC0_URL_NOSSL,
   },
   {
     id: "text_or_link",
     i18n: "plugin.workspace.materialsManagement.editorView.license.textOrLink",
+    // eslint-disable-next-line
     validate: (value: string) => typeof value === "string",
   },
   {
     id: "none",
     i18n: "plugin.workspace.materialsManagement.editorView.license.none",
+    // eslint-disable-next-line
     value: () => null,
+    // eslint-disable-next-line
     validate: () => true,
   },
 ];
 
+/**
+ * LicenseSelector
+ */
 export class LicenseSelector extends React.Component<
   LicenseSelectorProps,
   LicenseSelectorState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: LicenseSelectorProps) {
     super(props);
 
@@ -180,6 +227,11 @@ export class LicenseSelector extends React.Component<
     this.setAPropertyAndTriggerChange =
       this.setAPropertyAndTriggerChange.bind(this);
   }
+
+  /**
+   * componentWillReceiveProps
+   * @param nextProps nextProps
+   */
   componentWillReceiveProps(nextProps: LicenseSelectorProps) {
     if (nextProps.value !== this.state.text) {
       this.setState({
@@ -188,6 +240,11 @@ export class LicenseSelector extends React.Component<
       });
     }
   }
+
+  /**
+   * onChangeLicenseType
+   * @param e e
+   */
   onChangeLicenseType(e: React.ChangeEvent<HTMLSelectElement>) {
     const newLicense = LICENSES.find((v) => v.id === e.target.value);
 
@@ -198,6 +255,13 @@ export class LicenseSelector extends React.Component<
       newLicense.value ? newLicense.value(newPropertyValues) : ""
     );
   }
+
+  /**
+   * setAPropertyAndTriggerChange
+   * @param properties p
+   * @param propertyId p
+   * @param e e
+   */
   setAPropertyAndTriggerChange(
     properties: any,
     propertyId: string,
@@ -211,6 +275,11 @@ export class LicenseSelector extends React.Component<
 
     this.props.onChange(currentLicense.value(nProps));
   }
+
+  /**
+   * onChangeText
+   * @param e e
+   */
   onChangeText(e: React.ChangeEvent<HTMLInputElement>) {
     const currentLicense = LICENSES.find((v) => v.validate(this.props.value));
     const valid = currentLicense.validate(e.target.value);
@@ -223,6 +292,11 @@ export class LicenseSelector extends React.Component<
       this.props.onChange(e.target.value);
     }
   }
+
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     const currentLicense = LICENSES.find((v) => v.validate(this.props.value));
     const currentPropertyValues = currentLicense.propertiesParser

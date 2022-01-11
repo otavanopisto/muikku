@@ -1,16 +1,28 @@
 import * as React from "react";
-
 import "~/sass/elements/zoom.scss";
 
+/**
+ * ZoomProps
+ */
 interface ZoomProps {
   imgsrc: string;
 }
 
+/**
+ * ZoomState
+ */
 interface ZoomState {
   zoomed: boolean;
 }
 
+/**
+ * Zoom
+ */
 export default class Zoom extends React.Component<ZoomProps, ZoomState> {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: ZoomProps) {
     super(props);
 
@@ -20,6 +32,10 @@ export default class Zoom extends React.Component<ZoomProps, ZoomState> {
     this.toggleZoom = this.toggleZoom.bind(this);
     this.toggleBodyScroll = this.toggleBodyScroll.bind(this);
   }
+
+  /**
+   * toggleBodyScroll
+   */
   toggleBodyScroll() {
     if (this.state.zoomed) {
       document.body.style.overflow = "auto";
@@ -27,12 +43,21 @@ export default class Zoom extends React.Component<ZoomProps, ZoomState> {
       document.body.style.overflow = "hidden";
     }
   }
+
+  /**
+   * toggleZoom
+   */
   toggleZoom() {
     this.setState({
       zoomed: !this.state.zoomed,
     });
     this.toggleBodyScroll();
   }
+
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     let zoomComponent: React.ReactNode = null;
     if (this.state.zoomed) {

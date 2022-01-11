@@ -1,5 +1,8 @@
 import * as React from "react";
 
+/**
+ * ImageEditorRetrieverType
+ */
 export interface ImageEditorRetrieverType {
   getAsDataURL: (mimeType?: string, quality?: number) => string;
   getAsBlob: (
@@ -9,6 +12,9 @@ export interface ImageEditorRetrieverType {
   ) => void;
 }
 
+/**
+ * ImageEditorProps
+ */
 interface ImageEditorProps {
   dataURL: any;
   onLoadError: () => any;
@@ -22,6 +28,9 @@ interface ImageEditorProps {
   onInitializedGetRetriever?: (retriever: ImageEditorRetrieverType) => any;
 }
 
+/**
+ * ImageEditorState
+ */
 interface ImageEditorState {
   offsetX?: number;
   offsetY?: number;
@@ -38,6 +47,9 @@ interface ImageEditorState {
   b64?: string;
 }
 
+/**
+ * ImageEditorRetrieverType
+ */
 export default class ImageEditor extends React.Component<
   ImageEditorProps,
   ImageEditorState
@@ -50,6 +62,11 @@ export default class ImageEditor extends React.Component<
   private image: HTMLImageElement;
   private canvasContext: CanvasRenderingContext2D;
   private canvas: HTMLCanvasElement;
+
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: ImageEditorProps) {
     super(props);
     const state: ImageEditorState = {
@@ -87,6 +104,10 @@ export default class ImageEditor extends React.Component<
     this.setupCanvas();
     this.setupImage();
   }
+
+  /**
+   * componentWillMount
+   */
   componentWillMount() {
     document.body.addEventListener("mouseup", this.onMouseUp as any);
     document.body.addEventListener("mousemove", this.onMouseMove as any);
@@ -97,21 +118,47 @@ export default class ImageEditor extends React.Component<
         getAsDataURL: this.getAsDataURL.bind(this),
       });
   }
+  /**
+   * componentWillUnmount
+   */
   componentWillUnmount() {
     document.body.removeEventListener("mouseup", this.onMouseUp as any);
     document.body.addEventListener("mousemove", this.onMouseMove as any);
   }
+
+  /**
+   * componentWillReceiveProps
+   * @param nextProps nextProps
+   */
+  componentWillReceiveProps(nextProps: ImageEditorProps) {
+    if (nextProps.dataURL !== this.props.dataURL) {
+      this.image.src = nextProps.dataURL;
+    } else if (nextProps.angle !== this.props.angle) {
+      this.getImage(nextProps);
+    } else {
+      this.calculate(nextProps);
+    }
+  }
+
+  /**
+   * setupCanvas
+   */
   setupCanvas() {
     this.canvas = document.createElement("canvas");
     this.canvasContext = this.canvas.getContext("2d");
   }
+  /**
+   * setupImage
+   */
   setupImage() {
     this.image = new Image();
 
+    // eslint-disable-next-line
     this.image.onload = () => {
       this.getImage();
     };
 
+    // eslint-disable-next-line
     this.image.onerror = () => {
       this.props.onLoadError();
     };
@@ -123,15 +170,11 @@ export default class ImageEditor extends React.Component<
       this.image.src = this.props.dataURL;
     }
   }
-  componentWillReceiveProps(nextProps: ImageEditorProps) {
-    if (nextProps.dataURL !== this.props.dataURL) {
-      this.image.src = nextProps.dataURL;
-    } else if (nextProps.angle !== this.props.angle) {
-      this.getImage(nextProps);
-    } else {
-      this.calculate(nextProps);
-    }
-  }
+
+  /**
+   * getImage
+   * @param props props
+   */
   getImage(props?: ImageEditorProps) {
     if (!props) {
       props = this.props;
@@ -168,6 +211,11 @@ export default class ImageEditor extends React.Component<
     this.canvasContext.restore();
     this.calculate(props);
   }
+
+  /**
+   * calculate
+   * @param props props
+   */
   calculate(props: ImageEditorProps) {
     if (!this.image) {
       return;
@@ -246,6 +294,11 @@ export default class ImageEditor extends React.Component<
     //Update state
     this.setState(nstate);
   }
+
+  /**
+   * getResized
+   * @returns HTMLCanvasElement
+   */
   getResized() {
     const tempCanvas = document.createElement("canvas");
     tempCanvas.width = this.state.relativeDisplayedWidth;
@@ -259,12 +312,27 @@ export default class ImageEditor extends React.Component<
       );
     return tempCanvas;
   }
+
+  /**
+   * getAsDataURL
+   * @param mimeType m
+   * @param quality q
+   * @returns string
+   */
   getAsDataURL(mimeType?: string, quality?: number) {
     return this.getResized().toDataURL(
       mimeType || "image/jpeg",
       quality || 0.9
     );
   }
+
+  /**
+   * getAsBlob
+   * @param callback c
+   * @param mimeType m
+   * @param quality q
+   * @returns void
+   */
   getAsBlob(
     callback: (result: Blob | null) => void,
     mimeType?: string,
@@ -276,11 +344,21 @@ export default class ImageEditor extends React.Component<
       quality || 0.9
     );
   }
+
+  /**
+   * onTouchStart
+   * @param e e
+   */
   onTouchStart(e: React.TouchEvent<any>) {
     const touch = e.changedTouches[0];
     this.touchFromX = parseInt(touch.clientX as any);
     this.touchFromY = parseInt(touch.clientY as any);
   }
+
+  /**
+   * onTouchMove
+   * @param e e
+   */
   onTouchMove(e: React.TouchEvent<any>) {
     e.preventDefault();
     const touch = e.changedTouches[0];
@@ -290,12 +368,22 @@ export default class ImageEditor extends React.Component<
     this.touchFromY = parseInt(touch.clientY as any);
     this.applyOffset(diffX, diffY);
   }
+
+  /**
+   * onMouseDown
+   * @param e e
+   */
   onMouseDown(e: React.MouseEvent<any>) {
     this.mouseEvent = true;
     const mouse = e;
     this.mouseFromX = parseInt(mouse.clientX as any);
     this.mouseFromY = parseInt(mouse.clientY as any);
   }
+
+  /**
+   * onMouseMove
+   * @param e e
+   */
   onMouseMove(e: React.MouseEvent<any>) {
     if (!this.mouseEvent) {
       return;
@@ -307,9 +395,19 @@ export default class ImageEditor extends React.Component<
     this.mouseFromY = parseInt(mouse.clientY as any);
     this.applyOffset(diffX, diffY);
   }
+
+  /**
+   * onMouseUp
+   */
   onMouseUp() {
     this.mouseEvent = false;
   }
+
+  /**
+   * applyOffset
+   * @param diffX dx
+   * @param diffY dy
+   */
   applyOffset(diffX: number, diffY: number) {
     //Calculate new offsets
     let nOffsetX = this.state.offsetX - diffX;
@@ -345,6 +443,11 @@ export default class ImageEditor extends React.Component<
       relativeOffsetY,
     });
   }
+
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     const displayBoxStyle = Object.assign(
       {

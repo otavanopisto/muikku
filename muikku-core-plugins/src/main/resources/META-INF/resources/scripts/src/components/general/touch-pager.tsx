@@ -7,6 +7,9 @@
 import * as React from "react";
 import "~/sass/elements/touch-pager.scss";
 
+/**
+ * TouchPagerProps
+ */
 interface TouchPagerProps {
   children: any;
   prev?: any;
@@ -18,10 +21,16 @@ interface TouchPagerProps {
   goBackwards: () => any;
 }
 
+/**
+ * TouchPagerState
+ */
 interface TouchPagerState {
   drag: number;
 }
 
+/**
+ * TouchPager
+ */
 export default class TouchPager extends React.Component<
   TouchPagerProps,
   TouchPagerState
@@ -30,6 +39,10 @@ export default class TouchPager extends React.Component<
   private initialYPos: number;
   private closeInterval: NodeJS.Timer;
 
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: TouchPagerProps) {
     super(props);
 
@@ -44,11 +57,28 @@ export default class TouchPager extends React.Component<
       drag: 0,
     };
   }
+
+  /**
+   * componentWillReceiveProps
+   */
+  componentWillReceiveProps() {
+    this.setState({ drag: 0 });
+  }
+
+  /**
+   * onTouchStart
+   * @param e e
+   */
   onTouchStart(e: React.TouchEvent<any>) {
     this.initialXPos = e.touches[0].pageX;
     this.initialYPos = e.touches[0].pageY;
     clearInterval(this.closeInterval);
   }
+
+  /**
+   * onTouchMove
+   * @param e e
+   */
   onTouchMove(e: React.TouchEvent<any>) {
     let diff = this.initialXPos - e.touches[0].pageX;
     if (!this.props.hasNext && diff > 0) {
@@ -66,6 +96,10 @@ export default class TouchPager extends React.Component<
       drag: -diff,
     });
   }
+
+  /**
+   * onTouchEnd
+   */
   onTouchEnd() {
     const allDrag = Math.abs(this.state.drag);
     const totalDrag = (this.refs["centerContainer"] as HTMLElement).offsetWidth;
@@ -97,9 +131,11 @@ export default class TouchPager extends React.Component<
       });
     }, 10) as any;
   }
-  componentWillReceiveProps() {
-    this.setState({ drag: 0 });
-  }
+
+  /**
+   * render
+   * @returns JSX.Element
+   */
   render() {
     return (
       <div

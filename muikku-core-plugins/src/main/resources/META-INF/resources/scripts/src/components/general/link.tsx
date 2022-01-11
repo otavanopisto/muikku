@@ -6,10 +6,12 @@
 
 import * as React from "react";
 import { Redirect } from "react-router-dom";
-
 import "~/sass/elements/link.scss";
 import { scrollToSection } from "~/util/modifiers";
 
+/**
+ * LinkProps
+ */
 interface LinkProps
   extends React.DetailedHTMLProps<
     React.AnchorHTMLAttributes<HTMLAnchorElement>,
@@ -29,15 +31,25 @@ interface LinkProps
   disableSmoothScroll?: boolean;
 }
 
+/**
+ * LinkState
+ */
 interface LinkState {
   active: boolean;
   redirect: boolean;
 }
 
+/**
+ * Link
+ */
 export default class Link extends React.Component<LinkProps, LinkState> {
   private touchCordX: number | null;
   private touchCordY: number | null;
 
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: LinkProps) {
     super(props);
 
@@ -55,6 +67,11 @@ export default class Link extends React.Component<LinkProps, LinkState> {
     this.touchCordX = null;
     this.touchCordY = null;
   }
+
+  /**
+   * onClick
+   * @param e e
+   */
   onClick(e: React.MouseEvent<HTMLAnchorElement>) {
     e.preventDefault();
     if (this.props.disablePropagation) {
@@ -94,6 +111,11 @@ export default class Link extends React.Component<LinkProps, LinkState> {
       this.props.onClick(e);
     }
   }
+
+  /**
+   * onTouchStart
+   * @param e e
+   */
   onTouchStart(e: React.TouchEvent<HTMLAnchorElement>) {
     e.preventDefault();
     if (this.props.disablePropagation) {
@@ -110,6 +132,11 @@ export default class Link extends React.Component<LinkProps, LinkState> {
       }
     }
   }
+
+  /**
+   * onTouchMove
+   * @param e e
+   */
   onTouchMove(e: React.TouchEvent<HTMLAnchorElement>) {
     if (this.state.active) {
       const X = e.changedTouches[0].pageX;
@@ -126,6 +153,11 @@ export default class Link extends React.Component<LinkProps, LinkState> {
       this.props.onTouchMove(e);
     }
   }
+
+  /**
+   * onTouchEnd
+   * @param e e
+   */
   onTouchEnd(e: React.TouchEvent<any>) {
     if (!this.props.disabled) {
       this.setState({ active: false });
@@ -138,6 +170,11 @@ export default class Link extends React.Component<LinkProps, LinkState> {
       this.props.onTouchEnd(e);
     }
   }
+
+  /**
+   * onKeyDown
+   * @param e e
+   */
   onKeyDown(e: React.KeyboardEvent) {
     if (this.props.onKeyDown) {
       this.props.onKeyDown(e as any);
@@ -145,6 +182,11 @@ export default class Link extends React.Component<LinkProps, LinkState> {
       this.onClick(e as any);
     }
   }
+
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     if (this.state.redirect) {
       return <Redirect push to={this.props.to} />;
@@ -188,6 +230,11 @@ export default class Link extends React.Component<LinkProps, LinkState> {
       />
     );
   }
+
+  /**
+   * getElement
+   * @returns HTMLElement
+   */
   getElement(): HTMLElement {
     return this.refs["element"] as HTMLElement;
   }

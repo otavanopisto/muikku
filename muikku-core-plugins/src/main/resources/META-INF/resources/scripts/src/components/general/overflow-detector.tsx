@@ -6,6 +6,9 @@
 
 import * as React from "react";
 
+/**
+ * OverflowDetectorProps
+ */
 interface OverflowDetectorProps {
   classNameWhenOverflown: string;
   className: string;
@@ -13,14 +16,24 @@ interface OverflowDetectorProps {
   [prop: string]: any;
 }
 
+/**
+ * OverflowDetectorState
+ */
 interface OverflowDetectorState {
   overflown: boolean;
 }
 
+/**
+ * OverflowDetector
+ */
 export default class OverflowDetector extends React.Component<
   OverflowDetectorProps,
   OverflowDetectorState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: OverflowDetectorProps) {
     super(props);
 
@@ -30,12 +43,24 @@ export default class OverflowDetector extends React.Component<
 
     this.checkOverflown = this.checkOverflown.bind(this);
   }
+
+  /**
+   * componentDidMount
+   */
   componentDidMount() {
     this.checkOverflown();
   }
+
+  /**
+   * componentDidUpdate
+   */
   componentDidUpdate() {
     this.checkOverflown();
   }
+
+  /**
+   * checkOverflown
+   */
   checkOverflown() {
     const element: HTMLElement = this.refs["element"] as HTMLElement;
     const overflown = element.scrollHeight > element.offsetHeight;
@@ -45,6 +70,11 @@ export default class OverflowDetector extends React.Component<
       });
     }
   }
+
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     const Element: any = this.props.as;
     const givenProps: OverflowDetectorProps = Object.assign({}, this.props);

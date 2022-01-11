@@ -1,9 +1,18 @@
 import StringStorage from "~/util/storage";
 import * as React from "react";
 
+/**
+ * SessionStateComponent
+ */
 export default class SessionStateComponent<P, S> extends React.Component<P, S> {
   private storage: StringStorage;
   recovered: boolean;
+  /**
+   *
+   * @param props props
+   * @param namespace namespace
+   * @param subnamespace subnamespace
+   */
   constructor(props: P, namespace: string, subnamespace?: string) {
     super(props);
 
@@ -14,6 +23,12 @@ export default class SessionStateComponent<P, S> extends React.Component<P, S> {
 
     this.recovered = false;
   }
+
+  /**
+   * setStateAndStore
+   * @param newState nextState
+   * @param namespace namespace
+   */
   setStateAndStore(newState: Partial<S>, namespace?: any): void {
     let internalStorage = this.storage;
     if (namespace) {
@@ -26,6 +41,13 @@ export default class SessionStateComponent<P, S> extends React.Component<P, S> {
     });
     this.setState(nnewState);
   }
+
+  /**
+   * getRecoverStoredState
+   * @param base base
+   * @param namespace namespace
+   * @returns S
+   */
   getRecoverStoredState(base: Partial<S>, namespace?: any): S {
     let internalStorage = this.storage;
     if (namespace) {
@@ -43,6 +65,12 @@ export default class SessionStateComponent<P, S> extends React.Component<P, S> {
 
     return result;
   }
+
+  /**
+   * checkStoredAgainstThisState
+   * @param base base
+   * @param namespace namespace
+   */
   checkStoredAgainstThisState(base: Partial<S>, namespace?: any): void {
     let internalStorage = this.storage;
     if (namespace) {
@@ -63,6 +91,11 @@ export default class SessionStateComponent<P, S> extends React.Component<P, S> {
       this.forceUpdate();
     }
   }
+
+  /**
+   * forceRecovered
+   * @param newRecovered newRecovered
+   */
   forceRecovered(newRecovered = true) {
     if (this.recovered !== newRecovered) {
       this.recovered = newRecovered;
@@ -70,6 +103,12 @@ export default class SessionStateComponent<P, S> extends React.Component<P, S> {
       this.forceUpdate();
     }
   }
+
+  /**
+   * setStateAndClear
+   * @param newState newState
+   * @param namespace namespace
+   */
   setStateAndClear(newState: Partial<S>, namespace?: any): void {
     let internalStorage = this.storage;
     if (namespace) {
@@ -82,6 +121,12 @@ export default class SessionStateComponent<P, S> extends React.Component<P, S> {
     this.recovered = false;
     this.setState(newState as S);
   }
+
+  /**
+   * justClear
+   * @param keys keys
+   * @param namespace namespace
+   */
   justClear(keys: Array<string>, namespace?: any): void {
     let internalStorage = this.storage;
     if (namespace) {

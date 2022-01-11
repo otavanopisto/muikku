@@ -6,10 +6,12 @@
 
 import * as React from "react";
 import $ from "~/lib/jquery";
-
 import "~/sass/elements/content-panel.scss";
 import "~/sass/elements/loaders.scss";
 
+/**
+ * ContentPanelProps
+ */
 interface ContentPanelProps {
   modifier: string;
   title?: React.ReactElement<any> | string;
@@ -18,6 +20,9 @@ interface ContentPanelProps {
   onOpenNavigation?: () => any;
 }
 
+/**
+ * ContentPanelState
+ */
 interface ContentPanelState {
   displayed: boolean;
   visible: boolean;
@@ -26,6 +31,11 @@ interface ContentPanelState {
   open: boolean;
 }
 
+/**
+ * checkLinkClicked
+ * @param target t
+ * @returns boolean
+ */
 function checkLinkClicked(target: HTMLElement): boolean {
   return (
     target.nodeName.toLowerCase() === "a" ||
@@ -33,6 +43,9 @@ function checkLinkClicked(target: HTMLElement): boolean {
   );
 }
 
+/**
+ * ContentPanel
+ */
 export default class ContentPanel extends React.Component<
   ContentPanelProps,
   ContentPanelState
@@ -41,6 +54,11 @@ export default class ContentPanel extends React.Component<
   private touchCordY: number;
   private touchMovementX: number;
   private preventXMovement: boolean;
+
+  /**
+   * constructor
+   * @param props p
+   */
   constructor(props: ContentPanelProps) {
     super(props);
 
@@ -60,6 +78,10 @@ export default class ContentPanel extends React.Component<
     };
   }
 
+  /**
+   * onTouchStart
+   * @param e e
+   */
   onTouchStart(e: React.TouchEvent<any>) {
     this.setState({ dragging: true });
     this.touchCordX = e.changedTouches[0].pageX;
@@ -68,6 +90,11 @@ export default class ContentPanel extends React.Component<
     this.preventXMovement = false;
     e.preventDefault();
   }
+
+  /**
+   * onTouchMove
+   * @param e e
+   */
   onTouchMove(e: React.TouchEvent<any>) {
     let diffX = e.changedTouches[0].pageX - this.touchCordX;
     const diffY = e.changedTouches[0].pageY - this.touchCordY;
@@ -92,6 +119,11 @@ export default class ContentPanel extends React.Component<
     }
     e.preventDefault();
   }
+
+  /**
+   * onTouchEnd
+   * @param e e
+   */
   onTouchEnd(e: React.TouchEvent<any>) {
     const width = (
       document.querySelector(
@@ -120,6 +152,10 @@ export default class ContentPanel extends React.Component<
     }, 10);
     e.preventDefault();
   }
+
+  /**
+   * openNavigation
+   */
   openNavigation() {
     this.setState({ displayed: true, open: true });
     setTimeout(() => {
@@ -128,6 +164,11 @@ export default class ContentPanel extends React.Component<
     }, 10);
     $(document.body).css({ overflow: "hidden" });
   }
+
+  /**
+   * closeNavigationByOverlay
+   * @param e e
+   */
   closeNavigationByOverlay(e: React.MouseEvent<any>) {
     const isOverlay = e.target === e.currentTarget;
     const isLink = checkLinkClicked(e.target as HTMLElement);
@@ -135,6 +176,10 @@ export default class ContentPanel extends React.Component<
       this.closeNavigation();
     }
   }
+
+  /**
+   * closeNavigation
+   */
   closeNavigation() {
     if (!this.state.visible) {
       return;
@@ -145,6 +190,11 @@ export default class ContentPanel extends React.Component<
       this.setState({ displayed: false, open: false });
     }, 300);
   }
+
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     return (
       <main
@@ -208,10 +258,17 @@ export default class ContentPanel extends React.Component<
   }
 }
 
+/**
+ * ContentPanelItem
+ */
 export class ContentPanelItem extends React.Component<
   Record<string, unknown>,
   Record<string, unknown>
 > {
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     return (
       <div ref="component" className="content-panel__item">
@@ -219,6 +276,10 @@ export class ContentPanelItem extends React.Component<
       </div>
     );
   }
+  /**
+   * getComponent
+   * @returns HTMLElement
+   */
   getComponent(): HTMLElement {
     return this.refs["component"] as HTMLElement;
   }

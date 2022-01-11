@@ -8,14 +8,24 @@ import * as React from "react";
 import Link from "~/components/general/link";
 import "~/sass/elements/toc.scss";
 
+/**
+ * TocProps
+ */
 interface TocProps {
   tocTitle?: string;
 }
 
+/**
+ * Toc
+ */
 export default class Toc extends React.Component<
   TocProps,
   Record<string, unknown>
 > {
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     return (
       <div className="toc">
@@ -28,6 +38,9 @@ export default class Toc extends React.Component<
   }
 }
 
+/**
+ * TocTopicProps
+ */
 interface TocTopicProps {
   name?: string;
   icon?: string;
@@ -39,9 +52,19 @@ interface TocTopicProps {
   iconAfterColor?: string;
 }
 
+/**
+ * TocTopicState
+ */
 interface TocTopicState {}
 
+/**
+ * TocTopic
+ */
 export class TocTopic extends React.Component<TocTopicProps, TocTopicState> {
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     return (
       <div className={this.props.className}>
@@ -69,6 +92,9 @@ export class TocTopic extends React.Component<TocTopicProps, TocTopicState> {
   }
 }
 
+/**
+ * TocElementProps
+ */
 interface TocElementProps {
   isActive: boolean;
   isHidden: boolean;
@@ -86,12 +112,22 @@ interface TocElementProps {
   disableScroll?: boolean;
 }
 
+/**
+ * TocElementState
+ */
 interface TocElementState {}
 
+/**
+ * TocElement
+ */
 export class TocElement extends React.Component<
   TocElementProps,
   TocElementState
 > {
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     return (
       <Link
@@ -119,6 +155,11 @@ export class TocElement extends React.Component<
       </Link>
     );
   }
+
+  /**
+   * getElement
+   * @returns HTMLElement
+   */
   getElement(): HTMLElement {
     return (this.refs["element"] as Link).getElement();
   }

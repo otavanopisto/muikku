@@ -5,7 +5,14 @@ import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/environment-dialog.scss";
 
+/**
+ * EnvironmentDialog
+ */
 export default class EnvironmentDialog extends Dialog {
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     return (
       <Portal
@@ -54,16 +61,29 @@ export default class EnvironmentDialog extends Dialog {
 
 // TODO: this needs to be made to use the dialog versions of these using these classnames
 
+/**
+ * EnvironmentDialogRowProps
+ */
 interface EnvironmentDialogRowProps {
   modifiers?: string | Array<string>;
 }
 
+/**
+ * EnvironmentDialogRowState
+ */
 interface EnvironmentDialogRowState {}
 
+/**
+ * EnvironmentDialogRow
+ */
 export class EnvironmentDialogRow extends React.Component<
   EnvironmentDialogRowProps,
   EnvironmentDialogRowState
 > {
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     const modifiers =
       this.props.modifiers && this.props.modifiers instanceof Array
@@ -83,18 +103,31 @@ export class EnvironmentDialogRow extends React.Component<
   }
 }
 
+/**
+ * EnvironmentDialogFormElementProps
+ */
 interface EnvironmentDialogFormElementProps {
   label: string;
   i18n: i18nType;
   modifiers?: string | Array<string>;
 }
 
+/**
+ * EnvironmentDialogFormElementState
+ */
 interface EnvironmentDialogFormElementState {}
 
+/**
+ * EnvironmentDialogFormElement
+ */
 export class EnvironmentDialogFormElement extends React.Component<
   EnvironmentDialogFormElementProps,
   EnvironmentDialogFormElementState
 > {
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     const modifiers =
       this.props.modifiers && this.props.modifiers instanceof Array
@@ -119,6 +152,9 @@ export class EnvironmentDialogFormElement extends React.Component<
   }
 }
 
+/**
+ * EnvironmentDialogActionsProps
+ */
 interface EnvironmentDialogActionsProps {
   executeLabel: string;
   cancelLabel: string;
@@ -129,20 +165,35 @@ interface EnvironmentDialogActionsProps {
   i18n: i18nType;
 }
 
+/**
+ * EnvironmentDialogActionsState
+ */
 interface EnvironmentDialogActionsState {
   locked: boolean;
 }
 
+/**
+ * EnvironmentDialogActionsElement
+ */
 export class EnvironmentDialogActionsElement extends React.Component<
   EnvironmentDialogActionsProps,
   EnvironmentDialogActionsState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: EnvironmentDialogActionsProps) {
     super(props);
     this.state = {
       locked: false,
     };
   }
+
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     const modifiers =
       this.props.modifiers && this.props.modifiers instanceof Array

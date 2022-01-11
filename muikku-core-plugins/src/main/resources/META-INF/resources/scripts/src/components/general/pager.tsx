@@ -8,6 +8,9 @@ import "~/sass/elements/wcag.scss";
 
 const PAGER_MAX_PAGES = 10;
 
+/**
+ * PagerProps
+ */
 interface PagerProps {
   onClick: (id: number) => any;
   current: number;
@@ -17,9 +20,19 @@ interface PagerProps {
   identifier?: string;
 }
 
+/**
+ * PagerState
+ */
 interface PagerState {}
 
+/**
+ * Pager
+ */
 class Pager extends React.Component<PagerProps, PagerState> {
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     const left = Math.floor((PAGER_MAX_PAGES - 1) / 2);
     const right = Math.ceil((PAGER_MAX_PAGES - 1) / 2);
@@ -150,12 +163,21 @@ class Pager extends React.Component<PagerProps, PagerState> {
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ * @returns object
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @returns object
+ */
 function mapDispatchToProps() {
   return {};
 }

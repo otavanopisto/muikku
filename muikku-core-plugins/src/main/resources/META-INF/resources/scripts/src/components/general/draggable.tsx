@@ -11,6 +11,9 @@ import { queueJax } from "~/lib/mathjax";
 
 const interactionData: { [key: string]: any } = {};
 
+/**
+ * DroppableProps
+ */
 interface DroppableProps
   extends React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLDivElement>,
@@ -21,8 +24,17 @@ interface DroppableProps
   as?: string;
 }
 
+/**
+ * DroppableState
+ */
 interface DroppableState {}
 
+/**
+ * checkIsParentOrSelf
+ * @param element e
+ * @param comparer c
+ * @returns boolean
+ */
 function checkIsParentOrSelf(
   element: HTMLElement,
   comparer: HTMLElement
@@ -36,9 +48,16 @@ function checkIsParentOrSelf(
     : false;
 }
 
+/**
+ * Droppable
+ */
 export class Droppable extends React.Component<DroppableProps, DroppableState> {
   id: string;
 
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: DroppableProps) {
     super(props);
 
@@ -48,6 +67,11 @@ export class Droppable extends React.Component<DroppableProps, DroppableState> {
       interactionData[this.id] = props.interactionData;
     }
   }
+
+  /**
+   * componentWillReceiveProps
+   * @param nextProps nextProps
+   */
   componentWillReceiveProps(nextProps: DroppableProps) {
     if (typeof nextProps.interactionData !== "undefined") {
       interactionData[this.id] = nextProps.interactionData;
@@ -58,9 +82,18 @@ export class Droppable extends React.Component<DroppableProps, DroppableState> {
       delete interactionData[this.id];
     }
   }
+
+  /**
+   * componentWillUnmount
+   */
   componentWillUnmount() {
     delete interactionData[this.id];
   }
+
+  /**
+   * render
+   * @returns JSX.Element
+   */
   render() {
     const Element: any = this.props.as || "div";
     const nProps = { ...this.props };
@@ -77,11 +110,19 @@ export class Droppable extends React.Component<DroppableProps, DroppableState> {
       </Element>
     );
   }
+
+  /**
+   * getDOMComponent
+   * @returns HTMLElement
+   */
   getDOMComponent(): HTMLElement {
     return this.refs.base as HTMLElement;
   }
 }
 
+/**
+ * DraggableProps
+ */
 interface DraggableProps
   extends React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLDivElement>,
@@ -104,6 +145,9 @@ interface DraggableProps
   __debugVoidStyle?: boolean;
 }
 
+/**
+ * DraggableState
+ */
 interface DraggableState {
   isDragging: boolean;
   disableSwiper: boolean;
@@ -129,6 +173,9 @@ interface DraggableState {
 let lastHackedDraggableX: number;
 let lastHackedDraggableY: number;
 
+/**
+ * Draggable
+ */
 export default class Draggable extends React.Component<
   DraggableProps,
   DraggableState
@@ -146,6 +193,10 @@ export default class Draggable extends React.Component<
   private timer: number;
   private isFirstDrag: boolean;
 
+  /**
+   * constructor
+   * @param props Props
+   */
   constructor(props: DraggableProps) {
     super(props);
 
@@ -166,6 +217,10 @@ export default class Draggable extends React.Component<
     this.onMove = this.onMove.bind(this);
     this.detectCollisions = this.detectCollisions.bind(this);
   }
+
+  /**
+   * componentDidMount
+   */
   componentDidMount() {
     document.body.addEventListener("mousedown", this.onRootSelectStart);
     document.body.addEventListener("mousemove", this.onMove);
@@ -183,6 +238,10 @@ export default class Draggable extends React.Component<
       this.currentInteractionId = this.selfId;
     }
   }
+
+  /**
+   * componentWillUnmount
+   */
   componentWillUnmount() {
     document.body.removeEventListener("mousedown", this.onRootSelectStart);
     document.body.removeEventListener("mousemove", this.onMove);
@@ -193,6 +252,12 @@ export default class Draggable extends React.Component<
     document.body.removeEventListener("touchend", this.onRootSelectEnd);
     document.body.removeEventListener("touchcancel", this.onRootSelectEnd);
   }
+
+  /**
+   * onRootSelectStart
+   * @param e e
+   * @param force f
+   */
   onRootSelectStart(e: MouseEvent | TouchEvent, force?: boolean) {
     // not left click
     if (
@@ -304,6 +369,11 @@ export default class Draggable extends React.Component<
       queueJax
     );
   }
+
+  /**
+   * onMove
+   * @param e e
+   */
   onMove(e: MouseEvent | TouchEvent) {
     // not left click
     if (
@@ -359,6 +429,11 @@ export default class Draggable extends React.Component<
         this.detectCollisions(false);
     }
   }
+
+  /**
+   * onRootSelectEnd
+   * @param e e
+   */
   onRootSelectEnd(e: MouseEvent | TouchEvent) {
     // not left click
     if (
@@ -396,6 +471,11 @@ export default class Draggable extends React.Component<
       }
     }
   }
+
+  /**
+   * detectCollisions
+   * @param isDrop isDrop
+   */
   detectCollisions(isDrop: boolean) {
     //the contestant that showed collisions
     const contestants: Array<{
@@ -505,6 +585,11 @@ export default class Draggable extends React.Component<
       this.currentInteractionId = this.selfId;
     }
   }
+
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     let RootElement: any = this.props.as || "div";
     const rootElementProps: any = {

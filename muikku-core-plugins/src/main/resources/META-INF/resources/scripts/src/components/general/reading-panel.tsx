@@ -8,6 +8,9 @@ import * as React from "react";
 import "~/sass/elements/reading-panel.scss";
 import "~/sass/elements/loaders.scss";
 
+/**
+ * ReadingPanelProps
+ */
 interface ReadingPanelProps {
   modifier: string;
   title?: React.ReactElement<any> | string;
@@ -20,15 +23,25 @@ interface ReadingPanelProps {
   children?: React.ReactElement<any> | Array<React.ReactElement<any>>;
 }
 
+/**
+ * ReadingPanelState
+ */
 interface ReadingPanelState {
   sticky: boolean;
   remainingHeight: number;
 }
 
+/**
+ * ReadingPanel
+ */
 export default class ReadingPanel extends React.Component<
   ReadingPanelProps,
   ReadingPanelState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: ReadingPanelProps) {
     super(props);
 
@@ -37,9 +50,18 @@ export default class ReadingPanel extends React.Component<
       remainingHeight: null,
     };
   }
+
+  /**
+   * componentDidMount
+   */
   componentDidMount() {
     window.scrollTo(0, 0);
   }
+
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     return (
       <div

@@ -2,10 +2,12 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
-
 import "~/sass/elements/rich-text.scss";
 import "~/sass/elements/feed.scss";
 
+/**
+ * FeedProps
+ */
 interface FeedProps {
   entries: Array<{
     publicationDate: string;
@@ -19,9 +21,19 @@ interface FeedProps {
   i18n: i18nType;
 }
 
+/**
+ * FeedState
+ */
 interface FeedState {}
 
+/**
+ * Feed
+ */
 class Feed extends React.Component<FeedProps, FeedState> {
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     return (
       <ul className="feed">
@@ -106,12 +118,21 @@ class Feed extends React.Component<FeedProps, FeedState> {
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ * @returns object
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @returns object
+ */
 function mapDispatchToProps() {
   return {};
 }

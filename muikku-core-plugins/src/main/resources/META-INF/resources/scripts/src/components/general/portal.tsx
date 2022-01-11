@@ -6,6 +6,7 @@
 
 import * as React from "react";
 import {
+  // eslint-disable-next-line camelcase
   unstable_renderSubtreeIntoContainer,
   unmountComponentAtNode,
   findDOMNode,
@@ -15,6 +16,9 @@ const KEYCODES = {
   ESCAPE: 27,
 };
 
+/**
+ * PortalProps
+ */
 interface PortalProps {
   children?: any;
   openByClickOn?: React.ReactElement<any>;
@@ -23,24 +27,34 @@ interface PortalProps {
   closeOnEsc?: boolean;
   closeOnOutsideClick?: boolean;
   closeOnScroll?: boolean;
-  onOpen?(e: HTMLElement): any;
-  onClose?(): any;
-  beforeClose?(e: HTMLElement, resetPortalState: () => any): any;
-  onKeyStroke?(keyCode: number, closePortal: () => any): any;
-  onWrapperKeyDown?(e: React.KeyboardEvent): any;
+  onOpen?: (e: HTMLElement) => any;
+  onClose?: () => any;
+  beforeClose?: (e: HTMLElement, resetPortalState: () => any) => any;
+  onKeyStroke?: (keyCode: number, closePortal: () => any) => any;
+  onWrapperKeyDown?: (e: React.KeyboardEvent) => any;
   isOpen?: boolean;
 }
 
+/**
+ * PortalState
+ */
 interface PortalState {
   active: boolean;
 }
 
+/**
+ * Portal
+ */
 export default class Portal extends React.Component<PortalProps, PortalState> {
   private portal: any;
   private node: HTMLElement | null;
   private isUnmounted: boolean;
   private isClosing: boolean;
 
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: PortalProps) {
     super(props);
     this.state = { active: false };
@@ -55,6 +69,9 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
     this.isClosing = false;
   }
 
+  /**
+   * componentDidMount
+   */
   componentDidMount() {
     if (this.props.closeOnEsc) {
       document.addEventListener("keydown", this.handleKeydown);
@@ -74,6 +91,11 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
     }
   }
 
+  /**
+   * componentWillUpdate
+   * @param nextProps nextProps
+   * @param nextState nextState
+   */
   componentWillUpdate(nextProps: PortalProps, nextState: PortalState) {
     if (
       nextProps.isOpen === true &&
@@ -93,6 +115,9 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
     }
   }
 
+  /**
+   * componentWillUnmount
+   */
   componentWillUnmount() {
     if (this.props.closeOnEsc) {
       document.removeEventListener("keydown", this.handleKeydown);
@@ -111,6 +136,10 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
     this.closePortal();
   }
 
+  /**
+   * handleWrapperClick
+   * @param e e
+   */
   handleWrapperClick(e: Event) {
     e.preventDefault();
     e.stopPropagation();
@@ -120,6 +149,10 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
     this.openPortal();
   }
 
+  /**
+   * handleWrapperKeyDown
+   * @param e e
+   */
   handleWrapperKeyDown(e: React.KeyboardEvent) {
     if (e.key === "Enter") {
       e.preventDefault();
@@ -141,14 +174,24 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
     }
   }
 
+  /**
+   * openPortal
+   * @param props props
+   */
   openPortal(props: PortalProps = this.props) {
     this.setState({ active: true });
     this.renderPortal(props, true);
   }
 
+  /**
+   * closePortal
+   */
   closePortal() {
     this.isClosing = true;
 
+    /**
+     * resetPortalState
+     */
     const resetPortalState = () => {
       if (this.node) {
         unmountComponentAtNode(this.node);
@@ -174,6 +217,10 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
     }
   }
 
+  /**
+   * handleOutsideMouseClick
+   * @param e e
+   */
   handleOutsideMouseClick(e: Event) {
     if (!this.state.active) {
       return;
@@ -193,6 +240,10 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
     this.closePortal();
   }
 
+  /**
+   * handleKeydown
+   * @param e e
+   */
   handleKeydown(e: KeyboardEvent) {
     if (e.keyCode === KEYCODES.ESCAPE && this.state.active) {
       this.closePortal();
@@ -202,6 +253,11 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
     }
   }
 
+  /**
+   * renderPortal
+   * @param props props
+   * @param isOpening isOpening
+   */
   renderPortal(props: PortalProps, isOpening = false) {
     if (!this.node) {
       this.node = document.createElement("div");
@@ -221,6 +277,10 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
     }
   }
 
+  /**
+   * render
+   * @returns JSX.Element
+   */
   render() {
     if (this.props.openByClickOn) {
       return React.cloneElement(this.props.openByClickOn, {

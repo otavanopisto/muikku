@@ -3,6 +3,9 @@ import Link from "./link";
 
 import "~/sass/elements/buttons.scss";
 
+/**
+ * HoverButtonProps
+ */
 interface HoverButtonProps {
   onClick?: (e: React.MouseEvent<HTMLAnchorElement>) => any;
   modifier: string;
@@ -10,15 +13,30 @@ interface HoverButtonProps {
   href?: string;
 }
 
+/**
+ * HoverButtonState
+ */
 interface HoverButtonState {}
 
+/**
+ * HoverButton
+ */
 export default class HoverButton extends React.Component<
   HoverButtonProps,
   HoverButtonState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: HoverButtonProps) {
     super(props);
   }
+
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     return (
       <Link

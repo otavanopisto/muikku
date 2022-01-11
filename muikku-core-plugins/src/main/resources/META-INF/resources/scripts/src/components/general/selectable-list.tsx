@@ -1,5 +1,8 @@
 import * as React from "react";
 
+/**
+ * SelectableItem
+ */
 interface SelectableItem {
   className: string;
   onSelect: () => any;
@@ -18,6 +21,9 @@ interface SelectableItem {
   wcagLabel?: string;
 }
 
+/**
+ * SelectableListProps
+ */
 interface SelectableListProps {
   className?: string;
   selectModeClassAddition?: string;
@@ -29,10 +35,16 @@ interface SelectableListProps {
   selectModeModifiers?: string | Array<string>;
 }
 
+/**
+ * SelectableListState
+ */
 interface SelectableListState {
   touchMode: boolean;
 }
 
+/**
+ * SelectableList
+ */
 export default class SelectableList extends React.Component<
   SelectableListProps,
   SelectableListState
@@ -47,6 +59,10 @@ export default class SelectableList extends React.Component<
   private initialTime: number;
   private touchScreenDetected: boolean;
 
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: SelectableListProps) {
     super(props);
 
@@ -74,6 +90,28 @@ export default class SelectableList extends React.Component<
     this.initialTime = null;
     this.touchScreenDetected = false;
   }
+
+  /**
+   * componentWillReceiveProps
+   * @param nextProps nextProps
+   */
+  componentWillReceiveProps(nextProps: SelectableListProps) {
+    //if the next state is loading or if the elements that are selected have dissapeared
+    if (
+      nextProps.dataState === "LOADING" ||
+      (this.state.touchMode &&
+        !this.props.children.find((child: SelectableItem) => child.isSelected))
+    ) {
+      this.setState({
+        touchMode: false,
+      });
+    }
+  }
+
+  /**
+   * toggleSelectMode
+   * @param item item
+   */
   toggleSelectMode(item: SelectableItem) {
     if (item.isSelected) {
       item.onDeselect();
@@ -81,6 +119,12 @@ export default class SelectableList extends React.Component<
       item.onSelect();
     }
   }
+
+  /**
+   * onTouchStartItem
+   * @param item item
+   * @param e e
+   */
   onTouchStartItem(item: SelectableItem, e: React.TouchEvent<any>) {
     if (!this.state.touchMode) {
       this.touchModeTimeout = setTimeout(() => {
@@ -97,6 +141,11 @@ export default class SelectableList extends React.Component<
     this.initialTime = new Date().getTime();
     this.touchScreenDetected = true;
   }
+
+  /**
+   * onTouchMoveItem
+   * @param e e
+   */
   onTouchMoveItem(e: React.TouchEvent<any>) {
     this.lastXPos = e.touches[0].pageX;
     this.lastYPos = e.touches[0].pageY;
@@ -109,6 +158,11 @@ export default class SelectableList extends React.Component<
       this.cancelSelection = true;
     }
   }
+
+  /**
+   * onTouchEndItem
+   * @param item item
+   */
   onTouchEndItem(item: SelectableItem) {
     clearTimeout(this.touchModeTimeout);
 
@@ -136,38 +190,57 @@ export default class SelectableList extends React.Component<
       this.firstWasJustSelected = false;
     }
   }
+
+  /**
+   * onKeyDown
+   * @param item item
+   * @param e e
+   */
   onKeyDown(item: SelectableItem, e: React.KeyboardEvent) {
     if (e.key === "Enter" || e.key === " ") {
       item.onEnter();
     }
   }
+
+  /**
+   * onContextMenu
+   * @param e e
+   */
   onContextMenu(e: React.MouseEvent<any>) {
     e.preventDefault();
     e.stopPropagation();
   }
+
+  /**
+   * onItemClick
+   * @param item item
+   */
   onItemClick(item: SelectableItem) {
     if (!this.state.touchMode && !this.touchScreenDetected) {
       item.onEnter();
     }
   }
+
+  /**
+   * onCheckBoxItemChange
+   * @param item item
+   */
   onCheckBoxItemChange(item: SelectableItem) {
     this.toggleSelectMode(item);
   }
+
+  /**
+   * onCheckBoxItemClick
+   * @param e e
+   */
   onCheckBoxItemClick(e: React.MouseEvent<any>) {
     e.stopPropagation();
   }
-  componentWillReceiveProps(nextProps: SelectableListProps) {
-    //if the next state is loading or if the elements that are selected have dissapeared
-    if (
-      nextProps.dataState === "LOADING" ||
-      (this.state.touchMode &&
-        !this.props.children.find((child: SelectableItem) => child.isSelected))
-    ) {
-      this.setState({
-        touchMode: false,
-      });
-    }
-  }
+
+  /**
+   * render
+   * @returns JSX.Element
+   */
   render() {
     const RootElement = this.props.as || "div";
     const modifiers = this.props.as

@@ -40,7 +40,7 @@ const defaultPagerV2Props = {
 /**
  * PagerV2. It extends React Paginate components props, but without aria label builder
  * which is included already in PagerV2 by default
- * @param props
+ * @param props props
  * @returns JSX.Element
  */
 const PagerV2: React.FC<PagerV2Props> = (props) => {
@@ -78,7 +78,8 @@ const PagerV2: React.FC<PagerV2Props> = (props) => {
 
 /**
  * mapStateToProps
- * @param state
+ * @param state state
+ * @returns object
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -88,7 +89,7 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @returns object
  */
 function mapDispatchToProps() {
   return {};

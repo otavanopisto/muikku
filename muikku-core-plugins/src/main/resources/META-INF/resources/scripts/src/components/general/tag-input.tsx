@@ -8,6 +8,9 @@ import * as React from "react";
 import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/tag-input.scss";
 
+/**
+ * Tag
+ */
 export interface Tag {
   node: React.ReactElement<any> | string;
   value: any;
@@ -15,6 +18,9 @@ export interface Tag {
   icon?: string;
 }
 
+/**
+ * TagInputProps
+ */
 interface TagInputProps {
   modifier?: string;
   identifier: string;
@@ -32,18 +38,22 @@ interface TagInputProps {
   wcagLabel?: string;
 }
 
+/**
+ * TagInputState
+ */
 interface TagInputState {}
 
+/**
+ * TagInput
+ */
 export default class TagInput extends React.Component<
   TagInputProps,
   TagInputState
 > {
-  componentDidMount() {
-    if (this.props.autofocus) {
-      (this.refs["input"] as HTMLElement).focus();
-    }
-  }
-
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: TagInputProps) {
     super(props);
 
@@ -51,6 +61,30 @@ export default class TagInput extends React.Component<
     this.focus = this.focus.bind(this);
   }
 
+  /**
+   * componentDidMount
+   */
+  componentDidMount() {
+    if (this.props.autofocus) {
+      (this.refs["input"] as HTMLElement).focus();
+    }
+  }
+
+  /**
+   * componentDidUpdate
+   */
+  componentDidUpdate() {
+    if (this.props.isFocused) {
+      this.focus();
+    } else {
+      this.blur();
+    }
+  }
+
+  /**
+   * onKeyDown
+   * @param e e
+   */
   onKeyDown(e: React.KeyboardEvent<any>) {
     if (this.props.deleteByBackKey) {
       if (
@@ -63,34 +97,48 @@ export default class TagInput extends React.Component<
     }
   }
 
+  /**
+   * focusing to input ref element
+   */
   focus() {
     (this.refs["input"] as HTMLElement).focus();
   }
 
+  /**
+   * blur
+   */
   blur() {
     (this.refs["input"] as HTMLElement).blur();
   }
 
+  /**
+   * getInputHeight
+   * @returns number of input offsetheight
+   */
   getInputHeight() {
     return (this.refs["input"] as HTMLElement).offsetHeight;
   }
 
+  /**
+   * getInputBodyHeight
+   * @returns number of input body offsetheight
+   */
   getInputBodyHeight() {
     return (this.refs["inputbody"] as HTMLElement).offsetHeight;
   }
 
+  /**
+   * getSelectedHeight
+   * @returns number of slected offsetheight
+   */
   getSelectedHeight() {
     return (this.refs["selected"] as HTMLElement).offsetHeight;
   }
 
-  componentDidUpdate() {
-    if (this.props.isFocused) {
-      this.focus();
-    } else {
-      this.blur();
-    }
-  }
-
+  /**
+   * render
+   * @returns JSX.Element
+   */
   render() {
     return (
       <div
@@ -133,6 +181,9 @@ export default class TagInput extends React.Component<
   }
 }
 
+/**
+ * TagItemsProps
+ */
 interface TagItemsProps {
   modifier?: string;
   identifier: string;
@@ -141,9 +192,19 @@ interface TagItemsProps {
   tags: Tag[];
 }
 
+/**
+ * TagItemsState
+ */
 interface TagItemsState {}
 
+/**
+ * TagItems
+ */
 export class TagItems extends React.Component<TagItemsProps, TagItemsState> {
+  /**
+   * render
+   * @returns JSX.Element
+   */
   render() {
     return (
       <div
@@ -167,6 +228,9 @@ export class TagItems extends React.Component<TagItemsProps, TagItemsState> {
   }
 }
 
+/**
+ * TagItemProps
+ */
 interface TagItemProps {
   modifier?: string;
   disabled?: boolean;
@@ -175,20 +239,38 @@ interface TagItemProps {
   tag: Tag;
 }
 
+/**
+ * TagItemState
+ */
 interface TagItemState {}
 
+/**
+ * TagItem
+ */
 export class TagItem extends React.Component<TagItemProps, TagItemState> {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: TagItemProps) {
     super(props);
     this.onDeleteTag = this.onDeleteTag.bind(this);
   }
 
+  /**
+   * onDeleteTag
+   * @param tag tag
+   */
   onDeleteTag(tag: Tag) {
     if (!tag.disabled) {
       this.props.onDelete(tag.value);
     }
   }
 
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     return (
       <span

@@ -19,8 +19,14 @@ import $ from "~/lib/jquery";
 import "~/sass/elements/dropdown.scss";
 import * as uuid from "uuid";
 
+/**
+ * itemType2
+ */
 type itemType2 = (closeDropdown: () => any) => any;
 
+/**
+ * DropdownProps
+ */
 interface DropdownProps {
   modifier?: string;
   children?: React.ReactNode;
@@ -35,6 +41,9 @@ interface DropdownProps {
   alignSelf?: "left" | "center" | "right";
 }
 
+/**
+ * DropdownState
+ */
 interface DropdownState {
   top: number | null;
   left: number | null;
@@ -46,12 +55,20 @@ interface DropdownState {
   visible: boolean;
 }
 
+/**
+ * Dropdown
+ */
 export default class Dropdown extends React.Component<
   DropdownProps,
   DropdownState
 > {
   private id: string;
   private isUnmounted = false;
+
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: DropdownProps) {
     super(props);
     this.onOpen = this.onOpen.bind(this);
@@ -73,6 +90,17 @@ export default class Dropdown extends React.Component<
       visible: false,
     };
   }
+
+  /**
+   * componentWillUnmount
+   */
+  componentWillUnmount() {
+    this.isUnmounted = true;
+  }
+
+  /**
+   * onOpen
+   */
   onOpen() {
     if (this.isUnmounted) {
       return;
@@ -169,11 +197,21 @@ export default class Dropdown extends React.Component<
       this.props.onOpen
     );
   }
+
+  /**
+   * onClose
+   */
   onClose() {
     if (this.props.onClose) {
       this.props.onClose();
     }
   }
+
+  /**
+   * beforeClose
+   * @param DOMNode d
+   * @param removeFromDOM r
+   */
   beforeClose(DOMNode: HTMLElement, removeFromDOM: Function) {
     if (this.isUnmounted) {
       return;
@@ -194,12 +232,18 @@ export default class Dropdown extends React.Component<
       }, 10);
     }, 300);
   }
+
+  /**
+   * close
+   */
   close() {
     (this.refs["portal"] as Portal).closePortal();
   }
-  componentWillUnmount() {
-    this.isUnmounted = true;
-  }
+
+  /**
+   * onKeyDown
+   * @param e e
+   */
   onKeyDown(e: React.KeyboardEvent) {
     if (e.key === "Tab" || !this.props.items) {
       return;
@@ -212,6 +256,11 @@ export default class Dropdown extends React.Component<
       this.focusIndex(0);
     }
   }
+
+  /**
+   * onItemKeyDown
+   * @param e e
+   */
   onItemKeyDown(e: React.KeyboardEvent) {
     if (e.key === "ArrowUp" || e.key === "ArrowDown" || e.key === "Tab") {
       e.stopPropagation();
@@ -253,6 +302,11 @@ export default class Dropdown extends React.Component<
       this.focusIndex(index + 1);
     }
   }
+
+  /**
+   * focusIndex
+   * @param n n
+   */
   focusIndex(n: number) {
     const id = this.id + "-item-" + n;
     let element = document.querySelector("#" + id) as HTMLElement;
@@ -272,6 +326,11 @@ export default class Dropdown extends React.Component<
       element.focus();
     }
   }
+
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     let elementCloned: React.ReactElement<any> = React.cloneElement(
       this.props.children as any,

@@ -9,10 +9,17 @@ import * as React from "react";
 import { ButtonPill } from "~/components/general/button";
 import "~/sass/elements/item-list.scss";
 
+/**
+ * Navigation
+ */
 export default class Navigation extends React.Component<
   Record<string, unknown>,
   Record<string, unknown>
 > {
+  /**
+   * Component render method
+   * @returns JSx.Element
+   */
   render() {
     return (
       <nav className="menu-wrapper menu-wrapper--aside">
@@ -22,17 +29,30 @@ export default class Navigation extends React.Component<
   }
 }
 
+/**
+ * NavigationTopicProps
+ */
 interface NavigationTopicProps {
   name: string;
   classModifier?: string;
 }
 
+/**
+ * NavigationTopicState
+ */
 interface NavigationTopicState {}
 
+/**
+ * NavigationTopic
+ */
 export class NavigationTopic extends React.Component<
   NavigationTopicProps,
   NavigationTopicState
 > {
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     const listClassNameModifier = this.props.classModifier
       ? "menu--" + this.props.classModifier
@@ -49,6 +69,9 @@ export class NavigationTopic extends React.Component<
   }
 }
 
+/**
+ * NavigationElementProps
+ */
 interface NavigationElementProps {
   isActive: boolean;
   className?: string;
@@ -72,12 +95,22 @@ interface NavigationElementProps {
   disableScroll?: boolean;
 }
 
+/**
+ * NavigationElementState
+ */
 interface NavigationElementState {}
 
+/**
+ * NavigationElement
+ */
 export class NavigationElement extends React.Component<
   NavigationElementProps,
   NavigationElementState
 > {
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     let editableComponent = null;
 
@@ -146,6 +179,11 @@ export class NavigationElement extends React.Component<
       </li>
     );
   }
+
+  /**
+   * getElement
+   * @returns HTMLElement
+   */
   getElement(): HTMLElement {
     return (this.refs["element"] as Link).getElement();
   }
