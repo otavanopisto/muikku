@@ -45,20 +45,50 @@ const objects: { [key: string]: any } = {
 
 // Wheteher the object can check or not for an answer
 const answerCheckables: { [key: string]: (params: any) => boolean } = {
+  /**
+   * application/vnd.muikku.field.text
+   * @param params params
+   * @returns any
+   */
   "application/vnd.muikku.field.text": (params: any) =>
     params.content &&
     params.content.rightAnswers.filter((option: any) => option.correct).lenght,
+  /**
+   * select
+   * @param params params
+   * @returns any
+   */
   "application/vnd.muikku.field.select": (params: any) =>
     params.content &&
     params.content.options.filter((option: any) => option.correct).lenght,
+  /**
+   * multiselect
+   * @param params params
+   * @returns any
+   */
   "application/vnd.muikku.field.multiselect": (params: any) =>
     params.content &&
     params.content.options.filter((option: any) => option.correct).lenght,
+  /**
+   * connect
+   * @returns true
+   */
   "application/vnd.muikku.field.connect": () => true,
+  /**
+   * organizer
+   * @returns true
+   */
   "application/vnd.muikku.field.organizer": () => true,
+  /**
+   * sorter
+   * @returns true
+   */
   "application/vnd.muikku.field.sorter": () => true,
 };
 
+/**
+ * BaseProps
+ */
 interface BaseProps {
   material: MaterialContentNodeType;
   i18n: i18nType;
@@ -66,10 +96,8 @@ interface BaseProps {
   workspace: WorkspaceType;
   websocketState: WebsocketStateType;
   answerable: boolean;
-
   compositeReplies?: MaterialCompositeRepliesType;
   readOnly?: boolean;
-
   onConfirmedAndSyncedModification?: () => any;
   onModification?: () => any;
   displayCorrectAnswers: boolean;
@@ -80,20 +108,26 @@ interface BaseProps {
   invisible: boolean;
 }
 
+/**
+ * BaseState
+ */
 interface BaseState {
   elements: Array<HTMLElement>;
 }
 
 // The typing of the user will stack until the user stops typing for this amount of milliseconds
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const TIME_IT_TAKES_FOR_AN_ANSWER_TO_BE_SAVED_WHILE_THE_USER_MODIFIES_IT = 666;
 // The client will wait this amount of milliseconds and otherwise it will consider the answer unsynced
 const TIME_IT_TAKES_FOR_AN_ANSWER_TO_BE_CONSIDERED_FAILED_IF_SERVER_DOES_NOT_REPLY = 2000;
 // The client will wait this amount of milliseconds to trigger an update
 const TIME_IT_WAITS_TO_TRIGGER_A_CHANGE_EVENT_IF_NO_OTHER_CHANGE_EVENT_IS_IN_QUEUE = 666;
 
-// Fixes the html inconsitencies because
-// there are some of them which shouldn't
-// but hey that's the case
+/**
+ * Fixes the html inconsitencies because there are some of them which shouldn't but hey that's the case
+ * @param $html html
+ * @returns any
+ */
 function preprocessor($html: any): any {
   $html.find("img").each(function () {
     if (!$(this).parent("figure").length) {
@@ -165,8 +199,8 @@ function preprocessor($html: any): any {
 
 /**
  * createFieldSavedStateClass
- * @param state
- * @returns
+ * @param state state
+ * @returns string
  */
 export function createFieldSavedStateClass(state: FieldStateStatus) {
   let fieldSavedStateClass = "";
@@ -181,6 +215,9 @@ export function createFieldSavedStateClass(state: FieldStateStatus) {
   return fieldSavedStateClass;
 }
 
+/**
+ * Base
+ */
 export default class Base extends React.Component<BaseProps, BaseState> {
   private answerCheckable: boolean;
 
@@ -203,6 +240,10 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     [name: string]: React.Component<any, any>;
   };
 
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: BaseProps) {
     super(props);
 
@@ -233,7 +274,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
 
   /**
    * componentWillReceiveProps - To update everything if we get a brand new html we unmount and remount
-   * @param nextProps
+   * @param nextProps nextProps
    */
   componentWillReceiveProps(nextProps: BaseProps) {
     if (nextProps.material.html !== this.props.material.html) {
@@ -250,8 +291,8 @@ export default class Base extends React.Component<BaseProps, BaseState> {
 
   /**
    * setupEverything
-   * @param props
-   * @param elements
+   * @param props props
+   * @param elements elements
    */
   setupEverything(props: BaseProps = this.props, elements: Array<HTMLElement>) {
     const originalAnswerCheckable = this.answerCheckable;
@@ -316,10 +357,10 @@ export default class Base extends React.Component<BaseProps, BaseState> {
       );
     }
   }
+
   /**
    * onAnswerSavedAtServer - when an answer is saved from the server, as in the websocket calls this
-   * @param data
-   * @returns
+   * @param data data
    */
   onAnswerSavedAtServer(data: any) {
     // For some reason the data comes as string
@@ -339,6 +380,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
 
       // if we have an error
       if (actualData.error) {
+        // eslint-disable-next-line no-console
         console.error && console.error(actualData.error);
         // we get the context and check whether it's synced
         this.nameContextRegistry[actualData.fieldName].setState({
@@ -371,10 +413,10 @@ export default class Base extends React.Component<BaseProps, BaseState> {
 
   /**
    * getObjectElement - This takes the raw element and checks what react component it will give
-   * @param element
-   * @param props
-   * @param key
-   * @returns
+   * @param element element
+   * @param props props
+   * @param key key
+   * @returns JSX.Element
    */
   getObjectElement(
     element: HTMLElement,
@@ -394,7 +436,8 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     }
 
     // So now we get the parameters of that thing, due to all the updates we gotta unify here
-    const parameters: { [key: string]: any } = {};
+    // eslint-disable-next-line prefer-const
+    let parameters: { [key: string]: any } = {};
     // basically we need to get all the params
     element.querySelectorAll("param").forEach((node) => {
       // and add the value to a list of parameters
@@ -463,10 +506,9 @@ export default class Base extends React.Component<BaseProps, BaseState> {
 
   /**
    * onValueChange - Ok so this is what the element calls every time that changes
-   * @param context
-   * @param name
-   * @param newValue
-   * @returns
+   * @param context context
+   * @param name name
+   * @param newValue newValue
    */
   onValueChange(
     context: React.Component<any, any>,
@@ -551,7 +593,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
 
   /**
    * render
-   * @returns
+   * @returns JSX.Element
    */
   render() {
     const path =
@@ -564,14 +606,43 @@ export default class Base extends React.Component<BaseProps, BaseState> {
 
     const processingRules: HTMLToReactComponentRule[] = [
       {
+        /**
+         * shouldProcessHTMLElement
+         * @param tagname tagname
+         * @param element element
+         * @returns boolean
+         */
         shouldProcessHTMLElement: (tagname, element) =>
           tagname === "object" && objects[element.getAttribute("type")],
+
+        /**
+         * processingFunction
+         * @param tag tag
+         * @param props props
+         * @param children children
+         * @param element element
+         * @returns any
+         */
         processingFunction: (tag, props, children, element) =>
           this.getObjectElement(element, this.props, props.key),
       },
       {
+        /**
+         * shouldProcessHTMLElement
+         * @param tagname tagname
+         * @returns boolean
+         */
         shouldProcessHTMLElement: (tagname) => tagname === "iframe",
         preventChildProcessing: true,
+
+        /**
+         * processingFunction
+         * @param tag tag
+         * @param props props
+         * @param children children
+         * @param element element
+         * @returns any
+         */
         processingFunction: (tag, props, children, element) => {
           const dataset = extractDataSet(element);
           return (
@@ -587,8 +658,23 @@ export default class Base extends React.Component<BaseProps, BaseState> {
         },
       },
       {
+        /**
+         * shouldProcessHTMLElement
+         * @param tagname tagname
+         * @param element element
+         * @returns boolean
+         */
         shouldProcessHTMLElement: (tagname, element) =>
           !!(tagname === "mark" && element.dataset.muikkuWordDefinition),
+
+        /**
+         * processingFunction
+         * @param tag tag
+         * @param props props
+         * @param children children
+         * @param element element
+         * @returns any
+         */
         processingFunction: (tag, props, children, element) => {
           const dataset = extractDataSet(element);
           return (
@@ -604,10 +690,25 @@ export default class Base extends React.Component<BaseProps, BaseState> {
         },
       },
       {
+        /**
+         * shouldProcessHTMLElement
+         * @param tagname tagname
+         * @param element element
+         * @returns boolean
+         */
         shouldProcessHTMLElement: (tagname, element) =>
           (tagname === "figure" || tagname === "span") &&
           element.classList.contains("image"),
         preventChildProcessing: true,
+
+        /**
+         * processingFunction
+         * @param tag tag
+         * @param props props
+         * @param children children
+         * @param element element
+         * @returns any
+         */
         processingFunction: (tag, props, children, element) => {
           const dataset = extractDataSet(element);
           return (
@@ -625,17 +726,46 @@ export default class Base extends React.Component<BaseProps, BaseState> {
         id: "image-rule",
       },
       {
+        /**
+         * shouldProcessHTMLElement
+         * @param tagname tagname
+         * @param element element
+         * @returns boolean
+         */
         shouldProcessHTMLElement: (tagname, element) =>
           tagname === "span" && element.classList.contains("math-tex"),
+        /**
+         * processingFunction
+         * @param tag tag
+         * @param props  props
+         * @param children  children
+         * @param element  element
+         * @returns any
+         */
         processingFunction: (tag, props, children, element) => (
           <MathJAX key={props.key} invisible={invisible} children={children} />
         ),
       },
       {
+        /**
+         * shouldProcessHTMLElement
+         * @param tagname tagname
+         * @param element element
+         * @returns boolean
+         */
         shouldProcessHTMLElement: (tagname, element) =>
           !!(tagname === "a" && (element as HTMLAnchorElement).href),
         id: "link-rule",
         preventChildProcessing: true,
+
+        /**
+         * processingFunction
+         * @param tag tag
+         * @param props props
+         * @param children children
+         * @param element element
+         * @returns any
+         */
         processingFunction: (tag, props, children, element) => {
           const dataset = extractDataSet(element);
           return (
@@ -651,7 +781,20 @@ export default class Base extends React.Component<BaseProps, BaseState> {
         },
       },
       {
+        /**
+         * shouldProcessHTMLElement
+         * @param tagname tagname
+         * @returns boolean
+         */
         shouldProcessHTMLElement: (tagname) => tagname === "table",
+        /**
+         * processingFunction
+         * @param tagname tagname
+         * @param props props
+         * @param children children
+         * @param element element
+         * @returns any
+         */
         processingFunction: (tagname, props, children, element) => (
           <Table
             key={props.key}
@@ -662,10 +805,31 @@ export default class Base extends React.Component<BaseProps, BaseState> {
         ),
       },
       {
+        /**
+         * shouldProcessHTMLElement
+         * @param tagname tagname
+         * @returns boolean
+         */
         shouldProcessHTMLElement: (tagname) => tagname === "audio",
+        /**
+         * preprocessReactProperties
+         * @param tag tag
+         * @param props props
+         * @param children children
+         * @param element element
+         */
         preprocessReactProperties: (tag, props, children, element) => {
           props.preload = "metadata";
         },
+
+        /**
+         * processingFunction
+         * @param tag tag
+         * @param props props
+         * @param children children
+         * @param element element
+         * @returns any
+         */
         processingFunction: (tag, props, children, element) => (
           <AudioPoolComponent {...props} invisible={invisible}>
             {children}
@@ -673,7 +837,19 @@ export default class Base extends React.Component<BaseProps, BaseState> {
         ),
       },
       {
+        /**
+         * shouldProcessHTMLElement
+         * @param tagname tagname
+         * @returns boolean
+         */
         shouldProcessHTMLElement: (tagname) => tagname === "source",
+        /**
+         * preprocessReactProperties
+         * @param tag tag
+         * @param props props
+         * @param children children
+         * @param element element
+         */
         preprocessReactProperties: (tag, props, children, element) => {
           const dataset = extractDataSet(element);
           const src = dataset.original || "";

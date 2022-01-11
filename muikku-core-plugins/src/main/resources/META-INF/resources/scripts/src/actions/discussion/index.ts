@@ -78,6 +78,9 @@ export type SET_DISCUSSION_WORKSPACE_ID = SpecificActionType<
   number
 >;
 
+/**
+ * loadDiscussionThreadsFromServerTriggerType
+ */
 export interface loadDiscussionThreadsFromServerTriggerType {
   (data: {
     areaId: number;
@@ -87,6 +90,9 @@ export interface loadDiscussionThreadsFromServerTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * CreateDiscussionThreadTriggerType
+ */
 export interface CreateDiscussionThreadTriggerType {
   (data: {
     forumAreaId: number;
@@ -99,6 +105,9 @@ export interface CreateDiscussionThreadTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * ModifyDiscussionThreadTriggerType
+ */
 export interface ModifyDiscussionThreadTriggerType {
   (data: {
     thread: DiscussionThreadType;
@@ -111,6 +120,9 @@ export interface ModifyDiscussionThreadTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * LoadDiscussionThreadFromServerTriggerType
+ */
 export interface LoadDiscussionThreadFromServerTriggerType {
   (data: {
     areaId: number;
@@ -123,6 +135,9 @@ export interface LoadDiscussionThreadFromServerTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * ReplyToCurrentDiscussionThreadTriggerType
+ */
 export interface ReplyToCurrentDiscussionThreadTriggerType {
   (data: {
     message: string;
@@ -132,10 +147,16 @@ export interface ReplyToCurrentDiscussionThreadTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * DeleteCurrentDiscussionThreadTriggerType
+ */
 export interface DeleteCurrentDiscussionThreadTriggerType {
   (data: { success?: () => any; fail?: () => any }): AnyActionType;
 }
 
+/**
+ * DeleteDiscussionThreadReplyFromCurrentTriggerType
+ */
 export interface DeleteDiscussionThreadReplyFromCurrentTriggerType {
   (data: {
     reply: DiscussionThreadReplyType;
@@ -144,6 +165,9 @@ export interface DeleteDiscussionThreadReplyFromCurrentTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * ModifyReplyFromCurrentThreadTriggerType
+ */
 export interface ModifyReplyFromCurrentThreadTriggerType {
   (data: {
     reply: DiscussionThreadReplyType;
@@ -153,6 +177,11 @@ export interface ModifyReplyFromCurrentThreadTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * loadDiscussionThreadsFromServer
+ * @param data data
+ * @returns dispatch
+ */
 const loadDiscussionThreadsFromServer: loadDiscussionThreadsFromServerTriggerType =
   function loadDiscussionThreadsFromServer(data) {
     return async (
@@ -274,6 +303,11 @@ const loadDiscussionThreadsFromServer: loadDiscussionThreadsFromServerTriggerTyp
     };
   };
 
+/**
+ * createDiscussionThread
+ * @param data data
+ * @returns dispatch
+ */
 const createDiscussionThread: CreateDiscussionThreadTriggerType =
   function createDiscussionThread(data) {
     return async (
@@ -358,6 +392,11 @@ const createDiscussionThread: CreateDiscussionThreadTriggerType =
     };
   };
 
+/**
+ * modifyDiscussionThread
+ * @param data data
+ * @returns dispatch
+ */
 const modifyDiscussionThread: ModifyDiscussionThreadTriggerType =
   function modifyDiscussionThread(data) {
     return async (
@@ -436,6 +475,11 @@ const modifyDiscussionThread: ModifyDiscussionThreadTriggerType =
     };
   };
 
+/**
+ * loadDiscussionThreadFromServer
+ * @param data data
+ * @returns dispatch
+ */
 const loadDiscussionThreadFromServer: LoadDiscussionThreadFromServerTriggerType =
   function loadDiscussionThreadFromServer(data) {
     return async (
@@ -563,6 +607,11 @@ const loadDiscussionThreadFromServer: LoadDiscussionThreadFromServerTriggerType 
     };
   };
 
+/**
+ * replyToCurrentDiscussionThread
+ * @param data data
+ * @returns dispatch
+ */
 const replyToCurrentDiscussionThread: ReplyToCurrentDiscussionThreadTriggerType =
   function replyToDiscussionThread(data) {
     return async (
@@ -595,7 +644,8 @@ const replyToCurrentDiscussionThread: ReplyToCurrentDiscussionThreadTriggerType 
                 payload
               ),
           "callback"
-        )()
+        )();
+
         //sadly the new calculation is overly complex and error prone so we'll just do this;
         //We also need to use force refresh to avoid reusing data in memory
         dispatch(
@@ -617,6 +667,11 @@ const replyToCurrentDiscussionThread: ReplyToCurrentDiscussionThreadTriggerType 
     };
   };
 
+/**
+ * deleteCurrentDiscussionThread
+ * @param data data
+ * @returns dispatch
+ */
 const deleteCurrentDiscussionThread: DeleteCurrentDiscussionThreadTriggerType =
   function deleteCurrentDiscussionThread(data) {
     return async (
@@ -674,6 +729,11 @@ const deleteCurrentDiscussionThread: DeleteCurrentDiscussionThreadTriggerType =
     };
   };
 
+/**
+ * deleteDiscussionThreadReplyFromCurrent
+ * @param data data
+ * @returns dispatch
+ */
 const deleteDiscussionThreadReplyFromCurrent: DeleteDiscussionThreadReplyFromCurrentTriggerType =
   function deleteDiscussionThreadReplyFromCurrent(data) {
     return async (
@@ -725,6 +785,11 @@ const deleteDiscussionThreadReplyFromCurrent: DeleteDiscussionThreadReplyFromCur
     };
   };
 
+/**
+ * modifyReplyFromCurrentThread
+ * @param data data
+ * @returns dispatch
+ */
 const modifyReplyFromCurrentThread: ModifyReplyFromCurrentThreadTriggerType =
   function modifyReplyFromCurrentThread(data) {
     return async (
@@ -774,10 +839,18 @@ const modifyReplyFromCurrentThread: ModifyReplyFromCurrentThreadTriggerType =
     };
   };
 
+/**
+ * LoadDiscussionAreasFromServerTriggerType
+ */
 export interface LoadDiscussionAreasFromServerTriggerType {
   (callback?: () => any): AnyActionType;
 }
 
+/**
+ * loadDiscussionAreasFromServer
+ * @param callback callback
+ * @returns dispatch
+ */
 const loadDiscussionAreasFromServer: LoadDiscussionAreasFromServerTriggerType =
   function loadDiscussionAreasFromServer(callback) {
     return async (
@@ -809,6 +882,9 @@ const loadDiscussionAreasFromServer: LoadDiscussionAreasFromServerTriggerType =
     };
   };
 
+/**
+ * CreateDiscussionAreaTriggerType
+ */
 export interface CreateDiscussionAreaTriggerType {
   (data: {
     name: string;
@@ -818,6 +894,11 @@ export interface CreateDiscussionAreaTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * createDiscussionArea
+ * @param data data
+ * @returns dispatch
+ */
 const createDiscussionArea: CreateDiscussionAreaTriggerType =
   function createDiscussionArea(data) {
     return async (
@@ -869,6 +950,9 @@ const createDiscussionArea: CreateDiscussionAreaTriggerType =
     };
   };
 
+/**
+ * UpdateDiscussionAreaTriggerType
+ */
 export interface UpdateDiscussionAreaTriggerType {
   (data: {
     id: number;
@@ -879,6 +963,11 @@ export interface UpdateDiscussionAreaTriggerType {
   }): AnyActionType;
 }
 
+/**
+ *
+ * @param data data
+ * @returns dispatch
+ */
 const updateDiscussionArea: UpdateDiscussionAreaTriggerType =
   function updateDiscussionArea(data) {
     return async (
@@ -934,10 +1023,18 @@ const updateDiscussionArea: UpdateDiscussionAreaTriggerType =
     };
   };
 
+/**
+ * DeleteDiscussionAreaTriggerType
+ */
 export interface DeleteDiscussionAreaTriggerType {
   (data: { id: number; success?: () => any; fail?: () => any }): AnyActionType;
 }
 
+/**
+ * deleteDiscussionArea
+ * @param data data
+ * @returns dispatch
+ */
 const deleteDiscussionArea: DeleteDiscussionAreaTriggerType =
   function deleteDiscussionArea(data) {
     return async (
@@ -971,10 +1068,18 @@ const deleteDiscussionArea: DeleteDiscussionAreaTriggerType =
     };
   };
 
+/**
+ * SetDiscussionWorkspaceIdTriggerType
+ */
 export interface SetDiscussionWorkspaceIdTriggerType {
   (workspaceId: number): AnyActionType;
 }
 
+/**
+ * setDiscussionWorkpaceId
+ * @param workspaceId workspaceId
+ * @returns dispatch
+ */
 const setDiscussionWorkpaceId: SetDiscussionWorkspaceIdTriggerType =
   function setDiscussionWorkpaceId(workspaceId) {
     return {

@@ -8,6 +8,9 @@ import Synchronizer from "../base/synchronizer";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../../base/index";
 
+/**
+ * FileFieldProps
+ */
 interface FileFieldProps {
   type: string;
   content: {
@@ -27,6 +30,9 @@ interface FileFieldProps {
   invisible?: boolean;
 }
 
+/**
+ * FileFieldState
+ */
 interface FileFieldState {
   values: Array<{
     // might not be there while uploading
@@ -45,10 +51,17 @@ interface FileFieldState {
   fieldSavedState: FieldStateStatus;
 }
 
+/**
+ * FileField
+ */
 export default class FileField extends React.Component<
   FileFieldProps,
   FileFieldState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: FileFieldProps) {
     super(props);
 
@@ -72,7 +85,7 @@ export default class FileField extends React.Component<
 
   /**
    * onFieldSavedStateChange
-   * @param savedState
+   * @param savedState savedState
    */
   onFieldSavedStateChange(savedState: FieldStateStatus) {
     this.setState({
@@ -82,9 +95,9 @@ export default class FileField extends React.Component<
 
   /**
    * shouldComponentUpdate
-   * @param nextProps
-   * @param nextState
-   * @returns
+   * @param nextProps nextProps
+   * @param nextState nextState
+   * @returns boolean
    */
   shouldComponentUpdate(nextProps: FileFieldProps, nextState: FileFieldState) {
     return (
@@ -97,8 +110,8 @@ export default class FileField extends React.Component<
 
   /**
    * onFileAdded
-   * @param file
-   * @param data
+   * @param file file
+   * @param data data
    */
   onFileAdded(file: File, data: any) {
     const newValues = [
@@ -120,9 +133,9 @@ export default class FileField extends React.Component<
 
   /**
    * checkDoneAndRunOnChange
-   * @returns
+   * @returns {undefined}
    */
-  checkDoneAndRunOnChange() {
+  checkDoneAndRunOnChange(): undefined {
     if (!this.props.onChange || !this.props.content) {
       return;
     }
@@ -146,7 +159,7 @@ export default class FileField extends React.Component<
 
   /**
    * removeFileAt
-   * @param index
+   * @param index index
    */
   removeFileAt(index: number) {
     const newValues = this.state.values.filter((a, i) => i !== index);
@@ -160,7 +173,7 @@ export default class FileField extends React.Component<
 
   /**
    * removeFile
-   * @param data
+   * @param data data
    */
   removeFile(data: any) {
     const index = this.state.values.findIndex((f) => f.fileId === data.fileId);
@@ -169,7 +182,7 @@ export default class FileField extends React.Component<
 
   /**
    * render
-   * @returns
+   * @returns JSX.Element
    */
   render() {
     // if elements is disabled
@@ -177,6 +190,11 @@ export default class FileField extends React.Component<
       ? "material-page__taskfield-disabled"
       : "";
 
+    /**
+     * formDataGenerator
+     * @param file file
+     * @param formData formData
+     */
     const formDataGenerator = (file: File, formData: FormData) => {
       formData.append("file", file);
     };

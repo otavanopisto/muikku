@@ -41,7 +41,7 @@ class NavigationAside extends React.Component<
 > {
   /**
    * constructor
-   * @param props
+   * @param props props
    */
   constructor(props: NavigationAsideProps) {
     super(props);
@@ -49,7 +49,8 @@ class NavigationAside extends React.Component<
 
   /**
    * handleNavigationWorkspaceClick
-   * @param workspaceId
+   * @param workspaceId workspaceId
+   * @returns void
    */
   handleNavigationWorkspaceClick = (workspaceId?: number) => () => {
     this.props.setSelectedWorkspaceId({ workspaceId });
@@ -132,7 +133,8 @@ class NavigationAside extends React.Component<
 
 /**
  * mapStateToProps
- * @param state
+ * @param state state
+ * @returns object
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -144,7 +146,8 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch dispatch
+ * @returns object
  */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators({ setSelectedWorkspaceId }, dispatch);
