@@ -33,6 +33,8 @@ interface GuidanceEventState {
 }
 
 class GuidanceEvent extends React.Component<GuidanceEventProps, GuidanceEventState> {
+
+  private calendarRef = React.createRef<FullCalendar>();
   constructor(props: GuidanceEventProps) {
     super(props);
 
@@ -42,6 +44,23 @@ class GuidanceEvent extends React.Component<GuidanceEventProps, GuidanceEventSta
       locked: false,
     }
   }
+
+  handleAddEvent = () => {
+    const title = prompt("Uusi tapahtuma");
+    let calendarApi = this.calendarRef.current.getApi();
+
+    calendarApi.unselect()
+
+    if (title) {
+      calendarApi.addEvent({
+        id: Date.now().toString(),
+        title,
+        start: new Date(),
+        allDay: true
+      })
+    }
+  }
+
 
   render() {
     const content = () => <FullCalendar
