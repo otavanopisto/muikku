@@ -17,6 +17,9 @@ import Button from "~/components/general/button";
 import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
 
+/**
+ * ReplyThreadProps
+ */
 interface ReplyThreadProps {
   i18n: i18nType;
   children: React.ReactElement<any>;
@@ -27,15 +30,25 @@ interface ReplyThreadProps {
   replyToCurrentDiscussionThread: ReplyToCurrentDiscussionThreadTriggerType;
 }
 
+/**
+ * ReplyThreadState
+ */
 interface ReplyThreadState {
   text: string;
   locked: boolean;
 }
 
+/**
+ * ReplyThread
+ */
 class ReplyThread extends SessionStateComponent<
   ReplyThreadProps,
   ReplyThreadState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: ReplyThreadProps) {
     super(props, "discussion-reply-thread");
 
@@ -61,6 +74,11 @@ class ReplyThread extends SessionStateComponent<
         (props.reply ? "-" + props.reply.id : "")
     );
   }
+
+  /**
+   * onCKEditorChange
+   * @param text onCKEditorChange
+   */
   onCKEditorChange(text: string) {
     this.setStateAndStore(
       { text },
@@ -69,6 +87,10 @@ class ReplyThread extends SessionStateComponent<
         (this.props.reply ? "-" + this.props.reply.id : "")
     );
   }
+
+  /**
+   * clearUp
+   */
   clearUp() {
     this.setStateAndClear(
       {
@@ -86,6 +108,11 @@ class ReplyThread extends SessionStateComponent<
         (this.props.reply ? "-" + this.props.reply.id : "")
     );
   }
+
+  /**
+   * createReply
+   * @param closeDialog closeDialog
+   */
   createReply(closeDialog: () => any) {
     this.setState({
       locked: true,
@@ -95,6 +122,9 @@ class ReplyThread extends SessionStateComponent<
         this.props.reply &&
         (this.props.reply.parentReplyId || this.props.reply.id),
       message: this.state.text,
+      /**
+       * success
+       */
       success: () => {
         closeDialog();
         this.setStateAndClear(
@@ -114,6 +144,9 @@ class ReplyThread extends SessionStateComponent<
             (this.props.reply ? "-" + this.props.reply.id : "")
         );
       },
+      /**
+       * fail
+       */
       fail: () => {
         this.setState({
           locked: false,
@@ -121,6 +154,10 @@ class ReplyThread extends SessionStateComponent<
       },
     });
   }
+
+  /**
+   * onDialogOpen
+   */
   onDialogOpen() {
     //Text might have not loaded if quoteAuthor or quote wasn't ready
     if (this.props.quote && this.props.quoteAuthor && !this.state.text) {
@@ -157,12 +194,22 @@ class ReplyThread extends SessionStateComponent<
       );
     }
   }
+
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     const editorTitle =
       this.props.i18n.text.get("plugin.discussion.reply.topic") +
       " - " +
       this.props.i18n.text.get("plugin.discussion.createmessage.content");
 
+    /**
+     * content
+     * @param closeDialog
+     * @returns JSX.Element
+     */
     const content = (closeDialog: () => any) => [
       <div className="env-dialog__row env-dialog__row--ckeditor" key="1">
         <div className="env-dialog__form-element-container">
@@ -182,6 +229,12 @@ class ReplyThread extends SessionStateComponent<
         </div>
       </div>,
     ];
+
+    /**
+     * footer
+     * @param closeDialog closeDialog
+     * @returns JSX.Element
+     */
     const footer = (closeDialog: () => any) => (
       <div className="env-dialog__actions">
         <Button
@@ -226,6 +279,11 @@ class ReplyThread extends SessionStateComponent<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ * @returns object
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -233,6 +291,11 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ * @returns object
+ */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ replyToCurrentDiscussionThread }, dispatch);
 }

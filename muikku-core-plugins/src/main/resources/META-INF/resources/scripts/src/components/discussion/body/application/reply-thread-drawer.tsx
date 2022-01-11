@@ -12,7 +12,6 @@ import {
 import { StateType } from "~/reducers";
 import SessionStateComponent from "~/components/general/session-state-component";
 import Button from "~/components/general/button";
-
 import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
 
@@ -44,6 +43,10 @@ class ReplyThreadDrawer extends SessionStateComponent<
   ReplyThreadDrawerProps,
   ReplyThreadDrawerState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: ReplyThreadDrawerProps) {
     super(props, "discussion-reply-thread");
 
@@ -71,7 +74,7 @@ class ReplyThreadDrawer extends SessionStateComponent<
 
   /**
    * onCKEditorChange
-   * @param text
+   * @param text text
    */
   onCKEditorChange(text: string) {
     this.setStateAndStore(
@@ -105,7 +108,6 @@ class ReplyThreadDrawer extends SessionStateComponent<
 
   /**
    * createReply
-   * @param closeDialog
    */
   createReply() {
     this.setState({
@@ -116,6 +118,9 @@ class ReplyThreadDrawer extends SessionStateComponent<
         this.props.reply &&
         (this.props.reply.parentReplyId || this.props.reply.id),
       message: this.state.text,
+      /**
+       * success
+       */
       success: () => {
         this.props.onClickCancel && this.props.onClickCancel();
         this.setStateAndClear(
@@ -135,6 +140,9 @@ class ReplyThreadDrawer extends SessionStateComponent<
             (this.props.reply ? "-" + this.props.reply.id : "")
         );
       },
+      /**
+       * fail
+       */
       fail: () => {
         this.setState({
           locked: false,
@@ -227,6 +235,11 @@ class ReplyThreadDrawer extends SessionStateComponent<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ * @returns object
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -234,6 +247,11 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ * @returns object
+ */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ replyToCurrentDiscussionThread }, dispatch);
 }

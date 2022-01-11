@@ -2,17 +2,17 @@ import * as React from "react";
 import $ from "~/lib/jquery";
 import "~/sass/elements/file-uploader.scss";
 import Link from "~/components/general/link";
+import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
-import * as uuid from "uuid";
-import { UploadingValue } from "../../@types/shared";
-
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const ProgressBarLine = require("react-progress-bar.js").Line;
+import * as uuid from "uuid";
+import { UploadingValue } from "../../@types/shared";
 
 /**
  * FileUploaderProps
@@ -62,13 +62,16 @@ interface FileUploaderState {
 
 const MAX_BYTES = 10000000;
 
+/**
+ * FileUploader
+ */
 class FileUploader extends React.Component<
   FileUploaderProps,
   FileUploaderState
 > {
   /**
    * constructor
-   * @param props
+   * @param props props
    */
   constructor(props: FileUploaderProps) {
     super(props);
@@ -82,6 +85,9 @@ class FileUploader extends React.Component<
     this.removeFailedFileAt = this.removeFailedFileAt.bind(this);
   }
 
+  /**
+   * componentDidMount
+   */
   componentDidMount = () => {
     if (this.props.uploadingValues) {
       this.setState({
@@ -90,7 +96,15 @@ class FileUploader extends React.Component<
     }
   };
 
-  componentDidUpdate = (prevProps: FileUploaderProps) => {
+  /**
+   * componentDidUpdate
+   * @param prevProps prevProps
+   * @param prevState  prevState
+   */
+  componentDidUpdate = (
+    prevProps: FileUploaderProps,
+    prevState: FileUploaderState
+  ) => {
     if (
       JSON.stringify(prevProps.uploadingValues) !==
       JSON.stringify(this.props.uploadingValues)
@@ -103,7 +117,7 @@ class FileUploader extends React.Component<
 
   /**
    * removeFailedFileAt
-   * @param index
+   * @param index index
    */
   removeFailedFileAt(index: number) {
     const newValues = [...this.state.uploadingValues];
@@ -117,7 +131,7 @@ class FileUploader extends React.Component<
 
   /**
    * processFileAt
-   * @param index
+   * @param index index
    */
   processFileAt(index: number) {
     //first we create a new form data
@@ -164,11 +178,15 @@ class FileUploader extends React.Component<
         url: this.props.url,
         type: "POST",
         data: formData,
+        // eslint-disable-next-line
         success: (data: any) => {
           let actualData = data;
-
-          actualData = JSON.parse(data);
-
+          try {
+            actualData = JSON.parse(data);
+          } catch (err) {
+            // eslint-disable-next-line no-console
+            console.warn(err);
+          }
           //make a copy of the values
           const newValues = [...this.state.uploadingValues];
           const successIndex = newValues.findIndex((f) => f.file === file);
@@ -186,6 +204,7 @@ class FileUploader extends React.Component<
           this.props.onFileSuccess &&
             this.props.onFileSuccess(file, actualData);
         },
+        // eslint-disable-next-line
         error: (xhr: any, err: Error) => {
           //on error we do similarly that on success
           const newValues = [...this.state.uploadingValues];
@@ -203,6 +222,7 @@ class FileUploader extends React.Component<
             this.props.displayNotification(err.message, "error");
           this.props.onFileError && this.props.onFileError(file, err);
         },
+        // eslint-disable-next-line
         xhr: () => {
           //we need to get the upload progress
           const xhr = new (window as any).XMLHttpRequest();
@@ -243,7 +263,7 @@ class FileUploader extends React.Component<
 
   /**
    * onFileInputChange
-   * @param e
+   * @param e e
    */
   onFileInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     if (this.props.onFileInputChange) {
@@ -557,15 +577,17 @@ class FileUploader extends React.Component<
 
 /**
  * mapStateToProps
- * @param state
+ * @param state state
+ * @returns object
  */
-function mapStateToProps() {
+function mapStateToProps(state: StateType) {
   return {};
 }
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch dispatch
+ * @returns object
  */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators({ displayNotification }, dispatch);

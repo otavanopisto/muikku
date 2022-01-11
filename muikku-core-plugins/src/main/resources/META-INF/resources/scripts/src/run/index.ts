@@ -3,13 +3,20 @@ import * as React from "react";
 import { Provider, Store } from "react-redux";
 import { createStore, applyMiddleware, Reducer } from "redux";
 import { render } from "react-dom";
-import { logger } from "redux-logger";
 import { composeWithDevTools } from "redux-devtools-extension";
 import { StateType } from "~/reducers";
 
 //TODO screw ie11 >:(
 import "babel-polyfill";
+import { logger } from "redux-logger";
 
+/**
+ * runApp
+ * @param reducer reducer
+ * @param App App
+ * @param beforeCreateApp beforeCreateApp
+ * @returns Promise<Store<StateType>>
+ */
 export default async function runApp(
   reducer: Reducer<any>,
   App: any,
@@ -26,6 +33,11 @@ export default async function runApp(
   }
 
   const newStore: Store<StateType> = {
+    /**
+     * dispatch
+     * @param action action
+     * @returns dispatch
+     */
     dispatch(action: any) {
       if (typeof action === "function") {
         return action(store.dispatch, store.getState);
@@ -33,12 +45,28 @@ export default async function runApp(
 
       return store.dispatch(action);
     },
+    /**
+     * subscribe
+     * @param args args
+     * @returns void
+     */
     subscribe(...args: any[]) {
       return (store.subscribe as any)(...args);
     },
+    /**
+     * getState
+     * @param args args
+     * @returns StateType object
+     */
     getState(...args: any[]) {
       return (store.getState as any)(...args);
     },
+
+    /**
+     * replaceReducer
+     * @param args args
+     * @returns void
+     */
     replaceReducer(...args: any[]) {
       return (store.replaceReducer as any)(...args);
     },

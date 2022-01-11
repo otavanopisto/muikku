@@ -1,15 +1,15 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import Link from "~/components/general/link";
 import Dialog from "~/components/general/dialog";
 import { AnyActionType } from "~/actions";
 import { i18nType } from "~/reducers/base/i18n";
-
 import "~/sass/elements/link.scss";
 import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
-import { bindActionCreators } from "redux";
 
+/**
+ * ConfirmRemoveDialogProps
+ */
 interface ConfirmRemoveDialogProps {
   i18n: i18nType;
   onConfirm: (fileData: any) => any;
@@ -17,14 +17,24 @@ interface ConfirmRemoveDialogProps {
   children: React.ReactElement<any>;
 }
 
+/**
+ * ConfirmRemoveDialogState
+ */
 interface ConfirmRemoveDialogState {
   locked: boolean;
 }
 
+/**
+ * ConfirmRemoveDialog
+ */
 class ConfirmRemoveDialog extends React.Component<
   ConfirmRemoveDialogProps,
   ConfirmRemoveDialogState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: ConfirmRemoveDialogProps) {
     super(props);
     this.state = {
@@ -34,14 +44,34 @@ class ConfirmRemoveDialog extends React.Component<
     this.cancel = this.cancel.bind(this);
     this.confirm = this.confirm.bind(this);
   }
+
+  /**
+   * confirm
+   * @param closeDialog closeDialog
+   */
   confirm(closeDialog: () => any) {
     closeDialog();
     this.props.onConfirm(this.props.file);
   }
+
+  /**
+   * cancel
+   * @param closeDialog closeDialog
+   */
   cancel(closeDialog?: () => any) {
     closeDialog();
   }
+
+  /**
+   * render
+   * @returns JSX.Element
+   */
   render() {
+    /**
+     * content
+     * @param closeDialog closeDialog
+     * @returns JSX.Element
+     */
     const content = (closeDialog: () => any) => (
       <div>
         <span>
@@ -52,6 +82,11 @@ class ConfirmRemoveDialog extends React.Component<
       </div>
     );
 
+    /**
+     * footer
+     * @param closeDialog closDialog
+     * @returns JSX.Element
+     */
     const footer = (closeDialog: () => any) => (
       <div className="dialog__button-set">
         <Button
@@ -90,12 +125,22 @@ class ConfirmRemoveDialog extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ * @returns object
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
   };
 }
 
+/**
+ *
+ * @param dispatch dispatch
+ * @returns object
+ */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }

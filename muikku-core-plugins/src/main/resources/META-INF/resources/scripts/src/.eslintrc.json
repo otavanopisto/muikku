@@ -6,14 +6,21 @@
       "jsx": true
     }
   },
-  "plugins": ["@typescript-eslint", "prettier", "react", "react-hooks"],
+  "plugins": [
+    "@typescript-eslint",
+    "prettier",
+    "react",
+    "react-hooks",
+    "jsdoc"
+  ],
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
     "prettier",
     "plugin:react/recommended",
-    "plugin:react-hooks/recommended"
+    "plugin:react-hooks/recommended",
+    "plugin:jsdoc/recommended"
   ],
   "settings": {
     "react": {
@@ -52,6 +59,22 @@
     ],
     "@typescript-eslint/no-empty-interface": 0,
     "no-unused-vars": "off",
-    "no-var": 1
+    "no-var": 1,
+    "jsdoc/newline-after-description": 0,
+    "jsdoc/require-param-type": 0,
+    "jsdoc/require-returns-type": 0,
+    "jsdoc/require-jsdoc": [
+      1,
+      {
+        "contexts": ["TSMethodSignature", "TSInterfaceDeclaration"],
+        "require": {
+          "ClassDeclaration": true,
+          "ClassExpression": true,
+          "MethodDefinition": true,
+          "FunctionExpression": true,
+          "ArrowFunctionExpression": true
+        }
+      }
+    ]
   }
 }
