@@ -8,7 +8,17 @@ import { StateType } from '~/reducers';
 import { GuiderType, GuiderStudentType } from "~/reducers/main-function/guider";
 import FullCalendar from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
-import { EventInput } from "@fullcalendar/common"
+import Button from '~/components/general/button';
+
+interface EventType {
+  date?: string,
+  title?: string,
+  start?: string,
+  end?: string,
+  display?: "auto" | "background",
+  backgroundColor?: string,
+  resourceId?: string,
+}
 
 interface GuidanceEventProps {
   i18n: i18nType,
@@ -17,14 +27,20 @@ interface GuidanceEventProps {
 }
 
 interface GuidanceEventState {
-  newEvents: EventInput[],
-  backgroundEvents: EventInput[],
+  newEvents: EventType[],
+  backgroundEvents: EventType[],
+  locked: boolean,
 }
 
 class GuidanceEvent extends React.Component<GuidanceEventProps, GuidanceEventState> {
   constructor(props: GuidanceEventProps) {
     super(props);
 
+    this.state = {
+      newEvents: [],
+      backgroundEvents: [],
+      locked: false,
+    }
   }
 
   render() {
@@ -40,7 +56,21 @@ class GuidanceEvent extends React.Component<GuidanceEventProps, GuidanceEventSta
       weekends={false}
       firstDay={1}
     />;
-    const footer = (closeDialog: () => any) => <div>Niii</div>;
+    const footer = (closeDialog: () => any) => (
+      <div className="env-dialog__actions env-dialog__actions--guidance-event">
+        <Button
+          buttonModifiers="dialog-execute"
+          onClick={() => alert("Muu")}
+          disabled={this.state.locked} >
+          {this.props.i18n.text.get('plugin.guider.user.addGuidanceEvent.button.save')}
+        </Button>
+        <Button buttonModifiers="dialog-cancel"
+          onClick={closeDialog}
+          disabled={this.state.locked}>
+          {this.props.i18n.text.get('plugin.guider.user.addGuidanceEvent.button.cancel')}
+        </Button>
+      </div>
+    );
 
     return <EnvironmentDialog modifier="guidance-event"
       title={this.props.i18n.text.get('plugin.guider.user.actions.reserveGuidanceTime.title')}

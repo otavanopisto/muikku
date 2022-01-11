@@ -13,9 +13,6 @@ import { GuiderStudentUserProfileType, GuiderCurrentStudentStateType } from "~/r
 import CurrentStudent from '../body/application/current-student';
 import { getName } from "~/util/modifiers";
 
-
-
-
 /**
  * StudentDialogProps
  */
