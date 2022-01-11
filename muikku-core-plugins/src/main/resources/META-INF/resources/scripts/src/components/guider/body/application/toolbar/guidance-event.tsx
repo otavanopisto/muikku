@@ -6,14 +6,19 @@ import '~/sass/elements/link.scss';
 import { bindActionCreators } from "redux";
 import { StateType } from '~/reducers';
 import { GuiderType, GuiderStudentType } from "~/reducers/main-function/guider";
-import FullCalendar from '@fullcalendar/react';
+import FullCalendar, { DateSelectArg } from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
+import interactionPlugin, { EventResizeStopArg } from '@fullcalendar/interaction'
 import Button from '~/components/general/button';
+import { getName } from '~/util/modifiers';
+import moment from "~/lib/moment";
 
 interface EventType {
   date?: string,
+  id?: string,
   title?: string,
   start?: string,
+  overlap?: boolean,
   end?: string,
   display?: "auto" | "background",
   backgroundColor?: string,
@@ -45,32 +50,34 @@ class GuidanceEvent extends React.Component<GuidanceEventProps, GuidanceEventSta
     }
   }
 
-  handleAddEvent = () => {
-    const title = prompt("Uusi tapahtuma");
-    let calendarApi = this.calendarRef.current.getApi();
+  handleDateSelect = (arg: DateSelectArg) => {
+    const currentEvents = this.state.newEvents;
 
-    calendarApi.unselect()
-
-    if (title) {
-      calendarApi.addEvent({
-        id: Date.now().toString(),
-        title,
-        start: new Date(),
-        allDay: true
-      })
+    if (!moment(arg.start).isBefore()) {
+      let newEvents = currentEvents.concat({
+        title: getName(this.props.guider.currentStudent.basic, true),
+        start: arg.startStr,
+        overlap: false,
+        end: arg.endStr,
+        id: this.props.guider.currentStudent.basic.id + arg.start.getTime().toString()
+      });
+      this.setState({ newEvents: newEvents });
     }
   }
 
-
   render() {
     const content = () => <FullCalendar
-      plugins={[timeGridPlugin]}
+      plugins={[timeGridPlugin, interactionPlugin]}
       initialView="timeGridWeek"
+      select={this.handleDateSelect}
+      selectable={true}
+      events={this.state.newEvents}
       allDaySlot={false}
+      selectOverlap={false}
       locale={"fi"}
       slotMinTime={"09:00:00"}
       slotMaxTime={"16:00:00"}
-      slotDuration={"01:00:00"}
+      slotDuration={"00:30:00"}
       height={"auto"}
       weekends={false}
       firstDay={1}
