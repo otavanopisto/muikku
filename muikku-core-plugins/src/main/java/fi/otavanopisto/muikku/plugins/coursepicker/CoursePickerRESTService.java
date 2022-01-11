@@ -658,7 +658,7 @@ public class CoursePickerRESTService extends PluginRESTService {
     return isEvaluated;
   }
   
-  private CoursePickerWorkspace createRestModel(WorkspaceEntity workspaceEntity, String name, String nameExtension, String description, String educationTypeName, Mandatority educationSubtypeName, Boolean isCourseMember) {
+  private CoursePickerWorkspace createRestModel(WorkspaceEntity workspaceEntity, String name, String nameExtension, String description, String educationTypeName, Mandatority mandatority, Boolean isCourseMember) {
     Long numVisits = workspaceVisitController.getNumVisits(workspaceEntity);
     Date lastVisit = workspaceVisitController.getLastVisit(workspaceEntity);
     boolean hasCustomImage = workspaceEntityFileController.getHasCustomImage(workspaceEntity);
@@ -677,7 +677,7 @@ public class CoursePickerRESTService extends PluginRESTService {
         description, numVisits, 
         lastVisit, 
         educationTypeName,
-        educationSubtypeName,
+        mandatority,
         isCourseMember,
         hasCustomImage, organization);
   }
