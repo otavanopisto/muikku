@@ -581,6 +581,21 @@ const replyToCurrentDiscussionThread: ReplyToCurrentDiscussionThreadTriggerType 
       const discussion: DiscussionType = state.discussion;
 
       try {
+        await promisify(
+          discussion.workspaceId
+            ? mApi().workspace.workspaces.forumAreas.threads.replies.create(
+                discussion.workspaceId,
+                discussion.current.forumAreaId,
+                discussion.current.id,
+                payload
+              )
+            : mApi().forum.areas.threads.replies.create(
+                discussion.current.forumAreaId,
+                discussion.current.id,
+                payload
+              ),
+          "callback"
+        )()
         //sadly the new calculation is overly complex and error prone so we'll just do this;
         //We also need to use force refresh to avoid reusing data in memory
         dispatch(
