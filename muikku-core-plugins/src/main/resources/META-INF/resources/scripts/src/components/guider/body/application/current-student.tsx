@@ -192,12 +192,18 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
       <div className="application-sub-panel">
         {studentBasicInfo}
       </div>
-      <div className="application-sub-panel">
-        <h3 className="application-sub-panel__header">{this.props.i18n.text.get("plugin.guider.user.details.purchases")}</h3>
-        <div className="application-sub-panel__body">
-          <Ceepos />
+      {this.props.guider.currentStudent.basic && (this.props.guider.currentStudent.basic.studyProgrammeName === "Nettilukio/yksityisopiskelu (aineopintoina)" ||
+        this.props.guider.currentStudent.basic.studyProgrammeName === "Nettilukio/yksityisopiskelu (tutkinto)" ||
+        this.props.guider.currentStudent.basic.studyProgrammeName === "Aineopiskelu/lukio" ||
+        this.props.guider.currentStudent.basic.studyProgrammeName === "Aineopiskelu/peruskoulu" ||
+        this.props.guider.currentStudent.basic.studyProgrammeName === "Aineopiskelu/yo-tutkinto") &&
+        <div className="application-sub-panel">
+          <h3 className="application-sub-panel__header">{this.props.i18n.text.get("plugin.guider.user.details.purchases")}</h3>
+          <div className="application-sub-panel__body">
+            <Ceepos />
+          </div>
         </div>
-      </div>
+      }
       {studentHops ? <div className="application-sub-panel">
         <h3 className="application-sub-panel__header">{this.props.i18n.text.get("plugin.guider.user.details.hops")}</h3>
         {studentHops}
