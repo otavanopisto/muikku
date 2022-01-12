@@ -23,6 +23,9 @@ import {
   removeFromAnnouncementsSelected,
 } from "~/actions/announcements";
 
+/**
+ * AnnouncerToolbarProps
+ */
 interface AnnouncerToolbarProps {
   i18n: i18nType;
   announcements: AnnouncementsType;
@@ -30,12 +33,21 @@ interface AnnouncerToolbarProps {
   removeFromAnnouncementsSelected: RemoveFromAnnouncementsSelectedTriggerType;
 }
 
+/**
+ * AnnouncerToolbarState
+ */
 interface AnnouncerToolbarState {}
 
+/**
+ * AnnouncerToolbar
+ */
 class AnnouncerToolbar extends React.Component<
   AnnouncerToolbarProps,
   AnnouncerToolbarState
 > {
+  /**
+   * constructor
+   */
   constructor(props: AnnouncerToolbarProps) {
     super(props);
     this.go = this.go.bind(this);
@@ -45,6 +57,10 @@ class AnnouncerToolbar extends React.Component<
     this.restoreSelectedAnnouncements =
       this.restoreSelectedAnnouncements.bind(this);
   }
+
+  /**
+   * restoreCurrentAnnouncement
+   */
   restoreCurrentAnnouncement() {
     this.props.updateAnnouncement({
       announcement: this.props.announcements.current,
@@ -53,6 +69,10 @@ class AnnouncerToolbar extends React.Component<
       },
     });
   }
+
+  /**
+   * restoreSelectedAnnouncements
+   */
   restoreSelectedAnnouncements() {
     this.props.announcements.selected.map((announcement) => {
       this.props.updateAnnouncement({
@@ -65,6 +85,11 @@ class AnnouncerToolbar extends React.Component<
       this.props.removeFromAnnouncementsSelected(announcement);
     });
   }
+
+  /**
+   * go
+   * @param announcement announcement
+   */
   go(announcement: AnnouncementType) {
     if (!announcement) {
       return;
@@ -83,6 +108,10 @@ class AnnouncerToolbar extends React.Component<
       location.hash = location.hash.split("/")[0] + "/" + announcement.id;
     }
   }
+
+  /**
+   * onGoBackClick
+   */
   onGoBackClick() {
     //TODO this is a retarded way to do things if we ever update to a SPA
     //it's a hacky mechanism to make history awesome, once we use a router it gotta be fixed
@@ -100,6 +129,11 @@ class AnnouncerToolbar extends React.Component<
       location.hash = location.hash.split("/")[0];
     }
   }
+
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     if (this.props.announcements.current) {
       //TODO this should be done more efficiently but the information is not included in the announcement
@@ -210,6 +244,12 @@ class AnnouncerToolbar extends React.Component<
 }
 
 //TODO this is another one that uses the different version of announcements
+
+/**
+ * mapStateToProps - TODO this is another one that uses the different version of announcements
+ * @param state state
+ * @returns object
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -217,6 +257,11 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ * @returns object
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     { updateAnnouncement, removeFromAnnouncementsSelected },

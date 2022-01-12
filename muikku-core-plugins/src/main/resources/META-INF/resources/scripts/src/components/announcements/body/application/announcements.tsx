@@ -11,22 +11,38 @@ import { AnnouncementType } from "~/reducers/announcements";
 import { StateType } from "~/reducers";
 import { UserIndexType } from "~/reducers/user-index";
 
+/**
+ * AnnouncementProps
+ */
 interface AnnouncementProps {
   i18n: i18nType;
   announcement: AnnouncementType;
   userIndex: UserIndexType;
 }
 
+/**
+ * AnnouncementState
+ */
 interface AnnouncementState {}
 
+/**
+ * Announcement
+ */
 class Announcement extends React.Component<
   AnnouncementProps,
   AnnouncementState
 > {
+  /**
+   * componentDidUpdate
+   */
   componentDidUpdate() {
     window.scrollTo(0, 0);
   }
 
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     if (!this.props.announcement) {
       return null;
@@ -81,6 +97,11 @@ class Announcement extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ * @returns object
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -89,6 +110,11 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ * @returns JSX.Element
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return {};
 }

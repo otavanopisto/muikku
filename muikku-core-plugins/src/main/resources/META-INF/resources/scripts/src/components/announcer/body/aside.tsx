@@ -6,19 +6,27 @@ import {
   AnnouncerNavigationItemType,
 } from "~/reducers/announcements";
 import { StateType } from "~/reducers";
-
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/item-list.scss";
 import Navigation, { NavigationElement } from "../../general/navigation";
 import { NavigationTopic } from "../../general/navigation";
 
+/**
+ * NavigationAsideProps
+ */
 interface NavigationAsideProps {
   i18n: i18nType;
   announcements: AnnouncementsType;
 }
 
+/**
+ * NavigationAsideState
+ */
 interface NavigationAsideState {}
 
+/**
+ * NavigationAside
+ */
 class NavigationAside extends React.Component<
   NavigationAsideProps,
   NavigationAsideState
@@ -56,8 +64,8 @@ class NavigationAside extends React.Component<
 
 /**
  * mapStateToProps
- * @param state
- * @returns
+ * @param state state
+ * @returns object
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -68,8 +76,8 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
- * @returns
+ * @param dispatch dispatch
+ * @returns object
  */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return {};

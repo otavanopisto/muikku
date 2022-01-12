@@ -9,17 +9,30 @@ import { StateType } from "~/reducers";
 import "~/sass/elements/label.scss";
 import "~/sass/elements/item-list.scss";
 
+/**
+ * AnnouncementsAsideProps
+ */
 interface AnnouncementsAsideProps {
   i18n: i18nType;
   announcements: AnnouncementsType;
 }
 
+/**
+ * AnnouncementsAsideState
+ */
 interface AnnouncementsAsideState {}
 
+/**
+ * AnnouncementsAside
+ */
 class AnnouncementsAside extends React.Component<
   AnnouncementsAsideProps,
   AnnouncementsAsideState
 > {
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     return (
       <div className="react-required-container">
@@ -84,6 +97,11 @@ class AnnouncementsAside extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ * @returns object
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -91,6 +109,11 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ * @returns object
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return {};
 }

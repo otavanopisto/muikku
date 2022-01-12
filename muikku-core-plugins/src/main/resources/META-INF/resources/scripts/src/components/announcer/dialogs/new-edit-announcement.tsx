@@ -23,8 +23,14 @@ import Button from "~/components/general/button";
 import { StatusType } from "~/reducers/base/status";
 import equals = require("deep-equal");
 
+/**
+ * TargetItemsListType
+ */
 type TargetItemsListType = Array<ContactRecipientType>;
 
+/**
+ * NewEditAnnouncementProps
+ */
 interface NewEditAnnouncementProps {
   children: React.ReactElement<any>;
   i18n: i18nType;
@@ -38,6 +44,9 @@ interface NewEditAnnouncementProps {
   workspaces: WorkspacesType;
 }
 
+/**
+ * NewEditAnnouncementState
+ */
 interface NewEditAnnouncementState {
   text: string;
   currentTarget: TargetItemsListType;
@@ -47,11 +56,19 @@ interface NewEditAnnouncementState {
   endDate: any;
 }
 
+/**
+ * NewEditAnnouncement
+ */
 class NewEditAnnouncement extends SessionStateComponent<
   NewEditAnnouncementProps,
   NewEditAnnouncementState
 > {
   private baseAnnouncementCurrentTarget: TargetItemsListType;
+
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: NewEditAnnouncementProps) {
     super(props, "new-edit-announcement");
     this.onCKEditorChange = this.onCKEditorChange.bind(this);
@@ -103,116 +120,11 @@ class NewEditAnnouncement extends SessionStateComponent<
         (props.workspaceId || "")
     );
   }
-  checkAgainstStoredState() {
-    if (this.props.announcement) {
-      this.checkStoredAgainstThisState(
-        {
-          subject: this.props.announcement.caption,
-          text: this.props.announcement.content,
-          startDate: this.props.i18n.time.getLocalizedMoment(
-            this.props.announcement.startDate
-          ),
-          endDate: this.props.i18n.time.getLocalizedMoment(
-            this.props.announcement.endDate
-          ),
-        },
-        this.props.announcement.id + "-" + (this.props.workspaceId || "")
-      );
 
-      const userGroupEntityIds = this.state.currentTarget
-        .filter((w) => w.type === "usergroup")
-        .map((w) => (w.value as any).id);
-      const workspaceEntityIds = this.state.currentTarget
-        .filter((w) => w.type === "workspace")
-        .map((w) => (w.value as any).id);
-
-      if (
-        JSON.stringify(this.props.announcement.userGroupEntityIds) !==
-          JSON.stringify(userGroupEntityIds) ||
-        JSON.stringify(this.props.announcement.workspaceEntityIds) !==
-          JSON.stringify(workspaceEntityIds)
-      ) {
-        this.forceRecovered();
-      }
-    } else {
-      this.checkStoredAgainstThisState(
-        {
-          subject: "",
-          text: "",
-          currentTarget: this.getPredefinedWorkspaceByIdToConcat(this.props),
-          startDate: this.props.i18n.time.getLocalizedMoment(),
-          endDate: this.props.i18n.time.getLocalizedMoment().add(1, "day"),
-        },
-        this.props.workspaceId || ""
-      );
-    }
-  }
-  clearUp() {
-    if (!this.props.announcement) {
-      this.baseAnnouncementCurrentTarget =
-        this.getPredefinedWorkspaceByIdToConcat(this.props);
-      this.setStateAndClear(
-        {
-          subject: "",
-          text: "",
-          startDate: this.props.i18n.time.getLocalizedMoment(),
-          endDate: this.props.i18n.time.getLocalizedMoment().add(1, "day"),
-          currentTarget: this.baseAnnouncementCurrentTarget,
-        },
-        this.props.workspaceId || ""
-      );
-    } else {
-      this.baseAnnouncementCurrentTarget =
-        this.props.announcement.workspaces.map(
-          (w) =>
-            //NOTE this workspace type is incomplete, but should do the job regardless
-            ({
-              type: "workspace",
-              value: w,
-            } as ContactRecipientType)
-        );
-      this.setStateAndClear(
-        {
-          subject: this.props.announcement.caption,
-          text: this.props.announcement.content,
-          currentTarget: this.baseAnnouncementCurrentTarget,
-          startDate: this.props.i18n.time.getLocalizedMoment(
-            this.props.announcement.startDate
-          ),
-          endDate: this.props.i18n.time.getLocalizedMoment(
-            this.props.announcement.endDate
-          ),
-        },
-        this.props.announcement.id + "-" + (this.props.workspaceId || "")
-      );
-    }
-  }
-  getPredefinedWorkspaceByIdToConcat(props: NewEditAnnouncementProps) {
-    if (!props.workspaces || !props.workspaceId || props.announcement) {
-      return [];
-    }
-
-    const workpaceFound =
-      props.workspaces &&
-      props.workspaces.currentWorkspace &&
-      props.workspaces.currentWorkspace.id === props.workspaceId
-        ? props.workspaces.currentWorkspace
-        : props.workspaces &&
-          props.workspaces.availableWorkspaces
-            .concat(props.workspaces.userWorkspaces)
-            .find((w) => w.id === props.workspaceId);
-
-    if (workpaceFound) {
-      return [
-        {
-          type: "workspace",
-          value: workpaceFound,
-        } as ContactRecipientType,
-      ];
-    }
-
-    return [];
-  }
+  /**
+   * componentWillReceiveProps
+   * @param nextProps nextProps
+   */
   componentWillReceiveProps(nextProps: NewEditAnnouncementProps) {
     if (
       (this.props.announcement &&
@@ -305,6 +217,135 @@ class NewEditAnnouncement extends SessionStateComponent<
       );
     }
   }
+
+  /**
+   * checkAgainstStoredState
+   */
+  checkAgainstStoredState() {
+    if (this.props.announcement) {
+      this.checkStoredAgainstThisState(
+        {
+          subject: this.props.announcement.caption,
+          text: this.props.announcement.content,
+          startDate: this.props.i18n.time.getLocalizedMoment(
+            this.props.announcement.startDate
+          ),
+          endDate: this.props.i18n.time.getLocalizedMoment(
+            this.props.announcement.endDate
+          ),
+        },
+        this.props.announcement.id + "-" + (this.props.workspaceId || "")
+      );
+
+      const userGroupEntityIds = this.state.currentTarget
+        .filter((w) => w.type === "usergroup")
+        .map((w) => (w.value as any).id);
+      const workspaceEntityIds = this.state.currentTarget
+        .filter((w) => w.type === "workspace")
+        .map((w) => (w.value as any).id);
+
+      if (
+        JSON.stringify(this.props.announcement.userGroupEntityIds) !==
+          JSON.stringify(userGroupEntityIds) ||
+        JSON.stringify(this.props.announcement.workspaceEntityIds) !==
+          JSON.stringify(workspaceEntityIds)
+      ) {
+        this.forceRecovered();
+      }
+    } else {
+      this.checkStoredAgainstThisState(
+        {
+          subject: "",
+          text: "",
+          currentTarget: this.getPredefinedWorkspaceByIdToConcat(this.props),
+          startDate: this.props.i18n.time.getLocalizedMoment(),
+          endDate: this.props.i18n.time.getLocalizedMoment().add(1, "day"),
+        },
+        this.props.workspaceId || ""
+      );
+    }
+  }
+
+  /**
+   * clearUp
+   */
+  clearUp() {
+    if (!this.props.announcement) {
+      this.baseAnnouncementCurrentTarget =
+        this.getPredefinedWorkspaceByIdToConcat(this.props);
+      this.setStateAndClear(
+        {
+          subject: "",
+          text: "",
+          startDate: this.props.i18n.time.getLocalizedMoment(),
+          endDate: this.props.i18n.time.getLocalizedMoment().add(1, "day"),
+          currentTarget: this.baseAnnouncementCurrentTarget,
+        },
+        this.props.workspaceId || ""
+      );
+    } else {
+      this.baseAnnouncementCurrentTarget =
+        this.props.announcement.workspaces.map(
+          (w) =>
+            //NOTE this workspace type is incomplete, but should do the job regardless
+            ({
+              type: "workspace",
+              value: w,
+            } as ContactRecipientType)
+        );
+      this.setStateAndClear(
+        {
+          subject: this.props.announcement.caption,
+          text: this.props.announcement.content,
+          currentTarget: this.baseAnnouncementCurrentTarget,
+          startDate: this.props.i18n.time.getLocalizedMoment(
+            this.props.announcement.startDate
+          ),
+          endDate: this.props.i18n.time.getLocalizedMoment(
+            this.props.announcement.endDate
+          ),
+        },
+        this.props.announcement.id + "-" + (this.props.workspaceId || "")
+      );
+    }
+  }
+
+  /**
+   * getPredefinedWorkspaceByIdToConcat
+   * @param props props
+   * @returns list of ContactRecipientType
+   */
+  getPredefinedWorkspaceByIdToConcat(props: NewEditAnnouncementProps) {
+    if (!props.workspaces || !props.workspaceId || props.announcement) {
+      return [];
+    }
+
+    const workpaceFound =
+      props.workspaces &&
+      props.workspaces.currentWorkspace &&
+      props.workspaces.currentWorkspace.id === props.workspaceId
+        ? props.workspaces.currentWorkspace
+        : props.workspaces &&
+          props.workspaces.availableWorkspaces
+            .concat(props.workspaces.userWorkspaces)
+            .find((w) => w.id === props.workspaceId);
+
+    if (workpaceFound) {
+      return [
+        {
+          type: "workspace",
+          value: workpaceFound,
+        } as ContactRecipientType,
+      ];
+    }
+
+    return [];
+  }
+
+  /**
+   * onCKEditorChange
+   * @param text text
+   */
   onCKEditorChange(text: string) {
     this.setStateAndStore(
       { text },
@@ -312,6 +353,11 @@ class NewEditAnnouncement extends SessionStateComponent<
         (this.props.workspaceId || "")
     );
   }
+
+  /**
+   * setTargetItems
+   * @param currentTarget currentTarget
+   */
   setTargetItems(currentTarget: TargetItemsListType) {
     this.setStateAndStore(
       { currentTarget },
@@ -319,6 +365,11 @@ class NewEditAnnouncement extends SessionStateComponent<
         (this.props.workspaceId || "")
     );
   }
+
+  /**
+   * onSubjectChange
+   * @param e e
+   */
   onSubjectChange(e: React.ChangeEvent<HTMLInputElement>) {
     this.setStateAndStore(
       { subject: e.target.value },
@@ -326,6 +377,11 @@ class NewEditAnnouncement extends SessionStateComponent<
         (this.props.workspaceId || "")
     );
   }
+
+  /**
+   * createOrModifyAnnouncement
+   * @param closeDialog closeDialog
+   */
   createOrModifyAnnouncement(closeDialog: () => any) {
     this.setState({ locked: true });
     if (this.props.announcement) {
@@ -347,6 +403,9 @@ class NewEditAnnouncement extends SessionStateComponent<
             .filter((w) => w.type === "workspace")
             .map((w) => (w.value as any).id),
         },
+        /**
+         * success - set and clear state and close dialog
+         */
         success: () => {
           this.setStateAndClear(
             {
@@ -357,6 +416,9 @@ class NewEditAnnouncement extends SessionStateComponent<
           );
           closeDialog();
         },
+        /**
+         * If fail set locked false
+         */
         fail: () => {
           this.setState({ locked: false });
         },
@@ -378,6 +440,9 @@ class NewEditAnnouncement extends SessionStateComponent<
             .filter((w) => w.type === "workspace")
             .map((w) => (w.value as any).id),
         },
+        /**
+         * success - set and clear state and closedialog
+         */
         success: () => {
           this.setStateAndClear(
             {
@@ -394,12 +459,22 @@ class NewEditAnnouncement extends SessionStateComponent<
           );
           closeDialog();
         },
+
+        /**
+         * fail - set locked false
+         */
         fail: () => {
           this.setState({ locked: false });
         },
       });
     }
   }
+
+  /**
+   * handleDateChange
+   * @param stateLocation stateLocation
+   * @param newDate newDate
+   */
   handleDateChange(stateLocation: string, newDate: any) {
     const nState: any = {};
     nState[stateLocation] = newDate;
@@ -409,6 +484,11 @@ class NewEditAnnouncement extends SessionStateComponent<
         (this.props.workspaceId || "")
     );
   }
+
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     let editorTitle: string;
     if (this.props.announcement) {
@@ -427,6 +507,11 @@ class NewEditAnnouncement extends SessionStateComponent<
         );
     }
 
+    /**
+     * content
+     * @param closeDialog closeDialog
+     * @returns JSX.Element
+     */
     const content = (closeDialog: () => any) => [
       // FOR DESIGN CHECK https://github.com/Hacker0x01/react-datepicker
       <div
@@ -520,6 +605,12 @@ class NewEditAnnouncement extends SessionStateComponent<
         </div>
       </div>,
     ];
+
+    /**
+     * footer
+     * @param closeDialog closeDialog
+     * @returns JSX.Element
+     */
     const footer = (closeDialog: () => any) => (
       <div className="env-dialog__actions">
         <Button
@@ -578,6 +669,11 @@ class NewEditAnnouncement extends SessionStateComponent<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ * @returns object
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -592,6 +688,11 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ * @returns object
+ */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     { createAnnouncement, updateAnnouncement },

@@ -17,20 +17,33 @@ import ApplicationList, {
 import { AnnouncementsType } from "~/reducers/announcements";
 import { UserIndexType } from "~/reducers/user-index";
 
+/**
+ * MessageViewProps
+ */
 interface MessageViewProps {
   i18n: i18nType;
   announcements: AnnouncementsType;
   userIndex: UserIndexType;
 }
 
+/**
+ * MessageVitewState
+ */
 interface MessageVitewState {
   drag: number;
 }
 
+/**
+ * AnnouncementView
+ */
 class AnnouncementView extends React.Component<
   MessageViewProps,
   MessageVitewState
 > {
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     if (!this.props.announcements.current) {
       return null;
@@ -101,7 +114,12 @@ class AnnouncementView extends React.Component<
   }
 }
 
-//TODO fix this is using the other version of announcements
+/**
+ * mapStateToProps
+ * ODO fix this is using the other version of announcements
+ * @param state state
+ * @returns object
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -110,6 +128,11 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ * @returns object
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return {};
 }

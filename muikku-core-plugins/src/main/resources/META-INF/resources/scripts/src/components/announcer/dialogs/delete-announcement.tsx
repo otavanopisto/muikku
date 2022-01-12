@@ -1,5 +1,4 @@
 import "~/sass/elements/link.scss";
-
 import "~/sass/elements/buttons.scss";
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
@@ -17,6 +16,9 @@ import {
 import { AnnouncementType } from "reducers/announcements";
 import { StateType } from "~/reducers";
 
+/**
+ * DeleteAnnouncementDialogProps
+ */
 interface DeleteAnnouncementDialogProps {
   i18n: i18nType;
   announcement?: AnnouncementType;
@@ -26,14 +28,24 @@ interface DeleteAnnouncementDialogProps {
   onDeleteAnnouncementSuccess?: () => any;
 }
 
+/**
+ * DeleteAnnouncementDialogState
+ */
 interface DeleteAnnouncementDialogState {
   locked: boolean;
 }
 
+/**
+ * DeleteAnnouncementDialog
+ */
 class DeleteAnnouncementDialog extends React.Component<
   DeleteAnnouncementDialogProps,
   DeleteAnnouncementDialogState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: DeleteAnnouncementDialogProps) {
     super(props);
 
@@ -43,11 +55,17 @@ class DeleteAnnouncementDialog extends React.Component<
       locked: false,
     };
   }
+
+  /**
+   * deleteAnnouncement
+   * @param closeDialog closeDialog
+   */
   deleteAnnouncement(closeDialog: () => any) {
     this.setState({ locked: true });
     if (this.props.announcement) {
       this.props.deleteAnnouncement({
         announcement: this.props.announcement,
+        // eslint-disable-next-line
         success: () => {
           this.props.onDeleteAnnouncementSuccess &&
             this.props.onDeleteAnnouncementSuccess();
@@ -59,6 +77,7 @@ class DeleteAnnouncementDialog extends React.Component<
           this.setState({ locked: false });
           closeDialog();
         },
+        // eslint-disable-next-line
         fail: () => {
           this.setState({ locked: false });
         },
@@ -69,7 +88,17 @@ class DeleteAnnouncementDialog extends React.Component<
       closeDialog();
     }
   }
+
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
+    /**
+     * content
+     * @param closeDialog closeDialog
+     * @returns JSX.Element
+     */
     const content = (closeDialog: () => any) => (
       <div>
         {this.props.announcement
@@ -82,6 +111,11 @@ class DeleteAnnouncementDialog extends React.Component<
       </div>
     );
 
+    /**
+     * footer
+     * @param closeDialog closeDialog
+     * @returns JSX.Element
+     */
     const footer = (closeDialog: () => any) => (
       <div className="dialog__button-set">
         <Button
@@ -117,12 +151,22 @@ class DeleteAnnouncementDialog extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ * @returns object
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ * @returns object
+ */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     { deleteSelectedAnnouncements, deleteAnnouncement },

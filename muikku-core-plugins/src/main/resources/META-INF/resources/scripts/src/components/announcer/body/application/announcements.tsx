@@ -1,20 +1,15 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
-import { colorIntToHex } from "~/util/modifiers";
 import { StateType } from "~/reducers";
-
 import NewEditAnnouncement from "../../dialogs/new-edit-announcement";
-
 import { i18nType } from "~/reducers/base/i18n";
-
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
 import "~/sass/elements/application-list.scss";
 import "~/sass/elements/announcement.scss";
 import "~/sass/elements/rich-text.scss";
 import "~/sass/elements/label.scss";
-
 import { AnnouncementsType, AnnouncementType } from "~/reducers/announcements";
 import BodyScrollKeeper from "~/components/general/body-scroll-keeper";
 import SelectableList from "~/components/general/selectable-list";
@@ -37,6 +32,9 @@ import ApplicationList, {
 } from "~/components/general/application-list";
 import { UserIndexType } from "~/reducers/user-index";
 
+/**
+ * AnnouncementsProps
+ */
 interface AnnouncementsProps {
   i18n: i18nType;
   announcements: AnnouncementsType;
@@ -45,16 +43,31 @@ interface AnnouncementsProps {
   removeFromAnnouncementsSelected: RemoveFromAnnouncementsSelectedTriggerType;
 }
 
+/**
+ * AnnouncementsState
+ */
 interface AnnouncementsState {}
 
+/**
+ * Announcements
+ */
 class Announcements extends React.Component<
   AnnouncementsProps,
   AnnouncementsState
 > {
+  /**
+   * setCurrentAnnouncement
+   * @param announcement announcement
+   */
   setCurrentAnnouncement(announcement: AnnouncementType) {
     window.location.hash =
       window.location.hash.split("/")[0] + "/" + announcement.id;
   }
+
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     if (this.props.announcements.state === "LOADING") {
       return null;
@@ -89,6 +102,7 @@ class Announcements extends React.Component<
                 key: announcement.id,
                 checkboxId: `announcementSelect-${announcement.id}`,
                 checkboxClassName: "announcement__selector",
+                // eslint-disable-next-line
                 contents: (checkbox: React.ReactElement<any>) => (
                   <ApplicationListItemContentWrapper
                     className="announcement__content"
@@ -189,7 +203,11 @@ class Announcements extends React.Component<
   }
 }
 
-//TODO yet another one with the different version
+/**
+ * mapStateToProps - TODO yet another one with the different version
+ * @param state state
+ * @returns object
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -198,6 +216,11 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ * @returns object
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     {

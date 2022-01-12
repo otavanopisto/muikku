@@ -8,25 +8,35 @@ import Button from "~/components/general/button";
 import Toolbar from "./application/toolbar";
 import NewEditAnnouncement from "../dialogs/new-edit-announcement";
 import { StateType } from "~/reducers";
-
 import { i18nType } from "~/reducers/base/i18n";
-
 import "~/sass/elements/link.scss";
-
 import "~/sass/elements/application-panel.scss";
 import "~/sass/elements/loaders.scss";
 
+/**
+ * AnnouncerApplicationProps
+ */
 interface AnnouncerApplicationProps {
   aside: React.ReactElement<any>;
   i18n: i18nType;
 }
 
+/**
+ * AnnouncerApplicationState
+ */
 interface AnnouncerApplicationState {}
 
+/**
+ * AnnouncerApplication
+ */
 class AnnouncerApplication extends React.Component<
   AnnouncerApplicationProps,
   AnnouncerApplicationState
 > {
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     const title = this.props.i18n.text.get("plugin.announcer.pageTitle");
     const primaryOption = (
@@ -59,12 +69,22 @@ class AnnouncerApplication extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ * @returns object
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ * @returns object
+ */
 const mapDispatchToProps = (dispatch: Dispatch<any>) => ({});
 
 export default connect(
