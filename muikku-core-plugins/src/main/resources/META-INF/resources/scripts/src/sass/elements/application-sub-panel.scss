@@ -20,20 +20,15 @@
   @include breakpoint($breakpoint-desktop-xl){
     flex-wrap:unset;
   }
-
-
 }
 
 .application-sub-panel--student-data-primary {
- flex-basis: 100%;
+  flex-basis: 100%;
 
   @include breakpoint($breakpoint-desktop-xl){
-    flex-basis: 35em;
-
+    flex-basis: 45%;
   }
-
 }
-
 
 .application-sub-panel--student-data-secondary {
   flex-basis: 100%;
@@ -41,6 +36,7 @@
   @include breakpoint($breakpoint-desktop-xl){
     flex-basis: auto;
     flex-grow: 1;
+    padding: 0 0 0 20px;
   }
 }
 
@@ -93,7 +89,6 @@
     padding-bottom: 12px;
   }
 }
-
 
 // Subpanel header
 .application-sub-panel__header {

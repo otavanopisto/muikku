@@ -14,16 +14,13 @@ import { ApplicationListItem, ApplicationListItemHeader } from "~/components/gen
 import { getShortenGradeExtension, shortenGrade } from "~/util/modifiers";
 import DatePicker from "react-datepicker";
 import moment from "~/lib/moment";
-
 interface StudentWorkspaceProps {
   i18n: i18nType,
   workspace: WorkspaceType
 }
-
 interface StudentWorkspaceState {
   activitiesVisible: boolean
 }
-
 
 function CourseActivityRow(props: {
   i18n: i18nType,
@@ -165,7 +162,7 @@ class StudentWorkspace extends React.Component<StudentWorkspaceProps, StudentWor
         <div className="application-sub-panel__body">
           <div className="application-sub-panel__item application-sub-panel__item--course-scheduling">
             <div className="application-sub-panel__item-title">
-              Ajasta kurssi
+
             </div>
             <div className="application-sub-panel__item-data">
               <DatePicker

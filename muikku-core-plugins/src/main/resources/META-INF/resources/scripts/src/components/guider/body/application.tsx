@@ -1,13 +1,12 @@
 import * as React from 'react';
 import { connect, Dispatch } from 'react-redux';
 import ApplicationPanel from '~/components/general/application-panel/application-panel';
-import Dropdown from '~/components/general/dropdown';
-import Link from '~/components/general/link';
 import { i18nType } from 'reducers/base/i18n';
 import Students from './application/students';
 import Toolbar from './application/toolbar';
-import CurrentStudent from './application/current-student';
 import { StateType } from '~/reducers';
+
+
 
 interface GuiderApplicationProps {
   aside: React.ReactElement<any>,

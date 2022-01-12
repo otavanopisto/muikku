@@ -26,8 +26,10 @@ import NewMessage from '~/components/communicator/dialogs/new-message';
 import { ButtonPill } from '~/components/general/button';
 import GuiderToolbarLabels from './toolbar/labels';
 import GuidanceEvent from './toolbar/guidance-event';
-
-
+import FullCalendar, { DateSelectArg, EventClickArg } from '@fullcalendar/react';
+import resourceTimelinePlugin from '@fullcalendar/resource-timeline';
+import interactionPlugin, { EventResizeStopArg } from '@fullcalendar/interaction'
+import { EventType } from "./toolbar/guidance-event"
 
 interface CurrentStudentProps {
   i18n: i18nType,
@@ -199,6 +201,12 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
         notificationOfSuccessText={this.props.i18n.text.get("plugin.guider.fileUpload.successful")} displayNotificationOnSuccess />
     </div>
 
+    const headerToolbar = {
+      left: 'today prev,next',
+      center: 'title',
+      right: 'resourceTimelineMonth,resourceTimelineYear'
+    }
+
     return <>
       <div className="application-sub-panel application-sub-panel--guider-student-header">
         {studentBasicHeader}
@@ -233,6 +241,32 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
         {this.props.guider.currentStudent.activityLogs && this.props.guider.currentStudent.workspaces ? <MainChart workspaces={this.props.guider.currentStudent.workspaces} activityLogs={this.props.guider.currentStudent.activityLogs} /> : null}
       </div> */}
         {this.props.guider.currentState === "LOADING" ? <div className="application-sub-panel loader-empty" /> : null}
+      </div>
+      <div className="application-sub-panel application-sub-panel--student-data-container">
+
+        <FullCalendar
+          headerToolbar={headerToolbar}
+          plugins={[resourceTimelinePlugin, interactionPlugin]}
+          editable={true}
+          schedulerLicenseKey={"CC-Attribution-NonCommercial-NoDerivatives"}
+          height="auto"
+          firstDay={1}
+          resourceAreaHeaderContent={"Student"}
+          resourceAreaHeaderClassNames={"muumi"}
+          resourceAreaWidth={200}
+          resources={[{
+            id: this.props.guider.currentStudent.basic.id,
+            title: getName(this.props.guider.currentStudent.basic, true),
+          }]}
+          allDaySlot={false}
+          slotMinTime="09:00:00"
+          slotMaxTime="16:00:00"
+
+          locale={"fi"}
+          initialView="resourceTimelineYear"
+        // events={this.state.events}
+        />
+
       </div>
     </>
   }

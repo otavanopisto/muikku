@@ -13,7 +13,7 @@ import Button from '~/components/general/button';
 import { getName } from '~/util/modifiers';
 import moment from "~/lib/moment";
 
-interface EventType {
+export interface EventType {
   id?: string,
   title?: string,
   start?: string,
