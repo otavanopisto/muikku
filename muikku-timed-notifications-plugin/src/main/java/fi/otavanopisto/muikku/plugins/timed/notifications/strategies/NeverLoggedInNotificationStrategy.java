@@ -135,7 +135,7 @@ public class NeverLoggedInNotificationStrategy extends AbstractTimedNotification
 
     Date thresholdDate = Date.from(OffsetDateTime.now().minusDays(NOTIFICATION_THRESHOLD_DAYS).toInstant());
     List<SchoolDataIdentifier> studentIdentifierAlreadyNotified = neverLoggedInNotificationController.listNotifiedSchoolDataIdentifiersAfter(thresholdDate);
-    SearchResult searchResult = neverLoggedInNotificationController.searchActiveStudentIds(
+    SearchResult searchResult = neverLoggedInNotificationController.searchActiveStudents(
         getActiveOrganizations(),
         groups,
         FIRST_RESULT,

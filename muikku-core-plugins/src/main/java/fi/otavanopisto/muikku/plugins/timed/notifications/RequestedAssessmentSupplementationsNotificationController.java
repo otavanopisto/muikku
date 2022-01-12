@@ -27,10 +27,10 @@ public class RequestedAssessmentSupplementationsNotificationController {
   @Inject
   private RequestedAssessmentSupplementationNotificationDAO requestedAssessmentSupplementationNotificationDAO;
   
-  public SearchResult searchActiveStudentIds(List<OrganizationEntity> activeOrganizations, Collection<Long> groups, int firstResult, int maxResults){
+  public SearchResult searchActiveStudents(List<OrganizationEntity> activeOrganizations, Collection<Long> groups, int firstResult, int maxResults){
     SearchProvider searchProvider = getProvider("elastic-search");
     return searchProvider.searchUsers(activeOrganizations, null, null, Collections.singleton(EnvironmentRoleArchetype.STUDENT), groups, null, null, false, true, false, 
-        firstResult, maxResults, Collections.singleton("id"));
+        firstResult, maxResults, null);
   }
   
   public RequestedAssessmentSupplementationNotification createRequestedAssessmentSupplementationNotification(SchoolDataIdentifier studentIdentifier, SchoolDataIdentifier workspaceIdentifier){
