@@ -52,20 +52,23 @@ class CeeposPay extends React.Component<CeeposPayProps, CeeposPayState> {
                   buttonModifiers={["back-to-muikku", "info"]}
                   href="/">{this.props.i18n.text.get("plugin.ceepos.order.backToMuikkuButton.label")}
                 </Button>
-                <CommunicatorNewMessage extraNamespace="ceepos-error"
-                  initialSelectedItems={[{
-                    type: "staff",
-                    value: {
-                      id: this.props.ceepos.purchase.creator.userEntityId,
-                      name: getName(this.props.ceepos.purchase.creator, true)
-                    }
-                  }]}
-                  initialSubject={getErrorMessageTitle(this.props.ceepos.purchase)}
-                  initialMessage={getErrorMessageContent(this.props.i18n, this.props.ceepos.purchase, this.props.ceepos.payStatusMessage)}><Button
-                    icon="envelope"
-                    buttonModifiers={["send-message", "info"]}
-                  >{this.props.i18n.text.get("plugin.ceepos.order.sendMessageButton.label")}
+                {this.props.ceepos.purchase ?
+                  <CommunicatorNewMessage extraNamespace="ceepos-error"
+                    initialSelectedItems={[{
+                      type: "staff",
+                      value: {
+                        id: this.props.ceepos.purchase.creator.userEntityId,
+                        name: getName(this.props.ceepos.purchase.creator, true)
+                      }
+                    }]}
+                    initialSubject={getErrorMessageTitle(this.props.ceepos.purchase)}
+                    initialMessage={getErrorMessageContent(this.props.i18n, this.props.ceepos.purchase, this.props.ceepos.payStatusMessage)}><Button
+                      icon="envelope"
+                      buttonModifiers={["send-message", "info"]}
+                    >{this.props.i18n.text.get("plugin.ceepos.order.sendMessageButton.label")}
                   </Button></CommunicatorNewMessage>
+                : null}
+
               </div>
           : null}
           </div>
