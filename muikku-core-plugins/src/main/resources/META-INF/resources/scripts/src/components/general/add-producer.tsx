@@ -3,6 +3,9 @@ import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/add-producer.scss";
 import "~/sass/elements/wcag.scss";
 
+/**
+ * AddProducerProps
+ */
 interface AddProducerProps {
   producers?: Array<any>;
   title?: string;
@@ -13,14 +16,24 @@ interface AddProducerProps {
   wcagLabel?: string;
 }
 
+/**
+ * AddProducerState
+ */
 interface AddProducerState {
   currentInputValue: string;
 }
 
+/**
+ * AddProducer
+ */
 export default class AddProducer extends React.Component<
   AddProducerProps,
   AddProducerState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: AddProducerProps) {
     super(props);
 
@@ -34,11 +47,21 @@ export default class AddProducer extends React.Component<
     this.checkIfEnterKeyIsPressedAndAddProducer =
       this.checkIfEnterKeyIsPressedAndAddProducer.bind(this);
   }
+
+  /**
+   * updateInputValue
+   * @param e e
+   */
   updateInputValue(e: React.ChangeEvent<HTMLInputElement>) {
     this.setState({
       currentInputValue: e.target.value,
     });
   }
+
+  /**
+   * checkIfEnterKeyIsPressedAndAddProducer
+   * @param e e
+   */
   checkIfEnterKeyIsPressedAndAddProducer(
     e: React.KeyboardEvent<HTMLInputElement>
   ) {
@@ -48,6 +71,10 @@ export default class AddProducer extends React.Component<
       this.clearInputValue();
     }
   }
+
+  /**
+   * addProducerByClick
+   */
   addProducerByClick() {
     const input = this.state.currentInputValue;
     if (input.length > 2) {
@@ -55,15 +82,28 @@ export default class AddProducer extends React.Component<
       this.clearInputValue();
     }
   }
+
+  /**
+   * clearInputValue
+   */
   clearInputValue() {
     this.setState({
       currentInputValue: "",
     });
   }
+
+  /**
+   * removeProducerByClick
+   * @param index index
+   */
   removeProducerByClick(index: number) {
     this.props.removeProducer(index);
   }
 
+  /**
+   * render
+   * @returns JSX.Elemenet
+   */
   render() {
     return (
       <div

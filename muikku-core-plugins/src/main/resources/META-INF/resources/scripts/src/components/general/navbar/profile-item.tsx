@@ -6,13 +6,14 @@ import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
 import { bindActionCreators } from "redux";
 import { StateType } from "~/reducers";
-
 import { logout, LogoutTriggerType } from "~/actions/base/status";
-
 import "~/sass/elements/link.scss";
 import "~/sass/elements/buttons.scss";
 import { getUserImageUrl } from "~/util/modifiers";
 
+/**
+ * ProfileItemProps
+ */
 interface ProfileItemProps {
   modifier: string;
   i18n: i18nType;
@@ -21,9 +22,19 @@ interface ProfileItemProps {
   isProfileContainedInThisApp: boolean;
 }
 
+/**
+ * ProfileItemState
+ */
 interface ProfileItemState {}
 
+/**
+ * ProfileItem
+ */
 class ProfileItem extends React.Component<ProfileItemProps, ProfileItemState> {
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     if (!this.props.status.loggedIn) {
       return null;
@@ -103,6 +114,11 @@ class ProfileItem extends React.Component<ProfileItemProps, ProfileItemState> {
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ * @returns object
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -110,6 +126,11 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ * @returns object
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators({ logout }, dispatch);
 }

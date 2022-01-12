@@ -120,11 +120,13 @@ export default function useRecorder(props: UseRecorderProps) {
        */
       let contentType: string;
 
+      // eslint-disable-next-line
       recorder.ondataavailable = (e: MediaRecorderEvent) => {
         contentType = e.data.type;
         chunks.push(e.data);
       };
 
+      // eslint-disable-next-line
       recorder.onstop = async () => {
         const blob = new Blob(chunks, { type: contentType });
         chunks = [];
@@ -165,6 +167,11 @@ export default function useRecorder(props: UseRecorderProps) {
     };
   }, [recorderState.mediaRecorder]);
 
+  /**
+   * processFileAt
+   * @param valueToSave valueToSave
+   * @param initialValue initialValue
+   */
   const processFileAt = (
     valueToSave: RecordValue,
     initialValue: RecordValue[]
@@ -181,6 +188,7 @@ export default function useRecorder(props: UseRecorderProps) {
       url: props.status.contextPath + "/tempFileUploadServlet",
       type: "POST",
       data: formData,
+      // eslint-disable-next-line
       success: (data: any) => {
         newValue.uploading = false;
         newValue.id = data.fileId;
@@ -200,6 +208,7 @@ export default function useRecorder(props: UseRecorderProps) {
         }));
       },
       //in case of error
+      // eslint-disable-next-line
       error: () => {
         newValue.uploading = false;
         newValue.failed = true;
@@ -215,6 +224,7 @@ export default function useRecorder(props: UseRecorderProps) {
           values: updatedAllValues,
         }));
       },
+      // eslint-disable-next-line
       xhr: () => {
         //we need to get the upload progress
         const xhr = new (window as any).XMLHttpRequest();
@@ -255,8 +265,11 @@ export default function useRecorder(props: UseRecorderProps) {
 
   return {
     recorderState,
+    // eslint-disable-next-line
     startRecording: () => startRecording(setRecorderState),
+    // eslint-disable-next-line
     cancelRecording: () => setRecorderState(initialState),
+    // eslint-disable-next-line
     saveRecording: () => saveRecording(recorderState.mediaRecorder),
   };
 }

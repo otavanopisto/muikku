@@ -90,6 +90,7 @@ export class AudioPoolComponent extends React.Component<
       }
     );
   }
+
   public killEverything() {
     this.initialSetup();
     (window as any).AUDIOPOOL[this.univId].playing = true;

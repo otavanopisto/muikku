@@ -1,5 +1,8 @@
 import * as React from "react";
 
+/**
+ * BodyScrollLoader
+ */
 export default class BodyScrollLoader<T, S> extends React.Component<T, S> {
   public statePropertyLocation: string;
   public applicationIsReady: () => boolean;
@@ -11,12 +14,69 @@ export default class BodyScrollLoader<T, S> extends React.Component<T, S> {
   public cancellingLoadingPropertyLocation: string;
   private lastTimeCalledLoadMore: number;
 
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: T) {
     super(props);
     this.lastTimeCalledLoadMore = 0;
     this.checkCanLoadMore = this.checkCanLoadMore.bind(this);
     this.onScroll = this.onScroll.bind(this);
   }
+
+  /**
+   * componentDidMount
+   */
+  componentDidMount() {
+    window.addEventListener("scroll", this.onScroll);
+  }
+
+  /**
+   * componentDidUpdate
+   * @returns
+   */
+  componentDidUpdate() {
+    if (
+      this.cancellingLoadingPropertyLocation &&
+      (this.props as any)[this.cancellingLoadingPropertyLocation]
+    ) {
+      return;
+    }
+    const isReadyByState =
+      ((this.props as any)[this.statePropertyLocation] as string) === "READY" &&
+      (this.props as any)[this.hasMorePropertyLocation];
+    const isReadyByFunction =
+      this.applicationIsReady && this.applicationIsReady();
+    const hasMoreByFunction = this.hasMore && this.hasMore();
+    const hasMoreByState = (this.props as any)[this.hasMorePropertyLocation];
+    const isReady = isReadyByState || isReadyByFunction;
+    const hasMore = hasMoreByFunction || hasMoreByState;
+    if (isReady && hasMore) {
+      const doesNotHaveScrollBar =
+        document.documentElement.scrollHeight ===
+        document.documentElement.offsetHeight;
+      if (doesNotHaveScrollBar) {
+        if (this.loadMoreTriggerFunctionLocation) {
+          (this.props as any)[this.loadMoreTriggerFunctionLocation]();
+        } else {
+          this.loadMoreTriggerFunction();
+        }
+      }
+    }
+    this.checkCanLoadMore();
+  }
+
+  /**
+   * componentWillUnmount
+   */
+  componentWillUnmount() {
+    window.removeEventListener("scroll", this.onScroll);
+  }
+
+  /**
+   * checkCanLoadMore
+   */
   checkCanLoadMore() {
     if (
       this.cancellingLoadingPropertyLocation &&
@@ -53,43 +113,11 @@ export default class BodyScrollLoader<T, S> extends React.Component<T, S> {
       }
     }
   }
-  componentDidUpdate() {
-    if (
-      this.cancellingLoadingPropertyLocation &&
-      (this.props as any)[this.cancellingLoadingPropertyLocation]
-    ) {
-      return;
-    }
-    const isReadyByState =
-      ((this.props as any)[this.statePropertyLocation] as string) === "READY" &&
-      (this.props as any)[this.hasMorePropertyLocation];
-    const isReadyByFunction =
-      this.applicationIsReady && this.applicationIsReady();
-    const hasMoreByFunction = this.hasMore && this.hasMore();
-    const hasMoreByState = (this.props as any)[this.hasMorePropertyLocation];
-    const isReady = isReadyByState || isReadyByFunction;
-    const hasMore = hasMoreByFunction || hasMoreByState;
-    if (isReady && hasMore) {
-      const doesNotHaveScrollBar =
-        document.documentElement.scrollHeight ===
-        document.documentElement.offsetHeight;
-      if (doesNotHaveScrollBar) {
-        if (this.loadMoreTriggerFunctionLocation) {
-          (this.props as any)[this.loadMoreTriggerFunctionLocation]();
-        } else {
-          this.loadMoreTriggerFunction();
-        }
-      }
-    }
-    this.checkCanLoadMore();
-  }
+
+  /**
+   * onScroll
+   */
   onScroll() {
     this.checkCanLoadMore();
-  }
-  componentDidMount() {
-    window.addEventListener("scroll", this.onScroll);
-  }
-  componentWillUnmount() {
-    window.removeEventListener("scroll", this.onScroll);
   }
 }

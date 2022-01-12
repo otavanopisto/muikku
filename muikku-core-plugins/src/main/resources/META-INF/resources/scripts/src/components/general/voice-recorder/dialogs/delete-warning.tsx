@@ -56,6 +56,11 @@ class DeleteDialog extends React.Component<
    * @returns JSX.Element
    */
   render() {
+    /**
+     * footer
+     * @param closeDialog closeDialog
+     * @returns JSX.Element
+     */
     const footer = (closeDialog: () => any) => (
       <div className="dialog__button-set">
         <Button
@@ -76,6 +81,12 @@ class DeleteDialog extends React.Component<
         </Button>
       </div>
     );
+
+    /**
+     * content
+     * @param closeDialog closeDialog
+     * @returns JSX.Element
+     */
     const content = (closeDialog: () => any) => (
       <div>
         {this.props.i18n.text.get(

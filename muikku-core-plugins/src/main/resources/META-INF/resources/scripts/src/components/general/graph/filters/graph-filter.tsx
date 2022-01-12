@@ -4,6 +4,9 @@ import { connect } from "react-redux";
 import { StateType } from "~/reducers";
 import Dropdown from "~/components/general/dropdown";
 
+/**
+ * GraphFilterProps
+ */
 interface GraphFilterProps {
   i18n: i18nType;
   graphs: string[];
@@ -12,11 +15,22 @@ interface GraphFilterProps {
   modificator?: string;
 }
 
+/**
+ * GraphFilter
+ */
 class GraphFilter extends React.Component<GraphFilterProps> {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: GraphFilterProps) {
     super(props);
   }
 
+  /**
+   * dropdownFilter
+   * @returns JSX.Element
+   */
   dropdownFilter() {
     const modificator = this.props.modificator || "";
     if (modificator === "-dropdown-only" || modificator === "") {
@@ -60,6 +74,10 @@ class GraphFilter extends React.Component<GraphFilterProps> {
     }
   }
 
+  /**
+   * listFilter
+   * @returns JSX.Elemenet
+   */
   listFilter() {
     const modificator = this.props.modificator || "";
     if (modificator === "-list-only" || modificator === "") {
@@ -96,6 +114,10 @@ class GraphFilter extends React.Component<GraphFilterProps> {
     }
   }
 
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     return (
       <div className="filter filter--graph-filter">
@@ -106,6 +128,11 @@ class GraphFilter extends React.Component<GraphFilterProps> {
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ * @returns object
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,

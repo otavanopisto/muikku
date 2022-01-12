@@ -2,6 +2,9 @@ import * as React from "react";
 import { getUserImageUrl } from "~/util/modifiers";
 import "~/sass/elements/avatar.scss";
 
+/**
+ * AvatarProps
+ */
 interface AvatarProps {
   hasImage: boolean;
   id: number;
@@ -11,6 +14,11 @@ interface AvatarProps {
   avatarAriaLabel?: string;
 }
 
+/**
+ * Avatar
+ * @param props props
+ * @returns JSX.Element
+ */
 const Avatar = (props: AvatarProps) => {
   const { id, userCategory, hasImage, firstName, avatarAriaLabel } = props;
 

@@ -2,6 +2,9 @@ import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/application-sub-panel.scss";
 
+/**
+ * SubPanelProps
+ */
 interface SubPanelProps {
   modifier?: string;
   bodyModifier?: string;
@@ -9,12 +12,22 @@ interface SubPanelProps {
   title: string;
 }
 
+/**
+ * SubPanelState
+ */
 interface SubPanelState {}
 
+/**
+ * ApplicationSubPanel
+ */
 export default class ApplicationSubPanel extends React.Component<
   SubPanelProps,
   SubPanelState
 > {
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     return (
       <div
@@ -51,16 +64,27 @@ export default class ApplicationSubPanel extends React.Component<
   }
 }
 
+/**
+ * SubPanelItemDataProps
+ */
 interface SubPanelItemDataProps {
   modifier?: string;
   label?: string;
 }
 
+/**
+ * SubPanelItemProps
+ */
 interface SubPanelItemProps {
   modifier?: string;
   title: string;
 }
 
+/**
+ * ApplicationSubPanelItem
+ * @param props props
+ * @returns JSX.Elemeent
+ */
 export const ApplicationSubPanelItem: React.FunctionComponent<SubPanelItemProps> & {
   Content?: React.FunctionComponent<SubPanelItemDataProps>;
   SubItem?: React.FunctionComponent<{ modifier?: string }>;
@@ -91,6 +115,11 @@ export const ApplicationSubPanelItem: React.FunctionComponent<SubPanelItemProps>
   </div>
 );
 
+/**
+ * ApplicationSubPanelItemData
+ * @param props props
+ * @returns JSX.Elemenet
+ */
 const ApplicationSubPanelItemData: React.FunctionComponent<
   SubPanelItemDataProps
 > = (props) => (
@@ -124,6 +153,11 @@ const ApplicationSubPanelItemData: React.FunctionComponent<
   </div>
 );
 
+/**
+ * ApplicationSubPanelSubItem
+ * @param props props
+ * @returns JSX.Elemenet
+ */
 const ApplicationSubPanelSubItem: React.FunctionComponent<{
   modifier?: string;
 }> = (props) => (

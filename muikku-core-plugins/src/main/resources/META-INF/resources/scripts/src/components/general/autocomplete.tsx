@@ -7,6 +7,9 @@
 import * as React from "react";
 import "~/sass/elements/autocomplete.scss";
 
+/**
+ * AutocompleteProps
+ */
 interface AutocompleteProps {
   onItemClick: (item: any, selected: boolean) => any;
   opened: boolean;
@@ -19,14 +22,24 @@ interface AutocompleteProps {
   modifier: string;
 }
 
+/**
+ * AutocompleteState
+ */
 interface AutocompleteState {
   maxHeight: number;
 }
 
+/**
+ * Autocomplete
+ */
 export default class Autocomplete extends React.Component<
   AutocompleteProps,
   AutocompleteState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: AutocompleteProps) {
     super(props);
 
@@ -36,10 +49,11 @@ export default class Autocomplete extends React.Component<
       maxHeight: null,
     };
   }
-  onItemClick(value: any, selected: boolean, e: Event) {
-    e.stopPropagation();
-    this.props.onItemClick(value, selected);
-  }
+
+  /**
+   * componentWillReceiveProps
+   * @param nextProps nextProps
+   */
   componentWillReceiveProps(nextProps: AutocompleteProps) {
     if (nextProps.opened && !this.props.opened) {
       const autocomplete: HTMLDivElement = this.refs[
@@ -53,6 +67,22 @@ export default class Autocomplete extends React.Component<
       });
     }
   }
+
+  /**
+   * onItemClick
+   * @param value v
+   * @param selected s
+   * @param e e
+   */
+  onItemClick(value: any, selected: boolean, e: Event) {
+    e.stopPropagation();
+    this.props.onItemClick(value, selected);
+  }
+
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     const style: any = {
       maxHeight: this.state.maxHeight,

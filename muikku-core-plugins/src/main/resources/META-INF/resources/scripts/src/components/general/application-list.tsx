@@ -1,6 +1,9 @@
 import * as React from "react";
 import "~/sass/elements/application-list.scss";
 
+/**
+ * ApplicationListProps
+ */
 interface ApplicationListProps {
   modifiers?: string | Array<string>;
   className?: string;
@@ -10,14 +13,24 @@ interface ApplicationListProps {
   footer?: React.ReactElement<any>;
 }
 
+/**
+ * ApplicationListState
+ */
 interface ApplicationListState {
   sortOrder: string;
 }
 
+/**
+ * ApplicationList
+ */
 export default class ApplicationList extends React.Component<
   ApplicationListProps,
   ApplicationListState
 > {
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     const modifiers =
       this.props.modifiers && this.props.modifiers instanceof Array
@@ -62,6 +75,9 @@ export default class ApplicationList extends React.Component<
   }
 }
 
+/**
+ * ApplicationListItemProps
+ */
 interface ApplicationListItemProps
   extends React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLDivElement>,
@@ -71,12 +87,22 @@ interface ApplicationListItemProps
   classState?: string;
 }
 
+/**
+ * ApplicationListItemState
+ */
 interface ApplicationListItemState {}
 
+/**
+ * ApplicationListItem
+ */
 export class ApplicationListItem extends React.Component<
   ApplicationListItemProps,
   ApplicationListItemState
 > {
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     const newProps: ApplicationListItemProps = Object.assign({}, this.props);
     const modifiers =
@@ -107,6 +133,9 @@ export class ApplicationListItem extends React.Component<
   }
 }
 
+/**
+ * ApplicationListItemDateProps
+ */
 interface ApplicationListItemDateProps
   extends React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLDivElement>,
@@ -117,12 +146,22 @@ interface ApplicationListItemDateProps
   endDate: string;
 }
 
+/**
+ * ApplicationListItemDateState
+ */
 interface ApplicationListItemDateState {}
 
+/**
+ * ApplicationListItemDate
+ */
 export class ApplicationListItemDate extends React.Component<
   ApplicationListItemDateProps,
   ApplicationListItemDateState
 > {
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     const modifiers =
       this.props.modifiers && this.props.modifiers instanceof Array
@@ -147,6 +186,9 @@ export class ApplicationListItemDate extends React.Component<
   }
 }
 
+/**
+ * ApplicationListItemHeaderProps
+ */
 interface ApplicationListItemHeaderProps
   extends React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLDivElement>,
@@ -157,12 +199,22 @@ interface ApplicationListItemHeaderProps
   secondary?: React.ReactElement<any>;
 }
 
+/**
+ * ApplicationListItemHeaderState
+ */
 interface ApplicationListItemHeaderState {}
 
+/**
+ * ApplicationListItemHeader
+ */
 export class ApplicationListItemHeader extends React.Component<
   ApplicationListItemHeaderProps,
   ApplicationListItemHeaderState
 > {
+  /**
+   * Component render method
+   * @returns JSX.Elemenet
+   */
   render() {
     const newProps: ApplicationListItemHeaderProps = Object.assign(
       {},
@@ -193,6 +245,9 @@ export class ApplicationListItemHeader extends React.Component<
   }
 }
 
+/**
+ * ApplicationListHeaderPrimaryProps
+ */
 interface ApplicationListHeaderPrimaryProps
   extends React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLDivElement>,
@@ -201,12 +256,22 @@ interface ApplicationListHeaderPrimaryProps
   modifiers?: string | Array<string>;
 }
 
+/**
+ * ApplicationListHeaderPrimaryState
+ */
 interface ApplicationListHeaderPrimaryState {}
 
+/**
+ * ApplicationListHeaderPrimary
+ */
 export class ApplicationListHeaderPrimary extends React.Component<
   ApplicationListHeaderPrimaryProps,
   ApplicationListHeaderPrimaryState
 > {
+  /**
+   * Component render method
+   * @returns JSX.Elemeent
+   */
   render() {
     const modifiers =
       this.props.modifiers && this.props.modifiers instanceof Array
@@ -230,6 +295,9 @@ export class ApplicationListHeaderPrimary extends React.Component<
   }
 }
 
+/**
+ * ApplicationListItemBodyProps
+ */
 interface ApplicationListItemBodyProps
   extends React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLDivElement>,
@@ -240,12 +308,22 @@ interface ApplicationListItemBodyProps
   content?: string;
 }
 
+/**
+ * ApplicationListItemBodyState
+ */
 interface ApplicationListItemBodyState {}
 
+/**
+ * ApplicationListItemBody
+ */
 export class ApplicationListItemBody extends React.Component<
   ApplicationListItemBodyProps,
   ApplicationListItemBodyState
 > {
+  /**
+   * Component render method
+   * @returns JSX.Elemeent
+   */
   render() {
     const modifiers =
       this.props.modifiers && this.props.modifiers instanceof Array
@@ -300,6 +378,9 @@ export class ApplicationListItemBody extends React.Component<
   }
 }
 
+/**
+ * ApplicationListItemFooterProps
+ */
 interface ApplicationListItemFooterProps
   extends React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLDivElement>,
@@ -308,12 +389,22 @@ interface ApplicationListItemFooterProps
   modifiers?: string | Array<string>;
 }
 
+/**
+ * ApplicationListItemFooterState
+ */
 interface ApplicationListItemFooterState {}
 
+/**
+ * ApplicationListItemFooter
+ */
 export class ApplicationListItemFooter extends React.Component<
   ApplicationListItemFooterProps,
   ApplicationListItemFooterState
 > {
+  /**
+   * Component render method
+   * @returns JSX.Elemeent
+   */
   render() {
     const newProps: ApplicationListItemHeaderProps = Object.assign(
       {},
@@ -343,6 +434,9 @@ export class ApplicationListItemFooter extends React.Component<
   }
 }
 
+/**
+ * ApplicationListItemContentContainerProps
+ */
 interface ApplicationListItemContentContainerProps
   extends React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLDivElement>,
@@ -351,12 +445,22 @@ interface ApplicationListItemContentContainerProps
   modifiers?: string | Array<string>;
 }
 
+/**
+ * ApplicationListItemContentContainerState
+ */
 interface ApplicationListItemContentContainerState {}
 
+/**
+ * ApplicationListItemContentContainer
+ */
 export class ApplicationListItemContentContainer extends React.Component<
   ApplicationListItemContentContainerProps,
   ApplicationListItemContentContainerState
 > {
+  /**
+   * Component render method
+   * @returns JSX.Elemeent
+   */
   render() {
     const newProps: ApplicationListItemHeaderProps = Object.assign(
       {},
@@ -386,6 +490,9 @@ export class ApplicationListItemContentContainer extends React.Component<
   }
 }
 
+/**
+ * ApplicationListItemContentWrapperProps
+ */
 interface ApplicationListItemContentWrapperProps
   extends React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLDivElement>,
@@ -400,12 +507,22 @@ interface ApplicationListItemContentWrapperProps
   aside?: React.ReactElement<any>;
 }
 
+/**
+ * ApplicationListItemContentWrapperState
+ */
 interface ApplicationListItemContentWrapperState {}
 
+/**
+ * ApplicationListItemContentWrapper
+ */
 export class ApplicationListItemContentWrapper extends React.Component<
   ApplicationListItemContentWrapperProps,
   ApplicationListItemContentWrapperState
 > {
+  /**
+   * Component render method
+   * @returns JSX.Elemeent
+   */
   render() {
     const newProps: ApplicationListItemHeaderProps = Object.assign(
       {},
@@ -478,11 +595,21 @@ export class ApplicationListItemContentWrapper extends React.Component<
 
 // These are designed to be placed inside ApplicationListeItemContentWrapper
 
+/**
+ * ApplicationListItemContentActionsProps
+ */
 interface ApplicationListItemContentActionsProps {
   modifiers?: string | Array<string>;
 }
 
+/**
+ * ApplicationListItemContentActions
+ */
 export class ApplicationListItemContentActions extends React.Component<ApplicationListItemContentActionsProps> {
+  /**
+   * Component render method
+   * @returns JSX.Elemeent
+   */
   render() {
     const modifiers =
       this.props.modifiers && this.props.modifiers instanceof Array
@@ -504,6 +631,9 @@ export class ApplicationListItemContentActions extends React.Component<Applicati
   }
 }
 
+/**
+ * ApplicationListItemContentDataProps
+ */
 interface ApplicationListItemContentDataProps
   extends React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLDivElement>,
@@ -512,11 +642,22 @@ interface ApplicationListItemContentDataProps
   modifiers?: string | Array<string>;
 }
 
+/**
+ * ApplicationListItemContentDataState
+ */
 interface ApplicationListItemContentDataState {}
+
+/**
+ * ApplicationListItemContentData
+ */
 export class ApplicationListItemContentData extends React.Component<
   ApplicationListItemContentDataProps,
   ApplicationListItemContentDataState
 > {
+  /**
+   * Component render method
+   * @returns JSX.Elemeent
+   */
   render() {
     const modifiers =
       this.props.modifiers && this.props.modifiers instanceof Array

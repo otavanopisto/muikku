@@ -1,5 +1,8 @@
 import * as React from "react";
 
+/**
+ * BubbleProps
+ */
 interface BubbleProps {
   modifier?: string;
   title: any;
@@ -7,9 +10,19 @@ interface BubbleProps {
   children: any;
 }
 
+/**
+ * BubbleState
+ */
 interface BubbleState {}
 
+/**
+ * Bubble
+ */
 export default class Bubble extends React.Component<BubbleProps, BubbleState> {
+  /**
+   * render
+   * @returns JSX.Elemenet
+   */
   render() {
     return (
       <div

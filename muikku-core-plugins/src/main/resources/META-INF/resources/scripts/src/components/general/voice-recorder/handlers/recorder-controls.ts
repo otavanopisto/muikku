@@ -26,6 +26,10 @@ export async function startRecording(setRecorderState: SetRecorder) {
   } catch (err) {}
 }
 
+/**
+ * saveRecording
+ * @param recorder recorder
+ */
 export function saveRecording(recorder: MediaRecorder) {
   if (recorder.state !== "inactive") {
     recorder.stop();

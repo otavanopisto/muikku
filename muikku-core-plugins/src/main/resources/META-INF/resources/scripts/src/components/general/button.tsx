@@ -6,6 +6,12 @@ import Link from "./link";
 const REACTIVATION_DELAY = 400;
 
 let reactivationDelayLastCalled = 0;
+
+/**
+ * reactivationDelayWrapper
+ * @param onClickFn onClickFn
+ * @param args args
+ */
 function reactivationDelayWrapper(
   onClickFn: (...args: any[]) => any,
   ...args: any[]
@@ -17,6 +23,9 @@ function reactivationDelayWrapper(
   reactivationDelayLastCalled = currentCall;
 }
 
+/**
+ * ButtonProps
+ */
 interface ButtonProps
   extends React.DetailedHTMLProps<
     React.AnchorHTMLAttributes<HTMLAnchorElement>,
@@ -34,9 +43,19 @@ interface ButtonProps
   openInNewTab?: string;
 }
 
+/**
+ * ButtonState
+ */
 interface ButtonState {}
 
+/**
+ * Button
+ */
 export default class Button extends React.Component<ButtonProps, ButtonState> {
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     const Element: any = this.props.buttonAs || Link;
     const elementProps: any = Object.assign({}, this.props);
@@ -66,7 +85,14 @@ export default class Button extends React.Component<ButtonProps, ButtonState> {
   }
 }
 
+/**
+ * ButtonSocial
+ */
 export class ButtonSocial extends React.Component<ButtonProps, ButtonState> {
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     const Element = this.props.buttonAs || Link;
     const elementProps: any = Object.assign({}, this.props);
@@ -96,11 +122,21 @@ export class ButtonSocial extends React.Component<ButtonProps, ButtonState> {
   }
 }
 
+/**
+ * ButtonPillProps
+ */
 interface ButtonPillProps extends ButtonProps {
   icon?: string;
 }
 
+/**
+ * ButtonPill
+ */
 export class ButtonPill extends React.Component<ButtonPillProps, ButtonState> {
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     const Element = this.props.buttonAs || Link;
     const elementProps: any = Object.assign({}, this.props);
@@ -136,11 +172,21 @@ export class ButtonPill extends React.Component<ButtonPillProps, ButtonState> {
   }
 }
 
+/**
+ * IconButtonProps
+ */
 interface IconButtonProps extends ButtonProps {
   icon: string;
 }
 
+/**
+ * IconButton
+ */
 export class IconButton extends React.Component<IconButtonProps, ButtonState> {
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     const Element = this.props.buttonAs || Link;
     const elementProps: any = Object.assign({}, this.props);

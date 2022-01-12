@@ -15,6 +15,11 @@ import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
 import { StateType } from "~/reducers";
 
+/**
+ * checkLinkClicked
+ * @param target target
+ * @returns boolean
+ */
 function checkLinkClicked(target: HTMLElement): boolean {
   return (
     target.nodeName.toLowerCase() === "a" ||
@@ -27,6 +32,9 @@ import "~/sass/elements/menu.scss";
 import "~/sass/elements/link.scss";
 import { getUserImageUrl } from "~/util/modifiers";
 
+/**
+ * DrawerProps
+ */
 interface DrawerProps {
   open: boolean;
   onClose: () => any;
@@ -38,6 +46,9 @@ interface DrawerProps {
   logout: LogoutTriggerType;
 }
 
+/**
+ * DrawerState
+ */
 interface DrawerState {
   displayed: boolean;
   visible: boolean;
@@ -46,11 +57,19 @@ interface DrawerState {
   open: boolean;
 }
 
+/**
+ * Drawer
+ */
 class Drawer extends React.Component<DrawerProps, DrawerState> {
   private touchCordX: number;
   private touchCordY: number;
   private touchMovementX: number;
   private preventXMovement: boolean;
+
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: DrawerProps) {
     super(props);
 
@@ -69,6 +88,11 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
       open: props.open,
     };
   }
+
+  /**
+   * componentWillReceiveProps
+   * @param nextProps nextProps
+   */
   componentWillReceiveProps(nextProps: DrawerProps) {
     if (nextProps.open && !this.state.open) {
       this.open();
@@ -76,6 +100,11 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
       this.close();
     }
   }
+
+  /**
+   * onTouchStart
+   * @param e e
+   */
   onTouchStart(e: React.TouchEvent<any>) {
     this.setState({ dragging: true });
     this.touchCordX = e.changedTouches[0].pageX;
@@ -84,6 +113,11 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
     this.preventXMovement = false;
     e.preventDefault();
   }
+
+  /**
+   * onTouchMove
+   * @param e e
+   */
   onTouchMove(e: React.TouchEvent<any>) {
     let diffX = e.changedTouches[0].pageX - this.touchCordX;
     const diffY = e.changedTouches[0].pageY - this.touchCordY;
@@ -108,6 +142,11 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
     }
     e.preventDefault();
   }
+
+  /**
+   * onTouchEnd
+   * @param e e
+   */
   onTouchEnd(e: React.TouchEvent<any>) {
     const width = $(this.refs["menuContainer"]).width();
     const diff = this.state.drag;
@@ -132,6 +171,10 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
     }, 10);
     e.preventDefault();
   }
+
+  /**
+   * open
+   */
   open() {
     this.setState({ displayed: true, open: true });
     setTimeout(() => {
@@ -139,6 +182,11 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
     }, 10);
     $(document.body).css({ overflow: "hidden" });
   }
+
+  /**
+   * closeByOverlay
+   * @param e e
+   */
   closeByOverlay(e: React.MouseEvent<any>) {
     const isOverlay = e.target === e.currentTarget;
     const isLink = checkLinkClicked(e.target as HTMLElement);
@@ -146,6 +194,10 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
       this.close();
     }
   }
+
+  /**
+   * close
+   */
   close() {
     $(document.body).css({ overflow: "" });
     this.setState({ visible: false });
@@ -154,6 +206,11 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
       this.props.onClose();
     }, 300);
   }
+
+  /**
+   * render
+   * @returns JSX.Element
+   */
   render() {
     return (
       <div
@@ -293,6 +350,11 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ * @returns object
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -300,6 +362,11 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ * @returns object
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators({ logout }, dispatch);
 }

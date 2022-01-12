@@ -1,5 +1,8 @@
 import * as React from "react";
 
+/**
+ * ApplicationPanelBodyProps
+ */
 interface ApplicationPanelBodyProps {
   modifier?: string;
   primaryOption?: React.ReactElement<any> | Array<React.ReactElement<any>>;
@@ -12,15 +15,30 @@ interface ApplicationPanelBodyProps {
   children?: React.ReactElement<any> | Array<React.ReactElement<any>>;
 }
 
+/**
+ * ApplicationPanelBodyState
+ */
 interface ApplicationPanelBodyState {}
 
+/**
+ * ApplicationPanelBody
+ */
 export default class ApplicationPanelBody extends React.Component<
   ApplicationPanelBodyProps,
   ApplicationPanelBodyState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: ApplicationPanelBodyProps) {
     super(props);
   }
+
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     const {
       modifier,

@@ -49,20 +49,31 @@ const PLUGINS = {
 };
 const pluginsLoaded: any = {};
 
+/**
+ * CKEditorProps
+ */
 interface CKEditorProps {
   configuration?: any;
   ancestorHeight?: number;
-  onChange(arg: string): any;
-  onDrop?(): any;
+  onChange: (arg: string) => any;
+  onDrop?: () => any;
   children?: string;
   autofocus?: boolean;
   editorTitle?: string;
 }
 
+/**
+ * CKEditorState
+ */
 interface CKEditorState {
   contentHeight: number;
 }
 
+/**
+ * extraConfig
+ * @param props props
+ * @returns CKEditor config object
+ */
 const extraConfig = (props: CKEditorProps) => ({
   startupFocus: props.autofocus,
   title: props.editorTitle ? props.editorTitle : "",
@@ -102,6 +113,9 @@ const extraConfig = (props: CKEditorProps) => ({
   removePlugins: "exportpdf",
 });
 
+/**
+ * CKEditor
+ */
 export default class CKEditor extends React.Component<
   CKEditorProps,
   CKEditorState
@@ -114,6 +128,10 @@ export default class CKEditor extends React.Component<
   private timeoutProps: CKEditorProps;
   private previouslyAppliedConfig: any;
 
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: CKEditorProps) {
     super(props);
 
@@ -126,9 +144,71 @@ export default class CKEditor extends React.Component<
 
     this.onDataChange = this.onDataChange.bind(this);
   }
+
+  /**
+   * componentDidMount
+   */
   componentDidMount() {
     this.setupCKEditor();
   }
+
+  /**
+   * componentWillUnmount
+   */
+  componentWillUnmount() {
+    if (this.props.configuration && this.props.configuration.baseHref) {
+      const base = document.getElementById("basehref") as HTMLBaseElement;
+      if (base) {
+        document.head.removeChild(base);
+      }
+    }
+
+    if (!getCKEDITOR()) {
+      clearTimeout(this.timeout);
+      return;
+    }
+    if (getCKEDITOR().instances[this.name]) {
+      getCKEDITOR().instances[this.name].destroy();
+    }
+  }
+
+  /**
+   * componentWillReceiveProps
+   * @param nextProps nextProps
+   */
+  componentWillReceiveProps(nextProps: CKEditorProps) {
+    if (this.timeoutProps) {
+      this.timeoutProps = nextProps;
+      return;
+    }
+
+    const configObj = {
+      ...extraConfig(nextProps),
+      ...(nextProps.configuration || {}),
+    };
+
+    if (!equals(configObj, this.previouslyAppliedConfig)) {
+      getCKEDITOR().instances[this.name].destroy();
+      this.setupCKEditor(nextProps);
+    } else if ((nextProps.children || "") !== this.currentData) {
+      this.enableCancelChangeTrigger();
+      getCKEDITOR().instances[this.name].setData(nextProps.children || "");
+    }
+  }
+
+  /**
+   * shouldComponentUpdate
+   * @returns boolean
+   */
+  shouldComponentUpdate() {
+    //this element is managed from componentWillReceiveProps
+    return false;
+  }
+
+  /**
+   * onDataChange
+   * @param props props
+   */
   onDataChange(props: CKEditorProps = this.props) {
     if (this.cancelChangeTrigger) {
       return;
@@ -144,6 +224,11 @@ export default class CKEditor extends React.Component<
       props.onChange(data);
     }
   }
+
+  /**
+   * setupCKEditor
+   * @param props props
+   */
   setupCKEditor(props: CKEditorProps = this.props) {
     const configObj = { ...extraConfig(props), ...(props.configuration || {}) };
     if (!getCKEDITOR()) {
@@ -179,6 +264,7 @@ export default class CKEditor extends React.Component<
         document.head.appendChild(newBase);
       }
     }
+
     getCKEDITOR().replace(this.name, configObj);
     getCKEDITOR().instances[this.name].on("change", () => {
       this.onDataChange();
@@ -254,57 +340,31 @@ export default class CKEditor extends React.Component<
     });
   }
 
+  /**
+   * updateCKEditor
+   * @param data data
+   */
   updateCKEditor(data: string) {
     if (!getCKEDITOR()) {
       return;
     }
     getCKEDITOR().instances[this.name].setData(data);
   }
-  componentWillUnmount() {
-    if (this.props.configuration && this.props.configuration.baseHref) {
-      const base = document.getElementById("basehref") as HTMLBaseElement;
-      if (base) {
-        document.head.removeChild(base);
-      }
-    }
 
-    if (!getCKEDITOR()) {
-      clearTimeout(this.timeout);
-      return;
-    }
-    if (getCKEDITOR().instances[this.name]) {
-      getCKEDITOR().instances[this.name].destroy();
-    }
-  }
+  /**
+   * enableCancelChangeTrigger
+   */
   enableCancelChangeTrigger() {
     setTimeout(() => {
       this.cancelChangeTrigger = false;
     }, 300);
     this.cancelChangeTrigger = true;
   }
-  componentWillReceiveProps(nextProps: CKEditorProps) {
-    if (this.timeoutProps) {
-      this.timeoutProps = nextProps;
-      return;
-    }
 
-    const configObj = {
-      ...extraConfig(nextProps),
-      ...(nextProps.configuration || {}),
-    };
-
-    if (!equals(configObj, this.previouslyAppliedConfig)) {
-      getCKEDITOR().instances[this.name].destroy();
-      this.setupCKEditor(nextProps);
-    } else if ((nextProps.children || "") !== this.currentData) {
-      this.enableCancelChangeTrigger();
-      getCKEDITOR().instances[this.name].setData(nextProps.children || "");
-    }
-  }
-  shouldComponentUpdate() {
-    //this element is managed from componentWillReceiveProps
-    return false;
-  }
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     return <textarea className="cke" ref="ckeditor" name={this.name} />;
   }

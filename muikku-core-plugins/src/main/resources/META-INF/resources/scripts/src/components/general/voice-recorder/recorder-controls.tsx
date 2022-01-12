@@ -7,6 +7,9 @@ import { connect, Dispatch } from "react-redux";
 import { AnyActionType } from "~/actions/index";
 import { i18nType } from "~/reducers/base/i18n";
 
+/**
+ * RecorderControlsProps
+ */
 export interface RecorderControlsProps {
   recorderState: Recorder;
   handlers: {

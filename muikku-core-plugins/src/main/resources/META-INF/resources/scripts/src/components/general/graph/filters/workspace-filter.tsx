@@ -4,6 +4,9 @@ import * as React from "react";
 import Dropdown from "~/components/general/dropdown";
 import { StateType } from "~/reducers";
 
+/**
+ * WorkspaceFilterProps
+ */
 interface WorkspaceFilterProps {
   i18n: i18nType;
   workspaces: { id: number; name: string; isEmpty: boolean }[];
@@ -14,10 +17,22 @@ interface WorkspaceFilterProps {
   completedWorkspaceHandler?: any;
 }
 
+/**
+ * WorkspaceFilter
+ */
 class WorkspaceFilter extends React.Component<WorkspaceFilterProps> {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: WorkspaceFilterProps) {
     super(props);
   }
+
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     const items: JSX.Element[] = [];
     items.push(
@@ -124,6 +139,11 @@ class WorkspaceFilter extends React.Component<WorkspaceFilterProps> {
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ * @returns object
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,

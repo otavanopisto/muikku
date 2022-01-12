@@ -9,22 +9,39 @@ import { CarouselProvider, Slider, Slide, DotGroup } from "pure-react-carousel";
 import "pure-react-carousel/dist/react-carousel.es.css";
 import "~/sass/elements/carousel.scss";
 
+/**
+ * CarouselProps
+ */
 interface CarouselProps {
   totalSlides: number;
   naturalSlideWidth: number;
   naturalSlideHeight: number;
 }
 
+/**
+ * CarouselState
+ */
 interface CarouselState {}
 
+/**
+ * Carousel
+ */
 export default class Carousel extends React.Component<
   CarouselProps,
   CarouselState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: CarouselProps) {
     super(props);
   }
 
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     return (
       <div ref="carouselBaseRef">
@@ -43,10 +60,17 @@ export default class Carousel extends React.Component<
   }
 }
 
+/**
+ * CarouselItem
+ */
 export class CarouselItem extends React.Component<
   { index: number },
   Record<string, unknown>
 > {
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     return (
       <Slide index={this.props.index}>
@@ -56,10 +80,17 @@ export class CarouselItem extends React.Component<
   }
 }
 
+/**
+ * CarouselVideoItem
+ */
 export class CarouselVideoItem extends React.Component<
   { index: number },
   Record<string, unknown>
 > {
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     return (
       <Slide index={this.props.index}>
