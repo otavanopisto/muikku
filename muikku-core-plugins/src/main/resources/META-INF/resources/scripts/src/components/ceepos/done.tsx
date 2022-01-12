@@ -77,7 +77,7 @@ class CeeposDone extends React.Component<CeeposDoneProps, CeeposDoneState> {
     // Something else went wrong and we have no additional details nor any idea what went wrong.
     const unknownError = !paymentWasSuccessful && !paymentWasCancelled && !paymentWasErrored;
 
-    if (this.props.status) {
+    if (this.props.status != null) {
       feedbackData = (
         <div className="card__content card__content--ceepos">
           <div className="card__title card__title--ceepos">{this.props.i18n.text.get("plugin.ceepos.order.title")}</div>
