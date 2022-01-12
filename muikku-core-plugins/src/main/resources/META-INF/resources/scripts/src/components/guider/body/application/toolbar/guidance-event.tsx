@@ -6,7 +6,7 @@ import '~/sass/elements/link.scss';
 import { bindActionCreators } from "redux";
 import { StateType } from '~/reducers';
 import { GuiderType, GuiderStudentType } from "~/reducers/main-function/guider";
-import FullCalendar, { DateSelectArg } from '@fullcalendar/react';
+import FullCalendar, { DateSelectArg, EventClickArg } from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin, { EventResizeStopArg } from '@fullcalendar/interaction'
 import Button from '~/components/general/button';
@@ -14,12 +14,13 @@ import { getName } from '~/util/modifiers';
 import moment from "~/lib/moment";
 
 interface EventType {
-  date?: string,
   id?: string,
   title?: string,
   start?: string,
   overlap?: boolean,
   end?: string,
+  classNames?: string[],
+  description?: string,
   display?: "auto" | "background",
   backgroundColor?: string,
   resourceId?: string,
@@ -45,34 +46,58 @@ class GuidanceEvent extends React.Component<GuidanceEventProps, GuidanceEventSta
 
     this.state = {
       newEvents: [],
-      backgroundEvents: [],
-      locked: false,
+      backgroundEvents: [{
+        start: moment().day(0).toDate(),
+        end: moment().toDate(),
+        display: "background",
+        backgroundColor: "#cccccc"
+      },
+      {
+        start: moment().day(4).toDate(),
+        end: moment().day(5).toDate(),
+        display: "background",
+        backgroundColor: "#1db599"
+      }],
+      locked: true,
     }
+  }
+
+  handleEventClick = (eventClickInfo: EventClickArg) => {
+    const currentEvents = this.state.newEvents;
+    const newEvents = currentEvents.filter(event => event.id !== eventClickInfo.event.id);
+    const locked = newEvents.length === 0;
+    this.setState({ newEvents: newEvents, locked: locked });
+  }
+
+  saveEvents = (closeDialog: () => void) => {
+    console.log(this.state.newEvents);
+    closeDialog();
   }
 
   handleDateSelect = (arg: DateSelectArg) => {
     const currentEvents = this.state.newEvents;
-
-    if (!moment(arg.start).isBefore()) {
-      let newEvents = currentEvents.concat({
-        title: getName(this.props.guider.currentStudent.basic, true),
-        start: arg.startStr,
-        overlap: false,
-        end: arg.endStr,
-        id: this.props.guider.currentStudent.basic.id + arg.start.getTime().toString()
-      });
-      this.setState({ newEvents: newEvents });
-    }
+    let newEvents = currentEvents.concat({
+      title: getName(this.props.guider.currentStudent.basic, true),
+      description: "Ohjaussaika opiskelijalle",
+      start: arg.startStr,
+      classNames: ["env-dialog__guidance-event"],
+      overlap: false,
+      end: arg.endStr,
+      id: this.props.guider.currentStudent.basic.id + arg.start.getTime().toString()
+    });
+    this.setState({ newEvents: newEvents, locked: false });
   }
 
   render() {
     const content = () => <FullCalendar
+      ref={this.calendarRef}
       plugins={[timeGridPlugin, interactionPlugin]}
       initialView="timeGridWeek"
       select={this.handleDateSelect}
       selectable={true}
-      events={this.state.newEvents}
+      events={[...this.state.newEvents, ...this.state.backgroundEvents]}
       allDaySlot={false}
+      eventClick={this.handleEventClick}
       selectOverlap={false}
       locale={"fi"}
       slotMinTime={"09:00:00"}
@@ -82,17 +107,17 @@ class GuidanceEvent extends React.Component<GuidanceEventProps, GuidanceEventSta
       weekends={false}
       firstDay={1}
     />;
-    const footer = (closeDialog: () => any) => (
+    const footer = (closeDialog: () => void) => (
       <div className="env-dialog__actions env-dialog__actions--guidance-event">
         <Button
           buttonModifiers="dialog-execute"
-          onClick={() => alert("Muu")}
+          onClick={() => { this.saveEvents.bind(closeDialog()) }}
           disabled={this.state.locked} >
           {this.props.i18n.text.get('plugin.guider.user.addGuidanceEvent.button.save')}
         </Button>
         <Button buttonModifiers="dialog-cancel"
           onClick={closeDialog}
-          disabled={this.state.locked}>
+        >
           {this.props.i18n.text.get('plugin.guider.user.addGuidanceEvent.button.cancel')}
         </Button>
       </div>
