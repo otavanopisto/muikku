@@ -146,13 +146,13 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
                         <span className="application-list__header-primary application-list__header-primary--product">
                           <span className="application-list__header-primary-title"><b>{p.product.Description}</b></span>
                           <span className="application-list__header-primary-description">
-                            {this.props.i18n.text.get("plugin.guider.purchases.description." + p.state)}
+                            {this.props.i18n.text.get("plugin.profile.purchases.description." + p.state)}
                           </span>
                           <span className="application-list__header-primary-meta">
-                            <span>{this.props.i18n.text.get("plugin.guider.purchases.orderId")}: {p.id}</span>
-                            <span>{this.props.i18n.text.get("plugin.guider.purchases.date.created")}: {this.props.i18n.time.format(p.created)}</span>
+                            <span>{this.props.i18n.text.get("plugin.profile.purchases.orderId")}: {p.id}</span>
+                            <span>{this.props.i18n.text.get("plugin.profile.purchases.date.created")}: {this.props.i18n.time.format(p.created)}</span>
                             {p.paid ?
-                              <span>{this.props.i18n.text.get("plugin.guider.purchases.date.paid")}: {this.props.i18n.time.format(p.paid)}</span>
+                              <span>{this.props.i18n.text.get("plugin.profile.purchases.date.paid")}: {this.props.i18n.time.format(p.paid)}</span>
                               : null}
                           </span>
                         </span>
