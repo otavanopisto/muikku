@@ -172,7 +172,8 @@ public class NeverLoggedInNotificationStrategy extends AbstractTimedNotification
       if (studyStartDate == null) {
         continue;
       }
-      UserEntity studentEntity = userEntityController.findUserEntityById((long) result.get("userEntityId"));
+      Long userEntityId = new Long((int) result.get("userEntityId"));
+      UserEntity studentEntity = userEntityController.findUserEntityById(userEntityId);
       if (studentEntity == null) {
         continue;
       }
