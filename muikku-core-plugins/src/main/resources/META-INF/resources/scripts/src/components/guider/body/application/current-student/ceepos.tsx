@@ -351,7 +351,7 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
                           >{this.props.i18n.text.get("plugin.guider.purchase.deleteOrderLink")}</Button>
                       : null}
 
-                      {/* We show "COmplete order" button only if logged in user is ADMINISTRATOR */}
+                      {/* We show "Complete order" button only if logged in user is ADMINISTRATOR */}
                       {this.props.status.role === "ADMINISTRATOR" ?
                         <Button
                           onClick={this.beginOrderManualCompleteProcess.bind(this, p)}
