@@ -18,6 +18,7 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
+import fi.otavanopisto.muikku.schooldata.entity.EducationType;
 import fi.otavanopisto.muikku.schooldata.entity.Subject;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
@@ -83,7 +84,19 @@ public class WorkspaceIndexer {
       extra.put("published", workspaceEntity.getPublished());
       extra.put("access", workspaceEntity.getAccess());
       extra.put("isTemplate", Boolean.valueOf(workspace.isTemplate()));
-
+      
+      SchoolDataIdentifier educationTypeIdentifier = workspace.getEducationTypeIdentifier();
+      EducationType educationType = null;
+      String educationTypeName = null;
+      
+      if (workspace.getEducationTypeIdentifier() != null) {
+        educationType = courseMetaController.findEducationType(educationTypeIdentifier.getDataSource(), educationTypeIdentifier.getIdentifier());
+        if (educationType != null) {
+          educationTypeName = educationType.getName();
+        }
+        extra.put("educationTypeName", educationTypeName);
+      }
+      
       if (workspace.getSubjectIdentifier() != null) {
         Subject subject = courseMetaController.findSubject(workspace.getSchoolDataSource(), workspace.getSubjectIdentifier());
         extra.put("subject", subject.getName());
