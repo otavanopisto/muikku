@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { i18nType } from '~/reducers/base/i18n';
 import { GuiderType } from '~/reducers/main-function/guider';
 import { StateType } from '~/reducers';
+import { StatusType } from "~/reducers/base/status";
 
 import '~/sass/elements/application-list.scss';
 import '~/sass/elements/empty.scss';
@@ -22,10 +23,10 @@ import Dialog from '~/components/general/dialog';
 import Dropdown from '~/components/general/dropdown';
 import Link from '~/components/general/link';
 import Button from '~/components/general/button';
-import { isThisTypeNode } from 'typescript';
 
 interface CeeposProps {
   i18n: i18nType,
+  status: StatusType,
   guider: GuiderType,
   locale: string,
   doOrderForCurrentStudent: DoOrderForCurrentStudentTriggerType,
@@ -335,21 +336,32 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
                       <span>{this.props.i18n.text.get("plugin.guider.purchases.date.paid")}: {this.props.i18n.time.format(p.paid)}</span>
                       : null}
                   </span>
+
+                  {/* We show "Delete" and "Complete order" buttons only if purchase state is not COMPLETE */}
                   {p.state !== "COMPLETE" ?
-                  <span className="application-list__header-primary-actions">
-                    <Button
-                      onClick={this.beginOrderDeleteProcess.bind(this, p)}
-                      disabled={canOrderBeDeleted(p.state)}
-                      icon="trash"
-                      buttonModifiers={["delete-student-order", "fatal"]}
-                    >{this.props.i18n.text.get("plugin.guider.purchase.deleteOrderLink")}</Button>
-                    <Button
-                      onClick={this.beginOrderManualCompleteProcess.bind(this, p)}
-                      disabled={canOrderBeCompletedManually(p.state)}
-                      icon="forward"
-                      buttonModifiers={["complete-student-order", "execute"]}
-                    >{this.props.i18n.text.get("plugin.guider.purchase.completeOrderLink")}</Button>
-                  </span>
+                    <span className="application-list__header-primary-actions">
+
+                      {/* We show "Delete" button only if logged in user is ADMINISTRATOR or logged in user userEntityId is the same as purchase creator userId */}
+                      {this.props.status.role === "ADMINISTRATOR" || p.creator.userEntityId === this.props.status.userId ?
+                        <Button
+                          onClick={this.beginOrderDeleteProcess.bind(this, p)}
+                          disabled={canOrderBeDeleted(p.state)}
+                          icon="trash"
+                          buttonModifiers={["delete-student-order", "fatal"]}
+                          >{this.props.i18n.text.get("plugin.guider.purchase.deleteOrderLink")}</Button>
+                      : null}
+
+                      {/* We show "COmplete order" button only if logged in user is ADMINISTRATOR */}
+                      {this.props.status.role === "ADMINISTRATOR" ?
+                        <Button
+                          onClick={this.beginOrderManualCompleteProcess.bind(this, p)}
+                          disabled={canOrderBeCompletedManually(p.state)}
+                          icon="forward"
+                          buttonModifiers={["complete-student-order", "execute"]}
+                        >{this.props.i18n.text.get("plugin.guider.purchase.completeOrderLink")}</Button>
+                      : null}
+
+                    </span>
                   : null}
                 </span>
                 <span className="application-list__header-secondary">
@@ -400,7 +412,8 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     guider: state.guider,
-    locale: state.locales.current
+    locale: state.locales.current,
+    status: state.status
   }
 };
 
