@@ -38,6 +38,11 @@ public class SchoolDataIdentifier {
     return String.format("%s-%s", getDataSource(), getIdentifier());
   }
   
+  /**
+   * Produces this identifier as string if form "datasource/identifier".
+   * 
+   * Note the discrepancy with fromString.
+   */
   @Override
   public String toString() {
     return String.format("%s/%s", getDataSource(), getIdentifier());
@@ -56,6 +61,11 @@ public class SchoolDataIdentifier {
     return new SchoolDataIdentifier(identifier, dataSource);
   }
   
+  /**
+   * Returns SchoolDataIdentifier from string in form "identifier/datasource"
+   * 
+   * Note the discrepancy with toString.
+   */
   public static SchoolDataIdentifier fromString(String id) {
     int index = id == null ? -1 : id.indexOf('/');
     if (index == -1) {
