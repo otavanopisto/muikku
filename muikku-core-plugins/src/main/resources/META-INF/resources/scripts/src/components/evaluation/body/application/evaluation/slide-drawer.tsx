@@ -19,8 +19,8 @@ const defaultProps = {
 
 /**
  * SlideDrawer
- * @param param0
- * @returns
+ * @param props props
+ * @returns JSX.Element
  */
 const SlideDrawer: React.FC<SlideDrawerProps> = (props) => {
   props = { ...defaultProps, ...props };

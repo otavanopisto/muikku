@@ -64,7 +64,7 @@
     "jsdoc/require-param-type": 0,
     "jsdoc/require-returns-type": 0,
     "jsdoc/require-jsdoc": [
-      2,
+      1,
       {
         "contexts": ["TSMethodSignature", "TSInterfaceDeclaration"],
         "require": {
@@ -73,7 +73,8 @@
           "MethodDefinition": true,
           "FunctionExpression": true,
           "ArrowFunctionExpression": true
-        }
+        },
+        "enableFixer": true
       }
     ]
   }

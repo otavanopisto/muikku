@@ -19,6 +19,9 @@ import {
   updateEvaluationSearch,
 } from "~/actions/main-function/evaluation/evaluationActions";
 
+/**
+ * EvaluationToolbarProps
+ */
 interface EvaluationToolbarProps {
   i18n: i18nType;
   title: string;
@@ -27,15 +30,21 @@ interface EvaluationToolbarProps {
   setEvaluationFilters: SetEvaluationFilters;
 }
 
+/**
+ * EvaluationToolbarState
+ */
 interface EvaluationToolbarState {}
 
+/**
+ * EvaluationToolbar
+ */
 class EvaluationToolbar extends React.Component<
   EvaluationToolbarProps,
   EvaluationToolbarState
 > {
   /**
    * constructor
-   * @param props
+   * @param props props
    */
   constructor(props: EvaluationToolbarProps) {
     super(props);
@@ -51,6 +60,7 @@ class EvaluationToolbar extends React.Component<
 
   /**
    * handleCheckboxClick
+   * @param filter filter
    */
   handleCheckboxClick =
     (filter: keyof EvaluationFilters) =>

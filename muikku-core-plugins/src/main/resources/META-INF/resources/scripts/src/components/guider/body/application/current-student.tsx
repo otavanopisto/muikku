@@ -30,6 +30,9 @@ import {
   GuiderStudentUserProfileLabelType,
 } from "~/reducers/main-function/guider";
 
+/**
+ * CurrentStudentProps
+ */
 interface CurrentStudentProps {
   i18n: i18nType;
   guider: GuiderType;
@@ -37,17 +40,30 @@ interface CurrentStudentProps {
   displayNotification: DisplayNotificationTriggerType;
 }
 
+/**
+ * CurrentStudentState
+ */
 interface CurrentStudentState {}
 
+/**
+ * CurrentStudent
+ */
 class CurrentStudent extends React.Component<
   CurrentStudentProps,
   CurrentStudentState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: CurrentStudentProps) {
     super(props);
   }
 
   //TODO doesn't anyone notice that nor assessment requested, nor no passed courses etc... is available in this view
+  /**
+   * render
+   */
   render() {
     if (this.props.guider.currentStudent === null) {
       return null;
@@ -315,6 +331,11 @@ class CurrentStudent extends React.Component<
 
     const studentWorkspaces = <Workspaces />;
 
+    /**
+     * formDataGenerator
+     * @param file file
+     * @param formData formData
+     */
     const formDataGenerator = (file: File, formData: FormData) => {
       formData.append("upload", file);
       formData.append("title", file.name);
@@ -423,6 +444,10 @@ class CurrentStudent extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -430,6 +455,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     { addFileToCurrentStudent, displayNotification },

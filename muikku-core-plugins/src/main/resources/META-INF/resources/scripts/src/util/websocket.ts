@@ -17,6 +17,9 @@ type ListenerType = {
   };
 };
 
+/**
+ * MuikkuWebsocket
+ */
 export default class MuikkuWebsocket {
   private options: any;
   private ticket: any;
@@ -39,6 +42,12 @@ export default class MuikkuWebsocket {
   private store: Store<any>;
   private reconnectHandler: NodeJS.Timer;
 
+  /**
+   * constructor
+   * @param store store
+   * @param listeners listeners
+   * @param options options
+   */
   constructor(
     store: Store<any>,
     listeners: ListenerType,
@@ -77,6 +86,13 @@ export default class MuikkuWebsocket {
     $(window).on("beforeunload", this.onBeforeWindowUnload.bind(this));
   }
 
+  /**
+   * sendMessage
+   * @param eventType eventType
+   * @param data data
+   * @param onSent onSent
+   * @param stackId stackId
+   */
   sendMessage(
     eventType: string,
     data: any,
@@ -125,6 +141,13 @@ export default class MuikkuWebsocket {
     }
   }
 
+  /**
+   * queueMessage
+   * @param eventType eventType
+   * @param data data
+   * @param onSent onSent
+   * @param stackId stackId
+   */
   queueMessage(
     eventType: string,
     data: any,
@@ -146,6 +169,11 @@ export default class MuikkuWebsocket {
     }
   }
 
+  /**
+   * addEventListener
+   * @param event event
+   * @param actionCreator actionCreator
+   */
   addEventListener(event: string, actionCreator: Function) {
     const evtListeners = this.listeners[event] || {
       actions: [],
@@ -156,6 +184,11 @@ export default class MuikkuWebsocket {
     return this;
   }
 
+  /**
+   * removeEventCallback
+   * @param event event
+   * @param actionCreator actionCreator
+   */
   removeEventCallback(event: string, actionCreator: Function) {
     const index = this.listeners[event].callbacks.indexOf(actionCreator);
     if (index !== -1) {
@@ -163,6 +196,11 @@ export default class MuikkuWebsocket {
     }
   }
 
+  /**
+   * addEventCallback
+   * @param event event
+   * @param action action
+   */
   addEventCallback(event: string, action: Function) {
     const evtListeners = this.listeners[event] || {
       actions: [],
@@ -173,11 +211,19 @@ export default class MuikkuWebsocket {
     return this;
   }
 
+  /**
+   * restoreEventListeners
+   */
   restoreEventListeners() {
     this.listeners = this.baseListeners;
     return this;
   }
 
+  /**
+   * trigger
+   * @param event event
+   * @param data data
+   */
   trigger(event: any, data: any = null) {
     this.store.dispatch({
       type: "WEBSOCKET_EVENT",
@@ -208,6 +254,10 @@ export default class MuikkuWebsocket {
     }
   }
 
+  /**
+   * getTicket
+   * @param callback callback
+   */
   getTicket(callback: Function) {
     // Check if we have given up for good
     if (this.discarded) {
@@ -220,6 +270,9 @@ export default class MuikkuWebsocket {
         url: "/rest/websocket/ticket/" + this.ticket + "/check",
         type: "GET",
         cache: false,
+        /**
+         * success
+         */
         success: function () {
           callback(this.ticket);
         },
@@ -272,6 +325,10 @@ export default class MuikkuWebsocket {
     }
   }
 
+  /**
+   * createTicket
+   * @param callback callback
+   */
   createTicket(callback: Function) {
     // Check if we have given up for good
     if (this.discarded) {
@@ -281,15 +338,25 @@ export default class MuikkuWebsocket {
       url: "/rest/websocket/ticket",
       type: "GET",
       dataType: "text",
+      /**
+       * success
+       * @param data data
+       */
       success: function (data: any) {
         callback(data);
       },
+      /**
+       * error
+       */
       error: function () {
         callback();
       },
     });
   }
 
+  /**
+   * onWebSocketConnected
+   */
   onWebSocketConnected() {
     // Clear possible reconnection handler
     if (this.reconnectHandler) {
@@ -313,12 +380,18 @@ export default class MuikkuWebsocket {
     this.startPinging();
   }
 
+  /**
+   * onWebSocketError
+   */
   onWebSocketError() {
     if (!this.reconnecting && !this.discarded) {
       this.startReconnecting();
     }
   }
 
+  /**
+   * openWebSocket
+   */
   openWebSocket() {
     const host = window.location.host;
     const secure = location.protocol == "https:";
@@ -332,6 +405,10 @@ export default class MuikkuWebsocket {
     }
   }
 
+  /**
+   * createWebSocket
+   * @param url url
+   */
   createWebSocket(url: string) {
     if (typeof (<any>window).WebSocket !== "undefined") {
       return new WebSocket(url);
@@ -341,6 +418,9 @@ export default class MuikkuWebsocket {
     return null;
   }
 
+  /**
+   * startPinging
+   */
   startPinging() {
     this.pingHandler = setInterval(() => {
       // Skip just in case we would be closed or reconnecting
@@ -366,6 +446,9 @@ export default class MuikkuWebsocket {
     }, this.options.pingInterval);
   }
 
+  /**
+   * startReconnecting
+   */
   startReconnecting() {
     // Ignore if we are already busy reconnecting
     if (this.reconnecting || this.discarded) {
@@ -381,6 +464,9 @@ export default class MuikkuWebsocket {
     this.reconnect();
   }
 
+  /**
+   * reconnect
+   */
   reconnect() {
     // Skip if we are discarded already
     if (this.discarded) {
@@ -417,6 +503,10 @@ export default class MuikkuWebsocket {
     });
   }
 
+  /**
+   * discardCurrentWebSocket
+   * @param resetReconnectionParams resetReconnectionParams
+   */
   discardCurrentWebSocket(resetReconnectionParams: boolean) {
     // Inform everyone we're no longer open for business...
     const wasOpen = this.socketOpen;
@@ -455,6 +545,10 @@ export default class MuikkuWebsocket {
     }
   }
 
+  /**
+   * onWebSocketMessage
+   * @param event event
+   */
   onWebSocketMessage(event: any) {
     const message = JSON.parse(event.data);
     const eventType = message.eventType;
@@ -465,6 +559,9 @@ export default class MuikkuWebsocket {
     }
   }
 
+  /**
+   * onBeforeWindowUnload
+   */
   onBeforeWindowUnload() {
     this.discarded = true;
     this.discardCurrentWebSocket(true);

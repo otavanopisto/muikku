@@ -1,5 +1,8 @@
 import { ActionType } from "actions";
 
+/**
+ * VOPSRowItemType
+ */
 export interface VOPSRowItemType {
   courseNumber: number;
   description?: string;
@@ -12,12 +15,18 @@ export interface VOPSRowItemType {
   state: string;
 }
 
+/**
+ * VOPSRowType
+ */
 export interface VOPSRowType {
   subject: string;
   subjectIdentifier: string;
   items: Array<VOPSRowItemType>;
 }
 
+/**
+ * VOPSDataType
+ */
 export interface VOPSDataType {
   numMandatoryCourses: number;
   numCourses: number;
@@ -27,11 +36,19 @@ export interface VOPSDataType {
 
 export type VOPSStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
 
+/**
+ * VOPSType
+ */
 export interface VOPSType {
   status: VOPSStatusType;
   value: VOPSDataType;
 }
 
+/**
+ * vops
+ * @param state state
+ * @param action action
+ */
 export default function vops(
   state: VOPSType = {
     status: "WAIT",

@@ -17,6 +17,9 @@ import "~/sass/elements/link.scss";
 import AnswerMessageDrawer from "./message-editor/answer-message-drawer";
 import { MessageSignatureType } from "~/reducers/main-function/messages";
 
+/**
+ * MessageProps
+ */
 interface MessageProps {
   message: MessageType;
   status: StatusType;
@@ -25,11 +28,21 @@ interface MessageProps {
   labels?: MessageThreadLabelListType;
 }
 
+/**
+ * MessageState
+ */
 interface MessageState {
   openNewMessageType?: "person" | "all";
 }
 
+/**
+ * Message
+ */
 class Message extends React.Component<MessageProps, MessageState> {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: MessageProps) {
     super(props);
 

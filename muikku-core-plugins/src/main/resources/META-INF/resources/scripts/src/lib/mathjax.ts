@@ -4,6 +4,9 @@
  * Function type should be change to more specific type
  */
 
+/**
+ * queueJax
+ */
 export function queueJax() {
   if ((window as any).MathJax) {
     (window as any).MathJax.Hub.Queue(["Typeset", (window as any).MathJax.Hub]);
@@ -45,6 +48,9 @@ export const MATHJAXCONFIG = {
 export const MATHJAXSRC =
   "//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_SVG";
 
+/**
+ * loadMathJax
+ */
 export function loadMathJax() {
   const mathjaxScriptTag = document.querySelector(
     `script[src="${MATHJAXSRC}"]`
@@ -55,6 +61,7 @@ export function loadMathJax() {
   const script = document.createElement("script");
   script.src = MATHJAXSRC;
   script.async = true;
+  // eslint-disable-next-line
   script.onload = () => {
     (window as any).MathJax.Hub.Config(MATHJAXCONFIG);
     if (queue.length) {
@@ -65,6 +72,14 @@ export function loadMathJax() {
   document.head.appendChild(script);
 }
 
+/**
+ * toSVG
+ * @param element element
+ * @param errorSrc errorSrc
+ * @param cb cb
+ * @param placeholderSrc placeholderSrc
+ * @param placeholderCb placeholderCb
+ */
 export function toSVG(
   element: HTMLElement,
   errorSrc: string,
@@ -138,6 +153,9 @@ export function toSVG(
   });
 }
 
+/**
+ * getMQInterface
+ */
 export function getMQInterface() {
   return (window as any).MathQuill.getInterface(2);
 }

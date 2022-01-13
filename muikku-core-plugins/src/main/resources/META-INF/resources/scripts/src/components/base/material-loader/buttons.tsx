@@ -2,12 +2,19 @@ import * as React from "react";
 import { MaterialLoaderProps } from "~/components/base/material-loader";
 import Button from "~/components/general/button";
 
+/**
+ * MaterialLoaderButtonsProps
+ */
 interface MaterialLoaderButtonsProps extends MaterialLoaderProps {
   stateConfiguration: any;
   answerCheckable: boolean;
   answersVisible: boolean;
 }
 
+/**
+ * MaterialLoaderButtons
+ * @param props props
+ */
 export function MaterialLoaderButtons(props: MaterialLoaderButtonsProps) {
   const noAnswerOrStateConfig = !props.answerable || !props.stateConfiguration;
   if (noAnswerOrStateConfig) {

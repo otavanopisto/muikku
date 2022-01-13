@@ -14,6 +14,13 @@ const registry = {
   "^audio/": Audio,
 };
 
+/**
+ * BinaryMaterialLoader
+ * @param props props
+ * @param props.material material
+ * @param props.i18n i18n
+ * @param props.invisible invisible
+ */
 export default function BinaryMaterialLoader(props: {
   material: MaterialContentNodeType;
   i18n: i18nType;

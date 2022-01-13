@@ -14,11 +14,17 @@ import { StrMathJAX } from "../static/mathjax";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
 
+/**
+ * SorterFieldItemType
+ */
 interface SorterFieldItemType {
   id: string;
   name: string;
 }
 
+/**
+ * SorterFieldProps
+ */
 interface SorterFieldProps {
   type: string;
   content: {
@@ -45,6 +51,9 @@ interface SorterFieldProps {
   invisible?: boolean;
 }
 
+/**
+ * SorterFieldState
+ */
 interface SorterFieldState {
   items: Array<SorterFieldItemType>;
   selectedItem: SorterFieldItemType;
@@ -63,10 +72,17 @@ interface SorterFieldState {
   fieldSavedState: FieldStateStatus;
 }
 
+/**
+ * SorterField
+ */
 export default class SorterField extends React.Component<
   SorterFieldProps,
   SorterFieldState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: SorterFieldProps) {
     super(props);
 

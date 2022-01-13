@@ -8,16 +8,28 @@ import "~/sass/elements/logo.scss";
 import Button from "~/components/general/button";
 import Bubble from "~/components/general/bubble";
 
+/**
+ * FrontpageHeroProps
+ */
 interface FrontpageHeroProps {
   i18n: i18nType;
 }
 
+/**
+ * FrontpageHeroState
+ */
 interface FrontpageHeroState {}
 
+/**
+ * FrontpageHero
+ */
 export default class FrontpageHero extends React.Component<
   FrontpageHeroProps,
   FrontpageHeroState
 > {
+  /**
+   * render
+   */
   render() {
     return (
       <header className="hero hero--frontpage">

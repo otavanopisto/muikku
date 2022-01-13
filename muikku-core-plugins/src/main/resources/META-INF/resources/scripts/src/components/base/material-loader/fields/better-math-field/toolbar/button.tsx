@@ -1,5 +1,8 @@
 import * as React from "react";
 
+/**
+ * ToolbarButtonProps
+ */
 interface ToolbarButtonProps {
   className: string;
   image?: string;
@@ -9,16 +12,26 @@ interface ToolbarButtonProps {
   onTrigger: (e: React.MouseEvent<any> | React.TouchEvent<any>) => any;
 }
 
+/**
+ * ToolbarButtonState
+ */
 interface ToolbarButtonState {
   tooltipVisible: boolean;
 }
 
+/**
+ * ToolbarButton
+ */
 export default class ToolbarButton extends React.Component<
   ToolbarButtonProps,
   ToolbarButtonState
 > {
   avoidDuplicate: boolean;
   avoidDuplicateCaller: string;
+  /**
+   * constructor
+   * @param props
+   */
   constructor(props: ToolbarButtonProps) {
     super(props);
 
@@ -33,11 +46,21 @@ export default class ToolbarButton extends React.Component<
     this.onMouseLeave = this.onMouseLeave.bind(this);
     this.onTouchEnd = this.onTouchEnd.bind(this);
   }
+
+  /**
+   * toggleTooltip
+   * @param to to
+   */
   toggleTooltip(to: boolean) {
     this.setState({
       tooltipVisible: to,
     });
   }
+
+  /**
+   * onTouchStart
+   * @param e e
+   */
   onTouchStart(e: React.TouchEvent<any>) {
     //AVOID browser bug where they both trigger no matter what you do
     if (this.avoidDuplicate && this.avoidDuplicateCaller === "mousedown") {
@@ -52,6 +75,11 @@ export default class ToolbarButton extends React.Component<
     this.toggleTooltip(true);
     this.props.onTrigger(e);
   }
+
+  /**
+   * onMouseDown
+   * @param e e
+   */
   onMouseDown(e: React.MouseEvent<any>) {
     //AVOID browser bug where they both trigger no matter what you do
     if (this.avoidDuplicate && this.avoidDuplicateCaller === "touchstart") {
@@ -66,27 +94,51 @@ export default class ToolbarButton extends React.Component<
 
     this.props.onTrigger(e);
   }
+
+  /**
+   * disableMenu
+   * @param e e
+   */
   disableMenu(e: React.ChangeEvent<any>) {
     e.preventDefault();
     e.stopPropagation();
     return false;
   }
+
+  /**
+   * onMouseEnter
+   * @param e e
+   */
   onMouseEnter(e: React.MouseEvent<any>) {
     e.preventDefault();
 
     this.toggleTooltip(true);
   }
+
+  /**
+   * onMouseLeave
+   * @param e e
+   */
   onMouseLeave(e: React.MouseEvent<any>) {
     e.preventDefault();
 
     this.toggleTooltip(false);
   }
+
+  /**
+   * onTouchEnd
+   * @param e e
+   */
   onTouchEnd(e: React.TouchEvent<any>) {
     e.preventDefault();
 
     //A delay is added in touch devices
     setTimeout(() => this.toggleTooltip(false), 2000);
   }
+
+  /**
+   * render
+   */
   render() {
     return (
       <button

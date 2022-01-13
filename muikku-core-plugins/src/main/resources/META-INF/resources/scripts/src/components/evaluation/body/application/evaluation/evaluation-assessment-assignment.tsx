@@ -165,7 +165,7 @@ class EvaluationAssessmentAssignment extends React.Component<
 
   /**
    * updateMaterialEvaluationData
-   * @param data
+   * @param  assigmentSaveReturn
    */
   updateMaterialEvaluationData = (
     assigmentSaveReturn: AssignmentEvaluationSaveReturn
@@ -261,6 +261,8 @@ class EvaluationAssessmentAssignment extends React.Component<
 
   /**
    * handleOpenSlideDrawer
+   * @param assignmentId assignmentId
+   * @param assignmentType assignmentType
    */
   handleOpenSlideDrawer =
     (assignmentId: number, assignmentType: "EVALUATED" | "EXERCISE") => () => {
@@ -351,7 +353,7 @@ class EvaluationAssessmentAssignment extends React.Component<
 
   /**
    * assigmentGradeClass
-   * @param state
+   * @param compositeReply compositeReply
    * @returns classMod
    */
   assigmentGradeClass = (compositeReply?: MaterialCompositeRepliesType) => {
@@ -373,6 +375,7 @@ class EvaluationAssessmentAssignment extends React.Component<
 
   /**
    * renderAssignmentStatus
+   * @param compositeReply compositeReply
    * @returns JSX.Element
    */
   renderAssignmentMeta = (compositeReply?: MaterialCompositeRepliesType) => {
@@ -495,6 +498,9 @@ class EvaluationAssessmentAssignment extends React.Component<
     }
   };
 
+  /**
+   * render
+   */
   render() {
     const { compositeReply, showAsHidden } = this.props;
     const materialTypeClass = this.materialTypeClass();

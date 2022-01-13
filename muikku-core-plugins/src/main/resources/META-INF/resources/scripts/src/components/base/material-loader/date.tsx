@@ -3,6 +3,10 @@ import { MaterialLoaderProps } from "~/components/base/material-loader";
 
 type MaterialLoaderDateProps = MaterialLoaderProps;
 
+/**
+ * MaterialLoaderDate
+ * @param props props
+ */
 export function MaterialLoaderDate(props: MaterialLoaderDateProps) {
   const date =
     (props.material.evaluation && props.material.evaluation.evaluated) ||

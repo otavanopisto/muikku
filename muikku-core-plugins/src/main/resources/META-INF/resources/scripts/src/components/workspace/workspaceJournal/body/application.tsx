@@ -5,14 +5,11 @@ import HoverButton from "~/components/general/hover-button";
 import Toolbar from "./application/toolbar";
 import WorkspaceJournals from "./application/journals";
 import { i18nType } from "~/reducers/base/i18n";
-
 import "~/sass/elements/link.scss";
 import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/wcag.scss";
-
 import { StateType } from "~/reducers";
-
 import { WorkspaceType } from "~/reducers/workspaces";
 import { StatusType } from "~/reducers/base/status";
 import { getName } from "~/util/modifiers";
@@ -24,6 +21,9 @@ import {
 } from "~/actions/workspaces";
 import NewJournal from "~/components/workspace/workspaceJournal/dialogs/new-edit-journal";
 
+/**
+ * WorkspaceJournalApplicationProps
+ */
 interface WorkspaceJournalApplicationProps {
   aside: React.ReactElement<any>;
   i18n: i18nType;
@@ -32,12 +32,22 @@ interface WorkspaceJournalApplicationProps {
   loadCurrentWorkspaceJournalsFromServer: LoadCurrentWorkspaceJournalsFromServerTriggerType;
 }
 
+/**
+ * WorkspaceJournalApplicationState
+ */
 interface WorkspaceJournalApplicationState {}
 
+/**
+ * WorkspaceJournalApplication
+ */
 class WorkspaceJournalApplication extends React.Component<
   WorkspaceJournalApplicationProps,
   WorkspaceJournalApplicationState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: WorkspaceJournalApplicationProps) {
     super(props);
 
@@ -45,11 +55,18 @@ class WorkspaceJournalApplication extends React.Component<
       this.onWorkspaceJournalFilterChange.bind(this);
   }
 
+  /**
+   * onWorkspaceJournalFilterChange
+   * @param e e
+   */
   onWorkspaceJournalFilterChange(e: React.ChangeEvent<HTMLSelectElement>) {
     const newValue = parseInt(e.target.value) || null;
     this.props.loadCurrentWorkspaceJournalsFromServer(newValue);
   }
 
+  /**
+   * render
+   */
   render() {
     const title = this.props.i18n.text.get(
       "plugin.workspace.journal.pageTitle"
@@ -126,6 +143,10 @@ class WorkspaceJournalApplication extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -134,6 +155,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     { loadCurrentWorkspaceJournalsFromServer },

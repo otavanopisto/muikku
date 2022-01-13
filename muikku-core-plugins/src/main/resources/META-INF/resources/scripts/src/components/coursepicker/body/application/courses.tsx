@@ -21,6 +21,9 @@ import {
   WorkspaceType,
 } from "~/reducers/workspaces";
 
+/**
+ * CoursepickerWorkspacesProps
+ */
 interface CoursepickerWorkspacesProps {
   i18n: i18nType;
   workspacesState: WorkspacesStateType;
@@ -29,12 +32,22 @@ interface CoursepickerWorkspacesProps {
   workspaces: WorkspaceListType;
 }
 
+/**
+ * CoursepickerWorkspacesState
+ */
 interface CoursepickerWorkspacesState {}
 
+/**
+ * CoursepickerWorkspaces
+ */
 class CoursepickerWorkspaces extends BodyScrollLoader<
   CoursepickerWorkspacesProps,
   CoursepickerWorkspacesState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: CoursepickerWorkspacesProps) {
     super(props);
 
@@ -46,6 +59,9 @@ class CoursepickerWorkspaces extends BodyScrollLoader<
     this.loadMoreTriggerFunctionLocation = "loadMoreWorkspacesFromServer";
   }
 
+  /**
+   * render
+   */
   render() {
     if (this.props.workspacesState === "LOADING") {
       return null;
@@ -80,6 +96,10 @@ class CoursepickerWorkspaces extends BodyScrollLoader<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -89,6 +109,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators({ loadMoreWorkspacesFromServer }, dispatch);
 }

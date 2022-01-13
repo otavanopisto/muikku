@@ -22,6 +22,9 @@ const startOfPreviousMonth = startOfCurrentMonth
   .startOf("month");
 const dayOfCurrentMonth: number = moment(new Date()).date();
 
+/**
+ * WorkListEditableProps
+ */
 interface WorkListEditableProps {
   i18n: i18nType;
   locales: LocaleListType;
@@ -40,6 +43,9 @@ interface WorkListEditableProps {
   currentMonthDayLimit: number;
 }
 
+/**
+ * WorksListEditableState
+ */
 interface WorksListEditableState {
   description: string;
   date: any;
@@ -47,10 +53,17 @@ interface WorksListEditableState {
   factor: string;
 }
 
+/**
+ * WorkListEditable
+ */
 class WorkListEditable extends React.Component<
   WorkListEditableProps,
   WorksListEditableState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: WorkListEditableProps) {
     super(props);
 
@@ -60,6 +73,10 @@ class WorkListEditable extends React.Component<
     this.updateOne = this.updateOne.bind(this);
     this.canSubmitOnInequality = this.canSubmitOnInequality.bind(this);
   }
+
+  /**
+   * submit
+   */
   public async submit() {
     const description = this.state.description.trim();
     const date = this.state.date.format("YYYY-MM-DD");
@@ -78,9 +95,17 @@ class WorkListEditable extends React.Component<
       this.setupState();
     }
   }
+
+  /**
+   * cancel
+   */
   public cancel() {
     this.props.onCancel();
   }
+
+  /**
+   * canSubmitOnInequality
+   */
   public canSubmitOnInequality() {
     const description = this.state.description.trim();
     const date = this.state.date.format("YYYY-MM-DD");
@@ -94,6 +119,12 @@ class WorkListEditable extends React.Component<
       this.props.base.factor !== factor
     );
   }
+
+  /**
+   * setupState
+   * @param props props
+   * @param setupPhase setupPhase
+   */
   public setupState(
     props: WorkListEditableProps = this.props,
     setupPhase = false
@@ -132,21 +163,42 @@ class WorkListEditable extends React.Component<
 
     return newState;
   }
+
+  /**
+   * componentDidUpdate
+   * @param prevProps prevProps
+   */
   public componentDidUpdate(prevProps: WorkListEditableProps) {
     if (prevProps.base !== this.props.base) {
       this.setupState();
     }
   }
+
+  /**
+   * updateOne
+   * @param which which
+   * @param e e
+   */
   public updateOne(which: string, e: React.ChangeEvent<HTMLInputElement>) {
     this.setState({
       [which]: e.target.value,
     } as any);
   }
+
+  /**
+   * handleDateChange
+   * @param which which
+   * @param newDate newDate
+   */
   public handleDateChange(which: string, newDate: any) {
     this.setState({
       [which]: newDate,
     } as any);
   }
+
+  /**
+   * render
+   */
   public render() {
     const disableSubmitButton = this.props.enableDisableSubmitOnEquality
       ? !this.canSubmitOnInequality()
@@ -303,6 +355,10 @@ class WorkListEditable extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     locales: state.locales,
@@ -310,6 +366,9 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ */
 function mapDispatchToProps() {
   return {};
 }

@@ -6,14 +6,26 @@ import { i18nType } from "~/reducers/base/i18n";
 
 import "~/sass/elements/producers.scss";
 
+/**
+ * ProducersProps
+ */
 interface ProducersProps {
   workspace: WorkspaceType;
   i18n: i18nType;
 }
 
+/**
+ * ProducersState
+ */
 interface ProducersState {}
 
+/**
+ * Producers
+ */
 class Producers extends React.Component<ProducersProps, ProducersState> {
+  /**
+   * render
+   */
   render() {
     if (
       !this.props.workspace ||
@@ -44,6 +56,10 @@ class Producers extends React.Component<ProducersProps, ProducersState> {
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -51,6 +67,9 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ */
 function mapDispatchToProps() {
   return {};
 }

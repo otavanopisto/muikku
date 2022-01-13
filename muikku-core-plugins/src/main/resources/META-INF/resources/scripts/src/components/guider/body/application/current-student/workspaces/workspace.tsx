@@ -15,15 +15,32 @@ import {
 } from "~/components/general/application-list";
 import { getShortenGradeExtension, shortenGrade } from "~/util/modifiers";
 
+/**
+ * StudentWorkspaceProps
+ */
 interface StudentWorkspaceProps {
   i18n: i18nType;
   workspace: WorkspaceType;
 }
 
+/**
+ * StudentWorkspaceState
+ */
 interface StudentWorkspaceState {
   activitiesVisible: boolean;
 }
 
+/**
+ * @param props props
+ * @param props.i18n i18n
+ * @param props.workspace workspace
+ * @param props.labelTranslationString labelTranslationString
+ * @param props.conditionalAttribute conditionalAttribute
+ * @param props.conditionalAttributeLocale  conditionalAttributeLocale
+ * @param props.givenDateAttribute givenDateAttribute
+ * @param props.givenDateAttributeLocale givenDateAttributeLocale
+ * @param props.mainAttribute mainAttribute
+ */
 function CourseActivityRow(props: {
   i18n: i18nType;
   workspace: WorkspaceType;
@@ -86,6 +103,11 @@ function CourseActivityRow(props: {
   );
 }
 
+/**
+ * getWorkspaceAssessmentsAndPercents
+ * @param props props
+ * @param workspace workspace
+ */
 function getWorkspaceAssessmentsAndPercents(
   props: StudentWorkspaceProps,
   workspace: WorkspaceType
@@ -197,10 +219,17 @@ function getWorkspaceAssessmentsAndPercents(
   }
 }
 
+/**
+ *  StudentWorkspace
+ */
 class StudentWorkspace extends React.Component<
   StudentWorkspaceProps,
   StudentWorkspaceState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: StudentWorkspaceProps) {
     super(props);
 
@@ -210,11 +239,19 @@ class StudentWorkspace extends React.Component<
 
     this.toggleActivitiesVisible = this.toggleActivitiesVisible.bind(this);
   }
+
+  /**
+   * toggleActivitiesVisible
+   */
   toggleActivitiesVisible() {
     this.setState({
       activitiesVisible: !this.state.activitiesVisible,
     });
   }
+
+  /**
+   * render
+   */
   render() {
     const workspace = this.props.workspace;
 
@@ -411,12 +448,19 @@ class StudentWorkspace extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
   };
 }
 
+/**
+ * mapDispatchToProps
+ */
 function mapDispatchToProps() {
   return {};
 }

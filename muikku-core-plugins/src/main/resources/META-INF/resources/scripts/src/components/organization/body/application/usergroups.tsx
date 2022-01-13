@@ -15,6 +15,9 @@ import {
 import { UserGroupType } from "~/reducers/user-index";
 import useInfinityScroll from "~/hooks/useInfinityScroll";
 
+/**
+ * OrganizationUserGroupsProps
+ */
 interface OrganizationUserGroupsProps {
   i18n: i18nType;
   userGroups: Array<UserGroupType>;
@@ -23,6 +26,10 @@ interface OrganizationUserGroupsProps {
   loadMoreUserGroups: LoadMoreUserTriggerType;
 }
 
+/**
+ * OrganizationUserGroups
+ * @param props props
+ */
 const OrganizationUserGroups: React.FC<OrganizationUserGroupsProps> = (
   props
 ) => {
@@ -86,6 +93,10 @@ const OrganizationUserGroups: React.FC<OrganizationUserGroupsProps> = (
   );
 };
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -95,6 +106,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators({ loadMoreUserGroups }, dispatch);
 }

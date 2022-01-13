@@ -16,6 +16,9 @@ import { connect, Dispatch } from "react-redux";
 import { StateType } from "~/reducers";
 import { bindActionCreators } from "redux";
 
+/**
+ * CopyWizardProps
+ */
 interface CopyWizardProps {
   workspace: WorkspaceType;
   i18n: i18nType;
@@ -23,6 +26,9 @@ interface CopyWizardProps {
   onDone: () => any;
 }
 
+/**
+ * CopyWizardState
+ */
 interface CopyWizardState {
   store: CopyWizardStoreType;
   locked: boolean;
@@ -30,6 +36,9 @@ interface CopyWizardState {
   step?: CopyCurrentWorkspaceStepType;
 }
 
+/**
+ * CopyWizardStoreType
+ */
 export interface CopyWizardStoreType {
   description: string;
   name: string;
@@ -43,8 +52,15 @@ export interface CopyWizardStoreType {
 
 export type CopyWizardStoreUpdateType = Partial<CopyWizardStoreType>;
 
+/**
+ * CopyWizard
+ */
 class CopyWizard extends React.Component<CopyWizardProps, CopyWizardState> {
   private store: CopyWizardStoreType;
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: CopyWizardProps) {
     super(props);
 
@@ -74,10 +90,17 @@ class CopyWizard extends React.Component<CopyWizardProps, CopyWizardState> {
     this.copyWorkspace = this.copyWorkspace.bind(this);
   }
 
+  /**
+   * getStore
+   */
   getStore() {
     return this.state.store;
   }
 
+  /**
+   * updateStore
+   * @param update update
+   */
   updateStore(update: CopyWizardStoreUpdateType) {
     this.setState({
       store: {
@@ -87,6 +110,9 @@ class CopyWizard extends React.Component<CopyWizardProps, CopyWizardState> {
     });
   }
 
+  /**
+   * copyWorkspace
+   */
   copyWorkspace() {
     this.setState({
       locked: true,
@@ -107,6 +133,11 @@ class CopyWizard extends React.Component<CopyWizardProps, CopyWizardState> {
       copyDiscussionAreas: this.state.store.copyDiscussionAreas,
       copyMaterials: this.state.store.copyMaterials,
       copyBackgroundPicture: this.state.store.copyBackgroundPicture,
+      /**
+       * success
+       * @param step step
+       * @param workspace workspace
+       */
       success: (step, workspace) => {
         this.setState({
           step,
@@ -117,6 +148,9 @@ class CopyWizard extends React.Component<CopyWizardProps, CopyWizardState> {
           });
         }
       },
+      /**
+       * fail
+       */
       fail: () => {
         this.setState({
           locked: false,
@@ -125,12 +159,20 @@ class CopyWizard extends React.Component<CopyWizardProps, CopyWizardState> {
     });
   }
 
+  /**
+   * checkLastStep
+   * @param steps steps
+   * @param step step
+   */
   checkLastStep(steps: Array<any>, step: number) {
     if (step === steps.length - 1) {
       this.copyWorkspace();
     }
   }
 
+  /**
+   * render
+   */
   render() {
     const props = {
       getStore: this.getStore,
@@ -195,6 +237,10 @@ class CopyWizard extends React.Component<CopyWizardProps, CopyWizardState> {
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -202,6 +248,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators({ copyCurrentWorkspace }, dispatch);
 }

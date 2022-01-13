@@ -11,6 +11,12 @@ import WorkListRow from "./work-list-row";
 import SubmitWorklistItemsDialog from "../../../dialogs/submit-worklist-items";
 import { i18nType } from "~/reducers/base/i18n";
 
+/**
+ * sortBy
+ * @param data data
+ * @param property property
+ * @param direction direction
+ */
 function sortBy(
   data: StoredWorklistItem[],
   property: string,
@@ -32,6 +38,9 @@ function sortBy(
   });
 }
 
+/**
+ * WorkListSectionProps
+ */
 interface WorkListSectionProps {
   section: WorklistSection;
   isExpanded: boolean;
@@ -43,6 +52,10 @@ interface WorkListSectionProps {
   i18n: i18nType;
 }
 
+/**
+ * WorkListSection
+ * @param props props
+ */
 export function WorkListSection(props: WorkListSectionProps) {
   const [sortByProperty, setSortByProperty] = React.useState(null);
   const [sortByDirection, setSortByDirection] = React.useState("desc");

@@ -5,11 +5,18 @@ import { UserGroupType, UserType } from "~/reducers/user-index";
 
 export type MessagesStateType = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";
 export type MessagesSearchResultFolderType = "INBOX" | "TRASH" | "SENT";
+/**
+ * MessageSignatureType
+ */
 export interface MessageSignatureType {
   id: number;
   name: string;
   signature: string;
 }
+
+/**
+ * MessageSearchResult
+ */
 export interface MessageSearchResult {
   caption: string;
   communicatorMessageId: number;
@@ -34,6 +41,10 @@ export interface MessageSearchResult {
   userGroupRecipients?: Array<UserGroupType>;
   workspaceRecipients?: Array<MessageWorkspaceRecipientType>;
 }
+
+/**
+ * MessageThreadLabelType
+ */
 export interface MessageThreadLabelType {
   id: number;
   labelColor: number;
@@ -42,6 +53,10 @@ export interface MessageThreadLabelType {
   messageThreadId: number;
   userEntityId: number;
 }
+
+/**
+ * MessageThreadLabelUpdateType
+ */
 export interface MessageThreadLabelUpdateType {
   id?: number;
   labelColor?: number;
@@ -50,8 +65,12 @@ export interface MessageThreadLabelUpdateType {
   messageThreadId?: number;
   userEntityId?: number;
 }
+
 export type MessageThreadLabelListType = Array<MessageThreadLabelType>;
 
+/**
+ * MessageThreadType
+ */
 export interface MessageThreadType {
   caption: string;
   categoryName: "message";
@@ -75,6 +94,10 @@ export interface MessageThreadType {
     workspaceName: string;
   }>;
 }
+
+/**
+ * MessageThreadUpdateType
+ */
 export interface MessageThreadUpdateType {
   communicatorMessageId?: number;
   senderId?: number;
@@ -88,12 +111,20 @@ export interface MessageThreadUpdateType {
   messageCountInThread?: number;
   labels?: MessageThreadLabelListType;
 }
+
+/**
+ * MessageThreadExpandedType
+ */
 export interface MessageThreadExpandedType {
   olderThreadId?: number;
   newerThreadId?: number;
   messages: Array<MessageType>;
   labels: MessageThreadLabelListType;
 }
+
+/**
+ * MessageType
+ */
 export interface MessageType {
   caption: string;
   categoryName: "message";
@@ -109,6 +140,10 @@ export interface MessageType {
   userGroupRecipients: Array<UserGroupType>;
   workspaceRecipients: Array<MessageWorkspaceRecipientType>;
 }
+
+/**
+ * MessageRecepientType
+ */
 export interface MessageRecepientType {
   communicatorMessageId: number;
   userEntityId: number;
@@ -119,6 +154,10 @@ export interface MessageRecepientType {
   archived?: boolean;
   studiesEnded?: boolean;
 }
+
+/**
+ * MessageWorkspaceRecipientType
+ */
 export interface MessageWorkspaceRecipientType {
   archetype: string;
   workspaceEntityId: number;
@@ -127,24 +166,39 @@ export interface MessageWorkspaceRecipientType {
 }
 export type MessageThreadListType = Array<MessageThreadType>;
 
+/**
+ * MessagesNavigationItemUpdateType
+ */
 export interface MessagesNavigationItemUpdateType {
   location?: string;
   type?: string;
   id?: string | number;
   icon?: string;
   color?: string;
+  /**
+   *
+   */
   text?(i18n: i18nType): string;
 }
 
+/**
+ * MessagesNavigationItemType
+ */
 export interface MessagesNavigationItemType {
   location: string;
   type: string;
   id: string | number;
   icon: string;
   color?: string;
+  /**
+   *
+   */
   text(i18n: i18nType): string;
 }
 
+/**
+ * LabelType
+ */
 export interface LabelType {
   id: number;
   color: number;
@@ -161,6 +215,10 @@ const defaultNavigation: MessagesNavigationItemListType = [
     type: "folder",
     id: "inbox",
     icon: "folder",
+    /**
+     * text
+     * @param i18n i18n
+     */
     text(i18n: i18nType): string {
       return i18n.text.get("plugin.communicator.category.title.inbox");
     },
@@ -170,6 +228,10 @@ const defaultNavigation: MessagesNavigationItemListType = [
     type: "folder",
     id: "unread",
     icon: "folder",
+    /**
+     * text
+     * @param i18n i18n
+     */
     text(i18n: i18nType): string {
       return i18n.text.get("plugin.communicator.category.title.unread");
     },
@@ -179,6 +241,10 @@ const defaultNavigation: MessagesNavigationItemListType = [
     type: "folder",
     id: "sent",
     icon: "folder",
+    /**
+     * text
+     * @param i18n i18n
+     */
     text(i18n: i18nType): string {
       return i18n.text.get("plugin.communicator.category.title.sent");
     },
@@ -188,12 +254,18 @@ const defaultNavigation: MessagesNavigationItemListType = [
     type: "folder",
     id: "trash",
     icon: "trash-alt",
+    /**
+     * @param i18n
+     */
     text(i18n: i18nType): string {
       return i18n.text.get("plugin.communicator.category.title.trash");
     },
   },
 ];
 
+/**
+ * MessagesType
+ */
 export interface MessagesType {
   state: MessagesStateType;
   searchMessages: MessageSearchResult[];
@@ -211,6 +283,9 @@ export interface MessagesType {
   unreadThreadCount: number;
 }
 
+/**
+ * MessagesPatchType
+ */
 export interface MessagesPatchType {
   state?: MessagesStateType;
   searchMessages?: MessageSearchResult[];
@@ -227,6 +302,11 @@ export interface MessagesPatchType {
   query?: string;
 }
 
+/**
+ * sortNavigationItems
+ * @param itemA itemA
+ * @param itemB itemB
+ */
 function sortNavigationItems(
   itemA: MessagesNavigationItemType,
   itemB: MessagesNavigationItemType
@@ -248,6 +328,11 @@ function sortNavigationItems(
     : 0;
 }
 
+/**
+ * messages
+ * @param state state
+ * @param action action
+ */
 export default function messages(
   state: MessagesType = {
     state: "LOADING",

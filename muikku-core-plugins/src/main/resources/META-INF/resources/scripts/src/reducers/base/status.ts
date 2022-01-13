@@ -7,6 +7,9 @@
 import $ from "~/lib/jquery";
 import { ActionType } from "~/actions";
 
+/**
+ * WhoAmIType
+ */
 export interface WhoAmIType {
   studyTimeEnd: string;
   studyTimeLeftStr: string;
@@ -30,6 +33,9 @@ export interface WhoAmIType {
   emails: string;
 }
 
+/**
+ * StatusType
+ */
 export interface StatusType {
   loggedIn: boolean;
   userId: number;
@@ -64,6 +70,9 @@ export interface StatusType {
   currentWorkspaceId: number;
 }
 
+/**
+ * ProfileStatusType
+ */
 export interface ProfileStatusType {
   displayName: string;
   loggedUserName: string;
@@ -82,6 +91,11 @@ const workspaceIdNode = document.querySelector(
 const roleNode = document.querySelector('meta[name="muikku:role"]');
 
 // _MUIKKU_LOCALE should be taken from the html
+/**
+ * status
+ * @param state state
+ * @param action action
+ */
 export default function status(
   state: StatusType = {
     loggedIn: JSON.parse(

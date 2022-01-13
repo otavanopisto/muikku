@@ -8,6 +8,9 @@ import Dropdown from "~/components/general/dropdown";
 import Link from "~/components/general/link";
 import DeleteMessageDialog from "./deleteMessageDialog";
 
+/**
+ * IChatUserInfoType
+ */
 interface IChatUserInfoType {
   name: string;
   nick: string;
@@ -18,6 +21,9 @@ const USER_INFO_CACHE: {
   [key: string]: IChatUserInfoType;
 } = {};
 
+/**
+ * IChatMessageProps
+ */
 interface IChatMessageProps {
   canToggleInfo: boolean;
   message: IBareMessageType;
@@ -28,6 +34,9 @@ interface IChatMessageProps {
   chatType: string;
 }
 
+/**
+ * IChatMessageState
+ */
 interface IChatMessageState {
   showInfo: boolean;
   realName: string;
@@ -38,6 +47,9 @@ interface IChatMessageState {
   deleteMessageDialogOpen: boolean;
 }
 
+/**
+ * ChatMessage
+ */
 export class ChatMessage extends React.Component<
   IChatMessageProps,
   IChatMessageState
@@ -45,6 +57,10 @@ export class ChatMessage extends React.Component<
   private unmounted = false;
   private contentEditableRef: React.RefObject<HTMLDivElement>;
 
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: IChatMessageProps) {
     super(props);
 
@@ -68,6 +84,10 @@ export class ChatMessage extends React.Component<
     this.placeCaretToEnd = this.placeCaretToEnd.bind(this);
     this.onContentEditableKeyDown = this.onContentEditableKeyDown.bind(this);
   }
+
+  /**
+   * toggleInfo
+   */
   async toggleInfo() {
     if (this.state.showInfo) {
       this.setState({
@@ -98,9 +118,18 @@ export class ChatMessage extends React.Component<
       });
     }
   }
+
+  /**
+   * componentWillUnmount
+   */
   componentWillUnmount() {
     this.unmounted = true;
   }
+
+  /**
+   * toggleDeleteMessageDialog
+   * @param e e
+   */
   toggleDeleteMessageDialog(e?: React.MouseEvent) {
     e && e.stopPropagation();
     e && e.preventDefault();
@@ -111,9 +140,17 @@ export class ChatMessage extends React.Component<
       });
     }
   }
+
+  /**
+   * onMessageDeleted
+   */
   onMessageDeleted() {
     this.props.deleteMessage(this.props.message.stanzaId);
   }
+
+  /**
+   * getMessageModerationListDropdown
+   */
   getMessageModerationListDropdown() {
     const messageModerationItemsOptions: Array<any> = [
       {
@@ -135,6 +172,10 @@ export class ChatMessage extends React.Component<
 
     return messageModerationItemsOptions;
   }
+
+  /**
+   * toggleMessageEditMode
+   */
   toggleMessageEditMode() {
     if (this.state.messageIsInEditMode) {
       this.setState({
@@ -151,6 +192,11 @@ export class ChatMessage extends React.Component<
       );
     }
   }
+
+  /**
+   * onMessageEdited
+   * @param e e
+   */
   onMessageEdited(e: React.MouseEvent) {
     e.preventDefault();
     let finalText = "";
@@ -166,6 +212,11 @@ export class ChatMessage extends React.Component<
     this.toggleMessageEditMode();
     this.props.editMessage(this.props.message.stanzaId, finalText);
   }
+
+  /**
+   * placeCaretToEnd
+   * @param event event
+   */
   placeCaretToEnd(event: React.FocusEvent) {
     const e = event.currentTarget;
     const range = document.createRange();
@@ -175,6 +226,11 @@ export class ChatMessage extends React.Component<
     sel.removeAllRanges();
     sel.addRange(range);
   }
+
+  /**
+   * onContentEditableKeyDown
+   * @param event event
+   */
   onContentEditableKeyDown(event: React.KeyboardEvent) {
     if (event.key === "Enter" && !event.shiftKey) {
       event.stopPropagation();
@@ -185,6 +241,10 @@ export class ChatMessage extends React.Component<
       this.toggleMessageEditMode();
     }
   }
+
+  /**
+   * render
+   */
   render() {
     const senderClass = this.props.message.isSelf ? "sender-me" : "sender-them";
     const messageDeletedClass = this.props.message.deleted

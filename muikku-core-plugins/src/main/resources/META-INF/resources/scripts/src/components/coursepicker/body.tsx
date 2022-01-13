@@ -4,14 +4,26 @@ import Aside from "./body/aside";
 
 import * as React from "react";
 
+/**
+ * CoursepickerBodyProps
+ */
 interface CoursepickerBodyProps {}
 
+/**
+ * CoursepickerBodyState
+ */
 interface CoursepickerBodyState {}
 
+/**
+ * CoursepickerBody
+ */
 export default class CoursepickerBody extends React.Component<
   CoursepickerBodyProps,
   CoursepickerBodyState
 > {
+  /**
+   * render
+   */
   render() {
     const aside = <Aside />;
     return (

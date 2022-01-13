@@ -15,6 +15,9 @@ import {
   updateProfileWorklistItemsState,
 } from "~/actions/main-function/profile";
 
+/**
+ * SubmitWorklistItemsDialogProps
+ */
 interface SubmitWorklistItemsDialogProps {
   i18n: i18nType;
   summary: WorklistItemsSummary;
@@ -22,17 +25,32 @@ interface SubmitWorklistItemsDialogProps {
   updateProfileWorklistItemsState: UpdateProfileWorklistItemsStateTriggerType;
 }
 
+/**
+ * SubmitWorklistItemsDialogState
+ */
 interface SubmitWorklistItemsDialogState {}
 
+/**
+ * SubmitWorklistItemsDialog
+ */
 class SubmitWorklistItemsDialog extends React.Component<
   SubmitWorklistItemsDialogProps,
   SubmitWorklistItemsDialogState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: SubmitWorklistItemsDialogProps) {
     super(props);
 
     this.submit = this.submit.bind(this);
   }
+
+  /**
+   * submit
+   * @param closeDialog closeDialog
+   */
   submit(closeDialog: () => any) {
     this.props.updateProfileWorklistItemsState({
       beginDate: this.props.summary.beginDate,
@@ -41,7 +59,15 @@ class SubmitWorklistItemsDialog extends React.Component<
       success: closeDialog,
     });
   }
+
+  /**
+   * render
+   */
   render() {
+    /**
+     * content
+     * @param closeDialog closeDialog
+     */
     const content = (closeDialog: () => any) => (
       <div>
         <span>
@@ -51,6 +77,11 @@ class SubmitWorklistItemsDialog extends React.Component<
         </span>
       </div>
     );
+
+    /**
+     * footer
+     * @param closeDialog closeDialog
+     */
     const footer = (closeDialog: () => any) => (
       <div className="dialog__button-set">
         <Button
@@ -86,12 +117,20 @@ class SubmitWorklistItemsDialog extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators({ updateProfileWorklistItemsState }, dispatch);
 }

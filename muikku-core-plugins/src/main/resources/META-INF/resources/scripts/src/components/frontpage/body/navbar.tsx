@@ -6,23 +6,39 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
-
 import "~/sass/elements/label.scss";
 import "~/sass/elements/link.scss";
 
+/**
+ * FrontpageNavbarProps
+ */
 interface FrontpageNavbarProps {
   i18n: i18nType;
 }
 
+/**
+ * FrontpageNavbarState
+ */
 interface FrontpageNavbarState {}
 
+/**
+ *
+ */
 class FrontpageNavbar extends React.Component<
   FrontpageNavbarProps,
   FrontpageNavbarState
 > {
+  /**
+   * FrontpageNavbarProps
+   * @param props
+   */
   constructor(props: FrontpageNavbarProps) {
     super(props);
   }
+
+  /**
+   * render
+   */
   render() {
     return (
       <Navbar
@@ -143,12 +159,18 @@ class FrontpageNavbar extends React.Component<
   }
 }
 
+/**
+ * @param state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
   };
 }
 
+/**
+ *
+ */
 function mapDispatchToProps() {
   return {};
 }

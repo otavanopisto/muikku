@@ -21,10 +21,16 @@ export type UPDATE_STUDIES_SUMMARY_STATUS = SpecificActionType<
   "UPDATE_STUDIES_SUMMARY_STATUS",
   SummaryStatusType
 >;
+/**
+ * UpdateSummaryTriggerType
+ */
 export interface UpdateSummaryTriggerType {
   (): AnyActionType;
 }
 
+/**
+ * UpdateSummaryTriggerType
+ */
 const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
   return async (
     dispatch: (arg: AnyActionType) => any,

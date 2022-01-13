@@ -10,21 +10,37 @@ import Summary from "./application/summary";
 import YO from "./application/yo";
 import { StateType } from "~/reducers";
 
+/**
+ * StudiesApplicationProps
+ */
 interface StudiesApplicationProps {
   aside: React.ReactElement<any>;
   i18n: i18nType;
 }
 
+/**
+ * StudiesApplicationState
+ */
 interface StudiesApplicationState {}
 
+/**
+ * StudiesApplication
+ */
 class StudiesApplication extends React.Component<
   StudiesApplicationProps,
   StudiesApplicationState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: StudiesApplicationProps) {
     super(props);
   }
 
+  /**
+   * render
+   */
   render() {
     const title = (
       <h1 className="application-panel__header-title">
@@ -50,12 +66,19 @@ class StudiesApplication extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
   };
 }
 
+/**
+ * mapDispatchToProps
+ */
 function mapDispatchToProps() {
   return {};
 }

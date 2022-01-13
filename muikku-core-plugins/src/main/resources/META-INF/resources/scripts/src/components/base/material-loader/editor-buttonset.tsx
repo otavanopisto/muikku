@@ -3,10 +3,17 @@ import { MaterialLoaderProps } from "~/components/base/material-loader";
 import Dropdown from "~/components/general/dropdown";
 import { ButtonPill } from "~/components/general/button";
 
+/**
+ * EditorButtonSetProps
+ */
 interface EditorButtonSetProps extends MaterialLoaderProps {
   invisible?: boolean;
 }
 
+/**
+ * toggleVisiblePageStatus
+ * @param props props
+ */
 function toggleVisiblePageStatus(props: EditorButtonSetProps) {
   props.updateWorkspaceMaterialContentNode({
     workspace: props.workspace,
@@ -19,6 +26,10 @@ function toggleVisiblePageStatus(props: EditorButtonSetProps) {
   });
 }
 
+/**
+ * startupEditor
+ * @param props props
+ */
 function startupEditor(props: EditorButtonSetProps) {
   if (
     typeof props.canAddAttachments === "undefined" ||
@@ -84,6 +95,10 @@ function startupEditor(props: EditorButtonSetProps) {
   );
 }
 
+/**
+ * copyPage
+ * @param props props
+ */
 function copyPage(props: EditorButtonSetProps) {
   localStorage.setItem(
     "workspace-material-copied-id",
@@ -100,6 +115,10 @@ function copyPage(props: EditorButtonSetProps) {
   );
 }
 
+/**
+ * MaterialLoaderEditorButtonSet
+ * @param props props
+ */
 export function MaterialLoaderEditorButtonSet(props: EditorButtonSetProps) {
   if (!props.editable) {
     return null;

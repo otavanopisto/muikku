@@ -2,13 +2,11 @@ import Navbar from "~/components/general/navbar";
 import Link from "~/components/general/link";
 import LoginButton from "../login-button";
 import ForgotPasswordDialog from "../forgot-password-dialog";
-
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
 import { StateType } from "~/reducers";
-
 import "~/sass/elements/link.scss";
 import "~/sass/elements/indicator.scss";
 import Dropdown from "~/components/general/dropdown";
@@ -25,6 +23,9 @@ import {
 } from "~/actions/workspaces";
 import { bindActionCreators } from "redux";
 
+/**
+ * ItemDataElement
+ */
 interface ItemDataElement {
   modifier: string;
   trail: string;
@@ -37,6 +38,9 @@ interface ItemDataElement {
   openInNewTab?: string;
 }
 
+/**
+ * WorkspaceNavbarProps
+ */
 interface WorkspaceNavbarProps {
   activeTrail?: string;
   i18n: i18nType;
@@ -49,11 +53,19 @@ interface WorkspaceNavbarProps {
   updateWorkspaceEditModeState: UpdateWorkspaceEditModeStateTriggerType;
 }
 
+/**
+ * WorkspaceNavbarState
+ */
 interface WorkspaceNavbarState {
   requestEvaluationOpen: boolean;
   requestCancelOpen: boolean;
 }
 
+/**
+ * getTextForAssessmentState
+ * @param state
+ * @param i18n
+ */
 function getTextForAssessmentState(
   state: WorkspaceAssessementStateType,
   i18n: i18nType
@@ -77,6 +89,10 @@ function getTextForAssessmentState(
   return i18n.text.get(text);
 }
 
+/**
+ * getIconForAssessmentState
+ * @param state state
+ */
 function getIconForAssessmentState(state: WorkspaceAssessementStateType) {
   let icon;
   switch (state) {
@@ -102,6 +118,10 @@ function getIconForAssessmentState(state: WorkspaceAssessementStateType) {
   return icon;
 }
 
+/**
+ * getClassNameForAssessmentState
+ * @param state state
+ */
 function getClassNameForAssessmentState(state: WorkspaceAssessementStateType) {
   let className;
   switch (state) {
@@ -127,10 +147,17 @@ function getClassNameForAssessmentState(state: WorkspaceAssessementStateType) {
   return className;
 }
 
+/**
+ * WorkspaceNavbar
+ */
 class WorkspaceNavbar extends React.Component<
   WorkspaceNavbarProps,
   WorkspaceNavbarState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: WorkspaceNavbarProps) {
     super(props);
 
@@ -143,6 +170,10 @@ class WorkspaceNavbar extends React.Component<
       this.onRequestEvaluationOrCancel.bind(this);
     this.toggleEditModeActive = this.toggleEditModeActive.bind(this);
   }
+
+  /**
+   * toggleEditModeActive
+   */
   toggleEditModeActive() {
     this.props.updateWorkspaceEditModeState(
       {
@@ -151,6 +182,11 @@ class WorkspaceNavbar extends React.Component<
       true
     );
   }
+
+  /**
+   * onRequestEvaluationOrCancel
+   * @param state state
+   */
   onRequestEvaluationOrCancel(state: string) {
     switch (state) {
       case "pending":
@@ -168,6 +204,10 @@ class WorkspaceNavbar extends React.Component<
         break;
     }
   }
+
+  /**
+   * render
+   */
   render() {
     const itemData: ItemDataElement[] = [
       {
@@ -477,6 +517,9 @@ class WorkspaceNavbar extends React.Component<
   }
 }
 
+/**
+ * @param state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -487,6 +530,9 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * @param dispatch
+ */
 const mapDispatchToProps = (dispatch: Dispatch<any>) =>
   bindActionCreators({ updateWorkspaceEditModeState }, dispatch);
 

@@ -12,20 +12,36 @@ import CurrentThread from "./application/current-thread";
 import Button from "~/components/general/button";
 import "~/sass/elements/link.scss";
 
+/**
+ * DiscussionApplicationState
+ */
 interface DiscussionApplicationState {}
 
+/**
+ * DiscussionApplicationProps
+ */
 interface DiscussionApplicationProps {
   i18n: i18nType;
   discussion: DiscussionType;
 }
 
+/**
+ * DiscussionApplication
+ */
 class DiscussionApplication extends React.Component<
   DiscussionApplicationProps,
   DiscussionApplicationState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: DiscussionApplicationProps) {
     super(props);
   }
+  /**
+   * render
+   */
   render() {
     const title = this.props.i18n.text.get("plugin.forum.pageTitle");
     const toolbar = <Toolbar />;
@@ -62,6 +78,10 @@ class DiscussionApplication extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -69,6 +89,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return {};
 }

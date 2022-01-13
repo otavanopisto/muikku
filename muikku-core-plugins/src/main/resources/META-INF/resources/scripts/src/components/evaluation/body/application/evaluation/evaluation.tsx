@@ -34,6 +34,9 @@ import {
 } from "~/reducers/workspaces";
 import Link from "~/components/general/link";
 
+/**
+ * EvaluationDrawerProps
+ */
 interface EvaluationDrawerProps {
   i18n: i18nType;
   status: StatusType;
@@ -45,6 +48,9 @@ interface EvaluationDrawerProps {
   loadEvaluationAssessmentEventsFromServer: LoadEvaluationAssessmentEvent;
 }
 
+/**
+ * EvaluationDrawerState
+ */
 interface EvaluationDrawerState {
   archiveStudentDialog: boolean;
   showWorkspaceEvaluationDrawer: boolean;
@@ -59,6 +65,10 @@ interface EvaluationDrawerState {
   diaryFetched: boolean;
 }
 
+/**
+ * CKEditorConfig
+ * @param locale locale
+ */
 export const CKEditorConfig = (locale: string) => ({
   linkShowTargetTab: true,
   allowedContent: true, // disable content filtering to preserve all formatting of imported documents; fix for #263
@@ -138,6 +148,9 @@ export const CKEditorConfig = (locale: string) => ({
   extraPlugins: "divarea,image2,muikku-mathjax",
 });
 
+/**
+ * Evaluation
+ */
 export class Evaluation extends React.Component<
   EvaluationDrawerProps,
   EvaluationDrawerState
@@ -334,7 +347,8 @@ export class Evaluation extends React.Component<
 
   /**
    * handleClickEdit
-   * @param supplementation
+   * @param eventId eventId
+   * @param supplementation supplementation
    */
   handleClickEdit = (eventId: string, supplementation?: boolean) => () => {
     if (supplementation) {

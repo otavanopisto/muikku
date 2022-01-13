@@ -14,10 +14,12 @@ import { StateType } from "~/reducers";
 import SessionStateComponent from "~/components/general/session-state-component";
 import Button from "~/components/general/button";
 import { StatusType } from "~/reducers/base/status";
-
 import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
 
+/**
+ * ModifyThreadProps
+ */
 interface ModifyThreadProps {
   children: React.ReactElement<any>;
   i18n: i18nType;
@@ -27,6 +29,9 @@ interface ModifyThreadProps {
   status: StatusType;
 }
 
+/**
+ * ModifyThreadState
+ */
 interface ModifyThreadState {
   text: string;
   title: string;
@@ -35,10 +40,17 @@ interface ModifyThreadState {
   threadLocked: boolean;
 }
 
+/**
+ * ModifyThread
+ */
 class ModifyThread extends SessionStateComponent<
   ModifyThreadProps,
   ModifyThreadState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: ModifyThreadProps) {
     super(props, "discussion-modify-thread-dialog");
 
@@ -61,71 +73,10 @@ class ModifyThread extends SessionStateComponent<
     this.checkAgainstStoredState = this.checkAgainstStoredState.bind(this);
     this.clearUp = this.clearUp.bind(this);
   }
-  checkAgainstStoredState() {
-    this.checkStoredAgainstThisState(
-      {
-        text: this.props.thread.message,
-        title: this.props.thread.title,
-        threadPinned: this.props.thread.sticky,
-        threadLocked: this.props.thread.locked,
-      },
-      this.props.thread.id
-    );
-  }
-  onCKEditorChange(text: string) {
-    this.setStateAndStore({ text }, this.props.thread.id);
-  }
-  clearUp() {
-    this.setStateAndClear(
-      {
-        text: this.props.thread.message,
-        title: this.props.thread.title,
-        threadPinned: this.props.thread.sticky,
-        threadLocked: this.props.thread.locked,
-      },
-      this.props.thread.id
-    );
-  }
-  modifyThread(closeDialog: () => any) {
-    if (this.state.locked) {
-      return;
-    }
-    this.setState({ locked: true });
 
-    this.props.modifyDiscussionThread({
-      thread: this.props.thread,
-      title: this.state.title,
-      message: this.state.text,
-      sticky: this.state.threadPinned,
-      locked: this.state.threadLocked,
-      success: () => {
-        this.justClear(
-          ["text", "title", "threadPinned", "threadLocked"],
-          this.props.thread.id
-        );
-        this.setState({ locked: false });
-        closeDialog();
-      },
-      fail: () => {
-        this.setState({ locked: false });
-      },
-    });
-  }
-  onTitleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    this.setStateAndStore({ title: e.target.value }, this.props.thread.id);
-  }
-  togglePinned() {
-    this.setStateAndStore(
-      { threadPinned: !this.state.threadPinned },
-      this.props.thread.id
-    );
-  }
-  toggleLocked() {
-    this.setStateAndStore(
-      { threadLocked: !this.state.threadLocked },
-      this.props.thread.id
-    );
-  }
+  /**
+   * @param nextProps
+   */
   componentWillReceiveProps(nextProps: ModifyThreadProps) {
     if (nextProps.thread.id !== this.props.thread.id) {
       this.setState(
@@ -141,12 +92,122 @@ class ModifyThread extends SessionStateComponent<
       );
     }
   }
+
+  /**
+   * checkAgainstStoredState
+   */
+  checkAgainstStoredState() {
+    this.checkStoredAgainstThisState(
+      {
+        text: this.props.thread.message,
+        title: this.props.thread.title,
+        threadPinned: this.props.thread.sticky,
+        threadLocked: this.props.thread.locked,
+      },
+      this.props.thread.id
+    );
+  }
+
+  /**
+   * onCKEditorChange
+   * @param text
+   */
+  onCKEditorChange(text: string) {
+    this.setStateAndStore({ text }, this.props.thread.id);
+  }
+
+  /**
+   * clearUp
+   */
+  clearUp() {
+    this.setStateAndClear(
+      {
+        text: this.props.thread.message,
+        title: this.props.thread.title,
+        threadPinned: this.props.thread.sticky,
+        threadLocked: this.props.thread.locked,
+      },
+      this.props.thread.id
+    );
+  }
+
+  /**
+   * modifyThread
+   * @param closeDialog closeDialog
+   */
+  modifyThread(closeDialog: () => any) {
+    if (this.state.locked) {
+      return;
+    }
+    this.setState({ locked: true });
+
+    this.props.modifyDiscussionThread({
+      thread: this.props.thread,
+      title: this.state.title,
+      message: this.state.text,
+      sticky: this.state.threadPinned,
+      locked: this.state.threadLocked,
+      /**
+       * success
+       */
+      success: () => {
+        this.justClear(
+          ["text", "title", "threadPinned", "threadLocked"],
+          this.props.thread.id
+        );
+        this.setState({ locked: false });
+        closeDialog();
+      },
+      /**
+       * fail
+       */
+      fail: () => {
+        this.setState({ locked: false });
+      },
+    });
+  }
+
+  /**
+   * onTitleChange
+   * @param e e
+   */
+  onTitleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    this.setStateAndStore({ title: e.target.value }, this.props.thread.id);
+  }
+
+  /**
+   * togglePinned
+   */
+  togglePinned() {
+    this.setStateAndStore(
+      { threadPinned: !this.state.threadPinned },
+      this.props.thread.id
+    );
+  }
+
+  /**
+   * toggleLocked
+   */
+  toggleLocked() {
+    this.setStateAndStore(
+      { threadLocked: !this.state.threadLocked },
+      this.props.thread.id
+    );
+  }
+
+  /**
+   * render
+   */
   render() {
     const editorTitle =
       this.props.i18n.text.get("plugin.discussion.editmessage.topic") +
       " - " +
       this.props.i18n.text.get("plugin.discussion.createmessage.content");
 
+    /**
+     * content
+     * @param closeDialog closeDialog
+     */
     const content = (closeDialog: () => any) => [
       <div
         key="1"
@@ -220,6 +281,10 @@ class ModifyThread extends SessionStateComponent<
         </div>
       </div>,
     ];
+    /**
+     * footer
+     * @param closeDialog closeDialog
+     */
     const footer = (closeDialog: () => any) => (
       <div className="env-dialog__actions">
         <Button
@@ -264,6 +329,10 @@ class ModifyThread extends SessionStateComponent<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -272,6 +341,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ modifyDiscussionThread }, dispatch);
 }

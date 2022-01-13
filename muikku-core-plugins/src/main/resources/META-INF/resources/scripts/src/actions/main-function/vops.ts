@@ -5,6 +5,9 @@ import mApi, { MApiError } from "~/lib/mApi";
 import { VOPSDataType, VOPSStatusType } from "~/reducers/main-function/vops";
 import { StateType } from "~/reducers";
 
+/**
+ * UpdateVopsTriggerType
+ */
 export interface UpdateVopsTriggerType {
   (): AnyActionType;
 }
@@ -15,6 +18,9 @@ export type UPDATE_VOPS_STATUS = SpecificActionType<
   VOPSStatusType
 >;
 
+/**
+ * UpdateVopsTriggerType
+ */
 const updateVops: UpdateVopsTriggerType = function updateVops() {
   return async (
     dispatch: (arg: AnyActionType) => any,

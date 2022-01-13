@@ -12,6 +12,9 @@ import {
   EvaluationStudyDiaryEvent,
 } from "../../../@types/evaluation";
 
+/**
+ * EvaluationStateAndData
+ */
 interface EvaluationStateAndData<T> {
   state: EvaluationStateType;
   data?: T;

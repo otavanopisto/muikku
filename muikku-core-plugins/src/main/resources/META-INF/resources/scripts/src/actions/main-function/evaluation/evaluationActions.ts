@@ -181,34 +181,58 @@ export type UPDATE_NEEDS_RELOAD_EVALUATION_REQUESTS = SpecificActionType<
 >;
 
 // Server events
+/**
+ * LoadEvaluationSystem
+ */
 export interface LoadEvaluationSystem {
   (): AnyActionType;
 }
 
+/**
+ * LoadEvaluationAssessmentRequest
+ */
 export interface LoadEvaluationAssessmentRequest {
   (useFromWorkspace?: boolean): AnyActionType;
 }
 
+/**
+ * LoadEvaluationWorkspaces
+ */
 export interface LoadEvaluationWorkspaces {
   (): AnyActionType;
 }
 
+/**
+ * LoadEvaluationImportantAssessment
+ */
 export interface LoadEvaluationImportantAssessment {
   (): AnyActionType;
 }
 
+/**
+ * LoadEvaluationUnimportantAssessment
+ */
 export interface LoadEvaluationUnimportantAssessment {
   (): AnyActionType;
 }
 
+/**
+ * LoadEvaluationSortFunction
+ */
 export interface LoadEvaluationSortFunction {
   (): AnyActionType;
 }
 
+/**
+ * LoadEvaluationCurrentStudentAssigments
+ */
 export interface LoadEvaluationCurrentStudentAssigments {
   (data: { workspaceId: number }): AnyActionType;
 }
 
+/**
+ * UpdateCurrentStudentEvaluationData
+ */
 export interface UpdateCurrentStudentEvaluationData {
   (data: {
     assigmentSaveReturn: AssignmentEvaluationSaveReturn;
@@ -216,6 +240,9 @@ export interface UpdateCurrentStudentEvaluationData {
   }): AnyActionType;
 }
 
+/**
+ * UpdateCurrentStudentEvaluationCompositeRepliesData
+ */
 export interface UpdateCurrentStudentEvaluationCompositeRepliesData {
   (data: {
     workspaceId: number;
@@ -224,6 +251,9 @@ export interface UpdateCurrentStudentEvaluationCompositeRepliesData {
   }): AnyActionType;
 }
 
+/**
+ * LoadEvaluationAssessmentEvent
+ */
 export interface LoadEvaluationAssessmentEvent {
   (data: {
     assessment: AssessmentRequest;
@@ -232,18 +262,30 @@ export interface LoadEvaluationAssessmentEvent {
   }): AnyActionType;
 }
 
+/**
+ * LoadEvaluationAssignment
+ */
 export interface LoadEvaluationAssignment {
   (data: { assessment: AssessmentRequest }): AnyActionType;
 }
 
+/**
+ * LoadEvaluationStudyDiaryEvent
+ */
 export interface LoadEvaluationStudyDiaryEvent {
   (data: { assessment: AssessmentRequest }): AnyActionType;
 }
 
+/**
+ * LoadBilledPrice
+ */
 export interface LoadBilledPrice {
   (data: { workspaceEntityId: number }): AnyActionType;
 }
 
+/**
+ * LoadEvaluationCompositeReplies
+ */
 export interface LoadEvaluationCompositeReplies {
   (data: {
     userEntityId: number;
@@ -253,15 +295,24 @@ export interface LoadEvaluationCompositeReplies {
   }): AnyActionType;
 }
 
+/**
+ * LoadBasePrice
+ */
 export interface LoadBasePrice {
   (data: { workspaceEntityId: number }): AnyActionType;
 }
 
 // Other
+/**
+ * SaveEvaluationSortFunction
+ */
 export interface SaveEvaluationSortFunction {
   (data: { sortFunction: EvaluationSort }): AnyActionType;
 }
 
+/**
+ * UpdateWorkspaceEvaluation
+ */
 export interface UpdateWorkspaceEvaluation {
   (data: {
     type: "new" | "edit";
@@ -272,10 +323,16 @@ export interface UpdateWorkspaceEvaluation {
   }): AnyActionType;
 }
 
+/**
+ * UpdateEvaluationEvent
+ */
 export interface UpdateEvaluationEvent {
   (data: BilledPriceRequest): AnyActionType;
 }
 
+/**
+ * UpdateWorkspaceSupplementation
+ */
 export interface UpdateWorkspaceSupplementation {
   (data: {
     type: "new" | "edit";
@@ -285,6 +342,9 @@ export interface UpdateWorkspaceSupplementation {
   }): AnyActionType;
 }
 
+/**
+ * RemoveWorkspaceEvent
+ */
 export interface RemoveWorkspaceEvent {
   (data: {
     identifier: string;
@@ -294,6 +354,9 @@ export interface RemoveWorkspaceEvent {
   }): AnyActionType;
 }
 
+/**
+ * SaveEvaluationAssignmentGradeEvaluation
+ */
 export interface SaveEvaluationAssignmentGradeEvaluation {
   (data: {
     workspaceEntityId: number;
@@ -306,6 +369,9 @@ export interface SaveEvaluationAssignmentGradeEvaluation {
   }): AnyActionType;
 }
 
+/**
+ * SaveEvaluationAssignmentSupplementation
+ */
 export interface SaveEvaluationAssignmentSupplementation {
   (data: {
     workspaceEntityId: number;
@@ -318,6 +384,9 @@ export interface SaveEvaluationAssignmentSupplementation {
   }): AnyActionType;
 }
 
+/**
+ * DeleteAssessmentRequest
+ */
 export interface DeleteAssessmentRequest {
   (data: {
     workspaceUserEntityId: number;
@@ -326,6 +395,9 @@ export interface DeleteAssessmentRequest {
   }): AnyActionType;
 }
 
+/**
+ * ArchiveStudent
+ */
 export interface ArchiveStudent {
   (data: {
     workspaceEntityId: number;
@@ -335,26 +407,44 @@ export interface ArchiveStudent {
   }): AnyActionType;
 }
 
+/**
+ * SetEvaluationSelectedWorkspace
+ */
 export interface SetEvaluationSelectedWorkspace {
   (data: { workspaceId?: number }): AnyActionType;
 }
 
+/**
+ * SetEvaluationSortFunction
+ */
 export interface SetEvaluationSortFunction {
   (data: { sortFunction: string }): AnyActionType;
 }
 
+/**
+ * SetEvaluationFilters
+ */
 export interface SetEvaluationFilters {
   (data: { evaluationFilters: EvaluationFilters }): AnyActionType;
 }
 
+/**
+ * UpdateEvaluationSearch
+ */
 export interface UpdateEvaluationSearch {
   (data: { searchString: string }): AnyActionType;
 }
 
+/**
+ * UpdateEvaluationSelectedAssessment
+ */
 export interface UpdateEvaluationSelectedAssessment {
   (data: { assessment: AssessmentRequest }): AnyActionType;
 }
 
+/**
+ * UpdateImportance
+ */
 export interface UpdateImportance {
   (data: {
     importantAssessments: EvaluationImportance;
@@ -362,10 +452,16 @@ export interface UpdateImportance {
   }): AnyActionType;
 }
 
+/**
+ * UpdateOpenedAssignmentEvaluationId
+ */
 export interface UpdateOpenedAssignmentEvaluationId {
   (data: { assignmentId?: number }): AnyActionType;
 }
 
+/**
+ * UpdateNeedsReloadEvaluationRequests
+ */
 export interface UpdateNeedsReloadEvaluationRequests {
   (data: { value: boolean }): AnyActionType;
 }
@@ -374,7 +470,6 @@ export interface UpdateNeedsReloadEvaluationRequests {
 
 /**
  * loadEvaluationGradingSystemFromServer
- * @returns
  */
 const loadEvaluationGradingSystemFromServer: LoadEvaluationSystem =
   function loadEvaluationGradingSystemFromServer() {
@@ -434,7 +529,7 @@ const loadEvaluationGradingSystemFromServer: LoadEvaluationSystem =
 
 /**
  * loadEvaluationAssessmentRequestsFromServer
- * @returns
+ * @param useFromWorkspace useFromWorkspace
  */
 const loadEvaluationAssessmentRequestsFromServer: LoadEvaluationAssessmentRequest =
   function loadEvaluationAssessmentRequestsFromServer(useFromWorkspace) {
@@ -755,6 +850,7 @@ const loadEvaluationSortFunctionFromServer: LoadEvaluationSortFunction =
 
 /**
  * loadEvaluationAssessmentEventsFromServer
+ * @param data data
  */
 const loadEvaluationAssessmentEventsFromServer: LoadEvaluationAssessmentEvent =
   function loadEvaluationAssessmentEventsFromServer(data) {
@@ -814,6 +910,7 @@ const loadEvaluationAssessmentEventsFromServer: LoadEvaluationAssessmentEvent =
 
 /**
  * loadEvaluationSelectedAssessmentStudyDiaryEventsFromServer
+ * @param data data
  */
 const loadEvaluationSelectedAssessmentStudyDiaryEventsFromServer: LoadEvaluationStudyDiaryEvent =
   function loadEvaluationSelectedAssessmentStudyDiaryEventsFromServer(data) {
@@ -919,7 +1016,10 @@ const LoadBilledPriceFromServer: LoadBilledPrice =
 
 /**
  * loadEvaluationCompositeRepliesFromServer
- * @param data
+ * @param data data
+ * @param data.userEntityId data.userEntityId
+ * @param data.onSuccess data.onSuccess
+ * @param data.workspaceId data.workspaceId
  */
 const loadEvaluationCompositeRepliesFromServer: LoadEvaluationCompositeReplies =
   function loadEvaluationCompositeRepliesFromServer({
@@ -980,7 +1080,7 @@ const loadEvaluationCompositeRepliesFromServer: LoadEvaluationCompositeReplies =
 
 /**
  * saveEvaluationSortFunctionToServer
- * @returns
+ * @param data data
  */
 const saveEvaluationSortFunctionToServer: SaveEvaluationSortFunction =
   function saveEvaluationSortFunctionToServer(data) {
@@ -1038,7 +1138,11 @@ const saveEvaluationSortFunctionToServer: SaveEvaluationSortFunction =
 
 /**
  * updateWorkspaceEvaluationToServer
- * @param param0
+ * @param param.workspaceEvaluation workspaceEvaluation
+ * @param param0.type type
+ * @param param1.billingPrice billingPrice
+ * @param param2.onSuccess onSuccess
+ * @param param3.onFail onFail
  */
 const updateWorkspaceEvaluationToServer: UpdateWorkspaceEvaluation =
   function updateWorkspaceEvaluationToServer({
@@ -1151,6 +1255,10 @@ const updateWorkspaceEvaluationToServer: UpdateWorkspaceEvaluation =
 /**
  * updateWorkspaceSupplementation
  * @param param0
+ * @param param0.type type
+ * @param param1.workspaceSupplementation workspaceSupplementation
+ * @param param2.onSuccess onSuccess
+ * @param param3.onFail onFail
  */
 const updateWorkspaceSupplementationToServer: UpdateWorkspaceSupplementation =
   function updateWorkspaceSupplementationToServer({
@@ -1243,6 +1351,10 @@ const updateWorkspaceSupplementationToServer: UpdateWorkspaceSupplementation =
 /**
  * removeWorkspaceEventFromServer
  * @param param0
+ * @param param0.identifier identifier
+ * @param param1.eventType eventType
+ * @param param2.onSuccess onSuccess
+ * @param param3.onFail onFail
  */
 const removeWorkspaceEventFromServer: RemoveWorkspaceEvent =
   function removeWorkspaceEventFromServer({
@@ -1356,8 +1468,7 @@ const removeWorkspaceEventFromServer: RemoveWorkspaceEvent =
 
 /**
  * loadCurrentStudentAssigmentsData
- * @param param0
- * @returns
+ * @param param0.workspaceId workspaceId
  */
 const loadCurrentStudentAssigmentsData: LoadEvaluationCurrentStudentAssigments =
   function loadCurrentStudentAssigmentsData({ workspaceId }) {
@@ -1434,6 +1545,7 @@ const loadCurrentStudentAssigmentsData: LoadEvaluationCurrentStudentAssigments =
 /**
  * updateCurrentStudentCompositeRepliesData
  * Updates one compositereply in compositeReplies list with new coming values from backend
+ * @param data data
  */
 const updateCurrentStudentCompositeRepliesData: UpdateCurrentStudentEvaluationCompositeRepliesData =
   function updateCurrentStudentEvaluationData(data) {
@@ -1528,6 +1640,7 @@ const setEvaluationFilters: SetEvaluationFilters =
 
 /**
  * updateBillingToServer
+ * @param data data
  */
 const updateBillingToServer: UpdateEvaluationEvent =
   function updateBillingToServer(data) {
@@ -1611,7 +1724,7 @@ const updateEvaluationSearch: UpdateEvaluationSearch =
 
 /**
  * updateImportance
- * @param date
+ * @param data data
  */
 const updateImportance: UpdateImportance = function updateImportance(data) {
   return async (
@@ -1686,7 +1799,7 @@ const updateImportance: UpdateImportance = function updateImportance(data) {
 
 /**
  * updateOpenedAssignmentEvaluation
- * @param data
+ * @param data data
  */
 const updateOpenedAssignmentEvaluation: UpdateOpenedAssignmentEvaluationId =
   function updateOpenedAssignmentEvaluation(data) {
@@ -1700,7 +1813,7 @@ const updateOpenedAssignmentEvaluation: UpdateOpenedAssignmentEvaluationId =
 
 /**
  * deleteAssessmentRequest
- * @param data
+ * @param data.workspaceUserEntityId workspaceUserEntityId
  */
 const deleteAssessmentRequest: DeleteAssessmentRequest =
   function deleteAssessmentRequest({ workspaceUserEntityId }) {
@@ -1735,7 +1848,9 @@ const deleteAssessmentRequest: DeleteAssessmentRequest =
 
 /**
  * archiveStudent
- * @param data
+ * @param data.workspaceEntityId workspaceEntityId
+ * @param data.workspaceUserEntityId workspaceUserEntityId
+ * @param data.onSuccess onSuccess
  */
 const archiveStudent: ArchiveStudent = function archiveStudent({
   workspaceEntityId,
@@ -1785,6 +1900,7 @@ const archiveStudent: ArchiveStudent = function archiveStudent({
 
 /**
  * loadBasePriceFromServer
+ * @param root0.workspaceEntityId workspaceEntityId
  */
 const loadBasePriceFromServer: LoadBasePrice =
   function loadBasePriceFromServer({ workspaceEntityId }) {
@@ -1824,6 +1940,7 @@ const loadBasePriceFromServer: LoadBasePrice =
 
 /**
  * updateNeedsReloadEvaluationRequests
+ * @param root0.value value
  */
 const updateNeedsReloadEvaluationRequests: UpdateNeedsReloadEvaluationRequests =
   function updateNeedsReloadEvaluationRequests({ value }) {

@@ -1,15 +1,24 @@
 import { ActionType } from "actions";
 
+/**
+ * OrganizationSummaryWorkspaceDataType
+ */
 export interface OrganizationSummaryWorkspaceDataType {
   unpublishedCount: number;
   publishedCount: number;
 }
 
+/**
+ * OrganizationSummaryStudentsDataType
+ */
 export interface OrganizationSummaryStudentsDataType {
   activeStudents: number;
   inactiveStudents: number;
 }
 
+/**
+ * OrganizationSummaryContactDataType
+ */
 export interface OrganizationSummaryContactDataType {
   id: number;
   type: string;
@@ -24,6 +33,9 @@ export type OrganizationSummaryStatusType =
   | "READY"
   | "ERROR";
 
+/**
+ * OrganizationSummaryType
+ */
 export interface OrganizationSummaryType {
   status: OrganizationSummaryStatusType;
   students: OrganizationSummaryStudentsDataType;
@@ -31,6 +43,11 @@ export interface OrganizationSummaryType {
   contacts: Array<OrganizationSummaryContactDataType>;
 }
 
+/**
+ * organizationSummary
+ * @param state state
+ * @param action action
+ */
 export default function organizationSummary(
   state: OrganizationSummaryType = {
     status: "WAITING",

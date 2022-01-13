@@ -11,6 +11,9 @@ import {
 } from "~/actions/base/notifications";
 import { bindActionCreators } from "redux";
 
+/**
+ * DeleteMessageDialogProps
+ */
 interface DeleteMessageDialogProps {
   i18n: i18nType;
 
@@ -20,18 +23,40 @@ interface DeleteMessageDialogProps {
   onDelete: () => any;
 }
 
+/**
+ * DeleteMessageDialogState
+ */
 interface DeleteMessageDialogState {}
 
+/**
+ * DeleteMessageDialog
+ */
 class DeleteMessageDialog extends React.Component<
   DeleteMessageDialogProps,
   DeleteMessageDialogState
 > {
   private unmounted = false;
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: DeleteMessageDialogProps) {
     super(props);
 
     this.delete = this.delete.bind(this);
   }
+
+  /**
+   * componentWillUnmount
+   */
+  componentWillUnmount() {
+    this.unmounted = true;
+  }
+
+  /**
+   * delete
+   * @param closeDialog closeDialog
+   */
   async delete(closeDialog: () => any) {
     try {
       if (!this.unmounted) {
@@ -51,10 +76,15 @@ class DeleteMessageDialog extends React.Component<
       );
     }
   }
-  componentWillUnmount() {
-    this.unmounted = true;
-  }
+
+  /**
+   * render
+   */
   render() {
+    /**
+     * content
+     * @param closeDialog closeDialog
+     */
     const content = (closeDialog: () => any) => (
       <div>
         <span
@@ -66,6 +96,9 @@ class DeleteMessageDialog extends React.Component<
         ></span>
       </div>
     );
+    /**
+     * @param closeDialog
+     */
     const footer = (closeDialog: () => any) => (
       <div className="dialog__button-set">
         <Button
@@ -97,12 +130,20 @@ class DeleteMessageDialog extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators({ displayNotification }, dispatch);
 }

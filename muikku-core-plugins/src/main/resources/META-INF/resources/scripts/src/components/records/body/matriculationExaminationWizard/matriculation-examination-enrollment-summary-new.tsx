@@ -14,6 +14,9 @@ import {
   getPastTermOptions,
 } from "~/helper-functions/matriculation-functions";
 
+/**
+ * MatriculationExaminationEnrollmentSummaryProps
+ */
 interface MatriculationExaminationEnrollmentSummaryProps {
   examination: ExaminationInformation;
   saveState: SaveState;
@@ -22,8 +25,8 @@ interface MatriculationExaminationEnrollmentSummaryProps {
 
 /**
  * MatriculationExaminationEnrollmentSummary
- * @param props
- * @returns
+ * @param props props
+ * @returns JSX.Element
  */
 export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
   MatriculationExaminationEnrollmentSummaryProps
@@ -55,7 +58,7 @@ export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
 
   /**
    * enrollAsToValue
-   * @param type
+   * @param type type
    * @returns readable value of enroll as
    */
   const enrollAsToValue = (type: string) => {
@@ -76,7 +79,7 @@ export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
 
   /**
    * degreeTypeToValue
-   * @param type
+   * @param type type
    * @returns readable value of degree type
    */
   const degreeTypeToValue = (type: string) => {

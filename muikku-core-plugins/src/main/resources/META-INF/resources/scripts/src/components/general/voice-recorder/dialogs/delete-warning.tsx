@@ -45,6 +45,7 @@ class DeleteDialog extends React.Component<
 
   /**
    * handleDeleteEventClick
+   * @param closeDialog closeDialog
    */
   handleDeleteAudioFieldClick(closeDialog: () => any) {
     this.props.onDeleteAudio();

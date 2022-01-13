@@ -36,6 +36,7 @@ interface MatriculationExaminationEnrolledInputGroupProps {
 
 /**
  * MatriculationExaminationEnrolledInputGroup
+ * @param props props
  */
 export const MatriculationExaminationEnrolledInputGroup: React.FC<
   MatriculationExaminationEnrolledInputGroupProps
@@ -184,6 +185,7 @@ interface MatriculationExaminationFinishedInputGroupProps {
 
 /**
  * MatriculationExaminationSubjectInputGroup
+ * @param props props
  */
 export const MatriculationExaminationFinishedInputGroup: React.FC<
   MatriculationExaminationFinishedInputGroupProps
@@ -326,6 +328,7 @@ interface MatriculationExaminationPlannedInputGroupProps {
 
 /**
  * MatriculationExaminationFutureSubjectsGroup
+ * @param props props
  */
 export const MatriculationExaminationPlannedInputGroup: React.FC<
   MatriculationExaminationPlannedInputGroupProps
@@ -418,7 +421,9 @@ interface SubjectSelectProps
 
 /**
  * SubjectSelect
- * @param param0
+ * @param param0.i i
+ * @param param0.selectedValues selectedValues
+ * @param param0.modifier modifier
  * @returns
  */
 const SubjectSelect: React.FC<SubjectSelectProps> = ({
@@ -468,6 +473,9 @@ interface TermSelectProps
 
 /**
  * TermSelect
+ * @param root0.i i
+ * @param root0.options options
+ * @param root0.modifier modifier
  */
 const TermSelect: React.FC<TermSelectProps> = ({
   i,
@@ -508,6 +516,8 @@ interface MandatorySelectProps
 
 /**
  * MandatorySelect
+ * @param root0.i i
+ * @param root0.modifier modifier
  */
 const MandatorySelect: React.FC<MandatorySelectProps> = ({
   i,
@@ -547,6 +557,8 @@ interface RepeatSelectProps
 
 /**
  * RepeatSelect
+ * @param root0.i i
+ * @param root0.modifier modifier
  */
 const RepeatSelect: React.FC<RepeatSelectProps> = ({
   i,
@@ -586,6 +598,8 @@ interface GradeSelectProps
 
 /**
  * GradeSelect
+ * @param root0.i i
+ * @param root0.modifier modifier
  */
 const GradeSelect: React.FC<GradeSelectProps> = ({
   i,
@@ -621,6 +635,9 @@ const GradeSelect: React.FC<GradeSelectProps> = ({
   </>
 );
 
+/**
+ * FundingSelectProps
+ */
 interface FundingSelectProps
   extends React.SelectHTMLAttributes<HTMLSelectElement> {
   i: number;
@@ -631,6 +648,10 @@ interface FundingSelectProps
 
 /**
  * FundingSelect
+ * @param root0.i i
+ * @param root0.modifier modifier
+ * @param root0.isFailedBefore isFailedBefore
+ * @param root0.isSucceedBefore isSucceedBefore
  */
 const FundingSelect: React.FC<FundingSelectProps> = ({
   i,
@@ -687,12 +708,19 @@ const FundingSelect: React.FC<FundingSelectProps> = ({
   </>
 );
 
+/**
+ * FailedReasonSelectProps
+ */
 interface FailedReasonSelectProps
   extends React.SelectHTMLAttributes<HTMLSelectElement> {
   i: number;
   modifier: string;
 }
 
+/**
+ * @param root0.i i
+ * @param root0.modifier modifier
+ */
 export const FailedReasonSelect: React.FC<FailedReasonSelectProps> = ({
   i,
   modifier,

@@ -6,6 +6,9 @@ import {
   HTMLToReactComponentRule,
 } from "~/util/modifiers";
 
+/**
+ * IframeProps
+ */
 interface IframeProps {
   element: HTMLElement;
   path: string;
@@ -17,12 +20,19 @@ interface IframeProps {
   invisible?: boolean;
 }
 
+/**
+ * Iframe
+ */
 export default class Iframe extends React.Component<
   IframeProps,
   Record<string, unknown>
 > {
   private mainParentRef: React.RefObject<HTMLDivElement>;
   private loadedH5P = false;
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: IframeProps) {
     super(props);
 
@@ -30,12 +40,24 @@ export default class Iframe extends React.Component<
 
     this.loadH5PIfNecessary = this.loadH5PIfNecessary.bind(this);
   }
+
+  /**
+   * componentDidMount
+   */
   componentDidMount() {
     this.loadH5PIfNecessary();
   }
+
+  /**
+   * componentDidUpdate
+   */
   componentDidUpdate() {
     this.loadH5PIfNecessary();
   }
+
+  /**
+   * loadH5PIfNecessary
+   */
   loadH5PIfNecessary() {
     if (!this.loadedH5P) {
       const iframe =
@@ -49,11 +71,27 @@ export default class Iframe extends React.Component<
       }
     }
   }
+
+  /**
+   * render
+   */
   render() {
     const iframeOnlySpecificRules: HTMLToReactComponentRule[] = [
       {
+        /**
+         * shouldProcessHTMLElement
+         * @param tag tag
+         * @param element element
+         */
         shouldProcessHTMLElement: (tag, element) => tag === "iframe",
         preventChildProcessing: true,
+        /**
+         * processingFunction
+         * @param Tag Tag
+         * @param elementProps elementProps
+         * @param children children
+         * @param element element
+         */
         processingFunction: (Tag, elementProps, children, element) => {
           if (this.props.invisible) {
             const isYoutube = elementProps.src.includes("//www.youtube.com");

@@ -10,6 +10,9 @@ const baseConfig = {
   skipStartupTypeset: true,
 };
 
+/**
+ * MathJaxPreviewProps
+ */
 interface MathJaxPreviewProps {
   script: string;
   config: any;
@@ -19,6 +22,10 @@ interface MathJaxPreviewProps {
   parentCollectorSelector: string;
 }
 
+/**
+ * MathjaxReactLoader
+ * @param props props
+ */
 const MathjaxReactLoader = (props: MathJaxPreviewProps) => {
   const { script, config, className, math, style } = { ...props };
   const previewRef = useRef<HTMLDivElement>();
@@ -41,10 +48,18 @@ const MathjaxReactLoader = (props: MathJaxPreviewProps) => {
       const node = document.head || document.getElementsByTagName("head")[0];
       node.appendChild(mathjaxScriptTag);
     }
+
+    /**
+     * onloadHandler
+     */
     const onloadHandler = () => {
       setLoadingState("loaded");
       (window as any).MathJax.Hub.Config({ ...baseConfig, ...config });
     };
+
+    /**
+     * onerrorHandler
+     */
     const onerrorHandler = () => {
       setLoadingState("failed");
     };

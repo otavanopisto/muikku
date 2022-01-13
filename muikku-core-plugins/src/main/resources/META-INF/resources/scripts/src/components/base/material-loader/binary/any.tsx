@@ -3,6 +3,12 @@ import * as React from "react";
 import Link from "~/components/general/link";
 import { i18nType } from "~/reducers/base/i18n";
 
+/**
+ * Any
+ * @param props props
+ * @param props.material material
+ * @param props.i18n i18n
+ */
 export default function Any(props: {
   material: MaterialContentNodeType;
   i18n: i18nType;

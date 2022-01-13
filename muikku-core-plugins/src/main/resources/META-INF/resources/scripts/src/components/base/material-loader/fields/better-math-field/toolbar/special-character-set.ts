@@ -1,3 +1,6 @@
+/**
+ * SpecialCharacterType
+ */
 export interface SpecialCharacterType {
   character: string;
   latexCommand: string;

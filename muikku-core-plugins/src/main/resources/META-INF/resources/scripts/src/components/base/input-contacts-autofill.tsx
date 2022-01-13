@@ -21,6 +21,9 @@ import {
 import "~/sass/elements/autocomplete.scss";
 import "~/sass/elements/glyph.scss";
 
+/**
+ * InputContactsAutofillLoaders
+ */
 export interface InputContactsAutofillLoaders {
   studentsLoader?: (searchString: string) => any;
   staffLoader?: (searchString: string) => any;
@@ -28,6 +31,9 @@ export interface InputContactsAutofillLoaders {
   workspacesLoader?: (searchString: string) => any;
 }
 
+/**
+ * InputContactsAutofillProps
+ */
 export interface InputContactsAutofillProps {
   placeholder?: string;
   label?: string;
@@ -47,6 +53,9 @@ export interface InputContactsAutofillProps {
   identifier: string;
 }
 
+/**
+ * InputContactsAutofillState
+ */
 export interface InputContactsAutofillState {
   autocompleteSearchItems: ContactRecipientType[];
   selectedItems: ContactRecipientType[];
@@ -55,6 +64,11 @@ export interface InputContactsAutofillState {
   isFocused: boolean;
 }
 
+/**
+ * checkHasPermission
+ * @param which which
+ * @param defaultValue defaultValue
+ */
 function checkHasPermission(which: boolean, defaultValue?: boolean) {
   if (typeof which === "undefined") {
     return typeof defaultValue === "undefined" ? true : defaultValue;
@@ -62,6 +76,9 @@ function checkHasPermission(which: boolean, defaultValue?: boolean) {
   return which;
 }
 
+/**
+ * c
+ */
 export default class c extends React.Component<
   InputContactsAutofillProps,
   InputContactsAutofillState
@@ -71,6 +88,10 @@ export default class c extends React.Component<
   private activeSearchId: number;
   private activeSearchTimeout: NodeJS.Timer;
 
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: InputContactsAutofillProps) {
     super(props);
 
@@ -97,12 +118,30 @@ export default class c extends React.Component<
     this.activeSearchId = null;
     this.activeSearchTimeout = null;
   }
+
+  /**
+   * componentWillReceiveProps
+   * @param nextProps nextProps
+   */
   componentWillReceiveProps(nextProps: InputContactsAutofillProps) {
     if (nextProps.selectedItems !== this.props.selectedItems) {
       this.setState({ selectedItems: nextProps.selectedItems });
     }
   }
 
+  /**
+   * componentDidMount
+   */
+  componentDidMount() {
+    const selectedHeight = (
+      this.refs["taginput"] as TagInput
+    ).getSelectedHeight();
+    this.selectedHeight = selectedHeight;
+  }
+
+  /**
+   * setBodyMargin
+   */
   setBodyMargin() {
     const selectedHeight = (
       this.refs["taginput"] as TagInput
@@ -117,16 +156,29 @@ export default class c extends React.Component<
       this.selectedHeight = selectedHeight;
     }
   }
+  /**
+   * onInputBlur
+   * @param e e
+   */
   onInputBlur(e: React.FocusEvent<any>) {
     this.blurTimeout = setTimeout(
       () => this.setState({ isFocused: false }),
       100
     ) as any;
   }
+
+  /**
+   * onInputFocus
+   * @param e e
+   */
   onInputFocus(e: React.FocusEvent<any>) {
     clearTimeout(this.blurTimeout);
     this.setState({ isFocused: true });
   }
+  /**
+   * onInputChange
+   * @param e e
+   */
   onInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     const textInput = e.target.value;
     this.setState({ textInput, autocompleteOpened: true });
@@ -143,11 +195,18 @@ export default class c extends React.Component<
     }
   }
 
+  /**
+   * autocompleteDataFromServer
+   * @param textInput textInput
+   */
   async autocompleteDataFromServer(textInput: string) {
     const searchId = new Date().getTime();
     this.activeSearchId = searchId;
     const loaders = this.props.loaders || {};
 
+    /**
+     * getStudentsLoader
+     */
     const getStudentsLoader = () =>
       loaders.studentsLoader
         ? loaders.studentsLoader(textInput)
@@ -160,6 +219,10 @@ export default class c extends React.Component<
             }),
             "callback"
           );
+
+    /**
+     * getUserGroupsLoader
+     */
     const getUserGroupsLoader = () =>
       loaders.userGroupsLoader
         ? loaders.userGroupsLoader(textInput)
@@ -169,6 +232,10 @@ export default class c extends React.Component<
             }),
             "callback"
           );
+
+    /**
+     * getWorkspacesLoader
+     */
     const getWorkspacesLoader = () =>
       loaders.workspacesLoader
         ? loaders.workspacesLoader(textInput)
@@ -181,6 +248,10 @@ export default class c extends React.Component<
             }),
             "callback"
           );
+
+    /**
+     * getStaffLoader
+     */
     const getStaffLoader = () =>
       loaders.staffLoader
         ? loaders.staffLoader(textInput)
@@ -268,6 +339,11 @@ export default class c extends React.Component<
       });
     }
   }
+
+  /**
+   * onDelete
+   * @param item item
+   */
   onDelete(item: ContactRecipientType) {
     clearTimeout(this.blurTimeout);
     const nfilteredValue = this.state.selectedItems.filter(
@@ -285,6 +361,12 @@ export default class c extends React.Component<
 
     this.props.onChange(nfilteredValue);
   }
+
+  /**
+   * onAutocompleteItemClick
+   * @param item item
+   * @param selected selected
+   */
   onAutocompleteItemClick(item: ContactRecipientType, selected: boolean) {
     clearTimeout(this.blurTimeout);
     this.setBodyMargin;
@@ -305,13 +387,10 @@ export default class c extends React.Component<
     }
   }
 
-  componentDidMount() {
-    const selectedHeight = (
-      this.refs["taginput"] as TagInput
-    ).getSelectedHeight();
-    this.selectedHeight = selectedHeight;
-  }
-
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     const selectedItems = this.state.selectedItems.map((item) => {
       if (item.type === "user" || item.type === "staff") {

@@ -61,6 +61,8 @@ class DDiscussionThreads extends React.Component<
    * handles page changes,
    * sets selected page as currentPage to state
    * @param event
+   * @param selectedItem selectedItem
+   * @param selectedItem.selected selected
    */
   handlePageChange = (selectedItem: { selected: number }) => {
     window.location.hash =

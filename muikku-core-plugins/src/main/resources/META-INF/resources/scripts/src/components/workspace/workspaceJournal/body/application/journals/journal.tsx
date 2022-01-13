@@ -22,6 +22,9 @@ import { getName } from "~/util/modifiers";
 import DeleteJournal from "~/components/workspace/workspaceJournal/dialogs/delete-journal";
 import EditJournal from "~/components/workspace/workspaceJournal/dialogs/new-edit-journal";
 
+/**
+ * JournalProps
+ */
 interface JournalProps {
   i18n: i18nType;
   status: StatusType;
@@ -29,9 +32,18 @@ interface JournalProps {
   workspace: WorkspaceType;
 }
 
+/**
+ * JournalState
+ */
 interface JournalState {}
 
+/**
+ * Journal
+ */
 class Journal extends React.Component<JournalProps, JournalState> {
+  /**
+   * render
+   */
   render() {
     const student =
       this.props.workspace.students &&
@@ -109,6 +121,10 @@ class Journal extends React.Component<JournalProps, JournalState> {
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -117,6 +133,9 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ */
 function mapDispatchToProps() {
   return {};
 }

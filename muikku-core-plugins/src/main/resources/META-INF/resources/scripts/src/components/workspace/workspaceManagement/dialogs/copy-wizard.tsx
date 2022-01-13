@@ -8,21 +8,37 @@ import "~/sass/elements/wizard.scss";
 import CopyWizard from "~/components/workspace/workspaceManagement/body/copyWizard";
 import { StateType } from "~/reducers";
 
+/**
+ * CopyWizardDialogProps
+ */
 interface CopyWizardDialogProps {
   i18n: i18nType;
   children: React.ReactElement<any>;
 }
 
+/**
+ * CopyWizardDialogState
+ */
 interface CopyWizardDialogState {
   scale: number;
   angle: number;
 }
 
+/**
+ * CopyWizardDialog
+ */
 class CopyWizardDialog extends React.Component<
   CopyWizardDialogProps,
   CopyWizardDialogState
 > {
+  /**
+   * render
+   */
   render() {
+    /**
+     * content
+     * @param closeDialog closeDialog
+     */
     const content = (closeDialog: () => any) => (
       <div>
         <CopyWizard onDone={closeDialog} />
@@ -43,12 +59,19 @@ class CopyWizardDialog extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
   };
 }
 
+/**
+ * mapDispatchToProps
+ */
 function mapDispatchToProps() {
   return {};
 }

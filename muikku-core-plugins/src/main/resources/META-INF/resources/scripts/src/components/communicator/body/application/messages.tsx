@@ -38,6 +38,9 @@ import ApplicationList, {
 } from "~/components/general/application-list";
 import { StatusType } from "~/reducers/base/status";
 
+/**
+ * CommunicatorMessagesProps
+ */
 interface CommunicatorMessagesProps {
   threads: MessageThreadListType;
   hasMore: boolean;
@@ -56,12 +59,22 @@ interface CommunicatorMessagesProps {
   status: StatusType;
 }
 
+/**
+ * CommunicatorMessagesState
+ */
 interface CommunicatorMessagesState {}
 
+/**
+ * CommunicatorMessages
+ */
 class CommunicatorMessages extends BodyScrollLoader<
   CommunicatorMessagesProps,
   CommunicatorMessagesState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: CommunicatorMessagesProps) {
     super(props);
 
@@ -77,6 +90,12 @@ class CommunicatorMessages extends BodyScrollLoader<
     //abort if this is true (in this case it causes the current element to be invisible)
     this.cancellingLoadingPropertyLocation = "currentThread";
   }
+
+  /**
+   * getThreadUserNames
+   * @param thread thread
+   * @param userId userId
+   */
   getThreadUserNames(thread: MessageThreadType, userId: number): any {
     if (thread.senderId !== userId || !thread.recipients) {
       if (thread.senderId === userId) {
@@ -158,6 +177,11 @@ class CommunicatorMessages extends BodyScrollLoader<
       workspaceRecipientsList,
     ];
   }
+
+  /**
+   * setCurrentThread
+   * @param threadOrSearchResult threadOrSearchResult
+   */
   setCurrentThread(
     threadOrSearchResult: MessageThreadType | MessageSearchResult
   ) {
@@ -166,6 +190,10 @@ class CommunicatorMessages extends BodyScrollLoader<
       "/" +
       threadOrSearchResult.communicatorMessageId;
   }
+
+  /**
+   * render
+   */
   render() {
     if (this.props.state === "LOADING") {
       return null;
@@ -344,6 +372,10 @@ class CommunicatorMessages extends BodyScrollLoader<
                 : null,
               checkboxId: `messageSelect-${index}`,
               checkboxClassName: "message__selector",
+              /**
+               * contents
+               * @param checkbox checkbox
+               */
               contents: (checkbox: React.ReactElement<any>) => (
                 <ApplicationListItemContentWrapper
                   aside={
@@ -446,6 +478,10 @@ class CommunicatorMessages extends BodyScrollLoader<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     threads: state.messages.threads,
@@ -461,6 +497,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     {

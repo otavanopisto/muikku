@@ -5,7 +5,13 @@ import Application from "./body/application";
 
 import * as React from "react";
 
+/**
+ * ProfileBody
+ */
 export default class ProfileBody extends React.Component {
+  /**
+   * render
+   */
   render() {
     const aside = <Aside />;
     return (

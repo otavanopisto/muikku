@@ -26,11 +26,17 @@ import ApplicationList, {
   ApplicationListItemHeader,
 } from "~/components/general/application-list";
 
+/**
+ * RecordsProps
+ */
 interface RecordsProps {
   i18n: i18nType;
   records: RecordsType;
 }
 
+/**
+ * RecordsState
+ */
 interface RecordsState {
   sortDirectionWorkspaces?: string;
   sortDirectionRecords?: string;
@@ -40,6 +46,12 @@ interface RecordsState {
 
 const storedCurriculumIndex: any = {};
 
+/**
+ * getEvaluationRequestIfAvailable
+ * @param props props
+ * @param workspace workspace
+ * @returns JSX.Element
+ */
 function getEvaluationRequestIfAvailable(
   props: RecordsProps,
   workspace: WorkspaceType
@@ -78,6 +90,12 @@ function getEvaluationRequestIfAvailable(
   return null;
 }
 
+/**
+ * getTransferCreditValue
+ * @param props props
+ * @param transferCredit transferCredit
+ * @returns JSX.Element
+ */
 function getTransferCreditValue(
   props: RecordsProps,
   transferCredit: TransferCreditType
@@ -104,6 +122,12 @@ function getTransferCreditValue(
   );
 }
 
+/**
+ * getAssessments
+ * @param props props
+ * @param workspace workspace
+ * @returns JSX.Element
+ */
 function getAssessments(props: RecordsProps, workspace: WorkspaceType) {
   if (
     workspace.studentAssessmentState &&
@@ -160,6 +184,12 @@ function getAssessments(props: RecordsProps, workspace: WorkspaceType) {
   }
 }
 
+/**
+ * getActivity
+ * @param props props
+ * @param workspace workspace
+ * @returns JSX.Element
+ */
 function getActivity(props: RecordsProps, workspace: WorkspaceType) {
   if (!workspace.studentActivity) {
     return null;
@@ -212,7 +242,14 @@ function getActivity(props: RecordsProps, workspace: WorkspaceType) {
   );
 }
 
+/**
+ * Records
+ */
 class Records extends React.Component<RecordsProps, RecordsState> {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: RecordsProps) {
     super(props);
     this.goToWorkspace = this.goToWorkspace.bind(this);
@@ -222,6 +259,11 @@ class Records extends React.Component<RecordsProps, RecordsState> {
     };
   }
 
+  /**
+   * goToWorkspace
+   * @param user user
+   * @param workspace workspace
+   */
   goToWorkspace(user: UserWithSchoolDataType, workspace: WorkspaceType) {
     window.location.hash =
       "#?u=" +
@@ -231,6 +273,13 @@ class Records extends React.Component<RecordsProps, RecordsState> {
       "&w=" +
       workspace.id;
   }
+
+  /**
+   * sortBy
+   * @param data data
+   * @param key key
+   * @param direction direction
+   */
   sortBy(data: any, key: string, direction: string) {
     data.sort((a: any, b: any) => {
       if (a[key] < b[key]) {
@@ -242,6 +291,11 @@ class Records extends React.Component<RecordsProps, RecordsState> {
       return 0;
     });
   }
+
+  /**
+   * sortWorkspaces
+   * @param data data
+   */
   sortWorkspaces(data: any) {
     const key = "name";
     const sortDirection = this.state.sortDirectionWorkspaces;
@@ -254,6 +308,10 @@ class Records extends React.Component<RecordsProps, RecordsState> {
     });
   }
 
+  /**
+   * sortRecords
+   * @param data data
+   */
   sortRecords(data: any) {
     const key = "courseName";
     const sortDirection = this.state.sortDirectionRecords;
@@ -265,6 +323,9 @@ class Records extends React.Component<RecordsProps, RecordsState> {
     });
   }
 
+  /**
+   * render
+   */
   render() {
     if (
       this.props.records.userDataStatus === "LOADING" ||
@@ -484,12 +545,21 @@ class Records extends React.Component<RecordsProps, RecordsState> {
     );
   }
 }
+
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     records: state.records,
   };
 }
+
+/**
+ * mapDispatchToProps
+ */
 function mapDispatchToProps() {
   return {};
 }

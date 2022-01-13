@@ -14,6 +14,9 @@ import { UsedAs } from "~/@types/shared";
 import { FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
 
+/**
+ * TextFieldProps
+ */
 interface TextFieldProps {
   type: string;
   content: {
@@ -44,6 +47,9 @@ interface TextFieldProps {
   invisible: boolean;
 }
 
+/**
+ * TextFieldState
+ */
 interface TextFieldState {
   value: string;
 
@@ -60,10 +66,17 @@ interface TextFieldState {
   fieldSavedState: FieldStateStatus;
 }
 
+/**
+ * TextField
+ */
 export default class TextField extends React.Component<
   TextFieldProps,
   TextFieldState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: TextFieldProps) {
     super(props);
 
@@ -281,6 +294,10 @@ export default class TextField extends React.Component<
       );
     }
 
+    /**
+     * Component
+     * @param props props
+     */
     const Component = (props: any) => {
       if (this.props.content.autogrow) {
         return <AutosizeInput {...props} />;

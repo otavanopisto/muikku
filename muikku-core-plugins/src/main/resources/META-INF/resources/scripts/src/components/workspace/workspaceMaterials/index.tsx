@@ -12,6 +12,9 @@ import SignupDialog from "~/components/coursepicker/dialogs/workspace-signup";
 import TableOfContentsComponent from "./content";
 import EnrollmentDialog from "../enrollment-dialog";
 
+/**
+ * WorkspaceMaterialsBodyProps
+ */
 interface WorkspaceMaterialsBodyProps {
   workspaceUrl: string;
   onActiveNodeIdChange: (newId: number) => any;
@@ -21,18 +24,33 @@ interface WorkspaceMaterialsBodyProps {
   onCloseSignupDialog: () => void;
 }
 
+/**
+ * WorkspaceMaterialsBody
+ */
 export default class WorkspaceMaterialsBody extends React.Component<
   WorkspaceMaterialsBodyProps,
   Record<string, unknown>
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: WorkspaceMaterialsBodyProps) {
     super(props);
 
     this.onOpenNavigation = this.onOpenNavigation.bind(this);
   }
+
+  /**
+   * onOpenNavigation
+   */
   onOpenNavigation() {
     (this.refs.content as any).getWrappedInstance().refresh();
   }
+
+  /**
+   * render
+   */
   render() {
     const navigationComponent = <TableOfContentsComponent ref="content" />;
     return (

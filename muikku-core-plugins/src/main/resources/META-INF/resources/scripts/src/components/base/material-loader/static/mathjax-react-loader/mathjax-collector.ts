@@ -1,6 +1,13 @@
+/**
+ * MathJaxCollector
+ */
 export class MathJaxCollector {
   static globalMap: Map<HTMLElement, MathJaxCollector> = new Map();
 
+  /**
+   * getCollectorForNode
+   * @param element
+   */
   static getCollectorForNode(element: HTMLElement) {
     return (
       MathJaxCollector.globalMap.get(element) || new MathJaxCollector(element)
@@ -10,6 +17,10 @@ export class MathJaxCollector {
   private executionTimer: NodeJS.Timer;
   private element: HTMLElement;
 
+  /**
+   * constructor
+   * @param element element
+   */
   constructor(element: HTMLElement) {
     this.element = element;
     MathJaxCollector.globalMap.set(element, this);
@@ -21,6 +32,9 @@ export class MathJaxCollector {
     this.executionTimer = setTimeout(this.execute, 100) as any;
   }
 
+  /**
+   * execute
+   */
   private execute() {
     MathJaxCollector.globalMap.delete(this.element);
     if (document.contains(this.element)) {
@@ -37,6 +51,9 @@ export class MathJaxCollector {
     }
   }
 
+  /**
+   * resetTimer
+   */
   resetTimer() {
     clearTimeout(this.executionTimer);
     this.executionTimer = setTimeout(this.execute, 100) as any;

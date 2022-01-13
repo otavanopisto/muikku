@@ -7,6 +7,9 @@ import CKEditor from "~/components/general/ckeditor";
 import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
 
+/**
+ * StepProps
+ */
 interface StepProps {
   workspace: WorkspaceType;
   i18n: i18nType;
@@ -14,9 +17,19 @@ interface StepProps {
   updateStore: (u: CopyWizardStoreUpdateType) => any;
 }
 
+/**
+ * StepState
+ */
 interface StepState {}
 
+/**
+ * Step
+ */
 export default class Step extends React.Component<StepProps, StepState> {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: StepProps) {
     super(props);
     this.updateStartDate = this.updateStartDate.bind(this);
@@ -31,47 +44,87 @@ export default class Step extends React.Component<StepProps, StepState> {
     this.switchBetweenCloneAndLink = this.switchBetweenCloneAndLink.bind(this);
   }
 
+  /**
+   * updateNameExtension
+   * @param e e
+   */
   updateNameExtension(e: React.ChangeEvent<HTMLInputElement>) {
     this.props.updateStore({
       nameExtension: e.target.value || null,
     });
   }
+
+  /**
+   * updateName
+   * @param e e
+   */
   updateName(e: React.ChangeEvent<HTMLInputElement>) {
     this.props.updateStore({
       name: e.target.value,
     });
   }
+
+  /**
+   * updateStartDate
+   * @param newDate newDate
+   */
   updateStartDate(newDate: any) {
     this.props.updateStore({
       beginDate: newDate,
     });
   }
+
+  /**
+   * updateEndDate
+   * @param newDate newDate
+   */
   updateEndDate(newDate: any) {
     this.props.updateStore({
       endDate: newDate,
     });
   }
+
+  /**
+   * onDescriptionChange
+   * @param text text
+   */
   onDescriptionChange(text: string) {
     this.props.updateStore({
       description: text,
     });
   }
+
+  /**
+   * toggleCopyMaterials
+   */
   toggleCopyMaterials() {
     this.props.updateStore({
       copyMaterials:
         this.props.getStore().copyMaterials === "NO" ? "CLONE" : "NO",
     });
   }
+
+  /**
+   * toggleCopyBackgroundPicture
+   */
   toggleCopyBackgroundPicture() {
     this.props.updateStore({
       copyBackgroundPicture: !this.props.getStore().copyBackgroundPicture,
     });
   }
+
+  /**
+   * toggleCopyDiscussionAreas
+   */
   toggleCopyDiscussionAreas() {
     this.props.updateStore({
       copyDiscussionAreas: !this.props.getStore().copyDiscussionAreas,
     });
   }
+
+  /**
+   * switchBetweenCloneAndLink
+   */
   switchBetweenCloneAndLink() {
     this.props.updateStore({
       copyMaterials:
@@ -79,6 +132,9 @@ export default class Step extends React.Component<StepProps, StepState> {
     });
   }
 
+  /**
+   * render
+   */
   render() {
     const copyMaterials =
       this.props.getStore().copyMaterials !== "NO" ? (

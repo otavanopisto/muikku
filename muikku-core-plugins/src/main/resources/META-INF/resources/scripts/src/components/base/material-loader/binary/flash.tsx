@@ -1,6 +1,11 @@
 import { MaterialContentNodeType } from "~/reducers/workspaces";
 import * as React from "react";
 
+/**
+ * Flash
+ * @param props props
+ * @param props.material material
+ */
 export default function Flash(props: { material: MaterialContentNodeType }) {
   return (
     <object

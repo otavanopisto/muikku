@@ -35,6 +35,9 @@ import {
 
 type OrganizationTabs = "SUMMARY" | "USERS" | "USERGROUPS" | "COURSES";
 
+/**
+ * OrganizationManagementApplicationProps
+ */
 interface OrganizationManagementApplicationProps {
   aside: React.ReactElement<any>;
   loadUsers: LoadUsersTriggerType;
@@ -44,6 +47,9 @@ interface OrganizationManagementApplicationProps {
   i18n: i18nType;
 }
 
+/**
+ * OrganizationManagementApplicationState
+ */
 interface OrganizationManagementApplicationState {
   activeTab: OrganizationTabs;
   workspaceSearchFieldValue: string;
@@ -51,10 +57,17 @@ interface OrganizationManagementApplicationState {
   userGroupSearchFieldValue: string;
 }
 
+/**
+ * OrganizationManagementApplication
+ */
 class OrganizationManagementApplication extends React.Component<
   OrganizationManagementApplicationProps,
   OrganizationManagementApplicationState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: OrganizationManagementApplicationProps) {
     super(props);
     this.state = {
@@ -69,22 +82,38 @@ class OrganizationManagementApplication extends React.Component<
     this.doUserGroupSearch = this.doUserGroupSearch.bind(this);
   }
 
+  /**
+   * onTabChange
+   * @param id id
+   */
   onTabChange(id: OrganizationTabs) {
     this.setState({
       activeTab: id,
     });
   }
 
+  /**
+   * doUserSearch
+   * @param q q
+   */
   doUserSearch(q: string) {
     this.props.loadUsers({ payload: { q } });
     this.setState({ userSearchFieldValue: q });
   }
 
+  /**
+   * doUserGroupSearch
+   * @param q q
+   */
   doUserGroupSearch(q: string) {
     this.props.loadUserGroups({ payload: { q } });
     this.setState({ userGroupSearchFieldValue: q });
   }
 
+  /**
+   * doWorkspaceSearch
+   * @param value value
+   */
   doWorkspaceSearch(value: string) {
     const filters: WorkspacesActiveFiltersType = {
       educationFilters: this.props.activeFilters.educationFilters
@@ -108,6 +137,9 @@ class OrganizationManagementApplication extends React.Component<
     this.setState({ workspaceSearchFieldValue: value });
   }
 
+  /**
+   * render
+   */
   render() {
     const title = (
       <h2 className="application-panel__header-title">
@@ -204,6 +236,9 @@ class OrganizationManagementApplication extends React.Component<
             name: this.props.i18n.text.get(
               "plugin.organization.tab.title.summary"
             ),
+            /**
+             * component
+             */
             component: () => (
               <ApplicationPanelBody modifier="tabs">
                 <Summary />
@@ -216,6 +251,9 @@ class OrganizationManagementApplication extends React.Component<
               "plugin.organization.tab.title.users"
             ),
             mobileAction: usersPrimaryActionMobile,
+            /**
+             * component
+             */
             component: () => (
               <ApplicationPanelBody
                 primaryOption={usersPrimaryAction}
@@ -232,6 +270,9 @@ class OrganizationManagementApplication extends React.Component<
               "plugin.organization.tab.title.userGroups"
             ),
             mobileAction: userGroupsPrimaryActionMobile,
+            /**
+             * component
+             */
             component: () => (
               <ApplicationPanelBody
                 primaryOption={userGroupsPrimaryAction}
@@ -248,6 +289,9 @@ class OrganizationManagementApplication extends React.Component<
               "plugin.organization.tab.title.courses"
             ),
             mobileAction: coursesPrimaryActionMobile,
+            /**
+             * component
+             */
             component: () => (
               <ApplicationPanelBody
                 primaryOption={coursesPrimaryAction}
@@ -272,6 +316,10 @@ class OrganizationManagementApplication extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -279,6 +327,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 const mapDispatchToProps = (dispatch: Dispatch<any>) =>
   bindActionCreators(
     { loadUsers, loadWorkspaces: loadWorkspacesFromServer, loadUserGroups },

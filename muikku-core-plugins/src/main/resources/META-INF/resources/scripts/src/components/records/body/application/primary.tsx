@@ -5,27 +5,48 @@ import { TranscriptOfRecordLocationType } from "~/reducers/main-function/records
 import { StateType } from "~/reducers";
 import "~/sass/elements/form-elements.scss";
 
+/**
+ * StudiesPrimaryOptionProps
+ */
 interface StudiesPrimaryOptionProps {
   i18n: i18nType;
   location: TranscriptOfRecordLocationType;
   isHopsEnabled: boolean;
 }
 
+/**
+ * StudiesPrimaryOptionState
+ */
 interface StudiesPrimaryOptionState {}
 
+/**
+ * StudiesPrimaryOption
+ */
 class StudiesPrimaryOption extends React.Component<
   StudiesPrimaryOptionProps,
   StudiesPrimaryOptionState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: StudiesPrimaryOptionProps) {
     super(props);
 
     this.onSelectChange = this.onSelectChange.bind(this);
   }
+
+  /**
+   * onSelectChange
+   * @param e e
+   */
   onSelectChange(e: React.ChangeEvent<HTMLSelectElement>) {
     window.location.hash = "#" + e.target.value;
   }
 
+  /**
+   * render
+   */
   render() {
     const sections = [
       {
@@ -69,6 +90,10 @@ class StudiesPrimaryOption extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -77,6 +102,9 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ */
 function mapDispatchToProps() {
   return {};
 }

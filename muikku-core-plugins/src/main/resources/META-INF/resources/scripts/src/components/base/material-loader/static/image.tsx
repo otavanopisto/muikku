@@ -12,6 +12,9 @@ import {
 } from "~/util/modifiers";
 import Zoom from "~/components/general/zoom";
 
+/**
+ * ImageProps
+ */
 interface ImageProps {
   element: HTMLElement;
   path: string;
@@ -30,13 +33,23 @@ interface ImageProps {
   invisible?: boolean;
 }
 
+/**
+ * ImageState
+ */
 interface ImageState {
   predictedHeight: number;
   maxWidth: number;
 }
 
+/**
+ * Image
+ */
 export default class Image extends React.Component<ImageProps, ImageState> {
   private predictedAspectRatio: number;
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: ImageProps) {
     super(props);
 
@@ -55,16 +68,32 @@ export default class Image extends React.Component<ImageProps, ImageState> {
     this.calculatePredictedHeight = this.calculatePredictedHeight.bind(this);
     this.calculateMaxWidth = this.calculateMaxWidth.bind(this);
   }
+
+  /**
+   * componentDidMount
+   */
   componentDidMount() {
     window.addEventListener("resize", this.calculatePredictedHeight);
     this.calculatePredictedHeight();
   }
+
+  /**
+   * componentDidUpdate
+   */
   componentDidUpdate() {
     this.calculatePredictedHeight();
   }
+
+  /**
+   * componentWillUnmount
+   */
   componentWillUnmount() {
     window.addEventListener("resize", this.calculatePredictedHeight);
   }
+
+  /**
+   * calculatePredictedHeight
+   */
   calculatePredictedHeight() {
     if (this.predictedAspectRatio && this.refs["img"]) {
       const predictedHeight =
@@ -81,6 +110,9 @@ export default class Image extends React.Component<ImageProps, ImageState> {
       }
     }
   }
+  /**
+   * calculateMaxWidth
+   */
   calculateMaxWidth() {
     const image = this.refs["img"] as HTMLImageElement;
     if (image && image.src) {
@@ -90,13 +122,30 @@ export default class Image extends React.Component<ImageProps, ImageState> {
       }
     }
   }
+
+  /**
+   * render
+   */
   render() {
     const newRules = this.props.processingRules.filter(
       (r) => r.id !== "image-rule"
     );
     newRules.push({
+      /**
+       * shouldProcessHTMLElement
+       * @param tag tag
+       * @param element element
+       */
       shouldProcessHTMLElement: (tag, element) =>
         tag === "figure" || tag === "span",
+
+      /**
+       * preprocessReactProperties
+       * @param tag tag
+       * @param props props
+       * @param children children
+       * @param element element
+       */
       preprocessReactProperties: (tag, props, children, element) => {
         if (
           !this.props.invisible &&
@@ -200,8 +249,17 @@ export default class Image extends React.Component<ImageProps, ImageState> {
     });
 
     newRules.push({
+      /**
+       * shouldProcessHTMLElement
+       * @param tag tag
+       */
       shouldProcessHTMLElement: (tag) => tag === "img",
       preventChildProcessing: true,
+      /**
+       * preprocessReactProperties
+       * @param tag tag
+       * @param props props
+       */
       preprocessReactProperties: (tag, props) => {
         if (this.predictedAspectRatio && this.props.invisible) {
           delete props.src;
@@ -217,6 +275,13 @@ export default class Image extends React.Component<ImageProps, ImageState> {
         props.ref = "img";
         props.onLoad = this.calculateMaxWidth;
       },
+      /**
+       * processingFunction
+       * @param Tag Tag
+       * @param props props
+       * @param children children
+       * @param element element
+       */
       processingFunction: (Tag, props, children, element) => {
         const src = this.props.dataset.original || "";
         const isAbsolute =

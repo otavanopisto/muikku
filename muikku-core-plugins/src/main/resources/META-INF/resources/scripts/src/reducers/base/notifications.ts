@@ -12,6 +12,9 @@ export type NotificationSeverityType =
   | "secondary"
   | "inverse";
 
+/**
+ * NotificationType
+ */
 export interface NotificationType {
   id: number;
   severity: NotificationSeverityType;
@@ -20,6 +23,11 @@ export interface NotificationType {
 
 export type NotificationListType = Array<NotificationType>;
 
+/**
+ * notifications
+ * @param state state
+ * @param action action
+ */
 export default function notifications(
   state: NotificationListType = [],
   action: ActionType

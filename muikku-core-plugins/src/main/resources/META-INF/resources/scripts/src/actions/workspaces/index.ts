@@ -229,6 +229,9 @@ type WorkspaceQueryDataType = {
   maxResults?: number;
 };
 
+/**
+ * SelectItem
+ */
 export interface SelectItem {
   id: string | number;
   label: string;
@@ -240,6 +243,9 @@ export interface SelectItem {
   };
 }
 
+/**
+ * workspaceStudentsQueryDataType
+ */
 export interface workspaceStudentsQueryDataType {
   q: string | null;
   firstResult?: number | null;
@@ -247,10 +253,17 @@ export interface workspaceStudentsQueryDataType {
   active?: boolean;
 }
 
+/**
+ * LoadTemplatesFromServerTriggerType
+ */
 export interface LoadTemplatesFromServerTriggerType {
   (query?: string): AnyActionType;
 }
 
+/**
+ * loadTemplatesFromServer
+ * @param query query
+ */
 const loadTemplatesFromServer: LoadTemplatesFromServerTriggerType =
   function loadTemplatesFromServer(query?: string) {
     const data: WorkspaceQueryDataType = {
@@ -292,10 +305,16 @@ const loadTemplatesFromServer: LoadTemplatesFromServerTriggerType =
     };
   };
 
+/**
+ * LoadUserWorkspacesFromServerTriggerType
+ */
 export interface LoadUserWorkspacesFromServerTriggerType {
   (): AnyActionType;
 }
 
+/**
+ * loadUserWorkspacesFromServer
+ */
 const loadUserWorkspacesFromServer: LoadUserWorkspacesFromServerTriggerType =
   function loadUserWorkspacesFromServer() {
     return async (
@@ -329,10 +348,16 @@ const loadUserWorkspacesFromServer: LoadUserWorkspacesFromServerTriggerType =
     };
   };
 
+/**
+ * LoadLastWorkspaceFromServerTriggerType
+ */
 export interface LoadLastWorkspaceFromServerTriggerType {
   (): AnyActionType;
 }
 
+/**
+ * loadLastWorkspaceFromServer
+ */
 const loadLastWorkspaceFromServer: LoadLastWorkspaceFromServerTriggerType =
   function loadLastWorkspaceFromServer() {
     return async (
@@ -369,10 +394,17 @@ const loadLastWorkspaceFromServer: LoadLastWorkspaceFromServerTriggerType =
     };
   };
 
+/**
+ * UpdateLastWorkspaceTriggerType
+ */
 export interface UpdateLastWorkspaceTriggerType {
   (newReference: WorkspaceMaterialReferenceType): AnyActionType;
 }
 
+/**
+ * updateLastWorkspace
+ * @param newReference newReference
+ */
 const updateLastWorkspace: UpdateLastWorkspaceTriggerType =
   function updateLastWorkspace(newReference) {
     return async (dispatch: (arg: AnyActionType) => any) => {
@@ -396,6 +428,9 @@ const updateLastWorkspace: UpdateLastWorkspaceTriggerType =
     };
   };
 
+/**
+ * SetCurrentWorkspaceTriggerType
+ */
 export interface SetCurrentWorkspaceTriggerType {
   (data?: {
     workspaceId: number;
@@ -406,6 +441,9 @@ export interface SetCurrentWorkspaceTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * UpdateCurrentWorkspaceImagesB64TriggerType
+ */
 export interface UpdateCurrentWorkspaceImagesB64TriggerType {
   (data?: {
     delete?: boolean;
@@ -416,10 +454,16 @@ export interface UpdateCurrentWorkspaceImagesB64TriggerType {
   }): AnyActionType;
 }
 
+/**
+ * LoadCurrentWorkspaceUserGroupPermissionsTriggerType
+ */
 export interface LoadCurrentWorkspaceUserGroupPermissionsTriggerType {
   (): AnyActionType;
 }
 
+/**
+ * UpdateCurrentWorkspaceUserGroupPermissionTriggerType
+ */
 export interface UpdateCurrentWorkspaceUserGroupPermissionTriggerType {
   (data?: {
     original: WorkspacePermissionsType;
@@ -429,6 +473,9 @@ export interface UpdateCurrentWorkspaceUserGroupPermissionTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * SetWorkspaceMaterialEditorStateTriggerType
+ */
 export interface SetWorkspaceMaterialEditorStateTriggerType {
   (
     newState: WorkspaceMaterialEditorType,
@@ -436,10 +483,16 @@ export interface SetWorkspaceMaterialEditorStateTriggerType {
   ): AnyActionType;
 }
 
+/**
+ * RequestWorkspaceMaterialContentNodeAttachmentsTriggerType
+ */
 export interface RequestWorkspaceMaterialContentNodeAttachmentsTriggerType {
   (workspace: WorkspaceType, material: MaterialContentNodeType): AnyActionType;
 }
 
+/**
+ * UpdateWorkspaceMaterialContentNodeTriggerType
+ */
 export interface UpdateWorkspaceMaterialContentNodeTriggerType {
   (data: {
     workspace: WorkspaceType;
@@ -454,6 +507,9 @@ export interface UpdateWorkspaceMaterialContentNodeTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * DeleteWorkspaceMaterialContentNodeTriggerType
+ */
 export interface DeleteWorkspaceMaterialContentNodeTriggerType {
   (data: {
     material: MaterialContentNodeType;
@@ -466,6 +522,9 @@ export interface DeleteWorkspaceMaterialContentNodeTriggerType {
 
 type ApiPath = "materials" | "help";
 
+/**
+ * CreateWorkspaceMaterialContentNodeTriggerType
+ */
 export interface CreateWorkspaceMaterialContentNodeTriggerType {
   (
     data: {
@@ -485,6 +544,9 @@ export interface CreateWorkspaceMaterialContentNodeTriggerType {
   ): AnyActionType;
 }
 
+/**
+ * CreateWorkspaceMaterialAttachmentTriggerType
+ */
 export interface CreateWorkspaceMaterialAttachmentTriggerType {
   (
     data: {
@@ -499,6 +561,9 @@ export interface CreateWorkspaceMaterialAttachmentTriggerType {
   ): AnyActionType;
 }
 
+/**
+ * UpdateWorkspaceEditModeStateTriggerType
+ */
 export interface UpdateWorkspaceEditModeStateTriggerType {
   (
     data: Partial<WorkspaceEditModeStateType>,
@@ -506,6 +571,12 @@ export interface UpdateWorkspaceEditModeStateTriggerType {
   ): AnyActionType;
 }
 
+/**
+ * reuseExistantValue
+ * @param conditional conditional
+ * @param existantValue existantValue
+ * @param otherwise otherwise
+ */
 function reuseExistantValue(
   conditional: boolean,
   existantValue: any,
@@ -521,6 +592,10 @@ function reuseExistantValue(
   return otherwise();
 }
 
+/**
+ * setCurrentOrganizationWorkspace
+ * @param data data
+ */
 const setCurrentOrganizationWorkspace: SetCurrentWorkspaceTriggerType =
   function setCurrentOrganizationWorkspace(data) {
     return async (
@@ -579,6 +654,10 @@ const setCurrentOrganizationWorkspace: SetCurrentWorkspaceTriggerType =
     };
   };
 
+/**
+ * setCurrentWorkspace
+ * @param data data
+ */
 const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
   function setCurrentWorkspace(data) {
     return async (
@@ -785,6 +864,9 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
     };
   };
 
+/**
+ * RequestAssessmentAtWorkspaceTriggerType
+ */
 export interface RequestAssessmentAtWorkspaceTriggerType {
   (data: {
     workspace: WorkspaceType;
@@ -794,6 +876,10 @@ export interface RequestAssessmentAtWorkspaceTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * requestAssessmentAtWorkspace
+ * @param data data
+ */
 const requestAssessmentAtWorkspace: RequestAssessmentAtWorkspaceTriggerType =
   function requestAssessmentAtWorkspace(data) {
     return async (
@@ -863,6 +949,9 @@ const requestAssessmentAtWorkspace: RequestAssessmentAtWorkspaceTriggerType =
     };
   };
 
+/**
+ * CancelAssessmentAtWorkspaceTriggerType
+ */
 export interface CancelAssessmentAtWorkspaceTriggerType {
   (data: {
     workspace: WorkspaceType;
@@ -871,6 +960,10 @@ export interface CancelAssessmentAtWorkspaceTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * cancelAssessmentAtWorkspace
+ * @param data data
+ */
 const cancelAssessmentAtWorkspace: CancelAssessmentAtWorkspaceTriggerType =
   function cancelAssessmentAtWorkspace(data) {
     return async (
@@ -951,6 +1044,9 @@ const cancelAssessmentAtWorkspace: CancelAssessmentAtWorkspaceTriggerType =
     };
   };
 
+/**
+ * LoadWorkspacesFromServerTriggerType
+ */
 export interface LoadWorkspacesFromServerTriggerType {
   (
     filters: WorkspacesActiveFiltersType,
@@ -959,18 +1055,30 @@ export interface LoadWorkspacesFromServerTriggerType {
   ): AnyActionType;
 }
 
+/**
+ * LoadMoreWorkspacesFromServerTriggerType
+ */
 export interface LoadMoreWorkspacesFromServerTriggerType {
   (): AnyActionType;
 }
 
+/**
+ * LoadCurrentWorkspaceJournalsFromServerTriggerType
+ */
 export interface LoadCurrentWorkspaceJournalsFromServerTriggerType {
   (userEntityId?: number): AnyActionType;
 }
 
+/**
+ * LoadMoreCurrentWorkspaceJournalsFromServerTriggerType
+ */
 export interface LoadMoreCurrentWorkspaceJournalsFromServerTriggerType {
   (): AnyActionType;
 }
 
+/**
+ * LoadWholeWorkspaceMaterialsTriggerType
+ */
 export interface LoadWholeWorkspaceMaterialsTriggerType {
   (
     workspaceId: number,
@@ -978,6 +1086,9 @@ export interface LoadWholeWorkspaceMaterialsTriggerType {
     callback?: (nodes: Array<MaterialContentNodeType>) => any
   ): AnyActionType;
 }
+/**
+ * LoadWholeWorkspaceHelpTriggerType
+ */
 export interface LoadWholeWorkspaceHelpTriggerType {
   (
     workspaceId: number,
@@ -985,9 +1096,15 @@ export interface LoadWholeWorkspaceHelpTriggerType {
     callback?: (nodes: Array<MaterialContentNodeType>) => any
   ): AnyActionType;
 }
+/**
+ * SetWholeWorkspaceMaterialsTriggerType
+ */
 export interface SetWholeWorkspaceMaterialsTriggerType {
   (materials: MaterialContentNodeListType): AnyActionType;
 }
+/**
+ * SignupIntoWorkspaceTriggerType
+ */
 export interface SignupIntoWorkspaceTriggerType {
   (data: {
     success: () => any;
@@ -996,12 +1113,21 @@ export interface SignupIntoWorkspaceTriggerType {
     message: string;
   }): AnyActionType;
 }
+/**
+ * SetCurrentWorkspaceMaterialsActiveNodeIdTriggerType
+ */
 export interface SetCurrentWorkspaceMaterialsActiveNodeIdTriggerType {
   (id: number): AnyActionType;
 }
+/**
+ * LoadWorkspaceCompositeMaterialReplies
+ */
 export interface LoadWorkspaceCompositeMaterialReplies {
   (id: number): AnyActionType;
 }
+/**
+ * UpdateAssignmentStateTriggerType
+ */
 export interface UpdateAssignmentStateTriggerType {
   (
     successState: MaterialCompositeRepliesStateType,
@@ -1014,10 +1140,16 @@ export interface UpdateAssignmentStateTriggerType {
   ): AnyActionType;
 }
 
+/**
+ * LoadUserWorkspaceEducationFiltersFromServerTriggerType
+ */
 export interface LoadUserWorkspaceEducationFiltersFromServerTriggerType {
   (loadOrganizationWorkspaces: boolean): AnyActionType;
 }
 
+/**
+ * setFiltersTriggerType
+ */
 export interface setFiltersTriggerType {
   (
     loadOrganizationWorkspaceFilters: boolean,
@@ -1025,6 +1157,9 @@ export interface setFiltersTriggerType {
   ): AnyActionType;
 }
 
+/**
+ * LoadUserWorkspaceCurriculumFiltersFromServerTriggerType
+ */
 export interface LoadUserWorkspaceCurriculumFiltersFromServerTriggerType {
   (
     loadOrganizationWorkspaceFilters: boolean,
@@ -1032,12 +1167,18 @@ export interface LoadUserWorkspaceCurriculumFiltersFromServerTriggerType {
   ): AnyActionType;
 }
 
+/**
+ * LoadUserWorkspaceOrganizationFiltersFromServerTriggerType
+ */
 export interface LoadUserWorkspaceOrganizationFiltersFromServerTriggerType {
   (
     callback?: (organizations: WorkspaceOrganizationFilterListType) => any
   ): AnyActionType;
 }
 
+/**
+ * UpdateWorkspaceTriggerType
+ */
 export interface UpdateWorkspaceTriggerType {
   (data: {
     workspace: WorkspaceType;
@@ -1054,6 +1195,9 @@ export interface UpdateWorkspaceTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * LoadUsersOfWorkspaceTriggerType
+ */
 export interface LoadUsersOfWorkspaceTriggerType {
   (data: {
     workspace: WorkspaceType;
@@ -1070,6 +1214,9 @@ export interface LoadUsersOfWorkspaceTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * ToggleActiveStateOfStudentOfWorkspaceTriggerType
+ */
 export interface ToggleActiveStateOfStudentOfWorkspaceTriggerType {
   (data: {
     workspace: WorkspaceType;
@@ -1079,6 +1226,12 @@ export interface ToggleActiveStateOfStudentOfWorkspaceTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * loadWorkspacesFromServer
+ * @param filters filters
+ * @param organizationWorkspaces organizationWorkspaces
+ * @param refresh refresh
+ */
 const loadWorkspacesFromServer: LoadWorkspacesFromServerTriggerType =
   function loadWorkspacesFromServer(filters, organizationWorkspaces, refresh) {
     return loadWorkspacesHelper.bind(
@@ -1090,16 +1243,26 @@ const loadWorkspacesFromServer: LoadWorkspacesFromServerTriggerType =
     );
   };
 
+/**
+ * loadMoreWorkspacesFromServer
+ */
 const loadMoreWorkspacesFromServer: LoadMoreWorkspacesFromServerTriggerType =
   function loadMoreWorkspacesFromServer() {
     return loadWorkspacesHelper.bind(this, null, false, false, false);
   };
 
+/**
+ * loadMoreOrganizationWorkspacesFromServer
+ */
 const loadMoreOrganizationWorkspacesFromServer: LoadMoreWorkspacesFromServerTriggerType =
   function loadMoreWorkspacesFromServer() {
     return loadWorkspacesHelper.bind(this, null, false, false, true);
   };
 
+/**
+ * loadCurrentWorkspaceJournalsFromServer
+ * @param userEntityId userEntityId
+ */
 const loadCurrentWorkspaceJournalsFromServer: LoadCurrentWorkspaceJournalsFromServerTriggerType =
   function loadCurrentWorkspaceJournalsFromServer(userEntityId) {
     return loadCurrentWorkspaceJournalsHelper.bind(
@@ -1109,11 +1272,19 @@ const loadCurrentWorkspaceJournalsFromServer: LoadCurrentWorkspaceJournalsFromSe
     );
   };
 
+/**
+ * loadMoreCurrentWorkspaceJournalsFromServer
+ */
 const loadMoreCurrentWorkspaceJournalsFromServer: LoadMoreCurrentWorkspaceJournalsFromServerTriggerType =
   function loadMoreCurrentWorkspaceJournalsFromServer() {
     return loadCurrentWorkspaceJournalsHelper.bind(this, null, false);
   };
 
+/**
+ * setWorkspaceStateFilters
+ * @param loadOrganizationWorkspaceFilters loadOrganizationWorkspaceFilters
+ * @param filters filters
+ */
 const setWorkspaceStateFilters: setFiltersTriggerType =
   function setWorkspaceStateFilters(loadOrganizationWorkspaceFilters, filters) {
     return (dispatch: (arg: AnyActionType) => any) => {
@@ -1131,6 +1302,10 @@ const setWorkspaceStateFilters: setFiltersTriggerType =
     };
   };
 
+/**
+ * loadOrganizationWorkspaceFilters
+ * @param loadOrganizationWorkspaceFilters loadOrganizationWorkspaceFilters
+ */
 const loadUserWorkspaceEducationFiltersFromServer: LoadUserWorkspaceEducationFiltersFromServerTriggerType =
   function loadUserWorkspaceEducationFiltersFromServer(
     loadOrganizationWorkspaceFilters
@@ -1177,6 +1352,11 @@ const loadUserWorkspaceEducationFiltersFromServer: LoadUserWorkspaceEducationFil
     };
   };
 
+/**
+ * loadUserWorkspaceCurriculumFiltersFromServer
+ * @param loadOrganizationWorkspaceFilters loadOrganizationWorkspaceFilters
+ * @param callback callback
+ */
 const loadUserWorkspaceCurriculumFiltersFromServer: LoadUserWorkspaceCurriculumFiltersFromServerTriggerType =
   function loadUserWorkspaceCurriculumFiltersFromServer(
     loadOrganizationWorkspaceFilters,
@@ -1218,6 +1398,10 @@ const loadUserWorkspaceCurriculumFiltersFromServer: LoadUserWorkspaceCurriculumF
     };
   };
 
+/**
+ * loadUserWorkspaceOrganizationFiltersFromServer
+ * @param callback callback
+ */
 const loadUserWorkspaceOrganizationFiltersFromServer: LoadUserWorkspaceOrganizationFiltersFromServerTriggerType =
   function loadAvailableOrganizationFiltersFromServer(callback) {
     return async (
@@ -1252,6 +1436,10 @@ const loadUserWorkspaceOrganizationFiltersFromServer: LoadUserWorkspaceOrganizat
     };
   };
 
+/**
+ * signupIntoWorkspace
+ * @param data data
+ */
 const signupIntoWorkspace: SignupIntoWorkspaceTriggerType =
   function signupIntoWorkspace(data) {
     return async (
@@ -1284,6 +1472,10 @@ const signupIntoWorkspace: SignupIntoWorkspaceTriggerType =
     };
   };
 
+/**
+ * updateWorkspace
+ * @param data data
+ */
 const updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
   data
 ) {
@@ -1510,6 +1702,10 @@ const updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
   };
 };
 
+/**
+ * updateOrganizationWorkspace
+ * @param data data
+ */
 const updateOrganizationWorkspace: UpdateWorkspaceTriggerType =
   function updateOrganizationWorkspace(data) {
     return async (
@@ -1653,6 +1849,10 @@ const updateOrganizationWorkspace: UpdateWorkspaceTriggerType =
     };
   };
 
+/**
+ * loadCurrentOrganizationWorkspaceStaff
+ * @param data data
+ */
 const loadCurrentOrganizationWorkspaceStaff: LoadUsersOfWorkspaceTriggerType =
   function loadCurrentOrganizationWorkspaceStaff(data) {
     return async (
@@ -1709,6 +1909,10 @@ const loadCurrentOrganizationWorkspaceStaff: LoadUsersOfWorkspaceTriggerType =
     };
   };
 
+/**
+ * loadStaffMembersOfWorkspace
+ * @param data data
+ */
 const loadStaffMembersOfWorkspace: LoadUsersOfWorkspaceTriggerType =
   function loadStaffMembersOfWorkspace(data) {
     return async (
@@ -1754,6 +1958,10 @@ const loadStaffMembersOfWorkspace: LoadUsersOfWorkspaceTriggerType =
     };
   };
 
+/**
+ * loadCurrentOrganizationWorkspaceStudents
+ * @param data data
+ */
 const loadCurrentOrganizationWorkspaceStudents: LoadUsersOfWorkspaceTriggerType =
   function loadCurrentOrganizationWorkspaceStudents(data) {
     return async (
@@ -1810,6 +2018,10 @@ const loadCurrentOrganizationWorkspaceStudents: LoadUsersOfWorkspaceTriggerType 
     };
   };
 
+/**
+ * loadStudentsOfWorkspace
+ * @param data data
+ */
 const loadStudentsOfWorkspace: LoadUsersOfWorkspaceTriggerType =
   function loadStudentsOfWorkspace(data) {
     return async (
@@ -1880,6 +2092,10 @@ const loadStudentsOfWorkspace: LoadUsersOfWorkspaceTriggerType =
     };
   };
 
+/**
+ * toggleActiveStateOfStudentOfWorkspace
+ * @param data data
+ */
 const toggleActiveStateOfStudentOfWorkspace: ToggleActiveStateOfStudentOfWorkspaceTriggerType =
   function toggleActiveStateOfStudentOfWorkspace(data) {
     return async (
@@ -1961,6 +2177,12 @@ const toggleActiveStateOfStudentOfWorkspace: ToggleActiveStateOfStudentOfWorkspa
     };
   };
 
+/**
+ * loadWholeWorkspaceMaterials
+ * @param workspaceId workspaceId
+ * @param includeHidden includeHidden
+ * @param callback callback
+ */
 const loadWholeWorkspaceMaterials: LoadWholeWorkspaceMaterialsTriggerType =
   function loadWholeWorkspaceMaterials(workspaceId, includeHidden, callback) {
     return async (
@@ -1996,6 +2218,12 @@ const loadWholeWorkspaceMaterials: LoadWholeWorkspaceMaterialsTriggerType =
     };
   };
 
+/**
+ * loadWholeWorkspaceHelp
+ * @param workspaceId workspaceId
+ * @param includeHidden includeHidden
+ * @param callback callback
+ */
 const loadWholeWorkspaceHelp: LoadWholeWorkspaceHelpTriggerType =
   function loadWholeWorkspaceMaterials(workspaceId, includeHidden, callback) {
     return async (
@@ -2033,6 +2261,10 @@ const loadWholeWorkspaceHelp: LoadWholeWorkspaceHelpTriggerType =
     };
   };
 
+/**
+ * setWholeWorkspaceMaterials
+ * @param materials materials
+ */
 const setWholeWorkspaceMaterials: SetWholeWorkspaceMaterialsTriggerType =
   function setWholeWorkspaceMaterials(materials) {
     return {
@@ -2041,6 +2273,10 @@ const setWholeWorkspaceMaterials: SetWholeWorkspaceMaterialsTriggerType =
     };
   };
 
+/**
+ * setWholeWorkspaceHelp
+ * @param materials materials
+ */
 const setWholeWorkspaceHelp: SetWholeWorkspaceMaterialsTriggerType =
   function setWholeWorkspaceHelp(materials) {
     return {
@@ -2049,6 +2285,10 @@ const setWholeWorkspaceHelp: SetWholeWorkspaceMaterialsTriggerType =
     };
   };
 
+/**
+ * setCurrentWorkspaceMaterialsActiveNodeId
+ * @param id id
+ */
 const setCurrentWorkspaceMaterialsActiveNodeId: SetCurrentWorkspaceMaterialsActiveNodeIdTriggerType =
   function setCurrentWorkspaceMaterialsActiveNodeId(id) {
     return {
@@ -2057,6 +2297,10 @@ const setCurrentWorkspaceMaterialsActiveNodeId: SetCurrentWorkspaceMaterialsActi
     };
   };
 
+/**
+ * loadWorkspaceCompositeMaterialReplies
+ * @param id id
+ */
 const loadWorkspaceCompositeMaterialReplies: LoadWorkspaceCompositeMaterialReplies =
   function loadWorkspaceCompositeMaterialReplies(id) {
     return async (
@@ -2104,6 +2348,16 @@ const loadWorkspaceCompositeMaterialReplies: LoadWorkspaceCompositeMaterialRepli
 
 //Updates the evaluated assignment state, and either updates an existant composite reply or creates a new one as incomplete,
 //that is no answers
+/**
+ * updateAssignmentState
+ * @param successState successState
+ * @param avoidServerCall avoidServerCall
+ * @param workspaceId workspaceId
+ * @param workspaceMaterialId workspaceMaterialId
+ * @param existantReplyId existantReplyId
+ * @param successMessage successMessage
+ * @param callback callback
+ */
 const updateAssignmentState: UpdateAssignmentStateTriggerType =
   function updateAssignmentState(
     successState,
@@ -2181,6 +2435,9 @@ const updateAssignmentState: UpdateAssignmentStateTriggerType =
     };
   };
 
+/**
+ * CreateWorkspaceJournalForCurrentWorkspaceTriggerType
+ */
 export interface CreateWorkspaceJournalForCurrentWorkspaceTriggerType {
   (data: {
     title: string;
@@ -2190,6 +2447,9 @@ export interface CreateWorkspaceJournalForCurrentWorkspaceTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * UpdateWorkspaceJournalInCurrentWorkspaceTriggerType
+ */
 export interface UpdateWorkspaceJournalInCurrentWorkspaceTriggerType {
   (data: {
     journal: WorkspaceJournalType;
@@ -2200,6 +2460,9 @@ export interface UpdateWorkspaceJournalInCurrentWorkspaceTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * DeleteWorkspaceJournalInCurrentWorkspaceTriggerType
+ */
 export interface DeleteWorkspaceJournalInCurrentWorkspaceTriggerType {
   (data: {
     journal: WorkspaceJournalType;
@@ -2208,10 +2471,16 @@ export interface DeleteWorkspaceJournalInCurrentWorkspaceTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * LoadWorkspaceDetailsInCurrentWorkspaceTriggerType
+ */
 export interface LoadWorkspaceDetailsInCurrentWorkspaceTriggerType {
   (): AnyActionType;
 }
 
+/**
+ * UpdateWorkspaceDetailsForCurrentWorkspaceTriggerType
+ */
 export interface UpdateWorkspaceDetailsForCurrentWorkspaceTriggerType {
   (data: {
     newDetails: WorkspaceDetailsType;
@@ -2220,10 +2489,16 @@ export interface UpdateWorkspaceDetailsForCurrentWorkspaceTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * LoadWorkspaceChatStatusTriggerType
+ */
 export interface LoadWorkspaceChatStatusTriggerType {
   (): AnyActionType;
 }
 
+/**
+ * UpdateWorkspaceProducersForCurrentWorkspaceTriggerType
+ */
 export interface UpdateWorkspaceProducersForCurrentWorkspaceTriggerType {
   (data: {
     appliedProducers: Array<WorkspaceProducerType>;
@@ -2232,10 +2507,16 @@ export interface UpdateWorkspaceProducersForCurrentWorkspaceTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * LoadWorkspaceTypesTriggerType
+ */
 export interface LoadWorkspaceTypesTriggerType {
   (): AnyActionType;
 }
 
+/**
+ * DeleteCurrentWorkspaceImageTriggerType
+ */
 export interface DeleteCurrentWorkspaceImageTriggerType {
   (): AnyActionType;
 }
@@ -2248,6 +2529,9 @@ export type CopyCurrentWorkspaceStepType =
   | "copy-background-picture"
   | "done";
 
+/**
+ * CopyCurrentWorkspaceTriggerType
+ */
 export interface CopyCurrentWorkspaceTriggerType {
   (data: {
     description: string;
@@ -2281,6 +2565,9 @@ export type UpdateWorkspaceStateType =
   | "remove-teachers"
   | "done";
 
+/**
+ * CreateWorkspaceTriggerType
+ */
 export interface CreateWorkspaceTriggerType {
   (data: {
     id: number;
@@ -2297,6 +2584,10 @@ export interface CreateWorkspaceTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * createWorkspaceJournalForCurrentWorkspace
+ * @param data data
+ */
 const createWorkspaceJournalForCurrentWorkspace: CreateWorkspaceJournalForCurrentWorkspaceTriggerType =
   function createWorkspaceJournalForCurrentWorkspace(data) {
     return async (
@@ -2356,6 +2647,10 @@ const createWorkspaceJournalForCurrentWorkspace: CreateWorkspaceJournalForCurren
     };
   };
 
+/**
+ * updateWorkspaceJournalInCurrentWorkspace
+ * @param data data
+ */
 const updateWorkspaceJournalInCurrentWorkspace: UpdateWorkspaceJournalInCurrentWorkspaceTriggerType =
   function updateWorkspaceJournalInCurrentWorkspace(data) {
     return async (
@@ -2419,6 +2714,10 @@ const updateWorkspaceJournalInCurrentWorkspace: UpdateWorkspaceJournalInCurrentW
     };
   };
 
+/**
+ * deleteWorkspaceJournalInCurrentWorkspace
+ * @param data data
+ */
 const deleteWorkspaceJournalInCurrentWorkspace: DeleteWorkspaceJournalInCurrentWorkspaceTriggerType =
   function deleteWorkspaceJournalInCurrentWorkspace(data) {
     return async (
@@ -2473,6 +2772,9 @@ const deleteWorkspaceJournalInCurrentWorkspace: DeleteWorkspaceJournalInCurrentW
     };
   };
 
+/**
+ * loadWorkspaceChatStatus
+ */
 const loadWorkspaceChatStatus: LoadWorkspaceChatStatusTriggerType =
   function loadWorkspaceChatStatus() {
     return async (
@@ -2515,6 +2817,9 @@ const loadWorkspaceChatStatus: LoadWorkspaceChatStatusTriggerType =
     };
   };
 
+/**
+ * loadWorkspaceDetailsInCurrentWorkspace
+ */
 const loadWorkspaceDetailsInCurrentWorkspace: LoadWorkspaceDetailsInCurrentWorkspaceTriggerType =
   function loadWorkspaceDetailsInCurrentWorkspace() {
     return async (
@@ -2558,6 +2863,10 @@ const loadWorkspaceDetailsInCurrentWorkspace: LoadWorkspaceDetailsInCurrentWorks
     };
   };
 
+/**
+ * updateWorkspaceDetailsForCurrentWorkspace
+ * @param data data
+ */
 const updateWorkspaceDetailsForCurrentWorkspace: UpdateWorkspaceDetailsForCurrentWorkspaceTriggerType =
   function updateWorkspaceDetailsForCurrentWorkspace(data) {
     return async (
@@ -2606,6 +2915,10 @@ const updateWorkspaceDetailsForCurrentWorkspace: UpdateWorkspaceDetailsForCurren
     };
   };
 
+/**
+ * updateWorkspaceProducersForCurrentWorkspace
+ * @param data data
+ */
 const updateWorkspaceProducersForCurrentWorkspace: UpdateWorkspaceProducersForCurrentWorkspaceTriggerType =
   function updateWorkspaceProducersForCurrentWorkspace(data) {
     return async (
@@ -2701,6 +3014,9 @@ const updateWorkspaceProducersForCurrentWorkspace: UpdateWorkspaceProducersForCu
     };
   };
 
+/**
+ * loadWorkspaceTypes
+ */
 const loadWorkspaceTypes: LoadWorkspaceTypesTriggerType =
   function loadWorkspaceTypes() {
     return async (
@@ -2734,6 +3050,9 @@ const loadWorkspaceTypes: LoadWorkspaceTypesTriggerType =
     };
   };
 
+/**
+ * deleteCurrentWorkspaceImage
+ */
 const deleteCurrentWorkspaceImage: DeleteCurrentWorkspaceImageTriggerType =
   function deleteCurrentWorkspaceImage() {
     return async (
@@ -2787,6 +3106,10 @@ const deleteCurrentWorkspaceImage: DeleteCurrentWorkspaceImageTriggerType =
     };
   };
 
+/**
+ * createWorkspace
+ * @param data data
+ */
 const createWorkspace: CreateWorkspaceTriggerType = function createWorkspace(
   data
 ) {
@@ -2886,6 +3209,10 @@ const createWorkspace: CreateWorkspaceTriggerType = function createWorkspace(
   };
 };
 
+/**
+ * copyCurrentWorkspace
+ * @param data data
+ */
 const copyCurrentWorkspace: CopyCurrentWorkspaceTriggerType =
   function copyCurrentWorkspace(data) {
     return async (
@@ -2989,6 +3316,10 @@ const copyCurrentWorkspace: CopyCurrentWorkspaceTriggerType =
     };
   };
 
+/**
+ * updateCurrentWorkspaceImagesB64
+ * @param data data
+ */
 const updateCurrentWorkspaceImagesB64: UpdateCurrentWorkspaceImagesB64TriggerType =
   function updateCurrentWorkspaceImagesB64(data) {
     return async (
@@ -3068,6 +3399,9 @@ const updateCurrentWorkspaceImagesB64: UpdateCurrentWorkspaceImagesB64TriggerTyp
     };
   };
 
+/**
+ * loadCurrentWorkspaceUserGroupPermissions
+ */
 const loadCurrentWorkspaceUserGroupPermissions: LoadCurrentWorkspaceUserGroupPermissionsTriggerType =
   function loadCurrentWorkspaceUserGroupPermissions() {
     return async (
@@ -3111,6 +3445,10 @@ const loadCurrentWorkspaceUserGroupPermissions: LoadCurrentWorkspaceUserGroupPer
     };
   };
 
+/**
+ * setWorkspaceMaterialEditorState
+ * @param newState newState
+ */
 const setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType =
   function setWorkspaceMaterialEditorState(
     newState: WorkspaceMaterialEditorType
@@ -3140,6 +3478,11 @@ const setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerTyp
     };
   };
 
+/**
+ * requestWorkspaceMaterialContentNodeAttachments
+ * @param workspace workspace
+ * @param material material
+ */
 const requestWorkspaceMaterialContentNodeAttachments: RequestWorkspaceMaterialContentNodeAttachmentsTriggerType =
   function requestWorkspaceMaterialContentNodeAttachments(workspace, material) {
     return async (dispatch: (arg: AnyActionType) => any) => {
@@ -3175,6 +3518,10 @@ const requestWorkspaceMaterialContentNodeAttachments: RequestWorkspaceMaterialCo
     };
   };
 
+/**
+ * updateWorkspaceMaterialContentNode
+ * @param data data
+ */
 const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType =
   function updateWorkspaceMaterialContentNode(data) {
     return async (
@@ -3491,6 +3838,10 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
     };
   };
 
+/**
+ * deleteWorkspaceMaterialContentNode
+ * @param data data
+ */
 const deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTriggerType =
   function deleteWorkspaceMaterialContentNode(data) {
     return async (
@@ -3572,6 +3923,11 @@ const deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTrig
     };
   };
 
+/**
+ * createWorkspaceMaterialContentNode
+ * @param data data
+ * @param apiPath apiPath
+ */
 const createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTriggerType =
   function createWorkspaceMaterialContentNode(data, apiPath) {
     return async (
@@ -3631,9 +3987,18 @@ const createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTrig
               url: getState().status.contextPath + "/tempFileUploadServlet",
               type: "POST",
               data: formData,
+              /**
+               * success
+               * @param data data
+               */
               success: (data: any) => {
                 resolve(data);
               },
+              /**
+               * error
+               * @param xhr xhr
+               * @param err err
+               */
               error: (xhr: any, err: Error) => {
                 reject(err);
               },
@@ -3733,6 +4098,11 @@ const createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTrig
   };
 
 const MAX_ATTACHMENT_SIZE = 10000000;
+/**
+ * createWorkspaceMaterialAttachment
+ * @param data data
+ * @param updateUploadingValues updateUploadingValues
+ */
 const createWorkspaceMaterialAttachment: CreateWorkspaceMaterialAttachmentTriggerType =
   function createWorkspaceMaterialAttachment(
     data,
@@ -3771,12 +4141,24 @@ const createWorkspaceMaterialAttachment: CreateWorkspaceMaterialAttachmentTrigge
                 url: getState().status.contextPath + "/tempFileUploadServlet",
                 type: "POST",
                 data: formData,
+                /**
+                 * success
+                 * @param data data
+                 */
                 success: (data: any) => {
                   resolve(data);
                 },
+                /**
+                 * error
+                 * @param xhr xhr
+                 * @param err err
+                 */
                 error: (xhr: any, err: Error) => {
                   reject(err);
                 },
+                /**
+                 * xhr
+                 */
                 xhr: () => {
                   /**
                    * If these values are not given, just return;
@@ -3866,6 +4248,11 @@ const createWorkspaceMaterialAttachment: CreateWorkspaceMaterialAttachmentTrigge
     };
   };
 
+/**
+ * updateWorkspaceEditModeState
+ * @param data data
+ * @param restoreActiveFromLocalStorage restoreActiveFromLocalStorage
+ */
 const updateWorkspaceEditModeState: UpdateWorkspaceEditModeStateTriggerType =
   function updateWorkspaceEditModeState(data, restoreActiveFromLocalStorage) {
     if (restoreActiveFromLocalStorage && typeof data.active !== "undefined") {

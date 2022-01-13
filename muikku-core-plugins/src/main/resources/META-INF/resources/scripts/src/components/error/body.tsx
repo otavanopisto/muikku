@@ -11,13 +11,25 @@ import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
 import { ErrorType } from "~/reducers/base/error";
 
+/**
+ * ErrorBodyProps
+ */
 interface ErrorBodyProps {
   error: ErrorType;
 }
 
+/**
+ * ErrorBodyState
+ */
 interface ErrorBodyState {}
 
+/**
+ * ErrorBody
+ */
 class ErrorBody extends React.Component<ErrorBodyProps, ErrorBodyState> {
+  /**
+   * render
+   */
   render() {
     return (
       <div>
@@ -40,12 +52,20 @@ class ErrorBody extends React.Component<ErrorBodyProps, ErrorBodyState> {
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     error: state.error,
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return {};
 }

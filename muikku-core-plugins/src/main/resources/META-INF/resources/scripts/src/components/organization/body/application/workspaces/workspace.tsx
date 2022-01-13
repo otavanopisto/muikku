@@ -19,6 +19,9 @@ import {
 } from "~/components/general/application-list";
 import Button from "~/components/general/button";
 
+/**
+ * CourseProps
+ */
 interface CourseProps {
   i18n: i18nType;
   status: StatusType;
@@ -26,11 +29,21 @@ interface CourseProps {
   activeFilters: WorkspacesActiveFiltersType;
 }
 
+/**
+ * CourseState
+ */
 interface CourseState {
   expanded: boolean;
 }
 
+/**
+ * Workspace
+ */
 class Workspace extends React.Component<CourseProps, CourseState> {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: CourseProps) {
     super(props);
 
@@ -40,9 +53,17 @@ class Workspace extends React.Component<CourseProps, CourseState> {
 
     this.toggleExpanded = this.toggleExpanded.bind(this);
   }
+
+  /**
+   * toggleExpanded
+   */
   toggleExpanded() {
     this.setState({ expanded: !this.state.expanded });
   }
+
+  /**
+   * render
+   */
   render() {
     const actions = (
       <div>
@@ -150,6 +171,10 @@ class Workspace extends React.Component<CourseProps, CourseState> {
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -158,6 +183,9 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ */
 function mapDispatchToProps() {
   return {};
 }

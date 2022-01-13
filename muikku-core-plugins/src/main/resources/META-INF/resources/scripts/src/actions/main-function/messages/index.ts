@@ -29,6 +29,9 @@ import {
 import { ContactRecipientType } from "~/reducers/user-index";
 import { StatusType } from "~/reducers/base/status";
 
+/**
+ * UpdateMessageThreadsCountTriggerType
+ */
 export interface UpdateMessageThreadsCountTriggerType {
   (): AnyActionType;
 }
@@ -153,6 +156,9 @@ export type REMOVE_ONE_LABEL_FROM_ALL_MESSAGE_THREADS = SpecificActionType<
   }
 >;
 
+/**
+ * updateUnreadMessageThreadsCount
+ */
 const updateUnreadMessageThreadsCount: UpdateMessageThreadsCountTriggerType =
   function updateUnreadMessageThreadsCount() {
     return async (
@@ -189,10 +195,17 @@ const updateUnreadMessageThreadsCount: UpdateMessageThreadsCountTriggerType =
     };
   };
 
+/**
+ * LoadLastMessageThreadsFromSeverTriggerType
+ */
 export interface LoadLastMessageThreadsFromSeverTriggerType {
   (maxResults: number): AnyActionType;
 }
 
+/**
+ * loadLastMessageThreadsFromServer
+ * @param maxResults maxResults
+ */
 const loadLastMessageThreadsFromServer: LoadLastMessageThreadsFromSeverTriggerType =
   function loadLastMessageThreadsFromServer(maxResults) {
     return async (
@@ -226,6 +239,9 @@ const loadLastMessageThreadsFromServer: LoadLastMessageThreadsFromSeverTriggerTy
     };
   };
 
+/**
+ * SendMessageTriggerType
+ */
 export interface SendMessageTriggerType {
   (message: {
     to: ContactRecipientType[];
@@ -237,42 +253,72 @@ export interface SendMessageTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * LoadMessageThreadsTriggerType
+ */
 export interface LoadMessageThreadsTriggerType {
   (location: string, query: string): AnyActionType;
 }
 
+/**
+ * UpdateMessagesSelectedThreads
+ */
 export interface UpdateMessagesSelectedThreads {
   (threads: MessageThreadListType): AnyActionType;
 }
 
+/**
+ * AddToMessagesSelectedThreadsTriggerType
+ */
 export interface AddToMessagesSelectedThreadsTriggerType {
   (thread: MessageThreadType): AnyActionType;
 }
 
+/**
+ * LoadMoreMessageThreadsTriggerType
+ */
 export interface LoadMoreMessageThreadsTriggerType {
   (): AnyActionType;
 }
 
+/**
+ * RemoveFromMessagesSelectedThreadsTriggerType
+ */
 export interface RemoveFromMessagesSelectedThreadsTriggerType {
   (thread: MessageThreadType): AnyActionType;
 }
 
+/**
+ * AddLabelToSelectedMessageThreadsTriggerType
+ */
 export interface AddLabelToSelectedMessageThreadsTriggerType {
   (label: MessageThreadLabelType): AnyActionType;
 }
 
+/**
+ * RemoveLabelFromSelectedMessageThreadsTriggerType
+ */
 export interface RemoveLabelFromSelectedMessageThreadsTriggerType {
   (label: MessageThreadLabelType): AnyActionType;
 }
 
+/**
+ * AddLabelToCurrentMessageThreadTriggerType
+ */
 export interface AddLabelToCurrentMessageThreadTriggerType {
   (label: MessageThreadLabelType): AnyActionType;
 }
 
+/**
+ * RemoveLabelFromCurrentMessageThreadTriggerType
+ */
 export interface RemoveLabelFromCurrentMessageThreadTriggerType {
   (label: MessageThreadLabelType): AnyActionType;
 }
 
+/**
+ * ToggleMessageThreadReadStatusTriggerType
+ */
 export interface ToggleMessageThreadReadStatusTriggerType {
   (
     thread: MessageThreadType | number,
@@ -282,47 +328,80 @@ export interface ToggleMessageThreadReadStatusTriggerType {
   ): AnyActionType;
 }
 
+/**
+ * ToggleMessageThreadsReadStatusTriggerType
+ */
 export interface ToggleMessageThreadsReadStatusTriggerType {
   (threads: MessageThreadListType): AnyActionType;
 }
 
+/**
+ * DeleteSelectedMessageThreadsTriggerType
+ */
 export interface DeleteSelectedMessageThreadsTriggerType {
   (): AnyActionType;
 }
 
+/**
+ * RestoreSelectedMessageThreadsTriggerType
+ */
 export interface RestoreSelectedMessageThreadsTriggerType {
   (): AnyActionType;
 }
 
+/**
+ * DeleteCurrentMessageThreadTriggerType
+ */
 export interface DeleteCurrentMessageThreadTriggerType {
   (): AnyActionType;
 }
 
+/**
+ * RestoreCurrentMessageThreadTriggerType
+ */
 export interface RestoreCurrentMessageThreadTriggerType {
   (): AnyActionType;
 }
 
+/**
+ * LoadMessageThreadTriggerType
+ */
 export interface LoadMessageThreadTriggerType {
   (location: string, messageId: number): AnyActionType;
 }
 
+/**
+ * LoadNewlyReceivedMessageTriggerType
+ */
 export interface LoadNewlyReceivedMessageTriggerType {
   (): AnyActionType;
 }
 
+/**
+ * LoadSignatureTriggerType
+ */
 export interface LoadSignatureTriggerType {
   (): AnyActionType;
 }
 
+/**
+ * UpdateSignatureTriggerType
+ */
 export interface UpdateSignatureTriggerType {
   (newSignature: string): AnyActionType;
 }
 
+/**
+ * ToggleSelectAllMessageThreadsTriggerType
+ */
 export interface ToggleSelectAllMessageThreadsTriggerType {
   (): AnyActionType;
 }
 
 /////////////////// ACTUAL DEFINITIONS
+/**
+ * ToggleSelectAllMessageThreadsTriggerType
+ */
 const toggleAllMessageItems: ToggleSelectAllMessageThreadsTriggerType =
   function toggleAllMessageItems() {
     return {
@@ -331,6 +410,10 @@ const toggleAllMessageItems: ToggleSelectAllMessageThreadsTriggerType =
     };
   };
 
+/**
+ * sendMessage
+ * @param message
+ */
 const sendMessage: SendMessageTriggerType = function sendMessage(message) {
   const recepientWorkspaces = message.to
     .filter((x) => x.type === "workspace")
@@ -528,11 +611,20 @@ const sendMessage: SendMessageTriggerType = function sendMessage(message) {
   };
 };
 
+/**
+ * loadMessageThreads
+ * @param location
+ * @param query
+ */
 const loadMessageThreads: LoadMessageThreadsTriggerType =
   function loadMessageThreads(location, query) {
     return loadMessagesHelper.bind(this, location, query, true);
   };
 
+/**
+ * updateMessagesSelectedThreads
+ * @param threads
+ */
 const updateMessagesSelectedThreads: UpdateMessagesSelectedThreads =
   function updateMessagesSelectedThreads(threads) {
     return {
@@ -541,6 +633,10 @@ const updateMessagesSelectedThreads: UpdateMessagesSelectedThreads =
     };
   };
 
+/**
+ * addToMessagesSelectedThreads
+ * @param thread
+ */
 const addToMessagesSelectedThreads: AddToMessagesSelectedThreadsTriggerType =
   function addToMessagesSelectedThreads(thread) {
     return {
@@ -549,6 +645,10 @@ const addToMessagesSelectedThreads: AddToMessagesSelectedThreadsTriggerType =
     };
   };
 
+/**
+ * removeFromMessagesSelectedThreads
+ * @param thread
+ */
 const removeFromMessagesSelectedThreads: RemoveFromMessagesSelectedThreadsTriggerType =
   function removeFromMessagesSelectedThreads(thread) {
     return {
@@ -557,31 +657,57 @@ const removeFromMessagesSelectedThreads: RemoveFromMessagesSelectedThreadsTrigge
     };
   };
 
+/**
+ * loadMoreMessageThreads
+ */
 const loadMoreMessageThreads: LoadMoreMessageThreadsTriggerType =
   function loadMoreMessageThreads() {
     return loadMessagesHelper.bind(this, null, null, false);
   };
 
+/**
+ * addLabelToSelectedMessageThreads
+ * @param label label
+ */
 const addLabelToSelectedMessageThreads: AddLabelToSelectedMessageThreadsTriggerType =
   function addLabelToSelectedMessageThreads(label) {
     return setLabelStatusSelectedMessages.bind(this, label, true);
   };
 
+/**
+ * removeLabelFromSelectedMessageThreads
+ * @param label label
+ */
 const removeLabelFromSelectedMessageThreads: RemoveLabelFromSelectedMessageThreadsTriggerType =
   function removeLabelFromSelectedMessageThreads(label) {
     return setLabelStatusSelectedMessages.bind(this, label, false);
   };
 
+/**
+ * addLabelToCurrentMessageThread
+ * @param label label
+ */
 const addLabelToCurrentMessageThread: AddLabelToCurrentMessageThreadTriggerType =
   function addLabelToCurrentMessageThread(label) {
     return setLabelStatusCurrentMessage.bind(this, label, true);
   };
 
+/**
+ * removeLabelFromCurrentMessageThread
+ * @param label label
+ */
 const removeLabelFromCurrentMessageThread: RemoveLabelFromCurrentMessageThreadTriggerType =
   function removeLabelFromCurrentMessageThread(label) {
     return setLabelStatusCurrentMessage.bind(this, label, false);
   };
 
+/**
+ * toggleMessageThreadReadStatus
+ * @param threadOrId threadOrId
+ * @param markAsStatus markAsStatus
+ * @param dontLockToolbar dontLockToolbar
+ * @param callback callback
+ */
 const toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType =
   function toggleMessageThreadReadStatus(
     threadOrId,
@@ -710,6 +836,10 @@ const toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType =
     };
   };
 
+/**
+ * toggleMessageThreadsReadStatus
+ * @param threads threads
+ */
 const toggleMessageThreadsReadStatus: ToggleMessageThreadsReadStatusTriggerType =
   function toggleMessageThreadsReadStatus(threads) {
     return async (dispatch: (arg: AnyActionType) => any) => {
@@ -720,6 +850,9 @@ const toggleMessageThreadsReadStatus: ToggleMessageThreadsReadStatusTriggerType 
 
       let done = 0;
       threads.forEach((thread) => {
+        /**
+         * cb
+         */
         const cb = () => {
           done++;
           if (done === threads.length) {
@@ -740,6 +873,9 @@ const toggleMessageThreadsReadStatus: ToggleMessageThreadsReadStatusTriggerType 
     };
   };
 
+/**
+ * deleteSelectedMessageThreads
+ */
 const deleteSelectedMessageThreads: DeleteSelectedMessageThreadsTriggerType =
   function deleteSelectedMessageThreads() {
     return async (
@@ -811,6 +947,9 @@ const deleteSelectedMessageThreads: DeleteSelectedMessageThreadsTriggerType =
     };
   };
 
+/**
+ * deleteCurrentMessageThread
+ */
 const deleteCurrentMessageThread: DeleteCurrentMessageThreadTriggerType =
   function deleteCurrentMessageThread() {
     return async (
@@ -891,6 +1030,11 @@ const deleteCurrentMessageThread: DeleteCurrentMessageThreadTriggerType =
     };
   };
 
+/**
+ * loadMessageThread
+ * @param location location
+ * @param messageId messageId
+ */
 const loadMessageThread: LoadMessageThreadTriggerType =
   function loadMessageThread(location, messageId) {
     return async (
@@ -965,6 +1109,9 @@ const loadMessageThread: LoadMessageThreadTriggerType =
     };
   };
 
+/**
+ * loadNewlyReceivedMessage
+ */
 const loadNewlyReceivedMessage: LoadNewlyReceivedMessageTriggerType =
   function loadNewlyReceivedMessage() {
     return async (
@@ -1043,6 +1190,9 @@ const loadNewlyReceivedMessage: LoadNewlyReceivedMessageTriggerType =
     };
   };
 
+/**
+ * loadSignature
+ */
 const loadSignature: LoadSignatureTriggerType = function loadSignature() {
   return async (
     dispatch: (arg: AnyActionType) => any,
@@ -1074,6 +1224,10 @@ const loadSignature: LoadSignatureTriggerType = function loadSignature() {
   };
 };
 
+/**
+ * updateSignature
+ * @param newSignature newSignature
+ */
 const updateSignature: UpdateSignatureTriggerType = function updateSignature(
   newSignature
 ) {
@@ -1140,14 +1294,23 @@ const updateSignature: UpdateSignatureTriggerType = function updateSignature(
   };
 };
 
+/**
+ * LoadMessagesNavigationLabelsTriggerType
+ */
 export interface LoadMessagesNavigationLabelsTriggerType {
   (callback: () => any): AnyActionType;
 }
 
+/**
+ * AddMessagesNavigationLabelTriggerType
+ */
 export interface AddMessagesNavigationLabelTriggerType {
   (name: string): AnyActionType;
 }
 
+/**
+ * UpdateMessagesNavigationLabelTriggerType
+ */
 export interface UpdateMessagesNavigationLabelTriggerType {
   (data: {
     label: MessagesNavigationItemType;
@@ -1158,6 +1321,9 @@ export interface UpdateMessagesNavigationLabelTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * RemoveMessagesNavigationLabelTriggerType
+ */
 export interface RemoveMessagesNavigationLabelTriggerType {
   (data: {
     label: MessagesNavigationItemType;
@@ -1166,6 +1332,10 @@ export interface RemoveMessagesNavigationLabelTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * loadMessagesNavigationLabels
+ * @param callback
+ */
 const loadMessagesNavigationLabels: LoadMessagesNavigationLabelsTriggerType =
   function loadMessagesNavigationLabels(callback) {
     return async (
@@ -1183,6 +1353,9 @@ const loadMessagesNavigationLabels: LoadMessagesNavigationLabelsTriggerType =
             id: label.id,
             type: "label",
             icon: "tag",
+            /**
+             * text
+             */
             text() {
               return label.name;
             },
@@ -1206,6 +1379,10 @@ const loadMessagesNavigationLabels: LoadMessagesNavigationLabelsTriggerType =
     };
   };
 
+/**
+ * addMessagesNavigationLabel
+ * @param name name
+ */
 const addMessagesNavigationLabel: AddMessagesNavigationLabelTriggerType =
   function addMessagesNavigationLabel(name) {
     return async (
@@ -1243,6 +1420,9 @@ const addMessagesNavigationLabel: AddMessagesNavigationLabelTriggerType =
             id: newLabel.id,
             type: "label",
             icon: "tag",
+            /**
+             * text
+             */
             text() {
               return newLabel.name;
             },
@@ -1265,6 +1445,10 @@ const addMessagesNavigationLabel: AddMessagesNavigationLabelTriggerType =
     };
   };
 
+/**
+ * updateMessagesNavigationLabel
+ * @param data data
+ */
 const updateMessagesNavigationLabel: UpdateMessagesNavigationLabelTriggerType =
   function updateMessagesNavigationLabel(data) {
     return async (
@@ -1309,6 +1493,9 @@ const updateMessagesNavigationLabel: UpdateMessagesNavigationLabelTriggerType =
           payload: {
             labelId: <number>data.label.id,
             update: {
+              /**
+               * text
+               */
               text: () => newLabelData.name,
               color: data.newColor,
             },
@@ -1332,6 +1519,10 @@ const updateMessagesNavigationLabel: UpdateMessagesNavigationLabelTriggerType =
     };
   };
 
+/**
+ * removeMessagesNavigationLabel
+ * @param data data
+ */
 const removeMessagesNavigationLabel: RemoveMessagesNavigationLabelTriggerType =
   function removeMessagesNavigationLabel(data) {
     return async (
@@ -1380,6 +1571,9 @@ const removeMessagesNavigationLabel: RemoveMessagesNavigationLabelTriggerType =
     };
   };
 
+/**
+ * restoreSelectedMessageThreads
+ */
 const restoreSelectedMessageThreads: RestoreSelectedMessageThreadsTriggerType =
   function restoreSelectedMessageThreads() {
     return async (
@@ -1451,6 +1645,9 @@ const restoreSelectedMessageThreads: RestoreSelectedMessageThreadsTriggerType =
     };
   };
 
+/**
+ * restoreCurrentMessageThread
+ */
 const restoreCurrentMessageThread: RestoreCurrentMessageThreadTriggerType =
   function restoreCurrentMessageThread() {
     return async (

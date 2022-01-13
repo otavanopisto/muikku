@@ -5,6 +5,9 @@ import specialCharacters, {
 import latexCommands, { LatexCommandType } from "./latex-command-set";
 import ToolbarButton from "./button";
 
+/**
+ * MathFieldCommandType
+ */
 export interface MathFieldCommandType {
   latex: string;
   latexText: string;
@@ -12,6 +15,9 @@ export interface MathFieldCommandType {
   useWrite: boolean;
 }
 
+/**
+ * MathFieldToolbarProps
+ */
 interface MathFieldToolbarProps {
   className?: string;
   isOpen: boolean;
@@ -31,14 +37,24 @@ interface MathFieldToolbarProps {
   isMathExpanded: boolean;
 }
 
+/**
+ * MathFieldToolbarState
+ */
 interface MathFieldToolbarState {
   isExpanded: boolean;
 }
 
+/**
+ * MathFieldToolbar
+ */
 export default class MathFieldToolbar extends React.Component<
   MathFieldToolbarProps,
   MathFieldToolbarState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: MathFieldToolbarProps) {
     super(props);
 
@@ -49,6 +65,12 @@ export default class MathFieldToolbar extends React.Component<
     this.triggerCommandOn = this.triggerCommandOn.bind(this);
     this.toggleIsExpanded = this.toggleIsExpanded.bind(this);
   }
+
+  /**
+   * triggerCommandOn
+   * @param s s
+   * @param e e
+   */
   triggerCommandOn(
     s: SpecialCharacterType | LatexCommandType,
     e: React.ChangeEvent<any>
@@ -76,11 +98,19 @@ export default class MathFieldToolbar extends React.Component<
       useWrite: (s as LatexCommandType).useWrite,
     });
   }
+
+  /**
+   * toggleIsExpanded
+   */
   toggleIsExpanded() {
     this.setState({
       isExpanded: !this.state.isExpanded,
     });
   }
+
+  /**
+   * render
+   */
   render() {
     if (!this.props.isOpen) {
       return null;

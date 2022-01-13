@@ -14,6 +14,15 @@ import notificationActions from "~/actions/base/notifications";
 import { StateType } from "~/reducers";
 import { loadUserGroupIndex } from "~/actions/user-index";
 
+/**
+ * loadAnnouncementsHelper
+ * @param location location
+ * @param workspaceId workspaceId
+ * @param notOverrideCurrent notOverrideCurrent
+ * @param force force
+ * @param dispatch dispatch
+ * @param getState getState
+ */
 export async function loadAnnouncementsHelper(
   location: string | null,
   workspaceId: number,

@@ -11,12 +11,18 @@ import DeleteImageDialog from "../../../dialogs/delete-image";
 import "~/sass/elements/change-image.scss";
 import "~/sass/elements/wcag.scss";
 
+/**
+ * ProfilePictureProps
+ */
 interface ProfilePictureProps {
   i18n: i18nType;
   status: StatusType;
   profile: ProfileType;
 }
 
+/**
+ * ProfilePictureState
+ */
 interface ProfilePictureState {
   isImageDialogOpen: boolean;
   deleteImageDialogOpen: boolean;
@@ -25,10 +31,17 @@ interface ProfilePictureState {
   src?: string;
 }
 
+/**
+ * ProfilePicture
+ */
 class ProfilePicture extends React.Component<
   ProfilePictureProps,
   ProfilePictureState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: ProfilePictureProps) {
     super(props);
 
@@ -41,6 +54,11 @@ class ProfilePicture extends React.Component<
     this.editCurrentImage = this.editCurrentImage.bind(this);
     this.deleteCurrentImage = this.deleteCurrentImage.bind(this);
   }
+
+  /**
+   * readFile
+   * @param e e
+   */
   readFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files[0];
     const reader = new FileReader();
@@ -64,6 +82,11 @@ class ProfilePicture extends React.Component<
       reader.readAsDataURL(file);
     }
   }
+
+  /**
+   * editCurrentImage
+   * @param e e
+   */
   editCurrentImage(e: React.MouseEvent<HTMLAnchorElement>) {
     e.stopPropagation();
     e.preventDefault();
@@ -79,6 +102,11 @@ class ProfilePicture extends React.Component<
       file: null,
     });
   }
+
+  /**
+   * deleteCurrentImage
+   * @param e e
+   */
   deleteCurrentImage(e: React.MouseEvent<HTMLAnchorElement>) {
     e.stopPropagation();
     e.preventDefault();
@@ -87,6 +115,10 @@ class ProfilePicture extends React.Component<
       deleteImageDialogOpen: true,
     });
   }
+
+  /**
+   * render
+   */
   render() {
     return (
       <div className="application-sub-panel__item application-sub-panel__item--profile">
@@ -170,6 +202,10 @@ class ProfilePicture extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -178,6 +214,9 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ */
 function mapDispatchToProps() {
   return {};
 }

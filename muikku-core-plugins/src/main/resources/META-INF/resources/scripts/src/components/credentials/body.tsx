@@ -7,17 +7,29 @@ import CredentialsContainer from "./body/credentials-container";
 import CredentialsHero from "./body/credentials-hero";
 import { StateType } from "~/reducers";
 
+/**
+ * CredentialsBodyProps
+ */
 interface CredentialsBodyProps {
   i18n: i18nType;
   credentials: CredentialsType;
 }
 
+/**
+ * CredentialsBodyState
+ */
 interface CredentialsBodyState {}
 
+/**
+ * CredentialsBody
+ */
 class CredentialsBody extends React.Component<
   CredentialsBodyProps,
   CredentialsBodyState
 > {
+  /**
+   * render
+   */
   render() {
     return (
       <div className="credentials">
@@ -30,6 +42,10 @@ class CredentialsBody extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -37,6 +53,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return {};
 }

@@ -7,14 +7,26 @@ import ApplicationSubPanel, {
 } from "~/components/general/application-sub-panel";
 import { OrganizationSummaryType } from "~/reducers/organization/summary";
 
+/**
+ * SummaryProps
+ */
 interface SummaryProps {
   i18n: i18nType;
   summary: OrganizationSummaryType;
 }
 
+/**
+ * SummaryState
+ */
 interface SummaryState {}
 
+/**
+ * Summary
+ */
 class Summary extends React.Component<SummaryProps, SummaryState> {
+  /**
+   * render
+   */
   render() {
     const { summary } = this.props;
     return (
@@ -135,6 +147,9 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
   }
 }
 
+/**
+ * @param state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -142,6 +157,9 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ *
+ */
 function mapDispatchToProps() {
   return {};
 }

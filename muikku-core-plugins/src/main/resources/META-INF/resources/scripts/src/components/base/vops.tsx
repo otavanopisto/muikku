@@ -31,17 +31,30 @@ const CLASS_TRANSLATIONS: {
   },
 };
 
+/**
+ * VopsProps
+ */
 interface VopsProps {
   data?: VOPSDataType;
   defaultData: VOPSDataType;
   i18n: i18nType;
 }
 
+/**
+ * VopsState
+ */
 interface VopsState {
   legendOpened: boolean;
 }
 
+/**
+ * Vops
+ */
 class Vops extends React.Component<VopsProps, VopsState> {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: VopsProps) {
     super(props);
 
@@ -51,11 +64,17 @@ class Vops extends React.Component<VopsProps, VopsState> {
       legendOpened: false,
     };
   }
+  /**
+   * toggleLegend
+   */
   toggleLegend() {
     this.setState({
       legendOpened: !this.state.legendOpened,
     });
   }
+  /**
+   * render
+   */
   render() {
     const data = this.props.data || this.props.defaultData;
     if (!data.optedIn) {
@@ -231,6 +250,10 @@ class Vops extends React.Component<VopsProps, VopsState> {
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -238,6 +261,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return {};
 }

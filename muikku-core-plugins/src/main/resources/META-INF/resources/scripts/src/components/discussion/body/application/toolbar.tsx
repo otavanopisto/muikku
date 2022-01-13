@@ -19,27 +19,48 @@ import { StateType } from "~/reducers";
 import { ApplicationPanelToolbar } from "~/components/general/application-panel/application-panel";
 import { ButtonPill } from "~/components/general/button";
 
+/**
+ * DiscussionToolbarProps
+ */
 interface DiscussionToolbarProps {
   i18n: i18nType;
   discussion: DiscussionType;
   status: StatusType;
 }
 
+/**
+ * DiscussionToolbarState
+ */
 interface DiscussionToolbarState {}
 
+/**
+ * CommunicatorToolbar
+ */
 class CommunicatorToolbar extends React.Component<
   DiscussionToolbarProps,
   DiscussionToolbarState
 > {
+  /**
+   * constructor
+   * @param props
+   */
   constructor(props: DiscussionToolbarProps) {
     super(props);
 
     this.onSelectChange = this.onSelectChange.bind(this);
     this.onGoBackClick = this.onGoBackClick.bind(this);
   }
+
+  /**
+   * @param e
+   */
   onSelectChange(e: React.ChangeEvent<HTMLSelectElement>) {
     window.location.hash = e.target.value;
   }
+
+  /**
+   * @param e
+   */
   onGoBackClick(e: React.MouseEvent<HTMLAnchorElement>) {
     //TODO this is a retarded way to do things if we ever update to a SPA
     //it's a hacky mechanism to make history awesome, once we use a router it gotta be fixed
@@ -60,6 +81,10 @@ class CommunicatorToolbar extends React.Component<
       location.hash = splitted[0] + "/" + splitted[1];
     }
   }
+
+  /**
+   * render
+   */
   render() {
     if (this.props.discussion.current) {
       const currentArea = this.props.discussion.areas.find(
@@ -139,6 +164,10 @@ class CommunicatorToolbar extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -147,6 +176,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return {};
 }

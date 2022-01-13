@@ -37,6 +37,9 @@ import { LicenseSelector } from "~/components/general/license-selector";
 import FileUploader from "~/components/general/file-uploader";
 import { PageLocation, UploadingValue } from "~/@types/shared";
 
+/**
+ * MaterialEditorProps
+ */
 interface MaterialEditorProps {
   setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType;
   i18n: i18nType;
@@ -49,6 +52,9 @@ interface MaterialEditorProps {
   requestWorkspaceMaterialContentNodeAttachments: RequestWorkspaceMaterialContentNodeAttachmentsTriggerType;
 }
 
+/**
+ * MaterialEditorState
+ */
 interface MaterialEditorState {
   tab: string;
   producerEntryName: string;
@@ -56,6 +62,14 @@ interface MaterialEditorState {
   uploadingValues: UploadingValue[];
 }
 
+/**
+ * CKEditorConfig
+ * @param locale locale
+ * @param contextPath contextPath
+ * @param workspace workspace
+ * @param materialNode materialNode
+ * @param disablePlugins disablePlugins
+ */
 const CKEditorConfig = (
   locale: string,
   contextPath: string,
@@ -197,6 +211,9 @@ const CKEditorConfig = (
 
 // First we need to modify the material content nodes end point to be able to receive hidden
 // nodes, we need those to be able to modify here
+/**
+ * MaterialEditor
+ */
 class MaterialEditor extends React.Component<
   MaterialEditorProps,
   MaterialEditorState
@@ -580,11 +597,17 @@ class MaterialEditor extends React.Component<
             file,
           }))
         ),
+        /**
+         * success
+         */
         success: () => {
           this.setState({
             uploadingValues: [],
           });
         },
+        /**
+         * fail
+         */
         fail: () => {
           this.setState({
             uploadingValues: [],
@@ -866,6 +889,9 @@ class MaterialEditor extends React.Component<
         name: this.props.i18n.text.get(
           "plugin.workspace.materialsManagement.editorView.tabs.label.content"
         ),
+        /**
+         * component
+         */
         component: () => (
           <div className="material-editor__content-wrapper">
             {editorButtonSet}
@@ -918,6 +944,9 @@ class MaterialEditor extends React.Component<
         name: this.props.i18n.text.get(
           "plugin.workspace.materialsManagement.editorView.tabs.label.metadata"
         ),
+        /**
+         * component
+         */
         component: () => (
           <div className="material-editor__content-wrapper">
             {editorButtonSet}
@@ -979,6 +1008,9 @@ class MaterialEditor extends React.Component<
         name: this.props.i18n.text.get(
           "plugin.workspace.materialsManagement.editorView.tabs.label.attachments"
         ),
+        /**
+         * component
+         */
         component: () => (
           <div className="material-editor__content-wrapper">
             {editorButtonSet}

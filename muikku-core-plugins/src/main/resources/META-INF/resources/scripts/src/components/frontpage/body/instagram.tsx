@@ -5,16 +5,28 @@ import "~/sass/elements/ordered-container.scss";
 import "~/sass/elements/card.scss";
 import "~/sass/elements/wcag.scss";
 
+/**
+ * FrontpageInstagramProps
+ */
 interface FrontpageInstagramProps {
   i18n: i18nType;
 }
 
+/**
+ * FrontpageInstagramState
+ */
 interface FrontpageInstagramState {}
 
+/**
+ * FrontpageInstagram
+ */
 export default class FrontpageInstagram extends React.Component<
   FrontpageInstagramProps,
   FrontpageInstagramState
 > {
+  /**
+   * render
+   */
   render() {
     return (
       <section

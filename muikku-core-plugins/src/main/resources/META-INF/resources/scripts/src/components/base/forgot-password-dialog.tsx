@@ -16,6 +16,9 @@ import {
 } from "~/actions/base/notifications";
 import promisify from "~/util/promisify";
 
+/**
+ * ForgotPasswordDialogProps
+ */
 interface ForgotPasswordDialogProps {
   i18n: i18nType;
   displayNotification: DisplayNotificationTriggerType;
@@ -23,6 +26,9 @@ interface ForgotPasswordDialogProps {
   modifier?: string;
 }
 
+/**
+ * ForgotPasswordDialogState
+ */
 interface ForgotPasswordDialogState {
   email: string;
 }
@@ -31,10 +37,17 @@ const emailRegexValidator =
   // eslint-disable-next-line no-useless-escape
   /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 
+/**
+ * ForgotPasswordDialog
+ */
 class ForgotPasswordDialog extends React.Component<
   ForgotPasswordDialogProps,
   ForgotPasswordDialogState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: ForgotPasswordDialogProps) {
     super(props);
 
@@ -45,9 +58,20 @@ class ForgotPasswordDialog extends React.Component<
     this.resetPassword = this.resetPassword.bind(this);
     this.updateEmail = this.updateEmail.bind(this);
   }
+
+  /**
+   * updateEmail
+   * @param e e
+   */
   updateEmail(e: React.ChangeEvent<HTMLInputElement>) {
     this.setState({ email: e.target.value });
   }
+
+  /**
+   * resetPassword
+   * @param closeDialog closeDialog
+   * @param e e
+   */
   async resetPassword(closeDialog: () => any, e: React.ChangeEvent<any>) {
     if (!e.isDefaultPrevented()) {
       e.preventDefault();
@@ -100,7 +124,15 @@ class ForgotPasswordDialog extends React.Component<
       );
     }
   }
+
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
+    /**
+     * @param closeDialog
+     */
     const content = (closeDialog: () => any) => (
       <div>
         {this.props.i18n.text.get(
@@ -132,6 +164,11 @@ class ForgotPasswordDialog extends React.Component<
         </form>
       </div>
     );
+
+    /**
+     * footer
+     * @param closeDialog closeDialog
+     */
     const footer = (closeDialog: () => any) => (
       <div>
         <Link
@@ -171,12 +208,20 @@ class ForgotPasswordDialog extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators({ displayNotification }, dispatch);
 }

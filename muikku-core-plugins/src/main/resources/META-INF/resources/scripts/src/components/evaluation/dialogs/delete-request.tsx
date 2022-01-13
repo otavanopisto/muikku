@@ -110,6 +110,7 @@ class DeleteRequestDialog extends React.Component<
 
     /**
      * content
+     * @param closeDialog closeDialog
      */
     const content = (closeDialog: () => any) => (
       <div

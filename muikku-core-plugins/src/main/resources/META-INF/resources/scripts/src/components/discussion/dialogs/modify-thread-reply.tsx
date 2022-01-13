@@ -17,6 +17,9 @@ import Button from "~/components/general/button";
 import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
 
+/**
+ * ModifyThreadReplyProps
+ */
 interface ModifyThreadReplyProps {
   i18n: i18nType;
   children: React.ReactElement<any>;
@@ -24,15 +27,25 @@ interface ModifyThreadReplyProps {
   modifyReplyFromCurrentThread: ModifyReplyFromCurrentThreadTriggerType;
 }
 
+/**
+ * ModifyThreadReplyState
+ */
 interface ModifyThreadReplyState {
   text: string;
   locked: boolean;
 }
 
+/**
+ * ModifyThreadReply
+ */
 class ModifyThreadReply extends SessionStateComponent<
   ModifyThreadReplyProps,
   ModifyThreadReplyState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: ModifyThreadReplyProps) {
     super(props, "discussion-modify-thread-reply");
 
@@ -49,22 +62,11 @@ class ModifyThreadReply extends SessionStateComponent<
       props.reply.id
     );
   }
-  checkAgainstStoredState() {
-    this.checkStoredAgainstThisState(
-      {
-        text: this.props.reply.message,
-      },
-      this.props.reply.id
-    );
-  }
-  clearUp() {
-    this.setStateAndClear(
-      {
-        text: this.props.reply.message,
-      },
-      this.props.reply.id
-    );
-  }
+
+  /**
+   * componentWillReceiveProps
+   * @param nextProps nextProps
+   */
   componentWillReceiveProps(nextProps: ModifyThreadReplyProps) {
     if (nextProps.reply.id !== this.props.reply.id) {
       this.setState(
@@ -77,9 +79,42 @@ class ModifyThreadReply extends SessionStateComponent<
       );
     }
   }
+
+  /**
+   * checkAgainstStoredState
+   */
+  checkAgainstStoredState() {
+    this.checkStoredAgainstThisState(
+      {
+        text: this.props.reply.message,
+      },
+      this.props.reply.id
+    );
+  }
+  /**
+   * clearUp
+   */
+  clearUp() {
+    this.setStateAndClear(
+      {
+        text: this.props.reply.message,
+      },
+      this.props.reply.id
+    );
+  }
+
+  /**
+   * onCKEditorChange
+   * @param text text
+   */
   onCKEditorChange(text: string) {
     this.setStateAndStore({ text }, this.props.reply.id);
   }
+
+  /**
+   * modifyReply
+   * @param closeDialog closeDialog
+   */
   modifyReply(closeDialog: () => any) {
     this.setState({
       locked: true,
@@ -87,6 +122,9 @@ class ModifyThreadReply extends SessionStateComponent<
     this.props.modifyReplyFromCurrentThread({
       reply: this.props.reply,
       message: this.state.text,
+      /**
+       * success
+       */
       success: () => {
         this.justClear(["text"], this.props.reply.id);
         this.setState({
@@ -94,6 +132,9 @@ class ModifyThreadReply extends SessionStateComponent<
         });
         closeDialog();
       },
+      /**
+       * fail
+       */
       fail: () => {
         this.setState({
           locked: false,
@@ -101,12 +142,20 @@ class ModifyThreadReply extends SessionStateComponent<
       },
     });
   }
+
+  /**
+   * render
+   */
   render() {
     const editorTitle =
       this.props.i18n.text.get("plugin.discussion.reply.edit.topic") +
       " - " +
       this.props.i18n.text.get("plugin.discussion.createmessage.content");
 
+    /**
+     * content
+     * @param closeDialog closeDialog
+     */
     const content = (closeDialog: () => any) => [
       <div className="env-dialog__row env-dialog__row--ckeditor" key="3">
         <div className="env-dialog__form-element-container">
@@ -126,6 +175,11 @@ class ModifyThreadReply extends SessionStateComponent<
         </div>
       </div>,
     ];
+
+    /**
+     * footer
+     * @param closeDialog closeDialog
+     */
     const footer = (closeDialog: () => any) => (
       <div className="env-dialog__actions">
         <Button
@@ -170,12 +224,20 @@ class ModifyThreadReply extends SessionStateComponent<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ modifyReplyFromCurrentThread }, dispatch);
 }

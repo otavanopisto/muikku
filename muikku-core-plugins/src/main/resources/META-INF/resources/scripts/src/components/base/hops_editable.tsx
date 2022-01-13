@@ -10,6 +10,9 @@ import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/wcag.scss";
 
+/**
+ * HopsProps
+ */
 interface HopsProps {
   data?: HOPSDataType;
   defaultData: HOPSDataType;
@@ -17,11 +20,20 @@ interface HopsProps {
   i18n: i18nType;
 }
 
+/**
+ * HopsState
+ */
 interface HopsState {
   hops: HOPSDataType;
 }
 
+/**
+ * Hops
+ */
 class Hops extends React.Component<HopsProps, HopsState> {
+  /**
+   * @param props
+   */
   constructor(props: HopsProps) {
     super(props);
 
@@ -33,6 +45,22 @@ class Hops extends React.Component<HopsProps, HopsState> {
     };
   }
 
+  /**
+   * componentWillReceiveProps
+   * @param nextProps nextProps
+   */
+  componentWillReceiveProps(nextProps: HopsProps) {
+    const nextData = nextProps.data || nextProps.defaultData;
+    if (nextData !== this.state.hops) {
+      this.setState({ hops: nextData });
+    }
+  }
+
+  /**
+   * set
+   * @param property property
+   * @param value value
+   */
   set(property: string, value: any) {
     const nProp: any = {};
     nProp[property] = value || null;
@@ -44,15 +72,13 @@ class Hops extends React.Component<HopsProps, HopsState> {
     });
   }
 
+  /**
+   * setFromEventValue
+   * @param property property
+   * @param e e
+   */
   setFromEventValue(property: string, e: React.ChangeEvent<HTMLInputElement>) {
     return this.set(property, e.target.value);
-  }
-
-  componentWillReceiveProps(nextProps: HopsProps) {
-    const nextData = nextProps.data || nextProps.defaultData;
-    if (nextData !== this.state.hops) {
-      this.setState({ hops: nextData });
-    }
   }
 
   /**
@@ -64,6 +90,10 @@ class Hops extends React.Component<HopsProps, HopsState> {
     this.set("studentMatriculationSubjects", subjects);
   };
 
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     const data = this.props.data || this.props.defaultData;
     if (!data || !data.optedIn) {
@@ -560,6 +590,10 @@ class Hops extends React.Component<HopsProps, HopsState> {
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -567,6 +601,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return {};
 }

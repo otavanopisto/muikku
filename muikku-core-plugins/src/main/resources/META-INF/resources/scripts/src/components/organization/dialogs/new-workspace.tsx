@@ -48,12 +48,18 @@ import {
 import "~/sass/elements/course.scss";
 import { TagItem } from "~/components/general/tag-input";
 
+/**
+ * ValidationType
+ */
 interface ValidationType {
   templateSelected: boolean;
   nameValid: number;
   nameExtensionValid: 2;
 }
 
+/**
+ * OrganizationNewWorkspaceProps
+ */
 interface OrganizationNewWorkspaceProps {
   children?: React.ReactElement<any>;
   i18n: i18nType;
@@ -69,6 +75,9 @@ interface OrganizationNewWorkspaceProps {
   loadWorkspaces: LoadWorkspacesFromServerTriggerType;
 }
 
+/**
+ * OrganizationNewWorkspaceState
+ */
 interface OrganizationNewWorkspaceState {
   template: SelectItem;
   templateSearch: string;
@@ -89,12 +98,19 @@ interface OrganizationNewWorkspaceState {
   staffAdded: boolean;
 }
 
+/**
+ * OrganizationNewWorkspace
+ */
 class OrganizationNewWorkspace extends React.Component<
   OrganizationNewWorkspaceProps,
   OrganizationNewWorkspaceState
 > {
   private totalSteps: number;
 
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: OrganizationNewWorkspaceProps) {
     super(props);
     this.totalSteps = 5;
@@ -143,11 +159,19 @@ class OrganizationNewWorkspace extends React.Component<
     this.getLocaledDate = this.getLocaledDate.bind(this);
   }
 
+  /**
+   * doTemplateSearch
+   * @param value value
+   */
   doTemplateSearch(value: string) {
     this.props.loadTemplates(value);
     this.setState({ templateSearch: value });
   }
 
+  /**
+   * selectTemplate
+   * @param e e
+   */
   selectTemplate(e: React.ChangeEvent<HTMLInputElement>) {
     const validation: ValidationType = Object.assign(this.state.validation, {
       templateSelected: true,
@@ -160,6 +184,10 @@ class OrganizationNewWorkspace extends React.Component<
     });
   }
 
+  /**
+   * selectTemplateMobile
+   * @param template template
+   */
   selectTemplateMobile = (template: WorkspaceType) => {
     const validation: ValidationType = Object.assign(this.state.validation, {
       templateSelected: true,
@@ -172,16 +200,28 @@ class OrganizationNewWorkspace extends React.Component<
     });
   };
 
+  /**
+   * doStudentSearch
+   * @param q q
+   */
   doStudentSearch(q: string) {
     this.props.loadStudents({ payload: { q } });
     this.props.loadUserGroups({ payload: { q } });
   }
 
+  /**
+   * selectStudent
+   * @param student student
+   */
   selectStudent(student: SelectItem) {
     const newState = this.state.selectedStudents.concat(student);
     this.setState({ selectedStudents: newState });
   }
 
+  /**
+   * deleteStudent
+   * @param student student
+   */
   deleteStudent(student: SelectItem) {
     const newState = this.state.selectedStudents.filter(
       (selectedItem) => selectedItem.id !== student.id
@@ -189,15 +229,27 @@ class OrganizationNewWorkspace extends React.Component<
     this.setState({ selectedStudents: newState });
   }
 
+  /**
+   * doStaffSearch
+   * @param q q
+   */
   doStaffSearch(q: string) {
     this.props.loadStaff({ payload: { q } });
   }
 
+  /**
+   * selectStaff
+   * @param staff staff
+   */
   selectStaff(staff: SelectItem) {
     const newState = this.state.selectedStaff.concat(staff);
     this.setState({ selectedStaff: newState });
   }
 
+  /**
+   * deleteStaff
+   * @param staff staff
+   */
   deleteStaff(staff: SelectItem) {
     const newState = this.state.selectedStaff.filter(
       (selectedItem) => selectedItem.id !== staff.id
@@ -205,22 +257,43 @@ class OrganizationNewWorkspace extends React.Component<
     this.setState({ selectedStaff: newState });
   }
 
+  /**
+   * setSelectedStudents
+   * @param selectedStudents selectedStudents
+   */
   setSelectedStudents(selectedStudents: Array<SelectItem>) {
     this.setState({ selectedStudents });
   }
 
+  /**
+   * setWorkspaceName
+   * @param value value
+   */
   setWorkspaceName(value: string) {
     this.setState({ locked: false, workspaceName: value });
   }
 
+  /**
+   * setWorkspaceAccess
+   * @param value value
+   */
   setWorkspaceAccess(value: WorkspaceAccessType) {
     this.setState({ workspaceAccess: value });
   }
 
+  /**
+   * setWorkspaceNameExtension
+   * @param value value
+   */
   setWorkspaceNameExtension(value: string) {
     this.setState({ workspaceNameExtension: value });
   }
 
+  /**
+   * handleDateChange
+   * @param dateKey dateKey
+   * @param newDate newDate
+   */
   handleDateChange(dateKey: string, newDate: any) {
     this.setState({ [dateKey]: newDate } as Pick<
       OrganizationNewWorkspaceState,
@@ -228,6 +301,9 @@ class OrganizationNewWorkspace extends React.Component<
     >);
   }
 
+  /**
+   * clearComponentState
+   */
   clearComponentState() {
     this.setState({
       template: null,
@@ -252,10 +328,17 @@ class OrganizationNewWorkspace extends React.Component<
     });
   }
 
+  /**
+   * cancelDialog
+   * @param closeDialog closeDialog
+   */
   cancelDialog(closeDialog: () => any) {
     closeDialog();
   }
 
+  /**
+   * nextStep
+   */
   nextStep() {
     if (this.state.validation.templateSelected === false) {
       this.setState({ locked: true });
@@ -270,15 +353,26 @@ class OrganizationNewWorkspace extends React.Component<
     }
   }
 
+  /**
+   * lastStep
+   */
   lastStep() {
     const lastStep = this.state.currentStep - 1;
     this.setState({ currentStep: lastStep });
   }
 
+  /**
+   * getLocaledDate
+   * @param date date
+   */
   getLocaledDate(date: any) {
     return date.locale(this.props.i18n.time.getLocale()).format("L");
   }
 
+  /**
+   * saveWorkspace
+   * @param closeDialog closeDialog
+   */
   saveWorkspace(closeDialog: () => any) {
     this.setState({
       locked: true,
@@ -294,6 +388,10 @@ class OrganizationNewWorkspace extends React.Component<
       access: this.state.workspaceAccess,
       students: this.state.selectedStudents,
       staff: this.state.selectedStaff,
+      /**
+       * progress
+       * @param state state
+       */
       progress: (state: CreateWorkspaceStateType) => {
         if (state === "workspace-create") {
           this.setState({
@@ -319,15 +417,25 @@ class OrganizationNewWorkspace extends React.Component<
           );
         }
       },
+      /**
+       * success
+       */
       success: () => {
         closeDialog();
       },
+      /**
+       * fail
+       */
       fail: () => {
         closeDialog();
       },
     });
   }
 
+  /**
+   * wizardSteps
+   * @param page page
+   */
   wizardSteps(page: number) {
     switch (page) {
       case 1:
@@ -779,7 +887,14 @@ class OrganizationNewWorkspace extends React.Component<
     }
   }
 
+  /**
+   * render
+   */
   render() {
+    /**
+     * content
+     * @param closeDialog closeDialog
+     */
     const content = (closeDialog: () => any) =>
       this.wizardSteps(this.state.currentStep);
 
@@ -823,6 +938,10 @@ class OrganizationNewWorkspace extends React.Component<
         </div>
       </div>
     );
+    /**
+     * footer
+     * @param closePortal closePortal
+     */
     const footer = (closePortal: () => any) => (
       <FormWizardActions
         locked={this.state.locked}
@@ -866,6 +985,10 @@ class OrganizationNewWorkspace extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -874,6 +997,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     {

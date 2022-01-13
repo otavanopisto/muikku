@@ -6,6 +6,10 @@ import { StateType } from "~/reducers";
 import { Store } from "redux";
 import { loadStatus, loadWorkspaceStatus } from "~/actions/base/status";
 
+/**
+ * getOptionValue
+ * @param option option
+ */
 function getOptionValue(option: boolean) {
   if (typeof option === "undefined") {
     return true;
@@ -13,6 +17,12 @@ function getOptionValue(option: boolean) {
   return option;
 }
 
+/**
+ * @param store store
+ * @param options options
+ * @param options.setupMessages setupMessages
+ * @param options.setupWorkspacePermissions setupWorkspacePermissions
+ */
 export default async function (
   store: Store<StateType>,
   options: {
@@ -49,6 +59,9 @@ export default async function (
 
   if (!options.setupWorkspacePermissions) {
     return new Promise((resolve) => {
+      /**
+       * resolveFn
+       */
       const resolveFn = () => {
         resolve(websocket);
       };
@@ -57,6 +70,9 @@ export default async function (
   } else {
     return new Promise((resolve) => {
       let loadedTotal = 0;
+      /**
+       * resolveFn
+       */
       const resolveFn = () => {
         loadedTotal++;
         if (loadedTotal === 2) {

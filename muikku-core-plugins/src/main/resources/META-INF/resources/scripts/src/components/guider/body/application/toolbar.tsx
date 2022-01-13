@@ -32,6 +32,9 @@ import {
 } from "~/actions/main-function/guider";
 import { bindActionCreators } from "redux";
 
+/**
+ * GuiderToolbarProps
+ */
 interface GuiderToolbarProps {
   i18n: i18nType;
   guider: GuiderType;
@@ -40,15 +43,25 @@ interface GuiderToolbarProps {
   removeFromGuiderSelectedStudents: RemoveFromGuiderSelectedStudentsTriggerType;
 }
 
+/**
+ * GuiderToolbarState
+ */
 interface GuiderToolbarState {
   searchquery: string;
   focused: boolean;
 }
 
+/**
+ * GuiderToolbar
+ */
 class GuiderToolbar extends React.Component<
   GuiderToolbarProps,
   GuiderToolbarState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: GuiderToolbarProps) {
     super(props);
 
@@ -64,6 +77,24 @@ class GuiderToolbar extends React.Component<
     this.onInputBlur = this.onInputBlur.bind(this);
   }
 
+  /**
+   * componentWillReceiveProps
+   * @param nextProps nextProps
+   */
+  componentWillReceiveProps(nextProps: GuiderToolbarProps) {
+    if (
+      !this.state.focused &&
+      (nextProps.guider.activeFilters.query || "") !== this.state.searchquery
+    ) {
+      this.setState({
+        searchquery: nextProps.guider.activeFilters.query || "",
+      });
+    }
+  }
+
+  /**
+   * getBackByHash
+   */
   getBackByHash(): string {
     const locationData = queryString.parse(
       document.location.hash.split("?")[1] || "",
@@ -75,6 +106,9 @@ class GuiderToolbar extends React.Component<
     return newHash;
   }
 
+  /**
+   * onGoBackClick
+   */
   onGoBackClick() {
     //TODO this is a retarded way to do things if we ever update to a SPA
     //it's a hacky mechanism to make history awesome, once we use a router it gotta be fixed
@@ -94,6 +128,10 @@ class GuiderToolbar extends React.Component<
     }
   }
 
+  /**
+   * updateSearchWithQuery
+   * @param query query
+   */
   updateSearchWithQuery(query: string) {
     this.setState({
       searchquery: query,
@@ -107,21 +145,16 @@ class GuiderToolbar extends React.Component<
       "#?" + queryString.stringify(locationData, { arrayFormat: "bracket" });
   }
 
-  componentWillReceiveProps(nextProps: GuiderToolbarProps) {
-    if (
-      !this.state.focused &&
-      (nextProps.guider.activeFilters.query || "") !== this.state.searchquery
-    ) {
-      this.setState({
-        searchquery: nextProps.guider.activeFilters.query || "",
-      });
-    }
-  }
-
+  /**
+   * onInputFocus
+   */
   onInputFocus() {
     this.setState({ focused: true });
   }
 
+  /**
+   * onInputBlur
+   */
   onInputBlur() {
     this.setState({ focused: false });
   }
@@ -132,6 +165,10 @@ class GuiderToolbar extends React.Component<
    * @returns {Array} an Array of ContactRecipientType
    */
 
+  /**
+   * turnSelectedUsersToContacts
+   * @param users users
+   */
   turnSelectedUsersToContacts = (
     users: GuiderStudentListType
   ): ContactRecipientType[] => {
@@ -155,6 +192,10 @@ class GuiderToolbar extends React.Component<
    * @param selectedUsers is an Array of ContactRecipientType
    */
 
+  /**
+   * onContactsChange
+   * @param selectedUsers selectedUsers
+   */
   onContactsChange = (selectedUsers: ContactRecipientType[]): void => {
     // We need the arrays of ids for comparison from the dialog and the redux state
 
@@ -186,6 +227,9 @@ class GuiderToolbar extends React.Component<
     }
   };
 
+  /**
+   * render
+   */
   render() {
     return (
       <ApplicationPanelToolbar>
@@ -243,6 +287,10 @@ class GuiderToolbar extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -251,6 +299,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     {

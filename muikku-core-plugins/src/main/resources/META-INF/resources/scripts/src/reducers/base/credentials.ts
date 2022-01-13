@@ -1,5 +1,8 @@
 import { ActionType } from "~/actions";
 
+/**
+ * CredentialsType
+ */
 export interface CredentialsType {
   secret: string;
   username: string;
@@ -8,6 +11,11 @@ export interface CredentialsType {
 
 export type CredentialsStateType = "LOADING" | "READY" | "CHANGED";
 
+/**
+ * credentials
+ * @param state state
+ * @param action action
+ */
 export default function credentials(
   state: CredentialsType = {
     secret: "",

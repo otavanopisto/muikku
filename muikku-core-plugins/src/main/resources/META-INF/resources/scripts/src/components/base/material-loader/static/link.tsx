@@ -5,6 +5,9 @@ import {
   HTMLToReactComponentRule,
 } from "~/util/modifiers";
 
+/**
+ * LinkProps
+ */
 interface LinkProps {
   element: HTMLElement;
   path: string;
@@ -16,22 +19,45 @@ interface LinkProps {
   processingRules: HTMLToReactComponentRule[];
 }
 
+/**
+ * Link
+ */
 export default class Link extends React.Component<
   LinkProps,
   Record<string, unknown>
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: LinkProps) {
     super(props);
   }
+
+  /**
+   * render
+   */
   render() {
     const newRules = this.props.processingRules.filter(
       (r) => r.id !== "link-rule"
     );
     newRules.push({
+      /**
+       * shouldProcessHTMLElement
+       * @param tag tag
+       * @param element element
+       */
       shouldProcessHTMLElement: (tag, element) =>
         tag === "a" &&
         element.getAttribute("href") &&
         element.getAttribute("href")[0] !== "#",
+      /**
+       * preprocessReactProperties
+       * @param tag tag
+       * @param props props
+       * @param children children
+       * @param element element
+       */
       preprocessReactProperties: (tag, props, children, element) => {
         const isAbsolute =
           props.href.indexOf("/") == 0 ||

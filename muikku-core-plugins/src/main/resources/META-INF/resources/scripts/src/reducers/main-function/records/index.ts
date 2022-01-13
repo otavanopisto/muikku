@@ -8,6 +8,9 @@ import {
   MaterialCompositeRepliesType,
 } from "~/reducers/workspaces";
 
+/**
+ * TransferCreditType
+ */
 export interface TransferCreditType {
   assessorIdentifier: string;
   courseName: string;
@@ -41,16 +44,25 @@ export type AllStudentUsersDataType = Array<{
   records: RecordsOrderedType;
 }>;
 
+/**
+ * GradingScaleInfoType
+ */
 export interface GradingScaleInfoType {
   scale: string;
   grade: string;
   passing: boolean;
 }
 
+/**
+ * RecordsGradesType
+ */
 export interface RecordsGradesType {
   [key: string]: GradingScaleInfoType;
 }
 
+/**
+ * CurrentRecordType
+ */
 export interface CurrentRecordType {
   workspace: WorkspaceType;
   journals: WorkspaceJournalListType;
@@ -69,6 +81,9 @@ export type CurrentStudentUserAndWorkspaceStatusType =
   | "READY"
   | "ERROR";
 
+/**
+ * RecordsType
+ */
 export interface RecordsType {
   userData: AllStudentUsersDataType;
   userDataStatus: AllStudentUsersDataStatusType;
@@ -86,6 +101,11 @@ export type TranscriptOfRecordLocationType =
   | "summary"
   | "yo";
 
+/**
+ * records
+ * @param state state
+ * @param action action
+ */
 export default function records(
   state: RecordsType = {
     userData: [],

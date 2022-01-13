@@ -14,6 +14,9 @@ import {
 import { ChatMessage } from "./chatMessage";
 import DeleteRoomDialog from "./deleteMUCDialog";
 
+/**
+ * IGroupChatProps
+ */
 interface IGroupChatProps {
   chat: IAvailableChatRoomType;
   nick: string;
@@ -28,12 +31,18 @@ interface IGroupChatProps {
   active?: boolean;
 }
 
+/**
+ * IGroupChatOccupant
+ */
 interface IGroupChatOccupant {
   occupant: IChatOccupant;
   affilation: "none" | "owner";
   role: "moderator" | "participant";
 }
 
+/**
+ * IGroupChatState
+ */
 interface IGroupChatState {
   messages: IBareMessageType[];
   processedMessages: IBareMessageType[];
@@ -64,6 +73,9 @@ interface IGroupChatState {
 
 const roleNode = document.querySelector('meta[name="muikku:role"]');
 
+/**
+ * Groupchat
+ */
 export class Groupchat extends React.Component<
   IGroupChatProps,
   IGroupChatState
@@ -76,6 +88,10 @@ export class Groupchat extends React.Component<
   private chatWrapperRef: React.RefObject<HTMLDivElement>;
   private unmounted = false;
 
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: IGroupChatProps) {
     super(props);
 
@@ -137,7 +153,45 @@ export class Groupchat extends React.Component<
   }
 
   /**
+   * componentDidUpdate
+   * @param prevProps prevProps
+   */
+  componentDidUpdate(prevProps: IGroupChatProps) {
+    if (prevProps.chat && this.props.chat) {
+      if (prevProps.chat.roomName !== this.props.chat.roomName) {
+        this.setState({
+          roomNameField: this.props.chat.roomName || "",
+        });
+      }
+      if (prevProps.chat.roomDesc !== this.props.chat.roomDesc) {
+        this.setState({
+          roomDescField: this.props.chat.roomDesc || "",
+        });
+      }
+      // if (prevProps.chat.roomPersistent !== this.props.chat.roomPersistent) {
+      //   this.setState({
+      //     roomPersistent: this.props.chat.roomPersistent,
+      //   });
+      // }
+    }
+
+    if (
+      this.props.chat.roomJID !== prevProps.chat.roomJID ||
+      this.props.nick !== prevProps.nick ||
+      this.props.connection !== prevProps.connection
+    ) {
+      this.leaveRoom(prevProps);
+      this.joinRoom();
+    } else if (this.props.presence !== prevProps.presence) {
+      // we don't do this on the rejoining because it's automatically done
+      // if rejoining
+      this.sendRoomPrescense();
+    }
+  }
+
+  /**
    * toggleDeleteMUCDialog
+   * @param e e
    */
   toggleDeleteMUCDialog(e?: React.MouseEvent) {
     e && e.stopPropagation();
@@ -159,6 +213,7 @@ export class Groupchat extends React.Component<
 
   /**
    * updateRoomNameField
+   * @param e e
    */
   updateRoomNameField(e: React.ChangeEvent<HTMLInputElement>) {
     this.setState({
@@ -168,6 +223,7 @@ export class Groupchat extends React.Component<
 
   /**
    * updateRoomDescField
+   * @param e e
    */
   updateRoomDescField(e: React.ChangeEvent<HTMLTextAreaElement>) {
     this.setState({
@@ -177,7 +233,7 @@ export class Groupchat extends React.Component<
 
   /**
    * setCurrentMessageToBeSent
-   * @param e
+   * @param e e
    */
   setCurrentMessageToBeSent(e: React.ChangeEvent<HTMLTextAreaElement>) {
     this.setState({
@@ -187,7 +243,7 @@ export class Groupchat extends React.Component<
 
   /**
    * sendMessageToChatRoom
-   * @param event
+   * @param event event
    */
   sendMessageToChatRoom(event: React.FormEvent) {
     event && event.preventDefault();
@@ -215,7 +271,7 @@ export class Groupchat extends React.Component<
   /**
    * Custom Message DELETE, we send empty stanza with custom attribute
    * Attribute contains stanzaId that is from original 'to be deleted' mmessage
-   * @param stanzaId
+   * @param stanzaId stanzaId
    */
   deleteMessage(stanzaId: string) {
     this.props.connection.send(
@@ -230,8 +286,8 @@ export class Groupchat extends React.Component<
   /**
    * Custom Message EDIT, we send new stanza with new content and with custom attribute
    * Attribute contains stanzaId that is from original 'to be edited' mmessage
-   * @param stanzaId
-   * @param textContent
+   * @param stanzaId stanzaId
+   * @param textContent textContent
    */
   editMessage(stanzaId: string, textContent: string) {
     const text = textContent.trim();
@@ -250,7 +306,7 @@ export class Groupchat extends React.Component<
   /**
    * setChatroomConfiguration
    * Set chat room configurations
-   * @param event
+   * @param event event
    */
   async setChatroomConfiguration(event: React.FormEvent) {
     event.preventDefault();
@@ -340,7 +396,7 @@ export class Groupchat extends React.Component<
   /**
    * scrollToBottom
    * Scroll selected view to the bottom
-   * @param method
+   * @param method method
    */
   scrollToBottom(method: ScrollBehavior = "smooth") {
     if (this.messagesEnd.current && !this.isScrollDetached) {
@@ -350,8 +406,7 @@ export class Groupchat extends React.Component<
 
   /**
    * onEnterPress
-   * @param e
-   * @returns
+   * @param e e
    */
   onEnterPress(e: React.KeyboardEvent<HTMLTextAreaElement>) {
     if (e.keyCode == 13 && e.shiftKey == false) {
@@ -360,43 +415,6 @@ export class Groupchat extends React.Component<
       this.sendMessageToChatRoom(null);
 
       return false;
-    }
-  }
-
-  /**
-   * componentDidUpdate
-   * @param prevProps
-   */
-  componentDidUpdate(prevProps: IGroupChatProps) {
-    if (prevProps.chat && this.props.chat) {
-      if (prevProps.chat.roomName !== this.props.chat.roomName) {
-        this.setState({
-          roomNameField: this.props.chat.roomName || "",
-        });
-      }
-      if (prevProps.chat.roomDesc !== this.props.chat.roomDesc) {
-        this.setState({
-          roomDescField: this.props.chat.roomDesc || "",
-        });
-      }
-      // if (prevProps.chat.roomPersistent !== this.props.chat.roomPersistent) {
-      //   this.setState({
-      //     roomPersistent: this.props.chat.roomPersistent,
-      //   });
-      // }
-    }
-
-    if (
-      this.props.chat.roomJID !== prevProps.chat.roomJID ||
-      this.props.nick !== prevProps.nick ||
-      this.props.connection !== prevProps.connection
-    ) {
-      this.leaveRoom(prevProps);
-      this.joinRoom();
-    } else if (this.props.presence !== prevProps.presence) {
-      // we don't do this on the rejoining because it's automatically done
-      // if rejoining
-      this.sendRoomPrescense();
     }
   }
 
@@ -581,6 +599,7 @@ export class Groupchat extends React.Component<
 
   /**
    * joinRoom
+   * @param props
    */
   joinRoom(props: IGroupChatProps = this.props) {
     const roomJID = props.chat.roomJID;
@@ -682,6 +701,9 @@ export class Groupchat extends React.Component<
     this.unmounted = true;
   }
 
+  /**
+   * @param event
+   */
   handleClickOutside = (event: any) => {
     this.setState({ active: false });
   };

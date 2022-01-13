@@ -10,12 +10,20 @@ export type INITIALIZE_WEBSOCKET = SpecificActionType<
   MuikkuWebsocket
 >;
 
+/**
+ * WebsocketStateType
+ */
 export interface WebsocketStateType {
   connected: boolean;
   synchronized: boolean;
   websocket: MuikkuWebsocket;
 }
 
+/**
+ * websocket
+ * @param state state
+ * @param action action
+ */
 export default function websocket(
   state: WebsocketStateType = {
     connected: false,

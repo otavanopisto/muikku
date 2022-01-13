@@ -28,6 +28,9 @@ import {
 } from "~/actions/workspaces";
 import { repairContentNodes } from "~/util/modifiers";
 
+/**
+ * ContentProps
+ */
 interface ContentProps {
   i18n: i18nType;
   materials: MaterialContentNodeListType;
@@ -42,10 +45,17 @@ interface ContentProps {
   isStudent: boolean;
 }
 
+/**
+ * ContentState
+ */
 interface ContentState {
   materials: MaterialContentNodeListType;
 }
 
+/**
+ * isScrolledIntoView
+ * @param el el
+ */
 function isScrolledIntoView(el: HTMLElement) {
   const rect = el.getBoundingClientRect();
   const elemTop = rect.top;
@@ -65,7 +75,14 @@ function isScrolledIntoView(el: HTMLElement) {
   }
 }
 
+/**
+ * ContentComponent
+ */
 class ContentComponent extends React.Component<ContentProps, ContentState> {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: ContentProps) {
     super(props);
 
@@ -80,16 +97,31 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
     this.onInteractionBetweenSubnodes =
       this.onInteractionBetweenSubnodes.bind(this);
   }
+
+  /**
+   * componentDidUpdate
+   * @param prevProps prevProps
+   */
   componentDidUpdate(prevProps: ContentProps) {
     if (prevProps.activeNodeId !== this.props.activeNodeId) {
       this.refresh();
     }
   }
+
+  /**
+   * componentWillReceiveProps
+   * @param nextProps nextProps
+   */
   componentWillReceiveProps(nextProps: ContentProps) {
     this.setState({
       materials: nextProps.materials,
     });
   }
+
+  /**
+   *  refresh
+   * @param props props
+   */
   refresh(props: ContentProps = this.props) {
     const tocElement = this.refs[props.activeNodeId] as TocElement;
     if (tocElement) {
@@ -103,6 +135,12 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
       }
     }
   }
+
+  /**
+   * hotInsertBeforeSection
+   * @param baseIndex baseIndex
+   * @param targetBeforeIndex targetBeforeIndex
+   */
   hotInsertBeforeSection(baseIndex: number, targetBeforeIndex: number) {
     const newMaterialState = [...this.state.materials];
     newMaterialState.splice(baseIndex, 1);
@@ -130,6 +168,9 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
             parentId: update.parentId,
             nextSiblingId: update.nextSiblingId,
           },
+          /**
+           * success
+           */
           success: () => {
             this.props.setWholeWorkspaceHelp(contentNodesRepaired);
           },
@@ -138,6 +179,14 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
       }
     );
   }
+
+  /**
+   * hotInsertBeforeSubnode
+   * @param parentBaseIndex parentBaseIndex
+   * @param baseIndex baseIndex
+   * @param parentTargetBeforeIndex parentTargetBeforeIndex
+   * @param targetBeforeIndex targetBeforeIndex
+   */
   hotInsertBeforeSubnode(
     parentBaseIndex: number,
     baseIndex: number,
@@ -204,6 +253,9 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
             parentId: update.parentId,
             nextSiblingId: update.nextSiblingId,
           },
+          /**
+           * success
+           */
           success: () => {
             this.props.setWholeWorkspaceHelp(repariedNodes);
           },
@@ -212,6 +264,12 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
       }
     );
   }
+
+  /**
+   * onInteractionBetweenSections
+   * @param base base
+   * @param target target
+   */
   onInteractionBetweenSections(
     base: MaterialContentNodeType,
     target: MaterialContentNodeType
@@ -225,6 +283,12 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
       )
     );
   }
+
+  /**
+   * onInteractionBetweenSubnodes
+   * @param base base
+   * @param target target
+   */
   onInteractionBetweenSubnodes(
     base: MaterialContentNodeType,
     target: MaterialContentNodeType | number
@@ -259,6 +323,10 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
       targetBeforeIndex
     );
   }
+
+  /**
+   * render
+   */
   render() {
     if (!this.props.materials || !this.props.materials.length) {
       return null;
@@ -427,6 +495,10 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -439,6 +511,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     { updateWorkspaceMaterialContentNode, setWholeWorkspaceHelp },

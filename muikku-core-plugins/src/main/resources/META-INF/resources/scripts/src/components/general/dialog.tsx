@@ -536,7 +536,8 @@ export class DialogRemoveUsers extends React.Component<
   /**
    * handles page changes,
    * sets selected page as currentPage to state
-   * @param event
+   * @param selectedItem selectedItem
+   * @param selectedItem.selected selected
    */
   handleRemoveUsersPagerChange = (selectedItem: { selected: number }) =>
     this.goToRemovePage(selectedItem.selected + 1);
@@ -544,7 +545,8 @@ export class DialogRemoveUsers extends React.Component<
   /**
    * handles page changes,
    * sets selected page as currentPage to state
-   * @param event
+   * @param selectedItem selectedItem
+   * @param selectedItem.selected selected
    */
   handleAllUsersPagerChange = (selectedItem: { selected: number }) =>
     this.goToAllUsersPage(selectedItem.selected + 1);

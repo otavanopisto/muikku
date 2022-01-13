@@ -1,4 +1,11 @@
+/**
+ * MApiError
+ */
 export class MApiError extends Error {
+  /**
+   * constructor
+   * @param m m
+   */
   constructor(m: string) {
     super(m);
     Object.setPrototypeOf(this, MApiError.prototype);

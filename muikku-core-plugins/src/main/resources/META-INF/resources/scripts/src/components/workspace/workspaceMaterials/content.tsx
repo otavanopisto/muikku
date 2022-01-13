@@ -24,7 +24,6 @@ import {
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/item-list.scss";
 import "~/sass/elements/material-admin.scss";
-
 import Toc, { TocTopic, TocElement } from "~/components/general/toc";
 import Draggable, { Droppable } from "~/components/general/draggable";
 import { bindActionCreators } from "redux";
@@ -36,6 +35,9 @@ import {
 } from "~/actions/workspaces";
 import { repairContentNodes } from "~/util/modifiers";
 
+/**
+ * ContentProps
+ */
 interface ContentProps {
   i18n: i18nType;
   materials: MaterialContentNodeListType;
@@ -51,14 +53,17 @@ interface ContentProps {
   isStudent: boolean;
 }
 
+/**
+ * ContentState
+ */
 interface ContentState {
   materials: MaterialContentNodeListType;
 }
 
 /**
  * isScrolledIntoView
- * @param el
- * @returns
+ * @param el el
+ * @returns boolean
  */
 function isScrolledIntoView(el: HTMLElement) {
   const rect = el.getBoundingClientRect();
@@ -79,10 +84,17 @@ function isScrolledIntoView(el: HTMLElement) {
   }
 }
 
+/**
+ * ContentComponent
+ */
 class ContentComponent extends React.Component<ContentProps, ContentState> {
   private storedLastUpdateServerExecution: Function;
   private originalMaterials: MaterialContentNodeListType;
 
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: ContentProps) {
     super(props);
 
@@ -104,7 +116,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
 
   /**
    * componentDidUpdate
-   * @param prevProps
+   * @param prevProps prevProps
    */
   componentDidUpdate(prevProps: ContentProps) {
     if (prevProps.activeNodeId !== this.props.activeNodeId) {
@@ -114,7 +126,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
 
   /**
    * componentWillReceiveProps
-   * @param nextProps
+   * @param nextProps nextProps
    */
   componentWillReceiveProps(nextProps: ContentProps) {
     this.setState({
@@ -124,7 +136,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
 
   /**
    * refresh
-   * @param props
+   * @param props props
    */
   refresh(props: ContentProps = this.props) {
     const tocElement = this.refs[props.activeNodeId] as TocElement;
@@ -142,8 +154,8 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
 
   /**
    * hotInsertBeforeSection
-   * @param baseIndex
-   * @param targetBeforeIndex
+   * @param baseIndex baseIndex
+   * @param targetBeforeIndex targetBeforeIndex
    */
   hotInsertBeforeSection(baseIndex: number, targetBeforeIndex: number) {
     const newMaterialState = [...this.state.materials];
@@ -167,6 +179,9 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
       materials: contentNodesRepaired,
     });
 
+    /**
+     * storedLastUpdateServerExecution
+     */
     this.storedLastUpdateServerExecution = () => {
       this.props.updateWorkspaceMaterialContentNode({
         workspace: this.props.workspace,
@@ -175,6 +190,9 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
           parentId: update.parentId,
           nextSiblingId: update.nextSiblingId,
         },
+        /**
+         * success
+         */
         success: () => {
           this.props.setWholeWorkspaceMaterials(contentNodesRepaired);
           this.originalMaterials = contentNodesRepaired;
@@ -186,10 +204,10 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
 
   /**
    * hotInsertBeforeSubnode
-   * @param parentBaseIndex
-   * @param baseIndex
-   * @param parentTargetBeforeIndex
-   * @param targetBeforeIndex
+   * @param parentBaseIndex parentBaseIndex
+   * @param baseIndex baseIndex
+   * @param parentTargetBeforeIndex parentTargetBeforeIndex
+   * @param targetBeforeIndex targetBeforeIndex
    */
   hotInsertBeforeSubnode(
     parentBaseIndex: number,
@@ -260,6 +278,9 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
       }
     );
 
+    /**
+     * storedLastUpdateServerExecution
+     */
     this.storedLastUpdateServerExecution = () => {
       this.props.updateWorkspaceMaterialContentNode({
         workspace: this.props.workspace,
@@ -268,6 +289,9 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
           parentId: update.parentId,
           nextSiblingId: update.nextSiblingId,
         },
+        /**
+         * success
+         */
         success: () => {
           this.props.setWholeWorkspaceMaterials(repariedNodes);
           this.originalMaterials = repariedNodes;
@@ -279,8 +303,8 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
 
   /**
    * onInteractionBetweenSections
-   * @param base
-   * @param target
+   * @param base base
+   * @param target target
    */
   onInteractionBetweenSections(
     base: MaterialContentNodeType,
@@ -298,8 +322,8 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
 
   /**
    * onDropBetweenSections
-   * @param base
-   * @param target
+   * @param base base
+   * @param target target
    */
   onDropBetweenSections() {
     this.storedLastUpdateServerExecution &&
@@ -309,9 +333,8 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
 
   /**
    * onInteractionBetweenSubnodes
-   * @param base
-   * @param target
-   * @returns
+   * @param base base
+   * @param target target
    */
   onInteractionBetweenSubnodes(
     base: MaterialContentNodeType,
@@ -350,8 +373,8 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
 
   /**
    * onDropBetweenSubnodes
-   * @param base
-   * @param target
+   * @param base base
+   * @param target target
    */
   onDropBetweenSubnodes() {
     this.storedLastUpdateServerExecution &&
@@ -361,7 +384,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
 
   /**
    * render
-   * @returns
+   * @returns JSX.Element
    */
   render() {
     if (!this.props.materials || !this.props.materials.length) {

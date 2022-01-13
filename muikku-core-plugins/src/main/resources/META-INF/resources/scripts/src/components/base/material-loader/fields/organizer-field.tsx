@@ -8,26 +8,41 @@ import { StrMathJAX } from "../static/mathjax";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
 
+/**
+ * FieldType
+ */
 interface FieldType {
   name: string;
   text: string;
 }
 
+/**
+ * TermType
+ */
 interface TermType {
   id: string;
   name: string;
 }
 
+/**
+ * CategoryType
+ */
 interface CategoryType {
   id: string;
   name: string;
 }
 
+/**
+ * CategoryTerm
+ */
 interface CategoryTerm {
   category: string;
   terms: Array<string>;
 }
 
+/**
+ * OrganizerFieldProps
+ */
 interface OrganizerFieldProps {
   type: string;
   content: {
@@ -62,6 +77,9 @@ type OrganizerFieldanswerStateMissingTermsType = {
   [categoryId: string]: Array<string>;
 };
 
+/**
+ * OrganizerFieldState
+ */
 interface OrganizerFieldState {
   terms: {
     [termId: string]: string;
@@ -90,10 +108,17 @@ interface OrganizerFieldState {
   fieldSavedState: FieldStateStatus;
 }
 
+/**
+ * OrganizerField
+ */
 export default class OrganizerField extends React.Component<
   OrganizerFieldProps,
   OrganizerFieldState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: OrganizerFieldProps) {
     super(props);
 

@@ -13,6 +13,9 @@ import Synchronizer from "./base/synchronizer";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
 
+/**
+ * MathFieldProps
+ */
 interface MathFieldProps {
   type: string;
   content: {
@@ -30,6 +33,9 @@ interface MathFieldProps {
   ) => any;
 }
 
+/**
+ * MathFieldState
+ */
 interface MathFieldState {
   value: string;
 
@@ -43,10 +49,17 @@ interface MathFieldState {
   fieldSavedState: FieldStateStatus;
 }
 
+/**
+ * TextField
+ */
 export default class TextField extends React.Component<
   MathFieldProps,
   MathFieldState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: MathFieldProps) {
     super(props);
 

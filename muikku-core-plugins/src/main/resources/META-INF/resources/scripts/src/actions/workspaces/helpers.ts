@@ -16,6 +16,15 @@ import {
 const MAX_LOADED_AT_ONCE = 26;
 const MAX_JOURNAL_LOADED_AT_ONCE = 10;
 
+/**
+ * loadWorkspacesHelper
+ * @param filters filters
+ * @param initial initial
+ * @param refresh refresh
+ * @param loadOrganizationWorkspaces loadOrganizationWorkspaces
+ * @param dispatch dispatch
+ * @param getState getState
+ */
 export async function loadWorkspacesHelper(
   filters: WorkspacesActiveFiltersType | null,
   initial: boolean,
@@ -220,6 +229,13 @@ export async function loadWorkspacesHelper(
   }
 }
 
+/**
+ * loadCurrentWorkspaceJournalsHelper
+ * @param userEntityId userEntityId
+ * @param initial initial
+ * @param dispatch dispatch
+ * @param getState getState
+ */
 export async function loadCurrentWorkspaceJournalsHelper(
   userEntityId: number | null,
   initial: boolean,

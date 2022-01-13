@@ -22,14 +22,25 @@ export type UPDATE_STATUS = SpecificActionType<
   Partial<StatusType>
 >;
 
+/**
+ * LoadStatusType
+ */
 export interface LoadStatusType {
   (whoAmIReadyCb: () => void): AnyActionType;
 }
 
+/**
+ * LoadWorkspaceStatusInfoType
+ */
 export interface LoadWorkspaceStatusInfoType {
   (readyCb: () => void): AnyActionType;
 }
 
+/**
+ * loadWhoAMI
+ * @param dispatch
+ * @param whoAmIReadyCb
+ */
 async function loadWhoAMI(
   dispatch: (arg: AnyActionType) => any,
   whoAmIReadyCb: () => void
@@ -91,6 +102,10 @@ async function loadWhoAMI(
 }
 
 // User has set nickname for chat and activated the chat funtionality via profile view
+/**
+ * loadChatActive
+ * @param dispatch
+ */
 async function loadChatActive(dispatch: (arg: AnyActionType) => any) {
   const isActive = <boolean>(
     await promisify(mApi().chat.isActive.read(), "callback")()
@@ -107,6 +122,10 @@ async function loadChatActive(dispatch: (arg: AnyActionType) => any) {
 }
 
 // User is loggedin and is part of default organization that has access to chat
+/**
+ * loadChatAvailable
+ * @param dispatch
+ */
 async function loadChatAvailable(dispatch: (arg: AnyActionType) => any) {
   const isAvailable = <boolean>(
     await promisify(mApi().chat.isAvailable.read(), "callback")()
@@ -122,6 +141,10 @@ async function loadChatAvailable(dispatch: (arg: AnyActionType) => any) {
   });
 }
 
+/**
+ * loadWorklistAvailable
+ * @param dispatch
+ */
 async function loadWorklistAvailable(dispatch: (arg: AnyActionType) => any) {
   const isAvailable = <boolean>(
     await promisify(mApi().worklist.isAvailable.read(), "callback")()
@@ -137,6 +160,10 @@ async function loadWorklistAvailable(dispatch: (arg: AnyActionType) => any) {
   });
 }
 
+/**
+ * loadForumIsAvailable
+ * @param dispatch
+ */
 async function loadForumIsAvailable(dispatch: (arg: AnyActionType) => any) {
   const isAvailable = <boolean>(
     await promisify(mApi().forum.isAvailable.read(), "callback")()
@@ -163,6 +190,10 @@ async function loadForumIsAvailable(dispatch: (arg: AnyActionType) => any) {
   });
 }
 
+/**
+ * loadHopsEnabled
+ * @param dispatch
+ */
 async function loadHopsEnabled(dispatch: (arg: AnyActionType) => any) {
   const value = <any>(
     await promisify(mApi().user.property.read("hops.enabled"), "callback")()
@@ -176,6 +207,12 @@ async function loadHopsEnabled(dispatch: (arg: AnyActionType) => any) {
   });
 }
 
+/**
+ * loadWorkspacePermissions
+ * @param workspaceId
+ * @param dispatch
+ * @param readyCb
+ */
 async function loadWorkspacePermissions(
   workspaceId: number,
   dispatch: (arg: AnyActionType) => any,
@@ -260,6 +297,10 @@ async function loadWorkspacePermissions(
   readyCb();
 }
 
+/**
+ * loadStatus
+ * @param whoAmIReadyCb whoAmIReadyCb
+ */
 const loadStatus: LoadStatusType = function loadStatus(
   whoAmIReadyCb: () => void
 ) {
@@ -273,6 +314,10 @@ const loadStatus: LoadStatusType = function loadStatus(
   };
 };
 
+/**
+ * loadWorkspaceStatus
+ * @param readyCb readyCb
+ */
 const loadWorkspaceStatus: LoadWorkspaceStatusInfoType =
   function loadWorkspaceStatusInfo(readyCb: () => void) {
     return async (
@@ -284,18 +329,30 @@ const loadWorkspaceStatus: LoadWorkspaceStatusInfoType =
     };
   };
 
+/**
+ * LogoutTriggerType
+ */
 export interface LogoutTriggerType {
   (): LOGOUT;
 }
 
+/**
+ * UpdateStatusProfileTriggerType
+ */
 export interface UpdateStatusProfileTriggerType {
   (profile: ProfileStatusType): UPDATE_STATUS_PROFILE;
 }
 
+/**
+ * UpdateStatusHasImageTriggerType
+ */
 export interface UpdateStatusHasImageTriggerType {
   (value: boolean): UPDATE_STATUS_HAS_IMAGE;
 }
 
+/**
+ * LogoutTriggerType
+ */
 const logout: LogoutTriggerType = function logout() {
   return {
     type: "LOGOUT",
@@ -303,6 +360,10 @@ const logout: LogoutTriggerType = function logout() {
   };
 };
 
+/**
+ * updateStatusProfile
+ * @param profile
+ */
 const updateStatusProfile: UpdateStatusProfileTriggerType =
   function updateStatusProfile(profile) {
     return {
@@ -311,6 +372,10 @@ const updateStatusProfile: UpdateStatusProfileTriggerType =
     };
   };
 
+/**
+ * updateStatusHasImage
+ * @param value
+ */
 const updateStatusHasImage: UpdateStatusHasImageTriggerType =
   function updateStatusHasImage(value) {
     return {

@@ -34,6 +34,9 @@ import ApplicationList, {
   ApplicationListItem,
 } from "~/components/general/application-list";
 
+/**
+ * GuiderStudentsProps
+ */
 interface GuiderStudentsProps {
   i18n: i18nType;
   guiderStudentsState: GuiderStudentsStateType;
@@ -45,12 +48,22 @@ interface GuiderStudentsProps {
   removeFromGuiderSelectedStudents: RemoveFromGuiderSelectedStudentsTriggerType;
 }
 
+/**
+ * GuiderStudentsState
+ */
 interface GuiderStudentsState {}
 
+/**
+ * GuiderStudents
+ */
 class GuiderStudents extends BodyScrollLoader<
   GuiderStudentsProps,
   GuiderStudentsState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: GuiderStudentsProps) {
     super(props);
 
@@ -66,6 +79,10 @@ class GuiderStudents extends BodyScrollLoader<
     this.onStudentClick = this.onStudentClick.bind(this);
   }
 
+  /**
+   * onStudentClick
+   * @param student student
+   */
   onStudentClick(student: GuiderStudentType) {
     const locationData = queryString.parse(
       document.location.hash.split("?")[1] || "",
@@ -76,6 +93,9 @@ class GuiderStudents extends BodyScrollLoader<
       "#?" + queryString.stringify(locationData, { arrayFormat: "bracket" });
   }
 
+  /**
+   * render
+   */
   render() {
     if (this.props.guiderStudentsState === "LOADING") {
       return null;
@@ -131,6 +151,10 @@ class GuiderStudents extends BodyScrollLoader<
                 key: student.id,
                 checkboxId: `user-select-${index}`,
                 checkboxClassName: "user__selector",
+                /**
+                 * contents
+                 * @param checkbox checkbox
+                 */
                 contents: (checkbox: React.ReactElement<any>) => (
                   <Student
                     index={index}
@@ -147,6 +171,10 @@ class GuiderStudents extends BodyScrollLoader<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -157,6 +185,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     {

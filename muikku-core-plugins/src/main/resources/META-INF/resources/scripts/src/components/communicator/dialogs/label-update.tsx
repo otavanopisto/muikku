@@ -27,6 +27,9 @@ const KEYCODES = {
   ENTER: 13,
 };
 
+/**
+ * CommunicatorLabelUpdateDialogProps
+ */
 interface CommunicatorLabelUpdateDialogProps {
   children: React.ReactElement<any>;
   label: MessagesNavigationItemType;
@@ -38,6 +41,9 @@ interface CommunicatorLabelUpdateDialogProps {
   removeMessagesNavigationLabel: RemoveMessagesNavigationLabelTriggerType;
 }
 
+/**
+ * CommunicatorLabelUpdateDialogState
+ */
 interface CommunicatorLabelUpdateDialogState {
   displayColorPicker: boolean;
   color: string;
@@ -46,10 +52,17 @@ interface CommunicatorLabelUpdateDialogState {
   locked: boolean;
 }
 
+/**
+ * CommunicatorLabelUpdateDialog
+ */
 class CommunicatorLabelUpdateDialog extends React.Component<
   CommunicatorLabelUpdateDialogProps,
   CommunicatorLabelUpdateDialogState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: CommunicatorLabelUpdateDialogProps) {
     super(props);
 
@@ -70,22 +83,47 @@ class CommunicatorLabelUpdateDialog extends React.Component<
       locked: false,
     };
   }
-  onHandleClick = () => {
-    this.setState({ displayColorPicker: !this.state.displayColorPicker });
-  };
-  onHandleClose = () => {
-    this.setState({ displayColorPicker: false });
-  };
-  handleKeydown(code: number, closeDialog: () => any) {
-    if (code === KEYCODES.ENTER) {
-      this.update(closeDialog);
-    }
-  }
+
+  /**
+   * componentWillReceiveProps
+   * @param nextProps nextProps
+   */
   componentWillReceiveProps(nextProps: CommunicatorLabelUpdateDialogProps) {
     if (nextProps.label.id !== this.props.label.id) {
       this.resetState(null, nextProps);
     }
   }
+
+  /**
+   * onHandleClick
+   */
+  onHandleClick = () => {
+    this.setState({ displayColorPicker: !this.state.displayColorPicker });
+  };
+
+  /**
+   * onHandleClose
+   */
+  onHandleClose = () => {
+    this.setState({ displayColorPicker: false });
+  };
+
+  /**
+   * handleKeydown
+   * @param code code
+   * @param closeDialog closeDialog
+   */
+  handleKeydown(code: number, closeDialog: () => any) {
+    if (code === KEYCODES.ENTER) {
+      this.update(closeDialog);
+    }
+  }
+
+  /**
+   * resetState
+   * @param e e
+   * @param props props
+   */
   resetState(e: HTMLElement, props = this.props): void {
     this.setState({
       color: props.label.color,
@@ -93,33 +131,61 @@ class CommunicatorLabelUpdateDialog extends React.Component<
       name: props.label.text(props.i18n),
     });
   }
+
+  /**
+   * onColorChange
+   * @param color color
+   */
   onColorChange(color: ColorState) {
     if (this.state.removed) {
       return;
     }
     this.setState({ color: color.hex });
   }
+
+  /**
+   * onNameChange
+   * @param e e
+   */
   onNameChange(e: React.ChangeEvent<HTMLInputElement>) {
     this.setState({ name: e.target.value });
   }
+
+  /**
+   * removeLabel
+   */
   removeLabel() {
     this.setState({ removed: true });
   }
+
+  /**
+   * update
+   * @param closeDialog closeDialog
+   */
   update(closeDialog: () => any) {
     if (this.state.locked) {
       return;
     }
+
+    /**
+     * success
+     */
     const success = () => {
       this.setState({
         locked: false,
       });
       closeDialog();
     };
+
+    /**
+     * fail
+     */
     const fail = () => {
       this.setState({
         locked: false,
       });
     };
+
     if (
       (this.state.name !== this.props.label.text(this.props.i18n) ||
         this.state.color !== this.props.label.color) &&
@@ -148,7 +214,15 @@ class CommunicatorLabelUpdateDialog extends React.Component<
       closeDialog();
     }
   }
+
+  /**
+   * render
+   */
   render() {
+    /**
+     * footer
+     * @param closeDialog closeDialog
+     */
     const footer = (closeDialog: () => any) => (
       <div className="dialog__button-set">
         <Button
@@ -191,6 +265,11 @@ class CommunicatorLabelUpdateDialog extends React.Component<
         onChange={this.onColorChange}
       />
     );
+
+    /**
+     * content
+     * @param closeDialog closeDialog
+     */
     const content = (closeDialog: () => any) => (
       <div
         className="dialog__content-row dialog__content-row--label"
@@ -261,6 +340,10 @@ class CommunicatorLabelUpdateDialog extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     messages: state.messages,
@@ -268,6 +351,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     { updateMessagesNavigationLabel, removeMessagesNavigationLabel },

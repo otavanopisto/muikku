@@ -128,6 +128,9 @@ class ModifyThreadDrawer extends SessionStateComponent<
       message: this.state.text,
       sticky: this.state.threadPinned,
       locked: this.state.threadLocked,
+      /**
+       * success
+       */
       success: () => {
         this.props.onClickCancel && this.props.onClickCancel();
         this.justClear(
@@ -137,6 +140,9 @@ class ModifyThreadDrawer extends SessionStateComponent<
         this.setState({ locked: false });
         closeDialog();
       },
+      /**
+       * fail
+       */
       fail: () => {
         this.setState({ locked: false });
       },
@@ -342,6 +348,9 @@ class ModifyThreadDrawer extends SessionStateComponent<
   }
 }
 
+/**
+ * @param state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -350,6 +359,9 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * @param dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ modifyDiscussionThread }, dispatch);
 }

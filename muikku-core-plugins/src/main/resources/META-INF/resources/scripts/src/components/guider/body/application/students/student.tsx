@@ -22,6 +22,9 @@ import {
 
 type StudentStudyTimeState = "ONGOING" | "ENDING" | "ENDED";
 
+/**
+ * StudentProps
+ */
 interface StudentProps {
   student: GuiderStudentType;
   checkbox: any;
@@ -30,8 +33,14 @@ interface StudentProps {
   status: StatusType;
 }
 
+/**
+ * StudentState
+ */
 interface StudentState {}
 
+/**
+ * Student
+ */
 class Student extends React.Component<StudentProps, StudentState> {
   /**
    * getSudentStudyTimeState
@@ -56,6 +65,9 @@ class Student extends React.Component<StudentProps, StudentState> {
     return "ONGOING";
   };
 
+  /**
+   * render
+   */
   render() {
     const studyTimeEndState = this.getSudentStudyTimeState(this.props.student);
     return (
@@ -120,6 +132,10 @@ class Student extends React.Component<StudentProps, StudentState> {
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,

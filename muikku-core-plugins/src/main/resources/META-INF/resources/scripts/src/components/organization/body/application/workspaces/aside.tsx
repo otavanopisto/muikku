@@ -15,21 +15,34 @@ import Navigation, {
   NavigationElement,
 } from "~/components/general/navigation";
 
+/**
+ * NavigationAsideProps
+ */
 interface NavigationAsideProps {
   i18n: i18nType;
   workspaces: WorkspacesType;
 }
 
+/**
+ * NavigationAsideState
+ */
 interface NavigationAsideState {
   published: boolean;
   unpublished: boolean;
   active: boolean;
 }
 
+/**
+ * WorkspacesAside
+ */
 class WorkspacesAside extends React.Component<
   NavigationAsideProps,
   NavigationAsideState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: NavigationAsideProps) {
     super(props);
     this.state = {
@@ -39,6 +52,9 @@ class WorkspacesAside extends React.Component<
     };
   }
 
+  /**
+   * render
+   */
   render() {
     const locationData = queryString.parse(
       document.location.hash.split("?")[1] || "",
@@ -173,6 +189,10 @@ class WorkspacesAside extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -180,6 +200,9 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ */
 function mapDispatchToProps() {
   return {};
 }

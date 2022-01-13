@@ -11,6 +11,9 @@ import {
 import { bindActionCreators } from "redux";
 import Button from "~/components/general/button";
 
+/**
+ * DeleteImageDialogProps
+ */
 interface DeleteImageDialogProps {
   i18n: i18nType;
 
@@ -20,22 +23,44 @@ interface DeleteImageDialogProps {
   onClose: () => any;
 }
 
+/**
+ * DeleteImageDialogState
+ */
 interface DeleteImageDialogState {}
 
+/**
+ * DeleteImageDialog
+ */
 class DeleteImageDialog extends React.Component<
   DeleteImageDialogProps,
   DeleteImageDialogState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: DeleteImageDialogProps) {
     super(props);
 
     this.delete = this.delete.bind(this);
   }
+
+  /**
+   * delete
+   * @param closeDialog closeDialog
+   */
   delete(closeDialog: () => any) {
     this.props.deleteProfileImage();
     closeDialog();
   }
+  /**
+   * render
+   */
   render() {
+    /**
+     * content
+     * @param closeDialog closeDialog
+     */
     const content = (closeDialog: () => any) => (
       <div>
         <span>
@@ -45,6 +70,11 @@ class DeleteImageDialog extends React.Component<
         </span>
       </div>
     );
+
+    /**
+     * footer
+     * @param closeDialog closeDialog
+     */
     const footer = (closeDialog: () => any) => (
       <div className="dialog__button-set">
         <Button
@@ -80,12 +110,20 @@ class DeleteImageDialog extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators({ deleteProfileImage }, dispatch);
 }

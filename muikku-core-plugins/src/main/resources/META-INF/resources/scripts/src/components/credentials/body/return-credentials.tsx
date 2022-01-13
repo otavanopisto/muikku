@@ -18,6 +18,9 @@ import { StateType } from "~/reducers";
 import { bindActionCreators } from "redux";
 import LoginButton from "../../base/login-button";
 
+/**
+ * ReturnCredentialsProps
+ */
 interface ReturnCredentialsProps {
   displayNotification: DisplayNotificationTriggerType;
   updateCredentials: UpdateCredentialsTriggerType;
@@ -25,6 +28,9 @@ interface ReturnCredentialsProps {
   i18n: i18nType;
 }
 
+/**
+ * ReturnCredentialsState
+ */
 interface ReturnCredentialsState {
   username: string;
   newPassword: string;
@@ -32,10 +38,17 @@ interface ReturnCredentialsState {
   locked: boolean;
 }
 
+/**
+ * ReturnCredentials
+ */
 class ReturnCredentials extends React.Component<
   ReturnCredentialsProps,
   ReturnCredentialsState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: ReturnCredentialsProps) {
     super(props);
     this.state = {
@@ -46,11 +59,18 @@ class ReturnCredentials extends React.Component<
     };
   }
 
+  /**
+   * componentWillReceiveProps
+   */
   componentWillReceiveProps() {
     this.setState({
       username: this.props.credentials.username,
     });
   }
+
+  /**
+   * handleNewCredentials
+   */
   handleNewCredentials() {
     const newPassword1 = this.state.newPassword;
     const newPassword2 = this.state.newPasswordConfirm;
@@ -97,12 +117,20 @@ class ReturnCredentials extends React.Component<
     this.props.updateCredentials(newUserCredentials);
   }
 
+  /**
+   * updateField
+   * @param field field
+   * @param e e
+   */
   updateField(field: string, e: React.ChangeEvent<HTMLInputElement>) {
     const nField: any = {};
     nField[field] = e.target.value;
     this.setState(nField);
   }
 
+  /**
+   * render
+   */
   render() {
     const credentialsContent =
       this.props.credentials.state == "READY" ? (
@@ -185,12 +213,20 @@ class ReturnCredentials extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     { displayNotification, updateCredentials },

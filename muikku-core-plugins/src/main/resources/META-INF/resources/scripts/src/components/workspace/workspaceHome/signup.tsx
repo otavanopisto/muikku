@@ -5,18 +5,29 @@ import { WorkspaceType } from "~/reducers/workspaces";
 import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
 import Button from "~/components/general/button";
-
 import "~/sass/elements/panel.scss";
 
+/**
+ * SignUpPanelProps
+ */
 interface SignUpPanelProps {
   status: StatusType;
   workspace: WorkspaceType;
   i18n: i18nType;
 }
 
+/**
+ * SignUpPanelState
+ */
 interface SignUpPanelState {}
 
+/**
+ * SignUpPanel
+ */
 class SignUpPanel extends React.Component<SignUpPanelProps, SignUpPanelState> {
+  /**
+   * render
+   */
   render() {
     if (this.props.status.loggedIn) {
       return null;
@@ -46,6 +57,10 @@ class SignUpPanel extends React.Component<SignUpPanelProps, SignUpPanelState> {
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -54,6 +69,9 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ */
 function mapDispatchToProps() {
   return {};
 }

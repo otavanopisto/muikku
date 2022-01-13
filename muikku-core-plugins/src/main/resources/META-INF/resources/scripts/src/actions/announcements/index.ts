@@ -55,6 +55,9 @@ export type UPDATE_ANNOUNCEMENTS = SpecificActionType<
   AnnouncementListType
 >;
 
+/**
+ * LoadAnnouncementsAsAClientTriggerType
+ */
 export interface LoadAnnouncementsAsAClientTriggerType {
   (
     options?: any,
@@ -63,6 +66,9 @@ export interface LoadAnnouncementsAsAClientTriggerType {
 }
 
 //TODO notOverrideCurrent should go once the missing data in the current announcement is fixed
+/**
+ * LoadAnnouncementsTriggerType
+ */
 export interface LoadAnnouncementsTriggerType {
   (
     location: string,
@@ -72,6 +78,9 @@ export interface LoadAnnouncementsTriggerType {
   ): AnyActionType;
 }
 
+/**
+ * LoadAnnouncementTriggerType
+ */
 export interface LoadAnnouncementTriggerType {
   (
     location: string,
@@ -80,14 +89,23 @@ export interface LoadAnnouncementTriggerType {
   ): AnyActionType;
 }
 
+/**
+ * AddToAnnouncementsSelectedTriggerType
+ */
 export interface AddToAnnouncementsSelectedTriggerType {
   (announcement: AnnouncementType): AnyActionType;
 }
 
+/**
+ * RemoveFromAnnouncementsSelectedTriggerType
+ */
 export interface RemoveFromAnnouncementsSelectedTriggerType {
   (announcement: AnnouncementType): AnyActionType;
 }
 
+/**
+ * UpdateAnnouncementTriggerType
+ */
 export interface UpdateAnnouncementTriggerType {
   (data: {
     announcement: AnnouncementType;
@@ -98,6 +116,9 @@ export interface UpdateAnnouncementTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * DeleteAnnouncementTriggerType
+ */
 export interface DeleteAnnouncementTriggerType {
   (data: {
     announcement: AnnouncementType;
@@ -106,10 +127,16 @@ export interface DeleteAnnouncementTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * DeleteSelectedAnnouncementsTriggerType
+ */
 export interface DeleteSelectedAnnouncementsTriggerType {
   (): AnyActionType;
 }
 
+/**
+ * AnnouncementGeneratorType
+ */
 interface AnnouncementGeneratorType {
   caption: string;
   content: string;
@@ -120,6 +147,9 @@ interface AnnouncementGeneratorType {
   workspaceEntityIds: Array<number>;
 }
 
+/**
+ * CreateAnnouncementTriggerType
+ */
 export interface CreateAnnouncementTriggerType {
   (data: {
     announcement: AnnouncementGeneratorType;
@@ -128,6 +158,12 @@ export interface CreateAnnouncementTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * validateAnnouncement
+ * @param dispatch dispatch
+ * @param getState getState
+ * @param announcement announcement
+ */
 function validateAnnouncement(
   dispatch: (arg: AnyActionType) => any,
   getState: () => StateType,
@@ -178,6 +214,13 @@ function validateAnnouncement(
   return true;
 }
 
+/**
+ * loadAnnouncements
+ * @param location location
+ * @param workspaceId workspaceId
+ * @param notOverrideCurrent notOverrideCurrent
+ * @param force force
+ */
 const loadAnnouncements: LoadAnnouncementsTriggerType =
   function loadAnnouncements(location, workspaceId, notOverrideCurrent, force) {
     return loadAnnouncementsHelper.bind(
@@ -189,6 +232,12 @@ const loadAnnouncements: LoadAnnouncementsTriggerType =
     );
   };
 
+/**
+ * loadAnnouncement
+ * @param location location
+ * @param announcementId announcementId
+ * @param workspaceId workspaceId
+ */
 const loadAnnouncement: LoadAnnouncementTriggerType = function loadAnnouncement(
   location,
   announcementId,
@@ -250,6 +299,10 @@ const loadAnnouncement: LoadAnnouncementTriggerType = function loadAnnouncement(
   };
 };
 
+/**
+ * addToAnnouncementsSelected
+ * @param announcement
+ */
 const addToAnnouncementsSelected: AddToAnnouncementsSelectedTriggerType =
   function addToAnnouncementsSelected(announcement) {
     return {
@@ -258,6 +311,10 @@ const addToAnnouncementsSelected: AddToAnnouncementsSelectedTriggerType =
     };
   };
 
+/**
+ * removeFromAnnouncementsSelected
+ * @param announcement
+ */
 const removeFromAnnouncementsSelected: RemoveFromAnnouncementsSelectedTriggerType =
   function removeFromAnnouncementsSelected(announcement) {
     return {
@@ -266,6 +323,10 @@ const removeFromAnnouncementsSelected: RemoveFromAnnouncementsSelectedTriggerTyp
     };
   };
 
+/**
+ * updateAnnouncement
+ * @param data
+ */
 const updateAnnouncement: UpdateAnnouncementTriggerType =
   function updateAnnouncement(data) {
     return async (
@@ -344,6 +405,10 @@ const updateAnnouncement: UpdateAnnouncementTriggerType =
     };
   };
 
+/**
+ * deleteAnnouncement
+ * @param data
+ */
 const deleteAnnouncement: DeleteAnnouncementTriggerType =
   function deleteAnnouncement(data) {
     return async (
@@ -369,6 +434,9 @@ const deleteAnnouncement: DeleteAnnouncementTriggerType =
     };
   };
 
+/**
+ * deleteSelectedAnnouncements
+ */
 const deleteSelectedAnnouncements: DeleteSelectedAnnouncementsTriggerType =
   function deleteSelectedAnnouncements() {
     return async (
@@ -407,6 +475,10 @@ const deleteSelectedAnnouncements: DeleteSelectedAnnouncementsTriggerType =
     };
   };
 
+/**
+ * createAnnouncement
+ * @param data
+ */
 const createAnnouncement: CreateAnnouncementTriggerType =
   function createAnnouncement(data) {
     return async (
@@ -461,6 +533,11 @@ const createAnnouncement: CreateAnnouncementTriggerType =
     };
   };
 
+/**
+ * loadAnnouncementsAsAClient
+ * @param options
+ * @param callback
+ */
 const loadAnnouncementsAsAClient: LoadAnnouncementsAsAClientTriggerType =
   function loadAnnouncementsFromServer(
     options = { hideWorkspaceAnnouncements: "false", loadUserGroups: true },

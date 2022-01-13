@@ -44,6 +44,7 @@ class WarningDialog extends React.Component<
 
   /**
    * handleDeleteEventClick
+   * @param closeDialog closeDialog
    */
   handleContinueClick(closeDialog: () => any) {
     this.props.onContinueClick();
@@ -55,6 +56,10 @@ class WarningDialog extends React.Component<
    * @returns JSX.Element
    */
   render() {
+    /**
+     * footer
+     * @param closeDialog closeDialog
+     */
     const footer = (closeDialog: () => any) => (
       <div className="dialog__button-set">
         <Button
@@ -75,6 +80,10 @@ class WarningDialog extends React.Component<
         </Button>
       </div>
     );
+    /**
+     * content
+     * @param closeDialog closeDialog
+     */
     const content = (closeDialog: () => any) => (
       <div>
         {this.props.i18n.text.get(

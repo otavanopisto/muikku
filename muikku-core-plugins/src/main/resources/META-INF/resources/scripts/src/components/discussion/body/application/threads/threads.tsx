@@ -16,6 +16,9 @@ export class DiscussionThreads extends React.Component<
   Record<string, unknown>,
   Record<string, unknown>
 > {
+  /**
+   * render
+   */
   render() {
     return <ApplicationList>{this.props.children}</ApplicationList>;
   }
@@ -36,6 +39,9 @@ export class DiscussionThread extends React.Component<
   DiscussionThreadProps,
   Record<string, unknown>
 > {
+  /**
+   * render
+   */
   render() {
     return (
       <ApplicationListItem
@@ -68,6 +74,9 @@ export class DiscussionThreadHeader extends React.Component<
   DiscussionThreadHeaderProps,
   Record<string, unknown>
 > {
+  /**
+   * render
+   */
   render() {
     if (this.props.aside) {
       return (
@@ -96,6 +105,9 @@ export class DiscussionThreadBody extends React.Component<
   Record<string, unknown>,
   Record<string, unknown>
 > {
+  /**
+   * render
+   */
   render() {
     return (
       <ApplicationListItemBody>{this.props.children}</ApplicationListItemBody>
@@ -117,6 +129,9 @@ export class DiscussionThreadFooter extends React.Component<
   DiscussionThreadFooterProps,
   Record<string, unknown>
 > {
+  /**
+   * render
+   */
   render() {
     return (
       <ApplicationListItemFooter modifiers="discussion-message">
@@ -142,6 +157,9 @@ export class DiscussionCurrentThread extends React.Component<
   DiscussionCurrentThreadProps,
   Record<string, unknown>
 > {
+  /**
+   * render
+   */
   render() {
     return (
       <ApplicationList>
@@ -178,6 +196,9 @@ export class DiscussionCurrentThreadElement extends React.Component<
   DiscussionCurrentThreadElementProps,
   Record<string, unknown>
 > {
+  /**
+   * render
+   */
   render() {
     const baseMod = this.props.isOpMessage
       ? "discussion-message"

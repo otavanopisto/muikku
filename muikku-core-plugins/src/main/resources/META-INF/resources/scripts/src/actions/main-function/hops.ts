@@ -9,10 +9,16 @@ import {
 } from "~/reducers/main-function/hops";
 import { StateType } from "~/reducers";
 
+/**
+ * UpdateHopsTriggerType
+ */
 export interface UpdateHopsTriggerType {
   (callback?: () => void): AnyActionType;
 }
 
+/**
+ * SetHopsToTriggerType
+ */
 export interface SetHopsToTriggerType {
   (newHops: HOPSDataType): AnyActionType;
 }
@@ -27,6 +33,10 @@ export type UPDATE_HOPS_STATUS = SpecificActionType<
   HOPSStatusType
 >;
 
+/**
+ * updateHops
+ * @param callback callback
+ */
 const updateHops: UpdateHopsTriggerType = function updateHops(callback) {
   return async (
     dispatch: (arg: AnyActionType) => any,
@@ -82,6 +92,10 @@ const updateHops: UpdateHopsTriggerType = function updateHops(callback) {
   };
 };
 
+/**
+ * setHopsTo
+ * @param newHops newHops
+ */
 const setHopsTo: SetHopsToTriggerType = function setHopsTo(newHops) {
   return async (
     dispatch: (arg: AnyActionType) => any,

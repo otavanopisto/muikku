@@ -8,16 +8,28 @@ import "~/sass/elements/buttons.scss";
 import "~/sass/elements/rich-text.scss";
 import "~/sass/elements/wcag.scss";
 
+/**
+ * FrontpageOrganizationProps
+ */
 interface FrontpageOrganizationProps {
   i18n: i18nType;
 }
 
+/**
+ * FrontpageOrganizationState
+ */
 interface FrontpageOrganizationState {}
 
+/**
+ * FrontpageOrganization
+ */
 export default class FrontpageOrganization extends React.Component<
   FrontpageOrganizationProps,
   FrontpageOrganizationState
 > {
+  /**
+   * render
+   */
   render() {
     return (
       <section

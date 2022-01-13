@@ -3,6 +3,12 @@ import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
 import Link from "~/components/general/link";
 
+/**
+ * Pdf
+ * @param props props
+ * @param props.material material
+ * @param props.i18n i18n
+ */
 export default function Pdf(props: {
   material: MaterialContentNodeType;
   i18n: i18nType;

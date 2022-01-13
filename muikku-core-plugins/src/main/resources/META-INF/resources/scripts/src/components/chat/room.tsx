@@ -2,6 +2,9 @@ import * as React from "react";
 import "~/sass/elements/chat.scss";
 import { IAvailableChatRoomType } from "./chat";
 
+/**
+ * IRoomProps
+ */
 interface IRoomProps {
   chat: IAvailableChatRoomType;
   modifier?: string;
@@ -9,11 +12,21 @@ interface IRoomProps {
   requestExtraInfoAboutRoom: (refresh?: boolean) => void;
 }
 
+/**
+ * IRoomState
+ */
 interface IRoomState {
   showRoomInfo: boolean;
 }
 
+/**
+ * Room
+ */
 export class Room extends React.Component<IRoomProps, IRoomState> {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: any) {
     super(props);
     this.state = {
@@ -21,6 +34,10 @@ export class Room extends React.Component<IRoomProps, IRoomState> {
     };
     this.toggleRoomInfo = this.toggleRoomInfo.bind(this);
   }
+
+  /**
+   * toggleRoomInfo
+   */
   toggleRoomInfo() {
     if (!this.state.showRoomInfo) {
       this.props.requestExtraInfoAboutRoom();
@@ -33,6 +50,10 @@ export class Room extends React.Component<IRoomProps, IRoomState> {
       });
     }
   }
+
+  /**
+   * render
+   */
   render() {
     const roomActionModifier = this.props.modifier
       ? "chat__controlbox-room-action--" + this.props.modifier

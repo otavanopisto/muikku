@@ -5,16 +5,28 @@ import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/rich-text.scss";
 import "~/sass/elements/panel.scss";
 
+/**
+ * StudiesEndedProps
+ */
 interface StudiesEndedProps {
   i18n: i18nType;
 }
 
+/**
+ * StudiesEndedState
+ */
 interface StudiesEndedState {}
 
+/**
+ * StudiesEnded
+ */
 class StudiesEnded extends React.Component<
   StudiesEndedProps,
   StudiesEndedState
 > {
+  /**
+   * render
+   */
   render() {
     return (
       <div className="panel panel--studies-ended">
@@ -39,12 +51,19 @@ class StudiesEnded extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
   };
 }
 
+/**
+ * mapDispatchToProps
+ */
 function mapDispatchToProps() {
   return {};
 }

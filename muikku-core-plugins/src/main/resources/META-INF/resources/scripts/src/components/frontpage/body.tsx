@@ -19,16 +19,28 @@ import "~/sass/elements/footer.scss";
 import ScreenContainer from "~/components/general/screen-container";
 import { StateType } from "~/reducers";
 
+/**
+ * FrontpageBodyProps
+ */
 interface FrontpageBodyProps {
   i18n: i18nType;
 }
 
+/**
+ * FrontpageBodyState
+ */
 interface FrontpageBodyState {}
 
+/**
+ * FrontpageBody
+ */
 class FrontpageBody extends React.Component<
   FrontpageBodyProps,
   FrontpageBodyState
 > {
+  /**
+   * render
+   */
   render() {
     return (
       <div>
@@ -48,12 +60,19 @@ class FrontpageBody extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
   };
 }
 
+/**
+ * mapDispatchToProps
+ */
 function mapDispatchToProps() {
   return {};
 }

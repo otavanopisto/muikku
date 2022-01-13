@@ -5,24 +5,40 @@ import { StateType } from "~/reducers";
 import { ApplicationPanelToolbar } from "~/components/general/application-panel/application-panel";
 import { WorkspaceType } from "~/reducers/workspaces";
 
+/**
+ * WorkspaceJournalsToolbarProps
+ */
 interface WorkspaceJournalsToolbarProps {
   i18n: i18nType;
   workspace: WorkspaceType;
 }
 
+/**
+ * WorkspaceJournalsToolbarState
+ */
 interface WorkspaceJournalsToolbarState {
   searchquery: string;
 }
 
+/**
+ * WorkspaceJournalsToolbar
+ */
 class WorkspaceJournalsToolbar extends React.Component<
   WorkspaceJournalsToolbarProps,
   WorkspaceJournalsToolbarState
 > {
+  /**
+   * render
+   */
   render() {
     return <ApplicationPanelToolbar />;
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -30,6 +46,9 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ */
 function mapDispatchToProps() {
   return {};
 }

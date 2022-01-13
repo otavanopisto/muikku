@@ -14,6 +14,9 @@ import { StateType } from "~/reducers";
 import { WorkspaceBaseFilterType, WorkspacesType } from "~/reducers/workspaces";
 import { StatusType } from "~/reducers/base/status";
 
+/**
+ * CoursepickerApplicationProps
+ */
 interface CoursepickerApplicationProps {
   aside: React.ReactElement<any>;
   i18n: i18nType;
@@ -21,12 +24,22 @@ interface CoursepickerApplicationProps {
   status: StatusType;
 }
 
+/**
+ * CoursepickerApplicationState
+ */
 interface CoursepickerApplicationState {}
 
+/**
+ * CoursepickerApplication
+ */
 class CoursepickerApplication extends React.Component<
   CoursepickerApplicationProps,
   CoursepickerApplicationState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: CoursepickerApplicationProps) {
     super(props);
 
@@ -34,6 +47,10 @@ class CoursepickerApplication extends React.Component<
       this.onCoursepickerFilterChange.bind(this);
   }
 
+  /**
+   * onCoursepickerFilterChange
+   * @param e e
+   */
   onCoursepickerFilterChange(e: React.ChangeEvent<HTMLSelectElement>) {
     const locationData = queryString.parse(
       document.location.hash.split("?")[1] || "",
@@ -44,6 +61,9 @@ class CoursepickerApplication extends React.Component<
       "#?" + queryString.stringify(locationData, { arrayFormat: "bracket" });
   }
 
+  /**
+   * render
+   */
   render() {
     const filterTranslationString = {
       ALL_COURSES: "plugin.coursepicker.allcourses",
@@ -106,6 +126,10 @@ class CoursepickerApplication extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -114,6 +138,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return {};
 }

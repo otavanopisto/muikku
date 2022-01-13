@@ -107,13 +107,15 @@ type MatriculationExaminationEnrollmentInformationNewState =
 
 /**
  * MatriculationExaminationEnrollmentInformation
- * @param props
- * @returns
  */
 export class MatriculationExaminationEnrollmentInformationNew extends React.Component<
   MatriculationExaminationEnrollmentInformationNewProps,
   MatriculationExaminationEnrollmentInformationNewState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: MatriculationExaminationEnrollmentInformationNewProps) {
     super(props);
 
@@ -180,7 +182,7 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
    * Returns next non selected subject from subjects list
    *
    * @param selectedSubjects list of selected subjects
-   * @return next non selected subject from subjects list
+   * @returns next non selected subject from subjects list
    */
   getDefaultSubject = (selectedSubjects: string[]) => {
     const subjects = Object.keys(SUBJECT_MAP);
@@ -684,6 +686,7 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
   /**
    * Returns true if enrolled attendance is not a repeat but there is a
    * previous exam with the same subject.
+   * @param attendance attendance
    */
   isConflictingRepeat = (attendance: ExaminationEnrolledSubject) => {
     if (attendance.repeat === "false") {
@@ -860,6 +863,7 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
 
   /**
    * handles delete enrolled attendance and passes modified examination information to parent
+   * @param i index of enrolled attendacen row which will be deleted
    */
   handleDeleteEnrolledAttendanceRow = (i: number) => () => {
     const { examination, onChange } = this.props;
@@ -883,6 +887,7 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
 
   /**
    * handles delete finished attendance and passes modified examination information to parent
+   * @param i index of finished attendance row which will be deleted
    */
   handleDeleteFinishedAttendanceRow = (i: number) => () => {
     const { examination, onChange } = this.props;
@@ -906,6 +911,7 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
 
   /**
    * handles delete planned attendance and passes modified examination information to parent
+   * @param i index of planned attendance row which will be deleted
    */
   handleDeletePlannedAttendanceRow = (i: number) => () => {
     const { examination, onChange } = this.props;
@@ -923,8 +929,8 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
 
   /**
    * handles examination information changes and passes it to parent component
-   * @param key
-   * @param value
+   * @param key key
+   * @param value value
    */
   onExaminationInformationChange = <T extends keyof ExaminationInformation>(
     key: T,
@@ -991,7 +997,7 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
 
   /**
    * handle enrolled attendes list change and passes it to parent component
-   * @param examinationSubjectList
+   * @param examinationSubjectList examinationSubjectList
    */
   handleExaminationEnrolledAttendSubjectListChange = (
     examinationSubjectList: ExaminationEnrolledSubject[]
@@ -1013,7 +1019,7 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
 
   /**
    * handles finished attendes list change and passes it to parent component
-   * @param examinationSubjectList
+   * @param examinationSubjectList examinationSubjectList
    */
   handleExaminationFinishedSubjectListChange = (
     examinationSubjectList: ExaminationFinishedSubject[]
@@ -1035,7 +1041,7 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
 
   /**
    * handles planned attendes list change
-   * @param examinationSubjectList
+   * @param examinationSubjectList examinationSubjectList
    */
   handleExaminationPlannedSubjectListChange = (
     examinationSubjectList: ExaminationPlannedSubject[]

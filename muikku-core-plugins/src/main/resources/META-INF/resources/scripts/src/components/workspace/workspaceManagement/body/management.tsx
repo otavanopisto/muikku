@@ -50,6 +50,9 @@ import { SearchFormElement } from "~/components/general/form-element";
 
 const PERMISSIONS_TO_EXTRACT = ["WORKSPACE_SIGNUP"];
 
+/**
+ * ManagementPanelProps
+ */
 interface ManagementPanelProps {
   status: StatusType;
   workspace: WorkspaceType;
@@ -62,6 +65,9 @@ interface ManagementPanelProps {
   displayNotification: DisplayNotificationTriggerType;
 }
 
+/**
+ * ManagementPanelState
+ */
 interface ManagementPanelState {
   workspaceName: string;
   workspacePublished: boolean;
@@ -91,10 +97,17 @@ interface ManagementPanelState {
   locked: boolean;
 }
 
+/**
+ * ManagementPanel
+ */
 class ManagementPanel extends React.Component<
   ManagementPanelProps,
   ManagementPanelState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: ManagementPanelProps) {
     super(props);
     this.state = {
@@ -172,6 +185,11 @@ class ManagementPanel extends React.Component<
       this.updateWorkspaceUsergroupNameFilter.bind(this);
     this.save = this.save.bind(this);
   }
+
+  /**
+   * componentWillReceiveProps
+   * @param nextProps nextProps
+   */
   componentWillReceiveProps(nextProps: ManagementPanelProps) {
     this.setState({
       workspaceName: nextProps.workspace ? nextProps.workspace.name : null,
@@ -220,46 +238,91 @@ class ManagementPanel extends React.Component<
           : [],
     });
   }
+
+  /**
+   * updateWorkspaceName
+   * @param e e
+   */
   updateWorkspaceName(e: React.ChangeEvent<HTMLInputElement>) {
     this.setState({
       workspaceName: e.target.value,
     });
   }
+
+  /**
+   * setWorkspacePublishedTo
+   * @param value value
+   */
   setWorkspacePublishedTo(value: boolean) {
     this.setState({
       workspacePublished: value,
     });
   }
+
+  /**
+   * setWorkspaceChatTo
+   * @param value value
+   */
   setWorkspaceChatTo(value: WorkspaceChatStatusType) {
     this.setState({
       workspaceChatStatus: value,
     });
   }
+
+  /**
+   * setWorkspaceAccessTo
+   * @param value value
+   */
   setWorkspaceAccessTo(value: WorkspaceAccessType) {
     this.setState({
       workspaceAccess: value,
     });
   }
+
+  /**
+   * updateWorkspaceExtension
+   * @param e e
+   */
   updateWorkspaceExtension(e: React.ChangeEvent<HTMLInputElement>) {
     this.setState({
       workspaceExtension: e.target.value,
     });
   }
+
+  /**
+   * updateWorkspaceType
+   * @param e e
+   */
   updateWorkspaceType(e: React.ChangeEvent<HTMLSelectElement>) {
     this.setState({
       workspaceType: e.target.value,
     });
   }
+
+  /**
+   * updateStartDate
+   * @param newDate newDate
+   */
   updateStartDate(newDate: any) {
     this.setState({
       workspaceStartDate: newDate,
     });
   }
+
+  /**
+   * updateEndDate
+   * @param newDate newDate
+   */
   updateEndDate(newDate: any) {
     this.setState({
       workspaceEndDate: newDate,
     });
   }
+
+  /**
+   * updateCurrentWorkspaceProducerInputValue
+   * @param e e
+   */
   updateCurrentWorkspaceProducerInputValue(
     e: React.ChangeEvent<HTMLInputElement>
   ) {
@@ -267,12 +330,21 @@ class ManagementPanel extends React.Component<
       currentWorkspaceProducerInputValue: e.target.value,
     });
   }
+
+  /**
+   * updateWorkspaceUsergroupNameFilter
+   * @param query query
+   */
   updateWorkspaceUsergroupNameFilter(query: string) {
     this.setState({
       workspaceUsergroupNameFilter: query,
     });
   }
 
+  /**
+   * checkIfEnterKeyIsPressedAndAddProducer
+   * @param e e
+   */
   checkIfEnterKeyIsPressedAndAddProducer(
     e: React.KeyboardEvent<HTMLInputElement>
   ) {
@@ -281,6 +353,10 @@ class ManagementPanel extends React.Component<
     }
   }
 
+  /**
+   * addProducer
+   * @param name name
+   */
   addProducer(name: string) {
     this.setState({
       currentWorkspaceProducerInputValue: "",
@@ -292,6 +368,11 @@ class ManagementPanel extends React.Component<
       ],
     });
   }
+
+  /**
+   * removeProducer
+   * @param index index
+   */
   removeProducer(index: number) {
     this.setState({
       workspaceProducers: this.state.workspaceProducers.filter(
@@ -299,23 +380,40 @@ class ManagementPanel extends React.Component<
       ),
     });
   }
+
+  /**
+   * onDescriptionChange
+   * @param text text
+   */
   onDescriptionChange(text: string) {
     this.setState({
       workspaceDescription: text,
     });
   }
+
+  /**
+   * updateLicense
+   * @param newLicense newLicense
+   */
   updateLicense(newLicense: string) {
     this.setState({
       workspaceLicense: newLicense,
     });
   }
 
+  /**
+   * removeCustomImage
+   */
   removeCustomImage() {
     this.setState({
       isDeleteImageDialogOpen: true,
     });
   }
 
+  /**
+   * readNewImage
+   * @param e e
+   */
   readNewImage(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files[0];
     const reader = new FileReader();
@@ -339,6 +437,10 @@ class ManagementPanel extends React.Component<
       reader.readAsDataURL(file);
     }
   }
+
+  /**
+   * editCurrentImage
+   */
   editCurrentImage() {
     // let imageSrc = this.state.newWorkspaceImageCombo && this.state.newWorkspaceImageCombo.originalB64 ? this.state.newWorkspaceImageCombo.originalB64: `/rest/workspace/workspaces/${this.props.workspace.id}/workspacefile/workspace-frontpage-image-original`;
 
@@ -358,6 +460,10 @@ class ManagementPanel extends React.Component<
       });
     }
   }
+
+  /**
+   * imageDeleted
+   */
   imageDeleted() {
     this.setState({
       newWorkspaceImageCombo: null,
@@ -365,6 +471,12 @@ class ManagementPanel extends React.Component<
     });
   }
 
+  /**
+   * acceptNewImage
+   * @param croppedB64 croppedB64
+   * @param originalB64 originalB64
+   * @param file file
+   */
   acceptNewImage(croppedB64: string, originalB64?: string, file?: File) {
     this.setState({
       workspaceHasCustomImage: true,
@@ -375,6 +487,11 @@ class ManagementPanel extends React.Component<
       },
     });
   }
+
+  /**
+   * togglePermissionIn
+   * @param permission permission
+   */
   togglePermissionIn(permission: WorkspacePermissionsType) {
     this.setState({
       workspacePermissions: this.state.workspacePermissions.map((pte) => {
@@ -387,10 +504,20 @@ class ManagementPanel extends React.Component<
       }),
     });
   }
+
+  /**
+   * saveImage
+   * @param croppedB64 croppedB64
+   * @param originalB64 originalB64
+   * @param file file
+   */
   saveImage(croppedB64: string, originalB64?: string, file?: File) {
     this.props.updateCurrentWorkspaceImagesB64({
       originalB64: originalB64,
       croppedB64: croppedB64,
+      /**
+       * success
+       */
       success: () => {
         this.props.displayNotification(
           this.props.i18n.text.get(
@@ -410,6 +537,10 @@ class ManagementPanel extends React.Component<
       },
     });
   }
+
+  /**
+   * save
+   */
   save() {
     this.setState({
       locked: true,
@@ -503,6 +634,9 @@ class ManagementPanel extends React.Component<
     this.props.updateWorkspace({
       workspace: this.props.workspace,
       update: payload,
+      /**
+       * success
+       */
       success: () => {
         this.props.displayNotification(
           this.props.i18n.text.get(
@@ -514,6 +648,9 @@ class ManagementPanel extends React.Component<
           locked: false,
         });
       },
+      /**
+       * fail
+       */
       fail: () => {
         this.setState({
           locked: false,
@@ -522,6 +659,9 @@ class ManagementPanel extends React.Component<
     });
   }
 
+  /**
+   * render
+   */
   render() {
     let actualBackgroundSRC = this.state.workspaceHasCustomImage
       ? `/rest/workspace/workspaces/${this.props.workspace.id}/workspacefile/workspace-frontpage-image-cropped`
@@ -1065,6 +1205,10 @@ class ManagementPanel extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -1074,6 +1218,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     {

@@ -145,62 +145,107 @@ export type TOGGLE_ALL_STUDENTS = SpecificActionType<
   undefined
 >;
 
+/**
+ * LoadStudentsTriggerType
+ */
 export interface LoadStudentsTriggerType {
   (filters: GuiderActiveFiltersType): AnyActionType;
 }
 
+/**
+ * LoadMoreStudentsTriggerType
+ */
 export interface LoadMoreStudentsTriggerType {
   (): AnyActionType;
 }
 
+/**
+ * LoadStudentTriggerType
+ */
 export interface LoadStudentTriggerType {
   (id: string): AnyActionType;
 }
 
+/**
+ * AddToGuiderSelectedStudentsTriggerType
+ */
 export interface AddToGuiderSelectedStudentsTriggerType {
   (student: GuiderStudentType): AnyActionType;
 }
 
+/**
+ * RemoveFromGuiderSelectedStudentsTriggerType
+ */
 export interface RemoveFromGuiderSelectedStudentsTriggerType {
   (student: GuiderStudentType): AnyActionType;
 }
 
+/**
+ * AddGuiderLabelToCurrentUserTriggerType
+ */
 export interface AddGuiderLabelToCurrentUserTriggerType {
   (label: GuiderUserLabelType): AnyActionType;
 }
 
+/**
+ * RemoveGuiderLabelFromCurrentUserTriggerType
+ */
 export interface RemoveGuiderLabelFromCurrentUserTriggerType {
   (label: GuiderUserLabelType): AnyActionType;
 }
 
+/**
+ * AddGuiderLabelToSelectedUsersTriggerType
+ */
 export interface AddGuiderLabelToSelectedUsersTriggerType {
   (label: GuiderUserLabelType): AnyActionType;
 }
 
+/**
+ * RemoveGuiderLabelFromSelectedUsersTriggerType
+ */
 export interface RemoveGuiderLabelFromSelectedUsersTriggerType {
   (label: GuiderUserLabelType): AnyActionType;
 }
 
+/**
+ * AddFileToCurrentStudentTriggerType
+ */
 export interface AddFileToCurrentStudentTriggerType {
   (file: UserFileType): AnyActionType;
 }
 
+/**
+ * RemoveFileFromCurrentStudentTriggerType
+ */
 export interface RemoveFileFromCurrentStudentTriggerType {
   (file: UserFileType): AnyActionType;
 }
 
+/**
+ * UpdateLabelFiltersTriggerType
+ */
 export interface UpdateLabelFiltersTriggerType {
   (): AnyActionType;
 }
 
+/**
+ * UpdateWorkspaceFiltersTriggerType
+ */
 export interface UpdateWorkspaceFiltersTriggerType {
   (): AnyActionType;
 }
 
+/**
+ * CreateGuiderFilterLabelTriggerType
+ */
 export interface CreateGuiderFilterLabelTriggerType {
   (name: string): AnyActionType;
 }
 
+/**
+ * UpdateGuiderFilterLabelTriggerType
+ */
 export interface UpdateGuiderFilterLabelTriggerType {
   (data: {
     label: GuiderUserLabelType;
@@ -212,6 +257,9 @@ export interface UpdateGuiderFilterLabelTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * RemoveGuiderFilterLabelTriggerType
+ */
 export interface RemoveGuiderFilterLabelTriggerType {
   (data: {
     label: GuiderUserLabelType;
@@ -220,10 +268,16 @@ export interface RemoveGuiderFilterLabelTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * ToggleAllStudentsTriggerType
+ */
 export interface ToggleAllStudentsTriggerType {
   (): AnyActionType;
 }
 
+/**
+ * ToggleAllStudentsTriggerType
+ */
 const toggleAllStudents: ToggleAllStudentsTriggerType =
   function toggleAllStudents() {
     return {
@@ -232,6 +286,10 @@ const toggleAllStudents: ToggleAllStudentsTriggerType =
     };
   };
 
+/**
+ * addFileToCurrentStudent
+ * @param file file
+ */
 const addFileToCurrentStudent: AddFileToCurrentStudentTriggerType =
   function addFileToCurrentStudent(file) {
     return {
@@ -240,6 +298,10 @@ const addFileToCurrentStudent: AddFileToCurrentStudentTriggerType =
     };
   };
 
+/**
+ * removeFileFromCurrentStudent
+ * @param file file
+ */
 const removeFileFromCurrentStudent: RemoveFileFromCurrentStudentTriggerType =
   function removeFileFromCurrentStudent(file) {
     return async (
@@ -268,15 +330,26 @@ const removeFileFromCurrentStudent: RemoveFileFromCurrentStudentTriggerType =
     };
   };
 
+/**
+ * loadStudents
+ * @param filters filters
+ */
 const loadStudents: LoadStudentsTriggerType = function loadStudents(filters) {
   return loadStudentsHelper.bind(this, filters, true);
 };
 
+/**
+ * loadMoreStudents
+ */
 const loadMoreStudents: LoadMoreStudentsTriggerType =
   function loadMoreStudents() {
     return loadStudentsHelper.bind(this, null, false);
   };
 
+/**
+ * addToGuiderSelectedStudents
+ * @param student student
+ */
 const addToGuiderSelectedStudents: AddToGuiderSelectedStudentsTriggerType =
   function addToGuiderSelectedStudents(student) {
     return {
@@ -285,6 +358,10 @@ const addToGuiderSelectedStudents: AddToGuiderSelectedStudentsTriggerType =
     };
   };
 
+/**
+ * removeFromGuiderSelectedStudents
+ * @param student student
+ */
 const removeFromGuiderSelectedStudents: RemoveFromGuiderSelectedStudentsTriggerType =
   function removeFromGuiderSelectedStudents(student) {
     return {
@@ -293,6 +370,10 @@ const removeFromGuiderSelectedStudents: RemoveFromGuiderSelectedStudentsTriggerT
     };
   };
 
+/**
+ * loadStudent
+ * @param id id
+ */
 const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
   return async (
     dispatch: (arg: AnyActionType) => any,
@@ -504,6 +585,14 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
   };
 };
 
+/**
+ * removeLabelFromUserUtil
+ * @param student student
+ * @param flags flags
+ * @param label label
+ * @param dispatch dispatch
+ * @param getState getState
+ */
 async function removeLabelFromUserUtil(
   student: GuiderStudentType,
   flags: Array<GuiderStudentUserProfileLabelType>,
@@ -541,6 +630,14 @@ async function removeLabelFromUserUtil(
   }
 }
 
+/**
+ * addLabelToUserUtil
+ * @param student student
+ * @param flags flags
+ * @param label label
+ * @param dispatch dispatch
+ * @param getState getState
+ */
 async function addLabelToUserUtil(
   student: GuiderStudentType,
   flags: Array<GuiderStudentUserProfileLabelType>,
@@ -583,6 +680,10 @@ async function addLabelToUserUtil(
   }
 }
 
+/**
+ * addGuiderLabelToCurrentUser
+ * @param label label
+ */
 const addGuiderLabelToCurrentUser: AddGuiderLabelToCurrentUserTriggerType =
   function addGuiderLabelToCurrentUser(label) {
     return async (
@@ -601,6 +702,10 @@ const addGuiderLabelToCurrentUser: AddGuiderLabelToCurrentUserTriggerType =
     };
   };
 
+/**
+ * removeGuiderLabelFromCurrentUser
+ * @param label label
+ */
 const removeGuiderLabelFromCurrentUser: RemoveGuiderLabelFromCurrentUserTriggerType =
   function removeGuiderLabelFromCurrentUser(label) {
     return async (
@@ -619,6 +724,10 @@ const removeGuiderLabelFromCurrentUser: RemoveGuiderLabelFromCurrentUserTriggerT
     };
   };
 
+/**
+ * addGuiderLabelToSelectedUsers
+ * @param label label
+ */
 const addGuiderLabelToSelectedUsers: AddGuiderLabelToSelectedUsersTriggerType =
   function addGuiderLabelToSelectedUsers(label) {
     return async (
@@ -632,6 +741,10 @@ const addGuiderLabelToSelectedUsers: AddGuiderLabelToSelectedUsersTriggerType =
     };
   };
 
+/**
+ * removeGuiderLabelFromSelectedUsers
+ * @param label label
+ */
 const removeGuiderLabelFromSelectedUsers: RemoveGuiderLabelFromSelectedUsersTriggerType =
   function removeGuiderLabelFromSelectedUsers(label) {
     return async (
@@ -651,6 +764,9 @@ const removeGuiderLabelFromSelectedUsers: RemoveGuiderLabelFromSelectedUsersTrig
     };
   };
 
+/**
+ * updateLabelFilters
+ */
 const updateLabelFilters: UpdateLabelFiltersTriggerType =
   function updateLabelFilters() {
     return async (
@@ -682,6 +798,9 @@ const updateLabelFilters: UpdateLabelFiltersTriggerType =
     };
   };
 
+/**
+ * updateWorkspaceFilters
+ */
 const updateWorkspaceFilters: UpdateWorkspaceFiltersTriggerType =
   function updateWorkspaceFilters() {
     return async (
@@ -716,6 +835,9 @@ const updateWorkspaceFilters: UpdateWorkspaceFiltersTriggerType =
     };
   };
 
+/**
+ * updateUserGroupFilters
+ */
 const updateUserGroupFilters: UpdateWorkspaceFiltersTriggerType =
   function updateUserGroupFilters() {
     return async (
@@ -748,6 +870,10 @@ const updateUserGroupFilters: UpdateWorkspaceFiltersTriggerType =
     };
   };
 
+/**
+ * createGuiderFilterLabel
+ * @param name name
+ */
 const createGuiderFilterLabel: CreateGuiderFilterLabelTriggerType =
   function createGuiderFilterLabel(name) {
     return async (
@@ -798,6 +924,10 @@ const createGuiderFilterLabel: CreateGuiderFilterLabelTriggerType =
     };
   };
 
+/**
+ * updateGuiderFilterLabel
+ * @param data data
+ */
 const updateGuiderFilterLabel: UpdateGuiderFilterLabelTriggerType =
   function updateGuiderFilterLabel(data) {
     return async (
@@ -864,6 +994,10 @@ const updateGuiderFilterLabel: UpdateGuiderFilterLabelTriggerType =
     };
   };
 
+/**
+ * removeGuiderFilterLabel
+ * @param data data
+ */
 const removeGuiderFilterLabel: RemoveGuiderFilterLabelTriggerType =
   function removeGuiderFilterLabel(data) {
     return async (

@@ -9,16 +9,25 @@ import "~/sass/elements/filter.scss";
 
 let AmCharts: any = null;
 
+/**
+ * CurrentStudentWorkspaceStatisticsProps
+ */
 interface CurrentStudentWorkspaceStatisticsProps {
   i18n: i18nType;
   workspace: WorkspaceType;
 }
 
+/**
+ * CurrentStudentWorkspaceStatisticsState
+ */
 interface CurrentStudentWorkspaceStatisticsState {
   amChartsLoaded: boolean;
   filteredGraphs: string[];
 }
 
+/**
+ * WorkspaceChartData
+ */
 interface WorkspaceChartData {
   EVALUATION_REQUESTED?: number;
   EVALUATION_GOTINCOMPLETED?: number;
@@ -29,6 +38,9 @@ interface WorkspaceChartData {
   MATERIAL_ASSIGNMENTDONE?: number;
 }
 
+/**
+ *  Graph
+ */
 enum Graph {
   WORKSPACE_VISIT = "visits",
   MATERIAL_ASSIGNMENTDONE = "assignments",
@@ -39,10 +51,16 @@ let ignoreZoomed = true;
 let zoomStartDate: Date = null;
 let zoomEndDate: Date = null;
 
+/**
+ * CurrentStudentStatistics
+ */
 class CurrentStudentStatistics extends React.Component<
   CurrentStudentWorkspaceStatisticsProps,
   CurrentStudentWorkspaceStatisticsState
 > {
+  /**
+   * @param props
+   */
   constructor(props: CurrentStudentWorkspaceStatisticsProps) {
     super(props);
     this.GraphFilterHandler = this.GraphFilterHandler.bind(this);
@@ -59,14 +77,19 @@ class CurrentStudentStatistics extends React.Component<
     }
   }
 
+  /**
+   * loadAmCharts
+   */
   loadAmCharts() {
     const amcharts = document.createElement("script");
     amcharts.src = "https://www.amcharts.com/lib/3/amcharts.js";
     amcharts.async = true;
+    // eslint-disable-next-line
     amcharts.onload = () => {
       const serial = document.createElement("script");
       serial.src = "https://www.amcharts.com/lib/3/serial.js";
       serial.async = true;
+      // eslint-disable-next-line
       serial.onload = () => {
         AmCharts = require("@amcharts/amcharts3-react");
         this.setState({ amChartsLoaded: true });
@@ -76,6 +99,10 @@ class CurrentStudentStatistics extends React.Component<
     document.head.appendChild(amcharts);
   }
 
+  /**
+   * GraphFilterHandler
+   * @param graph graph
+   */
   GraphFilterHandler(graph: Graph) {
     const filteredGraphs = this.state.filteredGraphs.slice();
     const index = filteredGraphs.indexOf(graph);
@@ -87,6 +114,10 @@ class CurrentStudentStatistics extends React.Component<
     this.setState({ filteredGraphs: filteredGraphs });
   }
 
+  /**
+   * zoomSaveHandler
+   * @param e e
+   */
   zoomSaveHandler(e: any) {
     if (!ignoreZoomed) {
       zoomStartDate = e.startDate;
@@ -95,12 +126,19 @@ class CurrentStudentStatistics extends React.Component<
     ignoreZoomed = false;
   }
 
+  /**
+   * zoomApplyHandler
+   * @param e e
+   */
   zoomApplyHandler(e: any) {
     if (zoomStartDate !== null && zoomEndDate !== null) {
       e.chart.zoomToDates(zoomStartDate, zoomEndDate);
     }
   }
 
+  /**
+   * render
+   */
   render() {
     if (!this.state.amChartsLoaded) {
       return null;
@@ -291,6 +329,10 @@ class CurrentStudentStatistics extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,

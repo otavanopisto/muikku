@@ -7,16 +7,29 @@ import "~/sass/elements/card.scss";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/screen-container.scss";
 
+/**
+interface FrontpageStudyingProps {
+ * 
+ */
 interface FrontpageStudyingProps {
   i18n: i18nType;
 }
 
+/**
+ * FrontpageStudyingState
+ */
 interface FrontpageStudyingState {}
 
+/**
+ * FrontpageStudying
+ */
 export default class FrontpageStudying extends React.Component<
   FrontpageStudyingProps,
   FrontpageStudyingState
 > {
+  /**
+   * render
+   */
   render() {
     return (
       <section

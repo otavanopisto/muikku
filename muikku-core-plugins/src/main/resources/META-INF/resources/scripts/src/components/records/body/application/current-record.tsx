@@ -20,22 +20,38 @@ import ApplicationList, {
 } from "~/components/general/application-list";
 import { StatusType } from "~/reducers/base/status";
 
+/**
+ * CurrentRecordProps
+ */
 interface CurrentRecordProps {
   i18n: i18nType;
   records: RecordsType;
   status: StatusType;
 }
 
+/**
+ * CurrentRecordState
+ */
 interface CurrentRecordState {}
 
+/**
+ * CurrentRecord
+ */
 class CurrentRecord extends React.Component<
   CurrentRecordProps,
   CurrentRecordState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: CurrentRecordProps) {
     super(props);
   }
 
+  /**
+   * render
+   */
   render() {
     if (
       this.props.records.location !== "records" ||
@@ -277,6 +293,10 @@ class CurrentRecord extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -285,6 +305,9 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ */
 function mapDispatchToProps() {
   return {};
 }

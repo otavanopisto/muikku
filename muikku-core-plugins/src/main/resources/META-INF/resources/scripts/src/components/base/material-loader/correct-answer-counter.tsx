@@ -1,11 +1,18 @@
 import * as React from "react";
 import { MaterialLoaderProps } from "~/components/base/material-loader";
 
+/**
+ * MaterialLoaderCorrectAnswerCounterProps
+ */
 interface MaterialLoaderCorrectAnswerCounterProps extends MaterialLoaderProps {
   answersChecked: boolean;
   answerRegistry: { [name: string]: any };
 }
 
+/**
+ * MaterialLoaderCorrectAnswerCounter
+ * @param props props
+ */
 export function MaterialLoaderCorrectAnswerCounter(
   props: MaterialLoaderCorrectAnswerCounterProps
 ) {

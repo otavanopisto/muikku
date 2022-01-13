@@ -15,6 +15,9 @@ export type UserGroupsStateType =
   | "ERROR"
   | "READY";
 
+/**
+ * UserPayloadType
+ */
 export interface UserPayloadType {
   q: string | null;
   firstResult?: number | null;
@@ -22,58 +25,91 @@ export interface UserPayloadType {
   userGroupIds?: number[];
 }
 
+/**
+ * UsergroupPayloadType
+ */
 export interface UsergroupPayloadType extends UserPayloadType {
   userIdentifier?: string;
   archetype?: string;
 }
 
+/**
+ * PagingUserListType
+ */
 export interface PagingUserListType {
   firstResult: number;
   maxResults: number;
   totalHitCount: number;
 }
 
+/**
+ * PagingEnvironmentUserListType
+ */
 export interface PagingEnvironmentUserListType extends PagingUserListType {
   results: UsersListType;
 }
 
+/**
+ * UserGroupListType
+ */
 export interface UserGroupListType {
   list: UserGroupType[];
 }
 
+/**
+ * StudyprogrammeTypes
+ */
 export interface StudyprogrammeTypes {
   list: StudyprogrammeListType;
   status: StudyprogrammeTypeStatusType;
 }
 
+/**
+ * StudyprogrammeType
+ */
 export interface StudyprogrammeType {
   identifier: string;
   name: string;
 }
 
+/**
+ * UserPanelUsersType
+ */
 export interface UserPanelUsersType {
   results: UsersListType;
   totalHitCount: number;
   searchString?: string;
 }
 
+/**
+ * UsersType
+ */
 export interface UsersType {
   students?: UserPanelUsersType;
   staff?: UserPanelUsersType;
 }
 
+/**
+ * UsersSelectType
+ */
 export interface UsersSelectType {
   students: UsersListType;
   staff: UsersListType;
   userGroups: Array<UserGroupType>;
 }
 
+/**
+ * CurrentUserGroupType
+ */
 export interface CurrentUserGroupType {
   id: number | null;
   students: PagingEnvironmentUserListType;
   staff: PagingEnvironmentUserListType;
 }
 
+/**
+ * UserGroupsType
+ */
 export interface UserGroupsType {
   list: UserGroupType[];
   currentUserGroup?: CurrentUserGroupType;
@@ -85,15 +121,24 @@ export interface UserGroupsType {
 
 export type CurrentUserGroupUpdateType = Partial<CurrentUserGroupType>;
 
+/**
+ * CreateUserGroupType
+ */
 export interface CreateUserGroupType {
   name: string;
   isGuidanceGroup: boolean;
 }
 
+/**
+ * UpdateUserGroupType
+ */
 export interface UpdateUserGroupType extends CreateUserGroupType {
   identifier: string;
 }
 
+/**
+ * ModifyUserGroupUsersType
+ */
 export interface ModifyUserGroupUsersType {
   groupIdentifier?: string;
   userIdentifiers: string[];
@@ -107,6 +152,11 @@ export type UpdateUserGroupStateType =
 
 // Do not delete, this is for organization
 
+/**
+ * users
+ * @param state state
+ * @param action action
+ */
 export default function users(
   state: UsersType = {
     students: {
@@ -132,6 +182,11 @@ export default function users(
   return state;
 }
 
+/**
+ * userGroups
+ * @param state state
+ * @param action action
+ */
 export function userGroups(
   state: UserGroupsType = {
     list: [],
@@ -171,6 +226,11 @@ export function userGroups(
   return state;
 }
 
+/**
+ * userSelect
+ * @param state state
+ * @param action action
+ */
 export function userSelect(
   state: UsersSelectType = {
     students: [],
@@ -202,6 +262,11 @@ export function userSelect(
 // Not sure if they should actually be here, but changing their location is easy
 // At the time of writing, it's only used when creating a user in the organization
 
+/**
+ * studyprogrammes
+ * @param state state
+ * @param action action
+ */
 export function studyprogrammes(
   state: StudyprogrammeTypes = {
     list: [],

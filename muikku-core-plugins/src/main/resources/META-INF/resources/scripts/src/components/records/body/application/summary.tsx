@@ -21,6 +21,9 @@ import { StatusType } from "~/reducers/base/status";
 import Avatar from "~/components/general/avatar";
 import { getName } from "~/util/modifiers";
 
+/**
+ * SummaryProps
+ */
 interface SummaryProps {
   i18n: i18nType;
   records: RecordsType;
@@ -29,13 +32,26 @@ interface SummaryProps {
   hops: HOPSType;
 }
 
+/**
+ * SummaryState
+ */
 interface SummaryState {}
 
+/**
+ * Summary
+ */
 class Summary extends React.Component<SummaryProps, SummaryState> {
+  /**
+   * constructor
+   * @param props
+   */
   constructor(props: SummaryProps) {
     super(props);
   }
 
+  /**
+   * render
+   */
   render() {
     if (
       this.props.records.location !== "summary" ||
@@ -319,6 +335,10 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -329,6 +349,9 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ */
 function mapDispatchToProps() {
   return {};
 }

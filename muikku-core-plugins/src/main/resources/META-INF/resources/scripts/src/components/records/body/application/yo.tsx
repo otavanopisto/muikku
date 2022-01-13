@@ -22,6 +22,9 @@ import { updateYO } from "~/actions/main-function/records/yo";
 import { updateYOTriggerType } from "../../../../actions/main-function/records/yo";
 import MatriculationExaminationWizardDialog from "../../dialogs/matriculation-wizard";
 
+/**
+ * YOProps
+ */
 interface YOProps {
   i18n: i18nType;
   records: RecordsType;
@@ -31,6 +34,9 @@ interface YOProps {
   eligibilitySubjects: SubjectEligibilitySubjectsType;
 }
 
+/**
+ * YOState
+ */
 interface YOState {
   eligibility?: YOEligibilityType;
   eligibilityStatus?: YOEligibilityStatusType;
@@ -38,7 +44,14 @@ interface YOState {
   succesfulEnrollments: number[];
 }
 
+/**
+ * YO
+ */
 class YO extends React.Component<YOProps, YOState> {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: YOProps) {
     super(props);
 
@@ -49,6 +62,7 @@ class YO extends React.Component<YOProps, YOState> {
 
   /**
    * updateEnrollemnts HACK SOLUTION...
+   * @param examId examId
    */
   updateEnrollemnts = (examId: number) => {
     const updatedSuccesfullEnrollments = [...this.state.succesfulEnrollments];
@@ -225,6 +239,10 @@ class YO extends React.Component<YOProps, YOState> {
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -235,6 +253,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators({ updateYO }, dispatch);
 }

@@ -15,6 +15,9 @@ import {
   DeleteWorkspaceMaterialContentNodeTriggerType,
 } from "~/actions/workspaces";
 
+/**
+ * ConfirmDeletePageWithAnswersDialogProps
+ */
 interface ConfirmDeletePageWithAnswersDialogProps {
   i18n: i18nType;
   materialEditor: WorkspaceMaterialEditorType;
@@ -23,14 +26,24 @@ interface ConfirmDeletePageWithAnswersDialogProps {
   onDeleteSuccess: () => any;
 }
 
+/**
+ * ConfirmDeletePageWithAnswersDialogState
+ */
 interface ConfirmDeletePageWithAnswersDialogState {
   locked: boolean;
 }
 
+/**
+ * ConfirmDeletePageWithAnswersDialog
+ */
 class ConfirmDeletePageWithAnswersDialog extends React.Component<
   ConfirmDeletePageWithAnswersDialogProps,
   ConfirmDeletePageWithAnswersDialogState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: ConfirmDeletePageWithAnswersDialogProps) {
     super(props);
     this.state = {
@@ -40,6 +53,11 @@ class ConfirmDeletePageWithAnswersDialog extends React.Component<
     this.cancel = this.cancel.bind(this);
     this.confirm = this.confirm.bind(this);
   }
+
+  /**
+   * confirm
+   * @param closeDialog closeDialog
+   */
   confirm(closeDialog: () => any) {
     this.setState({
       locked: true,
@@ -49,6 +67,9 @@ class ConfirmDeletePageWithAnswersDialog extends React.Component<
       material: this.props.materialEditor.currentNodeValue,
       workspace: this.props.materialEditor.currentNodeWorkspace,
       removeAnswers: true,
+      /**
+       *
+       */
       success: () => {
         this.setState({
           locked: false,
@@ -56,6 +77,9 @@ class ConfirmDeletePageWithAnswersDialog extends React.Component<
         this.props.onDeleteSuccess();
         closeDialog();
       },
+      /**
+       *
+       */
       fail: () => {
         this.setState({
           locked: false,
@@ -63,6 +87,11 @@ class ConfirmDeletePageWithAnswersDialog extends React.Component<
       },
     });
   }
+
+  /**
+   * cancel
+   * @param closeDialog
+   */
   cancel(closeDialog?: () => any) {
     closeDialog && closeDialog();
     this.props.setWorkspaceMaterialEditorState({
@@ -70,7 +99,14 @@ class ConfirmDeletePageWithAnswersDialog extends React.Component<
       showRemoveAnswersDialogForDelete: false,
     });
   }
+  /**
+   * render
+   */
   render() {
+    /**
+     * content
+     * @param closeDialog closeDialog
+     */
     const content = (closeDialog: () => any) => (
       <div>
         <span>
@@ -81,6 +117,10 @@ class ConfirmDeletePageWithAnswersDialog extends React.Component<
       </div>
     );
 
+    /**
+     * footer
+     * @param closeDialog closeDialog
+     */
     const footer = (closeDialog: () => any) => (
       <div className="dialog__button-set">
         <Button
@@ -119,6 +159,10 @@ class ConfirmDeletePageWithAnswersDialog extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -126,6 +170,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     { setWorkspaceMaterialEditorState, deleteWorkspaceMaterialContentNode },

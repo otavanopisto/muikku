@@ -17,18 +17,30 @@ import Portal from "~/components/general/portal";
 
 import "~/sass/elements/notification-queue.scss";
 
+/**
+ * NotificationsProps
+ */
 interface NotificationsProps {
   notifications: NotificationListType;
   hideNotification: HideNotificationTriggerType;
   displayNotification: DisplayNotificationTriggerType;
 }
 
+/**
+ * NotificationsState
+ */
 interface NotificationsState {}
 
+/**
+ * Notifications
+ */
 class Notifications extends React.Component<
   NotificationsProps,
   NotificationsState
 > {
+  /**
+   * render
+   */
   render() {
     return (
       <Portal isOpen>
@@ -64,12 +76,20 @@ class Notifications extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     notifications: state.notifications,
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     { hideNotification, displayNotification },

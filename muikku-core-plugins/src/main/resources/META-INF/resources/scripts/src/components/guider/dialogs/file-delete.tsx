@@ -16,6 +16,9 @@ import { UserFileType } from "~/reducers/user-index";
 import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
 
+/**
+ * FileDeleteDialogProps
+ */
 interface FileDeleteDialogProps {
   children: React.ReactElement<any>;
   isOpen?: boolean;
@@ -25,22 +28,45 @@ interface FileDeleteDialogProps {
   removeFileFromCurrentStudent: RemoveFileFromCurrentStudentTriggerType;
 }
 
+/**
+ * FileDeleteDialogState
+ */
 interface FileDeleteDialogState {}
 
+/**
+ * FileDeleteDialog
+ */
 class FileDeleteDialog extends React.Component<
   FileDeleteDialogProps,
   FileDeleteDialogState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: FileDeleteDialogProps) {
     super(props);
 
     this.deleteFile = this.deleteFile.bind(this);
   }
+
+  /**
+   * deleteFile
+   * @param closeDialog closeDialog
+   */
   deleteFile(closeDialog: () => any) {
     this.props.removeFileFromCurrentStudent(this.props.file);
     closeDialog();
   }
+
+  /**
+   * render
+   */
   render() {
+    /**
+     * footer
+     * @param closeDialog closeDialog
+     */
     const footer = (closeDialog: () => any) => (
       <div className="dialog__button-set">
         <Button
@@ -61,6 +87,11 @@ class FileDeleteDialog extends React.Component<
         </Button>
       </div>
     );
+
+    /**
+     * content
+     * @param closeDialog closeDialog
+     */
     const content = (closeDialog: () => any) => (
       <div>
         {this.props.i18n.text.get(
@@ -85,12 +116,20 @@ class FileDeleteDialog extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ removeFileFromCurrentStudent }, dispatch);
 }

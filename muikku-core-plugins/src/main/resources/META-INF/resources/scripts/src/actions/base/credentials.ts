@@ -16,14 +16,24 @@ export type CREDENTIALS_STATE = SpecificActionType<
   CredentialsStateType
 >;
 
+/**
+ * UpdateCredentialsTriggerType
+ */
 export interface UpdateCredentialsTriggerType {
   (data: CredentialsType): AnyActionType;
 }
 
+/**
+ * LoadCrendentialsTriggerType
+ */
 export interface LoadCrendentialsTriggerType {
   (secret: string): AnyActionType;
 }
 
+/**
+ * loadCredentials
+ * @param secret
+ */
 const loadCredentials: LoadCrendentialsTriggerType = function loadCredentials(
   secret
 ) {
@@ -63,6 +73,10 @@ const loadCredentials: LoadCrendentialsTriggerType = function loadCredentials(
   };
 };
 
+/**
+ * updateCredentials
+ * @param credentials
+ */
 const updateCredentials: UpdateCredentialsTriggerType =
   function updateCredentials(credentials) {
     return async (

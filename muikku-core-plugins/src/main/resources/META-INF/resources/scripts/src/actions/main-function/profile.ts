@@ -22,10 +22,16 @@ import {
 } from "~/reducers/main-function/profile";
 import moment from "~/lib/moment";
 
+/**
+ * LoadProfilePropertiesSetTriggerType
+ */
 export interface LoadProfilePropertiesSetTriggerType {
   (): AnyActionType;
 }
 
+/**
+ * SaveProfilePropertyTriggerType
+ */
 export interface SaveProfilePropertyTriggerType {
   (data: {
     key: string;
@@ -35,14 +41,23 @@ export interface SaveProfilePropertyTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * LoadProfileUsernameTriggerType
+ */
 export interface LoadProfileUsernameTriggerType {
   (): AnyActionType;
 }
 
+/**
+ * LoadProfileAddressTriggerType
+ */
 export interface LoadProfileAddressTriggerType {
   (): AnyActionType;
 }
 
+/**
+ * UpdateProfileAddressTriggerType
+ */
 export interface UpdateProfileAddressTriggerType {
   (data: {
     street: string;
@@ -55,10 +70,16 @@ export interface UpdateProfileAddressTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * LoadProfileChatSettingsTriggerType
+ */
 export interface LoadProfileChatSettingsTriggerType {
   (): AnyActionType;
 }
 
+/**
+ * UpdateProfileChatSettingsTriggerType
+ */
 export interface UpdateProfileChatSettingsTriggerType {
   (data: {
     visibility: string;
@@ -68,6 +89,9 @@ export interface UpdateProfileChatSettingsTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * UploadProfileImageTriggerType
+ */
 export interface UploadProfileImageTriggerType {
   (data: {
     croppedB64: string;
@@ -78,6 +102,9 @@ export interface UploadProfileImageTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * DeleteProfileImageTriggerType
+ */
 export interface DeleteProfileImageTriggerType {
   (): AnyActionType;
 }
@@ -90,18 +117,30 @@ export type SET_PROFILE_USER_PROPERTY = SpecificActionType<
   }
 >;
 
+/**
+ * SetProfileLocationTriggerType
+ */
 export interface SetProfileLocationTriggerType {
   (location: string): AnyActionType;
 }
 
+/**
+ * LoadProfileWorklistTemplatesTriggerType
+ */
 export interface LoadProfileWorklistTemplatesTriggerType {
   (): AnyActionType;
 }
 
+/**
+ * LoadProfileWorklistSectionsTriggerType
+ */
 export interface LoadProfileWorklistSectionsTriggerType {
   (cb?: (d: Array<WorklistSection>) => void): AnyActionType;
 }
 
+/**
+ * InsertProfileWorklistItemTriggerType
+ */
 export interface InsertProfileWorklistItemTriggerType {
   (data: {
     templateId: number;
@@ -115,6 +154,9 @@ export interface InsertProfileWorklistItemTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * DeleteProfileWorklistItemTriggerType
+ */
 export interface DeleteProfileWorklistItemTriggerType {
   (data: {
     item: StoredWorklistItem;
@@ -123,6 +165,9 @@ export interface DeleteProfileWorklistItemTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * EditProfileWorklistItemTriggerType
+ */
 export interface EditProfileWorklistItemTriggerType {
   (data: {
     item: StoredWorklistItem;
@@ -136,6 +181,9 @@ export interface EditProfileWorklistItemTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * UpdateProfileWorklistItemsStateTriggerType
+ */
 export interface UpdateProfileWorklistItemsStateTriggerType {
   (data: {
     beginDate: string;
@@ -146,6 +194,9 @@ export interface UpdateProfileWorklistItemsStateTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * LoadProfileWorklistSectionTriggerType
+ */
 export interface LoadProfileWorklistSectionTriggerType {
   (index: number, refresh?: boolean): AnyActionType;
 }
@@ -179,6 +230,9 @@ export type SET_WORKLIST = SpecificActionType<
   Array<WorklistSection>
 >;
 
+/**
+ * LoadProfilePropertiesSetTriggerType
+ */
 const loadProfilePropertiesSet: LoadProfilePropertiesSetTriggerType =
   function loadProfilePropertiesSet() {
     return async (
@@ -213,6 +267,10 @@ const loadProfilePropertiesSet: LoadProfilePropertiesSetTriggerType =
     };
   };
 
+/**
+ * SaveProfilePropertyTriggerType
+ * @param data
+ */
 const saveProfileProperty: SaveProfilePropertyTriggerType =
   function saveProfileProperty(data) {
     return async (dispatch: (arg: AnyActionType) => any) => {
@@ -236,6 +294,9 @@ const saveProfileProperty: SaveProfilePropertyTriggerType =
     };
   };
 
+/**
+ * loadProfileUsername
+ */
 const loadProfileUsername: LoadProfileUsernameTriggerType =
   function loadProfileUsername() {
     return async (dispatch: (arg: AnyActionType) => any) => {
@@ -259,6 +320,9 @@ const loadProfileUsername: LoadProfileUsernameTriggerType =
     };
   };
 
+/**
+ * loadProfileAddress
+ */
 const loadProfileAddress: LoadProfileAddressTriggerType =
   function loadProfileAddress() {
     return async (
@@ -297,6 +361,10 @@ const loadProfileAddress: LoadProfileAddressTriggerType =
     };
   };
 
+/**
+ * updateProfileAddress
+ * @param data
+ */
 const updateProfileAddress: UpdateProfileAddressTriggerType =
   function updateProfileAddress(data) {
     return async (
@@ -382,6 +450,9 @@ const updateProfileAddress: UpdateProfileAddressTriggerType =
     };
   };
 
+/**
+ * loadProfileChatSettings
+ */
 const loadProfileChatSettings: LoadProfileChatSettingsTriggerType =
   function loadProfileChatSettings() {
     return async (
@@ -428,6 +499,10 @@ const loadProfileChatSettings: LoadProfileChatSettingsTriggerType =
     };
   };
 
+/**
+ * updateProfileChatSettings
+ * @param data
+ */
 const updateProfileChatSettings: UpdateProfileChatSettingsTriggerType =
   function updateProfileChatSettings(data) {
     return async (dispatch: (arg: AnyActionType) => any) => {
@@ -469,6 +544,10 @@ const updateProfileChatSettings: UpdateProfileChatSettingsTriggerType =
 
 const imageSizes = [96, 256];
 
+/**
+ * uploadProfileImage
+ * @param data
+ */
 const uploadProfileImage: UploadProfileImageTriggerType =
   function uploadProfileImage(data) {
     return async (
@@ -537,6 +616,9 @@ const uploadProfileImage: UploadProfileImageTriggerType =
     };
   };
 
+/**
+ * deleteProfileImage
+ */
 const deleteProfileImage: DeleteProfileImageTriggerType =
   function deleteProfileImage() {
     return async (
@@ -572,6 +654,10 @@ const deleteProfileImage: DeleteProfileImageTriggerType =
     };
   };
 
+/**
+ * setProfileLocation
+ * @param location
+ */
 const setProfileLocation: SetProfileLocationTriggerType =
   function setProfileLocation(location: string) {
     return {
@@ -580,6 +666,10 @@ const setProfileLocation: SetProfileLocationTriggerType =
     };
   };
 
+/**
+ * insertProfileWorklistItem
+ * @param data
+ */
 const insertProfileWorklistItem: InsertProfileWorklistItemTriggerType =
   function insertProfileWorklistItem(data) {
     return async (
@@ -688,6 +778,10 @@ const insertProfileWorklistItem: InsertProfileWorklistItemTriggerType =
     };
   };
 
+/**
+ * deleteProfileWorklistItem
+ * @param data
+ */
 const deleteProfileWorklistItem: DeleteProfileWorklistItemTriggerType =
   function deleteProfileWorklistItem(data) {
     return async (
@@ -754,6 +848,10 @@ const deleteProfileWorklistItem: DeleteProfileWorklistItemTriggerType =
     };
   };
 
+/**
+ * editProfileWorklistItem
+ * @param data
+ */
 const editProfileWorklistItem: EditProfileWorklistItemTriggerType =
   function deleteProfileWorklistItem(data) {
     if (
@@ -848,6 +946,9 @@ const editProfileWorklistItem: EditProfileWorklistItemTriggerType =
     };
   };
 
+/**
+ * loadProfileWorklistTemplates
+ */
 const loadProfileWorklistTemplates: LoadProfileWorklistTemplatesTriggerType =
   function loadProfileWorklistTemplates() {
     return async (
@@ -883,6 +984,10 @@ const loadProfileWorklistTemplates: LoadProfileWorklistTemplatesTriggerType =
     };
   };
 
+/**
+ * loadProfileWorklistSections
+ * @param cb cb
+ */
 const loadProfileWorklistSections: LoadProfileWorklistSectionsTriggerType =
   function loadProfileWorklistSections(
     cb?: (d: Array<WorklistSection>) => void
@@ -927,6 +1032,11 @@ const loadProfileWorklistSections: LoadProfileWorklistSectionsTriggerType =
     };
   };
 
+/**
+ * loadProfileWorklistSection
+ * @param index
+ * @param refresh
+ */
 const loadProfileWorklistSection: LoadProfileWorklistSectionTriggerType =
   function loadProfileWorklistSection(index: number, refresh?: boolean) {
     return async (
@@ -975,6 +1085,10 @@ const loadProfileWorklistSection: LoadProfileWorklistSectionTriggerType =
     };
   };
 
+/**
+ * updateProfileWorklistItemsState
+ * @param data
+ */
 const updateProfileWorklistItemsState: UpdateProfileWorklistItemsStateTriggerType =
   function updateProfileWorklistItemsState(data) {
     return async (

@@ -15,6 +15,9 @@ import {
   ApplicationListItemBody,
 } from "~/components/general/application-list";
 
+/**
+ * MaterialProps
+ */
 interface MaterialProps {
   material: MaterialContentNodeType;
   workspace: WorkspaceType;
@@ -22,14 +25,24 @@ interface MaterialProps {
   status: StatusType;
 }
 
+/**
+ * MaterialState
+ */
 interface MaterialState {
   opened: boolean;
 }
 
+/**
+ * Material
+ */
 export default class Material extends React.Component<
   MaterialProps,
   MaterialState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: MaterialProps) {
     super(props);
 
@@ -39,6 +52,11 @@ export default class Material extends React.Component<
       opened: false,
     };
   }
+
+  /**
+   * componentWillReceiveProps
+   * @param nextProps nextProps
+   */
   componentWillReceiveProps(nextProps: MaterialProps) {
     if (
       nextProps.material.assignment.id !== this.props.material.assignment.id
@@ -48,9 +66,17 @@ export default class Material extends React.Component<
       });
     }
   }
+
+  /**
+   * toggleOpened
+   */
   toggleOpened() {
     this.setState({ opened: !this.state.opened });
   }
+
+  /**
+   * render
+   */
   render() {
     const evaluation = this.props.material.evaluation;
     return (

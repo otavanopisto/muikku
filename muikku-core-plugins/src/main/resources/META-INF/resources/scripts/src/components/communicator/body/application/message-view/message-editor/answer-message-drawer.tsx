@@ -22,6 +22,9 @@ import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/environment-dialog.scss";
 
+/**
+ * AnswerMessageDrawerProps
+ */
 interface AnswerMessageDrawerProps {
   replyThreadId?: number;
   replyToAll?: boolean;
@@ -40,6 +43,9 @@ interface AnswerMessageDrawerProps {
   isOpen?: boolean;
 }
 
+/**
+ * AnswerMessageDrawerState
+ */
 interface AnswerMessageDrawerState {
   text: string;
   selectedItems: Array<ContactRecipientType>;
@@ -48,11 +54,18 @@ interface AnswerMessageDrawerState {
   includesSignature: boolean;
 }
 
+/**
+ * AnswerMessageDrawer
+ */
 class AnswerMessageDrawer extends SessionStateComponent<
   AnswerMessageDrawerProps,
   AnswerMessageDrawerState
 > {
   private avoidCKEditorTriggeringChangeForNoReasonAtAll: boolean;
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: AnswerMessageDrawerProps) {
     super(
       props,
@@ -148,6 +161,9 @@ class AnswerMessageDrawer extends SessionStateComponent<
             this.props.signature.signature +
             "</i>"
           : this.state.text,
+      /**
+       * success
+       */
       success: () => {
         this.props.onClickCancel && this.props.onClickCancel();
         this.avoidCKEditorTriggeringChangeForNoReasonAtAll = true;
@@ -164,6 +180,9 @@ class AnswerMessageDrawer extends SessionStateComponent<
           getStateIdentifier(this.props)
         );
       },
+      /**
+       * fail
+       */
       fail: () => {
         this.setState({
           locked: false,
@@ -205,6 +224,10 @@ class AnswerMessageDrawer extends SessionStateComponent<
    */
   inputContactsAutofillLoaders() {
     return {
+      /**
+       * studentsLoader
+       * @param searchString searchString
+       */
       studentsLoader: (searchString: string) =>
         promisify(
           mApi().communicator.recipientsUsersSearch.read({
@@ -212,6 +235,10 @@ class AnswerMessageDrawer extends SessionStateComponent<
           }),
           "callback"
         ),
+      /**
+       * workspacesLoader
+       * @param searchString searchString
+       */
       workspacesLoader: (searchString: string) =>
         promisify(
           mApi().communicator.recipientsWorkspacesSearch.read({
@@ -229,6 +256,9 @@ class AnswerMessageDrawer extends SessionStateComponent<
     this.props.onClickCancel && this.props.onClickCancel();
   };
 
+  /**
+   * render
+   */
   render() {
     const editorTitle =
       this.props.i18n.text.get("plugin.communicator.answertomessage.label") +
@@ -236,6 +266,11 @@ class AnswerMessageDrawer extends SessionStateComponent<
       this.props.i18n.text.get(
         "plugin.communicator.createmessage.title.content"
       );
+
+    /**
+     * content
+     * @param closeDialog closeDialog
+     */
     const content = (closeDialog: () => any) => (
       <>
         <InputContactsAutofill

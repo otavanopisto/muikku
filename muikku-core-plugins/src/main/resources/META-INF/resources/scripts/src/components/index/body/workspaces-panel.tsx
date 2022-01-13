@@ -5,23 +5,33 @@ import { i18nType } from "~/reducers/base/i18n";
 import { WorkspaceListType, WorkspaceType } from "~/reducers/workspaces";
 import { StatusType } from "~/reducers/base/status";
 import { StateType } from "~/reducers";
-
+import "~/sass/elements/panel.scss";
 import "~/sass/elements/panel.scss";
 
-import "~/sass/elements/panel.scss";
-
+/**
+ * WorkspacesPanelProps
+ */
 interface WorkspacesPanelProps {
   i18n: i18nType;
   status: StatusType;
   workspaces: WorkspaceListType;
 }
 
+/**
+ * WorkspacesPanelState
+ */
 interface WorkspacesPanelState {}
 
+/**
+ * WorkspacesPanel
+ */
 class WorkspacesPanel extends React.Component<
   WorkspacesPanelProps,
   WorkspacesPanelState
 > {
+  /**
+   * render
+   */
   render() {
     return (
       <div className="panel panel--workspaces">
@@ -97,6 +107,10 @@ class WorkspacesPanel extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     status: state.status,
@@ -105,6 +119,9 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ */
 function mapDispatchToProps() {
   return {};
 }

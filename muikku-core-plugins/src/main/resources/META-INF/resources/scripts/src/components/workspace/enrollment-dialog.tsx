@@ -5,19 +5,34 @@ import { connect } from "react-redux";
 import Button from "~/components/general/button";
 import { i18nType } from "~/reducers/base/i18n";
 
+/**
+ * EnrollmentDialogProps
+ */
 interface EnrollmentDialogProps {
   isOpen?: boolean;
   onClose?: () => any;
   i18n: i18nType;
 }
 
+/**
+ * EnrollmentDialogState
+ */
 interface EnrollmentDialogState {}
 
+/**
+ * EnrollmentDialog
+ */
 class EnrollmentDialog extends React.Component<
   EnrollmentDialogProps,
   EnrollmentDialogState
 > {
+  /**
+   * render
+   */
   render() {
+    /**
+     * footer
+     */
     const footer = () => (
       <div className="dialog__button-set">
         <Button href="/" buttonModifiers={["info", "standard-ok"]}>
@@ -25,6 +40,10 @@ class EnrollmentDialog extends React.Component<
         </Button>
       </div>
     );
+    /**
+     * content
+     * @param closeDialog  closeDialog
+     */
     const content = (closeDialog: () => any) => (
       <div className="dialog__content-row dialog__content-row--label">
         <img
@@ -52,12 +71,19 @@ class EnrollmentDialog extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
   };
 }
 
+/**
+ * mapDispatchToProps
+ */
 function mapDispatchToProps() {
   return {};
 }

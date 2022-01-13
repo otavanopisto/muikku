@@ -53,15 +53,24 @@ import * as React from "react";
 import mApi from "~/lib/mApi";
 import { i18nType } from "~/reducers/base/i18n";
 
+/**
+ * MatriculationLinkProps
+ */
 interface MatriculationLinkProps {
   i18n: i18nType;
 }
 
+/**
+ * MatriculationLinkState
+ */
 interface MatriculationLinkState {
   enabled: boolean;
   exams: CurrentExam[];
 }
 
+/**
+ * CurrentExam
+ */
 interface CurrentExam {
   id: number;
   starts: number;
@@ -69,12 +78,19 @@ interface CurrentExam {
   eligible: boolean;
 }
 
+/**
+ * MatriculationLink
+ */
 export class MatriculationLink extends React.Component<
   MatriculationLinkProps,
   MatriculationLinkState
 > {
   private _isMounted: boolean;
 
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: MatriculationLinkProps) {
     super(props);
     this._isMounted = false;
@@ -84,6 +100,9 @@ export class MatriculationLink extends React.Component<
     };
   }
 
+  /**
+   * componentDidMount
+   */
   public componentDidMount() {
     this._isMounted = true;
     if ("matriculation" in mApi()) {
@@ -101,10 +120,16 @@ export class MatriculationLink extends React.Component<
     }
   }
 
+  /**
+   * componentWillUnmount
+   */
   public componentWillUnmount() {
     this._isMounted = false;
   }
 
+  /**
+   * render
+   */
   public render() {
     if (!this.state.enabled) {
       return null;

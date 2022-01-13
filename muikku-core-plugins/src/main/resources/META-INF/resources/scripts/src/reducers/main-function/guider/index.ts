@@ -14,6 +14,9 @@ import {
 } from "~/reducers/workspaces";
 import { HOPSDataType } from "~/reducers/main-function/hops";
 
+/**
+ * GuiderUserLabelType
+ */
 export interface GuiderUserLabelType {
   id: number;
   name: string;
@@ -27,6 +30,9 @@ export type GuiderUserGroupListType = Array<UserGroupType>;
 export type GuiderWorkspaceType = WorkspaceType;
 export type GuiderWorkspaceListType = WorkspaceListType;
 
+/**
+ * GuiderFiltersType
+ */
 export interface GuiderFiltersType {
   labels: GuiderUserLabelListType;
   userGroups: GuiderUserGroupListType;
@@ -39,12 +45,20 @@ export type GuiderStudentsStateType =
   | "ERROR"
   | "READY";
 export type GuiderCurrentStudentStateType = "LOADING" | "ERROR" | "READY";
+
+/**
+ * GuiderActiveFiltersType
+ */
 export interface GuiderActiveFiltersType {
   workspaceFilters: Array<number>;
   labelFilters: Array<number>;
   userGroupFilters: Array<number>;
   query: string;
 }
+
+/**
+ * GuiderStudentType
+ */
 export interface GuiderStudentType extends UserWithSchoolDataType {
   flags: Array<GuiderStudentUserProfileLabelType>;
 }
@@ -54,12 +68,19 @@ export type GuiderStudentListType = Array<GuiderStudentType>;
 //studytime = Notification about study time ending
 //nopassedcourses = Notification about low number of finished courses in a year
 //assessmentrequest = Notification about inactivity in the first 2 months
+
+/**
+ * GuiderNotificationStudentsDataType
+ */
 export interface GuiderNotificationStudentsDataType {
   studytime?: string;
   nopassedcourses?: string;
   assessmentrequest?: string;
 }
 
+/**
+ * GuiderStudentUserProfileType
+ */
 export interface GuiderStudentUserProfileType {
   basic: GuiderStudentType;
   labels: Array<GuiderStudentUserProfileLabelType>;
@@ -76,6 +97,9 @@ export interface GuiderStudentUserProfileType {
   activityLogs: ActivityLogType[];
 }
 
+/**
+ * GuiderType
+ */
 export interface GuiderType {
   state: GuiderStudentsStateType;
   activeFilters: GuiderActiveFiltersType;
@@ -90,6 +114,9 @@ export interface GuiderType {
   currentState: GuiderCurrentStudentStateType;
 }
 
+/**
+ * GuiderPatchType
+ */
 export interface GuiderPatchType {
   state?: GuiderStudentsStateType;
   activeFilters?: GuiderActiveFiltersType;
@@ -103,6 +130,9 @@ export interface GuiderPatchType {
   currentState?: GuiderCurrentStudentStateType;
 }
 
+/**
+ * GuiderStudentUserProfileLabelType
+ */
 export interface GuiderStudentUserProfileLabelType {
   id: number;
   flagId: number;
@@ -111,6 +141,11 @@ export interface GuiderStudentUserProfileLabelType {
   studentIdentifier: string;
 }
 
+/**
+ * sortLabels
+ * @param labelA labelA
+ * @param labelB labelB
+ */
 function sortLabels(labelA: GuiderUserLabelType, labelB: GuiderUserLabelType) {
   const labelAUpperCase = labelA.name.toUpperCase();
   const labelBUpperCase = labelB.name.toUpperCase();
@@ -121,6 +156,10 @@ function sortLabels(labelA: GuiderUserLabelType, labelB: GuiderUserLabelType) {
     : 0;
 }
 
+/**
+ * @param state
+ * @param action
+ */
 export default function guider(
   state: GuiderType = {
     state: "LOADING",
@@ -221,6 +260,10 @@ export default function guider(
       }
     }
 
+    /**
+     * mapFn
+     * @param student student
+     */
     const mapFn = function (student: GuiderStudentType) {
       if (student.id === action.payload.studentId) {
         if (action.type === "ADD_GUIDER_LABEL_TO_USER") {
@@ -244,6 +287,10 @@ export default function guider(
       currentStudent: newCurrent,
     });
   } else if (action.type === "UPDATE_ONE_GUIDER_LABEL_FROM_ALL_STUDENTS") {
+    /**
+     * mapFnStudentLabel
+     * @param label label
+     */
     const mapFnStudentLabel = function (
       label: GuiderStudentUserProfileLabelType
     ) {
@@ -252,6 +299,11 @@ export default function guider(
       }
       return label;
     };
+
+    /**
+     * mapFn
+     * @param student student
+     */
     const mapFn = function (student: GuiderStudentType) {
       return Object.assign({}, student, {
         flags: student.flags.map(mapFnStudentLabel),
@@ -271,11 +323,19 @@ export default function guider(
       currentStudent: newCurrent,
     });
   } else if (action.type === "DELETE_ONE_GUIDER_LABEL_FROM_ALL_STUDENTS") {
+    /**
+     * filterFnStudentLabel
+     * @param label label
+     */
     const filterFnStudentLabel = function (
       label: GuiderStudentUserProfileLabelType
     ) {
       return label.flagId !== action.payload;
     };
+    /**
+     * mapFn
+     * @param student student
+     */
     const mapFn = function (student: GuiderStudentType) {
       return Object.assign({}, student, {
         flags: student.flags.filter(filterFnStudentLabel),

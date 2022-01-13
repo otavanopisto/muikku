@@ -14,6 +14,9 @@ import {
 } from "~/actions/base/notifications";
 import { bindActionCreators } from "redux";
 
+/**
+ * DeleteRoomDialogProps
+ */
 interface DeleteRoomDialogProps {
   i18n: i18nType;
 
@@ -26,18 +29,33 @@ interface DeleteRoomDialogProps {
   onDelete: () => any;
 }
 
+/**
+ * DeleteRoomDialogState
+ */
 interface DeleteRoomDialogState {}
 
+/**
+ * DeleteRoomDialog
+ */
 class DeleteRoomDialog extends React.Component<
   DeleteRoomDialogProps,
   DeleteRoomDialogState
 > {
   private unmounted = false;
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: DeleteRoomDialogProps) {
     super(props);
 
     this.delete = this.delete.bind(this);
   }
+
+  /**
+   * delete
+   * @param closeDialog closeDialog
+   */
   async delete(closeDialog: () => any) {
     try {
       await promisify(
@@ -67,10 +85,22 @@ class DeleteRoomDialog extends React.Component<
       );
     }
   }
+
+  /**
+   * componentWillUnmount
+   */
   componentWillUnmount() {
     this.unmounted = true;
   }
+
+  /**
+   * render
+   */
   render() {
+    /**
+     * content
+     * @param closeDialog closeDialog
+     */
     const content = (closeDialog: () => any) => (
       <div>
         <span
@@ -83,6 +113,11 @@ class DeleteRoomDialog extends React.Component<
         ></span>
       </div>
     );
+
+    /**
+     * footer
+     * @param closeDialog closeDialog
+     */
     const footer = (closeDialog: () => any) => (
       <div className="dialog__button-set">
         <Button
@@ -112,12 +147,20 @@ class DeleteRoomDialog extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators({ displayNotification }, dispatch);
 }

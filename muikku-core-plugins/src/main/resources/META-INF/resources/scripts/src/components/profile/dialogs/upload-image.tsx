@@ -24,6 +24,9 @@ import {
   UploadProfileImageTriggerType,
 } from "~/actions/main-function/profile";
 
+/**
+ * UploadImageDialogProps
+ */
 interface UploadImageDialogProps {
   i18n: i18nType;
   displayNotification: DisplayNotificationTriggerType;
@@ -37,6 +40,9 @@ interface UploadImageDialogProps {
   onClose: () => any;
 }
 
+/**
+ * UploadImageDialogState
+ */
 interface UploadImageDialogState {
   locked: boolean;
 
@@ -44,11 +50,18 @@ interface UploadImageDialogState {
   angle: number;
 }
 
+/**
+ * UploadImageDialog
+ */
 class UploadImageDialog extends React.Component<
   UploadImageDialogProps,
   UploadImageDialogState
 > {
   private retriever: ImageEditorRetrieverType;
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: UploadImageDialogProps) {
     super(props);
 
@@ -64,21 +77,34 @@ class UploadImageDialog extends React.Component<
       angle: 0,
     };
   }
+  /**
+   * upload
+   * @param closeDialog closeDialog
+   */
   upload(closeDialog: () => any) {
     this.setState({ locked: true });
     this.props.uploadProfileImage({
       croppedB64: this.retriever.getAsDataURL(),
       originalB64: !this.props.src ? this.props.b64 : null,
       file: !this.props.src ? this.props.file : null,
+      /**
+       * success
+       */
       success: () => {
         closeDialog();
         this.setState({ locked: false });
       },
+      /**
+       * fail
+       */
       fail: () => {
         this.setState({ locked: false });
       },
     });
   }
+  /**
+   * rotate
+   */
   rotate() {
     let nAngle = this.state.angle + 90;
     if (nAngle === 360) {
@@ -87,6 +113,9 @@ class UploadImageDialog extends React.Component<
 
     this.setState({ angle: nAngle });
   }
+  /**
+   * showLoadError
+   */
   showLoadError() {
     this.props.displayNotification(
       this.props.i18n.text.get(
@@ -95,15 +124,30 @@ class UploadImageDialog extends React.Component<
       "error"
     );
   }
+  /**
+   * onChangeScale
+   * @param newValue newValue
+   */
   onChangeScale(newValue: number) {
     this.setState({
       scale: newValue,
     });
   }
+  /**
+   * getRetriever
+   * @param retriever retriever
+   */
   getRetriever(retriever: ImageEditorRetrieverType) {
     this.retriever = retriever;
   }
+  /**
+   * render
+   */
   render() {
+    /**
+     * content
+     * @param closeDialog closeDialog
+     */
     const content = (closeDialog: () => any) => (
       <div>
         <ImageEditor
@@ -130,6 +174,10 @@ class UploadImageDialog extends React.Component<
         </div>
       </div>
     );
+    /**
+     * footer
+     * @param closeDialog closeDialog
+     */
     const footer = (closeDialog: () => any) => (
       <div className="dialog__button-set">
         <Button
@@ -167,12 +215,20 @@ class UploadImageDialog extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     { displayNotification, uploadProfileImage },

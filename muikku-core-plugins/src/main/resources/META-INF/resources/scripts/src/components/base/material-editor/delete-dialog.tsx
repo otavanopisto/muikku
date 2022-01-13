@@ -16,6 +16,9 @@ import {
   DeleteWorkspaceMaterialContentNodeTriggerType,
 } from "~/actions/workspaces";
 
+/**
+ * DeleteWorkspaceMaterialDialogProps
+ */
 interface DeleteWorkspaceMaterialDialogProps {
   i18n: i18nType;
   children: any;
@@ -26,14 +29,24 @@ interface DeleteWorkspaceMaterialDialogProps {
   onDeleteSuccess: () => any;
 }
 
+/**
+ * DeleteWorkspaceMaterialDialogState
+ */
 interface DeleteWorkspaceMaterialDialogState {
   locked: boolean;
 }
 
+/**
+ * DeleteWorkspaceMaterialDialog
+ */
 class DeleteWorkspaceMaterialDialog extends React.Component<
   DeleteWorkspaceMaterialDialogProps,
   DeleteWorkspaceMaterialDialogState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: DeleteWorkspaceMaterialDialogProps) {
     super(props);
     this.state = {
@@ -42,6 +55,11 @@ class DeleteWorkspaceMaterialDialog extends React.Component<
 
     this.delete = this.delete.bind(this);
   }
+
+  /**
+   * delete
+   * @param closeDialog closeDialog
+   */
   delete(closeDialog: () => any) {
     this.setState({
       locked: true,
@@ -49,6 +67,9 @@ class DeleteWorkspaceMaterialDialog extends React.Component<
     this.props.deleteWorkspaceMaterialContentNode({
       material: this.props.material,
       workspace: this.props.materialEditor.currentNodeWorkspace,
+      /**
+       * success
+       */
       success: () => {
         this.setState({
           locked: false,
@@ -56,6 +77,9 @@ class DeleteWorkspaceMaterialDialog extends React.Component<
         closeDialog();
         this.props.onDeleteSuccess();
       },
+      /**
+       * fail
+       */
       fail: () => {
         this.setState({
           locked: false,
@@ -64,7 +88,14 @@ class DeleteWorkspaceMaterialDialog extends React.Component<
       },
     });
   }
+  /**
+   * render
+   */
   render() {
+    /**
+     * content
+     * @param closeDialog closeDialog
+     */
     const content = (closeDialog: () => any) => (
       <div>
         <span>
@@ -77,6 +108,10 @@ class DeleteWorkspaceMaterialDialog extends React.Component<
       </div>
     );
 
+    /**
+     * footer
+     * @param closeDialog closeDialog
+     */
     const footer = (closeDialog: () => any) => (
       <div className="dialog__button-set">
         <Button
@@ -121,6 +156,10 @@ class DeleteWorkspaceMaterialDialog extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -128,6 +167,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ deleteWorkspaceMaterialContentNode }, dispatch);
 }

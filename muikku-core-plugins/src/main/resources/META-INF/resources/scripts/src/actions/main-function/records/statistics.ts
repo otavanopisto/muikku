@@ -16,10 +16,16 @@ export type UPDATE_STUDIES_STATISTICS_STATUS = SpecificActionType<
   StatisticsStatusType
 >;
 
+/**
+ * UpdateStatisticsTriggerType
+ */
 export interface UpdateStatisticsTriggerType {
   (): AnyActionType;
 }
 
+/**
+ * UpdateStatisticsTriggerType
+ */
 const updateStatistics: UpdateStatisticsTriggerType =
   function updateStatistics() {
     return async (

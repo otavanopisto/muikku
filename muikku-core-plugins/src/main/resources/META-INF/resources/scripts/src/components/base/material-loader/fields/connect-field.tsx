@@ -8,11 +8,17 @@ import { StrMathJAX } from "../static/mathjax";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
 
+/**
+ * FieldType
+ */
 interface FieldType {
   name: string;
   text: string;
 }
 
+/**
+ * ConnectFieldProps
+ */
 interface ConnectFieldProps {
   type: string;
   content: {
@@ -41,6 +47,9 @@ interface ConnectFieldProps {
   invisible?: boolean;
 }
 
+/**
+ * ConnectFieldState
+ */
 interface ConnectFieldState {
   fields: FieldType[];
   counterparts: FieldType[];
@@ -63,10 +72,17 @@ interface ConnectFieldState {
   fieldSavedState: FieldStateStatus;
 }
 
+/**
+ * ConnectField
+ */
 export default class ConnectField extends React.Component<
   ConnectFieldProps,
   ConnectFieldState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: ConnectFieldProps) {
     super(props);
 

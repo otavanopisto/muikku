@@ -9,24 +9,40 @@ import "~/sass/elements/form-elements.scss";
 import { StateType } from "~/reducers";
 import { RecordsType } from "~/reducers/main-function/records";
 
+/**
+ * StudiesToolbarProps
+ */
 interface StudiesToolbarProps {
   i18n: i18nType;
   records: RecordsType;
 }
 
+/**
+ * StudiesToolbarState
+ */
 interface StudiesToolbarState {
   searchquery: string;
 }
 
+/**
+ * StudiesToolbar
+ */
 class StudiesToolbar extends React.Component<
   StudiesToolbarProps,
   StudiesToolbarState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: StudiesToolbarProps) {
     super(props);
     this.onGoBackClick = this.onGoBackClick.bind(this);
   }
 
+  /**
+   * onGoBackClick
+   */
   onGoBackClick() {
     //TODO this is a retarded way to do things if we ever update to a SPA
     //it's a hacky mechanism to make history awesome, once we use a router it gotta be fixed
@@ -47,6 +63,9 @@ class StudiesToolbar extends React.Component<
     }
   }
 
+  /**
+   * render
+   */
   render() {
     return (
       <div className="application-panel__toolbar">
@@ -65,6 +84,10 @@ class StudiesToolbar extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -72,6 +95,9 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ */
 function mapDispatchToProps() {
   return {};
 }

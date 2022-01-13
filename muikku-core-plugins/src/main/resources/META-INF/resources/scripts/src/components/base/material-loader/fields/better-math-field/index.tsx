@@ -8,6 +8,9 @@ import * as React from "react";
 import Toolbar, { MathFieldCommandType } from "./toolbar";
 import Field from "./field";
 
+/**
+ * MathFieldProps
+ */
 interface MathFieldProps {
   className?: string;
   formulaClassName: string;
@@ -32,6 +35,9 @@ interface MathFieldProps {
   userId: number;
 }
 
+/**
+ * MathFieldState
+ */
 interface MathFieldState {
   isFocused: boolean;
   expandMath: boolean;
@@ -47,12 +53,19 @@ const MQ_DEFAULT_SRC =
 const MQ_DEFAULT_CSS =
   "//cdn.muikkuverkko.fi/libs/mathquill/0.10.1/mathquill.css";
 
+/**
+ * MathField
+ */
 export default class MathField extends React.Component<
   MathFieldProps,
   MathFieldState
 > {
   private loadedAce: boolean;
   private loadedMq: boolean;
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: MathFieldProps) {
     super(props);
 
@@ -74,6 +87,19 @@ export default class MathField extends React.Component<
 
     this.checkLoadingOfAceAndMQ(props);
   }
+
+  /**
+   * componentWillReceiveProps
+   * @param nextProps nextProps
+   */
+  componentWillReceiveProps(nextProps: MathFieldProps) {
+    this.checkLoadingOfAceAndMQ(nextProps);
+  }
+
+  /**
+   * checkLoadingOfAceAndMQ
+   * @param props props
+   */
   checkLoadingOfAceAndMQ(props: MathFieldProps) {
     if (!this.loadedAce && !props.dontLoadACE) {
       this.loadedAce = true;
@@ -85,6 +111,7 @@ export default class MathField extends React.Component<
         const script = document.createElement("script");
         script.src = ACE_DEFAULT_SRC;
         script.async = true;
+        // eslint-disable-next-line prettier/prettier
         script.onload = () => {
           const script2 = document.createElement("script");
           script2.src = ACE_MODE_SRC;
@@ -115,9 +142,10 @@ export default class MathField extends React.Component<
       }
     }
   }
-  componentWillReceiveProps(nextProps: MathFieldProps) {
-    this.checkLoadingOfAceAndMQ(nextProps);
-  }
+
+  /**
+   * onFocusField
+   */
   onFocusField() {
     //This is triggered when the field itself gains focus
     //makes the thing set the state to focused so as to show the toolbar
@@ -128,9 +156,17 @@ export default class MathField extends React.Component<
       });
     }
   }
+  /**
+   * onCommand
+   * @param command command
+   */
   onCommand(command: MathFieldCommandType) {
     (this.refs.input as Field).execute(command);
   }
+
+  /**
+   * onBlurField
+   */
   onBlurField() {
     //When the field blurs happens it can be real or fake
     //the unselect function allows me to unselect the selection of an equation in the field
@@ -139,36 +175,69 @@ export default class MathField extends React.Component<
       isFocused: false,
     });
   }
+
+  /**
+   * cancelBlur
+   */
   cancelBlur() {
     //this gets triggered once we have a mousedown event (before the blur)
     //on the toolbar, so we want to cancel it
     (this.refs.input as Field).focus();
   }
+
+  /**
+   * openMathExpanded
+   */
   openMathExpanded() {
     this.setState({
       expandMath: true,
     });
   }
+
+  /**
+   * closeMathExpanded
+   */
   closeMathExpanded() {
     this.setState({
       expandMath: false,
     });
   }
+
+  /**
+   * createNewLatex
+   */
   createNewLatex() {
     //this will trigger the onLatexModeOpen from the Field so the toolbar will react after all
     (this.refs.input as Field).createNewLatex();
   }
+
+  /**
+   * requestImage
+   */
   requestImage() {
     (this.refs.imginput as HTMLInputElement).click();
   }
+
+  /**
+   * onImageRequested
+   * @param e e
+   */
   onImageRequested(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files[0];
     e.target.value = null;
     (this.refs.input as Field).insertImage(file);
   }
+
+  /**
+   * getBase
+   */
   getBase(): HTMLElement {
     return this.refs["base"] as HTMLElement;
   }
+
+  /**
+   * render
+   */
   render() {
     return (
       <div ref="base">

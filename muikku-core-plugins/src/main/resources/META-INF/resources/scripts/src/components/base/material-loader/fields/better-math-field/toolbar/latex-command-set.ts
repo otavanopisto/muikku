@@ -1,4 +1,7 @@
 //Source https://github.com/digabi/rich-text-editor/blob/master/app/latexCommandsWithSvg.js
+/**
+ * LatexCommandType
+ */
 export interface LatexCommandType {
   action: string;
   label?: string;

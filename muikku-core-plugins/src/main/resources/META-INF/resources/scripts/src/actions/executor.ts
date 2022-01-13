@@ -1,3 +1,6 @@
+/**
+ * SimpleActionExecutor
+ */
 export class SimpleActionExecutor {
   private oneFails: () => void;
   private allSucceeds: () => void;
@@ -6,6 +9,9 @@ export class SimpleActionExecutor {
   private success = 0;
   private fails = 0;
 
+  /**
+   * constructor
+   */
   constructor() {
     this.succeeded = this.succeeded.bind(this);
     this.done = this.done.bind(this);
@@ -15,6 +21,9 @@ export class SimpleActionExecutor {
     this.addAction = this.addAction.bind(this);
   }
 
+  /**
+   * done
+   */
   private done() {
     if (this.totals === this.executed) {
       if (this.fails === 0) {
@@ -25,6 +34,11 @@ export class SimpleActionExecutor {
     }
   }
 
+  /**
+   * addAction
+   * @param condition
+   * @param fn
+   */
   public addAction(condition: boolean, fn: () => void) {
     if (condition) {
       this.totals++;
@@ -34,6 +48,9 @@ export class SimpleActionExecutor {
     return this;
   }
 
+  /**
+   * succeeded
+   */
   public succeeded() {
     this.executed++;
     this.success++;
@@ -41,6 +58,9 @@ export class SimpleActionExecutor {
     this.done();
   }
 
+  /**
+   * failed
+   */
   public failed() {
     this.executed++;
     this.fails++;
@@ -48,12 +68,20 @@ export class SimpleActionExecutor {
     this.done();
   }
 
+  /**
+   * onAllSucceed
+   * @param fn
+   */
   public onAllSucceed(fn: () => void) {
     this.allSucceeds = fn;
 
     return this;
   }
 
+  /**
+   * onOneFails
+   * @param fn
+   */
   public onOneFails(fn: () => void) {
     this.oneFails = fn;
 

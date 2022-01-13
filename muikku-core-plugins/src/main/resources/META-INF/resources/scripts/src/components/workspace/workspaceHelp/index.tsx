@@ -10,25 +10,46 @@ import Help from "./help";
 import MaterialEditor from "~/components/base/material-editor";
 import TableOfContentsComponent from "./content";
 
+/**
+ * WorkspaceHelpBodyProps
+ */
 interface WorkspaceHelpBodyProps {
   workspaceUrl: string;
   onActiveNodeIdChange: (newId: number) => any;
 }
 
+/**
+ * WorkspaceHelpBodyState
+ */
 interface WorkspaceHelpBodyState {}
 
+/**
+ * WorkspaceHelpBody
+ */
 export default class WorkspaceHelpBody extends React.Component<
   WorkspaceHelpBodyProps,
   WorkspaceHelpBodyState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: WorkspaceHelpBodyProps) {
     super(props);
 
     this.onOpenNavigation = this.onOpenNavigation.bind(this);
   }
+
+  /**
+   * onOpenNavigation
+   */
   onOpenNavigation() {
     (this.refs.content as any).getWrappedInstance().refresh();
   }
+
+  /**
+   * render
+   */
   render() {
     const navigationComponent = <TableOfContentsComponent ref="content" />;
     return (

@@ -2,16 +2,28 @@ import * as React from "react";
 import Carousel, { CarouselVideoItem } from "~/components/general/carousel";
 import { i18nType } from "~/reducers/base/i18n";
 
+/**
+ * FrontpageVideosProps
+ */
 interface FrontpageVideosProps {
   i18n: i18nType;
 }
 
+/**
+ * FrontpageVideosState
+ */
 interface FrontpageVideosState {}
 
+/**
+ * FrontpageVideos
+ */
 export default class FrontpageVideos extends React.Component<
   FrontpageVideosProps,
   FrontpageVideosState
 > {
+  /**
+   * render
+   */
   render() {
     return (
       <section

@@ -25,6 +25,9 @@ import { MaterialLoaderDate } from "~/components/base/material-loader/date";
 import LazyLoader from "~/components/general/lazy-loader";
 import { StatusType } from "~/reducers/base/status";
 
+/**
+ * HelpMaterialProps
+ */
 interface HelpMaterialProps {
   i18n: i18nType;
   status: StatusType;
@@ -36,16 +39,30 @@ interface HelpMaterialProps {
   setCurrentWorkspace: SetCurrentWorkspaceTriggerType;
 }
 
+/**
+ * HelpMaterialState
+ */
 interface HelpMaterialState {}
 
+/**
+ * WorkspaceMaterial
+ */
 class WorkspaceMaterial extends React.Component<
   HelpMaterialProps,
   HelpMaterialState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: HelpMaterialProps) {
     super(props);
     this.updateWorkspaceActivity = this.updateWorkspaceActivity.bind(this);
   }
+
+  /**
+   * updateWorkspaceActivity
+   */
   updateWorkspaceActivity() {
     //This function is very efficient and reuses as much data as possible so it won't call anything from the server other than
     //to refresh the activity and that's because we are forcing it to do so
@@ -54,6 +71,10 @@ class WorkspaceMaterial extends React.Component<
       refreshActivity: true,
     });
   }
+
+  /**
+   * render
+   */
   render() {
     const isAssignment =
       this.props.materialContentNode.assignmentType === "EVALUATED";
@@ -123,6 +144,10 @@ class WorkspaceMaterial extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -131,6 +156,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators({ setCurrentWorkspace }, dispatch);
 }

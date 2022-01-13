@@ -19,6 +19,9 @@ import {
 } from "~/actions/discussion";
 import { StateType } from "~/reducers";
 
+/**
+ * DiscussionDeleteThreadComponentProps
+ */
 interface DiscussionDeleteThreadComponentProps {
   i18n: i18nType;
   reply?: DiscussionThreadReplyType;
@@ -27,14 +30,24 @@ interface DiscussionDeleteThreadComponentProps {
   children: React.ReactElement<any>;
 }
 
+/**
+ * DiscussionDeleteThreadComponentState
+ */
 interface DiscussionDeleteThreadComponentState {
   locked: boolean;
 }
 
+/**
+ * DiscussionDeleteThreadComponent
+ */
 class DiscussionDeleteThreadComponent extends React.Component<
   DiscussionDeleteThreadComponentProps,
   DiscussionDeleteThreadComponentState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: DiscussionDeleteThreadComponentProps) {
     super(props);
 
@@ -44,14 +57,25 @@ class DiscussionDeleteThreadComponent extends React.Component<
       locked: false,
     };
   }
+
+  /**
+   * deleteComponent
+   * @param closeDialog closeDialog
+   */
   deleteComponent(closeDialog: () => any) {
     this.setState({ locked: true });
     if (!this.props.reply) {
       this.props.deleteCurrentDiscussionThread({
+        /**
+         * success
+         */
         success: () => {
           this.setState({ locked: false });
           closeDialog();
         },
+        /**
+         * fail
+         */
         fail: () => {
           this.setState({ locked: false });
         },
@@ -59,17 +83,30 @@ class DiscussionDeleteThreadComponent extends React.Component<
     } else {
       this.props.deleteDiscussionThreadReplyFromCurrent({
         reply: this.props.reply,
+        /**
+         * success
+         */
         success: () => {
           this.setState({ locked: false });
           closeDialog();
         },
+        /**
+         * fail
+         */
         fail: () => {
           this.setState({ locked: false });
         },
       });
     }
   }
+  /**
+   * render
+   */
   render() {
+    /**
+     * content
+     * @param closeDialog closeDialog
+     */
     const content = (closeDialog: () => any) => (
       <div>
         {this.props.reply
@@ -80,6 +117,9 @@ class DiscussionDeleteThreadComponent extends React.Component<
       </div>
     );
 
+    /**
+     * @param closeDialog
+     */
     const footer = (closeDialog: () => any) => (
       <div className="dialog__button-set">
         <Button
@@ -119,12 +159,20 @@ class DiscussionDeleteThreadComponent extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     { deleteCurrentDiscussionThread, deleteDiscussionThreadReplyFromCurrent },

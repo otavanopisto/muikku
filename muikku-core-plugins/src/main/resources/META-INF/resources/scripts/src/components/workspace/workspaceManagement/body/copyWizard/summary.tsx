@@ -5,6 +5,9 @@ import { CopyWizardStoreType, CopyWizardStoreUpdateType } from "./";
 import { CopyCurrentWorkspaceStepType } from "~/actions/workspaces";
 import Button from "~/components/general/button";
 
+/**
+ * StepProps
+ */
 interface StepProps {
   workspace: WorkspaceType;
   i18n: i18nType;
@@ -15,12 +18,25 @@ interface StepProps {
   step?: CopyCurrentWorkspaceStepType;
 }
 
+/**
+ * StepState
+ */
 interface StepState {}
 
+/**
+ * Step
+ */
 export default class Step extends React.Component<StepProps, StepState> {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: StepProps) {
     super(props);
   }
+  /**
+   * render
+   */
   render() {
     const copyMaterials = this.props.getStore().copyMaterials;
     const beginDate = this.props.getStore().beginDate;

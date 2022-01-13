@@ -9,6 +9,9 @@ import {
   OrganizationSummaryContactDataType,
 } from "~/reducers/organization/summary";
 
+/**
+ * LoadSummaryTriggerType
+ */
 export interface LoadSummaryTriggerType {
   (): AnyActionType;
 }
@@ -45,6 +48,9 @@ export type UPDATE_SUMMARY_STATUS = SpecificActionType<
 // yhteyshenkilöt
 // mApi().organizationUserManagement.contactPersons.read()
 
+/**
+ * loadOrganizationSummary
+ */
 const loadOrganizationSummary: LoadSummaryTriggerType =
   function loadOrganizationSummary() {
     return async (

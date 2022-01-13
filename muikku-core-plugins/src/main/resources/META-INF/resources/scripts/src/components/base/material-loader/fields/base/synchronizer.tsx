@@ -2,6 +2,9 @@ import * as React from "react";
 import { i18nType } from "reducers/base/i18n";
 import { FieldStateStatus } from "~/@types/shared";
 
+/**
+ * SynchronizerProps
+ */
 interface SynchronizerProps {
   synced: boolean;
   syncError: string;
@@ -9,14 +12,24 @@ interface SynchronizerProps {
   onFieldSavedStateChange?: (savedState: FieldStateStatus) => void;
 }
 
+/**
+ * SynchronizerState
+ */
 interface SynchronizerState {
   displaySyncedMessage: boolean;
 }
 
+/**
+ * Synchronizer
+ */
 export default class Synchronizer extends React.PureComponent<
   SynchronizerProps,
   SynchronizerState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: SynchronizerProps) {
     super(props);
 

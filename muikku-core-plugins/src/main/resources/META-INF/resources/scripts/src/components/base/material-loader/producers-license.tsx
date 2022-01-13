@@ -4,6 +4,10 @@ import Link from "~/components/general/link";
 
 type MaterialLoaderProducersLicenseProps = MaterialLoaderProps;
 
+/**
+ * MaterialLoaderProducersLicense
+ * @param props props
+ */
 export function MaterialLoaderProducersLicense(
   props: MaterialLoaderProducersLicenseProps
 ) {

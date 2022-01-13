@@ -16,6 +16,9 @@ import {
   DeleteWorkspaceMaterialContentNodeTriggerType,
 } from "~/actions/workspaces";
 
+/**
+ * ConfirmRemoveAttachmentProps
+ */
 interface ConfirmRemoveAttachmentProps {
   i18n: i18nType;
   materialEditor: WorkspaceMaterialEditorType;
@@ -24,14 +27,24 @@ interface ConfirmRemoveAttachmentProps {
   children: any;
 }
 
+/**
+ * ConfirmRemoveAttachmentState
+ */
 interface ConfirmRemoveAttachmentState {
   locked: boolean;
 }
 
+/**
+ * ConfirmRemoveAttachment
+ */
 class ConfirmRemoveAttachment extends React.Component<
   ConfirmRemoveAttachmentProps,
   ConfirmRemoveAttachmentState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: ConfirmRemoveAttachmentProps) {
     super(props);
     this.state = {
@@ -41,6 +54,10 @@ class ConfirmRemoveAttachment extends React.Component<
     this.cancel = this.cancel.bind(this);
     this.confirm = this.confirm.bind(this);
   }
+  /**
+   * confirm
+   * @param closeDialog closeDialog
+   */
   confirm(closeDialog: () => any) {
     this.setState({
       locked: true,
@@ -50,6 +67,9 @@ class ConfirmRemoveAttachment extends React.Component<
       material: this.props.file,
       workspace: this.props.materialEditor.currentNodeWorkspace,
       removeAnswers: false,
+      /**
+       * fail
+       */
       fail: () => {
         this.setState({
           locked: false,
@@ -57,10 +77,21 @@ class ConfirmRemoveAttachment extends React.Component<
       },
     });
   }
+  /**
+   * cancel
+   * @param closeDialog closeDialog
+   */
   cancel(closeDialog?: () => any) {
     closeDialog && closeDialog();
   }
+  /**
+   * render
+   */
   render() {
+    /**
+     * content
+     * @param closeDialog closeDialog
+     */
     const content = (closeDialog: () => any) => (
       <div>
         <span>
@@ -71,6 +102,10 @@ class ConfirmRemoveAttachment extends React.Component<
       </div>
     );
 
+    /**
+     * footer
+     * @param closeDialog closeDialog
+     */
     const footer = (closeDialog: () => any) => (
       <div className="dialog__button-set">
         <Button
@@ -109,6 +144,10 @@ class ConfirmRemoveAttachment extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -116,6 +155,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ deleteWorkspaceMaterialContentNode }, dispatch);
 }

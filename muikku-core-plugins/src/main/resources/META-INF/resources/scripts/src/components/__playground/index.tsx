@@ -5,17 +5,30 @@ import "brace/mode/html";
 import "brace/theme/github";
 import "~/sass/elements/rich-text.scss";
 
+/**
+ * PlaygroundProps
+ */
 interface PlaygroundProps {}
 
+/**
+ * PlaygroundState
+ */
 interface PlaygroundState {
   html: string;
   codeDisplayed: boolean;
 }
 
+/**
+ * Playground
+ */
 export default class Playground extends React.Component<
   PlaygroundProps,
   PlaygroundState
 > {
+  /**
+   * PlaygroundProps
+   * @param props props
+   */
   constructor(props: PlaygroundProps) {
     super(props);
 
@@ -35,6 +48,25 @@ export default class Playground extends React.Component<
       codeDisplayed: true,
     };
   }
+
+  /**
+   * componentDidMount
+   */
+  componentDidMount() {
+    document.addEventListener("keyup", (e) => {
+      if (e.keyCode == 27 && !e.ctrlKey) {
+        this.setState({ codeDisplayed: !this.state.codeDisplayed });
+      } else if (e.keyCode == 27 && e.ctrlKey) {
+        this.reloadStylesheets();
+      } else if (e.keyCode == 81 && e.ctrlKey) {
+        this.showURLEncoded();
+      }
+    });
+  }
+
+  /**
+   * reloadStylesheets
+   */
   reloadStylesheets() {
     const links = document.getElementsByTagName("link");
     for (let i = 0; i < links.length; i++) {
@@ -44,6 +76,9 @@ export default class Playground extends React.Component<
       }
     }
   }
+  /**
+   * showURLEncoded
+   */
   showURLEncoded() {
     const text = encodeURIComponent(this.state.html);
     let newHash = location.hash;
@@ -63,21 +98,18 @@ export default class Playground extends React.Component<
       newHash;
     prompt("copy this", url);
   }
-  componentDidMount() {
-    document.addEventListener("keyup", (e) => {
-      if (e.keyCode == 27 && !e.ctrlKey) {
-        this.setState({ codeDisplayed: !this.state.codeDisplayed });
-      } else if (e.keyCode == 27 && e.ctrlKey) {
-        this.reloadStylesheets();
-      } else if (e.keyCode == 81 && e.ctrlKey) {
-        this.showURLEncoded();
-      }
-    });
-  }
+
+  /**
+   * onChange
+   * @param newHTML
+   */
   onChange(newHTML: string) {
     this.setState({ html: newHTML });
     localStorage.setItem("HTML", newHTML);
   }
+  /**
+   * Component render methodrender
+   */
   render() {
     const style = { width: "100%", height: "100%" };
     const codeThingStyle = {

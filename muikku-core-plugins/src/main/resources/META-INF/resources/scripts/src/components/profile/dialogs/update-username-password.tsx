@@ -20,6 +20,9 @@ import {
   LoadProfileUsernameTriggerType,
 } from "~/actions/main-function/profile";
 
+/**
+ * UpdateUsernamePasswordDialogProps
+ */
 interface UpdateUsernamePasswordDialogProps {
   i18n: i18nType;
   children: React.ReactElement<any>;
@@ -28,6 +31,9 @@ interface UpdateUsernamePasswordDialogProps {
   loadProfileUsername: LoadProfileUsernameTriggerType;
 }
 
+/**
+ * UpdateUsernamePasswordDialogState
+ */
 interface UpdateUsernamePasswordDialogState {
   username: string;
   oldPassword: string;
@@ -36,10 +42,17 @@ interface UpdateUsernamePasswordDialogState {
   locked: boolean;
 }
 
+/**
+ * UpdateUsernamePasswordDialog
+ */
 class UpdateUsernamePasswordDialog extends React.Component<
   UpdateUsernamePasswordDialogProps,
   UpdateUsernamePasswordDialogState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: UpdateUsernamePasswordDialogProps) {
     super(props);
 
@@ -54,6 +67,10 @@ class UpdateUsernamePasswordDialog extends React.Component<
       locked: false,
     };
   }
+  /**
+   * componentWillReceiveProps
+   * @param nextProps nextProps
+   */
   componentWillReceiveProps(nextProps: UpdateUsernamePasswordDialogProps) {
     if (
       nextProps.profile.username !== null &&
@@ -64,6 +81,10 @@ class UpdateUsernamePasswordDialog extends React.Component<
       });
     }
   }
+  /**
+   * update
+   * @param closeDialog closeDialog
+   */
   update(closeDialog: () => any) {
     const newPassword1 = this.state.newPassword;
     const newPassword2 = this.state.newPasswordConfirm;
@@ -152,13 +173,25 @@ class UpdateUsernamePasswordDialog extends React.Component<
       });
   }
 
+  /**
+   * updateField
+   * @param field field
+   * @param e e
+   */
   updateField(field: string, e: React.ChangeEvent<HTMLInputElement>) {
     const nField: any = {};
     nField[field] = e.target.value;
     this.setState(nField);
   }
 
+  /**
+   * render
+   */
   render() {
+    /**
+     * content
+     * @param closeDialog closeDialog
+     */
     const content = (closeDialog: () => any) => (
       <div>
         <p>
@@ -236,6 +269,10 @@ class UpdateUsernamePasswordDialog extends React.Component<
         </form>
       </div>
     );
+    /**
+     * footer
+     * @param closeDialog closeDialog
+     */
     const footer = (closeDialog: () => any) => (
       <div className="dialog__button-set">
         <Button
@@ -273,6 +310,10 @@ class UpdateUsernamePasswordDialog extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -280,6 +321,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     { displayNotification, loadProfileUsername },

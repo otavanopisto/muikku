@@ -7,6 +7,9 @@ import { ChatMessage } from "./chatMessage";
 import promisify from "~/util/promisify";
 import { i18nType } from "~/reducers/base/i18n";
 
+/**
+ * IPrivateChatProps
+ */
 interface IPrivateChatProps {
   initializingStanza: Element;
   leaveChat: () => void;
@@ -15,6 +18,9 @@ interface IPrivateChatProps {
   i18n: i18nType;
 }
 
+/**
+ * IPrivateChatState
+ */
 interface IPrivateChatState {
   nick: string;
   messages: IBareMessageType[];
@@ -30,6 +36,9 @@ interface IPrivateChatState {
 
 const roleNode = document.querySelector('meta[name="muikku:role"]');
 
+/**
+ * PrivateChat
+ */
 export class PrivateChat extends React.Component<
   IPrivateChatProps,
   IPrivateChatState
@@ -41,6 +50,10 @@ export class PrivateChat extends React.Component<
   private isScrollDetached = false;
   private chatRef: React.RefObject<HTMLDivElement>;
 
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: IPrivateChatProps) {
     super(props);
 
@@ -77,6 +90,9 @@ export class PrivateChat extends React.Component<
     this.loadMessages = this.loadMessages.bind(this);
   }
 
+  /**
+   * componentDidMount
+   */
   componentDidMount() {
     this.messagesListenerHandler = this.props.connection.addHandler(
       this.onPrivateChatMessage,
@@ -106,6 +122,17 @@ export class PrivateChat extends React.Component<
     this.loadMessages();
   }
 
+  /**
+   * componentWillUnmount
+   */
+  componentWillUnmount() {
+    this.props.connection.deleteHandler(this.messagesListenerHandler);
+    this.props.connection.deleteHandler(this.presenceListenerHandler);
+  }
+
+  /**
+   * obtainNick
+   */
   async obtainNick() {
     const user: any = (await promisify(
       mApi().chat.userInfo.read(this.props.jid.split("@")[0], {}),
@@ -116,6 +143,9 @@ export class PrivateChat extends React.Component<
     });
   }
 
+  /**
+   * requestPrescense
+   */
   requestPrescense() {
     this.props.connection.send(
       $pres({
@@ -126,11 +156,9 @@ export class PrivateChat extends React.Component<
     );
   }
 
-  componentWillUnmount() {
-    this.props.connection.deleteHandler(this.messagesListenerHandler);
-    this.props.connection.deleteHandler(this.presenceListenerHandler);
-  }
-
+  /**
+   * onTextFieldFocus
+   */
   onTextFieldFocus() {
     this.isFocused = true;
     if (this.state.messageNotification) {
@@ -140,16 +168,27 @@ export class PrivateChat extends React.Component<
     }
   }
 
+  /**
+   * onTextFieldBlur
+   */
   onTextFieldBlur() {
     this.isFocused = false;
   }
 
+  /**
+   * setCurrentMessageToBeSent
+   * @param e e
+   */
   setCurrentMessageToBeSent(e: React.ChangeEvent<HTMLTextAreaElement>) {
     this.setState({
       currentMessageToBeSent: e.target.value,
     });
   }
 
+  /**
+   * sendMessage
+   * @param event event
+   */
   sendMessage(event: React.FormEvent) {
     event && event.preventDefault();
 
@@ -189,12 +228,20 @@ export class PrivateChat extends React.Component<
     }
   }
 
+  /**
+   * scrollToBottom
+   * @param method method
+   */
   scrollToBottom(method: ScrollBehavior = "smooth") {
     if (this.messagesEnd.current && !this.isScrollDetached) {
       this.messagesEnd.current.scrollIntoView({ behavior: method });
     }
   }
 
+  /**
+   * onPrivateChatMessage
+   * @param stanza stanza
+   */
   onPrivateChatMessage(stanza: Element) {
     const from = stanza.getAttribute("from");
     const fromNick: string = null;
@@ -231,6 +278,11 @@ export class PrivateChat extends React.Component<
 
     return true;
   }
+
+  /**
+   * onEnterPress
+   * @param e e
+   */
   onEnterPress(e: React.KeyboardEvent<HTMLTextAreaElement>) {
     if (e.keyCode == 13 && e.shiftKey == false) {
       e.preventDefault();
@@ -240,6 +292,10 @@ export class PrivateChat extends React.Component<
       return false;
     }
   }
+
+  /**
+   * toggleMinimizeChats
+   */
   toggleMinimizeChats() {
     let minimizedChatList: string[] = JSON.parse(
       window.sessionStorage.getItem("minimizedChats") || "[]"
@@ -266,6 +322,11 @@ export class PrivateChat extends React.Component<
       JSON.stringify(minimizedChatList)
     );
   }
+
+  /**
+   * onPresence
+   * @param stanza stanza
+   */
   onPresence(stanza: Element) {
     const show = stanza.querySelector("show");
     const precense: any = show ? show.textContent : "chat";
@@ -276,6 +337,11 @@ export class PrivateChat extends React.Component<
 
     return true;
   }
+
+  /**
+   * checkScrollDetachment
+   * @param e e
+   */
   checkScrollDetachment(e: React.UIEvent<HTMLDivElement>) {
     if (this.chatRef.current) {
       const isScrolledToBottom =
@@ -287,6 +353,10 @@ export class PrivateChat extends React.Component<
       this.loadMessages();
     }
   }
+
+  /**
+   * isScrolledToTop
+   */
   isScrolledToTop() {
     if (this.chatRef.current) {
       return this.chatRef.current.scrollTop === 0;
@@ -294,6 +364,10 @@ export class PrivateChat extends React.Component<
 
     return false;
   }
+
+  /**
+   * loadMessages
+   */
   loadMessages() {
     if (this.state.loadingMessages || !this.state.canLoadMoreMessages) {
       return;
@@ -394,6 +468,10 @@ export class PrivateChat extends React.Component<
       }
     });
   }
+
+  /**
+   * render
+   */
   render() {
     return (
       <div

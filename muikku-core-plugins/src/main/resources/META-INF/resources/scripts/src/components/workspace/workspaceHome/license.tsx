@@ -7,14 +7,26 @@ import Link from "~/components/general/link";
 
 import "~/sass/elements/license.scss";
 
+/**
+ * LicenseProps
+ */
 interface LicenseProps {
   workspace: WorkspaceType;
   i18n: i18nType;
 }
 
+/**
+ * LicenseState
+ */
 interface LicenseState {}
 
+/**
+ * License
+ */
 class License extends React.Component<LicenseProps, LicenseState> {
+  /**
+   * render
+   */
   render() {
     if (!this.props.workspace || !this.props.workspace.materialDefaultLicense) {
       return null;
@@ -90,6 +102,10 @@ class License extends React.Component<LicenseProps, LicenseState> {
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -97,6 +113,9 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ */
 function mapDispatchToProps() {
   return {};
 }

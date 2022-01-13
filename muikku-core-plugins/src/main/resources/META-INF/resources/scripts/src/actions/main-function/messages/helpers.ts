@@ -19,6 +19,11 @@ const MAX_LOADED_AT_ONCE = 30;
 
 //Why in the world do we have a weird second version?
 //This is a server-side issue, just why we have different paths for different things.
+/**
+ * getApiId
+ * @param item item
+ * @param weirdSecondVersion weirdSecondVersion
+ */
 export function getApiId(
   item: MessagesNavigationItemType,
   weirdSecondVersion = false
@@ -46,6 +51,14 @@ export function getApiId(
 
 let internalLastLoadId: number = null;
 
+/**
+ * loadMessagesHelper
+ * @param location location
+ * @param query query
+ * @param initial initial
+ * @param dispatch dispatch
+ * @param getState getState
+ */
 export async function loadMessagesHelper(
   location: string | null,
   query: string | null,
@@ -236,6 +249,13 @@ export async function loadMessagesHelper(
   }
 }
 
+/**
+ * setLabelStatusCurrentMessage
+ * @param label label
+ * @param isToAddLabel isToAddLabel
+ * @param dispatch dispatch
+ * @param getState getState
+ */
 export async function setLabelStatusCurrentMessage(
   label: MessageThreadLabelType,
   isToAddLabel: boolean,
@@ -305,6 +325,13 @@ export async function setLabelStatusCurrentMessage(
   }
 }
 
+/**
+ * setLabelStatusSelectedMessages
+ * @param label label
+ * @param isToAddLabel isToAddLabel
+ * @param dispatch dispatch
+ * @param getState getState
+ */
 export function setLabelStatusSelectedMessages(
   label: MessageThreadLabelType,
   isToAddLabel: boolean,

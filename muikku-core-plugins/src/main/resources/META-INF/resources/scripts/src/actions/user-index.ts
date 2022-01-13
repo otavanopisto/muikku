@@ -4,18 +4,30 @@ import mApi, { MApiError } from "~/lib/mApi";
 import { UserType } from "~/reducers/user-index";
 import { StateType } from "~/reducers";
 
+/**
+ * LoadUserIndexTriggerType
+ */
 export interface LoadUserIndexTriggerType {
   (userId: number, callback?: (user: UserType) => any): AnyActionType;
 }
 
+/**
+ * LoadUserIndexBySchoolDataTriggerType
+ */
 export interface LoadUserIndexBySchoolDataTriggerType {
   (userId: string, callback?: (user: UserType) => any): AnyActionType;
 }
 
+/**
+ * LoadLoggedUserTriggerType
+ */
 export interface LoadLoggedUserTriggerType {
   (callback?: (user: UserType) => any): AnyActionType;
 }
 
+/**
+ * LoadUserGroupIndexTriggerType
+ */
 export interface LoadUserGroupIndexTriggerType {
   (groupId: number): AnyActionType;
 }
@@ -46,6 +58,10 @@ export type SET_USER_BY_SCHOOL_DATA_INDEX = SpecificActionType<
 
 const fetchingStateUser: { [index: number]: boolean } = {};
 const fetchingStateUserBySchoolData: { [index: string]: boolean } = {};
+/**
+ * loadLoggedUser
+ * @param callback callback
+ */
 const loadLoggedUser: LoadLoggedUserTriggerType = function loadLoggedUser(
   callback
 ) {
@@ -88,6 +104,10 @@ const loadLoggedUser: LoadLoggedUserTriggerType = function loadLoggedUser(
   };
 };
 
+/**
+ * loadUserGroupIndex
+ * @param groupId groupId
+ */
 const loadUserGroupIndex: LoadUserGroupIndexTriggerType =
   function loadUserGroupIndex(groupId) {
     return async (

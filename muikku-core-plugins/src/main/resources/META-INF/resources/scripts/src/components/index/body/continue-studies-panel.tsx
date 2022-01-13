@@ -8,18 +8,30 @@ import { StateType } from "~/reducers";
 import "~/sass/elements/panel.scss";
 import "~/sass/elements/item-list.scss";
 
+/**
+ * ContinueStudiesPanelProps
+ */
 interface ContinueStudiesPanelProps {
   i18n: i18nType;
   status: StatusType;
   lastWorkspace: WorkspaceMaterialReferenceType;
 }
 
+/**
+ * ContinueStudiesPanelState
+ */
 interface ContinueStudiesPanelState {}
 
+/**
+ * ContinueStudiesPanel
+ */
 class ContinueStudiesPanel extends React.Component<
   ContinueStudiesPanelProps,
   ContinueStudiesPanelState
 > {
+  /**
+   * render
+   */
   render() {
     if (!this.props.status.loggedIn) {
       return null;
@@ -59,6 +71,10 @@ class ContinueStudiesPanel extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     status: state.status,
@@ -67,6 +83,9 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ */
 function mapDispatchToProps() {
   return {};
 }

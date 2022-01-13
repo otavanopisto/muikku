@@ -99,6 +99,7 @@ export default class Workspace extends React.Component<
 
   /**
    * constructor
+   * @param props props
    */
   constructor(props: WorkspaceProps) {
     super(props);
@@ -167,6 +168,8 @@ export default class Workspace extends React.Component<
 
   /**
    * loadlib
+   * @param url url
+   * @param onload onload
    */
   loadlib(url: string, onload?: () => void) {
     if (this.loadedLibs.indexOf(url) !== -1) {
@@ -388,6 +391,10 @@ export default class Workspace extends React.Component<
       this.props.store.dispatch(
         setCurrentWorkspace({
           workspaceId: state.status.currentWorkspaceId,
+          /**
+           * success
+           * @param workspace workspace
+           */
           success: (workspace) => {
             if (!workspace.staffMembers && state.status.loggedIn) {
               this.props.store.dispatch(
@@ -775,6 +782,9 @@ export default class Workspace extends React.Component<
               );
             } else if (hasLocationHashAndWillHaveToScrollIntoPosition) {
               // this is executing on first time
+              /**
+               * scrollToElement
+               */
               const scrollToElement = () => {
                 const element = document.querySelector(window.location.hash);
                 if (element) {
@@ -789,6 +799,9 @@ export default class Workspace extends React.Component<
                 return false;
               };
 
+              /**
+               * checkIsScrolledIntoView
+               */
               const checkIsScrolledIntoView = () => {
                 const element = document.querySelector(window.location.hash);
                 if (!element) {
@@ -805,6 +818,9 @@ export default class Workspace extends React.Component<
                 return isVisible;
               };
 
+              /**
+               * aggressiveSetToScrollPosition
+               */
               const aggressiveSetToScrollPosition = () => {
                 scrollToElement();
                 setTimeout(() => {
@@ -912,6 +928,10 @@ export default class Workspace extends React.Component<
       this.props.store.dispatch(
         setCurrentWorkspace({
           workspaceId: state.status.currentWorkspaceId,
+          /**
+           * success
+           * @param workspace workspace
+           */
           success: (workspace) => {
             if (!workspace.staffMembers && state.status.loggedIn) {
               this.props.store.dispatch(
@@ -985,6 +1005,10 @@ export default class Workspace extends React.Component<
       this.props.store.dispatch(
         setCurrentWorkspace({
           workspaceId: state.status.currentWorkspaceId,
+          /**
+           * success
+           * @param workspace workspace
+           */
           success: (workspace) => {
             if (
               !workspace.students &&
@@ -1050,6 +1074,9 @@ export default class Workspace extends React.Component<
       this.props.store.dispatch(
         setCurrentWorkspace({
           workspaceId: state.status.currentWorkspaceId,
+          /**
+           * success
+           */
           success: () => {
             this.props.store.dispatch(
               loadCurrentWorkspaceUserGroupPermissions() as Action
@@ -1076,7 +1103,7 @@ export default class Workspace extends React.Component<
 
   /**
    * renderWorkspacePermissions
-   * @param props
+   * @param props props
    * @returns JSX.Element
    */
   renderWorkspacePermissions(props: RouteComponentProps<any>) {
@@ -1093,6 +1120,9 @@ export default class Workspace extends React.Component<
       this.props.store.dispatch(
         setCurrentWorkspace({
           workspaceId: state.status.currentWorkspaceId,
+          /**
+           * success
+           */
           success: () => {
             this.props.store.dispatch(
               loadCurrentWorkspaceUserGroupPermissions() as Action
@@ -1140,6 +1170,10 @@ export default class Workspace extends React.Component<
       this.props.store.dispatch(
         setCurrentWorkspace({
           workspaceId: state.status.currentWorkspaceId,
+          /**
+           * success
+           * @param workspace workspace
+           */
           success: (workspace) => {
             this.props.store.dispatch(
               loadCurrentWorkspaceUserGroupPermissions() as Action

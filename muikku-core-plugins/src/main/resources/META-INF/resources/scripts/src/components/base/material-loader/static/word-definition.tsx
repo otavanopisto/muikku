@@ -2,6 +2,9 @@ import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
 import Dropdown from "~/components/general/dropdown";
 
+/**
+ * WordDefinitionProps
+ */
 interface WordDefinitionProps {
   dataset: {
     muikkuWordDefinition: string;
@@ -10,13 +13,24 @@ interface WordDefinitionProps {
   invisible?: boolean;
 }
 
+/**
+ * WordDefinition
+ */
 export default class WordDefinition extends React.Component<
   WordDefinitionProps,
   Record<string, unknown>
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: WordDefinitionProps) {
     super(props);
   }
+
+  /**
+   * render
+   */
   render() {
     //TODO remove the data-muikku-word-definition thing, it's basically used for styling alone
     if (this.props.invisible) {

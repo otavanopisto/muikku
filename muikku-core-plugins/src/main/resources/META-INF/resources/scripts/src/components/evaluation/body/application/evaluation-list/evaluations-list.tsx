@@ -89,6 +89,7 @@ export class EvaluationList extends React.Component<
    * Filters and sorts any given assessments list in following order
    * search string, evaluation sort function, sort selection aka checkboks and by importance which
    * also returns sorted list
+   * @param assessments assessments
    */
   filterAndSortAssessments = (assessments?: AssessmentRequest[]) => {
     const {
@@ -182,7 +183,8 @@ export class EvaluationList extends React.Component<
 
   /**
    * Filters assessments by active sort function
-   * @param assessments
+   * @param assessments assessments
+   * @param sortBy sortBy
    */
   sortAssessmentsBySortBy = (
     assessments: AssessmentRequest[],

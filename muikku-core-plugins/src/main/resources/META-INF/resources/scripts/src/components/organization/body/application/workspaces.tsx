@@ -20,6 +20,9 @@ import {
   WorkspaceListType,
 } from "~/reducers/workspaces";
 
+/**
+ * OrganizationWorkspacesProps
+ */
 interface OrganizationWorkspacesProps {
   i18n: i18nType;
   workspacesState: WorkspacesStateType;
@@ -28,6 +31,10 @@ interface OrganizationWorkspacesProps {
   workspaces: WorkspaceListType;
 }
 
+/**
+ * OrganizationWorkspaces
+ * @param props props
+ */
 const OrganizationWorkspaces: React.FC<OrganizationWorkspacesProps> = (
   props
 ) => {
@@ -91,6 +98,10 @@ const OrganizationWorkspaces: React.FC<OrganizationWorkspacesProps> = (
   );
 };
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -100,6 +111,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     { loadMoreOrganizationWorkspacesFromServer },

@@ -121,6 +121,9 @@ class ModifyThreadReplyDrawer extends SessionStateComponent<
     this.props.modifyReplyFromCurrentThread({
       reply: this.props.reply,
       message: this.state.text,
+      /**
+       * success
+       */
       success: () => {
         this.props.onClickCancel && this.props.onClickCancel();
         this.justClear(["text"], this.props.reply.id);
@@ -128,6 +131,9 @@ class ModifyThreadReplyDrawer extends SessionStateComponent<
           locked: false,
         });
       },
+      /**
+       * fail
+       */
       fail: () => {
         this.setState({
           locked: false,
@@ -136,6 +142,9 @@ class ModifyThreadReplyDrawer extends SessionStateComponent<
     });
   }
 
+  /**
+   *
+   */
   handleOnCancelClick = () => {
     this.props.onClickCancel && this.props.onClickCancel();
   };

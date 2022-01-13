@@ -50,37 +50,64 @@ export type UPDATE_RECORDS_SET_FILES = SpecificActionType<
   Array<UserFileType>
 >;
 
+/**
+ * SetLocationToStatisticsInTranscriptOfRecordsTriggerType
+ */
 export interface SetLocationToStatisticsInTranscriptOfRecordsTriggerType {
   (): AnyActionType;
 }
+/**
+ * SetLocationToSummaryInTranscriptOfRecordsTriggerType
+ */
 export interface SetLocationToSummaryInTranscriptOfRecordsTriggerType {
   (): AnyActionType;
 }
 
+/**
+ * SetLocationToYoInTranscriptOfRecordsTriggerType
+ */
 export interface SetLocationToYoInTranscriptOfRecordsTriggerType {
   (): AnyActionType;
 }
 
+/**
+ * UpdateAllStudentUsersAndSetViewToRecordsTriggerType
+ */
 export interface UpdateAllStudentUsersAndSetViewToRecordsTriggerType {
   (): AnyActionType;
 }
 
+/**
+ * SetCurrentStudentUserViewAndWorkspaceTriggerType
+ */
 export interface SetCurrentStudentUserViewAndWorkspaceTriggerType {
   (userEntityId: number, userId: string, workspaceId: number): AnyActionType;
 }
 
+/**
+ * SetLocationToVopsInTranscriptOfRecordsTriggerType
+ */
 export interface SetLocationToVopsInTranscriptOfRecordsTriggerType {
   (): AnyActionType;
 }
 
+/**
+ * SetLocationToHopsInTranscriptOfRecordsTriggerType
+ */
 export interface SetLocationToHopsInTranscriptOfRecordsTriggerType {
   (): AnyActionType;
 }
 
+/**
+ * UpdateTranscriptOfRecordsFilesTriggerType
+ */
 export interface UpdateTranscriptOfRecordsFilesTriggerType {
   (): AnyActionType;
 }
 
+/**
+ * updateAllStudentUsersAndSetViewToRecords
+ */
 const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewToRecordsTriggerType =
   function updateAllStudentUsersAndSetViewToRecords() {
     return async (
@@ -339,6 +366,12 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
     };
   };
 
+/**
+ * setCurrentStudentUserViewAndWorkspace
+ * @param userEntityId userEntityId
+ * @param userId userId
+ * @param workspaceId workspaceId
+ */
 const setCurrentStudentUserViewAndWorkspace: SetCurrentStudentUserViewAndWorkspaceTriggerType =
   function setCurrentStudentUserViewAndWorkspace(
     userEntityId,
@@ -521,6 +554,9 @@ const setCurrentStudentUserViewAndWorkspace: SetCurrentStudentUserViewAndWorkspa
     };
   };
 
+/**
+ * setLocationToStatisticsInTranscriptOfRecords
+ */
 const setLocationToStatisticsInTranscriptOfRecords: SetLocationToStatisticsInTranscriptOfRecordsTriggerType =
   function setLocationToStatisticsInTranscriptOfRecords() {
     return {
@@ -529,6 +565,9 @@ const setLocationToStatisticsInTranscriptOfRecords: SetLocationToStatisticsInTra
     };
   };
 
+/**
+ * setLocationToSummaryInTranscriptOfRecords
+ */
 const setLocationToSummaryInTranscriptOfRecords: SetLocationToSummaryInTranscriptOfRecordsTriggerType =
   function setLocationToSummaryInTranscriptOfRecords() {
     return {
@@ -537,6 +576,9 @@ const setLocationToSummaryInTranscriptOfRecords: SetLocationToSummaryInTranscrip
     };
   };
 
+/**
+ * setLocationToYoInTranscriptOfRecords
+ */
 const setLocationToYoInTranscriptOfRecords: SetLocationToYoInTranscriptOfRecordsTriggerType =
   function setLocationToYoInTranscriptOfRecords() {
     return {
@@ -545,6 +587,9 @@ const setLocationToYoInTranscriptOfRecords: SetLocationToYoInTranscriptOfRecords
     };
   };
 
+/**
+ * setLocationToVopsInTranscriptOfRecords
+ */
 const setLocationToVopsInTranscriptOfRecords: SetLocationToVopsInTranscriptOfRecordsTriggerType =
   function setLocationToVopsInTranscriptOfRecords() {
     return {
@@ -553,6 +598,9 @@ const setLocationToVopsInTranscriptOfRecords: SetLocationToVopsInTranscriptOfRec
     };
   };
 
+/**
+ * setLocationToHopsInTranscriptOfRecords
+ */
 const setLocationToHopsInTranscriptOfRecords: SetLocationToHopsInTranscriptOfRecordsTriggerType =
   function setLocationToHopsInTranscriptOfRecords() {
     return {
@@ -561,6 +609,9 @@ const setLocationToHopsInTranscriptOfRecords: SetLocationToHopsInTranscriptOfRec
     };
   };
 
+/**
+ * updateTranscriptOfRecordsFiles
+ */
 const updateTranscriptOfRecordsFiles: UpdateTranscriptOfRecordsFilesTriggerType =
   function updateTranscriptOfRecordsFiles() {
     return async (

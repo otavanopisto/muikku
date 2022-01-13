@@ -14,19 +14,32 @@ import { StateType } from "~/reducers";
 import "~/sass/elements/link.scss";
 import Button, { ButtonPill } from "~/components/general/button";
 
+/**
+ * CommunicatorApplicationProps
+ */
 interface CommunicatorApplicationProps {
   aside: React.ReactElement<any>;
   i18n: i18nType;
 }
 
+/**
+ * CommunicatorApplicationState
+ */
 interface CommunicatorApplicationState {
   updateSignatureDialogOpened: boolean;
 }
 
+/**
+ * CommunicatorApplication
+ */
 class CommunicatorApplication extends React.Component<
   CommunicatorApplicationProps,
   CommunicatorApplicationState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: CommunicatorApplicationProps) {
     super(props);
 
@@ -37,18 +50,30 @@ class CommunicatorApplication extends React.Component<
       updateSignatureDialogOpened: false,
     };
   }
+
+  /**
+   * openDialogSignature
+   * @param closeDropdown closeDropdown
+   */
   openDialogSignature(closeDropdown?: () => any) {
     this.setState({
       updateSignatureDialogOpened: true,
     });
     closeDropdown && closeDropdown();
   }
+
+  /**
+   * closeDialogSignature
+   */
   closeDialogSignature() {
     this.setState({
       updateSignatureDialogOpened: false,
     });
   }
 
+  /**
+   * render
+   */
   render() {
     const title = this.props.i18n.text.get("plugin.communicator.pageTitle");
     const icon = (
@@ -108,12 +133,20 @@ class CommunicatorApplication extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return {};
 }

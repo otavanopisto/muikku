@@ -57,6 +57,9 @@ import {
   toggleAllMessageItems,
 } from "~/actions/main-function/messages/index";
 
+/**
+ * CommunicatorToolbarProps
+ */
 interface CommunicatorToolbarProps {
   messages: MessagesType;
   i18n: i18nType;
@@ -76,17 +79,27 @@ interface CommunicatorToolbarProps {
   toggleAllMessageItems: ToggleSelectAllMessageThreadsTriggerType;
 }
 
+/**
+ * CommunicatorToolbarState
+ */
 interface CommunicatorToolbarState {
   labelFilter: string;
   isCurrentRead: boolean;
   searchquery: any;
 }
 
+/**
+ * CommunicatorToolbar
+ */
 class CommunicatorToolbar extends React.Component<
   CommunicatorToolbarProps,
   CommunicatorToolbarState
 > {
   private focused: boolean;
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: CommunicatorToolbarProps) {
     super(props);
     this.updateLabelFilter = this.updateLabelFilter.bind(this);
@@ -109,55 +122,11 @@ class CommunicatorToolbar extends React.Component<
     };
   }
 
-  updateSearchWithQuery(query: string) {
-    this.setState({
-      searchquery: query,
-    });
-    this.props.loadMessageThreads(null, query);
-  }
-
-  loadMessage(messageId: number) {
-    if (history.replaceState) {
-      history.replaceState(
-        "",
-        "",
-        location.hash.split("/")[0] + "/" + messageId
-      );
-      window.dispatchEvent(new HashChangeEvent("hashchange"));
-    } else {
-      location.hash = location.hash.split("/")[0] + "/" + messageId;
-    }
-  }
-  updateLabelFilter(e: React.ChangeEvent<HTMLInputElement>) {
-    this.setState({ labelFilter: e.target.value });
-  }
-  onCreateNewLabel() {
-    if (this.state.labelFilter.trim()) {
-      this.props.addMessagesNavigationLabel(this.state.labelFilter.trim());
-      this.resetLabelFilter();
-    }
-  }
-  onGoBackClick(e: React.MouseEvent<HTMLAnchorElement>) {
-    if (history.replaceState) {
-      const canGoBack =
-        (!document.referrer ||
-          document.referrer.indexOf(window.location.host) !== -1) &&
-        history.length;
-      if (canGoBack && location.hash.indexOf("?f") === -1) {
-        history.back();
-      } else {
-        history.replaceState("", "", location.hash.split("/")[0]);
-        window.dispatchEvent(new HashChangeEvent("hashchange"));
-      }
-    } else {
-      location.hash = location.hash.split("/")[0];
-    }
-  }
-  resetLabelFilter() {
-    this.setState({
-      labelFilter: "",
-    });
-  }
+  /**
+   * componentWillUpdate
+   * @param nextProps nextProps
+   * @param nextState nextState
+   */
   componentWillUpdate(
     nextProps: CommunicatorToolbarProps,
     nextState: CommunicatorToolbarState
@@ -178,6 +147,86 @@ class CommunicatorToolbar extends React.Component<
       });
     }
   }
+
+  /**
+   * updateSearchWithQuery
+   * @param query query
+   */
+  updateSearchWithQuery(query: string) {
+    this.setState({
+      searchquery: query,
+    });
+    this.props.loadMessageThreads(null, query);
+  }
+
+  /**
+   * loadMessage
+   * @param messageId messageId
+   */
+  loadMessage(messageId: number) {
+    if (history.replaceState) {
+      history.replaceState(
+        "",
+        "",
+        location.hash.split("/")[0] + "/" + messageId
+      );
+      window.dispatchEvent(new HashChangeEvent("hashchange"));
+    } else {
+      location.hash = location.hash.split("/")[0] + "/" + messageId;
+    }
+  }
+
+  /**
+   * updateLabelFilter
+   * @param e e
+   */
+  updateLabelFilter(e: React.ChangeEvent<HTMLInputElement>) {
+    this.setState({ labelFilter: e.target.value });
+  }
+
+  /**
+   * onCreateNewLabel
+   */
+  onCreateNewLabel() {
+    if (this.state.labelFilter.trim()) {
+      this.props.addMessagesNavigationLabel(this.state.labelFilter.trim());
+      this.resetLabelFilter();
+    }
+  }
+
+  /**
+   * onGoBackClick
+   * @param e e
+   */
+  onGoBackClick(e: React.MouseEvent<HTMLAnchorElement>) {
+    if (history.replaceState) {
+      const canGoBack =
+        (!document.referrer ||
+          document.referrer.indexOf(window.location.host) !== -1) &&
+        history.length;
+      if (canGoBack && location.hash.indexOf("?f") === -1) {
+        history.back();
+      } else {
+        history.replaceState("", "", location.hash.split("/")[0]);
+        window.dispatchEvent(new HashChangeEvent("hashchange"));
+      }
+    } else {
+      location.hash = location.hash.split("/")[0];
+    }
+  }
+
+  /**
+   * resetLabelFilter
+   */
+  resetLabelFilter() {
+    this.setState({
+      labelFilter: "",
+    });
+  }
+
+  /**
+   * toggleCurrentMessageReadStatus
+   */
   toggleCurrentMessageReadStatus() {
     this.props.toggleMessageThreadReadStatus(
       this.props.messages.currentThread.messages[0].communicatorMessageId,
@@ -187,14 +236,23 @@ class CommunicatorToolbar extends React.Component<
       isCurrentRead: !this.state.isCurrentRead,
     });
   }
+  /**
+   * onInputFocus
+   */
   onInputFocus() {
     this.focused = true;
   }
 
+  /**
+   * onInputBlur
+   */
   onInputBlur() {
     this.focused = false;
   }
 
+  /**
+   * render
+   */
   render() {
     const currentLocation = this.props.messages.navigation.find(
       (item) => item.location === this.props.messages.location
@@ -529,6 +587,10 @@ class CommunicatorToolbar extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     messages: state.messages,
@@ -536,6 +598,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     {

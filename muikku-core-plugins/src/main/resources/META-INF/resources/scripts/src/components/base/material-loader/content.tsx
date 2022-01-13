@@ -3,17 +3,28 @@ import { MaterialLoaderProps } from "~/components/base/material-loader";
 import Base from "~/components/base/material-loader/base";
 import BinaryMaterialLoader from "~/components/base/material-loader/binary";
 
+/**
+ * MaterialLoaderContentProps
+ */
 interface MaterialLoaderContentProps extends MaterialLoaderProps {
   answersChecked: boolean;
   answersVisible: boolean;
   stateConfiguration: any;
 }
 
+/**
+ * stopPropagation
+ * @param e e
+ */
 function stopPropagation(e: React.MouseEvent<HTMLDivElement>) {
   e.stopPropagation();
 }
 
 //This gets called once the material modified and the server comfirmed it was modified
+/**
+ * onConfirmedAndSyncedModification
+ * @param props props
+ */
 function onConfirmedAndSyncedModification(props: MaterialLoaderContentProps) {
   //What we basically want to do this is because when the websocket gets called
   //the state gets changed to ANSWERED from UNANSWERED but our client side
@@ -37,6 +48,10 @@ function onConfirmedAndSyncedModification(props: MaterialLoaderContentProps) {
   }
 }
 //Gets called on any modification of the material task
+/**
+ * onModification
+ * @param props props
+ */
 function onModification(props: MaterialLoaderContentProps) {
   //We use this function to basically modify the state with the modify state
   //Currently only used in exercises when the modify state sends them back to be answered
@@ -61,6 +76,10 @@ function onModification(props: MaterialLoaderContentProps) {
   }
 }
 
+/**
+ * MaterialLoaderContent
+ * @param props props
+ */
 export function MaterialLoaderContent(props: MaterialLoaderContentProps) {
   if (props.isViewRestricted) {
     return (

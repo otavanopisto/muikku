@@ -11,15 +11,27 @@ import { VOPSType } from "~/reducers/main-function/vops";
 import VopsGraph from "~/components/base/vops";
 import { StateType } from "~/reducers";
 
+/**
+ * VopsProps
+ */
 interface VopsProps {
   i18n: i18nType;
   records: RecordsType;
   vops: VOPSType;
 }
 
+/**
+ * VopsState
+ */
 interface VopsState {}
 
+/**
+ * Vops
+ */
 class Vops extends React.Component<VopsProps, VopsState> {
+  /**
+   * render
+   */
   render() {
     if (this.props.records.location !== "vops") {
       return null;
@@ -45,6 +57,10 @@ class Vops extends React.Component<VopsProps, VopsState> {
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -53,6 +69,9 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ */
 function mapDispatchToProps() {
   return {};
 }

@@ -55,6 +55,9 @@ interface WorkspaceEditorState {
   locked: boolean;
 }
 
+/**
+ * EvaluationPriceObject
+ */
 interface EvaluationPriceObject {
   name: string;
   value: number;
@@ -300,6 +303,7 @@ class WorkspaceEditor extends SessionStateComponent<
 
   /**
    * loadExistingBilledPrice
+   * @param assessmentIdentifier assessmentIdentifier
    * @returns exixting billed price object
    */
   loadExistingBilledPrice = async (
@@ -405,6 +409,9 @@ class WorkspaceEditor extends SessionStateComponent<
             verbalAssessment: literalEvaluation,
             assessmentDate: new Date().getTime().toString(),
           },
+          /**
+           * onSuccess
+           */
           onSuccess: () => {
             cleanWorkspaceAndSupplementationDrafts(this.state.draftId);
             this.setStateAndClear(
@@ -424,6 +431,9 @@ class WorkspaceEditor extends SessionStateComponent<
 
             onClose && onClose();
           },
+          /**
+           * onFail
+           */
           onFail: () => {
             this.setState({
               locked: false,
@@ -456,6 +466,9 @@ class WorkspaceEditor extends SessionStateComponent<
             verbalAssessment: literalEvaluation,
             assessmentDate: latestEvent.date,
           },
+          /**
+           * onSuccess
+           */
           onSuccess: () => {
             cleanWorkspaceAndSupplementationDrafts(this.state.draftId);
             this.setStateAndClear(
@@ -475,6 +488,9 @@ class WorkspaceEditor extends SessionStateComponent<
 
             onClose && onClose();
           },
+          /**
+           * onFail
+           */
           onFail: () => {
             this.setState({
               locked: false,
@@ -502,6 +518,9 @@ class WorkspaceEditor extends SessionStateComponent<
           verbalAssessment: literalEvaluation,
           assessmentDate: new Date().getTime().toString(),
         },
+        /**
+         * onSuccess
+         */
         onSuccess: () => {
           cleanWorkspaceAndSupplementationDrafts(this.state.draftId);
           this.setStateAndClear(
@@ -517,6 +536,9 @@ class WorkspaceEditor extends SessionStateComponent<
 
           onClose && onClose();
         },
+        /**
+         * onFail
+         */
         onFail: () => onClose(),
       });
     }

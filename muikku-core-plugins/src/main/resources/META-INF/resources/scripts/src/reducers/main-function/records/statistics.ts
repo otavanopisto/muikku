@@ -2,17 +2,28 @@ import { ActionType } from "actions";
 
 export type StatisticsStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
 
+/**
+ * StatisticsDataType
+ */
 export interface StatisticsDataType {
   studyStartDate: string;
   studyTimeEnd: string;
   studyEndDate: string;
 }
 
+/**
+ * StatisticsType
+ */
 export interface StatisticsType {
   status: StatisticsStatusType;
   value: StatisticsDataType;
 }
 
+/**
+ * statistics
+ * @param state state
+ * @param action action
+ */
 export default function statistics(
   state: StatisticsType = {
     status: "WAIT",

@@ -53,12 +53,18 @@ import moment from "~/lib/moment";
 import { TagItem } from "~/components/general/tag-input";
 import { UserStaffType } from "~/reducers/user-index";
 
+/**
+ * ValidationType
+ */
 interface ValidationType {
   nameValid: number;
 }
 
 type UserCategoryType = "students" | "staff";
 
+/**
+ * OrganizationEditWorkspaceProps
+ */
 interface OrganizationEditWorkspaceProps {
   children?: React.ReactElement<any>;
   i18n: i18nType;
@@ -76,6 +82,9 @@ interface OrganizationEditWorkspaceProps {
   loadWorkspaces: LoadWorkspacesFromServerTriggerType;
 }
 
+/**
+ * OrganizationEditWorkspaceState
+ */
 interface OrganizationEditWorkspaceState {
   beginDate: any;
   endDate: any;
@@ -106,6 +115,9 @@ interface OrganizationEditWorkspaceState {
   staffRemoved: boolean;
 }
 
+/**
+ * OrganizationEditWorkspace
+ */
 class OrganizationEditWorkspace extends React.Component<
   OrganizationEditWorkspaceProps,
   OrganizationEditWorkspaceState
@@ -113,6 +125,10 @@ class OrganizationEditWorkspace extends React.Component<
   private totalSteps: number;
   private usersPerPage = 5;
 
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: OrganizationEditWorkspaceProps) {
     super(props);
     this.totalSteps = 6;
@@ -171,6 +187,12 @@ class OrganizationEditWorkspace extends React.Component<
     this.turnStudentsToSelectItems = this.turnStudentsToSelectItems.bind(this);
   }
 
+  /**
+   * goToPage
+   * @param n n
+   * @param loader loader
+   * @param query query
+   */
   goToPage(n: number, loader: LoadUsersOfWorkspaceTriggerType, query: string) {
     const data = {
       workspace: this.props.workspace,
@@ -183,6 +205,10 @@ class OrganizationEditWorkspace extends React.Component<
     loader(data);
   }
 
+  /**
+   * goToStudentPage
+   * @param n n
+   */
   goToStudentPage(n: number) {
     const query: string =
       this.state.searchValues && this.state.searchValues.staff
@@ -195,6 +221,10 @@ class OrganizationEditWorkspace extends React.Component<
     );
   }
 
+  /**
+   * goToStaffPage
+   * @param n n
+   */
   goToStaffPage(n: number) {
     const query: string =
       this.state.searchValues && this.state.searchValues.staff
@@ -203,6 +233,10 @@ class OrganizationEditWorkspace extends React.Component<
     this.goToPage(n, this.props.loadCurrentOrganizationWorkspaceStaff, query);
   }
 
+  /**
+   * toggleStudentRemove
+   * @param usr usr
+   */
   toggleStudentRemove(usr: UiSelectItem) {
     const newRemoveState = this.state.removeStudents.some(
       (rStudent) => rStudent.id === usr.id
@@ -214,6 +248,10 @@ class OrganizationEditWorkspace extends React.Component<
     });
   }
 
+  /**
+   * toggleStaffRemove
+   * @param usr usr
+   */
   toggleStaffRemove(usr: UiSelectItem) {
     const newRemoveState = this.state.removeStaff.some(
       (rStaff) => rStaff.id === usr.id
@@ -225,6 +263,12 @@ class OrganizationEditWorkspace extends React.Component<
     });
   }
 
+  /**
+   * doWorkspaceUserSearch
+   * @param loader loader
+   * @param q q
+   * @param type type
+   */
   doWorkspaceUserSearch(
     loader: LoadUsersOfWorkspaceTriggerType,
     q: string,
@@ -237,6 +281,9 @@ class OrganizationEditWorkspace extends React.Component<
         firstResult: 0,
         maxResults: 5,
       },
+      /**
+       * @param users
+       */
       success: (users: WorkspaceStudentListType | WorkspaceStaffListType) => {
         this.setState({
           pages: {
@@ -249,6 +296,10 @@ class OrganizationEditWorkspace extends React.Component<
     loader(data);
   }
 
+  /**
+   * doWorkspaceStudentSearch
+   * @param q q
+   */
   doWorkspaceStudentSearch(q: string) {
     this.doWorkspaceUserSearch(
       this.props.loadCurrentOrganizationWorkspaceStudents,
@@ -257,6 +308,10 @@ class OrganizationEditWorkspace extends React.Component<
     );
   }
 
+  /**
+   * doWorkspaceStaffSearch
+   * @param q q
+   */
   doWorkspaceStaffSearch(q: string) {
     this.doWorkspaceUserSearch(
       this.props.loadCurrentOrganizationWorkspaceStaff,
@@ -265,16 +320,28 @@ class OrganizationEditWorkspace extends React.Component<
     );
   }
 
+  /**
+   * doStudentSearch
+   * @param q q
+   */
   doStudentSearch(q: string) {
     this.props.loadStudents({ payload: { q } });
     this.props.loadUserGroups({ payload: { q } });
   }
 
+  /**
+   * selectStudent
+   * @param student student
+   */
   selectStudent(student: SelectItem) {
     const newAddState = [...this.state.addStudents, student];
     this.setState({ addStudents: newAddState });
   }
 
+  /**
+   * deleteStudent
+   * @param student student
+   */
   deleteStudent(student: SelectItem) {
     const newAddState = this.state.addStudents.filter(
       (std) => std.id !== student.id
@@ -282,15 +349,27 @@ class OrganizationEditWorkspace extends React.Component<
     this.setState({ addStudents: newAddState });
   }
 
+  /**
+   * doStaffSearch
+   * @param q q
+   */
   doStaffSearch(q: string) {
     this.props.loadStaff({ payload: { q } });
   }
 
+  /**
+   * selectStaff
+   * @param staff staff
+   */
   selectStaff(staff: SelectItem) {
     const newAddState = [...this.state.addStaff, staff];
     this.setState({ addStaff: newAddState });
   }
 
+  /**
+   * deleteStaff
+   * @param staff staff
+   */
   deleteStaff(staff: SelectItem) {
     const newAddState = this.state.addStaff.filter(
       (stf) => stf.id !== staff.id
@@ -298,10 +377,17 @@ class OrganizationEditWorkspace extends React.Component<
     this.setState({ addStaff: newAddState });
   }
 
+  /**
+   * setSelectedWorkspace
+   */
   setSelectedWorkspace() {
     this.props.setCurrentOrganizationWorkspace({
       workspaceId: this.props.workspace.id,
       loadDetails: true,
+      /**
+       * success
+       * @param workspace workspace
+       */
       success: (workspace: WorkspaceType) => {
         this.setState({
           workspaceAccess: workspace.access,
@@ -316,10 +402,19 @@ class OrganizationEditWorkspace extends React.Component<
     });
   }
 
+  /**
+   * setWorkspaceName
+   * @param value value
+   */
   setWorkspaceName(value: string) {
     this.setState({ locked: false, workspaceName: value });
   }
 
+  /**
+   * handleDateChange
+   * @param dateKey dateKey
+   * @param newDate newDate
+   */
   handleDateChange(dateKey: string, newDate: any) {
     this.setState({ [dateKey]: newDate } as Pick<
       OrganizationEditWorkspaceState,
@@ -327,14 +422,25 @@ class OrganizationEditWorkspace extends React.Component<
     >);
   }
 
+  /**
+   * setWorkspaceNameExtension
+   * @param value value
+   */
   setWorkspaceNameExtension(value: string) {
     this.setState({ workspaceNameExtension: value });
   }
 
+  /**
+   * setWorkspaceAccess
+   * @param value value
+   */
   setWorkspaceAccess(value: WorkspaceAccessType) {
     this.setState({ workspaceAccess: value });
   }
 
+  /**
+   * clearComponentState
+   */
   clearComponentState() {
     this.setState({
       locked: false,
@@ -351,14 +457,25 @@ class OrganizationEditWorkspace extends React.Component<
     });
   }
 
+  /**
+   * getLocaledDate
+   * @param date date
+   */
   getLocaledDate(date: any) {
     return date.locale(this.props.i18n.time.getLocale()).format("L");
   }
 
+  /**
+   * cancelDialog
+   * @param closeDialog closeDialog
+   */
   cancelDialog(closeDialog: () => any) {
     closeDialog();
   }
 
+  /**
+   * nextStep
+   */
   nextStep() {
     if (this.state.currentStep === 1) {
       this.doWorkspaceStudentSearch("");
@@ -377,11 +494,18 @@ class OrganizationEditWorkspace extends React.Component<
     }
   }
 
+  /**
+   * lastStep
+   */
   lastStep() {
     const lastStep = this.state.currentStep - 1;
     this.setState({ currentStep: lastStep });
   }
 
+  /**
+   * turnStudentsToSelectItems
+   * @param users users
+   */
   turnStudentsToSelectItems(users: ShortWorkspaceUserWithActiveStatusType[]) {
     const selectItems: SelectItem[] = [];
 
@@ -400,6 +524,10 @@ class OrganizationEditWorkspace extends React.Component<
     return selectItems;
   }
 
+  /**
+   * turnStaffToSelectItems
+   * @param users users
+   */
   turnStaffToSelectItems(users: UserStaffType[]) {
     const selectItems: SelectItem[] = [];
 
@@ -418,6 +546,10 @@ class OrganizationEditWorkspace extends React.Component<
     return selectItems;
   }
 
+  /**
+   * saveWorkspace
+   * @param closeDialog closeDialog
+   */
   saveWorkspace(closeDialog: () => any) {
     this.setState({
       locked: true,
@@ -492,6 +624,10 @@ class OrganizationEditWorkspace extends React.Component<
       removeTeachers: this.state.removeStaff,
       addStudents: this.state.addStudents,
       addTeachers: this.state.addStaff,
+      /**
+       * progress
+       * @param state state
+       */
       progress: (state: UpdateWorkspaceStateType) => {
         if (state === "workspace-update") {
           this.setState({
@@ -517,15 +653,25 @@ class OrganizationEditWorkspace extends React.Component<
           );
         }
       },
+      /**
+       * success
+       */
       success: () => {
         closeDialog();
       },
+      /**
+       * fail
+       */
       fail: () => {
         closeDialog();
       },
     });
   }
 
+  /**
+   * wizardSteps
+   * @param page page
+   */
   wizardSteps(page: number) {
     switch (page) {
       case 1:
@@ -1039,7 +1185,13 @@ class OrganizationEditWorkspace extends React.Component<
     }
   }
 
+  /**
+   *
+   */
   render() {
+    /**
+     * @param closePortal
+     */
     const content = (closePortal: () => any) =>
       this.wizardSteps(this.state.currentStep);
 
@@ -1102,6 +1254,9 @@ class OrganizationEditWorkspace extends React.Component<
       </div>
     );
 
+    /**
+     * @param closePortal
+     */
     const footer = (closePortal: () => any) => (
       <FormWizardActions
         locked={this.state.locked}
@@ -1146,6 +1301,9 @@ class OrganizationEditWorkspace extends React.Component<
   }
 }
 
+/**
+ * @param state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -1154,6 +1312,9 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * @param dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     {

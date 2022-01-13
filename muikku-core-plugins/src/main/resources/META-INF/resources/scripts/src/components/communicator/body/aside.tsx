@@ -13,18 +13,30 @@ import Navigation, {
   NavigationElement,
 } from "~/components/general/navigation";
 
+/**
+ * NavigationProps
+ */
 interface NavigationProps {
   i18n: i18nType;
   messages: MessagesType;
   openSignatureDialog: () => any;
 }
 
+/**
+ * NavigationState
+ */
 interface NavigationState {}
 
+/**
+ * NavigationAside
+ */
 class NavigationAside extends React.Component<
   NavigationProps,
   NavigationState
 > {
+  /**
+   * render
+   */
   render() {
     return (
       <Navigation>
@@ -65,6 +77,10 @@ class NavigationAside extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -72,6 +88,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return {};
 }

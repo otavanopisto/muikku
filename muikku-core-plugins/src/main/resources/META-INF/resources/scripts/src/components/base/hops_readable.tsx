@@ -10,17 +10,30 @@ import "~/sass/elements/hops.scss";
 import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
 
+/**
+ * HopsProps
+ */
 interface HopsProps {
   data?: HOPSDataType;
   defaultData: HOPSDataType;
   i18n: i18nType;
 }
 
+/**
+ * HopsState
+ */
 interface HopsState {
   hops: HOPSDataType;
 }
 
+/**
+ * Hops
+ */
 class Hops extends React.Component<HopsProps, HopsState> {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: HopsProps) {
     super(props);
 
@@ -29,12 +42,21 @@ class Hops extends React.Component<HopsProps, HopsState> {
     };
   }
 
+  /**
+   * componentWillReceiveProps
+   * @param nextProps nextProps
+   */
   componentWillReceiveProps(nextProps: HopsProps) {
     const nextData = nextProps.data || nextProps.defaultData;
     if (nextData !== this.state.hops) {
       this.setState({ hops: nextData });
     }
   }
+
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     if (!this.props.data || !this.props.data.optedIn) {
       return null;
@@ -289,6 +311,10 @@ class Hops extends React.Component<HopsProps, HopsState> {
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -296,6 +322,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return {};
 }

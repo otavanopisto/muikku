@@ -20,6 +20,9 @@ import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
 import { getName } from "~/util/modifiers";
 
+/**
+ * GuiderLabelShareDialogProps
+ */
 interface GuiderLabelShareDialogProps {
   children: React.ReactElement<any>;
   label: GuiderUserLabelType;
@@ -30,15 +33,25 @@ interface GuiderLabelShareDialogProps {
   userIndex: UserIndexType;
 }
 
+/**
+ * GuiderLabelShareDialogState
+ */
 interface GuiderLabelShareDialogState {
   selectedItems: ContactRecipientType[];
 }
 
+/**
+ * GuiderLabelShareDialog
+ */
 class GuiderLabelShareDialog extends React.Component<
   GuiderLabelShareDialogProps,
   GuiderLabelShareDialogState
 > {
   sharesResult: any;
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: GuiderLabelShareDialogProps) {
     super(props);
 
@@ -157,6 +170,10 @@ class GuiderLabelShareDialog extends React.Component<
    * @returns
    */
   render() {
+    /**
+     * footer
+     * @param closeDialog closeDialog
+     */
     const footer = (closeDialog: () => any) => (
       <div className="dialog__button-set">
         <Button
@@ -175,6 +192,10 @@ class GuiderLabelShareDialog extends React.Component<
         </Button>
       </div>
     );
+    /**
+     * content
+     * @param closeDialog closeDialog
+     */
     const content = (closeDialog: () => any) => (
       <InputContactsAutofill
         identifier="guiderLabelShare"

@@ -3,6 +3,10 @@ import { UserType } from "~/reducers/user-index";
 import $ from "~/lib/jquery";
 import { MaterialContentNodeListType } from "~/reducers/workspaces";
 
+/**
+ * escapeRegExp
+ * @param str str
+ */
 function escapeRegExp(str: string) {
   /**
    * This regExp need some kind of rethinking because linter is giving
@@ -13,12 +17,22 @@ function escapeRegExp(str: string) {
   return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
 }
 
+/**
+ * intersectTwo
+ * @param a a
+ * @param b b
+ */
 function intersectTwo(a: any[], b: any[]) {
   return a.filter(function (n) {
     return b.indexOf(n) > -1;
   });
 }
 
+/**
+ * differenceTwo
+ * @param a a
+ * @param b b
+ */
 function differenceTwo(a: any[], b: any[]) {
   const inAButNotInB = a.filter(function (n) {
     return b.indexOf(n) === -1;
@@ -29,10 +43,20 @@ function differenceTwo(a: any[], b: any[]) {
   return inAButNotInB.concat(inBButNotInA);
 }
 
+/**
+ * filterMatch
+ * @param string string
+ * @param filter filter
+ */
 export function filterMatch(string: string, filter: string) {
   return string.match(new RegExp(escapeRegExp(filter), "i"));
 }
 
+/**
+ * filterHighlight
+ * @param string string
+ * @param filter filter
+ */
 export function filterHighlight(string: string, filter: string) {
   if (filter === "") {
     return React.createElement("span", {}, string);
@@ -71,6 +95,10 @@ export function filterHighlight(string: string, filter: string) {
   return newChild;
 }
 
+/**
+ * colorIntToHex
+ * @param color color
+ */
 export function colorIntToHex(color: number) {
   const b = (color & 255).toString(16);
   const g = ((color >> 8) & 255).toString(16);
@@ -83,6 +111,10 @@ export function colorIntToHex(color: number) {
   return "#" + rStr + gStr + bStr;
 }
 
+/**
+ * hexToColorInt
+ * @param hexColor hexColor
+ */
 export function hexToColorInt(hexColor: string) {
   let r = 255;
   let g = 255;
@@ -101,6 +133,10 @@ export function hexToColorInt(hexColor: string) {
   return (r << 16) + (g << 8) + b;
 }
 
+/**
+ * intersect
+ * @param {...any} elements elements
+ */
 export function intersect(...elements: any[]) {
   if (elements.length === 1) {
     return elements[0];
@@ -109,6 +145,10 @@ export function intersect(...elements: any[]) {
   return elements.reduce(intersectTwo);
 }
 
+/**
+ * difference
+ * @param {...any} elements elements
+ */
 export function difference(...elements: any[]) {
   if (elements.length === 1) {
     return [];
@@ -117,6 +157,10 @@ export function difference(...elements: any[]) {
   return elements.reduce(differenceTwo);
 }
 
+/**
+ * flatten
+ * @param {...any} elements elements
+ */
 export function flatten(...elements: any[]) {
   if (elements.length === 1) {
     return elements[0];
@@ -127,6 +171,10 @@ export function flatten(...elements: any[]) {
   return elements.reduce((a, b) => a.concat(b));
 }
 
+/**
+ * escapeHTML
+ * @param str str
+ */
 export function escapeHTML(str: string) {
   return str
     .replace(/&/g, "&amp;")
@@ -136,11 +184,20 @@ export function escapeHTML(str: string) {
     .replace(/'/g, "&apos;");
 }
 
+/**
+ * unescapeHTML
+ * @param str str
+ */
 export function unescapeHTML(str: string) {
   const doc = new DOMParser().parseFromString(str, "text/html");
   return doc.documentElement.textContent;
 }
 
+/**
+ * getName
+ * @param user user
+ * @param hasFullNamePermission hasFullNamePermission
+ */
 export function getName(user: any, hasFullNamePermission: boolean) {
   if (!user) {
     return "";
@@ -164,6 +221,12 @@ export function getName(user: any, hasFullNamePermission: boolean) {
   return userText;
 }
 
+/**
+ * getUserImageUrl
+ * @param user user
+ * @param type type
+ * @param version version
+ */
 export function getUserImageUrl(
   user: UserType | number,
   type?: number | string,
@@ -180,6 +243,10 @@ export function getUserImageUrl(
   }?v=${version || 1}`;
 }
 
+/**
+ * shortenGrade
+ * @param grade grade
+ */
 export function shortenGrade(grade: string) {
   if (grade === null) {
     return "";
@@ -190,6 +257,10 @@ export function shortenGrade(grade: string) {
   return grade[0];
 }
 
+/**
+ * getShortenGradeExtension
+ * @param grade grade
+ */
 export function getShortenGradeExtension(grade: string) {
   if (grade === null) {
     return "";
@@ -200,6 +271,10 @@ export function getShortenGradeExtension(grade: string) {
   return " - " + grade;
 }
 
+/**
+ * hashCode
+ * @param str str
+ */
 export function hashCode(str: string) {
   let hash = 0,
     i,
@@ -213,6 +288,13 @@ export function hashCode(str: string) {
   return hash;
 }
 
+/**
+ * resize
+ * @param img img
+ * @param width width
+ * @param mimeType mimeType
+ * @param quality quality
+ */
 export function resize(
   img: HTMLImageElement,
   width: number,
@@ -242,6 +324,10 @@ export function resize(
   return canvas.toDataURL(mimeType || "image/jpeg", quality || 0.9);
 }
 
+/**
+ * shuffle
+ * @param oArray oArray
+ */
 export function shuffle(oArray: Array<any>) {
   const array = [...oArray];
 
@@ -262,6 +348,12 @@ export function shuffle(oArray: Array<any>) {
 
 type TypescriptBuggyTakeThisCallbackComeOn = (element: any) => any;
 
+/**
+ * arrayToObject
+ * @param array array
+ * @param propertyName propertyName
+ * @param propertyValue propertyValue
+ */
 export function arrayToObject(
   array: Array<any>,
   propertyName: string,
@@ -373,6 +465,10 @@ function convertStylePropertyToCamelCase(str: string) {
   );
 }
 
+/**
+ * CSSStyleDeclarationToObject
+ * @param declaraion declaraion
+ */
 export function CSSStyleDeclarationToObject(declaraion: CSSStyleDeclaration) {
   const result: any = {};
   for (let i = 0; i < declaraion.length; i++) {
@@ -382,6 +478,9 @@ export function CSSStyleDeclarationToObject(declaraion: CSSStyleDeclaration) {
   return result;
 }
 
+/**
+ * HTMLToReactComponentRule
+ */
 export interface HTMLToReactComponentRule {
   shouldProcessHTMLElement: (tag: string, element: HTMLElement) => boolean;
   preventChildProcessing?: boolean;
@@ -401,6 +500,12 @@ export interface HTMLToReactComponentRule {
   id?: string;
 }
 
+/**
+ * HTMLtoReactComponent
+ * @param element element
+ * @param rules rules
+ * @param key key
+ */
 export function HTMLtoReactComponent(
   element: HTMLElement,
   rules?: HTMLToReactComponentRule[],
@@ -419,6 +524,12 @@ export function HTMLtoReactComponent(
     tagname = matchingRule.preprocessElement(element) || tagname;
   }
 
+  /**
+   * defaultProcesser
+   * @param tag tag
+   * @param props props
+   * @param children children
+   */
   const defaultProcesser = (tag: string, props: any, children: Array<any>) =>
     React.createElement(tag, props, children);
 
@@ -464,6 +575,10 @@ export function HTMLtoReactComponent(
   return actualProcesser(tagname, props, finalChildren, element);
 }
 
+/**
+ * extractDataSet
+ * @param element element
+ */
 export function extractDataSet(element: HTMLElement): any {
   let finalThing: any = {
     ...element.dataset,
@@ -480,7 +595,13 @@ export function extractDataSet(element: HTMLElement): any {
   return finalThing;
 }
 
+/**
+ * guidGenerator
+ */
 export function guidGenerator() {
+  /**
+   * S4
+   */
   const S4 = function () {
     return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
   };
@@ -500,6 +621,14 @@ export function guidGenerator() {
   );
 }
 
+/**
+ * scrollToSection
+ * @param anchor anchor
+ * @param onScrollToSection onScrollToSection
+ * @param scrollPadding scrollPadding
+ * @param disableAnimate disableAnimate
+ * @param disableAnchorSet disableAnchorSet
+ */
 export function scrollToSection(
   anchor: string,
   onScrollToSection?: () => any,
@@ -559,6 +688,13 @@ export function scrollToSection(
   }
 }
 
+/**
+ * repairContentNodes
+ * @param base base
+ * @param pathRepair pathRepair
+ * @param pathRepairId pathRepairId
+ * @param parentNodeId parentNodeId
+ */
 export function repairContentNodes(
   base: MaterialContentNodeListType,
   pathRepair?: string,
@@ -602,6 +738,10 @@ export function repairContentNodes(
   });
 }
 
+/**
+ * validURL
+ * @param str str
+ */
 export function validURL(str: string) {
   const pattern = new RegExp(
     "^(https?:\\/\\/)?" + // protocol

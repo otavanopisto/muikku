@@ -11,18 +11,30 @@ import VacationSettings from "./application/vacation-settings";
 import WorkList from "./application/work-list";
 import { i18nType } from "~/reducers/base/i18n";
 
+/**
+ * ProfileApplicationProps
+ */
 interface ProfileApplicationProps {
   i18n: i18nType;
   aside: React.ReactElement;
   status: StatusType;
 }
 
+/**
+ * ProfileApplicationState
+ */
 interface ProfileApplicationState {}
 
+/**
+ * ProfileApplication
+ */
 class ProfileApplication extends React.Component<
   ProfileApplicationProps,
   ProfileApplicationState
 > {
+  /**
+   * render
+   */
   render() {
     if (!this.props.status.profile) {
       return null;
@@ -46,6 +58,10 @@ class ProfileApplication extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -53,6 +69,9 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ */
 function mapDispatchToProps() {
   return {};
 }

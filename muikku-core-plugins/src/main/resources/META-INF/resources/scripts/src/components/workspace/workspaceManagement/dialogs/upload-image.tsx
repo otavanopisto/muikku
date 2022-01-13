@@ -25,6 +25,9 @@ import {
 const Slider = require("react-rangeslider").default;
 import "~/sass/elements/rangeslider.scss";
 
+/**
+ * UploadImageDialogProps
+ */
 interface UploadImageDialogProps {
   i18n: i18nType;
   displayNotification: DisplayNotificationTriggerType;
@@ -38,16 +41,26 @@ interface UploadImageDialogProps {
   onClose: () => any;
 }
 
+/**
+ * UploadImageDialogState
+ */
 interface UploadImageDialogState {
   scale: number;
   angle: number;
 }
 
+/**
+ * UploadImageDialog
+ */
 class UploadImageDialog extends React.Component<
   UploadImageDialogProps,
   UploadImageDialogState
 > {
   private retriever: ImageEditorRetrieverType;
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: UploadImageDialogProps) {
     super(props);
     this.acceptImage = this.acceptImage.bind(this);
@@ -60,11 +73,19 @@ class UploadImageDialog extends React.Component<
       angle: 0,
     };
   }
+
+  /**
+   * acceptImage
+   * @param closeDialog closeDialog
+   */
   acceptImage(closeDialog: () => any) {
     closeDialog();
     this.props.updateCurrentWorkspaceImagesB64({
       originalB64: this.props.b64,
       croppedB64: this.retriever.getAsDataURL(),
+      /**
+       * success
+       */
       success: () => {
         this.props.displayNotification(
           this.props.i18n.text.get(
@@ -80,6 +101,10 @@ class UploadImageDialog extends React.Component<
       },
     });
   }
+
+  /**
+   * rotate
+   */
   rotate() {
     let nAngle = this.state.angle + 90;
     if (nAngle === 360) {
@@ -88,6 +113,10 @@ class UploadImageDialog extends React.Component<
 
     this.setState({ angle: nAngle });
   }
+
+  /**
+   * showLoadError
+   */
   showLoadError() {
     this.props.displayNotification(
       this.props.i18n.text.get(
@@ -96,11 +125,21 @@ class UploadImageDialog extends React.Component<
       "error"
     );
   }
+
+  /**
+   * onChangeScale
+   * @param newValue newValue
+   */
   onChangeScale(newValue: number) {
     this.setState({
       scale: newValue,
     });
   }
+
+  /**
+   * getRetriever
+   * @param retriever retriever
+   */
   getRetriever(retriever: ImageEditorRetrieverType) {
     this.retriever = retriever;
   }
@@ -110,7 +149,14 @@ class UploadImageDialog extends React.Component<
   // If the layout is changed and the ratio changes, this needs to be updated
   // The ratio could be calculated dynamically, but as of now, there's no reason
 
+  /**
+   * render
+   */
   render() {
+    /**
+     * content
+     * @param closeDialog closeDialog
+     */
     const content = (closeDialog: () => any) => (
       <div>
         <ImageEditor
@@ -137,6 +183,10 @@ class UploadImageDialog extends React.Component<
         </div>
       </div>
     );
+    /**
+     * footer
+     * @param closeDialog closeDialog
+     */
     const footer = (closeDialog: () => any) => (
       <div className="dialog__button-set">
         <Button
@@ -172,12 +222,20 @@ class UploadImageDialog extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     { displayNotification, updateCurrentWorkspaceImagesB64 },

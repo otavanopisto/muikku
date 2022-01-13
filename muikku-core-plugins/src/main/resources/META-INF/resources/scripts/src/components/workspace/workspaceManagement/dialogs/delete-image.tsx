@@ -16,6 +16,9 @@ import {
 } from "~/actions/workspaces";
 import "~/sass/elements/rangeslider.scss";
 
+/**
+ * DeleteImageDialogProps
+ */
 interface DeleteImageDialogProps {
   i18n: i18nType;
   displayNotification: DisplayNotificationTriggerType;
@@ -25,21 +28,38 @@ interface DeleteImageDialogProps {
   onClose: () => any;
 }
 
+/**
+ * DeleteImageDialogState
+ */
 interface DeleteImageDialogState {}
 
+/**
+ * DeleteImageDialog
+ */
 class DeleteImageDialog extends React.Component<
   DeleteImageDialogProps,
   DeleteImageDialogState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: DeleteImageDialogProps) {
     super(props);
     this.deleteImage = this.deleteImage.bind(this);
   }
 
+  /**
+   * deleteImage
+   * @param closeDialog closeDialog
+   */
   deleteImage(closeDialog: () => any) {
     closeDialog();
     this.props.updateCurrentWorkspaceImagesB64({
       delete: true,
+      /**
+       * success
+       */
       success: () => {
         this.props.displayNotification(
           this.props.i18n.text.get(
@@ -52,7 +72,14 @@ class DeleteImageDialog extends React.Component<
     });
   }
 
+  /**
+   * render
+   */
   render() {
+    /**
+     *  content
+     * @param closeDialog closeDialog
+     */
     const content = (closeDialog: () => any) => (
       <div>
         {this.props.i18n.text.get(
@@ -60,6 +87,10 @@ class DeleteImageDialog extends React.Component<
         )}
       </div>
     );
+    /**
+     * footer
+     * @param closeDialog closeDialog
+     */
     const footer = (closeDialog: () => any) => (
       <div className="dialog__button-set">
         <Button
@@ -95,12 +126,20 @@ class DeleteImageDialog extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     { displayNotification, updateCurrentWorkspaceImagesB64 },

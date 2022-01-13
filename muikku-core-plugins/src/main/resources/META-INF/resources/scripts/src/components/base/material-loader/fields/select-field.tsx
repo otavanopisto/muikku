@@ -14,6 +14,9 @@ import { StrMathJAX } from "../static/mathjax";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
 
+/**
+ * SelectFieldProps
+ */
 interface SelectFieldProps {
   type: string;
   content: {
@@ -43,6 +46,9 @@ interface SelectFieldProps {
   invisible?: boolean;
 }
 
+/**
+ * SelectFieldState
+ */
 interface SelectFieldState {
   value: string;
 
@@ -59,10 +65,17 @@ interface SelectFieldState {
   fieldSavedState: FieldStateStatus;
 }
 
+/**
+ * SelectField
+ */
 export default class SelectField extends React.Component<
   SelectFieldProps,
   SelectFieldState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: SelectFieldProps) {
     super(props);
 

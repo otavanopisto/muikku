@@ -12,10 +12,16 @@ import "~/sass/elements/autocomplete.scss";
 import "~/sass/elements/glyph.scss";
 import { SelectItem } from "~/actions/workspaces/index";
 
+/**
+ * UiSelectItem
+ */
 export interface UiSelectItem extends SelectItem {
   icon?: string;
 }
 
+/**
+ * AutofillSelectorProps
+ */
 export interface AutofillSelectorProps {
   placeholder?: string;
   label?: string;
@@ -29,6 +35,9 @@ export interface AutofillSelectorProps {
   loader?: (searchString: string) => any;
 }
 
+/**
+ * AutofillSelectorState
+ */
 export interface AutofillSelectorState {
   searchItems: UiSelectItem[];
   selectedItems: UiSelectItem[];
@@ -37,12 +46,19 @@ export interface AutofillSelectorState {
   isFocused: boolean;
 }
 
+/**
+ * AutofillSelector
+ */
 export default class AutofillSelector extends React.Component<
   AutofillSelectorProps,
   AutofillSelectorState
 > {
   private blurTimeout: NodeJS.Timer;
   private activeSearchTimeout: NodeJS.Timer;
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: AutofillSelectorProps) {
     super(props);
 
@@ -62,12 +78,20 @@ export default class AutofillSelector extends React.Component<
     this.activeSearchTimeout = null;
   }
 
+  /**
+   * componentWillReceiveProps
+   * @param nextProps nextProps
+   */
   componentWillReceiveProps(nextProps: AutofillSelectorProps) {
     if (nextProps.selectedItems !== this.props.selectedItems) {
       this.setState({ selectedItems: nextProps.selectedItems });
     }
   }
 
+  /**
+   * onInputBlur
+   * @param e e
+   */
   onInputBlur(e: React.FocusEvent<any>) {
     this.blurTimeout = setTimeout(
       () => this.setState({ isFocused: false }),
@@ -75,11 +99,18 @@ export default class AutofillSelector extends React.Component<
     );
   }
 
+  /**
+   * onInputFocus
+   * @param e e
+   */
   onInputFocus(e: React.FocusEvent<any>) {
     clearTimeout(this.blurTimeout);
     this.setState({ isFocused: true });
   }
 
+  /**
+   * @param e
+   */
   onInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     const textInput = e.target.value;
     this.setState({ autocompleteOpened: true, textInput: textInput });
@@ -91,6 +122,11 @@ export default class AutofillSelector extends React.Component<
     }
   }
 
+  /**
+   * onAutocompleteItemClick
+   * @param item item
+   * @param selected selected
+   */
   onAutocompleteItemClick(item: UiSelectItem, selected: boolean) {
     if (!selected) {
       this.props.onSelect(item);
@@ -102,6 +138,10 @@ export default class AutofillSelector extends React.Component<
     }
   }
 
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     const selectedItems =
       this.props.selectedItems &&

@@ -17,6 +17,13 @@ import { StateType } from "~/reducers";
 //HELPERS
 const MAX_LOADED_AT_ONCE = 25;
 
+/**
+ * loadStudentsHelper
+ * @param filters filters
+ * @param initial initial
+ * @param dispatch dispatch
+ * @param getState getState
+ */
 export async function loadStudentsHelper(
   filters: GuiderActiveFiltersType | null,
   initial: boolean,

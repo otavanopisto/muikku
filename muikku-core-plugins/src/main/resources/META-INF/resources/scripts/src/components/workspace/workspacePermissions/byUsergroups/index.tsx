@@ -9,11 +9,13 @@ import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/form-elements.scss";
-
 import ContentPanel from "~/components/general/content-panel";
 import { WorkspaceType } from "~/reducers/workspaces";
 import { bindActionCreators } from "redux";
 
+/**
+ * PermissionsByUsergroupsProps
+ */
 interface PermissionsByUsergroupsProps {
   i18n: i18nType;
   workspace: WorkspaceType;
@@ -21,18 +23,33 @@ interface PermissionsByUsergroupsProps {
 
 const PERMISSIONS_TO_EXTRACT = ["WORKSPACE_SIGNUP"];
 
+/**
+ * PermissionsByUsergroups
+ */
 class PermissionsByUsergroups extends React.Component<
   PermissionsByUsergroupsProps,
   Record<string, unknown>
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: PermissionsByUsergroupsProps) {
     super(props);
 
     this.togglePermissionIn = this.togglePermissionIn.bind(this);
   }
+
+  /**
+   * togglePermissionIn
+   */
   togglePermissionIn() {
     //this.props.updateCurrentWorkspaceUserGroupPermission(permission, valueToToggle);
   }
+
+  /**
+   * render
+   */
   render() {
     return (
       <ContentPanel
@@ -84,6 +101,10 @@ class PermissionsByUsergroups extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -91,6 +112,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators({}, dispatch);
 }

@@ -18,12 +18,18 @@ import {
 
 import "~/sass/elements/buttons.scss";
 
+/**
+ * CheckContactInfoDialogProps
+ */
 interface CheckContactInfoDialogProps {
   i18n: i18nType;
   status: StatusType;
   displayNotification: DisplayNotificationTriggerType;
 }
 
+/**
+ * CheckContactInfoDialogState
+ */
 interface CheckContactInfoDialogState {
   user: UserWithSchoolDataType;
   address: StudentUserAddressType;
@@ -32,10 +38,17 @@ interface CheckContactInfoDialogState {
 
 const FORCE_OPEN = false;
 
+/**
+ * CheckContactInfoDialog
+ */
 class CheckContactInfoDialog extends React.Component<
   CheckContactInfoDialogProps,
   CheckContactInfoDialogState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: CheckContactInfoDialogProps) {
     super(props);
 
@@ -48,6 +61,9 @@ class CheckContactInfoDialog extends React.Component<
     this.closeDialog = this.closeDialog.bind(this);
     this.confirmContactInfo = this.confirmContactInfo.bind(this);
   }
+  /**
+   * componentDidMount
+   */
   async componentDidMount() {
     if (this.props.status.isStudent) {
       try {
@@ -90,11 +106,17 @@ class CheckContactInfoDialog extends React.Component<
       } catch (e) {}
     }
   }
+  /**
+   * closeDialog
+   */
   closeDialog() {
     this.setState({
       isOpen: false,
     });
   }
+  /**
+   * confirmContactInfo
+   */
   async confirmContactInfo() {
     this.closeDialog();
     try {
@@ -110,7 +132,14 @@ class CheckContactInfoDialog extends React.Component<
       this.props.displayNotification(err.message, "error");
     }
   }
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
+    /**
+     * @param closeDialog
+     */
     const content = (closeDialog: () => any) => (
       <div>
         <div>
@@ -161,6 +190,10 @@ class CheckContactInfoDialog extends React.Component<
       </div>
     );
 
+    /**
+     * footer
+     * @param closeDialog closeDialog
+     */
     const footer = (closeDialog: () => any) => (
       <div className="dialog__button-set">
         <Link
@@ -195,6 +228,10 @@ class CheckContactInfoDialog extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -202,6 +239,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return { displayNotification };
 }

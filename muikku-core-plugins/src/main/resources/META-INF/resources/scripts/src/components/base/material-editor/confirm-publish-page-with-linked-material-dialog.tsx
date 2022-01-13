@@ -15,6 +15,9 @@ import {
   UpdateWorkspaceMaterialContentNodeTriggerType,
 } from "~/actions/workspaces";
 
+/**
+ * ConfirmPublishPageWithLinkedMaterialDialogProps
+ */
 interface ConfirmPublishPageWithLinkedMaterialDialogProps {
   i18n: i18nType;
   materialEditor: WorkspaceMaterialEditorType;
@@ -22,14 +25,24 @@ interface ConfirmPublishPageWithLinkedMaterialDialogProps {
   updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType;
 }
 
+/**
+ * ConfirmPublishPageWithLinkedMaterialDialogState
+ */
 interface ConfirmPublishPageWithLinkedMaterialDialogState {
   locked: boolean;
 }
 
+/**
+ * ConfirmPublishPageWithLinkedMaterialDialog
+ */
 class ConfirmPublishPageWithLinkedMaterialDialog extends React.Component<
   ConfirmPublishPageWithLinkedMaterialDialogProps,
   ConfirmPublishPageWithLinkedMaterialDialogState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: ConfirmPublishPageWithLinkedMaterialDialogProps) {
     super(props);
     this.state = {
@@ -39,6 +52,11 @@ class ConfirmPublishPageWithLinkedMaterialDialog extends React.Component<
     this.cancel = this.cancel.bind(this);
     this.confirm = this.confirm.bind(this);
   }
+
+  /**
+   * confirm
+   * @param closeDialog closeDialog
+   */
   confirm(closeDialog: () => any) {
     this.setState({
       locked: true,
@@ -49,12 +67,18 @@ class ConfirmPublishPageWithLinkedMaterialDialog extends React.Component<
       material: this.props.materialEditor.currentNodeValue,
       update: this.props.materialEditor.currentDraftNodeValue,
       updateLinked: true,
+      /**
+       * success
+       */
       success: () => {
         this.setState({
           locked: false,
         });
         closeDialog();
       },
+      /**
+       * fail
+       */
       fail: () => {
         this.setState({
           locked: false,
@@ -62,6 +86,10 @@ class ConfirmPublishPageWithLinkedMaterialDialog extends React.Component<
       },
     });
   }
+  /**
+   * cancel
+   * @param closeDialog closeDialog
+   */
   cancel(closeDialog?: () => any) {
     closeDialog && closeDialog();
     this.props.setWorkspaceMaterialEditorState({
@@ -69,7 +97,14 @@ class ConfirmPublishPageWithLinkedMaterialDialog extends React.Component<
       showUpdateLinkedMaterialsDialogForPublish: false,
     });
   }
+  /**
+   * render
+   */
   render() {
+    /**
+     * content
+     * @param closeDialog closeDialog
+     */
     const content = (closeDialog: () => any) => (
       <div>
         <span>
@@ -82,6 +117,10 @@ class ConfirmPublishPageWithLinkedMaterialDialog extends React.Component<
       </div>
     );
 
+    /**
+     * footer
+     * @param closeDialog closeDialog
+     */
     const footer = (closeDialog: () => any) => (
       <div className="dialog__button-set">
         <Button
@@ -122,6 +161,10 @@ class ConfirmPublishPageWithLinkedMaterialDialog extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -129,6 +172,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     { setWorkspaceMaterialEditorState, updateWorkspaceMaterialContentNode },

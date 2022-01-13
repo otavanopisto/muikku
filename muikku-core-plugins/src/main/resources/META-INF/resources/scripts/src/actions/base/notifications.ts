@@ -13,10 +13,16 @@ export type HIDE_NOTIFICATION = SpecificActionType<
   NotificationType
 >;
 
+/**
+ * DisplayNotificationTriggerType
+ */
 export interface DisplayNotificationTriggerType {
   (message: string, severity: NotificationSeverityType): AnyActionType;
 }
 
+/**
+ * HideNotificationTriggerType
+ */
 export interface HideNotificationTriggerType {
   (notification: NotificationType): HIDE_NOTIFICATION;
 }
@@ -24,6 +30,12 @@ export interface HideNotificationTriggerType {
 const DEFAULT_TIMEOUT = 5000;
 const PERMANENT_LIST = ["warning", "fatal", "error", "notice"];
 
+/**
+ * displayNotification
+ * @param message message
+ * @param severity severity
+ * @param timeout timeout
+ */
 const displayNotification: DisplayNotificationTriggerType =
   function displayNotification(message, severity, timeout?: number) {
     return async (dispatch: (arg: AnyActionType) => any) => {
@@ -49,6 +61,10 @@ const displayNotification: DisplayNotificationTriggerType =
     };
   };
 
+/**
+ * hideNotification
+ * @param notification notification
+ */
 const hideNotification: HideNotificationTriggerType =
   function hideNotificationType(notification) {
     return {

@@ -6,28 +6,48 @@ import { StateType } from "~/reducers";
 import { SubjectEligibilityType } from "~/reducers/main-function/records/yo";
 import "~/sass/elements/application-sub-panel.scss";
 
+/**
+ * MatriculationEligibilityRowProps
+ */
 interface MatriculationEligibilityRowProps {
   subject: SubjectEligibilityType;
   i18n: i18nType;
 }
 
+/**
+ * MatriculationEligibilityRowState
+ */
 interface MatriculationEligibilityRowState {
   loading: boolean;
 }
 
+/**
+ * MatriculationEligibilityRow
+ */
 class MatriculationEligibilityRow extends React.Component<
   MatriculationEligibilityRowProps,
   MatriculationEligibilityRowState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: MatriculationEligibilityRowProps) {
     super(props);
   }
 
+  /**
+   * getMatriculationSubjectNameByCode
+   * @param code code
+   */
   getMatriculationSubjectNameByCode = (code: string): string =>
     this.props.i18n.text.get(
       `plugin.records.hops.matriculationSubject.${code}`
     );
 
+  /**
+   * render
+   */
   render() {
     return (
       <div className="application-sub-panel__summary-item application-sub-panel__summary-item--subject-eligibility">
@@ -64,12 +84,20 @@ class MatriculationEligibilityRow extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators({}, dispatch);
 }

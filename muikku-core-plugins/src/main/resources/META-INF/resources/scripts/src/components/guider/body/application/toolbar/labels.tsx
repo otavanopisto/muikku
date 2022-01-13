@@ -33,6 +33,9 @@ import { StateType } from "~/reducers";
 import { GuiderType, GuiderStudentType } from "~/reducers/main-function/guider";
 import { ButtonPill } from "~/components/general/button";
 
+/**
+ * GuiderToolbarLabelsProps
+ */
 interface GuiderToolbarLabelsProps {
   i18n: i18nType;
   guider: GuiderType;
@@ -44,14 +47,24 @@ interface GuiderToolbarLabelsProps {
   removeGuiderLabelFromSelectedUsers: RemoveGuiderLabelFromSelectedUsersTriggerType;
 }
 
+/**
+ * GuiderToolbarLabelsState
+ */
 interface GuiderToolbarLabelsState {
   labelFilter: string;
 }
 
+/**
+ * GuiderToolbarLabels
+ */
 class GuiderToolbarLabels extends React.Component<
   GuiderToolbarLabelsProps,
   GuiderToolbarLabelsState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: GuiderToolbarLabelsProps) {
     super(props);
 
@@ -61,9 +74,18 @@ class GuiderToolbarLabels extends React.Component<
 
     this.updateLabelFilter = this.updateLabelFilter.bind(this);
   }
+
+  /**
+   * updateLabelFilter
+   * @param e e
+   */
   updateLabelFilter(e: React.ChangeEvent<HTMLInputElement>) {
     this.setState({ labelFilter: e.target.value });
   }
+
+  /**
+   * render
+   */
   render() {
     if (this.props.guider.currentStudent) {
       return (
@@ -221,6 +243,10 @@ class GuiderToolbarLabels extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -228,6 +254,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     {

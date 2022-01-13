@@ -188,6 +188,11 @@ class AssignmentEditor extends SessionStateComponent<
     });
   };
 
+  /**
+   * componentDidUpdate
+   * @param prevProps prevProps
+   * @param prevState prevState
+   */
   componentDidUpdate = (
     prevProps: AssignmentEditorProps,
     prevState: AssignmentEditorState
@@ -201,6 +206,13 @@ class AssignmentEditor extends SessionStateComponent<
 
   /**
    * saveAssignmentEvaluationGradeToServer
+   * @param data data
+   * @param data.workspaceEntityId workspaceEntityId
+   * @param data.userEntityId userEntityId
+   * @param data.workspaceMaterialId workspaceMaterialId
+   * @param data.dataToSave data ToSave
+   * @param data.materialId materialId
+   * @param data.defaultGrade defaultGrade
    */
   saveAssignmentEvaluationGradeToServer = async (data: {
     workspaceEntityId: number;
@@ -268,7 +280,13 @@ class AssignmentEditor extends SessionStateComponent<
 
   /**
    * saveAssignmentEvaluationSupplementationToServer
-   * @param data
+   * @param data data
+   * @param data.workspaceEntityId workspaceEntityId
+   * @param data.userEntityId userEntityId
+   * @param data.workspaceMaterialId workspaceMaterialId
+   * @param data.dataToSave dataToSave
+   * @param data.materialId materialId
+   * @param data.defaultGrade defaultGrade
    */
   saveAssignmentEvaluationSupplementationToServer = async (data: {
     workspaceEntityId: number;

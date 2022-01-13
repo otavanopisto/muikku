@@ -7,21 +7,37 @@ import Toolbar from "./application/toolbar";
 import CurrentStudent from "./application/current-student";
 import { StateType } from "~/reducers";
 
+/**
+ * GuiderApplicationProps
+ */
 interface GuiderApplicationProps {
   aside: React.ReactElement<any>;
   i18n: i18nType;
 }
 
+/**
+ * GuiderApplicationState
+ */
 interface GuiderApplicationState {}
 
+/**
+ * GuiderApplication
+ */
 class GuiderApplication extends React.Component<
   GuiderApplicationProps,
   GuiderApplicationState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: GuiderApplicationProps) {
     super(props);
   }
 
+  /**
+   * render
+   */
   render() {
     const title = this.props.i18n.text.get("plugin.guider.guider");
     const toolbar = <Toolbar />;
@@ -58,12 +74,19 @@ class GuiderApplication extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
   };
 }
 
+/**
+ * mapDispatchToProps
+ */
 function mapDispatchToProps() {
   return {};
 }

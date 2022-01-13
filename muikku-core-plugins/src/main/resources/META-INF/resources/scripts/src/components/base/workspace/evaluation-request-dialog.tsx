@@ -75,12 +75,18 @@ class EvaluationRequestDialog extends React.Component<
     this.props.requestAssessmentAtWorkspace({
       workspace: this.props.workspace,
       text: this.state.message,
+      /**
+       * success
+       */
       success: () => {
         this.setState({
           locked: false,
         });
         closeDialog();
       },
+      /**
+       * fail
+       */
       fail: () => {
         this.setState({
           locked: false,
@@ -96,6 +102,10 @@ class EvaluationRequestDialog extends React.Component<
   render() {
     const hasFees = this.props.status.hasFees;
 
+    /**
+     * content
+     * @param closeDialog closeDialog
+     */
     const content = (closeDialog: () => any) => (
       <div>
         <div className="dialog__content-row">
@@ -129,6 +139,9 @@ class EvaluationRequestDialog extends React.Component<
       </div>
     );
 
+    /**
+     * @param closeDialog
+     */
     const footer = (closeDialog: () => any) => (
       <div className="dialog__button-set">
         <Button

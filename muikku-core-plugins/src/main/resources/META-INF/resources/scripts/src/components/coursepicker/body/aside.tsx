@@ -17,21 +17,30 @@ import {
   WorkspaceOrganizationFilterType,
 } from "~/reducers/workspaces";
 
+/**
+ * NavigationAsideProps
+ */
 interface NavigationAsideProps {
   i18n: i18nType;
   workspaces: WorkspacesType;
   status: StatusType;
 }
 
+/**
+ * NavigationAsideState
+ */
 interface NavigationAsideState {}
 
+/**
+ * NavigationAside
+ */
 class NavigationAside extends React.Component<
   NavigationAsideProps,
   NavigationAsideState
 > {
   /**
    * render
-   * @returns
+   * @returns JSX.Element
    */
   render() {
     const locationData = queryString.parse(
@@ -170,6 +179,10 @@ class NavigationAside extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -178,6 +191,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return {};
 }

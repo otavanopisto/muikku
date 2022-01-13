@@ -13,15 +13,28 @@ import {
 } from "~/components/general/application-list";
 import { UserGroupType } from "~/reducers/user-index";
 
+/**
+ * CourseProps
+ */
 interface CourseProps {
   i18n: i18nType;
   status: StatusType;
   usergroup: UserGroupType;
 }
 
+/**
+ * CourseState
+ */
 interface CourseState {}
 
+/**
+ * Workspace
+ */
 class Workspace extends React.Component<CourseProps, CourseState> {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: CourseProps) {
     super(props);
 
@@ -30,6 +43,9 @@ class Workspace extends React.Component<CourseProps, CourseState> {
     };
   }
 
+  /**
+   * render
+   */
   render() {
     const actions = (
       <div>
@@ -52,6 +68,10 @@ class Workspace extends React.Component<CourseProps, CourseState> {
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -59,6 +79,9 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ */
 function mapDispatchToProps() {
   return {};
 }

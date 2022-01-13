@@ -1,20 +1,31 @@
 import * as React from "react";
 import FrontpageFeed from "./feed";
 import { i18nType } from "~/reducers/base/i18n";
-
 import "~/sass/elements/ordered-container.scss";
 import "~/sass/elements/card.scss";
 
+/**
+ * FrontpageNewsProps
+ */
 interface FrontpageNewsProps {
   i18n: i18nType;
 }
 
+/**
+ * FrontpageNewsState
+ */
 interface FrontpageNewsState {}
 
+/**
+ * FrontpageNews
+ */
 export default class FrontpageNews extends React.Component<
   FrontpageNewsProps,
   FrontpageNewsState
 > {
+  /**
+   * render
+   */
   render() {
     return (
       <section

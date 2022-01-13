@@ -13,6 +13,9 @@ import { StateType } from "~/reducers/index";
 import { connect } from "react-redux";
 import PagerV2 from "~/components/general/pagerV2";
 
+/**
+ * AnnouncementsPanelProps
+ */
 interface AnnouncementsPanelProps {
   i18n: i18nType;
   status: StatusType;
@@ -20,16 +23,26 @@ interface AnnouncementsPanelProps {
   overflow?: boolean;
 }
 
+/**
+ * AnnouncementsPanelState
+ */
 interface AnnouncementsPanelState {
   currentPage: number;
   announcements: AnnouncementListType;
   itemsPerPage: number;
 }
 
+/**
+ * AnnouncementsPanel
+ */
 class AnnouncementsPanel extends React.Component<
   AnnouncementsPanelProps,
   AnnouncementsPanelState
 > {
+  /**
+   * AnnouncementsPanelProps
+   * @param props props
+   */
   constructor(props: AnnouncementsPanelProps) {
     super(props);
 
@@ -59,7 +72,8 @@ class AnnouncementsPanel extends React.Component<
   /**
    * handles page changes,
    * sets selected page as currentPage to state
-   * @param event
+   * @param selectedItem selectedItem
+   * @param selectedItem.selected selected
    */
   handlePageChange = (selectedItem: { selected: number }) => {
     this.setState({

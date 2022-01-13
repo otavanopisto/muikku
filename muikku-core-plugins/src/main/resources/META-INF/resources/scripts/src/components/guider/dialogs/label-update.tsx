@@ -34,6 +34,9 @@ const KEYCODES = {
   ENTER: 13,
 };
 
+/**
+ * SharedFlagUser
+ */
 interface SharedFlagUser {
   flagId: number;
   id: number;
@@ -48,6 +51,9 @@ interface SharedFlagUser {
   userIdentifier: string;
 }
 
+/**
+ * GuiderLabelUpdateDialogProps
+ */
 interface GuiderLabelUpdateDialogProps {
   children: React.ReactElement<any>;
   label: GuiderUserLabelType;
@@ -61,6 +67,9 @@ interface GuiderLabelUpdateDialogProps {
   displayNotification: DisplayNotificationTriggerType;
 }
 
+/**
+ * GuiderLabelUpdateDialogState
+ */
 interface GuiderLabelUpdateDialogState {
   selectedItems: ContactRecipientType[];
   displayColorPicker: boolean;
@@ -71,6 +80,9 @@ interface GuiderLabelUpdateDialogState {
   locked: boolean;
 }
 
+/**
+ * GuiderLabelUpdateDialog
+ */
 class GuiderLabelUpdateDialog extends React.Component<
   GuiderLabelUpdateDialogProps,
   GuiderLabelUpdateDialogState
@@ -161,6 +173,7 @@ class GuiderLabelUpdateDialog extends React.Component<
   /**
    * Remove flak linking. This is called by linked user that wants to
    * cancel linking to specific flak
+   * @param onClose onClose
    */
   removeLabelLinking = (onClose: () => void) => {
     this.setState({ locked: true });

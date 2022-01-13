@@ -55,6 +55,10 @@ class CurrentThread extends React.Component<
   CurrentThreadProps,
   CurrentThreadState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: CurrentThreadProps) {
     super(props);
 
@@ -137,6 +141,8 @@ class CurrentThread extends React.Component<
    * handles page changes,
    * sets selected page as currentPage to state
    * @param event
+   * @param selectedItem selectedItem
+   * @param selectedItem.selected selected
    */
   handlePagerChange = (selectedItem: { selected: number }) =>
     this.getToPage(selectedItem.selected + 1);

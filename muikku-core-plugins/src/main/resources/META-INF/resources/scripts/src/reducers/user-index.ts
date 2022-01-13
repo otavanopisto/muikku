@@ -2,6 +2,9 @@ import { ActionType } from "~/actions";
 import { PagingUserListType } from "~/reducers/main-function/users";
 export type ManipulateType = "UPDATE" | "CREATE";
 
+/**
+ * CreateUserType
+ */
 export interface CreateUserType {
   firstName: string;
   lastName: string;
@@ -11,6 +14,9 @@ export interface CreateUserType {
   ssn?: string;
 }
 
+/**
+ * UpdateUserType
+ */
 export interface UpdateUserType {
   identifier: number;
   firstName: string;
@@ -21,6 +27,9 @@ export interface UpdateUserType {
   ssn?: string;
 }
 
+/**
+ * UserType
+ */
 export interface UserType {
   // Ok, but coming from backend, "id" is not a number, but a string. This might cause trouble in the future?
   id: number;
@@ -53,6 +62,9 @@ export interface UserType {
   studiesEnded?: boolean;
 }
 
+/**
+ * UserWithSchoolDataType
+ */
 export interface UserWithSchoolDataType {
   curriculumIdentifier?: string;
   email: string;
@@ -74,16 +86,25 @@ export interface UserWithSchoolDataType {
   userEntityId: number;
 }
 
+/**
+ * UserChatSettingsType
+ */
 export interface UserChatSettingsType {
   visibility: "DISABLED" | "VISIBLE_TO_ALL";
   nick?: string;
 }
 
+/**
+ * OrganizationType
+ */
 export interface OrganizationType {
   id: number;
   name: string;
 }
 
+/**
+ * UserStaffType
+ */
 export interface UserStaffType {
   id: string;
   email: string;
@@ -94,14 +115,23 @@ export interface UserStaffType {
   hasImage: boolean;
 }
 
+/**
+ * WorkspaceStudentListType
+ */
 export interface WorkspaceStudentListType extends PagingUserListType {
   results: Array<ShortWorkspaceUserWithActiveStatusType>;
 }
 
+/**
+ * WorkspaceStaffListType
+ */
 export interface WorkspaceStaffListType extends PagingUserListType {
   results: Array<UserStaffType>;
 }
 
+/**
+ * ShortWorkspaceUserWithActiveStatusType
+ */
 export interface ShortWorkspaceUserWithActiveStatusType {
   workspaceUserEntityId: number;
   userIdentifier: string;
@@ -114,6 +144,9 @@ export interface ShortWorkspaceUserWithActiveStatusType {
   hasImage: boolean;
 }
 
+/**
+ * UserGroupType
+ */
 export interface UserGroupType {
   id: number;
   identifier?: string;
@@ -123,10 +156,16 @@ export interface UserGroupType {
   isGuidanceGroup?: boolean;
 }
 
+/**
+ * UserBaseIndexType
+ */
 export interface UserBaseIndexType {
   [index: number]: UserType;
 }
 
+/**
+ * ContactRecipientType
+ */
 export interface ContactRecipientType {
   type: "workspace" | "user" | "usergroup" | "staff";
   value: {
@@ -140,20 +179,32 @@ export interface ContactRecipientType {
   };
 }
 
+/**
+ * UserGroupBaseIndexType
+ */
 export interface UserGroupBaseIndexType {
   [index: number]: UserGroupType;
 }
 
+/**
+ * UsersBySchoolDataType
+ */
 export interface UsersBySchoolDataType {
   [index: string]: UserType;
 }
 
+/**
+ * UserIndexType
+ */
 export interface UserIndexType {
   users: UserBaseIndexType;
   groups: UserGroupBaseIndexType;
   usersBySchoolData: UsersBySchoolDataType;
 }
 
+/**
+ * UserFileType
+ */
 export interface UserFileType {
   id: number;
   userEntityId: number;
@@ -164,6 +215,9 @@ export interface UserFileType {
   archived: boolean;
 }
 
+/**
+ * StudentUserProfileEmailType
+ */
 export interface StudentUserProfileEmailType {
   studentIdentifier: string;
   type: string;
@@ -171,6 +225,9 @@ export interface StudentUserProfileEmailType {
   defaultAddress: boolean;
 }
 
+/**
+ * StudentUserProfilePhoneType
+ */
 export interface StudentUserProfilePhoneType {
   studentIdentifier: string;
   type: string;
@@ -178,6 +235,9 @@ export interface StudentUserProfilePhoneType {
   defaultNumber: boolean;
 }
 
+/**
+ * StudentUserAddressType
+ */
 export interface StudentUserAddressType {
   identifier: string;
   studentIdentifier: string;
@@ -190,11 +250,17 @@ export interface StudentUserAddressType {
   defaultAddress: boolean;
 }
 
+/**
+ * StudentUserProfileChatType
+ */
 export interface StudentUserProfileChatType {
   userIdentifier: string;
   visibility: any;
 }
 
+/**
+ * LastLoginStudentDataType
+ */
 export interface LastLoginStudentDataType {
   userIdentifier: string;
   authenticationProvder: string;
@@ -202,6 +268,11 @@ export interface LastLoginStudentDataType {
   time: string;
 }
 
+/**
+ * userIndex
+ * @param state state
+ * @param action action
+ */
 export default function userIndex(
   state: UserIndexType = {
     users: {},

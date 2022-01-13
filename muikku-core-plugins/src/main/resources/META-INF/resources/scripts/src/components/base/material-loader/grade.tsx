@@ -3,6 +3,10 @@ import { MaterialLoaderProps } from "~/components/base/material-loader";
 
 type MaterialLoaderGradeProps = MaterialLoaderProps;
 
+/**
+ * MaterialLoaderGrade
+ * @param props props
+ */
 export function MaterialLoaderGrade(props: MaterialLoaderGradeProps) {
   const grade =
     (props.material.evaluation && props.material.evaluation.grade) ||

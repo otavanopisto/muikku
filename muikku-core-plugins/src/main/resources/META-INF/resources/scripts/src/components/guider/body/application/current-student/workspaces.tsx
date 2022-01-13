@@ -8,18 +8,30 @@ import { StateType } from "~/reducers";
 import "~/sass/elements/application-list.scss";
 import "~/sass/elements/empty.scss";
 
+/**
+ * CurrentStudentWorkspacesProps
+ */
 interface CurrentStudentWorkspacesProps {
   i18n: i18nType;
   guider: GuiderType;
   locale: string;
 }
 
+/**
+ * CurrentStudentWorkspacesState
+ */
 interface CurrentStudentWorkspacesState {}
 
+/**
+ * CurrentStudentWorkspaces
+ */
 class CurrentStudentWorkspaces extends React.Component<
   CurrentStudentWorkspacesProps,
   CurrentStudentWorkspacesState
 > {
+  /**
+   * render
+   */
   render() {
     return this.props.guider.currentStudent.workspaces ? (
       this.props.guider.currentStudent.workspaces.length ? (
@@ -45,6 +57,10 @@ class CurrentStudentWorkspaces extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -53,6 +69,9 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ */
 function mapDispatchToProps() {
   return {};
 }

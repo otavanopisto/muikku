@@ -1,3 +1,6 @@
+/**
+ * getCKEDITOR
+ */
 function getCKEDITOR() {
   return (<any>window).CKEDITOR;
 }

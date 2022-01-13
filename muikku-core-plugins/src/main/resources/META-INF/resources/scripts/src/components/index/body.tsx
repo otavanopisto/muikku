@@ -14,16 +14,25 @@ import StudiesEnded from "./body/studies-ended";
 import CheckContactInfoDialog from "~/components/base/check-contact-info-dialog";
 import "~/sass/elements/wcag.scss";
 
+/**
+ * IndexBodyProps
+ */
 interface IndexBodyProps {
   status: StatusType;
   i18n: i18nType;
 }
 
 //TODO css get rid of ordered container
+/**
+ * IndexBody
+ */
 class IndexBody extends React.Component<
   IndexBodyProps,
   Record<string, unknown>
 > {
+  /**
+   * render
+   */
   render() {
     return (
       <div>
@@ -52,6 +61,10 @@ class IndexBody extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -59,6 +72,9 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ */
 function mapDispatchToProps() {
   return {};
 }

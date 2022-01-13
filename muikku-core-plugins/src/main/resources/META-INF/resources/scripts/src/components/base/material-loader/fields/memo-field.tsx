@@ -15,6 +15,9 @@ import { StrMathJAX } from "../static/mathjax";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
 
+/**
+ * MemoFieldProps
+ */
 interface MemoFieldProps {
   type: string;
   content: {
@@ -41,6 +44,9 @@ interface MemoFieldProps {
   invisible?: boolean;
 }
 
+/**
+ * MemoFieldState
+ */
 interface MemoFieldState {
   value: string;
   words: number;
@@ -118,10 +124,17 @@ function wordCount(rawText: string) {
   return rawText === "" ? 0 : rawText.trim().split(/\s+/).length;
 }
 
+/**
+ * MemoField
+ */
 export default class MemoField extends React.Component<
   MemoFieldProps,
   MemoFieldState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: MemoFieldProps) {
     super(props);
 

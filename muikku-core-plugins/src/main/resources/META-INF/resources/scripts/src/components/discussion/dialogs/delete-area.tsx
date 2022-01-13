@@ -17,6 +17,9 @@ import {
 import { DiscussionType } from "~/reducers/discussion";
 import { StateType } from "~/reducers";
 
+/**
+ * DiscussionDeleteAreaProps
+ */
 interface DiscussionDeleteAreaProps {
   i18n: i18nType;
   discussion: DiscussionType;
@@ -24,33 +27,58 @@ interface DiscussionDeleteAreaProps {
   deleteDiscussionArea: DeleteDiscussionAreaTriggerType;
 }
 
+/**
+ * DiscussionDeleteAreaState
+ */
 interface DiscussionDeleteAreaState {
   locked: boolean;
 }
 
+/**
+ * DiscussionDeleteArea
+ */
 class DiscussionDeleteArea extends React.Component<
   DiscussionDeleteAreaProps,
   DiscussionDeleteAreaState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: DiscussionDeleteAreaProps) {
     super(props);
     this.state = {
       locked: false,
     };
   }
+
+  /**
+   * deleteArea
+   * @param closeDialog closeDialog
+   */
   deleteArea(closeDialog: () => any) {
     this.setState({ locked: true });
     this.props.deleteDiscussionArea({
       id: this.props.discussion.areaId,
+      /**
+       * success
+       */
       success: () => {
         this.setState({ locked: false });
         closeDialog();
       },
+      /**
+       * fail
+       */
       fail: () => {
         this.setState({ locked: false });
       },
     });
   }
+
+  /**
+   * render
+   */
   render() {
     const area = this.props.discussion.areas.find(
       (area) => area.id === this.props.discussion.areaId
@@ -59,10 +87,18 @@ class DiscussionDeleteArea extends React.Component<
       return this.props.children;
     }
 
+    /**
+     * content
+     * @param closeDialog closeDialog
+     */
     const content = (closeDialog: () => any) => (
       <div>{this.props.i18n.text.get("plugin.discussion.deletearea.info")}</div>
     );
 
+    /**
+     * footer
+     * @param closeDialog closeDialog
+     */
     const footer = (closeDialog: () => any) => (
       <div className="dialog__button-set">
         <Button
@@ -94,6 +130,10 @@ class DiscussionDeleteArea extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -101,6 +141,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ deleteDiscussionArea }, dispatch);
 }

@@ -1,11 +1,17 @@
 import { ActionType } from "~/actions";
 import { i18nType } from "~/reducers/base/i18n";
 
+/**
+ * AnnouncerNavigationItemType
+ */
 export interface AnnouncerNavigationItemType {
   location: string;
   id: string | number;
   icon: string;
   color?: string;
+  /**
+   * text
+   */
   text(i18n: i18nType): string;
 }
 
@@ -17,6 +23,10 @@ const defaultNavigation: AnnouncerNavigationItemListType = [
     location: "active",
     id: "active",
     icon: "folder",
+    /**
+     * text
+     * @param i18n i18n
+     */
     text(i18n: i18nType): string {
       return i18n.text.get("plugin.announcer.cat.active");
     },
@@ -25,6 +35,10 @@ const defaultNavigation: AnnouncerNavigationItemListType = [
     location: "past",
     id: "past",
     icon: "folder",
+    /**
+     * text
+     * @param i18n i18n
+     */
     text(i18n: i18nType): string {
       return i18n.text.get("plugin.announcer.cat.past");
     },
@@ -33,6 +47,10 @@ const defaultNavigation: AnnouncerNavigationItemListType = [
     location: "mine",
     id: "mine",
     icon: "folder",
+    /**
+     * text
+     * @param i18n i18n
+     */
     text(i18n: i18nType): string {
       return i18n.text.get("plugin.announcer.cat.mine");
     },
@@ -41,12 +59,19 @@ const defaultNavigation: AnnouncerNavigationItemListType = [
     location: "archived",
     id: "archived",
     icon: "trash-alt",
+    /**
+     * text
+     * @param i18n i18n
+     */
     text(i18n: i18nType): string {
       return i18n.text.get("plugin.announcer.cat.archived");
     },
   },
 ];
 
+/**
+ * AnnouncementType
+ */
 export interface AnnouncementType {
   archived: boolean;
   caption: string;
@@ -68,6 +93,9 @@ export interface AnnouncementType {
   }>;
 }
 
+/**
+ * AnnouncementUpdateType
+ */
 export interface AnnouncementUpdateType {
   archived?: boolean;
   caption?: string;
@@ -92,6 +120,9 @@ export type AnnouncementListType = Array<AnnouncementType>;
 
 export type AnnouncementsStateType = "LOADING" | "ERROR" | "READY";
 
+/**
+ * AnnouncementsType
+ */
 export interface AnnouncementsType {
   state: AnnouncementsStateType;
   announcements: AnnouncementListType;
@@ -104,6 +135,9 @@ export interface AnnouncementsType {
   workspaceId?: number;
 }
 
+/**
+ * AnnouncementsPatchType
+ */
 export interface AnnouncementsPatchType {
   state?: AnnouncementsStateType;
   announcements?: AnnouncementListType;
@@ -116,6 +150,11 @@ export interface AnnouncementsPatchType {
   workspaceId?: number;
 }
 
+/**
+ * announcements
+ * @param state state
+ * @param action action
+ */
 export default function announcements(
   state: AnnouncementsType = {
     state: "LOADING",

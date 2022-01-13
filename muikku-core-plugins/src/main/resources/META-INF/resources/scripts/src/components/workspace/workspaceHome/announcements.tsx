@@ -10,6 +10,9 @@ import { StateType } from "~/reducers";
 import "~/sass/elements/panel.scss";
 import "~/sass/elements/item-list.scss";
 
+/**
+ * WorkspaceAnnouncementsProps
+ */
 interface WorkspaceAnnouncementsProps {
   status: StatusType;
   workspace: WorkspaceType;
@@ -17,12 +20,21 @@ interface WorkspaceAnnouncementsProps {
   i18n: i18nType;
 }
 
+/**
+ * WorkspaceAnnouncementsState
+ */
 interface WorkspaceAnnouncementsState {}
 
+/**
+ * WorkspaceAnnouncements
+ */
 class WorkspaceAnnouncements extends React.Component<
   WorkspaceAnnouncementsProps,
   WorkspaceAnnouncementsState
 > {
+  /**
+   * render
+   */
   render() {
     if (
       this.props.status.loggedIn &&
@@ -82,6 +94,10 @@ class WorkspaceAnnouncements extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -91,6 +107,9 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ */
 function mapDispatchToProps() {
   return {};
 }

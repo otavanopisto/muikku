@@ -13,6 +13,9 @@ import { StateType } from "~/reducers";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/indicator.scss";
 
+/**
+ * ItemDataElement
+ */
 interface ItemDataElement {
   modifier: string;
   trail: string;
@@ -25,6 +28,9 @@ interface ItemDataElement {
   openInNewTab?: string;
 }
 
+/**
+ * MainFunctionNavbarProps
+ */
 interface MainFunctionNavbarProps {
   activeTrail?: string;
   i18n: i18nType;
@@ -34,12 +40,21 @@ interface MainFunctionNavbarProps {
   title: string;
 }
 
+/**
+ * MainFunctionNavbarState
+ */
 interface MainFunctionNavbarState {}
 
+/**
+ * MainFunctionNavbar
+ */
 class MainFunctionNavbar extends React.Component<
   MainFunctionNavbarProps,
   MainFunctionNavbarState
 > {
+  /**
+   * render
+   */
   render() {
     const itemData: ItemDataElement[] = [
       {
@@ -240,6 +255,10 @@ class MainFunctionNavbar extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -249,6 +268,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 const mapDispatchToProps = (dispatch: Dispatch<any>) => ({});
 
 export default connect(mapStateToProps, mapDispatchToProps)(MainFunctionNavbar);

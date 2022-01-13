@@ -84,6 +84,9 @@ class ArchiveDialog extends React.Component<
     this.props.archiveStudent({
       workspaceEntityId,
       workspaceUserEntityId,
+      /**
+       * onSuccess
+       */
       onSuccess: () => {
         if (this.props.place === "card") {
           this.props.loadEvaluationAssessmentRequestsFromServer();

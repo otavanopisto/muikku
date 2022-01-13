@@ -14,6 +14,9 @@ import { bindActionCreators } from "redux";
 import { HOPSDataType } from "~/reducers/main-function/hops";
 import { StateType } from "~/reducers";
 
+/**
+ * HopsProps
+ */
 interface HopsProps {
   i18n: i18nType;
   records: RecordsType;
@@ -21,15 +24,30 @@ interface HopsProps {
   setHopsTo: SetHopsToTriggerType;
 }
 
+/**
+ * HopsState
+ */
 interface HopsState {}
 
+/**
+ * Hops
+ */
 class Hops extends React.Component<HopsProps, HopsState> {
   timeout: NodeJS.Timer;
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: HopsProps) {
     super(props);
 
     this.setHopsToWithDelay = this.setHopsToWithDelay.bind(this);
   }
+
+  /**
+   * setHopsToWithDelay
+   * @param hops hops
+   */
   setHopsToWithDelay(hops: HOPSDataType) {
     clearTimeout(this.timeout);
     this.timeout = setTimeout(
@@ -37,6 +55,10 @@ class Hops extends React.Component<HopsProps, HopsState> {
       1000
     ) as any;
   }
+
+  /**
+   * render
+   */
   render() {
     if (
       this.props.records.location !== "hops" ||
@@ -67,6 +89,10 @@ class Hops extends React.Component<HopsProps, HopsState> {
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -75,6 +101,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators({ setHopsTo }, dispatch);
 }

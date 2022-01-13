@@ -13,21 +13,34 @@ import {
 import { WorkspacesType } from "~/reducers/workspaces";
 import { SearchFormElement } from "~/components/general/form-element";
 
+/**
+ * CoursepickerToolbarProps
+ */
 interface CoursepickerToolbarProps {
   i18n: i18nType;
   workspaces: WorkspacesType;
 }
 
+/**
+ * CoursepickerToolbarState
+ */
 interface CoursepickerToolbarState {
   searchquery: string;
   focused: boolean;
 }
 
+/**
+ * CoursepickerToolbar
+ */
 class CoursepickerToolbar extends React.Component<
   CoursepickerToolbarProps,
   CoursepickerToolbarState
 > {
   private focused: boolean;
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: CoursepickerToolbarProps) {
     super(props);
 
@@ -42,6 +55,26 @@ class CoursepickerToolbar extends React.Component<
     this.focused = false;
   }
 
+  /**
+   * componentWillReceiveProps
+   * @param nextProps nextProps
+   */
+  componentWillReceiveProps(nextProps: CoursepickerToolbarProps) {
+    if (
+      !this.focused &&
+      (nextProps.workspaces.activeFilters.query || "") !==
+        this.state.searchquery
+    ) {
+      this.setState({
+        searchquery: nextProps.workspaces.activeFilters.query || "",
+      });
+    }
+  }
+
+  /**
+   * updateSearchWithQuery
+   * @param query query
+   */
   updateSearchWithQuery(query: string) {
     this.setState({
       searchquery: query,
@@ -55,26 +88,23 @@ class CoursepickerToolbar extends React.Component<
       "#?" + queryString.stringify(locationData, { arrayFormat: "bracket" });
   }
 
-  componentWillReceiveProps(nextProps: CoursepickerToolbarProps) {
-    if (
-      !this.focused &&
-      (nextProps.workspaces.activeFilters.query || "") !==
-        this.state.searchquery
-    ) {
-      this.setState({
-        searchquery: nextProps.workspaces.activeFilters.query || "",
-      });
-    }
-  }
-
+  /**
+   * onInputFocus
+   */
   onInputFocus() {
     this.setState({ focused: true });
   }
 
+  /**
+   * onInputBlur
+   */
   onInputBlur() {
     this.setState({ focused: false });
   }
 
+  /**
+   * render
+   */
   render() {
     return (
       <ApplicationPanelToolbar>
@@ -96,6 +126,10 @@ class CoursepickerToolbar extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -103,6 +137,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return {};
 }

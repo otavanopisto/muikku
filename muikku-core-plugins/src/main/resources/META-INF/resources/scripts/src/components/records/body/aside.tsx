@@ -14,6 +14,9 @@ import NavigationMenu, {
 import { HOPSType } from "~/reducers/main-function/hops";
 import { StatusType } from "~/reducers/base/status";
 
+/**
+ * NavigationProps
+ */
 interface NavigationProps {
   i18n: i18nType;
   location: TranscriptOfRecordLocationType;
@@ -22,10 +25,17 @@ interface NavigationProps {
   records: RecordsType;
 }
 
+/**
+ * Navigation
+ */
 class Navigation extends React.Component<
   NavigationProps,
   Record<string, unknown>
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: NavigationProps) {
     super(props);
   }
@@ -34,7 +44,7 @@ class Navigation extends React.Component<
    * Returns whether section with given hash should be visible or not
    *
    * @param hash section hash
-   * @return whether section with given hash should be visible or not
+   * @returns boolean whether section with given hash should be visible or not
    */
   isVisible(hash: string) {
     switch (hash) {
@@ -57,6 +67,9 @@ class Navigation extends React.Component<
     return true;
   }
 
+  /**
+   * render
+   */
   render() {
     const sections = [
       {
@@ -95,6 +108,10 @@ class Navigation extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -105,6 +122,9 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ */
 function mapDispatchToProps() {
   return {};
 }

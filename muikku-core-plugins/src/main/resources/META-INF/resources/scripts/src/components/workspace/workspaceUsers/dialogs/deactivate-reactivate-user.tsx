@@ -14,6 +14,9 @@ import { ShortWorkspaceUserWithActiveStatusType } from "~/reducers/user-index";
 import { getName } from "~/util/modifiers";
 import { WorkspaceType } from "~/reducers/workspaces";
 
+/**
+ * DeactivateReactivateUserDialogProps
+ */
 interface DeactivateReactivateUserDialogProps {
   i18n: i18nType;
 
@@ -25,17 +28,32 @@ interface DeactivateReactivateUserDialogProps {
   onClose: () => any;
 }
 
+/**
+ * DeactivateReactivateUserDialogState
+ */
 interface DeactivateReactivateUserDialogState {}
 
+/**
+ * DeactivateReactivateUserDialog
+ */
 class DeactivateReactivateUserDialog extends React.Component<
   DeactivateReactivateUserDialogProps,
   DeactivateReactivateUserDialogState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: DeactivateReactivateUserDialogProps) {
     super(props);
 
     this.toggleActiveStatus = this.toggleActiveStatus.bind(this);
   }
+
+  /**
+   * toggleActiveStatus
+   * @param closeDialog closeDialog
+   */
   toggleActiveStatus(closeDialog: () => any) {
     this.props.toggleActiveStateOfStudentOfWorkspace({
       workspace: this.props.workspace,
@@ -43,7 +61,15 @@ class DeactivateReactivateUserDialog extends React.Component<
       success: closeDialog,
     });
   }
+
+  /**
+   *
+   */
   render() {
+    /**
+     * content
+     * @param closeDialog closeDialog
+     */
     const content = (closeDialog: () => any) => (
       <div>
         <span>
@@ -56,6 +82,11 @@ class DeactivateReactivateUserDialog extends React.Component<
         </span>
       </div>
     );
+
+    /**
+     * footer
+     * @param closeDialog closeDialog
+     */
     const footer = (closeDialog: () => any) => (
       <div className="dialog__button-set">
         <Button
@@ -101,6 +132,10 @@ class DeactivateReactivateUserDialog extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -108,6 +143,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     { toggleActiveStateOfStudentOfWorkspace },

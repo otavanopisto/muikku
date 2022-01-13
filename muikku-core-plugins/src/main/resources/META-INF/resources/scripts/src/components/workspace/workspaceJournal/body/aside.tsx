@@ -22,6 +22,9 @@ import {
 } from "~/actions/workspaces/index";
 import { WorkspaceStudentListType } from "~/reducers/user-index";
 
+/**
+ * NavigationAsideProps
+ */
 interface NavigationAsideProps {
   i18n: i18nType;
   workspace: WorkspaceType;
@@ -30,14 +33,24 @@ interface NavigationAsideProps {
   loadCurrentWorkspaceJournalsFromServer: LoadCurrentWorkspaceJournalsFromServerTriggerType;
 }
 
+/**
+ * NavigationAsideState
+ */
 interface NavigationAsideState {
   students: WorkspaceStudentListType | null;
 }
 
+/**
+ * NavigationAside
+ */
 class NavigationAside extends React.Component<
   NavigationAsideProps,
   NavigationAsideState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: NavigationAsideProps) {
     super(props);
 
@@ -48,8 +61,7 @@ class NavigationAside extends React.Component<
 
   /**
    * Handles student changes and loads specific students journals to global state
-   * @param id
-   * @returns
+   * @param id id
    */
   handleOnStudentClick = (id: number | null) => () => {
     this.props.loadCurrentWorkspaceJournalsFromServer(id);
@@ -57,7 +69,7 @@ class NavigationAside extends React.Component<
 
   /**
    * filterStudents
-   * @param students
+   * @param students students
    * @returns array of students or empty array
    */
   filterStudents = (students: WorkspaceStudentListType | null) => {
@@ -78,7 +90,7 @@ class NavigationAside extends React.Component<
 
   /**
    * render
-   * @returns
+   * @returns JSX.Element
    */
   render() {
     const { workspace } = this.props;
@@ -150,8 +162,8 @@ class NavigationAside extends React.Component<
 
 /**
  * mapStateToProps
- * @param state
- * @returns
+ * @param state state
+ * @returns object
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -163,8 +175,8 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
- * @returns
+ * @param dispatch dispatch
+ * @returns object
  */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(

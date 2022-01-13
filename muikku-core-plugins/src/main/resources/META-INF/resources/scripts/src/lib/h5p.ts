@@ -27,7 +27,9 @@ actionHandlers.hello = (
   // document size may not be updated before the content resizes.
   iframe.getBoundingClientRect();
 
-  // Tell iframe that it needs to resize when our window resizes
+  /**
+   * Tell iframe that it needs to resize when our window resizes
+   */
   const resize = function () {
     if (iframe.contentWindow) {
       // Limit resize calls to avoid flickering
@@ -128,7 +130,10 @@ window.addEventListener(
   false
 );
 
-// Let h5p iframes know we're ready!
+/**
+ * Let h5p iframes know we're ready!
+ * @param iframe iframe
+ */
 export function prepareH5POn(iframe: HTMLIFrameElement) {
   const ready = {
     context: "h5p",

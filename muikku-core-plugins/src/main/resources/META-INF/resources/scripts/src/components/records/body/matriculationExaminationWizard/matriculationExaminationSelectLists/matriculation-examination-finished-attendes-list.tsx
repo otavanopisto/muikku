@@ -36,7 +36,13 @@ const defaultUseSelectProps = {
 
 /**
  * MatriculationExaminationCompletedSelectsList
- * @param props
+ * @param props props
+ * @param props.onChange onChange
+ * @param props.examinationFinishedList examinationFinishedList
+ * @param props.enrolledAttendances enrolledAttendances
+ * @param props.pastOptions pastOptions
+ * @param props.onDeleteRow  onDeleteRow
+ * @param props.readOnly readOnly
  * @returns
  */
 export const MatriculationExaminationFinishedAttendesList: React.FC<
@@ -54,9 +60,9 @@ export const MatriculationExaminationFinishedAttendesList: React.FC<
 
   /**
    * Handles matriculation examation finished subject group change
-   * @param key
-   * @param value
-   * @param index
+   * @param key key
+   * @param value value
+   * @param index index
    */
   const handleMatriculationExaminationSubjectGroupChange = <
     T extends keyof ExaminationFinishedSubject

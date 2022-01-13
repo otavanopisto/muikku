@@ -8,6 +8,9 @@ const ProgressBarCircle = require("react-progress-bar.js").Circle;
 import "~/sass/elements/workspace-activity.scss";
 import "~/sass/elements/wcag.scss";
 
+/**
+ * ProgressData
+ */
 export default class ProgressData extends React.Component<
   {
     activity: WorkspaceStudentActivityType;
@@ -17,6 +20,9 @@ export default class ProgressData extends React.Component<
   },
   Record<string, unknown>
 > {
+  /**
+   * render
+   */
   render() {
     if (!this.props.activity) {
       return null;

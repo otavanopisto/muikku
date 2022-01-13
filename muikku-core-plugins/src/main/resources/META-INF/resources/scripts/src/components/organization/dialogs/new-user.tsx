@@ -21,6 +21,9 @@ import { bindActionCreators } from "redux";
 import { StudyprogrammeTypes } from "~/reducers/main-function/users";
 import { CreateUserType } from "~/reducers/user-index";
 
+/**
+ * OrganizationUserProps
+ */
 interface OrganizationUserProps {
   children?: React.ReactElement<any>;
   i18n: i18nType;
@@ -31,6 +34,9 @@ interface OrganizationUserProps {
   createStaffmember: CreateStaffmemberTriggerType;
 }
 
+/**
+ * OrganizationUserState
+ */
 interface OrganizationUserState {
   user: {
     [field: string]: string;
@@ -43,10 +49,17 @@ interface OrganizationUserState {
   studyProgrammeIdentifierValid: number;
 }
 
+/**
+ * OrganizationUser
+ */
 class OrganizationUser extends React.Component<
   OrganizationUserProps,
   OrganizationUserState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: OrganizationUserProps) {
     super(props);
     this.state = {
@@ -65,6 +78,12 @@ class OrganizationUser extends React.Component<
     this.clearComponentState = this.clearComponentState.bind(this);
   }
 
+  /**
+   * updateField
+   * @param value value
+   * @param valid valid
+   * @param name name
+   */
   updateField(value: string, valid: boolean, name: string) {
     const fieldName = name;
     const fieldValue = valid ? value : "";
@@ -74,6 +93,9 @@ class OrganizationUser extends React.Component<
     this.setState({ user: newState });
   }
 
+  /**
+   * clearComponentState
+   */
   clearComponentState() {
     this.setState({
       user: {
@@ -89,10 +111,18 @@ class OrganizationUser extends React.Component<
     });
   }
 
+  /**
+   * cancelDialog
+   * @param closeDialog closeDialog
+   */
   cancelDialog(closeDialog: () => any) {
     closeDialog();
   }
 
+  /**
+   * saveUser
+   * @param closeDialog closeDialog
+   */
   saveUser(closeDialog: () => any) {
     let valid = true;
 
@@ -144,9 +174,15 @@ class OrganizationUser extends React.Component<
 
         this.props.createStudent({
           student: data,
+          /**
+           * success
+           */
           success: () => {
             closeDialog();
           },
+          /**
+           * fail
+           */
           fail: () => {
             closeDialog();
           },
@@ -168,6 +204,9 @@ class OrganizationUser extends React.Component<
 
         this.props.createStaffmember({
           staffmember: data,
+          /**
+           * success
+           */
           success: () => {
             this.setState({
               user: { role: "STUDENT" },
@@ -178,6 +217,9 @@ class OrganizationUser extends React.Component<
             });
             closeDialog();
           },
+          /**
+           * fail
+           */
           fail: () => {
             closeDialog();
           },
@@ -186,7 +228,14 @@ class OrganizationUser extends React.Component<
     }
   }
 
+  /**
+   * render
+   */
   render() {
+    /**
+     * content
+     * @param closeDialog closeDialog
+     */
     const content = (closeDialog: () => any) => (
       <div>
         <DialogRow modifiers="new-user">
@@ -287,6 +336,10 @@ class OrganizationUser extends React.Component<
       </div>
     );
 
+    /**
+     * footer
+     * @param closePortal closePortal
+     */
     const footer = (closePortal: () => any) => (
       <FormActionsElement
         locked={this.state.locked}
@@ -318,6 +371,10 @@ class OrganizationUser extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -326,6 +383,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators({ createStudent, createStaffmember }, dispatch);
 }

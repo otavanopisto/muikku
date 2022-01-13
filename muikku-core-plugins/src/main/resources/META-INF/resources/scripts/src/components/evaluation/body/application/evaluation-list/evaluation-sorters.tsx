@@ -41,6 +41,7 @@ class EvaluationSorters extends React.Component<
 > {
   /**
    * constructor
+   * @param props props
    */
   constructor(props: EvaluationSortersProps) {
     super(props);

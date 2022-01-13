@@ -8,6 +8,9 @@ import { StrMathJAX } from "../static/mathjax";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
 
+/**
+ * MultiSelectFieldProps
+ */
 interface MultiSelectFieldProps {
   type: string;
   content: {
@@ -37,6 +40,9 @@ interface MultiSelectFieldProps {
   invisible?: boolean;
 }
 
+/**
+ * MultiSelectFieldState
+ */
 interface MultiSelectFieldState {
   values: Array<string>;
 
@@ -53,10 +59,17 @@ interface MultiSelectFieldState {
   fieldSavedState: FieldStateStatus;
 }
 
+/**
+ * MultiSelectField
+ */
 export default class MultiSelectField extends React.Component<
   MultiSelectFieldProps,
   MultiSelectFieldState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: MultiSelectFieldProps) {
     super(props);
 

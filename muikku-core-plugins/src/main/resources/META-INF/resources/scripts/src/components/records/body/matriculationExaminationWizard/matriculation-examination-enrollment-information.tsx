@@ -58,13 +58,15 @@ type MatriculationExaminationEnrollmentInformationState =
 
 /**
  * MatriculationExaminationEnrollmentInformation
- * @param props
- * @returns
  */
 export class MatriculationExaminationEnrollmentInformation extends React.Component<
   MatriculationExaminationEnrollmentInformationProps,
   MatriculationExaminationEnrollmentInformationState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: MatriculationExaminationEnrollmentInformationProps) {
     super(props);
 
@@ -108,8 +110,8 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
 
   /**
    * Updates props to state
-   * @param prevProps
-   * @param prevState
+   * @param prevProps prevProps
+   * @param prevState prevState
    */
   componentDidUpdate = (
     prevProps: MatriculationExaminationEnrollmentInformationProps
@@ -131,7 +133,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
    * Returns next non selected subject from subjects list
    *
    * @param selectedSubjects list of selected subjects
-   * @return next non selected subject from subjects list
+   * @returns next non selected subject from subjects list
    */
   getDefaultSubject = (selectedSubjects: string[]) => {
     const subjects = Object.keys(SUBJECT_MAP);
@@ -375,6 +377,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
   /**
    * Returns true if enrolled attendance is not a repeat but there is a
    * previous exam with the same subject.
+   * @param attendance attendance
    */
   isConflictingRepeat = (attendance: ExaminationEnrolledSubject) => {
     if (attendance.repeat === "false") {
@@ -401,6 +404,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
 
   /**
    * Returns true if there is a finished attendance with the same subject but different mandatory.
+   * @param attendance attendance
    */
   isConflictingMandatory = (attendance: ExaminationEnrolledSubject) =>
     this.state.finishedAttendances.filter(
@@ -534,6 +538,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
 
   /**
    * handles delete enrolled attendance and passes modified examination information to parent
+   * @param i index of row which will be deleted
    */
   handleDeleteEnrolledAttendanceRow = (i: number) => () => {
     const { examination, onChange } = this.props;
@@ -552,6 +557,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
 
   /**
    * handles delete finished attendance and passes modified examination information to parent
+   * @param i index of row which will be deleted
    */
   handleDeleteFinishedAttendanceRow = (i: number) => () => {
     const { examination, onChange } = this.props;
@@ -570,6 +576,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
 
   /**
    * handles delete planned attendance and passes modified examination information to parent
+   * @param i index of row which will be deleted
    */
   handleDeletePlannedAttendanceRow = (i: number) => () => {
     const { examination, onChange } = this.props;
@@ -587,7 +594,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
 
   /**
    * handle enrolled attendes list change and passes it to parent component
-   * @param examinationSubjectList
+   * @param examinationSubjectList examinationSubjectList
    */
   handleExaminationEnrolledAttendSubjectListChange = (
     examinationSubjectList: ExaminationEnrolledSubject[]
@@ -604,7 +611,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
 
   /**
    * handles finished attendes list change and passes it to parent component
-   * @param examinationSubjectList
+   * @param examinationSubjectList examinationSubjectList
    */
   handleExaminationFinishedSubjectListChange = (
     examinationSubjectList: ExaminationFinishedSubject[]
@@ -621,7 +628,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
 
   /**
    * handles planned attendes list change
-   * @param examinationSubjectList
+   * @param examinationSubjectList examinationSubjectList
    */
   handleExaminationPlannedSubjectListChange = (
     examinationSubjectList: ExaminationPlannedSubject[]

@@ -36,6 +36,9 @@ import {
 } from "~/actions/workspaces";
 import { Redirect } from "react-router-dom";
 
+/**
+ * WorkspaceMaterialsProps
+ */
 interface WorkspaceMaterialsProps {
   i18n: i18nType;
   workspace: WorkspaceType;
@@ -53,6 +56,9 @@ interface WorkspaceMaterialsProps {
   updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType;
 }
 
+/**
+ * WorkspaceMaterialsState
+ */
 interface WorkspaceMaterialsState {
   defaultOffset: number;
   redirect: string;
@@ -60,11 +66,18 @@ interface WorkspaceMaterialsState {
 
 const DEFAULT_OFFSET = 67;
 
+/**
+ * WorkspaceMaterials
+ */
 class WorkspaceMaterials extends React.Component<
   WorkspaceMaterialsProps,
   WorkspaceMaterialsState
 > {
   private flattenedMaterial: MaterialContentNodeListType;
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: WorkspaceMaterialsProps) {
     super(props);
 
@@ -85,6 +98,10 @@ class WorkspaceMaterials extends React.Component<
 
     this.getFlattenedMaterials(props);
   }
+
+  /**
+   * componentDidMount
+   */
   componentDidMount() {
     const defaultOffset =
       ((document.querySelector("#stick") as HTMLElement) || ({} as any))
@@ -97,14 +114,28 @@ class WorkspaceMaterials extends React.Component<
 
     window.addEventListener("scroll", this.onScroll);
   }
+
+  /**
+   * componentWillUnmount
+   */
   componentWillUnmount() {
     window.removeEventListener("scroll", this.onScroll);
   }
+
+  /**
+   * componentWillReceiveProps
+   * @param nextProps nextProps
+   */
   componentWillReceiveProps(nextProps: WorkspaceMaterialsProps) {
     if (this.props.materials !== nextProps.materials) {
       this.getFlattenedMaterials(nextProps);
     }
   }
+
+  /**
+   * toggleSectionHiddenStatus
+   * @param section section
+   */
   toggleSectionHiddenStatus(section: MaterialContentNodeType) {
     this.props.updateWorkspaceMaterialContentNode({
       workspace: this.props.workspace,
@@ -115,6 +146,14 @@ class WorkspaceMaterials extends React.Component<
       isDraft: false,
     });
   }
+
+  /**
+   * getMaterialsOptionListDropdown
+   * @param section section
+   * @param nextSection nextSection
+   * @param nextSibling nextSibling
+   * @param includesSection includesSection
+   */
   getMaterialsOptionListDropdown(
     section: MaterialContentNodeType,
     nextSection: MaterialContentNodeType,
@@ -154,6 +193,11 @@ class WorkspaceMaterials extends React.Component<
 
     return materialManagementItemsOptions;
   }
+
+  /**
+   * startupEditor
+   * @param section section
+   */
   startupEditor(section: MaterialContentNodeType) {
     this.props.setWorkspaceMaterialEditorState({
       currentNodeWorkspace: this.props.workspace,
@@ -182,6 +226,12 @@ class WorkspaceMaterials extends React.Component<
       canSetTitle: true,
     });
   }
+
+  /**
+   * createPage
+   * @param section section
+   * @param nextSibling nextSibling
+   */
   createPage(
     section: MaterialContentNodeType,
     nextSibling: MaterialContentNodeType
@@ -200,6 +250,13 @@ class WorkspaceMaterials extends React.Component<
       "materials"
     );
   }
+
+  /**
+   * createPageFromBinary
+   * @param section section
+   * @param nextSibling nextSibling
+   * @param e e
+   */
   createPageFromBinary(
     section: MaterialContentNodeType,
     nextSibling: MaterialContentNodeType,
@@ -218,6 +275,11 @@ class WorkspaceMaterials extends React.Component<
       "materials"
     );
   }
+
+  /**
+   * createSection
+   * @param nextSibling nextSibling
+   */
   createSection(nextSibling: MaterialContentNodeType) {
     this.props.createWorkspaceMaterialContentNode(
       {
@@ -232,6 +294,12 @@ class WorkspaceMaterials extends React.Component<
       "materials"
     );
   }
+
+  /**
+   * pastePage
+   * @param section section
+   * @param nextSibling nextSibling
+   */
   pastePage(
     section: MaterialContentNodeType,
     nextSibling: MaterialContentNodeType
@@ -256,6 +324,11 @@ class WorkspaceMaterials extends React.Component<
       );
     }
   }
+
+  /**
+   * getFlattenedMaterials
+   * @param props props
+   */
   getFlattenedMaterials(props: WorkspaceMaterialsProps = this.props) {
     this.flattenedMaterial = [];
     if (!props.materials) {
@@ -267,9 +340,17 @@ class WorkspaceMaterials extends React.Component<
       });
     });
   }
+
+  /**
+   * onOpenNavigation
+   */
   onOpenNavigation() {
     this.props.onOpenNavigation();
   }
+
+  /**
+   * onScroll
+   */
   onScroll() {
     if ((window as any).IGNORE_SCROLL_EVENTS) {
       return;
@@ -279,6 +360,10 @@ class WorkspaceMaterials extends React.Component<
       this.props.onActiveNodeIdChange(newActive);
     }
   }
+
+  /**
+   * getActive
+   */
   getActive() {
     //gets the current active node
     let winner: number = null;
@@ -336,6 +421,10 @@ class WorkspaceMaterials extends React.Component<
     winner = winner || this.flattenedMaterial[0].workspaceMaterialId;
     return winner;
   }
+
+  /**
+   * render
+   */
   render() {
     if (this.state.redirect) {
       return <Redirect push to={this.state.redirect} />;
@@ -675,6 +764,10 @@ class WorkspaceMaterials extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -687,6 +780,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     {

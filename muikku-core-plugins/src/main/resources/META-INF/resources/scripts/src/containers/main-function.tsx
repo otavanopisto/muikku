@@ -90,7 +90,6 @@ import {
 } from "~/actions/main-function/records/yo";
 import { updateSummary } from "~/actions/main-function/records/summary";
 import loadOrganizationSummary from "~/actions/organization/summary";
-
 import Chat from "../components/chat/chat";
 import EvaluationBody from "../components/evaluation/body";
 import {
@@ -105,6 +104,9 @@ import * as moment from "moment";
 
 moment.locale("fi");
 
+/**
+ * MainFunctionProps
+ */
 interface MainFunctionProps {
   store: Store<StateType>;
   websocket: Websocket;
@@ -112,6 +114,9 @@ interface MainFunctionProps {
 
 (window as any).USES_HISTORY_API = true;
 
+/**
+ * MainFunction
+ */
 export default class MainFunction extends React.Component<
   MainFunctionProps,
   Record<string, unknown>
@@ -124,6 +129,7 @@ export default class MainFunction extends React.Component<
 
   /**
    * constructor
+   * @param props props
    */
   constructor(props: MainFunctionProps) {
     super(props);
@@ -147,7 +153,7 @@ export default class MainFunction extends React.Component<
 
   /**
    * loadlib
-   * @param url
+   * @param url url
    * @returns
    */
   loadlib(url: string) {
@@ -227,7 +233,6 @@ export default class MainFunction extends React.Component<
 
   /**
    * loadGuiderData
-   * @returns
    */
   loadGuiderData() {
     //This code allows you to use the weird deprecated #userprofile/PYRAMUS-STUDENT-30055%22%3EJuhana type of links
@@ -266,7 +271,7 @@ export default class MainFunction extends React.Component<
 
   /**
    * loadRecordsData
-   * @param dataSplitted
+   * @param dataSplitted dataSplitted
    */
   loadRecordsData(dataSplitted: string[]) {
     const givenLocation = dataSplitted[0].split("/")[0];
@@ -329,7 +334,7 @@ export default class MainFunction extends React.Component<
 
   /**
    * loadProfileData
-   * @param location
+   * @param location location
    */
   loadProfileData(location: string) {
     this.props.store.dispatch(setProfileLocation(location) as Action);
@@ -342,7 +347,7 @@ export default class MainFunction extends React.Component<
 
   /**
    * loadAnnouncerData
-   * @param location
+   * @param location location
    */
   loadAnnouncerData(location: string[]) {
     const actualLocation = location.filter((l) => !!l);
@@ -360,13 +365,17 @@ export default class MainFunction extends React.Component<
 
   /**
    * loadAnnouncementsData
-   * @param announcementId
+   * @param announcementId announcementId
    */
   loadAnnouncementsData(announcementId: number) {
     this.props.store.dispatch(loadAnnouncement(null, announcementId) as Action);
   }
 
-  //NOTE because loadDiscussionThreadsFromServer can only run after areas have been loaded, this needs to be so
+  /**
+   * loadDiscussionData -
+   * NOTE because loadDiscussionThreadsFromServer can only run after areas have been loaded, this needs to be so
+   * @param location location
+   */
   loadDiscussionData(location: string[]) {
     if (location.length <= 2) {
       //The link is expected to be like # none, in this case it will collapse to null, page 1
@@ -395,6 +404,9 @@ export default class MainFunction extends React.Component<
 
   /**
    * loadCoursePickerData
+   * @param originalData originalData
+   * @param isOrganization isOrganization
+   * @param refresh refresh
    */
   loadCoursePickerData(
     originalData: any,
@@ -417,6 +429,7 @@ export default class MainFunction extends React.Component<
 
   /**
    * loadCommunicatorData
+   * @param location location
    */
   loadCommunicatorData(location: string[]) {
     if (location.length === 1) {
@@ -432,7 +445,7 @@ export default class MainFunction extends React.Component<
 
   /**
    * renderCoursePickerBody
-   * @returns
+   * @returns JSX.Element
    */
   renderCoursePickerBody() {
     this.updateFirstTime();
@@ -467,6 +480,10 @@ export default class MainFunction extends React.Component<
 
       const state: StateType = this.props.store.getState();
 
+      /**
+       * loadCoursepickerDataByUser
+       * @param user user
+       */
       const loadCoursepickerDataByUser = (user: UserType) => {
         if (!currentLocationHasData) {
           const defaultSelections: any = {};
@@ -516,7 +533,7 @@ export default class MainFunction extends React.Component<
 
   /**
    * renderIndexBody
-   * @returns
+   * @returns JSX.Element
    */
   renderIndexBody() {
     this.updateFirstTime();
@@ -547,7 +564,7 @@ export default class MainFunction extends React.Component<
 
   /**
    * renderOrganizationAdministrationBody
-   * @returns
+   * @returns JSX.Element
    */
   renderOrganizationAdministrationBody() {
     this.updateFirstTime();
@@ -601,6 +618,10 @@ export default class MainFunction extends React.Component<
 
       const state: StateType = this.props.store.getState();
 
+      /**
+       * loadWorkspacesByUser
+       * @param user user
+       */
       const loadWorkspacesByUser = (user: UserType) => {
         if (!currentLocationHasData) {
           const defaultSelections: any = {
@@ -711,7 +732,7 @@ export default class MainFunction extends React.Component<
 
   /**
    * renderDiscussionBody
-   * @returns
+   * @returns JSX.Element
    */
   renderDiscussionBody() {
     this.updateFirstTime();
@@ -780,7 +801,7 @@ export default class MainFunction extends React.Component<
 
   /**
    * renderAnnouncerBody
-   * @returns
+   * @returns JSX.Element
    */
   renderAnnouncerBody() {
     this.updateFirstTime();

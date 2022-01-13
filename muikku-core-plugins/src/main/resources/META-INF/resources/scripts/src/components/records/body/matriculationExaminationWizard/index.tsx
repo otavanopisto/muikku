@@ -119,6 +119,9 @@ export const EXAMINATION_SUCCESS_GRADES_MAP = [
   "LAUDATUR",
 ];
 
+/**
+ * MatriculationExaminationWizardProps
+ */
 interface MatriculationExaminationWizardProps {
   workspace: WorkspaceType;
   i18n: i18nType;
@@ -131,6 +134,9 @@ interface MatriculationExaminationWizardProps {
   yo: YOType;
 }
 
+/**
+ * MatriculationExaminationWizardState
+ */
 export interface MatriculationExaminationWizardState {
   initialized: boolean;
   savingDraft: boolean;
@@ -140,6 +146,9 @@ export interface MatriculationExaminationWizardState {
   examinationInformation: ExaminationInformation;
 }
 
+/**
+ * MatriculationExaminationWizard
+ */
 class MatriculationExaminationWizard extends React.Component<
   MatriculationExaminationWizardProps,
   MatriculationExaminationWizardState
@@ -684,8 +693,8 @@ class MatriculationExaminationWizard extends React.Component<
 
 /**
  * mapStateToProps
- * @param state
- * @returns
+ * @param state state
+ * @returns object
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -699,8 +708,8 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
- * @returns
+ * @param dispatch dispatch
+ * @returns object
  */
 function mapDispatchToProps() {
   return {};

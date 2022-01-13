@@ -86,6 +86,9 @@ export type CLEAR_USER_SELECTOR = SpecificActionType<
   Partial<UsersSelectType>
 >;
 
+/**
+ * CreateStudentTriggerType
+ */
 export interface CreateStudentTriggerType {
   (data: {
     student: CreateUserType;
@@ -94,6 +97,9 @@ export interface CreateStudentTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * CreateStaffmemberTriggerType
+ */
 export interface CreateStaffmemberTriggerType {
   (data: {
     staffmember: CreateUserType;
@@ -102,6 +108,9 @@ export interface CreateStaffmemberTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * UpdateStudentTriggerType
+ */
 export interface UpdateStudentTriggerType {
   (data: {
     student: UpdateUserType;
@@ -110,6 +119,9 @@ export interface UpdateStudentTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * UpdateStaffmemberTriggerType
+ */
 export interface UpdateStaffmemberTriggerType {
   (data: {
     staffmember: UpdateUserType;
@@ -118,6 +130,9 @@ export interface UpdateStaffmemberTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * UpdateUsergroupTriggerType
+ */
 export interface UpdateUsergroupTriggerType {
   (data: {
     update: UpdateUserGroupType;
@@ -129,6 +144,9 @@ export interface UpdateUsergroupTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * CreateUsergroupTriggerType
+ */
 export interface CreateUsergroupTriggerType {
   (data: {
     payload: CreateUserGroupType;
@@ -139,10 +157,16 @@ export interface CreateUsergroupTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * LoadStudyprogrammesTriggerType
+ */
 export interface LoadStudyprogrammesTriggerType {
   (): AnyActionType;
 }
 
+/**
+ * LoadUsersTriggerType
+ */
 export interface LoadUsersTriggerType {
   (data: {
     payload: UserPayloadType;
@@ -151,6 +175,9 @@ export interface LoadUsersTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * LoadUsergroupsTriggerType
+ */
 export interface LoadUsergroupsTriggerType {
   (data: {
     payload: UsergroupPayloadType;
@@ -159,20 +186,34 @@ export interface LoadUsergroupsTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * LoadMoreUserTriggerType
+ */
 export interface LoadMoreUserTriggerType {
   (): AnyActionType;
 }
 
+/**
+ * SetCurrentUserGroupTriggerType
+ */
 export interface SetCurrentUserGroupTriggerType {
   (id: number): AnyActionType;
 }
 
+/**
+ * delay
+ * @param ms
+ */
 function delay(ms: number) {
   return new Promise((resolve) => {
     setTimeout(resolve, ms);
   });
 }
 
+/**
+ * createStudent
+ * @param data data
+ */
 const createStudent: CreateStudentTriggerType = function createStudent(data) {
   return async (
     dispatch: (arg: AnyActionType) => any,
@@ -225,6 +266,10 @@ const createStudent: CreateStudentTriggerType = function createStudent(data) {
   };
 };
 
+/**
+ * updateStudent
+ * @param data data
+ */
 const updateStudent: UpdateStudentTriggerType = function updateStudent(data) {
   return async (
     dispatch: (arg: AnyActionType) => any,
@@ -276,6 +321,10 @@ const updateStudent: UpdateStudentTriggerType = function updateStudent(data) {
   };
 };
 
+/**
+ * createStaffmember
+ * @param data data
+ */
 const createStaffmember: CreateStaffmemberTriggerType =
   function createStaffmember(data) {
     return async (
@@ -324,6 +373,10 @@ const createStaffmember: CreateStaffmemberTriggerType =
     };
   };
 
+/**
+ * updateStaffmember
+ * @param data data
+ */
 const updateStaffmember: UpdateStaffmemberTriggerType =
   function updateStaffmember(data) {
     return async (
@@ -375,6 +428,10 @@ const updateStaffmember: UpdateStaffmemberTriggerType =
     };
   };
 
+/**
+ * updateUsergroup
+ * @param data data
+ */
 const updateUsergroup: UpdateUsergroupTriggerType = function updateUsergroup(
   data
 ) {
@@ -428,6 +485,10 @@ const updateUsergroup: UpdateUsergroupTriggerType = function updateUsergroup(
   };
 };
 
+/**
+ * createUsergroup
+ * @param data data
+ */
 const createUsergroup: CreateUsergroupTriggerType = function createUsergroup(
   data
 ) {
@@ -480,6 +541,9 @@ const createUsergroup: CreateUsergroupTriggerType = function createUsergroup(
   };
 };
 
+/**
+ * loadStudyprogrammes
+ */
 const loadStudyprogrammes: LoadStudyprogrammesTriggerType =
   function loadStudyprogrammes() {
     return async (
@@ -515,6 +579,10 @@ const loadStudyprogrammes: LoadStudyprogrammesTriggerType =
     };
   };
 
+/**
+ * loadStudents
+ * @param data data
+ */
 const loadStudents: LoadUsersTriggerType = function loadStudents(data) {
   return async (
     dispatch: (arg: AnyActionType) => any,
@@ -564,6 +632,10 @@ const loadStudents: LoadUsersTriggerType = function loadStudents(data) {
   };
 };
 
+/**
+ * loadStaff
+ * @param data data
+ */
 const loadStaff: LoadUsersTriggerType = function loadStaff(data) {
   return async (
     dispatch: (arg: AnyActionType) => any,
@@ -611,6 +683,10 @@ const loadStaff: LoadUsersTriggerType = function loadStaff(data) {
   };
 };
 
+/**
+ * loadUserGroups
+ * @param data data
+ */
 const loadUserGroups: LoadUsergroupsTriggerType = function loadUserGroups(
   data
 ) {
@@ -687,6 +763,9 @@ const loadUserGroups: LoadUsergroupsTriggerType = function loadUserGroups(
   };
 };
 
+/**
+ * loadMoreUserGroups
+ */
 const loadMoreUserGroups: LoadUsersTriggerType = function loadMoreUserGroups() {
   return async (
     dispatch: (arg: AnyActionType) => any,
@@ -745,6 +824,10 @@ const loadMoreUserGroups: LoadUsersTriggerType = function loadMoreUserGroups() {
   };
 };
 
+/**
+ * setCurrentUserGroup
+ * @param id id
+ */
 const setCurrentUserGroup: SetCurrentUserGroupTriggerType =
   function loadCurrentUserGroup(id: number) {
     return async (
@@ -781,6 +864,10 @@ const setCurrentUserGroup: SetCurrentUserGroupTriggerType =
     };
   };
 
+/**
+ * loadAllCurrentUserGroupStaff
+ * @param data data
+ */
 const loadAllCurrentUserGroupStaff: LoadUsersTriggerType =
   function loadAllCurrentUserGroupUsers(data) {
     return async (
@@ -824,6 +911,10 @@ const loadAllCurrentUserGroupStaff: LoadUsersTriggerType =
     };
   };
 
+/**
+ * loadAllCurrentUserGroupStudents
+ * @param data data
+ */
 const loadAllCurrentUserGroupStudents: LoadUsersTriggerType =
   function loadAllCurrentUserGroupUsers(data) {
     return async (
@@ -867,6 +958,10 @@ const loadAllCurrentUserGroupStudents: LoadUsersTriggerType =
     };
   };
 
+/**
+ * loadUsers
+ * @param data data
+ */
 const loadUsers: LoadUsersTriggerType = function loadUsers(data) {
   const getStudents = promisify(
     mApi().organizationUserManagement.students.read(data.payload),
@@ -936,6 +1031,10 @@ const loadUsers: LoadUsersTriggerType = function loadUsers(data) {
   };
 };
 
+/**
+ * loadSelectorStudents
+ * @param data data
+ */
 const loadSelectorStudents: LoadUsersTriggerType =
   function loadSelectorStudents(data) {
     const getStudents = data.payload.q
@@ -994,6 +1093,10 @@ const loadSelectorStudents: LoadUsersTriggerType =
     };
   };
 
+/**
+ * loadSelectorStaff
+ * @param data data
+ */
 const loadSelectorStaff: LoadUsersTriggerType = function loadSelectorStaff(
   data
 ) {
@@ -1053,6 +1156,10 @@ const loadSelectorStaff: LoadUsersTriggerType = function loadSelectorStaff(
   };
 };
 
+/**
+ * loadSelectorUserGroups
+ * @param data data
+ */
 const loadSelectorUserGroups: LoadUsersTriggerType =
   function loadSelectorUserGroups(data) {
     const getUserGroups = data.payload.q

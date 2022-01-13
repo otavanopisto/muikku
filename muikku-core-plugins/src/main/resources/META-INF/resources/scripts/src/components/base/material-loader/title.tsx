@@ -2,6 +2,9 @@ import * as React from "react";
 import { MaterialLoaderProps } from "~/components/base/material-loader";
 import { i18nType } from "~/reducers/base/i18n";
 
+/**
+ * MaterialLoaderTitleProps
+ */
 interface MaterialLoaderTitleProps extends MaterialLoaderProps {
   i18n: i18nType;
 }
@@ -10,6 +13,10 @@ interface MaterialLoaderTitleProps extends MaterialLoaderProps {
   e.stopPropagation();
 } */
 
+/**
+ * MaterialLoaderTitle
+ * @param props props
+ */
 export function MaterialLoaderTitle(props: MaterialLoaderTitleProps) {
   const hidden = props.material.hidden || (props.folder && props.folder.hidden);
 

@@ -12,6 +12,9 @@ import { bindActionCreators } from "redux";
 import Button from "~/components/general/button";
 import { StoredWorklistItem } from "~/reducers/main-function/profile";
 
+/**
+ * DeleteWorklistItemDialogProps
+ */
 interface DeleteWorklistItemDialogProps {
   i18n: i18nType;
   deleteProfileWorklistItem: DeleteProfileWorklistItemTriggerType;
@@ -20,24 +23,46 @@ interface DeleteWorklistItemDialogProps {
   item: StoredWorklistItem;
 }
 
+/**
+ * DeleteWorklistItemDialogState
+ */
 interface DeleteWorklistItemDialogState {}
 
+/**
+ * DeleteWorklistItemDialog
+ */
 class DeleteWorklistItemDialog extends React.Component<
   DeleteWorklistItemDialogProps,
   DeleteWorklistItemDialogState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: DeleteWorklistItemDialogProps) {
     super(props);
 
     this.delete = this.delete.bind(this);
   }
+
+  /**
+   * delete
+   * @param closeDialog closeDialog
+   */
   delete(closeDialog: () => any) {
     this.props.deleteProfileWorklistItem({
       item: this.props.item,
       success: closeDialog,
     });
   }
+
+  /**
+   * render
+   */
   render() {
+    /**
+     * @param closeDialog
+     */
     const content = (closeDialog: () => any) => (
       <div>
         <span>
@@ -47,6 +72,11 @@ class DeleteWorklistItemDialog extends React.Component<
         </span>
       </div>
     );
+
+    /**
+     * footer
+     * @param closeDialog closeDialog
+     */
     const footer = (closeDialog: () => any) => (
       <div className="dialog__button-set">
         <Button
@@ -82,12 +112,20 @@ class DeleteWorklistItemDialog extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators({ deleteProfileWorklistItem }, dispatch);
 }

@@ -11,22 +11,40 @@ import * as React from "react";
 import "~/sass/elements/panel.scss";
 import "~/sass/elements/footer.scss";
 
+/**
+ * WorkspaceJournalBodyProps
+ */
 interface WorkspaceJournalBodyProps {
   workspaceUrl: string;
 }
 
+/**
+ * WorkspaceJournalBody
+ */
 export default class WorkspaceJournalBody extends React.Component<
   WorkspaceJournalBodyProps,
   Record<string, unknown>
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: WorkspaceJournalBodyProps) {
     super(props);
 
     this.onOpenNavigation = this.onOpenNavigation.bind(this);
   }
+
+  /**
+   * onOpenNavigation
+   */
   onOpenNavigation() {
     (this.refs.content as any).getWrappedInstance().refresh();
   }
+
+  /**
+   * render
+   */
   render() {
     const aside = <Aside />;
     return (

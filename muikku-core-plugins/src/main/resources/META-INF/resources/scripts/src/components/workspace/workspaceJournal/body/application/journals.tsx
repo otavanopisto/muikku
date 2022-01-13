@@ -1,14 +1,10 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
-
 import { i18nType } from "~/reducers/base/i18n";
-
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
-
 import "~/sass/elements/journal.scss";
-
 import BodyScrollLoader from "~/components/general/body-scroll-loader";
 import Journal from "./journals/journal";
 import { StateType } from "~/reducers";
@@ -22,6 +18,9 @@ import {
 } from "~/actions/workspaces";
 import { WorkspacesStateType, WorkspaceType } from "~/reducers/workspaces";
 
+/**
+ * WorkspaceJournalsProps
+ */
 interface WorkspaceJournalsProps {
   i18n: i18nType;
   workspaceJournalsState: WorkspacesStateType;
@@ -31,12 +30,22 @@ interface WorkspaceJournalsProps {
   status: StatusType;
 }
 
+/**
+ * WorkspaceJournalsState
+ */
 interface WorkspaceJournalsState {}
 
+/**
+ * WorkspaceJournals
+ */
 class WorkspaceJournals extends BodyScrollLoader<
   WorkspaceJournalsProps,
   WorkspaceJournalsState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: WorkspaceJournalsProps) {
     super(props);
 
@@ -49,6 +58,9 @@ class WorkspaceJournals extends BodyScrollLoader<
       "loadMoreCurrentWorkspaceJournalsFromServer";
   }
 
+  /**
+   * render
+   */
   render() {
     if (
       !this.props.workspace ||
@@ -90,6 +102,10 @@ class WorkspaceJournals extends BodyScrollLoader<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -106,6 +122,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     { loadMoreCurrentWorkspaceJournalsFromServer },

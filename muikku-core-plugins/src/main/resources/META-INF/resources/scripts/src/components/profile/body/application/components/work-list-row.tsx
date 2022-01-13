@@ -27,6 +27,9 @@ const today = moment();
 // this represents the previous month from the current day
 const previousMonth = moment().subtract(1, "months");
 
+/**
+ * WorkListRowProps
+ */
 interface WorkListRowProps {
   i18n: i18nType;
   item: StoredWorklistItem;
@@ -35,6 +38,9 @@ interface WorkListRowProps {
   currentMonthDayLimit: number;
 }
 
+/**
+ * WorksListEditableState
+ */
 interface WorksListEditableState {
   /**
    * Whether it is in edit mode
@@ -54,6 +60,10 @@ class WorkListRow extends React.Component<
   WorkListRowProps,
   WorksListEditableState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: WorkListRowProps) {
     super(props);
 
@@ -81,6 +91,12 @@ class WorkListRow extends React.Component<
    * Triggers on edit and updates
    * the field and sends the request
    * to the server
+   * @param data data
+   * @param data.description description
+   * @param data.date date
+   * @param data.price price
+   * @param data.factor factor
+   * @param data.billingNumber billingNumber
    */
   public onEdit(data: {
     description: string;
@@ -97,6 +113,9 @@ class WorkListRow extends React.Component<
         factor: data.factor,
         price: data.price,
         billingNumber: data.billingNumber,
+        /**
+         * success
+         */
         success: () => {
           r(true);
 
@@ -104,22 +123,37 @@ class WorkListRow extends React.Component<
             editMode: false,
           });
         },
+        /**
+         * fail
+         */
         fail: () => {
           r(false);
         },
       });
     });
   }
+
+  /**
+   * closeDeleteDialog
+   */
   public closeDeleteDialog() {
     this.setState({
       isDeleteDialogOpen: false,
     });
   }
+
+  /**
+   * onDelete
+   */
   public onDelete() {
     this.setState({
       isDeleteDialogOpen: true,
     });
   }
+
+  /**
+   * render
+   */
   public render() {
     if (this.state.editMode) {
       return (
@@ -248,12 +282,20 @@ class WorkListRow extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     { deleteProfileWorklistItem, editProfileWorklistItem },

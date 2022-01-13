@@ -1,6 +1,15 @@
 import { i18nType } from "~/reducers/base/i18n";
 import * as React from "react";
 
+/**
+ * ProfileProperty
+ * @param props props
+ * @param props.i18n i18n
+ * @param props.label label
+ * @param props.condition condition
+ * @param props.modifier modifier
+ * @param props.value value
+ */
 export default function ProfileProperty(props: {
   i18n: i18nType;
   label: string;

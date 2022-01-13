@@ -14,28 +14,44 @@ import WorkspaceTeachers from "./teachers";
 import WorkspaceAnnouncements from "./announcements";
 import WorkspaceLicense from "./license";
 import WorkspaceProducers from "./producers";
-
 import MaterialEditor from "~/components/base/material-editor";
-
 import "~/sass/elements/panel.scss";
 import "~/sass/elements/footer.scss";
 
+/**
+ * WorkspaceHomeBodyProps
+ */
 interface WorkspaceHomeBodyProps {
   workspaceUrl: string;
 }
 
+/**
+ * WorkspaceHomeBody
+ */
 export default class WorkspaceHomeBody extends React.Component<
   WorkspaceHomeBodyProps,
   Record<string, unknown>
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: WorkspaceHomeBodyProps) {
     super(props);
 
     this.onOpenNavigation = this.onOpenNavigation.bind(this);
   }
+
+  /**
+   * onOpenNavigation
+   */
   onOpenNavigation() {
     (this.refs.content as any).getWrappedInstance().refresh();
   }
+
+  /**
+   * render
+   */
   render() {
     return (
       <div>

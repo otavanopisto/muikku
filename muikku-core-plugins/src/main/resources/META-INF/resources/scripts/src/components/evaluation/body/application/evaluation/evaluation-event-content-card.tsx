@@ -27,6 +27,9 @@ interface EvaluationEventContentCardProps extends EvaluationEvent {
 
 /**
  * EvaluationEventContentCard
+ * @param root0.i18n i18n
+ * @param root0.showDeleteAndModify showDeleteAndModify
+ * @param root0.onClickEdit onClickEdit
  */
 const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
   i18n,

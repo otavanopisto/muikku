@@ -21,6 +21,9 @@ import { StatusType } from "~/reducers/base/status";
 import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
 
+/**
+ * CommunicatorNewMessageProps
+ */
 interface CommunicatorNewMessageProps {
   children?: React.ReactElement<any>;
   replyThreadId?: number;
@@ -41,6 +44,9 @@ interface CommunicatorNewMessageProps {
   isOpen?: boolean;
 }
 
+/**
+ * CommunicatorNewMessageState
+ */
 interface CommunicatorNewMessageState {
   text: string;
   selectedItems: Array<ContactRecipientType>;
@@ -52,8 +58,8 @@ interface CommunicatorNewMessageState {
 
 /**
  * getStateIdentifier
- * @param props
- * @returns
+ * @param props props
+ * @returns string
  */
 function getStateIdentifier(props: CommunicatorNewMessageProps) {
   if (!props.replyThreadId) {
@@ -63,11 +69,18 @@ function getStateIdentifier(props: CommunicatorNewMessageProps) {
   return props.replyThreadId + (props.replyToAll ? "a" : "b") + props.messageId;
 }
 
+/**
+ * CommunicatorNewMessage
+ */
 class CommunicatorNewMessage extends SessionStateComponent<
   CommunicatorNewMessageProps,
   CommunicatorNewMessageState
 > {
   private avoidCKEditorTriggeringChangeForNoReasonAtAll: boolean;
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: CommunicatorNewMessageProps) {
     super(
       props,
@@ -185,7 +198,7 @@ class CommunicatorNewMessage extends SessionStateComponent<
 
   /**
    * sendMessage
-   * @param closeDialog
+   * @param closeDialog closeDialog
    */
   sendMessage(closeDialog: () => any) {
     this.setState({
@@ -201,6 +214,9 @@ class CommunicatorNewMessage extends SessionStateComponent<
             this.props.signature.signature +
             "</i>"
           : this.state.text,
+      /**
+       * success
+       */
       success: () => {
         closeDialog();
         this.avoidCKEditorTriggeringChangeForNoReasonAtAll = true;
@@ -217,6 +233,9 @@ class CommunicatorNewMessage extends SessionStateComponent<
           getStateIdentifier(this.props)
         );
       },
+      /**
+       * fail
+       */
       fail: () => {
         this.setState({
           locked: false,
@@ -259,6 +278,10 @@ class CommunicatorNewMessage extends SessionStateComponent<
    */
   inputContactsAutofillLoaders() {
     return {
+      /**
+       * studentsLoader
+       * @param searchString searchString
+       */
       studentsLoader: (searchString: string) =>
         promisify(
           mApi().communicator.recipientsUsersSearch.read({
@@ -266,6 +289,10 @@ class CommunicatorNewMessage extends SessionStateComponent<
           }),
           "callback"
         ),
+      /**
+       * workspacesLoader
+       * @param searchString searchString
+       */
       workspacesLoader: (searchString: string) =>
         promisify(
           mApi().communicator.recipientsWorkspacesSearch.read({
@@ -288,6 +315,9 @@ class CommunicatorNewMessage extends SessionStateComponent<
         "plugin.communicator.createmessage.title.content"
       );
 
+    /**
+     * @param closeDialog
+     */
     const content = (closeDialog: () => any) => [
       <InputContactsAutofill
         identifier="communicatorRecipients"
@@ -371,6 +401,10 @@ class CommunicatorNewMessage extends SessionStateComponent<
         </div>
       ) : null,
     ];
+    /**
+     * footer
+     * @param closeDialog closeDialog
+     */
     const footer = (closeDialog: () => any) => (
       <div className="env-dialog__actions">
         <Button
@@ -425,7 +459,7 @@ class CommunicatorNewMessage extends SessionStateComponent<
 
 /**
  * mapStateToProps
- * @param state
+ * @param state state
  * @returns
  */
 function mapStateToProps(state: StateType) {
@@ -438,7 +472,7 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch dispatch
  * @returns
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {

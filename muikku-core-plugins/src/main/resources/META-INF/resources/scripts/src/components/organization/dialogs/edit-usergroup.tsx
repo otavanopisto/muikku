@@ -40,12 +40,18 @@ import {
 import { UserGroupType, UserType } from "~/reducers/user-index";
 import { TagItem } from "~/components/general/tag-input";
 
+/**
+ * ValidationType
+ */
 interface ValidationType {
   nameValid: number;
 }
 
 type UserCategoriesType = "students" | "staff";
 
+/**
+ * OrganizationEditUsergroupProps
+ */
 interface OrganizationEditUsergroupProps {
   children?: React.ReactElement<any>;
   usergroup: UserGroupType;
@@ -61,6 +67,9 @@ interface OrganizationEditUsergroupProps {
   loadUserGroups: LoadUsersTriggerType;
 }
 
+/**
+ * OrganizationEditUsergroupState
+ */
 interface OrganizationEditUsergroupState {
   pages: {
     [key: string]: number;
@@ -87,6 +96,9 @@ interface OrganizationEditUsergroupState {
   staffRemoved: boolean;
 }
 
+/**
+ * OrganizationEditUsergroup
+ */
 class OrganizationEditUsergroup extends React.Component<
   OrganizationEditUsergroupProps,
   OrganizationEditUsergroupState
@@ -95,6 +107,10 @@ class OrganizationEditUsergroup extends React.Component<
   private usersPerPage = 5;
   private searchTimer: NodeJS.Timer;
 
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: OrganizationEditUsergroupProps) {
     super(props);
     this.state = {
@@ -142,10 +158,20 @@ class OrganizationEditUsergroup extends React.Component<
     this.setGuidanceGroup = this.setGuidanceGroup.bind(this);
   }
 
+  /**
+   * doStudentSearch
+   * @param q q
+   */
   doStudentSearch(q: string) {
     this.props.loadStudents({ payload: { q } });
   }
 
+  /**
+   * goToPage
+   * @param n n
+   * @param loader loader
+   * @param query query
+   */
   goToPage(n: number, loader: LoadUsersTriggerType, query: string) {
     const pageStart: number = (n - 1) * this.usersPerPage;
     loader({
@@ -158,6 +184,10 @@ class OrganizationEditUsergroup extends React.Component<
     });
   }
 
+  /**
+   * goToStudentPage
+   * @param n n
+   */
   goToStudentPage(n: number) {
     const query: string =
       this.state.searchValues && this.state.searchValues.staff
@@ -166,6 +196,10 @@ class OrganizationEditUsergroup extends React.Component<
     this.goToPage(n, this.props.loadAllCurrentUserGroupStudents, query);
   }
 
+  /**
+   * goToStaffPage
+   * @param n n
+   */
   goToStaffPage(n: number) {
     const query: string =
       this.state.searchValues && this.state.searchValues.staff
@@ -174,6 +208,12 @@ class OrganizationEditUsergroup extends React.Component<
     this.goToPage(n, this.props.loadAllCurrentUserGroupStaff, query);
   }
 
+  /**
+   * doUserGroupUsersSearch
+   * @param loader loader
+   * @param q q
+   * @param type type
+   */
   doUserGroupUsersSearch(
     loader: LoadUsersTriggerType,
     q: string,
@@ -186,6 +226,10 @@ class OrganizationEditUsergroup extends React.Component<
         firstResult: 0,
         maxResults: 5,
       },
+      /**
+       * success
+       * @param users users
+       */
       success: (users: PagingEnvironmentUserListType) => {
         this.setState({
           pages: {
@@ -197,6 +241,10 @@ class OrganizationEditUsergroup extends React.Component<
     });
   }
 
+  /**
+   * turnUsersToSelectItems
+   * @param users users
+   */
   turnUsersToSelectItems(users: UserType[]) {
     const selectItems: SelectItem[] = [];
 
@@ -215,6 +263,10 @@ class OrganizationEditUsergroup extends React.Component<
     return selectItems;
   }
 
+  /**
+   * doUserGroupStudentSearch
+   * @param q q
+   */
   doUserGroupStudentSearch(q: string) {
     this.setState({
       searchValues: { ...this.state.searchValues, ["students"]: q },
@@ -231,6 +283,10 @@ class OrganizationEditUsergroup extends React.Component<
     );
   }
 
+  /**
+   * doUserGroupStaffSearch
+   * @param q q
+   */
   doUserGroupStaffSearch(q: string) {
     this.setState({
       searchValues: { ...this.state.searchValues, ["staff"]: q },
@@ -247,6 +303,10 @@ class OrganizationEditUsergroup extends React.Component<
     );
   }
 
+  /**
+   * toggleStudentRemove
+   * @param usr usr
+   */
   toggleStudentRemove(usr: UiSelectItem) {
     const newRemoveState = this.state.removeStudents.some(
       (rStudent) => rStudent.id === usr.id
@@ -258,6 +318,10 @@ class OrganizationEditUsergroup extends React.Component<
     });
   }
 
+  /**
+   * toggleStaffRemove
+   * @param usr usr
+   */
   toggleStaffRemove(usr: UiSelectItem) {
     const newRemoveState = this.state.removeStaff.some(
       (rStaff) => rStaff.id === usr.id
@@ -269,11 +333,19 @@ class OrganizationEditUsergroup extends React.Component<
     });
   }
 
+  /**
+   * selectStudent
+   * @param student student
+   */
   selectStudent(student: SelectItem) {
     const newAddState = [...this.state.addStudents, student];
     this.setState({ addStudents: newAddState });
   }
 
+  /**
+   * deleteStudent
+   * @param student student
+   */
   deleteStudent(student: SelectItem) {
     const newAddState = this.state.addStudents.filter(
       (std) => std.id !== student.id
@@ -281,15 +353,27 @@ class OrganizationEditUsergroup extends React.Component<
     this.setState({ addStudents: newAddState });
   }
 
+  /**
+   * doStaffSearch
+   * @param q q
+   */
   doStaffSearch(q: string) {
     this.props.loadStaff({ payload: { q } });
   }
 
+  /**
+   * selectStaff
+   * @param staff staff
+   */
   selectStaff(staff: SelectItem) {
     const newAddState = [...this.state.addStaff, staff];
     this.setState({ addStaff: newAddState });
   }
 
+  /**
+   *  deleteStaff
+   * @param staff staff
+   */
   deleteStaff(staff: SelectItem) {
     const newAddState = this.state.addStaff.filter(
       (stf) => stf.id !== staff.id
@@ -297,14 +381,25 @@ class OrganizationEditUsergroup extends React.Component<
     this.setState({ addStaff: newAddState });
   }
 
+  /**
+   * setGuidanceGroup
+   * @param value value
+   */
   setGuidanceGroup(value: boolean) {
     this.setState({ isGuidanceGroup: value });
   }
 
+  /**
+   * setUserGroupName
+   * @param value value
+   */
   setUserGroupName(value: string) {
     this.setState({ locked: false, userGroupName: value });
   }
 
+  /**
+   * clearComponentState
+   */
   clearComponentState() {
     this.setState({
       locked: false,
@@ -324,10 +419,17 @@ class OrganizationEditUsergroup extends React.Component<
     });
   }
 
+  /**
+   * cancelDialog
+   * @param closeDialog closeDialog
+   */
   cancelDialog(closeDialog: () => any) {
     closeDialog();
   }
 
+  /**
+   * nextStep
+   */
   nextStep() {
     if (this.state.currentStep === 2) {
       this.doUserGroupStudentSearch("");
@@ -346,11 +448,18 @@ class OrganizationEditUsergroup extends React.Component<
     }
   }
 
+  /**
+   * lastStep
+   */
   lastStep() {
     const lastStep = this.state.currentStep - 1;
     this.setState({ currentStep: lastStep });
   }
 
+  /**
+   * saveUsergroup
+   * @param closeDialog closeDialog
+   */
   saveUsergroup(closeDialog: () => any) {
     this.setState({
       locked: true,
@@ -426,6 +535,10 @@ class OrganizationEditUsergroup extends React.Component<
       update: update,
       addUsers: addUsers,
       removeUsers: removeUsers,
+      /**
+       * progress
+       * @param state state
+       */
       progress: (state: UpdateUserGroupStateType) => {
         if (state === "update-group") {
           this.setState({
@@ -450,16 +563,26 @@ class OrganizationEditUsergroup extends React.Component<
         }
       },
 
+      /**
+       * success
+       */
       success: () => {
         closeDialog();
       },
 
+      /**
+       * fail
+       */
       fail: () => {
         closeDialog();
       },
     });
   }
 
+  /**
+   * wizardSteps
+   * @param page page
+   */
   wizardSteps(page: number) {
     switch (page) {
       case 1:
@@ -859,7 +982,14 @@ class OrganizationEditUsergroup extends React.Component<
     }
   }
 
+  /**
+   * render
+   */
   render() {
+    /**
+     * executeContent
+     * @param closePortal closePortal
+     */
     const content = (closePortal: () => any) =>
       this.wizardSteps(this.state.currentStep);
 
@@ -921,6 +1051,10 @@ class OrganizationEditUsergroup extends React.Component<
       </div>
     );
 
+    /**
+     * footer
+     * @param closePortal closePortal
+     */
     const footer = (closePortal: () => any) => (
       <FormWizardActions
         locked={this.state.locked}
@@ -964,6 +1098,10 @@ class OrganizationEditUsergroup extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -972,6 +1110,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     {

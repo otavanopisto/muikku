@@ -9,22 +9,40 @@ import * as React from "react";
 import Application from "~/components/announcer/body/application";
 import Aside from "~/components/announcer/body/aside";
 
+/**
+ * WorkspaceAnnouncerBodyProps
+ */
 interface WorkspaceAnnouncerBodyProps {
   workspaceUrl: string;
 }
 
+/**
+ * WorkspaceAnnouncerBody
+ */
 export default class WorkspaceAnnouncerBody extends React.Component<
   WorkspaceAnnouncerBodyProps,
   Record<string, unknown>
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: WorkspaceAnnouncerBodyProps) {
     super(props);
 
     this.onOpenNavigation = this.onOpenNavigation.bind(this);
   }
+
+  /**
+   * onOpenNavigation
+   */
   onOpenNavigation() {
     (this.refs.content as any).getWrappedInstance().refresh();
   }
+
+  /**
+   * render
+   */
   render() {
     const aside = <Aside />;
     return (

@@ -17,6 +17,9 @@ import { MaterialLoaderTitle } from "~/components/base/material-loader/title";
 import { MaterialLoaderContent } from "~/components/base/material-loader/content";
 import { MaterialLoaderProducersLicense } from "~/components/base/material-loader/producers-license";
 
+/**
+ * DescriptionPanelProps
+ */
 interface DescriptionPanelProps {
   workspace: WorkspaceType;
   i18n: i18nType;
@@ -24,12 +27,21 @@ interface DescriptionPanelProps {
   workspaceEditMode: WorkspaceEditModeStateType;
 }
 
+/**
+ * DescriptionPanelState
+ */
 interface DescriptionPanelState {}
 
+/**
+ * DescriptionPanel
+ */
 class DescriptionPanel extends React.Component<
   DescriptionPanelProps,
   DescriptionPanelState
 > {
+  /**
+   *
+   */
   render() {
     return (
       <div className="panel panel--workspace-description">
@@ -78,6 +90,10 @@ class DescriptionPanel extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -86,6 +102,9 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ */
 function mapDispatchToProps() {
   return {};
 }

@@ -25,6 +25,9 @@ const daysInCurrentMonth = today.date();
 // This sets the date limit of the current month when it is not possible to add new entries to the previous month
 const currentMonthDayLimit = 10;
 
+/**
+ * IWorkListProps
+ */
 interface IWorkListProps {
   i18n: i18nType;
   profile: ProfileType;
@@ -33,12 +36,22 @@ interface IWorkListProps {
   loadProfileWorklistSection: LoadProfileWorklistSectionTriggerType;
 }
 
+/**
+ * IWorkListState
+ */
 interface IWorkListState {
   currentTemplate: WorklistTemplate;
   openedSections: string[];
 }
 
+/**
+ * WorkList
+ */
 class WorkList extends React.Component<IWorkListProps, IWorkListState> {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: IWorkListProps) {
     super(props);
 
@@ -52,6 +65,10 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
     this.onSelect = this.onSelect.bind(this);
   }
 
+  /**
+   * componentDidUpdate
+   * @param prevProps prevProps
+   */
   public componentDidUpdate(prevProps: IWorkListProps) {
     if (
       !this.state.currentTemplate &&
@@ -72,6 +89,15 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
     }
   }
 
+  /**
+   * insertNew
+   * @param data data
+   * @param data.description description
+   * @param data.date date
+   * @param data.price price
+   * @param data.factor factor
+   * @param data.billingNumber billingNumber
+   */
   public async insertNew(data: {
     description: string;
     date: string;
@@ -87,17 +113,32 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
         factor: data.factor,
         description: data.description,
         billingNumber: data.billingNumber,
+        /**
+         * success
+         */
         success: () => resolve(true),
+        /**
+         * fail
+         */
         fail: () => resolve(false),
       });
     });
   }
 
+  /**
+   * onFormSubmit
+   * @param e e
+   */
   public onFormSubmit(e: React.FormEvent) {
     e.stopPropagation();
     e.preventDefault();
   }
 
+  /**
+   * toggleSection
+   * @param index index
+   * @param e e
+   */
   public toggleSection(index: number, e: React.MouseEvent) {
     e && e.stopPropagation();
     e && e.preventDefault();
@@ -123,6 +164,10 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
     }
   }
 
+  /**
+   * onSelect
+   * @param e e
+   */
   public onSelect(e: React.ChangeEvent<HTMLSelectElement>) {
     const newTemplate = this.props.profile.worklistTemplates.find(
       (t) => t.id.toString() === e.target.value
@@ -132,6 +177,9 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
     });
   }
 
+  /**
+   * render
+   */
   public render() {
     if (
       this.props.profile.location !== "work" ||
@@ -215,6 +263,10 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -223,6 +275,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     { insertProfileWorklistItem, loadProfileWorklistSection },

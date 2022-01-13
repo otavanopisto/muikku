@@ -7,10 +7,8 @@ import { LoadingState } from "~/@types/shared";
  * @param hasMore boolean value if there are more to be loaded
  * @param state state of loading
  * @param loadMore a function to load more
- *
  * @returns useCallback() function to be used as a ref
  */
-
 const useInfinityScroll = (
   hasMore: boolean,
   state: LoadingState,

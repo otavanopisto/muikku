@@ -10,6 +10,9 @@ export type SubjectEligibilityStatusType =
 export type EligibleStatusType = "ELIGIBLE" | "NOT_ELIGIBLE";
 export type SubjectEligibilityListType = Array<SubjectEligibilityType>;
 
+/**
+ * SubjectEligibilityType
+ */
 export interface SubjectEligibilityType {
   subjectCode: string;
   code: string;
@@ -19,11 +22,17 @@ export interface SubjectEligibilityType {
   loading: boolean;
 }
 
+/**
+ * SubjectEligibilitySubjectsType
+ */
 export interface SubjectEligibilitySubjectsType {
   subjects: SubjectEligibilityListType;
   status: SubjectEligibilityStatusType;
 }
 
+/**
+ * YOEnrollmentType
+ */
 export interface YOEnrollmentType {
   id: number;
   enrolled: boolean;
@@ -34,6 +43,9 @@ export interface YOEnrollmentType {
   compulsoryEducationEligible: boolean;
 }
 
+/**
+ * YOEligibilityType
+ */
 export interface YOEligibilityType {
   coursesCompleted: number;
   coursesRequired: number;
@@ -41,6 +53,9 @@ export interface YOEligibilityType {
   creditPointsRequired: number;
 }
 
+/**
+ * YOType
+ */
 export interface YOType {
   status: YOStatusType;
   enrollment: Array<YOEnrollmentType>;
@@ -49,11 +64,19 @@ export interface YOType {
   eligibilityStatus: YOEligibilityStatusType;
 }
 
+/**
+ * YOMatriculationSubjectType
+ */
 export interface YOMatriculationSubjectType {
   code: string;
   subjectCode: string;
 }
 
+/**
+ * yo
+ * @param state state
+ * @param action action
+ */
 export default function yo(
   state: YOType = {
     status: "WAIT",
@@ -88,6 +111,11 @@ export default function yo(
   return state;
 }
 
+/**
+ * eligibilitySubjects
+ * @param state state
+ * @param action action
+ */
 export function eligibilitySubjects(
   state: SubjectEligibilitySubjectsType = {
     status: "WAIT",

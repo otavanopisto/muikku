@@ -20,6 +20,9 @@ export enum WorklistBillingState {
   PAID = "PAID",
 }
 
+/**
+ * WorklistTemplate
+ */
 export interface WorklistTemplate {
   id: number;
   description: string;
@@ -29,6 +32,9 @@ export interface WorklistTemplate {
   editableFields: Array<EditableField>;
 }
 
+/**
+ * WorklistItem
+ */
 export interface WorklistItem {
   templateId: number;
   entryDate: string;
@@ -38,6 +44,9 @@ export interface WorklistItem {
   billingNumber: number;
 }
 
+/**
+ * StoredWorklistItem
+ */
 export interface StoredWorklistItem extends WorklistItem {
   id: number;
   editableFields: Array<EditableField>;
@@ -45,6 +54,9 @@ export interface StoredWorklistItem extends WorklistItem {
   removable: boolean;
 }
 
+/**
+ * WorklistItemsSummary
+ */
 export interface WorklistItemsSummary {
   displayName: string;
   beginDate: string;
@@ -52,11 +64,17 @@ export interface WorklistItemsSummary {
   count: number;
 }
 
+/**
+ * WorklistSection
+ */
 export interface WorklistSection {
   summary: WorklistItemsSummary;
   items?: Array<StoredWorklistItem>;
 }
 
+/**
+ * ProfileType
+ */
 export interface ProfileType {
   location: string;
   properties: {
@@ -70,6 +88,11 @@ export interface ProfileType {
   worklist?: Array<WorklistSection>;
 }
 
+/**
+ * profile
+ * @param state state
+ * @param action action
+ */
 export default function profile(
   state: ProfileType = {
     properties: {},

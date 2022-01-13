@@ -141,6 +141,9 @@ const STATES = [
   },
 ];
 
+/**
+ * MaterialLoaderProps
+ */
 export interface MaterialLoaderProps {
   material: MaterialContentNodeType;
   folder?: MaterialContentNodeType;
@@ -226,10 +229,16 @@ export interface MaterialLoaderProps {
   ) => any;
 }
 
+/**
+ * DefaultMaterialLoaderProps
+ */
 interface DefaultMaterialLoaderProps {
   usedAs: UsedAs;
 }
 
+/**
+ * MaterialLoaderState
+ */
 interface MaterialLoaderState {
   //Composite replies as loaded when using loadCompositeReplies boolean
   compositeRepliesInState: MaterialCompositeRepliesType;
@@ -258,6 +267,9 @@ const compositeRepliesCache: { [key: string]: MaterialCompositeRepliesType } =
 //updating the layout and what not basically here, down the line all changes are scraped, base never ever updates
 //and the field never changes its state, a change in the content of the field, can destroy it and break the page
 //you can add styles here but don't mess up with the low level rendering
+/**
+ * MaterialLoader
+ */
 class MaterialLoader extends React.Component<
   MaterialLoaderProps,
   MaterialLoaderState
@@ -269,6 +281,10 @@ class MaterialLoader extends React.Component<
     usedAs: "default",
   };
 
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: MaterialLoaderProps) {
     super(props);
 
@@ -332,6 +348,9 @@ class MaterialLoader extends React.Component<
     //set the state
     this.state = state;
   }
+  /**
+   * componentDidMount
+   */
   componentDidMount() {
     this.setState({
       answersVisible: this.props.answersVisible && this.props.answersVisible,
@@ -341,6 +360,11 @@ class MaterialLoader extends React.Component<
     //create the composite replies if using the boolean flag
     this.create();
   }
+  /**
+   * componentWillUpdate
+   * @param nextProps nextProps
+   * @param nextState nextState
+   */
   componentWillUpdate(
     nextProps: MaterialLoaderProps,
     nextState: MaterialLoaderState
@@ -401,6 +425,10 @@ class MaterialLoader extends React.Component<
       }
     }
   }
+
+  /**
+   * create
+   */
   async create() {
     const { usedAs = "default", userEntityId } = this.props;
 
@@ -448,11 +476,19 @@ class MaterialLoader extends React.Component<
       });
     }
   }
+
+  /**
+   * getComponent
+   */
   getComponent(): HTMLDivElement {
     return this.refs["root"] as HTMLDivElement;
   }
-  //This gets called once an answer is pushed with the button to push the answer
-  //To change its state
+
+  /**
+   * onPushAnswer
+   * This gets called once an answer is pushed with the button to push the answer
+   * To change its state
+   */
   onPushAnswer() {
     //So now we need that juicy success state
     if (this.stateConfiguration["success-state"]) {
@@ -479,7 +515,10 @@ class MaterialLoader extends React.Component<
 
     this.props.onPushAnswer && this.props.onPushAnswer();
   }
-  //Toggles answers visible or not
+
+  /**
+   * Toggles answers visible or not
+   */
   toggleAnswersVisible() {
     this.setState({
       answersVisible: !this.state.answersVisible,
@@ -487,13 +526,18 @@ class MaterialLoader extends React.Component<
 
     this.props.onToggleAnswersVisible && this.props.onToggleAnswersVisible();
   }
-  //This function gets called every time a field answer state changes
-  //because of the way it works it will only be called if checkAnswers boolean attribute
-  //is set to true and it will fire immediately all the on rightness change events, as everything
-  //starts with unknown rightness, only things that can be righted call this, the name represents the field
-  //and the value the rightness that came as a result
-  //Some items do not trigger this function, which means your rightness count might differ from the
-  //amount of fields, because fields self register
+
+  /**
+   * This function gets called every time a field answer state changes
+   * because of the way it works it will only be called if checkAnswers boolean attribute
+   * is set to true and it will fire immediately all the on rightness change events, as everything
+   * starts with unknown rightness, only things that can be righted call this, the name represents the field
+   * and the value the rightness that came as a result
+   * Some items do not trigger this function, which means your rightness count might differ from the
+   * amount of fields, because fields self register
+   * @param name
+   * @param value
+   */
   onAnswerChange(name: string, value?: boolean) {
     //The reason we need a sync registry is that the rightness can change so fast
     //that it can overwrite itself in async operations like setState and this.state
@@ -515,17 +559,21 @@ class MaterialLoader extends React.Component<
     //to make all fields show in the correct answer count you might modify and change how
     //the function operates within the fields freely
   }
-  //this function gets called when the material in question
-  //answer checkable state changes
-  //now by default this state is unknown
-  //so it will always trigger on setup
-  //however here we set it to true and check
-  //because changes are it will be true so we
-  //need not to update anything
-  //if that's the case
-  //feel free to go on top and change it to false
-  //if chances are it is more likely to be false
-  //should save a couple of bytes
+
+  /**
+   * this function gets called when the material in question
+   * answer checkable state changes
+   * now by default this state is unknown
+   * so it will always trigger on setup
+   * however here we set it to true and check
+   * because changes are it will be true so we
+   * need not to update anything
+   * if that's the case
+   * feel free to go on top and change it to false
+   * if chances are it is more likely to be false
+   * should save a couple of bytes
+   * @param answerCheckable
+   */
   onAnswerCheckableChange(answerCheckable: boolean) {
     if (answerCheckable !== this.state.answerCheckable) {
       this.setState({ answerCheckable });
@@ -534,6 +582,9 @@ class MaterialLoader extends React.Component<
     this.props.onAnswerCheckableChange &&
       this.props.onAnswerCheckableChange(answerCheckable);
   }
+  /**
+   *
+   */
   render() {
     //The modifiers in use
     const modifiers: Array<string> =
@@ -590,6 +641,10 @@ class MaterialLoader extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -598,6 +653,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     {

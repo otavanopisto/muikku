@@ -1,6 +1,9 @@
 import * as React from "react";
 import * as uuid from "uuid";
 
+/**
+ * IAudioPoolComponentProps
+ */
 interface IAudioPoolComponentProps
   extends React.DetailedHTMLProps<
     React.AudioHTMLAttributes<HTMLAudioElement>,
@@ -9,6 +12,9 @@ interface IAudioPoolComponentProps
   invisible?: boolean;
 }
 
+/**
+ * IAudioPoolComponentState
+ */
 interface IAudioPoolComponentState {
   key: string;
   killed: boolean;
@@ -16,12 +22,19 @@ interface IAudioPoolComponentState {
 
 (window as any).AUDIOPOOL = {};
 
+/**
+ * AudioPoolComponent
+ */
 export class AudioPoolComponent extends React.Component<
   IAudioPoolComponentProps,
   IAudioPoolComponentState
 > {
   private univId: string;
   private audioRef: React.RefObject<HTMLAudioElement>;
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: IAudioPoolComponentProps) {
     super(props);
 
@@ -37,6 +50,9 @@ export class AudioPoolComponent extends React.Component<
       killed: false,
     };
   }
+  /**
+   * initialSetup
+   */
   public initialSetup() {
     if (!(window as any).AUDIOPOOL[this.univId]) {
       (window as any).AUDIOPOOL[this.univId] = {
@@ -54,12 +70,21 @@ export class AudioPoolComponent extends React.Component<
       };
     }
   }
+  /**
+   * componentDidMount
+   */
   componentDidMount() {
     this.initialSetup();
   }
+  /**
+   * componentWillUnmount
+   */
   componentWillUnmount() {
     delete (window as any).AUDIOPOOL[this.univId];
   }
+  /**
+   * kill
+   */
   public kill() {
     (window as any).AUDIOPOOL[this.univId].playing = false;
     // first we kill the standard to remove
@@ -91,6 +116,9 @@ export class AudioPoolComponent extends React.Component<
     );
   }
 
+  /**
+   * killEverything
+   */
   public killEverything() {
     this.initialSetup();
     (window as any).AUDIOPOOL[this.univId].playing = true;
@@ -110,6 +138,10 @@ export class AudioPoolComponent extends React.Component<
         (window as any).AUDIOPOOL[key].component.kill();
     });
   }
+
+  /**
+   * render
+   */
   public render() {
     const newProps = { ...this.props };
     delete newProps.invisible;

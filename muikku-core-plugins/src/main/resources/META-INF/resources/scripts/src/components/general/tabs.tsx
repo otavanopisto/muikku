@@ -1,5 +1,5 @@
-import "~/sass/elements/tabs.scss";
 import * as React from "react";
+import "~/sass/elements/tabs.scss";
 import { connect } from "react-redux";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/scss";
@@ -9,6 +9,9 @@ import { A11y, Pagination } from "swiper";
 import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
 
+/**
+ * TabType
+ */
 export interface TabType {
   id: string;
   name: string;
@@ -17,6 +20,9 @@ export interface TabType {
   component: () => React.ReactElement<any>;
 }
 
+/**
+ * TabsProps
+ */
 interface TabsProps {
   onTabChange: (id: string) => any;
   allTabs: string[];
@@ -28,6 +34,9 @@ interface TabsProps {
   children?: React.ReactNode;
 }
 
+/**
+ * MobileOnlyTabsProps
+ */
 interface MobileOnlyTabsProps {
   onTabChange: (id: string) => void;
   activeTab: string;
@@ -36,6 +45,10 @@ interface MobileOnlyTabsProps {
   renderAllComponents?: boolean;
 }
 
+/**
+ * Tabs
+ * @param props props
+ */
 export const Tabs: React.FC<TabsProps> = (props) => {
   const {
     modifier,
@@ -120,10 +133,16 @@ export const Tabs: React.FC<TabsProps> = (props) => {
   );
 };
 
+/**
+ * MobileOnlyTabs
+ */
 export class MobileOnlyTabs extends React.Component<
   MobileOnlyTabsProps,
   Record<string, unknown>
 > {
+  /**
+   * render
+   */
   render() {
     return (
       <div className="tabs">
@@ -184,6 +203,10 @@ export class MobileOnlyTabs extends React.Component<
  * @param state
  */
 
+/**
+ * mapStateToProps
+ * @param state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,

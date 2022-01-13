@@ -9,20 +9,32 @@ import CommunicatorNewMessage from "~/components/communicator/dialogs/new-messag
 import Avatar from "~/components/general/avatar";
 import { StatusType } from "~/reducers/base/status";
 import moment from "~/lib/moment";
-
 import "~/sass/elements/panel.scss";
 import "~/sass/elements/item-list.scss";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/glyph.scss";
 
+/**
+ * WorkspaceTeachersProps
+ */
 interface WorkspaceTeachersProps {
   workspace: WorkspaceType;
   i18n: i18nType;
   status: StatusType;
 }
 
+/**
+ * WorkspaceTeachersState
+ */
 interface WorkspaceTeachersState {}
 
+/**
+ * getWorkspaceMessage
+ * @param i18n i18n
+ * @param status status
+ * @param workspace workspace
+ * @param html html
+ */
 export function getWorkspaceMessage(
   i18n: i18nType,
   status: StatusType,
@@ -61,13 +73,24 @@ export function getWorkspaceMessage(
   return pretext + text;
 }
 
+/**
+ * WorkspaceTeachers
+ */
 class WorkspaceTeachers extends React.Component<
   WorkspaceTeachersProps,
   WorkspaceTeachersState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: WorkspaceTeachersProps) {
     super(props);
   }
+
+  /**
+   * render
+   */
   render() {
     if (!this.props.status.loggedIn || this.props.status.profile.studyEndDate) {
       return null;
@@ -192,6 +215,10 @@ class WorkspaceTeachers extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -200,6 +227,9 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ */
 function mapDispatchToProps() {
   return {};
 }

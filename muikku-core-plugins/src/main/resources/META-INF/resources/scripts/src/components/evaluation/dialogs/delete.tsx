@@ -52,6 +52,7 @@ class DeleteDialog extends React.Component<
 
   /**
    * handleDeleteEventClick
+   * @param closeDialog closeDialog
    */
   handleDeleteEventClick(closeDialog: () => any) {
     const { eventData } = this.props;
@@ -59,6 +60,9 @@ class DeleteDialog extends React.Component<
     this.props.removeWorkspaceEventFromServer({
       identifier: eventData.identifier,
       eventType: eventData.type,
+      /**
+       * onSuccess
+       */
       onSuccess: () => {
         const draftId = eventData.identifier;
 
@@ -66,6 +70,9 @@ class DeleteDialog extends React.Component<
 
         closeDialog();
       },
+      /**
+       * onFail
+       */
       onFail: () => closeDialog(),
     });
   }
@@ -79,6 +86,10 @@ class DeleteDialog extends React.Component<
 
     const studentNameString = `${evaluationSelectedAssessmentId.lastName}, ${evaluationSelectedAssessmentId.firstName}`;
 
+    /**
+     * footer
+     * @param closeDialog closeDialog
+     */
     const footer = (closeDialog: () => any) => (
       <div className="dialog__button-set">
         <Button
@@ -100,6 +111,10 @@ class DeleteDialog extends React.Component<
         </Button>
       </div>
     );
+    /**
+     * content
+     * @param closeDialog closeDialog
+     */
     const content = (closeDialog: () => any) => (
       <div>
         {this.props.i18n.text.get(

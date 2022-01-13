@@ -43,13 +43,22 @@ export type UPDATE_STUDIES_SUBJECT_ELIGIBILITY_STATUS = SpecificActionType<
   "UPDATE_STUDIES_SUBJECT_ELIGIBILITY_STATUS",
   SubjectEligibilityStatusType
 >;
+/**
+ * updateYOTriggerType
+ */
 export interface updateYOTriggerType {
   (): AnyActionType;
 }
+/**
+ * UpdateMatriculationSubjectEligibilityTriggerType
+ */
 export interface UpdateMatriculationSubjectEligibilityTriggerType {
   (): AnyActionType;
 }
 
+/**
+ * updateMatriculationSubjectEligibility
+ */
 const updateMatriculationSubjectEligibility: UpdateMatriculationSubjectEligibilityTriggerType =
   function updateMatriculationSubjectEligibility() {
     return async (
@@ -144,6 +153,9 @@ const updateMatriculationSubjectEligibility: UpdateMatriculationSubjectEligibili
     };
   };
 
+/**
+ * updateYO
+ */
 const updateYO: updateYOTriggerType = function updateYO() {
   return async (
     dispatch: (arg: AnyActionType) => any,

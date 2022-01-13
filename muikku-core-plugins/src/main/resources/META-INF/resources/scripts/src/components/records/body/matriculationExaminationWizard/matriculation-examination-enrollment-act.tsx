@@ -18,13 +18,15 @@ interface MatriculationExaminationEnrollmentActProps {
 
 /**
  * MatriculationExaminationEnrollmentAct
- * @param props
- * @returns
  */
 export class MatrMatriculationExaminationEnrollmentAct extends React.Component<
   MatriculationExaminationEnrollmentActProps,
   Record<string, unknown>
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: MatriculationExaminationEnrollmentActProps) {
     super(props);
   }

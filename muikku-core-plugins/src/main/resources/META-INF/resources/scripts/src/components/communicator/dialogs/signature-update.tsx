@@ -19,6 +19,9 @@ const KEYCODES = {
   ENTER: 13,
 };
 
+/**
+ * CommunicatorSignatureUpdateDialogProps
+ */
 interface CommunicatorSignatureUpdateDialogProps {
   children?: React.ReactElement<any>;
   isOpen: boolean;
@@ -28,14 +31,24 @@ interface CommunicatorSignatureUpdateDialogProps {
   i18n: i18nType;
 }
 
+/**
+ * CommunicatorSignatureUpdateDialogState
+ */
 interface CommunicatorSignatureUpdateDialogState {
   signature: string;
 }
 
+/**
+ * CommunicatorSignatureUpdateDialog
+ */
 class CommunicatorSignatureUpdateDialog extends React.Component<
   CommunicatorSignatureUpdateDialogProps,
   CommunicatorSignatureUpdateDialogState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: CommunicatorSignatureUpdateDialogProps) {
     super(props);
     this.onCKEditorChange = this.onCKEditorChange.bind(this);
@@ -47,24 +60,51 @@ class CommunicatorSignatureUpdateDialog extends React.Component<
       signature: props.signature ? props.signature.signature : "",
     };
   }
+
+  /**
+   * handleKeydown
+   * @param code code
+   * @param closeDialog closeDialog
+   */
   handleKeydown(code: number, closeDialog: () => any) {
     if (code === KEYCODES.ENTER) {
       this.update(closeDialog);
     }
   }
+
+  /**
+   * onCKEditorChange
+   * @param signature signature
+   */
   onCKEditorChange(signature: string) {
     this.setState({ signature });
   }
+
+  /**
+   * resetState
+   */
   resetState() {
     this.setState({
       signature: this.props.signature ? this.props.signature.signature : "",
     });
   }
+
+  /**
+   * update
+   * @param closeDialog closeDialog
+   */
   update(closeDialog: () => any) {
     this.props.updateSignature(this.state.signature.trim() || null);
     closeDialog();
   }
+
+  /**
+   * render
+   */
   render() {
+    /**
+     * @param closeDialog
+     */
     const footer = (closeDialog: () => any) => (
       <div className="env-dialog__actions">
         <Button
@@ -82,6 +122,10 @@ class CommunicatorSignatureUpdateDialog extends React.Component<
         </Button>
       </div>
     );
+    /**
+     * content
+     * @param closeDialog closeDialog
+     */
     const content = (closeDialog: () => any) => (
       <div className="env-dialog__row">
         <div className="env-dialog__form-element-container">
@@ -110,6 +154,10 @@ class CommunicatorSignatureUpdateDialog extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     signature: state.messages.signature,
@@ -117,6 +165,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ updateSignature }, dispatch);
 }

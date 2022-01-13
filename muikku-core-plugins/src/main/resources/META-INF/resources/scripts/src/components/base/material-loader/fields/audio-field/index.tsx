@@ -25,6 +25,9 @@ if (!(window as any).MediaRecorder) {
   document.head.appendChild(script);
 }
 
+/**
+ * AudioFieldProps
+ */
 interface AudioFieldProps {
   type: string;
   content: {
@@ -44,6 +47,9 @@ interface AudioFieldProps {
   invisible?: boolean;
 }
 
+/**
+ * AudioFieldState
+ */
 interface AudioFieldState {
   recording: boolean;
   values: Array<{
@@ -78,6 +84,9 @@ interface AudioFieldState {
 // this is the maximum recording time in seconds
 const MAX_RECORDING_TIME_IN_SECONDS = 60 * 5;
 
+/**
+ * AudioField
+ */
 export default class AudioField extends React.Component<
   AudioFieldProps,
   AudioFieldState
@@ -85,6 +94,10 @@ export default class AudioField extends React.Component<
   private interval: NodeJS.Timer;
   private recorder: any;
   private stream: MediaStream;
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: AudioFieldProps) {
     super(props);
 
@@ -313,6 +326,10 @@ export default class AudioField extends React.Component<
       url: this.props.status.contextPath + "/tempFileUploadServlet",
       type: "POST",
       data: formData,
+      /**
+       * success
+       * @param data data
+       */
       success: (data: any) => {
         // we change this
         const newValues = [...this.state.values];
@@ -332,6 +349,11 @@ export default class AudioField extends React.Component<
         );
       },
       // in case of error
+      /**
+       * error
+       * @param xhr xhr
+       * @param err err
+       */
       error: (xhr: any, err: Error) => {
         const newValues = [...this.state.values];
         newValues[index] = { ...this.state.values[index] };
@@ -344,6 +366,9 @@ export default class AudioField extends React.Component<
           this.checkDoneAndRunOnChange
         );
       },
+      /**
+       * xhr
+       */
       xhr: () => {
         const xhr = new (window as any).XMLHttpRequest();
         // Upload progress same as in the file field

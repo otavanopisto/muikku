@@ -1,10 +1,8 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import Link from "~/components/general/link";
 import Dialog from "~/components/general/dialog";
 import { AnyActionType } from "~/actions";
 import { i18nType } from "~/reducers/base/i18n";
-
 import "~/sass/elements/link.scss";
 import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
@@ -15,6 +13,9 @@ import {
   CancelAssessmentAtWorkspaceTriggerType,
 } from "~/actions/workspaces";
 
+/**
+ * EvaluationCancelDialogProps
+ */
 interface EvaluationCancelDialogProps {
   i18n: i18nType;
   workspace: WorkspaceType;
@@ -23,14 +24,24 @@ interface EvaluationCancelDialogProps {
   cancelAssessmentAtWorkspace: CancelAssessmentAtWorkspaceTriggerType;
 }
 
+/**
+ * EvaluationCancelDialogState
+ */
 interface EvaluationCancelDialogState {
   locked: boolean;
 }
 
+/**
+ * EvaluationCancelDialog
+ */
 class EvaluationCancelDialog extends React.Component<
   EvaluationCancelDialogProps,
   EvaluationCancelDialogState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: EvaluationCancelDialogProps) {
     super(props);
     this.state = {
@@ -39,18 +50,30 @@ class EvaluationCancelDialog extends React.Component<
 
     this.cancel = this.cancel.bind(this);
   }
+
+  /**
+   * cancel
+   * @param closeDialog closeDialog
+   */
   cancel(closeDialog: () => any) {
     this.setState({
       locked: true,
     });
     this.props.cancelAssessmentAtWorkspace({
       workspace: this.props.workspace,
+      /**
+       * success
+       */
       success: () => {
         this.setState({
           locked: false,
         });
         closeDialog();
       },
+
+      /**
+       * fail
+       */
       fail: () => {
         this.setState({
           locked: false,
@@ -58,7 +81,15 @@ class EvaluationCancelDialog extends React.Component<
       },
     });
   }
+
+  /**
+   * render
+   */
   render() {
+    /**
+     * content
+     * @param closeDialog closeDialog
+     */
     const content = (closeDialog: () => any) => (
       <div>
         <span>
@@ -69,6 +100,10 @@ class EvaluationCancelDialog extends React.Component<
       </div>
     );
 
+    /**
+     * footer
+     * @param closeDialog closeDialog
+     */
     const footer = (closeDialog: () => any) => (
       <div className="dialog__button-set">
         <Button
@@ -107,6 +142,10 @@ class EvaluationCancelDialog extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -114,6 +153,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ cancelAssessmentAtWorkspace }, dispatch);
 }

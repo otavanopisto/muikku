@@ -7,17 +7,29 @@ import { StateType } from "~/reducers";
 
 import "~/sass/elements/panel.scss";
 
+/**
+ * LastMessagesPanelProps
+ */
 interface LastMessagesPanelProps {
   i18n: i18nType;
   lastThreads: MessageThreadListType;
 }
 
+/**
+ * LastMessagesPanelState
+ */
 interface LastMessagesPanelState {}
 
+/**
+ * LastMessagesPanel
+ */
 class LastMessagesPanel extends React.Component<
   LastMessagesPanelProps,
   LastMessagesPanelState
 > {
+  /**
+   * render
+   */
   render() {
     return (
       <div className="panel panel--latest-messages">
@@ -72,6 +84,10 @@ class LastMessagesPanel extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -79,6 +95,9 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ */
 function mapDispatchToProps() {
   return {};
 }

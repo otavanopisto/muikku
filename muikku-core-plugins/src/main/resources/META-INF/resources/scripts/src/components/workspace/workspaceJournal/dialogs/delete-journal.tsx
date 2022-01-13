@@ -2,7 +2,6 @@ import "~/sass/elements/link.scss";
 import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/buttons.scss";
-
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -17,6 +16,9 @@ import {
   DeleteWorkspaceJournalInCurrentWorkspaceTriggerType,
 } from "~/actions/workspaces";
 
+/**
+ * DeleteJournalProps
+ */
 interface DeleteJournalProps {
   i18n: i18nType;
   journal: WorkspaceJournalType;
@@ -24,14 +26,24 @@ interface DeleteJournalProps {
   deleteWorkspaceJournalInCurrentWorkspace: DeleteWorkspaceJournalInCurrentWorkspaceTriggerType;
 }
 
+/**
+ * DeleteJournalState
+ */
 interface DeleteJournalState {
   locked: boolean;
 }
 
+/**
+ * DeleteJournal
+ */
 class DeleteJournal extends React.Component<
   DeleteJournalProps,
   DeleteJournalState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: DeleteJournalProps) {
     super(props);
 
@@ -41,20 +53,39 @@ class DeleteJournal extends React.Component<
       locked: false,
     };
   }
+
+  /**
+   * deleteJournal
+   * @param closeDialog closeDialog
+   */
   deleteJournal(closeDialog: () => any) {
     this.setState({ locked: true });
     this.props.deleteWorkspaceJournalInCurrentWorkspace({
       journal: this.props.journal,
+      /**
+       * success
+       */
       success: () => {
         this.setState({ locked: false });
         closeDialog();
       },
+      /**
+       * fail
+       */
       fail: () => {
         this.setState({ locked: false });
       },
     });
   }
+
+  /**
+   * render
+   */
   render() {
+    /**
+     * content
+     * @param closeDialog closeDialog
+     */
     const content = (closeDialog: () => any) => (
       <div>
         {this.props.i18n.text.get(
@@ -63,6 +94,10 @@ class DeleteJournal extends React.Component<
       </div>
     );
 
+    /**
+     * footer
+     * @param closeDialog closeDialog
+     */
     const footer = (closeDialog: () => any) => (
       <div className="dialog__button-set">
         <Button
@@ -100,12 +135,20 @@ class DeleteJournal extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     { deleteWorkspaceJournalInCurrentWorkspace },

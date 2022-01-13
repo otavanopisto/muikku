@@ -1,3 +1,6 @@
+/**
+ * SpecificActionType
+ */
 export interface SpecificActionType<ActionType, PayloadType> {
   type: ActionType;
   payload: PayloadType | null;

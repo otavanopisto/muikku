@@ -13,6 +13,9 @@ import warningImage from "./warning-image";
 const TIMEOUT_FOR_BLUR_EVENT = 10;
 const TIMEOUT_FOR_CANCELLING_BLUR = 300;
 
+/**
+ * FieldProps
+ */
 interface FieldProps {
   className?: string;
   formulaClassName: string;
@@ -30,8 +33,16 @@ interface FieldProps {
   userId: number;
 }
 
+/**
+ * FieldState
+ */
 interface FieldState {}
 
+/**
+ * checkIsParentOrSelf
+ * @param element element
+ * @param comparer comparer
+ */
 function checkIsParentOrSelf(
   element: HTMLElement,
   comparer: HTMLElement | string
@@ -49,6 +60,9 @@ function checkIsParentOrSelf(
     : false;
 }
 
+/**
+ * MathField
+ */
 export default class MathField extends React.Component<FieldProps, FieldState> {
   value: string;
   imgUrls: string[];
@@ -66,6 +80,10 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
   cancelBlur: boolean;
   isBlurDelayed: boolean;
 
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: FieldProps) {
     super(props);
 
@@ -88,10 +106,18 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
       this.onDeleteSomethingInMathMode.bind(this);
     this.handleDrops = this.handleDrops.bind(this);
   }
+
+  /**
+   * shouldComponentUpdate
+   */
   shouldComponentUpdate() {
     // this field is uncontrolled by react
     return false;
   }
+
+  /**
+   * componentDidMount
+   */
   componentDidMount() {
     // we want to load mathjax and create the markup from the property value of the field
     loadMathJax();
@@ -107,6 +133,11 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
       );
     }
   }
+
+  /**
+   * componentWillReceiveProps
+   * @param nextProps nextProps
+   */
   componentWillReceiveProps(nextProps: FieldProps) {
     if (nextProps.className !== this.props.className) {
       (this.refs.input as HTMLElement).className = nextProps.className;
@@ -135,6 +166,10 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     this.value = nextProps.value;
     this.createMarkup();
   }
+
+  /**
+   * createMarkup
+   */
   createMarkup() {
     // we might unselect any previously selected equation
     // this is for when the field updates
@@ -159,6 +194,11 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
       this.imgUrls.push(element.src);
     });
   }
+
+  /**
+   * onFocusField
+   * @param e e
+   */
   onFocusField(e: React.FocusEvent<any>) {
     if (this.isBlurDelayed) {
       this.cancelBlur = true;
@@ -195,6 +235,11 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     (this.refs.input as HTMLElement).classList.add("focused");
     this.props.onFocus();
   }
+
+  /**
+   * findLostImages
+   * @param oldImgURLS oldImgURLS
+   */
   findLostImages(oldImgURLS: string[]) {
     oldImgURLS.forEach((url) => {
       const hasBeenRemoved = !this.imgUrls.includes(url);
@@ -203,6 +248,10 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
       }
     });
   }
+
+  /**
+   * calculateOutput
+   */
   calculateOutput() {
     const oldImgUrls = this.imgUrls;
     this.imgUrls = [];
@@ -219,6 +268,11 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     this.findLostImages(oldImgUrls);
     return;
   }
+
+  /**
+   * convertToText
+   * @param node node
+   */
   convertToText(node: HTMLElement): string {
     if (node.className === this.props.editorClassName) {
       let latex: string = this.selectedMathField.latex();
@@ -273,7 +327,15 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     }
     return "<" + tag + extras + ">" + kids + "</" + tag + ">";
   }
+
+  /**
+   * onBlurField
+   * @param e e
+   */
   onBlurField(e: React.ChangeEvent<any> | Event) {
+    /**
+     * actualExecution
+     */
     const actualExecution = () => {
       this.isBlurDelayed = false;
 
@@ -313,6 +375,11 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     this.isBlurDelayed = true;
     setTimeout(actualExecution, TIMEOUT_FOR_BLUR_EVENT);
   }
+
+  /**
+   * focus
+   * @param avoidCancellingBlur avoidCancellingBlur
+   */
   focus(avoidCancellingBlur?: boolean) {
     if (!avoidCancellingBlur) {
       // We want to cancel a possible blur if there's a blur event but the focus is forced back
@@ -346,6 +413,10 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
 
     (this.refs.input as HTMLElement).classList.add("focused");
   }
+
+  /**
+   * onChange
+   */
   onChange() {
     this.calculateOutput();
 
@@ -369,6 +440,11 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
       }
     }
   }
+
+  /**
+   * execute
+   * @param command command
+   */
   execute(command: MathFieldCommandType) {
     // This is called by the parent on the case of a toolbar executed command
     if (!this.selectedFormula) {
@@ -405,6 +481,10 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
       this.onChange();
     }
   }
+
+  /**
+   * createNewLatex
+   */
   createNewLatex() {
     document.execCommand(
       "insertHTML",
@@ -416,11 +496,21 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     ).querySelector("img:not([alt]):not([src])") as HTMLImageElement;
     this.selectFormula(image);
   }
+
+  /**
+   * deleteImage
+   * @param url url
+   */
   async deleteImage(url: string) {
     return await fetch(url, {
       method: "DELETE",
     });
   }
+
+  /**
+   * insertImage
+   * @param file file
+   */
   async insertImage(file: File) {
     const formData = new FormData();
     formData.append("file", file);
@@ -440,6 +530,11 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
       );
     }
   }
+
+  /**
+   * handleDrops
+   * @param e e
+   */
   handleDrops(e: React.DragEvent) {
     const file =
       e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
@@ -449,6 +544,11 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
       this.insertImage(file);
     }
   }
+
+  /**
+   * selectFormula
+   * @param target target
+   */
   selectFormula(target: HTMLImageElement) {
     // Sometimes select formula might trigger with the same formula in that case
     // just cancel it out, this might happen eg, with the focus and handle all clicks that both
@@ -539,6 +639,11 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
 
     this.props.onLatexModeOpen();
   }
+
+  /**
+   * onDeleteSomethingInMathMode
+   * @param e e
+   */
   onDeleteSomethingInMathMode(e: KeyboardEvent) {
     // The delete keys are not triggered as an input event so we need to catch them manually
     const key = (e as any).keyCode || e.charCode;
@@ -550,9 +655,17 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
       this.unselect(true, true);
     }
   }
+
+  /**
+   * onAceEditorFocus
+   */
   onAceEditorFocus() {
     this.isOnAceEditor = true;
   }
+
+  /**
+   * onAceEditorInput
+   */
   onAceEditorInput() {
     const shouldShow = !this.aceEditor.session.getValue().length;
     let node = this.aceEditor.renderer.emptyMessageNode;
@@ -570,6 +683,11 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
       this.aceEditor.renderer.scroller.appendChild(node);
     }
   }
+
+  /**
+   * handleAllClicks
+   * @param e e
+   */
   handleAllClicks(e: Event) {
     // This detects clicks everywhere in any element
     const clickedTarget: HTMLElement = e.target as HTMLElement;
@@ -619,6 +737,12 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
       }
     }
   }
+
+  /**
+   * unselect
+   * @param focusAfterImage focusAfterImage
+   * @param selectAfterUnselect selectAfterUnselect
+   */
   unselect(focusAfterImage?: boolean, selectAfterUnselect?: boolean) {
     if (this.selectedFormula) {
       const latex = this.selectedMathField.latex();
@@ -633,6 +757,10 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
         );
         if (this.changedSelected) {
           this.selectedFormula.alt = latex;
+          /**
+           * cb
+           * @param newImage newImage
+           */
           const cb = (newImage: HTMLImageElement) => {
             if (focusAfterImage) {
               this.focus();
@@ -661,15 +789,28 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
       this.props.onLatexModeClose();
     }
   }
+
+  /**
+   * componentWillUnmount
+   */
   componentWillUnmount() {
     document.body.removeEventListener("click", this.handleAllClicks);
   }
+
+  /**
+   * checkTheFocus
+   * @param e e
+   */
   checkTheFocus(e: React.MouseEvent<any>) {
     if (this.props.readOnly) {
       return;
     }
     this.lastMouseedDownElement = e.target as HTMLElement;
   }
+
+  /**
+   * render
+   */
   render() {
     return (
       <div

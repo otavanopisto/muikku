@@ -14,6 +14,9 @@ import {
 import "~/sass/elements/hero.scss";
 import "~/sass/elements/meta.scss";
 
+/**
+ * WorkspaceHomeHeaderProps
+ */
 interface WorkspaceHomeHeaderProps {
   workspace: WorkspaceType;
   i18n: i18nType;
@@ -21,15 +24,29 @@ interface WorkspaceHomeHeaderProps {
   updateWorkspace: UpdateWorkspaceTriggerType;
 }
 
+/**
+ * WorkspaceHomeHeaderState
+ */
 interface WorkspaceHomeHeaderState {}
 
+/**
+ * WorkspaceHomeHeader
+ */
 class WorkspaceHomeHeader extends React.Component<
   WorkspaceHomeHeaderProps,
   WorkspaceHomeHeaderState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: WorkspaceHomeHeaderProps) {
     super(props);
   }
+
+  /**
+   * render
+   */
   render() {
     const headerBackgroundImage = this.props.workspace
       ? this.props.workspace.hasCustomImage
@@ -144,6 +161,10 @@ class WorkspaceHomeHeader extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -152,6 +173,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators({ updateWorkspace }, dispatch);
 }

@@ -31,10 +31,16 @@ import {
 } from "~/reducers/main-function/users";
 import { TagItem } from "~/components/general/tag-input";
 
+/**
+ * ValidationType
+ */
 interface ValidationType {
   nameValid: number;
 }
 
+/**
+ * OrganizationNewUserGroupProps
+ */
 interface OrganizationNewUserGroupProps {
   children?: React.ReactElement<any>;
   i18n: i18nType;
@@ -45,6 +51,9 @@ interface OrganizationNewUserGroupProps {
   loadUserGroups: LoadUsersTriggerType;
 }
 
+/**
+ * OrganizationNewUserGroupState
+ */
 interface OrganizationNewUserGroupState {
   usergroupName: string;
   isGuidanceGroup: boolean;
@@ -64,12 +73,19 @@ interface OrganizationNewUserGroupState {
   staffRemoved: boolean;
 }
 
+/**
+ * OrganizationNewUserGroup
+ */
 class OrganizationNewUserGroup extends React.Component<
   OrganizationNewUserGroupProps,
   OrganizationNewUserGroupState
 > {
   private totalSteps: number;
 
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: OrganizationNewUserGroupProps) {
     super(props);
     this.totalSteps = 4;
@@ -105,10 +121,18 @@ class OrganizationNewUserGroup extends React.Component<
     this.saveUsergroup = this.saveUsergroup.bind(this);
     this.clearComponentState = this.clearComponentState.bind(this);
   }
+  /**
+   * doStudentSearch
+   * @param q q
+   */
   doStudentSearch(q: string) {
     this.props.loadStudents({ payload: { q } });
   }
 
+  /**
+   * selectStudent
+   * @param student student
+   */
   selectStudent(student: SelectItem) {
     const newAddState = this.state.addStudents.concat(student);
     this.setState({
@@ -116,6 +140,10 @@ class OrganizationNewUserGroup extends React.Component<
     });
   }
 
+  /**
+   * deleteStudent
+   * @param student student
+   */
   deleteStudent(student: SelectItem) {
     const newAddState = this.state.addStudents.filter(
       (aStudent) => aStudent.id !== student.id
@@ -125,10 +153,18 @@ class OrganizationNewUserGroup extends React.Component<
     });
   }
 
+  /**
+   * doStaffSearch
+   * @param q q
+   */
   doStaffSearch(q: string) {
     this.props.loadStaff({ payload: { q } });
   }
 
+  /**
+   * selectStaff
+   * @param staff staff
+   */
   selectStaff(staff: SelectItem) {
     const newAddState = this.state.addStaff.concat(staff);
     this.setState({
@@ -136,6 +172,10 @@ class OrganizationNewUserGroup extends React.Component<
     });
   }
 
+  /**
+   * deleteStaff
+   * @param staff staff
+   */
   deleteStaff(staff: SelectItem) {
     const newAddState = this.state.addStaff.filter(
       (aStaff) => aStaff.id !== staff.id
@@ -145,14 +185,25 @@ class OrganizationNewUserGroup extends React.Component<
     });
   }
 
+  /**
+   * setGuidanceGroup
+   * @param value value
+   */
   setGuidanceGroup(value: boolean) {
     this.setState({ isGuidanceGroup: value });
   }
 
+  /**
+   * setUsergroupName
+   * @param value value
+   */
   setUsergroupName(value: string) {
     this.setState({ locked: false, usergroupName: value });
   }
 
+  /**
+   * clearComponentState
+   */
   clearComponentState() {
     this.setState({
       locked: true,
@@ -173,10 +224,17 @@ class OrganizationNewUserGroup extends React.Component<
     });
   }
 
+  /**
+   * cancelDialog
+   * @param closeDialog closeDialog
+   */
   cancelDialog(closeDialog: () => any) {
     closeDialog();
   }
 
+  /**
+   * nextStep
+   */
   nextStep() {
     if (this.state.usergroupName === "") {
       const validation: ValidationType = Object.assign(this.state.validation, {
@@ -189,11 +247,18 @@ class OrganizationNewUserGroup extends React.Component<
     }
   }
 
+  /**
+   * lastStep
+   */
   lastStep() {
     const lastStep = this.state.currentStep - 1;
     this.setState({ currentStep: lastStep });
   }
 
+  /**
+   * saveUsergroup
+   * @param closeDialog closeDialog
+   */
   saveUsergroup(closeDialog: () => any) {
     this.setState({
       locked: true,
@@ -228,6 +293,10 @@ class OrganizationNewUserGroup extends React.Component<
     this.props.createOrganizationUsergroup({
       payload: payload,
       addUsers: userIdentifiers,
+      /**
+       * progress
+       * @param state state
+       */
       progress: (state: UpdateUserGroupStateType) => {
         if (state === "update-group") {
           this.setState({
@@ -252,16 +321,26 @@ class OrganizationNewUserGroup extends React.Component<
         }
       },
 
+      /**
+       * success
+       */
       success: () => {
         closeDialog();
       },
 
+      /**
+       * fail
+       */
       fail: () => {
         closeDialog();
       },
     });
   }
 
+  /**
+   * wizardSteps
+   * @param page page
+   */
   wizardSteps(page: number) {
     switch (page) {
       case 1:
@@ -486,7 +565,14 @@ class OrganizationNewUserGroup extends React.Component<
     }
   }
 
+  /**
+   * render
+   */
   render() {
+    /**
+     * content
+     * @param closePortal closePortal
+     */
     const content = (closePortal: () => any) =>
       this.wizardSteps(this.state.currentStep);
 
@@ -547,6 +633,10 @@ class OrganizationNewUserGroup extends React.Component<
         </div>
       </div>
     );
+    /**
+     * footer
+     * @param closePortal closePortal
+     */
     const footer = (closePortal: () => any) => (
       <FormWizardActions
         locked={this.state.locked}
@@ -589,6 +679,10 @@ class OrganizationNewUserGroup extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -596,6 +690,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     {

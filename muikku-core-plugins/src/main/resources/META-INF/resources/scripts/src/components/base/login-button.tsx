@@ -9,22 +9,41 @@ import $ from "~/lib/jquery";
 import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
 
+/**
+ * LoginButtonProps
+ */
 interface LoginButtonProps {
   i18n: i18nType;
   modifier?: string;
 }
 
+/**
+ * LoginButtonState
+ */
 interface LoginButtonState {}
 
+/**
+ * LoginButton
+ */
 class LoginButton extends React.Component<LoginButtonProps, LoginButtonState> {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: LoginButtonProps) {
     super(props);
     this.login = this.login.bind(this);
   }
+  /**
+   * login
+   */
   login() {
     //TODO please let's find a better way to do this rather than the emulated way
     window.location.replace($("#login").attr("href"));
   }
+  /**
+   * render
+   */
   render() {
     return (
       <Link
@@ -40,12 +59,20 @@ class LoginButton extends React.Component<LoginButtonProps, LoginButtonState> {
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return {};
 }

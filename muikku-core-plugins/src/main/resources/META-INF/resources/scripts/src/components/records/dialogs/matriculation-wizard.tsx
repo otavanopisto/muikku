@@ -8,6 +8,9 @@ import "~/sass/elements/wizard.scss";
 import { StateType } from "~/reducers";
 import MatriculationExaminationWizard from "../body/matriculationExaminationWizard";
 
+/**
+ * MatriculationExaminationWizardDialogProps
+ */
 interface MatriculationExaminationWizardDialogProps {
   i18n: i18nType;
   children?: React.ReactElement<any>;
@@ -16,16 +19,29 @@ interface MatriculationExaminationWizardDialogProps {
   updateEnrollemnts: (examId: number) => void;
 }
 
+/**
+ * MatriculationExaminationWizardDialogState
+ */
 interface MatriculationExaminationWizardDialogState {
   scale: number;
   angle: number;
 }
 
+/**
+ * MatriculationExaminationWizardDialog
+ */
 class MatriculationExaminationWizardDialog extends React.Component<
   MatriculationExaminationWizardDialogProps,
   MatriculationExaminationWizardDialogState
 > {
+  /**
+   * render
+   */
   render() {
+    /**
+     * content
+     * @param closeDialog closeDialog
+     */
     const content = (closeDialog: () => any) => (
       <div>
         <MatriculationExaminationWizard
@@ -49,12 +65,19 @@ class MatriculationExaminationWizardDialog extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
   };
 }
 
+/**
+ * mapDispatchToProps
+ */
 function mapDispatchToProps() {
   return {};
 }

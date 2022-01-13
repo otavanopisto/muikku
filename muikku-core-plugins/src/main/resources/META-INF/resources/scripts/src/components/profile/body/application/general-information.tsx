@@ -7,12 +7,18 @@ import { ProfileType } from "~/reducers/main-function/profile";
 import ProfilePicture from "./components/profile-picture";
 import ProfileProperty from "./components/profile-property";
 
+/**
+ * GeneralInformationProps
+ */
 interface GeneralInformationProps {
   i18n: i18nType;
   profile: ProfileType;
   status: StatusType;
 }
 
+/**
+ * GeneralInformationState
+ */
 interface GeneralInformationState {
   profileVacationStart: any;
   profileVacationEnd: any;
@@ -24,14 +30,24 @@ interface GeneralInformationState {
   vacationAutoReplyMsg: string;
 }
 
+/**
+ * GeneralInformation
+ */
 class GeneralInformation extends React.Component<
   GeneralInformationProps,
   GeneralInformationState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: GeneralInformationProps) {
     super(props);
   }
 
+  /**
+   * render
+   */
   public render() {
     if (!this.props.profile || !this.props.status.profile) {
       return null;
@@ -85,6 +101,10 @@ class GeneralInformation extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -93,6 +113,9 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ */
 function mapDispatchToProps() {
   return {};
 }

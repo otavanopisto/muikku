@@ -32,6 +32,9 @@ import {
 } from "~/actions/workspaces";
 import { Redirect } from "react-router-dom";
 
+/**
+ * HelpMaterialsProps
+ */
 interface HelpMaterialsProps {
   i18n: i18nType;
   workspace: WorkspaceType;
@@ -48,6 +51,9 @@ interface HelpMaterialsProps {
   updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType;
 }
 
+/**
+ * HelpMaterialsState
+ */
 interface HelpMaterialsState {
   defaultOffset: number;
   redirect: string;
@@ -55,8 +61,15 @@ interface HelpMaterialsState {
 
 const DEFAULT_OFFSET = 67;
 
+/**
+ * Help
+ */
 class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
   private flattenedMaterial: MaterialContentNodeListType;
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: HelpMaterialsProps) {
     super(props);
 
@@ -77,6 +90,10 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
 
     this.getFlattenedMaterials(props);
   }
+
+  /**
+   * componentDidMount
+   */
   componentDidMount() {
     const defaultOffset =
       ((document.querySelector("#stick") as HTMLElement) || ({} as any))
@@ -89,14 +106,28 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
 
     window.addEventListener("scroll", this.onScroll);
   }
+
+  /**
+   * componentWillUnmount
+   */
   componentWillUnmount() {
     window.removeEventListener("scroll", this.onScroll);
   }
+
+  /**
+   * componentWillReceiveProps
+   * @param nextProps nextProps
+   */
   componentWillReceiveProps(nextProps: HelpMaterialsProps) {
     if (this.props.materials !== nextProps.materials) {
       this.getFlattenedMaterials(nextProps);
     }
   }
+
+  /**
+   * toggleSectionHiddenStatus
+   * @param section section
+   */
   toggleSectionHiddenStatus(section: MaterialContentNodeType) {
     this.props.updateWorkspaceMaterialContentNode({
       workspace: this.props.workspace,
@@ -107,6 +138,14 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
       isDraft: false,
     });
   }
+
+  /**
+   * getMaterialsOptionListDropdown
+   * @param section section
+   * @param nextSection nextSection
+   * @param nextSibling nextSibling
+   * @param includesSection includesSection
+   */
   getMaterialsOptionListDropdown(
     section: MaterialContentNodeType,
     nextSection: MaterialContentNodeType,
@@ -146,6 +185,11 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
 
     return materialManagementItemsOptions;
   }
+
+  /**
+   * startupEditor
+   * @param section section
+   */
   startupEditor(section: MaterialContentNodeType) {
     this.props.setWorkspaceMaterialEditorState({
       currentNodeWorkspace: this.props.workspace,
@@ -174,6 +218,12 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
       canSetTitle: true,
     });
   }
+
+  /**
+   * createPage
+   * @param section section
+   * @param nextSibling nextSibling
+   */
   createPage(
     section: MaterialContentNodeType,
     nextSibling: MaterialContentNodeType
@@ -192,6 +242,13 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
       "help"
     );
   }
+
+  /**
+   * createPageFromBinary
+   * @param section section
+   * @param nextSibling nextSibling
+   * @param e e
+   */
   createPageFromBinary(
     section: MaterialContentNodeType,
     nextSibling: MaterialContentNodeType,
@@ -210,6 +267,11 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
       "help"
     );
   }
+
+  /**
+   * createSection
+   * @param nextSibling nextSibling
+   */
   createSection(nextSibling: MaterialContentNodeType) {
     this.props.createWorkspaceMaterialContentNode(
       {
@@ -224,6 +286,12 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
       "help"
     );
   }
+
+  /**
+   * pastePage
+   * @param section section
+   * @param nextSibling nextSibling
+   */
   pastePage(
     section: MaterialContentNodeType,
     nextSibling: MaterialContentNodeType
@@ -248,6 +316,11 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
       );
     }
   }
+
+  /**
+   * getFlattenedMaterials
+   * @param props props
+   */
   getFlattenedMaterials(props: HelpMaterialsProps = this.props) {
     this.flattenedMaterial = [];
     if (!props.materials) {
@@ -259,9 +332,17 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
       });
     });
   }
+
+  /**
+   * onOpenNavigation
+   */
   onOpenNavigation() {
     this.props.onOpenNavigation();
   }
+
+  /**
+   * onScroll
+   */
   onScroll() {
     if ((window as any).IGNORE_SCROLL_EVENTS) {
       return;
@@ -271,6 +352,10 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
       this.props.onActiveNodeIdChange(newActive);
     }
   }
+
+  /**
+   * getActive
+   */
   getActive() {
     //gets the current active node
     let winner: number = null;
@@ -328,6 +413,10 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
     winner = winner || this.flattenedMaterial[0].workspaceMaterialId;
     return winner;
   }
+
+  /**
+   * render
+   */
   render() {
     if (this.state.redirect) {
       return <Redirect push to={this.state.redirect} />;
@@ -635,6 +724,10 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -646,6 +739,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     {

@@ -16,23 +16,41 @@ import "~/sass/elements/label.scss";
 import "~/sass/elements/application-list.scss";
 import "~/sass/elements/message.scss";
 
+/**
+ * MessageViewProps
+ */
 interface MessageViewProps {
   i18n: i18nType;
   messages: MessagesType;
 }
 
+/**
+ * MessageViewState
+ */
 interface MessageViewState {}
 
+/**
+ * MessageView
+ */
 class MessageView extends React.Component<MessageViewProps, MessageViewState> {
   private initialXPos: number;
   private initialYPos: number;
   private closeInterval: NodeJS.Timer;
 
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: MessageViewProps) {
     super(props);
 
     this.loadMessage = this.loadMessage.bind(this);
   }
+
+  /**
+   * loadMessage
+   * @param messageId messageId
+   */
   loadMessage(messageId: number) {
     if (history.replaceState) {
       history.replaceState(
@@ -45,6 +63,10 @@ class MessageView extends React.Component<MessageViewProps, MessageViewState> {
       location.hash = location.hash.split("/")[0] + "/" + messageId;
     }
   }
+
+  /**
+   * render
+   */
   render() {
     if (this.props.messages.currentThread === null) {
       return null;
@@ -79,6 +101,10 @@ class MessageView extends React.Component<MessageViewProps, MessageViewState> {
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     messages: state.messages,
@@ -86,6 +112,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return {};
 }

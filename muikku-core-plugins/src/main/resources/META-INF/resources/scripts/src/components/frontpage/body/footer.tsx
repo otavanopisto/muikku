@@ -4,16 +4,28 @@ import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/footer.scss";
 import "~/sass/elements/wcag.scss";
 
+/**
+ * FrontpageFooterProps
+ */
 interface FrontpageFooterProps {
   i18n: i18nType;
 }
 
+/**
+ * FrontpageFooterState
+ */
 interface FrontpageFooterState {}
 
+/**
+ * FrontpageFooter
+ */
 export default class FrontpageFooter extends React.Component<
   FrontpageFooterProps,
   FrontpageFooterState
 > {
+  /**
+   * render
+   */
   render() {
     return (
       <footer className="footer" id="contact">

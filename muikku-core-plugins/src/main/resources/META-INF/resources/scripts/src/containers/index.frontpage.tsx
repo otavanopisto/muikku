@@ -10,6 +10,9 @@ export default class IndexFrontpage extends React.Component<
   Record<string, unknown>,
   Record<string, unknown>
 > {
+  /**
+   * render
+   */
   render() {
     return (
       <div id="root">

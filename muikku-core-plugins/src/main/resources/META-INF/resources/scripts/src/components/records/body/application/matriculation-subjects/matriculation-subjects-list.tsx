@@ -35,6 +35,10 @@ class MatriculationSubjectsList extends React.Component<
   MatriculationSubjectsListProps,
   MatriculationSubjectsListState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: MatriculationSubjectsListProps) {
     super(props);
 
@@ -228,12 +232,19 @@ class MatriculationSubjectsList extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
   };
 }
 
+/**
+ * mapDispatchToProps
+ */
 function mapDispatchToProps() {
   return {};
 }

@@ -3,6 +3,9 @@
 import $ from "~/lib/jquery";
 import { ActionType } from "~/actions";
 
+/**
+ * LocaleListType
+ */
 export interface LocaleListType {
   available: {
     name: string;
@@ -11,6 +14,11 @@ export interface LocaleListType {
   current: string;
 }
 
+/**
+ * locales
+ * @param state state
+ * @param action action
+ */
 export default function locales(
   state = {
     available: $.makeArray(

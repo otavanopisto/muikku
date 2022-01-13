@@ -47,6 +47,7 @@ class AnnouncerToolbar extends React.Component<
 > {
   /**
    * constructor
+   * @param props props
    */
   constructor(props: AnnouncerToolbarProps) {
     super(props);

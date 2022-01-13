@@ -18,17 +18,26 @@ import {
 } from "~/actions/base/notifications";
 import { bindActionCreators } from "redux";
 
+/**
+ * IChatRoomType
+ */
 export interface IChatRoomType {
   name: string;
   title: string;
   description: string;
 }
 
+/**
+ * IChatMessageType
+ */
 export interface IChatMessageType {
   message: string;
   occupant: IChatOccupant;
 }
 
+/**
+ * IPrebindResponseType
+ */
 export interface IPrebindResponseType {
   bound: boolean;
   bindEpochMilli: string;
@@ -38,6 +47,9 @@ export interface IPrebindResponseType {
   hostname: string;
 }
 
+/**
+ * IAvailableChatRoomType
+ */
 export interface IAvailableChatRoomType {
   roomName: string;
   roomJID: string;
@@ -46,6 +58,9 @@ export interface IAvailableChatRoomType {
   // roomPersistent: boolean,
 }
 
+/**
+ * IChatOccupant
+ */
 export interface IChatOccupant {
   userId: string;
   jid: string;
@@ -59,6 +74,9 @@ export interface IChatOccupant {
   isStaff: boolean;
 }
 
+/**
+ * IBareMessageType
+ */
 export interface IBareMessageType {
   message: string;
   nick: string;
@@ -73,17 +91,26 @@ export interface IBareMessageType {
   edited: IBareMessageType;
 }
 
+/**
+ * IBareMessageActionType
+ */
 export interface IBareMessageActionType {
   deleteForId: string;
   editForId: string;
 }
 
+/**
+ * IOpenChatJID
+ */
 interface IOpenChatJID {
   type: "muc" | "user";
   jid: string;
   initStanza?: Element;
 }
 
+/**
+ * IChatState
+ */
 interface IChatState {
   connection: Strophe.Connection;
   connectionHostname: string;
@@ -104,6 +131,9 @@ interface IChatState {
   missingFields: boolean;
 }
 
+/**
+ * IChatProps
+ */
 interface IChatProps {
   settings: UserChatSettingsType;
   currentLocale: string;
@@ -113,9 +143,16 @@ interface IChatProps {
 
 const roleNode = document.querySelector('meta[name="muikku:role"]');
 
+/**
+ * Chat
+ */
 class Chat extends React.Component<IChatProps, IChatState> {
   private messagesListenerHandler: any = null;
 
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: IChatProps) {
     super(props);
 
@@ -172,12 +209,62 @@ class Chat extends React.Component<IChatProps, IChatState> {
       this.setUserAvailabilityDropdown.bind(this);
   }
 
+  /**
+   * componentDidMount
+   */
+  componentDidMount() {
+    if (
+      this.props.settings &&
+      this.props.settings.visibility === "VISIBLE_TO_ALL"
+    ) {
+      this.initialize();
+    }
+  }
+
+  /**
+   * componentWillUnmount
+   */
+  componentWillUnmount() {
+    this.state.connection &&
+      this.state.connection.deleteHandler(this.messagesListenerHandler);
+  }
+
+  /**
+   * componentDidUpdate
+   * @param prevProps prevProps
+   */
+  componentDidUpdate(prevProps: IChatProps) {
+    if (
+      prevProps.settings &&
+      prevProps.settings.visibility === "VISIBLE_TO_ALL" &&
+      (!this.props.settings || this.props.settings.visibility === "DISABLED") &&
+      this.state.isInitialized
+    ) {
+      this.stopChat();
+    } else if (
+      (!prevProps.settings || prevProps.settings.visibility === "DISABLED") &&
+      this.props.settings &&
+      this.props.settings.visibility === "VISIBLE_TO_ALL" &&
+      !this.state.isInitialized
+    ) {
+      this.initialize();
+    }
+  }
+
+  /**
+   * updateRoomNameField
+   * @param ee
+   */
   public updateRoomNameField(e: React.ChangeEvent<HTMLInputElement>) {
     this.setState({
       roomNameField: e.target.value,
     });
   }
 
+  /**
+   * updateRoomDescField
+   * @param e e
+   */
   public updateRoomDescField(e: React.ChangeEvent<HTMLTextAreaElement>) {
     this.setState({
       roomDescField: e.target.value,
@@ -190,6 +277,11 @@ class Chat extends React.Component<IChatProps, IChatState> {
   //   });
   // }
 
+  /**
+   * updateChatRoomConfig
+   * @param index index
+   * @param chat chat
+   */
   public updateChatRoomConfig(index: number, chat: IAvailableChatRoomType) {
     const newRooms = [...this.state.availableMucRooms];
     newRooms[index] = chat;
@@ -198,6 +290,10 @@ class Chat extends React.Component<IChatProps, IChatState> {
     });
   }
 
+  /**
+   * createAndJoinChatRoom
+   * @param e e
+   */
   async createAndJoinChatRoom(e: React.FormEvent) {
     e.preventDefault();
 
@@ -248,7 +344,9 @@ class Chat extends React.Component<IChatProps, IChatState> {
     }
   }
 
-  // Toggle states for Control Box window opening/closing
+  /**
+   * Toggle states for Control Box window opening/closing
+   */
   toggleControlBox() {
     if (this.state.showControlBox) {
       this.setState({
@@ -263,6 +361,10 @@ class Chat extends React.Component<IChatProps, IChatState> {
     }
   }
 
+  /**
+   * removeChatRoom
+   * @param roomJID roomJID
+   */
   removeChatRoom(roomJID: string) {
     this.leaveChatRoom(roomJID);
 
@@ -273,7 +375,9 @@ class Chat extends React.Component<IChatProps, IChatState> {
     });
   }
 
-  // Toggle states for Chat Room Create Form window opening/closing
+  /**
+   * Toggle states for Chat Room Create Form window opening/closing
+   */
   toggleCreateChatRoomForm() {
     if (!this.state.showNewRoomForm) {
       this.setState({
@@ -286,6 +390,11 @@ class Chat extends React.Component<IChatProps, IChatState> {
     }
   }
 
+  /**
+   * joinPrivateChat
+   * @param jid jid
+   * @param initStanza initStanza
+   */
   public joinPrivateChat(jid: string, initStanza?: Element) {
     // already joined or self
     const userBaseJID = this.state.connection.jid.split("/")[0];
@@ -325,6 +434,10 @@ class Chat extends React.Component<IChatProps, IChatState> {
     });
   }
 
+  /**
+   * leavePrivateChat
+   * @param jid jid
+   */
   public leavePrivateChat(jid: string) {
     const filteredJIDS = this.state.openChatsJIDS.filter(
       (item) => item.type !== "user" || item.jid !== jid
@@ -347,6 +460,10 @@ class Chat extends React.Component<IChatProps, IChatState> {
     });
   }
 
+  /**
+   * joinChatRoom
+   * @param roomJID roomJID
+   */
   public joinChatRoom(roomJID: string) {
     // already joined
     if (
@@ -380,6 +497,10 @@ class Chat extends React.Component<IChatProps, IChatState> {
     });
   }
 
+  /**
+   * leaveChatRoom
+   * @param roomJID roomJID
+   */
   public leaveChatRoom(roomJID: string) {
     const filteredJIDS = this.state.openChatsJIDS.filter(
       (item) => item.type !== "muc" || item.jid !== roomJID
@@ -402,7 +523,10 @@ class Chat extends React.Component<IChatProps, IChatState> {
     });
   }
 
-  // Toggles between joining and leaving the chat room
+  /**
+   * Toggles between joining and leaving the chat room
+   * @param roomJID
+   */
   public toggleJoinLeaveChatRoom(roomJID: string) {
     // Check whether current roomJID is allready part of openChatList
     if (
@@ -415,16 +539,29 @@ class Chat extends React.Component<IChatProps, IChatState> {
       this.joinChatRoom(roomJID);
     }
   }
+
+  /**
+   * getWorkspaceMucRooms
+   */
   getWorkspaceMucRooms() {
     return this.state.availableMucRooms.filter((room) =>
       room.roomJID.startsWith("workspace-")
     );
   }
+
+  /**
+   * getNotWorkspaceMucRooms
+   */
   getNotWorkspaceMucRooms() {
     return this.state.availableMucRooms.filter(
       (room) => !room.roomJID.startsWith("workspace-")
     );
   }
+
+  /**
+   * setUserAvailability
+   * @param newStatus newStatus
+   */
   setUserAvailability(newStatus: string) {
     this.state.connection.send($pres().c("show", {}, newStatus));
     this.setState({
@@ -435,6 +572,10 @@ class Chat extends React.Component<IChatProps, IChatState> {
       JSON.stringify(newStatus)
     );
   }
+
+  /**
+   * setUserAvailabilityDropdown
+   */
   setUserAvailabilityDropdown() {
     const setUserAvailabilityItems: Array<any> = [
       {
@@ -464,35 +605,11 @@ class Chat extends React.Component<IChatProps, IChatState> {
     ];
     return setUserAvailabilityItems;
   }
-  componentDidMount() {
-    if (
-      this.props.settings &&
-      this.props.settings.visibility === "VISIBLE_TO_ALL"
-    ) {
-      this.initialize();
-    }
-  }
-  componentWillUnmount() {
-    this.state.connection &&
-      this.state.connection.deleteHandler(this.messagesListenerHandler);
-  }
-  componentDidUpdate(prevProps: IChatProps) {
-    if (
-      prevProps.settings &&
-      prevProps.settings.visibility === "VISIBLE_TO_ALL" &&
-      (!this.props.settings || this.props.settings.visibility === "DISABLED") &&
-      this.state.isInitialized
-    ) {
-      this.stopChat();
-    } else if (
-      (!prevProps.settings || prevProps.settings.visibility === "DISABLED") &&
-      this.props.settings &&
-      this.props.settings.visibility === "VISIBLE_TO_ALL" &&
-      !this.state.isInitialized
-    ) {
-      this.initialize();
-    }
-  }
+
+  /**
+   * @param status
+   * @param condition
+   */
   onConnectionStatusChanged(status: Strophe.Status, condition: string) {
     if (status === Strophe.Status.ATTACHED) {
       // We are atached. Send presence to server so it knows we're online
@@ -503,6 +620,10 @@ class Chat extends React.Component<IChatProps, IChatState> {
     // I believe strophe retries automatically so disconnected does not need to be tried
     return true;
   }
+
+  /**
+   * listExistantChatRooms
+   */
   listExistantChatRooms() {
     const stanza = $iq({
       from: this.state.connection.jid,
@@ -543,6 +664,12 @@ class Chat extends React.Component<IChatProps, IChatState> {
       });
     });
   }
+
+  /**
+   * requestExtraInfoAboutRoom
+   * @param room room
+   * @param refresh refresh
+   */
   requestExtraInfoAboutRoom(room: IAvailableChatRoomType, refresh?: boolean) {
     if (room.roomDesc !== null && !refresh) {
       return;
@@ -582,6 +709,11 @@ class Chat extends React.Component<IChatProps, IChatState> {
       });
     });
   }
+
+  /**
+   * onMessageReceived
+   * @param stanza stanza
+   */
   public onMessageReceived(stanza: Element) {
     const userFrom = stanza.getAttribute("from").split("/")[0];
 
@@ -595,6 +727,10 @@ class Chat extends React.Component<IChatProps, IChatState> {
 
     return true;
   }
+
+  /**
+   * stopChat
+   */
   public stopChat() {
     this.setState({
       isInitialized: false,
@@ -606,6 +742,10 @@ class Chat extends React.Component<IChatProps, IChatState> {
       this.state.connection.disconnect("Chat is disabled");
     (window as any).ON_LOGOUT = null;
   }
+
+  /**
+   * initialize
+   */
   async initialize() {
     this.setState({
       isInitialized: true,
@@ -676,6 +816,10 @@ class Chat extends React.Component<IChatProps, IChatState> {
       }
     );
   }
+
+  /**
+   * render
+   */
   render() {
     if (!this.state.isInitialized || !this.state.connection) {
       return null;
@@ -901,6 +1045,10 @@ class Chat extends React.Component<IChatProps, IChatState> {
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     currentLocale: state.locales.current,
@@ -909,6 +1057,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators({ displayNotification }, dispatch);
 }

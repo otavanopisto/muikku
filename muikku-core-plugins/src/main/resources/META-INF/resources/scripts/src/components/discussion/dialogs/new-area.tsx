@@ -16,22 +16,35 @@ import {
 } from "~/actions/discussion";
 import { StateType } from "~/reducers";
 
+/**
+ * DiscussionNewAreaProps
+ */
 interface DiscussionNewAreaProps {
   i18n: i18nType;
   children: React.ReactElement<any>;
   createDiscussionArea: CreateDiscussionAreaTriggerType;
 }
 
+/**
+ * DiscussionNewAreaState
+ */
 interface DiscussionNewAreaState {
   name: string;
   description: string;
   locked: boolean;
 }
 
+/**
+ * DiscussionNewArea
+ */
 class DiscussionNewArea extends SessionStateComponent<
   DiscussionNewAreaProps,
   DiscussionNewAreaState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: DiscussionNewAreaProps) {
     super(props, "discussion-new-area");
 
@@ -47,39 +60,76 @@ class DiscussionNewArea extends SessionStateComponent<
       locked: false,
     });
   }
+
+  /**
+   * checkAgainstStoredState
+   */
   checkAgainstStoredState() {
     this.checkStoredAgainstThisState({
       name: "",
       description: "",
     });
   }
+
+  /**
+   * clearUp
+   */
   clearUp() {
     this.setStateAndClear({
       name: "",
       description: "",
     });
   }
+
+  /**
+   * onDescriptionChange
+   * @param e e
+   */
   onDescriptionChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
     this.setStateAndStore({ description: e.target.value });
   }
+
+  /**
+   * onNameChange
+   * @param e e
+   */
   onNameChange(e: React.ChangeEvent<HTMLInputElement>) {
     this.setStateAndStore({ name: e.target.value });
   }
+
+  /**
+   * createArea
+   * @param closeDialog closeDialog
+   */
   createArea(closeDialog: () => any) {
     this.setState({ locked: true });
     this.props.createDiscussionArea({
       name: this.state.name,
       description: this.state.description,
+      /**
+       * success
+       */
       success: () => {
         this.setStateAndClear({ name: "", description: "", locked: false });
         closeDialog();
       },
+      /**
+       * fail
+       */
       fail: () => {
         this.setState({ locked: false });
       },
     });
   }
+
+  /**
+   * render
+   */
   render() {
+    /**
+     * content
+     * @param closeDialog closeDialog
+     */
     const content = (closeDialog: () => any) => [
       <div className="env-dialog__row" key="1">
         <div className="env-dialog__form-element-container">
@@ -112,6 +162,10 @@ class DiscussionNewArea extends SessionStateComponent<
         </div>
       </div>,
     ];
+    /**
+     * footer
+     * @param closeDialog closeDialog
+     */
     const footer = (closeDialog: () => any) => (
       <div className="env-dialog__actions">
         <Button
@@ -156,12 +210,20 @@ class DiscussionNewArea extends SessionStateComponent<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ createDiscussionArea }, dispatch);
 }

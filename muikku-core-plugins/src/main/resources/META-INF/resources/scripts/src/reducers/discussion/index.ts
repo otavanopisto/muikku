@@ -1,5 +1,8 @@
 import { ActionType } from "~/actions";
 
+/**
+ * DiscussionUserType
+ */
 export interface DiscussionUserType {
   id: number;
   firstName: string;
@@ -8,6 +11,9 @@ export interface DiscussionUserType {
   hasImage: boolean;
 }
 
+/**
+ * DiscussionThreadType
+ */
 export interface DiscussionThreadType {
   created: string;
   creator: DiscussionUserType;
@@ -22,6 +28,9 @@ export interface DiscussionThreadType {
   updated: string;
 }
 
+/**
+ * DiscussionThreadReplyType
+ */
 export interface DiscussionThreadReplyType {
   childReplyCount: number;
   created: string;
@@ -39,6 +48,9 @@ export type DiscussionThreadListType = Array<DiscussionThreadType>;
 
 export type DiscussionStateType = "LOADING" | "ERROR" | "READY";
 
+/**
+ * DiscussionAreaType
+ */
 export interface DiscussionAreaType {
   id: number;
   name: string;
@@ -47,6 +59,9 @@ export interface DiscussionAreaType {
   numThreads: number;
 }
 
+/**
+ * DiscussionAreaUpdateType
+ */
 export interface DiscussionAreaUpdateType {
   id?: number;
   name?: string;
@@ -57,6 +72,9 @@ export interface DiscussionAreaUpdateType {
 
 export type DiscussionAreaListType = Array<DiscussionAreaType>;
 
+/**
+ * DiscussionType
+ */
 export interface DiscussionType {
   state: DiscussionStateType;
   threads: DiscussionThreadListType;
@@ -72,6 +90,9 @@ export interface DiscussionType {
   areas: DiscussionAreaListType;
 }
 
+/**
+ * DiscussionPatchType
+ */
 export interface DiscussionPatchType {
   state?: DiscussionStateType;
   threads?: DiscussionThreadListType;
@@ -87,6 +108,11 @@ export interface DiscussionPatchType {
   areas?: DiscussionAreaListType;
 }
 
+/**
+ * discussion
+ * @param state state
+ * @param action action
+ */
 export default function discussion(
   state: DiscussionType = {
     state: "LOADING",

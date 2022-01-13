@@ -20,6 +20,9 @@ import {
   UpdateProfileAddressTriggerType,
 } from "~/actions/main-function/profile";
 
+/**
+ * UpdateAddressDialogProps
+ */
 interface UpdateAddressDialogProps {
   i18n: i18nType;
   children: React.ReactElement<any>;
@@ -29,6 +32,9 @@ interface UpdateAddressDialogProps {
   updateProfileAddress: UpdateProfileAddressTriggerType;
 }
 
+/**
+ * UpdateAddressDialogState
+ */
 interface UpdateAddressDialogState {
   street: string;
   postalCode: string;
@@ -38,10 +44,17 @@ interface UpdateAddressDialogState {
   locked: boolean;
 }
 
+/**
+ * UpdateAddressDialog
+ */
 class UpdateAddressDialog extends React.Component<
   UpdateAddressDialogProps,
   UpdateAddressDialogState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: UpdateAddressDialogProps) {
     super(props);
 
@@ -57,6 +70,11 @@ class UpdateAddressDialog extends React.Component<
       locked: false,
     };
   }
+
+  /**
+   * componentWillReceiveProps
+   * @param nextProps nextProps
+   */
   componentWillReceiveProps(nextProps: UpdateAddressDialogProps) {
     if (
       nextProps.profile.addresses &&
@@ -87,6 +105,11 @@ class UpdateAddressDialog extends React.Component<
       });
     }
   }
+
+  /**
+   * update
+   * @param closeDialog closeDialog
+   */
   update(closeDialog: () => any) {
     this.props.updateProfileAddress({
       street: this.state.street,
@@ -94,18 +117,38 @@ class UpdateAddressDialog extends React.Component<
       city: this.state.city,
       country: this.state.country,
       municipality: this.state.municipality,
+      /**
+       *
+       */
       success: () => {
         closeDialog();
       },
+      /**
+       *
+       */
       fail: () => undefined,
     });
   }
+
+  /**
+   * updateField
+   * @param field field
+   * @param e e
+   */
   updateField(field: string, e: React.ChangeEvent<HTMLInputElement>) {
     const nField: any = {};
     nField[field] = e.target.value;
     this.setState(nField);
   }
+
+  /**
+   * render
+   */
   render() {
+    /**
+     * content
+     * @param closeDialog closeDialog
+     */
     const content = (closeDialog: () => any) => (
       <div>
         <p>
@@ -198,6 +241,11 @@ class UpdateAddressDialog extends React.Component<
         </form>
       </div>
     );
+
+    /**
+     * footer
+     * @param closeDialog closeDialog
+     */
     const footer = (closeDialog: () => any) => (
       <div className="dialog__button-set">
         <Button
@@ -235,6 +283,10 @@ class UpdateAddressDialog extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -242,6 +294,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     { displayNotification, updateProfileAddress },

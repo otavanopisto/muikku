@@ -15,6 +15,9 @@ import {
   UpdateWorkspaceMaterialContentNodeTriggerType,
 } from "~/actions/workspaces";
 
+/**
+ * ConfirmPublishPageWithAnswersDialogProps
+ */
 interface ConfirmPublishPageWithAnswersDialogProps {
   i18n: i18nType;
   materialEditor: WorkspaceMaterialEditorType;
@@ -22,14 +25,24 @@ interface ConfirmPublishPageWithAnswersDialogProps {
   updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType;
 }
 
+/**
+ * ConfirmPublishPageWithAnswersDialogState
+ */
 interface ConfirmPublishPageWithAnswersDialogState {
   locked: boolean;
 }
 
+/**
+ * ConfirmPublishPageWithAnswersDialog
+ */
 class ConfirmPublishPageWithAnswersDialog extends React.Component<
   ConfirmPublishPageWithAnswersDialogProps,
   ConfirmPublishPageWithAnswersDialogState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: ConfirmPublishPageWithAnswersDialogProps) {
     super(props);
     this.state = {
@@ -39,6 +52,11 @@ class ConfirmPublishPageWithAnswersDialog extends React.Component<
     this.cancel = this.cancel.bind(this);
     this.confirm = this.confirm.bind(this);
   }
+
+  /**
+   * confirm
+   * @param closeDialog closeDialog
+   */
   confirm(closeDialog: () => any) {
     this.setState({
       locked: true,
@@ -49,12 +67,19 @@ class ConfirmPublishPageWithAnswersDialog extends React.Component<
       material: this.props.materialEditor.currentNodeValue,
       update: this.props.materialEditor.currentDraftNodeValue,
       removeAnswers: true,
+
+      /**
+       * success
+       */
       success: () => {
         this.setState({
           locked: false,
         });
         closeDialog();
       },
+      /**
+       * fail
+       */
       fail: () => {
         this.setState({
           locked: false,
@@ -62,6 +87,10 @@ class ConfirmPublishPageWithAnswersDialog extends React.Component<
       },
     });
   }
+  /**
+   * cancel
+   * @param closeDialog closeDialog
+   */
   cancel(closeDialog?: () => any) {
     closeDialog && closeDialog();
     this.props.setWorkspaceMaterialEditorState({
@@ -69,7 +98,14 @@ class ConfirmPublishPageWithAnswersDialog extends React.Component<
       showRemoveAnswersDialogForPublish: false,
     });
   }
+  /**
+   * Component render method
+   */
   render() {
+    /**
+     * content
+     * @param closeDialog closeDialog
+     */
     const content = (closeDialog: () => any) => (
       <div>
         <span>
@@ -80,6 +116,10 @@ class ConfirmPublishPageWithAnswersDialog extends React.Component<
       </div>
     );
 
+    /**
+     * footer
+     * @param closeDialog closeDialog
+     */
     const footer = (closeDialog: () => any) => (
       <div className="dialog__button-set">
         <Button
@@ -118,6 +158,10 @@ class ConfirmPublishPageWithAnswersDialog extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -125,6 +169,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     { setWorkspaceMaterialEditorState, updateWorkspaceMaterialContentNode },
