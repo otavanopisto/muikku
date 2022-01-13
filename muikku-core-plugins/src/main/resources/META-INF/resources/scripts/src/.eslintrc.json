@@ -63,6 +63,7 @@
     "jsdoc/newline-after-description": 0,
     "jsdoc/require-param-type": 0,
     "jsdoc/require-returns-type": 0,
+    "jsdoc/require-returns": 0,
     "jsdoc/require-jsdoc": [
       1,
       {
@@ -73,8 +74,7 @@
           "MethodDefinition": true,
           "FunctionExpression": true,
           "ArrowFunctionExpression": true
-        },
-        "enableFixer": true
+        }
       }
     ]
   }
