@@ -154,7 +154,6 @@ export default class MainFunction extends React.Component<
   /**
    * loadlib
    * @param url url
-   * @returns
    */
   loadlib(url: string) {
     if (this.loadedLibs.indexOf(url) !== -1) {

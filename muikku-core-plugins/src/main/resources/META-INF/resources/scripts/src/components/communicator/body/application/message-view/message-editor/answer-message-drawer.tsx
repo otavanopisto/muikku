@@ -63,8 +63,7 @@ class AnswerMessageDrawer extends SessionStateComponent<
 > {
   private avoidCKEditorTriggeringChangeForNoReasonAtAll: boolean;
   /**
-   * constructor
-   * @param props props
+   * @param props
    */
   constructor(props: AnswerMessageDrawerProps) {
     super(
@@ -113,8 +112,7 @@ class AnswerMessageDrawer extends SessionStateComponent<
 
   /**
    * onCKEditorChange
-   * @param text
-   * @returns
+   * @param text text
    */
   onCKEditorChange(text: string) {
     if (this.avoidCKEditorTriggeringChangeForNoReasonAtAll) {
@@ -134,7 +132,7 @@ class AnswerMessageDrawer extends SessionStateComponent<
 
   /**
    * onSubjectChange
-   * @param e
+   * @param e e
    */
   onSubjectChange(e: React.ChangeEvent<HTMLInputElement>) {
     this.setStateAndStore(
@@ -145,7 +143,6 @@ class AnswerMessageDrawer extends SessionStateComponent<
 
   /**
    * sendMessage
-   * @param closeDialog
    */
   sendMessage() {
     this.setState({
@@ -162,7 +159,7 @@ class AnswerMessageDrawer extends SessionStateComponent<
             "</i>"
           : this.state.text,
       /**
-       * success
+       *
        */
       success: () => {
         this.props.onClickCancel && this.props.onClickCancel();
@@ -181,7 +178,7 @@ class AnswerMessageDrawer extends SessionStateComponent<
         );
       },
       /**
-       * fail
+       *
        */
       fail: () => {
         this.setState({
@@ -220,7 +217,6 @@ class AnswerMessageDrawer extends SessionStateComponent<
 
   /**
    * inputContactsAutofillLoaders
-   * @returns
    */
   inputContactsAutofillLoaders() {
     return {
@@ -267,11 +263,7 @@ class AnswerMessageDrawer extends SessionStateComponent<
         "plugin.communicator.createmessage.title.content"
       );
 
-    /**
-     * content
-     * @param closeDialog closeDialog
-     */
-    const content = (closeDialog: () => any) => (
+    const content = (
       <>
         <InputContactsAutofill
           identifier="communicatorRecipients"
@@ -430,8 +422,8 @@ function getStateIdentifier(props: AnswerMessageDrawerProps) {
 
 /**
  * mapStateToProps
- * @param state
- * @returns
+ * @param state state
+ * @returns object
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -443,8 +435,8 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
- * @returns
+ * @param dispatch dispatch
+ * @returns object
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ sendMessage }, dispatch);
