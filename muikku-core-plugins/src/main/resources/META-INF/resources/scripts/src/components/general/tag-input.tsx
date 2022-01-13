@@ -24,6 +24,7 @@ interface TagInputProps {
   autofocus?: boolean,
   deleteByBackKey?: boolean,
   wcagLabel?: string
+  required?: boolean
 }
 
 interface TagInputState {
@@ -82,8 +83,8 @@ export default class TagInput extends React.Component<TagInputProps, TagInputSta
   render() {
     return <div className={`container ${this.props.modifier ? "container--" + this.props.modifier : ""} ${this.props.isFocused ? "focus" : ""}`}>
       <div className="tag-input" ref="inputbody" onClick={(e) => this.props.onFocus(e as any)}>
-        <label htmlFor={this.props.identifier} className="tag-input__label">{this.props.label}</label>
-        <input id={this.props.identifier} className={`tag-input__input ${this.props.modifier ? "tag-input__input--" + this.props.modifier : null}`} placeholder={this.props.placeholder} value={this.props.inputValue} ref="input" onBlur={this.props.onBlur} onFocus={this.props.onFocus}
+        <label htmlFor={this.props.identifier} className="tag-input__label">{this.props.label}{this.props.required && (<span>*</span>)}</label>
+        <input required={this.props.required} id={this.props.identifier} className={`tag-input__input ${this.props.modifier ? "tag-input__input--" + this.props.modifier : null}`} placeholder={this.props.placeholder} value={this.props.inputValue} ref="input" onBlur={this.props.onBlur} onFocus={this.props.onFocus}
           onChange={this.props.onInputDataChange} onKeyDown={this.onKeyDown} />
         <TagItems ref="selected" identifier={this.props.identifier} onDelete={this.props.onDelete} tags={this.props.tags} />
       </div>

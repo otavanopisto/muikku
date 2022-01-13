@@ -1,7 +1,9 @@
 package fi.otavanopisto.muikku.plugins.forum.rest;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -41,6 +43,7 @@ import fi.otavanopisto.muikku.plugins.forum.model.ForumAreaGroup;
 import fi.otavanopisto.muikku.plugins.forum.model.ForumThread;
 import fi.otavanopisto.muikku.plugins.forum.model.ForumThreadReply;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
+import fi.otavanopisto.muikku.session.CurrentUserSession;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
@@ -63,8 +66,26 @@ public class ForumRESTService extends PluginRESTService {
   private SessionController sessionController;
 
   @Inject
+  private CurrentUserSession currentUserSession;
+
+  @Inject
   private ForumRESTModels restModels;
   
+  /**
+   * GET mapi().forum.isAvailable
+   * 
+   * Returns whether environment level forum functionality is active and available for the currently logged in user.
+   * 
+   * Output: true|false
+   */
+  @GET
+  @Path("/isAvailable")
+  @RESTPermit(handling = Handling.INLINE)
+  public Response getIsActive() {
+    boolean available = forumController.isEnvironmentForumActive() && sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_ACCESSENVIRONMENTFORUM);
+    return Response.ok(available).build();
+  }
+
   @GET
   @Path ("/areagroups")
   @RESTPermit(ForumResourcePermissionCollection.FORUM_LIST_FORUMAREAGROUPS)
@@ -343,6 +364,27 @@ public class ForumRESTService extends PluginRESTService {
     }
   }
   
+  @GET
+  @Path("/environmentAreaPermissions")
+  @RESTPermit(handling = Handling.INLINE)
+  public Response getEnvironmentAreaPermissions() {
+    Object permissionObject = null; 
+    if (sessionController.isLoggedIn()) {
+      if (sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_ACCESSENVIRONMENTFORUM) && currentUserSession.isActive()) {
+        List<EnvironmentForumArea> forumAreas = forumController.listEnvironmentForums();
+        Map<Long, AreaPermission> areaPermissions = new HashMap<>();
+        for (EnvironmentForumArea forumArea : forumAreas) {
+          AreaPermission areaPermission = new AreaPermission(
+              sessionController.hasPermission(ForumResourcePermissionCollection.FORUM_EDIT_ENVIRONMENT_MESSAGES, forumArea),
+              sessionController.hasPermission(ForumResourcePermissionCollection.FORUM_DELETE_ENVIRONMENT_MESSAGES, forumArea));
+          areaPermissions.put(forumArea.getId(), areaPermission);
+        }
+        permissionObject = areaPermissions;
+      }
+    }
+    return Response.ok(permissionObject).build();
+  }
+
   @PUT
   @Path ("/areas/{AREAID}/threads/{THREADID}")
   @RESTPermit(handling = Handling.INLINE)
@@ -763,6 +805,25 @@ public class ForumRESTService extends PluginRESTService {
     }
 
     return result;
+  }
+
+  public static class AreaPermission {
+
+    public AreaPermission(Boolean editMessages, Boolean removeThread) {
+      this.editMessages = editMessages;
+      this.removeThread = removeThread;
+    }
+
+    public Boolean getRemoveThread() {
+      return removeThread;
+    }
+
+    public Boolean getEditMessages() {
+      return editMessages;
+    }
+
+    private final Boolean editMessages;
+    private final Boolean removeThread;
   }
   
 }

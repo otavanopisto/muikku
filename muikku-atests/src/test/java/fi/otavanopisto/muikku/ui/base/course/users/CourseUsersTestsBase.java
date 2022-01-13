@@ -16,6 +16,7 @@ import fi.otavanopisto.muikku.mock.model.MockStaffMember;
 import fi.otavanopisto.muikku.mock.model.MockStudent;
 import fi.otavanopisto.muikku.ui.AbstractUITest;
 import fi.otavanopisto.pyramus.rest.model.Course;
+import fi.otavanopisto.pyramus.rest.model.CourseActivityState;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
 import fi.otavanopisto.pyramus.rest.model.Sex;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
@@ -39,10 +40,10 @@ public class CourseUsersTestsBase extends AbstractUITest {
       .build();
       login();
       Workspace workspace1 = createWorkspace(course1, Boolean.TRUE);
-      MockCourseStudent mcs = new MockCourseStudent(1l, course1.getId(), student.getId());
-      MockCourseStudent mcs2 = new MockCourseStudent(2l, course1.getId(), student2.getId());
-      MockCourseStudent mcs3 = new MockCourseStudent(3l, course1.getId(), student3.getId());
-      MockCourseStudent mcs4 = new MockCourseStudent(4l, course1.getId(), student4.getId());
+      MockCourseStudent mcs = new MockCourseStudent(1l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+      MockCourseStudent mcs2 = new MockCourseStudent(2l, course1.getId(), student2.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+      MockCourseStudent mcs3 = new MockCourseStudent(3l, course1.getId(), student3.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+      MockCourseStudent mcs4 = new MockCourseStudent(4l, course1.getId(), student4.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
 
       CourseStaffMember courseStaffMember = new CourseStaffMember(5l, course1.getId(), admin.getId(), 1l);
       mockBuilder
@@ -57,11 +58,15 @@ public class CourseUsersTestsBase extends AbstractUITest {
         waitForPresent(".application-list__item--workspace-user:nth-of-type(4) .application-list__item-content-primary-data>span");
         assertText(".application-list__item--workspace-user:nth-of-type(4) .application-list__item-content-primary-data>span", "Student Tester");
         
-        waitForPresent(".application-list--workspace-staff-members .application-list__item--workspace-staff-member .application-list__item-content-main--workspace-user>div:first-child");
+        waitForElementToAppear(".application-list--workspace-staff-members .application-list__item--workspace-staff-member .application-list__item-content-main--workspace-user>div:first-child", 3, 5000);
         assertText(".application-list--workspace-staff-members .application-list__item--workspace-staff-member .application-list__item-content-main--workspace-user>div:first-child", "Admin Person");
         assertText(".application-list--workspace-staff-members .application-list__item--workspace-staff-member .application-list__item-content-main--workspace-user .application-list__item-content-secondary-data", "testadmin@example.com");
       } finally {
         deleteWorkspace(workspace1.getId());
+        archiveUserByEmail(student.getEmail());
+        archiveUserByEmail(student2.getEmail());
+        archiveUserByEmail(student3.getEmail());
+        archiveUserByEmail(student4.getEmail());
       }
     }finally {
       mockBuilder.wiremockReset();
@@ -83,7 +88,7 @@ public class CourseUsersTestsBase extends AbstractUITest {
       .build();
       login();
       Workspace workspace1 = createWorkspace(course1, Boolean.TRUE);
-      MockCourseStudent mcs = new MockCourseStudent(1l, course1.getId(), student.getId());
+      MockCourseStudent mcs = new MockCourseStudent(1l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
       CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
       mockBuilder
         .addCourseStudent(course1.getId(), mcs)
@@ -100,6 +105,7 @@ public class CourseUsersTestsBase extends AbstractUITest {
         waitForVisible(".tabs__tab-data--workspace-students:not(.active) .application-list__item--workspace-user span");
         assertText(".tabs__tab-data--workspace-students:not(.active) .application-list__item--workspace-user span", "Student Tester");
       } finally {
+        archiveUserByEmail(student.getEmail());
         deleteWorkspace(workspace1.getId());
       }
     }finally {
@@ -122,7 +128,7 @@ public class CourseUsersTestsBase extends AbstractUITest {
       .build();
       login();
       Workspace workspace1 = createWorkspace(course1, Boolean.TRUE);
-      MockCourseStudent mcs = new MockCourseStudent(1l, course1.getId(), student.getId());
+      MockCourseStudent mcs = new MockCourseStudent(1l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
       CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
       mockBuilder
         .addCourseStudent(course1.getId(), mcs)
@@ -134,16 +140,17 @@ public class CourseUsersTestsBase extends AbstractUITest {
         waitForVisible(".button--standard-ok");
         waitUntilAnimationIsDone(".dialog--deactivate-reactivate-user");
         sleep(1000);
-        waitAndClick(".button--standard-ok");
+        waitAndClickAndConfirmVisibilityGoesAway(".button--standard-ok", ".dialog--deactivate-reactivate-user", 3, 2000);
         waitForVisible(".tabs__tab-data--workspace-students:not(.active) .application-list__item--workspace-user .application-list__item-content-actions .icon-back");
-
+        waitForNotPresent(".dialog--deactivate-reactivate-user");
         waitAndClick(".tabs__tab-data--workspace-students:not(.active) .application-list__item--workspace-user .application-list__item-content-actions .icon-back");
         waitUntilAnimationIsDone(".dialog--deactivate-reactivate-user");
         sleep(1000);
-        waitAndClick(".button--standard-ok");
+        waitAndClickAndConfirmVisibilityGoesAway(".button--standard-ok", ".dialog--deactivate-reactivate-user", 3, 2000);
         waitForPresent(".application-list__item-content-main--workspace-user .application-list__item-content-primary-data>span");
         assertText(".application-list__item-content-main--workspace-user .application-list__item-content-primary-data>span", "Student Tester");
       } finally {
+        archiveUserByEmail(student.getEmail());
         deleteWorkspace(workspace1.getId());
       }
     }finally {
@@ -166,7 +173,7 @@ public class CourseUsersTestsBase extends AbstractUITest {
       .build();
       login();
       Workspace workspace1 = createWorkspace(course1, Boolean.TRUE);
-      MockCourseStudent mcs = new MockCourseStudent(1l, course1.getId(), student.getId());
+      MockCourseStudent mcs = new MockCourseStudent(1l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
       CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
       mockBuilder
         .addCourseStudent(course1.getId(), mcs)
@@ -194,11 +201,12 @@ public class CourseUsersTestsBase extends AbstractUITest {
         waitForPresent(".application-list__item-body--communicator-message .application-list__header-item-body");
         assertText(".application-list__item-body--communicator-message .application-list__header-item-body", "Test (test extension)");
       } finally {
+        archiveUserByEmail(student.getEmail());
         deleteWorkspace(workspace1.getId());
       }
     }finally {
       mockBuilder.wiremockReset();
     }
-  }  
+  }
   
 }

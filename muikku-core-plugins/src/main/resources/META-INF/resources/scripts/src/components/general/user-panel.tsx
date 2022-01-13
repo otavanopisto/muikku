@@ -17,8 +17,11 @@ import {
   UserPanelUsersType,
   UsersListType,
 } from "~/reducers/main-function/users";
-import Pager from "~/components/general/pager";
+import PagerV2 from "~/components/general/pagerV2";
 
+/**
+ * UserPanelProps
+ */
 interface UserPanelProps {
   i18n: i18nType;
   users: UserPanelUsersType;
@@ -30,17 +33,27 @@ interface UserPanelProps {
   onEmpty: string;
 }
 
+/**
+ * UserPanelState
+ */
 interface UserPanelState {
   currentPage: number;
   pages: number;
 }
 
+/**
+ * UserPanel
+ */
 export default class UserPanel extends React.Component<
   UserPanelProps,
   UserPanelState
 > {
   private usersPerPage: number;
 
+  /**
+   * constructor
+   * @param props
+   */
   constructor(props: UserPanelProps) {
     super(props);
     this.usersPerPage = this.props.usersPerPage ? this.props.usersPerPage : 10;
@@ -51,6 +64,26 @@ export default class UserPanel extends React.Component<
     };
   }
 
+  /**
+   * componentDidUpdate
+   * @param prevProps
+   */
+  componentDidUpdate(prevProps: UserPanelProps) {
+    if (prevProps.users.totalHitCount !== this.props.users.totalHitCount) {
+      if (this.state.currentPage !== 1) {
+        this.setState({ currentPage: 1 });
+      }
+
+      this.setState({
+        pages: Math.ceil(this.props.users.totalHitCount / this.usersPerPage),
+      });
+    }
+  }
+
+  /**
+   * getToPage
+   * @param n
+   */
   getToPage(n: number) {
     let pageStart: number = (n - 1) * this.usersPerPage;
     let maxPerPage: number = this.usersPerPage;
@@ -62,17 +95,18 @@ export default class UserPanel extends React.Component<
     this.props.pageChange(query, pageStart, maxPerPage);
   }
 
-  componentDidUpdate(prevProps: UserPanelProps) {
-    if (prevProps.searchString !== this.props.searchString && this.props.searchString !== null) {
-      if (this.state.currentPage !== 1) {
-        this.setState({ currentPage: 1 });
-      }
-      this.setState({
-        pages: Math.ceil(this.props.users.totalHitCount / this.usersPerPage),
-      });
-    }
-  }
+  /**
+   * handles page changes,
+   * sets selected page as currentPage to state
+   * @param event
+   */
+  handlePagerChange = (selectedItem: { selected: number }) =>
+    this.getToPage(selectedItem.selected + 1);
 
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     let results = this.props.users.results as UsersListType;
     return (
@@ -101,7 +135,8 @@ export default class UserPanel extends React.Component<
                         <span className="icon-pencil"></span>
                       </StudentDialog>
                     </div>
-                  ) : data.role === "ADMINISTRATOR" || data.role === "STUDY_PROGRAMME_LEADER" ? (
+                  ) : data.role === "ADMINISTRATOR" ||
+                    data.role === "STUDY_PROGRAMME_LEADER" ? (
                     <div title={data.role}>
                       <span className="state-DISABLED icon-pencil"></span>
                     </div>
@@ -120,12 +155,18 @@ export default class UserPanel extends React.Component<
             <span>{this.props.i18n.text.get(this.props.onEmpty)}</span>
           </div>
         )}
-        <Pager
-          identifier={this.props.identifier.toLowerCase()}
-          current={this.state.currentPage}
-          onClick={this.getToPage}
-          pages={this.state.pages}
-        ></Pager>
+
+        <PagerV2
+          previousLabel=""
+          nextLabel=""
+          breakLabel="..."
+          initialPage={this.state.currentPage - 1}
+          forcePage={this.state.currentPage - 1}
+          marginPagesDisplayed={1}
+          pageCount={this.state.pages}
+          pageRangeDisplayed={2}
+          onPageChange={this.handlePagerChange}
+        />
       </ApplicationSubPanel>
     );
   }

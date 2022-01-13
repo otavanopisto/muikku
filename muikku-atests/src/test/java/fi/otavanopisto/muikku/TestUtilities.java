@@ -3,6 +3,7 @@ package fi.otavanopisto.muikku;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +18,8 @@ import fi.otavanopisto.muikku.mock.model.MockCourse;
 import fi.otavanopisto.muikku.mock.model.MockCourseStudent;
 import fi.otavanopisto.muikku.mock.model.MockStudent;
 import fi.otavanopisto.pyramus.rest.model.Course;
+import fi.otavanopisto.pyramus.rest.model.CourseActivity;
+import fi.otavanopisto.pyramus.rest.model.CourseActivityState;
 import fi.otavanopisto.pyramus.rest.model.CourseStudent;
 import fi.otavanopisto.pyramus.rest.model.Student;
 
@@ -131,6 +134,31 @@ public class TestUtilities {
   public static OffsetDateTime getNextYear() {
     OffsetDateTime result = OffsetDateTime.now(ZoneOffset.UTC);
     return result.plusYears(1);
+  }
+  
+  public static OffsetDateTime getNextWeek() {
+    OffsetDateTime result = OffsetDateTime.now(ZoneOffset.UTC);
+    return result.plusWeeks(1);
+  }
+
+  public static OffsetDateTime getLastWeek() {
+    OffsetDateTime result = OffsetDateTime.now(ZoneOffset.UTC);
+    return result.minusWeeks(1);
+  }
+  
+  public static Date toDate(OffsetDateTime offsetDate) {
+    return new Date(offsetDate.toInstant().toEpochMilli());
+  }
+  
+  public static List<CourseActivity> createCourseActivity(Course course, CourseActivityState courseActivityState) {
+    List<CourseActivity> courseActivities = new ArrayList<>();
+    CourseActivity ca = new CourseActivity();
+    ca.setCourseId(course.getId());
+    ca.setCourseName(course.getName());
+    ca.setState(courseActivityState);
+    ca.setActivityDate(TestUtilities.toDate(TestUtilities.getLastWeek()));
+    courseActivities.add(ca);
+    return courseActivities;
   }
   
 }

@@ -104,7 +104,7 @@ public class RequestedAssessmentSupplementationsNotificationStrategy extends Abs
     
     // Iterate through active students who belong to pre-configured groups (read: study programs)
     
-    SearchResult searchResult = requestedAssessmentSupplementationsNotificationController.searchActiveStudentIds(getActiveOrganizations(), groups, FIRST_RESULT + offset, MAX_RESULTS);
+    SearchResult searchResult = requestedAssessmentSupplementationsNotificationController.searchActiveStudents(getActiveOrganizations(), groups, FIRST_RESULT + offset, MAX_RESULTS);
     logger.log(Level.INFO, String.format("%s processing %d/%d", getClass().getSimpleName(), offset, searchResult.getTotalHitCount()));
     
     if ((offset + MAX_RESULTS) > searchResult.getTotalHitCount()) {
