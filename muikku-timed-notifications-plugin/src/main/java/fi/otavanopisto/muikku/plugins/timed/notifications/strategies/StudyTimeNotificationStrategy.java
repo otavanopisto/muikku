@@ -86,7 +86,7 @@ public class StudyTimeNotificationStrategy extends AbstractTimedNotificationStra
     Date studyTimeEnds = Date.from(studyTimeEndsOdt.toInstant());
     Date lastNotifiedThresholdDate = Date.from(OffsetDateTime.now().minusDays(NOTIFICATION_THRESHOLD_DAYS_LEFT + 1).toInstant());
     List<SchoolDataIdentifier> studentIdentifierAlreadyNotified = studyTimeLeftNotificationController.listNotifiedSchoolDataIdentifiersAfter(lastNotifiedThresholdDate);
-    SearchResult searchResult = studyTimeLeftNotificationController.searchActiveStudentIds(getActiveOrganizations(), groups, FIRST_RESULT + offset, MAX_RESULTS, studentIdentifierAlreadyNotified, studyTimeEnds);
+    SearchResult searchResult = studyTimeLeftNotificationController.searchActiveStudents(getActiveOrganizations(), groups, FIRST_RESULT + offset, MAX_RESULTS, studentIdentifierAlreadyNotified, studyTimeEnds);
     logger.log(Level.INFO, String.format("%s processing %d/%d", getClass().getSimpleName(), offset, searchResult.getTotalHitCount()));
     
     if ((offset + MAX_RESULTS) > searchResult.getTotalHitCount()) {

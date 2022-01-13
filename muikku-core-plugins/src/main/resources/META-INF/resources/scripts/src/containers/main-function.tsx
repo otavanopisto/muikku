@@ -542,14 +542,14 @@ export default class MainFunction extends React.Component<
           .restoreEventListeners()
           .addEventListener(
             "Communicator:newmessagereceived",
-            loadLastMessageThreadsFromServer.bind(null, 6)
+            loadLastMessageThreadsFromServer.bind(null, 10)
           );
       this.props.store.dispatch(
         loadAnnouncementsAsAClient({ loadUserGroups: false }) as Action
       );
       this.props.store.dispatch(loadLastWorkspaceFromServer() as Action);
       this.props.store.dispatch(loadUserWorkspacesFromServer() as Action);
-      this.props.store.dispatch(loadLastMessageThreadsFromServer(6) as Action);
+      this.props.store.dispatch(loadLastMessageThreadsFromServer(10) as Action);
       this.props.store.dispatch(
         titleActions.updateTitle(
           this.props.store.getState().i18n.text.get("plugin.site.title")
@@ -789,10 +789,14 @@ export default class MainFunction extends React.Component<
           }
         ) as Action
       );
-      this.loadAnnouncementsData(
-        parseInt(window.location.hash.replace("#", ""))
-      );
 
+      const hashId = parseInt(window.location.hash.replace("#", ""));
+
+      if (hashId) {
+        this.loadAnnouncementsData(
+          parseInt(window.location.hash.replace("#", ""))
+        );
+      }
       this.loadChatSettings();
     }
     return <AnnouncementsBody />;

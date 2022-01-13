@@ -45,7 +45,11 @@ class Announcement extends React.Component<
    */
   render() {
     if (!this.props.announcement) {
-      return null;
+      return (
+        <div>
+          {this.props.i18n.text.get("plugin.announcer.announcement.empty")}
+        </div>
+      );
     }
     return (
       <section>

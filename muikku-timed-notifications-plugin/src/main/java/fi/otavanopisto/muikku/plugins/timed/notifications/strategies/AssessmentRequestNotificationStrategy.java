@@ -93,7 +93,7 @@ public class AssessmentRequestNotificationStrategy extends AbstractTimedNotifica
     // Get a batch of students that have been studying for more than 60 days
     
     Date since = Date.from(OffsetDateTime.now().minusDays(NOTIFICATION_THRESHOLD_DAYS).toInstant());
-    SearchResult searchResult = assesmentRequestNotificationController.searchActiveStudentIds(getActiveOrganizations(), groups, FIRST_RESULT + offset, MAX_RESULTS, studentIdentifiersAlreadyNotified, since);
+    SearchResult searchResult = assesmentRequestNotificationController.searchActiveStudents(getActiveOrganizations(), groups, FIRST_RESULT + offset, MAX_RESULTS, studentIdentifiersAlreadyNotified, since);
     logger.log(Level.INFO, String.format("%s processing %d/%d", getClass().getSimpleName(), offset, searchResult.getTotalHitCount()));
 
     if ((offset + MAX_RESULTS) > searchResult.getTotalHitCount()) {

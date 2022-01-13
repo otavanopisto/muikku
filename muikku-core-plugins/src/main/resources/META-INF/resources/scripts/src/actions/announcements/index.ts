@@ -254,20 +254,35 @@ const loadAnnouncement: LoadAnnouncementTriggerType = function loadAnnouncement(
     );
     try {
       if (!announcement) {
-        announcement = <AnnouncementType>(
-          await promisify(
-            mApi().announcer.announcements.read(announcementId),
-            "callback"
-          )()
-        );
-        announcement.userGroupEntityIds.forEach((id) =>
-          dispatch(loadUserGroupIndex(id))
-        );
-        //TODO we should be able to get the information of wheter there is an announcement later or not, trace all this
-        //and remove the unnecessary code
+        /**
+         * There is chance that user will try url with id that is not (anymore) available, then this try catch will take
+         * care of it if that happens
+         */
+        try {
+          announcement = <AnnouncementType>(
+            await promisify(
+              mApi().announcer.announcements.read(announcementId),
+              "callback"
+            )()
+          );
+          announcement.userGroupEntityIds.forEach((id) =>
+            dispatch(loadUserGroupIndex(id))
+          );
+          //TODO we should be able to get the information of wheter there is an announcement later or not, trace all this
+          //and remove the unnecessary code
 
-        //this is where notOverrideCurrent plays a role when loading all the other announcements after itself
-        dispatch(loadAnnouncements(location, workspaceId, true, false));
+          //this is where notOverrideCurrent plays a role when loading all the other announcements after itself
+          dispatch(loadAnnouncements(location, workspaceId, true, false));
+        } catch (err) {
+          dispatch(
+            notificationActions.displayNotification(
+              getState().i18n.text.get(
+                "plugin.announcer.errormessage.announcementNotAvailable"
+              ),
+              "error"
+            )
+          );
+        }
       } else {
         // load the user group entities if not loaded for that announcement
         // this doe not reload if it's found

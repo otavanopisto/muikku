@@ -925,7 +925,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           sleep(500);
           
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-          assertTextIgnoreCase(".file-uploader__item-title", testFile.getName());
+          assertTextIgnoreCase(".file-uploader__item-title", testFile.getName(), 40);
           
           waitForPresent(".file-uploader__item-delete-icon");
           waitAndClick(".file-uploader__item-delete-icon");

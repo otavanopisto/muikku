@@ -20,8 +20,13 @@ import {
 import { StateType } from "~/reducers";
 import SessionStateComponent from "~/components/general/session-state-component";
 import Button from "~/components/general/button";
-import { StatusType } from "~/reducers/base/status";
+import { Role, StatusType } from "~/reducers/base/status";
 import equals = require("deep-equal");
+import { webworker } from "webpack";
+import {
+  DisplayNotificationTriggerType,
+  displayNotification,
+} from "~/actions/base/notifications";
 
 /**
  * TargetItemsListType
@@ -38,6 +43,7 @@ interface NewEditAnnouncementProps {
   userIndex: UserIndexType;
   createAnnouncement: CreateAnnouncementTriggerType;
   updateAnnouncement: UpdateAnnouncementTriggerType;
+  displayNotification: DisplayNotificationTriggerType;
   status: StatusType;
 
   workspaceId: number;
@@ -384,6 +390,22 @@ class NewEditAnnouncement extends SessionStateComponent<
    */
   createOrModifyAnnouncement(closeDialog: () => any) {
     this.setState({ locked: true });
+
+    if (this.props.status.role === Role.TEACHER) {
+      if (this.state.currentTarget.length <= 0) {
+        this.props.displayNotification(
+          this.props.i18n.text.get(
+            "plugin.announcer.errormessage.createAnnouncement.missing.targetGroup"
+          ),
+          "error"
+        );
+
+        this.setState({ locked: false });
+
+        return;
+      }
+    }
+
     if (this.props.announcement) {
       this.props.updateAnnouncement({
         announcement: this.props.announcement,
@@ -571,6 +593,7 @@ class NewEditAnnouncement extends SessionStateComponent<
         label={this.props.i18n.text.get(
           "plugin.announcer.createannouncement.target.label"
         )}
+        required={this.props.status.role === Role.TEACHER}
       />,
       <div className="env-dialog__row" key="annnouncement-edit-3">
         <div className="env-dialog__form-element-container  env-dialog__form-element-container--title">
@@ -695,7 +718,7 @@ function mapStateToProps(state: StateType) {
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
-    { createAnnouncement, updateAnnouncement },
+    { createAnnouncement, updateAnnouncement, displayNotification },
     dispatch
   );
 }

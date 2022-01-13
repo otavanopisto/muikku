@@ -352,8 +352,28 @@ export class SearchFormElement extends React.Component<
   }
 
   /**
+   * componentDidUpdate
+   * @param prevProps prevProps
+   * @param prevState prevState
+   * @param snapshot snapshot
+   */
+  componentDidUpdate(
+    prevProps: Readonly<SearchFormElementProps>,
+    prevState: Readonly<SearchFormElementState>,
+    snapshot?: any
+  ): void {
+    if (prevProps.value !== this.props.value) {
+      if (this.state.value !== this.props.value) {
+        this.setState({
+          value: this.props.value,
+        });
+      }
+    }
+  }
+
+  /**
    * updateSearchField
-   * @param e e
+   * @param e
    */
   updateSearchField(e: React.ChangeEvent<HTMLInputElement>) {
     clearTimeout(this.searchTimer);

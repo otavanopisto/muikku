@@ -36,6 +36,7 @@ interface TagInputProps {
   autofocus?: boolean;
   deleteByBackKey?: boolean;
   wcagLabel?: string;
+  required?: boolean;
 }
 
 /**
@@ -153,8 +154,10 @@ export default class TagInput extends React.Component<
         >
           <label htmlFor={this.props.identifier} className="tag-input__label">
             {this.props.label}
+            {this.props.required && <span>*</span>}
           </label>
           <input
+            required={this.props.required}
             id={this.props.identifier}
             className={`tag-input__input ${
               this.props.modifier

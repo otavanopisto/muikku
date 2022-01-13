@@ -51,6 +51,7 @@ export interface InputContactsAutofillProps {
   autofocus?: boolean;
   loaders?: InputContactsAutofillLoaders;
   identifier: string;
+  required?: boolean;
 }
 
 /**

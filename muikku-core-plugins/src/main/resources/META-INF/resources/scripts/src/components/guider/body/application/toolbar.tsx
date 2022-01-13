@@ -78,25 +78,32 @@ class GuiderToolbar extends React.Component<
   }
 
   /**
-   * componentWillReceiveProps
-   * @param nextProps nextProps
+   * componentDidUpdate
+   * @param prevProps prevProps
+   * @param prevState prevState
+   * @param snapshot snapshot
    */
-  componentWillReceiveProps(nextProps: GuiderToolbarProps) {
+  componentDidUpdate(
+    prevProps: Readonly<GuiderToolbarProps>,
+    prevState: Readonly<GuiderToolbarState>,
+    snapshot?: any
+  ) {
     if (
       !this.state.focused &&
-      (nextProps.guider.activeFilters.query || "") !== this.state.searchquery
+      this.props.guider.activeFilters.query !== this.state.searchquery
     ) {
       this.setState({
-        searchquery: nextProps.guider.activeFilters.query || "",
+        searchquery: this.props.guider.activeFilters.query,
       });
     }
   }
 
   /**
    * getBackByHash
+   * @returns hash
    */
   getBackByHash(): string {
-    const locationData = queryString.parse(
+    let locationData = queryString.parse(
       document.location.hash.split("?")[1] || "",
       { arrayFormat: "bracket" }
     );
@@ -164,11 +171,6 @@ class GuiderToolbar extends React.Component<
    * @param users array of GuiderStudents
    * @returns {Array} an Array of ContactRecipientType
    */
-
-  /**
-   * turnSelectedUsersToContacts
-   * @param users users
-   */
   turnSelectedUsersToContacts = (
     users: GuiderStudentListType
   ): ContactRecipientType[] => {
@@ -190,11 +192,6 @@ class GuiderToolbar extends React.Component<
   /**
    * Removes a user from redux state when the user is removed from a new message dialog on a contacts change
    * @param selectedUsers is an Array of ContactRecipientType
-   */
-
-  /**
-   * onContactsChange
-   * @param selectedUsers selectedUsers
    */
   onContactsChange = (selectedUsers: ContactRecipientType[]): void => {
     // We need the arrays of ids for comparison from the dialog and the redux state

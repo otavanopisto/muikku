@@ -135,7 +135,7 @@ public class NeverLoggedInNotificationStrategy extends AbstractTimedNotification
 
     Date thresholdDate = Date.from(OffsetDateTime.now().minusDays(NOTIFICATION_THRESHOLD_DAYS).toInstant());
     List<SchoolDataIdentifier> studentIdentifierAlreadyNotified = neverLoggedInNotificationController.listNotifiedSchoolDataIdentifiersAfter(thresholdDate);
-    SearchResult searchResult = neverLoggedInNotificationController.searchActiveStudentIds(
+    SearchResult searchResult = neverLoggedInNotificationController.searchActiveStudents(
         getActiveOrganizations(),
         groups,
         FIRST_RESULT,
@@ -172,7 +172,8 @@ public class NeverLoggedInNotificationStrategy extends AbstractTimedNotification
       if (studyStartDate == null) {
         continue;
       }
-      UserEntity studentEntity = userEntityController.findUserEntityById((long) result.get("userEntityId"));
+      Long userEntityId = new Long((int) result.get("userEntityId"));
+      UserEntity studentEntity = userEntityController.findUserEntityById(userEntityId);
       if (studentEntity == null) {
         continue;
       }
