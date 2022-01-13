@@ -64,6 +64,7 @@ import fi.otavanopisto.muikku.search.CommunicatorMessageSearchBuilder;
 import fi.otavanopisto.muikku.search.IndexedCommunicatorMessage;
 import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageRecipient;
 import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageSender;
+import fi.otavanopisto.muikku.search.IndexedWorkspace;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.search.SearchResults;
@@ -140,7 +141,7 @@ public class ElasticSearchProvider implements SearchProvider {
   
   @Override
   public SearchResult findWorkspace(SchoolDataIdentifier identifier) {
-    SearchRequestBuilder requestBuilder = elasticClient.prepareSearch("muikku").setTypes("Workspace");
+    SearchRequestBuilder requestBuilder = elasticClient.prepareSearch("muikku").setTypes("IndexedWorkspace");
     BoolQueryBuilder query = boolQuery();
     query.must(termQuery("identifier", identifier.getIdentifier()));
     SearchResponse response = requestBuilder.setQuery(query).execute().actionGet();
@@ -425,7 +426,7 @@ public class ElasticSearchProvider implements SearchProvider {
 
     SearchResponse response = elasticClient
       .prepareSearch("muikku")
-      .setTypes("Workspace")
+      .setTypes(IndexedWorkspace.INDEX_NAME)
       .setQuery(query)
       .setNoFields()
       .setSize(Integer.MAX_VALUE)
@@ -451,14 +452,14 @@ public class ElasticSearchProvider implements SearchProvider {
   public SearchResult searchWorkspaces(String schoolDataSource, String subjectIdentifier, int courseNumber) {
     BoolQueryBuilder query = boolQuery();
     query.must(termQuery("published", Boolean.TRUE));
-    query.must(termQuery("subjectIdentifier", subjectIdentifier));
-    query.must(termQuery("courseNumber", courseNumber));
+    query.must(termQuery("subjects.subjectIdentifier.identifier", subjectIdentifier));
+    query.must(termQuery("subjects.courseNumber", courseNumber));
     // query.must(termQuery("access", WorkspaceAccess.LOGGED_IN));
     
       
     SearchRequestBuilder requestBuilder = elasticClient
       .prepareSearch("muikku")
-      .setTypes("Workspace")
+      .setTypes(IndexedWorkspace.INDEX_NAME)
       .setFrom(0)
       .setSize(50)
       .setQuery(query);
@@ -514,7 +515,7 @@ public class ElasticSearchProvider implements SearchProvider {
             break;
             case MEMBERS_ONLY:
               BoolQueryBuilder memberQuery = boolQuery();
-              IdsQueryBuilder idsQuery = idsQuery("Workspace");
+              IdsQueryBuilder idsQuery = idsQuery(IndexedWorkspace.INDEX_NAME);
               for (SchoolDataIdentifier userWorkspace : getUserWorkspaces(accessUser)) {
                 idsQuery.addIds(String.format("%s/%s", userWorkspace.getIdentifier(), userWorkspace.getDataSource()));
               }
@@ -532,7 +533,7 @@ public class ElasticSearchProvider implements SearchProvider {
       }
       
       if (subjects != null && !subjects.isEmpty()) {
-        query.must(termsQuery("subjectIdentifier", subjects));
+        query.must(termsQuery("subjects.subjectIdentifier.identifier", subjects));
       }
       
       if (educationTypes != null && !educationTypes.isEmpty()) {
@@ -601,7 +602,7 @@ public class ElasticSearchProvider implements SearchProvider {
             query.must(boolQuery()
                 .should(prefixQuery("name", words[i]))
                 .should(prefixQuery("description", words[i]))
-                .should(prefixQuery("subject", words[i]))
+                .should(prefixQuery("subjects.subjectName", words[i]))
                 .should(prefixQuery("staffMembers.firstName", words[i]))
                 .should(prefixQuery("staffMembers.lastName", words[i]))
                 );
@@ -611,7 +612,7 @@ public class ElasticSearchProvider implements SearchProvider {
       
       SearchRequestBuilder requestBuilder = elasticClient
         .prepareSearch("muikku")
-        .setTypes("Workspace")
+        .setTypes(IndexedWorkspace.INDEX_NAME)
         .setFrom(start)
         .setSize(maxResults);
       

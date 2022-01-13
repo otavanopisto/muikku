@@ -143,6 +143,7 @@ import fi.otavanopisto.muikku.schooldata.entity.EducationType;
 import fi.otavanopisto.muikku.schooldata.entity.Subject;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceSubject;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceType;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser;
 import fi.otavanopisto.muikku.search.SearchProvider;
@@ -369,7 +370,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
 
     return Response
-        .ok(createRestModel(workspaceEntity, workspace.getName(), workspace.getNameExtension(), workspace.getDescription(), convertWorkspaceCurriculumIds(workspace), workspace.getSubjectIdentifier()))
+        .ok(createRestModel(workspaceEntity, workspace))
         .build();
   }
 
@@ -603,7 +604,6 @@ public class WorkspaceRESTService extends PluginRESTService {
               String name = (String) result.get("name");
               String description = (String) result.get("description");
               String nameExtension = (String) result.get("nameExtension");
-              String subjectIdentifier = (String) result.get("subjectIdentifier");
               
               Object curriculumIdentifiersObject = result.get("curriculumIdentifiers");
               Set<String> curriculumIdentifiers = new HashSet<String>();
@@ -618,7 +618,7 @@ public class WorkspaceRESTService extends PluginRESTService {
               }
               
               if (StringUtils.isNotBlank(name)) {
-                workspaces.add(createRestModel(workspaceEntity, name, nameExtension, description, curriculumIdentifiers, subjectIdentifier));
+                workspaces.add(createRestModel(workspaceEntity, name, nameExtension, description, curriculumIdentifiers));
               }
             }
           }
@@ -681,11 +681,7 @@ public class WorkspaceRESTService extends PluginRESTService {
 
     return Response.ok(createRestModel(
         workspaceEntity,
-        workspace.getName(),
-        workspace.getNameExtension(),
-        workspace.getDescription(),
-        convertWorkspaceCurriculumIds(workspace),
-        workspace.getSubjectIdentifier()
+        workspace
     )).build();
   }
   
@@ -759,7 +755,6 @@ public class WorkspaceRESTService extends PluginRESTService {
       String typeId = workspace.getWorkspaceTypeId() != null ? workspace.getWorkspaceTypeId().toId() : null;
       
       EducationType educationTypeObject = workspace.getEducationTypeIdentifier() == null ? null : courseMetaController.findEducationType(workspace.getEducationTypeIdentifier());
-      Subject subjectObject = courseMetaController.findSubject(workspace.getSchoolDataSource(), workspace.getSubjectIdentifier());
     
       Map<String, Object> result= new HashMap<>();
       result.put("beginDate", workspace.getBeginDate());
@@ -767,25 +762,37 @@ public class WorkspaceRESTService extends PluginRESTService {
       result.put("viewLink", workspace.getViewLink());
       result.put("workspaceTypeId", typeId);
       result.put("educationType", educationTypeObject);
-      result.put("subject", subjectObject);
       if (typeId != null) {
         WorkspaceType workspaceType = workspaceController.findWorkspaceType(workspace.getWorkspaceTypeId()); 
         result.put("workspaceType", workspaceType.getName());
       } else {
         result.put("workspaceType", null);
       }
-    
-      CourseLengthUnit lengthUnit = null;
-      if ((workspace.getLength() != null) && (workspace.getLengthUnitIdentifier() != null)) {
-        lengthUnit = courseMetaController.findCourseLengthUnit(workspace.getSchoolDataSource(), workspace.getLengthUnitIdentifier());
+
+      List<Object> resultWorkspaceSubjects = new ArrayList<>();
+      result.put("subjects", resultWorkspaceSubjects);
+      
+      for (WorkspaceSubject workspaceSubject : workspace.getSubjects()) {
+        Map<String, Object> workspaceSubjectResult = new HashMap<>();
+
+        Subject subjectObject = courseMetaController.findSubject(workspaceSubject.getSubjectIdentifier());
+        workspaceSubjectResult.put("subject", subjectObject);
+        
+        CourseLengthUnit lengthUnit = null;
+        if ((workspaceSubject.getLength() != null) && (workspaceSubject.getLengthUnitIdentifier() != null)) {
+          lengthUnit = courseMetaController.findCourseLengthUnit(workspaceSubject.getLengthUnitIdentifier());
+        }
+      
+        workspaceSubjectResult.put("courseLengthSymbol", lengthUnit);
+        if (lengthUnit != null) {
+          workspaceSubjectResult.put("courseLength", workspaceSubject.getLength());
+        } else {
+          workspaceSubjectResult.put("courseLength", null);
+        }
+        
+        resultWorkspaceSubjects.add(workspaceSubjectResult);
       }
-    
-      result.put("courseLengthSymbol", lengthUnit);
-      if (lengthUnit != null) {
-        result.put("courseLength", workspace.getLength());
-      } else {
-        result.put("courseLength", null);
-      }
+      
 
       return Response.ok(result).build(); 
 	} finally {
@@ -1071,11 +1078,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     
     return Response.ok(createRestModel(
         workspaceEntity,
-        workspace.getName(),
-        workspace.getNameExtension(),
-        workspace.getDescription(),
-        convertWorkspaceCurriculumIds(workspace),
-        workspace.getSubjectIdentifier()
+        workspace
     )).build();
   }
   
@@ -2414,11 +2417,23 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   private fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace createRestModel(
       WorkspaceEntity workspaceEntity,
+      Workspace workspace) {
+    return createRestModel(
+        workspaceEntity,
+        workspace.getName(), 
+        workspace.getNameExtension(), 
+        workspace.getDescription(), 
+        convertWorkspaceCurriculumIds(workspace) 
+    );
+  }
+  
+  private fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace createRestModel(
+      WorkspaceEntity workspaceEntity,
       String name,
       String nameExtension,
       String description,
-      Set<String> curriculumIdentifiers,
-      String subjectIdentifier) {
+      Set<String> curriculumIdentifiers
+      ) {
     Long numVisits = workspaceVisitController.getNumVisits(workspaceEntity);
     Date lastVisit = workspaceVisitController.getLastVisit(workspaceEntity);
     boolean hasCustomImage = workspaceEntityFileController.getHasCustomImage(workspaceEntity);
@@ -2436,7 +2451,6 @@ public class WorkspaceRESTService extends PluginRESTService {
         numVisits, 
         lastVisit,
         curriculumIdentifiers,
-        subjectIdentifier,
         hasCustomImage);
   }
 

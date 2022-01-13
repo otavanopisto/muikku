@@ -1,4 +1,4 @@
-package fi.otavanopisto.muikku.plugins.search;
+package fi.otavanopisto.muikku.search;
 
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 

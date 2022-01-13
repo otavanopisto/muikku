@@ -24,7 +24,6 @@ public class Workspace {
       Long numVisits,
       Date lastVisit,
       Set<String> curriculumIdentifiers,
-      String subjectIdentifier,
       boolean hasCustomImage) {
     super();
     this.id = id;
@@ -40,7 +39,6 @@ public class Workspace {
     this.numVisits = numVisits;
     this.lastVisit = lastVisit;
     this.curriculumIdentifiers = curriculumIdentifiers;
-    this.subjectIdentifier = subjectIdentifier;
     this.hasCustomImage = hasCustomImage;
   }
 
@@ -140,14 +138,6 @@ public class Workspace {
     this.curriculumIdentifiers = curriculumIdentifiers;
   }
   
-  public String getSubjectIdentifier() {
-    return subjectIdentifier;
-  }
-  
-  public void setSubjectIdentifier(String subjectIdentifier) {
-    this.subjectIdentifier = subjectIdentifier;
-  }
-
   public boolean getHasCustomImage() {
     return hasCustomImage;
   }
@@ -177,6 +167,5 @@ public class Workspace {
   private String materialDefaultLicense;
   private Boolean published;
   private Set<String> curriculumIdentifiers;
-  private String subjectIdentifier;
   private boolean hasCustomImage;
 }

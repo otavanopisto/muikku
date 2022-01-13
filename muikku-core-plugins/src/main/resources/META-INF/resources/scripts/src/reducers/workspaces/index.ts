@@ -153,25 +153,28 @@ export interface WorkspaceAssessmentRequestType {
   userEntityId: number;
 }
 
-export interface WorkspaceAdditionalInfoType {
-  beginDate: string;
-  endDate: string;
-  viewLink: string;
-  workspaceTypeId?: string;
-  workspaceType?: string;
-  courseLengthSymbol?: {
-    id: string;
-    name: string;
-    schoolDataSource: string;
-    symbol: string;
-  };
-  courseLength?: string;
+export interface WorkspaceAdditionalInfoSubjectType {
   subject?: {
     code: string;
     identifier: string;
     name: string;
     schoolDataSource: string;
   };
+  courseLength?: string;
+  courseLengthSymbol?: {
+    id: string;
+    name: string;
+    schoolDataSource: string;
+    symbol: string;
+  };
+}
+
+export interface WorkspaceAdditionalInfoType {
+  beginDate: string;
+  endDate: string;
+  viewLink: string;
+  workspaceTypeId?: string;
+  workspaceType?: string;
   educationType?: {
     identifier: {
       dataSource: string;
@@ -180,6 +183,7 @@ export interface WorkspaceAdditionalInfoType {
     name: string;
     schoolDataSource: string;
   };
+  subjects: Array<WorkspaceAdditionalInfoSubjectType>;
 }
 
 export interface WorkspaceProducerType {
@@ -240,7 +244,6 @@ export interface WorkspaceType {
   nameExtension?: string | null;
   numVisits: number;
   published: boolean;
-  subjectIdentifier: string | number;
   urlName: string;
   chatStatus?: WorkspaceChatStatusType;
   //These are usually part of the workspace but don't appear in certain occassions

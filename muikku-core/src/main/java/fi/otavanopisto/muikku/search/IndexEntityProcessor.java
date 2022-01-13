@@ -46,7 +46,9 @@ public class IndexEntityProcessor {
       indexObject.put("id", id);
       
       for (Method indexableGetter : getIndexableGetters(entity)) {
-        String fieldName = StringUtils.uncapitalize(indexableGetter.getName().substring(3));
+        int getterPrefixSubstrIndex = StringUtils.startsWith(indexableGetter.getName(), "is") ? 2 : 3;
+        
+        String fieldName = StringUtils.uncapitalize(indexableGetter.getName().substring(getterPrefixSubstrIndex));
         IndexField indexField = findIndexField(indexableGetter);
         
         if (indexField != null) {
@@ -215,7 +217,7 @@ public class IndexEntityProcessor {
           continue;
         }
         
-        if (StringUtils.startsWith(method.getName(), "get")) {
+        if (StringUtils.startsWith(method.getName(), "get") || StringUtils.startsWith(method.getName(), "is")) {
           result.add(method);
         }
       }
