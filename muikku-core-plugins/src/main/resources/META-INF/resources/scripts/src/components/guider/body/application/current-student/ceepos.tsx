@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { i18nType } from '~/reducers/base/i18n';
 import { GuiderType } from '~/reducers/main-function/guider';
 import { StateType } from '~/reducers';
+import { StatusType } from "~/reducers/base/status";
 
 import '~/sass/elements/application-list.scss';
 import '~/sass/elements/empty.scss';
@@ -22,10 +23,10 @@ import Dialog from '~/components/general/dialog';
 import Dropdown from '~/components/general/dropdown';
 import Link from '~/components/general/link';
 import Button from '~/components/general/button';
-import { isThisTypeNode } from 'typescript';
 
 interface CeeposProps {
   i18n: i18nType,
+  status: StatusType,
   guider: GuiderType,
   locale: string,
   doOrderForCurrentStudent: DoOrderForCurrentStudentTriggerType,
@@ -167,7 +168,7 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
      * @param closeDialog
      * @returns
      */
-    let orderConfirmDialogContent = (closeDialog: () => any) => <div>
+    const orderConfirmDialogContent = (closeDialog: () => any) => <div>
       <span><b>{this.state.isConfirmDialogOpenFor && this.state.isConfirmDialogOpenFor.Description}</b></span>
       <br/><br/>
       <span>{this.props.i18n.text.get("plugin.guider.orderConfirmDialog.description")}</span>
@@ -178,7 +179,7 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
      * @param closeDialog
      * @returns
      */
-    let orderConfirmDialogFooter = (closeDialog: () => any)=>{
+    const orderConfirmDialogFooter = (closeDialog: () => any)=>{
       return (
         <div className="dialog__button-set">
           <Button buttonModifiers={["standard-ok", "execute"]} onClick={this.acceptOrderCreation}>
@@ -196,7 +197,7 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
      * @param closeDialog
      * @returns
      */
-    let orderDeleteDialogContent = (closeDialog: () => any) => <div>
+    const orderDeleteDialogContent = (closeDialog: () => any) => <div>
       <span>{this.props.i18n.text.get("plugin.guider.orderDeleteDialog.description")}</span>
     </div>
 
@@ -205,7 +206,7 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
      * @param closeDialog
      * @returns
      */
-    let orderDeleteDialogFooter = (closeDialog: () => any)=>{
+    const orderDeleteDialogFooter = (closeDialog: () => any)=>{
       return (
         <div className="dialog__button-set">
           <Button buttonModifiers={["standard-ok", "fatal"]} onClick={this.acceptOrderDelete}>
@@ -223,7 +224,7 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
      * @param closeDialog
      * @returns
      */
-    let orderCompleteDialogContent = (closeDialog: () => any) => <div>
+    const orderCompleteDialogContent = (closeDialog: () => any) => <div>
       <span>{this.props.i18n.text.get("plugin.guider.orderCompleteDialog.description")}</span>
     </div>
 
@@ -232,7 +233,7 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
      * @param closeDialog
      * @returns
      */
-    let orderCompleteDialogFooter = (closeDialog: () => any)=>{
+    const orderCompleteDialogFooter = (closeDialog: () => any)=>{
       return (
         <div className="dialog__button-set">
           <Button buttonModifiers={["standard-ok", "execute"]} onClick={this.acceptOrderManualComplete}>
@@ -246,25 +247,31 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
     }
 
     /**
-     * Can new order be created by guidance counselor.
-     * This is handled inverse as <Button> disabled attribute receives true or false directly.
+     * Logic for whether new order can be created.
      *
-     * canOrderBeCreated
+     * If previous order(s) has state of CREATED, ONGOING or ERRORED new order cannot be created.
+     *
+     * IsOrderCreationDisabled
+     * @return true | false
      */
-    const canOrderBeCreated = this.props.guider.currentStudent.purchases &&
-      this.props.guider.currentStudent.purchases.find((param) =>
-        param["state"] === "CREATED" || param["state"] === "ONGOING" || param["state"] === "ERRORED" ? true : false
-      );
+    const IsOrderCreationDisabled =
+      this.props.guider.currentStudent.purchases &&
+      this.props.guider.currentStudent.purchases.filter((purchase) =>
+        purchase.state === "CREATED" ||
+        purchase.state === "ONGOING" ||
+        purchase.state === "ERRORED"
+      ).length > 0;
 
     /**
-     * Can guidance counselor delete already creted order
-     * This is handled inverse as <Button> disabled attribute receives true or false directly.
+     * Logic for whether already created order can be deleted
+     *
+     * Order can only be deleted if its' state is not ONGOING, COMPLETE or PAID.
      *
      * canOderBeDelete
      * @param state
      * @return true | false
      * */
-    const canOrderBeDeleted = (state: string) => {
+    const IsOrderDeletionDisabled = (state: string) => {
       switch (state) {
         case "ONGOING":
         case "COMPLETE":
@@ -276,14 +283,22 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
     };
 
     /**
-     * Can guidance counselor manually complete (behalf of student) already created but not finished order.
-     * This is handled inverse as <Button> disabled attribute receives true or false directly.
+     * Logic for whether order can be manually completed on behalf of student.
      *
-     * canOrderBeCompletedManually
+     * Order can be manually completed only if its's state is not ONGOING, PAID or ERRORED.
+     *
+     * Following rules describes requirement for manual completion:
+     *  - If Muikku is down when payment was made then order's state will remain as ONGOING.
+     *  - If Pyramus was down when payment was made and Muikku regognized it then order's state will remain as PAID.
+     *  - If something went wrong but payment was successful then order's state can be ERRORED.
+     *
+     * This is handled as inverse.
+     *
+     * IsOrderCompletionManuallyDisabled
      * @param state
      * @returns true | false
      */
-    const canOrderBeCompletedManually = (state: string) => {
+    const IsOrderCompletionManuallyDisabled = (state: string) => {
       switch (state) {
         case "ONGOING":
         case "PAID":
@@ -310,7 +325,7 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
               <Button
                 icon="cart-plus"
                 buttonModifiers={["create-student-order", "info"]}
-                disabled={canOrderBeCreated ? true : false}
+                disabled={IsOrderCreationDisabled}
               >{this.props.i18n.text.get("plugin.guider.createStudentOrder.buttonLabel")}</Button>
             </Dropdown>
           </> : <div className="empty">
@@ -335,21 +350,32 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
                       <span>{this.props.i18n.text.get("plugin.guider.purchases.date.paid")}: {this.props.i18n.time.format(p.paid)}</span>
                       : null}
                   </span>
+
+                  {/* We show "Delete" and "Complete order" buttons only if purchase state is not COMPLETE */}
                   {p.state !== "COMPLETE" ?
-                  <span className="application-list__header-primary-actions">
-                    <Button
-                      onClick={this.beginOrderDeleteProcess.bind(this, p)}
-                      disabled={canOrderBeDeleted(p.state)}
-                      icon="trash"
-                      buttonModifiers={["delete-student-order", "fatal"]}
-                    >{this.props.i18n.text.get("plugin.guider.purchase.deleteOrderLink")}</Button>
-                    <Button
-                      onClick={this.beginOrderManualCompleteProcess.bind(this, p)}
-                      disabled={canOrderBeCompletedManually(p.state)}
-                      icon="forward"
-                      buttonModifiers={["complete-student-order", "execute"]}
-                    >{this.props.i18n.text.get("plugin.guider.purchase.completeOrderLink")}</Button>
-                  </span>
+                    <span className="application-list__header-primary-actions">
+
+                      {/* We show "Delete" button only if logged in user is ADMINISTRATOR or logged in user userEntityId is the same as purchase creator userId */}
+                      {this.props.status.role === "ADMINISTRATOR" || p.creator.userEntityId === this.props.status.userId ?
+                        <Button
+                          onClick={this.beginOrderDeleteProcess.bind(this, p)}
+                          disabled={IsOrderDeletionDisabled(p.state)}
+                          icon="trash"
+                          buttonModifiers={["delete-student-order", "fatal"]}
+                          >{this.props.i18n.text.get("plugin.guider.purchase.deleteOrderLink")}</Button>
+                      : null}
+
+                      {/* We show "Complete order" button only if logged in user is ADMINISTRATOR */}
+                      {this.props.status.role === "ADMINISTRATOR" ?
+                        <Button
+                          onClick={this.beginOrderManualCompleteProcess.bind(this, p)}
+                          disabled={IsOrderCompletionManuallyDisabled(p.state)}
+                          icon="forward"
+                          buttonModifiers={["complete-student-order", "execute"]}
+                        >{this.props.i18n.text.get("plugin.guider.purchase.completeOrderLink")}</Button>
+                      : null}
+
+                    </span>
                   : null}
                 </span>
                 <span className="application-list__header-secondary">
@@ -400,7 +426,8 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     guider: state.guider,
-    locale: state.locales.current
+    locale: state.locales.current,
+    status: state.status
   }
 };
 
