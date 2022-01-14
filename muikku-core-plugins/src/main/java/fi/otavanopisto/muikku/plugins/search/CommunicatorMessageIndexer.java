@@ -256,7 +256,7 @@ public class CommunicatorMessageIndexer {
   private void indexCommunicatorMessage(IndexedCommunicatorMessage indexedCommunicatorMessage) {
     try {
       if (indexedCommunicatorMessage != null) {
-        indexer.index(indexedCommunicatorMessage.getClass().getSimpleName(), indexedCommunicatorMessage);
+        indexer.index(IndexedCommunicatorMessage.INDEX_NAME, IndexedCommunicatorMessage.TYPE_NAME, indexedCommunicatorMessage);
       }
     } catch (Exception e) {
       Long communicatorMessageId = indexedCommunicatorMessage != null ? indexedCommunicatorMessage.getId() : null;

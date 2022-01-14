@@ -29,13 +29,17 @@ import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceType;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser;
+import fi.otavanopisto.muikku.schooldata.payload.WorklistBasePriceRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemBilledPriceRestModel;
 import fi.otavanopisto.pyramus.rest.model.Course;
 import fi.otavanopisto.pyramus.rest.model.CourseDescription;
+import fi.otavanopisto.pyramus.rest.model.CourseLength;
+import fi.otavanopisto.pyramus.rest.model.CourseModule;
 import fi.otavanopisto.pyramus.rest.model.CourseOptionality;
 import fi.otavanopisto.pyramus.rest.model.CourseParticipationType;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
 import fi.otavanopisto.pyramus.rest.model.CourseStudent;
+import fi.otavanopisto.pyramus.rest.model.Subject;
 import fi.otavanopisto.pyramus.rest.model.course.CourseSignupStudentGroup;
 import fi.otavanopisto.pyramus.rest.model.course.CourseSignupStudyProgramme;
 
@@ -99,6 +103,16 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
 
     OffsetDateTime now = OffsetDateTime.now();
     
+    Set<CourseModule> courseModules = new HashSet<>();
+    for (CourseModule courseModuleSource : course.getCourseModules()) {
+      Subject subject = courseModuleSource.getSubject() != null ? new Subject(courseModuleSource.getSubject().getId(), null, null, null, null) : null;
+      CourseLength courseLength = null;
+      if (courseModuleSource.getCourseLength() != null) {
+        courseLength = new CourseLength(null, courseModuleSource.getCourseLength().getBaseUnits(), courseModuleSource.getCourseLength().getUnits(), courseModuleSource.getCourseLength().getUnit());
+      }
+      courseModules.add(new CourseModule(null, subject, courseModuleSource.getCourseNumber(), courseLength));
+    }
+    
     Course courseCopy = new Course(
         null, // copy has no id
         name, // copy has new name
@@ -106,7 +120,6 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
         now, // Last modified
         description, // copy has new description
         course.getArchived(),
-        course.getCourseNumber(),
         course.getMaxParticipantCount(),
         course.getBeginDate(),
         course.getEndDate(),
@@ -120,10 +133,7 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
         course.getEnrolmentTimeEnd(),
         course.getCreatorId(),
         course.getLastModifierId(),
-        course.getSubjectId(),
         course.getCurriculumIds(),
-        course.getLength(),
-        course.getLengthUnitId(),
         course.getModuleId(),
         course.getStateId(),
         course.getTypeId(),
@@ -132,7 +142,8 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
         pyramusOrganizationId,
         false, // CourseTemplate - never a template when created from Muikku
         course.getPrimaryEducationTypeId(),
-        course.getPrimaryEducationSubtypeId()
+        course.getPrimaryEducationSubtypeId(),
+        courseModules
     ); // 
     
     Course createdCourse = pyramusClient.post("/courses/courses/", courseCopy);
@@ -194,8 +205,6 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
     }
     
     Long typeId = identifierMapper.getPyramusCourseTypeId(workspace.getWorkspaceTypeId());
-    Long lengthUnitId = identifierMapper.getPyramusEducationalTimeUnitId(workspace.getLengthUnitIdentifier());
-    Long subjectId = identifierMapper.getPyramusSubjectId(workspace.getSubjectIdentifier());
     
     Course course = pyramusClient.get(String.format("/courses/courses/%d", pyramusCourseId), Course.class);
     
@@ -204,10 +213,9 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
     course.setDescription(workspace.getDescription());
     course.setBeginDate(workspace.getBeginDate());
     course.setEndDate(workspace.getEndDate());
-    course.setLength(workspace.getLength());
-    course.setLengthUnitId(lengthUnitId);
     course.setTypeId(typeId);
-    course.setSubjectId(subjectId);
+
+    // Updating course modules (length, subject) is not currently available
     
     Course updatedCourse = pyramusClient.put(String.format("/courses/courses/%d", pyramusCourseId), course);
     if (updatedCourse == null) {
@@ -457,8 +465,18 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
   }
 
   @Override
-  public Double getWorkspaceBasePrice(String workspaceIdentifier) {
-    return pyramusClient.responseGet(String.format("/worklist/basePrice?course=%s", workspaceIdentifier), Double.class).getEntity();
+  public WorklistBasePriceRestModel getWorkspaceBasePrice(String workspaceIdentifier) {
+    fi.otavanopisto.pyramus.rest.model.worklist.WorklistBasePriceRestModel pyramusPriceModel = pyramusClient.responseGet(String.format("/worklist/basePrice?course=%s", workspaceIdentifier), fi.otavanopisto.pyramus.rest.model.worklist.WorklistBasePriceRestModel.class).getEntity();
+    
+    WorklistBasePriceRestModel result = new WorklistBasePriceRestModel();
+    
+    if (pyramusPriceModel != null) {
+      for (Long courseModuleId : pyramusPriceModel.keySet()) {
+        result.put(identifierMapper.getCourseModuleIdentifier(courseModuleId).getIdentifier(), pyramusPriceModel.get(courseModuleId));
+      }
+    }
+    
+    return result;
   }
 
   @Override

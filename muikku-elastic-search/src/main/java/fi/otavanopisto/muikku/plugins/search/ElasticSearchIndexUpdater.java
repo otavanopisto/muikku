@@ -76,15 +76,18 @@ public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
       return;
     }
         
-    if (!indexExists()) {
-      createIndex();      
-    }
-    
     for (Indexable indexable : IndexableEntityVault.getEntities()) {
-      String propertyName = indexable.name();
+      String indexName = indexable.indexName();
+      
+      if (!indexExists(indexName)) {
+        createIndex(indexName);
+      }
+
+      String typeName = indexable.typeName();
+      
       Map<String, ElasticMappingProperty> properties = new HashMap<>();
 
-      if (StringUtils.isNotBlank(propertyName)) {
+      if (StringUtils.isNotBlank(typeName)) {
         IndexableFieldOption[] fieldOptions = indexable.options();
         if (fieldOptions != null) {
           for (IndexableFieldOption fieldOption : fieldOptions) {
@@ -115,41 +118,42 @@ public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
         }
 
         if (!properties.isEmpty()) {
-          updateMapping(propertyName, new ElasticMappingProperties(properties));
+          updateMapping(indexName, typeName, new ElasticMappingProperties(properties));
         }
       }
     }
   }
   
-  private void createIndex() {
+  private void createIndex(String indexName) {
+    logger.info(String.format("Creating elastic index %s", indexName));
     elasticClient
       .admin()
       .indices()
-      .prepareCreate("muikku")
+      .prepareCreate(indexName)
       .execute()
       .actionGet();
   }
 
-  private boolean indexExists() {
+  private boolean indexExists(String indexName) {
     return elasticClient
       .admin()
       .indices()
-      .prepareExists("muikku")
+      .prepareExists(indexName)
       .execute()
       .actionGet()
       .isExists();
   }
 
-  private void updateMapping(String propertyName, ElasticMappingProperties properties) {
+  private void updateMapping(String indexName, String typeName, ElasticMappingProperties properties) {
     try {
       Map<String, ElasticMappingProperties> mappings = new HashMap<>();
-      mappings.put(propertyName, properties);
+      mappings.put(typeName, properties);
       String mapping = new ObjectMapper()
         .writeValueAsString(mappings);
       
       elasticClient.admin().indices()
-          .preparePutMapping("muikku")
-          .setType(propertyName)
+          .preparePutMapping(indexName)
+          .setType(typeName)
           .setSource(mapping)
           .execute()
           .actionGet();
@@ -240,7 +244,7 @@ public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
   }
 
   @Override
-  public void addOrUpdateIndex(String typeName, Map<String, Object> entity) {
+  public void addOrUpdateIndex(String indexName, String typeName, Map<String, Object> entity) {
     ObjectMapper mapper = new ObjectMapper();
     mapper.registerModule(new JSR310Module());
     
@@ -249,16 +253,16 @@ public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
       json = mapper.writeValueAsString(entity);
       String id = entity.get("id").toString();
       @SuppressWarnings("unused")
-      IndexResponse response = elasticClient.prepareIndex("muikku", typeName, id).setSource(json).execute().actionGet();
+      IndexResponse response = elasticClient.prepareIndex(indexName, typeName, id).setSource(json).execute().actionGet();
     } catch (IOException e) {
       logger.log(Level.WARNING, "Adding to index failed because of exception", e);
     }
   }
 
   @Override
-  public void deleteFromIndex(String typeName, String id) {
+  public void deleteFromIndex(String indexName, String typeName, String id) {
     @SuppressWarnings("unused")
-    DeleteResponse response = elasticClient.prepareDelete("muikku", typeName, id).execute().actionGet();
+    DeleteResponse response = elasticClient.prepareDelete(indexName, typeName, id).execute().actionGet();
   }
 
   @Override

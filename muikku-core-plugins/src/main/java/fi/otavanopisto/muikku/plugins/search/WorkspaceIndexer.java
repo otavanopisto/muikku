@@ -81,7 +81,7 @@ public class WorkspaceIndexer {
     try {
       IndexedWorkspace indexedWorkspace = workspaceToIndexedWorkspace(workspace, workspaceEntity);
       
-      indexer.index(IndexedWorkspace.INDEX_NAME, indexedWorkspace);
+      indexer.index(IndexedWorkspace.INDEX_NAME, IndexedWorkspace.TYPE_NAME, indexedWorkspace);
     } catch (Exception e) {
       logger.log(Level.WARNING, String.format("could not index workspace #%s/%s", workspace.getIdentifier(), workspace.getSchoolDataSource()), e);
     }
@@ -93,7 +93,7 @@ public class WorkspaceIndexer {
 
   public void removeWorkspace(String dataSource, String identifier) {
     try {
-      indexer.remove(IndexedWorkspace.INDEX_NAME, String.format("%s/%s", identifier, dataSource));
+      indexer.remove(IndexedWorkspace.INDEX_NAME, IndexedWorkspace.TYPE_NAME, String.format("%s/%s", identifier, dataSource));
     } catch (Exception ex) {
       logger.log(Level.SEVERE, String.format("Removal of workspace %s/%s from index failed", dataSource, identifier), ex);
     } 

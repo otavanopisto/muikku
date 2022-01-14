@@ -41,7 +41,7 @@ public class SchoolDataIdentifier {
   /**
    * Produces this identifier as string if form "datasource/identifier".
    * 
-   * Note the discrepancy with fromString.
+   * Note that there is a discrepancy with fromString.
    */
   @Override
   public String toString() {
@@ -64,7 +64,7 @@ public class SchoolDataIdentifier {
   /**
    * Returns SchoolDataIdentifier from string in form "identifier/datasource"
    * 
-   * Note the discrepancy with toString.
+   * Note that there is a discrepancy with toString.
    */
   public static SchoolDataIdentifier fromString(String id) {
     int index = id == null ? -1 : id.indexOf('/');

@@ -10,7 +10,8 @@ import fi.otavanopisto.muikku.search.annotations.IndexableFieldMultiField;
 import fi.otavanopisto.muikku.search.annotations.IndexableFieldOption;
 
 @Indexable (
-  name = "User",
+  indexName = User.INDEX_NAME,
+  typeName = User.TYPE_NAME,
   options = {
     @IndexableFieldOption (
       name = "email",
@@ -29,6 +30,9 @@ import fi.otavanopisto.muikku.search.annotations.IndexableFieldOption;
 )
 public interface User extends SchoolDataEntity {
 
+  public static final String INDEX_NAME = "muikku";
+  public static final String TYPE_NAME = "User";
+  
   public String getIdentifier();
 
   public String getFirstName();

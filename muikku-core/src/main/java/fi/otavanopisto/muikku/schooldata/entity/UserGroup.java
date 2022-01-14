@@ -8,7 +8,8 @@ import fi.otavanopisto.muikku.search.annotations.IndexableFieldMultiField;
 import fi.otavanopisto.muikku.search.annotations.IndexableFieldOption;
 
 @Indexable (
-    name = "UserGroup",
+    indexName = UserGroup.INDEX_NAME,
+    typeName = UserGroup.TYPE_NAME,
     options = {
         @IndexableFieldOption (
           name = "organizationIdentifier",
@@ -21,6 +22,9 @@ import fi.otavanopisto.muikku.search.annotations.IndexableFieldOption;
     }
 )
 public interface UserGroup extends SchoolDataEntity {
+  
+  public static final String INDEX_NAME = "muikku";
+  public static final String TYPE_NAME = "UserGroup";
   
   public String getIdentifier();
 

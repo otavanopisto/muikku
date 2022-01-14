@@ -14,7 +14,8 @@ import fi.otavanopisto.muikku.search.annotations.IndexableFieldMultiField;
 import fi.otavanopisto.muikku.search.annotations.IndexableFieldOption;
 
 @Indexable (
-  name = IndexedWorkspace.INDEX_NAME,
+  indexName = IndexedWorkspace.INDEX_NAME,
+  typeName = IndexedWorkspace.TYPE_NAME,
   options = {
     @IndexableFieldOption (
       name = "identifier",
@@ -81,8 +82,8 @@ import fi.otavanopisto.muikku.search.annotations.IndexableFieldOption;
 )
 public class IndexedWorkspace {
 
-  // TODO change to Workspace
-  public static final String INDEX_NAME = "IndexedWorkspace";
+  public static final String INDEX_NAME = "muikku_workspaces";
+  public static final String TYPE_NAME = "Workspace";
   
   @IndexId
   public String getSearchId() {

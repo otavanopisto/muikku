@@ -1,6 +1,5 @@
 package fi.otavanopisto.muikku.plugins.search;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -102,9 +101,9 @@ public class UserIndexer {
             extra.put("email", userDefaultEmailAddress);
           }
           
-          indexer.index(User.class.getSimpleName(), user, extra);
+          indexer.index(User.INDEX_NAME, User.TYPE_NAME, user, extra);
         } else {
-          indexer.index(User.class.getSimpleName(), user);
+          indexer.index(User.INDEX_NAME, User.TYPE_NAME, user);
         }
       } else {
         logger.info(String.format("Removing user %s/%s from index", identifier, dataSource));
@@ -140,7 +139,7 @@ public class UserIndexer {
 
   public void removeUser(String dataSource, String identifier) {
     try {
-      indexer.remove(User.class.getSimpleName(), String.format("%s/%s", identifier, dataSource));
+      indexer.remove(User.INDEX_NAME, User.TYPE_NAME, String.format("%s/%s", identifier, dataSource));
     } catch (Exception ex) {
       logger.log(Level.SEVERE, String.format("Removal of user %s/%s from index failed", dataSource, identifier), ex);
     } 
