@@ -43,7 +43,7 @@ const defaultPagerV2Props = {
  * @param props props
  * @returns JSX.Element
  */
-const PagerV2: React.FC<PagerV2Props> = (props) => {
+const PagerV2: React.FC<PagerV2Props> = (props): JSX.Element => {
   props = { ...defaultPagerV2Props, ...props };
 
   /**
