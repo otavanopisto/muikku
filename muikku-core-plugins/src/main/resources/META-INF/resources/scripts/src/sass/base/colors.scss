@@ -109,7 +109,8 @@ $color-passed: #24c118;
 $color-failed: #de3211;
 $color-pending: #009fe3;
 $color-incomplete: #ea7503;
-$color-example: #e2ffe2;
+$color-example-background: #fbfffa;
+$color-example-border: #60daff;
 $color-journal: #0effe6;
 $color-correct-answer: #43f860;
 $color-incorrect-answer: #f64e4e;
@@ -505,6 +506,9 @@ $color-material-table-header-boder: #00e3c8;
 $color-material-word-definition-color: #007925;
 $color-material-word-definition-border-color: #8ed2a3;
 $color-material-word-definition-background-color: #c7fdd8;
+
+$color-material-exercise-feedback-background: #fbfffa;
+$color-material-exercise-feedback-border: #60daff;
 
 // Math
 $color-math-editor-background: #fff;

@@ -440,7 +440,8 @@
 .material-page__field-answer-examples {
   @include text;
   align-items: center;
-  background: $color-example;
+  background: $color-example-background;
+  border: 2px dotted $color-example-border;
   border-radius: 2px;
   display: inline-flex;
   flex-flow: row wrap;
@@ -463,7 +464,6 @@
 }
 
 .material-page__field-answer-examples-title {
-  font-style: italic;
   font-weight: 400;
   line-height: 1.15rem;
   padding: 2px 4px;
@@ -475,7 +475,6 @@
 
 .material-page__field-answer-example {
   border-radius: 2px;
-  font-style: italic;
   font-weight: 300;
   line-height: 1.15rem;
   margin: 0 4px 0 0;
@@ -1894,9 +1893,7 @@ mark[data-muikku-word-definition] {
 // MATERIAL PAGE CUSTOM BOX STYLES
 // These classNames cannot be changed as they a part of material page html and already saved to DB
 .material-styles-block {
-  background-color: $color-default;
   box-sizing: content-box;
-  color: $color-default-contrast;
   font-size: inherit;
   margin: 20px 0;
   min-height: 40px;
@@ -1974,12 +1971,12 @@ mark[data-muikku-word-definition] {
 }
 
 // MATERIAL'S EXERCISE FEEDBACK BOX
-// This will be visible only after user checks and submits exercise.
+// This will be visible only after user submits exercise.
 .material-exercise-feedback {
-  background: $color-default-item-separator-border;
-  border: 1px solid $color-default-item-separator-border;
-  border-radius: 10px;
-  display: block;
+  background: $color-material-exercise-feedback-background;
+  border-bottom: 2px dotted $color-material-exercise-feedback-border;
+  border-top: 2px dotted $color-material-exercise-feedback-border;
+  margin: 20px -20px;
 }
 
 .material-exercise-feedback[data-show='true'] {
