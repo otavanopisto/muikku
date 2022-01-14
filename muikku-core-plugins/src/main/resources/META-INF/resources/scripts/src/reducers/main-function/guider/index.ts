@@ -157,8 +157,9 @@ function sortLabels(labelA: GuiderUserLabelType, labelB: GuiderUserLabelType) {
 }
 
 /**
- * @param state
- * @param action
+ * guider
+ * @param state state
+ * @param action action
  */
 export default function guider(
   state: GuiderType = {

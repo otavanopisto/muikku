@@ -63,23 +63,21 @@ export const getPastTerms = () =>
 /**
  * Resolves next 3 terms
  *
- * @param {number} count count of terms to be resolved
- * @returns {Array} terms
+ * @returns terms
  */
 export const getNextTerms = () => resolveTerms(moment().add(1, "years"), 3);
 
 /**
  * Resolves past 6 term options
  *
- * @returns {Array} term options
+ * @returns term options
  */
 export const getPastTermOptions = () => getTermOptions(getPastTerms());
 
 /**
  * Resolves next 3 term options
  *
- * @param {number} count count of terms to be resolved
- * @returns {Array} term options
+ * @returns term options
  */
 export const getNextTermOptions = () => getTermOptions(getNextTerms());
 

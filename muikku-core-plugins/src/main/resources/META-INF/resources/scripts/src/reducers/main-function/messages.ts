@@ -255,7 +255,8 @@ const defaultNavigation: MessagesNavigationItemListType = [
     id: "trash",
     icon: "trash-alt",
     /**
-     * @param i18n
+     * text
+     * @param i18n i18n
      */
     text(i18n: i18nType): string {
       return i18n.text.get("plugin.communicator.category.title.trash");

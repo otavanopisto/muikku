@@ -373,7 +373,7 @@ export class SearchFormElement extends React.Component<
 
   /**
    * updateSearchField
-   * @param e
+   * @param e e
    */
   updateSearchField(e: React.ChangeEvent<HTMLInputElement>) {
     clearTimeout(this.searchTimer);

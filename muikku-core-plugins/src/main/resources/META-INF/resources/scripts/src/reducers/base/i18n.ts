@@ -52,7 +52,8 @@ const lang = document.querySelector("html").lang;
 //TODO it uses the global muikku locale because the i18n time part doesn't have a way to know
 //the current locale, it should be a method somehow
 /**
- * @param state
+ * i18n
+ * @param state state
  */
 export default function i18n(
   state = {

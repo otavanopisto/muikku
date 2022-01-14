@@ -103,7 +103,7 @@ class GuiderToolbar extends React.Component<
    * @returns hash
    */
   getBackByHash(): string {
-    let locationData = queryString.parse(
+    const locationData = queryString.parse(
       document.location.hash.split("?")[1] || "",
       { arrayFormat: "bracket" }
     );
