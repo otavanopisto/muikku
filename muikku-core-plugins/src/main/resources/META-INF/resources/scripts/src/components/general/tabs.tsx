@@ -1,4 +1,6 @@
 import '~/sass/elements/tabs.scss';
+// import variables from '~/sass/base/_exports.module.scss'
+
 import * as React from 'react';
 import { connect } from "react-redux";
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -8,6 +10,7 @@ import "swiper/scss/pagination"
 import { A11y, Pagination } from 'swiper';
 import { i18nType } from '~/reducers/base/i18n';
 import { StateType } from "~/reducers";
+
 
 export interface TabType {
   id: string,

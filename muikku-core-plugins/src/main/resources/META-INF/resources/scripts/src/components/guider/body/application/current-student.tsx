@@ -25,11 +25,10 @@ import { GuiderType, GuiderStudentUserProfileLabelType } from '~/reducers/main-f
 import NewMessage from '~/components/communicator/dialogs/new-message';
 import { ButtonPill } from '~/components/general/button';
 import GuiderToolbarLabels from './toolbar/labels';
-import GuidanceEvent from './toolbar/guidance-event';
-import FullCalendar, { DateSelectArg, EventClickArg } from '@fullcalendar/react';
-import resourceTimelinePlugin from '@fullcalendar/resource-timeline';
-import interactionPlugin, { EventResizeStopArg } from '@fullcalendar/interaction'
-import { EventType } from "./toolbar/guidance-event"
+import GuidanceEvent, { EventType } from './toolbar/guidance-event';
+import { ResourceTimeline } from "../../../general/resource-timeline";
+import workspaces from './current-student/workspaces';
+import { ExternalEventType } from "../../../general/resource-timeline"
 
 interface CurrentStudentProps {
   i18n: i18nType,
@@ -207,6 +206,10 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
       right: 'resourceTimelineMonth,resourceTimelineYear'
     }
 
+    const externalEvents: ExternalEventType[] = this.props.guider.currentStudent.workspaces.map(workspace => (
+      { id: workspace.id.toString(), title: workspace.name, duration: "36:00:00" }
+    ));
+
     return <>
       <div className="application-sub-panel application-sub-panel--guider-student-header">
         {studentBasicHeader}
@@ -243,31 +246,30 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
         {this.props.guider.currentState === "LOADING" ? <div className="application-sub-panel loader-empty" /> : null}
       </div>
       <div className="application-sub-panel application-sub-panel--student-data-container">
-
-        <FullCalendar
+        <ResourceTimeline
+          onDateSelect={(dates: EventType[]) => console.log(dates)}
+          namespace="student-resource"
           headerToolbar={headerToolbar}
-          plugins={[resourceTimelinePlugin, interactionPlugin]}
-          editable={true}
-          schedulerLicenseKey={"CC-Attribution-NonCommercial-NoDerivatives"}
-          height="auto"
-          firstDay={1}
-          resourceAreaHeaderContent={"Student"}
-          resourceAreaHeaderClassNames={"muumi"}
-          resourceAreaWidth={200}
+          resourceHeaderContent={"Opiskelija"}
+          externalEvents={externalEvents}
           resources={[{
-            id: this.props.guider.currentStudent.basic.id,
-            title: getName(this.props.guider.currentStudent.basic, true),
+            id: "student",
+            title: getName(this.props.guider.currentStudent.basic, true)
           }]}
-          allDaySlot={false}
-          slotMinTime="09:00:00"
-          slotMaxTime="16:00:00"
-
-          locale={"fi"}
-          initialView="resourceTimelineYear"
-        // events={this.state.events}
         />
-
       </div>
+      <div className="application-sub-panel application-sub-panel--student-data-container">
+        <ResourceTimeline
+          onDateSelect={(dates: EventType[]) => console.log(dates)}
+          namespace="workspace-resources"
+          headerToolbar={headerToolbar}
+          resourceHeaderContent={"Kurssi"}
+          resources={this.props.guider.currentStudent.workspaces.map((workspace) => (
+            { id: workspace.id.toString(), title: workspace.name }
+          ))}
+        />
+      </div>
+
     </>
   }
 }
