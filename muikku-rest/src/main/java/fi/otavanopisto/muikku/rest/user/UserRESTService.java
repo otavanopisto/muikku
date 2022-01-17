@@ -79,12 +79,14 @@ import fi.otavanopisto.muikku.rest.model.StudentEmail;
 import fi.otavanopisto.muikku.rest.model.StudentPhoneNumber;
 import fi.otavanopisto.muikku.rest.model.UserWhoAmIInfo;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
+import fi.otavanopisto.muikku.schooldata.CourseMetaController;
 import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
+import fi.otavanopisto.muikku.schooldata.entity.Curriculum;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScale;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
 import fi.otavanopisto.muikku.schooldata.entity.StudyProgramme;
@@ -200,6 +202,9 @@ public class UserRESTService extends AbstractRESTService {
 
   @Inject
   private CurrentUserSession currentUserSession;
+  
+  @Inject 
+  private CourseMetaController courseMetaController;
 
   @GET
   @Path("/property/{KEY}")
@@ -1647,6 +1652,15 @@ public class UserRESTService extends AbstractRESTService {
     OffsetDateTime studyTimeEnd = user == null ? null : user.getStudyTimeEnd();
     String studyTimeLeftStr = userEntityController.getStudyTimeEndAsString(studyTimeEnd);
     
+    // Curriculum 
+    String curriculumName = null;
+    if (user.getCurriculumIdentifier() != null) {
+    SchoolDataIdentifier curriculumId = SchoolDataIdentifier.fromId(user.getCurriculumIdentifier());
+    
+    Curriculum curriculum = user == null ? null : courseMetaController.findCurriculum(curriculumId.getDataSource(), curriculumId.getIdentifier());
+    
+    curriculumName = curriculum.getName();
+    }
     // Damn emails, addresses, and phoneNumbers as json
     
     String emails = null;
@@ -1692,7 +1706,6 @@ public class UserRESTService extends AbstractRESTService {
     }
     
     // Result object
-
     UserWhoAmIInfo whoamiInfo = new UserWhoAmIInfo(
         userEntity == null ? null : userEntity.getId(),
         userEntity == null ? null : userEntity.defaultSchoolDataIdentifier().toId(),
@@ -1700,9 +1713,11 @@ public class UserRESTService extends AbstractRESTService {
         user == null ? null : user.getLastName(),
         user == null ? null : user.getNickName(),
         user == null ? null : user.getStudyProgrammeName(),
+        user == null ? null : user.getStudyProgrammeIdentifier().toId(),
         hasImage,
         user == null ? false : user.getHasEvaluationFees(),
         user == null ? null : user.getCurriculumIdentifier(),
+        curriculumName,
         organizationIdentifier,
         isDefaultOrganization,
         currentUserSession.isActive(),
