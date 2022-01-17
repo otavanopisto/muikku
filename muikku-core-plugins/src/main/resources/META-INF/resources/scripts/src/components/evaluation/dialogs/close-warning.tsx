@@ -23,7 +23,7 @@ interface WarningeDialogProps {
 /**
  * DeleteDialogState
  */
-interface WarningDialogState {}
+interface WarningDialogState { }
 
 /**
  * DeleteDialog
@@ -63,16 +63,16 @@ class WarningDialog extends React.Component<
             onClick={this.handleContinueClick.bind(this, closeDialog)}
           >
             {this.props.i18n.text.get(
-          "plugin.evaluation.evaluationModal.unsavedVerbalRecordings.proceedButton"
-        )}
+              "plugin.evaluation.evaluationModal.unsavedVerbalRecordings.proceedButton"
+            )}
           </Button>
           <Button
             buttonModifiers={["cancel", "standard-cancel"]}
             onClick={closeDialog}
           >
             {this.props.i18n.text.get(
-          "plugin.evaluation.evaluationModal.unsavedVerbalRecordings.cancelButton"
-        )}
+              "plugin.evaluation.evaluationModal.unsavedVerbalRecordings.cancelButton"
+            )}
           </Button>
         </div>
       );

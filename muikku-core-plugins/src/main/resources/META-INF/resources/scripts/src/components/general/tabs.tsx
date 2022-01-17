@@ -8,6 +8,7 @@ import "swiper/scss/pagination"
 import { A11y, Pagination } from 'swiper';
 import { i18nType } from '~/reducers/base/i18n';
 import { StateType } from "~/reducers";
+import MobileSwitcher from './mobile-switcher';
 
 export interface TabType {
   id: string,
@@ -52,7 +53,8 @@ export const Tabs: React.FC<TabsProps> = (props) => {
   const nextSlide = allTabs[allTabs.indexOf(activeTab) + 1];
   const prevSlide = allTabs[allTabs.indexOf(activeTab) - 1];
 
-  return <div className={`tabs ${modifier ? "tabs--" + modifier : ""}`}>
+
+  const Desktop = () => <>
     <div className={`tabs__tab-labels ${modifier ? "tabs__tab-labels--" + modifier : ""}`}>
       {tabs.map((tab: TabType) => {
         return <div className={`tabs__tab ${modifier ? "tabs__tab--" + modifier : ""} ${tab.type ? "tabs__tab--" + tab.type : ""} ${tab.id === activeTab ? "active" : ""}`}
@@ -65,24 +67,30 @@ export const Tabs: React.FC<TabsProps> = (props) => {
         .map((t: TabType) => <div key={t.id} className={`tabs__tab-data ${t.type ? "tabs__tab-data--" + t.type : ""}  ${t.id === activeTab ? "active" : ""}`}>
           {t.component()}
         </div>)}
-    </div>
-    <Swiper
-      onSlideNextTransitionStart={onTabChange.bind(this, nextSlide)}
-      onSlidePrevTransitionStart={onTabChange.bind(this, prevSlide)}
-      modules={[A11y, Pagination]}
-      a11y={a11yConfig}
-      pagination={paginationConfig}
-      className="tabs__tab-data-container tabs__tab-data-container--mobile">
-      {tabs.map((t: TabType) =>
-        <SwiperSlide key={t.id}>
-          <div className="tabs__mobile-tab">
-            <div className="tabs__pagination-container"> </div>
-            <div>{t.name}</div>
-            {t.mobileAction ? t.mobileAction : <div className="tabs__mobile-tab-spacer" />}
-          </div>
-          {t.component()}
-        </SwiperSlide>)}
-    </Swiper>
+    </div></>;
+
+  const Mobile = () => <Swiper
+    onSlideNextTransitionStart={onTabChange.bind(this, nextSlide)}
+    onSlidePrevTransitionStart={onTabChange.bind(this, prevSlide)}
+    modules={[A11y, Pagination]}
+    a11y={a11yConfig}
+    pagination={paginationConfig}
+    className="tabs__tab-data-container tabs__tab-data-container--mobile">
+    {tabs.map((t: TabType) =>
+      <SwiperSlide key={t.id}>
+        <div className="tabs__mobile-tab">
+          <div className="tabs__pagination-container"> </div>
+          <div>{t.name}</div>
+          {t.mobileAction ? t.mobileAction : <div className="tabs__mobile-tab-spacer" />}
+        </div>
+        {t.component()}
+      </SwiperSlide>)}
+  </Swiper>;
+
+  const TabsWithMobileSwitcher = MobileSwitcher(Mobile, Desktop);
+
+  return <div className={`tabs ${modifier ? "tabs--" + modifier : ""}`}>
+    <TabsWithMobileSwitcher isMobile={true} />
   </div>
 }
 
