@@ -440,9 +440,10 @@
 .material-page__field-answer-examples {
   @include text;
   align-items: center;
-  background: $color-example-background;
-  border: 2px dotted $color-example-border;
+  background: $color-default;
+  border: 1px solid $color-example-border;
   border-radius: 2px;
+  box-shadow: 0 3px 5px 2px $color-example-box-shadow;
   display: inline-flex;
   flex-flow: row wrap;
   margin: 4px;
@@ -1973,10 +1974,13 @@ mark[data-muikku-word-definition] {
 // MATERIAL'S EXERCISE FEEDBACK BOX
 // This will be visible only after user submits exercise.
 .material-exercise-feedback {
-  background: $color-material-exercise-feedback-background;
-  border-bottom: 2px dotted $color-material-exercise-feedback-border;
-  border-top: 2px dotted $color-material-exercise-feedback-border;
-  margin: 20px -20px;
+  background: $color-default;
+  border-bottom: 1px solid $color-example-border;
+  border-radius: 2px;
+  border-right: 10px solid $color-example-border;
+  border-top: 1px solid $color-example-border;
+  box-shadow: 0 3px 5px 2px $color-example-box-shadow;
+  margin: 20px -30px 20px -20px;
 }
 
 .material-exercise-feedback[data-show='true'] {
