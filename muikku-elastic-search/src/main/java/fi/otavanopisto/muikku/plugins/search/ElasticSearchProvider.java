@@ -449,7 +449,7 @@ public class ElasticSearchProvider implements SearchProvider {
   }
 
   @Override
-  public SearchResult searchWorkspaces(String schoolDataSource, String subjectIdentifier, int courseNumber) {
+  public SearchResult searchWorkspaces(String subjectIdentifier, int courseNumber) {
     BoolQueryBuilder query = boolQuery();
     query.must(termQuery("published", Boolean.TRUE));
     query.must(termQuery("subjects.subjectIdentifier.identifier", subjectIdentifier));
@@ -483,9 +483,8 @@ public class ElasticSearchProvider implements SearchProvider {
   
   @Override
   public SearchResult searchWorkspaces(
-      String schoolDataSource, 
       List<String> subjects, 
-      List<String> identifiers, 
+      List<SchoolDataIdentifier> identifiers, 
       List<SchoolDataIdentifier> educationTypes, 
       List<SchoolDataIdentifier> curriculumIdentifiers, 
       Collection<OrganizationRestriction> organizationRestrictions,
@@ -526,10 +525,6 @@ public class ElasticSearchProvider implements SearchProvider {
           }
         }
         query.must(accessQuery);
-      }
-      
-      if (StringUtils.isNotBlank(schoolDataSource)) {
-        query.must(termQuery("schoolDataSource", schoolDataSource.toLowerCase()));
       }
       
       if (subjects != null && !subjects.isEmpty()) {
@@ -592,7 +587,10 @@ public class ElasticSearchProvider implements SearchProvider {
       query.must(organizationQuery.minimumNumberShouldMatch(1));
       
       if (identifiers != null) {
-        query.must(termsQuery("identifier", identifiers));
+        List<String> identifiersStrList = identifiers.stream()
+            .map(SchoolDataIdentifier::toId)
+            .collect(Collectors.toList());
+        query.must(termsQuery("identifier.untouched", identifiersStrList));
       }
   
       if (StringUtils.isNotBlank(freeText)) {

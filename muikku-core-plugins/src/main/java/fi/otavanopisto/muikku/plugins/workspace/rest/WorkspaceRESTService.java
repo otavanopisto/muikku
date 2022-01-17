@@ -438,8 +438,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     boolean doMinVisitFilter = minVisits != null;
     UserEntity userEntity = userEntityId != null ? userEntityController.findUserEntityById(userEntityId) : null;
     List<WorkspaceEntity> workspaceEntities = null;
-    String schoolDataSourceFilter = null;
-    List<String> workspaceIdentifierFilters = null;
+    List<SchoolDataIdentifier> workspaceIdentifierFilters = null;
     
     SchoolDataIdentifier userIdentifier = SchoolDataIdentifier.fromId(userId);
     if (userIdentifier != null) {
@@ -461,7 +460,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         if (sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_OWN_UNPUBLISHED_WORKSPACES)) {
           // List only from workspaces the user is member of
           workspaceIdentifierFilters = workspaceUserEntityController.listActiveWorkspaceEntitiesByUserEntity(sessionController.getLoggedUserEntity()).stream()
-              .map(WorkspaceEntity::getIdentifier)
+              .map(WorkspaceEntity::schoolDataIdentifier)
               .collect(Collectors.toList());
         } else {
           return Response.status(Status.FORBIDDEN).entity("You have no permission to list unpublished workspaces.").build();
@@ -533,11 +532,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         workspaceIdentifierFilters = new ArrayList<>();
         
         for (WorkspaceEntity workspaceEntity : workspaceEntities) {
-          if (schoolDataSourceFilter == null) {
-            schoolDataSourceFilter = workspaceEntity.getDataSource().getIdentifier();
-          }
-          
-          workspaceIdentifierFilters.add(workspaceEntity.getIdentifier());
+          workspaceIdentifierFilters.add(workspaceEntity.schoolDataIdentifier());
         }
       }
       
@@ -593,7 +588,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       
       List<OrganizationRestriction> organizationRestrictions = organizationEntityController.listUserOrganizationRestrictions(loggedUserOrganizations, publicityRestriction, templateRestriction);
       
-      searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, educationTypes, 
+      searchResult = searchProvider.searchWorkspaces(subjects, workspaceIdentifierFilters, educationTypes, 
           curriculums, organizationRestrictions, searchString, null, null, firstResult, maxResults, sorts);
       
       List<Map<String, Object>> results = searchResult.getResults();

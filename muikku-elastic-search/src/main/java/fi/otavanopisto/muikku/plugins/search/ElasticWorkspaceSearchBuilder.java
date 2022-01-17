@@ -12,7 +12,6 @@ public class ElasticWorkspaceSearchBuilder extends AbstractWorkspaceSearchBuilde
   @Override
   public SearchResult search() {
     return elastic.searchWorkspaces(
-        getSchoolDataSource(),
         getSubjects(),
         getWorkspaceIdentifiers(),
         getEducationTypeIdentifiers(),
