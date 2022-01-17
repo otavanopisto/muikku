@@ -12,6 +12,7 @@ import fi.otavanopisto.muikku.search.annotations.IndexId;
 import fi.otavanopisto.muikku.search.annotations.Indexable;
 import fi.otavanopisto.muikku.search.annotations.IndexableFieldMultiField;
 import fi.otavanopisto.muikku.search.annotations.IndexableFieldOption;
+import fi.otavanopisto.muikku.search.annotations.IndexableSubObject;
 
 @Indexable (
   indexName = IndexedWorkspace.INDEX_NAME,
@@ -77,6 +78,29 @@ import fi.otavanopisto.muikku.search.annotations.IndexableFieldOption;
       name = "access",
       type = "string",
       index = "not_analyzed"
+    )
+  },
+  subObjects = {
+    @IndexableSubObject (
+      name = "subjects",
+      options = {
+        @IndexableFieldOption (
+          name = "subjectIdentifier",
+          type = "multi_field",
+          multiFields = {
+            @IndexableFieldMultiField(name = "identifier", type="string", index = "analyzed"),
+            @IndexableFieldMultiField(name = "untouched", type="string", index = "not_analyzed")
+          }
+        ),
+        @IndexableFieldOption (
+          name = "lengthUnitIdentifier",
+          type = "multi_field",
+          multiFields = {
+            @IndexableFieldMultiField(name = "identifier", type="string", index = "analyzed"),
+            @IndexableFieldMultiField(name = "untouched", type="string", index = "not_analyzed")
+          }
+        )
+      }
     )
   }
 )
@@ -212,6 +236,7 @@ public class IndexedWorkspace {
     this.subjects.add(subject);
   }
 
+  @IndexField (collection = true)
   public Set<IndexedWorkspaceSubject> getSubjects() {
     return subjects;
   }

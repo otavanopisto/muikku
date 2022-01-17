@@ -7,11 +7,9 @@ import java.lang.annotation.ElementType;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface Indexable {
+public @interface IndexableSubObject {
 
-  String typeName();
-  String indexName();
+  String name();
   IndexableFieldOption[] options() default {};
-  IndexableSubObject[] subObjects() default {};
   
 }
