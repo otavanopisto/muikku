@@ -12,21 +12,17 @@ public interface WorkspaceSearchBuilder {
 
   SearchResult search();
   
-  String getSchoolDataSource();
-
-  WorkspaceSearchBuilder setSchoolDataSource(String schoolDataSource);
-
   List<String> getSubjects();
 
   WorkspaceSearchBuilder addSubject(String subject);
 
   WorkspaceSearchBuilder setSubjects(List<String> subjects);
 
-  List<String> getWorkspaceIdentifiers();
+  List<SchoolDataIdentifier> getWorkspaceIdentifiers();
 
-  WorkspaceSearchBuilder addWorkspaceIdentifier(String identifier);
+  WorkspaceSearchBuilder addWorkspaceIdentifier(SchoolDataIdentifier identifier);
 
-  WorkspaceSearchBuilder setWorkspaceIdentifiers(List<String> identifiers);
+  WorkspaceSearchBuilder setWorkspaceIdentifiers(List<SchoolDataIdentifier> identifiers);
 
   List<SchoolDataIdentifier> getEducationTypeIdentifiers();
 

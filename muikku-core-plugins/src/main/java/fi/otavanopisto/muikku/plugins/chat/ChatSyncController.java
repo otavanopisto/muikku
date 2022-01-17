@@ -41,6 +41,7 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceSubject;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.users.OrganizationEntityController;
@@ -324,16 +325,15 @@ public class ChatSyncController {
   }
   
   private String getRoomName(Workspace workspace) {
-    // TODO verify this
-    
-//    String subjectCode = courseMetaController.findSubject(workspace.getSchoolDataSource(), workspace.getSubjectIdentifier()).getCode();
+    WorkspaceSubject workspaceSubject = workspace.getSubjects() != null ? workspace.getSubjects().get(0) : null;
+    String subjectCode = workspaceSubject != null ? courseMetaController.findSubject(workspaceSubject.getSubjectIdentifier()).getCode() : null;
     StringBuilder roomName = new StringBuilder();
-//    if (!StringUtils.isBlank(subjectCode)) {
-//      roomName.append(subjectCode);
-//    }
-//    if (workspace.getCourseNumber() != null) {
-//      roomName.append(workspace.getCourseNumber());
-//    }
+    if (!StringUtils.isBlank(subjectCode)) {
+      roomName.append(subjectCode);
+    }
+    if ((workspaceSubject != null) && (workspaceSubject.getCourseNumber() != null)) {
+      roomName.append(workspaceSubject.getCourseNumber());
+    }
     if (!StringUtils.isBlank(roomName)) {
       roomName.append(" - ");
     }

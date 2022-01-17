@@ -240,8 +240,7 @@ public class CoursePickerRESTService extends PluginRESTService {
     boolean doMinVisitFilter = minVisits != null;
     UserEntity userEntity = myWorkspaces ? sessionController.getLoggedUserEntity() : null;
     List<WorkspaceEntity> workspaceEntities = null;
-    String schoolDataSourceFilter = null;
-    List<String> workspaceIdentifierFilters = null;
+    List<SchoolDataIdentifier> workspaceIdentifierFilters = null;
     
     if (doMinVisitFilter) {
       if (userEntity != null) {
@@ -283,11 +282,7 @@ public class CoursePickerRESTService extends PluginRESTService {
         workspaceIdentifierFilters = new ArrayList<>();
         
         for (WorkspaceEntity workspaceEntity : workspaceEntities) {
-          if (schoolDataSourceFilter == null) {
-            schoolDataSourceFilter = workspaceEntity.getDataSource().getIdentifier();
-          }
-          
-          workspaceIdentifierFilters.add(workspaceEntity.getIdentifier());
+          workspaceIdentifierFilters.add(workspaceEntity.schoolDataIdentifier());
         }
       }
 
@@ -348,7 +343,6 @@ public class CoursePickerRESTService extends PluginRESTService {
       List<OrganizationRestriction> organizationRestrictions = organizationEntityController.listUserOrganizationRestrictions(organizations , publicityRestriction, templateRestriction);
 
       searchResult = searchProvider.searchWorkspaces()
-        .setSchoolDataSource(schoolDataSourceFilter)
         .setSubjects(subjects)
         .setWorkspaceIdentifiers(workspaceIdentifierFilters)
         .setEducationTypeIdentifiers(educationTypes)
