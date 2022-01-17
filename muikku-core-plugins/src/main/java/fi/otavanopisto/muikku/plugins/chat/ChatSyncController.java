@@ -291,25 +291,9 @@ public class ChatSyncController {
       MUCRoomEntity mucRoomEntity = client.getChatRoom(String.format("workspace-chat-%s", workspaceEntity.getIdentifier()));
       if (mucRoomEntity != null) {
         Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-        String subjectCode = courseMetaController.findSubject(workspace.getSchoolDataSource(), workspace.getSubjectIdentifier()).getCode();
-        StringBuilder roomName = new StringBuilder();
-        if (!StringUtils.isBlank(subjectCode)) {
-          roomName.append(subjectCode);
-        }
-        if (workspace.getCourseNumber() != null) {
-          roomName.append(workspace.getCourseNumber());
-        }
-        if (!StringUtils.isBlank(roomName)) {
-          roomName.append(" - ");
-        }
-        if (!StringUtils.isBlank(workspace.getNameExtension())) {
-          roomName.append(workspace.getNameExtension());
-        }
-        else {
-          roomName.append(workspace.getName());
-        }
+        String roomName = getRoomName(workspace);
         if (!StringUtils.equals(mucRoomEntity.getNaturalName(), roomName)) {
-          mucRoomEntity.setNaturalName(roomName.toString());
+          mucRoomEntity.setNaturalName(roomName);
           client.updateChatRoom(mucRoomEntity);
         }
       }
@@ -322,25 +306,8 @@ public class ChatSyncController {
     if (mucRoomEntity == null) {
       logger.log(Level.INFO, String.format("Creating workspace chat room %d", workspaceEntity.getId()));
       Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-      String subjectCode = courseMetaController.findSubject(workspace.getSchoolDataSource(), workspace.getSubjectIdentifier()).getCode();
-      StringBuilder roomName = new StringBuilder();
-      if (!StringUtils.isBlank(subjectCode)) {
-        roomName.append(subjectCode);
-      }
-      if (workspace.getCourseNumber() != null) {
-        roomName.append(workspace.getCourseNumber());
-      }
-      if (!StringUtils.isBlank(roomName)) {
-        roomName.append(" - ");
-      }
-      // Prefer just name extension but fall back to workspace name if extension is not available
-      if (!StringUtils.isBlank(workspace.getNameExtension())) {
-        roomName.append(workspace.getNameExtension());
-      }
-      else {
-        roomName.append(workspace.getName());
-      }
-      mucRoomEntity = new MUCRoomEntity(String.format("workspace-chat-%s", workspace.getIdentifier()), roomName.toString(), "");
+      String roomName = getRoomName(workspace);
+      mucRoomEntity = new MUCRoomEntity(String.format("workspace-chat-%s", workspace.getIdentifier()), roomName, "");
       mucRoomEntity.setPersistent(true);
       mucRoomEntity.setLogEnabled(true);
       mucRoomEntity.setCanChangeNickname(true);
@@ -354,6 +321,30 @@ public class ChatSyncController {
       client.createChatRoom(mucRoomEntity);
     }
     return mucRoomEntity;
+  }
+  
+  private String getRoomName(Workspace workspace) {
+    // TODO verify this
+    
+//    String subjectCode = courseMetaController.findSubject(workspace.getSchoolDataSource(), workspace.getSubjectIdentifier()).getCode();
+    StringBuilder roomName = new StringBuilder();
+//    if (!StringUtils.isBlank(subjectCode)) {
+//      roomName.append(subjectCode);
+//    }
+//    if (workspace.getCourseNumber() != null) {
+//      roomName.append(workspace.getCourseNumber());
+//    }
+    if (!StringUtils.isBlank(roomName)) {
+      roomName.append(" - ");
+    }
+    // Prefer just name extension but fall back to workspace name if extension is not available
+    if (!StringUtils.isBlank(workspace.getNameExtension())) {
+      roomName.append(workspace.getNameExtension());
+    }
+    else {
+      roomName.append(workspace.getName());
+    }
+    return roomName.toString();
   }
   
   private UserEntity ensureUserExists(RestApiClient client, fi.otavanopisto.muikku.model.users.UserEntity muikkuUserEntity) {

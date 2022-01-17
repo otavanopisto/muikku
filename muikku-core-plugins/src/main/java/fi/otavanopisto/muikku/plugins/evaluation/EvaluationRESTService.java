@@ -51,6 +51,7 @@ import fi.otavanopisto.muikku.schooldata.entity.GradingScale;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceSubject;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.servlet.BaseUrl;
 import fi.otavanopisto.muikku.session.SessionController;
@@ -299,9 +300,13 @@ public class EvaluationRESTService extends PluginRESTService {
     Date evaluated = payload.getEvaluated();
     UserEntity student = userEntityController.findUserEntityByUserIdentifier(workspaceStudent.getUserIdentifier());
     Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+    // TODO
+    WorkspaceSubject workspaceSubject = workspace.getSubjects().get(0);
+    
     fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment assessment =  gradingController.updateWorkspaceAssessment(
         workspaceAssesmentIdentifier,
         workspaceStudent,
+        workspaceSubject,
         assessingUser,
         grade,
         payload.getVerbalAssessment(),

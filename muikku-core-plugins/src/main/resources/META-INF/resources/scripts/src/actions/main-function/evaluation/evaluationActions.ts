@@ -898,6 +898,8 @@ const LoadBilledPriceFromServer: LoadBilledPrice =
       });
 
       try {
+        // TODO baseprice is a map of workspaceModule -> baseprice
+        
         const basePrice = (await promisify(
           mApi().worklist.basePrice.read({
             workspaceEntityId: data.workspaceEntityId,

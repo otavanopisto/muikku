@@ -77,6 +77,7 @@ import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceSubject;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
@@ -989,12 +990,16 @@ public class Evaluation2RESTService {
     GradingScale gradingScale = gradingController.findGradingScale(gradingScaleIdentifier);
     SchoolDataIdentifier gradeIdentifier = SchoolDataIdentifier.fromId(payload.getGradeIdentifier());
     GradingScaleItem gradingScaleItem = gradingController.findGradingScaleItem(gradingScale, gradeIdentifier);
-    
+
+    // TODO
+    WorkspaceSubject workspaceSubject = workspace.getSubjects().get(0);
+
     // Create workspace assessment
     
     WorkspaceAssessment workspaceAssessment = gradingController.createWorkspaceAssessment(
         workspaceIdentifier.getDataSource(),
         workspaceUser,
+        workspaceSubject,
         assessingUser,
         gradingScaleItem,
         payload.getVerbalAssessment(),
@@ -1070,11 +1075,16 @@ public class Evaluation2RESTService {
     SchoolDataIdentifier gradeIdentifier = SchoolDataIdentifier.fromId(payload.getGradeIdentifier());
     GradingScaleItem gradingScaleItem = gradingController.findGradingScaleItem(gradingScale, gradeIdentifier);
     
+    // TODO
+
+    WorkspaceSubject workspaceSubject = workspace.getSubjects().get(0);
+
     // Update workspace assessment
     
     WorkspaceAssessment workspaceAssessment = gradingController.updateWorkspaceAssessment(
         workspaceAssessmentIdentifier,
         workspaceUser,
+        workspaceSubject,
         assessingUser,
         gradingScaleItem,
         payload.getVerbalAssessment(),
