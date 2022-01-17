@@ -242,7 +242,7 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
           aria-label={i18n.text.get(
             "plugin.evaluation.card.button.deleteRequest.title"
           )}
-          buttonModifiers="archive"
+          buttonModifiers="archive-request"
           icon="trash"
         />
       </DeleteRequestDialog>
@@ -253,7 +253,7 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
           aria-label={i18n.text.get(
             "plugin.evaluation.card.button.archiveButtonLabel"
           )}
-          buttonModifiers="archive"
+          buttonModifiers="archive-student"
           icon="archive"
         />
       </ArchiveDialog>
