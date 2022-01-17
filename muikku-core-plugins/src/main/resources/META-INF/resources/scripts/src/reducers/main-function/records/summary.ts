@@ -27,7 +27,7 @@ export interface SummaryDataType {
   graphData: GraphDataType,
   coursesDone: number,
   studentsDetails: SummaryStudyTime,
-  studentsGuidanceCouncelors: Array<SummaryStudentsGuidanceCouncelorsType>,
+  studentsGuidanceCouncelors: SummaryStudentsGuidanceCouncelorsType[],
 }
 
 export interface SummaryType {
@@ -36,7 +36,7 @@ export interface SummaryType {
 }
 
 export interface GraphDataType {
-  activity: Array<ActivityLogType>,
+  activity: ActivityLogType[],
   workspaces: WorkspaceListType,
 }
 

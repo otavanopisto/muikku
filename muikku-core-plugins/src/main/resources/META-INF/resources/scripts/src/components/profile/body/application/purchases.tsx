@@ -4,7 +4,7 @@ import { bindActionCreators, Dispatch } from "redux";
 import mApi from "~/lib/mApi";
 import { StateType } from "~/reducers";
 import { i18nType } from "~/reducers/base/i18n";
-import { ProfileType, PurchaseType } from "~/reducers/main-function/profile";
+import { ProfileType, PurchaseType, PurchaseStateType } from "~/reducers/main-function/profile";
 import promisify from "~/util/promisify";
 import ApplicationList, { ApplicationListItem, ApplicationListItemHeader } from '~/components/general/application-list'
 import Button from "~/components/general/button";
@@ -49,11 +49,11 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
     const purchases = this.props.profile.purchases;
 
     const ongoingPuchases: PurchaseType[] = purchases.filter((purchase) => {
-      return (purchase.state === "ONGOING" || purchase.state === "CREATED"  || purchase.state === "ERRORED")
+      return (purchase.state === PurchaseStateType.ONGOING || purchase.state === PurchaseStateType.CREATED || purchase.state === PurchaseStateType.ERRORED)
     });
 
     const completedPurchases: PurchaseType[] = purchases.filter((purchase) => {
-      return (purchase.state !== "ONGOING" && purchase.state !== "CREATED" && purchase.state !== "ERRORED")
+      return (purchase.state !== PurchaseStateType.ONGOING && purchase.state !== PurchaseStateType.CREATED && purchase.state !== PurchaseStateType.ERRORED)
     });
 
     if (!purchases.length) {
@@ -71,7 +71,7 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
         <div className="application-sub-panel">
           <h3 className="application-sub-panel__header">{this.props.i18n.text.get('plugin.profile.purchases.activeOrder')}</h3>
           <div className="application-sub-panel__body">
-            {ongoingPuchases.length ?
+            {ongoingPuchases.length > 0 ?
               <ApplicationList>
                 {ongoingPuchases.map((p) => {
                   return (
@@ -91,7 +91,7 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
                               : null}
                           </span>
 
-                          {p.state === "CREATED" || p.state === "ONGOING" ?
+                          {p.state === PurchaseStateType.CREATED || p.state === PurchaseStateType.ONGOING ?
                             <span className="application-list__header-primary-actions">
                               <Button
                                 icon="forward"
@@ -100,7 +100,7 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
                               </Button>
                             </span> : null}
 
-                            {p.state === "ERRORED" || p.state === "CANCELLED" || p.state === "PAID" ?
+                            {p.state === PurchaseStateType.ERRORED || p.state === PurchaseStateType.CANCELLED || p.state === PurchaseStateType.PAID ?
                             <span className="application-list__header-primary-actions">
                               <CommunicatorNewMessage extraNamespace="ceepos-error"
                                 initialSelectedItems={[{
@@ -135,7 +135,7 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
 
         <div className="application-sub-panel">
           <h3 className="application-sub-panel__header">{this.props.i18n.text.get('plugin.profile.purchases.orderHistory')}</h3>
-          {completedPurchases.length ?
+          {completedPurchases.length > 0 ?
             <div className="application-sub-panel__body">
               <ApplicationList>
                 {completedPurchases.map((p) => {

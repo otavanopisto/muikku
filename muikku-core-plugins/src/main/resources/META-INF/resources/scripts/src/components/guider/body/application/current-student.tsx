@@ -52,8 +52,8 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
     //a case where the property is not available
     //You can use the cheat && after the property
     //eg. guider.currentStudent.property && guider.currentStudent.property.useSubProperty
-    let defaultEmailAddress = this.props.guider.currentStudent.emails && this.props.guider.currentStudent.emails.find((e) => e.defaultAddress);
-    let studentBasicHeader = this.props.guider.currentStudent.basic && <div className="application-sub-panel__header">
+    const defaultEmailAddress = this.props.guider.currentStudent.emails && this.props.guider.currentStudent.emails.find((e) => e.defaultAddress);
+    const studentBasicHeader = this.props.guider.currentStudent.basic && <div className="application-sub-panel__header">
       <object
         className="avatar-container"
         role="img"
@@ -71,14 +71,14 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
       </div>
     </div>
 
-    let studentLabels = this.props.guider.currentStudent.labels && this.props.guider.currentStudent.labels.map((label: GuiderStudentUserProfileLabelType) => {
+    const studentLabels = this.props.guider.currentStudent.labels && this.props.guider.currentStudent.labels.map((label: GuiderStudentUserProfileLabelType) => {
       return <span className="label" key={label.id}>
         <span className="label__icon icon-flag" style={{ color: label.flagColor }}></span>
         <span className="label__text">{label.flagName}</span>
       </span>
     });
 
-    let studentBasicInfo = this.props.guider.currentStudent.basic && <div className="application-sub-panel__body">
+    const studentBasicInfo = this.props.guider.currentStudent.basic && <div className="application-sub-panel__body">
       <div className="application-sub-panel__item">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.studyStartDateTitle")}</div>
         <div className="application-sub-panel__item-data">
@@ -153,7 +153,7 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
       })}
     </div>
 
-    let studentHops = (this.props.guider.currentStudent.hops && this.props.guider.currentStudent.hops.optedIn) ?
+    const studentHops = (this.props.guider.currentStudent.hops && this.props.guider.currentStudent.hops.optedIn) ?
       <Hops data={this.props.guider.currentStudent.hops} /> : null;
 
     let studentVops = null;
@@ -161,16 +161,16 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
     // (this.props.guider.currentStudent.vops && this.props.guider.currentStudent.vops.optedIn) ?
     //        <Vops data={this.props.guider.currentStudent.vops}></Vops> : null;
 
-    let studentWorkspaces = <Workspaces />;
+    const studentWorkspaces = <Workspaces />;
 
-    let formDataGenerator = (file: File, formData: FormData) => {
+    const formDataGenerator = (file: File, formData: FormData) => {
       formData.append("upload", file);
       formData.append("title", file.name);
       formData.append("description", "");
       formData.append("userIdentifier", this.props.guider.currentStudent.basic.id);
     }
 
-    let files = this.props.guider.currentStudent.basic && <div className="application-sub-panel__body">
+    const files = this.props.guider.currentStudent.basic && <div className="application-sub-panel__body">
       <FileUploader url="/transcriptofrecordsfileupload/" formDataGenerator={formDataGenerator}
         displayNotificationOnError onFileSuccess={(file: File, data: UserFileType) => {
           this.props.addFileToCurrentStudent(data);
@@ -182,6 +182,19 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
         notificationOfSuccessText={this.props.i18n.text.get("plugin.guider.fileUpload.successful")} displayNotificationOnSuccess />
     </div>
 
+    const IsStudentPartOfProperStudyProgram = (studyProgramName: string) =>{
+      switch (studyProgramName) {
+        case "Nettilukio/yksityisopiskelu (aineopintoina)":
+        case "Nettilukio/yksityisopiskelu (tutkinto)":
+        case "Aineopiskelu/lukio":
+        case "Aineopiskelu/peruskoulu":
+        case "Aineopiskelu/yo-tutkinto":
+          return true;
+        default:
+          return false;
+      }
+    };
+
     return <div className="react-required-container">
       <div className="application-sub-panel application-sub-panel--guider-student-header">
         {studentBasicHeader}
@@ -192,18 +205,13 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
       <div className="application-sub-panel">
         {studentBasicInfo}
       </div>
-      {this.props.guider.currentStudent.basic && (this.props.guider.currentStudent.basic.studyProgrammeName === "Nettilukio/yksityisopiskelu (aineopintoina)" ||
-        this.props.guider.currentStudent.basic.studyProgrammeName === "Nettilukio/yksityisopiskelu (tutkinto)" ||
-        this.props.guider.currentStudent.basic.studyProgrammeName === "Aineopiskelu/lukio" ||
-        this.props.guider.currentStudent.basic.studyProgrammeName === "Aineopiskelu/peruskoulu" ||
-        this.props.guider.currentStudent.basic.studyProgrammeName === "Aineopiskelu/yo-tutkinto") &&
+      {this.props.guider.currentStudent.basic && IsStudentPartOfProperStudyProgram(this.props.guider.currentStudent.basic.studyProgrammeName) ?
         <div className="application-sub-panel">
           <h3 className="application-sub-panel__header">{this.props.i18n.text.get("plugin.guider.user.details.purchases")}</h3>
           <div className="application-sub-panel__body">
             <Ceepos />
           </div>
-        </div>
-      }
+        </div> : null}
       {studentHops ? <div className="application-sub-panel">
         <h3 className="application-sub-panel__header">{this.props.i18n.text.get("plugin.guider.user.details.hops")}</h3>
         {studentHops}

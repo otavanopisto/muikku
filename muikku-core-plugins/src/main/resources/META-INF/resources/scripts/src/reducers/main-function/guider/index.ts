@@ -100,14 +100,14 @@ export interface GuiderStudentUserProfileLabelType {
 }
 
 function sortLabels(labelA: GuiderUserLabelType, labelB: GuiderUserLabelType) {
-  let labelAUpperCase = labelA.name.toUpperCase();
-  let labelBUpperCase = labelB.name.toUpperCase();
+  const labelAUpperCase = labelA.name.toUpperCase();
+  const labelBUpperCase = labelB.name.toUpperCase();
   return (labelAUpperCase < labelBUpperCase) ? -1 : (labelAUpperCase > labelBUpperCase) ? 1 : 0;
 }
 
 function sortOrders(a: PurchaseType, b: PurchaseType) {
-  let dateA = new Date(a.created).getTime();
-  let dateB = new Date(b.created).getTime();
+  const dateA = new Date(a.created).getTime();
+  const dateB = new Date(b.created).getTime();
   return dateA > dateB ? -1 : 1;
 };
 

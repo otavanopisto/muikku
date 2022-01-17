@@ -105,13 +105,13 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
     }
     this.loadedLibs.push(url);
 
-    if(type === "styleSheet") {
-      let styleSheet = document.createElement("link");
+    if(type && type === "styleSheet") {
+      const styleSheet = document.createElement("link");
       styleSheet.href = url;
       styleSheet.rel = "styleSheet";
       document.head.appendChild(styleSheet);
     } else {
-      let script = document.createElement("script");
+      const script = document.createElement("script");
       script.src = url;
       document.head.appendChild(script);
     }

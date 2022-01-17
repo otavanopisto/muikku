@@ -35,11 +35,11 @@ interface CeeposProps {
 }
 
 interface CeeposState {
-  isConfirmDialogOpenFor: PurchaseProductType;
+  isConfirmDialogOpenFor: PurchaseProductType | null;
   isDeleteDialogOpen: boolean;
-  orderToBeDeleted: PurchaseType;
+  orderToBeDeleted: PurchaseType | null;
   isCompleteDialogOpen: boolean;
-  orderToBeCompleted: PurchaseType;
+  orderToBeCompleted: PurchaseType | null;
 }
 
 class Ceepos extends React.Component<CeeposProps, CeeposState> {
@@ -48,9 +48,9 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
 
     this.state = {
       isConfirmDialogOpenFor: null,
-      isDeleteDialogOpen: null,
+      isDeleteDialogOpen: false,
       orderToBeDeleted: null,
-      isCompleteDialogOpen: null,
+      isCompleteDialogOpen: false,
       orderToBeCompleted: null,
     }
 
