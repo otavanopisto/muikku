@@ -147,6 +147,7 @@ public class IndexedWorkspace {
     this.viewLink = viewLink;
   }
 
+  @IndexField (toId = true)
   public SchoolDataIdentifier getWorkspaceTypeId() {
     return workspaceTypeId;
   }
