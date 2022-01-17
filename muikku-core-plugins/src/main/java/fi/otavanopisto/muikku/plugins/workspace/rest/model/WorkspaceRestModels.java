@@ -22,7 +22,7 @@ public class WorkspaceRestModels {
       workspaceLengthUnit = lengthUnit != null ? new WorkspaceLengthUnitRestModel(lengthUnit.getIdentifier(), lengthUnit.getSymbol(), lengthUnit.getName()) : null;
     }
 
-    return new WorkspaceSubjectRestModel(subject, workspaceSubject.getLength(), workspaceLengthUnit);
+    return new WorkspaceSubjectRestModel(workspaceSubject.getIdentifier(), subject, workspaceSubject.getLength(), workspaceLengthUnit);
   }
   
 }
