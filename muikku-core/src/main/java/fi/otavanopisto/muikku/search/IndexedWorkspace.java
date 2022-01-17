@@ -283,6 +283,14 @@ public class IndexedWorkspace {
     this.signupPermissionGroups = signupPermissionGroups;
   }
 
+  public String getEducationTypeName() {
+    return educationTypeName;
+  }
+
+  public void setEducationTypeName(String educationTypeName) {
+    this.educationTypeName = educationTypeName;
+  }
+
   private SchoolDataIdentifier identifier;
   private String name;
   private String nameExtension;
@@ -290,6 +298,7 @@ public class IndexedWorkspace {
   private SchoolDataIdentifier workspaceTypeId;
   private String description;
   private SchoolDataIdentifier educationTypeIdentifier;
+  private String educationTypeName;
   private SchoolDataIdentifier educationSubtypeIdentifier;
   private SchoolDataIdentifier organizationIdentifier;
   private Date lastModified;

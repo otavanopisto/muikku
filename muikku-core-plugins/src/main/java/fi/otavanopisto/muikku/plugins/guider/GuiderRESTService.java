@@ -52,6 +52,7 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestController;
 import fi.otavanopisto.muikku.plugins.assessmentrequest.WorkspaceAssessmentState;
+import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
 import fi.otavanopisto.muikku.plugins.timed.notifications.AssesmentRequestNotificationController;
 import fi.otavanopisto.muikku.plugins.timed.notifications.NoPassedCoursesNotificationController;
 import fi.otavanopisto.muikku.plugins.timed.notifications.StudyTimeLeftNotificationController;
@@ -66,6 +67,7 @@ import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivity;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
@@ -105,6 +107,9 @@ public class GuiderRESTService extends PluginRESTService {
 
   @Inject
   private GuiderController guiderController;
+
+  @Inject
+  private EvaluationController evaluationController;
   
   @Inject
   private AssessmentRequestController assessmentRequestController;
@@ -540,6 +545,44 @@ public class GuiderRESTService extends PluginRESTService {
         .cacheControl(cacheControl)
         .tag(tag)
         .build();
+  }
+  
+  @GET
+  @Path("/users/{USERIDENTIFIER}/workspaceActivity")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response listWorkspaceActivities(
+      @PathParam("USERIDENTIFIER") String userIdentifier,
+      @QueryParam("workspaceIdentifier") String wsIdentifier,
+      @QueryParam("includeTransferCredits") boolean includeTransferCredits,
+      @QueryParam("includeAssignmentStatistics") boolean includeAssignmentStatistics) {
+    
+    // Access check
+    
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(userIdentifier);
+    if (studentIdentifier == null) {
+      return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Invalid studentIdentifier %s", userIdentifier)).build();
+    }
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.GET_WORKSPACE_ACTIVITY)) {
+      if (!sessionController.getLoggedUser().equals(studentIdentifier)) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    }
+    
+    // Optional workspace filter
+    
+    SchoolDataIdentifier workspaceIdentifier = null;
+    if (!StringUtils.isEmpty(wsIdentifier)) {
+      workspaceIdentifier = SchoolDataIdentifier.fromId(wsIdentifier);
+    }
+    
+    // Activity data
+    
+    List<WorkspaceActivity> activities = evaluationController.listWorkspaceActivities(
+        studentIdentifier,
+        workspaceIdentifier,
+        includeTransferCredits,
+        includeAssignmentStatistics);
+    return Response.ok(activities).build();
   }
 
   @GET

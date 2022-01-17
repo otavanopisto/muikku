@@ -119,6 +119,7 @@ import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReplyStat
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNodeType;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceRootFolder;
+import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceBasicInfo;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceCompositeReply;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceDetails;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceEntityFileRESTModel;
@@ -128,6 +129,7 @@ import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceJournalEntry
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterialCompositeReply;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterialFieldAnswer;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterialReply;
+import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRESTModelController;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceStaffMember;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceStudentRestModel;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceUserRestModel;
@@ -198,6 +200,9 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @Inject
   private WorkspaceUserEntityController workspaceUserEntityController;
+
+  @Inject
+  private WorkspaceRESTModelController workspaceRESTModelController;
   
   @Inject
   private SessionController sessionController;
@@ -737,11 +742,33 @@ public class WorkspaceRESTService extends PluginRESTService {
   }
   
   @GET
+  @Path("/workspaces/{URLNAME}/basicInfo")
+  @RESTPermit (handling = Handling.INLINE)
+  public Response getWorkspaceBasicInfo(@PathParam("URLNAME") String urlName) {
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityByUrlName(urlName);
+      if (workspaceEntity == null) {
+        return Response.status(Status.NOT_FOUND).build();
+      }
+      WorkspaceBasicInfo workspaceBasicInfo = workspaceRESTModelController.workspaceBasicInfo(workspaceEntity.getId());
+      if (workspaceBasicInfo == null) {
+        return Response.status(Status.NOT_FOUND).build();
+      }
+
+      return Response.ok(workspaceBasicInfo).build();
+    }
+    finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
+  }
+  
+  @GET
   @Path("/workspaces/{ID}/additionalInfo")
   @RESTPermit (handling = Handling.INLINE)
   public Response getWorkspaceAdditionalInfo(@PathParam("ID") Long workspaceEntityId) {
-	schoolDataBridgeSessionController.startSystemSession();
-	try {
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
       WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
       if (workspaceEntity == null) {
         return Response.status(Status.NOT_FOUND).build();
@@ -751,19 +778,20 @@ public class WorkspaceRESTService extends PluginRESTService {
       if (workspace == null) {
         return Response.status(Status.NOT_FOUND).build();
       }
-    
+
       String typeId = workspace.getWorkspaceTypeId() != null ? workspace.getWorkspaceTypeId().toId() : null;
-      
-      EducationType educationTypeObject = workspace.getEducationTypeIdentifier() == null ? null : courseMetaController.findEducationType(workspace.getEducationTypeIdentifier());
-    
-      Map<String, Object> result= new HashMap<>();
+
+      EducationType educationTypeObject = workspace.getEducationTypeIdentifier() == null ? null
+          : courseMetaController.findEducationType(workspace.getEducationTypeIdentifier());
+
+      Map<String, Object> result = new HashMap<>();
       result.put("beginDate", workspace.getBeginDate());
       result.put("endDate", workspace.getEndDate());
       result.put("viewLink", workspace.getViewLink());
       result.put("workspaceTypeId", typeId);
       result.put("educationType", educationTypeObject);
       if (typeId != null) {
-        WorkspaceType workspaceType = workspaceController.findWorkspaceType(workspace.getWorkspaceTypeId()); 
+        WorkspaceType workspaceType = workspaceController.findWorkspaceType(workspace.getWorkspaceTypeId());
         result.put("workspaceType", workspaceType.getName());
       } else {
         result.put("workspaceType", null);
@@ -771,33 +799,32 @@ public class WorkspaceRESTService extends PluginRESTService {
 
       List<Object> resultWorkspaceSubjects = new ArrayList<>();
       result.put("subjects", resultWorkspaceSubjects);
-      
+
       for (WorkspaceSubject workspaceSubject : workspace.getSubjects()) {
         Map<String, Object> workspaceSubjectResult = new HashMap<>();
 
         Subject subjectObject = courseMetaController.findSubject(workspaceSubject.getSubjectIdentifier());
         workspaceSubjectResult.put("subject", subjectObject);
-        
+
         CourseLengthUnit lengthUnit = null;
         if ((workspaceSubject.getLength() != null) && (workspaceSubject.getLengthUnitIdentifier() != null)) {
           lengthUnit = courseMetaController.findCourseLengthUnit(workspaceSubject.getLengthUnitIdentifier());
         }
-      
+
         workspaceSubjectResult.put("courseLengthSymbol", lengthUnit);
         if (lengthUnit != null) {
           workspaceSubjectResult.put("courseLength", workspaceSubject.getLength());
         } else {
           workspaceSubjectResult.put("courseLength", null);
         }
-        
+
         resultWorkspaceSubjects.add(workspaceSubjectResult);
       }
-      
 
-      return Response.ok(result).build(); 
-	} finally {
-	  schoolDataBridgeSessionController.endSystemSession();
-	}
+      return Response.ok(result).build();
+    } finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
   }
   
   @GET
@@ -1325,7 +1352,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     result.put("assignmentsDone", assignmentsDone);
     
     return Response.ok(result).build();
-}
+  }
   
   @GET
   @Path("/workspaces/{ID}/feeInfo")
@@ -1731,13 +1758,11 @@ public class WorkspaceRESTService extends PluginRESTService {
 
       if (assignmentType != null) {
         workspaceMaterials = workspaceMaterialController.listWorkspaceMaterialsByParentAndAssignmentType(parent, workspaceEntity, workspaceAssignmentType, BooleanPredicate.IGNORE);
-        workspaceMaterials.removeIf(material -> isHiddenMaterial(material));
       } else {
         workspaceMaterials = workspaceMaterialController.listWorkspaceMaterialsByParent(parent);
       }
     } else {
       workspaceMaterials = workspaceMaterialController.listWorkspaceMaterialsByAssignmentType(workspaceEntity, workspaceAssignmentType, BooleanPredicate.IGNORE);
-      workspaceMaterials.removeIf(material -> isHiddenMaterial(material));
     }
     
     if (workspaceMaterials.isEmpty()) {
@@ -1775,28 +1800,6 @@ public class WorkspaceRESTService extends PluginRESTService {
     
     return Response.ok(workspaceMaterials).build();
   } 
-
-  private boolean isHiddenMaterial(WorkspaceMaterial workspaceMaterial) {
-    if (workspaceMaterial.getHidden()) {
-      UserEntity userEntity = sessionController.getLoggedUserEntity();
-      if (userEntity != null) {
-        fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply workspaceMaterialReply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, userEntity);
-        if (workspaceMaterialReply != null) {
-          WorkspaceMaterialReplyState replyState = workspaceMaterialReply.getState();
-          if (replyState == WorkspaceMaterialReplyState.SUBMITTED ||
-              replyState == WorkspaceMaterialReplyState.PASSED ||
-              replyState == WorkspaceMaterialReplyState.FAILED ||
-              replyState == WorkspaceMaterialReplyState.INCOMPLETE) {
-            return false;
-          }
-        }
-      }
-      
-      return true;
-    } else {
-      return false;
-    }
-  }
 
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/materials/{ID}")
@@ -1903,7 +1906,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     List<WorkspaceCompositeReply> result = new ArrayList<>();
     
     try {
-      List<fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply> replies = workspaceMaterialReplyController.listVisibleWorkspaceMaterialRepliesByWorkspaceEntity(workspaceEntity, userEntity);
+      List<fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply> replies = workspaceMaterialReplyController.listWorkspaceMaterialRepliesByWorkspaceEntity(workspaceEntity, userEntity);
       
       for (fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply reply : replies) {
         List<WorkspaceMaterialFieldAnswer> answers = new ArrayList<>();

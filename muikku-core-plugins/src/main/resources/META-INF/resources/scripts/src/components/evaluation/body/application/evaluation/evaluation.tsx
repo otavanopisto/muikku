@@ -28,7 +28,10 @@ import {
 } from "~/actions/main-function/evaluation/evaluationActions";
 import "~/sass/elements/assignment.scss";
 import "~/sass/elements/empty.scss";
-import { WorkspaceType } from "~/reducers/workspaces";
+import {
+  MaterialCompositeRepliesType,
+  WorkspaceType,
+} from "~/reducers/workspaces";
 import Link from "~/components/general/link";
 
 interface EvaluationDrawerProps {
@@ -233,6 +236,18 @@ export class Evaluation extends React.Component<
 
       return indexOfLatestEvaluatedEvent;
     }
+  };
+
+  /**
+   * Shows hidden evaluation assignment if its hasbeen submitted and assignment
+   * is set to be hidden
+   * @param compositeReply assignment compositereply
+   * @returns boolean whether to show assignment or not
+   */
+  showAsHiddenEvaluationAssignment = (
+    compositeReply?: MaterialCompositeRepliesType
+  ): boolean => {
+    return compositeReply && compositeReply.submitted !== null;
   };
 
   /**
@@ -553,20 +568,52 @@ export class Evaluation extends React.Component<
         .length > 0 ? (
         this.props.evaluation.evaluationCurrentStudentAssigments.data.assigments.map(
           (item, i) => {
+            /**
+             * Possible composite reply
+             */
+            const compositeReply =
+              this.props.evaluation.evaluationCompositeReplies &&
+              this.props.evaluation.evaluationCompositeReplies.data &&
+              this.props.evaluation.evaluationCompositeReplies.data.find(
+                (cReply) => cReply.workspaceMaterialId === item.id
+              );
+
+            let showAsHidden = false;
+
+            /**
+             * If item is set to be hidden check is student has submitted it before
+             * it was set to hidden
+             */
+            if (item.hidden) {
+              showAsHidden =
+                this.showAsHiddenEvaluationAssignment(compositeReply);
+            }
+
+            /**
+             * Don't show assignment
+             */
+            if (item.hidden && !showAsHidden) {
+              return null;
+            }
+
+            const workspace = workspaces.find(
+              (eWorkspace) =>
+                eWorkspace.id ===
+                this.props.evaluation.evaluationSelectedAssessmentId
+                  .workspaceEntityId
+            );
+
             const open = this.state.listOfAssignmentIds.includes(item.id);
 
             return (
               <EvaluationAssessmentAssignment
                 key={i}
-                workspace={workspaces.find(
-                  (eWorkspace) =>
-                    eWorkspace.id ===
-                    this.props.evaluation.evaluationSelectedAssessmentId
-                      .workspaceEntityId
-                )}
+                workspace={workspace}
                 open={open}
-                onClickOpen={this.handleOpenMaterialClick}
                 assigment={item}
+                compositeReply={compositeReply}
+                showAsHidden={showAsHidden}
+                onClickOpen={this.handleOpenMaterialClick}
                 onSave={this.handleCloseSpecificMaterialContent}
               />
             );

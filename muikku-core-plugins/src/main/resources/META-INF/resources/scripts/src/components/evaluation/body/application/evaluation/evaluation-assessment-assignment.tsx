@@ -40,6 +40,8 @@ interface EvaluationAssessmentAssignmentProps {
   i18n: i18nType;
   evaluations: EvaluationState;
   updateOpenedAssignmentEvaluation: UpdateOpenedAssignmentEvaluationId;
+  showAsHidden: boolean;
+  compositeReply?: MaterialCompositeRepliesType;
   onClickOpen?: (id: number) => void;
   onSave?: (materialId: number) => void;
 }
@@ -373,7 +375,7 @@ class EvaluationAssessmentAssignment extends React.Component<
    * renderAssignmentStatus
    * @returns JSX.Element
    */
-  renderAssignmentMeta = (compositeReply: MaterialCompositeRepliesType) => {
+  renderAssignmentMeta = (compositeReply?: MaterialCompositeRepliesType) => {
     if (compositeReply) {
       const { evaluationInfo } = compositeReply;
 
@@ -494,13 +496,8 @@ class EvaluationAssessmentAssignment extends React.Component<
   };
 
   render() {
+    const { compositeReply, showAsHidden } = this.props;
     const materialTypeClass = this.materialTypeClass();
-    const compositeReply =
-      this.props.evaluations.evaluationCompositeReplies &&
-      this.props.evaluations.evaluationCompositeReplies.data &&
-      this.props.evaluations.evaluationCompositeReplies.data.find(
-        (cReply) => cReply.workspaceMaterialId === this.props.assigment.id
-      );
 
     const recordings =
       compositeReply &&
@@ -545,6 +542,11 @@ class EvaluationAssessmentAssignment extends React.Component<
       evaluationTitleClassMod = "active-dialog";
     }
 
+    const materialPageType =
+      this.props.assigment.assignmentType === "EVALUATED"
+        ? "assignment"
+        : "excercise";
+
     return (
       <div className={`evaluation-modal__item `}>
         <div
@@ -563,6 +565,14 @@ class EvaluationAssessmentAssignment extends React.Component<
                         }`}
           >
             {this.props.assigment.title}
+
+            {showAsHidden && (
+              <div className="evaluation-modal__item-hidden">
+                {this.props.i18n.text.get(
+                  `plugin.evaluation.evaluationModal.${materialPageType}HiddenButAnswered`
+                )}
+              </div>
+            )}
 
             {this.renderAssignmentMeta(compositeReply)}
           </div>

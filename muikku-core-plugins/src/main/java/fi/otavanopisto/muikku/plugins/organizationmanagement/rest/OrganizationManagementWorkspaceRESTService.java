@@ -267,22 +267,8 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
               String name = (String) result.get("name");
               String nameExtension = (String) result.get("nameExtension");
               String description = (String) result.get("description");
-              String educationTypeId = (String) result.get("educationTypeIdentifier");
-              String educationTypeName = null;
+              String educationTypeName = (String) result.get("educationTypeName");
               
-              if (StringUtils.isNotBlank(educationTypeId)) {
-                EducationType educationType = null;
-                SchoolDataIdentifier educationTypeIdentifier = SchoolDataIdentifier.fromId(educationTypeId);
-                if (educationTypeIdentifier == null) {
-                  logger.severe(String.format("Malformed educationTypeIdentifier %s", educationTypeId));
-                } else {
-                  educationType = courseMetaController.findEducationType(educationTypeIdentifier.getDataSource(), educationTypeIdentifier.getIdentifier());
-                }
-                
-                if (educationType != null) {
-                  educationTypeName = educationType.getName();
-                }
-              }
               if (StringUtils.isNotBlank(name)) {
                 workspaces.add(createRestModel(workspaceEntity, name, nameExtension, description, educationTypeName));
               } else {

@@ -116,7 +116,7 @@ public class WorklistRESTService {
   @RESTPermit(MuikkuPermissions.LIST_WORKLISTITEMTEMPLATES)
   public Response listWorklistItemTemplates() {
     
-    if (!worklistController.isWorklistActive()) {
+    if (!worklistController.isWorklistAvailable()) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
@@ -172,7 +172,7 @@ public class WorklistRESTService {
   @RESTPermit(MuikkuPermissions.CREATE_WORKLISTITEM)
   public Response createWorklistItem(WorklistItemRestModel item) {
 
-    if (!worklistController.isWorklistActive()) {
+    if (!worklistController.isWorklistAvailable()) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
@@ -206,7 +206,7 @@ public class WorklistRESTService {
   @RESTPermit(MuikkuPermissions.UPDATE_WORKLISTITEM)
   public Response updateWorklistItem(WorklistItemRestModel item) {
 
-    if (!worklistController.isWorklistActive()) {
+    if (!worklistController.isWorklistAvailable()) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
@@ -237,7 +237,7 @@ public class WorklistRESTService {
   @RESTPermit(MuikkuPermissions.DELETE_WORKLISTITEM)
   public Response removeWorklistItem(WorklistItemRestModel item) {
 
-    if (!worklistController.isWorklistActive()) {
+    if (!worklistController.isWorklistAvailable()) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
@@ -303,7 +303,7 @@ public class WorklistRESTService {
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response listWorklistItemsByOwnerAndTimeframe(@QueryParam("owner") String identifier, @QueryParam("beginDate") String beginDate, @QueryParam("endDate") String endDate) {
 
-    if (!worklistController.isWorklistActive()) {
+    if (!worklistController.isWorklistAvailable()) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
@@ -320,6 +320,21 @@ public class WorklistRESTService {
     else {
       return Response.status(response.getStatusCode()).entity(response.getMessage()).build();
     }
+  }
+
+  /**
+   * GET mapi().worklist.isAvailable
+   * 
+   * Returns whether worklist functionality is available (for the currently logged in user).
+   * 
+   * Output: true|false
+   */
+  @GET
+  @Path("/isAvailable")
+  @RESTPermit(handling = Handling.INLINE)
+  public Response getIsAvailable() {
+    boolean available = worklistController.isWorklistAvailable() && sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_WORKLIST_BILLING);
+    return Response.ok(available).build();
   }
 
   /**
@@ -348,7 +363,7 @@ public class WorklistRESTService {
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response listWorklistItemsByOwnerAndTimeframe(@QueryParam("owner") String identifier) {
 
-    if (!worklistController.isWorklistActive()) {
+    if (!worklistController.isWorklistAvailable()) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
@@ -387,7 +402,7 @@ public class WorklistRESTService {
   @RESTPermit(MuikkuPermissions.UPDATE_WORKLISTITEM)
   public Response updateWorklistItemsState(WorklistItemStateChangeRestModel stateChange) {
 
-    if (!worklistController.isWorklistActive()) {
+    if (!worklistController.isWorklistAvailable()) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
@@ -460,7 +475,7 @@ public class WorklistRESTService {
   @RESTPermit(MuikkuPermissions.ACCESS_WORKLIST_BILLING)
   public Response getWorkspaceBasePrice(@QueryParam("workspaceEntityId") Long workspaceEntityId) {
 
-    if (!worklistController.isWorklistActive()) {
+    if (!worklistController.isWorklistAvailable()) {
       return Response.status(Status.NOT_FOUND).build();
     }
     
@@ -484,7 +499,7 @@ public class WorklistRESTService {
   @RESTPermit(MuikkuPermissions.ACCESS_WORKLIST_BILLING)
   public Response getWorkspaceBilledPrice(@QueryParam("workspaceEntityId") Long workspaceEntityId, @QueryParam("assessmentIdentifier") String assessmentIdentifier) {
 
-    if (!worklistController.isWorklistActive()) {
+    if (!worklistController.isWorklistAvailable()) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
@@ -514,7 +529,7 @@ public class WorklistRESTService {
   @RESTPermit(MuikkuPermissions.ACCESS_WORKLIST_BILLING)
   public Response getWorkspaceBilledPrice(@QueryParam("workspaceEntityId") Long workspaceEntityId, WorklistItemBilledPriceRestModel payload) {
 
-    if (!worklistController.isWorklistActive()) {
+    if (!worklistController.isWorklistAvailable()) {
       return Response.status(Status.FORBIDDEN).build();
     }
     

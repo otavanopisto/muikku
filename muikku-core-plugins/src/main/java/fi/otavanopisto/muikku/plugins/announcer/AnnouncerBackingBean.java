@@ -9,8 +9,8 @@ import org.ocpsoft.rewrite.annotation.Join;
 import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.otavanopisto.muikku.jsf.NavigationRules;
-import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.security.LoggedIn;
 
 @Named
 @Stateful
@@ -23,26 +23,12 @@ public class AnnouncerBackingBean {
   private SessionController sessionController;
   
   @RequestAction
+  @LoggedIn
   public String init() {
-    
-    UserEntity userEntity = sessionController.getLoggedUserEntity();
-    
-    if (userEntity == null) {
-      return NavigationRules.ACCESS_DENIED;
-    }
-    
     if (!sessionController.hasEnvironmentPermission(AnnouncerPermissions.ANNOUNCER_TOOL)) {
       return NavigationRules.ACCESS_DENIED;
     }
-
     return null;
   }
 
-  public boolean getCanPublishEnvironment() {
-    return sessionController.hasEnvironmentPermission(AnnouncerPermissions.CREATE_ANNOUNCEMENT);
-  }
-  
-  public boolean getCanPublishGroups() {
-    return sessionController.hasEnvironmentPermission(AnnouncerPermissions.CREATE_ANNOUNCEMENT);
-  }
 }

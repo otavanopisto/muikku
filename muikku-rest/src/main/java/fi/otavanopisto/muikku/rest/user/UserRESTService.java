@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.rest.user;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -42,6 +43,9 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.otavanopisto.muikku.controller.PermissionController;
 import fi.otavanopisto.muikku.controller.SystemSettingsController;
@@ -97,6 +101,7 @@ import fi.otavanopisto.muikku.search.SearchResults;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.security.RoleFeatures;
 import fi.otavanopisto.muikku.servlet.BaseUrl;
+import fi.otavanopisto.muikku.session.CurrentUserSession;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.CreatedUserEntityFinder;
 import fi.otavanopisto.muikku.users.FlagController;
@@ -192,7 +197,10 @@ public class UserRESTService extends AbstractRESTService {
   @Inject
   @Any
   private Instance<SearchProvider> searchProviders;
-  
+
+  @Inject
+  private CurrentUserSession currentUserSession;
+
   @GET
   @Path("/property/{KEY}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
@@ -1630,11 +1638,64 @@ public class UserRESTService extends AbstractRESTService {
     String organizationIdentifier = user == null ? null : user.getOrganizationIdentifier().toId();
     String defaultOrganizationIdentifier = systemSettingsController.getSetting("defaultOrganization");
     boolean isDefaultOrganization = user == null ? false : StringUtils.equals(organizationIdentifier,  defaultOrganizationIdentifier);
-
     boolean hasImage = userEntity == null ? false : userEntityFileController.hasProfilePicture(userEntity);
     
+    // Study dates
+
+    OffsetDateTime studyStartDate = user == null ? null : user.getStudyStartDate();
+    OffsetDateTime studyEndDate = user == null ? null : user.getStudyEndDate();
+    OffsetDateTime studyTimeEnd = user == null ? null : user.getStudyTimeEnd();
+    String studyTimeLeftStr = userEntityController.getStudyTimeEndAsString(studyTimeEnd);
+    
+    // Damn emails, addresses, and phoneNumbers as json
+    
+    String emails = null;
+    if (userIdentifier != null) {
+      List<String> foundEmails = userEmailEntityController.getUserEmailAddresses(userIdentifier);
+      try {
+        emails = new ObjectMapper().writeValueAsString(foundEmails);
+      }
+      catch (JsonProcessingException e) {
+        emails = null;
+      }
+    }
+    
+    String addresses = null;
+    if (userIdentifier != null) {
+      List<UserAddress> userAddresses = userController.listUserAddresses(user);
+      ArrayList<String> foundAddresses = new ArrayList<>();
+      for (UserAddress userAddress : userAddresses) {
+        foundAddresses.add(String.format("%s %s %s %s", userAddress.getStreet(), userAddress.getPostalCode(),
+            userAddress.getCity(), userAddress.getCountry()));
+      }
+      try {
+        addresses = new ObjectMapper().writeValueAsString(foundAddresses);
+      } 
+      catch (JsonProcessingException e) {
+        addresses = null;
+      }
+    }
+    
+    String phoneNumbers = null;
+    if (userIdentifier != null) {
+      List<UserPhoneNumber> userPhoneNumbers = userIdentifier == null ? null :  userController.listUserPhoneNumbers(user);
+      ArrayList<String> foundPhoneNumbers = new ArrayList<>();
+      for (UserPhoneNumber userPhoneNumber : userPhoneNumbers) {
+        foundPhoneNumbers.add(userPhoneNumber.getNumber());
+      }
+      try {
+        phoneNumbers = new ObjectMapper().writeValueAsString(foundPhoneNumbers);
+      }
+      catch (JsonProcessingException e) {
+        phoneNumbers = null;
+      }
+    }
+    
+    // Result object
+
     UserWhoAmIInfo whoamiInfo = new UserWhoAmIInfo(
         userEntity == null ? null : userEntity.getId(),
+        userEntity == null ? null : userEntity.defaultSchoolDataIdentifier().toId(),
         user == null ? null : user.getFirstName(),
         user == null ? null : user.getLastName(),
         user == null ? null : user.getNickName(),
@@ -1644,8 +1705,17 @@ public class UserRESTService extends AbstractRESTService {
         user == null ? null : user.getCurriculumIdentifier(),
         organizationIdentifier,
         isDefaultOrganization,
+        currentUserSession.isActive(),
         permissionSet,
-        roleSet); 
+        roleSet,
+        user == null ? null : user.getDisplayName(),
+        emails,
+        addresses,
+        phoneNumbers,
+        studyTimeLeftStr,
+        studyStartDate,
+        studyEndDate,
+        studyTimeEnd); 
 
     return Response.ok(whoamiInfo).build();
   }

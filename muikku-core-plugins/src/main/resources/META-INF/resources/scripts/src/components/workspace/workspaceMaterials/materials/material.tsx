@@ -27,6 +27,7 @@ interface WorkspaceMaterialProps {
   folder: MaterialContentNodeType,
   compositeReplies: MaterialCompositeRepliesType,
   isViewRestricted: boolean,
+  showEvenIfHidden: boolean;
   workspace: WorkspaceType,
   setCurrentWorkspace: SetCurrentWorkspaceTriggerType,
 }

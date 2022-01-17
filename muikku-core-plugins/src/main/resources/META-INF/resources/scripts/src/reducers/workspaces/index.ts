@@ -119,10 +119,6 @@ export interface WorkspaceActivityStatisticsType {
   records: WorkspaceActivityRecordType[];
 }
 
-export interface WorkspaceFeeInfoType {
-  evaluationHasFee: boolean;
-}
-
 export interface WorkspaceJournalType {
   id: number;
   workspaceEntityId: number;
@@ -260,7 +256,6 @@ export interface WorkspaceType {
   studentAssessments?: WorkspaceStudentAssessmentsType;
   studentAssessmentState?: WorkspaceStudentAssessmentStateType;
   activityStatistics?: WorkspaceActivityStatisticsType;
-  feeInfo?: WorkspaceFeeInfoType;
   assessmentRequests?: Array<WorkspaceAssessmentRequestType>;
   additionalInfo?: WorkspaceAdditionalInfoType;
   staffMembers?: WorkspaceStaffListType;

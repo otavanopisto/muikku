@@ -8,7 +8,7 @@ import {
   sendMessage,
 } from "~/actions/main-function/messages/index";
 import { MessageSignatureType } from "~/reducers/main-function/messages";
-import { ContactRecepientType } from "~/reducers/user-index";
+import { ContactRecipientType } from "~/reducers/user-index";
 import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
 import InputContactsAutofill from "~/components/base/input-contacts-autofill";
@@ -27,7 +27,7 @@ interface AnswerMessageDrawerProps {
   replyToAll?: boolean;
   messageId?: number;
   extraNamespace?: string;
-  initialSelectedItems?: Array<ContactRecepientType>;
+  initialSelectedItems?: Array<ContactRecipientType>;
   i18n: i18nType;
   signature: MessageSignatureType;
   sendMessage: SendMessageTriggerType;
@@ -42,7 +42,7 @@ interface AnswerMessageDrawerProps {
 
 interface AnswerMessageDrawerState {
   text: string;
-  selectedItems: Array<ContactRecepientType>;
+  selectedItems: Array<ContactRecipientType>;
   subject: string;
   locked: boolean;
   includesSignature: boolean;
@@ -57,7 +57,7 @@ class AnswerMessageDrawer extends SessionStateComponent<
     super(
       props,
       "communicator-new-message" +
-        (props.extraNamespace ? "-" + props.extraNamespace : "")
+      (props.extraNamespace ? "-" + props.extraNamespace : "")
     );
 
     this.onCKEditorChange = this.onCKEditorChange.bind(this);
@@ -115,7 +115,7 @@ class AnswerMessageDrawer extends SessionStateComponent<
    * setSelectedItems
    * @param selectedItems
    */
-  setSelectedItems(selectedItems: Array<ContactRecepientType>) {
+  setSelectedItems(selectedItems: Array<ContactRecipientType>) {
     this.setStateAndStore({ selectedItems }, getStateIdentifier(this.props));
   }
 
@@ -144,9 +144,9 @@ class AnswerMessageDrawer extends SessionStateComponent<
       text:
         this.props.signature && this.state.includesSignature
           ? this.state.text +
-            '<i class="mf-signature">' +
-            this.props.signature.signature +
-            "</i>"
+          '<i class="mf-signature">' +
+          this.props.signature.signature +
+          "</i>"
           : this.state.text,
       success: () => {
         this.props.onClickCancel && this.props.onClickCancel();
@@ -276,23 +276,23 @@ class AnswerMessageDrawer extends SessionStateComponent<
               autoFocus={!!this.props.initialSelectedItems}
             />
           </div>
-          <div
-            className="env-dialog__row env-dialog__row--ckeditor"
-            key="new-message-3"
-          >
-            <div className="env-dialog__form-element-container">
-              <label className="env-dialog__label">
-                {this.props.i18n.text.get(
-                  "plugin.communicator.createmessage.title.content"
-                )}
-              </label>
-              <CKEditor
-                editorTitle={editorTitle}
-                onChange={this.onCKEditorChange}
-              >
-                {this.state.text}
-              </CKEditor>
-            </div>
+        </div>
+        <div
+          className="env-dialog__row env-dialog__row--ckeditor"
+          key="new-message-3"
+        >
+          <div className="env-dialog__form-element-container">
+            <label className="env-dialog__label">
+              {this.props.i18n.text.get(
+                "plugin.communicator.createmessage.title.content"
+              )}
+            </label>
+            <CKEditor
+              editorTitle={editorTitle}
+              onChange={this.onCKEditorChange}
+            >
+              {this.state.text}
+            </CKEditor>
           </div>
         </div>
         {this.props.signature ? (
@@ -333,6 +333,7 @@ class AnswerMessageDrawer extends SessionStateComponent<
         <Button
           buttonModifiers="dialog-execute"
           onClick={this.sendMessage.bind(this)}
+          disabled={this.state.locked}
         >
           {this.props.i18n.text.get(
             "plugin.communicator.createmessage.button.send"

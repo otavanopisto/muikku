@@ -38,8 +38,8 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
       Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
       mockBuilder
       .addStaffMember(admin)
-      .mockLogin(admin)
       .addCourse(course1)
+      .mockLogin(admin)
       .build();
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
@@ -53,13 +53,12 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
         click(".button-pill--editing-master-switch");
         waitForPresent(".material-admin-panel--master-functions .button-pill__icon.icon-plus");
         click(".material-admin-panel--master-functions .button-pill__icon.icon-plus");
-        waitForPresent(".material-admin-panel--chapter-functions .icon-pencil");
-        click(".material-admin-panel--chapter-functions .icon-pencil");
+        waitAndClickAndConfirm(".material-admin-panel--chapter-functions .icon-pencil", ".material-editor--visible .material-editor__title", 5, 3000);
         waitForVisible(".material-editor--visible .material-editor__title");
         clearElement(".material-editor--visible .material-editor__title");
         sendKeys(".material-editor--visible .material-editor__title", "Test title");
         waitForNotPresent(".button-pill--material-editor-publish-page.button-pill--disabled");
-        waitAndClickAndConfirm(".button-pill__icon.icon-leanpub", ".button-pill--material-editor-publish-page.button-pill--disabled", 5, 500);
+        waitAndClickAndConfirm(".button-pill__icon.icon-leanpub", ".button-pill--material-editor-publish-page.button-pill--disabled", 5, 1000);
         sleep(500);
         waitAndClick(".button-pill--material-page-close-editor");
         waitForNotVisible(".tabs--material-editor");
@@ -89,8 +88,8 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
       Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
       mockBuilder
       .addStaffMember(admin)
-      .mockLogin(admin)
       .addCourse(course1)
+      .mockLogin(admin)
       .build();
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
@@ -112,12 +111,11 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
           selectFinnishLocale();
           waitForPresent(".button-pill--editing-master-switch");
           click(".button-pill--editing-master-switch");
-          waitForClickable(".material-admin-panel--workspace-materials .button-pill--material-management-page");
-          click(".material-admin-panel--workspace-materials .button-pill--material-management-page");
+          waitAndClick(".material-admin-panel--workspace-materials .button-pill--material-management-page");
           waitAndClickXPath("//div[@class='tabs__tab tabs__tab--material-editor tabs__tab--material-editor ' and contains(text(),'Tiedot')]");
           waitForClickable(".material-editor__add-license-container .form-element__select--material-editor");
           selectOption(".material-editor__add-license-container .form-element__select--material-editor", "CC0");
-          waitAndClick(".material-editor__buttonset-secondary .icon-leanpub");
+          waitAndClickAndConfirm(".material-editor__buttonset-secondary .icon-leanpub", ".material-editor__buttonset-secondary .button-pill--disabled .icon-leanpub", 5, 1000);
           waitForPresent(".material-editor__buttonset-secondary .button-pill--disabled .icon-leanpub");
           waitAndClick(".button-pill--material-page-close-editor .icon-arrow-left");
           waitForPresent(".material-page__metadata-container .material-page__license-item");
@@ -151,8 +149,8 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
         Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
         mockBuilder
         .addStaffMember(admin)
-        .mockLogin(admin)
         .addCourse(course1)
+        .mockLogin(admin)
         .build();
         login();
         Workspace workspace = createWorkspace(course1, Boolean.TRUE);
@@ -174,8 +172,7 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
           selectFinnishLocale();
           waitForPresent(".button-pill--editing-master-switch");
           click(".button-pill--editing-master-switch");
-          waitForClickable(".material-admin-panel--workspace-materials .button-pill--material-management-page");
-          click(".material-admin-panel--workspace-materials .button-pill--material-management-page");
+          waitAndClick(".material-admin-panel--workspace-materials .button-pill--material-management-page");
           waitAndClickXPath("//div[@class='tabs__tab tabs__tab--material-editor tabs__tab--material-editor ' and contains(text(),'Tiedot')]");
           waitForClickable(".material-editor__add-license-container .form-element__select--material-editor");
           selectOption(".material-editor__add-license-container .form-element__select--material-editor", "CC4");
@@ -213,8 +210,8 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
       Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
       mockBuilder
       .addStaffMember(admin)
-      .mockLogin(admin)
       .addCourse(course1)
+      .mockLogin(admin)
       .build();
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
@@ -236,12 +233,11 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
           selectFinnishLocale();
           waitForPresent(".button-pill--editing-master-switch");
           click(".button-pill--editing-master-switch");
-          waitForClickable(".material-admin-panel--workspace-materials .button-pill--material-management-page");
-          click(".material-admin-panel--workspace-materials .button-pill--material-management-page");
+          waitAndClick(".material-admin-panel--workspace-materials .button-pill--material-management-page");
           waitAndClickXPath("//div[@class='tabs__tab tabs__tab--material-editor tabs__tab--material-editor ' and contains(text(),'Tiedot')]");
           waitForClickable(".material-editor__add-license-container .form-element__select--material-editor");
           selectOption(".material-editor__add-license-container .form-element__select--material-editor", "CC3");
-          waitAndClick(".material-editor__buttonset-secondary .icon-leanpub");
+          waitAndClickAndConfirm(".material-editor__buttonset-secondary .icon-leanpub", ".material-editor__buttonset-secondary .button-pill--disabled .icon-leanpub", 5, 1000);
           waitForPresent(".material-editor__buttonset-secondary .button-pill--disabled .icon-leanpub");
           waitAndClick(".button-pill--material-page-close-editor .icon-arrow-left");
           waitForPresent(".material-page__metadata-container .material-page__license-item");
@@ -274,8 +270,8 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
       Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
       mockBuilder
       .addStaffMember(admin)
-      .mockLogin(admin)
       .addCourse(course1)
+      .mockLogin(admin)
       .build();
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
@@ -297,8 +293,7 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
           selectFinnishLocale();
           waitForPresent(".button-pill--editing-master-switch");
           click(".button-pill--editing-master-switch");
-          waitForClickable(".material-admin-panel--workspace-materials .button-pill--material-management-page");
-          click(".material-admin-panel--workspace-materials .button-pill--material-management-page");
+          waitAndClick(".material-admin-panel--workspace-materials .button-pill--material-management-page");
           waitAndClickXPath("//div[@class='tabs__tab tabs__tab--material-editor tabs__tab--material-editor ' and contains(text(),'Tiedot')]");
           waitForClickable(".material-editor__add-license-container .form-element__select--material-editor");
           selectOption(".material-editor__add-license-container .form-element__select--material-editor", "text_or_link");
@@ -337,8 +332,8 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
       Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
       mockBuilder
       .addStaffMember(admin)
-      .mockLogin(admin)
       .addCourse(course1)
+      .mockLogin(admin)
       .build();
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
@@ -361,8 +356,8 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
         click(".dropdown--material-management.visible .dropdown__container-item:nth-child(2)");
         waitForPresent(".material-admin-panel--workspace-materials .button-pill--material-management-page:first-child");
         click(".material-admin-panel--workspace-materials .button-pill--material-management-page:first-child");
-        waitForClickable(".material-editor--visible .material-editor__title");
         waitForPresent(".material-editor--visible .material-editor__title");
+        waitForClickable(".material-editor--visible .material-editor__title");
         clearElement(".material-editor--visible .material-editor__title");
         sendKeys(".material-editor--visible .material-editor__title", "Test page title");
         addTextToCKEditor(contentInput);
@@ -398,8 +393,8 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
       Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
       mockBuilder
       .addStaffMember(admin)
-      .mockLogin(admin)
       .addCourse(course1)
+      .mockLogin(admin)
       .build();
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
@@ -419,12 +414,11 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
           selectFinnishLocale();
           waitForPresent(".button-pill--editing-master-switch");
           click(".button-pill--editing-master-switch");
-          waitForClickable(".material-admin-panel--workspace-materials .button-pill--material-management-page");
-          click(".material-admin-panel--workspace-materials .button-pill--material-management-page");
+          waitAndClick(".material-admin-panel--workspace-materials .button-pill--material-management-page");
           waitAndClickXPath("//div[@class='tabs__tab tabs__tab--material-editor tabs__tab--material-editor ' and contains(text(),'Tiedot')]");
           waitForClickable(".form-element__input--add-material-producer");
           sendKeys(".form-element__input--add-material-producer", "Test Producer Testalomente");
-          click(".add-producer--add-material-producer .form-element__input-decoration--add-material-producer.icon-plus");
+          waitAndClick(".add-producer--add-material-producer .form-element__input-decoration--add-material-producer.icon-plus");
           sleep(500);
           waitAndClick(".material-editor__buttonset-secondary .icon-leanpub");
           waitForPresent(".material-editor__buttonset-secondary .button-pill--disabled .icon-leanpub");
@@ -479,14 +473,10 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForPresent(".button-pill--editing-master-switch");
           click(".button-pill--editing-master-switch");
-          waitForClickable(".material-admin-panel--workspace-materials .button-pill--material-management-page");
-          click(".material-admin-panel--workspace-materials .button-pill--material-management-page");          
-          waitAndClick(".icon-puzzle");
-          sleep(500);
-          waitAndClick(".material-editor__buttonset-secondary .icon-leanpub");
-          waitForPresent(".material-editor__buttonset-secondary .button-pill--disabled .icon-leanpub");
-          waitAndClick(".button-pill--material-page-close-editor .icon-arrow-left");
-          waitForPresent(".material-page--assignment .button--muikku-submit-assignment");
+          waitAndClick(".material-admin-panel--workspace-materials .button-pill--material-management-page");
+          waitAndClickAndConfirm(".icon-puzzle", ".button-pill--material-editor-assignment", 5, 2000);
+          waitAndClickAndConfirm(".material-editor__buttonset-secondary .icon-leanpub", ".material-editor__buttonset-secondary .button-pill--disabled .icon-leanpub", 5, 2000);
+          waitAndClickAndConfirmVisibilityGoesAway(".button-pill--material-page-close-editor .icon-arrow-left", ".button-pill--material-page-close-editor .icon-arrow-left", 5, 3000);
           assertVisible(".material-page--assignment .button--muikku-submit-assignment");
         } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());

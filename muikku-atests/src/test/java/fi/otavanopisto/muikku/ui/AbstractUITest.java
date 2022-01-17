@@ -219,7 +219,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected Map<String, Long> getBrowserDimensions() {
-    String resolution = System.getProperty("it.sauce.browser.resolution");
+    String resolution = System.getProperty("it.browser.dimensions");
     if(resolution != null) {
       if (!resolution.isEmpty()) {
         String[] widthHeight = StringUtils.split(resolution, "x");
@@ -389,7 +389,19 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     FirefoxOptions firefoxOptions = new FirefoxOptions();
     firefoxOptions.setProfile(firefoxProfile);
     firefoxProfile.setPreference("intl.accept_languages", "en");
+    
+    if(System.getProperty("it.headless") != null) {
+      firefoxOptions.setHeadless(true);
+    }
+    
     FirefoxDriver firefoxDriver = new FirefoxDriver(firefoxOptions);
+    
+    if(getBrowserDimensions() != null) {
+      firefoxDriver.manage().window().setSize(new Dimension(toIntExact(getBrowserDimensions().get("width")), toIntExact(getBrowserDimensions().get("height"))));
+    }else {
+      firefoxDriver.manage().window().setSize(new Dimension(1280, 1024));
+    }
+    
     return firefoxDriver;
   }
   
@@ -400,7 +412,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
 
     WebDriver driver = new ChromeDriver(chromeOptions);
     if(getBrowserDimensions() != null) {
-      driver.manage().window().setSize(new Dimension(toIntExact(getBrowserDimensions().get("width")), toIntExact(getBrowserDimensions().get("length"))));      
+      driver.manage().window().setSize(new Dimension(toIntExact(getBrowserDimensions().get("width")), toIntExact(getBrowserDimensions().get("height"))));
     }else {
       driver.manage().window().setSize(new Dimension(1280, 1024));
     }
@@ -703,8 +715,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
             return ExpectedConditions.elementToBeClickable(elements.get(0)).apply(driver) != null;
           }
         } catch (Exception e) {
-        }
-        
+        } 
         return false;
       }
     });
@@ -727,8 +738,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void waitAndClick(String selector) {
-    waitForClickable(selector);
-    click(selector);
+    new WebDriverWait(getWebDriver(), Duration.ofSeconds(30)).until(ExpectedConditions.elementToBeClickable(By.cssSelector(selector))).click();
   }
 
   protected void waitAndClick(String selector, int timeout) {
@@ -768,7 +778,93 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     if(elements.isEmpty())
       throw new TimeoutException("Element to appear failed to appear in a given timeout period.");
   }
+  
+  /** 
+   * Clicks on an selector and checks
+   * if given element is not displayed after defined (ms) interval as a result, 
+   * if it is, it will try again
+   * number of times defined.
+   * @param clickSelector String
+   * @param elementToGoAway String
+   * @param timesToTry int
+   * @param interval int
+   * @return not a thing
+   */
+  protected void waitAndClickAndConfirmVisibilityGoesAway(String clickSelector, String elementToGoAway, int timesToTry, int interval) {
+    List<WebElement> elements = findElements(elementToGoAway);
+    int i = 0;
+    while(!elements.isEmpty()) {
+      if (i > timesToTry) {
+        break;
+      }
+      if (!elements.get(0).isDisplayed()) {
+        break;
+      }
+      i++;
+      WebDriverWait wait = new WebDriverWait(getWebDriver(), Duration.ofSeconds(10));
+      wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(clickSelector))).click();
+      sleep(interval);
+      elements = findElements(elementToGoAway);
+    }
+    if(!elements.isEmpty()) {
+      if (elements.get(0).isDisplayed()) {
+        throw new TimeoutException("Element did not go away in definded time period");
+      }
+    }
+  }
+  
+  protected void waitForElementToAppear(String elementToAppear, int timesToTry, int interval) {
+    List<WebElement> elements = findElements(elementToAppear);
+    int i = 0;
+    while(elements.isEmpty()) {
+      if (i > timesToTry) {
+        break;
+      }
+      i++;
+      refresh();
+      sleep(interval);
+      elements = findElements(elementToAppear);
+    }
+    if(elements.isEmpty())
+      throw new TimeoutException("Element to appear failed to appear in a given timeout period.");
+  }
+  
+  protected void waitAndClickAndConfirmTextChanges(String clickSelector, String elementWithText, String newText, int timesToTry, int interval) {
+    String text = findElement(elementWithText).getText();
+    int i = 0;
+    while(!StringUtils.equalsIgnoreCase(text, newText)) {
+      if (i > timesToTry) {
+        break;
+      }
+      i++;
+      WebDriverWait wait = new WebDriverWait(getWebDriver(), Duration.ofSeconds(10));
+      wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(clickSelector))).click();
+      sleep(interval);
+      text = findElement(elementWithText).getText();
+    }
+    if(!StringUtils.equalsIgnoreCase(text, newText))
+      throw new TimeoutException("Element to have new text content failed to have it in a given timeout period.");
+  }
+  
+  protected void clickAndConfirmElementCount(String clickSelector, String elementToCountSelector, int expectedCount) {
+    waitAndClick(clickSelector);
+    waitForPresent(elementToCountSelector);
+    int counter = 0 ;
+    int elementCount = countElements(elementToCountSelector);
+    while (elementCount != expectedCount) {
+      waitAndClick(clickSelector);
+      sleep(2000);
+      waitForPresent(elementToCountSelector);
+      elementCount = countElements(elementToCountSelector);
+      counter++;
+      if (counter > 5) {
+        throw new TimeoutException("Element count not what expected within timeout period.");
+      }
+    }
+  }
+  
   protected void waitAndClickWithAction(String selector) {
+    waitForPresent(selector);
     new Actions(getWebDriver()).moveToElement(getWebDriver().findElement(By.cssSelector(selector))).click().perform();    
   }
 
@@ -784,10 +880,12 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void scrollIntoView(String selector) {
+    waitForPresent(selector);
     ((JavascriptExecutor) getWebDriver()).executeScript(String.format("document.querySelectorAll('%s').item(0).scrollIntoView(true);", selector));
   }
   
   protected void scrollTo(String selector, int offset) {
+    waitForPresent(selector);
     ((JavascriptExecutor) getWebDriver()).executeScript(String.format(""
         + "var elPos = document.querySelectorAll('%s').item(0).getBoundingClientRect().top;"
         + "var offsetPosition = elPos - %d;"
@@ -854,6 +952,12 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
 
   protected void assertTextIgnoreCase(String selector, String text) {
     waitForPresent(selector);
+    String actual = StringUtils.lowerCase(getWebDriver().findElement(By.cssSelector(selector)).getText());
+    assertEquals(StringUtils.lowerCase(text), actual);
+  }
+
+  protected void assertTextIgnoreCase(String selector, String text, int timeOut) {
+    waitForPresent(selector, timeOut);
     String actual = StringUtils.lowerCase(getWebDriver().findElement(By.cssSelector(selector)).getText());
     assertEquals(StringUtils.lowerCase(text), actual);
   }
@@ -1218,7 +1322,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   
   protected Workspace createWorkspace(Course course, Boolean published) throws Exception {
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-
+    
     Workspace payload = new Workspace(null, course.getName(), null, "PYRAMUS", String.valueOf(course.getId()), published);
     Response response = asAdmin()
       .contentType("application/json")

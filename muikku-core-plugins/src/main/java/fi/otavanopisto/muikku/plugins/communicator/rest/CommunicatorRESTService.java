@@ -843,6 +843,7 @@ public class CommunicatorRESTService extends PluginRESTService {
       
       fi.otavanopisto.muikku.rest.model.UserBasicInfo result = new fi.otavanopisto.muikku.rest.model.UserBasicInfo(
           userEntity.getId(), 
+          userEntity.defaultSchoolDataIdentifier().toId(),
           user.getFirstName(), 
           user.getLastName(), 
           user.getNickName(),

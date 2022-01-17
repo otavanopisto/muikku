@@ -52,20 +52,6 @@ class NavigationAside extends React.Component<
     };
   }
 
-  componentDidUpdate(
-    prevProps: NavigationAsideProps,
-    prevState: NavigationAsideState
-  ) {
-    if (
-      JSON.stringify(prevProps.workspace) !==
-      JSON.stringify(this.props.workspace)
-    ) {
-      this.setState({
-        students: this.props.workspace.students,
-      });
-    }
-  }
-
   /**
    * Handles student changes and loads specific students journals to global state
    * @param id
@@ -101,13 +87,16 @@ class NavigationAside extends React.Component<
    * @returns
    */
   render() {
-    const { students } = this.state;
     const { workspace } = this.props;
+
+    if (!workspace) {
+      return null;
+    }
 
     /**
      * Filtered student list
      */
-    const filteredStudents = this.filterStudents(students);
+    const filteredStudents = this.filterStudents(workspace.students);
 
     /**
      * If all student is showed

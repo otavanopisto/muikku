@@ -14,6 +14,7 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
+import fi.otavanopisto.muikku.schooldata.entity.EducationType;
 import fi.otavanopisto.muikku.schooldata.entity.Subject;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
@@ -102,12 +103,23 @@ public class WorkspaceIndexer {
   private IndexedWorkspace workspaceToIndexedWorkspace(Workspace workspace, WorkspaceEntity workspaceEntity) {
     IndexedWorkspace indexedWorkspace = new IndexedWorkspace();
 
+    String educationTypeName = null;
+    
+    if (workspace.getEducationTypeIdentifier() != null) {
+      SchoolDataIdentifier educationTypeIdentifier = workspace.getEducationTypeIdentifier();
+      EducationType educationType = courseMetaController.findEducationType(educationTypeIdentifier.getDataSource(), educationTypeIdentifier.getIdentifier());
+      if (educationType != null) {
+        educationTypeName = educationType.getName();
+      }
+    }
+    
     indexedWorkspace.setIdentifier(new SchoolDataIdentifier(workspace.getIdentifier(), workspace.getSchoolDataSource()));
     indexedWorkspace.setName(workspace.getName());
     indexedWorkspace.setNameExtension(workspace.getNameExtension());
     indexedWorkspace.setViewLink(workspace.getViewLink());
     indexedWorkspace.setWorkspaceTypeId(workspace.getWorkspaceTypeId());
     indexedWorkspace.setDescription(workspace.getDescription());
+    indexedWorkspace.setEducationTypeName(educationTypeName);
     indexedWorkspace.setEducationTypeIdentifier(workspace.getEducationTypeIdentifier());
     indexedWorkspace.setEducationSubtypeIdentifier(workspace.getEducationSubtypeIdentifier());
     indexedWorkspace.setOrganizationIdentifier(workspace.getOrganizationIdentifier());
