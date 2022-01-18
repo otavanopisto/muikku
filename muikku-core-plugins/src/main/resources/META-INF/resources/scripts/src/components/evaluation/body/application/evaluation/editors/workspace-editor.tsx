@@ -36,6 +36,7 @@ interface WorkspaceEditorProps {
   type?: "new" | "edit";
   editorLabel?: string;
   eventId?: string;
+  subjectToBeEvaluated: string;
   onSuccesfulSave?: () => void;
   onClose?: () => void;
   updateWorkspaceEvaluationToServer: UpdateWorkspaceEvaluation;
@@ -77,7 +78,12 @@ class WorkspaceEditor extends SessionStateComponent<
     /**
      * This is wierd one, setting namespace and identificated type for it from props...
      */
-    super(props, `workspace-editor-${props.type ? props.type : "new"}`);
+    super(
+      props,
+      `workspace-editor-${props.type ? props.type : "new"}-${
+        props.subjectToBeEvaluated
+      }`
+    );
 
     const {
       evaluationAssessmentEvents,
@@ -92,6 +98,15 @@ class WorkspaceEditor extends SessionStateComponent<
      * that have same user evaluations, so draft won't class together
      */
     let draftId = `${evaluationSelectedAssessmentId.userEntityId}-${evaluationSelectedAssessmentId.workspaceEntityId}`;
+
+    /**
+     * Workspace basePriceId
+     */
+    const basePriceId =
+      this.props.evaluations.evaluationSelectedAssessmentId.subjects[0]
+        .subject &&
+      this.props.evaluations.evaluationSelectedAssessmentId.subjects[0]
+        .identifier;
 
     /**
      * If we have evaluation data or we have data and editing existing event
@@ -147,7 +162,7 @@ class WorkspaceEditor extends SessionStateComponent<
           {
             literalEvaluation: latestEvent.text,
             draftId,
-            basePriceFromServer: basePrice.data,
+            basePriceFromServer: basePrice.data[basePriceId],
             grade: `${usedGrade.dataSource}-${usedGrade.id}`,
           },
           draftId
@@ -160,7 +175,7 @@ class WorkspaceEditor extends SessionStateComponent<
           {
             literalEvaluation: "",
             draftId,
-            basePriceFromServer: basePrice.data,
+            basePriceFromServer: basePrice.data[basePriceId],
             grade: `${evaluationGradeSystem[0].grades[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`,
           },
           draftId
@@ -534,12 +549,21 @@ class WorkspaceEditor extends SessionStateComponent<
       /**
        * Latest event data
        */
-      const latestEvent =
+      let latestEvent =
         evaluationAssessmentEvents.data[
           evaluationAssessmentEvents.data.length - 1
         ];
 
       if (type === "edit") {
+        /**
+         * If editing existing event, we need to find that specific event from event list by its' id
+         */
+        if (this.props.eventId) {
+          latestEvent = evaluationAssessmentEvents.data.find(
+            (eItem) => eItem.identifier === this.props.eventId
+          );
+        }
+
         /**
          * If editing we clear draft and set all back to default values from latest event
          * and if pricing enabled, existing price

@@ -149,20 +149,24 @@ export interface WorkspaceAssessmentRequestType {
   userEntityId: number;
 }
 
+export interface WorkspaceSubjectType {
+  code: string;
+  identifier: string;
+  name: string;
+  schoolDataSource: string;
+}
+
+export interface WorkspaceCourseLengthSymbolType {
+  id: string;
+  name: string;
+  schoolDataSource: string;
+  symbol: string;
+}
+
 export interface WorkspaceAdditionalInfoSubjectType {
-  subject?: {
-    code: string;
-    identifier: string;
-    name: string;
-    schoolDataSource: string;
-  };
+  subject?: WorkspaceSubjectType;
   courseLength?: string;
-  courseLengthSymbol?: {
-    id: string;
-    name: string;
-    schoolDataSource: string;
-    symbol: string;
-  };
+  courseLengthSymbol?: WorkspaceCourseLengthSymbolType;
 }
 
 export interface WorkspaceAdditionalInfoType {
@@ -179,7 +183,7 @@ export interface WorkspaceAdditionalInfoType {
     name: string;
     schoolDataSource: string;
   };
-  subjects: Array<WorkspaceAdditionalInfoSubjectType>;
+  subjects: WorkspaceAdditionalInfoSubjectType[];
 }
 
 export interface WorkspaceProducerType {
