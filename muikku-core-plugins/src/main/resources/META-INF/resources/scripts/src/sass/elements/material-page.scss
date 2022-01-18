@@ -1982,6 +1982,15 @@ mark[data-muikku-word-definition] {
   margin: 20px -30px 20px -20px;
 }
 
+// THIS IS THE ONLY special rule for allowing material-feedback element to be placed
+// inside anorther styles element.
+.material-exercise {
+
+  .material-exercise-feedback {
+    margin: 20px -40px 20px 0;
+  }
+}
+
 .material-exercise-feedback[data-show='true'] {
   display: block;
 }
