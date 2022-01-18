@@ -858,6 +858,7 @@ export class Evaluation extends React.Component<
                     "plugin.evaluation.evaluationModal.events.supplementationButton"
                   )}
                 </Button>
+
                 {this.props.selectedAssessment.subjects.length >= 1 ? (
                   <select onChange={this.handleSelectSubjectEvaluationChange}>
                     {this.props.selectedAssessment.subjects.map((subject) => (
