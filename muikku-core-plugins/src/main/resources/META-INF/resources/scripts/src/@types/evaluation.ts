@@ -37,6 +37,7 @@ export interface EvaluationEvent {
   student: string;
   text: string;
   type: EvaluationEnum;
+  workspaceSubjectIdentifier: string | null;
 }
 
 export interface EvaluationAssignmentContent {

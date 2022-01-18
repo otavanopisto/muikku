@@ -155,19 +155,22 @@ export class Evaluation extends React.Component<
       listOfDiaryIds: [],
       listOfAssignmentIds: [],
       diaryFetched: false,
-      subjectToBeEvaluated:
-        this.props.selectedAssessment.subjects[0].subject.identifier,
+      subjectToBeEvaluated: "",
     };
   }
 
-  /**
-   * componentDidMount
-   */
   componentDidMount(): void {
-    this.setState({
-      subjectToBeEvaluated:
-        this.props.selectedAssessment.subjects[0].subject.identifier,
-    });
+    const isCombinationWorkspace =
+      this.props.evaluation.evaluationSelectedAssessmentId &&
+      this.props.evaluation.evaluationSelectedAssessmentId.subjects.length > 1;
+
+    if (isCombinationWorkspace) {
+      this.setState({
+        subjectToBeEvaluated:
+          this.props.evaluation.evaluationSelectedAssessmentId.subjects[0]
+            .identifier,
+      });
+    }
   }
 
   /**
@@ -770,58 +773,107 @@ export class Evaluation extends React.Component<
                   <div className="loader-empty" />
                 )}
 
-                {this.props.selectedAssessment.subjects.map(
-                  (subject) =>
-                    subject.subject.identifier ===
-                      this.state.subjectToBeEvaluated && (
-                      <div key={subject.identifier}>
-                        <SlideDrawer
-                          title={this.props.i18n.text.get(
-                            "plugin.evaluation.evaluationModal.workspaceEvaluationForm.title"
-                          )}
-                          modifiers={["workspace"]}
-                          show={this.state.showWorkspaceEvaluationDrawer}
-                          onClose={this.handleWorkspaceEvaluationCloseDrawer}
-                        >
-                          <WorkspaceEditor
-                            eventId={this.state.eventByIdOpened}
-                            editorLabel={this.props.i18n.text.get(
-                              "plugin.evaluation.evaluationModal.workspaceEvaluationForm.literalAssessmentLabel"
+                {this.props.selectedAssessment.subjects.length > 1 ? (
+                  this.props.selectedAssessment.subjects.map(
+                    (subject) =>
+                      subject.subject.identifier ===
+                        this.state.subjectToBeEvaluated && (
+                        <div key={subject.identifier}>
+                          <SlideDrawer
+                            title={this.props.i18n.text.get(
+                              "plugin.evaluation.evaluationModal.workspaceEvaluationForm.title"
                             )}
-                            subjectToBeEvaluated={subject.identifier}
+                            modifiers={["workspace"]}
+                            show={this.state.showWorkspaceEvaluationDrawer}
                             onClose={this.handleWorkspaceEvaluationCloseDrawer}
-                            type={this.state.edit ? "edit" : "new"}
-                            onSuccesfulSave={
-                              this.handleOpenArchiveStudentDialog
-                            }
-                          />
-                        </SlideDrawer>
+                          >
+                            <WorkspaceEditor
+                              eventId={this.state.eventByIdOpened}
+                              editorLabel={this.props.i18n.text.get(
+                                "plugin.evaluation.evaluationModal.workspaceEvaluationForm.literalAssessmentLabel"
+                              )}
+                              subjectToBeEvaluated={subject.identifier}
+                              onClose={
+                                this.handleWorkspaceEvaluationCloseDrawer
+                              }
+                              type={this.state.edit ? "edit" : "new"}
+                              onSuccesfulSave={
+                                this.handleOpenArchiveStudentDialog
+                              }
+                            />
+                          </SlideDrawer>
 
-                        <SlideDrawer
-                          title={this.props.i18n.text.get(
-                            "plugin.evaluation.evaluationModal.workspaceEvaluationForm.supplementationTitle"
-                          )}
-                          modifiers={["supplementation"]}
-                          show={this.state.showWorkspaceSupplemenationDrawer}
-                          onClose={
-                            this
-                              .handleWorkspaceSupplementationEvaluationCloseDrawer
-                          }
-                        >
-                          <SupplementationEditor
-                            eventId={this.state.eventByIdOpened}
-                            editorLabel={this.props.i18n.text.get(
-                              "plugin.evaluation.evaluationModal.workspaceEvaluationForm.literalSupplementationLabel"
+                          <SlideDrawer
+                            title={this.props.i18n.text.get(
+                              "plugin.evaluation.evaluationModal.workspaceEvaluationForm.supplementationTitle"
                             )}
+                            modifiers={["supplementation"]}
+                            show={this.state.showWorkspaceSupplemenationDrawer}
                             onClose={
                               this
                                 .handleWorkspaceSupplementationEvaluationCloseDrawer
                             }
-                            type={this.state.edit ? "edit" : "new"}
-                          />
-                        </SlideDrawer>
-                      </div>
-                    )
+                          >
+                            <SupplementationEditor
+                              eventId={this.state.eventByIdOpened}
+                              editorLabel={this.props.i18n.text.get(
+                                "plugin.evaluation.evaluationModal.workspaceEvaluationForm.literalSupplementationLabel"
+                              )}
+                              onClose={
+                                this
+                                  .handleWorkspaceSupplementationEvaluationCloseDrawer
+                              }
+                              type={this.state.edit ? "edit" : "new"}
+                            />
+                          </SlideDrawer>
+                        </div>
+                      )
+                  )
+                ) : (
+                  <div>
+                    <SlideDrawer
+                      title={this.props.i18n.text.get(
+                        "plugin.evaluation.evaluationModal.workspaceEvaluationForm.title"
+                      )}
+                      modifiers={["workspace"]}
+                      show={this.state.showWorkspaceEvaluationDrawer}
+                      onClose={this.handleWorkspaceEvaluationCloseDrawer}
+                    >
+                      <WorkspaceEditor
+                        eventId={this.state.eventByIdOpened}
+                        editorLabel={this.props.i18n.text.get(
+                          "plugin.evaluation.evaluationModal.workspaceEvaluationForm.literalAssessmentLabel"
+                        )}
+                        subjectToBeEvaluated={this.state.subjectToBeEvaluated}
+                        onClose={this.handleWorkspaceEvaluationCloseDrawer}
+                        type={this.state.edit ? "edit" : "new"}
+                        onSuccesfulSave={this.handleOpenArchiveStudentDialog}
+                      />
+                    </SlideDrawer>
+
+                    <SlideDrawer
+                      title={this.props.i18n.text.get(
+                        "plugin.evaluation.evaluationModal.workspaceEvaluationForm.supplementationTitle"
+                      )}
+                      modifiers={["supplementation"]}
+                      show={this.state.showWorkspaceSupplemenationDrawer}
+                      onClose={
+                        this.handleWorkspaceSupplementationEvaluationCloseDrawer
+                      }
+                    >
+                      <SupplementationEditor
+                        eventId={this.state.eventByIdOpened}
+                        editorLabel={this.props.i18n.text.get(
+                          "plugin.evaluation.evaluationModal.workspaceEvaluationForm.literalSupplementationLabel"
+                        )}
+                        onClose={
+                          this
+                            .handleWorkspaceSupplementationEvaluationCloseDrawer
+                        }
+                        type={this.state.edit ? "edit" : "new"}
+                      />
+                    </SlideDrawer>
+                  </div>
                 )}
               </div>
 
@@ -832,7 +884,10 @@ export class Evaluation extends React.Component<
                   disabled={
                     this.props.evaluation.evaluationAssessmentEvents.state ===
                       "LOADING" ||
-                    this.props.evaluation.basePrice.state === "LOADING"
+                    this.props.evaluation.basePrice.state === "LOADING" ||
+                    (this.props.evaluation.evaluationSelectedAssessmentId
+                      .subjects.length > 1 &&
+                      this.state.subjectToBeEvaluated === "")
                   }
                 >
                   {isEvaluated
@@ -851,7 +906,10 @@ export class Evaluation extends React.Component<
                   disabled={
                     this.props.evaluation.evaluationAssessmentEvents.state ===
                       "LOADING" ||
-                    this.props.evaluation.basePrice.state === "LOADING"
+                    this.props.evaluation.basePrice.state === "LOADING" ||
+                    (this.props.evaluation.evaluationSelectedAssessmentId
+                      .subjects.length > 1 &&
+                      this.state.subjectToBeEvaluated === "")
                   }
                 >
                   {this.props.i18n.text.get(
@@ -859,8 +917,9 @@ export class Evaluation extends React.Component<
                   )}
                 </Button>
 
-                {this.props.selectedAssessment.subjects.length >= 1 ? (
+                {this.props.selectedAssessment.subjects.length > 1 ? (
                   <select onChange={this.handleSelectSubjectEvaluationChange}>
+                    <option value="">Valitse</option>
                     {this.props.selectedAssessment.subjects.map((subject) => (
                       <option
                         key={subject.subject.identifier}

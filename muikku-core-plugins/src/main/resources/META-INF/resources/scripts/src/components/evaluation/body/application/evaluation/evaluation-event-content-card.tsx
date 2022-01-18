@@ -38,7 +38,15 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
 }) => {
   const [height, setHeight] = React.useState<0 | "auto">(0);
 
-  const { author, text, date, type, grade, identifier } = event;
+  const {
+    author,
+    text,
+    date,
+    type,
+    grade,
+    identifier,
+    workspaceSubjectIdentifier,
+  } = event;
 
   /**
    * arrowClassMod
@@ -100,6 +108,22 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
           type
         )} evaluation-modal__event-arrow--down `;
 
+  let subjectTitle: string | undefined = undefined;
+
+  const subject =
+    evaluations.evaluationSelectedAssessmentId &&
+    evaluations.evaluationSelectedAssessmentId.subjects.find(
+      (subject) => subject.identifier === workspaceSubjectIdentifier
+    );
+
+  if (
+    evaluations.evaluationSelectedAssessmentId &&
+    evaluations.evaluationSelectedAssessmentId.subjects.length > 1 &&
+    subject
+  ) {
+    subjectTitle = subject.subject && subject.subject.name;
+  }
+
   /**
    * renderTypeMessage
    * @param typeMsg
@@ -130,6 +154,11 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
               {i18n.text.get(
                 "plugin.evaluation.evaluationModal.events.gradePass.1"
               )}{" "}
+              {subjectTitle ? (
+                <span className="evaluation-modal__event-author">
+                  {`(${subjectTitle}) `}
+                </span>
+              ) : null}
               <span className="evaluation-modal__event-type state-PASSED">
                 {i18n.text.get(
                   "plugin.evaluation.evaluationModal.events.gradePass.2"
@@ -152,6 +181,11 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
               {i18n.text.get(
                 "plugin.evaluation.evaluationModal.events.gradeFail.1"
               )}{" "}
+              {subjectTitle ? (
+                <span className="evaluation-modal__event-author">
+                  {`(${subjectTitle}) `}
+                </span>
+              ) : null}
               <span className="evaluation-modal__event-type state-FAILED">
                 {i18n.text.get(
                   "plugin.evaluation.evaluationModal.events.gradeFail.2"
@@ -174,6 +208,11 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
               {i18n.text.get(
                 "plugin.evaluation.evaluationModal.events.gradeImproved.1"
               )}{" "}
+              {subjectTitle ? (
+                <span className="evaluation-modal__event-author">
+                  {`(${subjectTitle}) `}
+                </span>
+              ) : null}
               <span className="evaluation-modal__event-type state-IMPROVED">
                 {i18n.text.get(
                   "plugin.evaluation.evaluationModal.events.gradeImproved.2"
@@ -196,6 +235,11 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
               {i18n.text.get(
                 "plugin.evaluation.evaluationModal.events.supplementationRequest.1"
               )}{" "}
+              {subjectTitle ? (
+                <span className="evaluation-modal__event-author">
+                  {`(${subjectTitle}) `}
+                </span>
+              ) : null}
               <span className="evaluation-modal__event-type state-INCOMPLETE">
                 {i18n.text.get(
                   "plugin.evaluation.evaluationModal.events.supplementationRequest.2"
