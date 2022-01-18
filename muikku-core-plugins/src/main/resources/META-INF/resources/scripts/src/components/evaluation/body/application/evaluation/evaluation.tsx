@@ -788,7 +788,7 @@ export class Evaluation extends React.Component<
                             editorLabel={this.props.i18n.text.get(
                               "plugin.evaluation.evaluationModal.workspaceEvaluationForm.literalAssessmentLabel"
                             )}
-                            subjectToBeEvaluated={subject.subject.identifier}
+                            subjectToBeEvaluated={subject.identifier}
                             onClose={this.handleWorkspaceEvaluationCloseDrawer}
                             type={this.state.edit ? "edit" : "new"}
                             onSuccesfulSave={

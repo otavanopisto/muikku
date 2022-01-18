@@ -384,6 +384,7 @@ class WorkspaceEditor extends SessionStateComponent<
       status,
       onClose,
       onSuccesfulSave,
+      subjectToBeEvaluated,
     } = this.props;
 
     this.setState({
@@ -419,6 +420,7 @@ class WorkspaceEditor extends SessionStateComponent<
             gradeIdentifier: grade,
             verbalAssessment: literalEvaluation,
             assessmentDate: new Date().getTime().toString(),
+            workspaceSubjectIdentifier: subjectToBeEvaluated,
           },
           onSuccess: () => {
             cleanWorkspaceAndSupplementationDrafts(this.state.draftId);
@@ -470,6 +472,7 @@ class WorkspaceEditor extends SessionStateComponent<
             gradeIdentifier: grade,
             verbalAssessment: literalEvaluation,
             assessmentDate: latestEvent.date,
+            workspaceSubjectIdentifier: subjectToBeEvaluated,
           },
           onSuccess: () => {
             cleanWorkspaceAndSupplementationDrafts(this.state.draftId);
@@ -516,6 +519,7 @@ class WorkspaceEditor extends SessionStateComponent<
           gradeIdentifier: grade,
           verbalAssessment: literalEvaluation,
           assessmentDate: new Date().getTime().toString(),
+          workspaceSubjectIdentifier: subjectToBeEvaluated,
         },
         onSuccess: () => {
           cleanWorkspaceAndSupplementationDrafts(this.state.draftId);

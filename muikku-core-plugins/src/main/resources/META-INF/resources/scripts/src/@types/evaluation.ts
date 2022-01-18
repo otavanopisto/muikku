@@ -226,6 +226,7 @@ export interface WorkspaceEvaluationSaveRequest {
   gradeIdentifier: string;
   verbalAssessment: string;
   assessmentDate: string;
+  workspaceSubjectIdentifier: string;
 }
 
 /**
