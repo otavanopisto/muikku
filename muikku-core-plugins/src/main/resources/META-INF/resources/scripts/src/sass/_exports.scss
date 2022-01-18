@@ -1,0 +1,5 @@
+@import "./base/breakpoints";
+
+:export {
+  mobileBreakpoint: $breakpoint-pad;
+}

@@ -16,7 +16,7 @@ const plugins = [
     ignoreOrder: true,
   }),
   new ForkTsCheckerWebpackPlugin(),
-  ];
+];
 
 const rules = [];
 
@@ -43,7 +43,10 @@ rules.push({
       options: {
         sourceMap: true,
         importLoaders: 1,
-        url: false
+        url: false,
+        modules: {
+          compileType: "icss"  // Added this so I can get sass variables to js
+        }
       },
     },
     {
@@ -52,6 +55,7 @@ rules.push({
         sourceMap: true
       },
     },
+    // { loader: "style-loader" },
   ]
 });
 
@@ -82,19 +86,19 @@ module.exports = {
       cacheGroups: {
         vendor: {
           test: /[\/]node_modules[\/]/,
-				},
-			},
-		}
-	},
+        },
+      },
+    }
+  },
   resolve: {
     alias: {
       "~": __dirname
-		},
+    },
     extensions: [".js", ".ts", ".tsx"]
-	},
+  },
   module: {
     rules
-	},
+  },
   plugins,
   externals: {
     "jquery": "jQuery",
