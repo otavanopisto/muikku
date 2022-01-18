@@ -300,8 +300,18 @@ public class EvaluationRESTService extends PluginRESTService {
     Date evaluated = payload.getEvaluated();
     UserEntity student = userEntityController.findUserEntityByUserIdentifier(workspaceStudent.getUserIdentifier());
     Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-    // TODO
-    WorkspaceSubject workspaceSubject = workspace.getSubjects().get(0);
+
+    // WorkspaceSubject
+    
+    SchoolDataIdentifier workspaceSubjectIdentifier = SchoolDataIdentifier.fromId(payload.getWorkspaceSubjectIdentifier());
+    WorkspaceSubject workspaceSubject = workspace.getSubjects().stream()
+      .filter(workspaceSubject_ -> workspaceSubject_.getIdentifier().equals(workspaceSubjectIdentifier))
+      .findFirst()
+      .orElse(null);
+
+    if (workspaceSubject == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
     
     fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment assessment =  gradingController.updateWorkspaceAssessment(
         workspaceAssesmentIdentifier,
@@ -674,6 +684,7 @@ public class EvaluationRESTService extends PluginRESTService {
     
     return new fi.otavanopisto.muikku.plugins.evaluation.rest.model.WorkspaceAssessment(
       entry.getIdentifier().toId(),
+      entry.getWorkspaceSubjectIdentifier().toId(),
       entry.getDate(),
       assessor != null ? assessor.getId() : null,
       entry.getWorkspaceUserIdentifier().toId(),
