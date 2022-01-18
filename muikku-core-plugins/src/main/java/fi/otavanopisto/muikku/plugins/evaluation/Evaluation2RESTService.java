@@ -255,10 +255,12 @@ public class Evaluation2RESTService {
       GradingScale gradingScale = gradingController.findGradingScale(gradingScaleIdentifier);
       SchoolDataIdentifier gradeIdentifier = workspaceAssessment.getGradeIdentifier();
       GradingScaleItem gradingScaleItem = gradingController.findGradingScaleItem(gradingScale, gradeIdentifier);
+      SchoolDataIdentifier workspaceSubjectIdentifier = workspaceAssessment.getWorkspaceSubjectIdentifier();
       
       // Event
       
       RestEvaluationEvent event = new RestEvaluationEvent();
+      event.setWorkspaceSubjectIdentifier(workspaceSubjectIdentifier.toId());
       event.setStudent(studentName.getDisplayName());
       event.setAuthor(assessor.getDisplayName());
       event.setDate(workspaceAssessment.getDate());
