@@ -472,7 +472,7 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
     
     if (pyramusPriceModel != null) {
       for (Long courseModuleId : pyramusPriceModel.keySet()) {
-        result.put(identifierMapper.getCourseModuleIdentifier(courseModuleId).getIdentifier(), pyramusPriceModel.get(courseModuleId));
+        result.put(identifierMapper.getCourseModuleIdentifier(courseModuleId).toId(), pyramusPriceModel.get(courseModuleId));
       }
     }
     

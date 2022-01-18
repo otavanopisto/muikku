@@ -358,6 +358,7 @@ public class PyramusSchoolDataEntityFactory {
     }
     
     return new PyramusWorkspaceAssessment(courseAssessment.getId().toString(),
+        identifierMapper.getCourseModuleIdentifier(courseAssessment.getCourseModuleId()),
         identifierMapper.getWorkspaceStudentIdentifier(courseAssessment.getCourseStudentId()),
         identifierMapper.getStaffIdentifier(courseAssessment.getAssessorId()).getIdentifier(),
         gradeIdentifier == null ? null : gradeIdentifier.getIdentifier(),
@@ -384,6 +385,7 @@ public class PyramusSchoolDataEntityFactory {
     }
     
     return new PyramusWorkspaceAssessment(identifier.getIdentifier(),
+        identifierMapper.getCourseModuleIdentifier(courseAssessment.getCourseModuleId()),
         identifierMapper.getWorkspaceStudentIdentifier(courseAssessment.getCourseStudentId()),
         identifierMapper.getStaffIdentifier(courseAssessment.getAssessorId()).getIdentifier(),
         gradeIdentifier == null ? null : gradeIdentifier.getIdentifier(),

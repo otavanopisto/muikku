@@ -55,6 +55,7 @@ import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssignmentEvalua
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestEvaluationEvent;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestEvaluationEventType;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestSupplementationRequest;
+import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestWorkspaceAssessment;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.WorkspaceGrade;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.WorkspaceGradingScale;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
@@ -350,8 +351,9 @@ public class Evaluation2RESTService {
     if (workspaceAssessment == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
-    RestAssessment restAssessment = new RestAssessment(
+    RestWorkspaceAssessment restAssessment = new RestWorkspaceAssessment(
         workspaceAssessment.getIdentifier().toId(),
+        workspaceAssessment.getWorkspaceSubjectIdentifier().toId(),
         workspaceAssessment.getAssessingUserIdentifier().toId(),
         workspaceAssessment.getGradingScaleIdentifier().toId(),
         workspaceAssessment.getGradeIdentifier().toId(),
@@ -952,7 +954,7 @@ public class Evaluation2RESTService {
   @POST
   @Path("/workspaceuser/{WORKSPACEUSERENTITYID}/assessment")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response createWorkspaceAssessment(@PathParam("WORKSPACEUSERENTITYID") Long workspaceUserEntityId, RestAssessment payload) {
+  public Response createWorkspaceAssessment(@PathParam("WORKSPACEUSERENTITYID") Long workspaceUserEntityId, RestWorkspaceAssessment payload) {
     
     // Access check
     
@@ -982,6 +984,18 @@ public class Evaluation2RESTService {
     }
     SchoolDataIdentifier workspaceIdentifier = workspaceEntity.schoolDataIdentifier();
     UserEntity studentEntity = userSchoolDataIdentifier.getUserEntity();
+
+    // WorkspaceSubject
+    
+    SchoolDataIdentifier workspaceSubjectIdentifier = SchoolDataIdentifier.fromId(payload.getWorkspaceSubjectIdentifier());
+    WorkspaceSubject workspaceSubject = workspace.getSubjects().stream()
+      .filter(workspaceSubject_ -> workspaceSubject_.getIdentifier().equals(workspaceSubjectIdentifier))
+      .findFirst()
+      .orElse(null);
+
+    if (workspaceSubject == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
     
     // Assessor
     
@@ -995,9 +1009,6 @@ public class Evaluation2RESTService {
     GradingScale gradingScale = gradingController.findGradingScale(gradingScaleIdentifier);
     SchoolDataIdentifier gradeIdentifier = SchoolDataIdentifier.fromId(payload.getGradeIdentifier());
     GradingScaleItem gradingScaleItem = gradingController.findGradingScaleItem(gradingScale, gradeIdentifier);
-
-    // TODO
-    WorkspaceSubject workspaceSubject = workspace.getSubjects().get(0);
 
     // Create workspace assessment
     
@@ -1024,8 +1035,9 @@ public class Evaluation2RESTService {
     
     // Back to rest
     
-    RestAssessment restAssessment = new RestAssessment(
+    RestWorkspaceAssessment restAssessment = new RestWorkspaceAssessment(
         workspaceAssessment.getIdentifier().toId(),
+        workspaceAssessment.getWorkspaceSubjectIdentifier().toId(),
         workspaceAssessment.getAssessingUserIdentifier().toId(),
         workspaceAssessment.getGradingScaleIdentifier().toId(),
         workspaceAssessment.getGradeIdentifier().toId(),
@@ -1038,7 +1050,7 @@ public class Evaluation2RESTService {
   @PUT
   @Path("/workspaceuser/{WORKSPACEUSERENTITYID}/assessment")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response updateWorkspaceAssessment(@PathParam("WORKSPACEUSERENTITYID") Long workspaceUserEntityId, RestAssessment payload) {
+  public Response updateWorkspaceAssessment(@PathParam("WORKSPACEUSERENTITYID") Long workspaceUserEntityId, RestWorkspaceAssessment payload) {
     
     // Access check
     
@@ -1068,6 +1080,18 @@ public class Evaluation2RESTService {
     }
     SchoolDataIdentifier workspaceAssessmentIdentifier = SchoolDataIdentifier.fromId(payload.getIdentifier());
     
+    // WorkspaceSubject
+    
+    SchoolDataIdentifier workspaceSubjectIdentifier = SchoolDataIdentifier.fromId(payload.getWorkspaceSubjectIdentifier());
+    WorkspaceSubject workspaceSubject = workspace.getSubjects().stream()
+      .filter(workspaceSubject_ -> workspaceSubject_.getIdentifier().equals(workspaceSubjectIdentifier))
+      .findFirst()
+      .orElse(null);
+
+    if (workspaceSubject == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
     // Assessor
     
     SchoolDataIdentifier assessorIdentifier = SchoolDataIdentifier.fromId(payload.getAssessorIdentifier());
@@ -1079,10 +1103,6 @@ public class Evaluation2RESTService {
     GradingScale gradingScale = gradingController.findGradingScale(gradingScaleIdentifier);
     SchoolDataIdentifier gradeIdentifier = SchoolDataIdentifier.fromId(payload.getGradeIdentifier());
     GradingScaleItem gradingScaleItem = gradingController.findGradingScaleItem(gradingScale, gradeIdentifier);
-    
-    // TODO
-
-    WorkspaceSubject workspaceSubject = workspace.getSubjects().get(0);
 
     // Update workspace assessment
     
@@ -1097,8 +1117,9 @@ public class Evaluation2RESTService {
     
     // Back to rest
     
-    RestAssessment restAssessment = new RestAssessment(
+    RestWorkspaceAssessment restAssessment = new RestWorkspaceAssessment(
         workspaceAssessment.getIdentifier().toId(),
+        workspaceAssessment.getWorkspaceSubjectIdentifier().toId(),
         workspaceAssessment.getAssessingUserIdentifier().toId(),
         workspaceAssessment.getGradingScaleIdentifier().toId(),
         workspaceAssessment.getGradeIdentifier().toId(),
