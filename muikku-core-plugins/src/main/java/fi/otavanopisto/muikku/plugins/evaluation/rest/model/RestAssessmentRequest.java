@@ -1,6 +1,9 @@
 package fi.otavanopisto.muikku.plugins.evaluation.rest.model;
 
 import java.util.Date;
+import java.util.List;
+
+import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceSubjectRestModel;
 
 public class RestAssessmentRequest {
   
@@ -140,6 +143,14 @@ public class RestAssessmentRequest {
     this.graded = graded;
   }
 
+  public List<WorkspaceSubjectRestModel> getSubjects() {
+    return subjects;
+  }
+
+  public void setSubjects(List<WorkspaceSubjectRestModel> subjects) {
+    this.subjects = subjects;
+  }
+
   private Long userEntityId;
   private String firstName;
   private String lastName;
@@ -158,4 +169,5 @@ public class RestAssessmentRequest {
   private Long assignmentsDone;
   private Long assignmentsTotal;
 
+  private List<WorkspaceSubjectRestModel> subjects;
 }

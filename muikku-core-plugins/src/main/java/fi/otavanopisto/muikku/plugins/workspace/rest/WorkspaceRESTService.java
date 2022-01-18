@@ -130,8 +130,10 @@ import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterialComp
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterialFieldAnswer;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterialReply;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRESTModelController;
+import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRestModels;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceStaffMember;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceStudentRestModel;
+import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceSubjectRestModel;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceUserRestModel;
 import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
 import fi.otavanopisto.muikku.schooldata.CourseMetaController;
@@ -140,12 +142,9 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
-import fi.otavanopisto.muikku.schooldata.entity.CourseLengthUnit;
 import fi.otavanopisto.muikku.schooldata.entity.EducationType;
-import fi.otavanopisto.muikku.schooldata.entity.Subject;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
-import fi.otavanopisto.muikku.schooldata.entity.WorkspaceSubject;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceType;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser;
 import fi.otavanopisto.muikku.search.SearchProvider;
@@ -280,6 +279,9 @@ public class WorkspaceRESTService extends PluginRESTService {
   
   @Inject
   private ChatController chatController;
+
+  @Inject
+  private WorkspaceRestModels workspaceRestModels;
   
   @GET
   @Path("/workspaceTypes")
@@ -792,29 +794,10 @@ public class WorkspaceRESTService extends PluginRESTService {
         result.put("workspaceType", null);
       }
 
-      List<Object> resultWorkspaceSubjects = new ArrayList<>();
-      result.put("subjects", resultWorkspaceSubjects);
-
-      for (WorkspaceSubject workspaceSubject : workspace.getSubjects()) {
-        Map<String, Object> workspaceSubjectResult = new HashMap<>();
-
-        Subject subjectObject = courseMetaController.findSubject(workspaceSubject.getSubjectIdentifier());
-        workspaceSubjectResult.put("subject", subjectObject);
-
-        CourseLengthUnit lengthUnit = null;
-        if ((workspaceSubject.getLength() != null) && (workspaceSubject.getLengthUnitIdentifier() != null)) {
-          lengthUnit = courseMetaController.findCourseLengthUnit(workspaceSubject.getLengthUnitIdentifier());
-        }
-
-        workspaceSubjectResult.put("courseLengthSymbol", lengthUnit);
-        if (lengthUnit != null) {
-          workspaceSubjectResult.put("courseLength", workspaceSubject.getLength());
-        } else {
-          workspaceSubjectResult.put("courseLength", null);
-        }
-
-        resultWorkspaceSubjects.add(workspaceSubjectResult);
-      }
+      List<WorkspaceSubjectRestModel> subjectRestModels = workspace.getSubjects().stream()
+          .map(workspaceSubject -> workspaceRestModels.toRestModel(workspaceSubject))
+          .collect(Collectors.toList());
+      result.put("subjects", subjectRestModels);
 
       return Response.ok(result).build();
     } finally {
