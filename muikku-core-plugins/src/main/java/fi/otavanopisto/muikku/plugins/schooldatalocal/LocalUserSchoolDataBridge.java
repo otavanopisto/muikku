@@ -685,4 +685,14 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
     throw new SchoolDataBridgeInternalException("Not supported");
   }
 
+  @Override
+  public User increaseStudyTime(String studentIdentifier, int months) {
+    throw new SchoolDataBridgeInternalException("Not supported");
+  }
+
+  @Override
+  public String getUserDefaultEmailAddress(String userIdentifier) {
+    throw new SchoolDataBridgeInternalException("Not supported");
+  }
+
 }
