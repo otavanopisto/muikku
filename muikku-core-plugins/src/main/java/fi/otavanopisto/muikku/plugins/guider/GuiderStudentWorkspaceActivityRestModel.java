@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.plugins.guider;
 
 import java.util.Date;
+import java.util.List;
 
 import fi.otavanopisto.muikku.plugins.assessmentrequest.WorkspaceAssessmentState;
 
@@ -13,7 +14,7 @@ public class GuiderStudentWorkspaceActivityRestModel {
       long evaluablesUnanswered, long evaluablesAnswered, Date evaluablesAnsweredLastDate, long evaluablesSubmitted,
       Date evaluablesSubmittedLastDate, long evaluablesWithdrawn, Date evaluablesWithdrawnLastDate, long evaluablesPassed, Date evaluablesPassedLastDate, 
       long evaluablesFailed, Date evaluablesFailedLastDate, long evaluablesIncomplete, Date evaluablesIncompleteLastDate, 
-      long exercisesUnanswered, long exercisesAnswered, Date exercisesAnsweredLastDate, WorkspaceAssessmentState assessmentState) {
+      long exercisesUnanswered, long exercisesAnswered, Date exercisesAnsweredLastDate, Object assessmentState) {
     super();
     this.lastVisit = lastVisit;
     this.numVisits = numVisits;
@@ -138,11 +139,11 @@ public class GuiderStudentWorkspaceActivityRestModel {
     this.lastJournalEntry = lastJournalEntry;
   }
   
-  public WorkspaceAssessmentState getAssessmentState() {
+  public Object getAssessmentState() {
     return assessmentState;
   }
   
-  public void setAssessmentState(WorkspaceAssessmentState assessmentState) {
+  public void setAssessmentState(Object assessmentState) {
     this.assessmentState = assessmentState;
   }
 
@@ -200,5 +201,6 @@ public class GuiderStudentWorkspaceActivityRestModel {
   private long exercisesAnswered;
   private Date exercisesAnsweredLastDate;
   
-  private WorkspaceAssessmentState assessmentState;
+  // TODO Fix this
+  private Object assessmentState;
 }

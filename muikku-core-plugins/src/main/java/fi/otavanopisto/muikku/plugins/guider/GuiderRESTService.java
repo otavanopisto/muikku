@@ -65,8 +65,10 @@ import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
 import fi.otavanopisto.muikku.rest.model.Student;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
+import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivity;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
@@ -95,6 +97,9 @@ public class GuiderRESTService extends PluginRESTService {
 
   @Inject
   private Logger logger;
+  
+  @Inject
+  private WorkspaceController workspaceController;
   
   @Inject
   private WorkspaceEntityController workspaceEntityController;
@@ -170,7 +175,7 @@ public class GuiderRESTService extends PluginRESTService {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Failed to analyze assignments progress for student %s in workspace %d", userIdentifier, workspaceEntity.getId())).build();
     }
     
-    WorkspaceAssessmentState assessmentState = new WorkspaceAssessmentState(WorkspaceAssessmentState.UNASSESSED);
+    WorkspaceAssessmentState assessmentState = new WorkspaceAssessmentState(null, WorkspaceAssessmentState.UNASSESSED);
     WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserIdentifier(workspaceEntity, userIdentifier);
     if (workspaceUserEntity != null && workspaceUserEntity.getWorkspaceUserRole().getArchetype() == WorkspaceRoleArchetype.STUDENT) {
       assessmentState = assessmentRequestController.getWorkspaceAssessmentState(workspaceUserEntity);
@@ -209,9 +214,9 @@ public class GuiderRESTService extends PluginRESTService {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Failed to analyze assignments progress for student %s in workspace %d", userIdentifier, workspaceEntity.getId())).build();
     }
     
-    WorkspaceAssessmentState assessmentState = assessmentRequestController.getWorkspaceAssessmentState(workspaceUserEntity);
+    List<WorkspaceAssessmentState> assessmentStates = assessmentRequestController.getAllWorkspaceAssessmentStates(workspaceUserEntity);
     
-    return Response.ok(toRestModel(activity, assessmentState)).build();
+    return Response.ok(toRestModel(activity, assessmentStates)).build();
   }
   
   @GET
@@ -663,7 +668,7 @@ public class GuiderRESTService extends PluginRESTService {
     return new OrganizationRESTModel(organizationEntity.getId(), organizationEntity.getName());
   }
   
-  private GuiderStudentWorkspaceActivityRestModel toRestModel(GuiderStudentWorkspaceActivity activity, WorkspaceAssessmentState assessmentState) {
+  private GuiderStudentWorkspaceActivityRestModel toRestModel(GuiderStudentWorkspaceActivity activity, Object assessmentStates) {
     GuiderStudentWorkspaceActivityRestModel model = new GuiderStudentWorkspaceActivityRestModel(
         activity.getLastVisit(),
         activity.getNumVisits(),
@@ -685,7 +690,7 @@ public class GuiderRESTService extends PluginRESTService {
         activity.getExercises().getUnanswered(), 
         activity.getExercises().getAnswered(), 
         activity.getExercises().getAnsweredLastDate(),
-        assessmentState);
+        assessmentStates);
     return model;
   }
   

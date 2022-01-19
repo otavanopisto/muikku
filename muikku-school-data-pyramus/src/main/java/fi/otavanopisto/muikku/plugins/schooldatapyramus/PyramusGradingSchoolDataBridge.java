@@ -395,6 +395,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
     for (int i = 0; i < response.length; i++) {
       WorkspaceActivity activity = new WorkspaceActivity();
       activity.setIdentifier(response[i].getCourseId() == null ? null : response[i].getCourseId().toString());
+      activity.setWorkspaceSubjectIdentifier(response[i].getCourseModuleId() != null ? identifierMapper.getCourseModuleIdentifier(response[i].getCourseModuleId()).toId() : null);
       if (response[i].getCurriculumIds() != null) {
         for (Long curriculumId : response[i].getCurriculumIds()) {
           curriculumIdentifiers.add(identifierMapper.getCurriculumIdentifier(curriculumId).toId());
