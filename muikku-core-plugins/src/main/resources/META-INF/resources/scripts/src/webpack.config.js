@@ -45,7 +45,7 @@ rules.push({
         importLoaders: 1,
         url: false,
         modules: {
-          compileType: "icss"  // to import the sass variables to js
+          compileType: "icss"  // needed to import the sass variables to js
         }
       },
     },
