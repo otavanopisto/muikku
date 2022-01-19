@@ -45,7 +45,7 @@ rules.push({
         importLoaders: 1,
         url: false,
         modules: {
-          compileType: "icss"  // Added this so I can get sass variables to js
+          compileType: "icss"  // to import the sass variables to js
         }
       },
     },
@@ -55,7 +55,6 @@ rules.push({
         sourceMap: true
       },
     },
-    // { loader: "style-loader" },
   ]
 });
 
