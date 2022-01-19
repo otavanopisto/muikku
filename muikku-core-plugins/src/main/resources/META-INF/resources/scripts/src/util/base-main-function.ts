@@ -37,7 +37,10 @@ export default async function(store: Store<StateType>, options: {
       };
   }
 
-  let websocket = new Websocket(store, actionsAndCallbacks);
+  let websocket: any = null;
+  if (state.status.loggedIn) {
+    websocket = new Websocket(store, actionsAndCallbacks);
+  }
 
   if (state.status.isActiveUser) {
     getOptionValue(options.setupMessages) && store.dispatch(<Action>updateUnreadMessageThreadsCount());
