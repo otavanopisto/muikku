@@ -133,7 +133,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       mockBuilder.removeMockCourseStudent(courseStudent);
       courseStudent = new MockCourseStudent(2l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.GRADED));
       mockBuilder
-        .mockCourseAssessments(courseStudent, admin)
+        .mockCourseAssessments(course1, courseStudent, admin)
         .mockWorkspaceBilledPrice(String.valueOf(price/2))
         .addCourseStudent(course1.getId(), courseStudent)
         .mockCourseActivities();

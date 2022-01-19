@@ -251,7 +251,7 @@ public class GuiderTestsBase extends AbstractUITest {
         .mockStaffCompositeCourseAssessmentRequests()
         .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, true, date);
       
-        mockBuilder.mockCourseAssessments(courseStudent, admin);          
+        mockBuilder.mockCourseAssessments(course1, courseStudent, admin);          
 
         navigate("/guider", false);
         waitAndClick(".application-list__header-primary>span");

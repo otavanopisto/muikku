@@ -88,7 +88,7 @@ public class ToRTestsBase extends AbstractUITest {
           .addStaffCompositeAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, true, course1, student, admin.getId(), date, true)
           .mockStaffCompositeCourseAssessmentRequests()
           .mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello! I'd like to get assessment.", false, true, date)
-          .mockCourseAssessments(courseStudent, admin)
+          .mockCourseAssessments(course1, courseStudent, admin)
           .mockStudentCourseStats(student.getId(), 10).build();
         
         logout();

@@ -47,6 +47,7 @@ import fi.otavanopisto.pyramus.rest.model.Course;
 import fi.otavanopisto.pyramus.rest.model.CourseActivity;
 import fi.otavanopisto.pyramus.rest.model.CourseAssessment;
 import fi.otavanopisto.pyramus.rest.model.CourseAssessmentRequest;
+import fi.otavanopisto.pyramus.rest.model.CourseModule;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMemberRole;
 import fi.otavanopisto.pyramus.rest.model.CourseStudent;
@@ -948,9 +949,10 @@ public class PyramusMock {
         return this;
       }
       
-      public Builder mockCourseAssessments(MockCourseStudent courseStudent, MockStaffMember staffMember) throws JsonProcessingException {
+      public Builder mockCourseAssessments(Course course, MockCourseStudent courseStudent, MockStaffMember staffMember) throws JsonProcessingException {
         OffsetDateTime assessmentCreated = OffsetDateTime.of(LocalDateTime.now(), ZoneOffset.UTC);
-        CourseAssessment courseAssessment = new CourseAssessment(1l, courseStudent.getId(), 1l, 1l, staffMember.getId(), assessmentCreated, "Test evaluation.", Boolean.TRUE);
+        CourseModule courseModule = course.getCourseModules().iterator().next();
+        CourseAssessment courseAssessment = new CourseAssessment(1l, courseStudent.getId(), courseModule.getId(), 1l, 1l, staffMember.getId(), assessmentCreated, "Test evaluation.", Boolean.TRUE);
         
         stubFor(post(urlMatching(String.format("/1/students/students/%d/courses/%d/assessments/", courseStudent.getStudentId(), courseStudent.getCourseId())))
           .willReturn(aResponse()
