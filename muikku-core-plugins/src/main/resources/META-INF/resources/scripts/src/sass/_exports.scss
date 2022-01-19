@@ -1,5 +1,7 @@
 @import "./base/breakpoints";
 
+  // scss-lint:disable SelectorFormat
 :export {
   mobileBreakpoint: $breakpoint-pad;
 }
+  // scss-lint:enable SelectorFormat
