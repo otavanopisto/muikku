@@ -117,7 +117,7 @@ public class NoPassedCoursesNotificationStrategy extends AbstractTimedNotificati
     
     Date thresholdDate = Date.from(OffsetDateTime.now().minusDays(NOTIFICATION_THRESHOLD_DAYS).toInstant());
     List<SchoolDataIdentifier> studentIdentifierAlreadyNotified = noPassedCoursesNotificationController.listNotifiedSchoolDataIdentifiersAfter(thresholdDate);
-    SearchResult searchResult = noPassedCoursesNotificationController.searchActiveStudentIds(getActiveOrganizations(), groups, FIRST_RESULT + offset, MAX_RESULTS, studentIdentifierAlreadyNotified, thresholdDate);
+    SearchResult searchResult = noPassedCoursesNotificationController.searchActiveStudents(getActiveOrganizations(), groups, FIRST_RESULT + offset, MAX_RESULTS, studentIdentifierAlreadyNotified, thresholdDate);
     logger.log(Level.INFO, String.format("%s processing %d/%d", getClass().getSimpleName(), offset, searchResult.getTotalHitCount()));
     
     if ((offset + MAX_RESULTS) > searchResult.getTotalHitCount()) {

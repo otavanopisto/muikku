@@ -43,7 +43,10 @@ rules.push({
       options: {
         sourceMap: true,
         importLoaders: 1,
-        url: false
+        url: false,
+        modules: {
+          compileType: "icss"  // needed to import the sass variables to js
+        }
       },
     },
     {

@@ -1,0 +1,7 @@
+@import "./base/breakpoints";
+
+  // scss-lint:disable all
+:export {
+  mobileBreakpoint: $breakpoint-pad;
+}
+  // scss-lint:enable all

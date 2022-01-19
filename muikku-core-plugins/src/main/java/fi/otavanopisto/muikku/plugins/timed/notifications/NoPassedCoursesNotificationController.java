@@ -37,7 +37,7 @@ public class NoPassedCoursesNotificationController {
   @Inject
   private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
   
-  public SearchResult searchActiveStudentIds(List<OrganizationEntity> activeOrganizations, Collection<Long> groups, int firstResult, int maxResults, List<SchoolDataIdentifier> excludeSchoolDataIdentifiers, Date startedStudiesBefore){
+  public SearchResult searchActiveStudents(List<OrganizationEntity> activeOrganizations, Collection<Long> groups, int firstResult, int maxResults, List<SchoolDataIdentifier> excludeSchoolDataIdentifiers, Date startedStudiesBefore){
     SearchProvider searchProvider = getProvider("elastic-search");
     
     return searchProvider.searchUsers(
@@ -53,7 +53,7 @@ public class NoPassedCoursesNotificationController {
         true,   // only default users 
         firstResult, 
         maxResults, 
-        Collections.singleton("id"), 
+        null, 
         excludeSchoolDataIdentifiers, 
         startedStudiesBefore);
   }
