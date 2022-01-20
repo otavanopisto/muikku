@@ -1,5 +1,6 @@
 import '~/sass/elements/tabs.scss';
 import * as React from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { connect } from "react-redux";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/scss';
@@ -38,11 +39,33 @@ interface MobileOnlyTabsProps {
 }
 
 export const Tabs: React.FC<TabsProps> = (props) => {
-
   const { modifier, renderAllComponents, activeTab, onTabChange, tabs, children } = props;
-
+  const [currentWidth, setCurrentWidth] = useState(Math.round(window.innerWidth / 16));
   const mobileBreakpoint = parseInt(variables.mobileBreakpoint); //Parse a breakpoint from scss to a number
-  const currentWidth = Math.round(window.innerWidth / 16); // Inner width to em
+  const countRef = useRef(currentWidth);
+  countRef.current = currentWidth;
+
+  useEffect(() => {
+
+    const handleResize = () => () => {
+      const width = Math.round(window.innerWidth / 16);
+      const direction = countRef.current < width ? "out" : "in";
+      if (direction === "out" && countRef.current <= mobileBreakpoint) {
+        setCurrentWidth(width);
+      } else if (direction === "in" && countRef.current >= mobileBreakpoint) {
+        setCurrentWidth(width);
+
+      }
+    }
+
+    window.addEventListener("resize", handleResize());
+    return () => window.removeEventListener("resize", handleResize());
+
+  }, []);
+
+
+
+
   const isMobileWidth = currentWidth <= mobileBreakpoint;
 
   const a11yConfig = {
@@ -69,6 +92,11 @@ export const Tabs: React.FC<TabsProps> = (props) => {
   const allTabs = createAllTabs(tabs);
   const nextSlide = allTabs[allTabs.indexOf(activeTab) + 1];
   const prevSlide = allTabs[allTabs.indexOf(activeTab) - 1];
+
+  const test = (width: number) => {
+    setCurrentWidth(width)
+  }
+
 
   return <div className={`tabs ${modifier ? "tabs--" + modifier : ""}`}>
 
