@@ -436,7 +436,7 @@ public class GuiderTestsBase extends AbstractUITest {
         student = new MockStudent(10l, 10l, "Eastern", "Ibex", "ibexofeast@example.com", 2l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "101010-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.addMonths(monthsToIncrease));
         mockBuilder.mockStudyTimeIncrease(student, monthsToIncrease);
 
-        CeeposPaymentConfirmationRestModel cpcrm = new CeeposPaymentConfirmationRestModel("1", 1, "456", expectedHash);
+        CeeposPaymentConfirmationRestModel cpcrm = new CeeposPaymentConfirmationRestModel(orderNo, 1, refNo, expectedHash);
         
         int status = TestUtilities.sendHttpPOSTRequest(getAppUrl(false) + "/rest/ceepos/paymentConfirmation", objectMapper.writeValueAsString(cpcrm));
         if (status == 200) {
