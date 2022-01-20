@@ -128,23 +128,27 @@ export default class c extends React.Component<InputContactsAutofillProps, Input
     let getStudentsLoader = () => {
       return loaders.studentsLoader ? loaders.studentsLoader(textInput) : promisify(mApi().user.users.read({
         q: textInput,
+        maxResults: 20,
         onlyDefaultUsers: checkHasPermission(this.props.userPermissionIsOnlyDefaultUsers)
       }), 'callback');
     }
     let getUserGroupsLoader = () => {
       return loaders.userGroupsLoader ? loaders.userGroupsLoader(textInput) : promisify(mApi().usergroup.groups.read({
-        q: textInput
+        q: textInput,
+        maxResults: 20,
       }), 'callback');
     }
     let getWorkspacesLoader = () => {
       return loaders.workspacesLoader ? loaders.workspacesLoader(textInput) : promisify(mApi().coursepicker.workspaces.read({
         q: textInput,
+        maxResults: 20,
         myWorkspaces: checkHasPermission(this.props.workspacePermissionIsOnlyMyWorkspaces)
       }), 'callback');
     }
     let getStaffLoader = () => {
       return loaders.staffLoader ? loaders.staffLoader(textInput) : promisify(mApi().user.staffMembers.read({
-        q: textInput
+        q: textInput,
+        maxResults: 20,
       }), 'callback');
     }
 
@@ -198,6 +202,7 @@ export default class c extends React.Component<InputContactsAutofillProps, Input
       });
     }
   }
+  
   onDelete(item: ContactRecipientType) {
     clearTimeout(this.blurTimeout);
     let nfilteredValue = this.state.selectedItems.filter(selectedItem => selectedItem.type !== item.type || selectedItem.value.id !== item.value.id);
