@@ -1336,7 +1336,7 @@ public class PyramusMock {
         sb.append("&");
         sb.append(cSalt);
         String expectedHash = Hashing.sha256().hashString(sb.toString(), StandardCharsets.UTF_8).toString();
-        CeeposPaymentResponseRestModel response = new CeeposPaymentResponseRestModel("1", 2, "456", "new payment", returnAddress, expectedHash);
+        CeeposPaymentResponseRestModel response = new CeeposPaymentResponseRestModel(orderNo, 2, refNo, "new payment", returnAddress, expectedHash);
         stubFor(post(urlEqualTo("/ceeposrequestpayment"))
           .willReturn(aResponse()
             .withHeader("Content-Type", "application/json")
