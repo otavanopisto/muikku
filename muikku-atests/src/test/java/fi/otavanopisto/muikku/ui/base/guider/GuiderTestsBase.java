@@ -4,17 +4,26 @@ import static fi.otavanopisto.muikku.mock.PyramusMock.mocker;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONObject;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
+import com.google.common.hash.Hashing;
+
 import fi.otavanopisto.muikku.TestEnvironments;
 import fi.otavanopisto.muikku.TestUtilities;
+import fi.otavanopisto.muikku.atests.CeeposPaymentConfirmationRestModel;
 import fi.otavanopisto.muikku.atests.Workspace;
 import fi.otavanopisto.muikku.atests.WorkspaceFolder;
 import fi.otavanopisto.muikku.atests.WorkspaceHtmlMaterial;
@@ -30,6 +39,7 @@ import fi.otavanopisto.pyramus.rest.model.CourseActivity;
 import fi.otavanopisto.pyramus.rest.model.CourseActivityState;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
 import fi.otavanopisto.pyramus.rest.model.Sex;
+import fi.otavanopisto.pyramus.rest.model.StudyProgramme;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
 
 public class GuiderTestsBase extends AbstractUITest {
@@ -335,7 +345,7 @@ public class GuiderTestsBase extends AbstractUITest {
       .build();
       login();
       Workspace workspace1 = createWorkspace(course1, Boolean.TRUE);
-      MockCourseStudent mcs = new MockCourseStudent(9l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+      MockCourseStudent mcs = new MockCourseStudent(11l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
       CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
       mockBuilder
         .addCourseStudent(course1.getId(), mcs)
@@ -351,6 +361,140 @@ public class GuiderTestsBase extends AbstractUITest {
         navigate("", false);
         navigate("/guider", false);
         assertNotPresent(".application-list__item-footer--student .label--ENDING");
+      }finally {
+        archiveUserByEmail(student.getEmail());
+        deleteWorkspace(workspace1.getId());      
+      }
+    } finally {
+      mockBuilder.wiremockReset();
+    }
+  }
+  
+  @Test
+  public void addStudyTimeTest() throws Exception {
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    MockStaffMember admin = new MockStaffMember(1l, 1l, DEFAULT_ORGANIZATION_ID, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
+    Builder mockBuilder = mocker();
+    MockStudent student = new MockStudent(10l, 10l, "Eastern", "Ibex", "ibexofeast@example.com", 2l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "101010-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextWeek());
+    try {
+      mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
+      Course course1 = new CourseBuilder().name("aasdgz").id((long) 10).description("test coursemus for testing").buildCourse();
+      mockBuilder
+      .addStaffMember(admin)
+      .mockLogin(admin)
+      .addCourse(course1)
+      .build();
+      login();
+      Workspace workspace1 = createWorkspace(course1, Boolean.TRUE);
+      MockCourseStudent mcs = new MockCourseStudent(12l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
+      mockBuilder
+        .addCourseStudent(course1.getId(), mcs)
+        .addCourseStaffMember(course1.getId(), courseStaffMember)
+        .build();
+      try {
+        selectFinnishLocale();
+        navigate("/guider", false);
+        waitForPresent(".application-list__item-footer--student .label--ENDING");
+        waitAndClick(".application-list__header-primary>span");
+        scrollTo(".button--create-student-order", 150);
+        waitAndClickAndConfirm(".button--create-student-order", ".dropdown .link--purchasable-product-dropdown", 5, 500);
+        waitAndClickAndConfirm(".dropdown__container-item:first-child", ".dialog--dialog-confirm-order.dialog--visible", 5, 1000);
+        waitAndClick(".button--standard-ok");
+        assertTextIgnoreCase(".application-list__header-primary--product .application-list__header-primary-title b", "Nettilukion yksityisopiskelijan opiskelumaksu 6 kk");
+        assertTextIgnoreCase(".application-list__header-primary--product .application-list__header-primary-description", "Tilaus on luotu ja opiskelijalle on toimitettu sähköpostitse ohjeet maksamista varten.");
+        assertPresent(".application-list__header-primary--product .application-list__header-primary-actions .button--delete-student-order");
+        logout();
+
+        String orderNo = "1";
+        String refNo = "456";
+        String cSalt = "xxxxxx";
+        StringBuilder sb = new StringBuilder();
+        sb.append(orderNo);
+        sb.append("&");
+        sb.append("1"); // ceepos payment state
+        sb.append("&");
+        sb.append(refNo);
+        sb.append("&");
+        sb.append(cSalt);  // secret ceepos salt for hashing
+        String expectedHash = Hashing.sha256().hashString(sb.toString(), StandardCharsets.UTF_8).toString();
+        mockBuilder.mockLogin(student).mockCeeposRequestPayment(orderNo, refNo, cSalt, expectedHash, getAppUrl());
+        
+        login();
+        selectFinnishLocale();
+        navigate("/profile#purchases", false);
+        assertTextIgnoreCase(".application-list__item--product .application-list__header-primary-title b", "Nettilukion yksityisopiskelijan opiskelumaksu 6 kk");
+        assertTextIgnoreCase(".application-list__header-primary-description", "Tilaus on luotu ja sinulle on toimitettu sähköpostitse ohjeet maksamista varten.");
+        assertPresent(".application-list__header-primary-actions .button--pay-student-order");
+        click(".application-list__header-primary-actions .button--pay-student-order");
+        waitForPresent(".card__text-row--ceepos-feedback");
+        assertTextIgnoreCase(".card__text-row--ceepos-feedback", "Tilauksen maksutapahtuma onnistui.");
+        assertTextIgnoreCase(".button--back-to-muikku", "Muikun etusivulle");
+        click(".button--back-to-muikku");
+        
+        int monthsToIncrease = 6;
+        student = new MockStudent(10l, 10l, "Eastern", "Ibex", "ibexofeast@example.com", 2l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "101010-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.addMonths(monthsToIncrease));
+        mockBuilder.mockStudyTimeIncrease(student, monthsToIncrease);
+
+        CeeposPaymentConfirmationRestModel cpcrm = new CeeposPaymentConfirmationRestModel("1", 1, "456", expectedHash);
+        
+        int status = TestUtilities.sendHttpPOSTRequest(getAppUrl(false) + "/rest/ceepos/paymentConfirmation", objectMapper.writeValueAsString(cpcrm));
+        if (status == 200) {
+          mockBuilder.build();
+          assertVisible(".navbar .button-pill--profile");
+          navigate("/profile#general", false);
+          assertText(".application-sub-panel__item-data--study-end-date span:first-child", TestUtilities.addMonths(monthsToIncrease).format(DateTimeFormatter.ofPattern("dd.MM.yyyy")));
+          navigate("/profile#purchases", false);
+          assertTextIgnoreCase(".application-list__item--product .application-list__header-primary-description", "Tilaus on viety loppuun ja opintoaikaasi on pidennetty.");
+        }else {
+          assertTrue("paymentConfirmation status not 200", false);
+        }
+      }finally {
+        archiveUserByEmail(student.getEmail());
+        deleteWorkspace(workspace1.getId());      
+      }
+    } finally {
+      mockBuilder.wiremockReset();
+    }
+  }
+  
+  @Test
+  public void deleteAdditionalStudyTimeOrderTest() throws Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, DEFAULT_ORGANIZATION_ID, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
+    Builder mockBuilder = mocker();
+    MockStudent student = new MockStudent(11l, 11l, "Midwest", "Mudweller", "mmud@example.com", 2l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "101000-1011", Sex.MALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextWeek());
+    try {
+      mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
+      Course course1 = new CourseBuilder().name("aasdgz").id((long) 12).description("test coursemus for testing").buildCourse();
+      mockBuilder
+      .addStaffMember(admin)
+      .mockLogin(admin)
+      .addCourse(course1)
+      .build();
+      login();
+      Workspace workspace1 = createWorkspace(course1, Boolean.TRUE);
+      MockCourseStudent mcs = new MockCourseStudent(13l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
+      mockBuilder
+        .addCourseStudent(course1.getId(), mcs)
+        .addCourseStaffMember(course1.getId(), courseStaffMember)
+        .build();
+      try {
+        selectFinnishLocale();
+        navigate("/guider", false);
+        waitForPresent(".application-list__item-footer--student .label--ENDING");
+        waitAndClick(".application-list__header-primary>span");
+        scrollTo(".button--create-student-order", 150);
+        waitAndClickAndConfirm(".button--create-student-order", ".dropdown .link--purchasable-product-dropdown", 5, 500);
+        waitAndClickAndConfirm(".dropdown__container-item:first-child", ".dialog--dialog-confirm-order.dialog--visible", 5, 1000);
+        waitAndClick(".button--standard-ok");
+        assertTextIgnoreCase(".application-list__header-primary--product .application-list__header-primary-title b", "Nettilukion yksityisopiskelijan opiskelumaksu 6 kk");
+        assertTextIgnoreCase(".application-list__header-primary--product .application-list__header-primary-description", "Tilaus on luotu ja opiskelijalle on toimitettu sähköpostitse ohjeet maksamista varten.");
+        assertPresent(".application-list__header-primary--product .application-list__header-primary-actions .button--delete-student-order");
+        waitAndClick(".application-list__header-primary--product .application-list__header-primary-actions .button--delete-student-order");
+        waitAndClick(".dialog--dialog-delete-order.dialog--visible .button--fatal");
+        waitForNotPresent(".application-list__header-primary--product .application-list__header-primary-actions .button--delete-student-order");
+        assertTextIgnoreCase(".button--create-student-order", "Luo uusi tilaus");
       }finally {
         archiveUserByEmail(student.getEmail());
         deleteWorkspace(workspace1.getId());      

@@ -11,6 +11,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -35,8 +36,10 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.matching.UrlPathPattern;
 import com.github.tomakehurst.wiremock.stubbing.ServeEvent;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
+import com.google.common.hash.Hashing;
 
 import fi.otavanopisto.muikku.TestUtilities;
+import fi.otavanopisto.muikku.atests.CeeposPaymentResponseRestModel;
 import fi.otavanopisto.muikku.atests.PyramusMatriculationExam;
 import fi.otavanopisto.muikku.mock.model.MockCourseStudent;
 import fi.otavanopisto.muikku.mock.model.MockLoggable;
@@ -131,11 +134,17 @@ public class PyramusMock {
         
         pmock.studyProgrammeCategories.add(new StudyProgrammeCategory(1l, "All Study Programmes", 1l, false));
         pmock.studyProgrammes.add(new StudyProgramme(1l, 1l, "test", "Test Study Programme", 1l, false, false));
+        pmock.studyProgrammes.add(new StudyProgramme(2l, 1l, "test_lukio", "Aineopiskelu/lukio", 1l, false, false));
         
         pmock.courseTypes.add(new fi.otavanopisto.pyramus.rest.model.CourseType((long) 1, "Nonstop", false));
         pmock.courseTypes.add(new fi.otavanopisto.pyramus.rest.model.CourseType((long) 2, "Ryhmäkurssi", false));        
       }
 
+      public Builder addStudyProgramme(StudyProgramme studyProgramme) {
+        pmock.studyProgrammes.add(studyProgramme);
+        return this;
+      }
+      
       public Builder addStudents(List<MockStudent> students) {
         for(MockStudent mockStudent : students) {
           Person person = new Person(mockStudent.getPersonId(), mockStudent.getBirthday(), mockStudent.getSocialSecurityNumber(), mockStudent.getSex(), false, "empty", mockStudent.getPersonId());
@@ -1298,6 +1307,41 @@ public class PyramusMock {
                   .withBody(pmock.objectMapper.writeValueAsString(courseActivities))
                   .withStatus(200)));
         }
+        return this;
+      }
+          
+      public Builder mockStudyTimeIncrease(MockStudent mockStudent, int months) throws JsonProcessingException {
+        this.updateStudent(mockStudent);
+        stubFor(post(urlEqualTo(String.format("/1/students/students/%d/increaseStudyTime?months=%d", mockStudent.getId(), months)))
+          .willReturn(aResponse()
+            .withHeader("Content-type", "application/json")
+            .withBody(pmock.objectMapper.writeValueAsString(TestUtilities.studentFromMockStudent(mockStudent)))
+            .withStatus(200)));        
+        return this;
+      }
+      
+//    This is actually mocking cpu payment service, but not getting it's own class.  
+      public Builder mockCeeposRequestPayment(String orderNo, String refNo, String cSalt,String hash, String returnAppUrl) throws JsonProcessingException {
+        String returnAddress = returnAppUrl + "/ceepos/done?Id=1&Status=1&Reference=456&Hash=" + hash;
+        StringBuilder sb = new StringBuilder();
+        sb.append(orderNo);
+        sb.append("&");
+        sb.append(2);
+        sb.append("&");
+        sb.append(refNo);
+        sb.append("&");
+        sb.append("new payment");
+        sb.append("&");
+        sb.append(returnAddress);
+        sb.append("&");
+        sb.append(cSalt);
+        String expectedHash = Hashing.sha256().hashString(sb.toString(), StandardCharsets.UTF_8).toString();
+        CeeposPaymentResponseRestModel response = new CeeposPaymentResponseRestModel("1", 2, "456", "new payment", returnAddress, expectedHash);
+        stubFor(post(urlEqualTo("/ceeposrequestpayment"))
+          .willReturn(aResponse()
+            .withHeader("Content-Type", "application/json")
+            .withBody(pmock.objectMapper.writeValueAsString(response))
+            .withStatus(200)));
         return this;
       }
       
