@@ -57,12 +57,24 @@ public class TestUtilities {
 
   public static int sendHttpPOSTRequest(String url, String json) throws ClientProtocolException, IOException, URISyntaxException {
     CloseableHttpClient client = HttpClients.createDefault();
-    URI uri = new URI(url);
-    HttpPost post = new HttpPost(uri);
-    StringEntity se = new StringEntity(json);  
-    se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
-    post.setEntity(se);
-    return client.execute(post).getStatusLine().getStatusCode();
+    try {
+      URI uri = new URI(url);
+      HttpPost post = new HttpPost(uri);
+      try {
+        StringEntity se = new StringEntity(json);  
+        try {
+          se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
+          post.setEntity(se);
+          return client.execute(post).getStatusLine().getStatusCode();
+        } finally {
+          EntityUtils.consume(se);
+        }
+      } finally {
+        post.releaseConnection();
+      }
+    } finally {
+      client.close();
+    }
    }
 
   
