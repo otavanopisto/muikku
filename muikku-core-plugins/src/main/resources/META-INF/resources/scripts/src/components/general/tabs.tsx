@@ -47,7 +47,6 @@ export const Tabs: React.FC<TabsProps> = (props) => {
   countRef.current = currentWidth;
 
   useEffect(() => {
-
     const handleResize = () => () => {
       const width = Math.round(window.innerWidth / 16);
       const direction = countRef.current < width ? "out" : "in";
@@ -64,9 +63,6 @@ export const Tabs: React.FC<TabsProps> = (props) => {
 
   }, []);
 
-
-
-
   const isMobileWidth = currentWidth <= mobileBreakpoint;
 
   const a11yConfig = {
@@ -80,11 +76,6 @@ export const Tabs: React.FC<TabsProps> = (props) => {
 
   const nextSlide = allTabs[allTabs.indexOf(activeTab) + 1];
   const prevSlide = allTabs[allTabs.indexOf(activeTab) - 1];
-
-  const test = (width: number) => {
-    setCurrentWidth(width)
-  }
-
 
   return <div className={`tabs ${modifier ? "tabs--" + modifier : ""}`}>
     {isMobileWidth ?
