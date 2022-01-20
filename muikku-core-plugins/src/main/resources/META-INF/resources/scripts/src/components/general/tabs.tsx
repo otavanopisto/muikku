@@ -43,24 +43,33 @@ export const Tabs: React.FC<TabsProps> = (props) => {
   const [currentWidth, setCurrentWidth] = useState(Math.round(window.innerWidth / 16));
   const { modifier, renderAllComponents, activeTab, onTabChange, tabs, children, allTabs } = props;
   const mobileBreakpoint = parseInt(variables.mobileBreakpoint); //Parse a breakpoint from scss to a number
-  const countRef = useRef(currentWidth);
+
+  const countRef = useRef(currentWidth); // We need this, otherwise the useEffect won't get the correct currentWidth
   countRef.current = currentWidth;
 
   useEffect(() => {
+    /**
+     * A Handler for the resize event
+     *
+     * @returns
+     */
     const handleResize = () => () => {
-      const width = Math.round(window.innerWidth / 16);
-      const direction = countRef.current < width ? "out" : "in";
-      if (direction === "out" && countRef.current <= mobileBreakpoint) {
-        setCurrentWidth(width);
-      } else if (direction === "in" && countRef.current >= mobileBreakpoint) {
-        setCurrentWidth(width);
+      const width = Math.round(window.innerWidth / 16); // Width on resize
+      const direction = countRef.current < width ? "out" : "in"; // Direction of the resize
 
+      /** If the resize zoom direction is outwards
+       * we don't need to re-render
+       * if we're already using the correct component
+       * and vice versa
+       */
+      if ((direction === "out" && countRef.current <= mobileBreakpoint)
+        || (direction === "in" && countRef.current >= mobileBreakpoint)) {
+        setCurrentWidth(width);
       }
     }
 
     window.addEventListener("resize", handleResize());
     return () => window.removeEventListener("resize", handleResize());
-
   }, []);
 
   const isMobileWidth = currentWidth <= mobileBreakpoint;
