@@ -63,9 +63,6 @@ export const Tabs: React.FC<TabsProps> = (props) => {
 
   }, []);
 
-
-
-
   const isMobileWidth = currentWidth <= mobileBreakpoint;
 
   const a11yConfig = {
