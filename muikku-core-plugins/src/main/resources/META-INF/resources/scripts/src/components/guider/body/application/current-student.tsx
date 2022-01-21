@@ -13,6 +13,7 @@ import { getUserImageUrl, getName } from '~/util/modifiers';
 import Hops from '~/components/base/hops_readable';
 import FileDeleteDialog from '../../dialogs/file-delete';
 import Workspaces from './current-student/workspaces';
+import Ceepos from "./current-student/ceepos";
 import FileUploader from '~/components/general/file-uploader';
 import {
   AddFileToCurrentStudentTriggerType,
@@ -55,10 +56,12 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
     //a case where the property is not available
     //You can use the cheat && after the property
     //eg. guider.currentStudent.property && guider.currentStudent.property.useSubProperty
-    let defaultEmailAddress = this.props.guider.currentStudent.emails && this.props.guider.currentStudent.emails.find((e) => e.defaultAddress);
-    let studentBasicHeader = this.props.guider.currentStudent.basic && <div className="application-sub-panel__header">
+    const defaultEmailAddress = this.props.guider.currentStudent.emails && this.props.guider.currentStudent.emails.find((e) => e.defaultAddress);
+    const studentBasicHeader = this.props.guider.currentStudent.basic && <div className="application-sub-panel__header">
       <object
         className="avatar-container"
+        role="img"
+        aria-label={this.props.i18n.text.get("plugin.wcag.userAvatar.label")}
         data={getUserImageUrl(this.props.guider.currentStudent.basic.userEntityId)}
         type="image/jpeg">
         <div className={`avatar avatar--category-1`}>{this.props.guider.currentStudent.basic.firstName[0]}</div>
@@ -85,15 +88,16 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
       </div>
     </div >
 
-    let studentLabels = this.props.guider.currentStudent.labels && this.props.guider.currentStudent.labels.map((label: GuiderStudentUserProfileLabelType) => {
+    const studentLabels = this.props.guider.currentStudent.labels && this.props.guider.currentStudent.labels.map((label: GuiderStudentUserProfileLabelType) => {
       return <span className="label" key={label.id}>
         <span className="label__icon icon-flag" style={{ color: label.flagColor }}></span>
         <span className="label__text">{label.flagName}</span>
       </span>
     });
 
-    let studentBasicInfo = this.props.guider.currentStudent.basic && <div className="application-sub-panel__body">
-      <div className="application-sub-panel__item application-sub-panel__item--guider-student">
+
+    const studentBasicInfo = this.props.guider.currentStudent.basic && <div className="application-sub-panel__body">
+      <div className="application-sub-panel__item">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.studyStartDateTitle")}</div>
         <div className="application-sub-panel__item-data">
           <span className="application-sub-panel__single-entry">{this.props.guider.currentStudent.basic.studyStartDate ?
@@ -166,29 +170,25 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
         </div>
       })}
     </div>
-    //TODO: this was stolen from the dust template, please replace all the classNames, these are for just reference
-    //I don't want this file to become too complex, remember anyway that I will be splitting all these into simpler components
-    //later once a pattern is defined
-    let studentHops = (this.props.guider.currentStudent.hops && this.props.guider.currentStudent.hops.optedIn) ?
+
+    const studentHops = (this.props.guider.currentStudent.hops && this.props.guider.currentStudent.hops.optedIn) ?
       <Hops data={this.props.guider.currentStudent.hops} /> : null;
 
-    //I placed the VOPS in an external file already you can follow it, this is because
-    //it is very clear
     let studentVops = null;
     // Removed until it works
     // (this.props.guider.currentStudent.vops && this.props.guider.currentStudent.vops.optedIn) ?
     //        <Vops data={this.props.guider.currentStudent.vops}></Vops> : null;
 
-    let studentWorkspaces = <Workspaces />;
+    const studentWorkspaces = <Workspaces />;
 
-    let formDataGenerator = (file: File, formData: FormData) => {
+    const formDataGenerator = (file: File, formData: FormData) => {
       formData.append("upload", file);
       formData.append("title", file.name);
       formData.append("description", "");
       formData.append("userIdentifier", this.props.guider.currentStudent.basic.id);
     }
 
-    let files = this.props.guider.currentStudent.basic && <div className="application-sub-panel__body">
+    const files = this.props.guider.currentStudent.basic && <div className="application-sub-panel__body">
       <FileUploader url="/transcriptofrecordsfileupload/" formDataGenerator={formDataGenerator}
         displayNotificationOnError onFileSuccess={(file: File, data: UserFileType) => {
           this.props.addFileToCurrentStudent(data);
@@ -200,6 +200,7 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
         notificationOfSuccessText={this.props.i18n.text.get("plugin.guider.fileUpload.successful")} displayNotificationOnSuccess />
     </div>
 
+
     const headerToolbar = {
       left: 'today prev,next',
       center: 'title',
@@ -209,6 +210,20 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
     const externalEvents: ExternalEventType[] = this.props.guider.currentStudent.workspaces.map(workspace => (
       { id: workspace.id.toString(), title: workspace.name, duration: "36:00:00" }
     ));
+
+    const IsStudentPartOfProperStudyProgram = (studyProgramName: string) => {
+      switch (studyProgramName) {
+        case "Nettilukio/yksityisopiskelu (aineopintoina)":
+        case "Nettilukio/yksityisopiskelu (tutkinto)":
+        case "Aineopiskelu/lukio":
+        case "Aineopiskelu/peruskoulu":
+        case "Aineopiskelu/yo-tutkinto":
+          return true;
+        default:
+          return false;
+      }
+    };
+
 
     return <>
       <div className="application-sub-panel application-sub-panel--guider-student-header">
@@ -222,6 +237,7 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
           {studentBasicInfo}
         </div>
         {/* {studentHops ? <div className="application-sub-panel">
+
         <h3 className="application-sub-panel__header">{this.props.i18n.text.get("plugin.guider.user.details.hops")}</h3>
         {studentHops}
       </div> : null} */}

@@ -3,6 +3,19 @@
 @import "../base/mixins";
 @import "../base/breakpoints";
 
+.card-wrapper {
+  align-items: center;
+  bottom: 0;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 100%;
+}
+
 .card {
   background-color: $color-card-default-background;
   border: solid 1px $color-card-default-border;
@@ -14,6 +27,23 @@
   min-height: 45px;
   overflow: hidden;
   width: 100%;
+}
+
+.card__hero {
+  padding: 1.1rem;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 1.6rem;
+  }
+}
+
+.card__hero-image {
+  position: relative;
+  width: 100%;
+}
+
+.card__hero-text {
+  font-weight: 600;
 }
 
 .card__image {
@@ -112,6 +142,26 @@
   }
 }
 
+.card__text-row {
+  align-items: flex-start;
+  display: flex;
+  flex-flow: column nowrap;
+  font-weight: 300;
+  padding: 10px 0;
+}
+
+.card__subtitle {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.card__text-highlight {
+  font-size: 1.25rem;
+}
+
 .card__footer {
   padding: 0 1.1rem 1.1rem;
   position: relative;
@@ -138,4 +188,79 @@
 .card--frontpage-organization {
   margin-bottom: 90px;
   padding: 20px;
+}
+
+// Ceepos
+.card--ceepos {
+  background: transparent;
+  border: 0;
+  font-family: "Open Sans", Arial, sans-serif;
+  height: auto;
+  margin: 10px;
+  max-width: 430px;
+}
+
+.card__hero--ceepos {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+.card__hero-image--ceepos {
+  height: 50px;
+  width: auto;
+
+  @include breakpoint($breakpoint-pad) {
+    height: 60px;
+  }
+}
+
+.card__hero-text--ceepos {
+  color: $color-info;
+  font-family: "Exo 2", Arial, sans-serif;
+  font-size: 2rem;
+  font-weight: 900;
+  padding: 0 1rem;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: 2.5rem;
+  }
+}
+
+.card__content--ceepos {
+  background: $color-default;
+  border: 1px solid $color-panel-border-color;
+  border-radius: 5px;
+  box-shadow: 0 0 20px $color-ceepos-card-shadow;
+}
+
+.card__title--ceepos {
+  font-weight: 400;
+  text-transform: none;
+}
+
+.card__text-row--ceepos-feedback {
+  font-weight: 400;
+}
+
+.card__text--ceepos {
+  font-size: 1rem;
+}
+
+.card__text-highlight--ceepos {
+  color: $color-info;
+}
+
+.card__footer--ceepos {
+  display: flex;
+  justify-content: center;
+  padding: 1.1rem 0 0;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 1.6rem 0 0;
+  }
+
+  .button {
+    margin: 5px;
+  }
 }

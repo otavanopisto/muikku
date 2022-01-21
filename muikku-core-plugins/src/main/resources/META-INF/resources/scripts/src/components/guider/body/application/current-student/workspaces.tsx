@@ -27,7 +27,7 @@ class CurrentStudentWorkspaces extends React.Component<CurrentStudentWorkspacesP
         return <Workspace workspace={workspace} key={workspace.id}/>
       })}
     </div> : <div className="empty">
-      <h3 className="">{this.props.i18n.text.get("plugin.guider.noWorkspaces")}</h3>
+      <span>{this.props.i18n.text.get("plugin.guider.noWorkspaces")}</span>
     </div>) : null;
   }
 }

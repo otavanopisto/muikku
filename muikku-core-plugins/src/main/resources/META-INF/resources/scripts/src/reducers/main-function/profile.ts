@@ -34,6 +34,40 @@ export interface WorklistItem {
   billingNumber: number;
 }
 
+export enum PurchaseStateType {
+  CREATED = "CREATED",
+  CANCELLED = "CANCELLED",
+  ERRORED = "ERRORED",
+  ONGOING = "ONGOING",
+  PAID = "PAID",
+  COMPLETE = "COMPLETE"
+}
+
+export interface PurchaseProductType {
+  Code: string;
+  Description: string;
+  Price: number;
+};
+
+export interface PurchaseCreatorType {
+  id: number;
+  userEntityId: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+}
+
+export interface PurchaseType {
+  created: string;
+  paid: string;
+  id: number;
+  product: PurchaseProductType,
+  state: PurchaseStateType,
+  studentEmail: string;
+  studentIdentifier: string;
+  creator: PurchaseCreatorType;
+}
+
 export interface StoredWorklistItem extends WorklistItem {
   id: number;
   editableFields: Array<EditableField>;
@@ -64,6 +98,7 @@ export interface ProfileType {
   chatSettings?: UserChatSettingsType;
   worklistTemplates?: Array<WorklistTemplate>;
   worklist?: Array<WorklistSection>;
+  purchases?: PurchaseType[];
 }
 
 export default function profile(state: ProfileType = {
@@ -74,6 +109,7 @@ export default function profile(state: ProfileType = {
   location: null,
   worklistTemplates: null,
   worklist: null,
+  purchases: null,
 }, action: ActionType): ProfileType {
   if (action.type === "SET_PROFILE_USER_PROPERTY"){
     let newProperties = {...state.properties}
@@ -108,6 +144,10 @@ export default function profile(state: ProfileType = {
   } else if (action.type === "SET_WORKLIST") {
     return {...state, ...{
       worklist: action.payload
+    }}
+  } else if (action.type === "SET_PURCHASE_HISTORY") {
+    return {...state, ...{
+      purchases: action.payload
     }}
   }
   return state;

@@ -28,7 +28,7 @@
 
   &.disabled,
   &:disabled {
-    cursor: default;
+    cursor: not-allowed;
     opacity: 0.5;
   }
 
@@ -245,51 +245,12 @@
   }
 }
 
-.link--language-picker-dropdown {
-  color: $color-default-contrast;
-  justify-content: flex-start;
-
-  &:hover,
-  &.hover,
-  &:active,
-  &.active {
-    background-color: $color-environment-dropdown-link-hover-background;
-    color: $color-default-contrast;
-  }
-
-  .link__icon {
-    align-items: center;
-    display: flex;
-    justify-content: center;
-    min-width: 16px;
-  }
-}
-
-.link--profile-dropdown {
-  color: $color-default-contrast;
-  justify-content: flex-start;
-
-  &:hover,
-  &.hover,
-  &:active,
-  &.active {
-    background-color: $color-environment-dropdown-link-hover-background;
-    color: $color-default-contrast;
-  }
-
-  .link__icon {
-    align-items: center;
-    display: flex;
-    justify-content: center;
-    min-width: 16px;
-  }
-}
-
+.link--language-picker-dropdown,
+.link--profile-dropdown,
+.link--purchasable-product-dropdown,
 .link--chat-dropdown {
   color: $color-default-contrast;
-  font-size: 0.825rem;
   justify-content: flex-start;
-  padding: 0 5px;
 
   &:hover,
   &.hover,
@@ -305,6 +266,12 @@
     justify-content: center;
     min-width: 16px;
   }
+}
+
+// Specific override for dropdown used in chat
+.link--chat-dropdown {
+  font-size: 0.825rem;
+  padding: 0 5px;
 }
 
 .link--chat-availability-chat {

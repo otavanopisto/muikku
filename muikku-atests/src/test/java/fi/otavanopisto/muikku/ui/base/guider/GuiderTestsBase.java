@@ -359,5 +359,44 @@ public class GuiderTestsBase extends AbstractUITest {
       mockBuilder.wiremockReset();
     }
   }
+
+  @Test
+  public void sendMessageFromGuider() throws Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, DEFAULT_ORGANIZATION_ID, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
+    MockStudent student = new MockStudent(10l, 10l, "Southern", "Otter", "southo@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121211-1211", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextWeek());
+    Builder mockBuilder = mocker();
+    try {
+      mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
+      Course course1 = new CourseBuilder().name("Test kurs").id((long) 11).description("test kursimus for testing").buildCourse();
+      mockBuilder
+      .addStaffMember(admin)
+      .mockLogin(admin)
+      .addCourse(course1)
+      .build();
+      login();
+      Workspace workspace1 = createWorkspace(course1, Boolean.TRUE);
+      MockCourseStudent mcs = new MockCourseStudent(10l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
+      mockBuilder
+        .addCourseStudent(course1.getId(), mcs)
+        .addCourseStaffMember(course1.getId(), courseStaffMember)
+        .build();
+      try {
+        selectFinnishLocale();
+        navigate("/guider", false);
+        waitAndClick(".user .user__select-container input");
+        waitAndClick(".button-pill--new-message:not(.disabled)");
+        sendKeys("#messageTitle", "Message from guider.");
+        addTextToCKEditor("Hello from guider!");
+        waitAndClick(".button--dialog-execute");
+        assertPresent(".notification-queue__items .notification-queue__item--success");
+      }finally {
+        archiveUserByEmail(student.getEmail());
+        deleteWorkspace(workspace1.getId());      
+      }
+    } finally {
+      mockBuilder.wiremockReset();
+    }
+  }
   
 }
