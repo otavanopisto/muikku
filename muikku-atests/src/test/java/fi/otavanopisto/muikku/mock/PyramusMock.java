@@ -91,6 +91,7 @@ import fi.otavanopisto.pyramus.webhooks.WebhookStudentCreatePayload;
 import fi.otavanopisto.pyramus.webhooks.WebhookStudentGroupCreatePayload;
 import fi.otavanopisto.pyramus.webhooks.WebhookStudentGroupStaffMemberCreatePayload;
 import fi.otavanopisto.pyramus.webhooks.WebhookStudentGroupStudentCreatePayload;
+import fi.otavanopisto.pyramus.webhooks.WebhookStudyProgrammeCreatePayload;
 
 public class PyramusMock {
   
@@ -134,7 +135,6 @@ public class PyramusMock {
         
         pmock.studyProgrammeCategories.add(new StudyProgrammeCategory(1l, "All Study Programmes", 1l, false));
         pmock.studyProgrammes.add(new StudyProgramme(1l, 1l, "test", "Test Study Programme", 1l, false, false));
-        pmock.studyProgrammes.add(new StudyProgramme(2l, 1l, "test_lukio", "Aineopiskelu/lukio", 1l, false, false));
         
         pmock.courseTypes.add(new fi.otavanopisto.pyramus.rest.model.CourseType((long) 1, "Nonstop", false));
         pmock.courseTypes.add(new fi.otavanopisto.pyramus.rest.model.CourseType((long) 2, "Ryhmäkurssi", false));        
@@ -691,7 +691,8 @@ public class PyramusMock {
             .willReturn(aResponse()
               .withHeader("Content-Type", "application/json")
               .withBody(pmock.objectMapper.writeValueAsString(sp))
-              .withStatus(200)));          
+              .withStatus(200)));
+          pmock.payloads.add(pmock.objectMapper.writeValueAsString(new WebhookStudyProgrammeCreatePayload(sp.getId())));
         }
 
         stubFor(get(urlEqualTo("/1/students/studyProgrammeCategories"))
@@ -705,7 +706,7 @@ public class PyramusMock {
             .willReturn(aResponse()
               .withHeader("Content-Type", "application/json")
               .withBody(pmock.objectMapper.writeValueAsString(spc))
-              .withStatus(200)));          
+              .withStatus(200)));
         }
         return this;
       }
@@ -1346,24 +1347,29 @@ public class PyramusMock {
       }
       
       public Builder build() throws Exception {
-        mockDefaultOrganization();        
-        mockPersons();
-        mockStudents();
-        mockStaffMembers();
-
-        mockContactTypes();
+        mockDefaultOrganization();
         mockStudyProgrammes();
-        mockGradesAndScales();
-        mockEducationalTimeUnits();
-        mockEducationTypes();
-        mockSubjects();
+        mockStudentGroups();
+        mockContactTypes();
         mockCourses();
         mockCourseEducationTypes();
         mockCourseTypes();
         mockCourseStaffMembers();
         mockCourseStudents();
         mockCourseStaffMemberRoles();
-        mockStudentGroups();
+        
+        mockPersons();
+        mockStudents();
+        mockStaffMembers();
+
+        
+
+        mockGradesAndScales();
+        mockEducationalTimeUnits();
+        mockEducationTypes();
+        mockSubjects();
+        
+        
         mockCourseActivities();
         
         for (String payload : pmock.payloads) {

@@ -167,7 +167,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
         assertTextIgnoreCase(".item-list__item--announcements .item-list__announcement-date", "12.11.2015");
       }finally{
         deleteAnnouncements();
-        deleteUserGroup(2l);
+        deleteUserGroups();
       }
     }finally {
       mockBuilder.wiremockReset();
