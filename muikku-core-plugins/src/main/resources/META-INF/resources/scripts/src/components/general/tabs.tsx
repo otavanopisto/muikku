@@ -1,6 +1,5 @@
 import '~/sass/elements/tabs.scss';
 import * as React from 'react';
-import { useState, useEffect, useRef } from 'react';
 import { connect } from "react-redux";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/scss';
@@ -40,14 +39,14 @@ interface MobileOnlyTabsProps {
 
 export const Tabs: React.FC<TabsProps> = (props) => {
 
-  const [currentWidth, setCurrentWidth] = useState(Math.round(window.innerWidth / 16));
+  const [currentWidth, setCurrentWidth] = React.useState(Math.round(window.innerWidth / 16));
   const { modifier, renderAllComponents, activeTab, onTabChange, tabs, children, allTabs } = props;
   const mobileBreakpoint = parseInt(variables.mobileBreakpoint); //Parse a breakpoint from scss to a number
 
-  const countRef = useRef(currentWidth); // We need this, otherwise the useEffect won't get the correct currentWidth
+  const countRef = React.useRef(currentWidth); // We need this, otherwise the useEffect won't get the correct currentWidth
   countRef.current = currentWidth;
 
-  useEffect(() => {
+  React.useEffect(() => {
     /**
      * A Handler for the resize event
      *
