@@ -27,12 +27,12 @@ import { loadAnnouncement, loadAnnouncements } from '~/actions/announcements';
 import AnnouncementsBody from '../components/announcements/body';
 import { AnnouncementListType } from '~/reducers/announcements';
 import AnnouncerBody from '../components/announcer/body';
-import { updateLabelFilters, updateWorkspaceFilters, updateUserGroupFilters } from '~/actions/main-function/guider';
+import { updateAvailablePurchaseProducts, updateLabelFilters, updateWorkspaceFilters, updateUserGroupFilters } from '~/actions/main-function/guider';
 import { GuiderActiveFiltersType } from '~/reducers/main-function/guider';
-import { loadStudents, loadMoreStudents, loadStudent } from '~/actions/main-function/guider';
+import { loadStudents, loadStudent } from '~/actions/main-function/guider';
 import GuiderBody from '../components/guider/body';
 import ProfileBody from '../components/profile/body';
-import { loadProfilePropertiesSet, loadProfileUsername, loadProfileAddress, loadProfileChatSettings, setProfileLocation, loadProfileWorklistTemplates, loadProfileWorklistSections } from '~/actions/main-function/profile';
+import { loadProfilePropertiesSet, loadProfileUsername, loadProfileAddress, loadProfileChatSettings, setProfileLocation, loadProfileWorklistTemplates, loadProfileWorklistSections, loadProfilePurchases } from '~/actions/main-function/profile';
 import RecordsBody from '../components/records/body';
 import {
   updateTranscriptOfRecordsFiles, updateAllStudentUsersAndSetViewToRecords, setCurrentStudentUserViewAndWorkspace,
@@ -48,8 +48,11 @@ import loadOrganizationSummary from '~/actions/organization/summary';
 
 import Chat from '../components/chat/chat';
 import EvaluationBody from '../components/evaluation/body';
+import CeeposDone from "../components/ceepos/done";
+import CeeposPay from "../components/ceepos/pay";
 import { loadEvaluationAssessmentRequestsFromServer, loadEvaluationGradingSystemFromServer, loadEvaluationSortFunctionFromServer, loadEvaluationWorkspacesFromServer, loadListOfImportantAssessmentIdsFromServer, loadListOfUnimportantAssessmentIdsFromServer } from '~/actions/main-function/evaluation/evaluationActions';
 import * as moment from "moment";
+import { loadCeeposPurchase, loadCeeposPurchaseAndPay } from '~/actions/main-function/ceepos';
 
 moment.locale("fi");
 
@@ -83,6 +86,8 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
     this.renderProfileBody = this.renderProfileBody.bind(this);
     this.renderRecordsBody = this.renderRecordsBody.bind(this);
     this.renderEvaluationBody = this.renderEvaluationBody.bind(this);
+    this.renderCeeposDoneBody = this.renderCeeposDoneBody.bind(this);
+    this.renderCeeposPayBody = this.renderCeeposPayBody.bind(this);
     this.itsFirstTime = true;
     this.loadedLibs = [];
 
@@ -94,15 +99,22 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
    * @param url
    * @returns
    */
-  loadlib(url: string) {
+  loadlib(url: string, type?: string) {
     if (this.loadedLibs.indexOf(url) !== -1) {
       return;
     }
     this.loadedLibs.push(url);
 
-    let script = document.createElement("script");
-    script.src = url;
-    document.head.appendChild(script);
+    if(type && type === "styleSheet") {
+      const styleSheet = document.createElement("link");
+      styleSheet.href = url;
+      styleSheet.rel = "styleSheet";
+      document.head.appendChild(styleSheet);
+    } else {
+      const script = document.createElement("script");
+      script.src = url;
+      document.head.appendChild(script);
+    }
   }
 
   /**
@@ -226,6 +238,10 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
     if (location === "work") {
       this.props.store.dispatch(loadProfileWorklistTemplates() as Action);
       this.props.store.dispatch(loadProfileWorklistSections() as Action);
+    }
+
+    if (location === "purchases") {
+      this.props.store.dispatch(loadProfilePurchases() as Action);
     }
   }
 
@@ -576,6 +592,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.guider.guider')));
       this.props.store.dispatch(updateLabelFilters() as Action);
       this.props.store.dispatch(updateWorkspaceFilters() as Action);
+      this.props.store.dispatch(updateAvailablePurchaseProducts() as Action);
       this.props.store.dispatch(updateUserGroupFilters() as Action);
 
       this.loadGuiderData();
@@ -591,6 +608,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
   renderProfileBody() {
     this.updateFirstTime();
     if (this.itsFirstTime) {
+      this.loadlib(`//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`);
       this.props.websocket && this.props.websocket.restoreEventListeners();
 
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.profile.profile')));
@@ -660,6 +678,37 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
     return <EvaluationBody />
   }
 
+  renderCeeposDoneBody() {
+    this.updateFirstTime();
+
+    const locationData = queryString.parse(document.location.search.split("?")[1] || "", {arrayFormat: 'bracket'});
+    if (this.itsFirstTime){
+      this.loadlib("//fonts.googleapis.com/css?family=Exo+2:200,300,400,600,900", "styleSheet");
+      this.loadlib(`//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`);
+      const id = parseInt(locationData.Id);
+      if (id) {
+        this.props.store.dispatch(loadCeeposPurchase(id) as Action);
+      }
+    }
+
+    return <CeeposDone status={parseInt(locationData.Status)}/>
+  }
+
+  renderCeeposPayBody() {
+    this.updateFirstTime();
+
+    if(this.itsFirstTime){
+      this.loadlib("//fonts.googleapis.com/css?family=Exo+2:200,300,400,600,900", "styleSheet");
+      this.loadlib(`//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`);
+      const locationData = queryString.parse(document.location.search.split("?")[1] || "", {arrayFormat: 'bracket'});
+      if (locationData.order) {
+        this.props.store.dispatch(loadCeeposPurchaseAndPay(parseInt(locationData.order)) as Action);
+      }
+    }
+
+    return <CeeposPay/>
+  }
+
   /**
    * Component render method
    */
@@ -677,6 +726,8 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
       <Route path="/profile" render={this.renderProfileBody} />
       <Route path="/records" render={this.renderRecordsBody} />
       <Route path="/evaluation" render={this.renderEvaluationBody} />
+      <Route path="/ceepos/pay" render={this.renderCeeposPayBody} />
+      <Route path="/ceepos/done" render={this.renderCeeposDoneBody} />
       <Chat />
     </div></BrowserRouter>);
   }

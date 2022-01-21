@@ -161,8 +161,7 @@ class PyramusRestClient implements Serializable {
   public <T> T get(Client client, String accessToken, String path, Class<T> type) {
     WebTarget target = client.target(url + path);
     Builder request = target.request();
-    
-    request.accept(MediaType.APPLICATION_JSON_TYPE);
+    request.accept(MediaType.APPLICATION_JSON_TYPE, MediaType.TEXT_PLAIN_TYPE);
     request.header("Authorization", "Bearer " + accessToken);
     if (locale != null) {
       request.header("Accept-Language", locale);

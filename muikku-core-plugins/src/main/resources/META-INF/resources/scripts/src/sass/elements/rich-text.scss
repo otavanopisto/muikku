@@ -166,6 +166,16 @@
     width: auto;
   }
 
+  // CEEPOS Error message
+  .message-from-ceepos-error {
+    background: $color-message-from-workspace-background;
+    border-radius: 3px;
+    font-size: 0.825rem;
+    font-style: normal;
+    margin: 20px 0 10px;
+    padding: 2px 7px;
+  }
+
   // Communicator signature
   .mf-signature {
     background: $color-signature-background;
