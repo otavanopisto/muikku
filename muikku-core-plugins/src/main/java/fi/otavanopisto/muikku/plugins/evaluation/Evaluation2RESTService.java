@@ -27,7 +27,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.i18n.LocaleController;
@@ -1182,33 +1181,19 @@ public class Evaluation2RESTService {
       return Response.status(Status.FORBIDDEN).build();
     }
     
-    // Entities and identifiers
+    // #5940: Only remove the latest assessment request, if one exists (this endpoint used to remove all of them)
     
     WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityById(workspaceUserEntityId);
-    WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
-    
-    List<WorkspaceAssessmentRequest> requests = gradingController.listWorkspaceAssessmentRequests(
-        workspaceEntity.getDataSource().getIdentifier(),
-        workspaceEntity.getIdentifier(),
-        workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier());
-
-    if (CollectionUtils.isNotEmpty(requests)) {
-      for (WorkspaceAssessmentRequest request : requests) {
-        gradingController.updateWorkspaceAssessmentRequest(
-        request.getSchoolDataSource(),
-        request.getIdentifier(),
-        request.getWorkspaceUserIdentifier(),
-        request.getWorkspaceUserSchoolDataSource(),
-        workspaceEntity.getIdentifier(),
-        workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier(),
-        request.getRequestText(),
-        request.getDate(),
-        Boolean.TRUE, // archived
-        request.getHandled());
-      }
-      return Response.noContent().build();
+    WorkspaceAssessmentRequest request = gradingController.findLatestAssessmentRequestByIdentifier(
+        workspaceUserEntity.getUserSchoolDataIdentifier().schoolDataIdentifier());
+    if (request != null) {
+      gradingController.deleteWorkspaceAssessmentRequest(
+          request.getSchoolDataSource(),
+          request.getIdentifier(),
+          workspaceUserEntity.getWorkspaceEntity().getIdentifier(),
+          workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier());
     }
-    return Response.status(Status.BAD_REQUEST).build();
+    return Response.noContent().build();
   }
   
   private RestAssessmentRequest toRestAssessmentRequest(CompositeAssessmentRequest compositeAssessmentRequest) {
