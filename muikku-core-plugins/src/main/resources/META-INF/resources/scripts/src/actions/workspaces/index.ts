@@ -188,6 +188,7 @@ export type UPDATE_MATERIAL_CONTENT_NODE = SpecificActionType<
   {
     showRemoveAnswersDialogForPublish: boolean;
     showUpdateLinkedMaterialsDialogForPublish: boolean;
+    showRemoveLinkedAnswersDialogForPublish: boolean;
     showUpdateLinkedMaterialsDialogForPublishCount: number;
     material: MaterialContentNodeType;
     update: Partial<MaterialContentNodeType>;
@@ -3164,6 +3165,7 @@ let requestWorkspaceMaterialContentNodeAttachments: RequestWorkspaceMaterialCont
           showUpdateLinkedMaterialsDialogForPublish: false,
           showUpdateLinkedMaterialsDialogForPublishCount: 0,
           showRemoveAnswersDialogForPublish: false,
+          showRemoveLinkedAnswersDialogForPublish: false,
           material: material,
           update: {
             childrenAttachments,
@@ -3193,6 +3195,7 @@ let updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrigge
           payload: {
             showRemoveAnswersDialogForPublish: false,
             showUpdateLinkedMaterialsDialogForPublish: false,
+            showRemoveLinkedAnswersDialogForPublish: false,
             showUpdateLinkedMaterialsDialogForPublishCount: 0,
             material: data.material,
             update: data.update,
@@ -3222,6 +3225,7 @@ let updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrigge
               type: "UPDATE_MATERIAL_CONTENT_NODE",
               payload: {
                 showRemoveAnswersDialogForPublish: false,
+                showRemoveLinkedAnswersDialogForPublish: false,
                 showUpdateLinkedMaterialsDialogForPublishCount:
                   materialsAnswer.length,
                 showUpdateLinkedMaterialsDialogForPublish: true,
@@ -3352,6 +3356,7 @@ let updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrigge
               type: "UPDATE_MATERIAL_CONTENT_NODE",
               payload: {
                 showUpdateLinkedMaterialsDialogForPublish: false,
+                showRemoveLinkedAnswersDialogForPublish: false,
                 showUpdateLinkedMaterialsDialogForPublishCount: 0,
                 showRemoveAnswersDialogForPublish: false,
                 material: data.material,
@@ -3367,6 +3372,7 @@ let updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrigge
               type: "UPDATE_MATERIAL_CONTENT_NODE",
               payload: {
                 showUpdateLinkedMaterialsDialogForPublish: false,
+                showRemoveLinkedAnswersDialogForPublish: false,
                 showUpdateLinkedMaterialsDialogForPublishCount: 0,
                 showRemoveAnswersDialogForPublish: false,
                 material: data.material,
@@ -3449,6 +3455,25 @@ let updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrigge
         throw err;
       }
 
+      if(data.updateLinked){
+
+        dispatch({
+          type: "UPDATE_MATERIAL_CONTENT_NODE",
+          payload: {
+            showUpdateLinkedMaterialsDialogForPublish: false,
+            showUpdateLinkedMaterialsDialogForPublishCount: 0,
+            showRemoveLinkedAnswersDialogForPublish: true,
+            showRemoveAnswersDialogForPublish: false,
+            material: data.material,
+            update: data.material,
+            isDraft: data.isDraft,
+          },
+        });
+        data.fail && data.fail();
+
+        return;
+      }
+
       let showRemoveAnswersDialogForPublish = false;
       if (!data.removeAnswers && err.message) {
         try {
@@ -3464,6 +3489,7 @@ let updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrigge
           type: "UPDATE_MATERIAL_CONTENT_NODE",
           payload: {
             showUpdateLinkedMaterialsDialogForPublish: false,
+            showRemoveLinkedAnswersDialogForPublish: false,
             showUpdateLinkedMaterialsDialogForPublishCount: 0,
             showRemoveAnswersDialogForPublish,
             material: data.material,
