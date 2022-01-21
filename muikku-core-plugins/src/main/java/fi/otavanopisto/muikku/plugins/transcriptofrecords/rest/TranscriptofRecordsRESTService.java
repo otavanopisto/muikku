@@ -553,6 +553,10 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
         @Context Request request) {
     List<fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace> workspaces = new ArrayList<>();
 
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
     UserEntity userEntity = sessionController.getLoggedUserEntity();
 
     List<UserSchoolDataIdentifier> userSchoolDataIdentifiers = userSchoolDataIdentifierController.listUserSchoolDataIdentifiersByUserEntity(userEntity);
