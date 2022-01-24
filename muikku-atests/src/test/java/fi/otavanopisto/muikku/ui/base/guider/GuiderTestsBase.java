@@ -381,9 +381,12 @@ public class GuiderTestsBase extends AbstractUITest {
         .addStaffMember(admin)
         .addStudent(student)
         .mockLogin(admin)
-        .addStudentGroup(2l, 1l, "STUDYPROGRAMME-2", "STUDYPROGRAMME-2 usergroup", 1l, false)
-        .addStudentToStudentGroup(2l, student)
         .addStudyProgramme(new StudyProgramme(2l, 1l, "test_lukio", "Aineopiskelu/lukio", 1l, false, false))
+        .addStudentToStudentGroup(2l, student)
+        .mockPersons()
+        .mockStudents()
+        .mockStudyProgrammes()
+        .mockStudentGroups()
         .build();
       Course course1 = new CourseBuilder().name("aasdgz").id((long) 10).description("test coursemus for testing").buildCourse();
       mockBuilder
@@ -457,6 +460,7 @@ public class GuiderTestsBase extends AbstractUITest {
           assertTrue("paymentConfirmation status not 200", false);
         }
       }finally {
+        deleteUserGroupUsers();
         archiveUserByEmail(student.getEmail());
         deleteWorkspace(workspace1.getId());      
       }
@@ -471,7 +475,17 @@ public class GuiderTestsBase extends AbstractUITest {
     Builder mockBuilder = mocker();
     MockStudent student = new MockStudent(11l, 11l, "Midwest", "Mudweller", "mmud@example.com", 2l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "101000-1011", Sex.MALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextWeek());
     try {
-      mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
+      mockBuilder
+      .addStaffMember(admin)
+      .addStudent(student)
+      .mockLogin(admin)
+      .addStudyProgramme(new StudyProgramme(2l, 1l, "test_lukio", "Aineopiskelu/lukio", 1l, false, false))
+      .addStudentToStudentGroup(2l, student)
+      .mockPersons()
+      .mockStudents()
+      .mockStudyProgrammes()
+      .mockStudentGroups()
+      .build();
       Course course1 = new CourseBuilder().name("aasdgz").id((long) 12).description("test coursemus for testing").buildCourse();
       mockBuilder
       .addStaffMember(admin)
@@ -503,6 +517,7 @@ public class GuiderTestsBase extends AbstractUITest {
         waitForNotPresent(".application-list__header-primary--product .application-list__header-primary-actions .button--delete-student-order");
         assertTextIgnoreCase(".button--create-student-order", "Luo uusi tilaus");
       }finally {
+        deleteUserGroupUsers();
         archiveUserByEmail(student.getEmail());
         deleteWorkspace(workspace1.getId());      
       }
