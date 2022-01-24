@@ -1715,6 +1715,13 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       .then()
       .statusCode(204);
   }
+  
+  protected void deleteUserGroupUsers() {
+    asAdmin()
+      .delete("test/userGroups/users")
+      .then()
+      .statusCode(204);
+  }
 
   protected void createPasswordChange(String email) throws Exception {
     asAdmin()

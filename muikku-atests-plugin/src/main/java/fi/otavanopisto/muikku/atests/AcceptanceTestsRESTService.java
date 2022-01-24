@@ -867,6 +867,19 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     }
     return Response.noContent().build();
   }
+
+  @DELETE
+  @Path("/userGroups/users")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response deleteUserGroupUsers() {
+    List<UserGroupEntity> userGroups = userGroupEntityController.listAllUserGroupEntities();
+    for (UserGroupEntity userGroup: userGroups) {
+      for(UserGroupUserEntity userGroupUser : userGroupEntityController.listUserGroupUserEntitiesByUserGroupEntity(userGroup)) {
+        userGroupEntityController.deleteUserGroupUserEntity(userGroupUser);
+      }
+    }
+    return Response.noContent().build();
+  }
   
   @DELETE
   @Path("/workspaces/{WORKSPACEENTITYID}/discussiongroups/{GROUPID}/discussions/{DISCUSSIONID}/threads/{ID}")
