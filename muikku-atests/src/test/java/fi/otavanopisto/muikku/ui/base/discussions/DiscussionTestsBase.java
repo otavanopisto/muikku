@@ -291,8 +291,7 @@ public class DiscussionTestsBase extends AbstractUITest {
           sendKeys("input.env-dialog__input--new-discussion-thread-title", "ing");
           addToEndCKEditor("ing");
           waitAndClick(".button--dialog-execute");
-          waitForVisible(".application-list__title");
-          reloadCurrentPage();
+          waitAndClick(".application-list__item-header .discussion-category");
           waitForVisible(".application-list__title");
           assertText(".application-list__title", "Testinging");
           waitForPresent(".application-list__item-content-main .application-list__item-body .rich-text>p");
