@@ -547,15 +547,11 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   
   @GET
   @Path("/workspaces/")
-  @RESTPermit (handling = Handling.INLINE)
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response listWorkspaces(
         @QueryParam("userIdentifier") String userIdentifier,
         @Context Request request) {
     List<fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace> workspaces = new ArrayList<>();
-
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
 
     UserEntity userEntity = sessionController.getLoggedUserEntity();
 
