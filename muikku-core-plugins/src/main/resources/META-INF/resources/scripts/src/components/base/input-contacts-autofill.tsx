@@ -202,7 +202,7 @@ export default class c extends React.Component<InputContactsAutofillProps, Input
       });
     }
   }
-  
+
   onDelete(item: ContactRecipientType) {
     clearTimeout(this.blurTimeout);
     let nfilteredValue = this.state.selectedItems.filter(selectedItem => selectedItem.type !== item.type || selectedItem.value.id !== item.value.id);
