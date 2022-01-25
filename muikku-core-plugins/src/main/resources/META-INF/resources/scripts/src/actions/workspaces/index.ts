@@ -290,13 +290,15 @@ let loadUserWorkspacesFromServer: LoadUserWorkspacesFromServerTriggerType = func
     dispatch: (arg: AnyActionType) => any,
     getState: () => StateType
   ) => {
-    let userId = getState().status.userId;
+    const userId = getState().status.userId;
     try {
       dispatch({
         type: "UPDATE_USER_WORKSPACES",
         payload: <WorkspaceListType>(
           ((await promisify(
-            mApi().workspace.workspaces.read({ userId }),
+            mApi().workspace.workspaces.read({
+              userId: userId
+            }),
             "callback"
           )()) || 0)
         ),
