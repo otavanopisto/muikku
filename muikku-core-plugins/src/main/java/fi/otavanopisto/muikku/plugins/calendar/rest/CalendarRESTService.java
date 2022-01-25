@@ -88,7 +88,7 @@ public class CalendarRESTService {
    *   'title': 'Event title',
    *   'description: 'Event description',
    *   'visibility': 'PRIVATE | PUBLIC',
-   *   'userEntityId': 100,
+   *   'userEntityId': 100, // owner of event
    *   'participants': [
    *     {
    *       'userEntityId': 123,
@@ -100,7 +100,9 @@ public class CalendarRESTService {
    *       'name': 'Jane Doe',
    *       'attendance': 'UNCONFIRMED | YES | NO | MAYBE'
    *     }
-   *   ]
+   *   ],
+   *   'editable': true | false, // only event owner can edit
+   *   'removable': true | false // owner and participants can delete
    * }
    * 
    * DESCRIPTION:
@@ -184,7 +186,7 @@ public class CalendarRESTService {
    *   'title': 'Event title',
    *   'description: 'Event description',
    *   'visibility': 'PRIVATE | PUBLIC',
-   *   'userEntityId': 100,
+   *   'userEntityId': 100, // owner of event
    *   'participants': [
    *     {
    *       'userEntityId': 123,
@@ -196,7 +198,9 @@ public class CalendarRESTService {
    *       'name': 'Jane Doe',
    *       'attendance': 'UNCONFIRMED | YES | NO | MAYBE'
    *     }
-   *   ]
+   *   ],
+   *   'editable': true | false, // only event owner can edit
+   *   'removable': true | false // owner and participants can delete
    * }
    * 
    * DESCRIPTION:
