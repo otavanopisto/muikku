@@ -361,25 +361,6 @@
     
     <plugins>
       <plugin>
-        <groupId>org.jasig.maven</groupId>
-        <artifactId>sass-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>sassProcessSource</id>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>update-stylesheets</goal>
-            </goals>
-            <inherited>false</inherited>
-            <configuration>
-              <sassSourceDirectory>${basedir}/src/main/webapp/resources/theme-muikku/sass</sassSourceDirectory>
-              <destination>${project.build.directory}/${project.build.finalName}/resources/theme-muikku/css</destination>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
         <version>2.4</version>
