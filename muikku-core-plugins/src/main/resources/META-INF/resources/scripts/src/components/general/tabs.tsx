@@ -23,7 +23,6 @@ export interface Tab {
 }
 /**
  * TabsProps
- *
  */
 interface TabsProps {
   onTabChange: (id: string) => void;
