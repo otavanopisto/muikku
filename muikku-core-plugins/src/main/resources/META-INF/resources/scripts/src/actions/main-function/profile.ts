@@ -14,6 +14,7 @@ import {
   updateStatusHasImage,
 } from "~/actions/base/status";
 import {
+  PurchaseType,
   StoredWorklistItem,
   WorklistBillingState,
   WorklistItemsSummary,
@@ -22,9 +23,6 @@ import {
 } from "~/reducers/main-function/profile";
 import moment from "~/lib/moment";
 
-/**
- * LoadProfilePropertiesSetTriggerType
- */
 export interface LoadProfilePropertiesSetTriggerType {
   (): AnyActionType;
 }
@@ -52,6 +50,13 @@ export interface LoadProfileUsernameTriggerType {
  * LoadProfileAddressTriggerType
  */
 export interface LoadProfileAddressTriggerType {
+  (): AnyActionType;
+}
+
+/**
+ * LoadProfilePurchasesTriggerType
+ */
+export interface LoadProfilePurchasesTriggerType {
   (): AnyActionType;
 }
 
@@ -228,6 +233,10 @@ export type SET_WORKLIST_TEMPLATES = SpecificActionType<
 export type SET_WORKLIST = SpecificActionType<
   "SET_WORKLIST",
   Array<WorklistSection>
+>;
+export type SET_PURCHASE_HISTORY = SpecificActionType<
+  "SET_PURCHASE_HISTORY",
+  Array<PurchaseType>
 >;
 
 /**
@@ -1149,6 +1158,41 @@ const updateProfileWorklistItemsState: UpdateProfileWorklistItemsStateTriggerTyp
     };
   };
 
+/**
+ * loadProfilePurchases
+ */
+const loadProfilePurchases: LoadProfilePurchasesTriggerType =
+  function loadProfilePurchases() {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+      try {
+        const studentId = state.status.userSchoolDataIdentifier;
+        const historia: PurchaseType[] = (await promisify(
+          mApi().ceepos.user.orders.read(studentId),
+          "callback"
+        )()) as any;
+
+        dispatch({
+          type: "SET_PURCHASE_HISTORY",
+          payload: historia,
+        });
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          actions.displayNotification(
+            getState().i18n.text.get("plugin.profile.errormessage.purchases"),
+            "error"
+          )
+        );
+      }
+    };
+  };
+
 export {
   loadProfilePropertiesSet,
   saveProfileProperty,
@@ -1167,4 +1211,5 @@ export {
   deleteProfileWorklistItem,
   editProfileWorklistItem,
   updateProfileWorklistItemsState,
+  loadProfilePurchases,
 };

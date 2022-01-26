@@ -1163,19 +1163,21 @@ public class WorkspaceRESTService extends PluginRESTService {
     // Retrieve users via Elastic
     String[] fields = new String[] { "firstName", "lastName", "nickName", "email" };
     
+    // #5954: Include hidden users in results as teachers need to know that they're in the workspace 
+    
     SearchResult searchResult = elasticSearchProvider.searchUsers(
         organizationEntityController.listUnarchived(),            // organizations
-        searchString,                                                     // search string
-        fields,                                                     // fields
+        searchString,                                             // search string
+        fields,                                                   // fields
         null,                                                     // environment role
         null,                                                     // user groups
         null,                                                     // workspace (not set because of student identifiers)
         studentIdentifiers,                                       // user identifiers of students in workspace
         true,                                                     // include inactive students
-        false,                                                    // include hidden
+        true,                                                     // include hidden
         false,                                                    // only default users 
-        firstResult,                                                        // first result
-        maxResults);                                       // max results
+        firstResult,                                              // first result
+        maxResults);                                              // max results
     
     List<Map<String, Object>> elasticUsers = searchResult.getResults();
 
@@ -2775,6 +2777,8 @@ public class WorkspaceRESTService extends PluginRESTService {
     UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
     OrganizationEntity organization = userSchoolDataIdentifier.getOrganization();
     List<OrganizationEntity> organizations = Arrays.asList(organization);
+    
+    // #5954: This endpoint retrieves a workspace student so they can be archived from the workspace. Thus hidden users are returned as well.
 
     SearchResult searchResult = elasticSearchProvider.searchUsers(
         organizations,                                            // organizations
@@ -2785,7 +2789,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         null,                                                     // workspace
         Collections.singletonList(schoolDataIdentifier),          // user identifiers
         true,                                                     // include inactive students
-        false,                                                    // include hidden
+        true,                                                     // include hidden
         false,                                                    // only default users 
         0,                                                        // first result
         1);                                                       // max results

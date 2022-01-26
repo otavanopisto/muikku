@@ -76,7 +76,7 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
         "callback"
       )();
 
-      const studentsStudentCouncelors: any = [];
+      let studentsGuidanceCouncelors: any = [];
 
       /*
         We need to filter student's usergroups that are guidance groups, then we fetch guidance councelors
@@ -95,16 +95,16 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
                   "profile-phone,profile-vacation-start,profile-vacation-end",
               })
               .callback(function (err: any, result: any) {
-                result.forEach(function (studentsStudentCouncelor: any) {
+                result.forEach(function (studentsGuidanceCouncelor: any) {
                   if (
-                    !studentsStudentCouncelors.some(
+                    !studentsGuidanceCouncelor.some(
                       (existingStudentCouncelor: any) =>
                         existingStudentCouncelor.userEntityId ==
-                        studentsStudentCouncelor.userEntityId
+                        studentsGuidanceCouncelor.userEntityId
                     )
                   ) {
-                    studentsStudentCouncelors.push(studentsStudentCouncelor);
-                    studentsStudentCouncelors.sort(function (x: any, y: any) {
+                    studentsGuidanceCouncelor.push(studentsGuidanceCouncelor);
+                    studentsGuidanceCouncelor.sort(function (x: any, y: any) {
                       const a = x.lastName.toUpperCase(),
                         b = y.lastName.toUpperCase();
                       return a == b ? 0 : a > b ? 1 : -1;
@@ -200,7 +200,7 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
         coursesDone: coursesDone.length,
         graphData: graphData,
         studentsDetails: studentsDetails,
-        studentsStudentCouncelors: studentsStudentCouncelors,
+        studentsGuidanceCouncelors: studentsGuidanceCouncelors,
       };
 
       dispatch({

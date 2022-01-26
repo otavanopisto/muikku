@@ -208,61 +208,48 @@ export default class c extends React.Component<
     /**
      * getStudentsLoader
      */
-    const getStudentsLoader = () =>
-      loaders.studentsLoader
-        ? loaders.studentsLoader(textInput)
-        : promisify(
-            mApi().user.users.read({
-              q: textInput,
-              onlyDefaultUsers: checkHasPermission(
-                this.props.userPermissionIsOnlyDefaultUsers
-              ),
-            }),
-            "callback"
-          );
+     const getStudentsLoader = () => {
+      return loaders.studentsLoader ? loaders.studentsLoader(textInput) : promisify(mApi().user.users.read({
+        q: textInput,
+        maxResults: 20,
+        onlyDefaultUsers: checkHasPermission(this.props.userPermissionIsOnlyDefaultUsers)
+      }), 'callback');
+    }
 
     /**
      * getUserGroupsLoader
      */
-    const getUserGroupsLoader = () =>
-      loaders.userGroupsLoader
-        ? loaders.userGroupsLoader(textInput)
-        : promisify(
-            mApi().usergroup.groups.read({
-              q: textInput,
-            }),
-            "callback"
-          );
+    const getUserGroupsLoader = () => {
+      return loaders.userGroupsLoader ? loaders.userGroupsLoader(textInput) : promisify(mApi().usergroup.groups.read({
+        q: textInput,
+        maxResults: 20,
+      }), 'callback');
+    }
 
     /**
      * getWorkspacesLoader
      */
-    const getWorkspacesLoader = () =>
-      loaders.workspacesLoader
-        ? loaders.workspacesLoader(textInput)
-        : promisify(
-            mApi().coursepicker.workspaces.read({
-              q: textInput,
-              myWorkspaces: checkHasPermission(
-                this.props.workspacePermissionIsOnlyMyWorkspaces
-              ),
-            }),
-            "callback"
-          );
+     const getWorkspacesLoader = () => {
+      return loaders.workspacesLoader ? loaders.workspacesLoader(textInput) : promisify(mApi().coursepicker.workspaces.read({
+        q: textInput,
+        maxResults: 20,
+        myWorkspaces: checkHasPermission(this.props.workspacePermissionIsOnlyMyWorkspaces)
+      }), 'callback');
+    }
 
     /**
      * getStaffLoader
      */
-    const getStaffLoader = () =>
-      loaders.staffLoader
-        ? loaders.staffLoader(textInput)
-        : promisify(
-            mApi().user.staffMembers.read({
-              q: textInput,
-            }),
-            "callback"
-          );
+     const getStaffLoader = () => {
+      return loaders.staffLoader ? loaders.staffLoader(textInput) : promisify(mApi().user.staffMembers.read({
+        q: textInput,
+        maxResults: 20,
+      }), 'callback');
+    }
 
+    /**
+     * searchResults
+     */
     const searchResults = await Promise.all([
       checkHasPermission(this.props.hasUserPermission)
         ? getStudentsLoader()()
@@ -286,6 +273,9 @@ export default class c extends React.Component<
         : [],
     ]);
 
+    /**
+     * userItems
+     */
     const userItems: ContactRecipientType[] = searchResults[0].map(
       (item: UserType): ContactRecipientType => ({
         type: "user",
@@ -296,6 +286,10 @@ export default class c extends React.Component<
         },
       })
     );
+
+    /**
+     * userGroupItems
+     */
     const userGroupItems: ContactRecipientType[] = searchResults[1].map(
       (item: UserGroupType): ContactRecipientType => ({
         type: "usergroup",
@@ -306,6 +300,10 @@ export default class c extends React.Component<
         },
       })
     );
+
+    /**
+     * workspaceItems
+     */
     const workspaceItems: ContactRecipientType[] = searchResults[2].map(
       (item: WorkspaceType): ContactRecipientType => ({
         type: "workspace",
@@ -317,6 +315,10 @@ export default class c extends React.Component<
         },
       })
     );
+
+    /**
+     * staffItems
+     */
     const staffItems: ContactRecipientType[] = searchResults[3].map(
       (item: UserStaffType): ContactRecipientType => ({
         type: "staff",
@@ -328,6 +330,10 @@ export default class c extends React.Component<
         },
       })
     );
+
+    /**
+     * allItems
+     */
     const allItems: ContactRecipientType[] = userItems
       .concat(userGroupItems)
       .concat(workspaceItems)

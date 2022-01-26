@@ -24,6 +24,7 @@ import summary from "~/reducers/main-function/records/summary";
 import organizationSummary from "~/reducers/organization/summary";
 import { combineReducers } from "redux";
 import evaluations from "./main-function/evaluation/index";
+import ceepos from "./main-function/ceepos";
 
 export default combineReducers({
   notifications,
@@ -52,4 +53,5 @@ export default combineReducers({
   guider,
   profile,
   evaluations,
+  ceepos,
 });

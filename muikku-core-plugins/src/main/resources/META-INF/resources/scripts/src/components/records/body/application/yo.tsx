@@ -110,8 +110,6 @@ class YO extends React.Component<YOProps, YOState> {
           </div>
         );
 
-      //  < div className="empty">{i18n.text.get("plugin.records.matriculation.hopsUnfinished")}</div>
-
       const enrollmentLink =
         this.props.yo.enrollment != null
           ? this.props.yo.enrollment

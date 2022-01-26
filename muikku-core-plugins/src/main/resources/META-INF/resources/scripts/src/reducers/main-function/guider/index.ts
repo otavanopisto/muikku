@@ -13,6 +13,7 @@ import {
   ActivityLogType,
 } from "~/reducers/workspaces";
 import { HOPSDataType } from "~/reducers/main-function/hops";
+import { PurchaseType, PurchaseProductType } from "../profile";
 
 /**
  * GuiderUserLabelType
@@ -95,6 +96,7 @@ export interface GuiderStudentUserProfileType {
   notifications: GuiderNotificationStudentsDataType;
   workspaces: WorkspaceListType;
   activityLogs: ActivityLogType[];
+  purchases: PurchaseType[];
 }
 
 /**
@@ -103,6 +105,7 @@ export interface GuiderStudentUserProfileType {
 export interface GuiderType {
   state: GuiderStudentsStateType;
   activeFilters: GuiderActiveFiltersType;
+  availablePurchaseProducts: PurchaseProductType[];
   availableFilters: GuiderFiltersType;
   students: GuiderStudentListType;
   hasMore: boolean;
@@ -156,11 +159,12 @@ function sortLabels(labelA: GuiderUserLabelType, labelB: GuiderUserLabelType) {
     : 0;
 }
 
-/**
- * guider
- * @param state state
- * @param action action
- */
+function sortOrders(a: PurchaseType, b: PurchaseType) {
+  const dateA = new Date(a.created).getTime();
+  const dateB = new Date(b.created).getTime();
+  return dateA > dateB ? -1 : 1;
+}
+
 export default function guider(
   state: GuiderType = {
     state: "LOADING",
@@ -176,6 +180,7 @@ export default function guider(
       userGroupFilters: [],
       query: "",
     },
+    availablePurchaseProducts: [],
     students: [],
     hasMore: false,
     toolbarLock: false,
@@ -415,6 +420,43 @@ export default function guider(
           (label) => label.id !== action.payload
         ),
       }),
+    });
+  } else if (action.type === "UPDATE_GUIDER_AVAILABLE_PURCHASE_PRODUCTS") {
+    return Object.assign({}, state, {
+      availablePurchaseProducts: action.payload,
+    });
+  } else if (action.type === "UPDATE_GUIDER_INSERT_PURCHASE_ORDER") {
+    const newOrders = [...state.currentStudent.purchases, action.payload];
+    return Object.assign({}, state, {
+      currentStudent: {
+        ...state.currentStudent,
+        purchases: newOrders.sort(sortOrders),
+      },
+    });
+  } else if (action.type === "DELETE_GUIDER_PURCHASE_ORDER") {
+    return Object.assign({}, state, {
+      currentStudent: {
+        ...state.currentStudent,
+        purchases: state.currentStudent.purchases.filter(
+          (purchace: PurchaseType) => {
+            return purchace.id !== action.payload.id;
+          }
+        ),
+      },
+    });
+  } else if (action.type === "UPDATE_GUIDER_COMPLETE_PURCHASE_ORDER") {
+    return Object.assign({}, state, {
+      currentStudent: {
+        ...state.currentStudent,
+        purchases: state.currentStudent.purchases.map(
+          (purchace: PurchaseType) => {
+            if (purchace.id == action.payload.id) {
+              return Object.assign({}, purchace, action.payload);
+            }
+            return purchace;
+          }
+        ),
+      },
     });
   } else if (action.type === "TOGGLE_ALL_STUDENTS") {
     return Object.assign({}, state, {

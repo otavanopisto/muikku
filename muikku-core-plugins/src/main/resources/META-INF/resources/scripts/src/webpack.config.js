@@ -94,19 +94,19 @@ module.exports = {
       cacheGroups: {
         vendor: {
           test: /[\/]node_modules[\/]/,
-				},
-			},
-		}
-	},
+        },
+      },
+    }
+  },
   resolve: {
     alias: {
       "~": __dirname
-		},
+    },
     extensions: [".js", ".ts", ".tsx"]
-	},
+  },
   module: {
     rules
-	},
+  },
   plugins,
   externals: {
     "jquery": "jQuery",

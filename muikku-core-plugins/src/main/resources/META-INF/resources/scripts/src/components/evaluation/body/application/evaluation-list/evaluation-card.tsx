@@ -245,26 +245,24 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
 
   const renderArchiveOrDeleteDialogButton =
     rest.assessmentRequestDate &&
-    rest.evaluationDate === null &&
     rest.workspaceEntityId !== selectedWorkspaceId ? (
       <DeleteRequestDialog {...rest}>
         <ButtonPill
           aria-label={i18n.text.get(
             "plugin.evaluation.card.button.deleteRequest.title"
           )}
-          buttonModifiers="archive"
-          icon="archive"
+          buttonModifiers="archive-request"
+          icon="trash"
         />
       </DeleteRequestDialog>
-    ) : (rest.evaluationDate && rest.graded) ||
-      (rest.assessmentRequestDate &&
-        selectedWorkspaceId === rest.workspaceEntityId) ? (
+    ) : rest.assessmentRequestDate &&
+      selectedWorkspaceId === rest.workspaceEntityId ? (
       <ArchiveDialog place="card" {...rest}>
         <ButtonPill
           aria-label={i18n.text.get(
             "plugin.evaluation.card.button.archiveButtonLabel"
           )}
-          buttonModifiers="archive"
+          buttonModifiers="archive-student"
           icon="archive"
         />
       </ArchiveDialog>

@@ -9,7 +9,7 @@ import "~/sass/elements/application-sub-panel.scss";
 import { RecordsType } from "~/reducers/main-function/records";
 import {
   SummaryType,
-  SummaryStudentCouncelorsType,
+  SummaryStudentsGuidanceCouncelorsType,
 } from "~/reducers/main-function/records/summary";
 import { HOPSType } from "~/reducers/main-function/hops";
 import { StateType } from "~/reducers";
@@ -112,8 +112,8 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
               </div>
               <div className="application-sub-panel__item-data application-sub-panel__item-data--summary-student-councelors">
                 <div className="item-list item-list--student-councelors">
-                  {this.props.summary.data.studentsStudentCouncelors.map(
-                    (councelor: SummaryStudentCouncelorsType) => {
+                  {this.props.summary.data.studentsGuidanceCouncelors.map(
+                    (councelor: SummaryStudentsGuidanceCouncelorsType) => {
                       let displayVacationPeriod =
                         !!councelor.properties["profile-vacation-start"];
                       if (councelor.properties["profile-vacation-end"]) {

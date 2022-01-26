@@ -41,6 +41,7 @@ interface ButtonProps
   href?: string;
   to?: string;
   openInNewTab?: string;
+  icon?: string;
 }
 
 /**
@@ -62,6 +63,7 @@ export default class Button extends React.Component<ButtonProps, ButtonState> {
     delete elementProps["buttonAs"];
     delete elementProps["buttonModifiers"];
     delete elementProps["className"];
+    delete elementProps["icon"];
 
     const modifiers: Array<string> =
       typeof this.props.buttonModifiers === "string"
@@ -78,9 +80,18 @@ export default class Button extends React.Component<ButtonProps, ButtonState> {
             : null
         }
         className={`button ${
-          this.props.className ? this.props.className : ""
-        } ${(modifiers || []).map((s) => `button--${s}`).join(" ")}`}
-      />
+          this.props.icon ? "button--button-has-icon" : ""
+        } ${this.props.className ? this.props.className : ""} ${(
+          modifiers || []
+        )
+          .map((s) => `button--${s}`)
+          .join(" ")}`}
+      >
+        {this.props.icon && (
+          <span className={`button__icon icon-${this.props.icon}`}></span>
+        )}
+        {this.props.children}
+      </Element>
     );
   }
 }

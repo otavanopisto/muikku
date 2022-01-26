@@ -13,10 +13,7 @@ export interface SummaryStudyTime {
   studyEndDate: string;
 }
 
-/**
- * SummaryStudentCouncelorsType
- */
-export interface SummaryStudentCouncelorsType {
+export interface SummaryStudentsGuidanceCouncelorsType {
   firstName: string;
   lastName: string;
   email: string;
@@ -36,7 +33,7 @@ export interface SummaryDataType {
   graphData: GraphDataType;
   coursesDone: number;
   studentsDetails: SummaryStudyTime;
-  studentsStudentCouncelors: Array<SummaryStudentCouncelorsType>;
+  studentsGuidanceCouncelors: SummaryStudentsGuidanceCouncelorsType[];
 }
 
 /**
@@ -51,7 +48,7 @@ export interface SummaryType {
  * GraphDataType
  */
 export interface GraphDataType {
-  activity: Array<ActivityLogType>;
+  activity: ActivityLogType[];
   workspaces: WorkspaceListType;
 }
 

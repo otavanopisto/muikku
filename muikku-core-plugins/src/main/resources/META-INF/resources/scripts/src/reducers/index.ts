@@ -28,6 +28,7 @@ import { ErrorType } from "./base/error";
 import { ProfileType } from "./main-function/profile";
 import { OrganizationSummaryType } from "./organization/summary";
 import { EvaluationState } from "./main-function/evaluation/index";
+import { CeeposState } from "./main-function/ceepos";
 
 /**
  * StateType
@@ -61,4 +62,5 @@ export interface StateType {
   error?: ErrorType;
   profile?: ProfileType;
   evaluations?: EvaluationState;
+  ceepos?: CeeposState;
 }

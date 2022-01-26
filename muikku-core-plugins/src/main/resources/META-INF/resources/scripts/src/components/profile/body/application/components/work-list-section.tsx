@@ -169,9 +169,12 @@ export function WorkListSection(props: WorkListSectionProps) {
     }
   }
 
+  /**
+   * sectionLabels
+   */
   const sectionLabels = (
-    <div className="application-sub-panel__multiple-items application-sub-panel__multiple-items--list-mode application-sub-panel__multiple-items--item-labels">
-      <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-description">
+    <div className="application-sub-panel__multiple-items application-sub-panel__multiple-items--item-labels">
+      <span className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-description">
         <label className="application-sub-panel__item-title application-sub-panel__item-title--worklist-list-mode">
           <Link
             className="link link--worklist-entries-sorting"
@@ -183,8 +186,8 @@ export function WorkListSection(props: WorkListSectionProps) {
             className={`application-sub-panel__item-title-sort-indicator ${sortDescIcon}`}
           />
         </label>
-      </div>
-      <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-date">
+      </span>
+      <span className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-date">
         <label className="application-sub-panel__item-title application-sub-panel__item-title--worklist-list-mode">
           <Link
             className="link link--worklist-entries-sorting"
@@ -196,18 +199,18 @@ export function WorkListSection(props: WorkListSectionProps) {
             className={`application-sub-panel__item-title-sort-indicator ${sortEntryDateIcon}`}
           />
         </label>
-      </div>
-      <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-price">
+      </span>
+      <span className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-price">
         <label className="application-sub-panel__item-title application-sub-panel__item-title--worklist-list-mode">
           {props.i18n.text.get("plugin.profile.worklist.price.label")}
         </label>
-      </div>
-      <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-factor">
+      </span>
+      <span className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-factor">
         <label className="application-sub-panel__item-title application-sub-panel__item-title--worklist-list-mode">
           {props.i18n.text.get("plugin.profile.worklist.factor.label")}
         </label>
-      </div>
-      <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-actions"></div>
+      </span>
+      <span className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-actions"></span>
     </div>
   );
 

@@ -29,6 +29,7 @@ import {
   GuiderType,
   GuiderStudentUserProfileLabelType,
 } from "~/reducers/main-function/guider";
+import Ceepos from "./current-student/ceepos";
 
 /**
  * CurrentStudentProps
@@ -346,6 +347,24 @@ class CurrentStudent extends React.Component<
       );
     };
 
+    /**
+     * IsStudentPartOfProperStudyProgram
+     * @param studyProgramName
+     * @returns true or false
+     */
+    const IsStudentPartOfProperStudyProgram = (studyProgramName: string) => {
+      switch (studyProgramName) {
+        case "Nettilukio/yksityisopiskelu (aineopintoina)":
+        case "Nettilukio/yksityisopiskelu (tutkinto)":
+        case "Aineopiskelu/lukio":
+        case "Aineopiskelu/peruskoulu":
+        case "Aineopiskelu/yo-tutkinto":
+          return true;
+        default:
+          return false;
+      }
+    };
+
     const files = this.props.guider.currentStudent.basic && (
       <div className="application-sub-panel__body">
         <FileUploader
@@ -396,6 +415,19 @@ class CurrentStudent extends React.Component<
           ) : null}
         </div>
         <div className="application-sub-panel">{studentBasicInfo}</div>
+        {this.props.guider.currentStudent.basic &&
+        IsStudentPartOfProperStudyProgram(
+          this.props.guider.currentStudent.basic.studyProgrammeName
+        ) ? (
+          <div className="application-sub-panel">
+            <h3 className="application-sub-panel__header">
+              {this.props.i18n.text.get("plugin.guider.user.details.purchases")}
+            </h3>
+            <div className="application-sub-panel__body">
+              <Ceepos />
+            </div>
+          </div>
+        ) : null}
         {studentHops ? (
           <div className="application-sub-panel">
             <h3 className="application-sub-panel__header">

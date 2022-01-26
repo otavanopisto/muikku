@@ -53,7 +53,7 @@ export default class ApplicationList extends React.Component<
                   .map((m) => `application-list__content--${m}`)
                   .join(" ")
               : ""
-          } ${this.props.contentState ? this.props.contentState : null}`}
+          } ${this.props.contentState ? this.props.contentState : ""}`}
         >
           {this.props.children}
         </div>
