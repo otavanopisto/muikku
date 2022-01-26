@@ -13,7 +13,7 @@ import { getUserImageUrl, getName } from '~/util/modifiers';
 import Hops from '~/components/base/hops_readable';
 import FileDeleteDialog from '../../dialogs/file-delete';
 import Workspaces from './current-student/workspaces';
-// import Ceepos from "./current-student/ceepos";
+import Ceepos from "./current-student/ceepos";
 import FileUploader from '~/components/general/file-uploader';
 import {
   AddFileToCurrentStudentTriggerType,
@@ -224,7 +224,6 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
       }
     };
 
-
     return <>
       <div className="application-sub-panel application-sub-panel--guider-student-header">
         {studentBasicHeader}
@@ -237,13 +236,13 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
           {studentBasicInfo}
         </div>
 
-        {/* {this.props.guider.currentStudent.basic && IsStudentPartOfProperStudyProgram(this.props.guider.currentStudent.basic.studyProgrammeName) ?
+        {this.props.guider.currentStudent.basic && IsStudentPartOfProperStudyProgram(this.props.guider.currentStudent.basic.studyProgrammeName) ?
           <div className="application-sub-panel">
             <h3 className="application-sub-panel__header">{this.props.i18n.text.get("plugin.guider.user.details.purchases")}</h3>
             <div className="application-sub-panel__body">
               <Ceepos />
             </div>
-          </div> : null} */}
+          </div> : null}
 
 
         {/* {studentHops ? <div className="application-sub-panel">

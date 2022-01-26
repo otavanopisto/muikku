@@ -1,0 +1,22 @@
+@import "../base/colors";
+@import "../base/vars";
+@import "../base/breakpoints";
+@import "../base/mixins";
+
+.resource-timeline {
+  background-color: #f0f0f0;
+}
+
+.resource-timeline__draggable-event {
+  padding: 5px;
+  background-color: #fff;
+
+  &:not(:first-child) {
+    margin-left: 10px;
+  }
+}
+
+.resource-timeline__external-events {
+  padding: 10px;
+  display: flex;
+}

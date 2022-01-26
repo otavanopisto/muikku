@@ -1,43 +1,47 @@
-import * as React from 'react';
-import { useEffect, useState } from 'react';
-import FullCalendar, { DateSelectArg, EventClickArg } from '@fullcalendar/react';
-import resourceTimelinePlugin from '@fullcalendar/resource-timeline';
-import interactionPlugin, { Draggable, EventResizeStopArg } from '@fullcalendar/interaction'
-import { EventType } from "../guider/body/application/toolbar/guidance-event"
-
-
+import * as React from "react";
+import { useEffect, useState } from "react";
+import FullCalendar, {
+  DateSelectArg,
+  EventClickArg,
+} from "@fullcalendar/react";
+import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
+import interactionPlugin, {
+  Draggable,
+  EventResizeStopArg,
+} from "@fullcalendar/interaction";
+import { EventType } from "../guider/body/application/toolbar/guidance-event";
+import "../../sass/elements/resource-timeline.scss";
 
 export type ExternalEventType = {
-  title: string,
-  id: string,
-  color?: string,
-  duration: string,
-}
+  title: string;
+  id: string;
+  color?: string;
+  duration: string;
+};
 
 export type HeaderToolbarType = {
-  left: string,
-  center: string,
-  right: string,
-}
+  left: string;
+  center: string;
+  right: string;
+};
 
 export type ResourceType = {
-  id: string,
-  title: string,
-}
+  id: string;
+  title: string;
+};
 
 interface ResourceTimelineProps {
-  headerToolbar?: HeaderToolbarType,
-  resourceHeaderContent: string,
-  resources: ResourceType[],
-  externalEvents?: ExternalEventType[],
-  namespace: string,
+  headerToolbar?: HeaderToolbarType;
+  resourceHeaderContent: string;
+  resources: ResourceType[];
+  externalEvents?: ExternalEventType[];
+  namespace: string;
   onDateSelect: (events: EventType[]) => void;
 }
 
 interface ResourceTimelineState {
   newEvents: EventType[];
 }
-
 
 export const ResourceTimeline: React.FC<ResourceTimelineProps> = ({
   headerToolbar,
@@ -47,7 +51,6 @@ export const ResourceTimeline: React.FC<ResourceTimelineProps> = ({
   namespace,
   onDateSelect,
 }) => {
-
   const [events, setEvents] = useState<EventType[]>([]);
 
   const handleDateSelect = (arg: DateSelectArg) => {
@@ -60,18 +63,19 @@ export const ResourceTimeline: React.FC<ResourceTimelineProps> = ({
       overlap: false,
       end: arg.endStr,
       id: arg.resource._resource.title + arg.startStr,
-      resourceId: arg.resource._resource.id
+      resourceId: arg.resource._resource.id,
     });
     setEvents(newEvents);
     onDateSelect(newEvents);
-  }
-
+  };
 
   useEffect(() => {
-    let draggableElement = document.getElementById(`external-events--${namespace}`);
+    let draggableElement = document.getElementById(
+      `externalEvents${namespace}`
+    );
 
     new Draggable(draggableElement, {
-      itemSelector: ".draggable-event",
+      itemSelector: ".resource-timeline__draggable-event",
       eventData: function (element) {
         const id = element.dataset.id;
         const title = element.getAttribute("title");
@@ -83,41 +87,42 @@ export const ResourceTimeline: React.FC<ResourceTimelineProps> = ({
           title: title,
           color: color,
           duration: duration,
-          create: true
-        }
-      }
-
+          create: true,
+        };
+      },
     });
-
   }, []);
 
-  const externalEventsElements = externalEvents && externalEvents.map((event) => (
-    <div
-      className='draggable-event fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'
-      title={event.title}
-      data-id={event.id}
-      data-color={event.color}
-      data-duration={event.duration}
-      key={event.id}
-      style={{
-        backgroundColor: event.color,
-        cursor: "pointer",
-        width: 100,
-        height: 20,
-
-      }}
-    >{event.title}
-    </div>
-  ));
+  const externalEventsElements =
+    externalEvents &&
+    externalEvents.map((event) => (
+      <div
+        className="resource-timeline__draggable-event"
+        title={event.title}
+        data-id={event.id}
+        data-color={event.color}
+        data-duration={event.duration}
+        key={event.id}
+        style={{
+          backgroundColor: event.color,
+          cursor: "pointer",
+        }}
+      >
+        {event.title}
+      </div>
+    ));
 
   const test = events;
 
   return (
-    <>
-      <div id={`external-events--${namespace}`}>
+    <div className="resource-timeline">
+      <div
+        className="resource-timeline__external-events"
+        id={`externalEvents${namespace}`}
+      >
         {externalEventsElements}
       </div>
-      <div>
+      <div className="resource-timeline__timeline">
         <FullCalendar
           headerToolbar={headerToolbar}
           selectable={true}
@@ -130,14 +135,11 @@ export const ResourceTimeline: React.FC<ResourceTimelineProps> = ({
           resourceAreaHeaderContent={resourceHeaderContent}
           resourceAreaWidth={200}
           resources={resources}
-          // slotMinTime="09:00:00"
-          // slotMaxTime="16:00:00"
           locale={"fi"}
           initialView="resourceTimelineMonth"
           events={events}
         />
       </div>
-    </>
-  )
-
-}
+    </div>
+  );
+};
