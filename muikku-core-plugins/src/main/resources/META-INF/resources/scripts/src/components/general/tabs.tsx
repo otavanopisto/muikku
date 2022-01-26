@@ -20,14 +20,13 @@ export interface Tab {
   /** Type Class modifier */
   type?: string;
   mobileAction?: JSX.Element | JSX.Element[];
-  component: () => JSX.Element;
+  component: JSX.Element;
 }
 /**
  * TabsProps
  */
 interface TabsProps {
   onTabChange: (id: string) => void;
-  allTabs: string[];
   activeTab: string;
   /** General class modifier */
   modifier?: string;
@@ -218,7 +217,7 @@ export const MobileOnlyTabs: React.FC<MobileOnlyTabsProps> = (props) => {
                 t.type ? "tabs__tab-data--" + t.type : ""
               }  ${t.id === activeTab ? "active" : ""}`}
             >
-              {t.component()}
+              {t.component}
             </div>
           ))}
       </div>
