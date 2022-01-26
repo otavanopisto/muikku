@@ -316,7 +316,7 @@ const loadAnnouncement: LoadAnnouncementTriggerType = function loadAnnouncement(
 
 /**
  * addToAnnouncementsSelected
- * @param announcement
+ * @param announcement announcement
  */
 const addToAnnouncementsSelected: AddToAnnouncementsSelectedTriggerType =
   function addToAnnouncementsSelected(announcement) {
@@ -328,7 +328,7 @@ const addToAnnouncementsSelected: AddToAnnouncementsSelectedTriggerType =
 
 /**
  * removeFromAnnouncementsSelected
- * @param announcement
+ * @param announcement announcement
  */
 const removeFromAnnouncementsSelected: RemoveFromAnnouncementsSelectedTriggerType =
   function removeFromAnnouncementsSelected(announcement) {
@@ -340,7 +340,7 @@ const removeFromAnnouncementsSelected: RemoveFromAnnouncementsSelectedTriggerTyp
 
 /**
  * updateAnnouncement
- * @param data
+ * @param data data
  */
 const updateAnnouncement: UpdateAnnouncementTriggerType =
   function updateAnnouncement(data) {
@@ -422,7 +422,7 @@ const updateAnnouncement: UpdateAnnouncementTriggerType =
 
 /**
  * deleteAnnouncement
- * @param data
+ * @param data data
  */
 const deleteAnnouncement: DeleteAnnouncementTriggerType =
   function deleteAnnouncement(data) {
@@ -492,7 +492,7 @@ const deleteSelectedAnnouncements: DeleteSelectedAnnouncementsTriggerType =
 
 /**
  * createAnnouncement
- * @param data
+ * @param data data
  */
 const createAnnouncement: CreateAnnouncementTriggerType =
   function createAnnouncement(data) {
@@ -550,8 +550,8 @@ const createAnnouncement: CreateAnnouncementTriggerType =
 
 /**
  * loadAnnouncementsAsAClient
- * @param options
- * @param callback
+ * @param options options
+ * @param callback callback
  */
 const loadAnnouncementsAsAClient: LoadAnnouncementsAsAClientTriggerType =
   function loadAnnouncementsFromServer(

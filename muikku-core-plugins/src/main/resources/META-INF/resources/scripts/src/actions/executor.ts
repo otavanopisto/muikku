@@ -36,8 +36,8 @@ export class SimpleActionExecutor {
 
   /**
    * addAction
-   * @param condition
-   * @param fn
+   * @param condition condition
+   * @param fn fn
    */
   public addAction(condition: boolean, fn: () => void) {
     if (condition) {
@@ -70,7 +70,7 @@ export class SimpleActionExecutor {
 
   /**
    * onAllSucceed
-   * @param fn
+   * @param fn fn
    */
   public onAllSucceed(fn: () => void) {
     this.allSucceeds = fn;
@@ -80,7 +80,7 @@ export class SimpleActionExecutor {
 
   /**
    * onOneFails
-   * @param fn
+   * @param fn fn
    */
   public onOneFails(fn: () => void) {
     this.oneFails = fn;

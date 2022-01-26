@@ -32,7 +32,7 @@ export interface LoadCrendentialsTriggerType {
 
 /**
  * loadCredentials
- * @param secret
+ * @param secret secret
  */
 const loadCredentials: LoadCrendentialsTriggerType = function loadCredentials(
   secret
@@ -75,7 +75,7 @@ const loadCredentials: LoadCrendentialsTriggerType = function loadCredentials(
 
 /**
  * updateCredentials
- * @param credentials
+ * @param credentials credentials
  */
 const updateCredentials: UpdateCredentialsTriggerType =
   function updateCredentials(credentials) {

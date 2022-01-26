@@ -10,7 +10,7 @@ export interface UpdateTitleTriggerType {
 
 /**
  * updateTitle
- * @param newTitle
+ * @param newTitle newTitle
  */
 const updateTitle: UpdateTitleTriggerType = function updateTitle(newTitle) {
   return {

@@ -38,8 +38,8 @@ export interface LoadWorkspaceStatusInfoType {
 
 /**
  * loadWhoAMI
- * @param dispatch
- * @param whoAmIReadyCb
+ * @param dispatch dispatch
+ * @param whoAmIReadyCb whoAmIReadyCb
  */
 async function loadWhoAMI(
   dispatch: (arg: AnyActionType) => any,
@@ -104,7 +104,7 @@ async function loadWhoAMI(
 // User has set nickname for chat and activated the chat funtionality via profile view
 /**
  * loadChatActive
- * @param dispatch
+ * @param dispatch dispatch
  */
 async function loadChatActive(dispatch: (arg: AnyActionType) => any) {
   const isActive = <boolean>(
@@ -124,7 +124,7 @@ async function loadChatActive(dispatch: (arg: AnyActionType) => any) {
 // User is loggedin and is part of default organization that has access to chat
 /**
  * loadChatAvailable
- * @param dispatch
+ * @param dispatch dispatch
  */
 async function loadChatAvailable(dispatch: (arg: AnyActionType) => any) {
   const isAvailable = <boolean>(
@@ -143,7 +143,7 @@ async function loadChatAvailable(dispatch: (arg: AnyActionType) => any) {
 
 /**
  * loadWorklistAvailable
- * @param dispatch
+ * @param dispatch dispatch
  */
 async function loadWorklistAvailable(dispatch: (arg: AnyActionType) => any) {
   const isAvailable = <boolean>(
@@ -162,7 +162,7 @@ async function loadWorklistAvailable(dispatch: (arg: AnyActionType) => any) {
 
 /**
  * loadForumIsAvailable
- * @param dispatch
+ * @param dispatch dispatch
  */
 async function loadForumIsAvailable(dispatch: (arg: AnyActionType) => any) {
   const isAvailable = <boolean>(
@@ -192,7 +192,7 @@ async function loadForumIsAvailable(dispatch: (arg: AnyActionType) => any) {
 
 /**
  * loadHopsEnabled
- * @param dispatch
+ * @param dispatch dispatch
  */
 async function loadHopsEnabled(dispatch: (arg: AnyActionType) => any) {
   const value = <any>(
@@ -209,9 +209,9 @@ async function loadHopsEnabled(dispatch: (arg: AnyActionType) => any) {
 
 /**
  * loadWorkspacePermissions
- * @param workspaceId
- * @param dispatch
- * @param readyCb
+ * @param workspaceId workspaceId
+ * @param dispatch dispatch
+ * @param readyCb readyCb
  */
 async function loadWorkspacePermissions(
   workspaceId: number,
@@ -369,7 +369,7 @@ const logout: LogoutTriggerType = function logout() {
 
 /**
  * updateStatusProfile
- * @param profile
+ * @param profile profile
  */
 const updateStatusProfile: UpdateStatusProfileTriggerType =
   function updateStatusProfile(profile) {
@@ -381,7 +381,7 @@ const updateStatusProfile: UpdateStatusProfileTriggerType =
 
 /**
  * updateStatusHasImage
- * @param value
+ * @param value value
  */
 const updateStatusHasImage: UpdateStatusHasImageTriggerType =
   function updateStatusHasImage(value) {

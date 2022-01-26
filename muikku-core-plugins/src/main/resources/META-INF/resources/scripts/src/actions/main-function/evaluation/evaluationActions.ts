@@ -603,7 +603,6 @@ const loadEvaluationAssessmentRequestsFromServer: LoadEvaluationAssessmentReques
 
 /**
  * loadEvaluationWorkspacesFromServer
- * @returns
  */
 const loadEvaluationWorkspacesFromServer: LoadEvaluationWorkspaces =
   function loadEvaluationWorkspacesFromServer() {
@@ -665,7 +664,6 @@ const loadEvaluationWorkspacesFromServer: LoadEvaluationWorkspaces =
 
 /**
  * loadListOfImportantAssessmentIdsFromServer
- * @returns
  */
 const loadListOfImportantAssessmentIdsFromServer: LoadEvaluationImportantAssessment =
   function loadListOfImportantAssessmentIdsFromServer() {
@@ -725,7 +723,6 @@ const loadListOfImportantAssessmentIdsFromServer: LoadEvaluationImportantAssessm
 
 /**
  * loadListOfImportantAssessmentIdsFromServer
- * @returns
  */
 const loadListOfUnimportantAssessmentIdsFromServer: LoadEvaluationUnimportantAssessment =
   function loadListOfUnimportantAssessmentIdsFromServer() {
@@ -973,7 +970,7 @@ const loadEvaluationSelectedAssessmentStudyDiaryEventsFromServer: LoadEvaluation
 
 /**
  * LoadBilledPriceFromServer
- * @param data
+ * @param data data
  */
 const LoadBilledPriceFromServer: LoadBilledPrice =
   function LoadBilledPriceFromServer(data) {

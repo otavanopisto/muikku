@@ -438,9 +438,7 @@ export default function guider(
       currentStudent: {
         ...state.currentStudent,
         purchases: state.currentStudent.purchases.filter(
-          (purchace: PurchaseType) => {
-            return purchace.id !== action.payload.id;
-          }
+          (purchace: PurchaseType) => purchace.id !== action.payload.id
         ),
       },
     });

@@ -10,7 +10,7 @@ export interface SetLocaleTriggerType {
 
 /**
  * setLocale
- * @param locale
+ * @param locale locale
  */
 const setLocale: SetLocaleTriggerType = function setLocale(locale: string) {
   return {
