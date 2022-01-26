@@ -416,19 +416,20 @@ public class GuiderTestsBase extends AbstractUITest {
         assertPresent(".application-list__header-primary--product .application-list__header-primary-actions .button--delete-student-order");
         logout();
 
-        String orderNo = "1";
+        String orderNo = getLatestCeeposOrderId();
         String refNo = "456";
         String cSalt = "xxxxxx";
+        int ceeposStatus = 1;
         StringBuilder sb = new StringBuilder();
         sb.append(orderNo);
         sb.append("&");
-        sb.append("1"); // ceepos payment state
+        sb.append(ceeposStatus); // ceepos payment state
         sb.append("&");
         sb.append(refNo);
         sb.append("&");
         sb.append(cSalt);  // secret ceepos salt for hashing
         String expectedHash = Hashing.sha256().hashString(sb.toString(), StandardCharsets.UTF_8).toString();
-        mockBuilder.mockLogin(student).mockCeeposRequestPayment(orderNo, refNo, cSalt, expectedHash, getAppUrl(), 1);
+        mockBuilder.mockLogin(student).mockCeeposRequestPayment(orderNo, refNo, cSalt, expectedHash, getAppUrl(), ceeposStatus);
         
         login();
         selectFinnishLocale();
@@ -446,7 +447,7 @@ public class GuiderTestsBase extends AbstractUITest {
         student = new MockStudent(10l, 10l, "Eastern", "Ibex", "ibexofeast@example.com", 2l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "101010-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.addMonths(monthsToIncrease));
         mockBuilder.mockStudyTimeIncrease(student, monthsToIncrease);
 
-        CeeposPaymentConfirmationRestModel cpcrm = new CeeposPaymentConfirmationRestModel(orderNo, 1, refNo, expectedHash);
+        CeeposPaymentConfirmationRestModel cpcrm = new CeeposPaymentConfirmationRestModel(orderNo, ceeposStatus, refNo, expectedHash);
         
         int status = TestUtilities.sendHttpPOSTRequest(getAppUrl(false) + "/rest/ceepos/paymentConfirmation", objectMapper.writeValueAsString(cpcrm));
         if (status == 200) {
@@ -516,6 +517,111 @@ public class GuiderTestsBase extends AbstractUITest {
         waitAndClick(".dialog--dialog-delete-order.dialog--visible .button--fatal");
         waitForNotPresent(".application-list__header-primary--product .application-list__header-primary-actions .button--delete-student-order");
         assertTextIgnoreCase(".button--create-student-order", "Luo uusi tilaus");
+      }finally {
+        deleteUserGroupUsers();
+        archiveUserByEmail(student.getEmail());
+        deleteWorkspace(workspace1.getId());      
+      }
+    } finally {
+      mockBuilder.wiremockReset();
+    }
+  }
+  
+  @Test
+  public void cancelStudyTimeTest() throws Exception {
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    MockStaffMember admin = new MockStaffMember(1l, 1l, DEFAULT_ORGANIZATION_ID, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
+    Builder mockBuilder = mocker();
+    MockStudent student = new MockStudent(12l, 12l, "Southeastern", "Stinger", "sting@example.com", 2l, OffsetDateTime.of(1991, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121091-1211", Sex.MALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextWeek());
+    try {
+      mockBuilder
+        .addStaffMember(admin)
+        .addStudent(student)
+        .mockLogin(admin)
+        .addStudyProgramme(new StudyProgramme(2l, 1l, "test_lukio", "Aineopiskelu/lukio", 1l, false, false))
+        .addStudentToStudentGroup(2l, student)
+        .mockPersons()
+        .mockStudents()
+        .mockStudyProgrammes()
+        .mockStudentGroups()
+        .build();
+      Course course1 = new CourseBuilder().name("Tests").id((long) 13).description("test coursemus for testing").buildCourse();
+      mockBuilder
+      .addStaffMember(admin)
+      .mockLogin(admin)
+      .addCourse(course1)
+      .build();
+      login();
+      Workspace workspace1 = createWorkspace(course1, Boolean.TRUE);
+      MockCourseStudent mcs = new MockCourseStudent(14l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
+      mockBuilder
+        .addCourseStudent(course1.getId(), mcs)
+        .addCourseStaffMember(course1.getId(), courseStaffMember)
+        .build();
+      try {
+        selectFinnishLocale();
+        navigate("/guider", false);
+        waitForPresent(".application-list__item-footer--student .label--ENDING");
+        waitAndClick(".application-list__header-primary>span");
+        scrollTo(".button--create-student-order", 150);
+        waitAndClickAndConfirm(".button--create-student-order", ".dropdown .link--purchasable-product-dropdown", 5, 500);
+        waitAndClickAndConfirm(".dropdown__container-item:first-child", ".dialog--dialog-confirm-order.dialog--visible", 5, 1000);
+        waitAndClick(".button--standard-ok");
+        assertTextIgnoreCase(".application-list__header-primary--product .application-list__header-primary-title b", "Nettilukion yksityisopiskelijan opiskelumaksu 6 kk");
+        assertTextIgnoreCase(".application-list__header-primary--product .application-list__header-primary-description", "Tilaus on luotu ja opiskelijalle on toimitettu sähköpostitse ohjeet maksamista varten.");
+        assertPresent(".application-list__header-primary--product .application-list__header-primary-actions .button--delete-student-order");
+        logout();
+
+        String orderNo = getLatestCeeposOrderId();
+        String refNo = "456";
+        String cSalt = "xxxxxx";
+        int ceeposStatus = 0;
+        StringBuilder sb = new StringBuilder();
+        sb.append(orderNo);
+        sb.append("&");
+        sb.append(ceeposStatus); // ceepos payment state
+        sb.append("&");
+        sb.append(refNo);
+        sb.append("&");
+        sb.append(cSalt);  // secret ceepos salt for hashing
+        String expectedHash = Hashing.sha256().hashString(sb.toString(), StandardCharsets.UTF_8).toString();
+        mockBuilder.mockLogin(student).mockCeeposRequestPayment(orderNo, refNo, cSalt, expectedHash, getAppUrl(), ceeposStatus);
+        
+        login();
+        selectFinnishLocale();
+        navigate("/profile#purchases", false);
+        assertTextIgnoreCase(".application-list__item--product .application-list__header-primary-title b", "Nettilukion yksityisopiskelijan opiskelumaksu 6 kk");
+        assertTextIgnoreCase(".application-list__header-primary-description", "Tilaus on luotu ja sinulle on toimitettu sähköpostitse ohjeet maksamista varten.");
+        assertPresent(".application-list__header-primary-actions .button--pay-student-order");
+        click(".application-list__header-primary-actions .button--pay-student-order");
+        waitForPresent(".card__text-row--ceepos-feedback");
+        assertTextIgnoreCase(".card__text-row--ceepos-feedback", "Keskeytit tilauksen maksutapahtuman. Ole hyvä ja ota yhteyttä ohjaajaasi.");
+        assertTextIgnoreCase(".button--back-to-muikku", "Muikun etusivulle");
+        click(".button--back-to-muikku");
+        
+        CeeposPaymentConfirmationRestModel cpcrm = new CeeposPaymentConfirmationRestModel(orderNo, ceeposStatus, refNo, expectedHash);
+        
+        int status = TestUtilities.sendHttpPOSTRequest(getAppUrl(false) + "/rest/ceepos/paymentConfirmation", objectMapper.writeValueAsString(cpcrm));
+        if (status == 200) {
+          mockBuilder.build();
+          assertVisible(".navbar .button-pill--profile");
+          navigate("/profile#general", false);
+          assertText(".application-sub-panel__item-data--study-end-date span:first-child", TestUtilities.getNextWeek().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")));
+          navigate("/profile#purchases", false);
+          assertTextIgnoreCase(".application-list__item--product .application-list__header-primary-description", "Peruutit tilauksen. Jos haluat uuden tilauksen, ota yhteyttä ohjaajaasi.");
+          logout();
+          mockBuilder.mockLogin(admin);
+          login();
+          selectFinnishLocale();
+          navigate("/guider", false);
+          waitForPresent(".application-list__item-footer--student .label--ENDING");
+          waitAndClick(".application-list__header-primary>span");
+          scrollTo(".button--create-student-order", 150);
+          assertTextIgnoreCase(".application-list__item--product .application-list__header-primary--product .application-list__header-primary-description", "Opiskelija peruutti tilauksen.");
+        }else {
+          assertTrue("paymentConfirmation status not 200", false);
+        }
       }finally {
         deleteUserGroupUsers();
         archiveUserByEmail(student.getEmail());
