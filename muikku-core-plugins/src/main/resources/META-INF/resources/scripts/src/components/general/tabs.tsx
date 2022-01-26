@@ -17,6 +17,7 @@ import useIsAtBreakpoint from "~/hooks/useIsMobileWidth";
 export interface Tab {
   id: string;
   name: string;
+  /** Type Class modifier */
   type?: string;
   mobileAction?: JSX.Element | JSX.Element[];
   component: () => JSX.Element;
@@ -28,7 +29,9 @@ interface TabsProps {
   onTabChange: (id: string) => void;
   allTabs: string[];
   activeTab: string;
+  /** General class modifier */
   modifier?: string;
+  /** Localization */
   i18n: i18nType;
   tabs: Array<Tab>;
   renderAllComponents?: boolean;
@@ -40,6 +43,7 @@ interface TabsProps {
 interface MobileOnlyTabsProps {
   onTabChange: (id: string) => void;
   activeTab: string;
+  /** General class modifier */
   modifier?: string;
   tabs: Array<Tab>;
   renderAllComponents?: boolean;
