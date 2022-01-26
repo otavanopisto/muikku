@@ -18,15 +18,15 @@ export interface Tab {
   id: string;
   name: string;
   type?: string;
-  mobileAction?: React.ReactElement<any> | Array<React.ReactElement<any>>;
-  component: () => React.ReactElement<any>;
+  mobileAction?: JSX.Element | JSX.Element[];
+  component: () => JSX.Element;
 }
 /**
  * TabsProps
  *
  */
 interface TabsProps {
-  onTabChange: (id: string) => any;
+  onTabChange: (id: string) => void;
   allTabs: string[];
   activeTab: string;
   modifier?: string;
@@ -148,65 +148,68 @@ export const Tabs: React.FC<TabsProps> = (props) => {
   );
 };
 
-export class MobileOnlyTabs extends React.Component<MobileOnlyTabsProps, {}> {
-  render() {
-    return (
-      <div className="tabs">
-        <div className="tabs__tab-labels tabs__tab-labels--mobile">
-          {this.props.tabs.map((tab, index) => {
-            return (
-              <div
-                className={`tabs__tab tabs__tab--mobile-only-tab ${
-                  this.props.modifier ? "tabs__tab--" + this.props.modifier : ""
-                } ${tab.type ? "tabs__tab--" + tab.type : ""} ${
-                  tab.id === this.props.activeTab ? "active" : ""
-                }`}
-                key={tab.id}
-                onClick={this.props.onTabChange.bind(this, tab.id)}
-              >
-                {tab.name}
-              </div>
-            );
-          })}
-        </div>
-        <div className="tabs__tab-labels tabs__tab-labels--desktop">
-          {this.props.tabs.map((tab, index) => {
-            return (
-              <div
-                className={`tabs__tab tabs__tab--mobile-only-tab ${
-                  this.props.modifier ? "tabs__tab--" + this.props.modifier : ""
-                } ${tab.type ? "tabs__tab--" + tab.type : ""} ${
-                  tab.id === this.props.activeTab ? "active" : ""
-                }`}
-                key={tab.id}
-                onClick={this.props.onTabChange.bind(this, tab.id)}
-              >
-                {tab.name}
-              </div>
-            );
-          })}
-        </div>
-        <div className="tabs__tab-data-container tabs__tab-data-container--mobile-tabs">
-          {this.props.tabs
-            .filter(
-              (t) =>
-                this.props.renderAllComponents || t.id === this.props.activeTab
-            )
-            .map((t) => (
-              <div
-                key={t.id}
-                className={`tabs__tab-data ${
-                  t.type ? "tabs__tab-data--" + t.type : ""
-                }  ${t.id === this.props.activeTab ? "active" : ""}`}
-              >
-                {t.component()}
-              </div>
-            ))}
-        </div>
+/**
+ * Tabs that are only seen in mobile
+ * @param props
+ * @returns JSX.element
+ */
+
+export const MobileOnlyTabs: React.FC<MobileOnlyTabsProps> = (props) => {
+  const { tabs, modifier, activeTab, onTabChange, renderAllComponents } = props;
+
+  return (
+    <div className="tabs">
+      <div className="tabs__tab-labels tabs__tab-labels--mobile">
+        {tabs.map((tab, index) => {
+          return (
+            <div
+              className={`tabs__tab tabs__tab--mobile-only-tab ${
+                modifier ? "tabs__tab--" + modifier : ""
+              } ${tab.type ? "tabs__tab--" + tab.type : ""} ${
+                tab.id === activeTab ? "active" : ""
+              }`}
+              key={tab.id}
+              onClick={onTabChange.bind(this, tab.id)}
+            >
+              {tab.name}
+            </div>
+          );
+        })}
       </div>
-    );
-  }
-}
+      <div className="tabs__tab-labels tabs__tab-labels--desktop">
+        {tabs.map((tab, index) => {
+          return (
+            <div
+              className={`tabs__tab tabs__tab--mobile-only-tab ${
+                modifier ? "tabs__tab--" + modifier : ""
+              } ${tab.type ? "tabs__tab--" + tab.type : ""} ${
+                tab.id === activeTab ? "active" : ""
+              }`}
+              key={tab.id}
+              onClick={onTabChange.bind(this, tab.id)}
+            >
+              {tab.name}
+            </div>
+          );
+        })}
+      </div>
+      <div className="tabs__tab-data-container tabs__tab-data-container--mobile-tabs">
+        {tabs
+          .filter((t) => renderAllComponents || t.id === activeTab)
+          .map((t) => (
+            <div
+              key={t.id}
+              className={`tabs__tab-data ${
+                t.type ? "tabs__tab-data--" + t.type : ""
+              }  ${t.id === activeTab ? "active" : ""}`}
+            >
+              {t.component()}
+            </div>
+          ))}
+      </div>
+    </div>
+  );
+};
 
 /**
  * mapStateToProps
