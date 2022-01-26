@@ -9,7 +9,7 @@ import { A11y, Pagination } from "swiper";
 import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
 import variables from "~/sass/_exports.scss";
-import useIsAtBreakpoint from "~/hooks/useIsMobileWidth";
+import useIsAtBreakpoint from "~/hooks/useIsAtBreakpoint";
 
 /**
  * Tab
@@ -54,7 +54,7 @@ interface MobileOnlyTabsProps {
 
 /**
  * Tabs
- * @param props
+ * @param props Component props
  * @returns JSX.Element
  */
 export const Tabs: React.FC<TabsProps> = (props) => {
@@ -156,10 +156,9 @@ export const Tabs: React.FC<TabsProps> = (props) => {
 
 /**
  * Tabs that are only seen in mobile
- * @param props
+ * @param props Component props
  * @returns JSX.element
  */
-
 export const MobileOnlyTabs: React.FC<MobileOnlyTabsProps> = (props) => {
   const { tabs, modifier, activeTab, onTabChange, renderAllComponents } = props;
 
@@ -219,9 +218,8 @@ export const MobileOnlyTabs: React.FC<MobileOnlyTabsProps> = (props) => {
 
 /**
  * mapStateToProps
- * @param state
+ * @param state Redux state
  */
-
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,

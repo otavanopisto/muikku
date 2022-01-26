@@ -6,7 +6,6 @@ import { useEffect, useState, useRef } from "react";
  * @param breakPoint - an "em" breakpoint width as a number
  * @returns boolean
  */
-
 const useIsAtBreakpoint = (breakPoint: number): boolean => {
   const [currentWidth, setCurrentWidth] = useState(
     Math.round(window.innerWidth / 16) // Em values are calculated as 1em = 16px by default.
