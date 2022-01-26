@@ -19,6 +19,7 @@ export interface Tab {
   name: string;
   /** Type Class modifier */
   type?: string;
+  /** Tab spesific action or actions for the mobile UI*/
   mobileAction?: JSX.Element | JSX.Element[];
   component: () => JSX.Element;
 }
@@ -27,6 +28,7 @@ export interface Tab {
  */
 interface TabsProps {
   onTabChange: (id: string) => void;
+  /** An array of all tab ids for swiper*/
   allTabs: string[];
   activeTab: string;
   /** General class modifier */
@@ -34,6 +36,7 @@ interface TabsProps {
   /** Localization */
   i18n: i18nType;
   tabs: Array<Tab>;
+  /** If all of the tabs components should be rendered */
   renderAllComponents?: boolean;
   children?: React.ReactNode;
 }
