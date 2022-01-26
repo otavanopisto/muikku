@@ -9,7 +9,7 @@ import ApplicationList, {
   ApplicationListItem,
   ApplicationListItemHeader,
 } from "~/components/general/application-list";
-import Tabs, { TabType } from "~/components/general/tabs";
+import Tabs, { Tab } from "~/components/general/tabs";
 import { UiSelectItem } from "../base/input-select-autofill";
 import { SelectItem } from "~/actions/workspaces/index";
 import Avatar from "~/components/general/avatar";
@@ -173,7 +173,7 @@ interface DialogRowProps {
   modifiers?: string | Array<string>;
 }
 
-interface DialogRowState { }
+interface DialogRowState {}
 
 export class DialogRow extends React.Component<DialogRowProps, DialogRowState> {
   render() {
@@ -183,10 +183,11 @@ export class DialogRow extends React.Component<DialogRowProps, DialogRowState> {
         : [this.props.modifiers];
     return (
       <div
-        className={`dialog__content-row ${this.props.modifiers
-          ? modifiers.map((m) => `dialog__content-row--${m}`).join(" ")
-          : ""
-          }`}
+        className={`dialog__content-row ${
+          this.props.modifiers
+            ? modifiers.map((m) => `dialog__content-row--${m}`).join(" ")
+            : ""
+        }`}
       >
         {this.props.children}
       </div>
@@ -198,17 +199,31 @@ interface DialogTitleContainerProps {
   modifier?: string;
 }
 
-export const DialogTitleContainer: React.FC<DialogTitleContainerProps> = (props) => (
-  <div className={`dialog__title-sub-container ${props.modifier ? "dialog__title-container--" + props.modifier : ""}`}>{props.children}</div>
-)
+export const DialogTitleContainer: React.FC<DialogTitleContainerProps> = (
+  props
+) => (
+  <div
+    className={`dialog__title-sub-container ${
+      props.modifier ? "dialog__title-container--" + props.modifier : ""
+    }`}
+  >
+    {props.children}
+  </div>
+);
 
 interface DialogTitleProps {
   modifier?: string;
 }
 
 export const DialogTitleItem: React.FC<DialogTitleProps> = (props) => (
-  <span className={`dialog__title-item ${props.modifier ? "dialog__title-item--" + props.modifier : ""}`}>{props.children}</span>
-)
+  <span
+    className={`dialog__title-item ${
+      props.modifier ? "dialog__title-item--" + props.modifier : ""
+    }`}
+  >
+    {props.children}
+  </span>
+);
 
 interface DialogRowHeaderProps {
   modifiers?: string | Array<string>;
@@ -216,7 +231,7 @@ interface DialogRowHeaderProps {
   description?: string;
 }
 
-interface DialogRowHeaderState { }
+interface DialogRowHeaderState {}
 
 export class DialogRowHeader extends React.Component<
   DialogRowHeaderProps,
@@ -229,29 +244,32 @@ export class DialogRowHeader extends React.Component<
         : [this.props.modifiers];
     return (
       <div
-        className={`dialog__content-row-header ${this.props.modifiers
-          ? modifiers.map((m) => `dialog__content-row-header--${m}`).join(" ")
-          : ""
-          }`}
+        className={`dialog__content-row-header ${
+          this.props.modifiers
+            ? modifiers.map((m) => `dialog__content-row-header--${m}`).join(" ")
+            : ""
+        }`}
       >
         <div
-          className={`dialog__content-row-header-title ${this.props.modifiers
-            ? modifiers
-              .map((m) => `dialog__content-row-title--${m}`)
-              .join(" ")
-            : ""
-            }`}
+          className={`dialog__content-row-header-title ${
+            this.props.modifiers
+              ? modifiers
+                  .map((m) => `dialog__content-row-title--${m}`)
+                  .join(" ")
+              : ""
+          }`}
         >
           {this.props.title}
         </div>
         {this.props.description ? (
           <div
-            className={`dialog__content-row-header-description ${this.props.modifiers
-              ? modifiers
-                .map((m) => `dialog__content-row-title-description--${m}`)
-                .join(" ")
-              : ""
-              }`}
+            className={`dialog__content-row-header-description ${
+              this.props.modifiers
+                ? modifiers
+                    .map((m) => `dialog__content-row-title-description--${m}`)
+                    .join(" ")
+                : ""
+            }`}
           >
             {this.props.description}
           </div>
@@ -265,7 +283,7 @@ interface DialogRowContentProps {
   modifiers?: string | Array<string>;
 }
 
-interface DialogRowContentState { }
+interface DialogRowContentState {}
 
 export class DialogRowContent extends React.Component<
   DialogRowContentProps,
@@ -278,12 +296,13 @@ export class DialogRowContent extends React.Component<
         : [this.props.modifiers];
     return (
       <div
-        className={`dialog__content-row-content ${this.props.modifiers
-          ? modifiers
-            .map((m) => `dialog__content-row-content--${m}`)
-            .join(" ")
-          : ""
-          }`}
+        className={`dialog__content-row-content ${
+          this.props.modifiers
+            ? modifiers
+                .map((m) => `dialog__content-row-content--${m}`)
+                .join(" ")
+            : ""
+        }`}
       >
         {this.props.children}
       </div>
@@ -449,12 +468,12 @@ export class DialogRemoveUsers extends React.Component<
   render() {
     const removePages = Math.ceil(
       this.props.removeUsers.length / this.maxRemoveUsersPerPage
-    )
-    const tabs: TabType[] = [
+    );
+    const tabs: Tab[] = [
       {
         id: this.props.identifier + "-ALL",
         name: this.props.allTabTitle,
-        component:
+        component: (
           <DialogRow modifiers="user-search">
             <form>
               <SearchFormElement
@@ -488,12 +507,9 @@ export class DialogRemoveUsers extends React.Component<
                           aside={
                             <Avatar
                               id={
-                                user.variables &&
-                                  user.variables.identifier
+                                user.variables && user.variables.identifier
                                   ? (user.variables.identifier as number)
-                                  : this.getNumberFromUserId(
-                                    user.id as string
-                                  )
+                                  : this.getNumberFromUserId(user.id as string)
                               }
                               hasImage={
                                 user.variables && user.variables.boolean
@@ -537,11 +553,12 @@ export class DialogRemoveUsers extends React.Component<
               />
             </DialogRow>
           </DialogRow>
+        ),
       },
       {
         id: this.props.identifier + "-REMOVE",
         name: this.props.removeTabTitle,
-        component:
+        component: (
           <DialogRow>
             <DialogRow>
               <ApplicationList modifiers="dialog-remove-users">
@@ -552,7 +569,6 @@ export class DialogRemoveUsers extends React.Component<
                         className="course"
                         key={"remove-" + user.id}
                       >
-
                         <ApplicationListItemContentWrapper
                           modifiers="dialog-remove-users"
                           asideModifiers="user"
@@ -561,9 +577,7 @@ export class DialogRemoveUsers extends React.Component<
                               id={
                                 user.variables && user.variables.identifier
                                   ? (user.variables.identifier as number)
-                                  : this.getNumberFromUserId(
-                                    user.id as string
-                                  )
+                                  : this.getNumberFromUserId(user.id as string)
                               }
                               hasImage={
                                 user.variables && user.variables.boolean
@@ -610,7 +624,8 @@ export class DialogRemoveUsers extends React.Component<
                 />
               ) : null}
             </DialogRow>
-          </DialogRow >
+          </DialogRow>
+        ),
       },
     ];
 

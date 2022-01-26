@@ -1,5 +1,5 @@
 import * as React from "react";
-import Tabs, { TabType } from "~/components/general/tabs";
+import Tabs, { Tab } from "~/components/general/tabs";
 import ApplicationPanelBody from "./components/application-panel-body";
 import "~/sass/elements/application-panel.scss";
 import "~/sass/elements/loaders.scss";
@@ -8,7 +8,7 @@ interface ApplicationPanelProps {
   modifier?: string;
   title?: React.ReactElement<any> | string;
   icon?: React.ReactElement<any> | string;
-  panelTabs?: Array<TabType>;
+  panelTabs?: Array<Tab>;
   onTabChange?: (id: string) => any;
   activeTab?: string;
   primaryOption?: React.ReactElement<any>;
