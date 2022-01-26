@@ -208,44 +208,64 @@ export default class c extends React.Component<
     /**
      * getStudentsLoader
      */
-     const getStudentsLoader = () => {
-      return loaders.studentsLoader ? loaders.studentsLoader(textInput) : promisify(mApi().user.users.read({
-        q: textInput,
-        maxResults: 20,
-        onlyDefaultUsers: checkHasPermission(this.props.userPermissionIsOnlyDefaultUsers)
-      }), 'callback');
-    }
+    const getStudentsLoader = () =>
+      loaders.studentsLoader
+        ? loaders.studentsLoader(textInput)
+        : promisify(
+            mApi().user.users.read({
+              q: textInput,
+              maxResults: 20,
+              onlyDefaultUsers: checkHasPermission(
+                this.props.userPermissionIsOnlyDefaultUsers
+              ),
+            }),
+            "callback"
+          );
 
     /**
      * getUserGroupsLoader
      */
-    const getUserGroupsLoader = () => {
-      return loaders.userGroupsLoader ? loaders.userGroupsLoader(textInput) : promisify(mApi().usergroup.groups.read({
-        q: textInput,
-        maxResults: 20,
-      }), 'callback');
-    }
+    const getUserGroupsLoader = () =>
+      loaders.userGroupsLoader
+        ? loaders.userGroupsLoader(textInput)
+        : promisify(
+            mApi().usergroup.groups.read({
+              q: textInput,
+              maxResults: 20,
+            }),
+            "callback"
+          );
 
     /**
      * getWorkspacesLoader
      */
-     const getWorkspacesLoader = () => {
-      return loaders.workspacesLoader ? loaders.workspacesLoader(textInput) : promisify(mApi().coursepicker.workspaces.read({
-        q: textInput,
-        maxResults: 20,
-        myWorkspaces: checkHasPermission(this.props.workspacePermissionIsOnlyMyWorkspaces)
-      }), 'callback');
-    }
+    const getWorkspacesLoader = () =>
+      loaders.workspacesLoader
+        ? loaders.workspacesLoader(textInput)
+        : promisify(
+            mApi().coursepicker.workspaces.read({
+              q: textInput,
+              maxResults: 20,
+              myWorkspaces: checkHasPermission(
+                this.props.workspacePermissionIsOnlyMyWorkspaces
+              ),
+            }),
+            "callback"
+          );
 
     /**
      * getStaffLoader
      */
-     const getStaffLoader = () => {
-      return loaders.staffLoader ? loaders.staffLoader(textInput) : promisify(mApi().user.staffMembers.read({
-        q: textInput,
-        maxResults: 20,
-      }), 'callback');
-    }
+    const getStaffLoader = () =>
+      loaders.staffLoader
+        ? loaders.staffLoader(textInput)
+        : promisify(
+            mApi().user.staffMembers.read({
+              q: textInput,
+              maxResults: 20,
+            }),
+            "callback"
+          );
 
     /**
      * searchResults

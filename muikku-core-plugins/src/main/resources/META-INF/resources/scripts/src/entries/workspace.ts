@@ -27,6 +27,9 @@ runApp(reducer, App, async (store) => {
       }
     });
   }
-  const websocket = await mainFunctionDefault(store, { setupMessages: false, setupWorkspacePermissions: true });
+  const websocket = await mainFunctionDefault(store, {
+    setupMessages: false,
+    setupWorkspacePermissions: true,
+  });
   return { websocket };
 });

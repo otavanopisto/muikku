@@ -613,7 +613,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
          * @returns boolean
          */
         shouldProcessHTMLElement: (tagname, element) =>
-          tagname === "div" && element.getAttribute('data-show') !== null,
+          tagname === "div" && element.getAttribute("data-show") !== null,
 
         /**
          * processingFunction
@@ -624,10 +624,10 @@ export default class Base extends React.Component<BaseProps, BaseState> {
          * @returns any
          */
         preprocessReactProperties: (tag, props, children, element) => {
-          if(this.props.checkAnswers && this.props.displayCorrectAnswers){
-            props['data-show'] = 'true'
-          }else {
-            props['data-show'] = 'false'
+          if (this.props.checkAnswers && this.props.displayCorrectAnswers) {
+            props["data-show"] = "true";
+          } else {
+            props["data-show"] = "false";
           }
         },
       },

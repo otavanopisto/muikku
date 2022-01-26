@@ -44,21 +44,30 @@ export interface WorklistItem {
   billingNumber: number;
 }
 
+/**
+ * PurchaseStateType
+ */
 export enum PurchaseStateType {
   CREATED = "CREATED",
   CANCELLED = "CANCELLED",
   ERRORED = "ERRORED",
   ONGOING = "ONGOING",
   PAID = "PAID",
-  COMPLETE = "COMPLETE"
+  COMPLETE = "COMPLETE",
 }
 
+/**
+ * PurchaseProductType
+ */
 export interface PurchaseProductType {
   Code: string;
   Description: string;
   Price: number;
-};
+}
 
+/**
+ * PurchaseCreatorType
+ */
 export interface PurchaseCreatorType {
   id: number;
   userEntityId: number;
@@ -67,17 +76,23 @@ export interface PurchaseCreatorType {
   email: string;
 }
 
+/**
+ * PurchaseType
+ */
 export interface PurchaseType {
   created: string;
   paid: string;
   id: number;
-  product: PurchaseProductType,
-  state: PurchaseStateType,
+  product: PurchaseProductType;
+  state: PurchaseStateType;
   studentEmail: string;
   studentIdentifier: string;
   creator: PurchaseCreatorType;
 }
 
+/**
+ * StoredWorklistItem
+ */
 export interface StoredWorklistItem extends WorklistItem {
   id: number;
   editableFields: Array<EditableField>;
@@ -120,18 +135,26 @@ export interface ProfileType {
   purchases?: PurchaseType[];
 }
 
-export default function profile(state: ProfileType = {
-  properties: {},
-  username: null,
-  addresses: null,
-  chatSettings: null,
-  location: null,
-  worklistTemplates: null,
-  worklist: null,
-  purchases: null,
-}, action: ActionType): ProfileType {
-  if (action.type === "SET_PROFILE_USER_PROPERTY"){
-    let newProperties = {...state.properties}
+/**
+ * profile
+ * @param state state
+ * @param action action
+ */
+export default function profile(
+  state: ProfileType = {
+    properties: {},
+    username: null,
+    addresses: null,
+    chatSettings: null,
+    location: null,
+    worklistTemplates: null,
+    worklist: null,
+    purchases: null,
+  },
+  action: ActionType
+): ProfileType {
+  if (action.type === "SET_PROFILE_USER_PROPERTY") {
+    const newProperties = { ...state.properties };
     newProperties[action.payload.key] = action.payload.value;
     return {
       ...state,
@@ -182,13 +205,19 @@ export default function profile(state: ProfileType = {
       },
     };
   } else if (action.type === "SET_WORKLIST") {
-    return {...state, ...{
-      worklist: action.payload
-    }}
+    return {
+      ...state,
+      ...{
+        worklist: action.payload,
+      },
+    };
   } else if (action.type === "SET_PURCHASE_HISTORY") {
-    return {...state, ...{
-      purchases: action.payload
-    }}
+    return {
+      ...state,
+      ...{
+        purchases: action.payload,
+      },
+    };
   }
   return state;
 }

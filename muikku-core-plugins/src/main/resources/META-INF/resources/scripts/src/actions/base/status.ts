@@ -304,7 +304,10 @@ async function loadWorkspacePermissions(
 const loadStatus: LoadStatusType = function loadStatus(
   whoAmIReadyCb: () => void
 ) {
-  return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
+  return async (
+    dispatch: (arg: AnyActionType) => any,
+    getState: () => StateType
+  ) => {
     if (getState().status.loggedIn) {
       loadWhoAMI(dispatch, whoAmIReadyCb);
       loadChatActive(dispatch);
