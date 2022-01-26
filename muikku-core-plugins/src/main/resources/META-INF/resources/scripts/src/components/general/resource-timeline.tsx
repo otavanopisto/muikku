@@ -35,24 +35,28 @@ interface ResourceTimelineProps {
   resourceHeaderContent: string;
   resources: ResourceType[];
   externalEvents?: ExternalEventType[];
+  selectable?: boolean;
   namespace: string;
   onDateSelect: (events: EventType[]) => void;
 }
 
-interface ResourceTimelineState {
-  newEvents: EventType[];
-}
+const defaultTimelineProps = {
+  selectable: false,
+};
+export const ResourceTimeline: React.FC<ResourceTimelineProps> = (props) => {
+  props = { ...defaultTimelineProps, ...props };
 
-export const ResourceTimeline: React.FC<ResourceTimelineProps> = ({
-  headerToolbar,
-  resourceHeaderContent,
-  resources,
-  externalEvents,
-  namespace,
-  onDateSelect,
-}) => {
+  const {
+    headerToolbar,
+    resourceHeaderContent,
+    resources,
+    externalEvents,
+    selectable,
+    namespace,
+    onDateSelect,
+  } = props;
+
   const [events, setEvents] = useState<EventType[]>([]);
-
   const handleDateSelect = (arg: DateSelectArg) => {
     const currentEvents = events;
     const newEvents: EventType[] = currentEvents.concat({
@@ -101,7 +105,7 @@ export const ResourceTimeline: React.FC<ResourceTimelineProps> = ({
         title={event.title}
         data-id={event.id}
         data-color={event.color}
-        data-duration={event.duration}
+        data-duration={"48:00:00"}
         key={event.id}
         style={{
           backgroundColor: event.color,
@@ -111,8 +115,6 @@ export const ResourceTimeline: React.FC<ResourceTimelineProps> = ({
         {event.title}
       </div>
     ));
-
-  const test = events;
 
   return (
     <div className="resource-timeline">
@@ -125,9 +127,14 @@ export const ResourceTimeline: React.FC<ResourceTimelineProps> = ({
       <div className="resource-timeline__timeline">
         <FullCalendar
           headerToolbar={headerToolbar}
-          selectable={true}
+          selectable={selectable}
           plugins={[resourceTimelinePlugin, interactionPlugin]}
+          droppable={true}
+          drop={function (element) {
+            element.draggedEl.parentElement.removeChild;
+          }}
           editable={true}
+          forceEventDuration={true}
           schedulerLicenseKey={"CC-Attribution-NonCommercial-NoDerivatives"}
           height="auto"
           select={handleDateSelect}
