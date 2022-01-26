@@ -1347,8 +1347,8 @@ public class PyramusMock {
       }
       
 //    This is actually mocking cpu payment service, but not getting it's own class.  
-      public Builder mockCeeposRequestPayment(String orderNo, String refNo, String cSalt,String hash, String returnAppUrl) throws JsonProcessingException {
-        String returnAddress = returnAppUrl + "/ceepos/done?Id=1&Status=1&Reference=456&Hash=" + hash;
+      public Builder mockCeeposRequestPayment(String orderNo, String refNo, String cSalt, String hash, String returnAppUrl, int retStatus) throws JsonProcessingException {
+        String returnAddress = returnAppUrl + "/ceepos/done?Id=" + orderNo + "&Status=" + retStatus + "&Reference=" + refNo +"&Hash=" + hash;
         StringBuilder sb = new StringBuilder();
         sb.append(orderNo);
         sb.append("&");

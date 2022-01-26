@@ -428,7 +428,7 @@ public class GuiderTestsBase extends AbstractUITest {
         sb.append("&");
         sb.append(cSalt);  // secret ceepos salt for hashing
         String expectedHash = Hashing.sha256().hashString(sb.toString(), StandardCharsets.UTF_8).toString();
-        mockBuilder.mockLogin(student).mockCeeposRequestPayment(orderNo, refNo, cSalt, expectedHash, getAppUrl());
+        mockBuilder.mockLogin(student).mockCeeposRequestPayment(orderNo, refNo, cSalt, expectedHash, getAppUrl(), 1);
         
         login();
         selectFinnishLocale();
