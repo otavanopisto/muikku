@@ -50,7 +50,14 @@ import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserIdentifierProperty;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
+import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestController;
+import fi.otavanopisto.muikku.plugins.assessmentrequest.WorkspaceAssessmentState;
+import fi.otavanopisto.muikku.plugins.guider.GuiderController;
+import fi.otavanopisto.muikku.plugins.guider.GuiderStudentWorkspaceActivity;
+import fi.otavanopisto.muikku.plugins.guider.GuiderStudentWorkspaceActivityRestModel;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.StudiesViewCourseChoiceController;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsController;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsFileController;
@@ -156,6 +163,12 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
 
   @Inject
   private WorkspaceEntityFileController workspaceEntityFileController;
+  
+  @Inject
+  private GuiderController guiderController;
+
+  @Inject
+  private AssessmentRequestController assessmentRequestController;
   
   @Inject
   @Any
@@ -549,14 +562,19 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   @Path("/workspaces/")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response listWorkspaces(
-        @QueryParam("userIdentifier") String userIdentifier,
+        @QueryParam("userIdentifier") String userIdentifierParam,
         @Context Request request) {
     List<fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace> workspaces = new ArrayList<>();
 
+    SchoolDataIdentifier userIdentifier = SchoolDataIdentifier.fromId(userIdentifierParam);
+    if (userIdentifier == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
     UserEntity userEntity = sessionController.getLoggedUserEntity();
 
     List<UserSchoolDataIdentifier> userSchoolDataIdentifiers = userSchoolDataIdentifierController.listUserSchoolDataIdentifiersByUserEntity(userEntity);
-    if (!userSchoolDataIdentifiers.stream().anyMatch(usdi -> usdi.schoolDataIdentifier().toId().equals(userIdentifier))) {
+    if (!userSchoolDataIdentifiers.stream().anyMatch(usdi -> usdi.schoolDataIdentifier().equals(userIdentifier))) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
@@ -617,7 +635,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
               }
               
               if (StringUtils.isNotBlank(name)) {
-                workspaces.add(createRestModel(workspaceEntity, name, nameExtension, description, curriculumIdentifiers));
+                workspaces.add(createRestModel(userIdentifier, workspaceEntity, name, nameExtension, description, curriculumIdentifiers));
               }
             }
           }
@@ -631,6 +649,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   }
   
   private fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace createRestModel(
+      SchoolDataIdentifier userIdentifier,
       WorkspaceEntity workspaceEntity,
       String name,
       String nameExtension,
@@ -641,7 +660,17 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     Date lastVisit = workspaceVisitController.getLastVisit(workspaceEntity);
     boolean hasCustomImage = workspaceEntityFileController.getHasCustomImage(workspaceEntity);
 
-    return new fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace(workspaceEntity.getId(),
+    
+    GuiderStudentWorkspaceActivity activity = guiderController.getStudentWorkspaceActivity(workspaceEntity, userIdentifier);
+    List<WorkspaceAssessmentState> assessmentStates = new ArrayList<>();
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserIdentifier(workspaceEntity, userIdentifier);
+    if (workspaceUserEntity != null && workspaceUserEntity.getWorkspaceUserRole().getArchetype() == WorkspaceRoleArchetype.STUDENT) {
+      assessmentStates = assessmentRequestController.getAllWorkspaceAssessmentStates(workspaceUserEntity);
+    }
+    
+    GuiderStudentWorkspaceActivityRestModel guiderStudentWorkspaceActivityRestModel = toRestModel(activity, assessmentStates);
+    
+    return new ToRWorkspaceRestModel(workspaceEntity.getId(),
         workspaceEntity.getOrganizationEntity() == null ? null : workspaceEntity.getOrganizationEntity().getId(),
         workspaceEntity.getUrlName(),
         workspaceEntity.getAccess(),
@@ -654,7 +683,34 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
         numVisits, 
         lastVisit,
         curriculumIdentifiers,
-        hasCustomImage);
+        hasCustomImage,
+        guiderStudentWorkspaceActivityRestModel);
   }
 
+  private GuiderStudentWorkspaceActivityRestModel toRestModel(GuiderStudentWorkspaceActivity activity, Object assessmentStates) {
+    GuiderStudentWorkspaceActivityRestModel model = new GuiderStudentWorkspaceActivityRestModel(
+        activity.getLastVisit(),
+        activity.getNumVisits(),
+        activity.getJournalEntryCount(),
+        activity.getLastJournalEntry(),
+        activity.getEvaluables().getUnanswered(), 
+        activity.getEvaluables().getAnswered(), 
+        activity.getEvaluables().getAnsweredLastDate(), 
+        activity.getEvaluables().getSubmitted(), 
+        activity.getEvaluables().getSubmittedLastDate(), 
+        activity.getEvaluables().getWithdrawn(), 
+        activity.getEvaluables().getWithdrawnLastDate(), 
+        activity.getEvaluables().getPassed(), 
+        activity.getEvaluables().getPassedLastDate(), 
+        activity.getEvaluables().getFailed(), 
+        activity.getEvaluables().getFailedLastDate(),
+        activity.getEvaluables().getIncomplete(),
+        activity.getEvaluables().getIncompleteLastDate(),
+        activity.getExercises().getUnanswered(), 
+        activity.getExercises().getAnswered(), 
+        activity.getExercises().getAnsweredLastDate(),
+        assessmentStates);
+    return model;
+  }
+  
 }
