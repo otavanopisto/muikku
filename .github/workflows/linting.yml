@@ -1,8 +1,10 @@
 name: Front-end code quality linting
 
 on:
-  pull_request:
+  push:
     branches: devel
+  # pull_request:
+  #  branches: devel
 
 jobs:
   run-linters:
