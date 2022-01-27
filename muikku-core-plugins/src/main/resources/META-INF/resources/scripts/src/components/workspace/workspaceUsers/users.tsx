@@ -306,8 +306,8 @@ class WorkspaceUsers extends React.Component<
           breakLabel="..."
           marginPagesDisplayed={1}
           pageRangeDisplayed={2}
-          initialPage={this.state.currentStaffPage}
-          forcePage={this.state.currentStaffPage}
+          initialPage={this.state.currentStaffPage - 1}
+          forcePage={this.state.currentStaffPage - 1}
           pageCount={this.allStaffPages}
           onPageChange={this.handleStaffPagerChange}
         />

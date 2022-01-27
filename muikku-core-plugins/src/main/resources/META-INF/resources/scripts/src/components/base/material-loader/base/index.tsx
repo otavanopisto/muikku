@@ -488,6 +488,16 @@ export default class Base extends React.Component<BaseProps, BaseState> {
 
     const processingRules: HTMLToReactComponentRule[] = [
       {
+        shouldProcessHTMLElement:(tagname, element) => tagname === "div" && element.getAttribute('data-show') !== null,
+        preprocessReactProperties: (tag, props, children, element) => {
+          if(this.props.checkAnswers && this.props.displayCorrectAnswers){
+            props['data-show'] = 'true'
+          }else {
+            props['data-show'] = 'false'
+          }
+        },
+      },
+      {
         shouldProcessHTMLElement: (tagname, element) => tagname === "object" && objects[element.getAttribute("type")],
         processingFunction: (tag, props, children, element) => {
           return this.getObjectElement(element, this.props, props.key);

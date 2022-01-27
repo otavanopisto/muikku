@@ -209,6 +209,25 @@ public class UserRESTService extends AbstractRESTService {
     UserEntityProperty property = userEntityController.getUserEntityPropertyByKey(loggedUserEntity, key);
     return Response.ok(new fi.otavanopisto.muikku.rest.model.UserEntityProperty(key, property == null ? null : property.getValue())).build();
   }
+  
+  @GET
+  @Path("/defaultEmailAddress")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response getCurrentUserDefaultEmailAddress() {
+    String email = null;
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      email = userController.getUserDefaultEmailAddress(sessionController.getLoggedUserSchoolDataSource(), sessionController.getLoggedUserIdentifier());
+    }
+    finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
+    
+    // Return value should really be text/plain but due to an mApi bug,
+    // the address has to be returned as a json string, hence the quotes
+    
+    return Response.ok(String.format("\"%s\"", email)).build();
+  }
 
   @GET
   @Path("/properties/{USERENTITYID}")
