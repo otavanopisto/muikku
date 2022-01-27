@@ -123,6 +123,19 @@ export interface AssessmentRequest {
 }
 
 /**
+ * Interface for latest evaluation per subject
+ */
+export interface EvaluationLatestSubjectEvaluationIndex {
+  [subjectIdentifier: string]: number;
+}
+
+/**
+ * Interface for last evaluation per subject
+ */
+export interface EvaluationLastSubjectEvaluationIndex
+  extends EvaluationLatestSubjectEvaluationIndex {}
+
+/**
  * Interface for grading system
  */
 export interface EvaluationGradeSystem {

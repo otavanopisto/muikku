@@ -36,7 +36,7 @@ interface WorkspaceEditorProps {
   type?: "new" | "edit";
   editorLabel?: string;
   eventId?: string;
-  subjectToBeEvaluated: string;
+  workspaceSubjectToBeEvaluatedIdentifier: string;
   onSuccesfulSave?: () => void;
   onClose?: () => void;
   updateWorkspaceEvaluationToServer: UpdateWorkspaceEvaluation;
@@ -81,7 +81,7 @@ class WorkspaceEditor extends SessionStateComponent<
     super(
       props,
       `workspace-editor-${props.type ? props.type : "new"}-${
-        props.subjectToBeEvaluated
+        props.workspaceSubjectToBeEvaluatedIdentifier
       }`
     );
 
@@ -384,7 +384,7 @@ class WorkspaceEditor extends SessionStateComponent<
       status,
       onClose,
       onSuccesfulSave,
-      subjectToBeEvaluated,
+      workspaceSubjectToBeEvaluatedIdentifier,
     } = this.props;
 
     this.setState({
@@ -420,7 +420,7 @@ class WorkspaceEditor extends SessionStateComponent<
             gradeIdentifier: grade,
             verbalAssessment: literalEvaluation,
             assessmentDate: new Date().getTime().toString(),
-            workspaceSubjectIdentifier: subjectToBeEvaluated,
+            workspaceSubjectIdentifier: workspaceSubjectToBeEvaluatedIdentifier,
           },
           onSuccess: () => {
             cleanWorkspaceAndSupplementationDrafts(this.state.draftId);
@@ -472,7 +472,7 @@ class WorkspaceEditor extends SessionStateComponent<
             gradeIdentifier: grade,
             verbalAssessment: literalEvaluation,
             assessmentDate: latestEvent.date,
-            workspaceSubjectIdentifier: subjectToBeEvaluated,
+            workspaceSubjectIdentifier: workspaceSubjectToBeEvaluatedIdentifier,
           },
           onSuccess: () => {
             cleanWorkspaceAndSupplementationDrafts(this.state.draftId);
@@ -519,7 +519,7 @@ class WorkspaceEditor extends SessionStateComponent<
           gradeIdentifier: grade,
           verbalAssessment: literalEvaluation,
           assessmentDate: new Date().getTime().toString(),
-          workspaceSubjectIdentifier: subjectToBeEvaluated,
+          workspaceSubjectIdentifier: workspaceSubjectToBeEvaluatedIdentifier,
         },
         onSuccess: () => {
           cleanWorkspaceAndSupplementationDrafts(this.state.draftId);
@@ -640,7 +640,7 @@ class WorkspaceEditor extends SessionStateComponent<
 
   /**
    * isGraded
-   * @param type
+   * @param type type
    * @returns boolean if graded
    */
   isGraded = (type: EvaluationEnum) => {
@@ -657,10 +657,15 @@ class WorkspaceEditor extends SessionStateComponent<
    */
   hasGradedEvaluations = () => {
     const { evaluationAssessmentEvents } = this.props.evaluations;
+    const { workspaceSubjectToBeEvaluatedIdentifier } = this.props;
 
     if (evaluationAssessmentEvents.data) {
       for (const event of evaluationAssessmentEvents.data) {
-        if (this.isGraded(event.type)) {
+        if (
+          event.workspaceSubjectIdentifier ===
+            workspaceSubjectToBeEvaluatedIdentifier &&
+          this.isGraded(event.type)
+        ) {
           return true;
         }
       }
@@ -678,7 +683,7 @@ class WorkspaceEditor extends SessionStateComponent<
    * @returns Array of price options
    */
   parsePriceOptions = (): EvaluationPriceObject[] | undefined => {
-    const { i18n, type } = this.props;
+    const { i18n, type, workspaceSubjectToBeEvaluatedIdentifier } = this.props;
     const { evaluationAssessmentEvents } = this.props.evaluations;
     let { basePriceFromServer } = this.state;
 
@@ -689,10 +694,16 @@ class WorkspaceEditor extends SessionStateComponent<
     /**
      * We want to get latest event data
      */
-    let latestEvent =
+    let latestEvent = evaluationAssessmentEvents.data.find(
+      (event) =>
+        event.workspaceSubjectIdentifier ===
+        workspaceSubjectToBeEvaluatedIdentifier
+    );
+
+    /*  let latestEvent =
       evaluationAssessmentEvents.data[
         evaluationAssessmentEvents.data.length - 1
-      ];
+      ]; */
 
     /**
      * If editing existing event, we need to find that specific event from event list by its' id
