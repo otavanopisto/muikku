@@ -2,6 +2,7 @@ package fi.otavanopisto.muikku.plugins.calendar.rest;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -361,7 +362,7 @@ public class CalendarRESTService {
       beginDate = OffsetDateTime.parse(begins);
       endDate = OffsetDateTime.parse(ends);
     }
-    catch (Exception e) {
+    catch (DateTimeParseException e) {
       return Response.status(Status.BAD_REQUEST).entity(String.format("Invalid time format: %s", e.getMessage())).build();
     }
     
