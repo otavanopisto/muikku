@@ -1,13 +1,12 @@
 name: Front-end code quality linting
 
 on:
-  # Trigger the workflow on push or pull request,
   pull_request:
-    branches: [devel]
+    branches: devel
 
 jobs:
   run-linters:
-    name: Run linters
+    name: Running linters
     runs-on: ubuntu-latest
 
     steps:
@@ -23,7 +22,7 @@ jobs:
         run: npm ci
         working-directory: muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src
 
-      - name: Run linters
+      - name: Running linters
         uses: wearerequired/lint-action@v1
         with:
           eslint: true
