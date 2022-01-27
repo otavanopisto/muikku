@@ -11,6 +11,9 @@ jobs:
   run-linters:
     name: Run linters
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src
 
     steps:
       - name: Check out Git repository
@@ -22,7 +25,6 @@ jobs:
           node-version: 14.18.1
 
       - name: Install Node.js dependencies
-        working-directory: muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src
         run: npm ci
 
       - name: Run linters
