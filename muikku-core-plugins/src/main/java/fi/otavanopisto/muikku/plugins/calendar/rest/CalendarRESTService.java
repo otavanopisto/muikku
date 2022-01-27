@@ -23,6 +23,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.commons.lang3.StringUtils;
+
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
@@ -348,6 +350,21 @@ public class CalendarRESTService {
       @QueryParam("ends") String ends,
       @QueryParam("adjustTimes") @DefaultValue("true") boolean adjustTimes) {
     
+    // Request validation
+    
+    OffsetDateTime beginDate = null;
+    OffsetDateTime endDate = null;
+    if (StringUtils.isEmpty(begins) || StringUtils.isEmpty(ends)) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing begins/ends parameters").build();
+    }
+    try {
+      beginDate = OffsetDateTime.parse(begins);
+      endDate = OffsetDateTime.parse(ends);
+    }
+    catch (Exception e) {
+      return Response.status(Status.BAD_REQUEST).entity(String.format("Invalid time format: %s", e.getMessage())).build();
+    }
+    
     // Access checks
     
     if (userEntityId == null) {
@@ -366,8 +383,6 @@ public class CalendarRESTService {
     
     // Time adjustments
     
-    OffsetDateTime beginDate = OffsetDateTime.parse(begins);
-    OffsetDateTime endDate = OffsetDateTime.parse(ends);
     if (adjustTimes) {
       beginDate = beginDate.withHour(0).withMinute(0).withSecond(0).withNano(0);
       endDate = endDate.withHour(23).withMinute(59).withSecond(59).withNano(999999000);
