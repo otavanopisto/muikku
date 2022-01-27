@@ -4,8 +4,8 @@ on:
   # Trigger the workflow on push or pull request,
   push:
     branches: [5923-prettier-with-eslint]
-  pull_request:
-    branches: [devel, 5923-prettier-with-eslint]
+  # pull_request:
+  # branches: [devel, 5923-prettier-with-eslint]
 
 jobs:
   run-linters:
