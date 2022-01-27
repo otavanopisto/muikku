@@ -1,0 +1,33 @@
+name: ESLint
+working-directory: muikku/muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src
+
+on:
+  # Trigger the workflow on push or pull request,
+  push:
+    branches: [5923-prettier-with-eslint]
+  pull_request:
+    branches: [devel, 5923-prettier-with-eslint]
+
+jobs:
+  run-linters:
+    name: Run linters
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.18.1
+
+      - name: Install Node.js dependencies
+        run: npm ci
+
+      - name: Run linters
+        uses: wearerequired/lint-action@v1
+        with:
+          eslint: true
+          eslint_extensions: "ts,tsx"
+          eslint_dir: muikku/muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src

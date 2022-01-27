@@ -1,4 +1,5 @@
-name: Lint (ESLint, Prettier, Stylelint)
+name: Prettier
+working-directory: muikku/muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src
 
 on:
   # Trigger the workflow on push or pull request,
@@ -27,9 +28,6 @@ jobs:
       - name: Run linters
         uses: wearerequired/lint-action@v1
         with:
-          eslint: true
-          eslint_extensions: "ts,tsx"
-          eslint_dir: muikku/muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src
           prettier: true
           prettier_extensions: "ts,tsx"
           prettier_dir: muikku/muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src
