@@ -26,9 +26,10 @@ import {
 import { RecordsType } from "./main-function/records";
 import { ErrorType } from "./base/error";
 import { ProfileType } from "./main-function/profile";
-import { OrganizationSummaryType } from "./organization/summary"
+import { OrganizationSummaryType } from "./organization/summary";
 import { EvaluationState } from "./main-function/evaluation/index";
 import { CeeposState } from "./main-function/ceepos";
+import { Calendar } from "./calendar";
 
 export interface StateType {
   notifications: NotificationListType;
@@ -50,7 +51,7 @@ export interface StateType {
   userSelect?: UsersSelectType;
   userGroups?: UserGroupsType;
   workspaces?: WorkspacesType;
-  organizationSummary?: OrganizationSummaryType,
+  organizationSummary?: OrganizationSummaryType;
   organizationWorkspaces?: WorkspacesType;
   organizationUsers?: UsersType;
   discussion?: DiscussionType;
@@ -60,4 +61,5 @@ export interface StateType {
   profile?: ProfileType;
   evaluations?: EvaluationState;
   ceepos?: CeeposState;
+  Calendar?: Calendar;
 }

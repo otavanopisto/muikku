@@ -270,8 +270,15 @@ import {
 import {
   UPDATE_CEEPOS_PURCHASE,
   UPDATE_CEEPOS_STATE,
-  UPDATE_CEEPOS_PAY_STATUS
- } from "./main-function/ceepos";
+  UPDATE_CEEPOS_PAY_STATUS,
+} from "./main-function/ceepos";
+
+import {
+  LOAD_CALENDAR_EVENTS,
+  UPDATE_CALENDAR_EVENTS,
+  DELETE_CALENDAR_EVENT,
+  UPDATE_CALENDAR_EVENTS_STATUS,
+} from "./main-function/calendar";
 
 export type ActionType =
   | SET_CURRENT_MESSAGE_THREAD
@@ -475,6 +482,10 @@ export type ActionType =
   | UPDATE_GUIDER_COMPLETE_PURCHASE_ORDER
   | UPDATE_CEEPOS_STATE
   | UPDATE_CEEPOS_PAY_STATUS
-  | UPDATE_CEEPOS_PURCHASE;
+  | UPDATE_CEEPOS_PURCHASE
+  | LOAD_CALENDAR_EVENTS
+  | UPDATE_CALENDAR_EVENTS
+  | DELETE_CALENDAR_EVENT
+  | UPDATE_CALENDAR_EVENTS_STATUS;
 
 export type AnyActionType = ActionType | DeferredAction | AsyncDeferredAction;
