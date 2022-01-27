@@ -176,26 +176,26 @@ class WorkListRow extends React.Component<WorkListRowProps, WorksListEditableSta
 
     return (
       <div className="application-sub-panel__multiple-items application-sub-panel__multiple-items--list-mode">
-        <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-description">
-          <span title={entryStateText} className={`glyph glyph--worklist-state-indicator ${entryStateClass} ${entryStateIcon}`}></span>
+        <span title={entryStateText} className={`glyph glyph--worklist-state-indicator ${entryStateClass} ${entryStateIcon}`}></span>
+        <span className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-description">
           {this.props.item.description}
-        </div>
-        <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-date">
+        </span>
+        <span className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-date">
           {this.props.i18n.time.format(this.props.item.entryDate)}
-        </div>
-        <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-price">
+        </span>
+        <span className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-price">
           {this.props.item.price}
-        </div>
-        <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-factor">
+        </span>
+        <span className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-factor">
           {this.props.item.factor}
-        </div>
+        </span>
         {
           canBeEdited ?
-          <div className="application-sub-panel__multiple-item-container  application-sub-panel__multiple-item-container--worklist-actions">
+          <span className="application-sub-panel__multiple-item-container  application-sub-panel__multiple-item-container--worklist-actions">
             {this.props.item.editableFields.length > 0 && <ButtonPill buttonModifiers="edit-worklist-entry" icon="pencil" onClick={this.toggleEditMode} />}
             {this.props.item.removable && <ButtonPill buttonModifiers="delete-worklist-entry" icon="trash" onClick={this.onDelete} />}
-          </div> :
-          <div className="application-sub-panel__multiple-item-container  application-sub-panel__multiple-item-container--worklist-actions"/>
+          </span> :
+          <span className="application-sub-panel__multiple-item-container  application-sub-panel__multiple-item-container--worklist-actions"/>
         }
 
         <DeleteWorklistItemDialog

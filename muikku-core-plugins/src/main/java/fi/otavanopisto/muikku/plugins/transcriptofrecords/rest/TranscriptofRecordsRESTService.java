@@ -3,15 +3,24 @@ package fi.otavanopisto.muikku.plugins.transcriptofrecords.rest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -22,10 +31,13 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.StreamingOutput;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,9 +45,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
+import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserIdentifierProperty;
+import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
+import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestController;
+import fi.otavanopisto.muikku.plugins.assessmentrequest.WorkspaceAssessmentState;
+import fi.otavanopisto.muikku.plugins.guider.GuiderController;
+import fi.otavanopisto.muikku.plugins.guider.GuiderStudentWorkspaceActivity;
+import fi.otavanopisto.muikku.plugins.guider.GuiderStudentWorkspaceActivityRestModel;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.StudiesViewCourseChoiceController;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsController;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsFileController;
@@ -44,6 +66,8 @@ import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptofRecordsUse
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.VopsLister;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.StudiesViewCourseChoice;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.TranscriptOfRecordsFile;
+import fi.otavanopisto.muikku.plugins.workspace.WorkspaceEntityFileController;
+import fi.otavanopisto.muikku.plugins.workspace.WorkspaceVisitController;
 import fi.otavanopisto.muikku.schooldata.CourseMetaController;
 import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.MatriculationSchoolDataController;
@@ -58,7 +82,14 @@ import fi.otavanopisto.muikku.schooldata.entity.Subject;
 import fi.otavanopisto.muikku.schooldata.entity.TransferCredit;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
+import fi.otavanopisto.muikku.search.SearchProvider;
+import fi.otavanopisto.muikku.search.SearchProvider.Sort;
+import fi.otavanopisto.muikku.search.SearchResult;
+import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.OrganizationRestriction;
+import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.PublicityRestriction;
+import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.TemplateRestriction;
 import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.users.OrganizationEntityController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
@@ -123,6 +154,25 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   
   @Inject
   private MatriculationSchoolDataController matriculationSchoolDataController;
+
+  @Inject
+  private OrganizationEntityController organizationEntityController;
+
+  @Inject
+  private WorkspaceVisitController workspaceVisitController;
+
+  @Inject
+  private WorkspaceEntityFileController workspaceEntityFileController;
+  
+  @Inject
+  private GuiderController guiderController;
+
+  @Inject
+  private AssessmentRequestController assessmentRequestController;
+  
+  @Inject
+  @Any
+  private Instance<SearchProvider> searchProviders;
 
   @GET
   @Path("/files/{ID}/content")
@@ -506,6 +556,161 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     StudentMatriculationEligibility result = userController.getStudentMatriculationEligibility(sessionController.getLoggedUser(), subjectCode);
     
     return Response.ok(result).build();
+  }
+  
+  @GET
+  @Path("/workspaces/")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response listWorkspaces(
+        @QueryParam("userIdentifier") String userIdentifierParam,
+        @Context Request request) {
+    List<fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace> workspaces = new ArrayList<>();
+
+    SchoolDataIdentifier userIdentifier = SchoolDataIdentifier.fromId(userIdentifierParam);
+    if (userIdentifier == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
+    UserEntity userEntity = sessionController.getLoggedUserEntity();
+
+    List<UserSchoolDataIdentifier> userSchoolDataIdentifiers = userSchoolDataIdentifierController.listUserSchoolDataIdentifiersByUserEntity(userEntity);
+    if (!userSchoolDataIdentifiers.stream().anyMatch(usdi -> usdi.schoolDataIdentifier().equals(userIdentifier))) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    TemplateRestriction templateRestriction = TemplateRestriction.ONLY_WORKSPACES;
+    PublicityRestriction publicityRestriction = PublicityRestriction.LIST_ALL;
+    List<WorkspaceEntity> workspaceEntities = workspaceUserEntityController.listWorkspaceEntitiesByUserEntity(userEntity);
+   
+    if (CollectionUtils.isEmpty(workspaceEntities)) {
+      return Response.ok(Collections.emptyList()).build();
+    }
+    
+    Iterator<SearchProvider> searchProviderIterator = searchProviders.iterator();
+    if (searchProviderIterator.hasNext()) {
+      SearchProvider searchProvider = searchProviderIterator.next();
+      SearchResult searchResult = null;
+      
+      List<SchoolDataIdentifier> workspaceIdentifierFilters = workspaceEntities.stream()
+          .map(WorkspaceEntity::schoolDataIdentifier).collect(Collectors.toList());
+      
+      List<OrganizationEntity> loggedUserOrganizations = organizationEntityController.listLoggedUserOrganizations();
+      List<OrganizationRestriction> organizationRestrictions = organizationEntityController.listUserOrganizationRestrictions(loggedUserOrganizations, publicityRestriction, templateRestriction);
+      // The list is restricted to all of the students' workspaces so list them all
+      organizationRestrictions = organizationRestrictions.stream()
+          .map(organizationRestriction -> new OrganizationRestriction(organizationRestriction.getOrganizationIdentifier(), PublicityRestriction.LIST_ALL, TemplateRestriction.ONLY_WORKSPACES))
+          .collect(Collectors.toList());
+      
+      searchResult = searchProvider.searchWorkspaces()
+        .setWorkspaceIdentifiers(workspaceIdentifierFilters)
+        .setOrganizationRestrictions(organizationRestrictions)
+        .setMaxResults(500)
+        .addSort(new Sort("name.untouched", Sort.Order.ASC))
+        .search();
+      
+      List<Map<String, Object>> results = searchResult.getResults();
+      for (Map<String, Object> result : results) {
+        String searchId = (String) result.get("id");
+        if (StringUtils.isNotBlank(searchId)) {
+          String[] id = searchId.split("/", 2);
+          if (id.length == 2) {
+            String dataSource = id[1];
+            String identifier = id[0];
+            WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(dataSource, identifier);
+            if (workspaceEntity != null) {
+              String name = (String) result.get("name");
+              String description = (String) result.get("description");
+              String nameExtension = (String) result.get("nameExtension");
+              
+              Object curriculumIdentifiersObject = result.get("curriculumIdentifiers");
+              Set<String> curriculumIdentifiers = new HashSet<String>();
+              if (curriculumIdentifiersObject instanceof Collection) {
+                Collection<?> curriculumIdentifierCollection = (Collection<?>) curriculumIdentifiersObject;
+                for (Object o : curriculumIdentifierCollection) {
+                  if (o instanceof String)
+                    curriculumIdentifiers.add((String) o);
+                  else
+                    logger.warning("curriculumIdentifier not of type String");
+                }
+              }
+              
+              if (StringUtils.isNotBlank(name)) {
+                workspaces.add(createRestModel(userIdentifier, workspaceEntity, name, nameExtension, description, curriculumIdentifiers));
+              }
+            }
+          }
+        }
+      }
+    } else {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+    }
+
+    return Response.ok(workspaces).build();
+  }
+  
+  private fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace createRestModel(
+      SchoolDataIdentifier userIdentifier,
+      WorkspaceEntity workspaceEntity,
+      String name,
+      String nameExtension,
+      String description,
+      Set<String> curriculumIdentifiers
+      ) {
+    Long numVisits = workspaceVisitController.getNumVisits(workspaceEntity);
+    Date lastVisit = workspaceVisitController.getLastVisit(workspaceEntity);
+    boolean hasCustomImage = workspaceEntityFileController.getHasCustomImage(workspaceEntity);
+
+    
+    GuiderStudentWorkspaceActivity activity = guiderController.getStudentWorkspaceActivity(workspaceEntity, userIdentifier);
+    List<WorkspaceAssessmentState> assessmentStates = new ArrayList<>();
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserIdentifier(workspaceEntity, userIdentifier);
+    if (workspaceUserEntity != null && workspaceUserEntity.getWorkspaceUserRole().getArchetype() == WorkspaceRoleArchetype.STUDENT) {
+      assessmentStates = assessmentRequestController.getAllWorkspaceAssessmentStates(workspaceUserEntity);
+    }
+    
+    GuiderStudentWorkspaceActivityRestModel guiderStudentWorkspaceActivityRestModel = toRestModel(activity, assessmentStates);
+    
+    return new ToRWorkspaceRestModel(workspaceEntity.getId(),
+        workspaceEntity.getOrganizationEntity() == null ? null : workspaceEntity.getOrganizationEntity().getId(),
+        workspaceEntity.getUrlName(),
+        workspaceEntity.getAccess(),
+        workspaceEntity.getArchived(), 
+        workspaceEntity.getPublished(), 
+        name, 
+        nameExtension, 
+        description, 
+        workspaceEntity.getDefaultMaterialLicense(),
+        numVisits, 
+        lastVisit,
+        curriculumIdentifiers,
+        hasCustomImage,
+        guiderStudentWorkspaceActivityRestModel);
+  }
+
+  private GuiderStudentWorkspaceActivityRestModel toRestModel(GuiderStudentWorkspaceActivity activity, Object assessmentStates) {
+    GuiderStudentWorkspaceActivityRestModel model = new GuiderStudentWorkspaceActivityRestModel(
+        activity.getLastVisit(),
+        activity.getNumVisits(),
+        activity.getJournalEntryCount(),
+        activity.getLastJournalEntry(),
+        activity.getEvaluables().getUnanswered(), 
+        activity.getEvaluables().getAnswered(), 
+        activity.getEvaluables().getAnsweredLastDate(), 
+        activity.getEvaluables().getSubmitted(), 
+        activity.getEvaluables().getSubmittedLastDate(), 
+        activity.getEvaluables().getWithdrawn(), 
+        activity.getEvaluables().getWithdrawnLastDate(), 
+        activity.getEvaluables().getPassed(), 
+        activity.getEvaluables().getPassedLastDate(), 
+        activity.getEvaluables().getFailed(), 
+        activity.getEvaluables().getFailedLastDate(),
+        activity.getEvaluables().getIncomplete(),
+        activity.getEvaluables().getIncompleteLastDate(),
+        activity.getExercises().getUnanswered(), 
+        activity.getExercises().getAnswered(), 
+        activity.getExercises().getAnsweredLastDate(),
+        assessmentStates);
+    return model;
   }
   
 }

@@ -6,7 +6,7 @@ import { StudentUserAddressType, UserWithSchoolDataType, UserChatSettingsType} f
 import { StateType } from '~/reducers';
 import { resize } from '~/util/modifiers';
 import { updateStatusProfile, updateStatusHasImage } from '~/actions/base/status';
-import { StoredWorklistItem, WorklistBillingState, WorklistItemsSummary, WorklistSection, WorklistTemplate } from '~/reducers/main-function/profile';
+import { PurchaseType, StoredWorklistItem, WorklistBillingState, WorklistItemsSummary, WorklistSection, WorklistTemplate } from '~/reducers/main-function/profile';
 import moment from '~/lib/moment';
 
 export interface LoadProfilePropertiesSetTriggerType {
@@ -27,6 +27,10 @@ export interface LoadProfileUsernameTriggerType {
 }
 
 export interface LoadProfileAddressTriggerType {
+  ():AnyActionType
+}
+
+export interface LoadProfilePurchasesTriggerType {
   ():AnyActionType
 }
 
@@ -141,13 +145,14 @@ export interface SET_PROFILE_STUDENT extends SpecificActionType<"SET_PROFILE_STU
 export interface SET_PROFILE_CHAT_SETTINGS extends SpecificActionType<"SET_PROFILE_CHAT_SETTINGS", UserChatSettingsType>{}
 export interface SET_WORKLIST_TEMPLATES extends SpecificActionType<"SET_WORKLIST_TEMPLATES", Array<WorklistTemplate>>{}
 export interface SET_WORKLIST extends SpecificActionType<"SET_WORKLIST", Array<WorklistSection>>{}
+export interface SET_PURCHASE_HISTORY  extends SpecificActionType<"SET_PURCHASE_HISTORY", Array<PurchaseType>>{};
 
-let loadProfilePropertiesSet:LoadProfilePropertiesSetTriggerType =  function loadProfilePropertiesSet() {
+const loadProfilePropertiesSet:LoadProfilePropertiesSetTriggerType =  function loadProfilePropertiesSet() {
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
-    let state = getState();
+    const state = getState();
 
     try {
-      let properties:any = (await promisify(mApi().user.properties.read(state.status.userId, {
+      const properties:any = (await promisify(mApi().user.properties.read(state.status.userId, {
         properties: 'profile-phone,profile-vacation-start,profile-vacation-end,communicator-auto-reply,communicator-auto-reply-msg,communicator-auto-reply-subject'
       }), 'callback')());
 
@@ -169,7 +174,7 @@ let loadProfilePropertiesSet:LoadProfilePropertiesSetTriggerType =  function loa
   }
 }
 
-let saveProfileProperty:SaveProfilePropertyTriggerType = function saveProfileProperty(data){
+const saveProfileProperty:SaveProfilePropertyTriggerType = function saveProfileProperty(data){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
       const prop = {key: data.key, value: data.value};
@@ -191,12 +196,11 @@ let saveProfileProperty:SaveProfilePropertyTriggerType = function saveProfilePro
   }
 }
 
-let loadProfileUsername:LoadProfileUsernameTriggerType = function loadProfileUsername(){
+const loadProfileUsername:LoadProfileUsernameTriggerType = function loadProfileUsername(){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
-    let state = getState();
 
     try {
-      let credentials:any = (await promisify(mApi().userplugin.credentials.read(), 'callback')());
+      const credentials:any = (await promisify(mApi().userplugin.credentials.read(), 'callback')());
 
       if (credentials && credentials.username) {
         dispatch({
@@ -212,15 +216,15 @@ let loadProfileUsername:LoadProfileUsernameTriggerType = function loadProfileUse
   }
 }
 
-let loadProfileAddress:LoadProfileAddressTriggerType = function loadProfileAddress(){
+const loadProfileAddress:LoadProfileAddressTriggerType = function loadProfileAddress(){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
-    let state = getState();
+    const state = getState();
 
     try {
-      let identifier = state.status.userSchoolDataIdentifier;
-      let addresses:Array<StudentUserAddressType> = <Array<StudentUserAddressType>>(await promisify(mApi().user.students.addresses.read(identifier), 'callback')());
+      const identifier = state.status.userSchoolDataIdentifier;
+      const addresses:Array<StudentUserAddressType> = <Array<StudentUserAddressType>>(await promisify(mApi().user.students.addresses.read(identifier), 'callback')());
 
-      let student:UserWithSchoolDataType = <UserWithSchoolDataType>(await promisify(mApi().user.students.read(identifier), 'callback')());
+      const student:UserWithSchoolDataType = <UserWithSchoolDataType>(await promisify(mApi().user.students.read(identifier), 'callback')());
 
       dispatch({
         type: "SET_PROFILE_ADDRESSES",
@@ -240,13 +244,13 @@ let loadProfileAddress:LoadProfileAddressTriggerType = function loadProfileAddre
   }
 }
 
-let updateProfileAddress:UpdateProfileAddressTriggerType = function updateProfileAddress(data){
+const updateProfileAddress:UpdateProfileAddressTriggerType = function updateProfileAddress(data){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
-    let state = getState();
+    const state = getState();
 
     try {
       if (data.municipality && data.municipality !== "") {
-        let student:UserWithSchoolDataType = {...state.profile.student};
+        const student:UserWithSchoolDataType = {...state.profile.student};
         student.municipality = data.municipality;
 
         dispatch({
@@ -260,16 +264,16 @@ let updateProfileAddress:UpdateProfileAddressTriggerType = function updateProfil
         address = state.profile.addresses[0];
       }
 
-      let nAddress:StudentUserAddressType = {...address, ...{
+      const nAddress:StudentUserAddressType = {...address, ...{
         city: data.city,
         country: data.country,
         postalCode: data.postalCode,
         street: data.street
       }}
 
-      let nAddressAsSaidFromServer:StudentUserAddressType = <StudentUserAddressType>await promisify(mApi().user.students.addresses.update(state.status.userSchoolDataIdentifier, nAddress.identifier, nAddress), 'callback')();
+      const nAddressAsSaidFromServer:StudentUserAddressType = <StudentUserAddressType>await promisify(mApi().user.students.addresses.update(state.status.userSchoolDataIdentifier, nAddress.identifier, nAddress), 'callback')();
 
-      let newAddresses = state.profile.addresses.map(a=>a.identifier === nAddressAsSaidFromServer.identifier ? nAddressAsSaidFromServer : a);
+      const newAddresses = state.profile.addresses.map(a=>a.identifier === nAddressAsSaidFromServer.identifier ? nAddressAsSaidFromServer : a);
 
       dispatch({
         type: "SET_PROFILE_ADDRESSES",
@@ -297,14 +301,14 @@ let updateProfileAddress:UpdateProfileAddressTriggerType = function updateProfil
   }
 }
 
-let loadProfileChatSettings:LoadProfileChatSettingsTriggerType = function loadProfileChatSettings(){
+const loadProfileChatSettings:LoadProfileChatSettingsTriggerType = function loadProfileChatSettings(){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     const state = getState();
     if (state.profile.chatSettings) {
       return;
     }
     try {
-      let chatSettings:any = (await promisify(mApi().chat.settings.cacheClear().read(), 'callback')());
+      const chatSettings:any = (await promisify(mApi().chat.settings.cacheClear().read(), 'callback')());
 
       if (chatSettings && chatSettings.visibility) {
         dispatch({
@@ -337,7 +341,7 @@ let loadProfileChatSettings:LoadProfileChatSettingsTriggerType = function loadPr
   }
 }
 
-let updateProfileChatSettings: UpdateProfileChatSettingsTriggerType = function updateProfileChatSettings(data){
+const updateProfileChatSettings: UpdateProfileChatSettingsTriggerType = function updateProfileChatSettings(data){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
 
@@ -376,9 +380,8 @@ let updateProfileChatSettings: UpdateProfileChatSettingsTriggerType = function u
 
 const imageSizes = [96, 256];
 
-let uploadProfileImage:UploadProfileImageTriggerType = function uploadProfileImage(data){
+const uploadProfileImage:UploadProfileImageTriggerType = function uploadProfileImage(data){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
-    let state = getState();
 
     try {
       if (data.originalB64){
@@ -392,14 +395,12 @@ let uploadProfileImage:UploadProfileImageTriggerType = function uploadProfileIma
             }), 'callback')();
       }
 
-      let image:HTMLImageElement = <HTMLImageElement>await promisifyNewConstructor(Image, 'onload', 'onerror', {
+      const image:HTMLImageElement = <HTMLImageElement>await promisifyNewConstructor(Image, 'onload', 'onerror', {
         src: data.croppedB64
       })();
 
-      let done = 0;
-
       for (let i = 0;  i < imageSizes.length; i++) {
-        let size = imageSizes[i];
+        const size = imageSizes[i];
         await promisify (mApi().user.files
           .create({
             contentType: 'image/jpeg',
@@ -424,14 +425,14 @@ let uploadProfileImage:UploadProfileImageTriggerType = function uploadProfileIma
   }
 }
 
-let deleteProfileImage:DeleteProfileImageTriggerType = function deleteProfileImage(){
+const deleteProfileImage:DeleteProfileImageTriggerType = function deleteProfileImage(){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
-    let state = getState();
-    let allImagesToDelete = ['original', ...imageSizes];
+    const state = getState();
+    const allImagesToDelete = ['original', ...imageSizes];
 
     try {
       for (let i = 0;  i < allImagesToDelete.length; i++) {
-        let identifier = `profile-image-${allImagesToDelete[i]}`;
+        const identifier = `profile-image-${allImagesToDelete[i]}`;
         await promisify(mApi().user.files.identifier.del(state.status.userId, identifier), 'callback')();
       }
 
@@ -454,7 +455,7 @@ const setProfileLocation: SetProfileLocationTriggerType = function setProfileLoc
 
 const insertProfileWorklistItem: InsertProfileWorklistItemTriggerType = function insertProfileWorklistItem(data) {
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
-    let state = getState();
+    const state = getState();
 
     if (!state.profile || !state.profile.worklist) {
       return;
@@ -542,7 +543,7 @@ const insertProfileWorklistItem: InsertProfileWorklistItemTriggerType = function
 
 const deleteProfileWorklistItem: DeleteProfileWorklistItemTriggerType = function deleteProfileWorklistItem(data) {
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
-    let state = getState();
+    const state = getState();
 
     if (!state.profile || !state.profile.worklist) {
       return;
@@ -601,7 +602,7 @@ const editProfileWorklistItem: EditProfileWorklistItemTriggerType = function del
   }
 
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
-    let state = getState();
+    const state = getState();
 
     if (!state.profile || !state.profile.worklist) {
       return;
@@ -665,7 +666,7 @@ const editProfileWorklistItem: EditProfileWorklistItemTriggerType = function del
 
 const loadProfileWorklistTemplates: LoadProfileWorklistTemplatesTriggerType = function loadProfileWorklistTemplates() {
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
-    let state = getState();
+    const state = getState();
 
     if (state.profile && state.profile.worklistTemplates) {
       return;
@@ -688,7 +689,7 @@ const loadProfileWorklistTemplates: LoadProfileWorklistTemplatesTriggerType = fu
 
 const loadProfileWorklistSections: LoadProfileWorklistSectionsTriggerType = function loadProfileWorklistSections(cb?: (d: Array<WorklistSection>) => void) {
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
-    let state = getState();
+    const state = getState();
 
     if (state.profile && state.profile.worklist) {
       return;
@@ -720,7 +721,7 @@ const loadProfileWorklistSections: LoadProfileWorklistSectionsTriggerType = func
 
 const loadProfileWorklistSection: LoadProfileWorklistSectionTriggerType = function loadProfileWorklistSection(index: number, refresh?: boolean) {
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
-    let state = getState();
+    const state = getState();
 
     if ((!state.profile || !state.profile.worklist || !state.profile.worklist[index]) || (state.profile.worklist[index].items && !refresh)) {
       return;
@@ -750,9 +751,31 @@ const loadProfileWorklistSection: LoadProfileWorklistSectionTriggerType = functi
   }
 }
 
+const loadProfilePurchases: LoadProfilePurchasesTriggerType = function loadProfilePurchases() {
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    const state = getState();
+    try {
+
+      const studentId = state.status.userSchoolDataIdentifier;
+      const historia: PurchaseType[] = await promisify(mApi().ceepos.user.orders.read(studentId), 'callback')() as any;
+
+      dispatch({
+        type: "SET_PURCHASE_HISTORY",
+        payload: historia,
+      });
+
+    } catch (err){
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(actions.displayNotification(getState().i18n.text.get("plugin.profile.errormessage.purchases"), 'error'));
+    }
+  }
+}
+
 const updateProfileWorklistItemsState: UpdateProfileWorklistItemsStateTriggerType = function updateProfileWorklistItemsState(data) {
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
-    let state = getState();
+    const state = getState();
 
     if (!state.profile || !state.profile.worklist) {
       return;
@@ -800,5 +823,5 @@ export {loadProfilePropertiesSet, saveProfileProperty, loadProfileUsername, load
   updateProfileAddress, loadProfileChatSettings, updateProfileChatSettings, uploadProfileImage,
   deleteProfileImage, setProfileLocation, loadProfileWorklistTemplates, loadProfileWorklistSections,
   loadProfileWorklistSection, insertProfileWorklistItem, deleteProfileWorklistItem, editProfileWorklistItem,
-  updateProfileWorklistItemsState};
+  updateProfileWorklistItemsState, loadProfilePurchases};
 

@@ -3,14 +3,12 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
-// TODO: communicator color variables removing from main function styles
-
 .button {
   @include prefix(user-select, moz o ms webkit, none);
   @include prefix(transition, moz o ms webkit, background-color 0.3s);
   align-items: center;
   background-color: $color-button-default-background;
-  border-radius: 2px;
+  border-radius: 20px;
   color: $color-button-default-text;
   cursor: pointer;
   display: flex;
@@ -18,7 +16,7 @@
   font-size: $button-mobile-font-size;
   justify-content: center;
   overflow: hidden;
-  padding: 5px 10px;
+  padding: 5px 15px;
   text-decoration: none;
   text-overflow: ellipsis;
   text-transform: uppercase;
@@ -32,13 +30,17 @@
   &.disabled,
   &.disabled:hover {
     background-color: $color-button-disabled-background;
-    cursor: default;
+    cursor: not-allowed;
   }
 
   > [class^="icon-"],
   > [class*=" icon-"] {
     margin-right: 5px;
   }
+}
+
+.button__icon {
+  font-size: 1rem;
 }
 
 .button-image {
@@ -57,6 +59,34 @@
   }
 }
 
+.button--button-has-icon {
+  padding: 5px 15px 5px 10px;
+}
+
+.button--create-student-order,
+.button--delete-student-order ,
+.button--complete-student-order,
+.button--pay-student-order,
+.button--back-to-muikku,
+.button--send-message {
+  display: inline-flex;
+  margin: 0 10px 0 0;
+
+  &:last-child {
+    margin: 0;
+  }
+}
+
+.button--delete-student-order ,
+.button--complete-student-order {
+  font-size: 0.7rem;
+  padding: 4px 12px 4px 8px;
+
+  .button__icon {
+    font-size: 0.7rem;
+  }
+}
+
 .button--coursepicker-course-action {
   margin: 0 10px 0 0;
 }
@@ -66,11 +96,20 @@
   color: $color-button-execute-text;
   order: 3;
 
+  &:hover,
+  &.hover {
+    background-color: darken($color-button-execute-background, 10%);
+  }
+
+  &:active,
+  &.active {
+    background-color: darken($color-button-execute-background, 20%);
+  }
+
   @include breakpoint($breakpoint-desktop) {
     order: 1;
   }
 }
-
 
 .button--branded {
   font-family: $button-branded-font-family;
@@ -396,7 +435,6 @@
 }
 
 .button--frontpage-bubble {
-  border-radius: 5px;
   height: auto;
   letter-spacing: 1px;
   overflow-wrap: break-word;
@@ -517,7 +555,6 @@
   &.disabled,
   &.disabled:hover {
     background-color: $color-button-disabled-background;
-    cursor: default;
   }
 
   @include breakpoint($breakpoint-desktop) {
@@ -543,7 +580,7 @@
 
 .button--contact-teacher {
   font-size: 0.75rem;
-  padding: 2px 6px;
+  padding: 4px 12px;
 }
 
 .button-icon {
@@ -579,7 +616,7 @@
   &:disabled {
     background-color: $color-button-pill-background-disabled;
     color: $color-button-pill-text-disabled;
-    cursor: default;
+    cursor: not-allowed;
   }
 
   input {
@@ -642,7 +679,7 @@
   &.disabled:hover {
     background-color: $color-button-pill-background-disabled;
     color: $color-button-pill-text-disabled;
-    cursor: default;
+    cursor: not-allowed;
   }
 
   input {
@@ -1212,7 +1249,6 @@
 .button--change-image-delete {
   @include workspace-image-button;
   flex-grow: 1;
-  padding: 10px 20px;
   transition: background-color 0.3s ease-in-out;
 
   &:hover,
@@ -1280,7 +1316,8 @@
 }
 
 .button-pill--sorter,
-.button-pill--archive,
+.button-pill--archive-request,
+.button-pill--archive-student,
 .button-pill--evaluate,
 .button-icon--important,
 .button-icon--unimportant {
@@ -1316,7 +1353,16 @@
   color: $color-default;
 }
 
-.button-pill--archive {
+.button-pill--archive-request {
+  background: $color-fatal;
+  color: $color-default;
+
+  &:hover {
+    background: darken($color-fatal, 10%);
+  }
+}
+
+.button-pill--archive-student {
   background: $color-default-contrast;
   color: $color-default;
 
@@ -1746,7 +1792,6 @@
 .button--add-matriculation-row {
   background: $color-default;
   border: 1px solid $color-default;
-  border-radius: 2px;
   color: $color-info;
   padding: 4px 6px;
 }
@@ -1754,7 +1799,6 @@
 .button--remove-matriculation-row {
   align-items: center;
   background: transparent;
-  border-radius: 2px;
   color: $color-fatal;
   display: flex;
   font-size: 1.25rem;

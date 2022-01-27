@@ -293,7 +293,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
                     </ApplicationListItemContentWrapper>
                   </ApplicationListItem>
                 })
-                : <div className="empty">{this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.templates.empty')}</div>}
+                : <div className="empty"><span>{this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.templates.empty')}</span></div>}
             </ApplicationList>
           </DialogRow>
         </form >;

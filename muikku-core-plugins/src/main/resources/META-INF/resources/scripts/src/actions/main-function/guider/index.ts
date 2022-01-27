@@ -20,6 +20,7 @@ import { WorkspaceListType, WorkspaceStudentActivityType, WorkspaceForumStatisti
 import { HOPSDataType } from '~/reducers/main-function/hops';
 import { StateType } from '~/reducers';
 import { colorIntToHex } from '~/util/modifiers';
+import { PurchaseProductType, PurchaseType } from '~/reducers/main-function/profile';
 
 export type UPDATE_GUIDER_ACTIVE_FILTERS = SpecificActionType<"UPDATE_GUIDER_ACTIVE_FILTERS", GuiderActiveFiltersType>
 export type UPDATE_GUIDER_ALL_PROPS = SpecificActionType<"UPDATE_GUIDER_ALL_PROPS", GuiderPatchType>
@@ -30,8 +31,14 @@ export type SET_CURRENT_GUIDER_STUDENT = SpecificActionType<"SET_CURRENT_GUIDER_
 export type SET_CURRENT_GUIDER_STUDENT_EMPTY_LOAD = SpecificActionType<"SET_CURRENT_GUIDER_STUDENT_EMPTY_LOAD", null>
 export type SET_CURRENT_GUIDER_STUDENT_PROP = SpecificActionType<"SET_CURRENT_GUIDER_STUDENT_PROP", { property: string, value: any }>
 export type UPDATE_CURRENT_GUIDER_STUDENT_STATE = SpecificActionType<"UPDATE_CURRENT_GUIDER_STUDENT_STATE", GuiderCurrentStudentStateType>
+export type UPDATE_GUIDER_INSERT_PURCHASE_ORDER = SpecificActionType<"UPDATE_GUIDER_INSERT_PURCHASE_ORDER", PurchaseType>
+export type DELETE_GUIDER_PURCHASE_ORDER = SpecificActionType<"DELETE_GUIDER_PURCHASE_ORDER", PurchaseType>
+export type UPDATE_GUIDER_COMPLETE_PURCHASE_ORDER = SpecificActionType<"UPDATE_GUIDER_COMPLETE_PURCHASE_ORDER", PurchaseType>
+
 export type ADD_FILE_TO_CURRENT_STUDENT = SpecificActionType<"ADD_FILE_TO_CURRENT_STUDENT", UserFileType>
 export type REMOVE_FILE_FROM_CURRENT_STUDENT = SpecificActionType<"REMOVE_FILE_FROM_CURRENT_STUDENT", UserFileType>
+export type UPDATE_GUIDER_AVAILABLE_PURCHASE_PRODUCTS = SpecificActionType<"UPDATE_GUIDER_AVAILABLE_PURCHASE_PRODUCTS", PurchaseProductType[]>;
+
 export type ADD_GUIDER_LABEL_TO_USER = SpecificActionType<"ADD_GUIDER_LABEL_TO_USER", {
   studentId: string,
   label: GuiderStudentUserProfileLabelType
@@ -139,6 +146,21 @@ export interface RemoveGuiderFilterLabelTriggerType {
   }): AnyActionType
 }
 
+export interface UpdateAvailablePurchaseProductsTriggerType {
+  (): AnyActionType
+}
+
+export interface DoOrderForCurrentStudentTriggerType {
+  (order: PurchaseProductType): AnyActionType
+}
+
+export interface DeleteOrderFromCurrentStudentTriggerType {
+  (order: PurchaseType): AnyActionType
+}
+
+export interface CompleteOrderFromCurrentStudentTriggerType {
+  (order: PurchaseType): AnyActionType
+}
 export interface ToggleAllStudentsTriggerType {
   (): AnyActionType
 }
@@ -283,10 +305,13 @@ let loadStudent: LoadStudentTriggerType = function loadStudent(id) {
             }
             dispatch({ type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: { property: "workspaces", value: workspaces } })
           }),
-        promisify(mApi().activitylogs.user.workspace.read(id, { from: new Date(new Date().getFullYear() - 2, 0), to: new Date() }), 'callback')()
-          .then((activityLogs: ActivityLogType[]) => {
-            dispatch({ type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: { property: "activityLogs", value: activityLogs } });
-          })
+          promisify(mApi().activitylogs.user.workspace.read(id, {from: new Date(new Date().getFullYear()-2, 0), to: new Date()}), 'callback')()
+          .then((activityLogs:ActivityLogType[])=>{
+            dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "activityLogs", value: activityLogs}});
+        }),
+        promisify(mApi().ceepos.user.orders.read(id), "callback")().then((pOrders: PurchaseType[]) => {
+          dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "purchases", value: pOrders}})
+        }),
       ]);
 
       dispatch({
@@ -558,12 +583,85 @@ let removeGuiderFilterLabel: RemoveGuiderFilterLabelTriggerType = function remov
   }
 }
 
-export {
-  loadStudents, loadMoreStudents, loadStudent,
+const updateAvailablePurchaseProducts: UpdateAvailablePurchaseProductsTriggerType = function updateAvailablePurchaseProducts() {
+  return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
+    try {
+      const value: PurchaseProductType[] = await promisify(mApi().ceepos.products.read(), 'callback')() as any;
+      dispatch({
+        type: "UPDATE_GUIDER_AVAILABLE_PURCHASE_PRODUCTS",
+        payload: value,
+      });
+    } catch (err){
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.guider.errormessage.purchaseproducts"), 'error'));
+    }
+  }
+}
+
+const doOrderForCurrentStudent: DoOrderForCurrentStudentTriggerType = function doOrderForCurrentStudent(order: PurchaseProductType) {
+  return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
+    try {
+      const state = getState();
+      const value: PurchaseType = await promisify(mApi().ceepos.order.create({
+        studentIdentifier: state.guider.currentStudent.basic.id,
+        product: order,
+      }), 'callback')() as any;
+      dispatch({
+        type: "UPDATE_GUIDER_INSERT_PURCHASE_ORDER",
+        payload: value,
+      });
+    } catch (err){
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.guider.errormessage.purchasefailed"), 'error'));
+    }
+  }
+}
+
+const deleteOrderFromCurrentStudent: DeleteOrderFromCurrentStudentTriggerType = function deleteOrderFromCurrentStudent(order: PurchaseType) {
+  return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
+    try {
+      await promisify(mApi().ceepos.order.del(order.id), 'callback')();
+      dispatch({
+        type: "DELETE_GUIDER_PURCHASE_ORDER",
+        payload: order,
+      });
+    } catch (err){
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.guider.errormessage.deletefailed"), 'error'));
+    }
+  }
+}
+
+const completeOrderFromCurrentStudent: CompleteOrderFromCurrentStudentTriggerType = function completeOrderFromCurrentStudent(order: PurchaseType) {
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    try {
+      const value: PurchaseType = await promisify(mApi().ceepos.manualCompletion.create(order.id), 'callback')() as any;
+
+      dispatch({
+        type: "UPDATE_GUIDER_COMPLETE_PURCHASE_ORDER",
+        payload: value
+      });
+    } catch (err){
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.guider.errormessage.completefailed"), 'error'));
+    }
+  }
+}
+
+export {loadStudents, loadMoreStudents, loadStudent,
   addToGuiderSelectedStudents, removeFromGuiderSelectedStudents,
   addGuiderLabelToCurrentUser, removeGuiderLabelFromCurrentUser,
   addGuiderLabelToSelectedUsers, removeGuiderLabelFromSelectedUsers,
   addFileToCurrentStudent, removeFileFromCurrentStudent, updateLabelFilters,
-  updateWorkspaceFilters, updateUserGroupFilters, toggleAllStudents, createGuiderFilterLabel,
-  updateGuiderFilterLabel, removeGuiderFilterLabel
-};
+  updateWorkspaceFilters, createGuiderFilterLabel,
+  updateGuiderFilterLabel, removeGuiderFilterLabel, toggleAllStudents,
+  updateAvailablePurchaseProducts, updateUserGroupFilters,
+  doOrderForCurrentStudent, deleteOrderFromCurrentStudent, completeOrderFromCurrentStudent};
