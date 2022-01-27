@@ -7,7 +7,7 @@ on:
 
 jobs:
   run-linters:
-    name: Front-end Code Quality
+    name: Linting
     runs-on: ubuntu-latest
 
     steps:
