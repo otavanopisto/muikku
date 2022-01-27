@@ -1,11 +1,11 @@
-name: Prettier
+name: Lint
 
 on:
   # Trigger the workflow on push or pull request,
   push:
     branches: [5923-prettier-with-eslint]
   # pull_request:
-  # branches: [devel, 5923-prettier-with-eslint]
+  #npm lint branches: [devel, 5923-prettier-with-eslint]
 
 jobs:
   run-linters:
@@ -30,6 +30,10 @@ jobs:
       - name: Run linters
         uses: wearerequired/lint-action@v1
         with:
+          eslint: true
+          eslint_extensions: "ts,tsx"
+          eslint_dir: muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src
+
           prettier: true
           prettier_extensions: "ts,tsx"
           prettier_dir: muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src
