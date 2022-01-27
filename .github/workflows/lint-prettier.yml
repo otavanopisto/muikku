@@ -32,4 +32,4 @@ jobs:
         with:
           prettier: true
           prettier_extensions: "ts,tsx"
-          prettier_dir: muikku/muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src
+          prettier_dir: muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src

@@ -5,7 +5,7 @@ on:
   push:
     branches: [5923-prettier-with-eslint]
   # pull_request:
-  # branches: [devel, 5923-prettier-with-eslint]
+  #npm lint branches: [devel, 5923-prettier-with-eslint]
 
 jobs:
   run-linters:
@@ -32,4 +32,4 @@ jobs:
         with:
           eslint: true
           eslint_extensions: "ts,tsx"
-          eslint_dir: muikku/muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src
+          eslint_dir: muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src
