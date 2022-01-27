@@ -1,10 +1,8 @@
-name: Front-end code quality linting
+name: Front-end code quality
 
 on:
-  push:
-    branches: 5923-prettier-with-eslint
-  # pull_request:
-  #  branches: devel
+  pull_request:
+    branches: devel
 
 jobs:
   run-linters:
