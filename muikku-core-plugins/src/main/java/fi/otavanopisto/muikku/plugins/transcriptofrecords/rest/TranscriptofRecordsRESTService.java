@@ -560,8 +560,6 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
       return Response.status(Status.FORBIDDEN).build();
     }
     
-    String schoolDataSourceFilter = null;
-
     TemplateRestriction templateRestriction = TemplateRestriction.ONLY_WORKSPACES;
     PublicityRestriction publicityRestriction = PublicityRestriction.LIST_ALL;
     List<WorkspaceEntity> workspaceEntities = workspaceUserEntityController.listWorkspaceEntitiesByUserEntity(userEntity);
@@ -575,15 +573,8 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
       SearchProvider searchProvider = searchProviderIterator.next();
       SearchResult searchResult = null;
       
-      List<String> workspaceIdentifierFilters = new ArrayList<>();
-      
-      for (WorkspaceEntity workspaceEntity : workspaceEntities) {
-        if (schoolDataSourceFilter == null) {
-          schoolDataSourceFilter = workspaceEntity.getDataSource().getIdentifier();
-        }
-        
-        workspaceIdentifierFilters.add(workspaceEntity.getIdentifier());
-      }
+      List<SchoolDataIdentifier> workspaceIdentifierFilters = workspaceEntities.stream()
+          .map(WorkspaceEntity::schoolDataIdentifier).collect(Collectors.toList());
       
       List<OrganizationEntity> loggedUserOrganizations = organizationEntityController.listLoggedUserOrganizations();
       List<OrganizationRestriction> organizationRestrictions = organizationEntityController.listUserOrganizationRestrictions(loggedUserOrganizations, publicityRestriction, templateRestriction);
@@ -593,7 +584,6 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
           .collect(Collectors.toList());
       
       searchResult = searchProvider.searchWorkspaces()
-        .setSchoolDataSource(schoolDataSourceFilter)
         .setWorkspaceIdentifiers(workspaceIdentifierFilters)
         .setOrganizationRestrictions(organizationRestrictions)
         .setMaxResults(500)
@@ -613,7 +603,6 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
               String name = (String) result.get("name");
               String description = (String) result.get("description");
               String nameExtension = (String) result.get("nameExtension");
-              String subjectIdentifier = (String) result.get("subjectIdentifier");
               
               Object curriculumIdentifiersObject = result.get("curriculumIdentifiers");
               Set<String> curriculumIdentifiers = new HashSet<String>();
@@ -628,7 +617,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
               }
               
               if (StringUtils.isNotBlank(name)) {
-                workspaces.add(createRestModel(workspaceEntity, name, nameExtension, description, curriculumIdentifiers, subjectIdentifier));
+                workspaces.add(createRestModel(workspaceEntity, name, nameExtension, description, curriculumIdentifiers));
               }
             }
           }
@@ -646,8 +635,8 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
       String name,
       String nameExtension,
       String description,
-      Set<String> curriculumIdentifiers,
-      String subjectIdentifier) {
+      Set<String> curriculumIdentifiers
+      ) {
     Long numVisits = workspaceVisitController.getNumVisits(workspaceEntity);
     Date lastVisit = workspaceVisitController.getLastVisit(workspaceEntity);
     boolean hasCustomImage = workspaceEntityFileController.getHasCustomImage(workspaceEntity);
@@ -665,7 +654,6 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
         numVisits, 
         lastVisit,
         curriculumIdentifiers,
-        subjectIdentifier,
         hasCustomImage);
   }
 
