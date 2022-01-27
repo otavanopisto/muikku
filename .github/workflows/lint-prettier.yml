@@ -1,5 +1,4 @@
 name: Prettier
-working-directory: muikku/muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src
 
 on:
   # Trigger the workflow on push or pull request,
@@ -23,6 +22,7 @@ jobs:
           node-version: 14.18.1
 
       - name: Install Node.js dependencies
+        working-directory: muikku/muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src
         run: npm ci
 
       - name: Run linters
