@@ -1,15 +1,12 @@
-name: Lint
+name: Linting front-end
 
 on:
   # Trigger the workflow on push or pull request,
-  push:
-    branches: [5923-prettier-with-eslint]
-  # pull_request:
-  #npm lint branches: [devel, 5923-prettier-with-eslint]
+  pull_request:
+    branches: [devel]
 
 jobs:
   run-linters:
-    name: Run linters
     runs-on: ubuntu-latest
 
     steps:
