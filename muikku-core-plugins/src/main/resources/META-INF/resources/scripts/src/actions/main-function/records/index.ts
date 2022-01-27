@@ -165,11 +165,8 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
         let workspaces: Array<Array<WorkspaceType>> = (await Promise.all(
           users.map((user) =>
             promisify(
-              mApi().workspace.workspaces.read({
+              mApi().records.workspaces.read({
                 userIdentifier: user.id,
-                includeInactiveWorkspaces: true,
-                orderBy: "alphabet",
-                maxResults: 500,
               }),
               "callback"
             )()
