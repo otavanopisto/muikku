@@ -1,4 +1,4 @@
-name: Linting front-end
+name: Front-end Code Quality
 
 on:
   # Trigger the workflow on push or pull request,
@@ -7,6 +7,7 @@ on:
 
 jobs:
   run-linters:
+    name: Front-end Code Quality
     runs-on: ubuntu-latest
 
     steps:
