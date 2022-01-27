@@ -5,8 +5,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -244,9 +246,9 @@ public class Evaluation2RESTService {
         workspaceEntity.getIdentifier(),
         workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier());
     workspaceAssessments.sort(Comparator.comparing(WorkspaceAssessment::getDate));
-    boolean improved = false;
+    Set<SchoolDataIdentifier> seenWorkspaceSubjects = new HashSet<>();
     for (WorkspaceAssessment workspaceAssessment : workspaceAssessments) {
-      
+    
       // More data from Pyramus (urgh)
       
       User assessor = userController.findUserByIdentifier(workspaceAssessment.getAssessingUserIdentifier());
@@ -268,14 +270,18 @@ public class Evaluation2RESTService {
       event.setGradeIdentifier(String.format("PYRAMUS-%s@PYRAMUS-%s", gradingScale.getIdentifier(), gradingScaleItem.getIdentifier()));
       event.setIdentifier(workspaceAssessment.getIdentifier().toId());
       event.setText(workspaceAssessment.getVerbalAssessment());
-      if (improved) {
+      // subseequent workspace assessments are always considered improved grades
+      if (seenWorkspaceSubjects.contains(workspaceAssessment.getWorkspaceSubjectIdentifier())) {
         event.setType(RestEvaluationEventType.EVALUATION_IMPROVED);
       }
       else {
         event.setType(gradingScaleItem.isPassingGrade() ? RestEvaluationEventType.EVALUATION_PASS : RestEvaluationEventType.EVALUATION_FAIL);
       }
       events.add(event);
-      improved = true; // subseequent workspace assessments are always considered improved grades
+      
+      if (workspaceAssessment.getWorkspaceSubjectIdentifier() != null) {
+        seenWorkspaceSubjects.add(workspaceAssessment.getWorkspaceSubjectIdentifier());
+      }
     }
     
     // Supplementation requests
