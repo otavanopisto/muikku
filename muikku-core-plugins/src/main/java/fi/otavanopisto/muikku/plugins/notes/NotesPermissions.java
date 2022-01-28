@@ -16,19 +16,16 @@ import fi.otavanopisto.security.Scope;
 public class NotesPermissions extends AbstractMuikkuPermissionCollection implements MuikkuPermissionCollection {
 
   @Scope (PermissionScope.ENVIRONMENT)
-  @DefaultEnvironmentPermissionRoles ( { 
-    EnvironmentRoleArchetype.STUDENT,
-    EnvironmentRoleArchetype.STUDY_GUIDER,
-    EnvironmentRoleArchetype.ADMINISTRATOR
-  } )
+  @DefaultEnvironmentPermissionRoles ( {EnvironmentRoleArchetype.STUDY_GUIDER, EnvironmentRoleArchetype.ADMINISTRATOR})
   public static final String NOTES_VIEW = "NOTES_VIEW";
   
   @Scope (PermissionScope.ENVIRONMENT)
-  @DefaultEnvironmentPermissionRoles ( {
-    EnvironmentRoleArchetype.STUDY_GUIDER,
-    EnvironmentRoleArchetype.ADMINISTRATOR
-  } )
-  public static final String NOTES_MANAGE = "NOTES_MANAGE";
+  @DefaultEnvironmentPermissionRoles ( {EnvironmentRoleArchetype.STUDY_GUIDER, EnvironmentRoleArchetype.ADMINISTRATOR})
+  public static final String NOTES_CREATE = "NOTES_CREATE";
+  
+  @Scope (PermissionScope.ENVIRONMENT)
+  @DefaultEnvironmentPermissionRoles ( {EnvironmentRoleArchetype.STUDY_GUIDER, EnvironmentRoleArchetype.ADMINISTRATOR})
+  public static final String NOTES_UPDATE = "NOTES_UPDATE";
   
    @Override
   public List<String> listPermissions() {
