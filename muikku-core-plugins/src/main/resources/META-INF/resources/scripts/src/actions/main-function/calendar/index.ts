@@ -9,8 +9,14 @@ export type Participants = {
   userEntityId: number;
 };
 
+export type LoadCalendarEventParams = {
+  userEntityId: number;
+  begins: string;
+  ends: string;
+};
+
 export interface LoadCalendarEventsTriggerType {
-  (): AnyActionType;
+  (userEntityId: number, rangeStart: string, rangeEnd: string): AnyActionType;
 }
 
 export interface createCalendarEventTriggerType {
@@ -35,7 +41,7 @@ export interface UPDATE_CALENDAR_EVENTS_STATUS
   extends SpecificActionType<"UPDATE_CALENDAR_EVENTS_STATUS", EventsState> {}
 
 const loadCalendarEvents: LoadCalendarEventsTriggerType =
-  function loadCalendarEvents() {
+  function loadCalendarEvents(userEntityId, begins, ends) {
     return async (
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
@@ -47,9 +53,14 @@ const loadCalendarEvents: LoadCalendarEventsTriggerType =
         });
         dispatch({
           type: "LOAD_CALENDAR_EVENTS",
-          payload: <Event[]>(
-            await promisify(mApi().calendar.events.read(), "callback")()
-          ),
+          payload: <Event[]>await promisify(
+            mApi().calendar.events.read({
+              userEntityId,
+              begins,
+              ends,
+            }),
+            "callback"
+          )(),
         });
         dispatch({
           type: "UPDATE_CALENDAR_EVENTS_STATUS",
@@ -70,7 +81,7 @@ const loadCalendarEvents: LoadCalendarEventsTriggerType =
     };
   };
 
-export const createCalendarEvent: createCalendarEventTriggerType =
+const createCalendarEvent: createCalendarEventTriggerType =
   function createCalendarEvent(event) {
     return async (
       dispatch: (arg: AnyActionType) => any,
@@ -93,4 +104,6 @@ export const createCalendarEvent: createCalendarEventTriggerType =
       }
     };
   };
-export default loadCalendarEvents;
+
+export default { loadCalendarEvents };
+export { createCalendarEvent, loadCalendarEvents };

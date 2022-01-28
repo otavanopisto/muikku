@@ -61,5 +61,5 @@ export interface StateType {
   profile?: ProfileType;
   evaluations?: EvaluationState;
   ceepos?: CeeposState;
-  Calendar?: Calendar;
+  calendar?: Calendar;
 }
