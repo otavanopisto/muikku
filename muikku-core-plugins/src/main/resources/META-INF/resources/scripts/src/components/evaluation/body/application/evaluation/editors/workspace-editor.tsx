@@ -63,8 +63,6 @@ interface EvaluationPriceObject {
 
 /**
  * WorkspaceEditor
- * @param param0
- * @returns
  */
 class WorkspaceEditor extends SessionStateComponent<
   WorkspaceEditorProps,
@@ -72,18 +70,13 @@ class WorkspaceEditor extends SessionStateComponent<
 > {
   /**
    * constructor
-   * @param props
+   * @param props props
    */
   constructor(props: WorkspaceEditorProps) {
     /**
      * This is wierd one, setting namespace and identificated type for it from props...
      */
-    super(
-      props,
-      `workspace-editor-${props.type ? props.type : "new"}-${
-        props.workspaceSubjectToBeEvaluatedIdentifier
-      }`
-    );
+    super(props, `workspace-editor-${props.type ? props.type : "new"}`);
 
     const {
       evaluationAssessmentEvents,
@@ -97,7 +90,7 @@ class WorkspaceEditor extends SessionStateComponent<
      * draft id. There must be at least user id and workspace id, so if making changes to multiple workspace
      * that have same user evaluations, so draft won't class together
      */
-    let draftId = `${evaluationSelectedAssessmentId.userEntityId}-${evaluationSelectedAssessmentId.workspaceEntityId}`;
+    let draftId = `${evaluationSelectedAssessmentId.userEntityId}-${evaluationSelectedAssessmentId.workspaceEntityId}-${props.workspaceSubjectToBeEvaluatedIdentifier}`;
 
     /**
      * Workspace basePriceId
@@ -155,7 +148,7 @@ class WorkspaceEditor extends SessionStateComponent<
       /**
        * As default but + latest event id
        */
-      draftId = `${evaluationSelectedAssessmentId.userEntityId}-${evaluationSelectedAssessmentId.workspaceEntityId}-${eventId}`;
+      draftId = `${evaluationSelectedAssessmentId.userEntityId}-${evaluationSelectedAssessmentId.workspaceEntityId}-${props.workspaceSubjectToBeEvaluatedIdentifier}-${eventId}`;
 
       this.state = {
         ...this.getRecoverStoredState(
@@ -184,27 +177,6 @@ class WorkspaceEditor extends SessionStateComponent<
       };
     }
   }
-
-  /**
-   * getUsedGradingScaleByGradeId
-   * @param gradeId
-   * @returns used grade system by gradeId
-   */
-  getUsedGradingScaleByGradeId = (gradeId: string) => {
-    const { evaluationGradeSystem } = this.props.evaluations;
-
-    for (let i = 0; i < evaluationGradeSystem.length; i++) {
-      const gradeSystem = evaluationGradeSystem[i];
-
-      for (let j = 0; j < gradeSystem.grades.length; j++) {
-        const grade = gradeSystem.grades[j];
-
-        if (grade.id === gradeId.split("-")[1]) {
-          return gradeSystem;
-        }
-      }
-    }
-  };
 
   /**
    * componentDidMount
@@ -314,6 +286,27 @@ class WorkspaceEditor extends SessionStateComponent<
   };
 
   /**
+   * getUsedGradingScaleByGradeId
+   * @param gradeId gradeId
+   * @returns used grade system by gradeId
+   */
+  getUsedGradingScaleByGradeId = (gradeId: string) => {
+    const { evaluationGradeSystem } = this.props.evaluations;
+
+    for (let i = 0; i < evaluationGradeSystem.length; i++) {
+      const gradeSystem = evaluationGradeSystem[i];
+
+      for (let j = 0; j < gradeSystem.grades.length; j++) {
+        const grade = gradeSystem.grades[j];
+
+        if (grade.id === gradeId.split("-")[1]) {
+          return gradeSystem;
+        }
+      }
+    }
+  };
+
+  /**
    * loadExistingBilledPrice
    * @returns exixting billed price object
    */
@@ -345,24 +338,24 @@ class WorkspaceEditor extends SessionStateComponent<
   };
 
   /**
-   * handleCKEditorChange
-   * @param e
+   * Handles CKEditor changes
+   * @param e e
    */
   handleCKEditorChange = (e: string) => {
     this.setStateAndStore({ literalEvaluation: e }, this.state.draftId);
   };
 
   /**
-   * handleSelectGradeChange
-   * @param e
+   * Handles select grade changes
+   * @param e e
    */
   handleSelectGradeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     this.setStateAndStore({ grade: e.target.value }, this.state.draftId);
   };
 
   /**
-   * handleSelectGradeChange
-   * @param e
+   * Handles select price changes
+   * @param e e
    */
   handleSelectPriceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     this.setStateAndStore(
@@ -372,8 +365,8 @@ class WorkspaceEditor extends SessionStateComponent<
   };
 
   /**
-   * handleEvaluationSave
-   * @param e
+   * Handles evaluation saving
+   * @param e e
    */
   handleEvaluationSave = (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
@@ -542,7 +535,7 @@ class WorkspaceEditor extends SessionStateComponent<
   };
 
   /**
-   * handleDeleteEditorDraft
+   * Handles deleting drafts
    */
   handleDeleteEditorDraft = () => {
     const { evaluationAssessmentEvents, evaluationGradeSystem } =
@@ -652,7 +645,7 @@ class WorkspaceEditor extends SessionStateComponent<
   };
 
   /**
-   * hasGradedEvaluations
+   * Check if evaluation is graded
    * @returns boolean if there is previously graded evaluations
    */
   hasGradedEvaluations = () => {
@@ -699,11 +692,6 @@ class WorkspaceEditor extends SessionStateComponent<
         event.workspaceSubjectIdentifier ===
         workspaceSubjectToBeEvaluatedIdentifier
     );
-
-    /*  let latestEvent =
-      evaluationAssessmentEvents.data[
-        evaluationAssessmentEvents.data.length - 1
-      ]; */
 
     /**
      * If editing existing event, we need to find that specific event from event list by its' id
@@ -802,7 +790,7 @@ class WorkspaceEditor extends SessionStateComponent<
   };
 
   /**
-   * renderSelectOptions
+   * Creates select options
    * @returns List of options
    */
   renderSelectOptions = (): JSX.Element[] | undefined => {
@@ -956,7 +944,7 @@ class WorkspaceEditor extends SessionStateComponent<
 
 /**
  * mapStateToProps
- * @param state
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -969,7 +957,7 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
