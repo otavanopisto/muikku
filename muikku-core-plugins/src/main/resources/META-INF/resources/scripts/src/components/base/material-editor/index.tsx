@@ -30,7 +30,7 @@ import ConfirmRemovePageWithAnswersDialog from "./confirm-remove-page-with-answe
 import ConfirmRemoveAttachment from "./confirm-remove-attachment";
 import ConfirmPublishPageWithLinkedMaterialDialog from "./confirm-publish-page-with-linked-material-dialog";
 import equals = require("deep-equal");
-import Tabs, { TabType } from "~/components/general/tabs";
+import Tabs, { Tab } from "~/components/general/tabs";
 import { createAllTabs } from "~/helper-functions/tabs";
 import AddProducer from "~/components/general/add-producer";
 import { LicenseSelector } from "~/components/general/license-selector";
@@ -881,7 +881,7 @@ class MaterialEditor extends React.Component<
       />
     );
 
-    const materialEditorTabs: TabType[] = [
+    const materialEditorTabs: Tab[] = [
       {
         id: "content",
         type: "material-editor",
