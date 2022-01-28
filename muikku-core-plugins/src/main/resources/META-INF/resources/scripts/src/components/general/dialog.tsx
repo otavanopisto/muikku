@@ -9,7 +9,7 @@ import ApplicationList, {
   ApplicationListItem,
   ApplicationListItemHeader,
 } from "~/components/general/application-list";
-import Tabs, { TabType } from "~/components/general/tabs";
+import Tabs, { Tab } from "~/components/general/tabs";
 import { createAllTabs } from "~/helper-functions/tabs";
 import { UiSelectItem } from "../base/input-select-autofill";
 import { SelectItem } from "~/actions/workspaces/index";
@@ -556,7 +556,7 @@ export class DialogRemoveUsers extends React.Component<
    * @returns JSX.Element
    */
   render() {
-    const tabs: TabType[] = [
+    const tabs: Tab[] = [
       {
         id: this.props.identifier + "-ALL",
         name: this.props.allTabTitle,
