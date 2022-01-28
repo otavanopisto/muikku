@@ -34,6 +34,8 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
         return this.props.status.permissions.CHAT_AVAILABLE
       case "work":
         return !this.props.status.isStudent && this.props.status.permissions.WORKLIST_AVAILABLE;
+      case "purchases":
+        return this.props.status.isStudent;
       default:
         return true;
     }
@@ -64,6 +66,10 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
       {
         name: this.props.i18n.text.get("plugin.profile.category.work"),
         hash: "work"
+      },
+      {
+        name: this.props.i18n.text.get("plugin.profile.category.purchases"),
+        hash: "purchases"
       },
     ]
 
