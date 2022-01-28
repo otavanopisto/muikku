@@ -1,0 +1,5 @@
+
+
+public enum NoteType {
+  MANUAL
+}

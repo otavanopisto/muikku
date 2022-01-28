@@ -1,4 +1,4 @@
-package fi.otavanopisto.muikku.plugins.notes;
+package fi.otavanopisto.muikku.plugins.notes.model;
 
 public enum NotePriority {
   LOW,

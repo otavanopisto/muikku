@@ -1,28 +1,23 @@
-package fi.otavanopisto.muikku.plugins.notes;
+package fi.otavanopisto.muikku.plugins.notes.model;
 
 import java.util.Date;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Lob;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
 
-import fi.otavanopisto.muikku.plugins.notes.model.NotePriority;
-import fi.otavanopisto.muikku.plugins.notes.model.NoteType;
 
-public class NoteRestModel extends AbstractNoteRESTModel{
-  
-  public NoteRestModel() {
-    
-  }
+@Entity
+public class Note {
 
-  public NoteRestModel(Long id, String title, String description, NoteType type, NotePriority priority, Boolean pinned, String owner, String creator, Date created, String lastModifier, Date lastModified, Boolean archived) {
-    super(id, title, description, priority, pinned, owner, creator);
-    this.id = id;
-    this.title = title;
-    this.description = description;
-    this.priority = priority;
-    this.pinned = pinned;
-    this.owner = owner;
-    this.creator = creator;
-
-  }
 
   public Long getId() {
     return id;
@@ -119,19 +114,46 @@ public class NoteRestModel extends AbstractNoteRESTModel{
   public void setArchived(Boolean archived) {
     this.archived = archived;
   }
-
+  @Id
+  @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
+  
+  @Column (nullable = false)
   private String title;
+  
+  @Lob
   private String description;
+  
+  @Enumerated (EnumType.STRING)
+  @Column (nullable = false)
   private NoteType type;
+  
+  @Enumerated (EnumType.STRING)
+  @Column (nullable = false)
   private NotePriority priority;
+  
+  @Column (nullable=false)
   private Boolean pinned;
+  
+  @NotNull
+  @Column (nullable=false)
   private String owner;
+  
+  
+  @Column (nullable=false)
   private String creator;
+  
+  @NotNull
+  @Column (nullable=false)
+  @Temporal (value=TemporalType.TIMESTAMP)
   private Date created;
+  
   private String lastModifier;
+  
   private Date lastModified;
-  private Boolean archived;
+
+  @Column (nullable = false)
+  private Boolean archived = Boolean.FALSE;
 }
 
   

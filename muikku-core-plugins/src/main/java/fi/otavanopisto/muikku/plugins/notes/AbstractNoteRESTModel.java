@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import fi.otavanopisto.muikku.plugins.notes.model.NotePriority;
+
 public abstract class AbstractNoteRESTModel {
 
   public AbstractNoteRESTModel() {

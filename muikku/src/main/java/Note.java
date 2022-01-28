@@ -1,4 +1,4 @@
-package fi.otavanopisto.muikku.plugins.notes;
+
 
 import java.util.Date;
 
@@ -9,6 +9,9 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
 
@@ -115,47 +118,44 @@ public class Note {
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
   
-  @NotNull
-  @Column
+  @Column (nullable = false)
   private String title;
   
-  @NotNull
-  @Column
+  @Lob
   private String description;
   
   @Enumerated (EnumType.STRING)
-  @Column
+  @Column (nullable = false)
   private NoteType type;
   
   @Enumerated (EnumType.STRING)
-  @Column
+  @Column (nullable = false)
   private NotePriority priority;
   
-  @NotNull
-  @Column
+  @Column (nullable=false)
   private Boolean pinned;
   
   @NotNull
   @Column (nullable=false)
   private String owner;
   
-  @NotNull
+  
   @Column (nullable=false)
   private String creator;
   
   @NotNull
   @Column (nullable=false)
+  @Temporal (value=TemporalType.TIMESTAMP)
   private Date created;
   
-  @Column
+  @Column (nullable = false)
   private String lastModifier;
   
-  @Column
+  @Column (nullable = false)
   private Date lastModified;
-  
-  @NotNull
-  @Column
-  private Boolean archived;
+
+  @Column (nullable = false)
+  private Boolean archived = Boolean.FALSE;
 }
 
   

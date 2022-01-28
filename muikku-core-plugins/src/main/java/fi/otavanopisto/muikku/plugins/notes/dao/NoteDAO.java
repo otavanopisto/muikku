@@ -9,17 +9,18 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.notes.Note;
-import fi.otavanopisto.muikku.plugins.notes.NotePriority;
-import fi.otavanopisto.muikku.plugins.notes.NoteType;
-import fi.otavanopisto.muikku.plugins.notes.Note_;
+import fi.otavanopisto.muikku.plugins.notes.model.Note;
+import fi.otavanopisto.muikku.plugins.notes.model.NotePriority;
+import fi.otavanopisto.muikku.plugins.notes.model.NoteType;
+import fi.otavanopisto.muikku.plugins.notes.model.Note_;
 
 public class NoteDAO extends CorePluginsDAO<Note> {
 
   
+  
   private static final long serialVersionUID = 1265008061182482207L;
 
-  public Note create(String title, String description, NoteType type, NotePriority priority, Boolean pinned, String owner, String creator, Date created, String lastModifier, Date lastModified, Boolean archived){
+  public Note create(String title, String description, NoteType type, NotePriority priority, Boolean pinned, String owner, String creator, Date created){
     Note note = new Note();
     note.setTitle(title);
     note.setDescription(description);
@@ -33,14 +34,13 @@ public class NoteDAO extends CorePluginsDAO<Note> {
     return persist(note);
   }
   
-  public Note update(Note note, String title, String description, NotePriority priority, Boolean pinned, String lastModifier, Date lastModified, Boolean archived){
+  public Note update(Note note, String title, String description, NotePriority priority, Boolean pinned, String lastModifier, Date lastModified){
     note.setTitle(title);
     note.setDescription(description);
     note.setPriority(priority);
     note.setPinned(pinned);
     note.setLastModifier(lastModifier);
     note.setLastModified(lastModified);
-    note.setArchived(archived);
     return persist(note);
   }
   
@@ -73,6 +73,4 @@ public class NoteDAO extends CorePluginsDAO<Note> {
   public void delete(Note note) {
     super.delete(note);
   }
-
-  
 }
