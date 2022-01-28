@@ -20,7 +20,7 @@ public class NotesPermissions extends AbstractMuikkuPermissionCollection impleme
   public static final String NOTES_VIEW = "NOTES_VIEW";
   
   @Scope (PermissionScope.ENVIRONMENT)
-  @DefaultEnvironmentPermissionRoles ( {EnvironmentRoleArchetype.STUDY_GUIDER, EnvironmentRoleArchetype.ADMINISTRATOR})
+  @DefaultEnvironmentPermissionRoles ( {EnvironmentRoleArchetype.STUDENT, EnvironmentRoleArchetype.STUDY_GUIDER, EnvironmentRoleArchetype.ADMINISTRATOR})
   public static final String NOTES_CREATE = "NOTES_CREATE";
   
   @Scope (PermissionScope.ENVIRONMENT)

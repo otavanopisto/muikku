@@ -2,6 +2,7 @@ package fi.otavanopisto.muikku.plugins.notes;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,13 +18,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.notes.model.Note;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
-import fi.otavanopisto.muikku.security.MuikkuPermissionCollection;
-import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
@@ -45,12 +43,14 @@ public class NotesRESTService extends PluginRESTService {
   
   @Inject
   private NotesController notesController;
+  
 
   // mApi() call (mApi().notes.note.create(noteRestModel)
   //
   // noteRestModel: = {
   //  title: String, 
   //  description: String, 
+  //  type: emun MANUAL
   //  priority: enum LOW/NORMAL/HIGH, 
   //  pinned: Boolean, 
   //  owner: userIdentifier,
@@ -65,7 +65,7 @@ public class NotesRESTService extends PluginRESTService {
       return Response.status(Status.UNAUTHORIZED).build();
     }
     
-    if (!sessionController.hasEnvironmentPermission(NotesPermissions.NOTES_MANAGE)) {
+    if (!sessionController.hasEnvironmentPermission(NotesPermissions.NOTES_CREATE)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
@@ -89,20 +89,24 @@ public class NotesRESTService extends PluginRESTService {
   @RESTPermit(handling = Handling.INLINE)
   public Response updateNote(@PathParam ("NOTEID") Long noteId, NoteRestModel restModel) {
     
-    //permissions 
     
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.UNAUTHORIZED).build();
-    }
-    
-    if (!sessionController.hasEnvironmentPermission(NotesPermissions.NOTES_MANAGE)) {
-      return Response.status(Status.FORBIDDEN).build();
     }
     
     Note note = notesController.findNoteById(noteId);
     
     if (note == null) {
       return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    SchoolDataIdentifier ownerIdentifier = SchoolDataIdentifier.fromId(note.getOwner());
+    
+    //permissions 
+    
+    if (!sessionController.hasEnvironmentPermission(NotesPermissions.NOTES_UPDATE)) {
+      if (!Objects.equals(sessionController.getLoggedUser(), ownerIdentifier))
+        return Response.status(Status.FORBIDDEN).build();
     }
     
     notesController.updateNote(note, restModel.getTitle(), restModel.getDescription(), restModel.getPriority(), restModel.getPinned());
@@ -124,14 +128,16 @@ public class NotesRESTService extends PluginRESTService {
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response getNotesByOwner(@PathParam("OWNER") String owner) {
     
-    // permissions
-    if (!sessionController.hasEnvironmentPermission(NotesPermissions.NOTES_VIEW)) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
-    
     if (owner == null) {
       return Response.status(Status.BAD_REQUEST).entity("Invalid userIdentifier").build();
     }
+    
+    SchoolDataIdentifier ownerIdentifier = SchoolDataIdentifier.fromId(owner);
+    if (!sessionController.hasEnvironmentPermission(NotesPermissions.NOTES_VIEW)) {
+      if (!Objects.equals(sessionController.getLoggedUser(), ownerIdentifier))
+        return Response.status(Status.FORBIDDEN).build();
+    }
+    
     List<Note> notes = notesController.listBy(owner);
     
     return Response.ok(notes).build();
@@ -150,8 +156,11 @@ public class NotesRESTService extends PluginRESTService {
     }
     
     // permissions
-    if (!note.getOwner().equals(sessionController.getLoggedUser().toString()) || !sessionController.hasEnvironmentPermission(NotesPermissions.NOTES_MANAGE)){
-      return Response.status(Status.FORBIDDEN).build();
+    SchoolDataIdentifier ownerIdentifier = SchoolDataIdentifier.fromId(note.getOwner());
+    
+    if (!sessionController.hasEnvironmentPermission(NotesPermissions.NOTES_UPDATE)) {
+      if (!Objects.equals(sessionController.getLoggedUser(), ownerIdentifier))
+        return Response.status(Status.FORBIDDEN).build();
     }
 
       notesController.archiveNote(note);
