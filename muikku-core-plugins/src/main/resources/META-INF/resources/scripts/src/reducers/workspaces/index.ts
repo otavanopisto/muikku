@@ -192,7 +192,8 @@ export interface WorkspaceCourseLengthSymbolType {
   symbol: string;
 }
 
-export interface WorkspaceAdditionalInfoSubjectType {
+export interface WorkspaceSubject {
+  identifier: string;
   subject?: WorkspaceSubjectType;
   courseLength?: string;
   courseLengthSymbol?: WorkspaceCourseLengthSymbolType;
@@ -212,7 +213,7 @@ export interface WorkspaceAdditionalInfoType {
     name: string;
     schoolDataSource: string;
   };
-  subjects: WorkspaceAdditionalInfoSubjectType[];
+  subjects: WorkspaceSubject[];
 }
 
 export interface WorkspaceProducerType {
@@ -282,6 +283,11 @@ export interface WorkspaceType {
   //this one is actually also available in the current workspace in workspace/
   isCourseMember?: boolean;
   educationTypeName?: string;
+
+  /**
+   * aka "modules", always contains at least one unless it is combination workspace
+   */
+  subjects?: WorkspaceSubject[];
 
   //These are optional addons, and are usually not available
   activity?: WorkspacetActivityType;

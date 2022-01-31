@@ -14,19 +14,13 @@ import {
 } from "~/reducers/main-function/records";
 import BodyScrollKeeper from "~/components/general/body-scroll-keeper";
 import Link from "~/components/general/link";
-import {
-  WorkspaceType,
-  WorkspaceAssessementStateType,
-  Assessment,
-} from "~/reducers/workspaces";
+import { WorkspaceType, Assessment } from "~/reducers/workspaces";
 import { UserWithSchoolDataType } from "~/reducers/user-index";
 import { StateType } from "~/reducers";
 import { shortenGrade, getShortenGradeExtension } from "~/util/modifiers";
 import ApplicationList, {
   ApplicationListItem,
-  ApplicationListItemBody,
   ApplicationListItemContentContainer,
-  ApplicationListItemContentData,
   ApplicationListItemHeader,
 } from "~/components/general/application-list";
 
@@ -125,6 +119,7 @@ const TransfereCreditValueIndicator: React.FC<
  */
 interface AssessmentProps extends RecordsProps {
   assessment?: Assessment;
+  isCombinationWorkspace: boolean;
 }
 
 /**
@@ -133,7 +128,7 @@ interface AssessmentProps extends RecordsProps {
  * @returns JSX.Element
  */
 const Assessment: React.FC<AssessmentProps> = (props) => {
-  const { i18n, assessment } = props;
+  const { i18n, assessment, isCombinationWorkspace } = props;
 
   if (!assessment) {
     return null;
@@ -183,6 +178,25 @@ const Assessment: React.FC<AssessmentProps> = (props) => {
         {status[0].toLocaleUpperCase()}
       </span>
     );
+  } else {
+    if (isCombinationWorkspace) {
+      return (
+        <span
+          title={
+            i18n.text.get(
+              "plugin.records.workspace.evaluated",
+              i18n.time.format(assessment.date)
+            ) + getShortenGradeExtension(assessment.grade)
+          }
+          className={`application-list__indicator-badge application-list__indicator-badge--course ${
+            assessment.state === "unassessed" ? "state-UNASSESSED" : null
+          }`}
+          style={{ color: "black" }}
+        >
+          -
+        </span>
+      );
+    }
   }
 
   return null;
@@ -255,6 +269,9 @@ const ActivityIndicator: React.FC<ActivityIndicatorProps> = (props) => {
   );
 };
 
+/**
+ * Records
+ */
 class Records extends React.Component<RecordsProps, RecordsState> {
   constructor(props: RecordsProps) {
     super(props);
@@ -386,6 +403,9 @@ class Records extends React.Component<RecordsProps, RecordsState> {
       });
     }
 
+    /**
+     * studentRecords
+     */
     const studentRecords = (
       <div className="application-sub-panel">
         {this.props.records.userData.map((data) => {
@@ -429,15 +449,13 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                           </div>
                         ) : null}
                         {record.workspaces.map((workspace) => {
+                          // By default every workspace is not combination
                           let isCombinationWorkspace = false;
-                          let wholeWorkspaceIsPendingState = false;
 
                           if (workspace.activity) {
+                            // If assessmentState contains more than 1 items, then its is combination
                             isCombinationWorkspace =
                               workspace.activity.assessmentState.length > 1;
-
-                            wholeWorkspaceIsPendingState =
-                              this.wholeWorkspaceIsPending(workspace);
                           }
 
                           return (
@@ -462,21 +480,22 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                                     : null}
                                 </span>
                                 <div className="application-list__header-secondary">
-                                  {wholeWorkspaceIsPendingState ? (
-                                    <AssessmentRequestIndicator
-                                      {...this.props}
-                                      assessment={
-                                        workspace.activity.assessmentState[0]
-                                      }
-                                    />
-                                  ) : null}
-
                                   {!isCombinationWorkspace ? (
+                                    // So "legasy" case where there is only one module, render indicator etc next to workspace name
                                     <>
+                                      <AssessmentRequestIndicator
+                                        {...this.props}
+                                        assessment={
+                                          workspace.activity.assessmentState[0]
+                                        }
+                                      />
                                       <Assessment
                                         {...this.props}
                                         assessment={
                                           workspace.activity.assessmentState[0]
+                                        }
+                                        isCombinationWorkspace={
+                                          isCombinationWorkspace
                                         }
                                       />
                                     </>
@@ -489,27 +508,53 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                               </ApplicationListItemHeader>
 
                               {isCombinationWorkspace ? (
+                                // If combinatin workspace render module assessments below workspace name
                                 <ApplicationListItemContentContainer modifiers="course">
                                   {isCombinationWorkspace &&
                                     workspace.activity.assessmentState.map(
-                                      (a, i) => (
-                                        <div
-                                          key={a.workspaceSubjectIdentifier}
-                                          style={{ display: "flex" }}
-                                        >
-                                          {!wholeWorkspaceIsPendingState ? (
+                                      (a, i) => {
+                                        /**
+                                         * Find subject data, that contains basic information about that subject
+                                         */
+                                        const subjectData =
+                                          workspace.subjects.find(
+                                            (s) =>
+                                              s.identifier ===
+                                              a.workspaceSubjectIdentifier
+                                          );
+
+                                        /**
+                                         * If not found, return nothing
+                                         */
+                                        if (!subjectData) {
+                                          return;
+                                        }
+
+                                        return (
+                                          <div
+                                            key={a.workspaceSubjectIdentifier}
+                                            style={{
+                                              display: "flex",
+                                              alignItems: "center",
+                                            }}
+                                          >
+                                            <h4>{`(${subjectData.subject.code.toUpperCase()})`}</h4>
+
                                             <AssessmentRequestIndicator
                                               {...this.props}
                                               assessment={a}
                                             />
-                                          ) : null}
 
-                                          <Assessment
-                                            {...this.props}
-                                            assessment={a}
-                                          />
-                                        </div>
-                                      )
+                                            <Assessment
+                                              {...this.props}
+                                              assessment={a}
+                                              isCombinationWorkspace={
+                                                isCombinationWorkspace
+                                              }
+                                            />
+                                          </div>
+                                        );
+                                      }
                                     )}
                                 </ApplicationListItemContentContainer>
                               ) : null}
@@ -628,12 +673,22 @@ class Records extends React.Component<RecordsProps, RecordsState> {
     );
   }
 }
+
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     records: state.records,
   };
 }
+
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return {};
 }

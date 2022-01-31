@@ -12,7 +12,7 @@ import {
   EvaluationEnum,
   EvaluationLatestSubjectEvaluationIndex,
   EvaluationWorkspace,
-  EvaluationWorkspaceAddiotionalInfoSubjectType,
+  EvaluationWorkspaceSubject,
 } from "~/@types/evaluation";
 import EvaluationDiaryEvent from "./evaluation-diary-event";
 import WorkspaceEditor from "./editors/workspace-editor";
@@ -68,9 +68,7 @@ interface EvaluationDrawerState {
   /**
    * Object that contains subject properties that are needed for evaluation
    */
-  subjectToBeEvaluated:
-    | EvaluationWorkspaceAddiotionalInfoSubjectType
-    | undefined;
+  subjectToBeEvaluated: EvaluationWorkspaceSubject | undefined;
 }
 
 /**
@@ -290,6 +288,28 @@ export class Evaluation extends React.Component<
         }
       );
     }
+  };
+
+  /**
+   * isLatestEventSupplementationRequest
+   * @returns boolean whether latest event is supplementation request
+   */
+  isLatestEventSupplementationRequest = (): boolean => {
+    const { evaluationAssessmentEvents } = this.props.evaluation;
+
+    if (
+      evaluationAssessmentEvents.data &&
+      evaluationAssessmentEvents.data.length > 0
+    ) {
+      const lastEvent =
+        evaluationAssessmentEvents.data[
+          evaluationAssessmentEvents.data.length - 1
+        ];
+
+      return lastEvent.type === EvaluationEnum.SUPPLEMENTATION_REQUEST;
+    }
+
+    return false;
   };
 
   /**
@@ -575,6 +595,12 @@ export class Evaluation extends React.Component<
       );
 
     /**
+     * If latest event is supplementation request
+     */
+    const latestEventIsSupplementationRequest =
+      this.isLatestEventSupplementationRequest();
+
+    /**
      * If there is any existing evaluation in workspace
      */
     let isEvaluated = false;
@@ -612,6 +638,10 @@ export class Evaluation extends React.Component<
       isSelectedSubjectEvaluated = subject && subject.grade !== null;
     }
 
+    const eventListLength =
+      evaluationAssessmentEvents.data &&
+      evaluationAssessmentEvents.data.length - 1;
+
     /**
      * evaluationEventContentCards
      */
@@ -630,9 +660,13 @@ export class Evaluation extends React.Component<
               key={index}
               {...eItem}
               showDeleteAndModify={
-                latestEvaluatedEventIndexPerSubject[
-                  eItem.workspaceSubjectIdentifier
-                ] === index && isNotRequest
+                (latestEventIsSupplementationRequest &&
+                  eventListLength === index) ||
+                (!latestEventIsSupplementationRequest &&
+                  latestEvaluatedEventIndexPerSubject[
+                    eItem.workspaceSubjectIdentifier
+                  ] === index &&
+                  isNotRequest)
               }
             />
           );
