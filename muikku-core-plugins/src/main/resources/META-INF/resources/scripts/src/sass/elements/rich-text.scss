@@ -2,8 +2,7 @@
 @import "../base/mixins";
 @import "../base/vars";
 @import "../base/breakpoints";
-
-@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,600&subset=cyrillic');
+@import url("https://fonts.googleapis.com/css?family=Open+Sans:300,400,600&subset=cyrillic");
 
 // This file sets styling for every rich text editors content so they are rendered always the same way regardless where they are created.
 // scss-lint:disable SelectorFormat
@@ -42,6 +41,7 @@
   &.cke_wysiwyg_div {
     padding: 5px 20px;
   }
+
   // scss-lint:enable SelectorFormat
 
   p {

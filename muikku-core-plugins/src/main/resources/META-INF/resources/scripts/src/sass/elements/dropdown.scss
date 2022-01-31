@@ -6,6 +6,7 @@
 .dropdown {
   @include prefix(transition, moz ms o webkit, opacity 0.15s);
   @include text;
+
   display: block;
   left: 0;
   max-width: 95%;

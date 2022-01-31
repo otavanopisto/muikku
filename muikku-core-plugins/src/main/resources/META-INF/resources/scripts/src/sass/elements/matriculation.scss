@@ -81,6 +81,7 @@
       color: $color-tertiary;
     }
   }
+
   // scss-lint:enable SelectorFormat
 }
 
@@ -203,8 +204,8 @@
 
 .matriculation__input[type="checkbox"] {
   align-items: center;
-  -moz-appearance: none;
-  -webkit-appearance: none;
+  appearance: none;
+  appearance: none;
   appearance: none;
   border: solid 2px $color-matriculation-dialog-form-element-border;
   border-radius: 3px;
@@ -272,11 +273,12 @@
 }
 
 .matriculation-container__row--input-groups--conflicted {
-  background-image: linear-gradient(
-    to right,
-    lighten($color-error, 20%),
-    $color-default
-  );
+  background-image:
+    linear-gradient(
+      to right,
+      lighten($color-error, 20%),
+      $color-default
+    );
   margin-bottom: 5px;
 }
 

@@ -2,12 +2,12 @@
 @import "../base/mixins";
 @import "../base/vars";
 @import "../base/breakpoints";
-
 @import "cke-styles";
 
 .env-dialog {
   @include prefix(transition, moz ms webkit o, opacity 0.3s);
   @include text;
+
   bottom: 0;
   display: block;
   left: 0;
@@ -49,6 +49,7 @@
 
   @include breakpoint($breakpoint-pad) {
     @include prefix(transition, moz ms webkit o, bottom 0.3s);
+
     top: auto;
   }
 }
@@ -119,6 +120,7 @@
 
 .env-dialog__close {
   @include prefix(transition, moz ms o webkit, background-color 0.3s);
+
   border-radius: $dialog-button-close-height;
   cursor: pointer;
   font-size: 18px;
@@ -191,7 +193,6 @@
   }
 
   &:not(:first-child) {
-
     @include breakpoint($breakpoint-pad) {
       margin-left: 20px;
     }
@@ -309,8 +310,8 @@
 
 .env-dialog__input[type="checkbox"] {
   align-items: center;
-  -moz-appearance: none;
-  -webkit-appearance: none;
+  appearance: none;
+  appearance: none;
   appearance: none;
   border: solid 2px $color-env-dialog-form-element-border;
   border-radius: 3px;
@@ -371,7 +372,6 @@
   font-size: $text-forgotpassword-font-size;
   width: 100%;
 }
-
 
 // Reply Message "Non-dialog"
 .env-dialog--reply-message {

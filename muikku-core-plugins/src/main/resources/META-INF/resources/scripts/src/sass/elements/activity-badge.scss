@@ -52,8 +52,6 @@ $progress-units: 100;
   width: 100%;
 }
 
-
-
 @for $i from 1 through $progress-units {
 
   .activity-badge__unit-bar--#{$i} {

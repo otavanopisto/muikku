@@ -29,6 +29,7 @@
 
 .autocomplete__list-item {
   @include prefix(transition, moz o ms webkit, background-color 0.3s);
+
   background-color: $color-autocomplete-list-background-color;
   border-top: solid 1px $color-autocomplete-list-border;
   cursor: pointer;

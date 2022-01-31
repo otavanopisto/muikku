@@ -5,7 +5,9 @@
 
 .application-list {
   @include text;
+
   height: 100%;
+
   // margin-bottom: 20px;
   overflow: visible;
   width: 100%;
@@ -84,10 +86,12 @@
     align-content: start;
     display: flex;
     flex-wrap: wrap;
+
     // scss-lint:disable SelectorFormat
     &.state-FULL {
       min-height: 330px;
     }
+
     // scss-lint:enable SelectorFormat
   }
 }
@@ -121,6 +125,7 @@
   &.state-UNPUBLISHED {
     color: $color-disabled;
   }
+
   // scss-lint:enable SelectorFormat
 }
 
@@ -262,6 +267,7 @@
   &.state-NO-ASSESSMENT {
     background: $color-grade-not-assessed;
   }
+
   // scss-lint:enable SelectorFormat
 }
 
@@ -313,6 +319,7 @@
     color: $color-disabled;
     cursor: default;
   }
+
   // scss-lint:enable SelectorFormat
 }
 
@@ -325,6 +332,7 @@
   &.state-ENDED {
     color: $color-disabled;
   }
+
   // scss-lint:enable SelectorFormat
 }
 
@@ -369,8 +377,10 @@
     webkit ms o moz,
     background-color 0.2s ease-in-out
   );
+
   align-items: center;
   background-color: $color-application-list-item-background;
+
   // display: flex;
   position: relative;
 
@@ -428,11 +438,13 @@
       }
     }
   }
+
   // scss-lint:disable SelectorFormat
   &.state-DISABLED {
     background-color: $color-main-function-application-list-item-disabled-background;
     color: $color-main-function-application-list-item-disabled-text;
   }
+
   // scss-lint:enable SelectorFormat
 }
 
@@ -543,8 +555,8 @@
 
   input {
     align-items: center;
-    -moz-appearance: none;
-    -webkit-appearance: none;
+    appearance: none;
+    appearance: none;
     appearance: none;
     border: solid 2px $color-main-function-application-list-item-checkbox-border;
     border-radius: 3px;
@@ -556,7 +568,8 @@
 
   input:checked {
     background-color: $color-main-function-application-list-item-checkbox-checked-background;
-    border: solid 2px
+    border:
+      solid 2px
       $color-main-function-application-list-item-checkbox-checked-background;
   }
 
@@ -569,6 +582,7 @@
 
   input[type="radio"] {
     border-radius: 50%;
+
     // this could be for any input inside the aside, but in communicator it is in the container
     margin-right: 5px;
   }
@@ -915,10 +929,11 @@
 }
 
 .application-list__item-text-body--discussion-message-overflow::before {
-  background: linear-gradient(
-    $color-application-list-item-fade-background 1rem,
-    $color-default
-  );
+  background:
+    linear-gradient(
+      $color-application-list-item-fade-background 1rem,
+      $color-default
+    );
   bottom: 0;
   content: "";
   height: 4rem;
@@ -1081,7 +1096,6 @@
   span {
     font-weight: 300;
   }
-
 }
 
 .application-list__item-footer--course {

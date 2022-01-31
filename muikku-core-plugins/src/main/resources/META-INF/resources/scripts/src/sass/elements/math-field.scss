@@ -192,6 +192,7 @@
       box-shadow: none;
     }
   }
+
   // scss-lint:enable SelectorFormat
 
   @include breakpoint($breakpoint-pad) {
@@ -216,8 +217,10 @@
   .ace_editor {
     border: 1px solid $color-default;
     color: $color-default-contrast;
+
     // scss-lint:disable ImportantRule
     font-size: 1.125rem !important;
+
     // scss-lint:enable ImportantRule
     overflow: visible;
     padding: 5px 10px;
@@ -232,10 +235,13 @@
     // scss-lint:disable SelectorDepth
     .ace_marker-layer .ace_active-line {
       background: $color-math-editor-active-line-background;
+
       // scss-lint:disable ImportantRule
       left: 5px !important;
+
       // scss-lint:enable ImportantRule
     }
+
     // scss-lint:enable SelectorDepth
 
     // LaTeX cursor
@@ -263,12 +269,14 @@
     .ace_hidden-cursors .ace_cursor {
       visibility: hidden;
     }
+
     // scss-lint:enable SelectorDepth
 
     .ace_invisible {
       color: $color-default-helper;
     }
   }
+
   // scss-lint:enable SelectorFormat
 
   @include breakpoint($breakpoint-pad) {
@@ -278,4 +286,3 @@
     min-width: 50%;
   }
 }
-

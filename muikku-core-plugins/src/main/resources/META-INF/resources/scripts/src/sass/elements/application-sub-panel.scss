@@ -56,16 +56,15 @@
 }
 
 .application-sub-panel--organization-users {
-
   &:first-child {
     padding-bottom: 12px;
   }
 }
 
-
 // Subpanel header
 .application-sub-panel__header {
   @include mainfunction-subpanel-title;
+
   align-items: center;
   display: flex;
   flex-flow: row wrap;
@@ -301,7 +300,6 @@
   justify-content: center;
   padding: 10px;
 }
-
 
 .application-sub-panel__card-body {
   display: flex;
@@ -631,6 +629,7 @@
   &.NON-ACTIVE {
     opacity: 0.5;
   }
+
   // scss-lint:enable SelectorFormat
 
   &:not(:last-child) {
@@ -886,8 +885,6 @@
   font-weight: 600;
 }
 
-
-
 .application-sub-panel__item-label {
   font-weight: 600;
   margin: 2px 5px 2px 0;
@@ -1058,7 +1055,6 @@
   flex-flow: row wrap;
 
   .application-sub-panel__item-title {
-
     @include breakpoint($breakpoint-desktop) {
       flex-basis: 60%;
       margin: 0 10px 0 0;
@@ -1066,7 +1062,6 @@
   }
 
   .application-sub-panel__item-data {
-
     @include breakpoint($breakpoint-desktop) {
       flex-basis: auto;
     }
@@ -1079,14 +1074,12 @@
   flex-flow: column wrap;
 
   .application-sub-panel__item-title {
-
     @include breakpoint($breakpoint-desktop) {
       flex-basis: auto;
     }
   }
 
   .application-sub-panel__item-data {
-
     @include breakpoint($breakpoint-desktop) {
       flex-basis: auto;
     }
@@ -1151,7 +1144,6 @@
 }
 
 .application-sub-panel__text--course-evaluation {
-
   // scss-lint:disable SelectorFormat
   &.state-PASSED {
     border-left: 3px solid $color-grade-passed;
@@ -1164,6 +1156,7 @@
   &.state-INCOMPLETE {
     border-left: 3px solid $color-grade-incomplete;
   }
+
   // scss-lint:enable SelectorFormat
 }
 

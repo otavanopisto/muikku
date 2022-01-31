@@ -86,16 +86,19 @@
 
 .workspace-assessment__literal-label {
   @include assessment-text;
+
   font-weight: bold;
 }
 
 .workspace-assessment__literal-data {
   @include assessment-text;
+
   line-height: 1.375rem;
 }
 
 .workspace-assessment__grade {
   @include assessment-text;
+
   align-items: center;
   display: flex;
   flex-basis: 100;
@@ -128,6 +131,7 @@
 
 .workspace-assessment__date {
   @include assessment-text;
+
   align-items: center;
   display: flex;
   flex-basis: 100;
@@ -144,5 +148,6 @@
 
 .workspace-assessment__date-data {
   @include assessment-text;
+
   line-height: 1.375rem;
 }

@@ -31,12 +31,10 @@
 }
 
 .course--studies {
-
   &:hover,
   &.hover,
   &:active,
   &.active {
-
     svg {
       opacity: 0.9;
     }

@@ -2,7 +2,6 @@
 @import "../base/mixins";
 @import "../base/vars";
 @import "../base/breakpoints";
-
 @import "cke-styles";
 
 .evaluation-modal {
@@ -89,7 +88,6 @@
 }
 
 .evaluation-modal__content-wrapper {
-
   @include breakpoint($breakpoint-desktop) {
     height: 100%;
     overflow-y: scroll;
@@ -188,6 +186,7 @@
   &.state-INCOMPLETE {
     color: $color-incomplete;
   }
+
   // scss-lint:enable SelectorFormat
 }
 
@@ -243,6 +242,7 @@
   &.state-INCOMPLETE {
     color: $color-incomplete;
   }
+
   // scss-lint:enable SelectorFormat
 }
 
@@ -283,6 +283,7 @@
   &.state-INCOMPLETE {
     background: $color-incomplete;
   }
+
   // scss-lint:enable SelectorFormat
 }
 
@@ -362,6 +363,7 @@
       background: $color-incomplete;
     }
   }
+
   // scss-lint:enable SelectorFormat
 }
 
@@ -516,6 +518,7 @@
     opacity: 1;
     transform: translateX(0);
   }
+
   // scss-lint:enable SelectorFormat
 }
 

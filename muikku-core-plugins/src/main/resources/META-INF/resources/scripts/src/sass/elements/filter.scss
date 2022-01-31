@@ -50,8 +50,8 @@
 
   input[type="checkbox"] {
     align-items: center;
-    -moz-appearance: none;
-    -webkit-appearance: none;
+    appearance: none;
+    appearance: none;
     appearance: none;
     border: 2px solid $color-main-function-application-list-item-checkbox-border;
     border-radius: 3px;
@@ -83,7 +83,6 @@
 }
 
 .filter-item--assignments {
-
   input[type="checkbox"] {
     border-color: $color-assignment;
   }
@@ -94,7 +93,6 @@
 }
 
 .filter-item--logins {
-
   input[type="checkbox"] {
     border-color: $color-default-contrast;
   }
@@ -105,7 +103,6 @@
 }
 
 .filter-item--exercises {
-
   input[type="checkbox"] {
     border-color: $color-exercise;
   }
@@ -116,7 +113,6 @@
 }
 
 .filter-item--visits {
-
   input[type="checkbox"] {
     border-color: $color-workspace;
   }
@@ -127,7 +123,6 @@
 }
 
 .filter-item--discussion-messages {
-
   input[type="checkbox"] {
     border-color: $color-primary;
   }
@@ -143,7 +138,6 @@
 }
 
 .filter-item--evaluation-requested {
-
   input[type="checkbox"] {
     border-color: $color-evaluation-request;
   }
@@ -154,7 +148,6 @@
 }
 
 .filter-item--evaluation-passed {
-
   input[type="checkbox"] {
     border-color: $color-grade-passed;
   }
@@ -165,7 +158,6 @@
 }
 
 .filter-item--evaluation-failed {
-
   input[type="checkbox"] {
     border-color: $color-grade-failed;
   }
@@ -209,7 +201,6 @@
 }
 
 .filter__activator--graph-filter {
-
   @include breakpoint($breakpoint-pad) {
     display: none;
   }

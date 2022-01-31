@@ -5,6 +5,7 @@
 
 .dialog {
   @include prefix(transition, moz ms webkit o, opacity 0.3s);
+
   align-items: center;
   background-color: $color-overlay-background;
   bottom: 0;
@@ -19,9 +20,7 @@
 }
 
 .dialog--matriculation {
-
   .dialog__window {
-
     @include breakpoint($breakpoint-pad) {
       left: auto;
       right: auto;
@@ -261,6 +260,7 @@
 
 .dialog__close {
   @include prefix(transition, moz ms o webkit, background-color 0.3s);
+
   border-radius: $dialog-button-close-height;
   cursor: pointer;
   font-size: 18px;
@@ -410,7 +410,6 @@
   }
 
   .dialog__window--evaluation {
-
     @include breakpoint($breakpoint-pad) {
       bottom: 0;
       left: 0;
@@ -452,6 +451,7 @@
   &.state-DONE {
     color: $color-success;
   }
+
   // scss-lint:enable SelectorFormat
 }
 
@@ -471,6 +471,7 @@
       color: $color-info;
     }
   }
+
   // scss-lint:enable SelectorFormat
 }
 

@@ -3,7 +3,6 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
-
 .change-image {
   align-items: center;
   display: flex;
@@ -49,7 +48,6 @@
 }
 
 .change-image__container--workspace {
-
   @include breakpoint($breakpoint-pad) {
     background-position: center center;
     background-size: cover;
@@ -79,12 +77,12 @@
 
 .change-image__default-content {
   @include workspace-image-button;
+
   display: flex;
   padding: 10px;
 }
 
 .change-image__container--empty {
-
   &::before {
     color: $color-default;
     content: "\e114";

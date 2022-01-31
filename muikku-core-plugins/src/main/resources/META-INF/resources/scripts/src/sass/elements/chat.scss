@@ -8,6 +8,7 @@
 
   @include breakpoint($breakpoint-pad) {
     @include text;
+
     align-items: flex-end;
     bottom: 0;
     display: flex;
@@ -553,8 +554,8 @@
 
 .chat__checkbox {
   align-items: center;
-  -moz-appearance: none;
-  -webkit-appearance: none;
+  appearance: none;
+  appearance: none;
   appearance: none;
   border: 2px solid $color-chat-other-room-main-color;
   border-radius: 2px;

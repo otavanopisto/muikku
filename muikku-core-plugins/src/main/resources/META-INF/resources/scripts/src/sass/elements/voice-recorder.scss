@@ -5,6 +5,7 @@
 
 .voice-recorder {
   @include text;
+
   background: $color-default;
   border: 2px solid $taskfield-border-color;
   border-radius: 2px;
@@ -16,6 +17,7 @@
 
 .voice-container {
   @include text;
+
   margin: 4px 0 0;
   position: relative;
   width: 100%;
@@ -63,6 +65,7 @@
 .voice-recorder__start-record-label,
 .voice-recorder__stop-record-label {
   @include text;
+
   padding: 0 0 0 4px;
 }
 
@@ -139,6 +142,7 @@
 
 .voice-recorder__file {
   @include text;
+
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
@@ -154,6 +158,7 @@
 
 .voice-recorder__file-record-progressbar {
   @include text;
+
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
@@ -163,6 +168,7 @@
 
 .voice-recorder__file-upload-progressbar {
   @include text;
+
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;

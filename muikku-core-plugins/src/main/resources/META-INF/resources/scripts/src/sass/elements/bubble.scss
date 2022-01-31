@@ -26,6 +26,7 @@
 
   @include breakpoint($breakpoint-pad) {
     @include prefix(transition, webkit ms o moz, border-color 0.5s ease-in-out);
+
     background-color: $color-bubble-default-background;
     border: 6px solid $color-bubble-default-border;
     border-radius: 100%;

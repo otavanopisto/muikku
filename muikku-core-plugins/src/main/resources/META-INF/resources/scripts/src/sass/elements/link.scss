@@ -6,6 +6,7 @@
 .link {
   @include prefix(transition, moz ms webkit o, background-color 0.3s, color 0.3s);
   @include prefix(user-select, moz ms webkit o, none);
+
   color: $color-link-default-text;
   cursor: pointer;
   display: inline-block;
@@ -132,7 +133,6 @@
   text-transform: none;
 
   @include breakpoint($breakpoint-pad) {
-
     &:hover,
     &.hover {
       background-color: $color-environment-link-icon-border-top-color-active;
@@ -212,7 +212,6 @@
 
   .link__icon--workspace {
     background-color: $color-workspace-link-menu-icon-background;
-
   }
 }
 
@@ -222,7 +221,6 @@
 }
 
 .link--menu-instructions {
-
   .link__icon {
     background: $color-environment-link-menu-instructions-icon-background;
     color: $color-environment-link-menu-instructions-icon-color;
@@ -230,7 +228,6 @@
 }
 
 .link--menu-helpdesk {
-
   .link__icon {
     background: $color-environment-link-menu-heldesk-icon-background;
     color: $color-environment-link-menu-helpdesk-icon-color;
@@ -238,7 +235,6 @@
 }
 
 .link--menu-logout {
-
   .link__icon {
     background: $color-environment-link-menu-logout-icon-background;
     color: $color-environment-link-menu-logout-icon-color;
@@ -275,28 +271,24 @@
 }
 
 .link--chat-availability-chat {
-
   .link__icon {
     color: $color-chat-user-status-online;
   }
 }
 
 .link--chat-availability-away {
-
   .link__icon {
     color: $color-chat-user-status-away;
   }
 }
 
 .link--chat-availability-dnd {
-
   .link__icon {
     color: $color-chat-user-status-dnd;
   }
 }
 
 .link--chat-availability-xa {
-
   .link__icon {
     color: $color-chat-user-status-offline;
   }
@@ -391,7 +383,6 @@
   margin-right: 20px;
 }
 
-
 // This has to be think differently as the element is not <Link> component currently
 .link--matriculation-enrollment {
   display: flex;
@@ -415,35 +406,30 @@
 }
 
 .link--workspace-assessment-pending {
-
   &::before {
     background: $color-assessment-pending;
   }
 }
 
 .link--workspace-assessment-failed {
-
   &::before {
     background: $color-assessment-failed;
   }
 }
 
 .link--workspace-assessment-passed {
-
   &::before {
     background: $color-assessment-passed;
   }
 }
 
 .link--workspace-assessment-incomplete {
-
   &::before {
     background: $color-assessment-incomplete;
   }
 }
 
 .link--workspace-assessment-unassessed {
-
   &::before {
     background: transparent;
     box-shadow: none;
