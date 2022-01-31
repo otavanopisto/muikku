@@ -355,8 +355,8 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
                   {p.state !== "COMPLETE" ?
                     <span className="application-list__header-primary-actions">
 
-                      {/* We show "Delete" button only if logged in user is ADMINISTRATOR or logged in user userEntityId is the same as purchase creator userId */}
-                      {this.props.status.role === "ADMINISTRATOR" || p.creator.userEntityId === this.props.status.userId ?
+                      {/* We show "Delete" button only if logged in user has REMOVE_ORDER permission or logged in user's userEntityId is the same as purchase creator userId */}
+                      {this.props.status.permissions.REMOVE_ORDER || p.creator.userEntityId === this.props.status.userId ?
                         <Button
                           onClick={this.beginOrderDeleteProcess.bind(this, p)}
                           disabled={IsOrderDeletionDisabled(p.state)}
@@ -365,8 +365,8 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
                           >{this.props.i18n.text.get("plugin.guider.purchase.deleteOrderLink")}</Button>
                       : null}
 
-                      {/* We show "Complete order" button only if logged in user is ADMINISTRATOR */}
-                      {this.props.status.role === "ADMINISTRATOR" ?
+                      {/* We show "Complete order" button only if logged in user has COMPLETE_ORDER permission */}
+                      {this.props.status.permissions.COMPLETE_ORDER ?
                         <Button
                           onClick={this.beginOrderManualCompleteProcess.bind(this, p)}
                           disabled={IsOrderCompletionManuallyDisabled(p.state)}
