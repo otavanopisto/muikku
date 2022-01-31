@@ -2,6 +2,8 @@ package fi.otavanopisto.muikku.plugins.guider;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -61,6 +63,11 @@ import fi.otavanopisto.muikku.plugins.timed.notifications.model.NoPassedCoursesN
 import fi.otavanopisto.muikku.plugins.timed.notifications.model.StudyTimeNotification;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsFileController;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.TranscriptOfRecordsFile;
+import fi.otavanopisto.muikku.plugins.transcriptofrecords.rest.ToRWorkspaceRestModel;
+import fi.otavanopisto.muikku.plugins.workspace.WorkspaceEntityFileController;
+import fi.otavanopisto.muikku.plugins.workspace.WorkspaceVisitController;
+import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRestModels;
+import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceSubjectRestModel;
 import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
 import fi.otavanopisto.muikku.rest.model.Student;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
@@ -72,10 +79,15 @@ import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivity;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
+import fi.otavanopisto.muikku.search.SearchProvider.Sort;
+import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.OrganizationRestriction;
+import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.PublicityRestriction;
+import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.TemplateRestriction;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.security.RoleFeatures;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.FlagController;
+import fi.otavanopisto.muikku.users.OrganizationEntityController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
@@ -151,6 +163,18 @@ public class GuiderRESTService extends PluginRESTService {
 
   @Inject
   private FlagController flagController;
+  
+  @Inject
+  private WorkspaceRestModels workspaceRestModels;
+  
+  @Inject
+  private OrganizationEntityController organizationEntityController;
+
+  @Inject
+  private WorkspaceVisitController workspaceVisitController;
+  
+  @Inject
+  private WorkspaceEntityFileController workspaceEntityFileController;
   
   @Inject
   @Any
@@ -553,6 +577,97 @@ public class GuiderRESTService extends PluginRESTService {
   }
   
   @GET
+  @Path("/students/{ID}/workspaces/")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response listWorkspaces(
+        @Context Request request,
+        @PathParam("ID") String userIdentifierParam
+      ) {
+    List<ToRWorkspaceRestModel> workspaces = new ArrayList<>();
+
+    SchoolDataIdentifier userIdentifier = SchoolDataIdentifier.fromId(userIdentifierParam);
+    if (userIdentifier == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
+    if (!sessionController.hasEnvironmentPermission(GuiderPermissions.GUIDER_VIEW)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    UserEntity userEntity = sessionController.getLoggedUserEntity();
+    
+    TemplateRestriction templateRestriction = TemplateRestriction.ONLY_WORKSPACES;
+    PublicityRestriction publicityRestriction = PublicityRestriction.LIST_ALL;
+    List<WorkspaceEntity> workspaceEntities = workspaceUserEntityController.listWorkspaceEntitiesByUserEntity(userEntity);
+   
+    if (CollectionUtils.isEmpty(workspaceEntities)) {
+      return Response.ok(Collections.emptyList()).build();
+    }
+    
+    Iterator<SearchProvider> searchProviderIterator = searchProviders.iterator();
+    if (searchProviderIterator.hasNext()) {
+      SearchProvider searchProvider = searchProviderIterator.next();
+      SearchResult searchResult = null;
+      
+      List<SchoolDataIdentifier> workspaceIdentifierFilters = workspaceEntities.stream()
+          .map(WorkspaceEntity::schoolDataIdentifier).collect(Collectors.toList());
+      
+      List<OrganizationEntity> loggedUserOrganizations = organizationEntityController.listLoggedUserOrganizations();
+      List<OrganizationRestriction> organizationRestrictions = organizationEntityController.listUserOrganizationRestrictions(loggedUserOrganizations, publicityRestriction, templateRestriction);
+      // The list is restricted to all of the students' workspaces so list them all
+      organizationRestrictions = organizationRestrictions.stream()
+          .map(organizationRestriction -> new OrganizationRestriction(organizationRestriction.getOrganizationIdentifier(), PublicityRestriction.LIST_ALL, TemplateRestriction.ONLY_WORKSPACES))
+          .collect(Collectors.toList());
+      
+      searchResult = searchProvider.searchWorkspaces()
+        .setWorkspaceIdentifiers(workspaceIdentifierFilters)
+        .setOrganizationRestrictions(organizationRestrictions)
+        .setMaxResults(500)
+        .addSort(new Sort("name.untouched", Sort.Order.ASC))
+        .search();
+      
+      List<Map<String, Object>> results = searchResult.getResults();
+      for (Map<String, Object> result : results) {
+        String searchId = (String) result.get("id");
+        if (StringUtils.isNotBlank(searchId)) {
+          String[] id = searchId.split("/", 2);
+          if (id.length == 2) {
+            String dataSource = id[1];
+            String identifier = id[0];
+            WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(dataSource, identifier);
+            if (workspaceEntity != null) {
+              String name = (String) result.get("name");
+              String description = (String) result.get("description");
+              String nameExtension = (String) result.get("nameExtension");
+              
+              Object curriculumIdentifiersObject = result.get("curriculumIdentifiers");
+              Set<String> curriculumIdentifiers = new HashSet<String>();
+              if (curriculumIdentifiersObject instanceof Collection) {
+                Collection<?> curriculumIdentifierCollection = (Collection<?>) curriculumIdentifiersObject;
+                for (Object o : curriculumIdentifierCollection) {
+                  if (o instanceof String)
+                    curriculumIdentifiers.add((String) o);
+                  else
+                    logger.warning("curriculumIdentifier not of type String");
+                }
+              }
+              
+              if (StringUtils.isNotBlank(name)) {
+                workspaces.add(createRestModel(userIdentifier, workspaceEntity, name, nameExtension, description, curriculumIdentifiers));
+              }
+            }
+          }
+        }
+      }
+    } else {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+    }
+
+    return Response.ok(workspaces).build();
+  }
+  
+  
+  @GET
   @Path("/users/{USERIDENTIFIER}/workspaceActivity")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response listWorkspaceActivities(
@@ -738,4 +853,50 @@ public class GuiderRESTService extends PluginRESTService {
     return date;
   }
 
+  private ToRWorkspaceRestModel createRestModel(
+      SchoolDataIdentifier userIdentifier,
+      WorkspaceEntity workspaceEntity,
+      String name,
+      String nameExtension,
+      String description,
+      Set<String> curriculumIdentifiers
+      ) {
+    Long numVisits = workspaceVisitController.getNumVisits(workspaceEntity);
+    Date lastVisit = workspaceVisitController.getLastVisit(workspaceEntity);
+    boolean hasCustomImage = workspaceEntityFileController.getHasCustomImage(workspaceEntity);
+
+    
+    GuiderStudentWorkspaceActivity activity = guiderController.getStudentWorkspaceActivity(workspaceEntity, userIdentifier);
+    List<WorkspaceAssessmentState> assessmentStates = new ArrayList<>();
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserIdentifier(workspaceEntity, userIdentifier);
+    if (workspaceUserEntity != null && workspaceUserEntity.getWorkspaceUserRole().getArchetype() == WorkspaceRoleArchetype.STUDENT) {
+      assessmentStates = assessmentRequestController.getAllWorkspaceAssessmentStates(workspaceUserEntity);
+    }
+    
+    // TODO can we avoid loading workspace?
+    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+    List<WorkspaceSubjectRestModel> subjectRestModels = workspace.getSubjects().stream()
+        .map(workspaceSubject -> workspaceRestModels.toRestModel(workspaceSubject))
+        .collect(Collectors.toList());
+    
+    GuiderStudentWorkspaceActivityRestModel guiderStudentWorkspaceActivityRestModel = toRestModel(activity, assessmentStates);
+    
+    return new ToRWorkspaceRestModel(workspaceEntity.getId(),
+        workspaceEntity.getOrganizationEntity() == null ? null : workspaceEntity.getOrganizationEntity().getId(),
+        workspaceEntity.getUrlName(),
+        workspaceEntity.getAccess(),
+        workspaceEntity.getArchived(), 
+        workspaceEntity.getPublished(), 
+        name, 
+        nameExtension, 
+        description, 
+        workspaceEntity.getDefaultMaterialLicense(),
+        numVisits, 
+        lastVisit,
+        curriculumIdentifiers,
+        hasCustomImage,
+        subjectRestModels,
+        guiderStudentWorkspaceActivityRestModel);
+  }
+  
 } 

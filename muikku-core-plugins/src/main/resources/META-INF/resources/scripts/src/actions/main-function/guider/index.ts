@@ -279,16 +279,10 @@ let loadStudent: LoadStudentTriggerType = function loadStudent(id) {
           .then((notifications: GuiderNotificationStudentsDataType) => {
             dispatch({ type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: { property: "notifications", value: notifications } })
           }),
-        promisify(mApi().workspace.workspaces.read({ userIdentifier: id, includeInactiveWorkspaces: true }), 'callback')()
+        promisify(mApi().guider.students.workspaces.read(id), 'callback')()
           .then(async (workspaces: WorkspaceListType) => {
             if (workspaces && workspaces.length) {
               await Promise.all([
-                Promise.all(workspaces.map(async (workspace, index) => {
-                  let activity: WorkspaceStudentActivityType = <WorkspaceStudentActivityType>await promisify(mApi().guider.workspaces.studentactivity
-                    .read(workspace.id, id), 'callback')();
-                  workspaces[index].studentActivity = activity;
-                })
-                ),
                 Promise.all(workspaces.map(async (workspace, index) => {
                   let statistics: WorkspaceForumStatisticsType = <WorkspaceForumStatisticsType>await promisify(mApi().workspace.workspaces.forumStatistics
                     .read(workspace.id, { userIdentifier: id }), 'callback')();
