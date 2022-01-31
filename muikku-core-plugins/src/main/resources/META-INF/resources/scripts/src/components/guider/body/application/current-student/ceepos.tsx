@@ -314,20 +314,23 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
         {this.props.guider.availablePurchaseProducts && this.props.guider.availablePurchaseProducts.length ?
           <>
             <div className="application-sub-panel__description">{this.props.i18n.text.get("plugin.guider.createStudentOrder.description")}</div>
-            <Dropdown modifier="guider-products-selection" items={this.props.guider.availablePurchaseProducts.map((p) => {
-              return (closeDropdown: () => any) => {
-                return <Link className="link link--full link--purchasable-product-dropdown" onClick={this.beginOrderCreationProcess.bind(this, p, closeDropdown)}>
-                  <span className="link__icon icon-plus"></span>
-                  <span>{p.Description}</span>
-                </Link>
-              }
-            })}>
-              <Button
-                icon="cart-plus"
-                buttonModifiers={["create-student-order", "info"]}
-                disabled={IsOrderCreationDisabled}
-              >{this.props.i18n.text.get("plugin.guider.createStudentOrder.buttonLabel")}</Button>
-            </Dropdown>
+            {this.props.status.permissions.CREATE_ORDER ?
+              <Dropdown modifier="guider-products-selection" items={this.props.guider.availablePurchaseProducts.map((p) => {
+                return (closeDropdown: () => any) => {
+                  return <Link className="link link--full link--purchasable-product-dropdown" onClick={this.beginOrderCreationProcess.bind(this, p, closeDropdown)}>
+                    <span className="link__icon icon-plus"></span>
+                    <span>{p.Description}</span>
+                  </Link>
+                }
+              })}>
+                <Button
+                  icon="cart-plus"
+                  buttonModifiers={["create-student-order", "info"]}
+                  disabled={IsOrderCreationDisabled}
+                >{this.props.i18n.text.get("plugin.guider.createStudentOrder.buttonLabel")}</Button>
+              </Dropdown>
+            : null}
+
           </> : <div className="empty">
             <span>{this.props.i18n.text.get("plugin.guider.noPurchasableProducts")}</span>
           </div>
