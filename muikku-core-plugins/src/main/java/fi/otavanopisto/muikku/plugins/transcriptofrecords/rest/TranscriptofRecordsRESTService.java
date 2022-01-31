@@ -68,6 +68,8 @@ import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.StudiesViewCours
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.TranscriptOfRecordsFile;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceEntityFileController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceVisitController;
+import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRestModels;
+import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceSubjectRestModel;
 import fi.otavanopisto.muikku.schooldata.CourseMetaController;
 import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.MatriculationSchoolDataController;
@@ -81,6 +83,7 @@ import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibility;
 import fi.otavanopisto.muikku.schooldata.entity.Subject;
 import fi.otavanopisto.muikku.schooldata.entity.TransferCredit;
 import fi.otavanopisto.muikku.schooldata.entity.User;
+import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchProvider.Sort;
@@ -169,6 +172,9 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
 
   @Inject
   private AssessmentRequestController assessmentRequestController;
+  
+  @Inject
+  private WorkspaceRestModels workspaceRestModels;
   
   @Inject
   @Any
@@ -564,7 +570,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   public Response listWorkspaces(
         @QueryParam("userIdentifier") String userIdentifierParam,
         @Context Request request) {
-    List<fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace> workspaces = new ArrayList<>();
+    List<ToRWorkspaceRestModel> workspaces = new ArrayList<>();
 
     SchoolDataIdentifier userIdentifier = SchoolDataIdentifier.fromId(userIdentifierParam);
     if (userIdentifier == null) {
@@ -648,7 +654,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     return Response.ok(workspaces).build();
   }
   
-  private fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace createRestModel(
+  private ToRWorkspaceRestModel createRestModel(
       SchoolDataIdentifier userIdentifier,
       WorkspaceEntity workspaceEntity,
       String name,
@@ -668,6 +674,12 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
       assessmentStates = assessmentRequestController.getAllWorkspaceAssessmentStates(workspaceUserEntity);
     }
     
+    // TODO can we avoid loading workspace?
+    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+    List<WorkspaceSubjectRestModel> subjectRestModels = workspace.getSubjects().stream()
+        .map(workspaceSubject -> workspaceRestModels.toRestModel(workspaceSubject))
+        .collect(Collectors.toList());
+    
     GuiderStudentWorkspaceActivityRestModel guiderStudentWorkspaceActivityRestModel = toRestModel(activity, assessmentStates);
     
     return new ToRWorkspaceRestModel(workspaceEntity.getId(),
@@ -684,6 +696,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
         lastVisit,
         curriculumIdentifiers,
         hasCustomImage,
+        subjectRestModels,
         guiderStudentWorkspaceActivityRestModel);
   }
 
