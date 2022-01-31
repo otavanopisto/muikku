@@ -1,11 +1,13 @@
 package fi.otavanopisto.muikku.plugins.transcriptofrecords.rest;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.plugins.guider.GuiderStudentWorkspaceActivityRestModel;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace;
+import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceSubjectRestModel;
 
 public class ToRWorkspaceRestModel extends Workspace {
 
@@ -27,6 +29,7 @@ public class ToRWorkspaceRestModel extends Workspace {
       Date lastVisit,
       Set<String> curriculumIdentifiers,
       boolean hasCustomImage, 
+      List<WorkspaceSubjectRestModel> subjects, 
       GuiderStudentWorkspaceActivityRestModel activity) {
     super(
         id, 
@@ -43,6 +46,7 @@ public class ToRWorkspaceRestModel extends Workspace {
         lastVisit, 
         curriculumIdentifiers,
         hasCustomImage);
+    this.setSubjects(subjects);
     this.activity = activity;
   }
 
@@ -54,5 +58,14 @@ public class ToRWorkspaceRestModel extends Workspace {
     this.activity = activity;
   }
 
+  public List<WorkspaceSubjectRestModel> getSubjects() {
+    return subjects;
+  }
+
+  public void setSubjects(List<WorkspaceSubjectRestModel> subjects) {
+    this.subjects = subjects;
+  }
+
+  private List<WorkspaceSubjectRestModel> subjects;
   private GuiderStudentWorkspaceActivityRestModel activity;
 }
