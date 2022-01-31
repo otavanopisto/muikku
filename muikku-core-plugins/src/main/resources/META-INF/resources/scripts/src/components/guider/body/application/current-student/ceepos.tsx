@@ -369,7 +369,7 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
                       : null}
 
                       {/* We show "Complete order" button only if logged in user has COMPLETE_ORDER permission */}
-                      {this.props.status.permissions.COMPLETE_ORDER ?
+                      {this.props.status.role === "ADMINISTRATOR" ?
                         <Button
                           onClick={this.beginOrderManualCompleteProcess.bind(this, p)}
                           disabled={IsOrderCompletionManuallyDisabled(p.state)}
