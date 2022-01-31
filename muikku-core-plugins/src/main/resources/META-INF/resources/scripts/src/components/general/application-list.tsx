@@ -19,7 +19,7 @@ export default class ApplicationList extends React.Component<ApplicationListProp
   render() {
     let modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
     return <div className={`application-list ${this.props.className ? this.props.className : ""} ${this.props.modifiers ? modifiers.map(m => `application-list--${m}`).join(" ") : ""}`}>
-      <div className={`application-list__content ${this.props.modifiers ? modifiers.map(m => `application-list__content--${m}`).join(" ") : ""} ${this.props.contentState ? this.props.contentState : null}`}>{this.props.children}</div>
+      <div className={`application-list__content ${this.props.modifiers ? modifiers.map(m => `application-list__content--${m}`).join(" ") : ""} ${this.props.contentState ? this.props.contentState : ""}`}>{this.props.children}</div>
       {this.props.footer ? <div className={`application-list__footer ${this.props.modifiers ? modifiers.map(m => `application-list__footer--${m}`).join(" ") : ""}`}>{this.props.footer}</div> : null}
     </div>
   }

@@ -209,6 +209,7 @@ class AnswerMessageDrawer extends SessionStateComponent<
         promisify(
           mApi().communicator.recipientsUsersSearch.read({
             q: searchString,
+            maxResults: 20,
           }),
           "callback"
         ),
@@ -216,6 +217,7 @@ class AnswerMessageDrawer extends SessionStateComponent<
         promisify(
           mApi().communicator.recipientsWorkspacesSearch.read({
             q: searchString,
+            maxResults: 20,
           }),
           "callback"
         ),

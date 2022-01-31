@@ -1316,7 +1316,8 @@
 }
 
 .button-pill--sorter,
-.button-pill--archive,
+.button-pill--archive-request,
+.button-pill--archive-student,
 .button-pill--evaluate,
 .button-icon--important,
 .button-icon--unimportant {
@@ -1352,7 +1353,16 @@
   color: $color-default;
 }
 
-.button-pill--archive {
+.button-pill--archive-request {
+  background: $color-fatal;
+  color: $color-default;
+
+  &:hover {
+    background: darken($color-fatal, 10%);
+  }
+}
+
+.button-pill--archive-student {
   background: $color-default-contrast;
   color: $color-default;
 
