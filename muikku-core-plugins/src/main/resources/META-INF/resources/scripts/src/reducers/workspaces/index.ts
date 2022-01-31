@@ -33,13 +33,42 @@ export type WorkspaceAssessementStateType =
   | "fail"
   | "incomplete";
 
+export interface Assessment {
+  date: string;
+  state: WorkspaceAssessementStateType;
+  grade: string;
+  text: string;
+  workspaceSubjectIdentifier: string | null;
+}
+
+export interface WorkspacetActivityType {
+  assessmentState: Assessment[];
+  evaluablesAnswered: number;
+  evaluablesAnsweredLastDate: string;
+  evaluablesDonePercent: number;
+  evaluablesFailed: number;
+  evaluablesFailedLastDate?: string;
+  evaluablesIncomplete: number;
+  evaluablesIncompleteLastDate?: string;
+  evaluablesPassed: number;
+  evaluablesPassedLastDate?: string;
+  evaluablesSubmitted: number;
+  evaluablesSubmittedLastDate?: string;
+  evaluablesTotal: number;
+  evaluablesUnanswered: number;
+  exercisesAnswered: number;
+  exercisesAnsweredLastDate: string;
+  exercisesDonePercent: number;
+  exercisesTotal: number;
+  exercisesUnanswered: number;
+  journalEntryCount: number;
+  lastJournalEntry?: string;
+  lastVisit?: string;
+  numVisits: number;
+}
+
 export interface WorkspaceStudentActivityType {
-  assessmentState: {
-    date: string;
-    state: WorkspaceAssessementStateType;
-    grade: string;
-    text: string;
-  };
+  assessmentState: Assessment;
   evaluablesAnswered: number;
   evaluablesAnsweredLastDate: string;
   evaluablesDonePercent: number;
@@ -255,6 +284,7 @@ export interface WorkspaceType {
   educationTypeName?: string;
 
   //These are optional addons, and are usually not available
+  activity?: WorkspacetActivityType;
   studentActivity?: WorkspaceStudentActivityType;
   forumStatistics?: WorkspaceForumStatisticsType;
   studentAssessments?: WorkspaceStudentAssessmentsType;
@@ -540,7 +570,7 @@ export interface MaterialEvaluationType {
 
 export type MaterialContentNodeListType = Array<MaterialContentNodeType>;
 
-function processWorkspaceToHaveNewAssessmentStateAndDate(
+/* function processWorkspaceToHaveNewAssessmentStateAndDate(
   id: number,
   assessmentState: WorkspaceAssessementStateType,
   date: string,
@@ -548,6 +578,9 @@ function processWorkspaceToHaveNewAssessmentStateAndDate(
   deleteAssessmentRequestObject: boolean,
   workspace: WorkspaceType
 ) {
+
+  console.log("Tapahtuu jotain", id, assessmentState, date, assessmentRequestObject, deleteAssessmentRequestObject, workspace);
+
   let replacement =
     workspace && workspace.id === id ? { ...workspace } : workspace;
   if (replacement && replacement.id === id) {
@@ -586,7 +619,7 @@ function processWorkspaceToHaveNewAssessmentStateAndDate(
     }
   }
   return replacement;
-}
+} */
 
 export default function workspaces(
   state: WorkspacesType = {
@@ -660,7 +693,7 @@ export default function workspaces(
       currentWorkspace: <WorkspaceType>action.payload,
     });
   } else if (action.type === "UPDATE_WORKSPACE_ASSESSMENT_STATE") {
-    return Object.assign({}, state, {
+    /* return Object.assign({}, state, {
       currentWorkspace: processWorkspaceToHaveNewAssessmentStateAndDate(
         action.payload.workspace.id,
         action.payload.newState,
@@ -688,7 +721,7 @@ export default function workspaces(
           action.payload.newAssessmentRequest
         )
       ),
-    });
+    }); */
   } else if (
     action.type === "UPDATE_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES"
   ) {
