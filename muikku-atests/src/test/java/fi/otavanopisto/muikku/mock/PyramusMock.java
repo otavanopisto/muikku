@@ -11,6 +11,8 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 
+import java.nio.charset.StandardCharsets;
+import java.sql.Array;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -35,8 +37,10 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.matching.UrlPathPattern;
 import com.github.tomakehurst.wiremock.stubbing.ServeEvent;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
+import com.google.common.hash.Hashing;
 
 import fi.otavanopisto.muikku.TestUtilities;
+import fi.otavanopisto.muikku.atests.CeeposPaymentResponseRestModel;
 import fi.otavanopisto.muikku.atests.PyramusMatriculationExam;
 import fi.otavanopisto.muikku.mock.model.MockCourseStudent;
 import fi.otavanopisto.muikku.mock.model.MockLoggable;
@@ -88,6 +92,7 @@ import fi.otavanopisto.pyramus.webhooks.WebhookStudentCreatePayload;
 import fi.otavanopisto.pyramus.webhooks.WebhookStudentGroupCreatePayload;
 import fi.otavanopisto.pyramus.webhooks.WebhookStudentGroupStaffMemberCreatePayload;
 import fi.otavanopisto.pyramus.webhooks.WebhookStudentGroupStudentCreatePayload;
+import fi.otavanopisto.pyramus.webhooks.WebhookStudyProgrammeCreatePayload;
 
 public class PyramusMock {
   
@@ -136,6 +141,11 @@ public class PyramusMock {
         pmock.courseTypes.add(new fi.otavanopisto.pyramus.rest.model.CourseType((long) 2, "Ryhmäkurssi", false));        
       }
 
+      public Builder addStudyProgramme(StudyProgramme studyProgramme) {
+        pmock.studyProgrammes.add(studyProgramme);
+        return this;
+      }
+      
       public Builder addStudents(List<MockStudent> students) {
         for(MockStudent mockStudent : students) {
           Person person = new Person(mockStudent.getPersonId(), mockStudent.getBirthday(), mockStudent.getSocialSecurityNumber(), mockStudent.getSex(), false, "empty", mockStudent.getPersonId());
@@ -286,7 +296,8 @@ public class PyramusMock {
         return this;
       }
 
-      public Builder mockStudentGroups() throws JsonProcessingException {
+      public Builder mockStudentGroups() throws Exception {
+        List<String> payloads = new ArrayList<>();
         stubFor(get(urlMatching(String.format("/1/students/studentGroups")))
             .willReturn(aResponse()
               .withHeader("Content-Type", "application/json")
@@ -298,7 +309,8 @@ public class PyramusMock {
               .withHeader("Content-Type", "application/json")
               .withBody(pmock.objectMapper.writeValueAsString(sg))
               .withStatus(200)));
-          pmock.payloads.add(pmock.objectMapper.writeValueAsString(new WebhookStudentGroupCreatePayload(sg.getId())));          
+          pmock.payloads.add(pmock.objectMapper.writeValueAsString(new WebhookStudentGroupCreatePayload(sg.getId())));
+          payloads.add(pmock.objectMapper.writeValueAsString(new WebhookStudentGroupCreatePayload(sg.getId())));
         }
         
         for (Long groupId : pmock.studentGroupUsers.keySet()) {
@@ -313,8 +325,8 @@ public class PyramusMock {
                 .withHeader("Content-Type", "application/json")
                 .withBody(pmock.objectMapper.writeValueAsString(sgStudent))
                 .withStatus(200)));
-
             pmock.payloads.add(pmock.objectMapper.writeValueAsString(new WebhookStudentGroupStudentCreatePayload(sgStudent.getId(), groupId, sgStudent.getStudentId())));
+            payloads.add(pmock.objectMapper.writeValueAsString(new WebhookStudentGroupStudentCreatePayload(sgStudent.getId(), groupId, sgStudent.getStudentId())));
             }else if(o instanceof StudentGroupUser){
               StudentGroupUser sgUser = (StudentGroupUser) o;
               users.add(sgUser);
@@ -324,6 +336,7 @@ public class PyramusMock {
                   .withBody(pmock.objectMapper.writeValueAsString(sgUser))
                   .withStatus(200)));
               pmock.payloads.add(pmock.objectMapper.writeValueAsString(new WebhookStudentGroupStaffMemberCreatePayload(sgUser.getId(), groupId, sgUser.getStaffMemberId())));
+              payloads.add(pmock.objectMapper.writeValueAsString(new WebhookStudentGroupStaffMemberCreatePayload(sgUser.getId(), groupId, sgUser.getStaffMemberId())));
             }
           }
 //        students
@@ -339,6 +352,11 @@ public class PyramusMock {
             .withBody(pmock.objectMapper.writeValueAsString(users))
             .withStatus(200)));            
         }
+        
+        for (String payload : payloads) {
+          TestUtilities.webhookCall("http://dev.muikku.fi:" + System.getProperty("it.port.http") + "/pyramus/webhook", payload);
+        }
+        
         return this;
       }
       
@@ -578,8 +596,8 @@ public class PyramusMock {
         return this;
       }
     
-      public Builder mockStudents() throws JsonProcessingException{
-
+      public Builder mockStudents() throws Exception{
+        List<String> payloads = new ArrayList<>();
         List<Student> studentsList = new ArrayList<>();
         for (MockStudent mockStudent : pmock.students) {
           Student student = TestUtilities.studentFromMockStudent(mockStudent);
@@ -615,6 +633,7 @@ public class PyramusMock {
           
           studentsList.add(student);
           pmock.payloads.add(pmock.objectMapper.writeValueAsString(new WebhookStudentCreatePayload(student.getId())));
+          payloads.add(pmock.objectMapper.writeValueAsString(new WebhookStudentCreatePayload(student.getId())));
         }
         
         stubFor(get(urlPathEqualTo("/1/students/students"))
@@ -632,10 +651,15 @@ public class PyramusMock {
             .withBody(pmock.objectMapper.writeValueAsString(studentsList))
             .withStatus(200)));
         
+        for (String payload : payloads) {
+          TestUtilities.webhookCall("http://dev.muikku.fi:" + System.getProperty("it.port.http") + "/pyramus/webhook", payload);
+        }
+        
         return this;
       }
       
-      public Builder mockPersons() throws JsonProcessingException {
+      public Builder mockPersons() throws Exception {
+        List<String> payloads = new ArrayList<>();
         for (Person person : pmock.persons) {
           stubFor(get(urlEqualTo("/1/persons/persons/" + person.getId()))
             .willReturn(aResponse()
@@ -650,8 +674,8 @@ public class PyramusMock {
               .withHeader("Content-Type", "application/json")
               .withBody(pmock.objectMapper.writeValueAsString(userCredentials))
               .withStatus(200)));
-          
-          pmock.payloads.add(pmock.objectMapper.writeValueAsString(new WebhookPersonCreatePayload(person.getId())));
+          pmock.payloads.add(pmock.objectMapper.writeValueAsString(new WebhookPersonCreatePayload(person.getId())));          
+          payloads.add(pmock.objectMapper.writeValueAsString(new WebhookPersonCreatePayload(person.getId())));
         }
         
         stubFor(get(urlPathEqualTo("/1/persons/persons"))
@@ -666,11 +690,15 @@ public class PyramusMock {
             .withHeader("Content-Type", "application/json")
             .withBody(pmock.objectMapper.writeValueAsString(pmock.persons))
             .withStatus(200)));
-
+        
+        for (String payload : payloads) {
+          TestUtilities.webhookCall("http://dev.muikku.fi:" + System.getProperty("it.port.http") + "/pyramus/webhook", payload);
+        }
         return this;
       }
       
-      public Builder mockStudyProgrammes() throws JsonProcessingException {       
+      public Builder mockStudyProgrammes() throws Exception {       
+        List<String> payloads = new ArrayList<>();
         stubFor(get(urlEqualTo("/1/students/studyProgrammes"))
             .willReturn(aResponse()
               .withHeader("Content-Type", "application/json")
@@ -682,7 +710,9 @@ public class PyramusMock {
             .willReturn(aResponse()
               .withHeader("Content-Type", "application/json")
               .withBody(pmock.objectMapper.writeValueAsString(sp))
-              .withStatus(200)));          
+              .withStatus(200)));
+          pmock.payloads.add(pmock.objectMapper.writeValueAsString(new WebhookStudyProgrammeCreatePayload(sp.getId())));
+          payloads.add(pmock.objectMapper.writeValueAsString(new WebhookStudyProgrammeCreatePayload(sp.getId())));
         }
 
         stubFor(get(urlEqualTo("/1/students/studyProgrammeCategories"))
@@ -696,8 +726,13 @@ public class PyramusMock {
             .willReturn(aResponse()
               .withHeader("Content-Type", "application/json")
               .withBody(pmock.objectMapper.writeValueAsString(spc))
-              .withStatus(200)));          
+              .withStatus(200)));
         }
+        
+        for (String payload : payloads) {
+          TestUtilities.webhookCall("http://dev.muikku.fi:" + System.getProperty("it.port.http") + "/pyramus/webhook", payload);
+        }
+        
         return this;
       }
       
@@ -1300,26 +1335,63 @@ public class PyramusMock {
         }
         return this;
       }
+          
+      public Builder mockStudyTimeIncrease(MockStudent mockStudent, int months) throws JsonProcessingException {
+        this.updateStudent(mockStudent);
+        stubFor(post(urlEqualTo(String.format("/1/students/students/%d/increaseStudyTime?months=%d", mockStudent.getId(), months)))
+          .willReturn(aResponse()
+            .withHeader("Content-type", "application/json")
+            .withBody(pmock.objectMapper.writeValueAsString(TestUtilities.studentFromMockStudent(mockStudent)))
+            .withStatus(200)));        
+        return this;
+      }
+      
+//    This is actually mocking cpu payment service, but not getting it's own class.  
+      public Builder mockCeeposRequestPayment(String orderNo, String refNo, String cSalt, String hash, String returnAppUrl, int retStatus) throws JsonProcessingException {
+        String returnAddress = returnAppUrl + "/ceepos/done?Id=" + orderNo + "&Status=" + retStatus + "&Reference=" + refNo +"&Hash=" + hash;
+        StringBuilder sb = new StringBuilder();
+        sb.append(orderNo);
+        sb.append("&");
+        sb.append(2);
+        sb.append("&");
+        sb.append(refNo);
+        sb.append("&");
+        sb.append("new payment");
+        sb.append("&");
+        sb.append(returnAddress);
+        sb.append("&");
+        sb.append(cSalt);
+        String expectedHash = Hashing.sha256().hashString(sb.toString(), StandardCharsets.UTF_8).toString();
+        CeeposPaymentResponseRestModel response = new CeeposPaymentResponseRestModel(orderNo, 2, refNo, "new payment", returnAddress, expectedHash);
+        stubFor(post(urlEqualTo("/ceeposrequestpayment"))
+          .willReturn(aResponse()
+            .withHeader("Content-Type", "application/json")
+            .withBody(pmock.objectMapper.writeValueAsString(response))
+            .withStatus(200)));
+        return this;
+      }
       
       public Builder build() throws Exception {
-        mockDefaultOrganization();        
-        mockPersons();
-        mockStudents();
-        mockStaffMembers();
-
-        mockContactTypes();
+        mockDefaultOrganization();
         mockStudyProgrammes();
-        mockGradesAndScales();
-        mockEducationalTimeUnits();
-        mockEducationTypes();
-        mockSubjects();
+        mockStudentGroups();
+        mockContactTypes();
         mockCourses();
         mockCourseEducationTypes();
         mockCourseTypes();
         mockCourseStaffMembers();
         mockCourseStudents();
         mockCourseStaffMemberRoles();
-        mockStudentGroups();
+        
+        mockGradesAndScales();
+        mockEducationalTimeUnits();
+        mockEducationTypes();
+        mockSubjects();
+
+        mockPersons();
+        mockStudents();
+        mockStaffMembers();
+        
         mockCourseActivities();
         
         for (String payload : pmock.payloads) {
