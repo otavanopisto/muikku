@@ -521,7 +521,7 @@
 
   &[disabled] {
     cursor: not-allowed;
-    opacity: 0.5;
+    opacity: 50%;
   }
 }
 
@@ -554,8 +554,6 @@
 
 .chat__checkbox {
   align-items: center;
-  appearance: none;
-  appearance: none;
   appearance: none;
   border: 2px solid $color-chat-other-room-main-color;
   border-radius: 2px;
@@ -719,7 +717,7 @@
 
 .chat__message--deleted {
   font-style: italic;
-  opacity: 0.35;
+  opacity: 35%;
 }
 
 .chat__message-edited-info {

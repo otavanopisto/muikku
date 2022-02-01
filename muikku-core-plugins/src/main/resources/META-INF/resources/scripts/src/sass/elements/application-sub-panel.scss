@@ -454,7 +454,7 @@
 }
 
 .application-sub-panel__multiple-item-container-title {
-  font-weight: bold;
+  font-weight: 600;
 }
 
 .application-sub-panel__multiple-item-container-description {
@@ -627,7 +627,7 @@
 
   // scss-lint:disable SelectorFormat
   &.NON-ACTIVE {
-    opacity: 0.5;
+    opacity: 50%;
   }
 
   // scss-lint:enable SelectorFormat

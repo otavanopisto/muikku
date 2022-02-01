@@ -51,8 +51,6 @@
   input[type="checkbox"] {
     align-items: center;
     appearance: none;
-    appearance: none;
-    appearance: none;
     border: 2px solid $color-main-function-application-list-item-checkbox-border;
     border-radius: 3px;
     display: flex;
@@ -134,7 +132,7 @@
 
 .filter-item--workspaces-empty {
   font-style: italic;
-  opacity: 0.8;
+  opacity: 80%;
 }
 
 .filter-item--evaluation-requested {

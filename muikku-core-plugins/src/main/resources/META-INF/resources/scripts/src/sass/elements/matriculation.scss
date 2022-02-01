@@ -205,8 +205,6 @@
 .matriculation__input[type="checkbox"] {
   align-items: center;
   appearance: none;
-  appearance: none;
-  appearance: none;
   border: solid 2px $color-matriculation-dialog-form-element-border;
   border-radius: 3px;
   display: flex;
@@ -223,7 +221,7 @@
 .matriculation__input[type="checkbox"]:checked::after {
   color: $color-default;
   content: "\e639";
-  font-family: muikku;
+  font-family: "muikku";
   font-size: 0.875rem;
 }
 
@@ -382,17 +380,17 @@
 }
 
 .matriculation__saving-draft--fade-in {
-  opacity: 1;
+  opacity: 100%;
   transition: opacity 500ms linear;
 }
 
 .matriculation__saving-draft--fade-out {
-  opacity: 0;
+  opacity: 0%;
   transition: opacity 500ms linear;
 }
 
 .matriculation__hightlighted {
-  font-weight: bold;
+  font-weight: 600;
 }
 
 // Animations
@@ -400,14 +398,14 @@
 // blink
 @keyframes blink {
   0% {
-    opacity: 0.2;
+    opacity: 20%;
   }
 
   20% {
-    opacity: 1;
+    opacity: 100%;
   }
 
   100% {
-    opacity: 0.2;
+    opacity: 20%;
   }
 }

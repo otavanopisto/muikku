@@ -11,7 +11,7 @@
   bottom: 0;
   display: block;
   left: 0;
-  opacity: 0;
+  opacity: 0%;
   overflow: auto;
   position: fixed;
   right: 0;
@@ -19,7 +19,7 @@
   z-index: 9999;
 
   &.visible {
-    opacity: 1;
+    opacity: 100%;
 
     .env-dialog__wrapper {
       bottom: 0;
@@ -311,8 +311,6 @@
 .env-dialog__input[type="checkbox"] {
   align-items: center;
   appearance: none;
-  appearance: none;
-  appearance: none;
   border: solid 2px $color-env-dialog-form-element-border;
   border-radius: 3px;
   display: flex;
@@ -375,7 +373,7 @@
 
 // Reply Message "Non-dialog"
 .env-dialog--reply-message {
-  opacity: 1;
+  opacity: 100%;
   position: relative;
   z-index: unset;
 

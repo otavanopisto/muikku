@@ -12,7 +12,7 @@
 
   // scss-lint:disable SelectorFormat
   &.state-HIDDEN {
-    opacity: 0.3;
+    opacity: 30%;
   }
 
   &.state-SUBMITTED.state-HIDDEN,
@@ -21,7 +21,7 @@
   &.state-PASSED.state-HIDDEN,
   &.state-FAILED.state-HIDDEN,
   &.state-INCOMPLETE.state-HIDDEN {
-    opacity: 0.6;
+    opacity: 60%;
   }
 
   // scss-lint:enable SelectorFormat
@@ -297,7 +297,7 @@
     font-size: $text-mobile-font-size;
     font-weight: 400;
     margin: 2.25rem 0 0;
-    opacity: 0.9;
+    opacity: 90%;
     padding: 15px 10px;
   }
 
@@ -508,7 +508,7 @@
   color: $color-default-contrast;
   display: block;
   max-width: 300px;
-  opacity: 0;
+  opacity: 0%;
   padding: 3px 6px;
   position: absolute;
   text-align: left;
@@ -572,7 +572,7 @@
 
   &:hover {
     .material-page__field-hint {
-      opacity: 0;
+      opacity: 0%;
       visibility: hidden;
       z-index: 2;
     }
@@ -720,8 +720,6 @@
 .material-page__radiobutton {
   align-items: center;
   appearance: none;
-  appearance: none;
-  appearance: none;
   border: solid 2px $taskfield-border-color;
   border-radius: 100%;
   display: inline-flex;
@@ -738,7 +736,7 @@
   &:checked::after {
     color: $color-default;
     content: "\e639";
-    font-family: muikku;
+    font-family: "muikku";
     font-size: 0.875rem;
   }
 }
@@ -782,8 +780,6 @@
 .material-page__checkbox {
   align-items: center;
   appearance: none;
-  appearance: none;
-  appearance: none;
   border: solid 2px $taskfield-border-color;
   border-radius: 2px;
   display: inline-flex;
@@ -800,7 +796,7 @@
   &:checked::after {
     color: $color-default;
     content: "\e639";
-    font-family: muikku;
+    font-family: "muikku";
     font-size: 0.875rem;
   }
 
@@ -1309,7 +1305,7 @@
 .material-page__organizerfield-term--missing {
   cursor: default;
   line-height: 1; // This prevents text misalignment in mobile views
-  opacity: 0.6;
+  opacity: 60%;
   padding: 4px 6px;
 
   @include breakpoint($breakpoint-pad) {
@@ -1817,7 +1813,7 @@ mark[data-muikku-word-definition] {
 .material-page__assignment-assessment-verbal-label {
   @include assessment-text;
 
-  font-weight: bold;
+  font-weight: 600;
 }
 
 .material-page__assignment-assessment-literal-data {
@@ -1839,7 +1835,7 @@ mark[data-muikku-word-definition] {
 }
 
 .material-page__assignment-assessment-grade-label {
-  font-weight: bold;
+  font-weight: 600;
   padding: 0 10px 0 0;
 }
 
@@ -1858,7 +1854,7 @@ mark[data-muikku-word-definition] {
 .material-page__assignment-assessment-icon {
   font-size: 2rem;
   line-height: 1;
-  opacity: 0.3;
+  opacity: 30%;
   position: absolute;
   right: 20px;
   top: 20px;
@@ -1877,7 +1873,7 @@ mark[data-muikku-word-definition] {
 }
 
 .material-page__assignment-assessment-date-label {
-  font-weight: bold;
+  font-weight: 600;
   padding: 0 10px 0 0;
 }
 
@@ -2308,7 +2304,7 @@ mark[data-muikku-word-definition] {
     color: $color-material-citation-quote;
     content: open-quote;
     display: inline-block;
-    font-family: arial;
+    font-family: "Arial";
     font-size: 70px;
     line-height: 1px;
     vertical-align: -25px;
@@ -2319,7 +2315,7 @@ mark[data-muikku-word-definition] {
     color: $color-material-citation-quote;
     content: close-quote;
     display: inline-block;
-    font-family: arial;
+    font-family: "Arial";
     font-size: 70px;
     line-height: 1px;
     vertical-align: -25px;
@@ -2341,7 +2337,7 @@ mark[data-muikku-word-definition] {
   &::before {
     color: $color-material-citation-quote;
     content: open-quote;
-    font-family: arial;
+    font-family: "Arial";
     font-size: 60px;
     left: 16px;
     position: absolute;

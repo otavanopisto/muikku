@@ -30,7 +30,7 @@
   &.disabled,
   &:disabled {
     cursor: not-allowed;
-    opacity: 0.5;
+    opacity: 50%;
   }
 
   @include breakpoint($breakpoint-pad) {
@@ -125,7 +125,7 @@
 
 .link--icon {
   color: $color-environment-link-icon-color;
-  font-family: muikku;
+  font-family: "muikku";
   font-size: $link-icon-font-size;
   font-style: normal;
   font-variant: none;
@@ -302,7 +302,7 @@
     bottom: 0;
     cursor: pointer;
     left: 0;
-    opacity: 0;
+    opacity: 0%;
     position: absolute;
     right: 0;
     top: 0;

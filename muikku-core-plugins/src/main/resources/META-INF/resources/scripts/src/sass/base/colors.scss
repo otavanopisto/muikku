@@ -1,5 +1,5 @@
 // Generic
-$color-default: #fff;
+$color-default: #ffffff;
 $color-default-contrast: #2c2c2c;
 $color-default-item-separator-border: #f2f2f2;
 $color-default-separator-border: #ebebeb;
@@ -19,13 +19,13 @@ $color-info: #009fe3;
 $color-info-contrast: $color-default;
 $color-fatal: #de3211;
 $color-fatal-contrast: $color-default;
-$color-error: #f60;
+$color-error: #ff6600;
 $color-error-contrast: $color-default;
 $color-success: #24c118;
 $color-success-contrast: $color-default;
 $color-execute: #66b43b;
 $color-execute-contrast: $color-default;
-$color-clear: #f60;
+$color-clear: #ff6600;
 $color-clear-contrast: $color-default;
 $color-cancel: #7391a7;
 $color-cancel-contrast: $color-default;
@@ -82,7 +82,7 @@ $color-message-from-workspace-background: #f5f5f5;
 
 // Assignment & Exercise
 $color-assignment: #ce01bd;
-$color-exercise: #f90;
+$color-exercise: #ff9900;
 $color-withdrawn: #b3b2b2;
 $color-submitted: #009fe3;
 $color-view-restricted: $color-fatal;
@@ -98,7 +98,7 @@ $color-correct-answer: #43f860;
 $color-incorrect-answer: #f64e4e;
 $color-disabled-taskfield-border: #e3e3e3;
 $color-disabled-taskfield-background: #f5f5f5;
-$color-disabled-taskfield-icon: #ddd;
+$color-disabled-taskfield-icon: #dddddd;
 $color-taskfield-explanation-border: #5ed2ff;
 $color-taskfield-explanation-background: #fafeff;
 $color-taskfield-hint-border: #d6d823;
@@ -145,7 +145,7 @@ $color-assessment-box-shadow: 0 0 5px rgb(255 255 255 / 80%);
 // General
 $color-default-body: #f5f5f5;
 $color-overlay-background: rgb(0 0 0 / 50%);
-$color-executing-background: #fff;
+$color-executing-background: #ffffff;
 
 // Notification queue
 $color-notification-queue-item-container-shadow: rgb(0 0 0 / 30%);
@@ -203,7 +203,7 @@ $color-button-secondary-background: $color-secondary;
 $color-button-secondary-text: $color-secondary-contrast;
 $color-button-inverse-background: $color-inverse;
 $color-button-inverse-text: $color-inverse-contrast;
-$color-button-disabled-background: #ccc;
+$color-button-disabled-background: #cccccc;
 $color-workspace-signup-readmore-button-background: #ff008d;
 $color-button-wizard-background: $color-primary;
 $color-button-wizard-text: $color-primary-contrast;
@@ -219,7 +219,7 @@ $color-icon-button-text: #0fa5e4;
 // Button pill theme
 $color-button-pill-background: $color-primary;
 $color-button-pill-text: $color-default-contrast;
-$color-button-pill-background-disabled: #ccc;
+$color-button-pill-background-disabled: #cccccc;
 $color-button-pill-text-disabled: $color-default;
 $color-button-pill-shadow: rgb(255 255 255 / 40%);
 
@@ -301,7 +301,7 @@ $color-dialog-mobile-text: $color-inverse;
 $color-dialog-desktop-text: $color-default;
 $color-dialog-mobile-background: $color-default;
 $color-dialog-desktop-background: $color-primary;
-$color-dialog-default-title-text: #000;
+$color-dialog-default-title-text: #000000;
 $color-dialog-default-shadow: rgb(0 0 0 / 60%);
 $color-dialog-wizard-desktop-text: $color-inverse;
 $color-dialog-wizard-desktop-background: $color-default;
@@ -333,7 +333,7 @@ $color-instagram-main-color: #e1306c;
 $color-carousel-default-dot-background: #afafaf;
 $color-carousel-default-dot-border: $color-default;
 $color-carousel-default-dot-active-background: $color-warn;
-$color-carousel-focused-dot-active-background: #000;
+$color-carousel-focused-dot-active-background: #000000;
 
 // Hero
 $color-hero-default-background: #0089c6;
@@ -354,8 +354,8 @@ $color-panel-border: #e2e2e2;
 $color-panel-shadow: rgb(0 0 0 / 5%);
 
 // item list
-$color-item-list-item-font-color-active: #fff;
-$color-item-list-item-background: #fff;
+$color-item-list-item-font-color-active: #ffffff;
+$color-item-list-item-background: #ffffff;
 $color-item-list-item-background-hover: $color-list-hover-background;
 $color-item-list-item-background-active: $color-list-active-background;
 $color-item-list-item-aside-background: #f7f7f7;
@@ -379,13 +379,13 @@ $color-reading-panel-box-border: $color-panel-border-color;
 $color-toc-box-border: $color-panel-border-color;
 
 // Application list
-$color-application-list-item-background: #fff;
+$color-application-list-item-background: #ffffff;
 $color-application-list-sorter-background: #f8f8f8;
 $color-application-list-item-fade-background: rgb(255 255 255 / 0%);
 $color-application-list-item-background-hover: $color-list-hover-background;
 $color-application-list-item-background-active: $color-list-active-background;
 $color-application-list-item-background-selected: $color-list-selected-background;
-$color-application-list-item-checkmark-selected: #fff;
+$color-application-list-item-checkmark-selected: #ffffff;
 $color-application-list-item-course-border-selected: #29b0c4;
 
 // Loader
@@ -412,13 +412,13 @@ $color-matriculation-dialog-form-element-border: #f8a1ce;
 // Autocomplete
 $color-autocomplete-list-border: #dcdcdc;
 $color-autocomplete-list-background-color: $color-default;
-$color-autocomplete-list-item-hover: #eee;
-$color-autocomplete-list-item-active: #ddd;
+$color-autocomplete-list-item-hover: #eeeeee;
+$color-autocomplete-list-item-active: #dddddd;
 $color-autocomplete-list-item-selected: #29b0c4;
 
 // Rangeslider
 $color-rangeslider-background: #e6e6e6;
-$color-rangeslider-handle-border: #ccc;
+$color-rangeslider-handle-border: #cccccc;
 $color-rangeslider-handle-shadow: rgb(0 0 0 / 40%);
 $color-rangeslider-fill-shadow: rgb(0 0 0 / 40%);
 $color-rangeslider-handle-tooltip-border: rgb(0 0 0 / 80%);
@@ -427,7 +427,7 @@ $color-rangeslider-handle-background: #f2f2f2;
 
 // Materials specific and extended
 $color-material-citation-background: #f8f8f8;
-$color-material-citation-quote: #bbb;
+$color-material-citation-quote: #bbbbbb;
 $color-material-highlight-text-background: #f8f8f8;
 $color-material-highlight-text-border: #00e3cb;
 $color-material-file-box: #07d2ff;
@@ -450,21 +450,21 @@ $color-material-exercise-feedback-background: #fbfffa;
 $color-material-exercise-feedback-border: #60daff;
 
 // Math
-$color-math-editor-background: #fff;
-$color-math-editor-border: #ddd;
+$color-math-editor-background: #ffffff;
+$color-math-editor-border: #dddddd;
 $color-math-editor-focus-shadow: rgb(81 203 238 / 100%);
 $color-math-editor-forus-border: rgb(81 203 238 / 100%);
-$color-math-exercise-toolbar-default-background: #fff;
+$color-math-exercise-toolbar-default-background: #ffffff;
 $color-math-exercise-toolbar-default-shadow: rgb(0 0 0 / 40%);
-$color-math-exercise-toolbar-default-border: #ccc;
-$color-math-button-background-hover: #eee;
+$color-math-exercise-toolbar-default-border: #cccccc;
+$color-math-button-background-hover: #eeeeee;
 $color-math-button-tooltip-background: #29b0c4;
 $color-math-editor-border-selected: #29b0c4;
 $color-math-editor-active-line-background: rgb(0 0 0 / 4%);
 $color-math-editor-boxshadow: rgb(0 0 0 / 20%);
 $color-math-editor-line-variable-color: #29b0c4;
 $color-math-editor-line-storage-color: #0083db;
-$color-math-editor-line-constant-color: #f90;
+$color-math-editor-line-constant-color: #ff9900;
 $color-math-editor-line-keyword-color: #0083db;
 
 // Task fields
@@ -480,7 +480,7 @@ $color-environment-navbar-background: #009fe3;
 $color-environment-navbar-title: $color-default;
 $color-environment-navbar-item-menu-button: $color-default;
 $color-workspace-navbar-background: $color-workspace;
-$color-workspace-edit-mode-navbar-background: #000;
+$color-workspace-edit-mode-navbar-background: #000000;
 
 // scollbar
 
@@ -525,7 +525,7 @@ $color-menu-environment-header-button-close: $color-default;
 $color-menu-workspace-header-button-close: $color-default;
 $color-workspace-menu-header-background: $color-workspace-navbar-background;
 $color-workspace-link-menu-icon-background: $color-workspace-navbar-background;
-$color-menu-default-background: #fff;
+$color-menu-default-background: #ffffff;
 $color-menu-default-text: $color-inverse;
 $color-menu-default-header-background: rgb(0 0 0 / 10%);
 $color-menu-default-header-button-close: $color-default;
@@ -548,17 +548,17 @@ $color-tab-border: #5db5c5;
 $color-tab-invisible-border: rgb(255 255 255 / 0%);
 
 //  CATEGORIES
-$color-category-1: #09f;
-$color-category-2: #f90;
+$color-category-1: #0099ff;
+$color-category-2: #ff9900;
 $color-category-3: #ff008d;
 $color-category-4: #0bf0f2;
 $color-category-5: #f00bf2;
 $color-category-6: #47ccae;
 $color-category-7: #7082b0;
 $color-category-8: #6eb5cf;
-$color-category-9: #f00;
+$color-category-9: #ff0000;
 $color-category-10: #0cff00;
-$color-cagtegory-11: #000;
+$color-cagtegory-11: #000000;
 
 // CHAT
 $color-chat-bubble-background: #f95ae7;

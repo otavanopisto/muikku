@@ -10,13 +10,13 @@
   display: block;
   left: 0;
   max-width: 95%;
-  opacity: 0;
+  opacity: 0%;
   position: absolute;
   top: 0;
   z-index: 9999;
 
   &.visible {
-    opacity: 1;
+    opacity: 100%;
   }
 }
 
@@ -28,7 +28,7 @@
   display: block;
   max-height: 350px;
   min-width: 100px;
-  opacity: 1;
+  opacity: 100%;
   padding: 5px;
   position: relative;
   text-align: center;
