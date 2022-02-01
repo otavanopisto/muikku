@@ -348,7 +348,7 @@ class WorkspaceNavbar extends React.Component<
             this.props.currentWorkspace.studentAssessments.assessmentState
           )}`}
         />
-        <span className="link--menu__text">
+        <span className="link--menu-text">
           {getTextForAssessmentState(
             this.props.currentWorkspace.studentAssessments.assessmentState,
             this.props.i18n
@@ -493,7 +493,7 @@ class WorkspaceNavbar extends React.Component<
                     {item.badge >= 100 ? "99+" : item.badge}
                   </span>
                 ) : null}
-                <span className="link--menu__text">
+                <span className="link--menu-text">
                   {this.props.i18n.text.get(item.text)}
                 </span>
               </Link>

@@ -319,8 +319,6 @@
   input.cke_dialog_ui_checkbox_input {
     align-items: center;
     appearance: none;
-    appearance: none;
-    appearance: none;
     border: solid 2px lighten($color-form-element-border, 20%);
     border-radius: 3px;
     display: flex;
@@ -350,7 +348,7 @@
     &:checked::after {
       color: $color-default;
       content: "\e639";
-      font-family: muikku;
+      font-family: "muikku";
       font-size: 0.875rem;
     }
   }

@@ -76,9 +76,9 @@
     min-width: 250px;
 
     // scss-lint:disable VendorPrefix
-    position: sticky; // Safari 7-12 support
+    position: -webkit-sticky; // Safari 7-12 support
+
     // scss-lint:enable VendorPrefix
-    position: sticky;
     top: calc(#{$navbar-desktop-height} * 1.25 + (1 * #{$panel-header-title-margin}));
   }
 }
@@ -146,7 +146,7 @@
     order: 2;
 
     // scss-lint:disable VendorPrefix
-    position: sticky; // Safari 7-12 support
+    position: -webkit-sticky; // Safari 7-12 support
     // scss-lint:enable VendorPrefix
     position: sticky;
     top: calc(#{$navbar-desktop-height} * 1.25 + (2 * #{$panel-header-title-margin}) + #{$panel-header-title-height-desktop});

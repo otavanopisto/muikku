@@ -63,7 +63,7 @@
   input[type="checkbox"]:checked::after {
     color: $color-default;
     content: "\e639";
-    font-family: muikku;
+    font-family: "muikku";
     font-size: 0.875rem;
   }
 
@@ -75,7 +75,7 @@
   input:checked::after {
     color: $color-default;
     content: "\e639";
-    font-family: muikku;
+    font-family: "muikku";
     font-size: 0.875rem;
   }
 }

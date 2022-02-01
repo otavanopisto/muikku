@@ -448,7 +448,7 @@
   // scss-lint:enable SelectorFormat
 }
 
-.application-list__item-- .application-list__item--notification {
+.application-list__item--notification {
   border-top: 3px solid $color-message-border;
   margin: 0 0 1px;
   padding: 10px 10px 10px 0;
@@ -556,8 +556,6 @@
   input {
     align-items: center;
     appearance: none;
-    appearance: none;
-    appearance: none;
     border: solid 2px $color-main-function-application-list-item-checkbox-border;
     border-radius: 3px;
     display: flex;
@@ -576,7 +574,7 @@
   input:checked::after {
     color: $color-main-function-application-list-item-checkbox-checked-mark;
     content: "\e639";
-    font-family: muikku;
+    font-family: "muikku";
     font-size: 0.875rem;
   }
 
