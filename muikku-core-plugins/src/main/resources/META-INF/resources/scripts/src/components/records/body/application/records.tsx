@@ -127,7 +127,7 @@ interface AssessmentProps extends RecordsProps {
  * @param props Component props
  * @returns JSX.Element
  */
-const Assessment: React.FC<AssessmentProps> = (props) => {
+const RecordsAssessment: React.FC<AssessmentProps> = (props) => {
   const { i18n, assessment, isCombinationWorkspace } = props;
 
   if (!assessment) {
@@ -347,34 +347,6 @@ class Records extends React.Component<RecordsProps, RecordsState> {
   }
 
   /**
-   * wholeWorkspaceIsPending
-   * @param workspace workspace
-   * @returns boolean whether workspace is pending
-   */
-  wholeWorkspaceIsPending = (workspace: WorkspaceType): boolean => {
-    if (!workspace.activity) {
-      return false;
-    }
-
-    const numberOfModulesInWorkspace =
-      workspace.activity.assessmentState.length;
-
-    let numberOfPendingModules = 0;
-
-    for (const assessment of workspace.activity.assessmentState) {
-      if (
-        assessment.state === "pending" ||
-        assessment.state === "pending_fail" ||
-        assessment.state === "pending_pass"
-      ) {
-        numberOfPendingModules++;
-      }
-    }
-
-    return numberOfModulesInWorkspace === numberOfPendingModules;
-  };
-
-  /**
    * Component render method
    * @returns JSX.Element
    */
@@ -489,7 +461,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                                           workspace.activity.assessmentState[0]
                                         }
                                       />
-                                      <Assessment
+                                      <RecordsAssessment
                                         {...this.props}
                                         assessment={
                                           workspace.activity.assessmentState[0]
@@ -510,52 +482,51 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                               {isCombinationWorkspace ? (
                                 // If combinatin workspace render module assessments below workspace name
                                 <ApplicationListItemContentContainer modifiers="course">
-                                  {isCombinationWorkspace &&
-                                    workspace.activity.assessmentState.map(
-                                      (a, i) => {
-                                        /**
-                                         * Find subject data, that contains basic information about that subject
-                                         */
-                                        const subjectData =
-                                          workspace.subjects.find(
-                                            (s) =>
-                                              s.identifier ===
-                                              a.workspaceSubjectIdentifier
-                                          );
-
-                                        /**
-                                         * If not found, return nothing
-                                         */
-                                        if (!subjectData) {
-                                          return;
-                                        }
-
-                                        return (
-                                          <div
-                                            key={a.workspaceSubjectIdentifier}
-                                            style={{
-                                              display: "flex",
-                                              alignItems: "center",
-                                            }}
-                                          >
-                                            <h4>{`(${subjectData.subject.code.toUpperCase()})`}</h4>
-
-                                            <AssessmentRequestIndicator
-                                              {...this.props}
-                                              assessment={a}
-                                            />
-
-                                            <Assessment
-                                              {...this.props}
-                                              assessment={a}
-                                              isCombinationWorkspace={
-                                                isCombinationWorkspace
-                                              }
-                                            />
-                                          </div>
+                                  {workspace.activity.assessmentState.map(
+                                    (a) => {
+                                      /**
+                                       * Find subject data, that contains basic information about that subject
+                                       */
+                                      const subjectData =
+                                        workspace.subjects.find(
+                                          (s) =>
+                                            s.identifier ===
+                                            a.workspaceSubjectIdentifier
                                         );
+
+                                      /**
+                                       * If not found, return nothing
+                                       */
+                                      if (!subjectData) {
+                                        return;
                                       }
-                                    )}
+
+                                      return (
+                                        <div
+                                          key={a.workspaceSubjectIdentifier}
+                                          style={{
+                                            display: "flex",
+                                            alignItems: "center",
+                                          }}
+                                        >
+                                          <h4>{`(${subjectData.subject.code.toUpperCase()})`}</h4>
+
+                                          <AssessmentRequestIndicator
+                                            {...this.props}
+                                            assessment={a}
+                                          />
+
+                                          <RecordsAssessment
+                                            {...this.props}
+                                            assessment={a}
+                                            isCombinationWorkspace={
+                                              isCombinationWorkspace
+                                            }
+                                          />
+                                        </div>
+                                      );
+                                    }
+                                  )}
                                 </ApplicationListItemContentContainer>
                               ) : null}
                             </ApplicationListItem>

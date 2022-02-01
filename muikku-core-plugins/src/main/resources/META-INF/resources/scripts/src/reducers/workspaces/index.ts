@@ -41,7 +41,7 @@ export interface Assessment {
   workspaceSubjectIdentifier: string | null;
 }
 
-export interface WorkspacetActivityType {
+export interface WorkspaceActivityType {
   assessmentState: Assessment[];
   evaluablesAnswered: number;
   evaluablesAnsweredLastDate: string;
@@ -285,12 +285,12 @@ export interface WorkspaceType {
   educationTypeName?: string;
 
   /**
-   * aka "modules", always contains at least one unless it is combination workspace
+   * aka "modules", always contains at least one or more if it is combination workspace
    */
   subjects?: WorkspaceSubject[];
 
   //These are optional addons, and are usually not available
-  activity?: WorkspacetActivityType;
+  activity?: WorkspaceActivityType;
   studentActivity?: WorkspaceStudentActivityType;
   forumStatistics?: WorkspaceForumStatisticsType;
   studentAssessments?: WorkspaceStudentAssessmentsType;
