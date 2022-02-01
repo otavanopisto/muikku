@@ -162,7 +162,7 @@
   float: right;
 
   &--with-today-button {
-    border: 1px solid #aeaeae;
+    border: 1px solid $datepicker-border-color;
     border-radius: 0.3rem;
     display: inline;
     position: absolute;
@@ -287,7 +287,7 @@
   &--in-range {
     background-color: $datepicker-selected-color;
     border-radius: $datepicker-border-radius;
-    color: #ffffff;
+    color: $datepicker-main-color;
 
     &:hover {
       background-color: darken($datepicker-selected-color, 5%);
@@ -297,7 +297,7 @@
   &--keyboard-selected {
     background-color: lighten($datepicker-selected-color, 10%);
     border-radius: $datepicker-border-radius;
-    color: #ffffff;
+    color: $datepicker-main-color;
 
     &:hover {
       background-color: darken($datepicker-selected-color, 5%);
@@ -430,7 +430,7 @@
     border-radius: 50%;
     bottom: 0;
     box-sizing: border-box;
-    color: #ffffff;
+    color: $datepicker-main-color;
     content: "\00d7";
     cursor: pointer;
     font-size: 12px;

@@ -446,7 +446,7 @@
   &.course--open {
     background: $color-default;
     border-color: transparent;
-    box-shadow: 0 0 0 2px $color-application-list-item-course-border-selected;
+    box-shadow: 0 0 0 2px #000000;
     z-index: 10;
   }
 }

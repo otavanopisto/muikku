@@ -47,7 +47,7 @@
   &,
   &::before {
     border-bottom: none;
-    border-top-color: #ffffff;
+    border-top-color: $datepicker-main-color;
   }
 
   &::before {

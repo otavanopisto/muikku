@@ -1,9 +1,39 @@
 {
   "extends": "stylelint-config-standard-scss",
   "plugins": [
-		"stylelint-order"
+		"stylelint-order",
+    "stylelint-declaration-strict-value"
 	],
   "rules": {
+    "scale-unlimited/declaration-strict-value": [
+      [
+        "color",
+        "border-color",
+        "border-bottom-color",
+        "border-left-color",
+        "border-right-color",
+        "border-top-color",
+        "background-color",
+        "text-decoration-color",
+        "caret-color",
+        "text-emphasis-color",
+        "outline-color",
+        "column-rule-color"
+      ], {
+        "expandShorthand": true,
+        "ignoreValues": [
+          "transparent",
+          "currentColor",
+          "inherit",
+          "auto",
+          "initial",
+          "unset",
+          "revert",
+          "invert"],
+        "message": "Avoid using magical color hex values as '${value}' for '${property}'."
+      }
+    ],
+
     "comment-no-empty": null,
     "scss/comment-no-empty": true,
     "at-rule-no-unknown": null,
