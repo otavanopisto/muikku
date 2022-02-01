@@ -9,7 +9,7 @@ import { A11y, Pagination } from "swiper";
 import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
 import variables from "~/sass/_exports.scss";
-import useIsAtBreakpoint from "~/hooks/useIsMobileWidth";
+import useIsAtBreakpoint from "~/hooks/useIsAtBreakpoint";
 
 /**
  * Tab
@@ -19,6 +19,7 @@ export interface Tab {
   name: string;
   /** Type Class modifier */
   type?: string;
+  /** Tab spesific action or actions for the mobile UI*/
   mobileAction?: JSX.Element | JSX.Element[];
   component: JSX.Element;
 }
@@ -33,6 +34,7 @@ interface TabsProps {
   /** Localization */
   i18n: i18nType;
   tabs: Array<Tab>;
+  /** If all of the tabs components should be rendered */
   renderAllComponents?: boolean;
   children?: React.ReactNode;
 }
@@ -50,7 +52,7 @@ interface MobileOnlyTabsProps {
 
 /**
  * Tabs
- * @param props
+ * @param props Component props
  * @returns JSX.Element
  */
 export const Tabs: React.FC<TabsProps> = (props) => {
@@ -164,10 +166,9 @@ export const Tabs: React.FC<TabsProps> = (props) => {
 
 /**
  * Tabs that are only seen in mobile
- * @param props
+ * @param props Component props
  * @returns JSX.element
  */
-
 export const MobileOnlyTabs: React.FC<MobileOnlyTabsProps> = (props) => {
   const { tabs, modifier, activeTab, onTabChange, renderAllComponents } = props;
 
@@ -227,9 +228,8 @@ export const MobileOnlyTabs: React.FC<MobileOnlyTabsProps> = (props) => {
 
 /**
  * mapStateToProps
- * @param state
+ * @param state Redux state
  */
-
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
