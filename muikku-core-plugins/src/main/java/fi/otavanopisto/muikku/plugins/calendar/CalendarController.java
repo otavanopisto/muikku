@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
 import fi.otavanopisto.muikku.plugins.calendar.dao.CalendarEventDAO;
 import fi.otavanopisto.muikku.plugins.calendar.dao.CalendarEventParticipantDAO;
 import fi.otavanopisto.muikku.plugins.calendar.model.CalendarEvent;
@@ -25,17 +27,17 @@ public class CalendarController {
   @Inject
   private CalendarEventParticipantDAO calendarEventParticipantDAO;
   
-  public CalendarEvent createEvent(OffsetDateTime begins, OffsetDateTime ends, boolean allDay, String title, String description, CalendarEventVisibility visibility) {
-    Date beginDate = new Date(begins.toInstant().toEpochMilli());
-    Date endDate = new Date(ends.toInstant().toEpochMilli());
+  public CalendarEvent createEvent(OffsetDateTime start, OffsetDateTime end, boolean allDay, String title, String description, CalendarEventVisibility visibility, String type) {
+    Date startDate = new Date(start.toInstant().toEpochMilli());
+    Date endDate = new Date(end.toInstant().toEpochMilli());
     Long userEntityId = sessionController.getLoggedUserEntity().getId();
-    return calendarEventDAO.create(beginDate, endDate, allDay, title, description, visibility, userEntityId);
+    return calendarEventDAO.create(startDate, endDate, allDay, title, description, visibility, type, userEntityId);
   }
   
-  public CalendarEvent updateEvent(CalendarEvent event, OffsetDateTime begins, OffsetDateTime ends, boolean allDay, String title, String description, CalendarEventVisibility visibility) {
-    Date beginDate = new Date(begins.toInstant().toEpochMilli());
-    Date endDate = new Date(ends.toInstant().toEpochMilli());
-    return calendarEventDAO.update(event, beginDate, endDate, allDay, title, description, visibility);
+  public CalendarEvent updateEvent(CalendarEvent event, OffsetDateTime start, OffsetDateTime end, boolean allDay, String title, String description, CalendarEventVisibility visibility, String type) {
+    Date startDate = new Date(start.toInstant().toEpochMilli());
+    Date endDate = new Date(end.toInstant().toEpochMilli());
+    return calendarEventDAO.update(event, startDate, endDate, allDay, title, description, visibility, type);
   }
   
   public void deleteEvent(CalendarEvent event) {
@@ -96,10 +98,12 @@ public class CalendarController {
     }
   }
   
-  public List<CalendarEvent> listEventsByUserAndTimeframe(Long userEntityId, OffsetDateTime begins, OffsetDateTime ends) {
-    Date beginDate = new Date(begins.toInstant().toEpochMilli());
-    Date endDate = new Date(ends.toInstant().toEpochMilli());
-    return calendarEventDAO.listByUserAndTimeframe(userEntityId, beginDate, endDate);
+  public List<CalendarEvent> listEventsByUserAndTimeframeAndType(Long userEntityId, OffsetDateTime start, OffsetDateTime end, String type) {
+    Date startDate = new Date(start.toInstant().toEpochMilli());
+    Date endDate = new Date(end.toInstant().toEpochMilli());
+    return StringUtils.isEmpty(type)
+        ? calendarEventDAO.listByUserAndTimeframe(userEntityId, startDate, endDate)
+        : calendarEventDAO.listByUserAndTimeframeAndType(userEntityId, startDate, endDate, type);
   }
   
   private CalendarEventParticipant findParticipantByUserEntityId(List<CalendarEventParticipant> participants, Long userEntityId) {

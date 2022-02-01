@@ -65,12 +65,13 @@ public class CalendarRESTService {
    * REQUEST:
    * 
    * mApi().calendar.event.create({
-   *   'begins': '2021-10-28T10:00:00+02:00',
-   *   'ends': '2021-10-28T12:00:00+02:00',
+   *   'start': '2021-10-28T10:00:00+02:00',
+   *   'end': '2021-10-28T12:00:00+02:00',
    *   'allDay': true | false,
    *   'title': 'Event title',
    *   'description: 'Event description',
    *   'visibility': 'PRIVATE | PUBLIC',
+   *   'type': 'optional event type',
    *   'participants': [
    *     {
    *       'userEntityId': 123
@@ -85,12 +86,13 @@ public class CalendarRESTService {
    * 
    * {
    *   'id': 123456,
-   *   'begins': '2021-10-28T10:00:00+02:00',
-   *   'ends': '2021-10-28T12:00:00+02:00',
+   *   'start': '2021-10-28T10:00:00+02:00',
+   *   'end': '2021-10-28T12:00:00+02:00',
    *   'allDay': true | false,
    *   'title': 'Event title',
    *   'description: 'Event description',
    *   'visibility': 'PRIVATE | PUBLIC',
+   *   'type': 'optional event type',
    *   'userEntityId': 100, // owner of event
    *   'participants': [
    *     {
@@ -138,12 +140,13 @@ public class CalendarRESTService {
     // Event creation
     
     CalendarEvent event = calendarController.createEvent(
-        restEvent.getBegins(),
-        restEvent.getEnds(),
+        restEvent.getStart(),
+        restEvent.getEnd(),
         restEvent.isAllDay(),
         restEvent.getTitle(),
         restEvent.getDescription(), 
-        restEvent.getVisibility());
+        restEvent.getVisibility(),
+        restEvent.getType());
     
     // Participants
     
@@ -163,12 +166,13 @@ public class CalendarRESTService {
    * 
    * mApi().calendar.event.update({
    *   'id': 123456,
-   *   'begins': '2021-10-28T10:00:00+02:00',
-   *   'ends': '2021-10-28T12:00:00+02:00',
+   *   'start': '2021-10-28T10:00:00+02:00',
+   *   'end': '2021-10-28T12:00:00+02:00',
    *   'allDay': true | false,
    *   'title': 'Event title',
    *   'description: 'Event description',
    *   'visibility': 'PRIVATE | PUBLIC',
+   *   'type': 'optional event type',
    *   'participants': [
    *     {
    *       'userEntityId': 123
@@ -183,12 +187,13 @@ public class CalendarRESTService {
    * 
    * {
    *   'id': 123456,
-   *   'begins': '2021-10-28T10:00:00+02:00',
-   *   'ends': '2021-10-28T12:00:00+02:00',
+   *   'start': '2021-10-28T10:00:00+02:00',
+   *   'end': '2021-10-28T12:00:00+02:00',
    *   'allDay': true | false,
    *   'title': 'Event title',
    *   'description: 'Event description',
    *   'visibility': 'PRIVATE | PUBLIC',
+   *   'type': 'optional event type',
    *   'userEntityId': 100, // owner of event
    *   'participants': [
    *     {
@@ -248,12 +253,13 @@ public class CalendarRESTService {
     
     event = calendarController.updateEvent(
         event,
-        restEvent.getBegins(),
-        restEvent.getEnds(),
+        restEvent.getStart(),
+        restEvent.getEnd(),
         restEvent.isAllDay(),
         restEvent.getTitle(),
         restEvent.getDescription(), 
-        restEvent.getVisibility());
+        restEvent.getVisibility(),
+        restEvent.getType());
     
     // Participants
     
@@ -322,9 +328,10 @@ public class CalendarRESTService {
    * 
    * mApi().calendar.events.read({
    *   'user': 123,
-   *   'begins': '2021-10-28T00:00:00+02:00',
-   *   'ends': '2021-10-28T23:59:59+02:00',
-   *   'adjustTimes': true | false // defaults to true
+   *   'start': '2021-10-28T00:00:00+02:00',
+   *   'end': '2021-10-28T23:59:59+02:00',
+   *   'adjustTimes': true | false, // defaults to true
+   *   'type': 'optional event type'
    * });
    * 
    * RESPONSE:
@@ -333,12 +340,13 @@ public class CalendarRESTService {
    * 
    * DESCRIPTION:
    * 
-   * Returns events for the given user and timeframe.
+   * Returns events for the given user, timeframe, and (optional) event type
    * 
    * @param userEntityId User
-   * @param begins Timeframe start
-   * @param ends Timeframe end
+   * @param start Timeframe start
+   * @param end Timeframe end
    * @param adjustTimes Should timeframe start and end times be start and end of day
+   * @param type Event type (optional)
    * 
    * @return Orders of the given user
    */
@@ -347,20 +355,21 @@ public class CalendarRESTService {
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response listEvents(
       @QueryParam("user") Long userEntityId,
-      @QueryParam("begins") String begins,
-      @QueryParam("ends") String ends,
-      @QueryParam("adjustTimes") @DefaultValue("true") boolean adjustTimes) {
+      @QueryParam("start") String start,
+      @QueryParam("end") String end,
+      @QueryParam("adjustTimes") @DefaultValue("true") boolean adjustTimes,
+      @QueryParam("type") String type) {
     
     // Request validation
     
-    OffsetDateTime beginDate = null;
+    OffsetDateTime startDate = null;
     OffsetDateTime endDate = null;
-    if (StringUtils.isEmpty(begins) || StringUtils.isEmpty(ends)) {
-      return Response.status(Status.BAD_REQUEST).entity("Missing begins/ends parameters").build();
+    if (StringUtils.isEmpty(start) || StringUtils.isEmpty(end)) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing start/end parameters").build();
     }
     try {
-      beginDate = OffsetDateTime.parse(begins);
-      endDate = OffsetDateTime.parse(ends);
+      startDate = OffsetDateTime.parse(start);
+      endDate = OffsetDateTime.parse(end);
     }
     catch (DateTimeParseException e) {
       return Response.status(Status.BAD_REQUEST).entity(String.format("Invalid time format: %s", e.getMessage())).build();
@@ -385,13 +394,13 @@ public class CalendarRESTService {
     // Time adjustments
     
     if (adjustTimes) {
-      beginDate = beginDate.withHour(0).withMinute(0).withSecond(0).withNano(0);
+      startDate = startDate.withHour(0).withMinute(0).withSecond(0).withNano(0);
       endDate = endDate.withHour(23).withMinute(59).withSecond(59).withNano(999999000);
     }
     
     // List events and convert to rest
     
-    List<CalendarEvent> events = calendarController.listEventsByUserAndTimeframe(userEntityId, beginDate, endDate);
+    List<CalendarEvent> events = calendarController.listEventsByUserAndTimeframeAndType(userEntityId, startDate, endDate, type);
     List<CalendarEventRestModel> restEvents = new ArrayList<>();
     for (CalendarEvent event : events) {
       restEvents.add(toRestModel(event));
@@ -411,12 +420,13 @@ public class CalendarRESTService {
     // Event basic information
     
     restEvent.setId(event.getId());
-    restEvent.setBegins(toOffsetDateTime(event.getBegins()));
-    restEvent.setEnds(toOffsetDateTime(event.getEnds()));
+    restEvent.setStart(toOffsetDateTime(event.getStart()));
+    restEvent.setEnd(toOffsetDateTime(event.getEnd()));
     restEvent.setAllDay(event.getAllDay());
     restEvent.setTitle(event.getTitle());
     restEvent.setDescription(event.getDescription());
     restEvent.setVisibility(event.getVisibility());
+    restEvent.setType(event.getType());
     restEvent.setUserEntityId(event.getUserEntityId());
     List<CalendarEventParticipant> participants = calendarController.listParticipants(event);
     

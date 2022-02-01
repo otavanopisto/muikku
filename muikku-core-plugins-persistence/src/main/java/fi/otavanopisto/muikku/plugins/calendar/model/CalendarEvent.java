@@ -21,22 +21,6 @@ public class CalendarEvent {
     return id;
   }
 
-  public Date getBegins() {
-    return begins;
-  }
-
-  public void setBegins(Date begins) {
-    this.begins = begins;
-  }
-
-  public Date getEnds() {
-    return ends;
-  }
-
-  public void setEnds(Date ends) {
-    this.ends = ends;
-  }
-
   public Boolean getAllDay() {
     return allDay;
   }
@@ -77,6 +61,30 @@ public class CalendarEvent {
     this.userEntityId = userEntityId;
   }
   
+  public Date getStart() {
+    return start;
+  }
+
+  public void setStart(Date start) {
+    this.start = start;
+  }
+
+  public Date getEnd() {
+    return end;
+  }
+
+  public void setEnd(Date end) {
+    this.end = end;
+  }
+
+  public String getType() {
+    return type;
+  }
+
+  public void setType(String type) {
+    this.type = type;
+  }
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -84,12 +92,12 @@ public class CalendarEvent {
   @NotNull
   @Column (nullable = false)
   @Temporal (value=TemporalType.TIMESTAMP)
-  private Date begins;
+  private Date start;
 
   @NotNull
   @Column (nullable = false)
   @Temporal (value=TemporalType.TIMESTAMP)
-  private Date ends;
+  private Date end;
 
   @NotNull
   @Column (nullable = false)
@@ -98,6 +106,9 @@ public class CalendarEvent {
   @NotNull
   @Column(nullable = false)
   private String title;
+  
+  @Column
+  private String type;
 
   @Lob
   @Column

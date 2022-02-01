@@ -16,22 +16,6 @@ public class CalendarEventRestModel {
     this.id = id;
   }
 
-  public OffsetDateTime getBegins() {
-    return begins;
-  }
-
-  public void setBegins(OffsetDateTime begins) {
-    this.begins = begins;
-  }
-
-  public OffsetDateTime getEnds() {
-    return ends;
-  }
-
-  public void setEnds(OffsetDateTime ends) {
-    this.ends = ends;
-  }
-
   public boolean isAllDay() {
     return allDay;
   }
@@ -100,13 +84,38 @@ public class CalendarEventRestModel {
     this.removable = removable;
   }
 
+  public OffsetDateTime getStart() {
+    return start;
+  }
+
+  public void setStart(OffsetDateTime start) {
+    this.start = start;
+  }
+
+  public OffsetDateTime getEnd() {
+    return end;
+  }
+
+  public void setEnd(OffsetDateTime end) {
+    this.end = end;
+  }
+
+  public String getType() {
+    return type;
+  }
+
+  public void setType(String type) {
+    this.type = type;
+  }
+
   private Long id;
-  private OffsetDateTime begins;
-  private OffsetDateTime ends;
+  private OffsetDateTime start;
+  private OffsetDateTime end;
   private boolean allDay;
   private String title;
   private String description;
   private CalendarEventVisibility visibility;
+  private String type;
   private Long userEntityId;
   private List<CalendarEventParticipantRestModel> participants = new ArrayList<>();
   private boolean editable;
