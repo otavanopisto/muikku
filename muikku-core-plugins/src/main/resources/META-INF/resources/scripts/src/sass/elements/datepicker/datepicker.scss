@@ -6,7 +6,7 @@
 }
 
 .react-datepicker {
-  background-color: #ffffff;
+  background-color: $datepicker-main-background-color;
   border: 1px solid $datepicker-border-color;
   border-radius: $datepicker-border-radius;
   color: $datepicker-text-color;
@@ -171,48 +171,48 @@
   }
 
   .react-datepicker__time {
-    background: white;
+    background: $datepicker-main-background-color;
     position: relative;
+  }
 
-    .react-datepicker__time-box {
-      overflow-x: hidden;
-      width: 70px;
+  .react-datepicker__time-box {
+    overflow-x: hidden;
+    width: 70px;
+  }
 
-      ul.react-datepicker__time-list {
-        height: calc(195px + (#{$datepicker-item-size} / 2));
-        list-style: none;
-        margin: 0;
-        overflow-y: scroll;
-        padding-right: 30px;
-        width: 100%;
+  ul.react-datepicker__time-list {
+    height: calc(195px + (#{$datepicker-item-size} / 2));
+    list-style: none;
+    margin: 0;
+    overflow-y: scroll;
+    padding-right: 30px;
+    width: 100%;
+  }
 
-        li.react-datepicker__time-list-item {
-          padding: 5px 10px;
+  li.react-datepicker__time-list-item {
+    padding: 5px 10px;
 
-          &:hover {
-            background-color: $datepicker-background-color;
-            cursor: pointer;
-          }
+    &:hover {
+      background-color: $datepicker-background-color;
+      cursor: pointer;
+    }
 
-          &--selected {
-            background-color: $datepicker-selected-color;
-            color: white;
-            font-weight: 600;
+    &--selected {
+      background-color: $datepicker-selected-color;
+      color: $datepicker-main-color;
+      font-weight: 600;
 
-            &:hover {
-              background-color: $datepicker-selected-color;
-            }
-          }
+      &:hover {
+        background-color: $datepicker-selected-color;
+      }
+    }
 
-          &--disabled {
-            color: $datepicker-muted-color;
+    &--disabled {
+      color: $datepicker-muted-color;
 
-            &:hover {
-              background-color: transparent;
-              cursor: default;
-            }
-          }
-        }
+      &:hover {
+        background-color: transparent;
+        cursor: default;
       }
     }
   }
@@ -267,18 +267,18 @@
   &--highlighted {
     background-color: $datepicker-highlighted-color;
     border-radius: $datepicker-border-radius;
-    color: #ffffff;
+    color: $datepicker-main-color;
 
     &:hover {
       background-color: darken($datepicker-highlighted-color, 5%);
     }
 
     &-custom-1 {
-      color: magenta;
+      color: $datepicker-custom-color1;
     }
 
     &-custom-2 {
-      color: green;
+      color: $datepicker-custom-color2;
     }
   }
 

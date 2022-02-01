@@ -10,7 +10,6 @@
   position: relative;
   width: 100%;
 
-  // scss-lint:disable SelectorFormat
   &.state-HIDDEN {
     opacity: 30%;
   }
@@ -23,8 +22,6 @@
   &.state-INCOMPLETE.state-HIDDEN {
     opacity: 60%;
   }
-
-  // scss-lint:enable SelectorFormat
 }
 
 .material-page--empty {
@@ -831,12 +828,11 @@
 
   // Necessary evil as material editor uses the same class names to provide wysiwyg experience close to the actualy material page render
   // but unfortunately it does affect taskfields with ckeditors as well so this is needed to override padding rules.
-  // scss-lint:disable SelectorFormat
+
+  /* stylelint-disable selector-class-pattern */
   .cke_editable.cke_wysiwyg_div {
     padding: 0 8px;
   }
-
-  // scss-lint:enable SelectorFormat
 
   .cke { // This needs to be here so we can override the ckeditor's visuals/size partly
     background: $color-default;
@@ -848,12 +844,10 @@
     min-width: 100%;
   }
 
-  // scss-lint:disable SelectorFormat
   .cke_wysiwyg_div {
     min-height: 150px;
   }
-
-  // scss-lint:enable SelectorFormat
+  /* stylelint-enable selector-class-pattern */
 }
 
 .material-page__memofield {

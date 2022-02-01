@@ -18,12 +18,9 @@
     border-top: solid 1px $color-application-list-item-course-border-selected;
   }
 
-  // scss-lint:disable SelectorFormat
   &.state-NO-ASSESSMENT {
     cursor: auto;
   }
-
-  // scss-lint:enable SelectorFormat
 
   &.assignment--open:hover {
     background: $color-default;

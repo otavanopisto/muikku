@@ -3,7 +3,7 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
-// scss-lint:disable SelectorFormat, ImportantRule
+/* stylelint-disable selector-class-pattern, declaration-no-important */
 .cke_reset_all .cke_dialog * {
   @include text;
 }
@@ -597,4 +597,4 @@
   }
 }
 
-// scss-lint:enable SelectorFormat, ImportantRule
+/* stylelint-ebable selector-class-pattern, declaration-no-important */

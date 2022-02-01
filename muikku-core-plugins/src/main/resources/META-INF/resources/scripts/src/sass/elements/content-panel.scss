@@ -75,10 +75,11 @@
     max-width: 300px;
     min-width: 250px;
 
-    // scss-lint:disable VendorPrefix
+    /* stylelint-disable value-no-vendor-prefix, declaration-block-no-duplicate-properties */
     position: -webkit-sticky; // Safari 7-12 support
+    position: sticky;
+    /* stylelint-enable value-no-vendor-prefix, declaration-block-no-duplicate-properties */
 
-    // scss-lint:enable VendorPrefix
     top: calc(#{$navbar-desktop-height} * 1.25 + (1 * #{$panel-header-title-margin}));
   }
 }
@@ -145,10 +146,11 @@
     margin: 0;
     order: 2;
 
-    // scss-lint:disable VendorPrefix
+    /* stylelint-disable value-no-vendor-prefix, declaration-block-no-duplicate-properties */
     position: -webkit-sticky; // Safari 7-12 support
-    // scss-lint:enable VendorPrefix
     position: sticky;
+    /* stylelint-enable value-no-vendor-prefix, declaration-block-no-duplicate-properties */
+
     top: calc(#{$navbar-desktop-height} * 1.25 + (2 * #{$panel-header-title-margin}) + #{$panel-header-title-height-desktop});
     z-index: 1; // This does not need high z-index as ToC in desktop mode will never overlap with anything. Setting lower z-index also fixes possible stack order issues with zoomed images
 

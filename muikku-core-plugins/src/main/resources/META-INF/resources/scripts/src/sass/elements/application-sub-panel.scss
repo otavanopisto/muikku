@@ -625,12 +625,9 @@
   flex-shrink: 1;
   padding: 10px;
 
-  // scss-lint:disable SelectorFormat
   &.NON-ACTIVE {
     opacity: 50%;
   }
-
-  // scss-lint:enable SelectorFormat
 
   &:not(:last-child) {
     border-bottom: 1px solid $color-default-item-separator-border;
@@ -1144,7 +1141,6 @@
 }
 
 .application-sub-panel__text--course-evaluation {
-  // scss-lint:disable SelectorFormat
   &.state-PASSED {
     border-left: 3px solid $color-grade-passed;
   }
@@ -1156,8 +1152,6 @@
   &.state-INCOMPLETE {
     border-left: 3px solid $color-grade-incomplete;
   }
-
-  // scss-lint:enable SelectorFormat
 }
 
 .application-sub-panel__body--labels {

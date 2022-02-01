@@ -106,7 +106,7 @@
   flex-shrink: 1;
 
   // CKE override styles for editor it self as well as for the top and bottom part of it
-  // scss-lint:disable SelectorFormat, ImportantRule
+  /* stylelint-disable selector-class-pattern */
   .cke {
     background: $color-default;
     border: solid 2px lighten($color-material-page-admin-panel-main-color, 20%);
@@ -129,11 +129,10 @@
     border-top: 1px solid  lighten($color-material-page-admin-panel-main-color, 20%);
   }
 
-  // scss-lint:enable SelectorFormat, ImportantRule
+  /* stylelint-enable selector-class-pattern */
 }
 
 // this is the same in add-producer component style. TODO mixin.
-
 .material-editor__sub-section {
   border-radius: 2px;
   margin: 0 0 10px;

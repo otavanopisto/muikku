@@ -87,12 +87,9 @@
     display: flex;
     flex-wrap: wrap;
 
-    // scss-lint:disable SelectorFormat
     &.state-FULL {
       min-height: 330px;
     }
-
-    // scss-lint:enable SelectorFormat
   }
 }
 
@@ -121,12 +118,9 @@
   font-size: 1.25rem;
   margin-right: 10px;
 
-  // scss-lint:disable SelectorFormat
   &.state-UNPUBLISHED {
     color: $color-disabled;
   }
-
-  // scss-lint:enable SelectorFormat
 }
 
 .application-list__header-icon--notification-1 {
@@ -251,7 +245,6 @@
   text-align: center;
   width: 1.875rem;
 
-  // scss-lint:disable SelectorFormat
   &.state-PASSED {
     background: $color-grade-passed;
   }
@@ -267,8 +260,6 @@
   &.state-NO-ASSESSMENT {
     background: $color-grade-not-assessed;
   }
-
-  // scss-lint:enable SelectorFormat
 }
 
 .application-list__indicator-badge--course {
@@ -314,13 +305,10 @@
     cursor: pointer;
   }
 
-  // scss-lint:disable SelectorFormat
   .state-DISABLED {
     color: $color-disabled;
     cursor: default;
   }
-
-  // scss-lint:enable SelectorFormat
 }
 
 .application-list__item-content-wrapper {
@@ -328,12 +316,9 @@
   display: flex;
   flex-flow: row nowrap;
 
-  // scss-lint:disable SelectorFormat
   &.state-ENDED {
     color: $color-disabled;
   }
-
-  // scss-lint:enable SelectorFormat
 }
 
 .application-list__item-content-wrapper--workspace-user,
@@ -439,13 +424,10 @@
     }
   }
 
-  // scss-lint:disable SelectorFormat
   &.state-DISABLED {
     background-color: $color-main-function-application-list-item-disabled-background;
     color: $color-main-function-application-list-item-disabled-text;
   }
-
-  // scss-lint:enable SelectorFormat
 }
 
 .application-list__item--notification {
