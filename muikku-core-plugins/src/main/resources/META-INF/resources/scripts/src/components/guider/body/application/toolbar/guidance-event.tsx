@@ -7,14 +7,9 @@ import { bindActionCreators } from "redux";
 import { StateType } from "~/reducers";
 import { GuiderType, GuiderStudentType } from "~/reducers/main-function/guider";
 import { Calendar } from "~/reducers/calendar";
-import FullCalendar, {
-  DateSelectArg,
-  EventClickArg,
-} from "@fullcalendar/react";
+import FullCalendar, { DateSelectArg } from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
-import interactionPlugin, {
-  EventResizeStopArg,
-} from "@fullcalendar/interaction";
+import interactionPlugin from "@fullcalendar/interaction";
 import Button from "~/components/general/button";
 import { getName } from "~/util/modifiers";
 import moment from "~/lib/moment";
@@ -26,30 +21,43 @@ import {
   createCalendarEvent,
   createCalendarEventTriggerType,
   EventVisibility,
-  Participants,
 } from "~/actions/main-function/calendar";
 import { StatusType } from "~/reducers/base/status";
 
+/**
+ *  Props for the guidance event reservation
+ */
 interface GuidanceEventProps {
-  i18n: i18nType;
+  i18n: i18nType; // Localization
   guider: GuiderType;
   children: React.ReactElement<any>;
-  calendar: Calendar;
+  calendar: Calendar; // Calendar events
   status: StatusType;
   loadCalendarEvents: LoadCalendarEventsTriggerType;
   createCalendarEvent: createCalendarEventTriggerType;
 }
 
+/**
+ *  State for guidance event reservation
+ */
 interface GuidanceEventState {
   newEvent: Event;
-  locked: boolean;
+  locked: boolean; // If the save button should be locked
 }
 
+/**
+ * Guidance event component
+ */
 class GuidanceEvent extends React.Component<
   GuidanceEventProps,
   GuidanceEventState
 > {
-  private calendarRef = React.createRef<FullCalendar>();
+  private calendarRef = React.createRef<FullCalendar>(); // Reference to access the calendar
+
+  /**
+   * Constructor
+   * @param props
+   */
   constructor(props: GuidanceEventProps) {
     super(props);
 
@@ -59,19 +67,26 @@ class GuidanceEvent extends React.Component<
     };
   }
 
-  handleCalendarEventLoad = (forceLoad: boolean) => {
-    const calendarApi = this.calendarRef.current
+  //TODO: this could be a reusable effect that returns a start and end date
+  /**
+   * Handler for events loading
+   * @param forceLoad if true, load will be forced
+   */
+  handleCalendarEventsLoad = (forceLoad: boolean) => {
+    const calendarApi = this.calendarRef.current // If the calendar is not available, this will be null
       ? this.calendarRef.current.getApi()
       : null;
 
-    const startDate = calendarApi
+    const startDate = calendarApi // If the calendarApi is not available, date will be now
       ? moment(calendarApi.view.currentStart).format()
       : moment().format();
 
-    const endDate = calendarApi
+    const endDate = calendarApi // If the calendarApi is not available, date will be now
       ? moment(calendarApi.view.currentEnd).format()
       : moment().format();
 
+    //TODO: There will be different types of events so a typecheck will be needed here
+    /**Only loads if there are no events in the state or the load is forced*/
     if (this.props.calendar.events.length === 0 || forceLoad) {
       this.props.loadCalendarEvents(
         this.props.guider.currentStudent.basic.userEntityId,
@@ -81,10 +96,17 @@ class GuidanceEvent extends React.Component<
     }
   };
 
+  /**
+   * Clears the event from the state
+   */
   handleEventClick = () => {
     this.setState({ newEvent: {}, locked: true });
   };
 
+  /**
+   * Handles the selection of a state in the calendar
+   * @param arg event arguments from the fullCalendar
+   */
   handleDateSelect = (arg: DateSelectArg) => {
     let newEvent = {
       title: getName(this.props.guider.currentStudent.basic, true),
@@ -97,14 +119,17 @@ class GuidanceEvent extends React.Component<
     this.setState({ newEvent: newEvent, locked: false });
   };
 
-  saveEvent = (closeDialog: () => void) => {
-    console.log(this.state.newEvent);
+  /**
+   * Saves the event and runs the thunk functions and such
+   * @param closeDialog close function for the dialog
+   */
+  handleSaveEvent = (closeDialog: () => void) => {
     const event = {
       title: this.state.newEvent.title,
       description: this.state.newEvent.description,
       start: this.state.newEvent.start,
       end: this.state.newEvent.end,
-      visibility: "PUBLIC" as EventVisibility,
+      visibility: "PRIVATE" as EventVisibility,
       participants: [
         {
           userEntityId: this.props.status.userId,
@@ -114,13 +139,13 @@ class GuidanceEvent extends React.Component<
         },
       ],
     };
-    this.props.createCalendarEvent(event);
-    this.handleCalendarEventLoad(true);
-    closeDialog();
+    this.props.createCalendarEvent(event); // Create a new event
+    this.handleCalendarEventsLoad(true); // Load new event to state
+    closeDialog(); // Close the dialog
   };
 
   render() {
-    // A placeholder waiting for the backend
+    /** Turns then state events to background events*/
     const events = this.props.calendar.events.map((event) => {
       return {
         title: event.title,
@@ -130,6 +155,10 @@ class GuidanceEvent extends React.Component<
       };
     });
 
+    /**
+     * Dialog content
+     * @returns JSX.Element fullcalendar component
+     */
     const content = () => (
       <FullCalendar
         ref={this.calendarRef}
@@ -151,11 +180,16 @@ class GuidanceEvent extends React.Component<
       />
     );
 
+    /**
+     * Dialog footer
+     * @param closeDialog dialog close function
+     * @returns JSX.Element
+     */
     const footer = (closeDialog: () => void) => (
       <div className="env-dialog__actions env-dialog__actions--guidance-event">
         <Button
           buttonModifiers="dialog-execute"
-          onClick={this.saveEvent.bind(this, closeDialog)}
+          onClick={this.handleSaveEvent.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
           {this.props.i18n.text.get(
@@ -172,7 +206,7 @@ class GuidanceEvent extends React.Component<
 
     return (
       <EnvironmentDialog
-        executeOnOpen={this.handleCalendarEventLoad.bind(this)}
+        executeOnOpen={this.handleCalendarEventsLoad.bind(this)}
         modifier="guidance-event"
         title={this.props.i18n.text.get(
           "plugin.guider.user.actions.reserveGuidanceTime.title"
@@ -186,6 +220,11 @@ class GuidanceEvent extends React.Component<
   }
 }
 
+/**
+ * Takes the app state and maps it into component props
+ * @param state
+ * @returns
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -195,6 +234,11 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * Specifies what actions can be dispatched from the props
+ * @param dispatch
+ * @returns bindActionCreators
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     {
