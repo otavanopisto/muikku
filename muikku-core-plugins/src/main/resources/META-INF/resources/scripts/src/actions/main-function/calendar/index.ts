@@ -8,25 +8,25 @@ import { EventsState, Event } from "~/reducers/calendar";
 export type Participants = {
   userEntityId: number;
 };
-
-export type LoadCalendarEventParams = {
+export interface LoadCalendarEventParams {
   userEntityId: number;
   begins: string;
   ends: string;
-};
+}
 
+export type EventVisibility = "PRIVATE" | "PUBLIC";
 export interface LoadCalendarEventsTriggerType {
-  (userEntityId: number, rangeStart: string, rangeEnd: string): AnyActionType;
+  (userEntityId: number, start: string, end: string): AnyActionType;
 }
 
 export interface createCalendarEventTriggerType {
   (event: {
-    begins: string;
-    ends?: string;
+    start: string;
+    end?: string;
     allDay?: boolean;
     title: string;
     description: string;
-    visibility: "PRIVATE" | "PUBLIC";
+    visibility: EventVisibility;
     participants: Participants[];
   }): AnyActionType;
 }
@@ -41,7 +41,11 @@ export interface UPDATE_CALENDAR_EVENTS_STATUS
   extends SpecificActionType<"UPDATE_CALENDAR_EVENTS_STATUS", EventsState> {}
 
 const loadCalendarEvents: LoadCalendarEventsTriggerType =
-  function loadCalendarEvents(userEntityId, begins, ends) {
+  function loadCalendarEvents(
+    userEntityId: number,
+    start: string,
+    end: string
+  ) {
     return async (
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
@@ -53,14 +57,12 @@ const loadCalendarEvents: LoadCalendarEventsTriggerType =
         });
         dispatch({
           type: "LOAD_CALENDAR_EVENTS",
-          payload: <Event[]>await promisify(
-            mApi().calendar.events.read({
-              userEntityId,
-              begins,
-              ends,
-            }),
-            "callback"
-          )(),
+          payload: <Event[]>(
+            await promisify(
+              mApi().calendar.events.read({ userEntityId, start, end }),
+              "callback"
+            )()
+          ),
         });
         dispatch({
           type: "UPDATE_CALENDAR_EVENTS_STATUS",
@@ -83,15 +85,34 @@ const loadCalendarEvents: LoadCalendarEventsTriggerType =
 
 const createCalendarEvent: createCalendarEventTriggerType =
   function createCalendarEvent(event) {
+    const {
+      start,
+      end,
+      allDay = false,
+      title,
+      description,
+      visibility,
+      participants,
+    } = event;
+    console.log(event);
     return async (
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
     ) => {
       dispatch({
         type: "UPDATE_CALENDAR_EVENTS",
-        payload: <Event>(
-          await promisify(mApi().calendar.events.create(event), "callback")()
-        ),
+        payload: <Event>await promisify(
+          mApi().calendar.event.create({
+            start,
+            end,
+            allDay,
+            title,
+            description,
+            visibility,
+            participants,
+          }),
+          "callback"
+        )(),
       });
       try {
       } catch (err) {

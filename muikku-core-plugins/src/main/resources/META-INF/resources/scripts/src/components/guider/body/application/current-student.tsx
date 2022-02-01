@@ -32,7 +32,8 @@ import {
 import NewMessage from "~/components/communicator/dialogs/new-message";
 import { ButtonPill } from "~/components/general/button";
 import GuiderToolbarLabels from "./toolbar/labels";
-import GuidanceEvent, { EventType } from "./toolbar/guidance-event";
+import GuidanceEvent from "./toolbar/guidance-event";
+import { Event } from "~/reducers/calendar";
 import { ResourceTimeline } from "../../../general/resource-timeline";
 import workspaces from "./current-student/workspaces";
 import { ExternalEventType } from "../../../general/resource-timeline";
@@ -492,7 +493,7 @@ class CurrentStudent extends React.Component<
         </div>
         <div className="application-sub-panel application-sub-panel--student-data-container">
           <ResourceTimeline
-            onDateSelect={(dates: EventType[]) => console.log(dates)}
+            onDateSelect={(dates: Event[]) => console.log(dates)}
             namespace="student-resource"
             headerToolbar={headerToolbar}
             resourceHeaderContent={"Opiskelija"}
@@ -507,7 +508,7 @@ class CurrentStudent extends React.Component<
         </div>
         <div className="application-sub-panel application-sub-panel--student-data-container">
           <ResourceTimeline
-            onDateSelect={(dates: EventType[]) => console.log(dates)}
+            onDateSelect={(dates: Event[]) => console.log(dates)}
             namespace="workspace-resources"
             headerToolbar={headerToolbar}
             resourceHeaderContent={"Kurssi"}

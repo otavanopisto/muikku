@@ -9,7 +9,7 @@ import interactionPlugin, {
   Draggable,
   EventResizeStopArg,
 } from "@fullcalendar/interaction";
-import { EventType } from "../guider/body/application/toolbar/guidance-event";
+import { Event } from "~/reducers/calendar";
 import "../../sass/elements/resource-timeline.scss";
 
 export type ExternalEventType = {
@@ -37,7 +37,7 @@ interface ResourceTimelineProps {
   externalEvents?: ExternalEventType[];
   selectable?: boolean;
   namespace: string;
-  onDateSelect: (events: EventType[]) => void;
+  onDateSelect: (events: Event[]) => void;
 }
 
 const defaultTimelineProps = {
@@ -56,10 +56,10 @@ export const ResourceTimeline: React.FC<ResourceTimelineProps> = (props) => {
     onDateSelect,
   } = props;
 
-  const [events, setEvents] = useState<EventType[]>([]);
+  const [events, setEvents] = useState<Event[]>([]);
   const handleDateSelect = (arg: DateSelectArg) => {
     const currentEvents = events;
-    const newEvents: EventType[] = currentEvents.concat({
+    const newEvents: Event[] = currentEvents.concat({
       title: arg.resource._resource.title,
       description: "Ohjaussaika opiskelijalle",
       start: arg.startStr,
