@@ -654,6 +654,27 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     return Response.ok(workspaces).build();
   }
   
+  @GET
+  @Path("/workspaces/{ID}")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response getWorkspace(@PathParam("ID") Long workspaceEntityId) {
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+
+    // TODO 
+    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+
+    if (workspace == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+
+    Set<String> curriculumIdentifiers = workspace.getCurriculumIdentifiers().stream().map(ci -> ci.toId()).collect(Collectors.toSet());
+    return Response.ok(createRestModel(sessionController.getLoggedUser(), workspaceEntity, 
+        workspace.getName(), workspace.getNameExtension(), workspace.getDescription(), curriculumIdentifiers )).build();
+  }
+  
   private ToRWorkspaceRestModel createRestModel(
       SchoolDataIdentifier userIdentifier,
       WorkspaceEntity workspaceEntity,
