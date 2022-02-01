@@ -314,20 +314,23 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
         {this.props.guider.availablePurchaseProducts && this.props.guider.availablePurchaseProducts.length ?
           <>
             <div className="application-sub-panel__description">{this.props.i18n.text.get("plugin.guider.createStudentOrder.description")}</div>
-            <Dropdown modifier="guider-products-selection" items={this.props.guider.availablePurchaseProducts.map((p) => {
-              return (closeDropdown: () => any) => {
-                return <Link className="link link--full link--purchasable-product-dropdown" onClick={this.beginOrderCreationProcess.bind(this, p, closeDropdown)}>
-                  <span className="link__icon icon-plus"></span>
-                  <span>{p.Description}</span>
-                </Link>
-              }
-            })}>
-              <Button
-                icon="cart-plus"
-                buttonModifiers={["create-student-order", "info"]}
-                disabled={IsOrderCreationDisabled}
-              >{this.props.i18n.text.get("plugin.guider.createStudentOrder.buttonLabel")}</Button>
-            </Dropdown>
+            {this.props.status.permissions.CREATE_ORDER ?
+              <Dropdown modifier="guider-products-selection" items={this.props.guider.availablePurchaseProducts.map((p) => {
+                return (closeDropdown: () => any) => {
+                  return <Link className="link link--full link--purchasable-product-dropdown" onClick={this.beginOrderCreationProcess.bind(this, p, closeDropdown)}>
+                    <span className="link__icon icon-plus"></span>
+                    <span>{p.Description}</span>
+                  </Link>
+                }
+              })}>
+                <Button
+                  icon="cart-plus"
+                  buttonModifiers={["create-student-order", "info"]}
+                  disabled={IsOrderCreationDisabled}
+                >{this.props.i18n.text.get("plugin.guider.createStudentOrder.buttonLabel")}</Button>
+              </Dropdown>
+            : null}
+
           </> : <div className="empty">
             <span>{this.props.i18n.text.get("plugin.guider.noPurchasableProducts")}</span>
           </div>
@@ -355,8 +358,8 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
                   {p.state !== "COMPLETE" ?
                     <span className="application-list__header-primary-actions">
 
-                      {/* We show "Delete" button only if logged in user is ADMINISTRATOR or logged in user userEntityId is the same as purchase creator userId */}
-                      {this.props.status.role === "ADMINISTRATOR" || p.creator.userEntityId === this.props.status.userId ?
+                      {/* We show "Delete" button only if logged in user has REMOVE_ORDER permission or logged in user's userEntityId is the same as purchase creator userId */}
+                      {this.props.status.permissions.REMOVE_ORDER || p.creator.userEntityId === this.props.status.userId ?
                         <Button
                           onClick={this.beginOrderDeleteProcess.bind(this, p)}
                           disabled={IsOrderDeletionDisabled(p.state)}
@@ -365,7 +368,7 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
                           >{this.props.i18n.text.get("plugin.guider.purchase.deleteOrderLink")}</Button>
                       : null}
 
-                      {/* We show "Complete order" button only if logged in user is ADMINISTRATOR */}
+                      {/* We show "Complete order" button only if logged in user has COMPLETE_ORDER permission */}
                       {this.props.status.role === "ADMINISTRATOR" ?
                         <Button
                           onClick={this.beginOrderManualCompleteProcess.bind(this, p)}

@@ -168,6 +168,25 @@ public abstract class AbstractIntegrationTest {
     }
   }
   
+  protected String getLatestCeeposOrderId() throws SQLException, ClassNotFoundException {
+    Connection connection = getConnection();
+    try {
+      Statement statement = connection.createStatement();
+      statement.execute("SELECT id AS result "
+                  + "FROM ceeposOrder "
+                  + "ORDER BY ID DESC "
+                  + "LIMIT 1");
+      ResultSet results = statement.getResultSet();
+      String orderId = "";
+      while (results.next()) {              
+        orderId = results.getString("result");
+      }
+      return orderId;
+    } finally {
+      connection.close();
+    }
+  }
+  
   protected void updateWorkspaceAccess(WorkspaceAccess access, String urlName) throws SQLException, ClassNotFoundException{
     Connection connection = getConnection();
     try {

@@ -39,6 +39,13 @@ async function loadWhoAMI(dispatch: (arg: AnyActionType) => any, whoAmIReadyCb: 
         GUIDER_VIEW: whoAmI.permissions.includes("GUIDER_VIEW"),
         ORGANIZATION_VIEW: whoAmI.permissions.includes("ORGANIZATION_VIEW"),
         TRANSCRIPT_OF_RECORDS_VIEW: whoAmI.permissions.includes("TRANSCRIPT_OF_RECORDS_VIEW"),
+        LIST_USER_ORDERS: whoAmI.permissions.includes("LIST_USER_ORDERS"),
+        FIND_ORDER: whoAmI.permissions.includes("FIND_ORDER"),
+        REMOVE_ORDER: whoAmI.permissions.includes("REMOVE_ORDER"),
+        CREATE_ORDER: whoAmI.permissions.includes("CREATE_ORDER"),
+        PAY_ORDER: whoAmI.permissions.includes("PAY_ORDER"),
+        LIST_PRODUCTS: whoAmI.permissions.includes("LIST_PRODUCTS"),
+        COMPLETE_ORDER: whoAmI.permissions.includes("COMPLETE_ORDER")
       },
       profile: {
         addresses: (whoAmI.addresses && JSON.parse(whoAmI.addresses)) || [],

@@ -11,16 +11,15 @@ import '~/sass/elements/application-sub-panel.scss';
 import '~/sass/elements/avatar.scss';
 import '~/sass/elements/workspace-activity.scss';
 import { getUserImageUrl, getName } from '~/util/modifiers';
-import Vops from '~/components/base/vops';
 import Hops from '~/components/base/hops_readable';
 import FileDeleteDialog from '../../dialogs/file-delete';
 import Workspaces from './current-student/workspaces';
 import Ceepos from "./current-student/ceepos";
+import { StatusType } from "~/reducers/base/status";
 import FileUploader from '~/components/general/file-uploader';
 import MainChart from '~/components/general/graph/main-chart'
 import {
-  AddFileToCurrentStudentTriggerType, RemoveFileFromCurrentStudentTriggerType,
-  addFileToCurrentStudent
+  AddFileToCurrentStudentTriggerType, addFileToCurrentStudent
 } from '~/actions/main-function/guider';
 import { displayNotification, DisplayNotificationTriggerType } from '~/actions/base/notifications';
 import { UserFileType } from '~/reducers/user-index';
@@ -30,6 +29,7 @@ import { GuiderType, GuiderStudentUserProfileLabelType } from '~/reducers/main-f
 interface CurrentStudentProps {
   i18n: i18nType,
   guider: GuiderType,
+  status: StatusType,
   addFileToCurrentStudent: AddFileToCurrentStudentTriggerType,
   displayNotification: DisplayNotificationTriggerType
 }
@@ -205,7 +205,7 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
       <div className="application-sub-panel">
         {studentBasicInfo}
       </div>
-      {this.props.guider.currentStudent.basic && IsStudentPartOfProperStudyProgram(this.props.guider.currentStudent.basic.studyProgrammeName) ?
+      {this.props.guider.currentStudent.basic && IsStudentPartOfProperStudyProgram(this.props.guider.currentStudent.basic.studyProgrammeName) && this.props.status.permissions.LIST_USER_ORDERS ?
         <div className="application-sub-panel">
           <h3 className="application-sub-panel__header">{this.props.i18n.text.get("plugin.guider.user.details.purchases")}</h3>
           <div className="application-sub-panel__body">
@@ -242,7 +242,8 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    guider: state.guider
+    guider: state.guider,
+    status: state.status
   }
 };
 

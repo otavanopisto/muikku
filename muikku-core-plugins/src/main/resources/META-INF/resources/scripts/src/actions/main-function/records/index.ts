@@ -94,11 +94,8 @@ let updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewToR
 
       //Now we get the workspaces that each one of those users was in, so that mean is an array of an array of workspaces for each
       //user
-      let workspaces: Array<Array<WorkspaceType>> = await Promise.all(users.map((user) => promisify(mApi().workspace.workspaces.read({
-        userIdentifier: user.id,
-        includeInactiveWorkspaces: true,
-        orderBy: "alphabet",
-        maxResults: 500
+      let workspaces: Array<Array<WorkspaceType>> = await Promise.all(users.map((user) => promisify(mApi().records.workspaces.read({
+        userIdentifier: user.id
       }), 'callback')())) as Array<Array<WorkspaceType>>;
       //Now there's this weird thing that it won't give you an empty array if there are no workspaces found, it will instead
       //Give a no response, so we check wheter there was a no response aka undefined and we replace that with an emtpy array
