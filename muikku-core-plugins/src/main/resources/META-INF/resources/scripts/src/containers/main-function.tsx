@@ -592,7 +592,12 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.guider.guider')));
       this.props.store.dispatch(updateLabelFilters() as Action);
       this.props.store.dispatch(updateWorkspaceFilters() as Action);
-      this.props.store.dispatch(updateAvailablePurchaseProducts() as Action);
+
+      // If user has LIST_USER_ORDERS permission then dispatchin is possible
+      if (this.props.store.getState().status.permissions.LIST_USER_ORDERS) {
+        this.props.store.dispatch(updateAvailablePurchaseProducts() as Action);
+      }
+
       this.props.store.dispatch(updateUserGroupFilters() as Action);
 
       this.loadGuiderData();
