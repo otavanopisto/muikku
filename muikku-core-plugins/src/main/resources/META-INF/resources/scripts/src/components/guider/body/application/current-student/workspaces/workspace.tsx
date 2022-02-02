@@ -21,7 +21,6 @@ import {
   ApplicationListItemHeader,
 } from "~/components/general/application-list";
 import { getShortenGradeExtension, shortenGrade } from "~/util/modifiers";
-import * as moment from "moment";
 
 /**
  * StudentWorkspaceProps
@@ -56,16 +55,8 @@ class StudentWorkspace extends React.Component<
       activitiesVisible: false,
     };
 
-    this.toggleActivitiesVisible = this.toggleActivitiesVisible.bind(this);
-  }
-
-  /**
-   * toggleActivitiesVisible
-   */
-  toggleActivitiesVisible() {
-    this.setState({
-      activitiesVisible: !this.state.activitiesVisible,
-    });
+    this.handleToggleActivitiesVisibleClick =
+      this.handleToggleActivitiesVisibleClick.bind(this);
   }
 
   /**
@@ -83,32 +74,6 @@ class StudentWorkspace extends React.Component<
     }
 
     return false;
-  };
-
-  /**
-   * getLatestAssessmentDate
-   * @param assessments assessments
-   */
-  getLatestAssessmentDate = (assessments?: Assessment[]): string | null => {
-    if (assessments) {
-      let latestAssessmentDate;
-
-      for (let i = 0; i < assessments.length; i++) {
-        const date = assessments[i].date;
-
-        if (i === 0) {
-          latestAssessmentDate = date;
-        } else {
-          if (moment(latestAssessmentDate).isSameOrAfter(moment(date))) {
-            latestAssessmentDate = date;
-          }
-        }
-      }
-
-      return latestAssessmentDate;
-    }
-
-    return null;
   };
 
   /**
@@ -149,6 +114,15 @@ class StudentWorkspace extends React.Component<
       extraClasses,
     };
   };
+
+  /**
+   * toggleActivitiesVisible
+   */
+  handleToggleActivitiesVisibleClick() {
+    this.setState({
+      activitiesVisible: !this.state.activitiesVisible,
+    });
+  }
 
   /**
    * Component render method
@@ -267,7 +241,7 @@ class StudentWorkspace extends React.Component<
       >
         <ApplicationListItemHeader
           modifiers="course"
-          onClick={this.toggleActivitiesVisible}
+          onClick={this.handleToggleActivitiesVisibleClick}
         >
           <span className="application-list__header-icon icon-books"></span>
           <span className="application-list__header-primary">
@@ -303,8 +277,6 @@ class StudentWorkspace extends React.Component<
                   ) : null}
                 </span>
               ) : null}
-
-              {/* {getWorkspaceAssessmentsAndPercents(this.props, workspace)} */}
             </span>
           </span>
           <Dropdown
@@ -316,6 +288,9 @@ class StudentWorkspace extends React.Component<
           </Dropdown>
         </ApplicationListItemHeader>
 
+        {/**
+         * Only shows list of assessments here if its comibinations workspace
+         */}
         {isCombinationWorkspace ? renderCombinationSubjectAssessments() : null}
 
         {this.state.activitiesVisible ? (
@@ -484,7 +459,7 @@ const CourseActivityRow = <C,>(props: CourseActivityRowProps<C>) => {
   const workspace = props.workspace;
 
   /**
-   * Any types should not be used and should be fixed. As now there currently is no better solution.
+   * "Any" type should not be used and should be fixed. As now there currently is no better solution.
    * Tho more generic precise props still help use component more typescript precise
    */
   if (((workspace[mainAttribute] as any)[conditionalAttribute] as number) > 0) {

@@ -105,27 +105,26 @@ class CurrentRecord extends React.Component<
   render() {
     if (
       this.props.records.location !== "records" ||
-      !this.props.records.current
+      !this.props.records.current ||
+      this.props.records.currentStatus === "LOADING"
     ) {
-      return null;
-    } else if (this.props.records.currentStatus === "LOADING") {
       return null;
     }
 
     /**
-     * Renders assessment information
+     * Renders assessment information block per subject
      * @returns JSX.Element
      */
     const renderAssessmentsInformations = () => {
-      const { activity } = this.props.records.current.workspace;
+      const { current } = this.props.records;
 
-      if (!activity || !activity.assessmentState) {
+      if (!current.workspace.activity) {
         return null;
       }
 
       return (
         <div className="react-required-container">
-          {activity.assessmentState.map((a) => {
+          {current.workspace.activity.assessmentState.map((a) => {
             const {
               evalStateClassName,
               evalStateIcon,
@@ -134,6 +133,21 @@ class CurrentRecord extends React.Component<
               assessmentIsUnassessed,
               literalAssessment,
             } = this.getAssessmentData(a);
+
+            /**
+             * Find subject data, that contains basic information about that subject
+             */
+            const subjectData =
+              this.props.records.current.workspace.subjects.find(
+                (s) => s.identifier === a.workspaceSubjectIdentifier
+              );
+
+            /**
+             * If not found, return nothing
+             */
+            if (!subjectData) {
+              return;
+            }
 
             return !assessmentIsUnassessed && !assessmentIsPending ? (
               <div
@@ -144,12 +158,18 @@ class CurrentRecord extends React.Component<
                   className={`workspace-assessment__icon ${evalStateIcon}`}
                 ></div>
                 <div className="workspace-assessment__date">
+                  <span className="workspace-assessment__date-data">
+                    {`(${subjectData.subject.name.toUpperCase()})`}
+                  </span>
+                </div>
+                <div className="workspace-assessment__date">
                   <span className="workspace-assessment__date-label">
                     {this.props.i18n.text.get(
                       "plugin.records.workspace.assessment.date.label"
                     )}
                     :
                   </span>
+
                   <span className="workspace-assessment__date-data">
                     {this.props.i18n.time.format(a.date)}
                   </span>
@@ -224,6 +244,85 @@ class CurrentRecord extends React.Component<
       );
     };
 
+    /**
+     * Renders materials
+     * @returns JSX.Element
+     */
+    const renderMaterialsList = () => (
+      <ApplicationList>
+        {this.props.records.current.materials.map((material) => {
+          let showHiddenAssignment = false;
+
+          if (material.assignment && material.assignment.hidden) {
+            const compositeReply =
+              this.props.records.current &&
+              this.props.records.current.compositeReplies.find(
+                (cItem) => cItem.workspaceMaterialId === material.assignment.id
+              );
+
+            if (compositeReply && compositeReply.submitted !== null) {
+              showHiddenAssignment = true;
+            }
+          }
+          if (
+            material.assignment &&
+            material.assignment.hidden &&
+            !showHiddenAssignment
+          ) {
+            return null;
+          }
+
+          return (
+            <Material
+              key={material.id}
+              material={material}
+              i18n={this.props.i18n}
+              workspace={this.props.records.current.workspace}
+              status={this.props.status}
+            />
+          );
+        })}
+      </ApplicationList>
+    );
+
+    /**
+     * Renders jouranls
+     * @returns JSX.Element
+     */
+    const renderJournalsList = () => (
+      <div className="application-list_item-wrapper">
+        {this.props.records.current.journals.map((journal) => {
+          return (
+            <ApplicationListItem
+              className="journal journal--studies"
+              key={journal.id}
+            >
+              <ApplicationListItemHeader className="application-list__item-header--journal-entry">
+                <div className="application-list__item-header-main application-list__item-header-main--journal-entry">
+                  <span className="application-list__item-header-main-content application-list__item-header-main-content--journal-entry-title">
+                    {journal.title}
+                  </span>
+                </div>
+                <div className="application-list__item-header-aside">
+                  <span>
+                    {this.props.i18n.time.format(journal.created, "L LT")}
+                  </span>
+                </div>
+              </ApplicationListItemHeader>
+              <ApplicationListItemBody className="application-list__item-body">
+                <article
+                  className="application-list__item-content-body application-list__item-content-body--journal-entry rich-text"
+                  dangerouslySetInnerHTML={{
+                    __html: journal.content,
+                  }}
+                ></article>
+              </ApplicationListItemBody>
+            </ApplicationListItem>
+          );
+        })}
+      </div>
+    );
+
     return (
       <section>
         <h3
@@ -243,41 +342,7 @@ class CurrentRecord extends React.Component<
             {this.props.i18n.text.get("plugin.records.assignments.title")}
           </div>
           <div className="application-sub-panel__body application-sub-panel__body--studies-detailed-info">
-            <ApplicationList>
-              {this.props.records.current.materials.map((material) => {
-                let showHiddenAssignment = false;
-
-                if (material.assignment && material.assignment.hidden) {
-                  const compositeReply =
-                    this.props.records.current &&
-                    this.props.records.current.compositeReplies.find(
-                      (cItem) =>
-                        cItem.workspaceMaterialId === material.assignment.id
-                    );
-
-                  if (compositeReply && compositeReply.submitted !== null) {
-                    showHiddenAssignment = true;
-                  }
-                }
-                if (
-                  material.assignment &&
-                  material.assignment.hidden &&
-                  !showHiddenAssignment
-                ) {
-                  return null;
-                }
-
-                return (
-                  <Material
-                    key={material.id}
-                    material={material}
-                    i18n={this.props.i18n}
-                    workspace={this.props.records.current.workspace}
-                    status={this.props.status}
-                  />
-                );
-              })}
-            </ApplicationList>
+            {renderMaterialsList()}
           </div>
         </div>
         {this.props.records.current.journals.length ? (
@@ -286,42 +351,7 @@ class CurrentRecord extends React.Component<
               {this.props.i18n.text.get("plugin.records.studydiary.title")}
             </div>
             <div className="application-sub-panel__body application-sub-panel__body--studies-journal-entries">
-              <div className="application-list">
-                <div className="application-list_item-wrapper">
-                  {this.props.records.current.journals.map((journal) => {
-                    return (
-                      <ApplicationListItem
-                        className="journal journal--studies"
-                        key={journal.id}
-                      >
-                        <ApplicationListItemHeader className="application-list__item-header--journal-entry">
-                          <div className="application-list__item-header-main application-list__item-header-main--journal-entry">
-                            <span className="application-list__item-header-main-content application-list__item-header-main-content--journal-entry-title">
-                              {journal.title}
-                            </span>
-                          </div>
-                          <div className="application-list__item-header-aside">
-                            <span>
-                              {this.props.i18n.time.format(
-                                journal.created,
-                                "L LT"
-                              )}
-                            </span>
-                          </div>
-                        </ApplicationListItemHeader>
-                        <ApplicationListItemBody className="application-list__item-body">
-                          <article
-                            className="application-list__item-content-body application-list__item-content-body--journal-entry rich-text"
-                            dangerouslySetInnerHTML={{
-                              __html: journal.content,
-                            }}
-                          ></article>
-                        </ApplicationListItemBody>
-                      </ApplicationListItem>
-                    );
-                  })}
-                </div>
-              </div>
+              <div className="application-list">{renderJournalsList()}</div>
             </div>
           </div>
         ) : null}
