@@ -17,7 +17,7 @@ import * as React from "react";
 import { findDOMNode } from "react-dom";
 import $ from "~/lib/jquery";
 import "~/sass/elements/dropdown.scss";
-import * as uuid from "uuid";
+import { v4 as uuidv4 } from "uuid";
 
 /**
  * itemType2
@@ -77,7 +77,7 @@ export default class Dropdown extends React.Component<
     this.close = this.close.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onItemKeyDown = this.onItemKeyDown.bind(this);
-    this.id = "dropdown-" + uuid.v4();
+    this.id = "dropdown-" + uuidv4();
 
     this.state = {
       top: null,
