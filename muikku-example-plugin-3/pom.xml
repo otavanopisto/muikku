@@ -226,12 +226,12 @@
     <repository>
       <id>otavanopisto-snapshots</id>
       <name>Otavan Opisto Snapshots</name>
-      <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/snapshots</url>
+      <url>https://nexus.muikkuverkko.fi/repository/otavanopisto-snapshots/</url>
     </repository>
     <repository>
       <id>otavanopisto-releases</id>
       <name>Otavan Opisto Releases</name>
-      <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/releases</url>
+      <url>https://nexus.muikkuverkko.fi/repository/otavanopisto-releases/</url>
     </repository>
     <repository>
       <id>caldav4j</id>
