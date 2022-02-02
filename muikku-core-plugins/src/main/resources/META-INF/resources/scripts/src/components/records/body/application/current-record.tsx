@@ -1,7 +1,5 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { bindActionCreators } from "redux";
-import Link from "~/components/general/link";
 import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
 import "~/sass/elements/link.scss";
@@ -14,30 +12,96 @@ import "~/sass/elements/rich-text.scss";
 import "~/sass/elements/application-list.scss";
 import "~/sass/elements/journal.scss";
 import "~/sass/elements/workspace-assessment.scss";
-
 import ApplicationList, {
   ApplicationListItem,
   ApplicationListItemBody,
   ApplicationListItemHeader,
 } from "~/components/general/application-list";
 import { StatusType } from "~/reducers/base/status";
+import { Assessment } from "~/reducers/workspaces";
 
+/**
+ * CurrentRecordProps
+ */
 interface CurrentRecordProps {
   i18n: i18nType;
   records: RecordsType;
   status: StatusType;
 }
 
+/**
+ * CurrentRecordState
+ */
 interface CurrentRecordState {}
 
+/**
+ * CurrentRecord
+ */
 class CurrentRecord extends React.Component<
   CurrentRecordProps,
   CurrentRecordState
 > {
+  /**
+   * Constructor method
+   * @param props props
+   */
   constructor(props: CurrentRecordProps) {
     super(props);
   }
 
+  /**
+   * getAssessmentData
+   * @param assessment assessment
+   */
+  getAssessmentData = (assessment: Assessment) => {
+    let evalStateClassName = "";
+    let evalStateIcon = "";
+    let assessmentIsPending = null;
+    let assessmentIsIncomplete = null;
+    let assessmentIsUnassessed = null;
+
+    switch (assessment.state) {
+      case "pass":
+        evalStateClassName = "workspace-assessment--passed";
+        evalStateIcon = "icon-thumb-up";
+        break;
+      case "pending":
+      case "pending_pass":
+      case "pending_fail":
+        evalStateClassName = "workspace-assessment--pending";
+        evalStateIcon = "icon-assessment-pending";
+        assessmentIsPending = true;
+        break;
+      case "fail":
+        evalStateClassName = "workspace-assessment--failed";
+        evalStateIcon = "icon-thumb-down";
+        break;
+      case "incomplete":
+        evalStateClassName = "workspace-assessment--incomplete";
+        evalStateIcon = "";
+        assessmentIsIncomplete = true;
+        break;
+      case "unassessed":
+        assessmentIsUnassessed = true;
+    }
+
+    let literalAssessment =
+      assessment && assessment.text ? assessment.text : null;
+
+    return {
+      evalStateClassName,
+      evalStateIcon,
+      assessmentIsPending,
+      assessmentIsUnassessed,
+      assessmentIsIncomplete,
+      literalAssessment,
+    };
+  };
+
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     if (
       this.props.records.location !== "records" ||
@@ -48,45 +112,117 @@ class CurrentRecord extends React.Component<
       return null;
     }
 
-    let evalStateClassName = "";
-    let evalStateIcon = "";
-    let assessmentIsPending = null;
-    let assessmentIsIncomplete = null;
-    let assessmentIsUnassessed = null;
-    if (this.props.records.current.workspace.studentAssessmentState) {
-      switch (
-        this.props.records.current.workspace.studentAssessmentState.state
-      ) {
-        case "pass":
-          evalStateClassName = "workspace-assessment--passed";
-          evalStateIcon = "icon-thumb-up";
-          break;
-        case "pending":
-        case "pending_pass":
-        case "pending_fail":
-          evalStateClassName = "workspace-assessment--pending";
-          evalStateIcon = "icon-assessment-pending";
-          assessmentIsPending = true;
-          break;
-        case "fail":
-          evalStateClassName = "workspace-assessment--failed";
-          evalStateIcon = "icon-thumb-down";
-          break;
-        case "incomplete":
-          evalStateClassName = "workspace-assessment--incomplete";
-          evalStateIcon = "";
-          assessmentIsIncomplete = true;
-          break;
-        case "unassessed":
-          assessmentIsUnassessed = true;
-      }
-    }
+    /**
+     * Renders assessment information
+     * @returns JSX.Element
+     */
+    const renderAssessmentsInformations = () => {
+      const { activity } = this.props.records.current.workspace;
 
-    let literalAssessment =
-      this.props.records.current.workspace.studentAssessmentState &&
-      this.props.records.current.workspace.studentAssessmentState.text
-        ? this.props.records.current.workspace.studentAssessmentState.text
-        : null;
+      if (!activity || !activity.assessmentState) {
+        return null;
+      }
+
+      return (
+        <div className="react-required-container">
+          {activity.assessmentState.map((a) => {
+            const {
+              evalStateClassName,
+              evalStateIcon,
+              assessmentIsPending,
+              assessmentIsIncomplete,
+              assessmentIsUnassessed,
+              literalAssessment,
+            } = this.getAssessmentData(a);
+
+            return !assessmentIsUnassessed && !assessmentIsPending ? (
+              <div
+                key={a.workspaceSubjectIdentifier}
+                className={`workspace-assessment workspace-assessment--studies-details ${evalStateClassName}`}
+              >
+                <div
+                  className={`workspace-assessment__icon ${evalStateIcon}`}
+                ></div>
+                <div className="workspace-assessment__date">
+                  <span className="workspace-assessment__date-label">
+                    {this.props.i18n.text.get(
+                      "plugin.records.workspace.assessment.date.label"
+                    )}
+                    :
+                  </span>
+                  <span className="workspace-assessment__date-data">
+                    {this.props.i18n.time.format(a.date)}
+                  </span>
+                </div>
+                <div className="workspace-assessment__grade">
+                  <span className="workspace-assessment__grade-label">
+                    {this.props.i18n.text.get(
+                      "plugin.records.workspace.assessment.grade.label"
+                    )}
+                    :
+                  </span>
+                  <span className="workspace-assessment__grade-data">
+                    {assessmentIsIncomplete
+                      ? this.props.i18n.text.get(
+                          "plugin.records.workspace.assessment.grade.incomplete.data"
+                        )
+                      : this.props.records.current.workspace.activity
+                          .assessmentState[0].grade}
+                  </span>
+                </div>
+                <div className="workspace-assessment__literal">
+                  <div className="workspace-assessment__literal-label">
+                    {this.props.i18n.text.get(
+                      "plugin.records.workspace.assessment.literal.label"
+                    )}
+                    :
+                  </div>
+                  <div
+                    className="workspace-assessment__literal-data rich-text"
+                    dangerouslySetInnerHTML={{ __html: literalAssessment }}
+                  ></div>
+                </div>
+              </div>
+            ) : (
+              <div
+                key={a.workspaceSubjectIdentifier}
+                className={`workspace-assessment workspace-assessment--studies-details ${evalStateClassName}`}
+              >
+                <div
+                  className={`workspace-assessment__icon ${evalStateIcon}`}
+                ></div>
+                <div className="workspace-assessment__date">
+                  <span className="workspace-assessment__date-label">
+                    {this.props.i18n.text.get(
+                      "plugin.records.workspace.assessment.date.label"
+                    )}
+                    :
+                  </span>
+                  <span className="workspace-assessment__date-data">
+                    {this.props.i18n.time.format(
+                      this.props.records.current.workspace.activity
+                        .assessmentState[0].date
+                    )}
+                  </span>
+                </div>
+                <div className="workspace-assessment__literal">
+                  <div className="workspace-assessment__literal-label">
+                    {this.props.i18n.text.get(
+                      "plugin.records.workspace.assessment.request.label"
+                    )}
+                    :
+                  </div>
+                  <div
+                    className="workspace-assessment__literal-data rich-text"
+                    dangerouslySetInnerHTML={{ __html: literalAssessment }}
+                  ></div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      );
+    };
 
     return (
       <section>
@@ -99,96 +235,9 @@ class CurrentRecord extends React.Component<
             "(" + this.props.records.current.workspace.nameExtension + ")"}
         </h3>
         <div className="application-sub-panel">
-          {!assessmentIsUnassessed && (
-            <div className="react-required-container">
-              {this.props.records.current.workspace.studentAssessmentState &&
-              !assessmentIsPending ? (
-                <div
-                  className={`workspace-assessment workspace-assessment--studies-details ${evalStateClassName}`}
-                >
-                  <div
-                    className={`workspace-assessment__icon ${evalStateIcon}`}
-                  ></div>
-                  <div className="workspace-assessment__date">
-                    <span className="workspace-assessment__date-label">
-                      {this.props.i18n.text.get(
-                        "plugin.records.workspace.assessment.date.label"
-                      )}
-                      :
-                    </span>
-                    <span className="workspace-assessment__date-data">
-                      {this.props.i18n.time.format(
-                        this.props.records.current.workspace
-                          .studentAssessmentState.date
-                      )}
-                    </span>
-                  </div>
-                  <div className="workspace-assessment__grade">
-                    <span className="workspace-assessment__grade-label">
-                      {this.props.i18n.text.get(
-                        "plugin.records.workspace.assessment.grade.label"
-                      )}
-                      :
-                    </span>
-                    <span className="workspace-assessment__grade-data">
-                      {assessmentIsIncomplete
-                        ? this.props.i18n.text.get(
-                            "plugin.records.workspace.assessment.grade.incomplete.data"
-                          )
-                        : this.props.records.current.workspace
-                            .studentAssessmentState.grade}
-                    </span>
-                  </div>
-                  <div className="workspace-assessment__literal">
-                    <div className="workspace-assessment__literal-label">
-                      {this.props.i18n.text.get(
-                        "plugin.records.workspace.assessment.literal.label"
-                      )}
-                      :
-                    </div>
-                    <div
-                      className="workspace-assessment__literal-data rich-text"
-                      dangerouslySetInnerHTML={{ __html: literalAssessment }}
-                    ></div>
-                  </div>
-                </div>
-              ) : (
-                <div
-                  className={`workspace-assessment workspace-assessment--studies-details ${evalStateClassName}`}
-                >
-                  <div
-                    className={`workspace-assessment__icon ${evalStateIcon}`}
-                  ></div>
-                  <div className="workspace-assessment__date">
-                    <span className="workspace-assessment__date-label">
-                      {this.props.i18n.text.get(
-                        "plugin.records.workspace.assessment.date.label"
-                      )}
-                      :
-                    </span>
-                    <span className="workspace-assessment__date-data">
-                      {this.props.i18n.time.format(
-                        this.props.records.current.workspace
-                          .studentAssessmentState.date
-                      )}
-                    </span>
-                  </div>
-                  <div className="workspace-assessment__literal">
-                    <div className="workspace-assessment__literal-label">
-                      {this.props.i18n.text.get(
-                        "plugin.records.workspace.assessment.request.label"
-                      )}
-                      :
-                    </div>
-                    <div
-                      className="workspace-assessment__literal-data rich-text"
-                      dangerouslySetInnerHTML={{ __html: literalAssessment }}
-                    ></div>
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
+          <div className="react-required-container">
+            {renderAssessmentsInformations()}
+          </div>
 
           <div className="application-sub-panel__header">
             {this.props.i18n.text.get("plugin.records.assignments.title")}
@@ -281,6 +330,10 @@ class CurrentRecord extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -289,6 +342,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return {};
 }

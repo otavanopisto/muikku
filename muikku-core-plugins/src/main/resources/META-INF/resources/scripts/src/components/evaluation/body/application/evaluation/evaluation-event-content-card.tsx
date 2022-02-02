@@ -50,7 +50,7 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
 
   /**
    * arrowClassMod
-   * @param typeMsg
+   * @param typeMsg typeMsg
    * @returns arrow class modifier
    */
   const arrowClassMod = (typeMsg: EvaluationEnum) => {
@@ -84,7 +84,7 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
 
   /**
    * createHtmlMarkup
-   * @param htmlString
+   * @param htmlString htmlString
    */
   const createHtmlMarkup = (htmlString: string) => {
     return {
@@ -126,8 +126,8 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
 
   /**
    * renderTypeMessage
-   * @param typeMsg
-   * @param grade
+   * @param typeMsg typeMsg
+   * @param grade grade
    */
   const renderTypeMessage = (typeMsg: EvaluationEnum, grade: string | null) => {
     switch (typeMsg) {
@@ -310,7 +310,7 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
 
 /**
  * mapStateToProps
- * @param state
+ * @param  state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -321,7 +321,7 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({}, dispatch);

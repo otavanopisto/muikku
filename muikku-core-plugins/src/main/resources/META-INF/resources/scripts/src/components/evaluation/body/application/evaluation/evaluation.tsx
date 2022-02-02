@@ -10,7 +10,9 @@ import EvaluationAssessmentAssignment from "./evaluation-assessment-assignment";
 import {
   AssessmentRequest,
   EvaluationEnum,
+  EvaluationLatestSubjectEvaluationIndex,
   EvaluationWorkspace,
+  EvaluationWorkspaceSubject,
 } from "~/@types/evaluation";
 import EvaluationDiaryEvent from "./evaluation-diary-event";
 import WorkspaceEditor from "./editors/workspace-editor";
@@ -34,6 +36,9 @@ import {
 } from "~/reducers/workspaces";
 import Link from "~/components/general/link";
 
+/**
+ * EvaluationDrawerProps
+ */
 interface EvaluationDrawerProps {
   i18n: i18nType;
   status: StatusType;
@@ -45,6 +50,9 @@ interface EvaluationDrawerProps {
   loadEvaluationAssessmentEventsFromServer: LoadEvaluationAssessmentEvent;
 }
 
+/**
+ * EvaluationDrawerState
+ */
 interface EvaluationDrawerState {
   archiveStudentDialog: boolean;
   showWorkspaceEvaluationDrawer: boolean;
@@ -57,9 +65,17 @@ interface EvaluationDrawerState {
   listOfDiaryIds: number[];
   listOfAssignmentIds: number[];
   diaryFetched: boolean;
-  subjectToBeEvaluated: string;
+  /**
+   * Object that contains subject properties that are needed for evaluation
+   */
+  subjectToBeEvaluated: EvaluationWorkspaceSubject | undefined;
 }
 
+/**
+ * CKEditorConfig
+ * @param locale locale
+ * @returns CKEditor config
+ */
 export const CKEditorConfig = (locale: string) => ({
   linkShowTargetTab: true,
   allowedContent: true, // disable content filtering to preserve all formatting of imported documents; fix for #263
@@ -155,28 +171,38 @@ export class Evaluation extends React.Component<
       listOfDiaryIds: [],
       listOfAssignmentIds: [],
       diaryFetched: false,
-      subjectToBeEvaluated: "",
+      subjectToBeEvaluated: undefined,
     };
   }
 
+  /**
+   * componentDidMount
+   */
   componentDidMount(): void {
-    const isCombinationWorkspace =
-      this.props.evaluation.evaluationSelectedAssessmentId &&
-      this.props.evaluation.evaluationSelectedAssessmentId.subjects.length > 1;
+    if (this.props.evaluation.evaluationSelectedAssessmentId) {
+      /**
+       * If there is more than one subject, then its combination workspace
+       */
+      const isCombinationWorkspace =
+        this.props.evaluation.evaluationSelectedAssessmentId.subjects.length >
+        1;
 
-    if (isCombinationWorkspace) {
-      this.setState({
-        subjectToBeEvaluated:
-          this.props.evaluation.evaluationSelectedAssessmentId.subjects[0]
-            .identifier,
-      });
+      /**
+       * If not, then first item is default always
+       */
+      if (!isCombinationWorkspace) {
+        this.setState({
+          subjectToBeEvaluated:
+            this.props.evaluation.evaluationSelectedAssessmentId.subjects[0],
+        });
+      }
     }
   }
 
   /**
    * componentDidUpdate
-   * @param prevProps
-   * @param prevState
+   * @param prevProps prevProps
+   * @param prevState prevState
    */
   componentDidUpdate(
     prevProps: EvaluationDrawerProps,
@@ -203,7 +229,9 @@ export class Evaluation extends React.Component<
    * getLatestEvaluatedEventIndex
    * @returns latest evaluated event index
    */
-  getLatestEvaluatedEventIndex = () => {
+  getLatestEvaluatedEventIndex = (
+    identifier: string
+  ): EvaluationLatestSubjectEvaluationIndex => {
     const { evaluationAssessmentEvents } = this.props.evaluation;
 
     if (
@@ -215,12 +243,15 @@ export class Evaluation extends React.Component<
       for (let i = 0; i < evaluationAssessmentEvents.data.length; i++) {
         const event = evaluationAssessmentEvents.data[i];
 
-        if (event.type !== EvaluationEnum.EVALUATION_REQUEST) {
+        if (
+          event.workspaceSubjectIdentifier === identifier &&
+          event.type !== EvaluationEnum.EVALUATION_REQUEST
+        ) {
           indexOfLatestEvaluatedEvent = i;
         }
       }
 
-      return indexOfLatestEvaluatedEvent;
+      return { [identifier]: indexOfLatestEvaluatedEvent };
     }
   };
 
@@ -228,7 +259,9 @@ export class Evaluation extends React.Component<
    * getLastEvaluatedEventIndex
    * @returns last index
    */
-  getLastEvaluatedEventIndex = () => {
+  getLastEvaluatedEventIndex = (
+    identifier: string
+  ): EvaluationLatestSubjectEvaluationIndex => {
     const { evaluationAssessmentEvents } = this.props.evaluation;
 
     if (
@@ -237,10 +270,9 @@ export class Evaluation extends React.Component<
     ) {
       let indexOfLatestEvaluatedEvent: number = null;
 
-      const lastEvent =
-        evaluationAssessmentEvents.data[
-          evaluationAssessmentEvents.data.length - 1
-        ];
+      const lastEvent = evaluationAssessmentEvents.data.find(
+        (item) => item.workspaceSubjectIdentifier === identifier
+      );
 
       if (
         lastEvent.type &&
@@ -250,8 +282,34 @@ export class Evaluation extends React.Component<
           evaluationAssessmentEvents.data.length - 1;
       }
 
-      return indexOfLatestEvaluatedEvent;
+      return (
+        indexOfLatestEvaluatedEvent && {
+          [identifier]: indexOfLatestEvaluatedEvent,
+        }
+      );
     }
+  };
+
+  /**
+   * isLatestEventSupplementationRequest
+   * @returns boolean whether latest event is supplementation request
+   */
+  isLatestEventSupplementationRequest = (): boolean => {
+    const { evaluationAssessmentEvents } = this.props.evaluation;
+
+    if (
+      evaluationAssessmentEvents.data &&
+      evaluationAssessmentEvents.data.length > 0
+    ) {
+      const lastEvent =
+        evaluationAssessmentEvents.data[
+          evaluationAssessmentEvents.data.length - 1
+        ];
+
+      return lastEvent.type === EvaluationEnum.SUPPLEMENTATION_REQUEST;
+    }
+
+    return false;
   };
 
   /**
@@ -427,7 +485,7 @@ export class Evaluation extends React.Component<
 
   /**
    * handleCloseSpecificMaterialContent
-   * @param materialId
+   * @param materialId materialId
    */
   handleCloseSpecificMaterialContent = (materialId: number) => {
     const listOfAssignmentIds = this.state.listOfAssignmentIds.filter(
@@ -441,7 +499,7 @@ export class Evaluation extends React.Component<
 
   /**
    * handleOpenDiaryEntryClick
-   * @param id
+   * @param id id
    */
   handleOpenDiaryEntryClick = (id: number) => {
     let updatedList = [...this.state.listOfDiaryIds];
@@ -461,7 +519,7 @@ export class Evaluation extends React.Component<
 
   /**
    * handleOpenDiaryEntryClick
-   * @param id
+   * @param id id
    */
   handleOpenMaterialClick = (id: number) => {
     let updatedList = [...this.state.listOfAssignmentIds];
@@ -486,8 +544,14 @@ export class Evaluation extends React.Component<
   handleSelectSubjectEvaluationChange = (
     e: React.ChangeEvent<HTMLSelectElement>
   ) => {
+    const subject =
+      this.props.evaluation.evaluationSelectedAssessmentId &&
+      this.props.evaluation.evaluationSelectedAssessmentId.subjects.find(
+        (sItem) => sItem.identifier === e.currentTarget.value
+      );
+
     this.setState({
-      subjectToBeEvaluated: e.currentTarget.value,
+      subjectToBeEvaluated: subject,
     });
   };
 
@@ -496,7 +560,14 @@ export class Evaluation extends React.Component<
    * @returns JSX.Element
    */
   render() {
-    const { evaluationAssessmentEvents } = this.props.evaluation;
+    const {
+      subjectToBeEvaluated,
+      edit,
+      eventByIdOpened,
+      showWorkspaceEvaluationDrawer,
+    } = this.state;
+    const { evaluationAssessmentEvents, evaluationSelectedAssessmentId } =
+      this.props.evaluation;
 
     const evaluationDiaryEvents =
       this.props.evaluation.evaluationDiaryEntries.data &&
@@ -523,22 +594,59 @@ export class Evaluation extends React.Component<
         </div>
       );
 
+    /**
+     * If latest event is supplementation request
+     */
+    const latestEventIsSupplementationRequest =
+      this.isLatestEventSupplementationRequest();
+
+    /**
+     * If there is any existing evaluation in workspace
+     */
     let isEvaluated = false;
+
+    /**
+     * If one selected subject of workspace is evaluated. This will affect whether next evaluation is normal or
+     * raise
+     */
+    let isSelectedSubjectEvaluated = false;
+
     /**
      * This is because there must be chance to delete events
      * that were added before new "request" that students may request...
      * We pass it to evaluation event card component
      */
-    let latestEvaluatedEventIndex = this.getLatestEvaluatedEventIndex();
+    let latestEvaluatedEventIndexPerSubject =
+      evaluationSelectedAssessmentId &&
+      evaluationSelectedAssessmentId.subjects
+        .map((sItem) => this.getLatestEvaluatedEventIndex(sItem.identifier))
+        .reduce((r, c) => Object.assign(r, c), {});
 
-    let lastEvaluatedEventIndex = this.getLastEvaluatedEventIndex();
+    const evaluationsEvents = evaluationAssessmentEvents.data || [];
+
+    if (subjectToBeEvaluated) {
+      /**
+       * If selected subject is evaluated in combination workspace with grade
+       */
+      const subject =
+        evaluationsEvents.length > 0 &&
+        evaluationsEvents.find(
+          (event, index) =>
+            event.workspaceSubjectIdentifier === subjectToBeEvaluated.identifier
+        );
+
+      isSelectedSubjectEvaluated = subject && subject.grade !== null;
+    }
+
+    const eventListLength =
+      evaluationAssessmentEvents.data &&
+      evaluationAssessmentEvents.data.length - 1;
 
     /**
      * evaluationEventContentCards
      */
     const evaluationEventContentCards =
-      evaluationAssessmentEvents.data &&
-      evaluationAssessmentEvents.data.length > 0 ? (
+      evaluationsEvents.length > 0 ? (
         evaluationAssessmentEvents.data.map((eItem, index) => {
           if (eItem.grade !== null) {
             isEvaluated = true;
@@ -552,9 +660,13 @@ export class Evaluation extends React.Component<
               key={index}
               {...eItem}
               showDeleteAndModify={
-                lastEvaluatedEventIndex
-                  ? lastEvaluatedEventIndex === index && isNotRequest
-                  : latestEvaluatedEventIndex === index && isNotRequest
+                (latestEventIsSupplementationRequest &&
+                  eventListLength === index) ||
+                (!latestEventIsSupplementationRequest &&
+                  latestEvaluatedEventIndexPerSubject[
+                    eItem.workspaceSubjectIdentifier
+                  ] === index &&
+                  isNotRequest)
               }
             />
           );
@@ -773,30 +885,33 @@ export class Evaluation extends React.Component<
                   <div className="loader-empty" />
                 )}
 
-                {this.props.selectedAssessment.subjects.length > 1 ? (
+                {this.props.selectedAssessment.subjects.length > 1 &&
+                subjectToBeEvaluated ? (
                   this.props.selectedAssessment.subjects.map(
                     (subject) =>
-                      subject.subject.identifier ===
-                        this.state.subjectToBeEvaluated && (
+                      subject.identifier ===
+                        subjectToBeEvaluated.identifier && (
                         <div key={subject.identifier}>
                           <SlideDrawer
                             title={this.props.i18n.text.get(
                               "plugin.evaluation.evaluationModal.workspaceEvaluationForm.title"
                             )}
                             modifiers={["workspace"]}
-                            show={this.state.showWorkspaceEvaluationDrawer}
+                            show={showWorkspaceEvaluationDrawer}
                             onClose={this.handleWorkspaceEvaluationCloseDrawer}
                           >
                             <WorkspaceEditor
-                              eventId={this.state.eventByIdOpened}
+                              eventId={eventByIdOpened}
                               editorLabel={this.props.i18n.text.get(
                                 "plugin.evaluation.evaluationModal.workspaceEvaluationForm.literalAssessmentLabel"
                               )}
-                              subjectToBeEvaluated={subject.identifier}
+                              workspaceSubjectToBeEvaluatedIdentifier={
+                                subject.identifier
+                              }
                               onClose={
                                 this.handleWorkspaceEvaluationCloseDrawer
                               }
-                              type={this.state.edit ? "edit" : "new"}
+                              type={edit ? "edit" : "new"}
                               onSuccesfulSave={
                                 this.handleOpenArchiveStudentDialog
                               }
@@ -815,7 +930,7 @@ export class Evaluation extends React.Component<
                             }
                           >
                             <SupplementationEditor
-                              eventId={this.state.eventByIdOpened}
+                              eventId={eventByIdOpened}
                               editorLabel={this.props.i18n.text.get(
                                 "plugin.evaluation.evaluationModal.workspaceEvaluationForm.literalSupplementationLabel"
                               )}
@@ -823,30 +938,32 @@ export class Evaluation extends React.Component<
                                 this
                                   .handleWorkspaceSupplementationEvaluationCloseDrawer
                               }
-                              type={this.state.edit ? "edit" : "new"}
+                              type={edit ? "edit" : "new"}
                             />
                           </SlideDrawer>
                         </div>
                       )
                   )
-                ) : (
+                ) : subjectToBeEvaluated ? (
                   <div>
                     <SlideDrawer
                       title={this.props.i18n.text.get(
                         "plugin.evaluation.evaluationModal.workspaceEvaluationForm.title"
                       )}
                       modifiers={["workspace"]}
-                      show={this.state.showWorkspaceEvaluationDrawer}
+                      show={showWorkspaceEvaluationDrawer}
                       onClose={this.handleWorkspaceEvaluationCloseDrawer}
                     >
                       <WorkspaceEditor
-                        eventId={this.state.eventByIdOpened}
+                        eventId={eventByIdOpened}
                         editorLabel={this.props.i18n.text.get(
                           "plugin.evaluation.evaluationModal.workspaceEvaluationForm.literalAssessmentLabel"
                         )}
-                        subjectToBeEvaluated={this.state.subjectToBeEvaluated}
+                        workspaceSubjectToBeEvaluatedIdentifier={
+                          subjectToBeEvaluated.identifier
+                        }
                         onClose={this.handleWorkspaceEvaluationCloseDrawer}
-                        type={this.state.edit ? "edit" : "new"}
+                        type={edit ? "edit" : "new"}
                         onSuccesfulSave={this.handleOpenArchiveStudentDialog}
                       />
                     </SlideDrawer>
@@ -862,7 +979,7 @@ export class Evaluation extends React.Component<
                       }
                     >
                       <SupplementationEditor
-                        eventId={this.state.eventByIdOpened}
+                        eventId={eventByIdOpened}
                         editorLabel={this.props.i18n.text.get(
                           "plugin.evaluation.evaluationModal.workspaceEvaluationForm.literalSupplementationLabel"
                         )}
@@ -870,11 +987,11 @@ export class Evaluation extends React.Component<
                           this
                             .handleWorkspaceSupplementationEvaluationCloseDrawer
                         }
-                        type={this.state.edit ? "edit" : "new"}
+                        type={edit ? "edit" : "new"}
                       />
                     </SlideDrawer>
                   </div>
-                )}
+                ) : null}
               </div>
 
               <div className="evaluation-modal__content-buttonset">
@@ -887,10 +1004,12 @@ export class Evaluation extends React.Component<
                     this.props.evaluation.basePrice.state === "LOADING" ||
                     (this.props.evaluation.evaluationSelectedAssessmentId
                       .subjects.length > 1 &&
-                      this.state.subjectToBeEvaluated === "")
+                      !subjectToBeEvaluated)
                   }
                 >
-                  {isEvaluated
+                  {isEvaluated &&
+                  isSelectedSubjectEvaluated &&
+                  subjectToBeEvaluated
                     ? this.props.i18n.text.get(
                         "plugin.evaluation.evaluationModal.events.improvedGradeButton"
                       )
@@ -909,7 +1028,7 @@ export class Evaluation extends React.Component<
                     this.props.evaluation.basePrice.state === "LOADING" ||
                     (this.props.evaluation.evaluationSelectedAssessmentId
                       .subjects.length > 1 &&
-                      this.state.subjectToBeEvaluated === "")
+                      !subjectToBeEvaluated)
                   }
                 >
                   {this.props.i18n.text.get(
@@ -922,8 +1041,8 @@ export class Evaluation extends React.Component<
                     <option value="">Valitse</option>
                     {this.props.selectedAssessment.subjects.map((subject) => (
                       <option
-                        key={subject.subject.identifier}
-                        value={subject.subject.identifier}
+                        key={subject.identifier}
+                        value={subject.identifier}
                       >
                         {subject.subject.name}
                       </option>
@@ -947,7 +1066,7 @@ export class Evaluation extends React.Component<
 
 /**
  * mapStateToProps
- * @param state
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -960,7 +1079,7 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(

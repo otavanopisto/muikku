@@ -4,7 +4,7 @@ import {
   MaterialContentNodeListType,
   MaterialCompositeRepliesType,
   MaterialAssignmentType,
-  WorkspaceAdditionalInfoSubjectType,
+  WorkspaceSubject,
 } from "../reducers/workspaces/index";
 /**
  * EvaluationEnum
@@ -92,10 +92,8 @@ export interface EvaluationStudyDiaryEvent {
   workspaceEntityId: number;
 }
 
-export interface EvaluationWorkspaceAddiotionalInfoSubjectType
-  extends WorkspaceAdditionalInfoSubjectType {
+export interface EvaluationWorkspaceSubject extends WorkspaceSubject {
   datasource: string;
-  identifier: string;
 }
 
 /**
@@ -119,8 +117,21 @@ export interface AssessmentRequest {
   workspaceUrlName: string;
   workspaceUserEntityId: number;
   workspaceUserIdentifier: string;
-  subjects: EvaluationWorkspaceAddiotionalInfoSubjectType[];
+  subjects: EvaluationWorkspaceSubject[];
 }
+
+/**
+ * Interface for latest evaluation per subject
+ */
+export interface EvaluationLatestSubjectEvaluationIndex {
+  [subjectIdentifier: string]: number;
+}
+
+/**
+ * Interface for last evaluation per subject
+ */
+export interface EvaluationLastSubjectEvaluationIndex
+  extends EvaluationLatestSubjectEvaluationIndex {}
 
 /**
  * Interface for grading system

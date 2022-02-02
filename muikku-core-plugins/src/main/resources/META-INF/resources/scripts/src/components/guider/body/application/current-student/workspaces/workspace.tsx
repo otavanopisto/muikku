@@ -1,125 +1,126 @@
 import { i18nType } from "~/reducers/base/i18n";
 import * as React from "react";
-import { WorkspaceType } from "~/reducers/workspaces";
+import {
+  WorkspaceType,
+  Assessment,
+  WorkspaceActivityType,
+  WorkspaceForumStatisticsType,
+} from "~/reducers/workspaces";
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
-import {StateType} from '~/reducers';
-import Dropdown from '~/components/general/dropdown';
-import WorkspaceChart from './workspace/workspace-chart';
-import '~/sass/elements/application-list.scss';
-import '~/sass/elements/application-sub-panel.scss';
-import '~/sass/elements/course.scss';
-import '~/sass/elements/workspace-activity.scss';
-import { ApplicationListItem, ApplicationListItemHeader } from "~/components/general/application-list";
+import { StateType } from "~/reducers";
+import Dropdown from "~/components/general/dropdown";
+import WorkspaceChart from "./workspace/workspace-chart";
+import "~/sass/elements/application-list.scss";
+import "~/sass/elements/application-sub-panel.scss";
+import "~/sass/elements/course.scss";
+import "~/sass/elements/workspace-activity.scss";
+import {
+  ApplicationListItem,
+  ApplicationListItemContentContainer,
+  ApplicationListItemHeader,
+} from "~/components/general/application-list";
 import { getShortenGradeExtension, shortenGrade } from "~/util/modifiers";
+import * as moment from "moment";
 
-
+/**
+ * StudentWorkspaceProps
+ */
 interface StudentWorkspaceProps {
-  i18n: i18nType,
-  workspace: WorkspaceType
+  i18n: i18nType;
+  workspace: WorkspaceType;
 }
 
+/**
+ * StudentWorkspaceState
+ */
 interface StudentWorkspaceState {
-  activitiesVisible: boolean
+  activitiesVisible: boolean;
 }
 
-
-function CourseActivityRow(props: {
-  i18n: i18nType,
-  workspace: WorkspaceType,
-  labelTranslationString: string,
-  conditionalAttribute: string,
-  conditionalAttributeLocale?: string,
-  givenDateAttribute?: string,
-  givenDateAttributeLocale?: string,
-  mainAttribute: string
-}){
-  let output = "-";
-  if (((props.workspace as any)[props.mainAttribute][props.conditionalAttribute] as number) > 0) {
-    if (props.conditionalAttributeLocale){
-      output = props.i18n.text.get(props.conditionalAttributeLocale, (props.workspace as any)[props.mainAttribute][props.conditionalAttribute]);
-    } else {
-      output = (props.workspace as any)[props.mainAttribute][props.conditionalAttribute];
-    }
-
-    if (props.givenDateAttribute){
-      output += ", ";
-
-      if (props.givenDateAttributeLocale){
-        output += props.i18n.text.get(props.givenDateAttributeLocale, props.i18n.time.format((props.workspace as any)[props.mainAttribute][props.givenDateAttribute]));
-      } else {
-        output += props.i18n.time.format((props.workspace as any)[props.mainAttribute][props.givenDateAttribute]);
-      }
-    }
-  }
-  return <div className="application-sub-panel__item application-sub-panel__item--course-activity">
-    <div className="application-sub-panel__item-title">{props.i18n.text.get(props.labelTranslationString)}</div>
-    <div className="application-sub-panel__item-data">
-      <span className="application-sub-panel__single-entry">{output}</span>
-    </div>
-  </div>
-}
-
-function getWorkspaceAssessmentsAndPercents(props: StudentWorkspaceProps, workspace: WorkspaceType){
-
-  if (workspace.studentActivity.assessmentState && workspace.studentActivity.assessmentState.grade){
-    return <span className="application-list__header-secondary">
-      <span title={props.i18n.text.get("plugin.guider.evaluated", props.i18n.time.format(workspace.studentActivity.assessmentState.date)) +
-        getShortenGradeExtension(workspace.studentActivity.assessmentState.grade)}
-        className={`application-list__indicator-badge application-list__indicator-badge--course application-list__indicator-badge--course-in-guider ${
-          workspace.studentActivity.assessmentState.state === "pass" || workspace.studentActivity.assessmentState.state === "pending_pass" ? "state-PASSED" : "state-FAILED"}`}>
-        {shortenGrade(workspace.studentActivity.assessmentState.grade)}
-      </span>
-    </span>
-  } else if (workspace.studentActivity.assessmentState && workspace.studentActivity.assessmentState.state === "incomplete"){
-    let status = props.i18n.text.get(workspace.studentActivity.assessmentState.state === "incomplete" ? "plugin.guider.workspace.incomplete" : "plugin.guider.workspace.failed");
-    return <span className="application-list__header-secondary">
-      <span className="workspace-activity__assignment-done-percent" title={props.i18n.text.get("plugin.guider.headerEvaluatedTitle", workspace.studentActivity.evaluablesDonePercent)}>{
-        workspace.studentActivity.evaluablesDonePercent}%
-      </span>
-      <span> / </span>
-      <span className="workspace-activity__exercise-done-percent" title={props.i18n.text.get("plugin.guider.headerExercisesTitle",workspace.studentActivity.exercisesDonePercent)}>{
-        workspace.studentActivity.exercisesDonePercent}%
-      </span>
-      <span title={props.i18n.text.get("plugin.guider.evaluated", props.i18n.time.format(workspace.studentActivity.assessmentState.date)) + " - " + status}
-        className={`application-list__indicator-badge application-list__indicator-badge--course application-list__indicator-badge--course-in-guider ${workspace.studentActivity.assessmentState.state === "incomplete" ? "state-INCOMPLETE" : "state-FAILED"}`}>
-        {status[0].toLocaleUpperCase()}
-      </span>
-    </span>
-  } else {
-    return <span className="application-list__header-secondary">
-      <span className="workspace-activity__assignment-done-percent" title={props.i18n.text.get("plugin.guider.headerEvaluatedTitle", workspace.studentActivity.evaluablesDonePercent)}>{
-        workspace.studentActivity.evaluablesDonePercent}%
-      </span>
-      <span> / </span>
-      <span className="workspace-activity__exercise-done-percent" title={props.i18n.text.get("plugin.guider.headerExercisesTitle",workspace.studentActivity.exercisesDonePercent)}>{
-        workspace.studentActivity.exercisesDonePercent}%
-      </span>
-    </span>
-  }
-}
-
-class StudentWorkspace extends React.Component<StudentWorkspaceProps, StudentWorkspaceState>{
-  constructor(props: StudentWorkspaceProps){
+/**
+ * StudentWorkspace
+ */
+class StudentWorkspace extends React.Component<
+  StudentWorkspaceProps,
+  StudentWorkspaceState
+> {
+  /**
+   * Constructor method
+   * @param props props
+   */
+  constructor(props: StudentWorkspaceProps) {
     super(props);
 
     this.state = {
-      activitiesVisible: false
-    }
+      activitiesVisible: false,
+    };
 
     this.toggleActivitiesVisible = this.toggleActivitiesVisible.bind(this);
   }
-  toggleActivitiesVisible(){
-    this.setState({
-      activitiesVisible: !this.state.activitiesVisible
-    })
-  }
-  render(){
-    let workspace = this.props.workspace;
 
+  /**
+   * toggleActivitiesVisible
+   */
+  toggleActivitiesVisible() {
+    this.setState({
+      activitiesVisible: !this.state.activitiesVisible,
+    });
+  }
+
+  /**
+   * Show workspace percent if any of subject in assessment list doesn't have grade or
+   * is in "incomplete" state
+   * @param assessments assessments
+   */
+  showWorkspacePercents = (assessments?: Assessment[]) => {
+    if (assessments) {
+      for (const assessment of assessments) {
+        if (!assessment.grade || assessment.state === "incomplete") {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  };
+
+  /**
+   * getLatestAssessmentDate
+   * @param assessments assessments
+   */
+  getLatestAssessmentDate = (assessments?: Assessment[]): string | null => {
+    if (assessments) {
+      let latestAssessmentDate;
+
+      for (let i = 0; i < assessments.length; i++) {
+        const date = assessments[i].date;
+
+        if (i === 0) {
+          latestAssessmentDate = date;
+        } else {
+          if (moment(latestAssessmentDate).isSameOrAfter(moment(date))) {
+            latestAssessmentDate = date;
+          }
+        }
+      }
+
+      return latestAssessmentDate;
+    }
+
+    return null;
+  };
+
+  /**
+   * getAssessmentStateTextAndClassModifier
+   * @param assessment assessment
+   * @returns object containing state text and class modifier
+   */
+  getAssessmentStateTextAndClassModifier = (assessment: Assessment) => {
     let stateText;
     let extraClasses = "";
-    switch (workspace.studentActivity.assessmentState.state){
+
+    switch (assessment.state) {
       case "pending":
       case "pending_pass":
       case "pending_fail":
@@ -142,84 +143,502 @@ class StudentWorkspace extends React.Component<StudentWorkspaceProps, StudentWor
         stateText = "plugin.guider.assessmentState.UNASSESSED";
         break;
     }
-    let resultingStateText = this.props.i18n.text.get(stateText);
-    if (workspace.studentActivity.assessmentState.date){
-      resultingStateText += " - " + this.props.i18n.time.format(workspace.studentActivity.assessmentState.date);
+
+    return {
+      stateText,
+      extraClasses,
+    };
+  };
+
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
+  render() {
+    const { workspace } = this.props;
+
+    // By default every workspace is not combination
+    let isCombinationWorkspace = false;
+
+    if (workspace.activity) {
+      // If assessmentState contains more than 1 items, then its is combination
+      isCombinationWorkspace = workspace.activity.assessmentState.length > 1;
     }
 
-    return <ApplicationListItem className={`course ${this.state.activitiesVisible ? "course--open" : ""} ${extraClasses}`}>
-        <ApplicationListItemHeader modifiers="course" onClick={this.toggleActivitiesVisible}>
+    /**
+     * Renders combination subject assessesments
+     * @param assessments assessments
+     * @returns JSX.Element
+     */
+    const renderCombinationSubjectAssessments = () => (
+      <ApplicationListItemContentContainer>
+        {this.props.workspace.activity.assessmentState.map((a) => {
+          /**
+           * Find subject data, that contains basic information about that subject
+           */
+          const subjectData = workspace.subjects.find(
+            (s) => s.identifier === a.workspaceSubjectIdentifier
+          );
+
+          /**
+           * If not found, return nothing
+           */
+          if (!subjectData) {
+            return;
+          }
+
+          return (
+            <div
+              key={a.workspaceSubjectIdentifier}
+              style={{
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <h4>{`(${subjectData.subject.code.toUpperCase()})`}</h4>
+
+              <GuiderAssessment i18n={this.props.i18n} assessment={a} />
+            </div>
+          );
+        })}
+      </ApplicationListItemContentContainer>
+    );
+
+    /**
+     * Render Course activity data like assessment date and text descriping its state
+     * @returns JSX.Element
+     */
+    const renderCourseActivity = () => (
+      <div className="application-sub-panel__item application-sub-panel__item--course-activity">
+        <div className="application-sub-panel__item-title">
+          {this.props.i18n.text.get("plugin.guider.assessmentStateLabel")}
+        </div>
+        <div className="application-sub-panel__item-data">
+          {this.props.workspace.activity.assessmentState.map((a) => {
+            /**
+             * Find subject data, that contains basic information about that subject
+             */
+            const subjectData = workspace.subjects.find(
+              (s) => s.identifier === a.workspaceSubjectIdentifier
+            );
+
+            /**
+             * If not found, return nothing
+             */
+            if (!subjectData) {
+              return;
+            }
+
+            const stateInfo = this.getAssessmentStateTextAndClassModifier(a);
+
+            /**
+             * State text by default
+             */
+            let resultingStateText = this.props.i18n.text.get(
+              stateInfo.stateText
+            );
+
+            /**
+             * Add date to string if date is present
+             */
+            if (a.date) {
+              resultingStateText += " - " + this.props.i18n.time.format(a.date);
+            }
+
+            return (
+              <span
+                key={a.workspaceSubjectIdentifier}
+                className="application-sub-panel__single-entry"
+              >
+                {isCombinationWorkspace && `(${subjectData.subject.code}) `}
+                {resultingStateText}
+              </span>
+            );
+          })}
+        </div>
+      </div>
+    );
+
+    return (
+      <ApplicationListItem
+        className={`course ${
+          this.state.activitiesVisible ? "course--open" : ""
+        }`}
+      >
+        <ApplicationListItemHeader
+          modifiers="course"
+          onClick={this.toggleActivitiesVisible}
+        >
           <span className="application-list__header-icon icon-books"></span>
-          <span className="application-list__header-primary">{workspace.name} {workspace.nameExtension ? "(" + workspace.nameExtension + ")" : null}</span>
+          <span className="application-list__header-primary">
+            {workspace.name}
+            {workspace.nameExtension
+              ? "(" + workspace.nameExtension + ")"
+              : null}
+          </span>
           <span className="application-list__header-secondary workspace-activity">
             <span className="workspace-student__assessment-state">
-            {getWorkspaceAssessmentsAndPercents(this.props, workspace)}
+              {/**
+               * Show percent if method return true
+               */}
+              {this.showWorkspacePercents(
+                this.props.workspace.activity.assessmentState
+              ) ? (
+                <span className="application-list__header-secondary">
+                  <GuiderWorkspacePercents
+                    i18n={this.props.i18n}
+                    activity={this.props.workspace.activity}
+                  />
+
+                  {!isCombinationWorkspace ? (
+                    /**
+                     * Only show assessment in header line if its not combination workspace
+                     */
+                    <GuiderAssessment
+                      i18n={this.props.i18n}
+                      assessment={
+                        this.props.workspace.activity.assessmentState[0]
+                      }
+                    />
+                  ) : null}
+                </span>
+              ) : null}
+
+              {/* {getWorkspaceAssessmentsAndPercents(this.props, workspace)} */}
             </span>
           </span>
-          <Dropdown persistent modifier={"workspace-chart workspace-" + workspace.id} items={[<WorkspaceChart workspace={workspace}/>]}>
+          <Dropdown
+            persistent
+            modifier={"workspace-chart workspace-" + workspace.id}
+            items={[<WorkspaceChart workspace={workspace} />]}
+          >
             <span className="icon-statistics chart__activator chart__activator--workspace-chart"></span>
           </Dropdown>
         </ApplicationListItemHeader>
 
-        {this.state.activitiesVisible ? <div className="application-sub-panel text">
-          <div className="application-sub-panel__body">
-            <div className="application-sub-panel__item application-sub-panel__item--course-activity">
-              <div className="application-sub-panel__item-title"> {this.props.i18n.text.get("plugin.guider.assessmentStateLabel")}</div>
-              <div className="application-sub-panel__item-data">
-                <span className="application-sub-panel__single-entry">{resultingStateText}</span></div>
-              </div>
+        {isCombinationWorkspace ? renderCombinationSubjectAssessments() : null}
 
-            <CourseActivityRow conditionalAttributeLocale="plugin.guider.user.details.numberOfVisits" givenDateAttributeLocale="plugin.guider.user.details.lastVisit" labelTranslationString="plugin.guider.visitedLabel" conditionalAttribute="numVisits"
-              givenDateAttribute="lastVisit" mainAttribute="studentActivity" {...this.props}/>
+        {this.state.activitiesVisible ? (
+          <div className="application-sub-panel text">
+            <div className="application-sub-panel__body">
+              {renderCourseActivity()}
 
-            <CourseActivityRow conditionalAttributeLocale="plugin.guider.user.details.numberOfJournalEntries" givenDateAttributeLocale="plugin.guider.user.details.lastJournalEntry" labelTranslationString="plugin.guider.journalEntriesLabel" conditionalAttribute="journalEntryCount"
-              givenDateAttribute="lastJournalEntry" mainAttribute="studentActivity" {...this.props}/>
+              <CourseActivityRow<WorkspaceActivityType>
+                conditionalAttributeLocale="plugin.guider.user.details.numberOfVisits"
+                givenDateAttributeLocale="plugin.guider.user.details.lastVisit"
+                labelTranslationString="plugin.guider.visitedLabel"
+                conditionalAttribute="numVisits"
+                givenDateAttribute="lastVisit"
+                mainAttribute="activity"
+                {...this.props}
+              />
 
-            <CourseActivityRow conditionalAttributeLocale="plugin.guider.user.details.numberOfMessages" givenDateAttributeLocale="plugin.guider.user.details.lastMessage" labelTranslationString="plugin.guider.discussion-messagesLabel" conditionalAttribute="messageCount"
-              givenDateAttribute="latestMessage" mainAttribute="forumStatistics" {...this.props}/>
+              <CourseActivityRow<WorkspaceActivityType>
+                conditionalAttributeLocale="plugin.guider.user.details.numberOfJournalEntries"
+                givenDateAttributeLocale="plugin.guider.user.details.lastJournalEntry"
+                labelTranslationString="plugin.guider.journalEntriesLabel"
+                conditionalAttribute="journalEntryCount"
+                givenDateAttribute="lastJournalEntry"
+                mainAttribute="activity"
+                {...this.props}
+              />
 
-            <h4 className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.guider.assignmentsLabel")}</h4>
+              <CourseActivityRow<WorkspaceForumStatisticsType>
+                conditionalAttributeLocale="plugin.guider.user.details.numberOfMessages"
+                givenDateAttributeLocale="plugin.guider.user.details.lastMessage"
+                labelTranslationString="plugin.guider.discussion-messagesLabel"
+                conditionalAttribute="messageCount"
+                givenDateAttribute="latestMessage"
+                mainAttribute="forumStatistics"
+                {...this.props}
+              />
 
-            <CourseActivityRow labelTranslationString="plugin.guider.unansweredAssignmentsLabel" conditionalAttribute="evaluablesUnanswered"
-              mainAttribute="studentActivity" {...this.props}/>
+              <h4 className="application-sub-panel__item-header">
+                {this.props.i18n.text.get("plugin.guider.assignmentsLabel")}
+              </h4>
 
-            <CourseActivityRow conditionalAttributeLocale="plugin.guider.user.details.numberOfAnsweredAssignments" givenDateAttributeLocale="plugin.guider.user.details.lastAnsweredAssignment" labelTranslationString="plugin.guider.answeredAssignmentsLabel" conditionalAttribute="evaluablesAnswered"
-              givenDateAttribute="evaluablesAnsweredLastDate" mainAttribute="studentActivity" {...this.props}/>
+              <CourseActivityRow<WorkspaceActivityType>
+                labelTranslationString="plugin.guider.unansweredAssignmentsLabel"
+                conditionalAttribute="evaluablesUnanswered"
+                mainAttribute="activity"
+                {...this.props}
+              />
 
-            <CourseActivityRow conditionalAttributeLocale="plugin.guider.user.details.numberOfSubmittedAssignments" givenDateAttributeLocale="plugin.guider.user.details.lastSubmittedAssignment" labelTranslationString="plugin.guider.submittedAssignmentsLabel" conditionalAttribute="evaluablesSubmitted"
-              givenDateAttribute="evaluablesSubmittedLastDate" mainAttribute="studentActivity" {...this.props}/>
+              <CourseActivityRow<WorkspaceActivityType>
+                conditionalAttributeLocale="plugin.guider.user.details.numberOfAnsweredAssignments"
+                givenDateAttributeLocale="plugin.guider.user.details.lastAnsweredAssignment"
+                labelTranslationString="plugin.guider.answeredAssignmentsLabel"
+                conditionalAttribute="evaluablesAnswered"
+                givenDateAttribute="evaluablesAnsweredLastDate"
+                mainAttribute="activity"
+                {...this.props}
+              />
 
-            <CourseActivityRow conditionalAttributeLocale="plugin.guider.user.details.numberOfEvaluationFailed" givenDateAttributeLocale="plugin.guider.user.details.lastEvaluationFailed" labelTranslationString="plugin.guider.failedAssingmentsLabel" conditionalAttribute="evaluablesFailed"
-              givenDateAttribute="evaluablesFailedLastDate" mainAttribute="studentActivity" {...this.props}/>
+              <CourseActivityRow<WorkspaceActivityType>
+                conditionalAttributeLocale="plugin.guider.user.details.numberOfSubmittedAssignments"
+                givenDateAttributeLocale="plugin.guider.user.details.lastSubmittedAssignment"
+                labelTranslationString="plugin.guider.submittedAssignmentsLabel"
+                conditionalAttribute="evaluablesSubmitted"
+                givenDateAttribute="evaluablesSubmittedLastDate"
+                mainAttribute="activity"
+                {...this.props}
+              />
 
-            <CourseActivityRow conditionalAttributeLocale="plugin.guider.user.details.numberOfEvaluationPassed" givenDateAttributeLocale="plugin.guider.user.details.lastEvaluationPassed" labelTranslationString="plugin.guider.passedAssingmentsLabel" conditionalAttribute="evaluablesPassed"
-              givenDateAttribute="evaluablesPassedLastDate" mainAttribute="studentActivity" {...this.props}/>
+              <CourseActivityRow<WorkspaceActivityType>
+                conditionalAttributeLocale="plugin.guider.user.details.numberOfEvaluationFailed"
+                givenDateAttributeLocale="plugin.guider.user.details.lastEvaluationFailed"
+                labelTranslationString="plugin.guider.failedAssingmentsLabel"
+                conditionalAttribute="evaluablesFailed"
+                givenDateAttribute="evaluablesFailedLastDate"
+                mainAttribute="activity"
+                {...this.props}
+              />
 
-            <h4 className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.guider.exercisesLabel")}</h4>
+              <CourseActivityRow<WorkspaceActivityType>
+                conditionalAttributeLocale="plugin.guider.user.details.numberOfEvaluationPassed"
+                givenDateAttributeLocale="plugin.guider.user.details.lastEvaluationPassed"
+                labelTranslationString="plugin.guider.passedAssingmentsLabel"
+                conditionalAttribute="evaluablesPassed"
+                givenDateAttribute="evaluablesPassedLastDate"
+                mainAttribute="activity"
+                {...this.props}
+              />
 
-            <CourseActivityRow labelTranslationString="plugin.guider.unansweredExercisesLabel" conditionalAttribute="exercisesUnanswered"
-              mainAttribute="studentActivity" {...this.props}/>
+              <h4 className="application-sub-panel__item-header">
+                {this.props.i18n.text.get("plugin.guider.exercisesLabel")}
+              </h4>
 
-            <CourseActivityRow conditionalAttributeLocale="plugin.guider.user.details.numberOfAnsweredExercises" givenDateAttributeLocale="plugin.guider.user.details.lastAnsweredExercise" labelTranslationString="plugin.guider.answeredExercisesLabel" conditionalAttribute="exercisesAnswered"
-            givenDateAttribute="exercisesAnsweredLastDate" mainAttribute="studentActivity" {...this.props}/>
+              <CourseActivityRow<WorkspaceActivityType>
+                labelTranslationString="plugin.guider.unansweredExercisesLabel"
+                conditionalAttribute="exercisesUnanswered"
+                mainAttribute="activity"
+                {...this.props}
+              />
 
+              <CourseActivityRow<WorkspaceActivityType>
+                conditionalAttributeLocale="plugin.guider.user.details.numberOfAnsweredExercises"
+                givenDateAttributeLocale="plugin.guider.user.details.lastAnsweredExercise"
+                labelTranslationString="plugin.guider.answeredExercisesLabel"
+                conditionalAttribute="exercisesAnswered"
+                givenDateAttribute="exercisesAnsweredLastDate"
+                mainAttribute="activity"
+                {...this.props}
+              />
+            </div>
           </div>
-        </div> : null }
-    </ApplicationListItem>
+        ) : null}
+      </ApplicationListItem>
+    );
   }
 }
 
-function mapStateToProps(state: StateType){
+/**
+ * mapStateToProps
+ * @param state state
+ */
+function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n
-  }
-};
+    i18n: state.i18n,
+  };
+}
 
-function mapDispatchToProps(dispatch: Dispatch<any>){
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
+function mapDispatchToProps(dispatch: Dispatch<any>) {
   return {};
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(StudentWorkspace);
+
+// Other component used only by Workspace component
+
+/**
+ * CourseActivityRowProps
+ */
+interface CourseActivityRowProps<C> {
+  i18n: i18nType;
+  workspace: WorkspaceType;
+  labelTranslationString: string;
+  conditionalAttribute: keyof C;
+  conditionalAttributeLocale?: string;
+  givenDateAttribute?: string;
+  givenDateAttributeLocale?: string;
+  /**
+   * mainAttribute is type as WorkspaceType as component is not used any where else
+   */
+  mainAttribute: keyof WorkspaceType;
+}
+
+/**
+ * CourseActivityRow
+ * @param props props
+ * @returns JSX.Element
+ */
+const CourseActivityRow = <C,>(props: CourseActivityRowProps<C>) => {
+  let output = "-";
+
+  const { mainAttribute, conditionalAttribute } = props;
+
+  const workspace = props.workspace;
+
+  /**
+   * Any types should not be used and should be fixed. As now there currently is no better solution.
+   * Tho more generic precise props still help use component more typescript precise
+   */
+  if (((workspace[mainAttribute] as any)[conditionalAttribute] as number) > 0) {
+    if (props.conditionalAttributeLocale) {
+      output = props.i18n.text.get(
+        props.conditionalAttributeLocale,
+        (props.workspace[props.mainAttribute] as any)[
+          props.conditionalAttribute
+        ]
+      );
+    } else {
+      output = (props.workspace as any)[props.mainAttribute][
+        props.conditionalAttribute
+      ];
+    }
+
+    if (props.givenDateAttribute) {
+      output += ", ";
+
+      if (props.givenDateAttributeLocale) {
+        output += props.i18n.text.get(
+          props.givenDateAttributeLocale,
+          props.i18n.time.format(
+            (props.workspace as any)[props.mainAttribute][
+              props.givenDateAttribute
+            ]
+          )
+        );
+      } else {
+        output += props.i18n.time.format(
+          (props.workspace as any)[props.mainAttribute][
+            props.givenDateAttribute
+          ]
+        );
+      }
+    }
+  }
+  return (
+    <div className="application-sub-panel__item application-sub-panel__item--course-activity">
+      <div className="application-sub-panel__item-title">
+        {props.i18n.text.get(props.labelTranslationString)}
+      </div>
+      <div className="application-sub-panel__item-data">
+        <span className="application-sub-panel__single-entry">{output}</span>
+      </div>
+    </div>
+  );
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(StudentWorkspace);
+/**
+ * GuiderAssessmentProps
+ */
+interface GuiderAssessmentProps {
+  assessment?: Assessment;
+  i18n: i18nType;
+}
+
+/**
+ * GuiderAssessment
+ * @param props component prosp
+ * @returns JSX.Element
+ */
+const GuiderAssessment: React.FC<GuiderAssessmentProps> = (props) => {
+  const { assessment, i18n } = props;
+
+  if (assessment) {
+    if (assessment.grade) {
+      const modifier =
+        assessment.state === "pass" || assessment.state === "pending_pass"
+          ? "state-PASSED"
+          : "state-FAILED";
+
+      return (
+        <span
+          title={
+            i18n.text.get(
+              "plugin.guider.evaluated",
+              i18n.time.format(assessment.date)
+            ) + getShortenGradeExtension(assessment.grade)
+          }
+          className={`application-list__indicator-badge application-list__indicator-badge--course application-list__indicator-badge--course-in-guider ${modifier}`}
+        >
+          {shortenGrade(assessment.grade)}
+        </span>
+      );
+    } else if (assessment.state === "incomplete") {
+      const status = i18n.text.get(
+        assessment.state === "incomplete"
+          ? "plugin.guider.workspace.incomplete"
+          : "plugin.guider.workspace.failed"
+      );
+
+      const modifier =
+        assessment.state === "incomplete" ? "state-INCOMPLETE" : "state-FAILED";
+
+      return (
+        <span
+          title={
+            i18n.text.get(
+              "plugin.guider.evaluated",
+              i18n.time.format(assessment.date)
+            ) +
+            " - " +
+            status
+          }
+          className={`application-list__indicator-badge application-list__indicator-badge--course application-list__indicator-badge--course-in-guider ${modifier}`}
+        >
+          {status[0].toLocaleUpperCase()}
+        </span>
+      );
+    }
+  }
+  return null;
+};
+
+/**
+ * GuiderWorkspacePercentsProps
+ */
+interface GuiderWorkspacePercentsProps {
+  activity?: WorkspaceActivityType;
+  i18n: i18nType;
+}
+
+/**
+ * GuiderWorkspacePercents
+ * @param props props
+ * @returns JSX.Element
+ */
+const GuiderWorkspacePercents: React.FC<GuiderWorkspacePercentsProps> = (
+  props
+) => {
+  const { activity } = props;
+
+  return (
+    <>
+      <span
+        className="workspace-activity__assignment-done-percent"
+        title={props.i18n.text.get(
+          "plugin.guider.headerEvaluatedTitle",
+          activity.evaluablesDonePercent
+        )}
+      >
+        {activity.evaluablesDonePercent}%
+      </span>
+      <span> / </span>
+      <span
+        className="workspace-activity__exercise-done-percent"
+        title={props.i18n.text.get(
+          "plugin.guider.headerExercisesTitle",
+          activity.exercisesDonePercent
+        )}
+      >
+        {activity.exercisesDonePercent}%
+      </span>
+    </>
+  );
+};
