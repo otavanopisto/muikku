@@ -167,62 +167,107 @@ export type TOGGLE_ALL_STUDENTS = SpecificActionType<
   undefined
 >;
 
+/**
+ * LoadStudentsTriggerType
+ */
 export interface LoadStudentsTriggerType {
   (filters: GuiderActiveFiltersType): AnyActionType;
 }
 
+/**
+ * LoadMoreStudentsTriggerType
+ */
 export interface LoadMoreStudentsTriggerType {
   (): AnyActionType;
 }
 
+/**
+ * LoadStudentTriggerType
+ */
 export interface LoadStudentTriggerType {
   (id: string): AnyActionType;
 }
 
+/**
+ * AddToGuiderSelectedStudentsTriggerType
+ */
 export interface AddToGuiderSelectedStudentsTriggerType {
   (student: GuiderStudentType): AnyActionType;
 }
 
+/**
+ * RemoveFromGuiderSelectedStudentsTriggerType
+ */
 export interface RemoveFromGuiderSelectedStudentsTriggerType {
   (student: GuiderStudentType): AnyActionType;
 }
 
+/**
+ * AddGuiderLabelToCurrentUserTriggerType
+ */
 export interface AddGuiderLabelToCurrentUserTriggerType {
   (label: GuiderUserLabelType): AnyActionType;
 }
 
+/**
+ * RemoveGuiderLabelFromCurrentUserTriggerType
+ */
 export interface RemoveGuiderLabelFromCurrentUserTriggerType {
   (label: GuiderUserLabelType): AnyActionType;
 }
 
+/**
+ * AddGuiderLabelToSelectedUsersTriggerType
+ */
 export interface AddGuiderLabelToSelectedUsersTriggerType {
   (label: GuiderUserLabelType): AnyActionType;
 }
 
+/**
+ * RemoveGuiderLabelFromSelectedUsersTriggerType
+ */
 export interface RemoveGuiderLabelFromSelectedUsersTriggerType {
   (label: GuiderUserLabelType): AnyActionType;
 }
 
+/**
+ * AddFileToCurrentStudentTriggerType
+ */
 export interface AddFileToCurrentStudentTriggerType {
   (file: UserFileType): AnyActionType;
 }
 
+/**
+ * RemoveFileFromCurrentStudentTriggerType
+ */
 export interface RemoveFileFromCurrentStudentTriggerType {
   (file: UserFileType): AnyActionType;
 }
 
+/**
+ * UpdateLabelFiltersTriggerType
+ */
 export interface UpdateLabelFiltersTriggerType {
   (): AnyActionType;
 }
 
+/**
+ * UpdateWorkspaceFiltersTriggerType
+ */
 export interface UpdateWorkspaceFiltersTriggerType {
   (): AnyActionType;
 }
 
+/**
+ * CreateGuiderFilterLabelTriggerType
+ */
 export interface CreateGuiderFilterLabelTriggerType {
   (name: string): AnyActionType;
 }
 
+/**
+ * UpdateGuiderFilterLabelTriggerType
+ */
 export interface UpdateGuiderFilterLabelTriggerType {
   (data: {
     label: GuiderUserLabelType;
@@ -234,6 +279,9 @@ export interface UpdateGuiderFilterLabelTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * RemoveGuiderFilterLabelTriggerType
+ */
 export interface RemoveGuiderFilterLabelTriggerType {
   (data: {
     label: GuiderUserLabelType;
@@ -242,25 +290,44 @@ export interface RemoveGuiderFilterLabelTriggerType {
   }): AnyActionType;
 }
 
-export interface UpdateAvailablePurchaseProductsTriggerType {
-  (): AnyActionType;
-}
-
-export interface DoOrderForCurrentStudentTriggerType {
-  (order: PurchaseProductType): AnyActionType;
-}
-
-export interface DeleteOrderFromCurrentStudentTriggerType {
-  (order: PurchaseType): AnyActionType;
-}
-
-export interface CompleteOrderFromCurrentStudentTriggerType {
-  (order: PurchaseType): AnyActionType;
-}
+/**
+ * ToggleAllStudentsTriggerType
+ */
 export interface ToggleAllStudentsTriggerType {
   (): AnyActionType;
 }
 
+/**
+ * UpdateAvailablePurchaseProductsTriggerType
+ */
+export interface UpdateAvailablePurchaseProductsTriggerType {
+  (): AnyActionType;
+}
+
+/**
+ * DoOrderForCurrentStudentTriggerType
+ */
+export interface DoOrderForCurrentStudentTriggerType {
+  (order: PurchaseProductType): AnyActionType;
+}
+
+/**
+ * DeleteOrderFromCurrentStudentTriggerType
+ */
+export interface DeleteOrderFromCurrentStudentTriggerType {
+  (order: PurchaseType): AnyActionType;
+}
+
+/**
+ * CompleteOrderFromCurrentStudentTriggerType
+ */
+export interface CompleteOrderFromCurrentStudentTriggerType {
+  (order: PurchaseType): AnyActionType;
+}
+
+/**
+ * ToggleAllStudentsTriggerType
+ */
 const toggleAllStudents: ToggleAllStudentsTriggerType =
   function toggleAllStudents() {
     return {
@@ -269,7 +336,11 @@ const toggleAllStudents: ToggleAllStudentsTriggerType =
     };
   };
 
-let addFileToCurrentStudent: AddFileToCurrentStudentTriggerType =
+/**
+ * addFileToCurrentStudent
+ * @param file file
+ */
+const addFileToCurrentStudent: AddFileToCurrentStudentTriggerType =
   function addFileToCurrentStudent(file) {
     return {
       type: "ADD_FILE_TO_CURRENT_STUDENT",
@@ -277,7 +348,11 @@ let addFileToCurrentStudent: AddFileToCurrentStudentTriggerType =
     };
   };
 
-let removeFileFromCurrentStudent: RemoveFileFromCurrentStudentTriggerType =
+/**
+ * removeFileFromCurrentStudent
+ * @param file file
+ */
+const removeFileFromCurrentStudent: RemoveFileFromCurrentStudentTriggerType =
   function removeFileFromCurrentStudent(file) {
     return async (
       dispatch: (arg: AnyActionType) => any,
@@ -305,16 +380,27 @@ let removeFileFromCurrentStudent: RemoveFileFromCurrentStudentTriggerType =
     };
   };
 
-let loadStudents: LoadStudentsTriggerType = function loadStudents(filters) {
+/**
+ * loadStudents
+ * @param filters filters
+ */
+const loadStudents: LoadStudentsTriggerType = function loadStudents(filters) {
   return loadStudentsHelper.bind(this, filters, true);
 };
 
-let loadMoreStudents: LoadMoreStudentsTriggerType =
+/**
+ * loadMoreStudents
+ */
+const loadMoreStudents: LoadMoreStudentsTriggerType =
   function loadMoreStudents() {
     return loadStudentsHelper.bind(this, null, false);
   };
 
-let addToGuiderSelectedStudents: AddToGuiderSelectedStudentsTriggerType =
+/**
+ * addToGuiderSelectedStudents
+ * @param student student
+ */
+const addToGuiderSelectedStudents: AddToGuiderSelectedStudentsTriggerType =
   function addToGuiderSelectedStudents(student) {
     return {
       type: "ADD_TO_GUIDER_SELECTED_STUDENTS",
@@ -322,7 +408,11 @@ let addToGuiderSelectedStudents: AddToGuiderSelectedStudentsTriggerType =
     };
   };
 
-let removeFromGuiderSelectedStudents: RemoveFromGuiderSelectedStudentsTriggerType =
+/**
+ * removeFromGuiderSelectedStudents
+ * @param student student
+ */
+const removeFromGuiderSelectedStudents: RemoveFromGuiderSelectedStudentsTriggerType =
   function removeFromGuiderSelectedStudents(student) {
     return {
       type: "REMOVE_FROM_GUIDER_SELECTED_STUDENTS",
@@ -330,13 +420,17 @@ let removeFromGuiderSelectedStudents: RemoveFromGuiderSelectedStudentsTriggerTyp
     };
   };
 
-let loadStudent: LoadStudentTriggerType = function loadStudent(id) {
+/**
+ * loadStudent
+ * @param id id
+ */
+const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
   return async (
     dispatch: (arg: AnyActionType) => any,
     getState: () => StateType
   ) => {
     try {
-      let currentUserSchoolDataIdentifier =
+      const currentUserSchoolDataIdentifier =
         getState().status.userSchoolDataIdentifier;
 
       const canListUserOrders = getState().status.permissions.LIST_USER_ORDERS;
@@ -441,7 +535,7 @@ let loadStudent: LoadStudentTriggerType = function loadStudent(id) {
             await Promise.all([
               Promise.all(
                 workspaces.map(async (workspace, index) => {
-                  let activity: WorkspaceStudentActivityType = <
+                  const activity: WorkspaceStudentActivityType = <
                     WorkspaceStudentActivityType
                   >await promisify(
                     mApi().guider.workspaces.studentactivity.read(
@@ -455,7 +549,7 @@ let loadStudent: LoadStudentTriggerType = function loadStudent(id) {
               ),
               Promise.all(
                 workspaces.map(async (workspace, index) => {
-                  let statistics: WorkspaceForumStatisticsType = <
+                  const statistics: WorkspaceForumStatisticsType = <
                     WorkspaceForumStatisticsType
                   >await promisify(
                     mApi().workspace.workspaces.forumStatistics.read(
@@ -469,7 +563,7 @@ let loadStudent: LoadStudentTriggerType = function loadStudent(id) {
               ),
               Promise.all(
                 workspaces.map(async (workspace, index) => {
-                  let activityLogs: ActivityLogType[] = <ActivityLogType[]>(
+                  const activityLogs: ActivityLogType[] = <ActivityLogType[]>(
                     await promisify(
                       mApi().activitylogs.user.workspace.read(id, {
                         workspaceEntityId: workspace.id,
@@ -546,6 +640,14 @@ let loadStudent: LoadStudentTriggerType = function loadStudent(id) {
   };
 };
 
+/**
+ * removeLabelFromUserUtil
+ * @param student student
+ * @param flags flags
+ * @param label label
+ * @param dispatch dispatch
+ * @param getState getState
+ */
 async function removeLabelFromUserUtil(
   student: GuiderStudentType,
   flags: Array<GuiderStudentUserProfileLabelType>,
@@ -554,7 +656,7 @@ async function removeLabelFromUserUtil(
   getState: () => StateType
 ) {
   try {
-    let relationLabel: GuiderStudentUserProfileLabelType = flags.find(
+    const relationLabel: GuiderStudentUserProfileLabelType = flags.find(
       (flag) => flag.flagId === label.id
     );
     if (relationLabel) {
@@ -583,6 +685,14 @@ async function removeLabelFromUserUtil(
   }
 }
 
+/**
+ * addLabelToUserUtil
+ * @param student student
+ * @param flags flags
+ * @param label label
+ * @param dispatch dispatch
+ * @param getState getState
+ */
 async function addLabelToUserUtil(
   student: GuiderStudentType,
   flags: Array<GuiderStudentUserProfileLabelType>,
@@ -591,11 +701,11 @@ async function addLabelToUserUtil(
   getState: () => StateType
 ) {
   try {
-    let relationLabel: GuiderStudentUserProfileLabelType = flags.find(
+    const relationLabel: GuiderStudentUserProfileLabelType = flags.find(
       (flag) => flag.flagId === label.id
     );
     if (!relationLabel) {
-      let createdLabelRelation: GuiderStudentUserProfileLabelType = <
+      const createdLabelRelation: GuiderStudentUserProfileLabelType = <
         GuiderStudentUserProfileLabelType
       >await promisify(
         mApi().user.students.flags.create(student.id, {
@@ -625,14 +735,18 @@ async function addLabelToUserUtil(
   }
 }
 
-let addGuiderLabelToCurrentUser: AddGuiderLabelToCurrentUserTriggerType =
+/**
+ * addGuiderLabelToCurrentUser
+ * @param label label
+ */
+const addGuiderLabelToCurrentUser: AddGuiderLabelToCurrentUserTriggerType =
   function addGuiderLabelToCurrentUser(label) {
     return async (
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
     ) => {
-      let guider: GuiderType = getState().guider;
-      let student = guider.currentStudent;
+      const guider: GuiderType = getState().guider;
+      const student = guider.currentStudent;
       addLabelToUserUtil(
         student.basic,
         student.labels,
@@ -643,14 +757,18 @@ let addGuiderLabelToCurrentUser: AddGuiderLabelToCurrentUserTriggerType =
     };
   };
 
-let removeGuiderLabelFromCurrentUser: RemoveGuiderLabelFromCurrentUserTriggerType =
+/**
+ * removeGuiderLabelFromCurrentUser
+ * @param label label
+ */
+const removeGuiderLabelFromCurrentUser: RemoveGuiderLabelFromCurrentUserTriggerType =
   function removeGuiderLabelFromCurrentUser(label) {
     return async (
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
     ) => {
-      let guider: GuiderType = getState().guider;
-      let student = guider.currentStudent;
+      const guider: GuiderType = getState().guider;
+      const student = guider.currentStudent;
       removeLabelFromUserUtil(
         student.basic,
         student.labels,
@@ -661,7 +779,11 @@ let removeGuiderLabelFromCurrentUser: RemoveGuiderLabelFromCurrentUserTriggerTyp
     };
   };
 
-let addGuiderLabelToSelectedUsers: AddGuiderLabelToSelectedUsersTriggerType =
+/**
+ * addGuiderLabelToSelectedUsers
+ * @param label label
+ */
+const addGuiderLabelToSelectedUsers: AddGuiderLabelToSelectedUsersTriggerType =
   function addGuiderLabelToSelectedUsers(label) {
     return async (
       dispatch: (arg: AnyActionType) => any,
@@ -674,13 +796,17 @@ let addGuiderLabelToSelectedUsers: AddGuiderLabelToSelectedUsersTriggerType =
     };
   };
 
-let removeGuiderLabelFromSelectedUsers: RemoveGuiderLabelFromSelectedUsersTriggerType =
+/**
+ * removeGuiderLabelFromSelectedUsers
+ * @param label label
+ */
+const removeGuiderLabelFromSelectedUsers: RemoveGuiderLabelFromSelectedUsersTriggerType =
   function removeGuiderLabelFromSelectedUsers(label) {
     return async (
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
     ) => {
-      let guider: GuiderType = getState().guider;
+      const guider: GuiderType = getState().guider;
       guider.selectedStudents.forEach((student: GuiderStudentType) => {
         removeLabelFromUserUtil(
           student,
@@ -693,13 +819,16 @@ let removeGuiderLabelFromSelectedUsers: RemoveGuiderLabelFromSelectedUsersTrigge
     };
   };
 
-let updateLabelFilters: UpdateLabelFiltersTriggerType =
+/**
+ * updateLabelFilters
+ */
+const updateLabelFilters: UpdateLabelFiltersTriggerType =
   function updateLabelFilters() {
     return async (
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
     ) => {
-      let currentUser = getState().status.userSchoolDataIdentifier;
+      const currentUser = getState().status.userSchoolDataIdentifier;
       try {
         dispatch({
           type: "UPDATE_GUIDER_AVAILABLE_FILTERS_LABELS",
@@ -724,13 +853,16 @@ let updateLabelFilters: UpdateLabelFiltersTriggerType =
     };
   };
 
-let updateWorkspaceFilters: UpdateWorkspaceFiltersTriggerType =
+/**
+ * updateWorkspaceFilters
+ */
+const updateWorkspaceFilters: UpdateWorkspaceFiltersTriggerType =
   function updateWorkspaceFilters() {
     return async (
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
     ) => {
-      let currentUser = getState().status.userSchoolDataIdentifier;
+      const currentUser = getState().status.userSchoolDataIdentifier;
       try {
         dispatch({
           type: "UPDATE_GUIDER_AVAILABLE_FILTERS_WORKSPACES",
@@ -758,13 +890,16 @@ let updateWorkspaceFilters: UpdateWorkspaceFiltersTriggerType =
     };
   };
 
-let updateUserGroupFilters: UpdateWorkspaceFiltersTriggerType =
+/**
+ * updateUserGroupFilters
+ */
+const updateUserGroupFilters: UpdateWorkspaceFiltersTriggerType =
   function updateUserGroupFilters() {
     return async (
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
     ) => {
-      let currentUser = getState().status.userSchoolDataIdentifier;
+      const currentUser = getState().status.userSchoolDataIdentifier;
       try {
         dispatch({
           type: "UPDATE_GUIDER_AVAILABLE_FILTERS_USERGROUPS",
@@ -790,7 +925,11 @@ let updateUserGroupFilters: UpdateWorkspaceFiltersTriggerType =
     };
   };
 
-let createGuiderFilterLabel: CreateGuiderFilterLabelTriggerType =
+/**
+ * createGuiderFilterLabel
+ * @param name name
+ */
+const createGuiderFilterLabel: CreateGuiderFilterLabelTriggerType =
   function createGuiderFilterLabel(name) {
     return async (
       dispatch: (arg: AnyActionType) => any,
@@ -807,11 +946,11 @@ let createGuiderFilterLabel: CreateGuiderFilterLabelTriggerType =
         );
       }
 
-      let currentUserSchoolDataIdentifier =
+      const currentUserSchoolDataIdentifier =
         getState().status.userSchoolDataIdentifier;
 
-      let color: number = Math.round(Math.random() * 16777215);
-      let label = {
+      const color: number = Math.round(Math.random() * 16777215);
+      const label = {
         name,
         color: colorIntToHex(color),
         description: "",
@@ -819,7 +958,7 @@ let createGuiderFilterLabel: CreateGuiderFilterLabelTriggerType =
       };
 
       try {
-        let newLabel: GuiderUserLabelType = <GuiderUserLabelType>(
+        const newLabel: GuiderUserLabelType = <GuiderUserLabelType>(
           await promisify(mApi().user.flags.create(label), "callback")()
         );
         dispatch({
@@ -840,7 +979,11 @@ let createGuiderFilterLabel: CreateGuiderFilterLabelTriggerType =
     };
   };
 
-let updateGuiderFilterLabel: UpdateGuiderFilterLabelTriggerType =
+/**
+ * updateGuiderFilterLabel
+ * @param data data
+ */
+const updateGuiderFilterLabel: UpdateGuiderFilterLabelTriggerType =
   function updateGuiderFilterLabel(data) {
     return async (
       dispatch: (arg: AnyActionType) => any,
@@ -858,7 +1001,7 @@ let updateGuiderFilterLabel: UpdateGuiderFilterLabelTriggerType =
         );
       }
 
-      let newLabel: GuiderUserLabelType = Object.assign({}, data.label, {
+      const newLabel: GuiderUserLabelType = Object.assign({}, data.label, {
         name: data.name,
         description: data.description,
         color: data.color,
@@ -906,7 +1049,11 @@ let updateGuiderFilterLabel: UpdateGuiderFilterLabelTriggerType =
     };
   };
 
-let removeGuiderFilterLabel: RemoveGuiderFilterLabelTriggerType =
+/**
+ * removeGuiderFilterLabel
+ * @param data data
+ */
+const removeGuiderFilterLabel: RemoveGuiderFilterLabelTriggerType =
   function removeGuiderFilterLabel(data) {
     return async (
       dispatch: (arg: AnyActionType) => any,
@@ -938,6 +1085,9 @@ let removeGuiderFilterLabel: RemoveGuiderFilterLabelTriggerType =
     };
   };
 
+/**
+ * updateAvailablePurchaseProducts
+ */
 const updateAvailablePurchaseProducts: UpdateAvailablePurchaseProductsTriggerType =
   function updateAvailablePurchaseProducts() {
     return async (
@@ -969,6 +1119,10 @@ const updateAvailablePurchaseProducts: UpdateAvailablePurchaseProductsTriggerTyp
     };
   };
 
+/**
+ * doOrderForCurrentStudent
+ * @param order
+ */
 const doOrderForCurrentStudent: DoOrderForCurrentStudentTriggerType =
   function doOrderForCurrentStudent(order: PurchaseProductType) {
     return async (
@@ -1004,6 +1158,10 @@ const doOrderForCurrentStudent: DoOrderForCurrentStudentTriggerType =
     };
   };
 
+/**
+ * deleteOrderFromCurrentStudent
+ * @param order
+ */
 const deleteOrderFromCurrentStudent: DeleteOrderFromCurrentStudentTriggerType =
   function deleteOrderFromCurrentStudent(order: PurchaseType) {
     return async (
@@ -1030,6 +1188,10 @@ const deleteOrderFromCurrentStudent: DeleteOrderFromCurrentStudentTriggerType =
     };
   };
 
+/**
+ * completeOrderFromCurrentStudent
+ * @param order
+ */
 const completeOrderFromCurrentStudent: CompleteOrderFromCurrentStudentTriggerType =
   function completeOrderFromCurrentStudent(order: PurchaseType) {
     return async (
