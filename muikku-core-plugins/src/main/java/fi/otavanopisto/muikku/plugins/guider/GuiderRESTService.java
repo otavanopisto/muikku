@@ -2,7 +2,6 @@ package fi.otavanopisto.muikku.plugins.guider;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -35,10 +34,9 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.StreamingOutput;
 
-import org.apache.commons.lang3.StringUtils;
-
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
@@ -67,7 +65,6 @@ import fi.otavanopisto.muikku.plugins.transcriptofrecords.rest.ToRWorkspaceRestM
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceEntityFileController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceVisitController;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRestModels;
-import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceSubjectRestModel;
 import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
 import fi.otavanopisto.muikku.rest.model.Student;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
@@ -75,11 +72,12 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
-import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivity;
+import fi.otavanopisto.muikku.search.IndexedWorkspace;
 import fi.otavanopisto.muikku.search.SearchProvider;
-import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.search.SearchProvider.Sort;
+import fi.otavanopisto.muikku.search.SearchResult;
+import fi.otavanopisto.muikku.search.SearchResults;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.OrganizationRestriction;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.PublicityRestriction;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.TemplateRestriction;
@@ -183,6 +181,7 @@ public class GuiderRESTService extends PluginRESTService {
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/activity")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  // TODO Is this needed?
   public Response getWorkspaceAssessmentsStudyProgressAnalysis(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId) {
     SchoolDataIdentifier userIdentifier = sessionController.getLoggedUser();
     if (userIdentifier == null) {
@@ -205,12 +204,13 @@ public class GuiderRESTService extends PluginRESTService {
       assessmentState = assessmentRequestController.getWorkspaceAssessmentState(workspaceUserEntity);
     }
     
-    return Response.ok(toRestModel(activity, assessmentState)).build();
+    return Response.ok(workspaceRestModels.toRestModel(activity, assessmentState)).build();
   }
   
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/studentactivity/{USERIDENTIFIER}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  @Deprecated // TODO This could be removed as activity is part of workspaces in guider and records
   public Response getWorkspaceAssessmentsStudyProgressAnalysis(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("USERIDENTIFIER") String userId) {
     SchoolDataIdentifier userIdentifier = SchoolDataIdentifier.fromId(userId);
     if (userIdentifier == null) {
@@ -240,7 +240,7 @@ public class GuiderRESTService extends PluginRESTService {
     
     List<WorkspaceAssessmentState> assessmentStates = assessmentRequestController.getAllWorkspaceAssessmentStates(workspaceUserEntity);
     
-    return Response.ok(toRestModel(activity, assessmentStates)).build();
+    return Response.ok(workspaceRestModels.toRestModel(activity, assessmentStates)).build();
   }
   
   @GET
@@ -583,8 +583,6 @@ public class GuiderRESTService extends PluginRESTService {
         @Context Request request,
         @PathParam("ID") String userIdentifierParam
       ) {
-    List<ToRWorkspaceRestModel> workspaces = new ArrayList<>();
-
     SchoolDataIdentifier userIdentifier = SchoolDataIdentifier.fromId(userIdentifierParam);
     if (userIdentifier == null) {
       return Response.status(Status.BAD_REQUEST).build();
@@ -604,10 +602,11 @@ public class GuiderRESTService extends PluginRESTService {
       return Response.ok(Collections.emptyList()).build();
     }
     
+    List<ToRWorkspaceRestModel> workspaces = new ArrayList<>();
+
     Iterator<SearchProvider> searchProviderIterator = searchProviders.iterator();
     if (searchProviderIterator.hasNext()) {
       SearchProvider searchProvider = searchProviderIterator.next();
-      SearchResult searchResult = null;
       
       List<SchoolDataIdentifier> workspaceIdentifierFilters = workspaceEntities.stream()
           .map(WorkspaceEntity::schoolDataIdentifier).collect(Collectors.toList());
@@ -618,46 +617,18 @@ public class GuiderRESTService extends PluginRESTService {
       organizationRestrictions = organizationRestrictions.stream()
           .map(organizationRestriction -> new OrganizationRestriction(organizationRestriction.getOrganizationIdentifier(), PublicityRestriction.LIST_ALL, TemplateRestriction.ONLY_WORKSPACES))
           .collect(Collectors.toList());
+
+      SearchResults<List<IndexedWorkspace>> searchResults = searchProvider.searchWorkspaces()
+          .setWorkspaceIdentifiers(workspaceIdentifierFilters)
+          .setOrganizationRestrictions(organizationRestrictions)
+          .setMaxResults(500)
+          .addSort(new Sort("name.untouched", Sort.Order.ASC))
+          .searchTyped();
+
+      List<IndexedWorkspace> indexedWorkspaces = searchResults.getResults();
       
-      searchResult = searchProvider.searchWorkspaces()
-        .setWorkspaceIdentifiers(workspaceIdentifierFilters)
-        .setOrganizationRestrictions(organizationRestrictions)
-        .setMaxResults(500)
-        .addSort(new Sort("name.untouched", Sort.Order.ASC))
-        .search();
-      
-      List<Map<String, Object>> results = searchResult.getResults();
-      for (Map<String, Object> result : results) {
-        String searchId = (String) result.get("id");
-        if (StringUtils.isNotBlank(searchId)) {
-          String[] id = searchId.split("/", 2);
-          if (id.length == 2) {
-            String dataSource = id[1];
-            String identifier = id[0];
-            WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(dataSource, identifier);
-            if (workspaceEntity != null) {
-              String name = (String) result.get("name");
-              String description = (String) result.get("description");
-              String nameExtension = (String) result.get("nameExtension");
-              
-              Object curriculumIdentifiersObject = result.get("curriculumIdentifiers");
-              Set<String> curriculumIdentifiers = new HashSet<String>();
-              if (curriculumIdentifiersObject instanceof Collection) {
-                Collection<?> curriculumIdentifierCollection = (Collection<?>) curriculumIdentifiersObject;
-                for (Object o : curriculumIdentifierCollection) {
-                  if (o instanceof String)
-                    curriculumIdentifiers.add((String) o);
-                  else
-                    logger.warning("curriculumIdentifier not of type String");
-                }
-              }
-              
-              if (StringUtils.isNotBlank(name)) {
-                workspaces.add(createRestModel(userIdentifier, workspaceEntity, name, nameExtension, description, curriculumIdentifiers));
-              }
-            }
-          }
-        }
+      for (IndexedWorkspace indexedWorkspace : indexedWorkspaces) {
+        workspaces.add(workspaceRestModels.createRestModelWithActivity(userIdentifier, indexedWorkspace));
       }
     } else {
       return Response.status(Status.INTERNAL_SERVER_ERROR).build();
@@ -783,32 +754,6 @@ public class GuiderRESTService extends PluginRESTService {
     return new OrganizationRESTModel(organizationEntity.getId(), organizationEntity.getName());
   }
   
-  private GuiderStudentWorkspaceActivityRestModel toRestModel(GuiderStudentWorkspaceActivity activity, Object assessmentStates) {
-    GuiderStudentWorkspaceActivityRestModel model = new GuiderStudentWorkspaceActivityRestModel(
-        activity.getLastVisit(),
-        activity.getNumVisits(),
-        activity.getJournalEntryCount(),
-        activity.getLastJournalEntry(),
-        activity.getEvaluables().getUnanswered(), 
-        activity.getEvaluables().getAnswered(), 
-        activity.getEvaluables().getAnsweredLastDate(), 
-        activity.getEvaluables().getSubmitted(), 
-        activity.getEvaluables().getSubmittedLastDate(), 
-        activity.getEvaluables().getWithdrawn(), 
-        activity.getEvaluables().getWithdrawnLastDate(), 
-        activity.getEvaluables().getPassed(), 
-        activity.getEvaluables().getPassedLastDate(), 
-        activity.getEvaluables().getFailed(), 
-        activity.getEvaluables().getFailedLastDate(),
-        activity.getEvaluables().getIncomplete(),
-        activity.getEvaluables().getIncompleteLastDate(),
-        activity.getExercises().getUnanswered(), 
-        activity.getExercises().getAnswered(), 
-        activity.getExercises().getAnsweredLastDate(),
-        assessmentStates);
-    return model;
-  }
-  
   private List<fi.otavanopisto.muikku.rest.model.StudentFlag> createRestModel(FlagStudent[] flagStudents) {
     List<fi.otavanopisto.muikku.rest.model.StudentFlag> result = new ArrayList<>();
     
@@ -853,50 +798,4 @@ public class GuiderRESTService extends PluginRESTService {
     return date;
   }
 
-  private ToRWorkspaceRestModel createRestModel(
-      SchoolDataIdentifier userIdentifier,
-      WorkspaceEntity workspaceEntity,
-      String name,
-      String nameExtension,
-      String description,
-      Set<String> curriculumIdentifiers
-      ) {
-    Long numVisits = workspaceVisitController.getNumVisits(workspaceEntity);
-    Date lastVisit = workspaceVisitController.getLastVisit(workspaceEntity);
-    boolean hasCustomImage = workspaceEntityFileController.getHasCustomImage(workspaceEntity);
-
-    
-    GuiderStudentWorkspaceActivity activity = guiderController.getStudentWorkspaceActivity(workspaceEntity, userIdentifier);
-    List<WorkspaceAssessmentState> assessmentStates = new ArrayList<>();
-    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserIdentifier(workspaceEntity, userIdentifier);
-    if (workspaceUserEntity != null && workspaceUserEntity.getWorkspaceUserRole().getArchetype() == WorkspaceRoleArchetype.STUDENT) {
-      assessmentStates = assessmentRequestController.getAllWorkspaceAssessmentStates(workspaceUserEntity);
-    }
-    
-    // TODO can we avoid loading workspace?
-    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-    List<WorkspaceSubjectRestModel> subjectRestModels = workspace.getSubjects().stream()
-        .map(workspaceSubject -> workspaceRestModels.toRestModel(workspaceSubject))
-        .collect(Collectors.toList());
-    
-    GuiderStudentWorkspaceActivityRestModel guiderStudentWorkspaceActivityRestModel = toRestModel(activity, assessmentStates);
-    
-    return new ToRWorkspaceRestModel(workspaceEntity.getId(),
-        workspaceEntity.getOrganizationEntity() == null ? null : workspaceEntity.getOrganizationEntity().getId(),
-        workspaceEntity.getUrlName(),
-        workspaceEntity.getAccess(),
-        workspaceEntity.getArchived(), 
-        workspaceEntity.getPublished(), 
-        name, 
-        nameExtension, 
-        description, 
-        workspaceEntity.getDefaultMaterialLicense(),
-        numVisits, 
-        lastVisit,
-        curriculumIdentifiers,
-        hasCustomImage,
-        subjectRestModels,
-        guiderStudentWorkspaceActivityRestModel);
-  }
-  
 } 

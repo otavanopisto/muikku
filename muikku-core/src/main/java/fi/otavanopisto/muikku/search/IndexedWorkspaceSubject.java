@@ -73,6 +73,17 @@ public class IndexedWorkspaceSubject {
     this.lengthUnitName = lengthUnitName;
   }
 
+  @IndexField (toId = true)
+  public SchoolDataIdentifier getIdentifier() {
+    return identifier;
+  }
+
+  public void setIdentifier(SchoolDataIdentifier identifier) {
+    this.identifier = identifier;
+  }
+
+  @JsonDeserialize(using = IndexedSchoolDataIdentifierAsIdDeserializer.class)
+  private SchoolDataIdentifier identifier;
   @JsonDeserialize(using = IndexedSchoolDataIdentifierAsIdDeserializer.class)
   private SchoolDataIdentifier subjectIdentifier;
   private String subjectName;

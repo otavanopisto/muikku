@@ -125,8 +125,6 @@ public class WorkspaceIndexer {
     indexedWorkspace.setEducationSubtypeIdentifier(workspace.getEducationSubtypeIdentifier());
     indexedWorkspace.setOrganizationIdentifier(workspace.getOrganizationIdentifier());
     indexedWorkspace.setLastModified(workspace.getLastModified());
-    indexedWorkspace.setBeginDate(workspace.getBeginDate());
-    indexedWorkspace.setEndDate(workspace.getEndDate());
     indexedWorkspace.setTemplate(workspace.isTemplate());
     indexedWorkspace.setAccess(workspaceEntity.getAccess());
     indexedWorkspace.setPublished(workspaceEntity.getPublished());
@@ -155,6 +153,7 @@ public class WorkspaceIndexer {
     for (WorkspaceSubject workspaceSubject : workspace.getSubjects()) {
       IndexedWorkspaceSubject indexedWorkspaceSubject = new IndexedWorkspaceSubject();
       
+      indexedWorkspaceSubject.setIdentifier(workspaceSubject.getIdentifier());
       indexedWorkspaceSubject.setCourseNumber(workspaceSubject.getCourseNumber());
       indexedWorkspaceSubject.setLength(workspaceSubject.getLength());
       indexedWorkspaceSubject.setLengthUnitIdentifier(workspaceSubject.getLengthUnitIdentifier());
