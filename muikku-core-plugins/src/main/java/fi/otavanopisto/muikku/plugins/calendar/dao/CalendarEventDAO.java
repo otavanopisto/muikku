@@ -114,7 +114,7 @@ public class CalendarEventDAO extends CorePluginsDAO<CalendarEvent> {
     
     criteria.select(root);
     criteria.where(
-        // must match both timeframe and user
+        // must match timeframe and user and type
         criteriaBuilder.and(
             criteriaBuilder.equal(root.get(CalendarEvent_.type), type),
             criteriaBuilder.or(
