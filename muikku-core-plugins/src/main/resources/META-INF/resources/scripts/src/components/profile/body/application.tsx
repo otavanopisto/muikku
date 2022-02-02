@@ -10,6 +10,7 @@ import Security from "./application/security";
 import VacationSettings from "./application/vacation-settings";
 import WorkList from "./application/work-list";
 import { i18nType } from "~/reducers/base/i18n";
+import Purchases from "./application/purchases";
 
 /**
  * ProfileApplicationProps
@@ -52,6 +53,7 @@ class ProfileApplication extends React.Component<
           <Security />
           <VacationSettings />
           <WorkList />
+          <Purchases />
         </ApplicationPanel>
       </div>
     );
