@@ -1,5 +1,7 @@
 package fi.otavanopisto.muikku.search;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.search.annotations.IndexField;
 
@@ -47,9 +49,38 @@ public class IndexedWorkspaceSubject {
     this.lengthUnitIdentifier = lengthUnitIdentifier;
   }
   
+  public String getSubjectCode() {
+    return subjectCode;
+  }
+
+  public void setSubjectCode(String subjectCode) {
+    this.subjectCode = subjectCode;
+  }
+
+  public String getLengthUnitSymbol() {
+    return lengthUnitSymbol;
+  }
+
+  public void setLengthUnitSymbol(String lengthUnitSymbol) {
+    this.lengthUnitSymbol = lengthUnitSymbol;
+  }
+
+  public String getLengthUnitName() {
+    return lengthUnitName;
+  }
+
+  public void setLengthUnitName(String lengthUnitName) {
+    this.lengthUnitName = lengthUnitName;
+  }
+
+  @JsonDeserialize(using = IndexedSchoolDataIdentifierAsIdDeserializer.class)
   private SchoolDataIdentifier subjectIdentifier;
   private String subjectName;
+  private String subjectCode;
   private Integer courseNumber;
   private Double length;
+  @JsonDeserialize(using = IndexedSchoolDataIdentifierAsIdDeserializer.class)
   private SchoolDataIdentifier lengthUnitIdentifier;
+  private String lengthUnitSymbol;
+  private String lengthUnitName;
 }

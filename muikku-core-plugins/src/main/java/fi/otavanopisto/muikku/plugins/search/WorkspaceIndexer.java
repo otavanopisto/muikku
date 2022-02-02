@@ -14,6 +14,7 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
+import fi.otavanopisto.muikku.schooldata.entity.CourseLengthUnit;
 import fi.otavanopisto.muikku.schooldata.entity.EducationType;
 import fi.otavanopisto.muikku.schooldata.entity.Subject;
 import fi.otavanopisto.muikku.schooldata.entity.User;
@@ -161,6 +162,11 @@ public class WorkspaceIndexer {
       
       Subject subject = courseMetaController.findSubject(workspaceSubject.getSubjectIdentifier());
       indexedWorkspaceSubject.setSubjectName(subject.getName());
+      indexedWorkspaceSubject.setSubjectCode(subject.getCode());
+      
+      CourseLengthUnit courseLengthUnit = courseMetaController.findCourseLengthUnit(workspaceSubject.getLengthUnitIdentifier());
+      indexedWorkspaceSubject.setLengthUnitSymbol(courseLengthUnit.getSymbol());
+      indexedWorkspaceSubject.setLengthUnitName(courseLengthUnit.getName());
       
       indexedWorkspace.addSubject(indexedWorkspaceSubject);
     }

@@ -12,6 +12,8 @@ public interface WorkspaceSearchBuilder {
 
   SearchResult search();
   
+  SearchResults<List<IndexedWorkspace>> searchTyped();
+  
   List<String> getSubjects();
 
   WorkspaceSearchBuilder addSubject(String subject);

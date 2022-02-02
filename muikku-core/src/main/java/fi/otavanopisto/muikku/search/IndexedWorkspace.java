@@ -5,6 +5,10 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.search.annotations.IndexField;
@@ -104,6 +108,7 @@ import fi.otavanopisto.muikku.search.annotations.IndexableSubObject;
     )
   }
 )
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class IndexedWorkspace {
 
   public static final String INDEX_NAME = "muikku_workspaces";
@@ -292,25 +297,33 @@ public class IndexedWorkspace {
     this.educationTypeName = educationTypeName;
   }
 
+  @JsonDeserialize(using = IndexedSchoolDataIdentifierAsIdDeserializer.class)
   private SchoolDataIdentifier identifier;
   private String name;
   private String nameExtension;
   private String viewLink;
+  @JsonDeserialize(using = IndexedSchoolDataIdentifierAsIdDeserializer.class)
   private SchoolDataIdentifier workspaceTypeId;
   private String description;
+  @JsonDeserialize(using = IndexedSchoolDataIdentifierAsIdDeserializer.class)
   private SchoolDataIdentifier educationTypeIdentifier;
   private String educationTypeName;
+  @JsonDeserialize(using = IndexedSchoolDataIdentifierAsIdDeserializer.class)
   private SchoolDataIdentifier educationSubtypeIdentifier;
+  @JsonDeserialize(using = IndexedSchoolDataIdentifierAsIdDeserializer.class)
   private SchoolDataIdentifier organizationIdentifier;
   private Date lastModified;
   private OffsetDateTime beginDate;
   private OffsetDateTime endDate;
   private boolean isTemplate;
+
+  @JsonDeserialize(contentUsing = IndexedSchoolDataIdentifierAsIdDeserializer.class)
   private Set<SchoolDataIdentifier> curriculumIdentifiers = new HashSet<>();
   private Set<IndexedWorkspaceSubject> subjects = new HashSet<>();
   
   private WorkspaceAccess access;
   private boolean published;
   private Set<IndexedWorkspaceUser> staffMembers = new HashSet<>();
+  @JsonDeserialize(contentUsing = IndexedSchoolDataIdentifierAsIdDeserializer.class)
   private Set<SchoolDataIdentifier> signupPermissionGroups = new HashSet<>();
 }

@@ -483,6 +483,127 @@ public class ElasticSearchProvider implements SearchProvider {
     return result;
   }
   
+  private BoolQueryBuilder prepareWorkspaceSearchQuery(
+      List<String> subjects, 
+      List<SchoolDataIdentifier> identifiers, 
+      List<SchoolDataIdentifier> educationTypes, 
+      List<SchoolDataIdentifier> curriculumIdentifiers, 
+      Collection<OrganizationRestriction> organizationRestrictions,
+      String freeText, 
+      Collection<WorkspaceAccess> accesses, 
+      SchoolDataIdentifier accessUser) {
+    
+    BoolQueryBuilder query = boolQuery();
+    
+    freeText = sanitizeSearchString(freeText);
+
+    if (accesses != null) {
+      BoolQueryBuilder accessQuery = boolQuery();
+      for (WorkspaceAccess access : accesses) {
+        switch (access) {
+          case LOGGED_IN:  
+          case ANYONE:
+            accessQuery.should(termQuery("access", access));
+          break;
+          case MEMBERS_ONLY:
+            BoolQueryBuilder memberQuery = boolQuery();
+            IdsQueryBuilder idsQuery = idsQuery(IndexedWorkspace.INDEX_NAME);
+            for (SchoolDataIdentifier userWorkspace : getUserWorkspaces(accessUser)) {
+              idsQuery.addIds(String.format("%s/%s", userWorkspace.getIdentifier(), userWorkspace.getDataSource()));
+            }
+            memberQuery.must(idsQuery);
+            memberQuery.must(termQuery("access", access));
+            accessQuery.should(memberQuery);
+          break;
+        }
+      }
+      query.must(accessQuery);
+    }
+    
+    if (subjects != null && !subjects.isEmpty()) {
+      query.must(termsQuery("subjects.subjectIdentifier.identifier", subjects));
+    }
+    
+    if (educationTypes != null && !educationTypes.isEmpty()) {
+      List<String> educationTypeIds = new ArrayList<>(educationTypes.size());
+      for (SchoolDataIdentifier educationType : educationTypes) {
+        educationTypeIds.add(educationType.toId());
+      }
+      query.must(termsQuery("educationTypeIdentifier.untouched", educationTypeIds));
+    }
+
+    if (!CollectionUtils.isEmpty(curriculumIdentifiers)) {
+      List<String> curriculumIds = new ArrayList<>(curriculumIdentifiers.size());
+      for (SchoolDataIdentifier curriculumIdentifier : curriculumIdentifiers) {
+        curriculumIds.add(curriculumIdentifier.toId());
+      }
+
+      query.must(boolQuery()
+          .should(termsQuery("curriculumIdentifiers.untouched", curriculumIds))
+          .should(boolQuery().mustNot(existsQuery("curriculumIdentifiers")))
+          .minimumNumberShouldMatch(1));
+    }
+
+    BoolQueryBuilder organizationQuery = boolQuery();
+    
+    for (OrganizationRestriction organizationRestriction : organizationRestrictions) {
+      SchoolDataIdentifier organizationIdentifier = organizationRestriction.getOrganizationIdentifier();
+
+      BoolQueryBuilder organizationRestrictionQuery = boolQuery().must(termQuery("organizationIdentifier.untouched", organizationIdentifier.toId()));
+      
+      switch (organizationRestriction.getPublicityRestriction()) {
+        case ONLY_PUBLISHED:
+          organizationRestrictionQuery = organizationRestrictionQuery.must(termQuery("published", Boolean.TRUE));
+        break;
+        case ONLY_UNPUBLISHED:
+          organizationRestrictionQuery = organizationRestrictionQuery.must(termQuery("published", Boolean.FALSE));
+        break;
+        case LIST_ALL:
+        break;
+      }
+      
+      switch (organizationRestriction.getTemplateRestriction()) {
+        case ONLY_WORKSPACES:
+          organizationRestrictionQuery.must(termQuery("isTemplate", Boolean.FALSE));
+        break;
+        case ONLY_TEMPLATES:
+          organizationRestrictionQuery.must(termQuery("isTemplate", Boolean.TRUE));
+        break;
+        case LIST_ALL:
+          // No restrictions
+        break;
+      }
+      
+      organizationQuery.should(organizationRestrictionQuery);
+    }
+    
+    query.must(organizationQuery.minimumNumberShouldMatch(1));
+    
+    if (identifiers != null) {
+      List<String> identifiersStrList = identifiers.stream()
+          .map(SchoolDataIdentifier::toId)
+          .collect(Collectors.toList());
+      query.must(termsQuery("identifier.untouched", identifiersStrList));
+    }
+
+    if (StringUtils.isNotBlank(freeText)) {
+      String[] words = freeText.split(" ");
+      for (int i = 0; i < words.length; i++) {
+        if (StringUtils.isNotBlank(words[i])) {
+          query.must(boolQuery()
+              .should(prefixQuery("name", words[i]))
+              .should(prefixQuery("description", words[i]))
+              .should(prefixQuery("subjects.subjectName", words[i]))
+              .should(prefixQuery("staffMembers.firstName", words[i]))
+              .should(prefixQuery("staffMembers.lastName", words[i]))
+              );
+        }
+      }
+    }
+
+    return query;
+  }
+    
   @Override
   public SearchResult searchWorkspaces(
       List<String> subjects, 
@@ -496,132 +617,25 @@ public class ElasticSearchProvider implements SearchProvider {
       int start, 
       int maxResults, 
       List<Sort> sorts) {
+      
     if ((identifiers != null && identifiers.isEmpty()) || CollectionUtils.isEmpty(organizationRestrictions)) {
       return new SearchResult(0, new ArrayList<Map<String,Object>>(), 0);
     }
     
-    BoolQueryBuilder query = boolQuery();
-    
-    freeText = sanitizeSearchString(freeText);
-
     try {
-      
-      if (accesses != null) {
-        BoolQueryBuilder accessQuery = boolQuery();
-        for (WorkspaceAccess access : accesses) {
-          switch (access) {
-            case LOGGED_IN:  
-            case ANYONE:
-              accessQuery.should(termQuery("access", access));
-            break;
-            case MEMBERS_ONLY:
-              BoolQueryBuilder memberQuery = boolQuery();
-              IdsQueryBuilder idsQuery = idsQuery(IndexedWorkspace.INDEX_NAME);
-              for (SchoolDataIdentifier userWorkspace : getUserWorkspaces(accessUser)) {
-                idsQuery.addIds(String.format("%s/%s", userWorkspace.getIdentifier(), userWorkspace.getDataSource()));
-              }
-              memberQuery.must(idsQuery);
-              memberQuery.must(termQuery("access", access));
-              accessQuery.should(memberQuery);
-            break;
-          }
-        }
-        query.must(accessQuery);
-      }
-      
-      if (subjects != null && !subjects.isEmpty()) {
-        query.must(termsQuery("subjects.subjectIdentifier.identifier", subjects));
-      }
-      
-      if (educationTypes != null && !educationTypes.isEmpty()) {
-        List<String> educationTypeIds = new ArrayList<>(educationTypes.size());
-        for (SchoolDataIdentifier educationType : educationTypes) {
-          educationTypeIds.add(educationType.toId());
-        }
-        query.must(termsQuery("educationTypeIdentifier.untouched", educationTypeIds));
-      }
-
-      if (!CollectionUtils.isEmpty(curriculumIdentifiers)) {
-        List<String> curriculumIds = new ArrayList<>(curriculumIdentifiers.size());
-        for (SchoolDataIdentifier curriculumIdentifier : curriculumIdentifiers) {
-          curriculumIds.add(curriculumIdentifier.toId());
-        }
-
-        query.must(boolQuery()
-            .should(termsQuery("curriculumIdentifiers.untouched", curriculumIds))
-            .should(boolQuery().mustNot(existsQuery("curriculumIdentifiers")))
-            .minimumNumberShouldMatch(1));
-      }
-
-      BoolQueryBuilder organizationQuery = boolQuery();
-      
-      for (OrganizationRestriction organizationRestriction : organizationRestrictions) {
-        SchoolDataIdentifier organizationIdentifier = organizationRestriction.getOrganizationIdentifier();
-
-        BoolQueryBuilder organizationRestrictionQuery = boolQuery().must(termQuery("organizationIdentifier.untouched", organizationIdentifier.toId()));
-        
-        switch (organizationRestriction.getPublicityRestriction()) {
-          case ONLY_PUBLISHED:
-            organizationRestrictionQuery = organizationRestrictionQuery.must(termQuery("published", Boolean.TRUE));
-          break;
-          case ONLY_UNPUBLISHED:
-            organizationRestrictionQuery = organizationRestrictionQuery.must(termQuery("published", Boolean.FALSE));
-          break;
-          case LIST_ALL:
-          break;
-        }
-        
-        switch (organizationRestriction.getTemplateRestriction()) {
-          case ONLY_WORKSPACES:
-            organizationRestrictionQuery.must(termQuery("isTemplate", Boolean.FALSE));
-          break;
-          case ONLY_TEMPLATES:
-            organizationRestrictionQuery.must(termQuery("isTemplate", Boolean.TRUE));
-          break;
-          case LIST_ALL:
-            // No restrictions
-          break;
-        }
-        
-        organizationQuery.should(organizationRestrictionQuery);
-      }
-      
-      query.must(organizationQuery.minimumNumberShouldMatch(1));
-      
-      if (identifiers != null) {
-        List<String> identifiersStrList = identifiers.stream()
-            .map(SchoolDataIdentifier::toId)
-            .collect(Collectors.toList());
-        query.must(termsQuery("identifier.untouched", identifiersStrList));
-      }
-  
-      if (StringUtils.isNotBlank(freeText)) {
-        String[] words = freeText.split(" ");
-        for (int i = 0; i < words.length; i++) {
-          if (StringUtils.isNotBlank(words[i])) {
-            query.must(boolQuery()
-                .should(prefixQuery("name", words[i]))
-                .should(prefixQuery("description", words[i]))
-                .should(prefixQuery("subjects.subjectName", words[i]))
-                .should(prefixQuery("staffMembers.firstName", words[i]))
-                .should(prefixQuery("staffMembers.lastName", words[i]))
-                );
-          }
-        }
-      }
-      
       SearchRequestBuilder requestBuilder = elasticClient
-        .prepareSearch(IndexedWorkspace.INDEX_NAME)
-        .setTypes(IndexedWorkspace.TYPE_NAME)
-        .setFrom(start)
-        .setSize(maxResults);
-      
+          .prepareSearch(IndexedWorkspace.INDEX_NAME)
+          .setTypes(IndexedWorkspace.TYPE_NAME)
+          .setFrom(start)
+          .setSize(maxResults);
+        
       if (sorts != null && !sorts.isEmpty()) {
         for (Sort sort : sorts) {
           requestBuilder.addSort(sort.getField(), SortOrder.valueOf(sort.getOrder().name()));
         }
       }
-      
+
+      BoolQueryBuilder query = prepareWorkspaceSearchQuery(subjects, identifiers, educationTypes, curriculumIdentifiers, organizationRestrictions, freeText, accesses, accessUser);
       SearchResponse response = requestBuilder.setQuery(query).execute().actionGet();
       List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
       SearchHits searchHits = response.getHits();
@@ -638,6 +652,66 @@ public class ElasticSearchProvider implements SearchProvider {
     } catch (Exception e) {
       logger.log(Level.SEVERE, "ElasticSearch query failed unexpectedly", e);
       return new SearchResult(0, new ArrayList<Map<String,Object>>(), 0); 
+    }
+  }
+
+  @Override
+  public SearchResults<List<IndexedWorkspace>> searchIndexedWorkspaces(
+      List<String> subjects, 
+      List<SchoolDataIdentifier> identifiers, 
+      List<SchoolDataIdentifier> educationTypes, 
+      List<SchoolDataIdentifier> curriculumIdentifiers, 
+      Collection<OrganizationRestriction> organizationRestrictions,
+      String freeText, 
+      Collection<WorkspaceAccess> accesses, 
+      SchoolDataIdentifier accessUser, 
+      int start, 
+      int maxResults, 
+      List<Sort> sorts) {
+      
+    if ((identifiers != null && identifiers.isEmpty()) || CollectionUtils.isEmpty(organizationRestrictions)) {
+      return new SearchResults<List<IndexedWorkspace>>(0, new ArrayList<IndexedWorkspace>(), 0); 
+    }
+    
+    try {
+      SearchRequestBuilder requestBuilder = elasticClient
+          .prepareSearch(IndexedWorkspace.INDEX_NAME)
+          .setTypes(IndexedWorkspace.TYPE_NAME)
+          .setFrom(start)
+          .setSize(maxResults);
+        
+      if (sorts != null && !sorts.isEmpty()) {
+        for (Sort sort : sorts) {
+          requestBuilder.addSort(sort.getField(), SortOrder.valueOf(sort.getOrder().name()));
+        }
+      }
+
+      BoolQueryBuilder query = prepareWorkspaceSearchQuery(subjects, identifiers, educationTypes, curriculumIdentifiers, organizationRestrictions, freeText, accesses, accessUser);
+      SearchResponse response = requestBuilder.setQuery(query).execute().actionGet();
+      SearchHits searchHits = response.getHits();
+      long totalHitCount = searchHits.getTotalHits();
+      
+      ObjectMapper objectMapper = new ObjectMapper();
+      SearchHit[] results = searchHits.getHits();
+      List<IndexedWorkspace> searchResults = Arrays.stream(results)
+          .map(hit -> {
+            String source = hit.getSourceAsString();
+            try {
+              return objectMapper.readValue(source, IndexedWorkspace.class);
+            }
+            catch (Exception e) {
+              String documentId = hit != null ? hit.getId() : null;
+              logger.log(Level.SEVERE, String.format("Couldn't parse indexed workspace (id: %s)", documentId), e);
+            }
+            return null;
+          })
+          .collect(Collectors.toList());
+      
+      return new SearchResults<List<IndexedWorkspace>>(start, searchResults, totalHitCount);
+      
+    } catch (Exception e) {
+      logger.log(Level.SEVERE, "ElasticSearch query failed unexpectedly", e);
+      return new SearchResults<List<IndexedWorkspace>>(0, new ArrayList<IndexedWorkspace>(), 0); 
     }
   }
 

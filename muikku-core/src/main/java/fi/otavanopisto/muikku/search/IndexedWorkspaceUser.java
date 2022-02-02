@@ -4,6 +4,9 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 
 public class IndexedWorkspaceUser {
 
+  public IndexedWorkspaceUser() {
+  }
+  
   /**
    * Constructor
    * 

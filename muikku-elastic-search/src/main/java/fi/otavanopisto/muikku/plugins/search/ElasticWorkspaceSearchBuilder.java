@@ -1,7 +1,11 @@
 package fi.otavanopisto.muikku.plugins.search;
 
+import java.util.List;
+
 import fi.otavanopisto.muikku.search.AbstractWorkspaceSearchBuilder;
+import fi.otavanopisto.muikku.search.IndexedWorkspace;
 import fi.otavanopisto.muikku.search.SearchResult;
+import fi.otavanopisto.muikku.search.SearchResults;
 
 public class ElasticWorkspaceSearchBuilder extends AbstractWorkspaceSearchBuilder {
 
@@ -26,5 +30,23 @@ public class ElasticWorkspaceSearchBuilder extends AbstractWorkspaceSearchBuilde
     );
   }
 
+  @Override
+  public SearchResults<List<IndexedWorkspace>> searchTyped() {
+    return elastic.searchIndexedWorkspaces(
+        getSubjects(),
+        getWorkspaceIdentifiers(),
+        getEducationTypeIdentifiers(),
+        getCurriculumIdentifiers(),
+        getOrganizationRestrictions(),
+        getFreeText(),
+        getAccesses(),
+        getAccessUser(),
+        getFirstResult(),
+        getMaxResults(),
+        getSorts()
+    );
+  }
+
   private ElasticSearchProvider elastic;
+
 }
