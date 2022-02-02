@@ -594,7 +594,7 @@ public class GuiderRESTService extends PluginRESTService {
       return Response.status(Status.FORBIDDEN).build();
     }
     
-    UserEntity userEntity = sessionController.getLoggedUserEntity();
+    UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(userIdentifier);
     
     TemplateRestriction templateRestriction = TemplateRestriction.ONLY_WORKSPACES;
     PublicityRestriction publicityRestriction = PublicityRestriction.LIST_ALL;
