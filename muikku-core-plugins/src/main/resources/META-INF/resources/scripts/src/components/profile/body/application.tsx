@@ -9,6 +9,7 @@ import GeneralInformation from "./application/general-information";
 import Security from "./application/security";
 import VacationSettings from "./application/vacation-settings";
 import WorkList from "./application/work-list";
+import Purchases from "./application/purchases";
 import { i18nType } from "~/reducers/base/i18n";
 
 /**
@@ -52,6 +53,7 @@ class ProfileApplication extends React.Component<
           <Security />
           <VacationSettings />
           <WorkList />
+          <Purchases />
         </ApplicationPanel>
       </div>
     );
