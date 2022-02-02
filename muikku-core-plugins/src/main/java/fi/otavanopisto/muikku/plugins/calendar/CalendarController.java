@@ -68,30 +68,31 @@ public class CalendarController {
     return calendarEventParticipantDAO.listByEvent(event);
   }
   
-  public void updateParticipants(CalendarEvent event, List<CalendarEventParticipant> newParticipants) {
+  /**
+   * Sets the participants of an event. This method only adds and removes participants.
+   * All new participants will have attendance UNCONFIRMED. All existing participants will
+   * keep the attendance they currently have.   
+   * 
+   * @param event The event
+   * @param participants The participants of the event
+   */
+  public void setParticipants(CalendarEvent event, List<CalendarEventParticipant> participants) {
     
     List<CalendarEventParticipant> oldParticipants = calendarEventParticipantDAO.listByEvent(event);
     
-    // Add or update participants
+    // Add participants
     
-    for (CalendarEventParticipant newParticipant : newParticipants) {
-      CalendarEventAttendance attendance = newParticipant.getAttendance();
-      if (attendance == null) {
-        attendance = CalendarEventAttendance.UNCONFIRMED;
-      }
-      CalendarEventParticipant oldParticipant = findParticipantByUserEntityId(oldParticipants, newParticipant.getUserEntityId());
+    for (CalendarEventParticipant participant : participants) {
+      CalendarEventParticipant oldParticipant = findParticipantByUserEntityId(oldParticipants, participant.getUserEntityId());
       if (oldParticipant == null) {
-        calendarEventParticipantDAO.create(event, newParticipant.getUserEntityId(), attendance);
-      }
-      else if (oldParticipant.getAttendance() != attendance) {
-        calendarEventParticipantDAO.updateAttendance(oldParticipant, attendance);
+        calendarEventParticipantDAO.create(event, participant.getUserEntityId(), CalendarEventAttendance.UNCONFIRMED);
       }
     }
     
     // Remove participants
     
     for (CalendarEventParticipant oldParticipant : oldParticipants) {
-      CalendarEventParticipant newParticipant = findParticipantByUserEntityId(newParticipants, oldParticipant.getUserEntityId());
+      CalendarEventParticipant newParticipant = findParticipantByUserEntityId(participants, oldParticipant.getUserEntityId());
       if (newParticipant == null) {
         calendarEventParticipantDAO.delete(oldParticipant);
       }

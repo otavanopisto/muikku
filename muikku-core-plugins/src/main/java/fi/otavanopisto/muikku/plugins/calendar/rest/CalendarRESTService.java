@@ -31,7 +31,6 @@ import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.calendar.CalendarController;
 import fi.otavanopisto.muikku.plugins.calendar.model.CalendarEvent;
-import fi.otavanopisto.muikku.plugins.calendar.model.CalendarEventAttendance;
 import fi.otavanopisto.muikku.plugins.calendar.model.CalendarEventParticipant;
 import fi.otavanopisto.muikku.plugins.calendar.model.CalendarEventVisibility;
 import fi.otavanopisto.muikku.session.SessionController;
@@ -153,10 +152,10 @@ public class CalendarRESTService {
     List<CalendarEventParticipant> participants = new ArrayList<>();
     if (restEvent.getParticipants() != null) {
       for (CalendarEventParticipantRestModel restParticipant : restEvent.getParticipants()) {
-        participants.add(new CalendarEventParticipant(restParticipant.getUserEntityId(), CalendarEventAttendance.UNCONFIRMED));
+        participants.add(new CalendarEventParticipant(restParticipant.getUserEntityId()));
       }
     }
-    calendarController.updateParticipants(event, participants);
+    calendarController.setParticipants(event, participants);
     
     return Response.ok(toRestModel(event)).build();
   }
@@ -261,15 +260,15 @@ public class CalendarRESTService {
         restEvent.getVisibility(),
         restEvent.getType());
     
-    // Participants
+    // Participants 
     
     List<CalendarEventParticipant> participants = new ArrayList<>();
     if (restEvent.getParticipants() != null) {
       for (CalendarEventParticipantRestModel restParticipant : restEvent.getParticipants()) {
-        participants.add(new CalendarEventParticipant(restParticipant.getUserEntityId(), CalendarEventAttendance.UNCONFIRMED));
+        participants.add(new CalendarEventParticipant(restParticipant.getUserEntityId()));
       }
     }
-    calendarController.updateParticipants(event, participants);
+    calendarController.setParticipants(event, participants);
     
     return Response.ok(toRestModel(event)).build();
   }

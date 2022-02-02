@@ -90,17 +90,17 @@ public class CalendarEvent {
   private Long id;
 
   @NotNull
-  @Column (nullable = false)
-  @Temporal (value=TemporalType.TIMESTAMP)
+  @Column(nullable = false)
+  @Temporal(value=TemporalType.TIMESTAMP)
   private Date start;
 
   @NotNull
-  @Column (nullable = false)
-  @Temporal (value=TemporalType.TIMESTAMP)
+  @Column(nullable = false)
+  @Temporal(value=TemporalType.TIMESTAMP)
   private Date end;
 
   @NotNull
-  @Column (nullable = false)
+  @Column(nullable = false)
   private Boolean allDay;
   
   @NotNull
