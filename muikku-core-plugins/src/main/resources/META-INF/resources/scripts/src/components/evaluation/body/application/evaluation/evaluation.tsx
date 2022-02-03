@@ -34,6 +34,9 @@ import {
 } from "~/reducers/workspaces";
 import Link from "~/components/general/link";
 
+/**
+ * EvaluationDrawerProps
+ */
 interface EvaluationDrawerProps {
   i18n: i18nType;
   status: StatusType;
@@ -45,6 +48,9 @@ interface EvaluationDrawerProps {
   loadEvaluationAssessmentEventsFromServer: LoadEvaluationAssessmentEvent;
 }
 
+/**
+ * EvaluationDrawerState
+ */
 interface EvaluationDrawerState {
   archiveStudentDialog: boolean;
   showWorkspaceEvaluationDrawer: boolean;
@@ -59,14 +65,22 @@ interface EvaluationDrawerState {
   diaryFetched: boolean;
 }
 
+/**
+ * CKEditorConfig
+ * @param locale locale
+ */
 export const CKEditorConfig = (locale: string) => ({
   linkShowTargetTab: true,
   allowedContent: true, // disable content filtering to preserve all formatting of imported documents; fix for #263
   entities: false,
+  // eslint-disable-next-line camelcase
   entities_latin: false,
+  // eslint-disable-next-line camelcase
   entities_greek: false,
   language: locale,
+  // eslint-disable-next-line camelcase
   format_tags: "p;h3;h4",
+  // eslint-disable-next-line camelcase
   colorButton_colors:
     "000000,800000,8B4513,2F4F4F,008080,000080,4B0082,B22222,A52A2A,DAA520,006400,40E0D0,0000CD,800080,808080,FF0000,FF8C00,FFD700,008000,00FFFF,0000FF,EE82EE,A9A9A9,FFA07A,FFA500,FFFF00,00FF00,AFEEEE,ADD8E6,DDA0DD,D3D3D3,FFF0F5,FAEBD7,FFFFE0,F0FFF0,F0FFFF,F0F8FF,E6E6FA,FFFFFF",
   height: 400,
@@ -129,10 +143,14 @@ export const CKEditorConfig = (locale: string) => ({
     { name: "tools", items: ["Maximize"] },
   ],
   removePlugins: "image,exportpdf",
+  // eslint-disable-next-line camelcase
   resize_enabled: true,
   extraPlugins: "divarea,image2,muikku-mathjax",
 });
 
+/**
+ * Evaluation
+ */
 export class Evaluation extends React.Component<
   EvaluationDrawerProps,
   EvaluationDrawerState
@@ -162,10 +180,7 @@ export class Evaluation extends React.Component<
    * @param prevProps
    * @param prevState
    */
-  componentDidUpdate(
-    prevProps: EvaluationDrawerProps,
-    prevState: EvaluationDrawerState
-  ) {
+  componentDidUpdate() {
     if (
       !this.state.diaryFetched &&
       this.props.evaluation.evaluationDiaryEntries &&
@@ -246,9 +261,7 @@ export class Evaluation extends React.Component<
    */
   showAsHiddenEvaluationAssignment = (
     compositeReply?: MaterialCompositeRepliesType
-  ): boolean => {
-    return compositeReply && compositeReply.submitted !== null;
-  };
+  ): boolean => compositeReply && compositeReply.submitted !== null;
 
   /**
    * handleOpenDrawer
@@ -334,25 +347,24 @@ export class Evaluation extends React.Component<
 
   /**
    * handleClickEdit
-   * @param supplementation
+   * @param eventId eventId
+   * @param supplementation supplementation
    */
-  handleClickEdit =
-    (eventId: string, supplementation?: boolean) =>
-    (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-      if (supplementation) {
-        this.setState({
-          edit: true,
-          showWorkspaceSupplemenationDrawer: true,
-          eventByIdOpened: eventId,
-        });
-      } else {
-        this.setState({
-          edit: true,
-          showWorkspaceEvaluationDrawer: true,
-          eventByIdOpened: eventId,
-        });
-      }
-    };
+  handleClickEdit = (eventId: string, supplementation?: boolean) => () => {
+    if (supplementation) {
+      this.setState({
+        edit: true,
+        showWorkspaceSupplemenationDrawer: true,
+        eventByIdOpened: eventId,
+      });
+    } else {
+      this.setState({
+        edit: true,
+        showWorkspaceEvaluationDrawer: true,
+        eventByIdOpened: eventId,
+      });
+    }
+  };
 
   /**
    * handleCloseAllDiaryEntries
@@ -428,7 +440,7 @@ export class Evaluation extends React.Component<
    * @param id
    */
   handleOpenDiaryEntryClick = (id: number) => {
-    let updatedList = [...this.state.listOfDiaryIds];
+    const updatedList = [...this.state.listOfDiaryIds];
 
     const index = updatedList.findIndex((itemId) => itemId === id);
 
@@ -448,7 +460,7 @@ export class Evaluation extends React.Component<
    * @param id
    */
   handleOpenMaterialClick = (id: number) => {
-    let updatedList = [...this.state.listOfAssignmentIds];
+    const updatedList = [...this.state.listOfAssignmentIds];
 
     const index = updatedList.findIndex((itemId) => itemId === id);
 
@@ -501,9 +513,9 @@ export class Evaluation extends React.Component<
      * that were added before new "request" that students may request...
      * We pass it to evaluation event card component
      */
-    let latestEvaluatedEventIndex = this.getLatestEvaluatedEventIndex();
+    const latestEvaluatedEventIndex = this.getLatestEvaluatedEventIndex();
 
-    let lastEvaluatedEventIndex = this.getLastEvaluatedEventIndex();
+    const lastEvaluatedEventIndex = this.getLastEvaluatedEventIndex();
 
     /**
      * evaluationEventContentCards

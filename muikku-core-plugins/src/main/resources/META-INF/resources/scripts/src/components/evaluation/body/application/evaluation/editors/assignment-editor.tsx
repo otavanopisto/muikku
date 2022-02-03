@@ -97,7 +97,7 @@ class AssignmentEditor extends SessionStateComponent<
       ? ""
       : defaultGrade;
 
-    let draftId = `${evaluationSelectedAssessmentId.userEntityId}-${props.materialAssignment.id}`;
+    const draftId = `${evaluationSelectedAssessmentId.userEntityId}-${props.materialAssignment.id}`;
 
     this.state = {
       ...this.getRecoverStoredState(
@@ -190,6 +190,11 @@ class AssignmentEditor extends SessionStateComponent<
     });
   };
 
+  /**
+   * componentDidUpdate
+   * @param prevProps prevProps
+   * @param prevState prevState
+   */
   componentDidUpdate = (
     prevProps: AssignmentEditorProps,
     prevState: AssignmentEditorState
@@ -203,6 +208,13 @@ class AssignmentEditor extends SessionStateComponent<
 
   /**
    * saveAssignmentEvaluationGradeToServer
+   * @param data data
+   * @param data.workspaceEntityId workspaceEntityId
+   * @param data.userEntityId userEntityId
+   * @param data.workspaceMaterialId workspaceMaterialId
+   * @param data.dataToSave data ToSave
+   * @param data.materialId materialId
+   * @param data.defaultGrade defaultGrade
    */
   saveAssignmentEvaluationGradeToServer = async (data: {
     workspaceEntityId: number;
@@ -216,13 +228,8 @@ class AssignmentEditor extends SessionStateComponent<
       locked: true,
     });
 
-    const {
-      workspaceEntityId,
-      userEntityId,
-      workspaceMaterialId,
-      dataToSave,
-      defaultGrade,
-    } = data;
+    const { workspaceEntityId, userEntityId, workspaceMaterialId, dataToSave } =
+      data;
 
     try {
       await promisify(
@@ -275,7 +282,12 @@ class AssignmentEditor extends SessionStateComponent<
 
   /**
    * saveAssignmentEvaluationSupplementationToServer
-   * @param data data
+   * @param data.workspaceEntityId workspaceEntityId
+   * @param data.userEntityId userEntityId
+   * @param data.workspaceMaterialId workspaceMaterialId
+   * @param data.dataToSave dataToSave
+   * @param data.materialId materialId
+   * @param data.defaultGrade defaultGrade
    */
   saveAssignmentEvaluationSupplementationToServer = async (data: {
     workspaceEntityId: number;
@@ -285,13 +297,8 @@ class AssignmentEditor extends SessionStateComponent<
     materialId: number;
     defaultGrade: string;
   }) => {
-    const {
-      workspaceEntityId,
-      userEntityId,
-      workspaceMaterialId,
-      dataToSave,
-      defaultGrade,
-    } = data;
+    const { workspaceEntityId, userEntityId, workspaceMaterialId, dataToSave } =
+      data;
 
     this.setState({
       locked: true,
@@ -517,25 +524,15 @@ class AssignmentEditor extends SessionStateComponent<
    */
   render() {
     const renderGradingOptions =
-      this.props.evaluations.evaluationGradeSystem.map((gScale) => {
-        return (
-          <optgroup
-            key={`${gScale.dataSource}-${gScale.id}`}
-            label={gScale.name}
-          >
-            {gScale.grades.map((grade) => {
-              return (
-                <option
-                  key={grade.id}
-                  value={`${gScale.dataSource}-${grade.id}`}
-                >
-                  {grade.name}
-                </option>
-              );
-            })}
-          </optgroup>
-        );
-      });
+      this.props.evaluations.evaluationGradeSystem.map((gScale) => (
+        <optgroup key={`${gScale.dataSource}-${gScale.id}`} label={gScale.name}>
+          {gScale.grades.map((grade) => (
+            <option key={grade.id} value={`${gScale.dataSource}-${grade.id}`}>
+              {grade.name}
+            </option>
+          ))}
+        </optgroup>
+      ));
 
     return (
       <>

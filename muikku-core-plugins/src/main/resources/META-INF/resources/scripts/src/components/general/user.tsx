@@ -1,6 +1,5 @@
 import * as React from "react";
 import { UserType } from "~/reducers/user-index";
-import { i18nType } from "~/reducers/base/i18n";
 import { getName } from "~/util/modifiers";
 import Avatar from "~/components/general/avatar";
 import {
@@ -9,11 +8,19 @@ import {
   ApplicationListItemContentData,
 } from "~/components/general/application-list";
 
+/**
+ * UserProps
+ */
 interface UserProps {
   user: UserType;
   actions: React.ReactElement<any>;
 }
 
+/**
+ * User
+ * @param props props
+ * @returns JSX.Element
+ */
 export default function User(props: UserProps) {
   return (
     <ApplicationListItem key={props.user.id} modifiers="user">

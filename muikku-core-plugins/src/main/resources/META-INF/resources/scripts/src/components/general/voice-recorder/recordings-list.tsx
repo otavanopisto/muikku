@@ -36,18 +36,16 @@ function RecordingsList(props: RecordingsListProps) {
 
   return records.length > 0 ? (
     <div className="voice-recorder__files-container">
-      {records.map((record, index) => {
-        return (
-          <Record
-            controls
-            record={record}
-            src={record.url}
-            key={record.id || index}
-            noDeleteFunctions={noDeleteFunctions}
-            onClickDelete={deleteAudio}
-          />
-        );
-      })}
+      {records.map((record, index) => (
+        <Record
+          controls
+          record={record}
+          src={record.url}
+          key={record.id || index}
+          noDeleteFunctions={noDeleteFunctions}
+          onClickDelete={deleteAudio}
+        />
+      ))}
     </div>
   ) : null;
 }

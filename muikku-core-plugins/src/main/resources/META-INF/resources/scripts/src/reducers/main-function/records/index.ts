@@ -8,6 +8,9 @@ import {
   MaterialCompositeRepliesType,
 } from "~/reducers/workspaces";
 
+/**
+ * TransferCreditType
+ */
 export interface TransferCreditType {
   assessorIdentifier: string;
   courseName: string;
@@ -41,16 +44,25 @@ export type AllStudentUsersDataType = Array<{
   records: RecordsOrderedType;
 }>;
 
+/**
+ * GradingScaleInfoType
+ */
 export interface GradingScaleInfoType {
   scale: string;
   grade: string;
   passing: boolean;
 }
 
+/**
+ * RecordsGradesType
+ */
 export interface RecordsGradesType {
   [key: string]: GradingScaleInfoType;
 }
 
+/**
+ * CurrentRecordType
+ */
 export interface CurrentRecordType {
   workspace: WorkspaceType;
   journals: WorkspaceJournalListType;
@@ -69,14 +81,17 @@ export type CurrentStudentUserAndWorkspaceStatusType =
   | "READY"
   | "ERROR";
 
+/**
+ * RecordsType
+ */
 export interface RecordsType {
-  userData: AllStudentUsersDataType,
-  userDataStatus: AllStudentUsersDataStatusType,
-  files: Array<UserFileType>,
-  currentStatus: CurrentStudentUserAndWorkspaceStatusType,
-  current?: CurrentRecordType,
-  location?: TranscriptOfRecordLocationType,
-  curriculums: WorkspaceCurriculumFilterListType
+  userData: AllStudentUsersDataType;
+  userDataStatus: AllStudentUsersDataStatusType;
+  files: Array<UserFileType>;
+  currentStatus: CurrentStudentUserAndWorkspaceStatusType;
+  current?: CurrentRecordType;
+  location?: TranscriptOfRecordLocationType;
+  curriculums: WorkspaceCurriculumFilterListType;
 }
 
 export type TranscriptOfRecordLocationType =
@@ -86,15 +101,23 @@ export type TranscriptOfRecordLocationType =
   | "summary"
   | "yo";
 
-export default function records(state: RecordsType = {
-  userData: [],
-  userDataStatus: "WAIT",
-  location: null,
-  files: null,
-  current: null,
-  currentStatus: "WAIT",
-  curriculums: []
-}, action: ActionType): RecordsType {
+/**
+ * records
+ * @param state state
+ * @param action action
+ */
+export default function records(
+  state: RecordsType = {
+    userData: [],
+    userDataStatus: "WAIT",
+    location: null,
+    files: null,
+    current: null,
+    currentStatus: "WAIT",
+    curriculums: [],
+  },
+  action: ActionType
+): RecordsType {
   if (action.type === "UPDATE_RECORDS_ALL_STUDENT_USERS_DATA") {
     return Object.assign({}, state, {
       userData: action.payload,

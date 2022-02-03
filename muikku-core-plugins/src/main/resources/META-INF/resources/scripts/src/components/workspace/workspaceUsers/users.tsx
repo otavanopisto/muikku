@@ -18,7 +18,7 @@ import {
   ShortWorkspaceUserWithActiveStatusType,
 } from "~/reducers/user-index";
 import { getWorkspaceMessage } from "~/components/workspace/workspaceHome/teachers";
-import Tabs, { MobileOnlyTabs } from "~/components/general/tabs";
+import { MobileOnlyTabs } from "~/components/general/tabs";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import ApplicationList, {
@@ -67,14 +67,14 @@ class WorkspaceUsers extends React.Component<
   WorkspaceUsersProps,
   WorkspaceUsersState
 > {
-  private usersPerPage: number = 10;
-  private allStaffPages: number = 0;
-  private allActiveStudentsPages: number = 0;
-  private allInActiveStudentsPages: number = 0;
+  private usersPerPage = 10;
+  private allStaffPages = 0;
+  private allActiveStudentsPages = 0;
+  private allInActiveStudentsPages = 0;
 
   /**
    * Constructor method
-   * @param props
+   * @param props props
    */
   constructor(props: WorkspaceUsersProps) {
     super(props);
@@ -104,8 +104,30 @@ class WorkspaceUsers extends React.Component<
   }
 
   /**
+   * UNSAFE_componentWillReceiveProps. Should be refactored at somepoint
+   * @param nextProps nextProps
+   */
+  UNSAFE_componentWillReceiveProps(nextProps: WorkspaceUsersProps) {
+    if (nextProps.workspace && nextProps.workspace.staffMembers) {
+      this.allStaffPages = Math.ceil(
+        nextProps.workspace.staffMembers.totalHitCount / this.usersPerPage
+      );
+    }
+    if (nextProps.workspace && nextProps.workspace.students) {
+      this.allActiveStudentsPages = Math.ceil(
+        nextProps.workspace.students.totalHitCount / this.usersPerPage
+      );
+    }
+    if (nextProps.workspace && nextProps.workspace.inactiveStudents) {
+      this.allInActiveStudentsPages = Math.ceil(
+        nextProps.workspace.inactiveStudents.totalHitCount / this.usersPerPage
+      );
+    }
+  }
+
+  /**
    * onSendMessageTo
-   * @param student
+   * @param student student
    */
   onSendMessageTo(student: ShortWorkspaceUserWithActiveStatusType) {
     this.setState({
@@ -124,7 +146,7 @@ class WorkspaceUsers extends React.Component<
 
   /**
    * onTabChange
-   * @param id
+   * @param id id
    */
   onTabChange(id: "ACTIVE" | "INACTIVE") {
     this.setState({
@@ -134,7 +156,7 @@ class WorkspaceUsers extends React.Component<
 
   /**
    * updateSearch
-   * @param query
+   * @param query query
    */
   updateSearch(query: string) {
     this.props.loadStudents({
@@ -188,7 +210,7 @@ class WorkspaceUsers extends React.Component<
 
   /**
    * loadStaffMembers
-   * @param page
+   * @param page page
    */
   loadStaffMembers(page: number) {
     const data = {
@@ -205,8 +227,8 @@ class WorkspaceUsers extends React.Component<
 
   /**
    * handleStudentLoad
-   * @param page
-   * @param active
+   * @param page page
+   * @param active active
    */
   handleStudentLoad = (page: number, active: boolean) => {
     const data = {
@@ -223,7 +245,7 @@ class WorkspaceUsers extends React.Component<
 
   /**
    * loadActiveStudents
-   * @param page
+   * @param page page
    */
   loadActiveStudents(page: number) {
     this.handleStudentLoad(page, true);
@@ -232,7 +254,7 @@ class WorkspaceUsers extends React.Component<
 
   /**
    * loadInActiveStudents
-   * @param page
+   * @param page page
    */
   loadInActiveStudents(page: number) {
     this.handleStudentLoad(page, false);
@@ -242,7 +264,8 @@ class WorkspaceUsers extends React.Component<
   /**
    * handles pager changes,
    * sets selected page as currentPage to state
-   * @param event
+   * @param selectedItem selectedItem
+   * @param selectedItem.selected selected
    */
   handleStaffPagerChange = (selectedItem: { selected: number }) =>
     this.loadStaffMembers(selectedItem.selected + 1);
@@ -250,7 +273,8 @@ class WorkspaceUsers extends React.Component<
   /**
    * handles pager changes,
    * sets selected page as currentPage to state
-   * @param event
+   * @param selectedItem selectedItem
+   * @param selectedItem.selected selected
    */
   handleActiveStudentsPagerChange = (selectedItem: { selected: number }) =>
     this.loadActiveStudents(selectedItem.selected + 1);
@@ -258,32 +282,11 @@ class WorkspaceUsers extends React.Component<
   /**
    * handles pager changes,
    * sets selected page as currentPage to state
-   * @param event
+   * @param selectedItem selectedItem
+   * @param selectedItem.selected selected
    */
   handleInActiveStudentsPagerChange = (selectedItem: { selected: number }) =>
     this.loadInActiveStudents(selectedItem.selected + 1);
-
-  /**
-   * UNSAFE_componentWillReceiveProps. Should be refactored at somepoint
-   * @param nextProps
-   */
-  UNSAFE_componentWillReceiveProps(nextProps: WorkspaceUsersProps) {
-    if (nextProps.workspace && nextProps.workspace.staffMembers) {
-      this.allStaffPages = Math.ceil(
-        nextProps.workspace.staffMembers.totalHitCount / this.usersPerPage
-      );
-    }
-    if (nextProps.workspace && nextProps.workspace.students) {
-      this.allActiveStudentsPages = Math.ceil(
-        nextProps.workspace.students.totalHitCount / this.usersPerPage
-      );
-    }
-    if (nextProps.workspace && nextProps.workspace.inactiveStudents) {
-      this.allInActiveStudentsPages = Math.ceil(
-        nextProps.workspace.inactiveStudents.totalHitCount / this.usersPerPage
-      );
-    }
-  }
 
   /**
    * Component render method
@@ -421,6 +424,9 @@ class WorkspaceUsers extends React.Component<
                   "plugin.workspace.users.students.link.active"
                 ),
                 type: "workspace-students",
+                /**
+                 * component
+                 */
                 component: () => {
                   const activeStudents =
                     this.props.workspace &&
@@ -476,6 +482,9 @@ class WorkspaceUsers extends React.Component<
                   "plugin.workspace.users.students.link.inactive"
                 ),
                 type: "workspace-students",
+                /**
+                 * component
+                 */
                 component: () => {
                   const inactiveStudents =
                     this.props.workspace &&
@@ -561,7 +570,7 @@ class WorkspaceUsers extends React.Component<
 
 /**
  * mapStateToProps
- * @param state
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -573,7 +582,7 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(

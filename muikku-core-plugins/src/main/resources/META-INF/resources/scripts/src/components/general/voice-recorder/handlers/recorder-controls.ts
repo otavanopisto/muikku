@@ -1,3 +1,10 @@
+/**
+ * Try catching seems to be still in proggress state.
+ * It should have better error handling without consoles
+ *
+ * Needs fixing at some point
+ */
+
 import { SetRecorder } from "~/@types/recorder";
 
 /**
@@ -10,13 +17,12 @@ export async function startRecording(setRecorderState: SetRecorder) {
       audio: true,
     });
 
-    setRecorderState((prevState) => {
-      return {
-        ...prevState,
-        initRecording: true,
-        mediaStream: stream,
-      };
-    });
+    setRecorderState((prevState) => ({
+      ...prevState,
+      initRecording: true,
+      mediaStream: stream,
+    }));
+    // eslint-disable-next-line no-empty
   } catch (err) {}
 }
 

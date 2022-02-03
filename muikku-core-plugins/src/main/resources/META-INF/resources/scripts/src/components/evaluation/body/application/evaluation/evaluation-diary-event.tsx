@@ -13,6 +13,12 @@ interface EvaluationDiaryEventProps extends WorkspaceJournalType {
 
 /**
  * EvaluationEventContentCard
+ * @param root0.title title
+ * @param root0.content content
+ * @param root0.created created
+ * @param root0.open open
+ * @param root0.onClickOpen onClickOpen
+ * @param root0.id id
  */
 const EvaluationDiaryEvent: React.FC<EvaluationDiaryEventProps> = ({
   title,
@@ -36,11 +42,9 @@ const EvaluationDiaryEvent: React.FC<EvaluationDiaryEventProps> = ({
    * This should sanitize html
    * @param htmlString string that contains html
    */
-  const createHtmlMarkup = (htmlString: string) => {
-    return {
-      __html: htmlString,
-    };
-  };
+  const createHtmlMarkup = (htmlString: string) => ({
+    __html: htmlString,
+  });
 
   /**
    * handleOpenContentClick

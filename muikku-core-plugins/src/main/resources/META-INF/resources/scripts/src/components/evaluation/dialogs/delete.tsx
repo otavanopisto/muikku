@@ -7,12 +7,12 @@ import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
-import { EvaluationState } from "../../../reducers/main-function/evaluation/index";
+import { EvaluationState } from "~/reducers/main-function/evaluation/index";
 import {
   RemoveWorkspaceEvent,
   removeWorkspaceEventFromServer,
-} from "../../../actions/main-function/evaluation/evaluationActions";
-import { i18nType } from "../../../reducers/base/i18n";
+} from "~/actions/main-function/evaluation/evaluationActions";
+import { i18nType } from "~/reducers/base/i18n";
 import { EvaluationEvent } from "~/@types/evaluation";
 
 /**
@@ -52,6 +52,7 @@ class DeleteDialog extends React.Component<
 
   /**
    * handleDeleteEventClick
+   * @param closeDialog closeDialog
    */
   handleDeleteEventClick(closeDialog: () => any) {
     const { eventData } = this.props;
@@ -59,6 +60,9 @@ class DeleteDialog extends React.Component<
     this.props.removeWorkspaceEventFromServer({
       identifier: eventData.identifier,
       eventType: eventData.type,
+      /**
+       * onSuccess
+       */
       onSuccess: () => {
         const draftId = eventData.identifier;
 
@@ -66,6 +70,9 @@ class DeleteDialog extends React.Component<
 
         closeDialog();
       },
+      /**
+       * onFail
+       */
       onFail: () => closeDialog(),
     });
   }
@@ -79,39 +86,43 @@ class DeleteDialog extends React.Component<
 
     const studentNameString = `${evaluationSelectedAssessmentId.lastName}, ${evaluationSelectedAssessmentId.firstName}`;
 
-    const footer = (closeDialog: () => any) => {
-      return (
-        <div className="dialog__button-set">
-          <Button
-            buttonModifiers={["fatal", "standard-ok"]}
-            onClick={this.handleDeleteEventClick.bind(this, closeDialog)}
-          >
-            {this.props.i18n.text.get(
-              "plugin.evaluation.workspaceEvaluationDialog.removeDialog.removeButton",
-              studentNameString
-            )}
-          </Button>
-          <Button
-            buttonModifiers={["cancel", "standard-cancel"]}
-            onClick={closeDialog}
-          >
-            {this.props.i18n.text.get(
-              "plugin.evaluation.workspaceEvaluationDialog.removeDialog.cancelButton"
-            )}
-          </Button>
-        </div>
-      );
-    };
-    const content = (closeDialog: () => any) => {
-      return (
-        <div>
+    /**
+     * footer
+     * @param closeDialog closeDialog
+     */
+    const footer = (closeDialog: () => any) => (
+      <div className="dialog__button-set">
+        <Button
+          buttonModifiers={["fatal", "standard-ok"]}
+          onClick={this.handleDeleteEventClick.bind(this, closeDialog)}
+        >
           {this.props.i18n.text.get(
-            "plugin.evaluation.workspaceEvaluationDialog.removeDialog.description",
+            "plugin.evaluation.workspaceEvaluationDialog.removeDialog.removeButton",
             studentNameString
           )}
-        </div>
-      );
-    };
+        </Button>
+        <Button
+          buttonModifiers={["cancel", "standard-cancel"]}
+          onClick={closeDialog}
+        >
+          {this.props.i18n.text.get(
+            "plugin.evaluation.workspaceEvaluationDialog.removeDialog.cancelButton"
+          )}
+        </Button>
+      </div>
+    );
+    /**
+     * content
+     * @param closeDialog closeDialog
+     */
+    const content = (closeDialog: () => any) => (
+      <div>
+        {this.props.i18n.text.get(
+          "plugin.evaluation.workspaceEvaluationDialog.removeDialog.description",
+          studentNameString
+        )}
+      </div>
+    );
     return (
       <Dialog
         isOpen={this.props.isOpen}

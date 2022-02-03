@@ -75,7 +75,7 @@ export interface ExaminationSubject {
  */
 export interface ExaminationInformation
   extends MatriculationStudent,
-  MatriculationStudentExamination {
+    MatriculationStudentExamination {
   date: string;
 }
 

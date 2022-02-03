@@ -10,7 +10,8 @@ import AnimateHeight from "react-animate-height";
 import DeleteDialog from "./dialogs/delete-warning";
 import { AudioPoolComponent } from "../audio-pool-component";
 
-let ProgressBarLine = require("react-progress-bar.js").Line;
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const ProgressBarLine = require("react-progress-bar.js").Line;
 
 /**
  * RecordProps

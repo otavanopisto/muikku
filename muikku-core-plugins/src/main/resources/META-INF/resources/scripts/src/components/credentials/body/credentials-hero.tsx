@@ -1,28 +1,41 @@
-import * as React from 'react';
-import mApi from '~/lib/mApi';
-import promisify from '~/util/promisify';
+import * as React from "react";
 import "~/sass/elements/credentials.scss";
-import {i18nType} from '~/reducers/base/i18n';
+import { i18nType } from "~/reducers/base/i18n";
 
+/**
+ * CredentialsHeroProps
+ */
 interface CredentialsHeroProps {
-  modifier? : string,
-  i18n: i18nType
+  modifier?: string;
+  i18n: i18nType;
 }
 
+/**
+ * CredentialsHeroState
+ */
 interface CredentialsHeroState {
-  hash: string
+  hash: string;
 }
 
-export default class CredentialsHero extends React.Component<CredentialsHeroProps, CredentialsHeroState> {
-
-  constructor(props: CredentialsHeroProps){
+/**
+ * CredentialsHero
+ */
+export default class CredentialsHero extends React.Component<
+  CredentialsHeroProps,
+  CredentialsHeroState
+> {
+  /**
+   * constructor
+   * @param props
+   */
+  constructor(props: CredentialsHeroProps) {
     super(props);
-    }
+  }
 
-  render(){
-    return (
-      <div className="credentials__hero">
-      </div>
-    )
+  /**
+   * render
+   */
+  render() {
+    return <div className="credentials__hero"></div>;
   }
 }

@@ -35,7 +35,7 @@ export default class WorkspaceEvaluationBody extends React.Component<
    * @returns JSX.Element
    */
   render() {
-    let aside = <Aside />;
+    const aside = <Aside />;
 
     return (
       <div>

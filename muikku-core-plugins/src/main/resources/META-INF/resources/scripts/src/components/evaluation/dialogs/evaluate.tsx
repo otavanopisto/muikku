@@ -55,6 +55,7 @@ class EvaluateDialog extends React.Component<
 > {
   /**
    * constructor
+   * @param props props
    */
   constructor(props: EvaluateDialogProps) {
     super(props);
@@ -62,6 +63,7 @@ class EvaluateDialog extends React.Component<
 
   /**
    * handleUpdateSelectAssessmentId
+   * @param assessment assessment
    */
   handleUpdateSelectAssessmentOnDialogOpen = (
     assessment: AssessmentRequest
@@ -95,14 +97,16 @@ class EvaluateDialog extends React.Component<
    * @returns JSX.Element
    */
   render() {
-    const content = (closeDialog: () => any) => {
-      return (
-        <Evaluation
-          onClose={closeDialog}
-          selectedAssessment={this.props.assessment}
-        />
-      );
-    };
+    /**
+     * content
+     * @param closeDialog closeDialog
+     */
+    const content = (closeDialog: () => any) => (
+      <Evaluation
+        onClose={closeDialog}
+        selectedAssessment={this.props.assessment}
+      />
+    );
     return (
       <Dialog
         onOpen={this.handleOnDialogOpen}

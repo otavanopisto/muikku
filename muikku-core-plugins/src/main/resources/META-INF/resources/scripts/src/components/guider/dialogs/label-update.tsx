@@ -29,11 +29,14 @@ import InputContactsAutofill from "~/components/base/input-contacts-autofill";
 import { displayNotification } from "~/actions/base/notifications";
 import { DisplayNotificationTriggerType } from "../../../actions/base/notifications";
 
-import { getName } from '~/util/modifiers';
+import { getName } from "~/util/modifiers";
 const KEYCODES = {
   ENTER: 13,
 };
 
+/**
+ * SharedFlagUser
+ */
 interface SharedFlagUser {
   flagId: number;
   id: number;
@@ -48,6 +51,9 @@ interface SharedFlagUser {
   userIdentifier: string;
 }
 
+/**
+ * GuiderLabelUpdateDialogProps
+ */
 interface GuiderLabelUpdateDialogProps {
   children: React.ReactElement<any>;
   label: GuiderUserLabelType;
@@ -61,6 +67,9 @@ interface GuiderLabelUpdateDialogProps {
   displayNotification: DisplayNotificationTriggerType;
 }
 
+/**
+ * GuiderLabelUpdateDialogState
+ */
 interface GuiderLabelUpdateDialogState {
   selectedItems: ContactRecipientType[];
   displayColorPicker: boolean;
@@ -71,6 +80,9 @@ interface GuiderLabelUpdateDialogState {
   locked: boolean;
 }
 
+/**
+ * GuiderLabelUpdateDialog
+ */
 class GuiderLabelUpdateDialog extends React.Component<
   GuiderLabelUpdateDialogProps,
   GuiderLabelUpdateDialogState
@@ -136,17 +148,17 @@ class GuiderLabelUpdateDialog extends React.Component<
   updateSharesState = () => {
     this.setState({
       selectedItems: this.sharesResult
-        .map((result: SharedFlagUser): ContactRecipientType => {
-          return {
+        .map(
+          (result: SharedFlagUser): ContactRecipientType => ({
             type: "staff",
             value: {
               id: result.user.userEntityId,
               name: getName(result.user, true),
               email: "unknown",
-              identifier: result.user.userIdentifier
+              identifier: result.user.userIdentifier,
             },
-          };
-        })
+          })
+        )
         .filter((r: ContactRecipientType) => r !== null),
     });
   };
@@ -161,6 +173,7 @@ class GuiderLabelUpdateDialog extends React.Component<
   /**
    * Remove flak linking. This is called by linked user that wants to
    * cancel linking to specific flak
+   * @param onClose onClose
    */
   removeLabelLinking = (onClose: () => void) => {
     this.setState({ locked: true });
@@ -234,9 +247,10 @@ class GuiderLabelUpdateDialog extends React.Component<
    */
   shareOrRemoveFlags = async () => {
     const promises1 = this.state.selectedItems.map(async (member) => {
-      const wasAdded = !this.sharesResult.find((share: SharedFlagUser) => {
-        return share.userIdentifier === member.value.identifier;
-      });
+      const wasAdded = !this.sharesResult.find(
+        (share: SharedFlagUser) =>
+          share.userIdentifier === member.value.identifier
+      );
 
       if (wasAdded) {
         await mApi().user.flags.shares.create(this.props.label.id, {
@@ -248,9 +262,8 @@ class GuiderLabelUpdateDialog extends React.Component<
 
     const promises2 = this.sharesResult.map(async (share: SharedFlagUser) => {
       const wasRemoved = !this.state.selectedItems.find(
-        (member: ContactRecipientType) => {
-          return member.value.identifier === share.userIdentifier;
-        }
+        (member: ContactRecipientType) =>
+          member.value.identifier === share.userIdentifier
       );
 
       if (wasRemoved) {
@@ -486,7 +499,7 @@ class GuiderLabelUpdateDialog extends React.Component<
     /**
      * sliderPicker
      */
-    let sliderPicker = (
+    const sliderPicker = (
       <ChromePicker
         disableAlpha
         color={this.state.removed ? "#aaa" : this.state.color}
@@ -499,169 +512,167 @@ class GuiderLabelUpdateDialog extends React.Component<
      * @param closeDialog
      * @returns
      */
-    let content = (closeDialog: () => any) => {
-      return (
-        <div
-          className="dialog__content-row dialog__content-row--label"
-          style={{ opacity: this.state.removed ? 0.5 : null }}
-        >
-          <div className="dialog__container dialog__container--color-picker">
-            <div
-              className="dialog__icon-container"
+    const content = (closeDialog: () => any) => (
+      <div
+        className="dialog__content-row dialog__content-row--label"
+        style={{ opacity: this.state.removed ? 0.5 : null }}
+      >
+        <div className="dialog__container dialog__container--color-picker">
+          <div
+            className="dialog__icon-container"
+            style={{
+              borderColor: this.state.removed ? "#aaa" : this.state.color,
+            }}
+            onClick={this.onHandleClick}
+          >
+            <span
+              className={`glyph icon-flag`}
               style={{
-                borderColor: this.state.removed ? "#aaa" : this.state.color,
+                color: this.state.removed ? "#aaa" : this.state.color,
               }}
-              onClick={this.onHandleClick}
-            >
-              <span
-                className={`glyph icon-flag`}
-                style={{
-                  color: this.state.removed ? "#aaa" : this.state.color,
-                }}
-              />
-            </div>
-            {this.state.displayColorPicker ? (
-              <div className="color-picker">
-                <div
-                  className="color-picker-overlay"
-                  onClick={this.onHandleClose}
-                />
-                {sliderPicker}
-              </div>
-            ) : null}
+            />
           </div>
-          <div className="dialog__container dialog__container--label-form">
-            <div className="form-element form-element--edit-label">
-              <label htmlFor="guiderLabelName">
-                {this.props.i18n.text.get(
-                  "plugin.guider.flags.editFlagDialog.name"
-                )}
-              </label>
-              <input
-                id="guiderLabelName"
-                placeholder={this.props.i18n.text.get(
-                  "plugin.guider.flags.editFlagDialog.name"
-                )}
-                value={this.state.name}
-                className="form-element__input form-element__input--guider-label-name"
-                disabled={this.state.removed}
-                onChange={this.onNameChange}
+          {this.state.displayColorPicker ? (
+            <div className="color-picker">
+              <div
+                className="color-picker-overlay"
+                onClick={this.onHandleClose}
               />
+              {sliderPicker}
             </div>
-            <div className="form-element form-element--edit-label">
-              <label htmlFor="guiderLabelDescription">
-                {this.props.i18n.text.get(
-                  "plugin.guider.flags.editFlagDialog.description"
-                )}
-              </label>
-              <textarea
-                id="guiderLabelDescription"
-                placeholder={this.props.i18n.text.get(
-                  "plugin.guider.flags.editFlagDialog.description"
-                )}
-                className="form-element__textarea form-element__textarea--edit-label"
-                value={this.state.description}
-                disabled={this.state.removed}
-                onChange={this.onDescriptionChange}
-              />
-            </div>
-
-            {isOwnerOfCurrentLabel ? (
-              <div className="form-element form-element--edit-label">
-                <InputContactsAutofill
-                  label="Jaetaan henkilöille"
-                  identifier="guiderLabelShare"
-                  modifier="guider"
-                  onChange={this.onSharedMembersChange}
-                  selectedItems={this.state.selectedItems}
-                  hasGroupPermission={false}
-                  hasUserPermission={false}
-                  hasWorkspacePermission={false}
-                  hasStaffPermission
-                  showEmails={false}
-                  showFullNames
-                />
-              </div>
-            ) : null}
-          </div>
+          ) : null}
         </div>
-      );
-    };
+        <div className="dialog__container dialog__container--label-form">
+          <div className="form-element form-element--edit-label">
+            <label htmlFor="guiderLabelName">
+              {this.props.i18n.text.get(
+                "plugin.guider.flags.editFlagDialog.name"
+              )}
+            </label>
+            <input
+              id="guiderLabelName"
+              placeholder={this.props.i18n.text.get(
+                "plugin.guider.flags.editFlagDialog.name"
+              )}
+              value={this.state.name}
+              className="form-element__input form-element__input--guider-label-name"
+              disabled={this.state.removed}
+              onChange={this.onNameChange}
+            />
+          </div>
+          <div className="form-element form-element--edit-label">
+            <label htmlFor="guiderLabelDescription">
+              {this.props.i18n.text.get(
+                "plugin.guider.flags.editFlagDialog.description"
+              )}
+            </label>
+            <textarea
+              id="guiderLabelDescription"
+              placeholder={this.props.i18n.text.get(
+                "plugin.guider.flags.editFlagDialog.description"
+              )}
+              className="form-element__textarea form-element__textarea--edit-label"
+              value={this.state.description}
+              disabled={this.state.removed}
+              onChange={this.onDescriptionChange}
+            />
+          </div>
+
+          {isOwnerOfCurrentLabel ? (
+            <div className="form-element form-element--edit-label">
+              <InputContactsAutofill
+                label="Jaetaan henkilöille"
+                identifier="guiderLabelShare"
+                modifier="guider"
+                onChange={this.onSharedMembersChange}
+                selectedItems={this.state.selectedItems}
+                hasGroupPermission={false}
+                hasUserPermission={false}
+                hasWorkspacePermission={false}
+                hasStaffPermission
+                showEmails={false}
+                showFullNames
+              />
+            </div>
+          ) : null}
+        </div>
+      </div>
+    );
 
     /**
      * footer
      * @param closeDialog
      * @returns JSX.Element
      */
-    let footer = (closeDialog: () => any) => {
-      return (
-        <>
-          <div className="dialog__button-set">
-            <Button
-              buttonModifiers={["success", "standard-ok"]}
-              disabled={this.state.locked}
-              onClick={(e) => this.update(closeDialog)}
-            >
-              {this.props.i18n.text.get(
-                "plugin.guider.flags.editFlagDialog.save"
-              )}
-            </Button>
-            <Button
-              buttonModifiers={["cancel", "standard-cancel"]}
-              disabled={this.state.locked}
-              onClick={closeDialog}
-            >
-              {this.props.i18n.text.get(
-                "plugin.guider.flags.editFlagDialog.cancel"
-              )}
-            </Button>
-
-            {isOwnerOfCurrentLabel ? (
-              <Button
-                buttonModifiers={["fatal", "guider-remove-label"]}
-                disabled={
-                  this.state.removed ||
-                  this.state.locked ||
-                  this.state.selectedItems.length > 0
-                }
-                onClick={this.removeLabel}
-              >
-                {this.state.removed
-                  ? this.props.i18n.text.get(
-                    "plugin.guider.flags.confirmFlagDelete.deleted"
-                  )
-                  : this.props.i18n.text.get(
-                    "plugin.guider.flags.removeFlag.label"
-                  )}
-              </Button>
-            ) : (
-              <Button
-                buttonModifiers={["fatal", "guider-remove-label"]}
-                disabled={this.state.locked || AmShared}
-                onClick={(e) => this.removeLabelLinking(closeDialog)}
-              >
-                {this.state.removed
-                  ? this.props.i18n.text.get(
-                    "plugin.guider.flags.confirmFlagDelete.deleted"
-                  )
-                  : this.props.i18n.text.get(
-                    "plugin.guider.flags.removeFlag.label"
-                  )}
-              </Button>
+    const footer = (closeDialog: () => any) => (
+      <>
+        <div className="dialog__button-set">
+          <Button
+            buttonModifiers={["success", "standard-ok"]}
+            disabled={this.state.locked}
+            onClick={() => this.update(closeDialog)}
+          >
+            {this.props.i18n.text.get(
+              "plugin.guider.flags.editFlagDialog.save"
             )}
-          </div>
+          </Button>
+          <Button
+            buttonModifiers={["cancel", "standard-cancel"]}
+            disabled={this.state.locked}
+            onClick={closeDialog}
+          >
+            {this.props.i18n.text.get(
+              "plugin.guider.flags.editFlagDialog.cancel"
+            )}
+          </Button>
 
-          {isOwnerOfCurrentLabel && this.state.selectedItems.length > 0 && (
-            <div className="dialog__state state-INFO">
-              <div className="dialog__state-icon icon-notification"></div>
-              <div className="dialog__state-text">
-                {this.props.i18n.text.get("plugin.guider.flags.unableToDeleteFlag.description")}
-              </div>
-            </div>
+          {isOwnerOfCurrentLabel ? (
+            <Button
+              buttonModifiers={["fatal", "guider-remove-label"]}
+              disabled={
+                this.state.removed ||
+                this.state.locked ||
+                this.state.selectedItems.length > 0
+              }
+              onClick={this.removeLabel}
+            >
+              {this.state.removed
+                ? this.props.i18n.text.get(
+                    "plugin.guider.flags.confirmFlagDelete.deleted"
+                  )
+                : this.props.i18n.text.get(
+                    "plugin.guider.flags.removeFlag.label"
+                  )}
+            </Button>
+          ) : (
+            <Button
+              buttonModifiers={["fatal", "guider-remove-label"]}
+              disabled={this.state.locked || AmShared}
+              onClick={() => this.removeLabelLinking(closeDialog)}
+            >
+              {this.state.removed
+                ? this.props.i18n.text.get(
+                    "plugin.guider.flags.confirmFlagDelete.deleted"
+                  )
+                : this.props.i18n.text.get(
+                    "plugin.guider.flags.removeFlag.label"
+                  )}
+            </Button>
           )}
-        </>
-      );
-    };
+        </div>
+
+        {isOwnerOfCurrentLabel && this.state.selectedItems.length > 0 && (
+          <div className="dialog__state state-INFO">
+            <div className="dialog__state-icon icon-notification"></div>
+            <div className="dialog__state-text">
+              {this.props.i18n.text.get(
+                "plugin.guider.flags.unableToDeleteFlag.description"
+              )}
+            </div>
+          </div>
+        )}
+      </>
+    );
 
     return (
       <Dialog
@@ -691,7 +702,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     staffId: state.status.userId,
-    staffIdentifier: state.status.userSchoolDataIdentifier
+    staffIdentifier: state.status.userSchoolDataIdentifier,
   };
 }
 

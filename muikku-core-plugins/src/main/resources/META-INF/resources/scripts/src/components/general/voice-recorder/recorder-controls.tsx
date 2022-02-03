@@ -23,6 +23,9 @@ export interface RecorderControlsProps {
 /**
  * RecorderControls
  * Component that renders recording controls, start/save buttons etc
+ * @param param0.recorderState recorderState
+ * @param param0.handlers handlers
+ * @param param0.i18n i18n
  * @returns JSX.Element
  */
 function RecorderControls({

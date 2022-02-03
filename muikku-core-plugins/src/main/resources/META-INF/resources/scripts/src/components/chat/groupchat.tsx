@@ -1,73 +1,97 @@
-import * as React from 'react'
-import mApi from '~/lib/mApi';
-import { i18nType } from '~/reducers/base/i18n';
-import '~/sass/elements/chat.scss';
-import '~/sass/elements/wcag.scss';
-import promisify from '~/util/promisify';
-import { IAvailableChatRoomType, IBareMessageActionType, IBareMessageType, IChatOccupant, IChatRoomType } from './chat';
-import { ChatMessage } from './chatMessage';
+import * as React from "react";
+import mApi from "~/lib/mApi";
+import { i18nType } from "~/reducers/base/i18n";
+import "~/sass/elements/chat.scss";
+import "~/sass/elements/wcag.scss";
+import promisify from "~/util/promisify";
+import {
+  IAvailableChatRoomType,
+  IBareMessageActionType,
+  IBareMessageType,
+  IChatOccupant,
+  IChatRoomType,
+} from "./chat";
+import { ChatMessage } from "./chatMessage";
 import DeleteRoomDialog from "./deleteMUCDialog";
 
+/**
+ * IGroupChatProps
+ */
 interface IGroupChatProps {
-  chat: IAvailableChatRoomType,
-  nick: string,
-  leaveChatRoom: () => void,
-  joinPrivateChat: (jid: string) => void,
-  onUpdateChatRoomConfig: (chat: IAvailableChatRoomType) => void,
-  requestExtraInfoAboutRoom: () => void,
-  removeChatRoom: () => void,
-  connection: Strophe.Connection,
-  i18n: i18nType,
-  presence: "away" | "chat" | "dnd" | "xa", // these are defined by the XMPP protocol https://xmpp.org/rfcs/rfc3921.html 2.2.2
+  chat: IAvailableChatRoomType;
+  nick: string;
+  leaveChatRoom: () => void;
+  joinPrivateChat: (jid: string) => void;
+  onUpdateChatRoomConfig: (chat: IAvailableChatRoomType) => void;
+  requestExtraInfoAboutRoom: () => void;
+  removeChatRoom: () => void;
+  connection: Strophe.Connection;
+  i18n: i18nType;
+  presence: "away" | "chat" | "dnd" | "xa"; // these are defined by the XMPP protocol https://xmpp.org/rfcs/rfc3921.html 2.2.2
   active?: boolean;
 }
 
+/**
+ * IGroupChatOccupant
+ */
 interface IGroupChatOccupant {
-  occupant: IChatOccupant,
-  affilation: "none" | "owner",
-  role: "moderator" | "participant",
+  occupant: IChatOccupant;
+  affilation: "none" | "owner";
+  role: "moderator" | "participant";
 }
 
+/**
+ * IGroupChatState
+ */
 interface IGroupChatState {
-  messages: IBareMessageType[],
-  processedMessages: IBareMessageType[],
-  openChatSettings: boolean,
-  isStudent: boolean,
-  isOwner: boolean,
-  isModerator: boolean,
-  showRoomInfo: boolean,
-  minimized: boolean,
-  occupants: IGroupChatOccupant[],
-  showOccupantsList: boolean,
+  messages: IBareMessageType[];
+  processedMessages: IBareMessageType[];
+  openChatSettings: boolean;
+  isStudent: boolean;
+  isOwner: boolean;
+  isModerator: boolean;
+  showRoomInfo: boolean;
+  minimized: boolean;
+  occupants: IGroupChatOccupant[];
+  showOccupantsList: boolean;
 
-  roomNameField: string,
-  roomDescField: string,
+  roomNameField: string;
+  roomDescField: string;
 
-  lastMessageStamp: string,
-  loadingMessages: boolean,
-  canLoadMoreMessages: boolean,
+  lastMessageStamp: string;
+  loadingMessages: boolean;
+  canLoadMoreMessages: boolean;
   // roomPersistent: boolean,
 
-  updateFailed: boolean,
+  updateFailed: boolean;
 
-  deleteMUCDialogOpen: boolean,
-  currentMessageToBeSent: string,
-  currentEditedMessageToBeSent: string,
+  deleteMUCDialogOpen: boolean;
+  currentMessageToBeSent: string;
+  currentEditedMessageToBeSent: string;
   active: boolean;
 }
 
 const roleNode = document.querySelector('meta[name="muikku:role"]');
 
-export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState> {
-
+/**
+ * Groupchat
+ */
+export class Groupchat extends React.Component<
+  IGroupChatProps,
+  IGroupChatState
+> {
   private messagesListenerHandler: any = null;
   private presenceListenerHandler: any = null;
   private messagesEnd: React.RefObject<HTMLDivElement>;
-  private isScrollDetached: boolean = false;
+  private isScrollDetached = false;
   private chatRef: React.RefObject<HTMLDivElement>;
   private chatWrapperRef: React.RefObject<HTMLDivElement>;
-  private unmounted: boolean = false;
+  private unmounted = false;
 
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: IGroupChatProps) {
     super(props);
 
@@ -79,7 +103,9 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
       isOwner: false,
       isModerator: false,
       showRoomInfo: false,
-      minimized: JSON.parse(window.sessionStorage.getItem("minimizedChats") || "[]").includes(props.chat.roomJID),
+      minimized: JSON.parse(
+        window.sessionStorage.getItem("minimizedChats") || "[]"
+      ).includes(props.chat.roomJID),
       occupants: [],
       showOccupantsList: false,
       lastMessageStamp: null,
@@ -96,8 +122,8 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
 
       deleteMUCDialogOpen: false,
 
-      active:false
-    }
+      active: false,
+    };
 
     this.messagesEnd = React.createRef();
     this.chatRef = React.createRef();
@@ -127,216 +153,8 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
   }
 
   /**
-   * toggleDeleteMUCDialog
-   */
-  toggleDeleteMUCDialog(e?: React.MouseEvent) {
-    e && e.stopPropagation();
-    e && e.preventDefault();
-
-    if (!this.unmounted) {
-      this.setState({
-        deleteMUCDialogOpen: !this.state.deleteMUCDialogOpen,
-      });
-    }
-  }
-
-  /**
-   * onMUCDeleted
-   */
-  onMUCDeleted() {
-    this.props.removeChatRoom();
-  }
-
-  /**
-   * updateRoomNameField
-   */
-  updateRoomNameField(e: React.ChangeEvent<HTMLInputElement>) {
-    this.setState({
-      roomNameField: e.target.value,
-    });
-  }
-
-  /**
-   * updateRoomDescField
-   */
-  updateRoomDescField(e: React.ChangeEvent<HTMLTextAreaElement>) {
-    this.setState({
-      roomDescField: e.target.value,
-    });
-  }
-
-  /**
-   * setCurrentMessageToBeSent
-   * @param e
-   */
-  setCurrentMessageToBeSent(e: React.ChangeEvent<HTMLTextAreaElement>) {
-    this.setState({
-      currentMessageToBeSent: e.target.value,
-    });
-  }
-
-  /**
-   * sendMessageToChatRoom
-   * @param event
-   */
-  sendMessageToChatRoom(event: React.FormEvent) {
-    event && event.preventDefault();
-
-    const text = this.state.currentMessageToBeSent.trim();
-
-    if (text) {
-      this.props.connection.send($msg({
-        from: this.props.connection.jid,
-        to: this.props.chat.roomJID,
-        type: "groupchat",
-      }).c("body", text));
-
-      this.setState({
-        currentMessageToBeSent: "",
-      }, this.scrollToBottom.bind(this, "smooth"));
-    }
-  }
-
-  /**
-   * Custom Message DELETE, we send empty stanza with custom attribute
-   * Attribute contains stanzaId that is from original 'to be deleted' mmessage
-   * @param stanzaId
-   */
-  deleteMessage(stanzaId: string) {
-
-    this.props.connection.send($msg({
-      from: this.props.connection.jid,
-      to: this.props.chat.roomJID,
-      type: "groupchat",
-    }).c("body", { "otavanopisto-delete": stanzaId }));
-  }
-
-  /**
-   * Custom Message EDIT, we send new stanza with new content and with custom attribute
-   * Attribute contains stanzaId that is from original 'to be edited' mmessage
-   * @param stanzaId
-   * @param textContent
-   */
-  editMessage(stanzaId: string, textContent: string) {
-    const text = textContent.trim();
-
-    if (text) {
-      this.props.connection.send($msg({
-        from: this.props.connection.jid,
-        to: this.props.chat.roomJID,
-        type: "groupchat",
-      }).c("body", { "otavanopisto-edit": stanzaId }, text));
-    }
-  }
-
-  /**
-   * setChatroomConfiguration
-   * Set chat room configurations
-   * @param event
-   */
-  async setChatroomConfiguration(event: React.FormEvent) {
-    event.preventDefault();
-
-    const chat: IAvailableChatRoomType = {
-      ...this.props.chat,
-      roomName: this.state.roomNameField,
-      roomDesc: this.state.roomDescField,
-    };
-
-    try {
-      const chatRoom: IChatRoomType = await (promisify(mApi().chat.publicRoom.update({
-        title: chat.roomName,
-        description: chat.roomDesc,
-        name: Strophe.getNodeFromJid(chat.roomJID),
-      }), 'callback')()) as IChatRoomType;
-
-      chat.roomName = chatRoom.title;
-      chat.roomDesc = chatRoom.description;
-
-      this.setState({
-        updateFailed: false,
-        openChatSettings: false
-      });
-
-      this.props.onUpdateChatRoomConfig(chat);
-    } catch {
-      this.setState({
-        updateFailed: true,
-      });
-    }
-  }
-
-  /**
-   * toggleChatRoomSettings
-   */
-  public toggleChatRoomSettings() {
-    this.setState({
-      openChatSettings: !this.state.openChatSettings,
-      updateFailed: false,
-    });
-    this.props.requestExtraInfoAboutRoom();
-  }
-
-  /**
-   * toggleMinimizeChats
-   */
-  toggleMinimizeChats() {
-    const roomJID = this.props.chat.roomJID;
-    let minimizedRoomList: string[] = JSON.parse(window.sessionStorage.getItem("minimizedChats") || "[]");
-    const newMinimized = !this.state.minimized;
-
-    this.isScrollDetached = false;
-    this.setState({
-      minimized: newMinimized,
-    }, this.scrollToBottom.bind(this, "auto"));
-
-    if (newMinimized) {
-      minimizedRoomList.push(roomJID);
-    } else {
-      minimizedRoomList = minimizedRoomList.filter((r) => r !== roomJID);
-    }
-
-    window.sessionStorage.setItem("minimizedChats", JSON.stringify(minimizedRoomList));
-  }
-
-  /**
-   * toggleOccupantsList
-   */
-  async toggleOccupantsList() {
-    this.setState({
-      showOccupantsList: !this.state.showOccupantsList,
-    });
-  }
-
-  /**
-   * scrollToBottom
-   * Scroll selected view to the bottom
-   * @param method
-   */
-  scrollToBottom(method: ScrollBehavior = "smooth") {
-    if (this.messagesEnd.current && !this.isScrollDetached) {
-      this.messagesEnd.current.scrollIntoView({ behavior: method });
-    }
-  }
-
-  /**
-   * onEnterPress
-   * @param e
-   * @returns
-   */
-  onEnterPress(e: React.KeyboardEvent<HTMLTextAreaElement>) {
-    if (e.keyCode == 13 && e.shiftKey == false) {
-      e.preventDefault();
-
-      this.sendMessageToChatRoom(null);
-
-      return false;
-    }
-  }
-
-  /**
    * componentDidUpdate
-   * @param prevProps
+   * @param prevProps prevProps
    */
   componentDidUpdate(prevProps: IGroupChatProps) {
     if (prevProps.chat && this.props.chat) {
@@ -372,6 +190,235 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
   }
 
   /**
+   * toggleDeleteMUCDialog
+   * @param e e
+   */
+  toggleDeleteMUCDialog(e?: React.MouseEvent) {
+    e && e.stopPropagation();
+    e && e.preventDefault();
+
+    if (!this.unmounted) {
+      this.setState({
+        deleteMUCDialogOpen: !this.state.deleteMUCDialogOpen,
+      });
+    }
+  }
+
+  /**
+   * onMUCDeleted
+   */
+  onMUCDeleted() {
+    this.props.removeChatRoom();
+  }
+
+  /**
+   * updateRoomNameField
+   * @param e e
+   */
+  updateRoomNameField(e: React.ChangeEvent<HTMLInputElement>) {
+    this.setState({
+      roomNameField: e.target.value,
+    });
+  }
+
+  /**
+   * updateRoomDescField
+   * @param e e
+   */
+  updateRoomDescField(e: React.ChangeEvent<HTMLTextAreaElement>) {
+    this.setState({
+      roomDescField: e.target.value,
+    });
+  }
+
+  /**
+   * setCurrentMessageToBeSent
+   * @param e e
+   */
+  setCurrentMessageToBeSent(e: React.ChangeEvent<HTMLTextAreaElement>) {
+    this.setState({
+      currentMessageToBeSent: e.target.value,
+    });
+  }
+
+  /**
+   * sendMessageToChatRoom
+   * @param event event
+   */
+  sendMessageToChatRoom(event: React.FormEvent) {
+    event && event.preventDefault();
+
+    const text = this.state.currentMessageToBeSent.trim();
+
+    if (text) {
+      this.props.connection.send(
+        $msg({
+          from: this.props.connection.jid,
+          to: this.props.chat.roomJID,
+          type: "groupchat",
+        }).c("body", text)
+      );
+
+      this.setState(
+        {
+          currentMessageToBeSent: "",
+        },
+        this.scrollToBottom.bind(this, "smooth")
+      );
+    }
+  }
+
+  /**
+   * Custom Message DELETE, we send empty stanza with custom attribute
+   * Attribute contains stanzaId that is from original 'to be deleted' mmessage
+   * @param stanzaId stanzaId
+   */
+  deleteMessage(stanzaId: string) {
+    this.props.connection.send(
+      $msg({
+        from: this.props.connection.jid,
+        to: this.props.chat.roomJID,
+        type: "groupchat",
+      }).c("body", { "otavanopisto-delete": stanzaId })
+    );
+  }
+
+  /**
+   * Custom Message EDIT, we send new stanza with new content and with custom attribute
+   * Attribute contains stanzaId that is from original 'to be edited' mmessage
+   * @param stanzaId stanzaId
+   * @param textContent textContent
+   */
+  editMessage(stanzaId: string, textContent: string) {
+    const text = textContent.trim();
+
+    if (text) {
+      this.props.connection.send(
+        $msg({
+          from: this.props.connection.jid,
+          to: this.props.chat.roomJID,
+          type: "groupchat",
+        }).c("body", { "otavanopisto-edit": stanzaId }, text)
+      );
+    }
+  }
+
+  /**
+   * setChatroomConfiguration
+   * Set chat room configurations
+   * @param event event
+   */
+  async setChatroomConfiguration(event: React.FormEvent) {
+    event.preventDefault();
+
+    const chat: IAvailableChatRoomType = {
+      ...this.props.chat,
+      roomName: this.state.roomNameField,
+      roomDesc: this.state.roomDescField,
+    };
+
+    try {
+      const chatRoom: IChatRoomType = (await promisify(
+        mApi().chat.publicRoom.update({
+          title: chat.roomName,
+          description: chat.roomDesc,
+          name: Strophe.getNodeFromJid(chat.roomJID),
+        }),
+        "callback"
+      )()) as IChatRoomType;
+
+      chat.roomName = chatRoom.title;
+      chat.roomDesc = chatRoom.description;
+
+      this.setState({
+        updateFailed: false,
+        openChatSettings: false,
+      });
+
+      this.props.onUpdateChatRoomConfig(chat);
+    } catch {
+      this.setState({
+        updateFailed: true,
+      });
+    }
+  }
+
+  /**
+   * toggleChatRoomSettings
+   */
+  public toggleChatRoomSettings() {
+    this.setState({
+      openChatSettings: !this.state.openChatSettings,
+      updateFailed: false,
+    });
+    this.props.requestExtraInfoAboutRoom();
+  }
+
+  /**
+   * toggleMinimizeChats
+   */
+  toggleMinimizeChats() {
+    const roomJID = this.props.chat.roomJID;
+    let minimizedRoomList: string[] = JSON.parse(
+      window.sessionStorage.getItem("minimizedChats") || "[]"
+    );
+    const newMinimized = !this.state.minimized;
+
+    this.isScrollDetached = false;
+    this.setState(
+      {
+        minimized: newMinimized,
+      },
+      this.scrollToBottom.bind(this, "auto")
+    );
+
+    if (newMinimized) {
+      minimizedRoomList.push(roomJID);
+    } else {
+      minimizedRoomList = minimizedRoomList.filter((r) => r !== roomJID);
+    }
+
+    window.sessionStorage.setItem(
+      "minimizedChats",
+      JSON.stringify(minimizedRoomList)
+    );
+  }
+
+  /**
+   * toggleOccupantsList
+   */
+  async toggleOccupantsList() {
+    this.setState({
+      showOccupantsList: !this.state.showOccupantsList,
+    });
+  }
+
+  /**
+   * scrollToBottom
+   * Scroll selected view to the bottom
+   * @param method method
+   */
+  scrollToBottom(method: ScrollBehavior = "smooth") {
+    if (this.messagesEnd.current && !this.isScrollDetached) {
+      this.messagesEnd.current.scrollIntoView({ behavior: method });
+    }
+  }
+
+  /**
+   * onEnterPress
+   * @param e e
+   */
+  onEnterPress(e: React.KeyboardEvent<HTMLTextAreaElement>) {
+    if (e.keyCode == 13 && e.shiftKey == false) {
+      e.preventDefault();
+
+      this.sendMessageToChatRoom(null);
+
+      return false;
+    }
+  }
+
+  /**
    * onGroupChatMessage
    * @param stanza
    * @returns
@@ -389,7 +436,7 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
         action = {
           editForId,
           deleteForId,
-        }
+        };
       }
 
       const content = body.textContent;
@@ -414,7 +461,9 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
 
       if (!userId) {
         // we might not find it, if occupants is not ready
-        const groupChatOccupant = this.state.occupants.find((o) => o.occupant.nick === fromNick);
+        const groupChatOccupant = this.state.occupants.find(
+          (o) => o.occupant.nick === fromNick
+        );
         // whenever occupants get added this should be fixed
         if (groupChatOccupant) {
           userId = groupChatOccupant.occupant.userId;
@@ -434,10 +483,13 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
       };
 
       const newMessagesList = [...this.state.messages, messageReceived];
-      this.setState({
-        messages: newMessagesList,
-        processedMessages: this.processMessages(newMessagesList),
-      }, this.scrollToBottom.bind(this, "smooth"));
+      this.setState(
+        {
+          messages: newMessagesList,
+          processedMessages: this.processMessages(newMessagesList),
+        },
+        this.scrollToBottom.bind(this, "smooth")
+      );
     }
 
     return true;
@@ -471,9 +523,9 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
     const role: any = item.getAttribute("role");
 
     if (stanza.getAttribute("type") === "unavailable") {
-      const newOccupants = this.state.occupants.filter((o) => {
-        return (o.occupant.userId !== userId);
-      });
+      const newOccupants = this.state.occupants.filter(
+        (o) => o.occupant.userId !== userId
+      );
 
       this.setState({
         occupants: newOccupants,
@@ -501,7 +553,9 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
       if (groupOccupant.occupant.isSelf) {
         this.setState({
           isOwner: groupOccupant.affilation === "owner",
-          isModerator: groupOccupant.role === "moderator" || groupOccupant.affilation === "owner",
+          isModerator:
+            groupOccupant.role === "moderator" ||
+            groupOccupant.affilation === "owner",
         });
       }
 
@@ -510,7 +564,9 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
           return {
             ...m,
             userId: groupOccupant.occupant.userId,
-            isSelf: groupOccupant.occupant.userId === this.props.connection.jid.split("@")[0],
+            isSelf:
+              groupOccupant.occupant.userId ===
+              this.props.connection.jid.split("@")[0],
           } as IBareMessageType;
         }
 
@@ -543,12 +599,29 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
 
   /**
    * joinRoom
+   * @param props
    */
   joinRoom(props: IGroupChatProps = this.props) {
     const roomJID = props.chat.roomJID;
 
-    this.messagesListenerHandler = props.connection.addHandler(this.onGroupChatMessage, null, "message", "groupchat", null, roomJID, { matchBare: true });
-    this.presenceListenerHandler = props.connection.addHandler(this.onPresence, null, "presence", null, null, roomJID, { matchBare: true });
+    this.messagesListenerHandler = props.connection.addHandler(
+      this.onGroupChatMessage,
+      null,
+      "message",
+      "groupchat",
+      null,
+      roomJID,
+      { matchBare: true }
+    );
+    this.presenceListenerHandler = props.connection.addHandler(
+      this.onPresence,
+      null,
+      "presence",
+      null,
+      null,
+      roomJID,
+      { matchBare: true }
+    );
 
     if (!props.nick) {
       return;
@@ -568,7 +641,10 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
     const presStanza = $pres({
       from: props.connection.jid,
       to: roomJID + "/" + props.nick,
-    }).c("x", { 'xmlns': Strophe.NS.MUC }).up().c("show", {}, this.props.presence);
+    })
+      .c("x", { xmlns: Strophe.NS.MUC })
+      .up()
+      .c("show", {}, this.props.presence);
 
     props.connection.send(presStanza);
   }
@@ -587,7 +663,7 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
     const presStanza = $pres({
       from: props.connection.jid,
       to: roomJID + "/" + props.nick,
-      type: "unavailable"
+      type: "unavailable",
     });
 
     this.setState({
@@ -602,13 +678,13 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
    * componentDidMount
    */
   componentDidMount() {
-    if(this.props.active){
+    if (this.props.active) {
       this.setState({
-        active: true
-      })
+        active: true,
+      });
     }
 
-    document.addEventListener('mousedown', this.handleClickOutside);
+    document.addEventListener("mousedown", this.handleClickOutside);
 
     this.joinRoom();
     this.loadMessages();
@@ -618,16 +694,19 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
    * componentWillUnmount
    */
   componentWillUnmount() {
-    document.removeEventListener('mousedown', this.handleClickOutside);
+    document.removeEventListener("mousedown", this.handleClickOutside);
 
     this.leaveRoom();
 
     this.unmounted = true;
   }
 
-  handleClickOutside = (event:any) => {
-    this.setState({active: false});
-  }
+  /**
+   * @param event
+   */
+  handleClickOutside = (event: any) => {
+    this.setState({ active: false });
+  };
 
   /**
    * checkScrollDetachment
@@ -635,7 +714,8 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
    */
   checkScrollDetachment(e: React.UIEvent<HTMLDivElement>) {
     if (this.chatRef.current) {
-      const isScrolledToBottom = this.chatRef.current.scrollTop ===
+      const isScrolledToBottom =
+        this.chatRef.current.scrollTop ===
         this.chatRef.current.scrollHeight - this.chatRef.current.offsetHeight;
       this.isScrollDetached = !isScrolledToBottom;
     }
@@ -666,7 +746,9 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
     const actionMessages = messages.filter((m) => m.action);
     const standardMessages = messages.filter((m) => !m.action);
     const result: IBareMessageType[] = standardMessages.map((m) => {
-      const shouldDelete = actionMessages.some((a) => a.action.deleteForId === m.stanzaId);
+      const shouldDelete = actionMessages.some(
+        (a) => a.action.deleteForId === m.stanzaId
+      );
       if (shouldDelete) {
         const newMessage: IBareMessageType = {
           ...m,
@@ -674,7 +756,9 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
         };
         return newMessage;
       }
-      const foundActions = actionMessages.filter((a) => a.action.editForId === m.stanzaId);
+      const foundActions = actionMessages.filter(
+        (a) => a.action.editForId === m.stanzaId
+      );
       if (!foundActions.length) {
         return m;
       }
@@ -704,7 +788,7 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
       loadingMessages: true,
     });
 
-    let newMessages: IBareMessageType[] = [];
+    const newMessages: IBareMessageType[] = [];
     let processedNewMessages: IBareMessageType[] = [];
     let thereIsNoMore = false;
     let beforeLastMessageStamp: string = null;
@@ -712,15 +796,21 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
     while (processedNewMessages.length < 25 && !thereIsNoMore) {
       const stanza = $iq({
         type: "set",
-      }).c("query", {
-        xmlns: "otavanopisto:chat:history",
-      }).c("type", {}, "groupchat")
+      })
+        .c("query", {
+          xmlns: "otavanopisto:chat:history",
+        })
+        .c("type", {}, "groupchat")
         .c("with", {}, this.props.chat.roomJID)
         .c("includeStanzaIds")
         .c("max", {}, (25 - processedNewMessages.length).toString());
 
       if (this.state.lastMessageStamp) {
-        stanza.c("before", {}, beforeLastMessageStamp || this.state.lastMessageStamp);
+        stanza.c(
+          "before",
+          {},
+          beforeLastMessageStamp || this.state.lastMessageStamp
+        );
       }
 
       const answerStanza: Element = await new Promise((resolve, reject) => {
@@ -729,50 +819,59 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
         });
       });
 
-      const allMessagesLoaded: boolean = answerStanza.querySelector("query").getAttribute("complete") === "true";
+      const allMessagesLoaded: boolean =
+        answerStanza.querySelector("query").getAttribute("complete") === "true";
       if (allMessagesLoaded) {
         thereIsNoMore = true;
       }
 
-      Array.from(answerStanza.querySelectorAll("historyMessage")).map((historyMessage: Element, index: number) => {
-        const messageElement = historyMessage.querySelector("message");
+      Array.from(answerStanza.querySelectorAll("historyMessage")).map(
+        (historyMessage: Element, index: number) => {
+          const messageElement = historyMessage.querySelector("message");
 
-        const editForId = messageElement.getAttribute("otavanopisto-edit");
-        const deleteForId = messageElement.getAttribute("otavanopisto-delete");
-        let action: IBareMessageActionType = null;
-        if (editForId || deleteForId) {
-          action = {
-            editForId,
-            deleteForId,
+          const editForId = messageElement.getAttribute("otavanopisto-edit");
+          const deleteForId = messageElement.getAttribute(
+            "otavanopisto-delete"
+          );
+          let action: IBareMessageActionType = null;
+          if (editForId || deleteForId) {
+            action = {
+              editForId,
+              deleteForId,
+            };
           }
+
+          const stanzaId = historyMessage.querySelector("stanzaId").textContent;
+
+          const stamp = historyMessage.querySelector("timestamp").textContent;
+          if (index === 0) {
+            beforeLastMessageStamp = stamp;
+          }
+
+          const nick = historyMessage
+            .querySelector("toJID")
+            .textContent.split("/")[1];
+          const message = historyMessage.querySelector("message").textContent;
+          const date = new Date(stamp);
+          const userId = historyMessage
+            .querySelector("fromJID")
+            .textContent.split("@")[0];
+
+          const messageReceived: IBareMessageType = {
+            nick,
+            message,
+            stanzaId,
+            timestamp: date,
+            userId,
+            isSelf: userId === this.props.connection.jid.split("@")[0],
+            action,
+            deleted: false,
+            edited: null,
+          };
+
+          newMessages.push(messageReceived);
         }
-
-        const stanzaId = historyMessage.querySelector("stanzaId").textContent;
-
-        const stamp = historyMessage.querySelector("timestamp").textContent;
-        if (index === 0) {
-          beforeLastMessageStamp = stamp;
-        }
-
-        const nick = historyMessage.querySelector("toJID").textContent.split("/")[1];
-        const message = historyMessage.querySelector("message").textContent;
-        const date = new Date(stamp);
-        const userId = historyMessage.querySelector("fromJID").textContent.split("@")[0];
-
-        const messageReceived: IBareMessageType = {
-          nick,
-          message,
-          stanzaId,
-          timestamp: date,
-          userId,
-          isSelf: userId === this.props.connection.jid.split("@")[0],
-          action,
-          deleted: false,
-          edited: null,
-        };
-
-        newMessages.push(messageReceived);
-      });
+      );
 
       processedNewMessages = this.processMessages(newMessages);
     }
@@ -784,26 +883,31 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
     }
 
     if (newMessages.length) {
-      const oldScrollHeight = this.chatRef.current && this.chatRef.current.scrollHeight;
+      const oldScrollHeight =
+        this.chatRef.current && this.chatRef.current.scrollHeight;
       // most likely 0, but who knows, fast fingers
-      const oldScrollTop = this.chatRef.current && this.chatRef.current.scrollTop;
+      const oldScrollTop =
+        this.chatRef.current && this.chatRef.current.scrollTop;
 
-      this.setState({
-        messages: newMessages,
-        processedMessages: processedNewMessages,
-      }, () => {
-        if (!this.isScrollDetached) {
-          this.scrollToBottom("auto");
-        } else if (this.chatRef.current) {
-          const currentScrollHeight = this.chatRef.current.scrollHeight;
-          const diff = currentScrollHeight - oldScrollHeight;
-          this.chatRef.current.scrollTop = diff + oldScrollTop;
+      this.setState(
+        {
+          messages: newMessages,
+          processedMessages: processedNewMessages,
+        },
+        () => {
+          if (!this.isScrollDetached) {
+            this.scrollToBottom("auto");
+          } else if (this.chatRef.current) {
+            const currentScrollHeight = this.chatRef.current.scrollHeight;
+            const diff = currentScrollHeight - oldScrollHeight;
+            this.chatRef.current.scrollTop = diff + oldScrollTop;
+          }
+          this.setState({
+            loadingMessages: false,
+            canLoadMoreMessages: !thereIsNoMore,
+          });
         }
-        this.setState({
-          loadingMessages: false,
-          canLoadMoreMessages: !thereIsNoMore,
-        });
-      });
+      );
     } else {
       this.setState({
         loadingMessages: false,
@@ -817,112 +921,316 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
    * @returns JSX.Element
    */
   render() {
-    let chatRoomTypeClassName = this.props.chat.roomJID.startsWith("workspace-") ? "workspace" : "other";
+    const chatRoomTypeClassName = this.props.chat.roomJID.startsWith(
+      "workspace-"
+    )
+      ? "workspace"
+      : "other";
 
-    const staffOccupants = this.state.occupants.filter((o) => o.occupant.isStaff);
-    const studentOccupants = this.state.occupants.filter((o) => !o.occupant.isStaff);
+    const staffOccupants = this.state.occupants.filter(
+      (o) => o.occupant.isStaff
+    );
+    const studentOccupants = this.state.occupants.filter(
+      (o) => !o.occupant.isStaff
+    );
 
     return (
-      <div onClick={(e) => this.setState({active: true})} className={`chat__panel-wrapper ${this.state.minimized ? "chat__panel-wrapper--reorder" : ""}`} ref={this.chatWrapperRef}>
-
+      <div
+        onClick={(e) => this.setState({ active: true })}
+        className={`chat__panel-wrapper ${
+          this.state.minimized ? "chat__panel-wrapper--reorder" : ""
+        }`}
+        ref={this.chatWrapperRef}
+      >
         {this.state.minimized === true ? (
-          <div className={`chat__minimized chat__minimized--${chatRoomTypeClassName}`}>
-            <div onClick={this.toggleMinimizeChats} className="chat__minimized-title">{this.props.chat.roomName}</div>
-            <div onClick={this.props.leaveChatRoom} className="chat__button chat__button--close icon-cross"></div>
+          <div
+            className={`chat__minimized chat__minimized--${chatRoomTypeClassName}`}
+          >
+            <div
+              onClick={this.toggleMinimizeChats}
+              className="chat__minimized-title"
+            >
+              {this.props.chat.roomName}
+            </div>
+            <div
+              onClick={this.props.leaveChatRoom}
+              className="chat__button chat__button--close icon-cross"
+            ></div>
           </div>
         ) : (
-          <div className={`chat__panel chat__panel--${chatRoomTypeClassName} ${this.state.active ? "chat__panel--active" : ""}`}>
-            <div className={`chat__panel-header chat__panel-header--${chatRoomTypeClassName}`}>
-              <div className="chat__panel-header-title">{this.props.chat.roomName}</div>
-              <div onClick={this.toggleOccupantsList} className="chat__button chat__button--occupants icon-users"></div>
-              <div onClick={this.toggleMinimizeChats} className="chat__button chat__button--minimize icon-minus"></div>
-              {this.state.isOwner ? <div onClick={this.toggleChatRoomSettings} className="chat__button chat__button--room-settings icon-cogs"></div> : null}
-              <div onClick={this.props.leaveChatRoom} className="chat__button chat__button--close icon-cross"></div>
+          <div
+            className={`chat__panel chat__panel--${chatRoomTypeClassName} ${
+              this.state.active ? "chat__panel--active" : ""
+            }`}
+          >
+            <div
+              className={`chat__panel-header chat__panel-header--${chatRoomTypeClassName}`}
+            >
+              <div className="chat__panel-header-title">
+                {this.props.chat.roomName}
+              </div>
+              <div
+                onClick={this.toggleOccupantsList}
+                className="chat__button chat__button--occupants icon-users"
+              ></div>
+              <div
+                onClick={this.toggleMinimizeChats}
+                className="chat__button chat__button--minimize icon-minus"
+              ></div>
+              {this.state.isOwner ? (
+                <div
+                  onClick={this.toggleChatRoomSettings}
+                  className="chat__button chat__button--room-settings icon-cogs"
+                ></div>
+              ) : null}
+              <div
+                onClick={this.props.leaveChatRoom}
+                className="chat__button chat__button--close icon-cross"
+              ></div>
             </div>
 
-            {this.state.openChatSettings && <div className="chat__subpanel">
-              <div className={`chat__subpanel-header chat__subpanel-header--room-settings-${chatRoomTypeClassName}`}>
-                <div className="chat__subpanel-title">{this.props.i18n.text.get("plugin.chat.room.settingsTitle")}</div>
-                <div onClick={this.toggleChatRoomSettings} className="chat__button chat__button--close icon-cross"></div>
-              </div>
-              <div className="chat__subpanel-body">
-                <form onSubmit={this.setChatroomConfiguration}>
-                  <div className="chat__subpanel-row">
-                    <label htmlFor={`chatRoomName-${this.props.chat.roomJID.split("@")[0]}`} className="chat__label">{this.props.i18n.text.get("plugin.chat.room.name")}</label>
-                    <input id={`chatRoomName-${this.props.chat.roomJID.split("@")[0]}`} className={`chat__textfield chat__textfield--${chatRoomTypeClassName}`} name="newroomName" disabled={this.props.chat.roomJID.startsWith("workspace-") ? true : null} value={this.state.roomNameField} onChange={this.updateRoomNameField} type="text"></input>
+            {this.state.openChatSettings && (
+              <div className="chat__subpanel">
+                <div
+                  className={`chat__subpanel-header chat__subpanel-header--room-settings-${chatRoomTypeClassName}`}
+                >
+                  <div className="chat__subpanel-title">
+                    {this.props.i18n.text.get("plugin.chat.room.settingsTitle")}
                   </div>
-                  <div className="chat__subpanel-row">
-                    <label htmlFor={`chatRoomDesc-${this.props.chat.roomJID.split("@")[0]}`} className="chat__label">{this.props.i18n.text.get("plugin.chat.room.desc")}</label>
-                    <textarea id={`chatRoomDesc-${this.props.chat.roomJID.split("@")[0]}`} className={`chat__memofield chat__memofield--${chatRoomTypeClassName}`} name="newroomDescription" value={this.state.roomDescField || ""} onChange={this.updateRoomDescField}></textarea>
-                  </div>
-                  {/* {(!this.state.isStudent) && <div className="chat__subpanel-row">
+                  <div
+                    onClick={this.toggleChatRoomSettings}
+                    className="chat__button chat__button--close icon-cross"
+                  ></div>
+                </div>
+                <div className="chat__subpanel-body">
+                  <form onSubmit={this.setChatroomConfiguration}>
+                    <div className="chat__subpanel-row">
+                      <label
+                        htmlFor={`chatRoomName-${
+                          this.props.chat.roomJID.split("@")[0]
+                        }`}
+                        className="chat__label"
+                      >
+                        {this.props.i18n.text.get("plugin.chat.room.name")}
+                      </label>
+                      <input
+                        id={`chatRoomName-${
+                          this.props.chat.roomJID.split("@")[0]
+                        }`}
+                        className={`chat__textfield chat__textfield--${chatRoomTypeClassName}`}
+                        name="newroomName"
+                        disabled={
+                          this.props.chat.roomJID.startsWith("workspace-")
+                            ? true
+                            : null
+                        }
+                        value={this.state.roomNameField}
+                        onChange={this.updateRoomNameField}
+                        type="text"
+                      ></input>
+                    </div>
+                    <div className="chat__subpanel-row">
+                      <label
+                        htmlFor={`chatRoomDesc-${
+                          this.props.chat.roomJID.split("@")[0]
+                        }`}
+                        className="chat__label"
+                      >
+                        {this.props.i18n.text.get("plugin.chat.room.desc")}
+                      </label>
+                      <textarea
+                        id={`chatRoomDesc-${
+                          this.props.chat.roomJID.split("@")[0]
+                        }`}
+                        className={`chat__memofield chat__memofield--${chatRoomTypeClassName}`}
+                        name="newroomDescription"
+                        value={this.state.roomDescField || ""}
+                        onChange={this.updateRoomDescField}
+                      ></textarea>
+                    </div>
+                    {/* {(!this.state.isStudent) && <div className="chat__subpanel-row">
                     <label className="chat__label">Pysyvä huone: </label>
                     <input className={`chat__checkbox chat__checkbox--room-settings-${chatRoomTypeClassName}`} type="checkbox" name="persistent"></input>
                   </div>} */}
-                  <div className="chat__subpanel-row chat__subpanel-row--buttonset">
-                    <input className={`chat__submit chat__submit--room-settings-${chatRoomTypeClassName}`} type="submit" value={this.props.i18n.text.get("plugin.chat.button.save")}></input>
-                    {!this.props.chat.roomJID.startsWith("workspace-") && <button className="chat__submit chat__submit--room-settings-delete" onClick={this.toggleDeleteMUCDialog}>{this.props.i18n.text.get("plugin.chat.button.deleteRoom")}</button>}
-                  </div>
-                </form>
+                    <div className="chat__subpanel-row chat__subpanel-row--buttonset">
+                      <input
+                        className={`chat__submit chat__submit--room-settings-${chatRoomTypeClassName}`}
+                        type="submit"
+                        value={this.props.i18n.text.get(
+                          "plugin.chat.button.save"
+                        )}
+                      ></input>
+                      {!this.props.chat.roomJID.startsWith("workspace-") && (
+                        <button
+                          className="chat__submit chat__submit--room-settings-delete"
+                          onClick={this.toggleDeleteMUCDialog}
+                        >
+                          {this.props.i18n.text.get(
+                            "plugin.chat.button.deleteRoom"
+                          )}
+                        </button>
+                      )}
+                    </div>
+                  </form>
 
-                <div>
-                  {this.state.updateFailed ? "failed" : null}
+                  <div>{this.state.updateFailed ? "failed" : null}</div>
                 </div>
               </div>
-            </div>}
+            )}
 
             <div className="chat__panel-body chat__panel-body--chatroom">
-              <div className={`chat__messages-container chat__messages-container--${chatRoomTypeClassName}`} onScroll={this.checkScrollDetachment} ref={this.chatRef}>
-                {this.state.processedMessages.map((message) => <ChatMessage
-                  chatType="group"
-                  canModerate={!this.state.isStudent}
-                  key={message.stanzaId}
-                  canToggleInfo={!this.state.isStudent}
-                  message={message} i18n={this.props.i18n}
-                  editMessage={this.editMessage}
-                  deleteMessage={this.deleteMessage} />)}
-                <div className="chat__messages-last-message" ref={this.messagesEnd}></div>
+              <div
+                className={`chat__messages-container chat__messages-container--${chatRoomTypeClassName}`}
+                onScroll={this.checkScrollDetachment}
+                ref={this.chatRef}
+              >
+                {this.state.processedMessages.map((message) => (
+                  <ChatMessage
+                    chatType="group"
+                    canModerate={!this.state.isStudent}
+                    key={message.stanzaId}
+                    canToggleInfo={!this.state.isStudent}
+                    message={message}
+                    i18n={this.props.i18n}
+                    editMessage={this.editMessage}
+                    deleteMessage={this.deleteMessage}
+                  />
+                ))}
+                <div
+                  className="chat__messages-last-message"
+                  ref={this.messagesEnd}
+                ></div>
               </div>
-              {this.state.showOccupantsList && <div className="chat__occupants-container">
-                <div className="chat__occupants-staff">
-                  {staffOccupants.length > 0 ? <div className="chat__occupants-title">{this.props.i18n.text.get("plugin.chat.occupants.staff")}</div> : ""}
-                  {staffOccupants.map((staffOccupant) =>
-                    <div
-                      title={this.props.i18n.text.get("plugin.chat.state." + staffOccupant.occupant.precense)}
-                      className="chat__occupants-item chat__occupants-item--has-access-to-pm"
-                      onClick={this.props.joinPrivateChat.bind(null, staffOccupant.occupant.jid, null)} key={staffOccupant.occupant.userId}>
-                      <span className={"chat__online-indicator chat__online-indicator--" + staffOccupant.occupant.precense}></span>{staffOccupant.occupant.nick}</div>
-                  )}
+              {this.state.showOccupantsList && (
+                <div className="chat__occupants-container">
+                  <div className="chat__occupants-staff">
+                    {staffOccupants.length > 0 ? (
+                      <div className="chat__occupants-title">
+                        {this.props.i18n.text.get(
+                          "plugin.chat.occupants.staff"
+                        )}
+                      </div>
+                    ) : (
+                      ""
+                    )}
+                    {staffOccupants.map((staffOccupant) => (
+                      <div
+                        title={this.props.i18n.text.get(
+                          "plugin.chat.state." + staffOccupant.occupant.precense
+                        )}
+                        className="chat__occupants-item chat__occupants-item--has-access-to-pm"
+                        onClick={this.props.joinPrivateChat.bind(
+                          null,
+                          staffOccupant.occupant.jid,
+                          null
+                        )}
+                        key={staffOccupant.occupant.userId}
+                      >
+                        <span
+                          className={
+                            "chat__online-indicator chat__online-indicator--" +
+                            staffOccupant.occupant.precense
+                          }
+                        ></span>
+                        {staffOccupant.occupant.nick}
+                      </div>
+                    ))}
+                  </div>
+                  <div className="chat__occupants-student">
+                    {studentOccupants.length > 0 ? (
+                      <div className="chat__occupants-title">
+                        {this.props.i18n.text.get(
+                          "plugin.chat.occupants.students"
+                        )}
+                      </div>
+                    ) : (
+                      ""
+                    )}
+                    {studentOccupants.map((studentOccupant) => (
+                      <div
+                        title={this.props.i18n.text.get(
+                          "plugin.chat.state." +
+                            studentOccupant.occupant.precense
+                        )}
+                        className={`chat__occupants-item ${
+                          !this.state.isStudent &&
+                          "chat__occupants-item--has-access-to-pm"
+                        } `}
+                        onClick={
+                          this.state.isStudent
+                            ? null
+                            : this.props.joinPrivateChat.bind(
+                                this,
+                                studentOccupant.occupant.jid,
+                                null
+                              )
+                        }
+                        key={studentOccupant.occupant.userId}
+                      >
+                        <span
+                          className={
+                            "chat__online-indicator chat__online-indicator--" +
+                            studentOccupant.occupant.precense
+                          }
+                        ></span>
+                        {studentOccupant.occupant.nick}
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <div className="chat__occupants-student">
-                  {studentOccupants.length > 0 ? <div className="chat__occupants-title">{this.props.i18n.text.get("plugin.chat.occupants.students")}</div> : ""}
-                  {studentOccupants.map((studentOccupant) =>
-                    <div
-                      title={this.props.i18n.text.get("plugin.chat.state." + studentOccupant.occupant.precense)}
-                      className={`chat__occupants-item ${!this.state.isStudent && "chat__occupants-item--has-access-to-pm"} `}
-                      onClick={this.state.isStudent ? null : this.props.joinPrivateChat.bind(this, studentOccupant.occupant.jid, null)}
-                      key={studentOccupant.occupant.userId}>
-                      <span className={"chat__online-indicator chat__online-indicator--" + studentOccupant.occupant.precense}></span>{studentOccupant.occupant.nick}</div>)}
-                </div>
-              </div>}
+              )}
             </div>
-            <form className="chat__panel-footer chat__panel-footer--chatroom" onSubmit={this.sendMessageToChatRoom}>
-              <input name="chatRecipient" className="chat__muc-recipient" value={this.props.chat.roomJID} readOnly />
-              <label htmlFor={`sendGroupChatMessage-${this.props.chat.roomJID.split("@")[0]}`} className="visually-hidden">{this.props.i18n.text.get("plugin.wcag.sendMessage.label")}</label>
+            <form
+              className="chat__panel-footer chat__panel-footer--chatroom"
+              onSubmit={this.sendMessageToChatRoom}
+            >
+              <input
+                name="chatRecipient"
+                className="chat__muc-recipient"
+                value={this.props.chat.roomJID}
+                readOnly
+              />
+              <label
+                htmlFor={`sendGroupChatMessage-${
+                  this.props.chat.roomJID.split("@")[0]
+                }`}
+                className="visually-hidden"
+              >
+                {this.props.i18n.text.get("plugin.wcag.sendMessage.label")}
+              </label>
               <textarea
-                id={`sendGroupChatMessage-${this.props.chat.roomJID.split("@")[0]}`}
+                id={`sendGroupChatMessage-${
+                  this.props.chat.roomJID.split("@")[0]
+                }`}
                 className="chat__memofield chat__memofield--muc-message"
                 onKeyDown={this.onEnterPress}
                 placeholder={this.props.i18n.text.get("plugin.chat.writemsg")}
                 onChange={this.setCurrentMessageToBeSent}
                 value={this.state.currentMessageToBeSent}
-                ref={ref => ref && this.state.active && !this.state.openChatSettings && ref.focus()}/>
-              <button className={`chat__submit chat__submit--send-muc-message chat__submit--send-muc-message-${chatRoomTypeClassName}`} type="submit" value=""><span className="icon-arrow-right"></span></button>
+                ref={(ref) =>
+                  ref &&
+                  this.state.active &&
+                  !this.state.openChatSettings &&
+                  ref.focus()
+                }
+              />
+              <button
+                className={`chat__submit chat__submit--send-muc-message chat__submit--send-muc-message-${chatRoomTypeClassName}`}
+                type="submit"
+                value=""
+              >
+                <span className="icon-arrow-right"></span>
+              </button>
             </form>
-          </div>)
-        }
+          </div>
+        )}
 
-        <DeleteRoomDialog isOpen={this.state.deleteMUCDialogOpen} onClose={this.toggleDeleteMUCDialog} chat={this.props.chat} onDelete={this.onMUCDeleted} />
+        <DeleteRoomDialog
+          isOpen={this.state.deleteMUCDialogOpen}
+          onClose={this.toggleDeleteMUCDialog}
+          chat={this.props.chat}
+          onDelete={this.onMUCDeleted}
+        />
       </div>
     );
   }

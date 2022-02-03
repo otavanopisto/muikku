@@ -1,12 +1,15 @@
 import * as React from "react";
-import { SaveState } from "~/@types/shared";
 
+/**
+ * SavingDraftErrorProps
+ */
 interface SavingDraftErrorProps {
   draftSaveErrorMsg: string;
 }
 
 /**
  * Shows draft saving error
+ * @param root0.draftSaveErrorMsg draftSaveErrorMsg
  * @returns JSX.Element
  */
 export const SavingDraftError: React.FC<SavingDraftErrorProps> = ({

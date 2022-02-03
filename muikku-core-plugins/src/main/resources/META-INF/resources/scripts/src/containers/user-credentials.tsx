@@ -1,28 +1,45 @@
-import Notifications from '../components/base/notifications';
-import { StateType } from '~/reducers';
-import { Store } from 'react-redux';
-import { loadCredentials } from '~/actions/base/credentials';
-import {Action} from 'redux';
-import Body from '../components/credentials/body';
-import * as React from 'react';
-import '~/sass/util/base.scss';
+import Notifications from "../components/base/notifications";
+import { StateType } from "~/reducers";
+import { Store } from "react-redux";
+import { loadCredentials } from "~/actions/base/credentials";
+import { Action } from "redux";
+import Body from "../components/credentials/body";
+import * as React from "react";
+import "~/sass/util/base.scss";
 
+/**
+ * UserCredentialsProps
+ */
 interface UserCredentialsProps {
-  store: Store<StateType>,
+  store: Store<StateType>;
 }
 
-export default class UserCredentials extends React.Component<UserCredentialsProps,{}> {
-
+/**
+ * UserCredentials
+ */
+export default class UserCredentials extends React.Component<
+  UserCredentialsProps,
+  Record<string, unknown>
+> {
+  /**
+   * componentDidMount
+   */
   componentDidMount() {
-      let param = new URLSearchParams(location.search);
-      let hash:string = param.get("h");
-      this.props.store.dispatch(loadCredentials(hash) as Action);
+    const param = new URLSearchParams(location.search);
+    const hash: string = param.get("h");
+    this.props.store.dispatch(loadCredentials(hash) as Action);
   }
 
-  render(){
-    return (<div id="root">
-      <Notifications></Notifications>
-      <Body></Body>
-    </div>);
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
+  render() {
+    return (
+      <div id="root">
+        <Notifications></Notifications>
+        <Body></Body>
+      </div>
+    );
   }
 }
