@@ -1,10 +1,7 @@
 package fi.otavanopisto.muikku.plugins.notes;
 
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -18,11 +15,13 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+
+import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.notes.model.Note;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
-import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
@@ -36,7 +35,7 @@ public class NotesRESTService extends PluginRESTService {
   private static final long serialVersionUID = 6610657511716011677L;
   
   @Inject
-  private Logger logger;
+  private UserEntityController userEntityController;
   
   @Inject
   private SessionController sessionController;
@@ -53,33 +52,15 @@ public class NotesRESTService extends PluginRESTService {
   //  type: emun MANUAL
   //  priority: enum LOW/NORMAL/HIGH, 
   //  pinned: Boolean, 
-  //  owner: userIdentifier,
-  //  creator: loggedUser
+  //  owner: userIdentifier
   //  };
   @POST
   @Path("/note")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response createNote(NoteRestModel note) {
     
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.UNAUTHORIZED).build();
-    }
-    
-    if (!sessionController.hasEnvironmentPermission(NotesPermissions.NOTES_CREATE)) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
-    
-    try {
-      SchoolDataIdentifier loggedUser = sessionController.getLoggedUser();
-      
-      Note newNote = notesController.createNote(note.getTitle(), note.getDescription(), note.getType(), note.getPriority(), note.getPinned(), note.getOwner(), loggedUser.toString(), new Date());
-      return Response.ok(restModel(newNote)).build();
-    }
-    catch (Exception e) {
-      e.printStackTrace();
-      logger.log(Level.SEVERE, "Couldn't create new note.", e);
-      return Response.status(Status.INTERNAL_SERVER_ERROR).build();
-    } 
+      Note newNote = notesController.createNote(note.getTitle(), note.getDescription(), note.getType(), note.getPriority(), note.getPinned(), note.getOwner());
+      return Response.ok(toRestModel(newNote)).build();
   }
   
   //mApi() call (mApi().notes.note.update(noteId, noteRestModel)
@@ -89,58 +70,63 @@ public class NotesRESTService extends PluginRESTService {
   @RESTPermit(handling = Handling.INLINE)
   public Response updateNote(@PathParam ("NOTEID") Long noteId, NoteRestModel restModel) {
     
-    
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.UNAUTHORIZED).build();
-    }
-    
     Note note = notesController.findNoteById(noteId);
     
     if (note == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
     
-    SchoolDataIdentifier ownerIdentifier = SchoolDataIdentifier.fromId(note.getOwner());
-    
     //permissions 
     
-    if (!sessionController.hasEnvironmentPermission(NotesPermissions.NOTES_UPDATE)) {
-      if (!Objects.equals(sessionController.getLoggedUser(), ownerIdentifier))
+    if (!sessionController.getLoggedUserEntity().getId().equals(note.getCreator())) {
         return Response.status(Status.FORBIDDEN).build();
     }
     
-    notesController.updateNote(note, restModel.getTitle(), restModel.getDescription(), restModel.getPriority(), restModel.getPinned());
+    Note updatedNote = notesController.updateNote(note, restModel.getTitle(), restModel.getDescription(), restModel.getPriority(), restModel.getPinned());
   
-    return Response.noContent().build();
+    return Response.ok(toRestModel(updatedNote)).build();
   }
   
-  
-  
-  private NoteRestModel restModel(Note note) {
-    NoteRestModel restModel = new NoteRestModel(note.getId(), note.getTitle(), note.getDescription(), note.getType(), note.getPriority(), note.getPinned(), note.getOwner(), note.getCreator(), note.getCreated(), note.getLastModifier(), note.getLastModified(), note.getArchived());
+  private NoteRestModel toRestModel(Note note) {
+    
+    UserEntity userEntity = userEntityController.findUserEntityById(note.getCreator());
+    String creatorName = userEntityController.getName(userEntity).getDisplayNameWithLine();
+
+    NoteRestModel restModel = new NoteRestModel();
+    restModel.setId(note.getId());
+    restModel.setTitle(note.getTitle());
+    restModel.setDescription(note.getDescription());
+    restModel.setType(note.getType());
+    restModel.setPriority(note.getPriority());
+    restModel.setPinned(note.getPinned());
+    restModel.setOwner(note.getOwner());
+    restModel.setCreator(note.getCreator());
+    restModel.setCreatorName(creatorName);
+    restModel.setCreated(note.getCreated());
 
     return restModel;
   }
   
-  //mApi() call (mApi().notes.read(owner))
+  //mApi() call (mApi().notes.owner.read(owner))
   @GET
-  @Path("/{OWNER}")
+  @Path("/owner/{OWNER}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response getNotesByOwner(@PathParam("OWNER") String owner) {
+  public Response getNotesByOwner(@PathParam("OWNER") Long owner) {
     
     if (owner == null) {
       return Response.status(Status.BAD_REQUEST).entity("Invalid userIdentifier").build();
     }
     
-    SchoolDataIdentifier ownerIdentifier = SchoolDataIdentifier.fromId(owner);
-    if (!sessionController.hasEnvironmentPermission(NotesPermissions.NOTES_VIEW)) {
-      if (!Objects.equals(sessionController.getLoggedUser(), ownerIdentifier))
-        return Response.status(Status.FORBIDDEN).build();
+    List<Note> notes = notesController.listByOwner(owner);
+    List<NoteRestModel> notesList = new ArrayList<NoteRestModel>();
+    
+    for (Note note : notes) {
+      NoteRestModel noteRest = toRestModel(note);
+      
+      notesList.add(noteRest);
     }
     
-    List<Note> notes = notesController.listBy(owner);
-    
-    return Response.ok(notes).build();
+    return Response.ok(notesList).build();
   }
   
   // mApi() call (mApi().notes.note.del(noteId))
@@ -156,16 +142,14 @@ public class NotesRESTService extends PluginRESTService {
     }
     
     // permissions
-    SchoolDataIdentifier ownerIdentifier = SchoolDataIdentifier.fromId(note.getOwner());
-    
-    if (!sessionController.hasEnvironmentPermission(NotesPermissions.NOTES_UPDATE)) {
-      if (!Objects.equals(sessionController.getLoggedUser(), ownerIdentifier))
+    if ((!sessionController.getLoggedUserEntity().getId().equals(note.getCreator()))) {
+      if (!sessionController.getLoggedUserEntity().getId().equals(note.getOwner())) {
         return Response.status(Status.FORBIDDEN).build();
+      }
     }
 
       notesController.archiveNote(note);
       
       return Response.noContent().build();
   }
-
 } 

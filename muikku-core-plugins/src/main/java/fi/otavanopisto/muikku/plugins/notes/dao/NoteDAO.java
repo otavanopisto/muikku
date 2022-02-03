@@ -20,7 +20,7 @@ public class NoteDAO extends CorePluginsDAO<Note> {
   
   private static final long serialVersionUID = 1265008061182482207L;
 
-  public Note create(String title, String description, NoteType type, NotePriority priority, Boolean pinned, String owner, String creator, Date created){
+  public Note create(String title, String description, NoteType type, NotePriority priority, Boolean pinned, Long owner, Long creator, Long lastModifier){
     Note note = new Note();
     note.setTitle(title);
     note.setDescription(description);
@@ -29,22 +29,23 @@ public class NoteDAO extends CorePluginsDAO<Note> {
     note.setPinned(pinned);
     note.setOwner(owner);
     note.setCreator(creator);
-    note.setCreated(created);
+    note.setCreated(new Date());
+    note.setLastModifier(lastModifier);
+    note.setLastModified(new Date());
     note.setArchived(false);
     return persist(note);
   }
   
-  public Note update(Note note, String title, String description, NotePriority priority, Boolean pinned, String lastModifier, Date lastModified){
+  public Note update(Note note, String title, String description, NotePriority priority, Boolean pinned, Long lastModifier){
     note.setTitle(title);
     note.setDescription(description);
     note.setPriority(priority);
     note.setPinned(pinned);
     note.setLastModifier(lastModifier);
-    note.setLastModified(lastModified);
     return persist(note);
   }
   
-  public List<Note> listBy(String owner){
+  public List<Note> listByOwnerAndArchived(Long owner, boolean archived){
     
     EntityManager entityManager = getEntityManager(); 
     
@@ -54,7 +55,8 @@ public class NoteDAO extends CorePluginsDAO<Note> {
     Root<Note> root = criteria.from(Note.class);
     criteria.select(root);
     criteria.where(criteriaBuilder.and(
-      criteriaBuilder.equal(root.get(Note_.owner), owner)
+      criteriaBuilder.equal(root.get(Note_.owner), owner),
+      criteriaBuilder.equal(root.get(Note_.archived), archived)
     ));
     
     return entityManager.createQuery(criteria).getResultList();
@@ -63,14 +65,27 @@ public class NoteDAO extends CorePluginsDAO<Note> {
   
   public Note updateArchived(Note note, boolean archived) {
     note.setArchived(archived);
+    note.setLastModified(new Date());
     
     getEntityManager().persist(note);
     
     return note;
   }
-  
-  @Override
-  public void delete(Note note) {
-    super.delete(note);
+
+  public Note findByIdAndArchived(Long id, boolean archived) {
+    EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Note> criteria = criteriaBuilder.createQuery(Note.class);
+    Root<Note> root = criteria.from(Note.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(Note_.id), id),
+        criteriaBuilder.equal(root.get(Note_.archived), archived)
+      )
+    );
+
+    return getSingleResult(entityManager.createQuery(criteria));
   }
 }

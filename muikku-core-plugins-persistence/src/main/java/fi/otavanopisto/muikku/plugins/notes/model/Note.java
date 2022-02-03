@@ -23,10 +23,6 @@ public class Note {
     return id;
   }
 
-  public void setId(Long id) {
-    this.id = id;
-  }
-
   public String getTitle() {
     return title;
   }
@@ -67,19 +63,19 @@ public class Note {
     this.pinned = pinned;
   }
 
-  public String getOwner() {
+  public Long getOwner() {
     return owner;
   }
 
-  public void setOwner(String owner) {
+  public void setOwner(Long owner) {
     this.owner = owner;
   }
 
-  public String getCreator() {
+  public Long getCreator() {
     return creator;
   }
 
-  public void setCreator(String creator) {
+  public void setCreator(Long creator) {
     this.creator = creator;
   }
 
@@ -91,11 +87,11 @@ public class Note {
     this.created = created;
   }
 
-  public String getLastModifier() {
+  public Long getLastModifier() {
     return lastModifier;
   }
 
-  public void setLastModifier(String lastModifier) {
+  public void setLastModifier(Long lastModifier) {
     this.lastModifier = lastModifier;
   }
 
@@ -137,19 +133,24 @@ public class Note {
   
   @NotNull
   @Column (nullable=false)
-  private String owner;
+  private Long owner;
   
   
   @Column (nullable=false)
-  private String creator;
+  private Long creator;
   
   @NotNull
   @Column (nullable=false)
   @Temporal (value=TemporalType.TIMESTAMP)
   private Date created;
   
-  private String lastModifier;
+  @NotNull
+  @Column (nullable=false)
+  private Long lastModifier;
   
+  @NotNull
+  @Column (nullable=false)
+  @Temporal (value=TemporalType.TIMESTAMP)
   private Date lastModified;
 
   @Column (nullable = false)

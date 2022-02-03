@@ -6,23 +6,7 @@ import java.util.Date;
 import fi.otavanopisto.muikku.plugins.notes.model.NotePriority;
 import fi.otavanopisto.muikku.plugins.notes.model.NoteType;
 
-public class NoteRestModel extends AbstractNoteRESTModel{
-  
-  public NoteRestModel() {
-    
-  }
-
-  public NoteRestModel(Long id, String title, String description, NoteType type, NotePriority priority, Boolean pinned, String owner, String creator, Date created, String lastModifier, Date lastModified, Boolean archived) {
-    super(id, title, description, priority, pinned, owner, creator);
-    this.id = id;
-    this.title = title;
-    this.description = description;
-    this.priority = priority;
-    this.pinned = pinned;
-    this.owner = owner;
-    this.creator = creator;
-
-  }
+public class NoteRestModel {
 
   public Long getId() {
     return id;
@@ -72,19 +56,19 @@ public class NoteRestModel extends AbstractNoteRESTModel{
     this.pinned = pinned;
   }
 
-  public String getOwner() {
+  public Long getOwner() {
     return owner;
   }
 
-  public void setOwner(String owner) {
+  public void setOwner(Long owner) {
     this.owner = owner;
   }
 
-  public String getCreator() {
+  public Long getCreator() {
     return creator;
   }
 
-  public void setCreator(String creator) {
+  public void setCreator(Long creator) {
     this.creator = creator;
   }
 
@@ -92,32 +76,16 @@ public class NoteRestModel extends AbstractNoteRESTModel{
     return created;
   }
 
+  public String getCreatorName() {
+    return creatorName;
+  }
+
+  public void setCreatorName(String creatorName) {
+    this.creatorName = creatorName;
+  }
+
   public void setCreated(Date created) {
     this.created = created;
-  }
-
-  public String getLastModifier() {
-    return lastModifier;
-  }
-
-  public void setLastModifier(String lastModifier) {
-    this.lastModifier = lastModifier;
-  }
-
-  public Date getLastModified() {
-    return lastModified;
-  }
-
-  public void setLastModified(Date lastModified) {
-    this.lastModified = lastModified;
-  }
-
-  public Boolean getArchived() {
-    return archived;
-  }
-
-  public void setArchived(Boolean archived) {
-    this.archived = archived;
   }
 
   private Long id;
@@ -126,12 +94,8 @@ public class NoteRestModel extends AbstractNoteRESTModel{
   private NoteType type;
   private NotePriority priority;
   private Boolean pinned;
-  private String owner;
-  private String creator;
+  private Long owner;
+  private Long creator;
+  private String creatorName;
   private Date created;
-  private String lastModifier;
-  private Date lastModified;
-  private Boolean archived;
 }
-
-  
