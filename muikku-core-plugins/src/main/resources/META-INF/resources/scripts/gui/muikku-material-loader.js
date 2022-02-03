@@ -1,293 +1,384 @@
-(function() {
+(function () {
+  "use strict";
 
-  'use strict';
-  
   $.widget("custom.muikkuMaterialLoader", {
-    options : {
+    options: {
       baseUrl: null,
       workspaceEntityId: -1,
       loadAnswers: false,
       readOnlyFields: false,
       fieldlessMode: false,
-      dustTemplate: 'workspace/materials-page.dust',
-      prependTitle : true,
+      dustTemplate: "workspace/materials-page.dust",
+      prependTitle: true,
       renderMode: {
-        "html": "raw"
+        html: "raw",
       },
-      defaultRenderMode: 'dust'
-    },
-    
-    _create : function() {
-    },    
-    
-    _getRenderMode: function(type) {
-      return this.options.renderMode[type]||this.options.defaultRenderMode;
+      defaultRenderMode: "dust",
     },
 
-    _loadHtmlMaterial: function(pageElement, fieldAnswers) {
-      var workspaceMaterialId = $(pageElement).attr('data-workspace-material-id');
-      var materialId = $(pageElement).attr('data-material-id');
+    _create: function () {},
+
+    _getRenderMode: function (type) {
+      return this.options.renderMode[type] || this.options.defaultRenderMode;
+    },
+
+    _loadHtmlMaterial: function (pageElement, fieldAnswers) {
+      var workspaceMaterialId = $(pageElement).attr(
+        "data-workspace-material-id"
+      );
+      var materialId = $(pageElement).attr("data-material-id");
       var parentIds = []; // TODO needed anymore?
-      var viewRestricted = $(pageElement).attr('data-view-restricted')
+      var viewRestricted = $(pageElement).attr("data-view-restricted");
 
-//      try {
-        var material = {
-          title: $(pageElement).attr('data-material-title'),
-          html: $(pageElement).attr('data-material-content'),
-          currentRevision: $(pageElement).attr('data-material-current-revision'),
-          publishedRevision: $(pageElement).attr('data-material-published-revision'),
-          path: $(pageElement).attr('data-path')
-        };
-        
-        $(pageElement).removeAttr('data-material-content');
+      //      try {
+      var material = {
+        title: $(pageElement).attr("data-material-title"),
+        html: $(pageElement).attr("data-material-content"),
+        currentRevision: $(pageElement).attr("data-material-current-revision"),
+        publishedRevision: $(pageElement).attr(
+          "data-material-published-revision"
+        ),
+        path: $(pageElement).attr("data-path"),
+      };
 
-        var parsed = $('<div>');
-        if (material.title && this.options.prependTitle) {
-          parsed.append('<h2>' + material.title + '</h2>');
+      $(pageElement).removeAttr("data-material-content");
+
+      var parsed = $("<div>");
+      if (material.title && this.options.prependTitle) {
+        parsed.append("<h2>" + material.title + "</h2>");
+      }
+      if (material.html) {
+        // #2773: assignments need a form to avoid input name clashes
+        var assignmentType = $(pageElement).attr("data-assignment-type");
+        if (assignmentType == "EXERCISE" || assignmentType == "EVALUATED") {
+          var form = $(
+            '<form name="assignment-' + workspaceMaterialId + '">'
+          ).appendTo(parsed);
+          $(form).append(material.html);
+        } else {
+          parsed.append(material.html);
         }
-        if (material.html) {
-          // #2773: assignments need a form to avoid input name clashes
-          var assignmentType = $(pageElement).attr('data-assignment-type');
-          if (assignmentType == 'EXERCISE' || assignmentType == 'EVALUATED') {
-            var form = $('<form name="assignment-' + workspaceMaterialId + '">').appendTo(parsed);
-            $(form).append(material.html);
-          }
-          else {
-            parsed.append(material.html);
-          }
-        }
-        
-        // Convert relative urls to point to correct url
-        
-        parsed.find('a,div.lazy-pdf,img,embed,iframe,object,source').each($.proxy(function (index, element) {
-          var urlAttribute = '';
-          
+      }
+
+      // Convert relative urls to point to correct url
+
+      parsed.find("a,div.lazy-pdf,img,embed,iframe,object,source").each(
+        $.proxy(function (index, element) {
+          var urlAttribute = "";
+
           switch (element.tagName.toLowerCase()) {
-            case 'a':
-              var isAnchorSource = $(element).attr('href') && $(element).attr('href').indexOf('#') == 0;
-              var isAnchorTarget = !$(element).attr('href') && $(element).attr('name');
+            case "a":
+              var isAnchorSource =
+                $(element).attr("href") &&
+                $(element).attr("href").indexOf("#") == 0;
+              var isAnchorTarget =
+                !$(element).attr("href") && $(element).attr("name");
               if (isAnchorSource) {
-                $(element).attr('href', '#' + workspaceMaterialId + '-' + $(element).attr('href').substring(1));
-              }
-              else if (isAnchorTarget) {
-                var name = $(element).attr('name'); 
-                var hasId = $(element).attr('id') == name;  
-                $(element).attr('name', workspaceMaterialId + '-' + name);
+                $(element).attr(
+                  "href",
+                  "#" +
+                    workspaceMaterialId +
+                    "-" +
+                    $(element).attr("href").substring(1)
+                );
+              } else if (isAnchorTarget) {
+                var name = $(element).attr("name");
+                var hasId = $(element).attr("id") == name;
+                $(element).attr("name", workspaceMaterialId + "-" + name);
                 if (hasId) {
-                  $(element).attr('id', workspaceMaterialId + '-' + name);
+                  $(element).attr("id", workspaceMaterialId + "-" + name);
                 }
+              } else {
+                urlAttribute = "href";
               }
-              else {
-                urlAttribute = 'href';
-              }
-            break;
-            case 'div':
-              urlAttribute = $(element).hasClass('lazy-pdf') ? 'data-url' : null;
-            break;
-            case 'img':
-              urlAttribute = $(element).hasClass('lazy') ? 'data-original' : 'src';
-            break;
-            case 'embed':
-            case 'iframe':
-            case 'source':
-              urlAttribute = $(element).hasClass('lazyFrame') ? 'data-url' : 'src';
-            break;
-            case 'object':
-              urlAttribute = 'data';
-            break;
+              break;
+            case "div":
+              urlAttribute = $(element).hasClass("lazy-pdf")
+                ? "data-url"
+                : null;
+              break;
+            case "img":
+              urlAttribute = $(element).hasClass("lazy")
+                ? "data-original"
+                : "src";
+              break;
+            case "embed":
+            case "iframe":
+            case "source":
+              urlAttribute = $(element).hasClass("lazyFrame")
+                ? "data-url"
+                : "src";
+              break;
+            case "object":
+              urlAttribute = "data";
+              break;
           }
-          
+
           var src = urlAttribute ? $(element).attr(urlAttribute) : null;
           if (src) {
-            var absolute = (src.indexOf('/') == 0) || (src.indexOf('mailto:') == 0) || (src.indexOf('data:') == 0) || (src.match("^(?:[a-zA-Z]+:)?\/\/"));
+            var absolute =
+              src.indexOf("/") == 0 ||
+              src.indexOf("mailto:") == 0 ||
+              src.indexOf("data:") == 0 ||
+              src.match("^(?:[a-zA-Z]+:)?//");
             if (!absolute) {
-              if (src.lastIndexOf('/') == src.length - 1) {
-                $(element).attr(urlAttribute, this.options.baseUrl + '/' + material.path + src);
+              if (src.lastIndexOf("/") == src.length - 1) {
+                $(element).attr(
+                  urlAttribute,
+                  this.options.baseUrl + "/" + material.path + src
+                );
               } else {
-                $(element).attr(urlAttribute, this.options.baseUrl + '/' + material.path + '/' + src);
+                $(element).attr(
+                  urlAttribute,
+                  this.options.baseUrl + "/" + material.path + "/" + src
+                );
               }
             }
           }
-        }, this));
-        
-        $(document).trigger('beforeHtmlMaterialRender', {
-          pageElement: pageElement,
-          parentIds: parentIds,
-          workspaceMaterialId: workspaceMaterialId,
-          materialId: materialId,
-          element: parsed,
-          fieldAnswers: fieldAnswers,
-          readOnlyFields: this.options.readOnlyFields,
-          fieldlessMode: this.options.fieldlessMode
-        });
-        
-        if (this._getRenderMode('html') == 'dust') {
-          material.html = parsed.html();
-          renderDustTemplate(this.options.dustTemplate, { id: materialId, materialId: materialId, workspaceMaterialId: workspaceMaterialId, type: 'html', data: material, hidden: pageElement.hasClass('item-hidden'), viewRestricted: viewRestricted }, $.proxy(function (text) {
+        }, this)
+      );
+
+      $(document).trigger("beforeHtmlMaterialRender", {
+        pageElement: pageElement,
+        parentIds: parentIds,
+        workspaceMaterialId: workspaceMaterialId,
+        materialId: materialId,
+        element: parsed,
+        fieldAnswers: fieldAnswers,
+        readOnlyFields: this.options.readOnlyFields,
+        fieldlessMode: this.options.fieldlessMode,
+      });
+
+      if (this._getRenderMode("html") == "dust") {
+        material.html = parsed.html();
+        renderDustTemplate(
+          this.options.dustTemplate,
+          {
+            id: materialId,
+            materialId: materialId,
+            workspaceMaterialId: workspaceMaterialId,
+            type: "html",
+            data: material,
+            hidden: pageElement.hasClass("item-hidden"),
+            viewRestricted: viewRestricted,
+          },
+          $.proxy(function (text) {
             $(pageElement).empty().append(text);
-            $(document).trigger('afterHtmlMaterialRender', {
+            $(document).trigger("afterHtmlMaterialRender", {
               pageElement: pageElement,
               parentIds: parentIds,
               workspaceMaterialId: workspaceMaterialId,
               materialId: materialId,
               fieldAnswers: fieldAnswers,
               readOnlyFields: this.options.readOnlyFields,
-              fieldlessMode: this.options.fieldlessMode
+              fieldlessMode: this.options.fieldlessMode,
             });
             Waypoint.refreshAll();
-          }, this));
-        }
-        else {
-          $(pageElement).muikkuMaterialPage('content', parsed);
-          $(document).trigger('afterHtmlMaterialRender', {
-            pageElement: pageElement,
-            parentIds: parentIds,
-            workspaceMaterialId: workspaceMaterialId,
-            materialId: materialId,
-            fieldAnswers: fieldAnswers,
-            readOnlyFields: this.options.readOnlyFields,
-            fieldlessMode: this.options.fieldlessMode
-          });
-          $(pageElement).muikkuMaterialPage('applyState', this.options.readOnlyFields);
-        }
+          }, this)
+        );
+      } else {
+        $(pageElement).muikkuMaterialPage("content", parsed);
+        $(document).trigger("afterHtmlMaterialRender", {
+          pageElement: pageElement,
+          parentIds: parentIds,
+          workspaceMaterialId: workspaceMaterialId,
+          materialId: materialId,
+          fieldAnswers: fieldAnswers,
+          readOnlyFields: this.options.readOnlyFields,
+          fieldlessMode: this.options.fieldlessMode,
+        });
+        $(pageElement).muikkuMaterialPage(
+          "applyState",
+          this.options.readOnlyFields
+        );
+      }
 
-//      } catch (e) {
-//        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.workspace.materialsLoader.htmlMaterialReadingFailed", e));
-//      }
+      //      } catch (e) {
+      //        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.workspace.materialsLoader.htmlMaterialReadingFailed", e));
+      //      }
     },
-    
-    loadMaterial: function(page, fieldAnswers) {
-      var workspaceMaterialId = $(page).attr('data-workspace-material-id');
-      var materialId = $(page).attr('data-material-id');
-      var materialType = $(page).attr('data-material-type');
-      var materialTitle = $(page).attr('data-material-title');
-      var viewRestricted = $(page).attr('data-view-restricted');
+
+    loadMaterial: function (page, fieldAnswers) {
+      var workspaceMaterialId = $(page).attr("data-workspace-material-id");
+      var materialId = $(page).attr("data-material-id");
+      var materialType = $(page).attr("data-material-type");
+      var materialTitle = $(page).attr("data-material-title");
+      var viewRestricted = $(page).attr("data-view-restricted");
       switch (materialType) {
-        case 'html':
+        case "html":
           $(page).muikkuMaterialPage({
-            workspaceEntityId: this.options.workspaceEntityId
+            workspaceEntityId: this.options.workspaceEntityId,
           });
           this._loadHtmlMaterial($(page), fieldAnswers);
-        break;
-        case 'folder':
-          renderDustTemplate(this.options.dustTemplate, {id: workspaceMaterialId, workspaceMaterialId: workspaceMaterialId, type: materialType, hidden: $(page).hasClass('item-hidden'), viewRestricted: viewRestricted, data: { title: $(page).attr('data-material-title') } }, $.proxy(function (text) {
-            $(this).html(text);
-            Waypoint.refreshAll();
-          }, page));
-        break;
+          break;
+        case "folder":
+          renderDustTemplate(
+            this.options.dustTemplate,
+            {
+              id: workspaceMaterialId,
+              workspaceMaterialId: workspaceMaterialId,
+              type: materialType,
+              hidden: $(page).hasClass("item-hidden"),
+              viewRestricted: viewRestricted,
+              data: { title: $(page).attr("data-material-title") },
+            },
+            $.proxy(function (text) {
+              $(this).html(text);
+              Waypoint.refreshAll();
+            }, page)
+          );
+          break;
         default:
-          var typeEndpoint = mApi({async: false}).materials[materialType];
+          var typeEndpoint = mApi({ async: false }).materials[materialType];
           if (typeEndpoint != null) {
-            typeEndpoint.read(materialId).callback($.proxy(function (err, result) {
-              var binaryType = 'unknown';
-              if (materialType == 'binary') {
-                if (result.contentType.indexOf('image/') != -1) {
-                  binaryType = 'image';  
-                } else {
-                  switch (result.contentType) {
-                    case "application/pdf":
-                    case "application/x-pdf":
-                    case "application/vnd.pdf":
-                    case "text/pdf":
-                      binaryType = 'pdf';  
-                    break;
-                    case "application/x-shockwave-flash":
-                      binaryType = 'flash';  
-                    break;
+            typeEndpoint.read(materialId).callback(
+              $.proxy(function (err, result) {
+                var binaryType = "any";
+                if (materialType == "binary") {
+                  if (result.contentType.indexOf("image/") != -1) {
+                    binaryType = "image";
+                  } else {
+                    switch (result.contentType) {
+                      case "application/pdf":
+                      case "application/x-pdf":
+                      case "application/vnd.pdf":
+                      case "text/pdf":
+                        binaryType = "pdf";
+                        break;
+                      case "application/x-shockwave-flash":
+                        binaryType = "flash";
+                        break;
+                    }
                   }
                 }
-              }
-              $(page).attr('data-binary-type', binaryType);
+                $(page).attr("data-binary-type", binaryType);
 
-              renderDustTemplate(this.options.dustTemplate, { 
-                workspaceMaterialId: workspaceMaterialId,
-                materialId: materialId,
-                id: materialId,
-                title: materialTitle,
-                type: materialType,
-                binaryType: binaryType,
-                data: result,
-                viewRestricted: viewRestricted
-              }, $.proxy(function (text) {
-                $(this).html(text);
-                // PDF and SWF lazy loading 
-                $(this).find('.lazyPdf').lazyPdf();
-                $(this).find('.lazySwf').lazySwf();
-                Waypoint.refreshAll();
-              }, page));
-            }, this));
+                renderDustTemplate(
+                  this.options.dustTemplate,
+                  {
+                    workspaceMaterialId: workspaceMaterialId,
+                    materialId: materialId,
+                    id: materialId,
+                    title: materialTitle,
+                    type: materialType,
+                    binaryType: binaryType,
+                    data: result,
+                    viewRestricted: viewRestricted,
+                  },
+                  $.proxy(function (text) {
+                    $(this).html(text);
+                    // PDF and SWF lazy loading
+                    $(this).find(".lazyPdf").lazyPdf();
+                    $(this).find(".lazySwf").lazySwf();
+                    Waypoint.refreshAll();
+                  }, page)
+                );
+              }, this)
+            );
           }
-        break;
+          break;
       }
     },
-    loadMaterials: function(pageElements, fieldAnswers) {
+    loadMaterials: function (pageElements, fieldAnswers) {
       if (this.options.loadAnswers === true) {
-        mApi({async: false}).workspace.workspaces.compositeReplies.read(this.options.workspaceEntityId).callback($.proxy(function (err, replies) {
-          if (err) {
-            $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.workspace.materialsLoader.answerLoadingFailed", err));
-          } else {
-            // answers array
-            var fieldAnswers = {};
-            
-            $.each(replies||[], $.proxy(function (index, reply) {
-              if (reply) {
-                for (var i = 0, l = reply.answers.length; i < l; i++) {
-                  var answer = reply.answers[i];
-                  var answerKey = [answer.materialId, answer.embedId, answer.fieldName].join('.');
-                  fieldAnswers[answerKey] = answer.value;
-                }
-                
-                if (reply.state || reply.workspaceMaterialReplyId) {
-                  var page = $(pageElements).filter('*[data-workspace-material-id="' + reply.workspaceMaterialId + '"]');
-                  
-                  if (reply.state) { 
-                    page.attr('data-workspace-material-state', reply.state);
-                  }
+        mApi({ async: false })
+          .workspace.workspaces.compositeReplies.read(
+            this.options.workspaceEntityId
+          )
+          .callback(
+            $.proxy(function (err, replies) {
+              if (err) {
+                $(".notification-queue").notificationQueue(
+                  "notification",
+                  "error",
+                  getLocaleText(
+                    "plugin.workspace.materialsLoader.answerLoadingFailed",
+                    err
+                  )
+                );
+              } else {
+                // answers array
+                var fieldAnswers = {};
 
-                  if (reply.workspaceMaterialReplyId) { 
-                    page.attr('data-workspace-reply-id', reply.workspaceMaterialReplyId);
-                  }
-                }
+                $.each(
+                  replies || [],
+                  $.proxy(function (index, reply) {
+                    if (reply) {
+                      for (var i = 0, l = reply.answers.length; i < l; i++) {
+                        var answer = reply.answers[i];
+                        var answerKey = [
+                          answer.materialId,
+                          answer.embedId,
+                          answer.fieldName,
+                        ].join(".");
+                        fieldAnswers[answerKey] = answer.value;
+                      }
+
+                      if (reply.state || reply.workspaceMaterialReplyId) {
+                        var page = $(pageElements).filter(
+                          '*[data-workspace-material-id="' +
+                            reply.workspaceMaterialId +
+                            '"]'
+                        );
+
+                        if (reply.state) {
+                          page.attr(
+                            "data-workspace-material-state",
+                            reply.state
+                          );
+                        }
+
+                        if (reply.workspaceMaterialReplyId) {
+                          page.attr(
+                            "data-workspace-reply-id",
+                            reply.workspaceMaterialReplyId
+                          );
+                        }
+                      }
+                    }
+                  }, this)
+                );
+
+                // actual loading of pages
+                $(pageElements).each(
+                  $.proxy(function (index, page) {
+                    this.loadMaterial(page, fieldAnswers);
+                  }, this)
+                );
               }
-            }, this));
-
-            // actual loading of pages
-            $(pageElements).each($.proxy(function (index, page) {
-              this.loadMaterial(page, fieldAnswers);
-            }, this));
-          }       
-        }, this));
+            }, this)
+          );
+      } else {
+        $(pageElements).each(
+          $.proxy(function (index, page) {
+            this.loadMaterial(page, fieldAnswers || {});
+          }, this)
+        );
       }
-      else {
-        $(pageElements).each($.proxy(function (index, page) {
-          this.loadMaterial(page, fieldAnswers||{});
-        }, this));
-      }
-    }
+    },
   }); // material loader widget
-  
-  $(document).on('taskFieldDiscovered', function (event, data) {
+
+  $(document).on("taskFieldDiscovered", function (event, data) {
     var object = data.object;
-    if ($(object).attr('type') == 'application/vnd.muikku.field.text') {
+    if ($(object).attr("type") == "application/vnd.muikku.field.text") {
       var muikkuFieldElement;
       if (data.fieldlessMode) {
         var value = data.value;
         if (value) {
           value = value.replace(/`/g, "'"); // To not mess up MathJax
         }
-        muikkuFieldElement = $('<div>')
-          .attr('name', data.name)
-          .addClass('muikku-text-field')
+        muikkuFieldElement = $("<div>")
+          .attr("name", data.name)
+          .addClass("muikku-text-field")
           .text(value);
-      }
-      else {
-        muikkuFieldElement = $('<input>')
-          .addClass('muikku-text-field')
+      } else {
+        muikkuFieldElement = $("<input>")
+          .addClass("muikku-text-field")
           .attr({
-            'type': "text",
-            'size':data.meta.columns,
-            'placeholder': data.meta.hint,
-            'name': data.name
+            type: "text",
+            size: data.meta.columns,
+            placeholder: data.meta.hint,
+            name: data.name,
           })
           .val(data.value);
       }
@@ -296,18 +387,21 @@
         materialId: data.materialId,
         embedId: data.embedId,
         meta: data.meta,
-        readonly: data.readOnlyFields||false,
+        readonly: data.readOnlyFields || false,
         trackChange: false,
         fieldlessMode: data.fieldlessMode,
         isReadonly: function () {
-          return $(this.element).attr('disabled') == 'disabled' || $(this.element).attr('readonly') == 'readonly';
+          return (
+            $(this.element).attr("disabled") == "disabled" ||
+            $(this.element).attr("readonly") == "readonly"
+          );
         },
         setReadonly: function (readonly) {
           if (readonly) {
-            $(this.element).attr('readonly', 'readonly')
+            $(this.element).attr("readonly", "readonly");
           } else {
-            $(this.element).removeAttr('readonly');
-          } 
+            $(this.element).removeAttr("readonly");
+          }
         },
         hasExamples: function () {
           var meta = this.options.meta;
@@ -317,13 +411,13 @@
                 return false;
               }
             }
-            
+
             return true;
           }
-          
+
           return false;
         },
-        getCorrectAnswers: function() {
+        getCorrectAnswers: function () {
           var result = [];
           var meta = this.options.meta;
           if (meta.rightAnswers && meta.rightAnswers.length > 0) {
@@ -337,32 +431,36 @@
         },
         getExamples: function () {
           var result = [];
-          
+
           var meta = this.options.meta;
           if (meta.rightAnswers && meta.rightAnswers.length > 0) {
             for (var i = 0, l = meta.rightAnswers.length; i < l; i++) {
               result.push(meta.rightAnswers[i].text);
             }
           }
-          
+
           return result;
         },
-        hasDisplayableAnswers: function() {
-          return this.options.meta.rightAnswers && this.options.meta.rightAnswers.length > 0; 
+        hasDisplayableAnswers: function () {
+          return (
+            this.options.meta.rightAnswers &&
+            this.options.meta.rightAnswers.length > 0
+          );
         },
         answer: function (val) {
           if (val !== undefined) {
             if (this.options.fieldlessMode) {
               $(this.element).text(val);
-            }
-            else {
+            } else {
               $(this.element).val(val);
             }
           } else {
-            return this.options.fieldlessMode ? $(this.element).text() : $(this.element).val();
+            return this.options.fieldlessMode
+              ? $(this.element).text()
+              : $(this.element).val();
           }
         },
-        canCheckAnswer: function() {
+        canCheckAnswer: function () {
           var meta = this.options.meta;
           if (meta.rightAnswers) {
             for (var i = 0, l = meta.rightAnswers.length; i < l; i++) {
@@ -371,113 +469,124 @@
               }
             }
           }
-          
+
           return false;
         },
-        isCorrectAnswer: function() {
+        isCorrectAnswer: function () {
           var meta = this.options.meta;
-          
+
           var meta = this.options.meta;
           if (meta.rightAnswers) {
             for (var i = 0, l = meta.rightAnswers.length; i < l; i++) {
               if (meta.rightAnswers[i].correct === true) {
-                var answer = this.answer()||'';
-                var text = meta.rightAnswers[i].text||'';
-                
+                var answer = this.answer() || "";
+                var text = meta.rightAnswers[i].text || "";
+
                 if (!meta.rightAnswers[i].caseSensitive) {
                   answer = answer.toLowerCase();
                   text = text.toLowerCase();
                 }
-                
+
                 if (meta.rightAnswers[i].normalizeWhitespace) {
                   answer = answer.trim();
                   text = text.trim();
                 }
-                
+
                 if (text == answer) {
                   return true;
                 }
               }
             }
           }
-          
-          return false; 
-        }
+
+          return false;
+        },
       });
 
       if (data.fieldlessMode) {
         $(object).replaceWith(muikkuFieldElement);
-      }  
-      else {
-        var taskfieldWrapper = $('<span>').addClass('textfield-wrapper');
+      } else {
+        var taskfieldWrapper = $("<span>").addClass("textfield-wrapper");
         if (data.meta.autogrow !== false) {
-          muikkuFieldElement.addClass('autogrow');
+          muikkuFieldElement.addClass("autogrow");
         }
-        
+
         taskfieldWrapper.append(muikkuFieldElement);
-        
-        if (data.meta.hint != '') {
-          taskfieldWrapper.append($('<span class="muikku-text-field-hint">' + data.meta.hint + '</span>'));  
-          
-          $(muikkuFieldElement).on("focus", function() {
-            $(taskfieldWrapper).children('.muikku-text-field-hint')
+
+        if (data.meta.hint != "") {
+          taskfieldWrapper.append(
+            $(
+              '<span class="muikku-text-field-hint">' +
+                data.meta.hint +
+                "</span>"
+            )
+          );
+
+          $(muikkuFieldElement).on("focus", function () {
+            $(taskfieldWrapper)
+              .children(".muikku-text-field-hint")
               .css({
-                visibility:"visible",
-                top: muikkuFieldElement.outerHeight() + 4 + 'px'
+                visibility: "visible",
+                top: muikkuFieldElement.outerHeight() + 4 + "px",
               })
-              .animate({
-                opacity:1
-                
-              }, 300, function() {
-              
-              })
+              .animate(
+                {
+                  opacity: 1,
+                },
+                300,
+                function () {}
+              );
           });
-          
-          $(muikkuFieldElement).on("blur", function() {
-            $(taskfieldWrapper).children('.muikku-text-field-hint')
+
+          $(muikkuFieldElement).on("blur", function () {
+            $(taskfieldWrapper)
+              .children(".muikku-text-field-hint")
               .css({
-                visibility:"hidden"  
+                visibility: "hidden",
               })
-              .animate({
-                opacity:0
-                
-              }, 150, function() {
-              
-              })
+              .animate(
+                {
+                  opacity: 0,
+                },
+                150,
+                function () {}
+              );
           });
         }
         $(object).replaceWith(taskfieldWrapper);
       }
     }
   });
-  
-  $(document).on('taskFieldDiscovered', function (event, data) {
+
+  $(document).on("taskFieldDiscovered", function (event, data) {
     var object = data.object;
-    if ($(object).attr('type') == 'application/vnd.muikku.field.memo') {
+    if ($(object).attr("type") == "application/vnd.muikku.field.memo") {
       var memoFieldElement;
       if (data.fieldlessMode) {
         var value = data.value;
         if (value && !data.meta.richedit) {
           // #3212: for plain text memo, recycle value via div text to escape potential html but add html linebreaks
-          value = $('<div>').text(value).html().replace(/(?:\r\n|\r|\n)/g, '<br/>');
+          value = $("<div>")
+            .text(value)
+            .html()
+            .replace(/(?:\r\n|\r|\n)/g, "<br/>");
         }
         if (value) {
           value = value.replace(/`/g, "'"); // To not mess up MathJax
         }
-        memoFieldElement = $('<div>')
-          .attr('name', data.name)
-          .addClass('muikku-memo-field')
+        memoFieldElement = $("<div>")
+          .attr("name", data.name)
+          .addClass("muikku-memo-field")
           .html(value);
-      }
-      else {
-        memoFieldElement = $('<textarea>')
-          .addClass('muikku-memo-field')
+      } else {
+        memoFieldElement = $("<textarea>")
+          .addClass("muikku-memo-field")
           .attr({
-            'cols':data.meta.columns,
-            'rows':data.meta.rows,
-            'placeholder': data.meta.help,
-            'title': data.meta.hint,
-            'name': data.name
+            cols: data.meta.columns,
+            rows: data.meta.rows,
+            placeholder: data.meta.help,
+            title: data.meta.hint,
+            name: data.name,
           })
           .val(data.value);
       }
@@ -486,178 +595,254 @@
         fieldName: data.name,
         materialId: data.materialId,
         embedId: data.embedId,
-        readonly: data.readOnlyFields||false,
+        readonly: data.readOnlyFields || false,
         trackChange: data.meta.richedit,
         trackKeyUp: !!!data.meta.richedit,
         isReadonly: function () {
-          return $(this.element).attr('disabled') == 'disabled' || $(this.element).attr('readonly') == 'readonly';
+          return (
+            $(this.element).attr("disabled") == "disabled" ||
+            $(this.element).attr("readonly") == "readonly"
+          );
         },
         setReadonly: function (readonly) {
           if (readonly) {
-            $(this.element).attr('readonly', 'readonly')
+            $(this.element).attr("readonly", "readonly");
           } else {
-            $(this.element).removeAttr('readonly');
-          } 
-          if ($(this.element).hasClass('ckeditor-field')) {
-            $(this.element).muikkuRichMemoField('setReadOnly', readonly);
+            $(this.element).removeAttr("readonly");
+          }
+          if ($(this.element).hasClass("ckeditor-field")) {
+            $(this.element).muikkuRichMemoField("setReadOnly", readonly);
           }
         },
-        canCheckAnswer: function() {
+        canCheckAnswer: function () {
           return true;
         },
-        checksOwnAnswer: function() {
+        checksOwnAnswer: function () {
           return true;
         },
-        checkAnswer: function(showCorrectAnswers) {
+        checkAnswer: function (showCorrectAnswers) {
           if (this.hasDisplayableAnswers()) {
-            $(this.element).parent().find('.muikku-field-examples[data-for-field="' + this.options.fieldName + '"]').remove();
-            var exampleDetails = $('<span>').addClass('muikku-field-examples').attr('data-for-field', this.options.fieldName);
-            exampleDetails.append( 
-              $('<span>').addClass('muikku-field-examples-title').text(getLocaleText('plugin.workspace.assigment.checkAnswers.detailsSummary.title'))
+            $(this.element)
+              .parent()
+              .find(
+                '.muikku-field-examples[data-for-field="' +
+                  this.options.fieldName +
+                  '"]'
+              )
+              .remove();
+            var exampleDetails = $("<span>")
+              .addClass("muikku-field-examples")
+              .attr("data-for-field", this.options.fieldName);
+            exampleDetails.append(
+              $("<span>")
+                .addClass("muikku-field-examples-title")
+                .text(
+                  getLocaleText(
+                    "plugin.workspace.assigment.checkAnswers.detailsSummary.title"
+                  )
+                )
             );
-            exampleDetails.append($('<span>').addClass('muikku-field-example').html(this.options.meta.example.replace(/(?:\r\n|\r|\n)/g, '<br/>')));
-            var countContainer = $(this.element).parent().find('.count-container[data-for-field="' + this.options.fieldName + '"]');
+            exampleDetails.append(
+              $("<span>")
+                .addClass("muikku-field-example")
+                .html(
+                  this.options.meta.example.replace(/(?:\r\n|\r|\n)/g, "<br/>")
+                )
+            );
+            var countContainer = $(this.element)
+              .parent()
+              .find(
+                '.count-container[data-for-field="' +
+                  this.options.fieldName +
+                  '"]'
+              );
             if (countContainer.length) {
               $(countContainer).after(exampleDetails);
-            }
-            else {
+            } else {
               $(this.element).after(exampleDetails);
             }
           }
         },
-        hasDisplayableAnswers: function() {
+        hasDisplayableAnswers: function () {
           return this.options.meta.example;
-        }
+        },
       });
       if (data.fieldlessMode) {
         $(object).replaceWith(memoFieldElement);
-        
+
         var characterCounter = $('<div class="character-count-container">')
-          .append($('<span class="character-count-title">').text(getLocaleText('plugin.workspace.memoField.characterCount')))
+          .append(
+            $('<span class="character-count-title">').text(
+              getLocaleText("plugin.workspace.memoField.characterCount")
+            )
+          )
           .append('<span class="character-count">');
         var wordCounter = $('<div class="word-count-container">')
-          .append($('<span class="word-count-title">').text(getLocaleText('plugin.workspace.memoField.wordCount')))
+          .append(
+            $('<span class="word-count-title">').text(
+              getLocaleText("plugin.workspace.memoField.wordCount")
+            )
+          )
           .append('<span class="word-count">');
-        var countContainer = $('<div>')
-          .attr('data-for-field', data.name)
-          .addClass('count-container')
+        var countContainer = $("<div>")
+          .attr("data-for-field", data.name)
+          .addClass("count-container")
           .append(wordCounter)
           .append(characterCounter);
         memoFieldElement.after(countContainer);
 
-        var text = data.meta.richedit ? memoFieldElement.text() : data.value||'';
-        $(countContainer).find('.character-count').text(text === '' ? 0 : text.trim().replace(/(\s|\r\n|\r|\n)+/g,'').split("").length);
-        $(countContainer).find('.word-count').text(text === '' ? 0 : text.trim().split(/\s+/).length);
-      }
-      else {
+        var text = data.meta.richedit
+          ? memoFieldElement.text()
+          : data.value || "";
+        $(countContainer)
+          .find(".character-count")
+          .text(
+            text === ""
+              ? 0
+              : text
+                  .trim()
+                  .replace(/(\s|\r\n|\r|\n)+/g, "")
+                  .split("").length
+          );
+        $(countContainer)
+          .find(".word-count")
+          .text(text === "" ? 0 : text.trim().split(/\s+/).length);
+      } else {
         if (data.meta.richedit == true) {
-          memoFieldElement.addClass('ckeditor-field');
+          memoFieldElement.addClass("ckeditor-field");
         }
         $(object).replaceWith(memoFieldElement);
-        
+
         // #3120 memo word counter (non-richedit)
         if (data.meta.richedit != true) {
           var characterCounter = $('<div class="character-count-container">')
-            .append($('<span class="character-count-title">').text(getLocaleText('plugin.workspace.memoField.characterCount')))
+            .append(
+              $('<span class="character-count-title">').text(
+                getLocaleText("plugin.workspace.memoField.characterCount")
+              )
+            )
             .append('<span class="character-count">');
           var wordCounter = $('<div class="word-count-container">')
-            .append($('<span class="word-count-title">').text(getLocaleText('plugin.workspace.memoField.wordCount')))
+            .append(
+              $('<span class="word-count-title">').text(
+                getLocaleText("plugin.workspace.memoField.wordCount")
+              )
+            )
             .append('<span class="word-count">');
-          var countContainer = $('<div>')
-            .attr('data-for-field', data.name)
-            .addClass('count-container')
+          var countContainer = $("<div>")
+            .attr("data-for-field", data.name)
+            .addClass("count-container")
             .append(wordCounter)
             .append(characterCounter);
           memoFieldElement.after(countContainer);
-          var countMethod = function() {
+          var countMethod = function () {
             var text = memoFieldElement.val().trim();
-            $(countContainer).find('.character-count').text(text === '' ? 0 : text.replace(/(\s|\r\n|\r|\n)+/g,'').split("").length);
-            $(countContainer).find('.word-count').text(text === '' ? 0 : text.split(/\s+/).length);
+            $(countContainer)
+              .find(".character-count")
+              .text(
+                text === ""
+                  ? 0
+                  : text.replace(/(\s|\r\n|\r|\n)+/g, "").split("").length
+              );
+            $(countContainer)
+              .find(".word-count")
+              .text(text === "" ? 0 : text.split(/\s+/).length);
           };
           var timer = null;
-          memoFieldElement.on('focus', $.proxy(function() {
-            if (timer) {
-              clearInterval(timer);
-            }
-            timer = setInterval($.proxy(function() {
+          memoFieldElement.on(
+            "focus",
+            $.proxy(function () {
+              if (timer) {
+                clearInterval(timer);
+              }
+              timer = setInterval(
+                $.proxy(function () {
+                  countMethod();
+                }, this),
+                1000
+              );
+            }, this)
+          );
+          memoFieldElement.on(
+            "blur",
+            $.proxy(function () {
               countMethod();
-            }, this), 1000);
-          }, this));
-          memoFieldElement.on('blur', $.proxy(function() {
-            countMethod();
-            if (timer) {
-              clearInterval(timer);
-              timer = null;
-            }
-          }, this));
+              if (timer) {
+                clearInterval(timer);
+                timer = null;
+              }
+            }, this)
+          );
           countMethod();
         }
       }
     }
   });
 
-  $(document).on('taskFieldDiscovered', function (event, data) {
+  $(document).on("taskFieldDiscovered", function (event, data) {
     var object = data.object;
-    if ($(object).attr('type') == 'application/vnd.muikku.field.mathexercise') {
+    if ($(object).attr("type") == "application/vnd.muikku.field.mathexercise") {
       var userAgent = window.navigator.userAgent || "";
       var isIE = !!userAgent.match(/MSIE|Trident/);
 
       if (isIE) {
-        var browserInfo = $('<div>').text(getLocaleText("plugin.workspace.materialsLoader.mathExerciseNonSupportedBrowser"));
+        var browserInfo = $("<div>").text(
+          getLocaleText(
+            "plugin.workspace.materialsLoader.mathExerciseNonSupportedBrowser"
+          )
+        );
         $(object).replaceWith(browserInfo);
       } else {
-        var mathExerciseField = $('<div>').muikkuMathExerciseField({
+        var mathExerciseField = $("<div>").muikkuMathExerciseField({
           pageElement: data.pageElement,
           fieldName: data.name,
           materialId: data.materialId,
           embedId: data.embedId,
           meta: data.meta,
-          readonly: data.readOnlyFields||false
+          readonly: data.readOnlyFields || false,
         });
         if (data.value) {
-          mathExerciseField.muikkuField('answer', data.value);
+          mathExerciseField.muikkuField("answer", data.value);
         }
         $(object).replaceWith(mathExerciseField);
       }
     }
   });
 
-  $(document).on('taskFieldDiscovered', function (event, data) {
-    
-    function concatText(text, length){    
-      if (text.length > length) {   
-        return text.substring(0, length) + '...';   
+  $(document).on("taskFieldDiscovered", function (event, data) {
+    function concatText(text, length) {
+      if (text.length > length) {
+        return text.substring(0, length) + "...";
+      } else {
+        return text;
       }
-      else {    
-        return text;    
-      }   
     }
-    
+
     function shuffleArray(array) {
       for (var i = array.length - 1; i > 0; i--) {
-          var j = Math.floor(Math.random() * (i + 1));
-          var temp = array[i];
-          array[i] = array[j];
-          array[j] = temp;
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
       }
       return array;
     }
-    
-    function organizeFieldsByAnswers(terms, counterparts, answers){
+
+    function organizeFieldsByAnswers(terms, counterparts, answers) {
       var organizedTerms = [];
       var organizedCounterparts = [];
       for (var answer in answers) {
         if (answers.hasOwnProperty(answer)) {
-          for(var i = 0, j = terms.length; i < j;i++){
-            if(terms[i].name == answer){
+          for (var i = 0, j = terms.length; i < j; i++) {
+            if (terms[i].name == answer) {
               organizedTerms.push(terms[i]);
               terms.splice(i, 1);
               break;
             }
           }
-          
-          for(var n = 0, l = counterparts.length; n < l;n++){
-            if(counterparts[n].name == answers[answer]){
+
+          for (var n = 0, l = counterparts.length; n < l; n++) {
+            if (counterparts[n].name == answers[answer]) {
               organizedCounterparts.push(counterparts[n]);
               counterparts.splice(n, 1);
               break;
@@ -665,120 +850,143 @@
           }
         }
       }
-      
+
       terms = shuffleArray(terms);
       counterparts = shuffleArray(counterparts);
-      
+
       return {
         terms: organizedTerms.concat(terms),
-        counterparts: organizedCounterparts.concat(counterparts)
+        counterparts: organizedCounterparts.concat(counterparts),
       };
-      
-    };
+    }
 
     var object = data.object;
-    if ($(object).attr('type') == 'application/vnd.muikku.field.connect') {
+    if ($(object).attr("type") == "application/vnd.muikku.field.connect") {
       var meta = data.meta;
       var values = data.value ? $.parseJSON(data.value) : {};
-      if(!$.isEmptyObject(values)){
-        var organizedFields = organizeFieldsByAnswers(meta.fields, meta.counterparts, values);
+      if (!$.isEmptyObject(values)) {
+        var organizedFields = organizeFieldsByAnswers(
+          meta.fields,
+          meta.counterparts,
+          values
+        );
         meta.fields = organizedFields.terms;
-        meta.counterparts = organizedFields.counterparts
-      }else{
+        meta.counterparts = organizedFields.counterparts;
+      } else {
         meta.fields = shuffleArray(meta.fields);
         meta.counterparts = shuffleArray(meta.counterparts);
-      }   
-      
-      var tBody = $('<tbody>');
-      
-      var field = $('<table>')
-        .addClass('muikku-connect-field-table')
+      }
+
+      var tBody = $("<tbody>");
+
+      var field = $("<table>")
+        .addClass("muikku-connect-field-table")
         .attr({
-          'data-field-name': meta.name,
-          'data-material-id': data.materialId,
-          'data-embed-id': data.embedId,
-          'data-meta': JSON.stringify(data.meta)
+          "data-field-name": meta.name,
+          "data-material-id": data.materialId,
+          "data-embed-id": data.embedId,
+          "data-meta": JSON.stringify(data.meta),
         });
-      
+
       var fieldsSize = meta.fields.length;
       var counterpartsSize = meta.counterparts.length;
       var rowCount = Math.max(fieldsSize, counterpartsSize);
-      
+
       for (var rowIndex = 0; rowIndex < rowCount; rowIndex++) {
-        var tdTermElement = $("<td>").addClass('muikku-connect-field-term-cell');
-        var tdValueElement = $("<td>").addClass('muikku-connect-field-value-cell');
-        var tdCounterpartElement = $("<td>").addClass("muikku-connect-field-counterpart-cell");
-        var inputElement = $("<input>") 
-          .addClass('muikku-connect-field-value') 
+        var tdTermElement = $("<td>").addClass(
+          "muikku-connect-field-term-cell"
+        );
+        var tdValueElement = $("<td>").addClass(
+          "muikku-connect-field-value-cell"
+        );
+        var tdCounterpartElement = $("<td>").addClass(
+          "muikku-connect-field-counterpart-cell"
+        );
+        var inputElement = $("<input>")
+          .addClass("muikku-connect-field-value")
           .attr({
-            'type': 'text'
+            type: "text",
           });
-        
-        var connectFieldTermMeta = rowIndex < fieldsSize ? meta.fields[rowIndex] : null;
-        var connectFieldCounterpartMeta = rowIndex < counterpartsSize ? meta.counterparts[rowIndex] : null;
-        
+
+        var connectFieldTermMeta =
+          rowIndex < fieldsSize ? meta.fields[rowIndex] : null;
+        var connectFieldCounterpartMeta =
+          rowIndex < counterpartsSize ? meta.counterparts[rowIndex] : null;
+
         if (connectFieldTermMeta != null) {
           inputElement
             .attr({
-              'name': connectFieldTermMeta.name
+              name: connectFieldTermMeta.name,
             })
             .val(values[connectFieldTermMeta.name]);
-          
+
           tdTermElement.text(concatText(connectFieldTermMeta.text, 50));
-          tdTermElement.attr('title', connectFieldTermMeta.text);
-          tdTermElement.attr('data-muikku-connect-field-option-name', connectFieldTermMeta.name);
+          tdTermElement.attr("title", connectFieldTermMeta.text);
+          tdTermElement.attr(
+            "data-muikku-connect-field-option-name",
+            connectFieldTermMeta.name
+          );
           tdValueElement.append(inputElement);
         }
-        
+
         if (connectFieldCounterpartMeta != null) {
-          tdCounterpartElement.text(concatText(connectFieldCounterpartMeta.text, 50));
-          tdCounterpartElement.attr('title', connectFieldCounterpartMeta.text);
-          tdCounterpartElement.attr('data-muikku-connect-field-option-name', connectFieldCounterpartMeta.name);
+          tdCounterpartElement.text(
+            concatText(connectFieldCounterpartMeta.text, 50)
+          );
+          tdCounterpartElement.attr("title", connectFieldCounterpartMeta.text);
+          tdCounterpartElement.attr(
+            "data-muikku-connect-field-option-name",
+            connectFieldCounterpartMeta.name
+          );
         }
-      
-        tBody
-          .append($('<tr>')
+
+        tBody.append(
+          $("<tr>")
             .append(tdTermElement)
             .append(tdValueElement)
-            .append(tdCounterpartElement));
+            .append(tdCounterpartElement)
+        );
       }
-      
+
       field.append(tBody);
-      
+
       $(object).replaceWith(field);
-      
+
       // TODO: data.meta.help, data.meta.hint
     }
   });
 
-  $(document).on('taskFieldDiscovered', function (event, data) {
+  $(document).on("taskFieldDiscovered", function (event, data) {
     var object = data.object;
-    if ($(object).attr('type') == 'application/vnd.muikku.field.sorter') {
-      var containerElement = data.meta.orientation == 'horizontal' ? 'span' : 'div';
-      var sorterField = $('<' + containerElement + '>').muikkuSorterField({
+    if ($(object).attr("type") == "application/vnd.muikku.field.sorter") {
+      var containerElement =
+        data.meta.orientation == "horizontal" ? "span" : "div";
+      var sorterField = $("<" + containerElement + ">").muikkuSorterField({
         pageElement: data.pageElement,
         fieldName: data.name,
         materialId: data.materialId,
         embedId: data.embedId,
         meta: data.meta,
-        readonly: data.readOnlyFields||false
+        readonly: data.readOnlyFields || false,
       });
       if (data.value) {
-        sorterField.muikkuField('answer', data.value);
+        sorterField.muikkuField("answer", data.value);
       }
       $(object).replaceWith(sorterField);
     }
   });
 
-  $(document).on('taskFieldDiscovered', function (event, data) {
+  $(document).on("taskFieldDiscovered", function (event, data) {
     var object = data.object;
-    if ($(object).attr('type') == 'application/vnd.muikku.field.organizer') {
+    if ($(object).attr("type") == "application/vnd.muikku.field.organizer") {
       var meta = data.meta;
-      var organizerField = $('<div>').addClass('muikku-organizer-field');
-      organizerField.attr('id', data.name);
-      var terms = $('<div>').addClass('muikku-terms-container');
-      var termsTitle = $('<div>').addClass('muikku-terms-title').append(meta.termTitle);
-      var termsData = $('<div>').addClass('muikku-terms-data');
+      var organizerField = $("<div>").addClass("muikku-organizer-field");
+      organizerField.attr("id", data.name);
+      var terms = $("<div>").addClass("muikku-terms-container");
+      var termsTitle = $("<div>")
+        .addClass("muikku-terms-title")
+        .append(meta.termTitle);
+      var termsData = $("<div>").addClass("muikku-terms-data");
       var termObjects = meta.terms;
       var j, x, i;
       for (i = termObjects.length; i; i -= 1) {
@@ -788,69 +996,94 @@
         termObjects[j] = x;
       }
       for (var i = 0; i < termObjects.length; i++) {
-        var term = $('<div>').addClass('muikku-term').append(termObjects[i].name).attr('data-term-id', termObjects[i].id).draggable({
-          containment: '#' + data.name,
-          start: function (event, ui) {
-            var width = event.target.getBoundingClientRect().width;
-            $(ui.helper).css({
-                'width': Math.ceil(width)
-            });
-          },
-          helper: 'clone'
-        });
+        var term = $("<div>")
+          .addClass("muikku-term")
+          .append(termObjects[i].name)
+          .attr("data-term-id", termObjects[i].id)
+          .draggable({
+            containment: "#" + data.name,
+            start: function (event, ui) {
+              var width = event.target.getBoundingClientRect().width;
+              $(ui.helper).css({
+                width: Math.ceil(width),
+              });
+            },
+            helper: "clone",
+          });
         termsData.append(term);
       }
       organizerField.append(terms);
       terms.append(termsTitle).append(termsData);
-      var handleDropEvent = function(event, ui) {
-        var muikkuField = $(this).closest('.muikku-organizer-field');
-        var termId = $(ui.draggable).attr('data-term-id');
-        var existingTerm = $(this).find('.muikku-term[data-term-id="' + termId + '"]');
+      var handleDropEvent = function (event, ui) {
+        var muikkuField = $(this).closest(".muikku-organizer-field");
+        var termId = $(ui.draggable).attr("data-term-id");
+        var existingTerm = $(this).find(
+          '.muikku-term[data-term-id="' + termId + '"]'
+        );
         if (existingTerm.length == 0) {
           var categoryTerm = $(ui.draggable).clone();
-          categoryTerm.addClass('term-in-use');
-          var removeLink = $('<span>').addClass('icon-trash').on('click', $.proxy(function(event) {
-            var term = $(event.target).closest('.muikku-term');
-            var termId = $(term).attr('data-term-id'); 
-            $(term).remove();
-            var originalTermObject = $(muikkuField).find('.muikku-term[data-term-id="' + termId + '"]')[0];
-            var useCount = $(originalTermObject).attr('data-use-count');
-            useCount--;
-            if (useCount == 0) {
-              $(originalTermObject).removeAttr('data-use-count');
-              $(originalTermObject).removeClass('term-in-use');
-            }
-            else {
-              $(originalTermObject).attr('data-use-count', useCount);
-            }
-            $(this).trigger("change");
-          }, this));
+          categoryTerm.addClass("term-in-use");
+          var removeLink = $("<span>")
+            .addClass("icon-trash")
+            .on(
+              "click",
+              $.proxy(function (event) {
+                var term = $(event.target).closest(".muikku-term");
+                var termId = $(term).attr("data-term-id");
+                $(term).remove();
+                var originalTermObject = $(muikkuField).find(
+                  '.muikku-term[data-term-id="' + termId + '"]'
+                )[0];
+                var useCount = $(originalTermObject).attr("data-use-count");
+                useCount--;
+                if (useCount == 0) {
+                  $(originalTermObject).removeAttr("data-use-count");
+                  $(originalTermObject).removeClass("term-in-use");
+                } else {
+                  $(originalTermObject).attr("data-use-count", useCount);
+                }
+                $(this).trigger("change");
+              }, this)
+            );
           categoryTerm.append(removeLink);
           $(this).append(categoryTerm);
-          var originalTermObject = $(muikkuField).find('.muikku-term[data-term-id="' + termId + '"]')[0];
-          var useCountAttr = $(originalTermObject).attr('data-use-count'); 
-          if (typeof useCountAttr !== typeof undefined && useCountAttr !== false) {
-            var useCount = $(originalTermObject).attr('data-use-count');
+          var originalTermObject = $(muikkuField).find(
+            '.muikku-term[data-term-id="' + termId + '"]'
+          )[0];
+          var useCountAttr = $(originalTermObject).attr("data-use-count");
+          if (
+            typeof useCountAttr !== typeof undefined &&
+            useCountAttr !== false
+          ) {
+            var useCount = $(originalTermObject).attr("data-use-count");
             useCount++;
-            $(originalTermObject).attr('data-use-count', useCount);
-          }
-          else {
-            $(originalTermObject).addClass('term-in-use');
-            $(originalTermObject).attr('data-use-count', 1);
+            $(originalTermObject).attr("data-use-count", useCount);
+          } else {
+            $(originalTermObject).addClass("term-in-use");
+            $(originalTermObject).attr("data-use-count", 1);
           }
           $(this).trigger("change");
         }
-      }
-      var categoriesContainer = $('<div>').addClass('muikku-categories-container flex-row');
+      };
+      var categoriesContainer = $("<div>").addClass(
+        "muikku-categories-container flex-row"
+      );
       organizerField.append(categoriesContainer);
       var categoryObjects = meta.categories;
       for (var i = 0; i < categoryObjects.length; i++) {
-        var categoryContainer = $('<div>').addClass('muikku-category-container');
-        var categoryTitle = $('<div>').addClass('muikku-category-title').append(categoryObjects[i].name);
-        var category = $('<div>').addClass('muikku-category').attr('data-category-id', categoryObjects[i].id).droppable({
-          accept: '.muikku-term',
-          drop: handleDropEvent
-        });
+        var categoryContainer = $("<div>").addClass(
+          "muikku-category-container"
+        );
+        var categoryTitle = $("<div>")
+          .addClass("muikku-category-title")
+          .append(categoryObjects[i].name);
+        var category = $("<div>")
+          .addClass("muikku-category")
+          .attr("data-category-id", categoryObjects[i].id)
+          .droppable({
+            accept: ".muikku-term",
+            drop: handleDropEvent,
+          });
         categoryContainer.append(categoryTitle).append(category);
         categoriesContainer.append(categoryContainer);
       }
@@ -860,64 +1093,79 @@
         materialId: data.materialId,
         embedId: data.embedId,
         meta: meta,
-        readonly: data.readOnlyFields||false,
-        answer: function(val) {
+        readonly: data.readOnlyFields || false,
+        answer: function (val) {
           if (val === undefined) {
             var answer = {};
-            var categories = $(this.element).find('.muikku-category');
+            var categories = $(this.element).find(".muikku-category");
             for (var i = 0; i < categories.length; i++) {
-              var categoryId = $(categories[i]).attr('data-category-id'); 
+              var categoryId = $(categories[i]).attr("data-category-id");
               answer[categoryId] = [];
-              var terms = $(categories[i]).find('.muikku-term');
+              var terms = $(categories[i]).find(".muikku-term");
               for (var j = 0; j < terms.length; j++) {
-                answer[categoryId].push($(terms[j]).attr('data-term-id'));
+                answer[categoryId].push($(terms[j]).attr("data-term-id"));
               }
             }
             return JSON.stringify(answer);
-          }
-          else {
+          } else {
             var answer = $.parseJSON(val);
             var keys = Object.keys(answer);
             for (var i = 0; i < keys.length; i++) {
               var categoryId = keys[i];
-              var categories = $(this.element).find('.muikku-category[data-category-id="' + categoryId + '"]');
+              var categories = $(this.element).find(
+                '.muikku-category[data-category-id="' + categoryId + '"]'
+              );
               var category = categories.length == 0 ? null : categories[0];
               if (category != null) {
                 var termIds = answer[keys[i]];
                 for (var j = 0; j < termIds.length; j++) {
-                  var terms = $(this.element).find('.muikku-term[data-term-id="' + termIds[j] + '"]'); 
+                  var terms = $(this.element).find(
+                    '.muikku-term[data-term-id="' + termIds[j] + '"]'
+                  );
                   var term = terms.length == 0 ? null : terms[0];
                   if (term != null) {
                     var categoryTerm = $(term).clone();
-                    $(categoryTerm).addClass('term-in-use');
-                    var removeLink = $('<span>').addClass('icon-trash').on('click', $.proxy(function(event) {
-                      var term = $(event.target).closest('.muikku-term');
-                      var category = $(term).closest('.muikku-category');
-                      var termId = $(term).attr('data-term-id'); 
-                      $(term).remove();
-                      var originalTermObject = $(this.element).find('.muikku-term[data-term-id="' + termId + '"]')[0];
-                      var useCount = $(originalTermObject).attr('data-use-count');
-                      useCount--;
-                      if (useCount == 0) {
-                        $(originalTermObject).removeAttr('data-use-count');
-                        $(originalTermObject).removeClass('term-in-use');
-                      }
-                      else {
-                        $(originalTermObject).attr('data-use-count', useCount);
-                      }
-                      $(category).trigger("change");
-                    }, this));
+                    $(categoryTerm).addClass("term-in-use");
+                    var removeLink = $("<span>")
+                      .addClass("icon-trash")
+                      .on(
+                        "click",
+                        $.proxy(function (event) {
+                          var term = $(event.target).closest(".muikku-term");
+                          var category = $(term).closest(".muikku-category");
+                          var termId = $(term).attr("data-term-id");
+                          $(term).remove();
+                          var originalTermObject = $(this.element).find(
+                            '.muikku-term[data-term-id="' + termId + '"]'
+                          )[0];
+                          var useCount =
+                            $(originalTermObject).attr("data-use-count");
+                          useCount--;
+                          if (useCount == 0) {
+                            $(originalTermObject).removeAttr("data-use-count");
+                            $(originalTermObject).removeClass("term-in-use");
+                          } else {
+                            $(originalTermObject).attr(
+                              "data-use-count",
+                              useCount
+                            );
+                          }
+                          $(category).trigger("change");
+                        }, this)
+                      );
                     $(categoryTerm).append(removeLink);
                     $(category).append(categoryTerm);
-                    var useCountAttr = $(term).attr('data-use-count'); 
-                    if (typeof useCountAttr !== typeof undefined && useCountAttr !== false) {
-                      var useCount = $(term).attr('data-use-count');
+                    var useCountAttr = $(term).attr("data-use-count");
+                    if (
+                      typeof useCountAttr !== typeof undefined &&
+                      useCountAttr !== false
+                    ) {
+                      var useCount = $(term).attr("data-use-count");
                       useCount++;
-                      $(term).attr('data-use-count', useCount);
-                    }
-                    else {
-                      $(term).addClass('term-in-use');
-                      $(term).attr('data-use-count', 1);
+                      $(term).attr("data-use-count", useCount);
+                    } else {
+                      $(term).addClass("term-in-use");
+                      $(term).attr("data-use-count", 1);
                     }
                   }
                 }
@@ -925,50 +1173,54 @@
             }
           }
         },
-        hasDisplayableAnswers: function() {
+        hasDisplayableAnswers: function () {
           return true;
         },
-        checksOwnAnswer: function() {
+        checksOwnAnswer: function () {
           return true;
         },
-        checkAnswer: function(showCorrectAnswers) {
-          $(this.element).find('.muikku-field-examples').remove();
+        checkAnswer: function (showCorrectAnswers) {
+          $(this.element).find(".muikku-field-examples").remove();
           var result = {
-            'correctAnswers': 0,
-            'wrongAnswers': 0
-          }
+            correctAnswers: 0,
+            wrongAnswers: 0,
+          };
           var meta = this.options.meta;
           var correctTermsByUser = 0;
           var wrongTermsByUser = 0;
-          var totalCorrectAnswers = 0; 
+          var totalCorrectAnswers = 0;
           for (var i = 0; i < meta.categoryTerms.length; i++) {
             var categoryId = meta.categoryTerms[i].category;
             var userCorrectTermsInCategory = 0;
             var userWrongTermsInCategory = 0;
             var correctTermsInCategory = meta.categoryTerms[i].terms.length;
             totalCorrectAnswers += correctTermsInCategory;
-            var userCategory = $(this.element).find('.muikku-category[data-category-id="' + categoryId + '"]')[0];
-            $(userCategory).removeClass('muikku-field-correct-answer muikku-field-semi-correct-answer muikku-field-incorrect-answer');
-            var userTerms = $(userCategory).find('.muikku-term');
+            var userCategory = $(this.element).find(
+              '.muikku-category[data-category-id="' + categoryId + '"]'
+            )[0];
+            $(userCategory).removeClass(
+              "muikku-field-correct-answer muikku-field-semi-correct-answer muikku-field-incorrect-answer"
+            );
+            var userTerms = $(userCategory).find(".muikku-term");
             for (var j = 0; j < userTerms.length; j++) {
-              var userTerm = $(userTerms[j]).attr('data-term-id');
+              var userTerm = $(userTerms[j]).attr("data-term-id");
               if ($.inArray(userTerm, meta.categoryTerms[i].terms) >= 0) {
                 userCorrectTermsInCategory++;
-              }
-              else {
+              } else {
                 userWrongTermsInCategory++;
               }
             }
-            if (userCorrectTermsInCategory == correctTermsInCategory && userWrongTermsInCategory == 0) {
-              $(userCategory).addClass('muikku-field-correct-answer');
+            if (
+              userCorrectTermsInCategory == correctTermsInCategory &&
+              userWrongTermsInCategory == 0
+            ) {
+              $(userCategory).addClass("muikku-field-correct-answer");
               result.correctAnswers++;
-            }
-            else if (userCorrectTermsInCategory == 0) {
-              $(userCategory).addClass('muikku-field-incorrect-answer');
+            } else if (userCorrectTermsInCategory == 0) {
+              $(userCategory).addClass("muikku-field-incorrect-answer");
               result.wrongAnswers++;
-            }
-            else {
-              $(userCategory).addClass('muikku-field-semi-correct-answer');
+            } else {
+              $(userCategory).addClass("muikku-field-semi-correct-answer");
               result.wrongAnswers++;
             }
           }
@@ -976,229 +1228,98 @@
             var termNames = {};
             for (var i = 0; i < meta.terms.length; i++) {
               termNames[meta.terms[i].id] = meta.terms[i].name;
-            };
+            }
             var field = $(this.element);
-            var exampleDetails = $('<span>').addClass('muikku-field-examples').attr('data-for-field', $(field).attr('name'));
-            exampleDetails.append( 
-              $('<span>').addClass('muikku-field-examples-title').text(getLocaleText('plugin.workspace.assigment.checkAnswers.correctSummary.title'))
+            var exampleDetails = $("<span>")
+              .addClass("muikku-field-examples")
+              .attr("data-for-field", $(field).attr("name"));
+            exampleDetails.append(
+              $("<span>")
+                .addClass("muikku-field-examples-title")
+                .text(
+                  getLocaleText(
+                    "plugin.workspace.assigment.checkAnswers.correctSummary.title"
+                  )
+                )
             );
             for (var i = 0; i < meta.categories.length; i++) {
-              var correctString = meta.categories[i].name + ': ';
+              var correctString = meta.categories[i].name + ": ";
               var terms = meta.categoryTerms;
               for (var j = 0; j < meta.categoryTerms.length; j++) {
                 if (meta.categoryTerms[j].category == meta.categories[i].id) {
                   var terms = meta.categoryTerms[j].terms;
                   for (var k = 0; k < terms.length; k++) {
-                    correctString += k == 0 ? termNames[terms[k]] : ', ' + termNames[terms[k]]; 
+                    correctString +=
+                      k == 0 ? termNames[terms[k]] : ", " + termNames[terms[k]];
                   }
                   break;
                 }
               }
-              exampleDetails.append($('<span>').addClass('muikku-field-example').text(correctString));
+              exampleDetails.append(
+                $("<span>").addClass("muikku-field-example").text(correctString)
+              );
             }
             $(field).after(exampleDetails);
           }
           return result;
         },
-        canCheckAnswer: function() {
+        canCheckAnswer: function () {
           return true;
         },
-        isCorrectAnswer: function() {
+        isCorrectAnswer: function () {
           return false; // irrelevant (checks own answer)
         },
-        getCorrectAnswers: function() {
+        getCorrectAnswers: function () {
           return false; // irrelevant (checks own answer)
-        }
+        },
       });
       if (data.value) {
-        organizerField.muikkuField('answer', data.value);
+        organizerField.muikkuField("answer", data.value);
       }
       $(object).replaceWith(organizerField);
     }
   });
-  
-  $(document).on('taskFieldDiscovered', function (event, data) {
+
+  $(document).on("taskFieldDiscovered", function (event, data) {
     var object = data.object;
-    if ($(object).attr('type') == 'application/vnd.muikku.field.select') {
+    if ($(object).attr("type") == "application/vnd.muikku.field.select") {
       var meta = data.meta;
       switch (meta.listType) {
-        case 'list':
-        case 'dropdown':
-          var input = $('<select>')
-            .addClass('muikku-select-field')
-            .attr({
-              name: data.name
-            });
-          
+        case "list":
+        case "dropdown":
+          var input = $("<select>").addClass("muikku-select-field").attr({
+            name: data.name,
+          });
+
           // Empty option to be able to clear an answer (unless such exists in options already)
-          if (meta.listType == 'dropdown') {
+          if (meta.listType == "dropdown") {
             var hasEmpty = false;
             for (var i = 0, l = meta.options.length; i < l; i++) {
-              hasEmpty = (meta.options[i].text == '' || meta.options[i].text == '-');
-              if (hasEmpty)
-                break;
+              hasEmpty =
+                meta.options[i].text == "" || meta.options[i].text == "-";
+              if (hasEmpty) break;
             }
-            if (!hasEmpty)
-              input.append($('<option>'));
+            if (!hasEmpty) input.append($("<option>"));
+          } else {
+            input.attr("size", meta.options.length);
           }
-          else {
-            input.attr('size', meta.options.length);
-          }
-          
-          for(var i = 0, l = meta.options.length; i < l; i++){
-            var option = $('<option>')
-            .attr({
-              'value': meta.options[i].name
+
+          for (var i = 0, l = meta.options.length; i < l; i++) {
+            var option = $("<option>").attr({
+              value: meta.options[i].name,
             });
             option.text(meta.options[i].text);
             input.append(option);
-          }      
-          
-          input
-            .val(data.value)
-            .muikkuField({
-              pageElement: data.pageElement,
-              fieldName: data.name,
-              materialId: data.materialId,
-              embedId: data.embedId,
-              meta: meta,
-              readonly: data.readOnlyFields||false,
-              hasDisplayableAnswers: function() {
-                if (this.options.meta.explanation) {
-                  return true;
-                }
-                for (var i = 0, l = meta.options.length; i < l; i++) {
-                  if (meta.options[i].correct == true) {
-                    return true;
-                  }
-                }
-                return false;
-              },
-              canCheckAnswer: function() {
-                return this.hasDisplayableAnswers();
-              },
-              checksOwnAnswer: function() {
-                return true;
-              },
-              checkAnswer: function(showCorrectAnswers) {
-                $(this.element).find('.muikku-field-examples').remove();
-                $(this.element).removeClass('muikku-field-correct-answer muikku-field-incorrect-answer');
-                var result = {
-                  'correctAnswers': 0,
-                  'wrongAnswers': 0
-                }
-                // Selected by user
-                var selectedValues = [this.answer()];
-                // Choices that would be correct
-                var correctValues = [];
-                for (var i = 0, l = meta.options.length; i < l; i++) {
-                  if (meta.options[i].correct == true) {
-                    correctValues.push(meta.options[i].name);
-                  }
-                }
-                // If there are correct answers, calculate and recolor
-                if (correctValues.length > 0) {
-                  var answer = this.answer();
-                  if (correctValues.indexOf(answer) >= 0) {
-                    result.correctAnswers++;
-                    $(this.element).addClass('muikku-field-correct-answer');
-                  }
-                  else {
-                    result.wrongAnswers++;
-                    $(this.element).addClass('muikku-field-incorrect-answer');
-                  }
-                }
-                if (showCorrectAnswers && this.hasDisplayableAnswers()) {
-                  var exampleDetails = $('<span>').addClass('muikku-field-examples');
-                  if (result.wrongAnswers > 0 && showCorrectAnswers) {
-                    exampleDetails.append($('<span>')
-                      .addClass('muikku-field-examples-title')
-                      .text(getLocaleText('plugin.workspace.assigment.checkAnswers.correctSummary.title'))
-                    );
-                    for (var i = 0, l = meta.options.length; i < l; i++) {
-                      if (meta.options[i].correct == true) {
-                        exampleDetails.append($('<span>')
-                          .addClass('muikku-field-example')
-                          .html(meta.options[i].text.replace(/\n/g, '<br/>'))    
-                        );
-                      }
-                    }
-                  }
-                  if (this.options.meta.explanation) {
-                    exampleDetails.append($('<span>').addClass('explanation-wrapper').explanation({text: this.options.meta.explanation}));
-                  }
-                  $(this.element).after(exampleDetails);
-                }
-                return result;
-              }
-            });
-          
-          $(object).replaceWith(input);
-        break;
-        case 'radio-horizontal':
-        case 'radio-vertical':
-          var idPrefix = [data.materialId, data.embedId, data.name].join(':');
-          var container = $('<span>').addClass('muikku-select-field');
-          if (meta.listType == 'radio-horizontal') {
-            container.addClass('radiobutton-horizontal');
-          } else {
-            container.addClass('radiobutton-vertical');
           }
-          for (var i = 0, l = meta.options.length; i < l; i++){
-            var label = $('<label>')
-              .attr({
-                'for': [idPrefix, meta.options[i].name].join(':')
-              });
-            label.text(meta.options[i].text);
-            var radio = $('<input>')
-              .attr({
-                id: [idPrefix, meta.options[i].name].join(':'),
-                name: data.name,
-                type: 'radio',
-                value: meta.options[i].name
-            });
-            if (data.value == meta.options[i].name) {
-              radio.attr({
-                checked: 'checked'
-              });
-            }
-            var optionContainer = $('<span>');
-            container.append(optionContainer);
-            optionContainer.append(radio);
-            optionContainer.append(label);
-          }      
-          container.muikkuField({
+
+          input.val(data.value).muikkuField({
+            pageElement: data.pageElement,
             fieldName: data.name,
             materialId: data.materialId,
             embedId: data.embedId,
             meta: meta,
-            readonly: data.readOnlyFields||false,
-            isReadonly: function () {
-              return $(this.element).attr('data-disabled') == 'true';
-            },
-            setReadonly: function (readonly) {
-              if (readonly) {
-                $(this.element)
-                  .attr('data-disabled', 'true') 
-                  .find('input[type="radio"]').attr('disabled', 'disabled');
-              } else {
-                $(this.element)
-                  .removeAttr('data-disabled') 
-                  .find('input[type="radio"]').removeAttr('disabled');
-              }
-            },
-            getFieldElements: function() {
-              return $(this.element).find('input');
-            },
-            answer: function(val) {
-              if (val) {
-                $(this.element).find('input').prop('checked', false);
-                $(this.element).find('input[value="' + val + '"]').prop('checked', true);
-              } else {
-                return $(this.element).find('input:checked').val();
-              }
-            },
-            hasDisplayableAnswers: function() {
+            readonly: data.readOnlyFields || false,
+            hasDisplayableAnswers: function () {
               if (this.options.meta.explanation) {
                 return true;
               }
@@ -1209,26 +1330,182 @@
               }
               return false;
             },
-            canCheckAnswer: function() {
+            canCheckAnswer: function () {
               return this.hasDisplayableAnswers();
             },
-            checksOwnAnswer: function() {
+            checksOwnAnswer: function () {
               return true;
             },
-            checkAnswer: function(showCorrectAnswers) {
-              $(this.element).find('.muikku-field-examples').remove();
-              $(this.element).find('input').each(function(index, element) {
-                $(element).removeClass('muikku-field-correct-answer muikku-field-incorrect-answer');
-              });
+            checkAnswer: function (showCorrectAnswers) {
+              $(this.element).find(".muikku-field-examples").remove();
+              $(this.element).removeClass(
+                "muikku-field-correct-answer muikku-field-incorrect-answer"
+              );
               var result = {
-                'correctAnswers': 0,
-                'wrongAnswers': 0
+                correctAnswers: 0,
+                wrongAnswers: 0,
+              };
+              // Selected by user
+              var selectedValues = [this.answer()];
+              // Choices that would be correct
+              var correctValues = [];
+              for (var i = 0, l = meta.options.length; i < l; i++) {
+                if (meta.options[i].correct == true) {
+                  correctValues.push(meta.options[i].name);
+                }
               }
+              // If there are correct answers, calculate and recolor
+              if (correctValues.length > 0) {
+                var answer = this.answer();
+                if (correctValues.indexOf(answer) >= 0) {
+                  result.correctAnswers++;
+                  $(this.element).addClass("muikku-field-correct-answer");
+                } else {
+                  result.wrongAnswers++;
+                  $(this.element).addClass("muikku-field-incorrect-answer");
+                }
+              }
+              if (showCorrectAnswers && this.hasDisplayableAnswers()) {
+                var exampleDetails = $("<span>").addClass(
+                  "muikku-field-examples"
+                );
+                if (result.wrongAnswers > 0 && showCorrectAnswers) {
+                  exampleDetails.append(
+                    $("<span>")
+                      .addClass("muikku-field-examples-title")
+                      .text(
+                        getLocaleText(
+                          "plugin.workspace.assigment.checkAnswers.correctSummary.title"
+                        )
+                      )
+                  );
+                  for (var i = 0, l = meta.options.length; i < l; i++) {
+                    if (meta.options[i].correct == true) {
+                      exampleDetails.append(
+                        $("<span>")
+                          .addClass("muikku-field-example")
+                          .html(meta.options[i].text.replace(/\n/g, "<br/>"))
+                      );
+                    }
+                  }
+                }
+                if (this.options.meta.explanation) {
+                  exampleDetails.append(
+                    $("<span>")
+                      .addClass("explanation-wrapper")
+                      .explanation({ text: this.options.meta.explanation })
+                  );
+                }
+                $(this.element).after(exampleDetails);
+              }
+              return result;
+            },
+          });
+
+          $(object).replaceWith(input);
+          break;
+        case "radio-horizontal":
+        case "radio-vertical":
+          var idPrefix = [data.materialId, data.embedId, data.name].join(":");
+          var container = $("<span>").addClass("muikku-select-field");
+          if (meta.listType == "radio-horizontal") {
+            container.addClass("radiobutton-horizontal");
+          } else {
+            container.addClass("radiobutton-vertical");
+          }
+          for (var i = 0, l = meta.options.length; i < l; i++) {
+            var label = $("<label>").attr({
+              for: [idPrefix, meta.options[i].name].join(":"),
+            });
+            label.text(meta.options[i].text);
+            var radio = $("<input>").attr({
+              id: [idPrefix, meta.options[i].name].join(":"),
+              name: data.name,
+              type: "radio",
+              value: meta.options[i].name,
+            });
+            if (data.value == meta.options[i].name) {
+              radio.attr({
+                checked: "checked",
+              });
+            }
+            var optionContainer = $("<span>");
+            container.append(optionContainer);
+            optionContainer.append(radio);
+            optionContainer.append(label);
+          }
+          container.muikkuField({
+            fieldName: data.name,
+            materialId: data.materialId,
+            embedId: data.embedId,
+            meta: meta,
+            readonly: data.readOnlyFields || false,
+            isReadonly: function () {
+              return $(this.element).attr("data-disabled") == "true";
+            },
+            setReadonly: function (readonly) {
+              if (readonly) {
+                $(this.element)
+                  .attr("data-disabled", "true")
+                  .find('input[type="radio"]')
+                  .attr("disabled", "disabled");
+              } else {
+                $(this.element)
+                  .removeAttr("data-disabled")
+                  .find('input[type="radio"]')
+                  .removeAttr("disabled");
+              }
+            },
+            getFieldElements: function () {
+              return $(this.element).find("input");
+            },
+            answer: function (val) {
+              if (val) {
+                $(this.element).find("input").prop("checked", false);
+                $(this.element)
+                  .find('input[value="' + val + '"]')
+                  .prop("checked", true);
+              } else {
+                return $(this.element).find("input:checked").val();
+              }
+            },
+            hasDisplayableAnswers: function () {
+              if (this.options.meta.explanation) {
+                return true;
+              }
+              for (var i = 0, l = meta.options.length; i < l; i++) {
+                if (meta.options[i].correct == true) {
+                  return true;
+                }
+              }
+              return false;
+            },
+            canCheckAnswer: function () {
+              return this.hasDisplayableAnswers();
+            },
+            checksOwnAnswer: function () {
+              return true;
+            },
+            checkAnswer: function (showCorrectAnswers) {
+              $(this.element).find(".muikku-field-examples").remove();
+              $(this.element)
+                .find("input")
+                .each(function (index, element) {
+                  $(element).removeClass(
+                    "muikku-field-correct-answer muikku-field-incorrect-answer"
+                  );
+                });
+              var result = {
+                correctAnswers: 0,
+                wrongAnswers: 0,
+              };
               // Radio button selected by user
               var selectedValues = [];
-              $(this.element).find('input:checked').each(function() {
-                selectedValues.push($(this).val());
-              });
+              $(this.element)
+                .find("input:checked")
+                .each(function () {
+                  selectedValues.push($(this).val());
+                });
               // Radio buttons that would be correct
               var correctValues = [];
               for (var i = 0, l = meta.options.length; i < l; i++) {
@@ -1242,127 +1519,147 @@
                 if (correctValues.indexOf(answer) >= 0) {
                   result.correctAnswers++;
                   if (showCorrectAnswers) {
-                    $(this.element).find('input').each(function(index, element) {
-                      $(element).addClass('muikku-field-correct-answer');
-                    });
+                    $(this.element)
+                      .find("input")
+                      .each(function (index, element) {
+                        $(element).addClass("muikku-field-correct-answer");
+                      });
                   }
-                }
-                else {
+                } else {
                   result.wrongAnswers++;
                   if (showCorrectAnswers) {
-                    $(this.element).find('input').each(function(index, element) {
-                      $(element).addClass('muikku-field-incorrect-answer');
-                    });
+                    $(this.element)
+                      .find("input")
+                      .each(function (index, element) {
+                        $(element).addClass("muikku-field-incorrect-answer");
+                      });
                   }
                 }
               }
               if (showCorrectAnswers && this.hasDisplayableAnswers()) {
-                var exampleDetails = $('<span>').addClass('muikku-field-examples');
+                var exampleDetails = $("<span>").addClass(
+                  "muikku-field-examples"
+                );
                 if (result.wrongAnswers > 0 && showCorrectAnswers) {
-                  exampleDetails.append($('<span>')
-                    .addClass('muikku-field-examples-title')
-                    .text(getLocaleText('plugin.workspace.assigment.checkAnswers.correctSummary.title'))
+                  exampleDetails.append(
+                    $("<span>")
+                      .addClass("muikku-field-examples-title")
+                      .text(
+                        getLocaleText(
+                          "plugin.workspace.assigment.checkAnswers.correctSummary.title"
+                        )
+                      )
                   );
                   for (var i = 0, l = meta.options.length; i < l; i++) {
                     if (meta.options[i].correct == true) {
-                      exampleDetails.append($('<span>')
-                        .addClass('muikku-field-example')
-                        .html(meta.options[i].text.replace(/\n/g, '<br/>'))    
+                      exampleDetails.append(
+                        $("<span>")
+                          .addClass("muikku-field-example")
+                          .html(meta.options[i].text.replace(/\n/g, "<br/>"))
                       );
                     }
                   }
                 }
                 if (this.options.meta.explanation) {
-                  exampleDetails.append($('<span>').addClass('explanation-wrapper').explanation({text: this.options.meta.explanation}));
+                  exampleDetails.append(
+                    $("<span>")
+                      .addClass("explanation-wrapper")
+                      .explanation({ text: this.options.meta.explanation })
+                  );
                 }
                 $(this.element).after(exampleDetails);
               }
               return result;
-            }
+            },
           });
           $(object).replaceWith(container);
-        break;
+          break;
       }
     }
   });
 
-  $(document).on('taskFieldDiscovered', function (event, data) {
+  $(document).on("taskFieldDiscovered", function (event, data) {
     var object = data.object;
-    if ($(object).attr('type') == 'application/vnd.muikku.field.multiselect') {
-
+    if ($(object).attr("type") == "application/vnd.muikku.field.multiselect") {
       var meta = data.meta;
-      var idPrefix = [data.materialId, data.embedId, data.name].join(':');
-      var container = $('<span>').addClass('muikku-checkbox-field');
-      if (meta.listType == 'checkbox-horizontal') {
-        container.addClass('checkbox-horizontal');
+      var idPrefix = [data.materialId, data.embedId, data.name].join(":");
+      var container = $("<span>").addClass("muikku-checkbox-field");
+      if (meta.listType == "checkbox-horizontal") {
+        container.addClass("checkbox-horizontal");
       } else {
-        container.addClass('checkbox-vertical');
+        container.addClass("checkbox-vertical");
       }
-      for (var i = 0, l = meta.options.length; i < l; i++){
-        var label = $('<label>')
-          .attr({
-            'for': [idPrefix, meta.options[i].name].join(':')
-          });
+      for (var i = 0, l = meta.options.length; i < l; i++) {
+        var label = $("<label>").attr({
+          for: [idPrefix, meta.options[i].name].join(":"),
+        });
         label.text(meta.options[i].text);
         var values = data.value ? $.parseJSON(data.value) : [];
-        var checkbox = $('<input>')
-          .attr({
-            id: [idPrefix, meta.options[i].name].join(':'),
-            name: data.name,
-            type: 'checkbox',
-            value: meta.options[i].name
+        var checkbox = $("<input>").attr({
+          id: [idPrefix, meta.options[i].name].join(":"),
+          name: data.name,
+          type: "checkbox",
+          value: meta.options[i].name,
         });
         if ($.inArray(meta.options[i].name, values) > -1) {
           checkbox.attr({
-            checked: 'checked'
+            checked: "checked",
           });
         }
-        var optionContainer = $('<span>');
+        var optionContainer = $("<span>");
         container.append(optionContainer);
         optionContainer.append(checkbox);
         optionContainer.append(label);
-      }      
+      }
       container.muikkuField({
         pageElement: data.pageElement,
         fieldName: data.name,
         materialId: data.materialId,
         embedId: data.embedId,
         meta: meta,
-        readonly: data.readOnlyFields||false,
+        readonly: data.readOnlyFields || false,
         isReadonly: function () {
-          return $(this.element).attr('data-disabled') == 'true';
+          return $(this.element).attr("data-disabled") == "true";
         },
         setReadonly: function (readonly) {
           if (readonly) {
             $(this.element)
-              .attr('data-disabled', 'true') 
-              .find('input[type="checkbox"]').attr('disabled', 'disabled');
+              .attr("data-disabled", "true")
+              .find('input[type="checkbox"]')
+              .attr("disabled", "disabled");
           } else {
             $(this.element)
-              .removeAttr('data-disabled') 
-              .find('input[type="checkbox"]').removeAttr('disabled');
+              .removeAttr("data-disabled")
+              .find('input[type="checkbox"]')
+              .removeAttr("disabled");
           }
         },
-        getFieldElements: function() {
-          return $(this.element).find('input');
+        getFieldElements: function () {
+          return $(this.element).find("input");
         },
-        answer: function(val) {
+        answer: function (val) {
           if (val) {
-            $(this.element).find('input').prop('checked', false);
-            $.each($.isArray(val) ? val : $.parseJSON(val), $.proxy(function (index, value) {
-              $(this.element).find('input[value="' + value + '"]').prop('checked', true);
-            }, this));
-            
+            $(this.element).find("input").prop("checked", false);
+            $.each(
+              $.isArray(val) ? val : $.parseJSON(val),
+              $.proxy(function (index, value) {
+                $(this.element)
+                  .find('input[value="' + value + '"]')
+                  .prop("checked", true);
+              }, this)
+            );
           } else {
             var values = [];
-            $(this.element).find('input:checked').each(function() {
-              values.push($(this).val());
-            });
+            $(this.element)
+              .find("input:checked")
+              .each(function () {
+                values.push($(this).val());
+              });
 
-            return JSON.stringify(values); 
+            return JSON.stringify(values);
           }
         },
-        hasDisplayableAnswers: function() {
+        hasDisplayableAnswers: function () {
           if (this.options.meta.explanation) {
             return true;
           }
@@ -1373,26 +1670,32 @@
           }
           return false;
         },
-        canCheckAnswer: function() {
+        canCheckAnswer: function () {
           return this.hasDisplayableAnswers();
         },
-        checksOwnAnswer: function() {
+        checksOwnAnswer: function () {
           return true;
         },
-        checkAnswer: function(showCorrectAnswers) {
-          $(this.element).find('.muikku-field-examples').remove();
-          $(this.element).find('input').each(function(index, element) {
-            $(element).removeClass('muikku-field-correct-answer muikku-field-incorrect-answer');
-          });
+        checkAnswer: function (showCorrectAnswers) {
+          $(this.element).find(".muikku-field-examples").remove();
+          $(this.element)
+            .find("input")
+            .each(function (index, element) {
+              $(element).removeClass(
+                "muikku-field-correct-answer muikku-field-incorrect-answer"
+              );
+            });
           var result = {
-            'correctAnswers': 0,
-            'wrongAnswers': 0
-          }
+            correctAnswers: 0,
+            wrongAnswers: 0,
+          };
           // Checkboxes selected by user
           var selectedValues = [];
-          $(this.element).find('input:checked').each(function() {
-            selectedValues.push($(this).val());
-          });
+          $(this.element)
+            .find("input:checked")
+            .each(function () {
+              selectedValues.push($(this).val());
+            });
           // Checkboxes marked as correct
           var correctValues = [];
           for (var i = 0, l = meta.options.length; i < l; i++) {
@@ -1402,289 +1705,310 @@
           }
           // If there are correct answers, calculate and recolor
           if (correctValues.length > 0) {
-            $(this.element).find('input').each($.proxy(function(index, element) {
-              var value = $(element).val();
-              if (correctValues.indexOf(value) >= 0) {
-                if (selectedValues.indexOf(value) >= 0) {
-                  if (showCorrectAnswers) {
-                    $(element).addClass('muikku-field-correct-answer');
+            $(this.element)
+              .find("input")
+              .each(
+                $.proxy(function (index, element) {
+                  var value = $(element).val();
+                  if (correctValues.indexOf(value) >= 0) {
+                    if (selectedValues.indexOf(value) >= 0) {
+                      if (showCorrectAnswers) {
+                        $(element).addClass("muikku-field-correct-answer");
+                      }
+                      result.correctAnswers++;
+                    } else {
+                      if (showCorrectAnswers) {
+                        $(element).addClass("muikku-field-incorrect-answer");
+                      }
+                      result.wrongAnswers++;
+                    }
+                  } else {
+                    if (selectedValues.indexOf(value) >= 0) {
+                      if (showCorrectAnswers) {
+                        $(element).addClass("muikku-field-incorrect-answer");
+                      }
+                      result.wrongAnswers++;
+                    } else {
+                      if (showCorrectAnswers) {
+                        $(element).addClass("muikku-field-correct-answer");
+                      }
+                      result.correctAnswers++;
+                    }
                   }
-                  result.correctAnswers++;
-                }
-                else {
-                  if (showCorrectAnswers) {
-                    $(element).addClass('muikku-field-incorrect-answer');
-                  }
-                  result.wrongAnswers++;
-                }
-              }
-              else {
-                if (selectedValues.indexOf(value) >= 0) {
-                  if (showCorrectAnswers) {
-                    $(element).addClass('muikku-field-incorrect-answer');
-                  }
-                  result.wrongAnswers++;
-                }
-                else {
-                  if (showCorrectAnswers) {
-                    $(element).addClass('muikku-field-correct-answer');
-                  }
-                  result.correctAnswers++;
-                }
-              }
-            }, this));
+                }, this)
+              );
           }
           if (showCorrectAnswers && this.hasDisplayableAnswers()) {
-            var exampleDetails = $('<span>').addClass('muikku-field-examples');
+            var exampleDetails = $("<span>").addClass("muikku-field-examples");
             if (result.wrongAnswers > 0 && showCorrectAnswers) {
-              exampleDetails.append($('<span>')
-                .addClass('muikku-field-examples-title')
-                .text(getLocaleText('plugin.workspace.assigment.checkAnswers.correctSummary.title'))
+              exampleDetails.append(
+                $("<span>")
+                  .addClass("muikku-field-examples-title")
+                  .text(
+                    getLocaleText(
+                      "plugin.workspace.assigment.checkAnswers.correctSummary.title"
+                    )
+                  )
               );
               for (var i = 0, l = meta.options.length; i < l; i++) {
                 if (meta.options[i].correct == true) {
-                  exampleDetails.append($('<span>')
-                    .addClass('muikku-field-example')
-                    .html(meta.options[i].text.replace(/\n/g, '<br/>'))    
+                  exampleDetails.append(
+                    $("<span>")
+                      .addClass("muikku-field-example")
+                      .html(meta.options[i].text.replace(/\n/g, "<br/>"))
                   );
                 }
               }
             }
             if (this.options.meta.explanation) {
-              exampleDetails.append($('<span>').addClass('explanation-wrapper').explanation({text: this.options.meta.explanation}));
+              exampleDetails.append(
+                $("<span>")
+                  .addClass("explanation-wrapper")
+                  .explanation({ text: this.options.meta.explanation })
+              );
             }
             $(this.element).after(exampleDetails);
           }
           return result;
-        }
+        },
       });
       $(object).replaceWith(container);
     }
   });
-  
-  $(document).on('taskFieldDiscovered', function (event, data) {
+
+  $(document).on("taskFieldDiscovered", function (event, data) {
     var object = data.object;
-    if ($(object).attr('type') == 'application/vnd.muikku.field.file') {
-      
-      var input = $('<input>')
-        .addClass('muikku-file-field')
+    if ($(object).attr("type") == "application/vnd.muikku.field.file") {
+      var input = $("<input>")
+        .addClass("muikku-file-field")
         .attr({
-          'type': "file",
-          'placeholder': data.meta.help,
-          'title': data.meta.hint,
-          'name': data.name,
-          'data-readonly': $(object).attr('data-readonly')
+          type: "file",
+          placeholder: data.meta.help,
+          title: data.meta.hint,
+          name: data.name,
+          "data-readonly": $(object).attr("data-readonly"),
         })
         .data({
-          'field-name': data.name,
-          'material-id': data.materialId,
-          'embed-id': data.embedId
-        });   
-      
+          "field-name": data.name,
+          "material-id": data.materialId,
+          "embed-id": data.embedId,
+        });
+
       var files = data.value ? $.parseJSON(data.value) : [];
       for (var i = 0, l = files.length; i < l; i++) {
         var file = files[i];
-        $(input).attr('data-file-' + i + '.file-id', file.fileId);
-        $(input).attr('data-file-' + i + '.filename', file.name);
-        $(input).attr('data-file-' + i + '.content-type', file.contentType);
+        $(input).attr("data-file-" + i + ".file-id", file.fileId);
+        $(input).attr("data-file-" + i + ".filename", file.name);
+        $(input).attr("data-file-" + i + ".content-type", file.contentType);
       }
-      
+
       $(input).attr({
-        'data-file-count': files.length
+        "data-file-count": files.length,
       });
-      
+
       $(object).replaceWith(input);
     }
   });
-  
-  $(document).on('taskFieldDiscovered', function (event, data) {
+
+  $(document).on("taskFieldDiscovered", function (event, data) {
     var object = data.object;
-    if ($(object).attr('type') == 'application/vnd.muikku.field.audio') {
-      var audioRecord = $('<div>').muikkuAudioField({
-        'meta': data.meta,
-        'fieldName': data.name,
-        'materialId': data.materialId,
-        'embedId': data.embedId,
-        'readonly': data.readOnlyFields||false
+    if ($(object).attr("type") == "application/vnd.muikku.field.audio") {
+      var audioRecord = $("<div>").muikkuAudioField({
+        meta: data.meta,
+        fieldName: data.name,
+        materialId: data.materialId,
+        embedId: data.embedId,
+        readonly: data.readOnlyFields || false,
       });
-      
-      audioRecord.muikkuAudioField('answer', data.value);
-      
+
+      audioRecord.muikkuAudioField("answer", data.value);
+
       $(object).replaceWith(audioRecord);
     }
   });
-  
+
   function createEmbedId(parentIds) {
-    return (parentIds.length ? parentIds.join(':') : null);
+    return parentIds.length ? parentIds.join(":") : null;
   }
-  
-  $(document).on('beforeHtmlMaterialRender', function (event, data) {
-    $(data.element).find('object[type*="vnd.muikku.field"]').each(function (index, object) {
-      var meta = $.parseJSON($(object).find('param[name="content"]').attr('value'));
-      var embedId = createEmbedId(data.parentIds);
-      var materialId = data.materialId;
-      var valueKey = [materialId, embedId, meta.name].join('.');
-      var value = data.fieldAnswers ? data.fieldAnswers[valueKey] : '';
-      
-      $(document).trigger('taskFieldDiscovered', {
-        pageElement: data.pageElement,
-        object: object,
-        meta: meta,
-        name: meta.name,
-        embedId: embedId,
-        materialId: materialId,
-        value: value,
-        readOnlyFields: data.readOnlyFields,
-        fieldlessMode: data.fieldlessMode
+
+  $(document).on("beforeHtmlMaterialRender", function (event, data) {
+    $(data.element)
+      .find('object[type*="vnd.muikku.field"]')
+      .each(function (index, object) {
+        var meta = $.parseJSON(
+          $(object).find('param[name="content"]').attr("value")
+        );
+        var embedId = createEmbedId(data.parentIds);
+        var materialId = data.materialId;
+        var valueKey = [materialId, embedId, meta.name].join(".");
+        var value = data.fieldAnswers ? data.fieldAnswers[valueKey] : "";
+
+        $(document).trigger("taskFieldDiscovered", {
+          pageElement: data.pageElement,
+          object: object,
+          meta: meta,
+          name: meta.name,
+          embedId: embedId,
+          materialId: materialId,
+          value: value,
+          readOnlyFields: data.readOnlyFields,
+          fieldlessMode: data.fieldlessMode,
+        });
       });
-    });
   });
-  
-  $(document).on('afterHtmlMaterialRender', function (event, data) {
-    
-    $(data.pageElement).find("iframe[data-url^='//www.youtube.com']").each(function(index, object) {
-      $(object).removeAttr('height').removeAttr('width');
-      $(object).width($(object).parent().width());
-      $(object).height(Math.round($(object).width() / 16 * 9));
-    });
+
+  $(document).on("afterHtmlMaterialRender", function (event, data) {
+    $(data.pageElement)
+      .find("iframe[data-url^='//www.youtube.com']")
+      .each(function (index, object) {
+        $(object).removeAttr("height").removeAttr("width");
+        $(object).width($(object).parent().width());
+        $(object).height(Math.round(($(object).width() / 16) * 9));
+      });
 
     /* If last element inside article is floating this prevents mentioned element from overlapping its parent container */
+    $(data.pageElement).append($("<div>").addClass("clear"));
+
     $(data.pageElement)
-      .append($('<div>').addClass('clear'));
-    
-    $(data.pageElement).find('.muikku-connect-field-table').each(function (index, field) {
-      var meta = $.parseJSON($(field).attr('data-meta'));
-      $(field).muikkuConnectField({
-        fieldName: $(field).data('field-name'),
-        embedId: $(field).data('embed-id'),
-        materialId: $(field).data('material-id'),
-        meta: meta,
-        readonly: data.readOnlyFields||false
+      .find(".muikku-connect-field-table")
+      .each(function (index, field) {
+        var meta = $.parseJSON($(field).attr("data-meta"));
+        $(field).muikkuConnectField({
+          fieldName: $(field).data("field-name"),
+          embedId: $(field).data("embed-id"),
+          materialId: $(field).data("material-id"),
+          meta: meta,
+          readonly: data.readOnlyFields || false,
+        });
       });
-    });
-    
-    $(data.pageElement).find('table').each(function (index, table) {
-      var tableWrapper = $('<div>')
-        .addClass('table-wrapper')
-        .insertBefore(table);
-      $(table).appendTo(tableWrapper);
-    });
-    
+
+    $(data.pageElement)
+      .find("table")
+      .each(function (index, table) {
+        var tableWrapper = $("<div>")
+          .addClass("table-wrapper")
+          .insertBefore(table);
+        $(table).appendTo(tableWrapper);
+      });
+
     if (jQuery().magnificPopup) {
       // Lazy loading with magnific popup
-      $(data.pageElement).find('img.lazy').each(function (index, img) {
-        if ($(img).closest('a').length == 0) {
-          var src = $(img).attr('data-original');
-          var a = $('<a>')
-            .attr('href', src)
-            .magnificPopup({
-              type: 'image',
-              image: {
-                verticalFit: false
-              }
-            })
-            .insertBefore(img);
-          
-          $(img)
-            .appendTo(a)
-            .lazyload();
-        }
-        else {
-          $(img).lazyload();
-        }
-      });        
+      $(data.pageElement)
+        .find("img.lazy")
+        .each(function (index, img) {
+          if ($(img).closest("a").length == 0) {
+            var src = $(img).attr("data-original");
+            var a = $("<a>")
+              .attr("href", src)
+              .magnificPopup({
+                type: "image",
+                image: {
+                  verticalFit: false,
+                },
+              })
+              .insertBefore(img);
+
+            $(img).appendTo(a).lazyload();
+          } else {
+            $(img).lazyload();
+          }
+        });
     } else {
       // Lazy loading
-     $(data.pageElement).find('img.lazy').lazyload();
+      $(data.pageElement).find("img.lazy").lazyload();
     }
-    
+
     if (jQuery().imageDetails) {
-      $(data.pageElement).find('img')
-        .imageDetails();
+      $(data.pageElement).find("img").imageDetails();
     }
-    
+
     if (jQuery().wordDefinition) {
-      $(data.pageElement).find('mark[data-muikku-word-definition]')
+      $(data.pageElement)
+        .find("mark[data-muikku-word-definition]")
         .wordDefinition();
     }
-        
-    $(data.pageElement).find('.lazyFrame').lazyFrame();
-    
-    $(data.pageElement).find('.ckeditor-field').muikkuRichMemoField();
-    
+
+    $(data.pageElement).find(".lazyFrame").lazyFrame();
+
+    $(data.pageElement).find(".ckeditor-field").muikkuRichMemoField();
+
     /* Add autoGrow to textfield */
     if (jQuery().autoGrowInput) {
       $(data.pageElement)
-        .find('.muikku-text-field.autogrow')
-        .each(function() {
-          $(this)
-            .autoGrowInput({
-              minWidth: $(this).width(),
-              maxWidth: function() { 
-                 return $(data.pageElement).width()-40; 
-              },
-              comfortZone:0
-            });
+        .find(".muikku-text-field.autogrow")
+        .each(function () {
+          $(this).autoGrowInput({
+            minWidth: $(this).width(),
+            maxWidth: function () {
+              return $(data.pageElement).width() - 40;
+            },
+            comfortZone: 0,
+          });
         });
     }
 
     /* Add autosize to textarea */
-    if ((typeof autosize) == 'function') {
-      autosize($('textarea'));
+    if (typeof autosize == "function") {
+      autosize($("textarea"));
     }
-    
-    if ((typeof MathJax) != 'undefined') {
-      
-//      MathJax.Hub.Config({
-//        "HTML-CSS": {
-//          scale: 90
-//        },
-//        NativeMML: {
-//          scale: 90
-//        }
-//      });
-      
-      MathJax.Hub.Queue(["Typeset",MathJax.Hub,$(data.pageElement)[0]]);
+
+    if (typeof MathJax != "undefined") {
+      //      MathJax.Hub.Config({
+      //        "HTML-CSS": {
+      //          scale: 90
+      //        },
+      //        NativeMML: {
+      //          scale: 90
+      //        }
+      //      });
+
+      MathJax.Hub.Queue(["Typeset", MathJax.Hub, $(data.pageElement)[0]]);
     }
-    
+
     var maxFileSize = null;
     if ($("input[name='max-file-size']").length) {
       maxFileSize = Number($("input[name='max-file-size']").val());
     }
-    
-    renderDustTemplate('workspace/materials-assignment-attachement-remove-confirm.dust', { }, $.proxy(function (text) {
-      // File field support
-      $(data.pageElement).find('.muikku-file-field').each(function (index, field) {
-        var readonlyData = $(field).attr('data-readonly');
-        var readonly = data.readOnlyFields || ('true' === readonlyData);
-        $(field)
-          .muikkuFileField({
-            maxFileSize: maxFileSize,
-            confirmRemove: true,
-            confirmRemoveHtml: text,
-            supportRestore: false,
-            confirmRemoveDialogClass: "workspace-materials-assigment-attachment-dialog",
-          })
-          .muikkuField({
-            fieldName: $(field).data('field-name'),
-            embedId: $(field).data('embed-id'),
-            materialId: $(field).data('material-id'),
-            readonly: readonly,
-            answer: function (val) {
-              // TODO: Support setter for files
-              return JSON.stringify($(this.element).muikkuFileField('files'));
-            },
-            isReadonly: function () {
-              return $(this.element).muikkuFileField("isReadonly");
-            },
-            setReadonly: function (readonly) {
-              $(this.element).muikkuFileField("setReadonly", readonly);
-            }
-          });
-      });
-      
-    }, this));
-    
-  });
 
-}).call(this);
+    renderDustTemplate(
+      "workspace/materials-assignment-attachement-remove-confirm.dust",
+      {},
+      $.proxy(function (text) {
+        // File field support
+        $(data.pageElement)
+          .find(".muikku-file-field")
+          .each(function (index, field) {
+            var readonlyData = $(field).attr("data-readonly");
+            var readonly = data.readOnlyFields || "true" === readonlyData;
+            $(field)
+              .muikkuFileField({
+                maxFileSize: maxFileSize,
+                confirmRemove: true,
+                confirmRemoveHtml: text,
+                supportRestore: false,
+                confirmRemoveDialogClass:
+                  "workspace-materials-assigment-attachment-dialog",
+              })
+              .muikkuField({
+                fieldName: $(field).data("field-name"),
+                embedId: $(field).data("embed-id"),
+                materialId: $(field).data("material-id"),
+                readonly: readonly,
+                answer: function (val) {
+                  // TODO: Support setter for files
+                  return JSON.stringify(
+                    $(this.element).muikkuFileField("files")
+                  );
+                },
+                isReadonly: function () {
+                  return $(this.element).muikkuFileField("isReadonly");
+                },
+                setReadonly: function (readonly) {
+                  $(this.element).muikkuFileField("setReadonly", readonly);
+                },
+              });
+          });
+      }, this)
+    );
+  });
+}.call(this));

@@ -1,31 +1,61 @@
-import * as React from 'react';
-import { MaterialLoaderProps } from '~/components/base/material-loader';
+import * as React from "react";
+import { MaterialLoaderProps } from "~/components/base/material-loader";
 import Link from "~/components/general/link";
 
-interface MaterialLoaderProducersLicenseProps extends MaterialLoaderProps {
-}
+type MaterialLoaderProducersLicenseProps = MaterialLoaderProps;
 
-export function MaterialLoaderProducersLicense(props: MaterialLoaderProducersLicenseProps) {
-  if (!((props.material.producers && props.material.producers.length) || props.material.license)) {
+/**
+ * MaterialLoaderProducersLicense
+ * @param props props
+ */
+export function MaterialLoaderProducersLicense(
+  props: MaterialLoaderProducersLicenseProps
+) {
+  if (
+    !(
+      (props.material.producers && props.material.producers.length) ||
+      props.material.license
+    )
+  ) {
     return null;
   }
 
-  let license = props.material.license;
-  let hasLink = props.material.license ?  props.material.license.indexOf("http://") === 0 || props.material.license.indexOf("https://") === 0 : false;
+  const license = props.material.license;
+  const hasLink = props.material.license
+    ? props.material.license.indexOf("http://") === 0 ||
+      props.material.license.indexOf("https://") === 0
+    : false;
 
-  return (<div className="material-page__metadata-container">
-    {props.material.producers && props.material.producers.length ?
-      <div className="material-page__producers">
-        <div className="material-page__producers-label">{props.i18n.text.get("plugin.workspace.materials.producersLabel")}:</div>
-        <div className="material-page__producers-item">{props.material.producers.map((p) => p.name).join(", ")}</div>
-      </div>
-    : null}
-    {props.material.license ?
-      <div className="material-page__license">
-        <div className="material-page__license-label">{props.i18n.text.get("plugin.workspace.materials.licenseLabel")}:</div>
-         {hasLink ? <Link className="material-page__license-item" href={props.material.license} openInNewTab="_blank">{props.material.license}</Link>
-          : <span>{props.material.license}</span>}
-      </div>
-    : null}
-  </div>);
+  return (
+    <div className="material-page__metadata-container">
+      {props.material.producers && props.material.producers.length ? (
+        <div className="material-page__producers">
+          <div className="material-page__producers-label">
+            {props.i18n.text.get("plugin.workspace.materials.producersLabel")}:
+          </div>
+          <div className="material-page__producers-item">
+            {props.material.producers.map((p) => p.name).join(", ")}
+          </div>
+        </div>
+      ) : null}
+      {props.material.license ? (
+        <div className="material-page__license">
+          <div className="material-page__license-label">
+            {props.i18n.text.get("plugin.workspace.materials.licenseLabel")}:
+          </div>
+          {hasLink ? (
+            <Link
+              className="material-page__license-item"
+              href={props.material.license}
+              openInNewTab="_blank"
+            >
+              {props.material.license}
+            </Link>
+          ) : (
+            <span>{props.material.license}</span>
+          )}
+        </div>
+      ) : null}
+    </div>
+  );
 }

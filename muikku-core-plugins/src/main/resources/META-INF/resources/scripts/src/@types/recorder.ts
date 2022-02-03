@@ -1,5 +1,8 @@
 import { Dispatch, SetStateAction } from "react";
 
+/**
+ * RecordValue
+ */
 export interface RecordValue {
   //might not be there while uploading
   id?: string;

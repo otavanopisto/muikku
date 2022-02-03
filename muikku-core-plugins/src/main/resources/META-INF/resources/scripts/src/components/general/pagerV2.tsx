@@ -1,7 +1,7 @@
 import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import "~/sass/elements/pager.scss";
 import "~/sass/elements/wcag.scss";
 import ReactPaginateForked, { ReactPaginateForkProps } from "react-paginate";
@@ -40,10 +40,10 @@ const defaultPagerV2Props = {
 /**
  * PagerV2. It extends React Paginate components props, but without aria label builder
  * which is included already in PagerV2 by default
- * @param props
+ * @param props props
  * @returns JSX.Element
  */
-const PagerV2: React.FC<PagerV2Props> = (props) => {
+const PagerV2: React.FC<PagerV2Props> = (props): JSX.Element => {
   props = { ...defaultPagerV2Props, ...props };
 
   /**
@@ -78,7 +78,8 @@ const PagerV2: React.FC<PagerV2Props> = (props) => {
 
 /**
  * mapStateToProps
- * @param state
+ * @param state state
+ * @returns object
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -88,9 +89,9 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps() {
   return {};
 }
 

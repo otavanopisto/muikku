@@ -1,11 +1,12 @@
 import * as React from "react";
 import "~/sass/elements/matriculation.scss";
-import { StateType } from "../../../../reducers/index";
-import { HOPSType } from "../../../../reducers/main-function/hops";
-import { SaveState } from "../../../../@types/shared";
+import { SaveState } from "~/@types/shared";
 import { SavingDraftError } from "./saving-draft-error";
 import { SavingDraftInfo } from "./saving-draft-info";
 
+/**
+ * MatriculationExaminationEnrollmentInfoProps
+ */
 interface MatriculationExaminationEnrollmentInfoProps {
   onChangeSystemChange?: (value: boolean) => void;
   usingNewSystem?: boolean;
@@ -15,14 +16,24 @@ interface MatriculationExaminationEnrollmentInfoProps {
   compulsoryEducationEligible: boolean;
 }
 
+/**
+ * MatriculationExaminationEnrollmentInfoState
+ */
 interface MatriculationExaminationEnrollmentInfoState {
   usingNewSystem: boolean;
 }
 
+/**
+ * MatriculationExaminationEnrollmentInfo
+ */
 export class MatriculationExaminationEnrollmentInfo extends React.Component<
   MatriculationExaminationEnrollmentInfoProps,
   MatriculationExaminationEnrollmentInfoState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: MatriculationExaminationEnrollmentInfoProps) {
     super(props);
 
@@ -44,8 +55,7 @@ export class MatriculationExaminationEnrollmentInfo extends React.Component<
    * @param prevState
    */
   componentDidUpdate = (
-    prevProps: MatriculationExaminationEnrollmentInfoProps,
-    prevState: MatriculationExaminationEnrollmentInfoState
+    prevProps: MatriculationExaminationEnrollmentInfoProps
   ) => {
     if (this.props !== prevProps) {
       this.setState({
@@ -54,6 +64,10 @@ export class MatriculationExaminationEnrollmentInfo extends React.Component<
     }
   };
 
+  /**
+   * handleCheckboxChange
+   * @param e e
+   */
   handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (this.props.onChangeSystemChange) {
       this.props.onChangeSystemChange(e.target.checked);

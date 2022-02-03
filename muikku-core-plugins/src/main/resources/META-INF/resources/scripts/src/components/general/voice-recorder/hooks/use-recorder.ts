@@ -1,15 +1,15 @@
-import { useState, useEffect, useRef, useLayoutEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   Recorder,
   MediaRecorderEvent,
   AudioTrack,
   Interval,
-} from "../../../../@types/recorder";
+} from "~/@types/recorder";
 import $ from "~/lib/jquery";
 import { saveRecording, startRecording } from "../handlers/recorder-controls";
-import { StatusType } from "../../../../reducers/base/status";
-import { RecordValue } from "../../../../@types/recorder";
-import { AudioAssessment } from "../../../../@types/evaluation";
+import { StatusType } from "~/reducers/base/status";
+import { RecordValue } from "~/@types/recorder";
+import { AudioAssessment } from "~/@types/evaluation";
 
 /**
  * initialState
@@ -47,20 +47,18 @@ export default function useRecorder(props: UseRecorderProps) {
       props.values !== null &&
       recorderState.values.length !== props.values.length
     ) {
-      setRecorderState((prevState) => {
-        return {
-          ...prevState,
-          values: props.values.map(
-            (value) =>
-              ({
-                name: value.name,
-                contentType: value.contentType,
-                id: value.id,
-                url: `/rest/workspace/materialevaluationaudioassessment/${value.id}`,
-              } as RecordValue)
-          ),
-        };
-      });
+      setRecorderState((prevState) => ({
+        ...prevState,
+        values: props.values.map(
+          (value) =>
+            ({
+              name: value.name,
+              contentType: value.contentType,
+              id: value.id,
+              url: `/rest/workspace/materialevaluationaudioassessment/${value.id}`,
+            } as RecordValue)
+        ),
+      }));
     }
   }, []);
 
@@ -103,8 +101,7 @@ export default function useRecorder(props: UseRecorderProps) {
           ...prevState,
           mediaRecorder: new MediaRecorder(prevState.mediaStream),
         };
-      }
-      else {
+      } else {
         return prevState;
       }
     });
@@ -123,16 +120,18 @@ export default function useRecorder(props: UseRecorderProps) {
        */
       let contentType: string;
 
+      // eslint-disable-next-line
       recorder.ondataavailable = (e: MediaRecorderEvent) => {
         contentType = e.data.type;
         chunks.push(e.data);
       };
 
+      // eslint-disable-next-line
       recorder.onstop = async () => {
         const blob = new Blob(chunks, { type: contentType });
         chunks = [];
 
-        let newValues = [...recorderState.values];
+        const newValues = [...recorderState.values];
 
         setRecorderState((prevState: Recorder) => {
           if (prevState.mediaRecorder) {
@@ -168,15 +167,20 @@ export default function useRecorder(props: UseRecorderProps) {
     };
   }, [recorderState.mediaRecorder]);
 
+  /**
+   * processFileAt
+   * @param valueToSave valueToSave
+   * @param initialValue initialValue
+   */
   const processFileAt = (
     valueToSave: RecordValue,
     initialValue: RecordValue[]
   ) => {
-    let newValue = { ...valueToSave };
+    const newValue = { ...valueToSave };
     //create the form data
-    let formData = new FormData();
+    const formData = new FormData();
     // blob as given by the steam
-    let file = valueToSave.blob;
+    const file = valueToSave.blob;
     //we add it to the file
     formData.append("file", file);
     //and do the thing
@@ -184,6 +188,7 @@ export default function useRecorder(props: UseRecorderProps) {
       url: props.status.contextPath + "/tempFileUploadServlet",
       type: "POST",
       data: formData,
+      // eslint-disable-next-line
       success: (data: any) => {
         newValue.uploading = false;
         newValue.id = data.fileId;
@@ -196,16 +201,15 @@ export default function useRecorder(props: UseRecorderProps) {
 
         const updatedAllValues = initialValue.concat(newValueSavedToServer);
 
-        setRecorderState((prevState) => {
-          return {
-            ...initialState,
-            audio: window.URL.createObjectURL(valueToSave.blob),
-            values: updatedAllValues,
-          };
-        });
+        setRecorderState(() => ({
+          ...initialState,
+          audio: window.URL.createObjectURL(valueToSave.blob),
+          values: updatedAllValues,
+        }));
       },
       //in case of error
-      error: (xhr: any, err: Error) => {
+      // eslint-disable-next-line
+      error: () => {
         newValue.uploading = false;
         newValue.failed = true;
         newValue.contentType = file.type;
@@ -214,24 +218,23 @@ export default function useRecorder(props: UseRecorderProps) {
 
         const updatedAllValues = initialValue.concat(newValueSavedToServer);
 
-        setRecorderState((prevState) => {
-          return {
-            ...initialState,
-            audio: window.URL.createObjectURL(valueToSave.blob),
-            values: updatedAllValues,
-          };
-        });
+        setRecorderState(() => ({
+          ...initialState,
+          audio: window.URL.createObjectURL(valueToSave.blob),
+          values: updatedAllValues,
+        }));
       },
+      // eslint-disable-next-line
       xhr: () => {
         //we need to get the upload progress
-        let xhr = new (window as any).XMLHttpRequest();
+        const xhr = new (window as any).XMLHttpRequest();
         //Upload progress
         xhr.upload.addEventListener(
           "progress",
           (evt: any) => {
             if (evt.lengthComputable) {
               //we calculate the percent
-              let percentComplete = evt.loaded / evt.total;
+              const percentComplete = evt.loaded / evt.total;
               //make a copy of the values
 
               newValue.progress = percentComplete;
@@ -242,13 +245,11 @@ export default function useRecorder(props: UseRecorderProps) {
                 newValueSavedToServer
               );
 
-              setRecorderState((prevState) => {
-                return {
-                  ...prevState,
-                  audio: window.URL.createObjectURL(valueToSave.blob),
-                  values: updatedAllValues,
-                };
-              });
+              setRecorderState((prevState) => ({
+                ...prevState,
+                audio: window.URL.createObjectURL(valueToSave.blob),
+                values: updatedAllValues,
+              }));
             }
           },
           false
@@ -264,8 +265,11 @@ export default function useRecorder(props: UseRecorderProps) {
 
   return {
     recorderState,
+    // eslint-disable-next-line
     startRecording: () => startRecording(setRecorderState),
+    // eslint-disable-next-line
     cancelRecording: () => setRecorderState(initialState),
+    // eslint-disable-next-line
     saveRecording: () => saveRecording(recorderState.mediaRecorder),
   };
 }

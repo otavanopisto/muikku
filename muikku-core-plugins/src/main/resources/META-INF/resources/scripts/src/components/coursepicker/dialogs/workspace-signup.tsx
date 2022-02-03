@@ -1,14 +1,11 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import Link from "~/components/general/link";
 import Dialog from "~/components/general/dialog";
 import { AnyActionType } from "~/actions";
 import { i18nType } from "~/reducers/base/i18n";
-
 import "~/sass/elements/link.scss";
 import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
-
 import "~/sass/elements/buttons.scss";
 import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
@@ -81,10 +78,16 @@ class WorkspaceSignupDialog extends React.Component<
     const workspaceToUse = this.props.workspace || this.props.currentWorkspace;
     this.props.signupIntoWorkspace({
       workspace: workspaceToUse,
+      /**
+       * success
+       */
       success: () => {
         this.setState({ locked: false, message: "" });
         closeDialog();
       },
+      /**
+       * fail
+       */
       fail: () => {
         this.setState({ locked: false });
       },
@@ -101,7 +104,11 @@ class WorkspaceSignupDialog extends React.Component<
 
     const hasFees = this.props.status.hasFees;
 
-    let content = (closeDialog: () => any) => (
+    /**
+     * content
+     * @param closeDialog closeDialog
+     */
+    const content = (closeDialog: () => any) => (
       <div>
         <div>
           <div className="dialog__content-row">
@@ -142,21 +149,21 @@ class WorkspaceSignupDialog extends React.Component<
       </div>
     );
 
-    let footer = (closeDialog: () => any) => {
-      return (
-        <div className="dialog__button-set">
-          <Button
-            buttonModifiers={["standard-ok", "info"]}
-            onClick={this.signup.bind(this, closeDialog)}
-            disabled={this.state.locked}
-          >
-            {this.props.i18n.text.get(
-              "plugin.workspaceSignUp.signupButtonLabel"
-            )}
-          </Button>
-        </div>
-      );
-    };
+    /**
+     * footer
+     * @param closeDialog closeDialog
+     */
+    const footer = (closeDialog: () => any) => (
+      <div className="dialog__button-set">
+        <Button
+          buttonModifiers={["standard-ok", "info"]}
+          onClick={this.signup.bind(this, closeDialog)}
+          disabled={this.state.locked}
+        >
+          {this.props.i18n.text.get("plugin.workspaceSignUp.signupButtonLabel")}
+        </Button>
+      </div>
+    );
 
     return (
       <Dialog

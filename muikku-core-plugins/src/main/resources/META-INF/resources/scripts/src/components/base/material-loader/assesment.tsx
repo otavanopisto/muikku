@@ -6,7 +6,7 @@ import { RecordValue } from "../../../@types/recorder";
 /**
  * MaterialLoaderAssesmentProps
  */
-interface MaterialLoaderAssesmentProps extends MaterialLoaderProps {}
+type MaterialLoaderAssesmentProps = MaterialLoaderProps;
 
 /**
  * MaterialLoaderAssesment

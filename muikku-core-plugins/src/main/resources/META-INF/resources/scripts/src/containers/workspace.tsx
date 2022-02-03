@@ -35,7 +35,6 @@ import {
   loadCurrentWorkspaceJournalsFromServer,
   loadWorkspaceDetailsInCurrentWorkspace,
   loadWorkspaceTypes,
-  workspaceStudentsQueryDataType,
   loadCurrentWorkspaceUserGroupPermissions,
   loadWorkspaceChatStatus,
   loadWholeWorkspaceHelp,
@@ -100,6 +99,7 @@ export default class Workspace extends React.Component<
 
   /**
    * constructor
+   * @param props props
    */
   constructor(props: WorkspaceProps) {
     super(props);
@@ -168,6 +168,8 @@ export default class Workspace extends React.Component<
 
   /**
    * loadlib
+   * @param url url
+   * @param onload onload
    */
   loadlib(url: string, onload?: () => void) {
     if (this.loadedLibs.indexOf(url) !== -1) {
@@ -175,7 +177,7 @@ export default class Workspace extends React.Component<
     }
     this.loadedLibs.push(url);
 
-    let script = document.createElement("script");
+    const script = document.createElement("script");
     script.src = url;
     if (onload) {
       script.onload = onload;
@@ -260,7 +262,7 @@ export default class Workspace extends React.Component<
    * @param newId
    */
   onWorkspaceMaterialsBodyActiveNodeIdChange(newId: number) {
-    let state: StateType = this.props.store.getState();
+    const state: StateType = this.props.store.getState();
 
     if (!newId) {
       history.pushState(null, null, location.origin + location.pathname + "#");
@@ -308,8 +310,8 @@ export default class Workspace extends React.Component<
 
       if (state.workspaces.currentWorkspace.isCourseMember) {
         let indexFound = -1;
-        let materialChapter = state.workspaces.currentMaterials.find((m) => {
-          let index = m.children.findIndex(
+        const materialChapter = state.workspaces.currentMaterials.find((m) => {
+          const index = m.children.findIndex(
             (s) => s.workspaceMaterialId === newId
           );
           if (index !== -1) {
@@ -335,7 +337,7 @@ export default class Workspace extends React.Component<
    * @param newId
    */
   onWorkspaceHelpBodyActiveNodeIdChange(newId: number) {
-    let state: StateType = this.props.store.getState();
+    const state: StateType = this.props.store.getState();
 
     if (!newId) {
       history.pushState(null, null, "#");
@@ -384,20 +386,22 @@ export default class Workspace extends React.Component<
         }
       );
 
-      let state = this.props.store.getState();
+      const state = this.props.store.getState();
 
       this.props.store.dispatch(
         setCurrentWorkspace({
           workspaceId: state.status.currentWorkspaceId,
+          /**
+           * success
+           * @param workspace workspace
+           */
           success: (workspace) => {
             if (!workspace.staffMembers && state.status.loggedIn) {
               this.props.store.dispatch(
                 loadStaffMembersOfWorkspace({ workspace }) as Action
               );
             }
-            this.props.store.dispatch(
-              titleActions.updateTitle(workspace.name)
-            );
+            this.props.store.dispatch(titleActions.updateTitle(workspace.name));
           },
         }) as Action
       );
@@ -441,7 +445,7 @@ export default class Workspace extends React.Component<
         }
       );
 
-      let state = this.props.store.getState();
+      const state = this.props.store.getState();
       this.props.store.dispatch(
         titleActions.updateTitle(
           state.i18n.text.get("plugin.workspace.helpPage.title")
@@ -502,7 +506,7 @@ export default class Workspace extends React.Component<
         }
       );
 
-      let state = this.props.store.getState();
+      const state = this.props.store.getState();
       this.props.store.dispatch(
         titleActions.updateTitle(
           state.i18n.text.get("plugin.workspace.discussions.pageTitle")
@@ -519,7 +523,7 @@ export default class Workspace extends React.Component<
       this.props.store.dispatch(
         loadDiscussionAreasFromServer(() => {
           //here in the callback
-          let currentLocation = window.location.hash
+          const currentLocation = window.location.hash
             .replace("#", "")
             .split("/");
           this.loadWorkspaceDiscussionData(currentLocation);
@@ -546,7 +550,7 @@ export default class Workspace extends React.Component<
     if (this.itsFirstTime) {
       this.props.websocket && this.props.websocket.restoreEventListeners();
 
-      let state = this.props.store.getState();
+      const state = this.props.store.getState();
       this.props.store.dispatch(
         titleActions.updateTitle(
           state.i18n.text.get("plugin.workspace.announcements.pageTitle")
@@ -593,7 +597,7 @@ export default class Workspace extends React.Component<
         }
       );
 
-      let state = this.props.store.getState();
+      const state = this.props.store.getState();
       this.props.store.dispatch(
         titleActions.updateTitle(
           state.i18n.text.get("plugin.workspace.announcer.pageTitle")
@@ -635,7 +639,6 @@ export default class Workspace extends React.Component<
    * @param location
    */
   loadWorkspaceDiscussionData(location: string[]) {
-    let state = this.props.store.getState();
     if (location.length <= 2) {
       //The link is expected to be like # none, in this case it will collapse to null, page 1
       //Else it can be #1 in that case it will collapse to area 1, page 1
@@ -675,7 +678,7 @@ export default class Workspace extends React.Component<
    */
   loadWorkspaceAnnouncerData(location: string[]) {
     const actualLocation = location.filter((l) => !!l);
-    let state = this.props.store.getState();
+    const state = this.props.store.getState();
     if (actualLocation.length === 1) {
       this.props.store.dispatch(
         loadAnnouncements(
@@ -745,7 +748,7 @@ export default class Workspace extends React.Component<
         (window as any).IGNORE_SCROLL_EVENTS = true;
       }
 
-      let state = this.props.store.getState();
+      const state = this.props.store.getState();
       this.props.store.dispatch(
         titleActions.updateTitle(
           state.i18n.text.get("plugin.workspace.materials.pageTitle")
@@ -779,6 +782,9 @@ export default class Workspace extends React.Component<
               );
             } else if (hasLocationHashAndWillHaveToScrollIntoPosition) {
               // this is executing on first time
+              /**
+               * scrollToElement
+               */
               const scrollToElement = () => {
                 const element = document.querySelector(window.location.hash);
                 if (element) {
@@ -793,6 +799,9 @@ export default class Workspace extends React.Component<
                 return false;
               };
 
+              /**
+               * checkIsScrolledIntoView
+               */
               const checkIsScrolledIntoView = () => {
                 const element = document.querySelector(window.location.hash);
                 if (!element) {
@@ -809,6 +818,9 @@ export default class Workspace extends React.Component<
                 return isVisible;
               };
 
+              /**
+               * aggressiveSetToScrollPosition
+               */
               const aggressiveSetToScrollPosition = () => {
                 scrollToElement();
                 setTimeout(() => {
@@ -907,7 +919,7 @@ export default class Workspace extends React.Component<
         }
       );
 
-      let state = this.props.store.getState();
+      const state = this.props.store.getState();
       this.props.store.dispatch(
         titleActions.updateTitle(
           state.i18n.text.get("plugin.workspace.users.pageTitle")
@@ -916,6 +928,10 @@ export default class Workspace extends React.Component<
       this.props.store.dispatch(
         setCurrentWorkspace({
           workspaceId: state.status.currentWorkspaceId,
+          /**
+           * success
+           * @param workspace workspace
+           */
           success: (workspace) => {
             if (!workspace.staffMembers && state.status.loggedIn) {
               this.props.store.dispatch(
@@ -980,7 +996,7 @@ export default class Workspace extends React.Component<
         }
       );
 
-      let state = this.props.store.getState();
+      const state = this.props.store.getState();
       this.props.store.dispatch(
         titleActions.updateTitle(
           state.i18n.text.get("plugin.workspace.journal.pageTitle")
@@ -989,6 +1005,10 @@ export default class Workspace extends React.Component<
       this.props.store.dispatch(
         setCurrentWorkspace({
           workspaceId: state.status.currentWorkspaceId,
+          /**
+           * success
+           * @param workspace workspace
+           */
           success: (workspace) => {
             if (
               !workspace.students &&
@@ -1044,7 +1064,7 @@ export default class Workspace extends React.Component<
         }
       );
 
-      let state = this.props.store.getState();
+      const state = this.props.store.getState();
       this.props.store.dispatch(
         titleActions.updateTitle(
           state.i18n.text.get("plugin.workspace.management.pageTitle")
@@ -1054,7 +1074,10 @@ export default class Workspace extends React.Component<
       this.props.store.dispatch(
         setCurrentWorkspace({
           workspaceId: state.status.currentWorkspaceId,
-          success: (workspace) => {
+          /**
+           * success
+           */
+          success: () => {
             this.props.store.dispatch(
               loadCurrentWorkspaceUserGroupPermissions() as Action
             );
@@ -1080,7 +1103,7 @@ export default class Workspace extends React.Component<
 
   /**
    * renderWorkspacePermissions
-   * @param props
+   * @param props props
    * @returns JSX.Element
    */
   renderWorkspacePermissions(props: RouteComponentProps<any>) {
@@ -1088,7 +1111,7 @@ export default class Workspace extends React.Component<
     if (this.itsFirstTime) {
       this.props.websocket && this.props.websocket.restoreEventListeners();
 
-      let state = this.props.store.getState();
+      const state = this.props.store.getState();
       this.props.store.dispatch(
         titleActions.updateTitle(
           state.i18n.text.get("plugin.workspace.permissions.pageTitle")
@@ -1097,7 +1120,10 @@ export default class Workspace extends React.Component<
       this.props.store.dispatch(
         setCurrentWorkspace({
           workspaceId: state.status.currentWorkspaceId,
-          success: (workspace) => {
+          /**
+           * success
+           */
+          success: () => {
             this.props.store.dispatch(
               loadCurrentWorkspaceUserGroupPermissions() as Action
             );
@@ -1123,7 +1149,7 @@ export default class Workspace extends React.Component<
   renderWorkspaceEvaluation(props: RouteComponentProps<any>) {
     this.updateFirstTime();
     if (this.itsFirstTime) {
-      let state = this.props.store.getState();
+      const state = this.props.store.getState();
 
       this.props.websocket && this.props.websocket.restoreEventListeners();
 
@@ -1144,6 +1170,10 @@ export default class Workspace extends React.Component<
       this.props.store.dispatch(
         setCurrentWorkspace({
           workspaceId: state.status.currentWorkspaceId,
+          /**
+           * success
+           * @param workspace workspace
+           */
           success: (workspace) => {
             this.props.store.dispatch(
               loadCurrentWorkspaceUserGroupPermissions() as Action
