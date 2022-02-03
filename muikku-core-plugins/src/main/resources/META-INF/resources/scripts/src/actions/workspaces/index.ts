@@ -327,7 +327,7 @@ const loadUserWorkspacesFromServer: LoadUserWorkspacesFromServerTriggerType =
           type: "UPDATE_USER_WORKSPACES",
           payload: <WorkspaceListType>(
             ((await promisify(
-              mApi().workspace.workspaces.read({ userId }),
+              mApi().workspace.workspaces.read({ userId: userId }),
               "callback"
             )()) || 0)
           ),

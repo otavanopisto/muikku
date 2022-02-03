@@ -146,6 +146,7 @@
 .evaluation-modal__event {
   background: $color-default;
   border: 1px solid $color-panel-border-color;
+  border-radius: 2px;
   display: flex;
   flex-flow: column wrap;
   margin: 10px 0;
@@ -333,6 +334,7 @@
 .evaluation-modal__item {
   background: $color-default;
   border: 1px solid $color-panel-border-color;
+  border-radius: 2px;
   margin: 10px 0;
   padding: 0 10px;
 }
