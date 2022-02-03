@@ -23,13 +23,17 @@ const ProgressBarLine = require("react-progress-bar.js").Line;
 interface RecorderProps {
   i18n: i18nType;
   status: StatusType;
+  /**
+   * Handles changes is recording changes
+   */
+  onIsRecordingChange?: (isRecording: boolean) => void;
   onChange?: (audioAssessments: AudioAssessment[]) => void;
   values?: AudioAssessment[];
 }
 
 /**
  * Recorder
- * @param props
+ * @param props props
  * @returns JSX.Element
  */
 function Recorder(props: RecorderProps) {
@@ -45,6 +49,16 @@ function Recorder(props: RecorderProps) {
    * it helps checks if initial render has happened or not
    */
   const firstUpdate = React.useRef(true);
+
+  React.useEffect(() => {
+    /**
+     * If onIsRecordingChange props is present, tell parent component
+     * whether recording is is or off
+     */
+    if (props.onIsRecordingChange) {
+      props.onIsRecordingChange(recorderState.initRecording);
+    }
+  }, [recorderState.initRecording]);
 
   React.useEffect(() => {
     /**
@@ -127,7 +141,7 @@ function Recorder(props: RecorderProps) {
 
 /**
  * mapStateToProps
- * @param state
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -138,7 +152,7 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({}, dispatch);

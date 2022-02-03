@@ -68,6 +68,7 @@ interface AssignmentEditorState {
   grade: string;
   draftId: string;
   locked: boolean;
+  isRecording: boolean;
 }
 
 /**
@@ -79,7 +80,7 @@ class AssignmentEditor extends SessionStateComponent<
 > {
   /**
    * constructor
-   * @param props
+   * @param props props
    */
   constructor(props: AssignmentEditorProps) {
     super(props, `assignment-editor`);
@@ -123,12 +124,13 @@ class AssignmentEditor extends SessionStateComponent<
           ? compositeReplies.evaluationInfo.audioAssessments
           : [],
       locked: false,
+      isRecording: false,
     };
   }
 
   /**
    * getUsedGradingScaleByGradeId
-   * @param gradeId
+   * @param gradeId gradeId
    * @returns used grade system by gradeId
    */
   getUsedGradingScaleByGradeId = (gradeId: string) => {
@@ -280,7 +282,6 @@ class AssignmentEditor extends SessionStateComponent<
 
   /**
    * saveAssignmentEvaluationSupplementationToServer
-   * @param data data
    * @param data.workspaceEntityId workspaceEntityId
    * @param data.userEntityId userEntityId
    * @param data.workspaceMaterialId workspaceMaterialId
@@ -357,7 +358,7 @@ class AssignmentEditor extends SessionStateComponent<
 
   /**
    * handleSaveAssignment
-   * @param e
+   * @param e e
    */
   handleSaveAssignment = async (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
@@ -453,7 +454,7 @@ class AssignmentEditor extends SessionStateComponent<
 
   /**
    * handleCKEditorChange
-   * @param e
+   * @param e e
    */
   handleCKEditorChange = (e: string) => {
     this.setStateAndStore(
@@ -466,7 +467,7 @@ class AssignmentEditor extends SessionStateComponent<
 
   /**
    * handleAssignmentEvaluationChange
-   * @param e
+   * @param e e
    */
   handleAssignmentEvaluationChange = (
     e: React.ChangeEvent<HTMLInputElement>
@@ -486,7 +487,7 @@ class AssignmentEditor extends SessionStateComponent<
 
   /**
    * handleSelectGradeChange
-   * @param e
+   * @param e e
    */
   handleSelectGradeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     this.setStateAndStore(
@@ -498,8 +499,18 @@ class AssignmentEditor extends SessionStateComponent<
   };
 
   /**
+   * handleRecordingStateChange
+   * @param recording recording
+   */
+  handleIsRecordingChange = (recording: boolean) => {
+    this.setState({
+      isRecording: recording,
+    });
+  };
+
+  /**
    * handleAudioAssessmentChange
-   * @param audioAssessments
+   * @param audioAssessments audioAssessments
    */
   handleAudioAssessmentChange = (audioAssessments: AudioAssessment[]) => {
     this.setState({
@@ -555,6 +566,7 @@ class AssignmentEditor extends SessionStateComponent<
               )}
             </label>
             <Recorder
+              onIsRecordingChange={this.handleIsRecordingChange}
               onChange={this.handleAudioAssessmentChange}
               values={this.state.audioAssessments}
             />
@@ -600,6 +612,7 @@ class AssignmentEditor extends SessionStateComponent<
             </div>
           </div>
         </div>
+
         <div className="evaluation-modal__evaluate-drawer-row  form-element">
           <label
             htmlFor="assignmentEvaluationGrade"
@@ -627,7 +640,7 @@ class AssignmentEditor extends SessionStateComponent<
           <Button
             buttonModifiers="evaluate-assignment"
             onClick={this.handleSaveAssignment}
-            disabled={this.state.locked}
+            disabled={this.state.locked || this.state.isRecording}
           >
             {this.props.i18n.text.get(
               "plugin.evaluation.evaluationModal.workspaceEvaluationForm.saveButtonLabel"
@@ -637,7 +650,7 @@ class AssignmentEditor extends SessionStateComponent<
             <WarningDialog onContinueClick={this.props.onClose}>
               <Button
                 buttonModifiers="evaluate-cancel"
-                disabled={this.state.locked}
+                disabled={this.state.locked || this.state.isRecording}
               >
                 {this.props.i18n.text.get(
                   "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel"
@@ -647,7 +660,7 @@ class AssignmentEditor extends SessionStateComponent<
           ) : (
             <Button
               onClick={this.props.onClose}
-              disabled={this.state.locked}
+              disabled={this.state.locked || this.state.isRecording}
               buttonModifiers="evaluate-cancel"
             >
               {this.props.i18n.text.get(
@@ -659,7 +672,7 @@ class AssignmentEditor extends SessionStateComponent<
           {this.recovered && (
             <Button
               buttonModifiers="evaluate-remove-draft"
-              disabled={this.state.locked}
+              disabled={this.state.locked || this.state.isRecording}
               onClick={this.handleDeleteEditorDraft}
             >
               {this.props.i18n.text.get(
@@ -668,6 +681,16 @@ class AssignmentEditor extends SessionStateComponent<
             </Button>
           )}
         </div>
+
+        {this.state.isRecording && (
+          <div className="evaluation-modal__evaluate-drawer-row evaluation-modal__evaluate-drawer-row--recording-warning">
+            <div className="recording-warning">
+              {this.props.i18n.text.get(
+                "plugin.evaluation.evaluationModal.assignmentEvaluationForm.isRecordingWarning"
+              )}
+            </div>
+          </div>
+        )}
       </>
     );
   }

@@ -9,7 +9,7 @@ import { SetRecorder } from "~/@types/recorder";
 
 /**
  * startRecording
- * @param setRecorderState
+ * @param setRecorderState setRecorderState
  */
 export async function startRecording(setRecorderState: SetRecorder) {
   try {

@@ -26,7 +26,7 @@ const defaultRecordListProps = {
 
 /**
  * RecordingsList
- * @param props
+ * @param props props
  * @returns JSX.Element
  */
 function RecordingsList(props: RecordingsListProps) {
@@ -52,7 +52,7 @@ function RecordingsList(props: RecordingsListProps) {
 
 /**
  * mapStateToProps
- * @param state
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -62,7 +62,7 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({}, dispatch);

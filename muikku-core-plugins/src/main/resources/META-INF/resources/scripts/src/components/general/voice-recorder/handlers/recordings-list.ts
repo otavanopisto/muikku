@@ -2,8 +2,8 @@ import { SetRecordings } from "~/@types/recorder";
 
 /**
  * deleteAudio
- * @param recordId
- * @param setRecordings
+ * @param recordId recordId
+ * @param setRecordings setRecordings
  */
 export function deleteAudio(recordId: string, setRecordings: SetRecordings) {
   setRecordings((prevState) =>

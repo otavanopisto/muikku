@@ -35,8 +35,8 @@ interface UseRecorderProps {
  * useRecorder
  * Custom hook to handle Recorder functioning. It handles returning values on changes, actual
  * recording proggress and saving to to tempfile servlet
- * @param props
- * @returns
+ * @param props props
+ * @returns object containing useRecorder state and recorder methods
  */
 export default function useRecorder(props: UseRecorderProps) {
   const [recorderState, setRecorderState] = useState<Recorder>(initialState);
@@ -107,10 +107,16 @@ export default function useRecorder(props: UseRecorderProps) {
     });
   }, [recorderState.mediaStream]);
 
+  /**
+   * Whenever mediaRecorder property changes
+   */
   useEffect(() => {
     const recorder = recorderState.mediaRecorder;
     let chunks: Blob[] = [];
 
+    /**
+     * If not recording already, start or continue "streaming"
+     */
     if (recorder && recorder.state === "inactive") {
       recorder.start();
 
