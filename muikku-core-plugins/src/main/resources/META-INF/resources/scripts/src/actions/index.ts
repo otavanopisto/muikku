@@ -1,3 +1,6 @@
+/**
+ * SpecificActionType
+ */
 export interface SpecificActionType<ActionType, PayloadType> {
   type: ActionType;
   payload: PayloadType | null;
@@ -270,8 +273,8 @@ import {
 import {
   UPDATE_CEEPOS_PURCHASE,
   UPDATE_CEEPOS_STATE,
-  UPDATE_CEEPOS_PAY_STATUS
- } from "./main-function/ceepos";
+  UPDATE_CEEPOS_PAY_STATUS,
+} from "./main-function/ceepos";
 
 export type ActionType =
   | SET_CURRENT_MESSAGE_THREAD

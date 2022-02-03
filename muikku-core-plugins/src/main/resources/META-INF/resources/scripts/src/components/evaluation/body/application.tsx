@@ -41,7 +41,7 @@ class EvaluationApplication extends React.Component<
 > {
   /**
    * constructor
-   * @param props
+   * @param props props
    */
   constructor(props: EvaluationApplicationProps) {
     super(props);
@@ -49,7 +49,7 @@ class EvaluationApplication extends React.Component<
 
   /**
    * handleWorkspaceSelectChange
-   * @param e
+   * @param e e
    */
   handleWorkspaceSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     this.props.setSelectedWorkspaceId({
@@ -153,7 +153,7 @@ class EvaluationApplication extends React.Component<
 
 /**
  * mapStateToProps
- * @param state
+ * @param state state
  * @returns object
  */
 function mapStateToProps(state: StateType) {
@@ -167,7 +167,7 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch dispatch
  * @returns object
  */
 function mapDispatchToProps(dispatch: Dispatch<any>) {

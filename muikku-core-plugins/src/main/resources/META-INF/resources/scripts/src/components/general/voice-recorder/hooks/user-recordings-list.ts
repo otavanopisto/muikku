@@ -20,6 +20,8 @@ export default function useRecordingsList(records: RecordValue[] | null) {
 
   return {
     recordings,
+
+    // eslint-disable-next-line
     deleteAudio: (audioKey: string) => deleteAudio(audioKey, setRecordings),
   };
 }

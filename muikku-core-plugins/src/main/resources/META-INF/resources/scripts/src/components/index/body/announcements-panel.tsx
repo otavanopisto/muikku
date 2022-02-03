@@ -1,4 +1,4 @@
-import Link from "../../general/link";
+import Link from "~/components/general/link";
 import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
@@ -6,16 +6,16 @@ import {
   AnnouncementListType,
   AnnouncementType,
 } from "~/reducers/announcements";
-
 import "~/sass/elements/item-list.scss";
 import "~/sass/elements/panel.scss";
 import "~/sass/elements/label.scss";
-import ReactPaginate from "react-paginate";
-import { StateType } from "../../../reducers/index";
-import { connect, Dispatch } from "react-redux";
-import ReactPaginateForked from "react-paginate";
+import { StateType } from "~/reducers/index";
+import { connect } from "react-redux";
 import PagerV2 from "~/components/general/pagerV2";
 
+/**
+ * AnnouncementsPanelProps
+ */
 interface AnnouncementsPanelProps {
   i18n: i18nType;
   status: StatusType;
@@ -23,16 +23,26 @@ interface AnnouncementsPanelProps {
   overflow?: boolean;
 }
 
+/**
+ * AnnouncementsPanelState
+ */
 interface AnnouncementsPanelState {
   currentPage: number;
   announcements: AnnouncementListType;
   itemsPerPage: number;
 }
 
+/**
+ * AnnouncementsPanel
+ */
 class AnnouncementsPanel extends React.Component<
   AnnouncementsPanelProps,
   AnnouncementsPanelState
 > {
+  /**
+   * AnnouncementsPanelProps
+   * @param props props
+   */
   constructor(props: AnnouncementsPanelProps) {
     super(props);
 
@@ -48,10 +58,7 @@ class AnnouncementsPanel extends React.Component<
    * @param prevProps
    * @param prevState
    */
-  componentDidUpdate(
-    prevProps: AnnouncementsPanelProps,
-    prevState: AnnouncementsPanelState
-  ) {
+  componentDidUpdate(prevProps: AnnouncementsPanelProps) {
     if (
       JSON.stringify(prevProps.announcements) !==
       JSON.stringify(this.props.announcements)
@@ -65,7 +72,8 @@ class AnnouncementsPanel extends React.Component<
   /**
    * handles page changes,
    * sets selected page as currentPage to state
-   * @param event
+   * @param selectedItem selectedItem
+   * @param selectedItem.selected selected
    */
   handlePageChange = (selectedItem: { selected: number }) => {
     this.setState({
@@ -244,7 +252,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch
  * @returns
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps() {
   return {};
 }
 

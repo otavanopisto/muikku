@@ -1,13 +1,26 @@
+/**
+ * MathJaxCollector
+ */
 export class MathJaxCollector {
   static globalMap: Map<HTMLElement, MathJaxCollector> = new Map();
 
-  static getCollectorForNode(element: HTMLElement) {
-    return MathJaxCollector.globalMap.get(element) || new MathJaxCollector(element);
+  /**
+   * getCollectorForNode
+   * @param element
+   */
+  static getCollectorForNode(element: HTMLElement) {
+    return (
+      MathJaxCollector.globalMap.get(element) || new MathJaxCollector(element)
+    );
   }
 
   private executionTimer: NodeJS.Timer;
   private element: HTMLElement;
 
+  /**
+   * constructor
+   * @param element element
+   */
   constructor(element: HTMLElement) {
     this.element = element;
     MathJaxCollector.globalMap.set(element, this);
@@ -19,6 +32,9 @@ export class MathJaxCollector {
     this.executionTimer = setTimeout(this.execute, 100) as any;
   }
 
+  /**
+   * execute
+   */
   private execute() {
     MathJaxCollector.globalMap.delete(this.element);
     if (document.contains(this.element)) {
@@ -28,10 +44,16 @@ export class MathJaxCollector {
         this.element,
       ]);
     } else {
-      console.warn("Attempted to execute the mathjax collector in a non existant component");
+      // eslint-disable-next-line no-console
+      console.warn(
+        "Attempted to execute the mathjax collector in a non existant component"
+      );
     }
   }
 
+  /**
+   * resetTimer
+   */
   resetTimer() {
     clearTimeout(this.executionTimer);
     this.executionTimer = setTimeout(this.execute, 100) as any;

@@ -1,15 +1,10 @@
 import { i18nType } from "~/reducers/base/i18n";
 import * as React from "react";
-import {
-  DiscussionThreadType,
-  DiscussionThreadReplyType,
-} from "~/reducers/discussion";
+import { DiscussionThreadReplyType } from "~/reducers/discussion";
 import { Dispatch, connect } from "react-redux";
 import { AnyActionType } from "~/actions";
 import { bindActionCreators } from "redux";
 import CKEditor from "~/components/general/ckeditor";
-import Link from "~/components/general/link";
-import EnvironmentDialog from "~/components/general/environment-dialog";
 import {
   replyToCurrentDiscussionThread,
   ReplyToCurrentDiscussionThreadTriggerType,
@@ -17,7 +12,6 @@ import {
 import { StateType } from "~/reducers";
 import SessionStateComponent from "~/components/general/session-state-component";
 import Button from "~/components/general/button";
-
 import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
 
@@ -49,6 +43,10 @@ class ReplyThreadDrawer extends SessionStateComponent<
   ReplyThreadDrawerProps,
   ReplyThreadDrawerState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: ReplyThreadDrawerProps) {
     super(props, "discussion-reply-thread");
 
@@ -76,7 +74,7 @@ class ReplyThreadDrawer extends SessionStateComponent<
 
   /**
    * onCKEditorChange
-   * @param text
+   * @param text text
    */
   onCKEditorChange(text: string) {
     this.setStateAndStore(
@@ -110,7 +108,6 @@ class ReplyThreadDrawer extends SessionStateComponent<
 
   /**
    * createReply
-   * @param closeDialog
    */
   createReply() {
     this.setState({
@@ -121,6 +118,9 @@ class ReplyThreadDrawer extends SessionStateComponent<
         this.props.reply &&
         (this.props.reply.parentReplyId || this.props.reply.id),
       message: this.state.text,
+      /**
+       * success
+       */
       success: () => {
         this.props.onClickCancel && this.props.onClickCancel();
         this.setStateAndClear(
@@ -140,6 +140,9 @@ class ReplyThreadDrawer extends SessionStateComponent<
             (this.props.reply ? "-" + this.props.reply.id : "")
         );
       },
+      /**
+       * fail
+       */
       fail: () => {
         this.setState({
           locked: false,
@@ -160,12 +163,12 @@ class ReplyThreadDrawer extends SessionStateComponent<
    * @returns JSX.Element
    */
   render() {
-    let editorTitle =
+    const editorTitle =
       this.props.i18n.text.get("plugin.discussion.answertomessage.topic") +
       " - " +
       this.props.i18n.text.get("plugin.discussion.createmessage.content");
 
-    let content = (
+    const content = (
       <div className="env-dialog__row env-dialog__row--ckeditor">
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
@@ -184,7 +187,7 @@ class ReplyThreadDrawer extends SessionStateComponent<
       </div>
     );
 
-    let footer = (
+    const footer = (
       <div className="env-dialog__actions">
         <Button
           buttonModifiers="dialog-execute"
@@ -219,14 +222,12 @@ class ReplyThreadDrawer extends SessionStateComponent<
         <section className="env-dialog__wrapper">
           <div className="env-dialog__content">
             <header className="env-dialog__header">
-              {this.props.i18n.text.get("plugin.discussion.answertomessage.topic")}
+              {this.props.i18n.text.get(
+                "plugin.discussion.answertomessage.topic"
+              )}
             </header>
-            <section className="env-dialog__body">
-              {content}
-            </section>
-            <footer className="env-dialog__footer">
-              {footer}
-            </footer>
+            <section className="env-dialog__body">{content}</section>
+            <footer className="env-dialog__footer">{footer}</footer>
           </div>
         </section>
       </div>
@@ -234,6 +235,11 @@ class ReplyThreadDrawer extends SessionStateComponent<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ * @returns object
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -241,6 +247,11 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ * @returns object
+ */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ replyToCurrentDiscussionThread }, dispatch);
 }

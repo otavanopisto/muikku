@@ -1,3 +1,9 @@
+/* eslint-disable react/no-string-refs */
+
+/**
+ * Deprecated refs should be reractored
+ */
+
 import * as React from "react";
 import equals = require("deep-equal");
 import { i18nType } from "~/reducers/base/i18n";
@@ -8,6 +14,9 @@ import { UsedAs } from "~/@types/shared";
 import { FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
 
+/**
+ * TextFieldProps
+ */
 interface TextFieldProps {
   type: string;
   content: {
@@ -38,6 +47,9 @@ interface TextFieldProps {
   invisible: boolean;
 }
 
+/**
+ * TextFieldState
+ */
 interface TextFieldState {
   value: string;
 
@@ -54,10 +66,17 @@ interface TextFieldState {
   fieldSavedState: FieldStateStatus;
 }
 
+/**
+ * TextField
+ */
 export default class TextField extends React.Component<
   TextFieldProps,
   TextFieldState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: TextFieldProps) {
     super(props);
 
@@ -83,9 +102,9 @@ export default class TextField extends React.Component<
    * onFieldSavedStateChange
    * @param savedState
    */
-  onFieldSavedStateChange(savedState: FieldStateStatus){
+  onFieldSavedStateChange(savedState: FieldStateStatus) {
     this.setState({
-      fieldSavedState: savedState
+      fieldSavedState: savedState,
     });
   }
 
@@ -140,7 +159,7 @@ export default class TextField extends React.Component<
     }
 
     // Check for all the correct answers and filter which ones are set to be correct
-    let actuallyCorrectAnswers = this.props.content
+    const actuallyCorrectAnswers = this.props.content
       ? this.props.content.rightAnswers.filter((a) => a.correct)
       : [];
 
@@ -151,7 +170,7 @@ export default class TextField extends React.Component<
         this.setState({
           answerState: "UNKNOWN",
         });
-        // The rightness is sent as unknown to the function
+        // The rightness is sent as aunknownny to the function
         this.props.onAnswerChange(this.props.content.name, null);
       }
       return;
@@ -223,7 +242,7 @@ export default class TextField extends React.Component<
     // This is the component that provides the summary of the correct answers
     let correctAnswersummaryComponent = null;
     // a boolean representing whether the answer is correct and we are actually checking for it
-    let checkAnswersAndAnswerIsCorrect =
+    const checkAnswersAndAnswerIsCorrect =
       this.props.checkAnswers && this.state.answerState === "PASS";
     // If we are told to display the correct answers (we don't do that if the answer is checked and right because it's pointless)
     // UNKNOWN also gets there, so the correct answers will be shown even if the state is unknown
@@ -275,6 +294,10 @@ export default class TextField extends React.Component<
       );
     }
 
+    /**
+     * Component
+     * @param props props
+     */
     const Component = (props: any) => {
       if (this.props.content.autogrow) {
         return <AutosizeInput {...props} />;
@@ -319,7 +342,7 @@ export default class TextField extends React.Component<
     };
 
     // The state of the whole field
-    let fieldStateAfterCheck =
+    const fieldStateAfterCheck =
       this.state.answerState !== "UNKNOWN" &&
       this.props.displayCorrectAnswers &&
       this.props.checkAnswers
@@ -416,11 +439,15 @@ export default class TextField extends React.Component<
       );
     }
 
-    let fieldSavedStateClass = createFieldSavedStateClass(this.state.fieldSavedState);
+    const fieldSavedStateClass = createFieldSavedStateClass(
+      this.state.fieldSavedState
+    );
 
     // Standard modifiable version
     return (
-      <span className={`material-page__textfield-wrapper ${fieldSavedStateClass}`}>
+      <span
+        className={`material-page__textfield-wrapper ${fieldSavedStateClass}`}
+      >
         <Synchronizer
           synced={this.state.synced}
           syncError={this.state.syncError}

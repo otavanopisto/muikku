@@ -14,7 +14,8 @@ import AnimateHeight from "react-animate-height";
 import "~/sass/elements/voice-recorder.scss";
 import { AudioAssessment } from "../../../@types/evaluation";
 import useRecordingsList from "./hooks/user-recordings-list";
-let ProgressBarLine = require("react-progress-bar.js").Line;
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const ProgressBarLine = require("react-progress-bar.js").Line;
 
 /**
  * RecorderProps
@@ -62,7 +63,7 @@ function Recorder(props: RecorderProps) {
       JSON.stringify(props.values) !== JSON.stringify(recordings) &&
       !firstUpdate.current
     ) {
-      let audioAssessments = recordings.map((record) => {
+      const audioAssessments = recordings.map((record) => {
         const object: AudioAssessment = {
           name: record.name,
           id: record.id,

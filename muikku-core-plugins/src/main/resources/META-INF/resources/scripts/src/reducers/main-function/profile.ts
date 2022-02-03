@@ -1,5 +1,9 @@
 import { ActionType } from "~/actions";
-import { StudentUserAddressType, UserWithSchoolDataType, UserChatSettingsType } from "~/reducers/user-index";
+import {
+  StudentUserAddressType,
+  UserWithSchoolDataType,
+  UserChatSettingsType,
+} from "~/reducers/user-index";
 
 export enum EditableField {
   ENTRYDATE = "ENTRYDATE",
@@ -16,6 +20,9 @@ export enum WorklistBillingState {
   PAID = "PAID",
 }
 
+/**
+ * WorklistTemplate
+ */
 export interface WorklistTemplate {
   id: number;
   description: string;
@@ -25,6 +32,9 @@ export interface WorklistTemplate {
   editableFields: Array<EditableField>;
 }
 
+/**
+ * WorklistItem
+ */
 export interface WorklistItem {
   templateId: number;
   entryDate: string;
@@ -34,21 +44,30 @@ export interface WorklistItem {
   billingNumber: number;
 }
 
+/**
+ * PurchaseStateType
+ */
 export enum PurchaseStateType {
   CREATED = "CREATED",
   CANCELLED = "CANCELLED",
   ERRORED = "ERRORED",
   ONGOING = "ONGOING",
   PAID = "PAID",
-  COMPLETE = "COMPLETE"
+  COMPLETE = "COMPLETE",
 }
 
+/**
+ * PurchaseProductType
+ */
 export interface PurchaseProductType {
   Code: string;
   Description: string;
   Price: number;
-};
+}
 
+/**
+ * PurchaseCreatorType
+ */
 export interface PurchaseCreatorType {
   id: number;
   userEntityId: number;
@@ -57,17 +76,23 @@ export interface PurchaseCreatorType {
   email: string;
 }
 
+/**
+ * PurchaseType
+ */
 export interface PurchaseType {
   created: string;
   paid: string;
   id: number;
-  product: PurchaseProductType,
-  state: PurchaseStateType,
+  product: PurchaseProductType;
+  state: PurchaseStateType;
   studentEmail: string;
   studentIdentifier: string;
   creator: PurchaseCreatorType;
 }
 
+/**
+ * StoredWorklistItem
+ */
 export interface StoredWorklistItem extends WorklistItem {
   id: number;
   editableFields: Array<EditableField>;
@@ -75,6 +100,9 @@ export interface StoredWorklistItem extends WorklistItem {
   removable: boolean;
 }
 
+/**
+ * WorklistItemsSummary
+ */
 export interface WorklistItemsSummary {
   displayName: string;
   beginDate: string;
@@ -82,15 +110,21 @@ export interface WorklistItemsSummary {
   count: number;
 }
 
+/**
+ * WorklistSection
+ */
 export interface WorklistSection {
   summary: WorklistItemsSummary;
   items?: Array<StoredWorklistItem>;
 }
 
+/**
+ * ProfileType
+ */
 export interface ProfileType {
   location: string;
   properties: {
-    [key: string]: string
+    [key: string]: string;
   };
   username?: string;
   addresses?: Array<StudentUserAddressType>;
@@ -101,54 +135,89 @@ export interface ProfileType {
   purchases?: PurchaseType[];
 }
 
-export default function profile(state: ProfileType = {
-  properties: {},
-  username: null,
-  addresses: null,
-  chatSettings: null,
-  location: null,
-  worklistTemplates: null,
-  worklist: null,
-  purchases: null,
-}, action: ActionType): ProfileType {
-  if (action.type === "SET_PROFILE_USER_PROPERTY"){
-    let newProperties = {...state.properties}
+/**
+ * profile
+ * @param state state
+ * @param action action
+ */
+export default function profile(
+  state: ProfileType = {
+    properties: {},
+    username: null,
+    addresses: null,
+    chatSettings: null,
+    location: null,
+    worklistTemplates: null,
+    worklist: null,
+    purchases: null,
+  },
+  action: ActionType
+): ProfileType {
+  if (action.type === "SET_PROFILE_USER_PROPERTY") {
+    const newProperties = { ...state.properties };
     newProperties[action.payload.key] = action.payload.value;
-    return {...state, ...{
-      properties: newProperties
-    }}
-  } else if (action.type === "SET_PROFILE_USERNAME"){
-    return {...state, ...{
-      username: action.payload
-    }}
-  } else if (action.type === "SET_PROFILE_ADDRESSES"){
-    return {...state, ...{
-      addresses: action.payload
-    }}
-  } else if (action.type === "SET_PROFILE_STUDENT"){
-    return {...state, ...{
-      student: action.payload
-    }}
-  } else if (action.type === "SET_PROFILE_CHAT_SETTINGS"){
-    return {...state, ...{
-      chatSettings: action.payload
-    }}
+    return {
+      ...state,
+      ...{
+        properties: newProperties,
+      },
+    };
+  } else if (action.type === "SET_PROFILE_USERNAME") {
+    return {
+      ...state,
+      ...{
+        username: action.payload,
+      },
+    };
+  } else if (action.type === "SET_PROFILE_ADDRESSES") {
+    return {
+      ...state,
+      ...{
+        addresses: action.payload,
+      },
+    };
+  } else if (action.type === "SET_PROFILE_STUDENT") {
+    return {
+      ...state,
+      ...{
+        student: action.payload,
+      },
+    };
+  } else if (action.type === "SET_PROFILE_CHAT_SETTINGS") {
+    return {
+      ...state,
+      ...{
+        chatSettings: action.payload,
+      },
+    };
   } else if (action.type === "SET_PROFILE_LOCATION") {
-    return {...state, ...{
-      location: action.payload
-    }}
+    return {
+      ...state,
+      ...{
+        location: action.payload,
+      },
+    };
   } else if (action.type === "SET_WORKLIST_TEMPLATES") {
-    return {...state, ...{
-      worklistTemplates: action.payload
-    }}
+    return {
+      ...state,
+      ...{
+        worklistTemplates: action.payload,
+      },
+    };
   } else if (action.type === "SET_WORKLIST") {
-    return {...state, ...{
-      worklist: action.payload
-    }}
+    return {
+      ...state,
+      ...{
+        worklist: action.payload,
+      },
+    };
   } else if (action.type === "SET_PURCHASE_HISTORY") {
-    return {...state, ...{
-      purchases: action.payload
-    }}
+    return {
+      ...state,
+      ...{
+        purchases: action.payload,
+      },
+    };
   }
   return state;
 }

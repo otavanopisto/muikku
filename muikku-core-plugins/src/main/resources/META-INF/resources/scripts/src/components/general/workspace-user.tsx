@@ -13,6 +13,9 @@ import {
   ApplicationListItemContentActions,
 } from "~/components/general/application-list";
 
+/**
+ * workspaceUserProps
+ */
 interface workspaceUserProps {
   student: ShortWorkspaceUserWithActiveStatusType;
   workspace: WorkspaceType;
@@ -23,8 +26,13 @@ interface workspaceUserProps {
   onSetToggleStatus: () => any;
 }
 
+/**
+ * WorkspaceUser
+ * @param props props
+ * @returns JSX.Element
+ */
 export default function WorkspaceUser(props: workspaceUserProps) {
-  let actionButtons = props.student.active ? (
+  const actionButtons = props.student.active ? (
     <ApplicationListItemContentActions>
       <IconButton
         buttonModifiers="workspace-users-contact"

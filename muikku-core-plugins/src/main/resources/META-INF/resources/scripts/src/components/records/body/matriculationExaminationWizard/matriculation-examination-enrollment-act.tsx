@@ -1,10 +1,6 @@
 import * as React from "react";
 import "~/sass/elements/matriculation.scss";
-import {
-  ExaminationInformation,
-  ExaminationAttentionInformation,
-  SaveState,
-} from "../../../../@types/shared";
+import { ExaminationInformation, SaveState } from "~/@types/shared";
 import { Textarea } from "./textarea";
 import { TextField } from "./textfield";
 import { SavingDraftError } from "./saving-draft-error";
@@ -22,13 +18,15 @@ interface MatriculationExaminationEnrollmentActProps {
 
 /**
  * MatriculationExaminationEnrollmentAct
- * @param props
- * @returns
  */
 export class MatrMatriculationExaminationEnrollmentAct extends React.Component<
   MatriculationExaminationEnrollmentActProps,
-  {}
+  Record<string, unknown>
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: MatriculationExaminationEnrollmentActProps) {
     super(props);
   }

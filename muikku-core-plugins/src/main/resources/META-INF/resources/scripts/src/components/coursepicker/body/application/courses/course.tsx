@@ -22,19 +22,32 @@ import { WorkspaceType } from "~/reducers/workspaces";
 import promisify from "~/util/promisify";
 import mApi from "~/lib/mApi";
 
+/**
+ * CourseProps
+ */
 interface CourseProps {
   i18n: i18nType;
   status: StatusType;
   workspace: WorkspaceType;
 }
 
+/**
+ * CourseState
+ */
 interface CourseState {
   expanded: boolean;
   canSignUp?: boolean;
   loading: boolean;
 }
 
+/**
+ * Course
+ */
 class Course extends React.Component<CourseProps, CourseState> {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: CourseProps) {
     super(props);
 
@@ -60,9 +73,9 @@ class Course extends React.Component<CourseProps, CourseState> {
         expanded: !this.state.expanded,
       });
     } else {
-    /**
-     * Otherwise we get requested data from api
-     */
+      /**
+       * Otherwise we get requested data from api
+       */
       this.setState({
         loading: true,
       });
@@ -89,12 +102,11 @@ class Course extends React.Component<CourseProps, CourseState> {
    * the course
    * @returns Requirements object
    */
-  checkSignUpStatus = async (): Promise<boolean> => {
-    return (await promisify(
+  checkSignUpStatus = async (): Promise<boolean> =>
+    (await promisify(
       mApi().coursepicker.workspaces.canSignup.read(this.props.workspace.id),
       "callback"
     )()) as boolean;
-  };
 
   /**
    * render

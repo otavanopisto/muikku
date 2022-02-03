@@ -1,8 +1,6 @@
 import {
   WorkspaceType,
-  WorkspaceJournalListType,
   MaterialContentNodeListType,
-  MaterialCompositeRepliesType,
   MaterialAssignmentType,
 } from "../reducers/workspaces/index";
 /**
@@ -38,6 +36,9 @@ export interface EvaluationEvent {
   type: EvaluationEnum;
 }
 
+/**
+ * EvaluationAssignmentContent
+ */
 export interface EvaluationAssignmentContent {
   answers: any[];
   created: string | null;
@@ -135,7 +136,7 @@ export interface EvaluationGrade {
 /**
  * Interface for workspace used in evaluation
  */
-export interface EvaluationWorkspace extends WorkspaceType {}
+export type EvaluationWorkspace = WorkspaceType;
 
 /**
  * EvaluationStatus
@@ -165,6 +166,9 @@ export interface EvaluationSort {
   value: SortBy;
 }
 
+/**
+ * UpdateImportanceObject
+ */
 export interface UpdateImportanceObject {
   importantAssessments: EvaluationImportance;
   unimportantAssessments: EvaluationImportance;
@@ -226,6 +230,9 @@ export interface WorkspaceEvaluationSaveReturn {
   passing: boolean;
 }
 
+/**
+ * AssignmentEvaluationSaveReturn
+ */
 export interface AssignmentEvaluationSaveReturn {
   assessmentDate: string;
   assessorIdentifier: string;
@@ -293,6 +300,9 @@ export interface EvaluationData {
   materials: MaterialContentNodeListType;
 }
 
+/**
+ * EvaluationAssigmentData
+ */
 export interface EvaluationAssigmentData {
   assigments: MaterialAssignmentType[];
 }
@@ -305,6 +315,9 @@ export interface BilledPriceRequest {
   price: string;
 }
 
+/**
+ * WorkspaceUserEntity
+ */
 export interface WorkspaceUserEntity {
   active: boolean;
   firstName: string;
