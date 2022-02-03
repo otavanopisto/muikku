@@ -1,9 +1,6 @@
 {
   "extends": "stylelint-config-standard-scss",
-  "plugins": [
-		"stylelint-order",
-    "stylelint-declaration-strict-value"
-	],
+  "plugins": ["stylelint-order", "stylelint-declaration-strict-value"],
   "rules": {
     "scale-unlimited/declaration-strict-value": [
       [
@@ -19,7 +16,8 @@
         "text-emphasis-color",
         "outline-color",
         "column-rule-color"
-      ], {
+      ],
+      {
         "expandShorthand": true,
         "ignoreValues": [
           "transparent",
@@ -29,7 +27,8 @@
           "initial",
           "unset",
           "revert",
-          "invert"],
+          "invert"
+        ],
         "message": "Avoid using magical color hex values as '${value}' for '${property}'."
       }
     ],
@@ -38,7 +37,7 @@
     "scss/comment-no-empty": true,
     "at-rule-no-unknown": null,
     "scss/at-rule-no-unknown": true,
-    "scss/no-global-function-names" : null,
+    "scss/no-global-function-names": null,
     "scss/double-slash-comment-whitespace-inside": "always",
     "scss/no-duplicate-dollar-variables": true,
     "scss/operator-no-newline-after": true,
@@ -111,7 +110,7 @@
     "keyframes-name-pattern": null,
     "number-max-precision": 4,
     "time-min-milliseconds": null,
-    "unit-allowed-list": ["px", "em", "deg", "rem", "%", "s","vw", "vh", "ms"],
+    "unit-allowed-list": ["px", "em", "deg", "rem", "%", "s", "vw", "vh", "ms"],
     "unit-disallowed-list": null,
     "shorthand-property-no-redundant-values": true,
     "value-no-vendor-prefix": true,
@@ -119,6 +118,12 @@
     "property-allowed-list": null,
     "property-disallowed-list": null,
     "property-no-vendor-prefix": true,
+    "value-keyword-case": [
+      "lower",
+      {
+        "ignoreProperties": ["/^\\$/"]
+      }
+    ],
     "declaration-block-no-redundant-longhand-properties": [
       true,
       {
@@ -150,20 +155,29 @@
     "selector-max-type": 4,
     "selector-max-universal": 1,
     "selector-nested-pattern": null,
-    "selector-no-qualifying-type" :null,
-    "selector-no-vendor-prefix" : true,
+    "selector-no-qualifying-type": null,
+    "selector-no-vendor-prefix": true,
     "selector-pseudo-class-allowed-list": null,
-    "selector-pseudo-class-disallowed-list" : null,
+    "selector-pseudo-class-disallowed-list": null,
     "selector-pseudo-element-allowed-list": null,
     "selector-pseudo-element-colon-notation": "double",
     "selector-pseudo-element-disallowed-list": null,
     "rule-selector-property-disallowed-list": null,
     "media-feature-name-allowed-list": null,
     "media-feature-name-disallowed-list": null,
-    "media-feature-name-no-vendor-prefix" :true,
+    "media-feature-name-no-vendor-prefix": true,
     "media-feature-name-value-allowed-list": null,
     "custom-media-pattern": null,
-    "at-rule-allowed-list": ["extend", "keyframes", "media", "import", "include", "mixin", "for", "each"],
+    "at-rule-allowed-list": [
+      "extend",
+      "keyframes",
+      "media",
+      "import",
+      "include",
+      "mixin",
+      "for",
+      "each"
+    ],
     "at-rule-disallowed-list": null,
     "at-rule-no-vendor-prefix": true,
     "at-rule-property-required-list": null,
