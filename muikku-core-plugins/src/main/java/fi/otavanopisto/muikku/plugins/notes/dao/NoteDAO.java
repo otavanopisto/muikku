@@ -42,6 +42,7 @@ public class NoteDAO extends CorePluginsDAO<Note> {
     note.setPriority(priority);
     note.setPinned(pinned);
     note.setLastModifier(lastModifier);
+    note.setLastModified(new Date());
     return persist(note);
   }
   
