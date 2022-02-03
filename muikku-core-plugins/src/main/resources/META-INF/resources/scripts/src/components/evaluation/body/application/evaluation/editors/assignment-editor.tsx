@@ -688,8 +688,9 @@ class AssignmentEditor extends SessionStateComponent<
         {this.state.isRecording && (
           <div className="evaluation-modal__evaluate-drawer-row evaluation-modal__evaluate-drawer-row--recording-warning">
             <div className="recording-warning">
-              Tallennus käynnissä. Jatkaaksesi paina "Lopeta tallennus"
-              -painiketta, kun olet valmis.
+              {this.props.i18n.text.get(
+                "plugin.evaluation.evaluationModal.assignmentEvaluationForm.isRecordingWarning"
+              )}
             </div>
           </div>
         )}
