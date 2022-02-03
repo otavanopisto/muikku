@@ -48,6 +48,10 @@ public class CalendarController {
     calendarEventDAO.delete(event);
   }
   
+  public void updateEventAttendance(CalendarEventParticipant participant, CalendarEventAttendance attendance) {
+    calendarEventParticipantDAO.updateAttendance(participant, attendance);
+  }
+  
   public CalendarEvent findEventById(Long eventId) {
     return calendarEventDAO.findById(eventId);
   }

@@ -31,6 +31,7 @@ import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.calendar.CalendarController;
 import fi.otavanopisto.muikku.plugins.calendar.model.CalendarEvent;
+import fi.otavanopisto.muikku.plugins.calendar.model.CalendarEventAttendance;
 import fi.otavanopisto.muikku.plugins.calendar.model.CalendarEventParticipant;
 import fi.otavanopisto.muikku.plugins.calendar.model.CalendarEventVisibility;
 import fi.otavanopisto.muikku.session.SessionController;
@@ -68,7 +69,7 @@ public class CalendarRESTService {
    *   'end': '2021-10-28T12:00:00+02:00',
    *   'allDay': true | false,
    *   'title': 'Event title',
-   *   'description: 'Event description',
+   *   'description': 'Event description',
    *   'visibility': 'PRIVATE | PUBLIC',
    *   'type': 'optional event type',
    *   'participants': [
@@ -89,7 +90,7 @@ public class CalendarRESTService {
    *   'end': '2021-10-28T12:00:00+02:00',
    *   'allDay': true | false,
    *   'title': 'Event title',
-   *   'description: 'Event description',
+   *   'description': 'Event description',
    *   'visibility': 'PRIVATE | PUBLIC',
    *   'type': 'optional event type',
    *   'userEntityId': 100, // owner of event
@@ -169,7 +170,7 @@ public class CalendarRESTService {
    *   'end': '2021-10-28T12:00:00+02:00',
    *   'allDay': true | false,
    *   'title': 'Event title',
-   *   'description: 'Event description',
+   *   'description': 'Event description',
    *   'visibility': 'PRIVATE | PUBLIC',
    *   'type': 'optional event type',
    *   'participants': [
@@ -190,7 +191,7 @@ public class CalendarRESTService {
    *   'end': '2021-10-28T12:00:00+02:00',
    *   'allDay': true | false,
    *   'title': 'Event title',
-   *   'description: 'Event description',
+   *   'description': 'Event description',
    *   'visibility': 'PRIVATE | PUBLIC',
    *   'type': 'optional event type',
    *   'userEntityId': 100, // owner of event
@@ -319,6 +320,41 @@ public class CalendarRESTService {
       }
     }
     
+    return Response.ok(toRestModel(event)).build();
+  }
+  
+  /**
+   * REQUEST:
+   * 
+   * mApi().calendar.event.attendance.update(123, 'UNCONFIRMED | YES | NO | MAYBE'); // 123 = event id
+   * 
+   * RESPONSE:
+   * 
+   * Updated calendar event
+   * 
+   * DESCRIPTION:
+   * 
+   * Updates the currently logged in user's attendance to the given event. The user has to be
+   * a participant in the event.
+   * 
+   * @param eventId Event id
+   * @param attendance Event attendance
+   * 
+   * @return Updated calendar event
+   */
+  @Path("/event/{EVENTID}/attendance/{ATTENDANCE}")
+  @PUT
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response updateAttendance(@PathParam("EVENTID") Long eventId, @PathParam("ATTENDANCE") CalendarEventAttendance attendance) {
+    CalendarEvent event = calendarController.findEventById(eventId);
+    if (event == null) {
+      return Response.status(Status.NOT_FOUND).entity(String.format("Event %d not found", eventId)).build();
+    }
+    CalendarEventParticipant participant = calendarController.findParticipant(event, sessionController.getLoggedUserEntity().getId());
+    if (participant == null) {
+      return Response.status(Status.BAD_REQUEST).entity(String.format("Event %d participant not found", eventId)).build();
+    }
+    calendarController.updateEventAttendance(participant, attendance);
     return Response.ok(toRestModel(event)).build();
   }
   
