@@ -518,6 +518,10 @@
   // scss-lint:enable SelectorFormat
 }
 
+.evaluation-modal__evaluate-drawer--assignment {
+  z-index: 201;
+}
+
 .evaluation-modal__evaluate-drawer-header {
   align-items: center;
   background: $color-default;
