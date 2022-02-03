@@ -113,10 +113,6 @@ public class NotesRESTService extends PluginRESTService {
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response getNotesByOwner(@PathParam("OWNER") Long owner) {
     
-    if (owner == null) {
-      return Response.status(Status.BAD_REQUEST).entity("Invalid userIdentifier").build();
-    }
-    
     List<Note> notes = notesController.listByOwner(owner);
     List<NoteRestModel> notesList = new ArrayList<NoteRestModel>();
     
