@@ -94,7 +94,7 @@ const createCalendarEvent: createCalendarEventTriggerType =
       visibility,
       participants,
     } = event;
-    console.log(event);
+
     return async (
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType

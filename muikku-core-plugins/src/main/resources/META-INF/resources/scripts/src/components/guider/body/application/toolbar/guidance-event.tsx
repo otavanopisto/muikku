@@ -7,7 +7,10 @@ import { bindActionCreators } from "redux";
 import { StateType } from "~/reducers";
 import { GuiderType, GuiderStudentType } from "~/reducers/main-function/guider";
 import { Calendar } from "~/reducers/calendar";
-import FullCalendar, { DateSelectArg } from "@fullcalendar/react";
+import FullCalendar, {
+  DateSelectArg,
+  EventClickArg,
+} from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import Button from "~/components/general/button";
@@ -41,7 +44,6 @@ interface GuidanceEventProps {
  *  State for guidance event reservation
  */
 interface GuidanceEventState {
-  newEvent: Event;
   locked: boolean; // If the save button should be locked
 }
 
@@ -62,7 +64,6 @@ class GuidanceEvent extends React.Component<
     super(props);
 
     this.state = {
-      newEvent: {},
       locked: true,
     };
   }
@@ -98,25 +99,34 @@ class GuidanceEvent extends React.Component<
 
   /**
    * Clears the event from the state
+   * @param args Arguments of the event that has been clicked
    */
-  handleEventClick = () => {
-    this.setState({ newEvent: {}, locked: true });
+  handleEventClick = (args: EventClickArg) => {
+    if (!args.el.classList.contains("fc-bg-event")) {
+      const event = this.calendarRef.current
+        .getApi()
+        .getEventById(args.event.id);
+      event.remove();
+      this.setState({ locked: true });
+    }
   };
 
   /**
    * Handles the selection of a state in the calendar
-   * @param arg event arguments from the fullCalendar
+   * @param args Arguments of selected date from the fullCalendar
    */
-  handleDateSelect = (arg: DateSelectArg) => {
+  handleDateSelect = (args: DateSelectArg) => {
     let newEvent = {
+      id: "new-event",
       title: getName(this.props.guider.currentStudent.basic, true),
-      description: "Ohjaussaika opiskelijalle",
-      start: arg.startStr,
+      description: "Ohjausaika opiskelijalle",
+      start: args.startStr,
       classNames: ["env-dialog__guidance-event"],
       overlap: false,
-      end: arg.endStr,
+      end: args.endStr,
     };
-    this.setState({ newEvent: newEvent, locked: false });
+    this.calendarRef.current.getApi().addEvent(newEvent);
+    this.setState({ locked: false });
   };
 
   /**
@@ -124,11 +134,13 @@ class GuidanceEvent extends React.Component<
    * @param closeDialog close function for the dialog
    */
   handleSaveEvent = (closeDialog: () => void) => {
-    const event = {
-      title: this.state.newEvent.title,
-      description: this.state.newEvent.description,
-      start: this.state.newEvent.start,
-      end: this.state.newEvent.end,
+    const event = this.calendarRef.current.getApi().getEventById("new-event");
+
+    const payload = {
+      title: event.title,
+      description: event.extendedProps.description,
+      start: event.startStr,
+      end: event.endStr,
       visibility: "PRIVATE" as EventVisibility,
       participants: [
         {
@@ -139,9 +151,23 @@ class GuidanceEvent extends React.Component<
         },
       ],
     };
-    this.props.createCalendarEvent(event); // Create a new event
-    this.handleCalendarEventsLoad(true); // Load new event to state
+    this.props.createCalendarEvent(payload); // Create a new event
+    this.clearState();
     closeDialog(); // Close the dialog
+  };
+  /**
+   *Handles dialog close
+   * @param closeDialog
+   */
+  handleDialogClose = (closeDialog: () => void) => {
+    this.clearState();
+    closeDialog();
+  };
+  /**
+   * Clears component state
+   */
+  clearState = () => {
+    this.setState({ locked: true });
   };
 
   render() {
@@ -165,8 +191,9 @@ class GuidanceEvent extends React.Component<
         plugins={[timeGridPlugin, interactionPlugin]}
         initialView="timeGridWeek"
         select={this.handleDateSelect}
+        editable={true}
         selectable={true}
-        events={[...[this.state.newEvent], ...events]}
+        events={events}
         allDaySlot={false}
         eventClick={this.handleEventClick}
         selectOverlap={false}
@@ -196,7 +223,10 @@ class GuidanceEvent extends React.Component<
             "plugin.guider.user.addGuidanceEvent.button.save"
           )}
         </Button>
-        <Button buttonModifiers="dialog-cancel" onClick={closeDialog}>
+        <Button
+          buttonModifiers="dialog-cancel"
+          onClick={this.handleDialogClose.bind(this, closeDialog)}
+        >
           {this.props.i18n.text.get(
             "plugin.guider.user.addGuidanceEvent.button.cancel"
           )}
