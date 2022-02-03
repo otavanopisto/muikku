@@ -1,5 +1,9 @@
 import { SetRecorder } from "~/@types/recorder";
 
+/**
+ * startRecording
+ * @param setRecorderState setRecorderState
+ */
 export async function startRecording(setRecorderState: SetRecorder) {
   try {
     const stream: MediaStream = await navigator.mediaDevices.getUserMedia({
@@ -13,11 +17,13 @@ export async function startRecording(setRecorderState: SetRecorder) {
         mediaStream: stream,
       };
     });
-  } catch (err) {
-
-  }
+  } catch (err) {}
 }
 
+/**
+ * saveRecording
+ * @param recorder recorder
+ */
 export function saveRecording(recorder: MediaRecorder) {
   if (recorder.state !== "inactive") {
     recorder.stop();

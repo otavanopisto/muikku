@@ -89,7 +89,6 @@
 }
 
 .evaluation-modal__content-wrapper {
-
   @include breakpoint($breakpoint-desktop) {
     height: 100%;
     overflow-y: scroll;
@@ -590,6 +589,17 @@
 
 .evaluation-modal__evaluate-drawer-row {
   margin: 10px 0 15px;
+}
+
+.evaluation-modal__evaluate-drawer-row--recording-warning {
+  font-size: 1rem;
+  justify-content: center;
+
+  .recording-warning {
+    color: $color-failed;
+    display: flex;
+    justify-content: center;
+  }
 }
 
 .evaluation-modal__evaluate-drawer-row--buttons {
