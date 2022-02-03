@@ -3,7 +3,7 @@ import { ActionType } from "~/actions";
 export interface Event {
   id?: string;
   title?: string;
-  start?: string;
+  start: string;
   overlap?: boolean;
   end?: string;
   classNames?: string[];
