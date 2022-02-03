@@ -112,12 +112,7 @@ public class CalendarController {
   }
   
   private CalendarEventParticipant findParticipantByUserEntityId(List<CalendarEventParticipant> participants, Long userEntityId) {
-    for (CalendarEventParticipant participant : participants) {
-      if (participant.getUserEntityId().equals(userEntityId)) {
-        return participant;
-      }
-    }
-    return null;
+    return participants.stream().filter(p -> userEntityId.equals(p.getUserEntityId())).findFirst().orElse(null);
   }
 
 }
