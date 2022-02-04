@@ -259,18 +259,12 @@
 
   &:hover,
   &.hover {
-    background-color: darken(
-      $color-workspace-signup-readmore-button-background,
-      10%
-    );
+    background-color: darken($color-workspace-signup-readmore-button-background, 10%);
   }
 
   &:active,
   &.active {
-    background-color: darken(
-      $color-workspace-signup-readmore-button-background,
-      20%
-    );
+    background-color: darken($color-workspace-signup-readmore-button-background, 20%);
   }
 }
 
@@ -307,18 +301,12 @@
 
     &:hover,
     &.hover {
-      background-color: darken(
-        $color-main-function-button-login-background,
-        10%
-      );
+      background-color: darken($color-main-function-button-login-background, 10%);
     }
 
     &:active,
     &.active {
-      background-color: darken(
-        $color-main-function-button-login-background,
-        20%
-      );
+      background-color: darken($color-main-function-button-login-background, 20%);
     }
   }
 }
@@ -345,18 +333,20 @@
 
     &:hover,
     &.hover {
-      background-color: darken(
-        $color-main-function-button-login-background,
-        10%
-      );
+      background-color:
+        darken(
+          $color-main-function-button-login-background,
+          10%
+        );
     }
 
     &:active,
     &.active {
-      background-color: darken(
-        $color-main-function-button-login-background,
-        20%
-      );
+      background-color:
+        darken(
+          $color-main-function-button-login-background,
+          20%
+        );
     }
   }
 }
@@ -368,18 +358,20 @@
 
   &:hover,
   &.hover {
-    background-color: darken(
-      $color-frontpage-button-upper-secondary-school-readmore-background,
-      10%
-    );
+    background-color:
+      darken(
+        $color-frontpage-button-upper-secondary-school-readmore-background,
+        10%
+      );
   }
 
   &:active,
   &.active {
-    background-color: darken(
-      $color-frontpage-button-upper-secondary-school-readmore-background,
-      20%
-    );
+    background-color:
+      darken(
+        $color-frontpage-button-upper-secondary-school-readmore-background,
+        20%
+      );
   }
 }
 
@@ -390,18 +382,20 @@
 
   &:hover,
   &.hover {
-    background-color: darken(
-      $color-frontpage-button-secondary-school-readmore-background,
-      10%
-    );
+    background-color:
+      darken(
+        $color-frontpage-button-secondary-school-readmore-background,
+        10%
+      );
   }
 
   &:active,
   &.active {
-    background-color: darken(
-      $color-frontpage-button-secondary-school-readmore-background,
-      20%
-    );
+    background-color:
+      darken(
+        $color-frontpage-button-secondary-school-readmore-background,
+        20%
+      );
   }
 }
 
@@ -414,18 +408,20 @@
 
   &:hover,
   &.hover {
-    background-color: darken(
-      $color-frontpage-button-open-materials-readmore-background,
-      10%
-    );
+    background-color:
+      darken(
+        $color-frontpage-button-open-materials-readmore-background,
+        10%
+      );
   }
 
   &:active,
   &.active {
-    background-color: darken(
-      $color-frontpage-button-open-materials-readmore-background,
-      20%
-    );
+    background-color:
+      darken(
+        $color-frontpage-button-open-materials-readmore-background,
+        20%
+      );
   }
 }
 
@@ -458,18 +454,20 @@
 
   &:hover,
   &.hover {
-    background-color: darken(
-      $color-frontpage-button-newsletter-background,
-      10%
-    );
+    background-color:
+      darken(
+        $color-frontpage-button-newsletter-background,
+        10%
+      );
   }
 
   &:active,
   &.active {
-    background-color: darken(
-      $color-frontpage-button-newsletter-background,
-      20%
-    );
+    background-color:
+      darken(
+        $color-frontpage-button-newsletter-background,
+        20%
+      );
   }
 
   @include breakpoint($breakpoint-desktop) {
@@ -792,18 +790,20 @@
 
   &:hover,
   &.hover {
-    background-color: darken(
-      $color-environment-button-pill-language-background,
-      5%
-    );
+    background-color:
+      darken(
+        $color-environment-button-pill-language-background,
+        5%
+      );
   }
 
   &:active,
   &.active {
-    background-color: darken(
-      $color-environment-button-pill-language-background,
-      10%
-    );
+    background-color:
+      darken(
+        $color-environment-button-pill-language-background,
+        10%
+      );
   }
 }
 
@@ -883,18 +883,20 @@
 
   &:hover,
   &.hover {
-    background-color: darken(
-      $color-main-function-button-pill-delete-background,
-      10%
-    );
+    background-color:
+      darken(
+        $color-main-function-button-pill-delete-background,
+        10%
+      );
   }
 
   &:active,
   &.active {
-    background-color: darken(
-      $color-main-function-button-pill-delete-background,
-      20%
-    );
+    background-color:
+      darken(
+        $color-main-function-button-pill-delete-background,
+        20%
+      );
   }
 
   &.disabled,
@@ -919,18 +921,20 @@
 
   &:hover,
   &.hover {
-    background-color: darken(
-      $color-main-function-button-pill-delete-background,
-      10%
-    );
+    background-color:
+      darken(
+        $color-main-function-button-pill-delete-background,
+        10%
+      );
   }
 
   &:active,
   &.active {
-    background-color: darken(
-      $color-main-function-button-pill-delete-background,
-      20%
-    );
+    background-color:
+      darken(
+        $color-main-function-button-pill-delete-background,
+        20%
+      );
   }
 
   &.disabled,
@@ -951,18 +955,20 @@
 
   &:hover,
   &.hover {
-    background-color: darken(
-      $color-main-function-button-pill-edit-background,
-      10%
-    );
+    background-color:
+      darken(
+        $color-main-function-button-pill-edit-background,
+        10%
+      );
   }
 
   &:active,
   &.active {
-    background-color: darken(
-      $color-main-function-button-pill-edit-background,
-      20%
-    );
+    background-color:
+      darken(
+        $color-main-function-button-pill-edit-background,
+        20%
+      );
   }
 
   &.disabled,
@@ -983,18 +989,20 @@
 
   &:hover,
   &.hover {
-    background-color: darken(
-      $color-main-function-button-pill-label-background,
-      10%
-    );
+    background-color:
+      darken(
+        $color-main-function-button-pill-label-background,
+        10%
+      );
   }
 
   &:active,
   &.active {
-    background-color: darken(
-      $color-main-function-button-pill-label-background,
-      20%
-    );
+    background-color:
+      darken(
+        $color-main-function-button-pill-label-background,
+        20%
+      );
   }
 
   &.disabled,
@@ -1019,18 +1027,20 @@
 
   &:hover,
   &.hover {
-    background-color: darken(
-      $color-main-function-button-pill-label-background,
-      10%
-    );
+    background-color:
+      darken(
+        $color-main-function-button-pill-label-background,
+        10%
+      );
   }
 
   &:active,
   &.active {
-    background-color: darken(
-      $color-main-function-button-pill-label-background,
-      20%
-    );
+    background-color:
+      darken(
+        $color-main-function-button-pill-label-background,
+        20%
+      );
   }
 
   &.disabled,
@@ -1051,18 +1061,20 @@
 
   &:hover,
   &.hover {
-    background-color: darken(
-      $color-main-function-button-pill-toggle-read-background,
-      10%
-    );
+    background-color:
+      darken(
+        $color-main-function-button-pill-toggle-read-background,
+        10%
+      );
   }
 
   &:active,
   &.active {
-    background-color: darken(
-      $color-main-function-button-pill-toggle-read-background,
-      20%
-    );
+    background-color:
+      darken(
+        $color-main-function-button-pill-toggle-read-background,
+        20%
+      );
   }
 
   &.disabled,
@@ -1088,18 +1100,20 @@
 
   &:hover,
   &.hover {
-    background-color: darken(
-      $color-main-function-button-pill-go-back-background,
-      10%
-    );
+    background-color:
+      darken(
+        $color-main-function-button-pill-go-back-background,
+        10%
+      );
   }
 
   &:active,
   &.active {
-    background-color: darken(
-      $color-main-function-button-pill-go-back-background,
-      20%
-    );
+    background-color:
+      darken(
+        $color-main-function-button-pill-go-back-background,
+        20%
+      );
   }
 
   &.disabled,
@@ -1126,18 +1140,20 @@
 
     &:hover,
     &.hover {
-      background-color: darken(
-        $color-main-function-button-pill-prev-page-background,
-        10%
-      );
+      background-color:
+        darken(
+          $color-main-function-button-pill-prev-page-background,
+          10%
+        );
     }
 
     &:active,
     &.active {
-      background-color: darken(
-        $color-main-function-button-pill-prev-page-background,
-        20%
-      );
+      background-color:
+        darken(
+          $color-main-function-button-pill-prev-page-background,
+          20%
+        );
     }
 
     &.disabled,
@@ -1161,18 +1177,20 @@
 
     &:hover,
     &.hover {
-      background-color: darken(
-        $color-main-function-button-pill-next-page-background,
-        10%
-      );
+      background-color:
+        darken(
+          $color-main-function-button-pill-next-page-background,
+          10%
+        );
     }
 
     &:active,
     &.active {
-      background-color: darken(
-        $color-main-function-button-pill-next-page-background,
-        20%
-      );
+      background-color:
+        darken(
+          $color-main-function-button-pill-next-page-background,
+          20%
+        );
     }
 
     &.disabled,
@@ -1733,10 +1751,7 @@
   justify-content: center;
   margin-right: 15px;
   position: relative;
-  width: calc(
-    #{$generic-mobile-switch-size} + #{$generic-mobile-switch-container-border-size} *
-      2
-  );
+  width: calc(#{$generic-mobile-switch-size} + #{$generic-mobile-switch-container-border-size} * 2);
 
   &::after {
     background: lighten($color-disabled, 10%);
@@ -1755,10 +1770,7 @@
 
   @include breakpoint($breakpoint-pad) {
     border-radius: 12px; // This is half of the whole width of the switch
-    width: calc(
-      #{$generic-desktop-switch-size} + #{$generic-desktop-switch-container-border-size} *
-        2
-    );
+    width: calc(#{$generic-desktop-switch-size} + #{$generic-desktop-switch-container-border-size} * 2);
 
     &::after {
       height: $generic-desktop-switch-size;
@@ -1780,10 +1792,7 @@
   }
 
   @include breakpoint($breakpoint-pad) {
-    width: calc(
-      #{$generic-desktop-switch-size} + #{$generic-desktop-switch-container-border-size} *
-        2
-    );
+    width: calc(#{$generic-desktop-switch-size} + #{$generic-desktop-switch-container-border-size} * 2);
 
     &::after {
       height: $generic-desktop-switch-size;
@@ -1954,4 +1963,32 @@
   background: $color-button-cancel-background;
   color: $color-default;
   margin: 0 5px;
+}
+
+.button-icon--evaluation {
+  &.button-icon--excercise-drawer-close {
+    color: $color-default-contrast;
+    font-size: 2rem;
+  }
+
+  &.button-icon--assignment-drawer-close {
+    color: $color-assignment;
+    font-size: 2rem;
+  }
+
+  &.button-icon--workspace-drawer-close {
+    color: $color-info;
+    font-size: 2rem;
+  }
+
+  &.button-icon--supplementation-drawer-close {
+    color: $color-incomplete;
+    font-size: 2rem;
+  }
+
+  &.disabled,
+  &:disabled {
+    background-color: transparent;
+    color: $color-disabled;
+  }
 }

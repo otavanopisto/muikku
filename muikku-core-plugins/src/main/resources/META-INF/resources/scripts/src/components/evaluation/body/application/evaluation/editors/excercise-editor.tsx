@@ -46,6 +46,11 @@ interface AssignmentEditorProps {
     assigmentSaveReturn: AssignmentEvaluationSaveReturn
   ) => void;
   onAudioAssessmentChange: () => void;
+  /**
+   * Handles changes whether recording is happening or not
+   */
+  onIsRecordingChange?: (isRecording: boolean) => void;
+  isRecording: boolean;
   showAudioAssessmentWarningOnClose: boolean;
   updateCurrentStudentCompositeRepliesData: UpdateCurrentStudentEvaluationCompositeRepliesData;
   displayNotification: DisplayNotificationTriggerType;
@@ -439,6 +444,7 @@ class ExcerciseEditor extends SessionStateComponent<
               )}
             </label>
             <Recorder
+              onIsRecordingChange={this.props.onIsRecordingChange}
               onChange={this.handleAudioAssessmentChange}
               values={this.state.audioAssessments}
             />
@@ -490,6 +496,16 @@ class ExcerciseEditor extends SessionStateComponent<
             </Button>
           )}
         </div>
+
+        {this.props.isRecording && (
+          <div className="evaluation-modal__evaluate-drawer-row evaluation-modal__evaluate-drawer-row--recording-warning">
+            <div className="recording-warning">
+              {this.props.i18n.text.get(
+                "plugin.evaluation.evaluationModal.assignmentEvaluationForm.isRecordingWarning"
+              )}
+            </div>
+          </div>
+        )}
       </>
     );
   }

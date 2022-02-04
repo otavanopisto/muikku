@@ -9,6 +9,7 @@ export interface SlideDrawerProps {
   title: string;
   disableClose?: boolean;
   showWarning?: boolean;
+  closeIconModifiers?: string[];
   modifiers?: string[];
   show?: boolean;
   onClose?: () => void;
@@ -34,6 +35,7 @@ const SlideDrawer: React.FC<SlideDrawerProps> = (props) => {
     title,
     onClose,
     onOpen,
+    closeIconModifiers,
     modifiers,
     showWarning,
     disableClose,
@@ -76,6 +78,7 @@ const SlideDrawer: React.FC<SlideDrawerProps> = (props) => {
             <IconButton
               onClick={onClose}
               disabled={disableClose}
+              buttonModifiers={closeIconModifiers}
               icon="arrow-right"
             ></IconButton>
           </WarningDialog>
@@ -83,6 +86,7 @@ const SlideDrawer: React.FC<SlideDrawerProps> = (props) => {
           <IconButton
             onClick={onClose}
             disabled={disableClose}
+            buttonModifiers={closeIconModifiers}
             icon="arrow-right"
           ></IconButton>
         )}
