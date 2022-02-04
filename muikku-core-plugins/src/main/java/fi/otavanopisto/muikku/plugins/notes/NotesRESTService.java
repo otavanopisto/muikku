@@ -16,12 +16,15 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.notes.model.Note;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserEntityController;
+import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
@@ -35,13 +38,16 @@ public class NotesRESTService extends PluginRESTService {
   private static final long serialVersionUID = 6610657511716011677L;
   
   @Inject
-  private UserEntityController userEntityController;
+  private NotesController notesController;
   
   @Inject
   private SessionController sessionController;
+
+  @Inject
+  private UserEntityController userEntityController;
   
   @Inject
-  private NotesController notesController;
+  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
   
 
   // mApi() call (mApi().notes.note.create(noteRestModel)
@@ -49,18 +55,31 @@ public class NotesRESTService extends PluginRESTService {
   // noteRestModel: = {
   //  title: String, 
   //  description: String, 
-  //  type: emun MANUAL
+  //  type: enum MANUAL
   //  priority: enum LOW/NORMAL/HIGH, 
   //  pinned: Boolean, 
-  //  owner: userIdentifier
+  //  owner: userEntityId
   //  };
   @POST
   @Path("/note")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response createNote(NoteRestModel note) {
     
-      Note newNote = notesController.createNote(note.getTitle(), note.getDescription(), note.getType(), note.getPriority(), note.getPinned(), note.getOwner());
-      return Response.ok(toRestModel(newNote)).build();
+    EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUser());
+    EnvironmentRoleArchetype loggedUserRole = roleEntity != null ? roleEntity.getArchetype() : null;
+    
+    if (loggedUserRole == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    Note newNote = null;
+    
+    if (EnvironmentRoleArchetype.STUDENT.equals(loggedUserRole)) {
+      newNote = notesController.createNote(note.getTitle(), note.getDescription(), note.getType(), note.getPriority(), note.getPinned(), sessionController.getLoggedUserEntity().getId());
+    } else {
+      newNote = notesController.createNote(note.getTitle(), note.getDescription(), note.getType(), note.getPriority(), note.getPinned(), note.getOwner());
+    }
+    
+    return Response.ok(toRestModel(newNote)).build();
   }
   
   //mApi() call (mApi().notes.note.update(noteId, noteRestModel)

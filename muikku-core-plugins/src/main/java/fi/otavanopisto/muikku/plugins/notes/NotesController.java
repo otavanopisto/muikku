@@ -19,14 +19,12 @@ public class NotesController {
   private NoteDAO noteDAO;
   
   public List<Note> listByOwner(Long owner) {
-    return(noteDAO.listByOwnerAndArchived(owner, Boolean.FALSE)); 
+    return noteDAO.listByOwnerAndArchived(owner, Boolean.FALSE); 
   }
   
   public Note createNote(String title, String description, NoteType type, NotePriority priority, Boolean pinned, Long owner) {
-    Long lastModifier = sessionController.getLoggedUserEntity().getId();
-    Long creator = sessionController.getLoggedUserEntity().getId();
 
-    Note note = noteDAO.create(title, description, type, priority, pinned, owner, creator, lastModifier);
+    Note note = noteDAO.create(title, description, type, priority, pinned, owner, sessionController.getLoggedUserEntity().getId(), sessionController.getLoggedUserEntity().getId());
     
     return note;
   }
