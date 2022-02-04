@@ -1,10 +1,19 @@
+/* eslint-disable react/no-string-refs */
+
+/**
+ * Depcrecated refs should be refactored
+ */
+
 import * as React from "react";
 import Tabs, { Tab } from "~/components/general/tabs";
 import ApplicationPanelBody from "./components/application-panel-body";
 import "~/sass/elements/application-panel.scss";
 import "~/sass/elements/loaders.scss";
-import { createAllTabs } from "~/helper-functions/tabs"
+import { createAllTabs } from "~/helper-functions/tabs";
 
+/**
+ * ApplicationPanelProps
+ */
 interface ApplicationPanelProps {
   modifier?: string;
   title?: React.ReactElement<any> | string;
@@ -19,32 +28,72 @@ interface ApplicationPanelProps {
   children?: React.ReactElement<any> | Array<React.ReactElement<any>>;
 }
 
-interface ApplicationPanelState { }
+/**
+ * ApplicationPanelState
+ */
+interface ApplicationPanelState {}
 
+/**
+ * ApplicationPanel
+ */
 export default class ApplicationPanel extends React.Component<
   ApplicationPanelProps,
   ApplicationPanelState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: ApplicationPanelProps) {
     super(props);
   }
 
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
-
     return (
       <main
-        className={`application-panel ${this.props.modifier ? "application-panel--" + this.props.modifier : ""}`}
+        className={`application-panel ${
+          this.props.modifier ? "application-panel--" + this.props.modifier : ""
+        }`}
         ref="panel"
       >
-        <div className={`application-panel__container ${this.props.modifier ? "application-panel__container--" + this.props.modifier : ""}`}>
-          <h1 className={`application-panel__header   ${this.props.modifier ? "application-panel__header--" + this.props.modifier : ""}`}>
+        <div
+          className={`application-panel__container ${
+            this.props.modifier
+              ? "application-panel__container--" + this.props.modifier
+              : ""
+          }`}
+        >
+          <h1
+            className={`application-panel__header   ${
+              this.props.modifier
+                ? "application-panel__header--" + this.props.modifier
+                : ""
+            }`}
+          >
             {this.props.title ? (
-              <span className={`application-panel__header-title ${this.props.modifier ? "application-panel__header-title--" + this.props.modifier : ""}`}>
+              <span
+                className={`application-panel__header-title ${
+                  this.props.modifier
+                    ? "application-panel__header-title--" + this.props.modifier
+                    : ""
+                }`}
+              >
                 {this.props.title}
               </span>
             ) : null}
             {this.props.icon ? (
-              <span className={`application-panel__header-actions ${this.props.modifier ? "application-panele__header-actions--" + this.props.modifier : ""}`}>
+              <span
+                className={`application-panel__header-actions ${
+                  this.props.modifier
+                    ? "application-panele__header-actions--" +
+                      this.props.modifier
+                    : ""
+                }`}
+              >
                 {this.props.icon}
               </span>
             ) : null}
@@ -74,14 +123,27 @@ export default class ApplicationPanel extends React.Component<
   }
 }
 
-interface ApplicationPanelToolbarProps { }
+/**
+ * ApplicationPanelToolbarProps
+ */
+interface ApplicationPanelToolbarProps {}
 
-interface ApplicationPanelToolbarState { }
+/**
+ * ApplicationPanelToolbarState
+ */
+interface ApplicationPanelToolbarState {}
 
+/**
+ * ApplicationPanelToolbar
+ */
 export class ApplicationPanelToolbar extends React.Component<
   ApplicationPanelToolbarProps,
   ApplicationPanelToolbarState
 > {
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     return (
       <div className="application-panel__toolbar">{this.props.children}</div>
@@ -89,33 +151,65 @@ export class ApplicationPanelToolbar extends React.Component<
   }
 }
 
+/**
+ * ApplicationPanelToolbarActionsMainProps
+ */
 interface ApplicationPanelToolbarActionsMainProps {
-  modifier?: string
+  modifier?: string;
 }
 
-interface ApplicationPanelToolbarActionsMainState { }
+/**
+ * ApplicationPanelToolbarActionsMainState
+ */
+interface ApplicationPanelToolbarActionsMainState {}
 
+/**
+ * ApplicationPanelToolbarActionsMain
+ */
 export class ApplicationPanelToolbarActionsMain extends React.Component<
   ApplicationPanelToolbarActionsMainProps,
   ApplicationPanelToolbarActionsMainState
 > {
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     return (
-      <div className={`application-panel__toolbar-actions-main ${this.props.modifier ? "application-panel__toolbar-actions-main--" + this.props.modifier : ""}`}>
+      <div
+        className={`application-panel__toolbar-actions-main ${
+          this.props.modifier
+            ? "application-panel__toolbar-actions-main--" + this.props.modifier
+            : ""
+        }`}
+      >
         {this.props.children}
       </div>
     );
   }
 }
 
-interface ApplicationPanelToolbarActionsAsideProps { }
+/**
+ * ApplicationPanelToolbarActionsAsideProps
+ */
+interface ApplicationPanelToolbarActionsAsideProps {}
 
-interface ApplicationPanelToolbarActionsAsideState { }
+/**
+ * ApplicationPanelToolbarActionsAsideState
+ */
+interface ApplicationPanelToolbarActionsAsideState {}
 
+/**
+ * ApplicationPanelToolbarActionsAside
+ */
 export class ApplicationPanelToolbarActionsAside extends React.Component<
   ApplicationPanelToolbarActionsAsideProps,
   ApplicationPanelToolbarActionsAsideState
 > {
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     return (
       <div className="application-panel__toolbar-actions-aside">
@@ -125,14 +219,27 @@ export class ApplicationPanelToolbarActionsAside extends React.Component<
   }
 }
 
-interface ApplicationPanelToolsContainerProps { }
+/**
+ * ApplicationPanelToolsContainerProps
+ */
+interface ApplicationPanelToolsContainerProps {}
 
-interface ApplicationPanelToolsContainerState { }
+/**
+ * ApplicationPanelToolsContainerState
+ */
+interface ApplicationPanelToolsContainerState {}
 
+/**
+ * ApplicationPanelToolsContainer
+ */
 export class ApplicationPanelToolsContainer extends React.Component<
   ApplicationPanelToolsContainerProps,
   ApplicationPanelToolsContainerState
 > {
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     return (
       <div className="application-panel__tools-container">

@@ -1,18 +1,24 @@
-import * as React from 'react';
-import { MaterialLoaderProps } from '~/components/base/material-loader';
+import * as React from "react";
+import { MaterialLoaderProps } from "~/components/base/material-loader";
 import { i18nType } from "~/reducers/base/i18n";
 
+/**
+ * MaterialLoaderTitleProps
+ */
 interface MaterialLoaderTitleProps extends MaterialLoaderProps {
   i18n: i18nType;
 }
 
-function stopPropagation(e: React.MouseEvent<HTMLDivElement>) {
+/* function stopPropagation(e: React.MouseEvent<HTMLDivElement>) {
   e.stopPropagation();
-}
+} */
 
+/**
+ * MaterialLoaderTitle
+ * @param props props
+ */
 export function MaterialLoaderTitle(props: MaterialLoaderTitleProps) {
-
-  let hidden = props.material.hidden || props.folder && props.folder.hidden
+  const hidden = props.material.hidden || (props.folder && props.folder.hidden);
 
   if (props.isInFrontPage) {
     return null;
@@ -20,27 +26,38 @@ export function MaterialLoaderTitle(props: MaterialLoaderTitleProps) {
 
   if (props.invisible) {
     return (
-    <>
-      <h2 className="material-page__title">
-        {props.material.title}
-      </h2>
-    </>
+      <>
+        <h2 className="material-page__title">{props.material.title}</h2>
+      </>
     );
-
   }
 
-  const modifiers:Array<string> = typeof props.modifiers === "string" ? [props.modifiers] : props.modifiers;
+  /*   const modifiers: Array<string> =
+    typeof props.modifiers === "string" ? [props.modifiers] : props.modifiers; */
 
-  const materialPageType = props.material.assignmentType ? (props.material.assignmentType === "EXERCISE" ? "exercise" : "assignment") : "textual";
+  const materialPageType = props.material.assignmentType
+    ? props.material.assignmentType === "EXERCISE"
+      ? "exercise"
+      : "assignment"
+    : "textual";
 
   return (
-  <>
-    <h2 className={`material-page__title material-page__title--${materialPageType}`}>
-      {props.material.title}
-    </h2>
-    {hidden && (materialPageType === "exercise" || materialPageType === "assignment") ?
-      <div className="material-page__title-meta">{props.i18n.text.get("plugin.workspace.materials." + materialPageType + "HiddenButAnswered")}</div>
-    : null}
-  </>
+    <>
+      <h2
+        className={`material-page__title material-page__title--${materialPageType}`}
+      >
+        {props.material.title}
+      </h2>
+      {hidden &&
+      (materialPageType === "exercise" || materialPageType === "assignment") ? (
+        <div className="material-page__title-meta">
+          {props.i18n.text.get(
+            "plugin.workspace.materials." +
+              materialPageType +
+              "HiddenButAnswered"
+          )}
+        </div>
+      ) : null}
+    </>
   );
 }

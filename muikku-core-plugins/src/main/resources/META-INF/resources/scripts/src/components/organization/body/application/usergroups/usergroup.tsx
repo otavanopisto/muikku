@@ -1,5 +1,5 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/course.scss";
 import "~/sass/elements/rich-text.scss";
@@ -13,15 +13,28 @@ import {
 } from "~/components/general/application-list";
 import { UserGroupType } from "~/reducers/user-index";
 
+/**
+ * CourseProps
+ */
 interface CourseProps {
   i18n: i18nType;
   status: StatusType;
   usergroup: UserGroupType;
 }
 
-interface CourseState { }
+/**
+ * CourseState
+ */
+interface CourseState {}
 
+/**
+ * Workspace
+ */
 class Workspace extends React.Component<CourseProps, CourseState> {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: CourseProps) {
     super(props);
 
@@ -30,8 +43,11 @@ class Workspace extends React.Component<CourseProps, CourseState> {
     };
   }
 
+  /**
+   * render
+   */
   render() {
-    let actions = (
+    const actions = (
       <div>
         <UserGroupDialog usergroup={this.props.usergroup}>
           <span className="icon-pencil"></span>
@@ -52,6 +68,10 @@ class Workspace extends React.Component<CourseProps, CourseState> {
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -59,7 +79,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+/**
+ * mapDispatchToProps
+ */
+function mapDispatchToProps() {
   return {};
 }
 

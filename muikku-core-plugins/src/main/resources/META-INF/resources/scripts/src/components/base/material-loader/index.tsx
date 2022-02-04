@@ -1,3 +1,9 @@
+/* eslint-disable react/no-string-refs */
+
+/**
+ * Deprecated refs should be reractored
+ */
+
 //NOTE this is a sandbox file, because the code in the material loader is so complex I created this self contained
 //blackbox environment that makes it so that the material loader behaves like one component, this is bad because
 //it does not have the same capabilities and efficiency as the other components, and cannot be easily modified
@@ -135,6 +141,9 @@ const STATES = [
   },
 ];
 
+/**
+ * MaterialLoaderProps
+ */
 export interface MaterialLoaderProps {
   material: MaterialContentNodeType;
   folder?: MaterialContentNodeType;
@@ -220,10 +229,16 @@ export interface MaterialLoaderProps {
   ) => any;
 }
 
+/**
+ * DefaultMaterialLoaderProps
+ */
 interface DefaultMaterialLoaderProps {
   usedAs: UsedAs;
 }
 
+/**
+ * MaterialLoaderState
+ */
 interface MaterialLoaderState {
   //Composite replies as loaded when using loadCompositeReplies boolean
   compositeRepliesInState: MaterialCompositeRepliesType;
@@ -241,8 +256,9 @@ interface MaterialLoaderState {
 }
 
 //A cheap cache for material replies and composite replies used by the hack
-let materialRepliesCache: { [key: string]: any } = {};
-let compositeRepliesCache: { [key: string]: MaterialCompositeRepliesType } = {};
+const materialRepliesCache: { [key: string]: any } = {};
+const compositeRepliesCache: { [key: string]: MaterialCompositeRepliesType } =
+  {};
 
 //Treat this class with care it uses a lot of hacks to be efficient
 //The compositeReplies which answers are ignored and only used for setting the initial replies
@@ -251,6 +267,9 @@ let compositeRepliesCache: { [key: string]: MaterialCompositeRepliesType } = {};
 //updating the layout and what not basically here, down the line all changes are scraped, base never ever updates
 //and the field never changes its state, a change in the content of the field, can destroy it and break the page
 //you can add styles here but don't mess up with the low level rendering
+/**
+ * MaterialLoader
+ */
 class MaterialLoader extends React.Component<
   MaterialLoaderProps,
   MaterialLoaderState
@@ -262,11 +281,15 @@ class MaterialLoader extends React.Component<
     usedAs: "default",
   };
 
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: MaterialLoaderProps) {
     super(props);
 
     //initial state has no composite replies and the answers are not visible or checked
-    let state: MaterialLoaderState = {
+    const state: MaterialLoaderState = {
       compositeRepliesInState: null,
       compositeRepliesInStateLoaded: false,
 
@@ -294,15 +317,16 @@ class MaterialLoader extends React.Component<
     //if it is answerable
     if (props.answerable && props.material) {
       //lets try and get the state configuration
-      this.stateConfiguration = STATES.filter((state: any) => {
-        //by assignment type first
-        return state["assignment-type"] === props.material.assignmentType;
-      }).find((state: any) => {
+      this.stateConfiguration = STATES.filter(
+        (state: any) =>
+          //by assignment type first
+          state["assignment-type"] === props.material.assignmentType
+      ).find((state: any) => {
         //then by state, if no composite reply is given assume UNANSWERED
-        let stateRequired =
+        const stateRequired =
           (props.compositeReplies && props.compositeReplies.state) ||
           "UNANSWERED";
-        let statesInIt = state["state"];
+        const statesInIt = state["state"];
         return (
           statesInIt === stateRequired ||
           (statesInIt instanceof Array && statesInIt.includes(stateRequired))
@@ -324,6 +348,9 @@ class MaterialLoader extends React.Component<
     //set the state
     this.state = state;
   }
+  /**
+   * componentDidMount
+   */
   componentDidMount() {
     this.setState({
       answersVisible: this.props.answersVisible && this.props.answersVisible,
@@ -333,6 +360,11 @@ class MaterialLoader extends React.Component<
     //create the composite replies if using the boolean flag
     this.create();
   }
+  /**
+   * componentWillUpdate
+   * @param nextProps nextProps
+   * @param nextState nextState
+   */
   componentWillUpdate(
     nextProps: MaterialLoaderProps,
     nextState: MaterialLoaderState
@@ -341,16 +373,17 @@ class MaterialLoader extends React.Component<
     //and there's a material
     if (nextProps.answerable && nextProps.material) {
       //we get the composite replies
-      let compositeReplies =
+      const compositeReplies =
         nextProps.compositeReplies || nextState.compositeRepliesInState;
 
       //The state configuration
-      this.stateConfiguration = STATES.filter((state: any) => {
-        return state["assignment-type"] === nextProps.material.assignmentType;
-      }).find((state: any) => {
-        let stateRequired =
+      this.stateConfiguration = STATES.filter(
+        (state: any) =>
+          state["assignment-type"] === nextProps.material.assignmentType
+      ).find((state: any) => {
+        const stateRequired =
           (compositeReplies && compositeReplies.state) || "UNANSWERED";
-        let statesInIt = state["state"];
+        const statesInIt = state["state"];
         return (
           statesInIt === stateRequired ||
           (statesInIt instanceof Array && statesInIt.includes(stateRequired))
@@ -392,10 +425,18 @@ class MaterialLoader extends React.Component<
       }
     }
   }
+
+  /**
+   * create
+   */
   async create() {
     const { usedAs = "default", userEntityId } = this.props;
 
-    let userEntityIdToLoad = parseInt(document.querySelector('meta[name="muikku:loggedUserId"]').getAttribute("value"));
+    let userEntityIdToLoad = parseInt(
+      document
+        .querySelector('meta[name="muikku:loggedUserId"]')
+        .getAttribute("value")
+    );
 
     if (usedAs === "evaluationTool" && userEntityId) {
       userEntityIdToLoad = userEntityId;
@@ -435,16 +476,24 @@ class MaterialLoader extends React.Component<
       });
     }
   }
+
+  /**
+   * getComponent
+   */
   getComponent(): HTMLDivElement {
     return this.refs["root"] as HTMLDivElement;
   }
-  //This gets called once an answer is pushed with the button to push the answer
-  //To change its state
+
+  /**
+   * onPushAnswer
+   * This gets called once an answer is pushed with the button to push the answer
+   * To change its state
+   */
   onPushAnswer() {
     //So now we need that juicy success state
     if (this.stateConfiguration["success-state"]) {
       //Get the composite reply
-      let compositeReplies =
+      const compositeReplies =
         this.props.compositeReplies || this.state.compositeRepliesInState;
       //We make it be the success state that was given, call this function
       //We set first the state we want
@@ -466,7 +515,10 @@ class MaterialLoader extends React.Component<
 
     this.props.onPushAnswer && this.props.onPushAnswer();
   }
-  //Toggles answers visible or not
+
+  /**
+   * Toggles answers visible or not
+   */
   toggleAnswersVisible() {
     this.setState({
       answersVisible: !this.state.answersVisible,
@@ -474,13 +526,18 @@ class MaterialLoader extends React.Component<
 
     this.props.onToggleAnswersVisible && this.props.onToggleAnswersVisible();
   }
-  //This function gets called every time a field answer state changes
-  //because of the way it works it will only be called if checkAnswers boolean attribute
-  //is set to true and it will fire immediately all the on rightness change events, as everything
-  //starts with unknown rightness, only things that can be righted call this, the name represents the field
-  //and the value the rightness that came as a result
-  //Some items do not trigger this function, which means your rightness count might differ from the
-  //amount of fields, because fields self register
+
+  /**
+   * This function gets called every time a field answer state changes
+   * because of the way it works it will only be called if checkAnswers boolean attribute
+   * is set to true and it will fire immediately all the on rightness change events, as everything
+   * starts with unknown rightness, only things that can be righted call this, the name represents the field
+   * and the value the rightness that came as a result
+   * Some items do not trigger this function, which means your rightness count might differ from the
+   * amount of fields, because fields self register
+   * @param name
+   * @param value
+   */
   onAnswerChange(name: string, value?: boolean) {
     //The reason we need a sync registry is that the rightness can change so fast
     //that it can overwrite itself in async operations like setState and this.state
@@ -491,7 +548,7 @@ class MaterialLoader extends React.Component<
     } else {
       this.answerRegistrySync[name] = value;
     }
-    let newObj: any = { ...this.answerRegistrySync };
+    const newObj: any = { ...this.answerRegistrySync };
     this.setState({
       answerRegistry: newObj,
     });
@@ -502,17 +559,21 @@ class MaterialLoader extends React.Component<
     //to make all fields show in the correct answer count you might modify and change how
     //the function operates within the fields freely
   }
-  //this function gets called when the material in question
-  //answer checkable state changes
-  //now by default this state is unknown
-  //so it will always trigger on setup
-  //however here we set it to true and check
-  //because changes are it will be true so we
-  //need not to update anything
-  //if that's the case
-  //feel free to go on top and change it to false
-  //if chances are it is more likely to be false
-  //should save a couple of bytes
+
+  /**
+   * this function gets called when the material in question
+   * answer checkable state changes
+   * now by default this state is unknown
+   * so it will always trigger on setup
+   * however here we set it to true and check
+   * because changes are it will be true so we
+   * need not to update anything
+   * if that's the case
+   * feel free to go on top and change it to false
+   * if chances are it is more likely to be false
+   * should save a couple of bytes
+   * @param answerCheckable
+   */
   onAnswerCheckableChange(answerCheckable: boolean) {
     if (answerCheckable !== this.state.answerCheckable) {
       this.setState({ answerCheckable });
@@ -521,9 +582,12 @@ class MaterialLoader extends React.Component<
     this.props.onAnswerCheckableChange &&
       this.props.onAnswerCheckableChange(answerCheckable);
   }
+  /**
+   *
+   */
   render() {
     //The modifiers in use
-    let modifiers: Array<string> =
+    const modifiers: Array<string> =
       typeof this.props.modifiers === "string"
         ? [this.props.modifiers]
         : this.props.modifiers;
@@ -531,7 +595,7 @@ class MaterialLoader extends React.Component<
       this.props.compositeReplies || this.state.compositeRepliesInState;
 
     //Setting this up
-    let isHidden =
+    const isHidden =
       this.props.material.hidden ||
       (this.props.folder && this.props.folder.hidden);
 
@@ -577,6 +641,10 @@ class MaterialLoader extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -585,6 +653,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     {

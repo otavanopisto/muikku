@@ -9,15 +9,22 @@ import * as React from "react";
 
 const registry = {
   "^image/": Image,
-  "pdf$": Pdf,
+  pdf$: Pdf,
   "x-shockwave-flash$": Flash,
   "^audio/": Audio,
-}
+};
 
+/**
+ * BinaryMaterialLoader
+ * @param props props
+ * @param props.material material
+ * @param props.i18n i18n
+ * @param props.invisible invisible
+ */
 export default function BinaryMaterialLoader(props: {
-  material: MaterialContentNodeType,
-  i18n: i18nType,
-  invisible?: boolean,
+  material: MaterialContentNodeType;
+  i18n: i18nType;
+  invisible?: boolean;
 }) {
   let Element = Any;
   Object.keys(registry).forEach((matchKey) => {
@@ -27,5 +34,5 @@ export default function BinaryMaterialLoader(props: {
     }
   });
 
-  return <Element {...props}/>
+  return <Element {...props} />;
 }

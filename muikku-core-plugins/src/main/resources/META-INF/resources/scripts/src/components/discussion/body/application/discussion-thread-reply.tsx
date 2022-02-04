@@ -22,6 +22,9 @@ import {
 import ReplyThreadDrawer from "./reply-thread-drawer";
 import ModifyThreadReplyDrawer from "./modify-reply-thread-drawer";
 
+/**
+ * DiscussionThreadReplyProps
+ */
 interface DiscussionThreadReplyProps {
   discussionItem: DiscussionThreadReplyType;
   i18n: i18nType;
@@ -39,15 +42,25 @@ interface DiscussionThreadReplyProps {
   ) => (e: React.MouseEvent) => void;
 }
 
+/**
+ * DiscussionThreadReplyState
+ */
 interface DiscussionThreadReplyState {
   openReplyType?: "answer" | "modify" | "quote";
   openedReplyEditor?: number;
 }
 
+/**
+ * DiscussionThreadReply
+ */
 class DiscussionThreadReply extends React.Component<
   DiscussionThreadReplyProps,
   DiscussionThreadReplyState
 > {
+  /**
+   * DiscussionThreadReplyProps
+   * @param props props
+   */
   constructor(props: DiscussionThreadReplyProps) {
     super(props);
 

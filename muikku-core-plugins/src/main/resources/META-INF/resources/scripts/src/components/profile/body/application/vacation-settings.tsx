@@ -154,7 +154,7 @@ class VacationSettings extends React.Component<
    * @param newDate
    */
   handleDateChange(stateLocation: string, newDate: any) {
-    let nState: any = {};
+    const nState: any = {};
     nState[stateLocation] = newDate;
     (this.setState as any)(nState);
   }

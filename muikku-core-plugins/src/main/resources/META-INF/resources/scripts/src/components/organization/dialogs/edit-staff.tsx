@@ -5,7 +5,6 @@ import {
   FormActionsElement,
   EmailFormElement,
   InputFormElement,
-  SSNFormElement,
   SelectFormElement,
 } from "~/components/general/form-element";
 import {
@@ -19,6 +18,9 @@ import { bindActionCreators } from "redux";
 import { StudyprogrammeTypes } from "~/reducers/main-function/users";
 import { UserType } from "~/reducers/user-index";
 
+/**
+ * OrganizationUserProps
+ */
 interface OrganizationUserProps {
   children?: React.ReactElement<any>;
   i18n: i18nType;
@@ -28,6 +30,9 @@ interface OrganizationUserProps {
   updateStaffmember: UpdateStaffmemberTriggerType;
 }
 
+/**
+ * OrganizationUserState
+ */
 interface OrganizationUserState {
   user: {
     [field: string]: string;
@@ -38,10 +43,17 @@ interface OrganizationUserState {
   emailValid: number;
 }
 
+/**
+ * OrganizationUser
+ */
 class OrganizationUser extends React.Component<
   OrganizationUserProps,
   OrganizationUserState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: OrganizationUserProps) {
     super(props);
     this.state = {
@@ -60,13 +72,25 @@ class OrganizationUser extends React.Component<
     this.saveUser = this.saveUser.bind(this);
   }
 
+  /**
+   * updateField
+   * @param value value
+   * @param valid valid
+   * @param name name
+   */
   updateField(value: string, valid: boolean, name: string) {
-    let fieldName = name;
-    let fieldValue = valid ? value : "";
-    let newState = Object.assign(this.state.user, { [fieldName]: fieldValue });
+    const fieldName = name;
+    const fieldValue = valid ? value : "";
+    const newState = Object.assign(this.state.user, {
+      [fieldName]: fieldValue,
+    });
     this.setState({ user: newState });
   }
 
+  /**
+   * cancelDialog
+   * @param closeDialog closeDialog
+   */
   cancelDialog(closeDialog: () => any) {
     this.setState({
       firstNameValid: 2,
@@ -76,6 +100,10 @@ class OrganizationUser extends React.Component<
     closeDialog();
   }
 
+  /**
+   * saveUser
+   * @param closeDialog closeDialog
+   */
   saveUser(closeDialog: () => any) {
     let valid = true;
     if (
@@ -104,7 +132,7 @@ class OrganizationUser extends React.Component<
         locked: true,
       });
 
-      let data = {
+      const data = {
         identifier: this.props.data.id,
         firstName: this.state.user.firstName,
         lastName: this.state.user.lastName,
@@ -114,6 +142,9 @@ class OrganizationUser extends React.Component<
 
       this.props.updateStaffmember({
         staffmember: data,
+        /**
+         *
+         */
         success: () => {
           this.setState({
             locked: false,
@@ -123,6 +154,9 @@ class OrganizationUser extends React.Component<
           });
           closeDialog();
         },
+        /**
+         *
+         */
         fail: () => {
           closeDialog();
         },
@@ -130,8 +164,15 @@ class OrganizationUser extends React.Component<
     }
   }
 
+  /**
+   * render
+   */
   render() {
-    let content = (closePortal: () => any) => (
+    /**
+     * content
+     * @param closeDialog closeDialog
+     */
+    const content = (closeDialog: () => any) => (
       <div>
         <DialogRow modifiers="new-user">
           <SelectFormElement
@@ -195,7 +236,11 @@ class OrganizationUser extends React.Component<
       </div>
     );
 
-    let footer = (closePortal: () => any) => (
+    /**
+     * footer
+     * @param closePortal closePortal
+     */
+    const footer = (closePortal: () => any) => (
       <FormActionsElement
         locked={this.state.locked}
         executeLabel={this.props.i18n.text.get(
@@ -224,6 +269,10 @@ class OrganizationUser extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -232,6 +281,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators({ updateStaffmember }, dispatch);
 }

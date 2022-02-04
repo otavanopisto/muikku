@@ -121,6 +121,9 @@ class ModifyThreadReplyDrawer extends SessionStateComponent<
     this.props.modifyReplyFromCurrentThread({
       reply: this.props.reply,
       message: this.state.text,
+      /**
+       * success
+       */
       success: () => {
         this.props.onClickCancel && this.props.onClickCancel();
         this.justClear(["text"], this.props.reply.id);
@@ -128,6 +131,9 @@ class ModifyThreadReplyDrawer extends SessionStateComponent<
           locked: false,
         });
       },
+      /**
+       * fail
+       */
       fail: () => {
         this.setState({
           locked: false,
@@ -136,6 +142,9 @@ class ModifyThreadReplyDrawer extends SessionStateComponent<
     });
   }
 
+  /**
+   *
+   */
   handleOnCancelClick = () => {
     this.props.onClickCancel && this.props.onClickCancel();
   };
@@ -145,7 +154,7 @@ class ModifyThreadReplyDrawer extends SessionStateComponent<
    * @returns JSX.Element
    */
   render() {
-    let editorTitle =
+    const editorTitle =
       this.props.i18n.text.get("plugin.discussion.editmessage.topic") +
       " - " +
       this.props.i18n.text.get("plugin.discussion.createmessage.content");
@@ -153,7 +162,7 @@ class ModifyThreadReplyDrawer extends SessionStateComponent<
     /**
      * content
      */
-    let content = (
+    const content = (
       <div className="env-dialog__row env-dialog__row--ckeditor">
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
@@ -175,7 +184,7 @@ class ModifyThreadReplyDrawer extends SessionStateComponent<
     /**
      * footer
      */
-    let footer = (
+    const footer = (
       <div className="env-dialog__actions">
         <Button
           buttonModifiers="dialog-execute"
@@ -212,12 +221,8 @@ class ModifyThreadReplyDrawer extends SessionStateComponent<
             <header className="env-dialog__header">
               {this.props.i18n.text.get("plugin.discussion.editmessage.topic")}
             </header>
-            <section className="env-dialog__body">
-              {content}
-            </section>
-            <footer className="env-dialog__footer">
-              {footer}
-            </footer>
+            <section className="env-dialog__body">{content}</section>
+            <footer className="env-dialog__footer">{footer}</footer>
           </div>
         </section>
       </div>

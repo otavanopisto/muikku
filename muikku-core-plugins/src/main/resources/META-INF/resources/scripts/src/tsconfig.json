@@ -1,29 +1,24 @@
 {
-	"compilerOptions": {
-		"outDir": "../dist/",
-		"allowJs": true,
-		"sourceMap": true,
-		"skipLibCheck": true,
+  "compilerOptions": {
+    "outDir": "../dist/",
+    "allowJs": true,
+    "sourceMap": true,
+    "skipLibCheck": true,
     "skipDefaultLibCheck": true,
-		"noImplicitAny": true,
-		"module": "commonjs",
-		"target": "es5",
-		"jsx": "react",
-		"emitDecoratorMetadata": true,
-		"experimentalDecorators": true,
-		"allowSyntheticDefaultImports": true,
+    "noImplicitAny": true,
+    "module": "commonjs",
+    "target": "es5",
+    "jsx": "react",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
-		"lib": [
-			"dom",
-			"es2016"
-		],
-		"baseUrl": ".",
-		"paths": {
-			"~/*": ["./*"]
-		},
-		"moduleResolution": "node"
-	},
-	"exclude": [
-		"node_modules"
-	]
+    "lib": ["dom", "es2016"],
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["./*"]
+    },
+    "moduleResolution": "node"
+  },
+  "exclude": ["node_modules"]
 }
