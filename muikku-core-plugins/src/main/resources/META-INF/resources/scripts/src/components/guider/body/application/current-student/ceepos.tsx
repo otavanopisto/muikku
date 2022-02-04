@@ -1,39 +1,51 @@
-import * as React from 'react';
-import { bindActionCreators, Dispatch } from 'redux';
-import { connect } from 'react-redux';
-import { i18nType } from '~/reducers/base/i18n';
-import { GuiderType } from '~/reducers/main-function/guider';
-import { StateType } from '~/reducers';
+import * as React from "react";
+import { bindActionCreators, Dispatch } from "redux";
+import { connect } from "react-redux";
+import { i18nType } from "~/reducers/base/i18n";
+import { GuiderType } from "~/reducers/main-function/guider";
+import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
 
-import '~/sass/elements/application-list.scss';
-import '~/sass/elements/empty.scss';
-import '~/sass/elements/glyph.scss';
+import "~/sass/elements/application-list.scss";
+import "~/sass/elements/empty.scss";
+import "~/sass/elements/glyph.scss";
 import {
   doOrderForCurrentStudent,
   DoOrderForCurrentStudentTriggerType,
   deleteOrderFromCurrentStudent,
   DeleteOrderFromCurrentStudentTriggerType,
   completeOrderFromCurrentStudent,
-  CompleteOrderFromCurrentStudentTriggerType
-} from '~/actions/main-function/guider';
-import ApplicationList, { ApplicationListItem, ApplicationListItemHeader } from '~/components/general/application-list'
-import { PurchaseProductType, PurchaseType } from '~/reducers/main-function/profile';
-import Dialog from '~/components/general/dialog';
-import Dropdown from '~/components/general/dropdown';
-import Link from '~/components/general/link';
-import Button from '~/components/general/button';
+  CompleteOrderFromCurrentStudentTriggerType,
+} from "~/actions/main-function/guider";
+import ApplicationList, {
+  ApplicationListItem,
+  ApplicationListItemHeader,
+} from "~/components/general/application-list";
+import {
+  PurchaseProductType,
+  PurchaseType,
+} from "~/reducers/main-function/profile";
+import Dialog from "~/components/general/dialog";
+import Dropdown from "~/components/general/dropdown";
+import Link from "~/components/general/link";
+import Button from "~/components/general/button";
 
+/**
+ * CeeposProps
+ */
 interface CeeposProps {
-  i18n: i18nType,
-  status: StatusType,
-  guider: GuiderType,
-  locale: string,
-  doOrderForCurrentStudent: DoOrderForCurrentStudentTriggerType,
-  deleteOrderFromCurrentStudent: DeleteOrderFromCurrentStudentTriggerType,
-  completeOrderFromCurrentStudent: CompleteOrderFromCurrentStudentTriggerType,
+  i18n: i18nType;
+  status: StatusType;
+  guider: GuiderType;
+  locale: string;
+  doOrderForCurrentStudent: DoOrderForCurrentStudentTriggerType;
+  deleteOrderFromCurrentStudent: DeleteOrderFromCurrentStudentTriggerType;
+  completeOrderFromCurrentStudent: CompleteOrderFromCurrentStudentTriggerType;
 }
 
+/**
+ * CeeposState
+ */
 interface CeeposState {
   isConfirmDialogOpenFor: PurchaseProductType | null;
   isDeleteDialogOpen: boolean;
@@ -42,7 +54,15 @@ interface CeeposState {
   orderToBeCompleted: PurchaseType | null;
 }
 
+/**
+ * Ceepos
+ */
 class Ceepos extends React.Component<CeeposProps, CeeposState> {
+  /**
+  constructor(props: CeeposProps) {
+   *
+   * @param props props
+   */
   constructor(props: CeeposProps) {
     super(props);
 
@@ -52,7 +72,7 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
       orderToBeDeleted: null,
       isCompleteDialogOpen: false,
       orderToBeCompleted: null,
-    }
+    };
 
     this.beginOrderCreationProcess = this.beginOrderCreationProcess.bind(this);
     this.acceptOrderCreation = this.acceptOrderCreation.bind(this);
@@ -62,14 +82,17 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
     this.acceptOrderDelete = this.acceptOrderDelete.bind(this);
     this.declineOrderDelete = this.declineOrderDelete.bind(this);
 
-    this.beginOrderManualCompleteProcess = this.beginOrderManualCompleteProcess.bind(this);
+    this.beginOrderManualCompleteProcess =
+      this.beginOrderManualCompleteProcess.bind(this);
     this.acceptOrderManualComplete = this.acceptOrderManualComplete.bind(this);
-    this.declineOrderManualComplete = this.declineOrderManualComplete.bind(this);
+    this.declineOrderManualComplete =
+      this.declineOrderManualComplete.bind(this);
   }
 
   /**
    * beginOrderCreationProcess
-   * @param p
+   * @param p product
+   * @param closeDropdown closeDropdown
    */
   beginOrderCreationProcess(p: PurchaseProductType, closeDropdown?: () => any) {
     this.setState({
@@ -99,9 +122,9 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
 
   /**
    * beginOrderDeleteProcess
-   * @param order
+   * @param order order object of purchase
    */
-   beginOrderDeleteProcess(order: PurchaseType) {
+  beginOrderDeleteProcess(order: PurchaseType) {
     this.setState({
       isDeleteDialogOpen: true,
       orderToBeDeleted: order,
@@ -127,10 +150,10 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
     });
   }
 
-/**
- * beginOrderManualCompleteProcess
- * @param order
- */
+  /**
+   * beginOrderManualCompleteProcess
+   * @param order order object of purchase
+   */
   beginOrderManualCompleteProcess(order: PurchaseType) {
     this.setState({
       isCompleteDialogOpen: true,
@@ -151,7 +174,7 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
   /**
    * declineOrderManualComplete
    */
-   declineOrderManualComplete() {
+  declineOrderManualComplete() {
     this.setState({
       isCompleteDialogOpen: null,
     });
@@ -159,92 +182,131 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
 
   /**
    * render
-   * @returns
+   * @returns JSX.element
    */
   render() {
-
     /**
      * orderConfirmDialogContent
-     * @param closeDialog
-     * @returns
+     * @param closeDialog closeDialog
      */
-    const orderConfirmDialogContent = (closeDialog: () => any) => <div>
-      <span><b>{this.state.isConfirmDialogOpenFor && this.state.isConfirmDialogOpenFor.Description}</b></span>
-      <br/><br/>
-      <span>{this.props.i18n.text.get("plugin.guider.orderConfirmDialog.description")}</span>
-    </div>
+    const orderConfirmDialogContent = (closeDialog: () => any) => (
+      <div>
+        <span>
+          <b>
+            {this.state.isConfirmDialogOpenFor &&
+              this.state.isConfirmDialogOpenFor.Description}
+          </b>
+        </span>
+        <br />
+        <br />
+        <span>
+          {this.props.i18n.text.get(
+            "plugin.guider.orderConfirmDialog.description"
+          )}
+        </span>
+      </div>
+    );
 
     /**
      * orderConfirmDialogFooter
-     * @param closeDialog
-     * @returns
+     * @param closeDialog closeDialog
      */
-    const orderConfirmDialogFooter = (closeDialog: () => any)=>{
-      return (
-        <div className="dialog__button-set">
-          <Button buttonModifiers={["standard-ok", "execute"]} onClick={this.acceptOrderCreation}>
-            {this.props.i18n.text.get("plugin.guider.orderConfirmDialog.okButton")}
-          </Button>
-          <Button buttonModifiers={["cancel","standard-cancel"]} onClick={this.declineOrderCreation}>
-            {this.props.i18n.text.get("plugin.guider.orderConfirmDialog.cancelButton")}
-          </Button>
-        </div>
-      )
-    }
+    const orderConfirmDialogFooter = (closeDialog: () => any) => (
+      <div className="dialog__button-set">
+        <Button
+          buttonModifiers={["standard-ok", "execute"]}
+          onClick={this.acceptOrderCreation}
+        >
+          {this.props.i18n.text.get(
+            "plugin.guider.orderConfirmDialog.okButton"
+          )}
+        </Button>
+        <Button
+          buttonModifiers={["cancel", "standard-cancel"]}
+          onClick={this.declineOrderCreation}
+        >
+          {this.props.i18n.text.get(
+            "plugin.guider.orderConfirmDialog.cancelButton"
+          )}
+        </Button>
+      </div>
+    );
 
     /**
      * orderDeleteDialogContent
-     * @param closeDialog
-     * @returns
+     * @param closeDialog closeDialog
      */
-    const orderDeleteDialogContent = (closeDialog: () => any) => <div>
-      <span>{this.props.i18n.text.get("plugin.guider.orderDeleteDialog.description")}</span>
-    </div>
+    const orderDeleteDialogContent = (closeDialog: () => any) => (
+      <div>
+        <span>
+          {this.props.i18n.text.get(
+            "plugin.guider.orderDeleteDialog.description"
+          )}
+        </span>
+      </div>
+    );
 
     /**
      * orderDeleteDialogFooter
-     * @param closeDialog
-     * @returns
+     * @param closeDialog closeDialog
      */
-    const orderDeleteDialogFooter = (closeDialog: () => any)=>{
-      return (
-        <div className="dialog__button-set">
-          <Button buttonModifiers={["standard-ok", "fatal"]} onClick={this.acceptOrderDelete}>
-            {this.props.i18n.text.get("plugin.guider.orderDeleteDialog.okButton")}
-          </Button>
-          <Button buttonModifiers={["cancel","standard-cancel"]} onClick={this.declineOrderDelete}>
-            {this.props.i18n.text.get("plugin.guider.orderDeleteDialog.cancelButton")}
-          </Button>
-        </div>
-      )
-    }
+    const orderDeleteDialogFooter = (closeDialog: () => any) => (
+      <div className="dialog__button-set">
+        <Button
+          buttonModifiers={["standard-ok", "fatal"]}
+          onClick={this.acceptOrderDelete}
+        >
+          {this.props.i18n.text.get("plugin.guider.orderDeleteDialog.okButton")}
+        </Button>
+        <Button
+          buttonModifiers={["cancel", "standard-cancel"]}
+          onClick={this.declineOrderDelete}
+        >
+          {this.props.i18n.text.get(
+            "plugin.guider.orderDeleteDialog.cancelButton"
+          )}
+        </Button>
+      </div>
+    );
 
     /**
      * orderCompleteDialogContent
-     * @param closeDialog
-     * @returns
+     * @param closeDialog closeDialog
      */
-    const orderCompleteDialogContent = (closeDialog: () => any) => <div>
-      <span>{this.props.i18n.text.get("plugin.guider.orderCompleteDialog.description")}</span>
-    </div>
+    const orderCompleteDialogContent = (closeDialog: () => any) => (
+      <div>
+        <span>
+          {this.props.i18n.text.get(
+            "plugin.guider.orderCompleteDialog.description"
+          )}
+        </span>
+      </div>
+    );
 
     /**
      * orderCompleteDialogFooter
-     * @param closeDialog
-     * @returns
+     * @param closeDialog closeDialog
      */
-    const orderCompleteDialogFooter = (closeDialog: () => any)=>{
-      return (
-        <div className="dialog__button-set">
-          <Button buttonModifiers={["standard-ok", "execute"]} onClick={this.acceptOrderManualComplete}>
-            {this.props.i18n.text.get("plugin.guider.orderCompleteDialog.okButton")}
-          </Button>
-          <Button buttonModifiers={["cancel","standard-cancel"]} onClick={this.declineOrderManualComplete}>
-            {this.props.i18n.text.get("plugin.guider.orderCompleteDialog.cancelButton")}
-          </Button>
-        </div>
-      )
-    }
+    const orderCompleteDialogFooter = (closeDialog: () => any) => (
+      <div className="dialog__button-set">
+        <Button
+          buttonModifiers={["standard-ok", "execute"]}
+          onClick={this.acceptOrderManualComplete}
+        >
+          {this.props.i18n.text.get(
+            "plugin.guider.orderCompleteDialog.okButton"
+          )}
+        </Button>
+        <Button
+          buttonModifiers={["cancel", "standard-cancel"]}
+          onClick={this.declineOrderManualComplete}
+        >
+          {this.props.i18n.text.get(
+            "plugin.guider.orderCompleteDialog.cancelButton"
+          )}
+        </Button>
+      </div>
+    );
 
     /**
      * Logic for whether new order can be created.
@@ -252,14 +314,15 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
      * If previous order(s) has state of CREATED, ONGOING or ERRORED new order cannot be created.
      *
      * IsOrderCreationDisabled
-     * @return true | false
+     * @returns true or false
      */
     const IsOrderCreationDisabled =
       this.props.guider.currentStudent.purchases &&
-      this.props.guider.currentStudent.purchases.filter((purchase) =>
-        purchase.state === "CREATED" ||
-        purchase.state === "ONGOING" ||
-        purchase.state === "ERRORED"
+      this.props.guider.currentStudent.purchases.filter(
+        (purchase) =>
+          purchase.state === "CREATED" ||
+          purchase.state === "ONGOING" ||
+          purchase.state === "ERRORED"
       ).length > 0;
 
     /**
@@ -268,9 +331,9 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
      * Order can only be deleted if its' state is not ONGOING, COMPLETE or PAID.
      *
      * canOderBeDelete
-     * @param state
-     * @return true | false
-     * */
+     * @param state state
+     * @returns true or false
+     */
     const IsOrderDeletionDisabled = (state: string) => {
       switch (state) {
         case "ONGOING":
@@ -295,8 +358,8 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
      * This is handled as inverse.
      *
      * IsOrderCompletionManuallyDisabled
-     * @param state
-     * @returns true | false
+     * @param state state
+     * @returns true or false
      */
     const IsOrderCompletionManuallyDisabled = (state: string) => {
       switch (state) {
@@ -311,91 +374,155 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
 
     return (
       <>
-        {this.props.guider.availablePurchaseProducts && this.props.guider.availablePurchaseProducts.length ?
+        {this.props.guider.availablePurchaseProducts &&
+        this.props.guider.availablePurchaseProducts.length ? (
           <>
-            <div className="application-sub-panel__description">{this.props.i18n.text.get("plugin.guider.createStudentOrder.description")}</div>
-            {this.props.status.permissions.CREATE_ORDER ?
-              <Dropdown modifier="guider-products-selection" items={this.props.guider.availablePurchaseProducts.map((p) => {
-                return (closeDropdown: () => any) => {
-                  return <Link className="link link--full link--purchasable-product-dropdown" onClick={this.beginOrderCreationProcess.bind(this, p, closeDropdown)}>
-                    <span className="link__icon icon-plus"></span>
-                    <span>{p.Description}</span>
-                  </Link>
-                }
-              })}>
+            <div className="application-sub-panel__description">
+              {this.props.i18n.text.get(
+                "plugin.guider.createStudentOrder.description"
+              )}
+            </div>
+            {this.props.status.permissions.CREATE_ORDER ? (
+              <Dropdown
+                modifier="guider-products-selection"
+                items={this.props.guider.availablePurchaseProducts.map(
+                  (p) => (closeDropdown: () => any) =>
+                    (
+                      <Link
+                        className="link link--full link--purchasable-product-dropdown"
+                        onClick={this.beginOrderCreationProcess.bind(
+                          this,
+                          p,
+                          closeDropdown
+                        )}
+                      >
+                        <span className="link__icon icon-plus"></span>
+                        <span>{p.Description}</span>
+                      </Link>
+                    )
+                )}
+              >
                 <Button
                   icon="cart-plus"
                   buttonModifiers={["create-student-order", "info"]}
                   disabled={IsOrderCreationDisabled}
-                >{this.props.i18n.text.get("plugin.guider.createStudentOrder.buttonLabel")}</Button>
+                >
+                  {this.props.i18n.text.get(
+                    "plugin.guider.createStudentOrder.buttonLabel"
+                  )}
+                </Button>
               </Dropdown>
-            : null}
-
-          </> : <div className="empty">
-            <span>{this.props.i18n.text.get("plugin.guider.noPurchasableProducts")}</span>
+            ) : null}
+          </>
+        ) : (
+          <div className="empty">
+            <span>
+              {this.props.i18n.text.get("plugin.guider.noPurchasableProducts")}
+            </span>
           </div>
-        }
+        )}
 
-        {this.props.guider.currentStudent.purchases && this.props.guider.currentStudent.purchases.length ? <ApplicationList>
-          {this.props.guider.currentStudent.purchases.map((p) => (
-            <ApplicationListItem modifiers="product" key={p.id}>
-              <ApplicationListItemHeader modifiers="product">
-                <span className={`glyph--product-state-indicator state-${p.state} icon-shopping-cart`}></span>
-                <span className="application-list__header-primary application-list__header-primary--product">
-                  <span className="application-list__header-primary-title"><b>{p.product.Description}</b></span>
-                  <span className="application-list__header-primary-description">
-                    {this.props.i18n.text.get("plugin.guider.purchases.description." + p.state)}
-                  </span>
-                  <span className="application-list__header-primary-meta">
-                    <span>{this.props.i18n.text.get("plugin.guider.purchases.orderId")}: {p.id}</span>
-                    <span>{this.props.i18n.text.get("plugin.guider.purchases.date.created")}: {this.props.i18n.time.format(p.created)}</span>
-                    {p.paid ?
-                      <span>{this.props.i18n.text.get("plugin.guider.purchases.date.paid")}: {this.props.i18n.time.format(p.paid)}</span>
-                      : null}
-                  </span>
-
-                  {/* We show "Delete" and "Complete order" buttons only if purchase state is not COMPLETE */}
-                  {p.state !== "COMPLETE" ?
-                    <span className="application-list__header-primary-actions">
-
-                      {/* We show "Delete" button only if logged in user has REMOVE_ORDER permission or logged in user's userEntityId is the same as purchase creator userId */}
-                      {this.props.status.permissions.REMOVE_ORDER || p.creator.userEntityId === this.props.status.userId ?
-                        <Button
-                          onClick={this.beginOrderDeleteProcess.bind(this, p)}
-                          disabled={IsOrderDeletionDisabled(p.state)}
-                          icon="trash"
-                          buttonModifiers={["delete-student-order", "fatal"]}
-                          >{this.props.i18n.text.get("plugin.guider.purchase.deleteOrderLink")}</Button>
-                      : null}
-
-                      {/* We show "Complete order" button only if logged in user has COMPLETE_ORDER permission */}
-                      {this.props.status.role === "ADMINISTRATOR" ?
-                        <Button
-                          onClick={this.beginOrderManualCompleteProcess.bind(this, p)}
-                          disabled={IsOrderCompletionManuallyDisabled(p.state)}
-                          icon="forward"
-                          buttonModifiers={["complete-student-order", "execute"]}
-                        >{this.props.i18n.text.get("plugin.guider.purchase.completeOrderLink")}</Button>
-                      : null}
-
+        {this.props.guider.currentStudent.purchases &&
+        this.props.guider.currentStudent.purchases.length ? (
+          <ApplicationList>
+            {this.props.guider.currentStudent.purchases.map((p) => (
+              <ApplicationListItem modifiers="product" key={p.id}>
+                <ApplicationListItemHeader modifiers="product">
+                  <span
+                    className={`glyph--product-state-indicator state-${p.state} icon-shopping-cart`}
+                  ></span>
+                  <span className="application-list__header-primary application-list__header-primary--product">
+                    <span className="application-list__header-primary-title">
+                      <b>{p.product.Description}</b>
                     </span>
-                  : null}
-                </span>
-                <span className="application-list__header-secondary">
+                    <span className="application-list__header-primary-description">
+                      {this.props.i18n.text.get(
+                        "plugin.guider.purchases.description." + p.state
+                      )}
+                    </span>
+                    <span className="application-list__header-primary-meta">
+                      <span>
+                        {this.props.i18n.text.get(
+                          "plugin.guider.purchases.orderId"
+                        )}
+                        : {p.id}
+                      </span>
+                      <span>
+                        {this.props.i18n.text.get(
+                          "plugin.guider.purchases.date.created"
+                        )}
+                        : {this.props.i18n.time.format(p.created)}
+                      </span>
+                      {p.paid ? (
+                        <span>
+                          {this.props.i18n.text.get(
+                            "plugin.guider.purchases.date.paid"
+                          )}
+                          : {this.props.i18n.time.format(p.paid)}
+                        </span>
+                      ) : null}
+                    </span>
 
-                </span>
-              </ApplicationListItemHeader>
-            </ApplicationListItem>
-          ))}
-          </ApplicationList> : <div className="empty">
+                    {/* We show "Delete" and "Complete order" buttons only if purchase state is not COMPLETE */}
+                    {p.state !== "COMPLETE" ? (
+                      <span className="application-list__header-primary-actions">
+                        {/* We show "Delete" button only if logged in user has REMOVE_ORDER permission or logged in user's userEntityId is the same as purchase creator userId */}
+                        {this.props.status.permissions.REMOVE_ORDER ||
+                        p.creator.userEntityId === this.props.status.userId ? (
+                          <Button
+                            onClick={this.beginOrderDeleteProcess.bind(this, p)}
+                            disabled={IsOrderDeletionDisabled(p.state)}
+                            icon="trash"
+                            buttonModifiers={["delete-student-order", "fatal"]}
+                          >
+                            {this.props.i18n.text.get(
+                              "plugin.guider.purchase.deleteOrderLink"
+                            )}
+                          </Button>
+                        ) : null}
+
+                        {/* We show "Complete order" button only if logged in user has COMPLETE_ORDER permission */}
+                        {this.props.status.role === "ADMINISTRATOR" ? (
+                          <Button
+                            onClick={this.beginOrderManualCompleteProcess.bind(
+                              this,
+                              p
+                            )}
+                            disabled={IsOrderCompletionManuallyDisabled(
+                              p.state
+                            )}
+                            icon="forward"
+                            buttonModifiers={[
+                              "complete-student-order",
+                              "execute",
+                            ]}
+                          >
+                            {this.props.i18n.text.get(
+                              "plugin.guider.purchase.completeOrderLink"
+                            )}
+                          </Button>
+                        ) : null}
+                      </span>
+                    ) : null}
+                  </span>
+                  <span className="application-list__header-secondary"></span>
+                </ApplicationListItemHeader>
+              </ApplicationListItem>
+            ))}
+          </ApplicationList>
+        ) : (
+          <div className="empty">
             <span>{this.props.i18n.text.get("plugin.guider.noPurchases")}</span>
-          </div>}
+          </div>
+        )}
 
         {/* Confirm order creation dialog */}
         <Dialog
           modifier="dialog-confirm-order"
           isOpen={!!this.state.isConfirmDialogOpenFor}
-          title={this.props.i18n.text.get("plugin.guider.orderConfirmDialog.title")}
+          title={this.props.i18n.text.get(
+            "plugin.guider.orderConfirmDialog.title"
+          )}
           onClose={this.declineOrderCreation}
           content={orderConfirmDialogContent}
           footer={orderConfirmDialogFooter}
@@ -405,7 +532,9 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
         <Dialog
           modifier="dialog-delete-order"
           isOpen={!!this.state.isDeleteDialogOpen}
-          title={this.props.i18n.text.get("plugin.guider.orderDeleteDialog.title")}
+          title={this.props.i18n.text.get(
+            "plugin.guider.orderDeleteDialog.title"
+          )}
           onClose={this.declineOrderDelete}
           content={orderDeleteDialogContent}
           footer={orderDeleteDialogFooter}
@@ -415,7 +544,9 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
         <Dialog
           modifier="dialog-complete-order"
           isOpen={!!this.state.isCompleteDialogOpen}
-          title={this.props.i18n.text.get("plugin.guider.orderCompleteDialog.title")}
+          title={this.props.i18n.text.get(
+            "plugin.guider.orderCompleteDialog.title"
+          )}
           onClose={this.declineOrderManualComplete}
           content={orderCompleteDialogContent}
           footer={orderCompleteDialogFooter}
@@ -425,20 +556,32 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     guider: state.guider,
     locale: state.locales.current,
-    status: state.status
-  }
-};
+    status: state.status,
+  };
+}
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
-  return bindActionCreators({doOrderForCurrentStudent, deleteOrderFromCurrentStudent, completeOrderFromCurrentStudent}, dispatch);
-};
+  return bindActionCreators(
+    {
+      doOrderForCurrentStudent,
+      deleteOrderFromCurrentStudent,
+      completeOrderFromCurrentStudent,
+    },
+    dispatch
+  );
+}
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Ceepos);
+export default connect(mapStateToProps, mapDispatchToProps)(Ceepos);

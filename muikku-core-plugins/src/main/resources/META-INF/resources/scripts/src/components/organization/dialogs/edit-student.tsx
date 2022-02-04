@@ -5,8 +5,6 @@ import {
   FormActionsElement,
   EmailFormElement,
   InputFormElement,
-  SSNFormElement,
-  SelectFormElement,
 } from "~/components/general/form-element";
 import {
   updateStudent,
@@ -19,6 +17,9 @@ import { bindActionCreators } from "redux";
 import { StudyprogrammeTypes } from "~/reducers/main-function/users";
 import { UserType } from "~/reducers/user-index";
 
+/**
+ * OrganizationUserProps
+ */
 interface OrganizationUserProps {
   children?: React.ReactElement<any>;
   i18n: i18nType;
@@ -28,6 +29,9 @@ interface OrganizationUserProps {
   updateStudent: UpdateStudentTriggerType;
 }
 
+/**
+ * OrganizationUserState
+ */
 interface OrganizationUserState {
   user: {
     [field: string]: string;
@@ -40,11 +44,18 @@ interface OrganizationUserState {
   studyProgrammeIdentifierValid: number;
 }
 
+/**
+ * OrganizationUser
+ */
 class OrganizationUser extends React.Component<
   OrganizationUserProps,
   OrganizationUserState
 > {
   private editTimer: NodeJS.Timer;
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: OrganizationUserProps) {
     super(props);
     this.state = {
@@ -67,14 +78,26 @@ class OrganizationUser extends React.Component<
     this.saveUser = this.saveUser.bind(this);
   }
 
+  /**
+   * updateField
+   * @param value value
+   * @param valid valid
+   * @param name name
+   */
   updateField(value: string, valid: boolean, name: string) {
     clearTimeout(this.editTimer);
-    let fieldName = name;
-    let fieldValue = valid ? value : "";
-    let newState = Object.assign(this.state.user, { [fieldName]: fieldValue });
+    const fieldName = name;
+    const fieldValue = valid ? value : "";
+    const newState = Object.assign(this.state.user, {
+      [fieldName]: fieldValue,
+    });
     this.setState({ user: newState });
   }
 
+  /**
+   * cancelDialog
+   * @param closeDialog closeDialog
+   */
   cancelDialog(closeDialog: () => any) {
     this.setState({
       firstNameValid: 2,
@@ -85,6 +108,10 @@ class OrganizationUser extends React.Component<
     closeDialog();
   }
 
+  /**
+   * saveUser
+   * @param closeDialog closeDialog
+   */
   saveUser(closeDialog: () => any) {
     let valid = true;
 
@@ -124,7 +151,7 @@ class OrganizationUser extends React.Component<
     // SSN for user is optional at this point, so we don't validate. Only we do is set it to "" if it's not a valid SSN
 
     if (valid) {
-      let data = {
+      const data = {
         firstName: this.state.user.firstName,
         identifier: this.props.data.id,
         lastName: this.state.user.lastName,
@@ -135,6 +162,9 @@ class OrganizationUser extends React.Component<
 
       this.props.updateStudent({
         student: data,
+        /**
+         * success
+         */
         success: () => {
           closeDialog();
           this.setState({
@@ -145,6 +175,9 @@ class OrganizationUser extends React.Component<
             studyProgrammeIdentifierValid: 2,
           });
         },
+        /**
+         * fail
+         */
         fail: () => {
           closeDialog();
         },
@@ -152,8 +185,15 @@ class OrganizationUser extends React.Component<
     }
   }
 
+  /**
+   * render
+   */
   render() {
-    let content = (closePortal: () => any) => (
+    /**
+     * closeDialog
+     * @param closeDialog closeDialog
+     */
+    const content = (closeDialog: () => any) => (
       <div>
         <DialogRow modifiers="new-user">
           <InputFormElement
@@ -224,7 +264,11 @@ class OrganizationUser extends React.Component<
       </div>
     );
 
-    let footer = (closePortal: () => any) => (
+    /**
+     * footer
+     * @param closePortal closePortal
+     */
+    const footer = (closePortal: () => any) => (
       <FormActionsElement
         locked={this.state.locked}
         executeLabel={this.props.i18n.text.get(
@@ -253,6 +297,10 @@ class OrganizationUser extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -261,6 +309,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators({ updateStudent }, dispatch);
 }

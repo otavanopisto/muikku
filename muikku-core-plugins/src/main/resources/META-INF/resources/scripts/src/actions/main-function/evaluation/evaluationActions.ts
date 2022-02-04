@@ -12,15 +12,8 @@ import promisify from "../../../util/promisify";
 import { MApiError } from "../../../lib/mApi";
 import notificationActions from "~/actions/base/notifications";
 import { EvaluationAssigmentData } from "../../../@types/evaluation";
-import {
-  EvaluationEnum,
-  BilledPriceRequest,
-  EvaluationData,
-} from "../../../@types/evaluation";
-import {
-  MaterialCompositeRepliesType,
-  MaterialContentNodeListType,
-} from "../../../reducers/workspaces/index";
+import { EvaluationEnum, BilledPriceRequest } from "../../../@types/evaluation";
+import { MaterialCompositeRepliesType } from "../../../reducers/workspaces/index";
 import {
   WorkspaceUserEntity,
   AssignmentEvaluationSaveReturn,
@@ -29,11 +22,7 @@ import {
   WorkspaceEvaluationSaveRequest,
   WorkspaceSupplementationSaveRequest,
 } from "../../../@types/evaluation";
-import {
-  MaterialAssignmentType,
-  MaterialContentNodeType,
-  MaterialEvaluationType,
-} from "../../../reducers/workspaces/index";
+import { MaterialAssignmentType } from "../../../reducers/workspaces/index";
 import { EvaluationStudyDiaryEvent } from "../../../@types/evaluation";
 import {
   UpdateImportanceObject,
@@ -53,170 +42,197 @@ import {
 } from "../../../@types/evaluation";
 
 //////State update interfaces
-export interface UPDATE_BASE_PRICE_STATE
-  extends SpecificActionType<"UPDATE_BASE_PRICE_STATE", EvaluationStateType> {}
+export type UPDATE_BASE_PRICE_STATE = SpecificActionType<
+  "UPDATE_BASE_PRICE_STATE",
+  EvaluationStateType
+>;
 
-export interface UPDATE_EVALUATION_STATE
-  extends SpecificActionType<"UPDATE_EVALUATION_STATE", EvaluationStateType> {}
+export type UPDATE_EVALUATION_STATE = SpecificActionType<
+  "UPDATE_EVALUATION_STATE",
+  EvaluationStateType
+>;
 
-export interface UPDATE_EVALUATION_COMPOSITE_REPLIES_STATE
-  extends SpecificActionType<
-    "UPDATE_EVALUATION_COMPOSITE_REPLIES_STATE",
-    EvaluationStateType
-  > {}
+export type UPDATE_EVALUATION_COMPOSITE_REPLIES_STATE = SpecificActionType<
+  "UPDATE_EVALUATION_COMPOSITE_REPLIES_STATE",
+  EvaluationStateType
+>;
 
-export interface UPDATE_EVALUATION_CURRENT_EVENTS_STATE
-  extends SpecificActionType<
-    "UPDATE_EVALUATION_CURRENT_EVENTS_STATE",
-    EvaluationStateType
-  > {}
+export type UPDATE_EVALUATION_CURRENT_EVENTS_STATE = SpecificActionType<
+  "UPDATE_EVALUATION_CURRENT_EVENTS_STATE",
+  EvaluationStateType
+>;
 
-export interface UPDATE_CURRENT_SELECTED_EVALUATION_DIARY_DATA_STATE
-  extends SpecificActionType<
+export type UPDATE_CURRENT_SELECTED_EVALUATION_DIARY_DATA_STATE =
+  SpecificActionType<
     "UPDATE_CURRENT_SELECTED_EVALUATION_DIARY_DATA_STATE",
     EvaluationStateType
-  > {}
+  >;
 
-export interface UPDATE_EVALUATION_REQUESTS_STATE
-  extends SpecificActionType<
-    "UPDATE_EVALUATION_REQUESTS_STATE",
-    EvaluationStateType
-  > {}
+export type UPDATE_EVALUATION_REQUESTS_STATE = SpecificActionType<
+  "UPDATE_EVALUATION_REQUESTS_STATE",
+  EvaluationStateType
+>;
 
-export interface UPDATE_EVALUATION_SELECTED_ASSESSMENT_ASSIGNMENTS_STATE
-  extends SpecificActionType<
+export type UPDATE_EVALUATION_SELECTED_ASSESSMENT_ASSIGNMENTS_STATE =
+  SpecificActionType<
     "UPDATE_EVALUATION_SELECTED_ASSESSMENT_ASSIGNMENTS_STATE",
     EvaluationStateType
-  > {}
+  >;
 
-export interface SET_BASE_PRICE
-  extends SpecificActionType<"SET_BASE_PRICE", number> {}
+export type SET_BASE_PRICE = SpecificActionType<"SET_BASE_PRICE", number>;
 
-export interface SET_IMPORTANT_ASSESSMENTS
-  extends SpecificActionType<"SET_IMPORTANT_ASSESSMENTS", EvaluationStatus> {}
+export type SET_IMPORTANT_ASSESSMENTS = SpecificActionType<
+  "SET_IMPORTANT_ASSESSMENTS",
+  EvaluationStatus
+>;
 
-export interface SET_UNIMPORTANT_ASSESSMENTS
-  extends SpecificActionType<"SET_UNIMPORTANT_ASSESSMENTS", EvaluationStatus> {}
+export type SET_UNIMPORTANT_ASSESSMENTS = SpecificActionType<
+  "SET_UNIMPORTANT_ASSESSMENTS",
+  EvaluationStatus
+>;
 
-export interface SET_EVALUATION_ASESSESSMENTS
-  extends SpecificActionType<
-    "SET_EVALUATION_ASESSESSMENTS",
-    AssessmentRequest[]
-  > {}
+export type SET_EVALUATION_ASESSESSMENTS = SpecificActionType<
+  "SET_EVALUATION_ASESSESSMENTS",
+  AssessmentRequest[]
+>;
 
-export interface SET_EVALUATION_WORKSPACES
-  extends SpecificActionType<
-    "SET_EVALUATION_WORKSPACES",
-    EvaluationWorkspace[]
-  > {}
+export type SET_EVALUATION_WORKSPACES = SpecificActionType<
+  "SET_EVALUATION_WORKSPACES",
+  EvaluationWorkspace[]
+>;
 
-export interface SET_EVALUATION_GRADE_SYSTEM
-  extends SpecificActionType<
-    "SET_EVALUATION_GRADE_SYSTEM",
-    EvaluationGradeSystem[]
-  > {}
+export type SET_EVALUATION_GRADE_SYSTEM = SpecificActionType<
+  "SET_EVALUATION_GRADE_SYSTEM",
+  EvaluationGradeSystem[]
+>;
 
-export interface SET_EVALUATION_BILLED_PRICE
-  extends SpecificActionType<"SET_EVALUATION_BILLED_PRICE", number> {}
+export type SET_EVALUATION_BILLED_PRICE = SpecificActionType<
+  "SET_EVALUATION_BILLED_PRICE",
+  number
+>;
 
-export interface SET_EVALUATION_SELECTED_WORKSPACE
-  extends SpecificActionType<
-    "SET_EVALUATION_SELECTED_WORKSPACE",
-    number | undefined
-  > {}
+export type SET_EVALUATION_SELECTED_WORKSPACE = SpecificActionType<
+  "SET_EVALUATION_SELECTED_WORKSPACE",
+  number | undefined
+>;
 
-export interface SET_EVALUATION_SORT_FUNCTION
-  extends SpecificActionType<"SET_EVALUATION_SORT_FUNCTION", EvaluationSort> {}
+export type SET_EVALUATION_SORT_FUNCTION = SpecificActionType<
+  "SET_EVALUATION_SORT_FUNCTION",
+  EvaluationSort
+>;
 
-export interface SET_EVALUATION_FILTERS
-  extends SpecificActionType<"SET_EVALUATION_FILTERS", EvaluationFilters> {}
+export type SET_EVALUATION_FILTERS = SpecificActionType<
+  "SET_EVALUATION_FILTERS",
+  EvaluationFilters
+>;
 
-export interface SET_EVALUATION_COMPOSITE_REPLIES
-  extends SpecificActionType<
-    "SET_EVALUATION_COMPOSITE_REPLIES",
-    MaterialCompositeRepliesType[]
-  > {}
+export type SET_EVALUATION_COMPOSITE_REPLIES = SpecificActionType<
+  "SET_EVALUATION_COMPOSITE_REPLIES",
+  MaterialCompositeRepliesType[]
+>;
 
-export interface SET_EVALUATION_STUDENT_ASSIGMENTS
-  extends SpecificActionType<
-    "SET_EVALUATION_STUDENT_ASSIGMENTS",
-    EvaluationAssigmentData
-  > {}
+export type SET_EVALUATION_STUDENT_ASSIGMENTS = SpecificActionType<
+  "SET_EVALUATION_STUDENT_ASSIGMENTS",
+  EvaluationAssigmentData
+>;
 
-export interface UPDATE_EVALUATION_SEARCH
-  extends SpecificActionType<"UPDATE_EVALUATION_SEARCH", string> {}
+export type UPDATE_EVALUATION_SEARCH = SpecificActionType<
+  "UPDATE_EVALUATION_SEARCH",
+  string
+>;
 
-export interface UPDATE_EVALUATION_IMPORTANCE
-  extends SpecificActionType<
-    "UPDATE_EVALUATION_IMPORTANCE",
-    {
-      importantAssessments: EvaluationImportance;
-      unimportantAssessments: EvaluationImportance;
-    }
-  > {}
+export type UPDATE_EVALUATION_IMPORTANCE = SpecificActionType<
+  "UPDATE_EVALUATION_IMPORTANCE",
+  {
+    importantAssessments: EvaluationImportance;
+    unimportantAssessments: EvaluationImportance;
+  }
+>;
 
-export interface UPDATE_EVALUATION_SELECTED_ASSESSMENT
-  extends SpecificActionType<
-    "UPDATE_EVALUATION_SELECTED_ASSESSMENT",
-    AssessmentRequest
-  > {}
+export type UPDATE_EVALUATION_SELECTED_ASSESSMENT = SpecificActionType<
+  "UPDATE_EVALUATION_SELECTED_ASSESSMENT",
+  AssessmentRequest
+>;
 
-export interface SET_EVALUATION_SELECTED_ASSESSMENT_EVENTS
-  extends SpecificActionType<
-    "SET_EVALUATION_SELECTED_ASSESSMENT_EVENTS",
-    EvaluationEvent[]
-  > {}
+export type SET_EVALUATION_SELECTED_ASSESSMENT_EVENTS = SpecificActionType<
+  "SET_EVALUATION_SELECTED_ASSESSMENT_EVENTS",
+  EvaluationEvent[]
+>;
 
-export interface SET_EVALUATION_SELECTED_ASSESSMENT_ASSIGNMENTS
-  extends SpecificActionType<
-    "SET_EVALUATION_SELECTED_ASSESSMENT_ASSIGNMENTS",
-    EvaluationAssigmentData
-  > {}
+export type SET_EVALUATION_SELECTED_ASSESSMENT_ASSIGNMENTS = SpecificActionType<
+  "SET_EVALUATION_SELECTED_ASSESSMENT_ASSIGNMENTS",
+  EvaluationAssigmentData
+>;
 
-export interface SET_EVALUATION_SELECTED_ASSESSMENT_STUDY_DIARY_EVENTS
-  extends SpecificActionType<
+export type SET_EVALUATION_SELECTED_ASSESSMENT_STUDY_DIARY_EVENTS =
+  SpecificActionType<
     "SET_EVALUATION_SELECTED_ASSESSMENT_STUDY_DIARY_EVENTS",
     EvaluationStudyDiaryEvent[]
-  > {}
+  >;
 
-export interface UPDATE_OPENED_ASSIGNMENTS_EVALUATION
-  extends SpecificActionType<"UPDATE_OPENED_ASSIGNMENTS_EVALUATION", number> {}
+export type UPDATE_OPENED_ASSIGNMENTS_EVALUATION = SpecificActionType<
+  "UPDATE_OPENED_ASSIGNMENTS_EVALUATION",
+  number
+>;
 
-export interface UPDATE_NEEDS_RELOAD_EVALUATION_REQUESTS
-  extends SpecificActionType<
-    "UPDATE_NEEDS_RELOAD_EVALUATION_REQUESTS",
-    boolean
-  > {}
+export type UPDATE_NEEDS_RELOAD_EVALUATION_REQUESTS = SpecificActionType<
+  "UPDATE_NEEDS_RELOAD_EVALUATION_REQUESTS",
+  boolean
+>;
 
 // Server events
+/**
+ * LoadEvaluationSystem
+ */
 export interface LoadEvaluationSystem {
   (): AnyActionType;
 }
 
+/**
+ * LoadEvaluationAssessmentRequest
+ */
 export interface LoadEvaluationAssessmentRequest {
   (useFromWorkspace?: boolean): AnyActionType;
 }
 
+/**
+ * LoadEvaluationWorkspaces
+ */
 export interface LoadEvaluationWorkspaces {
   (): AnyActionType;
 }
 
+/**
+ * LoadEvaluationImportantAssessment
+ */
 export interface LoadEvaluationImportantAssessment {
   (): AnyActionType;
 }
 
+/**
+ * LoadEvaluationUnimportantAssessment
+ */
 export interface LoadEvaluationUnimportantAssessment {
   (): AnyActionType;
 }
 
+/**
+ * LoadEvaluationSortFunction
+ */
 export interface LoadEvaluationSortFunction {
   (): AnyActionType;
 }
 
+/**
+ * LoadEvaluationCurrentStudentAssigments
+ */
 export interface LoadEvaluationCurrentStudentAssigments {
   (data: { workspaceId: number }): AnyActionType;
 }
 
+/**
+ * UpdateCurrentStudentEvaluationData
+ */
 export interface UpdateCurrentStudentEvaluationData {
   (data: {
     assigmentSaveReturn: AssignmentEvaluationSaveReturn;
@@ -224,6 +240,9 @@ export interface UpdateCurrentStudentEvaluationData {
   }): AnyActionType;
 }
 
+/**
+ * UpdateCurrentStudentEvaluationCompositeRepliesData
+ */
 export interface UpdateCurrentStudentEvaluationCompositeRepliesData {
   (data: {
     workspaceId: number;
@@ -232,6 +251,9 @@ export interface UpdateCurrentStudentEvaluationCompositeRepliesData {
   }): AnyActionType;
 }
 
+/**
+ * LoadEvaluationAssessmentEvent
+ */
 export interface LoadEvaluationAssessmentEvent {
   (data: {
     assessment: AssessmentRequest;
@@ -240,18 +262,30 @@ export interface LoadEvaluationAssessmentEvent {
   }): AnyActionType;
 }
 
+/**
+ * LoadEvaluationAssignment
+ */
 export interface LoadEvaluationAssignment {
   (data: { assessment: AssessmentRequest }): AnyActionType;
 }
 
+/**
+ * LoadEvaluationStudyDiaryEvent
+ */
 export interface LoadEvaluationStudyDiaryEvent {
   (data: { assessment: AssessmentRequest }): AnyActionType;
 }
 
+/**
+ * LoadBilledPrice
+ */
 export interface LoadBilledPrice {
   (data: { workspaceEntityId: number }): AnyActionType;
 }
 
+/**
+ * LoadEvaluationCompositeReplies
+ */
 export interface LoadEvaluationCompositeReplies {
   (data: {
     userEntityId: number;
@@ -261,15 +295,24 @@ export interface LoadEvaluationCompositeReplies {
   }): AnyActionType;
 }
 
+/**
+ * LoadBasePrice
+ */
 export interface LoadBasePrice {
   (data: { workspaceEntityId: number }): AnyActionType;
 }
 
 // Other
+/**
+ * SaveEvaluationSortFunction
+ */
 export interface SaveEvaluationSortFunction {
   (data: { sortFunction: EvaluationSort }): AnyActionType;
 }
 
+/**
+ * UpdateWorkspaceEvaluation
+ */
 export interface UpdateWorkspaceEvaluation {
   (data: {
     type: "new" | "edit";
@@ -280,10 +323,16 @@ export interface UpdateWorkspaceEvaluation {
   }): AnyActionType;
 }
 
+/**
+ * UpdateEvaluationEvent
+ */
 export interface UpdateEvaluationEvent {
   (data: BilledPriceRequest): AnyActionType;
 }
 
+/**
+ * UpdateWorkspaceSupplementation
+ */
 export interface UpdateWorkspaceSupplementation {
   (data: {
     type: "new" | "edit";
@@ -293,6 +342,9 @@ export interface UpdateWorkspaceSupplementation {
   }): AnyActionType;
 }
 
+/**
+ * RemoveWorkspaceEvent
+ */
 export interface RemoveWorkspaceEvent {
   (data: {
     identifier: string;
@@ -302,6 +354,9 @@ export interface RemoveWorkspaceEvent {
   }): AnyActionType;
 }
 
+/**
+ * SaveEvaluationAssignmentGradeEvaluation
+ */
 export interface SaveEvaluationAssignmentGradeEvaluation {
   (data: {
     workspaceEntityId: number;
@@ -314,6 +369,9 @@ export interface SaveEvaluationAssignmentGradeEvaluation {
   }): AnyActionType;
 }
 
+/**
+ * SaveEvaluationAssignmentSupplementation
+ */
 export interface SaveEvaluationAssignmentSupplementation {
   (data: {
     workspaceEntityId: number;
@@ -326,6 +384,9 @@ export interface SaveEvaluationAssignmentSupplementation {
   }): AnyActionType;
 }
 
+/**
+ * DeleteAssessmentRequest
+ */
 export interface DeleteAssessmentRequest {
   (data: {
     workspaceUserEntityId: number;
@@ -334,6 +395,9 @@ export interface DeleteAssessmentRequest {
   }): AnyActionType;
 }
 
+/**
+ * ArchiveStudent
+ */
 export interface ArchiveStudent {
   (data: {
     workspaceEntityId: number;
@@ -343,26 +407,44 @@ export interface ArchiveStudent {
   }): AnyActionType;
 }
 
+/**
+ * SetEvaluationSelectedWorkspace
+ */
 export interface SetEvaluationSelectedWorkspace {
   (data: { workspaceId?: number }): AnyActionType;
 }
 
+/**
+ * SetEvaluationSortFunction
+ */
 export interface SetEvaluationSortFunction {
   (data: { sortFunction: string }): AnyActionType;
 }
 
+/**
+ * SetEvaluationFilters
+ */
 export interface SetEvaluationFilters {
   (data: { evaluationFilters: EvaluationFilters }): AnyActionType;
 }
 
+/**
+ * UpdateEvaluationSearch
+ */
 export interface UpdateEvaluationSearch {
   (data: { searchString: string }): AnyActionType;
 }
 
+/**
+ * UpdateEvaluationSelectedAssessment
+ */
 export interface UpdateEvaluationSelectedAssessment {
   (data: { assessment: AssessmentRequest }): AnyActionType;
 }
 
+/**
+ * UpdateImportance
+ */
 export interface UpdateImportance {
   (data: {
     importantAssessments: EvaluationImportance;
@@ -370,10 +452,16 @@ export interface UpdateImportance {
   }): AnyActionType;
 }
 
+/**
+ * UpdateOpenedAssignmentEvaluationId
+ */
 export interface UpdateOpenedAssignmentEvaluationId {
   (data: { assignmentId?: number }): AnyActionType;
 }
 
+/**
+ * UpdateNeedsReloadEvaluationRequests
+ */
 export interface UpdateNeedsReloadEvaluationRequests {
   (data: { value: boolean }): AnyActionType;
 }
@@ -382,7 +470,6 @@ export interface UpdateNeedsReloadEvaluationRequests {
 
 /**
  * loadEvaluationGradingSystemFromServer
- * @returns
  */
 const loadEvaluationGradingSystemFromServer: LoadEvaluationSystem =
   function loadEvaluationGradingSystemFromServer() {
@@ -442,7 +529,7 @@ const loadEvaluationGradingSystemFromServer: LoadEvaluationSystem =
 
 /**
  * loadEvaluationAssessmentRequestsFromServer
- * @returns
+ * @param useFromWorkspace useFromWorkspace
  */
 const loadEvaluationAssessmentRequestsFromServer: LoadEvaluationAssessmentRequest =
   function loadEvaluationAssessmentRequestsFromServer(useFromWorkspace) {
@@ -516,7 +603,6 @@ const loadEvaluationAssessmentRequestsFromServer: LoadEvaluationAssessmentReques
 
 /**
  * loadEvaluationWorkspacesFromServer
- * @returns
  */
 const loadEvaluationWorkspacesFromServer: LoadEvaluationWorkspaces =
   function loadEvaluationWorkspacesFromServer() {
@@ -578,7 +664,6 @@ const loadEvaluationWorkspacesFromServer: LoadEvaluationWorkspaces =
 
 /**
  * loadListOfImportantAssessmentIdsFromServer
- * @returns
  */
 const loadListOfImportantAssessmentIdsFromServer: LoadEvaluationImportantAssessment =
   function loadListOfImportantAssessmentIdsFromServer() {
@@ -638,7 +723,6 @@ const loadListOfImportantAssessmentIdsFromServer: LoadEvaluationImportantAssessm
 
 /**
  * loadListOfImportantAssessmentIdsFromServer
- * @returns
  */
 const loadListOfUnimportantAssessmentIdsFromServer: LoadEvaluationUnimportantAssessment =
   function loadListOfUnimportantAssessmentIdsFromServer() {
@@ -763,6 +847,7 @@ const loadEvaluationSortFunctionFromServer: LoadEvaluationSortFunction =
 
 /**
  * loadEvaluationAssessmentEventsFromServer
+ * @param data data
  */
 const loadEvaluationAssessmentEventsFromServer: LoadEvaluationAssessmentEvent =
   function loadEvaluationAssessmentEventsFromServer(data) {
@@ -822,6 +907,7 @@ const loadEvaluationAssessmentEventsFromServer: LoadEvaluationAssessmentEvent =
 
 /**
  * loadEvaluationSelectedAssessmentStudyDiaryEventsFromServer
+ * @param data data
  */
 const loadEvaluationSelectedAssessmentStudyDiaryEventsFromServer: LoadEvaluationStudyDiaryEvent =
   function loadEvaluationSelectedAssessmentStudyDiaryEventsFromServer(data) {
@@ -884,14 +970,11 @@ const loadEvaluationSelectedAssessmentStudyDiaryEventsFromServer: LoadEvaluation
 
 /**
  * LoadBilledPriceFromServer
- * @param data
+ * @param data data
  */
 const LoadBilledPriceFromServer: LoadBilledPrice =
   function LoadBilledPriceFromServer(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType
-    ) => {
+    return async (dispatch: (arg: AnyActionType) => any) => {
       dispatch({
         type: "UPDATE_EVALUATION_STATE",
         payload: <EvaluationStateType>"LOADING",
@@ -930,7 +1013,10 @@ const LoadBilledPriceFromServer: LoadBilledPrice =
 
 /**
  * loadEvaluationCompositeRepliesFromServer
- * @param data
+ * @param data data
+ * @param data.userEntityId data.userEntityId
+ * @param data.onSuccess data.onSuccess
+ * @param data.workspaceId data.workspaceId
  */
 const loadEvaluationCompositeRepliesFromServer: LoadEvaluationCompositeReplies =
   function loadEvaluationCompositeRepliesFromServer({
@@ -991,7 +1077,7 @@ const loadEvaluationCompositeRepliesFromServer: LoadEvaluationCompositeReplies =
 
 /**
  * saveEvaluationSortFunctionToServer
- * @returns
+ * @param data data
  */
 const saveEvaluationSortFunctionToServer: SaveEvaluationSortFunction =
   function saveEvaluationSortFunctionToServer(data) {
@@ -1049,7 +1135,11 @@ const saveEvaluationSortFunctionToServer: SaveEvaluationSortFunction =
 
 /**
  * updateWorkspaceEvaluationToServer
- * @param param0
+ * @param param.workspaceEvaluation workspaceEvaluation
+ * @param param0.type type
+ * @param param1.billingPrice billingPrice
+ * @param param2.onSuccess onSuccess
+ * @param param3.onFail onFail
  */
 const updateWorkspaceEvaluationToServer: UpdateWorkspaceEvaluation =
   function updateWorkspaceEvaluationToServer({
@@ -1162,6 +1252,10 @@ const updateWorkspaceEvaluationToServer: UpdateWorkspaceEvaluation =
 /**
  * updateWorkspaceSupplementation
  * @param param0
+ * @param param0.type type
+ * @param param1.workspaceSupplementation workspaceSupplementation
+ * @param param2.onSuccess onSuccess
+ * @param param3.onFail onFail
  */
 const updateWorkspaceSupplementationToServer: UpdateWorkspaceSupplementation =
   function updateWorkspaceSupplementationToServer({
@@ -1254,6 +1348,10 @@ const updateWorkspaceSupplementationToServer: UpdateWorkspaceSupplementation =
 /**
  * removeWorkspaceEventFromServer
  * @param param0
+ * @param param0.identifier identifier
+ * @param param1.eventType eventType
+ * @param param2.onSuccess onSuccess
+ * @param param3.onFail onFail
  */
 const removeWorkspaceEventFromServer: RemoveWorkspaceEvent =
   function removeWorkspaceEventFromServer({
@@ -1367,8 +1465,7 @@ const removeWorkspaceEventFromServer: RemoveWorkspaceEvent =
 
 /**
  * loadCurrentStudentAssigmentsData
- * @param param0
- * @returns
+ * @param param0.workspaceId workspaceId
  */
 const loadCurrentStudentAssigmentsData: LoadEvaluationCurrentStudentAssigments =
   function loadCurrentStudentAssigmentsData({ workspaceId }) {
@@ -1384,9 +1481,9 @@ const loadCurrentStudentAssigmentsData: LoadEvaluationCurrentStudentAssigments =
       });
 
       try {
-        let [assigments] = await Promise.all([
+        const [assigments] = await Promise.all([
           (async () => {
-            let assignmentsExcercise =
+            const assignmentsExcercise =
               <MaterialAssignmentType[]>await promisify(
                 mApi().workspace.workspaces.materials.read(workspaceId, {
                   assignmentType: "EXERCISE",
@@ -1394,7 +1491,7 @@ const loadCurrentStudentAssigmentsData: LoadEvaluationCurrentStudentAssigments =
                 "callback"
               )() || [];
 
-            let assignmentsEvaluated =
+            const assignmentsEvaluated =
               <MaterialAssignmentType[]>await promisify(
                 mApi().workspace.workspaces.materials.read(workspaceId, {
                   assignmentType: "EVALUATED",
@@ -1402,7 +1499,7 @@ const loadCurrentStudentAssigmentsData: LoadEvaluationCurrentStudentAssigments =
                 "callback"
               )() || [];
 
-            let assignments = [
+            const assignments = [
               ...assignmentsEvaluated,
               ...assignmentsExcercise,
             ];
@@ -1445,6 +1542,7 @@ const loadCurrentStudentAssigmentsData: LoadEvaluationCurrentStudentAssigments =
 /**
  * updateCurrentStudentCompositeRepliesData
  * Updates one compositereply in compositeReplies list with new coming values from backend
+ * @param data data
  */
 const updateCurrentStudentCompositeRepliesData: UpdateCurrentStudentEvaluationCompositeRepliesData =
   function updateCurrentStudentEvaluationData(data) {
@@ -1464,7 +1562,7 @@ const updateCurrentStudentCompositeRepliesData: UpdateCurrentStudentEvaluationCo
       /**
        * Get initial values that needs to be updated
        */
-      let updatedCompositeReplies: MaterialCompositeRepliesType[] =
+      const updatedCompositeReplies: MaterialCompositeRepliesType[] =
         state.evaluations.evaluationCompositeReplies.data;
 
       try {
@@ -1511,10 +1609,7 @@ const updateCurrentStudentCompositeRepliesData: UpdateCurrentStudentEvaluationCo
  */
 const setSelectedWorkspaceId: SetEvaluationSelectedWorkspace =
   function setSelectedWorkspaceId(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType
-    ) => {
+    return async (dispatch: (arg: AnyActionType) => any) => {
       dispatch({
         type: "SET_EVALUATION_SELECTED_WORKSPACE",
         payload: data.workspaceId,
@@ -1532,10 +1627,7 @@ const setSelectedWorkspaceId: SetEvaluationSelectedWorkspace =
  */
 const setEvaluationFilters: SetEvaluationFilters =
   function setEvaluationFilters(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType
-    ) => {
+    return async (dispatch: (arg: AnyActionType) => any) => {
       dispatch({
         type: "SET_EVALUATION_FILTERS",
         payload: data.evaluationFilters,
@@ -1545,6 +1637,7 @@ const setEvaluationFilters: SetEvaluationFilters =
 
 /**
  * updateBillingToServer
+ * @param data data
  */
 const updateBillingToServer: UpdateEvaluationEvent =
   function updateBillingToServer(data) {
@@ -1598,10 +1691,7 @@ const updateBillingToServer: UpdateEvaluationEvent =
  */
 const updateSelectedAssessment: UpdateEvaluationSelectedAssessment =
   function updateSelectedAssessment(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType
-    ) => {
+    return async (dispatch: (arg: AnyActionType) => any) => {
       dispatch({
         type: "UPDATE_EVALUATION_SELECTED_ASSESSMENT",
         payload: data.assessment,
@@ -1621,10 +1711,7 @@ const updateSelectedAssessment: UpdateEvaluationSelectedAssessment =
  */
 const updateEvaluationSearch: UpdateEvaluationSearch =
   function updateEvaluationSearch(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType
-    ) => {
+    return async (dispatch: (arg: AnyActionType) => any) => {
       dispatch({
         type: "UPDATE_EVALUATION_SEARCH",
         payload: data.searchString,
@@ -1634,7 +1721,7 @@ const updateEvaluationSearch: UpdateEvaluationSearch =
 
 /**
  * updateImportance
- * @param date
+ * @param data data
  */
 const updateImportance: UpdateImportance = function updateImportance(data) {
   return async (
@@ -1709,14 +1796,11 @@ const updateImportance: UpdateImportance = function updateImportance(data) {
 
 /**
  * updateOpenedAssignmentEvaluation
- * @param data
+ * @param data data
  */
 const updateOpenedAssignmentEvaluation: UpdateOpenedAssignmentEvaluationId =
   function updateOpenedAssignmentEvaluation(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType
-    ) => {
+    return async (dispatch: (arg: AnyActionType) => any) => {
       dispatch({
         type: "UPDATE_OPENED_ASSIGNMENTS_EVALUATION",
         payload: data.assignmentId,
@@ -1726,7 +1810,7 @@ const updateOpenedAssignmentEvaluation: UpdateOpenedAssignmentEvaluationId =
 
 /**
  * deleteAssessmentRequest
- * @param data
+ * @param data.workspaceUserEntityId workspaceUserEntityId
  */
 const deleteAssessmentRequest: DeleteAssessmentRequest =
   function deleteAssessmentRequest({ workspaceUserEntityId }) {
@@ -1761,7 +1845,9 @@ const deleteAssessmentRequest: DeleteAssessmentRequest =
 
 /**
  * archiveStudent
- * @param data
+ * @param data.workspaceEntityId workspaceEntityId
+ * @param data.workspaceUserEntityId workspaceUserEntityId
+ * @param data.onSuccess onSuccess
  */
 const archiveStudent: ArchiveStudent = function archiveStudent({
   workspaceEntityId,
@@ -1811,13 +1897,11 @@ const archiveStudent: ArchiveStudent = function archiveStudent({
 
 /**
  * loadBasePriceFromServer
+ * @param root0.workspaceEntityId workspaceEntityId
  */
 const loadBasePriceFromServer: LoadBasePrice =
   function loadBasePriceFromServer({ workspaceEntityId }) {
-    return async (
-      dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType
-    ) => {
+    return async (dispatch: (arg: AnyActionType) => any) => {
       let basePrice: number | undefined = undefined;
 
       dispatch({
@@ -1834,7 +1918,7 @@ const loadBasePriceFromServer: LoadBasePrice =
         (data) => {
           basePrice = data as number;
         },
-        (reject) => {
+        () => {
           basePrice = undefined;
         }
       );
@@ -1853,13 +1937,11 @@ const loadBasePriceFromServer: LoadBasePrice =
 
 /**
  * updateNeedsReloadEvaluationRequests
+ * @param root0.value value
  */
 const updateNeedsReloadEvaluationRequests: UpdateNeedsReloadEvaluationRequests =
   function updateNeedsReloadEvaluationRequests({ value }) {
-    return async (
-      dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType
-    ) => {
+    return async (dispatch: (arg: AnyActionType) => any) => {
       dispatch({
         type: "UPDATE_NEEDS_RELOAD_EVALUATION_REQUESTS",
         payload: value,

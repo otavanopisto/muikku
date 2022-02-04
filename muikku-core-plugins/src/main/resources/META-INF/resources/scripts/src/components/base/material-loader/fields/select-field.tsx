@@ -1,3 +1,9 @@
+/* eslint-disable react/no-string-refs */
+
+/**
+ * Deprecated refs should be reractored
+ */
+
 import * as React from "react";
 import equals = require("deep-equal");
 import { i18nType } from "~/reducers/base/i18n";
@@ -8,56 +14,76 @@ import { StrMathJAX } from "../static/mathjax";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
 
+/**
+ * SelectFieldProps
+ */
 interface SelectFieldProps {
-  type: string,
+  type: string;
   content: {
-    name: string,
-    explanation: string,
-    listType: "dropdown" | "list" | "radio-horizontal" | "radio-vertical",
+    name: string;
+    explanation: string;
+    listType: "dropdown" | "list" | "radio-horizontal" | "radio-vertical";
     options: Array<{
-      name: string,
-      text: string,
-      correct: boolean
-    }>
-  },
-  readOnly?: boolean,
-  initialValue?: string,
-  onChange?: (context: React.Component<any, any>, name: string, newValue: any)=>any,
+      name: string;
+      text: string;
+      correct: boolean;
+    }>;
+  };
+  readOnly?: boolean;
+  initialValue?: string;
+  onChange?: (
+    context: React.Component<any, any>,
+    name: string,
+    newValue: any
+  ) => any;
 
   usedAs: UsedAs;
-  i18n: i18nType,
-  displayCorrectAnswers?: boolean,
-  checkAnswers?: boolean,
-  onAnswerChange?: (name: string, value: boolean)=>any,
+  i18n: i18nType;
+  displayCorrectAnswers?: boolean;
+  checkAnswers?: boolean;
+  onAnswerChange?: (name: string, value: boolean) => any;
 
-  invisible?: boolean,
+  invisible?: boolean;
 }
 
+/**
+ * SelectFieldState
+ */
 interface SelectFieldState {
-  value: string,
+  value: string;
 
   // This state comes from the context handler in the base
   // We can use it but it's the parent managing function that modifies them
   // We only set them up in the initial state
-  modified: boolean,
-  synced: boolean,
-  syncError: string,
+  modified: boolean;
+  synced: boolean;
+  syncError: string;
 
   // The answer might be unknown pass or fail, sometimes there's just no right answer
-  answerState: "UNKNOWN" | "PASS" | "FAIL",
+  answerState: "UNKNOWN" | "PASS" | "FAIL";
 
-  fieldSavedState: FieldStateStatus,
+  fieldSavedState: FieldStateStatus;
 }
 
-export default class SelectField extends React.Component<SelectFieldProps, SelectFieldState> {
-  constructor(props: SelectFieldProps){
+/**
+ * SelectField
+ */
+export default class SelectField extends React.Component<
+  SelectFieldProps,
+  SelectFieldState
+> {
+  /**
+   * constructor
+   * @param props props
+   */
+  constructor(props: SelectFieldProps) {
     super(props);
 
     this.onSelectChange = this.onSelectChange.bind(this);
     this.onFieldSavedStateChange = this.onFieldSavedStateChange.bind(this);
 
     this.state = {
-      value: props.initialValue || '',
+      value: props.initialValue || "",
 
       // modified synced and syncerror are false, true and null by default
       modified: false,
@@ -68,16 +94,16 @@ export default class SelectField extends React.Component<SelectFieldProps, Selec
       answerState: null,
 
       fieldSavedState: null,
-    }
+    };
   }
 
   /**
    * onFieldSavedStateChange
    * @param savedState
    */
-  onFieldSavedStateChange(savedState: FieldStateStatus){
+  onFieldSavedStateChange(savedState: FieldStateStatus) {
     this.setState({
-      fieldSavedState: savedState
+      fieldSavedState: savedState,
     });
   }
 
@@ -85,11 +111,12 @@ export default class SelectField extends React.Component<SelectFieldProps, Selec
    * onSelectChange
    * @param e
    */
-  onSelectChange(e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>){
+  onSelectChange(e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) {
     // When the select changes, we gotta call it up
-    this.props.onChange && this.props.onChange(this, this.props.content.name, e.target.value);
+    this.props.onChange &&
+      this.props.onChange(this, this.props.content.name, e.target.value);
     // we update the state and check answers
-    this.setState({value: e.target.value}, this.checkAnswers);
+    this.setState({ value: e.target.value }, this.checkAnswers);
   }
 
   /**
@@ -97,30 +124,43 @@ export default class SelectField extends React.Component<SelectFieldProps, Selec
    * @param nextProps
    * @param nextState
    */
-  shouldComponentUpdate(nextProps: SelectFieldProps, nextState: SelectFieldState){
-    return !equals(nextProps.content, this.props.content) || this.props.readOnly !== nextProps.readOnly || !equals(nextState, this.state)
-    || this.props.i18n !== nextProps.i18n || this.props.displayCorrectAnswers !== nextProps.displayCorrectAnswers || this.props.checkAnswers !== nextProps.checkAnswers
-    || this.state.modified !== nextState.modified || this.state.synced !== nextState.synced || this.state.syncError !== nextState.syncError
-    || nextProps.invisible !== this.props.invisible;
+  shouldComponentUpdate(
+    nextProps: SelectFieldProps,
+    nextState: SelectFieldState
+  ) {
+    return (
+      !equals(nextProps.content, this.props.content) ||
+      this.props.readOnly !== nextProps.readOnly ||
+      !equals(nextState, this.state) ||
+      this.props.i18n !== nextProps.i18n ||
+      this.props.displayCorrectAnswers !== nextProps.displayCorrectAnswers ||
+      this.props.checkAnswers !== nextProps.checkAnswers ||
+      this.state.modified !== nextState.modified ||
+      this.state.synced !== nextState.synced ||
+      this.state.syncError !== nextState.syncError ||
+      nextProps.invisible !== this.props.invisible
+    );
   }
 
   /**
    * checkAnswers
    * @returns
    */
-  checkAnswers(){
+  checkAnswers() {
     // if we are allowed to check answers
-    if (!this.props.checkAnswers || !this.props.content){
+    if (!this.props.checkAnswers || !this.props.content) {
       return;
     }
 
     // So just like text-field, there might be no right answer
-    let actuallyCorrectAnswers = this.props.content.options.filter(a=>a.correct);
-    if (!actuallyCorrectAnswers.length){
+    const actuallyCorrectAnswers = this.props.content.options.filter(
+      (a) => a.correct
+    );
+    if (!actuallyCorrectAnswers.length) {
       // And equally we just call the state UNKNOWN
-      if (this.state.answerState !== "UNKNOWN"){
+      if (this.state.answerState !== "UNKNOWN") {
         this.setState({
-          answerState: "UNKNOWN"
+          answerState: "UNKNOWN",
         });
         // And call a answer change for it to be unknown
         this.props.onAnswerChange(this.props.content.name, null);
@@ -129,28 +169,28 @@ export default class SelectField extends React.Component<SelectFieldProps, Selec
     }
 
     // we do the same and start looping
-    let isCorrect:boolean;
+    let isCorrect: boolean;
     let answer;
-    for (answer of actuallyCorrectAnswers){
+    for (answer of actuallyCorrectAnswers) {
       // somehow the value and the name mix up here but it works out
       isCorrect = this.state.value === answer.name;
       // if we found that this check was right
-      if (isCorrect){
+      if (isCorrect) {
         // we break
         break;
       }
     }
 
     // We update accordingly only if the answer has changed
-    if (isCorrect && this.state.answerState !== "PASS"){
+    if (isCorrect && this.state.answerState !== "PASS") {
       this.setState({
-        answerState: "PASS"
+        answerState: "PASS",
       });
       // and call the function accordingly
       this.props.onAnswerChange(this.props.content.name, true);
-    } else if (!isCorrect && this.state.answerState !== "FAIL"){
+    } else if (!isCorrect && this.state.answerState !== "FAIL") {
       this.setState({
-        answerState: "FAIL"
+        answerState: "FAIL",
       });
       this.props.onAnswerChange(this.props.content.name, false);
     }
@@ -159,7 +199,7 @@ export default class SelectField extends React.Component<SelectFieldProps, Selec
   /**
    * componentDidMount
    */
-  componentDidMount(){
+  componentDidMount() {
     this.checkAnswers();
   }
 
@@ -168,7 +208,7 @@ export default class SelectField extends React.Component<SelectFieldProps, Selec
    * @param prevProps
    * @param prevState
    */
-  componentDidUpdate(prevProps: SelectFieldProps, prevState: SelectFieldState){
+  componentDidUpdate(prevProps: SelectFieldProps, prevState: SelectFieldState) {
     this.checkAnswers();
   }
 
@@ -176,28 +216,55 @@ export default class SelectField extends React.Component<SelectFieldProps, Selec
    * render
    * @returns
    */
-  render(){
-    if (!this.props.content) {
+  render() {
+    if (!this.props.content) {
       return null;
     }
-    if (this.props.invisible){
-      if (this.props.content.listType === "dropdown" || this.props.content.listType === "list"){
-        return <span className="material-page__selectfield-wrapper">
-          <select className="material-page__selectfield" size={this.props.content.listType === "list" ? this.props.content.options.length : null}
-            disabled/>
-        </span>
+    if (this.props.invisible) {
+      if (
+        this.props.content.listType === "dropdown" ||
+        this.props.content.listType === "list"
+      ) {
+        return (
+          <span className="material-page__selectfield-wrapper">
+            <select
+              className="material-page__selectfield"
+              size={
+                this.props.content.listType === "list"
+                  ? this.props.content.options.length
+                  : null
+              }
+              disabled
+            />
+          </span>
+        );
       }
 
-      return <span className="material-page__radiobutton-wrapper" ref="base">
-        {this.props.content.options.map(o=>{
-          return <span className={`material-page__radiobutton-items-wrapper material-page__radiobutton-items-wrapper--${this.props.content.listType === "radio-horizontal" ? "horizontal" : "vertical"}`} key={o.name}>
-            <span className="material-page__radiobutton-item-container">
-              <input className="material-page__radiobutton" type="radio" disabled/>
-              <label className="material-page__checkable-label">{o.text}</label>
+      return (
+        <span className="material-page__radiobutton-wrapper" ref="base">
+          {this.props.content.options.map((o) => (
+            <span
+              className={`material-page__radiobutton-items-wrapper material-page__radiobutton-items-wrapper--${
+                this.props.content.listType === "radio-horizontal"
+                  ? "horizontal"
+                  : "vertical"
+              }`}
+              key={o.name}
+            >
+              <span className="material-page__radiobutton-item-container">
+                <input
+                  className="material-page__radiobutton"
+                  type="radio"
+                  disabled
+                />
+                <label className="material-page__checkable-label">
+                  {o.text}
+                </label>
+              </span>
             </span>
-          </span>
-        })}
-      </span>
+          ))}
+        </span>
+      );
     }
 
     // Select field is able to mark what were meant to be the correct answers in the field itself
@@ -208,85 +275,167 @@ export default class SelectField extends React.Component<SelectFieldProps, Selec
 
     // So we only care about this logic if we didn't get the answer right and we are asking for show the right thing
     // Note that a state of UNKNOWN also goes through here, but not a state of PASS
-    if (this.props.displayCorrectAnswers){
+    if (this.props.displayCorrectAnswers) {
       // find the correct answers from the list
-      let correctAnswersFound = this.props.content.options.filter(a=>a.correct);
+      const correctAnswersFound = this.props.content.options.filter(
+        (a) => a.correct
+      );
       // if we have some correct answers
-      if (correctAnswersFound.length){
+      if (correctAnswersFound.length) {
         // We say we will mark those that are correct
         markcorrectAnswers = true;
         // we make the summary component, note we might have an explanation
         // For some reason it saves to no explanation
-        correctAnswersummaryComponent = <span className="material-page__field-answer-examples">
-          <span className="material-page__field-answer-examples-title">
-            {this.props.i18n.text.get("plugin.workspace.assigment.checkAnswers.correctSummary.title")}
+        correctAnswersummaryComponent = (
+          <span className="material-page__field-answer-examples">
+            <span className="material-page__field-answer-examples-title">
+              {this.props.i18n.text.get(
+                "plugin.workspace.assigment.checkAnswers.correctSummary.title"
+              )}
+            </span>
+            {correctAnswersFound.map((answer, index) => (
+              <span key={index} className="material-page__field-answer-example">
+                <StrMathJAX>{answer.text}</StrMathJAX>
+              </span>
+            ))}
+            {this.props.content.explanation ? (
+              <span className="material-page__field-explanation-wrapper">
+                <Dropdown
+                  modifier="material-page-field-explanation"
+                  content={
+                    <StrMathJAX>{this.props.content.explanation}</StrMathJAX>
+                  }
+                >
+                  <span className="material-page__field-explanation-button icon-question" />
+                </Dropdown>
+              </span>
+            ) : null}
           </span>
-          {correctAnswersFound.map((answer, index)=>
-            <span key={index} className="material-page__field-answer-example"><StrMathJAX>{answer.text}</StrMathJAX></span>
-          )}
-          {this.props.content.explanation ? <span className="material-page__field-explanation-wrapper">
-            <Dropdown modifier="material-page-field-explanation" content={<StrMathJAX>{this.props.content.explanation}</StrMathJAX>}>
-               <span className="material-page__field-explanation-button icon-question"/>
-             </Dropdown>
-           </span> : null}
-        </span>;
+        );
       } else if (this.props.content.explanation) {
         // Otherwise if there were no right answer say with a state of UNKNOWN, then we show the explanation if avaliable
-        correctAnswersummaryComponent = <span className="material-page__field-answer-examples">
-          <span className="material-page__field-answer-examples-title">
-            {this.props.i18n.text.get("plugin.workspace.assigment.checkAnswers.detailsSummary.title")}
+        correctAnswersummaryComponent = (
+          <span className="material-page__field-answer-examples">
+            <span className="material-page__field-answer-examples-title">
+              {this.props.i18n.text.get(
+                "plugin.workspace.assigment.checkAnswers.detailsSummary.title"
+              )}
+            </span>
+            <span className="material-page__field-answer-example">
+              <StrMathJAX>{this.props.content.explanation}</StrMathJAX>
+            </span>
           </span>
-          <span className="material-page__field-answer-example"><StrMathJAX>{this.props.content.explanation}</StrMathJAX></span>
-        </span>;
+        );
       }
     }
 
-    let fieldSavedStateClass = createFieldSavedStateClass(this.state.fieldSavedState);
+    const fieldSavedStateClass = createFieldSavedStateClass(
+      this.state.fieldSavedState
+    );
 
     // The classname that represents the state of the whole field
-    let fieldStateAfterCheck = this.state.answerState !== "UNKNOWN" && this.props.displayCorrectAnswers &&
-      this.props.checkAnswers ? (this.state.answerState === "FAIL" ? "incorrect-answer" : "correct-answer") : "";
+    const fieldStateAfterCheck =
+      this.state.answerState !== "UNKNOWN" &&
+      this.props.displayCorrectAnswers &&
+      this.props.checkAnswers
+        ? this.state.answerState === "FAIL"
+          ? "incorrect-answer"
+          : "correct-answer"
+        : "";
 
     // So the dropdown and list type are handled differently
-    if (this.props.content.listType === "dropdown" || this.props.content.listType === "list"){
-      let selectFieldType = this.props.content.listType === "list" ? "list" : "dropdown";
-      return <span className={`material-page__selectfield-wrapper material-page__selectfield-wrapper--${selectFieldType} ${fieldSavedStateClass}`}>
+    if (
+      this.props.content.listType === "dropdown" ||
+      this.props.content.listType === "list"
+    ) {
+      const selectFieldType =
+        this.props.content.listType === "list" ? "list" : "dropdown";
+      return (
+        <span
+          className={`material-page__selectfield-wrapper material-page__selectfield-wrapper--${selectFieldType} ${fieldSavedStateClass}`}
+        >
+          <Synchronizer
+            synced={this.state.synced}
+            syncError={this.state.syncError}
+            i18n={this.props.i18n}
+            onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
+          />
+          <select
+            className={`material-page__selectfield ${fieldStateAfterCheck}`}
+            size={
+              this.props.content.listType === "list"
+                ? this.props.content.options.length
+                : null
+            }
+            value={this.state.value}
+            onChange={this.onSelectChange}
+            disabled={this.props.readOnly}
+          >
+            {this.props.content.listType === "dropdown" ? (
+              <option value="" />
+            ) : null}
+            {this.props.content.options.map((o) => (
+              <option
+                className="material-page__selectfield-item-container"
+                key={o.name}
+                value={o.name}
+              >
+                {o.text}
+              </option>
+            ))}
+          </select>
+          {correctAnswersummaryComponent}
+        </span>
+      );
+    }
+
+    //this is for the standard
+    return (
+      <span
+        className={`material-page__radiobutton-wrapper ${fieldSavedStateClass}`}
+      >
         <Synchronizer
           synced={this.state.synced}
           syncError={this.state.syncError}
           i18n={this.props.i18n}
           onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
         />
-        <select className={`material-page__selectfield ${fieldStateAfterCheck}`} size={this.props.content.listType === "list" ? this.props.content.options.length : null}
-          value={this.state.value} onChange={this.onSelectChange} disabled={this.props.readOnly}>
-          {this.props.content.listType === "dropdown" ? <option value=""/> : null}
-          {this.props.content.options.map(o=>{
-            return <option className="material-page__selectfield-item-container" key={o.name} value={o.name}>{o.text}</option>
+        <span
+          className={`material-page__radiobutton-items-wrapper material-page__radiobutton-items-wrapper--${
+            this.props.content.listType === "radio-horizontal"
+              ? "horizontal"
+              : "vertical"
+          } ${fieldStateAfterCheck}`}
+        >
+          {this.props.content.options.map((o) => {
+            // lets generate unique id for labels and radio buttons
+            const uniqueElementID = "rb-" + uuid.v4();
+            return (
+              <span
+                className="material-page__radiobutton-item-container"
+                key={o.name}
+              >
+                <input
+                  id={uniqueElementID}
+                  className="material-page__radiobutton"
+                  type="radio"
+                  value={o.name}
+                  checked={this.state.value === o.name}
+                  onChange={this.onSelectChange}
+                  disabled={this.props.readOnly}
+                />
+                <label
+                  htmlFor={uniqueElementID}
+                  className="material-page__checkable-label"
+                >
+                  <StrMathJAX>{o.text}</StrMathJAX>
+                </label>
+              </span>
+            );
           })}
-        </select>
+        </span>
         {correctAnswersummaryComponent}
       </span>
-    }
-
-    //this is for the standard
-    return <span className={`material-page__radiobutton-wrapper ${fieldSavedStateClass}`}>
-      <Synchronizer
-        synced={this.state.synced}
-        syncError={this.state.syncError}
-        i18n={this.props.i18n}
-        onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
-      />
-      <span className={`material-page__radiobutton-items-wrapper material-page__radiobutton-items-wrapper--${this.props.content.listType === "radio-horizontal" ? "horizontal" : "vertical"} ${fieldStateAfterCheck}`}>
-        {this.props.content.options.map(o=>{
-          // lets generate unique id for labels and radio buttons
-          let uniqueElementID = "rb-" + uuid.v4();
-          return <span className="material-page__radiobutton-item-container" key={o.name}>
-            <input id={uniqueElementID} className="material-page__radiobutton" type="radio" value={o.name} checked={this.state.value === o.name} onChange={this.onSelectChange} disabled={this.props.readOnly}/>
-            <label htmlFor={uniqueElementID} className="material-page__checkable-label"><StrMathJAX>{o.text}</StrMathJAX></label>
-          </span>
-        })}
-      </span>
-      {correctAnswersummaryComponent}
-    </span>
+    );
   }
 }

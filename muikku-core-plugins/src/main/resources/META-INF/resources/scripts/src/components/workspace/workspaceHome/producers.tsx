@@ -1,52 +1,77 @@
 import { StateType } from "~/reducers";
-import { Dispatch, connect } from "react-redux";
+import { connect } from "react-redux";
 import * as React from "react";
 import { WorkspaceType } from "~/reducers/workspaces";
 import { i18nType } from "~/reducers/base/i18n";
-import Link from "~/components/general/link";
 
-import '~/sass/elements/producers.scss';
+import "~/sass/elements/producers.scss";
 
+/**
+ * ProducersProps
+ */
 interface ProducersProps {
-  workspace: WorkspaceType,
-  i18n: i18nType
+  workspace: WorkspaceType;
+  i18n: i18nType;
 }
 
-interface ProducersState {
+/**
+ * ProducersState
+ */
+interface ProducersState {}
 
-}
-
+/**
+ * Producers
+ */
 class Producers extends React.Component<ProducersProps, ProducersState> {
-  render(){
-    if (!this.props.workspace || !this.props.workspace.producers || !this.props.workspace.producers.length){
+  /**
+   * render
+   */
+  render() {
+    if (
+      !this.props.workspace ||
+      !this.props.workspace.producers ||
+      !this.props.workspace.producers.length
+    ) {
       return null;
     }
 
-    return (<div className="producers">
-      <span className="producers__title">{this.props.i18n.text.get("plugin.workspace.index.producersLabel")}:</span>
-      {this.props.workspace.producers.map((producer, index)=>{
-        let textForTheName = producer.name;
-        if (index !== this.props.workspace.producers.length - 1){
-          textForTheName += ", "
-        }
-        return <span className="producers__item" key={'producer' + index}>{textForTheName}</span>
-      })}
-    </div>);
+    return (
+      <div className="producers">
+        <span className="producers__title">
+          {this.props.i18n.text.get("plugin.workspace.index.producersLabel")}:
+        </span>
+        {this.props.workspace.producers.map((producer, index) => {
+          let textForTheName = producer.name;
+          if (index !== this.props.workspace.producers.length - 1) {
+            textForTheName += ", ";
+          }
+          return (
+            <span className="producers__item" key={"producer" + index}>
+              {textForTheName}
+            </span>
+          );
+        })}
+      </div>
+    );
   }
 }
 
-function mapStateToProps(state: StateType){
+/**
+ * mapStateToProps
+ * @param state state
+ */
+function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    workspace: state.workspaces.currentWorkspace
-  }
-};
+    workspace: state.workspaces.currentWorkspace,
+  };
+}
 
-function mapDispatchToProps(dispatch: Dispatch<any>){
+/**
+ * mapDispatchToProps
+ */
+function mapDispatchToProps() {
   return {};
-};
+}
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(Producers);
+export default connect(mapStateToProps, mapDispatchToProps)(Producers);

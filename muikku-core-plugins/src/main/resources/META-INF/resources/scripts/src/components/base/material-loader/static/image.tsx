@@ -1,33 +1,55 @@
+/* eslint-disable react/no-string-refs */
+
+/**
+ * Deprecated refs should be reractored
+ */
+
 import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
-import { HTMLtoReactComponent, HTMLToReactComponentRule } from "~/util/modifiers";
+import {
+  HTMLtoReactComponent,
+  HTMLToReactComponentRule,
+} from "~/util/modifiers";
 import Zoom from "~/components/general/zoom";
 
+/**
+ * ImageProps
+ */
 interface ImageProps {
-  element: HTMLElement,
-  path: string,
+  element: HTMLElement;
+  path: string;
   dataset: {
-    author: string,
-    authorUrl: string,
-    license: string,
-    licenseUrl: string,
-    source: string,
-    sourceUrl: string,
-    original?: string
-  },
-  i18n: i18nType,
-  processingRules: HTMLToReactComponentRule[],
+    author: string;
+    authorUrl: string;
+    license: string;
+    licenseUrl: string;
+    source: string;
+    sourceUrl: string;
+    original?: string;
+  };
+  i18n: i18nType;
+  processingRules: HTMLToReactComponentRule[];
 
-  invisible?: boolean,
+  invisible?: boolean;
 }
 
+/**
+ * ImageState
+ */
 interface ImageState {
   predictedHeight: number;
   maxWidth: number;
 }
 
-export default class Image extends React.Component<ImageProps, ImageState>{
+/**
+ * Image
+ */
+export default class Image extends React.Component<ImageProps, ImageState> {
   private predictedAspectRatio: number;
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: ImageProps) {
     super(props);
 
@@ -37,7 +59,7 @@ export default class Image extends React.Component<ImageProps, ImageState>{
     this.state = {
       predictedHeight: null,
       maxWidth: null,
-    }
+    };
 
     if (!isNaN(aspectRatio) && isFinite(aspectRatio)) {
       this.predictedAspectRatio = aspectRatio;
@@ -46,28 +68,53 @@ export default class Image extends React.Component<ImageProps, ImageState>{
     this.calculatePredictedHeight = this.calculatePredictedHeight.bind(this);
     this.calculateMaxWidth = this.calculateMaxWidth.bind(this);
   }
+
+  /**
+   * componentDidMount
+   */
   componentDidMount() {
     window.addEventListener("resize", this.calculatePredictedHeight);
     this.calculatePredictedHeight();
   }
+
+  /**
+   * componentDidUpdate
+   */
   componentDidUpdate() {
     this.calculatePredictedHeight();
   }
+
+  /**
+   * componentWillUnmount
+   */
   componentWillUnmount() {
     window.addEventListener("resize", this.calculatePredictedHeight);
   }
+
+  /**
+   * calculatePredictedHeight
+   */
   calculatePredictedHeight() {
     if (this.predictedAspectRatio && this.refs["img"]) {
-      const predictedHeight = (this.refs["img"] as HTMLImageElement).offsetWidth / this.predictedAspectRatio;
-      if (predictedHeight !== this.state.predictedHeight && !isNaN(predictedHeight) && isFinite(predictedHeight)) {
+      const predictedHeight =
+        (this.refs["img"] as HTMLImageElement).offsetWidth /
+        this.predictedAspectRatio;
+      if (
+        predictedHeight !== this.state.predictedHeight &&
+        !isNaN(predictedHeight) &&
+        isFinite(predictedHeight)
+      ) {
         this.setState({
-          predictedHeight
+          predictedHeight,
         });
       }
     }
   }
+  /**
+   * calculateMaxWidth
+   */
   calculateMaxWidth() {
-    const image = (this.refs["img"] as HTMLImageElement);
+    const image = this.refs["img"] as HTMLImageElement;
     if (image && image.src) {
       const maxWidth = image.naturalWidth;
       if (maxWidth !== this.state.maxWidth) {
@@ -75,36 +122,102 @@ export default class Image extends React.Component<ImageProps, ImageState>{
       }
     }
   }
+
+  /**
+   * render
+   */
   render() {
-    const newRules = this.props.processingRules.filter((r) => r.id !== "image-rule");
+    const newRules = this.props.processingRules.filter(
+      (r) => r.id !== "image-rule"
+    );
     newRules.push({
-      shouldProcessHTMLElement: (tag, element) => tag === "figure" || tag === "span",
+      /**
+       * shouldProcessHTMLElement
+       * @param tag tag
+       * @param element element
+       */
+      shouldProcessHTMLElement: (tag, element) =>
+        tag === "figure" || tag === "span",
+
+      /**
+       * preprocessReactProperties
+       * @param tag tag
+       * @param props props
+       * @param children children
+       * @param element element
+       */
       preprocessReactProperties: (tag, props, children, element) => {
-        if (!this.props.invisible && (this.props.dataset.source || this.props.dataset.author || this.props.dataset.license)) {
-          children.push(<span className="image__details icon-copyright" key="details">
-            <span className="image__details-container">
-              <span className="image__details-label">{this.props.i18n.text.get("plugin.workspace.materials.detailsSourceLabel")} </span>
-              {this.props.dataset.source || this.props.dataset.sourceUrl
-                ? (this.props.dataset.sourceUrl ?
-                  <a href={this.props.dataset.sourceUrl} target="_blank">{this.props.dataset.source || this.props.dataset.sourceUrl}</a> :
-                  <span>{this.props.dataset.source}</span>) : null}
-              {(this.props.dataset.author || this.props.dataset.authorUrl) &&
-                (this.props.dataset.source || this.props.dataset.sourceUrl) ? <span>&nbsp;/&nbsp;</span> : null}
-              {this.props.dataset.author || this.props.dataset.authorUrl ? (
-                this.props.dataset.authorUrl ?
-                  <a href={this.props.dataset.authorUrl} target="_blank">{this.props.dataset.author || this.props.dataset.authorUrl}</a> :
-                  <span>{this.props.dataset.author}</span>
-              ) : null}
-              {(this.props.dataset.license || this.props.dataset.licenseUrl) &&
-                (this.props.dataset.author || this.props.dataset.authorUrl ||
-                  this.props.dataset.source || this.props.dataset.sourceUrl) ? <span>,&nbsp;</span> : null}
-              {this.props.dataset.license || this.props.dataset.licenseUrl ? (
-                this.props.dataset.licenseUrl ?
-                  <a href={this.props.dataset.licenseUrl} target="_blank">{this.props.dataset.license || this.props.dataset.licenseUrl}</a> :
-                  <span>{this.props.dataset.license}</span>
-              ) : null}
+        if (
+          !this.props.invisible &&
+          (this.props.dataset.source ||
+            this.props.dataset.author ||
+            this.props.dataset.license)
+        ) {
+          children.push(
+            <span className="image__details icon-copyright" key="details">
+              <span className="image__details-container">
+                <span className="image__details-label">
+                  {this.props.i18n.text.get(
+                    "plugin.workspace.materials.detailsSourceLabel"
+                  )}{" "}
+                </span>
+                {this.props.dataset.source || this.props.dataset.sourceUrl ? (
+                  this.props.dataset.sourceUrl ? (
+                    <a
+                      href={this.props.dataset.sourceUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {this.props.dataset.source ||
+                        this.props.dataset.sourceUrl}
+                    </a>
+                  ) : (
+                    <span>{this.props.dataset.source}</span>
+                  )
+                ) : null}
+                {(this.props.dataset.author || this.props.dataset.authorUrl) &&
+                (this.props.dataset.source || this.props.dataset.sourceUrl) ? (
+                  <span>&nbsp;/&nbsp;</span>
+                ) : null}
+                {this.props.dataset.author || this.props.dataset.authorUrl ? (
+                  this.props.dataset.authorUrl ? (
+                    <a
+                      href={this.props.dataset.authorUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {this.props.dataset.author ||
+                        this.props.dataset.authorUrl}
+                    </a>
+                  ) : (
+                    <span>{this.props.dataset.author}</span>
+                  )
+                ) : null}
+                {(this.props.dataset.license ||
+                  this.props.dataset.licenseUrl) &&
+                (this.props.dataset.author ||
+                  this.props.dataset.authorUrl ||
+                  this.props.dataset.source ||
+                  this.props.dataset.sourceUrl) ? (
+                  <span>,&nbsp;</span>
+                ) : null}
+                {this.props.dataset.license || this.props.dataset.licenseUrl ? (
+                  this.props.dataset.licenseUrl ? (
+                    <a
+                      href={this.props.dataset.licenseUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {this.props.dataset.license ||
+                        this.props.dataset.licenseUrl}
+                    </a>
+                  ) : (
+                    <span>{this.props.dataset.license}</span>
+                  )
+                ) : null}
+              </span>
             </span>
-          </span>);
+          );
         }
 
         const img = this.props.element.querySelector("img");
@@ -120,18 +233,33 @@ export default class Image extends React.Component<ImageProps, ImageState>{
 
         // If we have floating image with or without caption we add margin to the opposing side
         // ie. left float adds right margin and vise versa
-        if (img && (img.style.float === 'left' || props.style.float === 'left')) {
+        if (
+          img &&
+          (img.style.float === "left" || props.style.float === "left")
+        ) {
           props.style.margin = "10px 15px 10px 0";
         }
-        if (img && (img.style.float === 'right' || props.style.float === 'right')) {
+        if (
+          img &&
+          (img.style.float === "right" || props.style.float === "right")
+        ) {
           props.style.margin = "10px 0 10px 15px";
         }
-      }
+      },
     });
 
     newRules.push({
+      /**
+       * shouldProcessHTMLElement
+       * @param tag tag
+       */
       shouldProcessHTMLElement: (tag) => tag === "img",
       preventChildProcessing: true,
+      /**
+       * preprocessReactProperties
+       * @param tag tag
+       * @param props props
+       */
       preprocessReactProperties: (tag, props) => {
         if (this.predictedAspectRatio && this.props.invisible) {
           delete props.src;
@@ -147,10 +275,20 @@ export default class Image extends React.Component<ImageProps, ImageState>{
         props.ref = "img";
         props.onLoad = this.calculateMaxWidth;
       },
+      /**
+       * processingFunction
+       * @param Tag Tag
+       * @param props props
+       * @param children children
+       * @param element element
+       */
       processingFunction: (Tag, props, children, element) => {
         const src = this.props.dataset.original || "";
-        const isAbsolute = (src.indexOf('/') == 0) || (src.indexOf('mailto:') == 0) ||
-          (src.indexOf('data:') == 0) || (src.match("^(?:[a-zA-Z]+:)?\/\/"));
+        const isAbsolute =
+          src.indexOf("/") == 0 ||
+          src.indexOf("mailto:") == 0 ||
+          src.indexOf("data:") == 0 ||
+          src.match("^(?:[a-zA-Z]+:)?//");
         if (!isAbsolute) {
           props.src = this.props.path + "/" + src;
         } else {
@@ -158,14 +296,11 @@ export default class Image extends React.Component<ImageProps, ImageState>{
         }
 
         return (
-          <Zoom
-            key={props.key}
-            imgsrc={props.src}
-          >
+          <Zoom key={props.key} imgsrc={props.src}>
             <Tag {...props}>{children}</Tag>
           </Zoom>
         );
-      }
+      },
     });
 
     return HTMLtoReactComponent(this.props.element, newRules);

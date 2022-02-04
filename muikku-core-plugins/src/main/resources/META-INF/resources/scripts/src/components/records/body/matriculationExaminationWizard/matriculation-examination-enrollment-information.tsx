@@ -53,18 +53,20 @@ interface MatriculationExaminationEnrollmentInformationProps {
   onChange: (examination: ExaminationInformation) => void;
 }
 
-interface MatriculationExaminationEnrollmentInformationState
-  extends ExaminationInformation {}
+type MatriculationExaminationEnrollmentInformationState =
+  ExaminationInformation;
 
 /**
  * MatriculationExaminationEnrollmentInformation
- * @param props
- * @returns
  */
 export class MatriculationExaminationEnrollmentInformation extends React.Component<
   MatriculationExaminationEnrollmentInformationProps,
   MatriculationExaminationEnrollmentInformationState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: MatriculationExaminationEnrollmentInformationProps) {
     super(props);
 
@@ -108,12 +110,11 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
 
   /**
    * Updates props to state
-   * @param prevProps
-   * @param prevState
+   * @param prevProps prevProps
+   * @param prevState prevState
    */
   componentDidUpdate = (
-    prevProps: MatriculationExaminationEnrollmentInformationProps,
-    prevState: MatriculationExaminationEnrollmentInformationState
+    prevProps: MatriculationExaminationEnrollmentInformationProps
   ) => {
     if (this.props !== prevProps) {
       this.setState(this.props.examination);
@@ -126,15 +127,13 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
    * before all data is given and valitated
    * @returns boolean
    */
-  isValidated = () => {
-    return !this.isInvalid();
-  };
+  isValidated = () => !this.isInvalid();
 
   /**
    * Returns next non selected subject from subjects list
    *
    * @param selectedSubjects list of selected subjects
-   * @return next non selected subject from subjects list
+   * @returns next non selected subject from subjects list
    */
   getDefaultSubject = (selectedSubjects: string[]) => {
     const subjects = Object.keys(SUBJECT_MAP);
@@ -153,33 +152,24 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
    *
    * @returns list of enrolled subjects from enrolled attendances lists
    */
-  getEnrolledSubjects = () => {
-    return this.state.enrolledAttendances.map((attendance) => {
-      return attendance.subject;
-    });
-  };
+  getEnrolledSubjects = () =>
+    this.state.enrolledAttendances.map((attendance) => attendance.subject);
 
   /**
    * Returns list of planned subjects from planned attendances lists
    *
    * @returns list of planned subjects from planned attendances lists
    */
-  getPlannedSubjects = () => {
-    return this.state.plannedAttendances.map((attendance) => {
-      return attendance.subject;
-    });
-  };
+  getPlannedSubjects = () =>
+    this.state.plannedAttendances.map((attendance) => attendance.subject);
 
   /**
    * Returns list of finished subjects from finished attendances lists
    *
    * @returns list of finished subjects from finished attendances lists
    */
-  getFinishedSubjects = () => {
-    return this.state.finishedAttendances.map((attendance) => {
-      return attendance.subject;
-    });
-  };
+  getFinishedSubjects = () =>
+    this.state.finishedAttendances.map((attendance) => attendance.subject);
 
   /**
    * Returns an array of attendances which includes enrolledAttendances, plannedAttendances
@@ -193,9 +183,9 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
       this.state.enrolledAttendances,
       this.state.plannedAttendances
     );
-    const attendedSubjects = attendances.map((attendance) => {
-      return attendance.subject;
-    });
+    const attendedSubjects = attendances.map(
+      (attendance) => attendance.subject
+    );
 
     this.state.finishedAttendances.forEach((finishedAttendance) => {
       if (attendedSubjects.indexOf(finishedAttendance.subject) === -1) {
@@ -214,9 +204,9 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
    * @returns count of attendances in finnish courses
    */
   getAmountOfFinnishAttendances() {
-    return this.getNonDuplicateAttendances().filter((attendance) => {
-      return FINNISH_SUBJECTS.indexOf(attendance.subject) !== -1;
-    }).length;
+    return this.getNonDuplicateAttendances().filter(
+      (attendance) => FINNISH_SUBJECTS.indexOf(attendance.subject) !== -1
+    ).length;
   }
 
   /**
@@ -227,9 +217,9 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
    * @returns count of attendances in mandatory courses
    */
   getAmountOfMandatoryAttendances() {
-    return this.getNonDuplicateAttendances().filter((attendance) => {
-      return attendance.mandatory === "true";
-    }).length;
+    return this.getNonDuplicateAttendances().filter(
+      (attendance) => attendance.mandatory === "true"
+    ).length;
   }
 
   /**
@@ -240,12 +230,11 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
    * @returns count of attendances in academic subjects
    */
   getAmountOfAcademicSubjectAttendances() {
-    return this.getNonDuplicateAttendances().filter((attendance) => {
-      return (
+    return this.getNonDuplicateAttendances().filter(
+      (attendance) =>
         attendance.mandatory === "true" &&
         ACADEMIC_SUBJECTS.indexOf(attendance.subject) !== -1
-      );
-    }).length;
+    ).length;
   }
 
   /**
@@ -256,12 +245,11 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
    * @returns whether user has valid amount of attendances in mandatory advanced subjects
    */
   getAmountOfMandatoryAdvancedSubjectAttendances() {
-    return this.getNonDuplicateAttendances().filter((attendance) => {
-      return (
+    return this.getNonDuplicateAttendances().filter(
+      (attendance) =>
         attendance.mandatory === "true" &&
         ADVANCED_SUBJECTS.indexOf(attendance.subject) !== -1
-      );
-    }).length;
+    ).length;
   }
 
   /**
@@ -269,17 +257,13 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
    *
    * @returns whether attendance details are valid
    */
-  isValidAttendances = () => {
-    return (
-      this.getAmountOfFinnishAttendances() == REQUIRED_FINNISH_ATTENDANCES &&
-      this.getAmountOfMandatoryAttendances() ==
-        REQUIRED_MANDATORY_ATTENDANCES &&
-      this.getAmountOfAcademicSubjectAttendances() <
-        REQUIRED_ACADEMIC_SUBJECT_ATTENDANCE_LESS_THAN &&
-      this.getAmountOfMandatoryAdvancedSubjectAttendances() >
-        REQUIRED_MANDATORY_SUBJECT_ATTENDANCE_MORE_THAN
-    );
-  };
+  isValidAttendances = () =>
+    this.getAmountOfFinnishAttendances() == REQUIRED_FINNISH_ATTENDANCES &&
+    this.getAmountOfMandatoryAttendances() == REQUIRED_MANDATORY_ATTENDANCES &&
+    this.getAmountOfAcademicSubjectAttendances() <
+      REQUIRED_ACADEMIC_SUBJECT_ATTENDANCE_LESS_THAN &&
+    this.getAmountOfMandatoryAdvancedSubjectAttendances() >
+      REQUIRED_MANDATORY_SUBJECT_ATTENDANCE_MORE_THAN;
 
   /**
    * isConflictingAttendances
@@ -300,7 +284,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
     /**
      * Creates array of string from attendance subject codes
      */
-    for (let attendance of this.state.enrolledAttendances) {
+    for (const attendance of this.state.enrolledAttendances) {
       subjectCodes.push(attendance.subject);
     }
 
@@ -310,9 +294,9 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
      * Creates list of conflicted group by subject that conflicts together
      * This will create duplicated of same items to array that are removed later
      */
-    for (let group of conflictingGroups) {
-      for (let subject1 of subjectCodes) {
-        for (let subject2 of subjectCodes) {
+    for (const group of conflictingGroups) {
+      for (const subject1 of subjectCodes) {
+        for (const subject2 of subjectCodes) {
           if (
             subject1 !== subject2 &&
             group.includes(subject1) &&
@@ -360,7 +344,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
    * @returns boolean
    */
   isIncompleteAttendances = (): boolean => {
-    for (let attendance of this.state.enrolledAttendances) {
+    for (const attendance of this.state.enrolledAttendances) {
       if (
         attendance.subject === "" ||
         attendance.mandatory === "" ||
@@ -369,7 +353,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
         return true;
       }
     }
-    for (let attendance of this.state.finishedAttendances) {
+    for (const attendance of this.state.finishedAttendances) {
       if (
         attendance.term === "" ||
         attendance.subject === "" ||
@@ -379,7 +363,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
         return true;
       }
     }
-    for (let attendance of this.state.plannedAttendances) {
+    for (const attendance of this.state.plannedAttendances) {
       if (
         attendance.term === "" ||
         attendance.subject === "" ||
@@ -393,6 +377,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
   /**
    * Returns true if enrolled attendance is not a repeat but there is a
    * previous exam with the same subject.
+   * @param attendance attendance
    */
   isConflictingRepeat = (attendance: ExaminationEnrolledSubject) => {
     if (attendance.repeat === "false") {
@@ -409,28 +394,24 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
     const finishedSubjects = this.getFinishedSubjects();
 
     return (
-      this.state.enrolledAttendances.filter((attendance) => {
-        return (
+      this.state.enrolledAttendances.filter(
+        (attendance) =>
           attendance.repeat === "false" &&
           finishedSubjects.indexOf(attendance.subject) != -1
-        );
-      }).length > 0
+      ).length > 0
     );
   };
 
   /**
    * Returns true if there is a finished attendance with the same subject but different mandatory.
+   * @param attendance attendance
    */
-  isConflictingMandatory = (attendance: ExaminationEnrolledSubject) => {
-    return (
-      this.state.finishedAttendances.filter((fin) => {
-        return (
-          fin.subject === attendance.subject &&
-          fin.mandatory != attendance.mandatory
-        );
-      }).length > 0
-    );
-  };
+  isConflictingMandatory = (attendance: ExaminationEnrolledSubject) =>
+    this.state.finishedAttendances.filter(
+      (fin) =>
+        fin.subject === attendance.subject &&
+        fin.mandatory != attendance.mandatory
+    ).length > 0;
 
   /**
    * Returns true if there are any conflicting mandatories; see isConflictingMandatory.
@@ -441,16 +422,14 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
       this.state.plannedAttendances
     );
     return (
-      attendances.filter((attendance) => {
-        return (
-          this.state.finishedAttendances.filter((fin) => {
-            return (
+      attendances.filter(
+        (attendance) =>
+          this.state.finishedAttendances.filter(
+            (fin) =>
               fin.subject === attendance.subject &&
               fin.mandatory != attendance.mandatory
-            );
-          }).length > 0
-        );
-      }).length > 0
+          ).length > 0
+      ).length > 0
     );
   };
 
@@ -490,7 +469,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
   /**
    * handles adding new enrolled attendes to list and passed modfied examination information to parent
    */
-  handleNewEnrolledAttendanceClick = (e: React.MouseEvent) => {
+  handleNewEnrolledAttendanceClick = () => {
     const { examination, onChange } = this.props;
 
     const enrolledAttendances = this.state.enrolledAttendances;
@@ -513,7 +492,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
   /**
    * handles adding new finished attendes to list and passed modfied examination information to parent
    */
-  handleNewFinishedAttendanceClick = (e: React.MouseEvent) => {
+  handleNewFinishedAttendanceClick = () => {
     const { examination, onChange } = this.props;
 
     const finishedAttendances = this.state.finishedAttendances;
@@ -537,7 +516,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
   /**
    * handles adding new planned attendes to list and passed modfied examination information to parent
    */
-  handleNewPlannedAttendanceClick = (e: React.MouseEvent) => {
+  handleNewPlannedAttendanceClick = () => {
     const { examination, onChange } = this.props;
 
     const plannedAttendances = this.state.plannedAttendances;
@@ -559,8 +538,9 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
 
   /**
    * handles delete enrolled attendance and passes modified examination information to parent
+   * @param i index of row which will be deleted
    */
-  handleDeleteEnrolledAttendanceRow = (i: number) => (e: React.MouseEvent) => {
+  handleDeleteEnrolledAttendanceRow = (i: number) => () => {
     const { examination, onChange } = this.props;
 
     const enrolledAttendances = this.state.enrolledAttendances;
@@ -577,8 +557,9 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
 
   /**
    * handles delete finished attendance and passes modified examination information to parent
+   * @param i index of row which will be deleted
    */
-  handleDeleteFinishedAttendanceRow = (i: number) => (e: React.MouseEvent) => {
+  handleDeleteFinishedAttendanceRow = (i: number) => () => {
     const { examination, onChange } = this.props;
 
     const finishedAttendances = this.state.finishedAttendances;
@@ -595,8 +576,9 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
 
   /**
    * handles delete planned attendance and passes modified examination information to parent
+   * @param i index of row which will be deleted
    */
-  handleDeletePlannedAttendanceRow = (i: number) => (e: React.MouseEvent) => {
+  handleDeletePlannedAttendanceRow = (i: number) => () => {
     const { examination, onChange } = this.props;
 
     const plannedAttendances = this.state.plannedAttendances;
@@ -612,7 +594,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
 
   /**
    * handle enrolled attendes list change and passes it to parent component
-   * @param examinationSubjectList
+   * @param examinationSubjectList examinationSubjectList
    */
   handleExaminationEnrolledAttendSubjectListChange = (
     examinationSubjectList: ExaminationEnrolledSubject[]
@@ -629,7 +611,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
 
   /**
    * handles finished attendes list change and passes it to parent component
-   * @param examinationSubjectList
+   * @param examinationSubjectList examinationSubjectList
    */
   handleExaminationFinishedSubjectListChange = (
     examinationSubjectList: ExaminationFinishedSubject[]
@@ -646,7 +628,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
 
   /**
    * handles planned attendes list change
-   * @param examinationSubjectList
+   * @param examinationSubjectList examinationSubjectList
    */
   handleExaminationPlannedSubjectListChange = (
     examinationSubjectList: ExaminationPlannedSubject[]
@@ -964,17 +946,15 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
                 <p>
                   <b>Aineet:</b>
                 </p>
-                {this.isConflictingAttendances().map((cGroup, index) => {
-                  return (
-                    <div key={index}>
-                      <ul>
-                        {cGroup.map((cSubject, index) => (
-                          <li key={index}> {SUBJECT_MAP[cSubject]} </li>
-                        ))}
-                      </ul>
-                    </div>
-                  );
-                })}
+                {this.isConflictingAttendances().map((cGroup, index) => (
+                  <div key={index}>
+                    <ul>
+                      {cGroup.map((cSubject, index) => (
+                        <li key={index}> {SUBJECT_MAP[cSubject]} </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
               </div>
             </div>
           ) : null}

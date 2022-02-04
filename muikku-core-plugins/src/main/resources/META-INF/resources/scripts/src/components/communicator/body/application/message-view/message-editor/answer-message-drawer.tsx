@@ -18,10 +18,13 @@ import SessionStateComponent from "~/components/general/session-state-component"
 import promisify from "~/util/promisify";
 import mApi from "~/lib/mApi";
 
-import '~/sass/elements/form-elements.scss';
-import '~/sass/elements/form.scss';
-import '~/sass/elements/environment-dialog.scss';
+import "~/sass/elements/form-elements.scss";
+import "~/sass/elements/form.scss";
+import "~/sass/elements/environment-dialog.scss";
 
+/**
+ * AnswerMessageDrawerProps
+ */
 interface AnswerMessageDrawerProps {
   replyThreadId?: number;
   replyToAll?: boolean;
@@ -40,6 +43,9 @@ interface AnswerMessageDrawerProps {
   isOpen?: boolean;
 }
 
+/**
+ * AnswerMessageDrawerState
+ */
 interface AnswerMessageDrawerState {
   text: string;
   selectedItems: Array<ContactRecipientType>;
@@ -48,16 +54,22 @@ interface AnswerMessageDrawerState {
   includesSignature: boolean;
 }
 
+/**
+ * AnswerMessageDrawer
+ */
 class AnswerMessageDrawer extends SessionStateComponent<
   AnswerMessageDrawerProps,
   AnswerMessageDrawerState
 > {
   private avoidCKEditorTriggeringChangeForNoReasonAtAll: boolean;
+  /**
+   * @param props
+   */
   constructor(props: AnswerMessageDrawerProps) {
     super(
       props,
       "communicator-new-message" +
-      (props.extraNamespace ? "-" + props.extraNamespace : "")
+        (props.extraNamespace ? "-" + props.extraNamespace : "")
     );
 
     this.onCKEditorChange = this.onCKEditorChange.bind(this);
@@ -100,8 +112,7 @@ class AnswerMessageDrawer extends SessionStateComponent<
 
   /**
    * onCKEditorChange
-   * @param text
-   * @returns
+   * @param text text
    */
   onCKEditorChange(text: string) {
     if (this.avoidCKEditorTriggeringChangeForNoReasonAtAll) {
@@ -121,7 +132,7 @@ class AnswerMessageDrawer extends SessionStateComponent<
 
   /**
    * onSubjectChange
-   * @param e
+   * @param e e
    */
   onSubjectChange(e: React.ChangeEvent<HTMLInputElement>) {
     this.setStateAndStore(
@@ -132,7 +143,6 @@ class AnswerMessageDrawer extends SessionStateComponent<
 
   /**
    * sendMessage
-   * @param closeDialog
    */
   sendMessage() {
     this.setState({
@@ -144,10 +154,13 @@ class AnswerMessageDrawer extends SessionStateComponent<
       text:
         this.props.signature && this.state.includesSignature
           ? this.state.text +
-          '<i class="mf-signature">' +
-          this.props.signature.signature +
-          "</i>"
+            '<i class="mf-signature">' +
+            this.props.signature.signature +
+            "</i>"
           : this.state.text,
+      /**
+       *
+       */
       success: () => {
         this.props.onClickCancel && this.props.onClickCancel();
         this.avoidCKEditorTriggeringChangeForNoReasonAtAll = true;
@@ -164,6 +177,9 @@ class AnswerMessageDrawer extends SessionStateComponent<
           getStateIdentifier(this.props)
         );
       },
+      /**
+       *
+       */
       fail: () => {
         this.setState({
           locked: false,
@@ -201,10 +217,13 @@ class AnswerMessageDrawer extends SessionStateComponent<
 
   /**
    * inputContactsAutofillLoaders
-   * @returns
    */
   inputContactsAutofillLoaders() {
     return {
+      /**
+       * studentsLoader
+       * @param searchString searchString
+       */
       studentsLoader: (searchString: string) =>
         promisify(
           mApi().communicator.recipientsUsersSearch.read({
@@ -213,6 +232,10 @@ class AnswerMessageDrawer extends SessionStateComponent<
           }),
           "callback"
         ),
+      /**
+       * workspacesLoader
+       * @param searchString searchString
+       */
       workspacesLoader: (searchString: string) =>
         promisify(
           mApi().communicator.recipientsWorkspacesSearch.read({
@@ -231,14 +254,18 @@ class AnswerMessageDrawer extends SessionStateComponent<
     this.props.onClickCancel && this.props.onClickCancel();
   };
 
+  /**
+   * render
+   */
   render() {
-    let editorTitle =
+    const editorTitle =
       this.props.i18n.text.get("plugin.communicator.answertomessage.label") +
       " - " +
       this.props.i18n.text.get(
         "plugin.communicator.createmessage.title.content"
       );
-    let content = (
+
+    const content = (
       <>
         <InputContactsAutofill
           identifier="communicatorRecipients"
@@ -330,7 +357,7 @@ class AnswerMessageDrawer extends SessionStateComponent<
       </>
     );
 
-    let footer = (
+    const footer = (
       <div className="env-dialog__actions">
         <Button
           buttonModifiers="dialog-execute"
@@ -369,14 +396,12 @@ class AnswerMessageDrawer extends SessionStateComponent<
         <section className="env-dialog__wrapper">
           <div className="env-dialog__content">
             <header className="env-dialog__header">
-              {this.props.i18n.text.get("plugin.communicator.answertomessage.label")}
+              {this.props.i18n.text.get(
+                "plugin.communicator.answertomessage.label"
+              )}
             </header>
-            <section className="env-dialog__body">
-              {content}
-            </section>
-            <footer className="env-dialog__footer">
-              {footer}
-            </footer>
+            <section className="env-dialog__body">{content}</section>
+            <footer className="env-dialog__footer">{footer}</footer>
           </div>
         </section>
       </div>
@@ -399,8 +424,8 @@ function getStateIdentifier(props: AnswerMessageDrawerProps) {
 
 /**
  * mapStateToProps
- * @param state
- * @returns
+ * @param state state
+ * @returns object
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -412,8 +437,8 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
- * @returns
+ * @param dispatch dispatch
+ * @returns object
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ sendMessage }, dispatch);

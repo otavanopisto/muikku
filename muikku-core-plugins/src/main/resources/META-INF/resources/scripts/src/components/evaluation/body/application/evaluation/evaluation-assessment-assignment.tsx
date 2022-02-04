@@ -125,14 +125,14 @@ class EvaluationAssessmentAssignment extends React.Component<
 
     const sleep = await this.sleep(1000);
 
-    let [loadedMaterial] = await Promise.all([
+    const [loadedMaterial] = await Promise.all([
       (async () => {
-        let material = (await promisify(
+        const material = (await promisify(
           mApi().materials.html.read(assigment.materialId),
           "callback"
         )()) as MaterialContentNodeType;
 
-        let evaluation = (await promisify(
+        const evaluation = (await promisify(
           mApi().workspace.workspaces.materials.evaluations.read(
             workspace.id,
             assigment.id,
@@ -143,11 +143,14 @@ class EvaluationAssessmentAssignment extends React.Component<
           "callback"
         )()) as MaterialEvaluationType[];
 
-        let loadedMaterial: MaterialContentNodeType = Object.assign(material, {
-          evaluation: evaluation[0],
-          assignment: this.props.assigment,
-          path: this.props.assigment.path,
-        });
+        const loadedMaterial: MaterialContentNodeType = Object.assign(
+          material,
+          {
+            evaluation: evaluation[0],
+            assignment: this.props.assigment,
+            path: this.props.assigment.path,
+          }
+        );
 
         return loadedMaterial;
       })(),
@@ -162,7 +165,7 @@ class EvaluationAssessmentAssignment extends React.Component<
 
   /**
    * updateMaterialEvaluationData
-   * @param data
+   * @param  assigmentSaveReturn
    */
   updateMaterialEvaluationData = (
     assigmentSaveReturn: AssignmentEvaluationSaveReturn
@@ -170,7 +173,7 @@ class EvaluationAssessmentAssignment extends React.Component<
     /**
      * Get initial values that needs to be updated
      */
-    let updatedMaterial: MaterialContentNodeType = {
+    const updatedMaterial: MaterialContentNodeType = {
       ...this.state.materialNode,
     };
 
@@ -226,11 +229,9 @@ class EvaluationAssessmentAssignment extends React.Component<
    * This should sanitize html
    * @param htmlString string that contains html
    */
-  createHtmlMarkup = (htmlString: string) => {
-    return {
-      __html: htmlString,
-    };
-  };
+  createHtmlMarkup = (htmlString: string) => ({
+    __html: htmlString,
+  });
 
   /**
    * toggleOpened
@@ -260,10 +261,11 @@ class EvaluationAssessmentAssignment extends React.Component<
 
   /**
    * handleOpenSlideDrawer
+   * @param assignmentId assignmentId
+   * @param assignmentType assignmentType
    */
   handleOpenSlideDrawer =
-    (assignmentId: number, assignmentType: "EVALUATED" | "EXERCISE") =>
-    (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    (assignmentId: number, assignmentType: "EVALUATED" | "EXERCISE") => () => {
       if (
         this.props.evaluations.openedAssignmentEvaluationId !== assignmentId
       ) {
@@ -351,7 +353,7 @@ class EvaluationAssessmentAssignment extends React.Component<
 
   /**
    * assigmentGradeClass
-   * @param state
+   * @param compositeReply compositeReply
    * @returns classMod
    */
   assigmentGradeClass = (compositeReply?: MaterialCompositeRepliesType) => {
@@ -373,6 +375,7 @@ class EvaluationAssessmentAssignment extends React.Component<
 
   /**
    * renderAssignmentStatus
+   * @param compositeReply compositeReply
    * @returns JSX.Element
    */
   renderAssignmentMeta = (compositeReply?: MaterialCompositeRepliesType) => {
@@ -495,6 +498,9 @@ class EvaluationAssessmentAssignment extends React.Component<
     }
   };
 
+  /**
+   * render
+   */
   render() {
     const { compositeReply, showAsHidden } = this.props;
     const materialTypeClass = this.materialTypeClass();
@@ -525,9 +531,7 @@ class EvaluationAssessmentAssignment extends React.Component<
       contentOpen = "auto";
     }
 
-    const invisible = contentOpen === 0;
-
-    let evaluatedFunctionClassMod =
+    const evaluatedFunctionClassMod =
       this.assignmentFunctionClass(compositeReply);
     let evaluationTitleClassMod = "";
 

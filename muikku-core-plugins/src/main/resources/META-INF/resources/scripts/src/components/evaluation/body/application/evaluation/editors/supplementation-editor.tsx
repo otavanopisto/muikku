@@ -180,6 +180,7 @@ class SupplementationEditor extends SessionStateComponent<
 
   /**
    * handleEvaluationSupplementationSave
+   * @param e e
    */
   handleEvaluationSupplementationSave = (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
@@ -196,6 +197,9 @@ class SupplementationEditor extends SessionStateComponent<
           requestDate: new Date().getTime().toString(),
           requestText: this.state.literalEvaluation,
         },
+        /**
+         * onSuccess
+         */
         onSuccess: () => {
           cleanWorkspaceAndSupplementationDrafts(this.state.draftId);
 
@@ -215,6 +219,9 @@ class SupplementationEditor extends SessionStateComponent<
 
           onClose && onClose();
         },
+        /**
+         * onFail
+         */
         onFail: () => {
           this.setState({ locked: false });
           onClose();
@@ -248,6 +255,9 @@ class SupplementationEditor extends SessionStateComponent<
             evaluationAssessmentEvents.data[latestIndex].date,
           requestText: this.state.literalEvaluation,
         },
+        /**
+         * onSuccess
+         */
         onSuccess: () => {
           cleanWorkspaceAndSupplementationDrafts(this.state.draftId);
 
@@ -266,6 +276,9 @@ class SupplementationEditor extends SessionStateComponent<
 
           onClose && onClose();
         },
+        /**
+         * onFail
+         */
         onFail: () => {
           this.setState({ locked: false });
           onClose();

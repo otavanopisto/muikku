@@ -549,14 +549,19 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   @Path("/workspaces/")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response listWorkspaces(
-        @QueryParam("userIdentifier") String userIdentifier,
+        @QueryParam("userIdentifier") String userIdentifierParam,
         @Context Request request) {
     List<fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace> workspaces = new ArrayList<>();
+
+    SchoolDataIdentifier userIdentifier = SchoolDataIdentifier.fromId(userIdentifierParam);
+    if (userIdentifier == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
 
     UserEntity userEntity = sessionController.getLoggedUserEntity();
 
     List<UserSchoolDataIdentifier> userSchoolDataIdentifiers = userSchoolDataIdentifierController.listUserSchoolDataIdentifiersByUserEntity(userEntity);
-    if (!userSchoolDataIdentifiers.stream().anyMatch(usdi -> usdi.schoolDataIdentifier().toId().equals(userIdentifier))) {
+    if (!userSchoolDataIdentifiers.stream().anyMatch(usdi -> usdi.schoolDataIdentifier().toId().equals(userIdentifierParam))) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
@@ -564,7 +569,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
 
     TemplateRestriction templateRestriction = TemplateRestriction.ONLY_WORKSPACES;
     PublicityRestriction publicityRestriction = PublicityRestriction.LIST_ALL;
-    List<WorkspaceEntity> workspaceEntities = workspaceUserEntityController.listWorkspaceEntitiesByUserEntity(userEntity);
+    List<WorkspaceEntity> workspaceEntities = workspaceUserEntityController.listWorkspaceEntitiesByUserIdentifier(userIdentifier);
    
     if (CollectionUtils.isEmpty(workspaceEntities)) {
       return Response.ok(Collections.emptyList()).build();

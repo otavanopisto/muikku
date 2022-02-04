@@ -19,6 +19,9 @@ import {
   updateEvaluationSearch,
 } from "~/actions/main-function/evaluation/evaluationActions";
 
+/**
+ * EvaluationToolbarProps
+ */
 interface EvaluationToolbarProps {
   i18n: i18nType;
   title: string;
@@ -27,15 +30,21 @@ interface EvaluationToolbarProps {
   setEvaluationFilters: SetEvaluationFilters;
 }
 
+/**
+ * EvaluationToolbarState
+ */
 interface EvaluationToolbarState {}
 
+/**
+ * EvaluationToolbar
+ */
 class EvaluationToolbar extends React.Component<
   EvaluationToolbarProps,
   EvaluationToolbarState
 > {
   /**
    * constructor
-   * @param props
+   * @param props props
    */
   constructor(props: EvaluationToolbarProps) {
     super(props);
@@ -51,6 +60,7 @@ class EvaluationToolbar extends React.Component<
 
   /**
    * handleCheckboxClick
+   * @param filter filter
    */
   handleCheckboxClick =
     (filter: keyof EvaluationFilters) =>
@@ -69,7 +79,7 @@ class EvaluationToolbar extends React.Component<
    */
   render() {
     const checkboxes = [
-      <div className="filter-item">
+      <div key="evaluated" className="filter-item">
         <input
           onChange={this.handleCheckboxClick("evaluated")}
           checked={this.props.evaluations.evaluationFilters.evaluated}
@@ -82,7 +92,7 @@ class EvaluationToolbar extends React.Component<
           )}
         </label>
       </div>,
-      <div className="filter-item">
+      <div key="requestEvaluation" className="filter-item">
         <input
           onChange={this.handleCheckboxClick("assessmentRequest")}
           checked={this.props.evaluations.evaluationFilters.assessmentRequest}
@@ -95,7 +105,7 @@ class EvaluationToolbar extends React.Component<
           )}
         </label>
       </div>,
-      <div className="filter-item">
+      <div key="hasSupplementationRequest" className="filter-item">
         <input
           onChange={this.handleCheckboxClick("supplementationRequest")}
           checked={
@@ -110,7 +120,7 @@ class EvaluationToolbar extends React.Component<
           )}
         </label>
       </div>,
-      <div className="filter-item">
+      <div key="noevaluation" className="filter-item">
         <input
           onChange={this.handleCheckboxClick("notEvaluated")}
           checked={this.props.evaluations.evaluationFilters.notEvaluated}

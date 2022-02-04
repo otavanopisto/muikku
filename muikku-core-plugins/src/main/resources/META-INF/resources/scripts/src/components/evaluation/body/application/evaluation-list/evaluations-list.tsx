@@ -89,6 +89,7 @@ export class EvaluationList extends React.Component<
    * Filters and sorts any given assessments list in following order
    * search string, evaluation sort function, sort selection aka checkboks and by importance which
    * also returns sorted list
+   * @param assessments assessments
    */
   filterAndSortAssessments = (assessments?: AssessmentRequest[]) => {
     const {
@@ -182,13 +183,14 @@ export class EvaluationList extends React.Component<
 
   /**
    * Filters assessments by active sort function
-   * @param assessments
+   * @param assessments assessments
+   * @param sortBy sortBy
    */
   sortAssessmentsBySortBy = (
     assessments: AssessmentRequest[],
     sortBy: SortBy
   ) => {
-    let filteredBySortAssessments = assessments;
+    const filteredBySortAssessments = assessments;
 
     switch (sortBy) {
       case "no-sort":
@@ -455,19 +457,6 @@ export class EvaluationList extends React.Component<
             </span>
           </div>
         );
-      } else if (evaluationRequests.data.length <= 0) {
-        /**
-         * Otherwise check if filtered list is empty and give message about that
-         */
-        renderEvaluationCardList = (
-          <div className="empty">
-            <span>
-              {this.props.i18n.text.get(
-                "plugin.evaluation.cardlist.noRequestWithFilters"
-              )}
-            </span>
-          </div>
-        );
       }
 
       return <>{renderEvaluationCardList}</>;
@@ -480,8 +469,8 @@ export class EvaluationList extends React.Component<
  * @param ascending
  * @returns
  */
-const byDate = (ascending: boolean) => {
-  return (a: AssessmentRequest, b: AssessmentRequest) => {
+const byDate =
+  (ascending: boolean) => (a: AssessmentRequest, b: AssessmentRequest) => {
     // equal items sort equally
     if (a.assessmentRequestDate === b.assessmentRequestDate) {
       return 0;
@@ -501,7 +490,6 @@ const byDate = (ascending: boolean) => {
       return a.assessmentRequestDate < b.assessmentRequestDate ? 1 : -1;
     }
   };
-};
 
 /**
  * mapStateToProps
