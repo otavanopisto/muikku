@@ -12,6 +12,7 @@
 
 .footer--workspace {
   @include text;
+
   background-color: $color-workspace-footer-default-background;
   margin: 0;
   order: 3;

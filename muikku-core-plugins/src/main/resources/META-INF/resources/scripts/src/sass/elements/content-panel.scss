@@ -25,6 +25,7 @@
 
 .content-panel__container {
   @include text;
+
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -73,10 +74,12 @@
     margin: -35px 10px 10px auto;
     max-width: 300px;
     min-width: 250px;
-    // scss-lint:disable VendorPrefix
+
+    /* stylelint-disable value-no-vendor-prefix, declaration-block-no-duplicate-properties */
     position: -webkit-sticky; // Safari 7-12 support
-    // scss-lint:enable VendorPrefix
     position: sticky;
+    /* stylelint-enable value-no-vendor-prefix, declaration-block-no-duplicate-properties */
+
     top: calc(#{$navbar-desktop-height} * 1.25 + (1 * #{$panel-header-title-margin}));
   }
 }
@@ -91,7 +94,6 @@
 }
 
 .content-panel__content {
-
   @include breakpoint($breakpoint-desktop) {
     display: flex;
     flex-flow: row nowrap;
@@ -100,6 +102,7 @@
 
 .content-panel__navigation {
   @include prefix(transition, webkit ms o moz, background-color 0.2s ease-in-out);
+
   background-color: transparent;
   bottom: 0;
   display: none;
@@ -142,10 +145,12 @@
     height: calc(100vh - (#{$navbar-desktop-height} * 1.25 + (3 * #{$panel-header-title-margin}) + #{$panel-header-title-height-desktop}));
     margin: 0;
     order: 2;
-    // scss-lint:disable VendorPrefix
+
+    /* stylelint-disable value-no-vendor-prefix, declaration-block-no-duplicate-properties */
     position: -webkit-sticky; // Safari 7-12 support
-    // scss-lint:enable VendorPrefix
     position: sticky;
+    /* stylelint-enable value-no-vendor-prefix, declaration-block-no-duplicate-properties */
+
     top: calc(#{$navbar-desktop-height} * 1.25 + (2 * #{$panel-header-title-margin}) + #{$panel-header-title-height-desktop});
     z-index: 1; // This does not need high z-index as ToC in desktop mode will never overlap with anything. Setting lower z-index also fixes possible stack order issues with zoomed images
 
@@ -165,6 +170,7 @@
 
 .content-panel__navigation-content {
   @include prefix(transition, webkit moz o ms, right 0.3s);
+
   background-color: $color-application-panel-box-background;
   border: solid 1px $color-application-panel-box-border;
   bottom: 0;
@@ -173,9 +179,11 @@
   overscroll-behavior: contain;
   position: absolute;
   right: 0;
+
   // scss-lint:disable PropertySpelling
   scrollbar-color: $color-scrollbar-handle $color-scrollbar-background;
   scrollbar-width: thin;
+
   // scss-lint:enable PropertySpelling
   top: 0;
   width: 90%;
@@ -248,8 +256,9 @@
 
   // scss-lint:disable SelectorFormat
   &.state-HIDDEN {
-    opacity: 0.3;
+    opacity: 30%;
   }
+
   // scss-lint:enable SelectorFormat
 
   @include breakpoint($breakpoint-pad) {

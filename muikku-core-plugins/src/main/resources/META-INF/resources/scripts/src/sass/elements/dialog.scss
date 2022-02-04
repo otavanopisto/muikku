@@ -5,13 +5,14 @@
 
 .dialog {
   @include prefix(transition, moz ms webkit o, opacity 0.3s);
+
   align-items: center;
   background-color: $color-overlay-background;
   bottom: 0;
   display: flex;
   justify-content: center;
   left: 0;
-  opacity: 0;
+  opacity: 0%;
   position: fixed;
   right: 0;
   top: 0;
@@ -19,9 +20,7 @@
 }
 
 .dialog--matriculation {
-
   .dialog__window {
-
     @include breakpoint($breakpoint-pad) {
       left: auto;
       right: auto;
@@ -39,7 +38,7 @@
 }
 
 .dialog--visible {
-  opacity: 1;
+  opacity: 100%;
 }
 
 .dialog__window {
@@ -161,7 +160,7 @@
   height: 100%;
   justify-content: center;
   left: 0;
-  opacity: 0.9;
+  opacity: 90%;
   position: absolute;
   width: 100%;
   z-index: 1000;
@@ -261,6 +260,7 @@
 
 .dialog__close {
   @include prefix(transition, moz ms o webkit, background-color 0.3s);
+
   border-radius: $dialog-button-close-height;
   cursor: pointer;
   font-size: 18px;
@@ -410,7 +410,6 @@
   }
 
   .dialog__window--evaluation {
-
     @include breakpoint($breakpoint-pad) {
       bottom: 0;
       left: 0;
@@ -452,6 +451,7 @@
   &.state-DONE {
     color: $color-success;
   }
+
   // scss-lint:enable SelectorFormat
 }
 
@@ -471,6 +471,7 @@
       color: $color-info;
     }
   }
+
   // scss-lint:enable SelectorFormat
 }
 

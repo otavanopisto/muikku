@@ -1,5 +1,5 @@
 import * as React from "react";
-import * as uuid from "uuid";
+import { v4 as uuidv4 } from "uuid";
 
 /**
  * IAudioPoolComponentProps
@@ -38,7 +38,7 @@ export class AudioPoolComponent extends React.Component<
   constructor(props: IAudioPoolComponentProps) {
     super(props);
 
-    this.univId = uuid.v4();
+    this.univId = uuidv4();
     this.audioRef = React.createRef();
 
     this.killEverything = this.killEverything.bind(this);

@@ -56,16 +56,15 @@
 }
 
 .application-sub-panel--organization-users {
-
   &:first-child {
     padding-bottom: 12px;
   }
 }
 
-
 // Subpanel header
 .application-sub-panel__header {
   @include mainfunction-subpanel-title;
+
   align-items: center;
   display: flex;
   flex-flow: row wrap;
@@ -302,7 +301,6 @@
   padding: 10px;
 }
 
-
 .application-sub-panel__card-body {
   display: flex;
   justify-content: center;
@@ -456,7 +454,7 @@
 }
 
 .application-sub-panel__multiple-item-container-title {
-  font-weight: bold;
+  font-weight: 600;
 }
 
 .application-sub-panel__multiple-item-container-description {
@@ -627,11 +625,9 @@
   flex-shrink: 1;
   padding: 10px;
 
-  // scss-lint:disable SelectorFormat
   &.NON-ACTIVE {
-    opacity: 0.5;
+    opacity: 50%;
   }
-  // scss-lint:enable SelectorFormat
 
   &:not(:last-child) {
     border-bottom: 1px solid $color-default-item-separator-border;
@@ -886,8 +882,6 @@
   font-weight: 600;
 }
 
-
-
 .application-sub-panel__item-label {
   font-weight: 600;
   margin: 2px 5px 2px 0;
@@ -1058,7 +1052,6 @@
   flex-flow: row wrap;
 
   .application-sub-panel__item-title {
-
     @include breakpoint($breakpoint-desktop) {
       flex-basis: 60%;
       margin: 0 10px 0 0;
@@ -1066,7 +1059,6 @@
   }
 
   .application-sub-panel__item-data {
-
     @include breakpoint($breakpoint-desktop) {
       flex-basis: auto;
     }
@@ -1079,14 +1071,12 @@
   flex-flow: column wrap;
 
   .application-sub-panel__item-title {
-
     @include breakpoint($breakpoint-desktop) {
       flex-basis: auto;
     }
   }
 
   .application-sub-panel__item-data {
-
     @include breakpoint($breakpoint-desktop) {
       flex-basis: auto;
     }
@@ -1151,8 +1141,6 @@
 }
 
 .application-sub-panel__text--course-evaluation {
-
-  // scss-lint:disable SelectorFormat
   &.state-PASSED {
     border-left: 3px solid $color-grade-passed;
   }
@@ -1164,7 +1152,6 @@
   &.state-INCOMPLETE {
     border-left: 3px solid $color-grade-incomplete;
   }
-  // scss-lint:enable SelectorFormat
 }
 
 .application-sub-panel__body--labels {

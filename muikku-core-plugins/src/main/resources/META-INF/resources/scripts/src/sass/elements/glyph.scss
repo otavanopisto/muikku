@@ -48,6 +48,7 @@
   &.state-PAID {
     color: $color-default-contrast;
   }
+
   // scss-lint:enable SelectorFormat
 }
 
@@ -91,5 +92,6 @@
   &.state-COMPLETE {
     color: $color-success;
   }
+
   // scss-lint:enable SelectorFormat
 }
