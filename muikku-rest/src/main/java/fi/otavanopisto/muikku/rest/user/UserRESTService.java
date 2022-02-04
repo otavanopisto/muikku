@@ -1734,7 +1734,7 @@ public class UserRESTService extends AbstractRESTService {
         user == null ? null : user.getLastName(),
         user == null ? null : user.getNickName(),
         user == null ? null : user.getStudyProgrammeName(),
-        user == null ? null : user.getStudyProgrammeIdentifier().toId(),
+        user == null || user.getStudyProgrammeIdentifier() == null ? null : user.getStudyProgrammeIdentifier().toId(),
         hasImage,
         user == null ? false : user.getHasEvaluationFees(),
         user == null ? null : user.getCurriculumIdentifier(),
