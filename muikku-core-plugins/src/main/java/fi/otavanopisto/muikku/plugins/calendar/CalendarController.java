@@ -106,9 +106,7 @@ public class CalendarController {
   public List<CalendarEvent> listEventsByUserAndTimeframeAndType(Long userEntityId, OffsetDateTime start, OffsetDateTime end, String type) {
     Date startDate = new Date(start.toInstant().toEpochMilli());
     Date endDate = new Date(end.toInstant().toEpochMilli());
-    return StringUtils.isEmpty(type)
-        ? calendarEventDAO.listByUserAndTimeframe(userEntityId, startDate, endDate)
-        : calendarEventDAO.listByUserAndTimeframeAndType(userEntityId, startDate, endDate, type);
+    return calendarEventDAO.listByUserAndTimeframeAndType(userEntityId, startDate, endDate, type);
   }
   
   private CalendarEventParticipant findParticipantByUserEntityId(List<CalendarEventParticipant> participants, Long userEntityId) {
