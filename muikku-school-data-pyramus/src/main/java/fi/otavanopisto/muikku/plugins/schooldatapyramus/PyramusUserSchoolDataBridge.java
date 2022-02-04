@@ -1355,4 +1355,36 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     return new BridgeResponse<List<WorklistApproverRestModel>>(response.getStatusCode(), approvers); 
   }
 
+  @Override
+  public User increaseStudyTime(String studentIdentifier, int months) {
+    Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
+    if (studentId == null) {
+      logger.severe(String.format("Student for identifier %s not found", studentIdentifier));
+      return null;
+    }
+    BridgeResponse<Student> response = pyramusClient.responsePost(
+        String.format("/students/students/%d/increaseStudyTime?months=%d", studentId, months),
+        null,
+        Student.class);
+    if (response.getEntity() == null) {
+      logger.severe(String.format("Failed to increase study time of student %s: %d %s",
+          studentIdentifier,
+          response.getStatusCode(),
+          response.getMessage()));
+    }
+    return createStudentEntity(response.getEntity());
+  }
+
+  @Override
+  public String getUserDefaultEmailAddress(String userIdentifier) {
+    Long userId = identifierMapper.getPyramusStudentId(userIdentifier);
+    if (userId == null) {
+      userId = identifierMapper.getPyramusStaffId(userIdentifier);
+    }
+    if (userId == null) {
+      return null;
+    }
+    return pyramusClient.get(String.format("/users/users/%d/defaultEmailAddress", userId), String.class);
+  }
+
 }

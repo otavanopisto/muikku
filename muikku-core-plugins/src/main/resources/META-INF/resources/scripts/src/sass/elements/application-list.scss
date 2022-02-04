@@ -5,7 +5,9 @@
 
 .application-list {
   @include text;
+
   height: 100%;
+
   // margin-bottom: 20px;
   overflow: visible;
   width: 100%;
@@ -84,11 +86,10 @@
     align-content: start;
     display: flex;
     flex-wrap: wrap;
-    // scss-lint:disable SelectorFormat
+
     &.state-FULL {
       min-height: 330px;
     }
-    // scss-lint:enable SelectorFormat
   }
 }
 
@@ -117,11 +118,9 @@
   font-size: 1.25rem;
   margin-right: 10px;
 
-  // scss-lint:disable SelectorFormat
   &.state-UNPUBLISHED {
     color: $color-disabled;
   }
-  // scss-lint:enable SelectorFormat
 }
 
 .application-list__header-icon--notification-1 {
@@ -144,6 +143,33 @@
   flex-shrink: 1;
   padding: 0 10px 0 0;
   word-wrap: break-word;
+}
+
+.application-list__header-primary--product {
+  flex-flow: column wrap;
+}
+
+.application-list__header-primary-title {
+  padding: 0 0 5px;
+}
+
+.application-list__header-primary-description {
+  font-size: 0.8125rem;
+  padding: 5px 0;
+}
+
+.application-list__header-primary-meta {
+  font-size: 0.75rem;
+  padding: 0 0 5px;
+
+  span {
+    display: inline-block;
+    margin: 0 10px 0 0;
+  }
+}
+
+.application-list__header-primary-actions {
+  padding: 5px 0;
 }
 
 .application-list__header-primary--announcement-meta {
@@ -219,7 +245,6 @@
   text-align: center;
   width: 1.875rem;
 
-  // scss-lint:disable SelectorFormat
   &.state-PASSED {
     background: $color-grade-passed;
   }
@@ -235,7 +260,6 @@
   &.state-NO-ASSESSMENT {
     background: $color-grade-not-assessed;
   }
-  // scss-lint:enable SelectorFormat
 }
 
 .application-list__indicator-badge--course {
@@ -281,12 +305,10 @@
     cursor: pointer;
   }
 
-  // scss-lint:disable SelectorFormat
   .state-DISABLED {
     color: $color-disabled;
     cursor: default;
   }
-  // scss-lint:enable SelectorFormat
 }
 
 .application-list__item-content-wrapper {
@@ -294,11 +316,9 @@
   display: flex;
   flex-flow: row nowrap;
 
-  // scss-lint:disable SelectorFormat
   &.state-ENDED {
     color: $color-disabled;
   }
-  // scss-lint:enable SelectorFormat
 }
 
 .application-list__item-content-wrapper--workspace-user,
@@ -342,8 +362,10 @@
     webkit ms o moz,
     background-color 0.2s ease-in-out
   );
+
   align-items: center;
   background-color: $color-application-list-item-background;
+
   // display: flex;
   position: relative;
 
@@ -401,15 +423,14 @@
       }
     }
   }
-  // scss-lint:disable SelectorFormat
+
   &.state-DISABLED {
     background-color: $color-main-function-application-list-item-disabled-background;
     color: $color-main-function-application-list-item-disabled-text;
   }
-  // scss-lint:enable SelectorFormat
 }
 
-.application-list__item-- .application-list__item--notification {
+.application-list__item--notification {
   border-top: 3px solid $color-message-border;
   margin: 0 0 1px;
   padding: 10px 10px 10px 0;
@@ -425,7 +446,7 @@
   &.course--open {
     background: $color-default;
     border-color: transparent;
-    box-shadow: 0 0 0 2px $color-application-list-item-course-border-selected;
+    box-shadow: 0 0 0 2px #000000;
     z-index: 10;
   }
 }
@@ -516,8 +537,6 @@
 
   input {
     align-items: center;
-    -moz-appearance: none;
-    -webkit-appearance: none;
     appearance: none;
     border: solid 2px $color-main-function-application-list-item-checkbox-border;
     border-radius: 3px;
@@ -529,19 +548,21 @@
 
   input:checked {
     background-color: $color-main-function-application-list-item-checkbox-checked-background;
-    border: solid 2px
+    border:
+      solid 2px
       $color-main-function-application-list-item-checkbox-checked-background;
   }
 
   input:checked::after {
     color: $color-main-function-application-list-item-checkbox-checked-mark;
     content: "\e639";
-    font-family: muikku;
+    font-family: "muikku";
     font-size: 0.875rem;
   }
 
   input[type="radio"] {
     border-radius: 50%;
+
     // this could be for any input inside the aside, but in communicator it is in the container
     margin-right: 5px;
   }
@@ -888,10 +909,11 @@
 }
 
 .application-list__item-text-body--discussion-message-overflow::before {
-  background: linear-gradient(
-    $color-application-list-item-fade-background 1rem,
-    $color-default
-  );
+  background:
+    linear-gradient(
+      $color-application-list-item-fade-background 1rem,
+      $color-default
+    );
   bottom: 0;
   content: "";
   height: 4rem;
@@ -1024,6 +1046,20 @@
   }
 }
 
+// Guider product
+.application-list__item--product {
+  border-top: 1px solid $color-message-border;
+
+  &:first-child {
+    border-color: transparent;
+  }
+}
+
+.application-list__item-header--product {
+  align-items: flex-start;
+  padding: 10px;
+}
+
 .application-list__item-body-meta-content {
   display: flex;
   flex-direction: column;
@@ -1040,7 +1076,6 @@
   span {
     font-weight: 300;
   }
-
 }
 
 .application-list__item-footer--course {

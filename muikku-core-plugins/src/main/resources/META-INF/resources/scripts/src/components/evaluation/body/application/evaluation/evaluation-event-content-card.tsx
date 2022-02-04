@@ -27,13 +27,14 @@ interface EvaluationEventContentCardProps extends EvaluationEvent {
 
 /**
  * EvaluationEventContentCard
+ * @param root0.i18n i18n
+ * @param root0.showDeleteAndModify showDeleteAndModify
+ * @param root0.onClickEdit onClickEdit
  */
 const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
   i18n,
   showDeleteAndModify,
   onClickEdit,
-  evaluations,
-  children,
   ...event
 }) => {
   const [height, setHeight] = React.useState<0 | "auto">(0);
@@ -78,11 +79,9 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
    * createHtmlMarkup
    * @param htmlString
    */
-  const createHtmlMarkup = (htmlString: string) => {
-    return {
-      __html: htmlString,
-    };
-  };
+  const createHtmlMarkup = (htmlString: string) => ({
+    __html: htmlString,
+  });
 
   /**
    * handleOpenContentClick
@@ -91,7 +90,7 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
     setHeight(height === 0 ? "auto" : 0);
   };
 
-  let arrowClasses =
+  const arrowClasses =
     height === 0
       ? `evaluation-modal__event-arrow ${arrowClassMod(
           type

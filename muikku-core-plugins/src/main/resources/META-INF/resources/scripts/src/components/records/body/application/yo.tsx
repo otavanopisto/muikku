@@ -1,6 +1,6 @@
 import * as React from "react";
-import { connect, Dispatch, Store } from "react-redux";
-import { bindActionCreators, Action } from "redux";
+import { connect, Dispatch } from "react-redux";
+import { bindActionCreators } from "redux";
 import { i18nType } from "~/reducers/base/i18n";
 import { RecordsType } from "~/reducers/main-function/records";
 import Button from "~/components/general/button";
@@ -22,6 +22,9 @@ import { updateYO } from "~/actions/main-function/records/yo";
 import { updateYOTriggerType } from "../../../../actions/main-function/records/yo";
 import MatriculationExaminationWizardDialog from "../../dialogs/matriculation-wizard";
 
+/**
+ * YOProps
+ */
 interface YOProps {
   i18n: i18nType;
   records: RecordsType;
@@ -31,14 +34,24 @@ interface YOProps {
   eligibilitySubjects: SubjectEligibilitySubjectsType;
 }
 
+/**
+ * YOState
+ */
 interface YOState {
   eligibility?: YOEligibilityType;
   eligibilityStatus?: YOEligibilityStatusType;
-  err?: String;
+  err?: string;
   succesfulEnrollments: number[];
 }
 
+/**
+ * YO
+ */
 class YO extends React.Component<YOProps, YOState> {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: YOProps) {
     super(props);
 
@@ -49,6 +62,7 @@ class YO extends React.Component<YOProps, YOState> {
 
   /**
    * updateEnrollemnts HACK SOLUTION...
+   * @param examId examId
    */
   updateEnrollemnts = (examId: number) => {
     const updatedSuccesfullEnrollments = [...this.state.succesfulEnrollments];
@@ -63,7 +77,7 @@ class YO extends React.Component<YOProps, YOState> {
    * @returns JSX.Element
    */
   render() {
-    let i18n = this.props.i18n;
+    const i18n = this.props.i18n;
 
     if (
       this.props.records.location !== "yo" ||
@@ -75,14 +89,12 @@ class YO extends React.Component<YOProps, YOState> {
       const selectedMatriculationSubjects =
         this.props.eligibilitySubjects.status == "READY" ? (
           this.props.eligibilitySubjects.subjects.length > 0 ? (
-            this.props.eligibilitySubjects.subjects.map((subject, index) => {
-              return (
-                <MatriculationEligibilityRow
-                  key={subject.subjectCode + index}
-                  subject={subject}
-                />
-              );
-            })
+            this.props.eligibilitySubjects.subjects.map((subject, index) => (
+              <MatriculationEligibilityRow
+                key={subject.subjectCode + index}
+                subject={subject}
+              />
+            ))
           ) : (
             <div>
               {this.props.i18n.text.get(
@@ -98,15 +110,13 @@ class YO extends React.Component<YOProps, YOState> {
           </div>
         );
 
-      //  < div className="empty">{i18n.text.get("plugin.records.matriculation.hopsUnfinished")}</div>
-
       const enrollmentLink =
         this.props.yo.enrollment != null
           ? this.props.yo.enrollment
               .filter((exam) => exam.eligible == true)
-              .map((exam) => {
-                return this.state.succesfulEnrollments.includes(exam.id) ||
-                  exam.enrolled ? (
+              .map((exam) =>
+                this.state.succesfulEnrollments.includes(exam.id) ||
+                exam.enrolled ? (
                   <div key={exam.id}>
                     <div className="application-sub-panel__notification-content">
                       <span className="application-sub-panel__notification-content-title">
@@ -151,8 +161,8 @@ class YO extends React.Component<YOProps, YOState> {
                       </Button>
                     </MatriculationExaminationWizardDialog>
                   </div>
-                );
-              })
+                )
+              )
           : null;
 
       return (
@@ -227,6 +237,10 @@ class YO extends React.Component<YOProps, YOState> {
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -237,6 +251,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators({ updateYO }, dispatch);
 }

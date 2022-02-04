@@ -133,8 +133,10 @@ public class ElasticSearchProvider implements SearchProvider {
     String escapedCharacters = Pattern.quote("\\/+-&|!(){}[]^~*?:" + ".,");
     
     ret = ret.replaceAll(String.format("([%s])", escapedCharacters), " ");
-
-    ret = ret.trim();
+    
+    // Trims and removes double spaces (incl. tabs etc)
+    ret = StringUtils.normalizeSpace(ret);
+    
     return ret;
   }
   
@@ -877,9 +879,14 @@ public class ElasticSearchProvider implements SearchProvider {
       BoolQueryBuilder boolQuery = boolQuery();
 
       if (StringUtils.isNotBlank(query)) {
-        boolQuery.must(prefixQuery("name", query));
+        String[] words = query.split(" ");
+        for (int i = 0; i < words.length; i++) {
+          if (StringUtils.isNotBlank(words[i])) {
+            boolQuery.must(prefixQuery("name", words[i]));
+          }
+        }
       }
-
+      
       if (StringUtils.isNotBlank(archetype)) {
         boolQuery.must(termQuery("archetype", StringUtils.lowerCase(archetype)));
       }

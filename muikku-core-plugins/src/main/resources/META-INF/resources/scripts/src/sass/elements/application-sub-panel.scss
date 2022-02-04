@@ -69,6 +69,7 @@
 // Subpanel header
 .application-sub-panel__header {
   @include mainfunction-subpanel-title;
+
   align-items: center;
   display: flex;
   flex-flow: row wrap;
@@ -176,6 +177,13 @@
   }
 }
 
+// Subpanel description'
+.application-sub-panel__description {
+  font-size: 0.8125rem;
+  font-style: italic;
+  margin: 0 0 10px;
+}
+
 // Subpanel body
 .application-sub-panel__body--yo-status-incomplete {
   border-left: 4px solid $color-sub-panel-status-incomplete-border;
@@ -190,14 +198,15 @@
   flex-flow: column nowrap;
   width: 50%;
 }
+
 .application-sub-panel__body--studies-options {
+  align-items: center;
+  background-color: $color-info;
   display: flex;
   flex-flow: column nowrap;
-  width: 50%;
-  text-align: center;
-  background-color: antiquewhite;
-  align-items: center;
   justify-content: center;
+  text-align: center;
+  width: 50%;
 }
 
 .application-sub-panel__body--studies-summary-cards {
@@ -405,7 +414,7 @@
   flex-flow: row wrap;
   flex-grow: 1;
   flex-shrink: 1;
-  margin: 2px 10px 2px 0;
+  margin: 0 10px 0 0;
 
   .application-sub-panel__item-title {
     align-items: center;
@@ -417,8 +426,10 @@
   }
 
   .application-sub-panel__item-title-sort-indicator {
+    display: flex;
     font-size: 0.825rem;
     height: 0.825rem;
+    justify-content: center;
     margin: 0 4px;
     width: 0.825rem;
   }
@@ -432,6 +443,7 @@
 
 .application-sub-panel__multiple-items--item-labels {
   display: none;
+  padding: 5px 0 5px 12px;
 
   @include breakpoint($breakpoint-desktop) {
     display: flex;
@@ -440,7 +452,7 @@
 
 .application-sub-panel__multiple-items--list-mode {
   border-top: 1px solid $color-default-separator-border;
-  padding: 5px 0 5px 12px;
+  padding: 10px 0 10px 12px;
 
   .application-sub-panel__multiple-item-container--worklist-description {
     align-items: flex-start;
@@ -457,6 +469,15 @@
   }
 }
 
+.application-sub-panel__multiple-item-container-title {
+  font-weight: 600;
+}
+
+.application-sub-panel__multiple-item-container-description {
+  font-size: 0.8125rem;
+  padding: 5px 0;
+}
+
 .application-sub-panel__multiple-item-container--worklist-template {
   flex-basis: 100%;
 
@@ -466,17 +487,17 @@
 }
 
 .application-sub-panel__multiple-item-container--worklist-description {
-  align-items: center;
+  align-items: flex-start;
   flex-basis: 100%;
   flex-flow: row wrap;
-  margin: 2px 0;
+  margin: 0;
 
   .application-sub-panel__item-title--worklist-list-mode {
     margin: 0;
   }
 
   @include breakpoint($breakpoint-desktop) {
-    margin: 2px 10px 2px 0;
+    margin: 0 10px 0 0;
   }
 }
 
@@ -547,6 +568,69 @@
   }
 }
 
+// Profile product
+.application-sub-panel__multiple-item-container--product-details {
+  align-items: flex-start;
+  flex-basis: 100%;
+  flex-flow: column nowrap;
+  margin: 0;
+
+  @include breakpoint($breakpoint-desktop) {
+    margin: 0 10px 0 0;
+  }
+}
+
+.application-sub-panel__multiple-item-container--product-date {
+  flex-basis: 100px;
+  flex-grow: 1;
+  flex-shrink: 0;
+  justify-content: flex-start;
+
+  .application-sub-panel__item-title--product {
+    flex-basis: auto;
+    flex-grow: 0;
+    flex-shrink: 1;
+    margin: 0;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-grow: 0;
+    justify-content: center;
+  }
+}
+
+.application-sub-panel__multiple-item-container--product-id {
+  flex-basis: 100px;
+  flex-grow: 0;
+  flex-shrink: 0;
+  justify-content: center;
+
+  .application-sub-panel__item-title--product {
+    flex-basis: auto;
+    flex-grow: 0;
+    flex-shrink: 1;
+    margin: 0;
+  }
+}
+
+.application-sub-panel__multiple-item-container--product-actions {
+  flex-basis: 200px;
+  flex-grow: 0;
+  flex-shrink: 0;
+  justify-content: center;
+
+  .application-sub-panel__item-title--product {
+    flex-basis: auto;
+    flex-grow: 0;
+    flex-shrink: 1;
+    margin: 0;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-grow: 1;
+  }
+}
+
 // Subpanel Item
 .application-sub-panel__item {
   align-items: center;
@@ -557,11 +641,9 @@
   flex-shrink: 1;
   padding: 10px;
 
-  // scss-lint:disable SelectorFormat
   &.NON-ACTIVE {
-    opacity: 0.5;
+    opacity: 50%;
   }
-  // scss-lint:enable SelectorFormat
 
   &:not(:last-child) {
     border-bottom: 1px solid $color-default-item-separator-border;
@@ -827,13 +909,13 @@
   flex-basis: auto;
   flex-grow: 0;
   flex-shrink: 0;
-  margin: 2px 10px 2px 0;
+  margin: 0 10px 0 0;
   text-transform: uppercase;
 
   @include breakpoint($breakpoint-pad) {
     flex-grow: 1;
     flex-shrink: 1;
-    margin: 2px 10px 2px 30px;
+    margin: 0 10px 0 38px;
   }
 }
 
@@ -883,8 +965,7 @@
   display: flex;
 }
 
-.application-sub-panel__item-data-container--organization-summary
-  *:not(:first-child) {
+.application-sub-panel__item-data-container--organization-summary *:not(:first-child) {
   margin-left: 10px;
 }
 
@@ -911,13 +992,13 @@
   flex-basis: auto;
   flex-grow: 0;
   flex-shrink: 0;
-  margin: 2px 0;
+  margin: 0;
 
   @include breakpoint($breakpoint-pad) {
     display: flex;
     flex-basis: 60px;
     justify-content: center;
-    margin: 2px 165px 2px 0;
+    margin: 0 165px 0 0;
   }
 }
 
@@ -936,13 +1017,11 @@
   }
 }
 
-.application-sub-panel__item-data--study-start-date
-  .application-sub-panel__single-entry {
+.application-sub-panel__item-data--study-start-date.application-sub-panel__single-entry {
   background-color: $color-sub-panel-data-1-background;
 }
 
-.application-sub-panel__item-data--study-end-date
-  .application-sub-panel__single-entry {
+.application-sub-panel__item-data--study-end-date.application-sub-panel__single-entry {
   background-color: $color-sub-panel-data-2-background;
   color: $color-default;
 }
@@ -1078,7 +1157,6 @@
 }
 
 .application-sub-panel__text--course-evaluation {
-  // scss-lint:disable SelectorFormat
   &.state-PASSED {
     border-left: 3px solid $color-grade-passed;
   }
@@ -1090,7 +1168,6 @@
   &.state-INCOMPLETE {
     border-left: 3px solid $color-grade-incomplete;
   }
-  // scss-lint:enable SelectorFormat
 }
 
 .application-sub-panel__body--labels {

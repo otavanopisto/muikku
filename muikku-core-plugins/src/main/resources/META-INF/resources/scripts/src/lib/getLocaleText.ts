@@ -1,3 +1,3 @@
-let getLocaleText = (<any>window).getLocaleText;
+const getLocaleText = (<any>window).getLocaleText;
 
 export default getLocaleText;

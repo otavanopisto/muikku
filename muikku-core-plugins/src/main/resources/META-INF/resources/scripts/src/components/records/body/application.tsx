@@ -1,5 +1,5 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
 import { i18nType } from "reducers/base/i18n";
 import Records from "./application/records";
@@ -10,23 +10,39 @@ import Summary from "./application/summary";
 import YO from "./application/yo";
 import { StateType } from "~/reducers";
 
+/**
+ * StudiesApplicationProps
+ */
 interface StudiesApplicationProps {
   aside: React.ReactElement<any>;
   i18n: i18nType;
 }
 
+/**
+ * StudiesApplicationState
+ */
 interface StudiesApplicationState {}
 
+/**
+ * StudiesApplication
+ */
 class StudiesApplication extends React.Component<
   StudiesApplicationProps,
   StudiesApplicationState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: StudiesApplicationProps) {
     super(props);
   }
 
+  /**
+   * render
+   */
   render() {
-    let title = (
+    const title = (
       <h1 className="application-panel__header-title">
         {this.props.i18n.text.get("plugin.records.pageTitle")}
       </h1>
@@ -50,13 +66,20 @@ class StudiesApplication extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
   };
 }
 
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+/**
+ * mapDispatchToProps
+ */
+function mapDispatchToProps() {
   return {};
 }
 

@@ -8,7 +8,6 @@ import {
   WorkspaceChatStatusType,
   WorkspaceStudentActivityType,
   WorkspaceStudentAssessmentsType,
-  WorkspaceFeeInfoType,
   WorkspaceAssessementStateType,
   WorkspaceAssessmentRequestType,
   WorkspaceEducationFilterListType,
@@ -80,22 +79,26 @@ export type UPDATE_WORKSPACES_EDIT_MODE_STATE = SpecificActionType<
   "UPDATE_WORKSPACES_EDIT_MODE_STATE",
   Partial<WorkspaceEditModeStateType>
 >;
-export type UPDATE_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES = SpecificActionType<
-  "UPDATE_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES",
-  WorkspaceEducationFilterListType
->;
-export type UPDATE_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS = SpecificActionType<
-  "UPDATE_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS",
-  WorkspaceCurriculumFilterListType
->;
-export type UPDATE_WORKSPACES_AVAILABLE_FILTERS_STATE_TYPES = SpecificActionType<
-  "UPDATE_WORKSPACES_AVAILABLE_FILTERS_STATE_TYPES",
-  WorkspaceStateFilterListType
->;
-export type UPDATE_WORKSPACES_AVAILABLE_FILTERS_ORGANIZATIONS = SpecificActionType<
-  "UPDATE_WORKSPACES_AVAILABLE_FILTERS_ORGANIZATIONS",
-  WorkspaceOrganizationFilterListType
->;
+export type UPDATE_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES =
+  SpecificActionType<
+    "UPDATE_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES",
+    WorkspaceEducationFilterListType
+  >;
+export type UPDATE_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS =
+  SpecificActionType<
+    "UPDATE_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS",
+    WorkspaceCurriculumFilterListType
+  >;
+export type UPDATE_WORKSPACES_AVAILABLE_FILTERS_STATE_TYPES =
+  SpecificActionType<
+    "UPDATE_WORKSPACES_AVAILABLE_FILTERS_STATE_TYPES",
+    WorkspaceStateFilterListType
+  >;
+export type UPDATE_WORKSPACES_AVAILABLE_FILTERS_ORGANIZATIONS =
+  SpecificActionType<
+    "UPDATE_WORKSPACES_AVAILABLE_FILTERS_ORGANIZATIONS",
+    WorkspaceOrganizationFilterListType
+  >;
 export type UPDATE_WORKSPACES_ACTIVE_FILTERS = SpecificActionType<
   "UPDATE_WORKSPACES_ACTIVE_FILTERS",
   WorkspacesActiveFiltersType
@@ -116,18 +119,21 @@ export type UPDATE_WORKSPACE = SpecificActionType<
   }
 >;
 
-export type UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES = SpecificActionType<
-  "UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES",
-  WorkspaceEducationFilterListType
->;
-export type UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS = SpecificActionType<
-  "UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS",
-  WorkspaceCurriculumFilterListType
->;
-export type UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_STATE_TYPES = SpecificActionType<
-  "UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_STATE_TYPES",
-  WorkspaceStateFilterListType
->;
+export type UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES =
+  SpecificActionType<
+    "UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES",
+    WorkspaceEducationFilterListType
+  >;
+export type UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS =
+  SpecificActionType<
+    "UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS",
+    WorkspaceCurriculumFilterListType
+  >;
+export type UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_STATE_TYPES =
+  SpecificActionType<
+    "UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_STATE_TYPES",
+    WorkspaceStateFilterListType
+  >;
 export type UPDATE_ORGANIZATION_WORKSPACES_ACTIVE_FILTERS = SpecificActionType<
   "UPDATE_ORGANIZATION_WORKSPACES_ACTIVE_FILTERS",
   WorkspacesActiveFiltersType
@@ -151,15 +157,17 @@ export type UPDATE_ORGANIZATION_SELECTED_WORKSPACE = SpecificActionType<
   WorkspaceUpdateType
 >;
 
-export type UPDATE_ORGANIZATION_SELECTED_WORKSPACE_STUDENT_SELECT_STATE = SpecificActionType<
-  "UPDATE_ORGANIZATION_SELECTED_WORKSPACE_STUDENT_SELECT_STATE",
-  UserSelectLoader
->;
+export type UPDATE_ORGANIZATION_SELECTED_WORKSPACE_STUDENT_SELECT_STATE =
+  SpecificActionType<
+    "UPDATE_ORGANIZATION_SELECTED_WORKSPACE_STUDENT_SELECT_STATE",
+    UserSelectLoader
+  >;
 
-export type UPDATE_ORGANIZATION_SELECTED_WORKSPACE_STAFF_SELECT_STATE = SpecificActionType<
-  "UPDATE_ORGANIZATION_SELECTED_WORKSPACE_STAFF_SELECT_STATE",
-  UserSelectLoader
->;
+export type UPDATE_ORGANIZATION_SELECTED_WORKSPACE_STAFF_SELECT_STATE =
+  SpecificActionType<
+    "UPDATE_ORGANIZATION_SELECTED_WORKSPACE_STAFF_SELECT_STATE",
+    UserSelectLoader
+  >;
 
 export type UPDATE_WORKSPACES_SET_CURRENT_MATERIALS = SpecificActionType<
   "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS",
@@ -169,22 +177,25 @@ export type UPDATE_WORKSPACES_SET_CURRENT_HELP = SpecificActionType<
   "UPDATE_WORKSPACES_SET_CURRENT_HELP",
   MaterialContentNodeListType
 >;
-export type UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_ACTIVE_NODE_ID = SpecificActionType<
-  "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_ACTIVE_NODE_ID",
-  number
->;
-export type UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_REPLIES = SpecificActionType<
-  "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_REPLIES",
-  MaterialCompositeRepliesListType
->;
-export type UPDATE_CURRENT_COMPOSITE_REPLIES_UPDATE_OR_CREATE_COMPOSITE_REPLY_STATE_VIA_ID_NO_ANSWER = SpecificActionType<
-  "UPDATE_CURRENT_COMPOSITE_REPLIES_UPDATE_OR_CREATE_COMPOSITE_REPLY_STATE_VIA_ID_NO_ANSWER",
-  {
-    state: MaterialCompositeRepliesStateType;
-    workspaceMaterialId: number;
-    workspaceMaterialReplyId: number;
-  }
->;
+export type UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_ACTIVE_NODE_ID =
+  SpecificActionType<
+    "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_ACTIVE_NODE_ID",
+    number
+  >;
+export type UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_REPLIES =
+  SpecificActionType<
+    "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_REPLIES",
+    MaterialCompositeRepliesListType
+  >;
+export type UPDATE_CURRENT_COMPOSITE_REPLIES_UPDATE_OR_CREATE_COMPOSITE_REPLY_STATE_VIA_ID_NO_ANSWER =
+  SpecificActionType<
+    "UPDATE_CURRENT_COMPOSITE_REPLIES_UPDATE_OR_CREATE_COMPOSITE_REPLY_STATE_VIA_ID_NO_ANSWER",
+    {
+      state: MaterialCompositeRepliesStateType;
+      workspaceMaterialId: number;
+      workspaceMaterialReplyId: number;
+    }
+  >;
 export type UPDATE_MATERIAL_CONTENT_NODE = SpecificActionType<
   "UPDATE_MATERIAL_CONTENT_NODE",
   {
@@ -219,6 +230,9 @@ type WorkspaceQueryDataType = {
   maxResults?: number;
 };
 
+/**
+ * SelectItem
+ */
 export interface SelectItem {
   id: string | number;
   label: string;
@@ -230,6 +244,9 @@ export interface SelectItem {
   };
 }
 
+/**
+ * workspaceStudentsQueryDataType
+ */
 export interface workspaceStudentsQueryDataType {
   q: string | null;
   firstResult?: number | null;
@@ -237,156 +254,184 @@ export interface workspaceStudentsQueryDataType {
   active?: boolean;
 }
 
+/**
+ * LoadTemplatesFromServerTriggerType
+ */
 export interface LoadTemplatesFromServerTriggerType {
   (query?: string): AnyActionType;
 }
 
-let loadTemplatesFromServer: LoadTemplatesFromServerTriggerType = function loadTemplatesFromServer(
-  query?: string
-) {
-  let data: WorkspaceQueryDataType = {
-    templates: "ONLY_TEMPLATES",
-    maxResults: 5,
-  };
+/**
+ * loadTemplatesFromServer
+ * @param query query
+ */
+const loadTemplatesFromServer: LoadTemplatesFromServerTriggerType =
+  function loadTemplatesFromServer(query?: string) {
+    const data: WorkspaceQueryDataType = {
+      templates: "ONLY_TEMPLATES",
+      maxResults: 5,
+    };
 
-  if (query) {
-    data.q = query;
-  }
-
-  return async (
-    dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType
-  ) => {
-    try {
-      dispatch({
-        type: "UPDATE_ORGANIZATION_TEMPLATES",
-        payload: <WorkspaceListType>(
-          ((await promisify(
-            mApi().organizationWorkspaceManagement.workspaces.read(data),
-            "callback"
-          )()) || 0)
-        ),
-      });
-    } catch (err) {
-      if (!(err instanceof MApiError)) {
-        throw err;
-      }
-      dispatch(
-        actions.displayNotification(
-          getState().i18n.text.get(
-            "plugin.workspace.errormessage.workspaceLoadFailed"
-          ),
-          "error"
-        )
-      );
+    if (query) {
+      data.q = query;
     }
-  };
-};
 
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      try {
+        dispatch({
+          type: "UPDATE_ORGANIZATION_TEMPLATES",
+          payload: <WorkspaceListType>(
+            ((await promisify(
+              mApi().organizationWorkspaceManagement.workspaces.read(data),
+              "callback"
+            )()) || 0)
+          ),
+        });
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          actions.displayNotification(
+            getState().i18n.text.get(
+              "plugin.workspace.errormessage.workspaceLoadFailed"
+            ),
+            "error"
+          )
+        );
+      }
+    };
+  };
+
+/**
+ * LoadUserWorkspacesFromServerTriggerType
+ */
 export interface LoadUserWorkspacesFromServerTriggerType {
   (): AnyActionType;
 }
 
-let loadUserWorkspacesFromServer: LoadUserWorkspacesFromServerTriggerType = function loadUserWorkspacesFromServer() {
-  return async (
-    dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType
-  ) => {
-    let userId = getState().status.userId;
-    try {
-      dispatch({
-        type: "UPDATE_USER_WORKSPACES",
-        payload: <WorkspaceListType>(
-          ((await promisify(
-            mApi().workspace.workspaces.read({ userId }),
-            "callback"
-          )()) || 0)
-        ),
-      });
-    } catch (err) {
-      if (!(err instanceof MApiError)) {
-        throw err;
-      }
-      dispatch(
-        actions.displayNotification(
-          getState().i18n.text.get(
-            "plugin.workspace.errormessage.workspaceLoadFailed"
+/**
+ * loadUserWorkspacesFromServer
+ */
+const loadUserWorkspacesFromServer: LoadUserWorkspacesFromServerTriggerType =
+  function loadUserWorkspacesFromServer() {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      const userId = getState().status.userId;
+      try {
+        dispatch({
+          type: "UPDATE_USER_WORKSPACES",
+          payload: <WorkspaceListType>(
+            ((await promisify(
+              mApi().workspace.workspaces.read({ userId: userId }),
+              "callback"
+            )()) || 0)
           ),
-          "error"
-        )
-      );
-    }
+        });
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          actions.displayNotification(
+            getState().i18n.text.get(
+              "plugin.workspace.errormessage.workspaceLoadFailed"
+            ),
+            "error"
+          )
+        );
+      }
+    };
   };
-};
 
+/**
+ * LoadLastWorkspaceFromServerTriggerType
+ */
 export interface LoadLastWorkspaceFromServerTriggerType {
   (): AnyActionType;
 }
 
-let loadLastWorkspaceFromServer: LoadLastWorkspaceFromServerTriggerType = function loadLastWorkspaceFromServer() {
-  return async (
-    dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType
-  ) => {
-    try {
-      dispatch({
-        type: "UPDATE_LAST_WORKSPACE",
-        payload: <WorkspaceMaterialReferenceType>(
-          JSON.parse(
-            ((await promisify(
-              mApi().user.property.read("last-workspace"),
-              "callback"
-            )()) as any).value
-          )
-        ),
-      });
-    } catch (err) {
-      if (!(err instanceof MApiError)) {
-        throw err;
-      }
-      dispatch(
-        actions.displayNotification(
-          getState().i18n.text.get(
-            "plugin.workspace.errormessage.lastWorkspaceLoadFailed"
+/**
+ * loadLastWorkspaceFromServer
+ */
+const loadLastWorkspaceFromServer: LoadLastWorkspaceFromServerTriggerType =
+  function loadLastWorkspaceFromServer() {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      try {
+        dispatch({
+          type: "UPDATE_LAST_WORKSPACE",
+          payload: <WorkspaceMaterialReferenceType>(
+            JSON.parse(
+              (
+                (await promisify(
+                  mApi().user.property.read("last-workspace"),
+                  "callback"
+                )()) as any
+              ).value
+            )
           ),
-          "error"
-        )
-      );
-    }
+        });
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          actions.displayNotification(
+            getState().i18n.text.get(
+              "plugin.workspace.errormessage.lastWorkspaceLoadFailed"
+            ),
+            "error"
+          )
+        );
+      }
+    };
   };
-};
 
+/**
+ * UpdateLastWorkspaceTriggerType
+ */
 export interface UpdateLastWorkspaceTriggerType {
   (newReference: WorkspaceMaterialReferenceType): AnyActionType;
 }
 
-let updateLastWorkspace: UpdateLastWorkspaceTriggerType = function updateLastWorkspace(
-  newReference
-) {
-  return async (
-    dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType
-  ) => {
-    try {
-      await promisify(
-        mApi().user.property.create({
-          key: "last-workspace",
-          value: JSON.stringify(newReference),
-        }),
-        "callback"
-      )();
-      dispatch({
-        type: "UPDATE_LAST_WORKSPACE",
-        payload: newReference,
-      });
-    } catch (err) {
-      if (!(err instanceof MApiError)) {
-        throw err;
+/**
+ * updateLastWorkspace
+ * @param newReference newReference
+ */
+const updateLastWorkspace: UpdateLastWorkspaceTriggerType =
+  function updateLastWorkspace(newReference) {
+    return async (dispatch: (arg: AnyActionType) => any) => {
+      try {
+        await promisify(
+          mApi().user.property.create({
+            key: "last-workspace",
+            value: JSON.stringify(newReference),
+          }),
+          "callback"
+        )();
+        dispatch({
+          type: "UPDATE_LAST_WORKSPACE",
+          payload: newReference,
+        });
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
       }
-    }
+    };
   };
-};
 
+/**
+ * SetCurrentWorkspaceTriggerType
+ */
 export interface SetCurrentWorkspaceTriggerType {
   (data?: {
     workspaceId: number;
@@ -397,6 +442,9 @@ export interface SetCurrentWorkspaceTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * UpdateCurrentWorkspaceImagesB64TriggerType
+ */
 export interface UpdateCurrentWorkspaceImagesB64TriggerType {
   (data?: {
     delete?: boolean;
@@ -407,10 +455,16 @@ export interface UpdateCurrentWorkspaceImagesB64TriggerType {
   }): AnyActionType;
 }
 
+/**
+ * LoadCurrentWorkspaceUserGroupPermissionsTriggerType
+ */
 export interface LoadCurrentWorkspaceUserGroupPermissionsTriggerType {
   (): AnyActionType;
 }
 
+/**
+ * UpdateCurrentWorkspaceUserGroupPermissionTriggerType
+ */
 export interface UpdateCurrentWorkspaceUserGroupPermissionTriggerType {
   (data?: {
     original: WorkspacePermissionsType;
@@ -420,6 +474,9 @@ export interface UpdateCurrentWorkspaceUserGroupPermissionTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * SetWorkspaceMaterialEditorStateTriggerType
+ */
 export interface SetWorkspaceMaterialEditorStateTriggerType {
   (
     newState: WorkspaceMaterialEditorType,
@@ -427,10 +484,16 @@ export interface SetWorkspaceMaterialEditorStateTriggerType {
   ): AnyActionType;
 }
 
+/**
+ * RequestWorkspaceMaterialContentNodeAttachmentsTriggerType
+ */
 export interface RequestWorkspaceMaterialContentNodeAttachmentsTriggerType {
   (workspace: WorkspaceType, material: MaterialContentNodeType): AnyActionType;
 }
 
+/**
+ * UpdateWorkspaceMaterialContentNodeTriggerType
+ */
 export interface UpdateWorkspaceMaterialContentNodeTriggerType {
   (data: {
     workspace: WorkspaceType;
@@ -445,6 +508,9 @@ export interface UpdateWorkspaceMaterialContentNodeTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * DeleteWorkspaceMaterialContentNodeTriggerType
+ */
 export interface DeleteWorkspaceMaterialContentNodeTriggerType {
   (data: {
     material: MaterialContentNodeType;
@@ -457,6 +523,9 @@ export interface DeleteWorkspaceMaterialContentNodeTriggerType {
 
 type ApiPath = "materials" | "help";
 
+/**
+ * CreateWorkspaceMaterialContentNodeTriggerType
+ */
 export interface CreateWorkspaceMaterialContentNodeTriggerType {
   (
     data: {
@@ -476,18 +545,26 @@ export interface CreateWorkspaceMaterialContentNodeTriggerType {
   ): AnyActionType;
 }
 
+/**
+ * CreateWorkspaceMaterialAttachmentTriggerType
+ */
 export interface CreateWorkspaceMaterialAttachmentTriggerType {
-  (data: {
-    workspace: WorkspaceType;
-    material: MaterialContentNodeType;
-    files: File[];
-    uploadingValues?: UploadingValue[];
-    success?: () => any;
-    fail?: () => any;
-  },
-  updateUploadingValues?:(updatedValues: UploadingValue[]) => void): AnyActionType;
+  (
+    data: {
+      workspace: WorkspaceType;
+      material: MaterialContentNodeType;
+      files: File[];
+      uploadingValues?: UploadingValue[];
+      success?: () => any;
+      fail?: () => any;
+    },
+    updateUploadingValues?: (updatedValues: UploadingValue[]) => void
+  ): AnyActionType;
 }
 
+/**
+ * UpdateWorkspaceEditModeStateTriggerType
+ */
 export interface UpdateWorkspaceEditModeStateTriggerType {
   (
     data: Partial<WorkspaceEditModeStateType>,
@@ -495,6 +572,12 @@ export interface UpdateWorkspaceEditModeStateTriggerType {
   ): AnyActionType;
 }
 
+/**
+ * reuseExistantValue
+ * @param conditional conditional
+ * @param existantValue existantValue
+ * @param otherwise otherwise
+ */
 function reuseExistantValue(
   conditional: boolean,
   existantValue: any,
@@ -510,281 +593,281 @@ function reuseExistantValue(
   return otherwise();
 }
 
-let setCurrentOrganizationWorkspace: SetCurrentWorkspaceTriggerType = function setCurrentOrganizationWorkspace(
-  data
-) {
-  return async (
-    dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType
-  ) => {
-    let current: WorkspaceType = getState().organizationWorkspaces
-      .currentWorkspace;
+/**
+ * setCurrentOrganizationWorkspace
+ * @param data data
+ */
+const setCurrentOrganizationWorkspace: SetCurrentWorkspaceTriggerType =
+  function setCurrentOrganizationWorkspace(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      const current: WorkspaceType =
+        getState().organizationWorkspaces.currentWorkspace;
 
-    try {
-      let workspace: WorkspaceType;
+      try {
+        let workspace: WorkspaceType;
 
-      if (current && current.id === data.workspaceId) {
-        workspace = { ...current };
-      }
+        if (current && current.id === data.workspaceId) {
+          workspace = { ...current };
+        }
 
-      workspace = await reuseExistantValue(true, workspace, () =>
-        promisify(
-          mApi().workspace.workspaces.cacheClear().read(data.workspaceId),
-          "callback"
-        )()
-      );
-
-      (workspace.details =
-        data.loadDetails || (workspace && workspace.details)
-          ? await reuseExistantValue(true, workspace && workspace.details, () =>
-            promisify(
-              mApi().workspace.workspaces.details.read(data.workspaceId),
-              "callback"
-            )()
-          )
-          : null),
-        dispatch({
-          type: "UPDATE_ORGANIZATION_SELECTED_WORKSPACE",
-          payload: workspace,
-        });
-
-      data.success && data.success(workspace);
-    } catch (err) {
-      if (!(err instanceof MApiError)) {
-        throw err;
-      }
-      dispatch(
-        actions.displayNotification(
-          getState().i18n.text.get(
-            "plugin.workspace.errormessage.workspaceLoadFailed"
-          ),
-          "error"
-        )
-      );
-      data.fail && data.fail();
-    }
-  };
-};
-
-let setCurrentWorkspace: SetCurrentWorkspaceTriggerType = function setCurrentWorkspace(
-  data
-) {
-  return async (
-    dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType
-  ) => {
-    let current: WorkspaceType = getState().workspaces.currentWorkspace;
-    if (
-      current &&
-      current.id === data.workspaceId &&
-      !data.refreshActivity &&
-      !data.loadDetails
-    ) {
-      data.success && data.success(current);
-      return;
-    }
-
-    try {
-      let workspace: WorkspaceType =
-        getState().workspaces.userWorkspaces.find(
-          (w) => w.id === data.workspaceId
-        ) ||
-        getState().workspaces.availableWorkspaces.find(
-          (w) => w.id === data.workspaceId
-        );
-      if (current && current.id === data.workspaceId) {
-        //if I just make it be current it will be buggy
-        workspace = { ...current };
-      }
-      let assesments: WorkspaceStudentAssessmentsType;
-      let feeInfo: WorkspaceFeeInfoType;
-      let assessmentRequests: Array<WorkspaceAssessmentRequestType>;
-      let activity: WorkspaceStudentActivityType;
-      let additionalInfo: WorkspaceAdditionalInfoType;
-      let contentDescription: MaterialContentNodeType;
-      let producers: Array<WorkspaceProducerType>;
-      let isCourseMember: boolean;
-      let journals: WorkspaceJournalsType;
-      let details: WorkspaceDetailsType;
-      let chatStatus: WorkspaceChatStatusType;
-      let status = getState().status;
-      [
-        workspace,
-        assesments,
-        feeInfo,
-        assessmentRequests,
-        activity,
-        additionalInfo,
-        contentDescription,
-        producers,
-        isCourseMember,
-        journals,
-        details,
-        chatStatus,
-      ] = (await Promise.all([
-        reuseExistantValue(true, workspace, () =>
+        workspace = await reuseExistantValue(true, workspace, () =>
           promisify(
             mApi().workspace.workspaces.cacheClear().read(data.workspaceId),
             "callback"
           )()
-        ),
+        );
 
-        reuseExistantValue(
-          status.permissions.WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT,
-          workspace && workspace.studentAssessments,
-          () =>
+        (workspace.details =
+          data.loadDetails || (workspace && workspace.details)
+            ? await reuseExistantValue(
+                true,
+                workspace && workspace.details,
+                () =>
+                  promisify(
+                    mApi().workspace.workspaces.details.read(data.workspaceId),
+                    "callback"
+                  )()
+              )
+            : null),
+          dispatch({
+            type: "UPDATE_ORGANIZATION_SELECTED_WORKSPACE",
+            payload: workspace,
+          });
+
+        data.success && data.success(workspace);
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          actions.displayNotification(
+            getState().i18n.text.get(
+              "plugin.workspace.errormessage.workspaceLoadFailed"
+            ),
+            "error"
+          )
+        );
+        data.fail && data.fail();
+      }
+    };
+  };
+
+/**
+ * setCurrentWorkspace
+ * @param data data
+ */
+const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
+  function setCurrentWorkspace(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      const current: WorkspaceType = getState().workspaces.currentWorkspace;
+      if (
+        current &&
+        current.id === data.workspaceId &&
+        !data.refreshActivity &&
+        !data.loadDetails
+      ) {
+        data.success && data.success(current);
+        return;
+      }
+
+      try {
+        let workspace: WorkspaceType =
+          getState().workspaces.userWorkspaces.find(
+            (w) => w.id === data.workspaceId
+          ) ||
+          getState().workspaces.availableWorkspaces.find(
+            (w) => w.id === data.workspaceId
+          );
+        if (current && current.id === data.workspaceId) {
+          //if I just make it be current it will be buggy
+          workspace = { ...current };
+        }
+        let assesments: WorkspaceStudentAssessmentsType;
+        let assessmentRequests: Array<WorkspaceAssessmentRequestType>;
+        let activity: WorkspaceStudentActivityType;
+        let additionalInfo: WorkspaceAdditionalInfoType;
+        let contentDescription: MaterialContentNodeType;
+        let producers: Array<WorkspaceProducerType>;
+        let isCourseMember: boolean;
+        let journals: WorkspaceJournalsType;
+        let details: WorkspaceDetailsType;
+        let chatStatus: WorkspaceChatStatusType;
+        const status = getState().status;
+        [
+          workspace,
+          assesments,
+          assessmentRequests,
+          activity,
+          additionalInfo,
+          contentDescription,
+          producers,
+          isCourseMember,
+          journals,
+          details,
+          chatStatus,
+        ] = (await Promise.all([
+          reuseExistantValue(true, workspace, () =>
             promisify(
-              mApi()
-                .workspace.workspaces.students.assessments.cacheClear()
-                .read(data.workspaceId, status.userSchoolDataIdentifier),
+              mApi().workspace.workspaces.cacheClear().read(data.workspaceId),
               "callback"
             )()
-        ),
+          ),
 
-        reuseExistantValue(
-          status.loggedIn,
-          workspace && workspace.feeInfo,
-          () =>
-            promisify(
-              mApi()
-                .workspace.workspaces.feeInfo.cacheClear()
-                .read(data.workspaceId),
-              "callback"
-            )()
-        ),
-
-        reuseExistantValue(
-          status.permissions.WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT,
-          workspace && workspace.assessmentRequests,
-          () =>
-            promisify(
-              mApi()
-                .assessmentrequest.workspace.assessmentRequests.cacheClear()
-                .read(data.workspaceId, {
-                  studentIdentifier: getState().status.userSchoolDataIdentifier,
-                }),
-              "callback"
-            )()
-        ),
-
-        getState().status.loggedIn
-          ? // The way refresh works is by never giving an existant value to the reuse existant value function that way it will think that there's no value
-          // And rerequest
           reuseExistantValue(
-            true,
-            typeof data.refreshActivity !== "undefined" &&
-              data.refreshActivity
-              ? null
-              : workspace && workspace.studentActivity,
+            status.permissions.WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT,
+            workspace && workspace.studentAssessments,
             () =>
               promisify(
                 mApi()
-                  .guider.workspaces.activity.cacheClear()
-                  .read(data.workspaceId),
+                  .workspace.workspaces.students.assessments.cacheClear()
+                  .read(data.workspaceId, status.userSchoolDataIdentifier),
                 "callback"
               )()
-          )
-          : null,
+          ),
 
-        reuseExistantValue(true, workspace && workspace.additionalInfo, () =>
-          promisify(
-            mApi()
-              .workspace.workspaces.additionalInfo.cacheClear()
-              .read(data.workspaceId),
-            "callback"
-          )()
-        ),
+          reuseExistantValue(
+            status.permissions.WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT,
+            workspace && workspace.assessmentRequests,
+            () =>
+              promisify(
+                mApi()
+                  .assessmentrequest.workspace.assessmentRequests.cacheClear()
+                  .read(data.workspaceId, {
+                    studentIdentifier:
+                      getState().status.userSchoolDataIdentifier,
+                  }),
+                "callback"
+              )()
+          ),
 
-        reuseExistantValue(
-          true,
-          workspace && workspace.contentDescription,
-          () =>
+          getState().status.loggedIn
+            ? // The way refresh works is by never giving an existant value to the reuse existant value function that way it will think that there's no value
+              // And rerequest
+              reuseExistantValue(
+                true,
+                typeof data.refreshActivity !== "undefined" &&
+                  data.refreshActivity
+                  ? null
+                  : workspace && workspace.studentActivity,
+                () =>
+                  promisify(
+                    mApi()
+                      .guider.workspaces.activity.cacheClear()
+                      .read(data.workspaceId),
+                    "callback"
+                  )()
+              )
+            : null,
+
+          reuseExistantValue(true, workspace && workspace.additionalInfo, () =>
             promisify(
               mApi()
-                .workspace.workspaces.description.cacheClear()
+                .workspace.workspaces.additionalInfo.cacheClear()
                 .read(data.workspaceId),
               "callback"
             )()
-        ),
+          ),
 
-        reuseExistantValue(true, workspace && workspace.producers, () =>
-          promisify(
-            mApi()
-              .workspace.workspaces.materialProducers.cacheClear()
-              .read(data.workspaceId),
-            "callback"
-          )()
-        ),
-
-        getState().status.loggedIn
-          ? reuseExistantValue(
+          reuseExistantValue(
             true,
-            workspace &&
-            typeof workspace.isCourseMember !== "undefined" &&
-            workspace.isCourseMember,
+            workspace && workspace.contentDescription,
             () =>
               promisify(
-                mApi().workspace.workspaces.amIMember.read(data.workspaceId),
+                mApi()
+                  .workspace.workspaces.description.cacheClear()
+                  .read(data.workspaceId),
                 "callback"
               )()
-          )
-          : false,
-
-        reuseExistantValue(true, workspace && workspace.journals, () => null),
-
-        data.loadDetails || (workspace && workspace.details)
-          ? reuseExistantValue(true, workspace && workspace.details, () =>
-            promisify(
-              mApi().workspace.workspaces.details.read(data.workspaceId),
-              "callback"
-            )()
-          )
-          : null,
-
-        getState().status.loggedIn
-          ? reuseExistantValue(true, workspace && workspace.chatStatus, () =>
-            promisify(
-              mApi().chat.workspaceChatSettings.read(data.workspaceId),
-              "callback"
-            )()
-          )
-          : null,
-      ])) as any;
-      workspace.studentAssessments = assesments;
-      workspace.feeInfo = feeInfo;
-      workspace.assessmentRequests = assessmentRequests;
-      workspace.studentActivity = activity;
-      workspace.additionalInfo = additionalInfo;
-      workspace.contentDescription = contentDescription;
-      workspace.producers = producers;
-      workspace.isCourseMember = isCourseMember;
-      workspace.journals = journals;
-      workspace.details = details;
-      workspace.chatStatus = chatStatus;
-
-      dispatch({
-        type: "SET_CURRENT_WORKSPACE",
-        payload: workspace,
-      });
-
-      data.success && data.success(workspace);
-    } catch (err) {
-      if (!(err instanceof MApiError)) {
-        throw err;
-      }
-      dispatch(
-        actions.displayNotification(
-          getState().i18n.text.get(
-            "plugin.workspace.errormessage.workspaceLoadFailed"
           ),
-          "error"
-        )
-      );
-      data.fail && data.fail();
-    }
-  };
-};
 
+          reuseExistantValue(true, workspace && workspace.producers, () =>
+            promisify(
+              mApi()
+                .workspace.workspaces.materialProducers.cacheClear()
+                .read(data.workspaceId),
+              "callback"
+            )()
+          ),
+
+          getState().status.loggedIn
+            ? reuseExistantValue(
+                true,
+                workspace &&
+                  typeof workspace.isCourseMember !== "undefined" &&
+                  workspace.isCourseMember,
+                () =>
+                  promisify(
+                    mApi().workspace.workspaces.amIMember.read(
+                      data.workspaceId
+                    ),
+                    "callback"
+                  )()
+              )
+            : false,
+
+          reuseExistantValue(true, workspace && workspace.journals, () => null),
+
+          data.loadDetails || (workspace && workspace.details)
+            ? reuseExistantValue(true, workspace && workspace.details, () =>
+                promisify(
+                  mApi().workspace.workspaces.details.read(data.workspaceId),
+                  "callback"
+                )()
+              )
+            : null,
+
+          getState().status.loggedIn
+            ? reuseExistantValue(true, workspace && workspace.chatStatus, () =>
+                promisify(
+                  mApi().chat.workspaceChatSettings.read(data.workspaceId),
+                  "callback"
+                )()
+              )
+            : null,
+        ])) as any;
+        workspace.studentAssessments = assesments;
+        workspace.assessmentRequests = assessmentRequests;
+        workspace.studentActivity = activity;
+        workspace.additionalInfo = additionalInfo;
+        workspace.contentDescription = contentDescription;
+        workspace.producers = producers;
+        workspace.isCourseMember = isCourseMember;
+        workspace.journals = journals;
+        workspace.details = details;
+        workspace.chatStatus = chatStatus;
+
+        dispatch({
+          type: "SET_CURRENT_WORKSPACE",
+          payload: workspace,
+        });
+
+        data.success && data.success(workspace);
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          actions.displayNotification(
+            getState().i18n.text.get(
+              "plugin.workspace.errormessage.workspaceLoadFailed"
+            ),
+            "error"
+          )
+        );
+        data.fail && data.fail();
+      }
+    };
+  };
+
+/**
+ * RequestAssessmentAtWorkspaceTriggerType
+ */
 export interface RequestAssessmentAtWorkspaceTriggerType {
   (data: {
     workspace: WorkspaceType;
@@ -794,16 +877,19 @@ export interface RequestAssessmentAtWorkspaceTriggerType {
   }): AnyActionType;
 }
 
-let requestAssessmentAtWorkspace: RequestAssessmentAtWorkspaceTriggerType = function requestAssessmentAtWorkspace(
-  data
-) {
-  return async (
-    dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType
-  ) => {
-    try {
-      let assessmentRequest: WorkspaceAssessmentRequestType = <
-        WorkspaceAssessmentRequestType
+/**
+ * requestAssessmentAtWorkspace
+ * @param data data
+ */
+const requestAssessmentAtWorkspace: RequestAssessmentAtWorkspaceTriggerType =
+  function requestAssessmentAtWorkspace(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      try {
+        const assessmentRequest: WorkspaceAssessmentRequestType = <
+          WorkspaceAssessmentRequestType
         >await promisify(
           mApi().assessmentrequest.workspace.assessmentRequests.create(
             data.workspace.id,
@@ -814,56 +900,59 @@ let requestAssessmentAtWorkspace: RequestAssessmentAtWorkspaceTriggerType = func
           "callback"
         )();
 
-      let newAssessmentState = data.workspace.studentAssessments
-        ? data.workspace.studentAssessments.assessmentState
-        : data.workspace.studentActivity.assessmentState.state;
-      if (newAssessmentState === "unassessed") {
-        newAssessmentState = "pending";
-      } else if (newAssessmentState == "pass") {
-        newAssessmentState = "pending_pass";
-      } else if (newAssessmentState == "fail") {
-        newAssessmentState = "pending_fail";
-      } else {
-        newAssessmentState = "pending";
+        let newAssessmentState = data.workspace.studentAssessments
+          ? data.workspace.studentAssessments.assessmentState
+          : data.workspace.studentActivity.assessmentState.state;
+        if (newAssessmentState === "unassessed") {
+          newAssessmentState = "pending";
+        } else if (newAssessmentState == "pass") {
+          newAssessmentState = "pending_pass";
+        } else if (newAssessmentState == "fail") {
+          newAssessmentState = "pending_fail";
+        } else {
+          newAssessmentState = "pending";
+        }
+
+        dispatch({
+          type: "UPDATE_WORKSPACE_ASSESSMENT_STATE",
+          payload: {
+            workspace: data.workspace,
+            newState: newAssessmentState,
+            newDate: assessmentRequest.date,
+            newAssessmentRequest: assessmentRequest,
+          },
+        });
+
+        dispatch(
+          actions.displayNotification(
+            getState().i18n.text.get(
+              "plugin.workspace.evaluation.requestEvaluation.notificationText"
+            ),
+            "success"
+          )
+        );
+
+        data.success && data.success();
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          actions.displayNotification(
+            getState().i18n.text.get(
+              "plugin.workspace.errormessage.requestAssessmentFail"
+            ),
+            "error"
+          )
+        );
+        data.fail && data.fail();
       }
-
-      dispatch({
-        type: "UPDATE_WORKSPACE_ASSESSMENT_STATE",
-        payload: {
-          workspace: data.workspace,
-          newState: newAssessmentState,
-          newDate: assessmentRequest.date,
-          newAssessmentRequest: assessmentRequest,
-        },
-      });
-
-      dispatch(
-        actions.displayNotification(
-          getState().i18n.text.get(
-            "plugin.workspace.evaluation.requestEvaluation.notificationText"
-          ),
-          "success"
-        )
-      );
-
-      data.success && data.success();
-    } catch (err) {
-      if (!(err instanceof MApiError)) {
-        throw err;
-      }
-      dispatch(
-        actions.displayNotification(
-          getState().i18n.text.get(
-            "plugin.workspace.errormessage.requestAssessmentFail"
-          ),
-          "error"
-        )
-      );
-      data.fail && data.fail();
-    }
+    };
   };
-};
 
+/**
+ * CancelAssessmentAtWorkspaceTriggerType
+ */
 export interface CancelAssessmentAtWorkspaceTriggerType {
   (data: {
     workspace: WorkspaceType;
@@ -872,19 +961,77 @@ export interface CancelAssessmentAtWorkspaceTriggerType {
   }): AnyActionType;
 }
 
-let cancelAssessmentAtWorkspace: CancelAssessmentAtWorkspaceTriggerType = function cancelAssessmentAtWorkspace(
-  data
-) {
-  return async (
-    dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType
-  ) => {
-    try {
-      let assessmentRequest: WorkspaceAssessmentRequestType =
-        data.workspace.assessmentRequests[
-        data.workspace.assessmentRequests.length - 1
-        ];
-      if (!assessmentRequest) {
+/**
+ * cancelAssessmentAtWorkspace
+ * @param data data
+ */
+const cancelAssessmentAtWorkspace: CancelAssessmentAtWorkspaceTriggerType =
+  function cancelAssessmentAtWorkspace(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      try {
+        const assessmentRequest: WorkspaceAssessmentRequestType =
+          data.workspace.assessmentRequests[
+            data.workspace.assessmentRequests.length - 1
+          ];
+        if (!assessmentRequest) {
+          dispatch(
+            actions.displayNotification(
+              getState().i18n.text.get(
+                "plugin.workspace.errormessage.cancelAssessmentFail"
+              ),
+              "error"
+            )
+          );
+          data.fail && data.fail();
+          return;
+        }
+
+        await promisify(
+          mApi().assessmentrequest.workspace.assessmentRequests.del(
+            data.workspace.id,
+            assessmentRequest.id
+          ),
+          "callback"
+        )();
+
+        let newAssessmentState = data.workspace.studentAssessments
+          ? data.workspace.studentAssessments.assessmentState
+          : data.workspace.studentActivity.assessmentState.state;
+        if (newAssessmentState == "pending") {
+          newAssessmentState = "unassessed";
+        } else if (newAssessmentState == "pending_pass") {
+          newAssessmentState = "pass";
+        } else if (newAssessmentState == "pending_fail") {
+          newAssessmentState = "fail";
+        }
+
+        dispatch({
+          type: "UPDATE_WORKSPACE_ASSESSMENT_STATE",
+          payload: {
+            workspace: data.workspace,
+            newState: newAssessmentState,
+            newDate: null,
+            oldAssessmentRequestToDelete: assessmentRequest,
+          },
+        });
+
+        dispatch(
+          actions.displayNotification(
+            getState().i18n.text.get(
+              "plugin.workspace.evaluation.cancelEvaluation.notificationText"
+            ),
+            "success"
+          )
+        );
+
+        data.success && data.success();
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
         dispatch(
           actions.displayNotification(
             getState().i18n.text.get(
@@ -894,65 +1041,13 @@ let cancelAssessmentAtWorkspace: CancelAssessmentAtWorkspaceTriggerType = functi
           )
         );
         data.fail && data.fail();
-        return;
       }
-
-      await promisify(
-        mApi().assessmentrequest.workspace.assessmentRequests.del(
-          data.workspace.id,
-          assessmentRequest.id
-        ),
-        "callback"
-      )();
-
-      let newAssessmentState = data.workspace.studentAssessments
-        ? data.workspace.studentAssessments.assessmentState
-        : data.workspace.studentActivity.assessmentState.state;
-      if (newAssessmentState == "pending") {
-        newAssessmentState = "unassessed";
-      } else if (newAssessmentState == "pending_pass") {
-        newAssessmentState = "pass";
-      } else if (newAssessmentState == "pending_fail") {
-        newAssessmentState = "fail";
-      }
-
-      dispatch({
-        type: "UPDATE_WORKSPACE_ASSESSMENT_STATE",
-        payload: {
-          workspace: data.workspace,
-          newState: newAssessmentState,
-          newDate: null,
-          oldAssessmentRequestToDelete: assessmentRequest,
-        },
-      });
-
-      dispatch(
-        actions.displayNotification(
-          getState().i18n.text.get(
-            "plugin.workspace.evaluation.cancelEvaluation.notificationText"
-          ),
-          "success"
-        )
-      );
-
-      data.success && data.success();
-    } catch (err) {
-      if (!(err instanceof MApiError)) {
-        throw err;
-      }
-      dispatch(
-        actions.displayNotification(
-          getState().i18n.text.get(
-            "plugin.workspace.errormessage.cancelAssessmentFail"
-          ),
-          "error"
-        )
-      );
-      data.fail && data.fail();
-    }
+    };
   };
-};
 
+/**
+ * LoadWorkspacesFromServerTriggerType
+ */
 export interface LoadWorkspacesFromServerTriggerType {
   (
     filters: WorkspacesActiveFiltersType,
@@ -961,18 +1056,30 @@ export interface LoadWorkspacesFromServerTriggerType {
   ): AnyActionType;
 }
 
+/**
+ * LoadMoreWorkspacesFromServerTriggerType
+ */
 export interface LoadMoreWorkspacesFromServerTriggerType {
   (): AnyActionType;
 }
 
+/**
+ * LoadCurrentWorkspaceJournalsFromServerTriggerType
+ */
 export interface LoadCurrentWorkspaceJournalsFromServerTriggerType {
   (userEntityId?: number): AnyActionType;
 }
 
+/**
+ * LoadMoreCurrentWorkspaceJournalsFromServerTriggerType
+ */
 export interface LoadMoreCurrentWorkspaceJournalsFromServerTriggerType {
   (): AnyActionType;
 }
 
+/**
+ * LoadWholeWorkspaceMaterialsTriggerType
+ */
 export interface LoadWholeWorkspaceMaterialsTriggerType {
   (
     workspaceId: number,
@@ -980,6 +1087,9 @@ export interface LoadWholeWorkspaceMaterialsTriggerType {
     callback?: (nodes: Array<MaterialContentNodeType>) => any
   ): AnyActionType;
 }
+/**
+ * LoadWholeWorkspaceHelpTriggerType
+ */
 export interface LoadWholeWorkspaceHelpTriggerType {
   (
     workspaceId: number,
@@ -987,9 +1097,15 @@ export interface LoadWholeWorkspaceHelpTriggerType {
     callback?: (nodes: Array<MaterialContentNodeType>) => any
   ): AnyActionType;
 }
+/**
+ * SetWholeWorkspaceMaterialsTriggerType
+ */
 export interface SetWholeWorkspaceMaterialsTriggerType {
   (materials: MaterialContentNodeListType): AnyActionType;
 }
+/**
+ * SignupIntoWorkspaceTriggerType
+ */
 export interface SignupIntoWorkspaceTriggerType {
   (data: {
     success: () => any;
@@ -998,12 +1114,21 @@ export interface SignupIntoWorkspaceTriggerType {
     message: string;
   }): AnyActionType;
 }
+/**
+ * SetCurrentWorkspaceMaterialsActiveNodeIdTriggerType
+ */
 export interface SetCurrentWorkspaceMaterialsActiveNodeIdTriggerType {
   (id: number): AnyActionType;
 }
+/**
+ * LoadWorkspaceCompositeMaterialReplies
+ */
 export interface LoadWorkspaceCompositeMaterialReplies {
   (id: number): AnyActionType;
 }
+/**
+ * UpdateAssignmentStateTriggerType
+ */
 export interface UpdateAssignmentStateTriggerType {
   (
     successState: MaterialCompositeRepliesStateType,
@@ -1016,10 +1141,16 @@ export interface UpdateAssignmentStateTriggerType {
   ): AnyActionType;
 }
 
+/**
+ * LoadUserWorkspaceEducationFiltersFromServerTriggerType
+ */
 export interface LoadUserWorkspaceEducationFiltersFromServerTriggerType {
   (loadOrganizationWorkspaces: boolean): AnyActionType;
 }
 
+/**
+ * setFiltersTriggerType
+ */
 export interface setFiltersTriggerType {
   (
     loadOrganizationWorkspaceFilters: boolean,
@@ -1027,6 +1158,9 @@ export interface setFiltersTriggerType {
   ): AnyActionType;
 }
 
+/**
+ * LoadUserWorkspaceCurriculumFiltersFromServerTriggerType
+ */
 export interface LoadUserWorkspaceCurriculumFiltersFromServerTriggerType {
   (
     loadOrganizationWorkspaceFilters: boolean,
@@ -1034,12 +1168,18 @@ export interface LoadUserWorkspaceCurriculumFiltersFromServerTriggerType {
   ): AnyActionType;
 }
 
+/**
+ * LoadUserWorkspaceOrganizationFiltersFromServerTriggerType
+ */
 export interface LoadUserWorkspaceOrganizationFiltersFromServerTriggerType {
   (
     callback?: (organizations: WorkspaceOrganizationFilterListType) => any
   ): AnyActionType;
 }
 
+/**
+ * UpdateWorkspaceTriggerType
+ */
 export interface UpdateWorkspaceTriggerType {
   (data: {
     workspace: WorkspaceType;
@@ -1056,6 +1196,9 @@ export interface UpdateWorkspaceTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * LoadUsersOfWorkspaceTriggerType
+ */
 export interface LoadUsersOfWorkspaceTriggerType {
   (data: {
     workspace: WorkspaceType;
@@ -1064,7 +1207,7 @@ export interface LoadUsersOfWorkspaceTriggerType {
       active?: boolean;
       firstResult?: number;
       maxResults?: number;
-    },
+    };
     success?: (
       students: WorkspaceStudentListType | WorkspaceStaffListType
     ) => any;
@@ -1072,6 +1215,9 @@ export interface LoadUsersOfWorkspaceTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * ToggleActiveStateOfStudentOfWorkspaceTriggerType
+ */
 export interface ToggleActiveStateOfStudentOfWorkspaceTriggerType {
   (data: {
     workspace: WorkspaceType;
@@ -1081,225 +1227,269 @@ export interface ToggleActiveStateOfStudentOfWorkspaceTriggerType {
   }): AnyActionType;
 }
 
-let loadWorkspacesFromServer: LoadWorkspacesFromServerTriggerType = function loadWorkspacesFromServer(
-  filters,
-  organizationWorkspaces,
-  refresh
-) {
-  return loadWorkspacesHelper.bind(
-    this,
-    filters,
-    true,
-    refresh,
-    organizationWorkspaces
-  );
-};
-
-let loadMoreWorkspacesFromServer: LoadMoreWorkspacesFromServerTriggerType = function loadMoreWorkspacesFromServer() {
-  return loadWorkspacesHelper.bind(this, null, false, false, false);
-};
-
-let loadMoreOrganizationWorkspacesFromServer: LoadMoreWorkspacesFromServerTriggerType = function loadMoreWorkspacesFromServer() {
-  return loadWorkspacesHelper.bind(this, null, false, false, true);
-};
-
-let loadCurrentWorkspaceJournalsFromServer: LoadCurrentWorkspaceJournalsFromServerTriggerType = function loadCurrentWorkspaceJournalsFromServer(
-  userEntityId
-) {
-  return loadCurrentWorkspaceJournalsHelper.bind(
-    this,
-    userEntityId || null,
-    true
-  );
-};
-
-let loadMoreCurrentWorkspaceJournalsFromServer: LoadMoreCurrentWorkspaceJournalsFromServerTriggerType = function loadMoreCurrentWorkspaceJournalsFromServer() {
-  return loadCurrentWorkspaceJournalsHelper.bind(this, null, false);
-};
-
-let setWorkspaceStateFilters: setFiltersTriggerType = function setWorkspaceStateFilters(
-  loadOrganizationWorkspaceFilters,
-  filters
-) {
-  return (dispatch: (arg: AnyActionType) => any) => {
-    if (loadOrganizationWorkspaceFilters) {
-      return dispatch({
-        type: "UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_STATE_TYPES",
-        payload: filters,
-      });
-    } else {
-      return dispatch({
-        type: "UPDATE_WORKSPACES_AVAILABLE_FILTERS_STATE_TYPES",
-        payload: filters,
-      });
-    }
+/**
+ * loadWorkspacesFromServer
+ * @param filters filters
+ * @param organizationWorkspaces organizationWorkspaces
+ * @param refresh refresh
+ */
+const loadWorkspacesFromServer: LoadWorkspacesFromServerTriggerType =
+  function loadWorkspacesFromServer(filters, organizationWorkspaces, refresh) {
+    return loadWorkspacesHelper.bind(
+      this,
+      filters,
+      true,
+      refresh,
+      organizationWorkspaces
+    );
   };
-};
 
-let loadUserWorkspaceEducationFiltersFromServer: LoadUserWorkspaceEducationFiltersFromServerTriggerType = function loadUserWorkspaceEducationFiltersFromServer(
-  loadOrganizationWorkspaceFilters
-) {
-  return async (
-    dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType
-  ) => {
-    try {
-      if (!loadOrganizationWorkspaceFilters) {
-        dispatch({
-          type: "UPDATE_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES",
-          payload: <WorkspaceEducationFilterListType>(
-            await promisify(
-              mApi().workspace.educationTypes.read(),
-              "callback"
-            )()
-          ),
+/**
+ * loadMoreWorkspacesFromServer
+ */
+const loadMoreWorkspacesFromServer: LoadMoreWorkspacesFromServerTriggerType =
+  function loadMoreWorkspacesFromServer() {
+    return loadWorkspacesHelper.bind(this, null, false, false, false);
+  };
+
+/**
+ * loadMoreOrganizationWorkspacesFromServer
+ */
+const loadMoreOrganizationWorkspacesFromServer: LoadMoreWorkspacesFromServerTriggerType =
+  function loadMoreWorkspacesFromServer() {
+    return loadWorkspacesHelper.bind(this, null, false, false, true);
+  };
+
+/**
+ * loadCurrentWorkspaceJournalsFromServer
+ * @param userEntityId userEntityId
+ */
+const loadCurrentWorkspaceJournalsFromServer: LoadCurrentWorkspaceJournalsFromServerTriggerType =
+  function loadCurrentWorkspaceJournalsFromServer(userEntityId) {
+    return loadCurrentWorkspaceJournalsHelper.bind(
+      this,
+      userEntityId || null,
+      true
+    );
+  };
+
+/**
+ * loadMoreCurrentWorkspaceJournalsFromServer
+ */
+const loadMoreCurrentWorkspaceJournalsFromServer: LoadMoreCurrentWorkspaceJournalsFromServerTriggerType =
+  function loadMoreCurrentWorkspaceJournalsFromServer() {
+    return loadCurrentWorkspaceJournalsHelper.bind(this, null, false);
+  };
+
+/**
+ * setWorkspaceStateFilters
+ * @param loadOrganizationWorkspaceFilters loadOrganizationWorkspaceFilters
+ * @param filters filters
+ */
+const setWorkspaceStateFilters: setFiltersTriggerType =
+  function setWorkspaceStateFilters(loadOrganizationWorkspaceFilters, filters) {
+    return (dispatch: (arg: AnyActionType) => any) => {
+      if (loadOrganizationWorkspaceFilters) {
+        return dispatch({
+          type: "UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_STATE_TYPES",
+          payload: filters,
         });
       } else {
-        dispatch({
-          type:
-            "UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES",
-          payload: <WorkspaceEducationFilterListType>(
-            await promisify(
-              mApi().workspace.educationTypes.read(),
-              "callback"
-            )()
-          ),
+        return dispatch({
+          type: "UPDATE_WORKSPACES_AVAILABLE_FILTERS_STATE_TYPES",
+          payload: filters,
         });
       }
-    } catch (err) {
-      if (!(err instanceof MApiError)) {
-        throw err;
-      }
-      dispatch(
-        displayNotification(
-          getState().i18n.text.get(
-            "plugin.coursepicker.errormessage.educationFilters"
-          ),
-          "error"
-        )
-      );
-    }
+    };
   };
-};
 
-let loadUserWorkspaceCurriculumFiltersFromServer: LoadUserWorkspaceCurriculumFiltersFromServerTriggerType = function loadUserWorkspaceCurriculumFiltersFromServer(
-  loadOrganizationWorkspaceFilters,
-  callback
-) {
-  return async (
-    dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType
-  ) => {
-    try {
-      let curriculums = <WorkspaceCurriculumFilterListType>(
-        await promisify(mApi().coursepicker.curriculums.read(), "callback")()
-      );
-      if (!loadOrganizationWorkspaceFilters) {
+/**
+ * loadOrganizationWorkspaceFilters
+ * @param loadOrganizationWorkspaceFilters loadOrganizationWorkspaceFilters
+ */
+const loadUserWorkspaceEducationFiltersFromServer: LoadUserWorkspaceEducationFiltersFromServerTriggerType =
+  function loadUserWorkspaceEducationFiltersFromServer(
+    loadOrganizationWorkspaceFilters
+  ) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      try {
+        if (!loadOrganizationWorkspaceFilters) {
+          dispatch({
+            type: "UPDATE_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES",
+            payload: <WorkspaceEducationFilterListType>(
+              await promisify(
+                mApi().workspace.educationTypes.read(),
+                "callback"
+              )()
+            ),
+          });
+        } else {
+          dispatch({
+            type: "UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES",
+            payload: <WorkspaceEducationFilterListType>(
+              await promisify(
+                mApi().workspace.educationTypes.read(),
+                "callback"
+              )()
+            ),
+          });
+        }
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          displayNotification(
+            getState().i18n.text.get(
+              "plugin.coursepicker.errormessage.educationFilters"
+            ),
+            "error"
+          )
+        );
+      }
+    };
+  };
+
+/**
+ * loadUserWorkspaceCurriculumFiltersFromServer
+ * @param loadOrganizationWorkspaceFilters loadOrganizationWorkspaceFilters
+ * @param callback callback
+ */
+const loadUserWorkspaceCurriculumFiltersFromServer: LoadUserWorkspaceCurriculumFiltersFromServerTriggerType =
+  function loadUserWorkspaceCurriculumFiltersFromServer(
+    loadOrganizationWorkspaceFilters,
+    callback
+  ) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      try {
+        const curriculums = <WorkspaceCurriculumFilterListType>(
+          await promisify(mApi().coursepicker.curriculums.read(), "callback")()
+        );
+        if (!loadOrganizationWorkspaceFilters) {
+          dispatch({
+            type: "UPDATE_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS",
+            payload: curriculums,
+          });
+        } else {
+          dispatch({
+            type: "UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS",
+            payload: curriculums,
+          });
+        }
+        callback && callback(curriculums);
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          displayNotification(
+            getState().i18n.text.get(
+              "plugin.coursepicker.errormessage.curriculumFilters"
+            ),
+            "error"
+          )
+        );
+      }
+    };
+  };
+
+/**
+ * loadUserWorkspaceOrganizationFiltersFromServer
+ * @param callback callback
+ */
+const loadUserWorkspaceOrganizationFiltersFromServer: LoadUserWorkspaceOrganizationFiltersFromServerTriggerType =
+  function loadAvailableOrganizationFiltersFromServer(callback) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      try {
+        const organizations = <WorkspaceOrganizationFilterListType>(
+          await promisify(
+            mApi().coursepicker.organizations.read(),
+            "callback"
+          )()
+        );
         dispatch({
-          type: "UPDATE_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS",
-          payload: curriculums,
+          type: "UPDATE_WORKSPACES_AVAILABLE_FILTERS_ORGANIZATIONS",
+          payload: organizations,
         });
-      } else {
-        dispatch({
-          type: "UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS",
-          payload: curriculums,
-        });
+        callback && callback(organizations);
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          displayNotification(
+            getState().i18n.text.get(
+              "plugin.coursepicker.errormessage.curriculumFilters"
+            ),
+            "error"
+          )
+        );
       }
-      callback && callback(curriculums);
-    } catch (err) {
-      if (!(err instanceof MApiError)) {
-        throw err;
-      }
-      dispatch(
-        displayNotification(
-          getState().i18n.text.get(
-            "plugin.coursepicker.errormessage.curriculumFilters"
-          ),
-          "error"
-        )
-      );
-    }
+    };
   };
-};
 
-let loadUserWorkspaceOrganizationFiltersFromServer: LoadUserWorkspaceOrganizationFiltersFromServerTriggerType = function loadAvailableOrganizationFiltersFromServer(
-  callback
-) {
-  return async (
-    dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType
-  ) => {
-    try {
-      let organizations = <WorkspaceOrganizationFilterListType>(
-        await promisify(mApi().coursepicker.organizations.read(), "callback")()
-      );
-      dispatch({
-        type: "UPDATE_WORKSPACES_AVAILABLE_FILTERS_ORGANIZATIONS",
-        payload: organizations,
-      });
-      callback && callback(organizations);
-    } catch (err) {
-      if (!(err instanceof MApiError)) {
-        throw err;
-      }
-      dispatch(
-        displayNotification(
-          getState().i18n.text.get(
-            "plugin.coursepicker.errormessage.curriculumFilters"
-          ),
-          "error"
-        )
-      );
-    }
-  };
-};
-
-let signupIntoWorkspace: SignupIntoWorkspaceTriggerType = function signupIntoWorkspace(
-  data
-) {
-  return async (
-    dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType
-  ) => {
-    try {
-      await promisify(
-        mApi().coursepicker.workspaces.signup.create(data.workspace.id, {
-          message: data.message,
-        }),
-        "callback"
-      )();
-      window.location.href = `${getState().status.contextPath}/workspace/${data.workspace.urlName
+/**
+ * signupIntoWorkspace
+ * @param data data
+ */
+const signupIntoWorkspace: SignupIntoWorkspaceTriggerType =
+  function signupIntoWorkspace(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      try {
+        await promisify(
+          mApi().coursepicker.workspaces.signup.create(data.workspace.id, {
+            message: data.message,
+          }),
+          "callback"
+        )();
+        window.location.href = `${getState().status.contextPath}/workspace/${
+          data.workspace.urlName
         }`;
-      data.success();
-    } catch (err) {
-      if (!(err instanceof MApiError)) {
-        throw err;
+        data.success();
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          displayNotification(
+            getState().i18n.text.get("plugin.workspaceSignUp.notif.error"),
+            "error"
+          )
+        );
+        data.fail();
       }
-      dispatch(
-        displayNotification(
-          getState().i18n.text.get("plugin.workspaceSignUp.notif.error"),
-          "error"
-        )
-      );
-      data.fail();
-    }
+    };
   };
-};
 
-let updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
+/**
+ * updateWorkspace
+ * @param data data
+ */
+const updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
   data
 ) {
   return async (
     dispatch: (arg: AnyActionType) => any,
     getState: () => StateType
   ) => {
-    let actualOriginal: WorkspaceType = { ...data.workspace };
+    const actualOriginal: WorkspaceType = { ...data.workspace };
     delete actualOriginal["studentActivity"];
     delete actualOriginal["forumStatistics"];
     delete actualOriginal["studentAssessments"];
     delete actualOriginal["studentAssessmentState"];
     delete actualOriginal["activityStatistics"];
-    delete actualOriginal["feeInfo"];
     delete actualOriginal["assessmentRequests"];
     delete actualOriginal["additionalInfo"];
     delete actualOriginal["staffMembers"];
@@ -1315,13 +1505,13 @@ let updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
     delete actualOriginal["inactiveStudents"];
 
     try {
-      let newDetails = data.update.details;
-      let newPermissions = data.update.permissions;
-      let appliedProducers = data.update.producers;
-      let unchangedPermissions: WorkspacePermissionsType[] = [];
-      let currentWorkspace: WorkspaceType = getState().workspaces
-        .currentWorkspace;
-      let newChatStatus = data.update.chatStatus;
+      const newDetails = data.update.details;
+      const newPermissions = data.update.permissions;
+      const appliedProducers = data.update.producers;
+      const unchangedPermissions: WorkspacePermissionsType[] = [];
+      const currentWorkspace: WorkspaceType =
+        getState().workspaces.currentWorkspace;
+      const newChatStatus = data.update.chatStatus;
 
       // I left the workspace image out of this, because it never is in the application state anyway
       // These need to be removed from the object for the basic stuff to not fail
@@ -1356,7 +1546,7 @@ let updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
 
         // Details affect additionalInfo, so I guess we load that too. It's not a "single source of truth" when there's duplicates in the model, is it?
 
-        let additionalInfo = <WorkspaceAdditionalInfoType>(
+        const additionalInfo = <WorkspaceAdditionalInfoType>(
           await promisify(
             mApi()
               .workspace.workspaces.additionalInfo.cacheClear()
@@ -1396,7 +1586,7 @@ let updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
         });
         await Promise.all(
           newPermissions.map((permission) => {
-            let originalPermission = currentWorkspace.permissions.find(
+            const originalPermission = currentWorkspace.permissions.find(
               (p) => p.userGroupEntityId === permission.userGroupEntityId
             );
             promisify(
@@ -1419,17 +1609,17 @@ let updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
 
       // Then producers
       if (appliedProducers) {
-        let existingProducers = currentWorkspace.producers;
-        let workspaceProducersToAdd =
+        const existingProducers = currentWorkspace.producers;
+        const workspaceProducersToAdd =
           existingProducers.length == 0
             ? appliedProducers
             : appliedProducers.filter((producer) => {
-              if (!producer.id) {
-                return producer;
-              }
-            });
+                if (!producer.id) {
+                  return producer;
+                }
+              });
 
-        let workspaceProducersToDelete = existingProducers.filter(
+        const workspaceProducersToDelete = existingProducers.filter(
           (producer) => {
             if (producer.id) {
               return !appliedProducers.find(
@@ -1513,693 +1703,742 @@ let updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
   };
 };
 
-let updateOrganizationWorkspace: UpdateWorkspaceTriggerType = function updateOrganizationWorkspace(
-  data
-) {
-  return async (
-    dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType
-  ) => {
-    try {
-      let originalWorkspace: WorkspaceType = data.workspace;
-      let newDetails = data.update.details;
+/**
+ * updateOrganizationWorkspace
+ * @param data data
+ */
+const updateOrganizationWorkspace: UpdateWorkspaceTriggerType =
+  function updateOrganizationWorkspace(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      try {
+        const originalWorkspace: WorkspaceType = data.workspace;
+        const newDetails = data.update.details;
 
-      // Take off data that'll cramp the update
-      delete originalWorkspace["staffMemberSelect"];
-      delete originalWorkspace["studentsSelect"];
-      delete originalWorkspace["details"];
-      delete originalWorkspace["studentActivity"];
-      delete originalWorkspace["forumStatistics"];
-      delete originalWorkspace["studentAssessments"];
-      delete originalWorkspace["studentAssessmentState"];
-      delete originalWorkspace["activityStatistics"];
-      delete originalWorkspace["feeInfo"];
-      delete originalWorkspace["assessmentRequests"];
-      delete originalWorkspace["additionalInfo"];
-      delete originalWorkspace["staffMembers"];
-      delete originalWorkspace["students"];
-      delete originalWorkspace["details"];
-      delete originalWorkspace["producers"];
-      delete originalWorkspace["contentDescription"];
-      delete originalWorkspace["isCourseMember"];
-      delete originalWorkspace["journals"];
-      delete originalWorkspace["activityLogs"];
-      delete originalWorkspace["permissions"];
-      delete originalWorkspace["chatStatus"];
+        // Take off data that'll cramp the update
+        delete originalWorkspace["staffMemberSelect"];
+        delete originalWorkspace["studentsSelect"];
+        delete originalWorkspace["details"];
+        delete originalWorkspace["studentActivity"];
+        delete originalWorkspace["forumStatistics"];
+        delete originalWorkspace["studentAssessments"];
+        delete originalWorkspace["studentAssessmentState"];
+        delete originalWorkspace["activityStatistics"];
+        delete originalWorkspace["assessmentRequests"];
+        delete originalWorkspace["additionalInfo"];
+        delete originalWorkspace["staffMembers"];
+        delete originalWorkspace["students"];
+        delete originalWorkspace["details"];
+        delete originalWorkspace["producers"];
+        delete originalWorkspace["contentDescription"];
+        delete originalWorkspace["isCourseMember"];
+        delete originalWorkspace["journals"];
+        delete originalWorkspace["activityLogs"];
+        delete originalWorkspace["permissions"];
+        delete originalWorkspace["chatStatus"];
 
-      // Delete details from update so it wont fail
+        // Delete details from update so it wont fail
 
-      delete data.update["details"];
+        delete data.update["details"];
 
-      if (data.update && Object.keys(data.update).length !== 0) {
-        await promisify(
-          mApi().workspace.workspaces.update(
-            data.workspace.id,
-            Object.assign(data.workspace, data.update)
-          ),
-          "callback"
-        )().then(data.progress && data.progress("workspace-update"));
-      }
+        if (data.update && Object.keys(data.update).length !== 0) {
+          await promisify(
+            mApi().workspace.workspaces.update(
+              data.workspace.id,
+              Object.assign(data.workspace, data.update)
+            ),
+            "callback"
+          )().then(data.progress && data.progress("workspace-update"));
+        }
 
-      if (newDetails) {
-        await promisify(
-          mApi().workspace.workspaces.details.update(
-            data.workspace.id,
-            newDetails
-          ),
-          "callback"
-        )().then(data.progress && data.progress("add-details"));
-      }
+        if (newDetails) {
+          await promisify(
+            mApi().workspace.workspaces.details.update(
+              data.workspace.id,
+              newDetails
+            ),
+            "callback"
+          )().then(data.progress && data.progress("add-details"));
+        }
 
-      if (data.addStudents.length > 0) {
-        let groupIdentifiers: number[] = [];
-        let studentIdentifiers: string[] = [];
+        if (data.addStudents.length > 0) {
+          const groupIdentifiers: number[] = [];
+          const studentIdentifiers: string[] = [];
 
-        data.addStudents.map((student) => {
-          if (student.type === "student-group") {
-            groupIdentifiers.push(student.id as number);
-          }
-          if (student.type === "student") {
-            studentIdentifiers.push(student.id as string);
-          }
-        });
-
-        await promisify(
-          mApi().organizationWorkspaceManagement.workspaces.students.create(
-            data.workspace.id,
-            {
-              studentIdentifiers: studentIdentifiers,
-              studentGroupIds: groupIdentifiers,
+          data.addStudents.map((student) => {
+            if (student.type === "student-group") {
+              groupIdentifiers.push(student.id as number);
             }
-          ),
-          "callback"
-        )().then(data.progress && data.progress("add-students"));
-      }
+            if (student.type === "student") {
+              studentIdentifiers.push(student.id as string);
+            }
+          });
 
-      if (data.addTeachers.length > 0) {
-        let staffMemberIdentifiers = data.addTeachers.map(
-          (teacher) => teacher.id
+          await promisify(
+            mApi().organizationWorkspaceManagement.workspaces.students.create(
+              data.workspace.id,
+              {
+                studentIdentifiers: studentIdentifiers,
+                studentGroupIds: groupIdentifiers,
+              }
+            ),
+            "callback"
+          )().then(data.progress && data.progress("add-students"));
+        }
+
+        if (data.addTeachers.length > 0) {
+          const staffMemberIdentifiers = data.addTeachers.map(
+            (teacher) => teacher.id
+          );
+
+          await promisify(
+            mApi().organizationWorkspaceManagement.workspaces.staff.create(
+              data.workspace.id,
+              {
+                staffMemberIdentifiers: staffMemberIdentifiers,
+              }
+            ),
+            "callback"
+          )().then(data.progress && data.progress("add-teachers"));
+        }
+
+        // if (data.removeStudents.length > 0) {
+        //   let studentIdentifiers = data.removeStudents.map(student => student.id);
+
+        // await promisify(mApi().organizationWorkspaceManagement.workspaces.students
+        //   .del(data.workspace.id, {
+        //     studentIdentifiers: studentIdentifiers
+        //   }
+        //   ), 'callback')().then(
+        //     data.progress && data.progress("remove-students")
+        //   );
+        // }
+
+        // if (data.removeTeachers.length > 0) {
+        //   let staffMemberIdentifiers = data.addTeachers.map(teacher => teacher.id);
+
+        // await promisify(mApi().organizationWorkspaceManagement.workspaces.staff
+        //   .del(data.workspace.id, {
+        //     staffMemberIdentifiers: staffMemberIdentifiers
+        //   }
+        //   ), 'callback')().then(
+        //     data.progress && data.progress("remove-teachers")
+        //   );
+        // }
+
+        //  await promisify(setTimeout(() => loadWorkspacesFromServer(data.activeFilters, true), 2000), 'callback')();
+
+        data.progress && data.progress("done");
+        data.success && data.success();
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          displayNotification(
+            getState().i18n.text.get(
+              "plugin.workspace.management.notification.save.error"
+            ),
+            "error"
+          )
         );
 
+        data.fail && data.fail();
+      }
+    };
+  };
+
+/**
+ * loadCurrentOrganizationWorkspaceStaff
+ * @param data data
+ */
+const loadCurrentOrganizationWorkspaceStaff: LoadUsersOfWorkspaceTriggerType =
+  function loadCurrentOrganizationWorkspaceStaff(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      try {
+        dispatch({
+          type: "UPDATE_ORGANIZATION_SELECTED_WORKSPACE",
+          payload: {
+            id: data.workspace.id,
+            staffMemberSelect: { state: "LOADING", users: [] },
+          },
+        });
+
+        const staffMembers: WorkspaceStaffListType = <WorkspaceStaffListType>(
+          await promisify(
+            mApi().user.staffMembers.read({
+              ...data.payload,
+              workspaceEntityId: data.workspace.id,
+            }),
+            "callback"
+          )()
+        );
+
+        const update: WorkspaceUpdateType = {
+          staffMembers,
+          id: data.workspace.id,
+        };
+
+        dispatch({
+          type: "UPDATE_ORGANIZATION_SELECTED_WORKSPACE",
+          payload: update,
+        });
+
+        data.success && data.success(staffMembers);
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          displayNotification(
+            getState().i18n.text.get(
+              "plugin.organization.workspaces.notification.selectStaff.error"
+            ),
+            "error"
+          )
+        );
+        dispatch({
+          type: "UPDATE_ORGANIZATION_SELECTED_WORKSPACE",
+          payload: { staffMemberSelect: { state: "ERROR" } },
+        });
+      }
+    };
+  };
+
+/**
+ * loadStaffMembersOfWorkspace
+ * @param data data
+ */
+const loadStaffMembersOfWorkspace: LoadUsersOfWorkspaceTriggerType =
+  function loadStaffMembersOfWorkspace(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      try {
+        const staffMembers = <WorkspaceStaffListType>await promisify(
+          mApi().user.staffMembers.read({
+            workspaceEntityId: data.workspace.id,
+            properties:
+              "profile-phone,profile-vacation-start,profile-vacation-end",
+            firstResult: data.payload ? data.payload.firstResult : 0,
+            maxResults: data.payload ? data.payload.maxResults : 10,
+          }),
+          "callback"
+        )();
+
+        const update: WorkspaceUpdateType = {
+          staffMembers,
+        };
+
+        dispatch({
+          type: "UPDATE_WORKSPACE",
+          payload: {
+            original: data.workspace,
+            update,
+          },
+        });
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          displayNotification(
+            getState().i18n.text.get(
+              "plugin.workspace.management.notification.failedToLoadTeachers"
+            ),
+            "error"
+          )
+        );
+      }
+    };
+  };
+
+/**
+ * loadCurrentOrganizationWorkspaceStudents
+ * @param data data
+ */
+const loadCurrentOrganizationWorkspaceStudents: LoadUsersOfWorkspaceTriggerType =
+  function loadCurrentOrganizationWorkspaceStudents(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      try {
+        dispatch({
+          type: "UPDATE_ORGANIZATION_SELECTED_WORKSPACE",
+          payload: {
+            id: data.workspace.id,
+            studentsSelect: { state: "LOADING", users: [] },
+          },
+        });
+
+        const students: WorkspaceStudentListType = <WorkspaceStudentListType>(
+          await promisify(
+            mApi().workspace.workspaces.students.read(
+              data.workspace.id,
+              data.payload
+            ),
+            "callback"
+          )()
+        );
+
+        const update: WorkspaceUpdateType = {
+          students,
+          id: data.workspace.id,
+        };
+
+        dispatch({
+          type: "UPDATE_ORGANIZATION_SELECTED_WORKSPACE",
+          payload: update,
+        });
+
+        data.success && data.success(students);
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          displayNotification(
+            getState().i18n.text.get(
+              "plugin.organization.workspaces.notification.selectStudents.error"
+            ),
+            "error"
+          )
+        );
+        dispatch({
+          type: "UPDATE_ORGANIZATION_SELECTED_WORKSPACE",
+          payload: { studentsSelect: { state: "ERROR" } },
+        });
+      }
+    };
+  };
+
+/**
+ * loadStudentsOfWorkspace
+ * @param data data
+ */
+const loadStudentsOfWorkspace: LoadUsersOfWorkspaceTriggerType =
+  function loadStudentsOfWorkspace(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      try {
+        const payload: workspaceStudentsQueryDataType = {
+          q: data.payload && data.payload.q ? data.payload.q : "",
+        };
+
+        if (data.payload && data.payload.firstResult >= 0) {
+          payload.firstResult = data.payload.firstResult;
+        }
+
+        if (data.payload && data.payload.maxResults) {
+          payload.maxResults = data.payload.maxResults;
+        }
+
+        if (data.payload && data.payload.active !== undefined) {
+          payload.active = data.payload.active;
+        }
+
+        const students = <WorkspaceStudentListType>(
+          await promisify(
+            mApi().workspace.workspaces.students.read(
+              data.workspace.id,
+              payload
+            ),
+            "callback"
+          )()
+        );
+
+        let update: WorkspaceUpdateType = {
+          students,
+        };
+
+        if (
+          data.payload &&
+          data.payload.active !== undefined &&
+          !data.payload.active
+        ) {
+          update = {
+            inactiveStudents: students,
+          };
+        }
+
+        dispatch({
+          type: "UPDATE_WORKSPACE",
+          payload: {
+            original: data.workspace,
+            update,
+          },
+        });
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          displayNotification(
+            getState().i18n.text.get(
+              "plugin.workspace.management.notification.failedToLoadStudents"
+            ),
+            "error"
+          )
+        );
+      }
+    };
+  };
+
+/**
+ * toggleActiveStateOfStudentOfWorkspace
+ * @param data data
+ */
+const toggleActiveStateOfStudentOfWorkspace: ToggleActiveStateOfStudentOfWorkspaceTriggerType =
+  function toggleActiveStateOfStudentOfWorkspace(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      const oldStudents = data.workspace.students;
+      try {
+        const newStudent: ShortWorkspaceUserWithActiveStatusType = {
+          ...data.student,
+          active: !data.student.active,
+        };
+        const newStudents =
+          data.workspace.students &&
+          data.workspace.students.results.map((student) => {
+            if (
+              student.workspaceUserEntityId === newStudent.workspaceUserEntityId
+            ) {
+              return newStudent;
+            }
+            return student;
+          });
+
+        const payload: WorkspaceStudentListType = {
+          ...data.workspace.students,
+          results: newStudents,
+        };
+
         await promisify(
-          mApi().organizationWorkspaceManagement.workspaces.staff.create(
+          mApi().workspace.workspaces.students.update(
             data.workspace.id,
+            newStudent.workspaceUserEntityId,
             {
-              staffMemberIdentifiers: staffMemberIdentifiers,
+              workspaceUserEntityId: newStudent.workspaceUserEntityId,
+              active: newStudent.active,
             }
           ),
           "callback"
-        )().then(data.progress && data.progress("add-teachers"));
-      }
+        )();
 
-      // if (data.removeStudents.length > 0) {
-      //   let studentIdentifiers = data.removeStudents.map(student => student.id);
-
-      // await promisify(mApi().organizationWorkspaceManagement.workspaces.students
-      //   .del(data.workspace.id, {
-      //     studentIdentifiers: studentIdentifiers
-      //   }
-      //   ), 'callback')().then(
-      //     data.progress && data.progress("remove-students")
-      //   );
-      // }
-
-      // if (data.removeTeachers.length > 0) {
-      //   let staffMemberIdentifiers = data.addTeachers.map(teacher => teacher.id);
-
-      // await promisify(mApi().organizationWorkspaceManagement.workspaces.staff
-      //   .del(data.workspace.id, {
-      //     staffMemberIdentifiers: staffMemberIdentifiers
-      //   }
-      //   ), 'callback')().then(
-      //     data.progress && data.progress("remove-teachers")
-      //   );
-      // }
-
-      //  await promisify(setTimeout(() => loadWorkspacesFromServer(data.activeFilters, true), 2000), 'callback')();
-
-      data.progress && data.progress("done");
-      data.success && data.success();
-    } catch (err) {
-      if (!(err instanceof MApiError)) {
-        throw err;
-      }
-      dispatch(
-        displayNotification(
-          getState().i18n.text.get(
-            "plugin.workspace.management.notification.save.error"
-          ),
-          "error"
-        )
-      );
-
-      data.fail && data.fail();
-    }
-  };
-};
-
-let loadCurrentOrganizationWorkspaceStaff: LoadUsersOfWorkspaceTriggerType = function loadCurrentOrganizationWorkspaceStaff(
-  data
-) {
-  return async (
-    dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType
-  ) => {
-    try {
-      dispatch({
-        type: "UPDATE_ORGANIZATION_SELECTED_WORKSPACE",
-        payload: {
-          id: data.workspace.id,
-          staffMemberSelect: { state: "LOADING", users: [] },
-        },
-      });
-
-      let staffMembers: WorkspaceStaffListType = <WorkspaceStaffListType>(
-        await promisify(
-          mApi().user.staffMembers.read({
-            ...data.payload,
-            workspaceEntityId: data.workspace.id,
-          }),
-          "callback"
-        )()
-      );
-
-      let update: WorkspaceUpdateType = {
-        staffMembers,
-        id: data.workspace.id,
-      };
-
-      dispatch({
-        type: "UPDATE_ORGANIZATION_SELECTED_WORKSPACE",
-        payload: update,
-      });
-
-      data.success && data.success(staffMembers);
-    } catch (err) {
-      if (!(err instanceof MApiError)) {
-        throw err;
-      }
-      dispatch(
-        displayNotification(
-          getState().i18n.text.get(
-            "plugin.organization.workspaces.notification.selectStaff.error"
-          ),
-          "error"
-        )
-      );
-      dispatch({
-        type: "UPDATE_ORGANIZATION_SELECTED_WORKSPACE",
-        payload: { staffMemberSelect: { state: "ERROR" } },
-      });
-    }
-  };
-};
-
-let loadStaffMembersOfWorkspace: LoadUsersOfWorkspaceTriggerType = function loadStaffMembersOfWorkspace(
-  data
-) {
-  return async (
-    dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType
-  ) => {
-    try {
-      let staffMembers = <WorkspaceStaffListType>await promisify(
-        mApi().user.staffMembers.read({
-          workspaceEntityId: data.workspace.id,
-          properties:
-            "profile-phone,profile-vacation-start,profile-vacation-end",
-          firstResult: data.payload ? data.payload.firstResult : 0,
-          maxResults: data.payload ? data.payload.maxResults : 10,
-        }),
-        "callback"
-      )();
-
-      let update: WorkspaceUpdateType = {
-        staffMembers,
-      };
-
-      dispatch({
-        type: "UPDATE_WORKSPACE",
-        payload: {
-          original: data.workspace,
-          update,
-        },
-      });
-    } catch (err) {
-      if (!(err instanceof MApiError)) {
-        throw err;
-      }
-      dispatch(
-        displayNotification(
-          getState().i18n.text.get(
-            "plugin.workspace.management.notification.failedToLoadTeachers"
-          ),
-          "error"
-        )
-      );
-    }
-  };
-};
-
-let loadCurrentOrganizationWorkspaceStudents: LoadUsersOfWorkspaceTriggerType = function loadCurrentOrganizationWorkspaceStudents(
-  data
-) {
-  return async (
-    dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType
-  ) => {
-    try {
-      dispatch({
-        type: "UPDATE_ORGANIZATION_SELECTED_WORKSPACE",
-        payload: {
-          id: data.workspace.id,
-          studentsSelect: { state: "LOADING", users: [] },
-        },
-      });
-
-      let students: WorkspaceStudentListType = <WorkspaceStudentListType>(
-        await promisify(
-          mApi().workspace.workspaces.students.read(
-            data.workspace.id,
-            data.payload
-          ),
-          "callback"
-        )()
-      );
-
-      let update: WorkspaceUpdateType = {
-        students,
-        id: data.workspace.id,
-      };
-
-      dispatch({
-        type: "UPDATE_ORGANIZATION_SELECTED_WORKSPACE",
-        payload: update,
-      });
-
-      data.success && data.success(students);
-    } catch (err) {
-      if (!(err instanceof MApiError)) {
-        throw err;
-      }
-      dispatch(
-        displayNotification(
-          getState().i18n.text.get(
-            "plugin.organization.workspaces.notification.selectStudents.error"
-          ),
-          "error"
-        )
-      );
-      dispatch({
-        type: "UPDATE_ORGANIZATION_SELECTED_WORKSPACE",
-        payload: { studentsSelect: { state: "ERROR" } },
-      });
-    }
-  };
-};
-
-let loadStudentsOfWorkspace: LoadUsersOfWorkspaceTriggerType = function loadStudentsOfWorkspace(
-  data
-) {
-  return async (
-    dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType
-  ) => {
-    try {
-      const payload: workspaceStudentsQueryDataType = {
-        q: data.payload && data.payload.q ? data.payload.q : "",
-      };
-
-      if (data.payload && data.payload.firstResult >= 0) {
-        payload.firstResult = data.payload.firstResult;
-      }
-
-      if (data.payload && data.payload.maxResults) {
-        payload.maxResults = data.payload.maxResults;
-      }
-
-      if (data.payload && data.payload.active !== undefined) {
-        payload.active = data.payload.active;
-      }
-
-      const students = <WorkspaceStudentListType>(
-        await promisify(
-          mApi().workspace.workspaces.students.read(data.workspace.id, payload),
-          "callback"
-        )()
-      );
-
-      let update: WorkspaceUpdateType = {
-        students,
-      };
-
-      if (
-        data.payload &&
-        data.payload.active !== undefined &&
-        !data.payload.active
-      ) {
-        update = {
-          inactiveStudents: students,
-        };
-      }
-
-      dispatch({
-        type: "UPDATE_WORKSPACE",
-        payload: {
-          original: data.workspace,
-          update,
-        },
-      });
-    } catch (err) {
-      if (!(err instanceof MApiError)) {
-        throw err;
-      }
-      dispatch(
-        displayNotification(
-          getState().i18n.text.get(
-            "plugin.workspace.management.notification.failedToLoadStudents"
-          ),
-          "error"
-        )
-      );
-    }
-  };
-};
-
-let toggleActiveStateOfStudentOfWorkspace: ToggleActiveStateOfStudentOfWorkspaceTriggerType = function toggleActiveStateOfStudentOfWorkspace(
-  data
-) {
-  return async (
-    dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType
-  ) => {
-    let oldStudents = data.workspace.students;
-    try {
-      let newStudent: ShortWorkspaceUserWithActiveStatusType = {
-        ...data.student,
-        active: !data.student.active,
-      };
-      let newStudents =
-        data.workspace.students &&
-        data.workspace.students.results.map((student) => {
-          if (
-            student.workspaceUserEntityId === newStudent.workspaceUserEntityId
-          ) {
-            return newStudent;
-          }
-          return student;
-        });
-
-      let payload: WorkspaceStudentListType = {
-        ...data.workspace.students,
-        results: newStudents,
-      };
-
-      await promisify(
-        mApi().workspace.workspaces.students.update(
-          data.workspace.id,
-          newStudent.workspaceUserEntityId,
-          {
-            workspaceUserEntityId: newStudent.workspaceUserEntityId,
-            active: newStudent.active,
-          }
-        ),
-        "callback"
-      )();
-
-      if (newStudents) {
-        dispatch({
-          type: "UPDATE_WORKSPACE",
-          payload: {
-            original: data.workspace,
-            update: {
-              students: payload,
+        if (newStudents) {
+          dispatch({
+            type: "UPDATE_WORKSPACE",
+            payload: {
+              original: data.workspace,
+              update: {
+                students: payload,
+              },
             },
-          },
-        });
-      }
+          });
+        }
 
-      data.success && data.success();
-    } catch (err) {
-      if (!(err instanceof MApiError)) {
-        throw err;
-      }
-      if (oldStudents) {
-        dispatch({
-          type: "UPDATE_WORKSPACE",
-          payload: {
-            original: data.workspace,
-            update: {
-              students: oldStudents,
+        data.success && data.success();
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        if (oldStudents) {
+          dispatch({
+            type: "UPDATE_WORKSPACE",
+            payload: {
+              original: data.workspace,
+              update: {
+                students: oldStudents,
+              },
             },
-          },
-        });
+          });
+        }
+        data.fail && data.fail();
+        dispatch(
+          displayNotification(
+            getState().i18n.text.get(
+              "plugin.workspace.management.notification.failedToUpdateStudents"
+            ),
+            "error"
+          )
+        );
       }
-      data.fail && data.fail();
-      dispatch(
-        displayNotification(
-          getState().i18n.text.get(
-            "plugin.workspace.management.notification.failedToUpdateStudents"
-          ),
-          "error"
-        )
-      );
-    }
+    };
   };
-};
 
-let loadWholeWorkspaceMaterials: LoadWholeWorkspaceMaterialsTriggerType = function loadWholeWorkspaceMaterials(
-  workspaceId,
-  includeHidden,
-  callback
-) {
-
-  return async (
-    dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType
-  ) => {
-    try {
-      let contentNodes: Array<MaterialContentNodeType> =
-        <Array<MaterialContentNodeType>>await promisify(
-          mApi().workspace.workspaces.materialContentNodes.read(workspaceId, {
-            includeHidden,
-          }),
-          "callback"
-        )() || [];
-      dispatch({
-        type: "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS",
-        payload: contentNodes,
-      });
-      callback && callback(contentNodes);
-    } catch (err) {
-      if (!(err instanceof MApiError)) {
-        throw err;
-      }
-      dispatch(
-        displayNotification(
-          getState().i18n.text.get(
-            "plugin.workspace.management.notification.failedToLoadWorkspaceMaterials"
-          ),
-          "error"
-        )
-      );
-    }
-  };
-};
-
-let loadWholeWorkspaceHelp: LoadWholeWorkspaceHelpTriggerType = function loadWholeWorkspaceMaterials(
-  workspaceId,
-  includeHidden,
-  callback
-) {
-  return async (
-    dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType
-  ) => {
-    try {
-      let contentNodes: Array<MaterialContentNodeType> =
-        <Array<MaterialContentNodeType>>(
-          await promisify(
-            mApi()
-              .workspace.workspaces.help.cacheClear()
-              .read(workspaceId, { includeHidden }),
+/**
+ * loadWholeWorkspaceMaterials
+ * @param workspaceId workspaceId
+ * @param includeHidden includeHidden
+ * @param callback callback
+ */
+const loadWholeWorkspaceMaterials: LoadWholeWorkspaceMaterialsTriggerType =
+  function loadWholeWorkspaceMaterials(workspaceId, includeHidden, callback) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      try {
+        const contentNodes: Array<MaterialContentNodeType> =
+          <Array<MaterialContentNodeType>>await promisify(
+            mApi().workspace.workspaces.materialContentNodes.read(workspaceId, {
+              includeHidden,
+            }),
             "callback"
-          )()
-        ) || [];
-      dispatch({
-        type: "UPDATE_WORKSPACES_SET_CURRENT_HELP",
-        payload: contentNodes,
-      });
-      callback && callback(contentNodes);
-    } catch (err) {
-      if (!(err instanceof MApiError)) {
-        throw err;
-      }
-      dispatch(
-        displayNotification(
-          getState().i18n.text.get(
-            "plugin.workspace.management.notification.failedToLoadWorkspaceHelp"
-          ),
-          "error"
-        )
-      );
-    }
-  };
-};
-
-let setWholeWorkspaceMaterials: SetWholeWorkspaceMaterialsTriggerType = function setWholeWorkspaceMaterials(
-  materials
-) {
-
-  return {
-    type: "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS",
-    payload: materials,
-  };
-};
-
-let setWholeWorkspaceHelp: SetWholeWorkspaceMaterialsTriggerType = function setWholeWorkspaceHelp(
-  materials
-) {
-  return {
-    type: "UPDATE_WORKSPACES_SET_CURRENT_HELP",
-    payload: materials,
-  };
-};
-
-let setCurrentWorkspaceMaterialsActiveNodeId: SetCurrentWorkspaceMaterialsActiveNodeIdTriggerType = function setCurrentWorkspaceMaterialsActiveNodeId(
-  id
-) {
-  return {
-    type: "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_ACTIVE_NODE_ID",
-    payload: id,
-  };
-};
-
-let loadWorkspaceCompositeMaterialReplies: LoadWorkspaceCompositeMaterialReplies = function loadWorkspaceCompositeMaterialReplies(
-  id
-) {
-  return async (
-    dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType
-  ) => {
-    try {
-      if (!getState().status.loggedIn) {
+          )() || [];
         dispatch({
-          type: "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_REPLIES",
-          payload: [],
+          type: "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS",
+          payload: contentNodes,
         });
-        return;
-      } else {
-        dispatch({
-          type: "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_REPLIES",
-          payload: null,
-        });
+        callback && callback(contentNodes);
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          displayNotification(
+            getState().i18n.text.get(
+              "plugin.workspace.management.notification.failedToLoadWorkspaceMaterials"
+            ),
+            "error"
+          )
+        );
       }
-      let compositeReplies: MaterialCompositeRepliesListType = <
-        MaterialCompositeRepliesListType
+    };
+  };
+
+/**
+ * loadWholeWorkspaceHelp
+ * @param workspaceId workspaceId
+ * @param includeHidden includeHidden
+ * @param callback callback
+ */
+const loadWholeWorkspaceHelp: LoadWholeWorkspaceHelpTriggerType =
+  function loadWholeWorkspaceMaterials(workspaceId, includeHidden, callback) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      try {
+        const contentNodes: Array<MaterialContentNodeType> =
+          <Array<MaterialContentNodeType>>(
+            await promisify(
+              mApi()
+                .workspace.workspaces.help.cacheClear()
+                .read(workspaceId, { includeHidden }),
+              "callback"
+            )()
+          ) || [];
+        dispatch({
+          type: "UPDATE_WORKSPACES_SET_CURRENT_HELP",
+          payload: contentNodes,
+        });
+        callback && callback(contentNodes);
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          displayNotification(
+            getState().i18n.text.get(
+              "plugin.workspace.management.notification.failedToLoadWorkspaceHelp"
+            ),
+            "error"
+          )
+        );
+      }
+    };
+  };
+
+/**
+ * setWholeWorkspaceMaterials
+ * @param materials materials
+ */
+const setWholeWorkspaceMaterials: SetWholeWorkspaceMaterialsTriggerType =
+  function setWholeWorkspaceMaterials(materials) {
+    return {
+      type: "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS",
+      payload: materials,
+    };
+  };
+
+/**
+ * setWholeWorkspaceHelp
+ * @param materials materials
+ */
+const setWholeWorkspaceHelp: SetWholeWorkspaceMaterialsTriggerType =
+  function setWholeWorkspaceHelp(materials) {
+    return {
+      type: "UPDATE_WORKSPACES_SET_CURRENT_HELP",
+      payload: materials,
+    };
+  };
+
+/**
+ * setCurrentWorkspaceMaterialsActiveNodeId
+ * @param id id
+ */
+const setCurrentWorkspaceMaterialsActiveNodeId: SetCurrentWorkspaceMaterialsActiveNodeIdTriggerType =
+  function setCurrentWorkspaceMaterialsActiveNodeId(id) {
+    return {
+      type: "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_ACTIVE_NODE_ID",
+      payload: id,
+    };
+  };
+
+/**
+ * loadWorkspaceCompositeMaterialReplies
+ * @param id id
+ */
+const loadWorkspaceCompositeMaterialReplies: LoadWorkspaceCompositeMaterialReplies =
+  function loadWorkspaceCompositeMaterialReplies(id) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      try {
+        if (!getState().status.loggedIn) {
+          dispatch({
+            type: "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_REPLIES",
+            payload: [],
+          });
+          return;
+        } else {
+          dispatch({
+            type: "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_REPLIES",
+            payload: null,
+          });
+        }
+        const compositeReplies: MaterialCompositeRepliesListType = <
+          MaterialCompositeRepliesListType
         >await promisify(
           mApi().workspace.workspaces.compositeReplies.cacheClear().read(id),
           "callback"
         )();
-      dispatch({
-        type: "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_REPLIES",
-        payload: compositeReplies || [],
-      });
-    } catch (err) {
-      if (!(err instanceof MApiError)) {
-        throw err;
+        dispatch({
+          type: "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_REPLIES",
+          payload: compositeReplies || [],
+        });
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          displayNotification(
+            getState().i18n.text.get(
+              "plugin.workspace.management.notification.failedToLoadMaterialAnswers"
+            ),
+            "error"
+          )
+        );
       }
-      dispatch(
-        displayNotification(
-          getState().i18n.text.get(
-            "plugin.workspace.management.notification.failedToLoadMaterialAnswers"
-          ),
-          "error"
-        )
-      );
-    }
+    };
   };
-};
 
 //Updates the evaluated assignment state, and either updates an existant composite reply or creates a new one as incomplete,
 //that is no answers
-let updateAssignmentState: UpdateAssignmentStateTriggerType = function updateAssignmentState(
-  successState,
-  avoidServerCall,
-  workspaceId,
-  workspaceMaterialId,
-  existantReplyId,
-  successMessage,
-  callback
-) {
-  return async (
-    dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType
-  ) => {
-    try {
-      let replyId: number = existantReplyId;
-      if (!avoidServerCall) {
-        let replyGenerated: any = await promisify(
-          existantReplyId
-            ? mApi().workspace.workspaces.materials.replies.update(
-              workspaceId,
-              workspaceMaterialId,
-              existantReplyId,
-              {
-                state: successState,
-              }
-            )
-            : mApi().workspace.workspaces.materials.replies.create(
-              workspaceId,
-              workspaceMaterialId,
-              {
-                state: successState,
-              }
-            ),
-          "callback"
-        )();
-        replyId = replyGenerated ? replyGenerated.id : existantReplyId;
-      }
-      if (!replyId) {
-        let result: Array<{ id: number; state: string }> = (await promisify(
-          mApi().workspace.workspaces.materials.replies.read(
-            workspaceId,
-            workspaceMaterialId
-          ),
-          "callback"
-        )()) as Array<{ id: number; state: string }>;
-        if (result[0] && result[0].id) {
-          replyId = result[0].id;
+/**
+ * updateAssignmentState
+ * @param successState successState
+ * @param avoidServerCall avoidServerCall
+ * @param workspaceId workspaceId
+ * @param workspaceMaterialId workspaceMaterialId
+ * @param existantReplyId existantReplyId
+ * @param successMessage successMessage
+ * @param callback callback
+ */
+const updateAssignmentState: UpdateAssignmentStateTriggerType =
+  function updateAssignmentState(
+    successState,
+    avoidServerCall,
+    workspaceId,
+    workspaceMaterialId,
+    existantReplyId,
+    successMessage,
+    callback
+  ) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      try {
+        let replyId: number = existantReplyId;
+        if (!avoidServerCall) {
+          const replyGenerated: any = await promisify(
+            existantReplyId
+              ? mApi().workspace.workspaces.materials.replies.update(
+                  workspaceId,
+                  workspaceMaterialId,
+                  existantReplyId,
+                  {
+                    state: successState,
+                  }
+                )
+              : mApi().workspace.workspaces.materials.replies.create(
+                  workspaceId,
+                  workspaceMaterialId,
+                  {
+                    state: successState,
+                  }
+                ),
+            "callback"
+          )();
+          replyId = replyGenerated ? replyGenerated.id : existantReplyId;
         }
-      }
+        if (!replyId) {
+          const result: Array<{ id: number; state: string }> = (await promisify(
+            mApi().workspace.workspaces.materials.replies.read(
+              workspaceId,
+              workspaceMaterialId
+            ),
+            "callback"
+          )()) as Array<{ id: number; state: string }>;
+          if (result[0] && result[0].id) {
+            replyId = result[0].id;
+          }
+        }
 
-      dispatch({
-        type:
-          "UPDATE_CURRENT_COMPOSITE_REPLIES_UPDATE_OR_CREATE_COMPOSITE_REPLY_STATE_VIA_ID_NO_ANSWER",
-        payload: {
-          workspaceMaterialReplyId: replyId,
-          state: successState,
-          workspaceMaterialId,
-        },
-      });
+        dispatch({
+          type: "UPDATE_CURRENT_COMPOSITE_REPLIES_UPDATE_OR_CREATE_COMPOSITE_REPLY_STATE_VIA_ID_NO_ANSWER",
+          payload: {
+            workspaceMaterialReplyId: replyId,
+            state: successState,
+            workspaceMaterialId,
+          },
+        });
 
-      callback && callback();
-    } catch (err) {
-      if (!(err instanceof MApiError)) {
-        throw err;
+        callback && callback();
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          displayNotification(
+            getState().i18n.text.get(
+              "plugin.workspace.management.notification.failedToUpdateMaterialAnswersState"
+            ),
+            "error"
+          )
+        );
       }
-      dispatch(
-        displayNotification(
-          getState().i18n.text.get(
-            "plugin.workspace.management.notification.failedToUpdateMaterialAnswersState"
-          ),
-          "error"
-        )
-      );
-    }
+    };
   };
-};
 
+/**
+ * CreateWorkspaceJournalForCurrentWorkspaceTriggerType
+ */
 export interface CreateWorkspaceJournalForCurrentWorkspaceTriggerType {
   (data: {
     title: string;
@@ -2209,6 +2448,9 @@ export interface CreateWorkspaceJournalForCurrentWorkspaceTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * UpdateWorkspaceJournalInCurrentWorkspaceTriggerType
+ */
 export interface UpdateWorkspaceJournalInCurrentWorkspaceTriggerType {
   (data: {
     journal: WorkspaceJournalType;
@@ -2219,6 +2461,9 @@ export interface UpdateWorkspaceJournalInCurrentWorkspaceTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * DeleteWorkspaceJournalInCurrentWorkspaceTriggerType
+ */
 export interface DeleteWorkspaceJournalInCurrentWorkspaceTriggerType {
   (data: {
     journal: WorkspaceJournalType;
@@ -2227,10 +2472,16 @@ export interface DeleteWorkspaceJournalInCurrentWorkspaceTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * LoadWorkspaceDetailsInCurrentWorkspaceTriggerType
+ */
 export interface LoadWorkspaceDetailsInCurrentWorkspaceTriggerType {
   (): AnyActionType;
 }
 
+/**
+ * UpdateWorkspaceDetailsForCurrentWorkspaceTriggerType
+ */
 export interface UpdateWorkspaceDetailsForCurrentWorkspaceTriggerType {
   (data: {
     newDetails: WorkspaceDetailsType;
@@ -2239,10 +2490,16 @@ export interface UpdateWorkspaceDetailsForCurrentWorkspaceTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * LoadWorkspaceChatStatusTriggerType
+ */
 export interface LoadWorkspaceChatStatusTriggerType {
   (): AnyActionType;
 }
 
+/**
+ * UpdateWorkspaceProducersForCurrentWorkspaceTriggerType
+ */
 export interface UpdateWorkspaceProducersForCurrentWorkspaceTriggerType {
   (data: {
     appliedProducers: Array<WorkspaceProducerType>;
@@ -2251,10 +2508,16 @@ export interface UpdateWorkspaceProducersForCurrentWorkspaceTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * LoadWorkspaceTypesTriggerType
+ */
 export interface LoadWorkspaceTypesTriggerType {
   (): AnyActionType;
 }
 
+/**
+ * DeleteCurrentWorkspaceImageTriggerType
+ */
 export interface DeleteCurrentWorkspaceImageTriggerType {
   (): AnyActionType;
 }
@@ -2267,6 +2530,9 @@ export type CopyCurrentWorkspaceStepType =
   | "copy-background-picture"
   | "done";
 
+/**
+ * CopyCurrentWorkspaceTriggerType
+ */
 export interface CopyCurrentWorkspaceTriggerType {
   (data: {
     description: string;
@@ -2300,6 +2566,9 @@ export type UpdateWorkspaceStateType =
   | "remove-teachers"
   | "done";
 
+/**
+ * CreateWorkspaceTriggerType
+ */
 export interface CreateWorkspaceTriggerType {
   (data: {
     id: number;
@@ -2316,371 +2585,398 @@ export interface CreateWorkspaceTriggerType {
   }): AnyActionType;
 }
 
-let createWorkspaceJournalForCurrentWorkspace: CreateWorkspaceJournalForCurrentWorkspaceTriggerType = function createWorkspaceJournalForCurrentWorkspace(
-  data
-) {
-  return async (
-    dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType
-  ) => {
-    try {
-      let state: StateType = getState();
-      let newJournal: WorkspaceJournalType = <WorkspaceJournalType>(
+/**
+ * createWorkspaceJournalForCurrentWorkspace
+ * @param data data
+ */
+const createWorkspaceJournalForCurrentWorkspace: CreateWorkspaceJournalForCurrentWorkspaceTriggerType =
+  function createWorkspaceJournalForCurrentWorkspace(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      try {
+        const state: StateType = getState();
+        const newJournal: WorkspaceJournalType = <WorkspaceJournalType>(
+          await promisify(
+            mApi().workspace.workspaces.journal.create(
+              state.workspaces.currentWorkspace.id,
+              {
+                content: data.content,
+                title: data.title,
+              }
+            ),
+            "callback"
+          )()
+        );
+
+        const currentWorkspace: WorkspaceType =
+          getState().workspaces.currentWorkspace;
+
+        dispatch({
+          type: "UPDATE_WORKSPACE",
+          payload: {
+            original: currentWorkspace,
+            update: {
+              journals: {
+                journals: [newJournal].concat(
+                  currentWorkspace.journals.journals
+                ),
+                hasMore: currentWorkspace.journals.hasMore,
+                userEntityId: currentWorkspace.journals.userEntityId,
+                state: currentWorkspace.journals.state,
+              },
+            },
+          },
+        });
+
+        data.success && data.success();
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          displayNotification(
+            getState().i18n.text.get(
+              "plugin.workspace.management.notification.failedToCreateJournal"
+            ),
+            "error"
+          )
+        );
+        data.fail && data.fail();
+      }
+    };
+  };
+
+/**
+ * updateWorkspaceJournalInCurrentWorkspace
+ * @param data data
+ */
+const updateWorkspaceJournalInCurrentWorkspace: UpdateWorkspaceJournalInCurrentWorkspaceTriggerType =
+  function updateWorkspaceJournalInCurrentWorkspace(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      try {
+        const state: StateType = getState();
         await promisify(
-          mApi().workspace.workspaces.journal.create(
+          mApi().workspace.workspaces.journal.update(
             state.workspaces.currentWorkspace.id,
+            data.journal.id,
             {
+              id: data.journal.id,
+              workspaceEntityId: state.workspaces.currentWorkspace.id,
               content: data.content,
               title: data.title,
             }
           ),
           "callback"
-        )()
-      );
+        )();
 
-      let currentWorkspace: WorkspaceType = getState().workspaces
-        .currentWorkspace;
+        const currentWorkspace: WorkspaceType =
+          getState().workspaces.currentWorkspace;
 
-      dispatch({
-        type: "UPDATE_WORKSPACE",
-        payload: {
-          original: currentWorkspace,
-          update: {
-            journals: {
-              journals: [newJournal].concat(currentWorkspace.journals.journals),
-              hasMore: currentWorkspace.journals.hasMore,
-              userEntityId: currentWorkspace.journals.userEntityId,
-              state: currentWorkspace.journals.state,
+        dispatch({
+          type: "UPDATE_WORKSPACE",
+          payload: {
+            original: currentWorkspace,
+            update: {
+              journals: {
+                journals: currentWorkspace.journals.journals.map((j) => {
+                  if (j.id === data.journal.id) {
+                    return { ...j, content: data.content, title: data.title };
+                  }
+                  return j;
+                }),
+                hasMore: currentWorkspace.journals.hasMore,
+                userEntityId: currentWorkspace.journals.userEntityId,
+                state: currentWorkspace.journals.state,
+              },
             },
           },
-        },
-      });
+        });
 
-      data.success && data.success();
-    } catch (err) {
-      if (!(err instanceof MApiError)) {
-        throw err;
-      }
-      dispatch(
-        displayNotification(
-          getState().i18n.text.get(
-            "plugin.workspace.management.notification.failedToCreateJournal"
-          ),
-          "error"
-        )
-      );
-      data.fail && data.fail();
-    }
-  };
-};
-
-let updateWorkspaceJournalInCurrentWorkspace: UpdateWorkspaceJournalInCurrentWorkspaceTriggerType = function updateWorkspaceJournalInCurrentWorkspace(
-  data
-) {
-  return async (
-    dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType
-  ) => {
-    try {
-      let state: StateType = getState();
-      await promisify(
-        mApi().workspace.workspaces.journal.update(
-          state.workspaces.currentWorkspace.id,
-          data.journal.id,
-          {
-            id: data.journal.id,
-            workspaceEntityId: state.workspaces.currentWorkspace.id,
-            content: data.content,
-            title: data.title,
-          }
-        ),
-        "callback"
-      )();
-
-      let currentWorkspace: WorkspaceType = getState().workspaces
-        .currentWorkspace;
-
-      dispatch({
-        type: "UPDATE_WORKSPACE",
-        payload: {
-          original: currentWorkspace,
-          update: {
-            journals: {
-              journals: currentWorkspace.journals.journals.map((j) => {
-                if (j.id === data.journal.id) {
-                  return { ...j, content: data.content, title: data.title };
-                }
-                return j;
-              }),
-              hasMore: currentWorkspace.journals.hasMore,
-              userEntityId: currentWorkspace.journals.userEntityId,
-              state: currentWorkspace.journals.state,
-            },
-          },
-        },
-      });
-
-      data.success && data.success();
-    } catch (err) {
-      if (!(err instanceof MApiError)) {
-        throw err;
-      }
-      dispatch(
-        displayNotification(
-          getState().i18n.text.get(
-            "plugin.workspace.management.notification.failedToUpdateJournal"
-          ),
-          "error"
-        )
-      );
-      data.fail && data.fail();
-    }
-  };
-};
-
-let deleteWorkspaceJournalInCurrentWorkspace: DeleteWorkspaceJournalInCurrentWorkspaceTriggerType = function deleteWorkspaceJournalInCurrentWorkspace(
-  data
-) {
-  return async (
-    dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType
-  ) => {
-    try {
-      let state: StateType = getState();
-      await promisify(
-        mApi().workspace.workspaces.journal.del(
-          state.workspaces.currentWorkspace.id,
-          data.journal.id
-        ),
-        "callback"
-      )();
-
-      let currentWorkspace: WorkspaceType = getState().workspaces
-        .currentWorkspace;
-
-      dispatch({
-        type: "UPDATE_WORKSPACE",
-        payload: {
-          original: currentWorkspace,
-          update: {
-            journals: {
-              journals: currentWorkspace.journals.journals.filter(
-                (j) => j.id !== data.journal.id
-              ),
-              hasMore: currentWorkspace.journals.hasMore,
-              userEntityId: currentWorkspace.journals.userEntityId,
-              state: currentWorkspace.journals.state,
-            },
-          },
-        },
-      });
-
-      data.success && data.success();
-    } catch (err) {
-      if (!(err instanceof MApiError)) {
-        throw err;
-      }
-      dispatch(
-        displayNotification(
-          getState().i18n.text.get(
-            "plugin.workspace.management.notification.failedToDeleteJournal"
-          ),
-          "error"
-        )
-      );
-      data.fail && data.fail();
-    }
-  };
-};
-
-let loadWorkspaceChatStatus: LoadWorkspaceChatStatusTriggerType = function loadWorkspaceChatStatus() {
-  return async (
-    dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType
-  ) => {
-    try {
-      let chatStatus: WorkspaceChatStatusType = <WorkspaceChatStatusType>(
-        await promisify(
-          mApi().chat.workspaceChatSettings.read(
-            getState().workspaces.currentWorkspace.id
-          ),
-          "callback"
-        )()
-      );
-
-      let currentWorkspace: WorkspaceType = getState().workspaces
-        .currentWorkspace;
-
-      dispatch({
-        type: "UPDATE_WORKSPACE",
-        payload: {
-          original: currentWorkspace,
-          update: { chatStatus },
-        },
-      });
-    } catch (err) {
-      if (!(err instanceof MApiError)) {
-        throw err;
-      }
-      dispatch(
-        displayNotification(
-          getState().i18n.text.get(
-            "plugin.workspace.management.notification.failedToLoadChatSettigns"
-          ),
-          "error"
-        )
-      );
-    }
-  };
-};
-
-let loadWorkspaceDetailsInCurrentWorkspace: LoadWorkspaceDetailsInCurrentWorkspaceTriggerType = function loadWorkspaceDetailsInCurrentWorkspace() {
-  return async (
-    dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType
-  ) => {
-    try {
-      let details: WorkspaceDetailsType = <WorkspaceDetailsType>(
-        await promisify(
-          mApi().workspace.workspaces.details.read(
-            getState().workspaces.currentWorkspace.id
-          ),
-          "callback"
-        )()
-      );
-      let currentWorkspace: WorkspaceType = getState().workspaces
-        .currentWorkspace;
-
-      dispatch({
-        type: "UPDATE_WORKSPACE",
-        payload: {
-          original: currentWorkspace,
-          update: {
-            details,
-          },
-        },
-      });
-    } catch (err) {
-      if (!(err instanceof MApiError)) {
-        throw err;
-      }
-      dispatch(
-        displayNotification(
-          getState().i18n.text.get(
-            "plugin.workspace.management.notification.failedToLoadDetails"
-          ),
-          "error"
-        )
-      );
-    }
-  };
-};
-
-let updateWorkspaceDetailsForCurrentWorkspace: UpdateWorkspaceDetailsForCurrentWorkspaceTriggerType = function updateWorkspaceDetailsForCurrentWorkspace(
-  data
-) {
-  return async (
-    dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType
-  ) => {
-    try {
-      let state: StateType = getState();
-
-      await promisify(
-        mApi().workspace.workspaces.details.update(
-          state.workspaces.currentWorkspace.id,
-          data.newDetails
-        ),
-        "callback"
-      )();
-
-      let currentWorkspace: WorkspaceType = getState().workspaces
-        .currentWorkspace;
-
-      dispatch({
-        type: "UPDATE_WORKSPACE",
-        payload: {
-          original: currentWorkspace,
-          update: {
-            details: data.newDetails,
-          },
-        },
-      });
-
-      data.success && data.success();
-    } catch (err) {
-      if (!(err instanceof MApiError)) {
-        throw err;
-      }
-      dispatch(
-        displayNotification(
-          getState().i18n.text.get(
-            "plugin.workspace.management.notification.failedToUpdateDetails"
-          ),
-          "error"
-        )
-      );
-      data.fail && data.fail();
-    }
-  };
-};
-
-let updateWorkspaceProducersForCurrentWorkspace: UpdateWorkspaceProducersForCurrentWorkspaceTriggerType = function updateWorkspaceProducersForCurrentWorkspace(
-  data
-) {
-  return async (
-    dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType
-  ) => {
-    try {
-      let state: StateType = getState();
-      let existingProducers = state.workspaces.currentWorkspace.producers;
-
-      let workspaceProducersToAdd =
-        existingProducers.length == 0
-          ? data.appliedProducers
-          : data.appliedProducers.filter((producer) => {
-            if (!producer.id) {
-              return producer;
-            }
-          });
-
-      let workspaceProducersToDelete = existingProducers.filter((producer) => {
-        if (producer.id) {
-          return !data.appliedProducers.find(
-            (keepProducer) => keepProducer.id === producer.id
-          );
+        data.success && data.success();
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
         }
-      });
-
-      await Promise.all(
-        workspaceProducersToAdd
-          .map((p) =>
-            promisify(
-              mApi().workspace.workspaces.materialProducers.create(
-                state.workspaces.currentWorkspace.id,
-                p
-              ),
-              "callback"
-            )()
+        dispatch(
+          displayNotification(
+            getState().i18n.text.get(
+              "plugin.workspace.management.notification.failedToUpdateJournal"
+            ),
+            "error"
           )
-          .concat(
-            workspaceProducersToDelete.map((p) =>
+        );
+        data.fail && data.fail();
+      }
+    };
+  };
+
+/**
+ * deleteWorkspaceJournalInCurrentWorkspace
+ * @param data data
+ */
+const deleteWorkspaceJournalInCurrentWorkspace: DeleteWorkspaceJournalInCurrentWorkspaceTriggerType =
+  function deleteWorkspaceJournalInCurrentWorkspace(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      try {
+        const state: StateType = getState();
+        await promisify(
+          mApi().workspace.workspaces.journal.del(
+            state.workspaces.currentWorkspace.id,
+            data.journal.id
+          ),
+          "callback"
+        )();
+
+        const currentWorkspace: WorkspaceType =
+          getState().workspaces.currentWorkspace;
+
+        dispatch({
+          type: "UPDATE_WORKSPACE",
+          payload: {
+            original: currentWorkspace,
+            update: {
+              journals: {
+                journals: currentWorkspace.journals.journals.filter(
+                  (j) => j.id !== data.journal.id
+                ),
+                hasMore: currentWorkspace.journals.hasMore,
+                userEntityId: currentWorkspace.journals.userEntityId,
+                state: currentWorkspace.journals.state,
+              },
+            },
+          },
+        });
+
+        data.success && data.success();
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          displayNotification(
+            getState().i18n.text.get(
+              "plugin.workspace.management.notification.failedToDeleteJournal"
+            ),
+            "error"
+          )
+        );
+        data.fail && data.fail();
+      }
+    };
+  };
+
+/**
+ * loadWorkspaceChatStatus
+ */
+const loadWorkspaceChatStatus: LoadWorkspaceChatStatusTriggerType =
+  function loadWorkspaceChatStatus() {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      try {
+        const chatStatus: WorkspaceChatStatusType = <WorkspaceChatStatusType>(
+          await promisify(
+            mApi().chat.workspaceChatSettings.read(
+              getState().workspaces.currentWorkspace.id
+            ),
+            "callback"
+          )()
+        );
+
+        const currentWorkspace: WorkspaceType =
+          getState().workspaces.currentWorkspace;
+
+        dispatch({
+          type: "UPDATE_WORKSPACE",
+          payload: {
+            original: currentWorkspace,
+            update: { chatStatus },
+          },
+        });
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          displayNotification(
+            getState().i18n.text.get(
+              "plugin.workspace.management.notification.failedToLoadChatSettigns"
+            ),
+            "error"
+          )
+        );
+      }
+    };
+  };
+
+/**
+ * loadWorkspaceDetailsInCurrentWorkspace
+ */
+const loadWorkspaceDetailsInCurrentWorkspace: LoadWorkspaceDetailsInCurrentWorkspaceTriggerType =
+  function loadWorkspaceDetailsInCurrentWorkspace() {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      try {
+        const details: WorkspaceDetailsType = <WorkspaceDetailsType>(
+          await promisify(
+            mApi().workspace.workspaces.details.read(
+              getState().workspaces.currentWorkspace.id
+            ),
+            "callback"
+          )()
+        );
+        const currentWorkspace: WorkspaceType =
+          getState().workspaces.currentWorkspace;
+
+        dispatch({
+          type: "UPDATE_WORKSPACE",
+          payload: {
+            original: currentWorkspace,
+            update: {
+              details,
+            },
+          },
+        });
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          displayNotification(
+            getState().i18n.text.get(
+              "plugin.workspace.management.notification.failedToLoadDetails"
+            ),
+            "error"
+          )
+        );
+      }
+    };
+  };
+
+/**
+ * updateWorkspaceDetailsForCurrentWorkspace
+ * @param data data
+ */
+const updateWorkspaceDetailsForCurrentWorkspace: UpdateWorkspaceDetailsForCurrentWorkspaceTriggerType =
+  function updateWorkspaceDetailsForCurrentWorkspace(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      try {
+        const state: StateType = getState();
+
+        await promisify(
+          mApi().workspace.workspaces.details.update(
+            state.workspaces.currentWorkspace.id,
+            data.newDetails
+          ),
+          "callback"
+        )();
+
+        const currentWorkspace: WorkspaceType =
+          getState().workspaces.currentWorkspace;
+
+        dispatch({
+          type: "UPDATE_WORKSPACE",
+          payload: {
+            original: currentWorkspace,
+            update: {
+              details: data.newDetails,
+            },
+          },
+        });
+
+        data.success && data.success();
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          displayNotification(
+            getState().i18n.text.get(
+              "plugin.workspace.management.notification.failedToUpdateDetails"
+            ),
+            "error"
+          )
+        );
+        data.fail && data.fail();
+      }
+    };
+  };
+
+/**
+ * updateWorkspaceProducersForCurrentWorkspace
+ * @param data data
+ */
+const updateWorkspaceProducersForCurrentWorkspace: UpdateWorkspaceProducersForCurrentWorkspaceTriggerType =
+  function updateWorkspaceProducersForCurrentWorkspace(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      try {
+        const state: StateType = getState();
+        const existingProducers = state.workspaces.currentWorkspace.producers;
+
+        const workspaceProducersToAdd =
+          existingProducers.length == 0
+            ? data.appliedProducers
+            : data.appliedProducers.filter((producer) => {
+                if (!producer.id) {
+                  return producer;
+                }
+              });
+
+        const workspaceProducersToDelete = existingProducers.filter(
+          (producer) => {
+            if (producer.id) {
+              return !data.appliedProducers.find(
+                (keepProducer) => keepProducer.id === producer.id
+              );
+            }
+          }
+        );
+
+        await Promise.all(
+          workspaceProducersToAdd
+            .map((p) =>
               promisify(
-                mApi().workspace.workspaces.materialProducers.del(
+                mApi().workspace.workspaces.materialProducers.create(
                   state.workspaces.currentWorkspace.id,
-                  p.id
+                  p
                 ),
                 "callback"
               )()
             )
-          )
-      );
+            .concat(
+              workspaceProducersToDelete.map((p) =>
+                promisify(
+                  mApi().workspace.workspaces.materialProducers.del(
+                    state.workspaces.currentWorkspace.id,
+                    p.id
+                  ),
+                  "callback"
+                )()
+              )
+            )
+        );
 
-      // For some reason the results of the request don't give the new workspace producers
-      // it's a mess but whatever
-      let newActualWorkspaceProducers: Array<WorkspaceProducerType> = <
-        Array<WorkspaceProducerType>
+        // For some reason the results of the request don't give the new workspace producers
+        // it's a mess but whatever
+        const newActualWorkspaceProducers: Array<WorkspaceProducerType> = <
+          Array<WorkspaceProducerType>
         >await promisify(
           mApi()
             .workspace.workspaces.materialProducers.cacheClear()
@@ -2688,122 +2984,134 @@ let updateWorkspaceProducersForCurrentWorkspace: UpdateWorkspaceProducersForCurr
           "callback"
         )();
 
-      let currentWorkspace: WorkspaceType = getState().workspaces
-        .currentWorkspace;
+        const currentWorkspace: WorkspaceType =
+          getState().workspaces.currentWorkspace;
 
-      dispatch({
-        type: "UPDATE_WORKSPACE",
-        payload: {
-          original: currentWorkspace,
-          update: {
-            producers: newActualWorkspaceProducers,
+        dispatch({
+          type: "UPDATE_WORKSPACE",
+          payload: {
+            original: currentWorkspace,
+            update: {
+              producers: newActualWorkspaceProducers,
+            },
           },
-        },
-      });
+        });
 
-      data.success && data.success();
-    } catch (err) {
-      if (!(err instanceof MApiError)) {
-        throw err;
+        data.success && data.success();
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          displayNotification(
+            getState().i18n.text.get(
+              "plugin.workspace.management.notification.failedToUpdateProducers"
+            ),
+            "error"
+          )
+        );
+        data.fail && data.fail();
       }
-      dispatch(
-        displayNotification(
-          getState().i18n.text.get(
-            "plugin.workspace.management.notification.failedToUpdateProducers"
-          ),
-          "error"
-        )
-      );
-      data.fail && data.fail();
-    }
+    };
   };
-};
 
-let loadWorkspaceTypes: LoadWorkspaceTypesTriggerType = function loadWorkspaceTypes() {
-  return async (
-    dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType
-  ) => {
-    try {
-      let workspaceTypes: Array<WorkspaceTypeType> = <Array<WorkspaceTypeType>>(
-        await promisify(mApi().workspace.workspaceTypes.read(), "callback")()
-      );
+/**
+ * loadWorkspaceTypes
+ */
+const loadWorkspaceTypes: LoadWorkspaceTypesTriggerType =
+  function loadWorkspaceTypes() {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      try {
+        const workspaceTypes: Array<WorkspaceTypeType> = <
+          Array<WorkspaceTypeType>
+        >await promisify(mApi().workspace.workspaceTypes.read(), "callback")();
 
-      dispatch({
-        type: "UPDATE_WORKSPACES_ALL_PROPS",
-        payload: {
-          types: workspaceTypes,
-        },
-      });
-    } catch (err) {
-      if (!(err instanceof MApiError)) {
-        throw err;
-      }
-      dispatch(
-        displayNotification(
-          getState().i18n.text.get(
-            "plugin.workspace.management.notification.failedToLoadWorkspaceTypes "
-          ),
-          "error"
-        )
-      );
-    }
-  };
-};
-
-let deleteCurrentWorkspaceImage: DeleteCurrentWorkspaceImageTriggerType = function deleteCurrentWorkspaceImage() {
-  return async (
-    dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType
-  ) => {
-    try {
-      let state: StateType = getState();
-      await Promise.all([
-        promisify(
-          mApi().workspace.workspaces.workspacefile.del(
-            state.workspaces.currentWorkspace.id,
-            "workspace-frontpage-image-cropped"
-          ),
-          "callback"
-        )(),
-        promisify(
-          mApi().workspace.workspaces.del(
-            state.workspaces.currentWorkspace.id,
-            "workspace-frontpage-image-original"
-          ),
-          "callback"
-        )(),
-      ]);
-
-      let currentWorkspace: WorkspaceType = getState().workspaces
-        .currentWorkspace;
-
-      dispatch({
-        type: "UPDATE_WORKSPACE",
-        payload: {
-          original: currentWorkspace,
-          update: {
-            hasCustomImage: false,
+        dispatch({
+          type: "UPDATE_WORKSPACES_ALL_PROPS",
+          payload: {
+            types: workspaceTypes,
           },
-        },
-      });
-    } catch (err) {
-      if (!(err instanceof MApiError)) {
-        throw err;
+        });
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          displayNotification(
+            getState().i18n.text.get(
+              "plugin.workspace.management.notification.failedToLoadWorkspaceTypes "
+            ),
+            "error"
+          )
+        );
       }
-      dispatch(
-        displayNotification(
-          getState().i18n.text.get(
-            "plugin.workspace.management.notification.failedToDeleteImage"
-          ),
-          "error"
-        )
-      );
-    }
+    };
   };
-};
 
-let createWorkspace: CreateWorkspaceTriggerType = function createWorkspace(
+/**
+ * deleteCurrentWorkspaceImage
+ */
+const deleteCurrentWorkspaceImage: DeleteCurrentWorkspaceImageTriggerType =
+  function deleteCurrentWorkspaceImage() {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      try {
+        const state: StateType = getState();
+        await Promise.all([
+          promisify(
+            mApi().workspace.workspaces.workspacefile.del(
+              state.workspaces.currentWorkspace.id,
+              "workspace-frontpage-image-cropped"
+            ),
+            "callback"
+          )(),
+          promisify(
+            mApi().workspace.workspaces.del(
+              state.workspaces.currentWorkspace.id,
+              "workspace-frontpage-image-original"
+            ),
+            "callback"
+          )(),
+        ]);
+
+        const currentWorkspace: WorkspaceType =
+          getState().workspaces.currentWorkspace;
+
+        dispatch({
+          type: "UPDATE_WORKSPACE",
+          payload: {
+            original: currentWorkspace,
+            update: {
+              hasCustomImage: false,
+            },
+          },
+        });
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          displayNotification(
+            getState().i18n.text.get(
+              "plugin.workspace.management.notification.failedToDeleteImage"
+            ),
+            "error"
+          )
+        );
+      }
+    };
+  };
+
+/**
+ * createWorkspace
+ * @param data data
+ */
+const createWorkspace: CreateWorkspaceTriggerType = function createWorkspace(
   data
 ) {
   return async (
@@ -2811,7 +3119,7 @@ let createWorkspace: CreateWorkspaceTriggerType = function createWorkspace(
     getState: () => StateType
   ) => {
     try {
-      let workspace: WorkspaceType = <WorkspaceType>await promisify(
+      const workspace: WorkspaceType = <WorkspaceType>await promisify(
         mApi().workspace.workspaces.create(
           {
             name: data.name,
@@ -2844,8 +3152,8 @@ let createWorkspace: CreateWorkspaceTriggerType = function createWorkspace(
       }
 
       if (data.students.length > 0) {
-        let groupIdentifiers: number[] = [];
-        let studentIdentifiers: string[] = [];
+        const groupIdentifiers: number[] = [];
+        const studentIdentifiers: string[] = [];
 
         data.students.map((student) => {
           if (student.type === "student-group") {
@@ -2869,12 +3177,15 @@ let createWorkspace: CreateWorkspaceTriggerType = function createWorkspace(
       }
 
       if (data.staff.length > 0) {
-        let staffMemberIdentifiers = data.staff.map((staff) => staff.id);
+        const staffMemberIdentifiers = data.staff.map((staff) => staff.id);
 
         await promisify(
-          mApi().organizationWorkspaceManagement.workspaces.staff.create(workspace.id, {
-            staffMemberIdentifiers: staffMemberIdentifiers,
-          }),
+          mApi().organizationWorkspaceManagement.workspaces.staff.create(
+            workspace.id,
+            {
+              staffMemberIdentifiers: staffMemberIdentifiers,
+            }
+          ),
           "callback"
         )().then(data.progress && data.progress("add-teachers"));
       }
@@ -2899,200 +3210,210 @@ let createWorkspace: CreateWorkspaceTriggerType = function createWorkspace(
   };
 };
 
-let copyCurrentWorkspace: CopyCurrentWorkspaceTriggerType = function copyCurrentWorkspace(
-  data
-) {
-  return async (
-    dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType
-  ) => {
-    try {
-      let currentWorkspace: WorkspaceType = getState().workspaces
-        .currentWorkspace;
-      let cloneWorkspace: WorkspaceType = <WorkspaceType>await promisify(
-        mApi().workspace.workspaces.create(
-          {
-            name: data.name,
-            nameExtension: data.nameExtension,
-            description: data.description,
-          },
-          {
-            sourceWorkspaceEntityId: currentWorkspace.id,
-          }
-        ),
-        "callback"
-      )();
-
-      data.success && data.success("initial-copy", cloneWorkspace);
-
-      if (data.copyDiscussionAreas) {
-        await promisify(
-          mApi().workspace.workspaces.forumAreas.create(
-            cloneWorkspace.id,
-            {},
-            { sourceWorkspaceEntityId: currentWorkspace.id }
-          ),
-          "callback"
-        )();
-        data.success && data.success("copy-areas", cloneWorkspace);
-      }
-
-      if (data.copyMaterials !== "NO") {
-        await promisify(
-          mApi().workspace.workspaces.materials.create(
-            cloneWorkspace.id,
-            {},
+/**
+ * copyCurrentWorkspace
+ * @param data data
+ */
+const copyCurrentWorkspace: CopyCurrentWorkspaceTriggerType =
+  function copyCurrentWorkspace(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      try {
+        const currentWorkspace: WorkspaceType =
+          getState().workspaces.currentWorkspace;
+        const cloneWorkspace: WorkspaceType = <WorkspaceType>await promisify(
+          mApi().workspace.workspaces.create(
+            {
+              name: data.name,
+              nameExtension: data.nameExtension,
+              description: data.description,
+            },
             {
               sourceWorkspaceEntityId: currentWorkspace.id,
-              targetWorkspaceEntityId: cloneWorkspace.id,
-              copyOnlyChildren: true,
-              cloneMaterials: data.copyMaterials === "CLONE",
             }
           ),
           "callback"
         )();
-        data.success && data.success("copy-materials", cloneWorkspace);
-      }
 
-      cloneWorkspace.details = <WorkspaceDetailsType>(
-        await promisify(
-          mApi().workspace.workspaces.details.read(cloneWorkspace.id),
-          "callback"
-        )()
-      );
+        data.success && data.success("initial-copy", cloneWorkspace);
 
-      cloneWorkspace.details = <WorkspaceDetailsType>await promisify(
-        mApi().workspace.workspaces.details.update(cloneWorkspace.id, {
-          ...cloneWorkspace.details,
-          beginDate: data.beginDate,
-          endDate: data.endDate,
-        }),
-        "callback"
-      )();
+        if (data.copyDiscussionAreas) {
+          await promisify(
+            mApi().workspace.workspaces.forumAreas.create(
+              cloneWorkspace.id,
+              {},
+              { sourceWorkspaceEntityId: currentWorkspace.id }
+            ),
+            "callback"
+          )();
+          data.success && data.success("copy-areas", cloneWorkspace);
+        }
 
-      data.success && data.success("change-date", cloneWorkspace);
+        if (data.copyMaterials !== "NO") {
+          await promisify(
+            mApi().workspace.workspaces.materials.create(
+              cloneWorkspace.id,
+              {},
+              {
+                sourceWorkspaceEntityId: currentWorkspace.id,
+                targetWorkspaceEntityId: cloneWorkspace.id,
+                copyOnlyChildren: true,
+                cloneMaterials: data.copyMaterials === "CLONE",
+              }
+            ),
+            "callback"
+          )();
+          data.success && data.success("copy-materials", cloneWorkspace);
+        }
 
-      if (data.copyBackgroundPicture) {
-        await promisify(
-          mApi().workspace.workspaces.workspacefilecopy.create(
-            currentWorkspace.id,
-            cloneWorkspace.id
-          ),
+        cloneWorkspace.details = <WorkspaceDetailsType>(
+          await promisify(
+            mApi().workspace.workspaces.details.read(cloneWorkspace.id),
+            "callback"
+          )()
+        );
+
+        cloneWorkspace.details = <WorkspaceDetailsType>await promisify(
+          mApi().workspace.workspaces.details.update(cloneWorkspace.id, {
+            ...cloneWorkspace.details,
+            beginDate: data.beginDate,
+            endDate: data.endDate,
+          }),
           "callback"
         )();
-        data.success && data.success("copy-background-picture", cloneWorkspace);
-      }
 
-      data.success && data.success("done", cloneWorkspace);
-    } catch (err) {
-      if (!(err instanceof MApiError)) {
-        throw err;
-      }
-      dispatch(
-        displayNotification(
-          getState().i18n.text.get(
-            "plugin.workspace.management.notification.failedToCloneWorkspace"
-          ),
-          "error"
-        )
-      );
+        data.success && data.success("change-date", cloneWorkspace);
 
-      data.fail && data.fail();
-    }
+        if (data.copyBackgroundPicture) {
+          await promisify(
+            mApi().workspace.workspaces.workspacefilecopy.create(
+              currentWorkspace.id,
+              cloneWorkspace.id
+            ),
+            "callback"
+          )();
+          data.success &&
+            data.success("copy-background-picture", cloneWorkspace);
+        }
+
+        data.success && data.success("done", cloneWorkspace);
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          displayNotification(
+            getState().i18n.text.get(
+              "plugin.workspace.management.notification.failedToCloneWorkspace"
+            ),
+            "error"
+          )
+        );
+
+        data.fail && data.fail();
+      }
+    };
   };
-};
 
-let updateCurrentWorkspaceImagesB64: UpdateCurrentWorkspaceImagesB64TriggerType = function updateCurrentWorkspaceImagesB64(
-  data
-) {
-  return async (
-    dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType
-  ) => {
-    try {
-      let state: StateType = getState();
-      let currentWorkspace: WorkspaceType = getState().workspaces
-        .currentWorkspace;
-      let mimeTypeRegex = /data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/;
-      let mimeTypeOriginal =
-        data.originalB64 && data.originalB64.match(mimeTypeRegex)[1];
-      let mimeTypeCropped =
-        data.croppedB64 && data.croppedB64.match(mimeTypeRegex)[1];
+/**
+ * updateCurrentWorkspaceImagesB64
+ * @param data data
+ */
+const updateCurrentWorkspaceImagesB64: UpdateCurrentWorkspaceImagesB64TriggerType =
+  function updateCurrentWorkspaceImagesB64(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      try {
+        const currentWorkspace: WorkspaceType =
+          getState().workspaces.currentWorkspace;
+        const mimeTypeRegex = /data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/;
+        const mimeTypeOriginal =
+          data.originalB64 && data.originalB64.match(mimeTypeRegex)[1];
+        const mimeTypeCropped =
+          data.croppedB64 && data.croppedB64.match(mimeTypeRegex)[1];
 
-      if (data.delete) {
-        await promisify(
-          mApi().workspace.workspaces.workspacefile.del(
-            currentWorkspace.id,
-            "workspace-frontpage-image-cropped"
-          ),
-          "callback"
-        )();
-      } else if (data.croppedB64) {
-        await promisify(
-          mApi().workspace.workspaces.workspacefile.create(
-            currentWorkspace.id,
-            {
-              fileIdentifier: "workspace-frontpage-image-cropped",
-              contentType: mimeTypeCropped,
-              base64Data: data.croppedB64,
-            }
-          ),
-          "callback"
-        )();
+        if (data.delete) {
+          await promisify(
+            mApi().workspace.workspaces.workspacefile.del(
+              currentWorkspace.id,
+              "workspace-frontpage-image-cropped"
+            ),
+            "callback"
+          )();
+        } else if (data.croppedB64) {
+          await promisify(
+            mApi().workspace.workspaces.workspacefile.create(
+              currentWorkspace.id,
+              {
+                fileIdentifier: "workspace-frontpage-image-cropped",
+                contentType: mimeTypeCropped,
+                base64Data: data.croppedB64,
+              }
+            ),
+            "callback"
+          )();
+        }
+
+        if (data.delete) {
+          await promisify(
+            mApi().workspace.workspaces.workspacefile.del(
+              currentWorkspace.id,
+              "workspace-frontpage-image-original"
+            ),
+            "callback"
+          )();
+        } else if (data.originalB64) {
+          await promisify(
+            mApi().workspace.workspaces.workspacefile.create(
+              currentWorkspace.id,
+              {
+                fileIdentifier: "workspace-frontpage-image-original",
+                contentType: mimeTypeOriginal,
+                base64Data: data.originalB64,
+              }
+            ),
+            "callback"
+          )();
+        }
+
+        data.success && data.success();
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+
+        dispatch(
+          displayNotification(
+            getState().i18n.text.get(
+              "plugin.workspace.management.notification.failedToUpdateImage"
+            ),
+            "error"
+          )
+        );
+
+        data.fail && data.fail();
       }
-
-      if (data.delete) {
-        await promisify(
-          mApi().workspace.workspaces.workspacefile.del(
-            currentWorkspace.id,
-            "workspace-frontpage-image-original"
-          ),
-          "callback"
-        )();
-      } else if (data.originalB64) {
-        await promisify(
-          mApi().workspace.workspaces.workspacefile.create(
-            currentWorkspace.id,
-            {
-              fileIdentifier: "workspace-frontpage-image-original",
-              contentType: mimeTypeOriginal,
-              base64Data: data.originalB64,
-            }
-          ),
-          "callback"
-        )();
-      }
-
-      data.success && data.success();
-    } catch (err) {
-      if (!(err instanceof MApiError)) {
-        throw err;
-      }
-
-      dispatch(
-        displayNotification(
-          getState().i18n.text.get(
-            "plugin.workspace.management.notification.failedToUpdateImage"
-          ),
-          "error"
-        )
-      );
-
-      data.fail && data.fail();
-    }
+    };
   };
-};
 
-let loadCurrentWorkspaceUserGroupPermissions: LoadCurrentWorkspaceUserGroupPermissionsTriggerType = function loadCurrentWorkspaceUserGroupPermissions() {
-  return async (
-    dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType
-  ) => {
-    try {
-      let currentWorkspace: WorkspaceType = getState().workspaces
-        .currentWorkspace;
-      let permissions: WorkspacePermissionsType[] = <
-        WorkspacePermissionsType[]
+/**
+ * loadCurrentWorkspaceUserGroupPermissions
+ */
+const loadCurrentWorkspaceUserGroupPermissions: LoadCurrentWorkspaceUserGroupPermissionsTriggerType =
+  function loadCurrentWorkspaceUserGroupPermissions() {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      try {
+        const currentWorkspace: WorkspaceType =
+          getState().workspaces.currentWorkspace;
+        const permissions: WorkspacePermissionsType[] = <
+          WorkspacePermissionsType[]
         >await promisify(
           mApi().workspace.workspaces.signupGroups.read(
             getState().workspaces.currentWorkspace.id
@@ -3100,801 +3421,859 @@ let loadCurrentWorkspaceUserGroupPermissions: LoadCurrentWorkspaceUserGroupPermi
           "callback"
         )();
 
-      dispatch({
-        type: "UPDATE_WORKSPACE",
-        payload: {
-          original: currentWorkspace,
-          update: {
-            permissions,
-          },
-        },
-      });
-    } catch (err) {
-      if (!(err instanceof MApiError)) {
-        throw err;
-      }
-      dispatch(
-        displayNotification(
-          getState().i18n.text.get(
-            "plugin.workspace.management.notification.failedToLoadWorkspacePermissions"
-          ),
-          "error"
-        )
-      );
-    }
-  };
-};
-
-let setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType = function setWorkspaceMaterialEditorState(
-  newState: WorkspaceMaterialEditorType,
-  loadCurrentDraftNodeValue
-) {
-  return async (
-    dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType
-  ) => {
-    const currentNodeValue = newState.currentNodeValue;
-    // TODO do mApi stuff
-    let currentDraftNodeValue;
-    const currentDraftNodeValueByStorage = localStorage.getItem(
-      "TEMPORARY_LOCAL_DRAFT_" +
-      currentNodeValue.workspaceMaterialId +
-      "_" +
-      newState.currentNodeWorkspace.id
-    );
-    if (!currentDraftNodeValueByStorage) {
-      newState.currentDraftNodeValue = { ...currentNodeValue };
-    } else {
-      newState.currentDraftNodeValue = JSON.parse(
-        currentDraftNodeValueByStorage
-      );
-    }
-    dispatch({
-      type: "UPDATE_WORKSPACES_ALL_PROPS",
-      payload: {
-        materialEditor: newState,
-      },
-    });
-  };
-};
-
-let requestWorkspaceMaterialContentNodeAttachments: RequestWorkspaceMaterialContentNodeAttachmentsTriggerType = function requestWorkspaceMaterialContentNodeAttachments(
-  workspace,
-  material
-) {
-  return async (
-    dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType
-  ) => {
-    try {
-      const childrenAttachments: MaterialContentNodeType[] =
-        ((await promisify(
-          mApi()
-            .workspace.workspaces.materials.cacheClear()
-            .read(workspace.id, {
-              parentId: material.workspaceMaterialId,
-            }),
-          "callback"
-        )()) as MaterialContentNodeType[]) || [];
-
-      dispatch({
-        type: "UPDATE_MATERIAL_CONTENT_NODE",
-        payload: {
-          showUpdateLinkedMaterialsDialogForPublish: false,
-          showUpdateLinkedMaterialsDialogForPublishCount: 0,
-          showRemoveAnswersDialogForPublish: false,
-          material: material,
-          update: {
-            childrenAttachments,
-          },
-          isDraft: false,
-        },
-      });
-    } catch (err) {
-      if (!(err instanceof MApiError)) {
-        throw err;
-      }
-    }
-  };
-};
-
-let updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType = function updateWorkspaceMaterialContentNode(
-  data
-) {
-  return async (
-    dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType
-  ) => {
-    try {
-      if (!data.dontTriggerReducerActions) {
         dispatch({
-          type: "UPDATE_MATERIAL_CONTENT_NODE",
+          type: "UPDATE_WORKSPACE",
           payload: {
-            showRemoveAnswersDialogForPublish: false,
-            showUpdateLinkedMaterialsDialogForPublish: false,
-            showUpdateLinkedMaterialsDialogForPublishCount: 0,
-            material: data.material,
-            update: data.update,
-            isDraft: data.isDraft,
-          },
-        });
-      }
-
-      if (!data.isDraft) {
-        // if we are not asked to update possibly linked materials
-        // and we actually have a material id because sections do not
-        // have a materialId
-        if (
-          !data.updateLinked &&
-          data.material.materialId &&
-          !data.dontTriggerReducerActions
-        ) {
-          const materialsAnswer: any[] = (await promisify(
-            mApi().materials.material.workspaceMaterials.read(
-              data.material.materialId
-            ),
-            "callback"
-          )()) as any;
-
-          if (materialsAnswer && materialsAnswer.length > 1) {
-            dispatch({
-              type: "UPDATE_MATERIAL_CONTENT_NODE",
-              payload: {
-                showRemoveAnswersDialogForPublish: false,
-                showUpdateLinkedMaterialsDialogForPublishCount:
-                  materialsAnswer.length,
-                showUpdateLinkedMaterialsDialogForPublish: true,
-                update: data.material,
-                material: data.material,
-                isDraft: false,
-              },
-            });
-            return;
-          }
-        }
-
-        if (
-          typeof data.update.html !== "undefined" &&
-          data.material.html !== data.update.html
-        ) {
-          await promisify(
-            mApi().materials.html.content.update(data.material.materialId, {
-              content: data.update.html,
-              removeAnswers: data.removeAnswers || false,
-            }),
-            "callback"
-          )();
-        }
-
-        let newPath = data.material.path;
-        let fields = [
-          "materialId",
-          "parentId",
-          "nextSiblingId",
-          "hidden",
-          "assignmentType",
-          "correctAnswers",
-          "path",
-          "title",
-        ];
-        if (data.material.type === "folder") {
-          fields = [
-            "hidden",
-            "nextSiblingId",
-            "parentId",
-            "title",
-            "path",
-            "viewRestrict",
-          ];
-        }
-        const result: any = {
-          id: data.material.workspaceMaterialId,
-        };
-        let changed = false;
-        fields.forEach((field) => {
-          if (
-            typeof (data.update as any)[field] !== "undefined" &&
-            (data.material as any)[field] !== (data.update as any)[field]
-          ) {
-            changed = true;
-          }
-          result[field] =
-            typeof (data.update as any)[field] !== "undefined"
-              ? (data.update as any)[field]
-              : (data.material as any)[field];
-        });
-        if (changed) {
-          let urlPath = "materials";
-          if (data.material.type === "folder") {
-            urlPath = "folders";
-          }
-          newPath = ((await promisify(
-            mApi().workspace.workspaces[urlPath].update(
-              data.workspace.id,
-              data.material.workspaceMaterialId,
-              result
-            ),
-            "callback"
-          )()) as any).path;
-        }
-
-        let materialFields = ["id", "license", "viewRestrict"];
-        if (data.material.type === "folder") {
-          fields = [];
-        }
-        const materialResult: any = {};
-        changed = false;
-        materialFields.forEach((field) => {
-          if (
-            typeof (data.update as any)[field] !== "undefined" &&
-            (data.material as any)[field] !== (data.update as any)[field]
-          ) {
-            changed = true;
-          }
-          materialResult[field] =
-            typeof (data.update as any)[field] !== "undefined"
-              ? (data.update as any)[field]
-              : (data.material as any)[field];
-        });
-        if (changed) {
-          await promisify(
-            mApi().materials.material.update(
-              data.material.materialId,
-              materialResult
-            ),
-            "callback"
-          )();
-        }
-
-        if (
-          typeof data.update.producers !== "undefined" &&
-          !equals(data.material.producers, data.update.producers)
-        ) {
-          const newProducers: MaterialContentNodeProducerType[] = await Promise.all<MaterialContentNodeProducerType>(
-            data.update.producers.map((p) => {
-              if (p.id === null) {
-                return <Promise<MaterialContentNodeProducerType>>(
-                  promisify(
-                    mApi().materials.material.producers.create(
-                      data.material.materialId,
-                      { name: p.name }
-                    ),
-                    "callback"
-                  )()
-                );
-              }
-              return p;
-            })
-          );
-          if (!data.dontTriggerReducerActions) {
-            dispatch({
-              type: "UPDATE_MATERIAL_CONTENT_NODE",
-              payload: {
-                showUpdateLinkedMaterialsDialogForPublish: false,
-                showUpdateLinkedMaterialsDialogForPublishCount: 0,
-                showRemoveAnswersDialogForPublish: false,
-                material: data.material,
-                update: {
-                  producers: newProducers,
-                },
-                isDraft: false,
-              },
-            });
-            // we need to update the draft as well because the old
-            // producers don't have a id
-            dispatch({
-              type: "UPDATE_MATERIAL_CONTENT_NODE",
-              payload: {
-                showUpdateLinkedMaterialsDialogForPublish: false,
-                showUpdateLinkedMaterialsDialogForPublishCount: 0,
-                showRemoveAnswersDialogForPublish: false,
-                material: data.material,
-                update: {
-                  producers: newProducers,
-                },
-                isDraft: true,
-              },
-            });
-          }
-
-          const deletedProducers = data.material.producers.filter(
-            (p) => !newProducers.find((p2) => p2.id === p.id)
-          );
-          await Promise.all(
-            deletedProducers.map((p) => {
-              return promisify(
-                mApi().materials.material.producers.del(
-                  data.material.materialId,
-                  p.id
-                ),
-                "callback"
-              )();
-            })
-          );
-        }
-
-        // if the title changed we need to update the path, sadly only the server knows
-        if (data.material.path !== newPath && !data.dontTriggerReducerActions) {
-          dispatch({
-            type: "UPDATE_PATH_FROM_MATERIAL_CONTENT_NODES",
-            payload: {
-              material: data.material,
-              newPath,
+            original: currentWorkspace,
+            update: {
+              permissions,
             },
-          });
-        }
-        localStorage.removeItem(
-          "TEMPORARY_LOCAL_DRAFT_" +
-          data.material.workspaceMaterialId +
-          "_" +
-          data.workspace.id
-        );
-      } else {
-        // Trying to update the draft
-        // TODO
-        const newDraftValue = {
-          ...data.material,
-          ...data.update,
-        };
-
-        // if the new draft is the same as the state, we basically have reverted
-        // we can safely remove the draft
-        if (
-          equals(
-            newDraftValue,
-            getState().workspaces.materialEditor.currentNodeValue
-          )
-        ) {
-          localStorage.removeItem(
-            "TEMPORARY_LOCAL_DRAFT_" +
-            data.material.workspaceMaterialId +
-            "_" +
-            data.workspace.id
-          );
-        } else {
-          localStorage.setItem(
-            "TEMPORARY_LOCAL_DRAFT_" +
-            data.material.workspaceMaterialId +
-            "_" +
-            data.workspace.id,
-            JSON.stringify(newDraftValue)
-          );
-        }
-      }
-
-      data.success && data.success();
-    } catch (err) {
-      if (!(err instanceof MApiError)) {
-        throw err;
-      }
-
-      let showRemoveAnswersDialogForPublish = false;
-      if (!data.removeAnswers && err.message) {
-        try {
-          let message = JSON.parse(err.message);
-          if (message.reason === "CONTAINS_ANSWERS") {
-            showRemoveAnswersDialogForPublish = true;
-          }
-        } catch (e) { }
-      }
-
-      if (!data.dontTriggerReducerActions) {
-        dispatch({
-          type: "UPDATE_MATERIAL_CONTENT_NODE",
-          payload: {
-            showUpdateLinkedMaterialsDialogForPublish: false,
-            showUpdateLinkedMaterialsDialogForPublishCount: 0,
-            showRemoveAnswersDialogForPublish,
-            material: data.material,
-            update: data.material,
-            isDraft: data.isDraft,
           },
         });
-      }
-
-      data.fail && data.fail();
-
-      if (!showRemoveAnswersDialogForPublish) {
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
         dispatch(
           displayNotification(
             getState().i18n.text.get(
-              "plugin.workspace.management.notification.failedToUpdateMaterialPage"
+              "plugin.workspace.management.notification.failedToLoadWorkspacePermissions"
             ),
             "error"
           )
         );
       }
-    }
+    };
   };
-};
 
-let deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTriggerType = function deleteWorkspaceMaterialContentNode(
-  data
-) {
-  return async (
-    dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType
-  ) => {
-    try {
-      let urlPath = "materials";
-      if (data.material.type === "folder") {
-        urlPath = "folders";
+/**
+ * setWorkspaceMaterialEditorState
+ * @param newState newState
+ */
+const setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType =
+  function setWorkspaceMaterialEditorState(
+    newState: WorkspaceMaterialEditorType
+  ) {
+    return async (dispatch: (arg: AnyActionType) => any) => {
+      const currentNodeValue = newState.currentNodeValue;
+      // TODO do mApi stuff
+      const currentDraftNodeValueByStorage = localStorage.getItem(
+        "TEMPORARY_LOCAL_DRAFT_" +
+          currentNodeValue.workspaceMaterialId +
+          "_" +
+          newState.currentNodeWorkspace.id
+      );
+      if (!currentDraftNodeValueByStorage) {
+        newState.currentDraftNodeValue = { ...currentNodeValue };
+      } else {
+        newState.currentDraftNodeValue = JSON.parse(
+          currentDraftNodeValueByStorage
+        );
       }
-      await promisify(
-        mApi().workspace.workspaces[urlPath].del(
-          data.workspace.id,
-          data.material.workspaceMaterialId || data.material.id,
-          {},
-          {
-            removeAnswers: data.removeAnswers || false,
-            updateLinkedMaterials: true,
-          }
-        ),
-        "callback"
-      )();
-
-      data.success && data.success();
-
       dispatch({
-        type: "DELETE_MATERIAL_CONTENT_NODE",
-        payload: data.material,
+        type: "UPDATE_WORKSPACES_ALL_PROPS",
+        payload: {
+          materialEditor: newState,
+        },
       });
-    } catch (err) {
-      if (!(err instanceof MApiError)) {
-        throw err;
-      }
+    };
+  };
 
-      let showRemoveAnswersDialogForDelete = false;
-      if (!data.removeAnswers && err.message) {
-        try {
-          let message = JSON.parse(err.message);
-          if (message.reason === "CONTAINS_ANSWERS") {
-            showRemoveAnswersDialogForDelete = true;
-            const currentEditorState = getState().workspaces.materialEditor;
-            dispatch(
-              setWorkspaceMaterialEditorState({
-                ...currentEditorState,
-                showRemoveAnswersDialogForDelete,
-              })
+/**
+ * requestWorkspaceMaterialContentNodeAttachments
+ * @param workspace workspace
+ * @param material material
+ */
+const requestWorkspaceMaterialContentNodeAttachments: RequestWorkspaceMaterialContentNodeAttachmentsTriggerType =
+  function requestWorkspaceMaterialContentNodeAttachments(workspace, material) {
+    return async (dispatch: (arg: AnyActionType) => any) => {
+      try {
+        const childrenAttachments: MaterialContentNodeType[] =
+          ((await promisify(
+            mApi()
+              .workspace.workspaces.materials.cacheClear()
+              .read(workspace.id, {
+                parentId: material.workspaceMaterialId,
+              }),
+            "callback"
+          )()) as MaterialContentNodeType[]) || [];
+
+        dispatch({
+          type: "UPDATE_MATERIAL_CONTENT_NODE",
+          payload: {
+            showUpdateLinkedMaterialsDialogForPublish: false,
+            showUpdateLinkedMaterialsDialogForPublishCount: 0,
+            showRemoveAnswersDialogForPublish: false,
+            material: material,
+            update: {
+              childrenAttachments,
+            },
+            isDraft: false,
+          },
+        });
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+      }
+    };
+  };
+
+/**
+ * updateWorkspaceMaterialContentNode
+ * @param data data
+ */
+const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType =
+  function updateWorkspaceMaterialContentNode(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      try {
+        if (!data.dontTriggerReducerActions) {
+          dispatch({
+            type: "UPDATE_MATERIAL_CONTENT_NODE",
+            payload: {
+              showRemoveAnswersDialogForPublish: false,
+              showUpdateLinkedMaterialsDialogForPublish: false,
+              showUpdateLinkedMaterialsDialogForPublishCount: 0,
+              material: data.material,
+              update: data.update,
+              isDraft: data.isDraft,
+            },
+          });
+        }
+
+        if (!data.isDraft) {
+          // if we are not asked to update possibly linked materials
+          // and we actually have a material id because sections do not
+          // have a materialId
+          if (
+            !data.updateLinked &&
+            data.material.materialId &&
+            !data.dontTriggerReducerActions
+          ) {
+            const materialsAnswer: any[] = (await promisify(
+              mApi().materials.material.workspaceMaterials.read(
+                data.material.materialId
+              ),
+              "callback"
+            )()) as any;
+
+            if (materialsAnswer && materialsAnswer.length > 1) {
+              dispatch({
+                type: "UPDATE_MATERIAL_CONTENT_NODE",
+                payload: {
+                  showRemoveAnswersDialogForPublish: false,
+                  showUpdateLinkedMaterialsDialogForPublishCount:
+                    materialsAnswer.length,
+                  showUpdateLinkedMaterialsDialogForPublish: true,
+                  update: data.material,
+                  material: data.material,
+                  isDraft: false,
+                },
+              });
+              return;
+            }
+          }
+
+          if (
+            typeof data.update.html !== "undefined" &&
+            data.material.html !== data.update.html
+          ) {
+            await promisify(
+              mApi().materials.html.content.update(data.material.materialId, {
+                content: data.update.html,
+                removeAnswers: data.removeAnswers || false,
+              }),
+              "callback"
+            )();
+          }
+
+          let newPath = data.material.path;
+          let fields = [
+            "materialId",
+            "parentId",
+            "nextSiblingId",
+            "hidden",
+            "assignmentType",
+            "correctAnswers",
+            "path",
+            "title",
+          ];
+          if (data.material.type === "folder") {
+            fields = [
+              "hidden",
+              "nextSiblingId",
+              "parentId",
+              "title",
+              "path",
+              "viewRestrict",
+            ];
+          }
+          const result: any = {
+            id: data.material.workspaceMaterialId,
+          };
+          let changed = false;
+          fields.forEach((field) => {
+            if (
+              typeof (data.update as any)[field] !== "undefined" &&
+              (data.material as any)[field] !== (data.update as any)[field]
+            ) {
+              changed = true;
+            }
+            result[field] =
+              typeof (data.update as any)[field] !== "undefined"
+                ? (data.update as any)[field]
+                : (data.material as any)[field];
+          });
+          if (changed) {
+            let urlPath = "materials";
+            if (data.material.type === "folder") {
+              urlPath = "folders";
+            }
+            newPath = (
+              (await promisify(
+                mApi().workspace.workspaces[urlPath].update(
+                  data.workspace.id,
+                  data.material.workspaceMaterialId,
+                  result
+                ),
+                "callback"
+              )()) as any
+            ).path;
+          }
+
+          const materialFields = ["id", "license", "viewRestrict"];
+          if (data.material.type === "folder") {
+            fields = [];
+          }
+          const materialResult: any = {};
+          changed = false;
+          materialFields.forEach((field) => {
+            if (
+              typeof (data.update as any)[field] !== "undefined" &&
+              (data.material as any)[field] !== (data.update as any)[field]
+            ) {
+              changed = true;
+            }
+            materialResult[field] =
+              typeof (data.update as any)[field] !== "undefined"
+                ? (data.update as any)[field]
+                : (data.material as any)[field];
+          });
+          if (changed) {
+            await promisify(
+              mApi().materials.material.update(
+                data.material.materialId,
+                materialResult
+              ),
+              "callback"
+            )();
+          }
+
+          if (
+            typeof data.update.producers !== "undefined" &&
+            !equals(data.material.producers, data.update.producers)
+          ) {
+            const newProducers: MaterialContentNodeProducerType[] =
+              await Promise.all<MaterialContentNodeProducerType>(
+                data.update.producers.map((p) => {
+                  if (p.id === null) {
+                    return <Promise<MaterialContentNodeProducerType>>(
+                      promisify(
+                        mApi().materials.material.producers.create(
+                          data.material.materialId,
+                          { name: p.name }
+                        ),
+                        "callback"
+                      )()
+                    );
+                  }
+                  return p;
+                })
+              );
+            if (!data.dontTriggerReducerActions) {
+              dispatch({
+                type: "UPDATE_MATERIAL_CONTENT_NODE",
+                payload: {
+                  showUpdateLinkedMaterialsDialogForPublish: false,
+                  showUpdateLinkedMaterialsDialogForPublishCount: 0,
+                  showRemoveAnswersDialogForPublish: false,
+                  material: data.material,
+                  update: {
+                    producers: newProducers,
+                  },
+                  isDraft: false,
+                },
+              });
+              // we need to update the draft as well because the old
+              // producers don't have a id
+              dispatch({
+                type: "UPDATE_MATERIAL_CONTENT_NODE",
+                payload: {
+                  showUpdateLinkedMaterialsDialogForPublish: false,
+                  showUpdateLinkedMaterialsDialogForPublishCount: 0,
+                  showRemoveAnswersDialogForPublish: false,
+                  material: data.material,
+                  update: {
+                    producers: newProducers,
+                  },
+                  isDraft: true,
+                },
+              });
+            }
+
+            const deletedProducers = data.material.producers.filter(
+              (p) => !newProducers.find((p2) => p2.id === p.id)
+            );
+            await Promise.all(
+              deletedProducers.map((p) =>
+                promisify(
+                  mApi().materials.material.producers.del(
+                    data.material.materialId,
+                    p.id
+                  ),
+                  "callback"
+                )()
+              )
             );
           }
-        } catch (e) { }
-      }
 
-      data.fail && data.fail();
-      if (!showRemoveAnswersDialogForDelete) {
-        if (data.material.children && data.material.children.length) {
-          // ERROR section has child nodes
-          dispatch(
-            displayNotification(
-              getState().i18n.text.get(
-                "plugin.workspace.materialsManagement.sectionDeleteNotEmptyMessage"
-              ),
-              "error"
-            )
+          // if the title changed we need to update the path, sadly only the server knows
+          if (
+            data.material.path !== newPath &&
+            !data.dontTriggerReducerActions
+          ) {
+            dispatch({
+              type: "UPDATE_PATH_FROM_MATERIAL_CONTENT_NODES",
+              payload: {
+                material: data.material,
+                newPath,
+              },
+            });
+          }
+          localStorage.removeItem(
+            "TEMPORARY_LOCAL_DRAFT_" +
+              data.material.workspaceMaterialId +
+              "_" +
+              data.workspace.id
           );
         } else {
-          // ERROR generic delete failure
+          // Trying to update the draft
+          // TODO
+          const newDraftValue = {
+            ...data.material,
+            ...data.update,
+          };
+
+          // if the new draft is the same as the state, we basically have reverted
+          // we can safely remove the draft
+          if (
+            equals(
+              newDraftValue,
+              getState().workspaces.materialEditor.currentNodeValue
+            )
+          ) {
+            localStorage.removeItem(
+              "TEMPORARY_LOCAL_DRAFT_" +
+                data.material.workspaceMaterialId +
+                "_" +
+                data.workspace.id
+            );
+          } else {
+            localStorage.setItem(
+              "TEMPORARY_LOCAL_DRAFT_" +
+                data.material.workspaceMaterialId +
+                "_" +
+                data.workspace.id,
+              JSON.stringify(newDraftValue)
+            );
+          }
+        }
+
+        data.success && data.success();
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+
+        let showRemoveAnswersDialogForPublish = false;
+        if (!data.removeAnswers && err.message) {
+          try {
+            const message = JSON.parse(err.message);
+            if (message.reason === "CONTAINS_ANSWERS") {
+              showRemoveAnswersDialogForPublish = true;
+            }
+            // eslint-disable-next-line no-empty
+          } catch (e) {}
+        }
+
+        if (!data.dontTriggerReducerActions) {
+          dispatch({
+            type: "UPDATE_MATERIAL_CONTENT_NODE",
+            payload: {
+              showUpdateLinkedMaterialsDialogForPublish: false,
+              showUpdateLinkedMaterialsDialogForPublishCount: 0,
+              showRemoveAnswersDialogForPublish,
+              material: data.material,
+              update: data.material,
+              isDraft: data.isDraft,
+            },
+          });
+        }
+
+        data.fail && data.fail();
+
+        if (!showRemoveAnswersDialogForPublish) {
           dispatch(
             displayNotification(
               getState().i18n.text.get(
-                "plugin.workspace.materialsManagement.deleteFailed.notification"
+                "plugin.workspace.management.notification.failedToUpdateMaterialPage"
               ),
               "error"
             )
           );
         }
       }
-    }
+    };
   };
-};
 
-let createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTriggerType = function createWorkspaceMaterialContentNode(
-  data,
-  apiPath
-) {
-  return async (
-    dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType
-  ) => {
-    try {
-      const apiRef =
-        apiPath === "help"
-          ? mApi().workspace.workspaces.help
-          : mApi().workspace.workspaces.materials;
-
-      const parentId = data.parentMaterial
-        ? data.parentMaterial.workspaceMaterialId
-        : data.rootParentId;
-
-      const nextSiblingId = data.nextSibling
-        ? data.nextSibling.workspaceMaterialId
-        : null;
-      let workspaceMaterialId: number = null;
-
-      if (data.copyMaterialId) {
-        /**
-         * Reason why copying uses materials end point naming, is
-         * because it is shared end point for other workspaces functionality
-         * too
-         * Confusing yes, but this is how it works now
-         */
-        workspaceMaterialId = ((await promisify(
-          mApi().workspace.workspaces.materials.create(
+/**
+ * deleteWorkspaceMaterialContentNode
+ * @param data data
+ */
+const deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTriggerType =
+  function deleteWorkspaceMaterialContentNode(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      try {
+        let urlPath = "materials";
+        if (data.material.type === "folder") {
+          urlPath = "folders";
+        }
+        await promisify(
+          mApi().workspace.workspaces[urlPath].del(
             data.workspace.id,
+            data.material.workspaceMaterialId || data.material.id,
+            {},
             {
-              parentId,
-              nextSiblingId,
-            },
-            {
-              sourceNodeId: data.copyMaterialId,
-              targetNodeId: parentId,
-              sourceWorkspaceEntityId: data.workspace.id,
-              targetWorkspaceEntityId: data.copyWorkspaceId,
-              copyOnlyChildren: false,
-              cloneMaterials: true,
+              removeAnswers: data.removeAnswers || false,
               updateLinkedMaterials: true,
             }
           ),
-          "callback"
-        )()) as any).id;
-      } else if (data.file) {
-        let formData = new FormData();
-        //we add it to the file
-        formData.append("file", data.file);
-        //and do the thing
-        const tempFileData: any = await new Promise((resolve, reject) => {
-          $.ajax({
-            url: getState().status.contextPath + "/tempFileUploadServlet",
-            type: "POST",
-            data: formData,
-            success: (data: any) => {
-              resolve(data);
-            },
-            error: (xhr: any, err: Error) => {
-              reject(err);
-            },
-            cache: false,
-            contentType: false,
-            processData: false,
-          });
-        });
-
-        const materialResult: any = await promisify(
-          mApi().materials.binary.create({
-            title: data.title,
-            contentType: tempFileData.fileContentType || data.file.type,
-            fileId: tempFileData.fileId,
-          }),
           "callback"
         )();
 
-        workspaceMaterialId = ((await promisify(
-          apiRef.create(
-            data.workspace.id,
-            {
-              materialId: materialResult.id,
-              parentId,
-              nextSiblingId,
-            },
-            {
-              updateLinkedMaterials: true,
-            }
-          ),
-          "callback"
-        )()) as any).id;
-      } else if (!data.makeFolder) {
-        // Creating page for section !
-        const materialId = ((await promisify(
-          mApi().materials.html.create({
-            title: data.title,
-            contentType: "text/html;editor=CKEditor",
-          }),
-          "callback"
-        )()) as any).id;
+        data.success && data.success();
 
-        workspaceMaterialId = ((await promisify(
-          mApi().workspace.workspaces.materials.create(data.workspace.id, {
-            materialId,
-            parentId,
-            nextSiblingId,
-          }),
-          "callback"
-        )()) as any).id;
+        dispatch({
+          type: "DELETE_MATERIAL_CONTENT_NODE",
+          payload: data.material,
+        });
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
 
-      } else {
-        //Creating section
-        workspaceMaterialId = ((await promisify(
-          mApi().workspace.workspaces.folders.create(data.workspace.id, {
-            parentId,
-            nextSiblingId,
-          }),
-          "callback"
-        )()) as any).id;
-      }
-
-      const newContentNode: MaterialContentNodeType = <MaterialContentNodeType>(
-        await promisify(
-          mApi().workspace.workspaces.asContentNode.read(
-            data.workspace.id,
-            workspaceMaterialId
-          ),
-          "callback"
-        )()
-      );
-
-      dispatch({
-        type: "INSERT_MATERIAL_CONTENT_NODE",
-        payload: {
-          nodeContent: newContentNode,
-          apiPath: apiPath,
-        },
-      });
-
-      data.success && data.success(newContentNode);
-    } catch (err) {
-      if (!(err instanceof MApiError)) {
-        throw err;
-      }
-
-      data.fail && data.fail();
-    }
-  };
-};
-
-const MAX_ATTACHMENT_SIZE = 10000000;
-let createWorkspaceMaterialAttachment: CreateWorkspaceMaterialAttachmentTriggerType = function createWorkspaceMaterialAttachment(
-  data,
-  updateUploadingValues?:(updatedValues: UploadingValue[]) => void
-) {
-  return async (
-    dispatch: (arg: AnyActionType) => any,
-    getState: () => StateType
-  ) => {
-    try {
-
-      /**
-       * Up keep updated values when mapping them
-       */
-      let updatedValues:UploadingValue[] = [];
-
-      const tempFilesData = await Promise.all(
-        data.files.map((file, index) => {
-          //create the form data
-          let formData = new FormData();
-          //we add it to the file
-          formData.append("file", file);
-          //and do the thing
-          return new Promise((resolve, reject) => {
-            if (file.size >= MAX_ATTACHMENT_SIZE) {
-              reject(
-                new Error(
-                  getState().i18n.text.get(
-                    "plugin.workspace.fileFieldUpload.fileSizeTooLarge"
-                  )
-                )
+        let showRemoveAnswersDialogForDelete = false;
+        if (!data.removeAnswers && err.message) {
+          try {
+            const message = JSON.parse(err.message);
+            if (message.reason === "CONTAINS_ANSWERS") {
+              showRemoveAnswersDialogForDelete = true;
+              const currentEditorState = getState().workspaces.materialEditor;
+              dispatch(
+                setWorkspaceMaterialEditorState({
+                  ...currentEditorState,
+                  showRemoveAnswersDialogForDelete,
+                })
               );
-              return;
             }
+            // eslint-disable-next-line no-empty
+          } catch (e) {}
+        }
 
+        data.fail && data.fail();
+        if (!showRemoveAnswersDialogForDelete) {
+          if (data.material.children && data.material.children.length) {
+            // ERROR section has child nodes
+            dispatch(
+              displayNotification(
+                getState().i18n.text.get(
+                  "plugin.workspace.materialsManagement.sectionDeleteNotEmptyMessage"
+                ),
+                "error"
+              )
+            );
+          } else {
+            // ERROR generic delete failure
+            dispatch(
+              displayNotification(
+                getState().i18n.text.get(
+                  "plugin.workspace.materialsManagement.deleteFailed.notification"
+                ),
+                "error"
+              )
+            );
+          }
+        }
+      }
+    };
+  };
+
+/**
+ * createWorkspaceMaterialContentNode
+ * @param data data
+ * @param apiPath apiPath
+ */
+const createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTriggerType =
+  function createWorkspaceMaterialContentNode(data, apiPath) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      try {
+        const apiRef =
+          apiPath === "help"
+            ? mApi().workspace.workspaces.help
+            : mApi().workspace.workspaces.materials;
+
+        const parentId = data.parentMaterial
+          ? data.parentMaterial.workspaceMaterialId
+          : data.rootParentId;
+
+        const nextSiblingId = data.nextSibling
+          ? data.nextSibling.workspaceMaterialId
+          : null;
+        let workspaceMaterialId: number = null;
+
+        if (data.copyMaterialId) {
+          /**
+           * Reason why copying uses materials end point naming, is
+           * because it is shared end point for other workspaces functionality
+           * too
+           * Confusing yes, but this is how it works now
+           */
+          workspaceMaterialId = (
+            (await promisify(
+              mApi().workspace.workspaces.materials.create(
+                data.workspace.id,
+                {
+                  parentId,
+                  nextSiblingId,
+                },
+                {
+                  sourceNodeId: data.copyMaterialId,
+                  targetNodeId: parentId,
+                  sourceWorkspaceEntityId: data.workspace.id,
+                  targetWorkspaceEntityId: data.copyWorkspaceId,
+                  copyOnlyChildren: false,
+                  cloneMaterials: true,
+                  updateLinkedMaterials: true,
+                }
+              ),
+              "callback"
+            )()) as any
+          ).id;
+        } else if (data.file) {
+          const formData = new FormData();
+          //we add it to the file
+          formData.append("file", data.file);
+          //and do the thing
+          const tempFileData: any = await new Promise((resolve, reject) => {
             $.ajax({
               url: getState().status.contextPath + "/tempFileUploadServlet",
               type: "POST",
               data: formData,
+              /**
+               * success
+               * @param data data
+               */
               success: (data: any) => {
                 resolve(data);
               },
+              /**
+               * error
+               * @param xhr xhr
+               * @param err err
+               */
               error: (xhr: any, err: Error) => {
                 reject(err);
-              },
-              xhr: () => {
-                /**
-                 * If these values are not given, just return;
-                 */
-                if(!data.uploadingValues && !updateUploadingValues){
-                  return;
-                }
-
-                //we need to get the upload progress
-                let xhr = new (window as any).XMLHttpRequest();
-                //Upload progress
-                xhr.upload.addEventListener("progress", (evt:any)=>{
-
-                  if(index === 0) {
-                    updatedValues = [...data.uploadingValues]
-                  }
-                  if (evt.lengthComputable) {
-                    //we calculate the percent
-                    const percentComplete = evt.loaded / evt.total;
-                    //and set the new progress
-                    updatedValues[index].progress = percentComplete;
-                    //set the state for that new progress
-                    updateUploadingValues(updatedValues)
-                  }
-                }, false);
-                return xhr;
               },
               cache: false,
               contentType: false,
               processData: false,
             });
           });
-        })
-      );
 
-      await Promise.all(
-        tempFilesData.map(async (tempFileData: any, index) => {
           const materialResult: any = await promisify(
             mApi().materials.binary.create({
-              title: data.files[index].name,
-              contentType:
-                tempFileData.fileContentType || data.files[index].type,
+              title: data.title,
+              contentType: tempFileData.fileContentType || data.file.type,
               fileId: tempFileData.fileId,
             }),
             "callback"
           )();
 
-          await promisify(
-            mApi().workspace.workspaces.materials.create(
-              data.workspace.id,
-              {
-                materialId: materialResult.id,
-                parentId: data.material.workspaceMaterialId,
-              },
-              {
-                updateLinkedMaterials: true,
+          workspaceMaterialId = (
+            (await promisify(
+              apiRef.create(
+                data.workspace.id,
+                {
+                  materialId: materialResult.id,
+                  parentId,
+                  nextSiblingId,
+                },
+                {
+                  updateLinkedMaterials: true,
+                }
+              ),
+              "callback"
+            )()) as any
+          ).id;
+        } else if (!data.makeFolder) {
+          // Creating page for section !
+          const materialId = (
+            (await promisify(
+              mApi().materials.html.create({
+                title: data.title,
+                contentType: "text/html;editor=CKEditor",
+              }),
+              "callback"
+            )()) as any
+          ).id;
+
+          workspaceMaterialId = (
+            (await promisify(
+              mApi().workspace.workspaces.materials.create(data.workspace.id, {
+                materialId,
+                parentId,
+                nextSiblingId,
+              }),
+              "callback"
+            )()) as any
+          ).id;
+        } else {
+          //Creating section
+          workspaceMaterialId = (
+            (await promisify(
+              mApi().workspace.workspaces.folders.create(data.workspace.id, {
+                parentId,
+                nextSiblingId,
+              }),
+              "callback"
+            )()) as any
+          ).id;
+        }
+
+        const newContentNode: MaterialContentNodeType = <
+          MaterialContentNodeType
+        >await promisify(
+          mApi().workspace.workspaces.asContentNode.read(
+            data.workspace.id,
+            workspaceMaterialId
+          ),
+          "callback"
+        )();
+
+        dispatch({
+          type: "INSERT_MATERIAL_CONTENT_NODE",
+          payload: {
+            nodeContent: newContentNode,
+            apiPath: apiPath,
+          },
+        });
+
+        data.success && data.success(newContentNode);
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+
+        data.fail && data.fail();
+      }
+    };
+  };
+
+const MAX_ATTACHMENT_SIZE = 10000000;
+/**
+ * createWorkspaceMaterialAttachment
+ * @param data data
+ * @param updateUploadingValues updateUploadingValues
+ */
+const createWorkspaceMaterialAttachment: CreateWorkspaceMaterialAttachmentTriggerType =
+  function createWorkspaceMaterialAttachment(
+    data,
+    updateUploadingValues?: (updatedValues: UploadingValue[]) => void
+  ) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      try {
+        /**
+         * Up keep updated values when mapping them
+         */
+        let updatedValues: UploadingValue[] = [];
+
+        const tempFilesData = await Promise.all(
+          data.files.map((file, index) => {
+            //create the form data
+            const formData = new FormData();
+            //we add it to the file
+            formData.append("file", file);
+            //and do the thing
+            return new Promise((resolve, reject) => {
+              if (file.size >= MAX_ATTACHMENT_SIZE) {
+                reject(
+                  new Error(
+                    getState().i18n.text.get(
+                      "plugin.workspace.fileFieldUpload.fileSizeTooLarge"
+                    )
+                  )
+                );
+                return;
               }
+
+              $.ajax({
+                url: getState().status.contextPath + "/tempFileUploadServlet",
+                type: "POST",
+                data: formData,
+                /**
+                 * success
+                 * @param data data
+                 */
+                success: (data: any) => {
+                  resolve(data);
+                },
+                /**
+                 * error
+                 * @param xhr xhr
+                 * @param err err
+                 */
+                error: (xhr: any, err: Error) => {
+                  reject(err);
+                },
+                /**
+                 * xhr
+                 */
+                xhr: () => {
+                  /**
+                   * If these values are not given, just return;
+                   */
+                  if (!data.uploadingValues && !updateUploadingValues) {
+                    return;
+                  }
+
+                  //we need to get the upload progress
+                  const xhr = new (window as any).XMLHttpRequest();
+                  //Upload progress
+                  xhr.upload.addEventListener(
+                    "progress",
+                    (evt: any) => {
+                      if (index === 0) {
+                        updatedValues = [...data.uploadingValues];
+                      }
+                      if (evt.lengthComputable) {
+                        //we calculate the percent
+                        const percentComplete = evt.loaded / evt.total;
+                        //and set the new progress
+                        updatedValues[index].progress = percentComplete;
+                        //set the state for that new progress
+                        updateUploadingValues(updatedValues);
+                      }
+                    },
+                    false
+                  );
+                  return xhr;
+                },
+                cache: false,
+                contentType: false,
+                processData: false,
+              });
+            });
+          })
+        );
+
+        await Promise.all(
+          tempFilesData.map(async (tempFileData: any, index) => {
+            const materialResult: any = await promisify(
+              mApi().materials.binary.create({
+                title: data.files[index].name,
+                contentType:
+                  tempFileData.fileContentType || data.files[index].type,
+                fileId: tempFileData.fileId,
+              }),
+              "callback"
+            )();
+
+            await promisify(
+              mApi().workspace.workspaces.materials.create(
+                data.workspace.id,
+                {
+                  materialId: materialResult.id,
+                  parentId: data.material.workspaceMaterialId,
+                },
+                {
+                  updateLinkedMaterials: true,
+                }
+              ),
+              "callback"
+            )();
+          })
+        );
+
+        dispatch(
+          actions.displayNotification(
+            getState().i18n.text.get(
+              "plugin.workspace.materialsManagement.attachment.notification.success"
             ),
-            "callback"
-          )();
-        })
-      );
+            "success"
+          )
+        );
+        data.success && data.success();
+      } catch (err) {
+        dispatch(actions.displayNotification(err.message, "error"));
+        data.fail && data.fail();
+      }
 
       dispatch(
-        actions.displayNotification(
-          getState().i18n.text.get(
-            "plugin.workspace.materialsManagement.attachment.notification.success"
-          ),
-          "success"
+        requestWorkspaceMaterialContentNodeAttachments(
+          data.workspace,
+          data.material
         )
       );
-      data.success && data.success();
-    } catch (err) {
-      dispatch(actions.displayNotification(err.message, "error"));
-      data.fail && data.fail();
-    }
-
-    dispatch(
-      requestWorkspaceMaterialContentNodeAttachments(
-        data.workspace,
-        data.material
-      )
-    );
+    };
   };
-};
 
-let updateWorkspaceEditModeState: UpdateWorkspaceEditModeStateTriggerType = function updateWorkspaceEditModeState(
-  data,
-  restoreActiveFromLocalStorage
-) {
-  if (restoreActiveFromLocalStorage && typeof data.active !== "undefined") {
-    localStorage.setItem("__editmode__active", JSON.stringify(data.active));
-  } else if (restoreActiveFromLocalStorage) {
+/**
+ * updateWorkspaceEditModeState
+ * @param data data
+ * @param restoreActiveFromLocalStorage restoreActiveFromLocalStorage
+ */
+const updateWorkspaceEditModeState: UpdateWorkspaceEditModeStateTriggerType =
+  function updateWorkspaceEditModeState(data, restoreActiveFromLocalStorage) {
+    if (restoreActiveFromLocalStorage && typeof data.active !== "undefined") {
+      localStorage.setItem("__editmode__active", JSON.stringify(data.active));
+    } else if (restoreActiveFromLocalStorage) {
+      return {
+        type: "UPDATE_WORKSPACES_EDIT_MODE_STATE",
+        payload: {
+          ...data,
+          active: JSON.parse(
+            localStorage.getItem("__editmode__active") || "false"
+          ),
+        },
+      };
+    }
     return {
       type: "UPDATE_WORKSPACES_EDIT_MODE_STATE",
-      payload: {
-        ...data,
-        active: JSON.parse(
-          localStorage.getItem("__editmode__active") || "false"
-        ),
-      },
+      payload: data,
     };
-  }
-  return {
-    type: "UPDATE_WORKSPACES_EDIT_MODE_STATE",
-    payload: data,
   };
-};
 
 export {
   loadUserWorkspaceCurriculumFiltersFromServer,

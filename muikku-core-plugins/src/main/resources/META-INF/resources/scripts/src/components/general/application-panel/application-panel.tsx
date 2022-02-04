@@ -1,16 +1,25 @@
+/* eslint-disable react/no-string-refs */
+
+/**
+ * Depcrecated refs should be refactored
+ */
+
 import * as React from "react";
-import Tabs, { TabType } from "~/components/general/tabs";
+import Tabs, { Tab } from "~/components/general/tabs";
 import ApplicationPanelBody from "./components/application-panel-body";
 import "~/sass/elements/application-panel.scss";
 import "~/sass/elements/loaders.scss";
 import { createAllTabs } from "~/helper-functions/tabs";
 
+/**
+ * ApplicationPanelProps
+ */
 interface ApplicationPanelProps {
   modifier?: string;
   title?: React.ReactElement<any> | string;
   icon?: React.ReactElement<any> | string;
-  panelTabs?: Array<TabType>;
-  onTabChange?: (id: string, hash?: string) => any;
+  panelTabs?: Array<Tab>;
+  onTabChange?: (id: string) => any;
   activeTab?: string;
   primaryOption?: React.ReactElement<any>;
   toolbar?: React.ReactElement<any>;
@@ -19,16 +28,30 @@ interface ApplicationPanelProps {
   children?: React.ReactElement<any> | Array<React.ReactElement<any>>;
 }
 
+/**
+ * ApplicationPanelState
+ */
 interface ApplicationPanelState {}
 
+/**
+ * ApplicationPanel
+ */
 export default class ApplicationPanel extends React.Component<
   ApplicationPanelProps,
   ApplicationPanelState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: ApplicationPanelProps) {
     super(props);
   }
 
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     return (
       <main
@@ -100,14 +123,27 @@ export default class ApplicationPanel extends React.Component<
   }
 }
 
+/**
+ * ApplicationPanelToolbarProps
+ */
 interface ApplicationPanelToolbarProps {}
 
+/**
+ * ApplicationPanelToolbarState
+ */
 interface ApplicationPanelToolbarState {}
 
+/**
+ * ApplicationPanelToolbar
+ */
 export class ApplicationPanelToolbar extends React.Component<
   ApplicationPanelToolbarProps,
   ApplicationPanelToolbarState
 > {
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     return (
       <div className="application-panel__toolbar">{this.props.children}</div>
@@ -115,16 +151,29 @@ export class ApplicationPanelToolbar extends React.Component<
   }
 }
 
+/**
+ * ApplicationPanelToolbarActionsMainProps
+ */
 interface ApplicationPanelToolbarActionsMainProps {
   modifier?: string;
 }
 
+/**
+ * ApplicationPanelToolbarActionsMainState
+ */
 interface ApplicationPanelToolbarActionsMainState {}
 
+/**
+ * ApplicationPanelToolbarActionsMain
+ */
 export class ApplicationPanelToolbarActionsMain extends React.Component<
   ApplicationPanelToolbarActionsMainProps,
   ApplicationPanelToolbarActionsMainState
 > {
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     return (
       <div
@@ -140,14 +189,27 @@ export class ApplicationPanelToolbarActionsMain extends React.Component<
   }
 }
 
+/**
+ * ApplicationPanelToolbarActionsAsideProps
+ */
 interface ApplicationPanelToolbarActionsAsideProps {}
 
+/**
+ * ApplicationPanelToolbarActionsAsideState
+ */
 interface ApplicationPanelToolbarActionsAsideState {}
 
+/**
+ * ApplicationPanelToolbarActionsAside
+ */
 export class ApplicationPanelToolbarActionsAside extends React.Component<
   ApplicationPanelToolbarActionsAsideProps,
   ApplicationPanelToolbarActionsAsideState
 > {
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     return (
       <div className="application-panel__toolbar-actions-aside">
@@ -157,14 +219,27 @@ export class ApplicationPanelToolbarActionsAside extends React.Component<
   }
 }
 
+/**
+ * ApplicationPanelToolsContainerProps
+ */
 interface ApplicationPanelToolsContainerProps {}
 
+/**
+ * ApplicationPanelToolsContainerState
+ */
 interface ApplicationPanelToolsContainerState {}
 
+/**
+ * ApplicationPanelToolsContainer
+ */
 export class ApplicationPanelToolsContainer extends React.Component<
   ApplicationPanelToolsContainerProps,
   ApplicationPanelToolsContainerState
 > {
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     return (
       <div className="application-panel__tools-container">

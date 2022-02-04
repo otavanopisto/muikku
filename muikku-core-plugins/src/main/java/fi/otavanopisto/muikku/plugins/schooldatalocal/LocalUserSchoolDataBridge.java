@@ -58,10 +58,10 @@ import fi.otavanopisto.muikku.schooldata.payload.WorklistSummaryItemRestModel;
 
 @Dependent
 public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
-  
+
   @Inject
   private LocalUserSchoolDataController localUserSchoolDataController;
-  
+
   @Override
   public String getSchoolDataSource() {
     return LocalUserSchoolDataController.SCHOOL_DATA_SOURCE;
@@ -81,12 +81,12 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
   public BridgeResponse<StudentPayload> createStudent(StudentPayload payload) {
     throw new SchoolDataBridgeInternalException("Not supported");
   }
-  
+
   @Override
   public BridgeResponse<StudentPayload> updateStudent(StudentPayload payload) {
     throw new SchoolDataBridgeInternalException("Not supported");
   }
-  
+
   public List<StudyProgramme> listStudyProgrammes() {
     return Collections.emptyList();
   }
@@ -99,19 +99,19 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
     if (StringUtils.isBlank(firstName)) {
       throw new SchoolDataBridgeInternalException("firstName is required");
     }
-    
+
     if (StringUtils.isBlank(lastName)) {
       throw new SchoolDataBridgeInternalException("lastName is required");
     }
-    
+
     User userImpl = toLocalUserImpl(localUserSchoolDataController.createUser(firstName, lastName));
     if (userImpl == null) {
       throw new SchoolDataBridgeInternalException("Failed to create local user");
     }
-    
+
     return userImpl;
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -120,7 +120,7 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
     if (!StringUtils.isNumeric(identifier)) {
       throw new SchoolDataBridgeInternalException("identifier is invalid");
     }
-    
+
     return toLocalUserImpl(localUserSchoolDataController.findUser(identifier));
   }
 
@@ -141,17 +141,17 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
     if (user == null) {
       return Collections.emptyList();
     }
-    
+
     return Arrays.asList(toLocalUserImpl(user));
   }
-  
+
   /**
    * {@inheritDoc}
    */
   @Override
   public List<User> listUsers() {
     List<User> result = new ArrayList<>();
-    
+
     for (LocalUser localUser : localUserSchoolDataController.listUsers()) {
       User user = toLocalUserImpl(localUser);
       if (user != null) {
@@ -160,10 +160,10 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
         throw new SchoolDataBridgeInternalException("Unexpected error occured while listing LocalUsers");
       }
     }
-    
+
     return result;
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -172,21 +172,21 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
     if (StringUtils.isNotBlank(user.getFirstName())) {
       throw new SchoolDataBridgeInternalException("firstName is required");
     }
-    
+
     if (StringUtils.isNotBlank(user.getLastName())) {
       throw new SchoolDataBridgeInternalException("lastName is required");
     }
-    
+
     LocalUser localUser = localUserSchoolDataController.findUser(user.getIdentifier());
     if (localUser != null) {
       localUserSchoolDataController.updateUserFirstName(localUser, user.getFirstName());
       localUserSchoolDataController.updateUserLastName(localUser, user.getLastName());
       return toLocalUserImpl(localUser);
     }
-    
+
     throw new SchoolDataBridgeInternalException("Unexpected error occured while creating LocalUser");
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -199,7 +199,7 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
       throw new SchoolDataBridgeInternalException("Failed to remove user because it does not exist");
     }
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -208,15 +208,15 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
     if (!StringUtils.isNumeric(userIdentifier)) {
       throw new SchoolDataBridgeInternalException("userIdentifier is invalid");
     }
-    
+
     UserEmail userEmail = toLocalUserEmailImpl(localUserSchoolDataController.createUserEmail(userIdentifier, address));
     if (userEmail != null) {
       return userEmail;
     }
-    
+
     throw new SchoolDataBridgeInternalException("Unexpected error occured while creating LocalUserEmail");
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -225,10 +225,10 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
     if (!StringUtils.isNumeric(identifier)) {
       throw new SchoolDataBridgeInternalException("identifier is invalid");
     }
-    
+
     return toLocalUserEmailImpl(localUserSchoolDataController.findUserEmail(identifier));
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -239,7 +239,7 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
     }
 
     List<UserEmail> result = new ArrayList<>();
-    
+
     List<LocalUserEmail> emails = localUserSchoolDataController.listUserEmailsByUserIdentifier(userIdentifier);
     for (LocalUserEmail email : emails) {
       UserEmail emailImpl = toLocalUserEmailImpl(email);
@@ -249,10 +249,10 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
         throw new SchoolDataBridgeInternalException("Unexpected error occured while listing LocalUserEmails");
       }
     }
-    
+
     return result;
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -260,7 +260,7 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
   public UserEmail updateUserEmail(UserEmail userEmail) {
     throw new SchoolDataBridgeInternalException("Unexpected error occured while updating LocalUserEmail");
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -270,10 +270,10 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
     if (localUserEmail == null) {
       throw new SchoolDataBridgeInternalException("UserEmail can not be removed because it does not exist");
     }
-    
+
     localUserSchoolDataController.removeUserEmail(localUserEmail);
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -287,10 +287,10 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
     if (userImage != null) {
       return userImage;
     }
-    
+
     throw new SchoolDataBridgeInternalException("Unexpected error occured while creating LocalUserImage");
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -302,14 +302,14 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
 
     return toLocalUserImageImpl(localUserSchoolDataController.findUserImage(identifier));
   }
-  
+
   /**
    * {@inheritDoc}
    */
   @Override
   public List<UserImage> listUserImagesByUserIdentifier(String userIdentifier) {
     List<UserImage> result = new ArrayList<>();
-    
+
     List<LocalUserImage> images = localUserSchoolDataController.listUserImagesByUserIdentifier(userIdentifier);
     for (LocalUserImage image : images) {
       UserImage userImage = toLocalUserImageImpl(image);
@@ -319,10 +319,10 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
         throw new SchoolDataBridgeInternalException("Unexpected error occured while listing LocalUserImages");
       }
     }
-    
+
     return result;
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -332,10 +332,10 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
     if (image != null) {
       return image;
     }
-    
+
     throw new SchoolDataBridgeInternalException("Unexpected error occured while updating LocalUserImage");
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -345,10 +345,10 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
     if (localUserImage == null) {
       throw new SchoolDataBridgeInternalException("UserImage can not be removed because it does not exist");
     }
-    
-    localUserSchoolDataController.removeUserImage(localUserImage);    
+
+    localUserSchoolDataController.removeUserImage(localUserImage);
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -370,7 +370,7 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
       return toLocalUserPropertyImpl(localUserSchoolDataController.createUserProperty(userIdentifier, key, value));
     }
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -384,10 +384,10 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
     if (userProperty != null) {
       return toLocalUserPropertyImpl(userProperty);
     }
-    
+
     return null;
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -398,14 +398,14 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
     }
 
     List<UserProperty> result = new ArrayList<>();
-    
+
     for (LocalUserProperty property : localUserSchoolDataController.listUserPropertiesByUser(userIdentifier)) {
       UserProperty propertyImpl = toLocalUserPropertyImpl(property);
       if (propertyImpl != null) {
         result.add(propertyImpl);
       }
     }
-    
+
     return result;
   }
 
@@ -415,12 +415,12 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
   @Override
   public List<Role> listRoles() throws SchoolDataBridgeInternalException {
     List<Role> result = new ArrayList<>();
-    
+
     List<RoleEntity> roleEntities = localUserSchoolDataController.listCoreRoleEntities();
     for (RoleEntity roleEntity : roleEntities) {
       result.add(toLocalRoleEntity(roleEntity));
     }
-    
+
     return result;
   }
 
@@ -445,25 +445,25 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
     if (user == null) {
       throw new SchoolDataBridgeInternalException("User not found");
     }
-    
+
     Long roleId = user.getRoleId();
     if (roleId != null) {
       RoleEntity roleEntity = localUserSchoolDataController.findCoreRoleEntityById(roleId);
       if (roleEntity == null) {
         throw new SchoolDataBridgeInternalException("User role could not be found");
       }
-      
+
       return toLocalRoleEntity(roleEntity);
     }
-    
+
     return null;
   };
-  
+
   private User toLocalUserImpl(LocalUser localUser) {
     if (localUser != null) {
       return new LocalUserImpl(
-          localUser.getId().toString(), 
-          localUser.getFirstName(), 
+          localUser.getId().toString(),
+          localUser.getFirstName(),
           localUser.getLastName(),
           null,
           null,
@@ -480,7 +480,7 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
           null,
           null);
     }
-    
+
     return null;
   }
 
@@ -492,7 +492,7 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
     if (localUserImage != null) {
       return new LocalUserImageImpl(localUserImage.getId().toString(), localUserImage.getUser().getId().toString(), localUserImage.getContentType(), localUserImage.getContent());
     }
-    
+
     return null;
   }
 
@@ -500,10 +500,10 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
     if (localUserProperty != null) {
       return new LocalUserPropertyImpl(localUserProperty.getUser().getId().toString(), localUserProperty.getKey().getName(), localUserProperty.getValue());
     }
-    
+
     return null;
   }
-  
+
   private Role toLocalRoleEntity(RoleEntity roleEntity) {
     if (roleEntity instanceof EnvironmentRoleEntity) {
       return toLocalEnvironmentRoleEntity((EnvironmentRoleEntity) roleEntity);
@@ -540,7 +540,7 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
   public BridgeResponse<StudentGroupMembersPayload> addStudentGroupMembers(StudentGroupMembersPayload studentGroupMembersPayload) {
     throw new SchoolDataBridgeInternalException("Not supported");
   }
-  
+
   @Override
   public BridgeResponse<StudentGroupMembersPayload> removeStudentGroupMembers(StudentGroupMembersPayload studentGroupMembersPayload) {
     throw new SchoolDataBridgeInternalException("Not supported");
@@ -591,7 +591,7 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
     // TODO implement
     return null;
   }
-  
+
   @Override
   public String findUsername(String identifier) {
     // TODO Auto-generated method stub
@@ -615,11 +615,11 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
     // TODO Auto-generated method stub
     return null;
   }
-  
+
   public void updateUserAddress(SchoolDataIdentifier studentIdentifier, SchoolDataIdentifier identifier, String street,
       String postalCode, String city, String country) {
     // TODO Auto-generated method stub
-    
+
   }
 
   @Override
@@ -635,11 +635,11 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
     // TODO Auto-generated method stub
     return null;
   }
-  
+
   public boolean isActiveUser(User user) {
     return user.getStudyEndDate() == null;
   }
-  
+
   @Override
   public BridgeResponse<List<OrganizationContactPerson>> listOrganizationContactPersonsByOrganization(
       String organizationIdentifier) {
@@ -683,6 +683,16 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
 
   @Override
   public BridgeResponse<List<WorklistApproverRestModel>> listWorklistApprovers() {
+    throw new SchoolDataBridgeInternalException("Not supported");
+  }
+
+  @Override
+  public User increaseStudyTime(String studentIdentifier, int months) {
+    throw new SchoolDataBridgeInternalException("Not supported");
+  }
+
+  @Override
+  public String getUserDefaultEmailAddress(String userIdentifier) {
     throw new SchoolDataBridgeInternalException("Not supported");
   }
 

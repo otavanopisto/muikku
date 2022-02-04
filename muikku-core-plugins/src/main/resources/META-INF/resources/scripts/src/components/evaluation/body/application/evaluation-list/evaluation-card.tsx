@@ -39,7 +39,15 @@ interface EvaluationCardProps extends AssessmentRequest {
 
 /**
  * EvaluationCard
- * @param props
+ * @param props.selectedWorkspaceId selectedWorkspaceId
+ * @param props.setSelectedWorkspaceId setSelectedWorkspaceId
+ * @param props.important important
+ * @param props.importantAssessments importantAssessments
+ * @param props.unimportantAssessments unimportantAssessments
+ * @param props.updateEvaluationImportance updateEvaluationImportance
+ * @param props.i18n i18n
+ * @param props.needsReloadRequests needsReloadRequests
+ * @param props.loadEvaluationAssessmentRequestsFromServer loadEvaluationAssessmentRequestsFromServer
  */
 const EvaluationCard: React.FC<EvaluationCardProps> = ({
   selectedWorkspaceId,
@@ -142,6 +150,7 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
 
   /**
    * Handles workspacename click. It "filters" every assessments by that workspace
+   * @param e e
    */
   const handleWorkspaceNameClick = (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
@@ -236,26 +245,24 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
 
   const renderArchiveOrDeleteDialogButton =
     rest.assessmentRequestDate &&
-    rest.evaluationDate === null &&
     rest.workspaceEntityId !== selectedWorkspaceId ? (
       <DeleteRequestDialog {...rest}>
         <ButtonPill
           aria-label={i18n.text.get(
             "plugin.evaluation.card.button.deleteRequest.title"
           )}
-          buttonModifiers="archive"
-          icon="archive"
+          buttonModifiers="archive-request"
+          icon="trash"
         />
       </DeleteRequestDialog>
-    ) : (rest.evaluationDate && rest.graded) ||
-      (rest.assessmentRequestDate &&
-        selectedWorkspaceId === rest.workspaceEntityId) ? (
+    ) : rest.assessmentRequestDate &&
+      selectedWorkspaceId === rest.workspaceEntityId ? (
       <ArchiveDialog place="card" {...rest}>
         <ButtonPill
           aria-label={i18n.text.get(
             "plugin.evaluation.card.button.archiveButtonLabel"
           )}
-          buttonModifiers="archive"
+          buttonModifiers="archive-student"
           icon="archive"
         />
       </ArchiveDialog>

@@ -4,13 +4,26 @@ import Aside from "./body/aside";
 
 import * as React from "react";
 
-export default class EvaluationBody extends React.Component<{}, {}> {
-  constructor(props: {}) {
+/**
+ * EvaluationBody
+ */
+export default class EvaluationBody extends React.Component<
+  Record<string, unknown>,
+  Record<string, unknown>
+> {
+  /**
+   * constructor
+   * @param props props
+   */
+  constructor(props: Record<string, unknown>) {
     super(props);
   }
 
+  /**
+   * render
+   */
   render() {
-    let aside = <Aside />;
+    const aside = <Aside />;
 
     return (
       <div>

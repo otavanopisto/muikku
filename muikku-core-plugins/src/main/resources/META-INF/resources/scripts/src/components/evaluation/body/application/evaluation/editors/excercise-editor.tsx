@@ -82,7 +82,7 @@ class ExcerciseEditor extends SessionStateComponent<
     const { compositeReplies } = props;
     const { evaluationSelectedAssessmentId } = props.evaluations;
 
-    let draftId = `${evaluationSelectedAssessmentId.userEntityId}-${props.materialAssignment.id}`;
+    const draftId = `${evaluationSelectedAssessmentId.userEntityId}-${props.materialAssignment.id}`;
 
     this.state = {
       ...this.getRecoverStoredState(
@@ -139,6 +139,11 @@ class ExcerciseEditor extends SessionStateComponent<
     });
   };
 
+  /**
+   * componentDidUpdate
+   * @param prevProps prevProps
+   * @param prevState prevState
+   */
   componentDidUpdate = (
     prevProps: AssignmentEditorProps,
     prevState: AssignmentEditorState
@@ -152,6 +157,12 @@ class ExcerciseEditor extends SessionStateComponent<
 
   /**
    * saveAssignmentEvaluationGradeToServer
+   * @param data data
+   * @param data.workspaceEntityId workspaceEntityId
+   * @param data.userEntityId userEntityId
+   * @param data.workspaceMaterialId workspaceMaterialId
+   * @param data.dataToSave dataToSave
+   * @param data.materialId materialId
    */
   saveAssignmentEvaluationGradeToServer = async (data: {
     workspaceEntityId: number;
@@ -214,7 +225,12 @@ class ExcerciseEditor extends SessionStateComponent<
 
   /**
    * saveAssignmentEvaluationSupplementationToServer
-   * @param data
+   * @param data data
+   * @param data.workspaceEntityId workspaceEntityId
+   * @param data.userEntityId userEntityId
+   * @param data.workspaceMaterialId workspaceMaterialId
+   * @param data.dataToSave dataToSave
+   * @param data.materialId materialId
    */
   saveAssignmentEvaluationSupplementationToServer = async (data: {
     workspaceEntityId: number;

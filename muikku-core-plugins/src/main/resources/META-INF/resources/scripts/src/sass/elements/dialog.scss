@@ -5,13 +5,14 @@
 
 .dialog {
   @include prefix(transition, moz ms webkit o, opacity 0.3s);
+
   align-items: center;
   background-color: $color-overlay-background;
   bottom: 0;
   display: flex;
   justify-content: center;
   left: 0;
-  opacity: 0;
+  opacity: 0%;
   position: fixed;
   right: 0;
   top: 0;
@@ -36,28 +37,8 @@
   }
 }
 
-.dialog--assignments {
-  .dialog__window {
-    max-width: 100%;
-
-    @include breakpoint($breakpoint-pad) {
-      left: auto;
-      right: auto;
-      width: 728px;
-    }
-
-    @include breakpoint($breakpoint-desktop) {
-      width: 984px;
-    }
-
-    @include breakpoint($breakpoint-desktop-xl) {
-      width: 1160px;
-    }
-  }
-}
-
 .dialog--visible {
-  opacity: 1;
+  opacity: 100%;
 }
 
 .dialog__window {
@@ -179,7 +160,7 @@
   height: 100%;
   justify-content: center;
   left: 0;
-  opacity: 0.9;
+  opacity: 90%;
   position: absolute;
   width: 100%;
   z-index: 1000;
@@ -279,6 +260,7 @@
 
 .dialog__close {
   @include prefix(transition, moz ms o webkit, background-color 0.3s);
+
   border-radius: $dialog-button-close-height;
   cursor: pointer;
   font-size: 18px;
@@ -469,6 +451,7 @@
   &.state-DONE {
     color: $color-success;
   }
+
   // scss-lint:enable SelectorFormat
 }
 
@@ -489,6 +472,7 @@
     }
   }
 }
+
 .dialog__state {
   align-items: center;
   border: 1px solid transparent;
@@ -505,6 +489,7 @@
       color: $color-info;
     }
   }
+
   // scss-lint:enable SelectorFormat
 }
 

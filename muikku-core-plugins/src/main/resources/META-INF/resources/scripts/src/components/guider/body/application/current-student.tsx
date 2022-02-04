@@ -1,7 +1,6 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
-import Link from "~/components/general/link";
 import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/label.scss";
@@ -11,15 +10,15 @@ import "~/sass/elements/application-sub-panel.scss";
 import "~/sass/elements/avatar.scss";
 import "~/sass/elements/workspace-activity.scss";
 import { getUserImageUrl, getName } from "~/util/modifiers";
-import Vops from "~/components/base/vops";
 import Hops from "~/components/base/hops_readable";
 import FileDeleteDialog from "../../dialogs/file-delete";
 import Workspaces from "./current-student/workspaces";
+import Ceepos from "./current-student/ceepos";
+import { StatusType } from "~/reducers/base/status";
 import FileUploader from "~/components/general/file-uploader";
 import MainChart from "~/components/general/graph/main-chart";
 import {
   AddFileToCurrentStudentTriggerType,
-  RemoveFileFromCurrentStudentTriggerType,
   addFileToCurrentStudent,
 } from "~/actions/main-function/guider";
 import {
@@ -32,27 +31,42 @@ import {
   GuiderType,
   GuiderStudentUserProfileLabelType,
 } from "~/reducers/main-function/guider";
-import Button from "../../../general/button";
-import HopsCompulsoryEducationWizardDialog from "~/components/records2/dialogs/hops-compulsory-education-wizard";
 
+/**
+ * CurrentStudentProps
+ */
 interface CurrentStudentProps {
   i18n: i18nType;
   guider: GuiderType;
+  status: StatusType;
   addFileToCurrentStudent: AddFileToCurrentStudentTriggerType;
   displayNotification: DisplayNotificationTriggerType;
 }
 
+/**
+ * CurrentStudentState
+ */
 interface CurrentStudentState {}
 
+/**
+ * CurrentStudent
+ */
 class CurrentStudent extends React.Component<
   CurrentStudentProps,
   CurrentStudentState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: CurrentStudentProps) {
     super(props);
   }
 
   //TODO doesn't anyone notice that nor assessment requested, nor no passed courses etc... is available in this view
+  /**
+   * render
+   */
   render() {
     if (this.props.guider.currentStudent === null) {
       return null;
@@ -62,10 +76,10 @@ class CurrentStudent extends React.Component<
     //a case where the property is not available
     //You can use the cheat && after the property
     //eg. guider.currentStudent.property && guider.currentStudent.property.useSubProperty
-    let defaultEmailAddress =
+    const defaultEmailAddress =
       this.props.guider.currentStudent.emails &&
       this.props.guider.currentStudent.emails.find((e) => e.defaultAddress);
-    let studentBasicHeader = this.props.guider.currentStudent.basic && (
+    const studentBasicHeader = this.props.guider.currentStudent.basic && (
       <div className="application-sub-panel__header">
         <object
           className="avatar-container"
@@ -95,23 +109,21 @@ class CurrentStudent extends React.Component<
       </div>
     );
 
-    let studentLabels =
+    const studentLabels =
       this.props.guider.currentStudent.labels &&
       this.props.guider.currentStudent.labels.map(
-        (label: GuiderStudentUserProfileLabelType) => {
-          return (
-            <span className="label" key={label.id}>
-              <span
-                className="label__icon icon-flag"
-                style={{ color: label.flagColor }}
-              ></span>
-              <span className="label__text">{label.flagName}</span>
-            </span>
-          );
-        }
+        (label: GuiderStudentUserProfileLabelType) => (
+          <span className="label" key={label.id}>
+            <span
+              className="label__icon icon-flag"
+              style={{ color: label.flagColor }}
+            ></span>
+            <span className="label__text">{label.flagName}</span>
+          </span>
+        )
       );
 
-    let studentBasicInfo = this.props.guider.currentStudent.basic && (
+    const studentBasicInfo = this.props.guider.currentStudent.basic && (
       <div className="application-sub-panel__body">
         <div className="application-sub-panel__item">
           <div className="application-sub-panel__item-title">
@@ -170,17 +182,15 @@ class CurrentStudent extends React.Component<
             </div>
             <div className="application-sub-panel__item-data">
               {this.props.guider.currentStudent.emails.length ? (
-                this.props.guider.currentStudent.emails.map((email) => {
-                  return (
-                    <span
-                      className="application-sub-panel__single-entry"
-                      key={email.address}
-                    >
-                      {email.defaultAddress ? `*` : null} {email.address} (
-                      {email.type})
-                    </span>
-                  );
-                })
+                this.props.guider.currentStudent.emails.map((email) => (
+                  <span
+                    className="application-sub-panel__single-entry"
+                    key={email.address}
+                  >
+                    {email.defaultAddress ? `*` : null} {email.address} (
+                    {email.type})
+                  </span>
+                ))
               ) : (
                 <span className="application-sub-panel__single-entry">
                   {this.props.i18n.text.get(
@@ -200,17 +210,15 @@ class CurrentStudent extends React.Component<
             </div>
             <div className="application-sub-panel__item-data">
               {this.props.guider.currentStudent.phoneNumbers.length ? (
-                this.props.guider.currentStudent.phoneNumbers.map((phone) => {
-                  return (
-                    <span
-                      className="application-sub-panel__single-entry"
-                      key={phone.number}
-                    >
-                      {phone.defaultNumber ? `*` : null} {phone.number} (
-                      {phone.type})
-                    </span>
-                  );
-                })
+                this.props.guider.currentStudent.phoneNumbers.map((phone) => (
+                  <span
+                    className="application-sub-panel__single-entry"
+                    key={phone.number}
+                  >
+                    {phone.defaultNumber ? `*` : null} {phone.number} (
+                    {phone.type})
+                  </span>
+                ))
               ) : (
                 <span className="application-sub-panel__single-entry">
                   {this.props.i18n.text.get(
@@ -245,16 +253,14 @@ class CurrentStudent extends React.Component<
             </div>
             <div className="application-sub-panel__item-data">
               {this.props.guider.currentStudent.usergroups.length ? (
-                this.props.guider.currentStudent.usergroups.map((usergroup) => {
-                  return (
-                    <span
-                      className="application-sub-panel__single-entry"
-                      key={usergroup.id}
-                    >
-                      {usergroup.name}
-                    </span>
-                  );
-                })
+                this.props.guider.currentStudent.usergroups.map((usergroup) => (
+                  <span
+                    className="application-sub-panel__single-entry"
+                    key={usergroup.id}
+                  >
+                    {usergroup.name}
+                  </span>
+                ))
               ) : (
                 <span className="application-sub-panel__single-entry">
                   {this.props.i18n.text.get(
@@ -308,39 +314,12 @@ class CurrentStudent extends React.Component<
               </div>;
             }
           )}
-        <div className="application-sub-panel__item">
-          <div className="application-sub-panel__item-title">
-            Opintosuunnitelma
-          </div>
-          <div className="application-sub-panel__item-data">
-            <HopsCompulsoryEducationWizardDialog
-              disabled={true}
-              user="supervisor"
-              superVisorModifies={false}
-              hops={2}
-            >
-              <Button className="button button--yo-signup">
-                Opintosuunnitelma
-              </Button>
-            </HopsCompulsoryEducationWizardDialog>
-            <HopsCompulsoryEducationWizardDialog
-              disabled={false}
-              user="supervisor"
-              superVisorModifies={true}
-              hops={2}
-            >
-              <Button className="button button--yo-signup">
-                Muokkaa opintosuunnitelma
-              </Button>
-            </HopsCompulsoryEducationWizardDialog>
-          </div>
-        </div>
       </div>
     );
     //TODO: this was stolen from the dust template, please replace all the classNames, these are for just reference
     //I don't want this file to become too complex, remember anyway that I will be splitting all these into simpler components
     //later once a pattern is defined
-    let studentHops =
+    const studentHops =
       this.props.guider.currentStudent.hops &&
       this.props.guider.currentStudent.hops.optedIn ? (
         <Hops data={this.props.guider.currentStudent.hops} />
@@ -348,14 +327,19 @@ class CurrentStudent extends React.Component<
 
     //I placed the VOPS in an external file already you can follow it, this is because
     //it is very clear
-    let studentVops = null;
+    const studentVops: any = null;
     // Removed until it works
     // (this.props.guider.currentStudent.vops && this.props.guider.currentStudent.vops.optedIn) ?
     //        <Vops data={this.props.guider.currentStudent.vops}></Vops> : null;
 
-    let studentWorkspaces = <Workspaces />;
+    const studentWorkspaces = <Workspaces />;
 
-    let formDataGenerator = (file: File, formData: FormData) => {
+    /**
+     * formDataGenerator
+     * @param file file
+     * @param formData formData
+     */
+    const formDataGenerator = (file: File, formData: FormData) => {
       formData.append("upload", file);
       formData.append("title", file.name);
       formData.append("description", "");
@@ -365,7 +349,25 @@ class CurrentStudent extends React.Component<
       );
     };
 
-    let files = this.props.guider.currentStudent.basic && (
+    /**
+     * IsStudentPartOfProperStudyProgram
+     * @param studyProgramName
+     * @returns true or false
+     */
+    const IsStudentPartOfProperStudyProgram = (studyProgramName: string) => {
+      switch (studyProgramName) {
+        case "Nettilukio/yksityisopiskelu (aineopintoina)":
+        case "Nettilukio/yksityisopiskelu (tutkinto)":
+        case "Aineopiskelu/lukio":
+        case "Aineopiskelu/peruskoulu":
+        case "Aineopiskelu/yo-tutkinto":
+          return true;
+        default:
+          return false;
+      }
+    };
+
+    const files = this.props.guider.currentStudent.basic && (
       <div className="application-sub-panel__body">
         <FileUploader
           url="/transcriptofrecordsfileupload/"
@@ -415,6 +417,20 @@ class CurrentStudent extends React.Component<
           ) : null}
         </div>
         <div className="application-sub-panel">{studentBasicInfo}</div>
+        {this.props.guider.currentStudent.basic &&
+        IsStudentPartOfProperStudyProgram(
+          this.props.guider.currentStudent.basic.studyProgrammeName
+        ) &&
+        this.props.status.permissions.LIST_USER_ORDERS ? (
+          <div className="application-sub-panel">
+            <h3 className="application-sub-panel__header">
+              {this.props.i18n.text.get("plugin.guider.user.details.purchases")}
+            </h3>
+            <div className="application-sub-panel__body">
+              <Ceepos />
+            </div>
+          </div>
+        ) : null}
         {studentHops ? (
           <div className="application-sub-panel">
             <h3 className="application-sub-panel__header">
@@ -463,13 +479,22 @@ class CurrentStudent extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     guider: state.guider,
+    status: state.status,
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     { addFileToCurrentStudent, displayNotification },

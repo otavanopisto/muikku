@@ -5,27 +5,35 @@ import { Dispatch } from "redux";
 import { HOPSDataType } from "~/reducers/main-function/hops";
 import { StateType } from "~/reducers";
 import MatriculationSubjectsList from "../records/body/application/matriculation-subjects/matriculation-subjects-list";
-import "~/sass/elements/hops.scss";
 import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/wcag.scss";
 
-interface UpperSecondarySchoolHopsProps {
+/**
+ * HopsProps
+ */
+interface HopsProps {
   data?: HOPSDataType;
   defaultData: HOPSDataType;
   onHopsChange?: (hops: HOPSDataType) => any;
   i18n: i18nType;
 }
 
-interface UpperSecondarySchoolHopsState {
+/**
+ * HopsState
+ */
+interface HopsState {
   hops: HOPSDataType;
 }
 
-class UpperSecondarySchoolHops extends React.Component<
-  UpperSecondarySchoolHopsProps,
-  UpperSecondarySchoolHopsState
-> {
-  constructor(props: UpperSecondarySchoolHopsProps) {
+/**
+ * Hops
+ */
+class Hops extends React.Component<HopsProps, HopsState> {
+  /**
+   * @param props
+   */
+  constructor(props: HopsProps) {
     super(props);
 
     this.set = this.set.bind(this);
@@ -37,14 +45,25 @@ class UpperSecondarySchoolHops extends React.Component<
   }
 
   /**
+   * componentWillReceiveProps
+   * @param nextProps nextProps
+   */
+  componentWillReceiveProps(nextProps: HopsProps) {
+    const nextData = nextProps.data || nextProps.defaultData;
+    if (nextData !== this.state.hops) {
+      this.setState({ hops: nextData });
+    }
+  }
+
+  /**
    * set
-   * @param property
-   * @param value
+   * @param property property
+   * @param value value
    */
   set(property: string, value: any) {
-    let nProp: any = {};
+    const nProp: any = {};
     nProp[property] = value || null;
-    let nval = Object.assign({}, this.state.hops, nProp);
+    const nval = Object.assign({}, this.state.hops, nProp);
     this.props.onHopsChange && this.props.onHopsChange(nval);
 
     this.setState({
@@ -54,22 +73,11 @@ class UpperSecondarySchoolHops extends React.Component<
 
   /**
    * setFromEventValue
-   * @param property
-   * @param e
+   * @param property property
+   * @param e e
    */
   setFromEventValue(property: string, e: React.ChangeEvent<HTMLInputElement>) {
     return this.set(property, e.target.value);
-  }
-
-  /**
-   * componentWillReceiveProps
-   * @param nextProps
-   */
-  componentWillReceiveProps(nextProps: UpperSecondarySchoolHopsProps) {
-    let nextData = nextProps.data || nextProps.defaultData;
-    if (nextData !== this.state.hops) {
-      this.setState({ hops: nextData });
-    }
   }
 
   /**
@@ -81,8 +89,12 @@ class UpperSecondarySchoolHops extends React.Component<
     this.set("studentMatriculationSubjects", subjects);
   };
 
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
-    let data = this.props.data || this.props.defaultData;
+    const data = this.props.data || this.props.defaultData;
     if (!data || !data.optedIn) {
       return null;
     }
@@ -97,7 +109,7 @@ class UpperSecondarySchoolHops extends React.Component<
             </div>
             <div className="application-sub-panel__item-data form-element">
               {["yes", "no", "maybe"].map((option: string) => {
-                let onEvent = this.set.bind(
+                const onEvent = this.set.bind(
                   this,
                   "goalSecondarySchoolDegree",
                   option
@@ -137,7 +149,7 @@ class UpperSecondarySchoolHops extends React.Component<
             </div>
             <div className="application-sub-panel__item-data form-element">
               {["yes", "no", "maybe"].map((option: string) => {
-                let onEvent = this.set.bind(
+                const onEvent = this.set.bind(
                   this,
                   "goalMatriculationExam",
                   option
@@ -206,13 +218,11 @@ class UpperSecondarySchoolHops extends React.Component<
                   )}
                 </option>
                 {["1", "2", "2,5", "3", "4", "5", "6", "7", "8", "9", "10"].map(
-                  (n) => {
-                    return (
-                      <option key={n} value={n}>
-                        {n}
-                      </option>
-                    );
-                  }
+                  (n) => (
+                    <option key={n} value={n}>
+                      {n}
+                    </option>
+                  )
                 )}
               </select>
               {this.props.i18n.text.get(
@@ -221,7 +231,7 @@ class UpperSecondarySchoolHops extends React.Component<
             </div>
             <div className="application-sub-panel__item-data form-element">
               {["yes", "no"].map((option: string) => {
-                let onEvent = this.set.bind(
+                const onEvent = this.set.bind(
                   this,
                   "goalJustMatriculationExam",
                   option
@@ -276,13 +286,11 @@ class UpperSecondarySchoolHops extends React.Component<
                   )}
                 </option>
                 {["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"].map(
-                  (n) => {
-                    return (
-                      <option key={n} value={n}>
-                        {n}
-                      </option>
-                    );
-                  }
+                  (n) => (
+                    <option key={n} value={n}>
+                      {n}
+                    </option>
+                  )
                 )}
               </select>
               {this.props.i18n.text.get(
@@ -291,7 +299,7 @@ class UpperSecondarySchoolHops extends React.Component<
             </div>
             <div className="application-sub-panel__item-data form-element">
               {["yes", "no"].map((option: string) => {
-                let onEvent = this.set.bind(
+                const onEvent = this.set.bind(
                   this,
                   "justTransferCredits",
                   option
@@ -340,13 +348,11 @@ class UpperSecondarySchoolHops extends React.Component<
                     "plugin.records.hops.selectAnOption"
                   )}
                 </option>
-                {["1", "2", "3", "4"].map((n) => {
-                  return (
-                    <option key={n} value={n}>
-                      {n}
-                    </option>
-                  );
-                })}
+                {["1", "2", "3", "4"].map((n) => (
+                  <option key={n} value={n}>
+                    {n}
+                  </option>
+                ))}
               </select>
               {this.props.i18n.text.get(
                 "plugin.records.hops.goals.completionYears2"
@@ -361,7 +367,7 @@ class UpperSecondarySchoolHops extends React.Component<
             </div>
             <div className="application-sub-panel__item-data form-element">
               {["AI", "S2"].map((option: string) => {
-                let onEvent = this.set.bind(this, "finnish", option);
+                const onEvent = this.set.bind(this, "finnish", option);
                 const nativity: any = { AI: "native", S2: "foreign" };
                 return (
                   <div
@@ -478,7 +484,7 @@ class UpperSecondarySchoolHops extends React.Component<
             </div>
             <div className="application-sub-panel__item-data form-element">
               {["MAA", "MAB"].map((option: string) => {
-                let onEvent = this.set.bind(this, "mathSyllabus", option);
+                const onEvent = this.set.bind(this, "mathSyllabus", option);
                 return (
                   <div
                     className="form-element__radio-option-container"
@@ -507,7 +513,7 @@ class UpperSecondarySchoolHops extends React.Component<
             </div>
             <div className="application-sub-panel__item-data form-element">
               {["BI", "FY", "KE", "GE"].map((option: string) => {
-                let onEvent = this.set.bind(this, "science", option);
+                const onEvent = this.set.bind(this, "science", option);
                 return (
                   <div
                     className="form-element__radio-option-container"
@@ -536,7 +542,7 @@ class UpperSecondarySchoolHops extends React.Component<
             </div>
             <div className="application-sub-panel__item-data form-element">
               {["UE", "ET", "UX"].map((option: string) => {
-                let onEvent = this.set.bind(this, "religion", option);
+                const onEvent = this.set.bind(this, "religion", option);
                 return (
                   <div
                     className="form-element__radio-option-container"
@@ -583,6 +589,10 @@ class UpperSecondarySchoolHops extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -590,11 +600,12 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return {};
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(UpperSecondarySchoolHops);
+export default connect(mapStateToProps, mapDispatchToProps)(Hops);

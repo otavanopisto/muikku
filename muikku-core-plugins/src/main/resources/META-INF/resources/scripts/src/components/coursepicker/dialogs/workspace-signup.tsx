@@ -1,14 +1,11 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import Link from "~/components/general/link";
 import Dialog from "~/components/general/dialog";
 import { AnyActionType } from "~/actions";
 import { i18nType } from "~/reducers/base/i18n";
-
 import "~/sass/elements/link.scss";
 import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
-
 import "~/sass/elements/buttons.scss";
 import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
@@ -18,6 +15,7 @@ import {
 } from "~/actions/workspaces";
 import { bindActionCreators } from "redux";
 import { WorkspaceSignUpDetails, WorkspaceType } from "~/reducers/workspaces";
+import { StatusType } from "~/reducers/base/status";
 
 /**
  * WorkspaceSignupDialogProps
@@ -27,6 +25,8 @@ interface WorkspaceSignupDialogProps {
   children?: React.ReactElement<any>;
   isOpen?: boolean;
   onClose?: () => void;
+  workspace?: WorkspaceType;
+  status: StatusType;
   workspaceSignUpDetails?: WorkspaceSignUpDetails;
   currentWorkspace: WorkspaceType;
   signupIntoWorkspace: SignupIntoWorkspaceTriggerType;
@@ -48,8 +48,8 @@ class WorkspaceSignupDialog extends React.Component<
   WorkspaceSignupDialogState
 > {
   /**
-   * constructor
-   * @param props
+   * constructor method
+   * @param props props
    */
   constructor(props: WorkspaceSignupDialogProps) {
     super(props);
@@ -64,7 +64,7 @@ class WorkspaceSignupDialog extends React.Component<
 
   /**
    * updateMessage
-   * @param e
+   * @param e e
    */
   updateMessage(e: React.ChangeEvent<HTMLTextAreaElement>) {
     this.setState({ message: e.target.value });
@@ -72,7 +72,7 @@ class WorkspaceSignupDialog extends React.Component<
 
   /**
    * signup
-   * @param closeDialog
+   * @param closeDialog closeDialog
    */
   signup(closeDialog: () => any) {
     this.setState({ locked: true });
@@ -86,10 +86,16 @@ class WorkspaceSignupDialog extends React.Component<
         nameExtension: workspaceSignUpDetails.nameExtension,
         urlName: workspaceSignUpDetails.urlName,
       },
+      /**
+       * success
+       */
       success: () => {
         this.setState({ locked: false, message: "" });
         closeDialog();
       },
+      /**
+       * fail
+       */
       fail: () => {
         this.setState({ locked: false });
       },
@@ -111,6 +117,11 @@ class WorkspaceSignupDialog extends React.Component<
         .getAttribute("value")
     );
 
+    /**
+     * content
+     * @param closeDialog closeDialog
+     * @returns JSX.Element
+     */
     let content = (closeDialog: () => any) => (
       <div>
         <div>
@@ -152,21 +163,21 @@ class WorkspaceSignupDialog extends React.Component<
       </div>
     );
 
-    let footer = (closeDialog: () => any) => {
-      return (
-        <div className="dialog__button-set">
-          <Button
-            buttonModifiers={["standard-ok", "info"]}
-            onClick={this.signup.bind(this, closeDialog)}
-            disabled={this.state.locked}
-          >
-            {this.props.i18n.text.get(
-              "plugin.workspaceSignUp.signupButtonLabel"
-            )}
-          </Button>
-        </div>
-      );
-    };
+    /**
+     * footer
+     * @param closeDialog closeDialog
+     */
+    const footer = (closeDialog: () => any) => (
+      <div className="dialog__button-set">
+        <Button
+          buttonModifiers={["standard-ok", "info"]}
+          onClick={this.signup.bind(this, closeDialog)}
+          disabled={this.state.locked}
+        >
+          {this.props.i18n.text.get("plugin.workspaceSignUp.signupButtonLabel")}
+        </Button>
+      </div>
+    );
 
     return (
       <Dialog
@@ -183,13 +194,22 @@ class WorkspaceSignupDialog extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
+    status: state.status,
     currentWorkspace: state.workspaces.currentWorkspace,
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ signupIntoWorkspace }, dispatch);
 }

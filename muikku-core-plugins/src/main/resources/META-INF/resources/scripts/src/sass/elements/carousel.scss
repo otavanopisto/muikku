@@ -50,6 +50,7 @@
 
   button {
     @include prefix(transition, moz ms webkit o, background 0.3);
+
     background: $color-carousel-default-dot-background;
     border: solid 2px $color-carousel-default-dot-border;
     border-radius: 100%;

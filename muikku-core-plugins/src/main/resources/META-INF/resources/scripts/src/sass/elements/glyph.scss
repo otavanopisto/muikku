@@ -26,10 +26,11 @@
 }
 
 .glyph--worklist-state-indicator {
-  font-size: 0.7rem;
-  height: 0.7rem;
-  margin: 4px 6px 0 0;
-  width: 0.7rem;
+  align-self: flex-start;
+  font-size: 1rem;
+  height: 1rem;
+  margin: 4px 10px 0 0;
+  width: 1rem;
 
   // scss-lint:disable SelectorFormat
   &.state-ENTERED {
@@ -47,6 +48,7 @@
   &.state-PAID {
     color: $color-default-contrast;
   }
+
   // scss-lint:enable SelectorFormat
 }
 
@@ -62,4 +64,34 @@
   justify-content: center;
   padding: 4px;
   width: 1rem;
+}
+
+.glyph--product-state-indicator {
+  align-self: flex-start;
+  font-size: 1rem;
+  height: 1rem;
+  margin: 2px 10px 0 0;
+  width: 1rem;
+
+  // scss-lint:disable SelectorFormat
+
+  &.state-CANCELLED {
+    color: $color-disabled;
+  }
+
+  &.state-ERRORED {
+    color: $color-fatal;
+  }
+
+  &.state-CREATED,
+  &.state-ONGOING {
+    color: $color-info;
+  }
+
+  &.state-PAID,
+  &.state-COMPLETE {
+    color: $color-success;
+  }
+
+  // scss-lint:enable SelectorFormat
 }
