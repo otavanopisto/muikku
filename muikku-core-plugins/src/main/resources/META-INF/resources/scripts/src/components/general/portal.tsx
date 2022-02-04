@@ -1,36 +1,60 @@
-import * as React from 'react';
-import {unstable_renderSubtreeIntoContainer, unmountComponentAtNode, findDOMNode} from 'react-dom';
+/* eslint-disable react/no-find-dom-node */
+
+/**
+ * Deprecated findReactDom should be refactored
+ */
+
+import * as React from "react";
+import {
+  // eslint-disable-next-line camelcase
+  unstable_renderSubtreeIntoContainer,
+  unmountComponentAtNode,
+  findDOMNode,
+} from "react-dom";
 
 const KEYCODES = {
-  ESCAPE: 27
+  ESCAPE: 27,
 };
 
+/**
+ * PortalProps
+ */
 interface PortalProps {
-  children?: any,
-  openByClickOn?: React.ReactElement<any>,
-  openByHoverOn?: React.ReactElement<any>,
+  children?: any;
+  openByClickOn?: React.ReactElement<any>;
+  openByHoverOn?: React.ReactElement<any>;
   openByHoverIsClickToo?: boolean;
-  closeOnEsc?: boolean,
-  closeOnOutsideClick?: boolean,
-  closeOnScroll?: boolean,
-  onOpen?(e: HTMLElement):any,
-  onClose?():any,
-  beforeClose?(e: HTMLElement, resetPortalState: ()=>any): any,
-  onKeyStroke?(keyCode: number, closePortal: ()=>any): any,
-  onWrapperKeyDown?(e: React.KeyboardEvent): any,
-  isOpen?: boolean
+  closeOnEsc?: boolean;
+  closeOnOutsideClick?: boolean;
+  closeOnScroll?: boolean;
+  onOpen?: (e: HTMLElement) => any;
+  onClose?: () => any;
+  beforeClose?: (e: HTMLElement, resetPortalState: () => any) => any;
+  onKeyStroke?: (keyCode: number, closePortal: () => any) => any;
+  onWrapperKeyDown?: (e: React.KeyboardEvent) => any;
+  isOpen?: boolean;
 }
 
+/**
+ * PortalState
+ */
 interface PortalState {
-  active: boolean
+  active: boolean;
 }
 
+/**
+ * Portal
+ */
 export default class Portal extends React.Component<PortalProps, PortalState> {
   private portal: any;
   private node: HTMLElement | null;
   private isUnmounted: boolean;
   private isClosing: boolean;
 
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: PortalProps) {
     super(props);
     this.state = { active: false };
@@ -45,53 +69,77 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
     this.isClosing = false;
   }
 
+  /**
+   * componentDidMount
+   */
   componentDidMount() {
     if (this.props.closeOnEsc) {
-      document.addEventListener('keydown', this.handleKeydown);
+      document.addEventListener("keydown", this.handleKeydown);
     }
 
     if (this.props.closeOnOutsideClick) {
-      document.addEventListener('mouseup', this.handleOutsideMouseClick);
-      document.addEventListener('touchstart', this.handleOutsideMouseClick);
+      document.addEventListener("mouseup", this.handleOutsideMouseClick);
+      document.addEventListener("touchstart", this.handleOutsideMouseClick);
     }
 
     if (this.props.closeOnScroll) {
-      document.addEventListener('scroll', this.handleOutsideMouseClick);
+      document.addEventListener("scroll", this.handleOutsideMouseClick);
     }
 
-    if (this.props.isOpen === true){
+    if (this.props.isOpen === true) {
       this.openPortal();
     }
   }
 
+  /**
+   * componentWillUpdate
+   * @param nextProps nextProps
+   * @param nextState nextState
+   */
   componentWillUpdate(nextProps: PortalProps, nextState: PortalState) {
-    if (nextProps.isOpen === true && !this.props.isOpen && !this.state.active && !this.isClosing){
+    if (
+      nextProps.isOpen === true &&
+      !this.props.isOpen &&
+      !this.state.active &&
+      !this.isClosing
+    ) {
       this.openPortal(nextProps);
-    } else if (nextProps.isOpen === false && this.state.active && !this.isClosing){
+    } else if (
+      nextProps.isOpen === false &&
+      this.state.active &&
+      !this.isClosing
+    ) {
       this.closePortal();
-    } else if (nextState.active){
+    } else if (nextState.active) {
       this.renderPortal(nextProps);
     }
   }
 
+  /**
+   * componentWillUnmount
+   */
   componentWillUnmount() {
     if (this.props.closeOnEsc) {
-      document.removeEventListener('keydown', this.handleKeydown);
+      document.removeEventListener("keydown", this.handleKeydown);
     }
 
     if (this.props.closeOnOutsideClick) {
-      document.removeEventListener('mouseup', this.handleOutsideMouseClick);
-      document.removeEventListener('touchstart', this.handleOutsideMouseClick);
+      document.removeEventListener("mouseup", this.handleOutsideMouseClick);
+      document.removeEventListener("touchstart", this.handleOutsideMouseClick);
     }
 
     if (this.props.closeOnScroll) {
-      document.removeEventListener('scroll', this.handleOutsideMouseClick);
+      document.removeEventListener("scroll", this.handleOutsideMouseClick);
     }
 
     this.isUnmounted = true;
     this.closePortal();
   }
 
+  /**
+   * handleWrapperClick
+   * @param e e
+   */
   handleWrapperClick(e: Event) {
     e.preventDefault();
     e.stopPropagation();
@@ -101,6 +149,10 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
     this.openPortal();
   }
 
+  /**
+   * handleWrapperKeyDown
+   * @param e e
+   */
   handleWrapperKeyDown(e: React.KeyboardEvent) {
     if (e.key === "Enter") {
       e.preventDefault();
@@ -122,14 +174,24 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
     }
   }
 
+  /**
+   * openPortal
+   * @param props props
+   */
   openPortal(props: PortalProps = this.props) {
     this.setState({ active: true });
     this.renderPortal(props, true);
   }
 
+  /**
+   * closePortal
+   */
   closePortal() {
     this.isClosing = true;
 
+    /**
+     * resetPortalState
+     */
     const resetPortalState = () => {
       if (this.node) {
         unmountComponentAtNode(this.node);
@@ -155,6 +217,10 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
     }
   }
 
+  /**
+   * handleOutsideMouseClick
+   * @param e e
+   */
   handleOutsideMouseClick(e: Event) {
     if (!this.state.active) {
       return;
@@ -165,7 +231,7 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
       e.stopPropagation();
       this.closePortal();
     }
-    let node: Node = e.target as Node;
+    const node: Node = e.target as Node;
     if (root.contains(node)) {
       return;
     }
@@ -174,23 +240,35 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
     this.closePortal();
   }
 
+  /**
+   * handleKeydown
+   * @param e e
+   */
   handleKeydown(e: KeyboardEvent) {
     if (e.keyCode === KEYCODES.ESCAPE && this.state.active) {
       this.closePortal();
-    } else if (this.state.active){
-      this.props.onKeyStroke && this.props.onKeyStroke(e.keyCode, this.closePortal);
+    } else if (this.state.active) {
+      this.props.onKeyStroke &&
+        this.props.onKeyStroke(e.keyCode, this.closePortal);
     }
   }
 
-  renderPortal(props: PortalProps, isOpening:boolean = false) {
+  /**
+   * renderPortal
+   * @param props props
+   * @param isOpening isOpening
+   */
+  renderPortal(props: PortalProps, isOpening = false) {
     if (!this.node) {
-      this.node = document.createElement('div');
+      this.node = document.createElement("div");
       document.body.appendChild(this.node);
     }
 
     this.portal = unstable_renderSubtreeIntoContainer(
       this,
-      typeof props.children === "function" ? props.children(this.closePortal) : props.children,
+      typeof props.children === "function"
+        ? props.children(this.closePortal)
+        : props.children,
       this.node
     );
 
@@ -199,6 +277,10 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
     }
   }
 
+  /**
+   * render
+   * @returns JSX.Element
+   */
   render() {
     if (this.props.openByClickOn) {
       return React.cloneElement(this.props.openByClickOn, {

@@ -47,7 +47,6 @@ INSERT INTO ROLESCHOOLDATAIDENTIFIER (id, identifier, datasource_id, roleentity_
 insert into SystemRoleEntity (id, roleType) values (11, 'EVERYONE');
 insert into WorkspaceRoleEntity (id, archetype) values (7, 'TEACHER'), (8, 'CUSTOM'), (9, 'CUSTOM'), (10, 'STUDENT');
 
-insert into UserGroupEntity (id, schoolDataSource_id, identifier, archived) values
-  (1, 2, 'STUDYPROGRAMME-1', false);
+
 
  SET REFERENTIAL_INTEGRITY TRUE;

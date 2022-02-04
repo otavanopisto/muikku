@@ -80,8 +80,8 @@ class Security extends React.Component<SecurityProps, SecurityState> {
    * update
    */
   public update() {
-    let newPassword1 = this.state.newPassword;
-    let newPassword2 = this.state.newPasswordConfirm;
+    const newPassword1 = this.state.newPassword;
+    const newPassword2 = this.state.newPasswordConfirm;
 
     if (newPassword1 && newPassword2 == "") {
       this.props.displayNotification(
@@ -107,7 +107,7 @@ class Security extends React.Component<SecurityProps, SecurityState> {
       locked: true,
     });
 
-    let values = {
+    const values = {
       oldPassword: this.state.oldPassword,
       username: this.state.username,
       newPassword: this.state.newPassword,
@@ -166,7 +166,7 @@ class Security extends React.Component<SecurityProps, SecurityState> {
    * @param e
    */
   updateField(field: string, e: React.ChangeEvent<HTMLInputElement>) {
-    let nField: any = {};
+    const nField: any = {};
     nField[field] = e.target.value;
     this.setState(nField);
   }

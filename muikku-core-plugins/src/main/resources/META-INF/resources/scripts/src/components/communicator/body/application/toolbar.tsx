@@ -4,30 +4,62 @@ import { bindActionCreators } from "redux";
 import Dropdown from "~/components/general/dropdown";
 import Link from "~/components/general/link";
 import {
-  deleteCurrentMessageThread, addLabelToCurrentMessageThread, removeLabelFromSelectedMessageThreads,
-  deleteSelectedMessageThreads, toggleMessageThreadsReadStatus, addMessagesNavigationLabel, addLabelToSelectedMessageThreads,
-  removeLabelFromCurrentMessageThread, DeleteCurrentMessageThreadTriggerType,
-  AddLabelToCurrentMessageThreadTriggerType, RemoveLabelFromSelectedMessageThreadsTriggerType, DeleteSelectedMessageThreadsTriggerType,
-  ToggleMessageThreadsReadStatusTriggerType, AddMessagesNavigationLabelTriggerType, AddLabelToSelectedMessageThreadsTriggerType,
-  RemoveLabelFromCurrentMessageThreadTriggerType, restoreCurrentMessageThread, RestoreCurrentMessageThreadTriggerType,
-  restoreSelectedMessageThreads, RestoreSelectedMessageThreadsTriggerType,
-  toggleMessageThreadReadStatus, ToggleMessageThreadReadStatusTriggerType, loadMessageThreads, LoadMessageThreadsTriggerType
-} from '~/actions/main-function/messages';
-import { filterMatch, filterHighlight, intersect, difference, flatten } from '~/util/modifiers';
-import LabelUpdateDialog from '../../dialogs/label-update';
-import { MessagesType } from '~/reducers/main-function/messages';
-import { i18nType } from '~/reducers/base/i18n';
-import { StateType } from '~/reducers';
-import '~/sass/elements/link.scss';
-import '~/sass/elements/application-panel.scss';
-import '~/sass/elements/buttons.scss';
-import '~/sass/elements/glyph.scss';
-import '~/sass/elements/form-elements.scss';
-import { ApplicationPanelToolbar, ApplicationPanelToolbarActionsMain, ApplicationPanelToolbarActionsAside } from '~/components/general/application-panel/application-panel';
-import { ButtonPill } from '~/components/general/button';
-import { SearchFormElement } from '~/components/general/form-element';
-import { ToggleSelectAllMessageThreadsTriggerType, toggleAllMessageItems } from '~/actions/main-function/messages/index';
+  deleteCurrentMessageThread,
+  addLabelToCurrentMessageThread,
+  removeLabelFromSelectedMessageThreads,
+  deleteSelectedMessageThreads,
+  toggleMessageThreadsReadStatus,
+  addMessagesNavigationLabel,
+  addLabelToSelectedMessageThreads,
+  removeLabelFromCurrentMessageThread,
+  DeleteCurrentMessageThreadTriggerType,
+  AddLabelToCurrentMessageThreadTriggerType,
+  RemoveLabelFromSelectedMessageThreadsTriggerType,
+  DeleteSelectedMessageThreadsTriggerType,
+  ToggleMessageThreadsReadStatusTriggerType,
+  AddMessagesNavigationLabelTriggerType,
+  AddLabelToSelectedMessageThreadsTriggerType,
+  RemoveLabelFromCurrentMessageThreadTriggerType,
+  restoreCurrentMessageThread,
+  RestoreCurrentMessageThreadTriggerType,
+  restoreSelectedMessageThreads,
+  RestoreSelectedMessageThreadsTriggerType,
+  toggleMessageThreadReadStatus,
+  ToggleMessageThreadReadStatusTriggerType,
+  loadMessageThreads,
+  LoadMessageThreadsTriggerType,
+} from "~/actions/main-function/messages";
+import {
+  filterMatch,
+  filterHighlight,
+  intersect,
+  difference,
+  flatten,
+} from "~/util/modifiers";
+import LabelUpdateDialog from "../../dialogs/label-update";
+import { MessagesType } from "~/reducers/main-function/messages";
+import { i18nType } from "~/reducers/base/i18n";
+import { StateType } from "~/reducers";
+import "~/sass/elements/link.scss";
+import "~/sass/elements/application-panel.scss";
+import "~/sass/elements/buttons.scss";
+import "~/sass/elements/glyph.scss";
+import "~/sass/elements/form-elements.scss";
+import {
+  ApplicationPanelToolbar,
+  ApplicationPanelToolbarActionsMain,
+  ApplicationPanelToolbarActionsAside,
+} from "~/components/general/application-panel/application-panel";
+import { ButtonPill } from "~/components/general/button";
+import { SearchFormElement } from "~/components/general/form-element";
+import {
+  ToggleSelectAllMessageThreadsTriggerType,
+  toggleAllMessageItems,
+} from "~/actions/main-function/messages/index";
 
+/**
+ * CommunicatorToolbarProps
+ */
 interface CommunicatorToolbarProps {
   messages: MessagesType;
   i18n: i18nType;
@@ -47,17 +79,27 @@ interface CommunicatorToolbarProps {
   toggleAllMessageItems: ToggleSelectAllMessageThreadsTriggerType;
 }
 
+/**
+ * CommunicatorToolbarState
+ */
 interface CommunicatorToolbarState {
   labelFilter: string;
   isCurrentRead: boolean;
   searchquery: any;
 }
 
+/**
+ * CommunicatorToolbar
+ */
 class CommunicatorToolbar extends React.Component<
   CommunicatorToolbarProps,
   CommunicatorToolbarState
 > {
   private focused: boolean;
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: CommunicatorToolbarProps) {
     super(props);
     this.updateLabelFilter = this.updateLabelFilter.bind(this);
@@ -65,9 +107,8 @@ class CommunicatorToolbar extends React.Component<
     this.loadMessage = this.loadMessage.bind(this);
     this.onCreateNewLabel = this.onCreateNewLabel.bind(this);
     this.resetLabelFilter = this.resetLabelFilter.bind(this);
-    this.toggleCurrentMessageReadStatus = this.toggleCurrentMessageReadStatus.bind(
-      this
-    );
+    this.toggleCurrentMessageReadStatus =
+      this.toggleCurrentMessageReadStatus.bind(this);
     this.updateSearchWithQuery = this.updateSearchWithQuery.bind(this);
     this.onInputFocus = this.onInputFocus.bind(this);
     this.onInputBlur = this.onInputBlur.bind(this);
@@ -81,55 +122,11 @@ class CommunicatorToolbar extends React.Component<
     };
   }
 
-  updateSearchWithQuery(query: string) {
-    this.setState({
-      searchquery: query,
-    });
-    this.props.loadMessageThreads(null, query);
-  }
-
-  loadMessage(messageId: number) {
-    if (history.replaceState) {
-      history.replaceState(
-        "",
-        "",
-        location.hash.split("/")[0] + "/" + messageId
-      );
-      window.dispatchEvent(new HashChangeEvent("hashchange"));
-    } else {
-      location.hash = location.hash.split("/")[0] + "/" + messageId;
-    }
-  }
-  updateLabelFilter(e: React.ChangeEvent<HTMLInputElement>) {
-    this.setState({ labelFilter: e.target.value });
-  }
-  onCreateNewLabel() {
-    if (this.state.labelFilter.trim()) {
-      this.props.addMessagesNavigationLabel(this.state.labelFilter.trim());
-      this.resetLabelFilter();
-    }
-  }
-  onGoBackClick(e: React.MouseEvent<HTMLAnchorElement>) {
-    if (history.replaceState) {
-      let canGoBack =
-        (!document.referrer ||
-          document.referrer.indexOf(window.location.host) !== -1) &&
-        history.length;
-      if (canGoBack && location.hash.indexOf("?f") === -1) {
-        history.back();
-      } else {
-        history.replaceState("", "", location.hash.split("/")[0]);
-        window.dispatchEvent(new HashChangeEvent("hashchange"));
-      }
-    } else {
-      location.hash = location.hash.split("/")[0];
-    }
-  }
-  resetLabelFilter() {
-    this.setState({
-      labelFilter: "",
-    });
-  }
+  /**
+   * componentWillUpdate
+   * @param nextProps nextProps
+   * @param nextState nextState
+   */
   componentWillUpdate(
     nextProps: CommunicatorToolbarProps,
     nextState: CommunicatorToolbarState
@@ -150,6 +147,86 @@ class CommunicatorToolbar extends React.Component<
       });
     }
   }
+
+  /**
+   * updateSearchWithQuery
+   * @param query query
+   */
+  updateSearchWithQuery(query: string) {
+    this.setState({
+      searchquery: query,
+    });
+    this.props.loadMessageThreads(null, query);
+  }
+
+  /**
+   * loadMessage
+   * @param messageId messageId
+   */
+  loadMessage(messageId: number) {
+    if (history.replaceState) {
+      history.replaceState(
+        "",
+        "",
+        location.hash.split("/")[0] + "/" + messageId
+      );
+      window.dispatchEvent(new HashChangeEvent("hashchange"));
+    } else {
+      location.hash = location.hash.split("/")[0] + "/" + messageId;
+    }
+  }
+
+  /**
+   * updateLabelFilter
+   * @param e e
+   */
+  updateLabelFilter(e: React.ChangeEvent<HTMLInputElement>) {
+    this.setState({ labelFilter: e.target.value });
+  }
+
+  /**
+   * onCreateNewLabel
+   */
+  onCreateNewLabel() {
+    if (this.state.labelFilter.trim()) {
+      this.props.addMessagesNavigationLabel(this.state.labelFilter.trim());
+      this.resetLabelFilter();
+    }
+  }
+
+  /**
+   * onGoBackClick
+   * @param e e
+   */
+  onGoBackClick(e: React.MouseEvent<HTMLAnchorElement>) {
+    if (history.replaceState) {
+      const canGoBack =
+        (!document.referrer ||
+          document.referrer.indexOf(window.location.host) !== -1) &&
+        history.length;
+      if (canGoBack && location.hash.indexOf("?f") === -1) {
+        history.back();
+      } else {
+        history.replaceState("", "", location.hash.split("/")[0]);
+        window.dispatchEvent(new HashChangeEvent("hashchange"));
+      }
+    } else {
+      location.hash = location.hash.split("/")[0];
+    }
+  }
+
+  /**
+   * resetLabelFilter
+   */
+  resetLabelFilter() {
+    this.setState({
+      labelFilter: "",
+    });
+  }
+
+  /**
+   * toggleCurrentMessageReadStatus
+   */
   toggleCurrentMessageReadStatus() {
     this.props.toggleMessageThreadReadStatus(
       this.props.messages.currentThread.messages[0].communicatorMessageId,
@@ -159,24 +236,33 @@ class CommunicatorToolbar extends React.Component<
       isCurrentRead: !this.state.isCurrentRead,
     });
   }
+  /**
+   * onInputFocus
+   */
   onInputFocus() {
     this.focused = true;
   }
 
+  /**
+   * onInputBlur
+   */
   onInputBlur() {
     this.focused = false;
   }
 
+  /**
+   * render
+   */
   render() {
-    let currentLocation = this.props.messages.navigation.find((item) => {
-      return item.location === this.props.messages.location;
-    });
+    const currentLocation = this.props.messages.navigation.find(
+      (item) => item.location === this.props.messages.location
+    );
 
     if (!currentLocation) {
       return null;
     }
 
-    let isUnreadOrInboxOrLabel: boolean =
+    const isUnreadOrInboxOrLabel: boolean =
       this.props.messages.location === "unread" ||
       this.props.messages.location === "inbox" ||
       this.props.messages.location.startsWith("label");
@@ -223,7 +309,7 @@ class CommunicatorToolbar extends React.Component<
             <Dropdown
               modifier="communicator-labels"
               items={[
-                <div className="form-element">
+                <div key="update-label" className="form-element">
                   <input
                     className="form-element__input"
                     value={this.state.labelFilter}
@@ -235,6 +321,7 @@ class CommunicatorToolbar extends React.Component<
                   />
                 </div>,
                 <Link
+                  key="new-link"
                   tabIndex={0}
                   className="link link--full link--new"
                   onClick={this.onCreateNewLabel}
@@ -243,21 +330,22 @@ class CommunicatorToolbar extends React.Component<
                 </Link>,
               ].concat(
                 this.props.messages.navigation
-                  .filter((item) => {
-                    return (
+                  .filter(
+                    (item) =>
                       item.type === "label" &&
                       filterMatch(
                         item.text(this.props.i18n),
                         this.state.labelFilter
                       )
-                    );
-                  })
+                  )
                   .map((label) => {
-                    let isSelected = this.props.messages.currentThread.labels.find(
-                      (l) => l.labelId === label.id
-                    );
+                    const isSelected =
+                      this.props.messages.currentThread.labels.find(
+                        (l) => l.labelId === label.id
+                      );
                     return (
                       <Link
+                        key={label.id}
                         tabIndex={0}
                         className={`link link--full link--communicator-label-dropdown ${
                           isSelected ? "selected" : ""
@@ -335,13 +423,13 @@ class CommunicatorToolbar extends React.Component<
 
     let allInCommon: number[] = [];
     let onlyInSome: number[] = [];
-    let isAtLeastOneSelected = this.props.messages.selectedThreads.length >= 1;
+    const isAtLeastOneSelected =
+      this.props.messages.selectedThreads.length >= 1;
     if (isAtLeastOneSelected) {
-      let partialIds: Array<
-        Array<number>
-      > = this.props.messages.selectedThreads.map((thread) => {
-        return thread.labels.map((l) => l.labelId);
-      });
+      const partialIds: Array<Array<number>> =
+        this.props.messages.selectedThreads.map((thread) =>
+          thread.labels.map((l) => l.labelId)
+        );
       allInCommon = intersect(...partialIds);
       onlyInSome = difference(allInCommon, flatten(...partialIds));
     }
@@ -388,7 +476,7 @@ class CommunicatorToolbar extends React.Component<
           onClose={this.resetLabelFilter}
           modifier="communicator-labels"
           items={[
-            <div className="form-element">
+            <div key="update-label" className="form-element">
               <input
                 className="form-element__input"
                 value={this.state.labelFilter}
@@ -400,6 +488,7 @@ class CommunicatorToolbar extends React.Component<
               />
             </div>,
             <Link
+              key="new-label"
               tabIndex={0}
               className="link link--full"
               onClick={this.onCreateNewLabel}
@@ -408,22 +497,22 @@ class CommunicatorToolbar extends React.Component<
             </Link>,
           ].concat(
             this.props.messages.navigation
-              .filter((item) => {
-                return (
+              .filter(
+                (item) =>
                   item.type === "label" &&
                   filterMatch(
                     item.text(this.props.i18n),
                     this.state.labelFilter
                   )
-                );
-              })
+              )
               .map((label) => {
-                let isSelected = allInCommon.includes(label.id as number);
-                let isPartiallySelected = onlyInSome.includes(
+                const isSelected = allInCommon.includes(label.id as number);
+                const isPartiallySelected = onlyInSome.includes(
                   label.id as number
                 );
                 return (
                   <Link
+                    key={label.id}
                     tabIndex={0}
                     className={`link link--full link--communicator-label-dropdown ${
                       isSelected ? "selected" : ""
@@ -498,6 +587,10 @@ class CommunicatorToolbar extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     messages: state.messages,
@@ -505,6 +598,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     {

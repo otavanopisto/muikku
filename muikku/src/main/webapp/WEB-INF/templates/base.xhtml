@@ -1,109 +1,194 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:jsf="http://xmlns.jcp.org/jsf"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-  lang="#{sessionBackingBean.locale}">
+  lang="#{sessionBackingBean.locale}"
+>
+  <!-- Base takes no parameters -->
+  <!-- Base takes four defines, styles, scripts, body and title, where title is not required -->
 
-<!-- Base takes no parameters -->
-<!-- Base takes four defines, styles, scripts, body and title, where title is not required -->
+  <f:view locale="#{sessionBackingBean.locale}">
+    <head>
+      <title>#{empty title ? i18n.text['plugin.site.title'] : title}</title>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+      <meta http-equiv="x-ua-compatible" content="ie=edge" />
+      <meta
+        content="width=device-width, initial-scale=1, user-scalable=yes"
+        name="viewport"
+      />
+      <meta
+        name="muikku:role"
+        value="#{sessionBackingBean.loggedUserRoleArchetype}"
+      />
+      <meta name="muikku:loggedIn" value="#{sessionBackingBean.loggedIn}" />
+      <meta name="muikku:loggedUser" value="#{sessionBackingBean.loggedUser}" />
+      <meta
+        name="muikku:loggedUserId"
+        value="#{sessionBackingBean.loggedUserId}"
+      />
+      <meta
+        name="muikku:activeUser"
+        value="#{sessionBackingBean.isActiveUser}"
+      />
+      <meta name="muikku:hasFees" value="#{sessionBackingBean.hasFees}" />
+      <ui:insert name="meta"></ui:insert>
 
-<f:view locale="#{sessionBackingBean.locale}">
+      <script type="text/javascript">
+        var CONTEXTPATH = "#{request.contextPath}";
+      </script>
 
-<head>
-  <title>#{empty title ? i18n.text['plugin.site.title'] : title}</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <meta http-equiv="x-ua-compatible" content="ie=edge" />
-  <meta content="width=device-width, initial-scale=1, user-scalable=yes" name="viewport" />
-  <meta name="muikku:role" value="#{sessionBackingBean.loggedUserRoleArchetype}"/>
-  <meta name="muikku:loggedIn" value="#{sessionBackingBean.loggedIn}"/>
-  <meta name="muikku:loggedUser" value="#{sessionBackingBean.loggedUser}"/>
-  <meta name="muikku:loggedUserId" value="#{sessionBackingBean.loggedUserId}"/>
-  <meta name="muikku:activeUser" value="#{sessionBackingBean.isActiveUser}"/>
-  <meta name="muikku:hasFees" value="#{sessionBackingBean.hasFees}"/>
-  <ui:insert name="meta"></ui:insert>
-  
-  <script type="text/javascript">
-    var CONTEXTPATH = "#{request.contextPath}";
-  </script>
+      <!-- jQuery -->
+      <script
+        type="text/javascript"
+        src="//cdn.muikkuverkko.fi/libs/jquery/2.1.3/jquery.min.js"
+      />
 
-  <!-- jQuery -->
-  <script type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jquery/2.1.3/jquery.min.js" />
+      <!-- jQuery UI -->
+      <script
+        defer="defer"
+        type="text/javascript"
+        src="//cdn.muikkuverkko.fi/libs/jqueryui/1.11.2/jquery-ui.min.js"
+      />
+      <script
+        defer="defer"
+        type="text/javascript"
+        src="//cdn.muikkuverkko.fi/libs/jqueryui/1.11.2/i18n/datepicker-fi.js"
+      />
 
-  <!-- jQuery UI -->
-  <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jqueryui/1.11.2/jquery-ui.min.js" />
-  <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jqueryui/1.11.2/i18n/datepicker-fi.js" />
+      <script defer="defer" type="text/javascript">
+        $(document).ready(function () {
+          $.datepicker.setDefaults(
+            $.datepicker.regional["#{sessionBackingBean.locale}"]
+          );
+        });
+      </script>
 
-  <script defer="defer" type="text/javascript">
-    $(document).ready(function () {
-      $.datepicker.setDefaults($.datepicker.regional['#{sessionBackingBean.locale}']);
-    });
-  </script>
+      <!-- Moment -->
+      <script
+        defer="defer"
+        type="text/javascript"
+        src="//cdn.muikkuverkko.fi/libs/moment/2.29.1/moment-with-locales.min.js"
+      />
 
-  <!-- Moment -->
-  <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/moment/2.29.1/moment-with-locales.min.js" />
+      <!-- Api resources -->
+      <script
+        defer="defer"
+        type="text/javascript"
+        src="#{request.contextPath}/rest/meta/resources?format=js"
+      ></script>
 
-  <!-- Api resources -->
-  <script defer="defer" type="text/javascript" src="#{request.contextPath}/rest/meta/resources?format=js"></script>
-
-  <!-- Async 
+      <!-- Async
   <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/async/0.9.0/async.js" />-->
 
-  <!-- ObjectPath, jQuery REST -->
-  <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/objectpathjs/0.0.1/interpreter.js"></script>
-  <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/objectpathjs/0.0.1/parse.js"></script>
-  <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/objectpathjs/0.0.1/tokens.js"></script>
-  <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jquery.rest/1.0.2/jquery.rest.min.js"></script>
+      <!-- ObjectPath, jQuery REST -->
+      <script
+        defer="defer"
+        type="text/javascript"
+        src="//cdn.muikkuverkko.fi/libs/objectpathjs/0.0.1/interpreter.js"
+      ></script>
+      <script
+        defer="defer"
+        type="text/javascript"
+        src="//cdn.muikkuverkko.fi/libs/objectpathjs/0.0.1/parse.js"
+      ></script>
+      <script
+        defer="defer"
+        type="text/javascript"
+        src="//cdn.muikkuverkko.fi/libs/objectpathjs/0.0.1/tokens.js"
+      ></script>
+      <script
+        defer="defer"
+        type="text/javascript"
+        src="//cdn.muikkuverkko.fi/libs/jquery.rest/1.0.2/jquery.rest.min.js"
+      ></script>
 
-  <!-- Api -->
-  <script defer="defer" type="text/javascript" jsf:name="/scripts/api/api.js" />
+      <!-- Api -->
+      <script
+        defer="defer"
+        type="text/javascript"
+        jsf:name="/scripts/api/api.js"
+      />
 
-  <!-- Heartbeat -->
-  <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/heartbeat.js" />
+      <!-- Heartbeat -->
+      <script
+        defer="defer"
+        type="text/javascript"
+        jsf:name="/scripts/gui/heartbeat.js"
+      />
 
-  <!-- JavaScript locales -->
-  <script defer="defer" type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{sessionBackingBean.locale}" />
+      <!-- JavaScript locales -->
+      <script
+        defer="defer"
+        type="text/javascript"
+        src="#{request.contextPath}/JavaScriptLocales?lang=#{sessionBackingBean.locale}"
+      />
 
-  <!-- locales -->
-  <script defer="defer" jsf:name="scripts/gui/locales.js" />
+      <!-- locales -->
+      <script defer="defer" jsf:name="scripts/gui/locales.js" />
 
-  <!-- Muikku icons -->
-  <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/assets/muikku-icons/1.3.4/style.css" />
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600&amp;subset=cyrillic" rel="stylesheet" />
-  <ui:insert name="styles"></ui:insert>
+      <!-- Muikku icons -->
+      <link
+        rel="stylesheet"
+        type="text/css"
+        href="//cdn.muikkuverkko.fi/assets/muikku-icons/1.3.6/style.css"
+      />
+      <link
+        href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600&amp;subset=cyrillic"
+        rel="stylesheet"
+      />
+      <ui:insert name="styles"></ui:insert>
 
-  <!-- Here goes what a page needs, usually their controllers -->
-  <ui:insert name="scripts"></ui:insert>
-</head>
+      <!-- Here goes what a page needs, usually their controllers -->
+      <ui:insert name="scripts"></ui:insert>
+    </head>
 
-<body>
-  <div id="app"></div>
+    <body>
+      <div id="app"></div>
 
-  <!-- TODO: please lets find a way to do this with a rest endpoint -->
-  <h:form id="language-picker" style="display:none" pt:aria-hidden="true">
-    <ui:repeat value="#{i18n.languages}" var="locale">
-      <a jsf:action="#{languageWidgetBackingBean.setLanguage(locale)}" data-locale="#{locale}">
-        #{i18n.text['plugin.navigation.language.' .concat(locale)]}
-      </a>
-    </ui:repeat>
-  </h:form>
-  <h:form style="display:none" pt:aria-hidden="true">
-    <a jsf:action="#{logoutWidgetBackingBean.logout}" id="logout"></a>
-  </h:form>
-  <a id="locale" style="display:none" aria-hidden="true">#{languageWidgetBackingBean.language}</a>
-  <a id="login" style="display:none" jsf:outcome="/login.jsf?authSource=loginWidgetBackingBean.credentialessAuthSources[0]" aria-hidden="true"></a>
+      <!-- TODO: please lets find a way to do this with a rest endpoint -->
+      <h:form id="language-picker" style="display: none" pt:aria-hidden="true">
+        <ui:repeat value="#{i18n.languages}" var="locale">
+          <a
+            jsf:action="#{languageWidgetBackingBean.setLanguage(locale)}"
+            data-locale="#{locale}"
+          >
+            #{i18n.text['plugin.navigation.language.' .concat(locale)]}
+          </a>
+        </ui:repeat>
+      </h:form>
+      <h:form style="display: none" pt:aria-hidden="true">
+        <a jsf:action="#{logoutWidgetBackingBean.logout}" id="logout"></a>
+      </h:form>
+      <a id="locale" style="display: none" aria-hidden="true"
+        >#{languageWidgetBackingBean.language}</a
+      >
+      <a
+        id="login"
+        style="display: none"
+        jsf:outcome="/login.jsf?authSource=loginWidgetBackingBean.credentialessAuthSources[0]"
+        aria-hidden="true"
+      ></a>
 
-  <!-- Google Analytics -->
-  <script>
-    window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-    ga('create', 'UA-7407719-33', 'auto');
-    ga('send', 'pageview');
-  </script>
-  <script async="async" src='https://www.google-analytics.com/analytics.js'></script>
-  <!-- End Google Analytics -->
-</body>
-
-</f:view>
+      <!-- Google Analytics -->
+      <script>
+        window.ga =
+          window.ga ||
+          function () {
+            (ga.q = ga.q || []).push(arguments);
+          };
+        ga.l = +new Date();
+        ga("create", "UA-7407719-33", "auto");
+        ga("send", "pageview");
+      </script>
+      <script
+        async="async"
+        src="https://www.google-analytics.com/analytics.js"
+      ></script>
+      <!-- End Google Analytics -->
+    </body>
+  </f:view>
 </html>

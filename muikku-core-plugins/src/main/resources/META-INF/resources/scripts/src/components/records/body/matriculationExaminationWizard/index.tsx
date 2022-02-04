@@ -9,9 +9,11 @@ import { MatrMatriculationExaminationEnrollmentAct as Step3 } from "./matriculat
 import { MatriculationExaminationEnrollmentSummary as Step4 } from "./matriculation-examination-enrollment-summary";
 import { MatriculationExaminationEnrollmentSummaryNew as Step4New } from "./matriculation-examination-enrollment-summary-new";
 import { MatriculationExaminationEnrollmentCompleted as Step5 } from "./matriculation-examination-enrollment-completed";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const StepZilla = require("react-stepzilla").default;
+
 import "~/sass/elements/wizard.scss";
 import { StateType } from "~/reducers";
 import "~/sass/elements/matriculation.scss";
@@ -20,22 +22,19 @@ import {
   ExaminationSubject,
   MatriculationExaminationApplication,
   ExaminationGrade,
-} from "../../../../@types/shared";
-import { StatusType } from "../../../../reducers/base/status";
-import { HOPSType } from "../../../../reducers/main-function/hops";
-import {
-  ExamEnrollmentDegreeStructure,
-  ExaminationFunding,
-} from "../../../../@types/shared";
-import { YOType } from "../../../../reducers/main-function/records/yo";
+} from "~/@types/shared";
+import { StatusType } from "~/reducers/base/status";
+import { HOPSType } from "~/reducers/main-function/hops";
+import { ExamEnrollmentDegreeStructure } from "~/@types/shared";
+import { YOType } from "~/reducers/main-function/records/yo";
 import {
   MatriculationExaminationDraft,
   ExaminationInformation,
-} from "../../../../@types/shared";
+} from "~/@types/shared";
 import {
   MatriculationStudent,
   MatriculationStudentExamination,
-} from "../../../../@types/shared";
+} from "~/@types/shared";
 
 moment.locale("fi");
 
@@ -120,6 +119,9 @@ export const EXAMINATION_SUCCESS_GRADES_MAP = [
   "LAUDATUR",
 ];
 
+/**
+ * MatriculationExaminationWizardProps
+ */
 interface MatriculationExaminationWizardProps {
   workspace: WorkspaceType;
   i18n: i18nType;
@@ -132,6 +134,9 @@ interface MatriculationExaminationWizardProps {
   yo: YOType;
 }
 
+/**
+ * MatriculationExaminationWizardState
+ */
 export interface MatriculationExaminationWizardState {
   initialized: boolean;
   savingDraft: boolean;
@@ -141,6 +146,9 @@ export interface MatriculationExaminationWizardState {
   examinationInformation: ExaminationInformation;
 }
 
+/**
+ * MatriculationExaminationWizard
+ */
 class MatriculationExaminationWizard extends React.Component<
   MatriculationExaminationWizardProps,
   MatriculationExaminationWizardState
@@ -204,9 +212,7 @@ class MatriculationExaminationWizard extends React.Component<
       `/rest/matriculation/exams/${this.props.examId}/initialData/${this.props.status.userSchoolDataIdentifier}`,
       { credentials: "include" }
     )
-      .then((response) => {
-        return response.json();
-      })
+      .then((response) => response.json())
       .then((data: MatriculationStudent) => {
         this.setState(
           (prevState) => ({
@@ -355,8 +361,8 @@ class MatriculationExaminationWizard extends React.Component<
         }
         throw new Error();
       })
-      .catch((error) => {
-        let errMsg =
+      .catch(() => {
+        const errMsg =
           "Lomakkeen välitallennus epäonnistui, palaa Muikun etusivulle ja varmista, että olet kirjautunut sisään.";
         this.handleErrorMsg(errMsg);
       });
@@ -485,7 +491,7 @@ class MatriculationExaminationWizard extends React.Component<
           throw new Error();
         }
       })
-      .catch((error) => {
+      .catch(() => {
         this.setState({ saveState: "FAILED" });
       });
   };
@@ -687,8 +693,8 @@ class MatriculationExaminationWizard extends React.Component<
 
 /**
  * mapStateToProps
- * @param state
- * @returns
+ * @param state state
+ * @returns object
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -702,10 +708,10 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
- * @returns
+ * @param dispatch dispatch
+ * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps() {
   return {};
 }
 

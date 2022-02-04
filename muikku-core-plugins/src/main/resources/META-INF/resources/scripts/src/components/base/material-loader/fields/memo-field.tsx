@@ -1,3 +1,9 @@
+/* eslint-disable react/no-string-refs */
+
+/**
+ * Deprecated refs should be reractored
+ */
+
 import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
 import CKEditor from "~/components/general/ckeditor";
@@ -9,6 +15,9 @@ import { StrMathJAX } from "../static/mathjax";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
 
+/**
+ * MemoFieldProps
+ */
 interface MemoFieldProps {
   type: string;
   content: {
@@ -35,6 +44,9 @@ interface MemoFieldProps {
   invisible?: boolean;
 }
 
+/**
+ * MemoFieldState
+ */
 interface MemoFieldState {
   value: string;
   words: number;
@@ -112,17 +124,24 @@ function wordCount(rawText: string) {
   return rawText === "" ? 0 : rawText.trim().split(/\s+/).length;
 }
 
+/**
+ * MemoField
+ */
 export default class MemoField extends React.Component<
   MemoFieldProps,
   MemoFieldState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: MemoFieldProps) {
     super(props);
 
     //get the initial value
-    let value = props.initialValue || "";
+    const value = props.initialValue || "";
     // and get the raw text if it's richedit
-    let rawText = this.props.content
+    const rawText = this.props.content
       ? this.props.content.richedit
         ? $(value).text()
         : value
@@ -151,9 +170,9 @@ export default class MemoField extends React.Component<
    * onFieldSavedStateChange
    * @param savedState
    */
-  onFieldSavedStateChange(savedState: FieldStateStatus){
+  onFieldSavedStateChange(savedState: FieldStateStatus) {
     this.setState({
-      fieldSavedState: savedState
+      fieldSavedState: savedState,
     });
   }
 
@@ -201,7 +220,7 @@ export default class MemoField extends React.Component<
    */
   onCKEditorChange(value: string) {
     // we need the raw text
-    let rawText = $(value).text();
+    const rawText = $(value).text();
     // and update the state
     this.setState({
       value,
@@ -278,7 +297,7 @@ export default class MemoField extends React.Component<
 
     // now we need the field
     let field;
-    let minRows =
+    const minRows =
       this.props.content.rows &&
       this.props.content.rows !== "" &&
       !isNaN(Number(this.props.content.rows))
@@ -344,11 +363,15 @@ export default class MemoField extends React.Component<
       }
     }
 
-    let fieldSavedStateClass = createFieldSavedStateClass(this.state.fieldSavedState);
+    const fieldSavedStateClass = createFieldSavedStateClass(
+      this.state.fieldSavedState
+    );
 
     // and here the element itself
     return (
-      <span className={`material-page__memofield-wrapper ${fieldSavedStateClass}`}>
+      <span
+        className={`material-page__memofield-wrapper ${fieldSavedStateClass}`}
+      >
         <Synchronizer
           synced={this.state.synced}
           syncError={this.state.syncError}

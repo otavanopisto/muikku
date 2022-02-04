@@ -1,48 +1,67 @@
-import * as React from 'react'
-import '~/sass/elements/chat.scss';
-import mApi from '~/lib/mApi';
-import promisify from '~/util/promisify';
-import { IBareMessageType } from './chat';
-import { i18nType } from '~/reducers/base/i18n';
-import Dropdown from '~/components/general/dropdown';
-import Link from '~/components/general/link';
+import * as React from "react";
+import "~/sass/elements/chat.scss";
+import mApi from "~/lib/mApi";
+import promisify from "~/util/promisify";
+import { IBareMessageType } from "./chat";
+import { i18nType } from "~/reducers/base/i18n";
+import Dropdown from "~/components/general/dropdown";
+import Link from "~/components/general/link";
 import DeleteMessageDialog from "./deleteMessageDialog";
 
+/**
+ * IChatUserInfoType
+ */
 interface IChatUserInfoType {
-  name: string,
-  nick: string,
-  studyProgramme: string,
+  name: string;
+  nick: string;
+  studyProgramme: string;
 }
 
 const USER_INFO_CACHE: {
-  [key: string]: IChatUserInfoType,
-} = {}
+  [key: string]: IChatUserInfoType;
+} = {};
 
+/**
+ * IChatMessageProps
+ */
 interface IChatMessageProps {
-  canToggleInfo: boolean,
-  message: IBareMessageType,
-  i18n: i18nType,
-  canModerate?: boolean,
-  editMessage?: (stanzaId: string, textContent: string) => void,
-  deleteMessage?: (stanzaId: string) => void,
-  chatType: string,
+  canToggleInfo: boolean;
+  message: IBareMessageType;
+  i18n: i18nType;
+  canModerate?: boolean;
+  editMessage?: (stanzaId: string, textContent: string) => void;
+  deleteMessage?: (stanzaId: string) => void;
+  chatType: string;
 }
 
+/**
+ * IChatMessageState
+ */
 interface IChatMessageState {
-  showInfo: boolean,
-  realName: string,
-  studyProgramme: string,
-  showRemoveButton: boolean,
-  messageDeleted: boolean,
-  messageIsInEditMode : boolean,
-  deleteMessageDialogOpen: boolean,
+  showInfo: boolean;
+  realName: string;
+  studyProgramme: string;
+  showRemoveButton: boolean;
+  messageDeleted: boolean;
+  messageIsInEditMode: boolean;
+  deleteMessageDialogOpen: boolean;
 }
 
-export class ChatMessage extends React.Component<IChatMessageProps, IChatMessageState> {
-  private unmounted: boolean = false;
+/**
+ * ChatMessage
+ */
+export class ChatMessage extends React.Component<
+  IChatMessageProps,
+  IChatMessageState
+> {
+  private unmounted = false;
   private contentEditableRef: React.RefObject<HTMLDivElement>;
 
-  constructor(props: IChatMessageProps){
+  /**
+   * constructor
+   * @param props props
+   */
+  constructor(props: IChatMessageProps) {
     super(props);
 
     this.state = {
@@ -53,7 +72,7 @@ export class ChatMessage extends React.Component<IChatMessageProps, IChatMessage
       messageDeleted: false,
       deleteMessageDialogOpen: false,
       messageIsInEditMode: false,
-    }
+    };
 
     this.contentEditableRef = React.createRef();
 
@@ -65,20 +84,28 @@ export class ChatMessage extends React.Component<IChatMessageProps, IChatMessage
     this.placeCaretToEnd = this.placeCaretToEnd.bind(this);
     this.onContentEditableKeyDown = this.onContentEditableKeyDown.bind(this);
   }
+
+  /**
+   * toggleInfo
+   */
   async toggleInfo() {
     if (this.state.showInfo) {
       this.setState({
         showInfo: false,
         realName: null,
       });
-    } else if (this.props.message.userId && this.props.canToggleInfo){
+    } else if (this.props.message.userId && this.props.canToggleInfo) {
       let userName: string = null;
       let studyProgramme: string = null;
       if (USER_INFO_CACHE[this.props.message.userId]) {
         userName = USER_INFO_CACHE[this.props.message.userId].name;
-        studyProgramme = USER_INFO_CACHE[this.props.message.userId].studyProgramme;
+        studyProgramme =
+          USER_INFO_CACHE[this.props.message.userId].studyProgramme;
       } else {
-        const user: IChatUserInfoType = (await promisify(mApi().chat.userInfo.read(this.props.message.userId,{}), 'callback')()) as any;
+        const user: IChatUserInfoType = (await promisify(
+          mApi().chat.userInfo.read(this.props.message.userId, {}),
+          "callback"
+        )()) as any;
         USER_INFO_CACHE[this.props.message.userId] = user;
         userName = user.name;
         studyProgramme = user.studyProgramme;
@@ -91,9 +118,18 @@ export class ChatMessage extends React.Component<IChatMessageProps, IChatMessage
       });
     }
   }
+
+  /**
+   * componentWillUnmount
+   */
   componentWillUnmount() {
     this.unmounted = true;
   }
+
+  /**
+   * toggleDeleteMessageDialog
+   * @param e e
+   */
   toggleDeleteMessageDialog(e?: React.MouseEvent) {
     e && e.stopPropagation();
     e && e.preventDefault();
@@ -104,22 +140,30 @@ export class ChatMessage extends React.Component<IChatMessageProps, IChatMessage
       });
     }
   }
+
+  /**
+   * onMessageDeleted
+   */
   onMessageDeleted() {
     this.props.deleteMessage(this.props.message.stanzaId);
   }
+
+  /**
+   * getMessageModerationListDropdown
+   */
   getMessageModerationListDropdown() {
     const messageModerationItemsOptions: Array<any> = [
       {
         icon: "trash",
-        text: 'plugin.chat.messages.deleteMessage',
+        text: "plugin.chat.messages.deleteMessage",
         onClick: this.toggleDeleteMessageDialog,
       },
       {
         icon: "pencil",
-        text: 'plugin.chat.messages.editMessage',
+        text: "plugin.chat.messages.editMessage",
         onClick: this.toggleMessageEditMode,
-      }
-    ]
+      },
+    ];
 
     // Student/staff member can only edit their own messages
     if (!this.props.message.isSelf) {
@@ -128,22 +172,34 @@ export class ChatMessage extends React.Component<IChatMessageProps, IChatMessage
 
     return messageModerationItemsOptions;
   }
+
+  /**
+   * toggleMessageEditMode
+   */
   toggleMessageEditMode() {
     if (this.state.messageIsInEditMode) {
       this.setState({
         messageIsInEditMode: false,
       });
     } else {
-      this.setState({
-        messageIsInEditMode: true,
-      }, () => {
-        this.contentEditableRef.current.focus();
-      });
+      this.setState(
+        {
+          messageIsInEditMode: true,
+        },
+        () => {
+          this.contentEditableRef.current.focus();
+        }
+      );
     }
   }
+
+  /**
+   * onMessageEdited
+   * @param e e
+   */
   onMessageEdited(e: React.MouseEvent) {
     e.preventDefault();
-    let finalText: string = "";
+    let finalText = "";
     const childNodes = this.contentEditableRef.current.childNodes;
     childNodes.forEach((n: Node, index) => {
       finalText += n.textContent;
@@ -156,15 +212,25 @@ export class ChatMessage extends React.Component<IChatMessageProps, IChatMessage
     this.toggleMessageEditMode();
     this.props.editMessage(this.props.message.stanzaId, finalText);
   }
-  placeCaretToEnd(event: React.FocusEvent){
+
+  /**
+   * placeCaretToEnd
+   * @param event event
+   */
+  placeCaretToEnd(event: React.FocusEvent) {
     const e = event.currentTarget;
-    let range = document.createRange();
+    const range = document.createRange();
     range.setStart(e, e.childNodes.length);
     range.setEnd(e, e.childNodes.length);
-    let sel = window.getSelection();
+    const sel = window.getSelection();
     sel.removeAllRanges();
     sel.addRange(range);
   }
+
+  /**
+   * onContentEditableKeyDown
+   * @param event event
+   */
   onContentEditableKeyDown(event: React.KeyboardEvent) {
     if (event.key === "Enter" && !event.shiftKey) {
       event.stopPropagation();
@@ -175,67 +241,144 @@ export class ChatMessage extends React.Component<IChatMessageProps, IChatMessage
       this.toggleMessageEditMode();
     }
   }
+
+  /**
+   * render
+   */
   render() {
     const senderClass = this.props.message.isSelf ? "sender-me" : "sender-them";
-    const messageDeletedClass = this.props.message.deleted ? "chat__message--deleted" : "";
+    const messageDeletedClass = this.props.message.deleted
+      ? "chat__message--deleted"
+      : "";
 
-    return (<div className={`chat__message chat__message--${senderClass} ${messageDeletedClass}`}>
-      <div className="chat__message-meta">
-        <span className={`chat__message-meta-sender ${this.props.canToggleInfo && "chat__message-meta-sender--access-to-realname"}`} onClick={this.toggleInfo}>
-          {this.props.message.nick}
-          {this.state.showInfo && <span className="chat__message-meta-sender-real-name">
-            ({this.state.realName}
-            {this.state.showInfo && (this.state.studyProgramme && this.state.studyProgramme !== "null") && <span> - {this.state.studyProgramme}</span>})
-          </span>}
-
-        </span>
-        <span className="chat__message-meta-timestamp">
-          {this.props.i18n.time.formatDaily(this.props.message.timestamp)}
-        </span>
-        {(this.props.canModerate || this.props.message.isSelf) && !this.props.message.deleted && this.props.chatType != "private" ?
-          <span className={`chat__message-actions ${this.props.message.isSelf ? "chat__message-actions--sender-me" : "chat__message-actions--sender-them"}`}>
-            <Dropdown alignSelf={this.props.message.isSelf ? "right" : "left"} modifier="chat" items={this.getMessageModerationListDropdown().map((item) => {
-
-              return (closeDropdown: () => any) => {
-                return <Link href={item.href} to={item.to ? item.href : null}
-                  className={`link link--full link--chat-dropdown`}
-                  onClick={(...args: any[]) => { closeDropdown(); item.onClick && item.onClick(...args) }}>
-                  <span className={`link__icon icon-${item.icon}`}></span>
-                  <span>{this.props.i18n.text.get(item.text)}</span>
-                </Link>
-              }
-            })}>
-              <span className="chat__message-action icon-more_vert"></span>
-            </Dropdown>
-          </span> : null}
+    return (
+      <div
+        className={`chat__message chat__message--${senderClass} ${messageDeletedClass}`}
+      >
+        <div className="chat__message-meta">
+          <span
+            className={`chat__message-meta-sender ${
+              this.props.canToggleInfo &&
+              "chat__message-meta-sender--access-to-realname"
+            }`}
+            onClick={this.toggleInfo}
+          >
+            {this.props.message.nick}
+            {this.state.showInfo && (
+              <span className="chat__message-meta-sender-real-name">
+                ({this.state.realName}
+                {this.state.showInfo &&
+                  this.state.studyProgramme &&
+                  this.state.studyProgramme !== "null" && (
+                    <span> - {this.state.studyProgramme}</span>
+                  )}
+                )
+              </span>
+            )}
+          </span>
+          <span className="chat__message-meta-timestamp">
+            {this.props.i18n.time.formatDaily(this.props.message.timestamp)}
+          </span>
+          {(this.props.canModerate || this.props.message.isSelf) &&
+          !this.props.message.deleted &&
+          this.props.chatType != "private" ? (
+            <span
+              className={`chat__message-actions ${
+                this.props.message.isSelf
+                  ? "chat__message-actions--sender-me"
+                  : "chat__message-actions--sender-them"
+              }`}
+            >
+              <Dropdown
+                alignSelf={this.props.message.isSelf ? "right" : "left"}
+                modifier="chat"
+                items={this.getMessageModerationListDropdown().map(
+                  (item) => (closeDropdown: () => any) =>
+                    (
+                      <Link
+                        href={item.href}
+                        to={item.to ? item.href : null}
+                        className={`link link--full link--chat-dropdown`}
+                        onClick={(...args: any[]) => {
+                          closeDropdown();
+                          item.onClick && item.onClick(...args);
+                        }}
+                      >
+                        <span className={`link__icon icon-${item.icon}`}></span>
+                        <span>{this.props.i18n.text.get(item.text)}</span>
+                      </Link>
+                    )
+                )}
+              >
+                <span className="chat__message-action icon-more_vert"></span>
+              </Dropdown>
+            </span>
+          ) : null}
+        </div>
+        {this.state.messageIsInEditMode && !this.props.message.deleted ? (
+          <div className="chat__message-content-container" key="editable">
+            <div
+              className="chat__message-content chat__message-content--edit-mode"
+              contentEditable
+              ref={this.contentEditableRef}
+              onFocus={this.placeCaretToEnd}
+              onKeyDown={this.onContentEditableKeyDown}
+            >
+              {this.props.message.message}
+            </div>
+            <div className="chat__message-footer">
+              <span
+                className="chat__message-footer-action"
+                onClick={this.toggleMessageEditMode}
+              >
+                {this.props.i18n.text.get(
+                  "plugin.chat.messages.editMessage.cancelLink"
+                )}
+              </span>
+              <span>
+                {this.props.i18n.text.get(
+                  "plugin.chat.messages.editMessage.orText"
+                )}
+              </span>
+              <span
+                className="chat__message-footer-action"
+                onClick={this.onMessageEdited}
+              >
+                {this.props.i18n.text.get(
+                  "plugin.chat.messages.editMessage.saveLink"
+                )}
+              </span>
+            </div>
+          </div>
+        ) : (
+          <div className="chat__message-content-container" key="nonEditable">
+            <div className="chat__message-content">
+              {this.props.message.deleted ? (
+                <i>
+                  {this.props.i18n.text.get(
+                    "plugin.chat.messages.messageIsDeleted"
+                  )}
+                </i>
+              ) : (
+                this.props.message.message
+              )}
+              {this.props.message.edited && (
+                <div className="chat__message-edited-info">
+                  {this.props.i18n.text.get("plugin.chat.messages.edited")}{" "}
+                  {this.props.i18n.time.formatDaily(
+                    this.props.message.edited.timestamp
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+        <DeleteMessageDialog
+          isOpen={this.state.deleteMessageDialogOpen}
+          onClose={this.toggleDeleteMessageDialog}
+          onDelete={this.onMessageDeleted}
+        />
       </div>
-      {this.state.messageIsInEditMode && !this.props.message.deleted ?
-        <div className="chat__message-content-container" key="editable">
-          <div
-            className="chat__message-content chat__message-content--edit-mode" contentEditable
-            ref={this.contentEditableRef}
-            onFocus={this.placeCaretToEnd}
-            onKeyDown={this.onContentEditableKeyDown}>
-            {this.props.message.message}
-          </div>
-          <div className="chat__message-footer">
-            <span className="chat__message-footer-action" onClick={this.toggleMessageEditMode}>{this.props.i18n.text.get("plugin.chat.messages.editMessage.cancelLink")}</span>
-            <span>{this.props.i18n.text.get("plugin.chat.messages.editMessage.orText")}</span>
-            <span className="chat__message-footer-action" onClick={this.onMessageEdited}>{this.props.i18n.text.get("plugin.chat.messages.editMessage.saveLink")}</span>
-          </div>
-        </div>
-        :
-        <div className="chat__message-content-container" key="nonEditable">
-          <div className="chat__message-content">
-            {this.props.message.deleted ? <i>{this.props.i18n.text.get("plugin.chat.messages.messageIsDeleted")}</i> : this.props.message.message}
-            {this.props.message.edited && <div className="chat__message-edited-info">
-              {this.props.i18n.text.get("plugin.chat.messages.edited")} {this.props.i18n.time.formatDaily(this.props.message.edited.timestamp)}
-            </div>}
-          </div>
-        </div>
-      }
-      <DeleteMessageDialog isOpen={this.state.deleteMessageDialogOpen} onClose={this.toggleDeleteMessageDialog} onDelete={this.onMessageDeleted} />
-    </div>
     );
   }
 }

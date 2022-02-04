@@ -6,31 +6,53 @@ import DatePicker from "react-datepicker";
 
 // Either label or placeholder is mandatory because of wcag
 
+/**
+ * FormElementLabel
+ */
 export type FormElementLabel = {
   label: string;
   placeholder?: string;
 };
 
+/**
+ * FormElementPlaceholder
+ */
 export type FormElementPlaceholder = {
   label?: string;
   placeholder: string;
 };
 
+/**
+ * FormElementProps
+ */
 interface FormElementProps {
   modifiers?: string | Array<string>;
   label?: string;
 }
 
-interface FormElementState { }
+/**
+ * FormElementState
+ */
+interface FormElementState {}
 
+/**
+ * FormElement
+ */
 export default class FormElement extends React.Component<
   FormElementProps,
   FormElementState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: FormElementProps) {
     super(props);
   }
 
+  /**
+   * Component render method
+   */
   render() {
     const modifiers =
       this.props.modifiers && this.props.modifiers instanceof Array
@@ -38,10 +60,11 @@ export default class FormElement extends React.Component<
         : [this.props.modifiers];
     return (
       <div
-        className={`form-element ${this.props.modifiers
+        className={`form-element ${
+          this.props.modifiers
             ? modifiers.map((m) => `form-element--${m}`).join(" ")
             : ""
-          }`}
+        }`}
       >
         {this.props.label ? (
           <div className="form-element__label">{this.props.label}</div>
@@ -52,16 +75,28 @@ export default class FormElement extends React.Component<
   }
 }
 
+/**
+ * FormElementRowProps
+ */
 interface FormElementRowProps {
   modifiers?: string | Array<string>;
 }
 
-interface FormElementRowState { }
+/**
+ * FormElementRowState
+ */
+interface FormElementRowState {}
 
+/**
+ * formElementRow
+ */
 export class formElementRow extends React.Component<
   FormElementRowProps,
   FormElementRowState
 > {
+  /**
+   * Component render method
+   */
   render() {
     const modifiers =
       this.props.modifiers && this.props.modifiers instanceof Array
@@ -69,10 +104,11 @@ export class formElementRow extends React.Component<
         : [this.props.modifiers];
     return (
       <div
-        className={`form-element__row ${this.props.modifiers
+        className={`form-element__row ${
+          this.props.modifiers
             ? modifiers.map((m) => `form-element__row--${m}`).join(" ")
             : ""
-          }`}
+        }`}
       >
         {this.props.children}
       </div>
@@ -80,6 +116,9 @@ export class formElementRow extends React.Component<
   }
 }
 
+/**
+ * FormActionsProps
+ */
 interface FormActionsProps {
   executeLabel: string;
   cancelLabel: string;
@@ -91,16 +130,29 @@ interface FormActionsProps {
   customButton?: React.ReactElement<any>;
 }
 
-interface FormActionsState { }
+/**
+ * FormActionsState
+ */
+interface FormActionsState {}
 
+/**
+ * FormActionsElement
+ */
 export class FormActionsElement extends React.Component<
   FormActionsProps,
   FormActionsState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: FormActionsProps) {
     super(props);
   }
 
+  /**
+   * Component render method
+   */
   render() {
     const modifiers =
       this.props.modifiers && this.props.modifiers instanceof Array
@@ -108,10 +160,11 @@ export class FormActionsElement extends React.Component<
         : [this.props.modifiers];
     return (
       <div
-        className={`form-element__actions ${this.props.modifiers
+        className={`form-element__actions ${
+          this.props.modifiers
             ? modifiers.map((m) => `form-element__actions--${m}`).join(" ")
             : ""
-          }`}
+        }`}
       >
         <Button
           buttonModifiers="form-element-execute"
@@ -132,7 +185,9 @@ export class FormActionsElement extends React.Component<
     );
   }
 }
-
+/**
+ * FormWizardActionsProps
+ */
 interface FormWizardActionsProps {
   executeLabel: string;
   cancelLabel: string;
@@ -149,18 +204,31 @@ interface FormWizardActionsProps {
   modifiers?: string | Array<string>;
 }
 
+/**
+ * FormWizardActionsState
+ */
 interface FormWizardActionsState {
   lastStep: boolean;
 }
 
+/**
+ * FormWizardActions
+ */
 export class FormWizardActions extends React.Component<
   FormWizardActionsProps,
   FormWizardActionsState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: FormWizardActionsProps) {
     super(props);
   }
 
+  /**
+   * Component render method
+   */
   render() {
     const modifiers =
       this.props.modifiers && this.props.modifiers instanceof Array
@@ -172,12 +240,13 @@ export class FormWizardActions extends React.Component<
 
     return (
       <div
-        className={`form-element__actions-container ${this.props.modifiers
+        className={`form-element__actions-container ${
+          this.props.modifiers
             ? modifiers
-              .map((m) => `form-element__actions-container--${m}`)
-              .join(" ")
+                .map((m) => `form-element__actions-container--${m}`)
+                .join(" ")
             : ""
-          }`}
+        }`}
       >
         {onLastStep ? (
           <div className="form-element__actions">
@@ -268,8 +337,8 @@ export class SearchFormElement extends React.Component<
   private delay: number;
 
   /**
-   * constructor method
-   * @param props
+   * constructor
+   * @param props props
    */
   constructor(props: SearchFormElementProps) {
     super(props);
@@ -284,9 +353,9 @@ export class SearchFormElement extends React.Component<
 
   /**
    * componentDidUpdate
-   * @param prevProps
-   * @param prevState
-   * @param snapshot
+   * @param prevProps prevProps
+   * @param prevState prevState
+   * @param snapshot snapshot
    */
   componentDidUpdate(
     prevProps: Readonly<SearchFormElementProps>,
@@ -304,11 +373,11 @@ export class SearchFormElement extends React.Component<
 
   /**
    * updateSearchField
-   * @param e
+   * @param e e
    */
   updateSearchField(e: React.ChangeEvent<HTMLInputElement>) {
     clearTimeout(this.searchTimer);
-    let value = e.target.value;
+    const value = e.target.value;
     this.setState({ value: value });
     if (this.delay > 0) {
       this.searchTimer = setTimeout(
@@ -331,7 +400,6 @@ export class SearchFormElement extends React.Component<
 
   /**
    * Component render method
-   * @returns JSX.Element
    */
   render() {
     const modifiers =
@@ -376,6 +444,9 @@ export class SearchFormElement extends React.Component<
   }
 }
 
+/**
+ * InputFormElementProps
+ */
 interface InputFormElementProps {
   label: string;
   name: string;
@@ -389,15 +460,25 @@ interface InputFormElementProps {
   modifiers?: string | Array<string>;
 }
 
+/**
+ * InputFormElementState
+ */
 interface InputFormElementState {
   value: string;
   valid: number;
 }
 
+/**
+ * InputFormElement
+ */
 export class InputFormElement extends React.Component<
   InputFormElementProps,
   InputFormElementState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: InputFormElementProps) {
     super(props);
     this.updateInputField = this.updateInputField.bind(this);
@@ -409,9 +490,23 @@ export class InputFormElement extends React.Component<
     };
   }
 
+  /**
+   * componentDidUpdate
+   * @param prevProps prevProps
+   */
+  componentDidUpdate(prevProps: any) {
+    if (this.props.valid !== prevProps.valid) {
+      this.setState({ valid: this.props.valid });
+    }
+  }
+
+  /**
+   * updateInputField
+   * @param e e
+   */
   updateInputField(e: React.ChangeEvent<HTMLInputElement>) {
-    let value = e.target.value;
-    let name = e.target.name;
+    const value = e.target.value;
+    const name = e.target.name;
     let valid = false;
 
     if (this.props.mandatory != null && this.props.mandatory == true) {
@@ -433,12 +528,9 @@ export class InputFormElement extends React.Component<
     }
   }
 
-  componentDidUpdate(prevProps: any) {
-    if (this.props.valid !== prevProps.valid) {
-      this.setState({ valid: this.props.valid });
-    }
-  }
-
+  /**
+   * Component render method
+   */
   render() {
     const modifiers =
       this.props.modifiers && this.props.modifiers instanceof Array
@@ -446,10 +538,11 @@ export class InputFormElement extends React.Component<
         : [this.props.modifiers];
     return (
       <div
-        className={`form-element ${this.props.modifiers
+        className={`form-element ${
+          this.props.modifiers
             ? modifiers.map((m) => `form-element--${m}`).join(" ")
             : ""
-          }`}
+        }`}
       >
         <label htmlFor={this.props.id} className="form-element__label">
           {this.props.label}
@@ -459,15 +552,17 @@ export class InputFormElement extends React.Component<
           value={this.state.value}
           name={this.props.name}
           type={this.props.type ? this.props.type : "text"}
-          className={`form-element__input ${this.props.modifiers
+          className={`form-element__input ${
+            this.props.modifiers
               ? modifiers.map((m) => `form-element__input--${m}`).join(" ")
               : ""
-            } ${this.state.valid !== 2
+          } ${
+            this.state.valid !== 2
               ? this.state.valid == 1
                 ? "VALID"
                 : "INVALID"
               : ""
-            }`}
+          }`}
           onChange={this.updateInputField}
           checked={this.props.checked}
         />
@@ -476,6 +571,9 @@ export class InputFormElement extends React.Component<
   }
 }
 
+/**
+ * SelectFormElementProps
+ */
 interface SelectFormElementProps {
   label: string;
   name: string;
@@ -488,15 +586,25 @@ interface SelectFormElementProps {
   updateField: (value: string, valid: boolean, name: string) => any;
 }
 
+/**
+ * SelectFormElementState
+ */
 interface SelectFormElementState {
   valid: number;
   value: string;
 }
 
+/**
+ * SelectFormElement
+ */
 export class SelectFormElement extends React.Component<
   SelectFormElementProps,
   SelectFormElementState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: SelectFormElementProps) {
     super(props);
     this.updateSelectField = this.updateSelectField.bind(this);
@@ -509,6 +617,20 @@ export class SelectFormElement extends React.Component<
     };
   }
 
+  /**
+   * componentDidUpdate
+   * @param prevProps prevProps
+   */
+  componentDidUpdate(prevProps: any) {
+    if (this.props.valid !== prevProps.valid) {
+      this.setState({ valid: this.props.valid });
+    }
+  }
+
+  /**
+   * updateSelectField
+   * @param e e
+   */
   updateSelectField(e: React.ChangeEvent<HTMLSelectElement>) {
     const name = e.target.name;
     const value = e.target.value;
@@ -526,12 +648,9 @@ export class SelectFormElement extends React.Component<
     this.props.updateField(value, valid, name);
   }
 
-  componentDidUpdate(prevProps: any) {
-    if (this.props.valid !== prevProps.valid) {
-      this.setState({ valid: this.props.valid });
-    }
-  }
-
+  /**
+   * Component render method
+   */
   render() {
     const modifiers =
       this.props.modifiers && this.props.modifiers instanceof Array
@@ -539,10 +658,11 @@ export class SelectFormElement extends React.Component<
         : [this.props.modifiers];
     return (
       <div
-        className={`form-element ${this.props.modifiers
+        className={`form-element ${
+          this.props.modifiers
             ? modifiers.map((m) => `form-element--${m}`).join(" ")
             : ""
-          }`}
+        }`}
       >
         <label htmlFor={this.props.id} className="form-element__label">
           {this.props.label}
@@ -551,15 +671,17 @@ export class SelectFormElement extends React.Component<
           id={this.props.id}
           value={this.state.value}
           name={this.props.name}
-          className={`form-element__select ${this.props.modifiers
+          className={`form-element__select ${
+            this.props.modifiers
               ? modifiers.map((m) => `form-element__select--${m}`).join(" ")
               : ""
-            } ${this.state.valid !== 2
+          } ${
+            this.state.valid !== 2
               ? this.state.valid == 1
                 ? "VALID"
                 : "INVALID"
               : ""
-            }`}
+          }`}
           onChange={this.updateSelectField}
         >
           {this.props.children}
@@ -569,6 +691,9 @@ export class SelectFormElement extends React.Component<
   }
 }
 
+/**
+ *EmailFormElementProps
+ */
 interface EmailFormElementProps {
   label: string;
   value?: string;
@@ -578,15 +703,25 @@ interface EmailFormElementProps {
   valid?: number;
 }
 
+/**
+ *EmailFormElementState
+ */
 interface EmailFormElementState {
   valid: number;
   value: string;
 }
 
+/**
+ *EmailFormElement
+ */
 export class EmailFormElement extends React.Component<
   EmailFormElementProps,
   EmailFormElementState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: EmailFormElementProps) {
     super(props);
     this.updateInputField = this.updateInputField.bind(this);
@@ -600,9 +735,25 @@ export class EmailFormElement extends React.Component<
     };
   }
 
+  /**
+   * componentDidUpdate
+   * @param prevProps prevProps
+   */
+  componentDidUpdate(prevProps: any) {
+    if (this.props.valid !== prevProps.valid) {
+      this.setState({ valid: this.props.valid });
+    }
+  }
+
+  /**
+   * updateInputField
+   * @param e e
+   */
   updateInputField(e: React.ChangeEvent<HTMLInputElement>) {
-    let value = e.target.value;
-    const emailRegExp = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+    const value = e.target.value;
+    const emailRegExp =
+      // eslint-disable-next-line no-useless-escape
+      /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
     let valid = false;
     this.setState({ value: value });
 
@@ -618,12 +769,9 @@ export class EmailFormElement extends React.Component<
     this.props.updateField(value, valid, e.target.name);
   }
 
-  componentDidUpdate(prevProps: any) {
-    if (this.props.valid !== prevProps.valid) {
-      this.setState({ valid: this.props.valid });
-    }
-  }
-
+  /**
+   * Component render method
+   */
   render() {
     const modifiers =
       this.props.modifiers && this.props.modifiers instanceof Array
@@ -631,10 +779,11 @@ export class EmailFormElement extends React.Component<
         : [this.props.modifiers];
     return (
       <div
-        className={`form-element ${this.props.modifiers
+        className={`form-element ${
+          this.props.modifiers
             ? modifiers.map((m) => `form-element--${m}`).join(" ")
             : ""
-          }`}
+        }`}
       >
         <label htmlFor="emailField" className="form-element__label">
           {this.props.label}
@@ -644,15 +793,17 @@ export class EmailFormElement extends React.Component<
           value={this.state.value}
           name="email"
           type="text"
-          className={`form-element__input ${this.props.modifiers
+          className={`form-element__input ${
+            this.props.modifiers
               ? modifiers.map((m) => `form-element__input--${m}`).join(" ")
               : ""
-            } ${this.state.valid !== 2
+          } ${
+            this.state.valid !== 2
               ? this.state.valid == 1
                 ? "VALID"
                 : "INVALID"
               : ""
-            }`}
+          }`}
           onChange={this.updateInputField}
         />
       </div>
@@ -660,6 +811,9 @@ export class EmailFormElement extends React.Component<
   }
 }
 
+/**
+ *SSNFormElementProps
+ */
 interface SSNFormElementProps {
   label: string;
   value?: string;
@@ -669,15 +823,25 @@ interface SSNFormElementProps {
   valid?: number;
 }
 
+/**
+ *SSNFormElementState
+ */
 interface SSNFormElementState {
   valid: number;
   value: string;
 }
 
+/**
+ *SSNFormElement
+ */
 export class SSNFormElement extends React.Component<
   SSNFormElementProps,
   SSNFormElementState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: SSNFormElementProps) {
     super(props);
     this.updateInputField = this.updateInputField.bind(this);
@@ -690,6 +854,20 @@ export class SSNFormElement extends React.Component<
     };
   }
 
+  /**
+   * componentDidUpdate
+   * @param prevProps prevProps
+   */
+  componentDidUpdate(prevProps: any) {
+    if (this.props.valid !== prevProps.valid) {
+      this.setState({ valid: this.props.valid });
+    }
+  }
+
+  /**
+   * updateInputField
+   * @param e e
+   */
   updateInputField(e: React.ChangeEvent<HTMLInputElement>) {
     let valid = false;
     const value = e.target.value.trim();
@@ -724,12 +902,9 @@ export class SSNFormElement extends React.Component<
     this.props.updateField(value, valid, e.target.name);
   }
 
-  componentDidUpdate(prevProps: any) {
-    if (this.props.valid !== prevProps.valid) {
-      this.setState({ valid: this.props.valid });
-    }
-  }
-
+  /**
+   * Component render method
+   */
   render() {
     const modifiers =
       this.props.modifiers && this.props.modifiers instanceof Array
@@ -737,10 +912,11 @@ export class SSNFormElement extends React.Component<
         : [this.props.modifiers];
     return (
       <div
-        className={`form-element ${this.props.modifiers
+        className={`form-element ${
+          this.props.modifiers
             ? modifiers.map((m) => `form-element--${m}`).join(" ")
             : ""
-          }`}
+        }`}
       >
         <label htmlFor="SSNField" className="form-element__label">
           {this.props.label}
@@ -750,15 +926,17 @@ export class SSNFormElement extends React.Component<
           value={this.state.value}
           name="ssn"
           type="text"
-          className={`form-element__input ${this.props.modifiers
+          className={`form-element__input ${
+            this.props.modifiers
               ? modifiers.map((m) => `form-element__input--${m}`).join(" ")
               : ""
-            } ${this.state.valid !== 2
+          } ${
+            this.state.valid !== 2
               ? this.state.valid == 1
                 ? "VALID"
                 : "INVALID"
               : ""
-            }`}
+          }`}
           onChange={this.updateInputField}
         />
       </div>
@@ -766,6 +944,9 @@ export class SSNFormElement extends React.Component<
   }
 }
 
+/**
+ * DateFormElementProps
+ */
 interface DateFormElementProps {
   labels: FormElementLabel | FormElementPlaceholder;
   id: string;
@@ -780,23 +961,40 @@ interface DateFormElementProps {
   modifiers?: string | Array<string>;
 }
 
+/**
+ * DateFormElementState
+ */
 interface DateFormElementState {
   value: string;
 }
 
+/**
+ *DateFormElement
+ */
 export class DateFormElement extends React.Component<
   DateFormElementProps,
   DateFormElementState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: DateFormElementProps) {
     super(props);
     this.updateInputField = this.updateInputField.bind(this);
   }
 
+  /**
+   * updateInputField
+   * @param newDate newDate
+   */
   updateInputField(newDate: any) {
     this.props.updateField(newDate);
   }
 
+  /**
+   * Component render method
+   */
   render() {
     const modifiers =
       this.props.modifiers && this.props.modifiers instanceof Array
@@ -805,10 +1003,11 @@ export class DateFormElement extends React.Component<
 
     return (
       <div
-        className={`form-element ${this.props.modifiers
+        className={`form-element ${
+          this.props.modifiers
             ? modifiers.map((m) => `form-element--${m}`).join(" ")
             : ""
-          }`}
+        }`}
       >
         {this.props.labels.label ? (
           <label htmlFor={this.props.id} className="form-element__label">
@@ -821,10 +1020,11 @@ export class DateFormElement extends React.Component<
         )}
         <DatePicker
           id={this.props.id}
-          className={`form-element__input ${this.props.modifiers
+          className={`form-element__input ${
+            this.props.modifiers
               ? modifiers.map((m) => `form-element__input--${m}`).join(" ")
               : ""
-            }`}
+          }`}
           placeholderText={this.props.labels.placeholder}
           onChange={this.updateInputField}
           maxDate={this.props.maxDate}

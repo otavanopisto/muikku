@@ -1,27 +1,49 @@
-import WorkspaceNavbar from '~/components/base/workspace/navbar';
-import ScreenContainer from '~/components/general/screen-container';
-import PermissionsByUsergroups from './byUsergroups';
+import WorkspaceNavbar from "~/components/base/workspace/navbar";
+import ScreenContainer from "~/components/general/screen-container";
+import PermissionsByUsergroups from "./byUsergroups";
+import * as React from "react";
 
-import * as React from 'react';
-
+/**
+ * WorkspacePermissionsBodyProps
+ */
 interface WorkspacePermissionsBodyProps {
-  workspaceUrl: string
+  workspaceUrl: string;
 }
 
-interface WorkspacePermissionsBodyState {
+/**
+ * WorkspacePermissionsBodyState
+ */
+interface WorkspacePermissionsBodyState {}
 
-}
-
-export default class WorkspacePermissionsBody extends React.Component<WorkspacePermissionsBodyProps, WorkspacePermissionsBodyState> {
-  constructor(props: WorkspacePermissionsBodyProps){
+/**
+ * WorkspacePermissionsBody
+ */
+export default class WorkspacePermissionsBody extends React.Component<
+  WorkspacePermissionsBodyProps,
+  WorkspacePermissionsBodyState
+> {
+  /**
+   * constructor
+   * @param props props
+   */
+  constructor(props: WorkspacePermissionsBodyProps) {
     super(props);
   }
-  render(){
-    return (<div>
-      <WorkspaceNavbar activeTrail="permissions" workspaceUrl={this.props.workspaceUrl}/>
-      <ScreenContainer viewModifiers="workspace">
-        <PermissionsByUsergroups/>
-      </ScreenContainer>
-    </div>);
+
+  /**
+   * render
+   */
+  render() {
+    return (
+      <div>
+        <WorkspaceNavbar
+          activeTrail="permissions"
+          workspaceUrl={this.props.workspaceUrl}
+        />
+        <ScreenContainer viewModifiers="workspace">
+          <PermissionsByUsergroups />
+        </ScreenContainer>
+      </div>
+    );
   }
 }

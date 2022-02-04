@@ -5,7 +5,7 @@
   <parent>
     <groupId>fi.otavanopisto.muikku</groupId>
     <artifactId>parent</artifactId>
-    <version>1.1.174-SNAPSHOT</version>
+    <version>1.1.177-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -100,7 +100,7 @@
       <artifactId>commons-io</artifactId>
       <scope>provided</scope>
     </dependency>
-
+    
     <!-- Hibernate -->
 
     <dependency>
@@ -181,7 +181,14 @@
       <artifactId>openfire-rest-client</artifactId>
     </dependency>
     
-    <!--  Multipart (for file uploads) -->
+    <!-- Guava (for Ceepos hashing) -->
+
+    <dependency>
+	  <groupId>com.google.guava</groupId>
+	  <artifactId>guava</artifactId>
+    </dependency>
+
+    <!-- Multipart (for file uploads) -->
 
     <dependency>
       <groupId>org.jboss.resteasy</groupId>

@@ -81,6 +81,9 @@ $color-label-alert: $color-fatal;
 $color-workspace: #2fd4af;
 $color-workspace-hero-shadow: rgba(0, 0, 0, 0.1);
 
+// Ceepos
+$color-ceepos-card-shadow: rgba(0, 0, 0, 0.05);
+
 // Meta
 $color-meta-workspace-background: $color-default;
 
@@ -100,7 +103,7 @@ $color-license-options-background: #f8f8f8;
 $color-message-from-workspace-background: #f5f5f5;
 
 // Assignment & Exercise
-$color-assignment:#ce01bd;
+$color-assignment: #ce01bd;
 $color-exercise: #ff9900;
 $color-withdrawn: #b3b2b2;
 $color-submitted: #009fe3;
@@ -109,7 +112,9 @@ $color-passed: #24c118;
 $color-failed: #de3211;
 $color-pending: #009fe3;
 $color-incomplete: #ea7503;
-$color-example: #e2ffe2;
+$color-example-background: $color-default;
+$color-example-border: #9aece0;
+$color-example-box-shadow: rgba(0, 0, 0, 0.1);
 $color-journal: #0effe6;
 $color-correct-answer: #43f860;
 $color-incorrect-answer: #f64e4e;
@@ -505,6 +510,9 @@ $color-material-table-header-boder: #00e3c8;
 $color-material-word-definition-color: #007925;
 $color-material-word-definition-border-color: #8ed2a3;
 $color-material-word-definition-background-color: #c7fdd8;
+
+$color-material-exercise-feedback-background: #fbfffa;
+$color-material-exercise-feedback-border: #60daff;
 
 // Math
 $color-math-editor-background: #fff;

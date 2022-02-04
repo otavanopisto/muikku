@@ -79,26 +79,9 @@
   }
 }
 
-.tabs__tab-data-container {
-  display: none;
-
-  @include breakpoint($breakpoint-pad) {
-    display: flex;
-  }
-}
-
-.tabs__tab-data-container--mobile {
-  display: flex;
-
-  @include breakpoint($breakpoint-pad) {
-    display: none;
-  }
-}
-
 .tabs__tab-data-container--mobile-tabs {
   display: flex;
 }
-
 
 .tabs__tab-data {
   display: none;
@@ -200,7 +183,6 @@
 }
 
 .tabs__tab--mobile-only-tab {
-
   @include breakpoint($breakpoint-pad) {
     background: $color-default;
     border: 0;

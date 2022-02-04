@@ -19,8 +19,8 @@ const defaultProps = {
 
 /**
  * SlideDrawer
- * @param param0
- * @returns
+ * @param props props
+ * @returns JSX.Element
  */
 const SlideDrawer: React.FC<SlideDrawerProps> = (props) => {
   props = { ...defaultProps, ...props };
@@ -39,7 +39,15 @@ const SlideDrawer: React.FC<SlideDrawerProps> = (props) => {
   }
 
   return (
-    <section className={drawerClasses}>
+    <section
+      className={`${drawerClasses} ${
+        modifiers
+          ? modifiers
+              .map((m) => `evaluation-modal__evaluate-drawer--${m}`)
+              .join(" ")
+          : ""
+      }`}
+    >
       <header
         className={`evaluation-modal__evaluate-drawer-header ${
           modifiers

@@ -1,3 +1,0 @@
-<div title='{#localize key="plugin.evaluation.evaluationModal.archiveRequest.confirmationDialog.title"/}' data-button-remove-text='{#localize key="plugin.evaluation.evaluationModal.archiveRequest.confirmationDialog.buttonArchiveLabel"/}' data-button-cancel-text='{#localize key="plugin.evaluation.evaluationModal.archiveRequest.confirmationDialog.buttonNoLabel"/}'>
-  {#localize key="plugin.evaluation.evaluationModal.archiveRequest.confirmationDialog.description" arg0=studentName arg1=workspaceName/}
-</div>
