@@ -466,22 +466,22 @@ public class CalendarRESTService {
     boolean publicEvent = event.getVisibility() == CalendarEventVisibility.PUBLIC;
     boolean isParticipant = myEvent ? true : calendarController.isEventParticipant(event, userEntityId);
     
-    // For students, even public events are private unless the student is a participant
+    // For students, even public events of others are considered private unless the student is a participant
     
     if (!isParticipant && userEntityController.isStudent(sessionController.getLoggedUserEntity())) {
       publicEvent = false;
     }
     
-    // Only show event title and description if the event is ours or public
+    // Only show event title and description if we are participating or the event is public
     
-    if (!myEvent && !publicEvent) {
+    if (!isParticipant && !publicEvent) {
       restEvent.setTitle(null);
       restEvent.setDescription(null);
     }
     
     // Event participants
 
-    if (myEvent || publicEvent) {
+    if (isParticipant || publicEvent) {
       for (CalendarEventParticipant participant : participants) {
         CalendarEventParticipantRestModel restParticipant = new CalendarEventParticipantRestModel();
         restParticipant.setUserEntityId(participant.getUserEntityId());
