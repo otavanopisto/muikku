@@ -92,6 +92,7 @@ public class CalendarEventDAO extends CorePluginsDAO<CalendarEvent> {
         // user is event participant
         root.in(subquery)
     );
+    predicates.add(predicate);
     
     criteria.select(root);
     criteria.where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
