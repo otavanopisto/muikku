@@ -28,6 +28,7 @@ import fi.otavanopisto.muikku.dao.users.UserIdentifierPropertyDAO;
 import fi.otavanopisto.muikku.dao.users.UserSchoolDataIdentifierDAO;
 import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.UserEmailEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
@@ -52,6 +53,9 @@ public class UserEntityController implements Serializable {
 
   @Inject
   private LocaleController localeController;
+
+  @Inject
+  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
 
   @Inject
   private UserEntityDAO userEntityDAO;
@@ -284,6 +288,11 @@ public class UserEntityController implements Serializable {
   
   public List<UserSchoolDataIdentifier> listUserSchoolDataIdentifiersByDataSource(SchoolDataSource dataSource) {
     return userSchoolDataIdentifierDAO.listByDataSourceAndArchived(dataSource, Boolean.FALSE);
+  }
+
+  public boolean isStudent(UserEntity userEntity) {
+    EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(userEntity);
+    return roleEntity == null || roleEntity.getArchetype() == EnvironmentRoleArchetype.STUDENT;
   }
 
   public List<UserEntity> listUserEntities() {

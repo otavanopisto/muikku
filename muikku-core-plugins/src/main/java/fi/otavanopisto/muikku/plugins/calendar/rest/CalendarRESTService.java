@@ -26,8 +26,6 @@ import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang3.StringUtils;
 
-import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
-import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.calendar.CalendarController;
 import fi.otavanopisto.muikku.plugins.calendar.model.CalendarEvent;
@@ -36,7 +34,6 @@ import fi.otavanopisto.muikku.plugins.calendar.model.CalendarEventParticipant;
 import fi.otavanopisto.muikku.plugins.calendar.model.CalendarEventVisibility;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserEntityController;
-import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
@@ -57,9 +54,6 @@ public class CalendarRESTService {
   
   @Inject
   private UserEntityController userEntityController;
-
-  @Inject
-  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
   
   /**
    * REQUEST:
@@ -126,11 +120,11 @@ public class CalendarRESTService {
     // Access checks
     
     Long userEntityId = sessionController.getLoggedUserEntity().getId();
-    boolean isStudent = isStudent(sessionController.getLoggedUserEntity());
+    boolean isStudent = userEntityController.isStudent(sessionController.getLoggedUserEntity());
     if (isStudent && restEvent.getParticipants() != null) {
       for (CalendarEventParticipantRestModel restParticipant : restEvent.getParticipants()) {
         UserEntity userEntity = userEntityController.findUserEntityById(restParticipant.getUserEntityId());
-        if (isStudent(userEntity)) {
+        if (userEntityController.isStudent(userEntity)) {
           logger.warning(String.format("Student %d attempt to create event to include student %d revoked", userEntityId, restParticipant.getUserEntityId()));
           return Response.status(Status.BAD_REQUEST).build();
         }
@@ -238,11 +232,11 @@ public class CalendarRESTService {
 
     // Access checks
     
-    boolean isStudent = isStudent(sessionController.getLoggedUserEntity());
+    boolean isStudent = userEntityController.isStudent(sessionController.getLoggedUserEntity());
     if (isStudent && restEvent.getParticipants() != null) {
       for (CalendarEventParticipantRestModel restParticipant : restEvent.getParticipants()) {
         UserEntity userEntity = userEntityController.findUserEntityById(restParticipant.getUserEntityId());
-        if (isStudent(userEntity)) {
+        if (userEntityController.isStudent(userEntity)) {
           logger.warning(String.format("Student %d attempt to edit event to include student %d revoked", userEntityId, restParticipant.getUserEntityId()));
           return Response.status(Status.BAD_REQUEST).build();
         }
@@ -417,9 +411,9 @@ public class CalendarRESTService {
     }
     if (!userEntityId.equals(sessionController.getLoggedUserEntity().getId())) {
       UserEntity caller = sessionController.getLoggedUserEntity();
-      if (isStudent(caller)) {
+      if (userEntityController.isStudent(caller)) {
         UserEntity target = userEntityController.findUserEntityById(userEntityId);
-        if (isStudent(target)) {
+        if (userEntityController.isStudent(target)) {
           logger.warning(String.format("User %d attempt to list calendar of user %d revoked", sessionController.getLoggedUserEntity().getId(), userEntityId));
           return Response.status(Status.FORBIDDEN).build();
         }
@@ -474,7 +468,7 @@ public class CalendarRESTService {
     
     // For students, even public events are private unless the student is a participant
     
-    if (!isParticipant && isStudent(sessionController.getLoggedUserEntity())) {
+    if (!isParticipant && userEntityController.isStudent(sessionController.getLoggedUserEntity())) {
       publicEvent = false;
     }
     
@@ -508,11 +502,6 @@ public class CalendarRESTService {
   
   private OffsetDateTime toOffsetDateTime(Date date) {
     return OffsetDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
-  }
-
-  private boolean isStudent(UserEntity userEntity) {
-    EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(userEntity);
-    return roleEntity == null || roleEntity.getArchetype() == EnvironmentRoleArchetype.STUDENT;
   }
   
 }
