@@ -25,6 +25,7 @@
 
 .reading-panel__container {
   @include text;
+
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -115,7 +116,6 @@
 }
 
 .reading-panel__content {
-
   @include breakpoint($breakpoint-pad) {
     align-items: flex-start;
     display: flex;
@@ -194,7 +194,6 @@
 }
 
 .reading-panel__main-container--content-full {
-
   @include breakpoint($breakpoint-pad) {
     padding-left: 0;
   }

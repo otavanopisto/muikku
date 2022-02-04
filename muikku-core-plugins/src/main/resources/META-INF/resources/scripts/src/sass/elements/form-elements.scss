@@ -24,8 +24,6 @@
 
   input[type="checkbox"] {
     align-items: center;
-    -moz-appearance: none;
-    -webkit-appearance: none;
     appearance: none;
     border: solid 2px $color-form-element-border;
     border-radius: 3px;
@@ -39,8 +37,6 @@
 
   input[type="radio"] {
     align-items: center;
-    -moz-appearance: none;
-    -webkit-appearance: none;
     appearance: none;
     border: solid 2px $color-form-element-border;
     border-radius: 100%;
@@ -59,7 +55,7 @@
   input:checked::after {
     color: $color-default;
     content: "\e639";
-    font-family: muikku;
+    font-family: "muikku";
     font-size: 0.875rem;
   }
 }
@@ -216,7 +212,8 @@
     box-shadow 0.2s ease-in-out,
     border 0.2s ease-in-out
   );
-  -webkit-appearance: none;
+
+  appearance: none;
   border: solid 2px $color-form-element-border;
   border-radius: 2px;
   font-family: $text-font-family;
@@ -238,9 +235,9 @@
   &.VALID {
     border-color: $color-success;
   }
+
   // scss-lint:enable SelectorFormat
 }
-
 
 // Teacher's Worklist Specific fields
 .form-element__input--worklist-description,
@@ -337,6 +334,7 @@
 
   &::before {
     @include form-element-input-search-decoration;
+
     color: $color-search-icon;
   }
 }
@@ -369,10 +367,9 @@
 }
 
 .form-element__select {
-  -moz-appearance: none;
-  -webkit-appearance: none;
   appearance: none;
-  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='15' height='10' fill='skyblue'><polygon points='0,0 3,0 8,7 12,0 15,0 8,10 0,0' /></svg>")
+  background:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='15' height='10' fill='skyblue'><polygon points='0,0 3,0 8,7 12,0 15,0 8,10 0,0' /></svg>")
     no-repeat right 5px center;
   background-color: transparent;
   border: 2px solid $color-form-element-border;
@@ -405,8 +402,9 @@
   height: 2rem;
 
   &[disabled] {
-    background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='15' height='10' fill='lightgrey'><polygon points='0,0 3,0 8,7 12,0 15,0 8,10 0,0' /></svg>")
-    no-repeat right 5px center;
+    background:
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='15' height='10' fill='lightgrey'><polygon points='0,0 3,0 8,7 12,0 15,0 8,10 0,0' /></svg>")
+      no-repeat right 5px center;
     border: 2px solid lighten($color-disabled, 20%);
   }
 }

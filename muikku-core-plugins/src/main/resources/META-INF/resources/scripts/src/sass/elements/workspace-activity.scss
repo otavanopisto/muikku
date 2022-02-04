@@ -72,10 +72,10 @@
 }
 
 .workspace-activity__progressbar--studies {
-
   svg {
     @include prefix(transition, webkit ms o moz, opacity 0.2s ease-in-out);
-    opacity: 0.3;
+
+    opacity: 30%;
   }
 }
 

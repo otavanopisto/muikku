@@ -9,7 +9,7 @@ import equals = require("deep-equal");
 import { i18nType } from "~/reducers/base/i18n";
 import Dropdown from "~/components/general/dropdown";
 import Synchronizer from "./base/synchronizer";
-import * as uuid from "uuid";
+import { v4 as uuidv4 } from "uuid";
 import { StrMathJAX } from "../static/mathjax";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
@@ -409,7 +409,7 @@ export default class SelectField extends React.Component<
         >
           {this.props.content.options.map((o) => {
             // lets generate unique id for labels and radio buttons
-            const uniqueElementID = "rb-" + uuid.v4();
+            const uniqueElementID = "rb-" + uuidv4();
             return (
               <span
                 className="material-page__radiobutton-item-container"

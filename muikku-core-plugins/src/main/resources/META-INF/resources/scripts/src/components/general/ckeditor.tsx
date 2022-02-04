@@ -7,7 +7,7 @@
 import equals = require("deep-equal");
 import * as React from "react";
 import getCKEDITOR, { CKEDITOR_VERSION } from "~/lib/ckeditor";
-import * as uuid from "uuid";
+import { v4 as uuidv4 } from "uuid";
 
 //TODO this ckeditor depends externally on CKEDITOR we got to figure out a way to represent an internal dependency
 //Right now it doesn't make sense to but once we get rid of all the old js code we should get rid of these
@@ -135,7 +135,7 @@ export default class CKEditor extends React.Component<
   constructor(props: CKEditorProps) {
     super(props);
 
-    this.name = "ckeditor-" + uuid.v4();
+    this.name = "ckeditor-" + uuidv4();
     this.currentData = props.children || "";
 
     //CKeditor tends to trigger change on setup for no reason at all

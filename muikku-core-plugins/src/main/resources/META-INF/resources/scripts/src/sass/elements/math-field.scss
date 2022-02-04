@@ -192,6 +192,7 @@
       box-shadow: none;
     }
   }
+
   // scss-lint:enable SelectorFormat
 
   @include breakpoint($breakpoint-pad) {
@@ -212,13 +213,12 @@
   z-index: 99;
 
   // Math Quill overrides, YAY!
-  // scss-lint:disable SelectorFormat
+
+  /* stylelint-disable selector-class-pattern, declaration-no-important */
   .ace_editor {
     border: 1px solid $color-default;
     color: $color-default-contrast;
-    // scss-lint:disable ImportantRule
     font-size: 1.125rem !important;
-    // scss-lint:enable ImportantRule
     overflow: visible;
     padding: 5px 10px;
     width: 100%;
@@ -229,14 +229,10 @@
       box-shadow: none;
     }
 
-    // scss-lint:disable SelectorDepth
     .ace_marker-layer .ace_active-line {
       background: $color-math-editor-active-line-background;
-      // scss-lint:disable ImportantRule
       left: 5px !important;
-      // scss-lint:enable ImportantRule
     }
-    // scss-lint:enable SelectorDepth
 
     // LaTeX cursor
     .ace_cursor {
@@ -259,17 +255,15 @@
       color: $color-math-editor-line-constant-color;
     }
 
-    // scss-lint:disable SelectorDepth
     .ace_hidden-cursors .ace_cursor {
       visibility: hidden;
     }
-    // scss-lint:enable SelectorDepth
 
     .ace_invisible {
       color: $color-default-helper;
     }
   }
-  // scss-lint:enable SelectorFormat
+  /* stylelint-enable selector-class-pattern, declaration-no-important */
 
   @include breakpoint($breakpoint-pad) {
     flex-basis: auto;
@@ -278,4 +272,3 @@
     min-width: 50%;
   }
 }
-

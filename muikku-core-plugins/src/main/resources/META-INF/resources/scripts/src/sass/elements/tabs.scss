@@ -5,6 +5,7 @@
 
 .tabs {
   @include text;
+
   margin-top: 10px;
 }
 
@@ -27,7 +28,7 @@
 
 .tabs__tab-labels--application-panel {
   border-bottom: solid 1px $color-application-panel-box-border;
- }
+}
 
 .tabs__tab-labels--mobile {
   display: flex;
@@ -99,7 +100,6 @@
 }
 
 .tabs__tab-data--material-editor {
-
   &.active {
     display: flex;
   }

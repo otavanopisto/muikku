@@ -10,10 +10,10 @@ $input-height: 2.25rem;
 // Menu
 $menu-width-pad: 400px;
 $menu-width-mobile: 300px;
-$menu-font: "Exo 2", Arial, sans-serif;
+$menu-font: "Exo 2", "Arial", sans-serif;
 
 // Navbar
-$navbar-font: "Exo 2", Arial, sans-serif;
+$navbar-font: "Exo 2", "Arial", sans-serif;
 $navbar-mobile-height: 3.5rem;
 $navbar-desktop-height: 4.2rem;
 $navbar-mobile-item-width: 3.5rem;
@@ -35,12 +35,12 @@ $container-desktop-gutter: 20px;
 $ordered-container-item-gutter: $container-desktop-gutter / 2;
 
 // Text
-$text-branded-font-family: "Exo 2", Arial, sans-serif;
-$text-font-family: "Open Sans", Arial, sans-serif;
-$text-avatar-font-family: "Exo 2", Arial, sans-serif;
+$text-branded-font-family: "Exo 2", "Arial", sans-serif;
+$text-font-family: "Open Sans", "Arial", sans-serif;
+$text-avatar-font-family: "Exo 2", "Arial", sans-serif;
 
 // Indicator
-$indicator-font-family: "Exo 2", Arial, sans-serif;
+$indicator-font-family: "Exo 2", "Arial", sans-serif;
 $indicator-padding: 4;
 $indicator-font-size: 12;
 
@@ -50,7 +50,7 @@ $dialog-title-mobile-font-size: 1rem;
 $dialog-title-desktop-font-size: 1.1rem;
 
 // Environment Dialog
-$env-dialog-box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.15);
+$env-dialog-box-shadow: 0 -5px 20px rgb(0 0 0 / 15%);
 
 // Basic Paragraph Text
 $text-mobile-font-size: 0.8125rem;
@@ -72,11 +72,11 @@ $logo-text-desktop-size: 5.375rem;
 // Bubble - Used only in the branded front page
 $bubble-size-small: 16rem;
 $bubble-size-normal: 18.25rem;
-$bubble-font: "Exo 2", Arial, sans-serif;
+$bubble-font: "Exo 2", "Arial", sans-serif;
 
 // Buttons
-$button-branded-font-family: "Exo 2", Arial, sans-serif;
-$button-font-family: "Open Sans", Arial, sans-serif;
+$button-branded-font-family: "Exo 2", "Arial", sans-serif;
+$button-font-family: "Open Sans", "Arial", sans-serif;
 $button-social-size: 2.5rem;
 $button-primary-height: 2.5rem;
 $button-mobile-font-size: 0.75rem;
@@ -96,10 +96,10 @@ $button-pill-navbar-desktop-font-size: 1rem;
 $button-pill-settings-font-size: 1.375rem;
 
 // Cards - Used only in the branded front page
-$card-font-family: "Exo 2", Arial, sans-serif;
+$card-font-family: "Exo 2", "Arial", sans-serif;
 
 // Label
-$label-font-family: "Exo 2", Arial, sans-serif;
+$label-font-family: "Exo 2", "Arial", sans-serif;
 $label-small-height: 1.3125rem;
 $label-small-font-size: 0.75rem;
 $label-medium-height: 1.6875rem;

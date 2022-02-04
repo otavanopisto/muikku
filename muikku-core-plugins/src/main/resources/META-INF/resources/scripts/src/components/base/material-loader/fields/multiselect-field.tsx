@@ -3,7 +3,7 @@ import equals = require("deep-equal");
 import { i18nType } from "~/reducers/base/i18n";
 import Dropdown from "~/components/general/dropdown";
 import Synchronizer from "./base/synchronizer";
-import * as uuid from "uuid";
+import { v4 as uuidv4 } from "uuid";
 import { StrMathJAX } from "../static/mathjax";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
@@ -400,7 +400,7 @@ export default class MultiSelectField extends React.Component<
               }
             }
             // lets generate unique id for labels and checkboxes
-            const uniqueElementID = "cb-" + uuid.v4();
+            const uniqueElementID = "cb-" + uuidv4();
             return (
               <span
                 key={o.name}
