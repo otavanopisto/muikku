@@ -38,7 +38,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       TestEnvironments.Browser.FIREFOX,
     }
   )
-  public void fileFieldTestAdmin() throws Exception {
+  public void fileFieldTestStudent() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
@@ -868,78 +868,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         assertClassPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Nakki')]/parent::span/parent::span", "correct-answer");
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
-        deleteWorkspace(workspace.getId());
-      }
-    } finally {
-      mockBuilder.wiremockReset();
-    }
-  }
-
-  @Test
-  @TestEnvironments (
-    browsers = {
-      TestEnvironments.Browser.CHROME,
-      TestEnvironments.Browser.CHROME_HEADLESS,
-      TestEnvironments.Browser.FIREFOX,
-    }
-  )
-  public void fileFieldTestStudent() throws Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
-    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
-    Builder mockBuilder = mocker();
-
-    try {
-      Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
-      mockBuilder
-      .addStaffMember(admin)
-      .addStudent(student)
-      .mockLogin(admin)
-      .addCourse(course1)
-      .build();
-      login();
-      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
-
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
-      mockBuilder
-        .addCourseStaffMember(course1.getId(), courseStaffMember)
-        .build();
-      File testFile = getTestFile();
-      try {
-        WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
-        
-        WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
-            "Test", "text/html;editor=CKEditor", 
-            "<p><object type=\"application/vnd.muikku.field.file\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-lAEveKeKFmjD5wQwcMh4SW20&quot;}\" /><input name=\"muikku-field-lAEveKeKFmjD5wQwcMh4SW20\" type=\"file\" /></p>", 
-            "EXERCISE");
-        logout();
-        MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
-        mockBuilder.addCourseStudent(workspace.getId(), mockCourseStudent).build();
-        mockBuilder.mockLogin(student);
-        login();
-        try {
-          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-          waitForPresent(".material-page__filefield-wrapper .file-uploader__field");
-          sendKeys(".material-page__filefield-wrapper .file-uploader__field", testFile.getAbsolutePath());
-          waitForPresent(".file-uploader__item--taskfield .file-uploader__item-download-icon");
-          waitForVisible(".notification-queue__item--success");
-          sleep(500);
-          
-          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-          assertTextIgnoreCase(".file-uploader__item-title", testFile.getName(), 40);
-          
-          waitForPresent(".file-uploader__item-delete-icon");
-          waitAndClick(".file-uploader__item-delete-icon");
-          waitForVisible(".dialog--confirm-remove-answer-dialog .button--standard-ok");
-          waitAndClick(".button--standard-ok");
-//        Timing problem where when debugging everything works fine, but at normal speed it gives error on saving empty field. Hence the sleep.
-          sleep(1500);
-          waitForVisible(".file-uploader__hint");
-          assertNotPresent(".file-uploader__item-title");
-        } finally {
-          deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
-        }
-        
-      } finally {
         deleteWorkspace(workspace.getId());
       }
     } finally {
