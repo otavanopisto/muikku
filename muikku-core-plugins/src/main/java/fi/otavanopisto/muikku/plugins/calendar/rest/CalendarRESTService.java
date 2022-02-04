@@ -377,7 +377,7 @@ public class CalendarRESTService {
    * @param adjustTimes Should timeframe start and end times be start and end of day
    * @param type Event type (optional)
    * 
-   * @return Orders of the given user
+   * @return Events of the given user
    */
   @Path("/events")
   @GET
