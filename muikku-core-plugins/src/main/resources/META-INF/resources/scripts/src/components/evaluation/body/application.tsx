@@ -15,6 +15,7 @@ import { bindActionCreators } from "redux";
 import EvaluationSorters from "./application/evaluation-list/evaluation-sorters";
 import { WorkspaceType } from "../../../reducers/workspaces/index";
 import { EvaluationWorkspace } from "../../../@types/evaluation";
+import { AnyActionType } from "~/actions";
 
 /**
  * EvaluationApplicationProps
@@ -170,7 +171,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ setSelectedWorkspaceId }, dispatch);
 }
 

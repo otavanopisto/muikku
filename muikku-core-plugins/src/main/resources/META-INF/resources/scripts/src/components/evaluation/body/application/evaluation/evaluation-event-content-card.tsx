@@ -27,23 +27,20 @@ interface EvaluationEventContentCardProps extends EvaluationEvent {
 
 /**
  * EvaluationEventContentCard
- * @param root0.i18n i18n
- * @param root0.showDeleteAndModify showDeleteAndModify
- * @param root0.onClickEdit onClickEdit
+ * @param props props
  */
-const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
-  i18n,
-  showDeleteAndModify,
-  onClickEdit,
-  ...event
-}) => {
+const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
+  props
+) => {
   const [height, setHeight] = React.useState<0 | "auto">(0);
+
+  const { i18n, showDeleteAndModify, onClickEdit, ...event } = props;
 
   const { author, text, date, type, grade, identifier } = event;
 
   /**
    * arrowClassMod
-   * @param typeMsg
+   * @param typeMsg typeMsg
    * @returns arrow class modifier
    */
   const arrowClassMod = (typeMsg: EvaluationEnum) => {
@@ -77,7 +74,7 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
 
   /**
    * createHtmlMarkup
-   * @param htmlString
+   * @param htmlString htmlString
    */
   const createHtmlMarkup = (htmlString: string) => ({
     __html: htmlString,
@@ -101,8 +98,8 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
 
   /**
    * renderTypeMessage
-   * @param typeMsg
-   * @param grade
+   * @param typeMsg typeMsg
+   * @param grade grade
    */
   const renderTypeMessage = (typeMsg: EvaluationEnum, grade: string | null) => {
     switch (typeMsg) {
@@ -265,7 +262,7 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
 
 /**
  * mapStateToProps
- * @param state
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -276,7 +273,7 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({}, dispatch);

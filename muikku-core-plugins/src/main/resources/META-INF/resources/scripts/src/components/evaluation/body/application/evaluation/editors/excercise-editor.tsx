@@ -74,7 +74,7 @@ class ExcerciseEditor extends SessionStateComponent<
 > {
   /**
    * constructor
-   * @param props
+   * @param props props
    */
   constructor(props: AssignmentEditorProps) {
     super(props, `excercise-editor`);
@@ -295,7 +295,7 @@ class ExcerciseEditor extends SessionStateComponent<
 
   /**
    * handleSaveAssignment
-   * @param e
+   * @param e e
    */
   handleSaveAssignment = (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
@@ -373,7 +373,7 @@ class ExcerciseEditor extends SessionStateComponent<
 
   /**
    * handleCKEditorChange
-   * @param e
+   * @param e e
    */
   handleCKEditorChange = (e: string) => {
     this.setStateAndStore(
@@ -386,7 +386,7 @@ class ExcerciseEditor extends SessionStateComponent<
 
   /**
    * handleAssignmentEvaluationChange
-   * @param e
+   * @param e e
    */
   handleAssignmentEvaluationChange = (
     e: React.ChangeEvent<HTMLInputElement>
@@ -401,7 +401,7 @@ class ExcerciseEditor extends SessionStateComponent<
 
   /**
    * handleAudioAssessmentChange
-   * @param audioAssessments
+   * @param audioAssessments audioAssessments
    */
   handleAudioAssessmentChange = (audioAssessments: AudioAssessment[]) => {
     this.setState({
@@ -497,7 +497,7 @@ class ExcerciseEditor extends SessionStateComponent<
 
 /**
  * mapStateToProps
- * @param state
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -509,7 +509,7 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(

@@ -17,6 +17,7 @@ import {
 import { UpdateImportanceObject } from "~/@types/evaluation";
 import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/empty.scss";
+import { AnyActionType } from "~/actions";
 
 /**
  * EvaluationListProps
@@ -43,7 +44,7 @@ export class EvaluationList extends React.Component<
 > {
   /**
    * constructor
-   * @param props
+   * @param props props
    */
   constructor(props: EvaluationListProps) {
     super(props);
@@ -51,7 +52,7 @@ export class EvaluationList extends React.Component<
 
   /**
    * Handles sorter buttons click
-   * @param sortBy
+   * @param sortBy sortBy
    */
   handleClickSorter =
     (sortBy: SortBy) => (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -150,7 +151,7 @@ export class EvaluationList extends React.Component<
 
   /**
    * Filters assessments by selections aka active checkboxes
-   * @param assessments
+   * @param assessments assessments
    */
   filterAssessmentsBySelections = (assessments: AssessmentRequest[]) => {
     const { evaluationFilters } = this.props.evaluations;
@@ -244,7 +245,7 @@ export class EvaluationList extends React.Component<
   /**
    * Filters assessments by search string and
    * comparing it to workspace name or student name
-   * @param assessments
+   * @param assessments assessments
    */
   filterAssessmentsBySearchString = (assessments: AssessmentRequest[]) => {
     const filteredAssessments = assessments.filter((aItem) => {
@@ -352,7 +353,7 @@ export class EvaluationList extends React.Component<
 
   /**
    * handleUpdateImportance
-   * @param object
+   * @param object object
    */
   handleUpdateImportance = (object: UpdateImportanceObject) => {
     this.props.updateImportance({
@@ -363,8 +364,7 @@ export class EvaluationList extends React.Component<
 
   /**
    * Builds sorted class depending of if it is active
-   * @param sortBy
-   * @param sortByState
+   * @param sortBy sortBy
    * @returns builded class string
    */
   buildSorterClass = (sortBy: SortBy) => {
@@ -466,8 +466,7 @@ export class EvaluationList extends React.Component<
 
 /**
  * By date sorting function
- * @param ascending
- * @returns
+ * @param ascending ascending
  */
 const byDate =
   (ascending: boolean) => (a: AssessmentRequest, b: AssessmentRequest) => {
@@ -493,7 +492,7 @@ const byDate =
 
 /**
  * mapStateToProps
- * @param state
+ * @param state state
  * @returns object
  */
 function mapStateToProps(state: StateType) {
@@ -505,10 +504,10 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch dispatch
  * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     {
       setSelectedWorkspaceId,

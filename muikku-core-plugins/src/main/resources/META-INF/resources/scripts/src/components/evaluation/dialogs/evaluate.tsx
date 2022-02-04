@@ -67,7 +67,7 @@ class EvaluateDialog extends React.Component<
    */
   handleUpdateSelectAssessmentOnDialogOpen = (
     assessment: AssessmentRequest
-  ): any => {
+  ) => {
     this.props.updateSelectedAssessment({ assessment });
     this.props.loadEvaluationCompositeRepliesFromServer({
       userEntityId: this.props.assessment.userEntityId,
@@ -125,7 +125,7 @@ class EvaluateDialog extends React.Component<
 
 /**
  * mapStateToProps
- * @param state
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -136,7 +136,7 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(

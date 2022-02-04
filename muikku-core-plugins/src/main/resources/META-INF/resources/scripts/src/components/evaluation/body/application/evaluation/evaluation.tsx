@@ -157,7 +157,7 @@ export class Evaluation extends React.Component<
 > {
   /**
    * constructor
-   * @param props
+   * @param props props
    */
   constructor(props: EvaluationDrawerProps) {
     super(props);
@@ -177,8 +177,6 @@ export class Evaluation extends React.Component<
 
   /**
    * componentDidUpdate
-   * @param prevProps
-   * @param prevState
    */
   componentDidUpdate() {
     if (
@@ -423,7 +421,7 @@ export class Evaluation extends React.Component<
 
   /**
    * handleCloseSpecificMaterialContent
-   * @param materialId
+   * @param materialId materialId
    */
   handleCloseSpecificMaterialContent = (materialId: number) => {
     const listOfAssignmentIds = this.state.listOfAssignmentIds.filter(
@@ -437,7 +435,7 @@ export class Evaluation extends React.Component<
 
   /**
    * handleOpenDiaryEntryClick
-   * @param id
+   * @param id id
    */
   handleOpenDiaryEntryClick = (id: number) => {
     const updatedList = [...this.state.listOfDiaryIds];
@@ -457,7 +455,7 @@ export class Evaluation extends React.Component<
 
   /**
    * handleOpenDiaryEntryClick
-   * @param id
+   * @param id id
    */
   handleOpenMaterialClick = (id: number) => {
     const updatedList = [...this.state.listOfAssignmentIds];
@@ -849,7 +847,7 @@ export class Evaluation extends React.Component<
 
 /**
  * mapStateToProps
- * @param state
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -862,7 +860,7 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
