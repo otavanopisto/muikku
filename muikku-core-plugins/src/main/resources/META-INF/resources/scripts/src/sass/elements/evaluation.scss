@@ -524,7 +524,8 @@
   // scss-lint:enable SelectorFormat
 }
 
-.evaluation-modal__evaluate-drawer--assignment {
+.evaluation-modal__evaluate-drawer--assignment,
+.evaluation-modal__evaluate-drawer--excercise {
   z-index: 201;
 }
 
@@ -544,28 +545,16 @@
   .evaluation-modal__evaluate-drawer-header-title {
     color: $color-assignment;
   }
-
-  .evaluation-modal__evaluate-drawer-close {
-    color: $color-assignment;
-  }
 }
 
 .evaluation-modal__evaluate-drawer-header--workspace {
   .evaluation-modal__evaluate-drawer-header-title {
     color: $color-info;
   }
-
-  .evaluation-modal__evaluate-drawer-close {
-    color: $color-info;
-  }
 }
 
 .evaluation-modal__evaluate-drawer-header--supplementation {
   .evaluation-modal__evaluate-drawer-header-title {
-    color: $color-incomplete;
-  }
-
-  .evaluation-modal__evaluate-drawer-close {
     color: $color-incomplete;
   }
 }

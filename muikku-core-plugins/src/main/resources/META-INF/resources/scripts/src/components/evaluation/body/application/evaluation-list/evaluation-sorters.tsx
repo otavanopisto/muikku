@@ -49,7 +49,7 @@ class EvaluationSorters extends React.Component<
 
   /**
    * Handles sorter buttons click
-   * @param sortBy
+   * @param sortBy sortBy
    */
   handleClickSorter =
     (sortBy: SortBy) =>
@@ -86,8 +86,7 @@ class EvaluationSorters extends React.Component<
 
   /**
    * Builds sorted class depending of if it is active
-   * @param sortBy
-   * @param sortByState
+   * @param sortBy sortBy
    * @returns builded class string
    */
   buildSorterClass = (sortBy: SortBy) => {
@@ -237,7 +236,7 @@ class EvaluationSorters extends React.Component<
 
 /**
  * mapStateToProps
- * @param state
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -248,7 +247,7 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ saveEvaluationSortFunctionToServer }, dispatch);

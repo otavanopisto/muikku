@@ -142,7 +142,7 @@ class DeleteDialog extends React.Component<
 
 /**
  * cleanWorkspaceAndSupplementationDrafts
- * @param draftId
+ * @param draftId draftId
  */
 export const cleanWorkspaceAndSupplementationDrafts = (draftId: string) => {
   const supplementationEditorEditLiteralEvaluation = localStorage.getItem(
@@ -249,7 +249,7 @@ export const cleanWorkspaceAndSupplementationDrafts = (draftId: string) => {
  */
 /**
  * mapStateToProps
- * @param state
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -260,7 +260,7 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ removeWorkspaceEventFromServer }, dispatch);
