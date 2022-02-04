@@ -72,8 +72,8 @@ public class CalendarEventDAO extends CorePluginsDAO<CalendarEvent> {
     // Timeframe
     
     Predicate predicate = criteriaBuilder.and(
-        criteriaBuilder.lessThanOrEqualTo(root.get(CalendarEvent_.end), start),
-        criteriaBuilder.greaterThanOrEqualTo(root.get(CalendarEvent_.start), end)
+        criteriaBuilder.greaterThanOrEqualTo(root.get(CalendarEvent_.end), start),
+        criteriaBuilder.lessThanOrEqualTo(root.get(CalendarEvent_.start), end)
     );
     predicates.add(predicate);
     
