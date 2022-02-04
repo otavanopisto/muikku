@@ -1673,12 +1673,14 @@ public class UserRESTService extends AbstractRESTService {
     
     // Curriculum 
     String curriculumName = null;
-    if (user.getCurriculumIdentifier() != null) {
-    SchoolDataIdentifier curriculumId = SchoolDataIdentifier.fromId(user.getCurriculumIdentifier());
     
-    Curriculum curriculum = user == null ? null : courseMetaController.findCurriculum(curriculumId.getDataSource(), curriculumId.getIdentifier());
-    
-    curriculumName = curriculum.getName();
+    if (user != null) {
+      if (user.getCurriculumIdentifier() != null) {
+        SchoolDataIdentifier curriculumId = SchoolDataIdentifier.fromId(user.getCurriculumIdentifier());
+      
+        Curriculum curriculum = courseMetaController.findCurriculum(curriculumId.getDataSource(), curriculumId.getIdentifier());
+        curriculumName = curriculum == null ? null : curriculum.getName();
+      }
     }
     // Damn emails, addresses, and phoneNumbers as json
     
