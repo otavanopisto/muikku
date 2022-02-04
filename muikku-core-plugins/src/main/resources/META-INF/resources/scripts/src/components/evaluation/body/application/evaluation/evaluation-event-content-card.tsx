@@ -27,22 +27,20 @@ interface EvaluationEventContentCardProps extends EvaluationEvent {
 
 /**
  * EvaluationEventContentCard
+ * @param props props
  */
-const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
-  i18n,
-  showDeleteAndModify,
-  onClickEdit,
-  evaluations,
-  children,
-  ...event
-}) => {
+const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
+  props
+) => {
   const [height, setHeight] = React.useState<0 | "auto">(0);
+
+  const { i18n, showDeleteAndModify, onClickEdit, ...event } = props;
 
   const { author, text, date, type, grade, identifier } = event;
 
   /**
    * arrowClassMod
-   * @param typeMsg
+   * @param typeMsg typeMsg
    * @returns arrow class modifier
    */
   const arrowClassMod = (typeMsg: EvaluationEnum) => {
@@ -76,13 +74,11 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
 
   /**
    * createHtmlMarkup
-   * @param htmlString
+   * @param htmlString htmlString
    */
-  const createHtmlMarkup = (htmlString: string) => {
-    return {
-      __html: htmlString,
-    };
-  };
+  const createHtmlMarkup = (htmlString: string) => ({
+    __html: htmlString,
+  });
 
   /**
    * handleOpenContentClick
@@ -91,7 +87,7 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
     setHeight(height === 0 ? "auto" : 0);
   };
 
-  let arrowClasses =
+  const arrowClasses =
     height === 0
       ? `evaluation-modal__event-arrow ${arrowClassMod(
           type
@@ -102,8 +98,8 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
 
   /**
    * renderTypeMessage
-   * @param typeMsg
-   * @param grade
+   * @param typeMsg typeMsg
+   * @param grade grade
    */
   const renderTypeMessage = (typeMsg: EvaluationEnum, grade: string | null) => {
     switch (typeMsg) {
@@ -266,7 +262,7 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
 
 /**
  * mapStateToProps
- * @param state
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -277,7 +273,7 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({}, dispatch);

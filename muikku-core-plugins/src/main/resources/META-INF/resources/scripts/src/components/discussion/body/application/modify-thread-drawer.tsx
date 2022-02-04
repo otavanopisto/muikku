@@ -2,9 +2,6 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import CKEditor from "~/components/general/ckeditor";
-import Link from "~/components/general/link";
-import InputContactsAutofill from "~/components/base/input-contacts-autofill";
-import EnvironmentDialog from "~/components/general/environment-dialog";
 import { AnyActionType } from "~/actions";
 import { i18nType } from "~/reducers/base/i18n";
 import { DiscussionType, DiscussionThreadType } from "~/reducers/discussion";
@@ -131,6 +128,9 @@ class ModifyThreadDrawer extends SessionStateComponent<
       message: this.state.text,
       sticky: this.state.threadPinned,
       locked: this.state.threadLocked,
+      /**
+       * success
+       */
       success: () => {
         this.props.onClickCancel && this.props.onClickCancel();
         this.justClear(
@@ -140,6 +140,9 @@ class ModifyThreadDrawer extends SessionStateComponent<
         this.setState({ locked: false });
         closeDialog();
       },
+      /**
+       * fail
+       */
       fail: () => {
         this.setState({ locked: false });
       },
@@ -206,12 +209,12 @@ class ModifyThreadDrawer extends SessionStateComponent<
    * @returns JSX.Element
    */
   render() {
-    let editorTitle =
+    const editorTitle =
       this.props.i18n.text.get("plugin.discussion.editmessage.topic") +
       " - " +
       this.props.i18n.text.get("plugin.discussion.createmessage.content");
 
-    let content = (
+    const content = (
       <>
         <div
           key="1"
@@ -299,7 +302,7 @@ class ModifyThreadDrawer extends SessionStateComponent<
     /**
      * footer
      */
-    let footer = (
+    const footer = (
       <div className="env-dialog__actions">
         <Button
           buttonModifiers="dialog-execute"
@@ -336,12 +339,8 @@ class ModifyThreadDrawer extends SessionStateComponent<
             <header className="env-dialog__header">
               {this.props.i18n.text.get("plugin.discussion.editmessage.topic")}
             </header>
-            <section className="env-dialog__body">
-              {content}
-            </section>
-            <footer className="env-dialog__footer">
-              {footer}
-            </footer>
+            <section className="env-dialog__body">{content}</section>
+            <footer className="env-dialog__footer">{footer}</footer>
           </div>
         </section>
       </div>
@@ -349,6 +348,9 @@ class ModifyThreadDrawer extends SessionStateComponent<
   }
 }
 
+/**
+ * @param state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -357,6 +359,9 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * @param dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ modifyDiscussionThread }, dispatch);
 }

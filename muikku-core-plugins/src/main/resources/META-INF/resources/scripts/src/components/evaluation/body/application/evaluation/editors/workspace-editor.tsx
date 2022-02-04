@@ -55,6 +55,9 @@ interface WorkspaceEditorState {
   locked: boolean;
 }
 
+/**
+ * EvaluationPriceObject
+ */
 interface EvaluationPriceObject {
   name: string;
   value: number;
@@ -71,7 +74,7 @@ class WorkspaceEditor extends SessionStateComponent<
 > {
   /**
    * constructor
-   * @param props
+   * @param props props
    */
   constructor(props: WorkspaceEditorProps) {
     /**
@@ -172,7 +175,7 @@ class WorkspaceEditor extends SessionStateComponent<
 
   /**
    * getUsedGradingScaleByGradeId
-   * @param gradeId
+   * @param gradeId gradeId
    * @returns used grade system by gradeId
    */
   getUsedGradingScaleByGradeId = (gradeId: string) => {
@@ -300,6 +303,7 @@ class WorkspaceEditor extends SessionStateComponent<
 
   /**
    * loadExistingBilledPrice
+   * @param assessmentIdentifier assessmentIdentifier
    * @returns exixting billed price object
    */
   loadExistingBilledPrice = async (
@@ -331,7 +335,7 @@ class WorkspaceEditor extends SessionStateComponent<
 
   /**
    * handleCKEditorChange
-   * @param e
+   * @param e e
    */
   handleCKEditorChange = (e: string) => {
     this.setStateAndStore({ literalEvaluation: e }, this.state.draftId);
@@ -339,7 +343,7 @@ class WorkspaceEditor extends SessionStateComponent<
 
   /**
    * handleSelectGradeChange
-   * @param e
+   * @param e e
    */
   handleSelectGradeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     this.setStateAndStore({ grade: e.target.value }, this.state.draftId);
@@ -347,7 +351,7 @@ class WorkspaceEditor extends SessionStateComponent<
 
   /**
    * handleSelectGradeChange
-   * @param e
+   * @param e e
    */
   handleSelectPriceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     this.setStateAndStore(
@@ -358,7 +362,7 @@ class WorkspaceEditor extends SessionStateComponent<
 
   /**
    * handleEvaluationSave
-   * @param e
+   * @param e e
    */
   handleEvaluationSave = (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
@@ -377,7 +381,7 @@ class WorkspaceEditor extends SessionStateComponent<
 
     const { evaluationAssessmentEvents } = evaluations;
     const { literalEvaluation, grade } = this.state;
-    let billingPrice = this.state.selectedPriceOption;
+    const billingPrice = this.state.selectedPriceOption;
 
     const usedGradeSystem = this.getUsedGradingScaleByGradeId(grade);
 
@@ -405,6 +409,9 @@ class WorkspaceEditor extends SessionStateComponent<
             verbalAssessment: literalEvaluation,
             assessmentDate: new Date().getTime().toString(),
           },
+          /**
+           * onSuccess
+           */
           onSuccess: () => {
             cleanWorkspaceAndSupplementationDrafts(this.state.draftId);
             this.setStateAndClear(
@@ -424,6 +431,9 @@ class WorkspaceEditor extends SessionStateComponent<
 
             onClose && onClose();
           },
+          /**
+           * onFail
+           */
           onFail: () => {
             this.setState({
               locked: false,
@@ -456,6 +466,9 @@ class WorkspaceEditor extends SessionStateComponent<
             verbalAssessment: literalEvaluation,
             assessmentDate: latestEvent.date,
           },
+          /**
+           * onSuccess
+           */
           onSuccess: () => {
             cleanWorkspaceAndSupplementationDrafts(this.state.draftId);
             this.setStateAndClear(
@@ -475,6 +488,9 @@ class WorkspaceEditor extends SessionStateComponent<
 
             onClose && onClose();
           },
+          /**
+           * onFail
+           */
           onFail: () => {
             this.setState({
               locked: false,
@@ -502,6 +518,9 @@ class WorkspaceEditor extends SessionStateComponent<
           verbalAssessment: literalEvaluation,
           assessmentDate: new Date().getTime().toString(),
         },
+        /**
+         * onSuccess
+         */
         onSuccess: () => {
           cleanWorkspaceAndSupplementationDrafts(this.state.draftId);
           this.setStateAndClear(
@@ -517,6 +536,9 @@ class WorkspaceEditor extends SessionStateComponent<
 
           onClose && onClose();
         },
+        /**
+         * onFail
+         */
         onFail: () => onClose(),
       });
     }
@@ -612,16 +634,13 @@ class WorkspaceEditor extends SessionStateComponent<
 
   /**
    * isGraded
-   * @param type
+   * @param type type
    * @returns boolean if graded
    */
-  isGraded = (type: EvaluationEnum) => {
-    return (
-      type === EvaluationEnum.EVALUATION_PASS ||
-      type === EvaluationEnum.EVALUATION_FAIL ||
-      type === EvaluationEnum.EVALUATION_IMPROVED
-    );
-  };
+  isGraded = (type: EvaluationEnum) =>
+    type === EvaluationEnum.EVALUATION_PASS ||
+    type === EvaluationEnum.EVALUATION_FAIL ||
+    type === EvaluationEnum.EVALUATION_IMPROVED;
 
   /**
    * hasGradedEvaluations
@@ -687,7 +706,7 @@ class WorkspaceEditor extends SessionStateComponent<
     /**
      * Default options
      */
-    let priceOptionsArray: EvaluationPriceObject[] = [];
+    const priceOptionsArray: EvaluationPriceObject[] = [];
 
     /**
      * Check if base price is loaded
@@ -767,13 +786,13 @@ class WorkspaceEditor extends SessionStateComponent<
    * @returns List of options
    */
   renderSelectOptions = (): JSX.Element[] | undefined => {
-    let parsedOptions = this.parsePriceOptions();
+    const parsedOptions = this.parsePriceOptions();
 
     if (parsedOptions === undefined) {
       return undefined;
     }
 
-    let options: JSX.Element[] = parsedOptions.map((item) => (
+    const options: JSX.Element[] = parsedOptions.map((item) => (
       <option key={item.value} value={item.value.toString()}>
         {item.name}
       </option>
@@ -795,25 +814,15 @@ class WorkspaceEditor extends SessionStateComponent<
       existingBilledPriceObject && !existingBilledPriceObject.editable;
 
     const renderGradingOptions =
-      this.props.evaluations.evaluationGradeSystem.map((gScale) => {
-        return (
-          <optgroup
-            key={`${gScale.dataSource}-${gScale.id}`}
-            label={gScale.name}
-          >
-            {gScale.grades.map((grade) => {
-              return (
-                <option
-                  key={grade.id}
-                  value={`${gScale.dataSource}-${grade.id}`}
-                >
-                  {grade.name}
-                </option>
-              );
-            })}
-          </optgroup>
-        );
-      });
+      this.props.evaluations.evaluationGradeSystem.map((gScale) => (
+        <optgroup key={`${gScale.dataSource}-${gScale.id}`} label={gScale.name}>
+          {gScale.grades.map((grade) => (
+            <option key={grade.id} value={`${gScale.dataSource}-${grade.id}`}>
+              {grade.name}
+            </option>
+          ))}
+        </optgroup>
+      ));
 
     return (
       <>
@@ -917,7 +926,7 @@ class WorkspaceEditor extends SessionStateComponent<
 
 /**
  * mapStateToProps
- * @param state
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -930,7 +939,7 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(

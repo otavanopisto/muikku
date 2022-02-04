@@ -7,25 +7,20 @@ $color-frontpage-label-forgot-password: $color-primary;
 $color-frontpage-text-muikku-description: $color-default;
 $color-frontpage-text-muikku-author: $color-default;
 $color-frontpage-text-muikku: $color-default;
-$color-frontpage-text-muikku-text-shadow: rgba(0, 0, 0, 0.3);
-
-$color-frontpage-text-author-text-shadow: rgba(0, 0, 0, 0.3);
-
+$color-frontpage-text-muikku-text-shadow: rgb(0 0 0 / 30%);
+$color-frontpage-text-author-text-shadow: rgb(0 0 0 / 30%);
 $color-frontpage-text-verkko: $color-default;
-$color-frontpage-text-verkko-text-shadow: rgba(0, 0, 0, 0.4);
+$color-frontpage-text-verkko-text-shadow: rgb(0 0 0 / 40%);
 $color-frontpage-text-title: $color-primary;
-
-$color-frontpage-text-description-text-shadow: rgba(0, 0, 0, 0.3);
+$color-frontpage-text-description-text-shadow: rgb(0 0 0 / 30%);
 
 // SRTUDYING
 $color-frontpage-card-upper-secondary-school-title: #5db5c5;
 $color-frontpage-button-upper-secondary-school-readmore-text: $color-default;
 $color-frontpage-button-upper-secondary-school-readmore-background: $color-frontpage-card-upper-secondary-school-title;
-
 $color-frontpage-card-secondary-school-title: #f58220;
 $color-frontpage-button-secondary-school-readmore-text: $color-default;
 $color-frontpage-button-secondary-school-readmore-background: $color-frontpage-card-secondary-school-title;
-
 $color-frontpage-card-open-materials-title: #c64986;
 $color-frontpage-button-open-materials-readmore-text: $color-default;
 $color-frontpage-button-open-materials-readmore-background: $color-frontpage-card-open-materials-title;
@@ -33,10 +28,8 @@ $color-frontpage-button-open-materials-readmore-background: $color-frontpage-car
 // Otavan opisto card
 $color-frontpage-text-organization-info-title: $color-inverse;
 $color-frontpage-text-organization-description: $color-inverse;
-
 $color-frontpage-button-website-text: $color-primary-contrast;
 $color-frontpage-button-website-background: $color-primary;
-
 $color-frontpage-button-newsletter-text: $color-warn-contrast;
 $color-frontpage-button-newsletter-background: $color-warn;
 

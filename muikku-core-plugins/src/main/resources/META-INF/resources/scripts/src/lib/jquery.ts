@@ -1,3 +1,3 @@
-let jQuery = (<any>window).jQuery;
+const jQuery = (<any>window).jQuery;
 
 export default jQuery;

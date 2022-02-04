@@ -3,17 +3,14 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
-// scss-lint:disable SelectorFormat, ImportantRule
+/* stylelint-disable selector-class-pattern, declaration-no-important */
 .cke_reset_all .cke_dialog * {
   @include text;
 }
 
 .cke_dialog {
-
-
   // CKE HIDPI overrides
   &.cke_hidpi * {
-
     .cke_dialog_close_button {
       background: none;
     }
@@ -24,7 +21,6 @@
   }
 
   &.cke_ltr {
-
     .cke_dialog_close_button {
       right: 5px;
     }
@@ -90,6 +86,7 @@
 
   .cke_dialog_close_button {
     @include prefix(transition, moz ms o webkit, background-color 0.3s);
+
     align-items: center;
     background: none;
     cursor: pointer;
@@ -97,7 +94,7 @@
     height: $dialog-button-close-height;
     justify-content: center;
     line-height: $dialog-button-close-height;
-    opacity: 1;
+    opacity: 100%;
     position: absolute;
     right: 5px;
     text-align: center;
@@ -215,7 +212,6 @@
   .organizer-categories-container,
   .selection-options-container,
   .textfield-elements-container {
-
     * {
       box-sizing: border-box;
     }
@@ -259,7 +255,7 @@
       border: solid 2px $color-form-element-border;
       outline: none;
       padding: 2px 6px;
-      }
+    }
   }
 
   div.cke_dialog_ui_input_select {
@@ -293,6 +289,7 @@
 
   input.cke_dialog_ui_input_text {
     @include text;
+
     border: solid 2px lighten($color-form-element-border, 20%);
     border-radius: 2px;
     flex-basis: auto;
@@ -321,8 +318,6 @@
 
   input.cke_dialog_ui_checkbox_input {
     align-items: center;
-    -moz-appearance: none;
-    -webkit-appearance: none;
     appearance: none;
     border: solid 2px lighten($color-form-element-border, 20%);
     border-radius: 3px;
@@ -353,7 +348,7 @@
     &:checked::after {
       color: $color-default;
       content: "\e639";
-      font-family: muikku;
+      font-family: "muikku";
       font-size: 0.875rem;
     }
   }
@@ -553,6 +548,7 @@
 
     a.cke_dialog_ui_button_cancel {
       @include text;
+
       background-color: $color-button-cancel-background;
       color: $color-button-cancel-text;
     }
@@ -565,6 +561,7 @@
     span.cke_dialog_ui_button {
       @include prefix(user-select, moz o ms webkit, none);
       @include prefix(transition, moz o ms webkit, background-color 0.3s);
+
       align-items: center;
       background-color: transparent;
       border: 0;
@@ -599,4 +596,5 @@
     margin: 0;
   }
 }
-// scss-lint:enable SelectorFormat, ImportantRule
+
+/* stylelint-ebable selector-class-pattern, declaration-no-important */

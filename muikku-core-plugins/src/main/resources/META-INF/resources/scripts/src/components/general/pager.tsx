@@ -1,13 +1,16 @@
 import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 
 import "~/sass/elements/pager.scss";
 import "~/sass/elements/wcag.scss";
 
 const PAGER_MAX_PAGES = 10;
 
+/**
+ * PagerProps
+ */
 interface PagerProps {
   onClick: (id: number) => any;
   current: number;
@@ -17,12 +20,22 @@ interface PagerProps {
   identifier?: string;
 }
 
+/**
+ * PagerState
+ */
 interface PagerState {}
 
+/**
+ * Pager
+ */
 class Pager extends React.Component<PagerProps, PagerState> {
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
-    let left = Math.floor((PAGER_MAX_PAGES - 1) / 2);
-    let right = Math.ceil((PAGER_MAX_PAGES - 1) / 2);
+    const left = Math.floor((PAGER_MAX_PAGES - 1) / 2);
+    const right = Math.ceil((PAGER_MAX_PAGES - 1) / 2);
 
     let leftPage = this.props.current - left;
     let rightPage = this.props.current + right;
@@ -41,8 +54,8 @@ class Pager extends React.Component<PagerProps, PagerState> {
       leftPage = 1;
     }
 
-    let isPagerLessVisible = leftPage !== 1;
-    let isPagerMoreVisible = rightPage !== this.props.pages;
+    const isPagerLessVisible = leftPage !== 1;
+    const isPagerMoreVisible = rightPage !== this.props.pages;
 
     let pagerLessNumber = this.props.current - PAGER_MAX_PAGES;
     if (pagerLessNumber < 1) {
@@ -65,6 +78,7 @@ class Pager extends React.Component<PagerProps, PagerState> {
           {isPagerLessVisible
             ? [
                 <div
+                  key="prev-label"
                   tabIndex={0}
                   className="pager__item pager__item--less icon-arrow-left"
                   onClick={this.props.onClick.bind(null, pagerLessNumber)}
@@ -73,6 +87,7 @@ class Pager extends React.Component<PagerProps, PagerState> {
                   )}
                 />,
                 <div
+                  key="go-to-label"
                   tabIndex={0}
                   className="pager__item pager__item--first"
                   onClick={this.props.onClick.bind(null, 1)}
@@ -82,7 +97,11 @@ class Pager extends React.Component<PagerProps, PagerState> {
                 >
                   1
                 </div>,
-                <div role="none" className="pager__item pager__item--gap">
+                <div
+                  key="gap-left"
+                  role="none"
+                  className="pager__item pager__item--gap"
+                >
                   ...
                 </div>,
               ]
@@ -90,37 +109,34 @@ class Pager extends React.Component<PagerProps, PagerState> {
           {Array.from(
             new Array(rightPage - leftPage + 1),
             (x, i) => leftPage + i
-          ).map((page) => {
-            return (
-              <div
-                tabIndex={0}
-                key={
-                  this.props.identifier ? this.props.identifier + page : page
-                }
-                className={`pager__item ${
-                  page === this.props.current ? "pager__item--current" : ""
-                }`}
-                onClick={this.props.onClick.bind(null, page)}
-                arial-label={
-                  page === this.props.current
-                    ? this.props.i18n.text.get(
-                        "plugin.wcag.pager.current.label"
-                      )
-                    : this.props.i18n.text.get(
-                        "plugin.wcag.pager.goToPage.label"
-                      )
-                }
-              >
-                {page}
-              </div>
-            );
-          })}
+          ).map((page) => (
+            <div
+              tabIndex={0}
+              key={this.props.identifier ? this.props.identifier + page : page}
+              className={`pager__item ${
+                page === this.props.current ? "pager__item--current" : ""
+              }`}
+              onClick={this.props.onClick.bind(null, page)}
+              arial-label={
+                page === this.props.current
+                  ? this.props.i18n.text.get("plugin.wcag.pager.current.label")
+                  : this.props.i18n.text.get("plugin.wcag.pager.goToPage.label")
+              }
+            >
+              {page}
+            </div>
+          ))}
           {isPagerMoreVisible
             ? [
-                <div role="none" className="pager__item pager__item--gap">
+                <div
+                  key="gap-right"
+                  role="none"
+                  className="pager__item pager__item--gap"
+                >
                   ...
                 </div>,
                 <div
+                  key="go-to-label"
                   tabIndex={0}
                   className="pager__item pager__item--last"
                   onClick={this.props.onClick.bind(null, this.props.pages)}
@@ -131,6 +147,7 @@ class Pager extends React.Component<PagerProps, PagerState> {
                   {this.props.pages}
                 </div>,
                 <div
+                  key="next-label"
                   tabIndex={0}
                   className="pager__item pager__item--more icon-arrow-right"
                   onClick={this.props.onClick.bind(null, pagerMoreNumber)}
@@ -146,13 +163,22 @@ class Pager extends React.Component<PagerProps, PagerState> {
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ * @returns object
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
   };
 }
 
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+/**
+ * mapDispatchToProps
+ * @returns object
+ */
+function mapDispatchToProps() {
   return {};
 }
 

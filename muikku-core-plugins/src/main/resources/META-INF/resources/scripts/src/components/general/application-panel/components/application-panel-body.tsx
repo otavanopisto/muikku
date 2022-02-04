@@ -1,24 +1,44 @@
 import * as React from "react";
 
+/**
+ * ApplicationPanelBodyProps
+ */
 interface ApplicationPanelBodyProps {
   modifier?: string;
   primaryOption?: React.ReactElement<any> | Array<React.ReactElement<any>>;
-  primaryOptionMobile?: React.ReactElement<any> | Array<React.ReactElement<any>>;
+  primaryOptionMobile?:
+    | React.ReactElement<any>
+    | Array<React.ReactElement<any>>;
   toolbar?: React.ReactElement<any>;
   asideBefore?: React.ReactElement<any>;
   asideAfter?: React.ReactElement<any>;
   children?: React.ReactElement<any> | Array<React.ReactElement<any>>;
 }
 
-interface ApplicationPanelBodyState { }
+/**
+ * ApplicationPanelBodyState
+ */
+interface ApplicationPanelBodyState {}
 
+/**
+ * ApplicationPanelBody
+ */
 export default class ApplicationPanelBody extends React.Component<
   ApplicationPanelBodyProps,
   ApplicationPanelBodyState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: ApplicationPanelBodyProps) {
     super(props);
   }
+
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     const {
       modifier,
@@ -31,40 +51,49 @@ export default class ApplicationPanelBody extends React.Component<
     } = this.props;
 
     return (
-
-      <div className={`application-panel__body ${
+      <div
+        className={`application-panel__body ${
           modifier ? "application-panel__body--" + modifier : ""
-        }`}>
-        <div className={`application-panel__actions ${
+        }`}
+      >
+        <div
+          className={`application-panel__actions ${
             modifier ? "application-panel__actions--" + modifier : ""
-          }`}>
+          }`}
+        >
           {primaryOption ? (
             <div
-              className={`application-panel__helper-container application-panel__helper-container--main-action ${modifier
-                ? "application-panel__helper-container--" + modifier
-                : ""
-                }`}>
+              className={`application-panel__helper-container application-panel__helper-container--main-action ${
+                modifier
+                  ? "application-panel__helper-container--" + modifier
+                  : ""
+              }`}
+            >
               {primaryOption}
             </div>
           ) : null}
           {toolbar ? (
-            <div className={`application-panel__main-container application-panel__main-container--actions ${
+            <div
+              className={`application-panel__main-container application-panel__main-container--actions ${
                 modifier ? "application-panel__main-container--" + modifier : ""
-              }`}>
+              }`}
+            >
               {toolbar}
             </div>
           ) : null}
         </div>
-        <div className={`application-panel__content ${
-          modifier ? "application-panel__content--" + modifier : ""
-        }`}
+        <div
+          className={`application-panel__content ${
+            modifier ? "application-panel__content--" + modifier : ""
+          }`}
         >
           {asideBefore ? (
             <div
-              className={`application-panel__helper-container ${modifier
-                ? "application-panel__helper-container--" + modifier
-                : ""
-                }`}
+              className={`application-panel__helper-container ${
+                modifier
+                  ? "application-panel__helper-container--" + modifier
+                  : ""
+              }`}
             >
               {asideBefore}
             </div>
@@ -73,9 +102,13 @@ export default class ApplicationPanelBody extends React.Component<
             {children}
           </div>
           {asideAfter ? (
-            <div className={`application-panel__helper-container ${
-              modifier ? "application-panel__helper-container--" + modifier : ""
-            }`}>
+            <div
+              className={`application-panel__helper-container ${
+                modifier
+                  ? "application-panel__helper-container--" + modifier
+                  : ""
+              }`}
+            >
               {asideAfter}
             </div>
           ) : null}

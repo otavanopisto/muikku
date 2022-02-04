@@ -2,7 +2,6 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import * as queryString from "query-string";
-import User from "~/components/general/user";
 import { i18nType } from "~/reducers/base/i18n";
 
 import "~/sass/elements/empty.scss";
@@ -35,6 +34,9 @@ import ApplicationList, {
   ApplicationListItem,
 } from "~/components/general/application-list";
 
+/**
+ * GuiderStudentsProps
+ */
 interface GuiderStudentsProps {
   i18n: i18nType;
   guiderStudentsState: GuiderStudentsStateType;
@@ -46,12 +48,22 @@ interface GuiderStudentsProps {
   removeFromGuiderSelectedStudents: RemoveFromGuiderSelectedStudentsTriggerType;
 }
 
+/**
+ * GuiderStudentsState
+ */
 interface GuiderStudentsState {}
 
+/**
+ * GuiderStudents
+ */
 class GuiderStudents extends BodyScrollLoader<
   GuiderStudentsProps,
   GuiderStudentsState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: GuiderStudentsProps) {
     super(props);
 
@@ -67,8 +79,12 @@ class GuiderStudents extends BodyScrollLoader<
     this.onStudentClick = this.onStudentClick.bind(this);
   }
 
+  /**
+   * onStudentClick
+   * @param student student
+   */
   onStudentClick(student: GuiderStudentType) {
-    let locationData = queryString.parse(
+    const locationData = queryString.parse(
       document.location.hash.split("?")[1] || "",
       { arrayFormat: "bracket" }
     );
@@ -77,6 +93,9 @@ class GuiderStudents extends BodyScrollLoader<
       "#?" + queryString.stringify(locationData, { arrayFormat: "bracket" });
   }
 
+  /**
+   * render
+   */
   render() {
     if (this.props.guiderStudentsState === "LOADING") {
       return null;
@@ -113,7 +132,7 @@ class GuiderStudents extends BodyScrollLoader<
         >
           {this.props.guider.students.map(
             (student: GuiderStudentType, index: number) => {
-              let isSelected = this.props.guider.selectedStudentsIds.includes(
+              const isSelected = this.props.guider.selectedStudentsIds.includes(
                 student.id
               );
               return {
@@ -132,15 +151,17 @@ class GuiderStudents extends BodyScrollLoader<
                 key: student.id,
                 checkboxId: `user-select-${index}`,
                 checkboxClassName: "user__selector",
-                contents: (checkbox: React.ReactElement<any>) => {
-                  return (
-                    <Student
-                      index={index}
-                      checkbox={checkbox}
-                      student={student}
-                    />
-                  );
-                },
+                /**
+                 * contents
+                 * @param checkbox checkbox
+                 */
+                contents: (checkbox: React.ReactElement<any>) => (
+                  <Student
+                    index={index}
+                    checkbox={checkbox}
+                    student={student}
+                  />
+                ),
               };
             }
           )}
@@ -150,6 +171,10 @@ class GuiderStudents extends BodyScrollLoader<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -160,6 +185,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     {

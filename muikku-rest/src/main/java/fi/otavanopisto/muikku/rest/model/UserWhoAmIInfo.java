@@ -14,9 +14,11 @@ public class UserWhoAmIInfo extends UserBasicInfo {
               String lastName,
               String nickName, 
               String studyProgrammeName,
+              String studyProgrammeIdentifier,
               boolean hasImage, 
               boolean hasEvaluationFees,
               String curriculumIdentifier,
+              String curriculumName,
               String organizationIdentifier,
               boolean isDefaultOrganization,
               boolean isActive,
@@ -33,8 +35,10 @@ public class UserWhoAmIInfo extends UserBasicInfo {
               ) {
     super(id, identifier, firstName, lastName, nickName, hasImage);
     this.studyProgrammeName = studyProgrammeName;
+    this.studyProgrammeIdentifier = studyProgrammeIdentifier;
     this.hasEvaluationFees = hasEvaluationFees;
     this.curriculumIdentifier = curriculumIdentifier;
+    this.curriculumName = curriculumName;
     this.organizationIdentifier = organizationIdentifier;
     this.isDefaultOrganization = isDefaultOrganization;
     this.isActive = isActive;
@@ -57,6 +61,14 @@ public class UserWhoAmIInfo extends UserBasicInfo {
   public void setStudyProgrammeName(String studyProgrammeName) {
     this.studyProgrammeName = studyProgrammeName;
   }
+  
+  public String getStudyProgrammeIdentifier() {
+    return studyProgrammeIdentifier;
+  }
+  
+  public void setStudyProgrammeIdentifier(String studyProgrammeIdentifier) {
+    this.studyProgrammeIdentifier = studyProgrammeIdentifier;
+  }
 
   public boolean getHasEvaluationFees() {
     return this.hasEvaluationFees;
@@ -74,6 +86,14 @@ public class UserWhoAmIInfo extends UserBasicInfo {
     this.curriculumIdentifier = curriculumIdentifier;
   }
 
+  public String getCurriculumName() {
+    return curriculumName;
+  }
+
+  public void setCurriculumName(String curriculumName) {
+    this.curriculumName = curriculumName;
+  }
+  
   public String getOrganizationIdentifier() {
     return organizationIdentifier;
   }
@@ -179,8 +199,10 @@ public class UserWhoAmIInfo extends UserBasicInfo {
   }
 
   private String studyProgrammeName;
+  private String studyProgrammeIdentifier;
   private boolean hasEvaluationFees;
   private String curriculumIdentifier;
+  private String curriculumName;
   private String organizationIdentifier;
   private boolean isDefaultOrganization;
   private Set<String> permissions;

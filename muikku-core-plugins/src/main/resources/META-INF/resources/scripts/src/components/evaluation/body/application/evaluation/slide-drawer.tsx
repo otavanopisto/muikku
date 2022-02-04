@@ -1,12 +1,15 @@
 import * as React from "react";
 import WarningDialog from "../../../dialogs/close-warning";
+import { IconButton } from "../../../../general/button";
 
 /**
  * SlideDrawerProps
  */
 export interface SlideDrawerProps {
   title: string;
+  disableClose?: boolean;
   showWarning?: boolean;
+  closeIconModifiers?: string[];
   modifiers?: string[];
   show?: boolean;
   onClose?: () => void;
@@ -15,18 +18,28 @@ export interface SlideDrawerProps {
 
 const defaultProps = {
   showWarning: false,
+  disableCloseButtons: false,
 };
 
 /**
  * SlideDrawer
- * @param param0
- * @returns
+ * @param props props
+ * @returns JSX.Element
  */
 const SlideDrawer: React.FC<SlideDrawerProps> = (props) => {
   props = { ...defaultProps, ...props };
 
-  const { show, children, title, onClose, onOpen, modifiers, showWarning } =
-    props;
+  const {
+    show,
+    children,
+    title,
+    onClose,
+    onOpen,
+    closeIconModifiers,
+    modifiers,
+    showWarning,
+    disableClose,
+  } = props;
 
   let drawerClasses = "evaluation-modal__evaluate-drawer";
 
@@ -39,7 +52,15 @@ const SlideDrawer: React.FC<SlideDrawerProps> = (props) => {
   }
 
   return (
-    <section className={drawerClasses}>
+    <section
+      className={`${drawerClasses} ${
+        modifiers
+          ? modifiers
+              .map((m) => `evaluation-modal__evaluate-drawer--${m}`)
+              .join(" ")
+          : ""
+      }`}
+    >
       <header
         className={`evaluation-modal__evaluate-drawer-header ${
           modifiers
@@ -54,13 +75,20 @@ const SlideDrawer: React.FC<SlideDrawerProps> = (props) => {
         </div>
         {showWarning ? (
           <WarningDialog onContinueClick={onClose}>
-            <div className="evaluation-modal__evaluate-drawer-close icon-arrow-right"></div>
+            <IconButton
+              onClick={onClose}
+              disabled={disableClose}
+              buttonModifiers={closeIconModifiers}
+              icon="arrow-right"
+            ></IconButton>
           </WarningDialog>
         ) : (
-          <div
+          <IconButton
             onClick={onClose}
-            className="evaluation-modal__evaluate-drawer-close icon-arrow-right"
-          ></div>
+            disabled={disableClose}
+            buttonModifiers={closeIconModifiers}
+            icon="arrow-right"
+          ></IconButton>
         )}
       </header>
       <div className="evaluation-modal__evaluate-drawer-content evaluation-modal__evaluate-drawer-content--workspace">

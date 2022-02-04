@@ -1,30 +1,54 @@
-import * as React from 'react';
-import {connect, Dispatch} from 'react-redux';
-import {bindActionCreators} from 'redux';
-import '~/sass/elements/empty.scss';
-import '~/sass/elements/loaders.scss';
-import '~/sass/elements/message.scss';
-import BodyScrollLoader from '~/components/general/body-scroll-loader';
-import {i18nType} from '~/reducers/base/i18n';
-import Course from './courses/course';
-import {StateType} from '~/reducers';
-import ApplicationList, { ApplicationListItem } from '~/components/general/application-list';
-import { loadMoreWorkspacesFromServer, LoadMoreWorkspacesFromServerTriggerType } from '~/actions/workspaces';
-import { WorkspacesStateType, WorkspaceListType, WorkspaceType } from '~/reducers/workspaces';
+import * as React from "react";
+import { connect, Dispatch } from "react-redux";
+import { bindActionCreators } from "redux";
+import "~/sass/elements/empty.scss";
+import "~/sass/elements/loaders.scss";
+import "~/sass/elements/message.scss";
+import BodyScrollLoader from "~/components/general/body-scroll-loader";
+import { i18nType } from "~/reducers/base/i18n";
+import Course from "./courses/course";
+import { StateType } from "~/reducers";
+import ApplicationList, {
+  ApplicationListItem,
+} from "~/components/general/application-list";
+import {
+  loadMoreWorkspacesFromServer,
+  LoadMoreWorkspacesFromServerTriggerType,
+} from "~/actions/workspaces";
+import {
+  WorkspacesStateType,
+  WorkspaceListType,
+  WorkspaceType,
+} from "~/reducers/workspaces";
 
+/**
+ * CoursepickerWorkspacesProps
+ */
 interface CoursepickerWorkspacesProps {
-  i18n: i18nType,
-  workspacesState: WorkspacesStateType,
-  workspacesHasMore: boolean,
-  loadMoreWorkspacesFromServer: LoadMoreWorkspacesFromServerTriggerType,
-  workspaces: WorkspaceListType
+  i18n: i18nType;
+  workspacesState: WorkspacesStateType;
+  workspacesHasMore: boolean;
+  loadMoreWorkspacesFromServer: LoadMoreWorkspacesFromServerTriggerType;
+  workspaces: WorkspaceListType;
 }
 
-interface CoursepickerWorkspacesState {
-}
+/**
+ * CoursepickerWorkspacesState
+ */
+interface CoursepickerWorkspacesState {}
 
-class CoursepickerWorkspaces extends BodyScrollLoader<CoursepickerWorkspacesProps, CoursepickerWorkspacesState> {
-  constructor(props: CoursepickerWorkspacesProps){
+/**
+ * CoursepickerWorkspaces
+ */
+class CoursepickerWorkspaces extends BodyScrollLoader<
+  CoursepickerWorkspacesProps,
+  CoursepickerWorkspacesState
+> {
+  /**
+   * constructor
+   * @param props props
+   */
+  constructor(props: CoursepickerWorkspacesProps) {
     super(props);
 
     //once this is in state READY only then a loading more event can be triggered
@@ -35,38 +59,63 @@ class CoursepickerWorkspaces extends BodyScrollLoader<CoursepickerWorkspacesProp
     this.loadMoreTriggerFunctionLocation = "loadMoreWorkspacesFromServer";
   }
 
-  render(){
-    if (this.props.workspacesState === "LOADING"){
+  /**
+   * render
+   */
+  render() {
+    if (this.props.workspacesState === "LOADING") {
       return null;
-    } else if (this.props.workspacesState === "ERROR"){
+    } else if (this.props.workspacesState === "ERROR") {
       //TODO ERRORMSG: put a translation here please! this happens when messages fail to load, a notification shows with the error
       //message but here we got to put something
-      return <div className="empty"><span>{"ERROR"}</span></div>
-    } else if (this.props.workspaces.length === 0){
-      return <div className="empty"><span>{this.props.i18n.text.get("plugin.coursepicker.searchResult.empty")}</span></div>
+      return (
+        <div className="empty">
+          <span>{"ERROR"}</span>
+        </div>
+      );
+    } else if (this.props.workspaces.length === 0) {
+      return (
+        <div className="empty">
+          <span>
+            {this.props.i18n.text.get("plugin.coursepicker.searchResult.empty")}
+          </span>
+        </div>
+      );
     }
 
-    return (<ApplicationList>
-      {this.props.workspaces.map((workspace: WorkspaceType)=>{
-        return <Course key={workspace.id} workspace={workspace}/>
-      })}
-      {this.props.workspacesState === "LOADING_MORE" ? <ApplicationListItem className="loader-empty"/> : null}
-    </ApplicationList>);
+    return (
+      <ApplicationList>
+        {this.props.workspaces.map((workspace: WorkspaceType) => (
+          <Course key={workspace.id} workspace={workspace} />
+        ))}
+        {this.props.workspacesState === "LOADING_MORE" ? (
+          <ApplicationListItem className="loader-empty" />
+        ) : null}
+      </ApplicationList>
+    );
   }
 }
 
-function mapStateToProps(state: StateType){
+/**
+ * mapStateToProps
+ * @param state state
+ */
+function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     workspacesState: state.workspaces.state,
     workspacesHasMore: state.workspaces.hasMore,
-    workspaces: state.workspaces.availableWorkspaces
-  }
-};
+    workspaces: state.workspaces.availableWorkspaces,
+  };
+}
 
-function mapDispatchToProps(dispatch: Dispatch<any>){
-  return bindActionCreators({loadMoreWorkspacesFromServer}, dispatch);
-};
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
+function mapDispatchToProps(dispatch: Dispatch<any>) {
+  return bindActionCreators({ loadMoreWorkspacesFromServer }, dispatch);
+}
 
 export default connect(
   mapStateToProps,
