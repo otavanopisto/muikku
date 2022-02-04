@@ -5,12 +5,13 @@
 
 .drawer {
   @include prefix(transition, moz webkit ms o, opacity 0.3s);
+
   background-color: $color-overlay-background;
   bottom: 0;
   display: none;
   font-family: $menu-font;
   left: 0;
-  opacity: 0;
+  opacity: 0%;
   position: fixed;
   right: 0;
   top: 0;
@@ -22,7 +23,7 @@
   }
 
   &.state-VISIBLE {
-    opacity: 1;
+    opacity: 100%;
 
     >.drawer__container {
       left: 0;
@@ -36,6 +37,7 @@
       transition: none;
     }
   }
+
   // scss-lint:enable SelectorFormat
 
   // When main function aside menu is cloned to the mobile menu drawer we change the rendering
@@ -54,21 +56,18 @@
 }
 
 .drawer--main-function {
-
   .drawer__header {
     background-color: $color-environment-menu-header-background;
   }
 }
 
 .drawer--workspace {
-
   .drawer__header {
     background-color: $color-workspace-menu-header-background;
   }
 }
 
 .drawer--workspace-edit-mode {
-
   .drawer__header {
     background-color: $color-workspace-edit-mode-navbar-background;
   }
@@ -100,6 +99,7 @@
 
 .drawer__container {
   @include prefix(transition, webkit moz o ms, left 0.3s);
+
   align-items: center;
   background-color: $color-menu-default-background;
   bottom: 0;
@@ -120,6 +120,7 @@
 
 .drawer__button-close {
   @include prefix(transition, webkit ms o moz, background-color 0.2s ease-in-out);
+
   cursor: pointer;
   font-size: 24px;
   font-weight: 600;

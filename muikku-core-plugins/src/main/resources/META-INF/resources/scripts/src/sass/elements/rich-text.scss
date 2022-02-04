@@ -2,18 +2,19 @@
 @import "../base/mixins";
 @import "../base/vars";
 @import "../base/breakpoints";
-
-@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,600&subset=cyrillic');
+@import url("https://fonts.googleapis.com/css?family=Open+Sans:300,400,600&subset=cyrillic");
 
 // This file sets styling for every rich text editors content so they are rendered always the same way regardless where they are created.
-// scss-lint:disable SelectorFormat
+
+/* stylelint-disable selector-class-pattern */
 .rich-text,
 .cke_editable {
   color: $color-text-default;
-  font-family: "Open Sans", Arial, sans-serif;
+  font-family: "Open Sans", "Arial", sans-serif;
   font-size: $text-mobile-font-size;
   font-weight: 400;
   line-height: 1.25rem;
+  /* stylelint-enable selector-class-pattern */
 
   // This will prevent ckeditor to screw up toolbar (and other elements) rendering becouse of previous rule
   .cke * {
@@ -35,14 +36,13 @@
     display: block;
   }
 
-  // scss-lint:enable SelectorFormat
-
   // This will adjust the editor's context area so it will resembel material page more closely
-  // scss-lint:disable SelectorFormat
+
+  /* stylelint-disable selector-class-pattern */
   &.cke_wysiwyg_div {
     padding: 5px 20px;
   }
-  // scss-lint:enable SelectorFormat
+  /* stylelint-enable selector-class-pattern */
 
   p {
     margin: 10px 0;

@@ -16,7 +16,6 @@
 }
 
 .menu--communicator-settings {
-
   @include breakpoint($breakpoint-pad) {
     display: none;
   }
@@ -88,7 +87,6 @@
 // Icon color change for guider
 .menu__item-link--aside-navigation-guider-course,
 .menu__item-link--aside-navigation-guider-user-group {
-
   .menu__item-link-icon {
     color: $color-workspace;
   }
@@ -134,7 +132,6 @@
 }
 
 .menu__item-link--instructions {
-
   &.active {
     background-color: $color-environment-link-menu-instructions-icon-background;
     color: $color-environment-link-menu-instructions-icon-color;
@@ -147,7 +144,6 @@
 }
 
 .menu__item-link--helpdesk {
-
   &.active {
     background: $color-environment-link-menu-heldesk-icon-background;
     color: $color-environment-link-menu-helpdesk-icon-color;
@@ -160,7 +156,6 @@
 }
 
 .menu__item-link--logout {
-
   &.active {
     background: $color-environment-link-menu-logout-icon-background;
     color: $color-environment-link-menu-logout-icon-color;

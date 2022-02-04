@@ -81,6 +81,7 @@
       color: $color-tertiary;
     }
   }
+
   // scss-lint:enable SelectorFormat
 }
 
@@ -203,8 +204,6 @@
 
 .matriculation__input[type="checkbox"] {
   align-items: center;
-  -moz-appearance: none;
-  -webkit-appearance: none;
   appearance: none;
   border: solid 2px $color-matriculation-dialog-form-element-border;
   border-radius: 3px;
@@ -222,7 +221,7 @@
 .matriculation__input[type="checkbox"]:checked::after {
   color: $color-default;
   content: "\e639";
-  font-family: muikku;
+  font-family: "muikku";
   font-size: 0.875rem;
 }
 
@@ -272,11 +271,12 @@
 }
 
 .matriculation-container__row--input-groups--conflicted {
-  background-image: linear-gradient(
-    to right,
-    lighten($color-error, 20%),
-    $color-default
-  );
+  background-image:
+    linear-gradient(
+      to right,
+      lighten($color-error, 20%),
+      $color-default
+    );
   margin-bottom: 5px;
 }
 
@@ -380,17 +380,17 @@
 }
 
 .matriculation__saving-draft--fade-in {
-  opacity: 1;
+  opacity: 100%;
   transition: opacity 500ms linear;
 }
 
 .matriculation__saving-draft--fade-out {
-  opacity: 0;
+  opacity: 0%;
   transition: opacity 500ms linear;
 }
 
 .matriculation__hightlighted {
-  font-weight: bold;
+  font-weight: 600;
 }
 
 // Animations
@@ -398,14 +398,14 @@
 // blink
 @keyframes blink {
   0% {
-    opacity: 0.2;
+    opacity: 20%;
   }
 
   20% {
-    opacity: 1;
+    opacity: 100%;
   }
 
   100% {
-    opacity: 0.2;
+    opacity: 20%;
   }
 }

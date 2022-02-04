@@ -6,6 +6,7 @@
 .button {
   @include prefix(user-select, moz o ms webkit, none);
   @include prefix(transition, moz o ms webkit, background-color 0.3s);
+
   align-items: center;
   background-color: $color-button-default-background;
   border-radius: 20px;
@@ -628,6 +629,7 @@
 .button-icon {
   @include prefix(user-select, moz o ms webkit, none);
   @include prefix(transition, moz o ms webkit, background-color 0.3s);
+
   align-items: center;
   background-color: transparent;
   color: $color-icon-button-text;
@@ -663,7 +665,7 @@
 
   input {
     height: 100%;
-    opacity: 0;
+    opacity: 0%;
     position: absolute;
     width: 100%;
   }
@@ -690,6 +692,7 @@
 .button-pill {
   @include prefix(user-select, moz o ms webkit, none);
   @include prefix(transition, moz o ms webkit, background-color 0.3s);
+
   align-items: center;
   background-color: $color-button-pill-background;
   border-radius: 100%;
@@ -727,7 +730,7 @@
   input {
     cursor: pointer;
     height: 100%;
-    opacity: 0;
+    opacity: 0%;
     position: absolute;
     width: 100%;
   }
@@ -1314,12 +1317,13 @@
     background-color 0.3s
   );
   @include prefix(user-select, moz ms o webkit, none);
+
   background-color: $color-button-social-default-background;
   border-radius: $button-social-size;
   color: $color-button-social-default-text;
   cursor: pointer;
   display: inline-block;
-  font-family: muikku;
+  font-family: "muikku";
   font-variant: normal;
   height: $button-social-size;
   line-height: $button-social-size;
@@ -1352,6 +1356,7 @@
 .button--change-image-edit,
 .button--change-image-delete {
   @include workspace-image-button;
+
   flex-grow: 1;
   transition: background-color 0.3s ease-in-out;
 
@@ -1505,6 +1510,7 @@
 // Material master management related
 .button-pill--material-management-master {
   @include prefix(transition, moz o ms webkit, all 0.15s);
+
   background: transparent;
   border-radius: 15px;
   color: $color-material-page-admin-panel-main-color;
@@ -1525,6 +1531,7 @@
 .button-pill--material-management-page,
 .button-pill--material-management-chapter {
   @include prefix(transition, moz o ms webkit, all 0.15s);
+
   background: $color-default;
   border: 0;
   border-radius: 10px;
@@ -1573,6 +1580,7 @@
 
 .button-pill--material-editor {
   @include prefix(transition, moz o ms webkit, all 0.15s);
+
   background: $color-material-page-admin-panel-main-color;
   border: 1px solid $color-material-page-admin-panel-main-color;
   border-radius: 10px;
@@ -1717,8 +1725,6 @@
 
 .button-pill--editing-master-switch {
   align-items: center;
-  -moz-appearance: none;
-  -webkit-appearance: none;
   appearance: none;
   background: $color-default;
   border: 2px solid $color-default;

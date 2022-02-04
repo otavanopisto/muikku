@@ -49,16 +49,6 @@ dd {
   margin: 0 0 5px;
 }
 
-// Webkit (Chrome, Opera, Safari)
-::-webkit-input-placeholder {
-  font-style: italic;
-}
-
-// > IE10
-:-ms-input-placeholder {
-  font-style: italic;
-}
-
 // Standard
 ::placeholder {
   font-style: italic;
