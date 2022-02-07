@@ -625,12 +625,12 @@ class SummaryNew extends React.Component<SummaryProps, SummaryState> {
       return null;
     }
 
-    return this.renderNewSummary();
+    /* return this.renderNewSummary(); */
 
-    /* return this.props.summary.data.studentsDetails.studyProgrammeName ===
+    return this.props.summary.data.studentsDetails.studyProgrammeName ===
       "Nettiperuskoulu"
       ? this.renderNewSummary()
-      : this.renderOldSummary(); */
+      : this.renderOldSummary();
   }
 }
 

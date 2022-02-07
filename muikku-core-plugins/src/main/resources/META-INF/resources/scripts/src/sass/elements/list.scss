@@ -23,8 +23,8 @@
 }
 
 .list-container--course {
-  margin-bottom: 10px;
   box-shadow: 3px 3px 3px grey;
+  margin-bottom: 10px;
 
   @include breakpoint($breakpoint-mobile-xl) {
     margin: 5px;
@@ -37,44 +37,44 @@
 }
 
 .list-subject-name {
-  position: relative;
+  align-items: center;
+  background-color: aliceblue;
+  border-radius: unset;
+  cursor: pointer;
+  display: flex;
+  font-weight: bold;
+  justify-content: space-between;
   overflow: hidden;
   padding: 10px 5px 10px 5px;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  white-space: nowrap;
+  position: relative;
   text-overflow: ellipsis;
-  border-radius: unset;
-  background-color: aliceblue;
-  font-weight: bold;
-  cursor: pointer;
-  justify-content: space-between;
+  white-space: nowrap;
+  width: 100%;
 }
 
 .list-subject-name-proggress {
-  content: "\A";
-  position: absolute;
   background-color: green;
   bottom: 0;
-  left: 0;
-  width: 0;
+  content: "\A";
   height: 5px;
+  left: 0;
+  position: absolute;
   transition: all 2s;
+  width: 0;
 }
 
 .list-item {
-  position: relative;
+  border-radius: 5px;
   overflow: hidden;
   padding: 10px 5px 10px 5px;
+  position: relative;
   width: 100%;
-  border-radius: 5px;
 }
 
 .list-item--course {
   background-color: #fbfbfb;
-  margin: 5px 0;
   border-radius: 0;
+  margin: 5px 0;
 }
 
 .list-item--course:nth-child(even) {
@@ -82,13 +82,13 @@
 }
 
 .list-item--subject {
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  border-radius: unset;
   background-color: aliceblue;
-  font-weight: bold;
+  border-radius: unset;
   cursor: pointer;
+  font-weight: bold;
   justify-content: space-between;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .list-item--SUGGESTED {
@@ -124,29 +124,29 @@
 }
 
 .list-item:after {
+  background: pink;
   content: "";
   display: block;
   height: 15px;
-  width: 15px;
-  background: pink;
   position: absolute;
+  right: -22px;
   top: 0;
   transform: skewX(45deg);
-  right: -22px;
   transition: right 0.3s ease-in;
+  width: 15px;
 }
 
 .list-item--NEXT:after {
+  background: pink;
   content: "";
   display: block;
   height: 15px;
-  width: 15px;
-  background: pink;
   position: absolute;
+  right: -7px;
   top: 0;
   transform: skewX(45deg);
-  right: -7px;
   transition: right 0.3s ease-in;
+  width: 15px;
 }
 
 .list-item--empty {
@@ -158,8 +158,8 @@
 }
 
 .list-item-arrow {
-  border: solid black;
   border-width: 0 3px 3px 0;
+  border: solid black;
   display: inline-block;
   padding: 3px;
   position: relative;
@@ -168,12 +168,12 @@
 }
 
 .arrow-right {
-  transform: rotate(-45deg);
+  transform: rotate(0);
   transition: transform 0.3s ease-in;
 }
 
 .arrow-left {
-  transform: rotate(135deg);
+  transform: rotate(0);
   transition: transform 0.3s ease-in;
 }
 
@@ -183,16 +183,16 @@
 }
 
 .arrow-down {
-  transform: rotate(45deg);
+  transform: rotate(180);
   transition: transform 0.3s ease-in;
 }
 
 .list-item-indicator {
-  margin: 0 5px;
-  width: 25px;
-  height: 30px;
-  transform: skew(-20deg);
   border-radius: 5px;
+  height: 30px;
+  margin: 0 5px;
+  transform: skew(-20deg);
+  width: 25px;
 }
 
 .list-item-indicator--MANDATORY {
