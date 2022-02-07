@@ -71,7 +71,6 @@ interface EvaluationDrawerState {
  */
 export const CKEditorConfig = (locale: string) => ({
   linkShowTargetTab: true,
-  allowedContent: true, // disable content filtering to preserve all formatting of imported documents; fix for #263
   entities: false,
   // eslint-disable-next-line camelcase
   entities_latin: false,

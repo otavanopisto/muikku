@@ -79,10 +79,6 @@ const CKEditorConfig = (
 ) => ({
   uploadUrl: `/materialAttachmentUploadServlet/workspace/${workspace.urlName}/materials/${materialNode.path}`,
   linkShowTargetTab: true,
-  allowedContent: true, // disable content filtering to preserve all formatting of imported documents; fix for #263
-  entities: false,
-  entities_latin: false,
-  entities_greek: false,
   language: locale,
   language_list: [
     "fi:Suomi",
@@ -101,7 +97,7 @@ const CKEditorConfig = (
     "workspace-material-styles:" +
     contextPath +
     "/scripts/ckplugins/styles/workspace-material-styles.js",
-  format_tags: "p;h3;h4",
+  //format_tags: "p;h3;h4",
   baseHref: `/workspace/${workspace.urlName}/materials/${materialNode.path}/`,
   mathJaxLib:
     "//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_SVG",
