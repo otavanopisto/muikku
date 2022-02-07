@@ -1,5 +1,5 @@
 import { ActionType } from "~/actions";
-
+import equals = require("deep-equal");
 export interface Event {
   id?: string;
   title?: string;
@@ -20,6 +20,22 @@ export interface Calendar {
   events: Event[];
 }
 
+/**
+ * Evaluates an event against an array of events
+ * @param event Event to be evaluated
+ * @param events Events to evaluate against
+ * @returns boolean
+ */
+export const evaluateEvents = (event: Event, events: Event[]) => {
+  let passed = true;
+  for (let i = 0; i < events.length; i++) {
+    if (events[i].id === event.id) {
+      passed = false;
+    }
+  }
+  return passed;
+};
+
 export default function calendar(
   state: Calendar = {
     state: "LOADING",
@@ -33,7 +49,12 @@ export default function calendar(
       return Object.assign({}, state, { state: newState });
     case "LOAD_CALENDAR_EVENTS":
       const newEvents: Event[] = action.payload;
-      return Object.assign({}, state, { events: newEvents });
+      const newEventsFiltered = newEvents.filter((event) => {
+        return evaluateEvents(event, state.events);
+      });
+      return Object.assign({}, state, {
+        events: [...state.events, ...newEventsFiltered],
+      });
     case "UPDATE_CALENDAR_EVENTS":
       const newEvent: Event[] = [action.payload];
       return Object.assign({}, state, {

@@ -16,7 +16,12 @@ export interface LoadCalendarEventParams {
 
 export type EventVisibility = "PRIVATE" | "PUBLIC";
 export interface LoadCalendarEventsTriggerType {
-  (userEntityId: number, start: string, end: string): AnyActionType;
+  (
+    userEntityId: number,
+    start: string,
+    end: string,
+    type?: string
+  ): AnyActionType;
 }
 
 export interface createCalendarEventTriggerType {
@@ -27,6 +32,7 @@ export interface createCalendarEventTriggerType {
     title: string;
     description: string;
     visibility: EventVisibility;
+    type?: string;
     participants: Participants[];
   }): AnyActionType;
 }
@@ -44,7 +50,8 @@ const loadCalendarEvents: LoadCalendarEventsTriggerType =
   function loadCalendarEvents(
     userEntityId: number,
     start: string,
-    end: string
+    end: string,
+    type: string
   ) {
     return async (
       dispatch: (arg: AnyActionType) => any,
@@ -59,7 +66,7 @@ const loadCalendarEvents: LoadCalendarEventsTriggerType =
           type: "LOAD_CALENDAR_EVENTS",
           payload: <Event[]>(
             await promisify(
-              mApi().calendar.events.read({ userEntityId, start, end }),
+              mApi().calendar.events.read({ userEntityId, start, end, type }),
               "callback"
             )()
           ),
@@ -92,6 +99,7 @@ const createCalendarEvent: createCalendarEventTriggerType =
       title,
       description,
       visibility,
+      type,
       participants,
     } = event;
 
@@ -109,6 +117,7 @@ const createCalendarEvent: createCalendarEventTriggerType =
             title,
             description,
             visibility,
+            type,
             participants,
           }),
           "callback"
