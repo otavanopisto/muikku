@@ -82,17 +82,18 @@ const extraConfig = (props: CKEditorProps) => ({
    * There is no need to use allowContent: true setting as it will disable ACF alltogether.
    * Therefore we let ACF to work on it's default filtering settings which are based on the toolbar settings.
    * */
-  extraAllowedContent: "*{*}",
+  extraAllowedContent: "*{*}; *[data*]",
 
   /**
    * We remove every class attribute from every html element and every on* prefixed attributes as well as everything related to font stylings.
    * This sanitation happen during pasting so custom div styles are unaffected.
    */
-  disallowedContent: "*(*); *[on*]; *{font, font-family, font-size}",
+  disallowedContent:
+    "*(dialog*, bubble*, button*, avatar*, pager*, panel*, tab*, zoom*, card*, carousel*, course*, message*, drawer*, filter*, footer*, label*, link*, menu*, meta*, navbar*, toc*, application*); *[on*]; *{font, font-family, font-size}",
   entities_latin: false,
   entities_greek: false,
   entities: false,
-  format_tags: "p;h3;h4;h5",
+  format_tags: "p;h3;h4",
   toolbar: [
     {
       name: "basicstyles",

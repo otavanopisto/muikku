@@ -97,7 +97,6 @@ const CKEditorConfig = (
     "workspace-material-styles:" +
     contextPath +
     "/scripts/ckplugins/styles/workspace-material-styles.js",
-  //format_tags: "p;h3;h4",
   baseHref: `/workspace/${workspace.urlName}/materials/${materialNode.path}/`,
   mathJaxLib:
     "//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_SVG",
