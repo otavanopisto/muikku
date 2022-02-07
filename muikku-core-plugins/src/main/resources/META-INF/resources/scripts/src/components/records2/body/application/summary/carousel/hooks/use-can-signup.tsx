@@ -13,7 +13,7 @@ export interface UseCourseCarousel {
 /**
  * useCanSignUp
  * Fetches and return diary data
- * @param workspaceEntityId
+ * @param workspaceId workspaceEntityId
  * @returns object containing state properties of loading, apiData and error
  */
 export const useCanSignUp = (workspaceId: number) => {
@@ -30,12 +30,11 @@ export const useCanSignUp = (workspaceId: number) => {
      * the course
      * @returns Requirements object
      */
-    const checkSignUpStatus = async (): Promise<boolean> => {
-      return (await promisify(
+    const checkSignUpStatus = async (): Promise<boolean> =>
+      (await promisify(
         mApi().coursepicker.workspaces.canSignup.read(workspaceId),
         "callback"
       )()) as boolean;
-    };
 
     /**
      * fetchData

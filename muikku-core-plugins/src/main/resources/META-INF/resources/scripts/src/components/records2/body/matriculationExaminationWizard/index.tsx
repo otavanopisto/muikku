@@ -11,7 +11,9 @@ import { MatriculationExaminationEnrollmentSummaryNew as Step4New } from "./matr
 import { MatriculationExaminationEnrollmentCompleted as Step5 } from "./matriculation-examination-enrollment-completed";
 import { connect, Dispatch } from "react-redux";
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const StepZilla = require("react-stepzilla").default;
+
 import "~/sass/elements/wizard.scss";
 import { StateType } from "~/reducers";
 import "~/sass/elements/matriculation.scss";
@@ -23,10 +25,7 @@ import {
 } from "../../../../@types/shared";
 import { StatusType } from "../../../../reducers/base/status";
 import { HOPSType } from "../../../../reducers/main-function/hops";
-import {
-  ExamEnrollmentDegreeStructure,
-  ExaminationFunding,
-} from "../../../../@types/shared";
+import { ExamEnrollmentDegreeStructure } from "../../../../@types/shared";
 import { YOType } from "../../../../reducers/main-function/records/yo";
 import {
   MatriculationExaminationDraft,
@@ -120,6 +119,9 @@ export const EXAMINATION_SUCCESS_GRADES_MAP = [
   "LAUDATUR",
 ];
 
+/**
+ * MatriculationExaminationWizardProps
+ */
 interface MatriculationExaminationWizardProps {
   workspace: WorkspaceType;
   i18n: i18nType;
@@ -132,6 +134,9 @@ interface MatriculationExaminationWizardProps {
   yo: YOType;
 }
 
+/**
+ * MatriculationExaminationWizardState
+ */
 export interface MatriculationExaminationWizardState {
   initialized: boolean;
   savingDraft: boolean;
@@ -141,6 +146,9 @@ export interface MatriculationExaminationWizardState {
   examinationInformation: ExaminationInformation;
 }
 
+/**
+ * MatriculationExaminationWizard
+ */
 class MatriculationExaminationWizard extends React.Component<
   MatriculationExaminationWizardProps,
   MatriculationExaminationWizardState
@@ -149,7 +157,7 @@ class MatriculationExaminationWizard extends React.Component<
 
   /**
    * constructor
-   * @param props
+   * @param props props
    */
   constructor(props: MatriculationExaminationWizardProps) {
     super(props);
@@ -204,9 +212,7 @@ class MatriculationExaminationWizard extends React.Component<
       `/rest/matriculation/exams/${this.props.examId}/initialData/${this.props.status.userSchoolDataIdentifier}`,
       { credentials: "include" }
     )
-      .then((response) => {
-        return response.json();
-      })
+      .then((response) => response.json())
       .then((data: MatriculationStudent) => {
         this.setState(
           (prevState) => ({
@@ -356,7 +362,7 @@ class MatriculationExaminationWizard extends React.Component<
         throw new Error();
       })
       .catch((error) => {
-        let errMsg =
+        const errMsg =
           "Lomakkeen välitallennus epäonnistui, palaa Muikun etusivulle ja varmista, että olet kirjautunut sisään.";
         this.handleErrorMsg(errMsg);
       });
@@ -492,7 +498,7 @@ class MatriculationExaminationWizard extends React.Component<
 
   /**
    * handles possible error messages setting those to state
-   * @param msg
+   * @param msg msg
    */
   handleErrorMsg = (msg: string) => {
     this.setState({
@@ -503,7 +509,7 @@ class MatriculationExaminationWizard extends React.Component<
 
   /**
    * onUsingNewSystemChange
-   * @param usingNewSystem
+   * @param usingNewSystem usingNewSystem
    */
   handleUsingNewSystemChange = (usingNewSystem: boolean) => {
     this.setState({
@@ -527,8 +533,7 @@ class MatriculationExaminationWizard extends React.Component<
   /**
    * handles when wizard step changes and here check when last step before complete happens,
    * kick offs form submit
-   * @param steps
-   * @returns
+   * @param steps steps
    */
   handleStepChange = (steps: object[]) => (step: any) => {
     if (step === steps.length - 1) {
@@ -539,7 +544,7 @@ class MatriculationExaminationWizard extends React.Component<
   /**
    * Handles examination information change and start draft saving timer, clears existing timer
    * if changes happens before existing timer happens to end
-   * @param examination
+   * @param examination examination
    */
   handleExaminationInformationChange = (
     examination: ExaminationInformation
@@ -687,8 +692,7 @@ class MatriculationExaminationWizard extends React.Component<
 
 /**
  * mapStateToProps
- * @param state
- * @returns
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -702,8 +706,7 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
- * @returns
+ * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return {};

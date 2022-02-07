@@ -2,12 +2,17 @@ import * as React from "react";
 import { SaveState } from "~/@types/shared";
 import { AnimatedDots } from "./animated-dots";
 
+/**
+ * SavingDraftIntoProps
+ */
 interface SavingDraftIntoProps {
   saveState: SaveState;
 }
 
 /**
  * Shows saving draft info
+ * @param root0 root0
+ * @param root0.saveState saveState
  * @returns JSX.Element
  */
 export const SavingDraftInfo: React.FC<SavingDraftIntoProps> = ({

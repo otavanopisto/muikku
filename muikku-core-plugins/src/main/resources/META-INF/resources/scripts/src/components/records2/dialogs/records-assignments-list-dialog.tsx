@@ -33,8 +33,17 @@ class RecordsAssigmentsListDialog extends React.Component<
   RecordsAssigmentsListDialogProps,
   RecordsAssigmentsListDialogState
 > {
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
-    let content = (closeDialog: () => any) => (
+    /**
+     * content
+     * @param closeDialog closeDialog
+     * @returns JSX.Element
+     */
+    const content = (closeDialog: () => any) => (
       <div className="records-container">
         <div className="records-assignment-section">
           <StudyAssignmentsList
@@ -52,9 +61,7 @@ class RecordsAssigmentsListDialog extends React.Component<
         </div>
       </div>
     );
-    let footer = (closeDialog: () => any) => {
-      return <div className="dialog__button-set"></div>;
-    };
+
     return (
       <Dialog
         disableScroll={true}
@@ -68,12 +75,20 @@ class RecordsAssigmentsListDialog extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return {};
 }

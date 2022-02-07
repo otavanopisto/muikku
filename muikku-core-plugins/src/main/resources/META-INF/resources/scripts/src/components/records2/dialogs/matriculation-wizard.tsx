@@ -8,6 +8,9 @@ import "~/sass/elements/wizard.scss";
 import { StateType } from "~/reducers";
 import MatriculationExaminationWizard from "../body/matriculationExaminationWizard";
 
+/**
+ * MatriculationExaminationWizardDialogProps
+ */
 interface MatriculationExaminationWizardDialogProps {
   i18n: i18nType;
   children?: React.ReactElement<any>;
@@ -16,17 +19,32 @@ interface MatriculationExaminationWizardDialogProps {
   updateEnrollemnts: (examId: number) => void;
 }
 
+/**
+ * MatriculationExaminationWizardDialogState
+ */
 interface MatriculationExaminationWizardDialogState {
   scale: number;
   angle: number;
 }
 
+/**
+ * MatriculationExaminationWizardDialog
+ */
 class MatriculationExaminationWizardDialog extends React.Component<
   MatriculationExaminationWizardDialogProps,
   MatriculationExaminationWizardDialogState
 > {
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
-    let content = (closeDialog: () => any) => (
+    /**
+     * content
+     * @param closeDialog closeDialog
+     * @returns JSX.Element
+     */
+    const content = (closeDialog: () => any) => (
       <div>
         <MatriculationExaminationWizard
           examId={this.props.examId}
@@ -36,9 +54,7 @@ class MatriculationExaminationWizardDialog extends React.Component<
         />
       </div>
     );
-    let footer = (closeDialog: () => any) => {
-      return <div className="dialog__button-set"></div>;
-    };
+
     return (
       <Dialog
         disableScroll={true}
@@ -52,12 +68,20 @@ class MatriculationExaminationWizardDialog extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return {};
 }

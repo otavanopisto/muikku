@@ -2,14 +2,12 @@ import * as React from "react";
 
 /**
  * AnimatedDots
- * @returns
+ * @returns JSX.Element. Animated dots
  */
-export const AnimatedDots = () => {
-  return (
-    <>
-      <span>.</span>
-      <span>.</span>
-      <span>.</span>
-    </>
-  );
-};
+export const AnimatedDots = () => (
+  <>
+    <span>.</span>
+    <span>.</span>
+    <span>.</span>
+  </>
+);

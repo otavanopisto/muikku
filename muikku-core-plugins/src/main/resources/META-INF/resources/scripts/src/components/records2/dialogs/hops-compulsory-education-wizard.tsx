@@ -29,7 +29,7 @@ class HopsCompulsoryEducationWizardDialog extends React.Component<
 > {
   /**
    * Constructor method
-   * @param props
+   * @param props props
    */
   constructor(props: HopsCompulsoruEducationWizardProps) {
     super(props);
@@ -40,7 +40,12 @@ class HopsCompulsoryEducationWizardDialog extends React.Component<
    * @returns JSX.Element
    */
   render() {
-    let content = (closeDialog: () => any) => (
+    /**
+     * content
+     * @param closeDialog closeDialog
+     * @returns JSX.Element
+     */
+    const content = (closeDialog: () => any) => (
       <div>
         <CompulsoryEducationHopsWizard
           user={this.props.user}
@@ -49,9 +54,6 @@ class HopsCompulsoryEducationWizardDialog extends React.Component<
         />
       </div>
     );
-    let footer = (closeDialog: () => any) => {
-      return <div className="dialog__button-set"></div>;
-    };
 
     return (
       <Dialog

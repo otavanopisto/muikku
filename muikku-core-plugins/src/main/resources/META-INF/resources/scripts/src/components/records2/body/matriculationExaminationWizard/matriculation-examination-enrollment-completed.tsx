@@ -3,6 +3,9 @@ import Button from "~/components/general/button";
 import "~/sass/elements/matriculation.scss";
 import { SaveState } from "../../../../@types/shared";
 
+/**
+ * MatriculationExaminationEnrollmentCompletedProps
+ */
 interface MatriculationExaminationEnrollmentCompletedProps {
   saveState: SaveState;
   examId: number;
@@ -10,10 +13,17 @@ interface MatriculationExaminationEnrollmentCompletedProps {
   updateEnrollemnts: (examId: number) => void;
 }
 
+/**
+ * MatriculationExaminationEnrollmentCompleted
+ */
 export class MatriculationExaminationEnrollmentCompleted extends React.Component<
   MatriculationExaminationEnrollmentCompletedProps,
-  {}
+  Record<string, unknown>
 > {
+  /**
+   * Constructor method
+   * @param props props
+   */
   constructor(props: MatriculationExaminationEnrollmentCompletedProps) {
     super(props);
   }
@@ -31,7 +41,7 @@ export class MatriculationExaminationEnrollmentCompleted extends React.Component
 
   /**
    * renderStateMessage
-   * @param saveState
+   * @param saveState saveState
    * @returns render save state message
    */
   renderStateMessage = (saveState: SaveState) =>
@@ -100,6 +110,10 @@ export class MatriculationExaminationEnrollmentCompleted extends React.Component
       undefined: null,
     }[saveState]);
 
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     return (
       <div>

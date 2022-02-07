@@ -55,7 +55,7 @@ class StudiesApplication extends React.Component<
 > {
   /**
    * constructor
-   * @param props
+   * @param props props
    */
   constructor(props: StudiesApplicationProps) {
     super(props);

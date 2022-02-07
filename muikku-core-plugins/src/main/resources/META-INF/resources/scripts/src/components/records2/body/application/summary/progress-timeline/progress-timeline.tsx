@@ -1,12 +1,17 @@
 import * as React from "react";
 import { Chrono } from "react-chrono";
-import {
-  TimelineCardModel,
-  TimelineItemModel,
-} from "react-chrono/dist/models/TimelineItemModel";
+import { TimelineItemModel } from "react-chrono/dist/models/TimelineItemModel";
 
+/**
+ * ProgressTimelineProps
+ */
 interface ProgressTimelineProps {}
 
+/**
+ * ProgressTimeline
+ * @param props props
+ * @returns JSX.Element. Proggress time line component
+ */
 const ProgressTimeline: React.FC<ProgressTimelineProps> = (props) => {
   const items2 = [
     {
@@ -113,6 +118,9 @@ const ProgressTimeline: React.FC<ProgressTimelineProps> = (props) => {
     },
   ];
 
+  /**
+   * items
+   */
   const items: TimelineItemModel[] = [
     {
       title: "Toukokuu 2020",
@@ -140,16 +148,12 @@ const ProgressTimeline: React.FC<ProgressTimelineProps> = (props) => {
 
   return (
     <Chrono
-      items={items2}
+      items={items}
       mode="VERTICAL"
       itemWidth={400}
       cardHeight={150}
       cardPositionHorizontal="TOP"
-    >
-      <div>
-        <p>Jottain</p>
-      </div>
-    </Chrono>
+    ></Chrono>
   );
 };
 

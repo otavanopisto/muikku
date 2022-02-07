@@ -2,8 +2,6 @@ import "~/sass/elements/carousel.scss";
 import * as React from "react";
 import Carousel from "react-multi-carousel";
 
-import Button from "~/components/general/button";
-
 const responsive = {
   desktop: {
     breakpoint: { max: 3000, min: 1024 },
@@ -31,7 +29,7 @@ interface AchievementsCarouselProps {
 
 /**
  * Carousel
- * @param props
+ * @param props props
  * @returns JSX.Element
  */
 const AchievementsCarousel: React.FC<AchievementsCarouselProps> = (props) => {
@@ -78,7 +76,7 @@ interface CourseCarouselItemProps {
 
 /**
  * CourseCarouselItem
- * @param props
+ * @param props props
  * @returns JSX.Element
  */
 const AchievementsCarouselItem: React.FC<CourseCarouselItemProps> = (props) => {

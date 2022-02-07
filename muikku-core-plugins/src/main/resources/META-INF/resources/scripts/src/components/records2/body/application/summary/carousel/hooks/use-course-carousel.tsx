@@ -47,12 +47,14 @@ export const useCourseCarousel = (
 
   React.useEffect(() => {
     /**
-     * loadStudentActivityListData
      * Loads student activity data
      * @param studentId of student
      */
     const loadStudentActivityListData = async (studentId: string) => {
-      setCourseCarousel({ ...courseCarousel, isLoading: true });
+      setCourseCarousel((courseCarousel) => ({
+        ...courseCarousel,
+        isLoading: true,
+      }));
 
       try {
         /**
@@ -147,24 +149,24 @@ export const useCourseCarousel = (
           })(),
         ]);
 
-        setCourseCarousel({
+        setCourseCarousel((courseCarousel) => ({
           ...courseCarousel,
           isLoading: false,
           carouselItems: loadedCourseCarouselData.map(
             (item) => ({ ...item } as Course)
           ),
-        });
+        }));
       } catch (err) {
         displayNotification(`Hups errori, ${err.message}`, "error");
-        setCourseCarousel({
+        setCourseCarousel((courseCarousel) => ({
           ...courseCarousel,
           isLoading: false,
-        });
+        }));
       }
     };
 
     loadStudentActivityListData(studentId);
-  }, [studentId]);
+  }, [studentId, displayNotification]);
 
   return {
     courseCarousel,
