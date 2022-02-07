@@ -57,7 +57,7 @@ class ArchiveDialog extends React.Component<
 > {
   /**
    * constructor
-   * @param props
+   * @param props props
    */
   constructor(props: ArchiveDialogProps) {
     super(props);
@@ -76,7 +76,6 @@ class ArchiveDialog extends React.Component<
 
   /**
    * deleteRequest
-   * @param closeDialog
    */
   archiveStudent() {
     const { workspaceUserEntityId, workspaceEntityId, onClose } = this.props;
@@ -113,7 +112,7 @@ class ArchiveDialog extends React.Component<
 
     /**
      * footer
-     * @param closeDialog
+     * @param closeDialog closeDialog
      */
     const footer = (closeDialog: () => any) => (
       <div className="dialog__button-set">
@@ -142,7 +141,7 @@ class ArchiveDialog extends React.Component<
 
     /**
      * content
-     * @param closeDialog
+     * @param closeDialog closeDialog
      */
     const content = (closeDialog: () => any) => (
       <div
@@ -172,7 +171,7 @@ class ArchiveDialog extends React.Component<
 
 /**
  * mapStateToProps
- * @param state
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -183,7 +182,7 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(

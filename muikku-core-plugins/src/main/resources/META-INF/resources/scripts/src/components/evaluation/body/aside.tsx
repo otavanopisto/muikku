@@ -16,6 +16,7 @@ import { bindActionCreators } from "redux";
 import { i18nType } from "~/reducers/base/i18n";
 import { WorkspaceType } from "../../../reducers/workspaces/index";
 import { EvaluationWorkspace } from "~/@types/evaluation";
+import { AnyActionType } from "~/actions";
 
 /**
  * NavigationAsideProps
@@ -149,7 +150,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ setSelectedWorkspaceId }, dispatch);
 }
 

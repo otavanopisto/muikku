@@ -27,7 +27,7 @@
 }
 
 .rangeslider__active {
-  opacity: 1;
+  opacity: 100%;
 }
 
 .rangeslider__handle-tooltip {
@@ -36,7 +36,7 @@
   color: $color-default;
   display: inline-block;
   font-size: 14px;
-  font-weight: normal;
+  font-weight: 400;
   height: 40px;
   left: 50%;
   position: absolute;
@@ -186,7 +186,6 @@
 
 // Rangeslider - Reverse
 .rangeslider-reverse {
-
   &.rangeslider-horizontal .rangeslider__fill {
     right: 0;
   }

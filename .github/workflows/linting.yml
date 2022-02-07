@@ -1,3 +1,4 @@
+# https://github.com/marketplace/actions/lint-action
 name: Front-end code quality
 
 on:
@@ -32,3 +33,7 @@ jobs:
           prettier: true
           prettier_extensions: "ts,tsx"
           prettier_dir: muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src
+
+          stylelint: true
+          stylelint_extensions: "scss"
+          stylelint_dir: muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src/sass

@@ -5,6 +5,7 @@
 
 .file-uploader {
   @include text;
+
   border: 2px solid $color-tertiary;
   display: block;
 }
@@ -20,6 +21,7 @@
 // FILE UPLOADER USED IN MATERIALS AS FILE FIELD TASK
 .file-uploader--taskfield {
   @include taskfield-text;
+
   border: solid 2px $taskfield-border-color;
 
   // DISABLED FILE FIELD
@@ -65,7 +67,7 @@
   bottom: 0;
   cursor: pointer;
   left: 0;
-  opacity: 0;
+  opacity: 0%;
   position: absolute;
   right: 0;
   top: 0;
@@ -85,6 +87,7 @@
 
 .uploaded-files {
   @include text;
+
   padding: 0 10px;
 }
 
@@ -100,7 +103,6 @@
   padding: 0 5px;
 
   &.file-uploader__item--failed-to-upload {
-
     .file-uploader__item-title {
       color: $color-fatal;
       margin: 0 0 0 27px;
@@ -122,6 +124,7 @@
 
   .file-uploader__item-title-container {
     @include text;
+
     display: flex;
     flex-basis: auto;
     flex-flow: column nowrap;
@@ -174,6 +177,7 @@
 
 .file-uploader__item-upload-progressbar {
   @include text;
+
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
@@ -184,4 +188,3 @@
   line-height: 1;
   margin: 0 0 5px;
 }
-

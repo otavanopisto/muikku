@@ -286,6 +286,7 @@
 
 .panel__header-title {
   @include text;
+
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
@@ -304,6 +305,7 @@
 
 .panel__body {
   @include text;
+
   background-color: $color-panel-background-color;
   border: 0;
   border-radius: $panel-border-radius;

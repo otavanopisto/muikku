@@ -5,7 +5,7 @@
  */
 
 import * as React from "react";
-import { v4 } from "uuid";
+import { v4 as uuidv4 } from "uuid";
 
 /**
  * LazyLoaderProps
@@ -43,7 +43,7 @@ export default class LazyLoader extends React.Component<
   LazyLoaderState
 > {
   private hasBeenForcefullyToggled = false;
-  private id: string = "L" + v4().replace(/-/g, "");
+  private id: string = "L" + uuidv4().replace(/-/g, "");
   private calculatedHeight: number;
 
   /**
@@ -109,13 +109,6 @@ export default class LazyLoader extends React.Component<
         this.calculatedHeight &&
         newCalculatedHeight !== this.calculatedHeight
       ) {
-        console.warn(
-          "Lazy element " +
-            this.id +
-            " when toggled became off by " +
-            (newCalculatedHeight - this.calculatedHeight) +
-            "px"
-        );
         this.calculatedHeight = newCalculatedHeight;
       }
     }

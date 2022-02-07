@@ -39,7 +39,7 @@ class DeleteRequestDialog extends React.Component<
 > {
   /**
    * constructor
-   * @param props
+   * @param props props
    */
   constructor(props: DeleteRequestDialogProps) {
     super(props);
@@ -58,7 +58,7 @@ class DeleteRequestDialog extends React.Component<
 
   /**
    * deleteRequest
-   * @param closeDialog
+   * @param closeDialog closeDialog
    */
   deleteRequest(closeDialog: () => any) {
     this.props.deleteAssessmentRequest({

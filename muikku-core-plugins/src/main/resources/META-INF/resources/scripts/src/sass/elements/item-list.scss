@@ -50,7 +50,6 @@
 
 // Item-list items in lastest messages panel
 .item-list--panel-latest-messages {
-
   .item-list__item {
     align-items: flex-start;
     border-top: solid 1px $color-default-item-separator-border;
@@ -61,7 +60,6 @@
   }
 
   .item-list__item--unread {
-
     .item-list__icon {
       color: $color-index-item-list-item-panel-latest-messages-unread-icon;
     }
@@ -80,7 +78,6 @@
 
 // Item-list items in announcements
 .item-list--panel-announcements {
-
   .item-list__item {
     align-items: flex-start;
     border-top: solid 1px $color-default-item-separator-border;
@@ -91,7 +88,6 @@
   }
 
   .item-list__item--unread {
-
     .item-list__icon {
       color: $color-index-item-list-item-panel-announcements-unread-icon;
     }
@@ -134,6 +130,7 @@
 .item-list__item--has-workspaces .item-list__icon {
   color: $color-index-item-list-item-panel-announcements-has-workspaces-icon;
 }
+
 // List item texts
 
 // List item for listing users (teachers and students alike)
@@ -159,10 +156,11 @@
 .item-list__user-email,
 .item-list__user-phone {
   @include word-break;
+
   align-items: center;
   display: flex;
   flex-flow: row nowrap;
-  opacity: 0.75;
+  opacity: 75%;
   padding: 2px 0;
 }
 

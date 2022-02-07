@@ -9,6 +9,7 @@
 
 .toc__title {
   @include text;
+
   font-size: calc(#{$text-mobile-font-size} * 1.35);
   font-weight: 400;
   line-height: 1;
@@ -23,6 +24,7 @@
 
 .toc__section-title {
   @include text;
+
   display: flex;
   margin: 12px 8px 12px 10px;
   text-transform: uppercase;
@@ -30,12 +32,13 @@
 
   &.hidden {
     font-style: italic;
-    opacity: 0.5;
+    opacity: 50%;
   }
 }
 
 .toc__item {
   @include prefix(transition, webkit ms o moz, background-color 0.2s ease-in-out);
+
   align-items: flex-start;
   background-color: $color-toc-item-link-background;
   border-bottom-right-radius: 2px;
@@ -63,7 +66,7 @@
 
   &.hidden {
     font-style: italic;
-    opacity: 0.5;
+    opacity: 50%;
   }
 
   @include breakpoint($breakpoint-desktop-xl) {
@@ -113,21 +116,18 @@
 }
 
 .toc__item--submitted {
-
   .toc__icon {
     background: $color-submitted;
   }
 }
 
 .toc__item--answered {
-
   .toc__icon {
     background: transparent;
     color: $color-submitted;
   }
 
   &.active {
-
     .toc__icon {
       color: $color-default;
     }
@@ -136,35 +136,30 @@
 
 .toc__section-container--view-restricted .toc__section-title,
 .toc__item--view-restricted {
-
   .toc__icon {
     background: $color-view-restricted;
   }
 }
 
 .toc__item--withdrawn {
-
   .toc__icon {
     background: $color-withdrawn;
   }
 }
 
 .toc__item--passed {
-
   .toc__icon {
     background: $color-passed;
   }
 }
 
 .toc__item--incomplete {
-
   .toc__icon {
     background: $color-incomplete;
   }
 }
 
 .toc__item--failed {
-
   .toc__icon {
     background: $color-failed;
   }

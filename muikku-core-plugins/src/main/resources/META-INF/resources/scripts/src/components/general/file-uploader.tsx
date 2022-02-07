@@ -11,7 +11,7 @@ import {
 } from "~/actions/base/notifications";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const ProgressBarLine = require("react-progress-bar.js").Line;
-import * as uuid from "uuid";
+import { v4 as uuidv4 } from "uuid";
 import { UploadingValue } from "../../@types/shared";
 
 /**
@@ -318,7 +318,7 @@ class FileUploader extends React.Component<
         </span>
       ) : null;
 
-    const uniqueElementID = "file-uploader__hint-" + uuid.v4();
+    const uniqueElementID = "file-uploader__hint-" + uuidv4();
     if (this.props.invisible) {
       return (
         <span
