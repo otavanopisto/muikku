@@ -34,7 +34,7 @@ class MotivationAndStudySkills extends React.Component<
 > {
   /**
    * constructor
-   * @param props
+   * @param props props
    */
   constructor(props: MotivationAndStudySkillsProps) {
     super(props);
@@ -60,7 +60,7 @@ class MotivationAndStudySkills extends React.Component<
 
   /**
    * handleTextareaChange
-   * @param name
+   * @param name name
    */
   handleTextareaChange =
     (name: keyof HopsMotivationAndStudy) =>
@@ -73,7 +73,7 @@ class MotivationAndStudySkills extends React.Component<
 
   /**
    * handleCheckboxElseChanges
-   * @param name
+   * @param name name
    */
   handleCheckboxElseChanges =
     (name: keyof MotivationAndStudySkillsState) =>
@@ -98,8 +98,8 @@ class MotivationAndStudySkills extends React.Component<
 
   /**
    * handleScaleRangeChange
-   * @param name
-   * @returns
+   * @param name name
+   * @param scaleValue scaleValue
    */
   handleScaleRangeChange = (
     name: keyof HopsMotivationAndStudy,
@@ -113,7 +113,7 @@ class MotivationAndStudySkills extends React.Component<
 
   /**
    * handleCheckboxItemChange
-   * @param name
+   * @param name name
    */
   handleCheckboxItemChange =
     (name: keyof HopsMotivationAndStudy) =>
@@ -126,7 +126,7 @@ class MotivationAndStudySkills extends React.Component<
 
   /**
    * handleGoalsSelectsChange
-   * @param name
+   * @param name name
    */
   handleGoalsSelectsChange =
     (name: keyof HopsMotivationAndStudy) =>

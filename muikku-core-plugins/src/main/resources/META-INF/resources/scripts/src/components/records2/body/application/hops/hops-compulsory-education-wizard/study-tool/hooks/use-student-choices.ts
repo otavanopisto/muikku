@@ -6,6 +6,9 @@ import { WebsocketStateType } from "~/reducers/util/websocket";
 import promisify from "~/util/promisify";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 
+/**
+ * UpdateStudentChoicesParams
+ */
 export interface UpdateStudentChoicesParams {
   courseNumber: number;
   subject: string;
@@ -23,6 +26,14 @@ export interface UseStudentActivityState {
 /**
  * useStudentActivity
  * Custom hook to return student activity data
+ */
+
+/**
+ * Custom hook to handle student course choices
+ * @param studentId studentId
+ * @param websocketState websocketState
+ * @param displayNotification displayNotification
+ * @returns student course choices
  */
 export const useStudentChoices = (
   studentId: string,
@@ -56,7 +67,10 @@ export const useStudentChoices = (
      * @param studentId of student
      */
     const loadStudentChoiceData = async (studentId: string) => {
-      setStudentChoices({ ...studentChoices, isLoading: true });
+      setStudentChoices((studentChoices) => ({
+        ...studentChoices,
+        isLoading: true,
+      }));
 
       try {
         /**
@@ -80,19 +94,19 @@ export const useStudentChoices = (
         ]);
 
         if (componentMounted.current) {
-          setStudentChoices({
+          setStudentChoices((studentChoices) => ({
             ...studentChoices,
             isLoading: false,
             studentChoices: loadedStudentChoices,
-          });
+          }));
         }
       } catch (err) {
         if (componentMounted.current) {
           displayNotification(`Hups errori, ${err.message}`, "error");
-          setStudentChoices({
+          setStudentChoices((studentChoices) => ({
             ...studentChoices,
             isLoading: false,
-          });
+          }));
         }
       }
     };
@@ -102,9 +116,45 @@ export const useStudentChoices = (
     return () => {
       componentMounted.current = false;
     };
-  }, [studentId]);
+  }, [studentId, displayNotification]);
 
   React.useEffect(() => {
+    /**
+     * onAnswerSavedAtServer
+     * Websocket event callback to handle answer from server when
+     * something is saved/changed
+     * @param data Websocket data
+     */
+    const onAnswerSavedAtServer = (data: StudentCourseChoice) => {
+      const { studentChoices } = ref.current;
+
+      const arrayOfStudentChoices = studentChoices;
+
+      /**
+       * Finding possible existing selection
+       */
+      const indexOfCourse = studentChoices.findIndex(
+        (sItem) =>
+          sItem.subject === data.subject &&
+          sItem.courseNumber === data.courseNumber
+      );
+
+      /**
+       * If found, then delete it otherwise add it
+       */
+      if (indexOfCourse !== -1) {
+        arrayOfStudentChoices.splice(indexOfCourse, 1);
+      } else {
+        arrayOfStudentChoices.push(data);
+      }
+
+      setStudentChoices((studentChoices) => ({
+        ...studentChoices,
+        isLoading: false,
+        studentChoices: arrayOfStudentChoices,
+      }));
+    };
+
     /**
      * Adding event callback to handle changes when ever
      * there has happened some changes with that message
@@ -123,47 +173,11 @@ export const useStudentChoices = (
         onAnswerSavedAtServer
       );
     };
-  }, []);
-
-  /**
-   * onAnswerSavedAtServer
-   * Websocket event callback to handle answer from server when
-   * something is saved/changed
-   * @param data Websocket data
-   */
-  const onAnswerSavedAtServer = (data: StudentCourseChoice) => {
-    const { studentChoices } = ref.current;
-
-    let arrayOfStudentChoices = studentChoices;
-
-    /**
-     * Finding possible existing selection
-     */
-    const indexOfCourse = studentChoices.findIndex(
-      (sItem) =>
-        sItem.subject === data.subject &&
-        sItem.courseNumber === data.courseNumber
-    );
-
-    /**
-     * If found, then delete it otherwise add it
-     */
-    if (indexOfCourse !== -1) {
-      arrayOfStudentChoices.splice(indexOfCourse, 1);
-    } else {
-      arrayOfStudentChoices.push(data);
-    }
-
-    setStudentChoices({
-      ...studentChoices,
-      isLoading: false,
-      studentChoices: arrayOfStudentChoices,
-    });
-  };
+  }, [websocketState.websocket]);
 
   /**
    * updateStudentChoice
-   * @param params
+   * @param params params
    */
   const updateStudentChoice = async (params: UpdateStudentChoicesParams) => {
     const { subject, courseNumber, studentId } = params;
@@ -183,6 +197,10 @@ export const useStudentChoices = (
 
   return {
     studentChoices,
+    /**
+     * updateStudentChoice
+     * @param params params
+     */
     updateStudentChoice: (params: UpdateStudentChoicesParams) =>
       updateStudentChoice(params),
   };

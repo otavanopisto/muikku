@@ -27,7 +27,7 @@ class StudentHopsInformation extends React.Component<
 > {
   /**
    * constructor
-   * @param props
+   * @param props props
    */
   constructor(props: StudentHopsInformationProps) {
     super(props);

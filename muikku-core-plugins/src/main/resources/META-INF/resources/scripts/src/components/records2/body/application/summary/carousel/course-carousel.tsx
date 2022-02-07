@@ -41,7 +41,7 @@ interface CourseCarouselProps {
 
 /**
  * Carousel
- * @param props
+ * @param props props
  * @returns JSX.Element
  */
 const CourseCarousel: React.FC<CourseCarouselProps> = (props) => {
@@ -93,7 +93,7 @@ interface CourseCarouselItemProps {
 
 /**
  * CourseCarouselItem
- * @param props
+ * @param props props
  * @returns JSX.Element
  */
 const CourseCarouselItem: React.FC<CourseCarouselItemProps> = (props) => {
@@ -104,11 +104,9 @@ const CourseCarouselItem: React.FC<CourseCarouselItemProps> = (props) => {
    * This should sanitize html
    * @param htmlString string that contains html
    */
-  const createHtmlMarkup = (htmlString: string) => {
-    return {
-      __html: htmlString,
-    };
-  };
+  const createHtmlMarkup = (htmlString: string) => ({
+    __html: htmlString,
+  });
 
   const courseImage = course.hasCustomImage
     ? `url(/rest/workspace/workspaces/${course.id}/workspacefile/workspace-frontpage-image-cropped)`

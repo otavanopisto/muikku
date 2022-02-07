@@ -8,18 +8,23 @@ import * as React from "react";
 export const useDimensions = (
   myRef: React.MutableRefObject<HTMLDivElement | HTMLTableElement>
 ) => {
-  const getDimensions = () => ({
-    width: myRef.current.offsetWidth,
-    height: myRef.current.offsetHeight,
-  });
+  /**
+   * getDimensions
+   * @returns Dimensions
+   */
+  const getDimensions = React.useCallback(
+    () => ({
+      width: myRef.current.offsetWidth,
+      height: myRef.current.offsetHeight,
+    }),
+    [myRef]
+  );
 
   const [dimensions, setDimensions] = React.useState({ width: 0, height: 0 });
 
   React.useEffect(() => {
-    if (myRef.current) {
-      setDimensions(getDimensions());
-    }
-  }, [myRef]);
+    setDimensions(getDimensions());
+  }, [getDimensions]);
 
   return dimensions;
 };
@@ -33,12 +38,19 @@ export const useDimensions = (
 export const useElementBoundings = (
   myRef: React.MutableRefObject<HTMLDivElement | HTMLTableElement>
 ) => {
-  const getBoundings = () => ({
-    left: myRef.current.getBoundingClientRect().left,
-    right: myRef.current.getBoundingClientRect().right,
-    top: myRef.current.getBoundingClientRect().top,
-    bottom: myRef.current.getBoundingClientRect().bottom,
-  });
+  /**
+   * getBoundings
+   * @returns Boundings
+   */
+  const getBoundings = React.useCallback(
+    () => ({
+      left: myRef.current.getBoundingClientRect().left,
+      right: myRef.current.getBoundingClientRect().right,
+      top: myRef.current.getBoundingClientRect().top,
+      bottom: myRef.current.getBoundingClientRect().bottom,
+    }),
+    [myRef]
+  );
 
   const [boundings, setBoundings] = React.useState({
     left: 0,
@@ -48,10 +60,8 @@ export const useElementBoundings = (
   });
 
   React.useEffect(() => {
-    if (myRef.current) {
-      setBoundings(getBoundings());
-    }
-  }, [myRef]);
+    setBoundings(getBoundings());
+  }, [getBoundings]);
 
   return boundings;
 };

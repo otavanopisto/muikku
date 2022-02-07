@@ -25,7 +25,7 @@ interface FollowUpGoalsProps {
 
 /**
  * FollowUpGoals
- * @param props
+ * @param props props
  * @returns JSX.Element
  */
 const FollowUpGoals: React.FC<FollowUpGoalsProps> = (props) => {
@@ -145,7 +145,7 @@ const FollowUpGoals: React.FC<FollowUpGoalsProps> = (props) => {
 
 /**
  * mapStateToProps
- * @param state
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -155,7 +155,7 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return { displayNotification };

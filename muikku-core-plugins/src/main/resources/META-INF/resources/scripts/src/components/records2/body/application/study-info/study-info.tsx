@@ -38,6 +38,10 @@ interface StudyInfoState {
  * StudyInfo
  */
 class StudyInfo extends React.Component<StudyInfoProps, StudyInfoState> {
+  /**
+   * Constructor method
+   * @param props props
+   */
   constructor(props: StudyInfoProps) {
     super(props);
 
@@ -53,7 +57,7 @@ class StudyInfo extends React.Component<StudyInfoProps, StudyInfoState> {
       return null;
     }
 
-    let studentBasicInfo = (
+    const studentBasicInfo = (
       <div className="application-sub-panel--study-info">
         <div
           className="application-sub-panel__header"
@@ -109,7 +113,7 @@ class StudyInfo extends React.Component<StudyInfoProps, StudyInfoState> {
             </div>
             <div className="application-sub-panel__item-data application-sub-panel__item-data--summary-student-councelors">
               <div className="item-list item-list--student-councelors">
-                {this.props.summary.data.studentsStudentCouncelors.map(
+                {this.props.summary.data.studentsGuidanceCouncelors.map(
                   (councelor, index) => {
                     let displayVacationPeriod =
                       !!councelor.properties["profile-vacation-start"];
@@ -221,8 +225,7 @@ class StudyInfo extends React.Component<StudyInfoProps, StudyInfoState> {
 
 /**
  * mapStateToProps
- * @param state
- * @returns
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -236,8 +239,7 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
- * @returns
+ * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return {};

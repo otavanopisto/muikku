@@ -2,16 +2,24 @@ import * as React from "react";
 import { ButtonPill } from "~/components/general/button";
 import Dropdown from "~/components/general/dropdown";
 
+/**
+ * StudyState
+ */
 type StudyState = "notenough" | "enough" | "toomuch";
 
+/**
+ * CalculationInfoBoxProps
+ */
 interface CalculationInfoBoxProps {
   state: StudyState;
   message?: string;
 }
 
 /**
- * renderCalculationInfoBox
- * @param state
+ * StudyCalculationInfoBox
+ * @param param0 param0
+ * @param param0.state state
+ * @param param0.message message
  * @returns JSX.Element
  */
 const StudyCalculationInfoBox: React.FC<CalculationInfoBoxProps> = ({

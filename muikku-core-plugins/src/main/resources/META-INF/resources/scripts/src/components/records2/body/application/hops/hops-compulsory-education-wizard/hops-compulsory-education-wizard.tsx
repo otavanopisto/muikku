@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { HOPSDataType } from "~/reducers/main-function/hops";
 import { StateType } from "~/reducers";
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const StepZilla = require("react-stepzilla").default;
 
 import "~/sass/elements/wizard.scss";
@@ -85,7 +86,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
 > {
   /**
    * constructor
-   * @param props
+   * @param props props
    */
   constructor(props: CompulsoryEducationHopsWizardProps) {
     super(props);
@@ -97,50 +98,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
         name: "",
       },
       hopsCompulsory: {
-        startingLevel: {
-          previousEducation: Education.COMPULSORY_SCHOOL,
-          previousWorkExperience: "0-6",
-          previousYearsUsedInStudies: "",
-          finnishAsMainOrSecondaryLng: false,
-          previousLanguageExperience: [
-            {
-              name: "Englanti",
-              grade: 1,
-              hardCoded: true,
-            },
-            {
-              name: "Ruotsi",
-              grade: 1,
-              hardCoded: true,
-            },
-          ],
-        },
-        motivationAndStudy: {
-          byReading: 0,
-          byListening: 0,
-          byDoing: 0,
-          someOtherWay: "",
-          byMemorizing: 0,
-          byTakingNotes: 0,
-          byDrawing: 0,
-          byListeningTeacher: 0,
-          byWatchingVideos: 0,
-          byFollowingOthers: 0,
-          someOtherMethod: "",
-          noSupport: 0,
-          family: 0,
-          friend: 0,
-          supportPerson: 0,
-          teacher: 0,
-          somethingElse: "",
-          scaleSize: 5,
-          scaleName: "0-5",
-        },
-        studiesPlanning: {
-          usedHoursPerWeek: 0,
-          ethics: false,
-          finnishAsSecondLanguage: false,
-        },
+        ...initializeHops(),
       },
     };
   }
@@ -166,7 +124,9 @@ class CompulsoryEducationHopsWizard extends React.Component<
     const studentId =
       this.props.user === "supervisor"
         ? this.props.guider.currentStudent.basic.id
-        : (window as any).MUIKKU_LOGGED_USER;
+        : document
+            .querySelector('meta[name="muikku:loggedUser"]')
+            .getAttribute("value");
 
     try {
       /**
@@ -194,7 +154,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
             "callback"
           )()) as HopsCompulsory;
 
-          let loadedHops = {
+          const loadedHops = {
             basicInfo: {
               name: `${studentBasicInfo.firstName} ${studentBasicInfo.lastName}`,
               updates: studentHopsHistory,
@@ -220,7 +180,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
 
   /**
    * handleStartingLevelChange
-   * @param startingLevel
+   * @param startingLevel startingLevel
    */
   handleStartingLevelChange = (startingLevel: HopsStudentStartingLevel) => {
     this.setState({
@@ -233,7 +193,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
 
   /**
    * handleMotivationAndStudyChange
-   * @param motivationAndStudy
+   * @param motivationAndStudy motivationAndStudy
    */
   handleMotivationAndStudyChange = (
     motivationAndStudy: HopsMotivationAndStudy
@@ -248,7 +208,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
 
   /**
    * handleStudiesPlanningChange
-   * @param studiesPlanning
+   * @param studiesPlanning studiesPlanning
    */
   handleStudiesPlanningChange = (studiesPlanning: HopsPlanningStudies) => {
     this.setState({
@@ -261,7 +221,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
 
   /**
    * handleFollowUpChange
-   * @param followUp
+   * @param followUp followUp
    */
   handleFollowUpChange = (followUp: FollowUp) => {
     this.setState({
@@ -298,7 +258,9 @@ class CompulsoryEducationHopsWizard extends React.Component<
     const studentId =
       this.props.user === "supervisor"
         ? this.props.guider.currentStudent.basic.id
-        : (window as any).MUIKKU_LOGGED_USER;
+        : document
+            .querySelector('meta[name="muikku:loggedUser"]')
+            .getAttribute("value");
 
     /**
      * Sleeper to delay data fetching if it happens faster than 1s
@@ -326,8 +288,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
   /**
    * handles when wizard step changes and here check when last step before complete happens,
    * kick offs form submit
-   * @param steps
-   * @returns
+   * @param steps steps
    */
   handleStepChange = (steps: object[]) => (step: any) => {
     if (step === steps.length - 1) {
@@ -380,7 +341,9 @@ class CompulsoryEducationHopsWizard extends React.Component<
             studentId={
               this.props.user === "supervisor"
                 ? this.props.guider.currentStudent.basic.id
-                : (window as any).MUIKKU_LOGGED_USER
+                : document
+                    .querySelector('meta[name="muikku:loggedUser"]')
+                    .getAttribute("value")
             }
             followUp={this.state.hopsFollowUp}
             studies={{
@@ -426,7 +389,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
 
 /**
  * mapStateToProps
- * @param state
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -437,7 +400,7 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return {

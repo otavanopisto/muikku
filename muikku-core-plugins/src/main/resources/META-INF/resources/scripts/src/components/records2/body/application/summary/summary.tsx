@@ -14,7 +14,7 @@ import ProgressTimeline from "./progress-timeline/progress-timeline";
 import Button from "~/components/general/button";
 import { AgendaNotes, AgendaNotesList } from "./agenda-notes/agenda-notes";
 import MainChart from "~/components/general/graph/main-chart";
-import { SummaryStudentCouncelorsType } from "../../../../../reducers/main-function/records/summary";
+import { SummaryStudentsGuidanceCouncelorsType } from "../../../../../reducers/main-function/records/summary";
 import moment from "../../../../../lib/moment";
 import Avatar from "~/components/general/avatar";
 import CommunicatorNewMessage from "~/components/communicator/dialogs/new-message";
@@ -24,8 +24,11 @@ import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
-let ProgressBarLine = require("react-progress-bar.js").Line;
-let ProgressBarCircle = require("react-progress-bar.js").Circle;
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const ProgressBarLine = require("react-progress-bar.js").Line;
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const ProgressBarCircle = require("react-progress-bar.js").Circle;
 
 /**
  * SummaryProps
@@ -48,6 +51,10 @@ interface SummaryState {}
  * SummaryNew
  */
 class SummaryNew extends React.Component<SummaryProps, SummaryState> {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: SummaryProps) {
     super(props);
 
@@ -65,7 +72,10 @@ class SummaryNew extends React.Component<SummaryProps, SummaryState> {
     ) {
       return null;
     } else {
-      let studentBasicInfo = (
+      /**
+       * studentBasicInfo
+       */
+      const studentBasicInfo = (
         <div className="application-sub-panel">
           <div className="application-sub-panel__header">
             {this.props.i18n.text.get("plugin.records.summary.studyInfo")}
@@ -118,9 +128,9 @@ class SummaryNew extends React.Component<SummaryProps, SummaryState> {
               </div>
               <div className="application-sub-panel__item-data application-sub-panel__item-data--summary-student-councelors">
                 <div className="item-list item-list--student-councelors">
-                  {this.props.summary.data.studentsStudentCouncelors.map(
+                  {this.props.summary.data.studentsGuidanceCouncelors.map(
                     (
-                      councelor: SummaryStudentCouncelorsType,
+                      councelor: SummaryStudentsGuidanceCouncelorsType,
                       index: number
                     ) => {
                       let displayVacationPeriod =
@@ -219,7 +229,7 @@ class SummaryNew extends React.Component<SummaryProps, SummaryState> {
         </div>
       );
 
-      let studyStatus =
+      const studyStatus =
         this.props.hops.value.goalMatriculationExam === "yes" ? (
           <div className="application-sub-panel__card-item application-sub-panel__card-item--summary-evaluated">
             <div className="application-sub-panel__card-header application-sub-panel__card-header--summary-evaluated">
@@ -615,17 +625,18 @@ class SummaryNew extends React.Component<SummaryProps, SummaryState> {
       return null;
     }
 
-    return this.props.summary.data.studentsDetails.studyProgrammeName ===
+    return this.renderNewSummary();
+
+    /* return this.props.summary.data.studentsDetails.studyProgrammeName ===
       "Nettiperuskoulu"
       ? this.renderNewSummary()
-      : this.renderOldSummary();
+      : this.renderOldSummary(); */
   }
 }
 
 /**
  * mapStateToProps
- * @param state
- * @returns
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -639,8 +650,7 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
- * @returns
+ * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return {

@@ -30,8 +30,10 @@ export interface UseStudentActivityState extends StudentActivityByStatus {
 }
 
 /**
- * useStudentActivity
  * Custom hook to return student activity data
+ * @param studentId studentId
+ * @param websocketState websocketState
+ * @param displayNotification displayNotification
  */
 export const useStudentActivity = (
   studentId: string,
@@ -69,7 +71,10 @@ export const useStudentActivity = (
      * @param studentId of student
      */
     const loadStudentActivityListData = async (studentId: string) => {
-      setStudentActivity({ ...studentActivity, isLoading: true });
+      setStudentActivity((studentActivity) => ({
+        ...studentActivity,
+        isLoading: true,
+      }));
 
       try {
         /**
@@ -95,7 +100,7 @@ export const useStudentActivity = (
         ]);
 
         if (componentMounted.current) {
-          setStudentActivity({
+          setStudentActivity((studentActivity) => ({
             ...studentActivity,
             isLoading: false,
             suggestedNextList: loadedStudentActivity.suggestedNextList,
@@ -103,15 +108,15 @@ export const useStudentActivity = (
             onGoingList: loadedStudentActivity.onGoingList,
             gradedList: loadedStudentActivity.gradedList,
             transferedList: loadedStudentActivity.transferedList,
-          });
+          }));
         }
       } catch (err) {
         if (componentMounted.current) {
           displayNotification(`Hups errori, ${err.message}`, "error");
-          setStudentActivity({
+          setStudentActivity((studentActivity) => ({
             ...studentActivity,
             isLoading: false,
-          });
+          }));
         }
       }
     };
@@ -121,9 +126,94 @@ export const useStudentActivity = (
     return () => {
       componentMounted.current = false;
     };
-  }, [studentId]);
+  }, [studentId, displayNotification]);
 
   React.useEffect(() => {
+    /**
+     * onAnswerSavedAtServer
+     * Websocket event callback to handle answer from server when
+     * something is saved/changed
+     * @param data Websocket data
+     */
+    const onAnswerSavedAtServer = (data: StudentActivityCourse) => {
+      const {
+        suggestedNextList,
+        suggestedOptionalList,
+        onGoingList,
+        gradedList,
+        transferedList,
+      } = ref.current;
+
+      /**
+       * Concated list of different filter lists together
+       */
+      const arrayOfStudentActivityCourses: StudentActivityCourse[] = [].concat(
+        suggestedNextList,
+        suggestedOptionalList,
+        onGoingList,
+        gradedList,
+        transferedList
+      );
+
+      /**
+       * If course id is null, meaning that delete existing activity course by
+       * finding that specific course with subject code and course number and splice it out
+       */
+      if (data.courseId === null) {
+        const indexOfCourse = arrayOfStudentActivityCourses.findIndex(
+          (item) =>
+            item.subject === data.subject &&
+            item.courseNumber === data.courseNumber
+        );
+
+        if (indexOfCourse !== -1) {
+          arrayOfStudentActivityCourses.splice(indexOfCourse, 1);
+        }
+      } else {
+        /**
+         * Else we are replacing suggestion with another or just adding new alltogether
+         */
+
+        /**
+         * Index of existing course
+         */
+        const indexOfCourse = arrayOfStudentActivityCourses.findIndex(
+          (aCourse) =>
+            aCourse.courseNumber === data.courseNumber &&
+            aCourse.subject === data.subject
+        );
+
+        /**
+         * Replace
+         */
+        if (indexOfCourse !== -1) {
+          arrayOfStudentActivityCourses.splice(indexOfCourse, 1, data);
+        } else {
+          /**
+           * Add new
+           */
+          arrayOfStudentActivityCourses.push(data);
+        }
+      }
+
+      /**
+       * Filtered activity courses by status
+       */
+      const studentActivityByStatus = filterActivity(
+        arrayOfStudentActivityCourses
+      );
+
+      setStudentActivity((studentActivity) => ({
+        ...studentActivity,
+        isLoading: false,
+        suggestedNextList: studentActivityByStatus.suggestedNextList,
+        suggestedOptionalList: studentActivityByStatus.suggestedOptionalList,
+        onGoingList: studentActivityByStatus.onGoingList,
+        gradedList: studentActivityByStatus.gradedList,
+        transferedList: studentActivityByStatus.transferedList,
+      }));
+    };
+
     /**
      * Adding event callback to handle changes when ever
      * there has happened some changes with that message
@@ -142,96 +232,11 @@ export const useStudentActivity = (
         onAnswerSavedAtServer
       );
     };
-  }, []);
-
-  /**
-   * onAnswerSavedAtServer
-   * Websocket event callback to handle answer from server when
-   * something is saved/changed
-   * @param data Websocket data
-   */
-  const onAnswerSavedAtServer = (data: StudentActivityCourse) => {
-    const {
-      suggestedNextList,
-      suggestedOptionalList,
-      onGoingList,
-      gradedList,
-      transferedList,
-    } = ref.current;
-
-    /**
-     * Concated list of different filter lists together
-     */
-    let arrayOfStudentActivityCourses: StudentActivityCourse[] = [].concat(
-      suggestedNextList,
-      suggestedOptionalList,
-      onGoingList,
-      gradedList,
-      transferedList
-    );
-
-    /**
-     * If course id is null, meaning that delete existing activity course by
-     * finding that specific course with subject code and course number and splice it out
-     */
-    if (data.courseId === null) {
-      const indexOfCourse = arrayOfStudentActivityCourses.findIndex(
-        (item) =>
-          item.subject === data.subject &&
-          item.courseNumber === data.courseNumber
-      );
-
-      if (indexOfCourse !== -1) {
-        arrayOfStudentActivityCourses.splice(indexOfCourse, 1);
-      }
-    } else {
-      /**
-       * Else we are replacing suggestion with another or just adding new alltogether
-       */
-
-      /**
-       * Index of existing course
-       */
-      const indexOfCourse = arrayOfStudentActivityCourses.findIndex(
-        (aCourse) =>
-          aCourse.courseNumber === data.courseNumber &&
-          aCourse.subject === data.subject
-      );
-
-      /**
-       * Replace
-       */
-      if (indexOfCourse !== -1) {
-        arrayOfStudentActivityCourses.splice(indexOfCourse, 1, data);
-      } else {
-        /**
-         * Add new
-         */
-        arrayOfStudentActivityCourses.push(data);
-      }
-    }
-
-    /**
-     * Filtered activity courses by status
-     */
-    const studentActivityByStatus = filterActivity(
-      arrayOfStudentActivityCourses
-    );
-
-    setStudentActivity({
-      ...studentActivity,
-      isLoading: false,
-      suggestedNextList: studentActivityByStatus.suggestedNextList,
-      suggestedOptionalList: studentActivityByStatus.suggestedOptionalList,
-      onGoingList: studentActivityByStatus.onGoingList,
-      gradedList: studentActivityByStatus.gradedList,
-      transferedList: studentActivityByStatus.transferedList,
-    });
-  };
+  }, [websocketState.websocket]);
 
   /**
    * updateSuggestion
-   * @param params
+   * @param params params
    */
   const updateSuggestion = async (params: UpdateSuggestionParams) => {
     const { goal, type, suggestionId, subjectCode, courseNumber, studentId } =
@@ -248,8 +253,8 @@ export const useStudentActivity = (
           }),
           "callback"
         )();
-      } catch (error) {
-        console.error(error);
+      } catch (err) {
+        displayNotification(`Update add suggestion:, ${err.message}`, "error");
       }
     } else {
       try {
@@ -262,13 +267,20 @@ export const useStudentActivity = (
           "callback"
         )();
       } catch (err) {
-        displayNotification(`Hups errori, ${err.message}`, "error");
+        displayNotification(
+          `Update remove suggestion:, ${err.message}`,
+          "error"
+        );
       }
     }
   };
 
   return {
     studentActivity,
+    /**
+     * updateSuggestion
+     * @param params params
+     */
     updateSuggestion: (params: UpdateSuggestionParams) =>
       updateSuggestion(params),
   };

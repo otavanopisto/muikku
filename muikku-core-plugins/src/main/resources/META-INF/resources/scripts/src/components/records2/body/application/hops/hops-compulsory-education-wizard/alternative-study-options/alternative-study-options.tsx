@@ -20,8 +20,11 @@ interface AlternativeStudyOptionsProps {
 
 /**
  * AlternativeStudyOptions
- * @param param0
- * @returns JSX.Element
+ * @param root0 root0
+ * @param root0.studentId studentId
+ * @param root0.displayNotification displayNotification
+ * @param root0.websocketState websocketState
+ * @param root0.disabled disabled
  */
 const AlternativeStudyOptions: React.FC<AlternativeStudyOptionsProps> = ({
   studentId,
@@ -37,7 +40,7 @@ const AlternativeStudyOptions: React.FC<AlternativeStudyOptionsProps> = ({
 
   /**
    * handleFinlandAsSecondLanguage
-   * @param e
+   * @param e e
    */
   const handleFinnishAsSecondLanguage = (
     e: React.ChangeEvent<HTMLInputElement>
@@ -50,6 +53,7 @@ const AlternativeStudyOptions: React.FC<AlternativeStudyOptionsProps> = ({
 
   /**
    * handleEthicsChange
+   * @param e e
    */
   const handleEthicsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     studyOptionHandlers.updateStudyOptions(studentId, {
@@ -94,7 +98,7 @@ const AlternativeStudyOptions: React.FC<AlternativeStudyOptionsProps> = ({
 
 /**
  * mapStateToProps
- * @param state
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -104,7 +108,7 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return { displayNotification };

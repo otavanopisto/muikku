@@ -38,7 +38,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
 
   /**
    * constructor
-   * @param props
+   * @param props props
    */
   constructor(props: HopsProps) {
     super(props);
@@ -48,7 +48,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
 
   /**
    * setHopsToWithDelay
-   * @param hops
+   * @param hops hops
    */
   setHopsToWithDelay(hops: HOPSDataType) {
     clearTimeout(this.timeout);
@@ -62,30 +62,26 @@ class Hops extends React.Component<HopsProps, HopsState> {
    * renderUpperSecondaryHops
    * @returns JSX.Element
    */
-  renderUpperSecondaryHops = () => {
-    return (
-      <section>
-        <h2 className="application-panel__content-header">
-          {this.props.i18n.text.get("plugin.records.hops.title")}
-        </h2>
-        <HopsGraph onHopsChange={this.setHopsToWithDelay} />
-      </section>
-    );
-  };
+  renderUpperSecondaryHops = () => (
+    <section>
+      <h2 className="application-panel__content-header">
+        {this.props.i18n.text.get("plugin.records.hops.title")}
+      </h2>
+      <HopsGraph onHopsChange={this.setHopsToWithDelay} />
+    </section>
+  );
 
   /**
    * renderHops
-   * @return JSX.Element
+   * @returns JSX.Element
    */
-  renderHops = () => {
-    return (
-      <CompulsoryEducationHopsWizard
-        user="student"
-        disabled={false}
-        superVisorModifies={false}
-      />
-    );
-  };
+  renderHops = () => (
+    <CompulsoryEducationHopsWizard
+      user="student"
+      disabled={false}
+      superVisorModifies={false}
+    />
+  );
 
   /**
    * Component render method
@@ -119,7 +115,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
 
 /**
  * mapStateToProps
- * @param state
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {

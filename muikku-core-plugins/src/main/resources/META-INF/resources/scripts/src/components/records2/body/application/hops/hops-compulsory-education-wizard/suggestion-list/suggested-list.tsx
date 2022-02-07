@@ -35,11 +35,13 @@ const defaultSuggestionListProps = {
 
 /**
  * SuggestionList
- * @param props
+ * @param props props
  * @returns JSX.Element
  */
 const SuggestionList = (props: SuggestionListProps) => {
   props = { ...defaultSuggestionListProps, ...props };
+
+  const { onLoad } = props;
 
   const { isLoading, suggestionsList } = useSuggestionList(
     props.subjectCode,
@@ -49,10 +51,10 @@ const SuggestionList = (props: SuggestionListProps) => {
   );
 
   React.useEffect(() => {
-    if (!isLoading && props.onLoad) {
-      props.onLoad();
+    if (!isLoading && onLoad) {
+      onLoad();
     }
-  }, [isLoading]);
+  }, [isLoading, onLoad]);
 
   /**
    * handleSuggestionClick
@@ -192,7 +194,7 @@ const SuggestionList = (props: SuggestionListProps) => {
 
 /**
  * mapStateToProps
- * @param state
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -202,7 +204,7 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return { displayNotification };

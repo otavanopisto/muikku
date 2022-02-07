@@ -1,5 +1,6 @@
 import * as React from "react";
 import "~/sass/elements/input-groups.scss";
+
 /**
  * CheckboxGroupProps
  */
@@ -13,7 +14,10 @@ interface InputGroupProps
 
 /**
  * CheckboxGroup
- * @param param0
+ * @param param0 param0
+ * @param param0.children children
+ * @param param0.modifiers modifiers
+ * @param param0.className className
  * @returns JSX.Element
  */
 export const InputGroup: React.FC<InputGroupProps> = ({
@@ -62,8 +66,8 @@ const defaultGroupItemProps = {
 
 /**
  * CheckboxGroupItem
- * @param param0
- * @returns
+ * @param props props
+ * @returns JSX.Element. Checkbox group item component
  */
 export const CheckboxGroupItem: React.FC<CheckboxGroupItemProps> = (props) => {
   props = { ...defaultGroupItemProps, ...props };
@@ -110,6 +114,9 @@ export const CheckboxGroupItem: React.FC<CheckboxGroupItemProps> = (props) => {
   );
 };
 
+/**
+ * ScaleInputGroupProps
+ */
 interface ScaleInputGroupProps<T> {
   name: keyof T | string;
   className?: string;
@@ -129,6 +136,11 @@ const defaultScaleInputGroupProps = {
   className: "group__item",
 };
 
+/**
+ *
+ * @param props props
+ * @returns JSX.Element. Scale input group component
+ */
 export const ScaleInputGroup = <T,>(props: ScaleInputGroupProps<T>) => {
   props = { ...defaultScaleInputGroupProps, ...props };
 
@@ -148,6 +160,10 @@ export const ScaleInputGroup = <T,>(props: ScaleInputGroupProps<T>) => {
     onChangeScaleGroup(name, scaleValue);
   }, [scaleValue]);
 
+  /**
+   * handleScaleChange
+   * @param e e
+   */
   const handleScaleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setScaleValue(parseInt(e.target.value));
   };
@@ -185,8 +201,8 @@ export const ScaleInputGroup = <T,>(props: ScaleInputGroupProps<T>) => {
       .join(" ");
   }
 
-  const items = Array.from(Array(scaleSize)).map((item, index) => {
-    return disabled ? (
+  const items = Array.from(Array(scaleSize)).map((item, index) =>
+    disabled ? (
       <ScaleInputItem
         className="scale__input__group"
         key={index}
@@ -207,8 +223,8 @@ export const ScaleInputGroup = <T,>(props: ScaleInputGroupProps<T>) => {
         checked={index === value}
         onChange={handleScaleChange}
       />
-    );
-  });
+    )
+  );
 
   return (
     <div className={`${updatedClassName} ${updatedClassMods}`}>
@@ -233,19 +249,20 @@ interface ScaleInputItemProps
 
 /**
  * ScaleInputItem
- * @param param0
- * @returns JSX.Element
+ * @param param0 param0
+ * @param param0.className className
+ * @param param0.modifiers modifiers
+ * @param param0.label label
+ * @returns JSX.Element. Scale input item component
  */
 export const ScaleInputItem: React.FC<ScaleInputItemProps> = ({
   className,
   modifiers,
   label,
   ...inputProps
-}) => {
-  return (
-    <div className={`${className} ${modifiers}`}>
-      <input type="radio" {...inputProps}></input>
-      <label className="item__label"> {label} </label>
-    </div>
-  );
-};
+}) => (
+  <div className={`${className} ${modifiers}`}>
+    <input type="radio" {...inputProps}></input>
+    <label className="item__label"> {label} </label>
+  </div>
+);

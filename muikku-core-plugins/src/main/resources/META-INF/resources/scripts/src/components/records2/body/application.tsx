@@ -14,7 +14,7 @@ import {
 import { HOPSType } from "../../../reducers/main-function/hops";
 import { StatusType } from "../../../reducers/base/status";
 import StudyInfo from "./application/study-info/study-info";
-import { TabType } from "~/components/general/tabs";
+import { Tab } from "~/components/general/tabs";
 import Hops from "./application/hops/hops";
 
 /**
@@ -117,12 +117,13 @@ class StudiesApplication extends React.Component<
   /**
    * Returns whether section with given hash should be visible or not
    *
-   * @param hash section hash
-   * @return whether section with given hash should be visible or not
+   * @param id section id
+   * @returns whether section with given hash should be visible or not
    */
   isVisible(id: string) {
     switch (id) {
       case "YO":
+        // eslint-disable-next-line no-case-declarations
         const yoVisibleValues = ["yes", "maybe"];
         return (
           this.props.status.isActiveUser &&
@@ -138,11 +139,12 @@ class StudiesApplication extends React.Component<
 
   /**
    * onTabChange
-   * @param id
+   * @param id id
+   * @param hash hash
    */
   onTabChange = (
     id: "RECORDS" | "HOPS" | "SUMMARY" | "YO",
-    hash?: string | TabType
+    hash?: string | Tab
   ) => {
     if (hash) {
       if (typeof hash === "string" || hash instanceof String) {
@@ -162,72 +164,82 @@ class StudiesApplication extends React.Component<
    * @returns JSX.Element
    */
   render() {
-    let title = (
+    const title = (
       <h1 className="application-panel__header-title">
         {this.props.i18n.text.get("plugin.records.pageTitle")}
       </h1>
     );
 
-    let panelTabs: TabType[] = [
+    let panelTabs: Tab[] = [
       {
         id: "SUMMARY",
         name: this.props.i18n.text.get("plugin.records.category.summary"),
         hash: "summary",
-        component: () => {
-          return (
-            <ApplicationPanelBody modifier="tabs">
-              <SummaryNew />
-            </ApplicationPanelBody>
-          );
-        },
+        /**
+         * component
+         * @returns JSX.Element
+         */
+        component: () => (
+          <ApplicationPanelBody modifier="tabs">
+            <SummaryNew />
+          </ApplicationPanelBody>
+        ),
       },
       {
         id: "RECORDS",
         name: this.props.i18n.text.get("plugin.records.category.records"),
         hash: "records",
-        component: () => {
-          return (
-            <ApplicationPanelBody modifier="tabs">
-              <Records />
-            </ApplicationPanelBody>
-          );
-        },
+        /**
+         * component
+         * @returns JSX.Element
+         */
+        component: () => (
+          <ApplicationPanelBody modifier="tabs">
+            <Records />
+          </ApplicationPanelBody>
+        ),
       },
       {
         id: "HOPS",
         name: this.props.i18n.text.get("plugin.records.category.hops"),
         hash: "hops",
-        component: () => {
-          return (
-            <ApplicationPanelBody modifier="tabs">
-              <Hops />
-            </ApplicationPanelBody>
-          );
-        },
+        /**
+         * component
+         * @returns JSX.Element
+         */
+        component: () => (
+          <ApplicationPanelBody modifier="tabs">
+            <Hops />
+          </ApplicationPanelBody>
+        ),
       },
       {
         id: "YO",
         name: "Yo",
         hash: "yo",
-        component: () => {
-          return (
-            <ApplicationPanelBody modifier="tabs">
-              <YO />
-            </ApplicationPanelBody>
-          );
-        },
+        /**
+         * component
+         * @returns JSX.Element
+         */
+        component: () => (
+          <ApplicationPanelBody modifier="tabs">
+            <YO />
+          </ApplicationPanelBody>
+        ),
       },
       {
         id: "STUDY_INFO",
         name: "Opintojen tiedot",
         hash: "info",
-        component: () => {
-          return (
-            <ApplicationPanelBody modifier="tabs">
-              <StudyInfo />
-            </ApplicationPanelBody>
-          );
-        },
+        /**
+         * component
+         * @returns JSX.Element
+         */
+        component: () => (
+          <ApplicationPanelBody modifier="tabs">
+            <StudyInfo />
+          </ApplicationPanelBody>
+        ),
       },
     ];
 
@@ -249,7 +261,7 @@ class StudiesApplication extends React.Component<
 
 /**
  * mapStateToProps
- * @param state
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -263,7 +275,7 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return {};

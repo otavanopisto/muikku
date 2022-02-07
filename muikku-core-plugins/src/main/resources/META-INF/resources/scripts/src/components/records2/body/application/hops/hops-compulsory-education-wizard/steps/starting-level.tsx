@@ -32,7 +32,7 @@ class StartingLevel extends React.Component<
 > {
   /**
    * constructor
-   * @param props
+   * @param props props
    */
   constructor(props: StartingLevelProps) {
     super(props);
@@ -42,7 +42,7 @@ class StartingLevel extends React.Component<
 
   /**
    * handleSelectsChange
-   * @param e
+   * @param name name
    */
   handleSelectsChange =
     (name: keyof HopsStudentStartingLevel) =>
@@ -55,7 +55,7 @@ class StartingLevel extends React.Component<
 
   /**
    * handleTextAreaChange
-   * @param e
+   * @param name name
    */
   handleTextAreaChange =
     (name: keyof HopsStudentStartingLevel) =>
@@ -68,7 +68,7 @@ class StartingLevel extends React.Component<
 
   /**
    * handleFinnishAsMainOrSecondaryLngChange
-   * @param e
+   * @param e e
    */
   handleFinnishAsMainOrSecondaryLngChange = (
     e: React.ChangeEvent<HTMLInputElement>
@@ -114,11 +114,11 @@ class StartingLevel extends React.Component<
 
   /**
    * handleCustomLngChange
-   * @param updatedLng
-   * @param index
+   * @param updatedLng updatedLng
+   * @param index index
    */
   handleCustomLngChange = (updatedLng: LanguageGrade, index: number) => {
-    let updatedLngGrades = [
+    const updatedLngGrades = [
       ...this.props.studentStartingLevel.previousLanguageExperience,
     ];
 

@@ -5,6 +5,9 @@ import promisify from "~/util/promisify";
 import { sleep } from "~/helper-functions/shared";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 
+/**
+ * AlternativeStudyObject
+ */
 export interface AlternativeStudyObject {
   finnishAsLanguage: boolean;
   religionAsEthics: boolean;
@@ -30,7 +33,11 @@ const initialState: UseStudentAlternativeOptions = {
 };
 
 /**
- * useFollowUpGoal
+ * Custom hook to load and changes alternative options
+ * @param studentId studentId
+ * @param websocketState websocketState
+ * @param displayNotification displayNotification
+ * @returns alternative study options list and method to update those
  */
 export const useStudentAlternativeOptions = (
   studentId: string,
@@ -59,7 +66,7 @@ export const useStudentAlternativeOptions = (
      * @param studentId of student
      */
     const loadStudentAlternativeOptionData = async (studentId: string) => {
-      setStudyOptions({ ...studyOptions, isLoading: true });
+      setStudyOptions((studyOptions) => ({ ...studyOptions, isLoading: true }));
 
       try {
         /**
@@ -83,22 +90,22 @@ export const useStudentAlternativeOptions = (
         ]);
 
         if (componentMounted.current) {
-          setStudyOptions({
+          setStudyOptions((studyOptions) => ({
             ...studyOptions,
             isLoading: false,
             options:
               loadedStudentAlternativeOptions !== undefined
                 ? loadedStudentAlternativeOptions
                 : initialState.options,
-          });
+          }));
         }
       } catch (err) {
         if (componentMounted.current) {
           displayNotification(`Hups errori, ${err.message}`, "error");
-          setStudyOptions({
+          setStudyOptions((studyOptions) => ({
             ...studyOptions,
             isLoading: false,
-          });
+          }));
         }
       }
     };
@@ -108,9 +115,32 @@ export const useStudentAlternativeOptions = (
     return () => {
       componentMounted.current = false;
     };
-  }, [studentId]);
+  }, [studentId, displayNotification]);
 
   React.useEffect(() => {
+    /**
+     * onAnswerSavedAtServer
+     * @param data data
+     * @param data.finnishAsLanguage finnishAsLanguage
+     * @param data.id id
+     * @param data.religionAsEthics religionAsEthics
+     * @param data.studentIdentifier studentIdentifier
+     */
+    const onAnswerSavedAtServer = (data: {
+      finnishAsLanguage: boolean;
+      id: number;
+      religionAsEthics: boolean;
+      studentIdentifier: string;
+    }) => {
+      setStudyOptions((studyOptions) => ({
+        ...studyOptions,
+        options: {
+          finnishAsLanguage: data.finnishAsLanguage,
+          religionAsEthics: data.religionAsEthics,
+        },
+      }));
+    };
+
     /**
      * Adding event callback to handle changes when ever
      * there has happened some changes with that message
@@ -129,30 +159,12 @@ export const useStudentAlternativeOptions = (
         onAnswerSavedAtServer
       );
     };
-  }, []);
+  }, [websocketState.websocket]);
 
   /**
-   * onAnswerSavedAtServer
-   * @param data
-   */
-  const onAnswerSavedAtServer = (data: {
-    finnishAsLanguage: boolean;
-    id: number;
-    religionAsEthics: boolean;
-    studentIdentifier: string;
-  }) => {
-    setStudyOptions({
-      ...studyOptions,
-      options: {
-        finnishAsLanguage: data.finnishAsLanguage,
-        religionAsEthics: data.religionAsEthics,
-      },
-    });
-  };
-
-  /**
-   * updateStudyHours
-   * @param studentId
+   * updateStudyOptions
+   * @param studentId studentId
+   * @param options options
    */
   const updateStudyOptions = async (
     studentId: string,
@@ -170,6 +182,11 @@ export const useStudentAlternativeOptions = (
 
   return {
     studyOptions,
+    /**
+     * updateStudyOptions
+     * @param studentId studentId
+     * @param options options
+     */
     updateStudyOptions: (studentId: string, options: AlternativeStudyObject) =>
       updateStudyOptions(studentId, options),
   };

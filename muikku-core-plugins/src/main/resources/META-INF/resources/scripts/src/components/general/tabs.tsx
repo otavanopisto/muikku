@@ -19,6 +19,10 @@ export interface Tab {
   name: string;
   /** Type Class modifier */
   type?: string;
+  /**
+   * Hash from url
+   */
+  hash?: string;
   /** Tab spesific action or actions for the mobile UI*/
   mobileAction?: JSX.Element | JSX.Element[];
   component: () => JSX.Element;
@@ -28,7 +32,7 @@ export interface Tab {
  * TabsProps
  */
 interface TabsProps {
-  onTabChange: (id: string) => void;
+  onTabChange: (id: string, hash?: string) => void;
   /** An array of all tab ids for swiper*/
   allTabs: string[];
   activeTab: string;
@@ -46,7 +50,7 @@ interface TabsProps {
  * MobileOnlyTabsProps
  */
 interface MobileOnlyTabsProps {
-  onTabChange: (id: string) => void;
+  onTabChange: (id: string, hash?: string) => void;
   activeTab: string;
   /** General class modifier */
   modifier?: string;
@@ -86,12 +90,23 @@ export const Tabs: React.FC<TabsProps> = (props) => {
   const nextSlide = allTabs[allTabs.indexOf(activeTab) + 1];
   const prevSlide = allTabs[allTabs.indexOf(activeTab) - 1];
 
+  const nextHash = tabs.find((tab) => tab.id === nextSlide);
+  const prevHash = tabs.find((tab) => tab.id === prevSlide);
+
   return (
     <div className={`tabs ${modifier ? "tabs--" + modifier : ""}`}>
       {isMobileWidth ? (
         <Swiper
-          onSlideNextTransitionStart={onTabChange.bind(this, nextSlide)}
-          onSlidePrevTransitionStart={onTabChange.bind(this, prevSlide)}
+          onSlideNextTransitionStart={onTabChange.bind(
+            this,
+            nextSlide,
+            nextHash
+          )}
+          onSlidePrevTransitionStart={onTabChange.bind(
+            this,
+            prevSlide,
+            prevHash
+          )}
           modules={[A11y, Pagination]}
           a11y={a11yConfig}
           pagination={paginationConfig}
@@ -127,7 +142,7 @@ export const Tabs: React.FC<TabsProps> = (props) => {
                   tab.id === activeTab ? "active" : ""
                 }`}
                 key={tab.id}
-                onClick={onTabChange.bind(this, tab.id)}
+                onClick={onTabChange.bind(this, tab.id, tab.hash)}
               >
                 {tab.name}
               </div>
@@ -173,7 +188,7 @@ export const MobileOnlyTabs: React.FC<MobileOnlyTabsProps> = (props) => {
               tab.id === activeTab ? "active" : ""
             }`}
             key={tab.id}
-            onClick={onTabChange.bind(this, tab.id)}
+            onClick={onTabChange.bind(this, tab.id, tab.hash)}
           >
             {tab.name}
           </div>
@@ -188,7 +203,7 @@ export const MobileOnlyTabs: React.FC<MobileOnlyTabsProps> = (props) => {
               tab.id === activeTab ? "active" : ""
             }`}
             key={tab.id}
-            onClick={onTabChange.bind(this, tab.id)}
+            onClick={onTabChange.bind(this, tab.id, tab.hash)}
           >
             {tab.name}
           </div>

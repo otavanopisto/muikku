@@ -22,10 +22,12 @@ const initialState: UseSuggestion = {
 };
 
 /**
- * useSuggestionList custom hook
- * @param subjectCode
- * @param course
- * @param loadData
+ * Custom hook for suggestion list
+ * @param subjectCode subjectCode
+ * @param course course
+ * @param displayNotification displayNotification
+ * @param loadData loadData
+ * @returns suggestion list
  */
 export const useSuggestionList = (
   subjectCode: string,
@@ -40,14 +42,14 @@ export const useSuggestionList = (
   React.useEffect(() => {
     /**
      * loadSuggestionListData
-     * @param subjectCode
-     * @param course
+     * @param subjectCode subjectCode
+     * @param course course
      */
     const loadSuggestionListData = async (
       subjectCode: string,
       course: Course
     ) => {
-      setSuggestins({ ...suggestions, isLoading: true });
+      setSuggestins((suggestions) => ({ ...suggestions, isLoading: true }));
 
       try {
         /**
@@ -71,16 +73,19 @@ export const useSuggestionList = (
         ]);
 
         if (componentMounted.current) {
-          setSuggestins({
+          setSuggestins((suggestions) => ({
             ...suggestions,
             isLoading: false,
             suggestionsList: loadedSuggestionListCourses,
-          });
+          }));
         }
       } catch (err) {
         if (componentMounted.current) {
           displayNotification(`Hups errori ${err}`, "error");
-          setSuggestins({ ...suggestions, isLoading: false });
+          setSuggestins((suggestions) => ({
+            ...suggestions,
+            isLoading: false,
+          }));
         }
       }
     };
@@ -88,13 +93,14 @@ export const useSuggestionList = (
     if (loadData) {
       loadSuggestionListData(subjectCode, course);
     }
-  }, [course, subjectCode, loadData]);
+  }, [course, subjectCode, loadData, displayNotification]);
 
-  React.useEffect(() => {
-    return () => {
+  React.useEffect(
+    () => () => {
       componentMounted.current = false;
-    };
-  }, []);
+    },
+    []
+  );
 
   return suggestions;
 };

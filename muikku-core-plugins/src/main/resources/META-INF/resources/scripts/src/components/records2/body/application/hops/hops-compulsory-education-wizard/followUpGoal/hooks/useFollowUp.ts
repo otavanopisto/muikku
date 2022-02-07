@@ -28,7 +28,11 @@ const initialState: UseFollowUpGoalsState = {
 };
 
 /**
- * useFollowUpGoal
+ * Custom hook for follow up goal
+ * @param studentId studentId
+ * @param websocketState websocketState
+ * @param displayNotification displayNotification
+ * @returns follow up goal data
  */
 export const useFollowUpGoal = (
   studentId: string,
@@ -149,8 +153,8 @@ export const useFollowUpGoal = (
 
   /**
    * updateFollowUpData
-   * @param studentId
-   * @param dataToUpdate
+   * @param studentId studentId
+   * @param dataToUpdate dataToUpdate
    */
   const updateFollowUpData = async (
     studentId: string,
@@ -168,6 +172,11 @@ export const useFollowUpGoal = (
 
   return {
     followUpData,
+    /**
+     * updateFollowUpData
+     * @param studentId studentId
+     * @param dataToUpdate dataToUpdate
+     */
     updateFollowUpData: (studentId: string, dataToUpdate: FollowUp) =>
       updateFollowUpData(studentId, dataToUpdate),
   };

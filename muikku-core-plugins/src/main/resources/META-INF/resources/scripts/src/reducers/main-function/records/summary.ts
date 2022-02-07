@@ -13,6 +13,9 @@ export interface SummaryStudyTime {
   studyEndDate: string;
 }
 
+/**
+ * SummaryStudentsGuidanceCouncelorsType
+ */
 export interface SummaryStudentsGuidanceCouncelorsType {
   firstName: string;
   lastName: string;

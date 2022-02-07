@@ -22,7 +22,11 @@ const initialState: UseStudentStudyHourState = {
 };
 
 /**
- * useFollowUpGoal
+ * Custom hook for student study hours
+ * @param studentId studentId
+ * @param websocketState websocketState
+ * @param displayNotification displayNotification
+ * @returns student study hours
  */
 export const useStudentStudyHour = (
   studentId: string,
@@ -51,7 +55,7 @@ export const useStudentStudyHour = (
      * @param studentId of student
      */
     const loadStudentActivityListData = async (studentId: string) => {
-      setStudyHours({ ...studyHours, isLoading: true });
+      setStudyHours((studyHours) => ({ ...studyHours, isLoading: true }));
 
       try {
         /**
@@ -75,20 +79,20 @@ export const useStudentStudyHour = (
         ]);
 
         if (componentMounted.current) {
-          setStudyHours({
+          setStudyHours((studyHours) => ({
             ...studyHours,
             isLoading: false,
             studyHourValue:
               loadedStudentHours !== undefined ? loadedStudentHours : 0,
-          });
+          }));
         }
       } catch (err) {
         if (componentMounted.current) {
           displayNotification(`Hups errori, ${err.message}`, "error");
-          setStudyHours({
+          setStudyHours((studyHours) => ({
             ...studyHours,
             isLoading: false,
-          });
+          }));
         }
       }
     };
@@ -98,9 +102,29 @@ export const useStudentStudyHour = (
     return () => {
       componentMounted.current = false;
     };
-  }, [studentId]);
+  }, [studentId, displayNotification]);
 
   React.useEffect(() => {
+    /**
+     * onAnswerSavedAtServer
+     * @param data data
+     * @param data.id id
+     * @param data.studentIdentifier studentIdentifier
+     * @param data.studyHours studyHours
+     */
+    const onAnswerSavedAtServer = (data: {
+      id: number;
+      studentIdentifier: string;
+      studyHours: number;
+    }) => {
+      if (data.studyHours !== ref.current.studyHourValue) {
+        setStudyHours((studyHours) => ({
+          ...studyHours,
+          studyHourValue: data.studyHours,
+        }));
+      }
+    };
+
     /**
      * Adding event callback to handle changes when ever
      * there has happened some changes with that message
@@ -119,25 +143,12 @@ export const useStudentStudyHour = (
         onAnswerSavedAtServer
       );
     };
-  }, []);
-
-  /**
-   * onAnswerSavedAtServer
-   * @param data
-   */
-  const onAnswerSavedAtServer = (data: {
-    id: number;
-    studentIdentifier: string;
-    studyHours: number;
-  }) => {
-    if (data.studyHours !== ref.current.studyHourValue) {
-      setStudyHours({ ...studyHours, studyHourValue: data.studyHours });
-    }
-  };
+  }, [websocketState.websocket]);
 
   /**
    * updateStudyHours
-   * @param studentId
+   * @param studentId studentId
+   * @param hours hours
    */
   const updateStudyHours = async (studentId: string, hours: number) => {
     try {
@@ -154,6 +165,11 @@ export const useStudentStudyHour = (
 
   return {
     studyHours,
+    /**
+     * updateStudyHours
+     * @param studentId studentId
+     * @param hours hours
+     */
     updateStudyHours: (studentId: string, hours: number) =>
       updateStudyHours(studentId, hours),
   };

@@ -17,29 +17,28 @@ interface LanguageGradeTableProps {}
 
 /**
  * LanguageGradeTable
- * @param param0
- * @returns JSX.Element
+ * @param param0 param0
+ * @param param0.children children
+ * @returns JSX.Element. Language grade table component
  */
 export const LanguageGradeTable: React.FC<LanguageGradeTableProps> = ({
   children,
-}) => {
-  return (
-    <Table modifiers={["language-table"]}>
-      <TableHead modifiers={["language-table"]}>
-        <Tr modifiers={["language-table"]}>
-          <Th style={{ maxWidth: "80px", textAlign: "center" }}>Kieli</Th>
-          <Th modifiers={["centered"]}>1</Th>
-          <Th modifiers={["centered"]}>2</Th>
-          <Th modifiers={["centered"]}>3</Th>
-          <Th modifiers={["centered"]}>4</Th>
-          <Th modifiers={["centered"]}>5</Th>
-          <Th style={{ maxWidth: "50px", textAlign: "center" }}>Toimin.</Th>
-        </Tr>
-      </TableHead>
-      <Tbody>{children}</Tbody>
-    </Table>
-  );
-};
+}) => (
+  <Table modifiers={["language-table"]}>
+    <TableHead modifiers={["language-table"]}>
+      <Tr modifiers={["language-table"]}>
+        <Th style={{ maxWidth: "80px", textAlign: "center" }}>Kieli</Th>
+        <Th modifiers={["centered"]}>1</Th>
+        <Th modifiers={["centered"]}>2</Th>
+        <Th modifiers={["centered"]}>3</Th>
+        <Th modifiers={["centered"]}>4</Th>
+        <Th modifiers={["centered"]}>5</Th>
+        <Th style={{ maxWidth: "50px", textAlign: "center" }}>Toimin.</Th>
+      </Tr>
+    </TableHead>
+    <Tbody>{children}</Tbody>
+  </Table>
+);
 
 /**
  * LanguageGradeRowProps
@@ -54,8 +53,13 @@ interface LanguageGradeRowProps {
 
 /**
  * LanguageGradeRow
- * @param param0
- * @returns JSX.Element
+ * @param param0 param0
+ * @param param0.index index
+ * @param param0.lng lng
+ * @param param0.onDeleteRowClick onDeleteRowClick
+ * @param param0.onLanguageRowChange onLanguageRowChange
+ * @param param0.disabled disabled
+ * @returns JSX.Element. Language grade table row
  */
 export const LanguageGradeRow: React.FC<LanguageGradeRowProps> = ({
   index,
@@ -66,21 +70,21 @@ export const LanguageGradeRow: React.FC<LanguageGradeRowProps> = ({
 }) => {
   /**
    * handleOtherLngChange
-   * @param e
+   * @param e e
    */
   const handleOtherLngChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let updatedLng = { ...lng, name: e.currentTarget.value };
+    const updatedLng = { ...lng, name: e.currentTarget.value };
 
     onLanguageRowChange(updatedLng, index);
   };
 
   /**
    * handleRadioInputChange
-   * @param number
+   * @param number number
    */
   const handleRadioInputChange =
     (number: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
-      let updatedLng = { ...lng, grade: number };
+      const updatedLng = { ...lng, grade: number };
 
       onLanguageRowChange(updatedLng, index);
     };

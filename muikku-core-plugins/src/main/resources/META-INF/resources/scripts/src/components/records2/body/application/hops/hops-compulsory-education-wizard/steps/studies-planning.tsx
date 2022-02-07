@@ -39,7 +39,7 @@ class StudiesPlanning extends React.Component<
 > {
   /**
    * constructor
-   * @param props
+   * @param props props
    */
   constructor(props: StudiesPlanningProps) {
     super(props);
@@ -53,7 +53,7 @@ class StudiesPlanning extends React.Component<
 
   /**
    * handleGoalsSelectsChange
-   * @param name
+   * @param name name
    */
   handleGoalsSelectsChange =
     (name: keyof HopsPlanningStudies) =>

@@ -28,8 +28,10 @@ import { useStudentStudyHour } from "./hooks/use-student-study-hours";
 import { useStudentAlternativeOptions } from "./hooks/use-student-alternative-options";
 import { useFollowUpGoal } from "../followUpGoal/hooks/useFollowUp";
 
-let ProgressBarCircle = require("react-progress-bar.js").Circle;
-let ProgressBarLine = require("react-progress-bar.js").Line;
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const ProgressBarCircle = require("react-progress-bar.js").Circle;
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const ProgressBarLine = require("react-progress-bar.js").Line;
 
 /**
  * StudyToolProps
@@ -124,7 +126,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
     const hoursInTotalToComplete =
       updatedMandatoryHoursNeeded + selectedOptionalHours - allApprovedHours;
 
-    let totalTime = getTotalTime(
+    const totalTime = getTotalTime(
       hoursInTotalToComplete,
       studyHours.studyHourValue
     );
@@ -600,15 +602,15 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
 
   /**
    * getTotalTime
-   * @param totalHours
-   * @param hoursPerWeek
+   * @param totalHours totalHours
+   * @param hoursPerWeek hoursPerWeek
    */
   const getTotalTime = (totalHours: number, hoursPerWeek: number) => {
     const totalMonths = Math.round(((totalHours / hoursPerWeek) * 7) / 31);
-    let totalTimeValue: any = `${totalMonths}kk`;
-    let offsetYears = 0;
+    const totalTimeValue: any = `${totalMonths}kk`;
+    /* let offsetYears = 0;
     let offsetMonths = 0;
-    let offsetWeeks = 0;
+    let offsetWeeks = 0; */
 
     if (!hoursPerWeek || hoursPerWeek === 0) {
       return 0;
@@ -619,6 +621,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
 
   /**
    * handleUsedHoursPerWeekChange
+   * @param e e
    */
   const handleUsedHoursPerWeekChange = (
     e: React.ChangeEvent<HTMLInputElement>
@@ -866,7 +869,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
                     }}
                     text={`
                     ${completedOptionalStudies}
-                    / 
+                    /
                     ${NEEDED_STUDIES_IN_TOTAL - needMandatoryStudies} ${
                       jotain > 0 ? `(${jotain})` : ""
                     }`}
@@ -1000,7 +1003,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
 
 /**
  * mapStateToProps
- * @param state
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -1010,7 +1013,7 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return { displayNotification };

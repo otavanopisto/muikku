@@ -3,11 +3,7 @@ import mApi from "~/lib/mApi";
 import { sleep } from "~/helper-functions/shared";
 import promisify from "~/util/promisify";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
-import {
-  CourseStatus,
-  StudentActivityCourse,
-  SuggestionWithWorkspaceInfo,
-} from "~/@types/shared";
+import { CourseStatus, StudentActivityCourse } from "~/@types/shared";
 import { Course } from "../course-carousel";
 import { schoolCourseTable } from "~/mock/mock-data";
 import { Suggestion } from "../../../../../../../@types/shared";
@@ -33,8 +29,10 @@ export interface UseCourseCarousel {
 }
 
 /**
- * useStudentActivity
  * Custom hook to return student activity data
+ * @param studentId studentId
+ * @param displayNotification displayNotification
+ * @returns array of course carousel items
  */
 export const useCourseCarousel = (
   studentId: string,
@@ -80,7 +78,7 @@ export const useCourseCarousel = (
              * with server calls that returns suggested courses which will eventually go
              * to course carousel. For now there is atleast one course per subject. Might be changed later.
              */
-            let courses: { subjectCode: string; courseNumber: number }[] = [];
+            const courses: { subjectCode: string; courseNumber: number }[] = [];
 
             /**
              * Iterate course matrix

@@ -20,7 +20,7 @@ interface DonePropsState {}
 class Done extends React.Component<DoneProps, DonePropsState> {
   /**
    * constructor
-   * @param props
+   * @param props props
    */
   constructor(props: DoneProps) {
     super(props);
@@ -30,7 +30,7 @@ class Done extends React.Component<DoneProps, DonePropsState> {
 
   /**
    * renderStateMessage
-   * @param saveState
+   * @param saveState saveState
    * @returns JSX.Element
    */
   renderStateMessage = (saveState: SaveState) =>
