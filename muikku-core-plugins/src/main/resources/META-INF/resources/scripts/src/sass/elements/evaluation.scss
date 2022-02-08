@@ -137,6 +137,7 @@
   right: 0;
 
   @include breakpoint($breakpoint-desktop) {
+    background: transparent;
     bottom: unset;
     box-shadow: none;
     left: unset;
