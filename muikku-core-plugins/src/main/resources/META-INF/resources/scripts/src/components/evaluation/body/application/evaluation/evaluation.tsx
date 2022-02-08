@@ -631,7 +631,7 @@ export class Evaluation extends React.Component<
       const subject =
         evaluationsEvents.length > 0 &&
         evaluationsEvents.find(
-          (event, index) =>
+          (event) =>
             event.workspaceSubjectIdentifier === subjectToBeEvaluated.identifier
         );
 
@@ -994,61 +994,71 @@ export class Evaluation extends React.Component<
                 ) : null}
               </div>
 
-              <div className="evaluation-modal__content-buttonset">
-                <Button
-                  onClick={this.handleOpenWorkspaceEvaluationDrawer}
-                  buttonModifiers={["evaluation-add-assessment"]}
-                  disabled={
-                    this.props.evaluation.evaluationAssessmentEvents.state ===
-                      "LOADING" ||
-                    this.props.evaluation.basePrice.state === "LOADING" ||
-                    (this.props.evaluation.evaluationSelectedAssessmentId
-                      .subjects.length > 1 &&
-                      !subjectToBeEvaluated)
-                  }
-                >
-                  {isEvaluated &&
-                  isSelectedSubjectEvaluated &&
-                  subjectToBeEvaluated
-                    ? this.props.i18n.text.get(
-                        "plugin.evaluation.evaluationModal.events.improvedGradeButton"
-                      )
-                    : this.props.i18n.text.get(
-                        "plugin.evaluation.evaluationModal.events.gradeButton"
-                      )}
-                </Button>
-                <Button
-                  onClick={
-                    this.handleOpenWorkspaceSupplementationEvaluationDrawer
-                  }
-                  buttonModifiers={["evaluation-add-supplementation"]}
-                  disabled={
-                    this.props.evaluation.evaluationAssessmentEvents.state ===
-                      "LOADING" ||
-                    this.props.evaluation.basePrice.state === "LOADING" ||
-                    (this.props.evaluation.evaluationSelectedAssessmentId
-                      .subjects.length > 1 &&
-                      !subjectToBeEvaluated)
-                  }
-                >
-                  {this.props.i18n.text.get(
-                    "plugin.evaluation.evaluationModal.events.supplementationButton"
-                  )}
-                </Button>
-
-                {this.props.selectedAssessment.subjects.length > 1 ? (
-                  <select onChange={this.handleSelectSubjectEvaluationChange}>
-                    <option value="">Valitse</option>
-                    {this.props.selectedAssessment.subjects.map((subject) => (
-                      <option
-                        key={subject.identifier}
-                        value={subject.identifier}
-                      >
-                        {subject.subject.name}
+              <div className="evaluation-modal__content-footer">
+                <div className="evaluation-modal__content-selector">
+                  {this.props.selectedAssessment.subjects.length > 1 ? (
+                    <select
+                      className="form-element__select form-element__select--evaluation"
+                      onChange={this.handleSelectSubjectEvaluationChange}
+                    >
+                      <option value="">
+                        {this.props.i18n.text.get(
+                          "plugin.evaluation.evaluationModal.events.selectSubject"
+                        )}
                       </option>
-                    ))}
-                  </select>
-                ) : null}
+                      {this.props.selectedAssessment.subjects.map((subject) => (
+                        <option
+                          key={subject.identifier}
+                          value={subject.identifier}
+                        >
+                          {subject.subject.name}
+                        </option>
+                      ))}
+                    </select>
+                  ) : null}
+                </div>
+                <div className="evaluation-modal__content-buttonset">
+                  <Button
+                    onClick={this.handleOpenWorkspaceEvaluationDrawer}
+                    buttonModifiers={["evaluation-add-assessment"]}
+                    disabled={
+                      this.props.evaluation.evaluationAssessmentEvents.state ===
+                        "LOADING" ||
+                      this.props.evaluation.basePrice.state === "LOADING" ||
+                      (this.props.evaluation.evaluationSelectedAssessmentId
+                        .subjects.length > 1 &&
+                        !subjectToBeEvaluated)
+                    }
+                  >
+                    {isEvaluated &&
+                    isSelectedSubjectEvaluated &&
+                    subjectToBeEvaluated
+                      ? this.props.i18n.text.get(
+                          "plugin.evaluation.evaluationModal.events.improvedGradeButton"
+                        )
+                      : this.props.i18n.text.get(
+                          "plugin.evaluation.evaluationModal.events.gradeButton"
+                        )}
+                  </Button>
+                  <Button
+                    onClick={
+                      this.handleOpenWorkspaceSupplementationEvaluationDrawer
+                    }
+                    buttonModifiers={["evaluation-add-supplementation"]}
+                    disabled={
+                      this.props.evaluation.evaluationAssessmentEvents.state ===
+                        "LOADING" ||
+                      this.props.evaluation.basePrice.state === "LOADING" ||
+                      (this.props.evaluation.evaluationSelectedAssessmentId
+                        .subjects.length > 1 &&
+                        !subjectToBeEvaluated)
+                    }
+                  >
+                    {this.props.i18n.text.get(
+                      "plugin.evaluation.evaluationModal.events.supplementationButton"
+                    )}
+                  </Button>
+                </div>
               </div>
             </div>
           </div>

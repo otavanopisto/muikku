@@ -89,7 +89,6 @@
 }
 
 .evaluation-modal__content-wrapper {
-
   @include breakpoint($breakpoint-desktop) {
     height: 100%;
     overflow-y: scroll;
@@ -124,6 +123,22 @@
   @include breakpoint($breakpoint-pad) {
     padding: 0 10px;
   }
+}
+
+.evaluation-modal__content-footer {
+  align-items: center;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+}
+
+.evaluation-modal__content-selector {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  margin: 0 0 5px;
+  width: 100%;
 }
 
 .evaluation-modal__content-buttonset {
