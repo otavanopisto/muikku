@@ -12,7 +12,7 @@
   height: calc(100% - 55px);
   margin: 55px 0 0;
   overflow: auto;
-  padding: 0 0 40px;
+  padding: 0 0 75px;
 
   @include breakpoint($breakpoint-desktop) {
     flex-direction: row;
@@ -126,10 +126,23 @@
 }
 
 .evaluation-modal__content-footer {
-  align-items: center;
+  background: $color-default;
+  border-top: 1px solid $color-default-separator-border;
+  bottom: 0;
   display: flex;
   flex-flow: column nowrap;
-  justify-content: center;
+  left: 0;
+  padding: 10px 0 5px;
+  position: fixed;
+  right: 0;
+
+  @include breakpoint($breakpoint-desktop) {
+    bottom: unset;
+    box-shadow: none;
+    left: unset;
+    position: static;
+    right: unset;
+  }
 }
 
 .evaluation-modal__content-selector {
@@ -143,19 +156,8 @@
 
 .evaluation-modal__content-buttonset {
   align-items: center;
-  bottom: 10px;
   display: flex;
   justify-content: center;
-  left: 0;
-  position: fixed;
-  right: 0;
-
-  @include breakpoint($breakpoint-desktop) {
-    bottom: unset;
-    left: unset;
-    position: static;
-    right: unset;
-  }
 }
 
 // Evaluation assessment events
