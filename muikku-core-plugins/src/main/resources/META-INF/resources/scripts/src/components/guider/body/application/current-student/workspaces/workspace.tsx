@@ -134,9 +134,17 @@ class StudentWorkspace extends React.Component<
     // By default every workspace is not combination
     let isCombinationWorkspace = false;
 
-    if (workspace.activity) {
+    if (workspace.subjects) {
       // If assessmentState contains more than 1 items, then its is combination
-      isCombinationWorkspace = workspace.activity.assessmentState.length > 1;
+      isCombinationWorkspace = workspace.subjects.length > 1;
+    }
+
+    // By default this is undefined so ApplicationListItemHeader won't get empty list
+    // item as part of its modifiers when course is non combined version
+    let applicationListWorkspaceTypeMod = undefined;
+
+    if (isCombinationWorkspace) {
+      applicationListWorkspaceTypeMod = "combination-course";
     }
 
     /**
@@ -145,7 +153,7 @@ class StudentWorkspace extends React.Component<
      * @returns JSX.Element
      */
     const renderCombinationSubjectAssessments = () => (
-      <ApplicationListItemContentContainer>
+      <ApplicationListItemContentContainer modifiers="combination-course">
         {this.props.workspace.activity.assessmentState.map((a) => {
           /**
            * Find subject data, that contains basic information about that subject
@@ -163,13 +171,14 @@ class StudentWorkspace extends React.Component<
 
           return (
             <div
+              className="application-list__item-content-single-item"
               key={a.workspaceSubjectIdentifier}
-              style={{
-                display: "flex",
-                alignItems: "center",
-              }}
             >
-              <h4>{`(${subjectData.subject.code.toUpperCase()})`}</h4>
+              <span className="application-list__item-content-single-item-primary">
+                {subjectData.subject.code.toUpperCase()} -{" "}
+                {subjectData.subject.name} ({subjectData.courseLength}
+                {subjectData.courseLengthSymbol.symbol})
+              </span>
 
               <GuiderAssessment i18n={this.props.i18n} assessment={a} />
             </div>
@@ -240,7 +249,11 @@ class StudentWorkspace extends React.Component<
         }`}
       >
         <ApplicationListItemHeader
-          modifiers="course"
+          modifiers={
+            applicationListWorkspaceTypeMod
+              ? ["course", applicationListWorkspaceTypeMod]
+              : ["course"]
+          }
           onClick={this.handleToggleActivitiesVisibleClick}
         >
           <span className="application-list__header-icon icon-books"></span>
