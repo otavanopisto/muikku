@@ -37,12 +37,18 @@ export interface createCalendarEventTriggerType {
   }): AnyActionType;
 }
 
-export interface LOAD_CALENDAR_EVENTS
-  extends SpecificActionType<"LOAD_CALENDAR_EVENTS", Event[]> {}
-export interface UPDATE_CALENDAR_EVENTS
-  extends SpecificActionType<"UPDATE_CALENDAR_EVENTS", Event> {}
-export interface DELETE_CALENDAR_EVENT
-  extends SpecificActionType<"DELETE_CALENDAR_EVENT", Event> {}
+export interface deleteCalendarEventTriggerType {
+  (id: number): AnyActionType;
+}
+
+export interface LOAD_CALENDAR_GUIDANCE_EVENTS
+  extends SpecificActionType<"LOAD_CALENDAR_GUIDANCE_EVENTS", Event[]> {}
+export interface UPDATE_CALENDAR_GUIDANCE_EVENT
+  extends SpecificActionType<"UPDATE_CALENDAR_GUIDANCE_EVENT", Event> {}
+export interface ADD_CALENDAR_GUIDANCE_EVENT
+  extends SpecificActionType<"ADD_CALENDAR_GUIDANCE_EVENT", Event> {}
+export interface DELETE_CALENDAR_GUIDANCE_EVENT
+  extends SpecificActionType<"DELETE_CALENDAR_GUIDANCE_EVENT", Event> {}
 export interface UPDATE_CALENDAR_EVENTS_STATUS
   extends SpecificActionType<"UPDATE_CALENDAR_EVENTS_STATUS", EventsState> {}
 
@@ -63,7 +69,7 @@ const loadCalendarEvents: LoadCalendarEventsTriggerType =
           payload: <EventsState>"LOADING",
         });
         dispatch({
-          type: "LOAD_CALENDAR_EVENTS",
+          type: "LOAD_CALENDAR_GUIDANCE_EVENTS",
           payload: <Event[]>(
             await promisify(
               mApi().calendar.events.read({ userEntityId, start, end, type }),
@@ -108,7 +114,7 @@ const createCalendarEvent: createCalendarEventTriggerType =
       getState: () => StateType
     ) => {
       dispatch({
-        type: "UPDATE_CALENDAR_EVENTS",
+        type: "ADD_CALENDAR_GUIDANCE_EVENT",
         payload: <Event>await promisify(
           mApi().calendar.event.create({
             start,
@@ -135,5 +141,79 @@ const createCalendarEvent: createCalendarEventTriggerType =
     };
   };
 
+const updateCalendarEvent: createCalendarEventTriggerType =
+  function updateCalendarEvent(event) {
+    const {
+      start,
+      end,
+      allDay,
+      title,
+      description,
+      visibility,
+      type,
+      participants,
+    } = event;
+
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      dispatch({
+        type: "UPDATE_CALENDAR_GUIDANCE_EVENT",
+        payload: <Event>await promisify(
+          mApi().calendar.event.update({
+            start,
+            end,
+            allDay,
+            title,
+            description,
+            visibility,
+            type,
+            participants,
+          }),
+          "callback"
+        )(),
+      });
+      try {
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          actions.displayNotification(getState().i18n.text.get("todo"), "error")
+        );
+      }
+    };
+  };
+
+const deleteCalendarEvent: deleteCalendarEventTriggerType =
+  function deleteCalendarEvent(id) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      dispatch({
+        type: "DELETE_CALENDAR_GUIDANCE_EVENT",
+        payload: <Event>(
+          await promisify(mApi().calendar.event.del(id), "callback")()
+        ),
+      });
+      try {
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          actions.displayNotification(getState().i18n.text.get("todo"), "error")
+        );
+      }
+    };
+  };
+
 export default { loadCalendarEvents };
-export { createCalendarEvent, loadCalendarEvents };
+export {
+  createCalendarEvent,
+  loadCalendarEvents,
+  updateCalendarEvent,
+  deleteCalendarEvent,
+};

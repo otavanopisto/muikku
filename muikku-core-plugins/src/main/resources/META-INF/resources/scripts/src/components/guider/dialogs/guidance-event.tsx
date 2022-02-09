@@ -102,8 +102,10 @@ const GuidanceEvent: React.FC<GuidanceEventProps> = (props) => {
   const handleDateSelect = (args: DateSelectArg) => {
     let newEvent = {
       id: "new-event",
-      title: getName(guider.currentStudent.basic, true),
-      description: "Ohjausaika opiskelijalle",
+      title: "Ohjauskeskustelu",
+      description:
+        "Ohjausaika opiskelijalle:" +
+        getName(guider.currentStudent.basic, true),
       start: args.startStr,
       classNames: ["env-dialog__guidance-event"],
       overlap: false,
@@ -125,12 +127,9 @@ const GuidanceEvent: React.FC<GuidanceEventProps> = (props) => {
       description: event.extendedProps.description,
       start: event.startStr,
       end: event.endStr,
-      visibility: "PRIVATE" as EventVisibility,
+      visibility: "PUBLIC" as EventVisibility,
       type: "guidance",
       participants: [
-        {
-          userEntityId: status.userId,
-        },
         {
           userEntityId: guider.currentStudent.basic.userEntityId,
         },
@@ -167,7 +166,7 @@ const GuidanceEvent: React.FC<GuidanceEventProps> = (props) => {
   };
 
   /** Turns the state events to background events*/
-  const events = calendar.events.map((event) => {
+  const events = calendar.guidanceEvents.map((event) => {
     return {
       title: event.title,
       start: event.start,

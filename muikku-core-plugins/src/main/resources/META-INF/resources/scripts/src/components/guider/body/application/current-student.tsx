@@ -32,7 +32,7 @@ import {
 import NewMessage from "~/components/communicator/dialogs/new-message";
 import { ButtonPill } from "~/components/general/button";
 import GuiderToolbarLabels from "./toolbar/labels";
-import GuidanceEvent from "./toolbar/guidance-event";
+import GuidanceEvent from "../../dialogs/guidance-event";
 import { Event } from "~/reducers/calendar";
 import { ResourceTimeline } from "../../../general/resource-timeline";
 import workspaces from "./current-student/workspaces";

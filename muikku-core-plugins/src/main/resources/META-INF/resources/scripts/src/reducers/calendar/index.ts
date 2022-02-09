@@ -1,5 +1,11 @@
 import { ActionType } from "~/actions";
-import equals = require("deep-equal");
+
+export type Participant = {
+  userEntityId: number;
+  name: string;
+  attendance: "UNCONFIRMED" | "YES" | "NO" | "MAYBE";
+};
+
 export interface Event {
   id?: string;
   title?: string;
@@ -11,13 +17,14 @@ export interface Event {
   display?: "auto" | "background";
   backgroundColor?: string;
   resourceId?: string;
+  participants?: Participant[];
 }
 
 export type EventsState = "LOADING" | "ERROR" | "READY";
 
 export interface Calendar {
   state: EventsState;
-  events: Event[];
+  guidanceEvents: Event[];
 }
 
 /**
@@ -39,7 +46,7 @@ export const evaluateEvents = (event: Event, events: Event[]) => {
 export default function calendar(
   state: Calendar = {
     state: "LOADING",
-    events: [],
+    guidanceEvents: [],
   },
   action: ActionType
 ): Calendar {
@@ -47,22 +54,31 @@ export default function calendar(
     case "UPDATE_CALENDAR_EVENTS_STATUS":
       const newState: EventsState = action.payload;
       return Object.assign({}, state, { state: newState });
-    case "LOAD_CALENDAR_EVENTS":
+    case "LOAD_CALENDAR_GUIDANCE_EVENTS":
       const newEvents: Event[] = action.payload;
       const newEventsFiltered = newEvents.filter((event) => {
-        return evaluateEvents(event, state.events);
+        return evaluateEvents(event, state.guidanceEvents);
       });
       return Object.assign({}, state, {
-        events: [...state.events, ...newEventsFiltered],
+        guidanceEvents: [...state.guidanceEvents, ...newEventsFiltered],
       });
-    case "UPDATE_CALENDAR_EVENTS":
+    case "ADD_CALENDAR_GUIDANCE_EVENT":
       const newEvent: Event[] = [action.payload];
       return Object.assign({}, state, {
-        events: [...state.events, ...newEvent],
+        guidanceEvents: [...state.guidanceEvents, ...newEvent],
       });
-    case "DELETE_CALENDAR_EVENT":
+    case "UPDATE_CALENDAR_GUIDANCE_EVENT":
+      const updateEvent: Event[] = [action.payload];
+      const filteredState = state.guidanceEvents.filter(
+        (event) => event.id !== action.payload.id
+      );
+
       return Object.assign({}, state, {
-        events: state.events.filter(
+        guidanceEvents: [...filteredState, ...updateEvent],
+      });
+    case "DELETE_CALENDAR_GUIDANCE_EVENT":
+      return Object.assign({}, state, {
+        guidanceEvents: state.guidanceEvents.filter(
           (event: Event) => event.id !== action.payload.id
         ),
       });
