@@ -3,7 +3,7 @@ import promisify from "~/util/promisify";
 import { AnyActionType, SpecificActionType } from "~/actions";
 import mApi, { MApiError } from "~/lib/mApi";
 import { StateType } from "~/reducers";
-import { EventsState, Event } from "~/reducers/calendar";
+import { EventsState, CalendarEvent } from "~/reducers/calendar";
 
 export type Participants = {
   userEntityId: number;
@@ -42,13 +42,16 @@ export interface deleteCalendarEventTriggerType {
 }
 
 export interface LOAD_CALENDAR_GUIDANCE_EVENTS
-  extends SpecificActionType<"LOAD_CALENDAR_GUIDANCE_EVENTS", Event[]> {}
+  extends SpecificActionType<
+    "LOAD_CALENDAR_GUIDANCE_EVENTS",
+    CalendarEvent[]
+  > {}
 export interface UPDATE_CALENDAR_GUIDANCE_EVENT
-  extends SpecificActionType<"UPDATE_CALENDAR_GUIDANCE_EVENT", Event> {}
+  extends SpecificActionType<"UPDATE_CALENDAR_GUIDANCE_EVENT", CalendarEvent> {}
 export interface ADD_CALENDAR_GUIDANCE_EVENT
-  extends SpecificActionType<"ADD_CALENDAR_GUIDANCE_EVENT", Event> {}
+  extends SpecificActionType<"ADD_CALENDAR_GUIDANCE_EVENT", CalendarEvent> {}
 export interface DELETE_CALENDAR_GUIDANCE_EVENT
-  extends SpecificActionType<"DELETE_CALENDAR_GUIDANCE_EVENT", Event> {}
+  extends SpecificActionType<"DELETE_CALENDAR_GUIDANCE_EVENT", CalendarEvent> {}
 export interface UPDATE_CALENDAR_EVENTS_STATUS
   extends SpecificActionType<"UPDATE_CALENDAR_EVENTS_STATUS", EventsState> {}
 
@@ -70,7 +73,7 @@ const loadCalendarEvents: LoadCalendarEventsTriggerType =
         });
         dispatch({
           type: "LOAD_CALENDAR_GUIDANCE_EVENTS",
-          payload: <Event[]>(
+          payload: <CalendarEvent[]>(
             await promisify(
               mApi().calendar.events.read({ userEntityId, start, end, type }),
               "callback"
@@ -115,7 +118,7 @@ const createCalendarEvent: createCalendarEventTriggerType =
     ) => {
       dispatch({
         type: "ADD_CALENDAR_GUIDANCE_EVENT",
-        payload: <Event>await promisify(
+        payload: <CalendarEvent>await promisify(
           mApi().calendar.event.create({
             start,
             end,
@@ -160,7 +163,7 @@ const updateCalendarEvent: createCalendarEventTriggerType =
     ) => {
       dispatch({
         type: "UPDATE_CALENDAR_GUIDANCE_EVENT",
-        payload: <Event>await promisify(
+        payload: <CalendarEvent>await promisify(
           mApi().calendar.event.update({
             start,
             end,
@@ -194,7 +197,7 @@ const deleteCalendarEvent: deleteCalendarEventTriggerType =
     ) => {
       dispatch({
         type: "DELETE_CALENDAR_GUIDANCE_EVENT",
-        payload: <Event>(
+        payload: <CalendarEvent>(
           await promisify(mApi().calendar.event.del(id), "callback")()
         ),
       });

@@ -6,10 +6,24 @@ export type Participant = {
   attendance: "UNCONFIRMED" | "YES" | "NO" | "MAYBE";
 };
 
-export interface Event {
+export interface CalendarEvent {
   id?: string;
   title?: string;
   start: string;
+  overlap?: boolean;
+  end?: string;
+  classNames?: string[];
+  description?: string;
+  display?: "auto" | "background";
+  backgroundColor?: string;
+  resourceId?: string;
+  participants?: Participant[];
+}
+
+export interface CalendarEventUpdate {
+  id: string;
+  title?: string;
+  start?: string;
   overlap?: boolean;
   end?: string;
   classNames?: string[];
@@ -24,7 +38,7 @@ export type EventsState = "LOADING" | "ERROR" | "READY";
 
 export interface Calendar {
   state: EventsState;
-  guidanceEvents: Event[];
+  guidanceEvents: CalendarEvent[];
 }
 
 /**
@@ -33,7 +47,10 @@ export interface Calendar {
  * @param events Events to evaluate against
  * @returns boolean
  */
-export const evaluateEvents = (event: Event, events: Event[]) => {
+export const evaluateEvents = (
+  event: CalendarEvent,
+  events: CalendarEvent[]
+) => {
   let passed = true;
   for (let i = 0; i < events.length; i++) {
     if (events[i].id === event.id) {
@@ -55,7 +72,7 @@ export default function calendar(
       const newState: EventsState = action.payload;
       return Object.assign({}, state, { state: newState });
     case "LOAD_CALENDAR_GUIDANCE_EVENTS":
-      const newEvents: Event[] = action.payload;
+      const newEvents: CalendarEvent[] = action.payload;
       const newEventsFiltered = newEvents.filter((event) => {
         return evaluateEvents(event, state.guidanceEvents);
       });
@@ -63,12 +80,12 @@ export default function calendar(
         guidanceEvents: [...state.guidanceEvents, ...newEventsFiltered],
       });
     case "ADD_CALENDAR_GUIDANCE_EVENT":
-      const newEvent: Event[] = [action.payload];
+      const newEvent: CalendarEvent[] = [action.payload];
       return Object.assign({}, state, {
         guidanceEvents: [...state.guidanceEvents, ...newEvent],
       });
     case "UPDATE_CALENDAR_GUIDANCE_EVENT":
-      const updateEvent: Event[] = [action.payload];
+      const updateEvent: CalendarEvent[] = [action.payload];
       const filteredState = state.guidanceEvents.filter(
         (event) => event.id !== action.payload.id
       );
@@ -79,7 +96,7 @@ export default function calendar(
     case "DELETE_CALENDAR_GUIDANCE_EVENT":
       return Object.assign({}, state, {
         guidanceEvents: state.guidanceEvents.filter(
-          (event: Event) => event.id !== action.payload.id
+          (event: CalendarEvent) => event.id !== action.payload.id
         ),
       });
     default:
