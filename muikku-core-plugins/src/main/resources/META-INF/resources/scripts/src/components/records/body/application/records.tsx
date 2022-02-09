@@ -6,7 +6,6 @@ import "~/sass/elements/activity-badge.scss";
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
 import "~/sass/elements/application-sub-panel.scss";
-import "~/sass/elements/workspace-activity.scss";
 import "~/sass/elements/file-uploader.scss";
 import {
   RecordsType,
@@ -424,10 +423,19 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                           // By default every workspace is not combination
                           let isCombinationWorkspace = false;
 
-                          if (workspace.activity) {
+                          if (workspace.subjects) {
                             // If assessmentState contains more than 1 items, then its is combination
                             isCombinationWorkspace =
-                              workspace.activity.assessmentState.length > 1;
+                              workspace.subjects.length > 1;
+                          }
+
+                          // By default this is undefined so ApplicationListItemHeader won't get empty list
+                          // item as part of its modifiers when course is non combined version
+                          let applicationListWorkspaceTypeMod = undefined;
+
+                          if (isCombinationWorkspace) {
+                            applicationListWorkspaceTypeMod =
+                              "combination-course";
                           }
 
                           return (
@@ -441,7 +449,14 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                               )}
                             >
                               <ApplicationListItemHeader
-                                modifiers="course"
+                                modifiers={
+                                  applicationListWorkspaceTypeMod
+                                    ? [
+                                        "course",
+                                        applicationListWorkspaceTypeMod,
+                                      ]
+                                    : ["course"]
+                                }
                                 key={workspace.id}
                               >
                                 <span className="application-list__header-icon icon-books"></span>
@@ -481,7 +496,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
 
                               {isCombinationWorkspace ? (
                                 // If combinatin workspace render module assessments below workspace name
-                                <ApplicationListItemContentContainer modifiers="course">
+                                <ApplicationListItemContentContainer modifiers="combination-course">
                                   {workspace.activity.assessmentState.map(
                                     (a) => {
                                       /**
@@ -504,12 +519,18 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                                       return (
                                         <div
                                           key={a.workspaceSubjectIdentifier}
-                                          style={{
-                                            display: "flex",
-                                            alignItems: "center",
-                                          }}
+                                          className="application-list__item-content-single-item"
                                         >
-                                          <h4>{`(${subjectData.subject.code.toUpperCase()})`}</h4>
+                                          <span className="application-list__item-content-single-item-primary">
+                                            {subjectData.subject.code.toUpperCase()}{" "}
+                                            - {subjectData.subject.name} (
+                                            {subjectData.courseLength}
+                                            {
+                                              subjectData.courseLengthSymbol
+                                                .symbol
+                                            }
+                                            )
+                                          </span>
 
                                           <AssessmentRequestIndicator
                                             {...this.props}

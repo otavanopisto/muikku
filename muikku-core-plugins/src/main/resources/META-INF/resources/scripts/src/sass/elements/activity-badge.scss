@@ -8,9 +8,14 @@ $progress-units: 100;
 .activity-badge {
   display: flex;
   height: 30px;
-  justify-content: space-around;
+  justify-content: space-between;
   margin-left: 10px;
-  width: 30px;
+  width: 22px;
+}
+
+.activity-badge--percent {
+  height: auto;
+  width: auto;
 }
 
 .activity-badge__item {
@@ -20,7 +25,7 @@ $progress-units: 100;
   cursor: help;
   display: flex;
   height: 100%;
-  width: 10px;
+  width: 9px;
 }
 
 .activity-badge__item--assignment {
@@ -39,6 +44,18 @@ $progress-units: 100;
   }
 }
 
+.activity-badge__item--assignment-percent {
+  color: $color-assignment;
+  padding: 0 5px 0 0;
+  width: auto;
+}
+
+.activity-badge__item--exercise-percent {
+  color: $color-exercise;
+  padding: 0 0 0 5px;
+  width: auto;
+}
+
 .activity-badge__item--empty {
   border: 1px solid $color-default-item-separator-border;
 
@@ -52,10 +69,7 @@ $progress-units: 100;
   width: 100%;
 }
 
-
-
 @for $i from 1 through $progress-units {
-
   .activity-badge__unit-bar--#{$i} {
     height: percentage($i / 100);
   }

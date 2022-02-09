@@ -14,7 +14,7 @@ import WorkspaceChart from "./workspace/workspace-chart";
 import "~/sass/elements/application-list.scss";
 import "~/sass/elements/application-sub-panel.scss";
 import "~/sass/elements/course.scss";
-import "~/sass/elements/workspace-activity.scss";
+import "~/sass/elements/activity-badge.scss";
 import {
   ApplicationListItem,
   ApplicationListItemContentContainer,
@@ -263,15 +263,15 @@ class StudentWorkspace extends React.Component<
               ? "(" + workspace.nameExtension + ")"
               : null}
           </span>
-          <span className="application-list__header-secondary workspace-activity">
-            <span className="workspace-student__assessment-state">
+          <span className="application-list__header-secondary">
+            <span className="activity-badge activity-badge--percent">
               {/**
                * Show percent if method return true
                */}
               {this.showWorkspacePercents(
                 this.props.workspace.activity.assessmentState
               ) ? (
-                <span className="application-list__header-secondary">
+                <>
                   <GuiderWorkspacePercents
                     i18n={this.props.i18n}
                     activity={this.props.workspace.activity}
@@ -288,17 +288,17 @@ class StudentWorkspace extends React.Component<
                       }
                     />
                   ) : null}
-                </span>
+                </>
               ) : null}
             </span>
+            <Dropdown
+              persistent
+              modifier={"workspace-chart workspace-" + workspace.id}
+              items={[<WorkspaceChart workspace={workspace} />]}
+            >
+              <span className="icon-statistics chart__activator chart__activator--workspace-chart"></span>
+            </Dropdown>
           </span>
-          <Dropdown
-            persistent
-            modifier={"workspace-chart workspace-" + workspace.id}
-            items={[<WorkspaceChart workspace={workspace} />]}
-          >
-            <span className="icon-statistics chart__activator chart__activator--workspace-chart"></span>
-          </Dropdown>
         </ApplicationListItemHeader>
 
         {/**
@@ -553,7 +553,7 @@ const GuiderAssessment: React.FC<GuiderAssessmentProps> = (props) => {
               i18n.time.format(assessment.date)
             ) + getShortenGradeExtension(assessment.grade)
           }
-          className={`application-list__indicator-badge application-list__indicator-badge--course application-list__indicator-badge--course-in-guider ${modifier}`}
+          className={`application-list__indicator-badge application-list__indicator-badge--course ${modifier}`}
         >
           {shortenGrade(assessment.grade)}
         </span>
@@ -578,7 +578,7 @@ const GuiderAssessment: React.FC<GuiderAssessmentProps> = (props) => {
             " - " +
             status
           }
-          className={`application-list__indicator-badge application-list__indicator-badge--course application-list__indicator-badge--course-in-guider ${modifier}`}
+          className={`application-list__indicator-badge application-list__indicator-badge--course ${modifier}`}
         >
           {status[0].toLocaleUpperCase()}
         </span>
@@ -609,7 +609,7 @@ const GuiderWorkspacePercents: React.FC<GuiderWorkspacePercentsProps> = (
   return (
     <>
       <span
-        className="workspace-activity__assignment-done-percent"
+        className="activity-badge__item activity-badge__item--assignment-percent"
         title={props.i18n.text.get(
           "plugin.guider.headerEvaluatedTitle",
           activity.evaluablesDonePercent
@@ -617,9 +617,9 @@ const GuiderWorkspacePercents: React.FC<GuiderWorkspacePercentsProps> = (
       >
         {activity.evaluablesDonePercent}%
       </span>
-      <span> / </span>
+      <span>/</span>
       <span
-        className="workspace-activity__exercise-done-percent"
+        className="activity-badge__item activity-badge__item--exercise-percent"
         title={props.i18n.text.get(
           "plugin.guider.headerExercisesTitle",
           activity.exercisesDonePercent
