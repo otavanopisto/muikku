@@ -1,29 +1,56 @@
-import WorkspaceNavbar from '~/components/base/workspace/navbar';
-import ScreenContainer from '~/components/general/screen-container';
-import Users from './users';
+/* eslint-disable react/no-string-refs */
 
-import * as React from 'react';
+/**
+ * Depcrecated refs should be refactored
+ */
 
+import WorkspaceNavbar from "~/components/base/workspace/navbar";
+import Users from "./users";
+import * as React from "react";
+
+/**
+ * WorkspaceUsersBodyProps
+ */
 interface WorkspaceUsersBodyProps {
-  workspaceUrl: string
+  workspaceUrl: string;
 }
 
-interface WorkspaceUsersBodyState {
-}
-
-export default class WorkspaceUsersBody extends React.Component<WorkspaceUsersBodyProps, WorkspaceUsersBodyState> {
-  constructor(props: WorkspaceUsersBodyProps){
+/**
+ * WorkspaceUsersBody
+ */
+export default class WorkspaceUsersBody extends React.Component<
+  WorkspaceUsersBodyProps,
+  Record<string, unknown>
+> {
+  /**
+   * constructor
+   * @param props props
+   */
+  constructor(props: WorkspaceUsersBodyProps) {
     super(props);
 
     this.onOpenNavigation = this.onOpenNavigation.bind(this);
   }
-  onOpenNavigation(){
+
+  /**
+   * onOpenNavigation
+   */
+  onOpenNavigation() {
     (this.refs.content as any).getWrappedInstance().refresh();
   }
-  render(){
-    return (<div>
-      <WorkspaceNavbar activeTrail="users" workspaceUrl={this.props.workspaceUrl}/>
-      <Users/>
-    </div>);
+
+  /**
+   * render
+   */
+  render() {
+    return (
+      <div>
+        <WorkspaceNavbar
+          activeTrail="users"
+          workspaceUrl={this.props.workspaceUrl}
+        />
+        <Users />
+      </div>
+    );
   }
 }

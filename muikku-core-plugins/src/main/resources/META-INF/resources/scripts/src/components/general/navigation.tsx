@@ -1,36 +1,62 @@
+/* eslint-disable react/no-string-refs */
+
+/**
+ * Depcrecated refs should be refactored
+ */
+
 import Link from "~/components/general/link";
 import * as React from "react";
 import { ButtonPill } from "~/components/general/button";
 import "~/sass/elements/item-list.scss";
 
-interface NavigationProps {}
-
-interface NavigationState {}
-
+/**
+ * Navigation
+ */
 export default class Navigation extends React.Component<
-  NavigationProps,
-  NavigationState
+  Record<string, unknown>,
+  Record<string, unknown>
 > {
+  /**
+   * Component render method
+   * @returns JSx.Element
+   */
   render() {
-
-    return (<nav className="menu-wrapper menu-wrapper--aside">{this.props.children}</nav>);
+    return (
+      <nav className="menu-wrapper menu-wrapper--aside">
+        {this.props.children}
+      </nav>
+    );
   }
 }
 
+/**
+ * NavigationTopicProps
+ */
 interface NavigationTopicProps {
   name: string;
   classModifier?: string;
 }
 
+/**
+ * NavigationTopicState
+ */
 interface NavigationTopicState {}
 
+/**
+ * NavigationTopic
+ */
 export class NavigationTopic extends React.Component<
   NavigationTopicProps,
   NavigationTopicState
 > {
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     const listClassNameModifier = this.props.classModifier
-      ? "menu--" + this.props.classModifier : "";
+      ? "menu--" + this.props.classModifier
+      : "";
 
     return (
       <ul className={`menu ${listClassNameModifier}`}>
@@ -43,6 +69,9 @@ export class NavigationTopic extends React.Component<
   }
 }
 
+/**
+ * NavigationElementProps
+ */
 interface NavigationElementProps {
   isActive: boolean;
   className?: string;
@@ -66,22 +95,32 @@ interface NavigationElementProps {
   disableScroll?: boolean;
 }
 
+/**
+ * NavigationElementState
+ */
 interface NavigationElementState {}
 
+/**
+ * NavigationElement
+ */
 export class NavigationElement extends React.Component<
   NavigationElementProps,
   NavigationElementState
 > {
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     let editableComponent = null;
 
-    let modifiers: Array<string> =
+    const modifiers: Array<string> =
       typeof this.props.modifiers === "string"
         ? [this.props.modifiers]
         : this.props.modifiers;
 
     if (this.props.isEditable && this.props.editableWrapper) {
-      let EditableWrapper = this.props.editableWrapper;
+      const EditableWrapper = this.props.editableWrapper;
       editableComponent = (
         <EditableWrapper {...this.props.editableWrapperArgs}>
           <ButtonPill
@@ -109,13 +148,9 @@ export class NavigationElement extends React.Component<
     return (
       <li className="menu__item">
         <Link
-          className={`menu__item-link ${
-            this.props.isActive ? "active" : ""
-          } ${this.props.className ? this.props.className : ""} ${(
-            modifiers || []
-          )
-            .map((s) => `menu__item-link--${s}`)
-            .join(" ")}`}
+          className={`menu__item-link ${this.props.isActive ? "active" : ""} ${
+            this.props.className ? this.props.className : ""
+          } ${(modifiers || []).map((s) => `menu__item-link--${s}`).join(" ")}`}
           onScrollToSection={this.props.onScrollToSection}
           scrollPadding={this.props.scrollPadding}
           disableScroll={this.props.disableScroll}
@@ -144,6 +179,11 @@ export class NavigationElement extends React.Component<
       </li>
     );
   }
+
+  /**
+   * getElement
+   * @returns HTMLElement
+   */
   getElement(): HTMLElement {
     return (this.refs["element"] as Link).getElement();
   }

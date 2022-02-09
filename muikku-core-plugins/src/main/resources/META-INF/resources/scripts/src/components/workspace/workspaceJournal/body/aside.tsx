@@ -1,8 +1,6 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import Link from "~/components/general/link";
 import { i18nType } from "~/reducers/base/i18n";
-import * as queryString from "query-string";
 
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/item-list.scss";
@@ -11,9 +9,8 @@ import Navigation, {
   NavigationTopic,
   NavigationElement,
 } from "~/components/general/navigation";
-import { WorkspaceType } from "../../../../reducers/workspaces/index";
-import { StatusType } from "../../../../reducers/base/status";
-import { getName } from "../../../../util/modifiers";
+import { WorkspaceType } from "~/reducers/workspaces/index";
+import { StatusType } from "~/reducers/base/status";
 import { bindActionCreators } from "redux";
 import {
   loadStudentsOfWorkspace,
@@ -22,12 +19,12 @@ import {
 import {
   LoadUsersOfWorkspaceTriggerType,
   LoadCurrentWorkspaceJournalsFromServerTriggerType,
-} from "../../../../actions/workspaces/index";
-import {
-  WorkspaceStudentListType,
-  ShortWorkspaceUserWithActiveStatusType,
-} from "../../../../reducers/user-index";
+} from "~/actions/workspaces/index";
+import { WorkspaceStudentListType } from "~/reducers/user-index";
 
+/**
+ * NavigationAsideProps
+ */
 interface NavigationAsideProps {
   i18n: i18nType;
   workspace: WorkspaceType;
@@ -36,14 +33,24 @@ interface NavigationAsideProps {
   loadCurrentWorkspaceJournalsFromServer: LoadCurrentWorkspaceJournalsFromServerTriggerType;
 }
 
+/**
+ * NavigationAsideState
+ */
 interface NavigationAsideState {
   students: WorkspaceStudentListType | null;
 }
 
+/**
+ * NavigationAside
+ */
 class NavigationAside extends React.Component<
   NavigationAsideProps,
   NavigationAsideState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: NavigationAsideProps) {
     super(props);
 
@@ -54,16 +61,15 @@ class NavigationAside extends React.Component<
 
   /**
    * Handles student changes and loads specific students journals to global state
-   * @param id
-   * @returns
+   * @param id id
    */
-  handleOnStudentClick = (id: number | null) => (e: React.MouseEvent) => {
+  handleOnStudentClick = (id: number | null) => () => {
     this.props.loadCurrentWorkspaceJournalsFromServer(id);
   };
 
   /**
    * filterStudents
-   * @param students
+   * @param students students
    * @returns array of students or empty array
    */
   filterStudents = (students: WorkspaceStudentListType | null) => {
@@ -84,7 +90,7 @@ class NavigationAside extends React.Component<
 
   /**
    * render
-   * @returns
+   * @returns JSX.Element
    */
   render() {
     const { workspace } = this.props;
@@ -101,12 +107,12 @@ class NavigationAside extends React.Component<
     /**
      * If all student is showed
      */
-    let allSelected =
+    const allSelected =
       workspace !== null &&
       workspace.journals !== null &&
       workspace.journals.userEntityId === null;
 
-    let navigationElementList: JSX.Element[] = [];
+    const navigationElementList: JSX.Element[] = [];
 
     navigationElementList.push(
       <NavigationElement
@@ -156,8 +162,8 @@ class NavigationAside extends React.Component<
 
 /**
  * mapStateToProps
- * @param state
- * @returns
+ * @param state state
+ * @returns object
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -169,8 +175,8 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
- * @returns
+ * @param dispatch dispatch
+ * @returns object
  */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(

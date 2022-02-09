@@ -14,7 +14,9 @@ import Hops from "~/components/base/hops_readable";
 import FileDeleteDialog from "../../dialogs/file-delete";
 import Workspaces from "./current-student/workspaces";
 import Ceepos from "./current-student/ceepos";
+import { StatusType } from "~/reducers/base/status";
 import FileUploader from "~/components/general/file-uploader";
+import MainChart from "~/components/general/graph/main-chart";
 import {
   AddFileToCurrentStudentTriggerType,
   addFileToCurrentStudent,
@@ -35,27 +37,43 @@ import GuiderToolbarLabels from "./toolbar/labels";
 import GuidanceEvent from "../../dialogs/guidance-event";
 import { CalendarEvent } from "~/reducers/calendar";
 import { ResourceTimeline } from "../../../general/resource-timeline";
-import workspaces from "./current-student/workspaces";
 import { ExternalEventType } from "../../../general/resource-timeline";
 
+/**
+ * CurrentStudentProps
+ */
 interface CurrentStudentProps {
   i18n: i18nType;
   guider: GuiderType;
+  status: StatusType;
   addFileToCurrentStudent: AddFileToCurrentStudentTriggerType;
   displayNotification: DisplayNotificationTriggerType;
 }
 
+/**
+ * CurrentStudentState
+ */
 interface CurrentStudentState {}
 
+/**
+ * CurrentStudent
+ */
 class CurrentStudent extends React.Component<
   CurrentStudentProps,
   CurrentStudentState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: CurrentStudentProps) {
     super(props);
   }
 
   //TODO doesn't anyone notice that nor assessment requested, nor no passed courses etc... is available in this view
+  /**
+   * render
+   */
   render() {
     if (this.props.guider.currentStudent === null) {
       return null;
@@ -72,8 +90,6 @@ class CurrentStudent extends React.Component<
       <div className="application-sub-panel__header">
         <object
           className="avatar-container"
-          role="img"
-          aria-label={this.props.i18n.text.get("plugin.wcag.userAvatar.label")}
           data={getUserImageUrl(
             this.props.guider.currentStudent.basic.userEntityId
           )}
@@ -127,17 +143,15 @@ class CurrentStudent extends React.Component<
     const studentLabels =
       this.props.guider.currentStudent.labels &&
       this.props.guider.currentStudent.labels.map(
-        (label: GuiderStudentUserProfileLabelType) => {
-          return (
-            <span className="label" key={label.id}>
-              <span
-                className="label__icon icon-flag"
-                style={{ color: label.flagColor }}
-              ></span>
-              <span className="label__text">{label.flagName}</span>
-            </span>
-          );
-        }
+        (label: GuiderStudentUserProfileLabelType) => (
+          <span className="label" key={label.id}>
+            <span
+              className="label__icon icon-flag"
+              style={{ color: label.flagColor }}
+            ></span>
+            <span className="label__text">{label.flagName}</span>
+          </span>
+        )
       );
 
     const studentBasicInfo = this.props.guider.currentStudent.basic && (
@@ -158,7 +172,7 @@ class CurrentStudent extends React.Component<
             </span>
           </div>
         </div>
-        <div className="application-sub-panel__item application-sub-panel__item--guider-student">
+        <div className="application-sub-panel__item">
           <div className="application-sub-panel__item-title">
             {this.props.i18n.text.get(
               "plugin.guider.user.details.label.studyEndDateTitle"
@@ -174,7 +188,7 @@ class CurrentStudent extends React.Component<
             </span>
           </div>
         </div>
-        <div className="application-sub-panel__item application-sub-panel__item--guider-student">
+        <div className="application-sub-panel__item">
           <div className="application-sub-panel__item-title">
             {this.props.i18n.text.get(
               "plugin.guider.user.details.label.studyTimeEndTitle"
@@ -191,7 +205,7 @@ class CurrentStudent extends React.Component<
           </div>
         </div>
         {this.props.guider.currentStudent.emails && (
-          <div className="application-sub-panel__item application-sub-panel__item--guider-student">
+          <div className="application-sub-panel__item">
             <div className="application-sub-panel__item-title">
               {this.props.i18n.text.get(
                 "plugin.guider.user.details.label.email"
@@ -199,17 +213,15 @@ class CurrentStudent extends React.Component<
             </div>
             <div className="application-sub-panel__item-data">
               {this.props.guider.currentStudent.emails.length ? (
-                this.props.guider.currentStudent.emails.map((email) => {
-                  return (
-                    <span
-                      className="application-sub-panel__single-entry"
-                      key={email.address}
-                    >
-                      {email.defaultAddress ? `*` : null} {email.address} (
-                      {email.type})
-                    </span>
-                  );
-                })
+                this.props.guider.currentStudent.emails.map((email) => (
+                  <span
+                    className="application-sub-panel__single-entry"
+                    key={email.address}
+                  >
+                    {email.defaultAddress ? `*` : null} {email.address} (
+                    {email.type})
+                  </span>
+                ))
               ) : (
                 <span className="application-sub-panel__single-entry">
                   {this.props.i18n.text.get(
@@ -221,7 +233,7 @@ class CurrentStudent extends React.Component<
           </div>
         )}
         {this.props.guider.currentStudent.phoneNumbers && (
-          <div className="application-sub-panel__item application-sub-panel__item--guider-student">
+          <div className="application-sub-panel__item">
             <div className="application-sub-panel__item-title">
               {this.props.i18n.text.get(
                 "plugin.guider.user.details.label.phoneNumber"
@@ -229,17 +241,15 @@ class CurrentStudent extends React.Component<
             </div>
             <div className="application-sub-panel__item-data">
               {this.props.guider.currentStudent.phoneNumbers.length ? (
-                this.props.guider.currentStudent.phoneNumbers.map((phone) => {
-                  return (
-                    <span
-                      className="application-sub-panel__single-entry"
-                      key={phone.number}
-                    >
-                      {phone.defaultNumber ? `*` : null} {phone.number} (
-                      {phone.type})
-                    </span>
-                  );
-                })
+                this.props.guider.currentStudent.phoneNumbers.map((phone) => (
+                  <span
+                    className="application-sub-panel__single-entry"
+                    key={phone.number}
+                  >
+                    {phone.defaultNumber ? `*` : null} {phone.number} (
+                    {phone.type})
+                  </span>
+                ))
               ) : (
                 <span className="application-sub-panel__single-entry">
                   {this.props.i18n.text.get(
@@ -250,7 +260,7 @@ class CurrentStudent extends React.Component<
             </div>
           </div>
         )}
-        <div className="application-sub-panel__item application-sub-panel__item--guider-student">
+        <div className="application-sub-panel__item">
           <div className="application-sub-panel__item-title">
             {this.props.i18n.text.get(
               "plugin.guider.user.details.label.school"
@@ -266,7 +276,7 @@ class CurrentStudent extends React.Component<
           </div>
         </div>
         {this.props.guider.currentStudent.usergroups && (
-          <div className="application-sub-panel__item application-sub-panel__item--guider-student">
+          <div className="application-sub-panel__item">
             <div className="application-sub-panel__item-title">
               {this.props.i18n.text.get(
                 "plugin.guider.user.details.label.studentgroups"
@@ -274,16 +284,14 @@ class CurrentStudent extends React.Component<
             </div>
             <div className="application-sub-panel__item-data">
               {this.props.guider.currentStudent.usergroups.length ? (
-                this.props.guider.currentStudent.usergroups.map((usergroup) => {
-                  return (
-                    <span
-                      className="application-sub-panel__single-entry"
-                      key={usergroup.id}
-                    >
-                      {usergroup.name}
-                    </span>
-                  );
-                })
+                this.props.guider.currentStudent.usergroups.map((usergroup) => (
+                  <span
+                    className="application-sub-panel__single-entry"
+                    key={usergroup.id}
+                  >
+                    {usergroup.name}
+                  </span>
+                ))
               ) : (
                 <span className="application-sub-panel__single-entry">
                   {this.props.i18n.text.get(
@@ -295,7 +303,7 @@ class CurrentStudent extends React.Component<
           </div>
         )}
         {this.props.guider.currentStudent.basic && (
-          <div className="application-sub-panel__item application-sub-panel__item--guider-student">
+          <div className="application-sub-panel__item">
             <div className="application-sub-panel__item-title">
               {this.props.i18n.text.get(
                 "plugin.guider.user.details.label.lastLogin"
@@ -339,20 +347,29 @@ class CurrentStudent extends React.Component<
           )}
       </div>
     );
-
+    //TODO: this was stolen from the dust template, please replace all the classNames, these are for just reference
+    //I don't want this file to become too complex, remember anyway that I will be splitting all these into simpler components
+    //later once a pattern is defined
     const studentHops =
       this.props.guider.currentStudent.hops &&
       this.props.guider.currentStudent.hops.optedIn ? (
         <Hops data={this.props.guider.currentStudent.hops} />
       ) : null;
 
-    let studentVops = null;
+    //I placed the VOPS in an external file already you can follow it, this is because
+    //it is very clear
+    const studentVops: any = null;
     // Removed until it works
     // (this.props.guider.currentStudent.vops && this.props.guider.currentStudent.vops.optedIn) ?
     //        <Vops data={this.props.guider.currentStudent.vops}></Vops> : null;
 
     const studentWorkspaces = <Workspaces />;
 
+    /**
+     * formDataGenerator
+     * @param file file
+     * @param formData formData
+     */
     const formDataGenerator = (file: File, formData: FormData) => {
       formData.append("upload", file);
       formData.append("title", file.name);
@@ -362,6 +379,7 @@ class CurrentStudent extends React.Component<
         this.props.guider.currentStudent.basic.id
       );
     };
+
 
     const files = this.props.guider.currentStudent.basic && (
       <div className="application-sub-panel__body">
@@ -414,6 +432,12 @@ class CurrentStudent extends React.Component<
         title: workspace.name,
         duration: "36:00:00",
       }));
+
+    /**
+     * IsStudentPartOfProperStudyProgram
+     * @param studyProgramName
+     * @returns true or false
+     */
 
     const IsStudentPartOfProperStudyProgram = (studyProgramName: string) => {
       switch (studyProgramName) {
@@ -527,13 +551,22 @@ class CurrentStudent extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     guider: state.guider,
+    status: state.status,
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     { addFileToCurrentStudent, displayNotification },

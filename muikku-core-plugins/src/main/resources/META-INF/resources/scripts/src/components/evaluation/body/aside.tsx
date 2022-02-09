@@ -16,6 +16,7 @@ import { bindActionCreators } from "redux";
 import { i18nType } from "~/reducers/base/i18n";
 import { WorkspaceType } from "../../../reducers/workspaces/index";
 import { EvaluationWorkspace } from "~/@types/evaluation";
+import { AnyActionType } from "~/actions";
 
 /**
  * NavigationAsideProps
@@ -41,7 +42,7 @@ class NavigationAside extends React.Component<
 > {
   /**
    * constructor
-   * @param props
+   * @param props props
    */
   constructor(props: NavigationAsideProps) {
     super(props);
@@ -49,12 +50,12 @@ class NavigationAside extends React.Component<
 
   /**
    * handleNavigationWorkspaceClick
-   * @param workspaceId
+   * @param workspaceId workspaceId
+   * @returns void
    */
-  handleNavigationWorkspaceClick =
-    (workspaceId?: number) => (e: React.MouseEvent) => {
-      this.props.setSelectedWorkspaceId({ workspaceId });
-    };
+  handleNavigationWorkspaceClick = (workspaceId?: number) => () => {
+    this.props.setSelectedWorkspaceId({ workspaceId });
+  };
 
   /**
    * Component render method
@@ -83,7 +84,7 @@ class NavigationAside extends React.Component<
     /**
      * Mapped workspaces as NavigationElement
      */
-    const renderNavigationWorkspaceElements = workspaces.map((wItem, i) => (
+    const renderNavigationWorkspaceElements = workspaces.map((wItem) => (
       <NavigationElement
         modifiers="aside-navigation"
         key={wItem.id}
@@ -133,7 +134,8 @@ class NavigationAside extends React.Component<
 
 /**
  * mapStateToProps
- * @param state
+ * @param state state
+ * @returns object
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -145,9 +147,10 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch dispatch
+ * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ setSelectedWorkspaceId }, dispatch);
 }
 

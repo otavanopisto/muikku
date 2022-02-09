@@ -31,6 +31,9 @@ import { EvaluationState } from "./main-function/evaluation/index";
 import { CeeposState } from "./main-function/ceepos";
 import { Calendar } from "./calendar";
 
+/**
+ * StateType
+ */
 export interface StateType {
   notifications: NotificationListType;
   i18n: i18nType;

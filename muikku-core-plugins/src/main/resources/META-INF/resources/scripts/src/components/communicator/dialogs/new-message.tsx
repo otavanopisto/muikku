@@ -21,6 +21,9 @@ import { StatusType } from "~/reducers/base/status";
 import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
 
+/**
+ * CommunicatorNewMessageProps
+ */
 interface CommunicatorNewMessageProps {
   children?: React.ReactElement<any>;
   replyThreadId?: number;
@@ -41,6 +44,9 @@ interface CommunicatorNewMessageProps {
   isOpen?: boolean;
 }
 
+/**
+ * CommunicatorNewMessageState
+ */
 interface CommunicatorNewMessageState {
   text: string;
   selectedItems: Array<ContactRecipientType>;
@@ -52,8 +58,8 @@ interface CommunicatorNewMessageState {
 
 /**
  * getStateIdentifier
- * @param props
- * @returns
+ * @param props props
+ * @returns string
  */
 function getStateIdentifier(props: CommunicatorNewMessageProps) {
   if (!props.replyThreadId) {
@@ -63,11 +69,18 @@ function getStateIdentifier(props: CommunicatorNewMessageProps) {
   return props.replyThreadId + (props.replyToAll ? "a" : "b") + props.messageId;
 }
 
+/**
+ * CommunicatorNewMessage
+ */
 class CommunicatorNewMessage extends SessionStateComponent<
   CommunicatorNewMessageProps,
   CommunicatorNewMessageState
 > {
   private avoidCKEditorTriggeringChangeForNoReasonAtAll: boolean;
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: CommunicatorNewMessageProps) {
     super(
       props,
@@ -131,7 +144,7 @@ class CommunicatorNewMessage extends SessionStateComponent<
       // Convert the Set to an Array
       const newCombinedSelectedIds = Array.from(combinedSelectedUniqueIds);
 
-      let newSelectedItems = [];
+      const newSelectedItems = [];
 
       // Iterate through the ids and find a counterpart from the combined selected items
 
@@ -185,7 +198,7 @@ class CommunicatorNewMessage extends SessionStateComponent<
 
   /**
    * sendMessage
-   * @param closeDialog
+   * @param closeDialog closeDialog
    */
   sendMessage(closeDialog: () => any) {
     this.setState({
@@ -201,6 +214,9 @@ class CommunicatorNewMessage extends SessionStateComponent<
             this.props.signature.signature +
             "</i>"
           : this.state.text,
+      /**
+       * success
+       */
       success: () => {
         closeDialog();
         this.avoidCKEditorTriggeringChangeForNoReasonAtAll = true;
@@ -217,6 +233,9 @@ class CommunicatorNewMessage extends SessionStateComponent<
           getStateIdentifier(this.props)
         );
       },
+      /**
+       * fail
+       */
       fail: () => {
         this.setState({
           locked: false,
@@ -259,6 +278,10 @@ class CommunicatorNewMessage extends SessionStateComponent<
    */
   inputContactsAutofillLoaders() {
     return {
+      /**
+       * studentsLoader
+       * @param searchString searchString
+       */
       studentsLoader: (searchString: string) =>
         promisify(
           mApi().communicator.recipientsUsersSearch.read({
@@ -267,6 +290,10 @@ class CommunicatorNewMessage extends SessionStateComponent<
           }),
           "callback"
         ),
+      /**
+       * workspacesLoader
+       * @param searchString searchString
+       */
       workspacesLoader: (searchString: string) =>
         promisify(
           mApi().communicator.recipientsWorkspacesSearch.read({
@@ -283,14 +310,17 @@ class CommunicatorNewMessage extends SessionStateComponent<
    * @returns
    */
   render() {
-    let editorTitle =
+    const editorTitle =
       this.props.i18n.text.get("plugin.communicator.createmessage.label") +
       " - " +
       this.props.i18n.text.get(
         "plugin.communicator.createmessage.title.content"
       );
 
-    let content = (closeDialog: () => any) => [
+    /**
+     * @param closeDialog
+     */
+    const content = (closeDialog: () => any) => [
       <InputContactsAutofill
         identifier="communicatorRecipients"
         modifier="new-message"
@@ -373,41 +403,43 @@ class CommunicatorNewMessage extends SessionStateComponent<
         </div>
       ) : null,
     ];
-    let footer = (closeDialog: () => any) => {
-      return (
-        <div className="env-dialog__actions">
+    /**
+     * footer
+     * @param closeDialog closeDialog
+     */
+    const footer = (closeDialog: () => any) => (
+      <div className="env-dialog__actions">
+        <Button
+          buttonModifiers="dialog-execute"
+          onClick={this.sendMessage.bind(this, closeDialog)}
+          disabled={this.state.locked}
+        >
+          {this.props.i18n.text.get(
+            "plugin.communicator.createmessage.button.send"
+          )}
+        </Button>
+        <Button
+          buttonModifiers="dialog-cancel"
+          onClick={closeDialog}
+          disabled={this.state.locked}
+        >
+          {this.props.i18n.text.get(
+            "plugin.communicator.createmessage.button.cancel"
+          )}
+        </Button>
+        {this.recovered ? (
           <Button
-            buttonModifiers="dialog-execute"
-            onClick={this.sendMessage.bind(this, closeDialog)}
+            buttonModifiers="dialog-clear"
+            onClick={this.clearUp}
             disabled={this.state.locked}
           >
             {this.props.i18n.text.get(
-              "plugin.communicator.createmessage.button.send"
+              "plugin.communicator.createmessage.button.clearDraft"
             )}
           </Button>
-          <Button
-            buttonModifiers="dialog-cancel"
-            onClick={closeDialog}
-            disabled={this.state.locked}
-          >
-            {this.props.i18n.text.get(
-              "plugin.communicator.createmessage.button.cancel"
-            )}
-          </Button>
-          {this.recovered ? (
-            <Button
-              buttonModifiers="dialog-clear"
-              onClick={this.clearUp}
-              disabled={this.state.locked}
-            >
-              {this.props.i18n.text.get(
-                "plugin.communicator.createmessage.button.clearDraft"
-              )}
-            </Button>
-          ) : null}
-        </div>
-      );
-    };
+        ) : null}
+      </div>
+    );
 
     return (
       <EnvironmentDialog
@@ -429,7 +461,7 @@ class CommunicatorNewMessage extends SessionStateComponent<
 
 /**
  * mapStateToProps
- * @param state
+ * @param state state
  * @returns
  */
 function mapStateToProps(state: StateType) {
@@ -442,7 +474,7 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch dispatch
  * @returns
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {

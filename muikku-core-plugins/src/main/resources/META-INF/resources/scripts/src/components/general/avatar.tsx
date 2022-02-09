@@ -2,6 +2,9 @@ import * as React from "react";
 import { getUserImageUrl } from "~/util/modifiers";
 import "~/sass/elements/avatar.scss";
 
+/**
+ * AvatarProps
+ */
 interface AvatarProps {
   hasImage: boolean;
   id: number;
@@ -11,6 +14,11 @@ interface AvatarProps {
   avatarAriaLabel?: string;
 }
 
+/**
+ * Avatar
+ * @param props props
+ * @returns JSX.Element
+ */
 const Avatar = (props: AvatarProps) => {
   const { id, userCategory, hasImage, firstName, avatarAriaLabel } = props;
 
@@ -19,26 +27,32 @@ const Avatar = (props: AvatarProps) => {
 
   return hasImage ? (
     <object
-    className={`avatar-container ${
-      props.size ? "avatar-container--" + props.size : ""
-    }`}
+      className={`avatar-container ${
+        props.size ? "avatar-container--" + props.size : ""
+      }`}
       data={getUserImageUrl(id)}
       type="image/jpeg"
       aria-label={avatarAriaLabel}
     >
-      <div className={`avatar avatar--category-${category}${
+      <div
+        className={`avatar avatar--category-${category}${
           props.size ? "avatar--" + props.size : ""
-        }`}>
+        }`}
+      >
         {firstName[0]}
       </div>
     </object>
   ) : (
-    <div className={`avatar-container ${
-      props.size ? "avatar-container--" + props.size : ""
-    }`}>
-      <div className={`avatar avatar--category-${category} ${
+    <div
+      className={`avatar-container ${
+        props.size ? "avatar-container--" + props.size : ""
+      }`}
+    >
+      <div
+        className={`avatar avatar--category-${category} ${
           props.size ? "avatar--" + props.size : ""
-        }`}>
+        }`}
+      >
         {firstName[0]}
       </div>
     </div>

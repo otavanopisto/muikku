@@ -1,13 +1,17 @@
 package fi.otavanopisto.muikku.plugins.calendar.dao;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Subquery;
+
+import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
 import fi.otavanopisto.muikku.plugins.calendar.model.CalendarEvent;
@@ -49,55 +53,6 @@ public class CalendarEventDAO extends CorePluginsDAO<CalendarEvent> {
     super.delete(event);
   }
 
-  public List<CalendarEvent> listByUserAndTimeframe(Long userEntityId, Date start, Date end) {
-    EntityManager entityManager = getEntityManager();
-
-    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-    CriteriaQuery<CalendarEvent> criteria = criteriaBuilder.createQuery(CalendarEvent.class);
-    Root<CalendarEvent> root = criteria.from(CalendarEvent.class);
-
-    Subquery<CalendarEvent> subquery = criteria.subquery(CalendarEvent.class);
-    Root<CalendarEventParticipant> participantRoot = subquery.from(CalendarEventParticipant.class);    
-    subquery.select(participantRoot.get(CalendarEventParticipant_.event));
-    subquery.where(
-        criteriaBuilder.equal(participantRoot.get(CalendarEventParticipant_.userEntityId), userEntityId)
-    );
-    
-    criteria.select(root);
-    criteria.where(
-        // must match both timeframe and user
-        criteriaBuilder.and(
-            criteriaBuilder.or(
-                // event within timeframe
-                criteriaBuilder.and(
-                    criteriaBuilder.greaterThanOrEqualTo(root.get(CalendarEvent_.start), start),
-                    criteriaBuilder.lessThanOrEqualTo(root.get(CalendarEvent_.end), end)
-                ),
-                // event ends within timeframe
-                criteriaBuilder.and(
-                    criteriaBuilder.lessThanOrEqualTo(root.get(CalendarEvent_.start), start),
-                    criteriaBuilder.lessThanOrEqualTo(root.get(CalendarEvent_.end), end),
-                    criteriaBuilder.greaterThanOrEqualTo(root.get(CalendarEvent_.end), start)
-                ),
-                // event starts within timeframe
-                criteriaBuilder.and(
-                    criteriaBuilder.greaterThanOrEqualTo(root.get(CalendarEvent_.start), start),
-                    criteriaBuilder.greaterThanOrEqualTo(root.get(CalendarEvent_.end), end),
-                    criteriaBuilder.lessThanOrEqualTo(root.get(CalendarEvent_.start), end)
-                )
-            ),
-            criteriaBuilder.or(
-                // event belongs to user
-                criteriaBuilder.equal(root.get(CalendarEvent_.userEntityId), userEntityId),
-                // user is event participant
-                root.in(subquery)
-            )
-        )
-    );
-
-    return entityManager.createQuery(criteria).getResultList();
-  }
-
   public List<CalendarEvent> listByUserAndTimeframeAndType(Long userEntityId, Date start, Date end, String type) {
     EntityManager entityManager = getEntityManager();
 
@@ -112,39 +67,35 @@ public class CalendarEventDAO extends CorePluginsDAO<CalendarEvent> {
         criteriaBuilder.equal(participantRoot.get(CalendarEventParticipant_.userEntityId), userEntityId)
     );
     
-    criteria.select(root);
-    criteria.where(
-        // must match both timeframe and user
-        criteriaBuilder.and(
-            criteriaBuilder.equal(root.get(CalendarEvent_.type), type),
-            criteriaBuilder.or(
-                // event within timeframe
-                criteriaBuilder.and(
-                    criteriaBuilder.greaterThanOrEqualTo(root.get(CalendarEvent_.start), start),
-                    criteriaBuilder.lessThanOrEqualTo(root.get(CalendarEvent_.end), end)
-                ),
-                // event ends within timeframe
-                criteriaBuilder.and(
-                    criteriaBuilder.lessThanOrEqualTo(root.get(CalendarEvent_.start), start),
-                    criteriaBuilder.lessThanOrEqualTo(root.get(CalendarEvent_.end), end),
-                    criteriaBuilder.greaterThanOrEqualTo(root.get(CalendarEvent_.end), start)
-                ),
-                // event starts within timeframe
-                criteriaBuilder.and(
-                    criteriaBuilder.greaterThanOrEqualTo(root.get(CalendarEvent_.start), start),
-                    criteriaBuilder.greaterThanOrEqualTo(root.get(CalendarEvent_.end), end),
-                    criteriaBuilder.lessThanOrEqualTo(root.get(CalendarEvent_.start), end)
-                )
-            ),
-            criteriaBuilder.or(
-                // event belongs to user
-                criteriaBuilder.equal(root.get(CalendarEvent_.userEntityId), userEntityId),
-                // user is event participant
-                root.in(subquery)
-            )
-        )
+    List<Predicate> predicates = new ArrayList<>();
+    
+    // Timeframe
+    
+    Predicate predicate = criteriaBuilder.and(
+        criteriaBuilder.greaterThanOrEqualTo(root.get(CalendarEvent_.end), start),
+        criteriaBuilder.lessThanOrEqualTo(root.get(CalendarEvent_.start), end)
     );
-
+    predicates.add(predicate);
+    
+    // Type (optional)
+    
+    if (!StringUtils.isEmpty(type)) {
+      predicate = criteriaBuilder.equal(root.get(CalendarEvent_.type), type);
+      predicates.add(predicate);
+    }
+    
+    // Event participation
+    
+    predicate = criteriaBuilder.or(
+        // event belongs to user
+        criteriaBuilder.equal(root.get(CalendarEvent_.userEntityId), userEntityId),
+        // user is event participant
+        root.in(subquery)
+    );
+    predicates.add(predicate);
+    
+    criteria.select(root);
+    criteria.where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
     return entityManager.createQuery(criteria).getResultList();
   }
 

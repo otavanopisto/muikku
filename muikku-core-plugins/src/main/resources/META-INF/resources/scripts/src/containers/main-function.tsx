@@ -113,6 +113,9 @@ import {
 
 moment.locale("fi");
 
+/**
+ * MainFunctionProps
+ */
 interface MainFunctionProps {
   store: Store<StateType>;
   websocket: Websocket;
@@ -120,18 +123,22 @@ interface MainFunctionProps {
 
 (window as any).USES_HISTORY_API = true;
 
+/**
+ * MainFunction
+ */
 export default class MainFunction extends React.Component<
   MainFunctionProps,
-  {}
+  Record<string, unknown>
 > {
   private prevPathName: string;
   private itsFirstTime: boolean;
   private loadedLibs: Array<string>;
-  private subscribedChatSettings: boolean = false;
-  private loadedChatSettings: boolean = false;
+  private subscribedChatSettings = false;
+  private loadedChatSettings = false;
 
   /**
    * constructor
+   * @param props props
    */
   constructor(props: MainFunctionProps) {
     super(props);
@@ -157,8 +164,7 @@ export default class MainFunction extends React.Component<
 
   /**
    * loadlib
-   * @param url
-   * @returns
+   * @param url url
    */
   loadlib(url: string, type?: string) {
     if (this.loadedLibs.indexOf(url) !== -1) {
@@ -244,7 +250,6 @@ export default class MainFunction extends React.Component<
 
   /**
    * loadGuiderData
-   * @returns
    */
   loadGuiderData() {
     //This code allows you to use the weird deprecated #userprofile/PYRAMUS-STUDENT-30055%22%3EJuhana type of links
@@ -256,35 +261,38 @@ export default class MainFunction extends React.Component<
       );
       return;
     }
-    let originalData: any = queryString.parse(
+    const originalData: any = queryString.parse(
       window.location.hash.split("?")[1] || "",
       { arrayFormat: "bracket" }
     );
 
-    if (originalData.c) {
-      this.props.store.dispatch(loadStudent(originalData.c) as Action);
+    if (!originalData.c) {
+      const filters: GuiderActiveFiltersType = {
+        workspaceFilters: (originalData.w || []).map((num: string) =>
+          parseInt(num)
+        ),
+        labelFilters: (originalData.l || []).map((num: string) =>
+          parseInt(num)
+        ),
+        userGroupFilters: (originalData.u || []).map((num: string) =>
+          parseInt(num)
+        ),
+        query: originalData.q || "",
+      };
+      this.props.store.dispatch(loadStudents(filters) as Action);
+      return;
     }
 
-    let filters: GuiderActiveFiltersType = {
-      workspaceFilters: (originalData.w || []).map((num: string) =>
-        parseInt(num)
-      ),
-      labelFilters: (originalData.l || []).map((num: string) => parseInt(num)),
-      userGroupFilters: (originalData.u || []).map((num: string) =>
-        parseInt(num)
-      ),
-      query: originalData.q || "",
-    };
-    this.props.store.dispatch(loadStudents(filters) as Action);
+    this.props.store.dispatch(loadStudent(originalData.c) as Action);
   }
 
   /**
    * loadRecordsData
-   * @param dataSplitted
+   * @param dataSplitted dataSplitted
    */
   loadRecordsData(dataSplitted: string[]) {
-    let givenLocation = dataSplitted[0].split("/")[0];
-    let originalData: any = queryString.parse(dataSplitted[1] || "", {
+    const givenLocation = dataSplitted[0].split("/")[0];
+    const originalData: any = queryString.parse(dataSplitted[1] || "", {
       arrayFormat: "bracket",
     });
 
@@ -343,7 +351,7 @@ export default class MainFunction extends React.Component<
 
   /**
    * loadProfileData
-   * @param location
+   * @param location location
    */
   loadProfileData(location: string) {
     this.props.store.dispatch(setProfileLocation(location) as Action);
@@ -360,7 +368,7 @@ export default class MainFunction extends React.Component<
 
   /**
    * loadAnnouncerData
-   * @param location
+   * @param location location
    */
   loadAnnouncerData(location: string[]) {
     const actualLocation = location.filter((l) => !!l);
@@ -378,13 +386,17 @@ export default class MainFunction extends React.Component<
 
   /**
    * loadAnnouncementsData
-   * @param announcementId
+   * @param announcementId announcementId
    */
   loadAnnouncementsData(announcementId: number) {
     this.props.store.dispatch(loadAnnouncement(null, announcementId) as Action);
   }
 
-  //NOTE because loadDiscussionThreadsFromServer can only run after areas have been loaded, this needs to be so
+  /**
+   * loadDiscussionData -
+   * NOTE because loadDiscussionThreadsFromServer can only run after areas have been loaded, this needs to be so
+   * @param location location
+   */
   loadDiscussionData(location: string[]) {
     if (location.length <= 2) {
       //The link is expected to be like # none, in this case it will collapse to null, page 1
@@ -413,13 +425,16 @@ export default class MainFunction extends React.Component<
 
   /**
    * loadCoursePickerData
+   * @param originalData originalData
+   * @param isOrganization isOrganization
+   * @param refresh refresh
    */
   loadCoursePickerData(
     originalData: any,
     isOrganization: boolean,
     refresh: boolean
   ) {
-    let filters: WorkspacesActiveFiltersType = {
+    const filters: WorkspacesActiveFiltersType = {
       educationFilters: originalData.e || [],
       curriculumFilters: originalData.c || [],
       organizationFilters: originalData.o || [],
@@ -435,6 +450,7 @@ export default class MainFunction extends React.Component<
 
   /**
    * loadCommunicatorData
+   * @param location location
    */
   loadCommunicatorData(location: string[]) {
     if (location.length === 1) {
@@ -450,7 +466,7 @@ export default class MainFunction extends React.Component<
 
   /**
    * renderCoursePickerBody
-   * @returns
+   * @returns JSX.Element
    */
   renderCoursePickerBody() {
     this.updateFirstTime();
@@ -472,22 +488,26 @@ export default class MainFunction extends React.Component<
             .i18n.text.get("plugin.coursepicker.pageTitle")
         )
       );
-      let currentLocationData = queryString.parse(
+      const currentLocationData = queryString.parse(
         window.location.hash.split("?")[1] || "",
         { arrayFormat: "bracket" }
       );
-      let currentLocationHasData =
+      const currentLocationHasData =
         Object.keys(currentLocationData).length > 0 ? true : false;
 
       if (currentLocationHasData) {
         this.loadCoursePickerData(currentLocationData, false, false);
       }
 
-      let state: StateType = this.props.store.getState();
+      const state: StateType = this.props.store.getState();
 
-      let loadCoursepickerDataByUser = (user: UserType) => {
+      /**
+       * loadCoursepickerDataByUser
+       * @param user user
+       */
+      const loadCoursepickerDataByUser = (user: UserType) => {
         if (!currentLocationHasData) {
-          let defaultSelections: any = {};
+          const defaultSelections: any = {};
           if (user.curriculumIdentifier) {
             defaultSelections["c"] = [user.curriculumIdentifier];
           }
@@ -517,7 +537,7 @@ export default class MainFunction extends React.Component<
             }) as Action
           );
         } else {
-          let user =
+          const user =
             state.userIndex.usersBySchoolData[
               state.status.userSchoolDataIdentifier
             ];
@@ -534,7 +554,7 @@ export default class MainFunction extends React.Component<
 
   /**
    * renderIndexBody
-   * @returns
+   * @returns JSX.Element
    */
   renderIndexBody() {
     this.updateFirstTime();
@@ -573,12 +593,12 @@ export default class MainFunction extends React.Component<
 
   /**
    * renderOrganizationAdministrationBody
-   * @returns
+   * @returns JSX.Element
    */
   renderOrganizationAdministrationBody() {
     this.updateFirstTime();
     if (this.itsFirstTime) {
-      let stateFilters = [
+      const stateFilters = [
         {
           identifier: "UNPUBLISHED",
           name: this.props.store
@@ -614,22 +634,26 @@ export default class MainFunction extends React.Component<
         loadUserWorkspaceEducationFiltersFromServer(true) as Action
       );
       this.props.store.dispatch(loadOrganizationSummary() as Action);
-      let currentLocationData = queryString.parse(
+      const currentLocationData = queryString.parse(
         window.location.hash.split("?")[1] || "",
         { arrayFormat: "bracket" }
       );
-      let currentLocationHasData =
+      const currentLocationHasData =
         Object.keys(currentLocationData).length > 0 ? true : false;
 
       if (currentLocationHasData) {
         this.loadCoursePickerData(currentLocationData, true, false);
       }
 
-      let state: StateType = this.props.store.getState();
+      const state: StateType = this.props.store.getState();
 
-      let loadWorkspacesByUser = (user: UserType) => {
+      /**
+       * loadWorkspacesByUser
+       * @param user user
+       */
+      const loadWorkspacesByUser = (user: UserType) => {
         if (!currentLocationHasData) {
-          let defaultSelections: any = {
+          const defaultSelections: any = {
             p: ["PUBLISHED"],
           };
           if (user.organizationIdentifier) {
@@ -657,7 +681,7 @@ export default class MainFunction extends React.Component<
             }) as Action
           );
         } else {
-          let user =
+          const user =
             state.userIndex.usersBySchoolData[
               state.status.userSchoolDataIdentifier
             ];
@@ -712,7 +736,7 @@ export default class MainFunction extends React.Component<
       );
       this.props.store.dispatch(loadSignature() as Action);
 
-      let currentLocation = window.location.hash.replace("#", "").split("/");
+      const currentLocation = window.location.hash.replace("#", "").split("/");
       this.props.store.dispatch(
         loadMessagesNavigationLabels(() => {
           if (currentLocation[0].includes("label")) {
@@ -737,7 +761,7 @@ export default class MainFunction extends React.Component<
 
   /**
    * renderDiscussionBody
-   * @returns
+   * @returns JSX.Element
    */
   renderDiscussionBody() {
     this.updateFirstTime();
@@ -761,7 +785,7 @@ export default class MainFunction extends React.Component<
       this.props.store.dispatch(
         loadDiscussionAreasFromServer(() => {
           //here in the callback
-          let currentLocation = window.location.hash
+          const currentLocation = window.location.hash
             .replace("#", "")
             .split("/");
           this.loadDiscussionData(currentLocation);
@@ -810,7 +834,7 @@ export default class MainFunction extends React.Component<
 
   /**
    * renderAnnouncerBody
-   * @returns
+   * @returns JSX.Element
    */
   renderAnnouncerBody() {
     this.updateFirstTime();
@@ -866,7 +890,12 @@ export default class MainFunction extends React.Component<
       );
       this.props.store.dispatch(updateLabelFilters() as Action);
       this.props.store.dispatch(updateWorkspaceFilters() as Action);
-      this.props.store.dispatch(updateAvailablePurchaseProducts() as Action);
+
+      // If user has LIST_USER_ORDERS permission then dispatchin is possible
+      if (this.props.store.getState().status.permissions.LIST_USER_ORDERS) {
+        this.props.store.dispatch(updateAvailablePurchaseProducts() as Action);
+      }
+
       this.props.store.dispatch(updateUserGroupFilters() as Action);
 
       this.loadGuiderData();

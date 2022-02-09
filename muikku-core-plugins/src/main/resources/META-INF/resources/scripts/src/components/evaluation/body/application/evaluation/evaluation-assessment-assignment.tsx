@@ -56,10 +56,11 @@ interface EvaluationAssessmentAssignmentState {
   isLoading: boolean;
   openAssignmentType?: "EVALUATED" | "EXERCISE";
   showCloseEditorWarning: boolean;
+  isRecording: boolean;
 }
+
 /**
  * EvaluationAssessmentAssignment
- * @param props
  */
 class EvaluationAssessmentAssignment extends React.Component<
   EvaluationAssessmentAssignmentProps,
@@ -69,7 +70,7 @@ class EvaluationAssessmentAssignment extends React.Component<
 
   /**
    * constructor
-   * @param props
+   * @param props props
    */
   constructor(props: EvaluationAssessmentAssignmentProps) {
     super(props);
@@ -80,13 +81,14 @@ class EvaluationAssessmentAssignment extends React.Component<
       isLoading: false,
       materialNode: undefined,
       showCloseEditorWarning: false,
+      isRecording: false,
     };
   }
 
   /**
    * componentDidUpdate
-   * @param prevProps
-   * @param prevState
+   * @param prevProps prevProps
+   * @param prevState prevState
    */
   componentDidUpdate(
     prevProps: EvaluationAssessmentAssignmentProps,
@@ -125,14 +127,14 @@ class EvaluationAssessmentAssignment extends React.Component<
 
     const sleep = await this.sleep(1000);
 
-    let [loadedMaterial] = await Promise.all([
+    const [loadedMaterial] = await Promise.all([
       (async () => {
-        let material = (await promisify(
+        const material = (await promisify(
           mApi().materials.html.read(assigment.materialId),
           "callback"
         )()) as MaterialContentNodeType;
 
-        let evaluation = (await promisify(
+        const evaluation = (await promisify(
           mApi().workspace.workspaces.materials.evaluations.read(
             workspace.id,
             assigment.id,
@@ -143,11 +145,14 @@ class EvaluationAssessmentAssignment extends React.Component<
           "callback"
         )()) as MaterialEvaluationType[];
 
-        let loadedMaterial: MaterialContentNodeType = Object.assign(material, {
-          evaluation: evaluation[0],
-          assignment: this.props.assigment,
-          path: this.props.assigment.path,
-        });
+        const loadedMaterial: MaterialContentNodeType = Object.assign(
+          material,
+          {
+            evaluation: evaluation[0],
+            assignment: this.props.assigment,
+            path: this.props.assigment.path,
+          }
+        );
 
         return loadedMaterial;
       })(),
@@ -162,7 +167,7 @@ class EvaluationAssessmentAssignment extends React.Component<
 
   /**
    * updateMaterialEvaluationData
-   * @param data
+   * @param  assigmentSaveReturn assigmentSaveReturn
    */
   updateMaterialEvaluationData = (
     assigmentSaveReturn: AssignmentEvaluationSaveReturn
@@ -170,7 +175,7 @@ class EvaluationAssessmentAssignment extends React.Component<
     /**
      * Get initial values that needs to be updated
      */
-    let updatedMaterial: MaterialContentNodeType = {
+    const updatedMaterial: MaterialContentNodeType = {
       ...this.state.materialNode,
     };
 
@@ -226,11 +231,9 @@ class EvaluationAssessmentAssignment extends React.Component<
    * This should sanitize html
    * @param htmlString string that contains html
    */
-  createHtmlMarkup = (htmlString: string) => {
-    return {
-      __html: htmlString,
-    };
-  };
+  createHtmlMarkup = (htmlString: string) => ({
+    __html: htmlString,
+  });
 
   /**
    * toggleOpened
@@ -260,10 +263,11 @@ class EvaluationAssessmentAssignment extends React.Component<
 
   /**
    * handleOpenSlideDrawer
+   * @param assignmentId assignmentId
+   * @param assignmentType assignmentType
    */
   handleOpenSlideDrawer =
-    (assignmentId: number, assignmentType: "EVALUATED" | "EXERCISE") =>
-    (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    (assignmentId: number, assignmentType: "EVALUATED" | "EXERCISE") => () => {
       if (
         this.props.evaluations.openedAssignmentEvaluationId !== assignmentId
       ) {
@@ -318,7 +322,7 @@ class EvaluationAssessmentAssignment extends React.Component<
 
   /**
    * assignmentFunctionClass
-   * @param compositeReply
+   * @param compositeReply compositeReply
    * @returns Assignment function button class
    */
   assignmentFunctionClass = (compositeReply?: MaterialCompositeRepliesType) => {
@@ -351,7 +355,7 @@ class EvaluationAssessmentAssignment extends React.Component<
 
   /**
    * assigmentGradeClass
-   * @param state
+   * @param compositeReply compositeReply
    * @returns classMod
    */
   assigmentGradeClass = (compositeReply?: MaterialCompositeRepliesType) => {
@@ -373,6 +377,7 @@ class EvaluationAssessmentAssignment extends React.Component<
 
   /**
    * renderAssignmentStatus
+   * @param compositeReply compositeReply
    * @returns JSX.Element
    */
   renderAssignmentMeta = (compositeReply?: MaterialCompositeRepliesType) => {
@@ -495,6 +500,17 @@ class EvaluationAssessmentAssignment extends React.Component<
     }
   };
 
+  /**
+   * Handles is recoding on change
+   * @param isRecording isRecording
+   */
+  handleIsRecordingChange = (isRecording: boolean) => {
+    this.setState({ isRecording });
+  };
+
+  /**
+   * render
+   */
   render() {
     const { compositeReply, showAsHidden } = this.props;
     const materialTypeClass = this.materialTypeClass();
@@ -525,9 +541,7 @@ class EvaluationAssessmentAssignment extends React.Component<
       contentOpen = "auto";
     }
 
-    const invisible = contentOpen === 0;
-
-    let evaluatedFunctionClassMod =
+    const evaluatedFunctionClassMod =
       this.assignmentFunctionClass(compositeReply);
     let evaluationTitleClassMod = "";
 
@@ -600,6 +614,11 @@ class EvaluationAssessmentAssignment extends React.Component<
         <SlideDrawer
           showWarning={this.state.showCloseEditorWarning}
           title={this.props.assigment.title}
+          closeIconModifiers={
+            this.props.assigment.assignmentType === "EVALUATED"
+              ? ["evaluation", "assignment-drawer-close"]
+              : ["evaluation", "excercise-drawer-close"]
+          }
           modifiers={
             this.props.assigment.assignmentType === "EVALUATED"
               ? ["assignment"]
@@ -610,6 +629,7 @@ class EvaluationAssessmentAssignment extends React.Component<
             this.props.evaluations.openedAssignmentEvaluationId ===
               this.props.assigment.id
           }
+          disableClose={this.state.isRecording}
           onClose={this.handleCloseSlideDrawer}
         >
           {this.state.isLoading ? (
@@ -627,6 +647,8 @@ class EvaluationAssessmentAssignment extends React.Component<
                 materialEvaluation={this.state.materialNode.evaluation}
                 materialAssignment={this.state.materialNode.assignment}
                 compositeReplies={compositeReply}
+                isRecording={this.state.isRecording}
+                onIsRecordingChange={this.handleIsRecordingChange}
                 updateMaterialEvaluationData={this.updateMaterialEvaluationData}
                 onClose={this.handleCloseSlideDrawer}
               />
@@ -641,6 +663,8 @@ class EvaluationAssessmentAssignment extends React.Component<
                 )}
                 materialEvaluation={this.state.materialNode.evaluation}
                 materialAssignment={this.state.materialNode.assignment}
+                isRecording={this.state.isRecording}
+                onIsRecordingChange={this.handleIsRecordingChange}
                 compositeReplies={compositeReply}
                 updateMaterialEvaluationData={this.updateMaterialEvaluationData}
                 onClose={this.handleCloseSlideDrawer}
@@ -706,7 +730,7 @@ class EvaluationAssessmentAssignment extends React.Component<
 
 /**
  * mapStateToProps
- * @param state
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -717,7 +741,7 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ updateOpenedAssignmentEvaluation }, dispatch);

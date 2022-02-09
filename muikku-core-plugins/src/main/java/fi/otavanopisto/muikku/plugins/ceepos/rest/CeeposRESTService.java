@@ -617,8 +617,7 @@ public class CeeposRESTService {
    * DESCRIPTION:
    * 
    * Forces the completion of an order in progress. The order may NOT be in state
-   * COMPLETE. Forced order completion is only available for admins or the staff
-   * member who originally created the order.
+   * COMPLETE. Forced order completion is only available for admins.
    * 
    * @param orderId Order id  
    * 
@@ -626,7 +625,7 @@ public class CeeposRESTService {
    */
   @Path("/manualCompletion/{ORDERID}")
   @POST
-  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  @RESTPermit(CeeposPermissions.COMPLETE_ORDER)
   public Response completeOrder(@PathParam("ORDERID") Long orderId) {
 
     // Validate payload
@@ -641,16 +640,6 @@ public class CeeposRESTService {
     if (order == null) {
       logger.warning(String.format("Ceepos order %d: Not found", orderId));
       return Response.status(Status.NOT_FOUND).build();
-    }
-    
-    // Ensure order ownership
-
-    if (!sessionController.hasEnvironmentPermission(CeeposPermissions.COMPLETE_ORDER)) {
-      if (!order.getCreatorId().equals(sessionController.getLoggedUserEntity().getId())) {
-        logger.severe(String.format("Ceepos order %d: User %s access revoked", order.getId(), sessionController.getLoggedUser().toId()));
-        return Response.status(Status.FORBIDDEN).build();
-        
-      }
     }
     
     // Ensure order sate

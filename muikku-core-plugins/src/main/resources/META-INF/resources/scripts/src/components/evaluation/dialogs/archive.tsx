@@ -57,7 +57,7 @@ class ArchiveDialog extends React.Component<
 > {
   /**
    * constructor
-   * @param props
+   * @param props props
    */
   constructor(props: ArchiveDialogProps) {
     super(props);
@@ -70,22 +70,22 @@ class ArchiveDialog extends React.Component<
    * This should sanitize html
    * @param htmlString string that contains html
    */
-  createHtmlMarkup = (htmlString: string) => {
-    return {
-      __html: htmlString,
-    };
-  };
+  createHtmlMarkup = (htmlString: string) => ({
+    __html: htmlString,
+  });
 
   /**
    * deleteRequest
-   * @param closeDialog
    */
-  archiveStudent(closeDialog: () => any) {
+  archiveStudent() {
     const { workspaceUserEntityId, workspaceEntityId, onClose } = this.props;
 
     this.props.archiveStudent({
       workspaceEntityId,
       workspaceUserEntityId,
+      /**
+       * onSuccess
+       */
       onSuccess: () => {
         if (this.props.place === "card") {
           this.props.loadEvaluationAssessmentRequestsFromServer();
@@ -112,51 +112,47 @@ class ArchiveDialog extends React.Component<
 
     /**
      * footer
-     * @param closeDialog
+     * @param closeDialog closeDialog
      */
-    const footer = (closeDialog: () => any) => {
-      return (
-        <div className="dialog__button-set">
-          <Button
-            buttonModifiers={["fatal", "standard-ok"]}
-            onClick={this.archiveStudent.bind(this, closeDialog)}
-          >
-            {this.props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.archiveStudent.confirmationDialog.buttonArchiveLabel"
-            )}
-          </Button>
-          <Button
-            buttonModifiers={["cancel", "standard-cancel"]}
-            onClick={this.props.onClose ? this.props.onClose : closeDialog}
-          >
-            {this.props.place === "card"
-              ? this.props.i18n.text.get(
-                  "plugin.evaluation.evaluationModal.archiveStudent.confirmationDialog.buttonNoLabel"
-                )
-              : this.props.i18n.text.get(
-                  "plugin.evaluation.evaluationModal.archiveRequest.confirmationDialog.noLabel"
-                )}
-          </Button>
-        </div>
-      );
-    };
+    const footer = (closeDialog: () => any) => (
+      <div className="dialog__button-set">
+        <Button
+          buttonModifiers={["fatal", "standard-ok"]}
+          onClick={this.archiveStudent.bind(this, closeDialog)}
+        >
+          {this.props.i18n.text.get(
+            "plugin.evaluation.evaluationModal.archiveStudent.confirmationDialog.buttonArchiveLabel"
+          )}
+        </Button>
+        <Button
+          buttonModifiers={["cancel", "standard-cancel"]}
+          onClick={this.props.onClose ? this.props.onClose : closeDialog}
+        >
+          {this.props.place === "card"
+            ? this.props.i18n.text.get(
+                "plugin.evaluation.evaluationModal.archiveStudent.confirmationDialog.buttonNoLabel"
+              )
+            : this.props.i18n.text.get(
+                "plugin.evaluation.evaluationModal.archiveRequest.confirmationDialog.noLabel"
+              )}
+        </Button>
+      </div>
+    );
 
     /**
      * content
-     * @param closeDialog
+     * @param closeDialog closeDialog
      */
-    const content = () => {
-      return (
-        <div
-          dangerouslySetInnerHTML={this.createHtmlMarkup(
-            this.props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.archiveStudent.confirmationDialog.description",
-              studentNameString
-            )
-          )}
-        />
-      );
-    };
+    const content = (closeDialog: () => any) => (
+      <div
+        dangerouslySetInnerHTML={this.createHtmlMarkup(
+          this.props.i18n.text.get(
+            "plugin.evaluation.evaluationModal.archiveStudent.confirmationDialog.description",
+            studentNameString
+          )
+        )}
+      />
+    );
     return (
       <Dialog
         isOpen={this.props.isOpen}
@@ -175,7 +171,7 @@ class ArchiveDialog extends React.Component<
 
 /**
  * mapStateToProps
- * @param state
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -186,7 +182,7 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(

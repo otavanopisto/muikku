@@ -3,6 +3,7 @@ import * as moment from "moment";
 import AnimateHeight from "react-animate-height";
 import { WorkspaceJournalType } from "~/reducers/workspaces/index";
 import "~/sass/elements/rich-text.scss";
+
 /**
  * EvaluationEventContentCardProps
  */
@@ -12,23 +13,18 @@ interface EvaluationDiaryEventProps extends WorkspaceJournalType {
 }
 
 /**
- * EvaluationEventContentCard
+ * Creates evaluation diary event component
+ * @param props props
+ * @returns JSX.Element
  */
-const EvaluationDiaryEvent: React.FC<EvaluationDiaryEventProps> = ({
-  title,
-  content,
-  created,
-  open,
-  onClickOpen,
-  id,
-}) => {
+const EvaluationDiaryEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
+  const { title, content, created, open, onClickOpen, id } = props;
+
   const [height, setHeight] = React.useState<0 | "auto">(0);
 
   React.useEffect(() => {
     const openAsHeight = open ? "auto" : 0;
-    if (openAsHeight !== height) {
-      setHeight(openAsHeight);
-    }
+    setHeight(openAsHeight);
   }, [open]);
 
   /**
@@ -36,11 +32,9 @@ const EvaluationDiaryEvent: React.FC<EvaluationDiaryEventProps> = ({
    * This should sanitize html
    * @param htmlString string that contains html
    */
-  const createHtmlMarkup = (htmlString: string) => {
-    return {
-      __html: htmlString,
-    };
-  };
+  const createHtmlMarkup = (htmlString: string) => ({
+    __html: htmlString,
+  });
 
   /**
    * handleOpenContentClick
@@ -48,8 +42,9 @@ const EvaluationDiaryEvent: React.FC<EvaluationDiaryEventProps> = ({
   const handleOpenContentClick = () => {
     if (onClickOpen) {
       onClickOpen(id);
+    } else {
+      setHeight(height === 0 ? "auto" : 0);
     }
-    setHeight(height === 0 ? "auto" : 0);
   };
 
   const formatedDate = `${moment(created).format("l")} - ${moment(

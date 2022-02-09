@@ -7,7 +7,7 @@ import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
-import { i18nType } from "../../../../reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18n";
 
 /**
  * DeleteDialogProps
@@ -45,6 +45,7 @@ class DeleteDialog extends React.Component<
 
   /**
    * handleDeleteEventClick
+   * @param closeDialog closeDialog
    */
   handleDeleteAudioFieldClick(closeDialog: () => any) {
     this.props.onDeleteAudio();
@@ -56,37 +57,44 @@ class DeleteDialog extends React.Component<
    * @returns JSX.Element
    */
   render() {
-    const footer = (closeDialog: () => any) => {
-      return (
-        <div className="dialog__button-set">
-          <Button
-            buttonModifiers={["fatal", "standard-ok"]}
-            onClick={this.handleDeleteAudioFieldClick.bind(this, closeDialog)}
-          >
-            {this.props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.audioAssessments.removeDialog.removeButton"
-            )}
-          </Button>
-          <Button
-            buttonModifiers={["cancel", "standard-cancel"]}
-            onClick={closeDialog}
-          >
-            {this.props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.audioAssessments.removeDialog.cancelButton"
-            )}
-          </Button>
-        </div>
-      );
-    };
-    const content = (closeDialog: () => any) => {
-      return (
-        <div>
+    /**
+     * footer
+     * @param closeDialog closeDialog
+     * @returns JSX.Element
+     */
+    const footer = (closeDialog: () => any) => (
+      <div className="dialog__button-set">
+        <Button
+          buttonModifiers={["fatal", "standard-ok"]}
+          onClick={this.handleDeleteAudioFieldClick.bind(this, closeDialog)}
+        >
           {this.props.i18n.text.get(
-            "plugin.evaluation.evaluationModal.audioAssessments.removeDialog.description"
+            "plugin.evaluation.evaluationModal.audioAssessments.removeDialog.removeButton"
           )}
-        </div>
-      );
-    };
+        </Button>
+        <Button
+          buttonModifiers={["cancel", "standard-cancel"]}
+          onClick={closeDialog}
+        >
+          {this.props.i18n.text.get(
+            "plugin.evaluation.evaluationModal.audioAssessments.removeDialog.cancelButton"
+          )}
+        </Button>
+      </div>
+    );
+
+    /**
+     * content
+     * @param closeDialog closeDialog
+     * @returns JSX.Element
+     */
+    const content = (closeDialog: () => any) => (
+      <div>
+        {this.props.i18n.text.get(
+          "plugin.evaluation.evaluationModal.audioAssessments.removeDialog.description"
+        )}
+      </div>
+    );
     return (
       <Dialog
         isOpen={this.props.isOpen}

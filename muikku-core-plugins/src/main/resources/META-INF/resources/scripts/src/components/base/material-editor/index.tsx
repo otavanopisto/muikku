@@ -13,7 +13,7 @@ import {
 } from "~/actions/workspaces";
 import { connect, Dispatch } from "react-redux";
 import { StateType } from "~/reducers";
-import i18n, { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18n";
 import {
   WorkspaceMaterialEditorType,
   WorkspaceType,
@@ -36,6 +36,9 @@ import { LicenseSelector } from "~/components/general/license-selector";
 import FileUploader from "~/components/general/file-uploader";
 import { PageLocation, UploadingValue } from "~/@types/shared";
 
+/**
+ * MaterialEditorProps
+ */
 interface MaterialEditorProps {
   setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType;
   i18n: i18nType;
@@ -48,6 +51,9 @@ interface MaterialEditorProps {
   requestWorkspaceMaterialContentNodeAttachments: RequestWorkspaceMaterialContentNodeAttachmentsTriggerType;
 }
 
+/**
+ * MaterialEditorState
+ */
 interface MaterialEditorState {
   tab: string;
   producerEntryName: string;
@@ -55,6 +61,14 @@ interface MaterialEditorState {
   uploadingValues: UploadingValue[];
 }
 
+/**
+ * CKEditorConfig
+ * @param locale locale
+ * @param contextPath contextPath
+ * @param workspace workspace
+ * @param materialNode materialNode
+ * @param disablePlugins disablePlugins
+ */
 const CKEditorConfig = (
   locale: string,
   contextPath: string,
@@ -196,6 +210,9 @@ const CKEditorConfig = (
 
 // First we need to modify the material content nodes end point to be able to receive hidden
 // nodes, we need those to be able to modify here
+/**
+ * MaterialEditor
+ */
 class MaterialEditor extends React.Component<
   MaterialEditorProps,
   MaterialEditorState
@@ -236,7 +253,7 @@ class MaterialEditor extends React.Component<
    * componentDidMount
    */
   componentDidMount() {
-    let offset: number = 40;
+    const offset = 40;
     this.updateHeight(offset);
     window.addEventListener("resize", () => this.updateHeight(offset));
   }
@@ -253,7 +270,7 @@ class MaterialEditor extends React.Component<
    * @param offset
    */
   updateHeight(offset?: number) {
-    let heightOffset: number = offset ? offset : 0;
+    const heightOffset: number = offset ? offset : 0;
     this.setState({ height: window.innerHeight - heightOffset });
   }
 
@@ -541,12 +558,10 @@ class MaterialEditor extends React.Component<
    * @param percent
    * @returns progress string
    */
-  handleUploadingTextProcesser = (percent: number) => {
-    return `
+  handleUploadingTextProcesser = (percent: number) => `
       ${this.props.i18n.text.get(
         "plugin.guider.user.details.files.uploading"
       )} ${percent}%`;
-  };
 
   /**
    * onClickClose
@@ -574,20 +589,24 @@ class MaterialEditor extends React.Component<
         material: this.props.editorState.currentNodeValue,
         files: Array.from(e.target.files),
         uploadingValues: [...this.state.uploadingValues].concat(
-          Array.from(e.target.files).map((file) => {
-            return {
-              name: file.name,
-              contentType: file.type,
-              progress: 0,
-              file,
-            };
-          })
+          Array.from(e.target.files).map((file) => ({
+            name: file.name,
+            contentType: file.type,
+            progress: 0,
+            file,
+          }))
         ),
+        /**
+         * success
+         */
         success: () => {
           this.setState({
             uploadingValues: [],
           });
         },
+        /**
+         * fail
+         */
         fail: () => {
           this.setState({
             uploadingValues: [],
@@ -637,7 +656,7 @@ class MaterialEditor extends React.Component<
       "viewRestrict",
     ];
     let canPublish = false;
-    for (let point of comparerPoints) {
+    for (const point of comparerPoints) {
       if (
         !equals(
           (this.props.editorState.currentNodeValue as any)[point],
@@ -717,7 +736,7 @@ class MaterialEditor extends React.Component<
     const canRestrictViewLocale =
       this.buildRestrictViewLocale(isViewRestricted);
 
-    let editorButtonSet = (
+    const editorButtonSet = (
       <div className="material-editor__buttonset">
         <div className="material-editor__buttonset-primary">
           {this.props.editorState.canHide &&
@@ -870,6 +889,7 @@ class MaterialEditor extends React.Component<
           "plugin.workspace.materialsManagement.editorView.tabs.label.content"
         ),
         component: (
+
           <div className="material-editor__content-wrapper">
             {editorButtonSet}
 
@@ -922,6 +942,7 @@ class MaterialEditor extends React.Component<
           "plugin.workspace.materialsManagement.editorView.tabs.label.metadata"
         ),
         component: (
+
           <div className="material-editor__content-wrapper">
             {editorButtonSet}
 
@@ -982,6 +1003,9 @@ class MaterialEditor extends React.Component<
         name: this.props.i18n.text.get(
           "plugin.workspace.materialsManagement.editorView.tabs.label.attachments"
         ),
+        /**
+         * component
+         */
         component: (
           <div className="material-editor__content-wrapper">
             {editorButtonSet}

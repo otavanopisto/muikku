@@ -48,6 +48,10 @@ public class CalendarController {
     calendarEventDAO.delete(event);
   }
   
+  public void updateEventAttendance(CalendarEventParticipant participant, CalendarEventAttendance attendance) {
+    calendarEventParticipantDAO.updateAttendance(participant, attendance);
+  }
+  
   public CalendarEvent findEventById(Long eventId) {
     return calendarEventDAO.findById(eventId);
   }
@@ -68,30 +72,31 @@ public class CalendarController {
     return calendarEventParticipantDAO.listByEvent(event);
   }
   
-  public void updateParticipants(CalendarEvent event, List<CalendarEventParticipant> newParticipants) {
+  /**
+   * Sets the participants of an event. This method only adds and removes participants.
+   * All new participants will have attendance UNCONFIRMED. All existing participants will
+   * keep the attendance they currently have.   
+   * 
+   * @param event The event
+   * @param participants The participants of the event
+   */
+  public void setParticipants(CalendarEvent event, List<CalendarEventParticipant> participants) {
     
     List<CalendarEventParticipant> oldParticipants = calendarEventParticipantDAO.listByEvent(event);
     
-    // Add or update participants
+    // Add participants
     
-    for (CalendarEventParticipant newParticipant : newParticipants) {
-      CalendarEventAttendance attendance = newParticipant.getAttendance();
-      if (attendance == null) {
-        attendance = CalendarEventAttendance.UNCONFIRMED;
-      }
-      CalendarEventParticipant oldParticipant = findParticipantByUserEntityId(oldParticipants, newParticipant.getUserEntityId());
+    for (CalendarEventParticipant participant : participants) {
+      CalendarEventParticipant oldParticipant = findParticipantByUserEntityId(oldParticipants, participant.getUserEntityId());
       if (oldParticipant == null) {
-        calendarEventParticipantDAO.create(event, newParticipant.getUserEntityId(), attendance);
-      }
-      else if (oldParticipant.getAttendance() != attendance) {
-        calendarEventParticipantDAO.updateAttendance(oldParticipant, attendance);
+        calendarEventParticipantDAO.create(event, participant.getUserEntityId(), CalendarEventAttendance.UNCONFIRMED);
       }
     }
     
     // Remove participants
     
     for (CalendarEventParticipant oldParticipant : oldParticipants) {
-      CalendarEventParticipant newParticipant = findParticipantByUserEntityId(newParticipants, oldParticipant.getUserEntityId());
+      CalendarEventParticipant newParticipant = findParticipantByUserEntityId(participants, oldParticipant.getUserEntityId());
       if (newParticipant == null) {
         calendarEventParticipantDAO.delete(oldParticipant);
       }
@@ -101,18 +106,11 @@ public class CalendarController {
   public List<CalendarEvent> listEventsByUserAndTimeframeAndType(Long userEntityId, OffsetDateTime start, OffsetDateTime end, String type) {
     Date startDate = new Date(start.toInstant().toEpochMilli());
     Date endDate = new Date(end.toInstant().toEpochMilli());
-    return StringUtils.isEmpty(type)
-        ? calendarEventDAO.listByUserAndTimeframe(userEntityId, startDate, endDate)
-        : calendarEventDAO.listByUserAndTimeframeAndType(userEntityId, startDate, endDate, type);
+    return calendarEventDAO.listByUserAndTimeframeAndType(userEntityId, startDate, endDate, type);
   }
   
   private CalendarEventParticipant findParticipantByUserEntityId(List<CalendarEventParticipant> participants, Long userEntityId) {
-    for (CalendarEventParticipant participant : participants) {
-      if (participant.getUserEntityId().equals(userEntityId)) {
-        return participant;
-      }
-    }
-    return null;
+    return participants.stream().filter(p -> userEntityId.equals(p.getUserEntityId())).findFirst().orElse(null);
   }
 
 }

@@ -1,3 +1,6 @@
+/**
+ * SpecificActionType
+ */
 export interface SpecificActionType<ActionType, PayloadType> {
   type: ActionType;
   payload: PayloadType | null;
@@ -272,7 +275,6 @@ import {
   UPDATE_CEEPOS_STATE,
   UPDATE_CEEPOS_PAY_STATUS,
 } from "./main-function/ceepos";
-
 import {
   LOAD_CALENDAR_GUIDANCE_EVENTS,
   ADD_CALENDAR_GUIDANCE_EVENT,

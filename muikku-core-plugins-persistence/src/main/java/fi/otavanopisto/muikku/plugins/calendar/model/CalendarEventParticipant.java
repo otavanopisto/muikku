@@ -20,9 +20,8 @@ public class CalendarEventParticipant {
   public CalendarEventParticipant() {
   }
 
-  public CalendarEventParticipant(Long userEntityId, CalendarEventAttendance attendance) {
+  public CalendarEventParticipant(Long userEntityId) {
     this.userEntityId = userEntityId;
-    this.attendance = attendance;
   }
 
   public Long getId() {
@@ -53,22 +52,6 @@ public class CalendarEventParticipant {
     this.attendance = attendance;
   }
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (!(o instanceof CalendarEventParticipant)) {
-      return false;
-    }
-    return id != null && id.equals(((CalendarEventParticipant) o).getId());
-  }
-
-  @Override
-  public int hashCode() {
-    return getClass().hashCode();
-  }
-
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -82,7 +65,7 @@ public class CalendarEventParticipant {
 
   @NotNull
   @Column(nullable = false)
-  @Enumerated (EnumType.STRING)
+  @Enumerated(EnumType.STRING)
   private CalendarEventAttendance attendance;
 
 }

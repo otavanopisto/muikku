@@ -1,33 +1,38 @@
 import MainFunctionNavbar from "../base/main-function/navbar";
 import ScreenContainer from "../general/screen-container";
-
 import AnnouncementsPanel from "./body/announcements-panel";
 import ContinueStudiesPanel from "./body/continue-studies-panel";
 import ImportantPanel from "./body/important-panel";
-import GuidanceEventsPanel from "./body/guidance-events-panel";
 import LastMessagesPanel from "./body/latest-messages-panel";
 import WorkspacesPanel from "./body/workspaces-panel";
 import { i18nType } from "~/reducers/base/i18n";
-
 import * as React from "react";
-
 import { StateType } from "~/reducers";
-import { Dispatch, connect } from "react-redux";
+import { connect } from "react-redux";
 import { StatusType } from "~/reducers/base/status";
 import StudiesEnded from "./body/studies-ended";
-
 import CheckContactInfoDialog from "~/components/base/check-contact-info-dialog";
-
 import "~/sass/elements/wcag.scss";
 
+/**
+ * IndexBodyProps
+ */
+interface IndexBodyProps {
+  status: StatusType;
+  i18n: i18nType;
+}
+
 //TODO css get rid of ordered container
+/**
+ * IndexBody
+ */
 class IndexBody extends React.Component<
-  {
-    status: StatusType;
-    i18n: i18nType;
-  },
-  {}
+  IndexBodyProps,
+  Record<string, unknown>
 > {
+  /**
+   * render
+   */
   render() {
     return (
       <div>
@@ -44,7 +49,6 @@ class IndexBody extends React.Component<
             <LastMessagesPanel />
             <ImportantPanel />
             <AnnouncementsPanel overflow={true} />
-            <GuidanceEventsPanel />
           </ScreenContainer>
         ) : (
           <ScreenContainer viewModifiers="index">
@@ -57,6 +61,10 @@ class IndexBody extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -64,7 +72,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+/**
+ * mapDispatchToProps
+ */
+function mapDispatchToProps() {
   return {};
 }
 

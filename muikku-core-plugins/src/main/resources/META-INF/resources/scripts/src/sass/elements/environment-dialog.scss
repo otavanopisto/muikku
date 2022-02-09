@@ -7,10 +7,11 @@
 .env-dialog {
   @include prefix(transition, moz ms webkit o, opacity 0.3s);
   @include text;
+
   bottom: 0;
   display: block;
   left: 0;
-  opacity: 0;
+  opacity: 0%;
   overflow: auto;
   position: fixed;
   right: 0;
@@ -18,7 +19,7 @@
   z-index: 9999;
 
   &.visible {
-    opacity: 1;
+    opacity: 100%;
 
     .env-dialog__wrapper {
       bottom: 0;
@@ -48,6 +49,7 @@
 
   @include breakpoint($breakpoint-pad) {
     @include prefix(transition, moz ms webkit o, bottom 0.3s);
+
     top: auto;
   }
 }
@@ -126,6 +128,7 @@
 
 .env-dialog__close {
   @include prefix(transition, moz ms o webkit, background-color 0.3s);
+
   border-radius: $dialog-button-close-height;
   cursor: pointer;
   font-size: 18px;
@@ -198,7 +201,6 @@
   }
 
   &:not(:first-child) {
-
     @include breakpoint($breakpoint-pad) {
       margin-left: 20px;
     }
@@ -316,8 +318,6 @@
 
 .env-dialog__input[type="checkbox"] {
   align-items: center;
-  -moz-appearance: none;
-  -webkit-appearance: none;
   appearance: none;
   border: solid 2px $color-env-dialog-form-element-border;
   border-radius: 3px;
@@ -336,7 +336,7 @@
 .env-dialog__input[type="checkbox"]:checked::after {
   color: $color-default;
   content: "\e639";
-  font-family: muikku;
+  font-family: "muikku";
   font-size: 0.875rem;
 }
 
@@ -379,10 +379,9 @@
   width: 100%;
 }
 
-
 // Reply Message "Non-dialog"
 .env-dialog--reply-message {
-  opacity: 1;
+  opacity: 100%;
   position: relative;
   z-index: unset;
 
