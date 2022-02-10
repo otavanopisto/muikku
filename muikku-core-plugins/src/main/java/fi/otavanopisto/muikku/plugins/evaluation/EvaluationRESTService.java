@@ -27,6 +27,7 @@ import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.model.base.Tag;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestController;
@@ -39,9 +40,13 @@ import fi.otavanopisto.muikku.plugins.evaluation.rest.model.WorkspaceAssessment;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.WorkspaceGrade;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.WorkspaceGradingScale;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.WorkspaceMaterialEvaluation;
+import fi.otavanopisto.muikku.plugins.guider.GuiderController;
+import fi.otavanopisto.muikku.plugins.guider.GuiderStudentWorkspaceActivity;
+import fi.otavanopisto.muikku.plugins.guider.GuiderStudentWorkspaceActivityRestModel;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceRootFolder;
+import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRestModels;
 import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -113,9 +118,65 @@ public class EvaluationRESTService extends PluginRESTService {
   @Inject
   private AssessmentRequestController assessmentRequestController;
   
+  @Inject
+  private GuiderController guiderController;
+  
+  @Inject
+  private WorkspaceRestModels workspaceRestModels;
+  
+  @GET
+  @Path("/workspaces/{WORKSPACEENTITYID}/students/{STUDENTID}/activity")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response getWorkspaceStudentActivity(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("STUDENTID") String studentId) {
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentId);
+    if (studentIdentifier == null) {
+      return Response.status(Status.BAD_REQUEST)
+        .entity(String.format("Malformed student identifier %s", studentId))
+        .build();
+    }
+    
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND)
+        .entity(String.format("Could not find workspace entity %d", workspaceEntityId))
+        .build();
+    }
+    
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserIdentifier(workspaceEntity, studentIdentifier);
+    if (workspaceUserEntity == null) {
+      return Response.status(Status.NOT_FOUND).entity("WorkspaceUserEntity not found").build();
+    }
+    
+    UserEntity studentUserEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);
+    if (studentUserEntity == null) {
+      return Response.status(Status.NOT_FOUND)
+          .entity(String.format("Could not find user entity for student identifier %s", studentIdentifier))
+          .build();
+    }
+    
+    if (!sessionController.getLoggedUserEntity().getId().equals(studentUserEntity.getId())) {
+      if (!sessionController.hasWorkspacePermission(MuikkuPermissions.VIEW_USER_EVALUATION, workspaceEntity)) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    }
+
+    GuiderStudentWorkspaceActivity activity = guiderController.getStudentWorkspaceActivity(workspaceEntity, studentIdentifier);
+    
+    List<WorkspaceAssessmentState> assessmentStates = new ArrayList<>();
+    if (workspaceUserEntity.getWorkspaceUserRole().getArchetype() == WorkspaceRoleArchetype.STUDENT) {
+      assessmentStates = assessmentRequestController.getAllWorkspaceAssessmentStates(workspaceUserEntity);
+    }
+    
+    GuiderStudentWorkspaceActivityRestModel guiderStudentWorkspaceActivityRestModel = workspaceRestModels.toRestModel(activity, assessmentStates);
+
+    return Response.ok(guiderStudentWorkspaceActivityRestModel).build();
+  }
+
+  
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/students/{STUDENTID}/assessmentstate")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  @Deprecated
   public Response getWorkspaceAssessmentState(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("STUDENTID") String studentId) {
     SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentId);
     if (studentIdentifier == null) {
