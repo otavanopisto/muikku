@@ -163,21 +163,6 @@ let updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewToR
             )
           )) as Array<Array<TransferCreditType>>;
 
-        //now this is kinna funny here we need to get the workspace evaluation data, wheter it's the final or current data
-        //for that we need to look through each workspaceSet that means the workspaceSet is an array of workspaces for an specific user
-        //of the same index, this uses Promise.all which means it's completely async it loops all at once
-        /*  await Promise.all(workspaces.map(async (workspaceSet, index) => {
-        let user = users[index];
-
-        //Now we need to get into one by one workspace per that specific user
-        await Promise.all(workspaceSet.map(async (workspace) => {
-          workspace.studentAssessmentState = <WorkspaceStudentAssessmentStateType>await promisify(mApi().workspace.workspaces
-            .students.assessmentstate.read(workspace.id, user.id), 'callback')();
-          workspace.studentActivity = <WorkspaceStudentActivityType>await promisify(mApi().guider.workspaces.activity
-            .read(workspace.id), 'callback')();
-        }));
-      }));
- */
         //so now we are here, we need to get the data and order it, this is the weird part
         let resultingData: AllStudentUsersDataType = [];
 
@@ -367,21 +352,6 @@ let setCurrentStudentUserViewAndWorkspace: SetCurrentStudentUserViewAndWorkspace
                 workspace = <WorkspaceType>(
                   await promisify(
                     mApi().records.workspaces.read(workspaceId),
-                    "callback"
-                  )()
-                );
-                workspace.studentAssessmentState = <
-                  WorkspaceStudentAssessmentStateType
-                >await promisify(
-                  mApi().workspace.workspaces.students.assessmentstate.read(
-                    workspace.id,
-                    userId
-                  ),
-                  "callback"
-                )();
-                workspace.studentActivity = <WorkspaceStudentActivityType>(
-                  await promisify(
-                    mApi().guider.workspaces.activity.read(workspace.id),
                     "callback"
                   )()
                 );
