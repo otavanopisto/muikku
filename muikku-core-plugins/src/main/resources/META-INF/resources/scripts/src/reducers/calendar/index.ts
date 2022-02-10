@@ -1,41 +1,49 @@
 import { ActionType } from "~/actions";
 
+/**
+ *  Participant
+ */
 export type Participant = {
   userEntityId: number;
   name: string;
   attendance: "UNCONFIRMED" | "YES" | "NO" | "MAYBE";
 };
 
+export type eventDisplay = "auto" | "block" | "list-item" | "background" | "inverse-background" | "none";
+/**
+ *  CalendarEvent
+ */
 export interface CalendarEvent {
   id?: string;
   title?: string;
   start: string;
-  overlap?: boolean;
   end?: string;
+  overlap?: boolean; // Can the event overlap with others
+  editable: boolean; // Override for the event
   classNames?: string[];
   description?: string;
-  display?: "auto" | "background";
+  display?: eventDisplay; // how the event is displayed in the calendar
   backgroundColor?: string;
-  resourceId?: string;
+  resourceId?: string; // Resource
   participants?: Participant[];
 }
 
-export interface CalendarEventUpdate {
+/**
+ *  CalendarEventStatusUpdate
+ */
+export interface CalendarEventStatusUpdate {
   id: string;
-  title?: string;
-  start?: string;
-  overlap?: boolean;
-  end?: string;
-  classNames?: string[];
-  description?: string;
-  display?: "auto" | "background";
-  backgroundColor?: string;
-  resourceId?: string;
-  participants?: Participant[];
+  status: "YES" | "NO" | "MAYBE"
 }
 
+/**
+ * EventState
+ */
 export type EventsState = "LOADING" | "ERROR" | "READY";
 
+/**
+ *  Calendar
+ */
 export interface Calendar {
   state: EventsState;
   guidanceEvents: CalendarEvent[];
@@ -60,6 +68,13 @@ export const evaluateEvents = (
   return passed;
 };
 
+/**
+ * Reducer function for calendar
+ *
+ * @param state
+ * @param action
+ * @returns returns state
+ */
 export default function calendar(
   state: Calendar = {
     state: "LOADING",

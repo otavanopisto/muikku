@@ -140,6 +140,10 @@ const GuidanceEvent: React.FC<GuidanceEventProps> = (props) => {
     closeDialog(); // Close the dialog
   };
 
+  /**
+   * Changes the week
+   * @param direction
+   */
   const handleWeekChange = (direction: "next" | "last") => {
     const calendarApi = calendarRef.current.getApi();
     if (direction === "next") {
@@ -211,7 +215,7 @@ const GuidanceEvent: React.FC<GuidanceEventProps> = (props) => {
         locale={"fi"}
         slotMinTime={"09:00:00"}
         slotMaxTime={"16:00:00"}
-        slotDuration={"00:30:00"}
+        slotDuration={"00:15:00"}
         height={"auto"}
         weekends={false}
         firstDay={1}
@@ -260,7 +264,7 @@ const GuidanceEvent: React.FC<GuidanceEventProps> = (props) => {
 /**
  * Takes the app state and maps it into component props
  * @param state
- * @returns
+ * @returns object
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -274,7 +278,7 @@ function mapStateToProps(state: StateType) {
 /**
  * Specifies what actions can be dispatched from the props
  * @param dispatch
- * @returns bindActionCreators
+ * @returns object
  */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(

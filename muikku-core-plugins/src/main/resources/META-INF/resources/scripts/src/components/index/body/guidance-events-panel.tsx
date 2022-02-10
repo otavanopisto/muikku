@@ -5,8 +5,6 @@ import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
 import {
   Calendar,
-  CalendarEvent,
-  CalendarEventUpdate,
 } from "~/reducers/calendar";
 import { StateType } from "~/reducers";
 import "~/sass/elements/panel.scss";
@@ -14,24 +12,32 @@ import "~/sass/elements/item-list.scss";
 import { bindActionCreators } from "redux";
 import moment from "~/lib/moment";
 import {
-  updateCalendarEvent,
-  createCalendarEventTriggerType,
+  changeCalendarAttendanceStatus,
+  updateCalendarAttendanceStatusTrigger,
 } from "~/actions/main-function/calendar";
+
+/**
 interface GuidanceEventsPanelProps {
-  i18n: i18nType;
+ *
+ */
+interface GuidanceEventsPanelProps {
+  i18n: i18nType; // Localization
   status: StatusType;
   calendar: Calendar;
-  updateCalendarEvent: createCalendarEventTriggerType;
+  changeCalendarAttendanceStatus: updateCalendarAttendanceStatusTrigger;
 }
 
+/**
+ * GuidanceEventsPanel
+ * @param props
+ * @returns JSX.element
+ */
 const GuidanceEventsPanel: React.FC<GuidanceEventsPanelProps> = (props) => {
   const handleEventParticipation = (
-    event: CalendarEvent,
-    state: "YES" | "NO" | "MAYBE"
+    event: number,
+    status: "YES" | "NO" | "MAYBE"
   ) => {
-    const eventUpdatePayload: CalendarEventUpdate = {
-      id: event.id,
-    };
+    props.changeCalendarAttendanceStatus(event, status)
   };
   return (
     <div className="panel panel--latest-messages">
@@ -52,36 +58,39 @@ const GuidanceEventsPanel: React.FC<GuidanceEventsPanelProps> = (props) => {
               return (
                 <div
                   key={event.id}
-                  className={`item-list__item item-list__item--latest-messages`}
-                >
-                  <span
-                    className={`item-list__icon item-list__icon--latest-messages icon-bubbles`}
-                  ></span>
+                  className={`item-list__item item-list__item--guidance-events`}
+                >                  <span
+                className={`item-list__icon item-list__icon--guidance-events icon-bubbles
+                ${props.status.isStudent && participation[0].attendance !== "UNCONFIRMED" ? "state-" + participation[0].attendance : ""}`}
+              ></span>
                   {props.status.isStudent &&
                   participation[0].attendance === "UNCONFIRMED" ? (
+
                     <div className="item-list__text-body item-list__text-body--multiline">
-                      <div>
-                        <span className="item-list__latest-message-caption">
+                      <div className={`item-list__item-header ${participation[0].attendance !== "UNCONFIRMED" ? "state-" + participation[0].attendance : ""}`}>
                           {event.title +
                             " " +
                             moment(event.start).format("dddd, MMMM Do hh:mm")}
-                        </span>
                       </div>
-                      <div>{event.description}</div>
-                      <div>
-                        <span className="item-list__latest-message-caption">
-                          <Link>Yes</Link>
-                          <Link>No</Link>
-                          <Link>Maybe</Link>
-                        </span>
+                      <div className="item-list__item-content">{event.description}</div>
+                      <div className="item-list__item-footer">
+                          <Link onClick={handleEventParticipation.bind(this, event.id, "YES")}>{props.i18n.text.get("plugin.frontPage.guidanceEvents.state.YES")}</Link>
+                          <Link onClick={handleEventParticipation.bind(this, event.id, "NO")}>{props.i18n.text.get("plugin.frontPage.guidanceEvents.state.NO")}</Link>
+                          <Link onClick={handleEventParticipation.bind(this, event.id, "MAYBE")}>{props.i18n.text.get("plugin.frontPage.guidanceEvents.state.MAYBE")}</Link>
                       </div>
                     </div>
                   ) : (
-                    <span className="item-list__text-body item-list__text-body--multiline">
-                      <span className="item-list__latest-message-caption">
-                        {event.title}
-                      </span>
-                    </span>
+                    <div className="item-list__text-body item-list__text-body--multiline">
+                      <div className={`item-list__item-header ${props.status.isStudent && participation[0].attendance !== "UNCONFIRMED" ? "state-" + participation[0].attendance : ""}`}>
+                          {event.title +
+                            " " +
+                            moment(event.start).format("dddd, MMMM Do hh:mm")}
+                      </div>
+                      <div className="item-list__item-content">{event.description}</div>
+                      <div className="item-list__item-footer"><Link>Linkki keskusteluun</Link></div>
+                      <div>
+                      </div>
+                    </div>
                   )}
                 </div>
               );
@@ -96,7 +105,11 @@ const GuidanceEventsPanel: React.FC<GuidanceEventsPanelProps> = (props) => {
     </div>
   );
 };
-
+/**
+ * mapStateToProps
+ * @param state
+ * @returns object
+ */
 function mapStateToProps(state: StateType) {
   return {
     status: state.status,
@@ -105,10 +118,15 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch
+ * @returns object
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     {
-      updateCalendarEvent,
+      changeCalendarAttendanceStatus,
     },
     dispatch
   );

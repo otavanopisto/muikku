@@ -102,6 +102,29 @@
   font-weight: 600;
 }
 
+.item-list__item-header {
+    // scss-lint:disable SelectorFormat
+    &.state-YES {
+      color: green;
+    }
+    &.state-NO {
+      color: red;
+    }
+    &.state-MAYBE {
+      color: yellow;
+    }
+      // scss-lint:enable SelectorFormat
+}
+.item-list__item-content {
+  padding: 5px 0 5px;
+}
+.item-list__item-footer {
+  padding: 5px 0 5px;
+  a:not(:first-child) {
+    margin-left: 10px;
+  }
+}
+
 // List item icons
 .item-list__icon {
   align-items: center;
@@ -126,10 +149,25 @@
 .item-list__icon--announcements {
   color: $color-index-item-list-item-panel-announcements-icon;
 }
+.item-list__icon--guidance-events {
+  color: $color-index-item-list-item-panel-announcements-icon;
+    // scss-lint:disable SelectorFormat
+  &.state-YES {
+    color: green;
+  }
+  &.state-NO {
+    color: red;
+  }
+  &.state-MAYBE {
+    color: yellow;
+  }
+    // scss-lint:enable SelectorFormat
+}
 
 .item-list__item--has-workspaces .item-list__icon {
   color: $color-index-item-list-item-panel-announcements-has-workspaces-icon;
 }
+
 
 // List item texts
 

@@ -5,16 +5,28 @@ import mApi, { MApiError } from "~/lib/mApi";
 import { StateType } from "~/reducers";
 import { EventsState, CalendarEvent } from "~/reducers/calendar";
 
+/**
+ * Participant
+ */
 export type Participants = {
   userEntityId: number;
 };
+/**
+ * LoadCalendarEventParams
+ */
 export interface LoadCalendarEventParams {
   userEntityId: number;
   begins: string;
   ends: string;
 }
-
+/**
+ * EventVisibility
+ */
 export type EventVisibility = "PRIVATE" | "PUBLIC";
+
+/**
+ * LoadCalendarEventsTriggerType
+ */
 export interface LoadCalendarEventsTriggerType {
   (
     userEntityId: number,
@@ -24,6 +36,9 @@ export interface LoadCalendarEventsTriggerType {
   ): AnyActionType;
 }
 
+/**
+ * createCalendarEventTriggerType
+ */
 export interface createCalendarEventTriggerType {
   (event: {
     start: string;
@@ -37,10 +52,23 @@ export interface createCalendarEventTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * updateCalendarAttendanceStatusTrigger
+ */
+export interface updateCalendarAttendanceStatusTrigger {(
+  id: number,
+  attendanceState: "YES" | "NO" | "MAYBE",
+  ): AnyActionType;
+
+  /**
+   * deleteCalendarEventTriggerType
+   */
+}
 export interface deleteCalendarEventTriggerType {
   (id: number): AnyActionType;
 }
 
+//////State update interfaces
 export interface LOAD_CALENDAR_GUIDANCE_EVENTS
   extends SpecificActionType<
     "LOAD_CALENDAR_GUIDANCE_EVENTS",
@@ -54,6 +82,16 @@ export interface DELETE_CALENDAR_GUIDANCE_EVENT
   extends SpecificActionType<"DELETE_CALENDAR_GUIDANCE_EVENT", CalendarEvent> {}
 export interface UPDATE_CALENDAR_EVENTS_STATUS
   extends SpecificActionType<"UPDATE_CALENDAR_EVENTS_STATUS", EventsState> {}
+
+
+/**
+ * LoadCalendarEvents thunk function
+ *
+ * @param userEntityId
+ * @param start
+ * @param end
+ * @param type
+ */
 
 const loadCalendarEvents: LoadCalendarEventsTriggerType =
   function loadCalendarEvents(
@@ -99,6 +137,10 @@ const loadCalendarEvents: LoadCalendarEventsTriggerType =
     };
   };
 
+/**
+ * createCalendarEvent thunk function
+ * @param event
+ */
 const createCalendarEvent: createCalendarEventTriggerType =
   function createCalendarEvent(event) {
     const {
@@ -144,6 +186,10 @@ const createCalendarEvent: createCalendarEventTriggerType =
     };
   };
 
+  /**
+   * updateCalendarEvent thunk function
+   * @param event
+   */
 const updateCalendarEvent: createCalendarEventTriggerType =
   function updateCalendarEvent(event) {
     const {
@@ -189,6 +235,40 @@ const updateCalendarEvent: createCalendarEventTriggerType =
     };
   };
 
+/**
+ * changeCalendarAttendanceStatus thunk function
+ * @param id
+ * @param attendanceState
+ */
+  const changeCalendarAttendanceStatus: updateCalendarAttendanceStatusTrigger =
+    function changeCalendarAttendanceStatus(id:number, attendanceState: string) {
+      return async (
+        dispatch: (arg: AnyActionType) => any,
+        getState: () => StateType
+      ) => {
+        dispatch({
+          type: "UPDATE_CALENDAR_GUIDANCE_EVENT",
+          payload: <CalendarEvent>await promisify(
+            mApi().calendar.event.attendance.update(id, attendanceState),
+            "callback"
+          )(),
+        });
+        try {
+        } catch (err) {
+          if (!(err instanceof MApiError)) {
+            throw err;
+          }
+          dispatch(
+            actions.displayNotification(getState().i18n.text.get("todo"), "error")
+          );
+        }
+      };
+  };
+
+/**
+ * deleteCalendarEvent thunk function
+ * @param id
+ */
 const deleteCalendarEvent: deleteCalendarEventTriggerType =
   function deleteCalendarEvent(id) {
     return async (
@@ -217,6 +297,7 @@ export default { loadCalendarEvents };
 export {
   createCalendarEvent,
   loadCalendarEvents,
+  changeCalendarAttendanceStatus,
   updateCalendarEvent,
   deleteCalendarEvent,
 };
