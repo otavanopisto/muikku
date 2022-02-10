@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.notes;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -22,16 +23,16 @@ public class NotesController {
     return noteDAO.listByOwnerAndArchived(owner, Boolean.FALSE); 
   }
   
-  public Note createNote(String title, String description, NoteType type, NotePriority priority, Boolean pinned, Long owner) {
+  public Note createNote(String title, String description, NoteType type, NotePriority priority, Boolean pinned, Long owner, Date dueDate) {
 
-    Note note = noteDAO.create(title, description, type, priority, pinned, owner, sessionController.getLoggedUserEntity().getId(), sessionController.getLoggedUserEntity().getId());
+    Note note = noteDAO.create(title, description, type, priority, pinned, owner, sessionController.getLoggedUserEntity().getId(), sessionController.getLoggedUserEntity().getId(), dueDate);
     
     return note;
   }
   
-  public Note updateNote(Note note, String title, String description, NotePriority priority, Boolean pinned) {
+  public Note updateNote(Note note, String title, String description, NotePriority priority, Boolean pinned, Date dueDate) {
     Long lastModifier = sessionController.getLoggedUserEntity().getId();
-    Note updatedNote = noteDAO.update(note, title, description, priority, pinned, lastModifier);
+    Note updatedNote = noteDAO.update(note, title, description, priority, pinned, lastModifier, dueDate);
     
     return updatedNote;
   }

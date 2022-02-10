@@ -88,6 +88,14 @@ public class NoteRestModel {
     this.created = created;
   }
 
+  public Date getDueDate() {
+    return dueDate;
+  }
+
+  public void setDueDate(Date dueDate) {
+    this.dueDate = dueDate;
+  }
+
   private Long id;
   private String title;
   private String description;
@@ -98,4 +106,5 @@ public class NoteRestModel {
   private Long creator;
   private String creatorName;
   private Date created;
+  private Date dueDate;
 }

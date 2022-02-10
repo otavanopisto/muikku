@@ -110,6 +110,14 @@ public class Note {
   public void setArchived(Boolean archived) {
     this.archived = archived;
   }
+  
+  public Date getDueDate() {
+    return dueDate;
+  }
+
+  public void setDueDate(Date dueDate) {
+    this.dueDate = dueDate;
+  }
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
@@ -155,6 +163,9 @@ public class Note {
 
   @Column (nullable = false)
   private Boolean archived = Boolean.FALSE;
+  
+  @Temporal (value=TemporalType.TIMESTAMP)
+  private Date dueDate;
 }
 
   
