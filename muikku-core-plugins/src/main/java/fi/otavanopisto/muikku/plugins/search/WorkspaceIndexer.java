@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
+import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.schooldata.CourseMetaController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
@@ -26,6 +27,8 @@ import fi.otavanopisto.muikku.search.IndexedWorkspaceSubject;
 import fi.otavanopisto.muikku.search.IndexedWorkspaceUser;
 import fi.otavanopisto.muikku.search.SearchIndexer;
 import fi.otavanopisto.muikku.users.UserController;
+import fi.otavanopisto.muikku.users.UserEntityController;
+import fi.otavanopisto.muikku.users.UserEntityName;
 
 public class WorkspaceIndexer {
   
@@ -46,6 +49,9 @@ public class WorkspaceIndexer {
 
   @Inject
   private UserController userController;
+  
+  @Inject
+  private UserEntityController userEntityController;
   
   @Inject
   private SearchIndexer indexer;
@@ -136,17 +142,28 @@ public class WorkspaceIndexer {
     List<WorkspaceUser> staffMembers = workspaceController.listWorkspaceStaffMembers(workspaceEntity);
     
     for (WorkspaceUser staffMember : staffMembers) {
-      // TODO: more efficient name fetching
-      User staffMemberUser = userController.findUserByIdentifier(staffMember.getUserIdentifier());
+      SchoolDataIdentifier staffMemberIdentifier = staffMember.getUserIdentifier();
       
-      if (staffMemberUser != null) {
-        indexedWorkspace.addStaffMember(new IndexedWorkspaceUser(staffMember.getUserIdentifier(), 
-            staffMemberUser.getFirstName(), staffMemberUser.getLastName()));
+      UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(staffMemberIdentifier);
+      UserEntityName userEntityName = userEntity != null ? userEntityController.getName(userEntity) : null;
+      
+      if (userEntityName != null) {
+        indexedWorkspace.addStaffMember(new IndexedWorkspaceUser(staffMemberIdentifier, 
+            userEntityName.getFirstName(), userEntityName.getLastName()));
       } else {
-        String userId = staffMember.getUserIdentifier() != null ? staffMember.getUserIdentifier().toId() : "NULL";
-        
-        logger.warning(String.format("Couldn't find staffmember #%s in workspace %s", userId, 
-            workspace.getIdentifier(), workspace.getSchoolDataSource()));
+        /**
+         * Fallback to fetch the user name the slower way
+         */
+        User staffMemberUser = userController.findUserByIdentifier(staffMemberIdentifier);
+        if (staffMemberUser != null) {
+          indexedWorkspace.addStaffMember(new IndexedWorkspaceUser(staffMemberIdentifier, 
+              staffMemberUser.getFirstName(), staffMemberUser.getLastName()));
+        } else {
+          String userId = staffMember.getUserIdentifier() != null ? staffMember.getUserIdentifier().toId() : "NULL";
+          
+          logger.warning(String.format("Couldn't find staffmember #%s in workspace %s", userId, 
+              workspace.getIdentifier(), workspace.getSchoolDataSource()));
+        }
       }
     }
 

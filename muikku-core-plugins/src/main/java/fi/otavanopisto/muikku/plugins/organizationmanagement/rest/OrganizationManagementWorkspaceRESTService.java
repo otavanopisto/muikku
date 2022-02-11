@@ -137,7 +137,7 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
   @RESTPermit(OrganizationManagementPermissions.ORGANIZATION_MANAGE_WORKSPACES)
   public Response listWorkspaces(
         @QueryParam("q") String searchString,
-        @QueryParam("subjects") List<String> subjects,
+        @QueryParam("subjects") List<String> subjectIds,
         @QueryParam("educationTypes") List<String> educationTypeIds,
         @QueryParam("curriculums") List<String> curriculumIds,
         @QueryParam("publicity") @DefaultValue ("ONLY_PUBLISHED") PublicityRestriction publicityRestriction,
@@ -219,6 +219,19 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
       }
     }
 
+    List<SchoolDataIdentifier> subjects = null;
+    if (subjectIds != null) {
+      subjects = new ArrayList<>(subjectIds.size());
+      for (String subjectId : subjectIds) {
+        SchoolDataIdentifier subjectIdentifier = SchoolDataIdentifier.fromId(subjectId);
+        if (subjectIdentifier != null) {
+          subjects.add(subjectIdentifier);
+        } else {
+          return Response.status(Status.BAD_REQUEST).entity(String.format("Malformed subject identifier", subjectId)).build();
+        }
+      }
+    }
+    
     // Restrict search to the organizations of the user
     
     UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());

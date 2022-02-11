@@ -180,8 +180,9 @@ public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
       Map<String, ElasticMappingProperties> mappings = new HashMap<>();
       mappings.put(typeName, properties);
       String mapping = new ObjectMapper()
+        .writerWithDefaultPrettyPrinter()
         .writeValueAsString(mappings);
-      
+
       elasticClient.admin().indices()
           .preparePutMapping(indexName)
           .setType(typeName)
@@ -189,7 +190,7 @@ public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
           .execute()
           .actionGet();
     } catch (IOException e) {
-      logger.severe("Failed to update ElasticSearch mappings");
+      logger.log(Level.SEVERE, "Failed to update ElasticSearch mappings", e);
     }
   }
 

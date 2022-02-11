@@ -14,11 +14,11 @@ public interface WorkspaceSearchBuilder {
   
   SearchResults<List<IndexedWorkspace>> searchTyped();
   
-  List<String> getSubjects();
+  List<SchoolDataIdentifier> getSubjects();
 
-  WorkspaceSearchBuilder addSubject(String subject);
+  WorkspaceSearchBuilder addSubject(SchoolDataIdentifier subject);
 
-  WorkspaceSearchBuilder setSubjects(List<String> subjects);
+  WorkspaceSearchBuilder setSubjects(List<SchoolDataIdentifier> subjects);
 
   List<SchoolDataIdentifier> getWorkspaceIdentifiers();
 

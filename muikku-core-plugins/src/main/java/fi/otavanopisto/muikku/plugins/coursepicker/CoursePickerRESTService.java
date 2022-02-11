@@ -222,7 +222,7 @@ public class CoursePickerRESTService extends PluginRESTService {
   @RESTPermitUnimplemented
   public Response listWorkspaces(
         @QueryParam("q") String searchString,
-        @QueryParam("subjects") List<String> subjects,
+        @QueryParam("subjects") List<String> subjectIds,
         @QueryParam("educationTypes") List<String> educationTypeIds,
         @QueryParam("curriculums") List<String> curriculumIds,
         @QueryParam("organizations") List<String> organizationIds,
@@ -325,6 +325,19 @@ public class CoursePickerRESTService extends PluginRESTService {
         }
       }
 
+      List<SchoolDataIdentifier> subjects = null;
+      if (subjectIds != null) {
+        subjects = new ArrayList<>(subjectIds.size());
+        for (String subjectId : subjectIds) {
+          SchoolDataIdentifier subjectIdentifier = SchoolDataIdentifier.fromId(subjectId);
+          if (subjectIdentifier != null) {
+            subjects.add(subjectIdentifier);
+          } else {
+            return Response.status(Status.BAD_REQUEST).entity(String.format("Malformed subject identifier", subjectId)).build();
+          }
+        }
+      }
+      
       final List<SchoolDataIdentifier> organizationIdentifiers = organizationIds != null ? new ArrayList<>(organizationIds.size()) : null;
       if (organizationIds != null) {
         for (String organizationId : organizationIds) {
@@ -340,7 +353,7 @@ public class CoursePickerRESTService extends PluginRESTService {
       List<OrganizationEntity> organizations = coursePickerController.listAccessibleOrganizations();
       organizations.removeIf(organization -> CollectionUtils.isNotEmpty(organizationIdentifiers) && !organizationIdentifiers.contains(organization.schoolDataIdentifier()));
       
-      List<OrganizationRestriction> organizationRestrictions = organizationEntityController.listUserOrganizationRestrictions(organizations , publicityRestriction, templateRestriction);
+      List<OrganizationRestriction> organizationRestrictions = organizationEntityController.listUserOrganizationRestrictions(organizations, publicityRestriction, templateRestriction);
 
       searchResult = searchProvider.searchWorkspaces()
         .setSubjects(subjects)

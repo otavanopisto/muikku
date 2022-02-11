@@ -156,11 +156,8 @@ public class VopsLister {
       return transferCreditEntry;
     }
 
-    List<VopsWorkspace> workspaces =
-        vopsController.listWorkspaceIdentifiersBySubjectIdentifierAndCourseNumber(
-            subject.getSchoolDataSource(),
-            subject.getIdentifier(),
-            courseNumber);
+    List<VopsWorkspace> workspaces = vopsController.listWorkspaceIdentifiersBySubjectIdentifierAndCourseNumber(
+        subject.schoolDataIdentifier(), courseNumber);
     
     List<WorkspaceAssessment> workspaceAssessments = new ArrayList<>();
     

@@ -198,8 +198,7 @@ public class TranscriptOfRecordsController {
     return new TranscriptofRecordsUserProperties(userProperties, studentMatriculationSubjects);
   }
 
-  // TODO schoolDataSource parameter is not used
-  public List<VopsWorkspace> listWorkspaceIdentifiersBySubjectIdentifierAndCourseNumber(String schoolDataSource, String subjectIdentifier, int courseNumber) {
+  public List<VopsWorkspace> listWorkspaceIdentifiersBySubjectIdentifierAndCourseNumber(SchoolDataIdentifier subjectIdentifier, int courseNumber) {
     List<VopsWorkspace> retval = new ArrayList<>();
     SearchProvider searchProvider = getProvider("elastic-search");
     if (searchProvider != null) {

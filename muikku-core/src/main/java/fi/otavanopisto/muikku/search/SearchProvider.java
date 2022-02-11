@@ -19,11 +19,11 @@ public interface SearchProvider {
   public void deinit();
   
   public WorkspaceSearchBuilder searchWorkspaces();
-  public SearchResults<List<IndexedWorkspace>> searchIndexedWorkspaces(List<String> subjects, List<SchoolDataIdentifier> identifiers, List<SchoolDataIdentifier> educationTypeIdentifiers, List<SchoolDataIdentifier> curriculumIdentifiers, 
+  public SearchResults<List<IndexedWorkspace>> searchIndexedWorkspaces(List<SchoolDataIdentifier> subjects, List<SchoolDataIdentifier> identifiers, List<SchoolDataIdentifier> educationTypeIdentifiers, List<SchoolDataIdentifier> curriculumIdentifiers, 
       Collection<OrganizationRestriction> organizationRestrictions, String freeText, Collection<WorkspaceAccess> accesses, SchoolDataIdentifier accessUser, int start, int maxResults, List<Sort> sorts);
-  public SearchResult searchWorkspaces(List<String> subjects, List<SchoolDataIdentifier> identifiers, List<SchoolDataIdentifier> educationTypeIdentifiers, List<SchoolDataIdentifier> curriculumIdentifiers, 
+  public SearchResult searchWorkspaces(List<SchoolDataIdentifier> subjects, List<SchoolDataIdentifier> identifiers, List<SchoolDataIdentifier> educationTypeIdentifiers, List<SchoolDataIdentifier> curriculumIdentifiers, 
       Collection<OrganizationRestriction> organizationRestrictions, String freeText, Collection<WorkspaceAccess> accesses, SchoolDataIdentifier accessUser, int start, int maxResults, List<Sort> sorts);
-  public SearchResult searchWorkspaces(String subject, int courseNumber);
+  public SearchResult searchWorkspaces(SchoolDataIdentifier subjectIdentifier, int courseNumber);
   public SearchResult findWorkspace(SchoolDataIdentifier identifier); 
   
   public CommunicatorMessageSearchBuilder searchCommunicatorMessages();

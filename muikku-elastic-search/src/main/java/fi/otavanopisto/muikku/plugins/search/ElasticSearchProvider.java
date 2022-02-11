@@ -451,10 +451,10 @@ public class ElasticSearchProvider implements SearchProvider {
   }
 
   @Override
-  public SearchResult searchWorkspaces(String subjectIdentifier, int courseNumber) {
+  public SearchResult searchWorkspaces(SchoolDataIdentifier subjectIdentifier, int courseNumber) {
     BoolQueryBuilder query = boolQuery();
     query.must(termQuery("published", Boolean.TRUE));
-    query.must(termQuery("subjects.subjectIdentifier.identifier", subjectIdentifier));
+    query.must(termQuery("subjects.subjectIdentifier.untouched", subjectIdentifier.toId()));
     query.must(termQuery("subjects.courseNumber", courseNumber));
     // query.must(termQuery("access", WorkspaceAccess.LOGGED_IN));
     
@@ -484,7 +484,7 @@ public class ElasticSearchProvider implements SearchProvider {
   }
   
   private BoolQueryBuilder prepareWorkspaceSearchQuery(
-      List<String> subjects, 
+      List<SchoolDataIdentifier> subjects, 
       List<SchoolDataIdentifier> identifiers, 
       List<SchoolDataIdentifier> educationTypes, 
       List<SchoolDataIdentifier> curriculumIdentifiers, 
@@ -520,24 +520,18 @@ public class ElasticSearchProvider implements SearchProvider {
       query.must(accessQuery);
     }
     
-    if (subjects != null && !subjects.isEmpty()) {
-      query.must(termsQuery("subjects.subjectIdentifier.identifier", subjects));
+    if (CollectionUtils.isNotEmpty(subjects)) {
+      List<String> subjectIds = subjects.stream().map(SchoolDataIdentifier::toId).collect(Collectors.toList());
+      query.must(termsQuery("subjects.subjectIdentifier.untouched", subjectIds));
     }
     
-    if (educationTypes != null && !educationTypes.isEmpty()) {
-      List<String> educationTypeIds = new ArrayList<>(educationTypes.size());
-      for (SchoolDataIdentifier educationType : educationTypes) {
-        educationTypeIds.add(educationType.toId());
-      }
+    if (CollectionUtils.isNotEmpty(educationTypes)) {
+      List<String> educationTypeIds = educationTypes.stream().map(SchoolDataIdentifier::toId).collect(Collectors.toList());
       query.must(termsQuery("educationTypeIdentifier.untouched", educationTypeIds));
     }
 
-    if (!CollectionUtils.isEmpty(curriculumIdentifiers)) {
-      List<String> curriculumIds = new ArrayList<>(curriculumIdentifiers.size());
-      for (SchoolDataIdentifier curriculumIdentifier : curriculumIdentifiers) {
-        curriculumIds.add(curriculumIdentifier.toId());
-      }
-
+    if (CollectionUtils.isNotEmpty(curriculumIdentifiers)) {
+      List<String> curriculumIds = curriculumIdentifiers.stream().map(SchoolDataIdentifier::toId).collect(Collectors.toList());
       query.must(boolQuery()
           .should(termsQuery("curriculumIdentifiers.untouched", curriculumIds))
           .should(boolQuery().mustNot(existsQuery("curriculumIdentifiers")))
@@ -606,7 +600,7 @@ public class ElasticSearchProvider implements SearchProvider {
     
   @Override
   public SearchResult searchWorkspaces(
-      List<String> subjects, 
+      List<SchoolDataIdentifier> subjects, 
       List<SchoolDataIdentifier> identifiers, 
       List<SchoolDataIdentifier> educationTypes, 
       List<SchoolDataIdentifier> curriculumIdentifiers, 
@@ -657,7 +651,7 @@ public class ElasticSearchProvider implements SearchProvider {
 
   @Override
   public SearchResults<List<IndexedWorkspace>> searchIndexedWorkspaces(
-      List<String> subjects, 
+      List<SchoolDataIdentifier> subjects, 
       List<SchoolDataIdentifier> identifiers, 
       List<SchoolDataIdentifier> educationTypes, 
       List<SchoolDataIdentifier> curriculumIdentifiers, 

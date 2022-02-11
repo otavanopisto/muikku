@@ -241,7 +241,7 @@ public class CommunicatorRecipientsRESTService extends PluginRESTService {
         workspaceIdentifierFilters.add(workspaceEntity.schoolDataIdentifier());
       }
 
-      List<String> subjects = null;
+      List<SchoolDataIdentifier> subjects = null;
       List<SchoolDataIdentifier> educationTypes = null;
       List<SchoolDataIdentifier> curriculumIdentifiers = null;
       List<WorkspaceAccess> accesses = null;

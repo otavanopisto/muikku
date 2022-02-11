@@ -47,8 +47,6 @@ import fi.otavanopisto.muikku.model.users.UserIdentifierProperty;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
-import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestController;
-import fi.otavanopisto.muikku.plugins.guider.GuiderController;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.StudiesViewCourseChoiceController;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsController;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsFileController;
@@ -57,8 +55,6 @@ import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptofRecordsUse
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.VopsLister;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.StudiesViewCourseChoice;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.TranscriptOfRecordsFile;
-import fi.otavanopisto.muikku.plugins.workspace.WorkspaceEntityFileController;
-import fi.otavanopisto.muikku.plugins.workspace.WorkspaceVisitController;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRestModels;
 import fi.otavanopisto.muikku.schooldata.CourseMetaController;
 import fi.otavanopisto.muikku.schooldata.GradingController;
@@ -152,18 +148,6 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   @Inject
   private OrganizationEntityController organizationEntityController;
 
-  @Inject
-  private WorkspaceVisitController workspaceVisitController;
-
-  @Inject
-  private WorkspaceEntityFileController workspaceEntityFileController;
-  
-  @Inject
-  private GuiderController guiderController;
-
-  @Inject
-  private AssessmentRequestController assessmentRequestController;
-  
   @Inject
   private WorkspaceRestModels workspaceRestModels;
   
@@ -625,7 +609,6 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
 
-    // TODO 
     Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
 
     if (workspace == null) {

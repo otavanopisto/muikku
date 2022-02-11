@@ -424,7 +424,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         @QueryParam("userIdentifier") String userId,
         @QueryParam("includeInactiveWorkspaces") @DefaultValue ("false") Boolean includeInactiveWorkspaces,
         @QueryParam("q") String searchString,
-        @QueryParam("subjects") List<String> subjects,
+        @QueryParam("subjects") List<String> subjectIds,
         @QueryParam("educationTypes") List<String> educationTypeIds,
         @QueryParam("curriculums") List<String> curriculumIds,
         @QueryParam("organizations") List<String> organizationIds,
@@ -567,6 +567,19 @@ public class WorkspaceRESTService extends PluginRESTService {
             curriculums.add(curriculumIdentifier);
           } else {
             return Response.status(Status.BAD_REQUEST).entity(String.format("Malformed curriculum identifier", curriculumId)).build();
+          }
+        }
+      }
+      
+      List<SchoolDataIdentifier> subjects = null;
+      if (subjectIds != null) {
+        subjects = new ArrayList<>(subjectIds.size());
+        for (String subjectId : subjectIds) {
+          SchoolDataIdentifier subjectIdentifier = SchoolDataIdentifier.fromId(subjectId);
+          if (subjectIdentifier != null) {
+            subjects.add(subjectIdentifier);
+          } else {
+            return Response.status(Status.BAD_REQUEST).entity(String.format("Malformed subject identifier", subjectId)).build();
           }
         }
       }

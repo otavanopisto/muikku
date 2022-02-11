@@ -18,12 +18,12 @@ public abstract class AbstractWorkspaceSearchBuilder implements WorkspaceSearchB
   public abstract SearchResult search();
   
   @Override
-  public List<String> getSubjects() {
+  public List<SchoolDataIdentifier> getSubjects() {
     return subjects;
   }
   
   @Override
-  public WorkspaceSearchBuilder addSubject(String subject) {
+  public WorkspaceSearchBuilder addSubject(SchoolDataIdentifier subject) {
     if (this.subjects == null) {
       this.subjects = new ArrayList<>();
     }
@@ -32,7 +32,7 @@ public abstract class AbstractWorkspaceSearchBuilder implements WorkspaceSearchB
   }
   
   @Override
-  public WorkspaceSearchBuilder setSubjects(List<String> subjects) {
+  public WorkspaceSearchBuilder setSubjects(List<SchoolDataIdentifier> subjects) {
     this.subjects = subjects;
     return this;
   }
@@ -203,7 +203,7 @@ public abstract class AbstractWorkspaceSearchBuilder implements WorkspaceSearchB
   
   private String freeText;
   private List<SchoolDataIdentifier> workspaceIdentifiers = null;
-  private List<String> subjects = null;
+  private List<SchoolDataIdentifier> subjects = null;
   private List<SchoolDataIdentifier> educationTypeIdentifiers = null; 
   private List<SchoolDataIdentifier> curriculumIdentifiers = null;
   private List<OrganizationRestriction> organizationRestrictions;
