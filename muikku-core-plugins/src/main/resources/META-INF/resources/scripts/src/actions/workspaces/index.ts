@@ -648,6 +648,7 @@ let setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
             () =>
               promisify(
                 mApi()
+                  // merge activity and assessments -> .workspace.workspaces.students.activity.cacheClear()
                   .workspace.workspaces.students.assessments.cacheClear()
                   .read(data.workspaceId, status.userSchoolDataIdentifier),
                 "callback"
