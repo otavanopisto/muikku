@@ -51,38 +51,65 @@ export type UPDATE_RECORDS_SET_FILES = SpecificActionType<
   Array<UserFileType>
 >;
 
+/**
+ * SetLocationToStatisticsInTranscriptOfRecordsTriggerType
+ */
 export interface SetLocationToStatisticsInTranscriptOfRecordsTriggerType {
   (): AnyActionType;
 }
+/**
+ * SetLocationToSummaryInTranscriptOfRecordsTriggerType
+ */
 export interface SetLocationToSummaryInTranscriptOfRecordsTriggerType {
   (): AnyActionType;
 }
 
+/**
+ * SetLocationToYoInTranscriptOfRecordsTriggerType
+ */
 export interface SetLocationToYoInTranscriptOfRecordsTriggerType {
   (): AnyActionType;
 }
 
+/**
+ * UpdateAllStudentUsersAndSetViewToRecordsTriggerType
+ */
 export interface UpdateAllStudentUsersAndSetViewToRecordsTriggerType {
   (): AnyActionType;
 }
 
+/**
+ * SetCurrentStudentUserViewAndWorkspaceTriggerType
+ */
 export interface SetCurrentStudentUserViewAndWorkspaceTriggerType {
   (userEntityId: number, userId: string, workspaceId: number): AnyActionType;
 }
 
+/**
+ * SetLocationToVopsInTranscriptOfRecordsTriggerType
+ */
 export interface SetLocationToVopsInTranscriptOfRecordsTriggerType {
   (): AnyActionType;
 }
 
+/**
+ * SetLocationToHopsInTranscriptOfRecordsTriggerType
+ */
 export interface SetLocationToHopsInTranscriptOfRecordsTriggerType {
   (): AnyActionType;
 }
 
+/**
+ * UpdateTranscriptOfRecordsFilesTriggerType
+ */
 export interface UpdateTranscriptOfRecordsFilesTriggerType {
   (): AnyActionType;
 }
 
-let updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewToRecordsTriggerType =
+/**
+ * updateAllStudentUsersAndSetViewToRecords
+ */
+const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewToRecordsTriggerType =
   function updateAllStudentUsersAndSetViewToRecords() {
     return async (
       dispatch: (arg: AnyActionType) => any,
@@ -110,7 +137,7 @@ let updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewToR
         //OK let me try to explain this :<
 
         //We get the current used id this user is supposedly a student
-        let userId: number = getState().status.userId;
+        const userId: number = getState().status.userId;
 
         //we get the users that represent that userId
         let users: Array<UserWithSchoolDataType> = (await promisify(
@@ -153,7 +180,7 @@ let updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewToR
         );
 
         //the same way we get all the transfer credits for each user, which is an array of array of transfer credits
-        let transferCredits: Array<Array<TransferCreditType>> =
+        const transferCredits: Array<Array<TransferCreditType>> =
           (await Promise.all(
             users.map((user) =>
               promisify(
@@ -163,8 +190,38 @@ let updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewToR
             )
           )) as Array<Array<TransferCreditType>>;
 
+        //now this is kinna funny here we need to get the workspace evaluation data, wheter it's the final or current data
+        //for that we need to look through each workspaceSet that means the workspaceSet is an array of workspaces for an specific user
+        //of the same index, this uses Promise.all which means it's completely async it loops all at once
+        await Promise.all(
+          workspaces.map(async (workspaceSet, index) => {
+            const user = users[index];
+
+            //Now we need to get into one by one workspace per that specific user
+            await Promise.all(
+              workspaceSet.map(async (workspace) => {
+                workspace.studentAssessmentState = <
+                  WorkspaceStudentAssessmentStateType
+                >await promisify(
+                  mApi().workspace.workspaces.students.assessmentstate.read(
+                    workspace.id,
+                    user.id
+                  ),
+                  "callback"
+                )();
+                workspace.studentActivity = <WorkspaceStudentActivityType>(
+                  await promisify(
+                    mApi().guider.workspaces.activity.read(workspace.id),
+                    "callback"
+                  )()
+                );
+              })
+            );
+          })
+        );
+
         //so now we are here, we need to get the data and order it, this is the weird part
-        let resultingData: AllStudentUsersDataType = [];
+        const resultingData: AllStudentUsersDataType = [];
 
         //ok so we loop for user
         users.forEach((user, index) => {
@@ -175,8 +232,8 @@ let updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewToR
           };
 
           //we get the results we got from the serveh
-          let givenWorkspacesByServer = workspaces[index];
-          let givenTransferCreditsByServer = transferCredits[index];
+          const givenWorkspacesByServer = workspaces[index];
+          const givenTransferCreditsByServer = transferCredits[index];
 
           //if the user does not have a curriculum identifier then the order is the workspaces is fairly irrelevant
           //we will just display them as they came from the server and don't tag them to belong to any curriculum
@@ -192,19 +249,19 @@ let updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewToR
           } else {
             //we create this helper index variable
             //of records
-            let recordById: { [key: string]: RecordGroupType } = {};
+            const recordById: { [key: string]: RecordGroupType } = {};
 
             //and this will be the default group
-            let defaultRecords: RecordGroupType = {
+            const defaultRecords: RecordGroupType = {
               workspaces: [],
               transferCredits: [],
             };
 
             //so we start with the workspace, we need each id as ordered
-            let workspaceIdsOrdered = givenWorkspacesByServer.map(
+            const workspaceIdsOrdered = givenWorkspacesByServer.map(
               (workspace) => {
                 //so we get the curriculum this workspace belongs to
-                let curriculumIdentifier: string =
+                const curriculumIdentifier: string =
                   workspace.curriculumIdentifiers[0];
 
                 //if there is none it goes to the default record one
@@ -230,9 +287,9 @@ let updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewToR
             );
 
             //we do virtually the same for the transfer credits
-            let recordsIdsOrdered = givenTransferCreditsByServer.map(
+            const recordsIdsOrdered = givenTransferCreditsByServer.map(
               (transferCredit) => {
-                let curriculumIdentifier: string =
+                const curriculumIdentifier: string =
                   transferCredit.curriculumIdentifier;
                 if (!curriculumIdentifier) {
                   defaultRecords.transferCredits.push(transferCredit);
@@ -254,12 +311,10 @@ let updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewToR
             //now here we need to order, the curriculum identifier of the user always goes first
             //then we add it by the ids given by the workspace and then by the transferred records
             //we need to remove duplicates, this gives us a list of strings of ids of the order of that specific user
-            let workspaceOrder = [user.curriculumIdentifier]
+            const workspaceOrder = [user.curriculumIdentifier]
               .concat(workspaceIdsOrdered)
               .concat(recordsIdsOrdered)
-              .filter((item, pos, self) => {
-                return self.indexOf(item) == pos;
-              });
+              .filter((item, pos, self) => self.indexOf(item) == pos);
 
             //now we need to apply this order for that user, we take the order and return each record group
             //we concat it with the default records (at the end as they have no identifier), and then we need
@@ -267,9 +322,10 @@ let updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewToR
             //transfer credit with that id; or it might be empty, eg, as the default record hold no records at all,
             //we want to filter those cases out
             resultingData[index].records = workspaceOrder
-              .map((curriculumIdentifier: string) => {
-                return recordById[curriculumIdentifier];
-              })
+              .map(
+                (curriculumIdentifier: string) =>
+                  recordById[curriculumIdentifier]
+              )
               .concat([defaultRecords])
               .filter(
                 (record: RecordGroupType) =>
@@ -308,7 +364,13 @@ let updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewToR
     };
   };
 
-let setCurrentStudentUserViewAndWorkspace: SetCurrentStudentUserViewAndWorkspaceTriggerType =
+/**
+ * setCurrentStudentUserViewAndWorkspace
+ * @param userEntityId userEntityId
+ * @param userId userId
+ * @param workspaceId workspaceId
+ */
+const setCurrentStudentUserViewAndWorkspace: SetCurrentStudentUserViewAndWorkspaceTriggerType =
   function setCurrentStudentUserViewAndWorkspace(
     userEntityId,
     userId,
@@ -328,25 +390,27 @@ let setCurrentStudentUserViewAndWorkspace: SetCurrentStudentUserViewAndWorkspace
           payload: <CurrentStudentUserAndWorkspaceStatusType>"LOADING",
         });
 
-        let userData: AllStudentUsersDataType = getState().records.userData;
+        const userData: AllStudentUsersDataType = getState().records.userData;
 
-        let [workspace, journals, materials, compositeReplies] =
+        const [workspace, journals, materials, compositeReplies] =
           await Promise.all([
             (async () => {
               let workspace: WorkspaceType;
-              let wasFoundInMemory = userData.find((dataPoint) => {
-                return !!dataPoint.records.find((record: RecordGroupType) => {
-                  return !!record.workspaces.find(
-                    (workspaceSearch: WorkspaceType) => {
-                      if (workspaceSearch.id === workspaceId) {
-                        workspace = workspaceSearch;
-                        return true;
-                      }
-                      return false;
-                    }
-                  );
-                });
-              });
+              const wasFoundInMemory = userData.find(
+                (dataPoint) =>
+                  !!dataPoint.records.find(
+                    (record: RecordGroupType) =>
+                      !!record.workspaces.find(
+                        (workspaceSearch: WorkspaceType) => {
+                          if (workspaceSearch.id === workspaceId) {
+                            workspace = workspaceSearch;
+                            return true;
+                          }
+                          return false;
+                        }
+                      )
+                  )
+              );
 
               if (!wasFoundInMemory) {
                 workspace = <WorkspaceType>(
@@ -361,7 +425,7 @@ let setCurrentStudentUserViewAndWorkspace: SetCurrentStudentUserViewAndWorkspace
             })(),
 
             (async () => {
-              let journals = <WorkspaceJournalListType>await promisify(
+              const journals = <WorkspaceJournalListType>await promisify(
                 mApi().workspace.workspaces.journal.read(workspaceId, {
                   userEntityId,
                   firstResult: 0,
@@ -373,7 +437,8 @@ let setCurrentStudentUserViewAndWorkspace: SetCurrentStudentUserViewAndWorkspace
             })(),
 
             (async () => {
-              let assignments = <Array<MaterialAssignmentType>>await promisify(
+              const assignments =
+                <Array<MaterialAssignmentType>>await promisify(
                   mApi().workspace.workspaces.materials.read(workspaceId, {
                     assignmentType: "EVALUATED",
                   }),
@@ -382,18 +447,19 @@ let setCurrentStudentUserViewAndWorkspace: SetCurrentStudentUserViewAndWorkspace
 
               let materials: Array<MaterialContentNodeType>;
               let evaluations: Array<MaterialEvaluationType>;
+              // eslint-disable-next-line prefer-const
               [materials, evaluations] = <any>await Promise.all([
                 Promise.all(
-                  assignments.map((assignment) => {
-                    return promisify(
+                  assignments.map((assignment) =>
+                    promisify(
                       mApi().materials.html.read(assignment.materialId),
                       "callback"
-                    )();
-                  })
+                    )()
+                  )
                 ),
                 Promise.all(
-                  assignments.map((assignment) => {
-                    return promisify(
+                  assignments.map((assignment) =>
+                    promisify(
                       mApi().workspace.workspaces.materials.evaluations.read(
                         workspaceId,
                         assignment.id,
@@ -402,20 +468,24 @@ let setCurrentStudentUserViewAndWorkspace: SetCurrentStudentUserViewAndWorkspace
                         }
                       ),
                       "callback"
-                    )().then((evaluations: Array<MaterialEvaluationType>) => {
-                      return evaluations[0];
-                    });
-                  })
+                    )().then(
+                      (evaluations: Array<MaterialEvaluationType>) =>
+                        evaluations[0]
+                    )
+                  )
                 ),
               ]);
 
-              return materials.map((material, index) => {
-                return <MaterialContentNodeType>Object.assign(material, {
-                  evaluation: evaluations[index],
-                  assignment: assignments[index],
-                  path: assignments[index].path,
-                });
-              });
+              return materials.map(
+                (material, index) => <MaterialContentNodeType>Object.assign(
+                    material,
+                    {
+                      evaluation: evaluations[index],
+                      assignment: assignments[index],
+                      path: assignments[index].path,
+                    }
+                  )
+              );
             })(),
 
             (async () => {
@@ -467,7 +537,10 @@ let setCurrentStudentUserViewAndWorkspace: SetCurrentStudentUserViewAndWorkspace
     };
   };
 
-let setLocationToStatisticsInTranscriptOfRecords: SetLocationToStatisticsInTranscriptOfRecordsTriggerType =
+/**
+ * setLocationToStatisticsInTranscriptOfRecords
+ */
+const setLocationToStatisticsInTranscriptOfRecords: SetLocationToStatisticsInTranscriptOfRecordsTriggerType =
   function setLocationToStatisticsInTranscriptOfRecords() {
     return {
       type: "UPDATE_RECORDS_LOCATION",
@@ -475,7 +548,10 @@ let setLocationToStatisticsInTranscriptOfRecords: SetLocationToStatisticsInTrans
     };
   };
 
-let setLocationToSummaryInTranscriptOfRecords: SetLocationToSummaryInTranscriptOfRecordsTriggerType =
+/**
+ * setLocationToSummaryInTranscriptOfRecords
+ */
+const setLocationToSummaryInTranscriptOfRecords: SetLocationToSummaryInTranscriptOfRecordsTriggerType =
   function setLocationToSummaryInTranscriptOfRecords() {
     return {
       type: "UPDATE_RECORDS_LOCATION",
@@ -483,7 +559,10 @@ let setLocationToSummaryInTranscriptOfRecords: SetLocationToSummaryInTranscriptO
     };
   };
 
-let setLocationToYoInTranscriptOfRecords: SetLocationToYoInTranscriptOfRecordsTriggerType =
+/**
+ * setLocationToYoInTranscriptOfRecords
+ */
+const setLocationToYoInTranscriptOfRecords: SetLocationToYoInTranscriptOfRecordsTriggerType =
   function setLocationToYoInTranscriptOfRecords() {
     return {
       type: "UPDATE_RECORDS_LOCATION",
@@ -491,7 +570,10 @@ let setLocationToYoInTranscriptOfRecords: SetLocationToYoInTranscriptOfRecordsTr
     };
   };
 
-let setLocationToVopsInTranscriptOfRecords: SetLocationToVopsInTranscriptOfRecordsTriggerType =
+/**
+ * setLocationToVopsInTranscriptOfRecords
+ */
+const setLocationToVopsInTranscriptOfRecords: SetLocationToVopsInTranscriptOfRecordsTriggerType =
   function setLocationToVopsInTranscriptOfRecords() {
     return {
       type: "UPDATE_RECORDS_LOCATION",
@@ -499,7 +581,10 @@ let setLocationToVopsInTranscriptOfRecords: SetLocationToVopsInTranscriptOfRecor
     };
   };
 
-let setLocationToHopsInTranscriptOfRecords: SetLocationToHopsInTranscriptOfRecordsTriggerType =
+/**
+ * setLocationToHopsInTranscriptOfRecords
+ */
+const setLocationToHopsInTranscriptOfRecords: SetLocationToHopsInTranscriptOfRecordsTriggerType =
   function setLocationToHopsInTranscriptOfRecords() {
     return {
       type: "UPDATE_RECORDS_LOCATION",
@@ -507,13 +592,16 @@ let setLocationToHopsInTranscriptOfRecords: SetLocationToHopsInTranscriptOfRecor
     };
   };
 
-let updateTranscriptOfRecordsFiles: UpdateTranscriptOfRecordsFilesTriggerType =
+/**
+ * updateTranscriptOfRecordsFiles
+ */
+const updateTranscriptOfRecordsFiles: UpdateTranscriptOfRecordsFilesTriggerType =
   function updateTranscriptOfRecordsFiles() {
     return async (
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
     ) => {
-      let files: Array<UserFileType> = <Array<UserFileType>>(
+      const files: Array<UserFileType> = <Array<UserFileType>>(
         await promisify(
           mApi().guider.users.files.read(
             getState().status.userSchoolDataIdentifier

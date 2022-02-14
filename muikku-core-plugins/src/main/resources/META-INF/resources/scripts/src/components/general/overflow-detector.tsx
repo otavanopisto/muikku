@@ -1,47 +1,94 @@
+/* eslint-disable react/no-string-refs */
+
+/**
+ * Depcrecated refs should be refactored
+ */
+
 import * as React from "react";
 
+/**
+ * OverflowDetectorProps
+ */
 interface OverflowDetectorProps {
-  classNameWhenOverflown: string,
-  className: string,
-  as: string,
-  [prop: string]: any
+  classNameWhenOverflown: string;
+  className: string;
+  as: string;
+  [prop: string]: any;
 }
 
-interface OverflowDetectorState {
-  overflown: boolean
+/**
+ * OverflowDetectorState
+ */
+interface OverflowDetectorState {
+  overflown: boolean;
 }
 
-export default class OverflowDetector extends React.Component<OverflowDetectorProps, OverflowDetectorState> {
-  constructor(props: OverflowDetectorProps){
+/**
+ * OverflowDetector
+ */
+export default class OverflowDetector extends React.Component<
+  OverflowDetectorProps,
+  OverflowDetectorState
+> {
+  /**
+   * constructor
+   * @param props props
+   */
+  constructor(props: OverflowDetectorProps) {
     super(props);
 
     this.state = {
-      overflown: false
-    }
+      overflown: false,
+    };
 
     this.checkOverflown = this.checkOverflown.bind(this);
   }
-  componentDidMount(){
+
+  /**
+   * componentDidMount
+   */
+  componentDidMount() {
     this.checkOverflown();
   }
-  componentDidUpdate(){
+
+  /**
+   * componentDidUpdate
+   */
+  componentDidUpdate() {
     this.checkOverflown();
   }
-  checkOverflown(){
-    let element:HTMLElement = this.refs["element"] as HTMLElement;
-    let overflown = element.scrollHeight > element.offsetHeight;
-    if (this.state.overflown !== overflown){
+
+  /**
+   * checkOverflown
+   */
+  checkOverflown() {
+    const element: HTMLElement = this.refs["element"] as HTMLElement;
+    const overflown = element.scrollHeight > element.offsetHeight;
+    if (this.state.overflown !== overflown) {
       this.setState({
-        overflown
+        overflown,
       });
     }
   }
-  render(){
-    let Element: any = this.props.as;
-    let givenProps:OverflowDetectorProps = Object.assign({}, this.props);
+
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
+  render() {
+    const Element: any = this.props.as;
+    const givenProps: OverflowDetectorProps = Object.assign({}, this.props);
     delete givenProps["classNameWhenOverflown"];
     delete givenProps["className"];
     delete givenProps["as"];
-    return <Element {...givenProps} className={`${this.props.className} ${this.state.overflown ? this.props.classNameWhenOverflown : ""}`} ref="element"/>
+    return (
+      <Element
+        {...givenProps}
+        className={`${this.props.className} ${
+          this.state.overflown ? this.props.classNameWhenOverflown : ""
+        }`}
+        ref="element"
+      />
+    );
   }
 }

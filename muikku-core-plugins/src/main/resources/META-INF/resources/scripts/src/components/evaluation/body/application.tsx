@@ -15,6 +15,7 @@ import { bindActionCreators } from "redux";
 import EvaluationSorters from "./application/evaluation-list/evaluation-sorters";
 import { WorkspaceType } from "../../../reducers/workspaces/index";
 import { EvaluationWorkspace } from "../../../@types/evaluation";
+import { AnyActionType } from "~/actions";
 
 /**
  * EvaluationApplicationProps
@@ -41,7 +42,7 @@ class EvaluationApplication extends React.Component<
 > {
   /**
    * constructor
-   * @param props
+   * @param props props
    */
   constructor(props: EvaluationApplicationProps) {
     super(props);
@@ -49,7 +50,7 @@ class EvaluationApplication extends React.Component<
 
   /**
    * handleWorkspaceSelectChange
-   * @param e
+   * @param e e
    */
   handleWorkspaceSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     this.props.setSelectedWorkspaceId({
@@ -153,7 +154,7 @@ class EvaluationApplication extends React.Component<
 
 /**
  * mapStateToProps
- * @param state
+ * @param state state
  * @returns object
  */
 function mapStateToProps(state: StateType) {
@@ -167,10 +168,10 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch dispatch
  * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ setSelectedWorkspaceId }, dispatch);
 }
 

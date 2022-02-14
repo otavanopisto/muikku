@@ -1,16 +1,10 @@
 import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
-import Avatar from "~/components/general/avatar";
 import StudentDialog from "~/components/organization/dialogs/edit-student";
 import StaffDialog from "~/components/organization/dialogs/edit-staff";
-import { getName } from "~/util/modifiers";
 import User from "~/components/general/user";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
-import ApplicationList, {
-  ApplicationListItem,
-  ApplicationListItemContentWrapper,
-  ApplicationListItemContentData,
-} from "~/components/general/application-list";
+import ApplicationList from "~/components/general/application-list";
 
 import "~/sass/elements/application-list.scss";
 import {
@@ -52,7 +46,7 @@ export default class UserPanel extends React.Component<
 
   /**
    * constructor
-   * @param props
+   * @param props props
    */
   constructor(props: UserPanelProps) {
     super(props);
@@ -66,7 +60,7 @@ export default class UserPanel extends React.Component<
 
   /**
    * componentDidUpdate
-   * @param prevProps
+   * @param prevProps prevProps
    */
   componentDidUpdate(prevProps: UserPanelProps) {
     if (prevProps.users.totalHitCount !== this.props.users.totalHitCount) {
@@ -82,13 +76,13 @@ export default class UserPanel extends React.Component<
 
   /**
    * getToPage
-   * @param n
+   * @param n page number
    */
   getToPage(n: number) {
-    let pageStart: number = (n - 1) * this.usersPerPage;
-    let maxPerPage: number = this.usersPerPage;
+    const pageStart: number = (n - 1) * this.usersPerPage;
+    const maxPerPage: number = this.usersPerPage;
 
-    let query: string = this.props.searchString
+    const query: string = this.props.searchString
       ? this.props.searchString
       : null;
     this.setState({ currentPage: n });
@@ -98,7 +92,9 @@ export default class UserPanel extends React.Component<
   /**
    * handles page changes,
    * sets selected page as currentPage to state
-   * @param event
+   * @param selectedItem selectedItem object
+   * @param selectedItem.selected page number
+   * @returns getToPage
    */
   handlePagerChange = (selectedItem: { selected: number }) =>
     this.getToPage(selectedItem.selected + 1);
@@ -108,7 +104,7 @@ export default class UserPanel extends React.Component<
    * @returns JSX.Element
    */
   render() {
-    let results = this.props.users.results as UsersListType;
+    const results = this.props.users.results as UsersListType;
     return (
       <ApplicationSubPanel
         i18n={this.props.i18n}
@@ -120,7 +116,7 @@ export default class UserPanel extends React.Component<
           <ApplicationList>
             {this.props.users &&
               results.map((user) => {
-                let data = {
+                const data = {
                   firstName: user.firstName,
                   lastName: user.lastName,
                   email: user.email,
@@ -128,7 +124,7 @@ export default class UserPanel extends React.Component<
                   role: user.role ? user.role : "STUDENT",
                   studyProgrammeIdentifier: user.studyProgrammeIdentifier,
                 };
-                let actions =
+                const actions =
                   data.role == "STUDENT" ? (
                     <div>
                       <StudentDialog data={data}>

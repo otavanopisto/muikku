@@ -58,7 +58,7 @@ class SupplementationEditor extends SessionStateComponent<
 > {
   /**
    * constructor
-   * @param props
+   * @param props props
    */
   constructor(props: SupplementationEditorProps) {
     /**
@@ -172,7 +172,7 @@ class SupplementationEditor extends SessionStateComponent<
 
   /**
    * handleCKEditorChange
-   * @param e
+   * @param e e
    */
   handleCKEditorChange = (e: string) => {
     this.setStateAndStore({ literalEvaluation: e }, this.state.draftId);
@@ -180,6 +180,7 @@ class SupplementationEditor extends SessionStateComponent<
 
   /**
    * handleEvaluationSupplementationSave
+   * @param e e
    */
   handleEvaluationSupplementationSave = (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
@@ -196,6 +197,9 @@ class SupplementationEditor extends SessionStateComponent<
           requestDate: new Date().getTime().toString(),
           requestText: this.state.literalEvaluation,
         },
+        /**
+         * onSuccess
+         */
         onSuccess: () => {
           cleanWorkspaceAndSupplementationDrafts(this.state.draftId);
 
@@ -215,6 +219,9 @@ class SupplementationEditor extends SessionStateComponent<
 
           onClose && onClose();
         },
+        /**
+         * onFail
+         */
         onFail: () => {
           this.setState({ locked: false });
           onClose();
@@ -248,6 +255,9 @@ class SupplementationEditor extends SessionStateComponent<
             evaluationAssessmentEvents.data[latestIndex].date,
           requestText: this.state.literalEvaluation,
         },
+        /**
+         * onSuccess
+         */
         onSuccess: () => {
           cleanWorkspaceAndSupplementationDrafts(this.state.draftId);
 
@@ -266,6 +276,9 @@ class SupplementationEditor extends SessionStateComponent<
 
           onClose && onClose();
         },
+        /**
+         * onFail
+         */
         onFail: () => {
           this.setState({ locked: false });
           onClose();
@@ -377,7 +390,7 @@ class SupplementationEditor extends SessionStateComponent<
 
 /**
  * mapStateToProps
- * @param state
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -390,7 +403,7 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(

@@ -10,7 +10,8 @@ import AnimateHeight from "react-animate-height";
 import DeleteDialog from "./dialogs/delete-warning";
 import { AudioPoolComponent } from "../audio-pool-component";
 
-let ProgressBarLine = require("react-progress-bar.js").Line;
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const ProgressBarLine = require("react-progress-bar.js").Line;
 
 /**
  * RecordProps
@@ -37,7 +38,7 @@ const defaultRecordtProps = {
  * Record
  * Shows invidual records and their functions like download/delete buttons
  * and if uploading to tempfile servlet, the proggressbar and error if so
- * @param props
+ * @param props props
  * @returns JSX.Element
  */
 function Record(props: RecordProps) {

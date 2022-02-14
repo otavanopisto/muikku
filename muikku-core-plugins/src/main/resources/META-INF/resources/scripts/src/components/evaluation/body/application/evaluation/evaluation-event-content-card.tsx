@@ -27,26 +27,16 @@ interface EvaluationEventContentCardProps extends EvaluationEvent {
 
 /**
  * EvaluationEventContentCard
+ * @param props props
  */
-const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
-  i18n,
-  showDeleteAndModify,
-  onClickEdit,
-  evaluations,
-  children,
-  ...event
-}) => {
+const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
+  props
+) => {
   const [height, setHeight] = React.useState<0 | "auto">(0);
 
-  const {
-    author,
-    text,
-    date,
-    type,
-    grade,
-    identifier,
-    workspaceSubjectIdentifier,
-  } = event;
+  const { i18n, showDeleteAndModify, onClickEdit, ...event } = props;
+
+  const { author, text, date, type, grade, identifier } = event;
 
   /**
    * arrowClassMod
@@ -86,11 +76,9 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
    * createHtmlMarkup
    * @param htmlString htmlString
    */
-  const createHtmlMarkup = (htmlString: string) => {
-    return {
-      __html: htmlString,
-    };
-  };
+  const createHtmlMarkup = (htmlString: string) => ({
+    __html: htmlString,
+  });
 
   /**
    * handleOpenContentClick
@@ -99,7 +87,7 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
     setHeight(height === 0 ? "auto" : 0);
   };
 
-  let arrowClasses =
+  const arrowClasses =
     height === 0
       ? `evaluation-modal__event-arrow ${arrowClassMod(
           type
@@ -109,20 +97,6 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
         )} evaluation-modal__event-arrow--down `;
 
   let subjectTitle: string | undefined = undefined;
-
-  const subject =
-    evaluations.evaluationSelectedAssessmentId &&
-    evaluations.evaluationSelectedAssessmentId.subjects.find(
-      (subject) => subject.identifier === workspaceSubjectIdentifier
-    );
-
-  if (
-    evaluations.evaluationSelectedAssessmentId &&
-    evaluations.evaluationSelectedAssessmentId.subjects.length > 1 &&
-    subject
-  ) {
-    subjectTitle = subject.subject && subject.subject.name;
-  }
 
   /**
    * renderTypeMessage
@@ -310,7 +284,7 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
 
 /**
  * mapStateToProps
- * @param  state
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {

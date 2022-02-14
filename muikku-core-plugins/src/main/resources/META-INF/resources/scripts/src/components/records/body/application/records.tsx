@@ -23,11 +23,17 @@ import ApplicationList, {
   ApplicationListItemHeader,
 } from "~/components/general/application-list";
 
+/**
+ * RecordsProps
+ */
 interface RecordsProps {
   i18n: i18nType;
   records: RecordsType;
 }
 
+/**
+ * RecordsState
+ */
 interface RecordsState {
   sortDirectionWorkspaces?: string;
   sortDirectionRecords?: string;
@@ -35,7 +41,7 @@ interface RecordsState {
   sortedRecords?: any;
 }
 
-let storedCurriculumIndex: any = {};
+const storedCurriculumIndex: any = {};
 
 /**
  * AssessmentRequestIndicatorProps
@@ -272,6 +278,10 @@ const ActivityIndicator: React.FC<ActivityIndicatorProps> = (props) => {
  * Records
  */
 class Records extends React.Component<RecordsProps, RecordsState> {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: RecordsProps) {
     super(props);
     this.goToWorkspace = this.goToWorkspace.bind(this);
@@ -319,9 +329,9 @@ class Records extends React.Component<RecordsProps, RecordsState> {
    * @param data data
    */
   sortWorkspaces(data: any) {
-    let key = "name";
-    let sortDirection = this.state.sortDirectionWorkspaces;
-    let sortedData = this.sortBy(data, key, sortDirection);
+    const key = "name";
+    const sortDirection = this.state.sortDirectionWorkspaces;
+    const sortedData = this.sortBy(data, key, sortDirection);
 
     this.setState({
       sortDirectionWorkspaces:
@@ -335,9 +345,9 @@ class Records extends React.Component<RecordsProps, RecordsState> {
    * @param data data
    */
   sortRecords(data: any) {
-    let key = "courseName";
-    let sortDirection = this.state.sortDirectionRecords;
-    let sortedData = this.sortBy(data, key, sortDirection);
+    const key = "courseName";
+    const sortDirection = this.state.sortDirectionRecords;
+    const sortedData = this.sortBy(data, key, sortDirection);
     this.setState({
       sortDirectionRecords:
         this.state.sortDirectionRecords === "asc" ? "desc" : "asc",
@@ -636,23 +646,21 @@ class Records extends React.Component<RecordsProps, RecordsState> {
           <div className="application-sub-panel__body">
             {this.props.records.files.length ? (
               <ApplicationList>
-                {this.props.records.files.map((file) => {
-                  return (
-                    <ApplicationListItem
-                      className="application-list__item application-list__item--studies-file-attacment"
-                      key={file.id}
+                {this.props.records.files.map((file) => (
+                  <ApplicationListItem
+                    className="application-list__item application-list__item--studies-file-attacment"
+                    key={file.id}
+                  >
+                    <span className="icon-attachment"></span>
+                    <Link
+                      className="link link--studies-file-attachment"
+                      href={`/rest/records/files/${file.id}/content`}
+                      openInNewTab={file.title}
                     >
-                      <span className="icon-attachment"></span>
-                      <Link
-                        className="link link--studies-file-attachment"
-                        href={`/rest/records/files/${file.id}/content`}
-                        openInNewTab={file.title}
-                      >
-                        {file.title}
-                      </Link>
-                    </ApplicationListItem>
-                  );
-                })}
+                      {file.title}
+                    </Link>
+                  </ApplicationListItem>
+                ))}
               </ApplicationList>
             ) : (
               <ApplicationListItem className="application-list__item application-list__item--studies-file-attacment">

@@ -1,7 +1,5 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { bindActionCreators } from "redux";
-import { colorIntToHex } from "~/util/modifiers";
 import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
@@ -105,7 +103,8 @@ class Announcement extends React.Component<
 
 /**
  * mapStateToProps
- * @param state
+ * @param state state
+ * @returns object
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -117,7 +116,8 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch dispatch
+ * @returns JSX.Element
  */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return {};

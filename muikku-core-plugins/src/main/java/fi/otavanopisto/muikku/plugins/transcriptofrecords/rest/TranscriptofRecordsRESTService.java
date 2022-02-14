@@ -108,28 +108,28 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
 
   @Inject
   private SessionController sessionController;
-  
+
   @Inject
   private WorkspaceController workspaceController;
-  
+
   @Inject
-  private UserGroupEntityController userGroupEntityController;  
-  
+  private UserGroupEntityController userGroupEntityController;
+
   @Inject
-  private CourseMetaController courseMetaController;  
-  
+  private CourseMetaController courseMetaController;
+
   @Inject
   private UserController userController;
 
   @Inject
   private UserEntityController userEntityController;
-  
+
   @Inject
   private WorkspaceEntityController workspaceEntityController;
-  
+
   @Inject
   private WorkspaceUserEntityController workspaceUserEntityController;
-  
+
   @Inject
   private PluginSettingsController pluginSettingsController;
 
@@ -141,7 +141,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
 
   @Inject
   private StudiesViewCourseChoiceController studiesViewCourseChoiceController;
-  
+
   @Inject
   private MatriculationSchoolDataController matriculationSchoolDataController;
 
@@ -150,7 +150,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
 
   @Inject
   private WorkspaceRestModels workspaceRestModels;
-  
+
   @Inject
   @Any
   private Instance<SearchProvider> searchProviders;
@@ -210,31 +210,31 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     if (studentIdentifier == null) {
       return Response.status(Status.NOT_FOUND).entity("Student identifier not found").build();
     }
-    
+
     if (!sessionController.hasEnvironmentPermission(TranscriptofRecordsPermissions.TRANSCRIPT_OF_RECORDS_VIEW_ANY_STUDENT_STUDIES)
         && !Objects.equals(sessionController.getLoggedUser(), studentIdentifier)) {
       return Response.status(Status.FORBIDDEN).entity("Can only look at own information").build();
     }
 
     User student = userController.findUserByIdentifier(studentIdentifier);
-    
+
     if (!transcriptOfRecordsController.shouldShowStudies(student)) {
       VopsRESTModel result = new VopsRESTModel(null, 0, 0, false);
       return Response.ok(result).build();
     }
-    
+
     List<TransferCredit> transferCredits = new ArrayList<>(gradingController.listStudentTransferCredits(studentIdentifier));
 
     List<Subject> subjects = courseMetaController.listSubjects();
     Map<SchoolDataIdentifier, WorkspaceAssessment> studentAssessments = transcriptOfRecordsController.listStudentAssessments(studentIdentifier);
-    
-    
+
+
     String curriculum = pluginSettingsController.getPluginSetting("transcriptofrecords", "curriculum");
     SchoolDataIdentifier curriculumIdentifier = null;
     if (curriculum != null) {
       curriculumIdentifier = SchoolDataIdentifier.fromId(curriculum);
     }
-    
+
     final List<String> subjectList = new ArrayList<String>();
     String commaSeparatedSubjectsOrder = pluginSettingsController.getPluginSetting("transcriptofrecords", "subjectsOrder");
     if (!StringUtils.isBlank(commaSeparatedSubjectsOrder)) {
@@ -249,7 +249,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
         return i1 < i2 ? -1 : i1 == i2 ? 0 : 1;
       }
     });
-    
+
     VopsLister lister = new VopsLister(
       subjects,
       transcriptOfRecordsController,
@@ -267,7 +267,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
       educationTypeMapping,
       workspaceEntityController
     );
-    
+
     lister.performListing();
 
     VopsRESTModel result = new VopsRESTModel(
@@ -321,7 +321,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     }
     return new HopsRESTModel();
   }
-  
+
   @GET
   @Path("/hopseligibility")
   @RESTPermit(handling=Handling.INLINE)
@@ -344,13 +344,13 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     }
 
     SchoolDataIdentifier userIdentifier = sessionController.getLoggedUser();
-    
+
     HopsRESTModel response = createHopsRESTModelForStudent(userIdentifier);
-    
+
     if (response == null) {
       return Response.status(Status.NOT_FOUND).entity("No HOPS form for non-students").build();
     }
-    
+
     return Response.ok(response).build();
   }
 
@@ -384,7 +384,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     }
 
     HopsRESTModel response = createHopsRESTModelForStudent(userIdentifier);
-    
+
     if (response == null) {
       return Response.status(Status.NOT_FOUND).entity("No HOPS form for non-students").build();
     }
@@ -403,7 +403,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     if (!hasPermission) {
       return Response.status(Status.FORBIDDEN).entity("You don't have the permission to access this").build();
     }
-    
+
     StudiesViewCourseChoice choice = studiesViewCourseChoiceController.find(
         model.getSubjectIdentifier(),
         model.getCourseNumber(),
@@ -455,7 +455,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     if (roleEntity == null || roleEntity.getArchetype() != EnvironmentRoleArchetype.STUDENT) {
       return Response.status(Status.FORBIDDEN).entity("Must be a student").build();
     }
-    
+
     try {
       userEntityController.setUserIdentifierProperty(userIdentifier.getIdentifier(), "hops", new ObjectMapper().writeValueAsString(model));
     }
@@ -466,7 +466,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
 
     return Response.ok().entity(model).build();
   }
-  
+
   @GET
   @Consumes("application/json")
   @Path("/studentMatriculationEligibility/{STUDENTIDENTIFIER}")
@@ -476,25 +476,25 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     if (identifier == null) {
       return Response.status(Status.BAD_REQUEST).entity("Invalid student identifier").build();
     }
-    
+
     if (!identifier.equals(sessionController.getLoggedUser())) {
       return Response.status(Status.FORBIDDEN).build();
     }
-    
+
     User student = userController.findUserByIdentifier(identifier);
     if (student == null) {
       return Response.status(Status.NOT_FOUND).entity("Student not found").build();
     }
-    
+
     StudentCourseStats studentCourseStats = transcriptOfRecordsController.fetchStudentCourseStats(identifier);
-    
+
     MatriculationEligibilityRESTModel result = new MatriculationEligibilityRESTModel();
     int coursesCompleted = studentCourseStats.getNumMandatoryCompletedCourses();
     int coursesRequired = transcriptOfRecordsController.getMandatoryCoursesRequiredForMatriculation();
-    
+
     double creditPoints = studentCourseStats.getSumMandatoryCompletedCreditPoints();
     double creditPointsRequired = transcriptOfRecordsController.getMandatoryCreditPointsRequiredForMatriculation();
-    
+
     if ((coursesCompleted >= coursesRequired) || (creditPoints >= creditPointsRequired)) {
       result.setStatus(MatriculationExamEligibilityStatus.ELIGIBLE);
     } else {
@@ -510,9 +510,9 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
 
   /**
    * REST endpoint for listing matriculation subjects.
-   * 
+   *
    * Method requires that user is logged in but does not require any special permissions.
-   * 
+   *
    * @return REST response object
    */
   @GET
@@ -522,10 +522,10 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
     }
-    
+
     return Response.ok(transcriptOfRecordsController.listMatriculationSubjects()).build();
   }
-  
+
   @GET
   @Path("/matriculationEligibility")
   @RESTPermit(handling = Handling.INLINE)
@@ -533,12 +533,12 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
     }
-    
+
     StudentMatriculationEligibility result = userController.getStudentMatriculationEligibility(sessionController.getLoggedUser(), subjectCode);
-    
+
     return Response.ok(result).build();
   }
-  
+
   @GET
   @Path("/workspaces/")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
@@ -551,45 +551,45 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     if (userIdentifier == null) {
       return Response.status(Status.BAD_REQUEST).build();
     }
-    
+
     UserEntity userEntity = sessionController.getLoggedUserEntity();
 
     List<UserSchoolDataIdentifier> userSchoolDataIdentifiers = userSchoolDataIdentifierController.listUserSchoolDataIdentifiersByUserEntity(userEntity);
-    if (!userSchoolDataIdentifiers.stream().anyMatch(usdi -> usdi.schoolDataIdentifier().equals(userIdentifier))) {
+    if (!userSchoolDataIdentifiers.stream().anyMatch(usdi -> usdi.schoolDataIdentifier().toId().equals(userIdentifierParam))) {
       return Response.status(Status.FORBIDDEN).build();
     }
-    
+
     TemplateRestriction templateRestriction = TemplateRestriction.ONLY_WORKSPACES;
     PublicityRestriction publicityRestriction = PublicityRestriction.LIST_ALL;
-    List<WorkspaceEntity> workspaceEntities = workspaceUserEntityController.listWorkspaceEntitiesByUserEntity(userEntity);
-   
+    List<WorkspaceEntity> workspaceEntities = workspaceUserEntityController.listWorkspaceEntitiesByUserIdentifier(userIdentifier);
+
     if (CollectionUtils.isEmpty(workspaceEntities)) {
       return Response.ok(Collections.emptyList()).build();
     }
-    
+
     Iterator<SearchProvider> searchProviderIterator = searchProviders.iterator();
     if (searchProviderIterator.hasNext()) {
       SearchProvider searchProvider = searchProviderIterator.next();
-      
+
       List<SchoolDataIdentifier> workspaceIdentifierFilters = workspaceEntities.stream()
           .map(WorkspaceEntity::schoolDataIdentifier).collect(Collectors.toList());
-      
+
       List<OrganizationEntity> loggedUserOrganizations = organizationEntityController.listLoggedUserOrganizations();
       List<OrganizationRestriction> organizationRestrictions = organizationEntityController.listUserOrganizationRestrictions(loggedUserOrganizations, publicityRestriction, templateRestriction);
       // The list is restricted to all of the students' workspaces so list them all
       organizationRestrictions = organizationRestrictions.stream()
           .map(organizationRestriction -> new OrganizationRestriction(organizationRestriction.getOrganizationIdentifier(), PublicityRestriction.LIST_ALL, TemplateRestriction.ONLY_WORKSPACES))
           .collect(Collectors.toList());
-      
+
       SearchResults<List<IndexedWorkspace>> searchResult = searchProvider.searchWorkspaces()
         .setWorkspaceIdentifiers(workspaceIdentifierFilters)
         .setOrganizationRestrictions(organizationRestrictions)
         .setMaxResults(500)
         .addSort(new Sort("name.untouched", Sort.Order.ASC))
         .searchTyped();
-      
+
       List<IndexedWorkspace> indexedWorkspaces = searchResult.getResults();
-      
+
       for (IndexedWorkspace indexedWorkspace : indexedWorkspaces) {
         workspaces.add(workspaceRestModels.createRestModelWithActivity(userIdentifier, indexedWorkspace));
       }
@@ -599,7 +599,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
 
     return Response.ok(workspaces).build();
   }
-  
+
   @GET
   @Path("/workspaces/{ID}")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
@@ -617,5 +617,5 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
 
     return Response.ok(workspaceRestModels.createRestModelWithActivity(sessionController.getLoggedUser(), workspaceEntity, workspace)).build();
   }
-  
+
 }

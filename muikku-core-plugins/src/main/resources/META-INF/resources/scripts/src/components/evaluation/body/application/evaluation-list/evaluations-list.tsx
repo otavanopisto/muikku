@@ -17,6 +17,7 @@ import {
 import { UpdateImportanceObject } from "~/@types/evaluation";
 import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/empty.scss";
+import { AnyActionType } from "~/actions";
 
 /**
  * EvaluationListProps
@@ -43,7 +44,7 @@ export class EvaluationList extends React.Component<
 > {
   /**
    * constructor
-   * @param props
+   * @param props props
    */
   constructor(props: EvaluationListProps) {
     super(props);
@@ -51,7 +52,7 @@ export class EvaluationList extends React.Component<
 
   /**
    * Handles sorter buttons click
-   * @param sortBy
+   * @param sortBy sortBy
    */
   handleClickSorter =
     (sortBy: SortBy) => (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -89,6 +90,7 @@ export class EvaluationList extends React.Component<
    * Filters and sorts any given assessments list in following order
    * search string, evaluation sort function, sort selection aka checkboks and by importance which
    * also returns sorted list
+   * @param assessments assessments
    */
   filterAndSortAssessments = (assessments?: AssessmentRequest[]) => {
     const {
@@ -149,7 +151,7 @@ export class EvaluationList extends React.Component<
 
   /**
    * Filters assessments by selections aka active checkboxes
-   * @param assessments
+   * @param assessments assessments
    */
   filterAssessmentsBySelections = (assessments: AssessmentRequest[]) => {
     const { evaluationFilters } = this.props.evaluations;
@@ -182,13 +184,14 @@ export class EvaluationList extends React.Component<
 
   /**
    * Filters assessments by active sort function
-   * @param assessments
+   * @param assessments assessments
+   * @param sortBy sortBy
    */
   sortAssessmentsBySortBy = (
     assessments: AssessmentRequest[],
     sortBy: SortBy
   ) => {
-    let filteredBySortAssessments = assessments;
+    const filteredBySortAssessments = assessments;
 
     switch (sortBy) {
       case "no-sort":
@@ -242,7 +245,7 @@ export class EvaluationList extends React.Component<
   /**
    * Filters assessments by search string and
    * comparing it to workspace name or student name
-   * @param assessments
+   * @param assessments assessments
    */
   filterAssessmentsBySearchString = (assessments: AssessmentRequest[]) => {
     const filteredAssessments = assessments.filter((aItem) => {
@@ -350,7 +353,7 @@ export class EvaluationList extends React.Component<
 
   /**
    * handleUpdateImportance
-   * @param object
+   * @param object object
    */
   handleUpdateImportance = (object: UpdateImportanceObject) => {
     this.props.updateImportance({
@@ -361,8 +364,7 @@ export class EvaluationList extends React.Component<
 
   /**
    * Builds sorted class depending of if it is active
-   * @param sortBy
-   * @param sortByState
+   * @param sortBy sortBy
    * @returns builded class string
    */
   buildSorterClass = (sortBy: SortBy) => {
@@ -455,19 +457,6 @@ export class EvaluationList extends React.Component<
             </span>
           </div>
         );
-      } else if (evaluationRequests.data.length <= 0) {
-        /**
-         * Otherwise check if filtered list is empty and give message about that
-         */
-        renderEvaluationCardList = (
-          <div className="empty">
-            <span>
-              {this.props.i18n.text.get(
-                "plugin.evaluation.cardlist.noRequestWithFilters"
-              )}
-            </span>
-          </div>
-        );
       }
 
       return <>{renderEvaluationCardList}</>;
@@ -477,11 +466,10 @@ export class EvaluationList extends React.Component<
 
 /**
  * By date sorting function
- * @param ascending
- * @returns
+ * @param ascending ascending
  */
-const byDate = (ascending: boolean) => {
-  return (a: AssessmentRequest, b: AssessmentRequest) => {
+const byDate =
+  (ascending: boolean) => (a: AssessmentRequest, b: AssessmentRequest) => {
     // equal items sort equally
     if (a.assessmentRequestDate === b.assessmentRequestDate) {
       return 0;
@@ -501,11 +489,10 @@ const byDate = (ascending: boolean) => {
       return a.assessmentRequestDate < b.assessmentRequestDate ? 1 : -1;
     }
   };
-};
 
 /**
  * mapStateToProps
- * @param state
+ * @param state state
  * @returns object
  */
 function mapStateToProps(state: StateType) {
@@ -517,10 +504,10 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch dispatch
  * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     {
       setSelectedWorkspaceId,

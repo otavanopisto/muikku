@@ -172,8 +172,8 @@
 .hero__item-logo-container {
   align-items: center;
   display: flex;
-  flex-direction: row;
   flex-flow: nowrap;
+  flex-direction: row;
   justify-content: center;
 
   @include breakpoint ($breakpoint-pad) {

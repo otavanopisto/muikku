@@ -339,6 +339,8 @@ let loadStudent: LoadStudentTriggerType = function loadStudent(id) {
       let currentUserSchoolDataIdentifier =
         getState().status.userSchoolDataIdentifier;
 
+      const canListUserOrders = getState().status.permissions.LIST_USER_ORDERS;
+
       dispatch({
         type: "LOCK_TOOLBAR",
         payload: null,
@@ -411,13 +413,6 @@ let loadStudent: LoadStudentTriggerType = function loadStudent(id) {
             });
           }
         ),
-        // Removed until it works correctly
-        // VOPS disabled until studies view redesign
-
-        //        promisify(mApi().records.vops.read(id), 'callback')()
-        //          .then((vops:VOPSDataType)=>{
-        //            dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "vops", value: vops}})
-        //          }),
         promisify(mApi().records.hops.read(id), "callback")().then(
           (hops: HOPSDataType) => {
             dispatch({
@@ -489,14 +484,16 @@ let loadStudent: LoadStudentTriggerType = function loadStudent(id) {
             payload: { property: "activityLogs", value: activityLogs },
           });
         }),
-        promisify(mApi().ceepos.user.orders.read(id), "callback")().then(
-          (pOrders: PurchaseType[]) => {
-            dispatch({
-              type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-              payload: { property: "purchases", value: pOrders },
-            });
-          }
-        ),
+
+        canListUserOrders &&
+          promisify(mApi().ceepos.user.orders.read(id), "callback")().then(
+            (pOrders: PurchaseType[]) => {
+              dispatch({
+                type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+                payload: { property: "purchases", value: pOrders },
+              });
+            }
+          ),
       ]);
 
       dispatch({

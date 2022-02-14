@@ -4,8 +4,8 @@ import { RecordValue } from "../../../../@types/recorder";
 
 /**
  * useRecordingsList
- * @param records
- * @returns
+ * @param records records
+ * @returns recordings list and deleteAudio "aka" list item method
  */
 export default function useRecordingsList(records: RecordValue[] | null) {
   const [recordings, setRecordings] = useState<RecordValue[]>([]);
@@ -20,6 +20,8 @@ export default function useRecordingsList(records: RecordValue[] | null) {
 
   return {
     recordings,
+
+    // eslint-disable-next-line
     deleteAudio: (audioKey: string) => deleteAudio(audioKey, setRecordings),
   };
 }

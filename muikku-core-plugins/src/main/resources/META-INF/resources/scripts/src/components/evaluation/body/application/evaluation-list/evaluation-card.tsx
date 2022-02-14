@@ -39,23 +39,25 @@ interface EvaluationCardProps extends AssessmentRequest {
 
 /**
  * EvaluationCard
- * @param props
+ * @param props props
  */
-const EvaluationCard: React.FC<EvaluationCardProps> = ({
-  selectedWorkspaceId,
-  setSelectedWorkspaceId,
-  important,
-  importantAssessments,
-  unimportantAssessments,
-  updateEvaluationImportance,
-  i18n,
-  needsReloadRequests,
-  loadEvaluationAssessmentRequestsFromServer,
-  ...rest
-}) => {
+const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
+  const {
+    selectedWorkspaceId,
+    setSelectedWorkspaceId,
+    important,
+    importantAssessments,
+    unimportantAssessments,
+    updateEvaluationImportance,
+    i18n,
+    needsReloadRequests,
+    loadEvaluationAssessmentRequestsFromServer,
+    ...rest
+  } = props;
+
   /**
    * Handles importance click
-   * @param status
+   * @param status status
    */
   const handleImportanceClick =
     (status: "important" | "unimportant") =>
@@ -142,6 +144,7 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
 
   /**
    * Handles workspacename click. It "filters" every assessments by that workspace
+   * @param e e
    */
   const handleWorkspaceNameClick = (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
@@ -360,7 +363,7 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
 
 /**
  * mapStateToProps
- * @param state
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -370,7 +373,7 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(

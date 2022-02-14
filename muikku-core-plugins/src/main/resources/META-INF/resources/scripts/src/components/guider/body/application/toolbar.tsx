@@ -59,8 +59,8 @@ class GuiderToolbar extends React.Component<
   GuiderToolbarState
 > {
   /**
-   * Constructor method
-   * @param props
+   * constructor
+   * @param props props
    */
   constructor(props: GuiderToolbarProps) {
     super(props);
@@ -78,29 +78,49 @@ class GuiderToolbar extends React.Component<
   }
 
   /**
+   * componentDidUpdate
+   * @param prevProps prevProps
+   * @param prevState prevState
+   * @param snapshot snapshot
+   */
+  componentDidUpdate(
+    prevProps: Readonly<GuiderToolbarProps>,
+    prevState: Readonly<GuiderToolbarState>,
+    snapshot?: any
+  ) {
+    if (
+      !this.state.focused &&
+      this.props.guider.activeFilters.query !== this.state.searchquery
+    ) {
+      this.setState({
+        searchquery: this.props.guider.activeFilters.query,
+      });
+    }
+  }
+
+  /**
    * getBackByHash
    * @returns hash
    */
   getBackByHash(): string {
-    let locationData = queryString.parse(
+    const locationData = queryString.parse(
       document.location.hash.split("?")[1] || "",
       { arrayFormat: "bracket" }
     );
     delete locationData.c;
-    let newHash =
+    const newHash =
       "#?" + queryString.stringify(locationData, { arrayFormat: "bracket" });
     return newHash;
   }
 
   /**
    * onGoBackClick
-   * @param e
    */
-  onGoBackClick(e: React.MouseEvent<HTMLAnchorElement>) {
+  onGoBackClick() {
     //TODO this is a retarded way to do things if we ever update to a SPA
     //it's a hacky mechanism to make history awesome, once we use a router it gotta be fixed
     if (history.replaceState) {
-      let canGoBack =
+      const canGoBack =
         (!document.referrer ||
           document.referrer.indexOf(window.location.host) !== -1) &&
         history.length;
@@ -117,40 +137,19 @@ class GuiderToolbar extends React.Component<
 
   /**
    * updateSearchWithQuery
-   * @param query
+   * @param query query
    */
   updateSearchWithQuery(query: string) {
     this.setState({
       searchquery: query,
     });
-    let locationData = queryString.parse(
+    const locationData = queryString.parse(
       document.location.hash.split("?")[1] || "",
       { arrayFormat: "bracket" }
     );
     locationData.q = query;
     window.location.hash =
       "#?" + queryString.stringify(locationData, { arrayFormat: "bracket" });
-  }
-
-  /**
-   * componentDidUpdate
-   * @param prevProps
-   * @param prevState
-   * @param snapshot
-   */
-  componentDidUpdate(
-    prevProps: Readonly<GuiderToolbarProps>,
-    prevState: Readonly<GuiderToolbarState>,
-    snapshot?: any
-  ): void {
-    if (
-      !this.state.focused &&
-      this.props.guider.activeFilters.query !== this.state.searchquery
-    ) {
-      this.setState({
-        searchquery: this.props.guider.activeFilters.query,
-      });
-    }
   }
 
   /**
@@ -175,7 +174,7 @@ class GuiderToolbar extends React.Component<
   turnSelectedUsersToContacts = (
     users: GuiderStudentListType
   ): ContactRecipientType[] => {
-    let contacts: ContactRecipientType[] = [];
+    const contacts: ContactRecipientType[] = [];
     users.map((user) => {
       contacts.push({
         type: "user",
@@ -226,8 +225,7 @@ class GuiderToolbar extends React.Component<
   };
 
   /**
-   * Component render method
-   * @returns JSX.Element
+   * render
    */
   render() {
     return (
@@ -288,7 +286,7 @@ class GuiderToolbar extends React.Component<
 
 /**
  * mapStateToProps
- * @param state
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -300,7 +298,7 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(

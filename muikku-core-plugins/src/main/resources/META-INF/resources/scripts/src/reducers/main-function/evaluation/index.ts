@@ -13,6 +13,9 @@ import {
   EvaluationFilters,
 } from "../../../@types/evaluation";
 
+/**
+ * EvaluationStateAndData
+ */
 interface EvaluationStateAndData<T> {
   state: EvaluationStateType;
   data?: T;
@@ -89,9 +92,9 @@ export const initialState: EvaluationState = {
 
 /**
  * Reducer function for evaluation
- * @param state
- * @param action
- * @returns
+ * @param state state
+ * @param action action
+ * @returns State of evaluation
  */
 export default function evaluations(state = initialState, action: ActionType) {
   if (action.type === "UPDATE_EVALUATION_STATE") {

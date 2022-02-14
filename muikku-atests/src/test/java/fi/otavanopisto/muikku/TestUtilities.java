@@ -1,5 +1,8 @@
 package fi.otavanopisto.muikku;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
@@ -10,11 +13,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicHeader;
+import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONObject;
 
 import fi.otavanopisto.muikku.mock.model.MockCourse;
 import fi.otavanopisto.muikku.mock.model.MockCourseStudent;
@@ -54,6 +61,29 @@ public class TestUtilities {
     }
   }
 
+  public static int sendHttpPOSTRequest(String url, String json) throws ClientProtocolException, IOException, URISyntaxException {
+    CloseableHttpClient client = HttpClients.createDefault();
+    try {
+      URI uri = new URI(url);
+      HttpPost post = new HttpPost(uri);
+      try {
+        StringEntity se = new StringEntity(json);  
+        try {
+          se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
+          post.setEntity(se);
+          return client.execute(post).getStatusLine().getStatusCode();
+        } finally {
+          EntityUtils.consume(se);
+        }
+      } finally {
+        post.releaseConnection();
+      }
+    } finally {
+      client.close();
+    }
+   }
+
+  
   public static Student studentFromMockStudent(MockStudent mockStudent) {
     Map<String, String> variables = new HashMap<>();
     List<String> tags = new ArrayList<>();
@@ -161,6 +191,11 @@ public class TestUtilities {
   public static OffsetDateTime getLastWeek() {
     OffsetDateTime result = OffsetDateTime.now(ZoneOffset.UTC);
     return result.minusWeeks(1);
+  }
+  
+  public static OffsetDateTime addMonths(int months) {
+    OffsetDateTime result = OffsetDateTime.now(ZoneOffset.UTC);
+    return result.plusMonths(months);
   }
   
   public static Date toDate(OffsetDateTime offsetDate) {
