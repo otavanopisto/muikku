@@ -2,4 +2,9 @@
 <update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
   <sql>drop table if exists NoLoggedInForTwoMonthsNotification;</sql>
   <sql>create table NoLoggedInForTwoMonthsNotification (id bigint not null auto_increment, sent datetime not null, studentIdentifier varchar(255) not null, primary key (id));</sql>
+
+  <!--  Study programmes for notification (nettilukio, nettiperuskoulu) -->
+  <sql>insert into PluginSettingKey (plugin, name) values ('timed-notifications', 'no-logged-in-for-two-months-notification.groups');</sql>
+  <sql>insert into PluginSetting (value,key_id) select ps.value,psk.id from PluginSetting ps, PluginSettingKey psk where ps.key_id=(select id from PluginSettingKey where plugin='timed-notifications' and name='never-logged-in-notification.groups') and psk.id=(select id from PluginSettingKey where plugin='timed-notifications' and name='no-logged-in-for-two-months-notification.groups');</sql>
+
 </update>
