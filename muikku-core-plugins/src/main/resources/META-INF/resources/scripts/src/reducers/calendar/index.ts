@@ -19,10 +19,10 @@ export interface CalendarEvent {
   start: string;
   end?: string;
   overlap?: boolean; // Can the event overlap with others
-  editable: boolean; // Override for the event
+  editable?: boolean; // Override for the event
   classNames?: string[];
   description?: string;
-  display?: eventDisplay; // how the event is displayed in the calendar
+  display?: eventDisplay; // How the event is displayed in the calendar
   backgroundColor?: string;
   resourceId?: string; // Resource
   participants?: Participant[];
