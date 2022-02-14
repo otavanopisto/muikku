@@ -1885,7 +1885,8 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     waitForVisible(".cke_contents");
     waitAndClick(".cke_contents");
     Actions action = new Actions(getWebDriver());
-    action.sendKeys(getWebDriver().findElement(By.cssSelector(".cke_contents")), Keys.END).perform();
+    action.sendKeys(getWebDriver().findElement(By.cssSelector(".cke_wysiwyg_div")), Keys.CONTROL)
+      .sendKeys(getWebDriver().findElement(By.cssSelector(".cke_wysiwyg_div")), Keys.END).perform();
     sendKeys(".cke_wysiwyg_div", text);
   }
   
