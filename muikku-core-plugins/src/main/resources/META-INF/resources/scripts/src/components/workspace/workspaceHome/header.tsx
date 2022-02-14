@@ -89,7 +89,7 @@ class WorkspaceHomeHeader extends React.Component<
         <>
           {this.props.workspace.additionalInfo.subjects.map(
             (subject, index) => (
-              <span className="meta__item-description">
+              <span key={index} className="meta__item-description">
                 {`(${subject.subject.code}) `}
                 {this.props.i18n.text.get(
                   "plugin.workspace.index.courseLength",
@@ -111,7 +111,7 @@ class WorkspaceHomeHeader extends React.Component<
         <>
           {this.props.workspace.additionalInfo.subjects.map(
             (subject, index) => (
-              <span className="meta__item-description">
+              <span key={index} className="meta__item-description">
                 {subject.subject.name}
                 {subjectsListLastIndex !== index && ","}
               </span>
