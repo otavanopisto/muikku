@@ -10,7 +10,7 @@
   <ui:define name="scripts">
     <!-- Muikku locales -->
     <script defer="defer" type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{sessionBackingBean.locale}"/>
-    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/locales.js"/>
+    <script defer="defer" type="text/javascript" src="#{request.contextPath}/scripts/gui/locales.js"/>
     <!-- Muikku materials -->
     <ui:include src="/jsf/workspace/workspace-material-scripts.xhtml"/>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js"></script>
@@ -20,7 +20,7 @@
     <!-- Dust -->
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-linkedin/2.7.1/dust-full.min.js"/>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-helpers/1.7.1/dust-helpers.min.js"/>
-    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/dustloader.js"/>
+    <script defer="defer" type="text/javascript" src="#{request.contextPath}/scripts/gui/dustloader.js"/>
     <!-- Evaluation -->
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/evaluation-main.js"/>
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/evaluation-modal.js"/>
