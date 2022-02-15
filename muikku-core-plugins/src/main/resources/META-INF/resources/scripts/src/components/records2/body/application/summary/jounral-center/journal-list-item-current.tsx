@@ -7,6 +7,8 @@ import {
 } from "../../../../../../@types/journal-center";
 import { UseJournals, JournalNoteRead } from "~/@types/journal-center";
 import JournalListEditorEdit from "./journal-list-editor-edit";
+import { i18nType } from "~/reducers/base/i18n";
+import * as moment from "moment";
 
 /**
  * JournalListProps
@@ -18,6 +20,7 @@ interface JournalListItemCurrentProps {
   currentSelectedJournal?: JournalNoteRead;
   dateEnd?: string;
   loggedUserIsOwner?: boolean;
+  i18n: i18nType;
   onClickCloseCurrent?: () => void;
   onJournalUpdate: (
     journalId: number,
@@ -38,12 +41,12 @@ const JournalListItemCurrent: React.FC<JournalListItemCurrentProps> = (
     openInEditMode,
     journals,
     currentSelectedJournal,
-    dateEnd,
     loggedUserIsOwner,
     onJournalUpdate,
     onPinJournalClick,
     onClickCloseCurrent,
     userId,
+    i18n,
   } = props;
 
   React.useEffect(() => {
@@ -66,8 +69,9 @@ const JournalListItemCurrent: React.FC<JournalListItemCurrentProps> = (
     );
   }
 
-  const { priority, description, title, creator, id, pinned } =
+  const { priority, description, title, creator, id, pinned, dueDate } =
     currentSelectedJournal;
+
   const content: JSX.Element[] = [];
 
   /**
@@ -137,8 +141,10 @@ const JournalListItemCurrent: React.FC<JournalListItemCurrentProps> = (
     );
   }
 
-  if (dateEnd) {
-    content.push(<div key="date">Suorita {dateEnd} mennessä</div>);
+  if (dueDate) {
+    content.push(
+      <div key="date">Suorita {moment(dueDate).format("l")} mennessä</div>
+    );
   }
 
   if (editMode) {
@@ -148,6 +154,7 @@ const JournalListItemCurrent: React.FC<JournalListItemCurrentProps> = (
         onCancelClick={handleCancelEditClick}
         selectedJournal={currentSelectedJournal}
         journals={journals}
+        i18n={i18n}
       />
     );
   }

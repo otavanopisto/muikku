@@ -30,6 +30,7 @@ export interface JournalNoteRead {
   creator: number;
   creatorName: string;
   created: string;
+  dueDate: Date | null;
 }
 
 /**
@@ -42,6 +43,7 @@ export interface JournalNoteCreate {
   priority: JournalPriority;
   pinned: boolean;
   owner: number;
+  dueDate: Date | null;
 }
 
 /**
@@ -52,6 +54,7 @@ export interface JournalNoteUpdate {
   description: string;
   priority: JournalPriority;
   pinned: boolean;
+  dueDate: Date | null;
 }
 
 /**

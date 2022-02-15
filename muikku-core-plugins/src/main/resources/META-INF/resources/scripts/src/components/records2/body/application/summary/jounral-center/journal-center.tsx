@@ -25,6 +25,7 @@ import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { sortJournalsBy } from "./helpers/filters";
 import { AnyActionType } from "~/actions";
+import { i18nType } from "~/reducers/base/i18n";
 
 /**
  * JournalCenterProps
@@ -52,6 +53,7 @@ interface JournalCenterProps {
    * Handles display notification from redux side
    */
   displayNotification: DisplayNotificationTriggerType;
+  i18n: i18nType;
 }
 
 /**
@@ -68,8 +70,14 @@ interface SelectedJournal {
  * @returns JSX.Element
  */
 const JournalCenter: React.FC<JournalCenterProps> = (props) => {
-  const { showHistoryPanel, displayNotification, userId, studentId, usePlace } =
-    props;
+  const {
+    showHistoryPanel,
+    displayNotification,
+    userId,
+    studentId,
+    usePlace,
+    i18n,
+  } = props;
 
   const [activeTab, setActiveTab] = React.useState("ongoing");
 
@@ -94,12 +102,12 @@ const JournalCenter: React.FC<JournalCenterProps> = (props) => {
    * handleFilttersChange
    * @param updatedFilters name
    */
-  const handleFilttersChange = (updatedFilters: JournalFiltters) => {
+  const handleFiltersChange = (updatedFilters: JournalFiltters) => {
     setFilters(updatedFilters);
   };
 
   /**
-   * onTabChange
+   * Handles tab change
    * @param tab tab
    */
   const handleTabChange = (tab: string) => {
@@ -107,9 +115,13 @@ const JournalCenter: React.FC<JournalCenterProps> = (props) => {
   };
 
   /**
-   * handleCreateNewClick
+   * Handles create new journal click
    */
   const handleCreateNewClick = () => {
+    /**
+     * This is needed to tell react to re render after when all useStates are
+     * done
+     */
     unstable_batchedUpdates(() => {
       setSelectedJournal({ journal: undefined, inEditMode: false });
       setCreateNew(true);
@@ -156,6 +168,9 @@ const JournalCenter: React.FC<JournalCenterProps> = (props) => {
     });
   };
 
+  /**
+   * List of journal center tabs
+   */
   const journallCenterTabs: Tab[] = [
     {
       id: "ongoing",
@@ -181,7 +196,7 @@ const JournalCenter: React.FC<JournalCenterProps> = (props) => {
               <JournalListFiltters
                 usePlace={usePlace}
                 filtters={filters}
-                onFilttersChange={handleFilttersChange}
+                onFilttersChange={handleFiltersChange}
               />
             </JournalFunctionsBar>
 
@@ -260,6 +275,7 @@ const JournalCenter: React.FC<JournalCenterProps> = (props) => {
                 onClose={handleCloseCurrentNote}
               >
                 <JournalListItemCurrent
+                  i18n={i18n}
                   userId={userId}
                   onJournalUpdate={updateJournal}
                   onPinJournalClick={pinJournal}
@@ -286,6 +302,7 @@ const JournalCenter: React.FC<JournalCenterProps> = (props) => {
                 journals={journals}
                 onCancelClick={handleCancelNewClick}
                 onJournalSaveClick={createJournal}
+                i18n={i18n}
               />
             </SlideDrawer>
           </div>
@@ -319,7 +336,7 @@ const JournalCenter: React.FC<JournalCenterProps> = (props) => {
               <JournalListFiltters
                 usePlace={usePlace}
                 filtters={filters}
-                onFilttersChange={handleFilttersChange}
+                onFilttersChange={handleFiltersChange}
               />
             </JournalFunctionsBar>
 
@@ -380,6 +397,7 @@ const JournalCenter: React.FC<JournalCenterProps> = (props) => {
                 onClose={handleCloseCurrentNote}
               >
                 <JournalListItemCurrent
+                  i18n={i18n}
                   userId={userId}
                   onPinJournalClick={pinJournal}
                   onJournalUpdate={updateJournal}
@@ -419,7 +437,9 @@ const JournalCenter: React.FC<JournalCenterProps> = (props) => {
  * @param state state
  */
 function mapStateToProps(state: StateType) {
-  return {};
+  return {
+    i18n: state.i18n,
+  };
 }
 
 /**

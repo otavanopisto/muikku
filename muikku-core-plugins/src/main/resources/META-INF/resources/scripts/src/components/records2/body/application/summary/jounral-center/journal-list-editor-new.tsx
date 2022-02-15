@@ -1,12 +1,15 @@
 import * as React from "react";
 import Button from "~/components/general/button";
 import {
-  JournalCenterUsePlaceType,
   JournalCreationType,
   JournalPriority,
   UseJournals,
 } from "~/@types/journal-center";
 import { JournalNoteCreate } from "../../../../../../@types/journal-center";
+import { i18nType } from "~/reducers/base/i18n";
+import DatePicker from "react-datepicker";
+import "~/sass/elements/datepicker/datepicker.scss";
+import * as moment from "moment";
 
 /**
  * JournalListEditorProps
@@ -22,15 +25,16 @@ interface JournalListEditorNewProps {
     newJournal: JournalNoteCreate,
     onSuccess?: () => void
   ) => Promise<void>;
+  i18n: i18nType;
 }
 
 /**
- * Creates journal list editor
+ * Creates journal list editor "new"
  * @param props props
  * @returns JSX.Element
  */
 const JournalListEditorNew: React.FC<JournalListEditorNewProps> = (props) => {
-  const { journals, onCancelClick, onJournalSaveClick, newNoteOwnerId } = props;
+  const { onCancelClick, onJournalSaveClick, newNoteOwnerId } = props;
 
   const [journal, setJournal] = React.useState<JournalNoteCreate>({
     title: "",
@@ -39,10 +43,11 @@ const JournalListEditorNew: React.FC<JournalListEditorNewProps> = (props) => {
     priority: JournalPriority.HIGH,
     pinned: false,
     owner: newNoteOwnerId,
+    dueDate: null,
   });
 
   /**
-   * handleJournalChange
+   * Handles journal change
    * @param key name of updated property
    * @param value of updated property
    */
@@ -58,7 +63,7 @@ const JournalListEditorNew: React.FC<JournalListEditorNewProps> = (props) => {
   };
 
   /**
-   * handleSaveNewClick
+   * Handles save click
    */
   const handleSaveClick = () => {
     onJournalSaveClick(journal, () => {
@@ -69,6 +74,7 @@ const JournalListEditorNew: React.FC<JournalListEditorNewProps> = (props) => {
         priority: JournalPriority.HIGH,
         pinned: false,
         owner: newNoteOwnerId,
+        dueDate: null,
       });
     });
   };
@@ -112,24 +118,7 @@ const JournalListEditorNew: React.FC<JournalListEditorNewProps> = (props) => {
             }}
           />
         </div>
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          <label>Kuvaus</label>
-          <textarea
-            onChange={(e) =>
-              handleJournalChange("description", e.currentTarget.value)
-            }
-            value={journal.description}
-            style={{
-              backgroundColor: "transparent",
-              border: "2px solid pink",
-              borderRadius: "2px",
-              fontSize: "0.8125rem",
-              minHeight: "150px",
-              padding: "6px",
-              width: "100%",
-            }}
-          />
-        </div>
+
         <div style={{ display: "flex", flexDirection: "column" }}>
           <label>Prioriteetti</label>
           <select
@@ -151,6 +140,36 @@ const JournalListEditorNew: React.FC<JournalListEditorNewProps> = (props) => {
             <option value={JournalPriority.NORMAL}>Normaali</option>
             <option value={JournalPriority.LOW}>Matala</option>
           </select>
+        </div>
+
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <label style={{ marginRight: "5px" }}>Päättymispäivä</label>
+          <DatePicker
+            selected={journal.dueDate && moment(journal.dueDate)}
+            onChange={(date, e) =>
+              handleJournalChange("dueDate", date && moment(date).toDate())
+            }
+            locale={props.i18n.time.getLocale()}
+          />
+        </div>
+
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <label>Kuvaus</label>
+          <textarea
+            onChange={(e) =>
+              handleJournalChange("description", e.currentTarget.value)
+            }
+            value={journal.description}
+            style={{
+              backgroundColor: "transparent",
+              border: "2px solid pink",
+              borderRadius: "2px",
+              fontSize: "0.8125rem",
+              minHeight: "150px",
+              padding: "6px",
+              width: "100%",
+            }}
+          />
         </div>
       </div>
 

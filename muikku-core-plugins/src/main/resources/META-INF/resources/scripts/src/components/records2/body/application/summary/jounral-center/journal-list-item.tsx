@@ -1,13 +1,13 @@
 import * as React from "react";
 import { JournalNoteRead, JournalNoteUpdate } from "~/@types/journal-center";
 import { IconButton } from "~/components/general/button";
+import * as moment from "moment";
 
 /**
  * JournalListProps
  */
 interface JournalListItemProps {
   journal: JournalNoteRead;
-  dateEnd?: string;
   loggedUserIsOwner?: boolean;
   onDeleteClick: (journalId: number) => void;
   onEditClick?: (journalId: number) => void;
@@ -33,10 +33,10 @@ const JournalListItem = React.forwardRef<HTMLDivElement, JournalListItemProps>(
       onDeleteClick,
       onPinJournalClick,
       loggedUserIsOwner,
-      dateEnd,
     } = props;
 
-    const { id, title, priority, creatorName, description, pinned } = journal;
+    const { id, title, priority, creatorName, description, pinned, dueDate } =
+      journal;
 
     let colour = "teal";
 
@@ -181,7 +181,9 @@ const JournalListItem = React.forwardRef<HTMLDivElement, JournalListItemProps>(
               >
                 {title}{" "}
               </h3>
-              {dateEnd ? <div>Suorita {dateEnd} mennessä</div> : null}
+              {dueDate ? (
+                <div>Suorita {moment(dueDate).format("l")} mennessä</div>
+              ) : null}
             </div>
             {description ? (
               <div

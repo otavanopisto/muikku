@@ -5,11 +5,12 @@ import {
 } from "~/@types/journal-center";
 
 /**
- * findDeselectedItem
+ * Finds deselected items based on two arrays
  * @param currentArray currentArray
+ * @returns array of delected sorter strings
  */
-export const findDeselectedFiltterItems = (currentArray: string[]) => {
-  const filttersStrings: string[] = [
+export const findDeselectedSorterItems = (currentArray: string[]) => {
+  const filtersStrings: string[] = [
     JournalPriority.HIGH,
     JournalPriority.NORMAL,
     JournalPriority.LOW,
@@ -18,10 +19,10 @@ export const findDeselectedFiltterItems = (currentArray: string[]) => {
   const deSelectedItems: string[] = [];
 
   // loop through previous array
-  for (let j = 0; j < filttersStrings.length; j++) {
+  for (let j = 0; j < filtersStrings.length; j++) {
     // look for same thing in new array
-    if (currentArray.indexOf(filttersStrings[j]) == -1) {
-      deSelectedItems.push(filttersStrings[j]);
+    if (currentArray.indexOf(filtersStrings[j]) == -1) {
+      deSelectedItems.push(filtersStrings[j]);
     }
   }
 
@@ -29,7 +30,7 @@ export const findDeselectedFiltterItems = (currentArray: string[]) => {
 };
 
 /**
- * sortByPinned
+ * Sorts journals by pinned status
  * @param journalList journalList
  * @returns two list, pinnend and non pinned lists
  */
@@ -62,19 +63,38 @@ export const sortByJournalPriority = (
   journalList: JournalNoteRead[],
   filters: JournalFiltters
 ) => {
-  const order: string[] = [];
+  /**
+   * Default order is always follow
+   */
+  let order: string[] = [
+    JournalPriority.HIGH,
+    JournalPriority.NORMAL,
+    JournalPriority.LOW,
+  ];
 
-  if (filters.high) {
-    order.push(JournalPriority.HIGH);
-  }
-  if (filters.normal) {
-    order.push(JournalPriority.NORMAL);
-  }
-  if (filters.low) {
-    order.push(JournalPriority.LOW);
+  /**
+   * If any of priority sorters are active default ordering
+   * is reseted and build depending what sorters are active
+   */
+  if (filters.high || filters.normal || filters.low) {
+    order = [];
+
+    if (filters.high) {
+      order.push(JournalPriority.HIGH);
+    }
+    if (filters.normal) {
+      order.push(JournalPriority.NORMAL);
+    }
+    if (filters.low) {
+      order.push(JournalPriority.LOW);
+    }
   }
 
-  const missing = findDeselectedFiltterItems(order);
+  /**
+   * This finds those deactive priorites sorters and pushes those to ordering array
+   * which is needed to correctly sort whole journal list
+   */
+  const missing = findDeselectedSorterItems(order);
 
   if (missing && missing.length > 0) {
     for (const miss of missing) {
@@ -82,11 +102,9 @@ export const sortByJournalPriority = (
     }
   }
 
-  return order.length > 0
-    ? journalList.sort(
-        (a, b) => order.indexOf(a.priority) - order.indexOf(b.priority)
-      )
-    : journalList;
+  return journalList.sort(
+    (a, b) => order.indexOf(a.priority) - order.indexOf(b.priority)
+  );
 };
 
 /**
@@ -113,18 +131,18 @@ export const sortByMadeByMe = (
  * filterByMaker
  * @param journalList journalList
  * @param filters filters
- * @param userId userId
+ * @param creator creator
  * @returns list of filtered journals
  */
-export const filterByMaker = (
+export const filterByCreator = (
   journalList: JournalNoteRead[],
   filters: JournalFiltters,
-  userId: number
+  creator: number
 ): JournalNoteRead[] => {
   const updatedList = journalList.filter((j) => {
     if (
-      (filters.own && userId === j.creator) ||
-      (filters.guider && userId !== j.creator)
+      (filters.own && creator === j.creator) ||
+      (filters.guider && creator !== j.creator)
     ) {
       return j;
     }
@@ -147,15 +165,19 @@ export const sortJournalsBy = (
 ): JournalNoteRead[] => {
   let { pinnedList, nonPinnedList } = sortByPinned(journalList);
 
+  /**
+   * Filters journals by creator
+   */
   if (filters.own || filters.guider) {
-    pinnedList = filterByMaker(pinnedList, filters, userId);
-    nonPinnedList = filterByMaker(nonPinnedList, filters, userId);
+    pinnedList = filterByCreator(pinnedList, filters, userId);
+    nonPinnedList = filterByCreator(nonPinnedList, filters, userId);
   }
 
-  if (filters.high || filters.normal || filters.low) {
-    pinnedList = sortByJournalPriority(pinnedList, filters);
-    nonPinnedList = sortByJournalPriority(nonPinnedList, filters);
-  }
+  /**
+   * Sorts by default priority order or by active priority order
+   */
+  pinnedList = sortByJournalPriority(pinnedList, filters);
+  nonPinnedList = sortByJournalPriority(nonPinnedList, filters);
 
   /* if (filtters.own) {
       journalListSorted = sortByMadeByMe(journalListSorted);
