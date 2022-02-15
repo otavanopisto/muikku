@@ -158,8 +158,8 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
     setSelectedWorkspaceId({ workspaceId: rest.workspaceEntityId });
   };
 
-  let evaluationImportantClassesMod = "";
-  let evaluationUnimportantClassesMod = "";
+  let evaluationImportantClassesMod = undefined;
+  let evaluationUnimportantClassesMod = undefined;
 
   /**
    * Whether important or unimportant is selected, renders it background differently
@@ -328,7 +328,11 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
               "plugin.evaluation.card.button.markImportantButtonLabel"
             )}
             onClick={handleImportanceClick("important")}
-            buttonModifiers={["important", evaluationImportantClassesMod]}
+            buttonModifiers={
+              evaluationImportantClassesMod
+                ? ["important", evaluationImportantClassesMod]
+                : ["important"]
+            }
             icon="star-full"
           />
           <IconButton
@@ -336,7 +340,11 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
               "plugin.evaluation.card.button.markNonImportantButtonLabel"
             )}
             onClick={handleImportanceClick("unimportant")}
-            buttonModifiers={["unimportant", evaluationUnimportantClassesMod]}
+            buttonModifiers={
+              evaluationUnimportantClassesMod
+                ? ["unimportant", evaluationUnimportantClassesMod]
+                : ["unimportant"]
+            }
             icon="star-empty"
           />
         </div>

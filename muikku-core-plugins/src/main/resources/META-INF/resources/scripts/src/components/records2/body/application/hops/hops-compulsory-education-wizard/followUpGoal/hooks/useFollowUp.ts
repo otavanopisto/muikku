@@ -61,7 +61,7 @@ export const useFollowUpGoal = (
      * @param studentId of student
      */
     const loadStudentFollowUpPlans = async (studentId: string) => {
-      setFollowUpData({ ...followUpData, isLoading: true });
+      setFollowUpData((followUpData) => ({ ...followUpData, isLoading: true }));
 
       try {
         /**
@@ -85,7 +85,7 @@ export const useFollowUpGoal = (
         ]);
 
         if (componentMounted.current) {
-          setFollowUpData({
+          setFollowUpData((followUpData) => ({
             ...followUpData,
             isLoading: false,
             followUp: {
@@ -99,15 +99,15 @@ export const useFollowUpGoal = (
                   ? loadedFollowUp.followUpGoal
                   : "",
             },
-          });
+          }));
         }
       } catch (err) {
         if (componentMounted.current) {
           displayNotification(`Hups errori, ${err.message}`, "error");
-          setFollowUpData({
+          setFollowUpData((followUpData) => ({
             ...followUpData,
             isLoading: false,
-          });
+          }));
         }
       }
     };
@@ -117,9 +117,20 @@ export const useFollowUpGoal = (
     return () => {
       componentMounted.current = false;
     };
-  }, [studentId]);
+  }, [studentId, displayNotification]);
 
   React.useEffect(() => {
+    /**
+     * onAnswerSavedAtServer
+     * @param data FollowUp. As its plain json, it needs to be parsed
+     */
+    const onAnswerSavedAtServer = (data: any) => {
+      setFollowUpData((followUpData) => ({
+        ...followUpData,
+        followUp: JSON.parse(data),
+      }));
+    };
+
     /**
      * Adding event callback to handle changes when ever
      * there has happened some changes with that message
@@ -138,18 +149,7 @@ export const useFollowUpGoal = (
         onAnswerSavedAtServer
       );
     };
-  }, []);
-
-  /**
-   * onAnswerSavedAtServer
-   * @param data FollowUp. As its plain json, it needs to be parsed
-   */
-  const onAnswerSavedAtServer = (data: any) => {
-    setFollowUpData({
-      ...followUpData,
-      followUp: JSON.parse(data),
-    });
-  };
+  }, [websocketState.websocket]);
 
   /**
    * updateFollowUpData

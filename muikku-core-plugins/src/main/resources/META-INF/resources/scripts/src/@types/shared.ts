@@ -272,6 +272,9 @@ export interface LanguageGrade {
   hardCoded: boolean;
 }
 
+/**
+ * HopsCompulsory
+ */
 export interface HopsCompulsory {
   startingLevel: HopsStudentStartingLevel;
   motivationAndStudy: HopsMotivationAndStudy;
@@ -288,6 +291,9 @@ export interface BasicInformation {
   counselorList?: string[];
 }
 
+/**
+ * StudentInfo
+ */
 export interface StudentInfo {
   id: number;
   firstName: string;
@@ -295,6 +301,9 @@ export interface StudentInfo {
   counselorList?: string[];
 }
 
+/**
+ * HopsUpdates
+ */
 export interface HopsUpdates {
   date: Date;
   modifier: string;
@@ -327,12 +336,18 @@ export interface HopsMotivationAndStudy
   areasToAdvance?: string;
 }
 
+/**
+ * HopsStudies
+ */
 export interface HopsStudies {
   usedHoursPerWeek: number;
   ethics: boolean;
   finnishAsSecondLanguage: boolean;
 }
 
+/**
+ * HopsPlanningStudies
+ */
 export interface HopsPlanningStudies {
   usedHoursPerWeek: number;
   ethics: boolean;
@@ -384,12 +399,18 @@ export interface StudentSupportive {
   somethingElse?: string;
 }
 
+/**
+ * SchoolSubject
+ */
 export interface SchoolSubject {
   name: string;
   subjectCode: string;
   availableCourses: Course[];
 }
 
+/**
+ * Course
+ */
 export interface Course {
   name: string;
   courseNumber: number;
@@ -398,6 +419,9 @@ export interface Course {
   id: number;
 }
 
+/**
+ * StudentActivityCourse
+ */
 export interface StudentActivityCourse {
   subject: string;
   courseId: number; // muikun työtilan id (jos kyseessä on arvioitu tai meneillään oleva kurssi)
@@ -408,6 +432,9 @@ export interface StudentActivityCourse {
   date: string;
 }
 
+/**
+ * StudiesCourseData
+ */
 export interface StudiesCourseData {
   completedSubjectListOfIds?: number[];
   approvedSubjectListOfIds?: number[];
@@ -416,6 +443,10 @@ export interface StudiesCourseData {
   ownHopsChoosed?: number;
   ownHopsCompleted?: number;
 }
+
+/**
+ * UploadingValue
+ */
 export interface UploadingValue {
   name: string;
   contentType: string;
@@ -424,6 +455,9 @@ export interface UploadingValue {
   file?: File;
 }
 
+/**
+ * Suggestion
+ */
 export interface Suggestion {
   id: number;
   name: string;
@@ -442,13 +476,22 @@ export interface Suggestion {
  */
 type CourseType = "Nonstop" | "Ryhmäkurssi";
 
+/**
+ * SuggestionWithWorkspaceInfo
+ */
 export interface SuggestionWithWorkspaceInfo extends Suggestion {}
 
+/**
+ * StudentCourseChoice
+ */
 export interface StudentCourseChoice {
   subject: string;
   courseNumber: number;
 }
 
+/**
+ * StudentActivityByStatus
+ */
 export interface StudentActivityByStatus {
   /**
    * List of ongoing courses
