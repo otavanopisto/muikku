@@ -22,6 +22,7 @@ import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.notes.model.Note;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
@@ -135,11 +136,28 @@ public class NotesRESTService extends PluginRESTService {
     
     List<Note> notes = notesController.listByOwner(owner);
     List<NoteRestModel> notesList = new ArrayList<NoteRestModel>();
+
     
     for (Note note : notes) {
       NoteRestModel noteRest = toRestModel(note);
       
-      notesList.add(noteRest);
+      UserEntity creator = userEntityController.findUserEntityById(note.getCreator());
+      EnvironmentRoleEntity creatorRoleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(creator.defaultSchoolDataIdentifier());
+      EnvironmentRoleArchetype creatorUserRole = creatorRoleEntity != null ? creatorRoleEntity.getArchetype() : null;
+      EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUser());
+      EnvironmentRoleArchetype loggedUserRole = roleEntity != null ? roleEntity.getArchetype() : null;
+      
+      if (loggedUserRole == null || creatorUserRole == null) {
+        return Response.status(Status.BAD_REQUEST).build();
+      }
+      
+      if (loggedUserRole.equals(EnvironmentRoleArchetype.STUDENT)) {
+        notesList.add(noteRest);
+      } else {
+        if (!creatorUserRole.equals(EnvironmentRoleArchetype.STUDENT)) {
+          notesList.add(noteRest);
+        }
+      }
     }
     
     return Response.ok(notesList).build();
