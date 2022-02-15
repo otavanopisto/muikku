@@ -74,9 +74,9 @@ public class NotesRESTService extends PluginRESTService {
     Note newNote = null;
     
     if (EnvironmentRoleArchetype.STUDENT.equals(loggedUserRole)) {
-      newNote = notesController.createNote(note.getTitle(), note.getDescription(), note.getType(), note.getPriority(), note.getPinned(), sessionController.getLoggedUserEntity().getId());
+      newNote = notesController.createNote(note.getTitle(), note.getDescription(), note.getType(), note.getPriority(), note.getPinned(), sessionController.getLoggedUserEntity().getId(), note.getDueDate());
     } else {
-      newNote = notesController.createNote(note.getTitle(), note.getDescription(), note.getType(), note.getPriority(), note.getPinned(), note.getOwner());
+      newNote = notesController.createNote(note.getTitle(), note.getDescription(), note.getType(), note.getPriority(), note.getPinned(), note.getOwner(), note.getDueDate());
     }
     
     return Response.ok(toRestModel(newNote)).build();
@@ -101,7 +101,7 @@ public class NotesRESTService extends PluginRESTService {
         return Response.status(Status.FORBIDDEN).build();
     }
     
-    Note updatedNote = notesController.updateNote(note, restModel.getTitle(), restModel.getDescription(), restModel.getPriority(), restModel.getPinned());
+    Note updatedNote = notesController.updateNote(note, restModel.getTitle(), restModel.getDescription(), restModel.getPriority(), restModel.getPinned(), restModel.getDueDate());
   
     return Response.ok(toRestModel(updatedNote)).build();
   }
@@ -122,6 +122,7 @@ public class NotesRESTService extends PluginRESTService {
     restModel.setCreator(note.getCreator());
     restModel.setCreatorName(creatorName);
     restModel.setCreated(note.getCreated());
+    restModel.setDueDate(note.getDueDate());
 
     return restModel;
   }
