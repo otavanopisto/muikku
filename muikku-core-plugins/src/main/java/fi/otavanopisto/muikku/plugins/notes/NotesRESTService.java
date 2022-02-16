@@ -1,12 +1,15 @@
 package fi.otavanopisto.muikku.plugins.notes;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -15,6 +18,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+
+import org.apache.commons.lang3.math.NumberUtils;
 
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
@@ -37,6 +42,8 @@ import fi.otavanopisto.security.rest.RESTPermit.Handling;
 public class NotesRESTService extends PluginRESTService {
 
   private static final long serialVersionUID = 6610657511716011677L;
+  
+  private static final int NOTES_FROM_THE_TIME = NumberUtils.createInteger(System.getProperty("muikku.notes.notesfromthetime", "14"));
   
   @Inject
   private NotesController notesController;
@@ -132,11 +139,11 @@ public class NotesRESTService extends PluginRESTService {
   @GET
   @Path("/owner/{OWNER}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response getNotesByOwner(@PathParam("OWNER") Long owner) {
-    
-    List<Note> notes = notesController.listByOwner(owner);
-    List<NoteRestModel> notesList = new ArrayList<NoteRestModel>();
+  public Response getNotesByOwner(@PathParam("OWNER") Long owner,@DefaultValue ("false") Boolean listArchived) {
 
+    List<Note> notes = notesController.listByOwner(owner, listArchived);
+    List<NoteRestModel> notesList = new ArrayList<NoteRestModel>();
+    OffsetDateTime inLastTwoWeeks = OffsetDateTime.now().minusDays(NOTES_FROM_THE_TIME);
     
     for (Note note : notes) {
       NoteRestModel noteRest = toRestModel(note);
@@ -151,11 +158,23 @@ public class NotesRESTService extends PluginRESTService {
         return Response.status(Status.BAD_REQUEST).build();
       }
       
-      if (loggedUserRole.equals(EnvironmentRoleArchetype.STUDENT)) {
-        notesList.add(noteRest);
+      if (Boolean.TRUE.equals(listArchived)) {
+        if (!note.getLastModified().before(Date.from(inLastTwoWeeks.toInstant()))) {
+          if (loggedUserRole.equals(EnvironmentRoleArchetype.STUDENT)) {
+            notesList.add(noteRest);
+          } else {
+            if (!creatorUserRole.equals(EnvironmentRoleArchetype.STUDENT)) {
+              notesList.add(noteRest);
+            }
+          }
+        }
       } else {
-        if (!creatorUserRole.equals(EnvironmentRoleArchetype.STUDENT)) {
+        if (loggedUserRole.equals(EnvironmentRoleArchetype.STUDENT)) {
           notesList.add(noteRest);
+        } else {
+          if (!creatorUserRole.equals(EnvironmentRoleArchetype.STUDENT)) {
+            notesList.add(noteRest);
+          } 
         }
       }
     }

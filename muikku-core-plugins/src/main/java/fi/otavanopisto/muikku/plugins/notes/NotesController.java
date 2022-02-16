@@ -19,8 +19,8 @@ public class NotesController {
   @Inject
   private NoteDAO noteDAO;
   
-  public List<Note> listByOwner(Long owner) {
-    return noteDAO.listByOwnerAndArchived(owner, Boolean.FALSE); 
+  public List<Note> listByOwner(Long owner, Boolean listArchived) {
+    return noteDAO.listByOwnerAndArchived(owner, listArchived); 
   }
   
   public Note createNote(String title, String description, NoteType type, NotePriority priority, Boolean pinned, Long owner, Date dueDate) {
