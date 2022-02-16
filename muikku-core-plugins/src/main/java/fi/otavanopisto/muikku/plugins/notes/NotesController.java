@@ -42,6 +42,6 @@ public class NotesController {
   }
   
   public Note findNoteById(Long id) {
-    return noteDAO.findByIdAndArchived(id, Boolean.FALSE);
+    return noteDAO.findById(id);
   }
 }
