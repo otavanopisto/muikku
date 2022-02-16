@@ -16,6 +16,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
@@ -139,7 +140,7 @@ public class NotesRESTService extends PluginRESTService {
   @GET
   @Path("/owner/{OWNER}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response getNotesByOwner(@PathParam("OWNER") Long owner,@DefaultValue ("false") Boolean listArchived) {
+  public Response getNotesByOwner(@PathParam("OWNER") Long owner, @QueryParam("listArchived") @DefaultValue ("false") Boolean listArchived) {
 
     List<Note> notes = notesController.listByOwner(owner, listArchived);
     List<NoteRestModel> notesList = new ArrayList<NoteRestModel>();
