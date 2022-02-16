@@ -53,6 +53,9 @@ interface JournalCenterProps {
    * Handles display notification from redux side
    */
   displayNotification: DisplayNotificationTriggerType;
+  /**
+   * For localization
+   */
   i18n: i18nType;
 }
 
@@ -146,7 +149,7 @@ const JournalCenter: React.FC<JournalCenterProps> = (props) => {
    * handleOnOpenInEditModeClick
    * @param id id
    */
-  const handleOnOpenInEditModeClick = (id: number) => {
+  const handleOpenInEditModeClick = (id: number) => {
     const journalFromList = journals.journalsList.find((j) => j.id === id);
 
     setSelectedJournal({
@@ -181,18 +184,8 @@ const JournalCenter: React.FC<JournalCenterProps> = (props) => {
        */
       component: () => (
         <JournalContentContainer>
-          <div
-            className="list-container"
-            style={{ width: "40%", overflow: "hidden", paddingRight: "10px" }}
-          >
-            <JournalFunctionsBar
-              style={{
-                width: "100%",
-                height: "60px",
-                display: "flex",
-                justifyContent: "flex-start",
-              }}
-            >
+          <div className="journal-list-content">
+            <JournalFunctionsBar>
               <JournalListFiltters
                 usePlace={usePlace}
                 filtters={filters}
@@ -207,10 +200,10 @@ const JournalCenter: React.FC<JournalCenterProps> = (props) => {
                     journal={j}
                     ref={React.createRef()}
                     key={j.id}
-                    onPinJournalClick={pinJournal}
                     loggedUserIsOwner={j.creator === userId}
+                    onPinJournalClick={pinJournal}
                     onDeleteClick={deleteJournal}
-                    onEditClick={handleOnOpenInEditModeClick}
+                    onEditClick={handleOpenInEditModeClick}
                     onJournalClick={handleJournalItemClick}
                   />
                 )
@@ -218,29 +211,8 @@ const JournalCenter: React.FC<JournalCenterProps> = (props) => {
             </JournalListAnimated>
           </div>
 
-          <div
-            className="current-editor-container"
-            style={{
-              height: "100%",
-              width: "60%",
-              paddingLeft: "10px",
-              borderLeft: "solid black 1px",
-              borderLeftStyle: "dashed",
-              display: "flex",
-              alignItems: "center",
-              flexDirection: "column",
-              position: "relative",
-              overflow: "hidden",
-            }}
-          >
-            <JournalFunctionsBar
-              style={{
-                width: "100%",
-                height: "60px",
-                display: "flex",
-                justifyContent: "flex-end",
-              }}
-            >
+          <div className="current-editor-container">
+            <JournalFunctionsBar>
               <div
                 style={{
                   display: "flex",
@@ -250,18 +222,7 @@ const JournalCenter: React.FC<JournalCenterProps> = (props) => {
                 <IconButton icon="plus" onClick={handleCreateNewClick} />
               </div>
             </JournalFunctionsBar>
-            <div
-              className="block"
-              style={{
-                height: "100%",
-                padding: "10px 0px",
-                overflow: "auto",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                width: "100%",
-              }}
-            >
+            <div className="editor-default-content">
               <h2>Ei valittua toiminnallisuutta</h2>
             </div>
             {journals.journalsList.map((j) => (
@@ -321,18 +282,8 @@ const JournalCenter: React.FC<JournalCenterProps> = (props) => {
        */
       component: () => (
         <JournalContentContainer>
-          <div
-            className="list-container"
-            style={{ width: "40%", overflow: "hidden", paddingRight: "10px" }}
-          >
-            <JournalFunctionsBar
-              style={{
-                width: "100%",
-                height: "60px",
-                display: "flex",
-                justifyContent: "flex-end",
-              }}
-            >
+          <div className="journal-list-content">
+            <JournalFunctionsBar>
               <JournalListFiltters
                 usePlace={usePlace}
                 filtters={filters}
@@ -348,8 +299,6 @@ const JournalCenter: React.FC<JournalCenterProps> = (props) => {
                     ref={React.createRef()}
                     key={j.id}
                     loggedUserIsOwner={j.creator === userId}
-                    onDeleteClick={deleteJournal}
-                    onEditClick={handleOnOpenInEditModeClick}
                     onJournalClick={handleJournalItemClick}
                     onPinJournalClick={pinJournal}
                   />
@@ -357,33 +306,9 @@ const JournalCenter: React.FC<JournalCenterProps> = (props) => {
               )}
             </JournalListAnimated>
           </div>
-          <div
-            className="current-editor-container"
-            style={{
-              height: "100%",
-              width: "60%",
-              paddingLeft: "10px",
-              borderLeft: "solid black 1px",
-              borderLeftStyle: "dashed",
-              display: "flex",
-              alignItems: "center",
-              flexDirection: "column",
-              position: "relative",
-              overflow: "hidden",
-            }}
-          >
-            <div
-              className="block"
-              style={{
-                height: "100%",
-                padding: "10px 0px",
-                overflow: "auto",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                width: "100%",
-              }}
-            >
+          <div className="current-editor-container">
+            <JournalFunctionsBar />
+            <div className="editor-default-content">
               <h2>Ei valittua toiminnallisuutta</h2>
             </div>
             {journals.journalsList.map((j) => (
@@ -400,14 +325,8 @@ const JournalCenter: React.FC<JournalCenterProps> = (props) => {
                   i18n={i18n}
                   userId={userId}
                   onPinJournalClick={pinJournal}
-                  onJournalUpdate={updateJournal}
                   journals={journals}
                   currentSelectedJournal={j}
-                  openInEditMode={
-                    selectedJournal.journal &&
-                    selectedJournal.journal.id === j.id &&
-                    selectedJournal.inEditMode
-                  }
                   onClickCloseCurrent={handleCloseCurrentNote}
                   loggedUserIsOwner={j.creator === userId}
                 />
@@ -466,7 +385,7 @@ interface JournalFunctionBarProps
  * @param props props
  */
 const JournalFunctionsBar: React.FC<JournalFunctionBarProps> = (props) => (
-  <div className="content-function-bar" {...props}>
+  <div className="journal-function-bar" {...props}>
     {props.children}
   </div>
 );
@@ -486,9 +405,5 @@ const JournalContentContainer: React.FC<JournalContentContainerProps> = (
 ) => {
   const { children } = props;
 
-  return (
-    <div style={{ height: "800px", padding: "10px 0px", display: "flex" }}>
-      {children}
-    </div>
-  );
+  return <div className="journal-content-container">{children}</div>;
 };

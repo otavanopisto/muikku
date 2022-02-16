@@ -82,17 +82,7 @@ const JournalListAnimated: React.FC<JournalListAnimatedProps> = (props) => {
   return (
     //const { children } = props;
 
-    <div
-      ref={listElementRef}
-      style={{
-        overflowY: "scroll",
-        height: "calc(100% - 50px)",
-        paddingRight: "10px",
-        display: "flex",
-        flexDirection: "column",
-        position: "relative",
-      }}
-    >
+    <div ref={listElementRef} className="journal-list-container">
       {children}
     </div>
   );

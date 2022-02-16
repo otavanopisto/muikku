@@ -57,7 +57,6 @@ const JournalListFiltters: React.FC<JournalListFilttersProps> = (props) => {
     };
 
   return (
-    // const { children } = props;
     <div
       style={{
         height: "50px",
@@ -106,21 +105,21 @@ const JournalListFiltters: React.FC<JournalListFilttersProps> = (props) => {
               <input type="checkbox" onChange={handleCheckboxesChange("own")} />
             </div>
 
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                margin: "5px 0px",
-              }}
-            >
-              <label style={{ marginRight: "5px" }}>
-                {usePlace === "records" ? "Ohjaajien" : "Opiskelijan"}
-              </label>
-              <input
-                type="checkbox"
-                onChange={handleCheckboxesChange("guider")}
-              />
-            </div>
+            {usePlace === "records" && (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  margin: "5px 0px",
+                }}
+              >
+                <label style={{ marginRight: "5px" }}>Ohjaajien</label>
+                <input
+                  type="checkbox"
+                  onChange={handleCheckboxesChange("guider")}
+                />
+              </div>
+            )}
           </div>
         }
       >

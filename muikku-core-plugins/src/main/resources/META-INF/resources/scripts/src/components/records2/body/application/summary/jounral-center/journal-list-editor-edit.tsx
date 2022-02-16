@@ -58,7 +58,9 @@ const JournalListEditorEdit: React.FC<JournalListEditorEditProps> = (props) => {
    * handleSaveNewClick
    */
   const handleSaveClick = () => {
-    onJournalSaveUpdateClick(selectedJournal.id, journal);
+    if (onJournalSaveUpdateClick) {
+      onJournalSaveUpdateClick(selectedJournal.id, journal);
+    }
   };
 
   return (

@@ -9,7 +9,7 @@ import * as moment from "moment";
 interface JournalListItemProps {
   journal: JournalNoteRead;
   loggedUserIsOwner?: boolean;
-  onDeleteClick: (journalId: number) => void;
+  onDeleteClick?: (journalId: number) => void;
   onEditClick?: (journalId: number) => void;
   onPinJournalClick: (journalId: number, journal: JournalNoteUpdate) => void;
   onJournalClick?: (journalId: number) => void;
@@ -26,6 +26,7 @@ const JournalListItem = React.forwardRef<HTMLDivElement, JournalListItemProps>(
   (props, ref) => {
     props = { ...defaultProps, ...props };
 
+    const myRef = React.useRef<HTMLDivElement>(null);
     const {
       journal,
       onJournalClick,
@@ -38,20 +39,20 @@ const JournalListItem = React.forwardRef<HTMLDivElement, JournalListItemProps>(
     const { id, title, priority, creatorName, description, pinned, dueDate } =
       journal;
 
-    let colour = "teal";
+    const priorityMod = [];
 
     if (priority) {
       switch (priority) {
         case "HIGH":
-          colour = "red";
+          priorityMod.push("high");
           break;
 
         case "NORMAL":
-          colour = "orange";
+          priorityMod.push("normal");
           break;
 
         case "LOW":
-          colour = "green";
+          priorityMod.push("low");
           break;
 
         default:
@@ -88,6 +89,7 @@ const JournalListItem = React.forwardRef<HTMLDivElement, JournalListItemProps>(
       e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
     ) => {
       e.stopPropagation();
+
       onPinJournalClick(id, journal);
     };
 
@@ -99,26 +101,32 @@ const JournalListItem = React.forwardRef<HTMLDivElement, JournalListItemProps>(
       e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
     ) => {
       e.stopPropagation();
-      onDeleteClick(id);
+
+      if (onDeleteClick) {
+        myRef.current.classList.add("state-DELETE");
+
+        setTimeout(() => {
+          onDeleteClick(id);
+        }, 250);
+      }
     };
 
     return (
       <div
-        ref={ref}
-        onClick={handleJournalClick(id)}
-        style={{
-          width: "100%",
-          border: `1px solid ${colour}`,
-          borderLeft: `5px solid ${colour}`,
-          marginBottom: "10px",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-          cursor: "pointer",
-          boxShadow: "3px 3px 5px grey",
-          padding: "25px 0px",
-          position: "relative",
+        ref={(node) => {
+          myRef.current = node;
+          if (typeof ref === "function") {
+            ref(node);
+          } else if (ref) {
+            (ref as React.MutableRefObject<HTMLDivElement>).current = node;
+          }
         }}
+        className={`journal-list-item ${
+          priorityMod.length
+            ? priorityMod.map((m) => `journal-list-item--${m}`).join(" ")
+            : ""
+        }`}
+        onClick={handleJournalClick(id)}
       >
         <div
           style={{
@@ -132,7 +140,7 @@ const JournalListItem = React.forwardRef<HTMLDivElement, JournalListItemProps>(
           }}
         >
           <div>
-            {loggedUserIsOwner ? (
+            {loggedUserIsOwner && onEditClick ? (
               <IconButton
                 onClick={handleJournalOpenInEditModeClick(id)}
                 icon="pencil"
@@ -145,7 +153,7 @@ const JournalListItem = React.forwardRef<HTMLDivElement, JournalListItemProps>(
               icon="pin"
             />
 
-            {loggedUserIsOwner ? (
+            {loggedUserIsOwner && onDeleteClick ? (
               <IconButton onClick={handleJournalDeleteClick} icon="trash" />
             ) : null}
           </div>

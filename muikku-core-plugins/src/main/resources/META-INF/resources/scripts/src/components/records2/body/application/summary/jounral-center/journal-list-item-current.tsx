@@ -16,13 +16,13 @@ import * as moment from "moment";
 interface JournalListItemCurrentProps {
   userId: number;
   journals: UseJournals;
-  openInEditMode: boolean;
+  openInEditMode?: boolean;
   currentSelectedJournal?: JournalNoteRead;
   dateEnd?: string;
   loggedUserIsOwner?: boolean;
   i18n: i18nType;
   onClickCloseCurrent?: () => void;
-  onJournalUpdate: (
+  onJournalUpdate?: (
     journalId: number,
     updatedJournal: JournalNoteUpdate
   ) => void;
@@ -50,7 +50,9 @@ const JournalListItemCurrent: React.FC<JournalListItemCurrentProps> = (
   } = props;
 
   React.useEffect(() => {
-    setEditMode(openInEditMode);
+    if (openInEditMode) {
+      setEditMode(openInEditMode);
+    }
   }, [openInEditMode]);
 
   const [editMode, setEditMode] = React.useState(false);
@@ -180,7 +182,7 @@ const JournalListItemCurrent: React.FC<JournalListItemCurrentProps> = (
         >
           <h1>{title}</h1>
           <div>
-            {loggedUserIsOwner ? (
+            {loggedUserIsOwner && onJournalUpdate ? (
               <IconButton onClick={handleClickEditMode} icon="pencil" />
             ) : null}
             <IconButton
