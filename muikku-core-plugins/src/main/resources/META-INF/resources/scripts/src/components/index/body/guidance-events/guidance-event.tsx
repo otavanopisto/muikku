@@ -63,7 +63,32 @@ const GuidanceEvent: React.FC<GuidanceEventProps> = (props) => {
   const participation = event.participants.filter(
     (participant) => participant.userEntityId === status.userId
   );
-  const studentParticipation = participation[0].attendance === "UNCONFIRMED";
+  const studentParticipation =
+    participation.length !== 0 && participation[0].attendance === "UNCONFIRMED";
+
+  /**
+   * GetParticipants handling for event participants
+   * @param event calendar event
+   * @returns JSX.element
+   */
+  const getParticipants = (event: CalendarEvent) => {
+    if (event.participants.length > 0) {
+      return event.participants.map((participant) => (
+        <span
+          className={`state-${participant.attendance}`}
+          key={"participant-" + participant.userEntityId}
+        >
+          {participant.name}
+        </span>
+      ));
+    } else {
+      return (
+        <span className="state-UNCONFIRMED">
+          {i18n.text.get("plugin.frontPage.guidanceEvents.participants.empty")}
+        </span>
+      );
+    }
+  };
 
   return (
     <div key={event.id} className={`guidance-event`}>
@@ -112,20 +137,9 @@ const GuidanceEvent: React.FC<GuidanceEventProps> = (props) => {
         </div>
       ) : (
         <div className={`guidance-event__item`}>
-          <span
-            className={`guidance-event__icon icon-bubbles ${
-              studentParticipation ? "state-" + participation[0].attendance : ""
-            }`}
-          />
+          <span className={`guidance-event__icon icon-bubbles`} />
           <div className="guidance-event__body">
-            <div
-              className={`guidance-event__body-header ${
-                status.isStudent &&
-                participation[0].attendance !== "UNCONFIRMED"
-                  ? "state-" + participation[0].attendance
-                  : ""
-              }`}
-            >
+            <div className={`guidance-event__body-header`}>
               {event.title +
                 " " +
                 moment(event.start).format("dddd, MMMM Do hh:mm")}
@@ -135,14 +149,7 @@ const GuidanceEvent: React.FC<GuidanceEventProps> = (props) => {
                 {event.description}
               </div>
               <div className="guidance-event__body-participants">
-                {event.participants.map((participant) => (
-                  <span
-                    className={`state-${participant.attendance}`}
-                    key={"participant-" + participant.userEntityId}
-                  >
-                    {participant.name}
-                  </span>
-                ))}
+                {getParticipants(event)}
               </div>
             </div>
             <div className="guidance-event__body-footer">
