@@ -1,5 +1,10 @@
 package fi.otavanopisto.muikku.plugins.notes;
 
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -20,7 +25,26 @@ public class NotesController {
   private NoteDAO noteDAO;
   
   public List<Note> listByOwner(Long owner, Boolean listArchived) {
-    return noteDAO.listByOwnerAndArchived(owner, listArchived); 
+    List<Note> noteList = noteDAO.listByOwnerAndArchived(owner, listArchived);
+    
+    // Notes whose dueDate is gone should be archived automatically
+    List<Note> filteredNoteList = new ArrayList<>();
+    for (Note note : noteList) {
+      
+      // Check if dueDate is already gone but note isn't archived yet
+      if (note.getDueDate() != null && note.getArchived().equals(Boolean.FALSE)) {
+        OffsetDateTime dueDate = toOffsetDateTime(note.getDueDate());
+        // Archive note if dueDate is earlier than yesterday
+        if (dueDate.isBefore(OffsetDateTime.now().minusDays(1))) {
+          archiveNote(note);
+        } else {
+          filteredNoteList.add(note);
+        }
+      } else {
+        filteredNoteList.add(note);
+      }
+    }
+    return filteredNoteList; 
   }
   
   public Note createNote(String title, String description, NoteType type, NotePriority priority, Boolean pinned, Long owner, Date dueDate) {
@@ -43,5 +67,12 @@ public class NotesController {
   
   public Note findNoteById(Long id) {
     return noteDAO.findById(id);
+  }
+  
+  private OffsetDateTime toOffsetDateTime(Date date) {
+    Instant instant = date.toInstant();
+    ZoneId systemId = ZoneId.systemDefault();
+    ZoneOffset offset = systemId.getRules().getOffset(instant);
+    return date.toInstant().atOffset(offset);
   }
 }
