@@ -55,16 +55,13 @@ export interface createCalendarEventTriggerType {
 /**
  * updateCalendarAttendanceStatusTrigger
  */
-export interface updateCalendarAttendanceStatusTrigger {(
-  id: number,
-  attendanceState: "YES" | "NO" | "MAYBE",
-  ): AnyActionType;
-
-  /**
-   * deleteCalendarEventTriggerType
-   */
+export interface updateCalendarAttendanceStatusTrigger {
+  (id: number, attendanceState: "YES" | "NO" | "MAYBE"): AnyActionType;
 }
-export interface deleteCalendarEventTriggerType {
+/**
+ * deleteCalendarEventTriggerType
+ */
+export interface deleteCalendarEventTrigger {
   (id: number): AnyActionType;
 }
 
@@ -79,10 +76,12 @@ export interface UPDATE_CALENDAR_GUIDANCE_EVENT
 export interface ADD_CALENDAR_GUIDANCE_EVENT
   extends SpecificActionType<"ADD_CALENDAR_GUIDANCE_EVENT", CalendarEvent> {}
 export interface DELETE_CALENDAR_GUIDANCE_EVENT
-  extends SpecificActionType<"DELETE_CALENDAR_GUIDANCE_EVENT", CalendarEvent> {}
+  extends SpecificActionType<
+    "DELETE_CALENDAR_GUIDANCE_EVENT",
+    CalendarEvent | number
+  > {}
 export interface UPDATE_CALENDAR_EVENTS_STATUS
   extends SpecificActionType<"UPDATE_CALENDAR_EVENTS_STATUS", EventsState> {}
-
 
 /**
  * LoadCalendarEvents thunk function
@@ -92,7 +91,6 @@ export interface UPDATE_CALENDAR_EVENTS_STATUS
  * @param end
  * @param type
  */
-
 const loadCalendarEvents: LoadCalendarEventsTriggerType =
   function loadCalendarEvents(
     userEntityId: number,
@@ -158,23 +156,23 @@ const createCalendarEvent: createCalendarEventTriggerType =
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
     ) => {
-      dispatch({
-        type: "ADD_CALENDAR_GUIDANCE_EVENT",
-        payload: <CalendarEvent>await promisify(
-          mApi().calendar.event.create({
-            start,
-            end,
-            allDay,
-            title,
-            description,
-            visibility,
-            type,
-            participants,
-          }),
-          "callback"
-        )(),
-      });
       try {
+        dispatch({
+          type: "ADD_CALENDAR_GUIDANCE_EVENT",
+          payload: <CalendarEvent>await promisify(
+            mApi().calendar.event.create({
+              start,
+              end,
+              allDay,
+              title,
+              description,
+              visibility,
+              type,
+              participants,
+            }),
+            "callback"
+          )(),
+        });
       } catch (err) {
         if (!(err instanceof MApiError)) {
           throw err;
@@ -186,10 +184,10 @@ const createCalendarEvent: createCalendarEventTriggerType =
     };
   };
 
-  /**
-   * updateCalendarEvent thunk function
-   * @param event
-   */
+/**
+ * updateCalendarEvent thunk function
+ * @param event
+ */
 const updateCalendarEvent: createCalendarEventTriggerType =
   function updateCalendarEvent(event) {
     const {
@@ -207,23 +205,23 @@ const updateCalendarEvent: createCalendarEventTriggerType =
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
     ) => {
-      dispatch({
-        type: "UPDATE_CALENDAR_GUIDANCE_EVENT",
-        payload: <CalendarEvent>await promisify(
-          mApi().calendar.event.update({
-            start,
-            end,
-            allDay,
-            title,
-            description,
-            visibility,
-            type,
-            participants,
-          }),
-          "callback"
-        )(),
-      });
       try {
+        dispatch({
+          type: "UPDATE_CALENDAR_GUIDANCE_EVENT",
+          payload: <CalendarEvent>await promisify(
+            mApi().calendar.event.update({
+              start,
+              end,
+              allDay,
+              title,
+              description,
+              visibility,
+              type,
+              participants,
+            }),
+            "callback"
+          )(),
+        });
       } catch (err) {
         if (!(err instanceof MApiError)) {
           throw err;
@@ -240,52 +238,55 @@ const updateCalendarEvent: createCalendarEventTriggerType =
  * @param id
  * @param attendanceState
  */
-  const changeCalendarAttendanceStatus: updateCalendarAttendanceStatusTrigger =
-    function changeCalendarAttendanceStatus(id:number, attendanceState: string) {
-      return async (
-        dispatch: (arg: AnyActionType) => any,
-        getState: () => StateType
-      ) => {
+const changeCalendarAttendanceStatus: updateCalendarAttendanceStatusTrigger =
+  function changeCalendarAttendanceStatus(id: number, attendanceState: string) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      try {
         dispatch({
           type: "UPDATE_CALENDAR_GUIDANCE_EVENT",
-          payload: <CalendarEvent>await promisify(
-            mApi().calendar.event.attendance.update(id, attendanceState),
-            "callback"
-          )(),
+          payload: <CalendarEvent>(
+            await promisify(
+              mApi().calendar.event.attendance.update(id, attendanceState),
+              "callback"
+            )()
+          ),
         });
-        try {
-        } catch (err) {
-          if (!(err instanceof MApiError)) {
-            throw err;
-          }
-          dispatch(
-            actions.displayNotification(getState().i18n.text.get("todo"), "error")
-          );
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
         }
-      };
+        dispatch(
+          actions.displayNotification(getState().i18n.text.get("todo"), "error")
+        );
+      }
+    };
   };
 
 /**
  * deleteCalendarEvent thunk function
  * @param id
  */
-const deleteCalendarEvent: deleteCalendarEventTriggerType =
+const deleteCalendarEvent: deleteCalendarEventTrigger =
   function deleteCalendarEvent(id) {
     return async (
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
     ) => {
-      dispatch({
-        type: "DELETE_CALENDAR_GUIDANCE_EVENT",
-        payload: <CalendarEvent>(
-          await promisify(mApi().calendar.event.del(id), "callback")()
-        ),
-      });
       try {
+        await mApi().calendar.event.del(id);
+
+        dispatch({
+          type: "DELETE_CALENDAR_GUIDANCE_EVENT",
+          payload: id,
+        });
       } catch (err) {
         if (!(err instanceof MApiError)) {
           throw err;
         }
+        console.log(err);
         dispatch(
           actions.displayNotification(getState().i18n.text.get("todo"), "error")
         );

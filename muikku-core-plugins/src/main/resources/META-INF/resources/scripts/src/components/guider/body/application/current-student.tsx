@@ -380,7 +380,6 @@ class CurrentStudent extends React.Component<
       );
     };
 
-
     const files = this.props.guider.currentStudent.basic && (
       <div className="application-sub-panel__body">
         <FileUploader
@@ -428,7 +427,7 @@ class CurrentStudent extends React.Component<
     const externalEvents: ExternalEventType[] =
       this.props.guider.currentStudent.workspaces &&
       this.props.guider.currentStudent.workspaces.map((workspace) => ({
-        id: workspace.id.toString(),
+        id: workspace.id,
         title: workspace.name,
         duration: "36:00:00",
       }));

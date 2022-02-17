@@ -14,7 +14,7 @@ import "../../sass/elements/resource-timeline.scss";
 
 export type ExternalEventType = {
   title: string;
-  id: string;
+  id: number;
   color?: string;
   duration: string;
 };
@@ -66,7 +66,6 @@ export const ResourceTimeline: React.FC<ResourceTimelineProps> = (props) => {
       classNames: ["env-dialog__guidance-event"],
       overlap: false,
       end: arg.endStr,
-      id: arg.resource._resource.title + arg.startStr,
       resourceId: arg.resource._resource.id,
     });
     setEvents(newEvents);
@@ -144,7 +143,7 @@ export const ResourceTimeline: React.FC<ResourceTimelineProps> = (props) => {
           resources={resources}
           locale={"fi"}
           initialView="resourceTimelineMonth"
-          events={events}
+          // events={events}
         />
       </div>
     </div>

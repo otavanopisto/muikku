@@ -48,7 +48,7 @@ class IndexBody extends React.Component<
               <WorkspacesPanel />
             </div>
             <LastMessagesPanel />
-            <GuidanceEventsPanel/>
+            <GuidanceEventsPanel />
             <AnnouncementsPanel overflow={true} />
           </ScreenContainer>
         ) : (

@@ -38,16 +38,14 @@ const GuidanceEventsPanel: React.FC<GuidanceEventsPanelProps> = (props) => (
     </div>
     {props.calendar.guidanceEvents.length > 0 ? (
       <div className="panel__body">
-        <div className="item-list item-list--panel-latest-messages">
-          {props.calendar.guidanceEvents.map((event) => {
-            <GuidanceEvent
-              i18n={props.i18n}
-              status={props.status}
-              event={event}
-              key={"guidance-event-" + event.id}
-            />;
-          })}
-        </div>
+        {props.calendar.guidanceEvents.map((event) => (
+          <GuidanceEvent
+            i18n={props.i18n}
+            status={props.status}
+            event={event}
+            key={"guidance-event-" + event.id}
+          />
+        ))}
       </div>
     ) : (
       <div className="panel__body panel__body--empty">

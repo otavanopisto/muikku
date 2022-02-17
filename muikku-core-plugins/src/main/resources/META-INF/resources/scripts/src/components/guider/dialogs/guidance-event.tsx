@@ -43,13 +43,14 @@ interface GuidanceEventProps {
 // TODO turn in to a function component
 /**
  * Guidance event component
+ * @param props GuidanceEventProps
  */
 const GuidanceEvent: React.FC<GuidanceEventProps> = (props) => {
   const {
     i18n,
     guider,
     calendar,
-    status,
+    // status,
     loadCalendarEvents,
     createCalendarEvent,
     children,
@@ -60,7 +61,6 @@ const GuidanceEvent: React.FC<GuidanceEventProps> = (props) => {
   //TODO: this could be a reusable effect that returns a start and end date
   /**
    * Handler for events loading
-   * @param forceLoad if true, load will be forced
    */
   const handleCalendarEventsLoad = () => {
     const calendarApi = calendarRef.current // If the calendar is not available, this will be null
@@ -100,7 +100,7 @@ const GuidanceEvent: React.FC<GuidanceEventProps> = (props) => {
    * @param args Arguments of selected date from the fullCalendar
    */
   const handleDateSelect = (args: DateSelectArg) => {
-    let newEvent = {
+    const newEvent = {
       id: "new-event",
       title: "Ohjauskeskustelu",
       description:
@@ -170,14 +170,12 @@ const GuidanceEvent: React.FC<GuidanceEventProps> = (props) => {
   };
 
   /** Turns the state events to background events*/
-  const events = calendar.guidanceEvents.map((event) => {
-    return {
-      title: event.title,
-      start: event.start,
-      end: event.end,
-      display: "background",
-    };
-  });
+  const events = calendar.guidanceEvents.map((event) => ({
+    title: event.title,
+    start: event.start,
+    end: event.end,
+    display: "background",
+  }));
 
   /**
    * Dialog content

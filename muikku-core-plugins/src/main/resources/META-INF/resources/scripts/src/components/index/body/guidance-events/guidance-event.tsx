@@ -5,10 +5,12 @@ import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
 import { CalendarEvent } from "~/reducers/calendar";
 import "~/sass/elements/panel.scss";
-import "~/sass/elements/item-list.scss";
+import "~/sass/elements/guidance-event.scss";
 import { bindActionCreators } from "redux";
 import moment from "~/lib/moment";
 import {
+  deleteCalendarEvent,
+  deleteCalendarEventTrigger,
   changeCalendarAttendanceStatus,
   updateCalendarAttendanceStatusTrigger,
 } from "~/actions/main-function/calendar";
@@ -22,6 +24,7 @@ interface GuidanceEventProps {
   status: StatusType;
   event: CalendarEvent;
   changeCalendarAttendanceStatus: updateCalendarAttendanceStatusTrigger;
+  deleteCalendarEvent: deleteCalendarEventTrigger;
 }
 
 /**
@@ -30,7 +33,13 @@ interface GuidanceEventProps {
  * @returns JSX.element
  */
 const GuidanceEvent: React.FC<GuidanceEventProps> = (props) => {
-  const { i18n, status, event, changeCalendarAttendanceStatus } = props;
+  const {
+    i18n,
+    status,
+    event,
+    changeCalendarAttendanceStatus,
+    deleteCalendarEvent,
+  } = props;
   /**
    * handleEventParticipation changes the attencance status
    * @param eventId id of the event_id
@@ -42,63 +51,75 @@ const GuidanceEvent: React.FC<GuidanceEventProps> = (props) => {
   ) => {
     changeCalendarAttendanceStatus(eventId, status);
   };
+
+  // TODO: implement some kind of "are you sure"-confirmation dialog
+  /**
+   * handleEventCancel cancels (deletes) the event
+   * @param eventId
+   */
+  const handleEventCancel = (eventId: number): void => {
+    deleteCalendarEvent(eventId);
+  };
   const participation = event.participants.filter(
     (participant) => participant.userEntityId === status.userId
   );
-  const studentParticipation =
-    status.isStudent && participation[0].attendance !== "UNCONFIRMED";
+  const studentParticipation = participation[0].attendance === "UNCONFIRMED";
 
   return (
-    <div
-      key={event.id}
-      className={`item-list__item item-list__item--guidance-events`}
-    >
-      {studentParticipation ? (
-        <>
+    <div key={event.id} className={`guidance-event`}>
+      {status.isStudent ? (
+        <div className={`guidance-event__item`}>
           <span
-            className={`item-list__icon item-list__icon--guidance-events icon-bubbles ${
-              studentParticipation ? "state-" + participation[0].attendance : ""
+            className={`guidance-event__icon icon-bubbles ${
+              !studentParticipation
+                ? "state-" + participation[0].attendance
+                : ""
             }`}
           />
-
-          <div className="item-list__text-body item-list__text-body--multiline">
+          <div className="guidance-event__body">
             <div
-              className={`item-list__item-header ${
+              className={`guidance-event__body-header ${
                 participation[0].attendance !== "UNCONFIRMED"
                   ? "state-" + participation[0].attendance
                   : ""
               }`}
             >
-              {event.title +
-                " " +
-                moment(event.start).format("dddd, MMMM Do hh:mm")}
+              {event.title + " " + moment(event.start).format("MMMM Do hh:mm")}
             </div>
-            <div className="item-list__item-content">{event.description}</div>
-            <div className="item-list__item-footer">
-              <Link onClick={handleEventAttendance.bind(this, event.id, "YES")}>
-                {i18n.text.get("plugin.frontPage.guidanceEvents.state.YES")}
-              </Link>
-              <Link onClick={handleEventAttendance.bind(this, event.id, "NO")}>
-                {i18n.text.get("plugin.frontPage.guidanceEvents.state.NO")}
-              </Link>
-              <Link
-                onClick={handleEventAttendance.bind(this, event.id, "MAYBE")}
-              >
-                {i18n.text.get("plugin.frontPage.guidanceEvents.state.MAYBE")}
-              </Link>
+            <div className="guidance-event__body-content">
+              {event.description}
             </div>
+            {studentParticipation ? (
+              <div className="guidance-event__body-footer">
+                <Link
+                  onClick={handleEventAttendance.bind(this, event.id, "YES")}
+                >
+                  {i18n.text.get("plugin.frontPage.guidanceEvents.state.YES")}
+                </Link>
+                <Link
+                  onClick={handleEventAttendance.bind(this, event.id, "NO")}
+                >
+                  {i18n.text.get("plugin.frontPage.guidanceEvents.state.NO")}
+                </Link>
+                <Link
+                  onClick={handleEventAttendance.bind(this, event.id, "MAYBE")}
+                >
+                  {i18n.text.get("plugin.frontPage.guidanceEvents.state.MAYBE")}
+                </Link>
+              </div>
+            ) : null}
           </div>
-        </>
+        </div>
       ) : (
-        <>
+        <div className={`guidance-event__item`}>
           <span
-            className={`item-list__icon item-list__icon--guidance-events icon-bubbles ${
+            className={`guidance-event__icon icon-bubbles ${
               studentParticipation ? "state-" + participation[0].attendance : ""
             }`}
           />
-          <div className="item-list__text-body item-list__text-body--multiline">
+          <div className="guidance-event__body">
             <div
-              className={`item-list__item-header ${
+              className={`guidance-event__body-header ${
                 status.isStudent &&
                 participation[0].attendance !== "UNCONFIRMED"
                   ? "state-" + participation[0].attendance
@@ -109,20 +130,29 @@ const GuidanceEvent: React.FC<GuidanceEventProps> = (props) => {
                 " " +
                 moment(event.start).format("dddd, MMMM Do hh:mm")}
             </div>
-            <div className="item-list__item-content">
-              <div>{event.description}</div>
-              <div>
+            <div className="guidance-event__body-content">
+              <div className="guidance-event__body-description">
+                {event.description}
+              </div>
+              <div className="guidance-event__body-participants">
                 {event.participants.map((participant) => (
-                  <span key={``}>{participant.name}</span>
+                  <span
+                    className={`state-${participant.attendance}`}
+                    key={"participant-" + participant.userEntityId}
+                  >
+                    {participant.name}
+                  </span>
                 ))}
               </div>
             </div>
-            <div className="item-list__item-footer">
-              <Link>Linkki keskusteluun</Link>
+            <div className="guidance-event__body-footer">
+              <Link onClick={handleEventCancel.bind(this, event.id)}>
+                Peruuta tapahtuma
+              </Link>
             </div>
             <div></div>
           </div>
-        </>
+        </div>
       )}
     </div>
   );
@@ -130,13 +160,14 @@ const GuidanceEvent: React.FC<GuidanceEventProps> = (props) => {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch redux dispatch
  * @returns object
  */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     {
       changeCalendarAttendanceStatus,
+      deleteCalendarEvent,
     },
     dispatch
   );
