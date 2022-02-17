@@ -64,6 +64,7 @@ export interface UseJournals {
   isLoadingList: boolean;
   isUpdatingList: boolean;
   journalsList: JournalNoteRead[];
+  journalsArchivedList: JournalNoteRead[];
 }
 
 /**
@@ -77,7 +78,7 @@ export type OptionType = {
 /**
  * JournalPriorityFiltters
  */
-export interface JournalFiltters {
+export interface JournalFilters {
   high: boolean;
   normal: boolean;
   low: boolean;
@@ -89,3 +90,59 @@ export interface JournalFiltters {
  * JournalCenterUsePlaceType
  */
 export type JournalCenterUsePlaceType = "records" | "guider";
+
+/**
+ * JournalNoteRead2
+ */
+/* export interface JournalNoteRead2 {
+  id: number;
+  title: string;
+  description: string;
+  type: JournalCreationType;
+  priority: JournalPriority;
+  pinned: boolean;
+  owner: number;
+  creator: number;
+  creatorName: string;
+  created: string;
+  dueDate: Date | null;
+  state: "ONGOING" | "CHECKING" | "DONE";
+  tasks: NoteTask[];
+} */
+
+/* type LinkedTaskType = MaterialTask | EvaluationTask; */
+
+/**
+ * MaterialTask
+ */
+/* interface MaterialTask {
+  discriminate: "MaterialTask";
+} */
+
+/**
+ * EvaluationTask
+ */
+/* interface EvaluationTask {
+  discriminate: "EvaluationTask";
+} */
+
+/**
+ * NoteTask
+ */
+/* interface NoteTask {
+  id: number;
+  name: string;
+  description?: string;
+  isDone: boolean;
+  linkedTask?: LinkedTaskType;
+} */
+
+/* const tasks: NoteTask[] = [
+  {
+    id: 1,
+    name: "Matikka tehtävä 1",
+    description:
+      "Matikka on haastava aine. Tee tämä tehtävä oppiaksesi matikan salat",
+    isDone: false,
+  },
+]; */

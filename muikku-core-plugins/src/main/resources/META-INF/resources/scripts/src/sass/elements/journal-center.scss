@@ -4,6 +4,21 @@
 @import "../base/breakpoints";
 @import "cke-styles";
 
+/* width */
+.journal-content-container ::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+.journal-content-container ::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 3px grey;
+}
+
+/* Handle */
+.journal-content-container ::-webkit-scrollbar-thumb {
+  background: #cccccc;
+}
+
 .journal-center-modal__create-drawer {
   background: $color-default;
   height: 100%;
@@ -23,14 +38,10 @@
     width: calc(100%);
   }
 
-  // scss-lint:disable SelectorFormat
   &.state-OPEN {
-    /* box-shadow: 0 25px 25px; */
     opacity: 100%;
     transform: translateX(0);
   }
-
-  // scss-lint:enable SelectorFormat
 }
 
 .journal-center-modal__create-drawer--from-left {
@@ -150,14 +161,13 @@
   flex-direction: column;
   height: calc(100% - 50px);
   overflow: scroll;
+  overflow-x: hidden;
   padding-right: 10px;
   position: relative;
 }
 
 .current-editor-container {
   align-items: center;
-  border-left: solid black 1px;
-  border-left-style: dashed;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -185,18 +195,31 @@
   width: 100%;
 }
 
-.journal-list-item {
+.journal-item-item {
+  width: 100%;
+}
+
+.journal-list-item-content {
   border: 1px solid teal;
-  border-left: 5px solid teal;
+  border-bottom-width: 1px;
+  border-left-color: teal;
+  border-left-width: 5px;
   box-shadow: 3px 3px 5px grey;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   margin-bottom: 10px;
-  padding: 25px 0px;
+  padding: 25px 0;
   position: relative;
+  transition: border-bottom-width 250ms ease-out, box-shadow 200ms ease-out;
   width: 100%;
+
+  &.state-ACTIVE {
+    border-bottom-width: 2px;
+    box-shadow: 5px 5px 7px grey;
+    transition: border-bottom-width 250ms ease-out, box-shadow 200ms ease-in;
+  }
 
   &.state-DELETE {
     transform: translateX(-110%);
@@ -204,17 +227,19 @@
   }
 }
 
-.journal-list-item--high {
-  border: 1px solid red;
-  border-left: 5px solid red;
+/* .journal-list-item-content:hover {
+  box-shadow: 5px 5px 7px grey;
+  transition: box-shadow 200ms ease-in;
+} */
+
+.journal-list-item-content--high {
+  border-color: red;
 }
 
-.journal-list-item--normal {
-  border: 1px solid orange;
-  border-left: 5px solid orange;
+.journal-list-item-content--normal {
+  border-color: orange;
 }
 
-.journal-list-item--low {
-  border: 1px solid green;
-  border-left: 5px solid green;
+.journal-list-item-content--low {
+  border-color: green;
 }

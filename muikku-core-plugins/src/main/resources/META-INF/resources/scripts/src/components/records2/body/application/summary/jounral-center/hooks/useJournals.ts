@@ -18,6 +18,7 @@ const initialState: UseJournals = {
   isLoadingList: true,
   isUpdatingList: false,
   journalsList: [],
+  journalsArchivedList: [],
 };
 
 /**
@@ -49,17 +50,26 @@ export const useJournals = (
         /**
          * Loaded journal list
          */
-        const [loadedJournalList] = await Promise.all([
-          (async () => {
-            const journals = (await promisify(
-              mApi().notes.owner.read(studentId),
-              "callback"
-            )()) as JournalNoteRead[];
+        const [loadedJournalList, loadedArchivedJournalList] =
+          await Promise.all([
+            (async () => {
+              const journals = (await promisify(
+                mApi().notes.owner.read(studentId, { listArchived: false }),
+                "callback"
+              )()) as JournalNoteRead[];
 
-            return journals;
-          })(),
-          sleepPromise,
-        ]);
+              return journals;
+            })(),
+            (async () => {
+              const journalsArchived = (await promisify(
+                mApi().notes.owner.read(studentId, { listArchived: true }),
+                "callback"
+              )()) as JournalNoteRead[];
+
+              return journalsArchived;
+            })(),
+            sleepPromise,
+          ]);
 
         if (componentMounted.current) {
           /**
@@ -77,6 +87,7 @@ export const useJournals = (
             journalsList: loadedJournalList.sort(
               (a, b) => order.indexOf(a.priority) - order.indexOf(b.priority)
             ),
+            journalsArchivedList: loadedArchivedJournalList,
           }));
         }
       } catch (err) {

@@ -178,6 +178,7 @@ const JournalListItemCurrent: React.FC<JournalListItemCurrentProps> = (
             display: "flex",
             justifyContent: "space-between",
             margin: "5px 0",
+            alignItems: "center",
           }}
         >
           <h1>{title}</h1>

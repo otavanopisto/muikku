@@ -1,7 +1,7 @@
 import * as React from "react";
 import {
   JournalCenterUsePlaceType,
-  JournalFiltters,
+  JournalFilters,
 } from "~/@types/journal-center";
 import { IconButton } from "~/components/general/button";
 import Dropdown from "~/components/general/dropdown";
@@ -12,8 +12,8 @@ import JournalPriorityChip from "./journal-list-filtters-chip";
  */
 interface JournalListFilttersProps {
   usePlace: JournalCenterUsePlaceType;
-  filtters: JournalFiltters;
-  onFilttersChange: (updatedFilters: JournalFiltters) => void;
+  filters: JournalFilters;
+  onFilttersChange: (updatedFilters: JournalFilters) => void;
 }
 
 /**
@@ -22,16 +22,16 @@ interface JournalListFilttersProps {
  * @returns JSX.Element
  */
 const JournalListFiltters: React.FC<JournalListFilttersProps> = (props) => {
-  const { filtters, onFilttersChange, usePlace } = props;
+  const { filters, onFilttersChange, usePlace } = props;
 
   /**
    * handleFiltterChipClick
    * @param name name
    */
-  const handleFiltterChipClick = (name: keyof JournalFiltters) => {
-    const updatedFilters: JournalFiltters = {
-      ...filtters,
-      [name]: !filtters[name],
+  const handleFiltterChipClick = (name: keyof JournalFilters) => {
+    const updatedFilters: JournalFilters = {
+      ...filters,
+      [name]: !filters[name],
     };
 
     if (onFilttersChange) {
@@ -44,11 +44,11 @@ const JournalListFiltters: React.FC<JournalListFilttersProps> = (props) => {
    * @param name name
    */
   const handleCheckboxesChange =
-    (name: keyof JournalFiltters) =>
+    (name: keyof JournalFilters) =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      const updatedFilters: JournalFiltters = {
-        ...filtters,
-        [name]: !filtters[name],
+      const updatedFilters: JournalFilters = {
+        ...filters,
+        [name]: !filters[name],
       };
 
       if (onFilttersChange) {
@@ -68,19 +68,19 @@ const JournalListFiltters: React.FC<JournalListFilttersProps> = (props) => {
       <div style={{ display: "flex", flexGrow: 1 }}>
         <JournalPriorityChip
           label="Tärkeä"
-          colour={filtters.high ? "red" : "#ff00009e"}
+          colour={filters.high ? "red" : "#ff00009e"}
           name="high"
           onChipClick={handleFiltterChipClick}
         />
         <JournalPriorityChip
           label="Melko tärkeä"
-          colour={filtters.normal ? "orange" : "#ffa5009c"}
+          colour={filters.normal ? "orange" : "#ffa5009c"}
           name="normal"
           onChipClick={handleFiltterChipClick}
         />
         <JournalPriorityChip
           label="Ei tärkeä"
-          colour={filtters.low ? "green" : "#0080008a"}
+          colour={filters.low ? "green" : "#0080008a"}
           name="low"
           onChipClick={handleFiltterChipClick}
         />
@@ -102,7 +102,11 @@ const JournalListFiltters: React.FC<JournalListFilttersProps> = (props) => {
               }}
             >
               <label style={{ marginRight: "5px" }}>Omat</label>
-              <input type="checkbox" onChange={handleCheckboxesChange("own")} />
+              <input
+                type="checkbox"
+                onChange={handleCheckboxesChange("own")}
+                checked={filters.own}
+              />
             </div>
 
             {usePlace === "records" && (
@@ -117,6 +121,7 @@ const JournalListFiltters: React.FC<JournalListFilttersProps> = (props) => {
                 <input
                   type="checkbox"
                   onChange={handleCheckboxesChange("guider")}
+                  checked={filters.guider}
                 />
               </div>
             )}

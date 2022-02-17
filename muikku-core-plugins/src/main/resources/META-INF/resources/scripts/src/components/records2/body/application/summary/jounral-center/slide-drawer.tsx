@@ -5,7 +5,7 @@ import "~/sass/elements/journal-center.scss";
  * SlideDrawerProps
  */
 export interface SlideDrawerProps {
-  title: string;
+  title?: string;
   showWarning?: boolean;
   modifiers?: string[];
   show?: boolean;

@@ -1,5 +1,5 @@
 import {
-  JournalFiltters,
+  JournalFilters,
   JournalNoteRead,
   JournalPriority,
 } from "~/@types/journal-center";
@@ -61,7 +61,7 @@ export const sortByPinned = (journalList: JournalNoteRead[]) => {
  */
 export const sortByJournalPriority = (
   journalList: JournalNoteRead[],
-  filters: JournalFiltters
+  filters: JournalFilters
 ) => {
   /**
    * Default order is always follow
@@ -136,7 +136,7 @@ export const sortByMadeByMe = (
  */
 export const filterByCreator = (
   journalList: JournalNoteRead[],
-  filters: JournalFiltters,
+  filters: JournalFilters,
   creator: number
 ): JournalNoteRead[] => {
   const updatedList = journalList.filter((j) => {
@@ -160,7 +160,7 @@ export const filterByCreator = (
  */
 export const sortJournalsBy = (
   journalList: JournalNoteRead[],
-  filters: JournalFiltters,
+  filters: JournalFilters,
   userId: number
 ): JournalNoteRead[] => {
   let { pinnedList, nonPinnedList } = sortByPinned(journalList);

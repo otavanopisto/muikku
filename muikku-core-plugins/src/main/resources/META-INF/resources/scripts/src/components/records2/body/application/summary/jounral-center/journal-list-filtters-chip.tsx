@@ -1,5 +1,5 @@
 import * as React from "react";
-import { JournalFiltters } from "~/@types/journal-center";
+import { JournalFilters } from "~/@types/journal-center";
 
 /**
  * JournalListProps
@@ -7,8 +7,8 @@ import { JournalFiltters } from "~/@types/journal-center";
 interface JournalListFiltterChipProps {
   label: string;
   colour?: string;
-  name?: keyof JournalFiltters;
-  onChipClick?: (name: keyof JournalFiltters) => void;
+  name?: keyof JournalFilters;
+  onChipClick?: (name: keyof JournalFilters) => void;
 }
 
 const defaultProps = {
@@ -30,7 +30,7 @@ const JournalPriorityChip: React.FC<JournalListFiltterChipProps> = (props) => {
    * @param name name
    */
   const handleChipClick =
-    (name: keyof JournalFiltters) =>
+    (name: keyof JournalFilters) =>
     (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
       if (onChipClick) {
         onChipClick(name);

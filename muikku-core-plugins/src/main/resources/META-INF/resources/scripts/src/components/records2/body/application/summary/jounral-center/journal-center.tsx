@@ -1,7 +1,7 @@
 import * as React from "react";
 import {
   JournalCenterUsePlaceType,
-  JournalFiltters,
+  JournalFilters,
   JournalNoteRead,
 } from "~/@types/journal-center";
 import {
@@ -88,7 +88,7 @@ const JournalCenter: React.FC<JournalCenterProps> = (props) => {
     { journal: undefined, inEditMode: false }
   );
 
-  const [filters, setFilters] = React.useState<JournalFiltters>({
+  const [filters, setFilters] = React.useState<JournalFilters>({
     high: false,
     normal: false,
     low: false,
@@ -105,7 +105,7 @@ const JournalCenter: React.FC<JournalCenterProps> = (props) => {
    * handleFilttersChange
    * @param updatedFilters name
    */
-  const handleFiltersChange = (updatedFilters: JournalFiltters) => {
+  const handleFiltersChange = (updatedFilters: JournalFilters) => {
     setFilters(updatedFilters);
   };
 
@@ -132,21 +132,21 @@ const JournalCenter: React.FC<JournalCenterProps> = (props) => {
   };
 
   /**
-   * handleCancelNewClick
+   * Handles cancle new click
    */
   const handleCancelNewClick = () => {
     setCreateNew(false);
   };
 
   /**
-   * handleCloseCurrentNote
+   * Handles close current note click
    */
   const handleCloseCurrentNote = () => {
     setSelectedJournal({ journal: undefined, inEditMode: false });
   };
 
   /**
-   * handleOnOpenInEditModeClick
+   * Handles note in edit mode click
    * @param id id
    */
   const handleOpenInEditModeClick = (id: number) => {
@@ -159,11 +159,26 @@ const JournalCenter: React.FC<JournalCenterProps> = (props) => {
   };
 
   /**
-   * handleClickJournalItemClick
+   * Handles journal item click
    * @param id id of clicked journal
    */
   const handleJournalItemClick = (id: number) => {
     const journalFromList = journals.journalsList.find((j) => j.id === id);
+
+    setSelectedJournal({
+      journal: journalFromList,
+      inEditMode: false,
+    });
+  };
+
+  /**
+   * Handles journal item click
+   * @param id id of clicked journal
+   */
+  const handleArchivedJournalItemClick = (id: number) => {
+    const journalFromList = journals.journalsArchivedList.find(
+      (j) => j.id === id
+    );
 
     setSelectedJournal({
       journal: journalFromList,
@@ -188,7 +203,7 @@ const JournalCenter: React.FC<JournalCenterProps> = (props) => {
             <JournalFunctionsBar>
               <JournalListFiltters
                 usePlace={usePlace}
-                filtters={filters}
+                filters={filters}
                 onFilttersChange={handleFiltersChange}
               />
             </JournalFunctionsBar>
@@ -197,9 +212,13 @@ const JournalCenter: React.FC<JournalCenterProps> = (props) => {
               {sortJournalsBy(journals.journalsList, filters, userId).map(
                 (j) => (
                   <JournalListItem
-                    journal={j}
-                    ref={React.createRef()}
                     key={j.id}
+                    ref={React.createRef()}
+                    journal={j}
+                    active={
+                      selectedJournal.journal &&
+                      selectedJournal.journal.id === j.id
+                    }
                     loggedUserIsOwner={j.creator === userId}
                     onPinJournalClick={pinJournal}
                     onDeleteClick={deleteJournal}
@@ -228,7 +247,7 @@ const JournalCenter: React.FC<JournalCenterProps> = (props) => {
             {journals.journalsList.map((j) => (
               <SlideDrawer
                 key={j.id}
-                title={j.title}
+                title="Tiedot"
                 modifiers={["from-left"]}
                 show={
                   selectedJournal.journal && selectedJournal.journal.id === j.id
@@ -286,24 +305,30 @@ const JournalCenter: React.FC<JournalCenterProps> = (props) => {
             <JournalFunctionsBar>
               <JournalListFiltters
                 usePlace={usePlace}
-                filtters={filters}
+                filters={filters}
                 onFilttersChange={handleFiltersChange}
               />
             </JournalFunctionsBar>
 
             <JournalListAnimated journals={journals}>
-              {sortJournalsBy(journals.journalsList, filters, userId).map(
-                (j) => (
-                  <JournalListItem
-                    journal={j}
-                    ref={React.createRef()}
-                    key={j.id}
-                    loggedUserIsOwner={j.creator === userId}
-                    onJournalClick={handleJournalItemClick}
-                    onPinJournalClick={pinJournal}
-                  />
-                )
-              )}
+              {sortJournalsBy(
+                journals.journalsArchivedList,
+                filters,
+                userId
+              ).map((j) => (
+                <JournalListItem
+                  key={j.id}
+                  ref={React.createRef()}
+                  journal={j}
+                  active={
+                    selectedJournal.journal &&
+                    selectedJournal.journal.id === j.id
+                  }
+                  loggedUserIsOwner={j.creator === userId}
+                  onJournalClick={handleArchivedJournalItemClick}
+                  onPinJournalClick={pinJournal}
+                />
+              ))}
             </JournalListAnimated>
           </div>
           <div className="current-editor-container">
@@ -311,10 +336,10 @@ const JournalCenter: React.FC<JournalCenterProps> = (props) => {
             <div className="editor-default-content">
               <h2>Ei valittua toiminnallisuutta</h2>
             </div>
-            {journals.journalsList.map((j) => (
+            {journals.journalsArchivedList.map((j) => (
               <SlideDrawer
                 key={j.id}
-                title={j.title}
+                title="Valittu lappu"
                 modifiers={["from-left"]}
                 show={
                   selectedJournal.journal && selectedJournal.journal.id === j.id
