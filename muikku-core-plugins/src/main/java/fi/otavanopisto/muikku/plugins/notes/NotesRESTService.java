@@ -199,12 +199,12 @@ public class NotesRESTService extends PluginRESTService {
     return userRoleArchetype;
   }
   
-  // mApi() call (mApi().notes.note.del(noteId))
-  
-  @DELETE
+  // mApi() call (mApi().notes.note.update(noteId))
+  // In this case archiving means moving note to 'trash'. So it's only update method and user can restore the note.
+  @PUT
   @Path ("/note/{NOTEID}")
   @RESTPermit(handling = Handling.INLINE)
-  public Response archiveNote(@PathParam ("NOTEID") Long noteId) {
+  public Response updateArchived(@PathParam ("NOTEID") Long noteId) {
     Note note = notesController.findNoteById(noteId);
     
     if (note == null) {
@@ -218,7 +218,7 @@ public class NotesRESTService extends PluginRESTService {
       }
     }
 
-      notesController.archiveNote(note);
+      notesController.updateArchived(note);
       
       return Response.noContent().build();
   }

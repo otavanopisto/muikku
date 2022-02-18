@@ -36,7 +36,7 @@ public class NotesController {
         OffsetDateTime dueDate = toOffsetDateTime(note.getDueDate());
         // Archive note if dueDate is earlier than yesterday
         if (dueDate.isBefore(OffsetDateTime.now().minusDays(1))) {
-          archiveNote(note);
+          updateArchived(note);
         } else {
           filteredNoteList.add(note);
         }
@@ -61,8 +61,8 @@ public class NotesController {
     return updatedNote;
   }
   
-  public void archiveNote(Note note) {
-    noteDAO.updateArchived(note, true);
+  public void updateArchived(Note note) {
+    noteDAO.updateArchived(note, !note.getArchived());
   }
   
   public Note findNoteById(Long id) {
