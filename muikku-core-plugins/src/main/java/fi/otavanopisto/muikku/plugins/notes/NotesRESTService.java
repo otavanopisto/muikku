@@ -92,7 +92,7 @@ public class NotesRESTService extends PluginRESTService {
   }
   
   //mApi() call (mApi().notes.note.update(noteId, noteRestModel)
-  // Editable fields are title, description, priority and pinned)
+  // Editable fields are title, description, priority and pinned, dueDate)
   @PUT
   @Path ("/note/{NOTEID}")
   @RESTPermit(handling = Handling.INLINE)
@@ -104,14 +104,26 @@ public class NotesRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
     
-    //permissions 
+    EnvironmentRoleArchetype loggedUserRole = getUserRoleArchetype(sessionController.getLoggedUser());
+    UserEntity creator = userEntityController.findUserEntityById(note.getCreator());
+    EnvironmentRoleArchetype creatorRole = getUserRoleArchetype(creator.defaultSchoolDataIdentifier());
+    Note updatedNote = null;
     
-    if (!sessionController.getLoggedUserEntity().getId().equals(note.getCreator())) {
-        return Response.status(Status.FORBIDDEN).build();
+    if (loggedUserRole == null || creatorRole == null) {
+      return Response.status(Status.BAD_REQUEST).build();
     }
     
-    Note updatedNote = notesController.updateNote(note, restModel.getTitle(), restModel.getDescription(), restModel.getPriority(), restModel.getPinned(), restModel.getDueDate());
-  
+    // Student can edit only 'pinned' field if note is created by someone else
+    if (loggedUserRole.equals(EnvironmentRoleArchetype.STUDENT) && sessionController.getLoggedUserEntity().getId().equals(note.getOwner()) && !creatorRole.equals(EnvironmentRoleArchetype.STUDENT)) {
+      updatedNote = notesController.updateNote(note, note.getTitle(), note.getDescription(), note.getPriority(), restModel.getPinned(), note.getDueDate());
+    } // Otherwise editing happens only if logged user equals with creator
+    else if (sessionController.getLoggedUserEntity().getId().equals(note.getCreator())) {
+      updatedNote = notesController.updateNote(note, restModel.getTitle(), restModel.getDescription(), restModel.getPriority(), restModel.getPinned(), restModel.getDueDate());
+    } 
+    else {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
     return Response.ok(toRestModel(updatedNote)).build();
   }
   
@@ -150,10 +162,8 @@ public class NotesRESTService extends PluginRESTService {
       NoteRestModel noteRest = toRestModel(note);
       
       UserEntity creator = userEntityController.findUserEntityById(note.getCreator());
-      EnvironmentRoleEntity creatorRoleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(creator.defaultSchoolDataIdentifier());
-      EnvironmentRoleArchetype creatorUserRole = creatorRoleEntity != null ? creatorRoleEntity.getArchetype() : null;
-      EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUser());
-      EnvironmentRoleArchetype loggedUserRole = roleEntity != null ? roleEntity.getArchetype() : null;
+      EnvironmentRoleArchetype creatorUserRole = getUserRoleArchetype(creator.defaultSchoolDataIdentifier());
+      EnvironmentRoleArchetype loggedUserRole = getUserRoleArchetype(sessionController.getLoggedUser());
       
       if (loggedUserRole == null || creatorUserRole == null) {
         return Response.status(Status.BAD_REQUEST).build();
@@ -183,12 +193,18 @@ public class NotesRESTService extends PluginRESTService {
     return Response.ok(notesList).build();
   }
   
-  // mApi() call (mApi().notes.note.del(noteId))
+  private EnvironmentRoleArchetype getUserRoleArchetype(SchoolDataIdentifier userSchoolDataIdentifier) {
+    EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(userSchoolDataIdentifier);
+    EnvironmentRoleArchetype userRoleArchetype = roleEntity != null ? roleEntity.getArchetype() : null;
+    return userRoleArchetype;
+  }
   
-  @DELETE
+  // mApi() call (mApi().notes.note.update(noteId))
+  // In this case archiving means moving note to 'trash'. So it's only update method and user can restore the note.
+  @PUT
   @Path ("/note/{NOTEID}")
   @RESTPermit(handling = Handling.INLINE)
-  public Response archiveNote(@PathParam ("NOTEID") Long noteId) {
+  public Response updateArchived(@PathParam ("NOTEID") Long noteId) {
     Note note = notesController.findNoteById(noteId);
     
     if (note == null) {
@@ -202,7 +218,7 @@ public class NotesRESTService extends PluginRESTService {
       }
     }
 
-      notesController.archiveNote(note);
+      notesController.updateArchived(note);
       
       return Response.noContent().build();
   }
