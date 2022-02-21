@@ -46,6 +46,11 @@ interface AssignmentEditorProps {
     assigmentSaveReturn: AssignmentEvaluationSaveReturn
   ) => void;
   onAudioAssessmentChange: () => void;
+  /**
+   * Handles changes whether recording is happening or not
+   */
+  onIsRecordingChange?: (isRecording: boolean) => void;
+  isRecording: boolean;
   showAudioAssessmentWarningOnClose: boolean;
   updateCurrentStudentCompositeRepliesData: UpdateCurrentStudentEvaluationCompositeRepliesData;
   displayNotification: DisplayNotificationTriggerType;
@@ -74,7 +79,7 @@ class ExcerciseEditor extends SessionStateComponent<
 > {
   /**
    * constructor
-   * @param props
+   * @param props props
    */
   constructor(props: AssignmentEditorProps) {
     super(props, `excercise-editor`);
@@ -295,7 +300,7 @@ class ExcerciseEditor extends SessionStateComponent<
 
   /**
    * handleSaveAssignment
-   * @param e
+   * @param e e
    */
   handleSaveAssignment = (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
@@ -373,7 +378,7 @@ class ExcerciseEditor extends SessionStateComponent<
 
   /**
    * handleCKEditorChange
-   * @param e
+   * @param e e
    */
   handleCKEditorChange = (e: string) => {
     this.setStateAndStore(
@@ -386,7 +391,7 @@ class ExcerciseEditor extends SessionStateComponent<
 
   /**
    * handleAssignmentEvaluationChange
-   * @param e
+   * @param e e
    */
   handleAssignmentEvaluationChange = (
     e: React.ChangeEvent<HTMLInputElement>
@@ -401,7 +406,7 @@ class ExcerciseEditor extends SessionStateComponent<
 
   /**
    * handleAudioAssessmentChange
-   * @param audioAssessments
+   * @param audioAssessments audioAssessments
    */
   handleAudioAssessmentChange = (audioAssessments: AudioAssessment[]) => {
     this.setState({
@@ -439,6 +444,7 @@ class ExcerciseEditor extends SessionStateComponent<
               )}
             </label>
             <Recorder
+              onIsRecordingChange={this.props.onIsRecordingChange}
               onChange={this.handleAudioAssessmentChange}
               values={this.state.audioAssessments}
             />
@@ -490,6 +496,16 @@ class ExcerciseEditor extends SessionStateComponent<
             </Button>
           )}
         </div>
+
+        {this.props.isRecording && (
+          <div className="evaluation-modal__evaluate-drawer-row evaluation-modal__evaluate-drawer-row--recording-warning">
+            <div className="recording-warning">
+              {this.props.i18n.text.get(
+                "plugin.evaluation.evaluationModal.assignmentEvaluationForm.isRecordingWarning"
+              )}
+            </div>
+          </div>
+        )}
       </>
     );
   }
@@ -497,7 +513,7 @@ class ExcerciseEditor extends SessionStateComponent<
 
 /**
  * mapStateToProps
- * @param state
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -509,7 +525,7 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(

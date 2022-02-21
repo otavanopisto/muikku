@@ -56,10 +56,11 @@ interface EvaluationAssessmentAssignmentState {
   isLoading: boolean;
   openAssignmentType?: "EVALUATED" | "EXERCISE";
   showCloseEditorWarning: boolean;
+  isRecording: boolean;
 }
+
 /**
  * EvaluationAssessmentAssignment
- * @param props
  */
 class EvaluationAssessmentAssignment extends React.Component<
   EvaluationAssessmentAssignmentProps,
@@ -69,7 +70,7 @@ class EvaluationAssessmentAssignment extends React.Component<
 
   /**
    * constructor
-   * @param props
+   * @param props props
    */
   constructor(props: EvaluationAssessmentAssignmentProps) {
     super(props);
@@ -80,13 +81,14 @@ class EvaluationAssessmentAssignment extends React.Component<
       isLoading: false,
       materialNode: undefined,
       showCloseEditorWarning: false,
+      isRecording: false,
     };
   }
 
   /**
    * componentDidUpdate
-   * @param prevProps
-   * @param prevState
+   * @param prevProps prevProps
+   * @param prevState prevState
    */
   componentDidUpdate(
     prevProps: EvaluationAssessmentAssignmentProps,
@@ -165,7 +167,7 @@ class EvaluationAssessmentAssignment extends React.Component<
 
   /**
    * updateMaterialEvaluationData
-   * @param  assigmentSaveReturn
+   * @param  assigmentSaveReturn assigmentSaveReturn
    */
   updateMaterialEvaluationData = (
     assigmentSaveReturn: AssignmentEvaluationSaveReturn
@@ -320,7 +322,7 @@ class EvaluationAssessmentAssignment extends React.Component<
 
   /**
    * assignmentFunctionClass
-   * @param compositeReply
+   * @param compositeReply compositeReply
    * @returns Assignment function button class
    */
   assignmentFunctionClass = (compositeReply?: MaterialCompositeRepliesType) => {
@@ -499,6 +501,14 @@ class EvaluationAssessmentAssignment extends React.Component<
   };
 
   /**
+   * Handles is recoding on change
+   * @param isRecording isRecording
+   */
+  handleIsRecordingChange = (isRecording: boolean) => {
+    this.setState({ isRecording });
+  };
+
+  /**
    * render
    */
   render() {
@@ -604,6 +614,11 @@ class EvaluationAssessmentAssignment extends React.Component<
         <SlideDrawer
           showWarning={this.state.showCloseEditorWarning}
           title={this.props.assigment.title}
+          closeIconModifiers={
+            this.props.assigment.assignmentType === "EVALUATED"
+              ? ["evaluation", "assignment-drawer-close"]
+              : ["evaluation", "excercise-drawer-close"]
+          }
           modifiers={
             this.props.assigment.assignmentType === "EVALUATED"
               ? ["assignment"]
@@ -614,6 +629,7 @@ class EvaluationAssessmentAssignment extends React.Component<
             this.props.evaluations.openedAssignmentEvaluationId ===
               this.props.assigment.id
           }
+          disableClose={this.state.isRecording}
           onClose={this.handleCloseSlideDrawer}
         >
           {this.state.isLoading ? (
@@ -631,6 +647,8 @@ class EvaluationAssessmentAssignment extends React.Component<
                 materialEvaluation={this.state.materialNode.evaluation}
                 materialAssignment={this.state.materialNode.assignment}
                 compositeReplies={compositeReply}
+                isRecording={this.state.isRecording}
+                onIsRecordingChange={this.handleIsRecordingChange}
                 updateMaterialEvaluationData={this.updateMaterialEvaluationData}
                 onClose={this.handleCloseSlideDrawer}
               />
@@ -645,6 +663,8 @@ class EvaluationAssessmentAssignment extends React.Component<
                 )}
                 materialEvaluation={this.state.materialNode.evaluation}
                 materialAssignment={this.state.materialNode.assignment}
+                isRecording={this.state.isRecording}
+                onIsRecordingChange={this.handleIsRecordingChange}
                 compositeReplies={compositeReply}
                 updateMaterialEvaluationData={this.updateMaterialEvaluationData}
                 onClose={this.handleCloseSlideDrawer}
@@ -710,7 +730,7 @@ class EvaluationAssessmentAssignment extends React.Component<
 
 /**
  * mapStateToProps
- * @param state
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -721,7 +741,7 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ updateOpenedAssignmentEvaluation }, dispatch);

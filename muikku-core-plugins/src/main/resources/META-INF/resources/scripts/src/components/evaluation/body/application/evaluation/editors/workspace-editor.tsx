@@ -74,7 +74,7 @@ class WorkspaceEditor extends SessionStateComponent<
 > {
   /**
    * constructor
-   * @param props
+   * @param props props
    */
   constructor(props: WorkspaceEditorProps) {
     /**
@@ -175,7 +175,7 @@ class WorkspaceEditor extends SessionStateComponent<
 
   /**
    * getUsedGradingScaleByGradeId
-   * @param gradeId
+   * @param gradeId gradeId
    * @returns used grade system by gradeId
    */
   getUsedGradingScaleByGradeId = (gradeId: string) => {
@@ -335,7 +335,7 @@ class WorkspaceEditor extends SessionStateComponent<
 
   /**
    * handleCKEditorChange
-   * @param e
+   * @param e e
    */
   handleCKEditorChange = (e: string) => {
     this.setStateAndStore({ literalEvaluation: e }, this.state.draftId);
@@ -343,7 +343,7 @@ class WorkspaceEditor extends SessionStateComponent<
 
   /**
    * handleSelectGradeChange
-   * @param e
+   * @param e e
    */
   handleSelectGradeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     this.setStateAndStore({ grade: e.target.value }, this.state.draftId);
@@ -351,7 +351,7 @@ class WorkspaceEditor extends SessionStateComponent<
 
   /**
    * handleSelectGradeChange
-   * @param e
+   * @param e e
    */
   handleSelectPriceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     this.setStateAndStore(
@@ -362,7 +362,7 @@ class WorkspaceEditor extends SessionStateComponent<
 
   /**
    * handleEvaluationSave
-   * @param e
+   * @param e e
    */
   handleEvaluationSave = (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
@@ -634,7 +634,7 @@ class WorkspaceEditor extends SessionStateComponent<
 
   /**
    * isGraded
-   * @param type
+   * @param type type
    * @returns boolean if graded
    */
   isGraded = (type: EvaluationEnum) =>
@@ -926,7 +926,7 @@ class WorkspaceEditor extends SessionStateComponent<
 
 /**
  * mapStateToProps
- * @param state
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -939,7 +939,7 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
