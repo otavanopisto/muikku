@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.frontpage.ts",
   "scripts": {
-    "install": "./node_modules/.bin/webpack",
+    "install": "webpack",
     "test": "echo \"Error: no test specified\" && exit 1",
     "eslint": "eslint . --ext .ts,.tsx",
     "stylelint": "stylelint '**/*.scss'",
