@@ -45,7 +45,7 @@ class CeeposPay extends React.Component<CeeposPayProps, CeeposPayState> {
               Muikku
             </span>
           </header>
-          {this.props.status.isActiveUser ?
+          {this.props.status.isActiveUser ? (
             <div className="card__content card__content--ceepos">
               <div className="card__title card__title--ceepos">
                 {this.props.i18n.text.get("plugin.ceepos.order.title")}
@@ -105,10 +105,12 @@ class CeeposPay extends React.Component<CeeposPayProps, CeeposPayState> {
                 </div>
               ) : null}
             </div>
-          :
+          ) : (
             <div className="card__content card__content--ceepos">
               <div className="card__title card__title--ceepos">
-                {this.props.i18n.text.get("plugin.ceepos.order.title.nonActiveUser")}
+                {this.props.i18n.text.get(
+                  "plugin.ceepos.order.title.nonActiveUser"
+                )}
               </div>
               <div className="card__text card__text--ceepos">
                 {this.props.ceepos.payStatusMessage
@@ -118,7 +120,7 @@ class CeeposPay extends React.Component<CeeposPayProps, CeeposPayState> {
                     )}
               </div>
             </div>
-          }
+          )}
         </div>
       </div>
     );
