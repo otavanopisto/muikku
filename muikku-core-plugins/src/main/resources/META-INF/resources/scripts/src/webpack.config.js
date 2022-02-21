@@ -9,25 +9,16 @@ const MiniCSSExtractPlugin = require("mini-css-extract-plugin");
 
 const plugins = [];
 
-if (mode === "development") {
-  const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
-  plugins.push(new ForkTsCheckerWebpackPlugin());
-  plugins.push(
-    new MiniCSSExtractPlugin({
-      filename: "[name].css",
-      chunkFilename: "[name].css",
-      ignoreOrder: true,
-    })
-  );
-} else {
-  plugins.push(
-    new MiniCSSExtractPlugin({
-      filename: "[name].css",
-      chunkFilename: "[name].css",
-      ignoreOrder: true,
-    })
-  );
-}
+const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
+
+plugins.push(new ForkTsCheckerWebpackPlugin());
+plugins.push(
+  new MiniCSSExtractPlugin({
+    filename: "[name].css",
+    chunkFilename: "[name].css",
+    ignoreOrder: true,
+  })
+);
 
 const rules = [];
 
