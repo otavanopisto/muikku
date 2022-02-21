@@ -48,12 +48,17 @@ interface AssignmentEditorProps {
   locale: LocaleListType;
   editorLabel?: string;
   modifiers?: string[];
+  isRecording: boolean;
   showAudioAssessmentWarningOnClose: boolean;
   onAudioAssessmentChange: () => void;
   updateMaterialEvaluationData: (
     assigmentSaveReturn: AssignmentEvaluationSaveReturn
   ) => void;
   updateCurrentStudentCompositeRepliesData: UpdateCurrentStudentEvaluationCompositeRepliesData;
+  /**
+   * Handles changes whether recording is happening or not
+   */
+  onIsRecordingChange?: (isRecording: boolean) => void;
   onClose?: () => void;
   onAssigmentSave?: (materialId: number) => void;
 }
@@ -68,7 +73,6 @@ interface AssignmentEditorState {
   grade: string;
   draftId: string;
   locked: boolean;
-  isRecording: boolean;
 }
 
 /**
@@ -124,7 +128,6 @@ class AssignmentEditor extends SessionStateComponent<
           ? compositeReplies.evaluationInfo.audioAssessments
           : [],
       locked: false,
-      isRecording: false,
     };
   }
 
@@ -282,6 +285,7 @@ class AssignmentEditor extends SessionStateComponent<
 
   /**
    * saveAssignmentEvaluationSupplementationToServer
+   * @param data data
    * @param data.workspaceEntityId workspaceEntityId
    * @param data.userEntityId userEntityId
    * @param data.workspaceMaterialId workspaceMaterialId
@@ -499,16 +503,6 @@ class AssignmentEditor extends SessionStateComponent<
   };
 
   /**
-   * handleRecordingStateChange
-   * @param recording recording
-   */
-  handleIsRecordingChange = (recording: boolean) => {
-    this.setState({
-      isRecording: recording,
-    });
-  };
-
-  /**
    * handleAudioAssessmentChange
    * @param audioAssessments audioAssessments
    */
@@ -566,7 +560,7 @@ class AssignmentEditor extends SessionStateComponent<
               )}
             </label>
             <Recorder
-              onIsRecordingChange={this.handleIsRecordingChange}
+              onIsRecordingChange={this.props.onIsRecordingChange}
               onChange={this.handleAudioAssessmentChange}
               values={this.state.audioAssessments}
             />
@@ -640,7 +634,7 @@ class AssignmentEditor extends SessionStateComponent<
           <Button
             buttonModifiers="evaluate-assignment"
             onClick={this.handleSaveAssignment}
-            disabled={this.state.locked || this.state.isRecording}
+            disabled={this.state.locked || this.props.isRecording}
           >
             {this.props.i18n.text.get(
               "plugin.evaluation.evaluationModal.workspaceEvaluationForm.saveButtonLabel"
@@ -650,7 +644,7 @@ class AssignmentEditor extends SessionStateComponent<
             <WarningDialog onContinueClick={this.props.onClose}>
               <Button
                 buttonModifiers="evaluate-cancel"
-                disabled={this.state.locked || this.state.isRecording}
+                disabled={this.state.locked || this.props.isRecording}
               >
                 {this.props.i18n.text.get(
                   "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel"
@@ -660,7 +654,7 @@ class AssignmentEditor extends SessionStateComponent<
           ) : (
             <Button
               onClick={this.props.onClose}
-              disabled={this.state.locked || this.state.isRecording}
+              disabled={this.state.locked || this.props.isRecording}
               buttonModifiers="evaluate-cancel"
             >
               {this.props.i18n.text.get(
@@ -672,7 +666,7 @@ class AssignmentEditor extends SessionStateComponent<
           {this.recovered && (
             <Button
               buttonModifiers="evaluate-remove-draft"
-              disabled={this.state.locked || this.state.isRecording}
+              disabled={this.state.locked || this.props.isRecording}
               onClick={this.handleDeleteEditorDraft}
             >
               {this.props.i18n.text.get(
@@ -682,7 +676,7 @@ class AssignmentEditor extends SessionStateComponent<
           )}
         </div>
 
-        {this.state.isRecording && (
+        {this.props.isRecording && (
           <div className="evaluation-modal__evaluate-drawer-row evaluation-modal__evaluate-drawer-row--recording-warning">
             <div className="recording-warning">
               {this.props.i18n.text.get(
@@ -698,7 +692,7 @@ class AssignmentEditor extends SessionStateComponent<
 
 /**
  * mapStateToProps
- * @param state
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -711,7 +705,7 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(

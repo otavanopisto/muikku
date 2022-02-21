@@ -39,31 +39,25 @@ interface EvaluationCardProps extends AssessmentRequest {
 
 /**
  * EvaluationCard
- * @param props.selectedWorkspaceId selectedWorkspaceId
- * @param props.setSelectedWorkspaceId setSelectedWorkspaceId
- * @param props.important important
- * @param props.importantAssessments importantAssessments
- * @param props.unimportantAssessments unimportantAssessments
- * @param props.updateEvaluationImportance updateEvaluationImportance
- * @param props.i18n i18n
- * @param props.needsReloadRequests needsReloadRequests
- * @param props.loadEvaluationAssessmentRequestsFromServer loadEvaluationAssessmentRequestsFromServer
+ * @param props props
  */
-const EvaluationCard: React.FC<EvaluationCardProps> = ({
-  selectedWorkspaceId,
-  setSelectedWorkspaceId,
-  important,
-  importantAssessments,
-  unimportantAssessments,
-  updateEvaluationImportance,
-  i18n,
-  needsReloadRequests,
-  loadEvaluationAssessmentRequestsFromServer,
-  ...rest
-}) => {
+const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
+  const {
+    selectedWorkspaceId,
+    setSelectedWorkspaceId,
+    important,
+    importantAssessments,
+    unimportantAssessments,
+    updateEvaluationImportance,
+    i18n,
+    needsReloadRequests,
+    loadEvaluationAssessmentRequestsFromServer,
+    ...rest
+  } = props;
+
   /**
    * Handles importance click
-   * @param status
+   * @param status status
    */
   const handleImportanceClick =
     (status: "important" | "unimportant") =>
@@ -158,8 +152,8 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
     setSelectedWorkspaceId({ workspaceId: rest.workspaceEntityId });
   };
 
-  let evaluationImportantClassesMod = "";
-  let evaluationUnimportantClassesMod = "";
+  let evaluationImportantClassesMod = undefined;
+  let evaluationUnimportantClassesMod = undefined;
 
   /**
    * Whether important or unimportant is selected, renders it background differently
@@ -328,7 +322,11 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
               "plugin.evaluation.card.button.markImportantButtonLabel"
             )}
             onClick={handleImportanceClick("important")}
-            buttonModifiers={["important", evaluationImportantClassesMod]}
+            buttonModifiers={
+              evaluationImportantClassesMod
+                ? ["important", evaluationImportantClassesMod]
+                : ["important"]
+            }
             icon="star-full"
           />
           <IconButton
@@ -336,7 +334,11 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
               "plugin.evaluation.card.button.markNonImportantButtonLabel"
             )}
             onClick={handleImportanceClick("unimportant")}
-            buttonModifiers={["unimportant", evaluationUnimportantClassesMod]}
+            buttonModifiers={
+              evaluationUnimportantClassesMod
+                ? ["unimportant", evaluationUnimportantClassesMod]
+                : ["unimportant"]
+            }
             icon="star-empty"
           />
         </div>
@@ -361,7 +363,7 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
 
 /**
  * mapStateToProps
- * @param state
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -371,7 +373,7 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(

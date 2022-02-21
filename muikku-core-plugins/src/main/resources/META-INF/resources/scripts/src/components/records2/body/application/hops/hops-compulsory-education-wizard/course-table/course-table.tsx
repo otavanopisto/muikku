@@ -44,7 +44,8 @@ interface CourseTableProps extends Partial<StudentActivityByStatus> {
 /**
  * CourseTable
  * Renders courses as table
- * @returns
+ * @param props props
+ * @returns JSX.Element
  */
 const CourseTable: React.FC<CourseTableProps> = (props) => {
   /**
@@ -54,6 +55,8 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
 
   /**
    * handleToggleChoiceClick
+   * @param user user
+   * @param choiceParams choiceParams
    */
   const handleToggleChoiceClick =
     (user: HopsUser, choiceParams: UpdateStudentChoicesParams) =>
@@ -177,7 +180,7 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
               sCourse.courseNumber === course.courseNumber
           )
         ) {
-          let suggestedCourseDataNext = props.suggestedNextList.filter(
+          const suggestedCourseDataNext = props.suggestedNextList.filter(
             (sCourse) => sCourse.subject === sSubject.subjectCode
           );
 
@@ -192,9 +195,10 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
               sOCourse.courseNumber === course.courseNumber
           )
         ) {
-          let suggestedCourseDataOptional = props.suggestedOptionalList.filter(
-            (oCourse) => oCourse.subject === sSubject.subjectCode
-          );
+          const suggestedCourseDataOptional =
+            props.suggestedOptionalList.filter(
+              (oCourse) => oCourse.subject === sSubject.subjectCode
+            );
 
           courseSuggestions = courseSuggestions.concat(
             suggestedCourseDataOptional
@@ -267,7 +271,7 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
         );
       });
 
-    let rowMods = ["course"];
+    const rowMods = ["course"];
 
     return (
       <Tr key={sSubject.name} modifiers={rowMods}>
@@ -321,7 +325,7 @@ const getHighestCourseNumber = (schoolSubjects: SchoolSubject[]): number => {
 
 /**
  * mapStateToProps
- * @param state
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {};
@@ -329,7 +333,7 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return {};

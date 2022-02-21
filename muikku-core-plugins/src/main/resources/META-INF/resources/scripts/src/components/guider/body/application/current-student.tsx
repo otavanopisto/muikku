@@ -31,6 +31,9 @@ import {
   GuiderType,
   GuiderStudentUserProfileLabelType,
 } from "~/reducers/main-function/guider";
+import HopsCompulsoryEducationWizardDialog from "~/components/records2/dialogs/hops-compulsory-education-wizard";
+import Button from "~/components/general/button";
+import JournalCenter from "~/components/records2/body/application/summary/jounral-center/journal-center";
 
 /**
  * CurrentStudentProps
@@ -290,6 +293,28 @@ class CurrentStudent extends React.Component<
             </div>
           </div>
         )}
+
+        <div className="application-sub-panel__item">
+          <div className="application-sub-panel__item-title">
+            Opintosuunnitelma
+          </div>
+          <div className="application-sub-panel__item-data">
+            <HopsCompulsoryEducationWizardDialog
+              user="supervisor"
+              disabled
+              superVisorModifies={false}
+            >
+              <Button>Opintosuunnitelma</Button>
+            </HopsCompulsoryEducationWizardDialog>
+            <HopsCompulsoryEducationWizardDialog
+              user="supervisor"
+              disabled={false}
+              superVisorModifies
+            >
+              <Button>Opintosuunnitelma (muokkaus)</Button>
+            </HopsCompulsoryEducationWizardDialog>
+          </div>
+        </div>
         {this.props.guider.currentStudent.notifications &&
           Object.keys(this.props.guider.currentStudent.notifications).map(
             (notification) => {
@@ -459,6 +484,23 @@ class CurrentStudent extends React.Component<
           </h3>
           {files}
         </div>
+
+        {this.props.guider.currentStudent.basic && (
+          <div className="application-sub-panel">
+            <h3 className="application-sub-panel__header">Journal Center</h3>
+            <JournalCenter
+              usePlace="guider"
+              userId={parseInt(
+                document
+                  .querySelector('meta[name="muikku:loggedUserId"]')
+                  .getAttribute("value")
+              )}
+              studentId={this.props.guider.currentStudent.basic.userEntityId}
+              showHistoryPanel={true}
+            />
+          </div>
+        )}
+
         <div className="application-sub-panel">
           <div className="application-sub-panel__header">
             {this.props.i18n.text.get("plugin.guider.user.details.statistics")}

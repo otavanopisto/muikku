@@ -29,6 +29,7 @@
           "revert",
           "invert"
         ],
+        "disableFix": true,
         "message": "Avoid using magical color hex values as '${value}' for '${property}'."
       }
     ],

@@ -422,7 +422,11 @@
 
   &:hover,
   &.hover {
-    background-color: darken($color-frontpage-button-newsletter-background, 10%);
+    background-color:
+      darken(
+        $color-frontpage-button-newsletter-background,
+        10%
+      );
   }
 
   &:active,
@@ -633,6 +637,12 @@
     height: $button-pill-desktop-size;
     width: $button-pill-desktop-size;
   }
+}
+
+.button-icon--journal-central {
+  font-size: 2rem;
+  height: 2.5rem;
+  width: 2.5rem;
 }
 
 .button-icon--workspace-users-contact {
@@ -1213,7 +1223,12 @@
 }
 
 .button-social {
-  @include prefix(transition, moz ms o webkit, color 0.3s, background-color 0.3s);
+  @include prefix(
+    transition,
+    moz ms o webkit,
+    color 0.3s,
+    background-color 0.3s
+  );
   @include prefix(user-select, moz ms o webkit, none);
 
   background-color: $color-button-social-default-background;
@@ -1505,7 +1520,8 @@
   }
 }
 
-.button-pill--material-editor-change-page-type { // This is default state for exercise/assignment buttons
+.button-pill--material-editor-change-page-type {
+  // This is default state for exercise/assignment buttons
   background: $color-material-page-admin-panel-disabled-color;
   border-color: $color-material-page-admin-panel-disabled-color;
 
@@ -1842,4 +1858,32 @@
   background: $color-button-cancel-background;
   color: $color-default;
   margin: 0 5px;
+}
+
+.button-icon--evaluation {
+  &.button-icon--excercise-drawer-close {
+    color: $color-default-contrast;
+    font-size: 2rem;
+  }
+
+  &.button-icon--assignment-drawer-close {
+    color: $color-assignment;
+    font-size: 2rem;
+  }
+
+  &.button-icon--workspace-drawer-close {
+    color: $color-info;
+    font-size: 2rem;
+  }
+
+  &.button-icon--supplementation-drawer-close {
+    color: $color-incomplete;
+    font-size: 2rem;
+  }
+
+  &.disabled,
+  &:disabled {
+    background-color: transparent;
+    color: $color-disabled;
+  }
 }

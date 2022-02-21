@@ -44,7 +44,7 @@ export const TableDataContent: React.FC<TableDataContentProps> = (props) => {
   /**
    * Default modifiers
    */
-  let updatedModifiers = [...modifiers];
+  const updatedModifiers = [...modifiers];
 
   const contentRef = React.useRef<HTMLDivElement>(null);
   const contenNameRef = React.useRef<HTMLDivElement>(null);
@@ -77,6 +77,7 @@ export const TableDataContent: React.FC<TableDataContentProps> = (props) => {
 
   /**
    * handleToggleChoiceClick
+   * @param choiceParams choiceParams
    */
   const handleToggleChoiceClick =
     (choiceParams: UpdateStudentChoicesParams) =>

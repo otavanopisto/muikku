@@ -18,6 +18,7 @@ import {
   UpdateEvaluationSearch,
   updateEvaluationSearch,
 } from "~/actions/main-function/evaluation/evaluationActions";
+import { AnyActionType } from "~/actions";
 
 /**
  * EvaluationToolbarProps
@@ -52,7 +53,7 @@ class EvaluationToolbar extends React.Component<
 
   /**
    * handleSearchFormElementChange
-   * @param e
+   * @param e e
    */
   handleSearchFormElementChange = (e: string) => {
     this.props.updateEvaluationSearch({ searchString: e });
@@ -156,8 +157,7 @@ class EvaluationToolbar extends React.Component<
 
 /**
  * mapStateToProps
- * @param state
- * @returns
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -168,10 +168,9 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
- * @returns
+ * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     { updateEvaluationSearch, setEvaluationFilters },
     dispatch

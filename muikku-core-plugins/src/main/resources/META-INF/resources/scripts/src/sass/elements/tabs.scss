@@ -94,6 +94,19 @@
   }
 }
 
+// Used in journal center component
+
+.tabs__tab--journal-center {
+  border: none;
+  flex-grow: unset;
+  margin: 0 5px;
+  width: fit-content;
+
+  &.active {
+    border: none;
+  }
+}
+
 // Used when editing material page
 .tabs__tab-labels--material-editor {
   padding: 0 40px 0 2px;

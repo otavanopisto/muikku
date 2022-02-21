@@ -24,6 +24,8 @@ import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
+import JournalCenter from "./jounral-center/journal-center";
+import { bindActionCreators } from "redux";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const ProgressBarLine = require("react-progress-bar.js").Line;
@@ -369,16 +371,27 @@ class SummaryNew extends React.Component<SummaryProps, SummaryState> {
             </div>
             <div className="studies-summary__section-content-calendar"></div>
           </div>
+
           <div
             style={{
               padding: "10px 0",
-              backgroundColor: "#fccc8d",
-              border: "10px solid orange",
-              borderStyle: "ridge",
             }}
             className="studies-summary__section-content"
           >
-            <AgendaNotes />
+            <JournalCenter
+              usePlace="records"
+              userId={parseInt(
+                document
+                  .querySelector('meta[name="muikku:loggedUserId"]')
+                  .getAttribute("value")
+              )}
+              studentId={parseInt(
+                document
+                  .querySelector('meta[name="muikku:loggedUserId"]')
+                  .getAttribute("value")
+              )}
+              showHistoryPanel
+            />
           </div>
         </div>
 
@@ -571,7 +584,7 @@ class SummaryNew extends React.Component<SummaryProps, SummaryState> {
 
         <div className="studies-summary__divider studies-summary__divider--transparent"></div>
 
-        <div className="studies-summary__section studies-summary__section--achivements">
+        {/* <div className="studies-summary__section studies-summary__section--achivements">
           <h2 className="studies-summary__section-header">Saavutukset</h2>
           <div className="studies-summary__section-content">
             <div className="studies-summary__section-content-latest-achievements">
@@ -611,7 +624,7 @@ class SummaryNew extends React.Component<SummaryProps, SummaryState> {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     );
   }
@@ -653,9 +666,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
-  return {
-    displayNotification,
-  };
+  return bindActionCreators({ displayNotification }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(SummaryNew);
