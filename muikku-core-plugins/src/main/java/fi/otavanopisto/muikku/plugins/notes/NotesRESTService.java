@@ -144,6 +144,7 @@ public class NotesRESTService extends PluginRESTService {
     restModel.setCreatorName(creatorName);
     restModel.setCreated(note.getCreated());
     restModel.setDueDate(note.getDueDate());
+    restModel.setStatus(note.getStatus());
 
     return restModel;
   }
