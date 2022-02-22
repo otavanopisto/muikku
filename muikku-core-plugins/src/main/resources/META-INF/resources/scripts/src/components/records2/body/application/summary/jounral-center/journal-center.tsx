@@ -98,8 +98,14 @@ const JournalCenter: React.FC<JournalCenterProps> = (props) => {
 
   const [createNew, setCreateNew] = React.useState(false);
 
-  const { journals, createJournal, updateJournal, deleteJournal, pinJournal } =
-    useJournals(studentId, displayNotification);
+  const {
+    journals,
+    createJournal,
+    updateJournal,
+    archiveJournal,
+    returnArchivedJournal,
+    pinJournal,
+  } = useJournals(studentId, displayNotification);
 
   /**
    * handleFilttersChange
@@ -186,6 +192,8 @@ const JournalCenter: React.FC<JournalCenterProps> = (props) => {
     });
   };
 
+  console.log(journals);
+
   /**
    * List of journal center tabs
    */
@@ -219,9 +227,10 @@ const JournalCenter: React.FC<JournalCenterProps> = (props) => {
                       selectedJournal.journal &&
                       selectedJournal.journal.id === j.id
                     }
+                    archived={false}
                     loggedUserIsOwner={j.creator === userId}
                     onPinJournalClick={pinJournal}
-                    onDeleteClick={deleteJournal}
+                    onArchiveClick={archiveJournal}
                     onEditClick={handleOpenInEditModeClick}
                     onJournalClick={handleJournalItemClick}
                   />
@@ -325,6 +334,8 @@ const JournalCenter: React.FC<JournalCenterProps> = (props) => {
                     selectedJournal.journal.id === j.id
                   }
                   loggedUserIsOwner={j.creator === userId}
+                  archived={true}
+                  onReturnArchivedClick={returnArchivedJournal}
                   onJournalClick={handleArchivedJournalItemClick}
                   onPinJournalClick={pinJournal}
                 />

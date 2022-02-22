@@ -7,10 +7,12 @@ import * as moment from "moment";
  * JournalListProps
  */
 interface JournalListItemProps {
+  archived: boolean;
   journal: JournalNoteRead;
   active?: boolean;
   loggedUserIsOwner?: boolean;
-  onDeleteClick?: (journalId: number) => void;
+  onArchiveClick?: (journalId: number) => void;
+  onReturnArchivedClick?: (journalId: number) => void;
   onEditClick?: (journalId: number) => void;
   onPinJournalClick: (journalId: number, journal: JournalNoteUpdate) => void;
   onJournalClick?: (journalId: number) => void;
@@ -33,7 +35,8 @@ const JournalListItem = React.forwardRef<HTMLDivElement, JournalListItemProps>(
       journal,
       onJournalClick,
       onEditClick,
-      onDeleteClick,
+      onArchiveClick,
+      onReturnArchivedClick,
       onPinJournalClick,
       loggedUserIsOwner,
       active,
@@ -81,16 +84,34 @@ const JournalListItem = React.forwardRef<HTMLDivElement, JournalListItemProps>(
      * Handles journal delete click
      * @param e mouse event
      */
-    const handleJournalDeleteClick = (
+    const handleJournalArchiveClick = (
       e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
     ) => {
       e.stopPropagation();
 
-      if (onDeleteClick) {
+      if (onArchiveClick) {
         myRef.current.classList.add("state-DELETE");
 
         setTimeout(() => {
-          onDeleteClick(id);
+          onArchiveClick(id);
+        }, 250);
+      }
+    };
+
+    /**
+     * Handles journal delete click
+     * @param e mouse event
+     */
+    const handleJournalReturnArchiveClick = (
+      e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+    ) => {
+      e.stopPropagation();
+
+      if (onReturnArchivedClick) {
+        myRef.current.classList.add("state-DELETE");
+
+        setTimeout(() => {
+          onReturnArchivedClick(id);
         }, 250);
       }
     };
@@ -160,8 +181,15 @@ const JournalListItem = React.forwardRef<HTMLDivElement, JournalListItemProps>(
                 icon="pin"
               />
 
-              {loggedUserIsOwner && onDeleteClick ? (
-                <IconButton onClick={handleJournalDeleteClick} icon="trash" />
+              {loggedUserIsOwner && onReturnArchivedClick ? (
+                <IconButton
+                  onClick={handleJournalReturnArchiveClick}
+                  icon="books"
+                />
+              ) : null}
+
+              {loggedUserIsOwner && onArchiveClick ? (
+                <IconButton onClick={handleJournalArchiveClick} icon="trash" />
               ) : null}
             </div>
           </div>
