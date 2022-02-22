@@ -1,4 +1,4 @@
-import actions from "../../base/notifications";
+import actions from "../base/notifications";
 import promisify from "~/util/promisify";
 import { AnyActionType, SpecificActionType } from "~/actions";
 import mApi, { MApiError } from "~/lib/mApi";
