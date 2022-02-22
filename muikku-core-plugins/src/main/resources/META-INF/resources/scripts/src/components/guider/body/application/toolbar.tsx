@@ -228,17 +228,20 @@ class GuiderToolbar extends React.Component<
   render() {
     return (
       <ApplicationPanelToolbar>
-
         <ApplicationPanelToolbarActionsMain>
           <NewMessage
             extraNamespace="guider"
             refreshInitialSelectedItemsOnOpen
             onRecipientChange={this.onContactsChange}
-            initialSelectedItems={this.turnSelectedUsersToContacts(this.props.guider.selectedStudents)}>
+            initialSelectedItems={this.turnSelectedUsersToContacts(
+              this.props.guider.selectedStudents
+            )}
+          >
             <ButtonPill
               disabled={this.props.guider.selectedStudentsIds.length < 1}
               icon="envelope"
-              buttonModifiers="new-message" />
+              buttonModifiers="new-message"
+            />
           </NewMessage>
 
           <ButtonPill
@@ -255,12 +258,14 @@ class GuiderToolbar extends React.Component<
               id="searchUsers"
               onFocus={this.onInputFocus}
               onBlur={this.onInputBlur}
-              placeholder={this.props.i18n.text.get('plugin.guider.search.placeholder')}
+              placeholder={this.props.i18n.text.get(
+                "plugin.guider.search.placeholder"
+              )}
               value={this.state.searchquery}
             />
           </ApplicationPanelToolsContainer>
-        </ApplicationPanelToolbarActionsMain >
-      </ApplicationPanelToolbar >
+        </ApplicationPanelToolbarActionsMain>
+      </ApplicationPanelToolbar>
     );
   }
 }

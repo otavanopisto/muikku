@@ -67,7 +67,6 @@ class GuiderApplication extends React.Component<
           asideBefore={this.props.aside}
         >
           <Students />
-          <CurrentStudent />
         </ApplicationPanel>
       </div>
     );

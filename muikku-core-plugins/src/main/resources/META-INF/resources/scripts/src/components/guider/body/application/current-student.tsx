@@ -514,37 +514,6 @@ class CurrentStudent extends React.Component<
             <div className="application-sub-panel loader-empty" />
           ) : null}
         </div>
-        <div className="application-sub-panel application-sub-panel--student-data-container">
-          <ResourceTimeline
-            onDateSelect={(dates: CalendarEvent[]) => console.log(dates)}
-            namespace="student-resource"
-            headerToolbar={headerToolbar}
-            resourceHeaderContent={"Opiskelija"}
-            externalEvents={externalEvents}
-            resources={[
-              {
-                id: "student",
-                title: getName(this.props.guider.currentStudent.basic, true),
-              },
-            ]}
-          />
-        </div>
-        <div className="application-sub-panel application-sub-panel--student-data-container">
-          <ResourceTimeline
-            onDateSelect={(dates: CalendarEvent[]) => console.log(dates)}
-            namespace="workspace-resources"
-            headerToolbar={headerToolbar}
-            resourceHeaderContent={"Kurssi"}
-            selectable={true}
-            resources={
-              this.props.guider.currentStudent.workspaces &&
-              this.props.guider.currentStudent.workspaces.map((workspace) => ({
-                id: workspace.id.toString(),
-                title: workspace.name,
-              }))
-            }
-          />
-        </div>
       </>
     );
   }

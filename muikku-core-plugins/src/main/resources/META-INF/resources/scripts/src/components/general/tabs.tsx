@@ -74,9 +74,10 @@ export const Tabs: React.FC<TabsProps> = (props) => {
   const a11yConfig = {
     enabled: true,
   };
+
   /**
    * Creates an array from tab ids from given tabs
-   *
+   * @param tabs array of tabs
    * @returns an array of strings
    */
   const createAllTabs = (tabs: Tab[]) => {
