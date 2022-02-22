@@ -61,8 +61,9 @@ public class NotesController {
     return updatedNote;
   }
   
-  public void updateArchived(Note note) {
-    noteDAO.updateArchived(note, !note.getArchived());
+  public Note updateArchived(Note note) {
+    Note updatedNote = noteDAO.updateArchived(note, !note.getArchived());
+    return updatedNote;
   }
   
   public Note findNoteById(Long id) {

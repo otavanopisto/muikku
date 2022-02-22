@@ -218,8 +218,8 @@ public class NotesRESTService extends PluginRESTService {
       }
     }
 
-      notesController.updateArchived(note);
+    Note updatedNote = notesController.updateArchived(note);
       
-      return Response.noContent().build();
+    return Response.ok(toRestModel(updatedNote)).build();
   }
 } 
