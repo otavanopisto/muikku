@@ -118,6 +118,15 @@ public class Note {
   public void setDueDate(Date dueDate) {
     this.dueDate = dueDate;
   }
+  
+  public NoteStatus getStatus() {
+    return status;
+  }
+  
+  public void setStatus(NoteStatus status) {
+    this.status = status;
+  }
+  
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
@@ -166,6 +175,11 @@ public class Note {
   
   @Temporal (value=TemporalType.TIMESTAMP)
   private Date dueDate;
+  
+  @NotNull
+  @Column (nullable=false)
+  @Enumerated (EnumType.STRING)
+  private NoteStatus status;
 }
 
   
