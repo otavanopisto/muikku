@@ -318,4 +318,6 @@ public interface UserSchoolDataBridge {
 
   public boolean isActiveUser(User user);
 
+  public String findUserSsn(SchoolDataIdentifier userIdentifier);
+
 }

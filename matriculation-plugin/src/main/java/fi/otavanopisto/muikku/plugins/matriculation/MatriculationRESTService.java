@@ -145,11 +145,13 @@ public class MatriculationRESTService {
     UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(identifier);
     List<UserAddress> userAddresses = userController.listUserAddresses(user);
     List<UserPhoneNumber> phoneNumbers = userController.listUserPhoneNumbers(user);
+    
     String address = "";
     String postalCode = "";
     String locality = "";
     String phoneNumber = "";
     String emailAddress = userEmailEntityController.getUserDefaultEmailAddress(userEntity, false); 
+    String ssn = userController.findUserSsn(user);
     String name = "";
     if (user.getFirstName() != null) {
       name += user.getFirstName();
@@ -170,7 +172,7 @@ public class MatriculationRESTService {
       }
     }
     result.setName(name);
-    result.setSsn(user.getSsn());
+    result.setSsn(ssn);
     result.setEmail(emailAddress);
     result.setPhone(phoneNumber);
     result.setAddress(address);
