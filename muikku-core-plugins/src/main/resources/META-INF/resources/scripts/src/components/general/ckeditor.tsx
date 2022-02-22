@@ -26,7 +26,7 @@ const PLUGINS = {
   language: `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/language/${CKEDITOR_VERSION}/`,
   image2: `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/image2/${CKEDITOR_VERSION}/`,
   oembed: "//cdn.muikkuverkko.fi/libs/ckeditor-plugins/oembed/1.17/",
-  audio: "//cdn.muikkuverkko.fi/libs/ckeditor-plugins/audio/1.0.0/",
+  audio: "//cdn.muikkuverkko.fi/libs/ckeditor-plugins/audio/1.0.1/",
 
   // CONTEXTPATHREMOVED
   "muikku-mathjax": "/scripts/ckplugins/muikku-mathjax/",
@@ -82,7 +82,7 @@ const extraConfig = (props: CKEditorProps) => ({
    * There is no need to use allowContent: true setting as it will disable ACF alltogether.
    * Therefore we let ACF to work on it's default filtering settings which are based on the toolbar settings.
    * */
-  extraAllowedContent: "*{*}; *[data*]; audio[*]{*}(*); video[*]{*}(*);",
+  extraAllowedContent: "*{*}; *[data*];",
 
   /**
    * We remove every class attribute from every html element and every on* prefixed attributes as well as everything related to font stylings.
