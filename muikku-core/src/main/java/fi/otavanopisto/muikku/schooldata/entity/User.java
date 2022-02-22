@@ -38,8 +38,6 @@ public interface User extends SchoolDataEntity {
   
   public void setSchool(String school);
 
-  public String getSearchId();
-
   public OffsetDateTime getStudyStartDate();
 
   public OffsetDateTime getStudyEndDate();

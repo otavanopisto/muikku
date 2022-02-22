@@ -34,32 +34,6 @@ public class IndexedUser {
   public IndexedUser() {
   }
 
-  public IndexedUser(SchoolDataIdentifier identifier, String firstName, String lastName, String nickName, String displayName,
-      String studyProgrammeName, SchoolDataIdentifier studyProgrammeIdentifier, String nationality, String language, String municipality, String school,
-      OffsetDateTime studyStartDate, OffsetDateTime studyEndDate, OffsetDateTime studyTimeEnd, boolean hidden, 
-      boolean evaluationFees, String curriculumIdentifier, SchoolDataIdentifier organizationIdentifier) {
-    super();
-    this.identifier = identifier.getIdentifier();
-    this.schoolDataSource = identifier.getDataSource();
-    this.firstName = firstName;
-    this.lastName = lastName;
-    this.nickName = nickName;
-    this.displayName = displayName;
-    this.studyProgrammeName = studyProgrammeName;
-    this.studyProgrammeIdentifier = studyProgrammeIdentifier;
-    this.nationality = nationality;
-    this.language = language;
-    this.municipality = municipality;
-    this.school = school;
-    this.studyStartDate = studyStartDate;
-    this.studyEndDate = studyEndDate;
-    this.studyTimeEnd = studyTimeEnd;
-    this.hidden = hidden;
-    this.evaluationFees = evaluationFees;
-    this.curriculumIdentifier = curriculumIdentifier;
-    this.organizationIdentifier = organizationIdentifier;
-  }
-
   @IndexId
   public String getSearchId() {
     return getIdentifier() + "/" + getSchoolDataSource();

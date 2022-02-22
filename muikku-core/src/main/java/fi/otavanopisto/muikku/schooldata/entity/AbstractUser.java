@@ -32,11 +32,6 @@ public abstract class AbstractUser implements User {
   }
 
   @Override
-  public String getSearchId() {
-    return getIdentifier() + "/" + getSchoolDataSource();
-  }
-
-  @Override
   public String getIdentifier() {
     return identifier;
   }
