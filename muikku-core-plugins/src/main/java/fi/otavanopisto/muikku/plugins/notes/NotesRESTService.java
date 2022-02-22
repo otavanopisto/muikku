@@ -92,7 +92,7 @@ public class NotesRESTService extends PluginRESTService {
   }
   
   //mApi() call (mApi().notes.note.update(noteId, noteRestModel)
-  // Editable fields are title, description, priority and pinned, dueDate)
+  // Editable fields are title, description, priority, pinned, dueDate & status)
   @PUT
   @Path ("/note/{NOTEID}")
   @RESTPermit(handling = Handling.INLINE)
@@ -115,10 +115,10 @@ public class NotesRESTService extends PluginRESTService {
     
     // Student can edit only 'pinned' field if note is created by someone else
     if (loggedUserRole.equals(EnvironmentRoleArchetype.STUDENT) && sessionController.getLoggedUserEntity().getId().equals(note.getOwner()) && !creatorRole.equals(EnvironmentRoleArchetype.STUDENT)) {
-      updatedNote = notesController.updateNote(note, note.getTitle(), note.getDescription(), note.getPriority(), restModel.getPinned(), note.getDueDate());
+      updatedNote = notesController.updateNote(note, note.getTitle(), note.getDescription(), note.getPriority(), restModel.getPinned(), note.getDueDate(), note.getStatus());
     } // Otherwise editing happens only if logged user equals with creator
     else if (sessionController.getLoggedUserEntity().getId().equals(note.getCreator())) {
-      updatedNote = notesController.updateNote(note, restModel.getTitle(), restModel.getDescription(), restModel.getPriority(), restModel.getPinned(), restModel.getDueDate());
+      updatedNote = notesController.updateNote(note, restModel.getTitle(), restModel.getDescription(), restModel.getPriority(), restModel.getPinned(), restModel.getDueDate(), note.getStatus());
     } 
     else {
       return Response.status(Status.BAD_REQUEST).build();
@@ -219,7 +219,9 @@ public class NotesRESTService extends PluginRESTService {
     }
 
     Note updatedNote = notesController.updateArchived(note);
-      
+    if(note.getArchived().equals(Boolean.FALSE)) {
+      note.setDueDate(null);
+    }
     return Response.ok(toRestModel(updatedNote)).build();
   }
 } 
