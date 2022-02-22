@@ -3,7 +3,7 @@ import promisify from "~/util/promisify";
 import { AnyActionType, SpecificActionType } from "~/actions";
 import mApi, { MApiError } from "~/lib/mApi";
 import { StateType } from "~/reducers";
-import { EventsState, CalendarEvent } from "~/reducers/calendar";
+import { EventsState, CalendarEvent } from "~/reducers/main-function/calendar";
 
 /**
  * Participant

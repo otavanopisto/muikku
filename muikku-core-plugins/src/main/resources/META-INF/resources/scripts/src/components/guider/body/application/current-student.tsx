@@ -35,7 +35,7 @@ import NewMessage from "~/components/communicator/dialogs/new-message";
 import { ButtonPill } from "~/components/general/button";
 import GuiderToolbarLabels from "./toolbar/labels";
 import GuidanceEvent from "../../dialogs/guidance-event";
-import { CalendarEvent } from "~/reducers/calendar";
+import { CalendarEvent } from "~/reducers/main-function/calendar";
 import { ResourceTimeline } from "../../../general/resource-timeline";
 import { ExternalEventType } from "../../../general/resource-timeline";
 

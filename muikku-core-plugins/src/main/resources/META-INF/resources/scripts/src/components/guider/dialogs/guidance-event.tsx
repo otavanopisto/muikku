@@ -6,7 +6,7 @@ import "~/sass/elements/link.scss";
 import { bindActionCreators } from "redux";
 import { StateType } from "~/reducers";
 import { GuiderType } from "~/reducers/main-function/guider";
-import { Calendar } from "~/reducers/calendar";
+import { Calendar } from "~/reducers/main-function/calendar";
 import FullCalendar, {
   DateSelectArg,
   EventClickArg,

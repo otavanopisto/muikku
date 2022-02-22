@@ -9,7 +9,7 @@ import interactionPlugin, {
   Draggable,
   EventResizeStopArg,
 } from "@fullcalendar/interaction";
-import { CalendarEvent } from "~/reducers/calendar";
+import { CalendarEvent } from "~/reducers/main-function/calendar";
 import "../../sass/elements/resource-timeline.scss";
 
 export type ExternalEventType = {

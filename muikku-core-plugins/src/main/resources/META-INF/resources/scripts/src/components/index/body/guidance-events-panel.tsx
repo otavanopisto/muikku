@@ -2,7 +2,7 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
-import { Calendar } from "~/reducers/calendar";
+import { Calendar } from "~/reducers/main-function/calendar";
 import { StateType } from "~/reducers";
 import "~/sass/elements/panel.scss";
 import "~/sass/elements/item-list.scss";
