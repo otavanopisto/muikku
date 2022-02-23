@@ -45,7 +45,7 @@ const JournalListEditorEdit: React.FC<JournalListEditorEditProps> = (props) => {
    */
   const handleJournalChange = <T extends keyof JournalNoteUpdate>(
     key: T,
-    value: JournalNoteCreate[T]
+    value: JournalNoteUpdate[T]
   ) => {
     const updateJournal = { ...journal };
 

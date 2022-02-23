@@ -1,7 +1,12 @@
 import * as React from "react";
-import { JournalNoteRead, JournalNoteUpdate } from "~/@types/journal-center";
-import { IconButton } from "~/components/general/button";
+import {
+  JournalNoteRead,
+  JournalNoteUpdate,
+  JournalStatusType,
+} from "~/@types/journal-center";
+import Button, { ButtonPill, IconButton } from "~/components/general/button";
 import * as moment from "moment";
+import Dropdown from "~/components/general/dropdown";
 
 /**
  * JournalListProps
@@ -10,16 +15,22 @@ interface JournalListItemProps {
   archived: boolean;
   journal: JournalNoteRead;
   active?: boolean;
+  loggedUserIsCreator?: boolean;
   loggedUserIsOwner?: boolean;
   onArchiveClick?: (journalId: number) => void;
   onReturnArchivedClick?: (journalId: number) => void;
   onEditClick?: (journalId: number) => void;
-  onPinJournalClick: (journalId: number, journal: JournalNoteUpdate) => void;
+  onPinJournalClick?: (journalId: number, journal: JournalNoteUpdate) => void;
   onJournalClick?: (journalId: number) => void;
+  onUpdateJournalStatus?: (
+    journalId: number,
+    newStatus: JournalStatusType
+  ) => void;
 }
 
 const defaultProps = {
   active: false,
+  loggedUserIsCreator: false,
   loggedUserIsOwner: false,
 };
 
@@ -38,12 +49,23 @@ const JournalListItem = React.forwardRef<HTMLDivElement, JournalListItemProps>(
       onArchiveClick,
       onReturnArchivedClick,
       onPinJournalClick,
+      onUpdateJournalStatus,
+      loggedUserIsCreator,
       loggedUserIsOwner,
       active,
+      archived,
     } = props;
 
-    const { id, title, priority, creatorName, description, pinned, dueDate } =
-      journal;
+    const {
+      id,
+      title,
+      priority,
+      creatorName,
+      description,
+      pinned,
+      dueDate,
+      status,
+    } = journal;
 
     const updatedModifiers = [];
 
@@ -116,6 +138,22 @@ const JournalListItem = React.forwardRef<HTMLDivElement, JournalListItemProps>(
       }
     };
 
+    /**
+     * handleUpdateJournalStatusClick
+     * @param newStatus newStatus
+     */
+    const handleUpdateJournalStatusClick =
+      (newStatus: JournalStatusType) =>
+      (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        e.stopPropagation();
+
+        console.log(newStatus);
+
+        if (onUpdateJournalStatus) {
+          onUpdateJournalStatus(id, newStatus);
+        }
+      };
+
     if (myRef && myRef.current && myRef.current.classList) {
       if (active) {
         myRef.current.classList.add("state-ACTIVE");
@@ -144,6 +182,146 @@ const JournalListItem = React.forwardRef<HTMLDivElement, JournalListItemProps>(
       }
     }
 
+    /**
+     * renderStatus
+     */
+    const renderStatus = () => {
+      switch (status) {
+        case JournalStatusType.ONGOING:
+          return (
+            <ButtonPill style={{ backgroundColor: "grey" }} icon="profile" />
+          );
+
+        case JournalStatusType.APPROVAL_PENDING:
+          return (
+            <ButtonPill
+              style={{ backgroundColor: "orange" }}
+              icon="assessment-pending"
+            />
+          );
+
+        case JournalStatusType.APPROVED:
+          return (
+            <ButtonPill style={{ backgroundColor: "green" }} icon="check" />
+          );
+
+        default:
+          break;
+      }
+    };
+
+    /**
+     * renderUpdateStatus
+     */
+    const renderUpdateStatus = () => {
+      let content;
+
+      if (archived) {
+        return;
+      }
+
+      if (loggedUserIsOwner) {
+        if (status === JournalStatusType.ONGOING) {
+          content = (
+            <div>
+              <Button
+                onClick={handleUpdateJournalStatusClick(
+                  JournalStatusType.APPROVAL_PENDING
+                )}
+              >
+                Pyydä arviointia
+              </Button>
+            </div>
+          );
+          if (loggedUserIsCreator) {
+            content = (
+              <div>
+                <Button
+                  onClick={handleUpdateJournalStatusClick(
+                    JournalStatusType.APPROVED
+                  )}
+                >
+                  Merkkaa tehdyksi
+                </Button>
+              </div>
+            );
+          }
+        }
+        if (status === JournalStatusType.APPROVAL_PENDING) {
+          content = (
+            <div>
+              <Button
+                onClick={handleUpdateJournalStatusClick(
+                  JournalStatusType.APPROVAL_PENDING
+                )}
+              >
+                Peruuta pyyntö
+              </Button>
+            </div>
+          );
+        }
+
+        if (status === JournalStatusType.APPROVED) {
+          content = (
+            <div>
+              <Button
+                onClick={handleUpdateJournalStatusClick(
+                  JournalStatusType.ONGOING
+                )}
+              >
+                Kesken?
+              </Button>
+            </div>
+          );
+        }
+      } else if (loggedUserIsCreator && !loggedUserIsOwner) {
+        if (status === JournalStatusType.ONGOING) {
+          return;
+        }
+        if (status === JournalStatusType.APPROVAL_PENDING) {
+          content = (
+            <div>
+              <Button
+                onClick={handleUpdateJournalStatusClick(
+                  JournalStatusType.APPROVED
+                )}
+              >
+                Hyväksy
+              </Button>
+              <Button
+                onClick={handleUpdateJournalStatusClick(
+                  JournalStatusType.ONGOING
+                )}
+              >
+                Peruuta pyyntö
+              </Button>
+            </div>
+          );
+        }
+        if (status === JournalStatusType.APPROVED) {
+          content = (
+            <div>
+              <Button
+                onClick={handleUpdateJournalStatusClick(
+                  JournalStatusType.APPROVAL_PENDING
+                )}
+              >
+                Peruuta arviointi
+              </Button>
+            </div>
+          );
+        }
+      }
+
+      return (
+        <Dropdown content={content}>
+          <div tabIndex={0}>
+            <IconButton icon="cogs" />
+          </div>
+        </Dropdown>
+      );
+    };
+
     return (
       <div ref={ref} style={{ width: "100%" }} onClick={handleJournalClick(id)}>
         <div
@@ -161,43 +339,6 @@ const JournalListItem = React.forwardRef<HTMLDivElement, JournalListItemProps>(
               width: "100%",
               display: "flex",
               flexGrow: 1,
-              justifyContent: "flex-end",
-              position: "absolute",
-              top: 0,
-              right: 0,
-            }}
-          >
-            <div>
-              {loggedUserIsOwner && onEditClick ? (
-                <IconButton
-                  onClick={handleJournalOpenInEditModeClick(id)}
-                  icon="pencil"
-                />
-              ) : null}
-
-              <IconButton
-                style={{ backgroundColor: pinned && "blue" }}
-                onClick={handleJournalPinClick}
-                icon="pin"
-              />
-
-              {loggedUserIsOwner && onReturnArchivedClick ? (
-                <IconButton
-                  onClick={handleJournalReturnArchiveClick}
-                  icon="books"
-                />
-              ) : null}
-
-              {loggedUserIsOwner && onArchiveClick ? (
-                <IconButton onClick={handleJournalArchiveClick} icon="trash" />
-              ) : null}
-            </div>
-          </div>
-          <div
-            style={{
-              width: "100%",
-              display: "flex",
-              flexGrow: 1,
               alignItems: "center",
             }}
           >
@@ -206,43 +347,91 @@ const JournalListItem = React.forwardRef<HTMLDivElement, JournalListItemProps>(
             </div>
             <div
               className="block-data"
-              style={{ display: "flex", flexDirection: "column" }}
+              style={{ display: "flex", alignItems: "center" }}
             >
               <div
-                className="block-data-header"
-                style={{ display: "flex", flexDirection: "column" }}
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  padding: "0 5px",
+                }}
               >
-                <h3
-                  style={{
-                    marginRight: "5px",
-                    whiteSpace: "nowrap",
-                    width: "300px",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    margin: "5px 0",
-                  }}
-                >
-                  {title}{" "}
-                </h3>
-                {dueDate ? (
-                  <div>Suorita {moment(dueDate).format("l")} mennessä</div>
+                <div className="block-data-header">
+                  <h3
+                    style={{
+                      marginRight: "5px",
+                      whiteSpace: "nowrap",
+                      width: "150px",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      margin: "5px 0",
+                    }}
+                  >
+                    {title}
+                  </h3>
+                  {dueDate && (
+                    <div>Suorita {moment(dueDate).format("l")} mennessä</div>
+                  )}
+                </div>
+                {description ? (
+                  <div
+                    className="block-data-text"
+                    style={{
+                      whiteSpace: "nowrap",
+                      width: "150px",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      margin: "5px 0",
+                      fontStyle: "italic",
+                    }}
+                  >
+                    {description}
+                  </div>
                 ) : null}
               </div>
-              {description ? (
-                <div
-                  className="block-data-text"
-                  style={{
-                    whiteSpace: "nowrap",
-                    width: "200px",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    margin: "5px 0",
-                    fontStyle: "italic",
-                  }}
-                >
-                  {description}
-                </div>
-              ) : null}
+
+              {renderStatus()}
+            </div>
+          </div>
+          <div
+            style={{
+              width: "100%",
+              display: "flex",
+              flexGrow: 1,
+              justifyContent: "flex-end",
+              top: 0,
+              right: 0,
+              position: "absolute",
+            }}
+          >
+            <div style={{ display: "flex" }}>
+              {loggedUserIsCreator && onEditClick && (
+                <IconButton
+                  onClick={handleJournalOpenInEditModeClick(id)}
+                  icon="pencil"
+                />
+              )}
+
+              {loggedUserIsOwner && onPinJournalClick && (
+                <IconButton
+                  style={{ backgroundColor: pinned && "blue" }}
+                  onClick={handleJournalPinClick}
+                  icon="pin"
+                />
+              )}
+
+              {loggedUserIsCreator && onReturnArchivedClick && (
+                <IconButton
+                  onClick={handleJournalReturnArchiveClick}
+                  icon="books"
+                />
+              )}
+
+              {loggedUserIsCreator && !archived && onArchiveClick && (
+                <IconButton onClick={handleJournalArchiveClick} icon="trash" />
+              )}
+
+              {renderUpdateStatus()}
             </div>
           </div>
           <div
@@ -259,7 +448,7 @@ const JournalListItem = React.forwardRef<HTMLDivElement, JournalListItemProps>(
               right: 0,
             }}
           >
-            - {loggedUserIsOwner ? "Minä" : creatorName}
+            - {loggedUserIsCreator ? "Minä" : creatorName}
           </div>
         </div>
       </div>

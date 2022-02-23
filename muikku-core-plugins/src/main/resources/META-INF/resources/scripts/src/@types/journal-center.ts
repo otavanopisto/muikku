@@ -7,6 +7,15 @@ export enum JournalCreationType {
 }
 
 /**
+ * JournalStatusType
+ */
+export enum JournalStatusType {
+  ONGOING = "ONGOING",
+  APPROVAL_PENDING = "APPROVAL_PENDING",
+  APPROVED = "APPROVED",
+}
+
+/**
  * JournalPriority
  */
 export enum JournalPriority {
@@ -31,6 +40,7 @@ export interface JournalNoteRead {
   creatorName: string;
   created: string;
   dueDate: Date | null;
+  status: JournalStatusType;
 }
 
 /**
@@ -55,6 +65,7 @@ export interface JournalNoteUpdate {
   priority: JournalPriority;
   pinned: boolean;
   dueDate: Date | null;
+  status: JournalStatusType;
 }
 
 /**
@@ -90,59 +101,3 @@ export interface JournalFilters {
  * JournalCenterUsePlaceType
  */
 export type JournalCenterUsePlaceType = "records" | "guider";
-
-/**
- * JournalNoteRead2
- */
-/* export interface JournalNoteRead2 {
-  id: number;
-  title: string;
-  description: string;
-  type: JournalCreationType;
-  priority: JournalPriority;
-  pinned: boolean;
-  owner: number;
-  creator: number;
-  creatorName: string;
-  created: string;
-  dueDate: Date | null;
-  state: "ONGOING" | "CHECKING" | "DONE";
-  tasks: NoteTask[];
-} */
-
-/* type LinkedTaskType = MaterialTask | EvaluationTask; */
-
-/**
- * MaterialTask
- */
-/* interface MaterialTask {
-  discriminate: "MaterialTask";
-} */
-
-/**
- * EvaluationTask
- */
-/* interface EvaluationTask {
-  discriminate: "EvaluationTask";
-} */
-
-/**
- * NoteTask
- */
-/* interface NoteTask {
-  id: number;
-  name: string;
-  description?: string;
-  isDone: boolean;
-  linkedTask?: LinkedTaskType;
-} */
-
-/* const tasks: NoteTask[] = [
-  {
-    id: 1,
-    name: "Matikka tehtävä 1",
-    description:
-      "Matikka on haastava aine. Tee tämä tehtävä oppiaksesi matikan salat",
-    isDone: false,
-  },
-]; */

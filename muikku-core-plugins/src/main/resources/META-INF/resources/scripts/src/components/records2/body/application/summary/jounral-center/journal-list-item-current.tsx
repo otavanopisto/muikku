@@ -19,6 +19,7 @@ interface JournalListItemCurrentProps {
   openInEditMode?: boolean;
   currentSelectedJournal?: JournalNoteRead;
   dateEnd?: string;
+  loggedUserIsCreator?: boolean;
   loggedUserIsOwner?: boolean;
   i18n: i18nType;
   onClickCloseCurrent?: () => void;
@@ -26,7 +27,7 @@ interface JournalListItemCurrentProps {
     journalId: number,
     updatedJournal: JournalNoteUpdate
   ) => void;
-  onPinJournalClick: (journalId: number, journal: JournalNoteUpdate) => void;
+  onPinJournalClick?: (journalId: number, journal: JournalNoteUpdate) => void;
 }
 
 /**
@@ -41,6 +42,7 @@ const JournalListItemCurrent: React.FC<JournalListItemCurrentProps> = (
     openInEditMode,
     journals,
     currentSelectedJournal,
+    loggedUserIsCreator,
     loggedUserIsOwner,
     onJournalUpdate,
     onPinJournalClick,
@@ -183,14 +185,17 @@ const JournalListItemCurrent: React.FC<JournalListItemCurrentProps> = (
         >
           <h1>{title}</h1>
           <div>
-            {loggedUserIsOwner && onJournalUpdate ? (
+            {loggedUserIsCreator && onJournalUpdate ? (
               <IconButton onClick={handleClickEditMode} icon="pencil" />
             ) : null}
-            <IconButton
-              style={{ backgroundColor: pinned && "blue" }}
-              icon="pin"
-              onClick={handlePinClick}
-            />
+
+            {loggedUserIsOwner && onPinJournalClick ? (
+              <IconButton
+                style={{ backgroundColor: pinned && "blue" }}
+                icon="pin"
+                onClick={handlePinClick}
+              />
+            ) : null}
           </div>
         </div>
         {content.length > 0 ? (

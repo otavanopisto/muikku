@@ -9,7 +9,10 @@ import {
 } from "~/@types/journal-center";
 import promisify from "~/util/promisify";
 import mApi from "~/lib/mApi";
-import { JournalPriority } from "../../../../../../../@types/journal-center";
+import {
+  JournalPriority,
+  JournalStatusType,
+} from "../../../../../../../@types/journal-center";
 
 /**
  * initialState
@@ -73,15 +76,6 @@ export const useJournals = (
           ]);
 
         if (componentMounted.current) {
-          /**
-           * Default sort order
-           */
-          const order: string[] = [
-            JournalPriority.HIGH,
-            JournalPriority.NORMAL,
-            JournalPriority.LOW,
-          ];
-
           setJournals((journals) => ({
             ...journals,
             isLoadingList: false,
@@ -430,6 +424,59 @@ export const useJournals = (
     }
   };
 
+  /**
+   * changeJournalStatus
+   * @param journalId journalId
+   * @param newStatus newStatus
+   * @param onSuccess onSuccess
+   */
+  const updateJournalStatus = async (
+    journalId: number,
+    newStatus: JournalStatusType,
+    onSuccess?: () => void
+  ) => {
+    try {
+      const indexOfJournal = journals.journalsList.findIndex(
+        (j) => j.id === journalId
+      );
+
+      const journalToUpdate = journals.journalsList[indexOfJournal];
+
+      journalToUpdate.status = newStatus;
+
+      /**
+       * Updating and getting updated journal
+       */
+      const updatedJournal = <JournalNoteRead>(
+        await promisify(
+          mApi().notes.note.update(journalId, journalToUpdate),
+          "callback"
+        )()
+      );
+
+      /**
+       * Initializing list
+       */
+      const updatedJournalsList = [...journals.journalsList];
+
+      updatedJournalsList.splice(indexOfJournal, 1, updatedJournal);
+
+      setJournals((journals) => ({
+        ...journals,
+        journalsList: setToDefaultSortingOrder(updatedJournalsList),
+        isUpdatingList: false,
+      }));
+
+      displayNotification(`Lappu palautettu onnistuneesti`, "success");
+    } catch (err) {
+      displayNotification(`Hups errori palautus ${err}`, "error");
+      setJournals((journals) => ({
+        ...journals,
+        isUpdatingList: false,
+      }));
+    }
+  };
+
   return {
     journals,
     /**
@@ -479,5 +526,17 @@ export const useJournals = (
       journal: JournalNoteUpdate,
       onSuccess?: () => void
     ) => pinJournal(journalId, journal, onSuccess),
+
+    /**
+     * updateJournalStatus
+     * @param journalId journalId
+     * @param journalStatus journalStatus
+     * @param onSuccess onSuccess
+     */
+    updateJournalStatus: (
+      journalId: number,
+      journalStatus: JournalStatusType,
+      onSuccess?: () => void
+    ) => updateJournalStatus(journalId, journalStatus, onSuccess),
   };
 };
