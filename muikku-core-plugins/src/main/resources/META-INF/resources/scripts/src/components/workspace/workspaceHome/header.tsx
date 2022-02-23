@@ -192,7 +192,7 @@ class WorkspaceHomeHeader extends React.Component<
               </span>
             </div>
           ) : null}
-          {this.props.workspace.studentActivity ? (
+          {this.props.workspace.activity ? (
             <div className="meta__item meta__item--progress-data">
               <ProgressData
                 modifier="workspace-home"
@@ -200,7 +200,7 @@ class WorkspaceHomeHeader extends React.Component<
                   "plugin.workspace.index.courseProgressLabel"
                 )}
                 i18n={this.props.i18n}
-                activity={this.props.workspace.studentActivity}
+                activity={this.props.workspace.activity}
               />
             </div>
           ) : null}

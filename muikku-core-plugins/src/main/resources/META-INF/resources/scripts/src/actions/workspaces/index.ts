@@ -17,6 +17,7 @@ import {
   WorkspacesPatchType,
   WorkspaceAdditionalInfoType,
   WorkspaceUpdateType,
+  WorkspaceActivityType,
 } from "~/reducers/workspaces";
 import {
   ShortWorkspaceUserWithActiveStatusType,
@@ -63,6 +64,17 @@ export type SET_CURRENT_WORKSPACE = SpecificActionType<
   "SET_CURRENT_WORKSPACE",
   WorkspaceType
 >;
+
+export type UPDATE_CURRENT_WORKSPACE_ACTIVITY = SpecificActionType<
+  "UPDATE_CURRENT_WORKSPACE_ACTIVITY",
+  WorkspaceActivityType
+>;
+
+export type UPDATE_CURRENT_WORKSPACE_ASESSMENT_REQUESTS = SpecificActionType<
+  "UPDATE_CURRENT_WORKSPACE_ASESSMENT_REQUESTS",
+  WorkspaceAssessmentRequestType[]
+>;
+
 export type UPDATE_WORKSPACE_ASSESSMENT_STATE = SpecificActionType<
   "UPDATE_WORKSPACE_ASSESSMENT_STATE",
   {
@@ -687,9 +699,10 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
           //if I just make it be current it will be buggy
           workspace = { ...current };
         }
-        let assesments: WorkspaceStudentAssessmentsType;
+
+        /* let assesments: WorkspaceStudentAssessmentsType; */
         let assessmentRequests: Array<WorkspaceAssessmentRequestType>;
-        let activity: WorkspaceStudentActivityType;
+        let activity: WorkspaceActivityType;
         let additionalInfo: WorkspaceAdditionalInfoType;
         let contentDescription: MaterialContentNodeType;
         let producers: Array<WorkspaceProducerType>;
@@ -698,9 +711,10 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
         let details: WorkspaceDetailsType;
         let chatStatus: WorkspaceChatStatusType;
         const status = getState().status;
+
         [
           workspace,
-          assesments,
+          /* assesments, */
           assessmentRequests,
           activity,
           additionalInfo,
@@ -718,7 +732,7 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
             )()
           ),
 
-          reuseExistantValue(
+          /* reuseExistantValue(
             status.permissions.WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT,
             workspace && workspace.studentAssessments,
             () =>
@@ -730,7 +744,7 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
                 "callback"
               )()
           ),
-
+          */
           reuseExistantValue(
             status.permissions.WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT,
             workspace && workspace.assessmentRequests,
@@ -754,12 +768,15 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
                 typeof data.refreshActivity !== "undefined" &&
                   data.refreshActivity
                   ? null
-                  : workspace && workspace.studentActivity,
+                  : workspace && workspace.activity,
                 () =>
                   promisify(
                     mApi()
-                      .guider.workspaces.activity.cacheClear()
-                      .read(data.workspaceId),
+                      .workspace.workspaces.students.activity.cacheClear()
+                      .read(
+                        data.workspaceId,
+                        getState().status.userSchoolDataIdentifier
+                      ),
                     "callback"
                   )()
               )
@@ -831,9 +848,9 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
               )
             : null,
         ])) as any;
-        workspace.studentAssessments = assesments;
+        /* workspace.studentAssessments = assesments; */
         workspace.assessmentRequests = assessmentRequests;
-        workspace.studentActivity = activity;
+        workspace.activity = activity;
         workspace.additionalInfo = additionalInfo;
         workspace.contentDescription = contentDescription;
         workspace.producers = producers;
@@ -861,6 +878,97 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
           )
         );
         data.fail && data.fail();
+      }
+    };
+  };
+
+/**
+ * UpdateCurrentWorkspaceActivityTriggerType
+ */
+export interface UpdateCurrentWorkspaceActivityTriggerType {
+  (data: { success?: () => any; fail?: () => any }): AnyActionType;
+}
+
+/**
+ * updateCurrentWorkspaceActivity
+ */
+const updateCurrentWorkspaceActivity: UpdateCurrentWorkspaceActivityTriggerType =
+  function updateCurrentWorkspaceActivity(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      if (getState().status.loggedIn) {
+        try {
+          const activity = <WorkspaceActivityType>(
+            await promisify(
+              mApi()
+                .workspace.workspaces.students.activity.cacheClear()
+                .read(
+                  getState().workspaces.currentWorkspace.id,
+                  getState().status.userSchoolDataIdentifier
+                ),
+              "callback"
+            )()
+          );
+
+          dispatch({
+            type: "UPDATE_CURRENT_WORKSPACE_ACTIVITY",
+            payload: activity,
+          });
+        } catch (err) {
+          dispatch(
+            actions.displayNotification(
+              "Virhe päivitettäessä activity tietoja",
+              "error"
+            )
+          );
+        }
+      }
+    };
+  };
+
+/**
+ * UpdateCurrentWorkspaceAssessmentRequestTriggerType
+ */
+export interface UpdateCurrentWorkspaceAssessmentRequestTriggerType {
+  (data: { success?: () => any; fail?: () => any }): AnyActionType;
+}
+
+/**
+ * updateCurrentWorkspaceAssessmentRequest
+ */
+const updateCurrentWorkspaceAssessmentRequest: UpdateCurrentWorkspaceAssessmentRequestTriggerType =
+  function updateCurrentWorkspaceAssessmentRequest(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      if (getState().status.loggedIn) {
+        try {
+          const assessmentRequests = <WorkspaceAssessmentRequestType[]>(
+            await promisify(
+              mApi()
+                .assessmentrequest.workspace.assessmentRequests.cacheClear()
+                .read(getState().workspaces.currentWorkspace.id, {
+                  studentIdentifier: getState().status.userSchoolDataIdentifier,
+                }),
+              "callback"
+            )()
+          );
+
+          dispatch({
+            type: "UPDATE_CURRENT_WORKSPACE_ASESSMENT_REQUESTS",
+            payload: assessmentRequests,
+          });
+        } catch (err) {
+          dispatch(
+            actions.displayNotification(
+              "Virhe päivitettäessä arviointipyyntötietoja tietoja",
+              "error"
+            )
+          );
+        }
       }
     };
   };
@@ -900,9 +1008,13 @@ const requestAssessmentAtWorkspace: RequestAssessmentAtWorkspaceTriggerType =
           "callback"
         )();
 
-        let newAssessmentState = data.workspace.studentAssessments
-          ? data.workspace.studentAssessments.assessmentState
-          : data.workspace.studentActivity.assessmentState.state;
+        /**
+         * First finding current "assessmentState state" and depending what state it is assign new state
+         * Will be changed when module specific evaluation assessment request functionality is implemented
+         */
+        let newAssessmentState =
+          data.workspace.activity.assessmentState[0].state;
+
         if (newAssessmentState === "unassessed") {
           newAssessmentState = "pending";
         } else if (newAssessmentState == "pass") {
@@ -913,7 +1025,7 @@ const requestAssessmentAtWorkspace: RequestAssessmentAtWorkspaceTriggerType =
           newAssessmentState = "pending";
         }
 
-        dispatch({
+        /* dispatch({
           type: "UPDATE_WORKSPACE_ASSESSMENT_STATE",
           payload: {
             workspace: data.workspace,
@@ -921,7 +1033,19 @@ const requestAssessmentAtWorkspace: RequestAssessmentAtWorkspaceTriggerType =
             newDate: assessmentRequest.date,
             newAssessmentRequest: assessmentRequest,
           },
-        });
+        }); */
+
+        /**
+         * Must be done for now. To update activity when assessmentRequest is being made.
+         * In future changing state locally is better options one combination workspace module specific
+         * request are implemented
+         */
+        dispatch(updateCurrentWorkspaceActivity({}));
+
+        /**
+         * Same here
+         */
+        dispatch(updateCurrentWorkspaceAssessmentRequest({}));
 
         dispatch(
           actions.displayNotification(
@@ -997,9 +1121,13 @@ const cancelAssessmentAtWorkspace: CancelAssessmentAtWorkspaceTriggerType =
           "callback"
         )();
 
-        let newAssessmentState = data.workspace.studentAssessments
-          ? data.workspace.studentAssessments.assessmentState
-          : data.workspace.studentActivity.assessmentState.state;
+        /**
+         * First finding current "assessmentState state" and depending what state it is assign new state
+         * Will be changed when module specific evaluation assessment request functionality is implemented
+         */
+        let newAssessmentState =
+          data.workspace.activity.assessmentState[0].state;
+
         if (newAssessmentState == "pending") {
           newAssessmentState = "unassessed";
         } else if (newAssessmentState == "pending_pass") {
@@ -1008,7 +1136,7 @@ const cancelAssessmentAtWorkspace: CancelAssessmentAtWorkspaceTriggerType =
           newAssessmentState = "fail";
         }
 
-        dispatch({
+        /* dispatch({
           type: "UPDATE_WORKSPACE_ASSESSMENT_STATE",
           payload: {
             workspace: data.workspace,
@@ -1016,7 +1144,19 @@ const cancelAssessmentAtWorkspace: CancelAssessmentAtWorkspaceTriggerType =
             newDate: null,
             oldAssessmentRequestToDelete: assessmentRequest,
           },
-        });
+        }); */
+
+        /**
+         * Must be done for now. To update activity when assessmentRequest is being made.
+         * In future changing state locally is better options one combination workspace module specific
+         * request are implemented
+         */
+        dispatch(updateCurrentWorkspaceActivity({}));
+
+        /**
+         * Same here
+         */
+        dispatch(updateCurrentWorkspaceAssessmentRequest({}));
 
         dispatch(
           actions.displayNotification(
@@ -1490,7 +1630,7 @@ const updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
     delete actualOriginal["studentAssessments"];
     delete actualOriginal["studentAssessmentState"];
     delete actualOriginal["activityStatistics"];
-    delete actualOriginal["assessmentRequests"];
+    /* delete actualOriginal["assessmentRequests"]; */
     delete actualOriginal["additionalInfo"];
     delete actualOriginal["staffMembers"];
     delete actualOriginal["students"];
@@ -1726,7 +1866,7 @@ const updateOrganizationWorkspace: UpdateWorkspaceTriggerType =
         delete originalWorkspace["studentAssessments"];
         delete originalWorkspace["studentAssessmentState"];
         delete originalWorkspace["activityStatistics"];
-        delete originalWorkspace["assessmentRequests"];
+        /* delete originalWorkspace["assessmentRequests"]; */
         delete originalWorkspace["additionalInfo"];
         delete originalWorkspace["staffMembers"];
         delete originalWorkspace["students"];
@@ -4327,5 +4467,7 @@ export {
   loadTemplatesFromServer,
   updateWorkspaceEditModeState,
   loadWholeWorkspaceHelp,
+  updateCurrentWorkspaceActivity,
+  updateCurrentWorkspaceAssessmentRequest,
   setWholeWorkspaceHelp,
 };

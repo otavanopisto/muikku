@@ -1,4 +1,7 @@
-import { WorkspaceStudentActivityType } from "~/reducers/workspaces";
+import {
+  WorkspaceActivityType,
+  WorkspaceStudentActivityType,
+} from "~/reducers/workspaces";
 import { i18nType } from "reducers/base/i18n";
 import * as React from "react";
 import Dropdown from "~/components/general/dropdown";
@@ -13,7 +16,7 @@ import "~/sass/elements/wcag.scss";
  */
 export default class ProgressData extends React.Component<
   {
-    activity: WorkspaceStudentActivityType;
+    activity: WorkspaceActivityType;
     i18n: i18nType;
     title?: string;
     modifier?: string;

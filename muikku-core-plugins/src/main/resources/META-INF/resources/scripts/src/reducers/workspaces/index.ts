@@ -817,6 +817,20 @@ export default function workspaces(
     return Object.assign({}, state, {
       currentWorkspace: <WorkspaceType>action.payload,
     });
+  } else if (action.type === "UPDATE_CURRENT_WORKSPACE_ACTIVITY") {
+    return Object.assign({}, state, {
+      currentWorkspace: {
+        ...state.currentWorkspace,
+        activity: action.payload,
+      },
+    });
+  } else if (action.type === "UPDATE_CURRENT_WORKSPACE_ASESSMENT_REQUESTS") {
+    return Object.assign({}, state, {
+      currentWorkspace: {
+        ...state.currentWorkspace,
+        assessmentRequests: action.payload,
+      },
+    });
   } else if (action.type === "UPDATE_WORKSPACE_ASSESSMENT_STATE") {
     /* return Object.assign({}, state, {
       currentWorkspace: processWorkspaceToHaveNewAssessmentStateAndDate(

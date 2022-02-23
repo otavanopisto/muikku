@@ -293,6 +293,16 @@ class WorkspaceNavbar extends React.Component<
       },
     ];
 
+    /**
+     * !DISCLAIMER!
+     * Following by combinationWorkspace change, there can be multiple assessmentState objects
+     * So currently before module specific assessment are implemented, using first item of assessmentState list
+     * is only option.
+     */
+    const assessmentState =
+      this.props.currentWorkspace &&
+      this.props.currentWorkspace.activity.assessmentState[0];
+
     const assessmentRequestItem =
       this.props.currentWorkspace &&
       this.props.status.permissions.WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT
@@ -304,8 +314,7 @@ class WorkspaceNavbar extends React.Component<
                 key="assessment-request"
                 modifier="assessment"
                 content={getTextForAssessmentState(
-                  this.props.currentWorkspace.studentAssessments
-                    .assessmentState,
+                  assessmentState.state,
                   this.props.i18n
                 )}
               >
@@ -314,20 +323,16 @@ class WorkspaceNavbar extends React.Component<
                   as="span"
                   onClick={this.onRequestEvaluationOrCancel.bind(
                     this,
-                    this.props.currentWorkspace.studentAssessments
-                      .assessmentState
+                    assessmentState.state
                   )}
                   aria-label={getTextForAssessmentState(
-                    this.props.currentWorkspace.studentAssessments
-                      .assessmentState,
+                    assessmentState.state,
                     this.props.i18n
                   )}
                   className={`link link--icon link--workspace-assessment link--workspace-assessment-${getClassNameForAssessmentState(
-                    this.props.currentWorkspace.studentAssessments
-                      .assessmentState
+                    assessmentState.state
                   )} link--workspace-navbar icon-assessment-${getIconForAssessmentState(
-                    this.props.currentWorkspace.studentAssessments
-                      .assessmentState
+                    assessmentState.state
                   )}`}
                 ></Link>
               </Dropdown>
@@ -337,22 +342,16 @@ class WorkspaceNavbar extends React.Component<
 
     const assessmentRequestMenuItem = assessmentRequestItem ? (
       <Link
-        onClick={this.onRequestEvaluationOrCancel.bind(
-          this,
-          this.props.currentWorkspace.studentAssessments.assessmentState
-        )}
+        onClick={this.onRequestEvaluationOrCancel.bind(this, assessmentState)}
         className="link link--full link--menu link--assessment-request"
       >
         <span
           className={`link__icon icon-assessment-${getIconForAssessmentState(
-            this.props.currentWorkspace.studentAssessments.assessmentState
+            assessmentState.state
           )}`}
         />
         <span className="link--menu-text">
-          {getTextForAssessmentState(
-            this.props.currentWorkspace.studentAssessments.assessmentState,
-            this.props.i18n
-          )}
+          {getTextForAssessmentState(assessmentState.state, this.props.i18n)}
         </span>
       </Link>
     ) : null;

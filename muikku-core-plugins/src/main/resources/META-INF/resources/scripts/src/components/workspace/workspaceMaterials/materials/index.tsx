@@ -739,7 +739,7 @@ class WorkspaceMaterials extends React.Component<
             "plugin.workspace.index.courseProgressLabel"
           )}
           i18n={this.props.i18n}
-          activity={this.props.workspace.studentActivity}
+          activity={this.props.workspace.activity}
         />
       ) : null;
 
