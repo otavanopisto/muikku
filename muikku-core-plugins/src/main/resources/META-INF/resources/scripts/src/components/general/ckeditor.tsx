@@ -89,7 +89,7 @@ const extraConfig = (props: CKEditorProps) => ({
    * This sanitation happen during pasting so custom div styles are unaffected.
    */
   disallowedContent:
-    "*(dialog*, bubble*, button*, avatar*, pager*, panel*, tab*, zoom*, card*, carousel*, course*, message*, drawer*, filter*, footer*, label*, link*, menu*, meta*, navbar*, toc*, application*); *[on*]; *{font, font-family, font-size}",
+    "*(dialog*, bubble*, button*, avatar*, pager*, panel*, tab*, zoom*, card*, carousel*, course*, message*, drawer*, filter*, footer*, label*, link*, menu*, meta*, navbar*, toc*, application*); *[on*]; *{font*}; *{margin*}; *{padding*}; *{list*}; *{line-height}; *{white-space}; *{vertical*}; *{flex*}; *{text*};",
   entities_latin: false,
   entities_greek: false,
   entities: false,
