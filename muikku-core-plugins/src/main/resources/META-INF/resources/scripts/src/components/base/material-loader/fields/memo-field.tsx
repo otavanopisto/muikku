@@ -62,6 +62,7 @@ interface MemoFieldState {
   fieldSavedState: FieldStateStatus;
 }
 
+/* eslint-disable camelcase */
 const ckEditorConfig = {
   autoGrow_onStartup: true,
   mathJaxLib:
@@ -99,6 +100,7 @@ const ckEditorConfig = {
   extraPlugins: "image2,widget,lineutils,autogrow,muikku-mathjax,divarea",
   resize_enabled: true,
 };
+/* eslint-enable camelcase */
 
 /**
  * characterCount - Counts the amount of characters
