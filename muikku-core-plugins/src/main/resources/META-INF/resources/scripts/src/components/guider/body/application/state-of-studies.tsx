@@ -12,10 +12,11 @@ import "~/sass/elements/workspace-activity.scss";
 import { getUserImageUrl, getName } from "~/util/modifiers";
 import Hops from "~/components/base/hops_readable";
 import FileDeleteDialog from "../../dialogs/file-delete";
-import Workspaces from "./current-student/workspaces";
-import Ceepos from "./current-student/ceepos";
+import Workspaces from "./state-of-studies/workspaces";
+import Ceepos from "./state-of-studies/ceepos";
 import { StatusType } from "~/reducers/base/status";
 import FileUploader from "~/components/general/file-uploader";
+
 import MainChart from "~/components/general/graph/main-chart";
 import {
   AddFileToCurrentStudentTriggerType,
@@ -34,15 +35,15 @@ import {
 import NewMessage from "~/components/communicator/dialogs/new-message";
 import { ButtonPill } from "~/components/general/button";
 import GuiderToolbarLabels from "./toolbar/labels";
-import GuidanceEvent from "../../dialogs/guidance-event";
-import { CalendarEvent } from "~/reducers/main-function/calendar";
-import { ResourceTimeline } from "../../../general/resource-timeline";
+// import GuidanceEvent from "../../dialogs/guidance-event";
+// import { CalendarEvent } from "~/reducers/main-function/calendar";
+// import { ResourceTimeline } from "../../../general/resource-timeline";
 import { ExternalEventType } from "../../../general/resource-timeline";
 
 /**
- * CurrentStudentProps
+ * StateOfStudiesProps
  */
-interface CurrentStudentProps {
+interface StateOfStudiesProps {
   i18n: i18nType;
   guider: GuiderType;
   status: StatusType;
@@ -51,22 +52,22 @@ interface CurrentStudentProps {
 }
 
 /**
- * CurrentStudentState
+ * StateOfStudiesState
  */
-interface CurrentStudentState {}
-
+interface StateOfStudiesState {}
 /**
- * CurrentStudent
+ * StateOfStudies
  */
-class CurrentStudent extends React.Component<
-  CurrentStudentProps,
-  CurrentStudentState
+class StateOfStudies extends React.Component<
+  StateOfStudiesProps,
+  StateOfStudiesState
 > {
   /**
    * constructor
+   *
    * @param props props
    */
-  constructor(props: CurrentStudentProps) {
+  constructor(props: StateOfStudiesProps) {
     super(props);
   }
 
@@ -130,12 +131,12 @@ class CurrentStudent extends React.Component<
               buttonModifiers={["new-message", "guider-student"]}
             />
           </NewMessage>
-          <GuidanceEvent>
+          {/* <GuidanceEvent>
             <ButtonPill
               icon="bubbles"
               buttonModifiers={["new-message", "guider-student"]}
             />
-          </GuidanceEvent>
+          </GuidanceEvent> */}
         </div>
       </div>
     );
@@ -425,8 +426,8 @@ class CurrentStudent extends React.Component<
     };
 
     const externalEvents: ExternalEventType[] =
-      this.props.guider.currentStudent.workspaces &&
-      this.props.guider.currentStudent.workspaces.map((workspace) => ({
+      this.props.guider.currentStudent.currentWorkspaces &&
+      this.props.guider.currentStudent.currentWorkspaces.map((workspace) => ({
         id: workspace.id,
         title: workspace.name,
         duration: "36:00:00",
@@ -542,4 +543,4 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CurrentStudent);
+export default connect(mapStateToProps, mapDispatchToProps)(StateOfStudies);

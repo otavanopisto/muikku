@@ -49,10 +49,9 @@ interface GuiderStudentsProps {
 /**
  * GuiderStudentsState
  */
- interface GuiderStudentsState {
-  isOpen: boolean,
+interface GuiderStudentsState {
+  isOpen: boolean;
 }
-
 
 /**
  * GuiderStudents
@@ -78,27 +77,31 @@ class GuiderStudents extends BodyScrollLoader<
     this.cancellingLoadingPropertyLocation = "guiderStudentsCurrent";
     this.state = {
       isOpen: false,
-    }
+    };
 
     this.onStudentClick = this.onStudentClick.bind(this);
   }
 
-/**
- * getBackByHash
- * @returns New hash string
- */
+  /**
+   * getBackByHash
+   * @returns New hash string
+   */
   getBackByHash = (): string => {
-    let locationData = queryString.parse(document.location.hash.split("?")[1] || "", { arrayFormat: 'bracket' });
+    let locationData = queryString.parse(
+      document.location.hash.split("?")[1] || "",
+      { arrayFormat: "bracket" }
+    );
     delete locationData.c;
-    let newHash = "#?" + queryString.stringify(locationData, { arrayFormat: 'bracket' });
+    let newHash =
+      "#?" + queryString.stringify(locationData, { arrayFormat: "bracket" });
     return newHash;
-  }
-/**
- * onStudentClose
- */
+  };
+  /**
+   * onStudentClose
+   */
   onStudentClose = () => {
     location.hash = this.getBackByHash();
-  }
+  };
 
   /**
    * onStudentClick
@@ -127,9 +130,7 @@ class GuiderStudents extends BodyScrollLoader<
           <span>{"ERROR"}</span>
         </div>
       );
-    } else if (
-      this.props.guider.students.length === 0
-    ) {
+    } else if (this.props.guider.students.length === 0) {
       return (
         <div className="empty">
           <span>
@@ -141,7 +142,11 @@ class GuiderStudents extends BodyScrollLoader<
 
     return (
       <>
-        <StudentDialog student={this.props.guider.currentStudent} isOpen={this.props.guider.currentStudent !== null} onClose={this.onStudentClose} />
+        <StudentDialog
+          student={this.props.guider.currentStudent}
+          isOpen={this.props.guider.currentStudent !== null}
+          onClose={this.onStudentClose}
+        />
         <BodyScrollKeeper hidden={false}>
           <SelectableList
             as={ApplicationList}
@@ -178,15 +183,13 @@ class GuiderStudents extends BodyScrollLoader<
                    * contents
                    * @param checkbox checkbox
                    */
-                  contents: (checkbox: React.ReactElement<any>) => {
-                    return (
-                      <Student
-                        index={index}
-                        checkbox={checkbox}
-                        student={student}
-                      />
-                    );
-                  },
+                  contents: (checkbox: React.ReactElement<any>) => (
+                    <Student
+                      index={index}
+                      checkbox={checkbox}
+                      student={student}
+                    />
+                  ),
                 };
               }
             )}

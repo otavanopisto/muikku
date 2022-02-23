@@ -433,7 +433,7 @@ let loadStudent: LoadStudentTriggerType = function loadStudent(id) {
         promisify(
           mApi().workspace.workspaces.read({
             userIdentifier: id,
-            includeInactiveWorkspaces: true,
+            includeInactiveWorkspaces: false,
           }),
           "callback"
         )().then(async (workspaces: WorkspaceListType) => {
@@ -486,21 +486,21 @@ let loadStudent: LoadStudentTriggerType = function loadStudent(id) {
           }
           dispatch({
             type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-            payload: { property: "workspaces", value: workspaces },
+            payload: { property: "currentWorkspaces", value: workspaces },
           });
         }),
-        promisify(
-          mApi().activitylogs.user.workspace.read(id, {
-            from: new Date(new Date().getFullYear() - 2, 0),
-            to: new Date(),
-          }),
-          "callback"
-        )().then((activityLogs: ActivityLogType[]) => {
-          dispatch({
-            type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-            payload: { property: "activityLogs", value: activityLogs },
-          });
-        }),
+        // promisify(
+        //   mApi().activitylogs.user.workspace.read(id, {
+        //     from: new Date(new Date().getFullYear() - 2, 0),
+        //     to: new Date(),
+        //   }),
+        //   "callback"
+        // )().then((activityLogs: ActivityLogType[]) => {
+        //   dispatch({
+        //     type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+        //     payload: { property: "activityLogs", value: activityLogs },
+        //   });
+        // }),
 
         canListUserOrders &&
           promisify(mApi().ceepos.user.orders.read(id), "callback")().then(
@@ -517,6 +517,127 @@ let loadStudent: LoadStudentTriggerType = function loadStudent(id) {
         type: "UPDATE_CURRENT_GUIDER_STUDENT_STATE",
         payload: <GuiderCurrentStudentStateType>"READY",
       });
+
+      dispatch({
+        type: "UNLOCK_TOOLBAR",
+        payload: null,
+      });
+    } catch (err) {
+      if (!(err instanceof MApiError)) {
+        throw err;
+      }
+      dispatch(
+        notificationActions.displayNotification(
+          getState().i18n.text.get("plugin.guider.errormessage.user"),
+          "error"
+        )
+      );
+      dispatch({
+        type: "UPDATE_GUIDER_ALL_PROPS",
+        payload: {
+          currentState: <GuiderCurrentStudentStateType>"ERROR",
+        },
+      });
+      dispatch({
+        type: "UNLOCK_TOOLBAR",
+        payload: null,
+      });
+    }
+  };
+};
+
+let loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
+  id
+) {
+  return async (
+    dispatch: (arg: AnyActionType) => any,
+    getState: () => StateType
+  ) => {
+    try {
+      dispatch({
+        type: "LOCK_TOOLBAR",
+        payload: null,
+      });
+
+      dispatch({
+        type: "UPDATE_CURRENT_GUIDER_STUDENT_STATE",
+        payload: <GuiderCurrentStudentStateType>"LOADING",
+      });
+      promisify(
+        mApi().workspace.workspaces.read({
+          userIdentifier: id,
+          includeInactiveWorkspaces: true,
+        }),
+        "callback"
+      )().then(async (workspaces: WorkspaceListType) => {
+        if (workspaces && workspaces.length) {
+          await Promise.all([
+            Promise.all(
+              workspaces.map(async (workspace, index) => {
+                let activity: WorkspaceStudentActivityType = <
+                  WorkspaceStudentActivityType
+                >await promisify(
+                  mApi().guider.workspaces.studentactivity.read(
+                    workspace.id,
+                    id
+                  ),
+                  "callback"
+                )();
+                workspaces[index].studentActivity = activity;
+              })
+            ),
+            Promise.all(
+              workspaces.map(async (workspace, index) => {
+                let statistics: WorkspaceForumStatisticsType = <
+                  WorkspaceForumStatisticsType
+                >await promisify(
+                  mApi().workspace.workspaces.forumStatistics.read(
+                    workspace.id,
+                    { userIdentifier: id }
+                  ),
+                  "callback"
+                )();
+                workspaces[index].forumStatistics = statistics;
+              })
+            ),
+            Promise.all(
+              workspaces.map(async (workspace, index) => {
+                let activityLogs: ActivityLogType[] = <ActivityLogType[]>(
+                  await promisify(
+                    mApi().activitylogs.user.workspace.read(id, {
+                      workspaceEntityId: workspace.id,
+                      from: new Date(new Date().getFullYear() - 2, 0),
+                      to: new Date(),
+                    }),
+                    "callback"
+                  )()
+                );
+                workspaces[index].activityLogs = activityLogs;
+              })
+            ),
+          ]);
+        }
+        dispatch({
+          type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+          payload: { property: "pastWorkspaces", value: workspaces },
+        });
+      }),
+        promisify(
+          mApi().activitylogs.user.workspace.read(id, {
+            from: new Date(new Date().getFullYear() - 2, 0),
+            to: new Date(),
+          }),
+          "callback"
+        )().then((activityLogs: ActivityLogType[]) => {
+          dispatch({
+            type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+            payload: { property: "activityLogs", value: activityLogs },
+          });
+        }),
+        dispatch({
+          type: "UPDATE_CURRENT_GUIDER_STUDENT_STATE",
+          payload: <GuiderCurrentStudentStateType>"READY",
+        });
 
       dispatch({
         type: "UNLOCK_TOOLBAR",
@@ -1066,6 +1187,7 @@ export {
   loadStudents,
   loadMoreStudents,
   loadStudent,
+  loadStudentHistory,
   addToGuiderSelectedStudents,
   removeFromGuiderSelectedStudents,
   addGuiderLabelToCurrentUser,

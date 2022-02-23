@@ -33,10 +33,10 @@ class CurrentStudentWorkspaces extends React.Component<
    * render
    */
   render() {
-    return this.props.guider.currentStudent.workspaces ? (
-      this.props.guider.currentStudent.workspaces.length ? (
+    return this.props.guider.currentStudent.currentWorkspaces ? (
+      this.props.guider.currentStudent.currentWorkspaces.length ? (
         <div className="application-list">
-          {this.props.guider.currentStudent.workspaces
+          {this.props.guider.currentStudent.currentWorkspaces
             .sort((a, b) =>
               ("" + a.name).localeCompare(b.name, this.props.locale, {
                 sensitivity: "base",
