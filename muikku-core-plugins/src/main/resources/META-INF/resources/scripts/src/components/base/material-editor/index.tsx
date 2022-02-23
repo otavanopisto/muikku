@@ -120,7 +120,6 @@ const CKEditorConfig = (
       name: "editing",
       items: [
         "Find",
-        "Replace",
         "-",
         "SelectAll",
         "-",
