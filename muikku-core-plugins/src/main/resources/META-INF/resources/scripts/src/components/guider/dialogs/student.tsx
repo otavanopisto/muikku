@@ -17,7 +17,15 @@ import {
   GuiderCurrentStudentStateType,
 } from "~/reducers/main-function/guider";
 import StateOfStudies from "../body/application/state-of-studies";
+import StudyHistory from "../body/application/study-history";
+
 import { getName } from "~/util/modifiers";
+
+export type tabs =
+  | "STUDIES"
+  | "STUDY_PLAN"
+  | "GUIDANCE_RELATIONS"
+  | "STUDY_HISTORY";
 
 /**
  * StudentDialogProps
@@ -48,6 +56,7 @@ class StudentDialog extends React.Component<
 > {
   /**
    * constructor
+   * @param props props for the constructor
    */
   constructor(props: StudentDialogProps) {
     super(props);
@@ -57,8 +66,28 @@ class StudentDialog extends React.Component<
     };
   }
 
-  onTabChange = (id: string) => {
+  /**
+   * Tab change function
+   * @param id tab id
+   */
+  onTabChange = (id: tabs) => {
     this.setState({ activeTab: id });
+    switch (id) {
+      case "STUDIES": {
+        return console.log("TODOS");
+      }
+      case "STUDY_PLAN": {
+        return console.log("TODO_PLAN");
+      }
+      case "GUIDANCE_RELATIONS": {
+        return console.log("TODO_RELATIONS");
+      }
+      case "STUDY_HISTORY": {
+        return console.log("TODO_HISTORY");
+      }
+      default:
+        return null;
+    }
   };
 
   /**
@@ -68,7 +97,7 @@ class StudentDialog extends React.Component<
   render() {
     const tabs = [
       {
-        id: "STUDENT",
+        id: "STUDIES",
         name: this.props.i18n.text.get(
           "plugin.guider.user.tabs.title.situation"
         ),
@@ -93,7 +122,7 @@ class StudentDialog extends React.Component<
           "plugin.guider.user.tabs.title.studyHistory"
         ),
         type: "guider-student",
-        component: <div>Opintohistoria</div>,
+        component: <StudyHistory />,
       },
     ];
 
@@ -101,6 +130,10 @@ class StudentDialog extends React.Component<
       return null;
     }
 
+    /**
+     * Content
+     * @returns JSX.Element
+     */
     const content = () => (
       <Tabs
         modifier="guider-student"

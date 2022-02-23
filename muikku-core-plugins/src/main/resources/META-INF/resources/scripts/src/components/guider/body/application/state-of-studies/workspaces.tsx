@@ -1,4 +1,4 @@
-import Workspace from "./workspaces/workspace";
+import Workspace from "../workspaces/workspace";
 import * as React from "react";
 import { connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
