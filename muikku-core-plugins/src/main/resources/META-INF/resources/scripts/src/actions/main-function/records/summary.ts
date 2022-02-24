@@ -5,6 +5,8 @@ import { AnyActionType, SpecificActionType } from "~/actions";
 import {
   SummaryDataType,
   SummaryStatusType,
+  SummaryStudentsGuidanceCouncelorsType,
+  SummaryStudyTime,
 } from "~/reducers/main-function/records/summary";
 import {
   WorkspaceForumStatisticsType,
@@ -13,6 +15,7 @@ import {
   WorkspaceType,
 } from "~/reducers/workspaces";
 import { StateType } from "~/reducers";
+import { GuiderUserGroupListType } from "~/reducers/main-function/guider";
 
 export type UPDATE_STUDIES_SUMMARY = SpecificActionType<
   "UPDATE_STUDIES_SUMMARY",
@@ -62,22 +65,24 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
       )();
 
       /* We need returned exercises and evaluated courses */
-      const assignmentsDone: any = [];
-      const coursesDone: any = [];
+      const assignmentsDone: Record<string, unknown>[] = [];
+      const coursesDone: Record<string, unknown>[] = [];
 
       /* Student's study time */
-      const studentsDetails: any = await promisify(
-        mApi().user.students.read(pyramusId),
-        "callback"
-      )();
+      const studentsDetails = <SummaryStudyTime>(
+        await promisify(mApi().user.students.read(pyramusId), "callback")()
+      );
 
       /* Student's user groups */
-      const studentsUserGroups: any = await promisify(
-        mApi().usergroup.groups.read({ userIdentifier: pyramusId }),
-        "callback"
-      )();
+      const studentsUserGroups = <GuiderUserGroupListType>(
+        await promisify(
+          mApi().usergroup.groups.read({ userIdentifier: pyramusId }),
+          "callback"
+        )()
+      );
 
-      let studentsGuidanceCouncelors: any = [];
+      const studentsGuidanceCouncelors: SummaryStudentsGuidanceCouncelorsType[] =
+        [];
 
       /*
         We need to filter student's usergroups that are guidance groups, then we fetch guidance councelors
@@ -86,43 +91,46 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
       if (studentsUserGroups && studentsUserGroups.length) {
         studentsUserGroups
           .filter(
-            (studentsUserGroup: any) =>
-              studentsUserGroup.isGuidanceGroup == true
+            (studentsUserGroup) => studentsUserGroup.isGuidanceGroup == true
           )
-          .forEach(function (studentsUserGroup: any) {
+          .forEach((studentsUserGroup) => {
             mApi()
               .usergroup.groups.staffMembers.read(studentsUserGroup.id, {
                 properties:
                   "profile-phone,profile-vacation-start,profile-vacation-end",
               })
-              .callback(function (err: any, result: any) {
-                result.forEach(function (studentsGuidanceCouncelor: any) {
-                  if (
-                    !studentsGuidanceCouncelor.some(
-                      (existingStudentCouncelor: any) =>
-                        existingStudentCouncelor.userEntityId ==
-                        studentsGuidanceCouncelor.userEntityId
-                    )
-                  ) {
-                    studentsGuidanceCouncelor.push(studentsGuidanceCouncelor);
-                    studentsGuidanceCouncelor.sort(function (x: any, y: any) {
-                      const a = x.lastName.toUpperCase(),
-                        b = y.lastName.toUpperCase();
-                      return a == b ? 0 : a > b ? 1 : -1;
-                    });
-                  }
-                });
-              });
+              .callback(
+                (err: any, result: SummaryStudentsGuidanceCouncelorsType[]) => {
+                  result.forEach((studentsGuidanceCouncelor) => {
+                    if (
+                      !studentsGuidanceCouncelors.some(
+                        (existingStudentCouncelor) =>
+                          existingStudentCouncelor.userEntityId ==
+                          studentsGuidanceCouncelor.userEntityId
+                      )
+                    ) {
+                      studentsGuidanceCouncelors.push(
+                        studentsGuidanceCouncelor
+                      );
+                      studentsGuidanceCouncelors.sort((x, y) => {
+                        const a = x.lastName.toUpperCase(),
+                          b = y.lastName.toUpperCase();
+                        return a == b ? 0 : a > b ? 1 : -1;
+                      });
+                    }
+                  });
+                }
+              );
           });
       }
 
       /* Getting past the object with keys */
-      const activityArrays: any = Object.keys(activityLogs).map(
-        (key) => activityLogs[key]
-      );
+      const activityArrays: Record<string, unknown>[] = Object.keys(
+        activityLogs
+      ).map((key) => activityLogs[key]);
 
       /* Picking the done exercises and evaluated courses from the objects */
-      activityArrays.forEach(function (element: any) {
+      activityArrays.forEach((element: any) => {
         element.find(function (param: any) {
           param["type"] == "MATERIAL_ASSIGNMENTDONE"
             ? assignmentsDone.push(param["type"])
@@ -144,7 +152,7 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
       if (workspaces && workspaces.length) {
         await Promise.all([
           Promise.all(
-            workspaces.map(async (workspace: any, index: any) => {
+            workspaces.map(async (workspace, index) => {
               const activity = <WorkspaceActivityType>(
                 await promisify(
                   mApi().workspace.workspaces.students.activity.read(
@@ -158,7 +166,7 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
             })
           ),
           Promise.all(
-            workspaces.map(async (workspace: any, index: any) => {
+            workspaces.map(async (workspace, index) => {
               const statistics: WorkspaceForumStatisticsType = <
                 WorkspaceForumStatisticsType
               >await promisify(
@@ -171,7 +179,7 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
             })
           ),
           Promise.all(
-            workspaces.map(async (workspace: any, index: any) => {
+            workspaces.map(async (workspace, index) => {
               const courseActivity: ActivityLogType[] = <ActivityLogType[]>(
                 await promisify(
                   mApi().activitylogs.user.workspace.read(pyramusId, {
