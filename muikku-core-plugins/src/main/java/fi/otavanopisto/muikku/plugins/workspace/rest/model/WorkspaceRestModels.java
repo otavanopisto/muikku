@@ -160,7 +160,7 @@ public class WorkspaceRestModels {
     return new WorkspaceSubjectRestModel(workspaceSubject.getIdentifier(), subject, workspaceSubject.getLength(), workspaceLengthUnit);
   }
   
-  public GuiderStudentWorkspaceActivityRestModel toRestModel(GuiderStudentWorkspaceActivity activity, Object assessmentStates) {
+  public GuiderStudentWorkspaceActivityRestModel toRestModel(GuiderStudentWorkspaceActivity activity, List<WorkspaceAssessmentState> assessmentStates) {
     GuiderStudentWorkspaceActivityRestModel model = new GuiderStudentWorkspaceActivityRestModel(
         activity.getLastVisit(),
         activity.getNumVisits(),

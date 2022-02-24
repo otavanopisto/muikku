@@ -14,7 +14,7 @@ public class GuiderStudentWorkspaceActivityRestModel {
       long evaluablesUnanswered, long evaluablesAnswered, Date evaluablesAnsweredLastDate, long evaluablesSubmitted,
       Date evaluablesSubmittedLastDate, long evaluablesWithdrawn, Date evaluablesWithdrawnLastDate, long evaluablesPassed, Date evaluablesPassedLastDate, 
       long evaluablesFailed, Date evaluablesFailedLastDate, long evaluablesIncomplete, Date evaluablesIncompleteLastDate, 
-      long exercisesUnanswered, long exercisesAnswered, Date exercisesAnsweredLastDate, Object assessmentState) {
+      long exercisesUnanswered, long exercisesAnswered, Date exercisesAnsweredLastDate, List<WorkspaceAssessmentState> assessmentState) {
     super();
     this.lastVisit = lastVisit;
     this.numVisits = numVisits;
@@ -139,11 +139,11 @@ public class GuiderStudentWorkspaceActivityRestModel {
     this.lastJournalEntry = lastJournalEntry;
   }
   
-  public Object getAssessmentState() {
+  public List<WorkspaceAssessmentState> getAssessmentState() {
     return assessmentState;
   }
   
-  public void setAssessmentState(Object assessmentState) {
+  public void setAssessmentState(List<WorkspaceAssessmentState> assessmentState) {
     this.assessmentState = assessmentState;
   }
 
@@ -201,6 +201,5 @@ public class GuiderStudentWorkspaceActivityRestModel {
   private long exercisesAnswered;
   private Date exercisesAnsweredLastDate;
   
-  // TODO Fix this
-  private Object assessmentState;
+  private List<WorkspaceAssessmentState> assessmentState;
 }

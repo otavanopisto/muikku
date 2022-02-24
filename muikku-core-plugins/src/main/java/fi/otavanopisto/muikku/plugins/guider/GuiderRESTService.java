@@ -178,70 +178,71 @@ public class GuiderRESTService extends PluginRESTService {
   @Any
   private Instance<SearchProvider> searchProviders;
   
-  @GET
-  @Path("/workspaces/{WORKSPACEENTITYID}/activity")
-  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  // TODO Is this needed?
-  public Response getWorkspaceAssessmentsStudyProgressAnalysis(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId) {
-    SchoolDataIdentifier userIdentifier = sessionController.getLoggedUser();
-    if (userIdentifier == null) {
-      return Response.status(Status.BAD_REQUEST).entity("Invalid userIdentifier").build();
-    }
-    
-    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
-    if (workspaceEntity == null) {
-      return Response.status(Status.NOT_FOUND).entity("WorkspaceEntity not found").build();
-    }
-    
-    GuiderStudentWorkspaceActivity activity = guiderController.getStudentWorkspaceActivity(workspaceEntity, userIdentifier);
-    if (activity == null) {
-      return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Failed to analyze assignments progress for student %s in workspace %d", userIdentifier, workspaceEntity.getId())).build();
-    }
-    
-    WorkspaceAssessmentState assessmentState = new WorkspaceAssessmentState(null, WorkspaceAssessmentState.UNASSESSED);
-    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserIdentifier(workspaceEntity, userIdentifier);
-    if (workspaceUserEntity != null && workspaceUserEntity.getWorkspaceUserRole().getArchetype() == WorkspaceRoleArchetype.STUDENT) {
-      assessmentState = assessmentRequestController.getWorkspaceAssessmentState(workspaceUserEntity);
-    }
-    
-    return Response.ok(workspaceRestModels.toRestModel(activity, assessmentState)).build();
-  }
+//  @GET
+//  @Path("/workspaces/{WORKSPACEENTITYID}/activity")
+//  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+//  // TODO Is this needed?
+//  @Deprecated
+//  public Response getWorkspaceAssessmentsStudyProgressAnalysis(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId) {
+//    SchoolDataIdentifier userIdentifier = sessionController.getLoggedUser();
+//    if (userIdentifier == null) {
+//      return Response.status(Status.BAD_REQUEST).entity("Invalid userIdentifier").build();
+//    }
+//    
+//    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+//    if (workspaceEntity == null) {
+//      return Response.status(Status.NOT_FOUND).entity("WorkspaceEntity not found").build();
+//    }
+//    
+//    GuiderStudentWorkspaceActivity activity = guiderController.getStudentWorkspaceActivity(workspaceEntity, userIdentifier);
+//    if (activity == null) {
+//      return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Failed to analyze assignments progress for student %s in workspace %d", userIdentifier, workspaceEntity.getId())).build();
+//    }
+//    
+//    WorkspaceAssessmentState assessmentState = new WorkspaceAssessmentState(null, WorkspaceAssessmentState.UNASSESSED);
+//    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserIdentifier(workspaceEntity, userIdentifier);
+//    if (workspaceUserEntity != null && workspaceUserEntity.getWorkspaceUserRole().getArchetype() == WorkspaceRoleArchetype.STUDENT) {
+//      assessmentState = assessmentRequestController.getWorkspaceAssessmentState(workspaceUserEntity);
+//    }
+//    
+//    return Response.ok(workspaceRestModels.toRestModel(activity, assessmentState)).build();
+//  }
   
-  @GET
-  @Path("/workspaces/{WORKSPACEENTITYID}/studentactivity/{USERIDENTIFIER}")
-  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  @Deprecated // TODO This could be removed as activity is part of workspaces in guider and records
-  public Response getWorkspaceAssessmentsStudyProgressAnalysis(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("USERIDENTIFIER") String userId) {
-    SchoolDataIdentifier userIdentifier = SchoolDataIdentifier.fromId(userId);
-    if (userIdentifier == null) {
-      return Response.status(Status.BAD_REQUEST).entity("Invalid userIdentifier").build();
-    }
-    
-    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
-    if (workspaceEntity == null) {
-      return Response.status(Status.NOT_FOUND).entity("WorkspaceEntity not found").build();
-    }
-    
-    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserIdentifier(workspaceEntity, userIdentifier);
-    if (workspaceUserEntity == null) {
-      return Response.status(Status.NOT_FOUND).entity("WorkspaceUserEntity not found").build();
-    }
-    
-    if (!sessionController.hasWorkspacePermission(GuiderPermissions.GUIDER_FIND_STUDENT_WORKSPACE_ACTIVITY, workspaceEntity)) {
-      if (!sessionController.getLoggedUserEntity().getId().equals(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().getId())) {
-        return Response.status(Status.FORBIDDEN).build();
-      }
-    }
-    
-    GuiderStudentWorkspaceActivity activity = guiderController.getStudentWorkspaceActivity(workspaceEntity, userIdentifier);
-    if (activity == null) {
-      return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Failed to analyze assignments progress for student %s in workspace %d", userIdentifier, workspaceEntity.getId())).build();
-    }
-    
-    List<WorkspaceAssessmentState> assessmentStates = assessmentRequestController.getAllWorkspaceAssessmentStates(workspaceUserEntity);
-    
-    return Response.ok(workspaceRestModels.toRestModel(activity, assessmentStates)).build();
-  }
+//  @GET
+//  @Path("/workspaces/{WORKSPACEENTITYID}/studentactivity/{USERIDENTIFIER}")
+//  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+//  @Deprecated // TODO This could be removed as activity is part of workspaces in guider and records
+//  public Response getWorkspaceAssessmentsStudyProgressAnalysis(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("USERIDENTIFIER") String userId) {
+//    SchoolDataIdentifier userIdentifier = SchoolDataIdentifier.fromId(userId);
+//    if (userIdentifier == null) {
+//      return Response.status(Status.BAD_REQUEST).entity("Invalid userIdentifier").build();
+//    }
+//    
+//    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+//    if (workspaceEntity == null) {
+//      return Response.status(Status.NOT_FOUND).entity("WorkspaceEntity not found").build();
+//    }
+//    
+//    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserIdentifier(workspaceEntity, userIdentifier);
+//    if (workspaceUserEntity == null) {
+//      return Response.status(Status.NOT_FOUND).entity("WorkspaceUserEntity not found").build();
+//    }
+//    
+//    if (!sessionController.hasWorkspacePermission(GuiderPermissions.GUIDER_FIND_STUDENT_WORKSPACE_ACTIVITY, workspaceEntity)) {
+//      if (!sessionController.getLoggedUserEntity().getId().equals(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().getId())) {
+//        return Response.status(Status.FORBIDDEN).build();
+//      }
+//    }
+//    
+//    GuiderStudentWorkspaceActivity activity = guiderController.getStudentWorkspaceActivity(workspaceEntity, userIdentifier);
+//    if (activity == null) {
+//      return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Failed to analyze assignments progress for student %s in workspace %d", userIdentifier, workspaceEntity.getId())).build();
+//    }
+//    
+//    List<WorkspaceAssessmentState> assessmentStates = assessmentRequestController.getAllWorkspaceAssessmentStates(workspaceUserEntity);
+//    
+//    return Response.ok(workspaceRestModels.toRestModel(activity, assessmentStates)).build();
+//  }
   
   @GET
   @Path("/students")
