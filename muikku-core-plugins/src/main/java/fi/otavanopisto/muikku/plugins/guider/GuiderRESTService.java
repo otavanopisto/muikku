@@ -47,11 +47,7 @@ import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
-import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
-import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
-import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestController;
-import fi.otavanopisto.muikku.plugins.assessmentrequest.WorkspaceAssessmentState;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
 import fi.otavanopisto.muikku.plugins.timed.notifications.AssesmentRequestNotificationController;
 import fi.otavanopisto.muikku.plugins.timed.notifications.NoPassedCoursesNotificationController;
@@ -62,15 +58,11 @@ import fi.otavanopisto.muikku.plugins.timed.notifications.model.StudyTimeNotific
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsFileController;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.TranscriptOfRecordsFile;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.rest.ToRWorkspaceRestModel;
-import fi.otavanopisto.muikku.plugins.workspace.WorkspaceEntityFileController;
-import fi.otavanopisto.muikku.plugins.workspace.WorkspaceVisitController;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRestModels;
 import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
 import fi.otavanopisto.muikku.rest.model.Student;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
-import fi.otavanopisto.muikku.schooldata.WorkspaceController;
-import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivity;
 import fi.otavanopisto.muikku.search.IndexedWorkspace;
@@ -109,25 +101,13 @@ public class GuiderRESTService extends PluginRESTService {
   private Logger logger;
   
   @Inject
-  private WorkspaceController workspaceController;
-  
-  @Inject
-  private WorkspaceEntityController workspaceEntityController;
-  
-  @Inject
   private WorkspaceUserEntityController workspaceUserEntityController;
   
   @Inject
   private SessionController sessionController;
 
   @Inject
-  private GuiderController guiderController;
-
-  @Inject
   private EvaluationController evaluationController;
-  
-  @Inject
-  private AssessmentRequestController assessmentRequestController;
   
   @Inject
   private TranscriptOfRecordsFileController torFileController;
@@ -169,80 +149,8 @@ public class GuiderRESTService extends PluginRESTService {
   private OrganizationEntityController organizationEntityController;
 
   @Inject
-  private WorkspaceVisitController workspaceVisitController;
-  
-  @Inject
-  private WorkspaceEntityFileController workspaceEntityFileController;
-  
-  @Inject
   @Any
   private Instance<SearchProvider> searchProviders;
-  
-//  @GET
-//  @Path("/workspaces/{WORKSPACEENTITYID}/activity")
-//  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-//  // TODO Is this needed?
-//  @Deprecated
-//  public Response getWorkspaceAssessmentsStudyProgressAnalysis(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId) {
-//    SchoolDataIdentifier userIdentifier = sessionController.getLoggedUser();
-//    if (userIdentifier == null) {
-//      return Response.status(Status.BAD_REQUEST).entity("Invalid userIdentifier").build();
-//    }
-//    
-//    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
-//    if (workspaceEntity == null) {
-//      return Response.status(Status.NOT_FOUND).entity("WorkspaceEntity not found").build();
-//    }
-//    
-//    GuiderStudentWorkspaceActivity activity = guiderController.getStudentWorkspaceActivity(workspaceEntity, userIdentifier);
-//    if (activity == null) {
-//      return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Failed to analyze assignments progress for student %s in workspace %d", userIdentifier, workspaceEntity.getId())).build();
-//    }
-//    
-//    WorkspaceAssessmentState assessmentState = new WorkspaceAssessmentState(null, WorkspaceAssessmentState.UNASSESSED);
-//    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserIdentifier(workspaceEntity, userIdentifier);
-//    if (workspaceUserEntity != null && workspaceUserEntity.getWorkspaceUserRole().getArchetype() == WorkspaceRoleArchetype.STUDENT) {
-//      assessmentState = assessmentRequestController.getWorkspaceAssessmentState(workspaceUserEntity);
-//    }
-//    
-//    return Response.ok(workspaceRestModels.toRestModel(activity, assessmentState)).build();
-//  }
-  
-//  @GET
-//  @Path("/workspaces/{WORKSPACEENTITYID}/studentactivity/{USERIDENTIFIER}")
-//  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-//  @Deprecated // TODO This could be removed as activity is part of workspaces in guider and records
-//  public Response getWorkspaceAssessmentsStudyProgressAnalysis(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("USERIDENTIFIER") String userId) {
-//    SchoolDataIdentifier userIdentifier = SchoolDataIdentifier.fromId(userId);
-//    if (userIdentifier == null) {
-//      return Response.status(Status.BAD_REQUEST).entity("Invalid userIdentifier").build();
-//    }
-//    
-//    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
-//    if (workspaceEntity == null) {
-//      return Response.status(Status.NOT_FOUND).entity("WorkspaceEntity not found").build();
-//    }
-//    
-//    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserIdentifier(workspaceEntity, userIdentifier);
-//    if (workspaceUserEntity == null) {
-//      return Response.status(Status.NOT_FOUND).entity("WorkspaceUserEntity not found").build();
-//    }
-//    
-//    if (!sessionController.hasWorkspacePermission(GuiderPermissions.GUIDER_FIND_STUDENT_WORKSPACE_ACTIVITY, workspaceEntity)) {
-//      if (!sessionController.getLoggedUserEntity().getId().equals(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().getId())) {
-//        return Response.status(Status.FORBIDDEN).build();
-//      }
-//    }
-//    
-//    GuiderStudentWorkspaceActivity activity = guiderController.getStudentWorkspaceActivity(workspaceEntity, userIdentifier);
-//    if (activity == null) {
-//      return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Failed to analyze assignments progress for student %s in workspace %d", userIdentifier, workspaceEntity.getId())).build();
-//    }
-//    
-//    List<WorkspaceAssessmentState> assessmentStates = assessmentRequestController.getAllWorkspaceAssessmentStates(workspaceUserEntity);
-//    
-//    return Response.ok(workspaceRestModels.toRestModel(activity, assessmentStates)).build();
-//  }
   
   @GET
   @Path("/students")
