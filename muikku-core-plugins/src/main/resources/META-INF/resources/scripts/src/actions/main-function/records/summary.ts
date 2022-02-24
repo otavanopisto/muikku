@@ -7,9 +7,10 @@ import {
   SummaryStatusType,
 } from "~/reducers/main-function/records/summary";
 import {
-  WorkspaceStudentActivityType,
   WorkspaceForumStatisticsType,
   ActivityLogType,
+  WorkspaceActivityType,
+  WorkspaceType,
 } from "~/reducers/workspaces";
 import { StateType } from "~/reducers";
 
@@ -132,7 +133,7 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
       });
 
       /* User workspaces */
-      const workspaces: any = await promisify(
+      const workspaces = <WorkspaceType[]>await promisify(
         mApi().workspace.workspaces.read({
           userIdentifier: pyramusId,
           includeInactiveWorkspaces: true,
@@ -144,16 +145,16 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
         await Promise.all([
           Promise.all(
             workspaces.map(async (workspace: any, index: any) => {
-              const activity: WorkspaceStudentActivityType = <
-                WorkspaceStudentActivityType
-              >await promisify(
-                mApi().guider.workspaces.studentactivity.read(
-                  workspace.id,
-                  pyramusId
-                ),
-                "callback"
-              )();
-              workspaces[index].studentActivity = activity;
+              const activity = <WorkspaceActivityType>(
+                await promisify(
+                  mApi().workspace.workspaces.students.activity.read(
+                    workspace.id,
+                    pyramusId
+                  ),
+                  "callback"
+                )()
+              );
+              workspaces[index].activity = activity;
             })
           ),
           Promise.all(

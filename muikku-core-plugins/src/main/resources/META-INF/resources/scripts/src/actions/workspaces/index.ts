@@ -6,8 +6,6 @@ import {
   WorkspaceMaterialReferenceType,
   WorkspaceType,
   WorkspaceChatStatusType,
-  WorkspaceStudentActivityType,
-  WorkspaceStudentAssessmentsType,
   WorkspaceAssessementStateType,
   WorkspaceAssessmentRequestType,
   WorkspaceEducationFilterListType,
@@ -1628,9 +1626,8 @@ const updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
     delete actualOriginal["studentActivity"];
     delete actualOriginal["forumStatistics"];
     delete actualOriginal["studentAssessments"];
-    delete actualOriginal["studentAssessmentState"];
     delete actualOriginal["activityStatistics"];
-    /* delete actualOriginal["assessmentRequests"]; */
+    delete actualOriginal["assessmentRequests"];
     delete actualOriginal["additionalInfo"];
     delete actualOriginal["staffMembers"];
     delete actualOriginal["students"];
@@ -1864,9 +1861,8 @@ const updateOrganizationWorkspace: UpdateWorkspaceTriggerType =
         delete originalWorkspace["studentActivity"];
         delete originalWorkspace["forumStatistics"];
         delete originalWorkspace["studentAssessments"];
-        delete originalWorkspace["studentAssessmentState"];
         delete originalWorkspace["activityStatistics"];
-        /* delete originalWorkspace["assessmentRequests"]; */
+        delete originalWorkspace["assessmentRequests"];
         delete originalWorkspace["additionalInfo"];
         delete originalWorkspace["staffMembers"];
         delete originalWorkspace["students"];

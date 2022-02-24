@@ -348,7 +348,6 @@ export interface WorkspaceType {
   studentActivity?: WorkspaceStudentActivityType;
   forumStatistics?: WorkspaceForumStatisticsType;
   studentAssessments?: WorkspaceStudentAssessmentsType;
-  studentAssessmentState?: WorkspaceStudentAssessmentStateType;
   activityStatistics?: WorkspaceActivityStatisticsType;
   assessmentRequests?: Array<WorkspaceAssessmentRequestType>;
   additionalInfo?: WorkspaceAdditionalInfoType;
@@ -831,8 +830,10 @@ export default function workspaces(
         assessmentRequests: action.payload,
       },
     });
-  } else if (action.type === "UPDATE_WORKSPACE_ASSESSMENT_STATE") {
-    /* return Object.assign({}, state, {
+  }
+  // Will be changed once module spefic assessment request are implemented
+  /* else if (action.type === "UPDATE_WORKSPACE_ASSESSMENT_STATE") {
+    return Object.assign({}, state, {
       currentWorkspace: processWorkspaceToHaveNewAssessmentStateAndDate(
         action.payload.workspace.id,
         action.payload.newState,
@@ -860,8 +861,9 @@ export default function workspaces(
           action.payload.newAssessmentRequest
         )
       ),
-    }); */
-  } else if (
+    });
+  } */
+  else if (
     action.type === "UPDATE_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES"
   ) {
     return Object.assign({}, state, {
