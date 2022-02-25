@@ -18,7 +18,10 @@ import {
 } from "~/reducers/main-function/guider";
 import StateOfStudies from "../body/application/state-of-studies";
 import StudyHistory from "../body/application/study-history";
-
+import {
+  loadStudentHistory,
+  LoadStudentTriggerType,
+} from "~/actions/main-function/guider";
 import { getName } from "~/util/modifiers";
 
 export type tabs =
@@ -38,6 +41,7 @@ interface StudentDialogProps {
   onOpen?: (jotan: any) => any;
   i18n: i18nType;
   status: StatusType;
+  loadStudentHistory: LoadStudentTriggerType;
 }
 
 /**
@@ -58,6 +62,7 @@ class StudentDialog extends React.Component<
    * constructor
    * @param props props for the constructor
    */
+
   constructor(props: StudentDialogProps) {
     super(props);
 
@@ -71,6 +76,7 @@ class StudentDialog extends React.Component<
    * @param id tab id
    */
   onTabChange = (id: tabs) => {
+    const studentId = this.props.student.basic.id;
     this.setState({ activeTab: id });
     switch (id) {
       case "STUDIES": {
@@ -83,6 +89,7 @@ class StudentDialog extends React.Component<
         return console.log("TODO_RELATIONS");
       }
       case "STUDY_HISTORY": {
+        this.props.loadStudentHistory(studentId);
         return console.log("TODO_HISTORY");
       }
       default:
@@ -186,7 +193,12 @@ function mapStateToProps(state: StateType) {
  * @param dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return bindActionCreators({}, dispatch);
+  return bindActionCreators(
+    {
+      loadStudentHistory,
+    },
+    dispatch
+  );
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(StudentDialog);

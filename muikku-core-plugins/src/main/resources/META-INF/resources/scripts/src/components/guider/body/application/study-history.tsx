@@ -4,6 +4,9 @@ import { GuiderType } from "~/reducers/main-function/guider";
 import { StatusType } from "~/reducers/base/status";
 import { StateType } from "~/reducers";
 import { connect } from "react-redux";
+import Workspaces from "./workspaces";
+import MainChart from "~/components/general/graph/main-chart";
+
 /**
  * StudyHistory props
  */
@@ -21,7 +24,38 @@ interface StudyHistoryProps {
 const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
   const { i18n, guider, status } = props;
 
-  return <div>Huhhahhei ja opintohistoria minut vei</div>;
+  const studentWorkspaces = (
+    <Workspaces workspaces={guider.currentStudent.pastWorkspaces} />
+  );
+
+  if (
+    !props.guider.currentStudent.pastWorkspaces ||
+    !props.guider.currentStudent.activityLogs
+  ) {
+    return null;
+  }
+  return (
+    <>
+      <div className="application-sub-panel application-sub-panel--student-data-secondary">
+        <h3 className="application-sub-panel__header">
+          {i18n.text.get("plugin.guider.user.details.workspaces")}
+        </h3>
+        <div className="application-sub-panel__body">{studentWorkspaces}</div>
+      </div>
+      <div className="application-sub-panel">
+        <div className="application-sub-panel__header">
+          {i18n.text.get("plugin.guider.user.details.statistics")}
+        </div>
+        {guider.currentStudent.activityLogs &&
+        guider.currentStudent.pastWorkspaces ? (
+          <MainChart
+            workspaces={guider.currentStudent.pastWorkspaces}
+            activityLogs={guider.currentStudent.activityLogs}
+          />
+        ) : null}
+      </div>
+    </>
+  );
 };
 
 /**

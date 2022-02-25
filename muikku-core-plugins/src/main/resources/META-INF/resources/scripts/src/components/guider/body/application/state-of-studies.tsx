@@ -12,12 +12,11 @@ import "~/sass/elements/workspace-activity.scss";
 import { getUserImageUrl, getName } from "~/util/modifiers";
 import Hops from "~/components/base/hops_readable";
 import FileDeleteDialog from "../../dialogs/file-delete";
-import Workspaces from "./state-of-studies/workspaces";
+import Workspaces from "./workspaces";
 import Ceepos from "./state-of-studies/ceepos";
 import { StatusType } from "~/reducers/base/status";
 import FileUploader from "~/components/general/file-uploader";
 
-import MainChart from "~/components/general/graph/main-chart";
 import {
   AddFileToCurrentStudentTriggerType,
   addFileToCurrentStudent,
@@ -364,7 +363,11 @@ class StateOfStudies extends React.Component<
     // (this.props.guider.currentStudent.vops && this.props.guider.currentStudent.vops.optedIn) ?
     //        <Vops data={this.props.guider.currentStudent.vops}></Vops> : null;
 
-    const studentWorkspaces = <Workspaces />;
+    const studentWorkspaces = (
+      <Workspaces
+        workspaces={this.props.guider.currentStudent.currentWorkspaces}
+      />
+    );
 
     /**
      * formDataGenerator
