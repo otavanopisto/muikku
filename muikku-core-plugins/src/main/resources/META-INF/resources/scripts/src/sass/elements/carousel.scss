@@ -145,6 +145,42 @@
   object-fit: cover;
 }
 
+.carousel-itemV2__container-section--courses {
+  display: flex;
+  flex-flow: column;
+  justify-content: space-between;
+  margin: 5px 10px;
+}
+
+.carousel-itemV2__container-content--courses {
+  display: flex;
+  flex-flow: column;
+  height: 120px;
+  margin: 5px 0;
+  max-height: 120px;
+  overflow: hidden;
+  position: relative;
+  text-align: initial;
+
+  p {
+    margin: 5px;
+  }
+
+}
+
+.carousel-itemV2__container-content--courses::before {
+  background-image: linear-gradient(180deg, #ffffff8c, #fffffff5);
+  bottom: 0;
+  content: "";
+  height: 20px;
+  position: absolute;
+  width: 100%;
+}
+
+.carousel-itemV2__container-functions--courses {
+  margin: 5px 0;
+}
+
 .carousel-item--achievement {
   padding: 10 10px;
 }

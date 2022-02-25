@@ -60,6 +60,7 @@ const CourseCarousel: React.FC<CourseCarouselProps> = (props) => {
 
   return (
     <Carousel
+      autoPlay={false}
       swipeable={true}
       draggable={true}
       showDots={false}
@@ -123,34 +124,17 @@ const CourseCarouselItem: React.FC<CourseCarouselItemProps> = (props) => {
         {course.nameExtension !== null && <h2>{course.nameExtension}</h2>}
       </div>
 
-      <div
-        style={{
-          display: "flex",
-          flexFlow: "column",
-          margin: "5px 10px",
-          justifyContent: "space-between",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            flexFlow: "column",
-            textAlign: "initial",
-            margin: "5px 0",
-            height: "120px",
-            maxHeight: "120px",
-            overflow: "auto",
-          }}
-        >
+      <div className="carousel-itemV2__container-section--courses">
+        <div className="carousel-itemV2__container-content--courses">
           {course.description ? (
             <div
               dangerouslySetInnerHTML={createHtmlMarkup(course.description)}
             />
           ) : (
-            <p style={{ margin: "5px" }}>-</p>
+            <p>-</p>
           )}
         </div>
-        <div style={{ margin: "5px 0" }}>
+        <div className="carousel-itemV2__container-functions--courses">
           <Button
             aria-label={course.name}
             buttonModifiers={[

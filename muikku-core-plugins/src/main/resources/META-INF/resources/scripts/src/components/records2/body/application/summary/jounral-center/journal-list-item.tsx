@@ -334,121 +334,144 @@ const JournalListItem = React.forwardRef<HTMLDivElement, JournalListItemProps>(
               : ""
           }`}
         >
-          <div
-            style={{
-              width: "100%",
-              display: "flex",
-              flexGrow: 1,
-              alignItems: "center",
-            }}
-          >
-            <div className="block-edit" style={{ margin: "0 10px" }}>
-              <IconButton icon="envelope" buttonModifiers="journal-central" />
+          <div style={{ display: "flex" }}>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <div className="block-edit" style={{ margin: "0 10px" }}>
+                <IconButton icon="envelope" buttonModifiers="journal-central" />
+              </div>
             </div>
             <div
-              className="block-data"
-              style={{ display: "flex", alignItems: "center" }}
+              style={{
+                width: "100%",
+                display: "flex",
+                justifyContent: "space-between",
+                flexDirection: "column",
+                paddingRight: "10px",
+              }}
             >
               <div
                 style={{
+                  width: "100%",
                   display: "flex",
-                  flexDirection: "column",
-                  padding: "0 5px",
+                  flexGrow: 1,
+                  justifyContent: "flex-end",
+                  top: 0,
+                  right: 0,
                 }}
               >
-                <div className="block-data-header">
-                  <h3
-                    style={{
-                      marginRight: "5px",
-                      whiteSpace: "nowrap",
-                      width: "150px",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      margin: "5px 0",
-                    }}
-                  >
-                    {title}
-                  </h3>
-                  {dueDate && (
-                    <div>Suorita {moment(dueDate).format("l")} mennessä</div>
+                <div style={{ display: "flex" }}>
+                  {loggedUserIsCreator && onEditClick && (
+                    <IconButton
+                      onClick={handleJournalOpenInEditModeClick(id)}
+                      icon="pencil"
+                    />
                   )}
+
+                  {loggedUserIsOwner && onPinJournalClick && (
+                    <IconButton
+                      style={{ backgroundColor: pinned && "blue" }}
+                      onClick={handleJournalPinClick}
+                      icon="pin"
+                    />
+                  )}
+
+                  {loggedUserIsCreator && onReturnArchivedClick && (
+                    <IconButton
+                      onClick={handleJournalReturnArchiveClick}
+                      icon="books"
+                    />
+                  )}
+
+                  {loggedUserIsCreator && !archived && onArchiveClick && (
+                    <IconButton
+                      onClick={handleJournalArchiveClick}
+                      icon="trash"
+                    />
+                  )}
+
+                  {renderUpdateStatus()}
                 </div>
-                {description ? (
+              </div>
+              <div
+                style={{
+                  width: "100%",
+                  display: "flex",
+                  flexGrow: 1,
+                  alignItems: "center",
+                }}
+              >
+                <div
+                  className="block-data"
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    width: "100%",
+                  }}
+                >
                   <div
-                    className="block-data-text"
                     style={{
-                      whiteSpace: "nowrap",
-                      width: "150px",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      margin: "5px 0",
-                      fontStyle: "italic",
+                      display: "flex",
+                      flexDirection: "column",
+                      padding: "0 5px",
                     }}
                   >
-                    {description}
+                    <div className="block-data-header">
+                      <h3
+                        style={{
+                          marginRight: "5px",
+                          whiteSpace: "nowrap",
+                          width: "150px",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          margin: "5px 0",
+                        }}
+                      >
+                        {title}
+                      </h3>
+                      {dueDate && (
+                        <div>
+                          Suorita {moment(dueDate).format("l")} mennessä
+                        </div>
+                      )}
+                    </div>
+                    {description ? (
+                      <div
+                        className="block-data-text"
+                        style={{
+                          whiteSpace: "nowrap",
+                          width: "150px",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          margin: "5px 0",
+                          fontStyle: "italic",
+                        }}
+                      >
+                        {description}
+                      </div>
+                    ) : null}
                   </div>
-                ) : null}
+
+                  {renderStatus()}
+                </div>
               </div>
 
-              {renderStatus()}
+              <div
+                style={{
+                  width: "100%",
+                  display: "flex",
+                  flexGrow: 1,
+                  justifyContent: "end",
+                  alignItems: "end",
+                  padding: "5px 0",
+                  fontStyle: "italic",
+                  bottom: 0,
+                  right: 0,
+                }}
+              >
+                - {loggedUserIsCreator ? "Minä" : creatorName}
+              </div>
             </div>
-          </div>
-          <div
-            style={{
-              width: "100%",
-              display: "flex",
-              flexGrow: 1,
-              justifyContent: "flex-end",
-              top: 0,
-              right: 0,
-              position: "absolute",
-            }}
-          >
-            <div style={{ display: "flex" }}>
-              {loggedUserIsCreator && onEditClick && (
-                <IconButton
-                  onClick={handleJournalOpenInEditModeClick(id)}
-                  icon="pencil"
-                />
-              )}
-
-              {loggedUserIsOwner && onPinJournalClick && (
-                <IconButton
-                  style={{ backgroundColor: pinned && "blue" }}
-                  onClick={handleJournalPinClick}
-                  icon="pin"
-                />
-              )}
-
-              {loggedUserIsCreator && onReturnArchivedClick && (
-                <IconButton
-                  onClick={handleJournalReturnArchiveClick}
-                  icon="books"
-                />
-              )}
-
-              {loggedUserIsCreator && !archived && onArchiveClick && (
-                <IconButton onClick={handleJournalArchiveClick} icon="trash" />
-              )}
-
-              {renderUpdateStatus()}
-            </div>
-          </div>
-          <div
-            style={{
-              width: "100%",
-              display: "flex",
-              flexGrow: 1,
-              justifyContent: "end",
-              alignItems: "end",
-              padding: "5px",
-              fontStyle: "italic",
-              position: "absolute",
-              bottom: 0,
-              right: 0,
-            }}
-          >
-            - {loggedUserIsCreator ? "Minä" : creatorName}
           </div>
         </div>
       </div>
