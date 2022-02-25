@@ -166,7 +166,6 @@ public class GuiderTestsBase extends AbstractUITest {
       logout();
       mockBuilder.mockLogin(student);
       login();
-      //navigate("/records#records", false);
       navigate("/records", false);
       
       waitAndClick(".tabs--application-panel .tabs__tab--records");
