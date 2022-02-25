@@ -172,6 +172,7 @@ class StudiesApplication extends React.Component<
         id: "SUMMARY",
         name: this.props.i18n.text.get("plugin.records.category.summary"),
         hash: "summary",
+        type: "summary",
         /**
          * component
          * @returns JSX.Element
@@ -186,6 +187,7 @@ class StudiesApplication extends React.Component<
         id: "RECORDS",
         name: this.props.i18n.text.get("plugin.records.category.records"),
         hash: "records",
+        type: "records",
         /**
          * component
          * @returns JSX.Element
@@ -201,6 +203,7 @@ class StudiesApplication extends React.Component<
         id: "HOPS",
         name: this.props.i18n.text.get("plugin.records.category.hops"),
         hash: "hops",
+        type: "hops",
         /**
          * component
          * @returns JSX.Element
@@ -213,8 +216,9 @@ class StudiesApplication extends React.Component<
       },
       {
         id: "YO",
-        name: "Yo",
+        name: this.props.i18n.text.get("plugin.records.category.yo"),
         hash: "yo",
+        type: "yo",
         /**
          * component
          * @returns JSX.Element
