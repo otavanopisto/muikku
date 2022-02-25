@@ -242,10 +242,9 @@ public class ToRTestsBase extends AbstractUITest {
       waitForVisible(".form-element__dropdown-selection-container:nth-child(2) .form-element__select--matriculation-exam");
       selectOption(".form-element__dropdown-selection-container:nth-child(2) .form-element__select--matriculation-exam", "M");
       sleep(1000);
-      waitForPresentXPath("//a[@href='#yo']");
-      clickLinkWithText("Ylioppilaskirjoitukset");
+      waitAndClick(".tabs--application-panel .tabs__tab--yo");
       
-      waitForVisible(".application-sub-panel--yo-status-container");
+      waitForVisible(".tabs__tab-data--yo");
       waitForVisible(".button--yo-signup");
       assertTextIgnoreCase(".button--yo-signup", "Ilmoittaudu YO-kokeeseen (12.12.2025 asti)");
 
@@ -280,10 +279,9 @@ public class ToRTestsBase extends AbstractUITest {
       waitAndClick(".form-element__radio-option-container #goalMatriculationExamyes");
       waitAndClick(".button--add-subject-row");
       waitForVisible(".form-element__select--matriculation-exam");
-      waitForPresentXPath("//a[@href='#yo']");
-      clickLinkWithText("Ylioppilaskirjoitukset");
+      waitAndClick(".tabs--application-panel .tabs__tab--yo");
       
-      waitForVisible(".application-sub-panel--yo-status-container");
+      waitForVisible(".tabs__tab-data--yo");
       waitForVisible(".button--yo-signup");
       assertTextIgnoreCase(".button--yo-signup", "Ilmoittaudu YO-kokeeseen (12.12.2025 asti)");
 

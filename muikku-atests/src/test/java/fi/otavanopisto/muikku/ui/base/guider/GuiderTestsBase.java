@@ -166,7 +166,13 @@ public class GuiderTestsBase extends AbstractUITest {
       logout();
       mockBuilder.mockLogin(student);
       login();
-      navigate("/records#records", false);
+      //navigate("/records#records", false);
+      navigate("/records", false);
+      
+      waitAndClick(".tabs--application-panel .tabs__tab--records");
+      
+      waitForVisible(".tabs__tab-data--records");
+      
       waitForPresent("a.link--studies-file-attachment");
       assertText("a.link--studies-file-attachment", "img_100x100_3x8bit_RGB_circles_center_0016.png");
     } finally {
