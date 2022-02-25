@@ -90,10 +90,7 @@ class StudentDialog extends React.Component<
       }
       case "STUDY_HISTORY": {
         this.props.loadStudentHistory(studentId);
-        return console.log("TODO_HISTORY");
       }
-      default:
-        return null;
     }
   };
 

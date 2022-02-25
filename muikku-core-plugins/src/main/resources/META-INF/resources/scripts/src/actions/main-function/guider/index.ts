@@ -176,7 +176,7 @@ export interface LoadMoreStudentsTriggerType {
 }
 
 export interface LoadStudentTriggerType {
-  (id: string): AnyActionType;
+  (id: string, forceLoad?: boolean): AnyActionType;
 }
 
 export interface AddToGuiderSelectedStudentsTriggerType {
@@ -336,7 +336,7 @@ let loadStudent: LoadStudentTriggerType = function loadStudent(id) {
     getState: () => StateType
   ) => {
     try {
-      let currentUserSchoolDataIdentifier =
+      const currentUserSchoolDataIdentifier =
         getState().status.userSchoolDataIdentifier;
 
       const canListUserOrders = getState().status.permissions.LIST_USER_ORDERS;
@@ -489,19 +489,6 @@ let loadStudent: LoadStudentTriggerType = function loadStudent(id) {
             payload: { property: "currentWorkspaces", value: workspaces },
           });
         }),
-        // promisify(
-        //   mApi().activitylogs.user.workspace.read(id, {
-        //     from: new Date(new Date().getFullYear() - 2, 0),
-        //     to: new Date(),
-        //   }),
-        //   "callback"
-        // )().then((activityLogs: ActivityLogType[]) => {
-        //   dispatch({
-        //     type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-        //     payload: { property: "activityLogs", value: activityLogs },
-        //   });
-        // }),
-
         canListUserOrders &&
           promisify(mApi().ceepos.user.orders.read(id), "callback")().then(
             (pOrders: PurchaseType[]) => {
@@ -547,13 +534,20 @@ let loadStudent: LoadStudentTriggerType = function loadStudent(id) {
 };
 
 let loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
-  id
+  id,
+  forceLoad
 ) {
   return async (
     dispatch: (arg: AnyActionType) => any,
     getState: () => StateType
   ) => {
     try {
+      const historyLoaded = !!getState().guider.currentStudent.pastWorkspaces;
+
+      if (historyLoaded && !forceLoad) {
+        return;
+      }
+
       dispatch({
         type: "LOCK_TOOLBAR",
         payload: null,
