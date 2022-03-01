@@ -1,13 +1,10 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-
 import { i18nType } from "~/reducers/base/i18n";
-
 import "~/sass/elements/course.scss";
 import "~/sass/elements/rich-text.scss";
 import "~/sass/elements/application-list.scss";
 import "~/sass/elements/wcag.scss";
-
 import { StatusType } from "~/reducers/base/status";
 import { StateType } from "~/reducers";
 import {
@@ -18,7 +15,7 @@ import {
 } from "~/components/general/application-list";
 import Button from "~/components/general/button";
 import WorkspaceSignupDialog from "../../../dialogs/workspace-signup";
-import { WorkspaceType } from "~/reducers/workspaces";
+import { WorkspaceMandatority, WorkspaceType } from "~/reducers/workspaces";
 import promisify from "~/util/promisify";
 import mApi from "~/lib/mApi";
 
@@ -59,6 +56,38 @@ class Course extends React.Component<CourseProps, CourseState> {
 
     this.toggleExpanded = this.toggleExpanded.bind(this);
   }
+
+  /**
+   * Depending what mandatority value is, returns description
+   *
+   * @returns mandatority description
+   */
+  renderMandatorityDescription = () => {
+    switch (this.props.workspace.mandatority) {
+      case WorkspaceMandatority.MANDATORY:
+        return this.props.i18n.text.get(
+          "plugin.workspace.mandatority.MANDATORY"
+        );
+
+      case WorkspaceMandatority.UNSPECIFIED_OPTIONAL:
+        return this.props.i18n.text.get(
+          "plugin.workspace.mandatority.UNSPECIFIED_OPTIONAL"
+        );
+
+      case WorkspaceMandatority.NATIONAL_LEVEL_OPTIONAL:
+        return this.props.i18n.text.get(
+          "plugin.workspace.mandatority.NATIONAL_LEVEL_OPTIONAL"
+        );
+
+      case WorkspaceMandatority.SCHOOL_LEVEL_OPTIONAL:
+        return this.props.i18n.text.get(
+          "plugin.workspace.mandatority.SCHOOL_LEVEL_OPTIONAL"
+        );
+
+      default:
+        return "";
+    }
+  };
 
   /**
    * Toggles course body to expanding
@@ -110,7 +139,7 @@ class Course extends React.Component<CourseProps, CourseState> {
 
   /**
    * render
-   * @returns
+   * @returns JSX.Element
    */
   render() {
     const hasFees = this.props.status.hasFees;
@@ -129,9 +158,14 @@ class Course extends React.Component<CourseProps, CourseState> {
             }`}
           ></span>
           <span className="application-list__header-primary">
-            {this.props.workspace.name}{" "}
+            {this.props.workspace.name}
+
             {this.props.workspace.nameExtension
-              ? "(" + this.props.workspace.nameExtension + ")"
+              ? ` (${this.props.workspace.nameExtension})`
+              : null}
+
+            {this.props.workspace.mandatority
+              ? ` (${this.renderMandatorityDescription()})`
               : null}
           </span>
           {hasFees ? (

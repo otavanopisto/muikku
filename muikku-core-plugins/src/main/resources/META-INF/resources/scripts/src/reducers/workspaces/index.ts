@@ -246,6 +246,13 @@ export interface WorkspaceDetailsType {
   indexFolderId: number;
 }
 
+export enum WorkspaceMandatority {
+  MANDATORY = "MANDATORY",
+  SCHOOL_LEVEL_OPTIONAL = "SCHOOL_LEVEL_OPTIONAL",
+  NATIONAL_LEVEL_OPTIONAL = "NATIONAL_LEVEL_OPTIONAL",
+  UNSPECIFIED_OPTIONAL = "UNSPECIFIED_OPTIONAL",
+}
+
 export type WorkspaceAccessType = "MEMBERS_ONLY" | "LOGGED_IN" | "ANYONE";
 
 /**
@@ -325,7 +332,7 @@ export interface WorkspaceType {
   studentsSelect?: UserSelectType;
   details?: WorkspaceDetailsType;
   permissions?: WorkspacePermissionsType[];
-
+  mandatority?: WorkspaceMandatority | null;
   //Fancy stuff in here
   journals?: WorkspaceJournalsType;
 
