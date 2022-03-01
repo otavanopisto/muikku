@@ -12,7 +12,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 
 import java.nio.charset.StandardCharsets;
-import java.sql.Array;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -986,6 +985,7 @@ public class PyramusMock {
       
       public Builder mockCourseAssessments(Course course, MockCourseStudent courseStudent, MockStaffMember staffMember) throws JsonProcessingException {
         OffsetDateTime assessmentCreated = OffsetDateTime.of(LocalDateTime.now(), ZoneOffset.UTC);
+        // This uses always only the first course module of the course that the iterator provides - this may need multi-module support later
         CourseModule courseModule = course.getCourseModules().iterator().next();
         CourseAssessment courseAssessment = new CourseAssessment(1l, courseStudent.getId(), courseModule.getId(), 1l, 1l, staffMember.getId(), assessmentCreated, "Test evaluation.", Boolean.TRUE);
         
