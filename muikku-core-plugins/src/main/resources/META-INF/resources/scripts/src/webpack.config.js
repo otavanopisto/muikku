@@ -19,7 +19,6 @@ plugins.push(
   })
 );
 
-
 const rules = [];
 
 if (mode === "production") {
