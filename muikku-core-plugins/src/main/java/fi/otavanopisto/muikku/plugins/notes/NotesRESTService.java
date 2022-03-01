@@ -8,7 +8,6 @@ import java.util.List;
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -83,9 +82,9 @@ public class NotesRESTService extends PluginRESTService {
     Note newNote = null;
     
     if (EnvironmentRoleArchetype.STUDENT.equals(loggedUserRole)) {
-      newNote = notesController.createNote(note.getTitle(), note.getDescription(), note.getType(), note.getPriority(), note.getPinned(), sessionController.getLoggedUserEntity().getId(), note.getDueDate());
+      newNote = notesController.createNote(note.getTitle(), note.getDescription(), note.getType(), note.getPriority(), note.getPinned(), sessionController.getLoggedUserEntity().getId(), note.getStartDate(), note.getDueDate());
     } else {
-      newNote = notesController.createNote(note.getTitle(), note.getDescription(), note.getType(), note.getPriority(), note.getPinned(), note.getOwner(), note.getDueDate());
+      newNote = notesController.createNote(note.getTitle(), note.getDescription(), note.getType(), note.getPriority(), note.getPinned(), note.getOwner(), note.getStartDate(), note.getDueDate());
     }
     
     return Response.ok(toRestModel(newNote)).build();
@@ -115,10 +114,10 @@ public class NotesRESTService extends PluginRESTService {
     
     // Student can edit only 'pinned' field if note is created by someone else
     if (loggedUserRole.equals(EnvironmentRoleArchetype.STUDENT) && sessionController.getLoggedUserEntity().getId().equals(note.getOwner()) && !creatorRole.equals(EnvironmentRoleArchetype.STUDENT)) {
-      updatedNote = notesController.updateNote(note, note.getTitle(), note.getDescription(), note.getPriority(), restModel.getPinned(), note.getDueDate(), restModel.getStatus());
+      updatedNote = notesController.updateNote(note, note.getTitle(), note.getDescription(), note.getPriority(), restModel.getPinned(), note.getStartDate(), note.getDueDate(), restModel.getStatus());
     } // Otherwise editing happens only if logged user equals with creator
     else if (sessionController.getLoggedUserEntity().getId().equals(note.getCreator())) {
-      updatedNote = notesController.updateNote(note, restModel.getTitle(), restModel.getDescription(), restModel.getPriority(), restModel.getPinned(), restModel.getDueDate(), restModel.getStatus());
+      updatedNote = notesController.updateNote(note, restModel.getTitle(), restModel.getDescription(), restModel.getPriority(), restModel.getPinned(), restModel.getStartDate(), restModel.getDueDate(), restModel.getStatus());
     } 
     else {
       return Response.status(Status.BAD_REQUEST).build();
@@ -143,6 +142,7 @@ public class NotesRESTService extends PluginRESTService {
     restModel.setCreator(note.getCreator());
     restModel.setCreatorName(creatorName);
     restModel.setCreated(note.getCreated());
+    restModel.setStartDate(note.getStartDate());
     restModel.setDueDate(note.getDueDate());
     restModel.setStatus(note.getStatus());
 
@@ -161,7 +161,6 @@ public class NotesRESTService extends PluginRESTService {
     
     for (Note note : notes) {
       NoteRestModel noteRest = toRestModel(note);
-      
       UserEntity creator = userEntityController.findUserEntityById(note.getCreator());
       EnvironmentRoleArchetype creatorUserRole = getUserRoleArchetype(creator.defaultSchoolDataIdentifier());
       EnvironmentRoleArchetype loggedUserRole = getUserRoleArchetype(sessionController.getLoggedUser());
@@ -169,8 +168,10 @@ public class NotesRESTService extends PluginRESTService {
       if (loggedUserRole == null || creatorUserRole == null) {
         return Response.status(Status.BAD_REQUEST).build();
       }
-      
+
       if (Boolean.TRUE.equals(listArchived)) {
+        noteRest.setIsActive(false);
+        // List archived notes from last two weeks
         if (!note.getLastModified().before(Date.from(inLastTwoWeeks.toInstant()))) {
           if (loggedUserRole.equals(EnvironmentRoleArchetype.STUDENT)) {
             notesList.add(noteRest);
@@ -181,11 +182,28 @@ public class NotesRESTService extends PluginRESTService {
           }
         }
       } else {
-        if (loggedUserRole.equals(EnvironmentRoleArchetype.STUDENT)) {
-          notesList.add(noteRest);
-        } else {
-          if (!creatorUserRole.equals(EnvironmentRoleArchetype.STUDENT)) {
+        // Set active by default
+        noteRest.setIsActive(true);
+        
+        if (note.getStartDate() != null) {
+          // If startDate is before today
+          if (note.getStartDate().before(Date.from(OffsetDateTime.now().toInstant()))) {
+            noteRest.setIsActive(false);
+          } 
+        }
+        if (loggedUserRole.equals(EnvironmentRoleArchetype.STUDENT)) { // if logged user role is student
+          if (noteRest.getIsActive().equals(Boolean.TRUE)) { // If note is active we can add it to list
             notesList.add(noteRest);
+          } else if (sessionController.getLoggedUserEntity().getId().equals(note.getCreator())){ // add note to list if user entity id equals creator even note is not active
+            notesList.add(noteRest);
+          }
+        } else {
+          if (!creatorUserRole.equals(EnvironmentRoleArchetype.STUDENT)) { // if note is not created by student
+            if (noteRest.getIsActive().equals(Boolean.TRUE)) {
+              notesList.add(noteRest);
+            } else if (sessionController.getLoggedUserEntity().getId().equals(note.getCreator())){
+              notesList.add(noteRest);
+            }
           } 
         }
       }
@@ -222,6 +240,7 @@ public class NotesRESTService extends PluginRESTService {
     Note updatedNote = notesController.updateArchived(note);
     if(note.getArchived().equals(Boolean.FALSE)) {
       note.setDueDate(null);
+      note.setStartDate(null);
     }
     return Response.ok(toRestModel(updatedNote)).build();
   }

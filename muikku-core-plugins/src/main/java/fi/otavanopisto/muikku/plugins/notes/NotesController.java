@@ -48,16 +48,16 @@ public class NotesController {
     return filteredNoteList; 
   }
   
-  public Note createNote(String title, String description, NoteType type, NotePriority priority, Boolean pinned, Long owner, Date dueDate) {
+  public Note createNote(String title, String description, NoteType type, NotePriority priority, Boolean pinned, Long owner, Date startDate, Date dueDate) {
     NoteStatus status = NoteStatus.ONGOING;
-    Note note = noteDAO.create(title, description, type, priority, pinned, owner, sessionController.getLoggedUserEntity().getId(), sessionController.getLoggedUserEntity().getId(), dueDate, status);
+    Note note = noteDAO.create(title, description, type, priority, pinned, owner, sessionController.getLoggedUserEntity().getId(), sessionController.getLoggedUserEntity().getId(), startDate, dueDate, status);
     
     return note;
   }
   
-  public Note updateNote(Note note, String title, String description, NotePriority priority, Boolean pinned, Date dueDate, NoteStatus status) {
+  public Note updateNote(Note note, String title, String description, NotePriority priority, Boolean pinned, Date startDate,  Date dueDate, NoteStatus status) {
     Long lastModifier = sessionController.getLoggedUserEntity().getId();
-    Note updatedNote = noteDAO.update(note, title, description, priority, pinned, lastModifier, dueDate, status);
+    Note updatedNote = noteDAO.update(note, title, description, priority, pinned, lastModifier, startDate, dueDate, status);
     
     return updatedNote;
   }

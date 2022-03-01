@@ -89,6 +89,14 @@ public class NoteRestModel {
     this.created = created;
   }
 
+  public Date getStartDate() {
+    return startDate;
+  }
+
+  public void setStartDate(Date startDate) {
+    this.startDate = startDate;
+  }
+
   public Date getDueDate() {
     return dueDate;
   }
@@ -105,6 +113,14 @@ public class NoteRestModel {
     this.status = status;
   }
 
+  public Boolean getIsActive() {
+    return isActive;
+  }
+
+  public void setIsActive(Boolean isActive) {
+    this.isActive = isActive;
+  }
+
   private Long id;
   private String title;
   private String description;
@@ -115,6 +131,9 @@ public class NoteRestModel {
   private Long creator;
   private String creatorName;
   private Date created;
+  private Date startDate;
   private Date dueDate;
   private NoteStatus status;
+  private Boolean isActive;
+
 }
