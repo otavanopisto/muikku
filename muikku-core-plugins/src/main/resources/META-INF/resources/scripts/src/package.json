@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.frontpage.ts",
   "scripts": {
-    "install": "./node_modules/.bin/webpack",
+    "install": "webpack",
     "test": "echo \"Error: no test specified\" && exit 1",
     "eslint": "eslint . --ext .ts,.tsx",
     "stylelint": "stylelint '**/*.scss'",
@@ -42,6 +42,7 @@
     "brace": "^0.10.0",
     "css-loader": "^5.0.1",
     "deep-equal": "^1.0.1",
+    "fork-ts-checker-webpack-plugin": "6.5.0",
     "mini-css-extract-plugin": "^2.5.3",
     "moment": "^2.29.1",
     "null-loader": "^0.1.1",
@@ -79,7 +80,7 @@
     "webpack-cli": "^4.3.1"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "5.8.1",
+    "@typescript-eslint/eslint-plugin": "5.12.1",
     "@typescript-eslint/parser": "5.8.1",
     "eslint": "8.7.0",
     "eslint-config-prettier": "8.3.0",
@@ -87,7 +88,10 @@
     "eslint-plugin-prettier": "4.0.0",
     "eslint-plugin-react": "7.28.0",
     "eslint-plugin-react-hooks": "4.3.0",
-    "fork-ts-checker-webpack-plugin": "6.5.0",
-    "prettier": "^2.5.1"
+    "prettier": "^2.5.1",
+    "stylelint": "14.3.0",
+    "stylelint-config-standard-scss": "3.0.0",
+    "stylelint-declaration-strict-value": "1.8.0",
+    "stylelint-order": "5.0.0"
   }
 }
