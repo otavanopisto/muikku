@@ -69,6 +69,7 @@ interface SelectedJournal {
 
 /**
  * Creater Journal center component
+ *
  * @param props props
  * @returns JSX.Element
  */
@@ -98,8 +99,15 @@ const JournalCenter: React.FC<JournalCenterProps> = (props) => {
 
   const [createNew, setCreateNew] = React.useState(false);
 
-  const { journals, createJournal, updateJournal, deleteJournal, pinJournal } =
-    useJournals(studentId, displayNotification);
+  const {
+    journals,
+    createJournal,
+    updateJournal,
+    archiveJournal,
+    returnArchivedJournal,
+    updateJournalStatus,
+    pinJournal,
+  } = useJournals(studentId, displayNotification);
 
   /**
    * handleFilttersChange
@@ -219,9 +227,12 @@ const JournalCenter: React.FC<JournalCenterProps> = (props) => {
                       selectedJournal.journal &&
                       selectedJournal.journal.id === j.id
                     }
-                    loggedUserIsOwner={j.creator === userId}
+                    archived={false}
+                    loggedUserIsCreator={j.creator === userId}
+                    loggedUserIsOwner={j.owner === userId}
                     onPinJournalClick={pinJournal}
-                    onDeleteClick={deleteJournal}
+                    onArchiveClick={archiveJournal}
+                    onUpdateJournalStatus={updateJournalStatus}
                     onEditClick={handleOpenInEditModeClick}
                     onJournalClick={handleJournalItemClick}
                   />
@@ -267,7 +278,8 @@ const JournalCenter: React.FC<JournalCenterProps> = (props) => {
                     selectedJournal.inEditMode
                   }
                   onClickCloseCurrent={handleCloseCurrentNote}
-                  loggedUserIsOwner={j.creator === userId}
+                  loggedUserIsCreator={j.creator === userId}
+                  loggedUserIsOwner={j.owner === userId}
                 />
               </SlideDrawer>
             ))}
@@ -319,14 +331,16 @@ const JournalCenter: React.FC<JournalCenterProps> = (props) => {
                 <JournalListItem
                   key={j.id}
                   ref={React.createRef()}
+                  archived={true}
                   journal={j}
                   active={
                     selectedJournal.journal &&
                     selectedJournal.journal.id === j.id
                   }
-                  loggedUserIsOwner={j.creator === userId}
+                  loggedUserIsCreator={j.creator === userId}
+                  loggedUserIsOwner={j.owner === userId}
+                  onReturnArchivedClick={returnArchivedJournal}
                   onJournalClick={handleArchivedJournalItemClick}
-                  onPinJournalClick={pinJournal}
                 />
               ))}
             </JournalListAnimated>
@@ -353,7 +367,8 @@ const JournalCenter: React.FC<JournalCenterProps> = (props) => {
                   journals={journals}
                   currentSelectedJournal={j}
                   onClickCloseCurrent={handleCloseCurrentNote}
-                  loggedUserIsOwner={j.creator === userId}
+                  loggedUserIsCreator={j.creator === userId}
+                  loggedUserIsOwner={j.owner === userId}
                 />
               </SlideDrawer>
             ))}
