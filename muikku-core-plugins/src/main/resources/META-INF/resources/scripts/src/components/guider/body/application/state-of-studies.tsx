@@ -11,21 +11,15 @@ import "~/sass/elements/avatar.scss";
 import "~/sass/elements/workspace-activity.scss";
 import { getUserImageUrl, getName } from "~/util/modifiers";
 import Hops from "~/components/base/hops_readable";
-import FileDeleteDialog from "../../dialogs/file-delete";
+
 import Workspaces from "./workspaces";
 import Ceepos from "./state-of-studies/ceepos";
 import { StatusType } from "~/reducers/base/status";
-import FileUploader from "~/components/general/file-uploader";
-
-import {
-  AddFileToCurrentStudentTriggerType,
-  addFileToCurrentStudent,
-} from "~/actions/main-function/guider";
 import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
-import { UserFileType } from "~/reducers/user-index";
+
 import { StateType } from "~/reducers";
 import {
   GuiderType,
@@ -46,7 +40,7 @@ interface StateOfStudiesProps {
   i18n: i18nType;
   guider: GuiderType;
   status: StatusType;
-  addFileToCurrentStudent: AddFileToCurrentStudentTriggerType;
+
   displayNotification: DisplayNotificationTriggerType;
 }
 
@@ -369,59 +363,6 @@ class StateOfStudies extends React.Component<
       />
     );
 
-    /**
-     * formDataGenerator
-     * @param file file
-     * @param formData formData
-     */
-    const formDataGenerator = (file: File, formData: FormData) => {
-      formData.append("upload", file);
-      formData.append("title", file.name);
-      formData.append("description", "");
-      formData.append(
-        "userIdentifier",
-        this.props.guider.currentStudent.basic.id
-      );
-    };
-
-    const files = this.props.guider.currentStudent.basic && (
-      <div className="application-sub-panel__body">
-        <FileUploader
-          url="/transcriptofrecordsfileupload/"
-          formDataGenerator={formDataGenerator}
-          displayNotificationOnError
-          onFileSuccess={(file: File, data: UserFileType) => {
-            this.props.addFileToCurrentStudent(data);
-          }}
-          hintText={this.props.i18n.text.get(
-            "plugin.guider.user.details.files.hint"
-          )}
-          fileTooLargeErrorText={this.props.i18n.text.get(
-            "plugin.guider.user.details.files.fileFieldUpload.fileSizeTooLarge"
-          )}
-          files={this.props.guider.currentStudent.files}
-          fileIdKey="id"
-          fileNameKey="title"
-          fileUrlGenerator={(f) => `/rest/guider/files/${f.id}/content`}
-          deleteDialogElement={FileDeleteDialog}
-          modifier="guider"
-          emptyText={this.props.i18n.text.get(
-            "plugin.guider.user.details.files.empty"
-          )}
-          uploadingTextProcesser={(percent: number) =>
-            this.props.i18n.text.get(
-              "plugin.guider.user.details.files.uploading",
-              percent
-            )
-          }
-          notificationOfSuccessText={this.props.i18n.text.get(
-            "plugin.guider.fileUpload.successful"
-          )}
-          displayNotificationOnSuccess
-        />
-      </div>
-    );
-
     const headerToolbar = {
       left: "today prev,next",
       center: "title",
@@ -441,7 +382,6 @@ class StateOfStudies extends React.Component<
      * @param studyProgramName
      * @returns true or false
      */
-
     const IsStudentPartOfProperStudyProgram = (studyProgramName: string) => {
       switch (studyProgramName) {
         case "Nettilukio/yksityisopiskelu (aineopintoina)":
@@ -487,15 +427,14 @@ class StateOfStudies extends React.Component<
             </div>
           ) : null}
 
-          {/* {studentHops ? <div className="application-sub-panel">
-
-        <h3 className="application-sub-panel__header">{this.props.i18n.text.get("plugin.guider.user.details.hops")}</h3>
-        {studentHops}
-      </div> : null} */}
-          {/* {studentVops ? <div className="application-sub-panel">
-        <h3 className="application-sub-panel__header">{this.props.i18n.text.get("plugin.guider.user.details.vops")}</h3>
-        {studentVops}
-      </div> : null} */}
+          {studentVops ? (
+            <div className="application-sub-panel">
+              <h3 className="application-sub-panel__header">
+                {this.props.i18n.text.get("plugin.guider.user.details.vops")}
+              </h3>
+              {studentVops}
+            </div>
+          ) : null}
           <div className="application-sub-panel application-sub-panel--student-data-secondary">
             <h3 className="application-sub-panel__header">
               {this.props.i18n.text.get(
@@ -506,14 +445,6 @@ class StateOfStudies extends React.Component<
               {studentWorkspaces}
             </div>
           </div>
-          {/* <div className="application-sub-panel">
-        <h3 className="application-sub-panel__header">{this.props.i18n.text.get("plugin.guider.user.details.files")}</h3>
-        {files}
-      </div> */}
-          {/* <div className="application-sub-panel">
-        <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.guider.user.details.statistics")}</div>
-        {this.props.guider.currentStudent.activityLogs && this.props.guider.currentStudent.workspaces ? <MainChart workspaces={this.props.guider.currentStudent.workspaces} activityLogs={this.props.guider.currentStudent.activityLogs} /> : null}
-      </div> */}
           {this.props.guider.currentState === "LOADING" ? (
             <div className="application-sub-panel loader-empty" />
           ) : null}
@@ -540,10 +471,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
-  return bindActionCreators(
-    { addFileToCurrentStudent, displayNotification },
-    dispatch
-  );
+  return bindActionCreators({ displayNotification }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(StateOfStudies);

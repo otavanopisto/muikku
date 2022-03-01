@@ -15,9 +15,11 @@ import { StatusType } from "~/reducers/base/status";
 import {
   GuiderStudentUserProfileType,
   GuiderCurrentStudentStateType,
+  GuiderType,
 } from "~/reducers/main-function/guider";
 import StateOfStudies from "../body/application/state-of-studies";
 import StudyHistory from "../body/application/study-history";
+import StudyPlan from "../body/application/study-plan";
 import {
   loadStudentHistory,
   LoadStudentTriggerType,
@@ -36,6 +38,7 @@ export type tabs =
 interface StudentDialogProps {
   isOpen?: boolean;
   student: GuiderStudentUserProfileType;
+  guider: GuiderType;
   currentStudentStatus: GuiderCurrentStudentStateType;
   onClose?: () => any;
   onOpen?: (jotan: any) => any;
@@ -67,7 +70,7 @@ class StudentDialog extends React.Component<
     super(props);
 
     this.state = {
-      activeTab: "STUDENT",
+      activeTab: "STUDIES",
     };
   }
 
@@ -79,17 +82,9 @@ class StudentDialog extends React.Component<
     const studentId = this.props.student.basic.id;
     this.setState({ activeTab: id });
     switch (id) {
-      case "STUDIES": {
-        return console.log("TODOS");
-      }
-      case "STUDY_PLAN": {
-        return console.log("TODO_PLAN");
-      }
-      case "GUIDANCE_RELATIONS": {
-        return console.log("TODO_RELATIONS");
-      }
       case "STUDY_HISTORY": {
         this.props.loadStudentHistory(studentId);
+        break;
       }
     }
   };
@@ -109,12 +104,6 @@ class StudentDialog extends React.Component<
         component: <StateOfStudies />,
       },
       // {
-      //   id: "STUDY_PLAN",
-      //   name: this.props.i18n.text.get('plugin.guider.user.tabs.title.studyPlan'),
-      //   type: "guider-student",
-      //   component: <div >Suunnitelma</div>
-      // },
-      // {
       //   id: "GUIDANCE_RELATIONS",
       //   name: this.props.i18n.text.get('plugin.guider.user.tabs.title.guidanceRelations'),
       //   type: "guider-student",
@@ -130,6 +119,22 @@ class StudentDialog extends React.Component<
       },
     ];
 
+    // If student has HOPS, we show the tab for it
+
+    if (
+      this.props.guider.currentStudent &&
+      this.props.guider.currentStudent.hops &&
+      this.props.guider.currentStudent.hops.optedIn
+    ) {
+      tabs.splice(1, 0, {
+        id: "STUDY_PLAN",
+        name: this.props.i18n.text.get(
+          "plugin.guider.user.tabs.title.studyPlan"
+        ),
+        type: "guider-student",
+        component: <StudyPlan />,
+      });
+    }
     if (!this.props.student) {
       return null;
     }
@@ -182,6 +187,7 @@ function mapStateToProps(state: StateType) {
     i18n: state.i18n,
     status: state.status,
     currentStudentStatus: state.guider.currentState,
+    guider: state.guider,
   };
 }
 

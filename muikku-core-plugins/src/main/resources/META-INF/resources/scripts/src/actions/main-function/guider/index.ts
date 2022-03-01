@@ -533,7 +533,12 @@ let loadStudent: LoadStudentTriggerType = function loadStudent(id) {
   };
 };
 
-let loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
+/**
+ * loadStudentHistory thunk function
+ * @param id
+ * @param forceLoad
+ */
+const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
   id,
   forceLoad
 ) {
@@ -557,65 +562,67 @@ let loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
         type: "UPDATE_CURRENT_GUIDER_STUDENT_STATE",
         payload: <GuiderCurrentStudentStateType>"LOADING",
       });
-      promisify(
-        mApi().workspace.workspaces.read({
-          userIdentifier: id,
-          includeInactiveWorkspaces: true,
-        }),
-        "callback"
-      )().then(async (workspaces: WorkspaceListType) => {
-        if (workspaces && workspaces.length) {
-          await Promise.all([
-            Promise.all(
-              workspaces.map(async (workspace, index) => {
-                let activity: WorkspaceStudentActivityType = <
-                  WorkspaceStudentActivityType
-                >await promisify(
-                  mApi().guider.workspaces.studentactivity.read(
-                    workspace.id,
-                    id
-                  ),
-                  "callback"
-                )();
-                workspaces[index].studentActivity = activity;
-              })
-            ),
-            Promise.all(
-              workspaces.map(async (workspace, index) => {
-                let statistics: WorkspaceForumStatisticsType = <
-                  WorkspaceForumStatisticsType
-                >await promisify(
-                  mApi().workspace.workspaces.forumStatistics.read(
-                    workspace.id,
-                    { userIdentifier: id }
-                  ),
-                  "callback"
-                )();
-                workspaces[index].forumStatistics = statistics;
-              })
-            ),
-            Promise.all(
-              workspaces.map(async (workspace, index) => {
-                let activityLogs: ActivityLogType[] = <ActivityLogType[]>(
-                  await promisify(
-                    mApi().activitylogs.user.workspace.read(id, {
-                      workspaceEntityId: workspace.id,
-                      from: new Date(new Date().getFullYear() - 2, 0),
-                      to: new Date(),
-                    }),
+
+      await Promise.all([
+        promisify(
+          mApi().workspace.workspaces.read({
+            userIdentifier: id,
+            includeInactiveWorkspaces: true,
+          }),
+          "callback"
+        )().then(async (workspaces: WorkspaceListType) => {
+          if (workspaces && workspaces.length) {
+            await Promise.all([
+              Promise.all(
+                workspaces.map(async (workspace, index) => {
+                  const activity: WorkspaceStudentActivityType = <
+                    WorkspaceStudentActivityType
+                  >await promisify(
+                    mApi().guider.workspaces.studentactivity.read(
+                      workspace.id,
+                      id
+                    ),
                     "callback"
-                  )()
-                );
-                workspaces[index].activityLogs = activityLogs;
-              })
-            ),
-          ]);
-        }
-        dispatch({
-          type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-          payload: { property: "pastWorkspaces", value: workspaces },
-        });
-      }),
+                  )();
+                  workspaces[index].studentActivity = activity;
+                })
+              ),
+              Promise.all(
+                workspaces.map(async (workspace, index) => {
+                  const statistics: WorkspaceForumStatisticsType = <
+                    WorkspaceForumStatisticsType
+                  >await promisify(
+                    mApi().workspace.workspaces.forumStatistics.read(
+                      workspace.id,
+                      { userIdentifier: id }
+                    ),
+                    "callback"
+                  )();
+                  workspaces[index].forumStatistics = statistics;
+                })
+              ),
+              Promise.all(
+                workspaces.map(async (workspace, index) => {
+                  const activityLogs: ActivityLogType[] = <ActivityLogType[]>(
+                    await promisify(
+                      mApi().activitylogs.user.workspace.read(id, {
+                        workspaceEntityId: workspace.id,
+                        from: new Date(new Date().getFullYear() - 2, 0),
+                        to: new Date(),
+                      }),
+                      "callback"
+                    )()
+                  );
+                  workspaces[index].activityLogs = activityLogs;
+                })
+              ),
+            ]);
+          }
+          dispatch({
+            type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+            payload: { property: "pastWorkspaces", value: workspaces },
+          });
+        }),
         promisify(
           mApi().activitylogs.user.workspace.read(id, {
             from: new Date(new Date().getFullYear() - 2, 0),
@@ -628,10 +635,11 @@ let loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
             payload: { property: "activityLogs", value: activityLogs },
           });
         }),
-        dispatch({
-          type: "UPDATE_CURRENT_GUIDER_STUDENT_STATE",
-          payload: <GuiderCurrentStudentStateType>"READY",
-        });
+      ]);
+      dispatch({
+        type: "UPDATE_CURRENT_GUIDER_STUDENT_STATE",
+        payload: <GuiderCurrentStudentStateType>"READY",
+      });
 
       dispatch({
         type: "UNLOCK_TOOLBAR",

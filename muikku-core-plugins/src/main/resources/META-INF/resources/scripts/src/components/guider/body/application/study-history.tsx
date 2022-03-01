@@ -1,11 +1,23 @@
 import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
 import { GuiderType } from "~/reducers/main-function/guider";
-import { StatusType } from "~/reducers/base/status";
 import { StateType } from "~/reducers";
-import { connect } from "react-redux";
+import { connect, Dispatch } from "react-redux";
+import FileDeleteDialog from "../../dialogs/file-delete";
+import FileUploader from "~/components/general/file-uploader";
+import { bindActionCreators } from "redux";
+import { UserFileType } from "~/reducers/user-index";
 import Workspaces from "./workspaces";
 import MainChart from "~/components/general/graph/main-chart";
+import ApplicationSubPanel from "~/components/general/application-sub-panel";
+import ApplicationPanelBody from "~/components/general/application-panel/components/application-panel-body";
+import Navigation, { NavigationElement } from "~/components/general/navigation";
+import {
+  AddFileToCurrentStudentTriggerType,
+  addFileToCurrentStudent,
+} from "~/actions/main-function/guider";
+
+type studyHistoryAside = "history" | "library";
 
 /**
  * StudyHistory props
@@ -13,7 +25,7 @@ import MainChart from "~/components/general/graph/main-chart";
 interface StudyHistoryProps {
   i18n: i18nType;
   guider: GuiderType;
-  status: StatusType;
+  addFileToCurrentStudent: AddFileToCurrentStudentTriggerType;
 }
 
 /**
@@ -22,7 +34,10 @@ interface StudyHistoryProps {
  * @returns JSX.Element
  */
 const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
-  const { i18n, guider, status } = props;
+  const { i18n, guider } = props;
+
+  const [navigationActive, setNavigationActive] =
+    React.useState<studyHistoryAside>("history");
 
   const studentWorkspaces = (
     <Workspaces workspaces={guider.currentStudent.pastWorkspaces} />
@@ -34,29 +49,146 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
   ) {
     return null;
   }
+
+  /**
+   * Switches the active navigaton state
+   * @param id
+   */
+  const handleNavigationClick = (id: studyHistoryAside) => {
+    switch (id) {
+      case "history": {
+        setNavigationActive("history");
+        break;
+      }
+      case "library": {
+        setNavigationActive("library");
+        break;
+      }
+    }
+  };
+  /**
+   * Aside navigation for the study-history
+   */
+  const aside = (
+    <Navigation>
+      <NavigationElement
+        onClick={handleNavigationClick.bind(this, "history")}
+        isActive={navigationActive === "history" ? true : false}
+      >
+        {i18n.text.get("plugin.guider.user.tabs.studyHistory.aside.history")}
+      </NavigationElement>
+      <NavigationElement
+        onClick={handleNavigationClick.bind(this, "library")}
+        isActive={navigationActive === "library" ? true : false}
+      >
+        {i18n.text.get("plugin.guider.user.tabs.studyHistory.aside.library")}
+      </NavigationElement>
+    </Navigation>
+  );
+  /**
+   * historyDataLoaded
+   */
+  const historyDataLoaded =
+    guider.currentStudent.activityLogs && guider.currentStudent.pastWorkspaces
+      ? true
+      : false;
+  /**
+   * formDataGenerator
+   * @param file file
+   * @param formData formData
+   */
+  const formDataGenerator = (file: File, formData: FormData) => {
+    formData.append("upload", file);
+    formData.append("title", file.name);
+    formData.append("description", "");
+    formData.append("userIdentifier", guider.currentStudent.basic.id);
+  };
+
+  const files = guider.currentStudent.basic && (
+    <div className="application-sub-panel__body">
+      <FileUploader
+        url="/transcriptofrecordsfileupload/"
+        formDataGenerator={formDataGenerator}
+        displayNotificationOnError
+        onFileSuccess={(file: File, data: UserFileType) => {
+          addFileToCurrentStudent(data);
+        }}
+        hintText={i18n.text.get("plugin.guider.user.details.files.hint")}
+        fileTooLargeErrorText={i18n.text.get(
+          "plugin.guider.user.details.files.fileFieldUpload.fileSizeTooLarge"
+        )}
+        files={guider.currentStudent.files}
+        fileIdKey="id"
+        fileNameKey="title"
+        fileUrlGenerator={(f) => `/rest/guider/files/${f.id}/content`}
+        deleteDialogElement={FileDeleteDialog}
+        modifier="guider"
+        emptyText={i18n.text.get("plugin.guider.user.details.files.empty")}
+        uploadingTextProcesser={(percent: number) =>
+          i18n.text.get("plugin.guider.user.details.files.uploading", percent)
+        }
+        notificationOfSuccessText={i18n.text.get(
+          "plugin.guider.fileUpload.successful"
+        )}
+        displayNotificationOnSuccess
+      />
+    </div>
+  );
+
+  /**
+   * studyHisrtoryContent switches the corrent component
+   * @returns JSX.element
+   */
+  const studyHistoryContent = () => {
+    switch (navigationActive) {
+      case "history": {
+        return (
+          <>
+            <ApplicationSubPanel
+              i18n={i18n}
+              title={i18n.text.get("plugin.guider.user.details.workspaces")}
+            >
+              {studentWorkspaces}
+            </ApplicationSubPanel>
+            <ApplicationSubPanel
+              i18n={i18n}
+              title={i18n.text.get("plugin.guider.user.details.statistics")}
+            >
+              <MainChart
+                workspaces={guider.currentStudent.pastWorkspaces}
+                activityLogs={guider.currentStudent.activityLogs}
+              />
+            </ApplicationSubPanel>
+          </>
+        );
+      }
+      case "library": {
+        return (
+          <div className="application-sub-panel">
+            <h3 className="application-sub-panel__header">
+              {i18n.text.get("plugin.guider.user.details.files")}
+            </h3>
+            {files}
+          </div>
+        );
+      }
+    }
+  };
+
   return (
-    <>
-      <div className="application-sub-panel application-sub-panel--student-data-secondary">
-        <h3 className="application-sub-panel__header">
-          {i18n.text.get("plugin.guider.user.details.workspaces")}
-        </h3>
-        <div className="application-sub-panel__body">{studentWorkspaces}</div>
-      </div>
-      <div className="application-sub-panel">
-        <div className="application-sub-panel__header">
-          {i18n.text.get("plugin.guider.user.details.statistics")}
-        </div>
-        {guider.currentStudent.activityLogs &&
-        guider.currentStudent.pastWorkspaces ? (
-          <MainChart
-            workspaces={guider.currentStudent.pastWorkspaces}
-            activityLogs={guider.currentStudent.activityLogs}
-          />
-        ) : null}
-      </div>
-    </>
+    <ApplicationPanelBody asideBefore={aside}>
+      {historyDataLoaded ? studyHistoryContent() : null}
+    </ApplicationPanelBody>
   );
 };
+
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
+function mapDispatchToProps(dispatch: Dispatch<any>) {
+  return bindActionCreators({ addFileToCurrentStudent }, dispatch);
+}
 
 /**
  * mapStateToProps
@@ -66,8 +198,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     guider: state.guider,
-    status: state.status,
   };
 }
 
-export default connect(mapStateToProps)(StudyHistory);
+export default connect(mapStateToProps, mapDispatchToProps)(StudyHistory);
