@@ -567,7 +567,15 @@ public class CeeposRESTService {
     
     boolean validHash = validateHash(ceeposPayloadResponse);
     if (!validHash) {
+      ceeposController.updateOrderState(order, CeeposOrderState.ERRORED, sessionController.getLoggedUserEntity().getId());
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Payment response hash failure").build();
+    }
+    
+    // Status is PAYMENT_PROCESSING, so we really should have a redirect link to the webstore at this point 
+    
+    if (StringUtils.isEmpty(ceeposPayloadResponse.getPaymentAddress())) {
+      ceeposController.updateOrderState(order, CeeposOrderState.ERRORED, sessionController.getLoggedUserEntity().getId());
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Missing payment link").build();
     }
     
     // Update order payment address and set its state to ONGOING
@@ -1041,7 +1049,7 @@ public class CeeposRESTService {
     sb.append("&");
     sb.append(paymentResponse.getAction());
     sb.append("&");
-    sb.append(paymentResponse.getPaymentAddress());
+    sb.append(StringUtils.defaultIfEmpty(paymentResponse.getPaymentAddress(), ""));
     sb.append("&");
     sb.append(getSetting("key"));
     String expectedHash = Hashing.sha256().hashString(sb.toString(), StandardCharsets.UTF_8).toString();

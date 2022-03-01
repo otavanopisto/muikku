@@ -3,7 +3,7 @@
   <parent>
     <groupId>fi.otavanopisto.muikku</groupId>
     <artifactId>parent</artifactId>
-    <version>1.1.177-SNAPSHOT</version>
+    <version>1.1.179-SNAPSHOT</version>
   </parent>
   <artifactId>matriculation-plugin</artifactId>
 	<packaging>jar</packaging>
@@ -79,8 +79,8 @@
           <artifactId>frontend-maven-plugin</artifactId>
           <version>1.6</version>
           <configuration>
-            <nodeVersion>v8.12.0</nodeVersion>
-            <npmVersion>6.13.1</npmVersion>
+            <nodeVersion>v14.18.1</nodeVersion>
+            <npmVersion>8.1.0</npmVersion>
           </configuration>
           <executions>
             <execution>
