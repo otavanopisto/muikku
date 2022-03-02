@@ -211,19 +211,6 @@
   background-color: #3ab8e1;
 }
 
-.table-data::after {
-  content: "";
-  display: block;
-  height: 15px;
-  width: 15px;
-  background: pink;
-  position: absolute;
-  top: 0;
-  transform: skewX(45deg);
-  right: -22px;
-  transition: right 0.3s ease-in;
-}
-
 .table-data--NEXT::after {
   content: "";
   display: block;

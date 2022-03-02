@@ -579,7 +579,8 @@ let loadStudent: LoadStudentTriggerType = function loadStudent(id) {
 };
 
 /**
- * updateCurrentStudentHopsPhase
+ * Updates and return hops phase for current student
+ *
  * @param data data
  */
 const updateCurrentStudentHopsPhase: UpdateCurrentStudentHopsPhaseTriggerType =
@@ -588,24 +589,39 @@ const updateCurrentStudentHopsPhase: UpdateCurrentStudentHopsPhaseTriggerType =
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
     ) => {
-      const properties: any = await promisify(
-        mApi().user.property.create({
-          key: "hopsPhase",
-          value: data.value,
-          userEntityId: getState().guider.currentStudent.basic.userEntityId,
-        }),
-        "callback"
-      )();
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const properties: any = await promisify(
+          mApi().user.property.create({
+            key: "hopsPhase",
+            value: data.value,
+            userEntityId: getState().guider.currentStudent.basic.userEntityId,
+          }),
+          "callback"
+        )();
 
-      console.log(properties);
+        dispatch({
+          type: "UPDATE_CURRENT_GUIDER_STUDENT_HOPS_PHASE",
+          payload: {
+            property: "hopsPhase",
+            value: properties.value,
+          },
+        });
 
-      dispatch({
-        type: "UPDATE_CURRENT_GUIDER_STUDENT_HOPS_PHASE",
-        payload: {
-          property: "hopsPhase",
-          value: properties.value,
-        },
-      });
+        dispatch(
+          notificationActions.displayNotification(
+            "Käyttäjän hops vaihe päivitetty onnistuneesti",
+            "success"
+          )
+        );
+      } catch (error) {
+        dispatch(
+          notificationActions.displayNotification(
+            "Hupsista error hops phasing yhteydessä",
+            "error"
+          )
+        );
+      }
     };
   };
 

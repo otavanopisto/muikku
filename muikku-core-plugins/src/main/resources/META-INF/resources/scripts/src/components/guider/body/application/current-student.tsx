@@ -38,6 +38,7 @@ import {
   UpdateCurrentStudentHopsPhaseTriggerType,
   updateCurrentStudentHopsPhase,
 } from "../../../../actions/main-function/guider/index";
+import { AnyActionType } from "~/actions";
 
 /**
  * CurrentStudentProps
@@ -561,7 +562,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     {
       addFileToCurrentStudent,
