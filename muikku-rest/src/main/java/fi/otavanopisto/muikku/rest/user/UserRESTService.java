@@ -212,7 +212,7 @@ public class UserRESTService extends AbstractRESTService {
   public Response getUserEntityProperty(@PathParam("KEY") String key) {
     UserEntity loggedUserEntity = sessionController.getLoggedUserEntity();
     UserEntityProperty property = userEntityController.getUserEntityPropertyByKey(loggedUserEntity, key);
-    return Response.ok(new fi.otavanopisto.muikku.rest.model.UserEntityProperty(key, property == null ? null : property.getValue())).build();
+    return Response.ok(new fi.otavanopisto.muikku.rest.model.UserEntityProperty(key, property == null ? null : property.getValue(), property == null ? null : property.getUserEntity().getId())).build();
   }
   
   @GET
@@ -248,7 +248,7 @@ public class UserRESTService extends AbstractRESTService {
     if (StringUtils.isBlank(keys)) {
       storedProperties = userEntityController.listUserEntityProperties(userEntity);
       for (UserEntityProperty property : storedProperties) {
-        restProperties.add(new fi.otavanopisto.muikku.rest.model.UserEntityProperty(property.getKey(), property.getValue()));
+        restProperties.add(new fi.otavanopisto.muikku.rest.model.UserEntityProperty(property.getKey(), property.getValue(), userEntityId));
       }
     }
     else {
@@ -257,7 +257,8 @@ public class UserRESTService extends AbstractRESTService {
       for (int i = 0; i < keyArray.length; i++) {
         storedProperty = userEntityController.getUserEntityPropertyByKey(userEntity, keyArray[i]);
         String value = storedProperty == null ? null : storedProperty.getValue();
-        restProperties.add(new fi.otavanopisto.muikku.rest.model.UserEntityProperty(keyArray[i], value));
+
+        restProperties.add(new fi.otavanopisto.muikku.rest.model.UserEntityProperty(keyArray[i], value, userEntityId));
       }
     }
     return Response.ok(restProperties).build();
