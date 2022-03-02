@@ -8,17 +8,18 @@ import {
 import { Table, Tbody, Td, Tr } from "~/components/general/table";
 import { schoolCourseTable } from "~/mock/mock-data";
 import { connect, Dispatch } from "react-redux";
-import { UpdateStudentChoicesParams } from "../study-tool/hooks/use-student-choices";
-import { UpdateSuggestionParams } from "../study-tool/hooks/use-student-activity";
-import { HopsUser } from "../hops-compulsory-education-wizard";
+import { HopsUser } from ".";
 import { StateType } from "~/reducers";
 import Dropdown from "~/components/general/dropdown";
-import SuggestionList from "../suggestion-list/suggested-list";
+import { UpdateSuggestionParams } from "./hooks/useStudentActivity";
+import { UpdateStudentChoicesParams } from "./hooks/useStudentChoices";
+import HopsSuggestionList from "./hops-suggested-list";
+import { AnyActionType } from "~/actions";
 
 /**
  * CourseTableProps
  */
-interface CourseTableProps extends Partial<StudentActivityByStatus> {
+interface HopsCourseTableProps extends Partial<StudentActivityByStatus> {
   user: HopsUser;
   studentId: string;
   disabled: boolean;
@@ -48,7 +49,7 @@ interface CourseTableProps extends Partial<StudentActivityByStatus> {
  * @param props props
  * @returns JSX.Element
  */
-const CourseTable: React.FC<CourseTableProps> = (props) => {
+const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
   /**
    * Table ref
    */
@@ -56,7 +57,6 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
 
   /**
    * handleToggleChoiceClick
-   * @param user user
    * @param choiceParams choiceParams
    */
   const handleToggleChoiceClick =
@@ -256,7 +256,7 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
                       {!props.disabled &&
                       props.user === "supervisor" &&
                       canBeSelected ? (
-                        <SuggestionList
+                        <HopsSuggestionList
                           studentId={props.studentId}
                           suggestedActivityCourses={courseSuggestions}
                           subjectCode={sSubject.subjectCode}
@@ -285,7 +285,7 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
                       {!props.disabled &&
                       props.user === "supervisor" &&
                       canBeSelected ? (
-                        <SuggestionList
+                        <HopsSuggestionList
                           studentId={props.studentId}
                           suggestedActivityCourses={courseSuggestions}
                           subjectCode={sSubject.subjectCode}
@@ -382,8 +382,8 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CourseTable);
+export default connect(mapStateToProps, mapDispatchToProps)(HopsCourseTable);

@@ -1,32 +1,25 @@
 import * as React from "react";
-import CourseTable from "../course-table/course-table";
-import {
-  HopsPlanningStudies,
-  StudiesCourseData,
-} from "../../../../../@types/shared";
-import { TextField } from "../text-field";
-import Dropdown from "../../../../general/dropdown";
-import {
-  HopsUser,
-  NEEDED_STUDIES_IN_TOTAL,
-} from "../hops-compulsory-education-wizard";
-import CourseList from "../course-table/course-list";
-import { schoolCourseTable } from "../../../../../mock/mock-data";
-import StudyCalculationInfoBox from "./calculation-info-box";
-import OptionalStudiesInfoBox from "./optional-studiess-info-box";
-import { useStudentActivity } from "./hooks/use-student-activity";
-import { FollowUp } from "../../../../../@types/shared";
+import { HopsPlanningStudies } from "../../../../@types/shared";
+import { TextField } from "./text-field";
+import Dropdown from "../../../general/dropdown";
+import { HopsUser, NEEDED_STUDIES_IN_TOTAL } from ".";
+import CourseList from "./hops-course-list";
+import { schoolCourseTable } from "../../../../mock/mock-data";
+import StudyToolCalculationInfoBox from "./study-tool-calculation-info-box";
+import { useStudentActivity } from "./hooks/useStudentActivity";
 import { StateType } from "reducers";
 import { connect, Dispatch } from "react-redux";
-import { WebsocketStateType } from "../../../../../reducers/util/websocket";
-import { useStudentChoices } from "./hooks/use-student-choices";
+import { WebsocketStateType } from "../../../../reducers/util/websocket";
 import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
-import { useStudentStudyHour } from "./hooks/use-student-study-hours";
-import { useStudentAlternativeOptions } from "./hooks/use-student-alternative-options";
-import { useFollowUpGoal } from "../followUpGoal/hooks/useFollowUp";
+import { useFollowUpGoal } from "./hooks/useFollowUp";
+import CourseTable from "./hops-course-table";
+import OptionalStudiesInfoBox from "./study-tool-optional-studiess-info-box";
+import { useStudentChoices } from "./hooks/useStudentChoices";
+import { useStudentStudyHour } from "./hooks/useStudentStudyHours";
+import { useStudentAlternativeOptions } from "./hooks/useStudentAlternativeOptions";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const ProgressBarCircle = require("react-progress-bar.js").Circle;
@@ -132,22 +125,28 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
     );
 
     if (hoursNeededToMatchGoal > studyHours.studyHourValue) {
-      return StudyCalculationInfoBox({
-        state: "notenough",
-        message: `Pohdi onko arvioitu opiskeluaika (${totalTime}) pessimistinen valmistumistavoitteeseen nähden (${followUpData.followUp.graduationGoal}kk).`,
-      });
+      return (
+        <StudyToolCalculationInfoBox
+          state="notenough"
+          message={`Pohdi onko arvioitu opiskeluaika (${totalTime}) pessimistinen valmistumistavoitteeseen nähden (${followUpData.followUp.graduationGoal}kk).`}
+        />
+      );
     }
     if (hoursNeededToMatchGoal < studyHours.studyHourValue) {
-      return StudyCalculationInfoBox({
-        state: "toomuch",
-        message: `Pohdi onko arvioitu opiskeluaika (${totalTime}) optimistinen valmistumistavoitteeseen nähden (${followUpData.followUp.graduationGoal}kk).`,
-      });
+      return (
+        <StudyToolCalculationInfoBox
+          state="toomuch"
+          message={`Pohdi onko arvioitu opiskeluaika (${totalTime}) optimistinen valmistumistavoitteeseen nähden (${followUpData.followUp.graduationGoal}kk).`}
+        />
+      );
     }
     if (hoursNeededToMatchGoal === studyHours.studyHourValue) {
-      return StudyCalculationInfoBox({
-        state: "enough",
-        message: `Arvioitu opiskeluaika (${totalTime}) on linjassa valmistumistavoitteesi kanssa (${followUpData.followUp.graduationGoal}kk).`,
-      });
+      return (
+        <StudyToolCalculationInfoBox
+          state="enough"
+          message={`Arvioitu opiskeluaika (${totalTime}) on linjassa valmistumistavoitteesi kanssa (${followUpData.followUp.graduationGoal}kk).`}
+        />
+      );
     }
   };
 

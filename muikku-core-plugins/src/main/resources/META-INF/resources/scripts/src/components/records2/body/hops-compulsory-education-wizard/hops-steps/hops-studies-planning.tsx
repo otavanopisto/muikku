@@ -1,14 +1,14 @@
 import * as React from "react";
-import StudyTool from "../study-tool/study-tool";
-import FollowUpGoals from "../followUpGoal/follow-up-goals";
-import { HopsBaseProps, HopsUser } from "../hops-compulsory-education-wizard";
-import AlternativeStudyOptions from "../alternative-study-options/alternative-study-options";
+import StudyTool from "../study-tool";
+import FollowUpGoals from "../hops-follow-up-goals";
+import { HopsBaseProps, HopsUser } from "..";
+import AlternativeStudyOptions from "../hops-alternative-study-options";
 import { FollowUp, HopsPlanningStudies } from "~/@types/shared";
 
 /**
  * StudiesPlanningProps
  */
-interface StudiesPlanningProps extends HopsBaseProps {
+interface HopsStudiesPlanningProps extends HopsBaseProps {
   user: HopsUser;
   finnishAsSecondLanguage: boolean;
   ethics: boolean;
@@ -23,7 +23,7 @@ interface StudiesPlanningProps extends HopsBaseProps {
 /**
  * StudiesPlanningState
  */
-interface StudiesPlanningState {
+interface HopsStudiesPlanningState {
   openExtra: boolean;
   selectNextIsActive: boolean;
   selectSuggestedOptionalActive: boolean;
@@ -32,16 +32,16 @@ interface StudiesPlanningState {
 /**
  * StudiesPlanning
  */
-class StudiesPlanning extends React.Component<
-  StudiesPlanningProps,
-  StudiesPlanningState
+class HopsStudiesPlanning extends React.Component<
+  HopsStudiesPlanningProps,
+  HopsStudiesPlanningState
 > {
   /**
    * Constructor method
    *
    * @param props props
    */
-  constructor(props: StudiesPlanningProps) {
+  constructor(props: HopsStudiesPlanningProps) {
     super(props);
 
     this.state = {
@@ -121,4 +121,4 @@ class StudiesPlanning extends React.Component<
   }
 }
 
-export default StudiesPlanning;
+export default HopsStudiesPlanning;

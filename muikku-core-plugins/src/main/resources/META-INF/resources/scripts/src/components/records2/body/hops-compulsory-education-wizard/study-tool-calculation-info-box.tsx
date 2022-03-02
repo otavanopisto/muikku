@@ -10,7 +10,7 @@ type StudyState = "notenough" | "enough" | "toomuch";
 /**
  * CalculationInfoBoxProps
  */
-interface CalculationInfoBoxProps {
+interface StudyToolCalculationInfoBoxProps {
   state: StudyState;
   message?: string;
 }
@@ -22,10 +22,9 @@ interface CalculationInfoBoxProps {
  * @param param0.message message
  * @returns JSX.Element
  */
-const StudyCalculationInfoBox: React.FC<CalculationInfoBoxProps> = ({
-  state,
-  message,
-}) => {
+const StudyToolCalculationInfoBox: React.FC<
+  StudyToolCalculationInfoBoxProps
+> = ({ state, message }) => {
   switch (state) {
     case "notenough":
       return (
@@ -125,4 +124,4 @@ const StudyCalculationInfoBox: React.FC<CalculationInfoBoxProps> = ({
   }
 };
 
-export default StudyCalculationInfoBox;
+export default StudyToolCalculationInfoBox;

@@ -1,12 +1,12 @@
 import * as React from "react";
 import { SaveState } from "~/@types/shared";
 import Button from "~/components/general/button";
-import { HopsBaseProps } from "../hops-compulsory-education-wizard";
+import { HopsBaseProps } from "..";
 
 /**
  * DoneProps
  */
-interface DoneProps extends HopsBaseProps {
+interface HopsDoneProps extends HopsBaseProps {
   saveState: SaveState;
   /**
    * This is utility method to jump specific step. Doesn validate so use it carefully.
@@ -19,18 +19,18 @@ interface DoneProps extends HopsBaseProps {
 /**
  * DonePropsState
  */
-interface DonePropsState {}
+interface HopsDonePropsState {}
 
 /**
  * Done
  */
-class Done extends React.Component<DoneProps, DonePropsState> {
+class HopsDone extends React.Component<HopsDoneProps, HopsDonePropsState> {
   /**
    * Constructor method
    *
    * @param props props
    */
-  constructor(props: DoneProps) {
+  constructor(props: HopsDoneProps) {
     super(props);
 
     this.state = {};
@@ -125,4 +125,4 @@ class Done extends React.Component<DoneProps, DonePropsState> {
   }
 }
 
-export default Done;
+export default HopsDone;

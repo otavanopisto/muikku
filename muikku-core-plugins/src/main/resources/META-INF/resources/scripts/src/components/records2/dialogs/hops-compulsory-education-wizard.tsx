@@ -2,7 +2,7 @@ import * as React from "react";
 import Dialog from "~/components/general/dialog";
 import CompulsoryEducationHopsWizard, {
   HopsUser,
-} from "~/components/records2/body/hops-compulsory-education-wizard/hops-compulsory-education-wizard";
+} from "~/components/records2/body/hops-compulsory-education-wizard";
 
 /**
  * HopsCompulsoruEducationWizardProps

@@ -1,10 +1,10 @@
 import * as React from "react";
-import { NEEDED_STUDIES_IN_TOTAL } from "../hops-compulsory-education-wizard";
+import { NEEDED_STUDIES_IN_TOTAL } from ".";
 
 /**
  * OptionalStudiesInfoBoxProps
  */
-interface OptionalStudiesInfoBoxProps {
+interface StudyToolOptionalStudiesInfoBoxProps {
   needMandatoryStudies: number;
   selectedNumberOfOptional: number;
   graduationGoal: string;
@@ -15,9 +15,9 @@ interface OptionalStudiesInfoBoxProps {
  * @param props props
  * @returns JSX.Element
  */
-const OptionalStudiesInfoBox: React.FC<OptionalStudiesInfoBoxProps> = (
-  props
-) => {
+const StudyToolOptionalStudiesInfoBox: React.FC<
+  StudyToolOptionalStudiesInfoBoxProps
+> = (props) => {
   const { needMandatoryStudies, selectedNumberOfOptional, graduationGoal } =
     props;
 
@@ -71,4 +71,4 @@ const OptionalStudiesInfoBox: React.FC<OptionalStudiesInfoBoxProps> = (
   }
 };
 
-export default OptionalStudiesInfoBox;
+export default StudyToolOptionalStudiesInfoBox;

@@ -3,12 +3,12 @@ import "~/sass/elements/compulsory-education-hops.scss";
 import { TextField } from "../text-field";
 import * as moment from "moment";
 import { BasicInformation } from "~/@types/shared";
-import { HopsBaseProps } from "../hops-compulsory-education-wizard";
+import { HopsBaseProps } from "..";
 
 /**
  * StudentHopsInformationProps
  */
-interface StudentHopsInformationProps extends HopsBaseProps {
+interface HopsStudentHopsInformationProps extends HopsBaseProps {
   loading: boolean;
   basicInformation: BasicInformation;
 }
@@ -16,20 +16,20 @@ interface StudentHopsInformationProps extends HopsBaseProps {
 /**
  * StudentHopsInformationState
  */
-interface StudentHopsInformationState {}
+interface HopsStudentHopsInformationState {}
 
 /**
  * StudentHopsInformation
  */
-class StudentHopsInformation extends React.Component<
-  StudentHopsInformationProps,
-  StudentHopsInformationState
+class HopsStudentHopsInformation extends React.Component<
+  HopsStudentHopsInformationProps,
+  HopsStudentHopsInformationState
 > {
   /**
    * constructor
    * @param props props
    */
-  constructor(props: StudentHopsInformationProps) {
+  constructor(props: HopsStudentHopsInformationProps) {
     super(props);
   }
 
@@ -104,4 +104,4 @@ class StudentHopsInformation extends React.Component<
   }
 }
 
-export default StudentHopsInformation;
+export default HopsStudentHopsInformation;

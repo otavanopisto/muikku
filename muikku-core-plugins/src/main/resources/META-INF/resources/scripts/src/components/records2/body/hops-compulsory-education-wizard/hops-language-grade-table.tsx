@@ -13,7 +13,7 @@ import { LanguageGrade } from "../../../../@types/shared";
 /**
  * LanguageGradeTableProps
  */
-interface LanguageGradeTableProps {}
+interface HopsLanguageGradeTableProps {}
 
 /**
  * LanguageGradeTable
@@ -21,7 +21,7 @@ interface LanguageGradeTableProps {}
  * @param param0.children children
  * @returns JSX.Element. Language grade table component
  */
-export const LanguageGradeTable: React.FC<LanguageGradeTableProps> = ({
+export const HopsLanguageGradeTable: React.FC<HopsLanguageGradeTableProps> = ({
   children,
 }) => (
   <Table modifiers={["language-table"]}>

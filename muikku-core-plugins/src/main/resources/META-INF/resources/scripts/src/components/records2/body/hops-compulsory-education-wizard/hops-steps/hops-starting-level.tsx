@@ -5,15 +5,18 @@ import {
   LanguageGrade,
 } from "~/@types/shared";
 import "~/sass/elements/compulsory-education-hops.scss";
-import { LanguageGradeTable, LanguageGradeRow } from "../language-grade-table";
+import {
+  HopsLanguageGradeTable,
+  LanguageGradeRow,
+} from "../hops-language-grade-table";
 import { TextField } from "../text-field";
 import Button from "~/components/general/button";
-import { HopsBaseProps } from "../hops-compulsory-education-wizard";
+import { HopsBaseProps } from "..";
 
 /**
  * StartingLevelProps
  */
-interface StartingLevelProps extends HopsBaseProps {
+interface HopsStartingLevelProps extends HopsBaseProps {
   studentStartingLevel: HopsStudentStartingLevel;
   onStartingLevelChange: (startingLevel: HopsStudentStartingLevel) => void;
 }
@@ -21,21 +24,21 @@ interface StartingLevelProps extends HopsBaseProps {
 /**
  * StartingLevelState
  */
-interface StartingLevelState {}
+interface HopsStartingLevelState {}
 
 /**
  * StartingLevel
  */
-class StartingLevel extends React.Component<
-  StartingLevelProps,
-  StartingLevelState
+class HopsStartingLevel extends React.Component<
+  HopsStartingLevelProps,
+  HopsStartingLevelState
 > {
   /**
    * Constructor method
    *
    * @param props props
    */
-  constructor(props: StartingLevelProps) {
+  constructor(props: HopsStartingLevelProps) {
     super(props);
 
     this.state = {};
@@ -236,7 +239,7 @@ class StartingLevel extends React.Component<
           <legend className="hops-container__subheader">Muu kielitaito</legend>
           <div className="hops-container__row">
             <div className="hops-table__container">
-              <LanguageGradeTable>
+              <HopsLanguageGradeTable>
                 {this.props.studentStartingLevel.previousLanguageExperience.map(
                   (lngG, index) => (
                     <LanguageGradeRow
@@ -249,7 +252,7 @@ class StartingLevel extends React.Component<
                     />
                   )
                 )}
-              </LanguageGradeTable>
+              </HopsLanguageGradeTable>
               <div className="hops-button__container">
                 <Button onClick={this.handleAddNewCustomLngClick}>Muu?</Button>
               </div>
@@ -261,4 +264,4 @@ class StartingLevel extends React.Component<
   }
 }
 
-export default StartingLevel;
+export default HopsStartingLevel;

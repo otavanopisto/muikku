@@ -1,5 +1,4 @@
 import * as React from "react";
-import { useStudentAlternativeOptions } from "../study-tool/hooks/use-student-alternative-options";
 import { StateType } from "~/reducers";
 import { connect, Dispatch } from "react-redux";
 import {
@@ -7,11 +6,13 @@ import {
   displayNotification,
 } from "~/actions/base/notifications";
 import { WebsocketStateType } from "~/reducers/util/websocket";
+import { useStudentAlternativeOptions } from "./hooks/useStudentAlternativeOptions";
+import { AnyActionType } from "~/actions";
 
 /**
  * AlternativeStudyOptionsProps
  */
-interface AlternativeStudyOptionsProps {
+interface HopsAlternativeStudyOptionsProps {
   studentId: string;
   disabled: boolean;
   displayNotification: DisplayNotificationTriggerType;
@@ -26,12 +27,9 @@ interface AlternativeStudyOptionsProps {
  * @param root0.websocketState websocketState
  * @param root0.disabled disabled
  */
-const AlternativeStudyOptions: React.FC<AlternativeStudyOptionsProps> = ({
-  studentId,
-  displayNotification,
-  websocketState,
-  disabled,
-}) => {
+const HopsAlternativeStudyOptions: React.FC<
+  HopsAlternativeStudyOptionsProps
+> = ({ studentId, displayNotification, websocketState, disabled }) => {
   const { studyOptions, ...studyOptionHandlers } = useStudentAlternativeOptions(
     studentId,
     websocketState,
@@ -110,11 +108,11 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return { displayNotification };
 }
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(AlternativeStudyOptions);
+)(HopsAlternativeStudyOptions);

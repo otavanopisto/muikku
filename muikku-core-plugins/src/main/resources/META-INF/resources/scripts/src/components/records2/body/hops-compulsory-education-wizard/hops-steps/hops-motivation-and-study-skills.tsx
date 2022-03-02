@@ -1,15 +1,15 @@
 import * as React from "react";
 import { Textarea } from "../text-area";
-import { CheckboxGroupItem, ScaleInputGroup } from "../input-groups";
+import { CheckboxGroupItem, ScaleInputGroup } from "../hops-input-groups";
 import AnimateHeight from "react-animate-height";
-import { InputGroup } from "../input-groups";
+import { InputGroup } from "../hops-input-groups";
 import { HopsMotivationAndStudy } from "~/@types/shared";
-import { HopsBaseProps } from "../hops-compulsory-education-wizard";
+import { HopsBaseProps } from "..";
 
 /**
  * MotivationAndStudySkillsProps
  */
-interface MotivationAndStudySkillsProps extends HopsBaseProps {
+interface HopsMotivationAndStudySkillsProps extends HopsBaseProps {
   onMotivationAndStudyChange: (
     motivationAndStudy: HopsMotivationAndStudy
   ) => void;
@@ -19,7 +19,7 @@ interface MotivationAndStudySkillsProps extends HopsBaseProps {
 /**
  * MotivationAndStudySkillsState
  */
-interface MotivationAndStudySkillsState {
+interface HopsMotivationAndStudySkillsState {
   someOtherWay: boolean;
   someOtherMethod: boolean;
   somethingElse: boolean;
@@ -28,15 +28,15 @@ interface MotivationAndStudySkillsState {
 /**
  * MotivationAndStudySkills
  */
-class MotivationAndStudySkills extends React.Component<
-  MotivationAndStudySkillsProps,
-  MotivationAndStudySkillsState
+class HopsMotivationAndStudySkills extends React.Component<
+  HopsMotivationAndStudySkillsProps,
+  HopsMotivationAndStudySkillsState
 > {
   /**
    * constructor
    * @param props props
    */
-  constructor(props: MotivationAndStudySkillsProps) {
+  constructor(props: HopsMotivationAndStudySkillsProps) {
     super(props);
 
     this.state = {
@@ -78,7 +78,7 @@ class MotivationAndStudySkills extends React.Component<
    * @param name keyof MotivationAndStudySkillsState
    */
   handleCheckboxElseChanges =
-    (name: keyof MotivationAndStudySkillsState) =>
+    (name: keyof HopsMotivationAndStudySkillsState) =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
       this.props.onMotivationAndStudyChange({
         ...this.props.motivationAndStudy,
@@ -428,4 +428,4 @@ class MotivationAndStudySkills extends React.Component<
   }
 }
 
-export default MotivationAndStudySkills;
+export default HopsMotivationAndStudySkills;

@@ -7,7 +7,7 @@ import { StateType } from "~/reducers";
 const StepZilla = require("react-stepzilla").default;
 
 import "~/sass/elements/wizard.scss";
-import { Step1, Step2, Step3, Step5, Step6 } from "./steps";
+import { Step1, Step2, Step3, Step5, Step6 } from "./hops-steps";
 import { GuiderType } from "../../../../reducers/main-function/guider/index";
 import promisify from "../../../../util/promisify";
 import mApi from "~/lib/mApi";
@@ -293,8 +293,9 @@ class CompulsoryEducationHopsWizard extends React.Component<
   };
 
   /**
-   * handles when wizard step changes and here check when last step before complete happens,
+   * Handles when wizard step changes and here check when last step before complete happens,
    * kick offs form submit
+   *
    * @param steps steps
    */
   handleStepChange = (steps: object[]) => (step: any) => {
@@ -305,6 +306,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
 
   /**
    * Component render method
+   *
    * @returns JSX.Element
    */
   render() {

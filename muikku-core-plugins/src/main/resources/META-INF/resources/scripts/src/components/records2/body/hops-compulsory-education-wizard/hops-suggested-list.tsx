@@ -5,16 +5,17 @@ import { connect, Dispatch } from "react-redux";
 import { Course, StudentActivityCourse } from "~/@types/shared";
 import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
-import { UpdateSuggestionParams } from "../study-tool/hooks/use-student-activity";
+import { UpdateSuggestionParams } from "./hooks/useStudentActivity";
 import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
+import { AnyActionType } from "~/actions";
 
 /**
  * SuggestionListProps
  */
-interface SuggestionListProps {
+interface HopsSuggestionListProps {
   subjectCode: string;
   suggestedActivityCourses?: StudentActivityCourse[];
   course: Course;
@@ -38,7 +39,7 @@ const defaultSuggestionListProps = {
  * @param props props
  * @returns JSX.Element
  */
-const SuggestionList = (props: SuggestionListProps) => {
+const HopsSuggestionList = (props: HopsSuggestionListProps) => {
   props = { ...defaultSuggestionListProps, ...props };
 
   const { onLoad } = props;
@@ -195,8 +196,8 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return { displayNotification };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(SuggestionList);
+export default connect(mapStateToProps, mapDispatchToProps)(HopsSuggestionList);

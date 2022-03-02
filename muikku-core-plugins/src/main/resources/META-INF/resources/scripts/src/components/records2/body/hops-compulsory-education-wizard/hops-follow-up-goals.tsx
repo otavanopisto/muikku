@@ -1,10 +1,7 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { StudySector, FollowUp } from "../../../../../@types/shared";
-import {
-  FollowUpGoal,
-  FollowUpStudies,
-} from "../../../../../@types/shared";
+import { StudySector, FollowUp } from "../../../../@types/shared";
+import { FollowUpGoal, FollowUpStudies } from "../../../../@types/shared";
 import { useFollowUpGoal } from "./hooks/useFollowUp";
 import { StateType } from "~/reducers";
 import {
@@ -12,11 +9,12 @@ import {
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 import { WebsocketStateType } from "~/reducers/util/websocket";
+import { AnyActionType } from "~/actions";
 
 /**
  * FollowUpGoalsProps
  */
-interface FollowUpGoalsProps {
+interface HopsFollowUpGoalsProps {
   disabled: boolean;
   studentId: string;
   websocketState: WebsocketStateType;
@@ -25,10 +23,11 @@ interface FollowUpGoalsProps {
 
 /**
  * FollowUpGoals
+ *
  * @param props props
  * @returns JSX.Element
  */
-const FollowUpGoals: React.FC<FollowUpGoalsProps> = (props) => {
+const HopsFollowUpGoals: React.FC<HopsFollowUpGoalsProps> = (props) => {
   const { disabled, studentId, websocketState, displayNotification } = props;
 
   const { followUpData, ...followUpHandlers } = useFollowUpGoal(
@@ -39,7 +38,8 @@ const FollowUpGoals: React.FC<FollowUpGoalsProps> = (props) => {
 
   /**
    * handleGoalsSelectsChange
-   * @param name
+   *
+   * @param name name
    */
   const handleGoalsSelectsChange =
     (name: keyof FollowUp) => (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -157,8 +157,8 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return { displayNotification };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(FollowUpGoals);
+export default connect(mapStateToProps, mapDispatchToProps)(HopsFollowUpGoals);

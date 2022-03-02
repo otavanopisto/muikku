@@ -6,20 +6,20 @@ import {
 } from "~/@types/shared";
 import { schoolCourseTable } from "~/mock/mock-data";
 import AnimateHeight from "react-animate-height";
-import SuggestionList from "../suggestion-list/suggested-list";
+import HopsSuggestionList from "./hops-suggested-list";
 import {
   ListContainer,
   ListItem,
   ListItemIndicator,
 } from "~/components/general/list";
-import { UpdateSuggestionParams } from "../study-tool/hooks/use-student-activity";
-import { UpdateStudentChoicesParams } from "../study-tool/hooks/use-student-choices";
-import { HopsUser } from "../hops-compulsory-education-wizard";
+import { UpdateSuggestionParams } from "./hooks/useStudentActivity";
+import { HopsUser } from ".";
+import { UpdateStudentChoicesParams } from "./hooks/useStudentChoices";
 
 /**
  * CourseListProps
  */
-interface CourseListProps extends Partial<StudentActivityByStatus> {
+interface HopsCourseListProps extends Partial<StudentActivityByStatus> {
   user: HopsUser;
   studentId: string;
   disabled: boolean;
@@ -41,9 +41,11 @@ interface CourseListProps extends Partial<StudentActivityByStatus> {
 
 /**
  * CourseTable
+ *
+ * @param props props
  * @returns JSX.Element
  */
-const CourseList: React.FC<CourseListProps> = (props) => {
+const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
   const [openedSubjectSelections, setOpenedSubjectSelections] = React.useState<
     string[]
   >([]);
@@ -53,6 +55,8 @@ const CourseList: React.FC<CourseListProps> = (props) => {
 
   /**
    * handleToggleChoiceClick
+   *
+   * @param choiceParams choiceParams
    */
   const handleToggleChoiceClick =
     (choiceParams: UpdateStudentChoicesParams) =>
@@ -62,7 +66,9 @@ const CourseList: React.FC<CourseListProps> = (props) => {
 
   /**
    * handleOpenSuggestionList
-   * @param subjectName
+   *
+   * @param user user
+   * @param courseId courseId
    */
   const handleOpenSuggestionList =
     (user: HopsUser, courseId: number) =>
@@ -96,7 +102,8 @@ const CourseList: React.FC<CourseListProps> = (props) => {
   /**
    * handleOpenSubjectCourseSelection
    * Opens and closes subject course lists
-   * @param subjectId
+   *
+   * @param subjectName subjectName
    */
   const handleOpenSubjectCourseSelection =
     (subjectName: string) =>
@@ -161,8 +168,8 @@ const CourseList: React.FC<CourseListProps> = (props) => {
      */
     const courses = sSubject.availableCourses.map((course) => {
       //Default modifiers
-      let listItemIndicatormodifiers = ["course"];
-      let listItemModifiers = ["course"];
+      const listItemIndicatormodifiers = ["course"];
+      const listItemModifiers = ["course"];
 
       if (course.mandatory) {
         mandatoryCount++;
@@ -218,7 +225,7 @@ const CourseList: React.FC<CourseListProps> = (props) => {
             sCourse.courseNumber === course.courseNumber
         )
       ) {
-        let suggestedCourseDataNext = props.suggestedNextList.filter(
+        const suggestedCourseDataNext = props.suggestedNextList.filter(
           (sCourse) => sCourse.subject === sSubject.subjectCode
         );
 
@@ -233,7 +240,7 @@ const CourseList: React.FC<CourseListProps> = (props) => {
             sOCourse.courseNumber === course.courseNumber
         )
       ) {
-        let suggestedCourseDataOptional = props.suggestedOptionalList.filter(
+        const suggestedCourseDataOptional = props.suggestedOptionalList.filter(
           (oCourse) => oCourse.subject === sSubject.subjectCode
         );
 
@@ -295,7 +302,7 @@ const CourseList: React.FC<CourseListProps> = (props) => {
                 </div>
               </div>
               <AnimateHeight height={suggestionsOpen ? "auto" : 0}>
-                <SuggestionList
+                <HopsSuggestionList
                   studentId={props.studentId}
                   suggestedActivityCourses={courseSuggestions}
                   course={course}
@@ -349,7 +356,7 @@ const CourseList: React.FC<CourseListProps> = (props) => {
                 </div>
               </div>
               <AnimateHeight height={suggestionsOpen ? "auto" : 0}>
-                <SuggestionList
+                <HopsSuggestionList
                   studentId={props.studentId}
                   suggestedActivityCourses={courseSuggestions}
                   course={course}
@@ -420,4 +427,4 @@ const CourseList: React.FC<CourseListProps> = (props) => {
   return <div className="list-row__container">{renderRows}</div>;
 };
 
-export default CourseList;
+export default HopsCourseList;

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { FollowUp } from "../../../../../../@types/shared";
+import { FollowUp } from "../../../../../@types/shared";
 import { sleep } from "~/helper-functions/shared";
 import promisify from "~/util/promisify";
 import mApi from "~/lib/mApi";

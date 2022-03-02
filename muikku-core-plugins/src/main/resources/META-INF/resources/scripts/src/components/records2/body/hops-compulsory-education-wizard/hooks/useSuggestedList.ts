@@ -1,9 +1,9 @@
-import { Suggestion, Course } from "../../../../../../@types/shared";
-import promisify from "../../../../../../util/promisify";
 import mApi from "~/lib/mApi";
 import * as React from "react";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import { sleep } from "~/helper-functions/shared";
+import { Course, Suggestion } from "~/@types/shared";
+import promisify from "~/util/promisify";
 
 /**
  * UseSuggestion
