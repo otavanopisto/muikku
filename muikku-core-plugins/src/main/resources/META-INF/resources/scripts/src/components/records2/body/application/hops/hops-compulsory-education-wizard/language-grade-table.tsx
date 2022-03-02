@@ -69,7 +69,8 @@ export const LanguageGradeRow: React.FC<LanguageGradeRowProps> = ({
   disabled,
 }) => {
   /**
-   * handleOtherLngChange
+   * Handles language name changes
+   *
    * @param e e
    */
   const handleOtherLngChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -79,8 +80,9 @@ export const LanguageGradeRow: React.FC<LanguageGradeRowProps> = ({
   };
 
   /**
-   * handleRadioInputChange
-   * @param number number
+   * Handles radio input changes
+   *
+   * @param number value which is clicked
    */
   const handleRadioInputChange =
     (number: number) => (e: React.ChangeEvent<HTMLInputElement>) => {

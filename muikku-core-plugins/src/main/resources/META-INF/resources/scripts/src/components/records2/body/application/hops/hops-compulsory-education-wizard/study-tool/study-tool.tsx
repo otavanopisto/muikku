@@ -607,7 +607,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
    */
   const getTotalTime = (totalHours: number, hoursPerWeek: number) => {
     const totalMonths = Math.round(((totalHours / hoursPerWeek) * 7) / 31);
-    const totalTimeValue: any = `${totalMonths}kk`;
+    const totalTimeValue = `${totalMonths}kk`;
     /* let offsetYears = 0;
     let offsetMonths = 0;
     let offsetWeeks = 0; */
@@ -674,7 +674,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
   const hoursInTotalToComplete =
     updatedMandatoryHoursNeeded + selectedOptionalHours - allApprovedHours;
 
-  let totalTime = getTotalTime(
+  const totalTime = getTotalTime(
     hoursInTotalToComplete,
     studyHours.studyHourValue
   );
@@ -686,13 +686,13 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
   const needMandatoryStudies = calculateMaxNumberOfMandatoryCourses();
   const neededOptionalStudies = NEEDED_STUDIES_IN_TOTAL - needMandatoryStudies;
 
-  let jotain = 0;
+  let optionalStudiesOverRequiredAmount = 0;
 
   if (
     studentChoices.studentChoices &&
     studentChoices.studentChoices.length > neededOptionalStudies
   ) {
-    jotain = studentChoices.studentChoices.length;
+    optionalStudiesOverRequiredAmount = studentChoices.studentChoices.length;
   }
 
   let calculationDivider1 =
@@ -871,7 +871,9 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
                     ${completedOptionalStudies}
                     /
                     ${NEEDED_STUDIES_IN_TOTAL - needMandatoryStudies} ${
-                      jotain > 0 ? `(${jotain})` : ""
+                      optionalStudiesOverRequiredAmount > 0
+                        ? `(${optionalStudiesOverRequiredAmount})`
+                        : ""
                     }`}
                     progress={
                       completedOptionalStudies /

@@ -4,12 +4,12 @@ import { CheckboxGroupItem, ScaleInputGroup } from "../input-groups";
 import AnimateHeight from "react-animate-height";
 import { InputGroup } from "../input-groups";
 import { HopsMotivationAndStudy } from "~/@types/shared";
+import { HopsBaseProps } from "../hops-compulsory-education-wizard";
 
 /**
  * MotivationAndStudySkillsProps
  */
-interface MotivationAndStudySkillsProps {
-  disabled: boolean;
+interface MotivationAndStudySkillsProps extends HopsBaseProps {
   onMotivationAndStudyChange: (
     motivationAndStudy: HopsMotivationAndStudy
   ) => void;
@@ -59,8 +59,9 @@ class MotivationAndStudySkills extends React.Component<
   };
 
   /**
-   * handleTextareaChange
-   * @param name name
+   * Handles textarea changes
+   *
+   * @param name keyof HopsMotivationAndStudy
    */
   handleTextareaChange =
     (name: keyof HopsMotivationAndStudy) =>
@@ -72,23 +73,17 @@ class MotivationAndStudySkills extends React.Component<
     };
 
   /**
-   * handleCheckboxElseChanges
-   * @param name name
+   * Handles checkbox else changes
+   *
+   * @param name keyof MotivationAndStudySkillsState
    */
   handleCheckboxElseChanges =
     (name: keyof MotivationAndStudySkillsState) =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      if (e.target.checked) {
-        this.props.onMotivationAndStudyChange({
-          ...this.props.motivationAndStudy,
-          [name]: "",
-        });
-      } else {
-        this.props.onMotivationAndStudyChange({
-          ...this.props.motivationAndStudy,
-          [name]: undefined,
-        });
-      }
+      this.props.onMotivationAndStudyChange({
+        ...this.props.motivationAndStudy,
+        [name]: e.target.checked ? "" : undefined,
+      });
 
       this.setState({
         ...this.state,
@@ -97,8 +92,9 @@ class MotivationAndStudySkills extends React.Component<
     };
 
   /**
-   * handleScaleRangeChange
-   * @param name name
+   * Handles scale range changes depending of property
+   *
+   * @param name keyof HopsMotivationAndStudy
    * @param scaleValue scaleValue
    */
   handleScaleRangeChange = (
@@ -112,8 +108,9 @@ class MotivationAndStudySkills extends React.Component<
   };
 
   /**
-   * handleCheckboxItemChange
-   * @param name name
+   * Handles checkbox item change depending of property
+   *
+   * @param name keyof HopsMotivationAndStudy
    */
   handleCheckboxItemChange =
     (name: keyof HopsMotivationAndStudy) =>
@@ -125,8 +122,9 @@ class MotivationAndStudySkills extends React.Component<
     };
 
   /**
-   * handleGoalsSelectsChange
-   * @param name name
+   * Handles goals selects changes depending of property
+   *
+   * @param name keyof HopsMotivationAndStudy
    */
   handleGoalsSelectsChange =
     (name: keyof HopsMotivationAndStudy) =>
@@ -139,6 +137,7 @@ class MotivationAndStudySkills extends React.Component<
 
   /**
    * Component render method
+   *
    * @returns JSX.Element
    */
   render() {

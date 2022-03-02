@@ -137,6 +137,7 @@ const defaultScaleInputGroupProps = {
 };
 
 /**
+ * ScaleInputGroup
  *
  * @param props props
  * @returns JSX.Element. Scale input group component
@@ -158,7 +159,7 @@ export const ScaleInputGroup = <T,>(props: ScaleInputGroupProps<T>) => {
 
   React.useEffect(() => {
     onChangeScaleGroup(name, scaleValue);
-  }, [scaleValue]);
+  }, [scaleValue, name, onChangeScaleGroup]);
 
   /**
    * handleScaleChange

@@ -175,45 +175,43 @@
   }
 }
 
-.table-data-content--SUGGESTED::before {
-  border: 3px solid pink;
-  content: "";
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
+.table-data--course {
+  overflow: hidden;
 }
 
-.table-data-content--MANDATORY {
+.table-data--SUGGESTED {
+  border: 3px solid pink;
+}
+
+.table-data--MANDATORY {
   background-color: #acacac;
 }
 
-.table-data-content--OPTIONAL {
+.table-data--OPTIONAL {
   background-color: lightblue;
 }
 
-.table-data-content--COMPLETED {
+.table-data--COMPLETED {
   background-color: green;
 }
 
-.table-data-content--INPROGRESS {
+.table-data--INPROGRESS {
   background-color: orange;
 }
 
-.table-data-content--APPROVAL {
+.table-data--APPROVAL {
   background-color: palegreen;
 }
 
-.table-data-content--SELECTED {
+.table-data--SELECTED {
   background-color: cornsilk;
 }
 
-.table-data-content--SELECTED_OPTIONAL {
+.table-data--SELECTED_OPTIONAL {
   background-color: #3ab8e1;
 }
 
-.table-data-content:after {
+.table-data::after {
   content: "";
   display: block;
   height: 15px;
@@ -226,7 +224,7 @@
   transition: right 0.3s ease-in;
 }
 
-.table-data-content--NEXT:after {
+.table-data--NEXT::after {
   content: "";
   display: block;
   height: 15px;

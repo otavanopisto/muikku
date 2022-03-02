@@ -14,6 +14,7 @@ import { bindActionCreators } from "redux";
 import { HOPSDataType } from "~/reducers/main-function/hops";
 import { StateType } from "~/reducers";
 import CompulsoryEducationHopsWizard from "./hops-compulsory-education-wizard/hops-compulsory-education-wizard";
+import { AnyActionType } from "~/actions";
 
 /**
  * HopsProps
@@ -77,6 +78,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
    */
   renderHops = () => (
     <CompulsoryEducationHopsWizard
+      phaseList={[]}
       user="student"
       disabled={false}
       superVisorModifies={false}
@@ -127,9 +129,9 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ setHopsTo }, dispatch);
 }
 

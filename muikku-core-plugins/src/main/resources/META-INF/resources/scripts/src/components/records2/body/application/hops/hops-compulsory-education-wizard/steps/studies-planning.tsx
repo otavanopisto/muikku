@@ -1,22 +1,22 @@
 import * as React from "react";
 import StudyTool from "../study-tool/study-tool";
 import FollowUpGoals from "../followUpGoal/follow-up-goals";
-import { HopsUser } from "../hops-compulsory-education-wizard";
+import { HopsBaseProps, HopsUser } from "../hops-compulsory-education-wizard";
 import AlternativeStudyOptions from "../alternative-study-options/alternative-study-options";
 import { FollowUp, HopsPlanningStudies } from "~/@types/shared";
 
 /**
  * StudiesPlanningProps
  */
-interface StudiesPlanningProps {
+interface StudiesPlanningProps extends HopsBaseProps {
   user: HopsUser;
-  disabled: boolean;
   finnishAsSecondLanguage: boolean;
   ethics: boolean;
   followUp: FollowUp;
   studies: HopsPlanningStudies;
   studentId: string;
   superVisorModifies: boolean;
+  phaseList: number[];
   onStudiesPlanningChange: (studies: HopsPlanningStudies) => void;
   onStudiesGoalsChange: (followUp: FollowUp) => void;
 }
@@ -38,7 +38,8 @@ class StudiesPlanning extends React.Component<
   StudiesPlanningState
 > {
   /**
-   * constructor
+   * Constructor method
+   *
    * @param props props
    */
   constructor(props: StudiesPlanningProps) {
@@ -52,8 +53,9 @@ class StudiesPlanning extends React.Component<
   }
 
   /**
-   * handleGoalsSelectsChange
-   * @param name name
+   * Handles goals selects change
+   *
+   * @param name keyof HopsPlanningStudies
    */
   handleGoalsSelectsChange =
     (name: keyof HopsPlanningStudies) =>
@@ -66,9 +68,15 @@ class StudiesPlanning extends React.Component<
 
   /**
    * Component render method
+   *
    * @returns JSX.Element
    */
   render() {
+    /**
+     * So if student has access "phase 2", student has access to study tool
+     */
+    const hasAccessToStudyTool = this.props.phaseList.includes(2);
+
     return (
       <div className="hops-container">
         <fieldset className="hops-container__fieldset">
@@ -90,17 +98,21 @@ class StudiesPlanning extends React.Component<
           />
         </fieldset>
         <fieldset className="hops-container__fieldset">
-          <legend className="hops__step-container__subheader">
-            Opintolaskuri
-          </legend>
-          <StudyTool
-            user={this.props.user}
-            studentId={this.props.studentId}
-            disabled={this.props.disabled}
-            studies={this.props.studies}
-            superVisorModifies={this.props.superVisorModifies}
-            onStudiesPlanningChange={this.props.onStudiesPlanningChange}
-          />
+          <legend className="hops-container__subheader">Opintolaskuri</legend>
+          {!hasAccessToStudyTool ? (
+            <div className="hops__phase-info">
+              Tämä osa lomakkeesta aktivoidaan ohjaajan toimesta.
+            </div>
+          ) : (
+            <StudyTool
+              user={this.props.user}
+              studentId={this.props.studentId}
+              disabled={this.props.disabled}
+              studies={this.props.studies}
+              superVisorModifies={this.props.superVisorModifies}
+              onStudiesPlanningChange={this.props.onStudiesPlanningChange}
+            />
+          )}
         </fieldset>
       </div>
     );

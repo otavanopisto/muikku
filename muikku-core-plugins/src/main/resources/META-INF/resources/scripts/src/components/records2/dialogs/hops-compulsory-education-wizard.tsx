@@ -48,6 +48,7 @@ class HopsCompulsoryEducationWizardDialog extends React.Component<
     const content = (closeDialog: () => any) => (
       <div>
         <CompulsoryEducationHopsWizard
+          phaseList={[]}
           user={this.props.user}
           disabled={this.props.disabled}
           superVisorModifies={this.props.superVisorModifies}

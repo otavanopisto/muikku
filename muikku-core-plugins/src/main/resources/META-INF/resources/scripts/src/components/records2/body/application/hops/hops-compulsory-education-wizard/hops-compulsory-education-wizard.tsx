@@ -2,17 +2,13 @@ import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
-import { HOPSDataType } from "~/reducers/main-function/hops";
 import { StateType } from "~/reducers";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const StepZilla = require("react-stepzilla").default;
 
 import "~/sass/elements/wizard.scss";
 import { Step1, Step2, Step3, Step5, Step6 } from "./steps";
-import {
-  GuiderType,
-  GuiderStudentType,
-} from "../../../../../../reducers/main-function/guider/index";
+import { GuiderType } from "../../../../../../reducers/main-function/guider/index";
 import promisify from "../../../../../../util/promisify";
 import mApi from "~/lib/mApi";
 import {
@@ -36,6 +32,7 @@ import {
 } from "~/actions/base/notifications";
 import { sleep } from "~/helper-functions/shared";
 import { SaveState } from "~/@types/shared";
+import { AnyActionType } from "~/actions";
 
 /**
  * Total needed optional studies without modifiers to graduate
@@ -54,14 +51,20 @@ export const NEEDED_STUDIES_IN_TOTAL = 46;
 export type HopsUser = "supervisor" | "student";
 
 /**
- * CompulsoryEducationHopsWizardProps
+ * HopsSteps
  */
-interface CompulsoryEducationHopsWizardProps {
+export interface HopsBaseProps {
   user: HopsUser;
-  onHopsChange?: (hops: HOPSDataType) => any;
-  i18n: i18nType;
+  phaseList: number[];
   disabled: boolean;
   superVisorModifies: boolean;
+}
+
+/**
+ * CompulsoryEducationHopsWizardProps
+ */
+interface CompulsoryEducationHopsWizardProps extends HopsBaseProps {
+  i18n: i18nType;
   guider: GuiderType;
   displayNotification: DisplayNotificationTriggerType;
 }
@@ -301,12 +304,18 @@ class CompulsoryEducationHopsWizard extends React.Component<
    * @returns JSX.Element
    */
   render() {
+    const { i18n, guider, displayNotification, children, ...baseProps } =
+      this.props;
+
+    const phaseList: number[] = [1, 2];
+
     const steps = [
       {
         name: "Perustiedot",
         component: (
           <Step1
-            disabled={this.props.disabled}
+            {...baseProps}
+            phaseList={phaseList}
             loading={this.state.loading}
             basicInformation={this.state.basicInfo}
           />
@@ -316,7 +325,8 @@ class CompulsoryEducationHopsWizard extends React.Component<
         name: "Osaamisen ja lähtötason arvointi",
         component: (
           <Step2
-            disabled={this.props.disabled}
+            {...baseProps}
+            phaseList={phaseList}
             studentStartingLevel={this.state.hopsCompulsory.startingLevel}
             onStartingLevelChange={this.handleStartingLevelChange}
           />
@@ -326,7 +336,8 @@ class CompulsoryEducationHopsWizard extends React.Component<
         name: "Opiskelutaidot ja Motivaatio",
         component: (
           <Step3
-            disabled={this.props.disabled}
+            {...baseProps}
+            phaseList={phaseList}
             motivationAndStudy={this.state.hopsCompulsory.motivationAndStudy}
             onMotivationAndStudyChange={this.handleMotivationAndStudyChange}
           />
@@ -336,8 +347,8 @@ class CompulsoryEducationHopsWizard extends React.Component<
         name: "Tavoitteet ja opintojen suunnittelu",
         component: (
           <Step5
-            user={this.props.user}
-            disabled={this.props.disabled}
+            {...baseProps}
+            phaseList={phaseList}
             studentId={
               this.props.user === "supervisor"
                 ? this.props.guider.currentStudent.basic.id
@@ -361,7 +372,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
       },
       {
         name: "Tallennus",
-        component: <Step6 saveState={this.state.savingStatus} />,
+        component: <Step6 {...baseProps} saveState={this.state.savingStatus} />,
       },
     ];
 
@@ -402,7 +413,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {
     displayNotification,
   };

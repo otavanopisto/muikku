@@ -3,12 +3,12 @@ import "~/sass/elements/compulsory-education-hops.scss";
 import { TextField } from "../text-field";
 import * as moment from "moment";
 import { BasicInformation } from "~/@types/shared";
+import { HopsBaseProps } from "../hops-compulsory-education-wizard";
 
 /**
  * StudentHopsInformationProps
  */
-interface StudentHopsInformationProps {
-  disabled: boolean;
+interface StudentHopsInformationProps extends HopsBaseProps {
   loading: boolean;
   basicInformation: BasicInformation;
 }

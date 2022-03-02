@@ -7,12 +7,13 @@ import {
 } from "~/@types/shared";
 import { Table, Tbody, Td, Tr } from "~/components/general/table";
 import { schoolCourseTable } from "~/mock/mock-data";
-import { TableDataContent } from "./table-data-content";
 import { connect, Dispatch } from "react-redux";
 import { UpdateStudentChoicesParams } from "../study-tool/hooks/use-student-choices";
 import { UpdateSuggestionParams } from "../study-tool/hooks/use-student-activity";
 import { HopsUser } from "../hops-compulsory-education-wizard";
 import { StateType } from "~/reducers";
+import Dropdown from "~/components/general/dropdown";
+import SuggestionList from "../suggestion-list/suggested-list";
 
 /**
  * CourseTableProps
@@ -59,11 +60,9 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
    * @param choiceParams choiceParams
    */
   const handleToggleChoiceClick =
-    (user: HopsUser, choiceParams: UpdateStudentChoicesParams) =>
-    (e: React.MouseEvent<HTMLTableDataCellElement, MouseEvent>) => {
-      if (user === "student") {
-        props.updateStudentChoice(choiceParams);
-      }
+    (choiceParams: UpdateStudentChoicesParams) =>
+    (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+      props.updateStudentChoice(choiceParams);
     };
 
   /**
@@ -119,10 +118,10 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
          * If no, then just empty table cell "placeholder"
          */
         if (course === undefined) {
-          modifiers = ["centered"];
+          modifiers = ["centered", "course"];
 
           return (
-            <Td key={`empty-${index + 1}`}>
+            <Td key={`empty-${index + 1}`} modifiers={modifiers}>
               <div
                 className={`table-data-content table-data-content-centered table-data-content--empty`}
               >
@@ -145,9 +144,6 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
 
         // Table data content options with default values
         let canBeSelected = true;
-        let canBeSuggestedForNextCourse = true;
-        let canBeSuggestedForOptionalCourse = true;
-
         let courseSuggestions: StudentActivityCourse[] = [];
 
         let selectedByStudent = false;
@@ -213,7 +209,6 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
               tCourse.courseNumber === course.courseNumber
           )
         ) {
-          canBeSuggestedForNextCourse = false;
           canBeSelected = false;
           modifiers.push("APPROVAL");
         } else if (
@@ -224,8 +219,6 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
               gCourse.courseNumber === course.courseNumber
           )
         ) {
-          canBeSuggestedForOptionalCourse = true;
-          canBeSuggestedForNextCourse = false;
           canBeSelected = false;
           modifiers.push("COMPLETED");
         } else if (
@@ -236,8 +229,6 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
               oCourse.courseNumber === course.courseNumber
           )
         ) {
-          canBeSuggestedForOptionalCourse = true;
-          canBeSuggestedForNextCourse = false;
           canBeSelected = false;
           modifiers.push("INPROGRESS");
         }
@@ -246,27 +237,83 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
           <Td
             key={course.id}
             modifiers={modifiers}
-            onClick={handleToggleChoiceClick(props.user, {
-              studentId: props.studentId,
-              courseNumber: course.courseNumber,
-              subject: sSubject.subjectCode,
-            })}
+            onClick={
+              props.user === "student"
+                ? handleToggleChoiceClick({
+                    studentId: props.studentId,
+                    courseNumber: course.courseNumber,
+                    subject: sSubject.subjectCode,
+                  })
+                : undefined
+            }
           >
-            <TableDataContent
-              user={props.user}
-              superVisorModifies={props.superVisorModifies}
-              modifiers={modifiers}
-              tableRef={tableRef}
-              subjectCode={sSubject.subjectCode}
-              course={course}
-              studentId={props.studentId}
-              selectedByStudent={selectedByStudent}
-              disabled={props.disabled}
-              suggestedActivityCourses={courseSuggestions}
-              canBeSelected={canBeSelected}
-              updateSuggestion={props.updateSuggestion}
-              updateStudentChoice={props.updateStudentChoice}
-            />
+            <Dropdown
+              content={
+                <div>
+                  <h4>{course.mandatory ? course.name : `${course.name}*`}</h4>
+                  {course.mandatory ? (
+                    <>
+                      {!props.disabled &&
+                      props.user === "supervisor" &&
+                      canBeSelected ? (
+                        <SuggestionList
+                          studentId={props.studentId}
+                          suggestedActivityCourses={courseSuggestions}
+                          subjectCode={sSubject.subjectCode}
+                          course={course}
+                          updateSuggestion={props.updateSuggestion}
+                        />
+                      ) : null}
+                    </>
+                  ) : (
+                    <>
+                      {props.user === "supervisor" &&
+                      props.superVisorModifies ? (
+                        <button
+                          onClick={handleToggleChoiceClick({
+                            studentId: props.studentId,
+                            courseNumber: course.courseNumber,
+                            subject: sSubject.subjectCode,
+                          })}
+                          style={{ zIndex: 2 }}
+                        >
+                          {selectedByStudent
+                            ? "Peru valinta"
+                            : "Valitse osaksi hopsia"}
+                        </button>
+                      ) : undefined}
+                      {!props.disabled &&
+                      props.user === "supervisor" &&
+                      canBeSelected ? (
+                        <SuggestionList
+                          studentId={props.studentId}
+                          suggestedActivityCourses={courseSuggestions}
+                          subjectCode={sSubject.subjectCode}
+                          course={course}
+                          updateSuggestion={props.updateSuggestion}
+                        />
+                      ) : null}
+                    </>
+                  )}
+                </div>
+              }
+            >
+              <div
+                tabIndex={0}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  height: "50%",
+                  width: "50%",
+                  margin: "auto",
+                }}
+              >
+                {course.mandatory
+                  ? course.courseNumber
+                  : `${course.courseNumber}*`}
+              </div>
+            </Dropdown>
           </Td>
         );
       });

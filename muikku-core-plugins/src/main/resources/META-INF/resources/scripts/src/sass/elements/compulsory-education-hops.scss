@@ -19,6 +19,8 @@
   // @include breakpoint($breakpoint-pad) {
   //    display: flex;
   //  }
+
+
 }
 
 .hops-container__subheader {
@@ -32,6 +34,15 @@
   @include breakpoint($breakpoint-pad) {
     font-size: 1.1875rem;
   }
+}
+
+.hops__phase-info {
+  align-items: center;
+  display: flex;
+  font-size: 2rem;
+  font-style: italic;
+  height: 100px;
+  justify-content: center;
 }
 
 // .hops-sub__container {

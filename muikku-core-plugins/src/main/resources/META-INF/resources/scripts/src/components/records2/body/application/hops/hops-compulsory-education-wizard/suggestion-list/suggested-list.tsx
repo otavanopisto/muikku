@@ -69,25 +69,14 @@ const SuggestionList = (props: SuggestionListProps) => {
       suggestionId: number
     ) =>
     (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-      if (type === "NEXT") {
-        props.updateSuggestion({
-          goal: actionType,
-          courseNumber: props.course.courseNumber,
-          subjectCode: props.subjectCode,
-          suggestionId: suggestionId,
-          studentId: props.studentId,
-          type: type,
-        });
-      } else {
-        props.updateSuggestion({
-          goal: actionType,
-          courseNumber: props.course.courseNumber,
-          subjectCode: props.subjectCode,
-          suggestionId: suggestionId,
-          studentId: props.studentId,
-          type: type,
-        });
-      }
+      props.updateSuggestion({
+        goal: actionType,
+        courseNumber: props.course.courseNumber,
+        subjectCode: props.subjectCode,
+        suggestionId: suggestionId,
+        studentId: props.studentId,
+        type: type,
+      });
     };
 
   /**

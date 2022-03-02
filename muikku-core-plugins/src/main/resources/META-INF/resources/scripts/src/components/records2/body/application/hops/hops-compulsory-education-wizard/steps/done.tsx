@@ -1,12 +1,19 @@
 import * as React from "react";
 import { SaveState } from "~/@types/shared";
 import Button from "~/components/general/button";
+import { HopsBaseProps } from "../hops-compulsory-education-wizard";
 
 /**
  * DoneProps
  */
-interface DoneProps {
+interface DoneProps extends HopsBaseProps {
   saveState: SaveState;
+  /**
+   * This is utility method to jump specific step. Doesn validate so use it carefully.
+   * Weird things is that StepZilla library doesn't support types. So this is need to "activate"
+   * this props, so it could work.
+   */
+  jumpToStep?: (step: number) => void;
 }
 
 /**
@@ -19,7 +26,8 @@ interface DonePropsState {}
  */
 class Done extends React.Component<DoneProps, DonePropsState> {
   /**
-   * constructor
+   * Constructor method
+   *
    * @param props props
    */
   constructor(props: DoneProps) {
@@ -29,7 +37,8 @@ class Done extends React.Component<DoneProps, DonePropsState> {
   }
 
   /**
-   * renderStateMessage
+   * Renders saving state message
+   *
    * @param saveState saveState
    * @returns JSX.Element
    */
@@ -101,14 +110,14 @@ class Done extends React.Component<DoneProps, DonePropsState> {
         {this.props.saveState === "SUCCESS" ||
         this.props.saveState === "FAILED" ? (
           <Button
-            onClick={() => console.log("sulje")}
+            onClick={() => this.props.jumpToStep(0)}
             className={`${
               this.props.saveState === "SUCCESS"
                 ? "button--success"
                 : "button--error"
             }`}
           >
-            Sulje
+            Alkuun
           </Button>
         ) : null}
       </div>

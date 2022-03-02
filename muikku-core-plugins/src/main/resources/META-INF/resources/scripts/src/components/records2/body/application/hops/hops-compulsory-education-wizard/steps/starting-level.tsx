@@ -8,12 +8,12 @@ import "~/sass/elements/compulsory-education-hops.scss";
 import { LanguageGradeTable, LanguageGradeRow } from "../language-grade-table";
 import { TextField } from "../text-field";
 import Button from "~/components/general/button";
+import { HopsBaseProps } from "../hops-compulsory-education-wizard";
 
 /**
  * StartingLevelProps
  */
-interface StartingLevelProps {
-  disabled: boolean;
+interface StartingLevelProps extends HopsBaseProps {
   studentStartingLevel: HopsStudentStartingLevel;
   onStartingLevelChange: (startingLevel: HopsStudentStartingLevel) => void;
 }
@@ -31,7 +31,8 @@ class StartingLevel extends React.Component<
   StartingLevelState
 > {
   /**
-   * constructor
+   * Constructor method
+   *
    * @param props props
    */
   constructor(props: StartingLevelProps) {
@@ -41,8 +42,9 @@ class StartingLevel extends React.Component<
   }
 
   /**
-   * handleSelectsChange
-   * @param name name
+   * Handles selects changes
+   *
+   * @param name keyof of HopsStudentStartingLevel
    */
   handleSelectsChange =
     (name: keyof HopsStudentStartingLevel) =>
@@ -54,8 +56,9 @@ class StartingLevel extends React.Component<
     };
 
   /**
-   * handleTextAreaChange
-   * @param name name
+   * Handles textarea changes
+   *
+   * @param name keyof of HopsStudentStartingLevel
    */
   handleTextAreaChange =
     (name: keyof HopsStudentStartingLevel) =>
@@ -97,7 +100,8 @@ class StartingLevel extends React.Component<
 
   /**
    * Handles row deletion from list
-   * @param index of deleted row in list
+   *
+   * @param index of row which will be deleted
    */
   handleDeleteCustomLngClick = (index: number) => {
     const updatedLngGrades = [
@@ -113,7 +117,8 @@ class StartingLevel extends React.Component<
   };
 
   /**
-   * handleCustomLngChange
+   * Handles custom language changes
+   *
    * @param updatedLng updatedLng
    * @param index index
    */
@@ -132,6 +137,7 @@ class StartingLevel extends React.Component<
 
   /**
    * Component render method
+   *
    * @returns JSX.Element
    */
   render() {
