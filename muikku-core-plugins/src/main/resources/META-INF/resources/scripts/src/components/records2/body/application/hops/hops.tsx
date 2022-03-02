@@ -13,7 +13,7 @@ import { SetHopsToTriggerType, setHopsTo } from "~/actions/main-function/hops";
 import { bindActionCreators } from "redux";
 import { HOPSDataType, HOPSType } from "~/reducers/main-function/hops";
 import { StateType } from "~/reducers";
-import CompulsoryEducationHopsWizard from "./hops-compulsory-education-wizard/hops-compulsory-education-wizard";
+import CompulsoryEducationHopsWizard from "../../hops-compulsory-education-wizard/hops-compulsory-education-wizard";
 import { AnyActionType } from "~/actions";
 
 /**

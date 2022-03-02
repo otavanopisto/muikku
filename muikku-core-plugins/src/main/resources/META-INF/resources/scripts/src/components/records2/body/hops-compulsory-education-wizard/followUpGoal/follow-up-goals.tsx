@@ -1,10 +1,10 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { StudySector, FollowUp } from "../../../../../../../@types/shared";
+import { StudySector, FollowUp } from "../../../../../@types/shared";
 import {
   FollowUpGoal,
   FollowUpStudies,
-} from "../../../../../../../@types/shared";
+} from "../../../../../@types/shared";
 import { useFollowUpGoal } from "./hooks/useFollowUp";
 import { StateType } from "~/reducers";
 import {

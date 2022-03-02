@@ -3,22 +3,22 @@ import CourseTable from "../course-table/course-table";
 import {
   HopsPlanningStudies,
   StudiesCourseData,
-} from "../../../../../../../@types/shared";
+} from "../../../../../@types/shared";
 import { TextField } from "../text-field";
-import Dropdown from "../../../../../../general/dropdown";
+import Dropdown from "../../../../general/dropdown";
 import {
   HopsUser,
   NEEDED_STUDIES_IN_TOTAL,
 } from "../hops-compulsory-education-wizard";
 import CourseList from "../course-table/course-list";
-import { schoolCourseTable } from "../../../../../../../mock/mock-data";
+import { schoolCourseTable } from "../../../../../mock/mock-data";
 import StudyCalculationInfoBox from "./calculation-info-box";
 import OptionalStudiesInfoBox from "./optional-studiess-info-box";
 import { useStudentActivity } from "./hooks/use-student-activity";
-import { FollowUp } from "../../../../../../../@types/shared";
+import { FollowUp } from "../../../../../@types/shared";
 import { StateType } from "reducers";
 import { connect, Dispatch } from "react-redux";
-import { WebsocketStateType } from "../../../../../../../reducers/util/websocket";
+import { WebsocketStateType } from "../../../../../reducers/util/websocket";
 import { useStudentChoices } from "./hooks/use-student-choices";
 import {
   displayNotification,

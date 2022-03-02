@@ -8,7 +8,7 @@ import {
   Th,
   Tr,
 } from "~/components/general/table";
-import { LanguageGrade } from "../../../../../../@types/shared";
+import { LanguageGrade } from "../../../../@types/shared";
 
 /**
  * LanguageGradeTableProps

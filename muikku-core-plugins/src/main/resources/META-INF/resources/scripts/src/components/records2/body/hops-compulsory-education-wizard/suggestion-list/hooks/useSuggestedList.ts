@@ -1,5 +1,5 @@
-import { Suggestion, Course } from "../../../../../../../../@types/shared";
-import promisify from "../../../../../../../../util/promisify";
+import { Suggestion, Course } from "../../../../../../@types/shared";
+import promisify from "../../../../../../util/promisify";
 import mApi from "~/lib/mApi";
 import * as React from "react";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
