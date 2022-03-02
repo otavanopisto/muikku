@@ -5,9 +5,10 @@ public class UserEntityProperty {
   public UserEntityProperty() {
   }
 
-  public UserEntityProperty(String key, String value) {
+  public UserEntityProperty(String key, String value, Long userEntityId) {
     this.setKey(key);
     this.setValue(value);
+    this.setUserEntityId(userEntityId);
   }
 
   public String getKey() {
