@@ -90,6 +90,16 @@ class StudentDialog extends React.Component<
   };
 
   /**
+   *
+   * @returns
+   */
+
+  closeDialog = () => {
+    this.setState({ activeTab: "STUDIES" });
+    this.props.onClose;
+  };
+
+  /**
    * Component render method
    * @returns JSX.Element
    */
@@ -119,7 +129,7 @@ class StudentDialog extends React.Component<
       },
     ];
 
-    // If student has HOPS, we show the tab for it
+    //    If student has HOPS, we show the tab for it
 
     if (
       this.props.guider.currentStudent &&
@@ -168,7 +178,7 @@ class StudentDialog extends React.Component<
     return (
       <Dialog
         isOpen={this.props.isOpen}
-        onClose={this.props.onClose}
+        onClose={this.closeDialog}
         modifier="guider-student"
         title={dialogTitle}
         content={content}

@@ -33,7 +33,7 @@ class CurrentStudentWorkspaces extends React.Component<
    * render
    */
   render() {
-    return this.props.workspaces.length ? (
+    return this.props.workspaces && this.props.workspaces.length ? (
       <div className="application-list">
         {this.props.workspaces
           .sort((a, b) =>
