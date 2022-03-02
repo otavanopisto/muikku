@@ -11,7 +11,7 @@ import { RecordsType } from "~/reducers/main-function/records";
 import HopsGraph from "~/components/base/hops_editable";
 import { SetHopsToTriggerType, setHopsTo } from "~/actions/main-function/hops";
 import { bindActionCreators } from "redux";
-import { HOPSDataType } from "~/reducers/main-function/hops";
+import { HOPSDataType, HOPSType } from "~/reducers/main-function/hops";
 import { StateType } from "~/reducers";
 import CompulsoryEducationHopsWizard from "./hops-compulsory-education-wizard/hops-compulsory-education-wizard";
 import { AnyActionType } from "~/actions";
@@ -22,7 +22,7 @@ import { AnyActionType } from "~/actions";
 interface HopsProps {
   i18n: i18nType;
   records: RecordsType;
-  hops: any;
+  hops: HOPSType;
   setHopsTo: SetHopsToTriggerType;
 }
 
@@ -76,14 +76,36 @@ class Hops extends React.Component<HopsProps, HopsState> {
    * renderHops
    * @returns JSX.Element
    */
-  renderHops = () => (
-    <CompulsoryEducationHopsWizard
-      phaseList={[]}
-      user="student"
-      disabled={false}
-      superVisorModifies={false}
-    />
-  );
+  renderHops = () => {
+    if (
+      this.props.hops.hopsPhase === undefined ||
+      this.props.hops.hopsPhase === "0"
+    ) {
+      return (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "100px",
+            fontSize: "2rem",
+            fontStyle: "italic",
+          }}
+        >
+          Hopsia ei ole aktivoitu ohjaajan toimesta!
+        </div>
+      );
+    }
+
+    return (
+      <CompulsoryEducationHopsWizard
+        phase={parseInt(this.props.hops.hopsPhase)}
+        user="student"
+        disabled={false}
+        superVisorModifies={false}
+      />
+    );
+  };
 
   /**
    * Component render method

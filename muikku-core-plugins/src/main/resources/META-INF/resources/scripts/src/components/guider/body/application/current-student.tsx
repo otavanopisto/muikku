@@ -34,6 +34,10 @@ import {
 import HopsCompulsoryEducationWizardDialog from "~/components/records2/dialogs/hops-compulsory-education-wizard";
 import Button from "~/components/general/button";
 import JournalCenter from "~/components/records2/body/application/summary/jounral-center/journal-center";
+import {
+  UpdateCurrentStudentHopsPhaseTriggerType,
+  updateCurrentStudentHopsPhase,
+} from "../../../../actions/main-function/guider/index";
 
 /**
  * CurrentStudentProps
@@ -44,6 +48,7 @@ interface CurrentStudentProps {
   status: StatusType;
   addFileToCurrentStudent: AddFileToCurrentStudentTriggerType;
   displayNotification: DisplayNotificationTriggerType;
+  updateCurrentStudentHopsPhase: UpdateCurrentStudentHopsPhaseTriggerType;
 }
 
 /**
@@ -65,6 +70,16 @@ class CurrentStudent extends React.Component<
   constructor(props: CurrentStudentProps) {
     super(props);
   }
+
+  /**
+   * handleHopsPhaseChange
+   * @param e e
+   */
+  handleHopsPhaseChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    this.props.updateCurrentStudentHopsPhase({
+      value: e.currentTarget.value,
+    });
+  };
 
   //TODO doesn't anyone notice that nor assessment requested, nor no passed courses etc... is available in this view
   /**
@@ -313,6 +328,15 @@ class CurrentStudent extends React.Component<
             >
               <Button>Opintosuunnitelma (muokkaus)</Button>
             </HopsCompulsoryEducationWizardDialog>
+            <select
+              value={this.props.guider.currentStudent.hopsPhase}
+              onChange={this.handleHopsPhaseChange}
+            >
+              <option value={0}>HOPS - Ei aktivoitu</option>
+              <option value={1}>HOPS - aktiivinen</option>
+              <option value={2}>HOPS - esitäyttö</option>
+              <option value={3}>HOPS - opintojen suunnittelu</option>
+            </select>
           </div>
         </div>
         {this.props.guider.currentStudent.notifications &&
@@ -539,7 +563,11 @@ function mapStateToProps(state: StateType) {
  */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
-    { addFileToCurrentStudent, displayNotification },
+    {
+      addFileToCurrentStudent,
+      displayNotification,
+      updateCurrentStudentHopsPhase,
+    },
     dispatch
   );
 }

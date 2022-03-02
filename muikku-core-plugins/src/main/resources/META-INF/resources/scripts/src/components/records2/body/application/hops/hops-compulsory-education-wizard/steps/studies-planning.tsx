@@ -16,7 +16,6 @@ interface StudiesPlanningProps extends HopsBaseProps {
   studies: HopsPlanningStudies;
   studentId: string;
   superVisorModifies: boolean;
-  phaseList: number[];
   onStudiesPlanningChange: (studies: HopsPlanningStudies) => void;
   onStudiesGoalsChange: (followUp: FollowUp) => void;
 }
@@ -73,9 +72,12 @@ class StudiesPlanning extends React.Component<
    */
   render() {
     /**
-     * So if student has access "phase 2", student has access to study tool
+     * By default access is given to supervisor and for student
+     * if student has access phase 3 or higher, then study tool is available
      */
-    const hasAccessToStudyTool = this.props.phaseList.includes(2);
+    const hasAccessToStudyTool =
+      this.props.user === "supervisor" ||
+      (this.props.phase && this.props.phase >= 3);
 
     return (
       <div className="hops-container">

@@ -55,7 +55,11 @@ export type HopsUser = "supervisor" | "student";
  */
 export interface HopsBaseProps {
   user: HopsUser;
-  phaseList: number[];
+  /**
+   * phase limits what parts and features are available
+   * for student depending what phase is on
+   */
+  phase?: number;
   disabled: boolean;
   superVisorModifies: boolean;
 }
@@ -307,15 +311,12 @@ class CompulsoryEducationHopsWizard extends React.Component<
     const { i18n, guider, displayNotification, children, ...baseProps } =
       this.props;
 
-    const phaseList: number[] = [1, 2];
-
     const steps = [
       {
         name: "Perustiedot",
         component: (
           <Step1
             {...baseProps}
-            phaseList={phaseList}
             loading={this.state.loading}
             basicInformation={this.state.basicInfo}
           />
@@ -326,7 +327,6 @@ class CompulsoryEducationHopsWizard extends React.Component<
         component: (
           <Step2
             {...baseProps}
-            phaseList={phaseList}
             studentStartingLevel={this.state.hopsCompulsory.startingLevel}
             onStartingLevelChange={this.handleStartingLevelChange}
           />
@@ -337,7 +337,6 @@ class CompulsoryEducationHopsWizard extends React.Component<
         component: (
           <Step3
             {...baseProps}
-            phaseList={phaseList}
             motivationAndStudy={this.state.hopsCompulsory.motivationAndStudy}
             onMotivationAndStudyChange={this.handleMotivationAndStudyChange}
           />
@@ -348,7 +347,6 @@ class CompulsoryEducationHopsWizard extends React.Component<
         component: (
           <Step5
             {...baseProps}
-            phaseList={phaseList}
             studentId={
               this.props.user === "supervisor"
                 ? this.props.guider.currentStudent.basic.id
