@@ -26,7 +26,16 @@ public class UserEntityProperty {
     this.value = value;
   }
 
+  public Long getUserEntityId() {
+    return userEntityId;
+  }
+
+  public void setUserEntityId(Long userEntityId) {
+    this.userEntityId = userEntityId;
+  }
+
   private String key;
   private String value;
+  private Long userEntityId;
 
 }
