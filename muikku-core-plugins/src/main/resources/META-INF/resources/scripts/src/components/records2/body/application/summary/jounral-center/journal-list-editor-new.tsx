@@ -43,6 +43,7 @@ const JournalListEditorNew: React.FC<JournalListEditorNewProps> = (props) => {
     priority: JournalPriority.HIGH,
     pinned: false,
     owner: newNoteOwnerId,
+    startDate: null,
     dueDate: null,
   });
 
@@ -74,6 +75,7 @@ const JournalListEditorNew: React.FC<JournalListEditorNewProps> = (props) => {
         priority: JournalPriority.HIGH,
         pinned: false,
         owner: newNoteOwnerId,
+        startDate: null,
         dueDate: null,
       });
     });
@@ -143,6 +145,14 @@ const JournalListEditorNew: React.FC<JournalListEditorNewProps> = (props) => {
         </div>
 
         <div style={{ display: "flex", flexDirection: "column" }}>
+          <label style={{ marginRight: "5px" }}>Alkamispäivä</label>
+          <DatePicker
+            selected={journal.startDate && moment(journal.startDate)}
+            onChange={(date, e) =>
+              handleJournalChange("startDate", date && moment(date).toDate())
+            }
+            locale={props.i18n.time.getLocale()}
+          />
           <label style={{ marginRight: "5px" }}>Päättymispäivä</label>
           <DatePicker
             selected={journal.dueDate && moment(journal.dueDate)}

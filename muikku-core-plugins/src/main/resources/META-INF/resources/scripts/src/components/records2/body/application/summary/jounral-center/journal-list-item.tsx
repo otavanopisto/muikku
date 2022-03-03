@@ -63,6 +63,7 @@ const JournalListItem = React.forwardRef<HTMLDivElement, JournalListItemProps>(
       creatorName,
       description,
       pinned,
+      startDate,
       dueDate,
       status,
     } = journal;
@@ -147,8 +148,6 @@ const JournalListItem = React.forwardRef<HTMLDivElement, JournalListItemProps>(
       (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
         e.stopPropagation();
 
-        console.log(newStatus);
-
         if (onUpdateJournalStatus) {
           onUpdateJournalStatus(id, newStatus);
         }
@@ -181,6 +180,27 @@ const JournalListItem = React.forwardRef<HTMLDivElement, JournalListItemProps>(
           break;
       }
     }
+
+    /**
+     * Renders dates. Date or date range string
+     *
+     * @returns JSX.Element
+     */
+    const renderDates = () => {
+      let dateOrDateRange = undefined;
+
+      if (startDate && dueDate) {
+        dateOrDateRange = `Voimassa aikavälillä ${moment(startDate).format(
+          "l"
+        )} - ${moment(dueDate).format("l")}`;
+      } else if (startDate) {
+        dateOrDateRange = `Voimassa alkaen ${moment(startDate).format("l")}`;
+      } else if (dueDate) {
+        dateOrDateRange = `Voimassa ${moment(dueDate).format("l")}`;
+      }
+
+      return dateOrDateRange ? <div>{dateOrDateRange}</div> : null;
+    };
 
     /**
      * renderStatus
@@ -429,11 +449,7 @@ const JournalListItem = React.forwardRef<HTMLDivElement, JournalListItemProps>(
                       >
                         {title}
                       </h3>
-                      {dueDate && (
-                        <div>
-                          Suorita {moment(dueDate).format("l")} mennessä
-                        </div>
-                      )}
+                      {renderDates()}
                     </div>
                     {description ? (
                       <div

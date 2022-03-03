@@ -127,6 +127,14 @@ const JournalListEditorEdit: React.FC<JournalListEditorEditProps> = (props) => {
         </div>
 
         <div style={{ display: "flex", flexDirection: "column" }}>
+          <label style={{ marginRight: "5px" }}>Alkamispäivä</label>
+          <DatePicker
+            selected={journal.startDate && moment(journal.startDate)}
+            onChange={(date, e) =>
+              handleJournalChange("startDate", date && moment(date).toDate())
+            }
+            locale={i18n.time.getLocale()}
+          />
           <label style={{ marginRight: "5px" }}>Päättymispäivä</label>
           <DatePicker
             selected={journal.dueDate && moment(journal.dueDate)}

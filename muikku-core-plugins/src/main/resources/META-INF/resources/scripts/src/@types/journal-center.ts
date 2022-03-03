@@ -35,10 +35,12 @@ export interface JournalNoteRead {
   type: JournalCreationType;
   priority: JournalPriority;
   pinned: boolean;
+  isActive: boolean;
   owner: number;
   creator: number;
   creatorName: string;
   created: string;
+  startDate: Date | null;
   dueDate: Date | null;
   status: JournalStatusType;
 }
@@ -53,6 +55,7 @@ export interface JournalNoteCreate {
   priority: JournalPriority;
   pinned: boolean;
   owner: number;
+  startDate: Date | null;
   dueDate: Date | null;
 }
 
@@ -64,6 +67,7 @@ export interface JournalNoteUpdate {
   description: string;
   priority: JournalPriority;
   pinned: boolean;
+  startDate: Date | null;
   dueDate: Date | null;
   status: JournalStatusType;
 }
