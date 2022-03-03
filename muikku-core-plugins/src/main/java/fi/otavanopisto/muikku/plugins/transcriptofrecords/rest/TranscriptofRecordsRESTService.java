@@ -632,8 +632,20 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
                 }
               }
               
+              String educationTypeId = (String) result.get("educationTypeIdentifier");
+
+              Mandatority mandatority = null;
+
+              if (StringUtils.isNotBlank(educationTypeId)) {
+                SchoolDataIdentifier educationSubtypeId = SchoolDataIdentifier.fromId((String) result.get("educationSubtypeIdentifier"));
+                
+                if (educationSubtypeId != null) {
+                  mandatority = getMandatority(educationSubtypeId); 
+                }
+              }
+              
               if (StringUtils.isNotBlank(name)) {
-                workspaces.add(createRestModel(workspaceEntity, name, nameExtension, description, curriculumIdentifiers, subjectIdentifier));
+                workspaces.add(createRestModel(workspaceEntity, name, nameExtension, description, curriculumIdentifiers, subjectIdentifier, mandatority));
               }
             }
           }
@@ -646,13 +658,30 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     return Response.ok(workspaces).build();
   }
   
+  private Mandatority getMandatority(SchoolDataIdentifier educationSubtypeId) {
+    Mandatority mandatority = null;
+    EducationTypeMapping educationTypeMapping = new EducationTypeMapping();
+    
+    String educationTypeMappingString = pluginSettingsController.getPluginSetting("transcriptofrecords", "educationTypeMapping");
+    if (educationTypeMappingString != null) {
+      try {
+        educationTypeMapping = new ObjectMapper().readValue(educationTypeMappingString, EducationTypeMapping.class);                        
+        mandatority = educationTypeMapping.getMandatority(educationSubtypeId);
+      } catch (Exception e) {
+        logger.severe(String.format("Education type mapping failed with %s", educationTypeMappingString));
+      }
+    }
+    return mandatority;
+  }
+  
   private fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace createRestModel(
       WorkspaceEntity workspaceEntity,
       String name,
       String nameExtension,
       String description,
       Set<String> curriculumIdentifiers,
-      String subjectIdentifier) {
+      String subjectIdentifier,
+      Mandatority mandatority) {
     Long numVisits = workspaceVisitController.getNumVisits(workspaceEntity);
     Date lastVisit = workspaceVisitController.getLastVisit(workspaceEntity);
     boolean hasCustomImage = workspaceEntityFileController.getHasCustomImage(workspaceEntity);
@@ -667,6 +696,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
         nameExtension, 
         description, 
         workspaceEntity.getDefaultMaterialLicense(),
+        mandatority,
         numVisits, 
         lastVisit,
         curriculumIdentifiers,
