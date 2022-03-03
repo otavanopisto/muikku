@@ -6,7 +6,6 @@ const isDevelopment = process.env.NODE_ENV !== "production";
 const mode = isDevelopment ? "development" : "production";
 
 const MiniCSSExtractPlugin = require("mini-css-extract-plugin");
-
 const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
 
 const plugins = [];

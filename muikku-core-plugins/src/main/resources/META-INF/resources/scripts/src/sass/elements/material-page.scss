@@ -1890,6 +1890,7 @@ mark[data-muikku-word-definition] {
   top: -20px;
   transition: background-color 0.2s ease-in-out;
   white-space: nowrap;
+  z-index: 2;
 }
 
 .material-page__field-answer-synchronizer--saving {
