@@ -131,6 +131,7 @@ public class NotesRESTService extends PluginRESTService {
     UserEntity userEntity = userEntityController.findUserEntityById(note.getCreator());
     String creatorName = userEntityController.getName(userEntity).getDisplayNameWithLine();
 
+    
     NoteRestModel restModel = new NoteRestModel();
     restModel.setId(note.getId());
     restModel.setTitle(note.getTitle());
@@ -146,6 +147,14 @@ public class NotesRESTService extends PluginRESTService {
     restModel.setDueDate(note.getDueDate());
     restModel.setStatus(note.getStatus());
 
+    restModel.setIsActive(true);
+    
+    if (note.getStartDate() != null) {
+      // If startDate is before today
+      if (note.getStartDate().before(Date.from(OffsetDateTime.now().toInstant()))) {
+        restModel.setIsActive(false);
+      } 
+    }
     return restModel;
   }
   
