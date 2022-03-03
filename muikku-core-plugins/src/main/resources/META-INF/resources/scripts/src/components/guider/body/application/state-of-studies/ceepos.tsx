@@ -10,8 +10,6 @@ import "~/sass/elements/application-list.scss";
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/glyph.scss";
 import {
-  doOrderForCurrentStudent,
-  DoOrderForCurrentStudentTriggerType,
   deleteOrderFromCurrentStudent,
   DeleteOrderFromCurrentStudentTriggerType,
   completeOrderFromCurrentStudent,
@@ -26,8 +24,6 @@ import {
   PurchaseType,
 } from "~/reducers/main-function/profile";
 import Dialog from "~/components/general/dialog";
-import Dropdown from "~/components/general/dropdown";
-import Link from "~/components/general/link";
 import Button from "~/components/general/button";
 
 /**
@@ -38,7 +34,6 @@ interface CeeposProps {
   status: StatusType;
   guider: GuiderType;
   locale: string;
-  doOrderForCurrentStudent: DoOrderForCurrentStudentTriggerType;
   deleteOrderFromCurrentStudent: DeleteOrderFromCurrentStudentTriggerType;
   completeOrderFromCurrentStudent: CompleteOrderFromCurrentStudentTriggerType;
 }
@@ -75,9 +70,6 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
     };
 
     this.beginOrderCreationProcess = this.beginOrderCreationProcess.bind(this);
-    this.acceptOrderCreation = this.acceptOrderCreation.bind(this);
-    this.declineOrderCreation = this.declineOrderCreation.bind(this);
-
     this.beginOrderDeleteProcess = this.beginOrderDeleteProcess.bind(this);
     this.acceptOrderDelete = this.acceptOrderDelete.bind(this);
     this.declineOrderDelete = this.declineOrderDelete.bind(this);
@@ -99,25 +91,6 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
       isConfirmDialogOpenFor: p,
     });
     closeDropdown && closeDropdown();
-  }
-
-  /**
-   * acceptOrderCreation
-   */
-  acceptOrderCreation() {
-    this.props.doOrderForCurrentStudent(this.state.isConfirmDialogOpenFor);
-    this.setState({
-      isConfirmDialogOpenFor: null,
-    });
-  }
-
-  /**
-   * declineOrderCreation
-   */
-  declineOrderCreation() {
-    this.setState({
-      isConfirmDialogOpenFor: null,
-    });
   }
 
   /**
@@ -185,53 +158,6 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
    * @returns JSX.element
    */
   render() {
-    /**
-     * orderConfirmDialogContent
-     * @param closeDialog closeDialog
-     */
-    const orderConfirmDialogContent = (closeDialog: () => any) => (
-      <div>
-        <span>
-          <b>
-            {this.state.isConfirmDialogOpenFor &&
-              this.state.isConfirmDialogOpenFor.Description}
-          </b>
-        </span>
-        <br />
-        <br />
-        <span>
-          {this.props.i18n.text.get(
-            "plugin.guider.orderConfirmDialog.description"
-          )}
-        </span>
-      </div>
-    );
-
-    /**
-     * orderConfirmDialogFooter
-     * @param closeDialog closeDialog
-     */
-    const orderConfirmDialogFooter = (closeDialog: () => any) => (
-      <div className="dialog__button-set">
-        <Button
-          buttonModifiers={["standard-ok", "execute"]}
-          onClick={this.acceptOrderCreation}
-        >
-          {this.props.i18n.text.get(
-            "plugin.guider.orderConfirmDialog.okButton"
-          )}
-        </Button>
-        <Button
-          buttonModifiers={["cancel", "standard-cancel"]}
-          onClick={this.declineOrderCreation}
-        >
-          {this.props.i18n.text.get(
-            "plugin.guider.orderConfirmDialog.cancelButton"
-          )}
-        </Button>
-      </div>
-    );
-
     /**
      * orderDeleteDialogContent
      * @param closeDialog closeDialog
@@ -374,54 +300,6 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
 
     return (
       <>
-        {this.props.guider.availablePurchaseProducts &&
-        this.props.guider.availablePurchaseProducts.length ? (
-          <>
-            <div className="application-sub-panel__description">
-              {this.props.i18n.text.get(
-                "plugin.guider.createStudentOrder.description"
-              )}
-            </div>
-            {this.props.status.permissions.CREATE_ORDER ? (
-              <Dropdown
-                modifier="guider-products-selection"
-                items={this.props.guider.availablePurchaseProducts.map(
-                  (p) => (closeDropdown: () => any) =>
-                    (
-                      <Link
-                        className="link link--full link--purchasable-product-dropdown"
-                        onClick={this.beginOrderCreationProcess.bind(
-                          this,
-                          p,
-                          closeDropdown
-                        )}
-                      >
-                        <span className="link__icon icon-plus"></span>
-                        <span>{p.Description}</span>
-                      </Link>
-                    )
-                )}
-              >
-                <Button
-                  icon="cart-plus"
-                  buttonModifiers={["create-student-order", "info"]}
-                  disabled={IsOrderCreationDisabled}
-                >
-                  {this.props.i18n.text.get(
-                    "plugin.guider.createStudentOrder.buttonLabel"
-                  )}
-                </Button>
-              </Dropdown>
-            ) : null}
-          </>
-        ) : (
-          <div className="empty">
-            <span>
-              {this.props.i18n.text.get("plugin.guider.noPurchasableProducts")}
-            </span>
-          </div>
-        )}
-
         {this.props.guider.currentStudent.purchases &&
         this.props.guider.currentStudent.purchases.length ? (
           <ApplicationList>
@@ -516,18 +394,6 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
           </div>
         )}
 
-        {/* Confirm order creation dialog */}
-        <Dialog
-          modifier="dialog-confirm-order"
-          isOpen={!!this.state.isConfirmDialogOpenFor}
-          title={this.props.i18n.text.get(
-            "plugin.guider.orderConfirmDialog.title"
-          )}
-          onClose={this.declineOrderCreation}
-          content={orderConfirmDialogContent}
-          footer={orderConfirmDialogFooter}
-        />
-
         {/* Delete order dialog */}
         <Dialog
           modifier="dialog-delete-order"
@@ -576,7 +442,6 @@ function mapStateToProps(state: StateType) {
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     {
-      doOrderForCurrentStudent,
       deleteOrderFromCurrentStudent,
       completeOrderFromCurrentStudent,
     },

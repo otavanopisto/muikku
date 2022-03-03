@@ -14,6 +14,7 @@ import Hops from "~/components/base/hops_readable";
 
 import Workspaces from "./workspaces";
 import Ceepos from "./state-of-studies/ceepos";
+import CeeposButton from "./state-of-studies/ceepos-button";
 import { StatusType } from "~/reducers/base/status";
 import {
   displayNotification,
@@ -106,6 +107,7 @@ class StateOfStudies extends React.Component<
         </div>
         <div className="application-sub-panel__header-aside-container">
           {/* {this.props.guider.currentStudent.basic.studyProgrammeName} */}
+          <CeeposButton />
           <GuiderToolbarLabels />
           <NewMessage
             extraNamespace="student-view"
@@ -124,7 +126,8 @@ class StateOfStudies extends React.Component<
               buttonModifiers={["new-message", "guider-student"]}
             />
           </NewMessage>
-          {/* <GuidanceEvent>
+          {/* For later
+          <GuidanceEvent>
             <ButtonPill
               icon="bubbles"
               buttonModifiers={["new-message", "guider-student"]}
@@ -363,19 +366,19 @@ class StateOfStudies extends React.Component<
       />
     );
 
-    const headerToolbar = {
-      left: "today prev,next",
-      center: "title",
-      right: "resourceTimelineMonth,resourceTimelineYear",
-    };
+    // const headerToolbar = {
+    //   left: "today prev,next",
+    //   center: "title",
+    //   right: "resourceTimelineMonth,resourceTimelineYear",
+    // };
 
-    const externalEvents: ExternalEventType[] =
-      this.props.guider.currentStudent.currentWorkspaces &&
-      this.props.guider.currentStudent.currentWorkspaces.map((workspace) => ({
-        id: workspace.id,
-        title: workspace.name,
-        duration: "36:00:00",
-      }));
+    // const externalEvents: ExternalEventType[] =
+    //   this.props.guider.currentStudent.currentWorkspaces &&
+    //   this.props.guider.currentStudent.currentWorkspaces.map((workspace) => ({
+    //     id: workspace.id,
+    //     title: workspace.name,
+    //     duration: "36:00:00",
+    //   }));
 
     /**
      * IsStudentPartOfProperStudyProgram
@@ -391,7 +394,7 @@ class StateOfStudies extends React.Component<
         case "Aineopiskelu/yo-tutkinto":
           return true;
         default:
-          return false;
+          return true; // this should be false, but for test purposes it's true
       }
     };
 
@@ -411,36 +414,29 @@ class StateOfStudies extends React.Component<
             {studentBasicInfo}
           </div>
 
-          {this.props.guider.currentStudent.basic &&
-          IsStudentPartOfProperStudyProgram(
-            this.props.guider.currentStudent.basic.studyProgrammeName
-          ) ? (
-            <div className="application-sub-panel">
-              <h3 className="application-sub-panel__header">
-                {this.props.i18n.text.get(
-                  "plugin.guider.user.details.purchases"
-                )}
-              </h3>
-              <div className="application-sub-panel__body">
-                <Ceepos />
-              </div>
-            </div>
-          ) : null}
-
-          {studentVops ? (
-            <div className="application-sub-panel">
-              <h3 className="application-sub-panel__header">
-                {this.props.i18n.text.get("plugin.guider.user.details.vops")}
-              </h3>
-              {studentVops}
-            </div>
-          ) : null}
           <div className="application-sub-panel application-sub-panel--student-data-secondary">
+            {this.props.guider.currentStudent.basic &&
+            IsStudentPartOfProperStudyProgram(
+              this.props.guider.currentStudent.basic.studyProgrammeName
+            ) ? (
+              <div className="application-sub-panel">
+                <h3 className="application-sub-panel__header">
+                  {this.props.i18n.text.get(
+                    "plugin.guider.user.details.purchases"
+                  )}
+                </h3>
+                <div className="application-sub-panel__body">
+                  <Ceepos />
+                </div>
+              </div>
+            ) : null}
+
             <h3 className="application-sub-panel__header">
               {this.props.i18n.text.get(
                 "plugin.guider.user.details.workspaces"
               )}
             </h3>
+
             <div className="application-sub-panel__body">
               {studentWorkspaces}
             </div>
