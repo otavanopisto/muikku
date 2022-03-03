@@ -259,6 +259,13 @@ public class NotesRESTService extends PluginRESTService {
       note.setDueDate(null);
       note.setStartDate(null);
     }
-    return Response.ok(toRestModel(updatedNote)).build();
+    
+    NoteRestModel updatedRestModel = toRestModel(updatedNote);
+    updatedRestModel.setIsActive(true);
+
+    if (note.getArchived().equals(Boolean.TRUE)) {
+      updatedRestModel.setIsActive(false);
+    }
+    return Response.ok(updatedRestModel).build();
   }
 } 
