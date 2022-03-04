@@ -107,7 +107,6 @@ export default class UserPanel extends React.Component<
     const results = this.props.users.results as UsersListType;
     return (
       <ApplicationSubPanel
-        i18n={this.props.i18n}
         modifier="organization-users"
         bodyModifier="organization-users"
         title={this.props.i18n.text.get(this.props.title)}

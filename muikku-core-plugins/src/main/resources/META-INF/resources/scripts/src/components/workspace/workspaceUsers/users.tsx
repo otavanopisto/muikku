@@ -322,10 +322,7 @@ class WorkspaceUsers extends React.Component<
       this.props.workspace.students.results.map((s) => (
         <WorkspaceUser
           highlight={this.state.currentSearch}
-          onSetToggleStatus={this.setStudentBeingToggledStatus.bind(
-            this,
-            s
-          )}
+          onSetToggleStatus={this.setStudentBeingToggledStatus.bind(this, s)}
           key={s.workspaceUserEntityId}
           student={s}
           onSendMessage={this.onSendMessageTo.bind(this, s)}
@@ -353,10 +350,7 @@ class WorkspaceUsers extends React.Component<
       this.props.workspace.inactiveStudents &&
       this.props.workspace.inactiveStudents.results.map((s) => (
         <WorkspaceUser
-          onSetToggleStatus={this.setStudentBeingToggledStatus.bind(
-            this,
-            s
-          )}
+          onSetToggleStatus={this.setStudentBeingToggledStatus.bind(this, s)}
           highlight={this.state.currentSearch}
           key={s.workspaceUserEntityId}
           student={s}
@@ -379,8 +373,6 @@ class WorkspaceUsers extends React.Component<
         />
       ) : null;
 
-
-
     return (
       <ApplicationPanel
         modifier="workspace-users"
@@ -391,7 +383,6 @@ class WorkspaceUsers extends React.Component<
           title={this.props.i18n.text.get(
             "plugin.workspace.users.teachers.title"
           )}
-          i18n={this.props.i18n}
         >
           <ApplicationList
             footer={staffPager}
@@ -463,7 +454,6 @@ class WorkspaceUsers extends React.Component<
         </ApplicationSubPanel>
         <ApplicationSubPanel
           modifier="workspace-users"
-          i18n={this.props.i18n}
           title={this.props.i18n.text.get(
             "plugin.workspace.users.students.title"
           )}
@@ -489,22 +479,21 @@ class WorkspaceUsers extends React.Component<
                   "plugin.workspace.users.students.link.active"
                 ),
                 type: "workspace-students",
-                component:
-                  <ApplicationList footer={pager} modifiers="workspace-users" >
-                    {
-                      this.props.workspace && this.props.workspace.students ? (
-                        activeStudents.length ? (
-                          activeStudents
-                        ) : (
-                          <div className="loaded-empty">
-                            {this.props.i18n.text.get(
-                              "plugin.workspaces.users.activeStudents.empty"
-                            )}
-                          </div>
-                        )
-                      ) : null
-                    }
+                component: (
+                  <ApplicationList footer={pager} modifiers="workspace-users">
+                    {this.props.workspace && this.props.workspace.students ? (
+                      activeStudents.length ? (
+                        activeStudents
+                      ) : (
+                        <div className="loaded-empty">
+                          {this.props.i18n.text.get(
+                            "plugin.workspaces.users.activeStudents.empty"
+                          )}
+                        </div>
+                      )
+                    ) : null}
                   </ApplicationList>
+                ),
               },
               {
                 id: "INACTIVE",
@@ -512,10 +501,13 @@ class WorkspaceUsers extends React.Component<
                   "plugin.workspace.users.students.link.inactive"
                 ),
                 type: "workspace-students",
-                component:
-                  <ApplicationList footer={inActivePager} modifiers="workspace-users">
+                component: (
+                  <ApplicationList
+                    footer={inActivePager}
+                    modifiers="workspace-users"
+                  >
                     {this.props.workspace &&
-                      this.props.workspace.inactiveStudents ? (
+                    this.props.workspace.inactiveStudents ? (
                       inactiveStudents.length ? (
                         inactiveStudents
                       ) : (
@@ -527,7 +519,7 @@ class WorkspaceUsers extends React.Component<
                       )
                     ) : null}
                   </ApplicationList>
-
+                ),
               },
             ]}
           />

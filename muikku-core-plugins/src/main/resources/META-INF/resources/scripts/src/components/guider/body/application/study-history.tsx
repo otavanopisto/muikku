@@ -16,6 +16,8 @@ import {
   AddFileToCurrentStudentTriggerType,
   addFileToCurrentStudent,
 } from "~/actions/main-function/guider";
+import useIsAtBreakpoint from "~/hooks/useIsAtBreakpoint";
+import variables from "~/sass/_exports.scss";
 
 type studyHistoryAside = "history" | "library";
 
@@ -42,6 +44,10 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
   const studentWorkspaces = (
     <Workspaces workspaces={guider.currentStudent.pastWorkspaces} />
   );
+
+  const mobileBreakpoint = parseInt(variables.mobileBreakpoint); //Parse a breakpoint from scss to a number
+
+  const isAtMobileWidth = useIsAtBreakpoint(mobileBreakpoint);
 
   if (
     !props.guider.currentStudent.pastWorkspaces ||
@@ -140,38 +146,61 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
    * @returns JSX.element
    */
   const studyHistoryContent = () => {
-    switch (navigationActive) {
-      case "history": {
-        return (
-          <>
+    if (!isAtMobileWidth) {
+      switch (navigationActive) {
+        case "history": {
+          return (
+            <>
+              <ApplicationSubPanel
+                title={i18n.text.get("plugin.guider.user.details.workspaces")}
+              >
+                {studentWorkspaces}
+              </ApplicationSubPanel>
+              <ApplicationSubPanel
+                title={i18n.text.get("plugin.guider.user.details.statistics")}
+              >
+                <MainChart
+                  workspaces={guider.currentStudent.pastWorkspaces}
+                  activityLogs={guider.currentStudent.activityLogs}
+                />
+              </ApplicationSubPanel>
+            </>
+          );
+        }
+        case "library": {
+          return (
             <ApplicationSubPanel
-              i18n={i18n}
-              title={i18n.text.get("plugin.guider.user.details.workspaces")}
+              title={i18n.text.get("plugin.guider.user.details.files")}
             >
-              {studentWorkspaces}
+              {files}
             </ApplicationSubPanel>
-            <ApplicationSubPanel
-              i18n={i18n}
-              title={i18n.text.get("plugin.guider.user.details.statistics")}
-            >
-              <MainChart
-                workspaces={guider.currentStudent.pastWorkspaces}
-                activityLogs={guider.currentStudent.activityLogs}
-              />
-            </ApplicationSubPanel>
-          </>
-        );
+          );
+        }
       }
-      case "library": {
-        return (
-          <div className="application-sub-panel">
-            <h3 className="application-sub-panel__header">
-              {i18n.text.get("plugin.guider.user.details.files")}
-            </h3>
+    } else {
+      return (
+        <>
+          <ApplicationSubPanel
+            title={i18n.text.get("plugin.guider.user.details.workspaces")}
+          >
+            {studentWorkspaces}
+          </ApplicationSubPanel>
+          <ApplicationSubPanel
+            title={i18n.text.get("plugin.guider.user.details.statistics")}
+          >
+            <MainChart
+              workspaces={guider.currentStudent.pastWorkspaces}
+              activityLogs={guider.currentStudent.activityLogs}
+            />
+          </ApplicationSubPanel>
+
+          <ApplicationSubPanel
+            title={i18n.text.get("plugin.guider.user.details.files")}
+          >
             {files}
-          </div>
-        );
-      }
+          </ApplicationSubPanel>
+        </>
+      );
     }
   };
 

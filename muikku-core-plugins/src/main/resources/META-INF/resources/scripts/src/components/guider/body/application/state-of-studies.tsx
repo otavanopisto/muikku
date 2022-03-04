@@ -11,7 +11,6 @@ import "~/sass/elements/avatar.scss";
 import "~/sass/elements/workspace-activity.scss";
 import { getUserImageUrl, getName } from "~/util/modifiers";
 import Hops from "~/components/base/hops_readable";
-
 import Workspaces from "./workspaces";
 import Ceepos from "./state-of-studies/ceepos";
 import CeeposButton from "./state-of-studies/ceepos-button";
@@ -29,10 +28,13 @@ import {
 import NewMessage from "~/components/communicator/dialogs/new-message";
 import { ButtonPill } from "~/components/general/button";
 import GuiderToolbarLabels from "./toolbar/labels";
+import ApplicationSubPanel from "~/components/general/application-sub-panel";
+import ApplicationPanelBody from "~/components/general/application-panel/components/application-panel-body";
+
 // import GuidanceEvent from "../../dialogs/guidance-event";
 // import { CalendarEvent } from "~/reducers/main-function/calendar";
 // import { ResourceTimeline } from "../../../general/resource-timeline";
-import { ExternalEventType } from "../../../general/resource-timeline";
+// import { ExternalEventType } from "../../../general/resource-timeline";
 
 /**
  * StateOfStudiesProps
@@ -81,6 +83,7 @@ class StateOfStudies extends React.Component<
     const defaultEmailAddress =
       this.props.guider.currentStudent.emails &&
       this.props.guider.currentStudent.emails.find((e) => e.defaultAddress);
+
     const studentBasicHeader = this.props.guider.currentStudent.basic && (
       <div className="application-sub-panel__header">
         <object
@@ -108,7 +111,6 @@ class StateOfStudies extends React.Component<
         <div className="application-sub-panel__header-aside-container">
           {/* {this.props.guider.currentStudent.basic.studyProgrammeName} */}
           <CeeposButton />
-          <GuiderToolbarLabels />
           <NewMessage
             extraNamespace="student-view"
             initialSelectedItems={[
@@ -133,6 +135,7 @@ class StateOfStudies extends React.Component<
               buttonModifiers={["new-message", "guider-student"]}
             />
           </GuidanceEvent> */}
+          <GuiderToolbarLabels />
         </div>
       </div>
     );
