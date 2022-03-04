@@ -77,8 +77,6 @@
 		<module>muikku-atests</module>
     <module>muikku-atests-plugin</module>
     <module>muikku-atests-plugin-rest-model</module>
-    <module>matriculation-plugin</module>
-    <module>matriculation-plugin-persistence</module>
 	</modules>
 
 	<properties>
