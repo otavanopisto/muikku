@@ -128,7 +128,7 @@ class StateOfStudies extends React.Component<
               buttonModifiers={["new-message", "guider-student"]}
             />
           </NewMessage>
-          {/* For later
+          {/* Not implemented yet
           <GuidanceEvent>
             <ButtonPill
               icon="bubbles"

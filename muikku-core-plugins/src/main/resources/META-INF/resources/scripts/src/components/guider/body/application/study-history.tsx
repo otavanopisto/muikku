@@ -205,7 +205,7 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
   };
 
   return (
-    <ApplicationPanelBody asideBefore={aside}>
+    <ApplicationPanelBody modifier="guider-student" asideBefore={aside}>
       {historyDataLoaded ? studyHistoryContent() : null}
     </ApplicationPanelBody>
   );

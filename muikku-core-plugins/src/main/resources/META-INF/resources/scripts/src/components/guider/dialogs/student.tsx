@@ -90,8 +90,7 @@ class StudentDialog extends React.Component<
   };
 
   /**
-   *
-   * @returns
+   * closeDialog resets the component state and forwards onClose()
    */
   closeDialog = () => {
     this.setState({ activeTab: "STUDIES" });
