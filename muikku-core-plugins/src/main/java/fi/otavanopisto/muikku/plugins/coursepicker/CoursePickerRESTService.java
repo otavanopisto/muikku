@@ -6,9 +6,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -383,6 +385,10 @@ public class CoursePickerRESTService extends PluginRESTService {
                 boolean isCourseMember = getIsAlreadyOnWorkspace(workspaceEntity);
                 String educationTypeId = (String) result.get("educationTypeIdentifier");
                 String educationTypeName = (String) result.get("educationTypeName");
+                
+                @SuppressWarnings("unchecked")
+                ArrayList<String> curriculumIdentifiersList = (ArrayList<String>) result.get("curriculumIdentifiers");
+                
                 Mandatority mandatority = null;
 
                 if (StringUtils.isNotBlank(educationTypeId)) {
@@ -394,7 +400,7 @@ public class CoursePickerRESTService extends PluginRESTService {
                 }
   
                 if (StringUtils.isNotBlank(name)) {
-                  workspaces.add(createRestModel(workspaceEntity, name, nameExtension, description, educationTypeName, mandatority, isCourseMember));
+                  workspaces.add(createRestModel(workspaceEntity, name, nameExtension, description, educationTypeName, mandatority, isCourseMember, curriculumIdentifiersList));
                 } else {
                   logger.severe(String.format("Search index contains workspace %s that does not have a name", workspaceIdentifier));
                 }
@@ -476,7 +482,12 @@ public class CoursePickerRESTService extends PluginRESTService {
     mandatority = getMandatority(educationSubtypeId); 
     }
     
-    return Response.ok(createRestModel(workspaceEntity, workspace.getName(), workspace.getNameExtension(), workspace.getDescription(), educationTypeName, mandatority, isCourseMember)).build();
+    List<String> curriculumIdentifiersList = new ArrayList<>();
+    
+    for (SchoolDataIdentifier curriculumIdentifier : workspace.getCurriculumIdentifiers()) {
+      curriculumIdentifiersList.add(curriculumIdentifier.toString());
+    }
+    return Response.ok(createRestModel(workspaceEntity, workspace.getName(), workspace.getNameExtension(), workspace.getDescription(), educationTypeName, mandatority, isCourseMember, curriculumIdentifiersList)).build();
   }
   
   @GET
@@ -658,7 +669,7 @@ public class CoursePickerRESTService extends PluginRESTService {
     return isEvaluated;
   }
   
-  private CoursePickerWorkspace createRestModel(WorkspaceEntity workspaceEntity, String name, String nameExtension, String description, String educationTypeName, Mandatority mandatority, Boolean isCourseMember) {
+  private CoursePickerWorkspace createRestModel(WorkspaceEntity workspaceEntity, String name, String nameExtension, String description, String educationTypeName, Mandatority mandatority, Boolean isCourseMember, List<String> curriculumIdentifiers) {
     Long numVisits = workspaceVisitController.getNumVisits(workspaceEntity);
     Date lastVisit = workspaceVisitController.getLastVisit(workspaceEntity);
     boolean hasCustomImage = workspaceEntityFileController.getHasCustomImage(workspaceEntity);
@@ -679,7 +690,9 @@ public class CoursePickerRESTService extends PluginRESTService {
         educationTypeName,
         mandatority,
         isCourseMember,
-        hasCustomImage, organization);
+        hasCustomImage, 
+        organization, 
+        curriculumIdentifiers);
   }
   
   private void waitForWorkspaceUserEntity(WorkspaceEntity workspaceEntity, SchoolDataIdentifier userIdentifier) {
