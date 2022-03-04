@@ -1,4 +1,4 @@
-package fi.otavanopisto.muikku.matriculation.persistence.model;
+package fi.otavanopisto.muikku.plugins.matriculation.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
