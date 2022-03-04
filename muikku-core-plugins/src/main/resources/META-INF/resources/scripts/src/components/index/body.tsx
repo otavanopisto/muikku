@@ -13,7 +13,7 @@ import { StatusType } from "~/reducers/base/status";
 import StudiesEnded from "./body/studies-ended";
 import CheckContactInfoDialog from "~/components/base/check-contact-info-dialog";
 import "~/sass/elements/wcag.scss";
-import GuidanceEventsPanel from "./body/guidance-events-panel";
+// import GuidanceEventsPanel from "./body/guidance-events-panel";
 
 /**
  * IndexBodyProps
@@ -48,7 +48,7 @@ class IndexBody extends React.Component<
               <WorkspacesPanel />
             </div>
             <LastMessagesPanel />
-            <GuidanceEventsPanel />
+            {/* <GuidanceEventsPanel /> */}
             <AnnouncementsPanel overflow={true} />
           </ScreenContainer>
         ) : (
