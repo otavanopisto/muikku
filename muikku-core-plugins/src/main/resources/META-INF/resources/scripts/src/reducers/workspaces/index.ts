@@ -503,6 +503,7 @@ export interface WorkspaceMaterialEditorType {
  * WorkspacesType
  */
 export interface WorkspacesType {
+  availableCurriculums?: WorkspaceCurriculumFilterListType;
   availableWorkspaces: WorkspaceListType;
   availableFilters: WorkspacesavailableFiltersType;
   templateWorkspaces: TemplateWorkspaceType[];
@@ -784,6 +785,10 @@ export default function workspaces(
   if (action.type === "UPDATE_USER_WORKSPACES") {
     return <WorkspacesType>Object.assign({}, state, {
       userWorkspaces: action.payload,
+    });
+  } else if (action.type === "UPDATE_AVAILABLE_CURRICULUMS") {
+    return Object.assign({}, state, {
+      availableCurriculums: action.payload,
     });
   } else if (action.type === "UPDATE_LAST_WORKSPACE") {
     return Object.assign({}, state, {

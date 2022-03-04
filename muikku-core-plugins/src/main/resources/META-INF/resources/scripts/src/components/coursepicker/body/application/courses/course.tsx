@@ -15,9 +15,15 @@ import {
 } from "~/components/general/application-list";
 import Button from "~/components/general/button";
 import WorkspaceSignupDialog from "../../../dialogs/workspace-signup";
-import { WorkspaceMandatority, WorkspaceType } from "~/reducers/workspaces";
+import {
+  WorkspaceCurriculumFilterListType,
+  WorkspaceMandatority,
+  WorkspaceType,
+} from "~/reducers/workspaces";
 import promisify from "~/util/promisify";
 import mApi from "~/lib/mApi";
+import { AnyActionType } from "~/actions";
+import { suitabilityMap } from "~/@shared/suitability";
 
 /**
  * CourseProps
@@ -26,6 +32,7 @@ interface CourseProps {
   i18n: i18nType;
   status: StatusType;
   workspace: WorkspaceType;
+  availableCurriculums: WorkspaceCurriculumFilterListType;
 }
 
 /**
@@ -58,34 +65,72 @@ class Course extends React.Component<CourseProps, CourseState> {
   }
 
   /**
+   * Returns OPS information by curriculum identifier
+   */
+  getOPSInformation = () => {
+    /**
+     * If workspace and available curriculums are loaded and are present
+     */
+    if (this.props.workspace && this.props.availableCurriculums) {
+      /**
+       * Course only contains ONE active curriculum even though
+       * current property is list. So we pick first item that list contains
+       */
+      const activeCurriculumnIdentifier =
+        this.props.workspace.curriculumIdentifiers[0];
+
+      /**
+       * Then checking if we can find OPS data with that identifier from
+       * available curriculums
+       */
+      const OPS = this.props.availableCurriculums.find(
+        (aC) => aC.identifier === activeCurriculumnIdentifier
+      );
+
+      return OPS;
+    } else {
+      return undefined;
+    }
+  };
+
+  /**
    * Depending what mandatority value is, returns description
    *
    * @returns mandatority description
    */
   renderMandatorityDescription = () => {
-    switch (this.props.workspace.mandatority) {
-      case WorkspaceMandatority.MANDATORY:
-        return this.props.i18n.text.get(
-          "plugin.workspace.mandatority.MANDATORY"
-        );
+    /**
+     * Get OPS data
+     */
+    const OPS = this.getOPSInformation();
 
-      case WorkspaceMandatority.UNSPECIFIED_OPTIONAL:
-        return this.props.i18n.text.get(
-          "plugin.workspace.mandatority.UNSPECIFIED_OPTIONAL"
-        );
+    /**
+     * If OPS data and workspace mandatority property is present
+     */
+    if (OPS && this.props.workspace.mandatority) {
+      /**
+       * Create map property from education type name and OPS name that was passed
+       * Strings are changes to lowercase form and any empty spaces are removed
+       */
+      const education = `${this.props.workspace.educationTypeName
+        .toLowerCase()
+        .replace(/ /g, "")}${OPS.name.replace(/ /g, "")}`;
 
-      case WorkspaceMandatority.NATIONAL_LEVEL_OPTIONAL:
-        return this.props.i18n.text.get(
-          "plugin.workspace.mandatority.NATIONAL_LEVEL_OPTIONAL"
-        );
+      /**
+       * Check if our map contains data with just created education string
+       * Otherwise just return null. There might not be all included values by every OPS created...
+       */
+      if (!suitabilityMap.has(education)) {
+        return null;
+      }
 
-      case WorkspaceMandatority.SCHOOL_LEVEL_OPTIONAL:
-        return this.props.i18n.text.get(
-          "plugin.workspace.mandatority.SCHOOL_LEVEL_OPTIONAL"
-        );
+      /**
+       * Then get correct local string from map by suitability enum value
+       */
+      const localString =
+        suitabilityMap.get(education)[this.props.workspace.mandatority];
 
-      default:
-        return "";
+      return ` (${this.props.i18n.text.get(localString)})`;
     }
   };
 
@@ -159,14 +204,10 @@ class Course extends React.Component<CourseProps, CourseState> {
           ></span>
           <span className="application-list__header-primary">
             {this.props.workspace.name}
-
             {this.props.workspace.nameExtension
               ? ` (${this.props.workspace.nameExtension})`
               : null}
-
-            {this.props.workspace.mandatority
-              ? ` (${this.renderMandatorityDescription()})`
-              : null}
+            {this.renderMandatorityDescription()}
           </span>
           {hasFees ? (
             <span
@@ -232,22 +273,21 @@ class Course extends React.Component<CourseProps, CourseState> {
 
 /**
  * mapStateToProps
- * @param state
- * @returns
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     status: state.status,
+    availableCurriculums: state.workspaces.availableFilters.curriculums,
   };
 }
 
 /**
  * mapDispatchToProps
- * @param dispatch
- * @returns
+ * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 
