@@ -98,11 +98,14 @@ const loadCeeposPurchaseAndPay: LoadCeeposPurchaseTriggerType =
           payload: <CeeposStateStatusType>"LOADING",
         });
 
-        const value: string = (await promisify(
-          mApi().ceepos.pay.create(purchaseId),
-          "callback"
-        )()) as string;
-        location.href = value;
+        if (getState().status.isActiveUser) {
+          const value: string = (await promisify(
+            mApi().ceepos.pay.create(purchaseId),
+            "callback"
+          )()) as string;
+
+          location.href = value;
+        }
 
         dispatch({
           type: "UPDATE_CEEPOS_STATE",
