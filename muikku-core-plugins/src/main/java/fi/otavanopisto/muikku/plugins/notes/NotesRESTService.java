@@ -153,7 +153,13 @@ public class NotesRESTService extends PluginRESTService {
       // If startDate is after today
       if (updatedNote.getStartDate().after(Date.from(OffsetDateTime.now().minusDays(1).toInstant()))) {
         updatedRestModel.setIsActive(false);
-      } 
+      }
+    } else if (note.getDueDate() != null) {
+      OffsetDateTime dueDate= toOffsetDateTime(note.getDueDate());
+      // Note is not active if dueDate is earlier than yesterday
+      if (dueDate.isBefore(OffsetDateTime.now().minusDays(1))) {
+        updatedRestModel.setIsActive(false);
+      }
     }
     return Response.ok(updatedRestModel).build();
   }
@@ -178,6 +184,7 @@ public class NotesRESTService extends PluginRESTService {
     restModel.setStartDate(note.getStartDate());
     restModel.setDueDate(note.getDueDate());
     restModel.setStatus(note.getStatus());
+    restModel.setIsArchived(note.getArchived());
     
     return restModel;
   }

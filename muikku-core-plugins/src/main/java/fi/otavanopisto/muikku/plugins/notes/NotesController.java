@@ -65,7 +65,16 @@ public class NotesController {
   
   public Note updateNote(Note note, String title, String description, NotePriority priority, Boolean pinned, Date startDate,  Date dueDate, NoteStatus status) {
     Long lastModifier = sessionController.getLoggedUserEntity().getId();
-    Note updatedNote = noteDAO.update(note, title, description, priority, pinned, lastModifier, startDate, dueDate, status);
+    Boolean archived = false;
+    
+    if (dueDate != null) {
+      OffsetDateTime dueDateOffset = toOffsetDateTime(dueDate);
+      
+      if (dueDateOffset.isBefore(OffsetDateTime.now().minusDays(1))) {
+        archived = true;
+      }
+    }
+    Note updatedNote = noteDAO.update(note, title, description, priority, pinned, lastModifier, startDate, dueDate, status, archived);
     
     return updatedNote;
   }

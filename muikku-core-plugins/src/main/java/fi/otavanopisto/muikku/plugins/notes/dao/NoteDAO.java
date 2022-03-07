@@ -40,7 +40,7 @@ public class NoteDAO extends CorePluginsDAO<Note> {
     return persist(note);
   }
   
-  public Note update(Note note, String title, String description, NotePriority priority, Boolean pinned, Long lastModifier, Date startDate, Date dueDate, NoteStatus status){
+  public Note update(Note note, String title, String description, NotePriority priority, Boolean pinned, Long lastModifier, Date startDate, Date dueDate, NoteStatus status, Boolean archived){
     note.setTitle(title);
     note.setDescription(description);
     note.setPriority(priority);
@@ -50,6 +50,7 @@ public class NoteDAO extends CorePluginsDAO<Note> {
     note.setStartDate(startDate);
     note.setDueDate(dueDate);
     note.setStatus(status);
+    note.setArchived(archived);
     return persist(note);
   }
   
