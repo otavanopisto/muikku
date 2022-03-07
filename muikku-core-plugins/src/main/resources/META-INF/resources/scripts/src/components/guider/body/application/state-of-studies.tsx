@@ -80,6 +80,25 @@ class StateOfStudies extends React.Component<
     //a case where the property is not available
     //You can use the cheat && after the property
     //eg. guider.currentStudent.property && guider.currentStudent.property.useSubProperty
+
+    /**
+     * IsStudentPartOfProperStudyProgram
+     * @param studyProgramName
+     * @returns true or false
+     */
+    const IsStudentPartOfProperStudyProgram = (studyProgramName: string) => {
+      switch (studyProgramName) {
+        case "Nettilukio/yksityisopiskelu (aineopintoina)":
+        case "Nettilukio/yksityisopiskelu (tutkinto)":
+        case "Aineopiskelu/lukio":
+        case "Aineopiskelu/peruskoulu":
+        case "Aineopiskelu/yo-tutkinto":
+          return true;
+        default:
+          return false;
+      }
+    };
+
     const defaultEmailAddress =
       this.props.guider.currentStudent.emails &&
       this.props.guider.currentStudent.emails.find((e) => e.defaultAddress);
@@ -110,7 +129,12 @@ class StateOfStudies extends React.Component<
         </div>
         <div className="application-sub-panel__header-aside-container">
           {/* {this.props.guider.currentStudent.basic.studyProgrammeName} */}
-          <CeeposButton />
+          {this.props.guider.currentStudent.basic &&
+          IsStudentPartOfProperStudyProgram(
+            this.props.guider.currentStudent.basic.studyProgrammeName
+          ) ? (
+            <CeeposButton />
+          ) : null}
           <NewMessage
             extraNamespace="student-view"
             initialSelectedItems={[
@@ -382,24 +406,6 @@ class StateOfStudies extends React.Component<
     //     title: workspace.name,
     //     duration: "36:00:00",
     //   }));
-
-    /**
-     * IsStudentPartOfProperStudyProgram
-     * @param studyProgramName
-     * @returns true or false
-     */
-    const IsStudentPartOfProperStudyProgram = (studyProgramName: string) => {
-      switch (studyProgramName) {
-        case "Nettilukio/yksityisopiskelu (aineopintoina)":
-        case "Nettilukio/yksityisopiskelu (tutkinto)":
-        case "Aineopiskelu/lukio":
-        case "Aineopiskelu/peruskoulu":
-        case "Aineopiskelu/yo-tutkinto":
-          return true;
-        default:
-          return true; // this should be false, but for test purposes it's true
-      }
-    };
 
     return (
       <>
