@@ -141,7 +141,14 @@ public class GuiderTestsBase extends AbstractUITest {
     MockStudent student = new MockStudent(6l, 6l, "Second", "User", "teststueradsfdent@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Course course1 = new CourseBuilder().name("testcourse").id((long) 5).description("test course for testing").buildCourse();
     Builder mockBuilder = mocker();
-    mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).addCourse(course1).build();
+    mockBuilder
+    .addStaffMember(admin)
+    .addStudent(student)
+    .mockLogin(admin)
+    .addCourse(course1)
+    .mockStudentCourseStats(student.getId(), 25)
+    .mockMatriculationEligibility(false)
+    .build();
     login();
     
     Workspace workspace = createWorkspace(course1, Boolean.TRUE);
