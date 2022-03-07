@@ -1,6 +1,9 @@
 package fi.otavanopisto.muikku.plugins.notes;
 
+import java.time.Instant;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -95,10 +98,22 @@ public class NotesRESTService extends PluginRESTService {
       if (note.getStartDate().after(Date.from(OffsetDateTime.now().minusDays(1).toInstant()))) {
         noteRest.setIsActive(false);
       } 
+    } else if (note.getDueDate() != null) {
+      OffsetDateTime dueDate= toOffsetDateTime(note.getDueDate());
+      // Note is not active if dueDate is earlier than yesterday
+      if (dueDate.isBefore(OffsetDateTime.now().minusDays(1))) {
+        noteRest.setIsActive(false);
+      }
     }
     return Response.ok(noteRest).build();
   }
   
+  private OffsetDateTime toOffsetDateTime(Date date) {
+    Instant instant = date.toInstant();
+    ZoneId systemId = ZoneId.systemDefault();
+    ZoneOffset offset = systemId.getRules().getOffset(instant);
+    return date.toInstant().atOffset(offset);
+  }
   //mApi() call (mApi().notes.note.update(noteId, noteRestModel)
   // Editable fields are title, description, priority, pinned, dueDate & status)
   @PUT

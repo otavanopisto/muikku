@@ -50,7 +50,15 @@ public class NotesController {
   
   public Note createNote(String title, String description, NoteType type, NotePriority priority, Boolean pinned, Long owner, Date startDate, Date dueDate) {
     NoteStatus status = NoteStatus.ONGOING;
-    Note note = noteDAO.create(title, description, type, priority, pinned, owner, sessionController.getLoggedUserEntity().getId(), sessionController.getLoggedUserEntity().getId(), startDate, dueDate, status);
+    Boolean archived = false;
+    if (dueDate != null) {
+      OffsetDateTime dueDateOffset = toOffsetDateTime(dueDate);
+      // Archive note if dueDate is earlier than yesterday
+      if (dueDateOffset.isBefore(OffsetDateTime.now().minusDays(1))) {
+        archived = true;
+      }
+    }
+    Note note = noteDAO.create(title, description, type, priority, pinned, owner, sessionController.getLoggedUserEntity().getId(), sessionController.getLoggedUserEntity().getId(), startDate, dueDate, status, archived);
     
     return note;
   }

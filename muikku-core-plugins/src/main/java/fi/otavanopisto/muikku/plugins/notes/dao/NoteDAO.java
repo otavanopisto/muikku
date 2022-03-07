@@ -21,7 +21,7 @@ public class NoteDAO extends CorePluginsDAO<Note> {
   
   private static final long serialVersionUID = 1265008061182482207L;
 
-  public Note create(String title, String description, NoteType type, NotePriority priority, Boolean pinned, Long owner, Long creator, Long lastModifier,Date startDate, Date dueDate, NoteStatus status){
+  public Note create(String title, String description, NoteType type, NotePriority priority, Boolean pinned, Long owner, Long creator, Long lastModifier,Date startDate, Date dueDate, NoteStatus status, Boolean archived){
     Note note = new Note();
     note.setTitle(title);
     note.setDescription(description);
@@ -33,7 +33,7 @@ public class NoteDAO extends CorePluginsDAO<Note> {
     note.setCreated(new Date());
     note.setLastModifier(lastModifier);
     note.setLastModified(new Date());
-    note.setArchived(false);
+    note.setArchived(archived);
     note.setStartDate(startDate);
     note.setDueDate(dueDate);
     note.setStatus(status);
