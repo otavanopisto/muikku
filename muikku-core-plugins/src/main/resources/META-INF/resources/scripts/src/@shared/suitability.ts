@@ -3,7 +3,7 @@ import { OPSsuitability } from "~/@types/shared";
 /**
  * This map contains all localizations for workspace mandatority property values
  * item key is combination of studyprogram and OPS. This should be only temporary solution
- * because hard coded values are not by any mean good approuch.
+ * because hard coded values are not by any mean good approach.
  */
 export const suitabilityMap = new Map<string, OPSsuitability>([
   [

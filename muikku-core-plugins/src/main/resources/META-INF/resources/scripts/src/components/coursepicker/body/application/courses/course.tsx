@@ -17,7 +17,6 @@ import Button from "~/components/general/button";
 import WorkspaceSignupDialog from "../../../dialogs/workspace-signup";
 import {
   WorkspaceCurriculumFilterListType,
-  WorkspaceMandatority,
   WorkspaceType,
 } from "~/reducers/workspaces";
 import promisify from "~/util/promisify";
