@@ -371,21 +371,6 @@ class StateOfStudies extends React.Component<
           )}
       </div>
     );
-    //TODO: this was stolen from the dust template, please replace all the classNames, these are for just reference
-    //I don't want this file to become too complex, remember anyway that I will be splitting all these into simpler components
-    //later once a pattern is defined
-    const studentHops =
-      this.props.guider.currentStudent.hops &&
-      this.props.guider.currentStudent.hops.optedIn ? (
-        <Hops data={this.props.guider.currentStudent.hops} />
-      ) : null;
-
-    //I placed the VOPS in an external file already you can follow it, this is because
-    //it is very clear
-    const studentVops: any = null;
-    // Removed until it works
-    // (this.props.guider.currentStudent.vops && this.props.guider.currentStudent.vops.optedIn) ?
-    //        <Vops data={this.props.guider.currentStudent.vops}></Vops> : null;
 
     const studentWorkspaces = (
       <Workspaces
