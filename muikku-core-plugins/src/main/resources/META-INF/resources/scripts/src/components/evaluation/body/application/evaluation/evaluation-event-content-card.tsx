@@ -24,6 +24,7 @@ interface EvaluationEventContentCardProps extends EvaluationEvent {
   selectedAssessment: AssessmentRequest;
   onClickEdit: (
     eventId: string,
+    workspaceSubjectIdentifier: string | null,
     supplementation?: boolean
   ) => (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void;
 }
@@ -288,6 +289,7 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
               className="link link--evaluation-event-edit"
               onClick={onClickEdit(
                 identifier,
+                workspaceSubjectIdentifier,
                 type === EvaluationEnum.SUPPLEMENTATION_REQUEST
               )}
             >
