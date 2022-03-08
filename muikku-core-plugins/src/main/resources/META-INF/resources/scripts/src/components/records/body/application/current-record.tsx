@@ -84,7 +84,7 @@ class CurrentRecord extends React.Component<
         assessmentIsUnassessed = true;
     }
 
-    let literalAssessment =
+    const literalAssessment =
       assessment && assessment.text ? assessment.text : null;
 
     return {
@@ -185,8 +185,7 @@ class CurrentRecord extends React.Component<
                       ? this.props.i18n.text.get(
                           "plugin.records.workspace.assessment.grade.incomplete.data"
                         )
-                      : this.props.records.current.workspace.activity
-                          .assessmentState[0].grade}
+                      : a.grade}
                   </span>
                 </div>
                 <div className="workspace-assessment__literal">
@@ -218,10 +217,7 @@ class CurrentRecord extends React.Component<
                     :
                   </span>
                   <span className="workspace-assessment__date-data">
-                    {this.props.i18n.time.format(
-                      this.props.records.current.workspace.activity
-                        .assessmentState[0].date
-                    )}
+                    {this.props.i18n.time.format(a.date)}
                   </span>
                 </div>
                 <div className="workspace-assessment__literal">
@@ -290,35 +286,33 @@ class CurrentRecord extends React.Component<
      */
     const renderJournalsList = () => (
       <div className="application-list_item-wrapper">
-        {this.props.records.current.journals.map((journal) => {
-          return (
-            <ApplicationListItem
-              className="journal journal--studies"
-              key={journal.id}
-            >
-              <ApplicationListItemHeader className="application-list__item-header--journal-entry">
-                <div className="application-list__item-header-main application-list__item-header-main--journal-entry">
-                  <span className="application-list__item-header-main-content application-list__item-header-main-content--journal-entry-title">
-                    {journal.title}
-                  </span>
-                </div>
-                <div className="application-list__item-header-aside">
-                  <span>
-                    {this.props.i18n.time.format(journal.created, "L LT")}
-                  </span>
-                </div>
-              </ApplicationListItemHeader>
-              <ApplicationListItemBody className="application-list__item-body">
-                <article
-                  className="application-list__item-content-body application-list__item-content-body--journal-entry rich-text"
-                  dangerouslySetInnerHTML={{
-                    __html: journal.content,
-                  }}
-                ></article>
-              </ApplicationListItemBody>
-            </ApplicationListItem>
-          );
-        })}
+        {this.props.records.current.journals.map((journal) => (
+          <ApplicationListItem
+            className="journal journal--studies"
+            key={journal.id}
+          >
+            <ApplicationListItemHeader className="application-list__item-header--journal-entry">
+              <div className="application-list__item-header-main application-list__item-header-main--journal-entry">
+                <span className="application-list__item-header-main-content application-list__item-header-main-content--journal-entry-title">
+                  {journal.title}
+                </span>
+              </div>
+              <div className="application-list__item-header-aside">
+                <span>
+                  {this.props.i18n.time.format(journal.created, "L LT")}
+                </span>
+              </div>
+            </ApplicationListItemHeader>
+            <ApplicationListItemBody className="application-list__item-body">
+              <article
+                className="application-list__item-content-body application-list__item-content-body--journal-entry rich-text"
+                dangerouslySetInnerHTML={{
+                  __html: journal.content,
+                }}
+              ></article>
+            </ApplicationListItemBody>
+          </ApplicationListItem>
+        ))}
       </div>
     );
 

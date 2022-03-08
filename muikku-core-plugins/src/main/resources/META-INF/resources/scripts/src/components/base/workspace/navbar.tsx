@@ -295,17 +295,18 @@ class WorkspaceNavbar extends React.Component<
 
     /**
      * !DISCLAIMER!
-     * Following by combinationWorkspace change, there can be multiple assessmentState objects
+     * Following by combinationWorkspace changes, there can be multiple assessmentState objects
      * So currently before module specific assessment are implemented, using first item of assessmentState list
      * is only option.
      */
     const assessmentState =
-      this.props.currentWorkspace &&
-      this.props.currentWorkspace.activity.assessmentState[0];
+      this.props.currentWorkspace && this.props.currentWorkspace.activity
+        ? this.props.currentWorkspace.activity.assessmentState[0]
+        : undefined;
 
     const assessmentRequestItem =
-      this.props.currentWorkspace &&
-      this.props.status.permissions.WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT
+      this.props.status.permissions.WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT &&
+      assessmentState
         ? {
             modifier: "assessment-request",
             item: (

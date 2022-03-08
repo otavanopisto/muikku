@@ -698,8 +698,6 @@ export type MaterialContentNodeListType = Array<MaterialContentNodeType>;
   workspace: WorkspaceType
 ) {
 
-  console.log("Tapahtuu jotain", id, assessmentState, date, assessmentRequestObject, deleteAssessmentRequestObject, workspace);
-
   let replacement =
     workspace && workspace.id === id ? { ...workspace } : workspace;
   if (replacement && replacement.id === id) {

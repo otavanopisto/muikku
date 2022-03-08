@@ -36,6 +36,7 @@ export class EvaluationMaterial extends React.Component<
 > {
   /**
    * constructor
+   *
    * @param props props
    */
   constructor(props: EvaluationMaterialProps) {
@@ -46,6 +47,7 @@ export class EvaluationMaterial extends React.Component<
 
   /**
    * Component render method
+   *
    * @returns JSX.Element
    */
   render() {
@@ -78,6 +80,7 @@ export class EvaluationMaterial extends React.Component<
 
 /**
  * mapStateToProps
+ *
  * @param state state
  */
 function mapStateToProps(state: StateType) {
@@ -88,6 +91,7 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
+ *
  * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {

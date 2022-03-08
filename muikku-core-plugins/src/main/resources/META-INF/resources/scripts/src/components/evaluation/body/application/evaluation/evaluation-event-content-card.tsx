@@ -1,5 +1,9 @@
 import * as React from "react";
-import { EvaluationEvent, EvaluationEnum } from "~/@types/evaluation";
+import {
+  EvaluationEvent,
+  EvaluationEnum,
+  AssessmentRequest,
+} from "~/@types/evaluation";
 import * as moment from "moment";
 import AnimateHeight from "react-animate-height";
 import DeleteDialog from "../../../dialogs/delete";
@@ -9,7 +13,6 @@ import { Dispatch, bindActionCreators } from "redux";
 import { AnyActionType } from "~/actions/index";
 import { connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
-import { EvaluationState } from "~/reducers/main-function/evaluation/index";
 import "~/sass/elements/rich-text.scss";
 
 /**
@@ -18,7 +21,7 @@ import "~/sass/elements/rich-text.scss";
 interface EvaluationEventContentCardProps extends EvaluationEvent {
   i18n: i18nType;
   showDeleteAndModify: boolean;
-  evaluations: EvaluationState;
+  selectedAssessment: AssessmentRequest;
   onClickEdit: (
     eventId: string,
     supplementation?: boolean
@@ -27,6 +30,7 @@ interface EvaluationEventContentCardProps extends EvaluationEvent {
 
 /**
  * EvaluationEventContentCard
+ *
  * @param props props
  */
 const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
@@ -34,12 +38,27 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
 ) => {
   const [height, setHeight] = React.useState<0 | "auto">(0);
 
-  const { i18n, showDeleteAndModify, onClickEdit, ...event } = props;
+  const {
+    i18n,
+    showDeleteAndModify,
+    onClickEdit,
+    selectedAssessment,
+    ...event
+  } = props;
 
-  const { author, text, date, type, grade, identifier } = event;
+  const {
+    author,
+    text,
+    date,
+    type,
+    grade,
+    identifier,
+    workspaceSubjectIdentifier,
+  } = event;
 
   /**
    * arrowClassMod
+   *
    * @param typeMsg typeMsg
    * @returns arrow class modifier
    */
@@ -97,6 +116,14 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
         )} evaluation-modal__event-arrow--down `;
 
   let subjectTitle: string | undefined = undefined;
+
+  const subject = selectedAssessment.subjects.find(
+    (subject) => subject.identifier === workspaceSubjectIdentifier
+  );
+
+  if (selectedAssessment.subjects.length > 1 && subject) {
+    subjectTitle = subject.subject && subject.subject.name;
+  }
 
   /**
    * renderTypeMessage
@@ -289,7 +316,6 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    evaluations: state.evaluations,
   };
 }
 

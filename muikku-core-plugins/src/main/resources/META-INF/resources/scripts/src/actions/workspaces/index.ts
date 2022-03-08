@@ -49,6 +49,7 @@ import {
 import equals = require("deep-equal");
 import $ from "~/lib/jquery";
 import { UploadingValue } from "~/@types/shared";
+import { Role } from "../../reducers/base/status";
 
 export type UPDATE_USER_WORKSPACES = SpecificActionType<
   "UPDATE_USER_WORKSPACES",
@@ -758,7 +759,7 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
               )()
           ),
 
-          getState().status.loggedIn
+          getState().status.loggedIn && getState().status.role === Role.STUDENT
             ? // The way refresh works is by never giving an existant value to the reuse existant value function that way it will think that there's no value
               // And rerequest
               reuseExistantValue(
@@ -1623,6 +1624,7 @@ const updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
     getState: () => StateType
   ) => {
     const actualOriginal: WorkspaceType = { ...data.workspace };
+    delete actualOriginal["activity"];
     delete actualOriginal["studentActivity"];
     delete actualOriginal["forumStatistics"];
     delete actualOriginal["studentAssessments"];

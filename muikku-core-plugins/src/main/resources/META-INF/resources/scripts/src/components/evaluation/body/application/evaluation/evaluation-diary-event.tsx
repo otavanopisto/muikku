@@ -14,6 +14,7 @@ interface EvaluationDiaryEventProps extends WorkspaceJournalType {
 
 /**
  * Creates evaluation diary event component
+ *
  * @param props props
  * @returns JSX.Element
  */
@@ -30,6 +31,7 @@ const EvaluationDiaryEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
   /**
    * createHtmlMarkup
    * This should sanitize html
+   *
    * @param htmlString string that contains html
    */
   const createHtmlMarkup = (htmlString: string) => ({

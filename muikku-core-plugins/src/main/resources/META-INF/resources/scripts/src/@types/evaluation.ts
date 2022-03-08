@@ -42,6 +42,7 @@ export interface EvaluationEvent {
  * EvaluationAssignmentContent
  */
 export interface EvaluationAssignmentContent {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   answers: any[];
   created: string | null;
   lastModified: string | null;
@@ -93,6 +94,9 @@ export interface EvaluationStudyDiaryEvent {
   workspaceEntityId: number;
 }
 
+/**
+ * EvaluationWorkspaceSubject
+ */
 export interface EvaluationWorkspaceSubject extends WorkspaceSubject {
   datasource: string;
 }
