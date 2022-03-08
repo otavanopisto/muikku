@@ -78,12 +78,14 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
   const aside = (
     <Navigation>
       <NavigationElement
+        id={"studyHistory"}
         onClick={handleNavigationClick.bind(this, "history")}
         isActive={navigationActive === "history" ? true : false}
       >
         {i18n.text.get("plugin.guider.user.tabs.studyHistory.aside.history")}
       </NavigationElement>
       <NavigationElement
+        id={"studyLibrary"}
         onClick={handleNavigationClick.bind(this, "library")}
         isActive={navigationActive === "library" ? true : false}
       >

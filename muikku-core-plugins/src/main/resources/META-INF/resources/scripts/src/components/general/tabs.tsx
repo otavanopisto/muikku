@@ -132,6 +132,7 @@ export const Tabs: React.FC<TabsProps> = (props) => {
           >
             {tabs.map((tab: Tab) => (
               <div
+                id={tab.id}
                 className={`tabs__tab ${
                   modifier ? "tabs__tab--" + modifier : ""
                 } ${tab.type ? "tabs__tab--" + tab.type : ""} ${
