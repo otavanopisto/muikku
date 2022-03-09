@@ -7,7 +7,7 @@ import usePrevious from "./hooks/usePrevious";
  * JournalListProps
  */
 interface JournalListAnimatedProps {
-  journals: UseJournals;
+  isLoadingList: boolean;
 }
 
 /**
@@ -16,7 +16,7 @@ interface JournalListAnimatedProps {
  * @returns JSX.Element
  */
 const JournalListAnimated: React.FC<JournalListAnimatedProps> = (props) => {
-  const { children, journals } = props;
+  const { children, isLoadingList } = props;
 
   const listElementRef = React.useRef();
 
@@ -75,7 +75,7 @@ const JournalListAnimated: React.FC<JournalListAnimatedProps> = (props) => {
     }
   }, [boundingBox, prevBoundingBox, children]);
 
-  if (journals.isLoadingList) {
+  if (isLoadingList) {
     return <div className="loader-empty" />;
   }
 

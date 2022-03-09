@@ -147,25 +147,50 @@ export const useJournals = (
         await promisify(mApi().notes.note.create(newJournal), "callback")()
       );
 
-      /**
-       * Initializing list
-       */
-      const updatedJournalList = [...journals.journalsList];
+      if (createdJournal.isArchived) {
+        /**
+         * Initializing list
+         */
+        const updatedArchivedJournalList = [...journals.journalsArchivedList];
 
-      /**
-       * Update list
-       */
-      updatedJournalList.push(createdJournal);
+        /**
+         * Update list
+         */
+        updatedArchivedJournalList.push(createdJournal);
 
-      setJournals((journals) => ({
-        ...journals,
-        journalsList: setToDefaultSortingOrder(updatedJournalList),
-        isUpdatingList: false,
-      }));
+        setJournals((journals) => ({
+          ...journals,
+          journalsArchivedList: setToDefaultSortingOrder(
+            updatedArchivedJournalList
+          ),
+          isUpdatingList: false,
+        }));
 
-      onSuccess && onSuccess();
+        displayNotification(
+          `Lappu luotu onnistuneesti ja siirrety arkistoituihin`,
+          "success"
+        );
+      } else {
+        /**
+         * Initializing list
+         */
+        const updatedJournalList = [...journals.journalsList];
 
-      displayNotification(`Lappu luotu onnistuneesti`, "success");
+        /**
+         * Update list
+         */
+        updatedJournalList.push(createdJournal);
+
+        setJournals((journals) => ({
+          ...journals,
+          journalsList: setToDefaultSortingOrder(updatedJournalList),
+          isUpdatingList: false,
+        }));
+
+        onSuccess && onSuccess();
+
+        displayNotification(`Lappu luotu onnistuneesti`, "success");
+      }
     } catch (err) {
       displayNotification(`Hups errori luonti ${err}`, "error");
       setJournals((journals) => ({

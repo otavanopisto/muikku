@@ -1,12 +1,12 @@
 import * as React from "react";
 import Button, { IconButton } from "~/components/general/button";
-import JournalPriorityChip from "./journal-list-filtters-chip";
+import JournalPriorityChip from "./journal-item-list-filtters-chip";
 import {
   JournalNoteUpdate,
   JournalPriority,
 } from "../../../../../../@types/journal-center";
 import { UseJournals, JournalNoteRead } from "~/@types/journal-center";
-import JournalListEditorEdit from "./journal-list-editor-edit";
+import JournalListEditorEdit from "./journal-center-item-current-edit";
 import { i18nType } from "~/reducers/base/i18n";
 import * as moment from "moment";
 

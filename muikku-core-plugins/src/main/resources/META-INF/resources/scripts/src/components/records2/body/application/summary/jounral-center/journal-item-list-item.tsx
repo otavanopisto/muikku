@@ -497,4 +497,4 @@ const JournalListItem = React.forwardRef<HTMLDivElement, JournalListItemProps>(
 
 JournalListItem.displayName = "JournalListItem";
 
-export default JournalListItem;
+export default React.memo(JournalListItem);

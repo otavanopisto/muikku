@@ -1,7 +1,6 @@
 import * as React from "react";
 import Button from "~/components/general/button";
 import {
-  JournalNoteCreate,
   JournalNoteRead,
   JournalNoteUpdate,
   JournalPriority,

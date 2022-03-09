@@ -5,7 +5,7 @@ import {
 } from "~/@types/journal-center";
 import { IconButton } from "~/components/general/button";
 import Dropdown from "~/components/general/dropdown";
-import JournalPriorityChip from "./journal-list-filtters-chip";
+import JournalPriorityChip from "./journal-item-list-filtters-chip";
 
 /**
  * JournalListProps

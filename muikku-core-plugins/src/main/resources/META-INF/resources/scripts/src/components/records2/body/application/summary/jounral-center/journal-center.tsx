@@ -1,8 +1,7 @@
 import * as React from "react";
 import {
   JournalCenterUsePlaceType,
-  JournalFilters,
-  JournalNoteRead,
+  SelectedJournal,
 } from "~/@types/journal-center";
 import {
   DisplayNotificationTriggerType,
@@ -12,20 +11,17 @@ import { IconButton } from "~/components/general/button";
 import Tabs, { Tab } from "~/components/general/tabs";
 import { createAllTabs } from "~/helper-functions/tabs";
 import { useJournals } from "./hooks/useJournals";
-import JournalListFiltters from "./journal-list-filtters";
-import JournalListItemCurrent from "./journal-list-item-current";
+import JournalListItemCurrent from "./journal-center-item-current";
 import SlideDrawer from "./slide-drawer";
-import JournalListEditorNew from "./journal-list-editor-new";
-import JournalListItem from "./journal-list-item";
+import JournalListEditorNew from "./journal-center-item-current-new";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
-import JournalListAnimated from "./journal-list-animated";
 import { StateType } from "~/reducers";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
-import { sortJournalsBy } from "./helpers/filters";
 import { AnyActionType } from "~/actions";
 import { i18nType } from "~/reducers/base/i18n";
+import JournalList from "./journal-item-list";
 
 /**
  * JournalCenterProps
@@ -60,14 +56,6 @@ interface JournalCenterProps {
 }
 
 /**
- * SelectedJournal
- */
-interface SelectedJournal {
-  journal: JournalNoteRead;
-  inEditMode: boolean;
-}
-
-/**
  * Creater Journal center component
  *
  * @param props props
@@ -89,14 +77,6 @@ const JournalCenter: React.FC<JournalCenterProps> = (props) => {
     { journal: undefined, inEditMode: false }
   );
 
-  const [filters, setFilters] = React.useState<JournalFilters>({
-    high: false,
-    normal: false,
-    low: false,
-    own: false,
-    guider: false,
-  });
-
   const [createNew, setCreateNew] = React.useState(false);
 
   const {
@@ -108,14 +88,6 @@ const JournalCenter: React.FC<JournalCenterProps> = (props) => {
     updateJournalStatus,
     pinJournal,
   } = useJournals(studentId, displayNotification);
-
-  /**
-   * handleFilttersChange
-   * @param updatedFilters name
-   */
-  const handleFiltersChange = (updatedFilters: JournalFilters) => {
-    setFilters(updatedFilters);
-  };
 
   /**
    * Handles tab change
@@ -149,50 +121,60 @@ const JournalCenter: React.FC<JournalCenterProps> = (props) => {
   /**
    * Handles close current note click
    */
-  const handleCloseCurrentNote = () => {
-    setSelectedJournal({ journal: undefined, inEditMode: false });
-  };
+  const handleCloseCurrentNote = React.useCallback(
+    () => setSelectedJournal({ journal: undefined, inEditMode: false }),
+    []
+  );
 
   /**
    * Handles note in edit mode click
    * @param id id
    */
-  const handleOpenInEditModeClick = (id: number) => {
-    const journalFromList = journals.journalsList.find((j) => j.id === id);
+  const handleOpenInEditModeClick = React.useCallback(
+    (id: number) => {
+      const journalFromList = journals.journalsList.find((j) => j.id === id);
 
-    setSelectedJournal({
-      journal: journalFromList,
-      inEditMode: true,
-    });
-  };
-
-  /**
-   * Handles journal item click
-   * @param id id of clicked journal
-   */
-  const handleJournalItemClick = (id: number) => {
-    const journalFromList = journals.journalsList.find((j) => j.id === id);
-
-    setSelectedJournal({
-      journal: journalFromList,
-      inEditMode: false,
-    });
-  };
+      setSelectedJournal({
+        journal: journalFromList,
+        inEditMode: true,
+      });
+    },
+    [journals.journalsList]
+  );
 
   /**
    * Handles journal item click
    * @param id id of clicked journal
    */
-  const handleArchivedJournalItemClick = (id: number) => {
-    const journalFromList = journals.journalsArchivedList.find(
-      (j) => j.id === id
-    );
+  const handleJournalItemClick = React.useCallback(
+    (id: number) => {
+      const journalFromList = journals.journalsList.find((j) => j.id === id);
 
-    setSelectedJournal({
-      journal: journalFromList,
-      inEditMode: false,
-    });
-  };
+      setSelectedJournal({
+        journal: journalFromList,
+        inEditMode: false,
+      });
+    },
+    [journals.journalsList]
+  );
+
+  /**
+   * Handles journal item click
+   * @param id id of clicked journal
+   */
+  const handleArchivedJournalItemClick = React.useCallback(
+    (id: number) => {
+      const journalFromList = journals.journalsArchivedList.find(
+        (j) => j.id === id
+      );
+
+      setSelectedJournal({
+        journal: journalFromList,
+        inEditMode: false,
+      });
+    },
+    [journals.journalsArchivedList]
+  );
 
   /**
    * List of journal center tabs
@@ -206,42 +188,21 @@ const JournalCenter: React.FC<JournalCenterProps> = (props) => {
        * component
        */
       component: () => (
-        <JournalContentContainer>
-          <div className="journal-list-content">
-            <JournalFunctionsBar>
-              <JournalListFiltters
-                usePlace={usePlace}
-                filters={filters}
-                onFilttersChange={handleFiltersChange}
-              />
-            </JournalFunctionsBar>
+        <JournalCentertContainer>
+          <JournalList
+            isLoadingList={journals.isLoadingList}
+            journals={journals.journalsList}
+            userId={userId}
+            usePlace={usePlace}
+            selectedJournal={selectedJournal}
+            onPinJournalClick={pinJournal}
+            onArchiveClick={archiveJournal}
+            onUpdateJournalStatus={updateJournalStatus}
+            onEditClick={handleOpenInEditModeClick}
+            onJournalClick={handleJournalItemClick}
+          />
 
-            <JournalListAnimated journals={journals}>
-              {sortJournalsBy(journals.journalsList, filters, userId).map(
-                (j) => (
-                  <JournalListItem
-                    key={j.id}
-                    ref={React.createRef()}
-                    journal={j}
-                    active={
-                      selectedJournal.journal &&
-                      selectedJournal.journal.id === j.id
-                    }
-                    archived={false}
-                    loggedUserIsCreator={j.creator === userId}
-                    loggedUserIsOwner={j.owner === userId}
-                    onPinJournalClick={pinJournal}
-                    onArchiveClick={archiveJournal}
-                    onUpdateJournalStatus={updateJournalStatus}
-                    onEditClick={handleOpenInEditModeClick}
-                    onJournalClick={handleJournalItemClick}
-                  />
-                )
-              )}
-            </JournalListAnimated>
-          </div>
-
-          <div className="current-editor-container">
+          <JournalCurrentNoteContent>
             <JournalFunctionsBar>
               <div
                 style={{
@@ -297,8 +258,8 @@ const JournalCenter: React.FC<JournalCenterProps> = (props) => {
                 i18n={i18n}
               />
             </SlideDrawer>
-          </div>
-        </JournalContentContainer>
+          </JournalCurrentNoteContent>
+        </JournalCentertContainer>
       ),
     },
   ];
@@ -312,40 +273,18 @@ const JournalCenter: React.FC<JournalCenterProps> = (props) => {
        * component
        */
       component: () => (
-        <JournalContentContainer>
-          <div className="journal-list-content">
-            <JournalFunctionsBar>
-              <JournalListFiltters
-                usePlace={usePlace}
-                filters={filters}
-                onFilttersChange={handleFiltersChange}
-              />
-            </JournalFunctionsBar>
+        <JournalCentertContainer>
+          <JournalList
+            isLoadingList={journals.isLoadingList}
+            journals={journals.journalsArchivedList}
+            userId={userId}
+            usePlace={usePlace}
+            selectedJournal={selectedJournal}
+            onReturnArchivedClick={returnArchivedJournal}
+            onJournalClick={handleArchivedJournalItemClick}
+          />
 
-            <JournalListAnimated journals={journals}>
-              {sortJournalsBy(
-                journals.journalsArchivedList,
-                filters,
-                userId
-              ).map((j) => (
-                <JournalListItem
-                  key={j.id}
-                  ref={React.createRef()}
-                  archived={true}
-                  journal={j}
-                  active={
-                    selectedJournal.journal &&
-                    selectedJournal.journal.id === j.id
-                  }
-                  loggedUserIsCreator={j.creator === userId}
-                  loggedUserIsOwner={j.owner === userId}
-                  onReturnArchivedClick={returnArchivedJournal}
-                  onJournalClick={handleArchivedJournalItemClick}
-                />
-              ))}
-            </JournalListAnimated>
-          </div>
-          <div className="current-editor-container">
+          <JournalCurrentNoteContent>
             <JournalFunctionsBar />
             <div className="editor-default-content">
               <h2>Ei valittua toiminnallisuutta</h2>
@@ -372,8 +311,8 @@ const JournalCenter: React.FC<JournalCenterProps> = (props) => {
                 />
               </SlideDrawer>
             ))}
-          </div>
-        </JournalContentContainer>
+          </JournalCurrentNoteContent>
+        </JournalCentertContainer>
       ),
     });
   }
@@ -424,7 +363,9 @@ interface JournalFunctionBarProps
  * JournalFunctionsBar
  * @param props props
  */
-const JournalFunctionsBar: React.FC<JournalFunctionBarProps> = (props) => (
+export const JournalFunctionsBar: React.FC<JournalFunctionBarProps> = (
+  props
+) => (
   <div className="journal-function-bar" {...props}>
     {props.children}
   </div>
@@ -440,10 +381,28 @@ interface JournalContentContainerProps {}
  * @param props props
  * @returns JSX.Element
  */
-const JournalContentContainer: React.FC<JournalContentContainerProps> = (
+const JournalCentertContainer: React.FC<JournalContentContainerProps> = (
   props
 ) => {
   const { children } = props;
 
-  return <div className="journal-content-container">{children}</div>;
+  return <div className="journal-center-container">{children}</div>;
+};
+
+/**
+ * JournalContentContainerProps
+ */
+interface JournalCurrentNoteContainerProps {}
+
+/**
+ * Creater Journal content container component
+ * @param props props
+ * @returns JSX.Element
+ */
+const JournalCurrentNoteContent: React.FC<JournalCurrentNoteContainerProps> = (
+  props
+) => {
+  const { children } = props;
+
+  return <div className="current-note-content">{children}</div>;
 };

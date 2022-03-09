@@ -5,17 +5,17 @@
 @import "cke-styles";
 
 /* width */
-.journal-content-container ::-webkit-scrollbar {
+.journal-center-container ::-webkit-scrollbar {
   width: 10px;
 }
 
 /* Track */
-.journal-content-container ::-webkit-scrollbar-track {
+.journal-center-container ::-webkit-scrollbar-track {
   box-shadow: inset 0 0 3px grey;
 }
 
 /* Handle */
-.journal-content-container ::-webkit-scrollbar-thumb {
+.journal-center-container ::-webkit-scrollbar-thumb {
   background: #cccccc;
 }
 
@@ -144,7 +144,7 @@
   margin: 5px;
 }
 
-.journal-content-container {
+.journal-center-container {
   display: flex;
   height: 800px;
   padding: 10px 0;
@@ -166,7 +166,7 @@
   position: relative;
 }
 
-.current-editor-container {
+.current-note-content {
   align-items: center;
   display: flex;
   flex-direction: column;

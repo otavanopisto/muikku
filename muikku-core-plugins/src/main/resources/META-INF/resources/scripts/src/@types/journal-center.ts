@@ -36,6 +36,7 @@ export interface JournalNoteRead {
   priority: JournalPriority;
   pinned: boolean;
   isActive: boolean;
+  isArchived: boolean;
   owner: number;
   creator: number;
   creatorName: string;
@@ -105,3 +106,11 @@ export interface JournalFilters {
  * JournalCenterUsePlaceType
  */
 export type JournalCenterUsePlaceType = "records" | "guider";
+
+/**
+ * SelectedJournal
+ */
+export interface SelectedJournal {
+  journal: JournalNoteRead;
+  inEditMode: boolean;
+}
