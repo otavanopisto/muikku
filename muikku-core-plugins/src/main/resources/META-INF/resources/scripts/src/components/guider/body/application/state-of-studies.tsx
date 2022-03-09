@@ -28,8 +28,6 @@ import {
 import NewMessage from "~/components/communicator/dialogs/new-message";
 import { ButtonPill } from "~/components/general/button";
 import GuiderToolbarLabels from "./toolbar/labels";
-import ApplicationSubPanel from "~/components/general/application-sub-panel";
-import ApplicationPanelBody from "~/components/general/application-panel/components/application-panel-body";
 
 // import GuidanceEvent from "../../dialogs/guidance-event";
 // import { CalendarEvent } from "~/reducers/main-function/calendar";
