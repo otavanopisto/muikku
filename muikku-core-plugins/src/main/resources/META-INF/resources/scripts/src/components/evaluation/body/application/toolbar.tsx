@@ -18,7 +18,11 @@ import {
   UpdateEvaluationSearch,
   updateEvaluationSearch,
 } from "~/actions/main-function/evaluation/evaluationActions";
+import { AnyActionType } from "~/actions";
 
+/**
+ * EvaluationToolbarProps
+ */
 interface EvaluationToolbarProps {
   i18n: i18nType;
   title: string;
@@ -27,15 +31,21 @@ interface EvaluationToolbarProps {
   setEvaluationFilters: SetEvaluationFilters;
 }
 
+/**
+ * EvaluationToolbarState
+ */
 interface EvaluationToolbarState {}
 
+/**
+ * EvaluationToolbar
+ */
 class EvaluationToolbar extends React.Component<
   EvaluationToolbarProps,
   EvaluationToolbarState
 > {
   /**
    * constructor
-   * @param props
+   * @param props props
    */
   constructor(props: EvaluationToolbarProps) {
     super(props);
@@ -43,7 +53,7 @@ class EvaluationToolbar extends React.Component<
 
   /**
    * handleSearchFormElementChange
-   * @param e
+   * @param e e
    */
   handleSearchFormElementChange = (e: string) => {
     this.props.updateEvaluationSearch({ searchString: e });
@@ -51,6 +61,7 @@ class EvaluationToolbar extends React.Component<
 
   /**
    * handleCheckboxClick
+   * @param filter filter
    */
   handleCheckboxClick =
     (filter: keyof EvaluationFilters) =>
@@ -69,7 +80,7 @@ class EvaluationToolbar extends React.Component<
    */
   render() {
     const checkboxes = [
-      <div className="filter-item">
+      <div key="evaluated" className="filter-item">
         <input
           onChange={this.handleCheckboxClick("evaluated")}
           checked={this.props.evaluations.evaluationFilters.evaluated}
@@ -82,7 +93,7 @@ class EvaluationToolbar extends React.Component<
           )}
         </label>
       </div>,
-      <div className="filter-item">
+      <div key="requestEvaluation" className="filter-item">
         <input
           onChange={this.handleCheckboxClick("assessmentRequest")}
           checked={this.props.evaluations.evaluationFilters.assessmentRequest}
@@ -95,7 +106,7 @@ class EvaluationToolbar extends React.Component<
           )}
         </label>
       </div>,
-      <div className="filter-item">
+      <div key="hasSupplementationRequest" className="filter-item">
         <input
           onChange={this.handleCheckboxClick("supplementationRequest")}
           checked={
@@ -110,7 +121,7 @@ class EvaluationToolbar extends React.Component<
           )}
         </label>
       </div>,
-      <div className="filter-item">
+      <div key="noevaluation" className="filter-item">
         <input
           onChange={this.handleCheckboxClick("notEvaluated")}
           checked={this.props.evaluations.evaluationFilters.notEvaluated}
@@ -146,8 +157,7 @@ class EvaluationToolbar extends React.Component<
 
 /**
  * mapStateToProps
- * @param state
- * @returns
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -158,10 +168,9 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
- * @returns
+ * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     { updateEvaluationSearch, setEvaluationFilters },
     dispatch

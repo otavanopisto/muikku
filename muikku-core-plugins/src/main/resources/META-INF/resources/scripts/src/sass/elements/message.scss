@@ -24,7 +24,6 @@
 }
 
 .message--discussion {
-
   @include breakpoint($breakpoint-pad) {
     padding: 15px 0;
   }
@@ -82,12 +81,10 @@
 }
 
 .message__recipients {
-
   span:not(:last-child)::after {
     content: ",";
     padding: 0 5px 0 0;
   }
-
 }
 
 .message__user-studies-ended {

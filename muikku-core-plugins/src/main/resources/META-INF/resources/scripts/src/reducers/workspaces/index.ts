@@ -8,12 +8,18 @@ import {
 import { repairContentNodes } from "~/util/modifiers";
 import { AudioAssessment } from "../../@types/evaluation";
 
+/**
+ * OrganizationCourseTeacherType
+ */
 export interface OrganizationCourseTeacherType {
   firstName: string;
   lastName: string;
   hasImage: boolean;
 }
 
+/**
+ * CreateWorkspaceType
+ */
 export interface CreateWorkspaceType {
   name: string;
   template: number;
@@ -33,6 +39,9 @@ export type WorkspaceAssessementStateType =
   | "fail"
   | "incomplete";
 
+/**
+ * WorkspaceStudentActivityType
+ */
 export interface WorkspaceStudentActivityType {
   assessmentState: {
     date: string;
@@ -64,11 +73,17 @@ export interface WorkspaceStudentActivityType {
   numVisits: number;
 }
 
+/**
+ * WorkspaceForumStatisticsType
+ */
 export interface WorkspaceForumStatisticsType {
   messageCount: number;
   latestMessage: string; //represents a date
 }
 
+/**
+ * WorkspaceStudentAssessmentType
+ */
 export interface WorkspaceStudentAssessmentType {
   assessorEntityId: number;
   evaluated: string;
@@ -84,12 +99,18 @@ export interface WorkspaceStudentAssessmentType {
   workspaceStudentId: string;
 }
 
+/**
+ * WorkspaceStudentAssessmentsType
+ */
 export interface WorkspaceStudentAssessmentsType {
   assessmentState: WorkspaceAssessementStateType;
   assessmentStateDate: string;
   assessments: Array<WorkspaceStudentAssessmentType>;
 }
 
+/**
+ * ActivityLogType
+ */
 export interface ActivityLogType {
   type:
     | "EVALUATION_REQUESTED"
@@ -110,15 +131,24 @@ export interface ActivityLogType {
   contextId?: number;
 }
 
+/**
+ * WorkspaceActivityRecordType
+ */
 export interface WorkspaceActivityRecordType {
   type: string;
   date: string;
 }
 
+/**
+ * WorkspaceActivityStatisticsType
+ */
 export interface WorkspaceActivityStatisticsType {
   records: WorkspaceActivityRecordType[];
 }
 
+/**
+ * WorkspaceJournalType
+ */
 export interface WorkspaceJournalType {
   id: number;
   workspaceEntityId: number;
@@ -132,6 +162,9 @@ export interface WorkspaceJournalType {
 
 export type WorkspaceJournalListType = Array<WorkspaceJournalType>;
 
+/**
+ * WorkspaceJournalsType
+ */
 export interface WorkspaceJournalsType {
   journals: WorkspaceJournalListType;
   hasMore: boolean;
@@ -139,6 +172,9 @@ export interface WorkspaceJournalsType {
   state: WorkspacesStateType;
 }
 
+/**
+ * WorkspaceAssessmentRequestType
+ */
 export interface WorkspaceAssessmentRequestType {
   id: string;
   userIdentifier: string;
@@ -149,6 +185,9 @@ export interface WorkspaceAssessmentRequestType {
   userEntityId: number;
 }
 
+/**
+ * WorkspaceAdditionalInfoType
+ */
 export interface WorkspaceAdditionalInfoType {
   beginDate: string;
   endDate: string;
@@ -178,16 +217,25 @@ export interface WorkspaceAdditionalInfoType {
   };
 }
 
+/**
+ * WorkspaceProducerType
+ */
 export interface WorkspaceProducerType {
   name: string;
   id?: number;
 }
 
+/**
+ * UserSelectType
+ */
 export interface UserSelectType {
   users?: Array<SelectItem>;
   state?: UserSelectLoader;
 }
 
+/**
+ * WorkspaceDetailsType
+ */
 export interface WorkspaceDetailsType {
   beginDate: string;
   endDate: string;
@@ -200,6 +248,9 @@ export interface WorkspaceDetailsType {
 
 export type WorkspaceAccessType = "MEMBERS_ONLY" | "LOGGED_IN" | "ANYONE";
 
+/**
+ * WorkspaceStudentAssessmentStateType
+ */
 export interface WorkspaceStudentAssessmentStateType {
   date: string;
   state: WorkspaceAssessementStateType;
@@ -209,6 +260,9 @@ export interface WorkspaceStudentAssessmentStateType {
 
 export type WorkspaceChatStatusType = "ENABLED" | "DISABLED";
 
+/**
+ * WorkspacePermissionsType
+ */
 export interface WorkspacePermissionsType {
   workspaceEntityId: number;
   userGroupEntityId: number;
@@ -218,12 +272,18 @@ export interface WorkspacePermissionsType {
 
 export type TemplateWorkspaceListType = Array<TemplateWorkspaceType>;
 
+/**
+ * TemplateWorkspaceType
+ */
 export interface TemplateWorkspaceType {
   id: number;
   name: string;
   nameExtension?: string | null;
 }
 
+/**
+ * WorkspaceType
+ */
 export interface WorkspaceType {
   archived: boolean;
   curriculumIdentifiers: Array<string>;
@@ -276,6 +336,9 @@ export interface WorkspaceType {
 
 export type WorkspaceUpdateType = Partial<WorkspaceType>;
 
+/**
+ * WorkspaceMaterialReferenceType
+ */
 export interface WorkspaceMaterialReferenceType {
   workspaceName: string;
   materialName: string;
@@ -289,6 +352,9 @@ export type WorkspaceBaseFilterType =
   | "MY_COURSES"
   | "UNPUBLISHED";
 
+/**
+ * WorkspaceEducationFilterType
+ */
 export interface WorkspaceEducationFilterType {
   identifier: string;
   name: string;
@@ -297,16 +363,25 @@ export interface WorkspaceEducationFilterType {
 export type WorkspaceEducationFilterListType =
   Array<WorkspaceEducationFilterType>;
 
+/**
+ * WorkspaceCurriculumFilterType
+ */
 export interface WorkspaceCurriculumFilterType {
   identifier: string;
   name: string;
 }
 
+/**
+ * WorkspaceOrganizationFilterType
+ */
 export interface WorkspaceOrganizationFilterType {
   identifier: string;
   name: string;
 }
 
+/**
+ *
+ */
 export interface WorkspaceStateFilterType {
   identifier: string;
   name: string;
@@ -319,6 +394,9 @@ export type WorkspaceOrganizationFilterListType =
 export type WorkspaceBaseFilterListType = Array<WorkspaceBaseFilterType>;
 export type WorkspaceStateFilterListType = Array<WorkspaceStateFilterType>;
 
+/**
+ * WorkspacesavailableFiltersType
+ */
 export interface WorkspacesavailableFiltersType {
   educationTypes: WorkspaceEducationFilterListType;
   curriculums: WorkspaceCurriculumFilterListType;
@@ -327,6 +405,9 @@ export interface WorkspacesavailableFiltersType {
   stateFilters?: WorkspaceStateFilterListType;
 }
 
+/**
+ * OrganizationWorkspacesAvailableFiltersType
+ */
 export interface OrganizationWorkspacesAvailableFiltersType {
   educationTypes: WorkspaceEducationFilterListType;
   curriculums: WorkspaceCurriculumFilterListType;
@@ -339,12 +420,18 @@ export type WorkspacesStateType =
   | "ERROR"
   | "READY";
 
+/**
+ * OrganizationWorkspacesActiveFiltersType
+ */
 export interface OrganizationWorkspacesActiveFiltersType {
   educationFilters: Array<string>;
   curriculumFilters: Array<string>;
   query: string;
 }
 
+/**
+ * WorkspacesActiveFiltersType
+ */
 export interface WorkspacesActiveFiltersType {
   educationFilters: Array<string>;
   curriculumFilters: Array<string>;
@@ -355,11 +442,17 @@ export interface WorkspacesActiveFiltersType {
   stateFilters?: Array<string>;
 }
 
+/**
+ * WorkspaceTypeType
+ */
 export interface WorkspaceTypeType {
   identifier: string;
   name: string;
 }
 
+/**
+ * WorkspaceEditModeStateType
+ */
 export interface WorkspaceEditModeStateType {
   available: boolean;
   active: boolean;
@@ -369,6 +462,9 @@ export interface WorkspaceEditModeStateType {
 //section = false && currentNodeValue = null && parentNodeValue = x     (new material)
 //section = true && currentNodeValue = x && parentNodeValue = null      (edit section)
 //section = false && currentNodeValue = x && parentNodeValue = x        (edit material)
+/**
+ * WorkspaceMaterialEditorType
+ */
 export interface WorkspaceMaterialEditorType {
   currentNodeWorkspace: WorkspaceType;
   currentNodeValue?: MaterialContentNodeType;
@@ -397,6 +493,9 @@ export interface WorkspaceMaterialEditorType {
   showUpdateLinkedMaterialsDialogForPublishCount: number;
 }
 
+/**
+ * WorkspacesType
+ */
 export interface WorkspacesType {
   availableWorkspaces: WorkspaceListType;
   availableFilters: WorkspacesavailableFiltersType;
@@ -421,6 +520,9 @@ export type WorkspacesPatchType = Partial<WorkspacesType>;
 
 export type MaterialCorrectAnswersType = "ALWAYS" | "ON_REQUEST" | "NEVER";
 
+/**
+ * MaterialAssignmentType
+ */
 export interface MaterialAssignmentType {
   id: number;
   materialId: number;
@@ -433,12 +535,18 @@ export interface MaterialAssignmentType {
   title: string;
 }
 
+/**
+ * MaterialContentNodeProducerType
+ */
 export interface MaterialContentNodeProducerType {
   id: number;
   name: string;
   materialId: number;
 }
 
+/**
+ * MaterialContentNodeType
+ */
 export interface MaterialContentNodeType {
   title: string;
   license: string;
@@ -469,6 +577,9 @@ export interface MaterialContentNodeType {
   assignment?: MaterialAssignmentType;
 }
 
+/**
+ *
+ */
 export interface MaterialAnswerType {
   embedId: string;
   fieldName: string;
@@ -486,6 +597,9 @@ export type MaterialCompositeRepliesStateType =
   | "FAILED"
   | "INCOMPLETE";
 
+/**
+ * MaterialCompositeRepliesType
+ */
 export interface MaterialCompositeRepliesType {
   answers: Array<MaterialAnswerType>;
   state: MaterialCompositeRepliesStateType;
@@ -504,6 +618,9 @@ export interface MaterialCompositeRepliesType {
   workspaceMaterialReplyId: number;
 }
 
+/**
+ * MaterialEvaluationInfo
+ */
 export interface MaterialEvaluationInfo {
   type: MaterialCompositeRepliesStateType;
   text: string;
@@ -515,6 +632,9 @@ export interface MaterialEvaluationInfo {
 export type MaterialCompositeRepliesListType =
   Array<MaterialCompositeRepliesType>;
 
+/**
+ *
+ */
 export interface MaterialEvaluationType {
   id: number;
   evaluated: string;
@@ -534,6 +654,15 @@ export interface MaterialEvaluationType {
 
 export type MaterialContentNodeListType = Array<MaterialContentNodeType>;
 
+/**
+ * processWorkspaceToHaveNewAssessmentStateAndDate
+ * @param id id
+ * @param assessmentState assessmentState
+ * @param date date
+ * @param assessmentRequestObject assessmentRequestObject
+ * @param deleteAssessmentRequestObject deleteAssessmentRequestObject
+ * @param workspace workspace
+ */
 function processWorkspaceToHaveNewAssessmentStateAndDate(
   id: number,
   assessmentState: WorkspaceAssessementStateType,
@@ -542,7 +671,7 @@ function processWorkspaceToHaveNewAssessmentStateAndDate(
   deleteAssessmentRequestObject: boolean,
   workspace: WorkspaceType
 ) {
-  let replacement =
+  const replacement =
     workspace && workspace.id === id ? { ...workspace } : workspace;
   if (replacement && replacement.id === id) {
     if (replacement.studentActivity) {
@@ -564,7 +693,7 @@ function processWorkspaceToHaveNewAssessmentStateAndDate(
       };
     }
     if (replacement.assessmentRequests) {
-      let index = replacement.assessmentRequests.findIndex(
+      const index = replacement.assessmentRequests.findIndex(
         (r) => r.id === assessmentRequestObject.id
       );
       replacement.assessmentRequests = [...replacement.assessmentRequests];
@@ -582,6 +711,11 @@ function processWorkspaceToHaveNewAssessmentStateAndDate(
   return replacement;
 }
 
+/**
+ * workspaces
+ * @param state state
+ * @param action action
+ */
 export default function workspaces(
   state: WorkspacesType = {
     availableWorkspaces: [],
@@ -797,7 +931,12 @@ export default function workspaces(
         ...action.payload.update,
       };
     }
-    let mapMaterial = (m: MaterialContentNodeType) => {
+
+    /**
+     * mapMaterial
+     * @param m m
+     */
+    const mapMaterial = (m: MaterialContentNodeType) => {
       if (action.payload.isDraft) {
         return m;
       }
@@ -881,7 +1020,11 @@ export default function workspaces(
       materialEditor: newEditor,
     };
   } else if (action.type === "DELETE_MATERIAL_CONTENT_NODE") {
-    let filterMaterial = (m: MaterialContentNodeType) => {
+    /**
+     * filterMaterial
+     * @param m m
+     */
+    const filterMaterial = (m: MaterialContentNodeType) => {
       // Sometimes I get id sometimes workspaceMaterialId, super inconsistent
       if (
         typeof m.id !== "undefined" &&
@@ -899,7 +1042,13 @@ export default function workspaces(
 
       return true;
     };
-    let mapMaterial = (
+    /**
+     * mapMaterial
+     * @param m m
+     * @param index index
+     * @param arr arr
+     */
+    const mapMaterial = (
       m: MaterialContentNodeType,
       index: number,
       arr: Array<MaterialContentNodeType>
@@ -960,10 +1109,10 @@ export default function workspaces(
     };
   } else if (action.type === "INSERT_MATERIAL_CONTENT_NODE") {
     const apiPath = action.payload.apiPath;
-    let insertedContentNode: MaterialContentNodeType =
+    const insertedContentNode: MaterialContentNodeType =
       action.payload.nodeContent;
 
-    let targetArray =
+    const targetArray =
       apiPath === "help" ? [...state.currentHelp] : [...state.currentMaterials];
 
     /**
@@ -1045,6 +1194,11 @@ export default function workspaces(
   return state;
 }
 
+/**
+ * organizationWorkspaces
+ * @param state state
+ * @param action action
+ */
 export function organizationWorkspaces(
   state: WorkspacesType = {
     availableWorkspaces: [],
@@ -1110,7 +1264,7 @@ export function organizationWorkspaces(
       templateWorkspaces: action.payload,
     });
   } else if (action.type === "UPDATE_ORGANIZATION_SELECTED_WORKSPACE") {
-    let newCurrent = state.currentWorkspace;
+    const newCurrent = state.currentWorkspace;
     if (newCurrent && newCurrent.id === action.payload.id) {
       return Object.assign({}, state, {
         currentWorkspace: { ...newCurrent, ...action.payload },

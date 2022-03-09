@@ -1,6 +1,6 @@
 import Dialog from "~/components/general/dialog";
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
@@ -8,6 +8,9 @@ import "~/sass/elements/wizard.scss";
 import { StateType } from "~/reducers";
 import MatriculationExaminationWizard from "../body/matriculationExaminationWizard";
 
+/**
+ * MatriculationExaminationWizardDialogProps
+ */
 interface MatriculationExaminationWizardDialogProps {
   i18n: i18nType;
   children?: React.ReactElement<any>;
@@ -16,17 +19,30 @@ interface MatriculationExaminationWizardDialogProps {
   updateEnrollemnts: (examId: number) => void;
 }
 
+/**
+ * MatriculationExaminationWizardDialogState
+ */
 interface MatriculationExaminationWizardDialogState {
   scale: number;
   angle: number;
 }
 
+/**
+ * MatriculationExaminationWizardDialog
+ */
 class MatriculationExaminationWizardDialog extends React.Component<
   MatriculationExaminationWizardDialogProps,
   MatriculationExaminationWizardDialogState
 > {
+  /**
+   * render
+   */
   render() {
-    let content = (closeDialog: () => any) => (
+    /**
+     * content
+     * @param closeDialog closeDialog
+     */
+    const content = (closeDialog: () => any) => (
       <div>
         <MatriculationExaminationWizard
           examId={this.props.examId}
@@ -36,9 +52,6 @@ class MatriculationExaminationWizardDialog extends React.Component<
         />
       </div>
     );
-    let footer = (closeDialog: () => any) => {
-      return <div className="dialog__button-set"></div>;
-    };
     return (
       <Dialog
         disableScroll={true}
@@ -52,13 +65,20 @@ class MatriculationExaminationWizardDialog extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
   };
 }
 
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+/**
+ * mapDispatchToProps
+ */
+function mapDispatchToProps() {
   return {};
 }
 

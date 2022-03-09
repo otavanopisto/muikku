@@ -1,5 +1,4 @@
 import * as React from "react";
-import Portal from "~/components/general/portal";
 import "~/sass/elements/material-editor.scss";
 import { bindActionCreators } from "redux";
 import {
@@ -14,13 +13,13 @@ import {
 } from "~/actions/workspaces";
 import { connect, Dispatch } from "react-redux";
 import { StateType } from "~/reducers";
-import i18n, { i18nType } from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18n";
 import {
   WorkspaceMaterialEditorType,
   WorkspaceType,
   MaterialContentNodeType,
 } from "~/reducers/workspaces";
-import Button, { ButtonPill } from "~/components/general/button";
+import { ButtonPill } from "~/components/general/button";
 import CKEditor from "~/components/general/ckeditor";
 import { StatusType } from "~/reducers/base/status";
 import { LocaleListType } from "~/reducers/base/locales";
@@ -32,14 +31,16 @@ import ConfirmRemoveAttachment from "./confirm-remove-attachment";
 import ConfirmPublishPageWithLinkedMaterialDialog from "./confirm-publish-page-with-linked-material-dialog";
 import ConfirmPublishRemovePageWithLinkedAnswersDialog from "./confirm-remove-page-with-linked-answers-dialog"
 import equals = require("deep-equal");
-import Tabs, { TabType } from "~/components/general/tabs";
-import { createAllTabs } from "~/helper-functions/tabs"
+import Tabs, { Tab } from "~/components/general/tabs";
+import { createAllTabs } from "~/helper-functions/tabs";
 import AddProducer from "~/components/general/add-producer";
 import { LicenseSelector } from "~/components/general/license-selector";
 import FileUploader from "~/components/general/file-uploader";
-import Link from "~/components/general/link";
 import { PageLocation, UploadingValue } from "~/@types/shared";
 
+/**
+ * MaterialEditorProps
+ */
 interface MaterialEditorProps {
   setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType;
   i18n: i18nType;
@@ -52,6 +53,9 @@ interface MaterialEditorProps {
   requestWorkspaceMaterialContentNodeAttachments: RequestWorkspaceMaterialContentNodeAttachmentsTriggerType;
 }
 
+/**
+ * MaterialEditorState
+ */
 interface MaterialEditorState {
   tab: string;
   producerEntryName: string;
@@ -59,7 +63,16 @@ interface MaterialEditorState {
   uploadingValues: UploadingValue[];
 }
 
+/**
+ * CKEditorConfig
+ * @param locale locale
+ * @param contextPath contextPath
+ * @param workspace workspace
+ * @param materialNode materialNode
+ * @param disablePlugins disablePlugins
+ */
 const CKEditorConfig = (
+  /* eslint-disable camelcase */
   locale: string,
   contextPath: string,
   workspace: WorkspaceType,
@@ -68,10 +81,6 @@ const CKEditorConfig = (
 ) => ({
   uploadUrl: `/materialAttachmentUploadServlet/workspace/${workspace.urlName}/materials/${materialNode.path}`,
   linkShowTargetTab: true,
-  allowedContent: true, // disable content filtering to preserve all formatting of imported documents; fix for #263
-  entities: false,
-  entities_latin: false,
-  entities_greek: false,
   language: locale,
   language_list: [
     "fi:Suomi",
@@ -90,7 +99,6 @@ const CKEditorConfig = (
     "workspace-material-styles:" +
     contextPath +
     "/scripts/ckplugins/styles/workspace-material-styles.js",
-  format_tags: "p;h3;h4",
   baseHref: `/workspace/${workspace.urlName}/materials/${materialNode.path}/`,
   mathJaxLib:
     "//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_SVG",
@@ -114,7 +122,6 @@ const CKEditorConfig = (
       name: "editing",
       items: [
         "Find",
-        "Replace",
         "-",
         "SelectAll",
         "-",
@@ -192,21 +199,25 @@ const CKEditorConfig = (
     { name: "tools", items: ["Maximize", "ShowBlocks", "-", "About"] },
   ],
   resize_enabled: false,
-  removePlugins: "image,exportpdf",
+  removePlugins: "image,exportpdf,wsc",
   extraPlugins: disablePlugins
     ? "divarea,language,oembed,audio,image2,muikku-embedded,muikku-image-details,muikku-image-target,muikku-word-definition,muikku-audio-defaults,muikku-image-target,widget,lineutils,filetools,uploadwidget,uploadimage,muikku-mathjax"
     : "divarea,language,oembed,audio,image2,muikku-embedded,muikku-image-details,muikku-image-target,muikku-word-definition,muikku-audio-defaults,muikku-image-target,widget,lineutils,filetools,uploadwidget,uploadimage,muikku-fields,muikku-textfield,muikku-memofield,muikku-filefield,muikku-audiofield,muikku-selection,muikku-connectfield,muikku-organizerfield,muikku-sorterfield,muikku-mathexercisefield,muikku-mathjax",
 });
+/* eslint-enable camelcase */
 
 // First we need to modify the material content nodes end point to be able to receive hidden
 // nodes, we need those to be able to modify here
+/**
+ * MaterialEditor
+ */
 class MaterialEditor extends React.Component<
   MaterialEditorProps,
   MaterialEditorState
 > {
   /**
    * constructor
-   * @param props
+   * @param props props
    */
   constructor(props: MaterialEditorProps) {
     super(props);
@@ -240,7 +251,7 @@ class MaterialEditor extends React.Component<
    * componentDidMount
    */
   componentDidMount() {
-    let offset: number = 40;
+    const offset = 40;
     this.updateHeight(offset);
     window.addEventListener("resize", () => this.updateHeight(offset));
   }
@@ -254,10 +265,10 @@ class MaterialEditor extends React.Component<
 
   /**
    * updateHeight
-   * @param offset
+   * @param offset offset
    */
   updateHeight(offset?: number) {
-    let heightOffset: number = offset ? offset : 0;
+    const heightOffset: number = offset ? offset : 0;
     this.setState({ height: window.innerHeight - heightOffset });
   }
 
@@ -324,8 +335,8 @@ class MaterialEditor extends React.Component<
           ? "EXERCISE"
           : this.props.editorState.currentDraftNodeValue.assignmentType ===
             "EXERCISE"
-            ? "EVALUATED"
-            : null,
+          ? "EVALUATED"
+          : null,
       },
       isDraft: true,
     });
@@ -341,13 +352,13 @@ class MaterialEditor extends React.Component<
       update: {
         correctAnswers:
           !this.props.editorState.currentDraftNodeValue.correctAnswers ||
-            this.props.editorState.currentDraftNodeValue.correctAnswers ===
+          this.props.editorState.currentDraftNodeValue.correctAnswers ===
             "ALWAYS"
             ? "ON_REQUEST"
             : this.props.editorState.currentDraftNodeValue.correctAnswers ===
               "ON_REQUEST"
-              ? "NEVER"
-              : "ALWAYS",
+            ? "NEVER"
+            : "ALWAYS",
       },
       isDraft: true,
     });
@@ -355,7 +366,7 @@ class MaterialEditor extends React.Component<
 
   /**
    * updateTitle
-   * @param e
+   * @param e e
    */
   updateTitle(e: React.ChangeEvent<HTMLInputElement>) {
     this.props.updateWorkspaceMaterialContentNode({
@@ -370,7 +381,7 @@ class MaterialEditor extends React.Component<
 
   /**
    * updateContent
-   * @param content
+   * @param content content
    */
   updateContent(content: string) {
     // TODO content update plug-in is all
@@ -427,7 +438,7 @@ class MaterialEditor extends React.Component<
 
   /**
    * removeProducer
-   * @param index
+   * @param index index
    */
   removeProducer(index: number) {
     const newProducers = [
@@ -447,7 +458,7 @@ class MaterialEditor extends React.Component<
 
   /**
    * addProducer
-   * @param name
+   * @param name name
    */
   addProducer(name: string) {
     const newProducers = [
@@ -475,7 +486,7 @@ class MaterialEditor extends React.Component<
 
   /**
    * updateLicense
-   * @param newLicense
+   * @param newLicense newLicense
    */
   updateLicense(newLicense: string) {
     this.props.updateWorkspaceMaterialContentNode({
@@ -491,7 +502,7 @@ class MaterialEditor extends React.Component<
   /**
    * Builds locale string depending what page component is used
    * and if page is already view restricted
-   * @param isRestricted
+   * @param isRestricted isRestricted
    * @returns localeString
    */
   buildRestrictViewLocale = (isRestricted: boolean): string => {
@@ -500,20 +511,20 @@ class MaterialEditor extends React.Component<
       case "Help":
         localeString = isRestricted
           ? this.props.i18n.text.get(
-            "plugin.workspace.helpManagement.disableViewRestrictionPageTooltip"
-          )
+              "plugin.workspace.helpManagement.disableViewRestrictionPageTooltip"
+            )
           : this.props.i18n.text.get(
-            "plugin.workspace.helpManagement.enableViewRestrictionPageTooltip"
-          );
+              "plugin.workspace.helpManagement.enableViewRestrictionPageTooltip"
+            );
         break;
       case "Materials":
         localeString = isRestricted
           ? this.props.i18n.text.get(
-            "plugin.workspace.materialsManagement.disableViewRestrictionPageTooltip"
-          )
+              "plugin.workspace.materialsManagement.disableViewRestrictionPageTooltip"
+            )
           : this.props.i18n.text.get(
-            "plugin.workspace.materialsManagement.enableViewRestrictionPageTooltip"
-          );
+              "plugin.workspace.materialsManagement.enableViewRestrictionPageTooltip"
+            );
         break;
       default:
         localeString = "";
@@ -525,7 +536,7 @@ class MaterialEditor extends React.Component<
 
   /**
    * updateUploadingValues
-   * @param updatedValues
+   * @param updatedValues updatedValues
    */
   updateUploadingValues = (
     updatedValues: {
@@ -542,15 +553,13 @@ class MaterialEditor extends React.Component<
 
   /**
    * handleUploadingTextProcesser
-   * @param percent
+   * @param percent percent
    * @returns progress string
    */
-  handleUploadingTextProcesser = (percent: number) => {
-    return `
+  handleUploadingTextProcesser = (percent: number) => `
       ${this.props.i18n.text.get(
-      "plugin.guider.user.details.files.uploading"
-    )} ${percent}%`;
-  };
+        "plugin.guider.user.details.files.uploading"
+      )} ${percent}%`;
 
   /**
    * onClickClose
@@ -561,7 +570,7 @@ class MaterialEditor extends React.Component<
 
   /**
    * onTabChange
-   * @param tab
+   * @param tab tab
    */
   onTabChange(tab: string) {
     this.setState({ tab });
@@ -569,7 +578,7 @@ class MaterialEditor extends React.Component<
 
   /**
    * onFilesUpload
-   * @param e
+   * @param e e
    */
   onFilesUpload(e: React.ChangeEvent<HTMLInputElement>) {
     this.props.createWorkspaceMaterialAttachment(
@@ -578,20 +587,24 @@ class MaterialEditor extends React.Component<
         material: this.props.editorState.currentNodeValue,
         files: Array.from(e.target.files),
         uploadingValues: [...this.state.uploadingValues].concat(
-          Array.from(e.target.files).map((file) => {
-            return {
-              name: file.name,
-              contentType: file.type,
-              progress: 0,
-              file,
-            };
-          })
+          Array.from(e.target.files).map((file) => ({
+            name: file.name,
+            contentType: file.type,
+            progress: 0,
+            file,
+          }))
         ),
+        /**
+         * success
+         */
         success: () => {
           this.setState({
             uploadingValues: [],
           });
         },
+        /**
+         * fail
+         */
         fail: () => {
           this.setState({
             uploadingValues: [],
@@ -604,7 +617,6 @@ class MaterialEditor extends React.Component<
 
   /**
    * render
-   * @returns
    */
   render() {
     if (
@@ -613,8 +625,9 @@ class MaterialEditor extends React.Component<
     ) {
       return (
         <div
-          className={`material-editor ${this.props.editorState.opened ? "material-editor--visible" : ""
-            }`}
+          className={`material-editor ${
+            this.props.editorState.opened ? "material-editor--visible" : ""
+          }`}
         />
       );
     }
@@ -640,7 +653,7 @@ class MaterialEditor extends React.Component<
       "viewRestrict",
     ];
     let canPublish = false;
-    for (let point of comparerPoints) {
+    for (const point of comparerPoints) {
       if (
         !equals(
           (this.props.editorState.currentNodeValue as any)[point],
@@ -690,12 +703,12 @@ class MaterialEditor extends React.Component<
 
     const exerciseRevealType =
       !this.props.editorState.currentDraftNodeValue.correctAnswers ||
-        this.props.editorState.currentDraftNodeValue.correctAnswers === "ALWAYS"
+      this.props.editorState.currentDraftNodeValue.correctAnswers === "ALWAYS"
         ? "always-show"
         : this.props.editorState.currentDraftNodeValue.correctAnswers ===
           "ON_REQUEST"
-          ? "on-request"
-          : "never-show";
+        ? "on-request"
+        : "never-show";
 
     const correctAnswersModifiers = [
       "material-editor-change-answer-reveal-type",
@@ -704,39 +717,39 @@ class MaterialEditor extends React.Component<
     ];
     const correctAnswersTooltips =
       !this.props.editorState.currentDraftNodeValue.correctAnswers ||
-        this.props.editorState.currentDraftNodeValue.correctAnswers === "ALWAYS"
+      this.props.editorState.currentDraftNodeValue.correctAnswers === "ALWAYS"
         ? this.props.i18n.text.get(
-          "plugin.workspace.materialsManagement.showAlwaysCorrectAnswersPageTooltip"
-        )
+            "plugin.workspace.materialsManagement.showAlwaysCorrectAnswersPageTooltip"
+          )
         : this.props.editorState.currentDraftNodeValue.correctAnswers ===
           "ON_REQUEST"
-          ? this.props.i18n.text.get(
+        ? this.props.i18n.text.get(
             "plugin.workspace.materialsManagement.showOnRequestCorrectAnswersPageTooltip"
           )
-          : this.props.i18n.text.get(
+        : this.props.i18n.text.get(
             "plugin.workspace.materialsManagement.showNeverCorrectAnswersPageTooltip"
           );
 
     const canRestrictViewLocale =
       this.buildRestrictViewLocale(isViewRestricted);
 
-    let editorButtonSet = (
+    const editorButtonSet = (
       <div className="material-editor__buttonset">
         <div className="material-editor__buttonset-primary">
           {this.props.editorState.canHide &&
-            (!this.props.editorState.parentNodeValue ||
-              !this.props.editorState.parentNodeValue.hidden) ? (
+          (!this.props.editorState.parentNodeValue ||
+            !this.props.editorState.parentNodeValue.hidden) ? (
             <Dropdown
               openByHover
               modifier="material-management-tooltip"
               content={
                 isHidden
                   ? this.props.i18n.text.get(
-                    "plugin.workspace.materialsManagement.showPageTooltip"
-                  )
+                      "plugin.workspace.materialsManagement.showPageTooltip"
+                    )
                   : this.props.i18n.text.get(
-                    "plugin.workspace.materialsManagement.hidePageTooltip"
-                  )
+                      "plugin.workspace.materialsManagement.hidePageTooltip"
+                    )
               }
             >
               <ButtonPill
@@ -780,7 +793,7 @@ class MaterialEditor extends React.Component<
           ) : null}
 
           {this.props.editorState.canChangeExerciseType &&
-            this.props.editorState.currentDraftNodeValue.assignmentType ===
+          this.props.editorState.currentDraftNodeValue.assignmentType ===
             "EXERCISE" ? (
             <Dropdown
               openByHover
@@ -853,13 +866,18 @@ class MaterialEditor extends React.Component<
       </div>
     );
 
-    const closeDialog = <ButtonPill
-      buttonModifiers={["material-page-close-editor", "material-page-close-mobile-editor"]}
-      onClick={this.onClickClose}
-      icon="arrow-left"
-    />;
+    const closeDialog = (
+      <ButtonPill
+        buttonModifiers={[
+          "material-page-close-editor",
+          "material-page-close-mobile-editor",
+        ]}
+        onClick={this.onClickClose}
+        icon="arrow-left"
+      />
+    );
 
-    const materialEditorTabs: TabType[] = [
+    const materialEditorTabs: Tab[] = [
       {
         id: "content",
         type: "material-editor",
@@ -867,6 +885,9 @@ class MaterialEditor extends React.Component<
         name: this.props.i18n.text.get(
           "plugin.workspace.materialsManagement.editorView.tabs.label.content"
         ),
+        /**
+         * component
+         */
         component: () => (
           <div className="material-editor__content-wrapper">
             {editorButtonSet}
@@ -881,8 +902,8 @@ class MaterialEditor extends React.Component<
               </div>
             ) : null}
             {!this.props.editorState.section &&
-              this.props.editorState.canEditContent &&
-              this.props.editorState.opened ? (
+            this.props.editorState.canEditContent &&
+            this.props.editorState.opened ? (
               <div
                 id="materialEditorContainer"
                 className="material-editor__editor-container"
@@ -919,6 +940,9 @@ class MaterialEditor extends React.Component<
         name: this.props.i18n.text.get(
           "plugin.workspace.materialsManagement.editorView.tabs.label.metadata"
         ),
+        /**
+         * component
+         */
         component: () => (
           <div className="material-editor__content-wrapper">
             {editorButtonSet}
@@ -980,6 +1004,9 @@ class MaterialEditor extends React.Component<
         name: this.props.i18n.text.get(
           "plugin.workspace.materialsManagement.editorView.tabs.label.attachments"
         ),
+        /**
+         * component
+         */
         component: () => (
           <div className="material-editor__content-wrapper">
             {editorButtonSet}
@@ -1024,8 +1051,9 @@ class MaterialEditor extends React.Component<
 
     return (
       <div
-        className={`material-editor ${this.props.editorState.opened ? "material-editor--visible" : ""
-          }`}
+        className={`material-editor ${
+          this.props.editorState.opened ? "material-editor--visible" : ""
+        }`}
       >
         <Tabs
           allTabs={createAllTabs(materialEditorTabs)}
@@ -1051,7 +1079,7 @@ class MaterialEditor extends React.Component<
 
 /**
  * mapStateToProps
- * @param state
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -1064,7 +1092,7 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(

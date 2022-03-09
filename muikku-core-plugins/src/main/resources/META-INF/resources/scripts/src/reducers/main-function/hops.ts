@@ -2,6 +2,9 @@ import { ActionType } from "actions";
 
 export type HOPSStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
 
+/**
+ * HOPSDataType
+ */
 export interface HOPSDataType {
   goalSecondarySchoolDegree: "yes" | "no" | "maybe";
   goalMatriculationExam: "yes" | "no" | "maybe";
@@ -25,16 +28,27 @@ export interface HOPSDataType {
   optedIn: boolean;
 }
 
+/**
+ * HOPSEligibilityType
+ */
 export interface HOPSEligibilityType {
   upperSecondarySchoolCurriculum: boolean;
 }
 
+/**
+ * HOPSType
+ */
 export interface HOPSType {
   eligibility: HOPSEligibilityType;
   status: HOPSStatusType;
   value: HOPSDataType;
 }
 
+/**
+ * hops
+ * @param state state
+ * @param action action
+ */
 export default function hops(
   state: HOPSType = {
     status: "WAIT",

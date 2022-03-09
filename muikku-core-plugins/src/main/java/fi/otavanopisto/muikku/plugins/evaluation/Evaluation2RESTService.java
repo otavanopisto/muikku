@@ -1182,29 +1182,36 @@ public class Evaluation2RESTService {
       return Response.status(Status.FORBIDDEN).build();
     }
     
+    // #6006: Restore endpoint functionality to pre-state of botched fix #5940
+    
     // Entities and identifiers
     
     WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityById(workspaceUserEntityId);
     WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
+    
+    // List all assessment requests by student X to course Y
     
     List<WorkspaceAssessmentRequest> requests = gradingController.listWorkspaceAssessmentRequests(
         workspaceEntity.getDataSource().getIdentifier(),
         workspaceEntity.getIdentifier(),
         workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier());
 
+    // Mark each assessment request archived
+    // #5940 hard deleted only latest, and even failed to figure out the correct one
+    
     if (CollectionUtils.isNotEmpty(requests)) {
       for (WorkspaceAssessmentRequest request : requests) {
         gradingController.updateWorkspaceAssessmentRequest(
-        request.getSchoolDataSource(),
-        request.getIdentifier(),
-        request.getWorkspaceUserIdentifier(),
-        request.getWorkspaceUserSchoolDataSource(),
-        workspaceEntity.getIdentifier(),
-        workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier(),
-        request.getRequestText(),
-        request.getDate(),
-        Boolean.TRUE, // archived
-        request.getHandled());
+          request.getSchoolDataSource(),
+          request.getIdentifier(),
+          request.getWorkspaceUserIdentifier(),
+          request.getWorkspaceUserSchoolDataSource(),
+          workspaceEntity.getIdentifier(),
+          workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier(),
+          request.getRequestText(),
+          request.getDate(),
+          Boolean.TRUE, // archived
+          request.getHandled());
       }
       return Response.noContent().build();
     }

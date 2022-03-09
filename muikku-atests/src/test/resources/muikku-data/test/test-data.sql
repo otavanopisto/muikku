@@ -43,3 +43,21 @@ insert into PluginSetting (value, key_id) select '/tmp/', id from PluginSettingK
 insert into OrganizationEntity (id, identifier, name, archived, dataSource_id,workspaceVisibility) values (1, '1', 'Default', false, 2, 'PUBLIC');
 insert into PluginSettingKey (name, plugin) select 'environmentForumOrganizations', 'forum' from PluginSettingKey where plugin = 'forum' and name = 'environmentForumOrganizations' having count(*) = 0;
 insert into PluginSetting (value, key_id) select 'PYRAMUS-1', id from PluginSettingKey where plugin = 'forum' and name = 'environmentForumOrganizations';
+
+insert into PluginSettingKey(plugin, name) select 'ceepos', 'server' from PluginSettingKey where plugin = 'ceepos' and name = 'server' having count(*) = 0;
+insert into PluginSettingKey(plugin, name) select 'ceepos', 'source' from PluginSettingKey where plugin = 'ceepos' and name = 'source' having count(*) = 0;
+insert into PluginSettingKey(plugin, name) select 'ceepos', 'key' from PluginSettingKey where plugin = 'ceepos' and name = 'key' having count(*) = 0;
+insert into PluginSettingKey(plugin, name) select 'ceepos', '6MonthCode' from PluginSettingKey where plugin = 'ceepos' and name = '6MonthCode' having count(*) = 0;
+insert into PluginSettingKey(plugin, name) select 'ceepos', '12MonthCode' from PluginSettingKey where plugin = 'ceepos' and name = '12MonthCode' having count(*) = 0;
+insert into PluginSettingKey(plugin, name) select 'ceepos', 'returnAddress' from PluginSettingKey where plugin = 'ceepos' and name = 'returnAddress' having count(*) = 0;
+insert into PluginSettingKey(plugin, name) select 'ceepos', 'notificationAddress' from PluginSettingKey where plugin = 'ceepos' and name = 'notificationAddress' having count(*) = 0;
+insert into CeeposProduct (code, description, price, type) values ('demo_004', 'Nettilukion yksityisopiskelijan opiskelumaksu 6 kk', 10000, 'STUDYTIME');
+insert into CeeposProduct (code, description, price, type) values ('demo_005', 'Nettilukion yksityisopiskelijan opiskelumaksu 12 kk', 15000, 'STUDYTIME');
+
+insert into PluginSetting (value, key_id) select 'demo_005', id from PluginSettingKey where plugin = 'ceepos' and name = '12MonthCode';
+insert into PluginSetting (value, key_id) select 'demo_004', id from PluginSettingKey where plugin = 'ceepos' and name = '6MonthCode';
+insert into PluginSetting (value, key_id) select 'xxxxxx', id from PluginSettingKey where plugin = 'ceepos' and name = 'key';
+insert into PluginSetting (value, key_id) select 'http://dev.muikku.fi/rest/ceepos/done', id from PluginSettingKey where plugin = 'ceepos' and name = 'returnAddress';
+insert into PluginSetting (value, key_id) select 'http://dev.muikku.fi/rest/ceepos/paymentConfirmation', id from PluginSettingKey where plugin = 'ceepos' and name = 'notificationAddress';
+insert into PluginSetting (value, key_id) select 'http://dev.muikku.fi:8089/ceeposrequestpayment', id from PluginSettingKey where plugin = 'ceepos' and name = 'server';
+insert into PluginSetting (value, key_id) select 'mikkeli_test', id from PluginSettingKey where plugin = 'ceepos' and name = 'source';

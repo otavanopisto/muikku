@@ -6,6 +6,7 @@
 // Ordered containers
 .ordered-container {
   @include text;
+
   display: flex;
   flex-flow: row wrap;
   min-height: 25px;
@@ -33,7 +34,6 @@
 }
 
 .ordered-container--frontpage-studying {
-
   .ordered-container__item {
     margin-bottom: calc(2 * #{$ordered-container-item-gutter});
   }

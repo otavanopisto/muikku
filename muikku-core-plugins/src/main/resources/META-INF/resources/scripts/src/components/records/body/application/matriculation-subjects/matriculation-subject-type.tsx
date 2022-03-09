@@ -3,6 +3,6 @@
  *
  */
 export default interface MatriculationSubjectType {
-  code: string,
-  subjectCode: string
+  code: string;
+  subjectCode: string;
 }

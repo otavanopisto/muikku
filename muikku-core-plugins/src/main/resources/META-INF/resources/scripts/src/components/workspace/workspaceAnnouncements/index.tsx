@@ -1,31 +1,59 @@
-import WorkspaceNavbar from '~/components/base/workspace/navbar';
-import ScreenContainer from '~/components/general/screen-container';
+/* eslint-disable react/no-string-refs */
 
-import * as React from 'react';
-import Application from '~/components/announcements/body/application';
-import Aside from '~/components/announcements/body/aside';
+/**
+ * Depcrecated refs should be refactored
+ */
 
+import WorkspaceNavbar from "~/components/base/workspace/navbar";
+import * as React from "react";
+import Application from "~/components/announcements/body/application";
+import Aside from "~/components/announcements/body/aside";
+
+/**
+ * WorkspaceAnnouncementsBodyProps
+ */
 interface WorkspaceAnnouncementsBodyProps {
-  workspaceUrl: string
+  workspaceUrl: string;
 }
 
-interface WorkspaceAnnouncementsBodyState {
-}
-
-export default class WorkspaceAnnouncementsBody extends React.Component<WorkspaceAnnouncementsBodyProps, WorkspaceAnnouncementsBodyState> {
-  constructor(props: WorkspaceAnnouncementsBodyProps){
+/**
+ * WorkspaceAnnouncementsBody
+ */
+export default class WorkspaceAnnouncementsBody extends React.Component<
+  WorkspaceAnnouncementsBodyProps,
+  Record<string, unknown>
+> {
+  /**
+   * constructor
+   * @param props props
+   */
+  constructor(props: WorkspaceAnnouncementsBodyProps) {
     super(props);
 
     this.onOpenNavigation = this.onOpenNavigation.bind(this);
   }
-  onOpenNavigation(){
+
+  /**
+   * onOpenNavigation
+   */
+  onOpenNavigation() {
     (this.refs.content as any).getWrappedInstance().refresh();
   }
-  render(){
-    let aside = <Aside />;
-    return (<div>
-      <WorkspaceNavbar navigation={aside} activeTrail="workspace-announcements" workspaceUrl={this.props.workspaceUrl}/>
-      <Application aside={aside}/>
-    </div>);
+
+  /**
+   * render
+   */
+  render() {
+    const aside = <Aside />;
+    return (
+      <div>
+        <WorkspaceNavbar
+          navigation={aside}
+          activeTrail="workspace-announcements"
+          workspaceUrl={this.props.workspaceUrl}
+        />
+        <Application aside={aside} />
+      </div>
+    );
   }
 }

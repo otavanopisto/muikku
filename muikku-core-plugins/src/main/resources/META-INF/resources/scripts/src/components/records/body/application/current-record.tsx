@@ -1,7 +1,5 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
-import { bindActionCreators } from "redux";
-import Link from "~/components/general/link";
+import { connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
 import "~/sass/elements/link.scss";
@@ -22,22 +20,38 @@ import ApplicationList, {
 } from "~/components/general/application-list";
 import { StatusType } from "~/reducers/base/status";
 
+/**
+ * CurrentRecordProps
+ */
 interface CurrentRecordProps {
   i18n: i18nType;
   records: RecordsType;
   status: StatusType;
 }
 
+/**
+ * CurrentRecordState
+ */
 interface CurrentRecordState {}
 
+/**
+ * CurrentRecord
+ */
 class CurrentRecord extends React.Component<
   CurrentRecordProps,
   CurrentRecordState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: CurrentRecordProps) {
     super(props);
   }
 
+  /**
+   * render
+   */
   render() {
     if (
       this.props.records.location !== "records" ||
@@ -82,7 +96,7 @@ class CurrentRecord extends React.Component<
       }
     }
 
-    let literalAssessment =
+    const literalAssessment =
       this.props.records.current.workspace.studentAssessmentState &&
       this.props.records.current.workspace.studentAssessmentState.text
         ? this.props.records.current.workspace.studentAssessmentState.text
@@ -239,38 +253,36 @@ class CurrentRecord extends React.Component<
             <div className="application-sub-panel__body application-sub-panel__body--studies-journal-entries">
               <div className="application-list">
                 <div className="application-list_item-wrapper">
-                  {this.props.records.current.journals.map((journal) => {
-                    return (
-                      <ApplicationListItem
-                        className="journal journal--studies"
-                        key={journal.id}
-                      >
-                        <ApplicationListItemHeader className="application-list__item-header--journal-entry">
-                          <div className="application-list__item-header-main application-list__item-header-main--journal-entry">
-                            <span className="application-list__item-header-main-content application-list__item-header-main-content--journal-entry-title">
-                              {journal.title}
-                            </span>
-                          </div>
-                          <div className="application-list__item-header-aside">
-                            <span>
-                              {this.props.i18n.time.format(
-                                journal.created,
-                                "L LT"
-                              )}
-                            </span>
-                          </div>
-                        </ApplicationListItemHeader>
-                        <ApplicationListItemBody className="application-list__item-body">
-                          <article
-                            className="application-list__item-content-body application-list__item-content-body--journal-entry rich-text"
-                            dangerouslySetInnerHTML={{
-                              __html: journal.content,
-                            }}
-                          ></article>
-                        </ApplicationListItemBody>
-                      </ApplicationListItem>
-                    );
-                  })}
+                  {this.props.records.current.journals.map((journal) => (
+                    <ApplicationListItem
+                      className="journal journal--studies"
+                      key={journal.id}
+                    >
+                      <ApplicationListItemHeader className="application-list__item-header--journal-entry">
+                        <div className="application-list__item-header-main application-list__item-header-main--journal-entry">
+                          <span className="application-list__item-header-main-content application-list__item-header-main-content--journal-entry-title">
+                            {journal.title}
+                          </span>
+                        </div>
+                        <div className="application-list__item-header-aside">
+                          <span>
+                            {this.props.i18n.time.format(
+                              journal.created,
+                              "L LT"
+                            )}
+                          </span>
+                        </div>
+                      </ApplicationListItemHeader>
+                      <ApplicationListItemBody className="application-list__item-body">
+                        <article
+                          className="application-list__item-content-body application-list__item-content-body--journal-entry rich-text"
+                          dangerouslySetInnerHTML={{
+                            __html: journal.content,
+                          }}
+                        ></article>
+                      </ApplicationListItemBody>
+                    </ApplicationListItem>
+                  ))}
                 </div>
               </div>
             </div>
@@ -281,6 +293,10 @@ class CurrentRecord extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -289,7 +305,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+/**
+ * mapDispatchToProps
+ */
+function mapDispatchToProps() {
   return {};
 }
 

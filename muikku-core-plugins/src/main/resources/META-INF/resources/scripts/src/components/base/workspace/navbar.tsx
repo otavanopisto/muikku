@@ -2,13 +2,11 @@ import Navbar from "~/components/general/navbar";
 import Link from "~/components/general/link";
 import LoginButton from "../login-button";
 import ForgotPasswordDialog from "../forgot-password-dialog";
-
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
 import { StateType } from "~/reducers";
-
 import "~/sass/elements/link.scss";
 import "~/sass/elements/indicator.scss";
 import Dropdown from "~/components/general/dropdown";
@@ -17,10 +15,6 @@ import {
   WorkspaceAssessementStateType,
   WorkspaceEditModeStateType,
 } from "~/reducers/workspaces";
-import Navigation, {
-  NavigationTopic,
-  NavigationElement,
-} from "~/components/general/navigation";
 import EvaluationRequestDialog from "./evaluation-request-dialog";
 import EvaluationCancelDialog from "./evaluation-cancel-dialog";
 import {
@@ -28,8 +22,10 @@ import {
   updateWorkspaceEditModeState,
 } from "~/actions/workspaces";
 import { bindActionCreators } from "redux";
-import workspace from "~/components/guider/body/application/current-student/workspaces/workspace";
 
+/**
+ * ItemDataElement
+ */
 interface ItemDataElement {
   modifier: string;
   trail: string;
@@ -42,6 +38,9 @@ interface ItemDataElement {
   openInNewTab?: string;
 }
 
+/**
+ * WorkspaceNavbarProps
+ */
 interface WorkspaceNavbarProps {
   activeTrail?: string;
   i18n: i18nType;
@@ -54,11 +53,19 @@ interface WorkspaceNavbarProps {
   updateWorkspaceEditModeState: UpdateWorkspaceEditModeStateTriggerType;
 }
 
+/**
+ * WorkspaceNavbarState
+ */
 interface WorkspaceNavbarState {
   requestEvaluationOpen: boolean;
   requestCancelOpen: boolean;
 }
 
+/**
+ * getTextForAssessmentState
+ * @param state
+ * @param i18n
+ */
 function getTextForAssessmentState(
   state: WorkspaceAssessementStateType,
   i18n: i18nType
@@ -82,6 +89,10 @@ function getTextForAssessmentState(
   return i18n.text.get(text);
 }
 
+/**
+ * getIconForAssessmentState
+ * @param state state
+ */
 function getIconForAssessmentState(state: WorkspaceAssessementStateType) {
   let icon;
   switch (state) {
@@ -107,6 +118,10 @@ function getIconForAssessmentState(state: WorkspaceAssessementStateType) {
   return icon;
 }
 
+/**
+ * getClassNameForAssessmentState
+ * @param state state
+ */
 function getClassNameForAssessmentState(state: WorkspaceAssessementStateType) {
   let className;
   switch (state) {
@@ -132,10 +147,17 @@ function getClassNameForAssessmentState(state: WorkspaceAssessementStateType) {
   return className;
 }
 
+/**
+ * WorkspaceNavbar
+ */
 class WorkspaceNavbar extends React.Component<
   WorkspaceNavbarProps,
   WorkspaceNavbarState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: WorkspaceNavbarProps) {
     super(props);
 
@@ -148,6 +170,10 @@ class WorkspaceNavbar extends React.Component<
       this.onRequestEvaluationOrCancel.bind(this);
     this.toggleEditModeActive = this.toggleEditModeActive.bind(this);
   }
+
+  /**
+   * toggleEditModeActive
+   */
   toggleEditModeActive() {
     this.props.updateWorkspaceEditModeState(
       {
@@ -156,8 +182,12 @@ class WorkspaceNavbar extends React.Component<
       true
     );
   }
+
+  /**
+   * onRequestEvaluationOrCancel
+   * @param state state
+   */
   onRequestEvaluationOrCancel(state: string) {
-    let text;
     switch (state) {
       case "pending":
       case "pending_pass":
@@ -174,6 +204,10 @@ class WorkspaceNavbar extends React.Component<
         break;
     }
   }
+
+  /**
+   * render
+   */
   render() {
     const itemData: ItemDataElement[] = [
       {
@@ -259,7 +293,7 @@ class WorkspaceNavbar extends React.Component<
       },
     ];
 
-    let assessmentRequestItem =
+    const assessmentRequestItem =
       this.props.currentWorkspace &&
       this.props.status.permissions.WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT
         ? {
@@ -301,7 +335,7 @@ class WorkspaceNavbar extends React.Component<
           }
         : null;
 
-    let assessmentRequestMenuItem = assessmentRequestItem ? (
+    const assessmentRequestMenuItem = assessmentRequestItem ? (
       <Link
         onClick={this.onRequestEvaluationOrCancel.bind(
           this,
@@ -314,7 +348,7 @@ class WorkspaceNavbar extends React.Component<
             this.props.currentWorkspace.studentAssessments.assessmentState
           )}`}
         />
-        <span className="link--menu__text">
+        <span className="link--menu-text">
           {getTextForAssessmentState(
             this.props.currentWorkspace.studentAssessments.assessmentState,
             this.props.i18n
@@ -323,7 +357,7 @@ class WorkspaceNavbar extends React.Component<
       </Link>
     ) : null;
 
-    let trueNavigation: Array<React.ReactElement<any>> = [];
+    const trueNavigation: Array<React.ReactElement<any>> = [];
     if (this.props.navigation) {
       trueNavigation.push(this.props.navigation);
     }
@@ -353,7 +387,7 @@ class WorkspaceNavbar extends React.Component<
       );
     }
 
-    let navbarModifiers = this.props.workspaceEditMode.active
+    const navbarModifiers = this.props.workspaceEditMode.active
       ? "workspace-edit-mode"
       : "workspace";
 
@@ -440,6 +474,7 @@ class WorkspaceNavbar extends React.Component<
             }
             return (
               <Link
+                key={item.modifier}
                 href={this.props.activeTrail !== item.trail ? item.href : null}
                 to={
                   item.to && this.props.activeTrail !== item.trail
@@ -458,7 +493,7 @@ class WorkspaceNavbar extends React.Component<
                     {item.badge >= 100 ? "99+" : item.badge}
                   </span>
                 ) : null}
-                <span className="link--menu__text">
+                <span className="link--menu-text">
                   {this.props.i18n.text.get(item.text)}
                 </span>
               </Link>
@@ -482,6 +517,9 @@ class WorkspaceNavbar extends React.Component<
   }
 }
 
+/**
+ * @param state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -492,8 +530,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
-const mapDispatchToProps = (dispatch: Dispatch<any>) => {
-  return bindActionCreators({ updateWorkspaceEditModeState }, dispatch);
-};
+/**
+ * @param dispatch
+ */
+const mapDispatchToProps = (dispatch: Dispatch<any>) =>
+  bindActionCreators({ updateWorkspaceEditModeState }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(WorkspaceNavbar);

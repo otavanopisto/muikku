@@ -26,7 +26,7 @@ const defaultRecordListProps = {
 
 /**
  * RecordingsList
- * @param props
+ * @param props props
  * @returns JSX.Element
  */
 function RecordingsList(props: RecordingsListProps) {
@@ -36,25 +36,23 @@ function RecordingsList(props: RecordingsListProps) {
 
   return records.length > 0 ? (
     <div className="voice-recorder__files-container">
-      {records.map((record, index) => {
-        return (
-          <Record
-            controls
-            record={record}
-            src={record.url}
-            key={record.id || index}
-            noDeleteFunctions={noDeleteFunctions}
-            onClickDelete={deleteAudio}
-          />
-        );
-      })}
+      {records.map((record, index) => (
+        <Record
+          controls
+          record={record}
+          src={record.url}
+          key={record.id || index}
+          noDeleteFunctions={noDeleteFunctions}
+          onClickDelete={deleteAudio}
+        />
+      ))}
     </div>
   ) : null;
 }
 
 /**
  * mapStateToProps
- * @param state
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -64,7 +62,7 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({}, dispatch);

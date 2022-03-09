@@ -1,11 +1,11 @@
-import locales from './base/locales';
-import status from './base/status';
-import i18n from './base/i18n';
-import title from './base/title';
-import messages from './main-function/messages';
-import error from '~/reducers/base/error';
+import locales from "./base/locales";
+import status from "./base/status";
+import i18n from "./base/i18n";
+import title from "./base/title";
+import messages from "./main-function/messages";
+import error from "~/reducers/base/error";
 
-import {combineReducers} from 'redux';
+import { combineReducers } from "redux";
 
 export default combineReducers({
   i18n,
@@ -13,5 +13,5 @@ export default combineReducers({
   status,
   title,
   messages,
-  error
+  error,
 });

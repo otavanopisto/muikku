@@ -7,6 +7,9 @@ import { connect, Dispatch } from "react-redux";
 import { AnyActionType } from "~/actions/index";
 import { i18nType } from "~/reducers/base/i18n";
 
+/**
+ * RecorderControlsProps
+ */
 export interface RecorderControlsProps {
   recorderState: Recorder;
   handlers: {
@@ -20,7 +23,9 @@ export interface RecorderControlsProps {
 /**
  * RecorderControls
  * Component that renders recording controls, start/save buttons etc
- * @param param0
+ * @param param0.recorderState recorderState
+ * @param param0.handlers handlers
+ * @param param0.i18n i18n
  * @returns JSX.Element
  */
 function RecorderControls({
@@ -71,7 +76,7 @@ function RecorderControls({
 
 /**
  * mapStateToProps
- * @param state
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -81,7 +86,7 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({}, dispatch);

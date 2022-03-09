@@ -67,6 +67,7 @@
   &.state-DISABLED {
     color: $color-disabled;
   }
+
   // scss-lint:enable SelectorFormat
 
   @include breakpoint($breakpoint-desktop) {
@@ -86,5 +87,6 @@
   &.state-DISABLED {
     color: $color-disabled;
   }
-    // scss-lint:enable SelectorFormat
+
+  // scss-lint:enable SelectorFormat
 }

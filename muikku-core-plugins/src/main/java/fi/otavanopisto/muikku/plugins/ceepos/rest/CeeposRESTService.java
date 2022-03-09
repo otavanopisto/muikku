@@ -567,7 +567,15 @@ public class CeeposRESTService {
     
     boolean validHash = validateHash(ceeposPayloadResponse);
     if (!validHash) {
+      ceeposController.updateOrderState(order, CeeposOrderState.ERRORED, sessionController.getLoggedUserEntity().getId());
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Payment response hash failure").build();
+    }
+    
+    // Status is PAYMENT_PROCESSING, so we really should have a redirect link to the webstore at this point 
+    
+    if (StringUtils.isEmpty(ceeposPayloadResponse.getPaymentAddress())) {
+      ceeposController.updateOrderState(order, CeeposOrderState.ERRORED, sessionController.getLoggedUserEntity().getId());
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Missing payment link").build();
     }
     
     // Update order payment address and set its state to ONGOING
@@ -617,8 +625,7 @@ public class CeeposRESTService {
    * DESCRIPTION:
    * 
    * Forces the completion of an order in progress. The order may NOT be in state
-   * COMPLETE. Forced order completion is only available for admins or the staff
-   * member who originally created the order.
+   * COMPLETE. Forced order completion is only available for admins.
    * 
    * @param orderId Order id  
    * 
@@ -626,7 +633,7 @@ public class CeeposRESTService {
    */
   @Path("/manualCompletion/{ORDERID}")
   @POST
-  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  @RESTPermit(CeeposPermissions.COMPLETE_ORDER)
   public Response completeOrder(@PathParam("ORDERID") Long orderId) {
 
     // Validate payload
@@ -641,16 +648,6 @@ public class CeeposRESTService {
     if (order == null) {
       logger.warning(String.format("Ceepos order %d: Not found", orderId));
       return Response.status(Status.NOT_FOUND).build();
-    }
-    
-    // Ensure order ownership
-
-    if (!sessionController.hasEnvironmentPermission(CeeposPermissions.COMPLETE_ORDER)) {
-      if (!order.getCreatorId().equals(sessionController.getLoggedUserEntity().getId())) {
-        logger.severe(String.format("Ceepos order %d: User %s access revoked", order.getId(), sessionController.getLoggedUser().toId()));
-        return Response.status(Status.FORBIDDEN).build();
-        
-      }
     }
     
     // Ensure order sate
@@ -1052,7 +1049,7 @@ public class CeeposRESTService {
     sb.append("&");
     sb.append(paymentResponse.getAction());
     sb.append("&");
-    sb.append(paymentResponse.getPaymentAddress());
+    sb.append(StringUtils.defaultIfEmpty(paymentResponse.getPaymentAddress(), ""));
     sb.append("&");
     sb.append(getSetting("key"));
     String expectedHash = Hashing.sha256().hashString(sb.toString(), StandardCharsets.UTF_8).toString();
