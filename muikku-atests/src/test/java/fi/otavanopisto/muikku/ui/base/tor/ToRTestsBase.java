@@ -294,23 +294,26 @@ public class ToRTestsBase extends AbstractUITest {
 
   @Test
   public void studiesSummaryTest() throws Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(5l, 5l, "Studentos", "Tester", "studento@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "111195-1252", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
     
     try{
       mockBuilder
+        .addStudentGroup(2l, 1l, "Admins guidance", "Admins guidance group for users", 1l, false, true)
         .addStudent(student)
+        .addStaffMember(admin)
         .mockStudentCourseStats(student.getId(), 25)
         .mockMatriculationEligibility(true)
         .mockLogin(student)
         .build();
         login();
-
+        mockBuilder.addStudentToStudentGroup(2l, student).addStaffMemberToStudentGroup(2l, admin).mockPersons().mockStudents().mockStudyProgrammes().mockStudentGroups();
         selectFinnishLocale();        
         navigate("/records", false);
-
+        
         waitForPresent(".application-sub-panel__body--studies-summary-info .application-sub-panel__item:nth-child(1) .application-sub-panel__item-title");
-        assertTextIgnoreCase(".application-sub-panel__body--studies-summary-info .application-sub-panel__item:nth-child(1) .application-sub-panel__item-title", "Opintojen alkamispäivä");        
+        assertTextIgnoreCase(".application-sub-panel__body--studies-summary-info .application-sub-panel__item:nth-child(1) .application-sub-panel__item-title", "Opintojen alkamispäivä");
         waitForPresent(".application-sub-panel__body--studies-summary-info .application-sub-panel__item-data--study-start-date");
         assertTextIgnoreCase(".application-sub-panel__body--studies-summary-info .application-sub-panel__item-data--study-start-date span", "01.01.2012");
 //  TODO: This.
@@ -318,6 +321,11 @@ public class ToRTestsBase extends AbstractUITest {
 //        assertTextIgnoreCase(".application-sub-panel__body--studies-summary-info .application-sub-panel__item:nth-child(2) .application-sub-panel__item-title", "Opinto-oikeuden päättymispäivä");
 //        waitForPresent(".application-sub-panel__body--studies-summary-info .application-sub-panel__item-data--study-end-date");
 //        assertTextIgnoreCase(".application-sub-panel__body--studies-summary-info .application-sub-panel__item-data--study-end-date span", "10.11.2021");
+        assertTextIgnoreCase(".application-sub-panel__body--studies-summary-info .application-sub-panel__item:nth-child(3) .application-sub-panel__item-title", "Ohjaajasi");        
+        findElementOrReloadAndFind(".item-list--student-councelors .item-list__user-name", 5, 5000);
+        assertTextIgnoreCase(".item-list--student-councelors .item-list__user-name", "Admin User");
+        assertTextIgnoreCase(".item-list--student-councelors .item-list__user-email", "admin@example.com");
+        assertTextIgnoreCase(".button--contact-student-councelor", "Lähetä viesti");
         
         waitForPresent(".application-sub-panel__card-header--summary-evaluated");
         assertTextIgnoreCase(".application-sub-panel__card-header--summary-evaluated", "Kurssisuoritukset");
@@ -334,6 +342,7 @@ public class ToRTestsBase extends AbstractUITest {
         waitForPresent(".application-sub-panel__card-highlight--summary-returned");
         assertTextIgnoreCase(".application-sub-panel__card-highlight--summary-returned", "0");
     } finally {
+      deleteUserGroupUsers();
       mockBuilder.wiremockReset();
     }
   }
