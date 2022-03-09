@@ -20,7 +20,7 @@ import Link from "~/components/general/link";
 import Button from "~/components/general/button";
 
 /**
- * CeeposProps
+ * CeeposButtonProps
  */
 interface CeeposButtonProps {
   i18n: i18nType;
@@ -29,6 +29,12 @@ interface CeeposButtonProps {
   doOrderForCurrentStudent: DoOrderForCurrentStudentTriggerType;
 }
 
+
+/**
+* CeeposButton
+ * @param props
+ * @returns JSX.elenment
+ */
 export const CeeposButton: React.FC<CeeposButtonProps> = (props) => {
   const { guider, i18n, status, doOrderForCurrentStudent } = props;
 
@@ -121,9 +127,6 @@ export const CeeposButton: React.FC<CeeposButtonProps> = (props) => {
       {guider.availablePurchaseProducts &&
       guider.availablePurchaseProducts.length ? (
         <>
-          {/* <div className="application-sub-panel__description">
-            {i18n.text.get("plugin.guider.createStudentOrder.description")}
-          </div> */}
           {status.permissions.CREATE_ORDER ? (
             <Dropdown
               modifier="guider-products-selection"
@@ -149,7 +152,6 @@ export const CeeposButton: React.FC<CeeposButtonProps> = (props) => {
                 buttonModifiers={["create-student-order", "info"]}
                 disabled={IsOrderCreationDisabled}
               >
-                {/* {i18n.text.get("plugin.guider.createStudentOrder.buttonLabel")} */}
               </ButtonPill>
             </Dropdown>
           ) : null}
