@@ -36,7 +36,7 @@ interface StudyHistoryProps {
  * @returns JSX.Element
  */
 const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
-  const { i18n, guider } = props;
+  const { i18n, guider, addFileToCurrentStudent } = props;
 
   const [navigationActive, setNavigationActive] =
     React.useState<studyHistoryAside>("history");
@@ -72,6 +72,7 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
       }
     }
   };
+
   /**
    * Aside navigation for the study-history
    */
