@@ -37,13 +37,13 @@ import { ButtonPill } from "~/components/general/button";
  * GuiderToolbarLabelsProps
  */
 interface GuiderToolbarLabelsProps {
-  i18n: i18nType,
-  guider: GuiderType
-  createGuiderFilterLabel: CreateGuiderFilterLabelTriggerType,
-  addGuiderLabelToCurrentUser: AddGuiderLabelToCurrentUserTriggerType,
-  removeGuiderLabelFromCurrentUser: RemoveGuiderLabelFromCurrentUserTriggerType,
-  addGuiderLabelToSelectedUsers: AddGuiderLabelToSelectedUsersTriggerType,
-  removeGuiderLabelFromSelectedUsers: RemoveGuiderLabelFromSelectedUsersTriggerType
+  i18n: i18nType;
+  guider: GuiderType;
+  createGuiderFilterLabel: CreateGuiderFilterLabelTriggerType;
+  addGuiderLabelToCurrentUser: AddGuiderLabelToCurrentUserTriggerType;
+  removeGuiderLabelFromCurrentUser: RemoveGuiderLabelFromCurrentUserTriggerType;
+  addGuiderLabelToSelectedUsers: AddGuiderLabelToSelectedUsersTriggerType;
+  removeGuiderLabelFromSelectedUsers: RemoveGuiderLabelFromSelectedUsersTriggerType;
 }
 
 /**

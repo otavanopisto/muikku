@@ -600,7 +600,7 @@ export class DialogRemoveUsers extends React.Component<
         name: this.props.allTabTitle,
 
         // eslint-disable-next-line
-component: (
+        component: (
           <DialogRow modifiers="user-search">
             <form>
               <SearchFormElement

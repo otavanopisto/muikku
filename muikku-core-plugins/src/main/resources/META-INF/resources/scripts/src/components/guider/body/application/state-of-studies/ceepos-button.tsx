@@ -29,9 +29,8 @@ interface CeeposButtonProps {
   doOrderForCurrentStudent: DoOrderForCurrentStudentTriggerType;
 }
 
-
 /**
-* CeeposButton
+ * CeeposButton
  * @param props
  * @returns JSX.elenment
  */
@@ -151,8 +150,7 @@ export const CeeposButton: React.FC<CeeposButtonProps> = (props) => {
                 icon="cart-plus"
                 buttonModifiers={["create-student-order", "info"]}
                 disabled={IsOrderCreationDisabled}
-              >
-              </ButtonPill>
+              ></ButtonPill>
             </Dropdown>
           ) : null}
         </>

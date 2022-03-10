@@ -884,7 +884,6 @@ class MaterialEditor extends React.Component<
           "plugin.workspace.materialsManagement.editorView.tabs.label.content"
         ),
         component: (
-
           <div className="material-editor__content-wrapper">
             {editorButtonSet}
 
@@ -937,7 +936,6 @@ class MaterialEditor extends React.Component<
           "plugin.workspace.materialsManagement.editorView.tabs.label.metadata"
         ),
         component: (
-
           <div className="material-editor__content-wrapper">
             {editorButtonSet}
 
