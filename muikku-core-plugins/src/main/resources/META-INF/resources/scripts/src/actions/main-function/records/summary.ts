@@ -97,14 +97,14 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
               .callback(function (err: any, result: any) {
                 result.forEach(function (studentsGuidanceCouncelor: any) {
                   if (
-                    !studentsGuidanceCouncelor.some(
+                    !studentsGuidanceCouncelors.some(
                       (existingStudentCouncelor: any) =>
                         existingStudentCouncelor.userEntityId ==
                         studentsGuidanceCouncelor.userEntityId
                     )
                   ) {
-                    studentsGuidanceCouncelor.push(studentsGuidanceCouncelor);
-                    studentsGuidanceCouncelor.sort(function (x: any, y: any) {
+                    studentsGuidanceCouncelors.push(studentsGuidanceCouncelor);
+                    studentsGuidanceCouncelors.sort(function (x: any, y: any) {
                       const a = x.lastName.toUpperCase(),
                         b = y.lastName.toUpperCase();
                       return a == b ? 0 : a > b ? 1 : -1;

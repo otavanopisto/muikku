@@ -241,10 +241,10 @@ public class PyramusMock {
       }
       
 //      TODO: UserGroup mockings
-      public Builder addStudentGroup(Long id, Long organizationId, String name, String description, Long creatorId, boolean archived) {
+      public Builder addStudentGroup(Long id, Long organizationId, String name, String description, Long creatorId, boolean archived, boolean isGuidanceGroup) {
         OffsetDateTime date = OffsetDateTime.of(2015, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC);
         List<String> tags = new ArrayList<>();
-        pmock.studentGroups.add(new StudentGroup(id, name, description, date, creatorId, date, creatorId, date, tags, false, organizationId, archived));
+        pmock.studentGroups.add(new StudentGroup(id, name, description, date, creatorId, date, creatorId, date, tags, isGuidanceGroup, organizationId, archived));
         return this;
       }
       
