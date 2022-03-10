@@ -67,7 +67,7 @@ export const Tabs: React.FC<TabsProps> = (props) => {
     children,
   } = props;
 
-  const mobileBreakpoint = parseInt(variables.mobileBreakpoint); //Parse a breakpoint from scss to a number
+  const mobileBreakpoint = parseInt(variables.mobilebreakpoint); //Parse a breakpoint from scss to a number
 
   const isMobileWidth = useIsAtBreakpoint(mobileBreakpoint);
 
