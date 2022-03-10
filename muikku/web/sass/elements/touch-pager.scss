@@ -1,0 +1,28 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.touch-pager {
+  min-height: calc(100vh - 155px);
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+
+  @include breakpoint($breakpoint-desktop) {
+    min-height: 0;
+  }
+}
+
+.touch-pager__prev-page,
+.touch-pager__next-page {
+  background-color: $color-panel-background-color;
+  border-left: solid 1px $color-panel-border-color;
+  border-right: solid 1px $color-panel-border-color;
+  opacity: 95%;
+  width: 100%;
+}
+
+.touch-pager__current-page {
+  width: 100%;
+}

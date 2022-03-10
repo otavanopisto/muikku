@@ -1,0 +1,168 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.menu-wrapper {
+  margin: 15px 0;
+  width: 100%;
+}
+
+.menu {
+  list-style-type: none;
+  margin: 0 0 15px;
+  padding: 0;
+  width: 100%;
+}
+
+.menu--communicator-settings {
+  @include breakpoint($breakpoint-pad) {
+    display: none;
+  }
+}
+
+.menu__title {
+  display: block;
+  font-size: $text-mobile-font-size;
+  font-weight: 600;
+  line-height: 1;
+  padding: 0 0 6px;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
+  }
+}
+
+.menu__item {
+  display: block;
+  margin: 0 0 5px;
+}
+
+.menu__spacer {
+  height: 15px;
+}
+
+.menu__item-link {
+  align-items: flex-start;
+  background-color: $color-item-list-item-background;
+  border-radius: 2px;
+  color: $color-text-default;
+  cursor: pointer;
+  display: flex;
+  padding: 5px;
+  position: relative;
+
+  &:hover,
+  &.hover {
+    background-color: $color-item-list-item-aside-background-hover;
+  }
+
+  &.active {
+    background-color: $color-item-list-item-aside-background-active;
+    color: $color-item-list-item-font-color-active;
+
+    .menu__item-link-icon {
+      color: $color-item-list-item-font-color-active;
+    }
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    background-color: $color-item-list-item-aside-background;
+    padding: 8px;
+  }
+}
+
+.menu__item-link-icon {
+  padding: 1px 0 0;
+}
+
+.menu__item-link-text {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  font-size: $text-mobile-font-size;
+  margin-left: 5px;
+}
+
+// Icon color change for guider
+.menu__item-link--aside-navigation-guider-course,
+.menu__item-link--aside-navigation-guider-user-group {
+  .menu__item-link-icon {
+    color: $color-workspace;
+  }
+}
+
+// Mobile main navigation menu rules that appears in the Drawer
+.menu__item--main {
+  height: 35px;
+  margin: 0 0 10px;
+
+  .menu__item-link {
+    align-items: center;
+    border-radius: 18px;
+    cursor: pointer;
+    display: flex;
+    flex-flow: row nowrap;
+    padding: 0;
+
+    &.active {
+      background: $color-default-item-separator-border;
+      color: $color-default-contrast;
+      font-weight: 600;
+    }
+  }
+
+  .menu__item-link-icon {
+    background-color: $color-environment-link-menu-icon-background;
+    border-radius: 100%;
+    color: $color-environment-link-menu-icon-color;
+    font-size: 20px;
+    height: 35px;
+    line-height: 35px;
+    margin: 0 10px 0 0;
+    text-align: center;
+    vertical-align: middle;
+    width: 35px;
+  }
+
+  .menu__item-link-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.menu__item-link--instructions {
+  &.active {
+    background-color: $color-environment-link-menu-instructions-icon-background;
+    color: $color-environment-link-menu-instructions-icon-color;
+  }
+
+  .menu__item-link-icon {
+    background: $color-environment-link-menu-instructions-icon-background;
+    color: $color-environment-link-menu-instructions-icon-color;
+  }
+}
+
+.menu__item-link--helpdesk {
+  &.active {
+    background: $color-environment-link-menu-heldesk-icon-background;
+    color: $color-environment-link-menu-helpdesk-icon-color;
+  }
+
+  .menu__item-link-icon {
+    background: $color-environment-link-menu-heldesk-icon-background;
+    color: $color-environment-link-menu-helpdesk-icon-color;
+  }
+}
+
+.menu__item-link--logout {
+  &.active {
+    background: $color-environment-link-menu-logout-icon-background;
+    color: $color-environment-link-menu-logout-icon-color;
+  }
+
+  .menu__item-link-icon {
+    background: $color-environment-link-menu-logout-icon-background;
+    color: $color-environment-link-menu-logout-icon-color;
+  }
+}

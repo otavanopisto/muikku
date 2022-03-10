@@ -1,0 +1,23 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.empty {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+  width: 100%;
+
+  > * {
+    font-family: $text-font-family;
+    font-size: 1.125rem;
+    font-weight: 300;
+  }
+}
+
+.empty--dialog-row {
+  justify-content: left;
+  padding: 0;
+}

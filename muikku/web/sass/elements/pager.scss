@@ -1,0 +1,56 @@
+@import "../base/colors";
+@import "../base/breakpoints";
+@import "../base/mixins";
+
+.pager {
+  border-top: 1px solid $color-default-separator-border;
+  margin: 10px 0 0;
+
+  @include breakpoint($breakpoint-pad) {
+    margin: 0;
+  }
+}
+
+.pager__body {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  padding: 12px 0;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 24px 0 12px;
+  }
+}
+
+.pager__item,
+.pager__item > a {
+  align-items: center;
+  border-radius: 10px;
+  color: $color-pager-page-index-font;
+  cursor: pointer;
+  display: flex;
+  flex-wrap: wrap;
+  height: 34px;
+  justify-content: center;
+  margin: 0 0 0 10px;
+  width: 34px;
+}
+
+.pager__item > a {
+  margin: 0;
+}
+
+.pager__items--first {
+  margin: 0 10px 0 0;
+}
+
+.pager__item--gap {
+  width: 20px;
+}
+
+.pager__item--current,
+.pager__item--current > a {
+  background-color: $color-pager-selected-page-index-background;
+  color: $color-pager-selected-page-index-font;
+  cursor: initial;
+}

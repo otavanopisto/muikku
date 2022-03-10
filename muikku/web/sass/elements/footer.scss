@@ -1,0 +1,147 @@
+@import "../base/colors";
+@import "../base/vars";
+@import "../base/breakpoints";
+@import "../base/mixins";
+
+.footer {
+  background-color: $color-footer-default-background;
+  font-family: $text-branded-font-family;
+  margin-top: calc(1.5rem + 20px);
+  width: 100%;
+}
+
+.footer--workspace {
+  @include text;
+
+  background-color: $color-workspace-footer-default-background;
+  margin: 0;
+  order: 3;
+
+  @include breakpoint($breakpoint-pad) {
+    margin: 10px;
+  }
+}
+
+.footer__container {
+  display: flex;
+  justify-content: center;
+  margin: 0 auto;
+  max-width: $breakpoint-max-usable-screen;
+  position: relative;
+  width: 100%;
+}
+
+.footer__container--plagscan {
+  background-color: $color-footer-plagscan-background;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  width: 100%;
+}
+
+.footer__container--accessibility-statement {
+  display: flex;
+  justify-content: center;
+  position: relative;
+  width: 100%;
+}
+
+.footer__item {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 0;
+  padding: 40px;
+  position: relative;
+}
+
+.footer__item--contact {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  max-width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    align-items: flex-start;
+    max-width: 50%;
+  }
+}
+
+.footer__item--plagscan {
+  align-items: center;
+  display: flex;
+  flex-flow: column wrap;
+  font-size: $text-mobile-font-size;
+  font-weight: 400;
+  justify-content: flex-start;
+  margin: 0 auto;
+  max-width: $breakpoint-max-usable-screen;
+  padding: 20px 30px 15px;
+
+  img {
+    height: 30px;
+    width: auto;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    flex-flow: row wrap;
+  }
+}
+
+.footer__item--plagscan-text {
+  color: $color-default;
+  margin: 0 5px 0 10px;
+}
+
+.footer__header {
+  color: $color-frontpage-text-contact-us;
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  font-size: 1.6rem;
+  font-weight: 200;
+  margin-bottom: 1.5rem;
+  text-align: center;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: 2.5rem;
+    text-align: left;
+  }
+}
+
+.footer__subitem {
+  color: $color-frontpage-text-contact-us-information;
+  display: flex;
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  font-size: $text-mobile-font-size;
+  margin-bottom: 0.55rem;
+  margin-top: 0.55rem;
+  max-width: 100%;
+  text-align: center;
+
+  * {
+    margin-right: 0.625rem;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
+    text-align: left;
+  }
+}
+
+.footer__subitem--privacy-policy {
+  margin-top: 1rem;
+}
+
+.footer__item--logos {
+  display: none;
+
+  @include breakpoint($breakpoint-pad) {
+    align-items: flex-end;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: space-around;
+  }
+}

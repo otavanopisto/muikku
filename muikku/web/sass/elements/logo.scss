@@ -1,0 +1,50 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.logo {
+  display: block;
+  overflow: hidden;
+  position: relative;
+}
+
+.logo--muikku {
+  border-radius: 100%;
+  box-shadow: 0 15px 15px $color-frontpage-logo-muikku-verkko-box-shadow;
+  height: $logo-mobile-size;
+  margin: 0 1rem 0 0;
+  text-align: center;
+  width: $logo-mobile-size;
+
+  @include breakpoint($breakpoint-pad) {
+    height: $logo-desktop-size;
+    margin: 0 0 1rem;
+    width: $logo-desktop-size;
+  }
+}
+
+.logo--organization {
+  display: inline-block;
+  height: $logo-text-mobile-size;
+  margin: -10px 0 10px;
+  max-width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    height: $logo-text-pad-size;
+    margin: 0;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    height: $logo-text-desktop-size;
+    margin: -10px 0 0 -10px;
+  }
+}
+
+.logo--organization-footer {
+  height: calc(#{$logo-text-mobile-size} / 1.2);
+}
+
+.logo--muikku-footer {
+  width: 300px;
+}

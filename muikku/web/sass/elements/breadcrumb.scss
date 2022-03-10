@@ -1,0 +1,61 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.breadcrumb {
+  align-items: center;
+  display: flex;
+  white-space: nowrap; // This prevents mobile wrapping for long topic titles in thread reading view
+}
+
+.breadcrumb__item {
+  padding: 0 5px;
+}
+
+.breadcrumb__arrow {
+  align-items: center;
+  display: flex;
+  font-size: 0.75rem;
+  padding: 2px 0 0;
+}
+
+.breadcrumb__item--area-1 {
+  border-left: 5px solid $color-message-area-category-1;
+}
+
+.breadcrumb__item--area-2 {
+  border-left: 5px solid $color-message-area-category-2;
+}
+
+.breadcrumb__item--area-3 {
+  border-left: 5px solid $color-message-area-category-3;
+}
+
+.breadcrumb__item--area-4 {
+  border-left: 5px solid $color-message-area-category-4;
+}
+
+.breadcrumb__item--area-5 {
+  border-left: 5px solid $color-message-area-category-5;
+}
+
+.breadcrumb__item--area-6 {
+  border-left: 5px solid $color-message-area-category-6;
+}
+
+.breadcrumb__item--area-7 {
+  border-left: 5px solid $color-message-area-category-7;
+}
+
+.breadcrumb__item--area-8 {
+  border-left: 5px solid $color-message-area-category-8;
+}
+
+.breadcrumb__item--area-9 {
+  border-left: 5px solid $color-message-area-category-9;
+}
+
+.breadcrumb__item--area-10 {
+  border-left: 5px solid $color-message-area-category-10;
+}

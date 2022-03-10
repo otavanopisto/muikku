@@ -1,0 +1,419 @@
+@import "../base/vars";
+@import "../base/colors";
+@import "../base/breakpoints";
+@import "../base/mixins";
+
+// Ordered containers
+.ordered-container {
+  @include text;
+
+  display: flex;
+  flex-flow: row wrap;
+  min-height: 25px;
+  position: relative;
+  width: 100%;
+}
+
+.ordered-container__error-title {
+  align-items: center;
+  background-color: $color-panel-background-color;
+  color: $color-index-text-for-panels-title;
+  display: flex;
+  flex-flow: row nowrap;
+  font-size: 1.1875rem;
+  font-weight: 400;
+  padding: 10px 0 0 5px;
+  text-transform: uppercase;
+
+  @include breakpoint($breakpoint-pad) {
+    background: none;
+    font-size: 1.375rem;
+    font-weight: 300;
+    padding: 0 2px 0.4rem;
+  }
+}
+
+.ordered-container--frontpage-studying {
+  .ordered-container__item {
+    margin-bottom: calc(2 * #{$ordered-container-item-gutter});
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-flow: row nowrap;
+  }
+}
+
+.ordered-container--frontpage-organization-info {
+  justify-content: center;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-flow: row wrap;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    justify-content: flex-start;
+  }
+}
+
+// Ordered container items
+.ordered-container__item {
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  max-width: 100%;
+  min-height: 25px;
+  position: relative;
+}
+
+.ordered-container__item-header {
+  align-items: center;
+  background-color: $color-panel-background-color;
+  color: $color-index-text-for-panels-title;
+  display: flex;
+  flex-flow: row nowrap;
+  font-size: 1.1875rem;
+  font-weight: 400;
+  padding: 10px 0 0 5px;
+  text-transform: uppercase;
+
+  @include breakpoint($breakpoint-pad) {
+    background: none;
+    font-size: 1.375rem;
+    font-weight: 300;
+    padding: 0 2px 0.4rem;
+  }
+}
+
+.ordered-container__item-subcontainer {
+  text-align: center;
+
+  @include breakpoint($breakpoint-desktop) {
+    text-align: left;
+  }
+}
+
+.ordered-container__subcontainer-content {
+  color: $color-frontpage-text-organization-description;
+  font-family: $text-branded-font-family;
+  font-size: $text-mobile-font-size;
+  font-weight: 400;
+  line-height: 1.375rem;
+
+  p {
+    margin: 0 0 1.15rem;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
+  }
+}
+
+.ordered-container__item-subcontainer--organization-social-media {
+  margin-top: 1.5rem;
+
+  @include breakpoint($breakpoint-pad) {
+    margin-top: 0;
+  }
+}
+
+.ordered-container__item-subcontainer--organization-description {
+  margin-top: 0;
+
+  @include breakpoint($breakpoint-pad) {
+    margin-top: 1.5rem;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    margin-top: 0;
+  }
+}
+
+.ordered-container__subcontainer-content--organization-description {
+  font-size: 1rem;
+
+  @include breakpoint($breakpoint-desktop) {
+    font-size: 1.0625rem;
+  }
+}
+
+.ordered-container__subcontainer-header--social-media {
+  color: $color-frontpage-text-organization-info-title;
+  font-family: $text-branded-font-family;
+  font-size: $text-mobile-font-size;
+  font-weight: 600;
+  margin: 0 0 0.625rem;
+  text-transform: uppercase;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
+  }
+}
+
+@include breakpoint($breakpoint-pad) {
+  // Upper secondary school card (Nettilukio)
+  .ordered-container__item--upper-secondary-school {
+    flex-basis: calc(50% - #{$ordered-container-item-gutter});
+    flex-grow: 1;
+    flex-shrink: 1;
+    margin: 0 $ordered-container-item-gutter 0 0;
+    order: 1;
+  }
+
+  // Secondary school card (Nettiperuskoulu)
+  .ordered-container__item--secondary-school {
+    flex-basis: calc(50% - #{$ordered-container-item-gutter});
+    flex-grow: 1;
+    flex-shrink: 1;
+    margin: 0 0 0 $ordered-container-item-gutter;
+    order: 2;
+  }
+
+  // Open materials card (Aineopiskelu)
+  .ordered-container__item--open-materials {
+    flex-basis: 100%;
+    flex-grow: 1;
+    flex-shrink: 1;
+    order: 3;
+  }
+
+  // News card
+  .ordered-container__item--frontpage-news {
+    flex-basis: 100%;
+    flex-grow: 1;
+    flex-shrink: 1;
+  }
+}
+
+@include breakpoint($breakpoint-desktop) {
+  .ordered-container__item--upper-secondary-school {
+    flex-basis: 33%;
+    flex-grow: 1;
+    flex-shrink: 1;
+    margin: 0 $ordered-container-item-gutter 0 0;
+  }
+
+  .ordered-container__item--secondary-school {
+    flex-basis: 33%;
+    flex-grow: 1;
+    flex-shrink: 1;
+    margin: 0 $ordered-container-item-gutter;
+  }
+
+  .ordered-container__item--open-materials {
+    flex-basis: 33%;
+    flex-grow: 1;
+    flex-shrink: 1;
+    margin: 0 0 0 $ordered-container-item-gutter;
+  }
+}
+
+.ordered-container__item--organization-logo {
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 0;
+  order: 1;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 50%;
+    flex-grow: 1;
+    flex-shrink: 1;
+    order: 1;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: 30%;
+    flex-grow: 0;
+    flex-shrink: 1;
+    order: 1;
+  }
+}
+
+.ordered-container__item--organization-social-media {
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 0;
+  order: 3;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 50%;
+    flex-grow: 1;
+    flex-shrink: 1;
+    order: 2;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: 100%;
+    flex-grow: 1;
+    flex-shrink: 1;
+    margin: 1.5rem 0 0 30%;
+    order: 3;
+  }
+}
+
+.ordered-container__item--organization-description {
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 0;
+  order: 2;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 100%;
+    flex-grow: 1;
+    flex-shrink: 0;
+    order: 3;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: 70%;
+    flex-grow: 1;
+    flex-shrink: 1;
+    order: 2;
+  }
+}
+
+// Index panels - Studies
+.ordered-container__item--studies {
+  display: flex;
+  flex-basis: auto;
+  flex-flow: column nowrap;
+  flex-grow: 1;
+  flex-shrink: 1;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 100%;
+    flex-flow: row nowrap;
+    flex-grow: 1;
+    flex-shrink: 1;
+    padding: 0;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: calc(33% - 20px);
+    flex-flow: column nowrap;
+    flex-grow: 1;
+    flex-shrink: 1;
+    max-width: calc(33% - 20px);
+    padding: 0 10px 0 0;
+  }
+}
+
+// Index panels - Continues Studies
+.ordered-container__item--continue-studies {
+  // Inherit everything for mobile from ordered-container_item
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: calc(50% - 20px);
+    flex-flow: row nowrap;
+    flex-grow: 1;
+    flex-shrink: 1;
+    padding: 0 10px;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: calc(100% - 20px);
+    flex-flow: column nowrap;
+    flex-grow: 1;
+    flex-shrink: 1;
+    padding: 0;
+  }
+}
+
+// Index panels - Workspaces
+.ordered-container__item--workspaces {
+  // Inherit everything for mobile from ordered-container_item
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: calc(50% - 20px);
+    flex-flow: row nowrap;
+    flex-grow: 1;
+    flex-shrink: 1;
+    padding: 0 10px;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: calc(100% - 20px);
+    flex-flow: column nowrap;
+    flex-grow: 1;
+    flex-shrink: 1;
+    padding: 0;
+  }
+}
+
+// Index panels - Messages
+.ordered-container__item--messages {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: calc(50% - 20px);
+    flex-grow: 1;
+    flex-shrink: 1;
+    padding: 0 10px;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: calc(33% - 20px);
+    flex-grow: 1;
+    flex-shrink: 1;
+    padding: 0 10px;
+  }
+}
+
+// Index panels - Announcements
+.ordered-container__item--announcements {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: calc(50% - 20px);
+    flex-grow: 1;
+    flex-shrink: 1;
+    padding: 0 10px;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: calc(33% - 20px);
+    flex-grow: 1;
+    flex-shrink: 1;
+    padding: 0 0 0 10px;
+  }
+}
+
+// Index panels - Container for all 5 panels to adjust bottom maregin
+.ordered-container__item--index-panel-container {
+  margin: 0 0 1rem;
+
+  @include breakpoint($breakpoint-pad) {
+    margin: 0 0 1.5rem;
+  }
+}
+
+// Error panels
+.ordered-container--error-panels {
+  flex-flow: column nowrap;
+  height: 100%;
+  padding: calc(#{$navbar-mobile-height} * 1.35) 0 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-flow: row wrap;
+    height: auto;
+    padding: calc(#{$navbar-desktop-height} * 1.5) 0 10px;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-flow: row nowrap;
+    padding: calc(#{$navbar-desktop-height} * 1.5) 10px 10px;
+  }
+}
+
+.ordered-container__item--error {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 0 10px;
+  }
+}

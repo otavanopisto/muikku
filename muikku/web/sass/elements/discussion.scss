@@ -1,0 +1,62 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.discussion-category {
+  padding: 0 0 0 10px;
+}
+
+.discussion-category--category-1 {
+  border-left: 5px solid $color-message-area-category-1;
+}
+
+.discussion-category--category-2 {
+  border-left: 5px solid $color-message-area-category-2;
+}
+
+.discussion-category--category-3 {
+  border-left: 5px solid $color-message-area-category-3;
+}
+
+.discussion-category--category-4 {
+  border-left: 5px solid $color-message-area-category-4;
+}
+
+.discussion-category--category-5 {
+  border-left: 5px solid $color-message-area-category-5;
+}
+
+.discussion-category--category-6 {
+  border-left: 5px solid $color-message-area-category-6;
+}
+
+.discussion-category--category-7 {
+  border-left: 5px solid $color-message-area-category-7;
+}
+
+.discussion-category--category-8 {
+  border-left: 5px solid $color-message-area-category-8;
+}
+
+.discussion-category--category-9 {
+  border-left: 5px solid $color-message-area-category-9;
+}
+
+.discussion-category--category-10 {
+  border-left: 5px solid $color-message-area-category-10;
+}
+
+.discussion__icon {
+  align-self: flex-start;
+  display: flex;
+  flex-basis: 0;
+  flex-grow: 0;
+  flex-shrink: 0;
+  padding: 5px 10px 5px 0;
+
+  @include breakpoint($breakpoint-pad) {
+    align-self: center;
+    padding: 8px 10px 8px 0;
+  }
+}

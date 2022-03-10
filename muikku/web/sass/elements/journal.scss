@@ -1,0 +1,21 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.journal {
+  border-top: 3px solid $color-message-border;
+  padding: 10px;
+
+  &:first-child {
+    border-color: transparent;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 15px 10px;
+  }
+}
+
+.journal--studies {
+  padding: 15px 0;
+}

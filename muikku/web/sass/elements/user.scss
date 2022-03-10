@@ -1,0 +1,31 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.user {
+  border-top: 2px solid $color-message-border;
+  cursor: pointer;
+  padding: 10px;
+
+  &:first-child {
+    border-top-color: transparent;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    border-width: 1px;
+    padding: 15px 10px;
+  }
+}
+
+.user__select-container {
+  align-items: center;
+  display: flex;
+  padding: 2px 8px 2px 2px;
+}
+
+.user--guider {
+  &:first-child {
+    border: 0;
+  }
+}

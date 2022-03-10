@@ -1,0 +1,17 @@
+@import "../base/colors";
+@import "../base/vars";
+@import "../base/breakpoints";
+@import "../base/mixins";
+
+.producers {
+  padding: 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 20px;
+  }
+}
+
+.producers__title {
+  padding: 0 5px 0 0;
+  text-transform: uppercase;
+}

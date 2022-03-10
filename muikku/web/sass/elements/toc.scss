@@ -1,0 +1,192 @@
+@import "../base/colors";
+@import "../base/vars";
+@import "../base/mixins";
+@import "../base/breakpoints";
+
+.toc {
+  @include text;
+}
+
+.toc__title {
+  @include text;
+
+  font-size: calc(#{$text-mobile-font-size} * 1.35);
+  font-weight: 400;
+  line-height: 1;
+  margin: 12px 10px 16px;
+  text-transform: uppercase;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: calc(#{$text-mobile-font-size} * 1.5);
+    font-weight: 300;
+  }
+}
+
+.toc__section-title {
+  @include text;
+
+  display: flex;
+  margin: 12px 8px 12px 10px;
+  text-transform: uppercase;
+  user-select: none; // This is to prevent select-by-panting when drag 'n dropping toc items
+
+  &.hidden {
+    font-style: italic;
+    opacity: 50%;
+  }
+}
+
+.toc__item {
+  @include prefix(transition, webkit ms o moz, background-color 0.2s ease-in-out);
+
+  align-items: flex-start;
+  background-color: $color-toc-item-link-background;
+  border-bottom-right-radius: 2px;
+  border-left: 3px solid $color-default;
+  border-top-right-radius: 2px;
+  color: $color-text-default;
+  cursor: pointer;
+  display: flex;
+  font-weight: 300;
+  margin: 6px 4px 6px 8px;
+  padding: 4px;
+  position: relative;
+  user-select: none; // This is to prevent select-by-panting when drag 'n dropping toc items
+
+  &:hover {
+    background: lighten($color-list-selected-background, 30%);
+  }
+
+  &.active {
+    background: $color-toc-item-link-selected-background;
+    color: $color-default;
+    font-weight: 400;
+    letter-spacing: -0.026rem; // This prevents active toc item to create unnecessary line break as font weight increases
+  }
+
+  &.hidden {
+    font-style: italic;
+    opacity: 50%;
+  }
+
+  @include breakpoint($breakpoint-desktop-xl) {
+    padding: 4px 4px 4px 8px;
+  }
+}
+
+.toc__element--drag-placeholder-container:nth-child(2) {
+  border: 2px dashed $color-default-separator-border;
+  height: 1.75rem;
+  margin: 0 12px;
+}
+
+.toc__section--drag-container,
+.toc__item--drag-container {
+  position: relative;
+}
+
+.toc__section--drag-handle,
+.toc__item--drag-handle {
+  align-items: center;
+  background: $color-default;
+  border-radius: 100%;
+  color: $color-material-page-admin-panel-main-color;
+  cursor: grab;
+  display: flex;
+  font-size: 0.8125rem;
+  height: 1.375rem;
+  justify-content: center;
+  position: absolute;
+  right: 7px;
+  top: 3px;
+  width: 1.375rem;
+  z-index: 9999;
+}
+
+.toc__section--drag-handle {
+  top: 0;
+}
+
+.toc__item--exercise {
+  border-color: $color-exercise;
+}
+
+.toc__item--assignment {
+  border-color: $color-assignment;
+}
+
+.toc__item--submitted {
+  .toc__icon {
+    background: $color-submitted;
+  }
+}
+
+.toc__item--answered {
+  .toc__icon {
+    background: transparent;
+    color: $color-submitted;
+  }
+
+  &.active {
+    .toc__icon {
+      color: $color-default;
+    }
+  }
+}
+
+.toc__section-container--view-restricted .toc__section-title,
+.toc__item--view-restricted {
+  .toc__icon {
+    background: $color-view-restricted;
+  }
+}
+
+.toc__item--withdrawn {
+  .toc__icon {
+    background: $color-withdrawn;
+  }
+}
+
+.toc__item--passed {
+  .toc__icon {
+    background: $color-passed;
+  }
+}
+
+.toc__item--incomplete {
+  .toc__icon {
+    background: $color-incomplete;
+  }
+}
+
+.toc__item--failed {
+  .toc__icon {
+    background: $color-failed;
+  }
+}
+
+.toc__text-body {
+  flex-basis: calc(100% - 20px);
+  flex-grow: 0;
+  flex-shrink: 1;
+  font-size: $text-mobile-font-size;
+  padding: 0 4px 0 0;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
+  }
+}
+
+.toc__icon {
+  align-items: center;
+  border-radius: 100%;
+  color: $color-default;
+  display: inline-flex;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  font-size: 0.8125rem;
+  height: 1.25rem;
+  justify-content: center;
+  width: 1.25rem;
+}

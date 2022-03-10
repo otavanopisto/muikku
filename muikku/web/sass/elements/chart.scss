@@ -1,0 +1,74 @@
+@import "../base/mixins";
+@import "../base/colors";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.chart {
+  max-width: 100%;
+}
+
+.chart--main-chart {
+  min-height: 400px;
+  width: auto;
+}
+
+.chart--workspace-chart {
+  height: 250px;
+  width: 600px;
+}
+
+.chart__activator {
+  align-items: center;
+  background-color: $color-primary;
+  border-radius: 2px;
+  color: $color-default;
+  display: inline-flex;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  font-size: $text-desktop-font-size;
+  height: 1.25rem;
+  justify-content: center;
+  width: 1.25rem;
+
+  &:hover,
+  &.hover {
+    background-color: darken($color-primary, 10%);
+  }
+
+  &:active,
+  &.active {
+    background-color: darken($color-primary, 20%);
+  }
+}
+
+.chart__activator--workspace-chart {
+  margin-left: 10px;
+  margin-right: 0;
+}
+
+.chart-legend {
+  align-items: stretch;
+  display: flex;
+  flex-flow: row nowrap;
+  font-family: $text-font-family;
+  font-size: $text-desktop-font-size;
+  justify-content: flex-end;
+  padding-left: 30px;
+  padding-right: 21px;
+
+  @include breakpoint($breakpoint-pad) {
+    justify-content: space-between;
+  }
+}
+
+.chart-legend-filter {
+  align-items: center;
+
+  @include breakpoint($breakpoint-pad) {
+    display: flex;
+    flex-basis: 0;
+    flex-grow: 1;
+    flex-shrink: 0;
+  }
+}

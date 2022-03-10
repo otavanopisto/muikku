@@ -1,0 +1,207 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.vops {
+  margin-top: 10px;
+  width: 100%;
+}
+
+.vops__title {
+  padding: 0 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    margin: 0 0 10px;
+    padding: 0;
+  }
+}
+
+.vops__legend-header {
+  align-items: center;
+  display: flex;
+  padding: 0 10px 10px;
+  width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 0 0 10px;
+  }
+}
+
+.vops__legend-arrow {
+  display: inline-block;
+  font-size: $vops-legend-header-arrow-size;
+  height: $vops-legend-header-size;
+  margin: 0 5px 0 0;
+  width: $vops-legend-header-size;
+
+  &::before {
+    color: $color-text-link;
+  }
+}
+
+.vops__legend-header-text {
+  color: $color-text-link;
+  cursor: pointer;
+  display: inline-block;
+  font-family: $text-font-family;
+  font-size: $vops-legend-header-size;
+  text-decoration: underline;
+}
+
+.vops__legend {
+  background-color: $color-vops-legend-background;
+  padding: 10px;
+  width: 100%;
+}
+
+.vops__legend-topic {
+  font-family: $text-font-family;
+  font-size: $vops-legend-header-size;
+  text-transform: uppercase;
+  width: 100%;
+}
+
+.vops__legend-items {
+  margin: 0 0 10px;
+  width: 100%;
+
+  &:last-child {
+    margin: 0;
+  }
+}
+
+.vops__legend-item {
+  align-items: center;
+  display: flex;
+  justify-content: start;
+  padding: 5px 5px 5px 0;
+
+  @include breakpoint($breakpoint-pad) {
+    align-items: center;
+    display: inline-flex;
+    justify-content: center;
+    padding: 20px;
+  }
+}
+
+.vops__legend-item-text {
+  font-family: $text-font-family;
+  font-size: $vops-legend-item-text-font-size;
+  margin-left: 5px;
+}
+
+.vops__data {
+  font-family: $text-font-family;
+  font-size: $vops-data-text-font-size;
+  padding: 10px;
+  width: 100%;
+
+  > span {
+    display: block;
+    font-size: $text-mobile-font-size;
+    padding: 2px 0;
+
+    @include breakpoint($breakpoint-pad) {
+      display: inline-block;
+      font-size: $text-mobile-font-size;
+    }
+  }
+
+  > span:not(:first-child) {
+    margin: 0;
+
+    @include breakpoint($breakpoint-pad) {
+      margin: 0 0 0 15px;
+    }
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 10px 0;
+  }
+}
+
+.vops__item {
+  background-color: $color-vops-item-base;
+  border: solid 3px transparent;
+  display: inline-block;
+  height: 30px;
+  width: 30px;
+}
+
+.vops__item--optional-national {
+  border-radius: 50% 50% 50% 3px;
+}
+
+.vops__item--optional-school {
+  border-radius: 50% 3px 50% 50%;
+}
+
+.vops__item--mandatory {
+  border-radius: 100%;
+}
+
+.vops__item--incomplete {
+  border-color: $color-vops-item-incomplete;
+}
+
+.vops__item--planned {
+  border-color: $color-vops-item-planned;
+}
+
+.vops__item--passed {
+  border-color: $color-vops-item-passed;
+}
+
+.vops__item--enrolled {
+  background-color: $color-vops-item-enrolled;
+}
+
+.vops__item--failed {
+  background-color: $color-vops-item-failed;
+}
+
+.vops__item--placeholder {
+  visibility: hidden;
+}
+
+.vops__body {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 5px 10px;
+  width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 5px 0;
+  }
+}
+
+.vops__table-wrapper {
+  display: table;
+  width: 100%;
+}
+
+.vops__row {
+  display: table-row;
+  width: 100%;
+}
+
+.vops__row-item {
+  display: table-cell;
+  padding-bottom: 3px;
+  padding-top: 3px;
+  text-align: center;
+}
+
+.vops__row-item--text-primary {
+  font-family: $text-font-family;
+  font-size: $vops-row-item-font-size;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.vops__row-item--text {
+  font-family: $text-font-family;
+  font-size: $vops-row-item-font-size;
+  text-align: center;
+}

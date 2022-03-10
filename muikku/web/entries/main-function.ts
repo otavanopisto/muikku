@@ -1,0 +1,16 @@
+import App from "~/containers/main-function";
+import reducer from "~/reducers/main-function";
+import runApp from "~/run";
+
+import mainFunctionDefault from "~/util/base-main-function";
+import tabOrMouse from "~/util/tab-or-mouse";
+
+runApp(reducer, App, async (store) => {
+  tabOrMouse();
+
+  let websocket = null;
+  if (store.getState().status.loggedIn) {
+    websocket = await mainFunctionDefault(store);
+  }
+  return { websocket };
+});

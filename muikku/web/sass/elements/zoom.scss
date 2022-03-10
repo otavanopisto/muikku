@@ -1,0 +1,49 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.zoom__clickable-item {
+  cursor: zoom-in;
+}
+
+.zoom__zoomed-item-overlay {
+  background-color: $color-zoom-image-overlay-background;
+  bottom: 0;
+  cursor: zoom-out;
+  height: 100vh;
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 100vw;
+  z-index: 100; // One step larger than navbar (.navbar) which is 99
+}
+
+.zoom__zoomed-item-container {
+  display: flex;
+  height: 100vh;
+  left: 0;
+  overflow: auto;
+  padding: 0.5rem;
+  position: absolute;
+  top: 0;
+  width: 100vw;
+}
+
+.zoom__zoomed-item {
+  cursor: zoom-out;
+  margin: auto;
+  max-width: 100%;
+}
+
+.zoom__zoomed-item-close {
+  color: $color-default;
+  cursor: pointer;
+  font-size: 30px;
+  height: 30px;
+  position: fixed;
+  right: 1rem;
+  top: 1rem;
+  width: 30px;
+}

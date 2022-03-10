@@ -1,0 +1,38 @@
+@import "../base/colors";
+@import "../base/vars";
+@import "../base/mixins";
+@import "../base/breakpoints";
+
+.instagram-feed {
+  column-count: 1;
+  column-gap: 1em;
+
+  @include breakpoint($breakpoint-mobile-xl) {
+    column-count: 2;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    column-count: 3;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    column-count: 4;
+  }
+}
+
+.instagram-feed__item {
+  border: 2px solid $color-default;
+  border-radius: 5px;
+  box-shadow: 0 5px 10px $color-instagram-feed-shadow-color;
+  display: inline-block;
+  margin-bottom: 1em;
+  transition: opacity 0.3s ease-in-out;
+  width: 100%;
+
+  &:hover,
+  &:active,
+  &.hover,
+  &.active {
+    opacity: 70%;
+  }
+}

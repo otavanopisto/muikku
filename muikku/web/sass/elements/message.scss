@@ -1,0 +1,98 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.message {
+  border-top: 2px solid $color-message-border;
+  cursor: pointer;
+  padding: 10px;
+
+  &:first-child {
+    border-top-color: transparent;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    border-width: 1px;
+    padding: 15px 10px;
+  }
+}
+
+// Using more precise selector so we donät need to create another unnecessary modifier for highlighted "search result message"
+.message--search-result.application-list__item--highlight {
+  padding: 10px 15px;
+}
+
+.message--discussion {
+  @include breakpoint($breakpoint-pad) {
+    padding: 15px 0;
+  }
+}
+
+.message__select-container {
+  align-items: center;
+  display: flex;
+  padding: 2px 8px 2px 2px;
+}
+
+.message__title {
+  font-weight: 600;
+  padding: 0 0 0 7px;
+}
+
+.message__title--category-1 {
+  border-left: 5px solid $color-message-area-category-1;
+}
+
+.message__title--category-2 {
+  border-left: 5px solid $color-message-area-category-2;
+}
+
+.message__title--category-3 {
+  border-left: 5px solid $color-message-area-category-3;
+}
+
+.message__title--category-4 {
+  border-left: 5px solid $color-message-area-category-4;
+}
+
+.message__title--category-5 {
+  border-left: 5px solid $color-message-area-category-5;
+}
+
+.message__title--category-6 {
+  border-left: 5px solid $color-message-area-category-6;
+}
+
+.message__title--category-7 {
+  border-left: 5px solid $color-message-area-category-7;
+}
+
+.message__title--category-8 {
+  border-left: 5px solid $color-message-area-category-8;
+}
+
+.message__title--category-9 {
+  border-left: 5px solid $color-message-area-category-9;
+}
+
+.message__title--category-10 {
+  border-left: 5px solid $color-message-area-category-10;
+}
+
+.message__recipients {
+  span:not(:last-child)::after {
+    content: ",";
+    padding: 0 5px 0 0;
+  }
+}
+
+.message__user-studies-ended {
+  color: $color-disabled;
+  font-style: italic;
+}
+
+.message__user-archived {
+  color: $color-warn;
+  font-style: italic;
+}

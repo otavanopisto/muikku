@@ -1,0 +1,97 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.glyph {
+  align-items: center;
+  display: flex;
+}
+
+.glyph--autocomplete-recipient {
+  align-items: center;
+  display: flex;
+  min-width: 15px;
+}
+
+.glyph--selected-recipient {
+  align-items: center;
+  display: flex;
+  flex-basis: 0;
+  flex-grow: 0;
+  flex-shrink: 0;
+  justify-content: center;
+  margin-right: 5px;
+  min-width: 15px;
+}
+
+.glyph--worklist-state-indicator {
+  align-self: flex-start;
+  font-size: 1rem;
+  height: 1rem;
+  margin: 4px 10px 0 0;
+  width: 1rem;
+
+  // scss-lint:disable SelectorFormat
+  &.state-ENTERED {
+    color: $color-default-helper;
+  }
+
+  &.state-PROPOSED {
+    color: $color-info;
+  }
+
+  &.state-APPROVED {
+    color: $color-success;
+  }
+
+  &.state-PAID {
+    color: $color-default-contrast;
+  }
+
+  // scss-lint:enable SelectorFormat
+}
+
+.glyph--submit-worklist {
+  align-items: center;
+  color: $color-info;
+  display: flex;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  font-size: 1rem;
+  height: 1rem;
+  justify-content: center;
+  padding: 4px;
+  width: 1rem;
+}
+
+.glyph--product-state-indicator {
+  align-self: flex-start;
+  font-size: 1rem;
+  height: 1rem;
+  margin: 2px 10px 0 0;
+  width: 1rem;
+
+  // scss-lint:disable SelectorFormat
+
+  &.state-CANCELLED {
+    color: $color-disabled;
+  }
+
+  &.state-ERRORED {
+    color: $color-fatal;
+  }
+
+  &.state-CREATED,
+  &.state-ONGOING {
+    color: $color-info;
+  }
+
+  &.state-PAID,
+  &.state-COMPLETE {
+    color: $color-success;
+  }
+
+  // scss-lint:enable SelectorFormat
+}

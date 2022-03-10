@@ -1,0 +1,74 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.carousel {
+  position: relative;
+  width: 100%;
+}
+
+.carousel__item {
+  display: block;
+  height: 100%;
+  position: relative;
+  width: 100%;
+}
+
+.carousel__item-video {
+  iframe {
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+  }
+}
+
+.carousel__controls {
+  display: block;
+  margin: 0;
+  padding: 20px 0;
+  width: 100%;
+}
+
+.carousel__dots {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  width: 100%;
+
+  li {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+  }
+
+  button {
+    @include prefix(transition, moz ms webkit o, background 0.3);
+
+    background: $color-carousel-default-dot-background;
+    border: solid 2px $color-carousel-default-dot-border;
+    border-radius: 100%;
+    cursor: pointer;
+    font-size: 0;
+    height: 17px;
+    margin: 0 10px;
+    outline: none;
+    padding: 0;
+    vertical-align: top;
+    width: 17px;
+  }
+
+  .carousel__dot--selected {
+    background: $color-carousel-default-dot-active-background;
+  }
+
+  button:focus {
+    background: $color-carousel-focused-dot-active-background;
+  }
+}

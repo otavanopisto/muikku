@@ -1,0 +1,18 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.color-picker {
+  position: absolute;
+  top: 102px;
+  z-index: 100;
+}
+
+.color-picker-overlay {
+  bottom: 0;
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+}

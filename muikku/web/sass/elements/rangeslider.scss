@@ -1,0 +1,197 @@
+@import "../base/colors";
+@import "../base/vars";
+@import "../base/breakpoints";
+@import "../base/mixins";
+
+// Rangeslider, more happy bugs wouldn't allow this to be imported from the node modules when a file is named index because it's index.css
+.rangeslider {
+  background: $color-rangeslider-background;
+  display: block;
+  margin: 20px 0;
+  position: relative;
+  touch-action: none;
+}
+
+.rangeslider__fill {
+  box-shadow: inset 0 1px 3px $color-rangeslider-fill-shadow;
+  display: block;
+}
+
+.rangeslider__handle {
+  background: $color-default;
+  border: 1px solid $color-rangeslider-handle-border;
+  box-shadow: 0 1px 3px $color-rangeslider-handle-shadow, 0 -1px 3px $color-rangeslider-handle-shadow;
+  cursor: pointer;
+  display: inline-block;
+  position: absolute;
+}
+
+.rangeslider__active {
+  opacity: 100%;
+}
+
+.rangeslider__handle-tooltip {
+  background-color: $color-rangeslider-handle-tooltip-background;
+  border-radius: 4px;
+  color: $color-default;
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 400;
+  height: 40px;
+  left: 50%;
+  position: absolute;
+  text-align: center;
+  transform: translate3d(-50%, 0, 0);
+  width: 40px;
+
+  &::after {
+    content: " ";
+    height: 0;
+    position: absolute;
+    width: 0;
+  }
+
+  span {
+    display: inline-block;
+    line-height: 100%;
+    margin-top: 12px;
+  }
+}
+
+// Rangeslider - Labels
+.rangeslider__labels {
+  position: relative;
+}
+
+.rangeslider__label-item {
+  cursor: pointer;
+  display: inline-block;
+  font-size: 14px;
+  position: absolute;
+  top: 10px;
+  transform: translate3d(-50%, 0, 0);
+}
+
+// Rangeslider - Horizontal slider
+.rangeslider-horizontal {
+  border-radius: 10px;
+  height: 12px;
+
+  .rangeslider__fill {
+    background-color: $color-info;
+    border-radius: 10px;
+    height: 100%;
+    top: 0;
+  }
+
+  .rangeslider__handle {
+    border-radius: 30px;
+    height: 30px;
+    top: 50%;
+    transform: translate3d(-50%, -50%, 0);
+    width: 30px;
+
+    &::after {
+      background-color: $color-rangeslider-handle-background;
+      border-radius: 50%;
+      box-shadow: 0 1px 3px $color-rangeslider-handle-shadow inset, 0 -1px 3px $color-rangeslider-handle-shadow inset;
+      content: " ";
+      height: 16px;
+      left: 6px;
+      position: absolute;
+      top: 6px;
+      width: 16px;
+    }
+  }
+
+  .rangeslider__handle-tooltip {
+    top: -55px;
+
+    &::after {
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      border-top: 8px solid $color-rangeslider-handle-tooltip-border;
+      bottom: -8px;
+      left: 50%;
+      transform: translate3d(-50%, 0, 0);
+    }
+  }
+}
+
+// Rangeslider - Vertical slider
+.rangeslider-vertical {
+  background-color: transparent;
+  height: 150px;
+  margin: 20px auto;
+  max-width: 10px;
+
+  .rangeslider__fill {
+    background-color: $color-info;
+    bottom: 0;
+    box-shadow: none;
+    position: absolute;
+    width: 100%;
+  }
+
+  .rangeslider__handle {
+    box-shadow: none;
+    height: 10px;
+    left: -10px;
+    position: absolute;
+    width: 30px;
+  }
+
+  .rangeslider__handle-tooltip {
+    left: -100%;
+    top: 50%;
+    transform: translate3d(-50%, -50%, 0);
+
+    &::after {
+      border-bottom: 8px solid transparent;
+      border-left: 8px solid $color-default-contrast;
+      border-top: 8px solid transparent;
+      left: 100%;
+      top: 12px;
+    }
+  }
+
+  .rangeslider__labels {
+    height: 100%;
+    left: 10px;
+    list-style-type: none;
+    margin: 0 0 0 24px;
+    padding: 0;
+    position: relative;
+    text-align: left;
+    width: 250px;
+  }
+
+  .rangeslider__label-item {
+    position: absolute;
+    transform: translate3d(0, -50%, 0);
+
+    &::before {
+      background: $color-default-contrast;
+      content: "";
+      height: 2px;
+      left: -14px;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 10px;
+      z-index: -1;
+    }
+  }
+}
+
+// Rangeslider - Reverse
+.rangeslider-reverse {
+  &.rangeslider-horizontal .rangeslider__fill {
+    right: 0;
+  }
+
+  &.rangeslider-vertical .rangeslider__fill {
+    bottom: inherit;
+    top: 0;
+  }
+}

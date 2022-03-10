@@ -1,0 +1,69 @@
+@import "../base/colors";
+@import "../base/vars";
+@import "../base/mixins";
+@import "../base/breakpoints";
+
+.meta {
+  @include text;
+
+  display: flex;
+}
+
+.meta--workspace {
+  align-items: center;
+  background: $color-meta-workspace-background;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+  padding: 5px 0 0;
+
+  .meta__item {
+    padding: 2px 0;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    opacity: 100%;
+    padding: 10px 5px 5px;
+    position: relative;
+  }
+}
+
+.meta__item {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+
+  &:last-child {
+    margin: 0;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    margin: 0 10px 0 0;
+  }
+}
+
+.meta__item--progress-data {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  justify-content: flex-start;
+
+  @include breakpoint($breakpoint-desktop) {
+    justify-content: flex-end;
+  }
+}
+
+.meta__item-label {
+  font-weight: 300;
+  padding: 0 5px;
+  text-transform: uppercase;
+}
+
+.meta__item-description {
+  padding: 0 5px 0 0;
+  text-transform: uppercase;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 0 5px;
+  }
+}

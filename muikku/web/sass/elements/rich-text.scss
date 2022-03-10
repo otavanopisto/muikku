@@ -1,0 +1,233 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+@import url("https://fonts.googleapis.com/css?family=Open+Sans:300,400,600&subset=cyrillic");
+
+// This file sets styling for every rich text editors content so they are rendered always the same way regardless where they are created.
+
+/* stylelint-disable selector-class-pattern */
+.rich-text,
+.cke_editable {
+  color: $color-text-default;
+  font-family: "Open Sans", "Arial", sans-serif;
+  font-size: $text-mobile-font-size;
+  font-weight: 400;
+  line-height: 1.25rem;
+  /* stylelint-enable selector-class-pattern */
+
+  // This will prevent ckeditor to screw up toolbar (and other elements) rendering becouse of previous rule
+  .cke * {
+    clear: unset;
+  }
+
+  // Math Formulas overflow rule
+  .math-tex {
+    align-items: center;
+    display: inline-flex;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 0.1em; // This prevents unnecessary scrollbars to be rendered
+    vertical-align: middle;
+  }
+
+  .mathjax-preview-result {
+    display: block;
+  }
+
+  // This will adjust the editor's context area so it will resembel material page more closely
+
+  /* stylelint-disable selector-class-pattern */
+  &.cke_wysiwyg_div {
+    padding: 5px 20px;
+  }
+  /* stylelint-enable selector-class-pattern */
+
+  p {
+    margin: 10px 0;
+  }
+
+  // Only allow h3 and h4 inside ckeditor
+  h3,
+  h4 {
+    font-weight: 400;
+    margin: 10px 0;
+  }
+
+  h3 {
+    font-size: 1.125rem;
+
+    @include breakpoint($breakpoint-pad) {
+      font-size: 1.25rem;
+    }
+  }
+
+  h4 {
+    font-size: 1rem;
+
+    @include breakpoint($breakpoint-pad) {
+      font-size: 1.125rem;
+    }
+  }
+
+  b,
+  strong {
+    font-weight: 600;
+  }
+
+  i {
+    font-style: italc;
+  }
+
+  a {
+    color: $color-text-link;
+    text-decoration: underline;
+  }
+
+  img {
+    border: 0;
+    max-width: 100%;
+  }
+
+  iframe {
+    max-width: 100%;
+  }
+
+  blockquote {
+    background: $color-signature-background;
+    border-left: 5px solid $color-signature-border;
+    margin: 10px;
+    padding: 0.01em 10px;
+  }
+
+  ul,
+  ol {
+    display: block;
+    margin: 10px 0;
+    padding: 0 0 0 30px;
+  }
+
+  ul ul,
+  ol ol,
+  ul ol,
+  ol ul {
+    margin: 0;
+  }
+
+  ul {
+    list-style-type: disc;
+
+    ul {
+      list-style-type: circle;
+    }
+  }
+
+  ol {
+    list-style-type: decimal;
+  }
+
+  li {
+    display: list-item;
+  }
+
+  table {
+    border-collapse: collapse;
+    font-size: $text-desktop-font-size;
+    margin: initial;
+    padding: initial;
+  }
+
+  table[cellspacing] {
+    border-collapse: separate;
+  }
+
+  table[cellpadding] td {
+    border-collapse: separate;
+  }
+
+  @for $i from 0 through 49 {
+    table[cellspacing="#{$i}"] {
+      border-spacing: #{$i}px;
+    }
+
+    table[cellpadding="#{$i}"] td {
+      padding: #{$i}px;
+    }
+  }
+
+  td {
+    border-radius: 2px;
+    margin: initial;
+    max-width: 100%;
+    overflow-wrap: break-word;
+    padding: initial;
+    vertical-align: top;
+    width: auto;
+  }
+
+  // CEEPOS Error message
+  .message-from-ceepos-error {
+    background: $color-message-from-workspace-background;
+    border-radius: 3px;
+    font-size: 0.825rem;
+    font-style: normal;
+    margin: 20px 0 10px;
+    padding: 2px 7px;
+  }
+
+  // Communicator signature
+  .mf-signature {
+    background: $color-signature-background;
+    border-left: 5px solid $color-signature-border;
+    display: block;
+    font-style: italic;
+    margin: 20px 0 10px;
+    padding: 10px 15px;
+
+    p {
+      margin: 0;
+    }
+  }
+
+  // Communicator message from workspace
+  .message-from-workspace {
+    background: $color-message-from-workspace-background;
+    border-radius: 3px;
+    font-size: 0.825rem;
+    font-style: normal;
+    margin: 20px 0 10px;
+    padding: 2px 7px;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-richtext-font-size;
+    font-weight: 300;
+    line-height: 1.75rem;
+  }
+}
+
+.rich-text--evaluation-literal {
+  font-size: 0.825rem;
+
+  h3 {
+    font-size: 1.125rem;
+
+    @include breakpoint($breakpoint-pad) {
+      font-size: 1.25rem;
+    }
+  }
+
+  h4 {
+    font-size: 1rem;
+
+    @include breakpoint($breakpoint-pad) {
+      font-size: 1.125rem;
+    }
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
+    line-height: 1.25rem;
+  }
+}

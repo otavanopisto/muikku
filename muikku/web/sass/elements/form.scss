@@ -1,0 +1,77 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.form {
+  position: relative;
+  width: 100%;
+}
+
+.form--forgot-password {
+  padding: 20px 30px;
+}
+
+.form__row {
+  padding-bottom: 10px;
+  position: relative;
+  width: 100%;
+}
+
+.form__row--wizard {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.form__row--wizard-dates {
+  flex-direction: row;
+}
+
+.form__fieldset-header {
+  @include text;
+
+  font-weight: 600;
+  padding: 0 0 5px;
+}
+
+.form__subdivision {
+  flex-basis: 100%;
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: 50%;
+    padding: 0 10px;
+
+    // We might need to re-think these first and last child selectors as there might not be always 2 per row
+    &:first-child {
+      padding: 0 10px 0 0;
+    }
+
+    &:last-child {
+      padding: 0 0 0 10px;
+    }
+  }
+}
+
+.form__hidden {
+  display: none;
+}
+
+input,
+select,
+option,
+textarea {
+  @include text;
+}
+
+fieldset {
+  border: 0;
+
+  label,
+  .form-element label {
+    font-weight: 400;
+  }
+}
+
+legend {
+  font-weight: 600;
+}

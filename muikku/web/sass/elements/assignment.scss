@@ -1,0 +1,41 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.assignment {
+  border-top: 1px solid $color-message-border;
+  margin: 0 0 1px;
+  padding: 14px 0;
+
+  &:first-child {
+    border-top: 1px solid $color-default;
+  }
+
+  &.assignment--open {
+    background: $color-default;
+    border-bottom: solid 1px $color-application-list-item-course-border-selected;
+    border-top: solid 1px $color-application-list-item-course-border-selected;
+  }
+
+  &.state-NO-ASSESSMENT {
+    cursor: auto;
+  }
+
+  &.assignment--open:hover {
+    background: $color-default;
+  }
+}
+
+.assignment--open .text--list-item-title {
+  font-weight: 600;
+}
+
+.assignment__content {
+  flex-flow: row nowrap;
+  padding: 0 0 0 9px;
+}
+
+.assignment__title {
+  padding-left: 5px;
+}

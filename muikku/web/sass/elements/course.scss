@@ -1,0 +1,63 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.course {
+  border-top: 1px solid $color-message-border;
+  margin: 0 0 1px;
+  padding: 0 10px; // Top and bottom paddings are added in application-list__item-header--course so clickable area is bigger when only header acts as cickable object
+
+  &:first-child {
+    border-color: transparent;
+  }
+
+  &.course--open {
+    background: $color-default;
+    border-left: 3px solid $color-application-list-item-course-border-selected;
+    margin-left: 1px;
+    padding-left: 6px; // padding - left border - left margin
+
+    @include breakpoint($breakpoint-pad) {
+      border-left-width: 2px;
+      margin-left: 0;
+      padding-left: 8px;
+    }
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    border-width: 1px;
+  }
+}
+
+.course--studies {
+  &:hover,
+  &.hover,
+  &:active,
+  &.active {
+    svg {
+      opacity: 90%;
+    }
+  }
+}
+
+.course--credits {
+  cursor: auto;
+
+  .application-list__item-header--course {
+    cursor: auto;
+  }
+}
+
+.course--open .text--list-item-title {
+  font-weight: 600;
+}
+
+.course__content {
+  flex-flow: row nowrap;
+  padding: 0 0 0 9px;
+}
+
+.course__title {
+  padding-left: 5px;
+}

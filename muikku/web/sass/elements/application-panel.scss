@@ -1,0 +1,314 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.application-panel {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  margin: 0 auto;
+  max-width: $breakpoint-max-usable-screen;
+  padding: $navbar-mobile-height 0 10px;
+  width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: calc(#{$navbar-desktop-height} * 1.25) 10px 10px;
+  }
+}
+
+// This removes the unnecessary top-padding in studies and profile view as there is no toolbar present
+.application-panel--studies,
+.application-panel--profile {
+  .application-panel__content {
+    padding: 10px 0;
+  }
+}
+
+.application-panel--workspace-journal {
+  padding: 0;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: calc(#{$navbar-desktop-height} * 1.25) 10px 10px;
+  }
+}
+
+.application-panel__container {
+  @include text;
+
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.application-panel__body {
+  @include panel-body;
+
+  background-color: $color-application-panel-box-background;
+  box-shadow: 0 2px 3px $color-panel-shadow;
+  display: flex;
+  flex-direction: column;
+
+  @include breakpoint($breakpoint-pad) {
+    border: solid 1px $color-application-panel-box-border;
+    box-shadow: none;
+  }
+}
+
+.application-panel__body--tabs {
+  @include breakpoint($breakpoint-pad) {
+    border-bottom: solid 1px $color-application-panel-box-border;
+    border-left: solid 1px $color-application-panel-box-border;
+    border-right: solid 1px $color-application-panel-box-border;
+    border-top: 0;
+    box-shadow: none;
+  }
+}
+
+.application-panel__header {
+  display: none;
+
+  @include breakpoint($breakpoint-pad) {
+    align-items: center;
+    background-color: $color-default-body;
+    display: flex;
+    flex-basis: auto;
+    flex-grow: 0;
+    flex-shrink: 0;
+    justify-content: center;
+    margin: 10px;
+    max-width: calc(#{$breakpoint-max-usable-screen} - 20px);
+    position: relative;
+    width: calc(100% - 20px);
+  }
+}
+
+.application-panel__header-title {
+  display: none;
+
+  @include breakpoint($breakpoint-pad) {
+    display: flex;
+    flex-basis: auto;
+    flex-grow: 1;
+    flex-shrink: 1;
+    font-size: 1.5rem;
+    font-weight: 300;
+    height: $panel-header-title-height-desktop;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+}
+
+.application-panel__header-actions {
+  display: none;
+
+  @include breakpoint($breakpoint-pad) {
+    display: flex;
+    flex-basis: auto;
+    flex-grow: 0;
+    flex-shrink: 0;
+    height: $panel-header-title-height-desktop;
+  }
+}
+
+.application-panel__actions {
+  background: $color-default;
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: $navbar-mobile-height;
+  z-index: 998;
+
+  @include breakpoint($breakpoint-pad) {
+    align-items: center;
+    display: flex;
+    flex-basis: auto;
+    flex-grow: 0;
+    flex-shrink: 0;
+    justify-content: center;
+    position: sticky;
+    top: $navbar-desktop-height;
+  }
+}
+
+.application-panel__actions--tabs {
+  position: static;
+
+  @include breakpoint($breakpoint-pad) {
+    position: sticky;
+  }
+}
+
+.application-panel__toolbar {
+  align-items: center;
+  display: flex;
+  overflow: hidden;
+  width: 100%;
+}
+
+.application-panel__tool--current-folder {
+  align-items: center;
+  display: flex;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  font-weight: 400;
+  overflow: hidden;
+  position: relative;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  @include breakpoint($breakpoint-pad) {
+    display: none;
+  }
+}
+
+.application-panel__tool-icon {
+  font-size: 1rem;
+  height: auto;
+  padding: 0 5px 0 0;
+  width: 22px;
+}
+
+.application-panel__tool-title {
+  display: inline-block;
+  font-size: 1rem;
+  max-width: calc(100% - 44px); // 44px is sum of folders icon and label edit icon widths
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.application-panel__toolbar-actions-main {
+  align-items: center;
+  display: flex;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+
+.application-panel__tools-container {
+  display: flex;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+
+.application-panel__toolbar-actions-aside {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.application-panel__content {
+  padding: $navbar-mobile-height 0 0;
+
+  @include breakpoint($breakpoint-pad) {
+    display: flex;
+    flex-direction: row;
+    padding: 0;
+  }
+}
+
+.application-panel__content--tabs {
+  padding: 1.5rem 0 0;
+}
+
+.application-panel__content-header {
+  font-size: 1.25rem;
+  font-weight: 300;
+  margin-bottom: 20px;
+  margin-left: 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: 1.5rem;
+    margin-left: 0;
+  }
+}
+
+// Helper containers
+
+.application-panel__helper-container {
+  display: none;
+  height: auto;
+
+  @include breakpoint($breakpoint-pad) {
+    @include no-scrollbars;
+
+    display: flex;
+    flex-basis: 220px;
+    flex-grow: 0;
+    flex-shrink: 0;
+    height: calc(100vh - 153px); // 100 View-port height - top offset which is 134px + <main> 10px padding-bottom + 1px for border + 8px margin-bottom
+    margin: 0 0 8px;
+    overflow: auto;
+    overscroll-behavior: contain;
+    padding: 0 12px;
+    position: sticky;
+    top: 134px; // Navbar height + application-panel__actions height
+    z-index: 1;
+  }
+}
+
+// Helper container's sticky position for Profile and Studies view has different height and top property values
+.application-panel__helper-container--profile,
+.application-panel__helper-container--studies {
+  @include breakpoint($breakpoint-pad) {
+    height: calc(100vh - 97px); // 100 View-port height - top offset which is 77px + <main> 10px padding-bottom + 1px for border + 8px margin-bottom
+    top: 77px;
+  }
+}
+
+.application-panel__helper-container--main-action {
+  align-items: center;
+  border-bottom: 1px solid $color-main-function-application-panel-actions-border;
+  height: $navbar-desktop-height;
+  margin: 0;
+}
+
+// Main containers
+.application-panel__main-container {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 12px;
+  }
+}
+
+.application-panel__main-container--actions {
+  background: $color-default;
+  border-bottom: 2px solid $color-main-function-application-panel-actions-border;
+  flex-direction: row;
+  height: $navbar-mobile-height;
+  padding: 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    background: transparent;
+    border-width: 1px;
+    height: $navbar-desktop-height;
+    padding: 12px;
+  }
+}
+
+.application-panel__main-container--workspace-journal {
+  display: none;
+
+  @include breakpoint($breakpoint-pad) {
+    display: block;
+  }
+}
+
+.application-panel__main-container--header {
+  justify-content: flex-end;
+}
+
+.application-panel__main-container--content-full {
+  @include breakpoint($breakpoint-pad) {
+    padding-left: 0;
+  }
+}

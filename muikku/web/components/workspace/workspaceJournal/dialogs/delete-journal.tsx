@@ -1,0 +1,159 @@
+import "~/sass/elements/link.scss";
+import "~/sass/elements/form-elements.scss";
+import "~/sass/elements/form.scss";
+import "~/sass/elements/buttons.scss";
+import * as React from "react";
+import { connect, Dispatch } from "react-redux";
+import { bindActionCreators } from "redux";
+import { AnyActionType } from "~/actions";
+import { i18nType } from "~/reducers/base/i18n";
+import Dialog from "~/components/general/dialog";
+import Button from "~/components/general/button";
+import { StateType } from "~/reducers";
+import { WorkspaceJournalType } from "~/reducers/workspaces";
+import {
+  deleteWorkspaceJournalInCurrentWorkspace,
+  DeleteWorkspaceJournalInCurrentWorkspaceTriggerType,
+} from "~/actions/workspaces";
+
+/**
+ * DeleteJournalProps
+ */
+interface DeleteJournalProps {
+  i18n: i18nType;
+  journal: WorkspaceJournalType;
+  children: React.ReactElement<any>;
+  deleteWorkspaceJournalInCurrentWorkspace: DeleteWorkspaceJournalInCurrentWorkspaceTriggerType;
+}
+
+/**
+ * DeleteJournalState
+ */
+interface DeleteJournalState {
+  locked: boolean;
+}
+
+/**
+ * DeleteJournal
+ */
+class DeleteJournal extends React.Component<
+  DeleteJournalProps,
+  DeleteJournalState
+> {
+  /**
+   * constructor
+   * @param props props
+   */
+  constructor(props: DeleteJournalProps) {
+    super(props);
+
+    this.deleteJournal = this.deleteJournal.bind(this);
+
+    this.state = {
+      locked: false,
+    };
+  }
+
+  /**
+   * deleteJournal
+   * @param closeDialog closeDialog
+   */
+  deleteJournal(closeDialog: () => any) {
+    this.setState({ locked: true });
+    this.props.deleteWorkspaceJournalInCurrentWorkspace({
+      journal: this.props.journal,
+      /**
+       * success
+       */
+      success: () => {
+        this.setState({ locked: false });
+        closeDialog();
+      },
+      /**
+       * fail
+       */
+      fail: () => {
+        this.setState({ locked: false });
+      },
+    });
+  }
+
+  /**
+   * render
+   */
+  render() {
+    /**
+     * content
+     * @param closeDialog closeDialog
+     */
+    const content = (closeDialog: () => any) => (
+      <div>
+        {this.props.i18n.text.get(
+          "plugin.workspace.journal.deleteEntry.dialog.description"
+        )}
+      </div>
+    );
+
+    /**
+     * footer
+     * @param closeDialog closeDialog
+     */
+    const footer = (closeDialog: () => any) => (
+      <div className="dialog__button-set">
+        <Button
+          buttonModifiers={["fatal", "standard-ok"]}
+          onClick={this.deleteJournal.bind(this, closeDialog)}
+          disabled={this.state.locked}
+        >
+          {this.props.i18n.text.get(
+            "plugin.workspace.journal.deleteEntry.dialog.deleteButton"
+          )}
+        </Button>
+        <Button
+          buttonModifiers={["cancel", "standard-cancel"]}
+          onClick={closeDialog}
+        >
+          {this.props.i18n.text.get(
+            "plugin.workspace.journal.deleteEntry.dialog.cancelButton"
+          )}
+        </Button>
+      </div>
+    );
+
+    return (
+      <Dialog
+        modifier="delete-journal"
+        title={this.props.i18n.text.get(
+          "plugin.workspace.journal.deleteEntry.dialog.title"
+        )}
+        content={content}
+        footer={footer}
+      >
+        {this.props.children}
+      </Dialog>
+    );
+  }
+}
+
+/**
+ * mapStateToProps
+ * @param state state
+ */
+function mapStateToProps(state: StateType) {
+  return {
+    i18n: state.i18n,
+  };
+}
+
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+  return bindActionCreators(
+    { deleteWorkspaceJournalInCurrentWorkspace },
+    dispatch
+  );
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(DeleteJournal);
