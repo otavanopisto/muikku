@@ -13,6 +13,7 @@ import {
   AssignmentEvaluationSupplementationRequest,
   AssignmentEvaluationGradeRequest,
   AssignmentEvaluationSaveReturn,
+  AssessmentRequest,
 } from "~/@types/evaluation";
 import SessionStateComponent from "~/components/general/session-state-component";
 import CKEditor from "~/components/general/ckeditor";
@@ -37,6 +38,7 @@ import WarningDialog from "../../../../dialogs/close-warning";
  */
 interface AssignmentEditorProps {
   i18n: i18nType;
+  selectedAssessment: AssessmentRequest;
   materialEvaluation?: MaterialEvaluationType;
   materialAssignment: MaterialAssignmentType;
   compositeReplies: MaterialCompositeRepliesType;
@@ -84,10 +86,9 @@ class ExcerciseEditor extends SessionStateComponent<
   constructor(props: AssignmentEditorProps) {
     super(props, `excercise-editor`);
 
-    const { compositeReplies } = props;
-    const { evaluationSelectedAssessmentId } = props.evaluations;
+    const { compositeReplies, selectedAssessment } = props;
 
-    const draftId = `${evaluationSelectedAssessmentId.userEntityId}-${props.materialAssignment.id}`;
+    const draftId = `${selectedAssessment.userEntityId}-${props.materialAssignment.id}`;
 
     this.state = {
       ...this.getRecoverStoredState(
@@ -310,11 +311,8 @@ class ExcerciseEditor extends SessionStateComponent<
      */
     if (!this.state.needsSupplementation) {
       this.saveAssignmentEvaluationGradeToServer({
-        workspaceEntityId:
-          this.props.evaluations.evaluationSelectedAssessmentId
-            .workspaceEntityId,
-        userEntityId:
-          this.props.evaluations.evaluationSelectedAssessmentId.userEntityId,
+        workspaceEntityId: this.props.selectedAssessment.workspaceEntityId,
+        userEntityId: this.props.selectedAssessment.userEntityId,
         workspaceMaterialId: this.props.materialAssignment.id,
         dataToSave: {
           assessorIdentifier: this.props.status.userSchoolDataIdentifier,
@@ -328,16 +326,12 @@ class ExcerciseEditor extends SessionStateComponent<
       });
     } else {
       this.saveAssignmentEvaluationSupplementationToServer({
-        workspaceEntityId:
-          this.props.evaluations.evaluationSelectedAssessmentId
-            .workspaceEntityId,
-        userEntityId:
-          this.props.evaluations.evaluationSelectedAssessmentId.userEntityId,
+        workspaceEntityId: this.props.selectedAssessment.workspaceEntityId,
+        userEntityId: this.props.selectedAssessment.userEntityId,
         workspaceMaterialId: this.props.materialAssignment.id,
         dataToSave: {
           userEntityId: this.props.status.userId,
-          studentEntityId:
-            this.props.evaluations.evaluationSelectedAssessmentId.userEntityId,
+          studentEntityId: this.props.selectedAssessment.userEntityId,
           workspaceMaterialId: this.props.materialAssignment.id.toString(),
           requestDate: new Date().getTime(),
           requestText: this.state.literalEvaluation,

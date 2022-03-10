@@ -15,7 +15,11 @@ import { cleanWorkspaceAndSupplementationDrafts } from "../../../../dialogs/dele
 import Button from "~/components/general/button";
 import promisify from "~/util/promisify";
 import mApi from "~/lib/mApi";
-import { BilledPrice, EvaluationEnum } from "~/@types/evaluation";
+import {
+  AssessmentRequest,
+  BilledPrice,
+  EvaluationEnum,
+} from "~/@types/evaluation";
 import { i18nType } from "~/reducers/base/i18n";
 import {
   UpdateNeedsReloadEvaluationRequests,
@@ -33,6 +37,7 @@ interface WorkspaceEditorProps {
   status: StatusType;
   evaluations: EvaluationState;
   locale: LocaleListType;
+  selectedAssessment: AssessmentRequest;
   type?: "new" | "edit";
   editorLabel?: string;
   eventId?: string;
@@ -81,28 +86,24 @@ class WorkspaceEditor extends SessionStateComponent<
      */
     super(props, `workspace-editor-${props.type ? props.type : "new"}`);
 
-    const {
-      evaluationAssessmentEvents,
-      evaluationSelectedAssessmentId,
-      basePrice,
-      evaluationGradeSystem,
-    } = props.evaluations;
+    const { evaluationAssessmentEvents, basePrice, evaluationGradeSystem } =
+      props.evaluations;
+
+    const { selectedAssessment } = props;
 
     /**
      * When there is not existing event data we use only user id and workspace id as
      * draft id. There must be at least user id and workspace id, so if making changes to multiple workspace
      * that have same user evaluations, so draft won't class together
      */
-    let draftId = `${evaluationSelectedAssessmentId.userEntityId}-${evaluationSelectedAssessmentId.workspaceEntityId}-${props.workspaceSubjectToBeEvaluatedIdentifier}`;
+    let draftId = `${selectedAssessment.userEntityId}-${selectedAssessment.workspaceEntityId}-${props.workspaceSubjectToBeEvaluatedIdentifier}`;
 
     /**
      * Workspace basePriceId
      */
     const basePriceId =
-      this.props.evaluations.evaluationSelectedAssessmentId.subjects[0]
-        .subject &&
-      this.props.evaluations.evaluationSelectedAssessmentId.subjects[0]
-        .identifier;
+      selectedAssessment.subjects[0].subject &&
+      selectedAssessment.subjects[0].identifier;
 
     /**
      * If we have evaluation data or we have data and editing existing event
@@ -151,7 +152,7 @@ class WorkspaceEditor extends SessionStateComponent<
       /**
        * As default but + latest event id
        */
-      draftId = `${evaluationSelectedAssessmentId.userEntityId}-${evaluationSelectedAssessmentId.workspaceEntityId}-${props.workspaceSubjectToBeEvaluatedIdentifier}-${eventId}`;
+      draftId = `${selectedAssessment.userEntityId}-${selectedAssessment.workspaceEntityId}-${props.workspaceSubjectToBeEvaluatedIdentifier}-${eventId}`;
 
       this.state = {
         ...this.getRecoverStoredState(

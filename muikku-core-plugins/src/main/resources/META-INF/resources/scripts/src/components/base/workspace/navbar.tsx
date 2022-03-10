@@ -22,6 +22,7 @@ import {
   updateWorkspaceEditModeState,
 } from "~/actions/workspaces";
 import { bindActionCreators } from "redux";
+import { Assessment } from "~/reducers/workspaces";
 
 /**
  * ItemDataElement
@@ -62,92 +63,6 @@ interface WorkspaceNavbarState {
 }
 
 /**
- * getTextForAssessmentState
- * @param state
- * @param i18n
- */
-function getTextForAssessmentState(
-  state: WorkspaceAssessementStateType,
-  i18n: i18nType
-) {
-  let text;
-  switch (state) {
-    case "unassessed":
-      text = "plugin.workspace.dock.evaluation.requestEvaluationButtonTooltip";
-      break;
-    case "pending":
-    case "pending_pass":
-    case "pending_fail":
-      text = "plugin.workspace.dock.evaluation.cancelEvaluationButtonTooltip";
-      break;
-    default:
-      text =
-        "plugin.workspace.dock.evaluation.resendRequestEvaluationButtonTooltip";
-      break;
-  }
-
-  return i18n.text.get(text);
-}
-
-/**
- * getIconForAssessmentState
- * @param state state
- */
-function getIconForAssessmentState(state: WorkspaceAssessementStateType) {
-  let icon;
-  switch (state) {
-    case "unassessed":
-      icon = "unassessed";
-      break;
-    case "pending":
-    case "pending_fail":
-    case "pending_pass":
-      icon = "pending";
-      break;
-    case "fail":
-    case "incomplete":
-      icon = "fail";
-      break;
-    case "pass":
-      icon = "pass";
-      break;
-    default:
-      icon = "canceled";
-      break;
-  }
-  return icon;
-}
-
-/**
- * getClassNameForAssessmentState
- * @param state state
- */
-function getClassNameForAssessmentState(state: WorkspaceAssessementStateType) {
-  let className;
-  switch (state) {
-    case "pending":
-    case "pending_fail":
-    case "pending_pass":
-      className = "pending";
-      break;
-    case "fail":
-      className = "failed";
-      break;
-    case "incomplete":
-      className = "incomplete";
-      break;
-    case "pass":
-      className = "passed";
-      break;
-    case "unassessed":
-    default:
-      className = "unassessed";
-      break;
-  }
-  return className;
-}
-
-/**
  * WorkspaceNavbar
  */
 class WorkspaceNavbar extends React.Component<
@@ -185,28 +100,23 @@ class WorkspaceNavbar extends React.Component<
 
   /**
    * onRequestEvaluationOrCancel
-   * @param state state
    */
-  onRequestEvaluationOrCancel(state: string) {
-    switch (state) {
-      case "pending":
-      case "pending_pass":
-      case "pending_fail":
-        this.setState({
-          requestCancelOpen: true,
-        });
-        break;
-      case "unassessed":
-      default:
-        this.setState({
-          requestEvaluationOpen: true,
-        });
-        break;
+  onRequestEvaluationOrCancel(canCancel: boolean) {
+    if (canCancel) {
+      this.setState({
+        requestCancelOpen: true,
+      });
+    } else {
+      this.setState({
+        requestEvaluationOpen: true,
+      });
     }
   }
 
   /**
-   * render
+   * Component render method
+   *
+   * @returns JSX.Element
    */
   render() {
     const itemData: ItemDataElement[] = [
@@ -294,18 +204,49 @@ class WorkspaceNavbar extends React.Component<
     ];
 
     /**
+     * Boolean variable to store value if workspace is combination or not
+     */
+    const isCombinationWorkspace =
+      this.props.currentWorkspace &&
+      this.props.currentWorkspace.additionalInfo &&
+      this.props.currentWorkspace.additionalInfo.subjects.length > 1;
+
+    /**
      * !DISCLAIMER!
-     * Following by combinationWorkspace change, there can be multiple assessmentState objects
+     * Following by combinationWorkspace changes, there can be multiple assessmentState objects
      * So currently before module specific assessment are implemented, using first item of assessmentState list
      * is only option.
      */
-    const assessmentState =
+    let assessmentState =
       this.props.currentWorkspace &&
-      this.props.currentWorkspace.activity.assessmentState[0];
+      this.props.currentWorkspace.activity &&
+      this.props.currentWorkspace.activity.assessmentState.length > 0
+        ? this.props.currentWorkspace.activity.assessmentState[0]
+        : undefined;
+
+    let canCancelRequest =
+      assessmentState && canCancelAssessmentRequest(assessmentState);
+
+    if (isCombinationWorkspace) {
+      assessmentState =
+        this.props.currentWorkspace &&
+        this.props.currentWorkspace.activity &&
+        this.props.currentWorkspace.activity.assessmentState.length > 0
+          ? getPrioritizedAssessmentState(
+              this.props.currentWorkspace.activity.assessmentState
+            )
+          : undefined;
+
+      canCancelRequest =
+        assessmentState &&
+        canCancelAssessmentRequest(
+          this.props.currentWorkspace.activity.assessmentState
+        );
+    }
 
     const assessmentRequestItem =
-      this.props.currentWorkspace &&
-      this.props.status.permissions.WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT
+      this.props.status.permissions.WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT &&
+      assessmentState
         ? {
             modifier: "assessment-request",
             item: (
@@ -323,7 +264,7 @@ class WorkspaceNavbar extends React.Component<
                   as="span"
                   onClick={this.onRequestEvaluationOrCancel.bind(
                     this,
-                    assessmentState.state
+                    canCancelRequest
                   )}
                   aria-label={getTextForAssessmentState(
                     assessmentState.state,
@@ -342,7 +283,7 @@ class WorkspaceNavbar extends React.Component<
 
     const assessmentRequestMenuItem = assessmentRequestItem ? (
       <Link
-        onClick={this.onRequestEvaluationOrCancel.bind(this, assessmentState)}
+        onClick={this.onRequestEvaluationOrCancel.bind(this, canCancelRequest)}
         className="link link--full link--menu link--assessment-request"
       >
         <span
@@ -517,7 +458,9 @@ class WorkspaceNavbar extends React.Component<
 }
 
 /**
- * @param state
+ * mapStateToProps
+ *
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -530,9 +473,187 @@ function mapStateToProps(state: StateType) {
 }
 
 /**
- * @param dispatch
+ * mapDispatchToProps
+ *
+ * @param dispatch dispatch
  */
 const mapDispatchToProps = (dispatch: Dispatch<any>) =>
   bindActionCreators({ updateWorkspaceEditModeState }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(WorkspaceNavbar);
+
+/**
+ * Get text by assessment state
+ *
+ * @param state state
+ * @param i18n i18n
+ * @returns localized text
+ */
+function getTextForAssessmentState(
+  state: WorkspaceAssessementStateType,
+  i18n: i18nType
+) {
+  let text;
+  switch (state) {
+    case "unassessed":
+      text = "plugin.workspace.dock.evaluation.requestEvaluationButtonTooltip";
+      break;
+    case "pending":
+    case "pending_pass":
+    case "pending_fail":
+      text = "plugin.workspace.dock.evaluation.cancelEvaluationButtonTooltip";
+      break;
+    default:
+      text =
+        "plugin.workspace.dock.evaluation.resendRequestEvaluationButtonTooltip";
+      break;
+  }
+
+  return i18n.text.get(text);
+}
+
+/**
+ * Get icon by assessment state
+ *
+ * @param state state
+ * @returns icon
+ */
+function getIconForAssessmentState(state: WorkspaceAssessementStateType) {
+  let icon;
+  switch (state) {
+    case "unassessed":
+      icon = "unassessed";
+      break;
+    case "pending":
+    case "pending_fail":
+    case "pending_pass":
+      icon = "pending";
+      break;
+    case "fail":
+    case "incomplete":
+      icon = "fail";
+      break;
+    case "pass":
+      icon = "pass";
+      break;
+    default:
+      icon = "canceled";
+      break;
+  }
+  return icon;
+}
+
+/**
+ * Gets classname by assessment state
+ *
+ * @param state state
+ * @returns classname
+ */
+function getClassNameForAssessmentState(state: WorkspaceAssessementStateType) {
+  let className;
+  switch (state) {
+    case "pending":
+    case "pending_fail":
+    case "pending_pass":
+      className = "pending";
+      break;
+    case "fail":
+      className = "failed";
+      break;
+    case "incomplete":
+      className = "incomplete";
+      break;
+    case "pass":
+      className = "passed";
+      break;
+    case "unassessed":
+    default:
+      className = "unassessed";
+      break;
+  }
+  return className;
+}
+
+/**
+ * Gets and returns priorizied assessement state
+ * as following array shows. Only used with combination workspaces
+ *
+ * @param assessmentStates assessmentStates
+ * @returns assessment state
+ */
+function getPrioritizedAssessmentState(assessmentStates: Assessment[]) {
+  /**
+   * Priority array
+   */
+  const assessmentPriorityOrder: WorkspaceAssessementStateType[] = [
+    "fail",
+    "incomplete",
+    "pending",
+    "pending_fail",
+    "pending_pass",
+    "pass",
+  ];
+
+  /**
+   * If one of priorities happen to be found, then just return found
+   * assessment state object
+   */
+  for (const p of assessmentPriorityOrder) {
+    const assessmentState = assessmentStates.find((a) => a.state === p);
+
+    if (assessmentState) {
+      return assessmentState;
+    }
+  }
+
+  return undefined;
+}
+
+/**
+ * Checks if current assessment can be canceled depending if its combination or normal
+ * workspace
+ *
+ * @param assessmentState assessmentState
+ * @returns boolean if current request can be canceled
+ */
+function canCancelAssessmentRequest(
+  assessmentState: Assessment | Assessment[]
+) {
+  /**
+   * If "aka" combination workspace
+   */
+  if (Array.isArray(assessmentState)) {
+    let count = 0;
+
+    for (let i = 0; i < assessmentState.length; i++) {
+      /**
+       * If any of these happens then just return false
+       */
+      if (
+        assessmentState[i].state === "unassessed" ||
+        assessmentState[i].state === "pass" ||
+        assessmentState[i].state === "incomplete" ||
+        assessmentState[i].state === "fail"
+      ) {
+        return false;
+      }
+
+      /**
+       * Otherwise bump counter
+       */
+      count++;
+    }
+
+    /**
+     * If counter is same as array length we know that
+     * every item in array has state some of pending or its variable
+     */
+    return count === assessmentState.length;
+  } else {
+    return (
+      assessmentState.state === "pending" ||
+      assessmentState.state === "pending_fail" ||
+      assessmentState.state === "pending_pass"
+    );
+  }
+}

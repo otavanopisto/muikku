@@ -21,7 +21,7 @@ import {
 } from "~/actions/main-function/evaluation/evaluationActions";
 import "~/sass/elements/form-elements.scss";
 import Recorder from "~/components/general/voice-recorder/recorder";
-import { AudioAssessment } from "~/@types/evaluation";
+import { AssessmentRequest, AudioAssessment } from "~/@types/evaluation";
 import AnimateHeight from "react-animate-height";
 import { LocaleListType } from "~/reducers/base/locales";
 import { CKEditorConfig } from "../evaluation";
@@ -40,6 +40,7 @@ import WarningDialog from "../../../../dialogs/close-warning";
  */
 interface AssignmentEditorProps {
   i18n: i18nType;
+  selectedAssessment: AssessmentRequest;
   materialEvaluation?: MaterialEvaluationType;
   materialAssignment: MaterialAssignmentType;
   compositeReplies: MaterialCompositeRepliesType;
@@ -89,9 +90,8 @@ class AssignmentEditor extends SessionStateComponent<
   constructor(props: AssignmentEditorProps) {
     super(props, `assignment-editor`);
 
-    const { materialEvaluation, compositeReplies } = props;
-    const { evaluationGradeSystem, evaluationSelectedAssessmentId } =
-      props.evaluations;
+    const { materialEvaluation, compositeReplies, selectedAssessment } = props;
+    const { evaluationGradeSystem } = props.evaluations;
 
     const defaultGrade = `${evaluationGradeSystem[0].grades[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`;
 
@@ -101,7 +101,7 @@ class AssignmentEditor extends SessionStateComponent<
       ? ""
       : defaultGrade;
 
-    const draftId = `${evaluationSelectedAssessmentId.userEntityId}-${props.materialAssignment.id}`;
+    const draftId = `${selectedAssessment.userEntityId}-${props.materialAssignment.id}`;
 
     this.state = {
       ...this.getRecoverStoredState(
@@ -380,11 +380,8 @@ class AssignmentEditor extends SessionStateComponent<
       const gradingScaleIdentifier = `${usedGradeSystem.dataSource}-${usedGradeSystem.id}`;
 
       await this.saveAssignmentEvaluationGradeToServer({
-        workspaceEntityId:
-          this.props.evaluations.evaluationSelectedAssessmentId
-            .workspaceEntityId,
-        userEntityId:
-          this.props.evaluations.evaluationSelectedAssessmentId.userEntityId,
+        workspaceEntityId: this.props.selectedAssessment.workspaceEntityId,
+        userEntityId: this.props.selectedAssessment.userEntityId,
         workspaceMaterialId: this.props.materialAssignment.id,
         dataToSave: {
           assessorIdentifier: this.props.status.userSchoolDataIdentifier,
@@ -399,16 +396,12 @@ class AssignmentEditor extends SessionStateComponent<
       });
     } else if (this.state.assignmentEvaluationType === "INCOMPLETE") {
       this.saveAssignmentEvaluationSupplementationToServer({
-        workspaceEntityId:
-          this.props.evaluations.evaluationSelectedAssessmentId
-            .workspaceEntityId,
-        userEntityId:
-          this.props.evaluations.evaluationSelectedAssessmentId.userEntityId,
+        workspaceEntityId: this.props.selectedAssessment.workspaceEntityId,
+        userEntityId: this.props.selectedAssessment.userEntityId,
         workspaceMaterialId: this.props.materialAssignment.id,
         dataToSave: {
           userEntityId: this.props.status.userId,
-          studentEntityId:
-            this.props.evaluations.evaluationSelectedAssessmentId.userEntityId,
+          studentEntityId: this.props.selectedAssessment.userEntityId,
           workspaceMaterialId: this.props.materialAssignment.id.toString(),
           requestDate: new Date().getTime(),
           requestText: this.state.literalEvaluation,

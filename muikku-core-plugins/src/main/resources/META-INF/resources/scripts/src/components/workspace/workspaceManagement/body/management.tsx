@@ -190,7 +190,8 @@ class ManagementPanel extends React.Component<
    * componentWillReceiveProps
    * @param nextProps nextProps
    */
-  componentWillReceiveProps(nextProps: ManagementPanelProps) {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillReceiveProps(nextProps: ManagementPanelProps) {
     this.setState({
       workspaceName: nextProps.workspace ? nextProps.workspace.name : null,
       workspacePublished: nextProps.workspace
