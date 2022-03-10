@@ -614,53 +614,51 @@ export class DialogRemoveUsers extends React.Component<
             <DialogRow>
               <ApplicationList modifiers="dialog-users">
                 {this.props.users.length > 0 ? (
-                  this.props.users.map((user: SelectItem) => {
-                    return (
-                      <ApplicationListItem
-                        className="course"
-                        classState={
-                          this.checkUserInRemoveList(
-                            user.id as string,
-                            this.props.removeUsers
-                          )
-                            ? "disabled"
-                            : ""
+                  this.props.users.map((user: SelectItem) => (
+                    <ApplicationListItem
+                      className="course"
+                      classState={
+                        this.checkUserInRemoveList(
+                          user.id as string,
+                          this.props.removeUsers
+                        )
+                          ? "disabled"
+                          : ""
+                      }
+                      key={"all-" + user.id}
+                    >
+                      <ApplicationListItemContentWrapper
+                        modifiers="dialog-remove-users"
+                        asideModifiers="user"
+                        aside={
+                          <Avatar
+                            id={
+                              user.variables && user.variables.identifier
+                                ? (user.variables.identifier as number)
+                                : this.getNumberFromUserId(user.id as string)
+                            }
+                            hasImage={
+                              user.variables && user.variables.boolean
+                                ? user.variables.boolean
+                                : false
+                            }
+                            firstName={user.label}
+                            size="small"
+                          />
                         }
-                        key={"all-" + user.id}
                       >
-                        <ApplicationListItemContentWrapper
-                          modifiers="dialog-remove-users"
-                          asideModifiers="user"
-                          aside={
-                            <Avatar
-                              id={
-                                user.variables && user.variables.identifier
-                                  ? (user.variables.identifier as number)
-                                  : this.getNumberFromUserId(user.id as string)
-                              }
-                              hasImage={
-                                user.variables && user.variables.boolean
-                                  ? user.variables.boolean
-                                  : false
-                              }
-                              firstName={user.label}
-                              size="small"
-                            />
-                          }
+                        <ApplicationListItemHeader
+                          onClick={this.toggleUserRemoved.bind(this, user)}
+                          modifiers="course"
                         >
-                          <ApplicationListItemHeader
-                            onClick={this.toggleUserRemoved.bind(this, user)}
-                            modifiers="course"
-                          >
-                            <span className="application-list__header-primary">
-                              {user.label}
-                            </span>
-                            <span className="application-list__header-secondary"></span>
-                          </ApplicationListItemHeader>
-                        </ApplicationListItemContentWrapper>
-                      </ApplicationListItem>
-                    );
-                  })
+                          <span className="application-list__header-primary">
+                            {user.label}
+                          </span>
+                          <span className="application-list__header-secondary"></span>
+                        </ApplicationListItemHeader>
+                      </ApplicationListItemContentWrapper>
+                    </ApplicationListItem>
+                  ))
                 ) : (
                   <div className="empty">{this.props.onEmptyTitle}</div>
                 )}

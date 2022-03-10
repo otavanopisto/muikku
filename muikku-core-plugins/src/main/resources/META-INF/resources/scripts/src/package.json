@@ -42,6 +42,7 @@
     "brace": "^0.10.0",
     "css-loader": "^5.0.1",
     "deep-equal": "^1.0.1",
+    "eslint-plugin": "^1.0.1",
     "fork-ts-checker-webpack-plugin": "6.5.0",
     "mini-css-extract-plugin": "^2.5.3",
     "moment": "^2.29.1",
@@ -83,7 +84,7 @@
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "5.12.1",
     "@typescript-eslint/parser": "5.8.1",
-    "eslint": "8.7.0",
+    "eslint": "^8.10.0",
     "eslint-config-prettier": "8.3.0",
     "eslint-plugin-jsdoc": "37.6.1",
     "eslint-plugin-prettier": "4.0.0",
