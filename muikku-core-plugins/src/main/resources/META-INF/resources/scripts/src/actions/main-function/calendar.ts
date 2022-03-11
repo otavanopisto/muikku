@@ -125,7 +125,7 @@ const loadCalendarEvents: LoadCalendarEventsTriggerType =
           throw err;
         }
         dispatch(
-          actions.displayNotification(getState().i18n.text.get("todo"), "error")
+          actions.displayNotification(getState().i18n.text.get("plugin.calendar.events.load.error"), "error")
         );
         dispatch({
           type: "UPDATE_CALENDAR_EVENTS_STATUS",
@@ -178,7 +178,7 @@ const createCalendarEvent: createCalendarEventTriggerType =
           throw err;
         }
         dispatch(
-          actions.displayNotification(getState().i18n.text.get("todo"), "error")
+          actions.displayNotification(getState().i18n.text.get("plugin.calendar.events.create.error"), "error")
         );
       }
     };
@@ -227,7 +227,7 @@ const updateCalendarEvent: createCalendarEventTriggerType =
           throw err;
         }
         dispatch(
-          actions.displayNotification(getState().i18n.text.get("todo"), "error")
+          actions.displayNotification(getState().i18n.text.get("plugin.calendar.events.update.error"), "error")
         );
       }
     };
@@ -259,7 +259,7 @@ const changeCalendarAttendanceStatus: updateCalendarAttendanceStatusTrigger =
           throw err;
         }
         dispatch(
-          actions.displayNotification(getState().i18n.text.get("todo"), "error")
+          actions.displayNotification(getState().i18n.text.get("plugin.calendar.events.attendance.error"), "error")
         );
       }
     };
@@ -288,7 +288,7 @@ const deleteCalendarEvent: deleteCalendarEventTrigger =
         }
         console.log(err);
         dispatch(
-          actions.displayNotification(getState().i18n.text.get("todo"), "error")
+          actions.displayNotification(getState().i18n.text.get("plugin.calendar.events.delete.error"), "error")
         );
       }
     };
