@@ -57,20 +57,6 @@ export const ResourceTimeline: React.FC<ResourceTimelineProps> = (props) => {
   } = props;
 
   const [events, setEvents] = useState<CalendarEvent[]>([]);
-  const handleDateSelect = (arg: DateSelectArg) => {
-    const currentEvents = events;
-    const newEvents: CalendarEvent[] = currentEvents.concat({
-      title: arg.resource._resource.title,
-      description: "Ohjaussaika opiskelijalle",
-      start: arg.startStr,
-      classNames: ["env-dialog__guidance-event"],
-      overlap: false,
-      end: arg.endStr,
-      resourceId: arg.resource._resource.id,
-    });
-    setEvents(newEvents);
-    onDateSelect(newEvents);
-  };
 
   useEffect(() => {
     let draggableElement = document.getElementById(
@@ -95,6 +81,21 @@ export const ResourceTimeline: React.FC<ResourceTimelineProps> = (props) => {
       },
     });
   }, []);
+
+  const handleDateSelect = (arg: DateSelectArg) => {
+    const currentEvents = events;
+    const newEvents: CalendarEvent[] = currentEvents.concat({
+      title: arg.resource._resource.title,
+      description: "Ohjaussaika opiskelijalle",
+      start: arg.startStr,
+      classNames: ["env-dialog__guidance-event"],
+      overlap: false,
+      end: arg.endStr,
+      resourceId: arg.resource._resource.id,
+    });
+    setEvents(newEvents);
+    onDateSelect(newEvents);
+  };
 
   const externalEventsElements =
     externalEvents &&
