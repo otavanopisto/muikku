@@ -2,4 +2,5 @@
 <jboss-web>
   <context-root>/</context-root>
   <virtual-host>muikku</virtual-host>
+  <max-active-sessions>150</max-active-sessions>
 </jboss-web>
