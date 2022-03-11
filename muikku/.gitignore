@@ -10,3 +10,4 @@
 /.tern-project
 /.cargo/
 /target/
+/dist/
