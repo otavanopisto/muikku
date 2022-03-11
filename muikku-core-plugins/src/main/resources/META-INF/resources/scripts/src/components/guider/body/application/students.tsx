@@ -96,8 +96,9 @@ class GuiderStudents extends BodyScrollLoader<
       "#?" + queryString.stringify(locationData, { arrayFormat: "bracket" });
     return newHash;
   };
+
   /**
-   * onStudentClose
+   * onStudentClose when the student is closed, the hash must be reset
    */
   onStudentClose = () => {
     location.hash = this.getBackByHash();
@@ -107,7 +108,6 @@ class GuiderStudents extends BodyScrollLoader<
    * onStudentClick
    * @param student student
    */
-
   onStudentClick(student: GuiderStudentType) {
     const locationData = queryString.parse(
       document.location.hash.split("?")[1] || "",

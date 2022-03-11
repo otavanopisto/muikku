@@ -16,6 +16,7 @@ export type eventDisplay =
   | "background"
   | "inverse-background"
   | "none";
+
 /**
  *  CalendarEvent
  */
@@ -24,13 +25,17 @@ export interface CalendarEvent {
   title?: string;
   start: string;
   end?: string;
-  overlap?: boolean; // Can the event overlap with others
-  editable?: boolean; // Override for the event
+  /** Can the event overlap with others */
+  overlap?: boolean;
+  /** Override for the event */
+  editable?: boolean;
   classNames?: string[];
   description?: string;
-  display?: eventDisplay; // How the event is displayed in the calendar
+  /** How the event is displayed in the calendar */
+  display?: eventDisplay;
   backgroundColor?: string;
-  resourceId?: string; // Resource
+  /** Fullcalendar Resource */
+  resourceId?: string;
   participants?: Participant[];
 }
 

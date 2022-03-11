@@ -199,10 +199,10 @@ const GuidanceEvent: React.FC<GuidanceEventProps> = (props) => {
         }}
         customButtons={{
           nextWeek: {
-            click: handleWeekChange.bind(this, "next"),
+            click: () => handleWeekChange("next"),
           },
           prevWeek: {
-            click: handleWeekChange.bind(this, "last"),
+            click: () => handleWeekChange("last"),
           },
         }}
         headerToolbar={{
