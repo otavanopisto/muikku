@@ -121,31 +121,32 @@ export const CeeposButton: React.FC<CeeposButtonProps> = (props) => {
     closeDropdown && closeDropdown();
   };
 
+  const Links = guider.availablePurchaseProducts.map((p) => {
+    /**
+     * Link
+     * @param closeDropdown prop drilling for portal
+     * @returns a link
+     */
+    const link = (closeDropdown: () => any) => (
+      <Link
+        key={p.Code}
+        className="link link--full link--purchasable-product-dropdown"
+        onClick={beginOrderCreationProcess.bind(this, p, closeDropdown)}
+      >
+        <span className="link__icon icon-plus"></span>
+        <span>{p.Description}</span>
+      </Link>
+    );
+    return link;
+  });
+
   return (
     <>
       {guider.availablePurchaseProducts &&
       guider.availablePurchaseProducts.length ? (
         <>
           {status.permissions.CREATE_ORDER ? (
-            <Dropdown
-              modifier="guider-products-selection"
-              items={guider.availablePurchaseProducts.map(
-                (p) => (closeDropdown: () => any) =>
-                  (
-                    <Link
-                      className="link link--full link--purchasable-product-dropdown"
-                      onClick={beginOrderCreationProcess.bind(
-                        this,
-                        p,
-                        closeDropdown
-                      )}
-                    >
-                      <span className="link__icon icon-plus"></span>
-                      <span>{p.Description}</span>
-                    </Link>
-                  )
-              )}
-            >
+            <Dropdown modifier="guider-products-selection" items={Links}>
               <ButtonPill
                 icon="cart-plus"
                 buttonModifiers={["create-student-order", "info"]}

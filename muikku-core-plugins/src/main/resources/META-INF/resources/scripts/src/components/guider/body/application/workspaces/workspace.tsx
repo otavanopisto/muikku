@@ -15,6 +15,9 @@ import {
 } from "~/components/general/application-list";
 import { getShortenGradeExtension, shortenGrade } from "~/util/modifiers";
 
+/**
+ * StudentWorkspaceProps
+ */
 interface StudentWorkspaceProps {
   i18n: i18nType;
   workspace: WorkspaceType;

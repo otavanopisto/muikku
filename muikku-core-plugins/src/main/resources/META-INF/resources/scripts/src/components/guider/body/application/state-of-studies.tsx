@@ -10,7 +10,6 @@ import "~/sass/elements/application-sub-panel.scss";
 import "~/sass/elements/avatar.scss";
 import "~/sass/elements/workspace-activity.scss";
 import { getUserImageUrl, getName } from "~/util/modifiers";
-import Hops from "~/components/base/hops_readable";
 import Workspaces from "./workspaces";
 import Ceepos from "./state-of-studies/ceepos";
 import CeeposButton from "./state-of-studies/ceepos-button";
@@ -29,7 +28,7 @@ import NewMessage from "~/components/communicator/dialogs/new-message";
 import { ButtonPill } from "~/components/general/button";
 import GuiderToolbarLabels from "./toolbar/labels";
 
-// import GuidanceEvent from "../../dialogs/guidance-event";
+import GuidanceEvent from "../../dialogs/guidance-event";
 // import { CalendarEvent } from "~/reducers/main-function/calendar";
 // import { ResourceTimeline } from "../../../general/resource-timeline";
 // import { ExternalEventType } from "../../../general/resource-timeline";
@@ -150,13 +149,13 @@ class StateOfStudies extends React.Component<
               buttonModifiers={["new-message", "guider-student"]}
             />
           </NewMessage>
-          {/* Not implemented yet
+          Not implemented yet
           <GuidanceEvent>
             <ButtonPill
               icon="bubbles"
               buttonModifiers={["new-message", "guider-student"]}
             />
-          </GuidanceEvent> */}
+          </GuidanceEvent>
           <GuiderToolbarLabels />
         </div>
       </div>
