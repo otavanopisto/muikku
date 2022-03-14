@@ -92,7 +92,10 @@ class GuiderToolbarLabels extends React.Component<
         <Dropdown
           modifier="guider-labels"
           items={[
-            <div key="update-label" className="form-element">
+            <div
+              key="update-label"
+              className="form-element form-element--new-flag"
+            >
               <input
                 className="form-element__input"
                 value={this.state.labelFilter}
@@ -176,7 +179,7 @@ class GuiderToolbarLabels extends React.Component<
       <Dropdown
         modifier="guider-labels"
         items={[
-          <div key="" className="form-element">
+          <div key="update-label" className="form-element--new-flag">
             <input
               className="form-element__input"
               value={this.state.labelFilter}
@@ -187,7 +190,8 @@ class GuiderToolbarLabels extends React.Component<
               )}
             />
           </div>,
-          <span
+          <Link
+            tabIndex={0}
             key="create-label"
             className="link link--full"
             onClick={this.props.createGuiderFilterLabel.bind(
@@ -196,7 +200,7 @@ class GuiderToolbarLabels extends React.Component<
             )}
           >
             {this.props.i18n.text.get("plugin.guider.flags.create")}
-          </span>,
+          </Link>,
         ].concat(
           this.props.guider.availableFilters.labels
             .filter((item) => filterMatch(item.name, this.state.labelFilter))

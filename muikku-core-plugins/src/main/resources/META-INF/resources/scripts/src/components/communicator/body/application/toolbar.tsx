@@ -309,7 +309,10 @@ class CommunicatorToolbar extends React.Component<
             <Dropdown
               modifier="communicator-labels"
               items={[
-                <div key="update-label" className="form-element">
+                <div
+                  key="update-label"
+                  className="form-element form-element--new-label"
+                >
                   <input
                     className="form-element__input"
                     value={this.state.labelFilter}
@@ -476,7 +479,10 @@ class CommunicatorToolbar extends React.Component<
           onClose={this.resetLabelFilter}
           modifier="communicator-labels"
           items={[
-            <div key="update-label" className="form-element">
+            <div
+              key="update-label"
+              className="form-element form-element--new-label"
+            >
               <input
                 className="form-element__input"
                 value={this.state.labelFilter}
