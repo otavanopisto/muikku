@@ -255,6 +255,7 @@ class WorkspaceNavbar extends React.Component<
                 key="assessment-request"
                 modifier="assessment"
                 content={getTextForAssessmentState(
+                  canCancelRequest,
                   assessmentState.state,
                   this.props.i18n
                 )}
@@ -267,6 +268,7 @@ class WorkspaceNavbar extends React.Component<
                     canCancelRequest
                   )}
                   aria-label={getTextForAssessmentState(
+                    canCancelRequest,
                     assessmentState.state,
                     this.props.i18n
                   )}
@@ -292,7 +294,11 @@ class WorkspaceNavbar extends React.Component<
           )}`}
         />
         <span className="link--menu-text">
-          {getTextForAssessmentState(assessmentState.state, this.props.i18n)}
+          {getTextForAssessmentState(
+            canCancelRequest,
+            assessmentState.state,
+            this.props.i18n
+          )}
         </span>
       </Link>
     ) : null;
@@ -490,6 +496,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(WorkspaceNavbar);
  * @returns localized text
  */
 function getTextForAssessmentState(
+  canCancelRequest: boolean,
   state: WorkspaceAssessementStateType,
   i18n: i18nType
 ) {
@@ -501,7 +508,13 @@ function getTextForAssessmentState(
     case "pending":
     case "pending_pass":
     case "pending_fail":
-      text = "plugin.workspace.dock.evaluation.cancelEvaluationButtonTooltip";
+      if (canCancelRequest) {
+        text = "plugin.workspace.dock.evaluation.cancelEvaluationButtonTooltip";
+      } else {
+        text =
+          "plugin.workspace.dock.evaluation.resendRequestEvaluationButtonTooltip";
+      }
+
       break;
     default:
       text =
@@ -592,7 +605,7 @@ function getPrioritizedAssessmentState(assessmentStates: Assessment[]) {
     "pending_fail",
     "pending_pass",
     "pass",
-    "unassessed"
+    "unassessed",
   ];
 
   /**
