@@ -83,7 +83,7 @@ class GuiderStudents extends BodyScrollLoader<
   }
 
   /**
-   * getBackByHash
+   * getBackByHash clears the selectedStudent hash from the url
    * @returns New hash string
    */
   getBackByHash = (): string => {
