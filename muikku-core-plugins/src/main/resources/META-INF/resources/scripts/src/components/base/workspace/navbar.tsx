@@ -514,7 +514,6 @@ function getTextForAssessmentState(
         text =
           "plugin.workspace.dock.evaluation.resendRequestEvaluationButtonTooltip";
       }
-
       break;
     default:
       text =
