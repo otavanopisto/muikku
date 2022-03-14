@@ -230,14 +230,14 @@ const GuidanceEvent: React.FC<GuidanceEventProps> = (props) => {
     <div className="env-dialog__actions env-dialog__actions--guidance-event">
       <Button
         buttonModifiers="dialog-execute"
-        onClick={handleSaveEvent.bind(this, closeDialog)}
+        onClick={() => handleSaveEvent(closeDialog)}
         disabled={locked}
       >
         {i18n.text.get("plugin.guider.user.addGuidanceEvent.button.save")}
       </Button>
       <Button
         buttonModifiers="dialog-cancel"
-        onClick={handleDialogClose.bind(this, closeDialog)}
+        onClick={() => handleDialogClose(closeDialog)}
       >
         {i18n.text.get("plugin.guider.user.addGuidanceEvent.button.cancel")}
       </Button>
@@ -246,7 +246,7 @@ const GuidanceEvent: React.FC<GuidanceEventProps> = (props) => {
 
   return (
     <EnvironmentDialog
-      executeOnOpen={handleCalendarEventsLoad.bind(this)}
+      executeOnOpen={handleCalendarEventsLoad}
       modifier="guidance-event"
       title={i18n.text.get(
         "plugin.guider.user.actions.reserveGuidanceTime.title"
