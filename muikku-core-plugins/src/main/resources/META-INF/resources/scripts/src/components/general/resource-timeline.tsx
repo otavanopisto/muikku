@@ -12,6 +12,10 @@ import interactionPlugin, {
 import { CalendarEvent } from "~/reducers/main-function/calendar";
 import "../../sass/elements/resource-timeline.scss";
 
+
+/**
+ * A type for external draggable events
+ */
 export type ExternalEventType = {
   title: string;
   id: number;
@@ -19,17 +23,27 @@ export type ExternalEventType = {
   duration: string;
 };
 
+/**
+ * Calendar header toolbar
+ */
 export type HeaderToolbarType = {
   left: string;
   center: string;
   right: string;
 };
 
+
+/**
+ * Calendar resource type
+ */
 export type ResourceType = {
   id: string;
   title: string;
 };
 
+/**
+ * ResourceTimelineProps
+ */
 interface ResourceTimelineProps {
   headerToolbar?: HeaderToolbarType;
   resourceHeaderContent: string;
@@ -40,23 +54,26 @@ interface ResourceTimelineProps {
   onDateSelect: (events: CalendarEvent[]) => void;
 }
 
-const defaultTimelineProps = {
-  selectable: false,
-};
+/**
+ * ResourceTimeline
+ *
+ * @param props
+ * @returns JSX.Element
+ */
 export const ResourceTimeline: React.FC<ResourceTimelineProps> = (props) => {
-  props = { ...defaultTimelineProps, ...props };
 
   const {
     headerToolbar,
     resourceHeaderContent,
     resources,
     externalEvents,
-    selectable,
+    selectable = false,
     namespace,
     onDateSelect,
   } = props;
 
   const [events, setEvents] = useState<CalendarEvent[]>([]);
+
 
   useEffect(() => {
     let draggableElement = document.getElementById(
@@ -82,6 +99,11 @@ export const ResourceTimeline: React.FC<ResourceTimelineProps> = (props) => {
     });
   }, []);
 
+
+  /**
+   * handleDateSelect handles date a date select in calendar
+   * @param arg
+   */
   const handleDateSelect = (arg: DateSelectArg) => {
     const currentEvents = events;
     const newEvents: CalendarEvent[] = currentEvents.concat({
