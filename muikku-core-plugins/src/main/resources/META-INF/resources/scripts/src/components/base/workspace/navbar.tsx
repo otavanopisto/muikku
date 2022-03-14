@@ -592,6 +592,7 @@ function getPrioritizedAssessmentState(assessmentStates: Assessment[]) {
     "pending_fail",
     "pending_pass",
     "pass",
+    "unassessed"
   ];
 
   /**
