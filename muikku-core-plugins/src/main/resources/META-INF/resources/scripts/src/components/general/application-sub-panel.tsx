@@ -136,7 +136,13 @@ const ApplicationSubPanelItemData: React.FunctionComponent<
           : ""
       }`}
     >
-      {props.children}
+      {React.Children.count(props.children) > 1 ? (
+        props.children
+      ) : (
+        <span className="application-sub-panel__single-entry">
+          {props.children}
+        </span>
+      )}
     </div>
   </div>
 );
