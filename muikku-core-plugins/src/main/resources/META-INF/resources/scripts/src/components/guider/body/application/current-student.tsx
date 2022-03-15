@@ -386,7 +386,6 @@ class CurrentStudent extends React.Component<
       </div>
     );
 
-
     /**
      * IsStudentPartOfProperStudyProgram
      * @param studyProgramName
