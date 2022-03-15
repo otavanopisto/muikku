@@ -32,6 +32,7 @@ import { bindActionCreators } from "redux";
 import { StateType } from "~/reducers";
 import { GuiderType, GuiderStudentType } from "~/reducers/main-function/guider";
 import { ButtonPill } from "~/components/general/button";
+import { AnyActionType } from "~/actions";
 
 /**
  * GuiderToolbarLabelsProps
@@ -94,7 +95,7 @@ class GuiderToolbarLabels extends React.Component<
           items={[
             <div
               key="update-label"
-              className="form-element form-element--new-flag"
+              className="form-element form-element--new-label"
             >
               <input
                 className="form-element__input"
@@ -179,7 +180,10 @@ class GuiderToolbarLabels extends React.Component<
       <Dropdown
         modifier="guider-labels"
         items={[
-          <div key="update-label" className="form-element--new-flag">
+          <div
+            key="update-label"
+            className="form-element form-element--new-label"
+          >
             <input
               className="form-element__input"
               value={this.state.labelFilter}
@@ -262,7 +266,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     {
       createGuiderFilterLabel,
