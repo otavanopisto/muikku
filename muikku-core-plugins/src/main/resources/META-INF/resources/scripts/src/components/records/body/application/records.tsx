@@ -139,7 +139,9 @@ const RecordsAssessment: React.FC<AssessmentProps> = (props) => {
     return null;
   }
 
-  if (assessment.grade) {
+  // We can have situation where course module has PASSED assessment and also it's state is INCOMPLETE
+  // as it has been evaluated as incomplete after evaluated as PASSED
+  if (assessment.grade && assessment.state !== "incomplete") {
     return (
       <span
         title={
@@ -188,15 +190,17 @@ const RecordsAssessment: React.FC<AssessmentProps> = (props) => {
       return (
         <span
           title={
-            i18n.text.get(
-              "plugin.records.workspace.evaluated",
-              i18n.time.format(assessment.date)
-            ) + getShortenGradeExtension(assessment.grade)
+            assessment.grade
+              ? i18n.text.get(
+                  "plugin.records.workspace.evaluated",
+                  i18n.time.format(assessment.date)
+                ) + getShortenGradeExtension(assessment.grade)
+              : ""
           }
           className={`application-list__indicator-badge application-list__indicator-badge--course ${
-            assessment.state === "unassessed" ? "state-UNASSESSED" : null
+            assessment.state === "unassessed" ? "state-UNASSESSED" : ""
           }`}
-          style={{ color: "black" }}
+          style={{ color: "#000" }}
         >
           -
         </span>

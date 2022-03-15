@@ -539,7 +539,9 @@ const GuiderAssessment: React.FC<GuiderAssessmentProps> = (props) => {
   const { assessment, i18n } = props;
 
   if (assessment) {
-    if (assessment.grade) {
+    // We can have situation where course module has PASSED assessment and also it's state is INCOMPLETE
+    // as it has been evaluated as incomplete after evaluated as PASSED
+    if (assessment.grade && assessment.state !== "incomplete") {
       const modifier =
         assessment.state === "pass" || assessment.state === "pending_pass"
           ? "state-PASSED"
