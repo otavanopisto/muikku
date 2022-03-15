@@ -281,7 +281,7 @@ export class Evaluation extends React.Component<
   };
 
   /**
-   * Shows hidden evaluation assignment if its hasbeen submitted and assignment
+   * Shows hidden evaluation assignment if it's has been submitted and assignment
    * is set to be hidden
    *
    * @param compositeReply assignment compositereply
