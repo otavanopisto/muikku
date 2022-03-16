@@ -260,6 +260,7 @@
 
 .dialog__close {
   @include prefix(transition, moz ms o webkit, background-color 0.3s);
+
   border-radius: $dialog-button-close-height;
   cursor: pointer;
   font-size: 18px;
