@@ -37,9 +37,7 @@ import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.users.UserIdentifierProperty;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
-import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.User;
-import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.session.SessionController;
@@ -77,9 +75,6 @@ public class UserEntityController implements Serializable {
   
   @Inject
   private UserEmailEntityDAO userEmailEntityDAO;
-
-  @Inject
-  private UserGroupController userGroupController;
 
   @Inject
   private UserGroupEntityController userGroupEntityController;
@@ -306,29 +301,33 @@ public class UserEntityController implements Serializable {
   
   // There should be a better way to check if logged user is guidance counselor, I did not come up with anything else for this distress
   public boolean isGuidanceCounselor() {
-      UserEntity loggedUserEntity = sessionController.getLoggedUserEntity();
-      Boolean isCounselor = Boolean.FALSE;
-      List<UserGroupEntity> userGroupEntities = userGroupEntityController.listUserGroupsByUserIdentifier(loggedUserEntity.defaultSchoolDataIdentifier());
-      
-      userGroupEntities:
-      for (UserGroupEntity userGroupEntity : userGroupEntities) {
-        UserGroup userGroup = userGroupController.findUserGroup(userGroupEntity);
+    UserEntity loggedUserEntity = sessionController.getLoggedUserEntity();
+    EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(loggedUserEntity);
+    Boolean isCounselor = false;
 
-        if (userGroup.getIsGuidanceGroup()) {
-          List<GroupUser> groupUsers = userGroupController.listUserGroupStaffMembers(userGroup);
-
-          for (GroupUser groupUser : groupUsers) {
-            User user = userGroupController.findUserByGroupUser(groupUser);
-            
-            if (loggedUserEntity.equals(findUserEntityByUser(user))) {
-            isCounselor = Boolean.TRUE;
-            break userGroupEntities;
+    if (roleEntity == null || roleEntity.getArchetype() == EnvironmentRoleArchetype.STUDENT) {
+      return isCounselor;
+    }
+    List<UserGroupEntity> userGroupEntities = userGroupEntityController.listUserGroupsByUserIdentifier(loggedUserEntity.defaultSchoolDataIdentifier());
+    for (UserGroupEntity userGroupEntity : userGroupEntities) {
+      for (SearchProvider searchProvider : searchProviders) {
+        if (StringUtils.equals(searchProvider.getName(), "elastic-search")) {
+          SearchResult searchResult = searchProvider.findUserGroup(userGroupEntity.schoolDataIdentifier());
+          if (searchResult.getTotalHitCount() > 0) {
+            List<Map<String, Object>> results = searchResult.getResults();
+              for (Map<String, Object> result : results) {
+                isCounselor = (Boolean) result.get("isGuidanceGroup");
+                if (isCounselor) {
+                  break;
+                
+              }
             }
           }
         }
       }
-      return isCounselor;
     }
+    return isCounselor;
+  }
   
 
   public List<UserEntity> listUserEntities() {
