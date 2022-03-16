@@ -3803,8 +3803,7 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
           throw err;
         }
 
-        if(data.updateLinked){
-
+        if (data.updateLinked) {
           dispatch({
             type: "UPDATE_MATERIAL_CONTENT_NODE",
             payload: {

@@ -1,19 +1,13 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import Link from "~/components/general/link";
 import Dialog from "~/components/general/dialog";
 import { AnyActionType } from "~/actions";
 import { i18nType } from "~/reducers/base/i18n";
-
 import "~/sass/elements/link.scss";
 import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
 import { bindActionCreators } from "redux";
-import {
-  WorkspaceType,
-  MaterialContentNodeType,
-  WorkspaceMaterialEditorType,
-} from "~/reducers/workspaces";
+import { WorkspaceMaterialEditorType } from "~/reducers/workspaces";
 import {
   setWorkspaceMaterialEditorState,
   SetWorkspaceMaterialEditorStateTriggerType,
@@ -21,6 +15,9 @@ import {
   UpdateWorkspaceMaterialContentNodeTriggerType,
 } from "~/actions/workspaces";
 
+/**
+ * ConfirmPublishRemovePageWithLinkedAnswersDialogProps
+ */
 interface ConfirmPublishRemovePageWithLinkedAnswersDialogProps {
   i18n: i18nType;
   materialEditor: WorkspaceMaterialEditorType;
@@ -28,14 +25,25 @@ interface ConfirmPublishRemovePageWithLinkedAnswersDialogProps {
   updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType;
 }
 
+/**
+ * ConfirmPublishRemovePageWithLinkedAnswersDialogState
+ */
 interface ConfirmPublishRemovePageWithLinkedAnswersDialogState {
   locked: boolean;
 }
 
+/**
+ * ConfirmPublishRemovePageWithLinkedAnswersDialog
+ */
 class ConfirmPublishRemovePageWithLinkedAnswersDialog extends React.Component<
   ConfirmPublishRemovePageWithLinkedAnswersDialogProps,
   ConfirmPublishRemovePageWithLinkedAnswersDialogState
 > {
+  /**
+   * Constructor method
+   *
+   * @param props props
+   */
   constructor(props: ConfirmPublishRemovePageWithLinkedAnswersDialogProps) {
     super(props);
     this.state = {
@@ -45,6 +53,12 @@ class ConfirmPublishRemovePageWithLinkedAnswersDialog extends React.Component<
     this.cancel = this.cancel.bind(this);
     this.confirm = this.confirm.bind(this);
   }
+
+  /**
+   * confirm
+   *
+   * @param closeDialog closeDialog
+   */
   confirm(closeDialog: () => any) {
     this.setState({
       locked: true,
@@ -56,12 +70,18 @@ class ConfirmPublishRemovePageWithLinkedAnswersDialog extends React.Component<
       update: this.props.materialEditor.currentDraftNodeValue,
       removeAnswers: true,
       updateLinked: true,
+      /**
+       * success
+       */
       success: () => {
         this.setState({
           locked: false,
         });
         closeDialog();
       },
+      /**
+       * fail
+       */
       fail: () => {
         this.setState({
           locked: false,
@@ -69,6 +89,12 @@ class ConfirmPublishRemovePageWithLinkedAnswersDialog extends React.Component<
       },
     });
   }
+
+  /**
+   * cancel
+   *
+   * @param closeDialog closeDialog
+   */
   cancel(closeDialog?: () => any) {
     closeDialog && closeDialog();
     this.props.setWorkspaceMaterialEditorState({
@@ -76,8 +102,20 @@ class ConfirmPublishRemovePageWithLinkedAnswersDialog extends React.Component<
       showRemoveAnswersDialogForPublish: false,
     });
   }
+
+  /**
+   * Component render method
+   *
+   * @returns JSX.Element
+   */
   render() {
-    let content = (closeDialog: () => any) => (
+    /**
+     * content
+     *
+     * @param closeDialog closeDialog
+     * @returns JSX.Element
+     */
+    const content = (closeDialog: () => any) => (
       <div>
         <span>
           {this.props.i18n.text.get(
@@ -87,30 +125,34 @@ class ConfirmPublishRemovePageWithLinkedAnswersDialog extends React.Component<
       </div>
     );
 
-    let footer = (closeDialog: () => any) => {
-      return (
-        <div className="dialog__button-set">
-          <Button
-            buttonModifiers={["standard-ok", "fatal"]}
-            onClick={this.confirm.bind(this, closeDialog)}
-            disabled={this.state.locked}
-          >
-            {this.props.i18n.text.get(
-              "plugin.workspace.materialsManagement.confirmPublishPageWithAnswers.confirmButton"
-            )}
-          </Button>
-          <Button
-            buttonModifiers={["cancel", "standard-cancel"]}
-            onClick={this.cancel.bind(this, closeDialog)}
-            disabled={this.state.locked}
-          >
-            {this.props.i18n.text.get(
-              "plugin.workspace.materialsManagement.confirmPublishPageWithAnswers.cancelButton"
-            )}
-          </Button>
-        </div>
-      );
-    };
+    /**
+     * footer
+     *
+     * @param closeDialog closeDialog
+     * @returns JSX.Element
+     */
+    const footer = (closeDialog: () => any) => (
+      <div className="dialog__button-set">
+        <Button
+          buttonModifiers={["standard-ok", "fatal"]}
+          onClick={this.confirm.bind(this, closeDialog)}
+          disabled={this.state.locked}
+        >
+          {this.props.i18n.text.get(
+            "plugin.workspace.materialsManagement.confirmPublishPageWithAnswers.confirmButton"
+          )}
+        </Button>
+        <Button
+          buttonModifiers={["cancel", "standard-cancel"]}
+          onClick={this.cancel.bind(this, closeDialog)}
+          disabled={this.state.locked}
+        >
+          {this.props.i18n.text.get(
+            "plugin.workspace.materialsManagement.confirmPublishPageWithAnswers.cancelButton"
+          )}
+        </Button>
+      </div>
+    );
 
     return (
       <Dialog
@@ -129,6 +171,11 @@ class ConfirmPublishRemovePageWithLinkedAnswersDialog extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ *
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -136,6 +183,11 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ *
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     { setWorkspaceMaterialEditorState, updateWorkspaceMaterialContentNode },
