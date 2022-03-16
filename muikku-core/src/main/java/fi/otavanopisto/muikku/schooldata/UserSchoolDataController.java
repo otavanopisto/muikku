@@ -17,6 +17,8 @@ import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.rest.OrganizationContactPerson;
+import fi.otavanopisto.muikku.rest.StudentContactLogEntryCommentRestModel;
+import fi.otavanopisto.muikku.rest.StudentContactLogEntryRestModel;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
 import fi.otavanopisto.muikku.schooldata.entity.Role;
@@ -97,6 +99,38 @@ public class UserSchoolDataController {
   }
   
   /* User */
+  
+  public BridgeResponse<List<StudentContactLogEntryRestModel>> listStudentContactLogEntries(String dataSource, SchoolDataIdentifier userIdentifier) {
+    return getUserBridge(dataSource).listStudentContactLogEntriesByStudent(userIdentifier);
+  }
+  
+  public BridgeResponse<StudentContactLogEntryRestModel> createStudentContactLogEntry(String dataSource, SchoolDataIdentifier userIdentifier, StudentContactLogEntryRestModel payload) {
+    return getUserBridge(dataSource).createStudentContactLogEntry(userIdentifier,payload);
+  }
+  
+  public BridgeResponse<StudentContactLogEntryRestModel> updateStudentContactLogEntry(String dataSource, SchoolDataIdentifier userIdentifier, Long contactLogEntryId, StudentContactLogEntryRestModel payload) {
+    return getUserBridge(dataSource).updateStudentContactLogEntry(userIdentifier, contactLogEntryId, payload);
+  }
+  
+  public void removeStudentContactLogEntry(String dataSource, SchoolDataIdentifier studentIdentifier, Long contactLogEntryId) {
+    getUserBridge(dataSource).removeStudentContactLogEntry(studentIdentifier, contactLogEntryId);
+  }
+  
+  public BridgeResponse<List<StudentContactLogEntryCommentRestModel>> listStudentContactLogEntryCommentsByStudentAndEntryId(String dataSource, SchoolDataIdentifier userIdentifier, Long entryId) {
+    return getUserBridge(dataSource).listStudentContactLogEntryCommentsByStudentAndId(userIdentifier, entryId);
+  }
+  
+  public BridgeResponse<StudentContactLogEntryCommentRestModel> createStudentContactLogEntryComment(String dataSource, SchoolDataIdentifier userIdentifier, StudentContactLogEntryCommentRestModel payload) {
+    return getUserBridge(dataSource).createStudentContactLogEntryComment(userIdentifier,payload);
+  }
+  
+  public BridgeResponse<StudentContactLogEntryCommentRestModel> updateStudentContactLogEntryComment(String dataSource, SchoolDataIdentifier userIdentifier, Long commentId, StudentContactLogEntryCommentRestModel payload) {
+    return getUserBridge(dataSource).updateStudentContactLogEntryComment(userIdentifier, commentId, payload);
+  }
+  
+  public void removeStudentContactLogEntryComment(String dataSource, SchoolDataIdentifier studentIdentifier, Long commentId) {
+    getUserBridge(dataSource).removeStudentContactLogEntryComment(studentIdentifier, commentId);
+  }
   
   public BridgeResponse<List<OrganizationContactPerson>> listOrganizationContactPersons(String dataSource, String organizationIdentifier) {
     return getUserBridge(dataSource).listOrganizationContactPersonsByOrganization(organizationIdentifier);

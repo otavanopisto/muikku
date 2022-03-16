@@ -33,10 +33,13 @@ import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.UserEmailEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserEntityProperty;
+import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.users.UserIdentifierProperty;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.User;
+import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.session.SessionController;
@@ -74,6 +77,12 @@ public class UserEntityController implements Serializable {
   
   @Inject
   private UserEmailEntityDAO userEmailEntityDAO;
+
+  @Inject
+  private UserGroupController userGroupController;
+
+  @Inject
+  private UserGroupEntityController userGroupEntityController;
 
   @Inject
   @Any
@@ -294,6 +303,33 @@ public class UserEntityController implements Serializable {
     EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(userEntity);
     return roleEntity == null || roleEntity.getArchetype() == EnvironmentRoleArchetype.STUDENT;
   }
+  
+  // There should be a better way to check if logged user is guidance counselor, I did not come up with anything else for this distress
+  public boolean isGuidanceCounselor() {
+      UserEntity loggedUserEntity = sessionController.getLoggedUserEntity();
+      Boolean isCounselor = Boolean.FALSE;
+      List<UserGroupEntity> userGroupEntities = userGroupEntityController.listUserGroupsByUserIdentifier(loggedUserEntity.defaultSchoolDataIdentifier());
+      
+      userGroupEntities:
+      for (UserGroupEntity userGroupEntity : userGroupEntities) {
+        UserGroup userGroup = userGroupController.findUserGroup(userGroupEntity);
+
+        if (userGroup.getIsGuidanceGroup()) {
+          List<GroupUser> groupUsers = userGroupController.listUserGroupStaffMembers(userGroup);
+
+          for (GroupUser groupUser : groupUsers) {
+            User user = userGroupController.findUserByGroupUser(groupUser);
+            
+            if (loggedUserEntity.equals(findUserEntityByUser(user))) {
+            isCounselor = Boolean.TRUE;
+            break userGroupEntities;
+            }
+          }
+        }
+      }
+      return isCounselor;
+    }
+  
 
   public List<UserEntity> listUserEntities() {
     return userEntityDAO.listAll();
