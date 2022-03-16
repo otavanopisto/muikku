@@ -260,13 +260,12 @@
 
 .dialog__close {
   @include prefix(transition, moz ms o webkit, background-color 0.3s);
-
   border-radius: $dialog-button-close-height;
   cursor: pointer;
   font-size: 18px;
   height: $dialog-button-close-height;
   line-height: $dialog-button-close-height;
-  margin-top: -#{$dialog-button-close-height / 2};
+  margin-top: calc(-#{$dialog-button-close-height} / 2);
   position: absolute;
   right: 5px;
   text-align: center;

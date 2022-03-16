@@ -136,8 +136,8 @@
   content: " ";
   height: #{$size}px;
   left: 50%;
-  margin-left: -#{$size / 2}px;
-  margin-top: -#{$size / 2}px;
+  margin-left: calc(-#{$size} / 2);
+  margin-top: calc(-#{$size} / 2);
   position: absolute;
   top: 50%;
   width: #{$size}px;
