@@ -49,6 +49,8 @@ import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserIdentifierProperty;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
+import fi.otavanopisto.muikku.model.workspace.Mandatority;
+import fi.otavanopisto.muikku.model.workspace.EducationTypeMapping;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.StudiesViewCourseChoiceController;
@@ -605,6 +607,8 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
         .addSort(new Sort("name.untouched", Sort.Order.ASC))
         .search();
       
+      EducationTypeMapping educationTypeMapping = workspaceEntityController.getEducationTypeMapping(); 
+
       List<Map<String, Object>> results = searchResult.getResults();
       for (Map<String, Object> result : results) {
         String searchId = (String) result.get("id");
@@ -640,7 +644,9 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
                 SchoolDataIdentifier educationSubtypeId = SchoolDataIdentifier.fromId((String) result.get("educationSubtypeIdentifier"));
                 
                 if (educationSubtypeId != null) {
-                  mandatority = getMandatority(educationSubtypeId); 
+                  if (educationTypeMapping != null) {
+                    mandatority = educationTypeMapping.getMandatority(educationSubtypeId);
+                  }
                 }
               }
               
@@ -656,22 +662,6 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     }
 
     return Response.ok(workspaces).build();
-  }
-  
-  private Mandatority getMandatority(SchoolDataIdentifier educationSubtypeId) {
-    Mandatority mandatority = null;
-    EducationTypeMapping educationTypeMapping = new EducationTypeMapping();
-    
-    String educationTypeMappingString = pluginSettingsController.getPluginSetting("transcriptofrecords", "educationTypeMapping");
-    if (educationTypeMappingString != null) {
-      try {
-        educationTypeMapping = new ObjectMapper().readValue(educationTypeMappingString, EducationTypeMapping.class);                        
-        mandatority = educationTypeMapping.getMandatority(educationSubtypeId);
-      } catch (Exception e) {
-        logger.severe(String.format("Education type mapping failed with %s", educationTypeMappingString));
-      }
-    }
-    return mandatority;
   }
   
   private fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace createRestModel(

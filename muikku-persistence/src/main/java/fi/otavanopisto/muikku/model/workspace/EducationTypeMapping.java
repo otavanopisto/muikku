@@ -1,4 +1,4 @@
-package fi.otavanopisto.muikku.plugins.transcriptofrecords.rest;
+package fi.otavanopisto.muikku.model.workspace;
 
 import java.util.ArrayList;
 import java.util.List;

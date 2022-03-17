@@ -62,10 +62,8 @@ import org.jboss.resteasy.annotations.GZIP;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.otavanopisto.muikku.controller.PermissionController;
-import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.controller.messaging.MessagingWidget;
 import fi.otavanopisto.muikku.files.TempFileUtils;
 import fi.otavanopisto.muikku.i18n.LocaleController;
@@ -77,6 +75,8 @@ import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserEntityProperty;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
+import fi.otavanopisto.muikku.model.workspace.EducationTypeMapping;
+import fi.otavanopisto.muikku.model.workspace.Mandatority;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialProducer;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
@@ -96,8 +96,6 @@ import fi.otavanopisto.muikku.plugins.material.model.Material;
 import fi.otavanopisto.muikku.plugins.material.model.MaterialViewRestrict;
 import fi.otavanopisto.muikku.plugins.search.UserIndexer;
 import fi.otavanopisto.muikku.plugins.search.WorkspaceIndexer;
-import fi.otavanopisto.muikku.plugins.transcriptofrecords.rest.EducationTypeMapping;
-import fi.otavanopisto.muikku.plugins.transcriptofrecords.rest.Mandatority;
 import fi.otavanopisto.muikku.plugins.workspace.ContentNode;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceEntityFileController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceJournalController;
@@ -285,8 +283,6 @@ public class WorkspaceRESTService extends PluginRESTService {
   @Inject
   private ChatController chatController;
   
-  @Inject 
-  private PluginSettingsController pluginSettingsController;
   @GET
   @Path("/workspaceTypes")
   @RESTPermit (requireLoggedIn = false, handling = Handling.UNSECURED)
@@ -375,7 +371,10 @@ public class WorkspaceRESTService extends PluginRESTService {
     SchoolDataIdentifier educationSubtypeId = workspace.getEducationSubtypeIdentifier();
     
     if (educationSubtypeId != null) {
-      mandatority = getMandatority(educationSubtypeId); 
+      EducationTypeMapping educationTypeMapping = workspaceEntityController.getEducationTypeMapping();
+      if (educationTypeMapping != null) {
+        mandatority = educationTypeMapping.getMandatority(educationSubtypeId);
+      }
     }
     
     // #2599: Also copy workspace default license and producers
@@ -605,7 +604,8 @@ public class WorkspaceRESTService extends PluginRESTService {
       }
       
       List<OrganizationRestriction> organizationRestrictions = organizationEntityController.listUserOrganizationRestrictions(loggedUserOrganizations, publicityRestriction, templateRestriction);
-      
+      EducationTypeMapping educationTypeMapping = workspaceEntityController.getEducationTypeMapping();
+
       searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, educationTypes, 
           curriculums, organizationRestrictions, searchString, null, null, firstResult, maxResults, sorts);
       
@@ -643,7 +643,9 @@ public class WorkspaceRESTService extends PluginRESTService {
                 SchoolDataIdentifier educationSubtypeId = SchoolDataIdentifier.fromId((String) result.get("educationSubtypeIdentifier"));
                 
                 if (educationSubtypeId != null) {
-                  mandatority = getMandatority(educationSubtypeId); 
+                  if (educationTypeMapping != null) {
+                    mandatority = educationTypeMapping.getMandatority(educationSubtypeId);
+                  }
                 }
               }
               
@@ -712,7 +714,11 @@ public class WorkspaceRESTService extends PluginRESTService {
     SchoolDataIdentifier educationSubtypeId = workspace.getEducationSubtypeIdentifier();
     
     if (educationSubtypeId != null) {
-      mandatority = getMandatority(educationSubtypeId); 
+      EducationTypeMapping educationTypeMapping = workspaceEntityController.getEducationTypeMapping();
+      
+      if (educationTypeMapping != null) {
+        mandatority = educationTypeMapping.getMandatority(educationSubtypeId);
+      }
     }
   
     return Response.ok(createRestModel(
@@ -726,22 +732,6 @@ public class WorkspaceRESTService extends PluginRESTService {
     )).build();
   }
 
-private Mandatority getMandatority(SchoolDataIdentifier educationSubtypeId) {
-  Mandatority mandatority = null;
-  EducationTypeMapping educationTypeMapping = new EducationTypeMapping();
-  
-  String educationTypeMappingString = pluginSettingsController.getPluginSetting("transcriptofrecords", "educationTypeMapping");
-  if (educationTypeMappingString != null) {
-    try {
-      educationTypeMapping = new ObjectMapper().readValue(educationTypeMappingString, EducationTypeMapping.class);                        
-      mandatority = educationTypeMapping.getMandatority(educationSubtypeId);
-    } catch (Exception e) {
-      logger.severe(String.format("Education type mapping failed with %s", educationTypeMappingString));
-    }
-  }
-  return mandatority;
-}
-  
   @GET
   @Path("/workspaces/{ID}/description")
   @RESTPermit (handling = Handling.INLINE)

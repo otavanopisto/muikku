@@ -1,4 +1,4 @@
-package fi.otavanopisto.muikku.plugins.transcriptofrecords.rest;
+package fi.otavanopisto.muikku.model.workspace;
 
 public enum Mandatority {
   MANDATORY,

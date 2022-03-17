@@ -3,7 +3,7 @@ package fi.otavanopisto.muikku.plugins.coursepicker;
 import java.util.Date;
 import java.util.List;
 
-import fi.otavanopisto.muikku.plugins.transcriptofrecords.rest.Mandatority;
+import fi.otavanopisto.muikku.model.workspace.Mandatority;
 import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
 
 public class CoursePickerWorkspace {
