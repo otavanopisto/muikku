@@ -20,7 +20,8 @@ import "~/sass/elements/rich-text.scss";
  */
 interface EvaluationEventContentCardProps extends EvaluationEvent {
   i18n: i18nType;
-  showDeleteAndModify: boolean;
+  showModifyLink: boolean;
+  showDeleteLink: boolean;
   selectedAssessment: AssessmentRequest;
   onClickEdit: (
     eventId: string,
@@ -41,7 +42,8 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
 
   const {
     i18n,
-    showDeleteAndModify,
+    showModifyLink,
+    showDeleteLink,
     onClickEdit,
     selectedAssessment,
     ...event
@@ -283,27 +285,32 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
           />
         </AnimateHeight>
 
-        {showDeleteAndModify ? (
+        {showModifyLink || showDeleteLink ? (
           <div className="evaluation-modal__event-buttonset">
-            <Link
-              className="link link--evaluation-event-edit"
-              onClick={onClickEdit(
-                identifier,
-                workspaceSubjectIdentifier,
-                type === EvaluationEnum.SUPPLEMENTATION_REQUEST
-              )}
-            >
-              {i18n.text.get(
-                "plugin.evaluation.evaluationModal.events.editButton"
-              )}
-            </Link>
-            <DeleteDialog eventData={event}>
-              <Link className="link link--evaluation-event-delete">
+            {showModifyLink && (
+              <Link
+                className="link link--evaluation-event-edit"
+                onClick={onClickEdit(
+                  identifier,
+                  workspaceSubjectIdentifier,
+                  type === EvaluationEnum.SUPPLEMENTATION_REQUEST
+                )}
+              >
                 {i18n.text.get(
-                  "plugin.evaluation.evaluationModal.events.deleteButton"
+                  "plugin.evaluation.evaluationModal.events.editButton"
                 )}
               </Link>
-            </DeleteDialog>
+            )}
+
+            {showDeleteLink && (
+              <DeleteDialog eventData={event}>
+                <Link className="link link--evaluation-event-delete">
+                  {i18n.text.get(
+                    "plugin.evaluation.evaluationModal.events.deleteButton"
+                  )}
+                </Link>
+              </DeleteDialog>
+            )}
           </div>
         ) : null}
       </div>
