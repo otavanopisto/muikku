@@ -143,3 +143,10 @@
     position: relative;
   }
 }
+
+.dropdown--guider-labels,
+.dropdown--communicator-labels {
+  .dropdown__container {
+    overflow-y: auto;
+  }
+}
