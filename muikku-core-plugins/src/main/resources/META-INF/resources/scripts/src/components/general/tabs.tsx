@@ -33,8 +33,6 @@ export interface Tab {
  */
 interface TabsProps {
   onTabChange: (id: string, hash?: string | Tab) => void;
-  /** An array of all tab ids for swiper*/
-  allTabs: string[];
   activeTab: string;
   /** General class modifier */
   modifier?: string;
