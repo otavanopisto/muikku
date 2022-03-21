@@ -56,6 +56,9 @@ const ApplicationSubPanelHeader: React.FC<{ modifier?: string }> = (props) => (
   </div>
 );
 
+/**
+ * SubPanelViewHeaderProps
+ */
 interface SubPanelViewHeaderProps {
   title: string;
   titleDetail?: string;
@@ -63,6 +66,11 @@ interface SubPanelViewHeaderProps {
   aside?: string | JSX.Element;
 }
 
+/**
+ * ApplicationSubPanelViewHeader
+ * @param props
+ * @returns JSX.Element
+ */
 export const ApplicationSubPanelViewHeader: React.FC<
   SubPanelViewHeaderProps
 > = (props) => (

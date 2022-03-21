@@ -1,17 +1,10 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
-import FullCalendar, {
-  DateSelectArg,
-  EventClickArg,
-} from "@fullcalendar/react";
+import FullCalendar, { DateSelectArg } from "@fullcalendar/react";
 import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
-import interactionPlugin, {
-  Draggable,
-  EventResizeStopArg,
-} from "@fullcalendar/interaction";
+import interactionPlugin, { Draggable } from "@fullcalendar/interaction";
 import { CalendarEvent } from "~/reducers/main-function/calendar";
 import "../../sass/elements/resource-timeline.scss";
-
 
 /**
  * A type for external draggable events
@@ -31,7 +24,6 @@ export type HeaderToolbarType = {
   center: string;
   right: string;
 };
-
 
 /**
  * Calendar resource type
@@ -61,7 +53,6 @@ interface ResourceTimelineProps {
  * @returns JSX.Element
  */
 export const ResourceTimeline: React.FC<ResourceTimelineProps> = (props) => {
-
   const {
     headerToolbar,
     resourceHeaderContent,
@@ -74,14 +65,18 @@ export const ResourceTimeline: React.FC<ResourceTimelineProps> = (props) => {
 
   const [events, setEvents] = useState<CalendarEvent[]>([]);
 
-
   useEffect(() => {
-    let draggableElement = document.getElementById(
+    const draggableElement = document.getElementById(
       `externalEvents${namespace}`
     );
 
     new Draggable(draggableElement, {
       itemSelector: ".resource-timeline__draggable-event",
+      /**
+       * eventData
+       * @param element
+       * @returns a draggable element
+       */
       eventData: function (element) {
         const id = element.dataset.id;
         const title = element.getAttribute("title");
@@ -98,7 +93,6 @@ export const ResourceTimeline: React.FC<ResourceTimelineProps> = (props) => {
       },
     });
   }, []);
-
 
   /**
    * handleDateSelect handles date a date select in calendar
