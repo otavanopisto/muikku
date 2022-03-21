@@ -32,13 +32,9 @@ export interface Tab {
  * TabsProps
  */
 interface TabsProps {
-<<<<<<< HEAD
-  onTabChange: (id: string) => void;
-=======
   onTabChange: (id: string, hash?: string | Tab) => void;
   /** An array of all tab ids for swiper*/
   allTabs: string[];
->>>>>>> refs/heads/devel
   activeTab: string;
   /** General class modifier */
   modifier?: string;
@@ -86,15 +82,9 @@ export const Tabs: React.FC<TabsProps> = (props) => {
     onTabChange,
     tabs,
     children,
-<<<<<<< HEAD
-=======
-    allTabs,
     useWithHash,
->>>>>>> refs/heads/devel
   } = props;
 
-<<<<<<< HEAD
-=======
   const [swiper, setSwiper] = React.useState(null);
 
   /**
@@ -118,7 +108,6 @@ export const Tabs: React.FC<TabsProps> = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [swiper, useWithHash]);
 
->>>>>>> refs/heads/devel
   const mobileBreakpoint = parseInt(variables.mobilebreakpoint); //Parse a breakpoint from scss to a number
 
   const isMobileWidth = useIsAtBreakpoint(mobileBreakpoint);
