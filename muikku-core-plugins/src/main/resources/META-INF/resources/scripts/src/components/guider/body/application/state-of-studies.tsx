@@ -28,8 +28,10 @@ import NewMessage from "~/components/communicator/dialogs/new-message";
 import { ButtonPill } from "~/components/general/button";
 import GuiderToolbarLabels from "./toolbar/labels";
 import ApplicationSubPanel, {
+  ApplicationSubPanelViewHeader,
   ApplicationSubPanelItem,
 } from "~/components/general/application-sub-panel";
+import Avatar from "~/components/general/avatar";
 
 // import GuidanceEvent from "../../dialogs/guidance-event";
 // import { CalendarEvent } from "~/reducers/main-function/calendar";
@@ -104,31 +106,21 @@ class StateOfStudies extends React.Component<
       this.props.guider.currentStudent.emails.find((e) => e.defaultAddress);
 
     const studentBasicHeader = this.props.guider.currentStudent.basic && (
-      <div className="application-sub-panel__header">
-        <object
-          className="avatar-container"
-          data={getUserImageUrl(
-            this.props.guider.currentStudent.basic.userEntityId
-          )}
-          type="image/jpeg"
+      <ApplicationSubPanel.Header>
+        <Avatar
+          id={this.props.guider.currentStudent.basic.userEntityId}
+          hasImage={this.props.guider.currentStudent.basic.hasImage}
+          firstName={this.props.guider.currentStudent.basic.firstName}
+        ></Avatar>
+        <ApplicationSubPanelViewHeader
+          title={getName(this.props.guider.currentStudent.basic, true)}
+          titleDetail={
+            (defaultEmailAddress && defaultEmailAddress.address) ||
+            this.props.i18n.text.get(
+              "plugin.guider.user.details.label.unknown.email"
+            )
+          }
         >
-          <div className={`avatar avatar--category-1`}>
-            {this.props.guider.currentStudent.basic.firstName[0]}
-          </div>
-        </object>
-        <div className="application-sub-panel__header-main-container">
-          <h2 className="application-sub-panel__header-main application-sub-panel__header-main--guider-profile-student-name">
-            {getName(this.props.guider.currentStudent.basic, true)}
-          </h2>
-          <div className="application-sub-panel__header-main application-sub-panel__header-main--guider-profile-student-email">
-            {(defaultEmailAddress && defaultEmailAddress.address) ||
-              this.props.i18n.text.get(
-                "plugin.guider.user.details.label.unknown.email"
-              )}
-          </div>
-        </div>
-        <div className="application-sub-panel__header-aside-container">
-          {/* {this.props.guider.currentStudent.basic.studyProgrammeName} */}
           {this.props.guider.currentStudent.basic &&
           IsStudentPartOfProperStudyProgram(
             this.props.guider.currentStudent.basic.studyProgrammeName
@@ -160,8 +152,8 @@ class StateOfStudies extends React.Component<
             />
           </GuidanceEvent> */}
           <GuiderToolbarLabels />
-        </div>
-      </div>
+        </ApplicationSubPanelViewHeader>
+      </ApplicationSubPanel.Header>
     );
 
     const studentLabels =
@@ -284,13 +276,15 @@ class StateOfStudies extends React.Component<
             )}
           >
             <ApplicationSubPanelItem.Content>
-              {this.props.guider.currentStudent.usergroups.length
-                ? this.props.guider.currentStudent.usergroups.map(
-                    (usergroup) => usergroup.name
-                  )
-                : this.props.i18n.text.get(
-                    "plugin.guider.user.details.label.nostudentgroups"
-                  )}
+              <span>
+                {this.props.guider.currentStudent.usergroups.length
+                  ? this.props.guider.currentStudent.usergroups.map(
+                      (usergroup, index) => usergroup.name + " "
+                    )
+                  : this.props.i18n.text.get(
+                      "plugin.guider.user.details.label.nostudentgroups"
+                    )}
+              </span>
             </ApplicationSubPanelItem.Content>
           </ApplicationSubPanelItem>
         )}
@@ -355,51 +349,52 @@ class StateOfStudies extends React.Component<
 
     return (
       <>
-        <div className="application-sub-panel application-sub-panel--guider-student-header">
+        <ApplicationSubPanel modifier="guider-student-header">
           {studentBasicHeader}
           {this.props.guider.currentStudent.labels &&
           this.props.guider.currentStudent.labels.length ? (
-            <div className="application-sub-panel__body application-sub-panel__body--labels labels">
-              {studentLabels}
-            </div>
+            <ApplicationSubPanel.Body modifier="labels">
+              <div className="labels">{studentLabels}</div>
+            </ApplicationSubPanel.Body>
           ) : null}
-        </div>
-        <div className="application-sub-panel application-sub-panel--student-data-container">
-          <div className="application-sub-panel application-sub-panel--student-data-primary">
+        </ApplicationSubPanel>
+        <ApplicationSubPanel modifier="student-data-container">
+          <ApplicationSubPanel modifier="student-data-primary">
             {studentBasicInfo}
-          </div>
-
-          <div className="application-sub-panel application-sub-panel--student-data-secondary">
+          </ApplicationSubPanel>
+          <ApplicationSubPanel modifier="student-data-secondary">
             {this.props.guider.currentStudent.basic &&
             IsStudentPartOfProperStudyProgram(
               this.props.guider.currentStudent.basic.studyProgrammeName
             ) ? (
-              <div className="application-sub-panel">
-                <h3 className="application-sub-panel__header">
+              <ApplicationSubPanel>
+                <ApplicationSubPanel.Header>
                   {this.props.i18n.text.get(
                     "plugin.guider.user.details.purchases"
                   )}
-                </h3>
-                <div className="application-sub-panel__body">
+                </ApplicationSubPanel.Header>
+                <ApplicationSubPanel.Body>
                   <Ceepos />
-                </div>
-              </div>
+                </ApplicationSubPanel.Body>
+              </ApplicationSubPanel>
             ) : null}
 
-            <h3 className="application-sub-panel__header">
+            <ApplicationSubPanel.Header>
               {this.props.i18n.text.get(
                 "plugin.guider.user.details.workspaces"
               )}
-            </h3>
+            </ApplicationSubPanel.Header>
 
-            <div className="application-sub-panel__body">
+            <ApplicationSubPanel.Body>
               {studentWorkspaces}
-            </div>
-          </div>
+            </ApplicationSubPanel.Body>
+          </ApplicationSubPanel>
           {this.props.guider.currentState === "LOADING" ? (
-            <div className="application-sub-panel loader-empty" />
+            <ApplicationSubPanel>
+              <div className="loader-empty" />
+            </ApplicationSubPanel>
           ) : null}
-        </div>
+        </ApplicationSubPanel>
       </>
     );
   }
