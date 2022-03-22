@@ -20,6 +20,7 @@ import javax.inject.Inject;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -63,8 +64,11 @@ import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsFil
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.TranscriptOfRecordsFile;
 import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
 import fi.otavanopisto.muikku.rest.model.Student;
+import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
+import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivity;
@@ -136,6 +140,9 @@ public class GuiderRESTService extends PluginRESTService {
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
   
   @Inject
+  private UserSchoolDataController userSchoolDataController;
+  
+  @Inject
   private NoPassedCoursesNotificationController noPassedCoursesNotificationController;
 
   @Inject
@@ -146,6 +153,9 @@ public class GuiderRESTService extends PluginRESTService {
 
   @Inject
   private FlagController flagController;
+  
+  @Inject
+  private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
   
   @Inject
   @Any
@@ -657,6 +667,49 @@ public class GuiderRESTService extends PluginRESTService {
     String contentType = file.getContentType();
     
     return Response.ok().type(contentType).entity(output).build();
+  }
+  
+  /**
+   * POST mApi().guider.students.studyTime.create(16, {months: 3})
+   * 
+   * Increases student's study time end by given months.
+   * 
+   * @param userEntityId
+   * @param months
+   * @return 
+   * 
+   * returns increased studyTimeEnd
+   */
+  
+  @POST
+  @Path("/students/{ID}/studyTime")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response increaseStudyTime(@PathParam("ID") Long userEntityId, @QueryParam("months") Integer months) {
+    
+    // Validation
+    if (months == null || months <= 0) {
+      logger.severe("Invalid months");
+      return Response.status(Status.BAD_REQUEST).entity("Invalid months").build();
+    }
+    UserEntity studentEntity = userEntityController.findUserEntityById(userEntityId);
+    
+    if (studentEntity == null) {
+      logger.severe("Student not found");
+      return Response.status(Status.BAD_REQUEST).entity("Student not found").build();
+    }
+    
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      User student = userSchoolDataController.increaseStudyTime(studentEntity.defaultSchoolDataIdentifier(), months);
+      if (student != null) {
+        return Response.status(Status.OK).entity(student.getStudyTimeEnd()).build();
+      }
+      else {
+        return Response.status(Status.NOT_FOUND).build();
+      }
+    } finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
   }
   
   private OrganizationRESTModel toRestModel(OrganizationEntity organizationEntity) {
