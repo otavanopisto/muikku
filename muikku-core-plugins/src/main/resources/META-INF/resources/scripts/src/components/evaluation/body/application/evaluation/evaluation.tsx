@@ -1046,6 +1046,9 @@ export class Evaluation extends React.Component<
                     onClose={
                       this.handleCloseWorkspaceSupplementationEvaluationDrawer
                     }
+                    workspaceSubjectToBeEvaluatedIdentifier={
+                      subjectToBeEvaluated.identifier
+                    }
                     selectedAssessment={this.props.selectedAssessment}
                     type={edit ? "edit" : "new"}
                   />
@@ -1105,7 +1108,9 @@ export class Evaluation extends React.Component<
                     disabled={
                       this.props.evaluation.evaluationAssessmentEvents.state ===
                         "LOADING" ||
-                      this.props.evaluation.basePrice.state === "LOADING"
+                      this.props.evaluation.basePrice.state === "LOADING" ||
+                      (this.props.selectedAssessment.subjects.length > 1 &&
+                        !subjectToBeEvaluated)
                     }
                   >
                     {this.props.i18n.text.get(

@@ -38,6 +38,7 @@ interface SupplementationEditorProps {
   editorLabel?: string;
   modifiers?: string[];
   onClose?: () => void;
+  workspaceSubjectToBeEvaluatedIdentifier: string;
   updateWorkspaceSupplementationToServer: UpdateWorkspaceSupplementation;
   updateNeedsReloadEvaluationRequests: UpdateNeedsReloadEvaluationRequests;
 }
@@ -199,6 +200,8 @@ class SupplementationEditor extends SessionStateComponent<
         workspaceSupplementation: {
           requestDate: new Date().getTime().toString(),
           requestText: this.state.literalEvaluation,
+          workspaceSubjectIdentifier:
+            this.props.workspaceSubjectToBeEvaluatedIdentifier,
         },
         /**
          * onSuccess
@@ -257,6 +260,8 @@ class SupplementationEditor extends SessionStateComponent<
             evaluationAssessmentEvents.data &&
             evaluationAssessmentEvents.data[latestIndex].date,
           requestText: this.state.literalEvaluation,
+          workspaceSubjectIdentifier:
+            this.props.workspaceSubjectToBeEvaluatedIdentifier,
         },
         /**
          * onSuccess
