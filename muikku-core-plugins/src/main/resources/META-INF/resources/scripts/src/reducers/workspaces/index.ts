@@ -1006,7 +1006,8 @@ export default function workspaces(
       action.payload.showUpdateLinkedMaterialsDialogForPublish;
     newEditor.showUpdateLinkedMaterialsDialogForPublishCount =
       action.payload.showUpdateLinkedMaterialsDialogForPublishCount;
-      newEditor.showRemoveLinkedAnswersDialogForPublish = action.payload.showRemoveLinkedAnswersDialogForPublish
+    newEditor.showRemoveLinkedAnswersDialogForPublish =
+      action.payload.showRemoveLinkedAnswersDialogForPublish;
 
     return {
       ...state,
