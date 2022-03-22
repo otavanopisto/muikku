@@ -849,12 +849,16 @@ public class Evaluation2RESTService {
     UserEntity studentEntity = workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity();
     UserEntity userEntity = sessionController.getLoggedUserEntity();
 
-    // TODO check that the subjectidentifier is in the workspace
-    // TODO check that the subjectidentifier is in the workspace
-    // TODO check that the subjectidentifier is in the workspace
-    // TODO check that the subjectidentifier is in the workspace
-    // TODO check that the subjectidentifier is in the workspace
-
+    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+    
+    if (workspace != null) {
+      if (!workspace.getSubjects().stream().anyMatch(workspaceSubject -> workspaceSubjectIdentifier.equals(workspaceSubject.getIdentifier()))) {
+        return Response.status(Status.BAD_REQUEST).entity("No such workspaceSubjectIdentifier in this workspace").build();
+      }
+    } else {
+      return Response.status(Status.NOT_FOUND).entity("Workspace not found").build();
+    }
+    
     // Creation
     
     SupplementationRequest supplementationRequest = evaluationController.createSupplementationRequest(
