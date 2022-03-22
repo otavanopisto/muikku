@@ -998,61 +998,90 @@ export class Evaluation extends React.Component<
                             )}
                           />
                         </SlideDrawer>
+                        <SlideDrawer
+                          title={this.props.i18n.text.get(
+                            "plugin.evaluation.evaluationModal.workspaceEvaluationForm.supplementationTitle"
+                          )}
+                          modifiers={["supplementation"]}
+                          show={this.state.showWorkspaceSupplemenationDrawer}
+                          onClose={
+                            this
+                              .handleCloseWorkspaceSupplementationEvaluationDrawer
+                          }
+                        >
+                          <SupplementationEditor
+                            eventId={eventByIdOpened}
+                            editorLabel={this.props.i18n.text.get(
+                              "plugin.evaluation.evaluationModal.workspaceEvaluationForm.literalSupplementationLabel"
+                            )}
+                            onClose={
+                              this
+                                .handleCloseWorkspaceSupplementationEvaluationDrawer
+                            }
+                            workspaceSubjectToBeEvaluatedIdentifier={
+                              subject.identifier
+                            }
+                            selectedAssessment={this.props.selectedAssessment}
+                            type={edit ? "edit" : "new"}
+                          />
+                        </SlideDrawer>
                       </div>
                     );
                   })
                 ) : subjectToBeEvaluated ? (
-                  <div>
+                  <>
+                    <div>
+                      <SlideDrawer
+                        title={this.props.i18n.text.get(
+                          "plugin.evaluation.evaluationModal.workspaceEvaluationForm.title"
+                        )}
+                        modifiers={["workspace"]}
+                        show={showWorkspaceEvaluationDrawer}
+                        onClose={this.handleCloseWorkspaceEvaluationDrawer}
+                      >
+                        <WorkspaceEditor
+                          eventId={eventByIdOpened}
+                          editorLabel={this.props.i18n.text.get(
+                            "plugin.evaluation.evaluationModal.workspaceEvaluationForm.literalAssessmentLabel"
+                          )}
+                          selectedAssessment={this.props.selectedAssessment}
+                          workspaceSubjectToBeEvaluatedIdentifier={
+                            subjectToBeEvaluated.identifier
+                          }
+                          onClose={this.handleCloseWorkspaceEvaluationDrawer}
+                          type={edit ? "edit" : "new"}
+                          onSuccesfulSave={this.handleOpenArchiveStudentDialog}
+                        />
+                      </SlideDrawer>
+                    </div>
                     <SlideDrawer
                       title={this.props.i18n.text.get(
-                        "plugin.evaluation.evaluationModal.workspaceEvaluationForm.title"
+                        "plugin.evaluation.evaluationModal.workspaceEvaluationForm.supplementationTitle"
                       )}
-                      modifiers={["workspace"]}
-                      show={showWorkspaceEvaluationDrawer}
-                      onClose={this.handleCloseWorkspaceEvaluationDrawer}
+                      modifiers={["supplementation"]}
+                      show={this.state.showWorkspaceSupplemenationDrawer}
+                      onClose={
+                        this.handleCloseWorkspaceSupplementationEvaluationDrawer
+                      }
                     >
-                      <WorkspaceEditor
+                      <SupplementationEditor
                         eventId={eventByIdOpened}
                         editorLabel={this.props.i18n.text.get(
-                          "plugin.evaluation.evaluationModal.workspaceEvaluationForm.literalAssessmentLabel"
+                          "plugin.evaluation.evaluationModal.workspaceEvaluationForm.literalSupplementationLabel"
                         )}
-                        selectedAssessment={this.props.selectedAssessment}
+                        onClose={
+                          this
+                            .handleCloseWorkspaceSupplementationEvaluationDrawer
+                        }
                         workspaceSubjectToBeEvaluatedIdentifier={
                           subjectToBeEvaluated.identifier
                         }
-                        onClose={this.handleCloseWorkspaceEvaluationDrawer}
+                        selectedAssessment={this.props.selectedAssessment}
                         type={edit ? "edit" : "new"}
-                        onSuccesfulSave={this.handleOpenArchiveStudentDialog}
                       />
                     </SlideDrawer>
-                  </div>
+                  </>
                 ) : null}
-
-                <SlideDrawer
-                  title={this.props.i18n.text.get(
-                    "plugin.evaluation.evaluationModal.workspaceEvaluationForm.supplementationTitle"
-                  )}
-                  modifiers={["supplementation"]}
-                  show={this.state.showWorkspaceSupplemenationDrawer}
-                  onClose={
-                    this.handleCloseWorkspaceSupplementationEvaluationDrawer
-                  }
-                >
-                  <SupplementationEditor
-                    eventId={eventByIdOpened}
-                    editorLabel={this.props.i18n.text.get(
-                      "plugin.evaluation.evaluationModal.workspaceEvaluationForm.literalSupplementationLabel"
-                    )}
-                    onClose={
-                      this.handleCloseWorkspaceSupplementationEvaluationDrawer
-                    }
-                    workspaceSubjectToBeEvaluatedIdentifier={
-                      subjectToBeEvaluated.identifier
-                    }
-                    selectedAssessment={this.props.selectedAssessment}
-                    type={edit ? "edit" : "new"}
-                  />
-                </SlideDrawer>
               </div>
 
               <div className="evaluation-modal__content-footer">
