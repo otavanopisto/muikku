@@ -93,10 +93,9 @@ export const useStudentAlternativeOptions = (
           setStudyOptions((studyOptions) => ({
             ...studyOptions,
             isLoading: false,
-            options:
-              loadedStudentAlternativeOptions !== undefined
-                ? loadedStudentAlternativeOptions
-                : initialState.options,
+            options: loadedStudentAlternativeOptions
+              ? loadedStudentAlternativeOptions
+              : initialState.options,
           }));
         }
       } catch (err) {

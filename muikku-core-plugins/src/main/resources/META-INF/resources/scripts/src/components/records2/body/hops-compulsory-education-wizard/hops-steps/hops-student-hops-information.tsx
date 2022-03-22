@@ -4,6 +4,7 @@ import { TextField } from "../text-field";
 import * as moment from "moment";
 import { BasicInformation } from "~/@types/shared";
 import { HopsBaseProps } from "..";
+import HopsHistory from "../hops-history";
 
 /**
  * StudentHopsInformationProps
@@ -79,23 +80,14 @@ class HopsStudentHopsInformation extends React.Component<
             </div>
             {this.props.basicInformation.updates &&
             this.props.basicInformation.updates.length ? (
-              <div className="hops-sub__container--updates">
-                <div className="hops-container__row">
-                  <div className="hops__form-element-container">
-                    <label className="hops-label">Päivitykset:</label>
-                    <ul className="hops-updates__list">
-                      {this.props.basicInformation.updates.map(
-                        (uItem, index) => (
-                          <li key={index}>
-                            {index + 1}. {moment(uItem.date).format("l")} -{" "}
-                            {uItem.modifier}
-                          </li>
-                        )
-                      )}
-                    </ul>
-                  </div>
+              <>
+                <h3>Muokkaushistoria</h3>
+                <div className="hops-sub__container--updates">
+                  <HopsHistory
+                    hopsUpdates={this.props.basicInformation.updates}
+                  />
                 </div>
-              </div>
+              </>
             ) : null}
           </fieldset>
         )}
