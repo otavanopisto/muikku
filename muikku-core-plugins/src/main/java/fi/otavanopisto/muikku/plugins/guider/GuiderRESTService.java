@@ -722,7 +722,7 @@ public class GuiderRESTService extends PluginRESTService {
    */
   @POST
   @Path("/student/{ID}/contactLog/")
-  @RESTPermit (GuiderPermissions.GUIDER_CREATE_CONTACT_LOG_ENTRY)
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response createStudentContactLog(@PathParam("ID") Long userEntityId, StudentContactLogEntryRestModel payload) {
     String dataSource = sessionController.getLoggedUserSchoolDataSource();
     UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
@@ -763,7 +763,7 @@ public class GuiderRESTService extends PluginRESTService {
   
   @PUT
   @Path("/student/{ID}/contactLog/{CONTACTLOGENTRYID}")
-  @RESTPermit (GuiderPermissions.GUIDER_CREATE_CONTACT_LOG_ENTRY)
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response updateStudentContactLog(@PathParam("ID") Long userEntityId, @PathParam("CONTACTLOGENTRYID") Long contactLogEntryId, StudentContactLogEntryRestModel payload) {
     String dataSource = sessionController.getLoggedUserSchoolDataSource();
     UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
@@ -845,7 +845,7 @@ public class GuiderRESTService extends PluginRESTService {
    */
   @DELETE
   @Path("/student/{ID}/contactLog/{CONTACTLOGENTRYID}")
-  @RESTPermit (GuiderPermissions.GUIDER_CREATE_CONTACT_LOG_ENTRY)
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response archiveStudentContactLog(@PathParam("ID") Long userEntityId, @PathParam("CONTACTLOGENTRYID") Long contactLogEntryId) {
     String dataSource = sessionController.getLoggedUserSchoolDataSource();
     UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
@@ -913,7 +913,7 @@ public class GuiderRESTService extends PluginRESTService {
    */
   @POST
   @Path("/student/{ID}/contactLog/{ENTRYID}/comments")
-  @RESTPermit (GuiderPermissions.GUIDER_CREATE_CONTACT_LOG_ENTRY)
+  @RESTPermit (GuiderPermissions.GUIDER_MANAGE_CONTACT_LOG)
   public Response createContactLogEntryComment(@PathParam("ID") Long userEntityId, @PathParam("ENTRYID") Long entryId, StudentContactLogEntryCommentRestModel payload) {
     String dataSource = sessionController.getLoggedUserSchoolDataSource();
     UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
@@ -946,7 +946,7 @@ public class GuiderRESTService extends PluginRESTService {
    */
   @PUT
   @Path("/student/{ID}/contactLog/{ENTRYID}/comments/{COMMENTID}")
-  @RESTPermit (GuiderPermissions.GUIDER_CREATE_CONTACT_LOG_ENTRY)
+  @RESTPermit (GuiderPermissions.GUIDER_MANAGE_CONTACT_LOG)
   public Response updateStudentContactLogComment(@PathParam("ID") Long userEntityId, @PathParam("ENTRYID") Long entryId, @PathParam("COMMENTID") Long commentId, StudentContactLogEntryCommentRestModel payload) {
     String dataSource = sessionController.getLoggedUserSchoolDataSource();
     UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
@@ -972,7 +972,7 @@ public class GuiderRESTService extends PluginRESTService {
    */
   @DELETE
   @Path("/student/{ID}/contactLog/{ENTRYID}/comments/{COMMENTID}")
-  @RESTPermit (GuiderPermissions.GUIDER_CREATE_CONTACT_LOG_ENTRY)
+  @RESTPermit (GuiderPermissions.GUIDER_MANAGE_CONTACT_LOG)
   public Response archiveStudentContactLogComment(@PathParam("ID") Long userEntityId, @PathParam("ENTRYID") Long contactLogEntryId, @PathParam("COMMENTID") Long commentId) {
     String dataSource = sessionController.getLoggedUserSchoolDataSource();
     UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);

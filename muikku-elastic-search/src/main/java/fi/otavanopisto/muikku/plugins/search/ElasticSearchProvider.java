@@ -846,8 +846,6 @@ public class ElasticSearchProvider implements SearchProvider {
   
   @Override
   public SearchResult findUserGroup(SchoolDataIdentifier identifier) {
-
-    // Query that checks activity based on user having a study end date set
     
     BoolQueryBuilder query = boolQuery();
     IdsQueryBuilder includeIdsQuery = idsQuery("UserGroup");

@@ -41,7 +41,7 @@ public class GuiderPermissions extends AbstractMuikkuPermissionCollection implem
 
   @Scope (PermissionScope.ENVIRONMENT)
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER } )
-  public static final String GUIDER_CREATE_CONTACT_LOG_ENTRY = "GUIDER_CREATE_CONTACT_LOG_ENTRY";
+  public static final String GUIDER_MANAGE_CONTACT_LOG = "GUIDER_MANAGE_CONTACT_LOG";
   
   @Override
   public List<String> listPermissions() {
