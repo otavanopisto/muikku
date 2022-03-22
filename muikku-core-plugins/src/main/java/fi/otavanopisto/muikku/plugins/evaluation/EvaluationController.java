@@ -143,6 +143,8 @@ public class EvaluationController {
         continue;
       }
       
+      SchoolDataIdentifier workspaceSubjectIdentifier = SchoolDataIdentifier.fromId(activity.getWorkspaceSubjectIdentifier());
+      
       // WorkspaceEntityId
       
       WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(dataSource, activity.getIdentifier());
@@ -155,7 +157,7 @@ public class EvaluationController {
       // Supplementation request, if one exists and is newer than activity date so far
       
       SupplementationRequest supplementationRequest = findLatestSupplementationRequestByStudentAndWorkspaceAndArchived(
-          userEntity.getId(), workspaceEntity.getId(), Boolean.FALSE);
+          userEntity.getId(), workspaceEntity.getId(), workspaceSubjectIdentifier, Boolean.FALSE);
       if (supplementationRequest != null && supplementationRequest.getRequestDate().after(activity.getDate())) {
         activity.setText(supplementationRequest.getRequestText());
         activity.setDate(supplementationRequest.getRequestDate());
@@ -223,11 +225,12 @@ public class EvaluationController {
     return activities;
   }
   
-  public SupplementationRequest createSupplementationRequest(Long userEntityId, Long studentEntityId, Long workspaceEntityId, Long workspaceMaterialId, Date requestDate, String requestText) {
+  public SupplementationRequest createSupplementationRequest(Long userEntityId, Long studentEntityId, Long workspaceEntityId, SchoolDataIdentifier workspaceSubjectIdentifier, Long workspaceMaterialId, Date requestDate, String requestText) {
     SupplementationRequest supplementationRequest = supplementationRequestDAO.createSupplementationRequest(
         userEntityId,
         studentEntityId,
         workspaceEntityId,
+        workspaceSubjectIdentifier,
         workspaceMaterialId,
         requestDate,
         requestText);
@@ -291,8 +294,16 @@ public class EvaluationController {
     return supplementationRequestDAO.listByStudentAndWorkspaceAndArchived(studentEntityId, workspaceEntityId, archived);
   }
   
+  public List<SupplementationRequest> listSupplementationRequestsByStudentAndWorkspaceAndArchived(Long studentEntityId, Long workspaceEntityId, SchoolDataIdentifier workspaceSubjectIdentifier, Boolean archived) {
+    return supplementationRequestDAO.listByStudentAndWorkspaceAndArchived(studentEntityId, workspaceEntityId, workspaceSubjectIdentifier, archived);
+  }
+  
   public SupplementationRequest findLatestSupplementationRequestByStudentAndWorkspaceAndArchived(Long studentEntityId, Long workspaceEntityId, Boolean archived) {
     return supplementationRequestDAO.findLatestByStudentAndWorkspaceAndArchived(studentEntityId, workspaceEntityId, archived);
+  }
+
+  public SupplementationRequest findLatestSupplementationRequestByStudentAndWorkspaceAndArchived(Long studentEntityId, Long workspaceEntityId, SchoolDataIdentifier workspaceSubjectIdentifier, Boolean archived) {
+    return supplementationRequestDAO.findLatestByStudentAndWorkspaceAndArchived(studentEntityId, workspaceEntityId, workspaceSubjectIdentifier, archived);
   }
 
   public SupplementationRequest findLatestSupplementationRequestByStudentAndWorkspaceMaterialAndArchived(Long studentEntityId, Long workspaceMaterialId, Boolean archived) {
@@ -326,11 +337,13 @@ public class EvaluationController {
   }
 
   public SupplementationRequest updateSupplementationRequest(SupplementationRequest supplementationRequest, Long userEntityId, Date requestDate, String requestText) {
+    SchoolDataIdentifier workspaceSubjectIdentifier = supplementationRequest.getWorkspaceSubjectIdentifier() != null ? SchoolDataIdentifier.fromId(supplementationRequest.getWorkspaceSubjectIdentifier()) : null;
     supplementationRequest = supplementationRequestDAO.updateSupplementationRequest(
         supplementationRequest,
         userEntityId,
         supplementationRequest.getStudentEntityId(),
         supplementationRequest.getWorkspaceEntityId(),
+        workspaceSubjectIdentifier,
         supplementationRequest.getWorkspaceMaterialId(),
         requestDate,
         requestText,

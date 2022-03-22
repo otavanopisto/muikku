@@ -298,7 +298,7 @@ public class Evaluation2RESTService {
       User assessor = userController.findUserByIdentifier(assessorIdentifier);
       
       RestEvaluationEvent event = new RestEvaluationEvent();
-      event.setWorkspaceSubjectIdentifier(null);
+      event.setWorkspaceSubjectIdentifier(supplementationRequest.getWorkspaceSubjectIdentifier());
       event.setStudent(studentName.getDisplayName());
       event.setAuthor(assessor.getDisplayName());
       event.setDate(supplementationRequest.getRequestDate());
@@ -556,6 +556,7 @@ public class Evaluation2RESTService {
         supplementationRequest.getUserEntityId(),
         supplementationRequest.getStudentEntityId(),
         supplementationRequest.getWorkspaceEntityId(),
+        supplementationRequest.getWorkspaceSubjectIdentifier(),
         supplementationRequest.getWorkspaceMaterialId(),
         supplementationRequest.getRequestDate(),
         supplementationRequest.getRequestText());
@@ -605,6 +606,7 @@ public class Evaluation2RESTService {
         supplementationRequest.getUserEntityId(),
         supplementationRequest.getStudentEntityId(),
         supplementationRequest.getWorkspaceEntityId(),
+        supplementationRequest.getWorkspaceSubjectIdentifier(),
         supplementationRequest.getWorkspaceMaterialId(),
         supplementationRequest.getRequestDate(),
         supplementationRequest.getRequestText());
@@ -831,20 +833,35 @@ public class Evaluation2RESTService {
     if (payload.getId() != null) {
       return Response.status(Status.BAD_REQUEST).entity("POST with payload identifier").build();
     }
-    
+    if (StringUtils.isBlank(payload.getWorkspaceSubjectIdentifier())) {
+      return Response.status(Status.BAD_REQUEST).entity("Payload missing workspaceSubjectIdentifier").build();
+    }
+
+    SchoolDataIdentifier workspaceSubjectIdentifier = SchoolDataIdentifier.fromId(payload.getWorkspaceSubjectIdentifier());
+    if (workspaceSubjectIdentifier == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Invalid workspaceSubjectIdentifier").build();
+    }
+
     // Entities
     
     WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityById(workspaceUserEntityId);
     WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
     UserEntity studentEntity = workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity();
     UserEntity userEntity = sessionController.getLoggedUserEntity();
-    
+
+    // TODO check that the subjectidentifier is in the workspace
+    // TODO check that the subjectidentifier is in the workspace
+    // TODO check that the subjectidentifier is in the workspace
+    // TODO check that the subjectidentifier is in the workspace
+    // TODO check that the subjectidentifier is in the workspace
+
     // Creation
     
     SupplementationRequest supplementationRequest = evaluationController.createSupplementationRequest(
       userEntity.getId(),
       studentEntity.getId(),
       workspaceEntity.getId(),
+      workspaceSubjectIdentifier,
       null, // workspace material
       payload.getRequestDate(),
       payload.getRequestText());
@@ -927,7 +944,8 @@ public class Evaluation2RESTService {
       supplementationRequest = evaluationController.createSupplementationRequest(
           payload.getUserEntityId(),
           payload.getStudentEntityId(),
-          null,
+          null, // workspaceEntityId
+          null, // workspaceSubjectIdentifier
           payload.getWorkspaceMaterialId(),
           payload.getRequestDate(),
           payload.getRequestText());
@@ -954,6 +972,7 @@ public class Evaluation2RESTService {
         supplementationRequest.getUserEntityId(),
         supplementationRequest.getStudentEntityId(),
         supplementationRequest.getWorkspaceEntityId(),
+        supplementationRequest.getWorkspaceSubjectIdentifier(),
         supplementationRequest.getWorkspaceMaterialId(),
         supplementationRequest.getRequestDate(),
         supplementationRequest.getRequestText());

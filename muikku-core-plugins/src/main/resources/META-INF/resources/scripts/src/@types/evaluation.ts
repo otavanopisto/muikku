@@ -280,6 +280,7 @@ export interface AssignmentEvaluationSaveReturn {
  */
 export interface WorkspaceSupplementationSaveRequest {
   id?: string;
+  workspaceSubjectIdentifier: string;
   requestDate: string;
   requestText: string;
 }

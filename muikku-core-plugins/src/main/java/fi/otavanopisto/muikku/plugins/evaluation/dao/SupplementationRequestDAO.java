@@ -12,6 +12,7 @@ import javax.persistence.criteria.Root;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
 import fi.otavanopisto.muikku.plugins.evaluation.model.SupplementationRequest;
 import fi.otavanopisto.muikku.plugins.evaluation.model.SupplementationRequest_;
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 
 public class SupplementationRequestDAO extends CorePluginsDAO<SupplementationRequest> {
 
@@ -21,6 +22,7 @@ public class SupplementationRequestDAO extends CorePluginsDAO<SupplementationReq
       Long userEntityId,
       Long studentEntityId,
       Long workspaceEntityId,
+      SchoolDataIdentifier workspaceSubjectIdentifier,
       Long workspaceMaterialId,
       Date requestDate,
       String requestText) {
@@ -29,6 +31,7 @@ public class SupplementationRequestDAO extends CorePluginsDAO<SupplementationReq
     supplementationRequest.setUserEntityId(userEntityId);
     supplementationRequest.setStudentEntityId(studentEntityId);
     supplementationRequest.setWorkspaceEntityId(workspaceEntityId);
+    supplementationRequest.setWorkspaceSubjectIdentifier(workspaceSubjectIdentifier != null ? workspaceSubjectIdentifier.toId() : null);
     supplementationRequest.setWorkspaceMaterialId(workspaceMaterialId);
     supplementationRequest.setRequestDate(requestDate);
     supplementationRequest.setRequestText(requestText);
@@ -42,6 +45,7 @@ public class SupplementationRequestDAO extends CorePluginsDAO<SupplementationReq
       Long userEntityId,
       Long studentEntityId,
       Long workspaceEntityId,
+      SchoolDataIdentifier workspaceSubjectIdentifier,
       Long workspaceMaterialId,
       Date requestDate,
       String requestText,
@@ -49,6 +53,7 @@ public class SupplementationRequestDAO extends CorePluginsDAO<SupplementationReq
     supplementationRequest.setUserEntityId(userEntityId);
     supplementationRequest.setStudentEntityId(studentEntityId);
     supplementationRequest.setWorkspaceEntityId(workspaceEntityId);
+    supplementationRequest.setWorkspaceSubjectIdentifier(workspaceSubjectIdentifier != null ? workspaceSubjectIdentifier.toId() : null);
     supplementationRequest.setWorkspaceMaterialId(workspaceMaterialId);
     supplementationRequest.setRequestDate(requestDate);
     supplementationRequest.setRequestText(requestText);
@@ -67,7 +72,18 @@ public class SupplementationRequestDAO extends CorePluginsDAO<SupplementationReq
     }
     return requests.get(0);
   }
-  
+
+  public SupplementationRequest findLatestByStudentAndWorkspaceAndArchived(Long studentEntityId, Long workspaceEntityId, SchoolDataIdentifier workspaceSubjectIdentifier, Boolean archived) {
+    List<SupplementationRequest> requests = listByStudentAndWorkspaceAndArchived(studentEntityId, workspaceEntityId, workspaceSubjectIdentifier, archived);
+    if (requests.isEmpty()) {
+      return null;
+    }
+    else if (requests.size() > 1) {
+      requests.sort(Comparator.comparing(SupplementationRequest::getRequestDate).reversed());
+    }
+    return requests.get(0);
+  }
+
   public List<SupplementationRequest> listByStudentAndWorkspaceAndArchived(Long studentEntityId, Long workspaceEntityId, Boolean archived) {
     EntityManager entityManager = getEntityManager(); 
     
@@ -79,6 +95,32 @@ public class SupplementationRequestDAO extends CorePluginsDAO<SupplementationReq
       criteriaBuilder.and(
         criteriaBuilder.equal(root.get(SupplementationRequest_.studentEntityId), studentEntityId),
         criteriaBuilder.equal(root.get(SupplementationRequest_.workspaceEntityId), workspaceEntityId),
+        criteriaBuilder.equal(root.get(SupplementationRequest_.archived), archived)
+      )
+    );
+    
+    return entityManager.createQuery(criteria).getResultList();
+  }
+  
+  /**
+   * Returns a SupplementationRequest that matches given parameters. Due to backwards compatibility (pre WorkspaceSubject)
+   * returns also SuppplementationRequests that may have null workspaceSubjectIdentifier.
+   */
+  public List<SupplementationRequest> listByStudentAndWorkspaceAndArchived(Long studentEntityId, Long workspaceEntityId, SchoolDataIdentifier workspaceSubjectIdentifier, Boolean archived) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<SupplementationRequest> criteria = criteriaBuilder.createQuery(SupplementationRequest.class);
+    Root<SupplementationRequest> root = criteria.from(SupplementationRequest.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(SupplementationRequest_.studentEntityId), studentEntityId),
+        criteriaBuilder.equal(root.get(SupplementationRequest_.workspaceEntityId), workspaceEntityId),
+        criteriaBuilder.or(
+            criteriaBuilder.equal(root.get(SupplementationRequest_.workspaceSubjectIdentifier), workspaceSubjectIdentifier.toId()),
+            criteriaBuilder.isNull(root.get(SupplementationRequest_.workspaceSubjectIdentifier))
+        ),
         criteriaBuilder.equal(root.get(SupplementationRequest_.archived), archived)
       )
     );

@@ -17,8 +17,8 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table (
   uniqueConstraints = {
-    @UniqueConstraint (columnNames = { "studentEntityId", "workspaceEntityId" }),
-    @UniqueConstraint (columnNames = { "studentEntityId", "workspaceMaterialId" })
+    @UniqueConstraint ( name = "sr_student_workspace", columnNames = { "studentEntityId", "workspaceEntityId", "workspaceSubjectIdentifier" }),
+    @UniqueConstraint ( name = "sr_student_material", columnNames = { "studentEntityId", "workspaceMaterialId" })
   }    
 )
 public class SupplementationRequest {
@@ -87,6 +87,14 @@ public class SupplementationRequest {
     this.archived = archived;
   }
 
+  public String getWorkspaceSubjectIdentifier() {
+    return workspaceSubjectIdentifier;
+  }
+
+  public void setWorkspaceSubjectIdentifier(String workspaceSubjectIdentifier) {
+    this.workspaceSubjectIdentifier = workspaceSubjectIdentifier;
+  }
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -100,6 +108,8 @@ public class SupplementationRequest {
   private Long studentEntityId;
 
   private Long workspaceEntityId;
+  
+  private String workspaceSubjectIdentifier;
   
   private Long workspaceMaterialId;
 
