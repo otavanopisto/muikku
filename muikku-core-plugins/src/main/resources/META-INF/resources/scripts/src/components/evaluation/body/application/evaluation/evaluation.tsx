@@ -576,6 +576,8 @@ export class Evaluation extends React.Component<
 
     const { evaluationAssessmentEvents } = this.props.evaluation;
 
+    const isCombinationWorkspace = selectedAssessment.subjects.length > 1;
+
     const evaluationDiaryEvents =
       this.props.evaluation.evaluationDiaryEntries.data &&
       this.props.evaluation.evaluationDiaryEntries.data.length > 0 ? (
@@ -663,40 +665,88 @@ export class Evaluation extends React.Component<
           const isSupplementationRequest =
             eItem.type === EvaluationEnum.SUPPLEMENTATION_REQUEST;
 
-          /**
-           * Whether current element is latest evaluation for module
-           */
-          const isLatestEvaluationForModule =
-            latestEvaluatedEventIndexPerSubject[
-              eItem.workspaceSubjectIdentifier
-            ] === index;
-
-          /**
-           * Next event is not request. Default value true
-           */
-          let nextIsNotRequest = true;
-
-          /**
-           * We only check items before last element
-           */
-          if (evaluationAssessmentEvents.data.length - 1 !== index) {
+          if (isCombinationWorkspace) {
             /**
-             * Creating help array that contains remaining events from current element forward
+             * Whether current element is latest evaluation for module
              */
-            const remainingEvents =
-              evaluationAssessmentEvents.data.slice(index);
+            const isLatestEvaluationForModule =
+              latestEvaluatedEventIndexPerSubject[
+                eItem.workspaceSubjectIdentifier
+              ] === index;
 
             /**
-             * Checking if remaining event array doesn't contain evaluation or
-             * supplementation request event
+             * Next event is not request. Default value true
              */
-            nextIsNotRequest =
-              remainingEvents.find(
-                (j) =>
-                  j.type === EvaluationEnum.EVALUATION_REQUEST ||
-                  j.type === EvaluationEnum.SUPPLEMENTATION_REQUEST
-              ) === undefined;
+            let nextIsNotRequest = true;
+
+            /**
+             * supplementation request can be deleted. Default value true
+             */
+            let canDeleteSupplementationRequest = true;
+
+            /**
+             * We only check items before last element
+             */
+            if (evaluationAssessmentEvents.data.length - 1 !== index) {
+              /**
+               * Creating help array that contains remaining events from current element forward
+               */
+              const remainingEvents = evaluationAssessmentEvents.data.slice(
+                index + 1
+              );
+
+              /**
+               * Checking if remaining event array doesn't contain evaluation or
+               * supplementation request event for normal workspace. If combination then only evaluation requests matters
+               */
+              nextIsNotRequest =
+                remainingEvents.find(
+                  (j) => j.type === EvaluationEnum.EVALUATION_REQUEST
+                ) === undefined;
+
+              /**
+               * If event is supplementation request...
+               */
+              if (isSupplementationRequest) {
+                /**
+                 * Check if remaining events contains same type of event with same workspace identifier
+                 * if it doesn't then event can be deleted
+                 */
+                canDeleteSupplementationRequest =
+                  remainingEvents.find(
+                    (e) =>
+                      e.type === EvaluationEnum.SUPPLEMENTATION_REQUEST &&
+                      e.workspaceSubjectIdentifier ===
+                        eItem.workspaceSubjectIdentifier
+                  ) === undefined;
+              }
+            }
+
+            return (
+              <EvaluationEventContentCard
+                onClickEdit={this.handleClickEdit}
+                key={index}
+                selectedAssessment={this.props.selectedAssessment}
+                {...eItem}
+                showModifyLink={isNotRequest || isSupplementationRequest}
+                showDeleteLink={
+                  (isNotRequest &&
+                    nextIsNotRequest &&
+                    isLatestEvaluationForModule &&
+                    !latestEventIsSupplementationRequest) ||
+                  (isSupplementationRequest &&
+                    nextIsNotRequest &&
+                    canDeleteSupplementationRequest)
+                }
+              />
+            );
           }
+
+          /**
+           * Is event latest one. Only latest event can be deleted
+           */
+          const isLatestEvent =
+            evaluationAssessmentEvents.data.length - 1 === index;
 
           return (
             <EvaluationEventContentCard
@@ -704,17 +754,8 @@ export class Evaluation extends React.Component<
               key={index}
               selectedAssessment={this.props.selectedAssessment}
               {...eItem}
-              showModifyLink={
-                (isNotRequest && isLatestEvaluationForModule) ||
-                isSupplementationRequest
-              }
-              showDeleteLink={
-                (isNotRequest &&
-                  nextIsNotRequest &&
-                  isLatestEvaluationForModule &&
-                  !latestEventIsSupplementationRequest) ||
-                (isSupplementationRequest && nextIsNotRequest)
-              }
+              showModifyLink={isNotRequest}
+              showDeleteLink={isNotRequest && isLatestEvent}
             />
           );
         })

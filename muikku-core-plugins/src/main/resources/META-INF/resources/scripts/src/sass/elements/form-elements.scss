@@ -60,6 +60,14 @@
   }
 }
 
+.form-element--new-label {
+  width: 100%;
+
+  .form-element__input {
+    width: 100%;
+  }
+}
+
 .form-element--checkbox-radiobutton {
   align-items: center;
   background-color: transparent;
@@ -237,6 +245,10 @@
   }
 
   // scss-lint:enable SelectorFormat
+}
+
+.form-element__input--new-label {
+  width: 100%;
 }
 
 // Teacher's Worklist Specific fields

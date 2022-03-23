@@ -61,3 +61,6 @@ insert into PluginSetting (value, key_id) select 'http://dev.muikku.fi/rest/ceep
 insert into PluginSetting (value, key_id) select 'http://dev.muikku.fi/rest/ceepos/paymentConfirmation', id from PluginSettingKey where plugin = 'ceepos' and name = 'notificationAddress';
 insert into PluginSetting (value, key_id) select 'http://dev.muikku.fi:8089/ceeposrequestpayment', id from PluginSettingKey where plugin = 'ceepos' and name = 'server';
 insert into PluginSetting (value, key_id) select 'mikkeli_test', id from PluginSettingKey where plugin = 'ceepos' and name = 'source';
+
+insert into PluginSettingKey(name, plugin) select 'enabledOrganizations', 'chat' from PluginSettingKey where plugin = 'chat' and name = 'enabledOrganizations' having count(*) = 0;
+insert into PluginSetting (value, key_id) select 'PYRAMUS-1', (select id from PluginSettingKey where plugin = 'chat' and name = 'enabledOrganizations') from PluginSetting where key_id = (select id from PluginSettingKey where plugin = 'chat' and name = 'enabledOrganizations') having count(*) = 0;
