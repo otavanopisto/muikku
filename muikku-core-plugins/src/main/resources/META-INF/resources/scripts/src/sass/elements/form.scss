@@ -46,13 +46,6 @@
   justify-content: center;
 }
 
-.form__fieldset-header {
-  @include text;
-
-  font-weight: 600;
-  padding: 0 0 5px;
-}
-
 .form__subdivision {
   flex-basis: 100%;
 
@@ -78,7 +71,9 @@
 input,
 select,
 option,
-textarea {
+textarea,
+fieldset,
+legend {
   @include text;
 }
 
@@ -98,11 +93,7 @@ legend {
 // FIELDSET & LEGEND
 .form__fieldset {
   margin: 0;
-  padding: 10px;
-
-  @include breakpoint($breakpoint-pad) {
-    padding: 20px;
-  }
+  padding: 0;
 }
 
 .form__legend {
