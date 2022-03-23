@@ -327,6 +327,16 @@ legend {
   }
 }
 
+// DESCRIPTION
+.form-element__description {
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  font-size: 0.8125rem;
+  font-style: italic;
+  margin: 10px 0 0;
+}
+
 // TEXTFIELD
 .form-element__input {
   @include prefix(

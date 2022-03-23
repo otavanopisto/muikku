@@ -143,19 +143,21 @@ class ForgotPasswordDialog extends React.Component<
           className="form"
           onSubmit={this.resetPassword.bind(this, closeDialog)}
         >
-          <div className="form-element">
-            <label htmlFor="forgotpassword-email">
-              {this.props.i18n.text.get(
-                "plugin.forgotpassword.forgotPasswordDialog.email"
-              )}
-            </label>
-            <input
-              type="text"
-              name="email"
-              value={this.state.email}
-              onChange={this.updateEmail}
-              className="form-element__input form-element__input--forgotpassword"
-            />
+          <div className="form__row">
+            <div className="form-element">
+              <label htmlFor="forgotpassword-email">
+                {this.props.i18n.text.get(
+                  "plugin.forgotpassword.forgotPasswordDialog.email"
+                )}
+              </label>
+              <input
+                type="text"
+                name="email"
+                value={this.state.email}
+                onChange={this.updateEmail}
+                className="form-element__input form-element__input--forgotpassword"
+              />
+            </div>
           </div>
         </form>
       </div>

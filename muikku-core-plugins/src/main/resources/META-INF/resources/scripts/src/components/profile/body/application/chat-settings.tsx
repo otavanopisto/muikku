@@ -180,60 +180,64 @@ class ChatSettings extends React.Component<
 
     return (
       <section>
-        <form>
+        <form className="form">
           <h2 className="application-panel__content-header">
             {this.props.i18n.text.get("plugin.profile.titles.chatSettings")}
           </h2>
           <div className="application-sub-panel">
             <div className="application-sub-panel__body">
-              <div className="application-sub-panel__item application-sub-panel__item--profile form-element">
-                <label htmlFor="chatVisibility">
-                  {this.props.i18n.text.get("plugin.profile.chat.visibility")}
-                </label>
-                <select
-                  id="chatVisibility"
-                  className="form-element__select"
-                  value={
-                    this.state.chatVisibility !== null
-                      ? this.state.chatVisibility
-                      : "DISABLED"
-                  }
-                  onChange={this.onChatVisibilityChange}
-                >
-                  <option value="VISIBLE_TO_ALL">
-                    {this.props.i18n.text.get(
-                      "plugin.profile.chat.visibleToAll"
-                    )}
-                  </option>
-                  <option value="DISABLED">
-                    {this.props.i18n.text.get("plugin.profile.chat.disabled")}
-                  </option>
-                </select>
+              <div className="form__row">
+                <div className="form-element">
+                  <label htmlFor="chatVisibility">
+                    {this.props.i18n.text.get("plugin.profile.chat.visibility")}
+                  </label>
+                  <select
+                    id="chatVisibility"
+                    className="form-element__select"
+                    value={
+                      this.state.chatVisibility !== null
+                        ? this.state.chatVisibility
+                        : "DISABLED"
+                    }
+                    onChange={this.onChatVisibilityChange}
+                  >
+                    <option value="VISIBLE_TO_ALL">
+                      {this.props.i18n.text.get(
+                        "plugin.profile.chat.visibleToAll"
+                      )}
+                    </option>
+                    <option value="DISABLED">
+                      {this.props.i18n.text.get("plugin.profile.chat.disabled")}
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div className="form__row">
+                <div className="form-element">
+                  <label htmlFor="chatNickname">
+                    {this.props.i18n.text.get("plugin.profile.chat.setNick")}
+                  </label>
+                  <input
+                    id="chatNickname"
+                    className="form-element__input"
+                    type="text"
+                    onChange={this.onChatNicknameChange}
+                    value={
+                      this.state.chatNickname !== null
+                        ? this.state.chatNickname
+                        : ""
+                    }
+                  />
+                </div>
+
+                <div className="form-element__description">
+                  {this.props.i18n.text.get(
+                    "plugin.profile.chat.setNickDescription"
+                  )}
+                </div>
               </div>
 
-              <div className="application-sub-panel__item application-sub-panel__item--profile form-element">
-                <label htmlFor="chatNickname">
-                  {this.props.i18n.text.get("plugin.profile.chat.setNick")}
-                </label>
-                <input
-                  id="chatNickname"
-                  className="form-element__input"
-                  type="text"
-                  onChange={this.onChatNicknameChange}
-                  value={
-                    this.state.chatNickname !== null
-                      ? this.state.chatNickname
-                      : ""
-                  }
-                />
-              </div>
-              <div className="application-sub-panel__item-description">
-                {this.props.i18n.text.get(
-                  "plugin.profile.chat.setNickDescription"
-                )}
-              </div>
-
-              <div className="application-sub-panel__item-actions">
+              <div className="form__buttons">
                 <Button
                   buttonModifiers="primary-function-save"
                   onClick={this.save}
