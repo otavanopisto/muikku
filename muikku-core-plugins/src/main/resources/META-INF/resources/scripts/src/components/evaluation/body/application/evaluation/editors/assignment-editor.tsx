@@ -566,7 +566,7 @@ class AssignmentEditor extends SessionStateComponent<
           </div>
         </div>
         <div className="form__row">
-          <fieldset className="form_fieldset">
+          <fieldset className="form__fieldset">
             <legend className="form__legend">
               {this.props.i18n.text.get(
                 "plugin.evaluation.evaluationModal.assignmentEvaluationForm.assessmentEvaluateLabel"

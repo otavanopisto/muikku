@@ -304,94 +304,93 @@ export class LicenseSelector extends React.Component<
       : {};
     return (
       <div className="license-selector">
-        <div className="form-element">
-          <label
-            className="visually-hidden"
-            htmlFor={this.props.wcagLabel && this.props.wcagLabel}
-          >
-            {this.props.wcagDesc && this.props.wcagDesc}
-          </label>
-          <select
-            id={this.props.wcagLabel ? this.props.wcagLabel : ""}
-            className={`form-element__select ${
-              this.props.modifier
-                ? "form-element__select--" + this.props.modifier
-                : ""
-            }`}
-            value={currentLicense.id}
-            onChange={this.onChangeLicenseType}
-          >
-            {LICENSES.map((l) => (
-              <option key={l.id} value={l.id}>
-                {this.props.i18n.text.get(l.i18n)}
-              </option>
-            ))}
-          </select>
-        </div>
-        {currentLicense.properties ? (
-          <div className="license-selector__options-container">
-            {currentLicense.properties.map((property) => (
-              <div key={property.id}>
-                <fieldset>
-                  <legend className="license-selector__options-title">
-                    {this.props.i18n.text.get(property.i18n)}
-                  </legend>
-                  <div className="license-selector__options-body">
-                    {property.values.map((v, index) => (
-                      <span
-                        className="form-element form-element--checkbox-radiobutton"
-                        key={"license-value" + index}
-                      >
-                        <input
-                          type="radio"
-                          id={property.id + index}
-                          name={property.id}
-                          value={v.value || ""}
-                          checked={
-                            currentPropertyValues[property.id] === v.value
-                          }
-                          onChange={this.setAPropertyAndTriggerChange.bind(
-                            this,
-                            currentPropertyValues,
-                            property.id
-                          )}
-                        />
-                        <label htmlFor={property.id + index}>
-                          {this.props.i18n.text.get(v.i18n)}
-                        </label>
-                      </span>
-                    ))}
-                  </div>
-                </fieldset>
-              </div>
-            ))}
+        <div className="form__row">
+          <div className="form-element">
+            <label
+              className="visually-hidden"
+              htmlFor={this.props.wcagLabel && this.props.wcagLabel}
+            >
+              {this.props.wcagDesc && this.props.wcagDesc}
+            </label>
+            <select
+              id={this.props.wcagLabel ? this.props.wcagLabel : ""}
+              className={`form-element__select ${
+                this.props.modifier
+                  ? "form-element__select--" + this.props.modifier
+                  : ""
+              }`}
+              value={currentLicense.id}
+              onChange={this.onChangeLicenseType}
+            >
+              {LICENSES.map((l) => (
+                <option key={l.id} value={l.id}>
+                  {this.props.i18n.text.get(l.i18n)}
+                </option>
+              ))}
+            </select>
           </div>
-        ) : null}
-        {!currentLicense.value ? (
-          <div className="license-selector__options-container">
-            <div className="form-element">
-              <label
-                className="license-selector__options-title"
-                htmlFor="workspace-license-link-or-text"
-              >
-                {this.props.i18n.text.get(
-                  "plugin.workspace.materialsManagement.editorView.license.textOrLink"
-                )}
-              </label>
-              <input
-                id="workspace-license-link-or-text"
-                type="text"
-                className={`form-element__input ${
-                  this.props.modifier
-                    ? "form-element__input--" + this.props.modifier
-                    : ""
-                } ${this.state.valid ? "" : "form-element--invalid"}`}
-                value={this.state.text}
-                onChange={this.onChangeText}
-              />
+          {currentLicense.properties ? (
+            <div className="license-selector__options-container">
+              {currentLicense.properties.map((property) => (
+                <div className="form__row" key={property.id}>
+                  <fieldset className="form__fieldset">
+                    <legend className="form__legend">
+                      {this.props.i18n.text.get(property.i18n)}
+                    </legend>
+                    <div className="form__fieldset-content form__fieldset-content--horizontal">
+                      {property.values.map((v, index) => (
+                        <span
+                          className="form-element form-element--checkbox-radiobutton"
+                          key={"license-value" + index}
+                        >
+                          <input
+                            type="radio"
+                            id={property.id + index}
+                            name={property.id}
+                            value={v.value || ""}
+                            checked={
+                              currentPropertyValues[property.id] === v.value
+                            }
+                            onChange={this.setAPropertyAndTriggerChange.bind(
+                              this,
+                              currentPropertyValues,
+                              property.id
+                            )}
+                          />
+                          <label htmlFor={property.id + index}>
+                            {this.props.i18n.text.get(v.i18n)}
+                          </label>
+                        </span>
+                      ))}
+                    </div>
+                  </fieldset>
+                </div>
+              ))}
             </div>
-          </div>
-        ) : null}
+          ) : null}
+          {!currentLicense.value ? (
+            <div className="license-selector__options-container">
+              <div className="form-element">
+                <label htmlFor="workspace-license-link-or-text">
+                  {this.props.i18n.text.get(
+                    "plugin.workspace.materialsManagement.editorView.license.textOrLink"
+                  )}
+                </label>
+                <input
+                  id="workspace-license-link-or-text"
+                  type="text"
+                  className={`form-element__input ${
+                    this.props.modifier
+                      ? "form-element__input--" + this.props.modifier
+                      : ""
+                  } ${this.state.valid ? "" : "form-element--invalid"}`}
+                  value={this.state.text}
+                  onChange={this.onChangeText}
+                />
+              </div>
+            </div>
+          ) : null}
+        </div>
       </div>
     );
   }

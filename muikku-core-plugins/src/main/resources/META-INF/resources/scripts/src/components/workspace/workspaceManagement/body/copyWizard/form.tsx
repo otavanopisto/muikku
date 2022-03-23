@@ -172,9 +172,9 @@ export default class Step extends React.Component<StepProps, StepState> {
     return (
       <div className="wizard__content">
         <div className="form" role="form">
-          <div className="form__row form__row--wizard">
-            <div className="form__subdivision form__subdivision--wizard">
-              <div className="form__row form__row--wizard">
+          <div className="form__row form__row--split">
+            <div className="form__subdivision">
+              <div className="form__row">
                 <div className="form-element form-element--workspace-name">
                   <label htmlFor="workspaceName">
                     {this.props.i18n.text.get(
@@ -189,7 +189,7 @@ export default class Step extends React.Component<StepProps, StepState> {
                   />
                 </div>
               </div>
-              <div className="form__row form__row--wizard">
+              <div className="form__row">
                 <div className="form-element form-element--workspace-name-extension">
                   <label htmlFor="workspaceExtension">
                     {this.props.i18n.text.get(
@@ -204,7 +204,7 @@ export default class Step extends React.Component<StepProps, StepState> {
                   />
                 </div>
               </div>
-              <div className="form__row form__row--wizard form__row--wizard-dates">
+              <div className="form__row form__row--split">
                 <div className="form-element form-element--copy-workspace-start-date">
                   <label htmlFor="workspaceStartDate">
                     {this.props.i18n.text.get(
@@ -237,8 +237,8 @@ export default class Step extends React.Component<StepProps, StepState> {
                 </div>
               </div>
             </div>
-            <div className="form__subdivision form__subdivision--wizard">
-              <div className="form__row form__row--wizard">
+            <div className="form__subdivision">
+              <div className="form__row">
                 <div className="form-element form-element--copy-workspace-ckeditor">
                   <label>
                     {this.props.i18n.text.get(
@@ -257,7 +257,7 @@ export default class Step extends React.Component<StepProps, StepState> {
               </div>
             </div>
           </div>
-          <div className="form__row form__row--wizard">
+          <div className="form__row">
             <fieldset className="form__fieldset">
               <legend className="form__legend">
                 {this.props.i18n.text.get(
@@ -305,6 +305,15 @@ export default class Step extends React.Component<StepProps, StepState> {
                   </label>
                 </div>
               </div>
+            </fieldset>
+          </div>
+          <div className="form__row">
+            <fieldset className="form__fieldset">
+              <legend className="form__legend">
+                {this.props.i18n.text.get(
+                  "plugin.workspacecopywizard.materialCopyType.label"
+                )}
+              </legend>
               {copyMaterials}
             </fieldset>
           </div>

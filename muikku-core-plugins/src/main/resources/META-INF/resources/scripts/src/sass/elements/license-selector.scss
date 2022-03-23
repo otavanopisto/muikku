@@ -4,7 +4,7 @@
 @import "../base/breakpoints";
 
 .license-selector {
-  padding: 10px 0 0;
+  padding: 5px 0 0;
   width: 100%;
 }
 
@@ -16,33 +16,5 @@
   background: $color-license-options-background;
   border-radius: 3px;
   margin: 10px 0 0;
-  padding: 10px 15px;
-}
-
-.license-selector__options-title {
-  display: block;
-  padding: 5px 0 10px;
-}
-
-.license-selector__options-body {
-  align-items: flex-start;
-  display: flex;
-  flex-flow: column nowrap;
-
-  @include breakpoint($breakpoint-pad) {
-    align-items: center;
-    flex-flow: row nowrap;
-  }
-}
-
-.license-selector__option {
-  align-items: center;
-  display: flex;
-  margin: 5px 5px 5px 0;
-  padding: 4px;
-
-  label {
-    font-weight: 400;
-    padding: 0;
-  }
+  padding: 15px;
 }

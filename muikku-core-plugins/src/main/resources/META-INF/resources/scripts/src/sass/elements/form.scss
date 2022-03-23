@@ -12,6 +12,10 @@
   margin: 0 0 15px;
   position: relative;
   width: 100%;
+
+  &:last-child {
+    margin: 0;
+  }
 }
 
 .form__row--evaluation-warning {
@@ -25,13 +29,15 @@
   }
 }
 
-.form__row--wizard {
+.form__row--workspace-management {
+  align-items: center;
   display: flex;
   flex-flow: row wrap;
 }
 
-.form__row--wizard-dates {
-  flex-direction: row;
+.form__row--split {
+  display: flex;
+  flex-flow: row wrap;
 }
 
 .form__buttons {
@@ -39,7 +45,6 @@
   display: flex;
   flex-flow: row wrap;
   justify-content: flex-start;
-  padding: 10px 0;
 }
 
 .form__buttons--evaluation {
@@ -53,7 +58,6 @@
     flex-basis: 50%;
     padding: 0 10px;
 
-    // We might need to re-think these first and last child selectors as there might not be always 2 per row
     &:first-child {
       padding: 0 10px 0 0;
     }
@@ -62,10 +66,17 @@
       padding: 0 0 0 10px;
     }
   }
+
+  .form__row:last-child {
+    margin: 0;
+  }
 }
 
-.form__hidden {
-  display: none;
+// Sets splitted form's subdivision to reserve space only as much it needs
+.form__subdivision--auto-width {
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: auto;
+  }
 }
 
 input,
@@ -77,27 +88,23 @@ legend {
   @include text;
 }
 
-fieldset {
-  border: 0;
-
-  label,
-  .form-element label {
-    font-weight: 400;
-  }
-}
-
-legend {
-  font-weight: 600;
-}
-
 // FIELDSET & LEGEND
 .form__fieldset {
+  border: 0;
   margin: 0;
   padding: 0;
 }
 
 .form__legend {
+  display: block;
+  font-family: $text-font-family;
+  font-size: $text-mobile-font-size;
   font-weight: 600;
+  padding: 0 0 5px;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
+  }
 }
 
 .form__fieldset-content {
@@ -193,11 +200,12 @@ legend {
   background-color: transparent;
   border-radius: 0;
   display: flex;
-  margin: 5px 5px 5px 0;
-  padding: 5px 10px 5px 0;
+  margin: 0 5px 0 0;
+  padding: 5px 10px 0 0;
   width: auto;
 
   label {
+    font-weight: 400;
     padding: 0;
   }
 }
