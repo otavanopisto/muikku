@@ -236,7 +236,7 @@ public class EvaluationController {
         requestText);
     // For workspace supplementation requests, mark respective workspace assessment requests as handled 
     if (studentEntityId != null && workspaceEntityId != null) {
-      markWorkspaceAssessmentRequestsAsHandled(studentEntityId, workspaceEntityId);      
+      markWorkspaceAssessmentRequestsAsHandled(studentEntityId, workspaceEntityId, requestDate);      
     }
     handleSupplementationNotifications(supplementationRequest);    
     return supplementationRequest;
@@ -350,7 +350,7 @@ public class EvaluationController {
         Boolean.FALSE);
     // For workspace supplementation requests, mark respective workspace assessment requests as handled 
     if (supplementationRequest.getStudentEntityId() != null && supplementationRequest.getWorkspaceEntityId() != null) {
-      markWorkspaceAssessmentRequestsAsHandled(supplementationRequest.getStudentEntityId(), supplementationRequest.getWorkspaceEntityId());
+      markWorkspaceAssessmentRequestsAsHandled(supplementationRequest.getStudentEntityId(), supplementationRequest.getWorkspaceEntityId(), requestDate);
     }
     handleSupplementationNotifications(supplementationRequest);
     return supplementationRequest;
@@ -446,7 +446,7 @@ public class EvaluationController {
    * @param userEntityId Student id (in Muikku)
    * @param workspaceEntityId Workspace id (in Muikku)
    */
-  private void markWorkspaceAssessmentRequestsAsHandled(Long userEntityId, Long workspaceEntityId) {
+  private void markWorkspaceAssessmentRequestsAsHandled(Long userEntityId, Long workspaceEntityId, Date when) {
     // TODO Performance bottleneck?
     UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
@@ -465,6 +465,16 @@ public class EvaluationController {
       if (assessmentRequest.getHandled()) {
         continue;
       }
+      
+      /**
+       * If assessment request date is after the given date, skip it - this is so that 
+       * the assessment requests are not changed if a supplementation request is edited 
+       * and there are later assessment requests. 
+       */
+      if (assessmentRequest.getDate() != null && assessmentRequest.getDate().after(when)) {
+        continue;
+      }
+      
       gradingController.updateWorkspaceAssessmentRequest(
           assessmentRequest.getSchoolDataSource(),
           assessmentRequest.getIdentifier(),
