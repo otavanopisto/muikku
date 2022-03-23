@@ -19,7 +19,7 @@ import {
   UpdateNeedsReloadEvaluationRequests,
   updateNeedsReloadEvaluationRequests,
 } from "~/actions/main-function/evaluation/evaluationActions";
-import "~/sass/elements/form-elements.scss";
+import "~/sass/elements/form.scss";
 import { LocaleListType } from "~/reducers/base/locales";
 import { CKEditorConfig } from "../evaluation";
 

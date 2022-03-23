@@ -1,6 +1,6 @@
 import * as React from "react";
 import "~/sass/elements/material-editor.scss";
-import "~/sass/elements/form-elements.scss";
+import "~/sass/elements/form.scss";
 import { bindActionCreators } from "redux";
 import {
   setWorkspaceMaterialEditorState,

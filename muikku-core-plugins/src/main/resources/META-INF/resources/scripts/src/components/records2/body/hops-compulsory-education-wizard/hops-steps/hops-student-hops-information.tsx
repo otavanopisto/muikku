@@ -1,6 +1,6 @@
 import * as React from "react";
 import "~/sass/elements/hops.scss";
-import "~/sass/elements/form-elements.scss";
+import "~/sass/elements/form.scss";
 import { TextField } from "../text-field";
 import * as moment from "moment";
 import { BasicInformation } from "~/@types/shared";

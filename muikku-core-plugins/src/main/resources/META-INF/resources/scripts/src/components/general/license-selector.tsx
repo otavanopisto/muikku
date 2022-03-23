@@ -1,6 +1,6 @@
 import { i18nType } from "~/reducers/base/i18n";
 import * as React from "react";
-import "~/sass/elements/form-elements.scss";
+import "~/sass/elements/form.scss";
 import "~/sass/elements/license-selector.scss";
 import "~/sass/elements/wcag.scss";
 

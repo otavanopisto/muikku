@@ -23,7 +23,7 @@ import CopyWizardDialog from "../dialogs/copy-wizard";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
 import "~/sass/elements/panel.scss";
 import "~/sass/elements/item-list.scss";
-import "~/sass/elements/form-elements.scss";
+import "~/sass/elements/form.scss";
 import "~/sass/elements/change-image.scss";
 import "~/sass/elements/wcag.scss";
 import { LicenseSelector } from "~/components/general/license-selector";

@@ -19,7 +19,7 @@ import {
   UpdateCurrentStudentEvaluationCompositeRepliesData,
   updateCurrentStudentCompositeRepliesData,
 } from "~/actions/main-function/evaluation/evaluationActions";
-import "~/sass/elements/form-elements.scss";
+import "~/sass/elements/form.scss";
 import Recorder from "~/components/general/voice-recorder/recorder";
 import { AudioAssessment } from "~/@types/evaluation";
 import AnimateHeight from "react-animate-height";

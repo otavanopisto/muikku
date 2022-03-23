@@ -1,7 +1,6 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import Button from "~/components/general/button";
-import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
 import {
   displayNotification,

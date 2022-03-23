@@ -5,7 +5,6 @@ import { bindActionCreators } from "redux";
 import { i18nType } from "~/reducers/base/i18n";
 import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
-import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
 import Evaluation from "../body/application/evaluation/evaluation";
 import { AssessmentRequest } from "~/@types/evaluation";

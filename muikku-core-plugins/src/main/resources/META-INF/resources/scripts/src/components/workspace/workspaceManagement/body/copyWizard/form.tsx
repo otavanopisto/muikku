@@ -4,7 +4,6 @@ import { i18nType } from "~/reducers/base/i18n";
 import { CopyWizardStoreType, CopyWizardStoreUpdateType } from "./";
 import DatePicker from "react-datepicker";
 import CKEditor from "~/components/general/ckeditor";
-import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
 
 /**

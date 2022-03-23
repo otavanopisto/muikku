@@ -1,7 +1,7 @@
 import * as React from "react";
 import Button from "~/components/general/button";
 import "~/sass/elements/dialog.scss";
-import "~/sass/elements/form-elements.scss";
+import "~/sass/elements/form.scss";
 import DatePicker from "react-datepicker";
 
 // Either label or placeholder is mandatory because of wcag

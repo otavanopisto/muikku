@@ -10,7 +10,7 @@ import "~/sass/elements/application-list.scss";
 import "~/sass/elements/announcement.scss";
 import "~/sass/elements/rich-text.scss";
 import "~/sass/elements/label.scss";
-import "~/sass/elements/form-elements.scss";
+import "~/sass/elements/form.scss";
 import { AnnouncementsType, AnnouncementType } from "~/reducers/announcements";
 import BodyScrollKeeper from "~/components/general/body-scroll-keeper";
 import SelectableList from "~/components/general/selectable-list";

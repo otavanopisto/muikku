@@ -9,7 +9,7 @@ import "~/sass/elements/loaders.scss";
 import "~/sass/elements/application-list.scss";
 import "~/sass/elements/label.scss";
 import "~/sass/elements/message.scss";
-import "~/sass/elements/form-elements.scss";
+import "~/sass/elements/form.scss";
 import "~/sass/elements/wcag.scss";
 import BodyScrollLoader from "~/components/general/body-scroll-loader";
 import BodyScrollKeeper from "~/components/general/body-scroll-keeper";

@@ -6,7 +6,7 @@ import "~/sass/elements/breadcrumb.scss";
 import "~/sass/elements/application-panel.scss";
 
 import "~/sass/elements/buttons.scss";
-import "~/sass/elements/form-elements.scss";
+import "~/sass/elements/form.scss";
 import "~/sass/elements/wcag.scss";
 
 import { i18nType } from "~/reducers/base/i18n";
