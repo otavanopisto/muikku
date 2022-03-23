@@ -287,9 +287,13 @@
   border: 2px solid $color-env-dialog-form-element-border;
   border-radius: 3px;
   display: inline-block;
-  height: $input-height;
+  height: $input-height-mobile;
   padding: 4px 8px;
   width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    height: $input-height-desktop;
+  }
 }
 
 .env-dialog__input-label {

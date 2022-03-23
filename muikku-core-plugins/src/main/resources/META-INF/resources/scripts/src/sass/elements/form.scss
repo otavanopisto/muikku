@@ -189,6 +189,10 @@ legend {
   }
 }
 
+.form-element--user-group-name {
+  width: 100%;
+}
+
 // Application-list item selector
 .form-element--item-selection-container {
   padding: 2px;
@@ -351,13 +355,13 @@ legend {
   border-radius: 2px;
   font-family: $text-font-family;
   font-size: $text-mobile-font-size;
-  height: 2.25rem;
+  height: $input-height-mobile;
   padding: 0 10px;
   resize: none;
 
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;
-    height: 2.5rem;
+    height: $input-height-desktop;
   }
 
   &.INVALID {
@@ -519,13 +523,13 @@ legend {
   border-radius: 2px;
   font-family: $text-font-family;
   font-size: $text-mobile-font-size;
-  height: 2.25rem;
+  height: $select-height-mobile;
   padding: 0 25px 0 10px;
   position: relative;
 
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;
-    height: 2.5rem;
+    height: $select-height-desktop;
   }
 
   &.INVALID {

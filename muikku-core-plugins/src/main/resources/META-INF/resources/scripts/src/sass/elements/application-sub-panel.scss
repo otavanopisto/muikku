@@ -1008,15 +1008,6 @@
   justify-content: flex-end;
 }
 
-.application-sub-panel__item-data--workspace-management {
-  align-items: flex-start;
-  flex-flow: column nowrap;
-
-  @include breakpoint($breakpoint-pad) {
-    flex-flow: row wrap;
-  }
-}
-
 .application-sub-panel__item-data--study-start-date.application-sub-panel__single-entry {
   background-color: $color-sub-panel-data-1-background;
 }

@@ -39,9 +39,13 @@
   display: inline-block;
   font-family: $text-font-family;
   font-size: $text-mobile-font-size;
-  height: $input-height;
+  height: $input-height-mobile;
   padding: 4px 8px;
   width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    height: $input-height-desktop;
+  }
 }
 
 .tag-input__input--new-message,
