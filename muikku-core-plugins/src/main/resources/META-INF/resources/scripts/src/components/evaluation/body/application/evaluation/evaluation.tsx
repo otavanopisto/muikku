@@ -935,6 +935,7 @@ export class Evaluation extends React.Component<
                 {this.props.selectedAssessment.subjects.length > 1 ? (
                   this.props.selectedAssessment.subjects.map((subject) => {
                     let workspaceEditorOpen = false;
+                    let supplementationEditorOpen = false;
 
                     /**
                      * If show workspace evaluation drawer
@@ -952,9 +953,33 @@ export class Evaluation extends React.Component<
                         null
                       ) {
                         /**
-                         * When editing existing event
+                         * When editing existing workspace event
                          */
                         workspaceEditorOpen =
+                          this.state.subjectEvaluationToBeEditedIdentifier ===
+                          subject.identifier;
+                      }
+                    }
+
+                    /**
+                     * If show supplementation evaluation drawer
+                     */
+                    if (this.state.showWorkspaceSupplemenationDrawer) {
+                      /**
+                       * Normal evaluation process, there must be selected subject
+                       */
+                      if (this.state.subjectToBeEvaluated) {
+                        supplementationEditorOpen =
+                          this.state.subjectToBeEvaluated.identifier ===
+                          subject.identifier;
+                      } else if (
+                        this.state.subjectEvaluationToBeEditedIdentifier !==
+                        null
+                      ) {
+                        /**
+                         * When editing existing supplementation event
+                         */
+                        supplementationEditorOpen =
                           this.state.subjectEvaluationToBeEditedIdentifier ===
                           subject.identifier;
                       }
@@ -1003,7 +1028,7 @@ export class Evaluation extends React.Component<
                             "plugin.evaluation.evaluationModal.workspaceEvaluationForm.supplementationTitle"
                           )}
                           modifiers={["supplementation"]}
-                          show={this.state.showWorkspaceSupplemenationDrawer}
+                          show={supplementationEditorOpen}
                           onClose={
                             this
                               .handleCloseWorkspaceSupplementationEvaluationDrawer

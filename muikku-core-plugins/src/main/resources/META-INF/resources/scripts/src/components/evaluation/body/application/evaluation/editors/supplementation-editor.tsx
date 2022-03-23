@@ -78,7 +78,7 @@ class SupplementationEditor extends SessionStateComponent<
      * draft id. There must be at least user id and workspace id, so if making changes to multiple workspace
      * that have same user evaluations, so draft won't class together
      */
-    let draftId = `${selectedAssessment.userEntityId}-${selectedAssessment.workspaceEntityId}`;
+    let draftId = `${selectedAssessment.userEntityId}-${selectedAssessment.workspaceEntityId}-${props.workspaceSubjectToBeEvaluatedIdentifier}`;
 
     if (
       (evaluationAssessmentEvents.data.length > 0 && props.type !== "new") ||
@@ -106,7 +106,7 @@ class SupplementationEditor extends SessionStateComponent<
       /**
        * As default but + latest event id
        */
-      draftId = `${selectedAssessment.userEntityId}-${selectedAssessment.workspaceEntityId}-${eventId}`;
+      draftId = `${selectedAssessment.userEntityId}-${selectedAssessment.workspaceEntityId}-${props.workspaceSubjectToBeEvaluatedIdentifier}-${eventId}`;
 
       this.state = {
         ...this.getRecoverStoredState(
