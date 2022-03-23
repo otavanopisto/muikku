@@ -7,19 +7,20 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
 @Entity
 @Table (
-  uniqueConstraints = {
-    @UniqueConstraint ( name = "sr_student_workspace", columnNames = { "studentEntityId", "workspaceEntityId", "workspaceSubjectIdentifier" }),
-    @UniqueConstraint ( name = "sr_student_material", columnNames = { "studentEntityId", "workspaceMaterialId" })
-  }    
+  indexes = {
+    @Index ( name = "sr_student_workspace", columnList = "studentEntityId, workspaceEntityId" ),
+    @Index ( name = "sr_student_workspace_subject", columnList = "studentEntityId, workspaceEntityId, workspaceSubjectIdentifier" ),
+    @Index ( name = "sr_student_material", columnList = "studentEntityId, workspaceMaterialId" )
+  }
 )
 public class SupplementationRequest {
 
