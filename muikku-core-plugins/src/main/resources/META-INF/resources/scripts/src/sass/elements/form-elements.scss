@@ -519,15 +519,15 @@
 }
 
 .form-element__button-container {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
   padding: 10px 0;
 }
 
 .form-element__autocomplete-highlight {
   background: $color-form-element-autocomplete-highlight;
-}
-
-.form-element--button-container {
-  padding: 10px 0;
 }
 
 // This is exactly the same as env-dialog__actions
