@@ -13,9 +13,10 @@ import promisify from "~/util/promisify";
 import mApi from "~/lib/mApi";
 import {
   BasicInformation,
-  HopsUpdates,
+  HopsUpdate,
   FollowUp,
   StudentInfo,
+  LanguageGradeEnum,
 } from "~/@types/shared";
 import {
   HopsCompulsory,
@@ -149,7 +150,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
           const studentHopsHistory = (await promisify(
             mApi().hops.student.history.read(studentId),
             "callback"
-          )()) as HopsUpdates[];
+          )()) as HopsUpdate[];
 
           const studentBasicInfo = (await promisify(
             mApi().hops.student.studentInfo.read(studentId),
@@ -435,16 +436,20 @@ const initializeHops = (): HopsCompulsory => ({
     previousEducation: Education.COMPULSORY_SCHOOL,
     previousWorkExperience: "0-6",
     previousYearsUsedInStudies: "",
-    finnishAsMainOrSecondaryLng: false,
     previousLanguageExperience: [
       {
-        name: "Englanti",
-        grade: 1,
+        name: "suomi",
+        grade: LanguageGradeEnum.NOT_STUDIED,
         hardCoded: true,
       },
       {
-        name: "Ruotsi",
-        grade: 1,
+        name: "ruotsi",
+        grade: LanguageGradeEnum.NOT_STUDIED,
+        hardCoded: true,
+      },
+      {
+        name: "englanti",
+        grade: LanguageGradeEnum.NOT_STUDIED,
         hardCoded: true,
       },
     ],

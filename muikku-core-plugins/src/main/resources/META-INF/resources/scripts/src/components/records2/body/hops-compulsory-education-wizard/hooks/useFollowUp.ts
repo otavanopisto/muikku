@@ -91,11 +91,11 @@ export const useFollowUpGoal = (
             followUp: {
               ...loadedFollowUp,
               graduationGoal:
-                loadedFollowUp.graduationGoal !== undefined
+                loadedFollowUp && loadedFollowUp.graduationGoal
                   ? loadedFollowUp.graduationGoal
                   : "",
               followUpGoal:
-                loadedFollowUp.followUpGoal !== undefined
+                loadedFollowUp && loadedFollowUp.followUpGoal
                   ? loadedFollowUp.followUpGoal
                   : "",
             },

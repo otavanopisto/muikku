@@ -43,7 +43,6 @@
 .hops__sub-container--updates {
   border: 1px solid cornflowerblue;
   border-left: 3px solid cornflowerblue;
-  flex-grow: 2;
 }
 
 .hops__row {
@@ -389,4 +388,18 @@
   @include breakpoint($breakpoint-desktop) {
     justify-content: flex-end;
   }
+}
+
+.animate-height::before {
+  background-image: linear-gradient(180deg, #ffffff8c, #fffffff5);
+  bottom: 25px;
+  content: "";
+  height: 20px;
+  position: absolute;
+  transition: height 0.3s ease-in;
+  width: 100%;
+}
+
+.animate-height--open::before {
+  height: 0px;
 }

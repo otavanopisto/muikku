@@ -3,6 +3,7 @@ import {
   Education,
   HopsStudentStartingLevel,
   LanguageGrade,
+  LanguageGradeEnum,
 } from "~/@types/shared";
 import "~/sass/elements/hops.scss";
 import {
@@ -73,19 +74,6 @@ class HopsStartingLevel extends React.Component<
     };
 
   /**
-   * handleFinnishAsMainOrSecondaryLngChange
-   * @param e e
-   */
-  handleFinnishAsMainOrSecondaryLngChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    this.props.onStartingLevelChange({
-      ...this.props.studentStartingLevel,
-      finnishAsMainOrSecondaryLng: e.target.checked,
-    });
-  };
-
-  /**
    * Handles adding new customg language to list
    */
   handleAddNewCustomLngClick = () => {
@@ -93,7 +81,11 @@ class HopsStartingLevel extends React.Component<
       ...this.props.studentStartingLevel.previousLanguageExperience,
     ];
 
-    updatedLngGrades.push({ name: "", grade: 1, hardCoded: false });
+    updatedLngGrades.push({
+      name: "",
+      grade: LanguageGradeEnum.NOT_STUDIED,
+      hardCoded: false,
+    });
 
     this.props.onStartingLevelChange({
       ...this.props.studentStartingLevel,
@@ -216,25 +208,11 @@ class HopsStartingLevel extends React.Component<
             </div>
           </div>
         </fieldset>
-        <fieldset className="hops__fieldset">
-          <legend className="hops__subheader">Kielivalinta ja osaaminen</legend>
-          <div className="hops__row">
-            <div className="form-element form-element--single-row">
-              <label>suomi äidinkielenä/suomi toisena kielenä</label>
-              <input
-                type="checkbox"
-                className="form-element__input"
-                checked={
-                  this.props.studentStartingLevel.finnishAsMainOrSecondaryLng
-                }
-                onChange={this.handleFinnishAsMainOrSecondaryLngChange}
-                disabled={this.props.disabled}
-              ></input>
-            </div>
-          </div>
-          <legend className="hops__subheader">Muu kielitaito</legend>
-          <div className="hops__row">
-            <div className="hops__table-container">
+        <fieldset className="hops-container__fieldset">
+          <legend className="hops-container__subheader">Kielitaito</legend>
+
+          <div className="hops-container__row">
+            <div className="hops-table__container">
               <HopsLanguageGradeTable>
                 {this.props.studentStartingLevel.previousLanguageExperience.map(
                   (lngG, index) => (
@@ -249,8 +227,10 @@ class HopsStartingLevel extends React.Component<
                   )
                 )}
               </HopsLanguageGradeTable>
-              <div className="hops__button-container">
-                <Button onClick={this.handleAddNewCustomLngClick}>Muu?</Button>
+              <div className="hops-button__container">
+                <Button onClick={this.handleAddNewCustomLngClick}>
+                  Lisää kieli
+                </Button>
               </div>
             </div>
           </div>
