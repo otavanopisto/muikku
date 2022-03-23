@@ -828,7 +828,7 @@ class WorkspaceEditor extends SessionStateComponent<
       <>
         <div className="evaluation-modal__evaluate-drawer-row form-element">
           {this.props.editorLabel && (
-            <label className="evaluation-modal__evaluate-drawer-row-label">
+            <label>
               {this.props.editorLabel}
             </label>
           )}
@@ -844,7 +844,6 @@ class WorkspaceEditor extends SessionStateComponent<
         <div className="evaluation-modal__evaluate-drawer-row form-element">
           <label
             htmlFor="workspaceEvaluationGrade"
-            className="evaluation-modal__evaluate-drawer-row-label"
           >
             {this.props.i18n.text.get(
               "plugin.evaluation.evaluationModal.assignmentGradeLabel"
@@ -852,7 +851,7 @@ class WorkspaceEditor extends SessionStateComponent<
           </label>
           <select
             id="workspaceEvaluationGrade"
-            className="form-element__select form-element__select--evaluation"
+            className="form-element__select"
             onChange={this.handleSelectGradeChange}
             value={this.state.grade}
           >
@@ -870,7 +869,6 @@ class WorkspaceEditor extends SessionStateComponent<
           <div className="evaluation-modal__evaluate-drawer-row form-element">
             <label
               htmlFor="workspaceEvaluationBilling"
-              className="evaluation-modal__evaluate-drawer-row-label"
             >
               {this.props.i18n.text.get(
                 "plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingLabel"
@@ -878,7 +876,7 @@ class WorkspaceEditor extends SessionStateComponent<
             </label>
             <select
               id="workspaceEvaluationBilling"
-              className=" form-element__select form-element__select--evaluation"
+              className=" form-element__select"
               onChange={this.handleSelectPriceChange}
               value={this.state.selectedPriceOption}
               disabled={billingPriceDisabled}

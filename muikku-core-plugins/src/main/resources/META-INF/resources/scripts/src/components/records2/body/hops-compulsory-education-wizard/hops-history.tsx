@@ -4,7 +4,7 @@ import AnimateHeight from "react-animate-height";
 import { HopsUpdate } from "~/@types/shared";
 import Avatar from "~/components/general/avatar";
 import Button, { IconButton } from "~/components/general/button";
-import "~/sass/elements/compulsory-education-hops.scss";
+import "~/sass/elements/hops.scss";
 import EditHopsEventDescriptionDialog from "./dialogs/edit-hops-event-description-dialog";
 
 /**

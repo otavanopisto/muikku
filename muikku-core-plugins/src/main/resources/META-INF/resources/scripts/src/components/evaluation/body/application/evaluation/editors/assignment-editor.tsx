@@ -532,7 +532,7 @@ class AssignmentEditor extends SessionStateComponent<
       <>
         <div className="evaluation-modal__evaluate-drawer-row form-element">
           {this.props.editorLabel && (
-            <label className="evaluation-modal__evaluate-drawer-row-label">
+            <label>
               {this.props.editorLabel}
             </label>
           )}
@@ -553,7 +553,6 @@ class AssignmentEditor extends SessionStateComponent<
           >
             <label
               htmlFor="assignmentEvaluationGrade"
-              className="evaluation-modal__evaluate-drawer-row-label"
             >
               {this.props.i18n.text.get(
                 "plugin.evaluation.evaluationModal.audioAssessments"
@@ -568,7 +567,7 @@ class AssignmentEditor extends SessionStateComponent<
         </div>
 
         <div className="evaluation-modal__evaluate-drawer-row form-element">
-          <label className="evaluation-modal__evaluate-drawer-row-label">
+          <label>
             {this.props.i18n.text.get(
               "plugin.evaluation.evaluationModal.assignmentEvaluationForm.assessmentEvaluateLabel"
             )}
@@ -610,7 +609,6 @@ class AssignmentEditor extends SessionStateComponent<
         <div className="evaluation-modal__evaluate-drawer-row  form-element">
           <label
             htmlFor="assignmentEvaluationGrade"
-            className="evaluation-modal__evaluate-drawer-row-label"
           >
             {this.props.i18n.text.get(
               "plugin.evaluation.evaluationModal.assignmentGradeLabel"
@@ -620,7 +618,7 @@ class AssignmentEditor extends SessionStateComponent<
           <div className="evaluation-modal__evaluate-drawer-row-data">
             <select
               id="assignmentEvaluationGrade"
-              className="form-element__select form-element__select--evaluation"
+              className="form-element__select"
               value={this.state.grade}
               onChange={this.handleSelectGradeChange}
               disabled={this.state.assignmentEvaluationType === "INCOMPLETE"}

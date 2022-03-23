@@ -339,7 +339,7 @@ class SupplementationEditor extends SessionStateComponent<
       <>
         <div className="evaluation-modal__evaluate-drawer-row form-element">
           {this.props.editorLabel && (
-            <label className="evaluation-modal__evaluate-drawer-row-label">
+            <label>
               {this.props.editorLabel}
             </label>
           )}

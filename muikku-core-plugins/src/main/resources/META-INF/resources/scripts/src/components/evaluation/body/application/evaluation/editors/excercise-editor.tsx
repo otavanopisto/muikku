@@ -423,7 +423,7 @@ class ExcerciseEditor extends SessionStateComponent<
       <>
         <div className="evaluation-modal__evaluate-drawer-row form-element">
           {this.props.editorLabel && (
-            <label className="evaluation-modal__evaluate-drawer-row-label">
+            <label>
               {this.props.editorLabel}
             </label>
           )}
@@ -437,7 +437,6 @@ class ExcerciseEditor extends SessionStateComponent<
           <AnimateHeight height={!this.state.needsSupplementation ? "auto" : 0}>
             <label
               htmlFor="assignmentEvaluationGrade"
-              className="evaluation-modal__evaluate-drawer-row-label"
             >
               {this.props.i18n.text.get(
                 "plugin.evaluation.evaluationModal.audioAssessments"
