@@ -290,6 +290,8 @@ class OrganizationUser extends React.Component<
             )}
             updateField={this.updateField}
           />
+        </DialogRow>
+        <DialogRow modifiers="new-user">
           <EmailFormElement
             value={this.state.user.email}
             modifiers={["new-user", "new-user-email"]}
@@ -302,36 +304,40 @@ class OrganizationUser extends React.Component<
           />
         </DialogRow>
         {this.state.user.role == "STUDENT" ? (
-          <DialogRow modifiers="new-user">
-            <SSNFormElement
-              modifiers="new-user"
-              label={this.props.i18n.text.get(
-                "plugin.organization.users.addUser.label.SSN"
-              )}
-              updateField={this.updateField}
-            />
-            <SelectFormElement
-              id="studyProgramme"
-              valid={this.state.studyProgrammeIdentifierValid}
-              mandatory={true}
-              name="studyProgrammeIdentifier"
-              modifiers="new-user"
-              label={this.props.i18n.text.get(
-                "plugin.organization.users.addUser.label.studyprogramme"
-              )}
-              updateField={this.updateField}
-            >
-              {this.props.studyprogrammes &&
-                this.props.studyprogrammes.list.map((studyprogramme) => (
-                  <option
-                    key={studyprogramme.identifier}
-                    value={studyprogramme.identifier}
-                  >
-                    {studyprogramme.name}
-                  </option>
-                ))}
-            </SelectFormElement>
-          </DialogRow>
+          <>
+            <DialogRow modifiers="new-user">
+              <SSNFormElement
+                modifiers="new-user"
+                label={this.props.i18n.text.get(
+                  "plugin.organization.users.addUser.label.SSN"
+                )}
+                updateField={this.updateField}
+              />
+            </DialogRow>
+            <DialogRow modifiers="new-user">
+              <SelectFormElement
+                id="studyProgramme"
+                valid={this.state.studyProgrammeIdentifierValid}
+                mandatory={true}
+                name="studyProgrammeIdentifier"
+                modifiers="new-user"
+                label={this.props.i18n.text.get(
+                  "plugin.organization.users.addUser.label.studyprogramme"
+                )}
+                updateField={this.updateField}
+              >
+                {this.props.studyprogrammes &&
+                  this.props.studyprogrammes.list.map((studyprogramme) => (
+                    <option
+                      key={studyprogramme.identifier}
+                      value={studyprogramme.identifier}
+                    >
+                      {studyprogramme.name}
+                    </option>
+                  ))}
+              </SelectFormElement>
+            </DialogRow>
+          </>
         ) : null}
       </div>
     );

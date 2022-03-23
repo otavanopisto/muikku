@@ -36,92 +36,93 @@ const defaultUseSelectsProps = {
  * @param props
  * @returns
  */
-export const MatriculationExaminationEnrolledAttendesList: React.FC<MatriculationExaminationEnrolledAttendesListProps> =
-  (props) => {
-    props = { ...defaultUseSelectsProps, ...props };
+export const MatriculationExaminationEnrolledAttendesList: React.FC<
+  MatriculationExaminationEnrolledAttendesListProps
+> = (props) => {
+  props = { ...defaultUseSelectsProps, ...props };
 
-    const {
-      onChange,
-      examinationEnrolledList,
-      failedFinishedList,
-      succesFinishedList,
-      conflictingAttendancesGroup,
-      onDeleteRow,
-      children,
-      readOnly,
-      ...rest
-    } = props;
+  const {
+    onChange,
+    examinationEnrolledList,
+    failedFinishedList,
+    succesFinishedList,
+    conflictingAttendancesGroup,
+    onDeleteRow,
+    children,
+    readOnly,
+    ...rest
+  } = props;
 
-    /**
-     * Handles matriculation examation enrolled subject group change
-     * @param key
-     * @param value
-     * @param index
-     */
-    const handleMatriculationExaminationSubjectGroupChange = <
-      T extends keyof ExaminationEnrolledSubject
-    >(
-      key: T,
-      value: ExaminationEnrolledSubject[T],
-      index: number
-    ) => {
-      let modifiedExaminationEnrolledList = examinationEnrolledList;
+  /**
+   * Handles matriculation examation enrolled subject group change
+   * @param key
+   * @param value
+   * @param index
+   */
+  const handleMatriculationExaminationSubjectGroupChange = <
+    T extends keyof ExaminationEnrolledSubject
+  >(
+    key: T,
+    value: ExaminationEnrolledSubject[T],
+    index: number
+  ) => {
+    let modifiedExaminationEnrolledList = examinationEnrolledList;
 
-      modifiedExaminationEnrolledList[index][key] = value;
+    modifiedExaminationEnrolledList[index][key] = value;
 
-      onChange(modifiedExaminationEnrolledList);
-    };
-
-    /**
-     * List of selected subject string keys
-     */
-    const selectedSubjects = examinationEnrolledList.map(
-      (sSubject) => sSubject.subject
-    );
-
-    return (
-      <>
-        {examinationEnrolledList.map((subject, index) => {
-          /**
-           * Checks if course conflicts
-           */
-          const conflictedCourse =
-            conflictingAttendancesGroup &&
-            conflictingAttendancesGroup.some(
-              (r) => r.indexOf(subject.subject) >= 0
-            );
-
-          const failedBefore =
-            failedFinishedList && failedFinishedList.includes(subject.subject);
-
-          const succeedBefore =
-            succesFinishedList && succesFinishedList.includes(subject.subject);
-
-          return (
-            <div
-              key={index}
-              className={`matriculation-container__row matriculation-container__row--input-groups ${
-                conflictedCourse
-                  ? "matriculation-container__row--input-groups--conflicted"
-                  : ""
-              }`}
-            >
-              <MatriculationExaminationEnrolledInputGroup
-                index={index}
-                readOnly={readOnly}
-                subject={subject}
-                isFailedBefore={failedBefore}
-                isSucceedBefore={succeedBefore}
-                selectedSubjectList={selectedSubjects}
-                onSubjectGroupChange={
-                  handleMatriculationExaminationSubjectGroupChange
-                }
-                onClickDeleteRow={onDeleteRow}
-                {...rest}
-              />
-            </div>
-          );
-        })}
-      </>
-    );
+    onChange(modifiedExaminationEnrolledList);
   };
+
+  /**
+   * List of selected subject string keys
+   */
+  const selectedSubjects = examinationEnrolledList.map(
+    (sSubject) => sSubject.subject
+  );
+
+  return (
+    <>
+      {examinationEnrolledList.map((subject, index) => {
+        /**
+         * Checks if course conflicts
+         */
+        const conflictedCourse =
+          conflictingAttendancesGroup &&
+          conflictingAttendancesGroup.some(
+            (r) => r.indexOf(subject.subject) >= 0
+          );
+
+        const failedBefore =
+          failedFinishedList && failedFinishedList.includes(subject.subject);
+
+        const succeedBefore =
+          succesFinishedList && succesFinishedList.includes(subject.subject);
+
+        return (
+          <div
+            key={index}
+            className={`matriculation-container__row matriculation-container__row--input-groups ${
+              conflictedCourse
+                ? "matriculation-container__row--input-groups--conflicted"
+                : ""
+            }`}
+          >
+            <MatriculationExaminationEnrolledInputGroup
+              index={index}
+              readOnly={readOnly}
+              subject={subject}
+              isFailedBefore={failedBefore}
+              isSucceedBefore={succeedBefore}
+              selectedSubjectList={selectedSubjects}
+              onSubjectGroupChange={
+                handleMatriculationExaminationSubjectGroupChange
+              }
+              onClickDeleteRow={onDeleteRow}
+              {...rest}
+            />
+          </div>
+        );
+      })}
+    </>
+  );
+};

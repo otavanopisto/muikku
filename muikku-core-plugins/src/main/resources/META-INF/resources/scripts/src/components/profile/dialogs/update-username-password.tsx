@@ -201,7 +201,7 @@ class UpdateUsernamePasswordDialog extends React.Component<
         </p>
         <form>
           <div className="form-element form-element--profile">
-            <label htmlFor="profileUsername" className="form-element__label">
+            <label htmlFor="profileUsername">
               {this.props.i18n.text.get(
                 "plugin.profile.changePassword.dialog.usernameField.label"
               )}
@@ -215,7 +215,7 @@ class UpdateUsernamePasswordDialog extends React.Component<
             />
           </div>
           <div className="form-element form-element--profile">
-            <label htmlFor="profileOldPassword" className="form-element__label">
+            <label htmlFor="profileOldPassword">
               {this.props.i18n.text.get(
                 "plugin.profile.changePassword.dialog.oldPasswordField.label"
               )}
@@ -229,10 +229,7 @@ class UpdateUsernamePasswordDialog extends React.Component<
             />
           </div>
           <div className="form-element form-element--profile">
-            <label
-              htmlFor="profileNewPassword1"
-              className="form-element__label"
-            >
+            <label htmlFor="profileNewPassword1">
               {this.props.i18n.text.get(
                 "plugin.profile.changePassword.dialog.newPasswordField1.label"
               )}
@@ -246,10 +243,7 @@ class UpdateUsernamePasswordDialog extends React.Component<
             />
           </div>
           <div className="form-element form-element--profile">
-            <label
-              htmlFor="profileNewPassword2"
-              className="form-element__label"
-            >
+            <label htmlFor="profileNewPassword2">
               {this.props.i18n.text.get(
                 "plugin.profile.changePassword.dialog.newPasswordField2.label"
               )}

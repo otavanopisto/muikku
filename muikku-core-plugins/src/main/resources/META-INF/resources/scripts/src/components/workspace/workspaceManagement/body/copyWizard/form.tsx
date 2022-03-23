@@ -205,7 +205,7 @@ export default class Step extends React.Component<StepProps, StepState> {
               </div>
             </div>
             <div className="form__row form__row--wizard form__row--wizard-dates">
-              <div className="form-element form-element__copy-workspace-start-date">
+              <div className="form-element form-element--copy-workspace-start-date">
                 <label htmlFor="workspaceStartDate">
                   {this.props.i18n.text.get(
                     "plugin.workspacecopywizard.workspaceStartDate.label"
@@ -220,7 +220,7 @@ export default class Step extends React.Component<StepProps, StepState> {
                   selected={this.props.getStore().beginDate}
                 />
               </div>
-              <div className="form-element form-element__copy-workspace-end-date">
+              <div className="form-element form-element--copy-workspace-end-date">
                 <label htmlFor="workspaceEndDate">
                   {this.props.i18n.text.get(
                     "plugin.workspacecopywizard.workspaceEndDate.label"
@@ -239,7 +239,7 @@ export default class Step extends React.Component<StepProps, StepState> {
           </div>
           <div className="form__subdivision form__subdivision--wizard">
             <div className="form__row form__row--wizard">
-              <div className="form-element form-element__copy-workspace-ckeditor">
+              <div className="form-element form-element--copy-workspace-ckeditor">
                 <label>
                   {this.props.i18n.text.get(
                     "plugin.workspacecopywizard.workspaceDescription.label"

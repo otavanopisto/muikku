@@ -307,137 +307,112 @@ class VacationSettings extends React.Component<
           </h2>
           <div className="application-sub-panel">
             <div className="application-sub-panel__body">
-              <div className="application-sub-panel__item application-sub-panel__item--profile">
-                <label
-                  htmlFor="profileVacationStart"
-                  className="application-sub-panel__item-title"
-                >
+              <div className="application-sub-panel__item application-sub-panel__item--profile form-element">
+                <label htmlFor="profileVacationStart">
                   {this.props.i18n.text.get(
                     "plugin.profile.awayStartDate.label"
                   )}
                 </label>
-                <div className="application-sub-panel__item-data form-element">
-                  <DatePicker
-                    id="profileVacationStart"
-                    className="form-element__input"
-                    onChange={this.handleDateChange.bind(
-                      this,
-                      "profileVacationStart"
-                    )}
-                    maxDate={this.state.profileVacationEnd || null}
-                    locale={this.props.i18n.time.getLocale()}
-                    selected={this.state.profileVacationStart}
-                  />
-                </div>
+                <DatePicker
+                  id="profileVacationStart"
+                  className="form-element__input"
+                  onChange={this.handleDateChange.bind(
+                    this,
+                    "profileVacationStart"
+                  )}
+                  maxDate={this.state.profileVacationEnd || null}
+                  locale={this.props.i18n.time.getLocale()}
+                  selected={this.state.profileVacationStart}
+                />
               </div>
 
-              <div className="application-sub-panel__item application-sub-panel__item--profile">
-                <label
-                  htmlFor="profileVacationStart"
-                  className="application-sub-panel__item-title"
-                >
+              <div className="application-sub-panel__item application-sub-panel__item--profile form-element">
+                <label htmlFor="profileVacationStart">
                   {this.props.i18n.text.get("plugin.profile.awayEndDate.label")}
                 </label>
-                <div className="application-sub-panel__item-data form-element">
-                  <DatePicker
-                    id="profileVacationEnd"
-                    className="form-element__input"
-                    onChange={this.handleDateChange.bind(
-                      this,
-                      "profileVacationEnd"
-                    )}
-                    minDate={this.state.profileVacationStart || null}
-                    locale={this.props.i18n.time.getLocale()}
-                    selected={this.state.profileVacationEnd}
-                  />
-                </div>
+                <DatePicker
+                  id="profileVacationEnd"
+                  className="form-element__input"
+                  onChange={this.handleDateChange.bind(
+                    this,
+                    "profileVacationEnd"
+                  )}
+                  minDate={this.state.profileVacationStart || null}
+                  locale={this.props.i18n.time.getLocale()}
+                  selected={this.state.profileVacationEnd}
+                />
               </div>
 
               <div
-                className={`application-sub-panel__item application-sub-panel__item--profile ${
+                className={`application-sub-panel__item application-sub-panel__item--profile  form-element ${
                   !this.state.profileVacationStart ||
                   !this.state.profileVacationEnd
                     ? "NON-ACTIVE"
                     : ""
                 }`}
               >
-                <div className="application-sub-panel__item-data form-element">
-                  <div className="form-element__radio-option-container form-element__radio-option-container--profile">
-                    <input
-                      checked={
-                        this.state.vacationAutoReply === "ENABLED"
-                          ? true
-                          : false
-                      }
-                      value={this.state.vacationAutoReply}
-                      id="profileVacationAutoReply"
-                      type="checkbox"
-                      onChange={this.onVacationAutoReplyChange}
-                    />
-                    <label
-                      htmlFor="profileVacationAutoReply"
-                      className="application-sub-panel__item-label "
-                    >
-                      {this.props.i18n.text.get(
-                        "plugin.profile.vacationAutoReply.label"
-                      )}
-                    </label>
-                  </div>
-                  <div className="application-sub-panel__item-description">
+                <div className="form-element form-element--checkbox-radiobutton">
+                  <input
+                    checked={
+                      this.state.vacationAutoReply === "ENABLED" ? true : false
+                    }
+                    value={this.state.vacationAutoReply}
+                    id="profileVacationAutoReply"
+                    type="checkbox"
+                    onChange={this.onVacationAutoReplyChange}
+                  />
+                  <label htmlFor="profileVacationAutoReply">
                     {this.props.i18n.text.get(
-                      "plugin.profile.vacationAutoReply.description"
+                      "plugin.profile.vacationAutoReply.label"
                     )}
-                  </div>
+                  </label>
+                </div>
+                <div className="application-sub-panel__item-description">
+                  {this.props.i18n.text.get(
+                    "plugin.profile.vacationAutoReply.description"
+                  )}
                 </div>
               </div>
 
               {this.state.vacationAutoReply === "ENABLED" && (
                 <div
-                  className={`application-sub-panel__item application-sub-panel__item--profile ${
+                  className={`application-sub-panel__item application-sub-panel__item--profile form-element ${
                     !this.state.profileVacationStart ||
                     !this.state.profileVacationEnd
                       ? "NON-ACTIVE"
                       : ""
                   } form-element`}
                 >
-                  <label
-                    htmlFor="profileVacationAutoReplySubject"
-                    className="application-sub-panel__item-title"
-                  >
+                  <label htmlFor="profileVacationAutoReplySubject">
                     {this.props.i18n.text.get(
                       "plugin.profile.vacationAutoReplySubject.label"
                     )}
                   </label>
-                  <div className="application-sub-panel__item-data form-element">
-                    <input
-                      className="form-element__input form-element__input--profile-auto-reply"
-                      id="profileVacationAutoReplySubject"
-                      type="text"
-                      onChange={this.onVacationAutoReplySubjectChange}
-                      value={this.state.vacationAutoReplySubject}
-                    ></input>
-                  </div>
+                  <input
+                    className="form-element__input form-element__input--profile-auto-reply"
+                    id="profileVacationAutoReplySubject"
+                    type="text"
+                    onChange={this.onVacationAutoReplySubjectChange}
+                    value={this.state.vacationAutoReplySubject}
+                  ></input>
                 </div>
               )}
 
               {this.state.vacationAutoReply === "ENABLED" && (
                 <div
-                  className={`application-sub-panel__item application-sub-panel__item--profile ${
+                  className={`application-sub-panel__item application-sub-panel__item--profile form-element ${
                     !this.state.profileVacationStart ||
                     !this.state.profileVacationEnd
                       ? "NON-ACTIVE"
                       : ""
                   } form-element`}
                 >
-                  <label
-                    htmlFor="profileVacationAutoReplyMsg"
-                    className="application-sub-panel__item-title"
-                  >
+                  <label htmlFor="profileVacationAutoReplyMsg">
                     {this.props.i18n.text.get(
                       "plugin.profile.vacationAutoReplyMsg.label"
                     )}
                   </label>
-                  <div className="application-sub-panel__item-data form-element">
+                  <div className="form-element__textarea-container">
                     <textarea
                       className="form-element__textarea form-element__textarea--profile-auto-reply"
                       id="profileVacationAutoReplyMsg"

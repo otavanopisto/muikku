@@ -3,36 +3,22 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
-.hops-container {
+.hops__container {
   flex-basis: 100%;
   overflow: auto;
   width: 100%;
-  padding: 0 10px 0 10px;
 }
 
-.hops-container__fieldset {
-  border-bottom: 1px solid $color-default-separator-border;
-  margin: 0 0 15px;
-  padding: 0 0 10px;
-  min-width: 100%;
-
-  // @include breakpoint($breakpoint-pad) {
-  //    display: flex;
-  //  }
-
-
-}
-
-.hops-container__subheader {
-  border: 0;
-  display: block;
-  font-size: 1rem;
+.hops__subheader {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  font-size: 1.1875rem;
   font-weight: 400;
-  margin: 0 0 10px;
-  width: 100%;
+  margin: 0 10px 10px;
 
   @include breakpoint($breakpoint-pad) {
-    font-size: 1.1875rem;
+    margin: 0 0 10px;
   }
 }
 
@@ -45,30 +31,22 @@
   justify-content: center;
 }
 
-// .hops-sub__container {
-//  flex-grow: 1;
-//
-//  @include breakpoint($breakpoint-pad) {
-//    flex-grow: 4;
-//  }
-// }
-
-.hops-updates__list {
+.hops__updates-list {
   list-style-type: disc;
   padding-inline-start: 20px;
 }
 
-.hops-updates__list li {
+.hops__updates-list li {
   display: list-item;
 }
 
-.hops-sub__container--updates {
+.hops__sub-container--updates {
   border: 1px solid cornflowerblue;
   border-left: 3px solid cornflowerblue;
   flex-grow: 2;
 }
 
-.hops-container__row {
+.hops__row {
   display: flex;
   flex-flow: column wrap;
 
@@ -78,17 +56,17 @@
 }
 
 .hops__form-element-container {
+  box-shadow: 0 5px 5px $color-workspace-hero-shadow;
+  display: flex;
   flex-basis: auto;
   flex-flow: column nowrap;
   flex-grow: 1;
   flex-shrink: 1;
   margin: 5px;
   position: relative;
-  display: flex;
-  box-shadow: 0 5px 5px $color-workspace-hero-shadow;
 }
 
-.hops__form-element-container--hops_indicators {
+.hops__form-element-container--hops-indicators {
   align-items: center;
 }
 
@@ -97,14 +75,14 @@
   display: flex;
   flex-flow: row;
 
-  .hops-label {
+  .hops__label {
     flex-basis: auto;
     margin: 0 10px 0 0;
     padding: 0;
   }
 }
 
-.hops__form-element-container--pad__upforwards {
+.hops__form-element-container--pad-upforwards {
   display: none;
 
   @include breakpoint($breakpoint-mobile-xl) {
@@ -123,8 +101,8 @@
 .hops__form-element-container--info {
   border: 2px solid;
   border-left-width: 5px;
-  padding: 10px;
   font-style: italic;
+  padding: 10px;
 }
 
 .hops__form-element-container--toomuch {
@@ -139,7 +117,7 @@
   border-color: orange;
 }
 
-.hops-label {
+.hops__label {
   display: block;
   font-weight: 600;
   overflow: hidden;
@@ -147,7 +125,7 @@
   text-overflow: ellipsis;
 }
 
-.hops-input {
+.hops__input {
   background: $color-default;
   border: 2px solid pink;
   border-radius: 3px;
@@ -159,9 +137,14 @@
     background-color: lighten($color-disabled, 20%);
     border: 0;
   }
+
+  &:disabled {
+    background-color: #e6e5e5;
+    border: 0;
+  }
 }
 
-.hops-select {
+.hops__select {
   background: $color-default;
   border: 2px solid pink;
   border-radius: 3px;
@@ -176,7 +159,7 @@
   }
 }
 
-.hops-input[type="checkbox"] {
+.hops__input[type="checkbox"] {
   align-items: center;
   -moz-appearance: none;
   -webkit-appearance: none;
@@ -192,50 +175,45 @@
     background-color: #c1c1c1;
     border: 0;
   }
+
+  &:checked {
+    background-color: $color-application-dialog-border-color;
+    border: solid 2px $color-application-dialog-border-color;
+  }
+
+  &:checked::after {
+    color: $color-default;
+    content: "\e639";
+    font-family: muikku;
+    font-size: 0.875rem;
+  }
 }
 
-.hops-input:disabled {
-  background-color: #e6e5e5;
-  border: 0;
-}
-
-.hops-input[type="checkbox"]:checked {
-  background-color: $color-application-dialog-border-color;
-  border: solid 2px $color-application-dialog-border-color;
-}
-
-.hops-input[type="checkbox"]:checked::after {
-  color: $color-default;
-  content: "\e639";
-  font-family: muikku;
-  font-size: 0.875rem;
-}
-
-.hops-table__container {
+.hops__table-container {
   width: 100%;
 }
 
-.hops-button__container {
+.hops__button-container {
   height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.hops-container__row--list {
+.hops__row--list {
   display: block;
 }
 
-.form-element__textarea[disabled] {
-  background-color: #e6e5e5;
-  border: 0;
-}
+// .form-element__textarea[disabled] {
+//   background-color: #e6e5e5;
+//   border: 0;
+// }
 
-.form-element__textarea--resize__vertically {
-  margin-top: 5px;
-  min-height: 50px;
-  resize: vertical;
-}
+// .form-element__textarea--resize-vertically {
+//   margin-top: 5px;
+//   min-height: 50px;
+//   resize: vertical;
+// }
 
 .hops-container__indicator-examples {
   display: flex;
@@ -243,72 +221,72 @@
   flex-flow: row wrap;
 }
 
-.hops-container__course-latest_completed,
-.hops-container__course-selected,
-.hops-container__course-suggested,
-.hops-container__course-mandatory,
-.hops-container__course-optional,
-.hops-container__course-inprogress,
-.hops-container__course-approval,
-.hops-container__course-completed {
+.hops__container-course-latest_completed,
+.hops__container-course-selected,
+.hops__container-course-suggested,
+.hops__container-course-mandatory,
+.hops__container-course-optional,
+.hops__container-course-inprogress,
+.hops__container-course-approval,
+.hops__container-course-completed {
   align-items: center;
   display: flex;
   margin: 5px 5px 5px;
   flex-shrink: 1;
 }
 
-.hops-container__course-latest_completed-indicator,
-.hops-container__course-suggested-indicator,
-.hops-container__course-selected-indicator,
-.hops-container__course-mandatory-indicator,
-.hops-container__course-optional-indicator,
-.hops-container__course-inprogress-indicator,
-.hops-container__course-approval-indicator,
-.hops-container__course-completed-indicator {
+.hops__container-course-latest_completed-indicator,
+.hops__container-course-suggested-indicator,
+.hops__container-course-selected-indicator,
+.hops__container-course-mandatory-indicator,
+.hops__container-course-optional-indicator,
+.hops__container-course-inprogress-indicator,
+.hops__container-course-approval-indicator,
+.hops__container-course-completed-indicator {
   display: inline-block;
   height: 25px;
   margin: 0 10px 0 0;
   width: 25px;
 }
 
-.hops-container__course-suggested-indicator {
+.hops__container-course-suggested-indicator {
   border: 2px solid pink;
 }
 
-.hops-container__course-mandatory-indicator {
+.hops__container-course-mandatory-indicator {
   background-color: #acacac;
 }
 
-.hops-container__course-optional-indicator {
+.hops__container-course-optional-indicator {
   background-color: lightblue;
 }
 
-.hops-container__course-inprogress-indicator {
+.hops__container-course-inprogress-indicator {
   background-color: orange;
 }
 
-.hops-container__course-approval-indicator {
+.hops__container-course-approval-indicator {
   background-color: palegreen;
 }
 
-.hops-container__course-completed-indicator {
+.hops__container-course-completed-indicator {
   background-color: green;
 }
 
-.hops-container__course-latest_completed-indicator {
+.hops__container-course-latest_completed-indicator {
   background-color: #08e108;
 }
 
-.hops-container__course-selected-indicator {
+.hops__container-course-selected-indicator {
   background-color: #3ab8e1;
 }
 
-.hops__form-element-container-study__counter {
+.hops__form-element-container-study-ounter {
   background-color: aliceblue;
   padding: 5px;
 }
 
-.hops__form-element-container-study__counter div {
+.hops__form-element-container-study-counter div {
   display: flex;
   justify-content: space-between;
 }
@@ -317,36 +295,36 @@
   margin: 0 5px;
 }
 
-.hops__calculated__hours-divider {
+.hops__calculated-hours-divider {
   margin-top: 10px;
   margin-bottom: 10px;
 }
 
-.hops-activity__progressbar-circle {
+.hops__activity-progressbar-circle {
   align-items: center;
   cursor: pointer;
   display: flex;
   height: 105px;
 }
 
-.hops-course-activity__progressbar-circle {
+.hops__course-activity-progressbar-circle {
   align-items: center;
   cursor: pointer;
   display: flex;
   height: 100px;
 }
 
-.hops-activity__progressbar-circle {
+.hops__activity-progressbar-circle {
   line-height: 1;
   margin: 0 5px;
 }
 
-.hops-course-activity__progressbar-circle {
+.hops__course-activity-progressbar-circle {
   line-height: 1;
   margin: 0 5px;
 }
 
-.hops-proggress-line {
+.hops__proggress-line {
   display: flex;
   position: relative;
   align-items: center;
@@ -354,15 +332,15 @@
   margin: 5px;
 }
 
-.hops-proggress-line .progressbar-text {
+.hops__proggress-line .progressbar-text {
   margin: 5px;
 }
 
-.hops-divived {
+.hops__divived {
   margin: 5px;
 }
 
-.hops-activity__progressbar-label {
+.hops__activity-progressbar-label {
   background: $color-default;
   border: 1px solid $color-assignment;
   border-radius: 3px;
@@ -374,7 +352,7 @@
   text-align: center;
 }
 
-.hops-activity__progressbar-label--workspace {
+.hops__activity-progressbar-label--workspace {
   background: transparent;
   border: 0;
   padding: 0 6px;
@@ -387,17 +365,17 @@
   justify-content: center;
 }
 
-.hops-activity__progressbar-label--assignment {
+.hops__activity-progressbar-label--assignment {
   color: #ce01bd;
 }
 
-.hops_buttons {
+.hops__buttons {
   flex-grow: 1;
   display: flex;
   flex-flow: wrap;
 }
 
-.hops_buttons--add {
+.hops__buttons--add {
   justify-content: unset;
 
   @include breakpoint($breakpoint-desktop) {
@@ -405,7 +383,7 @@
   }
 }
 
-.hops_buttons--remove {
+.hops__buttons--remove {
   justify-content: unset;
 
   @include breakpoint($breakpoint-desktop) {

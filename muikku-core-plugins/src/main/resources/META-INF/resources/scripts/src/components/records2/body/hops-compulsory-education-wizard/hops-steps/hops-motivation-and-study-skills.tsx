@@ -209,7 +209,7 @@ class HopsMotivationAndStudySkills extends React.Component<
           </div>
           <AnimateHeight height={this.state.someOtherWay ? "auto" : 0}>
             <div className="hops-container__row">
-              <div className="hops__form-element-container">
+              <div className="form-element">
                 <Textarea
                   className="form-element__textarea form-element__textarea--resize__vertically"
                   label="Muu?"
@@ -288,7 +288,7 @@ class HopsMotivationAndStudySkills extends React.Component<
           </div>
           <AnimateHeight height={this.state.someOtherMethod ? "auto" : 0}>
             <div className="hops-container__row">
-              <div className="hops__form-element-container">
+              <div className="form-element">
                 <Textarea
                   className="form-element__textarea form-element__textarea--resize__vertically"
                   label="Muu?"
@@ -359,7 +359,7 @@ class HopsMotivationAndStudySkills extends React.Component<
           </div>
           <AnimateHeight height={this.state.somethingElse ? "auto" : 0}>
             <div className="hops-container__row">
-              <div className="hops__form-element-container">
+              <div className="form-element">
                 <Textarea
                   className="form-element__textarea form-element__textarea--resize__vertically"
                   label="Muu?"
@@ -376,7 +376,7 @@ class HopsMotivationAndStudySkills extends React.Component<
           <legend className="hops-container__subheader">Muuta?</legend>
 
           <div className="hops-container__row">
-            <div className="hops__form-element-container">
+            <div className="form-element">
               <Textarea
                 className="form-element__textarea form-element__textarea--resize__vertically"
                 label="Mikä sinusta on opiskelussa helpointa/vaikeinta?"
@@ -388,7 +388,7 @@ class HopsMotivationAndStudySkills extends React.Component<
           </div>
 
           <div className="hops-container__row">
-            <div className="hops__form-element-container">
+            <div className="form-element">
               <Textarea
                 className="form-element__textarea form-element__textarea--resize__vertically"
                 label="Mitkä ovat vahvuuksiasi/heikkouksiasi?"
@@ -400,7 +400,7 @@ class HopsMotivationAndStudySkills extends React.Component<
           </div>
 
           <div className="hops-container__row">
-            <div className="hops__form-element-container">
+            <div className="form-element">
               <Textarea
                 className="form-element__textarea form-element__textarea--resize__vertically"
                 label="Mikä sinua tällä hetkellä kiinnostaa eniten?"
@@ -412,7 +412,7 @@ class HopsMotivationAndStudySkills extends React.Component<
           </div>
 
           <div className="hops-container__row">
-            <div className="hops__form-element-container">
+            <div className="form-element">
               <Textarea
                 className="form-element__textarea form-element__textarea--resize__vertically"
                 label="Missä haluaisit erityisesti kehittyä?"

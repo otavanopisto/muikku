@@ -3,15 +3,34 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
+.form-fieldset {
+  margin: 0;
+  padding: 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 20px;
+  }
+}
+
+.form-fieldset__legend {
+  font-size: 1.1875rem;
+  font-weight: 400;
+  margin: 0 10px 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    margin: 0 0 10px;
+  }
+}
+
 .form-element {
   width: auto;
 
   label {
+    display: inline-block;
     font-family: $text-font-family;
     font-size: $text-mobile-font-size;
     font-weight: 600;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    padding: 0 0 5px;
 
     &:first-child {
       margin-right: 5px;
@@ -68,22 +87,24 @@
   }
 }
 
+// Application-list item selector
+.form-element--item-selection-container {
+  padding: 2px;
+}
+
+// CHECKBOX or RADIOBUTTON form-element wrapper
 .form-element--checkbox-radiobutton {
   align-items: center;
   background-color: transparent;
   border-radius: 0;
   display: flex;
-  margin: 2px 5px 2px 0;
-  padding: 4px 8px 4px 0;
+  margin: 5px 5px 5px 0;
+  padding: 5px 10px 5px 0;
   width: auto;
 
   label {
     padding: 0;
   }
-}
-
-.form-element--workspace-management {
-  width: auto;
 }
 
 .form-element--edit-label {
@@ -92,8 +113,13 @@
 }
 
 .form-element--new-user {
+  flex-basis: 100%;
   flex-grow: 1;
-  margin-right: 10px;
+  flex-shrink: 1;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: auto;
+  }
 }
 
 .form-element--organization-workspace-date {
@@ -101,71 +127,15 @@
 }
 
 .form-element--new-user:not(:first-child) {
-  @include breakpoint($breakpoint-pad) {
-    margin-left: 20px;
-  }
-}
-
-.form-element--new-user-email:last-child {
-  margin-left: 0;
-}
-
-.form-element__copy-workspace-start-date {
-  flex-basis: 100%;
-  flex-grow: 1;
-  flex-shrink: 1;
-  padding: 0 0 10px;
+  margin: 10px 0 0;
 
   @include breakpoint($breakpoint-pad) {
-    flex-basis: 50%;
-    padding: 0 10px 0 0;
-  }
-}
-
-.form-element__copy-workspace-ckeditor {
-  display: flex;
-  flex-basis: auto;
-  flex-flow: column wrap;
-  flex-grow: 1;
-  flex-shrink: 1;
-  width: 100%;
-
-  .cke {
-    flex-basis: auto;
-    flex-grow: 1;
-    flex-shrink: 1;
-  }
-}
-
-.form-element__copy-workspace-end-date {
-  flex-basis: 100%;
-  flex-grow: 1;
-  flex-shrink: 1;
-  padding: 0 0 10px;
-
-  @include breakpoint($breakpoint-pad) {
-    flex-basis: 50%;
-    padding: 0 0 0 10px;
-  }
-}
-
-.form-element__copy-workspace-start-date,
-.form-element__copy-workspace-end-date {
-  .react-datepicker-wrapper {
-    display: block;
-  }
-
-  .react-datepicker__input-container {
-    display: block;
+    margin: 0 0 0 20px;
   }
 }
 
 .form-element--main-action {
   @include form-element-toolbar;
-}
-
-.form-element__custom-element {
-  padding: 10px 0 0;
 }
 
 .form-element--add-producer,
@@ -186,33 +156,75 @@
 }
 
 .form-element--workspace-name,
-.form-element--workspace-name-extension,
-.form-element--dialog-workspace-name-extension {
+.form-element--workspace-name-extension {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  margin-right: 10px;
-}
-
-.form-element--dialog-workspace-name-extension {
-  flex-basis: 200px;
 }
 
 .form-element--forgot-password {
   display: flex;
   flex-direction: column;
-  padding: 5px 0;
+  padding: 10px 0;
 
   label {
-    padding: 10px 0 5px;
+    font-size: 1rem;
+    font-weight: 400;
   }
 }
 
-.form-element__label {
-  display: inline-block;
-  padding: 0 0 5px;
+// COPY WORKSPACE --modifiers
+.form-element--copy-workspace-start-date {
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  padding: 0 0 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 50%;
+    padding: 0 10px 10px 0;
+  }
 }
 
+.form-element--copy-workspace-ckeditor {
+  display: flex;
+  flex-basis: auto;
+  flex-flow: column wrap;
+  flex-grow: 1;
+  flex-shrink: 1;
+  width: 100%;
+
+  .cke {
+    flex-basis: auto;
+    flex-grow: 1;
+    flex-shrink: 1;
+  }
+}
+
+.form-element--copy-workspace-end-date {
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  padding: 0 0 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 50%;
+    padding: 0 0 10px 10px;
+  }
+}
+
+.form-element--copy-workspace-start-date,
+.form-element--copy-workspace-end-date {
+  .react-datepicker-wrapper {
+    display: block;
+  }
+
+  .react-datepicker__input-container {
+    display: block;
+  }
+}
+
+// TEXTFIELD
 .form-element__input {
   @include prefix(
     transition,
@@ -235,7 +247,6 @@
     height: 2.5rem;
   }
 
-  // scss-lint:disable SelectorFormat
   &.INVALID {
     border-color: $color-fatal;
   }
@@ -243,8 +254,21 @@
   &.VALID {
     border-color: $color-success;
   }
+}
 
-  // scss-lint:enable SelectorFormat
+.form-element__input--material-editor-title {
+  background: $color-default;
+  font-size: 1.25rem;
+  font-weight: 300;
+  height: auto;
+  line-height: 1;
+  padding: 10px;
+  width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: 1.375rem;
+    padding: 15px;
+  }
 }
 
 .form-element__input--new-label {
@@ -281,7 +305,8 @@
   }
 }
 
-.form-element__input--workspace-management {
+.form-element__input--workspace-management,
+.form-element__input--material-editor {
   margin: 0 0 5px;
   width: 100%;
 }
@@ -328,21 +353,14 @@
   }
 }
 
-// Overrides the border color
-.form-element__input--add-producer,
-.form-element__input--add-material-producer {
-  border: solid 2px $color-form-element-border;
-}
-
-// Overrides the border color
-.form-element__input--add-material-producer {
-  border: solid 2px lighten($color-material-page-admin-panel-main-color, 20%);
+// TEXTFIELD DECORATION
+.form-element__input-decoration {
+  border-radius: 2px;
 }
 
 .form-element__input-decoration--search,
 .form-element__input-decoration--add-producer {
   background-color: $color-main-function-input-field-decoration-background;
-  border-radius: 2px;
 
   &::before {
     @include form-element-input-search-decoration;
@@ -353,7 +371,6 @@
 
 .form-element__input-decoration--clear-search {
   background-color: $color-search-clear-background;
-  border-radius: 2px;
   cursor: pointer;
   height: 1.8rem;
   position: absolute;
@@ -378,6 +395,7 @@
   }
 }
 
+// SELECT
 .form-element__select {
   appearance: none;
   background:
@@ -397,8 +415,6 @@
     height: 2.5rem;
   }
 
-  // scss-lint:disable SelectorFormat
-
   &.INVALID {
     border-color: $color-fatal;
   }
@@ -406,13 +422,9 @@
   &.VALID {
     border-color: $color-success;
   }
-
-  // scss-lint:enable SelectorFormat
 }
 
 .form-element__select--evaluation {
-  height: 2rem;
-
   &[disabled] {
     background:
       url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='15' height='10' fill='lightgrey'><polygon points='0,0 3,0 8,7 12,0 15,0 8,10 0,0' /></svg>")
@@ -452,7 +464,6 @@
 }
 
 .form-element__select--material-editor {
-  border: solid 2px lighten($color-material-page-admin-panel-main-color, 20%);
   width: 100%;
 }
 
@@ -477,6 +488,7 @@
   width: 100%;
 }
 
+// TEXTAREA
 .form-element__textarea-container {
   width: 100%;
 }
@@ -503,36 +515,11 @@
 }
 
 .form-element__dropdown-selection-container {
-  padding: 3px 0 3px 10px;
+  padding: 3px 0;
 }
 
 .form-element__button-container {
-  padding: 10px;
-}
-
-.form-element__radio-option-container {
-  align-items: center;
-  display: flex;
-  padding: 10px;
-
-  input {
-    margin-right: 5px;
-  }
-}
-
-.form-element__radio-option-container--profile {
-  padding: 0;
-}
-
-.form-element__check-option-container {
-  align-items: center;
-  display: flex;
-  margin-right: 10px;
-  padding: 10px;
-
-  input {
-    margin-right: 5px;
-  }
+  padding: 10px 0;
 }
 
 .form-element__autocomplete-highlight {

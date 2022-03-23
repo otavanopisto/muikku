@@ -215,7 +215,7 @@ class MatriculationSubjectsList extends React.Component<
       );
 
     return (
-      <div className="form-element__custom-element">
+      <div className="form-element">
         {matriculationSubjectInputs}
         <div className="form-element__button-container">
           <Button

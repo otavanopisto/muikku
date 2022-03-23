@@ -10,6 +10,7 @@ import "~/sass/elements/application-list.scss";
 import "~/sass/elements/announcement.scss";
 import "~/sass/elements/rich-text.scss";
 import "~/sass/elements/label.scss";
+import "~/sass/elements/form-elements.scss";
 import { AnnouncementsType, AnnouncementType } from "~/reducers/announcements";
 import BodyScrollKeeper from "~/components/general/body-scroll-keeper";
 import SelectableList from "~/components/general/selectable-list";
@@ -101,13 +102,12 @@ class Announcements extends React.Component<
                 ),
                 key: announcement.id,
                 checkboxId: `announcementSelect-${announcement.id}`,
-                checkboxClassName: "announcement__selector",
                 // eslint-disable-next-line
                 contents: (checkbox: React.ReactElement<any>) => (
                   <ApplicationListItemContentWrapper
                     className="announcement__content"
                     aside={
-                      <div className="announcement__select-container">
+                      <div className="form-element form-element--item-selection-container">
                         <label
                           htmlFor={`announcementSelect-` + announcement.id}
                           className="visually-hidden"

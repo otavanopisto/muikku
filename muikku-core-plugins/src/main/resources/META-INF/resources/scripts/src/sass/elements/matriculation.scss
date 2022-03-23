@@ -41,7 +41,6 @@
     display: list-item;
   }
 
-  // scss-lint:disable SelectorFormat
   &.state-INFO {
     border-color: $color-info;
 
@@ -81,8 +80,6 @@
       color: $color-tertiary;
     }
   }
-
-  // scss-lint:enable SelectorFormat
 }
 
 .matriculation-container__state-icon {

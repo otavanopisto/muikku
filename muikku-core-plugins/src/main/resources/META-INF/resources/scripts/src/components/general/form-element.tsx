@@ -66,9 +66,7 @@ export default class FormElement extends React.Component<
             : ""
         }`}
       >
-        {this.props.label ? (
-          <div className="form-element__label">{this.props.label}</div>
-        ) : null}
+        {this.props.label ? <div>{this.props.label}</div> : null}
         {this.props.children}
       </div>
     );
@@ -433,12 +431,12 @@ export class SearchFormElement extends React.Component<
           onChange={this.updateSearchField}
         />
         <div
-          className={`form-element__input-decoration--clear-search icon-cross ${
+          className={`form-element__input-decoration form-element__input-decoration--clear-search icon-cross ${
             this.props.value.length > 0 ? "active" : ""
           }`}
           onClick={this.clearSearchField}
         ></div>
-        <div className="form-element__input-decoration--search icon-search"></div>
+        <div className="form-element__input-decoration form-element__input-decoration--search icon-search"></div>
       </div>
     );
   }
@@ -544,9 +542,7 @@ export class InputFormElement extends React.Component<
             : ""
         }`}
       >
-        <label htmlFor={this.props.id} className="form-element__label">
-          {this.props.label}
-        </label>
+        <label htmlFor={this.props.id}>{this.props.label}</label>
         <input
           id={this.props.id}
           value={this.state.value}
@@ -664,9 +660,7 @@ export class SelectFormElement extends React.Component<
             : ""
         }`}
       >
-        <label htmlFor={this.props.id} className="form-element__label">
-          {this.props.label}
-        </label>
+        <label htmlFor={this.props.id}>{this.props.label}</label>
         <select
           id={this.props.id}
           value={this.state.value}
@@ -785,9 +779,7 @@ export class EmailFormElement extends React.Component<
             : ""
         }`}
       >
-        <label htmlFor="emailField" className="form-element__label">
-          {this.props.label}
-        </label>
+        <label htmlFor="emailField">{this.props.label}</label>
         <input
           id="emailField"
           value={this.state.value}
@@ -918,9 +910,7 @@ export class SSNFormElement extends React.Component<
             : ""
         }`}
       >
-        <label htmlFor="SSNField" className="form-element__label">
-          {this.props.label}
-        </label>
+        <label htmlFor="SSNField">{this.props.label}</label>
         <input
           id="SSNField"
           value={this.state.value}
@@ -1010,9 +1000,7 @@ export class DateFormElement extends React.Component<
         }`}
       >
         {this.props.labels.label ? (
-          <label htmlFor={this.props.id} className="form-element__label">
-            {this.props.labels.label}
-          </label>
+          <label htmlFor={this.props.id}>{this.props.labels.label}</label>
         ) : (
           <label htmlFor={this.props.id} className="visually-hidden">
             {this.props.labels.placeholder}

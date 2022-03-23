@@ -687,10 +687,7 @@ class ManagementPanel extends React.Component<
             <div className="application-sub-panel__body application-sub-panel__body--workspace-settings">
               <div className="application-sub-panel__item-split-container">
                 <div className="form-element application-sub-panel__item application-sub-panel__item--workspace-management">
-                  <label
-                    htmlFor="wokspaceName"
-                    className="application-sub-panel__item-header"
-                  >
+                  <label htmlFor="wokspaceName">
                     {this.props.i18n.text.get(
                       "plugin.workspace.management.title.basicInfo.name"
                     )}
@@ -728,8 +725,8 @@ class ManagementPanel extends React.Component<
                 </div>
               </div>
               <div className="application-sub-panel__item-split-container">
-                <div className="application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-description">
-                  <label className="application-sub-panel__item-header">
+                <div className="application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-description form-element">
+                  <label>
                     {this.props.i18n.text.get(
                       "plugin.workspace.management.title.basicInfo.description"
                     )}
@@ -937,10 +934,7 @@ class ManagementPanel extends React.Component<
             </h2>
             <div className="application-sub-panel__body application-sub-panel__body--workspace-settings">
               <div className="form-element application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-name-extension">
-                <label
-                  htmlFor="workspaceNameExtension"
-                  className="application-sub-panel__item-header"
-                >
+                <label htmlFor="workspaceNameExtension">
                   {this.props.i18n.text.get(
                     "plugin.workspace.management.additionalInfo.nameExtension"
                   )}
@@ -955,10 +949,7 @@ class ManagementPanel extends React.Component<
                 />
               </div>
               <div className="form-element application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-type">
-                <label
-                  htmlFor="workspaceType"
-                  className="application-sub-panel__item-header"
-                >
+                <label htmlFor="workspaceType">
                   {this.props.i18n.text.get(
                     "plugin.workspace.management.additionalInfo.courseType"
                   )}
@@ -979,10 +970,7 @@ class ManagementPanel extends React.Component<
                 </select>
               </div>
               <div className="form-element application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-start-date">
-                <label
-                  htmlFor="workspaceStartDate"
-                  className="application-sub-panel__item-header"
-                >
+                <label htmlFor="workspaceStartDate">
                   {this.props.i18n.text.get(
                     "plugin.workspace.management.additionalInfo.startDate"
                   )}
@@ -997,10 +985,7 @@ class ManagementPanel extends React.Component<
                 />
               </div>
               <div className="form-element application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-end-date">
-                <label
-                  htmlFor="workspaceEndDate"
-                  className="application-sub-panel__item-header"
-                >
+                <label htmlFor="workspaceEndDate">
                   {this.props.i18n.text.get(
                     "plugin.workspace.management.additionalInfo.endDate"
                   )}

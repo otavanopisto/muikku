@@ -471,14 +471,25 @@ class OrganizationNewWorkspace extends React.Component<
                       this.state.template &&
                       this.state.template.id === template.id;
                     const aside = (
-                      <input
-                        key={template.id}
-                        type="radio"
-                        checked={templateSelected}
-                        onChange={this.selectTemplate}
-                        name={template.name}
-                        value={template.id}
-                      />
+                      <div className="form-element form-element--item-selection-container">
+                        <label
+                          htmlFor={`messageSelect-` + template.id}
+                          className="visually-hidden"
+                        >
+                          {this.props.i18n.text.get(
+                            "plugin.wcag.workspaceTemplateSelect.label"
+                          )}
+                        </label>
+                        <input
+                          key={template.id}
+                          type="radio"
+                          id={`messageSelect-` + template.id}
+                          checked={templateSelected}
+                          onChange={this.selectTemplate}
+                          name={template.name}
+                          value={template.id}
+                        />
+                      </div>
                     );
                     return (
                       <ApplicationListItem

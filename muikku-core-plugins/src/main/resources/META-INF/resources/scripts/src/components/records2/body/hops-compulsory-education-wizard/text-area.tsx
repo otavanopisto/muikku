@@ -23,6 +23,8 @@ export const Textarea: React.FC<TextareaProps> = ({
 }) => (
   <>
     <label>{label}</label>
-    <textarea {...textareaProps} />
+    <div className="form-element__textarea-container">
+      <textarea {...textareaProps} />
+    </div>
   </>
 );

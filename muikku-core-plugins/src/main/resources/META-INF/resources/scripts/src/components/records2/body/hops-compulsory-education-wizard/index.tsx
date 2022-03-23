@@ -8,24 +8,24 @@ const StepZilla = require("react-stepzilla").default;
 
 import "~/sass/elements/wizard.scss";
 import { Step1, Step2, Step3, Step5, Step6 } from "./hops-steps";
-import { GuiderType } from "../../../../reducers/main-function/guider/index";
-import promisify from "../../../../util/promisify";
+import { GuiderType } from "~/reducers/main-function/guider/index";
+import promisify from "~/util/promisify";
 import mApi from "~/lib/mApi";
 import {
   BasicInformation,
   HopsUpdates,
   FollowUp,
   StudentInfo,
-} from "../../../../@types/shared";
+} from "~/@types/shared";
 import {
   HopsCompulsory,
   Education,
   HopsPlanningStudies,
-} from "../../../../@types/shared";
+} from "~/@types/shared";
 import {
   HopsStudentStartingLevel,
   HopsMotivationAndStudy,
-} from "../../../../@types/shared";
+} from "~/@types/shared";
 import {
   displayNotification,
   DisplayNotificationTriggerType,
@@ -377,21 +377,23 @@ class CompulsoryEducationHopsWizard extends React.Component<
     ];
 
     return (
-      <div className="wizard">
-        <div className="wizard_container">
-          <StepZilla
-            steps={steps}
-            showNavigation={true}
-            showSteps={true}
-            preventEnterSubmission={true}
-            prevBtnOnLastStep={true}
-            nextTextOnFinalActionStep="Tallenna"
-            nextButtonCls="button button--wizard"
-            backButtonCls="button button--wizard"
-            nextButtonText="Seuraava"
-            backButtonText="Edellinen"
-            onStepChange={this.handleStepChange(steps)}
-          />
+      <div className="hops">
+        <div className="wizard">
+          <div className="wizard_container">
+            <StepZilla
+              steps={steps}
+              showNavigation={true}
+              showSteps={true}
+              preventEnterSubmission={true}
+              prevBtnOnLastStep={true}
+              nextTextOnFinalActionStep="Tallenna"
+              nextButtonCls="button button--wizard"
+              backButtonCls="button button--wizard"
+              nextButtonText="Seuraava"
+              backButtonText="Edellinen"
+              onStepChange={this.handleStepChange(steps)}
+            />
+          </div>
         </div>
       </div>
     );

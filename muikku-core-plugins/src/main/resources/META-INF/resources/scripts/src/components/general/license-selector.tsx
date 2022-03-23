@@ -303,29 +303,31 @@ export class LicenseSelector extends React.Component<
       ? currentLicense.propertiesParser(this.props.value)
       : {};
     return (
-      <div className="license-selector form-element">
-        <label
-          className="visually-hidden"
-          htmlFor={this.props.wcagLabel && this.props.wcagLabel}
-        >
-          {this.props.wcagDesc && this.props.wcagDesc}
-        </label>
-        <select
-          id={this.props.wcagLabel ? this.props.wcagLabel : ""}
-          className={`form-element__select ${
-            this.props.modifier
-              ? "form-element__select--" + this.props.modifier
-              : ""
-          }`}
-          value={currentLicense.id}
-          onChange={this.onChangeLicenseType}
-        >
-          {LICENSES.map((l) => (
-            <option key={l.id} value={l.id}>
-              {this.props.i18n.text.get(l.i18n)}
-            </option>
-          ))}
-        </select>
+      <div className="license-selector">
+        <div className="form-element">
+          <label
+            className="visually-hidden"
+            htmlFor={this.props.wcagLabel && this.props.wcagLabel}
+          >
+            {this.props.wcagDesc && this.props.wcagDesc}
+          </label>
+          <select
+            id={this.props.wcagLabel ? this.props.wcagLabel : ""}
+            className={`form-element__select ${
+              this.props.modifier
+                ? "form-element__select--" + this.props.modifier
+                : ""
+            }`}
+            value={currentLicense.id}
+            onChange={this.onChangeLicenseType}
+          >
+            {LICENSES.map((l) => (
+              <option key={l.id} value={l.id}>
+                {this.props.i18n.text.get(l.i18n)}
+              </option>
+            ))}
+          </select>
+        </div>
         {currentLicense.properties ? (
           <div className="license-selector__options-container">
             {currentLicense.properties.map((property) => (
@@ -337,7 +339,7 @@ export class LicenseSelector extends React.Component<
                   <div className="license-selector__options-body">
                     {property.values.map((v, index) => (
                       <span
-                        className="license-selector__option"
+                        className="form-element form-element--checkbox-radiobutton"
                         key={"license-value" + index}
                       >
                         <input
@@ -367,25 +369,27 @@ export class LicenseSelector extends React.Component<
         ) : null}
         {!currentLicense.value ? (
           <div className="license-selector__options-container">
-            <label
-              className="license-selector__options-title"
-              htmlFor="workspace-license-link-or-text"
-            >
-              {this.props.i18n.text.get(
-                "plugin.workspace.materialsManagement.editorView.license.textOrLink"
-              )}
-            </label>
-            <input
-              id="workspace-license-link-or-text"
-              type="text"
-              className={`form-element__input ${
-                this.props.modifier
-                  ? "form-element__input--" + this.props.modifier
-                  : ""
-              } ${this.state.valid ? "" : "form-element--invalid"}`}
-              value={this.state.text}
-              onChange={this.onChangeText}
-            />
+            <div className="form-element">
+              <label
+                className="license-selector__options-title"
+                htmlFor="workspace-license-link-or-text"
+              >
+                {this.props.i18n.text.get(
+                  "plugin.workspace.materialsManagement.editorView.license.textOrLink"
+                )}
+              </label>
+              <input
+                id="workspace-license-link-or-text"
+                type="text"
+                className={`form-element__input ${
+                  this.props.modifier
+                    ? "form-element__input--" + this.props.modifier
+                    : ""
+                } ${this.state.valid ? "" : "form-element--invalid"}`}
+                value={this.state.text}
+                onChange={this.onChangeText}
+              />
+            </div>
           </div>
         ) : null}
       </div>

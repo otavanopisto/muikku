@@ -1102,7 +1102,7 @@
 // Profile view
 .application-sub-panel__item--profile {
   align-items: flex-start;
-  flex-flow: row wrap;
+  flex-flow: column wrap;
 
   .application-sub-panel__item-title {
     flex-basis: 100%;

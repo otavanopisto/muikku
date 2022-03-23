@@ -16,11 +16,12 @@
   background: $color-license-options-background;
   border-radius: 3px;
   margin: 10px 0 0;
-  padding: 0 10px 10px;
+  padding: 10px 15px;
 }
 
 .license-selector__options-title {
-  padding: 10px 0;
+  display: block;
+  padding: 5px 0 10px;
 }
 
 .license-selector__options-body {
@@ -37,7 +38,7 @@
 .license-selector__option {
   align-items: center;
   display: flex;
-  margin: 2px 5px 2px 0;
+  margin: 5px 5px 5px 0;
   padding: 4px;
 
   label {
