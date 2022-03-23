@@ -45,8 +45,8 @@ class HopsStudentHopsInformation extends React.Component<
         {this.props.loading ? (
           <div className="loader-empty" />
         ) : (
-          <fieldset className="form-fieldset">
-            <legend className="form-fieldset__legend">Perustiedot:</legend>
+          <fieldset className="form__fieldset">
+            <legend className="form__legend">Perustiedot:</legend>
 
             <div className="hops__row">
               <div className="form-element">

@@ -825,39 +825,37 @@ class WorkspaceEditor extends SessionStateComponent<
       ));
 
     return (
-      <>
-        <div className="evaluation-modal__evaluate-drawer-row form-element">
-          {this.props.editorLabel && (
-            <label>
-              {this.props.editorLabel}
+      <div className="form" role="form">
+        <div className="form__row">
+          <div className="form-element">
+            {this.props.editorLabel && <label>{this.props.editorLabel}</label>}
+
+            <CKEditor
+              onChange={this.handleCKEditorChange}
+              configuration={CKEditorConfig(this.props.locale.current)}
+            >
+              {this.state.literalEvaluation}
+            </CKEditor>
+          </div>
+        </div>
+        <div className="form__row">
+          <div className="form-element">
+            <label htmlFor="workspaceEvaluationGrade">
+              {this.props.i18n.text.get(
+                "plugin.evaluation.evaluationModal.assignmentGradeLabel"
+              )}
             </label>
-          )}
-
-          <CKEditor
-            onChange={this.handleCKEditorChange}
-            configuration={CKEditorConfig(this.props.locale.current)}
-          >
-            {this.state.literalEvaluation}
-          </CKEditor>
+            <select
+              id="workspaceEvaluationGrade"
+              className="form-element__select"
+              onChange={this.handleSelectGradeChange}
+              value={this.state.grade}
+            >
+              {renderGradingOptions}
+            </select>
+          </div>
         </div>
 
-        <div className="evaluation-modal__evaluate-drawer-row form-element">
-          <label
-            htmlFor="workspaceEvaluationGrade"
-          >
-            {this.props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.assignmentGradeLabel"
-            )}
-          </label>
-          <select
-            id="workspaceEvaluationGrade"
-            className="form-element__select"
-            onChange={this.handleSelectGradeChange}
-            value={this.state.grade}
-          >
-            {renderGradingOptions}
-          </select>
-        </div>
         {(options &&
           options.length > 0 &&
           this.state.basePriceFromServer &&
@@ -866,27 +864,27 @@ class WorkspaceEditor extends SessionStateComponent<
           options.length > 0 &&
           this.state.existingBilledPriceObject &&
           this.props.type === "edit") ? (
-          <div className="evaluation-modal__evaluate-drawer-row form-element">
-            <label
-              htmlFor="workspaceEvaluationBilling"
-            >
-              {this.props.i18n.text.get(
-                "plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingLabel"
-              )}
-            </label>
-            <select
-              id="workspaceEvaluationBilling"
-              className=" form-element__select"
-              onChange={this.handleSelectPriceChange}
-              value={this.state.selectedPriceOption}
-              disabled={billingPriceDisabled}
-            >
-              {options}
-            </select>
+          <div className="form__row">
+            <div className="form-element">
+              <label htmlFor="workspaceEvaluationBilling">
+                {this.props.i18n.text.get(
+                  "plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingLabel"
+                )}
+              </label>
+              <select
+                id="workspaceEvaluationBilling"
+                className=" form-element__select"
+                onChange={this.handleSelectPriceChange}
+                value={this.state.selectedPriceOption}
+                disabled={billingPriceDisabled}
+              >
+                {options}
+              </select>
+            </div>
           </div>
         ) : null}
 
-        <div className="evaluation-modal__evaluate-drawer-row evaluation-modal__evaluate-drawer-row--buttons">
+        <div className="form__buttons form__buttons--evaluation">
           <Button
             buttonModifiers="evaluate-workspace"
             onClick={this.handleEvaluationSave}
@@ -917,7 +915,7 @@ class WorkspaceEditor extends SessionStateComponent<
             </Button>
           )}
         </div>
-      </>
+      </div>
     );
   }
 }

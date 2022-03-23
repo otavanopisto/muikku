@@ -9,18 +9,41 @@
 }
 
 .form__row {
-  padding-bottom: 10px;
+  margin: 0 0 15px;
   position: relative;
   width: 100%;
 }
 
+.form__row--evaluation-warning {
+  font-size: 1rem;
+  justify-content: center;
+
+  .recording-warning {
+    color: $color-failed;
+    display: flex;
+    justify-content: center;
+  }
+}
+
 .form__row--wizard {
   display: flex;
-  flex-wrap: wrap;
+  flex-flow: row wrap;
 }
 
 .form__row--wizard-dates {
   flex-direction: row;
+}
+
+.form__buttons {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+  padding: 10px 0;
+}
+
+.form__buttons--evaluation {
+  justify-content: center;
 }
 
 .form__fieldset-header {
@@ -72,9 +95,8 @@ legend {
   font-weight: 600;
 }
 
-
-// FORM ELEMENTS
-.form-fieldset {
+// FIELDSET & LEGEND
+.form__fieldset {
   margin: 0;
   padding: 10px;
 
@@ -83,21 +105,32 @@ legend {
   }
 }
 
-.form-fieldset__legend {
-  font-size: 1.1875rem;
-  font-weight: 400;
-  margin: 0 10px 10px;
-
-  @include breakpoint($breakpoint-pad) {
-    margin: 0 0 10px;
-  }
+.form__legend {
+  font-weight: 600;
 }
 
+.form__fieldset-content {
+  display: flex;
+}
+
+.form__fieldset-content--horizontal {
+  align-items: center;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+}
+
+.form__fieldset-content--vertical {
+  align-items: flex-start;
+  flex-flow: column wrap;
+  justify-content: flex-start;
+}
+
+// FORM ELEMENTS
 .form-element {
   width: auto;
 
   label {
-    display: inline-block;
+    display: block;
     font-family: $text-font-family;
     font-size: $text-mobile-font-size;
     font-weight: 600;
@@ -587,18 +620,6 @@ legend {
   padding: 3px 0;
 }
 
-.form-element__button-container {
-  align-items: center;
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: flex-start;
-  padding: 10px 0;
-}
-
-.form-element__button-container--evaluation {
-  justify-content: center;
-}
-
 .form-element__autocomplete-highlight {
   background: $color-form-element-autocomplete-highlight;
 }
@@ -627,4 +648,3 @@ legend {
     justify-content: center;
   }
 }
-

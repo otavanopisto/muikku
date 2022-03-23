@@ -217,7 +217,7 @@ class MatriculationSubjectsList extends React.Component<
     return (
       <div className="form-element">
         {matriculationSubjectInputs}
-        <div className="form-element__button-container">
+        <div className="form__buttons">
           <Button
             buttonModifiers={["primary-function-content", "add-subject-row"]}
             onClick={this.handleMatriculationSubjectAdd.bind(this)}
