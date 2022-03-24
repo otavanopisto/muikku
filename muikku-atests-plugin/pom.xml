@@ -54,7 +54,7 @@
 
     <dependency>
       <groupId>fi.otavanopisto.muikku</groupId>
-      <artifactId>evaluation-plugin</artifactId>
+      <artifactId>core-plugins</artifactId>
     </dependency>
     
   </dependencies> 
