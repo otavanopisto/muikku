@@ -149,6 +149,11 @@
       <groupId>fi.otavanopisto.muikku</groupId>
       <artifactId>persistence</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>fi.otavanopisto.muikku</groupId>
+      <artifactId>core</artifactId>
+    </dependency>
     
     <dependency>
       <groupId>fi.otavanopisto.muikku</groupId>
@@ -165,16 +170,6 @@
       <artifactId>forum-plugin-rest-model</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>fi.otavanopisto.muikku</groupId>
-      <artifactId>evaluation-plugin-rest-model</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>fi.otavanopisto.muikku</groupId>
-      <artifactId>evaluation-plugin-persistence</artifactId>
-    </dependency>
-    
     <dependency>
       <groupId>fi.otavanopisto.muikku</groupId>
       <artifactId>timed-notifications-plugin-persistence</artifactId>
