@@ -1,15 +1,16 @@
-package fi.otavanopisto.muikku.matriculation.persistence.dao;
+package fi.otavanopisto.muikku.plugins.matriculation.dao;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.otavanopisto.muikku.matriculation.persistence.model.SavedMatriculationEnrollment;
-import fi.otavanopisto.muikku.matriculation.persistence.model.SavedMatriculationEnrollment_;
+import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
+import fi.otavanopisto.muikku.plugins.matriculation.model.SavedMatriculationEnrollment;
+import fi.otavanopisto.muikku.plugins.matriculation.model.SavedMatriculationEnrollment_;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 
-public class SavedMatriculationEnrollmentDAO extends MatriculationPluginDAO<SavedMatriculationEnrollment> {
+public class SavedMatriculationEnrollmentDAO extends CorePluginsDAO<SavedMatriculationEnrollment> {
 
   private static final long serialVersionUID = 7506613764993681620L;
 
