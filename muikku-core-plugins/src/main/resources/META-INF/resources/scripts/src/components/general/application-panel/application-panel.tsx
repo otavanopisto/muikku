@@ -19,13 +19,14 @@ interface ApplicationPanelProps {
   title?: React.ReactElement<any> | string;
   icon?: React.ReactElement<any> | string;
   panelTabs?: Array<Tab>;
-  onTabChange?: (id: string) => any;
+  onTabChange?: (id: string, hash?: string | Tab) => any;
   activeTab?: string;
   primaryOption?: React.ReactElement<any>;
   toolbar?: React.ReactElement<any>;
   asideBefore?: React.ReactElement<any>;
   asideAfter?: React.ReactElement<any>;
   children?: React.ReactElement<any> | Array<React.ReactElement<any>>;
+  useWithHash?: boolean;
 }
 
 /**
@@ -105,6 +106,7 @@ export default class ApplicationPanel extends React.Component<
               tabs={this.props.panelTabs}
               onTabChange={this.props.onTabChange}
               activeTab={this.props.activeTab}
+              useWithHash={this.props.useWithHash}
             />
           ) : (
             <ApplicationPanelBody
