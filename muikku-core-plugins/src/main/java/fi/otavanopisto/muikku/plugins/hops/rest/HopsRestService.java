@@ -136,7 +136,7 @@ public class HopsRestService {
   @POST
   @Path("/student/{STUDENTIDENTIFIER}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response createOrUpdateHops(@PathParam("STUDENTIDENTIFIER") String studentIdentifier, String formData, String historyDetails) {
+  public Response createOrUpdateHops(@PathParam("STUDENTIDENTIFIER") String studentIdentifier, HopsData payload) {
     
     // Access check
     
@@ -147,8 +147,13 @@ public class HopsRestService {
     }
     
     // Validate JSON
-
     ObjectMapper objectMapper = new ObjectMapper();
+    
+    if (payload == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+
+    String formData = payload.getFormData().toString();
     try {
       objectMapper.readTree(formData);
     }
@@ -160,10 +165,10 @@ public class HopsRestService {
     
     Hops hops = hopsController.findHopsByStudentIdentifier(studentIdentifier);
     if (hops == null) {
-      hops = hopsController.createHops(studentIdentifier, formData, historyDetails);
+      hops = hopsController.createHops(studentIdentifier, formData, payload.getHistoryDetails());
     }
     else {
-      hops = hopsController.updateHops(hops, studentIdentifier, formData, historyDetails);
+      hops = hopsController.updateHops(hops, studentIdentifier, formData, payload.getHistoryDetails());
     }
 
     return Response.ok(formData).build();
@@ -338,7 +343,7 @@ public class HopsRestService {
       
       if (userMap.containsKey(historyEntry.getModifier())) {
         historyItem.setModifier(userMap.get(historyEntry.getModifier()).getFirstName() + " " + userMap.get(historyEntry.getModifier()).getLastName());
-        historyItem.setModifierIdentifier(userMap.get(historyEntry.getModifier()).getId());
+        historyItem.setModifierId(userMap.get(historyEntry.getModifier()).getId());
         historyItem.setModifierHasImage(userMap.get(historyEntry.getModifier()).isHasImage());
       }
       else {
@@ -348,7 +353,7 @@ public class HopsRestService {
         
         if (userEntity != null && userEntityName != null) {
           historyItem.setModifier(userEntityName.getDisplayName());
-          historyItem.setModifierIdentifier(userEntity.getId());
+          historyItem.setModifierId(userEntity.getId());
           historyItem.setModifierHasImage(userEntityFileController.hasProfilePicture(userEntity));
           
           userDetails.setFirstName(userEntityName.getFirstName());
@@ -407,7 +412,7 @@ public class HopsRestService {
       historyItem.setModifier(userEntityName.getDisplayName());
     }
     
-    historyItem.setModifierIdentifier(userEntity.getId());
+    historyItem.setModifierId(userEntity.getId());
     historyItem.setModifierHasImage(userEntityFileController.hasProfilePicture(userEntity));
     historyItem.setDetails(updatedHistory.getDetails());
     
