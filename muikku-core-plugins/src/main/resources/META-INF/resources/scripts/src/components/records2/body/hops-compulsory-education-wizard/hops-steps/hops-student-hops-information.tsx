@@ -2,7 +2,6 @@ import * as React from "react";
 import "~/sass/elements/hops.scss";
 import "~/sass/elements/form.scss";
 import { TextField } from "../text-field";
-import * as moment from "moment";
 import { BasicInformation } from "~/@types/shared";
 import { HopsBaseProps } from "..";
 import HopsHistory from "../hops-history";
@@ -13,6 +12,8 @@ import HopsHistory from "../hops-history";
 interface HopsStudentHopsInformationProps extends HopsBaseProps {
   loading: boolean;
   basicInformation: BasicInformation;
+  loggedUserId: number;
+  onHistoryEventClick: (eventId: number) => void;
 }
 
 /**
@@ -84,6 +85,8 @@ class HopsStudentHopsInformation extends React.Component<
                 <div className="hops-sub__container--updates">
                   <HopsHistory
                     hopsUpdates={this.props.basicInformation.updates}
+                    loggedUserId={this.props.loggedUserId}
+                    onHistoryEventClick={this.props.onHistoryEventClick}
                   />
                 </div>
               </>

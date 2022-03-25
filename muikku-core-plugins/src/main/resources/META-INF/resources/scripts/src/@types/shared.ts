@@ -314,8 +314,11 @@ export interface StudentInfo {
  */
 export interface HopsUpdate {
   date: Date;
+  details: string | null;
+  id: number;
   modifier: string;
-  description?: string;
+  modifierHasImage: boolean;
+  modifierId: number;
 }
 
 /**
@@ -369,7 +372,10 @@ export interface FollowUp {
   graduationGoal: string;
   followUpGoal: string;
   followUpStudies?: string;
+  followUpStudiesElse?: string;
   studySector?: string;
+  studySectorElse?: string;
+  followUpPlanExtraInfo?: string;
 }
 
 /**
