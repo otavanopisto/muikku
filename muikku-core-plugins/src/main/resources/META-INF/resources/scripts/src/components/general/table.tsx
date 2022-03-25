@@ -61,7 +61,7 @@ export const TableHead: React.FC<TableHeaderProps> = ({
   className,
   ...rest
 }) => {
-  let updatedClassName = "table-thead";
+  let updatedClassName = "table__thead";
 
   if (className) {
     updatedClassName = className;
@@ -102,7 +102,7 @@ export const Tbody: React.FC<TableBodyProps> = ({
   className,
   ...rest
 }) => {
-  let updatedClassName = "table-tbody";
+  let updatedClassName = "table__tbody";
 
   if (className) {
     updatedClassName = className;
@@ -144,7 +144,7 @@ export const Tfooter: React.FC<TableFooterProps> = ({
   className,
   ...rest
 }) => {
-  let updatedClassName = "table-tfoot";
+  let updatedClassName = "table__tfoot";
 
   if (className) {
     updatedClassName = className;
@@ -186,7 +186,7 @@ export const Tr: React.FC<TableRowProps> = ({
   className,
   ...rest
 }) => {
-  let updatedClassName = "table-row";
+  let updatedClassName = "table__row";
 
   if (className) {
     updatedClassName = className;
@@ -228,7 +228,7 @@ export const Th: React.FC<TableHeadProps> = ({
   className,
   ...rest
 }) => {
-  let updatedClassName = "table-head";
+  let updatedClassName = "table__head";
 
   if (className) {
     updatedClassName = className;
@@ -270,7 +270,7 @@ export const Td: React.FC<TableDataProps> = ({
   className,
   ...rest
 }) => {
-  let updatedClassName = "table-data";
+  let updatedClassName = "table__data";
 
   if (className) {
     updatedClassName = className;

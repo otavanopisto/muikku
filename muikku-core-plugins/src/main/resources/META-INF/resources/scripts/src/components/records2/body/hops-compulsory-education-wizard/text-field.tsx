@@ -21,7 +21,9 @@ export const TextField: React.FC<InputProps> = ({
   ...rest
 }) => (
   <>
-    <label aria-label={labelAria}>{label}</label>
+    <label className="hops__label" aria-label={labelAria}>
+      {label}
+    </label>
     <input {...rest} />
   </>
 );

@@ -14,6 +14,7 @@ import mApi from "~/lib/mApi";
 import {
   BasicInformation,
   HopsUpdate,
+  SaveState,
   FollowUp,
   StudentInfo,
   LanguageGradeEnum,
@@ -32,8 +33,11 @@ import {
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 import { sleep } from "~/helper-functions/shared";
-import { SaveState } from "~/@types/shared";
 import { AnyActionType } from "~/actions";
+import NewHopsEventDescriptionDialog from "./dialogs/new-hops-event-description-dialog";
+import { Textarea } from "./text-area";
+import { StatusType } from "~/reducers/base/status";
+import EditHopsEventDescriptionDialog from "./dialogs/edit-hops-event-description-dialog";
 
 /**
  * Total needed optional studies without modifiers to graduate
@@ -71,6 +75,7 @@ export interface HopsBaseProps {
 interface CompulsoryEducationHopsWizardProps extends HopsBaseProps {
   i18n: i18nType;
   guider: GuiderType;
+  status: StatusType;
   displayNotification: DisplayNotificationTriggerType;
 }
 
@@ -83,6 +88,9 @@ interface CompulsoryEducationHopsWizardState {
   hopsFollowUp?: FollowUp;
   loading: boolean;
   savingStatus?: SaveState;
+  addHopsUpdateDetailsDialogOpen: boolean;
+  updateEventToBeEdited?: HopsUpdate;
+  hopsUpdateDetails: string;
 }
 
 /**
@@ -108,6 +116,8 @@ class CompulsoryEducationHopsWizard extends React.Component<
       hopsCompulsory: {
         ...initializeHops(),
       },
+      addHopsUpdateDetailsDialogOpen: false,
+      hopsUpdateDetails: "",
     };
   }
 
@@ -187,6 +197,102 @@ class CompulsoryEducationHopsWizard extends React.Component<
   };
 
   /**
+   * handleUpdateHistoryEventDetails
+   */
+  updateHistoryEventDetails = async () => {
+    /**
+     * Student id get from guider or logged in student
+     */
+    const studentId =
+      this.props.user === "supervisor"
+        ? this.props.guider.currentStudent.basic.id
+        : document
+            .querySelector('meta[name="muikku:loggedUser"]')
+            .getAttribute("value");
+
+    try {
+      const updatedEvent = (await promisify(
+        mApi().hops.student.history.update(
+          studentId,
+          this.state.updateEventToBeEdited.id,
+          {
+            details: this.state.updateEventToBeEdited.details,
+          }
+        ),
+        "callback"
+      )()) as HopsUpdate;
+
+      const updatedEventList = [...this.state.basicInfo.updates];
+
+      const indexOfEditedEvent = updatedEventList.findIndex(
+        (item) => item.id === updatedEvent.id
+      );
+
+      updatedEventList[indexOfEditedEvent] = updatedEvent;
+
+      this.setState({
+        basicInfo: {
+          ...this.state.basicInfo,
+          updates: updatedEventList,
+        },
+      });
+    } catch (err) {
+      this.props.displayNotification(`Hups errori ${err}`, "error");
+      this.setState({ loading: false });
+    }
+  };
+
+  /**
+   * handleSaveHops
+   */
+  saveHops = async () => {
+    this.setState({
+      loading: true,
+      savingStatus: "IN_PROGRESS",
+    });
+
+    /**
+     * Student id get from guider or logged in student
+     */
+    const studentId =
+      this.props.user === "supervisor"
+        ? this.props.guider.currentStudent.basic.id
+        : document
+            .querySelector('meta[name="muikku:loggedUser"]')
+            .getAttribute("value");
+
+    /**
+     * Sleeper to delay data fetching if it happens faster than 1s
+     */
+    const sleepPromise = sleep(1000);
+
+    try {
+      Promise.all([
+        (async () => {
+          await promisify(
+            mApi().hops.student.create(studentId, this.state.hopsCompulsory, {
+              details: this.state.hopsUpdateDetails,
+            }),
+            "callback"
+          )();
+        })(),
+        sleepPromise,
+      ]).then(async () => {
+        this.loadHopsData().then(() => {
+          this.setState({
+            loading: false,
+            hopsUpdateDetails: "",
+            savingStatus: "SUCCESS",
+          });
+        });
+      });
+    } catch (err) {
+      this.props.displayNotification(`Hups errori ${err}`, "error");
+      this.setState({ loading: false, savingStatus: "FAILED" });
+    }
+  };
+
+  /**
    * handleStartingLevelChange
    * @param startingLevel startingLevel
    */
@@ -252,45 +358,89 @@ class CompulsoryEducationHopsWizard extends React.Component<
   };
 
   /**
-   * handleSaveHops
+   * Handles edit history event click and sets that as active edited event to state
+   *
+   * @param eventId eventId
    */
-  handleSaveHops = async () => {
+  handleEditHistoryEventClick = (eventId: number) => {
     this.setState({
-      loading: true,
-      savingStatus: "IN_PROGRESS",
+      updateEventToBeEdited: this.state.basicInfo.updates.find(
+        (item) => item.id === eventId
+      ),
     });
+  };
 
-    /**
-     * Student id get from guider or logged in student
-     */
-    const studentId =
-      this.props.user === "supervisor"
-        ? this.props.guider.currentStudent.basic.id
-        : document
-            .querySelector('meta[name="muikku:loggedUser"]')
-            .getAttribute("value");
+  /**
+   * Handles change event when editing choosed history event's details
+   * @param e e
+   */
+  handleHopsEditingHistoryEventDetailsChange = (
+    e: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
+    this.setState({
+      updateEventToBeEdited: {
+        ...this.state.updateEventToBeEdited,
+        details: e.currentTarget.value,
+      },
+    });
+  };
 
-    /**
-     * Sleeper to delay data fetching if it happens faster than 1s
-     */
-    const sleepPromise = sleep(1000);
+  /**
+   * Handles hops update details change
+   *
+   * @param e e
+   */
+  handleHopsUpdateDetailsChange = (
+    e: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
+    this.setState({
+      hopsUpdateDetails: e.currentTarget.value,
+    });
+  };
 
-    try {
-      Promise.all([
-        (async () => {
-          await promisify(
-            mApi().hops.student.create(studentId, this.state.hopsCompulsory),
-            "callback"
-          )();
-        })(),
-        sleepPromise,
-      ]).then(() => {
-        this.setState({ loading: false, savingStatus: "SUCCESS" });
+  /**
+   * Handles save click on details dialog...
+   */
+  handleSaveClick = () => {
+    this.saveHops()
+      .then(() => {
+        this.setState({
+          addHopsUpdateDetailsDialogOpen: false,
+        });
+      })
+      .catch(() => {
+        this.setState({ addHopsUpdateDetailsDialogOpen: false });
       });
-    } catch (err) {
-      this.props.displayNotification(`Hups errori ${err}`, "error");
-      this.setState({ loading: false, savingStatus: "FAILED" });
-    }
+  };
+
+  /**
+   * Handles cancel click on details dialog
+   */
+  handleCancelClick = () => {
+    this.setState({
+      addHopsUpdateDetailsDialogOpen: false,
+    });
+  };
+
+  /**
+   * Handles save updated click on updated history event dialog
+   */
+  handleSaveUpdatedHistoryEventClick = () => {
+    this.updateHistoryEventDetails().then(() => {
+      this.setState({
+        updateEventToBeEdited: undefined,
+      });
+    });
+  };
+
+  /**
+   * Handles cancel click on updated history event dialog
+   *
+   */
+  handleCancelUpdatingHistoryEventClick = () => {
+    this.setState({
+      updateEventToBeEdited: undefined,
+    });
   };
 
   /**
@@ -301,7 +451,13 @@ class CompulsoryEducationHopsWizard extends React.Component<
    */
   handleStepChange = (steps: object[]) => (step: any) => {
     if (step === steps.length - 1) {
-      this.handleSaveHops();
+      if (this.props.superVisorModifies) {
+        this.setState({
+          addHopsUpdateDetailsDialogOpen: true,
+        });
+      } else {
+        this.saveHops();
+      }
     }
   };
 
@@ -311,8 +467,14 @@ class CompulsoryEducationHopsWizard extends React.Component<
    * @returns JSX.Element
    */
   render() {
-    const { i18n, guider, displayNotification, children, ...baseProps } =
-      this.props;
+    const {
+      i18n,
+      guider,
+      status,
+      displayNotification,
+      children,
+      ...baseProps
+    } = this.props;
 
     const steps = [
       {
@@ -322,6 +484,8 @@ class CompulsoryEducationHopsWizard extends React.Component<
             {...baseProps}
             loading={this.state.loading}
             basicInformation={this.state.basicInfo}
+            loggedUserId={status.userId}
+            onHistoryEventClick={this.handleEditHistoryEventClick}
           />
         ),
       },
@@ -378,24 +542,55 @@ class CompulsoryEducationHopsWizard extends React.Component<
     ];
 
     return (
-      <div className="hops">
-        <div className="wizard">
-          <div className="wizard_container">
-            <StepZilla
-              steps={steps}
-              showNavigation={true}
-              showSteps={true}
-              preventEnterSubmission={true}
-              prevBtnOnLastStep={true}
-              nextTextOnFinalActionStep="Tallenna"
-              nextButtonCls="button button--wizard"
-              backButtonCls="button button--wizard"
-              nextButtonText="Seuraava"
-              backButtonText="Edellinen"
-              onStepChange={this.handleStepChange(steps)}
-            />
-          </div>
+      <div className="wizard">
+        <div className="wizard_container">
+          <StepZilla
+            steps={steps}
+            showNavigation={true}
+            showSteps={true}
+            preventEnterSubmission={true}
+            prevBtnOnLastStep={true}
+            nextTextOnFinalActionStep="Tallenna"
+            nextButtonCls="button button--wizard"
+            backButtonCls="button button--wizard"
+            nextButtonText="Seuraava"
+            backButtonText="Edellinen"
+            onStepChange={this.handleStepChange(steps)}
+          />
         </div>
+        <NewHopsEventDescriptionDialog
+          content={
+            <div>
+              <Textarea
+                label="Vapaa kuvaus tapahtuman muutoksista"
+                className="form-element__textarea form-element__textarea--resize__vertically"
+                onChange={this.handleHopsUpdateDetailsChange}
+                value={this.state.hopsUpdateDetails}
+              />
+            </div>
+          }
+          isOpen={this.state.addHopsUpdateDetailsDialogOpen}
+          onSaveClick={this.handleSaveClick}
+          onCancelClick={this.handleCancelClick}
+        />
+        <EditHopsEventDescriptionDialog
+          content={
+            <div>
+              <Textarea
+                label="Muokkaa tapahtuman kuvausta"
+                className="form-element__textarea form-element__textarea--resize__vertically"
+                onChange={this.handleHopsEditingHistoryEventDetailsChange}
+                value={
+                  this.state.updateEventToBeEdited &&
+                  this.state.updateEventToBeEdited.details
+                }
+              />
+            </div>
+          }
+          isOpen={!!this.state.updateEventToBeEdited}
+          onSaveClick={this.handleSaveUpdatedHistoryEventClick}
+          onCancelClick={this.handleCancelUpdatingHistoryEventClick}
+        />
       </div>
     );
   }
@@ -409,6 +604,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     guider: state.guider,
+    status: state.status,
   };
 }
 

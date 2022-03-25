@@ -6,12 +6,11 @@ import "~/sass/elements/form.scss";
 import "~/sass/elements/wizard.scss";
 import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
-import { Textarea } from "~/components/records2/body/hops-compulsory-education-wizard/text-area";
 
 /**
  * MatriculationExaminationWizardDialogProps
  */
-interface EditHopsEventDescriptionDialogProps {
+interface NewHopsEventDescriptionDialogProps {
   i18n: i18nType;
   children?: React.ReactElement<any>;
   isOpen: boolean;
@@ -23,18 +22,24 @@ interface EditHopsEventDescriptionDialogProps {
 /**
  * MatriculationExaminationWizardDialogState
  */
-interface EditHopsEventDescriptionDialogState {
-  scale: number;
-  angle: number;
-}
+interface NewHopsEventDescriptionDialogState {}
 
 /**
  * MatriculationExaminationWizardDialog
  */
-class EditHopsEventDescriptionDialog extends React.Component<
-  EditHopsEventDescriptionDialogProps,
-  EditHopsEventDescriptionDialogState
+class NewHopsEventDescriptionDialog extends React.Component<
+  NewHopsEventDescriptionDialogProps,
+  NewHopsEventDescriptionDialogState
 > {
+  /**
+   * Constructor method
+   *
+   * @param props props
+   */
+  constructor(props: NewHopsEventDescriptionDialogProps) {
+    super(props);
+  }
+
   /**
    * Component render method
    * @returns JSX.Element
@@ -57,7 +62,7 @@ class EditHopsEventDescriptionDialog extends React.Component<
           buttonModifiers={["standard-ok", "fatal"]}
           onClick={this.props.onSaveClick}
         >
-          Päivitä
+          Ok
         </Button>
         <Button
           buttonModifiers={["standard-cancel", "cancel"]}
@@ -72,7 +77,7 @@ class EditHopsEventDescriptionDialog extends React.Component<
       <Dialog
         modifier="confirm-remove-answer-dialog"
         disableScroll={true}
-        title="Päivityksen kuvaus"
+        title="Muokkaa kuvausta"
         content={content}
         footer={footer}
         isOpen={this.props.isOpen}
@@ -105,4 +110,4 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(EditHopsEventDescriptionDialog);
+)(NewHopsEventDescriptionDialog);

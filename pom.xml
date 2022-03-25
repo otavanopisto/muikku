@@ -57,7 +57,6 @@
     <module>muikku-forum-plugin-rest-model</module>
 		<module>muikku-hsqldb-plugin</module>
 		<module>muikku-google-oauth</module>
-		<module>muikku-facebook-oauth</module>
 		<module>muikku-pyramus-oauth</module>
 		<module>muikku-h2db-plugin</module>
 		<module>muikku-persistence</module>

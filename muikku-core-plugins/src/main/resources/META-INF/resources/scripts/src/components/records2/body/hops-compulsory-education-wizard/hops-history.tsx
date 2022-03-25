@@ -5,13 +5,14 @@ import { HopsUpdate } from "~/@types/shared";
 import Avatar from "~/components/general/avatar";
 import Button, { IconButton } from "~/components/general/button";
 import "~/sass/elements/hops.scss";
-import EditHopsEventDescriptionDialog from "./dialogs/edit-hops-event-description-dialog";
 
 /**
  * HopsHistoryProps
  */
 interface HopsHistoryProps {
   hopsUpdates: HopsUpdate[];
+  loggedUserId: number;
+  onHistoryEventClick: (eventId: number) => void;
 }
 
 /**
@@ -33,14 +34,9 @@ const HopsHistory: React.FC<HopsHistoryProps> = (props) => (
     {props.hopsUpdates.map((item, i) => (
       <HopsHistoryEvent
         key={i}
-        showEdit={false}
-        hopsUpdate={{
-          ...item,
-          description:
-            i === 0
-              ? "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer a sollicitudin tellus. Quisque vel laoreet ligula, ut semper odio. Aliquam erat volutpat"
-              : undefined,
-        }}
+        showEdit={item.modifierId === props.loggedUserId}
+        hopsUpdate={item}
+        onHistoryEventClick={props.onHistoryEventClick}
       />
     ))}
   </div>
@@ -54,6 +50,7 @@ export default HopsHistory;
 interface HopsHistoryEventProps {
   hopsUpdate: HopsUpdate;
   showEdit: boolean;
+  onHistoryEventClick: (eventId: number) => void;
 }
 
 /**
@@ -63,10 +60,18 @@ interface HopsHistoryEventProps {
 const HopsHistoryEvent: React.FC<HopsHistoryEventProps> = (props) => {
   const [showDescription, setShowDescription] = React.useState(false);
 
+  /**
+   * handleEditClick
+   */
+  const handleEditClick = () => {
+    props.onHistoryEventClick(props.hopsUpdate.id);
+  };
+
   const descrptionOpen = showDescription ? "auto" : 35;
   const animateHeightClass = showDescription
     ? "animate-height--open"
     : "animate-height";
+
   return (
     <div
       className="history-event-item"
@@ -93,10 +98,10 @@ const HopsHistoryEvent: React.FC<HopsHistoryEventProps> = (props) => {
           style={{ display: "flex", alignItems: "center" }}
         >
           <Avatar
-            id={1}
+            id={props.hopsUpdate.modifierId}
             firstName={props.hopsUpdate.modifier}
+            hasImage={props.hopsUpdate.modifierHasImage}
             size="large"
-            hasImage={false}
           />
           <div
             className="history-event-item-user-data"
@@ -116,14 +121,12 @@ const HopsHistoryEvent: React.FC<HopsHistoryEventProps> = (props) => {
           </div>
           {props.showEdit && (
             <div className="history-event-item-functions">
-              <EditHopsEventDescriptionDialog eventId={0}>
-                <IconButton icon="pencil" />
-              </EditHopsEventDescriptionDialog>
+              <IconButton icon="pencil" onClick={handleEditClick} />
             </div>
           )}
         </div>
       </div>
-      {props.hopsUpdate.description && (
+      {props.hopsUpdate.details && (
         <div
           className="history-event-item-row"
           style={{
@@ -139,7 +142,7 @@ const HopsHistoryEvent: React.FC<HopsHistoryEventProps> = (props) => {
             className={animateHeightClass}
             contentClassName="content-description"
           >
-            {props.hopsUpdate.description}
+            {props.hopsUpdate.details}
           </AnimateHeight>
           <div
             style={{
