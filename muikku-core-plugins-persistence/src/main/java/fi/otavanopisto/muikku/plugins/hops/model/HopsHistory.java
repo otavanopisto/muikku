@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
@@ -43,6 +44,14 @@ public class HopsHistory {
   public void setModifier(String modifier) {
     this.modifier = modifier;
   }
+  
+  public String getDetails() {
+    return details;
+  }
+
+  public void setDetails(String details) {
+    this.details = details;
+  }
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -62,5 +71,9 @@ public class HopsHistory {
   @NotEmpty
   @Column(nullable = false)
   private String modifier;
+  
+  @Lob
+  @Column
+  private String details;
 
 }

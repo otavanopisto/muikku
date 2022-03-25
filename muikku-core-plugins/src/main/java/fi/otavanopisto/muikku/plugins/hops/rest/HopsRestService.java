@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,7 @@ import javax.inject.Inject;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -31,7 +33,6 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.hops.HopsController;
@@ -44,6 +45,7 @@ import fi.otavanopisto.muikku.plugins.hops.model.HopsStudyHours;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsSuggestion;
 import fi.otavanopisto.muikku.plugins.websocket.WebSocketMessenger;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceEntityFileController;
+import fi.otavanopisto.muikku.rest.model.UserBasicInfo;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.CourseMetaController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
@@ -61,6 +63,7 @@ import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.OrganizationEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
+import fi.otavanopisto.muikku.users.UserEntityFileController;
 import fi.otavanopisto.muikku.users.UserEntityName;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
@@ -86,6 +89,9 @@ public class HopsRestService {
   
   @Inject
   private UserEntityController userEntityController;
+  
+  @Inject
+  private UserEntityFileController userEntityFileController;
 
   @Inject
   private WorkspaceEntityController workspaceEntityController;
@@ -130,7 +136,7 @@ public class HopsRestService {
   @POST
   @Path("/student/{STUDENTIDENTIFIER}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response createOrUpdateHops(@PathParam("STUDENTIDENTIFIER") String studentIdentifier, String formData) {
+  public Response createOrUpdateHops(@PathParam("STUDENTIDENTIFIER") String studentIdentifier, String formData, String historyDetails) {
     
     // Access check
     
@@ -154,10 +160,10 @@ public class HopsRestService {
     
     Hops hops = hopsController.findHopsByStudentIdentifier(studentIdentifier);
     if (hops == null) {
-      hops = hopsController.createHops(studentIdentifier, formData);
+      hops = hopsController.createHops(studentIdentifier, formData, historyDetails);
     }
     else {
-      hops = hopsController.updateHops(hops, studentIdentifier, formData);
+      hops = hopsController.updateHops(hops, studentIdentifier, formData, historyDetails);
     }
 
     return Response.ok(formData).build();
@@ -321,26 +327,91 @@ public class HopsRestService {
       return Response.ok(Collections.<HistoryItem>emptyList()).build();
     }
 
-    Map<String, String> nameMap = new HashMap<>();
+    Map<String, UserBasicInfo> userMap = new HashMap<>();
+    UserBasicInfo userDetails = new UserBasicInfo();
     List<HistoryItem> historyItems = new ArrayList<>();
     for (HopsHistory historyEntry : history) {
       HistoryItem historyItem = new HistoryItem();
       historyItem.setDate(historyEntry.getDate());
-      if (nameMap.containsKey(historyEntry.getModifier())) {
-        historyItem.setModifier(nameMap.get(historyEntry.getModifier()));
+      historyItem.setId(historyEntry.getId());
+      historyItem.setDetails(historyEntry.getDetails());
+      
+      if (userMap.containsKey(historyEntry.getModifier())) {
+        historyItem.setModifier(userMap.get(historyEntry.getModifier()).getFirstName() + " " + userMap.get(historyEntry.getModifier()).getLastName());
+        historyItem.setModifierIdentifier(userMap.get(historyEntry.getModifier()).getId());
+        historyItem.setModifierHasImage(userMap.get(historyEntry.getModifier()).isHasImage());
       }
       else {
         SchoolDataIdentifier sdi = SchoolDataIdentifier.fromId(historyEntry.getModifier());
+        UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(sdi);
         UserEntityName userEntityName = userEntityController.getName(sdi);
-        if (userEntityName != null) {
+        
+        if (userEntity != null && userEntityName != null) {
           historyItem.setModifier(userEntityName.getDisplayName());
-          nameMap.put(historyEntry.getModifier(), userEntityName.getDisplayName());
+          historyItem.setModifierIdentifier(userEntity.getId());
+          historyItem.setModifierHasImage(userEntityFileController.hasProfilePicture(userEntity));
+          
+          userDetails.setFirstName(userEntityName.getFirstName());
+          userDetails.setLastName(userEntityName.getLastName());
+          userDetails.setId(userEntity.getId());
+          userDetails.setHasImage(userEntityFileController.hasProfilePicture(userEntity));
+          
+          userMap.put(historyEntry.getModifier(), userDetails);
+          
         }
       }
       historyItems.add(historyItem);
     }
     
+    historyItems.sort(Comparator.comparing(HistoryItem::getDate).reversed());
+    
     return Response.ok(historyItems).build();
+  }
+  
+  @PUT
+  @Path("/student/{STUDENTIDENTIFIER}/history/{HISTORYID}")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response updateHopsHistoryDetails(@PathParam ("STUDENTIDENTIFIER") String studentIdentifier, @PathParam("HISTORYID") Long historyId, HistoryItem hopsHistory) {
+    
+    if (studentIdentifier == null || historyId == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
+    HopsHistory history = hopsController.findHistoryById(historyId);
+    
+    if (history == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    SchoolDataIdentifier sdi = SchoolDataIdentifier.fromId(history.getModifier());
+    
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.HOPS_EDIT)) {
+      if (!StringUtils.equals(SchoolDataIdentifier.fromId(studentIdentifier).getIdentifier(), sessionController.getLoggedUserIdentifier())) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    } else if (!sdi.equals(sessionController.getLoggedUserEntity().defaultSchoolDataIdentifier())){
+      return Response.status(Status.FORBIDDEN).entity("You can modify only your own history details").build();
+    }
+    
+    HopsHistory updatedHistory = hopsController.updateHopsHistoryDetails(history, hopsHistory.getDetails());
+    
+    HistoryItem historyItem = new HistoryItem();
+    historyItem.setDate(updatedHistory.getDate());
+
+    UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(sdi);
+    
+    
+    historyItem.setId(updatedHistory.getId());
+    
+    UserEntityName userEntityName = userEntityController.getName(sdi);
+    if (userEntityName != null) {
+      historyItem.setModifier(userEntityName.getDisplayName());
+    }
+    
+    historyItem.setModifierIdentifier(userEntity.getId());
+    historyItem.setModifierHasImage(userEntityFileController.hasProfilePicture(userEntity));
+    historyItem.setDetails(updatedHistory.getDetails());
+    
+    return Response.ok(historyItem).build();
   }
   
   @GET
