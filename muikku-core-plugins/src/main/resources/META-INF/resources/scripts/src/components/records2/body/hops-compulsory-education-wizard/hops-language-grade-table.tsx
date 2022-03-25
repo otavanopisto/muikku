@@ -8,7 +8,7 @@ import {
   Th,
   Tr,
 } from "~/components/general/table";
-import { LanguageGrade } from "../../../../@types/shared";
+import { LanguageGrade, LanguageGradeEnum } from "../../../../@types/shared";
 
 /**
  * LanguageGradeTableProps
@@ -28,11 +28,11 @@ export const HopsLanguageGradeTable: React.FC<HopsLanguageGradeTableProps> = ({
     <TableHead modifiers={["language-table"]}>
       <Tr modifiers={["language-table"]}>
         <Th style={{ maxWidth: "80px", textAlign: "center" }}>Kieli</Th>
-        <Th modifiers={["centered"]}>1</Th>
-        <Th modifiers={["centered"]}>2</Th>
-        <Th modifiers={["centered"]}>3</Th>
-        <Th modifiers={["centered"]}>4</Th>
-        <Th modifiers={["centered"]}>5</Th>
+        <Th modifiers={["centered"]}>Äidinkieli</Th>
+        <Th modifiers={["centered"]}>Erinomainen / Kiitettävä</Th>
+        <Th modifiers={["centered"]}>Hyvä</Th>
+        <Th modifiers={["centered"]}>Tyydyttävä / Alkeet</Th>
+        <Th modifiers={["centered"]}>En ole opiskellut</Th>
         <Th style={{ maxWidth: "50px", textAlign: "center" }}>Toimin.</Th>
       </Tr>
     </TableHead>
@@ -82,11 +82,11 @@ export const LanguageGradeRow: React.FC<LanguageGradeRowProps> = ({
   /**
    * Handles radio input changes
    *
-   * @param number value which is clicked
+   * @param v value which is clicked
    */
   const handleRadioInputChange =
-    (number: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
-      const updatedLng = { ...lng, grade: number };
+    (v: LanguageGradeEnum) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      const updatedLng = { ...lng, grade: v };
 
       onLanguageRowChange(updatedLng, index);
     };
@@ -111,8 +111,8 @@ export const LanguageGradeRow: React.FC<LanguageGradeRowProps> = ({
       <Td>
         <input
           type="radio"
-          checked={lng.grade == 1}
-          onChange={handleRadioInputChange(1)}
+          checked={lng.grade === LanguageGradeEnum.NATIVE_LANGUAGE}
+          onChange={handleRadioInputChange(LanguageGradeEnum.NATIVE_LANGUAGE)}
           className="hops-input"
           disabled={disabled}
         ></input>
@@ -120,8 +120,8 @@ export const LanguageGradeRow: React.FC<LanguageGradeRowProps> = ({
       <Td>
         <input
           type="radio"
-          checked={lng.grade == 2}
-          onChange={handleRadioInputChange(2)}
+          checked={lng.grade === LanguageGradeEnum.EXCELLENT}
+          onChange={handleRadioInputChange(LanguageGradeEnum.EXCELLENT)}
           className="hops-input"
           disabled={disabled}
         ></input>
@@ -129,8 +129,8 @@ export const LanguageGradeRow: React.FC<LanguageGradeRowProps> = ({
       <Td>
         <input
           type="radio"
-          checked={lng.grade == 3}
-          onChange={handleRadioInputChange(3)}
+          checked={lng.grade === LanguageGradeEnum.GOOD}
+          onChange={handleRadioInputChange(LanguageGradeEnum.GOOD)}
           className="hops-input"
           disabled={disabled}
         ></input>
@@ -138,8 +138,8 @@ export const LanguageGradeRow: React.FC<LanguageGradeRowProps> = ({
       <Td>
         <input
           type="radio"
-          checked={lng.grade == 4}
-          onChange={handleRadioInputChange(4)}
+          checked={lng.grade === LanguageGradeEnum.SATISFYING}
+          onChange={handleRadioInputChange(LanguageGradeEnum.SATISFYING)}
           className="hops-input"
           disabled={disabled}
         ></input>
@@ -147,8 +147,8 @@ export const LanguageGradeRow: React.FC<LanguageGradeRowProps> = ({
       <Td>
         <input
           type="radio"
-          checked={lng.grade == 5}
-          onChange={handleRadioInputChange(5)}
+          checked={lng.grade === LanguageGradeEnum.NOT_STUDIED}
+          onChange={handleRadioInputChange(LanguageGradeEnum.NOT_STUDIED)}
           className="hops-input"
           disabled={disabled}
         ></input>

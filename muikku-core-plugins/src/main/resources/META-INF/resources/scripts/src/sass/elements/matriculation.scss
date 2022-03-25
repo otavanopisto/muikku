@@ -41,7 +41,6 @@
     display: list-item;
   }
 
-  // scss-lint:disable SelectorFormat
   &.state-INFO {
     border-color: $color-info;
 
@@ -81,8 +80,6 @@
       color: $color-tertiary;
     }
   }
-
-  // scss-lint:enable SelectorFormat
 }
 
 .matriculation-container__state-icon {
@@ -119,6 +116,12 @@
 
   @include breakpoint($breakpoint-pad) {
     font-size: 1.1875rem;
+  }
+}
+
+.matriculation-container__info {
+  .matriculation-container__subheader {
+    margin: 15px 0 10px;
   }
 }
 
@@ -189,6 +192,7 @@
 }
 
 .matriculation-container__fieldset {
+  border: 0;
   border-bottom: 1px solid $color-default-separator-border;
   margin: 0 0 15px;
   padding: 0 0 10px;
@@ -229,13 +233,14 @@
   background: $color-default;
   border: 2px solid $color-matriculation-dialog-form-element-border;
   border-radius: 3px;
-  height: 2.25rem;
+  height: $select-height-mobile;
   padding: 4px 8px;
   width: 100%;
 
   &[readonly] {
     background-color: lighten($color-disabled, 20%);
     border: 0;
+    height: $select-height-desktop;
   }
 }
 
@@ -244,13 +249,14 @@
   border: 2px solid $color-matriculation-dialog-form-element-border;
   border-radius: 3px;
   display: inline-block;
-  height: 2.25rem;
+  height: $select-height-mobile;
   padding: 4px;
   width: 100%;
 
   &[disabled] {
     background-color: lighten($color-disabled, 20%);
     border: 0;
+    height: $select-height-desktop;
   }
 }
 

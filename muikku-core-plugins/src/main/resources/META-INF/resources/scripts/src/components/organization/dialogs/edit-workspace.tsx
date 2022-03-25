@@ -741,13 +741,13 @@ class OrganizationEditWorkspace extends React.Component<
               />
             </DialogRow>
             <DialogRow>
-              <fieldset>
-                <legend className="application-sub-panel__item-header">
+              <fieldset className="form__fieldset">
+                <legend className="form__legend">
                   {this.props.i18n.text.get(
                     "plugin.workspace.management.settings.access"
                   )}
                 </legend>
-                <div className="application-sub-panel__item-data application-sub-panel__item-data--workspace-management">
+                <div className="form__fieldset-content  form__fieldset-content--horizontal">
                   <div className="form-element form-element--checkbox-radiobutton">
                     <input
                       id="access-members"

@@ -3,7 +3,7 @@ import { connect, Dispatch } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
 import * as queryString from "query-string";
 import "~/sass/elements/buttons.scss";
-import "~/sass/elements/form-elements.scss";
+import "~/sass/elements/form.scss";
 import "~/sass/elements/wcag.scss";
 import { StateType } from "~/reducers";
 import {

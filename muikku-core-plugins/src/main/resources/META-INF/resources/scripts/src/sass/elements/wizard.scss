@@ -33,7 +33,6 @@
       line-height: normal;
       position: relative;
 
-      // scss-lint:disable NestingDepth, SelectorDepth
       span {
         @include step-title;
 
@@ -44,8 +43,6 @@
           display: flex;
         }
       }
-
-      // scss-lint:enable NestingDepth, SelectorDepth
     }
 
     .progtrckr-todo {

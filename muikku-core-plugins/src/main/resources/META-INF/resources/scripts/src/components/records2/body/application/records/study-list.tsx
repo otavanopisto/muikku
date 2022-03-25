@@ -175,303 +175,301 @@ interface StudyAssignmentsListItemProps {
  * studyAssignmentsListItem
  * @returns JSX.Element
  */
-export const StudyAssignmentsListItem: React.FC<StudyAssignmentsListItemProps> =
-  ({
-    i18n,
-    assigment,
-    workspace,
-    compositeReply,
-    userEntityId,
-    open,
-    updateMaterialOpen,
-  }) => {
-    const ref = React.useRef<HTMLDivElement>();
+export const StudyAssignmentsListItem: React.FC<
+  StudyAssignmentsListItemProps
+> = ({
+  i18n,
+  assigment,
+  workspace,
+  compositeReply,
+  userEntityId,
+  open,
+  updateMaterialOpen,
+}) => {
+  const ref = React.useRef<HTMLDivElement>();
 
-    const [isLoading, setIsLoading] = React.useState(false);
-    const [openContent, setOpenContent] = React.useState(false);
-    const [materialNode, setMaterilaNode] =
-      React.useState<MaterialContentNodeType>(undefined);
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [openContent, setOpenContent] = React.useState(false);
+  const [materialNode, setMaterilaNode] =
+    React.useState<MaterialContentNodeType>(undefined);
 
-    React.useEffect(() => {
-      if (materialNode === undefined && openContent) {
-        loadMaterialData();
-      }
-    }, [openContent]);
+  React.useEffect(() => {
+    if (materialNode === undefined && openContent) {
+      loadMaterialData();
+    }
+  }, [openContent]);
 
-    React.useEffect(() => {
-      if (openContent !== open) {
-        setOpenContent(open);
-      }
-    }, [open]);
+  React.useEffect(() => {
+    if (openContent !== open) {
+      setOpenContent(open);
+    }
+  }, [open]);
 
-    /**
-     * loadMaterialData
-     */
-    const loadMaterialData = async () => {
-      setIsLoading(true);
+  /**
+   * loadMaterialData
+   */
+  const loadMaterialData = async () => {
+    setIsLoading(true);
 
-      const sleepp = await sleep(1000);
+    const sleepp = await sleep(1000);
 
-      let [loadedMaterial] = await Promise.all([
-        (async () => {
-          let material = (await promisify(
-            mApi().materials.html.read(assigment.materialId),
-            "callback"
-          )()) as MaterialContentNodeType;
+    let [loadedMaterial] = await Promise.all([
+      (async () => {
+        let material = (await promisify(
+          mApi().materials.html.read(assigment.materialId),
+          "callback"
+        )()) as MaterialContentNodeType;
 
-          let evaluation = (await promisify(
-            mApi().workspace.workspaces.materials.evaluations.read(
-              workspace.id,
-              assigment.id,
-              {
-                userEntityId,
-              }
-            ),
-            "callback"
-          )()) as MaterialEvaluationType[];
-
-          let loadedMaterial: MaterialContentNodeType = Object.assign(
-            material,
+        let evaluation = (await promisify(
+          mApi().workspace.workspaces.materials.evaluations.read(
+            workspace.id,
+            assigment.id,
             {
-              evaluation: evaluation[0],
-              assignment: assigment,
-              path: assigment.path,
+              userEntityId,
             }
-          );
+          ),
+          "callback"
+        )()) as MaterialEvaluationType[];
 
-          return loadedMaterial;
-        })(),
-        sleepp,
-      ]);
+        let loadedMaterial: MaterialContentNodeType = Object.assign(material, {
+          evaluation: evaluation[0],
+          assignment: assigment,
+          path: assigment.path,
+        });
 
-      setIsLoading(false);
-      setMaterilaNode(loadedMaterial);
-    };
+        return loadedMaterial;
+      })(),
+      sleepp,
+    ]);
 
-    /**
-     * toggleOpened
-     */
-    const handleOpenMaterialContent = () => {
-      if (updateMaterialOpen) {
-        updateMaterialOpen(assigment.materialId);
-      }
+    setIsLoading(false);
+    setMaterilaNode(loadedMaterial);
+  };
 
-      setOpenContent(!openContent);
-    };
+  /**
+   * toggleOpened
+   */
+  const handleOpenMaterialContent = () => {
+    if (updateMaterialOpen) {
+      updateMaterialOpen(assigment.materialId);
+    }
 
-    /**
-     * renderAssignmentStatus
-     * @returns JSX.Element
-     */
-    const renderAssignmentMeta = (
-      compositeReply: MaterialCompositeRepliesType
-    ) => {
-      if (compositeReply) {
-        const { evaluationInfo } = compositeReply;
+    setOpenContent(!openContent);
+  };
 
-        /**
-         * Checking if assigments is submitted at all.
-         * Its date string
-         */
-        const hasSubmitted = compositeReply.submitted;
+  /**
+   * renderAssignmentStatus
+   * @returns JSX.Element
+   */
+  const renderAssignmentMeta = (
+    compositeReply: MaterialCompositeRepliesType
+  ) => {
+    if (compositeReply) {
+      const { evaluationInfo } = compositeReply;
 
-        /**
-         * Checking if its evaluated with grade
-         */
-        const evaluatedWithGrade = evaluationInfo && evaluationInfo.grade;
+      /**
+       * Checking if assigments is submitted at all.
+       * Its date string
+       */
+      const hasSubmitted = compositeReply.submitted;
 
-        /**
-         * Needs supplementation
-         */
-        const needsSupplementation =
-          evaluationInfo && evaluationInfo.type === "INCOMPLETE";
+      /**
+       * Checking if its evaluated with grade
+       */
+      const evaluatedWithGrade = evaluationInfo && evaluationInfo.grade;
 
-        /**
-         * If evaluation is given as supplementation request and student
-         * cancels and makes changes to answers and submits again
-         */
-        const supplementationDone =
-          compositeReply.state === "SUBMITTED" && needsSupplementation;
+      /**
+       * Needs supplementation
+       */
+      const needsSupplementation =
+        evaluationInfo && evaluationInfo.type === "INCOMPLETE";
 
-        /**
-         * Evaluation date if evaluated
-         */
-        const evaluationDate = evaluationInfo && evaluationInfo.date;
+      /**
+       * If evaluation is given as supplementation request and student
+       * cancels and makes changes to answers and submits again
+       */
+      const supplementationDone =
+        compositeReply.state === "SUBMITTED" && needsSupplementation;
 
-        /**
-         * Grade class mod
-         */
-        const assignmentGradeClassMod = assigmentGradeClass(compositeReply);
+      /**
+       * Evaluation date if evaluated
+       */
+      const evaluationDate = evaluationInfo && evaluationInfo.date;
 
-        return (
-          <div className="evaluation-modal__item-meta">
-            {hasSubmitted === null ||
-            (hasSubmitted !== null && compositeReply.state === "WITHDRAWN") ? (
-              <div className="evaluation-modal__item-meta-item">
-                <span className="evaluation-modal__item-meta-item-data">
-                  {i18n.text.get(
-                    "plugin.evaluation.evaluationModal.assignmentNotDoneLabel"
-                  )}
-                </span>
-              </div>
-            ) : (
-              hasSubmitted && (
-                <div className="evaluation-modal__item-meta-item">
-                  <span className="evaluation-modal__item-meta-item-label">
-                    {i18n.text.get(
-                      "plugin.evaluation.evaluationModal.assignmentDoneLabel"
-                    )}
-                  </span>
-                  <span className="evaluation-modal__item-meta-item-data">
-                    {moment(hasSubmitted).format("l")}
-                  </span>
-                </div>
-              )
-            )}
+      /**
+       * Grade class mod
+       */
+      const assignmentGradeClassMod = assigmentGradeClass(compositeReply);
 
-            {evaluationDate && (
+      return (
+        <div className="evaluation-modal__item-meta">
+          {hasSubmitted === null ||
+          (hasSubmitted !== null && compositeReply.state === "WITHDRAWN") ? (
+            <div className="evaluation-modal__item-meta-item">
+              <span className="evaluation-modal__item-meta-item-data">
+                {i18n.text.get(
+                  "plugin.evaluation.evaluationModal.assignmentNotDoneLabel"
+                )}
+              </span>
+            </div>
+          ) : (
+            hasSubmitted && (
               <div className="evaluation-modal__item-meta-item">
                 <span className="evaluation-modal__item-meta-item-label">
                   {i18n.text.get(
-                    "plugin.evaluation.evaluationModal.assignmentEvaluatedLabel"
+                    "plugin.evaluation.evaluationModal.assignmentDoneLabel"
                   )}
                 </span>
                 <span className="evaluation-modal__item-meta-item-data">
-                  {moment(evaluationDate).format("l")}
+                  {moment(hasSubmitted).format("l")}
                 </span>
               </div>
-            )}
+            )
+          )}
 
-            {evaluatedWithGrade && (
-              <div className="evaluation-modal__item-meta-item">
-                <span className="evaluation-modal__item-meta-item-label">
-                  {i18n.text.get(
-                    "plugin.evaluation.evaluationModal.assignmentGradeLabel"
-                  )}
-                </span>
-                <span
-                  className={`evaluation-modal__item-meta-item-data evaluation-modal__item-meta-item-data--grade ${assignmentGradeClassMod}`}
-                >
-                  {evaluationInfo.grade}
-                </span>
-              </div>
-            )}
+          {evaluationDate && (
+            <div className="evaluation-modal__item-meta-item">
+              <span className="evaluation-modal__item-meta-item-label">
+                {i18n.text.get(
+                  "plugin.evaluation.evaluationModal.assignmentEvaluatedLabel"
+                )}
+              </span>
+              <span className="evaluation-modal__item-meta-item-data">
+                {moment(evaluationDate).format("l")}
+              </span>
+            </div>
+          )}
 
-            {needsSupplementation && !supplementationDone && (
-              <div className="evaluation-modal__item-meta-item">
-                <span
-                  className={`evaluation-modal__item-meta-item-data evaluation-modal__item-meta-item-data--grade ${assignmentGradeClassMod}`}
-                >
-                  {i18n.text.get(
-                    "plugin.evaluation.evaluationModal.assignmentEvaluatedIncompleteLabel"
-                  )}
-                </span>
-              </div>
-            )}
+          {evaluatedWithGrade && (
+            <div className="evaluation-modal__item-meta-item">
+              <span className="evaluation-modal__item-meta-item-label">
+                {i18n.text.get(
+                  "plugin.evaluation.evaluationModal.assignmentGradeLabel"
+                )}
+              </span>
+              <span
+                className={`evaluation-modal__item-meta-item-data evaluation-modal__item-meta-item-data--grade ${assignmentGradeClassMod}`}
+              >
+                {evaluationInfo.grade}
+              </span>
+            </div>
+          )}
 
-            {supplementationDone && (
-              <div className="evaluation-modal__item-meta-item">
-                <span
-                  className={`evaluation-modal__item-meta-item-data evaluation-modal__item-meta-item-data--grade ${assignmentGradeClassMod}`}
-                >
-                  {i18n.text.get(
-                    "plugin.evaluation.evaluationModal.assignmentEvaluatedIncompleteDoneLabel"
-                  )}
-                </span>
-              </div>
-            )}
-          </div>
-        );
-      }
-    };
+          {needsSupplementation && !supplementationDone && (
+            <div className="evaluation-modal__item-meta-item">
+              <span
+                className={`evaluation-modal__item-meta-item-data evaluation-modal__item-meta-item-data--grade ${assignmentGradeClassMod}`}
+              >
+                {i18n.text.get(
+                  "plugin.evaluation.evaluationModal.assignmentEvaluatedIncompleteLabel"
+                )}
+              </span>
+            </div>
+          )}
 
-    const materialTypeClassMod = materialTypeClass(assigment);
+          {supplementationDone && (
+            <div className="evaluation-modal__item-meta-item">
+              <span
+                className={`evaluation-modal__item-meta-item-data evaluation-modal__item-meta-item-data--grade ${assignmentGradeClassMod}`}
+              >
+                {i18n.text.get(
+                  "plugin.evaluation.evaluationModal.assignmentEvaluatedIncompleteDoneLabel"
+                )}
+              </span>
+            </div>
+          )}
+        </div>
+      );
+    }
+  };
 
-    const evaluatedFunctionClassMod = assignmentFunctionClass(
-      compositeReply,
-      assigment
+  const materialTypeClassMod = materialTypeClass(assigment);
+
+  const evaluatedFunctionClassMod = assignmentFunctionClass(
+    compositeReply,
+    assigment
+  );
+
+  const recordings =
+    compositeReply &&
+    compositeReply.evaluationInfo &&
+    compositeReply.evaluationInfo.audioAssessments.map(
+      (aAssessment) =>
+        ({
+          ...aAssessment,
+          url: `/rest/workspace/materialevaluationaudioassessment/${aAssessment.id}`,
+        } as RecordValue)
     );
 
-    const recordings =
-      compositeReply &&
-      compositeReply.evaluationInfo &&
-      compositeReply.evaluationInfo.audioAssessments.map(
-        (aAssessment) =>
-          ({
-            ...aAssessment,
-            url: `/rest/workspace/materialevaluationaudioassessment/${aAssessment.id}`,
-          } as RecordValue)
-      );
+  const contentOpen = openContent ? "auto" : 0;
 
-    const contentOpen = openContent ? "auto" : 0;
-
-    return (
-      <>
+  return (
+    <>
+      <div
+        className={`evaluation-modal__item-header ${evaluatedFunctionClassMod}`}
+        ref={ref}
+      >
         <div
-          className={`evaluation-modal__item-header ${evaluatedFunctionClassMod}`}
-          ref={ref}
-        >
-          <div
-            onClick={handleOpenMaterialContent}
-            className={`evaluation-modal__item-header-title
+          onClick={handleOpenMaterialContent}
+          className={`evaluation-modal__item-header-title
                   evaluation-modal__item-header-title--${materialTypeClassMod}
                   `}
-          >
-            {assigment.title}
+        >
+          {assigment.title}
 
-            {renderAssignmentMeta(compositeReply)}
-          </div>
+          {renderAssignmentMeta(compositeReply)}
         </div>
-        <AnimateHeight duration={400} height={contentOpen}>
-          {compositeReply &&
-          compositeReply.evaluationInfo &&
-          (compositeReply.evaluationInfo.text || recordings.length > 0) ? (
-            <>
-              {compositeReply.evaluationInfo.text ? (
-                <div className="evaluation-modal__item-literal-assessment">
-                  <div className="evaluation-modal__item-literal-assessment-label">
-                    {i18n.text.get(
-                      "plugin.evaluation.evaluationModal.assignmentLiteralEvaluationLabel"
-                    )}
-                  </div>
-
-                  <div
-                    className="evaluation-modal__item-literal-assessment-data rich-text rich-text--evaluation-literal"
-                    dangerouslySetInnerHTML={createHtmlMarkup(
-                      compositeReply.evaluationInfo.text
-                    )}
-                  />
+      </div>
+      <AnimateHeight duration={400} height={contentOpen}>
+        {compositeReply &&
+        compositeReply.evaluationInfo &&
+        (compositeReply.evaluationInfo.text || recordings.length > 0) ? (
+          <>
+            {compositeReply.evaluationInfo.text ? (
+              <div className="evaluation-modal__item-literal-assessment">
+                <div className="evaluation-modal__item-literal-assessment-label">
+                  {i18n.text.get(
+                    "plugin.evaluation.evaluationModal.assignmentLiteralEvaluationLabel"
+                  )}
                 </div>
-              ) : null}
 
-              {recordings.length > 0 ? (
-                <div className="evaluation-modal__item-verbal-assessment">
-                  <div className="evaluation-modal__item-verbal-assessment-label">
-                    {i18n.text.get(
-                      "plugin.evaluation.evaluationModal.audioAssessments"
-                    )}
-                  </div>
-                  <div className="voice-container">
-                    <RecordingsList records={recordings} noDeleteFunctions />
-                  </div>
+                <div
+                  className="evaluation-modal__item-literal-assessment-data rich-text rich-text--evaluation-literal"
+                  dangerouslySetInnerHTML={createHtmlMarkup(
+                    compositeReply.evaluationInfo.text
+                  )}
+                />
+              </div>
+            ) : null}
+
+            {recordings.length > 0 ? (
+              <div className="evaluation-modal__item-verbal-assessment">
+                <div className="evaluation-modal__item-verbal-assessment-label">
+                  {i18n.text.get(
+                    "plugin.evaluation.evaluationModal.audioAssessments"
+                  )}
                 </div>
-              ) : null}
-            </>
-          ) : null}
-          {isLoading ? (
-            <div className="loader-empty" />
-          ) : workspace && materialNode ? (
-            <AssignmentMaterial
-              material={materialNode}
-              workspace={workspace}
-              compositeReply={compositeReply}
-              userEntityId={userEntityId}
-            />
-          ) : null}
-        </AnimateHeight>
-      </>
-    );
-  };
+                <div className="voice-container">
+                  <RecordingsList records={recordings} noDeleteFunctions />
+                </div>
+              </div>
+            ) : null}
+          </>
+        ) : null}
+        {isLoading ? (
+          <div className="loader-empty" />
+        ) : workspace && materialNode ? (
+          <AssignmentMaterial
+            material={materialNode}
+            workspace={workspace}
+            compositeReply={compositeReply}
+            userEntityId={userEntityId}
+          />
+        ) : null}
+      </AnimateHeight>
+    </>
+  );
+};
 
 /**
  * assignmentFunctionClass

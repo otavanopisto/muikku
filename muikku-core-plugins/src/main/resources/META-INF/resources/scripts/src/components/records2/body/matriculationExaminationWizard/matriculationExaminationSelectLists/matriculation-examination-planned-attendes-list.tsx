@@ -32,68 +32,69 @@ const defaultUseSelectProps = {
  * @param props
  * @returns
  */
-export const MatriculationExaminationPlannedAttendesList: React.FC<MatriculationExaminationPlannedAttendesListProps> =
-  (props) => {
-    props = { ...defaultUseSelectProps, ...props };
+export const MatriculationExaminationPlannedAttendesList: React.FC<
+  MatriculationExaminationPlannedAttendesListProps
+> = (props) => {
+  props = { ...defaultUseSelectProps, ...props };
 
-    const {
-      onChange,
-      examinationPlannedList,
-      nextOptions,
-      onDeleteRow,
-      readOnly,
-      children,
-      ...useSelectProps
-    } = props;
+  const {
+    onChange,
+    examinationPlannedList,
+    nextOptions,
+    onDeleteRow,
+    readOnly,
+    children,
+    ...useSelectProps
+  } = props;
 
-    /**
-     * Handles matriculation examation planned subject group change
-     * @param key
-     * @param value
-     * @param index
-     */
-    const handleMatriculationExaminationSubjectGroupChange = <
-      T extends keyof ExaminationPlannedSubject
-    >(
-      key: T,
-      value: ExaminationPlannedSubject[T],
-      index: number
-    ) => {
-      let modifiedExaminationPlannedList = examinationPlannedList;
+  /**
+   * Handles matriculation examation planned subject group change
+   * @param key
+   * @param value
+   * @param index
+   */
+  const handleMatriculationExaminationSubjectGroupChange = <
+    T extends keyof ExaminationPlannedSubject
+  >(
+    key: T,
+    value: ExaminationPlannedSubject[T],
+    index: number
+  ) => {
+    let modifiedExaminationPlannedList = examinationPlannedList;
 
-      modifiedExaminationPlannedList[index][key] = value;
+    modifiedExaminationPlannedList[index][key] = value;
 
-      onChange(modifiedExaminationPlannedList);
-    };
-
-    /**
-     * List of selected subject string keys
-     */
-    const selectedPlannedSubjects = examinationPlannedList.map(
-      (sSubject) => sSubject.subject
-    );
-
-    return (
-      <>
-        {examinationPlannedList.map((subject, index) => (
-          <div
-            key={index}
-            className="matriculation-container__row matriculation-container__row--input-groups"
-          >
-            <MatriculationExaminationPlannedInputGroup
-              index={index}
-              readOnly={readOnly}
-              subject={subject}
-              nextOptions={nextOptions}
-              selectedSubjectList={selectedPlannedSubjects}
-              onSubjectGroupChange={
-                handleMatriculationExaminationSubjectGroupChange
-              }
-              onClickDeleteRow={onDeleteRow}
-              {...useSelectProps}
-            />
-          </div>
-        ))}
-      </>
-    );
+    onChange(modifiedExaminationPlannedList);
   };
+
+  /**
+   * List of selected subject string keys
+   */
+  const selectedPlannedSubjects = examinationPlannedList.map(
+    (sSubject) => sSubject.subject
+  );
+
+  return (
+    <>
+      {examinationPlannedList.map((subject, index) => (
+        <div
+          key={index}
+          className="matriculation-container__row matriculation-container__row--input-groups"
+        >
+          <MatriculationExaminationPlannedInputGroup
+            index={index}
+            readOnly={readOnly}
+            subject={subject}
+            nextOptions={nextOptions}
+            selectedSubjectList={selectedPlannedSubjects}
+            onSubjectGroupChange={
+              handleMatriculationExaminationSubjectGroupChange
+            }
+            onClickDeleteRow={onDeleteRow}
+            {...useSelectProps}
+          />
+        </div>
+      ))}
+    </>
+  );
+};

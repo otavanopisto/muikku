@@ -268,8 +268,16 @@ export enum CourseStatus {
  */
 export interface LanguageGrade {
   name: string;
-  grade: number;
+  grade: LanguageGradeEnum;
   hardCoded: boolean;
+}
+
+export enum LanguageGradeEnum {
+  NATIVE_LANGUAGE = "NATIVE_LANGUAGE",
+  EXCELLENT = "EXCELLENT",
+  GOOD = "GOOD",
+  SATISFYING = "SATISFYING",
+  NOT_STUDIED = "NOT_STUDIED",
 }
 
 /**
@@ -287,7 +295,7 @@ export interface HopsCompulsory {
 export interface BasicInformation {
   name: string;
   dateOfIssue?: Date;
-  updates?: HopsUpdates[];
+  updates?: HopsUpdate[];
   counselorList?: string[];
 }
 
@@ -304,9 +312,10 @@ export interface StudentInfo {
 /**
  * HopsUpdates
  */
-export interface HopsUpdates {
+export interface HopsUpdate {
   date: Date;
   modifier: string;
+  description?: string;
 }
 
 /**
@@ -317,7 +326,6 @@ export interface HopsStudentStartingLevel {
   previousEducationElse?: string;
   previousWorkExperience: string;
   previousYearsUsedInStudies: string;
-  finnishAsMainOrSecondaryLng: boolean;
   previousLanguageExperience: LanguageGrade[];
 }
 

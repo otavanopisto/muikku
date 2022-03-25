@@ -43,7 +43,7 @@ interface SummaryState {}
 class Summary extends React.Component<SummaryProps, SummaryState> {
   /**
    * constructor
-   * @param props
+   * @param props props
    */
   constructor(props: SummaryProps) {
     super(props);

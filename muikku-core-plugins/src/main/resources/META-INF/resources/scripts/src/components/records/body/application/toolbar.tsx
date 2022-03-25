@@ -5,7 +5,7 @@ import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/application-panel.scss";
 import "~/sass/elements/buttons.scss";
-import "~/sass/elements/form-elements.scss";
+import "~/sass/elements/form.scss";
 import { StateType } from "~/reducers";
 import { RecordsType } from "~/reducers/main-function/records";
 

@@ -121,10 +121,8 @@ class ProfilePicture extends React.Component<
    */
   render() {
     return (
-      <div className="application-sub-panel__item application-sub-panel__item--profile">
-        <label className="application-sub-panel__item-title">
-          {this.props.i18n.text.get("plugin.profile.image.label")}
-        </label>
+      <div className="form-element">
+        <label>{this.props.i18n.text.get("plugin.profile.image.label")}</label>
         <div className="application-sub-panel__item-data form-element">
           {!this.props.status.hasImage ? (
             <div className="change-image">

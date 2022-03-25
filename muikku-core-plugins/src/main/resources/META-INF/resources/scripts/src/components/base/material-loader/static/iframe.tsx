@@ -94,7 +94,9 @@ export default class Iframe extends React.Component<
          */
         processingFunction: (Tag, elementProps, children, element) => {
           if (this.props.invisible) {
-            const isYoutube = elementProps.src.includes("//www.youtube.com");
+            const isYoutube =
+              elementProps.src &&
+              elementProps.src.includes("//www.youtube.com");
             if (isYoutube) {
               return (
                 <span
@@ -134,7 +136,8 @@ export default class Iframe extends React.Component<
           }
 
           const iframeProps = { ...elementProps };
-          const isYoutube = elementProps.src.includes("//www.youtube.com");
+          const isYoutube =
+            elementProps.src && elementProps.src.includes("//www.youtube.com");
           let containerStyle: any = {
             height: elementProps.height + "px" || "160px",
             width: "100%",

@@ -39,68 +39,69 @@ const defaultUseSelectProps = {
  * @param props
  * @returns
  */
-export const MatriculationExaminationFinishedAttendesList: React.FC<MatriculationExaminationFinishedAttendesListProps> =
-  ({
-    onChange,
-    examinationFinishedList,
-    enrolledAttendances,
-    pastOptions,
-    onDeleteRow,
-    readOnly,
-    children,
-    ...useSelectProps
-  }) => {
-    useSelectProps = { ...defaultUseSelectProps, ...useSelectProps };
+export const MatriculationExaminationFinishedAttendesList: React.FC<
+  MatriculationExaminationFinishedAttendesListProps
+> = ({
+  onChange,
+  examinationFinishedList,
+  enrolledAttendances,
+  pastOptions,
+  onDeleteRow,
+  readOnly,
+  children,
+  ...useSelectProps
+}) => {
+  useSelectProps = { ...defaultUseSelectProps, ...useSelectProps };
 
-    /**
-     * Handles matriculation examation finished subject group change
-     * @param key
-     * @param value
-     * @param index
-     */
-    const handleMatriculationExaminationSubjectGroupChange = <
-      T extends keyof ExaminationFinishedSubject
-    >(
-      key: T,
-      value: ExaminationFinishedSubject[T],
-      index: number
-    ) => {
-      let modifiedExaminationFinishedList = examinationFinishedList;
+  /**
+   * Handles matriculation examation finished subject group change
+   * @param key
+   * @param value
+   * @param index
+   */
+  const handleMatriculationExaminationSubjectGroupChange = <
+    T extends keyof ExaminationFinishedSubject
+  >(
+    key: T,
+    value: ExaminationFinishedSubject[T],
+    index: number
+  ) => {
+    let modifiedExaminationFinishedList = examinationFinishedList;
 
-      modifiedExaminationFinishedList[index][key] = value;
+    modifiedExaminationFinishedList[index][key] = value;
 
-      onChange(modifiedExaminationFinishedList);
-    };
-
-    /**
-     * List of selected subject string keys
-     */
-    const selectedSubjects = examinationFinishedList.map(
-      (sSubject) => sSubject.subject
-    );
-
-    return (
-      <>
-        {examinationFinishedList.map((subject, index) => (
-          <div
-            key={index}
-            className="matriculation-container__row matriculation-container__row--input-groups"
-          >
-            <MatriculationExaminationFinishedInputGroup
-              index={index}
-              subject={subject}
-              pastTermOptions={pastOptions}
-              selectedSubjectList={selectedSubjects}
-              enrolledAttendances={enrolledAttendances}
-              onSubjectGroupChange={
-                handleMatriculationExaminationSubjectGroupChange
-              }
-              onClickDeleteRow={onDeleteRow}
-              readOnly={readOnly}
-              {...useSelectProps}
-            />
-          </div>
-        ))}
-      </>
-    );
+    onChange(modifiedExaminationFinishedList);
   };
+
+  /**
+   * List of selected subject string keys
+   */
+  const selectedSubjects = examinationFinishedList.map(
+    (sSubject) => sSubject.subject
+  );
+
+  return (
+    <>
+      {examinationFinishedList.map((subject, index) => (
+        <div
+          key={index}
+          className="matriculation-container__row matriculation-container__row--input-groups"
+        >
+          <MatriculationExaminationFinishedInputGroup
+            index={index}
+            subject={subject}
+            pastTermOptions={pastOptions}
+            selectedSubjectList={selectedSubjects}
+            enrolledAttendances={enrolledAttendances}
+            onSubjectGroupChange={
+              handleMatriculationExaminationSubjectGroupChange
+            }
+            onClickDeleteRow={onDeleteRow}
+            readOnly={readOnly}
+            {...useSelectProps}
+          />
+        </div>
+      ))}
+    </>
+  );
+};

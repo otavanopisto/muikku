@@ -101,6 +101,7 @@ async function loadWhoAMI(
         studyStartDate: whoAmI.studyStartDate,
         studyTimeEnd: whoAmI.studyTimeEnd,
         studyTimeLeftStr: whoAmI.studyTimeLeftStr,
+        permissions: whoAmI.permissions,
       },
     },
   });
@@ -170,8 +171,12 @@ async function loadWorklistAvailable(dispatch: (arg: AnyActionType) => any) {
 /**
  * loadForumIsAvailable
  * @param dispatch dispatch
+ * @param permissions permissions
  */
-async function loadForumIsAvailable(dispatch: (arg: AnyActionType) => any) {
+async function loadForumIsAvailable(
+  dispatch: (arg: AnyActionType) => any,
+  permissions: string[]
+) {
   const isAvailable = <boolean>(
     await promisify(mApi().forum.isAvailable.read(), "callback")()
   );
@@ -188,9 +193,12 @@ async function loadForumIsAvailable(dispatch: (arg: AnyActionType) => any) {
     type: "UPDATE_STATUS",
     payload: {
       permissions: {
-        FORUM_ACCESSENVIRONMENTFORUM: isAvailable,
-        FORUM_CREATEENVIRONMENTFORUM: isAvailable,
-        FORUM_DELETEENVIRONMENTFORUM: isAvailable,
+        FORUM_ACCESSENVIRONMENTFORUM:
+          isAvailable && permissions.includes("FORUM_ACCESSENVIRONMENTFORUM"),
+        FORUM_CREATEENVIRONMENTFORUM:
+          isAvailable && permissions.includes("FORUM_CREATEENVIRONMENTFORUM"),
+        FORUM_DELETEENVIRONMENTFORUM:
+          isAvailable && permissions.includes("FORUM_DELETEENVIRONMENTFORUM"),
         AREA_PERMISSIONS: areaPermissions,
       },
     },
@@ -316,11 +324,11 @@ const loadStatus: LoadStatusType = function loadStatus(
     getState: () => StateType
   ) => {
     if (getState().status.loggedIn) {
-      loadWhoAMI(dispatch, whoAmIReadyCb);
+      await loadWhoAMI(dispatch, whoAmIReadyCb);
       loadChatActive(dispatch);
       loadChatAvailable(dispatch);
       loadWorklistAvailable(dispatch);
-      loadForumIsAvailable(dispatch);
+      loadForumIsAvailable(dispatch, getState().status.profile.permissions);
       loadHopsEnabled(dispatch);
     } else {
       loadWhoAMI(dispatch, whoAmIReadyCb);

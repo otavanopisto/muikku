@@ -19,7 +19,7 @@ import {
   UpdateNeedsReloadEvaluationRequests,
   updateNeedsReloadEvaluationRequests,
 } from "~/actions/main-function/evaluation/evaluationActions";
-import "~/sass/elements/form-elements.scss";
+import "~/sass/elements/form.scss";
 import { LocaleListType } from "~/reducers/base/locales";
 import { CKEditorConfig } from "../evaluation";
 
@@ -336,23 +336,21 @@ class SupplementationEditor extends SessionStateComponent<
    */
   render() {
     return (
-      <>
-        <div className="evaluation-modal__evaluate-drawer-row form-element">
-          {this.props.editorLabel && (
-            <label className="evaluation-modal__evaluate-drawer-row-label">
-              {this.props.editorLabel}
-            </label>
-          )}
+      <div className="form" role="form">
+        <div className="form__row">
+          <div className="form-element">
+            {this.props.editorLabel && <label>{this.props.editorLabel}</label>}
 
-          <CKEditor
-            onChange={this.handleCKEditorChange}
-            configuration={CKEditorConfig(this.props.locale.current)}
-          >
-            {this.state.literalEvaluation}
-          </CKEditor>
+            <CKEditor
+              onChange={this.handleCKEditorChange}
+              configuration={CKEditorConfig(this.props.locale.current)}
+            >
+              {this.state.literalEvaluation}
+            </CKEditor>
+          </div>
         </div>
 
-        <div className="evaluation-modal__evaluate-drawer-row evaluation-modal__evaluate-drawer-row--buttons">
+        <div className="form__buttons form__buttons--evaluation">
           <Button
             buttonModifiers="evaluate-supplementation"
             onClick={this.handleEvaluationSupplementationSave}
@@ -383,7 +381,7 @@ class SupplementationEditor extends SessionStateComponent<
             </Button>
           )}
         </div>
-      </>
+      </div>
     );
   }
 }
