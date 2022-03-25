@@ -2,10 +2,10 @@ package fi.otavanopisto.muikku.plugins.hops.rest;
 
 public class HopsData {
 
-  public Object getFormData() {
+  public String getFormData() {
     return formData;
   }
-  public void setFormData(Object formData) {
+  public void setFormData(String formData) {
     this.formData = formData;
   }
   
@@ -16,6 +16,6 @@ public class HopsData {
     this.historyDetails = historyDetails;
   }
 
-  private Object formData;
+  private String formData;
   private String historyDetails;
 }

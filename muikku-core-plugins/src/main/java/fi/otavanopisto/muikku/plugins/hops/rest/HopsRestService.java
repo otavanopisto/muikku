@@ -152,8 +152,8 @@ public class HopsRestService {
     if (payload == null) {
       return Response.status(Status.BAD_REQUEST).build();
     }
-
-    String formData = payload.getFormData().toString();
+    
+    String formData = payload.getFormData();
     try {
       objectMapper.readTree(formData);
     }
