@@ -338,7 +338,7 @@ public class HopsRestService {
       
       if (userMap.containsKey(historyEntry.getModifier())) {
         historyItem.setModifier(userMap.get(historyEntry.getModifier()).getFirstName() + " " + userMap.get(historyEntry.getModifier()).getLastName());
-        historyItem.setModifierIdentifier(userMap.get(historyEntry.getModifier()).getId());
+        historyItem.setModifierId(userMap.get(historyEntry.getModifier()).getId());
         historyItem.setModifierHasImage(userMap.get(historyEntry.getModifier()).isHasImage());
       }
       else {
@@ -348,7 +348,7 @@ public class HopsRestService {
         
         if (userEntity != null && userEntityName != null) {
           historyItem.setModifier(userEntityName.getDisplayName());
-          historyItem.setModifierIdentifier(userEntity.getId());
+          historyItem.setModifierId(userEntity.getId());
           historyItem.setModifierHasImage(userEntityFileController.hasProfilePicture(userEntity));
           
           userDetails.setFirstName(userEntityName.getFirstName());
@@ -407,7 +407,7 @@ public class HopsRestService {
       historyItem.setModifier(userEntityName.getDisplayName());
     }
     
-    historyItem.setModifierIdentifier(userEntity.getId());
+    historyItem.setModifierId(userEntity.getId());
     historyItem.setModifierHasImage(userEntityFileController.hasProfilePicture(userEntity));
     historyItem.setDetails(updatedHistory.getDetails());
     
