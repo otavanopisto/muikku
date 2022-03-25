@@ -378,7 +378,6 @@ class CompulsoryEducationHopsWizard extends React.Component<
     ];
 
     return (
-      <div className="hops">
         <div className="wizard">
           <div className="wizard_container">
             <StepZilla
@@ -396,7 +395,6 @@ class CompulsoryEducationHopsWizard extends React.Component<
             />
           </div>
         </div>
-      </div>
     );
   }
 }

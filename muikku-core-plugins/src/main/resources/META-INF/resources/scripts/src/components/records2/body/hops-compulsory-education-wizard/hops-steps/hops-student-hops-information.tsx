@@ -41,27 +41,27 @@ class HopsStudentHopsInformation extends React.Component<
    */
   render() {
     return (
-      <section className="hops__container">
+      <section className="hops-container">
         {this.props.loading ? (
           <div className="loader-empty" />
         ) : (
-          <fieldset className="form__fieldset">
-            <legend className="form__legend">Perustiedot:</legend>
+          <fieldset className="hops-container__fieldset">
+            <legend className="hops-container__subheader">Perustiedot:</legend>
 
-            <div className="hops__row">
-              <div className="form-element">
+            <div className="hops-container__row">
+              <div className="hops__form-element-container">
                 <TextField
                   label="Nimi:"
                   type="text"
                   placeholder="Nimi"
                   value={this.props.basicInformation.name}
-                  disabled
-                  className="form-element__input"
+                  readOnly
+                  className="hops__input"
                 />
               </div>
             </div>
-            <div className="hops__row">
-              <div className="form-element">
+            <div className="hops-container__row">
+              <div className="hops__form-element-container">
                 <TextField
                   label="Ohjaaja:"
                   type="text"
@@ -72,21 +72,19 @@ class HopsStudentHopsInformation extends React.Component<
                       ? this.props.basicInformation.counselorList.join(", ")
                       : "Ei ohjaaja"
                   }
-                  disabled
-                  className="form-element__input"
+                  readOnly
+                  className="hops__input"
                 />
               </div>
             </div>
             {this.props.basicInformation.updates &&
             this.props.basicInformation.updates.length ? (
-              <>
-                <h3>Muokkaushistoria</h3>
-                <div className="hops-sub__container--updates">
-                  <HopsHistory
-                    hopsUpdates={this.props.basicInformation.updates}
-                  />
-                </div>
-              </>
+              <div className="hops-container__info">
+                <h3 className="hops-container__subheader">Muokkaushistoria</h3>
+                <HopsHistory
+                  hopsUpdates={this.props.basicInformation.updates}
+                />
+              </div>
             ) : null}
           </fieldset>
         )}

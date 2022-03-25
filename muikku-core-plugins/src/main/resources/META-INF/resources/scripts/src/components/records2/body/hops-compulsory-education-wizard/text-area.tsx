@@ -22,7 +22,7 @@ export const Textarea: React.FC<TextareaProps> = ({
   ...textareaProps
 }) => (
   <>
-    <label>{label}</label>
+    <label className="hops__label">{label}</label>
     <div className="form-element__textarea-container">
       <textarea {...textareaProps} />
     </div>
