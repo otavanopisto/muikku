@@ -136,7 +136,7 @@ public class HopsRestService {
   @POST
   @Path("/student/{STUDENTIDENTIFIER}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response createOrUpdateHops(@PathParam("STUDENTIDENTIFIER") String studentIdentifier, String formData, String historyDetails) {
+  public Response createOrUpdateHops(@PathParam("STUDENTIDENTIFIER") String studentIdentifier, HopsData payload) {
     
     // Access check
     
@@ -147,8 +147,13 @@ public class HopsRestService {
     }
     
     // Validate JSON
-
     ObjectMapper objectMapper = new ObjectMapper();
+    
+    if (payload == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+
+    String formData = payload.getFormData().toString();
     try {
       objectMapper.readTree(formData);
     }
@@ -160,10 +165,10 @@ public class HopsRestService {
     
     Hops hops = hopsController.findHopsByStudentIdentifier(studentIdentifier);
     if (hops == null) {
-      hops = hopsController.createHops(studentIdentifier, formData, historyDetails);
+      hops = hopsController.createHops(studentIdentifier, formData, payload.getHistoryDetails());
     }
     else {
-      hops = hopsController.updateHops(hops, studentIdentifier, formData, historyDetails);
+      hops = hopsController.updateHops(hops, studentIdentifier, formData, payload.getHistoryDetails());
     }
 
     return Response.ok(formData).build();
