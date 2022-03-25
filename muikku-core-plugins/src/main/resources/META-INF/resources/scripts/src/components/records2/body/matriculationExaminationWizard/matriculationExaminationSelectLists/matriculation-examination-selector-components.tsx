@@ -1,15 +1,14 @@
 import * as React from "react";
-import { ExaminationSubject } from "~/@types/shared";
 import "~/sass/elements/matriculation.scss";
 import "~/sass/elements/wcag.scss";
 import Button from "~/components/general/button";
 import { SUBJECT_MAP, EXAMINATION_GRADES_MAP } from "../index";
-import { ExaminationFunding } from "../../../../../@types/shared";
+import { ExaminationFunding } from "~/@types/shared";
 import {
   ExaminationEnrolledSubject,
   ExaminationFinishedSubject,
   ExaminationPlannedSubject,
-} from "../../../../../@types/shared";
+} from "~/@types/shared";
 
 /**
  * MatriculationExaminationSubjectInputGroupProps
@@ -151,7 +150,7 @@ export const MatriculationExaminationEnrolledInputGroup: React.FC<
           ) : null}
           <Button
             aria-labelledby="removeMatriculationRowLabel"
-            className="icon-trash"
+            icon="trash"
             buttonModifiers={"remove-matriculation-row"}
             onClick={onClickDeleteRow(index)}
           ></Button>
@@ -298,7 +297,7 @@ export const MatriculationExaminationFinishedInputGroup: React.FC<
           ) : null}
           <Button
             aria-labelledby="removeMatriculationRowLabel"
-            className="icon-trash"
+            icon="trash"
             buttonModifiers={"remove-matriculation-row"}
             onClick={onClickDeleteRow(index)}
           ></Button>
@@ -401,7 +400,7 @@ export const MatriculationExaminationPlannedInputGroup: React.FC<
           ) : null}
           <Button
             aria-labelledby="removeMatriculationRowLabel"
-            className="icon-trash"
+            icon="trash"
             buttonModifiers={"remove-matriculation-row"}
             onClick={onClickDeleteRow(index)}
           ></Button>

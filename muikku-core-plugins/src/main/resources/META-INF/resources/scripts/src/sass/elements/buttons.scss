@@ -1811,23 +1811,32 @@
   }
 }
 
-.button--add-matriculation-row {
+.button--add-matriculation-row,
+.button--add-hops-row {
   background: $color-default;
   border: 1px solid $color-default;
   color: $color-info;
   padding: 4px 6px;
 }
 
-.button--remove-matriculation-row {
-  align-items: center;
+.button--remove-matriculation-row,
+.button--remove-hops-row {
   background: transparent;
-  color: $color-fatal;
-  display: flex;
-  font-size: 1.25rem;
   height: 2.25rem;
-  justify-content: center;
   padding: 5px;
   width: 2.25rem;
+
+  .icon-trash {
+    align-items: center;
+    color: $color-fatal;
+    display: flex;
+    font-size: 1.25rem;
+    height: 2.25rem;
+    justify-content: center;
+    margin: 0;
+    padding: 5px;
+    width: 2.25rem;
+  }
 }
 
 .button--evaluate-assignment {

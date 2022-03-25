@@ -542,23 +542,21 @@ class CompulsoryEducationHopsWizard extends React.Component<
     ];
 
     return (
-      <div className="hops">
-        <div className="wizard">
-          <div className="wizard_container">
-            <StepZilla
-              steps={steps}
-              showNavigation={true}
-              showSteps={true}
-              preventEnterSubmission={true}
-              prevBtnOnLastStep={true}
-              nextTextOnFinalActionStep="Tallenna"
-              nextButtonCls="button button--wizard"
-              backButtonCls="button button--wizard"
-              nextButtonText="Seuraava"
-              backButtonText="Edellinen"
-              onStepChange={this.handleStepChange(steps)}
-            />
-          </div>
+      <div className="wizard">
+        <div className="wizard_container">
+          <StepZilla
+            steps={steps}
+            showNavigation={true}
+            showSteps={true}
+            preventEnterSubmission={true}
+            prevBtnOnLastStep={true}
+            nextTextOnFinalActionStep="Tallenna"
+            nextButtonCls="button button--wizard"
+            backButtonCls="button button--wizard"
+            nextButtonText="Seuraava"
+            backButtonText="Edellinen"
+            onStepChange={this.handleStepChange(steps)}
+          />
         </div>
         <NewHopsEventDescriptionDialog
           content={

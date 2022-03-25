@@ -20,12 +20,12 @@ public class HistoryItem {
     this.date = date;
   }
   
-  public Long getModifierIdentifier() {
-    return modifierIdentifier;
+  public Long getModifierId() {
+    return modifierId;
   }
 
-  public void setModifierIdentifier(Long modifierIdentifier) {
-    this.modifierIdentifier = modifierIdentifier;
+  public void setModifierId(Long modifierId) {
+    this.modifierId = modifierId;
   }
 
   public String getModifier() {
@@ -54,7 +54,7 @@ public class HistoryItem {
 
   private Long id;
   private Date date;
-  private Long modifierIdentifier;
+  private Long modifierId;
   private String modifier;
   private Boolean modifierHasImage;
   private String details;

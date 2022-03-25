@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ButtonPill } from "~/components/general/button";
+import Button from "~/components/general/button";
 import {
   Table,
   TableHead,
@@ -8,7 +8,9 @@ import {
   Th,
   Tr,
 } from "~/components/general/table";
-import { LanguageGrade, LanguageGradeEnum } from "../../../../@types/shared";
+import { LanguageGrade, LanguageGradeEnum } from "~/@types/shared";
+
+import "~/sass/elements/wcag.scss";
 
 /**
  * LanguageGradeTableProps
@@ -92,79 +94,95 @@ export const LanguageGradeRow: React.FC<LanguageGradeRowProps> = ({
     };
 
   return (
-    <Tr>
-      <Td style={{ maxWidth: "80px", textAlign: "center" }}>
-        {lng.hardCoded ? (
-          <label className="hops-label">{lng.name}</label>
-        ) : (
+    <Tr modifiers={["language-table"]}>
+      <Td modifiers={["centered"]}>
+        <span className="table__alignment-helper">
+          {lng.hardCoded ? (
+            <label className="hops__label">{lng.name}</label>
+          ) : (
+            <input
+              type="text"
+              value={lng.name}
+              onChange={handleOtherLngChange}
+              placeholder="Kieli"
+              className="hops__input"
+              disabled={disabled}
+              style={{ textAlign: "center" }}
+            ></input>
+          )}
+        </span>
+      </Td>
+      <Td modifiers={["centered"]}>
+        <span className="table__alignment-helper">
           <input
-            type="text"
-            value={lng.name}
-            onChange={handleOtherLngChange}
-            placeholder="Kieli"
-            className="hops-input"
+            type="radio"
+            checked={lng.grade === LanguageGradeEnum.NATIVE_LANGUAGE}
+            onChange={handleRadioInputChange(LanguageGradeEnum.NATIVE_LANGUAGE)}
+            className="hops__input"
             disabled={disabled}
-            style={{ textAlign: "center" }}
           ></input>
-        )}
+        </span>
       </Td>
-      <Td>
-        <input
-          type="radio"
-          checked={lng.grade === LanguageGradeEnum.NATIVE_LANGUAGE}
-          onChange={handleRadioInputChange(LanguageGradeEnum.NATIVE_LANGUAGE)}
-          className="hops-input"
-          disabled={disabled}
-        ></input>
-      </Td>
-      <Td>
-        <input
-          type="radio"
-          checked={lng.grade === LanguageGradeEnum.EXCELLENT}
-          onChange={handleRadioInputChange(LanguageGradeEnum.EXCELLENT)}
-          className="hops-input"
-          disabled={disabled}
-        ></input>
-      </Td>
-      <Td>
-        <input
-          type="radio"
-          checked={lng.grade === LanguageGradeEnum.GOOD}
-          onChange={handleRadioInputChange(LanguageGradeEnum.GOOD)}
-          className="hops-input"
-          disabled={disabled}
-        ></input>
-      </Td>
-      <Td>
-        <input
-          type="radio"
-          checked={lng.grade === LanguageGradeEnum.SATISFYING}
-          onChange={handleRadioInputChange(LanguageGradeEnum.SATISFYING)}
-          className="hops-input"
-          disabled={disabled}
-        ></input>
-      </Td>
-      <Td>
-        <input
-          type="radio"
-          checked={lng.grade === LanguageGradeEnum.NOT_STUDIED}
-          onChange={handleRadioInputChange(LanguageGradeEnum.NOT_STUDIED)}
-          className="hops-input"
-          disabled={disabled}
-        ></input>
-      </Td>
-      <Td
-        modifiers={["centered"]}
-        style={{ maxWidth: "50px", textAlign: "center" }}
-      >
-        {lng.hardCoded ? (
-          "-"
-        ) : (
-          <ButtonPill
-            icon="trash"
-            onClick={(e) => onDeleteRowClick(index)}
+      <Td modifiers={["centered"]}>
+        <span className="table__alignment-helper">
+          <input
+            type="radio"
+            checked={lng.grade === LanguageGradeEnum.EXCELLENT}
+            onChange={handleRadioInputChange(LanguageGradeEnum.EXCELLENT)}
+            className="hops__input"
             disabled={disabled}
-          />
+          ></input>
+        </span>
+      </Td>
+      <Td modifiers={["centered"]}>
+        <span className="table__alignment-helper">
+          <input
+            type="radio"
+            checked={lng.grade === LanguageGradeEnum.GOOD}
+            onChange={handleRadioInputChange(LanguageGradeEnum.GOOD)}
+            className="hops__input"
+            disabled={disabled}
+          ></input>
+        </span>
+      </Td>
+      <Td modifiers={["centered"]}>
+        <span className="table__alignment-helper">
+          <input
+            type="radio"
+            checked={lng.grade === LanguageGradeEnum.SATISFYING}
+            onChange={handleRadioInputChange(LanguageGradeEnum.SATISFYING)}
+            className="hops__input"
+            disabled={disabled}
+          ></input>
+        </span>
+      </Td>
+      <Td modifiers={["centered"]}>
+        <span className="table__alignment-helper">
+          <input
+            type="radio"
+            checked={lng.grade === LanguageGradeEnum.NOT_STUDIED}
+            onChange={handleRadioInputChange(LanguageGradeEnum.NOT_STUDIED)}
+            className="hops__input"
+            disabled={disabled}
+          ></input>
+        </span>
+      </Td>
+      <Td modifiers={["centered"]}>
+        {lng.hardCoded ? (
+          <span className="table__alignment-helper">-</span>
+        ) : (
+          <span className="table__alignment-helper">
+            <label id="removeLanguageRowLabel" className="visually-hidden">
+              Poista
+            </label>
+            <Button
+              aria-labelledby="removeLanguageRowLabel"
+              buttonModifiers={["remove-hops-row"]}
+              icon="trash"
+              onClick={(e) => onDeleteRowClick(index)}
+              disabled={disabled}
+            />
+          </span>
         )}
       </Td>
     </Tr>
