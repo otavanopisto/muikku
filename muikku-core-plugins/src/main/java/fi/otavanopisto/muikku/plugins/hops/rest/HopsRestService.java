@@ -171,7 +171,7 @@ public class HopsRestService {
       hops = hopsController.updateHops(hops, studentIdentifier, formData, payload.getHistoryDetails());
     }
 
-    return Response.ok(formData).build();
+    return Response.ok(payload.getFormData()).build();
   }
   
   @GET
