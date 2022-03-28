@@ -240,17 +240,6 @@
     </profile>
 
     <profile>
-      <id>matriculation-plugin</id>
-      <dependencies>
-        <dependency>
-          <groupId>fi.otavanopisto.muikku</groupId>
-          <artifactId>matriculation-plugin</artifactId>
-          <version>1.1.180-SNAPSHOT</version>
-        </dependency>
-      </dependencies>
-    </profile>
-
-    <profile>
       <id>jndi-mail-plugin</id>
       <dependencies>
         <dependency>
@@ -289,17 +278,6 @@
         <dependency>
           <groupId>fi.otavanopisto.muikku</groupId>
           <artifactId>google-oauth-plugin</artifactId>
-          <version>1.1.180-SNAPSHOT</version>
-        </dependency>
-      </dependencies>
-    </profile>
-
-    <profile>
-      <id>evaluation-plugin</id>
-      <dependencies>
-        <dependency>
-          <groupId>fi.otavanopisto.muikku</groupId>
-          <artifactId>evaluation-plugin</artifactId>
           <version>1.1.180-SNAPSHOT</version>
         </dependency>
       </dependencies>

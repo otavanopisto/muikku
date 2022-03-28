@@ -22,7 +22,7 @@
     <!-- Jackson -->
 
     <jackson.version>2.9.10</jackson.version>
-    <jackson-databind.version>2.9.10.4</jackson-databind.version>
+    <jackson-databind.version>2.9.10.8</jackson-databind.version>
 
     <!-- Scribe -->
 
@@ -240,24 +240,6 @@
 
       <dependency>
         <groupId>fi.otavanopisto.muikku</groupId>
-        <artifactId>evaluation-plugin</artifactId>
-        <version>${muikku.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>fi.otavanopisto.muikku</groupId>
-        <artifactId>evaluation-plugin-persistence</artifactId>
-        <version>${muikku.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>fi.otavanopisto.muikku</groupId>
-        <artifactId>evaluation-plugin-rest-model</artifactId>
-        <version>${muikku.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>fi.otavanopisto.muikku</groupId>
         <artifactId>timed-notifications-plugin</artifactId>
         <version>${muikku.version}</version>
       </dependency>
@@ -274,12 +256,6 @@
         <version>${muikku.version}</version>
       </dependency>
     
-      <dependency>
-        <groupId>fi.otavanopisto.muikku</groupId>
-        <artifactId>matriculation-plugin-persistence</artifactId>
-        <version>${muikku.version}</version>
-      </dependency>
-
       <!-- Webapp-permission -->
 
       <dependency>
