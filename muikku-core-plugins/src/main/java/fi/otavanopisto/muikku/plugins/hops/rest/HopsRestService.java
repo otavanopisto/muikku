@@ -317,7 +317,9 @@ public class HopsRestService {
   @GET
   @Path("/student/{STUDENTIDENTIFIER}/history")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response getHopsHistory(@PathParam("STUDENTIDENTIFIER") String studentIdentifier) {
+  public Response getHopsHistory(@PathParam("STUDENTIDENTIFIER") String studentIdentifier,
+      @QueryParam("firstResult") @DefaultValue("0") Integer firstResult,
+      @QueryParam("maxResults") @DefaultValue("5") Integer maxResults) {
     
     // Access check
     
@@ -327,7 +329,7 @@ public class HopsRestService {
       }
     }
     
-    List<HopsHistory> history = hopsController.listHistoryByStudentIdentifier(studentIdentifier);
+    List<HopsHistory> history = hopsController.listHistoryByStudentIdentifier(studentIdentifier, firstResult, maxResults);
     if (history.isEmpty()) {
       return Response.ok(Collections.<HistoryItem>emptyList()).build();
     }

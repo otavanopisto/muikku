@@ -217,8 +217,8 @@ public class HopsController {
     }
   }
   
-  public List<HopsHistory> listHistoryByStudentIdentifier(String studentIdentifier) {
-    List<HopsHistory> history = hopsHistoryDAO.listByStudentIdentifier(studentIdentifier);
+  public List<HopsHistory> listHistoryByStudentIdentifier(String studentIdentifier, int firstResult, int maxResults) {
+    List<HopsHistory> history = hopsHistoryDAO.listByStudentIdentifier(studentIdentifier, firstResult, maxResults);
     history.sort(Comparator.comparing(HopsHistory::getDate));
     return history;
   }
