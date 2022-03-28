@@ -185,6 +185,7 @@ const CKEditorConfig = (
         "-",
         "Outdent",
         "Indent",
+        "Blockquote",
         "-",
         "JustifyLeft",
         "JustifyCenter",
