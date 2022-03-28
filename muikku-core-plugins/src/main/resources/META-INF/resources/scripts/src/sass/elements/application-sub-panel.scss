@@ -288,7 +288,9 @@
 
   @include breakpoint($breakpoint-desktop) {
     border-radius: 3px;
-    flex-basis: 300px;
+    flex-basis: 100%;
+    flex-grow: 1;
+    flex-shrink: 1;
     margin: 10px;
 
     &:first-child {

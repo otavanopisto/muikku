@@ -232,6 +232,7 @@ export enum FollowUpStudies {
   VOCATIONAL_SCHOOL = "VOCATIONAL_SCHOOL",
   UPPER_SECONDARY_SCHOOL = "UPPER_SECONDARY_SCHOOL",
   UNIVERSITY_STUDIES = "UNIVERSITY_STUDIES",
+  SOMETHING_ELSE = "SOMETHING_ELSE",
 }
 
 /**
@@ -244,6 +245,7 @@ export enum StudySector {
   EDUCATION_SECTOR = "EDUCATION_SECTOR",
   INDUSTRY_SECTOR = "INDUSTRY_SECTOR",
   ART_SECTOR = "ART_SECTOR",
+  SOMETHING_ELSE = "SOMETHING_ELSE",
 }
 
 /**
@@ -253,6 +255,7 @@ export enum FollowUpGoal {
   POSTGRADUATE_STUDIES = "POSTGRADUATE_STUDIES",
   WORKING_LIFE = "WORKING_LIFE",
   NO_FOLLOW_UP_GOALS = "NO_FOLLOW_UP_GOALS",
+  DONT_KNOW = "DONT_KNOW",
 }
 
 export enum CourseStatus {
@@ -328,6 +331,7 @@ export interface HopsStudentStartingLevel {
   previousEducation: string;
   previousEducationElse?: string;
   previousWorkExperience: string;
+  previousWorkExperienceField: string;
   previousYearsUsedInStudies: string;
   previousLanguageExperience: LanguageGrade[];
 }

@@ -24,6 +24,9 @@ const initialState: UseFollowUpGoalsState = {
     followUpGoal: "",
     followUpStudies: "",
     studySector: "",
+    followUpStudiesElse: "",
+    studySectorElse: "",
+    followUpPlanExtraInfo: "",
   },
 };
 

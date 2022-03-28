@@ -85,6 +85,7 @@ class HopsStudentHopsInformation extends React.Component<
                 <HopsHistory
                   hopsUpdates={this.props.basicInformation.updates}
                   loggedUserId={this.props.loggedUserId}
+                  superVisorModifies={this.props.superVisorModifies}
                   onHistoryEventClick={this.props.onHistoryEventClick}
                 />
               </div>

@@ -713,7 +713,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
           <div className="hops__form-element-container">
             <TextField
               type="number"
-              label="Paljonko tunteja käytettävissä viikossa"
+              label="Kuinka monta tuntia ehdit opiskella viikossa?"
               onChange={handleUsedHoursPerWeekChange}
               value={studyHours.studyHourValue}
               className="hops-input"

@@ -12,6 +12,7 @@ import "~/sass/elements/hops.scss";
 interface HopsHistoryProps {
   hopsUpdates: HopsUpdate[];
   loggedUserId: number;
+  superVisorModifies: boolean;
   onHistoryEventClick: (eventId: number) => void;
 }
 
@@ -34,7 +35,9 @@ const HopsHistory: React.FC<HopsHistoryProps> = (props) => (
     {props.hopsUpdates.map((item, i) => (
       <HopsHistoryEvent
         key={i}
-        showEdit={item.modifierId === props.loggedUserId}
+        showEdit={
+          props.superVisorModifies && item.modifierId === props.loggedUserId
+        }
         hopsUpdate={item}
         onHistoryEventClick={props.onHistoryEventClick}
       />
