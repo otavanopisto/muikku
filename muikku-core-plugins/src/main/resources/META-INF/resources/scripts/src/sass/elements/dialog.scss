@@ -309,7 +309,7 @@
   font-size: 18px;
   height: $dialog-button-close-height;
   line-height: $dialog-button-close-height;
-  margin-top: -#{$dialog-button-close-height / 2};
+  margin-top: calc(-#{$dialog-button-close-height} / 2);
   position: absolute;
   right: 5px;
   text-align: center;
