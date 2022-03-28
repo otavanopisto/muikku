@@ -23,7 +23,7 @@ interface WarningeDialogProps {
 /**
  * DeleteDialogState
  */
-interface WarningDialogState { }
+interface WarningDialogState {}
 
 /**
  * DeleteDialog
@@ -56,7 +56,6 @@ class WarningDialog extends React.Component<
    * @returns JSX.Element
    */
   render() {
-
     /**
      * footer
      * @param closeDialog closeDialog

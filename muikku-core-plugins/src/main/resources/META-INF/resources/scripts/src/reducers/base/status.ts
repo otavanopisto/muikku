@@ -84,6 +84,7 @@ export interface ProfileStatusType {
   studyStartDate: string;
   studyEndDate: string;
   studyTimeEnd: string;
+  permissions: string[];
 }
 
 export enum Role {

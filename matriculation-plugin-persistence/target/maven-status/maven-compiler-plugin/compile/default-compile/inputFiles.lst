@@ -1,0 +1,7 @@
+/home/untti/git/muikku/matriculation-plugin-persistence/target/generated-sources/apt/fi/otavanopisto/muikku/matriculation/persistence/model/SentMatriculationEnrollment_.java
+/home/untti/git/muikku/matriculation-plugin-persistence/target/generated-sources/apt/fi/otavanopisto/muikku/matriculation/persistence/model/SavedMatriculationEnrollment_.java
+/home/untti/git/muikku/matriculation-plugin-persistence/src/main/java/fi/otavanopisto/muikku/matriculation/persistence/dao/MatriculationPluginDAO.java
+/home/untti/git/muikku/matriculation-plugin-persistence/src/main/java/fi/otavanopisto/muikku/matriculation/persistence/dao/SavedMatriculationEnrollmentDAO.java
+/home/untti/git/muikku/matriculation-plugin-persistence/src/main/java/fi/otavanopisto/muikku/matriculation/persistence/model/SentMatriculationEnrollment.java
+/home/untti/git/muikku/matriculation-plugin-persistence/src/main/java/fi/otavanopisto/muikku/matriculation/persistence/model/SavedMatriculationEnrollment.java
+/home/untti/git/muikku/matriculation-plugin-persistence/src/main/java/fi/otavanopisto/muikku/matriculation/persistence/dao/SentMatriculationEnrollmentDAO.java

@@ -449,12 +449,12 @@
   width: 100%;
 }
 
-
 .button--yo-signup {
   background-color: $color-yo-sign-up;
   color: $color-yo-sign-up-contrast;
   height: $button-primary-height;
   width: 100%;
+
   @include breakpoint($breakpoint-pad) {
     display: inline-flex;
     width: auto;
@@ -828,6 +828,7 @@
 }
 
 .button-pill--delete,
+.button-pill--create-student-order,
 .button-pill--toggle,
 .button-pill--restore,
 .button-pill--edit,
@@ -950,7 +951,7 @@
   flex-basis: auto;
   flex-grow: 0;
   flex-shrink: 0;
-  margin: 0 10px 0 0;
+  margin: 0 10px;
   vertical-align: top;
 
   &:hover,
@@ -967,6 +968,10 @@
   &:disabled {
     background-color: $color-button-pill-background-disabled;
     color: $color-button-pill-text-disabled;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    margin: 0 10px 0 0;
   }
 }
 

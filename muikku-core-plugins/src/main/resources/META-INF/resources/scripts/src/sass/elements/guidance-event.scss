@@ -1,9 +1,7 @@
-
 @import "../base/colors";
 @import "../base/mixins";
 @import "../base/vars";
 @import "../base/breakpoints";
-
 
 .guidance-event {
   align-items: flex-start;
@@ -24,7 +22,7 @@
 
 .guidance-event__icon {
   align-items: center;
-  color: $color-item-list-icon-font-color;
+  color: $color-index-item-list-item-panel-announcements-icon;
   display: flex;
   flex-basis: 16px;
   flex-grow: 0;
@@ -32,21 +30,21 @@
   font-size: $item-list-icon-font-size;
   justify-content: center;
   padding: 2px 0 0;
-}
 
-.guidance-event__icon {
-  color: $color-index-item-list-item-panel-announcements-icon;
-    // scss-lint:disable SelectorFormat
+  // scss-lint:disable SelectorFormat
   &.state-YES {
-    color: green;
+    color: $color-approved;
   }
+
   &.state-NO {
-    color: red;
+    color: $color-declined;
   }
+
   &.state-MAYBE {
-    color: yellow;
+    color: $color-waiting;
   }
-    // scss-lint:enable SelectorFormat
+
+  // scss-lint:enable SelectorFormat
 }
 
 .guidance-event__body {
@@ -57,19 +55,22 @@
 .guidance-event__body-header {
   // scss-lint:disable SelectorFormat
   &.state-YES {
-    color: green;
+    color: $color-approved;
   }
+
   &.state-NO {
-    color: red;
+    color: $color-declined;
   }
+
   &.state-MAYBE {
-    color: yellow;
+    color: $color-waiting;
   }
-    // scss-lint:enable SelectorFormat
+
+  // scss-lint:enable SelectorFormat
 }
 
 .guidance-event__body-content {
-  padding: 5px 0 5px;
+  padding: 5px 0;
 }
 
 .guidance-event__body-description {
@@ -84,25 +85,31 @@
     &:not(:first-child) {
       margin-left: 10px;
     }
+
     // scss-lint:disable SelectorFormat
     &.state-YES {
-      background-color: #caffca;
+      background-color: $color-approved-background;
     }
+
     &.state-NO {
-      background-color: #df7171;
+      background-color: $color-declined-background;
     }
+
     &.state-MAYBE {
-      background-color: #fbe181;
+      background-color: $color-waiting-background;
     }
+
     &.state-UNCONFIRMED {
-      background-color: #f3f3f3;
+      background-color: $color-unconfirmed-background;
     }
+
     // scss-lint:enable SelectorFormat
   }
 }
 
 .guidance-event__body-footer {
-  padding: 5px 0 5px;
+  padding: 5px 0;
+
   a:not(:first-child) {
     margin-left: 10px;
   }

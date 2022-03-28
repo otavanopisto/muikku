@@ -19,6 +19,9 @@ jobs:
         with:
           node-version: 14.18.1
 
+      - name: Install npm@8.3.1
+        run: npm install --global npm@8.3.1
+
       - name: Install Node.js dependencies
         run: npm ci
         working-directory: muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src

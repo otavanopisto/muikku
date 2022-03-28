@@ -1,5 +1,8 @@
 import * as React from "react";
-import Dialog, { DialogTitleItem, DialogTitleContainer } from "~/components/general/dialog";
+import Dialog, {
+  DialogTitleItem,
+  DialogTitleContainer,
+} from "~/components/general/dialog";
 import Tabs from "~/components/general/tabs";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -9,28 +12,46 @@ import { StateType } from "~/reducers";
 import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
 import { StatusType } from "~/reducers/base/status";
-import { GuiderStudentUserProfileType, GuiderCurrentStudentStateType } from "~/reducers/main-function/guider";
-import CurrentStudent from '../body/application/current-student';
+import {
+  GuiderStudentUserProfileType,
+  GuiderCurrentStudentStateType,
+  GuiderType,
+} from "~/reducers/main-function/guider";
+import StateOfStudies from "../body/application/state-of-studies";
+import StudyHistory from "../body/application/study-history";
+import StudyPlan from "../body/application/study-plan";
+import {
+  loadStudentHistory,
+  LoadStudentTriggerType,
+} from "~/actions/main-function/guider";
 import { getName } from "~/util/modifiers";
+
+export type tabs =
+  | "STUDIES"
+  | "STUDY_PLAN"
+  | "GUIDANCE_RELATIONS"
+  | "STUDY_HISTORY";
 
 /**
  * StudentDialogProps
  */
 interface StudentDialogProps {
-  isOpen?: boolean,
-  student: GuiderStudentUserProfileType,
-  currentStudentStatus: GuiderCurrentStudentStateType,
-  onClose?: () => any,
-  onOpen?: (jotan: any) => any,
-  i18n: i18nType,
-  status: StatusType,
+  isOpen?: boolean;
+  student: GuiderStudentUserProfileType;
+  guider: GuiderType;
+  currentStudentStatus: GuiderCurrentStudentStateType;
+  onClose?: () => any;
+  onOpen?: (jotan: any) => any;
+  i18n: i18nType;
+  status: StatusType;
+  loadStudentHistory: LoadStudentTriggerType;
 }
 
 /**
  * StudentDialogState
  */
 interface StudentDialogState {
-  activeTab: string,
+  activeTab: string;
 }
 
 /**
@@ -42,77 +63,125 @@ class StudentDialog extends React.Component<
 > {
   /**
    * constructor
+   * @param props props for the constructor
    */
+
   constructor(props: StudentDialogProps) {
     super(props);
 
     this.state = {
-      activeTab: "STUDENT"
-    }
+      activeTab: "STUDIES",
+    };
   }
 
-  onTabChange = (id: string) => {
+  /**
+   * Tab change function
+   * @param id tab id
+   */
+  onTabChange = (id: tabs) => {
+    const studentId = this.props.student.basic.id;
     this.setState({ activeTab: id });
-  }
+    switch (id) {
+      case "STUDY_HISTORY": {
+        this.props.loadStudentHistory(studentId);
+        break;
+      }
+    }
+  };
+
+  /**
+   * closeDialog resets the component state and forwards onClose()
+   */
+  closeDialog = () => {
+    this.setState({ activeTab: "STUDIES" });
+    this.props.onClose();
+  };
 
   /**
    * Component render method
    * @returns JSX.Element
    */
   render() {
-    const tabs = [{
-      id: "STUDENT",
-      name: this.props.i18n.text.get('plugin.guider.user.tabs.title.situation'),
-      type: "guider-student",
-      component: <CurrentStudent />
-    },
-    {
-      id: "STUDY_PLAN",
-      name: this.props.i18n.text.get('plugin.guider.user.tabs.title.studyPlan'),
-      type: "guider-student",
-      component: <div >Suunnitelma</div>
-    },
-    {
-      id: "GUIDANCE_RELATIONS",
-      name: this.props.i18n.text.get('plugin.guider.user.tabs.title.guidanceRelations'),
-      type: "guider-student",
-      component: <div >Ohjaussuhde</div>
-    },
-    {
-      id: "STUDY_HISTORY",
-      name: this.props.i18n.text.get('plugin.guider.user.tabs.title.studyHistory'),
-      type: "guider-student",
-      component: <div >Opintohistoria</div>
-    },
+    const tabs = [
+      {
+        id: "STUDIES",
+        name: this.props.i18n.text.get(
+          "plugin.guider.user.tabs.title.situation"
+        ),
+        type: "guider-student",
+        component: <StateOfStudies />,
+      },
+      // {
+      //   id: "GUIDANCE_RELATIONS",
+      //   name: this.props.i18n.text.get('plugin.guider.user.tabs.title.guidanceRelations'),
+      //   type: "guider-student",
+      //   component: <div >Ohjaussuhde</div>
+      // },
+      {
+        id: "STUDY_HISTORY",
+        name: this.props.i18n.text.get(
+          "plugin.guider.user.tabs.title.studyHistory"
+        ),
+        type: "guider-student",
+        component: <StudyHistory />,
+      },
     ];
 
+    //    If student has HOPS, we show the tab for it
+
+    if (
+      this.props.guider.currentStudent &&
+      this.props.guider.currentStudent.hops &&
+      this.props.guider.currentStudent.hops.optedIn
+    ) {
+      tabs.splice(1, 0, {
+        id: "STUDY_PLAN",
+        name: this.props.i18n.text.get(
+          "plugin.guider.user.tabs.title.studyPlan"
+        ),
+        type: "guider-student",
+        component: <StudyPlan />,
+      });
+    }
     if (!this.props.student) {
       return null;
     }
 
+    /**
+     * Content
+     * @returns JSX.Element
+     */
     const content = () => (
-      <Tabs modifier="guider-student" tabs={tabs} activeTab={this.state.activeTab} onTabChange={this.onTabChange}></Tabs>
+      <Tabs
+        modifier="guider-student"
+        tabs={tabs}
+        activeTab={this.state.activeTab}
+        onTabChange={this.onTabChange}
+      ></Tabs>
     );
 
-    const studyProgrammeName = this.props.student.basic && this.props.student.basic.studyProgrammeName;
-    const dialogTitle = <DialogTitleContainer>
-      <DialogTitleItem modifier="user">
-        {getName(this.props.student.basic, true)}
-      </DialogTitleItem>
-      <DialogTitleItem modifier="studyprogramme">{"(" + studyProgrammeName + ")"}</DialogTitleItem>
-    </DialogTitleContainer>;
-
+    const studyProgrammeName =
+      this.props.student.basic && this.props.student.basic.studyProgrammeName;
+    const dialogTitle = (
+      <DialogTitleContainer>
+        <DialogTitleItem modifier="user">
+          {getName(this.props.student.basic, true)}
+        </DialogTitleItem>
+        <DialogTitleItem modifier="studyprogramme">
+          {"(" + studyProgrammeName + ")"}
+        </DialogTitleItem>
+      </DialogTitleContainer>
+    );
 
     return (
       <Dialog
         isOpen={this.props.isOpen}
-        onClose={this.props.onClose}
+        onClose={this.closeDialog}
         modifier="guider-student"
         title={dialogTitle}
         content={content}
         disableScroll
       />
-
     );
   }
 }
@@ -125,7 +194,8 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     status: state.status,
-    currentStudentStatus: state.guider.currentState
+    currentStudentStatus: state.guider.currentState,
+    guider: state.guider,
   };
 }
 
@@ -136,7 +206,7 @@ function mapStateToProps(state: StateType) {
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     {
-
+      loadStudentHistory,
     },
     dispatch
   );

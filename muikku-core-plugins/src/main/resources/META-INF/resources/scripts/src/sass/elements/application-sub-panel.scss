@@ -17,15 +17,15 @@
   display: flex;
   flex-wrap: wrap;
 
-  @include breakpoint($breakpoint-desktop-xl){
-    flex-wrap:unset;
+  @include breakpoint($breakpoint-desktop-xl) {
+    flex-wrap: unset;
   }
 }
 
 .application-sub-panel--student-data-primary {
   flex-basis: 100%;
 
-  @include breakpoint($breakpoint-desktop-xl){
+  @include breakpoint($breakpoint-desktop-xl) {
     flex-basis: 45%;
   }
 }
@@ -33,13 +33,12 @@
 .application-sub-panel--student-data-secondary {
   flex-basis: 100%;
 
-  @include breakpoint($breakpoint-desktop-xl){
+  @include breakpoint($breakpoint-desktop-xl) {
     flex-basis: auto;
     flex-grow: 1;
     padding: 0 0 0 20px;
   }
 }
-
 
 .application-sub-panel--worklist {
   border: 0;
@@ -304,7 +303,9 @@
 
   @include breakpoint($breakpoint-desktop) {
     border-radius: 3px;
-    flex-basis: 300px;
+    flex-basis: 100%;
+    flex-grow: 1;
+    flex-shrink: 1;
     margin: 10px;
 
     &:first-child {

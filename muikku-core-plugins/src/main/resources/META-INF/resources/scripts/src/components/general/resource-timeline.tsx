@@ -1,17 +1,14 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
-import FullCalendar, {
-  DateSelectArg,
-  EventClickArg,
-} from "@fullcalendar/react";
+import FullCalendar, { DateSelectArg } from "@fullcalendar/react";
 import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
-import interactionPlugin, {
-  Draggable,
-  EventResizeStopArg,
-} from "@fullcalendar/interaction";
-import { CalendarEvent } from "~/reducers/calendar";
+import interactionPlugin, { Draggable } from "@fullcalendar/interaction";
+import { CalendarEvent } from "~/reducers/main-function/calendar";
 import "../../sass/elements/resource-timeline.scss";
 
+/**
+ * A type for external draggable events
+ */
 export type ExternalEventType = {
   title: string;
   id: number;
@@ -19,17 +16,26 @@ export type ExternalEventType = {
   duration: string;
 };
 
+/**
+ * Calendar header toolbar
+ */
 export type HeaderToolbarType = {
   left: string;
   center: string;
   right: string;
 };
 
+/**
+ * Calendar resource type
+ */
 export type ResourceType = {
   id: string;
   title: string;
 };
 
+/**
+ * ResourceTimelineProps
+ */
 interface ResourceTimelineProps {
   headerToolbar?: HeaderToolbarType;
   resourceHeaderContent: string;
@@ -40,45 +46,37 @@ interface ResourceTimelineProps {
   onDateSelect: (events: CalendarEvent[]) => void;
 }
 
-const defaultTimelineProps = {
-  selectable: false,
-};
+/**
+ * ResourceTimeline
+ *
+ * @param props
+ * @returns JSX.Element
+ */
 export const ResourceTimeline: React.FC<ResourceTimelineProps> = (props) => {
-  props = { ...defaultTimelineProps, ...props };
-
   const {
     headerToolbar,
     resourceHeaderContent,
     resources,
     externalEvents,
-    selectable,
+    selectable = false,
     namespace,
     onDateSelect,
   } = props;
 
   const [events, setEvents] = useState<CalendarEvent[]>([]);
-  const handleDateSelect = (arg: DateSelectArg) => {
-    const currentEvents = events;
-    const newEvents: CalendarEvent[] = currentEvents.concat({
-      title: arg.resource._resource.title,
-      description: "Ohjaussaika opiskelijalle",
-      start: arg.startStr,
-      classNames: ["env-dialog__guidance-event"],
-      overlap: false,
-      end: arg.endStr,
-      resourceId: arg.resource._resource.id,
-    });
-    setEvents(newEvents);
-    onDateSelect(newEvents);
-  };
 
   useEffect(() => {
-    let draggableElement = document.getElementById(
+    const draggableElement = document.getElementById(
       `externalEvents${namespace}`
     );
 
     new Draggable(draggableElement, {
       itemSelector: ".resource-timeline__draggable-event",
+      /**
+       * eventData
+       * @param element event element
+       * @returns external event element
+       */
       eventData: function (element) {
         const id = element.dataset.id;
         const title = element.getAttribute("title");
@@ -95,6 +93,25 @@ export const ResourceTimeline: React.FC<ResourceTimelineProps> = (props) => {
       },
     });
   }, []);
+
+  /**
+   * handleDateSelect handles date a date select in calendar
+   * @param arg agument passed from the calendar
+   */
+  const handleDateSelect = (arg: DateSelectArg) => {
+    const currentEvents = events;
+    const newEvents: CalendarEvent[] = currentEvents.concat({
+      title: arg.resource._resource.title,
+      description: "Ohjaussaika opiskelijalle",
+      start: arg.startStr,
+      classNames: ["env-dialog__guidance-event"],
+      overlap: false,
+      end: arg.endStr,
+      resourceId: arg.resource._resource.id,
+    });
+    setEvents(newEvents);
+    onDateSelect(newEvents);
+  };
 
   const externalEventsElements =
     externalEvents &&

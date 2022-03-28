@@ -103,11 +103,12 @@
 }
 
 .item-list__item-content {
-  padding: 5px 0 5px;
+  padding: 5px;
 }
 
 .item-list__item-footer {
-  padding: 5px 0 5px;
+  padding: 5px;
+
   a:not(:first-child) {
     margin-left: 10px;
   }
@@ -141,7 +142,6 @@
 .item-list__item--has-workspaces .item-list__icon {
   color: $color-index-item-list-item-panel-announcements-has-workspaces-icon;
 }
-
 
 // List item texts
 

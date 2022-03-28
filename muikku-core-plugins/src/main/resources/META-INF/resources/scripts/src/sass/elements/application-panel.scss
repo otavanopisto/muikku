@@ -55,6 +55,12 @@
   }
 }
 
+.application-panel__body--guider-student {
+  @include breakpoint($breakpoint-pad) {
+    border: none;
+  }
+}
+
 .application-panel__body--tabs {
   @include breakpoint($breakpoint-pad) {
     border-bottom: solid 1px $color-application-panel-box-border;

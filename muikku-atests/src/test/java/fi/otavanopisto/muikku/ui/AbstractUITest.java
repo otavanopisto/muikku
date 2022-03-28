@@ -812,6 +812,22 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       }
     }
   }
+
+  protected void findElementOrReloadAndFind(String elementToAppear, int timesToTry, int interval) {
+    List<WebElement> elements = findElements(elementToAppear);
+    int i = 0;
+    while(elements.isEmpty()) {
+      reloadCurrentPage();
+      if (i > timesToTry) {
+        break;
+      }
+      i++;
+      sleep(interval);
+      elements = findElements(elementToAppear);
+    }
+    if(elements.isEmpty())
+      throw new TimeoutException("Element to appear failed to appear in a given timeout period.");
+  }
   
   protected void waitForElementToAppear(String elementToAppear, int timesToTry, int interval) {
     List<WebElement> elements = findElements(elementToAppear);
@@ -1882,13 +1898,12 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void addToEndCKEditor(String text) {
-      waitForVisible(".cke_contents");
-      String gotoEnd = Keys.chord(Keys.CONTROL, Keys.END);
-      waitForVisible(".cke_contents");
-      waitAndClick(".cke_contents");
-      getWebDriver().findElement(By.cssSelector(".cke_wysiwyg_div")).sendKeys(gotoEnd);
-      sendKeys(".cke_wysiwyg_div", text);
-      getWebDriver().switchTo().defaultContent();
+    waitForVisible(".cke_contents");
+    waitAndClick(".cke_contents");
+    Actions action = new Actions(getWebDriver());
+    action.sendKeys(getWebDriver().findElement(By.cssSelector(".cke_wysiwyg_div")), Keys.CONTROL)
+      .sendKeys(getWebDriver().findElement(By.cssSelector(".cke_wysiwyg_div")), Keys.END).perform();
+    sendKeys(".cke_wysiwyg_div", text);
   }
   
   protected void addTextToCKEditor(String text) {

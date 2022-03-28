@@ -251,7 +251,7 @@ class OrganizationManagementApplication extends React.Component<
               "plugin.organization.tab.title.users"
             ),
             mobileAction: usersPrimaryActionMobile,
-            component:  (
+            component: (
               <ApplicationPanelBody
                 primaryOption={usersPrimaryAction}
                 toolbar={usersToolbar}
@@ -267,7 +267,7 @@ class OrganizationManagementApplication extends React.Component<
               "plugin.organization.tab.title.userGroups"
             ),
             mobileAction: userGroupsPrimaryActionMobile,
-            component:  (
+            component: (
               <ApplicationPanelBody
                 primaryOption={userGroupsPrimaryAction}
                 toolbar={userGroupsToolbar}

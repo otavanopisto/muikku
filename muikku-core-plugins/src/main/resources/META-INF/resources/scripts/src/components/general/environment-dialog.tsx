@@ -1,11 +1,9 @@
-
 import Dialog from "./dialog";
 import Portal from "./portal";
 import Button from "~/components/general/button";
 import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/environment-dialog.scss";
-
 
 /**
  * EnvironmentDialog
@@ -17,7 +15,6 @@ export default class EnvironmentDialog extends Dialog {
    */
   render() {
     return (
-
       <Portal
         onKeyStroke={this.props.onKeyStroke}
         isOpen={this.props.isOpen}
@@ -59,7 +56,6 @@ export default class EnvironmentDialog extends Dialog {
         )}
       </Portal>
     );
-
   }
 }
 
@@ -94,7 +90,6 @@ export class EnvironmentDialogRow extends React.Component<
         ? this.props.modifiers
         : [this.props.modifiers];
     return (
-
       <div
         className={`env-dialog__row ${
           this.props.modifiers
@@ -134,7 +129,6 @@ export class EnvironmentDialogFormElement extends React.Component<
    * @returns JSX.Element
    */
   render() {
-
     const modifiers =
       this.props.modifiers && this.props.modifiers instanceof Array
         ? this.props.modifiers

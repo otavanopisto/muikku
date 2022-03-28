@@ -32,18 +32,19 @@ import { bindActionCreators } from "redux";
 import { StateType } from "~/reducers";
 import { GuiderType, GuiderStudentType } from "~/reducers/main-function/guider";
 import { ButtonPill } from "~/components/general/button";
+import { AnyActionType } from "~/actions";
 
 /**
  * GuiderToolbarLabelsProps
  */
 interface GuiderToolbarLabelsProps {
-  i18n: i18nType,
-  guider: GuiderType
-  createGuiderFilterLabel: CreateGuiderFilterLabelTriggerType,
-  addGuiderLabelToCurrentUser: AddGuiderLabelToCurrentUserTriggerType,
-  removeGuiderLabelFromCurrentUser: RemoveGuiderLabelFromCurrentUserTriggerType,
-  addGuiderLabelToSelectedUsers: AddGuiderLabelToSelectedUsersTriggerType,
-  removeGuiderLabelFromSelectedUsers: RemoveGuiderLabelFromSelectedUsersTriggerType
+  i18n: i18nType;
+  guider: GuiderType;
+  createGuiderFilterLabel: CreateGuiderFilterLabelTriggerType;
+  addGuiderLabelToCurrentUser: AddGuiderLabelToCurrentUserTriggerType;
+  removeGuiderLabelFromCurrentUser: RemoveGuiderLabelFromCurrentUserTriggerType;
+  addGuiderLabelToSelectedUsers: AddGuiderLabelToSelectedUsersTriggerType;
+  removeGuiderLabelFromSelectedUsers: RemoveGuiderLabelFromSelectedUsersTriggerType;
 }
 
 /**
@@ -91,7 +92,10 @@ class GuiderToolbarLabels extends React.Component<
         <Dropdown
           modifier="guider-labels"
           items={[
-            <div key="update-label" className="form-element">
+            <div
+              key="update-label"
+              className="form-element form-element--new-label"
+            >
               <input
                 className="form-element__input"
                 value={this.state.labelFilter}
@@ -175,7 +179,10 @@ class GuiderToolbarLabels extends React.Component<
       <Dropdown
         modifier="guider-labels"
         items={[
-          <div key="" className="form-element">
+          <div
+            key="update-label"
+            className="form-element form-element--new-label"
+          >
             <input
               className="form-element__input"
               value={this.state.labelFilter}
@@ -186,7 +193,8 @@ class GuiderToolbarLabels extends React.Component<
               )}
             />
           </div>,
-          <span
+          <Link
+            tabIndex={0}
             key="create-label"
             className="link link--full"
             onClick={this.props.createGuiderFilterLabel.bind(
@@ -195,7 +203,7 @@ class GuiderToolbarLabels extends React.Component<
             )}
           >
             {this.props.i18n.text.get("plugin.guider.flags.create")}
-          </span>,
+          </Link>,
         ].concat(
           this.props.guider.availableFilters.labels
             .filter((item) => filterMatch(item.name, this.state.labelFilter))
@@ -257,7 +265,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     {
       createGuiderFilterLabel,

@@ -25,9 +25,9 @@ const PLUGINS = {
   divarea: `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/divarea/${CKEDITOR_VERSION}/`,
   language: `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/language/${CKEDITOR_VERSION}/`,
   image2: `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/image2/${CKEDITOR_VERSION}/`,
-
   oembed: "//cdn.muikkuverkko.fi/libs/ckeditor-plugins/oembed/1.17/",
-  audio: "//cdn.muikkuverkko.fi/libs/ckeditor-plugins/audio/1.0.0/",
+  audio: "//cdn.muikkuverkko.fi/libs/ckeditor-plugins/audio/1.0.1/",
+  scayt: `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/scayt/${CKEDITOR_VERSION}/`,
 
   // CONTEXTPATHREMOVED
   "muikku-mathjax": "/scripts/ckplugins/muikku-mathjax/",
@@ -75,14 +75,39 @@ interface CKEditorState {
  * @returns CKEditor config object
  */
 const extraConfig = (props: CKEditorProps) => ({
+  /* eslint-disable camelcase */
   startupFocus: props.autofocus,
   title: props.editorTitle ? props.editorTitle : "",
-  allowedContent: true,
+
+  /**
+   * We allow style attribute for every element that can be pasted/added to the CKEditor.
+   * There is no need to use allowContent: true setting as it will disable ACF alltogether.
+   * Therefore we let ACF to work on it's default filtering settings which are based on the toolbar settings.
+   * */
+  extraAllowedContent: "*{*}; *[data*]; audio source[*](*){*};",
+
+  /**
+   * We remove every class attribute from every html element and every on* prefixed attributes as well as everything related to font stylings.
+   * This sanitation happen during pasting so custom div styles are unaffected.
+   */
+  disallowedContent:
+    "*(dialog*, bubble*, button*, avatar*, pager*, panel*, tab*, zoom*, card*, carousel*, course*, message*, drawer*, filter*, footer*, label*, link*, menu*, meta*, navbar*, toc*, application*); *[on*]; *{font*}; *{margin*}; *{padding*}; *{list*}; *{line-height}; *{white-space}; *{vertical*}; *{flex*}; *{text*};",
+
   entities_latin: false,
   entities_greek: false,
-  entities: false,
   format_tags: "p;h3;h4",
+  scayt_sLang: "fi_FI",
+  resize_enabled: true,
+  entities: false,
   toolbar: [
+    {
+      name: "clipboard",
+      items: ["Cut", "Copy", "Paste", "-", "Undo", "Redo"],
+    },
+    {
+      name: "editing",
+      items: ["Find", "-", "SelectAll", "-", "Scayt"],
+    },
     {
       name: "basicstyles",
       items: ["Bold", "Italic", "Underline", "Strike", "RemoveFormat"],
@@ -106,11 +131,11 @@ const extraConfig = (props: CKEditorProps) => ({
     },
     { name: "tools", items: ["Maximize"] },
   ],
-  resize_enabled: true,
   uploadUrl: "/communicatorAttachmentUploadServlet",
   extraPlugins:
-    "widget,lineutils,filetools,notification,notificationaggregator,uploadwidget,uploadimage,divarea",
-  removePlugins: "exportpdf",
+    "widget,lineutils,filetools,notification,notificationaggregator,uploadwidget,uploadimage,divarea,scayt",
+  removePlugins: "exportpdf,wsc",
+  /* eslint-enable camelcase */
 });
 
 /**

@@ -38,7 +38,12 @@
 }
 
 .dialog--guider-student {
+  background-color: $color-dialog-default-background;
   overflow: auto;
+
+  @include breakpoint($breakpoint-pad) {
+    background-color: $color-overlay-background;
+  }
 }
 
 .dialog--visible {
@@ -74,8 +79,8 @@
 
   @include breakpoint($breakpoint-pad) {
     box-shadow: unset;
+    max-width: unset;
     position: absolute;
-    max-width: unset ;
     top: 20px;
     width: calc(100% - 40px);
   }
@@ -241,7 +246,7 @@
 .dialog__header--guider-student {
   @include breakpoint($breakpoint-pad) {
     position: sticky;
-    top:0;
+    top: 0;
     z-index: 1;
   }
 }
@@ -287,20 +292,13 @@
 }
 
 .dialog__title-item {
-
   &:not(:first-child) {
     margin-left: 10px;
- }
-
-  @include breakpoint($breakpoint-pad) {
   }
 }
 
 .dialog__title-item--studyprogramme {
   display: flex;
-
-  @include breakpoint($breakpoint-pad) {
-  }
 }
 
 .dialog__close {
@@ -311,7 +309,7 @@
   font-size: 18px;
   height: $dialog-button-close-height;
   line-height: $dialog-button-close-height;
-  margin-top: -#{$dialog-button-close-height / 2};
+  margin-top: calc(-#{$dialog-button-close-height} / 2);
   position: absolute;
   right: 5px;
   text-align: center;

@@ -4,12 +4,12 @@
 @import "../base/mixins";
 
 .resource-timeline {
-  background-color: #f0f0f0;
+  background-color: $color-timeline-background;
 }
 
 .resource-timeline__draggable-event {
+  background-color: $color-draggable-event-background;
   padding: 5px;
-  background-color: #fff;
 
   &:not(:first-child) {
     margin-left: 10px;
@@ -17,8 +17,8 @@
 }
 
 .resource-timeline__external-events {
-  padding: 10px;
   display: flex;
+  padding: 10px;
 }
 
 .resource-timeline__timeline {
