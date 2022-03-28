@@ -1,7 +1,7 @@
 // Loader
-$loader-size: 50;
-$dialog-loader-size: 220;
-$loader-border-width: 10;
+$loader-size: 50px;
+$dialog-loader-size: 220px;
+$loader-border-width: 10px;
 
 // Input
 $input-height-mobile: 2.25rem;
@@ -36,7 +36,7 @@ $main-function-link-icon-active-border-size: $navbar-desktop-height;
 // Containers
 $container-mobile-gutter: 10px;
 $container-desktop-gutter: 20px;
-$ordered-container-item-gutter: $container-desktop-gutter / 2;
+$ordered-container-item-gutter: calc($container-desktop-gutter / 2);
 
 // Text
 $text-branded-font-family: "Exo 2", "Arial", sans-serif;
