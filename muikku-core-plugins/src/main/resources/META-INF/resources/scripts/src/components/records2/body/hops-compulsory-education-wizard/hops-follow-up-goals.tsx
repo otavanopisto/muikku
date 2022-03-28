@@ -1,7 +1,11 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { StudySector, FollowUp } from "../../../../@types/shared";
-import { FollowUpGoal, FollowUpStudies } from "../../../../@types/shared";
+import {
+  StudySector,
+  FollowUp,
+  FollowUpStudies,
+  FollowUpGoal,
+} from "../../../../@types/shared";
 import { useFollowUpGoal } from "./hooks/useFollowUp";
 import { StateType } from "~/reducers";
 import {
@@ -10,6 +14,8 @@ import {
 } from "~/actions/base/notifications";
 import { WebsocketStateType } from "~/reducers/util/websocket";
 import { AnyActionType } from "~/actions";
+import { Textarea } from "./text-area";
+import { TextField } from "./text-field";
 
 /**
  * FollowUpGoalsProps
@@ -37,19 +43,22 @@ const HopsFollowUpGoals: React.FC<HopsFollowUpGoalsProps> = (props) => {
   );
 
   /**
-   * handleGoalsSelectsChange
+   * Handles goals change
    *
-   * @param name name
+   * @param key key
+   * @param value value
    */
-  const handleGoalsSelectsChange =
-    (name: keyof FollowUp) => (e: React.ChangeEvent<HTMLSelectElement>) => {
-      const updatedFollowUpData: FollowUp = {
-        ...followUpData.followUp,
-        [name]: e.currentTarget.value,
-      };
-
-      followUpHandlers.updateFollowUpData(props.studentId, updatedFollowUpData);
+  const handleGoalsChange = <T extends keyof FollowUp>(
+    key: T,
+    value: FollowUp[T]
+  ) => {
+    const updatedFollowUpData: FollowUp = {
+      ...followUpData.followUp,
+      [key]: value,
     };
+
+    followUpHandlers.updateFollowUpData(props.studentId, updatedFollowUpData);
+  };
 
   return (
     <>
@@ -58,7 +67,9 @@ const HopsFollowUpGoals: React.FC<HopsFollowUpGoalsProps> = (props) => {
           <label className="hops-label">Valmistumisaikatavoite:</label>
           <select
             value={followUpData.followUp.graduationGoal}
-            onChange={handleGoalsSelectsChange("graduationGoal")}
+            onChange={(e) =>
+              handleGoalsChange("graduationGoal", e.currentTarget.value)
+            }
             className="hops-select"
             disabled={disabled}
           >
@@ -73,10 +84,14 @@ const HopsFollowUpGoals: React.FC<HopsFollowUpGoalsProps> = (props) => {
 
       <div className="hops-container__row">
         <div className="hops__form-element-container">
-          <label className="hops-label">Jatkotavoitteet:</label>
+          <label className="hops-label">
+            Mitä aiot tehdä Nettiperuskoulun jälkeen:
+          </label>
           <select
             value={followUpData.followUp.followUpGoal}
-            onChange={handleGoalsSelectsChange("followUpGoal")}
+            onChange={(e) =>
+              handleGoalsChange("followUpGoal", e.currentTarget.value)
+            }
             className="hops-select"
             disabled={disabled}
           >
@@ -84,10 +99,11 @@ const HopsFollowUpGoals: React.FC<HopsFollowUpGoalsProps> = (props) => {
             <option value={FollowUpGoal.POSTGRADUATE_STUDIES}>
               Jatko-opinnot
             </option>
-            <option value={FollowUpGoal.WORKING_LIFE}>Työelämä</option>
-            <option value={FollowUpGoal.NO_FOLLOW_UP_GOALS}>
+            <option value={FollowUpGoal.WORKING_LIFE}>Aion mennä töihin</option>
+            {/* <option value={FollowUpGoal.NO_FOLLOW_UP_GOALS}>
               Ei muita tavotteita
-            </option>
+            </option> */}
+            <option value={FollowUpGoal.DONT_KNOW}>En tiedä vielä</option>
           </select>
         </div>
       </div>
@@ -95,50 +111,90 @@ const HopsFollowUpGoals: React.FC<HopsFollowUpGoalsProps> = (props) => {
       FollowUpGoal.POSTGRADUATE_STUDIES ? (
         <div className="hops-container__row">
           <div className="hops__form-element-container">
-            <label className="hops-label">Jatko-opinnot:</label>
+            <label className="hops-label">Mihin aiot hakea:</label>
             <select
               value={followUpData.followUp.followUpStudies}
-              onChange={handleGoalsSelectsChange("followUpStudies")}
+              onChange={(e) =>
+                handleGoalsChange("followUpStudies", e.currentTarget.value)
+              }
               className="hops-select"
               disabled={disabled}
             >
               <option value="">Valitse...</option>
-              <option value={FollowUpStudies.APPRENTICESHIP_TRAINING}>
-                Oppisopimuskoulutus
-              </option>
+
               <option value={FollowUpStudies.VOCATIONAL_SCHOOL}>
-                Ammatillinen toinen aste
+                ammatillinen toinen aste
               </option>
               <option value={FollowUpStudies.UPPER_SECONDARY_SCHOOL}>
-                Lukio
+                lukio
               </option>
-              <option value={FollowUpStudies.UNIVERSITY_STUDIES}>
-                Korkeakouluopinnot
-              </option>
+
+              <option value={FollowUpStudies.SOMETHING_ELSE}>joku muu?</option>
             </select>
           </div>
+
+          {followUpData.followUp.followUpStudies ===
+            FollowUpStudies.SOMETHING_ELSE && (
+            <div className="hops__form-element-container">
+              <TextField
+                label="Kerro tarkemmin"
+                defaultValue={followUpData.followUp.followUpStudiesElse}
+                onBlur={(e) =>
+                  handleGoalsChange(
+                    "followUpStudiesElse",
+                    e.currentTarget.value
+                  )
+                }
+              />
+            </div>
+          )}
 
           <div className="hops__form-element-container">
             <label className="hops-label">Koulutusala:</label>
             <select
               value={followUpData.followUp.studySector}
-              onChange={handleGoalsSelectsChange("studySector")}
+              onChange={(e) =>
+                handleGoalsChange("studySector", e.currentTarget.value)
+              }
               className="hops-select"
               disabled={disabled}
             >
               <option value="">Valitse...</option>
               <option value={StudySector.SOCIAL_HEALT_SECTOR}>
-                Sosiaali- ja terveysala
+                sosiaali- ja terveysala
               </option>
-              <option value={StudySector.TRADE_SECTOR}>Kauppa</option>
-              <option value={StudySector.TRANSPORT_SECTOR}>Liikenne</option>
-              <option value={StudySector.EDUCATION_SECTOR}>Kasvatus</option>
-              <option value={StudySector.INDUSTRY_SECTOR}>Teollisuus</option>
-              <option value={StudySector.ART_SECTOR}>Taide</option>
+              <option value={StudySector.TRADE_SECTOR}>kauppa</option>
+              <option value={StudySector.TRANSPORT_SECTOR}>liikenne</option>
+              <option value={StudySector.EDUCATION_SECTOR}>kasvatus</option>
+              <option value={StudySector.INDUSTRY_SECTOR}>teollisuus</option>
+              <option value={StudySector.ART_SECTOR}>taide</option>
+              <option value={StudySector.SOMETHING_ELSE}>joku muu?</option>
             </select>
           </div>
+
+          {followUpData.followUp.studySector ===
+            FollowUpStudies.SOMETHING_ELSE && (
+            <div className="hops__form-element-container">
+              <TextField
+                label="Kerro tarkemmin"
+                defaultValue={followUpData.followUp.studySectorElse}
+                onBlur={(e) =>
+                  handleGoalsChange("studySectorElse", e.currentTarget.value)
+                }
+              />
+            </div>
+          )}
         </div>
       ) : null}
+      <div className="hops-container__row">
+        <Textarea
+          label="Voit kertoa tarkemmin jatkosuunnitelmistasi:"
+          defaultValue={followUpData.followUp.followUpPlanExtraInfo}
+          onBlur={(e) =>
+            handleGoalsChange("followUpPlanExtraInfo", e.currentTarget.value)
+          }
+        />
+      </div>
     </>
   );
 };

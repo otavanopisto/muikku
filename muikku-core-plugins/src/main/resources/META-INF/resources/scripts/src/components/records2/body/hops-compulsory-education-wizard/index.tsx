@@ -162,6 +162,8 @@ class CompulsoryEducationHopsWizard extends React.Component<
             "callback"
           )()) as HopsUpdate[];
 
+          console.log(studentHopsHistory);
+
           const studentBasicInfo = (await promisify(
             mApi().hops.student.studentInfo.read(studentId),
             "callback"
@@ -172,6 +174,8 @@ class CompulsoryEducationHopsWizard extends React.Component<
             "callback"
           )()) as HopsCompulsory;
 
+          console.log("hops", hops);
+
           const loadedHops = {
             basicInfo: {
               name: `${studentBasicInfo.firstName} ${studentBasicInfo.lastName}`,
@@ -181,10 +185,14 @@ class CompulsoryEducationHopsWizard extends React.Component<
             hopsCompulsory: hops !== undefined ? hops : initializeHops(),
           };
 
+          console.log(loadedHops);
+
           return loadedHops;
         })(),
         sleepPromise,
       ]);
+
+      console.log(loadedHops);
 
       this.setState({
         loading: false,
@@ -270,8 +278,9 @@ class CompulsoryEducationHopsWizard extends React.Component<
       Promise.all([
         (async () => {
           await promisify(
-            mApi().hops.student.create(studentId, this.state.hopsCompulsory, {
-              details: this.state.hopsUpdateDetails,
+            mApi().hops.student.create(studentId, {
+              formData: JSON.stringify(this.state.hopsCompulsory),
+              historyDetails: this.state.hopsUpdateDetails,
             }),
             "callback"
           )();
@@ -297,6 +306,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
    * @param startingLevel startingLevel
    */
   handleStartingLevelChange = (startingLevel: HopsStudentStartingLevel) => {
+    console.log(startingLevel);
     this.setState({
       hopsCompulsory: {
         ...this.state.hopsCompulsory,
@@ -485,6 +495,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
             loading={this.state.loading}
             basicInformation={this.state.basicInfo}
             loggedUserId={status.userId}
+            superVisorModifies={this.props.superVisorModifies}
             onHistoryEventClick={this.handleEditHistoryEventClick}
           />
         ),
@@ -632,6 +643,7 @@ const initializeHops = (): HopsCompulsory => ({
     previousEducation: Education.COMPULSORY_SCHOOL,
     previousWorkExperience: "0-6",
     previousYearsUsedInStudies: "",
+    previousWorkExperienceField: "",
     previousLanguageExperience: [
       {
         name: "suomi",

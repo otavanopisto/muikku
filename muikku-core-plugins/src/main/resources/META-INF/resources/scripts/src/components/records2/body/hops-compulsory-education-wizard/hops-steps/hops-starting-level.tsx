@@ -207,6 +207,22 @@ class HopsStartingLevel extends React.Component<
               </select>
             </div>
           </div>
+
+          <div className="hops-container__row">
+            <div className="hops__form-element-container">
+              <TextField
+                label="Miltä alalta työkokemuksesi on?"
+                className="hops__input"
+                onChange={this.handleTextAreaChange(
+                  "previousWorkExperienceField"
+                )}
+                value={
+                  this.props.studentStartingLevel.previousWorkExperienceField
+                }
+                disabled={this.props.disabled}
+              />
+            </div>
+          </div>
         </fieldset>
         <fieldset className="hops-container__fieldset">
           <legend className="hops-container__subheader">Kielitaito</legend>
