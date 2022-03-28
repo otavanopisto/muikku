@@ -3,8 +3,12 @@ package fi.otavanopisto.muikku.users;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
 
+import fi.otavanopisto.muikku.dao.MuikkuInjectionMonitor;
 import fi.otavanopisto.muikku.dao.base.SchoolDataSourceDAO;
 import fi.otavanopisto.muikku.dao.users.UserSchoolDataIdentifierDAO;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
@@ -24,6 +28,25 @@ public class UserSchoolDataIdentifierController {
 
   @Inject
   private SchoolDataSourceDAO schoolDataSourceDAO;
+  
+  
+  @Inject private InjectionPoint injectionPoint;
+  @Inject private MuikkuInjectionMonitor imon;
+  
+  @PostConstruct
+  public void postConstruct() {
+    String cln = injectionPoint != null ? injectionPoint.getMember().getDeclaringClass().getSimpleName() : "NO IP";
+    imon.add(getClass().getSimpleName());
+    imon.add(getClass().getSimpleName(), cln);
+    System.out.println(String.format("%s.postConstruct %s", getClass().getSimpleName(), cln));
+  }
+  
+  @PreDestroy
+  public void preDestroy() {
+    String cln = injectionPoint != null ? injectionPoint.getMember().getDeclaringClass().getSimpleName() : "NO IP";
+    System.out.println(String.format("%s.preDestroy %s", getClass().getSimpleName(), cln));
+  }
+
   
   public UserSchoolDataIdentifier createUserSchoolDataIdentifier(SchoolDataSource dataSource, String identifier, UserEntity userEntity, EnvironmentRoleEntity environmentRoleEntity, OrganizationEntity organizationEntity) {
     return userSchoolDataIdentifierDAO.create(dataSource, identifier, userEntity, environmentRoleEntity, organizationEntity, Boolean.FALSE);
