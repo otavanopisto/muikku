@@ -50,7 +50,7 @@
     "react-datepicker": "0.61.0",
     "react-dom": "16.14.0",
     "react-input-autosize": "2.2.2",
-    "react-multi-carousel": "^2.6.5",
+    "react-multi-carousel": "2.6.5",
     "react-paginate": "8.1.2",
     "react-progress-bar.js": "0.2.3",
     "react-rangeslider": "2.2.0",
