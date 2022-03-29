@@ -19,6 +19,7 @@ import { getShortenGradeExtension, shortenGrade } from "~/util/modifiers";
  * StudentWorkspaceProps
  */
 interface StudentWorkspaceProps {
+  /** Localization */
   i18n: i18nType;
   workspace: WorkspaceType;
 }
@@ -27,10 +28,13 @@ interface StudentWorkspaceProps {
  * StudentWorkspaceState
  */
 interface StudentWorkspaceState {
+  /** Show student workspace activities */
   activitiesVisible: boolean;
 }
 
 /**
+ * CourseActivityRow creates a div row from given props
+ *
  * @param props props
  * @param props.i18n i18n
  * @param props.workspace workspace
@@ -40,6 +44,7 @@ interface StudentWorkspaceState {
  * @param props.givenDateAttribute givenDateAttribute
  * @param props.givenDateAttributeLocale givenDateAttributeLocale
  * @param props.mainAttribute mainAttribute
+ * @returns JSX.element
  */
 function CourseActivityRow(props: {
   i18n: i18nType;
