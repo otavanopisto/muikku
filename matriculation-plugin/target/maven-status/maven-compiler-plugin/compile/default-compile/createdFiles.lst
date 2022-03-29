@@ -1,0 +1,11 @@
+fi/otavanopisto/muikku/plugins/matriculation/MatriculationExamInitialData.class
+fi/otavanopisto/muikku/plugins/matriculation/MatriculationJadeTemplateLoader.class
+fi/otavanopisto/muikku/plugins/matriculation/MatriculationCurrentExam.class
+fi/otavanopisto/muikku/plugins/matriculation/MatriculationNotificationController$1.class
+fi/otavanopisto/muikku/plugins/matriculation/restmodel/MatriculationExamAttendance.class
+fi/otavanopisto/muikku/plugins/matriculation/MatriculationIndexBackingBean.class
+fi/otavanopisto/muikku/plugins/matriculation/restmodel/MatriculationExam.class
+fi/otavanopisto/muikku/plugins/matriculation/MatriculationPermissions.class
+fi/otavanopisto/muikku/plugins/matriculation/MatriculationNotificationController.class
+fi/otavanopisto/muikku/plugins/matriculation/restmodel/MatriculationExamEnrollment.class
+fi/otavanopisto/muikku/plugins/matriculation/MatriculationRESTService.class

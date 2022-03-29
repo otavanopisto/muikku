@@ -96,7 +96,7 @@ export const ResourceTimeline: React.FC<ResourceTimelineProps> = (props) => {
 
   /**
    * handleDateSelect handles date a date select in calendar
-   * @param arg
+   * @param arg agument passed from the calendar
    */
   const handleDateSelect = (arg: DateSelectArg) => {
     const currentEvents = events;
