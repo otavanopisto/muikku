@@ -19,11 +19,11 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import fi.otavanopisto.muikku.matriculation.persistence.dao.SavedMatriculationEnrollmentDAO;
-import fi.otavanopisto.muikku.matriculation.persistence.dao.SentMatriculationEnrollmentDAO;
-import fi.otavanopisto.muikku.matriculation.persistence.model.SavedMatriculationEnrollment;
-import fi.otavanopisto.muikku.matriculation.persistence.model.SentMatriculationEnrollment;
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.plugins.matriculation.dao.SavedMatriculationEnrollmentDAO;
+import fi.otavanopisto.muikku.plugins.matriculation.dao.SentMatriculationEnrollmentDAO;
+import fi.otavanopisto.muikku.plugins.matriculation.model.SavedMatriculationEnrollment;
+import fi.otavanopisto.muikku.plugins.matriculation.model.SentMatriculationEnrollment;
 import fi.otavanopisto.muikku.plugins.matriculation.restmodel.MatriculationExamAttendance;
 import fi.otavanopisto.muikku.plugins.matriculation.restmodel.MatriculationExamEnrollment;
 import fi.otavanopisto.muikku.schooldata.MatriculationSchoolDataController;
