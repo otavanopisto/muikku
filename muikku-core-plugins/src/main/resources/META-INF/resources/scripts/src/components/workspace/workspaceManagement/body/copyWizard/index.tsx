@@ -5,7 +5,6 @@ import Step1 from "./form";
 import Step2 from "./summary";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const StepZilla = require("react-stepzilla").default;
-import moment from "~/lib/moment";
 import "~/sass/elements/wizard.scss";
 import {
   copyCurrentWorkspace,
@@ -15,6 +14,7 @@ import {
 import { connect, Dispatch } from "react-redux";
 import { StateType } from "~/reducers";
 import { bindActionCreators } from "redux";
+import * as moment from "moment";
 
 /**
  * CopyWizardProps
@@ -43,8 +43,8 @@ export interface CopyWizardStoreType {
   description: string;
   name: string;
   nameExtension?: string;
-  beginDate: any;
-  endDate: any;
+  beginDate: Date | null;
+  endDate: Date | null;
   copyDiscussionAreas: boolean;
   copyMaterials: "NO" | "CLONE" | "LINK";
   copyBackgroundPicture: boolean;
@@ -70,12 +70,12 @@ class CopyWizard extends React.Component<CopyWizardProps, CopyWizardState> {
         name: props.workspace.name,
         nameExtension: props.workspace.nameExtension,
         beginDate:
-          props.workspace.additionalInfo.beginDate != null
-            ? moment(props.workspace.additionalInfo.beginDate)
+          props.workspace.additionalInfo.beginDate !== null
+            ? moment(props.workspace.additionalInfo.beginDate).toDate()
             : null,
         endDate:
-          props.workspace.additionalInfo.beginDate != null
-            ? moment(props.workspace.additionalInfo.endDate)
+          props.workspace.additionalInfo.endDate !== null
+            ? moment(props.workspace.additionalInfo.endDate).toDate()
             : null,
         copyDiscussionAreas: false,
         copyMaterials: "CLONE",

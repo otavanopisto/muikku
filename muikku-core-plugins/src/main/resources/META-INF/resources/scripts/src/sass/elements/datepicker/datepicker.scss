@@ -1,7 +1,11 @@
 @import "./variables";
 @import "./mixins";
 
-.react-datepicker-wrapper {
+.react-datepicker-popper {
+  z-index: 101;
+}
+
+/* .react-datepicker-wrapper {
   display: inline-block;
 }
 
@@ -509,4 +513,4 @@
       border-left-color: darken($datepicker-muted-color, 10%);
     }
   }
-}
+} */
