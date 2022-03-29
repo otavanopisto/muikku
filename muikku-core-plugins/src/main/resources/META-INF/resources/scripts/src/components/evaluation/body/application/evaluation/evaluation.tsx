@@ -126,6 +126,7 @@ export const CKEditorConfig = (locale: string) => ({
         "-",
         "Outdent",
         "Indent",
+        "Blockquote",
         "-",
         "JustifyLeft",
         "JustifyCenter",
