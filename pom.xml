@@ -4,7 +4,7 @@
 
 	<groupId>fi.otavanopisto.muikku</groupId>
 	<artifactId>parent</artifactId>
-	<version>1.1.179-SNAPSHOT</version>
+	<version>1.1.181-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Muikku Parent</name>
 
@@ -57,7 +57,6 @@
     <module>muikku-forum-plugin-rest-model</module>
 		<module>muikku-hsqldb-plugin</module>
 		<module>muikku-google-oauth</module>
-		<module>muikku-facebook-oauth</module>
 		<module>muikku-pyramus-oauth</module>
 		<module>muikku-h2db-plugin</module>
 		<module>muikku-persistence</module>
@@ -67,9 +66,6 @@
     <module>muikku-school-data-pyramus-persistence</module>
 		<module>muikku-dummy-mail-bridge-plugin</module>
 		<module>muikku-jndi-mail-bridge-plugin</module>
-    <module>muikku-evaluation-plugin-persistence</module>
-    <module>muikku-evaluation-plugin-rest-model</module>
-    <module>muikku-evaluation-plugin</module>
     <module>muikku-timed-notifications-plugin</module>
     <module>muikku-timed-notifications-plugin-persistence</module>
     <module>muikku</module>
@@ -77,8 +73,6 @@
 		<module>muikku-atests</module>
     <module>muikku-atests-plugin</module>
     <module>muikku-atests-plugin-rest-model</module>
-    <module>matriculation-plugin</module>
-    <module>matriculation-plugin-persistence</module>
 	</modules>
 
 	<properties>
@@ -96,7 +90,7 @@
 			<dependency>
 				<groupId>fi.otavanopisto.muikku</groupId>
 				<artifactId>bom</artifactId>
-				<version>1.1.179-SNAPSHOT</version>
+				<version>1.1.181-SNAPSHOT</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
