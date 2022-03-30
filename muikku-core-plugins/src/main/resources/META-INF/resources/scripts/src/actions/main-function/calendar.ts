@@ -86,10 +86,10 @@ export interface UPDATE_CALENDAR_EVENTS_STATUS
 /**
  * LoadCalendarEvents thunk function
  *
- * @param userEntityId
- * @param start
- * @param end
- * @param type
+ * @param userEntityId userEntityId
+ * @param start start date string
+ * @param end end date string
+ * @param type events type
  */
 const loadCalendarEvents: LoadCalendarEventsTriggerType =
   function loadCalendarEvents(
