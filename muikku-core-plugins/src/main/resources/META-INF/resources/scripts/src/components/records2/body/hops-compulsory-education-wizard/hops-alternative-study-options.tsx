@@ -64,12 +64,12 @@ const HopsAlternativeStudyOptions: React.FC<
     <>
       <div className="hops-container__row">
         <div className="hops__form-element-container hops__form-element-container--single-row">
-          <label className="hops-label">
+          <label className="hops__label">
             Suoritan äidinkielen sijaan Suomen toisena kielenä?
           </label>
           <input
             type="checkbox"
-            className="hops-input"
+            className="hops__input"
             checked={studyOptions.options.finnishAsLanguage}
             onChange={handleFinnishAsSecondLanguage}
             disabled={disabled}
@@ -78,12 +78,12 @@ const HopsAlternativeStudyOptions: React.FC<
       </div>
       <div className="hops-container__row">
         <div className="hops__form-element-container hops__form-element-container--single-row">
-          <label className="hops-label">
+          <label className="hops__label">
             Suoritan uskonnon elämänkatsomustietona?
           </label>
           <input
             type="checkbox"
-            className="hops-input"
+            className="hops__input"
             checked={studyOptions.options.religionAsEthics}
             onChange={handleEthicsChange}
             disabled={disabled}

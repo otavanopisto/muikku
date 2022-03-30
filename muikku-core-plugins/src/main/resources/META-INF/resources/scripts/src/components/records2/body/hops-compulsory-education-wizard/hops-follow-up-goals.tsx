@@ -64,13 +64,13 @@ const HopsFollowUpGoals: React.FC<HopsFollowUpGoalsProps> = (props) => {
     <>
       <div className="hops-container__row">
         <div className="hops__form-element-container">
-          <label className="hops-label">Valmistumisaikatavoite:</label>
+          <label className="hops__label">Valmistumisaikatavoite:</label>
           <select
             value={followUpData.followUp.graduationGoal}
             onChange={(e) =>
               handleGoalsChange("graduationGoal", e.currentTarget.value)
             }
-            className="hops-select"
+            className="hops__select"
             disabled={disabled}
           >
             <option value="">Valitse...</option>
@@ -84,7 +84,7 @@ const HopsFollowUpGoals: React.FC<HopsFollowUpGoalsProps> = (props) => {
 
       <div className="hops-container__row">
         <div className="hops__form-element-container">
-          <label className="hops-label">
+          <label className="hops__label">
             Mitä aiot tehdä Nettiperuskoulun jälkeen:
           </label>
           <select
@@ -92,7 +92,7 @@ const HopsFollowUpGoals: React.FC<HopsFollowUpGoalsProps> = (props) => {
             onChange={(e) =>
               handleGoalsChange("followUpGoal", e.currentTarget.value)
             }
-            className="hops-select"
+            className="hops__select"
             disabled={disabled}
           >
             <option value="">Valitse...</option>
@@ -106,94 +106,112 @@ const HopsFollowUpGoals: React.FC<HopsFollowUpGoalsProps> = (props) => {
             <option value={FollowUpGoal.DONT_KNOW}>En tiedä vielä</option>
           </select>
         </div>
+        {followUpData.followUp.followUpGoal ===
+        FollowUpGoal.POSTGRADUATE_STUDIES ? (
+          <>
+            <div className="hops-container__row hops-container__row--dependant-of-above">
+              <div className="hops__form-element-container">
+                <label className="hops__label">Mihin aiot hakea:</label>
+                <select
+                  value={followUpData.followUp.followUpStudies}
+                  onChange={(e) =>
+                    handleGoalsChange("followUpStudies", e.currentTarget.value)
+                  }
+                  className="hops__select"
+                  disabled={disabled}
+                >
+                  <option value="">Valitse...</option>
+
+                  <option value={FollowUpStudies.VOCATIONAL_SCHOOL}>
+                    ammatillinen toinen aste
+                  </option>
+                  <option value={FollowUpStudies.UPPER_SECONDARY_SCHOOL}>
+                    lukio
+                  </option>
+
+                  <option value={FollowUpStudies.SOMETHING_ELSE}>
+                    joku muu?
+                  </option>
+                </select>
+              </div>
+              {followUpData.followUp.followUpStudies ===
+                FollowUpStudies.SOMETHING_ELSE && (
+                <div className="hops-container__row hops-container__row--dependant-of-above">
+                  <div className="hops__form-element-container">
+                    <TextField
+                      label="Kerro tarkemmin"
+                      defaultValue={followUpData.followUp.followUpStudiesElse}
+                      onBlur={(e) =>
+                        handleGoalsChange(
+                          "followUpStudiesElse",
+                          e.currentTarget.value
+                        )
+                      }
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="hops-container__row hops-container__row--dependant-of-above">
+              <div className="hops__form-element-container">
+                <label className="hops__label">Koulutusala:</label>
+                <select
+                  value={followUpData.followUp.studySector}
+                  onChange={(e) =>
+                    handleGoalsChange("studySector", e.currentTarget.value)
+                  }
+                  className="hops__select"
+                  disabled={disabled}
+                >
+                  <option value="">Valitse...</option>
+                  <option value={StudySector.SOCIAL_HEALT_SECTOR}>
+                    sosiaali- ja terveysala
+                  </option>
+                  <option value={StudySector.TRADE_SECTOR}>kauppa</option>
+                  <option value={StudySector.TRANSPORT_SECTOR}>liikenne</option>
+                  <option value={StudySector.EDUCATION_SECTOR}>kasvatus</option>
+                  <option value={StudySector.INDUSTRY_SECTOR}>
+                    teollisuus
+                  </option>
+                  <option value={StudySector.ART_SECTOR}>taide</option>
+                  <option value={StudySector.SOMETHING_ELSE}>joku muu?</option>
+                </select>
+              </div>
+
+              {followUpData.followUp.studySector ===
+                FollowUpStudies.SOMETHING_ELSE && (
+                <div className="hops-container__row hops-container__row--dependant-of-above">
+                  <div className="hops__form-element-container">
+                    <TextField
+                      label="Kerro tarkemmin"
+                      defaultValue={followUpData.followUp.studySectorElse}
+                      onBlur={(e) =>
+                        handleGoalsChange(
+                          "studySectorElse",
+                          e.currentTarget.value
+                        )
+                      }
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+          </>
+        ) : null}
       </div>
-      {followUpData.followUp.followUpGoal ===
-      FollowUpGoal.POSTGRADUATE_STUDIES ? (
-        <div className="hops-container__row">
-          <div className="hops__form-element-container">
-            <label className="hops-label">Mihin aiot hakea:</label>
-            <select
-              value={followUpData.followUp.followUpStudies}
-              onChange={(e) =>
-                handleGoalsChange("followUpStudies", e.currentTarget.value)
-              }
-              className="hops-select"
-              disabled={disabled}
-            >
-              <option value="">Valitse...</option>
 
-              <option value={FollowUpStudies.VOCATIONAL_SCHOOL}>
-                ammatillinen toinen aste
-              </option>
-              <option value={FollowUpStudies.UPPER_SECONDARY_SCHOOL}>
-                lukio
-              </option>
-
-              <option value={FollowUpStudies.SOMETHING_ELSE}>joku muu?</option>
-            </select>
-          </div>
-
-          {followUpData.followUp.followUpStudies ===
-            FollowUpStudies.SOMETHING_ELSE && (
-            <div className="hops__form-element-container">
-              <TextField
-                label="Kerro tarkemmin"
-                defaultValue={followUpData.followUp.followUpStudiesElse}
-                onBlur={(e) =>
-                  handleGoalsChange(
-                    "followUpStudiesElse",
-                    e.currentTarget.value
-                  )
-                }
-              />
-            </div>
-          )}
-
-          <div className="hops__form-element-container">
-            <label className="hops-label">Koulutusala:</label>
-            <select
-              value={followUpData.followUp.studySector}
-              onChange={(e) =>
-                handleGoalsChange("studySector", e.currentTarget.value)
-              }
-              className="hops-select"
-              disabled={disabled}
-            >
-              <option value="">Valitse...</option>
-              <option value={StudySector.SOCIAL_HEALT_SECTOR}>
-                sosiaali- ja terveysala
-              </option>
-              <option value={StudySector.TRADE_SECTOR}>kauppa</option>
-              <option value={StudySector.TRANSPORT_SECTOR}>liikenne</option>
-              <option value={StudySector.EDUCATION_SECTOR}>kasvatus</option>
-              <option value={StudySector.INDUSTRY_SECTOR}>teollisuus</option>
-              <option value={StudySector.ART_SECTOR}>taide</option>
-              <option value={StudySector.SOMETHING_ELSE}>joku muu?</option>
-            </select>
-          </div>
-
-          {followUpData.followUp.studySector ===
-            FollowUpStudies.SOMETHING_ELSE && (
-            <div className="hops__form-element-container">
-              <TextField
-                label="Kerro tarkemmin"
-                defaultValue={followUpData.followUp.studySectorElse}
-                onBlur={(e) =>
-                  handleGoalsChange("studySectorElse", e.currentTarget.value)
-                }
-              />
-            </div>
-          )}
-        </div>
-      ) : null}
       <div className="hops-container__row">
-        <Textarea
-          label="Voit kertoa tarkemmin jatkosuunnitelmistasi:"
-          defaultValue={followUpData.followUp.followUpPlanExtraInfo}
-          onBlur={(e) =>
-            handleGoalsChange("followUpPlanExtraInfo", e.currentTarget.value)
-          }
-        />
+        <div className="hops__form-element-container">
+          <Textarea
+            className="hops__textarea"
+            label="Voit kertoa tarkemmin jatkosuunnitelmistasi:"
+            defaultValue={followUpData.followUp.followUpPlanExtraInfo}
+            onBlur={(e) =>
+              handleGoalsChange("followUpPlanExtraInfo", e.currentTarget.value)
+            }
+          />
+        </div>
       </div>
     </>
   );

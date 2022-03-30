@@ -172,7 +172,7 @@ class HopsMotivationAndStudySkills extends React.Component<
             Miten opin? Asteikolla 0-4.
           </legend>
 
-          <div className="hops-container__row hops-container__row--list">
+          <div className="hops-container__row">
             <InputGroup>
               <ScaleInputGroup<HopsMotivationAndStudy>
                 label="Lukemalla"
@@ -209,9 +209,9 @@ class HopsMotivationAndStudySkills extends React.Component<
           </div>
           <AnimateHeight height={this.state.someOtherWay ? "auto" : 0}>
             <div className="hops-container__row">
-              <div className="form-element">
+              <div className="hops__form-element-container">
                 <Textarea
-                  className="form-element__textarea form-element__textarea--resize__vertically"
+                  className="hops__textarea"
                   label="Muu?"
                   value={someOtherWay}
                   onChange={this.handleTextareaChange("someOtherWay")}
@@ -227,7 +227,7 @@ class HopsMotivationAndStudySkills extends React.Component<
             Millaisia tapoja olen aiemmin käyttänyt? Asteikolla 0-4.
           </legend>
 
-          <div className="hops-container__row hops-container__row--list">
+          <div className="hops-container__row">
             <InputGroup>
               <ScaleInputGroup<HopsMotivationAndStudy>
                 label="Opettelen asioita ulkoa"
@@ -288,9 +288,9 @@ class HopsMotivationAndStudySkills extends React.Component<
           </div>
           <AnimateHeight height={this.state.someOtherMethod ? "auto" : 0}>
             <div className="hops-container__row">
-              <div className="form-element">
+              <div className="hops__form-element-container">
                 <Textarea
-                  className="form-element__textarea form-element__textarea--resize__vertically"
+                  className="hops__textarea"
                   label="Muu?"
                   value={someOtherMethod}
                   onChange={this.handleTextareaChange("someOtherMethod")}
@@ -306,7 +306,7 @@ class HopsMotivationAndStudySkills extends React.Component<
             Keneltä saan tukea opiskeluun? Asteikolla 0-4.
           </legend>
 
-          <div className="hops-container__row hops-container__row--list">
+          <div className="hops-container__row">
             <InputGroup>
               <ScaleInputGroup<HopsMotivationAndStudy>
                 label="En saa tukea"
@@ -359,9 +359,9 @@ class HopsMotivationAndStudySkills extends React.Component<
           </div>
           <AnimateHeight height={this.state.somethingElse ? "auto" : 0}>
             <div className="hops-container__row">
-              <div className="form-element">
+              <div className="hops__form-element-container">
                 <Textarea
-                  className="form-element__textarea form-element__textarea--resize__vertically"
+                  className="hops__textarea"
                   label="Muu?"
                   value={somethingElse}
                   onChange={this.handleTextareaChange("somethingElse")}
@@ -376,9 +376,9 @@ class HopsMotivationAndStudySkills extends React.Component<
           <legend className="hops-container__subheader">Muuta?</legend>
 
           <div className="hops-container__row">
-            <div className="form-element">
+            <div className="hops__form-element-container">
               <Textarea
-                className="form-element__textarea form-element__textarea--resize__vertically"
+                className="hops__textarea"
                 label="Mikä sinusta on opiskelussa helpointa/vaikeinta?"
                 value={hardOrEasyInStudies}
                 onChange={this.handleTextareaChange("hardOrEasyInStudies")}
@@ -388,9 +388,9 @@ class HopsMotivationAndStudySkills extends React.Component<
           </div>
 
           <div className="hops-container__row">
-            <div className="form-element">
+            <div className="hops__form-element-container">
               <Textarea
-                className="form-element__textarea form-element__textarea--resize__vertically"
+                className="hops__textarea"
                 label="Mitkä ovat vahvuuksiasi/heikkouksiasi?"
                 value={strengthsOrWeaknesses}
                 onChange={this.handleTextareaChange("strengthsOrWeaknesses")}
@@ -400,9 +400,9 @@ class HopsMotivationAndStudySkills extends React.Component<
           </div>
 
           <div className="hops-container__row">
-            <div className="form-element">
+            <div className="hops__form-element-container">
               <Textarea
-                className="form-element__textarea form-element__textarea--resize__vertically"
+                className="hops__textarea"
                 label="Mikä sinua tällä hetkellä kiinnostaa eniten?"
                 value={interests}
                 onChange={this.handleTextareaChange("interests")}
@@ -412,9 +412,9 @@ class HopsMotivationAndStudySkills extends React.Component<
           </div>
 
           <div className="hops-container__row">
-            <div className="form-element">
+            <div className="hops__form-element-container">
               <Textarea
-                className="form-element__textarea form-element__textarea--resize__vertically"
+                className="hops__textarea"
                 label="Missä haluaisit erityisesti kehittyä?"
                 value={areasToAdvance}
                 onChange={this.handleTextareaChange("areasToAdvance")}

@@ -45,19 +45,17 @@ class HopsDone extends React.Component<HopsDoneProps, HopsDonePropsState> {
   renderStateMessage = (saveState: SaveState) =>
     ({
       PENDING: (
-        <div className="matriculation-container">
-          <h3 className="matriculation-container__header">Odottaa!</h3>
+        <div className="hops-container">
+          <h3 className="hops-container__header">Odottaa!</h3>
           <div className="loader-empty" />
         </div>
       ),
       IN_PROGRESS: (
-        <div className="matriculation-container">
-          <h3 className="matriculation-container__header">
-            Lomaketta tallennetaan
-          </h3>
-          <div className="matriculation-container__state state-LOADER">
-            <div className="matriculation-container__state-icon icon-notification"></div>
-            <div className="matriculation-container__state-text">
+        <div className="hops-container">
+          <h3 className="hops-container__header">Lomaketta tallennetaan</h3>
+          <div className="hops-container__state state-LOADER">
+            <div className="hops-container__state-icon icon-notification"></div>
+            <div className="hops-container__state-text">
               <p>Lomakkeen tietoja tallennetaan, odota hetki</p>
             </div>
           </div>
@@ -65,26 +63,24 @@ class HopsDone extends React.Component<HopsDoneProps, HopsDonePropsState> {
         </div>
       ),
       SUCCESS: (
-        <div className="matriculation-container">
-          <h3 className="matriculation-container__header">
-            HOPS:n tallennus onnistui
-          </h3>
-          <div className="matriculation-container__state state-SUCCESS">
-            <div className="matriculation-container__state-icon icon-notification"></div>
-            <div className="matriculation-container__state-text">
+        <div className="hops-container">
+          <h3 className="hops-container__header">HOPS:n tallennus onnistui</h3>
+          <div className="hops-container__state state-SUCCESS">
+            <div className="hops-container__state-icon icon-notification"></div>
+            <div className="hops-container__state-text">
               <p>Tallennus tehty onnistuneesti</p>
             </div>
           </div>
         </div>
       ),
       FAILED: (
-        <div className="matriculation-container">
-          <h3 className="matriculation-container__header">
+        <div className="hops-container">
+          <h3 className="hops-container__header">
             Lomakkeen tallennus epäonnistui
           </h3>
-          <div className="matriculation-container__state state-FAILED">
-            <div className="matriculation-container__state-icon icon-notification"></div>
-            <div className="matriculation-container__state-text">
+          <div className="hops-container__state state-FAILED">
+            <div className="hops-container__state-icon icon-notification"></div>
+            <div className="hops-container__state-text">
               <p>
                 Lomakkeen tietojen tallennus epäonnistui. Varmista, että olet
                 kirjautunut sisään palaamalla lomakkeelle uudelleen Muikun
@@ -105,7 +101,7 @@ class HopsDone extends React.Component<HopsDoneProps, HopsDonePropsState> {
    */
   render() {
     return (
-      <div className="hops-container">
+      <div>
         {this.renderStateMessage(this.props.saveState)}
         {this.props.saveState === "SUCCESS" ||
         this.props.saveState === "FAILED" ? (

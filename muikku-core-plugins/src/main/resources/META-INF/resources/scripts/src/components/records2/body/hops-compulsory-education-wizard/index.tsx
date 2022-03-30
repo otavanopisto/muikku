@@ -571,13 +571,15 @@ class CompulsoryEducationHopsWizard extends React.Component<
         </div>
         <NewHopsEventDescriptionDialog
           content={
-            <div>
-              <Textarea
-                label="Vapaa kuvaus tapahtuman muutoksista"
-                className="form-element__textarea form-element__textarea--resize__vertically"
-                onChange={this.handleHopsUpdateDetailsChange}
-                value={this.state.hopsUpdateDetails}
-              />
+            <div className="hops-container__row">
+              <div className="hops__form-element-container">
+                <Textarea
+                  label="Vapaa kuvaus tapahtuman muutoksista"
+                  className="form-element__textarea form-element__textarea--resize__vertically"
+                  onChange={this.handleHopsUpdateDetailsChange}
+                  value={this.state.hopsUpdateDetails}
+                />
+              </div>
             </div>
           }
           isOpen={this.state.addHopsUpdateDetailsDialogOpen}
@@ -586,16 +588,18 @@ class CompulsoryEducationHopsWizard extends React.Component<
         />
         <EditHopsEventDescriptionDialog
           content={
-            <div>
-              <Textarea
-                label="Muokkaa tapahtuman kuvausta"
-                className="form-element__textarea form-element__textarea--resize__vertically"
-                onChange={this.handleHopsEditingHistoryEventDetailsChange}
-                value={
-                  this.state.updateEventToBeEdited &&
-                  this.state.updateEventToBeEdited.details
-                }
-              />
+            <div className="hops-container__row">
+              <div className="hops__form-element-container">
+                <Textarea
+                  label="Muokkaa tapahtuman kuvausta"
+                  className="form-element__textarea form-element__textarea--resize__vertically"
+                  onChange={this.handleHopsEditingHistoryEventDetailsChange}
+                  value={
+                    this.state.updateEventToBeEdited &&
+                    this.state.updateEventToBeEdited.details
+                  }
+                />
+              </div>
             </div>
           }
           isOpen={!!this.state.updateEventToBeEdited}

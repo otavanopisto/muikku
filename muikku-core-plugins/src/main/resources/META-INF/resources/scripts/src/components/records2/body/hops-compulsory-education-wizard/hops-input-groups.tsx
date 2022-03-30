@@ -25,7 +25,7 @@ export const InputGroup: React.FC<InputGroupProps> = ({
   modifiers,
   className,
 }) => {
-  let updatedClassName = "checkbox__group";
+  let updatedClassName = "input-group-container";
 
   if (className) {
     updatedClassName = className;
@@ -54,14 +54,14 @@ interface CheckboxGroupItemProps
   > {
   label: string;
   /**
-   * Default: "group__item"
+   * Default: "input-group"
    */
   className?: string;
   modifiers?: string[];
 }
 
 const defaultGroupItemProps = {
-  className: "group__item",
+  className: "input-group",
 };
 
 /**
@@ -74,9 +74,9 @@ export const CheckboxGroupItem: React.FC<CheckboxGroupItemProps> = (props) => {
 
   const { label, className, children, modifiers, ...inputProps } = props;
   /**
-   * Default className value "group__item"
+   * Default className value "input-group"
    */
-  let updatedClassName = "group__item";
+  let updatedClassName = "input-group";
   let updatedClassMods: string[] | string = [];
 
   /**
@@ -108,8 +108,12 @@ export const CheckboxGroupItem: React.FC<CheckboxGroupItemProps> = (props) => {
 
   return (
     <div className={`${updatedClassName} ${updatedClassMods}`}>
-      <input className="item__input" {...inputProps} type="checkbox"></input>
-      <label className="item__label"> {label} </label>
+      <input
+        className="input-group__input"
+        {...inputProps}
+        type="checkbox"
+      ></input>
+      <label className="input-group__label"> {label} </label>
     </div>
   );
 };
@@ -133,7 +137,7 @@ interface ScaleInputGroupProps<T> {
 }
 
 const defaultScaleInputGroupProps = {
-  className: "group__item",
+  className: "input-group",
 };
 
 /**
@@ -170,9 +174,9 @@ export const ScaleInputGroup = <T,>(props: ScaleInputGroupProps<T>) => {
   };
 
   /**
-   * Default className value "group__item"
+   * Default className value "checkbox-group__item"
    */
-  let updatedClassName = "group__item";
+  let updatedClassName = "input-group";
   let updatedClassMods: string[] | string = [];
 
   /**
@@ -205,10 +209,10 @@ export const ScaleInputGroup = <T,>(props: ScaleInputGroupProps<T>) => {
   const items = Array.from(Array(scaleSize)).map((item, index) =>
     disabled ? (
       <ScaleInputItem
-        className="scale__input__group"
+        className="input-group__item-container"
         key={index}
         label={index.toString()}
-        name={`scale_input_${name}`}
+        name={`input-group-${name}`}
         value={index}
         readOnly
         disabled
@@ -216,10 +220,10 @@ export const ScaleInputGroup = <T,>(props: ScaleInputGroupProps<T>) => {
       />
     ) : (
       <ScaleInputItem
-        className="scale__input__group"
+        className="input-group__item-container"
         key={index}
         label={index.toString()}
-        name={`scale_input_${name}`}
+        name={`input-group-${name}`}
         value={index}
         checked={index === value}
         onChange={handleScaleChange}
@@ -229,8 +233,8 @@ export const ScaleInputGroup = <T,>(props: ScaleInputGroupProps<T>) => {
 
   return (
     <div className={`${updatedClassName} ${updatedClassMods}`}>
-      <label className="item__label"> {label} </label>
-      <div style={{ display: "flex", flexWrap: "wrap" }}>{items}</div>
+      <label className="input-group__label"> {label} </label>
+      <div className="input-group__items-container">{items}</div>
     </div>
   );
 };
@@ -262,8 +266,12 @@ export const ScaleInputItem: React.FC<ScaleInputItemProps> = ({
   label,
   ...inputProps
 }) => (
-  <div className={`${className} ${modifiers}`}>
-    <input type="radio" {...inputProps}></input>
-    <label className="item__label"> {label} </label>
+  <div
+    className={`${className ? className : ""} ${(modifiers || [])
+      .map((s) => `${className}--${s}`)
+      .join(" ")}`}
+  >
+    <input className="input-group__item" type="radio" {...inputProps}></input>
+    <label className="input-group__item-label"> {label} </label>
   </div>
 );
