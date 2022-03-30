@@ -92,9 +92,9 @@ class GuiderStudents extends BodyScrollLoader<
       { arrayFormat: "bracket" }
     );
     delete locationData.c;
-    let newHash =
-      "#?" + queryString.stringify(locationData, { arrayFormat: "bracket" });
-    return newHash;
+    return (
+      "#?" + queryString.stringify(locationData, { arrayFormat: "bracket" })
+    );
   };
 
   /**
@@ -160,9 +160,8 @@ class GuiderStudents extends BodyScrollLoader<
           >
             {this.props.guider.students.map(
               (student: GuiderStudentType, index: number) => {
-                let isSelected = this.props.guider.selectedStudentsIds.includes(
-                  student.id
-                );
+                const isSelected =
+                  this.props.guider.selectedStudentsIds.includes(student.id);
                 return {
                   as: ApplicationListItem,
                   className: "user user--guider",

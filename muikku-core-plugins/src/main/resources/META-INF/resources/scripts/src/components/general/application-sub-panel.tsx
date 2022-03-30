@@ -8,7 +8,6 @@ import "~/sass/elements/application-sub-panel.scss";
 interface SubPanelProps {
   modifier?: string;
   bodyModifier?: string;
-  // i18n: i18nType;
   title: string;
 }
 

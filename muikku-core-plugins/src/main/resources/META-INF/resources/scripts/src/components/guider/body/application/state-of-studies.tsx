@@ -125,7 +125,6 @@ class StateOfStudies extends React.Component<
           </div>
         </div>
         <div className="application-sub-panel__header-aside-container">
-          {/* {this.props.guider.currentStudent.basic.studyProgrammeName} */}
           {this.props.guider.currentStudent.basic &&
           IsStudentPartOfProperStudyProgram(
             this.props.guider.currentStudent.basic.studyProgrammeName

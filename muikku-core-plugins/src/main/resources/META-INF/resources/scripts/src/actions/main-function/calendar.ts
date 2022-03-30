@@ -298,7 +298,6 @@ const deleteCalendarEvent: deleteCalendarEventTrigger =
         if (!(err instanceof MApiError)) {
           throw err;
         }
-        console.log(err);
         dispatch(
           actions.displayNotification(
             getState().i18n.text.get("plugin.calendar.events.delete.error"),

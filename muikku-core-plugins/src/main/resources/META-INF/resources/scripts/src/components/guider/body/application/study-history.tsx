@@ -2,6 +2,7 @@ import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
 import { GuiderType } from "~/reducers/main-function/guider";
 import { StateType } from "~/reducers";
+import { AnyActionType } from "~/actions/index";
 import { connect, Dispatch } from "react-redux";
 import FileDeleteDialog from "../../dialogs/file-delete";
 import FileUploader from "~/components/general/file-uploader";
@@ -218,7 +219,7 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ addFileToCurrentStudent }, dispatch);
 }
 

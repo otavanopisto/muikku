@@ -7,6 +7,7 @@ import { bindActionCreators } from "redux";
 import { StateType } from "~/reducers";
 import { GuiderType } from "~/reducers/main-function/guider";
 import { Calendar } from "~/reducers/main-function/calendar";
+import { AnyActionType } from "~/actions";
 import FullCalendar, {
   DateSelectArg,
   EventClickArg,
@@ -278,7 +279,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch
  * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     {
       loadCalendarEvents,
