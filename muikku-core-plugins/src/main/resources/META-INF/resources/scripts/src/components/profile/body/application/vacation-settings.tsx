@@ -4,6 +4,7 @@ import { Dispatch, connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
 import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import "~/sass/elements/datepicker/datepicker.scss";
 import { ProfileType } from "~/reducers/main-function/profile";
 import {
@@ -18,8 +19,10 @@ import {
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 import Button from "~/components/general/button";
-import moment from "~/lib/moment";
 import { SimpleActionExecutor } from "~/actions/executor";
+import * as moment from "moment";
+import { AnyActionType } from "~/actions/index";
+import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 
 /**
  * VacationSettingsProps
@@ -37,8 +40,8 @@ interface VacationSettingsProps {
  * VacationSettingsState
  */
 interface VacationSettingsState {
-  profileVacationStart: any;
-  profileVacationEnd: any;
+  profileVacationStart: Date | null;
+  profileVacationEnd: Date | null;
   vacationAutoReply: string;
   vacationAutoReplySubject: string;
   vacationAutoReplyMsg: string;
@@ -53,7 +56,7 @@ class VacationSettings extends React.Component<
 > {
   /**
    * constructor
-   * @param props
+   * @param props props
    */
   constructor(props: VacationSettingsProps) {
     super(props);
@@ -61,11 +64,13 @@ class VacationSettings extends React.Component<
     this.state = {
       profileVacationStart:
         (props.profile.properties["profile-vacation-start"] &&
-          moment(props.profile.properties["profile-vacation-start"])) ||
+          moment(
+            props.profile.properties["profile-vacation-start"]
+          ).toDate()) ||
         null,
       profileVacationEnd:
         (props.profile.properties["profile-vacation-end"] &&
-          moment(props.profile.properties["profile-vacation-end"])) ||
+          moment(props.profile.properties["profile-vacation-end"]).toDate()) ||
         null,
       vacationAutoReply:
         props.profile.properties["communicator-auto-reply"] || "",
@@ -86,10 +91,11 @@ class VacationSettings extends React.Component<
   }
 
   /**
-   * componentWillReceiveProps
-   * @param nextProps
+   * UNSAFE_componentWillReceiveProps
+   * @param nextProps nextProps
    */
-  componentWillReceiveProps(nextProps: VacationSettingsProps) {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillReceiveProps(nextProps: VacationSettingsProps) {
     if (
       nextProps.profile.properties["profile-vacation-start"] &&
       this.props.profile.properties["profile-vacation-start"] !==
@@ -98,7 +104,7 @@ class VacationSettings extends React.Component<
       this.setState({
         profileVacationStart: moment(
           nextProps.profile.properties["profile-vacation-start"]
-        ),
+        ).toDate(),
       });
     }
 
@@ -110,7 +116,7 @@ class VacationSettings extends React.Component<
       this.setState({
         profileVacationEnd: moment(
           nextProps.profile.properties["profile-vacation-end"]
-        ),
+        ).toDate(),
       });
     }
 
@@ -150,10 +156,13 @@ class VacationSettings extends React.Component<
 
   /**
    * handleDateChange
-   * @param stateLocation
-   * @param newDate
+   * @param stateLocation stateLocation
+   * @param newDate newDate
    */
-  handleDateChange(stateLocation: string, newDate: any) {
+  handleDateChange(
+    stateLocation: "profileVacationStart" | "profileVacationEnd",
+    newDate: Date
+  ) {
     const nState: any = {};
     nState[stateLocation] = newDate;
     (this.setState as any)(nState);
@@ -161,7 +170,7 @@ class VacationSettings extends React.Component<
 
   /**
    * onVacationAutoReplyChange
-   * @param e
+   * @param e e
    */
   onVacationAutoReplyChange(e: React.ChangeEvent<HTMLInputElement>) {
     this.setState({
@@ -171,7 +180,7 @@ class VacationSettings extends React.Component<
 
   /**
    * onVacationAutoReplySubjectChange
-   * @param e
+   * @param e e
    */
   onVacationAutoReplySubjectChange(e: React.ChangeEvent<HTMLInputElement>) {
     this.setState({
@@ -181,7 +190,7 @@ class VacationSettings extends React.Component<
 
   /**
    * onVacationAutoReplyMsgChange
-   * @param e
+   * @param e e
    */
   onVacationAutoReplyMsgChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
     this.setState({
@@ -201,8 +210,9 @@ class VacationSettings extends React.Component<
     executor
       .addAction(
         !this.props.status.isStudent &&
-          this.props.profile.properties["profile-vacation-start"] !==
-            this.state.profileVacationStart,
+          !moment(
+            this.props.profile.properties["profile-vacation-start"]
+          ).isSame(moment(this.state.profileVacationStart)),
         () => {
           this.props.saveProfileProperty({
             key: "profile-vacation-start",
@@ -216,8 +226,9 @@ class VacationSettings extends React.Component<
       )
       .addAction(
         !this.props.status.isStudent &&
-          this.props.profile.properties["profile-vacation-end"] !==
-            this.state.profileVacationEnd,
+          !moment(this.props.profile.properties["profile-vacation-end"]).isSame(
+            moment(this.state.profileVacationEnd)
+          ),
         () => {
           this.props.saveProfileProperty({
             key: "profile-vacation-end",
@@ -321,9 +332,12 @@ class VacationSettings extends React.Component<
                       this,
                       "profileVacationStart"
                     )}
-                    maxDate={this.state.profileVacationEnd || null}
-                    locale={this.props.i18n.time.getLocale()}
+                    maxDate={this.state.profileVacationEnd}
+                    locale={outputCorrectDatePickerLocale(
+                      this.props.i18n.time.getLocale()
+                    )}
                     selected={this.state.profileVacationStart}
+                    dateFormat="P"
                   />
                 </div>
               </div>
@@ -341,9 +355,12 @@ class VacationSettings extends React.Component<
                       this,
                       "profileVacationEnd"
                     )}
-                    minDate={this.state.profileVacationStart || null}
-                    locale={this.props.i18n.time.getLocale()}
+                    minDate={this.state.profileVacationStart}
+                    locale={outputCorrectDatePickerLocale(
+                      this.props.i18n.time.getLocale()
+                    )}
                     selected={this.state.profileVacationEnd}
+                    dateFormat="P"
                   />
                 </div>
               </div>
@@ -455,7 +472,7 @@ class VacationSettings extends React.Component<
 
 /**
  * mapStateToProps
- * @param state
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -467,9 +484,9 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     { saveProfileProperty, displayNotification, updateProfileChatSettings },
     dispatch

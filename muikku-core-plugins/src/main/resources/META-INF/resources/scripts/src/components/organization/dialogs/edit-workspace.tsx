@@ -49,9 +49,11 @@ import {
   WorkspacesActiveFiltersType,
   WorkspaceDetailsType,
 } from "~/reducers/workspaces";
-import moment from "~/lib/moment";
 import { TagItem } from "~/components/general/tag-input";
 import { UserStaffType } from "~/reducers/user-index";
+import * as moment from "moment";
+import { AnyActionType } from "~/actions/index";
+import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 
 /**
  * ValidationType
@@ -86,8 +88,8 @@ interface OrganizationEditWorkspaceProps {
  * OrganizationEditWorkspaceState
  */
 interface OrganizationEditWorkspaceState {
-  beginDate: any;
-  endDate: any;
+  beginDate: Date | null;
+  endDate: Date | null;
   pages: {
     [key: string]: number;
   };
@@ -183,7 +185,6 @@ class OrganizationEditWorkspace extends React.Component<
     this.saveWorkspace = this.saveWorkspace.bind(this);
     this.clearComponentState = this.clearComponentState.bind(this);
     this.setSelectedWorkspace = this.setSelectedWorkspace.bind(this);
-    this.getLocaledDate = this.getLocaledDate.bind(this);
     this.turnStudentsToSelectItems = this.turnStudentsToSelectItems.bind(this);
   }
 
@@ -282,7 +283,8 @@ class OrganizationEditWorkspace extends React.Component<
         maxResults: 5,
       },
       /**
-       * @param users
+       * success
+       * @param users users
        */
       success: (users: WorkspaceStudentListType | WorkspaceStaffListType) => {
         this.setState({
@@ -392,10 +394,14 @@ class OrganizationEditWorkspace extends React.Component<
         this.setState({
           workspaceAccess: workspace.access,
           beginDate: workspace.details.beginDate
-            ? moment(workspace.details.beginDate)
+            ? this.props.i18n.time
+                .getLocalizedMoment(workspace.details.beginDate)
+                .toDate()
             : null,
           endDate: workspace.details.endDate
-            ? moment(workspace.details.endDate)
+            ? this.props.i18n.time
+                .getLocalizedMoment(workspace.details.endDate)
+                .toDate()
             : null,
         });
       },
@@ -415,11 +421,8 @@ class OrganizationEditWorkspace extends React.Component<
    * @param dateKey dateKey
    * @param newDate newDate
    */
-  handleDateChange(dateKey: string, newDate: any) {
-    this.setState({ [dateKey]: newDate } as Pick<
-      OrganizationEditWorkspaceState,
-      keyof OrganizationEditWorkspaceState
-    >);
+  handleDateChange(dateKey: "beginDate" | "endDate", newDate: Date) {
+    this.setState({ ...this.state, [dateKey]: newDate });
   }
 
   /**
@@ -455,14 +458,6 @@ class OrganizationEditWorkspace extends React.Component<
       studentsAdded: false,
       staffAdded: false,
     });
-  }
-
-  /**
-   * getLocaledDate
-   * @param date date
-   */
-  getLocaledDate(date: any) {
-    return date.locale(this.props.i18n.time.getLocale()).format("L");
   }
 
   /**
@@ -561,15 +556,19 @@ class OrganizationEditWorkspace extends React.Component<
     const originalBeginDate = this.props.currentWorkspace.details.beginDate
       ? moment(this.props.currentWorkspace.details.beginDate).toISOString()
       : null;
+
     const originalEndDate = this.props.currentWorkspace.details.endDate
       ? moment(this.props.currentWorkspace.details.endDate).toISOString()
       : null;
+
     const beginDate = this.state.beginDate
       ? this.state.beginDate.toISOString()
       : null;
+
     const endDate = this.state.endDate
       ? this.state.endDate.toISOString()
       : null;
+
     let detailsChanged = false;
     const payload: WorkspaceUpdateType = {};
 
@@ -717,7 +716,9 @@ class OrganizationEditWorkspace extends React.Component<
                 id="workspaceBeginDate"
                 maxDate={this.state.endDate}
                 updateField={this.handleDateChange.bind(this, "beginDate")}
-                locale={this.props.i18n.time.getLocale()}
+                locale={outputCorrectDatePickerLocale(
+                  this.props.i18n.time.getLocale()
+                )}
                 selected={this.state.beginDate}
                 modifiers="organization-workspace-date"
                 labels={{
@@ -725,12 +726,15 @@ class OrganizationEditWorkspace extends React.Component<
                     "plugin.organization.workspaces.editWorkspace.beginDate.label"
                   ),
                 }}
+                dateFormat="P"
               />
               <DateFormElement
                 id="workspaceEndDate"
                 minDate={this.state.beginDate}
                 updateField={this.handleDateChange.bind(this, "endDate")}
-                locale={this.props.i18n.time.getLocale()}
+                locale={outputCorrectDatePickerLocale(
+                  this.props.i18n.time.getLocale()
+                )}
                 selected={this.state.endDate}
                 modifiers="organization-workspace-date"
                 labels={{
@@ -738,6 +742,7 @@ class OrganizationEditWorkspace extends React.Component<
                     "plugin.organization.workspaces.editWorkspace.endDate.label"
                   ),
                 }}
+                dateFormat="P"
               />
             </DialogRow>
             <DialogRow>
@@ -1032,14 +1037,14 @@ class OrganizationEditWorkspace extends React.Component<
               <DialogRowContent modifiers="summary-dates">
                 <span>
                   {this.state.beginDate
-                    ? this.getLocaledDate(this.state.beginDate)
+                    ? this.props.i18n.time.format(this.state.beginDate)
                     : this.props.i18n.text.get(
                         "plugin.organization.workspaces.editWorkspace.summary.endDate.empty"
                       )}
                 </span>
                 <span>
                   {this.state.endDate
-                    ? this.getLocaledDate(this.state.endDate)
+                    ? this.props.i18n.time.format(this.state.endDate)
                     : this.props.i18n.text.get(
                         "plugin.organization.workspaces.editWorkspace.summary.endDate.empty"
                       )}
@@ -1186,11 +1191,12 @@ class OrganizationEditWorkspace extends React.Component<
   }
 
   /**
-   *
+   * render
    */
   render() {
     /**
-     * @param closePortal
+     * content
+     * @param closePortal closePortal
      */
     const content = (closePortal: () => any) =>
       this.wizardSteps(this.state.currentStep);
@@ -1255,7 +1261,8 @@ class OrganizationEditWorkspace extends React.Component<
     );
 
     /**
-     * @param closePortal
+     * footer
+     * @param closePortal closePortal
      */
     const footer = (closePortal: () => any) => (
       <FormWizardActions
@@ -1302,7 +1309,8 @@ class OrganizationEditWorkspace extends React.Component<
 }
 
 /**
- * @param state
+ * mapStateToProps
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -1313,9 +1321,10 @@ function mapStateToProps(state: StateType) {
 }
 
 /**
- * @param dispatch
+ * mapDispatchToProps
+ * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     {
       loadStaff: loadSelectorStaff,
