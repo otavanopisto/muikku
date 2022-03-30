@@ -5,7 +5,7 @@ import { TextField } from "../text-field";
 import { BasicInformation } from "~/@types/shared";
 import { HopsBaseProps } from "..";
 import HopsHistory from "../hops-history";
-import Link from "~/components/general/link";
+import Button from "~/components/general/button";
 
 /**
  * StudentHopsInformationProps
@@ -86,16 +86,6 @@ class HopsStudentHopsInformation extends React.Component<
             this.props.basicInformation.updates.length ? (
               <div className="hops-container__info">
                 <h3 className="hops-container__subheader">Muokkaushistoria</h3>
-                <Link
-                  onClick={this.props.onLoadMOreHistoryEventsClick}
-                  disabled={
-                    this.props.allHistoryEventLoaded ||
-                    this.props.loadingHistoryEvents ||
-                    this.props.basicInformation.updates.length > 5
-                  }
-                >
-                  Lataa kaikki
-                </Link>
                 <HopsHistory
                   hopsUpdates={this.props.basicInformation.updates}
                   loggedUserId={this.props.loggedUserId}
@@ -103,6 +93,19 @@ class HopsStudentHopsInformation extends React.Component<
                   superVisorModifies={this.props.superVisorModifies}
                   onHistoryEventClick={this.props.onHistoryEventClick}
                 />
+                <div className="hops-container__row">
+                  <Button
+                    buttonModifiers={["load-all-hops-events"]}
+                    onClick={this.props.onLoadMOreHistoryEventsClick}
+                    disabled={
+                      this.props.allHistoryEventLoaded ||
+                      this.props.loadingHistoryEvents ||
+                      this.props.basicInformation.updates.length > 5
+                    }
+                  >
+                    Lataa kaikki
+                  </Button>
+                </div>
               </div>
             ) : null}
           </fieldset>

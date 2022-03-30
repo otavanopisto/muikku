@@ -1812,11 +1812,25 @@
 }
 
 .button--add-matriculation-row,
-.button--add-hops-row {
+.button--add-hops-row,
+.button--load-all-hops-events,
+.button--back-to-hops-start {
   background: $color-default;
   border: 1px solid $color-default;
   color: $color-info;
   padding: 4px 6px;
+
+  &.disabled {
+    background: $color-default;
+    border: 1px solid $color-default;
+    color: $color-disabled;
+
+    &:hover {
+      background: $color-default;
+      border: 1px solid $color-default;
+      color: $color-disabled;
+    }
+  }
 }
 
 .button--remove-matriculation-row,

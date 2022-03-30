@@ -22,7 +22,7 @@ interface HopsHistoryProps {
  * @param props props
  */
 const HopsHistory: React.FC<HopsHistoryProps> = (props) => (
-  <div className="hops__history-container">
+  <div className="hops-container__history">
     {props.hopsUpdates.map((item, i) => (
       <HopsHistoryEvent
         key={i}
@@ -34,7 +34,7 @@ const HopsHistory: React.FC<HopsHistoryProps> = (props) => (
       />
     ))}
     {props.loading && (
-      <div className="hops__history-event">
+      <div className="hops-container__history-event">
         <div className="loader-empty" />
       </div>
     )}
@@ -72,34 +72,29 @@ const HopsHistoryEvent: React.FC<HopsHistoryEventProps> = (props) => {
     : "animate-height";
 
   return (
-    <div className="hops__history-event">
-      <>
-        <div
-          className="hops__history-event-author"
-          style={{ display: "flex", alignItems: "center" }}
-        >
-          <Avatar
-            id={props.hopsUpdate.modifierId}
-            firstName={props.hopsUpdate.modifier}
-            hasImage={props.hopsUpdate.modifierHasImage}
-            size="large"
-          />
-          <div className="hops__history-event-author-name">
-            {props.hopsUpdate.modifier}
-          </div>
+    <div className="hops-container__history-event">
+      <div className="hops-container__history-event-author">
+        <Avatar
+          id={props.hopsUpdate.modifierId}
+          firstName={props.hopsUpdate.modifier}
+          hasImage={props.hopsUpdate.modifierHasImage}
+          size="large"
+        />
+        <div className="hops-container__history-event-author-name">
+          {props.hopsUpdate.modifier}
         </div>
+      </div>
 
-        <div className="hops__history-event-meta">
-          <div className="hops__history-event-date">
-            {moment(props.hopsUpdate.date).format("l")}
-          </div>
-          {props.showEdit && (
-            <div className="hops__history-event-action">
-              <IconButton icon="pencil" onClick={handleEditClick} />
-            </div>
-          )}
+      <div className="hops-container__history-event-meta">
+        <div className="hops-container__history-event-date">
+          {moment(props.hopsUpdate.date).format("l")}
         </div>
-      </>
+        {props.showEdit && (
+          <div className="hops-container__history-event-action">
+            <IconButton icon="pencil" onClick={handleEditClick} />
+          </div>
+        )}
+      </div>
       {props.hopsUpdate.details && (
         <>
           <AnimateHeight
