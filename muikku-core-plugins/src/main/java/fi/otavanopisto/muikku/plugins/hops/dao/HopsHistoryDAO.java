@@ -1,10 +1,10 @@
 package fi.otavanopisto.muikku.plugins.hops.dao;
 
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -15,7 +15,7 @@ import fi.otavanopisto.muikku.plugins.hops.model.HopsHistory_;
 
 public class HopsHistoryDAO extends CorePluginsDAO<HopsHistory> {
 
-  private static final long serialVersionUID = -6729260246394093969L;
+  private static final long serialVersionUID = 684462720482086730L;
 
   public HopsHistory create(String studentIdentifier, Date date, String lastModifier, String details) {
     EntityManager entityManager = getEntityManager();
@@ -36,7 +36,7 @@ public class HopsHistoryDAO extends CorePluginsDAO<HopsHistory> {
     return persist(history);
   }
 
-  public List<HopsHistory> listByStudentIdentifier(String studentIdentifier) {
+  public List<HopsHistory> listByStudentIdentifier(String studentIdentifier, int firstResult, int maxResults) {
     EntityManager entityManager = getEntityManager();
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -47,12 +47,15 @@ public class HopsHistoryDAO extends CorePluginsDAO<HopsHistory> {
       criteriaBuilder.equal(root.get(HopsHistory_.studentIdentifier), studentIdentifier)
     );
 
-    List<HopsHistory> hopsHistory = entityManager.createQuery(criteria).getResultList();
-    
     // Sort latest to oldest
-    hopsHistory.sort(Comparator.comparing(HopsHistory::getDate).reversed());
+    criteria.orderBy(criteriaBuilder.desc(root.get(HopsHistory_.date)));
+    
+    TypedQuery<HopsHistory> query = entityManager.createQuery(criteria);
+    
+    query.setFirstResult(firstResult);
+    query.setMaxResults(maxResults);
 
-    return hopsHistory;
+    return query.getResultList();
   }
 
 }

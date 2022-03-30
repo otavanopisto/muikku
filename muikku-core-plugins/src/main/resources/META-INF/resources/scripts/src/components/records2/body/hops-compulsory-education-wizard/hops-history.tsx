@@ -12,6 +12,7 @@ import "~/sass/elements/hops.scss";
 interface HopsHistoryProps {
   hopsUpdates: HopsUpdate[];
   loggedUserId: number;
+  loading: boolean;
   superVisorModifies: boolean;
   onHistoryEventClick: (eventId: number) => void;
 }
@@ -42,6 +43,21 @@ const HopsHistory: React.FC<HopsHistoryProps> = (props) => (
         onHistoryEventClick={props.onHistoryEventClick}
       />
     ))}
+    {props.loading && (
+      <div
+        className="history-event-item"
+        style={{
+          display: "flex",
+          marginBottom: "10px",
+          flexWrap: "wrap",
+          borderBottom: "1px solid black",
+          borderBottomStyle: "dashed",
+          maxWidth: "750px",
+        }}
+      >
+        <div className="loader-empty" />
+      </div>
+    )}
   </div>
 );
 

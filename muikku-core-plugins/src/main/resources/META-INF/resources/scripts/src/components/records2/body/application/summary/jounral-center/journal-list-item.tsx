@@ -147,8 +147,6 @@ const JournalListItem = React.forwardRef<HTMLDivElement, JournalListItemProps>(
       (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
         e.stopPropagation();
 
-        console.log(newStatus);
-
         if (onUpdateJournalStatus) {
           onUpdateJournalStatus(id, newStatus);
         }

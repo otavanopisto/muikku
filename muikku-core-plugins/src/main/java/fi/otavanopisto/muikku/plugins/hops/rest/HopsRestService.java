@@ -317,7 +317,9 @@ public class HopsRestService {
   @GET
   @Path("/student/{STUDENTIDENTIFIER}/history")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response getHopsHistory(@PathParam("STUDENTIDENTIFIER") String studentIdentifier) {
+  public Response getHopsHistory(@PathParam("STUDENTIDENTIFIER") String studentIdentifier,
+      @QueryParam("firstResult") @DefaultValue("0") Integer firstResult,
+      @QueryParam("maxResults") @DefaultValue("5") Integer maxResults) {
     
     // Access check
     
@@ -327,13 +329,13 @@ public class HopsRestService {
       }
     }
     
-    List<HopsHistory> history = hopsController.listHistoryByStudentIdentifier(studentIdentifier);
+    List<HopsHistory> history = hopsController.listHistoryByStudentIdentifier(studentIdentifier, firstResult, maxResults);
     if (history.isEmpty()) {
       return Response.ok(Collections.<HistoryItem>emptyList()).build();
     }
 
     Map<String, UserBasicInfo> userMap = new HashMap<>();
-    UserBasicInfo userDetails = new UserBasicInfo();
+    
     List<HistoryItem> historyItems = new ArrayList<>();
     for (HopsHistory historyEntry : history) {
       HistoryItem historyItem = new HistoryItem();
@@ -352,6 +354,8 @@ public class HopsRestService {
         UserEntityName userEntityName = userEntityController.getName(sdi);
         
         if (userEntity != null && userEntityName != null) {
+          UserBasicInfo userDetails = new UserBasicInfo();
+          
           historyItem.setModifier(userEntityName.getDisplayName());
           historyItem.setModifierId(userEntity.getId());
           historyItem.setModifierHasImage(userEntityFileController.hasProfilePicture(userEntity));

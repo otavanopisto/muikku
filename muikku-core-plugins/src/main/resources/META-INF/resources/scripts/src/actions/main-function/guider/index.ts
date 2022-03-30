@@ -382,8 +382,6 @@ let loadStudent: LoadStudentTriggerType = function loadStudent(id) {
               }),
               "callback"
             )().then((properties: any) => {
-              console.log(properties[0]);
-
               dispatch({
                 type: "SET_CURRENT_GUIDER_STUDENT_PROP",
                 payload: { property: "hopsPhase", value: properties[0].value },
