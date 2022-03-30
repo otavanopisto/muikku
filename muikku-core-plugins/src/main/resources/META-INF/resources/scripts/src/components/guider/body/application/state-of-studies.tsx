@@ -28,10 +28,12 @@ import NewMessage from "~/components/communicator/dialogs/new-message";
 import { ButtonPill } from "~/components/general/button";
 import GuiderToolbarLabels from "./toolbar/labels";
 
-// import GuidanceEvent from "../../dialogs/guidance-event";
-// import { CalendarEvent } from "~/reducers/main-function/calendar";
-// import { ResourceTimeline } from "../../../general/resource-timeline";
-// import { ExternalEventType } from "../../../general/resource-timeline";
+import GuidanceEvent from "../../dialogs/guidance-event";
+import { CalendarEvent } from "~/reducers/main-function/calendar";
+import {
+  ResourceTimeline,
+  ExternalEventType,
+} from "../../../general/resource-timeline";
 
 /**
  * StateOfStudiesProps
@@ -149,13 +151,12 @@ class StateOfStudies extends React.Component<
               buttonModifiers={["new-message", "guider-student"]}
             />
           </NewMessage>
-          {/* Not implemented yet
           <GuidanceEvent>
             <ButtonPill
               icon="bubbles"
               buttonModifiers={["new-message", "guider-student"]}
             />
-          </GuidanceEvent> */}
+          </GuidanceEvent>
           <GuiderToolbarLabels />
         </div>
       </div>
