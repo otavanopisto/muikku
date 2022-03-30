@@ -133,17 +133,45 @@
   }
 }
 
-.hops-container__info-item {
-  margin: 15px 5px;
+// HOPS history
+.hops__history-container {
+  display: flex;
+  flex-flow: column wrap;
 }
 
-.hops-container__info-list {
-  list-style-type: disc;
-  margin: 15px 30px;
+.hops__history-event {
+  align-items: center;
+  display: flex;
+  flex-basis: 100%;
+  flex-flow: row nowrap;
+  flex-grow: 1;
+  flex-shrink: 1;
+  justify-content: flex-start;
+  margin: 5px;
 }
 
-.hops-container__info-list-item {
-  display: list-item;
+.hops__history-event-author {
+  align-items: center;
+  display: flex;
+  flex-basis: auto;
+  flex-flow: row nowrap;
+  flex-grow: 1;
+  flex-shrink: 1;
+  justify-content: flex-start;
+}
+
+.hops__history-event-meta {
+  align-items: center;
+  display: flex;
+  flex-basis: 100px;
+  flex-flow: row nowrap;
+  flex-grow: 1;
+  flex-shrink: 1;
+  justify-content: flex-start;
+}
+
+.hops__history-item-actions-date {
+
 }
 
 .hops-container__row {
@@ -167,7 +195,6 @@
       top: 10px;
       width: 10px;
     }
-
   }
 }
 
@@ -328,30 +355,19 @@
 }
 
 .hops__form-element-container--toomuch {
-  border-color: green;
+  border-color: $color-error;
 }
 
 .hops__form-element-container--enough {
-  border-color: lightblue;
+  border-color: $color-info;
 }
 
 .hops__form-element-container--notenough {
-  border-color: orange;
+  border-color: $color-warn;
 }
 
 .hops__table-container {
   width: 100%;
-}
-
-.hops__button-container {
-  align-items: center;
-  display: flex;
-  height: 50px;
-  justify-content: center;
-}
-
-.hops__row--list {
-  display: block;
 }
 
 .hops-container__indicator-examples {
@@ -360,7 +376,6 @@
   margin: 10px 5px 20px;
 }
 
-.hops__container-course-latest_completed,
 .hops__container-course-selected,
 .hops__container-course-suggested,
 .hops__container-course-mandatory,
@@ -374,7 +389,6 @@
   margin: 5px;
 }
 
-.hops__container-course-latest_completed-indicator,
 .hops__container-course-suggested-indicator,
 .hops__container-course-selected-indicator,
 .hops__container-course-mandatory-indicator,
@@ -401,7 +415,7 @@
 }
 
 .hops__container-course-inprogress-indicator {
-  background-color: orange;
+  background-color: $color-info;
 }
 
 .hops__container-course-approval-indicator {
@@ -409,11 +423,7 @@
 }
 
 .hops__container-course-completed-indicator {
-  background-color: green;
-}
-
-.hops__container-course-latest_completed-indicator {
-  background-color: #08e108;
+  background-color: $color-success;
 }
 
 .hops__container-course-selected-indicator {
@@ -435,8 +445,8 @@
 }
 
 .hops__calculated-hours-divider {
-  margin-top: 10px;
   margin-bottom: 10px;
+  margin-top: 10px;
 }
 
 .hops__activity-progressbar-circle {
@@ -444,6 +454,8 @@
   cursor: pointer;
   display: flex;
   height: 105px;
+  line-height: 1;
+  margin: 0 5px;
 }
 
 .hops__course-activity-progressbar-circle {
@@ -451,24 +463,16 @@
   cursor: pointer;
   display: flex;
   height: 100px;
-}
-
-.hops__activity-progressbar-circle {
-  line-height: 1;
-  margin: 0 5px;
-}
-
-.hops__course-activity-progressbar-circle {
   line-height: 1;
   margin: 0 5px;
 }
 
 .hops__proggress-line {
-  display: flex;
-  position: relative;
   align-items: center;
-  width: calc(100% - 10px);
+  display: flex;
   margin: 5px;
+  position: relative;
+  width: calc(100% - 10px);
 }
 
 .hops__proggress-line .progressbar-text {
@@ -492,16 +496,16 @@
 }
 
 .hops__activity-progressbar-label--workspace {
+  align-items: center;
   background: transparent;
   border: 0;
-  padding: 0 6px;
-  white-space: nowrap;
-  position: absolute;
-  height: 100px;
-  width: 100px;
   display: flex;
-  align-items: center;
+  height: 100px;
   justify-content: center;
+  padding: 0 6px;
+  position: absolute;
+  white-space: nowrap;
+  width: 100px;
 }
 
 .hops__activity-progressbar-label--assignment {
@@ -509,9 +513,9 @@
 }
 
 .hops__buttons {
-  flex-grow: 1;
   display: flex;
   flex-flow: wrap;
+  flex-grow: 1;
 }
 
 .hops__buttons--add {
