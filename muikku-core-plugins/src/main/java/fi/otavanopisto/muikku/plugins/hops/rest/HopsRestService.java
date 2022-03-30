@@ -335,7 +335,7 @@ public class HopsRestService {
     }
 
     Map<String, UserBasicInfo> userMap = new HashMap<>();
-    UserBasicInfo userDetails = new UserBasicInfo();
+    
     List<HistoryItem> historyItems = new ArrayList<>();
     for (HopsHistory historyEntry : history) {
       HistoryItem historyItem = new HistoryItem();
@@ -354,6 +354,8 @@ public class HopsRestService {
         UserEntityName userEntityName = userEntityController.getName(sdi);
         
         if (userEntity != null && userEntityName != null) {
+          UserBasicInfo userDetails = new UserBasicInfo();
+          
           historyItem.setModifier(userEntityName.getDisplayName());
           historyItem.setModifierId(userEntity.getId());
           historyItem.setModifierHasImage(userEntityFileController.hasProfilePicture(userEntity));
