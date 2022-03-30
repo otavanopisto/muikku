@@ -5,6 +5,7 @@ import { TextField } from "../text-field";
 import { BasicInformation } from "~/@types/shared";
 import { HopsBaseProps } from "..";
 import HopsHistory from "../hops-history";
+import Link from "~/components/general/link";
 
 /**
  * StudentHopsInformationProps
@@ -13,7 +14,10 @@ interface HopsStudentHopsInformationProps extends HopsBaseProps {
   loading: boolean;
   basicInformation: BasicInformation;
   loggedUserId: number;
+  loadingHistoryEvents: boolean;
+  allHistoryEventLoaded: boolean;
   onHistoryEventClick: (eventId: number) => void;
+  onLoadMOreHistoryEventsClick: () => void;
 }
 
 /**
@@ -82,9 +86,20 @@ class HopsStudentHopsInformation extends React.Component<
             this.props.basicInformation.updates.length ? (
               <div className="hops-container__info">
                 <h3 className="hops-container__subheader">Muokkaushistoria</h3>
+                <Link
+                  onClick={this.props.onLoadMOreHistoryEventsClick}
+                  disabled={
+                    this.props.allHistoryEventLoaded ||
+                    this.props.loadingHistoryEvents ||
+                    this.props.basicInformation.updates.length > 5
+                  }
+                >
+                  Lataa lisää
+                </Link>
                 <HopsHistory
                   hopsUpdates={this.props.basicInformation.updates}
                   loggedUserId={this.props.loggedUserId}
+                  loading={this.props.loadingHistoryEvents}
                   superVisorModifies={this.props.superVisorModifies}
                   onHistoryEventClick={this.props.onHistoryEventClick}
                 />

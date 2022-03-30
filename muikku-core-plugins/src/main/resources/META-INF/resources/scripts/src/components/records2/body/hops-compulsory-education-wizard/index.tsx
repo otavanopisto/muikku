@@ -87,6 +87,8 @@ interface CompulsoryEducationHopsWizardState {
   hopsCompulsory: HopsCompulsory;
   hopsFollowUp?: FollowUp;
   loading: boolean;
+  loadingHistoryEvents: boolean;
+  allHistoryEventsLoaded: boolean;
   savingStatus?: SaveState;
   addHopsUpdateDetailsDialogOpen: boolean;
   updateEventToBeEdited?: HopsUpdate;
@@ -109,6 +111,8 @@ class CompulsoryEducationHopsWizard extends React.Component<
 
     this.state = {
       loading: false,
+      loadingHistoryEvents: false,
+      allHistoryEventsLoaded: false,
       savingStatus: undefined,
       basicInfo: {
         name: "",
@@ -127,6 +131,67 @@ class CompulsoryEducationHopsWizard extends React.Component<
   async componentDidMount() {
     this.loadHopsData();
   }
+
+  /**
+   * loadMoreHistoryEvents
+   */
+  loadMoreHistoryEvents = async () => {
+    this.setState({
+      loadingHistoryEvents: true,
+    });
+
+    /**
+     * Student id get from guider or logged in student
+     */
+    const studentId =
+      this.props.user === "supervisor"
+        ? this.props.guider.currentStudent.basic.id
+        : document
+            .querySelector('meta[name="muikku:loggedUser"]')
+            .getAttribute("value");
+
+    try {
+      /**
+       * Sleeper to delay data fetching if it happens faster than 1s
+       */
+      const sleepPromise = await sleep(1000);
+
+      /**
+       * loaded history data
+       */
+      const [studentHopsHistory] = await Promise.all([
+        (async () => {
+          const studentHopsHistory = (await promisify(
+            mApi().hops.student.history.read(studentId, {
+              firstResult: 6,
+              maxResults: 999,
+            }),
+            "callback"
+          )()) as HopsUpdate[];
+
+          return studentHopsHistory;
+        })(),
+        sleepPromise,
+      ]);
+
+      const updatedList: HopsUpdate[] = [].concat(
+        this.state.basicInfo.updates,
+        studentHopsHistory
+      );
+
+      this.setState({
+        allHistoryEventsLoaded: true,
+        loadingHistoryEvents: false,
+        basicInfo: {
+          ...this.state.basicInfo,
+          updates: updatedList,
+        },
+      });
+    } catch (err) {
+      this.props.displayNotification(`Hups errori ${err}`, "error");
+      this.setState({ loadingHistoryEvents: false });
+    }
+  };
 
   /**
    * loadHopsData
@@ -162,8 +227,6 @@ class CompulsoryEducationHopsWizard extends React.Component<
             "callback"
           )()) as HopsUpdate[];
 
-          console.log(studentHopsHistory);
-
           const studentBasicInfo = (await promisify(
             mApi().hops.student.studentInfo.read(studentId),
             "callback"
@@ -174,8 +237,6 @@ class CompulsoryEducationHopsWizard extends React.Component<
             "callback"
           )()) as HopsCompulsory;
 
-          console.log("hops", hops);
-
           const loadedHops = {
             basicInfo: {
               name: `${studentBasicInfo.firstName} ${studentBasicInfo.lastName}`,
@@ -185,14 +246,10 @@ class CompulsoryEducationHopsWizard extends React.Component<
             hopsCompulsory: hops !== undefined ? hops : initializeHops(),
           };
 
-          console.log(loadedHops);
-
           return loadedHops;
         })(),
         sleepPromise,
       ]);
-
-      console.log(loadedHops);
 
       this.setState({
         loading: false,
@@ -290,6 +347,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
         this.loadHopsData().then(() => {
           this.setState({
             loading: false,
+            allHistoryEventsLoaded: false,
             hopsUpdateDetails: "",
             savingStatus: "SUCCESS",
           });
@@ -306,7 +364,6 @@ class CompulsoryEducationHopsWizard extends React.Component<
    * @param startingLevel startingLevel
    */
   handleStartingLevelChange = (startingLevel: HopsStudentStartingLevel) => {
-    console.log(startingLevel);
     this.setState({
       hopsCompulsory: {
         ...this.state.hopsCompulsory,
@@ -495,8 +552,11 @@ class CompulsoryEducationHopsWizard extends React.Component<
             loading={this.state.loading}
             basicInformation={this.state.basicInfo}
             loggedUserId={status.userId}
+            loadingHistoryEvents={this.state.loadingHistoryEvents}
+            allHistoryEventLoaded={this.state.allHistoryEventsLoaded}
             superVisorModifies={this.props.superVisorModifies}
             onHistoryEventClick={this.handleEditHistoryEventClick}
+            onLoadMOreHistoryEventsClick={this.loadMoreHistoryEvents}
           />
         ),
       },

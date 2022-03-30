@@ -499,7 +499,6 @@ class NewEditAnnouncement extends SessionStateComponent<
    */
   handleDateChange(stateLocation: string, newDate: any) {
     const nState: any = {};
-    console.log(newDate);
     nState[stateLocation] = newDate;
     (this.setStateAndClear as any)(
       nState,
@@ -529,8 +528,6 @@ class NewEditAnnouncement extends SessionStateComponent<
           "plugin.announcer.createannouncement.content.label"
         );
     }
-
-    console.log(this.state.startDate);
 
     /**
      * content
