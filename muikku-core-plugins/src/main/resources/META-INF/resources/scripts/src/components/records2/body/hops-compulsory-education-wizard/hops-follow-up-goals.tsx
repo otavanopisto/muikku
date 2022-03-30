@@ -16,6 +16,7 @@ import { WebsocketStateType } from "~/reducers/util/websocket";
 import { AnyActionType } from "~/actions";
 import { Textarea } from "./text-area";
 import { TextField } from "./text-field";
+import AnimateHeight from "react-animate-height";
 
 /**
  * FollowUpGoalsProps
@@ -106,99 +107,119 @@ const HopsFollowUpGoals: React.FC<HopsFollowUpGoalsProps> = (props) => {
             <option value={FollowUpGoal.DONT_KNOW}>En tiedä vielä</option>
           </select>
         </div>
-        {followUpData.followUp.followUpGoal ===
-        FollowUpGoal.POSTGRADUATE_STUDIES ? (
-          <>
-            <div className="hops-container__row hops-container__row--dependant-of-above">
-              <div className="hops__form-element-container">
-                <label className="hops__label">Mihin aiot hakea:</label>
-                <select
-                  value={followUpData.followUp.followUpStudies}
-                  onChange={(e) =>
-                    handleGoalsChange("followUpStudies", e.currentTarget.value)
-                  }
-                  className="hops__select"
-                  disabled={disabled}
-                >
-                  <option value="">Valitse...</option>
 
-                  <option value={FollowUpStudies.VOCATIONAL_SCHOOL}>
-                    ammatillinen toinen aste
-                  </option>
-                  <option value={FollowUpStudies.UPPER_SECONDARY_SCHOOL}>
-                    lukio
-                  </option>
+        <AnimateHeight
+          height={
+            followUpData.followUp.followUpGoal ===
+            FollowUpGoal.POSTGRADUATE_STUDIES
+              ? "auto"
+              : 0
+          }
+          contentClassName="hops-animate_height-wrapper"
+          className="hops-container__row hops-container__row--dependant-of-above"
+        >
+          <div className="hops__form-element-container">
+            <label className="hops__label">Mihin aiot hakea:</label>
+            <select
+              value={followUpData.followUp.followUpStudies}
+              onChange={(e) =>
+                handleGoalsChange("followUpStudies", e.currentTarget.value)
+              }
+              className="hops__select"
+              disabled={disabled}
+            >
+              <option value="">Valitse...</option>
 
-                  <option value={FollowUpStudies.SOMETHING_ELSE}>
-                    joku muu?
-                  </option>
-                </select>
-              </div>
-              {followUpData.followUp.followUpStudies ===
-                FollowUpStudies.SOMETHING_ELSE && (
-                <div className="hops-container__row hops-container__row--dependant-of-above">
-                  <div className="hops__form-element-container">
-                    <TextField
-                      label="Kerro tarkemmin"
-                      defaultValue={followUpData.followUp.followUpStudiesElse}
-                      onBlur={(e) =>
-                        handleGoalsChange(
-                          "followUpStudiesElse",
-                          e.currentTarget.value
-                        )
-                      }
-                    />
-                  </div>
-                </div>
-              )}
+              <option value={FollowUpStudies.VOCATIONAL_SCHOOL}>
+                ammatillinen toinen aste
+              </option>
+              <option value={FollowUpStudies.UPPER_SECONDARY_SCHOOL}>
+                lukio
+              </option>
+
+              <option value={FollowUpStudies.SOMETHING_ELSE}>joku muu?</option>
+            </select>
+          </div>
+
+          <AnimateHeight
+            height={
+              followUpData.followUp.followUpStudies ===
+              FollowUpStudies.SOMETHING_ELSE
+                ? "auto"
+                : 0
+            }
+            contentClassName="hops-animate_height-wrapper"
+            className="hops-container__row hops-container__row--dependant-of-above"
+          >
+            <div className="hops__form-element-container">
+              <TextField
+                label="Kerro tarkemmin"
+                defaultValue={followUpData.followUp.followUpStudiesElse}
+                onBlur={(e) =>
+                  handleGoalsChange(
+                    "followUpStudiesElse",
+                    e.currentTarget.value
+                  )
+                }
+              />
             </div>
+          </AnimateHeight>
+        </AnimateHeight>
+        <AnimateHeight
+          height={
+            followUpData.followUp.followUpGoal ===
+              FollowUpGoal.POSTGRADUATE_STUDIES ||
+            followUpData.followUp.followUpGoal === FollowUpGoal.WORKING_LIFE
+              ? "auto"
+              : 0
+          }
+          contentClassName="hops-animate_height-wrapper"
+          className="hops-container__row hops-container__row--dependant-of-above"
+        >
+          <div className="hops__form-element-container">
+            <label className="hops__label">Koulutusala:</label>
+            <select
+              value={followUpData.followUp.studySector}
+              onChange={(e) =>
+                handleGoalsChange("studySector", e.currentTarget.value)
+              }
+              className="hops__select"
+              disabled={disabled}
+            >
+              <option value="">Valitse...</option>
+              <option value={StudySector.SOCIAL_HEALT_SECTOR}>
+                sosiaali- ja terveysala
+              </option>
+              <option value={StudySector.TRADE_SECTOR}>kauppa</option>
+              <option value={StudySector.TRANSPORT_SECTOR}>liikenne</option>
+              <option value={StudySector.EDUCATION_SECTOR}>kasvatus</option>
+              <option value={StudySector.INDUSTRY_SECTOR}>teollisuus</option>
+              <option value={StudySector.ART_SECTOR}>taide</option>
+              <option value={StudySector.SOMETHING_ELSE}>joku muu?</option>
+            </select>
+          </div>
 
-            <div className="hops-container__row hops-container__row--dependant-of-above">
-              <div className="hops__form-element-container">
-                <label className="hops__label">Koulutusala:</label>
-                <select
-                  value={followUpData.followUp.studySector}
-                  onChange={(e) =>
-                    handleGoalsChange("studySector", e.currentTarget.value)
-                  }
-                  className="hops__select"
-                  disabled={disabled}
-                >
-                  <option value="">Valitse...</option>
-                  <option value={StudySector.SOCIAL_HEALT_SECTOR}>
-                    sosiaali- ja terveysala
-                  </option>
-                  <option value={StudySector.TRADE_SECTOR}>kauppa</option>
-                  <option value={StudySector.TRANSPORT_SECTOR}>liikenne</option>
-                  <option value={StudySector.EDUCATION_SECTOR}>kasvatus</option>
-                  <option value={StudySector.INDUSTRY_SECTOR}>
-                    teollisuus
-                  </option>
-                  <option value={StudySector.ART_SECTOR}>taide</option>
-                  <option value={StudySector.SOMETHING_ELSE}>joku muu?</option>
-                </select>
-              </div>
-
-              {followUpData.followUp.studySector ===
-                FollowUpStudies.SOMETHING_ELSE && (
-                <div className="hops-container__row hops-container__row--dependant-of-above">
-                  <div className="hops__form-element-container">
-                    <TextField
-                      label="Kerro tarkemmin"
-                      defaultValue={followUpData.followUp.studySectorElse}
-                      onBlur={(e) =>
-                        handleGoalsChange(
-                          "studySectorElse",
-                          e.currentTarget.value
-                        )
-                      }
-                    />
-                  </div>
-                </div>
-              )}
+          <AnimateHeight
+            height={
+              followUpData.followUp.studySector ===
+              FollowUpStudies.SOMETHING_ELSE
+                ? "auto"
+                : 0
+            }
+            contentClassName="hops-animate_height-wrapper"
+            className="hops-container__row hops-container__row--dependant-of-above"
+          >
+            <div className="hops__form-element-container">
+              <TextField
+                label="Kerro tarkemmin"
+                defaultValue={followUpData.followUp.studySectorElse}
+                onBlur={(e) =>
+                  handleGoalsChange("studySectorElse", e.currentTarget.value)
+                }
+              />
             </div>
-          </>
-        ) : null}
+          </AnimateHeight>
+        </AnimateHeight>
       </div>
 
       <div className="hops-container__row">

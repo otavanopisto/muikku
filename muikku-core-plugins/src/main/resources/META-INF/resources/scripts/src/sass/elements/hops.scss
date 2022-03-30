@@ -3,6 +3,10 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
+.hops-animate_height-wrapper {
+  width: 100%;
+}
+
 .hops-container {
   flex-basis: 100%;
   overflow: auto;
