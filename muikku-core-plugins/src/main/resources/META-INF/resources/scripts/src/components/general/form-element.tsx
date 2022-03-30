@@ -2,7 +2,7 @@ import * as React from "react";
 import Button from "~/components/general/button";
 import "~/sass/elements/dialog.scss";
 import "~/sass/elements/form-elements.scss";
-import DatePicker from "react-datepicker";
+import DatePicker, { ReactDatePickerProps } from "react-datepicker";
 
 // Either label or placeholder is mandatory because of wcag
 
@@ -947,15 +947,10 @@ export class SSNFormElement extends React.Component<
 /**
  * DateFormElementProps
  */
-interface DateFormElementProps {
+interface DateFormElementProps extends Omit<ReactDatePickerProps, "onChange"> {
   labels: FormElementLabel | FormElementPlaceholder;
   id: string;
-  updateField: (value: string) => any;
-  maxDate?: any;
-  minDate?: any;
-  selected: any;
-  value?: string;
-  locale: string;
+  updateField: (value: Date) => void;
   mandatory?: boolean;
   valid?: number;
   modifiers?: string | Array<string>;
@@ -988,7 +983,7 @@ export class DateFormElement extends React.Component<
    * updateInputField
    * @param newDate newDate
    */
-  updateInputField(newDate: any) {
+  updateInputField(newDate: Date) {
     this.props.updateField(newDate);
   }
 
@@ -996,41 +991,41 @@ export class DateFormElement extends React.Component<
    * Component render method
    */
   render() {
-    const modifiers =
-      this.props.modifiers && this.props.modifiers instanceof Array
-        ? this.props.modifiers
-        : [this.props.modifiers];
+    const { modifiers, labels, ...datePickerProps } = this.props;
+
+    const id = datePickerProps.id;
+
+    const parsedModifiers =
+      modifiers && modifiers instanceof Array ? modifiers : [modifiers];
 
     return (
       <div
         className={`form-element ${
-          this.props.modifiers
-            ? modifiers.map((m) => `form-element--${m}`).join(" ")
+          modifiers
+            ? parsedModifiers.map((m) => `form-element--${m}`).join(" ")
             : ""
         }`}
       >
-        {this.props.labels.label ? (
-          <label htmlFor={this.props.id} className="form-element__label">
-            {this.props.labels.label}
+        {labels.label ? (
+          <label htmlFor={id} className="form-element__label">
+            {labels.label}
           </label>
         ) : (
-          <label htmlFor={this.props.id} className="visually-hidden">
-            {this.props.labels.placeholder}
+          <label htmlFor={id} className="visually-hidden">
+            {labels.placeholder}
           </label>
         )}
         <DatePicker
-          id={this.props.id}
           className={`form-element__input ${
-            this.props.modifiers
-              ? modifiers.map((m) => `form-element__input--${m}`).join(" ")
+            modifiers
+              ? parsedModifiers
+                  .map((m) => `form-element__input--${m}`)
+                  .join(" ")
               : ""
           }`}
           placeholderText={this.props.labels.placeholder}
           onChange={this.updateInputField}
-          maxDate={this.props.maxDate}
-          minDate={this.props.minDate}
-          locale={this.props.locale}
-          selected={this.props.selected}
+          {...datePickerProps}
         />
       </div>
     );
