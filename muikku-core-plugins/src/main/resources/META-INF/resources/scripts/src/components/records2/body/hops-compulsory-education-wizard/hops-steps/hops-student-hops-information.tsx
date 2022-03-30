@@ -94,7 +94,7 @@ class HopsStudentHopsInformation extends React.Component<
                     this.props.basicInformation.updates.length > 5
                   }
                 >
-                  Lataa lisää
+                  Lataa kaikki
                 </Link>
                 <HopsHistory
                   hopsUpdates={this.props.basicInformation.updates}

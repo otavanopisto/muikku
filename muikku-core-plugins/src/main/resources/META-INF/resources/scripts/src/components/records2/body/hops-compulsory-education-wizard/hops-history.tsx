@@ -22,17 +22,7 @@ interface HopsHistoryProps {
  * @param props props
  */
 const HopsHistory: React.FC<HopsHistoryProps> = (props) => (
-  <div
-    className="history-list"
-    style={{
-      padding: "10px",
-      maxHeight: "400px",
-      display: "flex",
-      flexDirection: "column",
-      overflow: "auto",
-      maxWidth: "750px",
-    }}
-  >
+  <div className="hops__history-container">
     {props.hopsUpdates.map((item, i) => (
       <HopsHistoryEvent
         key={i}
@@ -44,17 +34,7 @@ const HopsHistory: React.FC<HopsHistoryProps> = (props) => (
       />
     ))}
     {props.loading && (
-      <div
-        className="history-event-item"
-        style={{
-          display: "flex",
-          marginBottom: "10px",
-          flexWrap: "wrap",
-          borderBottom: "1px solid black",
-          borderBottomStyle: "dashed",
-          maxWidth: "750px",
-        }}
-      >
+      <div className="hops__history-event">
         <div className="loader-empty" />
       </div>
     )}
@@ -92,28 +72,10 @@ const HopsHistoryEvent: React.FC<HopsHistoryEventProps> = (props) => {
     : "animate-height";
 
   return (
-    <div
-      className="history-event-item"
-      style={{
-        display: "flex",
-        marginBottom: "10px",
-        flexWrap: "wrap",
-        borderBottom: "1px solid black",
-        borderBottomStyle: "dashed",
-        maxWidth: "750px",
-      }}
-    >
-      <div
-        className="history-event-item-row"
-        style={{
-          display: "flex",
-          flexBasis: "100%",
-          justifyContent: "space-between",
-          marginBottom: "10px",
-        }}
-      >
+    <div className="hops__history-event">
+      <>
         <div
-          className="history-event-item-user"
+          className="hops__history-event-author"
           style={{ display: "flex", alignItems: "center" }}
         >
           <Avatar
@@ -122,40 +84,24 @@ const HopsHistoryEvent: React.FC<HopsHistoryEventProps> = (props) => {
             hasImage={props.hopsUpdate.modifierHasImage}
             size="large"
           />
-          <div
-            className="history-event-item-user-data"
-            style={{ marginLeft: "5px" }}
-          >
-            <h4>{props.hopsUpdate.modifier}</h4>
-            <div style={{ fontWeight: "lighter" }}>Titteli</div>
+          <div className="hops__history-event-author-name">
+            {props.hopsUpdate.modifier}
           </div>
         </div>
 
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <div
-            className="history-event-item-date"
-            style={{ fontWeight: "lighter" }}
-          >
-            Tapahtui {moment(props.hopsUpdate.date).format("l")}
+        <div className="hops__history-event-meta">
+          <div className="hops__history-event-date">
+            {moment(props.hopsUpdate.date).format("l")}
           </div>
           {props.showEdit && (
-            <div className="history-event-item-functions">
+            <div className="hops__history-event-action">
               <IconButton icon="pencil" onClick={handleEditClick} />
             </div>
           )}
         </div>
-      </div>
+      </>
       {props.hopsUpdate.details && (
-        <div
-          className="history-event-item-row"
-          style={{
-            display: "flex",
-            flexBasis: "100%",
-            justifyContent: "center",
-            flexWrap: "wrap",
-            position: "relative",
-          }}
-        >
+        <>
           <AnimateHeight
             height={descrptionOpen}
             className={animateHeightClass}
@@ -163,18 +109,12 @@ const HopsHistoryEvent: React.FC<HopsHistoryEventProps> = (props) => {
           >
             {props.hopsUpdate.details}
           </AnimateHeight>
-          <div
-            style={{
-              display: "flex",
-              flexBasis: "100%",
-              justifyContent: "center",
-            }}
-          >
+          <div>
             <Button onClick={() => setShowDescription(!showDescription)}>
               Lue lisää
             </Button>
           </div>
-        </div>
+        </>
       )}
     </div>
   );
