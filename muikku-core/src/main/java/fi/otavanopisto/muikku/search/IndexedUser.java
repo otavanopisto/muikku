@@ -1,77 +1,93 @@
-package fi.otavanopisto.muikku.schooldata.entity;
+package fi.otavanopisto.muikku.search;
 
 import java.time.OffsetDateTime;
+import java.util.Set;
 
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.search.annotations.IndexField;
+import fi.otavanopisto.muikku.search.annotations.IndexId;
+import fi.otavanopisto.muikku.search.annotations.Indexable;
+import fi.otavanopisto.muikku.search.annotations.IndexableFieldMultiField;
+import fi.otavanopisto.muikku.search.annotations.IndexableFieldOption;
 
-public abstract class AbstractUser implements User {
-  
-  public AbstractUser(String identifier, String firstName, String lastName, String nickName, String displayName,
-      String studyProgrammeName, SchoolDataIdentifier studyProgrammeIdentifier, String nationality, String language, String municipality, String school,
-      OffsetDateTime studyStartDate, OffsetDateTime studyEndDate, OffsetDateTime studyTimeEnd, boolean hidden, 
-      boolean evaluationFees, String curriculumIdentifier, SchoolDataIdentifier organizationIdentifier) {
-    super();
-    this.identifier = identifier;
-    this.firstName = firstName;
-    this.lastName = lastName;
-    this.nickName = nickName;
-    this.displayName = displayName;
-    this.studyProgrammeName = studyProgrammeName;
-    this.studyProgrammeIdentifier = studyProgrammeIdentifier;
-    this.nationality = nationality;
-    this.language = language;
-    this.municipality = municipality;
-    this.school = school;
-    this.studyStartDate = studyStartDate;
-    this.studyEndDate = studyEndDate;
-    this.studyTimeEnd = studyTimeEnd;
-    this.hidden = hidden;
-    this.evaluationFees = evaluationFees;
-    this.curriculumIdentifier = curriculumIdentifier;
-    this.organizationIdentifier = organizationIdentifier;
+@Indexable (
+  name = "User",
+  options = {
+    @IndexableFieldOption (
+      name = "email",
+      type = "string",
+      index = "not_analyzed"
+    ),
+    @IndexableFieldOption (
+      name = "organizationIdentifier",
+      type = "multi_field",
+      multiFields = {
+        @IndexableFieldMultiField(name = "organizationIdentifier", type="string", index = "analyzed"),
+        @IndexableFieldMultiField(name = "untouched", type="string", index = "not_analyzed")
+      }
+    )
+  }
+)
+public class IndexedUser {
+
+  public IndexedUser() {
   }
 
-  @Override
+  @IndexId
+  public String getSearchId() {
+    return getIdentifier() + "/" + getSchoolDataSource();
+  }
+
+  public void setIdentifier(String identifier) {
+    this.identifier = identifier;
+  }
+  
   public String getIdentifier() {
     return identifier;
   }
 
-  @Override
   public void setFirstName(String firstName) {
     this.firstName = firstName;
   }
 
-  @Override
   public String getFirstName() {
     return firstName;
   }
 
-  @Override
   public void setLastName(String lastName) {
     this.lastName = lastName;
   }
 
-  @Override
   public String getLastName() {
     return lastName;
   }
   
-  @Override
+  public void setDisplayName(String displayName) {
+    this.displayName = displayName;
+  }
+
   public String getDisplayName() {
     return displayName;
   }
 
-  @Override
+  public void setStudyProgrammeName(String studyProgrammeName) {
+    this.studyProgrammeName = studyProgrammeName;
+  }
+
   public String getStudyProgrammeName() {
     return studyProgrammeName;
   }
 
-  @Override
+  public void setStudyProgrammeIdentifier(SchoolDataIdentifier studyProgrammeIdentifier) {
+    this.studyProgrammeIdentifier = studyProgrammeIdentifier;
+  }
+
+  @IndexField (toId = true)
   public SchoolDataIdentifier getStudyProgrammeIdentifier() {
     return studyProgrammeIdentifier;
   }
   
-  @Override
   public String getNationality() {
     return nationality;
   }
@@ -80,7 +96,6 @@ public abstract class AbstractUser implements User {
     this.nationality = nationality;
   }
 
-  @Override
   public String getLanguage() {
     return language;
   }
@@ -89,7 +104,6 @@ public abstract class AbstractUser implements User {
     this.language = language;
   }
 
-  @Override
   public String getMunicipality() {
     return municipality;
   }
@@ -98,7 +112,6 @@ public abstract class AbstractUser implements User {
     this.municipality = municipality;
   }
 
-  @Override
   public String getSchool() {
     return school;
   }
@@ -107,7 +120,6 @@ public abstract class AbstractUser implements User {
     this.school = school;
   }
 
-  @Override
   public OffsetDateTime getStudyStartDate() {
     return studyStartDate;
   }
@@ -116,7 +128,6 @@ public abstract class AbstractUser implements User {
     this.studyStartDate = studyStartDate;
   }
   
-  @Override
   public OffsetDateTime getStudyEndDate() {
     return this.studyEndDate;
   }
@@ -125,7 +136,6 @@ public abstract class AbstractUser implements User {
     this.studyEndDate = studyEndDate;
   }
 
-  @Override
   public OffsetDateTime getStudyTimeEnd() {
     return studyTimeEnd;
   }
@@ -134,7 +144,6 @@ public abstract class AbstractUser implements User {
     this.studyTimeEnd = studyTimeEnd;
   }
 
-  @Override
   public boolean getHidden() {
     return hidden;
   }
@@ -143,12 +152,14 @@ public abstract class AbstractUser implements User {
     this.hidden = hidden;
   }
   
-  @Override
+  public void setHasEvaluationFees(boolean evaluationFees) {
+    this.evaluationFees = evaluationFees;
+  }
+
   public boolean getHasEvaluationFees() {
     return evaluationFees;
   }
 
-  @Override
   public String getCurriculumIdentifier() {
     return curriculumIdentifier;
   }
@@ -165,7 +176,7 @@ public abstract class AbstractUser implements User {
     this.nickName = nickName;
   }
 
-  @Override
+  @IndexField (toId = true)
   public SchoolDataIdentifier getOrganizationIdentifier() {
     return organizationIdentifier;
   }
@@ -174,7 +185,65 @@ public abstract class AbstractUser implements User {
     this.organizationIdentifier = organizationIdentifier;
   }
 
+  public String getSchoolDataSource() {
+    return schoolDataSource;
+  }
+
+  public void setSchoolDataSource(String schoolDataSource) {
+    this.schoolDataSource = schoolDataSource;
+  }
+
+  public EnvironmentRoleArchetype getArchetype() {
+    return archetype;
+  }
+
+  public void setArchetype(EnvironmentRoleArchetype archetype) {
+    this.archetype = archetype;
+  }
+
+  public Long getUserEntityId() {
+    return userEntityId;
+  }
+
+  public void setUserEntityId(Long userEntityId) {
+    this.userEntityId = userEntityId;
+  }
+
+  @IndexField(name = "isDefaultIdentifier")
+  public Boolean getDefaultIdentifier() {
+    return defaultIdentifier;
+  }
+
+  public void setDefaultIdentifier(Boolean defaultIdentifier) {
+    this.defaultIdentifier = defaultIdentifier;
+  }
+
+  public String getEmail() {
+    return email;
+  }
+
+  public void setEmail(String email) {
+    this.email = email;
+  }
+
+  public Set<Long> getWorkspaces() {
+    return workspaces;
+  }
+
+  public void setWorkspaces(Set<Long> workspaces) {
+    this.workspaces = workspaces;
+  }
+
+  public Set<Long> getGroups() {
+    return groups;
+  }
+
+  public void setGroups(Set<Long> groups) {
+    this.groups = groups;
+  }
+
   private String identifier;
+  private String schoolDataSource;
   private String firstName;
   private String lastName;
   private String displayName;
@@ -192,4 +261,11 @@ public abstract class AbstractUser implements User {
   private String curriculumIdentifier;
   private SchoolDataIdentifier organizationIdentifier;
   private String nickName;
+  private EnvironmentRoleArchetype archetype;
+  private Long userEntityId;
+  private Boolean defaultIdentifier;
+  private String email;
+  private Set<Long> workspaces;
+  private Set<Long> groups;
+
 }

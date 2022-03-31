@@ -106,6 +106,14 @@ public class UserController {
     return userSchoolDataController.listUserPhoneNumbers(userIdentifier);
   }
   
+  public String findUserSsn(User user) {
+    return findUserSsn(new SchoolDataIdentifier(user.getIdentifier(), user.getSchoolDataSource()));
+  }
+  
+  public String findUserSsn(SchoolDataIdentifier userIdentifier) {
+    return userSchoolDataController.findUserSsn(userIdentifier);
+  }
+  
   /**
    * Returns student eligibility to participate matriculation exams
    * 

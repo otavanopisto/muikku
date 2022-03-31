@@ -691,7 +691,6 @@ public class ElasticSearchProvider implements SearchProvider {
       long senderId,
       IndexedCommunicatorMessageSender sender,
       List<IndexedCommunicatorMessageRecipient> recipients,
-      Long searchId,
       Date created,
       Set<Long> tags,
       int start, 
