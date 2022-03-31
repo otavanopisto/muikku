@@ -59,7 +59,7 @@
 		<module>muikku-google-oauth</module>
 		<module>muikku-facebook-oauth</module>
 		<module>muikku-pyramus-oauth</module>
-		<module>muikku-h2db-plugin</module>
+<!-- 		<module>muikku-h2db-plugin</module> -->
 		<module>muikku-persistence</module>
 		<module>muikku-plugin</module>
 		<module>muikku-rest</module>
@@ -86,31 +86,39 @@
 		<maven.build.timestamp.format>yyyyMMdd'T'HHmmss</maven.build.timestamp.format>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-		<hibernate-jpamodelgen.version>4.3.6.Final</hibernate-jpamodelgen.version>
+		<hibernate-jpamodelgen.version>5.3.20.Final</hibernate-jpamodelgen.version>
         <findbugs.skip>true</findbugs.skip>
         <elasticsearch.version>2.1.2</elasticsearch.version>
 	</properties>
 
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>fi.otavanopisto.muikku</groupId>
-				<artifactId>bom</artifactId>
-				<version>1.1.150-SNAPSHOT</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>fi.otavanopisto.muikku</groupId>
+        <artifactId>bom</artifactId>
+        <version>1.1.150-SNAPSHOT</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
 
-			<dependency>
-				<groupId>org.jboss.weld</groupId>
-				<artifactId>weld-core-bom</artifactId>
-				<version>2.2.8.Final</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
+<!--       <dependency> -->
+<!--         <groupId>org.wildfly.bom</groupId> -->
+<!--         <artifactId>wildfly-jakartaee8-with-tools</artifactId> -->
+<!--         <scope>import</scope> -->
+<!--         <type>pom</type> -->
+<!--         <version>${wildfly.version}</version> -->
+<!--       </dependency> -->
 
-		</dependencies>
-	</dependencyManagement>
+<!--       <dependency> -->
+<!--         <groupId>org.jboss.weld</groupId> -->
+<!--         <artifactId>weld-core-bom</artifactId> -->
+<!--         <version>2.2.8.Final</version> -->
+<!--         <type>pom</type> -->
+<!--         <scope>import</scope> -->
+<!--       </dependency> -->
+
+    </dependencies>
+  </dependencyManagement>
 
 	<build>
 		<pluginManagement>

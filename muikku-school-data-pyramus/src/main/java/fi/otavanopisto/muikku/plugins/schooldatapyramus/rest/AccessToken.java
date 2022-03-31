@@ -1,6 +1,8 @@
 package fi.otavanopisto.muikku.plugins.schooldatapyramus.rest;
 
+//import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
+//import com.fasterxml.jackson.annotation.JsonSetter;
 
 public class AccessToken {
   
@@ -12,10 +14,14 @@ public class AccessToken {
     this.accessToken = accessToken;
   }
   
+//  @JsonGetter("expires_in")
+//  @JsonProperty ("expires_in")
   public Integer getExpiresIn() {
     return expiresIn;
   }
   
+//  @JsonSetter("expires_in")
+//  @JsonProperty ("expires_in")
   public void setExpiresIn(Integer expiresIn) {
     this.expiresIn = expiresIn;
   }

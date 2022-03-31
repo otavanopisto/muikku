@@ -11,7 +11,8 @@
   <properties>
     <!-- WildFly -->
 
-    <wildfly-spec-api.version>10.0.0.Final</wildfly-spec-api.version>
+    <wildfly.version>22.0.1.Final</wildfly.version>
+<!--     <wildfly-spec-api.version>10.0.0.Final</wildfly-spec-api.version> -->
 
     <!-- Commons -->
 
@@ -19,10 +20,16 @@
     <commons-collections.version>3.2.2</commons-collections.version>
     <commons-validator.version>1.5.0</commons-validator.version>
 
+    <!-- Jakarta -->
+
+<!--     <javax-annotation.version>1.3.2</javax-annotation.version>     -->
+    <jakarta-annotation.version>1.3.5</jakarta-annotation.version>    
+    <jakarta-xml-bind.version>3.0.0</jakarta-xml-bind.version>
+
     <!-- Jackson -->
 
-    <jackson.version>2.9.10</jackson.version>
-    <jackson-databind.version>2.9.10.4</jackson-databind.version>
+<!--     <jackson.version>2.9.10</jackson.version> -->
+<!--     <jackson-databind.version>2.9.10.4</jackson-databind.version> -->
 
     <!-- Scribe -->
 
@@ -30,7 +37,7 @@
 
     <!-- Rewrite -->
 
-    <rewrite.version>2.0.12.Final</rewrite.version>
+    <rewrite.version>3.5.0.Final</rewrite.version>
 
     <!-- Neko -->
 
@@ -57,26 +64,96 @@
     <rest-assured.version>2.3.4</rest-assured.version>
 
     <!-- JSR310 -->
-    <jackson-datatype-jsr310.version>2.5.4</jackson-datatype-jsr310.version>
+<!--     <jackson-datatype-jsr310.version>2.5.4</jackson-datatype-jsr310.version> -->
 
     <!-- ROME -->
     <rome.version>1.12.2</rome.version>
 
     <xmpp.rocks.version>0.8.2</xmpp.rocks.version>
+    
+    
+          <elasticsearch.lucene.version>8.8.0</elasticsearch.lucene.version>
+    
   </properties>
 
   <dependencyManagement>
     <dependencies>
 
+    <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-core</artifactId>
+      <version>${elasticsearch.lucene.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-misc</artifactId>
+      <version>${elasticsearch.lucene.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-analyzers-common</artifactId>
+      <version>${elasticsearch.lucene.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-facet</artifactId>
+      <version>${elasticsearch.lucene.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-queries</artifactId>
+      <version>${elasticsearch.lucene.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-queryparser</artifactId>
+      <version>${elasticsearch.lucene.version}</version>
+      <scope>compile</scope>
+    </dependency>
+
       <!-- WildFly -->
 
       <dependency>
-        <groupId>org.wildfly</groupId>
-        <artifactId>wildfly-spec-api</artifactId>
-        <version>${wildfly-spec-api.version}</version>
-        <type>pom</type>
+        <groupId>org.wildfly.bom</groupId>
+        <artifactId>wildfly-jakartaee8</artifactId>
         <scope>import</scope>
+        <type>pom</type>
+        <version>${wildfly.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-core</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-core</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-misc</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-analyzers-common</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-facet</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-queries</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
+
+<!--       <dependency> -->
+<!--         <groupId>org.wildfly</groupId> -->
+<!--         <artifactId>wildfly-spec-api</artifactId> -->
+<!--         <version>${wildfly-spec-api.version}</version> -->
+<!--         <type>pom</type> -->
+<!--         <scope>import</scope> -->
+<!--       </dependency> -->
 
       <!-- Commons -->
 
@@ -98,31 +175,45 @@
         <version>${commons-validator.version}</version>
       </dependency>
 
-      <!-- Jackson -->
+      <!-- Jakarta ???? -->
 
       <dependency>
-        <groupId>com.fasterxml.jackson.jaxrs</groupId>
-        <artifactId>jackson-jaxrs-json-provider</artifactId>
-        <version>${jackson.version}</version>
+        <groupId>jakarta.annotation</groupId>
+        <artifactId>jakarta.annotation-api</artifactId>
+        <version>${jakarta-annotation.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>com.fasterxml.jackson.core</groupId>
-        <artifactId>jackson-databind</artifactId>
-        <version>${jackson-databind.version}</version>
+        <groupId>jakarta.xml.bind</groupId>
+        <artifactId>jakarta.xml.bind-api</artifactId>
+        <version>${jakarta-xml-bind.version}</version>
       </dependency>
 
-      <dependency>
-        <groupId>com.fasterxml.jackson.core</groupId>
-        <artifactId>jackson-core</artifactId>
-        <version>${jackson.version}</version>
-      </dependency>
+      <!-- Jackson ???? -->
 
-      <dependency>
-        <groupId>com.fasterxml.jackson.core</groupId>
-        <artifactId>jackson-annotations</artifactId>
-        <version>${jackson.version}</version>
-      </dependency>
+<!--       <dependency> -->
+<!--         <groupId>com.fasterxml.jackson.jaxrs</groupId> -->
+<!--         <artifactId>jackson-jaxrs-json-provider</artifactId> -->
+<!--         <version>${jackson.version}</version> -->
+<!--       </dependency> -->
+
+<!--       <dependency> -->
+<!--         <groupId>com.fasterxml.jackson.core</groupId> -->
+<!--         <artifactId>jackson-databind</artifactId> -->
+<!--         <version>${jackson-databind.version}</version> -->
+<!--       </dependency> -->
+
+<!--       <dependency> -->
+<!--         <groupId>com.fasterxml.jackson.core</groupId> -->
+<!--         <artifactId>jackson-core</artifactId> -->
+<!--         <version>${jackson.version}</version> -->
+<!--       </dependency> -->
+
+<!--       <dependency> -->
+<!--         <groupId>com.fasterxml.jackson.core</groupId> -->
+<!--         <artifactId>jackson-annotations</artifactId> -->
+<!--         <version>${jackson.version}</version> -->
+<!--       </dependency> -->
 
       <!-- Scribe -->
 
@@ -315,27 +406,29 @@
         <artifactId>javax.mail-api</artifactId>
         <version>${mail-api.version}</version>
       </dependency>
-      <dependency>
-        <groupId>com.fasterxml.jackson.datatype</groupId>
-        <artifactId>jackson-datatype-jsr310</artifactId>
-        <version>${jackson-datatype-jsr310.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
+      
+<!--       <dependency> -->
+<!--         <groupId>com.fasterxml.jackson.datatype</groupId> -->
+<!--         <artifactId>jackson-datatype-jsr310</artifactId> -->
+<!--         <version>${jackson-datatype-jsr310.version}</version> -->
+<!--         <exclusions> -->
+<!--           <exclusion> -->
+<!--             <groupId>com.fasterxml.jackson.core</groupId> -->
+<!--             <artifactId>jackson-core</artifactId> -->
+<!--           </exclusion> -->
+<!--           <exclusion> -->
+<!--             <groupId>com.fasterxml.jackson.core</groupId> -->
+<!--             <artifactId>jackson-databind</artifactId> -->
+<!--           </exclusion> -->
+<!--         </exclusions> -->
+<!--       </dependency> -->
 
       <dependency>
         <groupId>com.rometools</groupId>
         <artifactId>rome</artifactId>
         <version>${rome.version}</version>
       </dependency>
+      
       <dependency>
         <groupId>com.rometools</groupId>
         <artifactId>rome-modules</artifactId>
@@ -347,11 +440,21 @@
         <artifactId>xmpp-core-client</artifactId>
         <version>${xmpp.rocks.version}</version>
       </dependency>
+      
       <dependency>
         <groupId>rocks.xmpp</groupId>
         <artifactId>xmpp-extensions-client</artifactId>
         <version>${xmpp.rocks.version}</version>
       </dependency>
+      
+      <!-- JUnit4 -->
+      
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.13.1</version>
+      </dependency>
+  
     </dependencies>
   </dependencyManagement>
 

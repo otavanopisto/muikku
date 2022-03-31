@@ -9,49 +9,52 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import fi.otavanopisto.muikku.search.annotations.IndexId;
 import fi.otavanopisto.muikku.search.annotations.Indexable;
 import fi.otavanopisto.muikku.search.annotations.IndexableFieldOption;
+import fi.otavanopisto.muikku.search.annotations.IndexableFieldType;
 
 @Indexable (
-  name = "IndexedCommunicatorMessage",
-    options = {
-      @IndexableFieldOption (
-        name = "communicatorMessageThreadId",
-        type = "Long",
-        index = "not_analyzed"
-      ),
-      @IndexableFieldOption (
-        name = "senderId",
-        type = "long",
-        index = "not_analyzed"
-      ),
-      @IndexableFieldOption (
-        name = "sender",
-        type = "IndexedCommunicatorMessageSender",
-        index = "not_analyzed"
-      ),
-      @IndexableFieldOption (
-        name = "recipients",
-        type = "List<IndexedCommunicatorMessageRecipient>",
-        index = "not_analyzed"
-      ),
-      @IndexableFieldOption (
-          name = "groupRecipients",
-          type = "List<IndexedCommunicatorMessageGroupRecipient>",
-          index = "not_analyzed"
-        ),
-      @IndexableFieldOption (
-        name = "searchId",
-        type = "Long",
-        index = "not_analyzed"
-      ),
-      @IndexableFieldOption (
-        name = "created",
-        type = "Date",
-        index = "not_analyzed"
-     )
-   }
+  indexName = IndexedCommunicatorMessage.INDEX_NAME,
+  typeName = IndexedCommunicatorMessage.TYPE_NAME
+//    options = {
+//      @IndexableFieldOption (
+//        name = "communicatorMessageThreadId",
+//        type = IndexableFieldType.LONG
+//      ),
+//      @IndexableFieldOption (
+//        name = "senderId",
+//        type = IndexableFieldType.LONG
+//      ),
+//      @IndexableFieldOption (
+//        name = "sender",
+//        type = "IndexedCommunicatorMessageSender",
+//        index = "not_analyzed"
+//      ),
+//      @IndexableFieldOption (
+//        name = "recipients",
+//        type = "List<IndexedCommunicatorMessageRecipient>",
+//        index = "not_analyzed"
+//      ),
+//      @IndexableFieldOption (
+//          name = "groupRecipients",
+//          type = "List<IndexedCommunicatorMessageGroupRecipient>",
+//          index = "not_analyzed"
+//        ),
+//      @IndexableFieldOption (
+//        name = "searchId",
+//        type = "Long",
+//        index = "not_analyzed"
+//      ),
+//      @IndexableFieldOption (
+//        name = "created",
+//        type = "Date",
+//        index = "not_analyzed"
+//     )
+//   }
 )
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class IndexedCommunicatorMessage {
+  
+  public static final String INDEX_NAME = "muikku_communicatormessage";
+  public static final String TYPE_NAME = "IndexedCommunicatorMessage";
   
   public String getMessage() {
     return this.message;

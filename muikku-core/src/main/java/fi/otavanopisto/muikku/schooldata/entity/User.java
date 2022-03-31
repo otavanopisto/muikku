@@ -8,26 +8,44 @@ import fi.otavanopisto.muikku.search.annotations.IndexId;
 import fi.otavanopisto.muikku.search.annotations.Indexable;
 import fi.otavanopisto.muikku.search.annotations.IndexableFieldMultiField;
 import fi.otavanopisto.muikku.search.annotations.IndexableFieldOption;
+import fi.otavanopisto.muikku.search.annotations.IndexableFieldType;
 
 @Indexable (
-  name = "User",
+  indexName = User.INDEX_NAME,
+  typeName = User.TYPE_NAME,
   options = {
     @IndexableFieldOption (
+      name = "firstName",
+      type = IndexableFieldType.TEXT,
+      multiFields = {
+        @IndexableFieldMultiField(name = "untouched", type = IndexableFieldType.KEYWORD)
+      }
+    ),
+    @IndexableFieldOption (
+      name = "lastName",
+      type = IndexableFieldType.TEXT,
+      multiFields = {
+        @IndexableFieldMultiField(name = "untouched", type = IndexableFieldType.KEYWORD)
+      }
+    ),
+    @IndexableFieldOption (
       name = "email",
-      type = "string",
-      index = "not_analyzed"
+      type = IndexableFieldType.KEYWORD
     ),
     @IndexableFieldOption (
       name = "organizationIdentifier",
-      type = "multi_field",
-      multiFields = {
-        @IndexableFieldMultiField(name = "organizationIdentifier", type="string", index = "analyzed"),
-        @IndexableFieldMultiField(name = "untouched", type="string", index = "not_analyzed")
-      }
+      type = IndexableFieldType.KEYWORD
+//      multiFields = {
+//        @IndexableFieldMultiField(name = "organizationIdentifier", type="string", index = "analyzed"),
+//        @IndexableFieldMultiField(name = "untouched", type="string", index = "not_analyzed")
+//      }
     )
   }
 )
 public interface User extends SchoolDataEntity {
+
+  public static final String INDEX_NAME = "muikku_user";
+  public static final String TYPE_NAME = "User";
 
   public String getIdentifier();
 

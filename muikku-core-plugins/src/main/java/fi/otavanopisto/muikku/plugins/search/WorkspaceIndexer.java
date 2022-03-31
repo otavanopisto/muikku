@@ -118,7 +118,7 @@ public class WorkspaceIndexer {
       Set<String> workspaceSignupGroupIds = workspaceSignupGroups.stream().map(SchoolDataIdentifier::toId).collect(Collectors.toSet());
       extra.put("signupPermissionGroups", workspaceSignupGroupIds);
       
-      indexer.index(Workspace.class.getSimpleName(), workspace, extra);
+      indexer.index(Workspace.INDEX_NAME, Workspace.TYPE_NAME, workspace, extra);
     } catch (Exception e) {
       logger.log(Level.WARNING, String.format("could not index workspace #%s/%s", workspace.getIdentifier(), workspace.getSchoolDataSource()), e);
     }
@@ -130,7 +130,7 @@ public class WorkspaceIndexer {
 
   public void removeWorkspace(String dataSource, String identifier) {
     try {
-      indexer.remove(Workspace.class.getSimpleName(), String.format("%s/%s", identifier, dataSource));
+      indexer.remove(Workspace.INDEX_NAME, Workspace.TYPE_NAME, String.format("%s/%s", identifier, dataSource));
     } catch (Exception ex) {
       logger.log(Level.SEVERE, String.format("Removal of workspace %s/%s from index failed", dataSource, identifier), ex);
     } 

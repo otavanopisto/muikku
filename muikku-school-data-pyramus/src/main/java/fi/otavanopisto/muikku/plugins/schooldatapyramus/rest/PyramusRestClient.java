@@ -15,7 +15,11 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 
@@ -194,6 +198,37 @@ class PyramusRestClient implements Serializable {
 
     Builder request = target.request();
 
+    Response x = request.post(Entity.form(form));
+    String readEntity = x.readEntity(String.class);
+    System.out.println(readEntity);
+    
+    ObjectMapper o = new ObjectMapper();
+    try {
+      AccessToken at = o.readValue(readEntity, AccessToken.class);
+      
+      JAXBContext jc = JAXBContext.newInstance(AccessToken.class);
+      
+      System.out.println("===========================================");
+      System.out.println(jc.getClass().getName());
+      System.out.println("===========================================");
+      System.out.println(at.getAccessToken());
+      System.out.println(at.getRefreshToken());
+      System.out.println(at.getExpiresIn());
+      System.out.println("===========================================");
+      
+    } catch (JsonMappingException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (JsonProcessingException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (JAXBException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    
+//    waddafuu
+    
     return request.post(Entity.form(form), AccessToken.class);
   }
   

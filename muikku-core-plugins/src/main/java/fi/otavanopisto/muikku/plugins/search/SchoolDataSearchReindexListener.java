@@ -223,7 +223,7 @@ public class SchoolDataSearchReindexListener {
           UserGroup userGroup = userGroupController.findUserGroup(groupEntity.getSchoolDataSource(), groupEntity.getIdentifier());
 
           try {
-            indexer.index(UserGroup.class.getSimpleName(), userGroup);
+            indexer.index(UserGroup.INDEX_NAME, UserGroup.TYPE_NAME, userGroup);
           }
           catch (Exception e) {
             logger.log(Level.WARNING, "could not index UserGroup #" + groupEntity.getSchoolDataSource() + '/' + groupEntity.getIdentifier(), e);

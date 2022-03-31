@@ -62,7 +62,7 @@ public class SchoolDataIndexListeners {
   }
   
   public void onSchoolDataWorkspaceRemovedEvent(@Observes SchoolDataWorkspaceRemovedEvent event) {
-    indexer.remove(Workspace.class.getSimpleName(), event.getSearchId());
+    indexer.remove(Workspace.INDEX_NAME, Workspace.TYPE_NAME, event.getSearchId());
   }
   
   @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -101,7 +101,7 @@ public class SchoolDataIndexListeners {
     try {
       UserGroup userGroup = userGroupController.findUserGroup(event.getDataSource(), event.getIdentifier());
       if (userGroup != null) {
-        indexer.index(UserGroup.class.getSimpleName(), userGroup);
+        indexer.index(UserGroup.INDEX_NAME, UserGroup.TYPE_NAME, userGroup);
       } else {
         logger.warning("could not index user group because user group '" + event.getIdentifier() + '/' + event.getDataSource() +  "' could not be found");
       }
@@ -111,7 +111,7 @@ public class SchoolDataIndexListeners {
   }  
 
   public void onSchoolDataUserGroupRemovedEvent(@Observes SchoolDataUserGroupRemovedEvent event) {
-    indexer.remove(UserGroup.class.getSimpleName(), event.getSearchId());
+    indexer.remove(UserGroup.INDEX_NAME, UserGroup.TYPE_NAME, event.getSearchId());
   }  
 
   public void onSchoolDataUserGroupUpdatedEvent(@Observes SchoolDataUserGroupUpdatedEvent event) {
@@ -119,7 +119,7 @@ public class SchoolDataIndexListeners {
     try {
       UserGroup userGroup = userGroupController.findUserGroup(event.getDataSource(), event.getIdentifier());
       if (userGroup != null) {
-        indexer.index(UserGroup.class.getSimpleName(), userGroup);
+        indexer.index(UserGroup.INDEX_NAME, UserGroup.TYPE_NAME, userGroup);
       } else {
         logger.warning("could not index user group because user group '" + event.getIdentifier() + '/' + event.getDataSource() +  "' could not be found");
       }

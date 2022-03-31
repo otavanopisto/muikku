@@ -10,58 +10,62 @@ import fi.otavanopisto.muikku.search.annotations.IndexId;
 import fi.otavanopisto.muikku.search.annotations.Indexable;
 import fi.otavanopisto.muikku.search.annotations.IndexableFieldMultiField;
 import fi.otavanopisto.muikku.search.annotations.IndexableFieldOption;
+import fi.otavanopisto.muikku.search.annotations.IndexableFieldType;
 
 @Indexable (
-  name = "Workspace",
+  indexName = Workspace.INDEX_NAME,
+  typeName = Workspace.TYPE_NAME,
   options = {
     @IndexableFieldOption (
       name = "name",
-      type = "multi_field",
+      type = IndexableFieldType.TEXT,
       multiFields = {
-        @IndexableFieldMultiField(name = "name", type="string", index = "analyzed"),
-        @IndexableFieldMultiField(name = "untouched", type="string", index = "not_analyzed")
+        @IndexableFieldMultiField(name = "name", type = IndexableFieldType.TEXT),
+        @IndexableFieldMultiField(name = "untouched", type = IndexableFieldType.KEYWORD)
       }
     ),
     @IndexableFieldOption (
       name = "educationTypeIdentifier",
-      type = "multi_field",
+      type = IndexableFieldType.TEXT,
       multiFields = {
-        @IndexableFieldMultiField(name = "educationTypeIdentifier", type="string", index = "analyzed"),
-        @IndexableFieldMultiField(name = "untouched", type="string", index = "not_analyzed")
+        @IndexableFieldMultiField(name = "educationTypeIdentifier", type = IndexableFieldType.TEXT),
+        @IndexableFieldMultiField(name = "untouched", type = IndexableFieldType.KEYWORD)
       }
     ),
     @IndexableFieldOption (
       name = "curriculumIdentifiers",
-      type = "multi_field",
+      type = IndexableFieldType.TEXT,
       multiFields = {
-        @IndexableFieldMultiField(name = "curriculumIdentifiers", type="string", index = "analyzed"),
-        @IndexableFieldMultiField(name = "untouched", type="string", index = "not_analyzed")
+        @IndexableFieldMultiField(name = "curriculumIdentifiers", type = IndexableFieldType.TEXT),
+        @IndexableFieldMultiField(name = "untouched", type = IndexableFieldType.KEYWORD)
       }
     ),
     @IndexableFieldOption (
       name = "organizationIdentifier",
-      type = "multi_field",
+      type = IndexableFieldType.TEXT,
       multiFields = {
-        @IndexableFieldMultiField(name = "organizationIdentifier", type="string", index = "analyzed"),
-        @IndexableFieldMultiField(name = "untouched", type="string", index = "not_analyzed")
+        @IndexableFieldMultiField(name = "organizationIdentifier", type = IndexableFieldType.TEXT),
+        @IndexableFieldMultiField(name = "untouched", type = IndexableFieldType.KEYWORD)
       }
     ),
     @IndexableFieldOption (
       name = "workspaceTypeId",
-      type = "multi_field",
+      type = IndexableFieldType.TEXT,
       multiFields = {
-        @IndexableFieldMultiField(name = "workspaceTypeId", type="string", index = "analyzed"),
-        @IndexableFieldMultiField(name = "untouched", type="string", index = "not_analyzed")
+        @IndexableFieldMultiField(name = "workspaceTypeId", type=IndexableFieldType.TEXT),
+        @IndexableFieldMultiField(name = "untouched", type = IndexableFieldType.KEYWORD)
       }
     ),
     @IndexableFieldOption (
       name = "access",
-      type = "string",
-      index = "not_analyzed"
+      type = IndexableFieldType.KEYWORD
     )
   }
 )
 public interface Workspace extends SchoolDataEntity {
+
+  public static final String INDEX_NAME = "muikku_workspace";
+  public static final String TYPE_NAME = "Workspace";
 
   public String getIdentifier();
 

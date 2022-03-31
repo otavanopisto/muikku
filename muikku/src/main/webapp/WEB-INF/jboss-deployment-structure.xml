@@ -1,0 +1,14 @@
+<jboss-deployment-structure>
+  <deployment>
+    <exclusions>
+      <module name="org.jboss.resteasy.resteasy-json-binding-provider" />
+      <module name="org.jboss.resteasy.resteasy-jettison-provider" />
+      <module name="org.jboss.resteasy.resteasy-jaxb-provider" />
+    </exclusions>
+    <dependencies>
+      <module name="org.jboss.resteasy.resteasy-jackson2-provider" services="import" />
+      <module name="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider" />
+    </dependencies>
+  </deployment>
+
+</jboss-deployment-structure>

@@ -9,7 +9,8 @@ import java.lang.annotation.ElementType;
 @Target(ElementType.TYPE)
 public @interface Indexable {
 
-  String name();
+  String typeName();
+  String indexName();
   IndexableFieldOption[] options() default {};
   
 }
