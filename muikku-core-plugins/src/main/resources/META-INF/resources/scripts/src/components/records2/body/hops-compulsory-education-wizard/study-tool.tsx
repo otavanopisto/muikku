@@ -16,7 +16,7 @@ import {
 } from "~/actions/base/notifications";
 import { useFollowUpGoal } from "./hooks/useFollowUp";
 import CourseTable from "./hops-course-table";
-import OptionalStudiesInfoBox from "./study-tool-optional-studiess-info-box";
+import StudyToolOptionalStudiesInfoBox from "./study-tool-optional-studiess-info-box";
 import { useStudentChoices } from "./hooks/useStudentChoices";
 import { useStudentStudyHour } from "./hooks/useStudentStudyHours";
 import { useStudentAlternativeOptions } from "./hooks/useStudentAlternativeOptions";
@@ -806,7 +806,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
       {studentActivity.isLoading ||
         (studentChoices.isLoading && (
           <div className="hops-container__row">
-            <OptionalStudiesInfoBox
+            <StudyToolOptionalStudiesInfoBox
               needMandatoryStudies={needMandatoryStudies}
               selectedNumberOfOptional={studentChoices.studentChoices.length}
               graduationGoal={followUpData.followUp.graduationGoal}
