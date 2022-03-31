@@ -45,13 +45,13 @@ class HopsDone extends React.Component<HopsDoneProps, HopsDonePropsState> {
   renderStateMessage = (saveState: SaveState) =>
     ({
       PENDING: (
-        <div className="hops-container">
+        <>
           <h3 className="hops-container__header">Odottaa!</h3>
           <div className="loader-empty" />
-        </div>
+        </>
       ),
       IN_PROGRESS: (
-        <div className="hops-container">
+        <>
           <h3 className="hops-container__header">Lomaketta tallennetaan</h3>
           <div className="hops-container__state state-LOADER">
             <div className="hops-container__state-icon icon-notification"></div>
@@ -60,10 +60,10 @@ class HopsDone extends React.Component<HopsDoneProps, HopsDonePropsState> {
             </div>
           </div>
           <div className="loader-empty" />
-        </div>
+        </>
       ),
       SUCCESS: (
-        <div className="hops-container">
+        <>
           <h3 className="hops-container__header">HOPS:n tallennus onnistui</h3>
           <div className="hops-container__state state-SUCCESS">
             <div className="hops-container__state-icon icon-notification"></div>
@@ -71,10 +71,10 @@ class HopsDone extends React.Component<HopsDoneProps, HopsDonePropsState> {
               <p>Tallennus tehty onnistuneesti</p>
             </div>
           </div>
-        </div>
+        </>
       ),
       FAILED: (
-        <div className="hops-container">
+        <>
           <h3 className="hops-container__header">
             Lomakkeen tallennus epäonnistui
           </h3>
@@ -88,7 +88,7 @@ class HopsDone extends React.Component<HopsDoneProps, HopsDonePropsState> {
               </p>
             </div>
           </div>
-        </div>
+        </>
       ),
       SAVING_DRAFT: null,
       DRAFT_SAVED: null,
@@ -101,20 +101,18 @@ class HopsDone extends React.Component<HopsDoneProps, HopsDonePropsState> {
    */
   render() {
     return (
-      <div>
+      <div className="hops-container">
         {this.renderStateMessage(this.props.saveState)}
         {this.props.saveState === "SUCCESS" ||
         this.props.saveState === "FAILED" ? (
-          <Button
-            onClick={() => this.props.jumpToStep(0)}
-            className={`${
-              this.props.saveState === "SUCCESS"
-                ? "button--success"
-                : "button--error"
-            }`}
-          >
-            Alkuun
-          </Button>
+          <div className="hops-container__row hops-container__row--wizard-last-step">
+            <Button
+              buttonModifiers={["back-to-hops-start"]}
+              onClick={() => this.props.jumpToStep(0)}
+            >
+              Palaa alkuun
+            </Button>
+          </div>
         ) : null}
       </div>
     );

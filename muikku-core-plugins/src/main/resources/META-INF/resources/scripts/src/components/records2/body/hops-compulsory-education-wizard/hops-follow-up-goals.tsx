@@ -122,7 +122,7 @@ const HopsFollowUpGoals: React.FC<HopsFollowUpGoalsProps> = (props) => {
               ? "auto"
               : 0
           }
-          contentClassName="hops-animate_height-wrapper"
+          contentClassName="hops-animate__height-wrapper"
           className="hops-container__row hops-container__row--dependant-of-above"
         >
           <div className="hops__form-element-container">
@@ -155,7 +155,7 @@ const HopsFollowUpGoals: React.FC<HopsFollowUpGoalsProps> = (props) => {
                 ? "auto"
                 : 0
             }
-            contentClassName="hops-animate_height-wrapper"
+            contentClassName="hops-animate__height-wrapper"
             className="hops-container__row hops-container__row--dependant-of-above"
           >
             <div className="hops__form-element-container">
@@ -180,7 +180,7 @@ const HopsFollowUpGoals: React.FC<HopsFollowUpGoalsProps> = (props) => {
               ? "auto"
               : 0
           }
-          contentClassName="hops-animate_height-wrapper"
+          contentClassName="hops-animate__height-wrapper"
           className="hops-container__row hops-container__row--dependant-of-above"
         >
           <div className="hops__form-element-container">
@@ -213,7 +213,7 @@ const HopsFollowUpGoals: React.FC<HopsFollowUpGoalsProps> = (props) => {
                 ? "auto"
                 : 0
             }
-            contentClassName="hops-animate_height-wrapper"
+            contentClassName="hops-animate__height-wrapper"
             className="hops-container__row hops-container__row--dependant-of-above"
           >
             <div className="hops__form-element-container">
