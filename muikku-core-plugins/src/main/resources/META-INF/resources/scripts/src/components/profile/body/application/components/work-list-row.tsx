@@ -6,6 +6,7 @@ import {
   WorklistBillingState,
 } from "~/reducers/main-function/profile";
 import { ButtonPill } from "~/components/general/button";
+import "react-datepicker/dist/react-datepicker.css";
 import "~/sass/elements/datepicker/datepicker.scss";
 import "~/sass/elements/glyph.scss";
 import { i18nType } from "~/reducers/base/i18n";

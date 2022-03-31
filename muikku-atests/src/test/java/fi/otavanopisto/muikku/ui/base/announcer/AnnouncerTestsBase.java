@@ -152,7 +152,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
     try{
-      mockBuilder.addStaffMember(admin).addStudent(student).addStudentGroup(2l, 1l, "Test group", "Test group for users", 1l, false).mockLogin(admin).build();
+      mockBuilder.addStaffMember(admin).addStudent(student).addStudentGroup(2l, 1l, "Test group", "Test group for users", 1l, false, false).mockLogin(admin).build();
       login();
       mockBuilder.addStudentToStudentGroup(2l, student).addStaffMemberToStudentGroup(2l, admin).mockPersons().mockStudents().mockStudyProgrammes().mockStudentGroups();
       try{
@@ -184,7 +184,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
     try {
-      mockBuilder.addStaffMember(admin).addStudent(student).addStudentGroup(2l, 1l, "Test group", "Test group for users", 1l, false).mockLogin(admin).build();
+      mockBuilder.addStaffMember(admin).addStudent(student).addStudentGroup(2l, 1l, "Test group", "Test group for users", 1l, false, false).mockLogin(admin).build();
       login();
       mockBuilder.addStaffMemberToStudentGroup(2l, admin).mockPersons().mockStudents().mockStudyProgrammes().mockStudentGroups();
       try{

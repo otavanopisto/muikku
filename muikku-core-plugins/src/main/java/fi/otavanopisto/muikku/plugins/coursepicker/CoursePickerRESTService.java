@@ -495,6 +495,31 @@ public class CoursePickerRESTService extends PluginRESTService {
       canSignup = !getIsAlreadyEvaluated(workspaceEntity);
     }
     
+    // #5950: If both student and workspace have curriculum(s), they have to match
+    
+    if (canSignup) {
+      Iterator<SearchProvider> searchProviderIterator = searchProviders.iterator();
+      if (searchProviderIterator.hasNext()) {
+        SearchProvider searchProvider = searchProviderIterator.next();
+        SearchResult searchResult = searchProvider.findUser(sessionController.getLoggedUser(), false);
+        if (searchResult.getTotalHitCount() > 0) {
+          Map<String, Object> result = searchResult.getResults().get(0);
+          String studentCurriculum = (String) result.get("curriculumIdentifier");
+          if (!StringUtils.isEmpty(studentCurriculum)) {
+            searchResult = searchProvider.findWorkspace(workspaceEntity.schoolDataIdentifier());
+            if (searchResult.getTotalHitCount() > 0) {
+              result = searchResult.getResults().get(0);
+              @SuppressWarnings("unchecked")
+              List<String> workspaceCurriculums = (List<String>) result.get("curriculumIdentifiers");
+              if (workspaceCurriculums != null && workspaceCurriculums.size() > 0) {
+                canSignup = workspaceCurriculums.contains(studentCurriculum);
+              }
+            }
+          }
+        }
+      }
+    }
+    
     return Response.ok(canSignup).build();
   }
   

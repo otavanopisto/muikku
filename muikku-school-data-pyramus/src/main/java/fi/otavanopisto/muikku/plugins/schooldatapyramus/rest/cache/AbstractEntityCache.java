@@ -18,10 +18,13 @@ public abstract class AbstractEntityCache {
   @Inject
   private EntityCacheStatistics entityCacheStatistics;
   
+  private boolean logStatistics;
+  
   @PostConstruct
   public void init() {
     cache = new HashMap<>();
     entityCacheEvictor.addCache(this);
+    logStatistics = Boolean.parseBoolean(System.getProperty("muikku.entityCacheStatistics"));
   }
   
   @PreDestroy
@@ -34,7 +37,9 @@ public abstract class AbstractEntityCache {
   public <T> CachedEntity<T> put(String path, T data) {
     CacheConfig cacheConfig = cacheConfigs.getCacheConfig(path);
     if (!cacheConfig.getEnabledCaches().contains(getType())) {
-      entityCacheStatistics.addSkip(getType(), path);
+      if (logStatistics) {
+        entityCacheStatistics.addSkip(getType(), path);
+      }
       return null;
     }
     
@@ -42,7 +47,9 @@ public abstract class AbstractEntityCache {
     
     switch (cacheConfig.getCacheStrategy()) {
       case NONE:
-        entityCacheStatistics.addSkip(getType(), path);
+        if (logStatistics) {
+          entityCacheStatistics.addSkip(getType(), path);
+        }
         return null;
       case EXPIRES:
         if (cacheConfig.getExpireTime() != null) {
@@ -74,14 +81,18 @@ public abstract class AbstractEntityCache {
     CachedEntity<T> cachedEntity = (CachedEntity<T>) cache.get(path);
     if (cachedEntity != null) {
       if ((cachedEntity.getExpires() != null) || (cachedEntity.getExpires().longValue() < System.currentTimeMillis())) {
-        entityCacheStatistics.addHit(getType(), path);
+        if (logStatistics) {
+          entityCacheStatistics.addHit(getType(), path);
+        }
         return cachedEntity;
       } else {
         remove(path);
       }
     }
     
-    entityCacheStatistics.addMiss(getType(), path);
+    if (logStatistics) {
+      entityCacheStatistics.addMiss(getType(), path);
+    }
 
     return null;
   }

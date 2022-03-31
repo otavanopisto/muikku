@@ -71,6 +71,7 @@ interface MaterialEditorState {
  * @param disablePlugins disablePlugins
  */
 const CKEditorConfig = (
+  /* eslint-disable camelcase */
   locale: string,
   contextPath: string,
   workspace: WorkspaceType,
@@ -79,10 +80,6 @@ const CKEditorConfig = (
 ) => ({
   uploadUrl: `/materialAttachmentUploadServlet/workspace/${workspace.urlName}/materials/${materialNode.path}`,
   linkShowTargetTab: true,
-  allowedContent: true, // disable content filtering to preserve all formatting of imported documents; fix for #263
-  entities: false,
-  entities_latin: false,
-  entities_greek: false,
   language: locale,
   language_list: [
     "fi:Suomi",
@@ -101,11 +98,12 @@ const CKEditorConfig = (
     "workspace-material-styles:" +
     contextPath +
     "/scripts/ckplugins/styles/workspace-material-styles.js",
-  format_tags: "p;h3;h4",
   baseHref: `/workspace/${workspace.urlName}/materials/${materialNode.path}/`,
   mathJaxLib:
     "//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_SVG",
   mathJaxClass: "math-tex", // This CANNOT be changed as cke saves this to database as part of documents html (wraps the formula in a span with specified className). Don't touch it! ... STOP TOUCHING IT!
+  disallowedContent:
+    "*(dialog*, bubble*, button*, avatar*, pager*, panel*, tab*, zoom*, card*, carousel*, course*, message*, drawer*, filter*, footer*, label*, link*, menu*, meta*, navbar*, toc*, application*); *[on*]; *{white-space}; *{flex*};",
   toolbar: [
     { name: "document", items: ["Source"] },
     {
@@ -125,7 +123,6 @@ const CKEditorConfig = (
       name: "editing",
       items: [
         "Find",
-        "Replace",
         "-",
         "SelectAll",
         "-",
@@ -190,6 +187,7 @@ const CKEditorConfig = (
         "-",
         "Outdent",
         "Indent",
+        "Blockquote",
         "-",
         "JustifyLeft",
         "JustifyCenter",
@@ -203,11 +201,12 @@ const CKEditorConfig = (
     { name: "tools", items: ["Maximize", "ShowBlocks", "-", "About"] },
   ],
   resize_enabled: false,
-  removePlugins: "image,exportpdf",
+  removePlugins: "image,exportpdf,wsc",
   extraPlugins: disablePlugins
     ? "divarea,language,oembed,audio,image2,muikku-embedded,muikku-image-details,muikku-image-target,muikku-word-definition,muikku-audio-defaults,muikku-image-target,widget,lineutils,filetools,uploadwidget,uploadimage,muikku-mathjax"
     : "divarea,language,oembed,audio,image2,muikku-embedded,muikku-image-details,muikku-image-target,muikku-word-definition,muikku-audio-defaults,muikku-image-target,widget,lineutils,filetools,uploadwidget,uploadimage,muikku-fields,muikku-textfield,muikku-memofield,muikku-filefield,muikku-audiofield,muikku-selection,muikku-connectfield,muikku-organizerfield,muikku-sorterfield,muikku-mathexercisefield,muikku-mathjax",
 });
+/* eslint-enable camelcase */
 
 // First we need to modify the material content nodes end point to be able to receive hidden
 // nodes, we need those to be able to modify here
@@ -220,7 +219,7 @@ class MaterialEditor extends React.Component<
 > {
   /**
    * constructor
-   * @param props
+   * @param props props
    */
   constructor(props: MaterialEditorProps) {
     super(props);
@@ -268,7 +267,7 @@ class MaterialEditor extends React.Component<
 
   /**
    * updateHeight
-   * @param offset
+   * @param offset offset
    */
   updateHeight(offset?: number) {
     const heightOffset: number = offset ? offset : 0;
@@ -369,7 +368,7 @@ class MaterialEditor extends React.Component<
 
   /**
    * updateTitle
-   * @param e
+   * @param e e
    */
   updateTitle(e: React.ChangeEvent<HTMLInputElement>) {
     this.props.updateWorkspaceMaterialContentNode({
@@ -384,7 +383,7 @@ class MaterialEditor extends React.Component<
 
   /**
    * updateContent
-   * @param content
+   * @param content content
    */
   updateContent(content: string) {
     // TODO content update plug-in is all
@@ -441,7 +440,7 @@ class MaterialEditor extends React.Component<
 
   /**
    * removeProducer
-   * @param index
+   * @param index index
    */
   removeProducer(index: number) {
     const newProducers = [
@@ -461,7 +460,7 @@ class MaterialEditor extends React.Component<
 
   /**
    * addProducer
-   * @param name
+   * @param name name
    */
   addProducer(name: string) {
     const newProducers = [
@@ -489,7 +488,7 @@ class MaterialEditor extends React.Component<
 
   /**
    * updateLicense
-   * @param newLicense
+   * @param newLicense newLicense
    */
   updateLicense(newLicense: string) {
     this.props.updateWorkspaceMaterialContentNode({
@@ -505,7 +504,7 @@ class MaterialEditor extends React.Component<
   /**
    * Builds locale string depending what page component is used
    * and if page is already view restricted
-   * @param isRestricted
+   * @param isRestricted isRestricted
    * @returns localeString
    */
   buildRestrictViewLocale = (isRestricted: boolean): string => {
@@ -539,7 +538,7 @@ class MaterialEditor extends React.Component<
 
   /**
    * updateUploadingValues
-   * @param updatedValues
+   * @param updatedValues updatedValues
    */
   updateUploadingValues = (
     updatedValues: {
@@ -556,7 +555,7 @@ class MaterialEditor extends React.Component<
 
   /**
    * handleUploadingTextProcesser
-   * @param percent
+   * @param percent percent
    * @returns progress string
    */
   handleUploadingTextProcesser = (percent: number) => `
@@ -573,7 +572,7 @@ class MaterialEditor extends React.Component<
 
   /**
    * onTabChange
-   * @param tab
+   * @param tab tab
    */
   onTabChange(tab: string) {
     this.setState({ tab });
@@ -581,7 +580,7 @@ class MaterialEditor extends React.Component<
 
   /**
    * onFilesUpload
-   * @param e
+   * @param e e
    */
   onFilesUpload(e: React.ChangeEvent<HTMLInputElement>) {
     this.props.createWorkspaceMaterialAttachment(
@@ -620,7 +619,6 @@ class MaterialEditor extends React.Component<
 
   /**
    * render
-   * @returns
    */
   render() {
     if (
@@ -1082,7 +1080,7 @@ class MaterialEditor extends React.Component<
 
 /**
  * mapStateToProps
- * @param state
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -1095,7 +1093,7 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(

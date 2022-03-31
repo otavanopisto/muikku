@@ -17,6 +17,10 @@ import useIsAtBreakpoint from "~/hooks/useIsAtBreakpoint";
 export interface Tab {
   id: string;
   name: string;
+  /**
+   * Hash from url
+   */
+  hash?: string;
   /** Type Class modifier */
   type?: string;
   /** Tab spesific action or actions for the mobile UI*/
@@ -28,7 +32,7 @@ export interface Tab {
  * TabsProps
  */
 interface TabsProps {
-  onTabChange: (id: string) => void;
+  onTabChange: (id: string, hash?: string | Tab) => void;
   /** An array of all tab ids for swiper*/
   allTabs: string[];
   activeTab: string;
@@ -40,13 +44,18 @@ interface TabsProps {
   /** If all of the tabs components should be rendered */
   renderAllComponents?: boolean;
   children?: React.ReactNode;
+  /**
+   * If tabs changing needs to take account of hash changing also
+   * @default false
+   */
+  useWithHash?: boolean;
 }
 
 /**
  * MobileOnlyTabsProps
  */
 interface MobileOnlyTabsProps {
-  onTabChange: (id: string) => void;
+  onTabChange: (id: string, hash?: string) => void;
   activeTab: string;
   /** General class modifier */
   modifier?: string;
@@ -54,12 +63,18 @@ interface MobileOnlyTabsProps {
   renderAllComponents?: boolean;
 }
 
+const defaultProps = {
+  useWithHash: false,
+};
+
 /**
  * Tabs
  * @param props Component props
  * @returns JSX.Element
  */
 export const Tabs: React.FC<TabsProps> = (props) => {
+  props = { ...defaultProps, ...props };
+
   const {
     modifier,
     renderAllComponents,
@@ -68,7 +83,31 @@ export const Tabs: React.FC<TabsProps> = (props) => {
     tabs,
     children,
     allTabs,
+    useWithHash,
   } = props;
+
+  const [swiper, setSwiper] = React.useState(null);
+
+  /**
+   * This IS NOT good solution, but for now it will do
+   */
+  React.useEffect(() => {
+    if (swiper && useWithHash) {
+      const timer = setTimeout(() => {
+        const index = tabs.findIndex((t) => t.id === activeTab);
+
+        if (index) {
+          const initSlide = allTabs[index];
+          const initHash = tabs[index];
+
+          swiper.slideTo(index);
+          onTabChange(initSlide, initHash);
+        }
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [swiper, useWithHash]);
 
   const mobileBreakpoint = parseInt(variables.mobileBreakpoint); //Parse a breakpoint from scss to a number
 
@@ -86,12 +125,24 @@ export const Tabs: React.FC<TabsProps> = (props) => {
   const nextSlide = allTabs[allTabs.indexOf(activeTab) + 1];
   const prevSlide = allTabs[allTabs.indexOf(activeTab) - 1];
 
+  const nextHash = tabs.find((tab) => tab.id === nextSlide);
+  const prevHash = tabs.find((tab) => tab.id === prevSlide);
+
   return (
     <div className={`tabs ${modifier ? "tabs--" + modifier : ""}`}>
       {isMobileWidth ? (
         <Swiper
-          onSlideNextTransitionStart={onTabChange.bind(this, nextSlide)}
-          onSlidePrevTransitionStart={onTabChange.bind(this, prevSlide)}
+          onSwiper={(s) => useWithHash && setSwiper(s)}
+          onSlidePrevTransitionStart={onTabChange.bind(
+            this,
+            prevSlide,
+            prevHash
+          )}
+          onSlideNextTransitionStart={onTabChange.bind(
+            this,
+            nextSlide,
+            nextHash
+          )}
           modules={[A11y, Pagination]}
           a11y={a11yConfig}
           pagination={paginationConfig}
@@ -127,7 +178,7 @@ export const Tabs: React.FC<TabsProps> = (props) => {
                   tab.id === activeTab ? "active" : ""
                 }`}
                 key={tab.id}
-                onClick={onTabChange.bind(this, tab.id)}
+                onClick={onTabChange.bind(this, tab.id, tab.hash)}
               >
                 {tab.name}
               </div>
@@ -173,7 +224,7 @@ export const MobileOnlyTabs: React.FC<MobileOnlyTabsProps> = (props) => {
               tab.id === activeTab ? "active" : ""
             }`}
             key={tab.id}
-            onClick={onTabChange.bind(this, tab.id)}
+            onClick={onTabChange.bind(this, tab.id, tab.hash)}
           >
             {tab.name}
           </div>
@@ -188,7 +239,7 @@ export const MobileOnlyTabs: React.FC<MobileOnlyTabsProps> = (props) => {
               tab.id === activeTab ? "active" : ""
             }`}
             key={tab.id}
-            onClick={onTabChange.bind(this, tab.id)}
+            onClick={onTabChange.bind(this, tab.id, tab.hash)}
           >
             {tab.name}
           </div>
