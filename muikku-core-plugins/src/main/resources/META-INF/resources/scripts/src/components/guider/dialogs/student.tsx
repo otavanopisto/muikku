@@ -20,6 +20,7 @@ import {
 import StateOfStudies from "./student/tabs/state-of-studies";
 import StudyHistory from "./student/tabs/study-history";
 import StudyPlan from "./student/tabs/study-plan";
+import GuidanceRelation from "./student/tabs/guidance-relation";
 import {
   loadStudentHistory,
   LoadStudentTriggerType,
@@ -117,7 +118,7 @@ class StudentDialog extends React.Component<
           "plugin.guider.user.tabs.title.guidanceRelations"
         ),
         type: "guider-student",
-        component: <div>Ohjaussuhde</div>,
+        component: <GuidanceRelation />,
       },
       {
         id: "STUDY_HISTORY",

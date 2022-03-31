@@ -3,12 +3,20 @@ import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
 import { connect } from "react-redux";
 
+/**
+ * GuidanceRelationProps
+ */
 interface GuidanceRelationProps {
   i18n: i18nType;
 }
 
-const GuidanceRelation: React.FC<GuidanceRelationProps> = () => {
-  return <div></div>;
+/**
+ * GuidanceReleation
+ * @param props GuidanceRelationProps
+ * @returns JSX.element
+ */
+const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
+  return <div>Ohjussuhde</div>;
 };
 
 /**
