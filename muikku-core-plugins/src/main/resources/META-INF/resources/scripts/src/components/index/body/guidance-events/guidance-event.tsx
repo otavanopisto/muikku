@@ -55,7 +55,7 @@ const GuidanceEvent: React.FC<GuidanceEventProps> = (props) => {
   // TODO: implement some kind of "are you sure"-confirmation dialog
   /**
    * handleEventCancel cancels (deletes) the event
-   * @param eventId
+   * @param eventId event's id
    */
   const handleEventCancel = (eventId: number): void => {
     deleteCalendarEvent(eventId);
@@ -116,19 +116,13 @@ const GuidanceEvent: React.FC<GuidanceEventProps> = (props) => {
             </div>
             {studentParticipation ? (
               <div className="guidance-event__body-footer">
-                <Link
-                  onClick={handleEventAttendance.bind(this, event.id, "YES")}
-                >
+                <Link onClick={() => handleEventAttendance(event.id, "YES")}>
                   {i18n.text.get("plugin.frontPage.guidanceEvents.state.YES")}
                 </Link>
-                <Link
-                  onClick={handleEventAttendance.bind(this, event.id, "NO")}
-                >
+                <Link onClick={() => handleEventAttendance(event.id, "NO")}>
                   {i18n.text.get("plugin.frontPage.guidanceEvents.state.NO")}
                 </Link>
-                <Link
-                  onClick={handleEventAttendance.bind(this, event.id, "MAYBE")}
-                >
+                <Link onClick={() => handleEventAttendance(event.id, "MAYBE")}>
                   {i18n.text.get("plugin.frontPage.guidanceEvents.state.MAYBE")}
                 </Link>
               </div>
