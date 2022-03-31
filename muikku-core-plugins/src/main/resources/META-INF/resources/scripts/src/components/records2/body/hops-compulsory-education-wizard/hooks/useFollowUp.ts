@@ -5,6 +5,7 @@ import promisify from "~/util/promisify";
 import mApi from "~/lib/mApi";
 import { WebsocketStateType } from "~/reducers/util/websocket";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
+import * as moment from "moment";
 
 /**
  * UseFollowUpGoalsState
@@ -20,7 +21,7 @@ export interface UseFollowUpGoalsState {
 const initialState: UseFollowUpGoalsState = {
   isLoading: false,
   followUp: {
-    graduationGoal: "",
+    graduationGoal: null,
     followUpGoal: "",
     followUpStudies: "",
     studySector: "",
@@ -95,8 +96,8 @@ export const useFollowUpGoal = (
               ...loadedFollowUp,
               graduationGoal:
                 loadedFollowUp && loadedFollowUp.graduationGoal
-                  ? loadedFollowUp.graduationGoal
-                  : "",
+                  ? moment(loadedFollowUp.graduationGoal).toDate()
+                  : null,
               followUpGoal:
                 loadedFollowUp && loadedFollowUp.followUpGoal
                   ? loadedFollowUp.followUpGoal
@@ -128,9 +129,16 @@ export const useFollowUpGoal = (
      * @param data FollowUp. As its plain json, it needs to be parsed
      */
     const onAnswerSavedAtServer = (data: any) => {
+      const followUp: FollowUp = JSON.parse(data);
+
       setFollowUpData((followUpData) => ({
         ...followUpData,
-        followUp: JSON.parse(data),
+        followUp: {
+          ...followUp,
+          graduationGoal: followUp.graduationGoal
+            ? moment(followUp.graduationGoal).toDate()
+            : null,
+        },
       }));
     };
 

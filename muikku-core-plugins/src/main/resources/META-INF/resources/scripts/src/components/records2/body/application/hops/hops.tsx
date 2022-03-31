@@ -14,6 +14,7 @@ import { HOPSDataType, HOPSType } from "~/reducers/main-function/hops";
 import { StateType } from "~/reducers";
 import CompulsoryEducationHopsWizard from "../../hops-compulsory-education-wizard";
 import { AnyActionType } from "~/actions";
+import { StatusType } from "~/reducers/base/status";
 
 /**
  * HopsProps
@@ -21,6 +22,7 @@ import { AnyActionType } from "~/actions";
 interface HopsProps {
   i18n: i18nType;
   records: RecordsType;
+  status: StatusType;
   hops: HOPSType;
   setHopsTo: SetHopsToTriggerType;
 }
@@ -102,6 +104,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
         user="student"
         disabled={false}
         superVisorModifies={false}
+        studyTimeEnd={this.props.status.profile.studyTimeEnd}
       />
     );
   };
@@ -145,6 +148,7 @@ function mapStateToProps(state: StateType) {
     i18n: state.i18n,
     records: (state as any).records,
     hops: state.hops,
+    status: state.status,
   };
 }
 

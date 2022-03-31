@@ -319,6 +319,7 @@ class CurrentStudent extends React.Component<
               user="supervisor"
               disabled
               superVisorModifies={false}
+              studyTimeEnd={this.props.guider.currentStudent.basic.studyTimeEnd}
             >
               <Button>Opintosuunnitelma</Button>
             </HopsCompulsoryEducationWizardDialog>
@@ -326,6 +327,7 @@ class CurrentStudent extends React.Component<
               user="supervisor"
               disabled={false}
               superVisorModifies
+              studyTimeEnd={this.props.guider.currentStudent.basic.studyTimeEnd}
             >
               <Button>Opintosuunnitelma (muokkaus)</Button>
             </HopsCompulsoryEducationWizardDialog>

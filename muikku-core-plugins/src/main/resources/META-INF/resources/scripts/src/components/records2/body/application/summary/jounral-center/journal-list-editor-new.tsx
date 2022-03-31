@@ -144,13 +144,13 @@ const JournalListEditorNew: React.FC<JournalListEditorNewProps> = (props) => {
 
         <div style={{ display: "flex", flexDirection: "column" }}>
           <label style={{ marginRight: "5px" }}>Päättymispäivä</label>
-          <DatePicker
+          {/* <DatePicker
             selected={journal.dueDate && moment(journal.dueDate)}
             onChange={(date, e) =>
               handleJournalChange("dueDate", date && moment(date).toDate())
             }
             locale={props.i18n.time.getLocale()}
-          />
+          /> */}
         </div>
 
         <div style={{ display: "flex", flexDirection: "column" }}>

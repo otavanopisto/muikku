@@ -15,6 +15,7 @@ interface HopsStudiesPlanningProps extends HopsBaseProps {
   followUp: FollowUp;
   studies: HopsPlanningStudies;
   studentId: string;
+  studyTimeEnd: string | null;
   superVisorModifies: boolean;
   onStudiesPlanningChange: (studies: HopsPlanningStudies) => void;
   onStudiesGoalsChange: (followUp: FollowUp) => void;
@@ -87,6 +88,7 @@ class HopsStudiesPlanning extends React.Component<
           <FollowUpGoals
             disabled={this.props.disabled}
             studentId={this.props.studentId}
+            studyTimeEnd={this.props.studyTimeEnd}
           />
         </fieldset>
         <fieldset className="hops-container__fieldset">
