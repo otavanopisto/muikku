@@ -17,9 +17,9 @@ import {
   GuiderCurrentStudentStateType,
   GuiderType,
 } from "~/reducers/main-function/guider";
-import StateOfStudies from "../body/application/state-of-studies";
-import StudyHistory from "../body/application/study-history";
-import StudyPlan from "../body/application/study-plan";
+import StateOfStudies from "./student/tabs/state-of-studies";
+import StudyHistory from "./student/tabs/study-history";
+import StudyPlan from "./student/tabs/study-plan";
 import {
   loadStudentHistory,
   LoadStudentTriggerType,
@@ -111,12 +111,14 @@ class StudentDialog extends React.Component<
         type: "guider-student",
         component: <StateOfStudies />,
       },
-      // {
-      //   id: "GUIDANCE_RELATIONS",
-      //   name: this.props.i18n.text.get('plugin.guider.user.tabs.title.guidanceRelations'),
-      //   type: "guider-student",
-      //   component: <div >Ohjaussuhde</div>
-      // },
+      {
+        id: "GUIDANCE_RELATIONS",
+        name: this.props.i18n.text.get(
+          "plugin.guider.user.tabs.title.guidanceRelations"
+        ),
+        type: "guider-student",
+        component: <div>Ohjaussuhde</div>,
+      },
       {
         id: "STUDY_HISTORY",
         name: this.props.i18n.text.get(

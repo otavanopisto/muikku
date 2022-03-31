@@ -10,7 +10,7 @@ import "~/sass/elements/application-sub-panel.scss";
 import "~/sass/elements/avatar.scss";
 import "~/sass/elements/workspace-activity.scss";
 import { getUserImageUrl, getName } from "~/util/modifiers";
-import Workspaces from "./workspaces";
+import Workspaces from "../workspaces";
 import Ceepos from "./state-of-studies/ceepos";
 import CeeposButton from "./state-of-studies/ceepos-button";
 import { StatusType } from "~/reducers/base/status";
@@ -26,14 +26,14 @@ import {
 } from "~/reducers/main-function/guider";
 import NewMessage from "~/components/communicator/dialogs/new-message";
 import { ButtonPill } from "~/components/general/button";
-import GuiderToolbarLabels from "./toolbar/labels";
+import GuiderToolbarLabels from "../../../body/application/toolbar/labels";
 
-import GuidanceEvent from "../../dialogs/guidance-event";
-import { CalendarEvent } from "~/reducers/main-function/calendar";
-import {
-  ResourceTimeline,
-  ExternalEventType,
-} from "../../../general/resource-timeline";
+import GuidanceEvent from "../../guidance-event";
+// import { CalendarEvent } from "~/reducers/main-function/calendar";
+// import {
+//   ResourceTimeline,
+//   ExternalEventType,
+// } from "../../../../general/resource-timeline";
 
 /**
  * StateOfStudiesProps
