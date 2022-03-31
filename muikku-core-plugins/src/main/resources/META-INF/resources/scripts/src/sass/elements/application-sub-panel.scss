@@ -13,6 +13,24 @@
   }
 }
 
+.application-sub-panel--header-main {
+  align-items: flex-start;
+  border-bottom: none;
+  display: flex;
+  flex-basis: auto;
+  flex-flow: column wrap;
+  flex-grow: 1;
+  flex-shrink: 1;
+  margin: 0 0 0 15px;
+  text-transform: none;
+
+
+  @include breakpoint($breakpoint-desktop) {
+    align-items: center;
+    flex-flow: row wrap;
+  }
+
+}
 .application-sub-panel--student-data-container {
   display: flex;
   flex-wrap: wrap;

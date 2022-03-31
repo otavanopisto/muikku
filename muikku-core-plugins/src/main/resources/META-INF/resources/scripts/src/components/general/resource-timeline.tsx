@@ -74,8 +74,8 @@ export const ResourceTimeline: React.FC<ResourceTimelineProps> = (props) => {
       itemSelector: ".resource-timeline__draggable-event",
       /**
        * eventData
-       * @param element event element
-       * @returns external event element
+       * @param element
+       * @returns a draggable element
        */
       eventData: function (element) {
         const id = element.dataset.id;
