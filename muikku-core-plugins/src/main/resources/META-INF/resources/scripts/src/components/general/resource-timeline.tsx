@@ -49,7 +49,7 @@ interface ResourceTimelineProps {
 /**
  * ResourceTimeline
  *
- * @param props
+ * @param props ResourceTimelineProps
  * @returns JSX.Element
  */
 export const ResourceTimeline: React.FC<ResourceTimelineProps> = (props) => {
@@ -96,7 +96,7 @@ export const ResourceTimeline: React.FC<ResourceTimelineProps> = (props) => {
 
   /**
    * handleDateSelect handles date a date select in calendar
-   * @param arg
+   * @param arg DateSelectArg
    */
   const handleDateSelect = (arg: DateSelectArg) => {
     const currentEvents = events;
