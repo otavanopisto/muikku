@@ -120,11 +120,7 @@ export const Tabs: React.FC<TabsProps> = (props) => {
    * @returns an array of strings
    */
   const createAllTabs = (tabs: Tab[]) => {
-    const tabStrings: string[] = [];
-    for (let i = 0; i < tabs.length; i++) {
-      tabStrings.push(tabs[i].id);
-    }
-    return tabStrings;
+    return tabs.map((tab) => tab.id);
   };
 
   const paginationConfig = {
