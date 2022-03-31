@@ -76,31 +76,32 @@ const HopsHistoryEvent: React.FC<HopsHistoryEventProps> = (props) => {
     : "animate-height";
 
   return (
-    <div className="hops-container__history-event">
-      {props.status && props.status.isStudent ? (
-        <>
-          <span className="hops-container__history-event-text">
-            Muokkasit HOPS:sia
-          </span>
-          <span className="hops-container__history-event-date">
-            {moment(props.hopsUpdate.date).format("l")}
-          </span>
-        </>
+    <>
+      {props.status.userId === props.hopsUpdate.modifierId ? (
+        <div className="hops-container__history-event hops-container__history-event--created-by-me">
+          <div className="hops-container__history-event-primary">
+            <span className="hops-container__history-event-text">
+              Muokkasit HOPS:sia
+            </span>
+            <span className="hops-container__history-event-date">
+              {moment(props.hopsUpdate.date).format("l")}
+            </span>
+          </div>
+        </div>
       ) : (
-        <>
+        <div className="hops-container__history-event hops-container__history-event--created-by-other">
           <div className="hops-container__history-event-primary">
             {props.showEdit && (
               <div className="hops-container__history-event-action">
                 <IconButton icon="pencil" onClick={handleEditClick} />
               </div>
             )}
-            <span className="hops-container__history-event-text">Ohjaaja</span>
             <span className="hops-container__history-event-author">
               <Avatar
                 id={props.hopsUpdate.modifierId}
                 firstName={props.hopsUpdate.modifier}
                 hasImage={props.hopsUpdate.modifierHasImage}
-                size="large"
+                size="small"
               />
               <span className="hops-container__history-event-author-name">
                 {props.hopsUpdate.modifier}
@@ -131,8 +132,8 @@ const HopsHistoryEvent: React.FC<HopsHistoryEventProps> = (props) => {
               </>
             )}
           </div>
-        </>
+        </div>
       )}
-    </div>
+    </>
   );
 };

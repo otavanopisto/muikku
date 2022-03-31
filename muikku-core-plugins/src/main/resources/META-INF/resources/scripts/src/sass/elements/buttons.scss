@@ -1851,6 +1851,19 @@
     padding: 5px;
     width: 2.25rem;
   }
+
+  &.disabled {
+    background: transparent;
+
+    .icon-trash {
+      color: $color-disabled;
+    }
+
+    &:hover {
+      background: transparent;
+      color: $color-disabled;
+    }
+  }
 }
 
 .button--evaluate-assignment {

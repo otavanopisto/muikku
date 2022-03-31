@@ -152,12 +152,40 @@
   border-bottom: 1px solid $color-default-separator-border;
   display: flex;
   flex-basis: 100%;
-  flex-flow: row nowrap;
   flex-grow: 1;
   flex-shrink: 1;
   justify-content: flex-start;
   margin: 0 5px;
   padding: 10px 0;
+}
+
+.hops-container__history-event--created-by-me {
+  flex-flow: row nowrap;
+}
+
+.hops-container__history-event--created-by-other {
+  align-items: flex-start;
+  flex-flow: column nowrap;
+}
+
+.hops-container__history-event-primary,
+.hops-container__history-event-secondary {
+  align-items: center;
+  display: flex;
+  flex-basis: 100%;
+  flex-flow: row nowrap;
+  flex-grow: 1;
+  flex-shrink: 1;
+  justify-content: flex-start;
+  padding: 2px 0;
+}
+
+.hops-container__history-event-action {
+  margin: 0 7px 0 0;
+}
+
+.hops-container__history-event-text {
+  margin: 0 7px 0 0;
 }
 
 .hops-container__history-event-author {
@@ -168,21 +196,27 @@
   flex-grow: 1;
   flex-shrink: 1;
   justify-content: flex-start;
+  margin: 0 7px 0 0;
+
+  .avatar-container {
+    border: 2px solid $color-application-dialog-border-color;
+    border-radius: 100%;
+    margin: 0 7px 0 0 ;
+  }
 }
 
 .hops-container__history-event-author-name {
-  margin: 0 0 0 15px;
+  font-weight: 600;
 }
 
-.hops-container__history-event-meta {
-  align-items: center;
-  display: flex;
-  flex-basis: 150px;
-  flex-flow: row nowrap;
-  flex-grow: 0;
-  flex-shrink: 0;
-  justify-content: flex-end;
+.hops-container__history-event-date {
+  background: $color-default-generic-background;
+  border-radius: 3px;
+  line-height: 1;
+  margin: 0 7px 0 0;
+  padding: 4px;
 }
+
 
 .hops-container__row {
   display: flex;
@@ -294,6 +328,13 @@
   font-size: 0.875rem;
 }
 
+.hops__input[disabled]:checked::after {
+  color: $color-default-contrast;
+  content: "\e639";
+  font-family: "muikku";
+  font-size: 0.875rem;
+}
+
 .hops__input {
   background: $color-default;
   border: 2px solid $color-hops-dialog-form-element-border;
@@ -302,9 +343,12 @@
   padding: 4px 8px;
   width: 100%;
 
-  &[readonly] {
+  &[disabled] {
     background-color: lighten($color-disabled, 20%);
-    border: 0;
+    border-color: lighten($color-disabled, 20%);
+  }
+
+  @include breakpoint($breakpoint-pad) {
     height: $select-height-desktop;
   }
 }
@@ -320,7 +364,10 @@
 
   &[disabled] {
     background-color: lighten($color-disabled, 20%);
-    border: 0;
+    border-color: lighten($color-disabled, 20%);
+  }
+
+  @include breakpoint($breakpoint-pad) {
     height: $select-height-desktop;
   }
 }
@@ -335,7 +382,7 @@
   resize: vertical;
   width: 100%;
 
-  &[readonly] {
+  &[disabled] {
     background-color: lighten($color-disabled, 20%);
     border: 0;
   }

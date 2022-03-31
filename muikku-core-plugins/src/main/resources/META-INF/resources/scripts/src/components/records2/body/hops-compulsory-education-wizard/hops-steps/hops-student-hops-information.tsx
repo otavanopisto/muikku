@@ -62,7 +62,7 @@ class HopsStudentHopsInformation extends React.Component<
                   type="text"
                   placeholder="Nimi"
                   value={this.props.basicInformation.name}
-                  readOnly
+                  disabled
                   className="hops__input"
                 />
               </div>
@@ -79,7 +79,7 @@ class HopsStudentHopsInformation extends React.Component<
                       ? this.props.basicInformation.counselorList.join(", ")
                       : "Ei ohjaaja"
                   }
-                  readOnly
+                  disabled
                   className="hops__input"
                 />
               </div>

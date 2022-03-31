@@ -61,6 +61,12 @@
 .table__data {
   padding: 5px;
   width: 10%;
+
+  input[disabled],
+  select[disabled] {
+    background: transparent;
+    border-color: transparent;
+  }
 }
 
 .table__data--course {
