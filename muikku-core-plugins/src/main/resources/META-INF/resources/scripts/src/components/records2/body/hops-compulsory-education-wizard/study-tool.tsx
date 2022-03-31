@@ -20,6 +20,8 @@ import OptionalStudiesInfoBox from "./study-tool-optional-studiess-info-box";
 import { useStudentChoices } from "./hooks/useStudentChoices";
 import { useStudentStudyHour } from "./hooks/useStudentStudyHours";
 import { useStudentAlternativeOptions } from "./hooks/useStudentAlternativeOptions";
+import * as moment from "moment";
+import { i18nType } from "~/reducers/base/i18n";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const ProgressBarCircle = require("react-progress-bar.js").Circle;
@@ -30,6 +32,7 @@ const ProgressBarLine = require("react-progress-bar.js").Line;
  * StudyToolProps
  */
 interface StudyToolProps {
+  i18n: i18nType;
   user: HopsUser;
   studentId: string;
   disabled: boolean;
@@ -50,7 +53,7 @@ const defaultProps = {
 
 /**
  * Tool for designing studies
- * @param props
+ * @param props props
  * @returns JSX.Element
  */
 const StudyTool: React.FC<StudyToolProps> = (props) => {
@@ -99,6 +102,9 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
     const mandatoryHoursCompleted = calculateCompletedMandatoryHours();
     const mandatoryHoursNeeded = calculateMandatoryHoursNeeded();
 
+    /**
+     * Mandatory hours minus completed mandatory hours
+     */
     const updatedMandatoryHoursNeeded =
       mandatoryHoursNeeded - mandatoryHoursCompleted;
 
@@ -109,42 +115,100 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
         calculateSelectedOptionalHours() - optionalHoursCompleted;
     }
 
-    const weekFactor = parseInt(followUpData.followUp.graduationGoal) / 12;
-
-    const hoursNeededToMatchGoal = Math.round(
-      (updatedMandatoryHoursNeeded + selectedOptionalHours - allApprovedHours) /
-        (52 * weekFactor)
-    );
-
     const hoursInTotalToComplete =
       updatedMandatoryHoursNeeded + selectedOptionalHours - allApprovedHours;
 
-    const totalTime = getTotalTime(
+    /**
+     * Time in months need to be study. Based on calculation from hours total to complete and study hours per week
+     */
+    const totalTimeInMonths = getTotalTimeInMonths(
       hoursInTotalToComplete,
       studyHours.studyHourValue
     );
 
-    if (hoursNeededToMatchGoal > studyHours.studyHourValue) {
+    /**
+     * Calculated graduation date based on toal time in months
+     */
+    const calculateGraduationDate = props.i18n.time
+      .getLocalizedMoment()
+      .add(totalTimeInMonths, "M")
+      .format("MM-YYYY");
+
+    /**
+     * Own graduation date goal changed to moment form
+     */
+    const ownGoal = moment(followUpData.followUp.graduationGoal);
+
+    if (followUpData.followUp.graduationGoal === null) {
       return (
         <StudyToolCalculationInfoBox
           state="notenough"
-          message={`Pohdi onko arvioitu opiskeluaika (${totalTime}) pessimistinen valmistumistavoitteeseen nähden (${followUpData.followUp.graduationGoal}kk).`}
+          message={`Jos opiskelet ${studyHours.studyHourValue} tuntia viikossa, valmistut arviolta ${calculateGraduationDate}`}
         />
       );
     }
-    if (hoursNeededToMatchGoal < studyHours.studyHourValue) {
+
+    /**
+     * If calculated graduation date is after than student original goal is
+     */
+    if (
+      props.i18n.time
+        .getLocalizedMoment()
+        .add(totalTimeInMonths, "M")
+        .startOf("month")
+        .isAfter(ownGoal)
+    ) {
+      return (
+        <StudyToolCalculationInfoBox
+          state="notenough"
+          message={`Jos opiskelet ${
+            studyHours.studyHourValue
+          } tuntia viikossa, valmistut arviolta ${calculateGraduationDate}. Valmistumiselle asettamasi tavoite on: ${ownGoal.format(
+            "MM-YYYY"
+          )}. Voit joko valmistua myöhemmin tai etsiä itsellesi lisää aikaa opiskelemiseen. Pohdi asiaa vielä!`}
+        />
+      );
+    }
+
+    /**
+     * If calculated graduation date is before than student original goal is
+     */
+    if (
+      props.i18n.time
+        .getLocalizedMoment()
+        .add(totalTimeInMonths, "M")
+        .startOf("month")
+        .isBefore(ownGoal)
+    ) {
       return (
         <StudyToolCalculationInfoBox
           state="toomuch"
-          message={`Pohdi onko arvioitu opiskeluaika (${totalTime}) optimistinen valmistumistavoitteeseen nähden (${followUpData.followUp.graduationGoal}kk).`}
+          message={`Jos opiskelet ${
+            studyHours.studyHourValue
+          } tuntia viikossa, valmistut arviolta ${calculateGraduationDate}. Sehän on nopeammin kuin ajattelit (${ownGoal.format(
+            "MM-YYYY"
+          )})! Pieni jousto aikataulussa on kuitenkin hyvä juttu, koska elämässä aina sattuu ja tapahtuu.`}
         />
       );
     }
-    if (hoursNeededToMatchGoal === studyHours.studyHourValue) {
+
+    /**
+     * If calculated graduation date is same as student original goal is.
+     * This can be +- couple study hours per week
+     */
+    if (
+      props.i18n.time
+        .getLocalizedMoment()
+        .add(totalTimeInMonths, "M")
+        .startOf("month")
+        .isSame(ownGoal)
+    ) {
       return (
         <StudyToolCalculationInfoBox
           state="enough"
-          message={`Arvioitu opiskeluaika (${totalTime}) on linjassa valmistumistavoitteesi kanssa (${followUpData.followUp.graduationGoal}kk).`}
+          message={`Erinomaista! Jos opiskelet tällä tahdilla, valmistuminen ${ownGoal.format(
+            "MM-YYYY"
+          )} on täysin mahdollista!`}
         />
       );
     }
@@ -604,18 +668,34 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
    * @param totalHours totalHours
    * @param hoursPerWeek hoursPerWeek
    */
-  const getTotalTime = (totalHours: number, hoursPerWeek: number) => {
-    const totalMonths = Math.round(((totalHours / hoursPerWeek) * 7) / 31);
-    const totalTimeValue = `${totalMonths}kk`;
-    /* let offsetYears = 0;
-    let offsetMonths = 0;
-    let offsetWeeks = 0; */
-
+  const getTotalTimeInMonths = (totalHours: number, hoursPerWeek: number) => {
     if (!hoursPerWeek || hoursPerWeek === 0) {
       return 0;
     }
 
+    const totalMonths = Math.round(((totalHours / hoursPerWeek) * 7) / 31);
+    const totalTimeValue = totalMonths;
+
     return totalTimeValue;
+  };
+
+  /**
+   * Shows time as readable text. Years + months
+   *
+   * @param nm number of months
+   * @returns number of years + months
+   */
+  const showAsReadableTime = (nm: number) => {
+    const years = (nm / 12) | 0;
+    const months = nm % 12;
+
+    if (nm === 0) {
+      return `${nm} y`;
+    }
+
+    return `${years !== 0 ? `${years}y` : ""} ${
+      months !== 0 ? `${months}kk` : ""
+    }`;
   };
 
   /**
@@ -635,7 +715,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
    * hasValidAmountStudies
    * @returns boolean whether there is enough valid studies
    */
-  const hasValidAmountStudies = (): boolean => {
+  /* const hasValidAmountStudies = (): boolean => {
     const needMaxMandatoryStudies = calculateMaxNumberOfMandatoryCourses();
     const needMaxOptionalStudies =
       NEEDED_STUDIES_IN_TOTAL - calculateMaxNumberOfMandatoryCourses();
@@ -653,7 +733,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
     }
 
     return false;
-  };
+  }; */
 
   const allApprovedHours = calculateAllApprovedHours();
   const optionalHoursCompleted = calculateCompletedOptionalHours();
@@ -673,7 +753,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
   const hoursInTotalToComplete =
     updatedMandatoryHoursNeeded + selectedOptionalHours - allApprovedHours;
 
-  const totalTime = getTotalTime(
+  const totalTimeInMonths = getTotalTimeInMonths(
     hoursInTotalToComplete,
     studyHours.studyHourValue
   );
@@ -708,7 +788,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
 
   return (
     <>
-      {!studyHours.isLoading && followUpData.followUp.graduationGoal !== "" ? (
+      {!studyHours.isLoading && (
         <div className="hops-container__row">
           <div className="hops__form-element-container">
             <TextField
@@ -721,25 +801,27 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
             />
           </div>
         </div>
-      ) : null}
-
-      {studentActivity.isLoading || studentChoices.isLoading ? null : (
-        <div className="hops-container__row">
-          <OptionalStudiesInfoBox
-            needMandatoryStudies={needMandatoryStudies}
-            selectedNumberOfOptional={studentChoices.studentChoices.length}
-            graduationGoal={followUpData.followUp.graduationGoal}
-          />
-        </div>
       )}
 
       {studentActivity.isLoading ||
-      studentChoices.isLoading ? null : studentChoices.studentChoices &&
-        studentChoices.studentChoices.length >= neededOptionalStudies ? (
-        <div className="hops-container__row">
-          {compareGraduationGoalToNeededForMandatoryStudies()}
-        </div>
-      ) : null}
+        (studentChoices.isLoading && (
+          <div className="hops-container__row">
+            <OptionalStudiesInfoBox
+              needMandatoryStudies={needMandatoryStudies}
+              selectedNumberOfOptional={studentChoices.studentChoices.length}
+              graduationGoal={followUpData.followUp.graduationGoal}
+            />
+          </div>
+        ))}
+
+      {!studentActivity.isLoading &&
+        !studentChoices.isLoading &&
+        studentChoices.studentChoices &&
+        studentChoices.studentChoices.length >= neededOptionalStudies && (
+          <div className="hops-container__row">
+            {compareGraduationGoalToNeededForMandatoryStudies()}
+          </div>
+        )}
 
       {props.showIndicators && (
         <div
@@ -914,7 +996,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
                       "hops-activity__progressbar-label hops-activity__progressbar-label--assignment  hops-activity__progressbar-label--workspace",
                   },
                 }}
-                text={`${totalTime}`}
+                text={`${showAsReadableTime(totalTimeInMonths)}`}
               />
             </div>
           </div>
@@ -1009,6 +1091,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
 function mapStateToProps(state: StateType) {
   return {
     websocketState: state.websocket,
+    i18n: state.i18n,
   };
 }
 

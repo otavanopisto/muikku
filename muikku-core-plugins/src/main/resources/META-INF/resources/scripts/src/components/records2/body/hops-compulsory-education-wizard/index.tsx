@@ -67,6 +67,7 @@ export interface HopsBaseProps {
   phase?: number;
   disabled: boolean;
   superVisorModifies: boolean;
+  studyTimeEnd: string | null;
 }
 
 /**
@@ -593,6 +594,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
                     .querySelector('meta[name="muikku:loggedUser"]')
                     .getAttribute("value")
             }
+            studyTimeEnd={this.props.studyTimeEnd}
             followUp={this.state.hopsFollowUp}
             studies={{
               ...this.state.hopsCompulsory.studiesPlanning,

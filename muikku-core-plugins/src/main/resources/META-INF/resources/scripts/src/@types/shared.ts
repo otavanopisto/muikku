@@ -373,7 +373,7 @@ export interface HopsPlanningStudies {
  * FollowUpGoal
  */
 export interface FollowUp {
-  graduationGoal: string;
+  graduationGoal: Date | null;
   followUpGoal: string;
   followUpStudies?: string;
   followUpStudiesElse?: string;

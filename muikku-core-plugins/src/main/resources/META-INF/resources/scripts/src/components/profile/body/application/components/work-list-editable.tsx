@@ -1,6 +1,5 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import moment from "~/lib/moment";
 import { StateType } from "~/reducers";
 import { LocaleListType } from "~/reducers/base/locales";
 import {
@@ -10,16 +9,20 @@ import {
 } from "~/reducers/main-function/profile";
 import { ButtonPill } from "~/components/general/button";
 import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import "~/sass/elements/datepicker/datepicker.scss";
 import { i18nType } from "~/reducers/base/i18n";
+import * as moment from "moment";
+import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 
 // these are used to limit the date pickers, first the start of the current month
 // the previous month and the day of the current month
-const startOfCurrentMonth = moment().startOf("month");
-const startOfPreviousMonth = startOfCurrentMonth
+const startOfCurrentMonth = moment().startOf("month").toDate();
+const startOfPreviousMonth = moment(startOfCurrentMonth)
   .clone()
   .subtract(1, "months")
-  .startOf("month");
+  .startOf("month")
+  .toDate();
 const dayOfCurrentMonth: number = moment(new Date()).date();
 
 /**
@@ -48,7 +51,7 @@ interface WorkListEditableProps {
  */
 interface WorksListEditableState {
   description: string;
-  date: any;
+  date: Date | null;
   price: string;
   factor: string;
 }
@@ -79,7 +82,7 @@ class WorkListEditable extends React.Component<
    */
   public async submit() {
     const description = this.state.description.trim();
-    const date = this.state.date.format("YYYY-MM-DD");
+    const date = moment(this.state.date).format("YYYY-MM-DD");
     const price = parseFloat(this.state.price.replace(",", "."));
     const factor = parseFloat(this.state.factor.replace(",", "."));
 
@@ -108,7 +111,7 @@ class WorkListEditable extends React.Component<
    */
   public canSubmitOnInequality() {
     const description = this.state.description.trim();
-    const date = this.state.date.format("YYYY-MM-DD");
+    const date = moment(this.state.date).format("YYYY-MM-DD");
     const price = parseFloat(this.state.price.replace(",", "."));
     const factor = parseFloat(this.state.factor.replace(",", "."));
 
@@ -154,7 +157,9 @@ class WorkListEditable extends React.Component<
       }
     }
     if (props.base && (props.base as StoredWorklistItem).entryDate) {
-      newState.date = moment((props.base as StoredWorklistItem).entryDate);
+      newState.date = moment(
+        (props.base as StoredWorklistItem).entryDate
+      ).toDate();
     }
 
     if (!setupPhase) {
@@ -187,13 +192,12 @@ class WorkListEditable extends React.Component<
 
   /**
    * handleDateChange
-   * @param which which
    * @param newDate newDate
    */
-  public handleDateChange(which: string, newDate: any) {
+  public handleDateChange(newDate: Date) {
     this.setState({
-      [which]: newDate,
-    } as any);
+      date: newDate,
+    });
   }
 
   /**
@@ -267,8 +271,10 @@ class WorkListEditable extends React.Component<
               }
               id={"date-" + (this.props.base && this.props.base.id)}
               className="form-element__input form-element__input--worklist-date"
-              onChange={this.handleDateChange.bind(this, "date")}
-              locale={this.props.i18n.time.getLocale()}
+              onChange={this.handleDateChange.bind(this)}
+              locale={outputCorrectDatePickerLocale(
+                this.props.i18n.time.getLocale()
+              )}
               selected={this.state.date}
               // the entry date min date allows us to pick the previous month within the limit, or otherwise
               // we can only choose from this month forwards
@@ -277,6 +283,7 @@ class WorkListEditable extends React.Component<
                   ? startOfPreviousMonth
                   : startOfCurrentMonth
               }
+              dateFormat="P"
             />
           </div>
         </div>

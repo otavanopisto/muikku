@@ -13,6 +13,7 @@ interface HopsCompulsoruEducationWizardProps {
   children?: React.ReactElement<any>;
   hops?: number;
   disabled: boolean;
+  studyTimeEnd: string | null;
 }
 
 /**
@@ -51,6 +52,7 @@ class HopsCompulsoryEducationWizardDialog extends React.Component<
           user={this.props.user}
           disabled={this.props.disabled}
           superVisorModifies={this.props.superVisorModifies}
+          studyTimeEnd={this.props.studyTimeEnd}
         />
       </div>
     );

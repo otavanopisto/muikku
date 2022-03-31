@@ -98,6 +98,7 @@ import Chat from "../components/chat/chat";
 import EvaluationBody from "../components/evaluation/body";
 import CeeposDone from "../components/ceepos/done";
 import CeeposPay from "../components/ceepos/pay";
+import * as moment from "moment";
 import {
   loadEvaluationAssessmentRequestsFromServer,
   loadEvaluationGradingSystemFromServer,
@@ -106,12 +107,15 @@ import {
   loadListOfImportantAssessmentIdsFromServer,
   loadListOfUnimportantAssessmentIdsFromServer,
 } from "~/actions/main-function/evaluation/evaluationActions";
-import * as moment from "moment";
 import {
   loadCeeposPurchase,
   loadCeeposPurchaseAndPay,
 } from "~/actions/main-function/ceepos";
+import { registerLocale } from "react-datepicker";
+import { enGB, fi } from "date-fns/locale";
 import RecordsBody2 from "~/components/records2/body";
+registerLocale("fi", fi);
+registerLocale("enGB", enGB);
 
 moment.locale("fi");
 

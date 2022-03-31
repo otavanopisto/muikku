@@ -1,6 +1,7 @@
-import moment from "~/lib/moment";
 import getLocaleText from "~/lib/getLocaleText";
-
+import * as moment from "moment";
+import "moment/locale/en-gb";
+import { outputCorrectMomentLocale } from "~/helper-functions/locale";
 /**
  * i18nType
  */
@@ -39,7 +40,7 @@ export interface i18nType {
     /**
      * getLocalizedMoment
      */
-    getLocalizedMoment(...args: any[]): any;
+    getLocalizedMoment(...args: any[]): moment.Moment;
     /**
      * getLocale
      */
@@ -75,7 +76,9 @@ export default function i18n(
        * @param format format
        */
       format(date = new Date(), format = "L") {
-        return moment(date).locale(lang.toLowerCase()).format(format);
+        return moment(date)
+          .locale(outputCorrectMomentLocale(lang.toLowerCase()))
+          .format(format);
       },
       /**
        * fromNow
@@ -94,25 +97,33 @@ export default function i18n(
         const momentOfDate = moment(date);
         const isToday = moment().isSame(momentOfDate, "day");
         return moment(date)
-          .locale(lang.toLowerCase())
+          .locale(outputCorrectMomentLocale(lang.toLowerCase()))
           .format(isToday ? todayFormat : otherDayFormat);
       },
       /**
        * subtract
-       * @param date date
-       * @param input input
-       * @param value value
+       * @param date date. Default is new Date()
+       * @param input input. Default is 1
+       * @param value value. Default is "days"
        */
-      subtract(date = new Date(), input = 1, value = "days") {
+      subtract(
+        date = new Date(),
+        input = 1,
+        value: moment.DurationInputArg2 = "days"
+      ) {
         return moment(date).subtract(input, value).calendar();
       },
       /**
        * add
-       * @param date date
-       * @param input input
-       * @param value value
+       * @param date date. Default is new Date()
+       * @param input input. Default is 1
+       * @param value value. Default is "days"
        */
-      add(date = new Date(), input = 1, value = "days") {
+      add(
+        date = new Date(),
+        input = 1,
+        value: moment.DurationInputArg2 = "days"
+      ) {
         return moment(date).add(input, value).calendar();
       },
       /**
@@ -120,7 +131,9 @@ export default function i18n(
        * @param {...any} args args
        */
       getLocalizedMoment(...args: any[]) {
-        return moment(...args).locale(lang.toLowerCase());
+        return moment(...args).locale(
+          outputCorrectMomentLocale(lang.toLowerCase())
+        );
       },
       /**
        * getLocale

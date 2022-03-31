@@ -12,18 +12,26 @@ import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
+import "react-datepicker/dist/react-datepicker.css";
+import "~/sass/elements/datepicker/datepicker.scss";
 import { WebsocketStateType } from "~/reducers/util/websocket";
 import { AnyActionType } from "~/actions";
 import { Textarea } from "./text-area";
 import { TextField } from "./text-field";
 import AnimateHeight from "react-animate-height";
+import DatePicker from "react-datepicker";
+import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
+import { i18nType } from "~/reducers/base/i18n";
+import * as moment from "moment";
 
 /**
  * FollowUpGoalsProps
  */
 interface HopsFollowUpGoalsProps {
+  i18n: i18nType;
   disabled: boolean;
   studentId: string;
+  studyTimeEnd: string | null;
   websocketState: WebsocketStateType;
   displayNotification: DisplayNotificationTriggerType;
 }
@@ -35,7 +43,8 @@ interface HopsFollowUpGoalsProps {
  * @returns JSX.Element
  */
 const HopsFollowUpGoals: React.FC<HopsFollowUpGoalsProps> = (props) => {
-  const { disabled, studentId, websocketState, displayNotification } = props;
+  const { disabled, studentId, websocketState, displayNotification, i18n } =
+    props;
 
   const { followUpData, ...followUpHandlers } = useFollowUpGoal(
     studentId,
@@ -65,21 +74,19 @@ const HopsFollowUpGoals: React.FC<HopsFollowUpGoalsProps> = (props) => {
     <>
       <div className="hops-container__row">
         <div className="hops__form-element-container">
-          <label className="hops__label">Valmistumisaikatavoite:</label>
-          <select
-            value={followUpData.followUp.graduationGoal}
-            onChange={(e) =>
-              handleGoalsChange("graduationGoal", e.currentTarget.value)
+          <label className="hops__label">Milloin haluat valmistua?</label>
+          <DatePicker
+            onChange={(date) => handleGoalsChange("graduationGoal", date)}
+            selected={followUpData.followUp.graduationGoal}
+            locale={outputCorrectDatePickerLocale(i18n.time.getLocale())}
+            dateFormat="MM/yyyy"
+            showMonthYearPicker
+            showFullMonthYearPicker
+            className="form-element__input"
+            maxDate={
+              props.studyTimeEnd !== null && moment(props.studyTimeEnd).toDate()
             }
-            className="hops__select"
-            disabled={disabled}
-          >
-            <option value="">Valitse...</option>
-            <option value="6">6kk</option>
-            <option value="12">1v.</option>
-            <option value="18">1,5v.</option>
-            <option value="24">2v.</option>
-          </select>
+          />
         </div>
       </div>
 
@@ -245,6 +252,7 @@ const HopsFollowUpGoals: React.FC<HopsFollowUpGoalsProps> = (props) => {
 function mapStateToProps(state: StateType) {
   return {
     websocketState: state.websocket,
+    i18n: state.i18n,
   };
 }
 
