@@ -4,6 +4,7 @@ import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
 import { Calendar } from "~/reducers/main-function/calendar";
 import { StateType } from "~/reducers";
+import { AnyActionType } from "~/actions";
 import "~/sass/elements/panel.scss";
 import "~/sass/elements/item-list.scss";
 import { bindActionCreators } from "redux";
@@ -73,7 +74,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch Redux dispatch
  * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     {
       changeCalendarAttendanceStatus,

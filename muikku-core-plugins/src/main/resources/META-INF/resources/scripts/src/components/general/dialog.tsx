@@ -246,6 +246,11 @@ interface DialogTitleContainerProps {
   modifier?: string;
 }
 
+/**
+ * DialogTitleContainer
+ * @param props DialogTitleContainerProps
+ * @returns  JSX.Element
+ */
 export const DialogTitleContainer: React.FC<DialogTitleContainerProps> = (
   props
 ) => (
@@ -265,6 +270,11 @@ interface DialogTitleProps {
   modifier?: string;
 }
 
+/**
+ * DialogTitleItem
+ * @param props DialogTitleProps
+ * @returns JSX.Element
+ */
 export const DialogTitleItem: React.FC<DialogTitleProps> = (props) => (
   <span
     className={`dialog__title-item ${

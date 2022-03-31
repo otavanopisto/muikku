@@ -191,7 +191,7 @@ class StudentDialog extends React.Component<
 
 /**
  * mapStateToProps
- * @param state
+ * @param state application state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -204,7 +204,7 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch action dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(

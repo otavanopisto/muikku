@@ -49,7 +49,7 @@ interface ResourceTimelineProps {
 /**
  * ResourceTimeline
  *
- * @param props
+ * @param props ResourceTimelineProps
  * @returns JSX.Element
  */
 export const ResourceTimeline: React.FC<ResourceTimelineProps> = (props) => {
