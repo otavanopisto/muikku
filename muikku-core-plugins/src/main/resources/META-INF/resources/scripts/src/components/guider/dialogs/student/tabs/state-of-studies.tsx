@@ -27,13 +27,16 @@ import {
 import NewMessage from "~/components/communicator/dialogs/new-message";
 import { ButtonPill } from "~/components/general/button";
 import GuiderToolbarLabels from "../../../body/application/toolbar/labels";
+import ApplicationSubPanel, {
+  ApplicationSubPanelViewHeader,
+  ApplicationSubPanelItem,
+} from "~/components/general/application-sub-panel";
+import Avatar from "~/components/general/avatar";
 
 import GuidanceEvent from "../../guidance-event";
 // import { CalendarEvent } from "~/reducers/main-function/calendar";
-// import {
-//   ResourceTimeline,
-//   ExternalEventType,
-// } from "../../../../general/resource-timeline";
+// import { ResourceTimeline } from "../../../general/resource-timeline";
+// import { ExternalEventType } from "../../../general/resource-timeline";
 
 /**
  * StateOfStudiesProps
@@ -82,7 +85,7 @@ class StateOfStudies extends React.Component<
 
     /**
      * IsStudentPartOfProperStudyProgram
-     * @param studyProgramName
+     * @param studyProgramName studyprogramme name
      * @returns true or false
      */
     const IsStudentPartOfProperStudyProgram = (studyProgramName: string) => {
@@ -103,31 +106,21 @@ class StateOfStudies extends React.Component<
       this.props.guider.currentStudent.emails.find((e) => e.defaultAddress);
 
     const studentBasicHeader = this.props.guider.currentStudent.basic && (
-      <div className="application-sub-panel__header">
-        <object
-          className="avatar-container"
-          data={getUserImageUrl(
-            this.props.guider.currentStudent.basic.userEntityId
-          )}
-          type="image/jpeg"
+      <ApplicationSubPanel.Header>
+        <Avatar
+          id={this.props.guider.currentStudent.basic.userEntityId}
+          hasImage={this.props.guider.currentStudent.basic.hasImage}
+          firstName={this.props.guider.currentStudent.basic.firstName}
+        ></Avatar>
+        <ApplicationSubPanelViewHeader
+          title={getName(this.props.guider.currentStudent.basic, true)}
+          titleDetail={
+            (defaultEmailAddress && defaultEmailAddress.address) ||
+            this.props.i18n.text.get(
+              "plugin.guider.user.details.label.unknown.email"
+            )
+          }
         >
-          <div className={`avatar avatar--category-1`}>
-            {this.props.guider.currentStudent.basic.firstName[0]}
-          </div>
-        </object>
-        <div className="application-sub-panel__header-main-container">
-          <h2 className="application-sub-panel__header-main application-sub-panel__header-main--guider-profile-student-name">
-            {getName(this.props.guider.currentStudent.basic, true)}
-          </h2>
-          <div className="application-sub-panel__header-main application-sub-panel__header-main--guider-profile-student-email">
-            {(defaultEmailAddress && defaultEmailAddress.address) ||
-              this.props.i18n.text.get(
-                "plugin.guider.user.details.label.unknown.email"
-              )}
-          </div>
-        </div>
-        <div className="application-sub-panel__header-aside-container">
-          {/* {this.props.guider.currentStudent.basic.studyProgrammeName} */}
           {this.props.guider.currentStudent.basic &&
           IsStudentPartOfProperStudyProgram(
             this.props.guider.currentStudent.basic.studyProgrammeName
@@ -158,8 +151,8 @@ class StateOfStudies extends React.Component<
             />
           </GuidanceEvent>
           <GuiderToolbarLabels />
-        </div>
-      </div>
+        </ApplicationSubPanelViewHeader>
+      </ApplicationSubPanel.Header>
     );
 
     const studentLabels =
@@ -178,193 +171,156 @@ class StateOfStudies extends React.Component<
 
     const studentBasicInfo = this.props.guider.currentStudent.basic && (
       <div className="application-sub-panel__body">
-        <div className="application-sub-panel__item">
-          <div className="application-sub-panel__item-title">
-            {this.props.i18n.text.get(
-              "plugin.guider.user.details.label.studyStartDateTitle"
-            )}
-          </div>
-          <div className="application-sub-panel__item-data">
-            <span className="application-sub-panel__single-entry">
-              {this.props.guider.currentStudent.basic.studyStartDate
-                ? this.props.i18n.time.format(
-                    this.props.guider.currentStudent.basic.studyStartDate
-                  )
-                : "-"}
-            </span>
-          </div>
-        </div>
-        <div className="application-sub-panel__item">
-          <div className="application-sub-panel__item-title">
-            {this.props.i18n.text.get(
-              "plugin.guider.user.details.label.studyEndDateTitle"
-            )}
-          </div>
-          <div className="application-sub-panel__item-data">
-            <span className="application-sub-panel__single-entry">
-              {this.props.guider.currentStudent.basic.studyEndDate
-                ? this.props.i18n.time.format(
-                    this.props.guider.currentStudent.basic.studyEndDate
-                  )
-                : "-"}
-            </span>
-          </div>
-        </div>
-        <div className="application-sub-panel__item">
-          <div className="application-sub-panel__item-title">
-            {this.props.i18n.text.get(
-              "plugin.guider.user.details.label.studyTimeEndTitle"
-            )}
-          </div>
-          <div className="application-sub-panel__item-data">
-            <span className="application-sub-panel__single-entry">
-              {this.props.guider.currentStudent.basic.studyTimeEnd
-                ? this.props.i18n.time.format(
-                    this.props.guider.currentStudent.basic.studyTimeEnd
-                  )
-                : "-"}
-            </span>
-          </div>
-        </div>
+        <ApplicationSubPanelItem
+          title={this.props.i18n.text.get(
+            "plugin.guider.user.details.label.studyStartDateTitle"
+          )}
+        >
+          <ApplicationSubPanelItem.Content>
+            {this.props.guider.currentStudent.basic.studyStartDate
+              ? this.props.i18n.time.format(
+                  this.props.guider.currentStudent.basic.studyStartDate
+                )
+              : "-"}
+          </ApplicationSubPanelItem.Content>
+        </ApplicationSubPanelItem>
+        <ApplicationSubPanelItem
+          title={this.props.i18n.text.get(
+            "plugin.guider.user.details.label.studyEndDateTitle"
+          )}
+        >
+          <ApplicationSubPanelItem.Content>
+            {this.props.guider.currentStudent.basic.studyEndDate
+              ? this.props.i18n.time.format(
+                  this.props.guider.currentStudent.basic.studyEndDate
+                )
+              : "-"}
+          </ApplicationSubPanelItem.Content>
+        </ApplicationSubPanelItem>
+        <ApplicationSubPanelItem
+          title={this.props.i18n.text.get(
+            "plugin.guider.user.details.label.studyTimeEndTitle"
+          )}
+        >
+          <ApplicationSubPanelItem.Content>
+            {this.props.guider.currentStudent.basic.studyTimeEnd
+              ? this.props.i18n.time.format(
+                  this.props.guider.currentStudent.basic.studyTimeEnd
+                )
+              : "-"}
+          </ApplicationSubPanelItem.Content>
+        </ApplicationSubPanelItem>
         {this.props.guider.currentStudent.emails && (
-          <div className="application-sub-panel__item">
-            <div className="application-sub-panel__item-title">
-              {this.props.i18n.text.get(
-                "plugin.guider.user.details.label.email"
-              )}
-            </div>
-            <div className="application-sub-panel__item-data">
-              {this.props.guider.currentStudent.emails.length ? (
-                this.props.guider.currentStudent.emails.map((email) => (
-                  <span
-                    className="application-sub-panel__single-entry"
-                    key={email.address}
-                  >
-                    {email.defaultAddress ? `*` : null} {email.address} (
-                    {email.type})
-                  </span>
-                ))
-              ) : (
-                <span className="application-sub-panel__single-entry">
-                  {this.props.i18n.text.get(
-                    "plugin.guider.user.details.label.unknown.email"
-                  )}
-                </span>
-              )}
-            </div>
-          </div>
+          <ApplicationSubPanelItem
+            title={this.props.i18n.text.get(
+              "plugin.guider.user.details.label.email"
+            )}
+          >
+            <ApplicationSubPanelItem.Content>
+              <span>
+                {this.props.guider.currentStudent.emails.length
+                  ? this.props.guider.currentStudent.emails.map((email) => (
+                      <>
+                        {email.defaultAddress ? `*` : null} {email.address} (
+                        {email.type})
+                      </>
+                    ))
+                  : this.props.i18n.text.get(
+                      "plugin.guider.user.details.label.unknown.email"
+                    )}
+              </span>
+            </ApplicationSubPanelItem.Content>
+          </ApplicationSubPanelItem>
         )}
         {this.props.guider.currentStudent.phoneNumbers && (
-          <div className="application-sub-panel__item">
-            <div className="application-sub-panel__item-title">
-              {this.props.i18n.text.get(
-                "plugin.guider.user.details.label.phoneNumber"
-              )}
-            </div>
-            <div className="application-sub-panel__item-data">
-              {this.props.guider.currentStudent.phoneNumbers.length ? (
-                this.props.guider.currentStudent.phoneNumbers.map((phone) => (
-                  <span
-                    className="application-sub-panel__single-entry"
-                    key={phone.number}
-                  >
-                    {phone.defaultNumber ? `*` : null} {phone.number} (
-                    {phone.type})
-                  </span>
-                ))
-              ) : (
-                <span className="application-sub-panel__single-entry">
-                  {this.props.i18n.text.get(
-                    "plugin.guider.user.details.label.unknown.phoneNumber"
-                  )}
-                </span>
-              )}
-            </div>
-          </div>
-        )}
-        <div className="application-sub-panel__item">
-          <div className="application-sub-panel__item-title">
-            {this.props.i18n.text.get(
-              "plugin.guider.user.details.label.school"
+          <ApplicationSubPanelItem
+            title={this.props.i18n.text.get(
+              "plugin.guider.user.details.label.phoneNumber"
             )}
-          </div>
-          <div className="application-sub-panel__item-data">
-            <span className="application-sub-panel__single-entry">
-              {this.props.guider.currentStudent.basic.school ||
-                this.props.i18n.text.get(
-                  "plugin.guider.user.details.label.unknown.school"
-                )}
-            </span>
-          </div>
-        </div>
+          >
+            <ApplicationSubPanelItem.Content>
+              <span>
+                {this.props.guider.currentStudent.phoneNumbers.length
+                  ? this.props.guider.currentStudent.phoneNumbers.map(
+                      (phone) => (
+                        <>
+                          {phone.defaultNumber ? `*` : null} {phone.number} (
+                          {phone.type})
+                        </>
+                      )
+                    )
+                  : this.props.i18n.text.get(
+                      "plugin.guider.user.details.label.unknown.phoneNumber"
+                    )}
+              </span>
+            </ApplicationSubPanelItem.Content>
+          </ApplicationSubPanelItem>
+        )}
+        <ApplicationSubPanelItem
+          title={this.props.i18n.text.get(
+            "plugin.guider.user.details.label.school"
+          )}
+        >
+          <ApplicationSubPanelItem.Content>
+            {this.props.guider.currentStudent.basic.school ||
+              this.props.i18n.text.get(
+                "plugin.guider.user.details.label.unknown.school"
+              )}
+          </ApplicationSubPanelItem.Content>
+        </ApplicationSubPanelItem>
         {this.props.guider.currentStudent.usergroups && (
-          <div className="application-sub-panel__item">
-            <div className="application-sub-panel__item-title">
-              {this.props.i18n.text.get(
-                "plugin.guider.user.details.label.studentgroups"
-              )}
-            </div>
-            <div className="application-sub-panel__item-data">
-              {this.props.guider.currentStudent.usergroups.length ? (
-                this.props.guider.currentStudent.usergroups.map((usergroup) => (
-                  <span
-                    className="application-sub-panel__single-entry"
-                    key={usergroup.id}
-                  >
-                    {usergroup.name}
-                  </span>
-                ))
-              ) : (
-                <span className="application-sub-panel__single-entry">
-                  {this.props.i18n.text.get(
-                    "plugin.guider.user.details.label.nostudentgroups"
-                  )}
-                </span>
-              )}
-            </div>
-          </div>
+          <ApplicationSubPanelItem
+            title={this.props.i18n.text.get(
+              "plugin.guider.user.details.label.studentgroups"
+            )}
+          >
+            <ApplicationSubPanelItem.Content>
+              <span>
+                {this.props.guider.currentStudent.usergroups.length
+                  ? this.props.guider.currentStudent.usergroups.map(
+                      (usergroup, index) => usergroup.name + " "
+                    )
+                  : this.props.i18n.text.get(
+                      "plugin.guider.user.details.label.nostudentgroups"
+                    )}
+              </span>
+            </ApplicationSubPanelItem.Content>
+          </ApplicationSubPanelItem>
         )}
         {this.props.guider.currentStudent.basic && (
-          <div className="application-sub-panel__item">
-            <div className="application-sub-panel__item-title">
-              {this.props.i18n.text.get(
-                "plugin.guider.user.details.label.lastLogin"
-              )}
-            </div>
-            <div className="application-sub-panel__item-data">
-              <span className="application-sub-panel__single-entry">
-                {this.props.guider.currentStudent.basic.lastLogin
-                  ? this.props.i18n.time.format(
-                      this.props.guider.currentStudent.basic.lastLogin,
-                      "LLL"
-                    )
-                  : "-"}
-              </span>
-            </div>
-          </div>
+          <ApplicationSubPanelItem
+            title={this.props.i18n.text.get(
+              "plugin.guider.user.details.label.lastLogin"
+            )}
+          >
+            <ApplicationSubPanelItem.Content>
+              {this.props.guider.currentStudent.basic.lastLogin
+                ? this.props.i18n.time.format(
+                    this.props.guider.currentStudent.basic.lastLogin,
+                    "LLL"
+                  )
+                : "-"}
+            </ApplicationSubPanelItem.Content>
+          </ApplicationSubPanelItem>
         )}
         {this.props.guider.currentStudent.notifications &&
           Object.keys(this.props.guider.currentStudent.notifications).map(
             (notification) => {
-              <div
-                className="application-sub-panel__item application-sub-panel__item--notification"
+              <ApplicationSubPanelItem
+                title={this.props.i18n.text.get(
+                  "plugin.guider.user." + notification
+                )}
+                modifier="notification"
                 key={notification}
               >
-                <div className="application-sub-panel__item-title ">
-                  {this.props.i18n.text.get(
-                    "plugin.guider.user." + notification
+                <ApplicationSubPanelItem.Content>
+                  {this.props.i18n.time.format(
+                    (this.props.guider.currentStudent.notifications as any)[
+                      notification
+                    ]
                   )}
-                </div>
-                <div className="application-sub-panel__item-data">
-                  <span className="application-sub-panel__single-entry">
-                    {this.props.i18n.time.format(
-                      (this.props.guider.currentStudent.notifications as any)[
-                        notification
-                      ]
-                    )}
-                  </span>
-                </div>
-              </div>;
+                </ApplicationSubPanelItem.Content>
+              </ApplicationSubPanelItem>;
             }
           )}
       </div>
@@ -392,51 +348,52 @@ class StateOfStudies extends React.Component<
 
     return (
       <>
-        <div className="application-sub-panel application-sub-panel--guider-student-header">
+        <ApplicationSubPanel modifier="guider-student-header">
           {studentBasicHeader}
           {this.props.guider.currentStudent.labels &&
           this.props.guider.currentStudent.labels.length ? (
-            <div className="application-sub-panel__body application-sub-panel__body--labels labels">
-              {studentLabels}
-            </div>
+            <ApplicationSubPanel.Body modifier="labels">
+              <div className="labels">{studentLabels}</div>
+            </ApplicationSubPanel.Body>
           ) : null}
-        </div>
-        <div className="application-sub-panel application-sub-panel--student-data-container">
-          <div className="application-sub-panel application-sub-panel--student-data-primary">
+        </ApplicationSubPanel>
+        <ApplicationSubPanel modifier="student-data-container">
+          <ApplicationSubPanel modifier="student-data-primary">
             {studentBasicInfo}
-          </div>
-
-          <div className="application-sub-panel application-sub-panel--student-data-secondary">
+          </ApplicationSubPanel>
+          <ApplicationSubPanel modifier="student-data-secondary">
             {this.props.guider.currentStudent.basic &&
             IsStudentPartOfProperStudyProgram(
               this.props.guider.currentStudent.basic.studyProgrammeName
             ) ? (
-              <div className="application-sub-panel">
-                <h3 className="application-sub-panel__header">
+              <ApplicationSubPanel>
+                <ApplicationSubPanel.Header>
                   {this.props.i18n.text.get(
                     "plugin.guider.user.details.purchases"
                   )}
-                </h3>
-                <div className="application-sub-panel__body">
+                </ApplicationSubPanel.Header>
+                <ApplicationSubPanel.Body>
                   <Ceepos />
-                </div>
-              </div>
+                </ApplicationSubPanel.Body>
+              </ApplicationSubPanel>
             ) : null}
 
-            <h3 className="application-sub-panel__header">
+            <ApplicationSubPanel.Header>
               {this.props.i18n.text.get(
                 "plugin.guider.user.details.workspaces"
               )}
-            </h3>
+            </ApplicationSubPanel.Header>
 
-            <div className="application-sub-panel__body">
+            <ApplicationSubPanel.Body>
               {studentWorkspaces}
-            </div>
-          </div>
+            </ApplicationSubPanel.Body>
+          </ApplicationSubPanel>
           {this.props.guider.currentState === "LOADING" ? (
-            <div className="application-sub-panel loader-empty" />
+            <ApplicationSubPanel>
+              <div className="loader-empty" />
+            </ApplicationSubPanel>
           ) : null}
-        </div>
+        </ApplicationSubPanel>
       </>
     );
   }
