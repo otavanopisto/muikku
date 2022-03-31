@@ -65,21 +65,39 @@ export interface deleteCalendarEventTrigger {
   (id: number): AnyActionType;
 }
 
-//////State update interfaces
+/**
+ * Load guidance events action type
+ */
 export interface LOAD_CALENDAR_GUIDANCE_EVENTS
   extends SpecificActionType<
     "LOAD_CALENDAR_GUIDANCE_EVENTS",
     CalendarEvent[]
   > {}
+
+/**
+ * Update guidance events action type
+ */
 export interface UPDATE_CALENDAR_GUIDANCE_EVENT
   extends SpecificActionType<"UPDATE_CALENDAR_GUIDANCE_EVENT", CalendarEvent> {}
+
+/**
+ * Add guidance event action type
+ */
 export interface ADD_CALENDAR_GUIDANCE_EVENT
   extends SpecificActionType<"ADD_CALENDAR_GUIDANCE_EVENT", CalendarEvent> {}
+
+/**
+ * Delete guidance event action type
+ */
 export interface DELETE_CALENDAR_GUIDANCE_EVENT
   extends SpecificActionType<
     "DELETE_CALENDAR_GUIDANCE_EVENT",
     CalendarEvent | number
   > {}
+
+/**
+ * Update calendar events status action type
+ */
 export interface UPDATE_CALENDAR_EVENTS_STATUS
   extends SpecificActionType<"UPDATE_CALENDAR_EVENTS_STATUS", EventsState> {}
 
@@ -140,7 +158,7 @@ const loadCalendarEvents: LoadCalendarEventsTriggerType =
 
 /**
  * createCalendarEvent thunk function
- * @param event
+ * @param event event object
  */
 const createCalendarEvent: createCalendarEventTriggerType =
   function createCalendarEvent(event) {
@@ -192,7 +210,7 @@ const createCalendarEvent: createCalendarEventTriggerType =
 
 /**
  * updateCalendarEvent thunk function
- * @param event
+ * @param event calendar event
  */
 const updateCalendarEvent: createCalendarEventTriggerType =
   function updateCalendarEvent(event) {
@@ -244,8 +262,8 @@ const updateCalendarEvent: createCalendarEventTriggerType =
 
 /**
  * changeCalendarAttendanceStatus thunk function
- * @param id
- * @param attendanceState
+ * @param id user id
+ * @param attendanceState new attendance state
  */
 const changeCalendarAttendanceStatus: updateCalendarAttendanceStatusTrigger =
   function changeCalendarAttendanceStatus(id: number, attendanceState: string) {
@@ -279,7 +297,7 @@ const changeCalendarAttendanceStatus: updateCalendarAttendanceStatusTrigger =
 
 /**
  * deleteCalendarEvent thunk function
- * @param id
+ * @param id event id
  */
 const deleteCalendarEvent: deleteCalendarEventTrigger =
   function deleteCalendarEvent(id) {
