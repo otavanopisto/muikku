@@ -204,7 +204,6 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       String language = null;
       String municipality = null;
       String school = null;
-      String ssn = null;
       boolean hidden = false;
 
       if (student.getStudyProgrammeId() != null) {
@@ -260,7 +259,6 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
             Person.class);
         if (person != null) {
           hidden = person.getSecureInfo() != null ? person.getSecureInfo() : false;
-          ssn = person.getSocialSecurityNumber();
         }
       }
       
@@ -282,7 +280,6 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
           evaluationFees,
           hidden,
           curriculumIdentifier,
-          ssn,
           organizationIdentifier));
     }
     
@@ -350,6 +347,35 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     }
 
     logger.warning(String.format("PyramusUserSchoolDataBridge.findUser malformed user identifier %s\n%s",
+        identifier,
+        ExceptionUtils.getStackTrace(new Throwable())));
+    throw new SchoolDataBridgeInternalException(String.format("Malformed user identifier %s", identifier));
+  }
+
+  @Override
+  public String findUserSsn(SchoolDataIdentifier userIdentifier) {
+    String identifier = userIdentifier.getIdentifier();
+    
+    Long studentId = identifierMapper.getPyramusStudentId(identifier);
+    if (studentId != null) {
+      Student student = findPyramusStudent(studentId);
+      
+      if (student.getPersonId() != null) {
+        Person person = pyramusClient.get(
+            "/persons/persons/" + student.getPersonId(),
+            Person.class);
+        if (person != null) {
+          return person.getSocialSecurityNumber();
+        }
+      }
+    }
+
+    Long staffId = identifierMapper.getPyramusStaffId(identifier);
+    if (staffId != null) {
+      throw new SchoolDataBridgeInternalException(String.format("Not supported for staff members", identifier));
+    }
+
+    logger.warning(String.format("PyramusUserSchoolDataBridge.findUserSsn malformed user identifier %s\n%s",
         identifier,
         ExceptionUtils.getStackTrace(new Throwable())));
     throw new SchoolDataBridgeInternalException(String.format("Malformed user identifier %s", identifier));
