@@ -40,7 +40,10 @@ const StudyToolOptionalStudiesInfoBox: React.FC<
         <h3>
           Sinulla ei ole valittuna riittävästi valinnaisia opintoja (
           {selectedNumberOfOptional}/
-          {NEEDED_STUDIES_IN_TOTAL - needMandatoryStudies}). Valitse ainakin x
+          {NEEDED_STUDIES_IN_TOTAL - needMandatoryStudies}). Valitse ainakin
+          {NEEDED_STUDIES_IN_TOTAL -
+            needMandatoryStudies -
+            selectedNumberOfOptional}
           kurssia.
         </h3>
         {graduationGoal === null ? (
@@ -63,9 +66,11 @@ const StudyToolOptionalStudiesInfoBox: React.FC<
         className="hops__form-element-container"
       >
         <h3>
-          Jee! Olet valinnut itsellesi riittävän määrän valinnaisia opintoja
-          (x/9). Jos haluat, voit suorittaa valinnaisia opintoja enemmänkin.
-          Silloin oppimäärän suorittamiseen kuluva aika saattaa tosin pidentyä.
+          Jee! Olet valinnut itsellesi riittävän määrän valinnaisia opintoja (
+          {selectedNumberOfOptional}/
+          {NEEDED_STUDIES_IN_TOTAL - needMandatoryStudies}). Jos haluat, voit
+          suorittaa valinnaisia opintoja enemmänkin. Silloin oppimäärän
+          suorittamiseen kuluva aika saattaa tosin pidentyä.
         </h3>
       </div>
     );
