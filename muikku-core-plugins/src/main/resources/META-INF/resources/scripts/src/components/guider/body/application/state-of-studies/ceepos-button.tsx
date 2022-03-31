@@ -31,7 +31,7 @@ interface CeeposButtonProps {
 
 /**
  * CeeposButton
- * @param props
+ * @param props CeeposButtonProps
  * @returns JSX.elenment
  */
 export const CeeposButton: React.FC<CeeposButtonProps> = (props) => {

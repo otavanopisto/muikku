@@ -80,7 +80,7 @@ class StateOfStudies extends React.Component<
 
     /**
      * IsStudentPartOfProperStudyProgram
-     * @param studyProgramName
+     * @param studyProgramName the name of the study programme
      * @returns true or false
      */
     const IsStudentPartOfProperStudyProgram = (studyProgramName: string) => {

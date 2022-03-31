@@ -59,7 +59,7 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
 
   /**
    * Switches the active navigaton state
-   * @param id
+   * @param id study history aside id
    */
   const handleNavigationClick = (id: studyHistoryAside) => {
     switch (id) {
@@ -81,14 +81,14 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
     <Navigation>
       <NavigationElement
         id={"studyHistory"}
-        onClick={handleNavigationClick.bind(this, "history")}
+        onClick={() => handleNavigationClick("history")}
         isActive={navigationActive === "history" ? true : false}
       >
         {i18n.text.get("plugin.guider.user.tabs.studyHistory.aside.history")}
       </NavigationElement>
       <NavigationElement
         id={"studyLibrary"}
-        onClick={handleNavigationClick.bind(this, "library")}
+        onClick={() => handleNavigationClick("library")}
         isActive={navigationActive === "library" ? true : false}
       >
         {i18n.text.get("plugin.guider.user.tabs.studyHistory.aside.library")}
