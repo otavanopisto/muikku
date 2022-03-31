@@ -143,7 +143,7 @@ const GuidanceEvent: React.FC<GuidanceEventProps> = (props) => {
 
   /**
    * Changes the week
-   * @param direction
+   * @param direction direction of the change
    */
   const handleWeekChange = (direction: "next" | "last") => {
     const calendarApi = calendarRef.current.getApi();
@@ -157,7 +157,7 @@ const GuidanceEvent: React.FC<GuidanceEventProps> = (props) => {
 
   /**
    *Handles dialog close
-   * @param closeDialog
+   * @param closeDialog prop drilling close function
    */
   const handleDialogClose = (closeDialog: () => void) => {
     clearState();
@@ -262,7 +262,7 @@ const GuidanceEvent: React.FC<GuidanceEventProps> = (props) => {
 
 /**
  * Takes the app state and maps it into component props
- * @param state
+ * @param state application state
  * @returns object
  */
 function mapStateToProps(state: StateType) {
@@ -276,7 +276,7 @@ function mapStateToProps(state: StateType) {
 
 /**
  * Specifies what actions can be dispatched from the props
- * @param dispatch
+ * @param dispatch action dispatch
  * @returns object
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
