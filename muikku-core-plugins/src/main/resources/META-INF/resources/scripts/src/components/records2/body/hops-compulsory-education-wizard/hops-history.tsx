@@ -3,6 +3,7 @@ import * as React from "react";
 import AnimateHeight from "react-animate-height";
 import { HopsUpdate } from "~/@types/shared";
 import Avatar from "~/components/general/avatar";
+import { StatusType } from "~/reducers/base/status";
 import Button, { IconButton } from "~/components/general/button";
 import "~/sass/elements/hops.scss";
 
@@ -15,6 +16,7 @@ interface HopsHistoryProps {
   loading: boolean;
   superVisorModifies: boolean;
   onHistoryEventClick: (eventId: number) => void;
+  status: StatusType;
 }
 
 /**
@@ -31,6 +33,7 @@ const HopsHistory: React.FC<HopsHistoryProps> = (props) => (
         }
         hopsUpdate={item}
         onHistoryEventClick={props.onHistoryEventClick}
+        status={props.status}
       />
     ))}
     {props.loading && (
@@ -50,6 +53,7 @@ interface HopsHistoryEventProps {
   hopsUpdate: HopsUpdate;
   showEdit: boolean;
   onHistoryEventClick: (eventId: number) => void;
+  status: StatusType;
 }
 
 /**
@@ -73,41 +77,59 @@ const HopsHistoryEvent: React.FC<HopsHistoryEventProps> = (props) => {
 
   return (
     <div className="hops-container__history-event">
-      <div className="hops-container__history-event-author">
-        <Avatar
-          id={props.hopsUpdate.modifierId}
-          firstName={props.hopsUpdate.modifier}
-          hasImage={props.hopsUpdate.modifierHasImage}
-          size="large"
-        />
-        <div className="hops-container__history-event-author-name">
-          {props.hopsUpdate.modifier}
-        </div>
-      </div>
-
-      <div className="hops-container__history-event-meta">
-        <div className="hops-container__history-event-date">
-          {moment(props.hopsUpdate.date).format("l")}
-        </div>
-        {props.showEdit && (
-          <div className="hops-container__history-event-action">
-            <IconButton icon="pencil" onClick={handleEditClick} />
-          </div>
-        )}
-      </div>
-      {props.hopsUpdate.details && (
+      {props.status && props.status.isStudent ? (
         <>
-          <AnimateHeight
-            height={descrptionOpen}
-            className={animateHeightClass}
-            contentClassName="content-description"
-          >
-            {props.hopsUpdate.details}
-          </AnimateHeight>
-          <div>
-            <Button onClick={() => setShowDescription(!showDescription)}>
-              Lue lisää
-            </Button>
+          <span className="hops-container__history-event-text">
+            Muokkasit HOPS:sia
+          </span>
+          <span className="hops-container__history-event-date">
+            {moment(props.hopsUpdate.date).format("l")}
+          </span>
+        </>
+      ) : (
+        <>
+          <div className="hops-container__history-event-primary">
+            {props.showEdit && (
+              <div className="hops-container__history-event-action">
+                <IconButton icon="pencil" onClick={handleEditClick} />
+              </div>
+            )}
+            <span className="hops-container__history-event-text">Ohjaaja</span>
+            <span className="hops-container__history-event-author">
+              <Avatar
+                id={props.hopsUpdate.modifierId}
+                firstName={props.hopsUpdate.modifier}
+                hasImage={props.hopsUpdate.modifierHasImage}
+                size="large"
+              />
+              <span className="hops-container__history-event-author-name">
+                {props.hopsUpdate.modifier}
+              </span>
+            </span>
+            <span className="hops-container__history-event-text">
+              muokkasi HOPS:sia
+            </span>
+            <span className="hops-container__history-event-date">
+              {moment(props.hopsUpdate.date).format("l")}
+            </span>
+          </div>
+          <div className="hops-container__history-event-secondary">
+            {props.hopsUpdate.details && (
+              <>
+                <AnimateHeight
+                  height={descrptionOpen}
+                  className={animateHeightClass}
+                  contentClassName="content-description"
+                >
+                  {props.hopsUpdate.details}
+                </AnimateHeight>
+                <div>
+                  <Button onClick={() => setShowDescription(!showDescription)}>
+                    Lue lisää
+                  </Button>
+                </div>
+              </>
+            )}
           </div>
         </>
       )}

@@ -6,6 +6,7 @@ import { BasicInformation } from "~/@types/shared";
 import { HopsBaseProps } from "..";
 import HopsHistory from "../hops-history";
 import Button from "~/components/general/button";
+import { StatusType } from "~/reducers/base/status";
 
 /**
  * StudentHopsInformationProps
@@ -18,6 +19,7 @@ interface HopsStudentHopsInformationProps extends HopsBaseProps {
   allHistoryEventLoaded: boolean;
   onHistoryEventClick: (eventId: number) => void;
   onLoadMOreHistoryEventsClick: () => void;
+  status: StatusType;
 }
 
 /**
@@ -92,6 +94,7 @@ class HopsStudentHopsInformation extends React.Component<
                   loading={this.props.loadingHistoryEvents}
                   superVisorModifies={this.props.superVisorModifies}
                   onHistoryEventClick={this.props.onHistoryEventClick}
+                  status={this.props.status}
                 />
                 <div className="hops-container__row">
                   <Button

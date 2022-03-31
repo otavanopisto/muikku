@@ -552,6 +552,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
             loading={this.state.loading}
             basicInformation={this.state.basicInfo}
             loggedUserId={status.userId}
+            status={status}
             loadingHistoryEvents={this.state.loadingHistoryEvents}
             allHistoryEventLoaded={this.state.allHistoryEventsLoaded}
             superVisorModifies={this.props.superVisorModifies}
