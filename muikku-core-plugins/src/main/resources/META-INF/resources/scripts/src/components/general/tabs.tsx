@@ -106,7 +106,7 @@ export const Tabs: React.FC<TabsProps> = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [swiper, useWithHash]);
 
-  const mobileBreakpoint = parseInt(variables.mobileBreakpoint); //Parse a breakpoint from scss to a number
+  const mobileBreakpoint = parseInt(variables.mobilebreakpoint); //Parse a breakpoint from scss to a number
 
   const isMobileWidth = useIsAtBreakpoint(mobileBreakpoint);
 
@@ -114,21 +114,22 @@ export const Tabs: React.FC<TabsProps> = (props) => {
     enabled: true,
   };
 
-  /**
-   * Creates an array from tab ids from given tabs
-   * @param tabs array of tabs
-   * @returns an array of strings
-   */
-  const createAllTabs = (tabs: Tab[]) => {
-    return tabs.map((tab) => tab.id);
-  };
-
   const paginationConfig = {
     el: ".tabs__pagination-container",
     modifierClass: "tabs__pagination-container--",
   };
 
-  const allTabs = createAllTabs(tabs);
+    /**
+   * Creates an array from tab ids from given tabs
+   * @param tabs array of tabs
+   * @returns an array of strings
+   */
+     const createAllTabs = (tabs: Tab[]) => {
+      return tabs.map((tab) => tab.id);
+    };
+
+    const allTabs = createAllTabs(tabs);
+
   const nextSlide = allTabs[allTabs.indexOf(activeTab) + 1];
   const prevSlide = allTabs[allTabs.indexOf(activeTab) - 1];
 
@@ -179,7 +180,6 @@ export const Tabs: React.FC<TabsProps> = (props) => {
           >
             {tabs.map((tab: Tab) => (
               <div
-                id={tab.id}
                 className={`tabs__tab ${
                   modifier ? "tabs__tab--" + modifier : ""
                 } ${tab.type ? "tabs__tab--" + tab.type : ""} ${
