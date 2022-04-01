@@ -46,7 +46,7 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
     <Workspaces workspaces={guider.currentStudent.pastWorkspaces} />
   );
 
-  const mobileBreakpoint = parseInt(variables.mobileBreakpoint); //Parse a breakpoint from scss to a number
+  const mobileBreakpoint = parseInt(variables.mobilebreakpoint); //Parse a breakpoint from scss to a number
 
   const isAtMobileWidth = useIsAtBreakpoint(mobileBreakpoint);
 
