@@ -43,7 +43,7 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
     React.useState<studyHistoryAside>("history");
 
   const studentWorkspaces = (
-    <Workspaces workspaces={guider.currentStudent.pastWorkspaces} />
+    <Workspaces workspaces={guider.currentStudent.pastWorkspaces ? guider.currentStudent.pastWorkspaces : []} />
   );
 
   const mobileBreakpoint = parseInt(variables.mobilebreakpoint); //Parse a breakpoint from scss to a number
