@@ -727,14 +727,6 @@ public class GuiderRESTService extends PluginRESTService {
     String dataSource = sessionController.getLoggedUserSchoolDataSource();
     UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
     
-    Boolean isCounselor = userEntityController.isGuidanceCounselor();
-    EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUserEntity());
-    if (roleEntity == null) {
-      return Response.status(Status.NOT_FOUND).entity("Can't find role entity").build();
-    }
-    if (!isCounselor || !roleEntity.getArchetype().equals(EnvironmentRoleArchetype.ADMINISTRATOR)) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
     BridgeResponse<StudentContactLogEntryRestModel> response = userSchoolDataController.createStudentContactLogEntry(dataSource, userEntity.defaultSchoolDataIdentifier(), payload);
     if (response.ok()) {
       return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
@@ -768,15 +760,6 @@ public class GuiderRESTService extends PluginRESTService {
     String dataSource = sessionController.getLoggedUserSchoolDataSource();
     UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
     
-    Boolean isCounselor = userEntityController.isGuidanceCounselor();
-    EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUserEntity());
-    if (roleEntity == null) {
-      return Response.status(Status.NOT_FOUND).entity("Can't find role entity").build();
-    }
-    if (!isCounselor || !roleEntity.getArchetype().equals(EnvironmentRoleArchetype.ADMINISTRATOR)) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
-    
     BridgeResponse<StudentContactLogEntryRestModel> response = userSchoolDataController.updateStudentContactLogEntry(dataSource, userEntity.defaultSchoolDataIdentifier(), contactLogEntryId, payload);
     if (response.ok()) {
       return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
@@ -807,36 +790,13 @@ public class GuiderRESTService extends PluginRESTService {
   public Response listStudentContactLogEntries(@PathParam("ID") Long userEntityId) {
     String dataSource = sessionController.getLoggedUserSchoolDataSource();
     UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+    
     BridgeResponse<List<StudentContactLogEntryRestModel>> response = userSchoolDataController.listStudentContactLogEntries(dataSource, userEntity.defaultSchoolDataIdentifier());
     if (response.ok()) {
-      Boolean isCounselor = userEntityController.isGuidanceCounselor();
-      
-      EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUserEntity());
-      if (roleEntity == null) {
-        return Response.status(Status.NOT_FOUND).entity("Can't find role entity").build();
-      }
-      
-      if (isCounselor || roleEntity.getArchetype().equals(EnvironmentRoleArchetype.ADMINISTRATOR)) {
-        return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
-      } else {
-        List<StudentContactLogEntryRestModel> contactLogEntryList = new ArrayList<>();
-        StudentContactLogEntryRestModel contactLogEntryRest = new StudentContactLogEntryRestModel();
-
-        for (StudentContactLogEntryRestModel contactLogEntry : response.getEntity()) {
-          contactLogEntryRest.setId(contactLogEntry.getId());
-          contactLogEntryRest.setCreatorName(contactLogEntry.getCreatorName());
-          contactLogEntryRest.setEntryDate(contactLogEntry.getEntryDate());
-          contactLogEntryRest.setType(contactLogEntry.getType());
-          contactLogEntryRest.setArchived(contactLogEntry.getArchived());
-          
-          contactLogEntryList.add(contactLogEntryRest);
-        }
-        return Response.status(response.getStatusCode()).entity(contactLogEntryList).build();
-      }
-    }
-    else {
+      return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
+    } else {
       return Response.status(response.getStatusCode()).entity(response.getMessage()).build();
-    }    
+    }
   }
   /**
    * DELETE mApi().guider.student.contactLog.del(userEntityId, contactLogEntryId)
@@ -850,14 +810,6 @@ public class GuiderRESTService extends PluginRESTService {
     String dataSource = sessionController.getLoggedUserSchoolDataSource();
     UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
     
-    Boolean isCounselor = userEntityController.isGuidanceCounselor();
-    EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUserEntity());
-    if (roleEntity == null) {
-      return Response.status(Status.NOT_FOUND).entity("Can't find role entity").build();
-    }
-    if (!isCounselor || !roleEntity.getArchetype().equals(EnvironmentRoleArchetype.ADMINISTRATOR)) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
     userSchoolDataController.removeStudentContactLogEntry(dataSource, userEntity.defaultSchoolDataIdentifier(), contactLogEntryId);
     
     return Response.noContent().build();
@@ -917,7 +869,6 @@ public class GuiderRESTService extends PluginRESTService {
   public Response createContactLogEntryComment(@PathParam("ID") Long userEntityId, @PathParam("ENTRYID") Long entryId, StudentContactLogEntryCommentRestModel payload) {
     String dataSource = sessionController.getLoggedUserSchoolDataSource();
     UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
-    
     BridgeResponse<StudentContactLogEntryCommentRestModel> response = userSchoolDataController.createStudentContactLogEntryComment(dataSource, userEntity.defaultSchoolDataIdentifier(), payload);
     if (response.ok()) {
       return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
@@ -946,7 +897,7 @@ public class GuiderRESTService extends PluginRESTService {
    */
   @PUT
   @Path("/student/{ID}/contactLog/{ENTRYID}/comments/{COMMENTID}")
-  @RESTPermit (GuiderPermissions.GUIDER_MANAGE_CONTACT_LOG)
+  @RESTPermit (GuiderPermissions.GUIDER_MANAGE_CONTACT_LOG)  
   public Response updateStudentContactLogComment(@PathParam("ID") Long userEntityId, @PathParam("ENTRYID") Long entryId, @PathParam("COMMENTID") Long commentId, StudentContactLogEntryCommentRestModel payload) {
     String dataSource = sessionController.getLoggedUserSchoolDataSource();
     UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
@@ -976,7 +927,6 @@ public class GuiderRESTService extends PluginRESTService {
   public Response archiveStudentContactLogComment(@PathParam("ID") Long userEntityId, @PathParam("ENTRYID") Long contactLogEntryId, @PathParam("COMMENTID") Long commentId) {
     String dataSource = sessionController.getLoggedUserSchoolDataSource();
     UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
-    
     userSchoolDataController.removeStudentContactLogEntryComment(dataSource, userEntity.defaultSchoolDataIdentifier(), commentId);
     
     return Response.noContent().build();

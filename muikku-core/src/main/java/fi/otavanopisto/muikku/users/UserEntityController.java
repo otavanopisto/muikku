@@ -299,37 +299,6 @@ public class UserEntityController implements Serializable {
     return roleEntity == null || roleEntity.getArchetype() == EnvironmentRoleArchetype.STUDENT;
   }
   
-  // There should be a better way to check if logged user is guidance counselor, I did not come up with anything else for this distress
-  public boolean isGuidanceCounselor() {
-    UserEntity loggedUserEntity = sessionController.getLoggedUserEntity();
-    EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(loggedUserEntity);
-    Boolean isCounselor = false;
-
-    if (roleEntity == null || roleEntity.getArchetype() == EnvironmentRoleArchetype.STUDENT) {
-      return isCounselor;
-    }
-    List<UserGroupEntity> userGroupEntities = userGroupEntityController.listUserGroupsByUserIdentifier(loggedUserEntity.defaultSchoolDataIdentifier());
-    for (UserGroupEntity userGroupEntity : userGroupEntities) {
-      for (SearchProvider searchProvider : searchProviders) {
-        if (StringUtils.equals(searchProvider.getName(), "elastic-search")) {
-          SearchResult searchResult = searchProvider.findUserGroup(userGroupEntity.schoolDataIdentifier());
-          if (searchResult.getTotalHitCount() > 0) {
-            List<Map<String, Object>> results = searchResult.getResults();
-              for (Map<String, Object> result : results) {
-                isCounselor = (Boolean) result.get("isGuidanceGroup");
-                if (isCounselor) {
-                  break;
-                
-              }
-            }
-          }
-        }
-      }
-    }
-    return isCounselor;
-  }
-  
-
   public List<UserEntity> listUserEntities() {
     return userEntityDAO.listAll();
   }
