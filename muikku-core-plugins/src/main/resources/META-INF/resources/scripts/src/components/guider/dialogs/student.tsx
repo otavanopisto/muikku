@@ -151,7 +151,7 @@ class StudentDialog extends React.Component<
      * Content
      * @returns JSX.Element
      */
-    const content = () => (
+    const content = () =>(
       <Tabs
         modifier="guider-student"
         tabs={tabs}
