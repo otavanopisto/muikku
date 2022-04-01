@@ -46,7 +46,7 @@
 }
 
 .table__row:nth-child(even) {
-  background-color: $color-default-generic-background;
+  background-color: $color-default-lighter-generic-background;
 }
 
 .table__head {
@@ -61,12 +61,6 @@
 .table__data {
   padding: 5px;
   width: 10%;
-
-  input[disabled],
-  select[disabled] {
-    background: transparent;
-    border-color: transparent;
-  }
 }
 
 .table__data--course {
