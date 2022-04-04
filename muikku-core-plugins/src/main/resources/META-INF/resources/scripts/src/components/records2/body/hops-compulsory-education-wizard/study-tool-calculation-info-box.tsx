@@ -1,17 +1,19 @@
 import * as React from "react";
-import { ButtonPill } from "~/components/general/button";
-import Dropdown from "~/components/general/dropdown";
 
 /**
  * StudyState
  */
-type StudyState = "notenough" | "enough" | "toomuch";
+type StudyState =
+  | "warning_notenough"
+  | "warning_overstudyendtime"
+  | "info_enough"
+  | "info_toomuch";
 
 /**
  * CalculationInfoBoxProps
  */
 interface StudyToolCalculationInfoBoxProps {
-  state: StudyState;
+  state?: StudyState;
   message?: string;
 }
 
@@ -26,7 +28,7 @@ const StudyToolCalculationInfoBox: React.FC<
   StudyToolCalculationInfoBoxProps
 > = ({ state, message }) => {
   switch (state) {
-    case "notenough":
+    case "warning_notenough":
       return (
         <div className="hops-container__info">
           <div className="hops-container__state state-WARNING">
@@ -38,7 +40,19 @@ const StudyToolCalculationInfoBox: React.FC<
         </div>
       );
 
-    case "enough":
+    case "warning_overstudyendtime":
+      return (
+        <div className="hops-container__info">
+          <div className="hops-container__state state-WARNING">
+            <div className="hops-container__state-icon icon-notification"></div>
+            <div className="hops-container__state-text">
+              {message && message}
+            </div>
+          </div>
+        </div>
+      );
+
+    case "info_enough":
       return (
         <div className="hops-container__info">
           <div className="hops-container__state state-SUCCESS">
@@ -50,7 +64,7 @@ const StudyToolCalculationInfoBox: React.FC<
         </div>
       );
 
-    case "toomuch":
+    case "info_toomuch":
       return (
         <div className="hops-container__info">
           <div className="hops-container__state state-INFO">
@@ -63,7 +77,16 @@ const StudyToolCalculationInfoBox: React.FC<
       );
 
     default:
-      return null;
+      return (
+        <div className="hops-container__info">
+          <div className="hops-container__state state-INFO">
+            <div className="hops-container__state-icon icon-notification"></div>
+            <div className="hops-container__state-text">
+              {message && message}
+            </div>
+          </div>
+        </div>
+      );
   }
 };
 

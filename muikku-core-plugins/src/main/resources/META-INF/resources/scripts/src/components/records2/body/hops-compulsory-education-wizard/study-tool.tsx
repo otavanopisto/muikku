@@ -156,7 +156,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
     ) {
       return (
         <StudyToolCalculationInfoBox
-          state="notenough"
+          state="warning_overstudyendtime"
           message={`Jos opiskelet ${
             studyHours.studyHourValue
           } tuntia viikossa, valmistut arviolta ${calculateGraduationDateFormated}. Opinto-oikeutesi kuitenkin päättyy: ${localizedMoment(
@@ -171,7 +171,6 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
     if (followUpData.followUp.graduationGoal === null) {
       return (
         <StudyToolCalculationInfoBox
-          state="notenough"
           message={`Jos opiskelet ${studyHours.studyHourValue} tuntia viikossa, valmistut arviolta ${calculateGraduationDateFormated}`}
         />
       );
@@ -187,7 +186,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
     ) {
       return (
         <StudyToolCalculationInfoBox
-          state="notenough"
+          state="warning_notenough"
           message={`Jos opiskelet ${
             studyHours.studyHourValue
           } tuntia viikossa, valmistut arviolta ${calculateGraduationDateFormated}. Valmistumiselle asettamasi tavoite on: ${ownGoal.format(
@@ -208,7 +207,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
     ) {
       return (
         <StudyToolCalculationInfoBox
-          state="toomuch"
+          state="info_toomuch"
           message={`Jos opiskelet ${
             studyHours.studyHourValue
           } tuntia viikossa, valmistut arviolta ${calculateGraduationDateFormated}. Sehän on nopeammin kuin ajattelit (${ownGoal.format(
@@ -230,7 +229,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
     ) {
       return (
         <StudyToolCalculationInfoBox
-          state="enough"
+          state="info_enough"
           message={`Erinomaista! Jos opiskelet tällä tahdilla, valmistuminen ${ownGoal.format(
             "l"
           )} on täysin mahdollista!`}
@@ -824,16 +823,15 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
         </div>
       )}
 
-      {studentActivity.isLoading ||
-        (studentChoices.isLoading && (
-          <div className="hops-container__row">
-            <StudyToolOptionalStudiesInfoBox
-              needMandatoryStudies={needMandatoryStudies}
-              selectedNumberOfOptional={studentChoices.studentChoices.length}
-              graduationGoal={followUpData.followUp.graduationGoal}
-            />
-          </div>
-        ))}
+      {!studentActivity.isLoading && !studentChoices.isLoading && (
+        <div className="hops-container__row">
+          <StudyToolOptionalStudiesInfoBox
+            needMandatoryStudies={needMandatoryStudies}
+            selectedNumberOfOptional={studentChoices.studentChoices.length}
+            graduationGoal={followUpData.followUp.graduationGoal}
+          />
+        </div>
+      )}
 
       {!studentActivity.isLoading &&
         !studentChoices.isLoading &&
