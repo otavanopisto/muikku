@@ -1,10 +1,9 @@
 import * as moment from "moment";
 import * as React from "react";
-import AnimateHeight from "react-animate-height";
 import { HopsUpdate } from "~/@types/shared";
 import Avatar from "~/components/general/avatar";
 import { StatusType } from "~/reducers/base/status";
-import Button, { IconButton } from "~/components/general/button";
+import { IconButton } from "~/components/general/button";
 import "~/sass/elements/hops.scss";
 
 /**
