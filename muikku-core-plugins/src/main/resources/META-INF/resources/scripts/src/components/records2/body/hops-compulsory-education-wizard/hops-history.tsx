@@ -88,19 +88,19 @@ const HopsHistoryEvent: React.FC<HopsHistoryEventProps> = (props) => {
             <span className="hops-container__history-event-date">
               {moment(props.hopsUpdate.date).format("l")}
             </span>
+            {props.showEdit && (
+              <span className="hops-container__history-event-action">
+                <IconButton
+                  buttonModifiers={["edit-hops-history-event-description"]}
+                  icon="pencil"
+                  onClick={handleEditClick}
+                />
+              </span>
+            )}
           </div>
 
           {props.hopsUpdate.details && (
             <div className="hops-container__history-event-secondary">
-              {props.showEdit && (
-                <span className="hops-container__history-event-action">
-                  <IconButton
-                    buttonModifiers={["edit-hops-history-event-description"]}
-                    icon="pencil"
-                    onClick={handleEditClick}
-                  />
-                </span>
-              )}
               <span>{props.hopsUpdate.details}</span>
             </div>
           )}

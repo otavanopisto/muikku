@@ -175,6 +175,7 @@
 
 .hops-container__history-event-secondary {
   font-size: 0.8125rem;
+  font-style: italic;
 
   span {
     white-space: break-spaces;
@@ -182,8 +183,7 @@
 }
 
 .hops-container__history-event-action {
-  align-self: flex-start;
-  margin: 0 7px 0 0;
+  margin: 0 7px 0 7px;
 }
 
 .hops-container__history-event-text {
