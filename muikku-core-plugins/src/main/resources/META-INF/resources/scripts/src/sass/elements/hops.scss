@@ -295,6 +295,10 @@
   text-overflow: ellipsis;
 }
 
+.hops__label--input-groups {
+  padding: 0;
+}
+
 // HOPS checkboxes and radiobuttons
 .hops__input[type="checkbox"],
 .hops__input[type="radio"] {

@@ -113,7 +113,7 @@ export const CheckboxGroupItem: React.FC<CheckboxGroupItemProps> = (props) => {
         {...inputProps}
         type="checkbox"
       ></input>
-      <label className="input-group__label"> {label} </label>
+      <label className="hops__label hops__label--input-groups"> {label} </label>
     </div>
   );
 };
@@ -271,7 +271,11 @@ export const ScaleInputItem: React.FC<ScaleInputItemProps> = ({
       .map((s) => `${className}--${s}`)
       .join(" ")}`}
   >
-    <input className="hops__input hops__input--input-groups" type="radio" {...inputProps}></input>
+    <input
+      className="hops__input hops__input--input-groups"
+      type="radio"
+      {...inputProps}
+    ></input>
     <label className="input-group__item-label"> {label} </label>
   </div>
 );
