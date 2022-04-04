@@ -817,7 +817,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
               label="Kuinka monta tuntia ehdit opiskella viikossa?"
               onChange={handleUsedHoursPerWeekChange}
               value={studyHours.studyHourValue}
-              className="hops-input"
+              className="hops__ input"
               disabled={props.disabled}
             />
           </div>

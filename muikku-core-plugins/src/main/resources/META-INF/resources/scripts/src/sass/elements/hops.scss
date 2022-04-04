@@ -175,6 +175,10 @@
 
 .hops-container__history-event-secondary {
   font-size: 0.8125rem;
+
+  span {
+    white-space: break-spaces;
+  }
 }
 
 .hops-container__history-event-action {
