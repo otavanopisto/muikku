@@ -32,9 +32,6 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.controller.messaging.MessagingWidget;
 import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.mail.MailType;
@@ -42,6 +39,8 @@ import fi.otavanopisto.muikku.mail.Mailer;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
+import fi.otavanopisto.muikku.model.workspace.EducationTypeMapping;
+import fi.otavanopisto.muikku.model.workspace.Mandatority;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
@@ -51,8 +50,6 @@ import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestController;
 import fi.otavanopisto.muikku.plugins.assessmentrequest.WorkspaceAssessmentState;
 import fi.otavanopisto.muikku.plugins.search.UserIndexer;
-import fi.otavanopisto.muikku.plugins.transcriptofrecords.rest.EducationTypeMapping;
-import fi.otavanopisto.muikku.plugins.transcriptofrecords.rest.Mandatority;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceEntityFileController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceVisitController;
 import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
@@ -156,9 +153,6 @@ public class CoursePickerRESTService extends PluginRESTService {
   
   @Inject
   private AssessmentRequestController assessmentRequestController;
-  
-  @Inject
-  private PluginSettingsController pluginSettingsController;
   
   @Inject
   private OrganizationEntityController organizationEntityController;
@@ -364,6 +358,8 @@ public class CoursePickerRESTService extends PluginRESTService {
       
       schoolDataBridgeSessionController.startSystemSession();
       try {
+        EducationTypeMapping educationTypeMapping = workspaceEntityController.getEducationTypeMapping();
+
         List<Map<String, Object>> results = searchResult.getResults();
         for (Map<String, Object> result : results) {
           String searchId = (String) result.get("id");
@@ -383,20 +379,21 @@ public class CoursePickerRESTService extends PluginRESTService {
                 boolean isCourseMember = getIsAlreadyOnWorkspace(workspaceEntity);
                 String educationTypeId = (String) result.get("educationTypeIdentifier");
                 String educationTypeName = (String) result.get("educationTypeName");
-                
+                SchoolDataIdentifier educationSubtypeId = SchoolDataIdentifier.fromId((String) result.get("educationSubtypeIdentifier"));
+
                 @SuppressWarnings("unchecked")
                 ArrayList<String> curriculumIdentifiersList = (ArrayList<String>) result.get("curriculumIdentifiers");
-                
+  
                 Mandatority mandatority = null;
 
                 if (StringUtils.isNotBlank(educationTypeId)) {
-                  SchoolDataIdentifier educationSubtypeId = SchoolDataIdentifier.fromId((String) result.get("educationSubtypeIdentifier"));
                   
-                  if (educationSubtypeId != null) {
-                    mandatority = getMandatority(educationSubtypeId); 
+                  if (educationSubtypeId != null) {                    
+                    if (educationTypeMapping != null) {
+                      mandatority = educationTypeMapping.getMandatority(educationSubtypeId);
+                    }
                   }
                 }
-  
                 if (StringUtils.isNotBlank(name)) {
                   workspaces.add(createRestModel(workspaceEntity, name, nameExtension, description, educationTypeName, mandatority, isCourseMember, curriculumIdentifiersList));
                 } else {
@@ -477,13 +474,17 @@ public class CoursePickerRESTService extends PluginRESTService {
     SchoolDataIdentifier educationSubtypeId = workspace.getEducationSubtypeIdentifier();
     
     if (educationSubtypeId != null) {
-    mandatority = getMandatority(educationSubtypeId); 
+      EducationTypeMapping educationTypeMapping = workspaceEntityController.getEducationTypeMapping();
+      
+      if (educationTypeMapping != null) {
+        mandatority = educationTypeMapping.getMandatority(educationSubtypeId);
+      }
     }
     
     List<String> curriculumIdentifiersList = new ArrayList<>();
     
     for (SchoolDataIdentifier curriculumIdentifier : workspace.getCurriculumIdentifiers()) {
-      curriculumIdentifiersList.add(curriculumIdentifier.toString());
+      curriculumIdentifiersList.add(curriculumIdentifier.toId());
     }
     return Response.ok(createRestModel(workspaceEntity, workspace.getName(), workspace.getNameExtension(), workspace.getDescription(), educationTypeName, mandatority, isCourseMember, curriculumIdentifiersList)).build();
   }
@@ -613,21 +614,7 @@ public class CoursePickerRESTService extends PluginRESTService {
     return Response.noContent().build();
   }
   
-  private Mandatority getMandatority(SchoolDataIdentifier educationSubtypeId) {
-    Mandatority mandatority = null;
-    EducationTypeMapping educationTypeMapping = new EducationTypeMapping();
-    
-    String educationTypeMappingString = pluginSettingsController.getPluginSetting("transcriptofrecords", "educationTypeMapping");
-    if (educationTypeMappingString != null) {
-      try {
-        educationTypeMapping = new ObjectMapper().readValue(educationTypeMappingString, EducationTypeMapping.class);                        
-        mandatority = educationTypeMapping.getMandatority(educationSubtypeId);
-      } catch (Exception e) {
-        logger.severe(String.format("Education type mapping failed with %s", educationTypeMappingString));
-      }
-    }
-    return mandatority;
-  }
+  
 
   private boolean getIsAlreadyOnWorkspace(WorkspaceEntity workspaceEntity) {
     if (sessionController.isLoggedIn()) {

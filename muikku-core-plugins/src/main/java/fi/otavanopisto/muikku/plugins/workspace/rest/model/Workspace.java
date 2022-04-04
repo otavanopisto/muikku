@@ -3,8 +3,8 @@ package fi.otavanopisto.muikku.plugins.workspace.rest.model;
 import java.util.Date;
 import java.util.Set;
 
+import fi.otavanopisto.muikku.model.workspace.Mandatority;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
-import fi.otavanopisto.muikku.plugins.transcriptofrecords.rest.Mandatority;
 
 public class Workspace {
 
