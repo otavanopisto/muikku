@@ -20,7 +20,6 @@ import StudyToolOptionalStudiesInfoBox from "./study-tool-optional-studiess-info
 import { useStudentChoices } from "./hooks/useStudentChoices";
 import { useStudentStudyHour } from "./hooks/useStudentStudyHours";
 import { useStudentAlternativeOptions } from "./hooks/useStudentAlternativeOptions";
-import * as moment from "moment";
 import { i18nType } from "~/reducers/base/i18n";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -39,6 +38,7 @@ interface StudyToolProps {
   showIndicators?: boolean;
   superVisorModifies: boolean;
   studies: HopsPlanningStudies;
+  studyTimeEnd: string | null;
   websocketState: WebsocketStateType;
   displayNotification: DisplayNotificationTriggerType;
   onStudiesPlanningChange: (studies: HopsPlanningStudies) => void;
@@ -103,6 +103,11 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
     const mandatoryHoursNeeded = calculateMandatoryHoursNeeded();
 
     /**
+     * Localized moment initialzied to variable
+     */
+    const localizedMoment = props.i18n.time.getLocalizedMoment;
+
+    /**
      * Mandatory hours minus completed mandatory hours
      */
     const updatedMandatoryHoursNeeded =
@@ -129,21 +134,45 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
     /**
      * Calculated graduation date based on toal time in months
      */
-    const calculateGraduationDate = props.i18n.time
-      .getLocalizedMoment()
-      .add(totalTimeInDays, "d")
+    const calculateGraduationDate = localizedMoment().add(
+      totalTimeInDays,
+      "day"
+    );
+
+    const calculateGraduationDateFormated = localizedMoment()
+      .add(totalTimeInDays, "day")
       .format("l");
 
     /**
      * Own graduation date goal changed to moment form
      */
-    const ownGoal = moment(followUpData.followUp.graduationGoal).endOf("month");
+    const ownGoal = localizedMoment(followUpData.followUp.graduationGoal).endOf(
+      "month"
+    );
+
+    if (
+      props.studyTimeEnd &&
+      calculateGraduationDate.isAfter(localizedMoment(props.studyTimeEnd))
+    ) {
+      return (
+        <StudyToolCalculationInfoBox
+          state="notenough"
+          message={`Jos opiskelet ${
+            studyHours.studyHourValue
+          } tuntia viikossa, valmistut arviolta ${calculateGraduationDateFormated}. Opinto-oikeutesi kuitenkin päättyy: ${localizedMoment(
+            props.studyTimeEnd
+          ).format(
+            "l"
+          )}. Mieti, kuinka voisit järjestää itsellesi enemmän aikaa opiskelulle.`}
+        />
+      );
+    }
 
     if (followUpData.followUp.graduationGoal === null) {
       return (
         <StudyToolCalculationInfoBox
           state="notenough"
-          message={`Jos opiskelet ${studyHours.studyHourValue} tuntia viikossa, valmistut arviolta ${calculateGraduationDate}`}
+          message={`Jos opiskelet ${studyHours.studyHourValue} tuntia viikossa, valmistut arviolta ${calculateGraduationDateFormated}`}
         />
       );
     }
@@ -152,8 +181,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
      * If calculated graduation date is after than student original goal is
      */
     if (
-      props.i18n.time
-        .getLocalizedMoment()
+      localizedMoment()
         .add(totalTimeInDays, "day")
         .isAfter(ownGoal.endOf("month"))
     ) {
@@ -162,7 +190,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
           state="notenough"
           message={`Jos opiskelet ${
             studyHours.studyHourValue
-          } tuntia viikossa, valmistut arviolta ${calculateGraduationDate}. Valmistumiselle asettamasi tavoite on: ${ownGoal.format(
+          } tuntia viikossa, valmistut arviolta ${calculateGraduationDateFormated}. Valmistumiselle asettamasi tavoite on: ${ownGoal.format(
             "l"
           )}. Voit joko valmistua myöhemmin tai etsiä itsellesi lisää aikaa opiskelemiseen. Pohdi asiaa vielä!`}
         />
@@ -173,8 +201,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
      * If calculated graduation date is before than student original goal is
      */
     if (
-      props.i18n.time
-        .getLocalizedMoment()
+      localizedMoment()
         .add(totalTimeInDays, "day")
         .endOf("month")
         .isBefore(ownGoal.endOf("month"))
@@ -184,7 +211,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
           state="toomuch"
           message={`Jos opiskelet ${
             studyHours.studyHourValue
-          } tuntia viikossa, valmistut arviolta ${calculateGraduationDate}. Sehän on nopeammin kuin ajattelit (${ownGoal.format(
+          } tuntia viikossa, valmistut arviolta ${calculateGraduationDateFormated}. Sehän on nopeammin kuin ajattelit (${ownGoal.format(
             "l"
           )})! Pieni jousto aikataulussa on kuitenkin hyvä juttu, koska elämässä aina sattuu ja tapahtuu.`}
         />
@@ -196,8 +223,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
      * This can be +- couple study hours per week
      */
     if (
-      props.i18n.time
-        .getLocalizedMoment()
+      localizedMoment()
         .add(totalTimeInDays, "day")
         .endOf("month")
         .isSame(ownGoal.endOf("month"))
