@@ -38,20 +38,6 @@ const StudyToolCalculationInfoBox: React.FC<
               }}
             >
               {message && message}
-              <Dropdown
-                openByHover
-                content={
-                  <div>
-                    Opintolaskuri kertoo myös ohjeistavan arvioin
-                    valmistumistavoitteesi ja käytettävissä viikkotuntien
-                    suhteesta.
-                  </div>
-                }
-              >
-                <div tabIndex={0} style={{ fontStyle: "normal" }}>
-                  <ButtonPill>?</ButtonPill>
-                </div>
-              </Dropdown>
             </h3>
           </div>
         </div>
@@ -68,21 +54,7 @@ const StudyToolCalculationInfoBox: React.FC<
                 justifyContent: "space-between",
               }}
             >
-              {message && message}{" "}
-              <Dropdown
-                openByHover
-                content={
-                  <div>
-                    Opintolaskuri kertoo myös ohjeistavan arvioin
-                    valmistumistavoitteesi ja käytettävissä viikkotuntien
-                    suhteesta.
-                  </div>
-                }
-              >
-                <div tabIndex={0} style={{ fontStyle: "normal" }}>
-                  <ButtonPill>?</ButtonPill>
-                </div>
-              </Dropdown>
+              {message && message}
             </h3>
           </div>
         </div>
@@ -99,21 +71,7 @@ const StudyToolCalculationInfoBox: React.FC<
                 justifyContent: "space-between",
               }}
             >
-              {message && message}{" "}
-              <Dropdown
-                openByHover
-                content={
-                  <div>
-                    Opintolaskuri kertoo myös ohjeistavan arvioin
-                    valmistumistavoitteesi ja käytettävissä viikkotuntien
-                    suhteesta.
-                  </div>
-                }
-              >
-                <div tabIndex={0} style={{ fontStyle: "normal" }}>
-                  <ButtonPill>?</ButtonPill>
-                </div>
-              </Dropdown>
+              {message && message}
             </h3>
           </div>
         </div>
