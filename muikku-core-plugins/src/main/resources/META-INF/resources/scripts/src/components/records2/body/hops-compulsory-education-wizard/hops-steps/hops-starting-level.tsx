@@ -152,10 +152,12 @@ class HopsStartingLevel extends React.Component<
                 onChange={this.handleSelectsChange("previousEducation")}
                 disabled={this.props.disabled}
               >
-                <option value={Education.HOME_SCHOOL}>kotiopetus</option>
-                <option value={Education.COMPULSORY_SCHOOL}>peruskoulu</option>
+                <option value={Education.COMPULSORY_SCHOOL}>perusopetus</option>
                 <option value={Education.VOCATIONAL_SCHOOL}>
                   ammattiopisto
+                </option>
+                <option value={Education.NO_PREVIOUS_EDUCATION}>
+                  ei aiempaa koulutusta
                 </option>
                 <option value={Education.SOMETHING_ELSE}>joku muu</option>
               </select>

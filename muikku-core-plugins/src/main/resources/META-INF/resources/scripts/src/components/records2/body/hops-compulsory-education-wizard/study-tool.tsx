@@ -121,7 +121,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
     /**
      * Time in months need to be study. Based on calculation from hours total to complete and study hours per week
      */
-    const totalTimeInMonths = getTotalTimeInMonths(
+    const totalTimeInDays = getTotalTimeInDays(
       hoursInTotalToComplete,
       studyHours.studyHourValue
     );
@@ -131,13 +131,13 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
      */
     const calculateGraduationDate = props.i18n.time
       .getLocalizedMoment()
-      .add(totalTimeInMonths, "M")
-      .format("MM-YYYY");
+      .add(totalTimeInDays, "d")
+      .format("l");
 
     /**
      * Own graduation date goal changed to moment form
      */
-    const ownGoal = moment(followUpData.followUp.graduationGoal);
+    const ownGoal = moment(followUpData.followUp.graduationGoal).endOf("month");
 
     if (followUpData.followUp.graduationGoal === null) {
       return (
@@ -154,9 +154,8 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
     if (
       props.i18n.time
         .getLocalizedMoment()
-        .add(totalTimeInMonths, "M")
-        .startOf("month")
-        .isAfter(ownGoal)
+        .add(totalTimeInDays, "day")
+        .isAfter(ownGoal.endOf("month"))
     ) {
       return (
         <StudyToolCalculationInfoBox
@@ -164,7 +163,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
           message={`Jos opiskelet ${
             studyHours.studyHourValue
           } tuntia viikossa, valmistut arviolta ${calculateGraduationDate}. Valmistumiselle asettamasi tavoite on: ${ownGoal.format(
-            "MM-YYYY"
+            "l"
           )}. Voit joko valmistua myöhemmin tai etsiä itsellesi lisää aikaa opiskelemiseen. Pohdi asiaa vielä!`}
         />
       );
@@ -176,9 +175,9 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
     if (
       props.i18n.time
         .getLocalizedMoment()
-        .add(totalTimeInMonths, "M")
-        .startOf("month")
-        .isBefore(ownGoal)
+        .add(totalTimeInDays, "day")
+        .endOf("month")
+        .isBefore(ownGoal.endOf("month"))
     ) {
       return (
         <StudyToolCalculationInfoBox
@@ -186,7 +185,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
           message={`Jos opiskelet ${
             studyHours.studyHourValue
           } tuntia viikossa, valmistut arviolta ${calculateGraduationDate}. Sehän on nopeammin kuin ajattelit (${ownGoal.format(
-            "MM-YYYY"
+            "l"
           )})! Pieni jousto aikataulussa on kuitenkin hyvä juttu, koska elämässä aina sattuu ja tapahtuu.`}
         />
       );
@@ -199,15 +198,15 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
     if (
       props.i18n.time
         .getLocalizedMoment()
-        .add(totalTimeInMonths, "M")
-        .startOf("month")
-        .isSame(ownGoal)
+        .add(totalTimeInDays, "day")
+        .endOf("month")
+        .isSame(ownGoal.endOf("month"))
     ) {
       return (
         <StudyToolCalculationInfoBox
           state="enough"
           message={`Erinomaista! Jos opiskelet tällä tahdilla, valmistuminen ${ownGoal.format(
-            "MM-YYYY"
+            "l"
           )} on täysin mahdollista!`}
         />
       );
@@ -668,13 +667,13 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
    * @param totalHours totalHours
    * @param hoursPerWeek hoursPerWeek
    */
-  const getTotalTimeInMonths = (totalHours: number, hoursPerWeek: number) => {
+  const getTotalTimeInDays = (totalHours: number, hoursPerWeek: number) => {
     if (!hoursPerWeek || hoursPerWeek === 0) {
       return 0;
     }
 
-    const totalMonths = Math.round(((totalHours / hoursPerWeek) * 7) / 31);
-    const totalTimeValue = totalMonths;
+    const totalDays = Math.round((totalHours / hoursPerWeek) * 7);
+    const totalTimeValue = totalDays;
 
     return totalTimeValue;
   };
@@ -682,20 +681,16 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
   /**
    * Shows time as readable text. Years + months
    *
-   * @param nm number of months
+   * @param nd number of days
    * @returns number of years + months
    */
-  const showAsReadableTime = (nm: number) => {
-    const years = (nm / 12) | 0;
-    const months = nm % 12;
+  const showAsReadableTime = (nd: number) => {
+    const years = Math.floor(nd / 365);
+    const months = Math.floor((nd % 365) / 30);
 
-    if (nm === 0) {
-      return `${nm} y`;
-    }
-
-    return `${years !== 0 ? `${years}y` : ""} ${
-      months !== 0 ? `${months}kk` : ""
-    }`;
+    const yearsDisplay = years > 0 ? `${years} y` : "";
+    const monthsDisplay = months > 0 ? `${months} kk` : "";
+    return `${yearsDisplay} ${monthsDisplay}`;
   };
 
   /**
@@ -753,7 +748,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
   const hoursInTotalToComplete =
     updatedMandatoryHoursNeeded + selectedOptionalHours - allApprovedHours;
 
-  const totalTimeInMonths = getTotalTimeInMonths(
+  const totalTimeInMonths = getTotalTimeInDays(
     hoursInTotalToComplete,
     studyHours.studyHourValue
   );
