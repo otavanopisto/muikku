@@ -89,6 +89,7 @@ function startupEditor(props: EditorButtonSetProps) {
       showRemoveAnswersDialogForPublish: false,
       showRemoveAnswersDialogForDelete: false,
       showUpdateLinkedMaterialsDialogForPublish: false,
+      showRemoveLinkedAnswersDialogForPublish: false,
       showUpdateLinkedMaterialsDialogForPublishCount: 0,
     },
     true
