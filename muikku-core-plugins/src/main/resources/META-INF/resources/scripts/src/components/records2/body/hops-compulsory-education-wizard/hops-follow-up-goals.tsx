@@ -82,7 +82,7 @@ const HopsFollowUpGoals: React.FC<HopsFollowUpGoalsProps> = (props) => {
             dateFormat="MM/yyyy"
             showMonthYearPicker
             showFullMonthYearPicker
-            className="form-element__input"
+            className="hops__input"
             maxDate={
               props.studyTimeEnd !== null && moment(props.studyTimeEnd).toDate()
             }
