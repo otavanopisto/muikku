@@ -148,24 +148,16 @@
 }
 
 .hops-container__history-event {
-  align-items: center;
+  align-items: flex-start;
   border-bottom: 1px solid $color-default-separator-border;
   display: flex;
   flex-basis: 100%;
+  flex-flow: column wrap;
   flex-grow: 1;
   flex-shrink: 1;
   justify-content: flex-start;
   margin: 0 5px;
   padding: 10px 0;
-}
-
-.hops-container__history-event--created-by-me {
-  flex-flow: row nowrap;
-}
-
-.hops-container__history-event--created-by-other {
-  align-items: flex-start;
-  flex-flow: column nowrap;
 }
 
 .hops-container__history-event-primary,
@@ -177,7 +169,12 @@
   flex-grow: 1;
   flex-shrink: 1;
   justify-content: flex-start;
-  padding: 2px 0;
+  padding: 4px 0;
+  width: 100%;
+}
+
+.hops-container__history-event-secondary {
+  font-size: 0.8125rem;
 }
 
 .hops-container__history-event-action {
@@ -193,8 +190,8 @@
   display: flex;
   flex-basis: auto;
   flex-flow: row nowrap;
-  flex-grow: 1;
-  flex-shrink: 1;
+  flex-grow: 0;
+  flex-shrink: 0;
   justify-content: flex-start;
   margin: 0 7px 0 0;
 

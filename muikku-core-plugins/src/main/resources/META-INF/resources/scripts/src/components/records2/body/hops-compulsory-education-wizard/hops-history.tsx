@@ -1,10 +1,9 @@
 import * as moment from "moment";
 import * as React from "react";
-import AnimateHeight from "react-animate-height";
 import { HopsUpdate } from "~/@types/shared";
 import Avatar from "~/components/general/avatar";
 import { StatusType } from "~/reducers/base/status";
-import Button, { IconButton } from "~/components/general/button";
+import { IconButton } from "~/components/general/button";
 import "~/sass/elements/hops.scss";
 
 /**
@@ -83,15 +82,6 @@ const HopsHistoryEvent: React.FC<HopsHistoryEventProps> = (props) => {
       {viewingOwnHistorEvent ? (
         <div className="hops-container__history-event hops-container__history-event--created-by-me">
           <div className="hops-container__history-event-primary">
-            {props.showEdit && (
-              <span className="hops-container__history-event-action">
-                <IconButton
-                  buttonModifiers={["edit-hops-history-event-description"]}
-                  icon="pencil"
-                  onClick={handleEditClick}
-                />
-              </span>
-            )}
             <span className="hops-container__history-event-text">
               Muokkasit HOPS:sia
             </span>
@@ -99,6 +89,21 @@ const HopsHistoryEvent: React.FC<HopsHistoryEventProps> = (props) => {
               {moment(props.hopsUpdate.date).format("l")}
             </span>
           </div>
+
+          {props.hopsUpdate.details && (
+            <div className="hops-container__history-event-secondary">
+              {props.showEdit && (
+                <span className="hops-container__history-event-action">
+                  <IconButton
+                    buttonModifiers={["edit-hops-history-event-description"]}
+                    icon="pencil"
+                    onClick={handleEditClick}
+                  />
+                </span>
+              )}
+              <span>{props.hopsUpdate.details}</span>
+            </div>
+          )}
         </div>
       ) : (
         <div className="hops-container__history-event hops-container__history-event--created-by-other">
@@ -121,24 +126,12 @@ const HopsHistoryEvent: React.FC<HopsHistoryEventProps> = (props) => {
               {moment(props.hopsUpdate.date).format("l")}
             </span>
           </div>
-          <div className="hops-container__history-event-secondary">
-            {props.hopsUpdate.details && (
-              <>
-                <AnimateHeight
-                  height={descrptionOpen}
-                  className={animateHeightClass}
-                  contentClassName="content-description"
-                >
-                  {props.hopsUpdate.details}
-                </AnimateHeight>
-                <div>
-                  <Button onClick={() => setShowDescription(!showDescription)}>
-                    Lue lisää
-                  </Button>
-                </div>
-              </>
-            )}
-          </div>
+
+          {props.hopsUpdate.details && (
+            <div className="hops-container__history-event-secondary">
+              <span>{props.hopsUpdate.details}</span>
+            </div>
+          )}
         </div>
       )}
     </>
