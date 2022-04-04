@@ -58,12 +58,12 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
-import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
 import fi.otavanopisto.muikku.search.CommunicatorMessageSearchBuilder;
 import fi.otavanopisto.muikku.search.IndexedCommunicatorMessage;
 import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageRecipient;
 import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageSender;
+import fi.otavanopisto.muikku.search.IndexedUser;
 import fi.otavanopisto.muikku.search.IndexedWorkspace;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
@@ -180,7 +180,7 @@ public class ElasticSearchProvider implements SearchProvider {
     
     // Search
     
-    SearchRequestBuilder requestBuilder = elasticClient.prepareSearch(User.INDEX_NAME).setTypes(User.TYPE_NAME);
+    SearchRequestBuilder requestBuilder = elasticClient.prepareSearch(IndexedUser.INDEX_NAME).setTypes(IndexedUser.TYPE_NAME);
     
     // Results processing
     
@@ -340,8 +340,8 @@ public class ElasticSearchProvider implements SearchProvider {
       }
       
       SearchRequestBuilder requestBuilder = elasticClient
-        .prepareSearch(User.INDEX_NAME)
-        .setTypes(User.TYPE_NAME)
+        .prepareSearch(IndexedUser.INDEX_NAME)
+        .setTypes(IndexedUser.TYPE_NAME)
         .setFrom(start)
         .setSize(maxResults);
       
@@ -721,8 +721,8 @@ public class ElasticSearchProvider implements SearchProvider {
     query.addIds(String.format("%s/%s", userIdentifier.getIdentifier(), userIdentifier.getDataSource()));
     
     SearchResponse response = elasticClient
-      .prepareSearch(User.INDEX_NAME)
-      .setTypes(User.TYPE_NAME)
+      .prepareSearch(IndexedUser.INDEX_NAME)
+      .setTypes(IndexedUser.TYPE_NAME)
       .setQuery(query)
       .addField("workspaces")
       .setSize(1)
@@ -760,7 +760,6 @@ public class ElasticSearchProvider implements SearchProvider {
       long senderId,
       IndexedCommunicatorMessageSender sender,
       List<IndexedCommunicatorMessageRecipient> recipients,
-      Long searchId,
       Date created,
       Set<Long> tags,
       int start, 
@@ -1005,8 +1004,8 @@ public class ElasticSearchProvider implements SearchProvider {
     );
 
     SearchRequestBuilder requestBuilder = elasticClient
-        .prepareSearch(User.INDEX_NAME)
-        .setTypes(User.TYPE_NAME)
+        .prepareSearch(IndexedUser.INDEX_NAME)
+        .setTypes(IndexedUser.TYPE_NAME)
         .setFrom(0)
         .setSize(1);
     
@@ -1046,8 +1045,8 @@ public class ElasticSearchProvider implements SearchProvider {
     );
 
     SearchRequestBuilder requestBuilder = elasticClient
-        .prepareSearch(User.INDEX_NAME)
-        .setTypes(User.TYPE_NAME)
+        .prepareSearch(IndexedUser.INDEX_NAME)
+        .setTypes(IndexedUser.TYPE_NAME)
         .setFrom(0)
         .setSize(1);
     

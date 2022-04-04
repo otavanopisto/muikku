@@ -525,6 +525,7 @@ export interface WorkspaceMaterialEditorType {
   showRemoveAnswersDialogForPublish: boolean;
   showRemoveAnswersDialogForDelete: boolean;
   showUpdateLinkedMaterialsDialogForPublish: boolean;
+  showRemoveLinkedAnswersDialogForPublish: boolean;
   showUpdateLinkedMaterialsDialogForPublishCount: number;
 }
 
@@ -796,6 +797,7 @@ export default function workspaces(
       showRemoveAnswersDialogForPublish: false,
       showRemoveAnswersDialogForDelete: false,
       showUpdateLinkedMaterialsDialogForPublish: false,
+      showRemoveLinkedAnswersDialogForPublish: false,
       showUpdateLinkedMaterialsDialogForPublishCount: 0,
       canSetTitle: true,
     },
@@ -1049,6 +1051,8 @@ export default function workspaces(
       action.payload.showUpdateLinkedMaterialsDialogForPublish;
     newEditor.showUpdateLinkedMaterialsDialogForPublishCount =
       action.payload.showUpdateLinkedMaterialsDialogForPublishCount;
+    newEditor.showRemoveLinkedAnswersDialogForPublish =
+      action.payload.showRemoveLinkedAnswersDialogForPublish;
 
     return {
       ...state,
