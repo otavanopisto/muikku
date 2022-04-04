@@ -2,6 +2,10 @@ import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
 import { connect } from "react-redux";
+import ApplicationSubPanel, {
+  ApplicationSubPanelViewHeader,
+  ApplicationSubPanelItem,
+} from "~/components/general/application-sub-panel";
 
 /**
  * GuidanceRelationProps
@@ -16,7 +20,12 @@ interface GuidanceRelationProps {
  * @returns JSX.element
  */
 const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
-  return <div>Ohjussuhde</div>;
+  return (
+    <ApplicationSubPanel>
+      <ApplicationSubPanel.Header> Ohjussuhde</ApplicationSubPanel.Header>
+      <ApplicationSubPanel.Body>Boti</ApplicationSubPanel.Body>
+    </ApplicationSubPanel>
+  );
 };
 
 /**

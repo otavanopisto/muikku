@@ -9,7 +9,7 @@ import "~/sass/elements/application-list.scss";
 import "~/sass/elements/application-sub-panel.scss";
 import "~/sass/elements/avatar.scss";
 import "~/sass/elements/workspace-activity.scss";
-import { getUserImageUrl, getName } from "~/util/modifiers";
+import { getName } from "~/util/modifiers";
 import Workspaces from "../workspaces";
 import Ceepos from "./state-of-studies/ceepos";
 import CeeposButton from "./state-of-studies/ceepos-button";
