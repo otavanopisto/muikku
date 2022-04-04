@@ -544,7 +544,10 @@ class CompulsoryEducationHopsWizard extends React.Component<
       ...baseProps
     } = this.props;
 
-    const steps = [
+    /**
+     * Default steps
+     */
+    let steps = [
       {
         name: "Perustiedot",
         component: (
@@ -615,22 +618,109 @@ class CompulsoryEducationHopsWizard extends React.Component<
       },
     ];
 
+    /**
+     * If Hops is disabled state. Then following steps are used.
+     */
+    if (baseProps.disabled) {
+      steps = [
+        {
+          name: "Perustiedot",
+          component: (
+            <Step1
+              {...baseProps}
+              loading={this.state.loading}
+              basicInformation={this.state.basicInfo}
+              loggedUserId={status.userId}
+              status={status}
+              loadingHistoryEvents={this.state.loadingHistoryEvents}
+              allHistoryEventLoaded={this.state.allHistoryEventsLoaded}
+              superVisorModifies={this.props.superVisorModifies}
+              onHistoryEventClick={this.handleEditHistoryEventClick}
+              onLoadMOreHistoryEventsClick={this.loadMoreHistoryEvents}
+            />
+          ),
+        },
+        {
+          name: "Osaamisen ja lähtötason arvointi",
+          component: (
+            <Step2
+              {...baseProps}
+              studentStartingLevel={this.state.hopsCompulsory.startingLevel}
+              onStartingLevelChange={this.handleStartingLevelChange}
+            />
+          ),
+        },
+        {
+          name: "Opiskelutaidot ja Motivaatio",
+          component: (
+            <Step3
+              {...baseProps}
+              motivationAndStudy={this.state.hopsCompulsory.motivationAndStudy}
+              onMotivationAndStudyChange={this.handleMotivationAndStudyChange}
+            />
+          ),
+        },
+        {
+          name: "Tavoitteet ja opintojen suunnittelu",
+          component: (
+            <Step5
+              {...baseProps}
+              studentId={
+                this.props.user === "supervisor"
+                  ? this.props.guider.currentStudent.basic.id
+                  : document
+                      .querySelector('meta[name="muikku:loggedUser"]')
+                      .getAttribute("value")
+              }
+              studyTimeEnd={this.props.studyTimeEnd}
+              followUp={this.state.hopsFollowUp}
+              studies={{
+                ...this.state.hopsCompulsory.studiesPlanning,
+              }}
+              superVisorModifies={this.props.superVisorModifies}
+              ethics={this.state.hopsCompulsory.studiesPlanning.ethics}
+              finnishAsSecondLanguage={
+                this.state.hopsCompulsory.studiesPlanning
+                  .finnishAsSecondLanguage
+              }
+              onStudiesPlanningChange={this.handleStudiesPlanningChange}
+              onStudiesGoalsChange={this.handleFollowUpChange}
+            />
+          ),
+        },
+      ];
+    }
+
     return (
       <div className="wizard">
         <div className="wizard_container">
-          <StepZilla
-            steps={steps}
-            showNavigation={true}
-            showSteps={true}
-            preventEnterSubmission={true}
-            prevBtnOnLastStep={true}
-            nextTextOnFinalActionStep="Tallenna"
-            nextButtonCls="button button--wizard"
-            backButtonCls="button button--wizard"
-            nextButtonText="Seuraava"
-            backButtonText="Edellinen"
-            onStepChange={this.handleStepChange(steps)}
-          />
+          {baseProps.disabled ? (
+            <StepZilla
+              steps={steps}
+              showNavigation={true}
+              showSteps={true}
+              preventEnterSubmission={true}
+              prevBtnOnLastStep={true}
+              nextButtonCls="button button--wizard"
+              backButtonCls="button button--wizard"
+              nextButtonText="Seuraava"
+              backButtonText="Edellinen"
+            />
+          ) : (
+            <StepZilla
+              steps={steps}
+              showNavigation={true}
+              showSteps={true}
+              preventEnterSubmission={true}
+              prevBtnOnLastStep={true}
+              nextTextOnFinalActionStep="Tallenna"
+              nextButtonCls="button button--wizard"
+              backButtonCls="button button--wizard"
+              nextButtonText="Seuraava"
+              backButtonText="Edellinen"
+              onStepChange={this.handleStepChange(steps)}
+            />
+          )}
         </div>
         <NewHopsEventDescriptionDialog
           content={

@@ -86,6 +86,7 @@ const HopsFollowUpGoals: React.FC<HopsFollowUpGoalsProps> = (props) => {
             maxDate={
               props.studyTimeEnd !== null && moment(props.studyTimeEnd).toDate()
             }
+            disabled={disabled}
           />
         </div>
       </div>
@@ -162,6 +163,7 @@ const HopsFollowUpGoals: React.FC<HopsFollowUpGoalsProps> = (props) => {
               <TextField
                 label="Kerro tarkemmin"
                 defaultValue={followUpData.followUp.followUpStudiesElse}
+                disabled={disabled}
                 onBlur={(e) =>
                   handleGoalsChange(
                     "followUpStudiesElse",
@@ -220,6 +222,7 @@ const HopsFollowUpGoals: React.FC<HopsFollowUpGoalsProps> = (props) => {
               <TextField
                 label="Kerro tarkemmin"
                 defaultValue={followUpData.followUp.studySectorElse}
+                disabled={disabled}
                 onBlur={(e) =>
                   handleGoalsChange("studySectorElse", e.currentTarget.value)
                 }
@@ -234,6 +237,7 @@ const HopsFollowUpGoals: React.FC<HopsFollowUpGoalsProps> = (props) => {
           <Textarea
             className="hops__textarea"
             label="Voit kertoa tarkemmin jatkosuunnitelmistasi:"
+            disabled={disabled}
             defaultValue={followUpData.followUp.followUpPlanExtraInfo}
             onBlur={(e) =>
               handleGoalsChange("followUpPlanExtraInfo", e.currentTarget.value)
