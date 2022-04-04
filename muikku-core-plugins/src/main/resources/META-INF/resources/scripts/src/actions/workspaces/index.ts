@@ -17,6 +17,7 @@ import {
   WorkspacesPatchType,
   WorkspaceAdditionalInfoType,
   WorkspaceUpdateType,
+  WorkspaceCurriculumFilterType,
 } from "~/reducers/workspaces";
 import {
   ShortWorkspaceUserWithActiveStatusType,
@@ -50,6 +51,11 @@ import {
 import equals = require("deep-equal");
 import $ from "~/lib/jquery";
 import { UploadingValue } from "~/@types/shared";
+
+export type UPDATE_AVAILABLE_CURRICULUMS = SpecificActionType<
+  "UPDATE_AVAILABLE_CURRICULUMS",
+  WorkspaceCurriculumFilterType[]
+>;
 
 export type UPDATE_USER_WORKSPACES = SpecificActionType<
   "UPDATE_USER_WORKSPACES",
@@ -440,6 +446,13 @@ export interface SetCurrentWorkspaceTriggerType {
     fail?: () => any;
     loadDetails?: boolean;
   }): AnyActionType;
+}
+
+/**
+ * SetAvailableCurriculumsTriggerType
+ */
+export interface SetAvailableCurriculumsTriggerType {
+  (): AnyActionType;
 }
 
 /**
@@ -861,6 +874,41 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
           )
         );
         data.fail && data.fail();
+      }
+    };
+  };
+
+/**
+ * setAvailableCurriculums
+ * @returns Promise<void>
+ */
+const setAvailableCurriculums: SetAvailableCurriculumsTriggerType =
+  function setAvailableCurriculums() {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      try {
+        const curriculums = <WorkspaceCurriculumFilterListType>(
+          await promisify(mApi().coursepicker.curriculums.read(), "callback")()
+        );
+
+        dispatch({
+          type: "UPDATE_AVAILABLE_CURRICULUMS",
+          payload: curriculums,
+        });
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          actions.displayNotification(
+            getState().i18n.text.get(
+              "plugin.workspace.errormessage.requestAssessmentFail"
+            ),
+            "error"
+          )
+        );
       }
     };
   };
@@ -4352,4 +4400,5 @@ export {
   updateWorkspaceEditModeState,
   loadWholeWorkspaceHelp,
   setWholeWorkspaceHelp,
+  setAvailableCurriculums,
 };

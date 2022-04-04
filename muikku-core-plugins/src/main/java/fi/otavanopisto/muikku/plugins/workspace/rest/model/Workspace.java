@@ -3,6 +3,7 @@ package fi.otavanopisto.muikku.plugins.workspace.rest.model;
 import java.util.Date;
 import java.util.Set;
 
+import fi.otavanopisto.muikku.model.workspace.Mandatority;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 
 public class Workspace {
@@ -21,6 +22,7 @@ public class Workspace {
       String nameExtension,
       String description,
       String materialDefaultLicense,
+      Mandatority mandatority,
       Long numVisits,
       Date lastVisit,
       Set<String> curriculumIdentifiers,
@@ -37,6 +39,7 @@ public class Workspace {
     this.name = name;
     this.nameExtension = nameExtension;
     this.description = description;
+    this.setMandatority(mandatority);
     this.numVisits = numVisits;
     this.lastVisit = lastVisit;
     this.curriculumIdentifiers = curriculumIdentifiers;
@@ -148,6 +151,14 @@ public class Workspace {
     this.subjectIdentifier = subjectIdentifier;
   }
 
+  public Mandatority getMandatority() {
+    return mandatority;
+  }
+
+  public void setMandatority(Mandatority mandatority) {
+    this.mandatority = mandatority;
+  }
+
   public boolean getHasCustomImage() {
     return hasCustomImage;
   }
@@ -171,6 +182,7 @@ public class Workspace {
   private String name;
   private String nameExtension;
   private String description;
+  private Mandatority mandatority;
   private Long numVisits;
   private Date lastVisit;
   private WorkspaceAccess access;
