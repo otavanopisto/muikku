@@ -1,17 +1,19 @@
 import * as React from "react";
-import { ButtonPill } from "~/components/general/button";
-import Dropdown from "~/components/general/dropdown";
 
 /**
  * StudyState
  */
-type StudyState = "notenough" | "enough" | "toomuch";
+type StudyState =
+  | "warning_notenough"
+  | "warning_overstudyendtime"
+  | "info_enough"
+  | "info_toomuch";
 
 /**
  * CalculationInfoBoxProps
  */
 interface StudyToolCalculationInfoBoxProps {
-  state: StudyState;
+  state?: StudyState;
   message?: string;
 }
 
@@ -26,9 +28,9 @@ const StudyToolCalculationInfoBox: React.FC<
   StudyToolCalculationInfoBoxProps
 > = ({ state, message }) => {
   switch (state) {
-    case "notenough":
+    case "warning_notenough":
       return (
-        <div className="hops__form-element-container hops__form-element-container--info hops__form-element-container--notenough">
+        <div className="hops__form-element-container hops__form-element-container--info hops__form-element-container--warning_notenough">
           <div>
             <h3
               style={{
@@ -43,9 +45,9 @@ const StudyToolCalculationInfoBox: React.FC<
         </div>
       );
 
-    case "enough":
+    case "warning_overstudyendtime":
       return (
-        <div className="hops__form-element-container hops__form-element-container--info hops__form-element-container--enough">
+        <div className="hops__form-element-container hops__form-element-container--info hops__form-element-container--warning_overstudyendtime">
           <div>
             <h3
               style={{
@@ -60,9 +62,26 @@ const StudyToolCalculationInfoBox: React.FC<
         </div>
       );
 
-    case "toomuch":
+    case "info_enough":
       return (
-        <div className="hops__form-element-container hops__form-element-container--info hops__form-element-container--toomuch">
+        <div className="hops__form-element-container hops__form-element-container--info hops__form-element-container--info_enough">
+          <div>
+            <h3
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              {message && message}
+            </h3>
+          </div>
+        </div>
+      );
+
+    case "info_toomuch":
+      return (
+        <div className="hops__form-element-container hops__form-element-container--info hops__form-element-container--info_toomuch">
           <div>
             <h3
               style={{
@@ -78,7 +97,21 @@ const StudyToolCalculationInfoBox: React.FC<
       );
 
     default:
-      return null;
+      return (
+        <div className="hops__form-element-container hops__form-element-container--info">
+          <div>
+            <h3
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              {message && message}
+            </h3>
+          </div>
+        </div>
+      );
   }
 };
 

@@ -442,15 +442,15 @@
   padding: 10px;
 }
 
-.hops__form-element-container--toomuch {
+.hops__form-element-container--info_toomuch {
   border-color: $color-error;
 }
 
-.hops__form-element-container--enough {
+.hops__form-element-container--info_enough {
   border-color: $color-info;
 }
 
-.hops__form-element-container--notenough {
+.hops__form-element-container--warning_notenough {
   border-color: $color-warn;
 }
 
