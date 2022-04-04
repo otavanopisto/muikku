@@ -186,6 +186,7 @@ export const Tabs: React.FC<TabsProps> = (props) => {
                   tab.id === activeTab ? "active" : ""
                 }`}
                 key={tab.id}
+                id={tab.id}
                 onClick={onTabChange.bind(this, tab.id, tab.hash)}
               >
                 {tab.name}
