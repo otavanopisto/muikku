@@ -60,19 +60,12 @@ interface HopsHistoryEventProps {
  * @param props props
  */
 const HopsHistoryEvent: React.FC<HopsHistoryEventProps> = (props) => {
-  const [showDescription, setShowDescription] = React.useState(false);
-
   /**
    * handleEditClick
    */
   const handleEditClick = () => {
     props.onHistoryEventClick(props.hopsUpdate.id);
   };
-
-  const descrptionOpen = showDescription ? "auto" : 35;
-  const animateHeightClass = showDescription
-    ? "animate-height--open"
-    : "animate-height";
 
   const viewingOwnHistorEvent =
     props.status.userId === props.hopsUpdate.modifierId;

@@ -108,15 +108,24 @@ class HopsStudiesPlanning extends React.Component<
               Tämä osa lomakkeesta aktivoidaan ohjaajan toimesta.
             </div>
           ) : (
-            <StudyTool
-              user={this.props.user}
-              studentId={this.props.studentId}
-              disabled={this.props.disabled}
-              studies={this.props.studies}
-              studyTimeEnd={this.props.studyTimeEnd}
-              superVisorModifies={this.props.superVisorModifies}
-              onStudiesPlanningChange={this.props.onStudiesPlanningChange}
-            />
+            <>
+              <div>
+                Opintoaikalaskuri vertaa valmistumiselle asettamaasi tavoitetta
+                aikaan, joka sinulla on viikoittain käytössäsi opiskeluun. Yhden
+                kurssin suorittaminen vie aikaa keskimäärin 28 tuntia. Jos
+                valmistuminen ei ole mahdollista ajassa, jonka voit käyttää
+                opiskelemiseen, kannattaa asiaa pohtia uudelleen.
+              </div>
+              <StudyTool
+                user={this.props.user}
+                studentId={this.props.studentId}
+                disabled={this.props.disabled}
+                studies={this.props.studies}
+                studyTimeEnd={this.props.studyTimeEnd}
+                superVisorModifies={this.props.superVisorModifies}
+                onStudiesPlanningChange={this.props.onStudiesPlanningChange}
+              />
+            </>
           )}
         </fieldset>
       </div>
