@@ -113,6 +113,7 @@ class HopsStudiesPlanning extends React.Component<
               studentId={this.props.studentId}
               disabled={this.props.disabled}
               studies={this.props.studies}
+              studyTimeEnd={this.props.studyTimeEnd}
               superVisorModifies={this.props.superVisorModifies}
               onStudiesPlanningChange={this.props.onStudiesPlanningChange}
             />
