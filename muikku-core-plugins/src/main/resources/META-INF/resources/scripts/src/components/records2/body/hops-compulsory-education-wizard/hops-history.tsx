@@ -75,11 +75,23 @@ const HopsHistoryEvent: React.FC<HopsHistoryEventProps> = (props) => {
     ? "animate-height--open"
     : "animate-height";
 
+  const viewingOwnHistorEvent =
+    props.status.userId === props.hopsUpdate.modifierId;
+
   return (
     <>
-      {props.status.userId === props.hopsUpdate.modifierId ? (
+      {viewingOwnHistorEvent ? (
         <div className="hops-container__history-event hops-container__history-event--created-by-me">
           <div className="hops-container__history-event-primary">
+            {props.showEdit && (
+              <span className="hops-container__history-event-action">
+                <IconButton
+                  buttonModifiers={["edit-hops-history-event-description"]}
+                  icon="pencil"
+                  onClick={handleEditClick}
+                />
+              </span>
+            )}
             <span className="hops-container__history-event-text">
               Muokkasit HOPS:sia
             </span>
@@ -91,11 +103,6 @@ const HopsHistoryEvent: React.FC<HopsHistoryEventProps> = (props) => {
       ) : (
         <div className="hops-container__history-event hops-container__history-event--created-by-other">
           <div className="hops-container__history-event-primary">
-            {props.showEdit && (
-              <div className="hops-container__history-event-action">
-                <IconButton icon="pencil" onClick={handleEditClick} />
-              </div>
-            )}
             <span className="hops-container__history-event-author">
               <Avatar
                 id={props.hopsUpdate.modifierId}
