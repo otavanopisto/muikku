@@ -19,16 +19,6 @@ import "~/sass/elements/meta.scss";
 import { suitabilityMap } from "~/@shared/suitability";
 
 /**
- * OPSsuitability
- */
-interface OPSsuitability {
-  MANDATORY: string;
-  UNSPECIFIED_OPTIONAL: string;
-  NATIONAL_LEVEL_OPTIONAL: string;
-  SCHOOL_LEVEL_OPTIONAL: string;
-}
-
-/**
  * WorkspaceHomeHeaderProps
  */
 interface WorkspaceHomeHeaderProps {
@@ -61,6 +51,8 @@ class WorkspaceHomeHeader extends React.Component<
 
   /**
    * Returns OPS information by curriculum identifier
+   *
+   * @returns OPS information
    */
   getOPSInformation = () => {
     /**

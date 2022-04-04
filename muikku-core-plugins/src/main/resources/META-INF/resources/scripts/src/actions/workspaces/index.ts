@@ -447,6 +447,9 @@ export interface SetCurrentWorkspaceTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * SetAvailableCurriculumsTriggerType
+ */
 export interface SetAvailableCurriculumsTriggerType {
   (): AnyActionType;
 }
@@ -876,6 +879,7 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
 
 /**
  * setAvailableCurriculums
+ * @returns Promise<void>
  */
 const setAvailableCurriculums: SetAvailableCurriculumsTriggerType =
   function setAvailableCurriculums() {

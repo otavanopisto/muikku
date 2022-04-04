@@ -66,6 +66,7 @@ class Course extends React.Component<CourseProps, CourseState> {
 
   /**
    * Returns OPS information by curriculum identifier
+   * @returns OPS information
    */
   getOPSInformation = () => {
     /**
@@ -174,6 +175,7 @@ class Course extends React.Component<CourseProps, CourseState> {
    * Sends api request to Api which returns data if
    * user can signUp for course or is already member of
    * the course
+   *
    * @returns Requirements object
    */
   checkSignUpStatus = async (): Promise<boolean> =>
