@@ -5,7 +5,14 @@ import {
   StudentActivityCourse,
   StudentCourseChoice,
 } from "~/@types/shared";
-import { Table, Tbody, Td, Tr } from "~/components/general/table";
+import {
+  Table,
+  TableHead,
+  Tbody,
+  Td,
+  Tr,
+  Th,
+} from "~/components/general/table";
 import { schoolCourseTable } from "~/mock/mock-data";
 import { connect, Dispatch } from "react-redux";
 import { HopsUser } from ".";
@@ -340,6 +347,12 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
 
   return (
     <Table ref={tableRef} modifiers={["course-matrix"]}>
+      <TableHead modifiers={["language-table"]}>
+        <Tr modifiers={["language-table"]}>
+          <Th modifiers={["subject"]}>Oppiaine</Th>
+          <Th colSpan={currentMaxCourses}>Opintojaksot</Th>
+        </Tr>
+      </TableHead>
       <Tbody>{renderRows}</Tbody>
     </Table>
   );

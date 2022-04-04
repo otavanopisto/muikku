@@ -6,6 +6,8 @@
 .table {
   border-collapse: collapse;
   font-family: "Open Sans", "Arial", sans-serif;
+  table-layout: fixed;
+  width: 100%;
 }
 
 .table--language-table {
@@ -17,7 +19,8 @@
   border-bottom: 2px solid $color-default-separator-border;
 }
 
-.table__thead--language-table {
+.table__thead--language-table,
+.table__thead--course {
   border-bottom-color: $color-hops-dialog-form-element-border;
 }
 
@@ -39,7 +42,8 @@
   }
 }
 
-.table__row--language-table {
+.table__row--language-table,
+.table__row--course {
   &:last-child {
     border-bottom-color: $color-hops-dialog-form-element-border;
   }
@@ -51,6 +55,12 @@
 
 .table__head {
   color: $color-default-contrast;
+  font-weight: 600;
+}
+
+.table__head--subject,
+.table__head--language {
+  width: 200px;
 }
 
 .table__head--centered,
@@ -60,7 +70,17 @@
 
 .table__data {
   padding: 5px;
-  width: 10%;
+  width: auto;
+}
+
+.table__data--language {
+  font-weight: 600;
+}
+
+.table__data--subject {
+  font-weight: 600;
+  max-width: 200px;
+  width: 200px;
 }
 
 .table__data--course {

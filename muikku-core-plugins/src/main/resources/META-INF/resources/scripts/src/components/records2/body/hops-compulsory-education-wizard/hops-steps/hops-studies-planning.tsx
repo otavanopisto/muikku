@@ -104,12 +104,12 @@ class HopsStudiesPlanning extends React.Component<
         <fieldset className="hops-container__fieldset">
           <legend className="hops-container__subheader">Opintolaskuri</legend>
           {!hasAccessToStudyTool ? (
-            <div className="hops__phase-info">
+            <div className="hops-container__phase-info">
               Tämä osa lomakkeesta aktivoidaan ohjaajan toimesta.
             </div>
           ) : (
             <>
-              <div>
+              <div className="hops__form-element-container">
                 Opintoaikalaskuri vertaa valmistumiselle asettamaasi tavoitetta
                 aikaan, joka sinulla on viikoittain käytössäsi opiskeluun. Yhden
                 kurssin suorittaminen vie aikaa keskimäärin 28 tuntia. Jos

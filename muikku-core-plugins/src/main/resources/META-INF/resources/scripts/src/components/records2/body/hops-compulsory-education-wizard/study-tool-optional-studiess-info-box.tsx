@@ -28,26 +28,32 @@ const StudyToolOptionalStudiesInfoBox: React.FC<
       graduationGoal === null)
   ) {
     return (
-      <div
-        style={{
-          border: "1px solid orange",
-          borderLeftWidth: "2px",
-          padding: "10px",
-          fontStyle: "italic",
-        }}
-        className="hops__form-element-container"
-      >
-        <h3>
-          Sinulla ei ole valittuna riittävästi valinnaisia opintoja (
-          {selectedNumberOfOptional}/
-          {NEEDED_STUDIES_IN_TOTAL - needMandatoryStudies}). Valitse ainakin
-          {NEEDED_STUDIES_IN_TOTAL -
-            needMandatoryStudies -
-            selectedNumberOfOptional}
-          kurssia.
-        </h3>
+      <div className="hops-container__info">
+        <div className="hops-container__state state-WARNING">
+          <div className="hops-container__state-icon icon-notification"></div>
+          <div className="hops-container__state-text">
+            Sinulla ei ole valittuna riittävästi valinnaisia opintoja (
+            {selectedNumberOfOptional}/
+            {NEEDED_STUDIES_IN_TOTAL - needMandatoryStudies}). Valitse ainakin
+            {NEEDED_STUDIES_IN_TOTAL -
+              needMandatoryStudies -
+              selectedNumberOfOptional}
+            kurssia.
+          </div>
+        </div>
         {graduationGoal === null ? (
-          <h3>Valmistumisaikatavoite valinta on tyhjä</h3>
+          <div className="hops-container__state state-WARNING">
+            <div className="hops-container__state-icon icon-notification"></div>
+            <div className="hops-container__state-text">
+              Sinulla ei ole valittuna riittävästi valinnaisia opintoja (
+              {selectedNumberOfOptional}/
+              {NEEDED_STUDIES_IN_TOTAL - needMandatoryStudies}). Valitse ainakin
+              {NEEDED_STUDIES_IN_TOTAL -
+                needMandatoryStudies -
+                selectedNumberOfOptional}
+              kurssia.
+            </div>
+          </div>
         ) : null}
       </div>
     );
@@ -56,22 +62,17 @@ const StudyToolOptionalStudiesInfoBox: React.FC<
     NEEDED_STUDIES_IN_TOTAL - needMandatoryStudies
   ) {
     return (
-      <div
-        style={{
-          border: "1px solid lightblue",
-          borderLeftWidth: "2px",
-          padding: "10px",
-          fontStyle: "italic",
-        }}
-        className="hops__form-element-container"
-      >
-        <h3>
-          Jee! Olet valinnut itsellesi riittävän määrän valinnaisia opintoja (
-          {selectedNumberOfOptional}/
-          {NEEDED_STUDIES_IN_TOTAL - needMandatoryStudies}). Jos haluat, voit
-          suorittaa valinnaisia opintoja enemmänkin. Silloin oppimäärän
-          suorittamiseen kuluva aika saattaa tosin pidentyä.
-        </h3>
+      <div className="hops-container__info">
+        <div className="hops-container__state state-INFO">
+          <div className="hops-container__state-icon icon-notification"></div>
+          <div className="hops-container__state-text">
+            Jee! Olet valinnut itsellesi riittävän määrän valinnaisia opintoja (
+            {selectedNumberOfOptional}/
+            {NEEDED_STUDIES_IN_TOTAL - needMandatoryStudies}). Jos haluat, voit
+            suorittaa valinnaisia opintoja enemmänkin. Silloin oppimäärän
+            suorittamiseen kuluva aika saattaa tosin pidentyä.
+          </div>
+        </div>
       </div>
     );
   } else {

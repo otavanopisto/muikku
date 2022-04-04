@@ -25,7 +25,7 @@
   display: flex;
   flex-flow: row nowrap;
   font-size: 1rem;
-  margin:  5px;
+  margin: 5px;
   padding: 10px;
 
   p {
@@ -135,6 +135,8 @@
 }
 
 .hops-container__info {
+  width: 100%;
+
   .hops-container__subheader {
     margin: 15px 0 10px;
   }
@@ -203,7 +205,7 @@
   .avatar-container {
     border: 2px solid $color-application-dialog-border-color;
     border-radius: 100%;
-    margin: 0 7px 0 0 ;
+    margin: 0 7px 0 0;
   }
 }
 
@@ -218,7 +220,6 @@
   margin: 0 7px 0 0;
   padding: 4px;
 }
-
 
 .hops-container__row {
   display: flex;
@@ -435,106 +436,14 @@
   }
 }
 
-.hops__form-element-container--info {
-  border: 2px solid;
-  border-left-width: 5px;
-  font-style: italic;
-  padding: 10px;
-}
-
-.hops__form-element-container--toomuch {
-  border-color: $color-error;
-}
-
-.hops__form-element-container--enough {
-  border-color: $color-info;
-}
-
-.hops__form-element-container--notenough {
-  border-color: $color-warn;
-}
-
 .hops__table-container {
   width: 100%;
 }
 
-.hops-container__indicator-examples {
+.hops-container__indicator-descriptions {
   display: flex;
   flex-flow: row wrap;
   margin: 10px 5px 20px;
-}
-
-.hops__container-course-selected,
-.hops__container-course-suggested,
-.hops__container-course-mandatory,
-.hops__container-course-optional,
-.hops__container-course-inprogress,
-.hops__container-course-approval,
-.hops__container-course-completed {
-  align-items: center;
-  display: flex;
-  flex-shrink: 1;
-  margin: 5px;
-}
-
-.hops__container-course-suggested-indicator,
-.hops__container-course-selected-indicator,
-.hops__container-course-mandatory-indicator,
-.hops__container-course-optional-indicator,
-.hops__container-course-inprogress-indicator,
-.hops__container-course-approval-indicator,
-.hops__container-course-completed-indicator {
-  display: inline-block;
-  height: 25px;
-  margin: 0 10px 0 0;
-  width: 25px;
-}
-
-.hops__container-course-suggested-indicator {
-  border: 2px solid pink;
-}
-
-.hops__container-course-mandatory-indicator {
-  background-color: #acacac;
-}
-
-.hops__container-course-optional-indicator {
-  background-color: lightblue;
-}
-
-.hops__container-course-inprogress-indicator {
-  background-color: $color-info;
-}
-
-.hops__container-course-approval-indicator {
-  background-color: palegreen;
-}
-
-.hops__container-course-completed-indicator {
-  background-color: $color-success;
-}
-
-.hops__container-course-selected-indicator {
-  background-color: #3ab8e1;
-}
-
-.hops__form-element-container-study-ounter {
-  background-color: aliceblue;
-  padding: 5px;
-}
-
-.hops__form-element-container-study-counter div {
-  display: flex;
-  justify-content: space-between;
-}
-
-.hops__result-title {
-  margin: 0 5px;
-}
-
-.hops__calculated-hours-divider {
-  margin-bottom: 10px;
-  margin-top: 10px;
 }
 
 .hops__activity-progressbar-circle {

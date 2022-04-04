@@ -178,7 +178,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
     }
 
     /**
-     * If calculated graduation date is after than student original goal is
+     * If calculated graduation date exceeds student's original goal
      */
     if (
       localizedMoment()
@@ -198,7 +198,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
     }
 
     /**
-     * If calculated graduation date is before than student original goal is
+     * If calculated graduation date predates student's original goal
      */
     if (
       localizedMoment()
@@ -219,7 +219,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
     }
 
     /**
-     * If calculated graduation date is same as student original goal is.
+     * If calculated graduation date is same as student original goal
      * This can be +- couple study hours per week
      */
     if (
@@ -845,11 +845,8 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
         )}
 
       {props.showIndicators && (
-        <div
-          style={{ flexFlow: "column", paddingBottom: "15px" }}
-          className="hops-container__row"
-        >
-          <h2 style={{ margin: "5px" }}>Opintojen edistyminen</h2>
+        <div className="hops-container__info">
+          <h3 className="hops-container__subheader">Opintojen edistyminen</h3>
           <div>
             <ProgressBarLine
               containerClassName="hops-activity__progressbar-line hops-course-activity__progressbar-line hops-proggress-line"
@@ -866,7 +863,6 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
                   flexGrow: "0",
                   flexShrink: "0",
                   height: "30px",
-                  boxShadow: "5px 5px 5px grey",
                 },
                 text: {
                   style: {
@@ -1029,22 +1025,24 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
           {studentActivity.isLoading || studentChoices.isLoading ? (
             <div className="loader-empty" />
           ) : (
-            <CourseTable
-              disabled={props.disabled}
-              studentId={props.studentId}
-              user={props.user}
-              superVisorModifies={props.superVisorModifies}
-              ethicsSelected={studyOptions.options.religionAsEthics}
-              finnishAsSecondLanguage={studyOptions.options.finnishAsLanguage}
-              suggestedNextList={studentActivity.suggestedNextList}
-              suggestedOptionalList={studentActivity.suggestedOptionalList}
-              onGoingList={studentActivity.onGoingList}
-              gradedList={studentActivity.gradedList}
-              transferedList={studentActivity.transferedList}
-              studentChoiceList={studentChoices.studentChoices}
-              updateSuggestion={studentActivityHandlers.updateSuggestion}
-              updateStudentChoice={studentChoiceHandlers.updateStudentChoice}
-            />
+            <div className="hops__table-container">
+              <CourseTable
+                disabled={props.disabled}
+                studentId={props.studentId}
+                user={props.user}
+                superVisorModifies={props.superVisorModifies}
+                ethicsSelected={studyOptions.options.religionAsEthics}
+                finnishAsSecondLanguage={studyOptions.options.finnishAsLanguage}
+                suggestedNextList={studentActivity.suggestedNextList}
+                suggestedOptionalList={studentActivity.suggestedOptionalList}
+                onGoingList={studentActivity.onGoingList}
+                gradedList={studentActivity.gradedList}
+                transferedList={studentActivity.transferedList}
+                studentChoiceList={studentChoices.studentChoices}
+                updateSuggestion={studentActivityHandlers.updateSuggestion}
+                updateStudentChoice={studentChoiceHandlers.updateStudentChoice}
+              />
+            </div>
           )}
         </div>
 
@@ -1071,7 +1069,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
         </div>
       </div>
 
-      <div className="hops-container__indicator-examples">
+      <div className="hops-container__indicator-descriptions">
         <div className="hops-container__course-mandatory">
           <div className="hops-container__course-mandatory-indicator"></div>
           <p>Pakollinen</p>

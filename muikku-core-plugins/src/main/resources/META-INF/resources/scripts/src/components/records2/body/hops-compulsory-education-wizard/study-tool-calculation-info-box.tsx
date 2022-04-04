@@ -28,51 +28,36 @@ const StudyToolCalculationInfoBox: React.FC<
   switch (state) {
     case "notenough":
       return (
-        <div className="hops__form-element-container hops__form-element-container--info hops__form-element-container--notenough">
-          <div>
-            <h3
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-            >
+        <div className="hops-container__info">
+          <div className="hops-container__state state-WARNING">
+            <div className="hops-container__state-icon icon-notification"></div>
+            <div className="hops-container__state-text">
               {message && message}
-            </h3>
+            </div>
           </div>
         </div>
       );
 
     case "enough":
       return (
-        <div className="hops__form-element-container hops__form-element-container--info hops__form-element-container--enough">
-          <div>
-            <h3
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-            >
+        <div className="hops-container__info">
+          <div className="hops-container__state state-SUCCESS">
+            <div className="hops-container__state-icon icon-notification"></div>
+            <div className="hops-container__state-text">
               {message && message}
-            </h3>
+            </div>
           </div>
         </div>
       );
 
     case "toomuch":
       return (
-        <div className="hops__form-element-container hops__form-element-container--info hops__form-element-container--toomuch">
-          <div>
-            <h3
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-            >
+        <div className="hops-container__info">
+          <div className="hops-container__state state-INFO">
+            <div className="hops-container__state-icon icon-notification"></div>
+            <div className="hops-container__state-text">
               {message && message}
-            </h3>
+            </div>
           </div>
         </div>
       );

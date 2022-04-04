@@ -29,7 +29,7 @@ export const HopsLanguageGradeTable: React.FC<HopsLanguageGradeTableProps> = ({
   <Table modifiers={["language-table"]}>
     <TableHead modifiers={["language-table"]}>
       <Tr modifiers={["language-table"]}>
-        <Th style={{ maxWidth: "80px", textAlign: "center" }}>Kieli</Th>
+        <Th modifiers={["centered", "language"]}>Kieli</Th>
         <Th modifiers={["centered"]}>Äidinkieli</Th>
         <Th modifiers={["centered"]}>Erinomainen / Kiitettävä</Th>
         <Th modifiers={["centered"]}>Hyvä</Th>
@@ -95,11 +95,11 @@ export const LanguageGradeRow: React.FC<LanguageGradeRowProps> = ({
 
   return (
     <Tr modifiers={["language-table"]}>
-      <Td modifiers={["centered"]}>
-        <span className="table__alignment-helper">
-          {lng.hardCoded ? (
-            <label className="hops__label">{lng.name}</label>
-          ) : (
+      <Td modifiers={["centered", "language"]}>
+        {lng.hardCoded ? (
+          <>{lng.name}</>
+        ) : (
+          <span className="table__alignment-helper">
             <input
               type="text"
               value={lng.name}
@@ -109,8 +109,8 @@ export const LanguageGradeRow: React.FC<LanguageGradeRowProps> = ({
               disabled={disabled}
               style={{ textAlign: "center" }}
             ></input>
-          )}
-        </span>
+          </span>
+        )}
       </Td>
       <Td modifiers={["centered"]}>
         <span className="table__alignment-helper">
