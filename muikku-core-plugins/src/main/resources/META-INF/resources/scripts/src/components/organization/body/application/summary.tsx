@@ -6,7 +6,6 @@ import ApplicationSubPanel, {
   ApplicationSubPanelItem,
 } from "~/components/general/application-sub-panel";
 import { OrganizationSummaryType } from "~/reducers/organization/summary";
-import Application from "../application";
 
 /**
  * SummaryProps

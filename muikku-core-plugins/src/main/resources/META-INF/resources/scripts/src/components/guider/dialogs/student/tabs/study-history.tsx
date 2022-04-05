@@ -36,6 +36,11 @@ interface StudyHistoryProps {
  * @returns JSX.Element
  */
 const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
+  const [navigationActive, setNavigationActive] =
+    React.useState<studyHistoryAside>("history");
+  const mobileBreakpoint = parseInt(variables.mobileBreakpoint); //Parse a breakpoint from scss to a number
+  const isAtMobileWidth = useIsAtBreakpoint(mobileBreakpoint);
+
   if (
     !props.guider.currentStudent ||
     !props.guider.currentStudent.pastWorkspaces ||
@@ -44,19 +49,11 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
     return null;
   }
 
-
   const { i18n, guider, addFileToCurrentStudent } = props;
-
-  const [navigationActive, setNavigationActive] =
-    React.useState<studyHistoryAside>("history");
 
   const studentWorkspaces = (
     <Workspaces workspaces={guider.currentStudent.pastWorkspaces} />
   );
-
-  const mobileBreakpoint = parseInt(variables.mobileBreakpoint); //Parse a breakpoint from scss to a number
-
-  const isAtMobileWidth = useIsAtBreakpoint(mobileBreakpoint);
 
   /**
    * Switches the active navigaton state
