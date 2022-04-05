@@ -1277,31 +1277,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     waitAndClick(".login-button");
     waitForVisible(".navbar .button-pill--profile");
   }
-  
-  protected void loginStudent1() throws JsonProcessingException, Exception {
-    PyramusMocks.student1LoginMock();
-    PyramusMocks.personsPyramusMocks();
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-    String payload = objectMapper.writeValueAsString(new WebhookStudentCreatePayload((long) 1));
-    TestUtilities.webhookCall("http://dev.muikku.fi:" + getPortHttp() + "/pyramus/webhook", payload);
-    payload = objectMapper.writeValueAsString(new WebhookPersonCreatePayload((long) 1));
-    TestUtilities.webhookCall("http://dev.muikku.fi:" + getPortHttp() + "/pyramus/webhook", payload);
-    navigate("/login?authSourceId=1", false);
-    waitForPresent(".index");
-  }
-  
-  protected void loginStudent2() throws JsonProcessingException, Exception {
-    PyramusMocks.student2LoginMock();
-    PyramusMocks.personsPyramusMocks();
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-    String payload = objectMapper.writeValueAsString(new WebhookStudentCreatePayload((long) 2));
-    webhookCall("http://dev.muikku.fi:" + getPortHttp() + "/pyramus/webhook", payload);
-    payload = objectMapper.writeValueAsString(new WebhookPersonCreatePayload((long) 2));
-    webhookCall("http://dev.muikku.fi:" + getPortHttp() + "/pyramus/webhook", payload);
-    navigate("/login?authSourceId=1", false);
-    waitForPresent(".index");
-  }
-  
+   
   protected void logout() {
     navigate("/", false);
     waitAndClick(".button-pill--profile");
