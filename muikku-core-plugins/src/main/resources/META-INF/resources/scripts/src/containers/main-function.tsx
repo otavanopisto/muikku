@@ -113,7 +113,6 @@ import {
 } from "~/actions/main-function/ceepos";
 import { registerLocale } from "react-datepicker";
 import { enGB, fi } from "date-fns/locale";
-import RecordsBody2 from "~/components/records2/body";
 registerLocale("fi", fi);
 registerLocale("enGB", enGB);
 
@@ -976,7 +975,7 @@ export default class MainFunction extends React.Component<
       this.loadChatSettings();
     }
 
-    return <RecordsBody2 />;
+    return <RecordsBody />;
   }
 
   /**

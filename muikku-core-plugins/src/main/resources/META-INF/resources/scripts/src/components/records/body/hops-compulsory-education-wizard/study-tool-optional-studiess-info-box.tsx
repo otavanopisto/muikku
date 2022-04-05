@@ -41,20 +41,6 @@ const StudyToolOptionalStudiesInfoBox: React.FC<
             kurssia.
           </div>
         </div>
-        {graduationGoal === null ? (
-          <div className="hops-container__state state-WARNING">
-            <div className="hops-container__state-icon icon-notification"></div>
-            <div className="hops-container__state-text">
-              Sinulla ei ole valittuna riittävästi valinnaisia opintoja (
-              {selectedNumberOfOptional}/
-              {NEEDED_STUDIES_IN_TOTAL - needMandatoryStudies}). Valitse ainakin
-              {NEEDED_STUDIES_IN_TOTAL -
-                needMandatoryStudies -
-                selectedNumberOfOptional}
-              kurssia.
-            </div>
-          </div>
-        ) : null}
       </div>
     );
   } else if (
