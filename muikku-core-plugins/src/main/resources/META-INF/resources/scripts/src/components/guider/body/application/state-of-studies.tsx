@@ -10,56 +10,57 @@ import "~/sass/elements/application-sub-panel.scss";
 import "~/sass/elements/avatar.scss";
 import "~/sass/elements/workspace-activity.scss";
 import { getUserImageUrl, getName } from "~/util/modifiers";
-import Hops from "~/components/base/hops_readable";
-import FileDeleteDialog from "../../dialogs/file-delete";
-import Workspaces from "./current-student/workspaces";
-import Ceepos from "./current-student/ceepos";
+import Workspaces from "./workspaces";
+import Ceepos from "./state-of-studies/ceepos";
+import CeeposButton from "./state-of-studies/ceepos-button";
 import { StatusType } from "~/reducers/base/status";
-import FileUploader from "~/components/general/file-uploader";
-import MainChart from "~/components/general/graph/main-chart";
-import {
-  AddFileToCurrentStudentTriggerType,
-  addFileToCurrentStudent,
-} from "~/actions/main-function/guider";
 import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
-import { UserFileType } from "~/reducers/user-index";
+
 import { StateType } from "~/reducers";
 import {
   GuiderType,
   GuiderStudentUserProfileLabelType,
 } from "~/reducers/main-function/guider";
+import NewMessage from "~/components/communicator/dialogs/new-message";
+import { ButtonPill } from "~/components/general/button";
+import GuiderToolbarLabels from "./toolbar/labels";
+
+// import GuidanceEvent from "../../dialogs/guidance-event";
+// import { CalendarEvent } from "~/reducers/main-function/calendar";
+// import { ResourceTimeline } from "../../../general/resource-timeline";
+// import { ExternalEventType } from "../../../general/resource-timeline";
 
 /**
- * CurrentStudentProps
+ * StateOfStudiesProps
  */
-interface CurrentStudentProps {
+interface StateOfStudiesProps {
   i18n: i18nType;
   guider: GuiderType;
   status: StatusType;
-  addFileToCurrentStudent: AddFileToCurrentStudentTriggerType;
+
   displayNotification: DisplayNotificationTriggerType;
 }
 
 /**
- * CurrentStudentState
+ * StateOfStudiesState
  */
-interface CurrentStudentState {}
-
+interface StateOfStudiesState {}
 /**
- * CurrentStudent
+ * StateOfStudies
  */
-class CurrentStudent extends React.Component<
-  CurrentStudentProps,
-  CurrentStudentState
+class StateOfStudies extends React.Component<
+  StateOfStudiesProps,
+  StateOfStudiesState
 > {
   /**
    * constructor
+   *
    * @param props props
    */
-  constructor(props: CurrentStudentProps) {
+  constructor(props: StateOfStudiesProps) {
     super(props);
   }
 
@@ -76,9 +77,29 @@ class CurrentStudent extends React.Component<
     //a case where the property is not available
     //You can use the cheat && after the property
     //eg. guider.currentStudent.property && guider.currentStudent.property.useSubProperty
+
+    /**
+     * IsStudentPartOfProperStudyProgram
+     * @param studyProgramName the name of the study programme
+     * @returns true or false
+     */
+    const IsStudentPartOfProperStudyProgram = (studyProgramName: string) => {
+      switch (studyProgramName) {
+        case "Nettilukio/yksityisopiskelu (aineopintoina)":
+        case "Nettilukio/yksityisopiskelu (tutkinto)":
+        case "Aineopiskelu/lukio":
+        case "Aineopiskelu/peruskoulu":
+        case "Aineopiskelu/yo-tutkinto":
+          return true;
+        default:
+          return false;
+      }
+    };
+
     const defaultEmailAddress =
       this.props.guider.currentStudent.emails &&
       this.props.guider.currentStudent.emails.find((e) => e.defaultAddress);
+
     const studentBasicHeader = this.props.guider.currentStudent.basic && (
       <div className="application-sub-panel__header">
         <object
@@ -104,7 +125,37 @@ class CurrentStudent extends React.Component<
           </div>
         </div>
         <div className="application-sub-panel__header-aside-container">
-          {this.props.guider.currentStudent.basic.studyProgrammeName}
+          {this.props.guider.currentStudent.basic &&
+          IsStudentPartOfProperStudyProgram(
+            this.props.guider.currentStudent.basic.studyProgrammeName
+          ) ? (
+            <CeeposButton />
+          ) : null}
+          <NewMessage
+            extraNamespace="student-view"
+            initialSelectedItems={[
+              {
+                type: "user",
+                value: {
+                  id: this.props.guider.currentStudent.basic.userEntityId,
+                  name: getName(this.props.guider.currentStudent.basic, true),
+                },
+              },
+            ]}
+          >
+            <ButtonPill
+              icon="envelope"
+              buttonModifiers={["new-message", "guider-student"]}
+            />
+          </NewMessage>
+          {/* Not implemented yet
+          <GuidanceEvent>
+            <ButtonPill
+              icon="bubbles"
+              buttonModifiers={["new-message", "guider-student"]}
+            />
+          </GuidanceEvent> */}
+          <GuiderToolbarLabels />
         </div>
       </div>
     );
@@ -316,97 +367,29 @@ class CurrentStudent extends React.Component<
           )}
       </div>
     );
-    //TODO: this was stolen from the dust template, please replace all the classNames, these are for just reference
-    //I don't want this file to become too complex, remember anyway that I will be splitting all these into simpler components
-    //later once a pattern is defined
-    const studentHops =
-      this.props.guider.currentStudent.hops &&
-      this.props.guider.currentStudent.hops.optedIn ? (
-        <Hops data={this.props.guider.currentStudent.hops} />
-      ) : null;
 
-    //I placed the VOPS in an external file already you can follow it, this is because
-    //it is very clear
-    const studentVops: any = null;
-    // Removed until it works
-    // (this.props.guider.currentStudent.vops && this.props.guider.currentStudent.vops.optedIn) ?
-    //        <Vops data={this.props.guider.currentStudent.vops}></Vops> : null;
-
-    const studentWorkspaces = <Workspaces />;
-
-    /**
-     * formDataGenerator
-     * @param file file
-     * @param formData formData
-     */
-    const formDataGenerator = (file: File, formData: FormData) => {
-      formData.append("upload", file);
-      formData.append("title", file.name);
-      formData.append("description", "");
-      formData.append(
-        "userIdentifier",
-        this.props.guider.currentStudent.basic.id
-      );
-    };
-
-    /**
-     * IsStudentPartOfProperStudyProgram
-     * @param studyProgramName
-     * @returns true or false
-     */
-    const IsStudentPartOfProperStudyProgram = (studyProgramName: string) => {
-      switch (studyProgramName) {
-        case "Nettilukio/yksityisopiskelu (aineopintoina)":
-        case "Nettilukio/yksityisopiskelu (tutkinto)":
-        case "Aineopiskelu/lukio":
-        case "Aineopiskelu/peruskoulu":
-        case "Aineopiskelu/yo-tutkinto":
-          return true;
-        default:
-          return false;
-      }
-    };
-
-    const files = this.props.guider.currentStudent.basic && (
-      <div className="application-sub-panel__body">
-        <FileUploader
-          url="/transcriptofrecordsfileupload/"
-          formDataGenerator={formDataGenerator}
-          displayNotificationOnError
-          onFileSuccess={(file: File, data: UserFileType) => {
-            this.props.addFileToCurrentStudent(data);
-          }}
-          hintText={this.props.i18n.text.get(
-            "plugin.guider.user.details.files.hint"
-          )}
-          fileTooLargeErrorText={this.props.i18n.text.get(
-            "plugin.guider.user.details.files.fileFieldUpload.fileSizeTooLarge"
-          )}
-          files={this.props.guider.currentStudent.files}
-          fileIdKey="id"
-          fileNameKey="title"
-          fileUrlGenerator={(f) => `/rest/guider/files/${f.id}/content`}
-          deleteDialogElement={FileDeleteDialog}
-          modifier="guider"
-          emptyText={this.props.i18n.text.get(
-            "plugin.guider.user.details.files.empty"
-          )}
-          uploadingTextProcesser={(percent: number) =>
-            this.props.i18n.text.get(
-              "plugin.guider.user.details.files.uploading",
-              percent
-            )
-          }
-          notificationOfSuccessText={this.props.i18n.text.get(
-            "plugin.guider.fileUpload.successful"
-          )}
-          displayNotificationOnSuccess
-        />
-      </div>
+    const studentWorkspaces = (
+      <Workspaces
+        workspaces={this.props.guider.currentStudent.currentWorkspaces}
+      />
     );
 
+    // const headerToolbar = {
+    //   left: "today prev,next",
+    //   center: "title",
+    //   right: "resourceTimelineMonth,resourceTimelineYear",
+    // };
+
+    // const externalEvents: ExternalEventType[] =
+    //   this.props.guider.currentStudent.currentWorkspaces &&
+    //   this.props.guider.currentStudent.currentWorkspaces.map((workspace) => ({
+    //     id: workspace.id,
+    //     title: workspace.name,
+    //     duration: "36:00:00",
+    //   }));
+
     return (
-      <div className="react-required-container">
+      <>
         <div className="application-sub-panel application-sub-panel--guider-student-header">
           {studentBasicHeader}
           {this.props.guider.currentStudent.labels &&
@@ -416,65 +399,43 @@ class CurrentStudent extends React.Component<
             </div>
           ) : null}
         </div>
-        <div className="application-sub-panel">{studentBasicInfo}</div>
-        {this.props.guider.currentStudent.basic &&
-        IsStudentPartOfProperStudyProgram(
-          this.props.guider.currentStudent.basic.studyProgrammeName
-        ) &&
-        this.props.status.permissions.LIST_USER_ORDERS ? (
-          <div className="application-sub-panel">
+        <div className="application-sub-panel application-sub-panel--student-data-container">
+          <div className="application-sub-panel application-sub-panel--student-data-primary">
+            {studentBasicInfo}
+          </div>
+
+          <div className="application-sub-panel application-sub-panel--student-data-secondary">
+            {this.props.guider.currentStudent.basic &&
+            IsStudentPartOfProperStudyProgram(
+              this.props.guider.currentStudent.basic.studyProgrammeName
+            ) ? (
+              <div className="application-sub-panel">
+                <h3 className="application-sub-panel__header">
+                  {this.props.i18n.text.get(
+                    "plugin.guider.user.details.purchases"
+                  )}
+                </h3>
+                <div className="application-sub-panel__body">
+                  <Ceepos />
+                </div>
+              </div>
+            ) : null}
+
             <h3 className="application-sub-panel__header">
-              {this.props.i18n.text.get("plugin.guider.user.details.purchases")}
+              {this.props.i18n.text.get(
+                "plugin.guider.user.details.workspaces"
+              )}
             </h3>
+
             <div className="application-sub-panel__body">
-              <Ceepos />
+              {studentWorkspaces}
             </div>
           </div>
-        ) : null}
-        {studentHops ? (
-          <div className="application-sub-panel">
-            <h3 className="application-sub-panel__header">
-              {this.props.i18n.text.get("plugin.guider.user.details.hops")}
-            </h3>
-            {studentHops}
-          </div>
-        ) : null}
-        {studentVops ? (
-          <div className="application-sub-panel">
-            <h3 className="application-sub-panel__header">
-              {this.props.i18n.text.get("plugin.guider.user.details.vops")}
-            </h3>
-            {studentVops}
-          </div>
-        ) : null}
-        <div className="application-sub-panel">
-          <h3 className="application-sub-panel__header">
-            {this.props.i18n.text.get("plugin.guider.user.details.workspaces")}
-          </h3>
-          <div className="application-sub-panel__body">{studentWorkspaces}</div>
-        </div>
-        <div className="application-sub-panel">
-          <h3 className="application-sub-panel__header">
-            {this.props.i18n.text.get("plugin.guider.user.details.files")}
-          </h3>
-          {files}
-        </div>
-        <div className="application-sub-panel">
-          <div className="application-sub-panel__header">
-            {this.props.i18n.text.get("plugin.guider.user.details.statistics")}
-          </div>
-          {this.props.guider.currentStudent.activityLogs &&
-          this.props.guider.currentStudent.workspaces ? (
-            <MainChart
-              workspaces={this.props.guider.currentStudent.workspaces}
-              activityLogs={this.props.guider.currentStudent.activityLogs}
-            />
+          {this.props.guider.currentState === "LOADING" ? (
+            <div className="application-sub-panel loader-empty" />
           ) : null}
         </div>
-        {this.props.guider.currentState === "LOADING" ? (
-          <div className="application-sub-panel loader-empty" />
-        ) : null}
-      </div>
+      </>
     );
   }
 }
@@ -496,10 +457,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
-  return bindActionCreators(
-    { addFileToCurrentStudent, displayNotification },
-    dispatch
-  );
+  return bindActionCreators({ displayNotification }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CurrentStudent);
+export default connect(mapStateToProps, mapDispatchToProps)(StateOfStudies);

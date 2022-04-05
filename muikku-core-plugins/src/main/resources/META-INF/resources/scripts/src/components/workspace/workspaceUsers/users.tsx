@@ -316,6 +316,63 @@ class WorkspaceUsers extends React.Component<
         />
       ) : null;
 
+    const activeStudents =
+      this.props.workspace &&
+      this.props.workspace.students &&
+      this.props.workspace.students.results.map((s) => (
+        <WorkspaceUser
+          highlight={this.state.currentSearch}
+          onSetToggleStatus={this.setStudentBeingToggledStatus.bind(this, s)}
+          key={s.workspaceUserEntityId}
+          student={s}
+          onSendMessage={this.onSendMessageTo.bind(this, s)}
+          {...this.props}
+        />
+      ));
+
+    const pager =
+      this.allActiveStudentsPages > 1 ? (
+        <PagerV2
+          previousLabel=""
+          nextLabel=""
+          breakLabel="..."
+          initialPage={this.state.currentActiveStudentPage - 1}
+          forcePage={this.state.currentActiveStudentPage - 1}
+          marginPagesDisplayed={1}
+          pageCount={this.allActiveStudentsPages}
+          pageRangeDisplayed={2}
+          onPageChange={this.handleActiveStudentsPagerChange}
+        />
+      ) : null;
+
+    const inactiveStudents =
+      this.props.workspace &&
+      this.props.workspace.inactiveStudents &&
+      this.props.workspace.inactiveStudents.results.map((s) => (
+        <WorkspaceUser
+          onSetToggleStatus={this.setStudentBeingToggledStatus.bind(this, s)}
+          highlight={this.state.currentSearch}
+          key={s.workspaceUserEntityId}
+          student={s}
+          {...this.props}
+        />
+      ));
+
+    const inActivePager =
+      this.allInActiveStudentsPages > 1 ? (
+        <PagerV2
+          previousLabel=""
+          nextLabel=""
+          breakLabel="..."
+          initialPage={this.state.currentInactiveStudentPage - 1}
+          forcePage={this.state.currentInactiveStudentPage - 1}
+          marginPagesDisplayed={1}
+          pageCount={this.allInActiveStudentsPages}
+          pageRangeDisplayed={2}
+          onPageChange={this.handleInActiveStudentsPagerChange}
+        />
+      ) : null;
+
     return (
       <ApplicationPanel
         modifier="workspace-users"
@@ -326,7 +383,6 @@ class WorkspaceUsers extends React.Component<
           title={this.props.i18n.text.get(
             "plugin.workspace.users.teachers.title"
           )}
-          i18n={this.props.i18n}
         >
           <ApplicationList
             footer={staffPager}
@@ -398,7 +454,6 @@ class WorkspaceUsers extends React.Component<
         </ApplicationSubPanel>
         <ApplicationSubPanel
           modifier="workspace-users"
-          i18n={this.props.i18n}
           title={this.props.i18n.text.get(
             "plugin.workspace.users.students.title"
           )}
@@ -424,57 +479,21 @@ class WorkspaceUsers extends React.Component<
                   "plugin.workspace.users.students.link.active"
                 ),
                 type: "workspace-students",
-                /**
-                 * component
-                 */
-                component: () => {
-                  const activeStudents =
-                    this.props.workspace &&
-                    this.props.workspace.students &&
-                    this.props.workspace.students.results.map((s) => (
-                      <WorkspaceUser
-                        highlight={this.state.currentSearch}
-                        onSetToggleStatus={this.setStudentBeingToggledStatus.bind(
-                          this,
-                          s
-                        )}
-                        key={s.workspaceUserEntityId}
-                        student={s}
-                        onSendMessage={this.onSendMessageTo.bind(this, s)}
-                        {...this.props}
-                      />
-                    ));
-
-                  const pager =
-                    this.allActiveStudentsPages > 1 ? (
-                      <PagerV2
-                        previousLabel=""
-                        nextLabel=""
-                        breakLabel="..."
-                        initialPage={this.state.currentActiveStudentPage - 1}
-                        forcePage={this.state.currentActiveStudentPage - 1}
-                        marginPagesDisplayed={1}
-                        pageCount={this.allActiveStudentsPages}
-                        pageRangeDisplayed={2}
-                        onPageChange={this.handleActiveStudentsPagerChange}
-                      />
-                    ) : null;
-                  return (
-                    <ApplicationList footer={pager} modifiers="workspace-users">
-                      {this.props.workspace && this.props.workspace.students ? (
-                        activeStudents.length ? (
-                          activeStudents
-                        ) : (
-                          <div className="loaded-empty">
-                            {this.props.i18n.text.get(
-                              "plugin.workspaces.users.activeStudents.empty"
-                            )}
-                          </div>
-                        )
-                      ) : null}
-                    </ApplicationList>
-                  );
-                },
+                component: (
+                  <ApplicationList footer={pager} modifiers="workspace-users">
+                    {this.props.workspace && this.props.workspace.students ? (
+                      activeStudents.length ? (
+                        activeStudents
+                      ) : (
+                        <div className="loaded-empty">
+                          {this.props.i18n.text.get(
+                            "plugin.workspaces.users.activeStudents.empty"
+                          )}
+                        </div>
+                      )
+                    ) : null}
+                  </ApplicationList>
+                ),
               },
               {
                 id: "INACTIVE",
@@ -482,61 +501,29 @@ class WorkspaceUsers extends React.Component<
                   "plugin.workspace.users.students.link.inactive"
                 ),
                 type: "workspace-students",
-                /**
-                 * component
-                 */
-                component: () => {
-                  const inactiveStudents =
-                    this.props.workspace &&
-                    this.props.workspace.inactiveStudents &&
-                    this.props.workspace.inactiveStudents.results.map((s) => (
-                      <WorkspaceUser
-                        onSetToggleStatus={this.setStudentBeingToggledStatus.bind(
-                          this,
-                          s
-                        )}
-                        highlight={this.state.currentSearch}
-                        key={s.workspaceUserEntityId}
-                        student={s}
-                        {...this.props}
-                      />
-                    ));
-                  const pager =
-                    this.allInActiveStudentsPages > 1 ? (
-                      <PagerV2
-                        previousLabel=""
-                        nextLabel=""
-                        breakLabel="..."
-                        initialPage={this.state.currentInactiveStudentPage - 1}
-                        forcePage={this.state.currentInactiveStudentPage - 1}
-                        marginPagesDisplayed={1}
-                        pageCount={this.allInActiveStudentsPages}
-                        pageRangeDisplayed={2}
-                        onPageChange={this.handleInActiveStudentsPagerChange}
-                      />
-                    ) : null;
-                  return (
-                    <ApplicationList footer={pager} modifiers="workspace-users">
-                      {this.props.workspace &&
-                      this.props.workspace.inactiveStudents ? (
-                        inactiveStudents.length ? (
-                          inactiveStudents
-                        ) : (
-                          <div className="loaded-empty">
-                            {this.props.i18n.text.get(
-                              "plugin.workspaces.users.inActiveStudents.empty"
-                            )}
-                          </div>
-                        )
-                      ) : null}
-                    </ApplicationList>
-                  );
-                },
+                component: (
+                  <ApplicationList
+                    footer={inActivePager}
+                    modifiers="workspace-users"
+                  >
+                    {this.props.workspace &&
+                    this.props.workspace.inactiveStudents ? (
+                      inactiveStudents.length ? (
+                        inactiveStudents
+                      ) : (
+                        <div className="loaded-empty">
+                          {this.props.i18n.text.get(
+                            "plugin.workspaces.users.inActiveStudents.empty"
+                          )}
+                        </div>
+                      )
+                    ) : null}
+                  </ApplicationList>
+                ),
               },
             ]}
           />
         </ApplicationSubPanel>
-
         {currentStudentBeingSentMessage ? (
           <CommunicatorNewMessage
             isOpen
