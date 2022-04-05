@@ -31,9 +31,8 @@ import {
   GuiderType,
   GuiderStudentUserProfileLabelType,
 } from "~/reducers/main-function/guider";
-import HopsCompulsoryEducationWizardDialog from "~/components/records2/dialogs/hops-compulsory-education-wizard";
+import HopsCompulsoryEducationWizardDialog from "~/components/records/dialogs/hops-compulsory-education-wizard";
 import Button from "~/components/general/button";
-import JournalCenter from "~/components/records2/body/application/summary/jounral-center/journal-center";
 import {
   UpdateCurrentStudentHopsPhaseTriggerType,
   updateCurrentStudentHopsPhase,
@@ -511,22 +510,6 @@ class CurrentStudent extends React.Component<
           </h3>
           {files}
         </div>
-
-        {this.props.guider.currentStudent.basic && (
-          <div className="application-sub-panel">
-            <h3 className="application-sub-panel__header">Journal Center</h3>
-            <JournalCenter
-              usePlace="guider"
-              userId={parseInt(
-                document
-                  .querySelector('meta[name="muikku:loggedUserId"]')
-                  .getAttribute("value")
-              )}
-              studentId={this.props.guider.currentStudent.basic.userEntityId}
-              showHistoryPanel={true}
-            />
-          </div>
-        )}
 
         <div className="application-sub-panel">
           <div className="application-sub-panel__header">
