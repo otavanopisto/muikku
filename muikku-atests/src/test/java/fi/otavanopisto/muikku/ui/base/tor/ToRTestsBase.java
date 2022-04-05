@@ -4,6 +4,8 @@ import static fi.otavanopisto.muikku.mock.PyramusMock.mocker;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -20,6 +22,8 @@ import fi.otavanopisto.muikku.mock.model.MockStaffMember;
 import fi.otavanopisto.muikku.mock.model.MockStudent;
 import fi.otavanopisto.muikku.ui.AbstractUITest;
 import fi.otavanopisto.pyramus.rest.model.Course;
+import fi.otavanopisto.pyramus.rest.model.CourseActivity;
+import fi.otavanopisto.pyramus.rest.model.CourseActivityState;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
 import fi.otavanopisto.pyramus.rest.model.Sex;
 import fi.otavanopisto.pyramus.rest.model.StudentMatriculationEligibility;
@@ -40,17 +44,32 @@ public class ToRTestsBase extends AbstractUITest {
         .addStudent(student)
         .mockMatriculationEligibility(true)
         .addStaffMember(admin)
-        .addCourse(course1)
         .mockLogin(admin)
+        .addCourse(course1)
         .build();
       login();
 
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
-      MockCourseStudent courseStudent = new MockCourseStudent(2l, courseId, student.getId());
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 7l);
+      
+      CourseActivity ca = new CourseActivity();
+      ca.setCourseId(course1.getId());
+      ca.setCourseName(course1.getName());
+      ca.setGrade("Excellent");
+      ca.setPassingGrade(true);
+      ca.setGradeDate(TestUtilities.toDate(TestUtilities.getLastWeek()));
+      ca.setText("Test evaluation.");
+      ca.setActivityDate(TestUtilities.toDate(TestUtilities.getLastWeek()));
+      ca.setState(CourseActivityState.GRADED);
+      
+      
+      List<CourseActivity> courseActivities = new ArrayList<>();
+      courseActivities.add(ca);
+      
+      MockCourseStudent courseStudent = new MockCourseStudent(2l, course1.getId(), student.getId(), courseActivities);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
       mockBuilder
-        .addCourseStaffMember(courseId, courseStaffMember)
-        .addCourseStudent(courseId, courseStudent)
+        .addCourseStaffMember(course1.getId(), courseStaffMember)
+        .addCourseStudent(course1.getId(), courseStudent)
         .build();
 
       WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
@@ -61,33 +80,31 @@ public class ToRTestsBase extends AbstractUITest {
         "EVALUATED");
       
       try {
-      mockBuilder
-        .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, date)
-        .mockCompositeGradingScales()
-        .addCompositeCourseAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, course1, student, date)
-        .mockCompositeCourseAssessmentRequests()
-        .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, course1, student, admin.getId(), date)
-        .mockStaffCompositeCourseAssessmentRequests()      
-        .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, true, course1, student, admin.getId(), date)
-        .mockStaffCompositeCourseAssessmentRequests()
-        .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello! I'd like to get assessment.", false, true, date)
-        .mockCourseAssessments(courseStudent, admin)
-        .mockStudentCourseStats(student.getId(), 10).build();
-      
-      logout();
-      mockBuilder.mockLogin(student);
-      login();
-      
-      navigate("/records#records", false);
-      waitForPresent(".application-list__item-header--course .application-list__header-primary");
-      assertText(".application-list__item-header--course .application-list__header-primary", "testcourses (test extension)");
-      
-      waitForPresent(".application-list__item-header--course .application-list__indicator-badge--course");
-      assertText(".application-list__item-header--course .application-list__indicator-badge--course", "E");
-      
-      waitAndClick(".application-list__item-header--course .application-list__header-primary");
-      waitForPresent(".workspace-assessment__literal .workspace-assessment__literal-data");
-      assertText(".workspace-assessment__literal .workspace-assessment__literal-data", "Test evaluation.");
+        mockBuilder
+          .mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, date)
+          .mockCompositeGradingScales()
+          .addCompositeCourseAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, course1, student, date)
+          .mockCompositeCourseAssessmentRequests()
+          .addStaffCompositeAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, true, course1, student, admin.getId(), date, true)
+          .mockStaffCompositeCourseAssessmentRequests()
+          .mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello! I'd like to get assessment.", false, true, date)
+          .mockCourseAssessments(courseStudent, admin)
+          .mockStudentCourseStats(student.getId(), 10).build();
+        
+        logout();
+        mockBuilder.mockLogin(student);
+        login();
+        
+        navigate("/records#records", false);
+        waitForPresent(".application-list__item-header--course .application-list__header-primary");
+        assertText(".application-list__item-header--course .application-list__header-primary", "testcourses (test extension)");
+        
+        waitForPresent(".application-list__item-header--course .application-list__indicator-badge--course");
+        assertText(".application-list__item-header--course .application-list__indicator-badge--course", "E");
+        
+        waitAndClick(".application-list__item-header--course .application-list__header-primary");
+        waitForPresent(".workspace-assessment__literal .workspace-assessment__literal-data");
+        assertText(".workspace-assessment__literal .workspace-assessment__literal-data", "Test evaluation.");
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         deleteWorkspace(workspace.getId());
@@ -110,14 +127,14 @@ public class ToRTestsBase extends AbstractUITest {
         .addStudent(student)
         .mockMatriculationEligibility(true)
         .addStaffMember(admin)
-        .addCourse(course1)
         .mockLogin(admin)
+        .addCourse(course1)
         .build();
       login();
       
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
-      MockCourseStudent courseStudent = new MockCourseStudent(2l, courseId, student.getId());
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 7l);
+      MockCourseStudent courseStudent = new MockCourseStudent(2l, courseId, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 1l);
       mockBuilder
         .addCourseStaffMember(courseId, courseStaffMember)
         .addCourseStudent(courseId, courseStudent)
@@ -140,7 +157,7 @@ public class ToRTestsBase extends AbstractUITest {
         assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "");
         waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
         waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "field value");
-        waitForVisible(".material-page__field-answer-synchronizer--saved");
+        waitForPresent(".material-page__textfield-wrapper.state-SAVED");
         waitAndClick(".button--muikku-submit-assignment");
 
         waitForElementToBeClickable(".button--muikku-withdraw-assignment");
@@ -150,32 +167,29 @@ public class ToRTestsBase extends AbstractUITest {
         .mockCompositeGradingScales()
         .addCompositeCourseAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, course1, student, date)
         .mockCompositeCourseAssessmentRequests()
-        .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, course1, student, admin.getId(), date)
+        .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, course1, student, admin.getId(), date, false)
         .mockStaffCompositeCourseAssessmentRequests();
         
         logout();
         mockBuilder.mockLogin(admin);
         login();
-        navigate(String.format("/evaluation2"), false);
-        waitAndClick(".evaluate-button");
-        waitAndClick(".assignment-title-wrapper");
-        waitForVisible(".assignment-wrapper .muikku-text-field");
-        assertTextIgnoreCase(".assignment-wrapper .muikku-text-field", "field value");
-        waitAndClick(".assignment-evaluate-button");
-        waitUntilAnimationIsDone("#evaluationAssignmentEvaluateContainer");
-        waitForElementToBeClickable("#evaluationAssignmentEvaluateContainer .evaluation-modal-evaluate-form #cke_assignmentEvaluateFormLiteralEvaluation .cke_contents");
-        getWebDriver().switchTo().frame(findElementByCssSelector("#evaluationAssignmentEvaluateContainer .evaluation-modal-evaluate-form #cke_assignmentEvaluateFormLiteralEvaluation .cke_wysiwyg_frame"));
-        sendKeys(".cke_contents_ltr", "Test evaluation.");
-        getWebDriver().switchTo().defaultContent();
+        navigate(String.format("/evaluation"), false);
+        waitAndClick(".button-pill--evaluate");
+        waitAndClick(".evaluation-modal__item-header-title--assignment");
+        waitUntilAnimationIsDone(".rah-static");
+        waitUntilHasText(".evaluation-modal__item-body span.material-page__textfield--evaluation");
+        assertText(".evaluation-modal__item-body span.material-page__textfield--evaluation", "field value");
+        waitAndClick(".evaluation-modal__item-header .button-pill--evaluate");
+        waitUntilAnimationIsDone(".evaluation-modal__evaluate-drawer");
+        waitForPresent(".evaluation-modal__evaluate-drawer.state-OPEN");
+        addTextToCKEditor("Test evaluation.");
+        selectOption("#assignmentEvaluationGrade", "PYRAMUS-1");
+        waitAndClick(".button--evaluate-assignment");
         
-        selectOption("#workspaceGradeGrade", "PYRAMUS-1@PYRAMUS-1");
-  
-        waitAndClick("#assignmentSaveButton");
-        waitForPresent(".notification-queue-item-success");
-        waitForVisible(".assignment-wrapper .assignment-evaluated-label");
-        waitForVisible(".assignment-wrapper .assignment-grade .assignment-grade-data");          
-        assertTextIgnoreCase(".assignment-wrapper .assignment-grade .assignment-grade-data", "Excellent");
-        
+        waitForVisible(".evaluation-modal__item-header.state-EVALUATED");
+        waitForVisible(".evaluation-modal .evaluation-modal__item .evaluation-modal__item-meta .evaluation-modal__item-meta-item-data--grade.state-EVALUATED");
+        assertTextIgnoreCase(".evaluation-modal .evaluation-modal__item .evaluation-modal__item-meta .evaluation-modal__item-meta-item-data--grade.state-EVALUATED", "Excellent");
+        mockBuilder.addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, course1, student, admin.getId(), date, true);
         logout();
         mockBuilder.mockLogin(student);
         login();
@@ -198,7 +212,7 @@ public class ToRTestsBase extends AbstractUITest {
       mockBuilder.wiremockReset();
     }
   }
-  
+
   @Test
   public void recordsHOPSAndMatriculation() throws JsonProcessingException, Exception {
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
@@ -228,10 +242,9 @@ public class ToRTestsBase extends AbstractUITest {
       waitForVisible(".form-element__dropdown-selection-container:nth-child(2) .form-element__select--matriculation-exam");
       selectOption(".form-element__dropdown-selection-container:nth-child(2) .form-element__select--matriculation-exam", "M");
       sleep(1000);
-      waitForPresentXPath("//a[@href='#yo']");
-      clickLinkWithText("Ylioppilaskirjoitukset");
+      waitAndClick(".tabs--application-panel .tabs__tab--yo");
       
-      waitForVisible(".application-sub-panel--yo-status-container");
+      waitForVisible(".tabs__tab-data--yo");
       waitForVisible(".button--yo-signup");
       assertTextIgnoreCase(".button--yo-signup", "Ilmoittaudu YO-kokeeseen (12.12.2025 asti)");
 
@@ -246,7 +259,7 @@ public class ToRTestsBase extends AbstractUITest {
       mockBuilder.wiremockReset();
     }
   }
-  
+
   @Test
   public void recordsMatriculationExamNoSubjectsSelected() throws JsonProcessingException, Exception {
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
@@ -266,10 +279,9 @@ public class ToRTestsBase extends AbstractUITest {
       waitAndClick(".form-element__radio-option-container #goalMatriculationExamyes");
       waitAndClick(".button--add-subject-row");
       waitForVisible(".form-element__select--matriculation-exam");
-      waitForPresentXPath("//a[@href='#yo']");
-      clickLinkWithText("Ylioppilaskirjoitukset");
+      waitAndClick(".tabs--application-panel .tabs__tab--yo");
       
-      waitForVisible(".application-sub-panel--yo-status-container");
+      waitForVisible(".tabs__tab-data--yo");
       waitForVisible(".button--yo-signup");
       assertTextIgnoreCase(".button--yo-signup", "Ilmoittaudu YO-kokeeseen (12.12.2025 asti)");
 
@@ -279,33 +291,41 @@ public class ToRTestsBase extends AbstractUITest {
       mockBuilder.wiremockReset();
     }
   }
-  
+
   @Test
   public void studiesSummaryTest() throws Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(5l, 5l, "Studentos", "Tester", "studento@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "111195-1252", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
     
     try{
       mockBuilder
+        .addStudentGroup(2l, 1l, "Admins guidance", "Admins guidance group for users", 1l, false, true)
         .addStudent(student)
+        .addStaffMember(admin)
         .mockStudentCourseStats(student.getId(), 25)
         .mockMatriculationEligibility(true)
         .mockLogin(student)
         .build();
         login();
-
+        mockBuilder.addStudentToStudentGroup(2l, student).addStaffMemberToStudentGroup(2l, admin).mockPersons().mockStudents().mockStudyProgrammes().mockStudentGroups();
         selectFinnishLocale();        
         navigate("/records", false);
-
+        
         waitForPresent(".application-sub-panel__body--studies-summary-info .application-sub-panel__item:nth-child(1) .application-sub-panel__item-title");
-        assertTextIgnoreCase(".application-sub-panel__body--studies-summary-info .application-sub-panel__item:nth-child(1) .application-sub-panel__item-title", "Opintojen alkamispäivä");        
-        waitForPresent(".application-sub-panel__body--studies-summary-info .application-sub-panel__item-data--summary-start-date");
-        assertTextIgnoreCase(".application-sub-panel__body--studies-summary-info .application-sub-panel__item-data--summary-start-date span", "01.01.2012");
+        assertTextIgnoreCase(".application-sub-panel__body--studies-summary-info .application-sub-panel__item:nth-child(1) .application-sub-panel__item-title", "Opintojen alkamispäivä");
+        waitForPresent(".application-sub-panel__body--studies-summary-info .application-sub-panel__item-data--study-start-date");
+        assertTextIgnoreCase(".application-sub-panel__body--studies-summary-info .application-sub-panel__item-data--study-start-date span", "01.01.2012");
 //  TODO: This.
 //        waitForPresent(".application-sub-panel__body--studies-summary-info .application-sub-panel__item:nth-child(2) .application-sub-panel__item-title");
 //        assertTextIgnoreCase(".application-sub-panel__body--studies-summary-info .application-sub-panel__item:nth-child(2) .application-sub-panel__item-title", "Opinto-oikeuden päättymispäivä");
-//        waitForPresent(".application-sub-panel__body--studies-summary-info .application-sub-panel__item-data--summary-end-date");
-//        assertTextIgnoreCase(".application-sub-panel__body--studies-summary-info .application-sub-panel__item-data--summary-end-date span", "10.11.2021");
+//        waitForPresent(".application-sub-panel__body--studies-summary-info .application-sub-panel__item-data--study-end-date");
+//        assertTextIgnoreCase(".application-sub-panel__body--studies-summary-info .application-sub-panel__item-data--study-end-date span", "10.11.2021");
+        assertTextIgnoreCase(".application-sub-panel__body--studies-summary-info .application-sub-panel__item:nth-child(3) .application-sub-panel__item-title", "Ohjaajasi");        
+        findElementOrReloadAndFind(".item-list--student-councelors .item-list__user-name", 5, 5000);
+        assertTextIgnoreCase(".item-list--student-councelors .item-list__user-name", "Admin User");
+        assertTextIgnoreCase(".item-list--student-councelors .item-list__user-email", "admin@example.com");
+        assertTextIgnoreCase(".button--contact-student-councelor", "Lähetä viesti");
         
         waitForPresent(".application-sub-panel__card-header--summary-evaluated");
         assertTextIgnoreCase(".application-sub-panel__card-header--summary-evaluated", "Kurssisuoritukset");
@@ -322,6 +342,7 @@ public class ToRTestsBase extends AbstractUITest {
         waitForPresent(".application-sub-panel__card-highlight--summary-returned");
         assertTextIgnoreCase(".application-sub-panel__card-highlight--summary-returned", "0");
     } finally {
+      deleteUserGroupUsers();
       mockBuilder.wiremockReset();
     }
   }

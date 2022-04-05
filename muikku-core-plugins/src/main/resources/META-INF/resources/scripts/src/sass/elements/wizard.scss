@@ -10,12 +10,10 @@
 }
 
 @mixin step-title {
-  width: 20px;
   margin-bottom: 14px;
 }
 
 .wizard {
-
   .cke {
     border: 2px solid $color-form-element-border;
   }
@@ -38,6 +36,7 @@
       // scss-lint:disable NestingDepth, SelectorDepth
       span {
         @include step-title;
+
         display: none;
         padding: 0;
 
@@ -45,6 +44,7 @@
           display: flex;
         }
       }
+
       // scss-lint:enable NestingDepth, SelectorDepth
     }
 
@@ -58,6 +58,7 @@
 
       &::before {
         @include step-indicator;
+
         background-color: $color-wizard-todo;
         color: $color-wizard-todo;
         content: "";
@@ -75,6 +76,7 @@
 
       &::before {
         @include step-indicator;
+
         background-color: $color-wizard-doing;
         content: "";
         line-height: normal;
@@ -91,6 +93,7 @@
 
       &::before {
         @include step-indicator;
+
         background-color: $color-wizard-done;
         content: "";
         line-height: normal;
@@ -110,6 +113,7 @@
 
   .progtrckr em {
     @include step-title;
+
     display: flex;
     font-weight: 700;
     padding: 0;
@@ -124,7 +128,7 @@
     display: flex;
     flex-flow: row wrap;
     justify-content: center;
-    padding: 20px;
+    padding: 20px 20px 0;
   }
 }
 

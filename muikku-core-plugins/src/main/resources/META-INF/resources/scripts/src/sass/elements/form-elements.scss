@@ -24,8 +24,6 @@
 
   input[type="checkbox"] {
     align-items: center;
-    -moz-appearance: none;
-    -webkit-appearance: none;
     appearance: none;
     border: solid 2px $color-form-element-border;
     border-radius: 3px;
@@ -33,13 +31,12 @@
     height: 1rem;
     justify-content: center;
     margin-right: 5px;
+    padding: 0;
     width: 1rem;
   }
 
   input[type="radio"] {
     align-items: center;
-    -moz-appearance: none;
-    -webkit-appearance: none;
     appearance: none;
     border: solid 2px $color-form-element-border;
     border-radius: 100%;
@@ -58,8 +55,16 @@
   input:checked::after {
     color: $color-default;
     content: "\e639";
-    font-family: muikku;
+    font-family: "muikku";
     font-size: 0.875rem;
+  }
+}
+
+.form-element--new-label {
+  width: 100%;
+
+  .form-element__input {
+    width: 100%;
   }
 }
 
@@ -88,10 +93,21 @@
 
 .form-element--new-user {
   flex-grow: 1;
+  margin-right: 10px;
+}
+
+.form-element--organization-workspace-date {
+  margin-right: 10px;
 }
 
 .form-element--new-user:not(:first-child) {
-  margin-left: 20px;
+  @include breakpoint($breakpoint-pad) {
+    margin-left: 20px;
+  }
+}
+
+.form-element--new-user-email:last-child {
+  margin-left: 0;
 }
 
 .form-element__copy-workspace-start-date {
@@ -135,7 +151,6 @@
 
 .form-element__copy-workspace-start-date,
 .form-element__copy-workspace-end-date {
-
   .react-datepicker-wrapper {
     display: block;
   }
@@ -171,8 +186,16 @@
 }
 
 .form-element--workspace-name,
-.form-element--workspace-extension {
+.form-element--workspace-name-extension,
+.form-element--dialog-workspace-name-extension {
+  display: flex;
+  flex-direction: column;
   flex-grow: 1;
+  margin-right: 10px;
+}
+
+.form-element--dialog-workspace-name-extension {
+  flex-basis: 200px;
 }
 
 .form-element--forgot-password {
@@ -185,9 +208,20 @@
   }
 }
 
+.form-element__label {
+  display: inline-block;
+  padding: 0 0 5px;
+}
+
 .form-element__input {
-  @include prefix(transition, webkit ms o moz, box-shadow 0.2s ease-in-out, border 0.2s ease-in-out);
-  -webkit-appearance: none;
+  @include prefix(
+    transition,
+    webkit ms o moz,
+    box-shadow 0.2s ease-in-out,
+    border 0.2s ease-in-out
+  );
+
+  appearance: none;
   border: solid 2px $color-form-element-border;
   border-radius: 2px;
   font-family: $text-font-family;
@@ -209,7 +243,34 @@
   &.VALID {
     border-color: $color-success;
   }
+
   // scss-lint:enable SelectorFormat
+}
+
+.form-element__input--new-label {
+  width: 100%;
+}
+
+// Teacher's Worklist Specific fields
+.form-element__input--worklist-description,
+.form-element__input--worklist-price,
+.form-element__input--worklist-factor,
+.form-element__input--worklist-date {
+  max-width: 100%;
+  width: 100%;
+}
+
+.form-element__input--worklist-date,
+.form-element__input--worklist-price,
+.form-element__input--worklist-factor {
+  text-align: center;
+}
+
+.form-element__input--worklist-description[disabled],
+.form-element__input--worklist-price[disabled],
+.form-element__input--worklist-factor[disabled] {
+  background: $color-disabled-background;
+  border-color: $color-disabled-background;
 }
 
 .form-element__input--profile-auto-reply {
@@ -230,6 +291,7 @@
 .form-element__input--communicator-label-name,
 .form-element__input--profile,
 .form-element__input--workspace-name,
+.form-element__input--user-group-name,
 .form-element__input--workspace-name-extension,
 .form-element__input--new-user {
   width: 100%;
@@ -240,7 +302,7 @@
   width: 100%;
 }
 
-.form-element__input--profile-wrong {
+.form-element__input--profile-error {
   color: $color-fatal;
 }
 
@@ -255,6 +317,15 @@
   border: 2px solid $color-main-function-input-field-border;
   margin-right: -2px; // Hides the right border and border-radius effect to provide more unified look
   width: 100%;
+}
+
+// Communicator Message Search
+.form-element--communicator-message-search {
+  display: none;
+
+  @include breakpoint($breakpoint-pad) {
+    display: flex;
+  }
 }
 
 // Overrides the border color
@@ -275,6 +346,7 @@
 
   &::before {
     @include form-element-input-search-decoration;
+
     color: $color-search-icon;
   }
 }
@@ -307,10 +379,10 @@
 }
 
 .form-element__select {
-  -moz-appearance: none;
-  -webkit-appearance: none;
   appearance: none;
-  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='15' height='10' fill='skyblue'><polygon points='0,0 3,0 8,7 12,0 15,0 8,10 0,0' /></svg>") no-repeat right 5px center;
+  background:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='15' height='10' fill='skyblue'><polygon points='0,0 3,0 8,7 12,0 15,0 8,10 0,0' /></svg>")
+    no-repeat right 5px center;
   background-color: transparent;
   border: 2px solid $color-form-element-border;
   border-radius: 2px;
@@ -318,6 +390,7 @@
   font-size: $text-mobile-font-size;
   height: 2.25rem;
   padding: 0 25px 0 10px;
+  position: relative;
 
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;
@@ -335,7 +408,22 @@
   }
 
   // scss-lint:enable SelectorFormat
+}
 
+.form-element__select--evaluation {
+  height: 2rem;
+
+  &[disabled] {
+    background:
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='15' height='10' fill='lightgrey'><polygon points='0,0 3,0 8,7 12,0 15,0 8,10 0,0' /></svg>")
+      no-repeat right 5px center;
+    border: 2px solid lighten($color-disabled, 20%);
+  }
+}
+
+.form-element__select--worklist-template {
+  max-width: 200px;
+  width: 200px;
 }
 
 .form-element__select--matriculation-exam {
@@ -430,6 +518,10 @@
   input {
     margin-right: 5px;
   }
+}
+
+.form-element__radio-option-container--profile {
+  padding: 0;
 }
 
 .form-element__check-option-container {

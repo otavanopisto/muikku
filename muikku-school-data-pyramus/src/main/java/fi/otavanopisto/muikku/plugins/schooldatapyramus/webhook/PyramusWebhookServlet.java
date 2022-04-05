@@ -33,6 +33,7 @@ import fi.otavanopisto.pyramus.webhooks.data.WebhookStudentData;
 import fi.otavanopisto.pyramus.webhooks.data.WebhookStudentGroupData;
 import fi.otavanopisto.pyramus.webhooks.data.WebhookStudentGroupStaffMemberData;
 import fi.otavanopisto.pyramus.webhooks.data.WebhookStudentGroupStudentData;
+import fi.otavanopisto.pyramus.webhooks.data.WebhookStudyProgrammeData;
 
 @WebServlet (urlPatterns = "/pyramus/webhook")
 @Transactional
@@ -184,6 +185,17 @@ public class PyramusWebhookServlet extends HttpServlet {
           }
           
           pyramusUpdater.updatePerson(personData.getPersonId());
+        break;
+        
+        case STUDYPROGRAMME_ARCHIVE:
+        case STUDYPROGRAMME_CREATE:
+        case STUDYPROGRAMME_UPDATE:
+          WebhookStudyProgrammeData studyProgrammeData = unmarshalData(resp, payload, WebhookStudyProgrammeData.class);
+          if (studyProgrammeData == null) {
+            return;  
+          }
+          
+          pyramusUpdater.updateStudyProgramme(studyProgrammeData.getStudyProgrammeId());
         break;
         
         case STUDENTGROUP_ARCHIVE:

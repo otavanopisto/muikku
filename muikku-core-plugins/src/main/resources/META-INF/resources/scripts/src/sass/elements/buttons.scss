@@ -3,14 +3,13 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
-// TODO: communicator color variables removing from main function styles
-
 .button {
   @include prefix(user-select, moz o ms webkit, none);
   @include prefix(transition, moz o ms webkit, background-color 0.3s);
+
   align-items: center;
   background-color: $color-button-default-background;
-  border-radius: 2px;
+  border-radius: 20px;
   color: $color-button-default-text;
   cursor: pointer;
   display: flex;
@@ -18,7 +17,7 @@
   font-size: $button-mobile-font-size;
   justify-content: center;
   overflow: hidden;
-  padding: 5px 10px;
+  padding: 5px 15px;
   text-decoration: none;
   text-overflow: ellipsis;
   text-transform: uppercase;
@@ -32,8 +31,17 @@
   &.disabled,
   &.disabled:hover {
     background-color: $color-button-disabled-background;
-    cursor: default;
+    cursor: not-allowed;
   }
+
+  > [class^="icon-"],
+  > [class*=" icon-"] {
+    margin-right: 5px;
+  }
+}
+
+.button__icon {
+  font-size: 1rem;
 }
 
 .button-image {
@@ -52,6 +60,34 @@
   }
 }
 
+.button--button-has-icon {
+  padding: 5px 15px 5px 10px;
+}
+
+.button--create-student-order,
+.button--delete-student-order,
+.button--complete-student-order,
+.button--pay-student-order,
+.button--back-to-muikku,
+.button--send-message {
+  display: inline-flex;
+  margin: 0 10px 0 0;
+
+  &:last-child {
+    margin: 0;
+  }
+}
+
+.button--delete-student-order,
+.button--complete-student-order {
+  font-size: 0.7rem;
+  padding: 4px 12px 4px 8px;
+
+  .button__icon {
+    font-size: 0.7rem;
+  }
+}
+
 .button--coursepicker-course-action {
   margin: 0 10px 0 0;
 }
@@ -61,11 +97,20 @@
   color: $color-button-execute-text;
   order: 3;
 
+  &:hover,
+  &.hover {
+    background-color: darken($color-button-execute-background, 10%);
+  }
+
+  &:active,
+  &.active {
+    background-color: darken($color-button-execute-background, 20%);
+  }
+
   @include breakpoint($breakpoint-desktop) {
     order: 1;
   }
 }
-
 
 .button--branded {
   font-family: $button-branded-font-family;
@@ -377,7 +422,11 @@
 
   &:hover,
   &.hover {
-    background-color: darken($color-frontpage-button-newsletter-background, 10%);
+    background-color:
+      darken(
+        $color-frontpage-button-newsletter-background,
+        10%
+      );
   }
 
   &:active,
@@ -391,7 +440,6 @@
 }
 
 .button--frontpage-bubble {
-  border-radius: 5px;
   height: auto;
   letter-spacing: 1px;
   overflow-wrap: break-word;
@@ -512,7 +560,6 @@
   &.disabled,
   &.disabled:hover {
     background-color: $color-button-disabled-background;
-    cursor: default;
   }
 
   @include breakpoint($breakpoint-desktop) {
@@ -538,12 +585,13 @@
 
 .button--contact-teacher {
   font-size: 0.75rem;
-  padding: 2px 6px;
+  padding: 4px 12px;
 }
 
 .button-icon {
   @include prefix(user-select, moz o ms webkit, none);
   @include prefix(transition, moz o ms webkit, background-color 0.3s);
+
   align-items: center;
   background-color: transparent;
   color: $color-icon-button-text;
@@ -574,12 +622,12 @@
   &:disabled {
     background-color: $color-button-pill-background-disabled;
     color: $color-button-pill-text-disabled;
-    cursor: default;
+    cursor: not-allowed;
   }
 
   input {
     height: 100%;
-    opacity: 0;
+    opacity: 0%;
     position: absolute;
     width: 100%;
   }
@@ -606,6 +654,7 @@
 .button-pill {
   @include prefix(user-select, moz o ms webkit, none);
   @include prefix(transition, moz o ms webkit, background-color 0.3s);
+
   align-items: center;
   background-color: $color-button-pill-background;
   border-radius: 100%;
@@ -626,7 +675,6 @@
   &:hover,
   &.hover {
     background-color: darken($color-button-pill-background, 10%);
-
   }
 
   &:active,
@@ -635,16 +683,16 @@
   }
 
   &.disabled,
-  &:disabled {
+  &.disabled:hover {
     background-color: $color-button-pill-background-disabled;
     color: $color-button-pill-text-disabled;
-    cursor: default;
+    cursor: not-allowed;
   }
 
   input {
     cursor: pointer;
     height: 100%;
-    opacity: 0;
+    opacity: 0%;
     position: absolute;
     width: 100%;
   }
@@ -746,7 +794,6 @@
 }
 
 .button-pill--search {
-
   .button-pill__icon {
     color: $color-environment-button-pill-icon-search;
   }
@@ -777,8 +824,11 @@
 }
 
 .button-pill--delete,
+.button-pill--toggle,
 .button-pill--restore,
-.button-pill--edit {
+.button-pill--edit,
+.button-pill--new-message,
+.button-pill--filter {
   background-color: $color-main-function-button-pill-delete-background;
   color: $color-main-function-button-pill-delete-text;
   flex-basis: auto;
@@ -805,6 +855,32 @@
 
   @include breakpoint($breakpoint-pad) {
     margin: 0 10px 0 0;
+  }
+}
+
+.button-pill--filter {
+  background-color: $color-main-function-button-pill-delete-background;
+  color: $color-main-function-button-pill-delete-text;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  margin: 0 0 0 10px;
+  vertical-align: top;
+
+  &:hover,
+  &.hover {
+    background-color: darken($color-main-function-button-pill-delete-background, 10%);
+  }
+
+  &:active,
+  &.active {
+    background-color: darken($color-main-function-button-pill-delete-background, 20%);
+  }
+
+  &.disabled,
+  &:disabled {
+    background-color: $color-button-pill-background-disabled;
+    color: $color-button-pill-text-disabled;
   }
 }
 
@@ -1066,7 +1142,6 @@
 }
 
 // Environment dialog
-
 .button--workspace-management {
   background-color: $color-button-execute-background;
   color: $color-button-execute-text;
@@ -1075,6 +1150,12 @@
   @include breakpoint($breakpoint-desktop) {
     order: 1;
   }
+}
+
+.button--load-further {
+  background-color: $color-pager-selected-page-index-background;
+  color: $color-pager-selected-page-index-font;
+  width: 200px;
 }
 
 .button--form-element-next {
@@ -1088,7 +1169,6 @@
   color: $color-button-primary-text;
   order: 4;
 }
-
 
 .button--dialog-execute,
 .button--form-element-execute {
@@ -1132,14 +1212,20 @@
 }
 
 .button-social {
-  @include prefix(transition, moz ms o webkit, color 0.3s, background-color 0.3s);
+  @include prefix(
+    transition,
+    moz ms o webkit,
+    color 0.3s,
+    background-color 0.3s
+  );
   @include prefix(user-select, moz ms o webkit, none);
+
   background-color: $color-button-social-default-background;
   border-radius: $button-social-size;
   color: $color-button-social-default-text;
   cursor: pointer;
   display: inline-block;
-  font-family: muikku;
+  font-family: "muikku";
   font-variant: normal;
   height: $button-social-size;
   line-height: $button-social-size;
@@ -1159,7 +1245,6 @@
   }
 
   @include breakpoint($breakpoint-desktop) {
-
     &:first-of-type {
       margin: 0 0.3rem 0 0;
     }
@@ -1173,8 +1258,8 @@
 .button--change-image-edit,
 .button--change-image-delete {
   @include workspace-image-button;
+
   flex-grow: 1;
-  padding: 10px 20px;
   transition: background-color 0.3s ease-in-out;
 
   &:hover,
@@ -1183,6 +1268,7 @@
   }
 
   .icon {
+    background: transparent;
     padding-right: 5px;
   }
 }
@@ -1227,9 +1313,106 @@
   background: $color-assignment;
 }
 
+// Evaluation related
+.button--evaluation-add-assessment {
+  background-color: $color-info;
+  color: $color-default;
+  margin: 5px;
+}
+
+.button--evaluation-add-supplementation {
+  background-color: $color-grade-incomplete;
+  color: $color-default;
+  margin: 5px;
+}
+
+.button-pill--sorter,
+.button-pill--archive-request,
+.button-pill--archive-student,
+.button-pill--evaluate,
+.button-icon--important,
+.button-icon--unimportant {
+  border-radius: 2px;
+  box-sizing: unset;
+  cursor: pointer;
+  display: inline-block;
+  font-family: "muikku";
+  font-size: 1.125rem;
+  height: 1.125rem;
+  line-height: 1.125rem;
+  margin: 0 10px 0 0;
+  padding: 6px;
+  width: 1.125rem;
+
+  &:last-child {
+    margin: 0;
+  }
+}
+
+.button-pill--sorter {
+  background: lighten($color-default-helper, 20%);
+  color: $color-default-contrast;
+
+  &:hover {
+    background: $color-info;
+    color: $color-default;
+  }
+}
+
+.button-pill--sorter-selected {
+  background: $color-info;
+  color: $color-default;
+}
+
+.button-pill--archive-request {
+  background: $color-fatal;
+  color: $color-default;
+
+  &:hover {
+    background: darken($color-fatal, 10%);
+  }
+}
+
+.button-pill--archive-student {
+  background: $color-default-contrast;
+  color: $color-default;
+
+  &:hover {
+    background: darken($color-default-contrast, 10%);
+  }
+}
+
+.button-pill--evaluate {
+  background: $color-info;
+  color: $color-default;
+
+  &:hover {
+    background: darken($color-info, 10%);
+  }
+}
+
+.button-icon--important,
+.button-icon--unimportant {
+  background: transparent;
+  border-radius: 100%;
+  color: $color-info;
+
+  &:hover {
+    background: $color-default-contrast;
+    color: $color-default;
+  }
+}
+
+.button-icon--important-selected,
+.button-icon--unimportant-selected {
+  background: $color-default-contrast;
+  color: $color-default;
+}
+
 // Material master management related
 .button-pill--material-management-master {
   @include prefix(transition, moz o ms webkit, all 0.15s);
+
   background: transparent;
   border-radius: 15px;
   color: $color-material-page-admin-panel-main-color;
@@ -1250,6 +1433,7 @@
 .button-pill--material-management-page,
 .button-pill--material-management-chapter {
   @include prefix(transition, moz o ms webkit, all 0.15s);
+
   background: $color-default;
   border: 0;
   border-radius: 10px;
@@ -1292,8 +1476,13 @@
   }
 }
 
+.button-pill--material-page-close-mobile-editor {
+  position: static;
+}
+
 .button-pill--material-editor {
   @include prefix(transition, moz o ms webkit, all 0.15s);
+
   background: $color-material-page-admin-panel-main-color;
   border: 1px solid $color-material-page-admin-panel-main-color;
   border-radius: 10px;
@@ -1320,7 +1509,8 @@
   }
 }
 
-.button-pill--material-editor-change-page-type { // This is default state for exercise/assignment buttons
+.button-pill--material-editor-change-page-type {
+  // This is default state for exercise/assignment buttons
   background: $color-material-page-admin-panel-disabled-color;
   border-color: $color-material-page-admin-panel-disabled-color;
 
@@ -1437,8 +1627,6 @@
 
 .button-pill--editing-master-switch {
   align-items: center;
-  -moz-appearance: none;
-  -webkit-appearance: none;
   appearance: none;
   background: $color-default;
   border: 2px solid $color-default;
@@ -1476,7 +1664,6 @@
 }
 
 .button-pill--editing-master-switch-active {
-
   &::after {
     background: $color-fatal;
     border-radius: 100%;
@@ -1499,6 +1686,109 @@
   }
 }
 
+// Teacher's Worklist
+.button-pill--expand-worklist {
+  background: transparent;
+  border-radius: 3px;
+  color: $color-default-helper;
+  font-size: 0.625rem;
+  height: 1.5rem;
+  width: 1.5rem;
+
+  &:hover,
+  &.hover,
+  &:active,
+  &.active {
+    background: transparent;
+  }
+}
+
+.button-pill--add-worklist-entry {
+  border-radius: 3px;
+  color: $color-default;
+  height: 2.25rem;
+  width: 2.25rem;
+
+  @include breakpoint($breakpoint-pad) {
+    height: 2.5rem;
+    width: 2.5rem;
+  }
+}
+
+.button-pill--save-worklist-entry {
+  background: $color-execute;
+  border-radius: 3px;
+  color: $color-default;
+  height: 2.25rem;
+  margin: 0 0 0 5px;
+  width: 2.25rem;
+
+  &:hover,
+  &.hover,
+  &:active,
+  &.active {
+    background: darken($color-execute, 20%);
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    height: 2.5rem;
+    width: 2.5rem;
+  }
+}
+
+.button-pill--cancel-worklist-entry {
+  background: $color-cancel;
+  border-radius: 3px;
+  color: $color-default;
+  height: 2.25rem;
+  width: 2.25rem;
+
+  &:hover,
+  &.hover,
+  &:active,
+  &.active {
+    background: darken($color-cancel, 20%);
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    height: 2.5rem;
+    width: 2.5rem;
+  }
+}
+
+.button-pill--edit-worklist-entry {
+  background: transparent;
+  border-radius: 3px;
+  color: $color-info;
+  font-size: 0.875rem;
+  height: 1.5rem;
+  width: 2.5rem;
+
+  &:hover,
+  &.hover,
+  &:active,
+  &.active {
+    background: transparent;
+  }
+}
+
+.button-pill--delete-worklist-entry {
+  background: transparent;
+  border-radius: 3px;
+  color: $color-fatal;
+  font-size: 0.875rem;
+  height: 1.5rem;
+  margin: 0 0 0 5px;
+  width: 2.5rem;
+
+  &:hover,
+  &.hover,
+  &:active,
+  &.active {
+    background: transparent;
+  }
+}
+
 .button--wizard {
   background-color: $color-button-wizard-background;
   border: 0;
@@ -1507,5 +1797,82 @@
 
   &:not(:first-child) {
     margin-left: 10px;
+  }
+}
+
+.button--add-matriculation-row {
+  background: $color-default;
+  border: 1px solid $color-default;
+  color: $color-info;
+  padding: 4px 6px;
+}
+
+.button--remove-matriculation-row {
+  align-items: center;
+  background: transparent;
+  color: $color-fatal;
+  display: flex;
+  font-size: 1.25rem;
+  height: 2.25rem;
+  justify-content: center;
+  padding: 5px;
+  width: 2.25rem;
+}
+
+.button--evaluate-assignment {
+  background-color: $color-assignment;
+  color: $color-default;
+  margin: 0 5px;
+}
+
+.button--evaluate-supplementation {
+  background: $color-incomplete;
+  color: $color-default;
+  margin: 0 5px;
+}
+
+.button--evaluate-workspace {
+  background: $color-success;
+  color: $color-default;
+  margin: 0 5px;
+}
+
+.button--evaluate-remove-draft {
+  background: $color-clear;
+  color: $color-default;
+  margin: 0 5px;
+}
+
+.button--evaluate-cancel {
+  background: $color-button-cancel-background;
+  color: $color-default;
+  margin: 0 5px;
+}
+
+.button-icon--evaluation {
+  &.button-icon--excercise-drawer-close {
+    color: $color-default-contrast;
+    font-size: 2rem;
+  }
+
+  &.button-icon--assignment-drawer-close {
+    color: $color-assignment;
+    font-size: 2rem;
+  }
+
+  &.button-icon--workspace-drawer-close {
+    color: $color-info;
+    font-size: 2rem;
+  }
+
+  &.button-icon--supplementation-drawer-close {
+    color: $color-incomplete;
+    font-size: 2rem;
+  }
+
+  &.disabled,
+  &:disabled {
+    background-color: transparent;
+    color: $color-disabled;
   }
 }

@@ -16,6 +16,7 @@ import fi.otavanopisto.muikku.dao.users.UserSchoolDataIdentifierDAO;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
+import fi.otavanopisto.muikku.rest.OrganizationContactPerson;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
 import fi.otavanopisto.muikku.schooldata.entity.Role;
@@ -33,7 +34,9 @@ import fi.otavanopisto.muikku.schooldata.payload.StaffMemberPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupMembersPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentPayload;
+import fi.otavanopisto.muikku.schooldata.payload.WorklistApproverRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemRestModel;
+import fi.otavanopisto.muikku.schooldata.payload.WorklistItemStateChangeRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemTemplateRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistSummaryItemRestModel;
 
@@ -85,8 +88,19 @@ public class UserSchoolDataController {
     return getUserBridge(dataSource).getWorklistSummary(identifier);
   }
   
+  public void updateWorklistItemsState(String dataSource, WorklistItemStateChangeRestModel stateChange) {
+    getUserBridge(dataSource).updateWorklistItemsState(stateChange);
+  }
+  
+  public BridgeResponse<List<WorklistApproverRestModel>> listWorklistApprovers(String dataSource) {
+    return getUserBridge(dataSource).listWorklistApprovers();
+  }
   
   /* User */
+  
+  public BridgeResponse<List<OrganizationContactPerson>> listOrganizationContactPersons(String dataSource, String organizationIdentifier) {
+    return getUserBridge(dataSource).listOrganizationContactPersonsByOrganization(organizationIdentifier);
+  }
 
   public BridgeResponse<StaffMemberPayload> createStaffMember(String dataSource, StaffMemberPayload staffMember) {
     return getUserBridge(dataSource).createStaffMember(staffMember);
@@ -106,6 +120,14 @@ public class UserSchoolDataController {
   
   public User findUser(SchoolDataSource schoolDataSource, String userIdentifier) {
     return getUserBridge(schoolDataSource).findUser(userIdentifier);
+  }
+  
+  public String getUserDefaultEmailAddress(String schoolDataSource, String userIdentifier) {
+    return getUserBridge(schoolDataSource).getUserDefaultEmailAddress(userIdentifier);
+  }
+  
+  public User increaseStudyTime(SchoolDataIdentifier schoolDataIdentifier, Integer months) {
+    return getUserBridge(schoolDataIdentifier.getDataSource()).increaseStudyTime(schoolDataIdentifier.getIdentifier(), months);
   }
 
   public User findUser(SchoolDataIdentifier userIdentifier) {
@@ -201,6 +223,14 @@ public class UserSchoolDataController {
   public UserEntity findUserEntityByDataSourceAndIdentifier(SchoolDataSource dataSource, String identifier) {
     UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierDAO.findByDataSourceAndIdentifierAndArchived(dataSource, identifier, Boolean.FALSE);
     return userSchoolDataIdentifier == null ? null : userSchoolDataIdentifier.getUserEntity();
+  }
+
+  public String findUserSsn(SchoolDataIdentifier userIdentifier) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(userIdentifier.getDataSource());
+    if (schoolDataSource == null) {
+      throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", userIdentifier.getDataSource()));
+    }
+    return getUserBridge(schoolDataSource).findUserSsn(userIdentifier);
   }
 
   /* User Emails */

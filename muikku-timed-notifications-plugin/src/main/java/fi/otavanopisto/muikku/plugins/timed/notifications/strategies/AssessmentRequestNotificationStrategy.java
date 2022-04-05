@@ -1,10 +1,10 @@
 package fi.otavanopisto.muikku.plugins.timed.notifications.strategies;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -19,10 +19,9 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import java.time.OffsetDateTime;
+
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.i18n.LocaleController;
-import fi.otavanopisto.muikku.jade.JadeLocaleHelper;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.activitylog.ActivityLogController;
 import fi.otavanopisto.muikku.plugins.activitylog.model.ActivityLogType;
@@ -30,12 +29,11 @@ import fi.otavanopisto.muikku.plugins.timed.notifications.AssesmentRequestNotifi
 import fi.otavanopisto.muikku.plugins.timed.notifications.NotificationController;
 import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
-import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 import fi.otavanopisto.muikku.search.SearchResult;
-import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
+import fi.otavanopisto.muikku.users.UserEntityName;
 
 @Startup
 @Singleton
@@ -54,13 +52,7 @@ public class AssessmentRequestNotificationStrategy extends AbstractTimedNotifica
   private UserEntityController userEntityController;
   
   @Inject
-  private UserController userController;
-  
-  @Inject
   private LocaleController localeController;
-  
-  @Inject
-  private JadeLocaleHelper jadeLocaleHelper;
   
   @Inject
   private NotificationController notificationController;
@@ -101,7 +93,7 @@ public class AssessmentRequestNotificationStrategy extends AbstractTimedNotifica
     // Get a batch of students that have been studying for more than 60 days
     
     Date since = Date.from(OffsetDateTime.now().minusDays(NOTIFICATION_THRESHOLD_DAYS).toInstant());
-    SearchResult searchResult = assesmentRequestNotificationController.searchActiveStudentIds(getActiveOrganizations(), groups, FIRST_RESULT + offset, MAX_RESULTS, studentIdentifiersAlreadyNotified, since);
+    SearchResult searchResult = assesmentRequestNotificationController.searchActiveStudents(getActiveOrganizations(), groups, FIRST_RESULT + offset, MAX_RESULTS, studentIdentifiersAlreadyNotified, since);
     logger.log(Level.INFO, String.format("%s processing %d/%d", getClass().getSimpleName(), offset, searchResult.getTotalHitCount()));
 
     if ((offset + MAX_RESULTS) > searchResult.getTotalHitCount()) {
@@ -119,23 +111,29 @@ public class AssessmentRequestNotificationStrategy extends AbstractTimedNotifica
       UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);      
       if (studentEntity != null) {
         Locale studentLocale = localeController.resolveLocale(LocaleUtils.toLocale(studentEntity.getLocale()));
-        Map<String, Object> templateModel = new HashMap<>();
-        templateModel.put("locale", studentLocale);
-        templateModel.put("localeHelper", jadeLocaleHelper);
-        String notificationContent = renderNotificationTemplate("assessment-request-notification", templateModel);
+        UserEntityName studentName = userEntityController.getName(studentEntity);
+        if (studentName == null) {
+          logger.log(Level.SEVERE, String.format("Cannot send notification to student %s because name couldn't be resolved", studentIdentifier.toId()));
+          continue;
+        }
+        String guidanceCounselorMail = notificationController.getStudyCounselorEmail(studentEntity.defaultSchoolDataIdentifier());
+        String notificationContent = localeController.getText(studentLocale, "plugin.timednotifications.notification.assesmentrequest.content",
+            new Object[] {studentName.getDisplayNameWithLine()});
+        if (guidanceCounselorMail != null) {
+          notificationContent = localeController.getText(studentLocale, "plugin.timednotifications.notification.assesmentrequest.content.guidanceCounselor",
+              new Object[] {studentName.getDisplayNameWithLine(), guidanceCounselorMail});
+        }
         notificationController.sendNotification(
-          localeController.getText(studentLocale, "plugin.timednotifications.notification.category"),
           localeController.getText(studentLocale, "plugin.timednotifications.notification.assesmentrequest.subject"),
           notificationContent,
           studentEntity,
-          studentIdentifier,
-          "assesmentrequest"
+          guidanceCounselorMail
         );
         assesmentRequestNotificationController.createAssesmentRequestNotification(studentIdentifier);
         activityLogController.createActivityLog(studentEntity.getId(), ActivityLogType.NOTIFICATION_ASSESMENTREQUEST);
       }
       else {
-        logger.log(Level.SEVERE, String.format("Cannot send notification to student with identifier %s because UserEntity was not found", studentIdentifier.toId()));
+        logger.log(Level.SEVERE, String.format("Cannot send notification to student %s because UserEntity was not found", studentIdentifier.toId()));
       }
     }
   }
@@ -176,44 +174,41 @@ public class AssessmentRequestNotificationStrategy extends AbstractTimedNotifica
         continue;
       }
       
-      // Find the student by SchoolDataIdentifier
+      Date studyStartDate = getDateResult(result.get("studyStartDate"));
+      Date studyEndDate = getDateResult(result.get("studyEndDate"));
       
-      User student = userController.findUserByIdentifier(studentIdentifier);
-      if (student != null) {
-        
-        // Students without a start date (or with an end date) are never notified
-        
-        if (student.getStudyStartDate() == null || student.getStudyEndDate() != null) {
-          continue;
-        }
-        
-        // Students that have started their studies in the last 60 days should not be notified
-        // (given searchResult should not even contain these but let's check it once more, just in case) 
-        
-        OffsetDateTime thresholdDateTime = OffsetDateTime.now().minusDays(NOTIFICATION_THRESHOLD_DAYS);
-        if (student.getStudyStartDate().isAfter(thresholdDateTime)) {
-          logger.severe(String.format("Skipping student id %s that just started studies", studentId));
-          continue;
-        }
-      
-        // Check if student has made any assessment requests. If they have, they don't need to be notified
-  
-        WorkspaceAssessmentRequest latestRequest = gradingController.findLatestAssessmentRequestByIdentifier(studentIdentifier);
-        if (latestRequest != null) {
-          continue;
-        }
-        
-        // Check if student has any workspace assessments. If they have, they don't need to be notified
-        
-        WorkspaceAssessment latestAssessment = gradingController.findLatestWorkspaceAssessmentByIdentifier(studentIdentifier);
-        if (latestAssessment != null) {
-          continue;
-        }
-        
-        // By this point, we can be certain that the student has to be notified
-        
-        studentIdentifiers.add(studentIdentifier);
+      // Students without a start date (or with an end date) are never notified
+
+      if (studyStartDate == null || studyEndDate != null) {
+        continue;
       }
+
+      // Students that have started their studies in the last 60 days should not be notified
+      // (given searchResult should not even contain these but let's check it once more, just in case) 
+
+      OffsetDateTime thresholdDateTime = OffsetDateTime.now().minusDays(NOTIFICATION_THRESHOLD_DAYS);
+      if (fromDateToOffsetDateTime(studyStartDate).isAfter(thresholdDateTime)) {
+        logger.severe(String.format("Skipping student id %s that just started studies", studentId));
+        continue;
+      }
+
+      // Check if student has made any assessment requests. If they have, they don't need to be notified
+
+      WorkspaceAssessmentRequest latestRequest = gradingController.findLatestAssessmentRequestByIdentifier(studentIdentifier);
+      if (latestRequest != null) {
+        continue;
+      }
+
+      // Check if student has any workspace assessments. If they have, they don't need to be notified
+
+      WorkspaceAssessment latestAssessment = gradingController.findLatestWorkspaceAssessmentByIdentifier(studentIdentifier);
+      if (latestAssessment != null) {
+        continue;
+      }
+
+      // By this point, we can be certain that the student has to be notified
+
+      studentIdentifiers.add(studentIdentifier);
     }
     return studentIdentifiers;
   }

@@ -46,6 +46,14 @@ public class UserController {
   public User findUserByDataSourceAndIdentifier(SchoolDataSource schoolDataSource, String userIdentifier) {
     return userSchoolDataController.findUser(schoolDataSource, userIdentifier);
   }
+  
+  public String getUserDefaultEmailAddress(SchoolDataIdentifier schoolDataIdentifier) {
+    return userSchoolDataController.getUserDefaultEmailAddress(schoolDataIdentifier.getDataSource(), schoolDataIdentifier.getIdentifier());
+  }
+
+  public String getUserDefaultEmailAddress(String schoolDataSource, String userIdentifier) {
+    return userSchoolDataController.getUserDefaultEmailAddress(schoolDataSource, userIdentifier);
+  }
 
   public User findUserByIdentifier(SchoolDataIdentifier userIdentifier) {
     if (userIdentifier == null) {
@@ -96,6 +104,14 @@ public class UserController {
   
   public List<UserPhoneNumber> listUserPhoneNumbers(SchoolDataIdentifier userIdentifier) {
     return userSchoolDataController.listUserPhoneNumbers(userIdentifier);
+  }
+  
+  public String findUserSsn(User user) {
+    return findUserSsn(new SchoolDataIdentifier(user.getIdentifier(), user.getSchoolDataSource()));
+  }
+  
+  public String findUserSsn(SchoolDataIdentifier userIdentifier) {
+    return userSchoolDataController.findUserSsn(userIdentifier);
   }
   
   /**

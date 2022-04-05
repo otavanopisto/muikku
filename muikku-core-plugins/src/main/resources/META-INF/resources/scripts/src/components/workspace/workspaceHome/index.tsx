@@ -1,54 +1,81 @@
-import WorkspaceNavbar from '~/components/base/workspace/navbar';
-import ScreenContainer from '~/components/general/screen-container';
-import * as React from 'react';
-import WorkspaceHomeHeader from './header';
-import WorkspaceSignUp from './signup';
-import WorkspaceDescription from './description';
-import WorkspaceTeachers from './teachers';
-import WorkspaceAnnouncements from './announcements';
-import WorkspaceLicense from './license';
-import WorkspaceProducers from './producers';
+/* eslint-disable react/no-string-refs */
 
-import MaterialEditor from '~/components/base/material-editor';
+/**
+ * Depcrecated refs should be refactored
+ */
 
-import '~/sass/elements/panel.scss';
-import '~/sass/elements/footer.scss';
+import WorkspaceNavbar from "~/components/base/workspace/navbar";
+import ScreenContainer from "~/components/general/screen-container";
+import * as React from "react";
+import WorkspaceHomeHeader from "./header";
+import WorkspaceSignUp from "./signup";
+import WorkspaceDescription from "./description";
+import WorkspaceTeachers from "./teachers";
+import WorkspaceAnnouncements from "./announcements";
+import WorkspaceLicense from "./license";
+import WorkspaceProducers from "./producers";
+import MaterialEditor from "~/components/base/material-editor";
+import "~/sass/elements/panel.scss";
+import "~/sass/elements/footer.scss";
 
+/**
+ * WorkspaceHomeBodyProps
+ */
 interface WorkspaceHomeBodyProps {
-  workspaceUrl: string
+  workspaceUrl: string;
 }
 
-interface WorkspaceHomeBodyState {
-}
-
-export default class WorkspaceHomeBody extends React.Component<WorkspaceHomeBodyProps, WorkspaceHomeBodyState> {
+/**
+ * WorkspaceHomeBody
+ */
+export default class WorkspaceHomeBody extends React.Component<
+  WorkspaceHomeBodyProps,
+  Record<string, unknown>
+> {
+  /**
+   * constructor
+   * @param props props
+   */
   constructor(props: WorkspaceHomeBodyProps) {
     super(props);
 
     this.onOpenNavigation = this.onOpenNavigation.bind(this);
   }
+
+  /**
+   * onOpenNavigation
+   */
   onOpenNavigation() {
     (this.refs.content as any).getWrappedInstance().refresh();
   }
+
+  /**
+   * render
+   */
   render() {
-    return (<div>
-      <WorkspaceNavbar activeTrail="index" workspaceUrl={this.props.workspaceUrl} />
-      <ScreenContainer viewModifiers="workspace">
-        <MaterialEditor />
-        <WorkspaceHomeHeader />
-        <div className="panel-group panel-group--workspace-main">
-          <WorkspaceDescription />
-          <div className="panel-group panel-group--workspace-aside">
-            <WorkspaceSignUp />
-            <WorkspaceTeachers />
-            <WorkspaceAnnouncements />
+    return (
+      <div>
+        <WorkspaceNavbar
+          activeTrail="index"
+          workspaceUrl={this.props.workspaceUrl}
+        />
+        <ScreenContainer viewModifiers="workspace">
+          <MaterialEditor locationPage="Home" />
+          <WorkspaceHomeHeader />
+          <div className="panel-group panel-group--workspace-main">
+            <WorkspaceDescription />
+            <div className="panel-group panel-group--workspace-aside">
+              <WorkspaceSignUp />
+              <WorkspaceTeachers />
+              <WorkspaceAnnouncements />
+            </div>
           </div>
-        </div>
-        <footer className="footer footer--workspace">
-          <WorkspaceLicense />
-          <WorkspaceProducers />
-        </footer>
-      </ScreenContainer>
-    </div>);
+          <footer className="footer footer--workspace">
+            <WorkspaceLicense />
+            <WorkspaceProducers />
+          </footer>
+        </ScreenContainer>
+      </div>
+    );
   }
 }

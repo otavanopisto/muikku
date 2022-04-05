@@ -1,24 +1,18 @@
 package fi.otavanopisto.muikku.ui.base.discussions;
 
 import static fi.otavanopisto.muikku.mock.PyramusMock.mocker;
-
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 
 import fi.otavanopisto.muikku.TestEnvironments;
-import fi.otavanopisto.muikku.TestUtilities;
 import fi.otavanopisto.muikku.atests.Discussion;
 import fi.otavanopisto.muikku.atests.DiscussionGroup;
 import fi.otavanopisto.muikku.atests.DiscussionThread;
 import fi.otavanopisto.muikku.mock.PyramusMock.Builder;
 import fi.otavanopisto.muikku.mock.model.MockStaffMember;
-import fi.otavanopisto.muikku.mock.model.MockStudent;
 import fi.otavanopisto.muikku.ui.AbstractUITest;
 import fi.otavanopisto.pyramus.rest.model.Sex;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
@@ -87,9 +81,10 @@ public class DiscussionTestsBase extends AbstractUITest {
       waitAndSendKeys("input.env-dialog__input--new-discussion-area-name", "Test area");
       waitAndClick(".env-dialog__textarea");
       waitAndSendKeys(".env-dialog__textarea", "Description of test area");
+      sleep(1000);
       waitAndClick(".env-dialog__actions .button--dialog-execute");
-      waitForPresent(".application-panel__toolbar select.form-element__select--toolbar-selector option:nth-child(2)", 30);
-      assertTextIgnoreCase(".application-panel__toolbar select.form-element__select--toolbar-selector option:nth-child(2)", "Test area");
+      waitUntilCountOfElements(".application-panel__toolbar select.form-element__select--toolbar-selector option", 2);
+      assertTrue(isInSelection(".application-panel__toolbar select.form-element__select--toolbar-selector", "Test Area"));
     } finally {
       cleanUpDiscussions();
       mockBuilder.wiremockReset();
@@ -124,11 +119,10 @@ public class DiscussionTestsBase extends AbstractUITest {
         waitAndClick(".link--application-list-item-footer:nth-child(1)");
         addTextToCKEditor("Test reply for test.");
         waitAndClick(".env-dialog__actions .button--dialog-execute");
-        waitForVisible(".application-list__item--discussion-reply .application-list__item-body article p");
-        assertText(".application-list__item--discussion-reply .application-list__item-body article p", "Test reply for test.");
-      } catch (Exception e) {
-        deleteDiscussionThread(discussionGroup.getId(), discussion.getId(), thread.getId());
+        waitForVisible(".application-list__item--discussion-reply .application-list__item-body div p");
+        assertText(".application-list__item--discussion-reply .application-list__item-body div p", "Test reply for test.");
     } finally {
+      deleteDiscussionThread(discussionGroup.getId(), discussion.getId(), thread.getId());
       deleteDiscussion(discussionGroup.getId(), discussion.getId());
     }
   } finally {
@@ -168,9 +162,8 @@ public class DiscussionTestsBase extends AbstractUITest {
         waitForNotVisible(".dialog--delete-area");
         waitForVisible(".application-panel__content .application-panel__main-container.loader-empty");
         assertTextIgnoreCase(".application-panel__content .application-panel__main-container.loader-empty .empty span", "Ei viestejä");
-      } catch (Exception e) {
-        deleteDiscussionThread(discussionGroup.getId(), discussion.getId(), thread.getId());
     } finally {
+      deleteDiscussionThread(discussionGroup.getId(), discussion.getId(), thread.getId());
       deleteDiscussion(discussionGroup.getId(), discussion.getId());
     }
   } finally {
@@ -298,8 +291,7 @@ public class DiscussionTestsBase extends AbstractUITest {
           sendKeys("input.env-dialog__input--new-discussion-thread-title", "ing");
           addToEndCKEditor("ing");
           waitAndClick(".button--dialog-execute");
-          waitForVisible(".application-list__title");
-          reloadCurrentPage();
+          waitAndClick(".application-list__item-header .discussion-category");
           waitForVisible(".application-list__title");
           assertText(".application-list__title", "Testinging");
           waitForPresent(".application-list__item-content-main .application-list__item-body .rich-text>p");

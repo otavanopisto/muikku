@@ -15,7 +15,7 @@
   right: 0;
   top: 0;
   width: 100%;
-  z-index: 999;
+  z-index: 99; // One step smaller than zoomed image overlay (.zoom__zoomed-item-overlay) which is 100
 }
 
 // NAVBAR WRAPPER FOR ALL ELEMENTS
@@ -50,7 +50,6 @@
 
 // NAVBAR LOGO LINK
 .navbar__logo-link {
-
   @include breakpoint($breakpoint-pad) {
     align-items: center;
     display: flex;
@@ -110,7 +109,6 @@
 // NAVBAR ITEMS
 .navbar__item {
   display: none;
-  float: left;
   height: $navbar-mobile-height;
   line-height: $navbar-mobile-height;
   margin: 0;
@@ -155,14 +153,14 @@
   .navbar__item--journal,
   .navbar__item--users,
   .navbar__item--assessment-request,
-  .navbar__item--workspace-management {
+  .navbar__item--workspace-management,
+  .navbar__item--organization {
     display: inline-block;
     width: $navbar-desktop-item-width;
   }
 }
 
 @include breakpoint($breakpoint-desktop) {
-
   .navbar--frontpage .navbar__item--menu-button {
     display: none;
   }

@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.evaluation;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -7,12 +8,16 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 
+import fi.otavanopisto.muikku.files.TempFileUtils;
 import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.model.base.Tag;
 import fi.otavanopisto.muikku.model.users.UserEntity;
@@ -22,25 +27,33 @@ import fi.otavanopisto.muikku.plugins.communicator.events.CommunicatorMessageSen
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageCategory;
 import fi.otavanopisto.muikku.plugins.evaluation.dao.SupplementationRequestDAO;
+import fi.otavanopisto.muikku.plugins.evaluation.dao.WorkspaceMaterialEvaluationAudioClipDAO;
 import fi.otavanopisto.muikku.plugins.evaluation.dao.WorkspaceMaterialEvaluationDAO;
 import fi.otavanopisto.muikku.plugins.evaluation.model.SupplementationRequest;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
+import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluationAudioClip;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssignmentEvaluation;
+import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssignmentEvaluationAudioClip;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssignmentEvaluationType;
 import fi.otavanopisto.muikku.plugins.workspace.ContentNode;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialException;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialReplyController;
+import fi.otavanopisto.muikku.plugins.workspace.fieldio.WorkspaceFieldIOException;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReplyState;
 import fi.otavanopisto.muikku.schooldata.GradingController;
+import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScale;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivity;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivityState;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 import fi.otavanopisto.muikku.servlet.BaseUrl;
 import fi.otavanopisto.muikku.users.UserEntityController;
@@ -50,6 +63,9 @@ public class EvaluationController {
   @Inject
   @BaseUrl
   private String baseUrl;
+
+  @Inject
+  private Logger logger;
 
   @Inject
   private WorkspaceMaterialReplyController workspaceMaterialReplyController;
@@ -67,11 +83,14 @@ public class EvaluationController {
   private WorkspaceMaterialEvaluationDAO workspaceMaterialEvaluationDAO;
 
   @Inject
+  private WorkspaceMaterialEvaluationAudioClipDAO workspaceMaterialEvaluationAudioClipDAO;
+  
+  @Inject
   private SupplementationRequestDAO supplementationRequestDAO;
   
   @Inject
   private GradingController gradingController;
-
+  
   @Inject
   private UserEntityController userEntityController;
 
@@ -83,6 +102,126 @@ public class EvaluationController {
 
   @Inject
   private Event<CommunicatorMessageSent> communicatorMessageSentEvent;
+
+  @Inject
+  private EvaluationFileStorageUtils file;
+
+  @Inject
+  private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
+  
+  /* Workspace activity */
+  
+  public List<WorkspaceActivity> listWorkspaceActivities(SchoolDataIdentifier studentIdentifier,
+      SchoolDataIdentifier workspaceIdentifier,
+      boolean includeTransferCredits,
+      boolean includeAssignmentStatistics) {
+    String dataSource = studentIdentifier.getDataSource(); 
+    UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);
+    
+    // Ask base information from Pyramus
+    
+    List<WorkspaceActivity> activities = new ArrayList<>();
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      activities = gradingController.listWorkspaceActivities(
+          dataSource,
+          studentIdentifier.getIdentifier(),
+          workspaceIdentifier == null ? null : workspaceIdentifier.getIdentifier(),
+          includeTransferCredits);
+    }
+    finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
+    
+    // Complement the response with data available only in Muikku
+    
+    for (WorkspaceActivity activity : activities) {
+      
+      // Skip activity items without a course (basically transfer credits)
+      
+      if (activity.getIdentifier() == null) {
+        continue;
+      }
+      
+      // WorkspaceEntityId
+      
+      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(dataSource, activity.getIdentifier());
+      if (workspaceEntity == null) {
+        logger.warning(String.format("Pyramus course %s not found", activity.getIdentifier()));
+        continue;
+      }
+      activity.setId(workspaceEntity.getId());
+      
+      // Supplementation request, if one exists and is newer than activity date so far
+      
+      SupplementationRequest supplementationRequest = findLatestSupplementationRequestByStudentAndWorkspaceAndArchived(
+          userEntity.getId(), workspaceEntity.getId(), Boolean.FALSE);
+      if (supplementationRequest != null && supplementationRequest.getRequestDate().after(activity.getDate())) {
+        activity.setText(supplementationRequest.getRequestText());
+        activity.setDate(supplementationRequest.getRequestDate());
+        activity.setState(WorkspaceActivityState.SUPPLEMENTATION_REQUESTED);
+      }
+      
+      // Optional assignment statistics
+      
+      if (includeAssignmentStatistics) {
+        int exercisesTotal = 0;
+        int exercisesAnswered = 0;
+        int evaluablesTotal = 0;
+        int evaluablesAnswered = 0;
+        
+        // Exercises
+        
+        List<WorkspaceMaterial> assignments = workspaceMaterialController.listVisibleWorkspaceMaterialsByAssignmentType(
+            workspaceEntity, WorkspaceMaterialAssignmentType.EXERCISE);
+        exercisesTotal = assignments.size();
+        for (WorkspaceMaterial assignment : assignments) {
+          WorkspaceMaterialReply workspaceMaterialReply = workspaceMaterialReplyController
+              .findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(assignment, userEntity);
+          if (workspaceMaterialReply != null) {
+            switch (workspaceMaterialReply.getState()) {
+              case SUBMITTED:
+              case PASSED:
+              case FAILED:
+              case INCOMPLETE:
+                exercisesAnswered++;
+              break;
+              default:
+              break;
+            }
+          }
+        }
+        
+        // Evaluables
+        
+        assignments = workspaceMaterialController.listVisibleWorkspaceMaterialsByAssignmentType(
+            workspaceEntity, WorkspaceMaterialAssignmentType.EVALUATED);
+        evaluablesTotal = assignments.size();
+        for (WorkspaceMaterial assignment : assignments) {
+          WorkspaceMaterialReply workspaceMaterialReply = workspaceMaterialReplyController
+              .findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(assignment, userEntity);
+          if (workspaceMaterialReply != null) {
+            switch (workspaceMaterialReply.getState()) {
+              case SUBMITTED:
+              case PASSED:
+              case FAILED:
+              case INCOMPLETE:
+                evaluablesAnswered++;
+              break;
+              default:
+              break;
+            }
+          }
+        }
+
+        activity.setExercisesTotal(exercisesTotal);
+        activity.setExercisesAnswered(exercisesAnswered);
+        activity.setEvaluablesTotal(evaluablesTotal);
+        activity.setEvaluablesAnswered(evaluablesAnswered);
+      }
+    }
+    return activities;
+  }
   
   public SupplementationRequest createSupplementationRequest(Long userEntityId, Long studentEntityId, Long workspaceEntityId, Long workspaceMaterialId, Date requestDate, String requestText) {
     SupplementationRequest supplementationRequest = supplementationRequestDAO.createSupplementationRequest(
@@ -103,19 +242,20 @@ public class EvaluationController {
   public WorkspaceMaterialEvaluation createWorkspaceMaterialEvaluation(UserEntity student, WorkspaceMaterial workspaceMaterial, GradingScale gradingScale, GradingScaleItem grade, UserEntity assessor, Date evaluated, String verbalAssessment) {
     WorkspaceMaterialEvaluation evaluation = workspaceMaterialEvaluationDAO.create(student.getId(), 
         workspaceMaterial.getId(),  
-        gradingScale.getIdentifier(), 
-        gradingScale.getSchoolDataSource(), 
-        grade.getIdentifier(), 
-        grade.getSchoolDataSource(), 
+        gradingScale != null ? gradingScale.getIdentifier() : null, 
+        gradingScale != null ? gradingScale.getSchoolDataSource() : null, 
+        grade != null ? grade.getIdentifier() : null, 
+        grade != null ? grade.getSchoolDataSource() : null, 
         assessor.getId(), 
         evaluated, 
         verbalAssessment);
     WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, student);
-    WorkspaceMaterialReplyState state = grade.isPassingGrade() ? WorkspaceMaterialReplyState.PASSED : WorkspaceMaterialReplyState.FAILED;
+    // Null grade is translated to passed as it's likely to be an exercise evaluation
+    WorkspaceMaterialReplyState state = (grade == null || grade.isPassingGrade()) ? WorkspaceMaterialReplyState.PASSED : WorkspaceMaterialReplyState.FAILED;
     if (reply != null) {
       workspaceMaterialReplyController.updateWorkspaceMaterialReply(reply, state);
     }
-    
+
     return evaluation;
   }
   
@@ -125,6 +265,20 @@ public class EvaluationController {
 
   public void deleteWorkspaceMaterialEvaluation(WorkspaceMaterialEvaluation evaluation) {
     if (evaluation != null) {
+      List<WorkspaceMaterialEvaluationAudioClip> evaluationAudioClips = listEvaluationAudioClips(evaluation);
+      for (WorkspaceMaterialEvaluationAudioClip evaluationAudioClip : evaluationAudioClips) {
+        if (file.isFileInFileSystem(evaluation.getStudentEntityId(), evaluationAudioClip.getClipId())) {
+          try {
+            file.removeFileFromFileSystem(evaluation.getStudentEntityId(), evaluationAudioClip.getClipId());
+          } catch (IOException e) {
+            logger.log(Level.SEVERE, String.format("Could not remove clip %s", evaluationAudioClip.getClipId()), e);
+          }
+        }
+        
+        // Remove db entry
+        workspaceMaterialEvaluationAudioClipDAO.delete(evaluationAudioClip);
+      }
+      
       workspaceMaterialEvaluationDAO.delete(evaluation);
     }
   }
@@ -138,14 +292,7 @@ public class EvaluationController {
   }
   
   public SupplementationRequest findLatestSupplementationRequestByStudentAndWorkspaceAndArchived(Long studentEntityId, Long workspaceEntityId, Boolean archived) {
-    List<SupplementationRequest> supplementationRequests = supplementationRequestDAO.listByStudentAndWorkspaceAndArchived(studentEntityId, workspaceEntityId, archived); 
-    if (supplementationRequests.isEmpty()) {
-      return null;
-    }
-    else if (supplementationRequests.size() > 1) {
-      supplementationRequests.sort(Comparator.comparing(SupplementationRequest::getRequestDate).reversed());
-    }
-    return supplementationRequests.get(0);
+    return supplementationRequestDAO.findLatestByStudentAndWorkspaceAndArchived(studentEntityId, workspaceEntityId, archived);
   }
 
   public SupplementationRequest findLatestSupplementationRequestByStudentAndWorkspaceMaterialAndArchived(Long studentEntityId, Long workspaceMaterialId, Boolean archived) {
@@ -197,11 +344,11 @@ public class EvaluationController {
   }
   
   public WorkspaceMaterialEvaluation updateWorkspaceMaterialEvaluation(WorkspaceMaterialEvaluation workspaceMaterialEvaluation, GradingScale gradingScale, GradingScaleItem grade, UserEntity assessor, Date evaluated, String verbalAssessment) {
-    workspaceMaterialEvaluationDAO.updateGradingScaleIdentifier(workspaceMaterialEvaluation, gradingScale.getIdentifier());
-    workspaceMaterialEvaluationDAO.updateGradingScaleSchoolDataSource(workspaceMaterialEvaluation, gradingScale.getSchoolDataSource());
+    workspaceMaterialEvaluationDAO.updateGradingScaleIdentifier(workspaceMaterialEvaluation, gradingScale != null ? gradingScale.getIdentifier() : null);
+    workspaceMaterialEvaluationDAO.updateGradingScaleSchoolDataSource(workspaceMaterialEvaluation, gradingScale != null ? gradingScale.getSchoolDataSource() : null);
     workspaceMaterialEvaluationDAO.updateVerbalAssessment(workspaceMaterialEvaluation, verbalAssessment);
-    workspaceMaterialEvaluationDAO.updateGradeIdentifier(workspaceMaterialEvaluation, grade.getIdentifier());
-    workspaceMaterialEvaluationDAO.updateGradeSchoolDataSource(workspaceMaterialEvaluation, grade.getSchoolDataSource());
+    workspaceMaterialEvaluationDAO.updateGradeIdentifier(workspaceMaterialEvaluation, grade != null ? grade.getIdentifier() : null);
+    workspaceMaterialEvaluationDAO.updateGradeSchoolDataSource(workspaceMaterialEvaluation, grade != null ? grade.getSchoolDataSource() : null);
     workspaceMaterialEvaluationDAO.updateAssessorEntityId(workspaceMaterialEvaluation, assessor.getId());
     workspaceMaterialEvaluationDAO.updateEvaluated(workspaceMaterialEvaluation, evaluated);
     
@@ -209,11 +356,12 @@ public class EvaluationController {
     UserEntity student = userEntityController.findUserEntityById(workspaceMaterialEvaluation.getStudentEntityId());
     
     WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, student);
-    WorkspaceMaterialReplyState state = grade.isPassingGrade() ? WorkspaceMaterialReplyState.PASSED : WorkspaceMaterialReplyState.FAILED;
+    // Null grade is translated to passed as it's likely to be an exercise evaluation
+    WorkspaceMaterialReplyState state = (grade == null || grade.isPassingGrade()) ? WorkspaceMaterialReplyState.PASSED : WorkspaceMaterialReplyState.FAILED;
     if (reply != null) {
       workspaceMaterialReplyController.updateWorkspaceMaterialReply(reply, state);
     }
-    
+
     return workspaceMaterialEvaluation;
   }
 
@@ -234,6 +382,9 @@ public class EvaluationController {
     }
     else {
       // No supplementation request or evaluation is newer
+      
+      List<WorkspaceMaterialEvaluationAudioClip> evaluationAudioClips = workspaceMaterialEvaluationAudioClipDAO.listByEvaluation(workspaceMaterialEvaluation);
+      
       RestAssignmentEvaluation evaluation = new RestAssignmentEvaluation();
       evaluation.setType(RestAssignmentEvaluationType.PASSED);
       evaluation.setDate(workspaceMaterialEvaluation.getEvaluated());
@@ -250,6 +401,11 @@ public class EvaluationController {
           }
         }
       }
+      
+      evaluationAudioClips.forEach(audioClip -> {
+        evaluation.addAudioAssessmentAudioClip(new RestAssignmentEvaluationAudioClip(audioClip.getClipId(), audioClip.getFileName(), audioClip.getContentType()));
+      });
+      
       return evaluation;
     }
   }
@@ -369,6 +525,70 @@ public class EvaluationController {
         localeController.getText(locale, "plugin.evaluation.workspaceIncomplete.notificationText", new Object[] {workspaceUrl, workspaceName, verbalAssessment}),
         Collections.<Tag>emptySet());
     communicatorMessageSentEvent.fire(new CommunicatorMessageSent(communicatorMessage.getId(), student.getId(), baseUrl));
+  }
+  
+  public WorkspaceMaterialEvaluationAudioClip findEvaluationAudioClip(String clipId) {
+    return workspaceMaterialEvaluationAudioClipDAO.findByClipId(clipId);
+  }
+  
+  public List<WorkspaceMaterialEvaluationAudioClip> listEvaluationAudioClips(WorkspaceMaterialEvaluation evaluation) {
+    return workspaceMaterialEvaluationAudioClipDAO.listByEvaluation(evaluation);
+  }
+  
+  public void synchronizeWorkspaceMaterialEvaluationAudioAssessments(WorkspaceMaterialEvaluation evaluation, List<RestAssignmentEvaluationAudioClip> audioAssessments) {
+    List<WorkspaceMaterialEvaluationAudioClip> existingClips = workspaceMaterialEvaluationAudioClipDAO.listByEvaluation(evaluation);
+
+    List<String> existingClipIds = existingClips.stream().map(WorkspaceMaterialEvaluationAudioClip::getClipId).collect(Collectors.toList());
+
+    if (audioAssessments != null) {
+      for (RestAssignmentEvaluationAudioClip clip : audioAssessments) {
+        if (existingClipIds.contains(clip.getId())) {
+          // Already existing clip
+          existingClipIds.remove(clip.getId());
+        }
+        else {
+          // New clip
+          try {
+            byte[] audioData = TempFileUtils.getTempFileData(clip.getId());
+            if (audioData == null) {
+              throw new WorkspaceFieldIOException("Temp audio does not exist");
+            }
+            
+            // Create file
+            Long userEntityId = evaluation.getStudentEntityId();
+            file.storeFileToFileSystem(userEntityId, clip.getId(), audioData);
+            
+            // Create db entry
+            workspaceMaterialEvaluationAudioClipDAO.create(evaluation, clip.getContentType(), clip.getId(), clip.getName());
+            TempFileUtils.deleteTempFile(clip.getId());
+          }
+          catch (Exception e) {
+            throw new RuntimeException("Failed to retrieve clip data", e);
+          }
+        }
+      }
+    }
+    
+    // Removed clips
+    
+    for (String existingClipId : existingClipIds) {
+      WorkspaceMaterialEvaluationAudioClip workspaceMaterialEvaluationAudioClip = workspaceMaterialEvaluationAudioClipDAO.findByClipId(existingClipId);
+      if (workspaceMaterialEvaluationAudioClip != null) {
+        try {
+          // Remove file
+          Long userEntityId = workspaceMaterialEvaluationAudioClip.getEvaluation().getStudentEntityId();
+          if (file.isFileInFileSystem(userEntityId, existingClipId)) {
+            file.removeFileFromFileSystem(userEntityId, existingClipId);
+          }
+          
+          // Remove db entry
+          workspaceMaterialEvaluationAudioClipDAO.delete(workspaceMaterialEvaluationAudioClip);
+        }
+        catch (Exception e) {
+          throw new RuntimeException("Failed to remove audio data", e);
+        }
+      }
+    }
   }
   
 }

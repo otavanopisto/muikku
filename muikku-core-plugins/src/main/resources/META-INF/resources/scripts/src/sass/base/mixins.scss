@@ -129,19 +129,18 @@
 }
 
 @mixin load-animation($size: $loader-size) {
-
   animation: spin 2s linear infinite;
-  border: #{$loader-border-width}px solid $color-loader-empty-ring;
+  border: #{$loader-border-width} solid $color-loader-empty-ring;
   border-radius: 50%;
-  border-top: #{$loader-border-width}px solid $color-loader-empty-rotating-piece;
+  border-top: #{$loader-border-width} solid $color-loader-empty-rotating-piece;
   content: " ";
-  height: #{$size}px;
+  height: #{$size};
   left: 50%;
-  margin-left: -#{$size / 2}px;
-  margin-top: -#{$size / 2}px;
+  margin-left: calc(-#{$size} / 2);
+  margin-top: calc(-#{$size} / 2);
   position: absolute;
   top: 50%;
-  width: #{$size}px;
+  width: #{$size};
 
   @keyframes spin {
     0% {
@@ -154,9 +153,9 @@
   }
 }
 
-
 @mixin chat-pulse {
   $animation-name: unique-id();
+
   animation-name: $animation-name;
 
   @keyframes #{$animation-name} {

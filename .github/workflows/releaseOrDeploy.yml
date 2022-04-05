@@ -23,10 +23,10 @@ jobs:
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-      - name: Build with Maven
-        run: mvn clean install -Pjndi-mail-plugin,elastic-search-plugin,evaluation-plugin,timed-notifications-plugin,pyramus-plugins,matriculation-plugin
       - name: Prepare maven settings
         run: python prepare-maven.py
+      - name: Build with Maven
+        run: mvn clean install --settings ~/.m2/mySettings.xml -Pjndi-mail-plugin,elastic-search-plugin,evaluation-plugin,timed-notifications-plugin,pyramus-plugins,matriculation-plugin
       - name: Release or Deploy
         run: ./releaseOrDeploy.sh
         env:

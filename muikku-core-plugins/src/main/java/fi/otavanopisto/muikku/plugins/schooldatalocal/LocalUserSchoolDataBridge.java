@@ -23,6 +23,7 @@ import fi.otavanopisto.muikku.plugins.schooldatalocal.model.LocalUser;
 import fi.otavanopisto.muikku.plugins.schooldatalocal.model.LocalUserEmail;
 import fi.otavanopisto.muikku.plugins.schooldatalocal.model.LocalUserImage;
 import fi.otavanopisto.muikku.plugins.schooldatalocal.model.LocalUserProperty;
+import fi.otavanopisto.muikku.rest.OrganizationContactPerson;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeInternalException;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -48,7 +49,9 @@ import fi.otavanopisto.muikku.schooldata.payload.StaffMemberPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupMembersPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentPayload;
+import fi.otavanopisto.muikku.schooldata.payload.WorklistApproverRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemRestModel;
+import fi.otavanopisto.muikku.schooldata.payload.WorklistItemStateChangeRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemTemplateRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistSummaryItemRestModel;
 
@@ -462,7 +465,6 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
           localUser.getFirstName(), 
           localUser.getLastName(),
           null,
-          null,
           localUser.getFirstName() + ' ' + localUser.getLastName() + " (Local)",
           null,
           null,
@@ -635,6 +637,12 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
   public boolean isActiveUser(User user) {
     return user.getStudyEndDate() == null;
   }
+  
+  @Override
+  public BridgeResponse<List<OrganizationContactPerson>> listOrganizationContactPersonsByOrganization(
+      String organizationIdentifier) {
+    throw new SchoolDataBridgeInternalException("Not supported");
+  }
 
   @Override
   public BridgeResponse<List<WorklistItemTemplateRestModel>> getWorklistTemplates() {
@@ -664,6 +672,31 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
   @Override
   public BridgeResponse<List<WorklistSummaryItemRestModel>> getWorklistSummary(String identifier) {
     throw new SchoolDataBridgeInternalException("Not supported");
+  }
+
+  @Override
+  public void updateWorklistItemsState(WorklistItemStateChangeRestModel stateChange) {
+    throw new SchoolDataBridgeInternalException("Not supported");
+  }
+
+  @Override
+  public BridgeResponse<List<WorklistApproverRestModel>> listWorklistApprovers() {
+    throw new SchoolDataBridgeInternalException("Not supported");
+  }
+
+  @Override
+  public User increaseStudyTime(String studentIdentifier, int months) {
+    throw new SchoolDataBridgeInternalException("Not supported");
+  }
+
+  @Override
+  public String getUserDefaultEmailAddress(String userIdentifier) {
+    throw new SchoolDataBridgeInternalException("Not supported");
+  }
+
+  @Override
+  public String findUserSsn(SchoolDataIdentifier userIdentifier) {
+    return null;
   }
 
 }

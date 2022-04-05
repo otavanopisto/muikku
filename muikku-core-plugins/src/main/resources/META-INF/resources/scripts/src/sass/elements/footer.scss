@@ -12,6 +12,7 @@
 
 .footer--workspace {
   @include text;
+
   background-color: $color-workspace-footer-default-background;
   margin: 0;
   order: 3;
@@ -110,6 +111,7 @@
 
 .footer__subitem {
   color: $color-frontpage-text-contact-us-information;
+  display: flex;
   flex-basis: 100%;
   flex-grow: 1;
   flex-shrink: 1;

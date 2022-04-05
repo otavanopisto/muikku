@@ -1,49 +1,79 @@
-import Dialog from '~/components/general/dialog';
-import * as React from 'react';
-import {connect, Dispatch} from 'react-redux';
-import Link from '~/components/general/link';
-import {i18nType} from '~/reducers/base/i18n';
-import '~/sass/elements/form-elements.scss';
-import '~/sass/elements/form.scss';
-import '~/sass/elements/wizard.scss';
-import CopyWizard from '~/components/workspace/workspaceManagement/body/copyWizard';
-import { StateType } from '~/reducers';
+import Dialog from "~/components/general/dialog";
+import * as React from "react";
+import { connect } from "react-redux";
+import { i18nType } from "~/reducers/base/i18n";
+import "~/sass/elements/form-elements.scss";
+import "~/sass/elements/form.scss";
+import "~/sass/elements/wizard.scss";
+import CopyWizard from "~/components/workspace/workspaceManagement/body/copyWizard";
+import { StateType } from "~/reducers";
 
+/**
+ * CopyWizardDialogProps
+ */
 interface CopyWizardDialogProps {
-  i18n: i18nType,
-  children: React.ReactElement<any>,
+  i18n: i18nType;
+  children: React.ReactElement<any>;
 }
 
+/**
+ * CopyWizardDialogState
+ */
 interface CopyWizardDialogState {
-  scale: number,
-  angle: number
+  scale: number;
+  angle: number;
 }
 
-class CopyWizardDialog extends React.Component<CopyWizardDialogProps, CopyWizardDialogState> {
-  render(){
-    let content = (closeDialog: ()=>any)=><div>
-      <CopyWizard onDone={closeDialog}/>
-    </div>;
-    let footer = (closeDialog: ()=>any)=>{
-      return <div className="dialog__button-set">
+/**
+ * CopyWizardDialog
+ */
+class CopyWizardDialog extends React.Component<
+  CopyWizardDialogProps,
+  CopyWizardDialogState
+> {
+  /**
+   * render
+   */
+  render() {
+    /**
+     * content
+     * @param closeDialog closeDialog
+     */
+    const content = (closeDialog: () => any) => (
+      <div>
+        <CopyWizard onDone={closeDialog} />
       </div>
-    }
-    return <Dialog disableScroll={true} title={this.props.i18n.text.get('plugin.workspace.management.copyWorkspace')}
-      content={content} modifier="wizard">{this.props.children}</Dialog>
+    );
+    return (
+      <Dialog
+        disableScroll={true}
+        title={this.props.i18n.text.get(
+          "plugin.workspace.management.copyWorkspace"
+        )}
+        content={content}
+        modifier={["wizard", "copy-workspace"]}
+      >
+        {this.props.children}
+      </Dialog>
+    );
   }
 }
 
-function mapStateToProps(state: StateType){
+/**
+ * mapStateToProps
+ * @param state state
+ */
+function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n
-  }
-};
+    i18n: state.i18n,
+  };
+}
 
-function mapDispatchToProps(dispatch: Dispatch<any>){
+/**
+ * mapDispatchToProps
+ */
+function mapDispatchToProps() {
   return {};
-};
+}
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CopyWizardDialog);
+export default connect(mapStateToProps, mapDispatchToProps)(CopyWizardDialog);

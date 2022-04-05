@@ -40,6 +40,8 @@ import org.apache.commons.lang3.StringUtils;
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.controller.TagController;
 import fi.otavanopisto.muikku.model.base.Tag;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserEntityProperty;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
@@ -79,6 +81,7 @@ import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserEntityFileController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
+import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.security.AuthorizationException;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
@@ -126,6 +129,9 @@ public class CommunicatorRESTService extends PluginRESTService {
   @Inject
   private UserEntityFileController userEntityFileController;
 
+  @Inject
+  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
+  
   @Inject
   private TagController tagController;
   
@@ -185,8 +191,8 @@ public class CommunicatorRESTService extends PluginRESTService {
         Date created = recipient.getCommunicatorMessage().getCreated();
         latestMessageDate = latestMessageDate == null || latestMessageDate.before(created) ? created : latestMessageDate;
       }
+      CommunicatorUserBasicInfo senderBasicInfo = restModels.getCommunicatorUserBasicInfo(receivedItem.getSender());
       
-      UserBasicInfo senderBasicInfo = restModels.getSenderBasicInfo(receivedItem);
       Long messageCountInThread = communicatorController.countMessagesByUserAndMessageId(user, receivedItem.getCommunicatorMessageId(), false);
 
       List<CommunicatorMessageIdLabel> labels = communicatorController.listMessageIdLabelsByUserEntity(user, receivedItem.getCommunicatorMessageId());
@@ -245,7 +251,7 @@ public class CommunicatorRESTService extends PluginRESTService {
         latestMessageDate = latestMessageDate == null || latestMessageDate.before(created) ? created : latestMessageDate;
       }
       
-      UserBasicInfo senderBasicInfo = restModels.getSenderBasicInfo(sentItem);
+      CommunicatorUserBasicInfo senderBasicInfo = restModels.getCommunicatorUserBasicInfo(sentItem.getSender());
       Long messageCountInThread = communicatorController.countMessagesByUserAndMessageId(user, sentItem.getCommunicatorMessageId(), false);
 
       List<CommunicatorMessageIdLabel> labels = communicatorController.listMessageIdLabelsByUserEntity(user, sentItem.getCommunicatorMessageId());
@@ -255,18 +261,19 @@ public class CommunicatorRESTService extends PluginRESTService {
       List<CommunicatorMessageRecipientUserGroup> userGroupRecipients = communicatorController.listCommunicatorMessageUserGroupRecipients(sentItem);
       List<CommunicatorMessageRecipientWorkspaceGroup> workspaceGroupRecipients = communicatorController.listCommunicatorMessageWorkspaceGroupRecipients(sentItem);
 
-      List<CommunicatorMessageRecipientRESTModel> restRecipients = restModels.restRecipient(messageRecipients);
+      List<CommunicatorUserBasicInfo> restRecipients = restModels.restRecipient2(messageRecipients);
       List<fi.otavanopisto.muikku.rest.model.UserGroup> restUserGroupRecipients = restModels.restUserGroupRecipients(userGroupRecipients);
       List<CommunicatorMessageRecipientWorkspaceGroupRESTModel> restWorkspaceRecipients = restModels.restWorkspaceGroupRecipients(workspaceGroupRecipients);
 
       Long recipientCount = (long) messageRecipients.size() + userGroupRecipients.size() + workspaceGroupRecipients.size();
       
       Set<String> tags = communicatorController.tagIdsToStr(sentItem.getTags());
-
-      result.add(new CommunicatorSentThreadRESTModel(
-          sentItem.getId(), sentItem.getCommunicatorMessageId().getId(), sentItem.getSender(), senderBasicInfo, categoryName, 
-          sentItem.getCaption(), sentItem.getCreated(), tags, hasUnreadMsgs, latestMessageDate, 
-          messageCountInThread, restLabels, restRecipients, restUserGroupRecipients, restWorkspaceRecipients, recipientCount));
+      
+        result.add(new CommunicatorSentThreadRESTModel(
+            sentItem.getId(), sentItem.getCommunicatorMessageId().getId(), sentItem.getSender(), senderBasicInfo, categoryName, 
+            sentItem.getCaption(), sentItem.getCreated(), tags, hasUnreadMsgs, latestMessageDate, 
+            messageCountInThread, restLabels, restRecipients, restUserGroupRecipients, restWorkspaceRecipients, recipientCount));
+      
     }
     
     return Response.ok(
@@ -334,11 +341,7 @@ public class CommunicatorRESTService extends PluginRESTService {
       for (IndexedCommunicatorMessage result : results) {
         IndexedCommunicatorMessageSender sender = result.getSender();
 
-        CommunicatorSearchSenderRESTModel senderData = new CommunicatorSearchSenderRESTModel();
-        senderData.setUserEntityId(sender.getUserEntityId());
-        senderData.setFirstName(sender.getFirstName());
-        senderData.setLastName(sender.getLastName());
-        senderData.setNickName(sender.getNickName());
+        CommunicatorUserBasicInfo senderData = restModels.getCommunicatorUserBasicInfo(sender.getUserEntityId());
         
         CommunicatorMessage communicatorMessage = communicatorController.findCommunicatorMessageById(result.getId());
         CommunicatorMessageCategory category = communicatorMessage.getCategory();
@@ -349,7 +352,7 @@ public class CommunicatorRESTService extends PluginRESTService {
         List<CommunicatorMessageRecipientUserGroup> userGroupRecipients = communicatorController.listCommunicatorMessageUserGroupRecipients(communicatorMessage);
         List<CommunicatorMessageRecipientWorkspaceGroup> workspaceGroupRecipients = communicatorController.listCommunicatorMessageWorkspaceGroupRecipients(communicatorMessage);
 
-        List<CommunicatorMessageRecipientRESTModel> restRecipients = restModels.restRecipient(messageRecipients);
+        List<CommunicatorUserBasicInfo> restRecipients = restModels.restRecipient2(messageRecipients);
         List<fi.otavanopisto.muikku.rest.model.UserGroup> restUserGroupRecipients = restModels.restUserGroupRecipients(userGroupRecipients);
         List<CommunicatorMessageRecipientWorkspaceGroupRESTModel> restWorkspaceRecipients = restModels.restWorkspaceGroupRecipients(workspaceGroupRecipients);
 
@@ -535,12 +538,23 @@ public class CommunicatorRESTService extends PluginRESTService {
     
     Set<Tag> tagList = parseTags(newMessage.getTags());
     List<UserEntity> recipients = new ArrayList<UserEntity>();
+    boolean studentMessaging = sessionController.hasEnvironmentPermission(CommunicatorPermissionCollection.COMMUNICATOR_STUDENT_MESSAGING);
     
     for (Long recipientId : newMessage.getRecipientIds()) {
       UserEntity recipient = userEntityController.findUserEntityById(recipientId);
+      
+      if (recipient != null) {
+        if (!studentMessaging) {
+          EnvironmentRoleEntity recipientRole = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(recipient);
+          if (recipientRole == null || EnvironmentRoleArchetype.STUDENT.equals(recipientRole.getArchetype())) {
+            return Response.status(Status.BAD_REQUEST).build();
+          }
+        }
 
-      if (recipient != null)
         recipients.add(recipient);
+      } else {
+        return Response.status(Status.BAD_REQUEST).build();
+      }
     }
 
     List<UserGroupEntity> userGroupRecipients = null;
@@ -697,12 +711,23 @@ public class CommunicatorRESTService extends PluginRESTService {
     
     Set<Tag> tagList = parseTags(newMessage.getTags());
     List<UserEntity> recipients = new ArrayList<UserEntity>();
+    boolean studentMessaging = sessionController.hasEnvironmentPermission(CommunicatorPermissionCollection.COMMUNICATOR_STUDENT_MESSAGING);
     
     for (Long recipientId : newMessage.getRecipientIds()) {
       UserEntity recipient = userEntityController.findUserEntityById(recipientId);
 
-      if (recipient != null)
+      if (recipient != null) {
+        if (!studentMessaging) {
+          EnvironmentRoleEntity recipientRole = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(recipient);
+          if (recipientRole == null || EnvironmentRoleArchetype.STUDENT.equals(recipientRole.getArchetype())) {
+            return Response.status(Status.BAD_REQUEST).build();
+          }
+        }
+        
         recipients.add(recipient);
+      } else {
+        return Response.status(Status.BAD_REQUEST).build();
+      }
     }
     
     List<UserGroupEntity> userGroupRecipients = null;
@@ -793,7 +818,7 @@ public class CommunicatorRESTService extends PluginRESTService {
     List<CommunicatorMessageRecipient> messageRecipients = communicatorController.listCommunicatorMessageRecipients(communicatorMessage);
 
     return Response.ok(
-      restModels.restRecipient(messageRecipients)
+      restModels.restRecipient2(messageRecipients)
     ).build();
   }
 
@@ -818,6 +843,7 @@ public class CommunicatorRESTService extends PluginRESTService {
       
       fi.otavanopisto.muikku.rest.model.UserBasicInfo result = new fi.otavanopisto.muikku.rest.model.UserBasicInfo(
           userEntity.getId(), 
+          userEntity.defaultSchoolDataIdentifier().toId(),
           user.getFirstName(), 
           user.getLastName(), 
           user.getNickName(),

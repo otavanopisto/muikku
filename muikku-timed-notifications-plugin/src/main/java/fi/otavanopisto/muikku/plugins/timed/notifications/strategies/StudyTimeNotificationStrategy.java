@@ -1,10 +1,10 @@
 package fi.otavanopisto.muikku.plugins.timed.notifications.strategies;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -19,20 +19,18 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import java.time.OffsetDateTime;
+
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.i18n.LocaleController;
-import fi.otavanopisto.muikku.jade.JadeLocaleHelper;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.activitylog.ActivityLogController;
 import fi.otavanopisto.muikku.plugins.activitylog.model.ActivityLogType;
 import fi.otavanopisto.muikku.plugins.timed.notifications.NotificationController;
 import fi.otavanopisto.muikku.plugins.timed.notifications.StudyTimeLeftNotificationController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
-import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.search.SearchResult;
-import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
+import fi.otavanopisto.muikku.users.UserEntityName;
 
 @Startup
 @Singleton
@@ -55,13 +53,7 @@ public class StudyTimeNotificationStrategy extends AbstractTimedNotificationStra
   private UserEntityController userEntityController;
 
   @Inject
-  private UserController userController;
-  
-  @Inject
   private LocaleController localeController;
-  
-  @Inject
-  private JadeLocaleHelper jadeLocaleHelper;
   
   @Inject
   private NotificationController notificationController;
@@ -94,7 +86,7 @@ public class StudyTimeNotificationStrategy extends AbstractTimedNotificationStra
     Date studyTimeEnds = Date.from(studyTimeEndsOdt.toInstant());
     Date lastNotifiedThresholdDate = Date.from(OffsetDateTime.now().minusDays(NOTIFICATION_THRESHOLD_DAYS_LEFT + 1).toInstant());
     List<SchoolDataIdentifier> studentIdentifierAlreadyNotified = studyTimeLeftNotificationController.listNotifiedSchoolDataIdentifiersAfter(lastNotifiedThresholdDate);
-    SearchResult searchResult = studyTimeLeftNotificationController.searchActiveStudentIds(getActiveOrganizations(), groups, FIRST_RESULT + offset, MAX_RESULTS, studentIdentifierAlreadyNotified, studyTimeEnds);
+    SearchResult searchResult = studyTimeLeftNotificationController.searchActiveStudents(getActiveOrganizations(), groups, FIRST_RESULT + offset, MAX_RESULTS, studentIdentifierAlreadyNotified, studyTimeEnds);
     logger.log(Level.INFO, String.format("%s processing %d/%d", getClass().getSimpleName(), offset, searchResult.getTotalHitCount()));
     
     if ((offset + MAX_RESULTS) > searchResult.getTotalHitCount()) {
@@ -121,17 +113,23 @@ public class StudyTimeNotificationStrategy extends AbstractTimedNotificationStra
       UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);      
 
       if (studentEntity != null) {
-        User student = userController.findUserByIdentifier(studentIdentifier);
+        UserEntityName studentName = userEntityController.getName(studentEntity);
+        if (studentName == null) {
+          logger.log(Level.SEVERE, String.format("Cannot send notification to student %s because name couldn't be resolved", studentIdentifier.toId()));
+          continue;
+        }
+        Date studyStartDate = getDateResult(result.get("studyStartDate"));
         
         // Do not notify students that have no study start date set or have started their studies within the last 60 days
         
-        if (student.getStudyStartDate() == null || student.getStudyStartDate().isAfter(sendNotificationIfStudentStartedBefore)) {
+        if (studyStartDate == null || fromDateToOffsetDateTime(studyStartDate).isAfter(sendNotificationIfStudentStartedBefore)) {
           continue;
         }
         
         // Make sure study time end exists and falls between now and 60 days in to future
         
-        if (student.getStudyTimeEnd() == null || student.getStudyTimeEnd().isAfter(studyTimeEndsOdt) || student.getStudyTimeEnd().isBefore(OffsetDateTime.now())) {
+        OffsetDateTime studyTimeEnd = fromDateToOffsetDateTime(getDateResult(result.get("studyTimeEnd")));
+        if (studyTimeEnd == null || studyTimeEnd.isAfter(studyTimeEndsOdt) || studyTimeEnd.isBefore(OffsetDateTime.now())) {
           continue;
         }
 
@@ -145,17 +143,21 @@ public class StudyTimeNotificationStrategy extends AbstractTimedNotificationStra
         }
         
         Locale studentLocale = localeController.resolveLocale(LocaleUtils.toLocale(studentEntity.getLocale()));
-        Map<String, Object> templateModel = new HashMap<>();
-        templateModel.put("locale", studentLocale);
-        templateModel.put("localeHelper", jadeLocaleHelper);
-        String notificationContent = renderNotificationTemplate(isAineopiskelu ? "study-time-notification-internetix" : "study-time-notification", templateModel);
+        String internetixStudyTimeNotification = localeController.getText(studentLocale, "plugin.timednotifications.notification.studytime.content.internetix",
+            new Object[] {studentName.getDisplayNameWithLine()});
+        String studyTimeNotification = localeController.getText(studentLocale, "plugin.timednotifications.notification.studytime.content",
+            new Object[] {studentName.getDisplayNameWithLine()});
+        String guidanceCounselorMail = notificationController.getStudyCounselorEmail(studentEntity.defaultSchoolDataIdentifier());
+        if (guidanceCounselorMail != null) {
+          studyTimeNotification = localeController.getText(studentLocale, "plugin.timednotifications.notification.studytime.content.guidanceCounselor",
+              new Object[] {studentName.getDisplayNameWithLine(), guidanceCounselorMail});
+        }
+        String notificationContent = isAineopiskelu ? internetixStudyTimeNotification : studyTimeNotification;
         notificationController.sendNotification(
-          localeController.getText(studentLocale, "plugin.timednotifications.notification.category"),
           localeController.getText(studentLocale, "plugin.timednotifications.notification.studytime.subject"),
           notificationContent,
           studentEntity,
-          studentIdentifier,
-          "studytime"
+          guidanceCounselorMail
         );
         studyTimeLeftNotificationController.createStudyTimeNotification(studentIdentifier);
         activityLogController.createActivityLog(studentEntity.getId(), ActivityLogType.NOTIFICATION_STUDYTIME);

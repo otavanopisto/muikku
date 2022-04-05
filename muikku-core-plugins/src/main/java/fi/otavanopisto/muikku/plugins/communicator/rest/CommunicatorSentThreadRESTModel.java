@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import fi.otavanopisto.muikku.rest.model.UserBasicInfo;
 import fi.otavanopisto.muikku.rest.model.UserGroup;
 
 /**
@@ -13,12 +12,12 @@ import fi.otavanopisto.muikku.rest.model.UserGroup;
  */
 public class CommunicatorSentThreadRESTModel extends CommunicatorThreadRESTModel {
 
-  public CommunicatorSentThreadRESTModel(Long id, Long communicatorMessageId, Long senderId, UserBasicInfo sender, 
+  public CommunicatorSentThreadRESTModel(Long id, Long communicatorMessageId, Long senderId, CommunicatorUserBasicInfo senderBasicInfo, 
       String categoryName, String caption, Date created, Set<String> tags, boolean unreadMessagesInThread, 
       Date threadLatestMessageDate, Long messageCountInThread, List<CommunicatorMessageIdLabelRESTModel> labels,
-      List<CommunicatorMessageRecipientRESTModel> recipients, List<UserGroup> userGroupRecipients, 
+      List<CommunicatorUserBasicInfo> recipients, List<UserGroup> userGroupRecipients, 
       List<CommunicatorMessageRecipientWorkspaceGroupRESTModel> workspaceRecipients, Long recipientCount) {
-    super(id, communicatorMessageId, senderId, sender, categoryName, caption, created, tags, unreadMessagesInThread, 
+    super(id, communicatorMessageId, senderId, senderBasicInfo, categoryName, caption, created, tags, unreadMessagesInThread, 
         threadLatestMessageDate, messageCountInThread, labels);
     this.recipients = recipients;
     this.recipientCount = recipientCount;
@@ -26,11 +25,11 @@ public class CommunicatorSentThreadRESTModel extends CommunicatorThreadRESTModel
     this.workspaceRecipients = workspaceRecipients;
   }
 
-  public List<CommunicatorMessageRecipientRESTModel> getRecipients() {
+  public List<CommunicatorUserBasicInfo> getRecipients() {
     return recipients;
   }
 
-  public void setRecipients(List<CommunicatorMessageRecipientRESTModel> recipients) {
+  public void setRecipients(List<CommunicatorUserBasicInfo> recipients) {
     this.recipients = recipients;
   }
 
@@ -59,7 +58,7 @@ public class CommunicatorSentThreadRESTModel extends CommunicatorThreadRESTModel
   }
 
   private Long recipientCount;
-  private List<CommunicatorMessageRecipientRESTModel> recipients = new ArrayList<CommunicatorMessageRecipientRESTModel>();
+  private List<CommunicatorUserBasicInfo> recipients = new ArrayList<CommunicatorUserBasicInfo>();
   private List<UserGroup> userGroupRecipients;
   private List<CommunicatorMessageRecipientWorkspaceGroupRESTModel> workspaceRecipients;
 }

@@ -18,9 +18,11 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
+import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
@@ -30,6 +32,7 @@ import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.users.OrganizationEntityController;
 import fi.otavanopisto.muikku.users.UserGroupController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
@@ -56,6 +59,9 @@ public class WorkspaceSignupGroupsRESTService extends PluginRESTService {
   private UserGroupEntityController userGroupEntityController;
   
   @Inject
+  private OrganizationEntityController organizationEntityController;
+  
+  @Inject
   private PluginSettingsController pluginSettingsController;
 
   @Inject
@@ -73,22 +79,25 @@ public class WorkspaceSignupGroupsRESTService extends PluginRESTService {
     List<UserGroupEntity> userGroupEntities;
     
     String permissionGroupIds = pluginSettingsController.getPluginSetting("workspace", "permission-group-ids");
-    if (permissionGroupIds == null) {
+    if (StringUtils.isEmpty(permissionGroupIds)) {
       userGroupEntities = userGroupEntityController.listUserGroupEntities();
     }
     else {
+      boolean fullOrganizationAccess = organizationEntityController.canCurrentUserAccessAllOrganizations();
+      OrganizationEntity organizationEntity = organizationEntityController.getCurrentUserOrganization();
       userGroupEntities = new ArrayList<UserGroupEntity>();
       String[] idArray = permissionGroupIds.split(",");
       for (int i = 0; i < idArray.length; i++) {
         Long groupId = NumberUtils.createLong(idArray[i]);
-
         if (groupId != null) {
           UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityById(groupId);
           if (userGroupEntity == null) {
             logger.warning(String.format("Missing group %d in plugin setting workspace.permission-group-ids", groupId));
           }
           else {
-            userGroupEntities.add(userGroupEntity);
+            if (fullOrganizationAccess || (organizationEntity != null && organizationEntity.getId().equals(userGroupEntity.getOrganization().getId()))) {
+              userGroupEntities.add(userGroupEntity);
+            }
           }
         }
         else {

@@ -10,9 +10,9 @@
 
 .carousel__item {
   display: block;
+  height: 100%;
   position: relative;
   width: 100%;
-  height: 100%;
 }
 
 .carousel__item-video {
@@ -50,6 +50,7 @@
 
   button {
     @include prefix(transition, moz ms webkit o, background 0.3);
+
     background: $color-carousel-default-dot-background;
     border: solid 2px $color-carousel-default-dot-border;
     border-radius: 100%;

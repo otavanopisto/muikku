@@ -2,6 +2,9 @@ name: Accessibility checks
 on: workflow_dispatch
 jobs:
   WCAG_check:
+    env:
+      OOM2_USER: ${{secrets.OOM2_USER}}
+      OOM2_PASSWORD: ${{secrets.OOM2_PASSWORD}}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -18,7 +21,9 @@ jobs:
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+      - name: Prepare maven settings
+        run: python prepare-maven.py
       - name: Check accessibility
         run: |
             cd muikku-atests
-            mvn clean verify -Pwcag -Dit.test=${{ matrix.testclass }} -Dit.test.student=${{ secrets.TEST_STUDENT }} -Dit.test.student.password=${{ secrets.TEST_STUDENT_PASSWORD }} -Dit.test.admin=${{ secrets.TEST_ADMIN }} -Dit.test.admin.password=${{ secrets.TEST_ADMIN_PASSWORD }} -Dit.host=${{ secrets.TEST_HOST }}
+            mvn clean verify --settings ~/.m2/mySettings.xml -Pwcag -Dit.test=${{ matrix.testclass }} -Dit.test.student=${{ secrets.TEST_STUDENT }} -Dit.test.student.password=${{ secrets.TEST_STUDENT_PASSWORD }} -Dit.test.admin=${{ secrets.TEST_ADMIN }} -Dit.test.admin.password=${{ secrets.TEST_ADMIN_PASSWORD }} -Dit.host=${{ secrets.TEST_HOST }}

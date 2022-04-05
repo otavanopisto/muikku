@@ -853,6 +853,33 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     userGroupEntityController.deleteUserGroupEntity(userGroup);
     return Response.noContent().build();
   }
+
+  @DELETE
+  @Path("/userGroups")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response deleteUserGroups() {
+    List<UserGroupEntity> userGroups = userGroupEntityController.listAllUserGroupEntities();
+    for (UserGroupEntity userGroup: userGroups) {
+      for(UserGroupUserEntity userGroupUser : userGroupEntityController.listUserGroupUserEntitiesByUserGroupEntity(userGroup)) {
+        userGroupEntityController.deleteUserGroupUserEntity(userGroupUser);
+      }
+      userGroupEntityController.deleteUserGroupEntity(userGroup);
+    }
+    return Response.noContent().build();
+  }
+
+  @DELETE
+  @Path("/userGroups/users")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response deleteUserGroupUsers() {
+    List<UserGroupEntity> userGroups = userGroupEntityController.listAllUserGroupEntities();
+    for (UserGroupEntity userGroup: userGroups) {
+      for(UserGroupUserEntity userGroupUser : userGroupEntityController.listUserGroupUserEntitiesByUserGroupEntity(userGroup)) {
+        userGroupEntityController.deleteUserGroupUserEntity(userGroupUser);
+      }
+    }
+    return Response.noContent().build();
+  }
   
   @DELETE
   @Path("/workspaces/{WORKSPACEENTITYID}/discussiongroups/{GROUPID}/discussions/{DISCUSSIONID}/threads/{ID}")
@@ -1032,6 +1059,18 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     userEntityController.archiveUserEntity(userEntity);
     userIndexer.removeUser(userEntity.getDefaultSchoolDataSource().getIdentifier(), userEntity.getDefaultIdentifier());
     return Response.ok().build();
+  }
+  
+  @GET
+  @Path("/users/id/{EMAIL}")
+  @Produces("text/plain")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response getUserIdByEmail(@PathParam ("EMAIL") String email) {
+    UserEntity userEntity = userEntityController.findUserEntityByEmailAddress(email);
+    if(userEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    return Response.ok(userEntity.getId()).build();
   }
   
   @POST

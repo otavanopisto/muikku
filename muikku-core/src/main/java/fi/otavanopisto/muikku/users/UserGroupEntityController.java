@@ -3,6 +3,7 @@ package fi.otavanopisto.muikku.users;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -11,6 +12,7 @@ import fi.otavanopisto.muikku.dao.users.UserGroupEntityDAO;
 import fi.otavanopisto.muikku.dao.users.UserGroupUserEntityDAO;
 import fi.otavanopisto.muikku.model.base.Archived;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
+import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupUserEntity;
@@ -30,18 +32,21 @@ public class UserGroupEntityController {
   
   @Inject
   private SchoolDataSourceDAO schoolDataSourceDAO;
+  
+  @Inject
+  private OrganizationEntityController organizationEntityController;
 
   @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
   
-  public UserGroupEntity createUserGroupEntity(String dataSource, String identifier) {
+  public UserGroupEntity createUserGroupEntity(String dataSource, String identifier, OrganizationEntity organization) {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(dataSource);
     if (schoolDataSource == null) {
       logger.severe("Could not find datasource " + dataSource);
       return null;
     }
     
-    return userGroupEntityDAO.create(schoolDataSource, identifier, false);
+    return userGroupEntityDAO.create(schoolDataSource, identifier, organization, false);
   }
   
   public UserGroupUserEntity createUserGroupUserEntity(UserGroupEntity userGroupEntity, String dataSource, String identifier, UserSchoolDataIdentifier userSchoolDataIdentifier) {
@@ -151,8 +156,22 @@ public class UserGroupEntityController {
     return userGroupEntityDAO.listByUserIdentifierExcludeArchived(userSchoolDataIdentifier);
   }
   
+  public List<UserGroupEntity> listAllUserGroupEntities() {
+    return userGroupEntityDAO.listAll();
+  }
+  
   public List<UserGroupEntity> listUserGroupEntities() {
-    return userGroupEntityDAO.listByArchived(Boolean.FALSE);
+    List<UserGroupEntity> userGroups = userGroupEntityDAO.listByArchived(Boolean.FALSE);
+    if (!organizationEntityController.canCurrentUserAccessAllOrganizations()) {
+      OrganizationEntity organizationEntity = organizationEntityController.getCurrentUserOrganization();
+      if (organizationEntity == null) {
+        return Collections.emptyList();
+      }
+      else {
+        userGroups = userGroups.stream().filter(group -> group.getOrganization().getId().equals(organizationEntity.getId())).collect(Collectors.toList());
+      }
+    }
+    return userGroups;
   }
 
   public List<UserGroupEntity> listUserGroupEntitiesIncludeArchived() {
@@ -177,6 +196,10 @@ public class UserGroupEntityController {
 
   public UserGroupUserEntity updateUserGroupEntity(UserGroupUserEntity userGroupUserEntity, UserGroupEntity userGroupEntity) {
     return userGroupUserEntityDAO.updateUserGroupEntity(userGroupUserEntity, userGroupEntity);
+  }
+  
+  public UserGroupEntity updateUserGroupEntityOrganization(UserGroupEntity userGroupEntity, OrganizationEntity organizationEntity) {
+    return userGroupEntityDAO.updateOrganization(userGroupEntity, organizationEntity);
   }
 
   public UserGroupEntity archiveUserGroupEntity(UserGroupEntity userGroupEntity) {

@@ -6,19 +6,18 @@
 .empty {
   align-items: center;
   display: flex;
-  height: 100%;
   justify-content: center;
-  min-height: calc(100vh - 155px);
   padding: 20px;
   width: 100%;
 
-  >* {
+  > * {
     font-family: $text-font-family;
-    font-size: 1.2rem;
+    font-size: 1.125rem;
     font-weight: 300;
   }
+}
 
-  @include breakpoint($breakpoint-pad) {
-    min-height: 100%;
-  }
+.empty--dialog-row {
+  justify-content: left;
+  padding: 0;
 }

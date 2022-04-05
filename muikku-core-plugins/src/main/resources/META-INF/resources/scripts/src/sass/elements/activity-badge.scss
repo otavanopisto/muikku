@@ -16,7 +16,7 @@ $progress-units: 100;
 .activity-badge__item {
   align-items: flex-end;
   background-color: $color-default;
-  border-radius: 3px;
+  border-radius: 2px;
   cursor: help;
   display: flex;
   height: 100%;
@@ -52,11 +52,8 @@ $progress-units: 100;
   width: 100%;
 }
 
-
-
 @for $i from 1 through $progress-units {
-
   .activity-badge__unit-bar--#{$i} {
-    height: percentage($i / 100);
+    height: percentage(calc($i / 100));
   }
 }

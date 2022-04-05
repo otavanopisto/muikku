@@ -247,17 +247,22 @@ public class TranscriptOfRecordsController {
     Map<SchoolDataIdentifier, WorkspaceAssessment> result = new HashMap<>();
     for (WorkspaceAssessment assessment : assessmentsByStudent) {
       WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifier(assessment.getWorkspaceUserIdentifier());
-      
-      WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
-      SchoolDataIdentifier workspaceIdentifier = workspaceEntity.schoolDataIdentifier();
-     
-      if (!result.containsKey(workspaceIdentifier)) {
-        result.put(workspaceIdentifier, assessment);
-      } else {
-        WorkspaceAssessment storedAssessment = result.get(workspaceIdentifier);
-        
-        if (assessment.getDate().after(storedAssessment.getDate()))
+      if (workspaceUserEntity != null) {
+
+        WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
+        SchoolDataIdentifier workspaceIdentifier = workspaceEntity.schoolDataIdentifier();
+
+        if (!result.containsKey(workspaceIdentifier)) {
           result.put(workspaceIdentifier, assessment);
+        } else {
+          WorkspaceAssessment storedAssessment = result.get(workspaceIdentifier);
+
+          if (assessment.getDate().after(storedAssessment.getDate()))
+            result.put(workspaceIdentifier, assessment);
+        }
+      }
+      else {
+        logger.warning(String.format("Workspace assessment %s has no corresponding WorkspaceUserEntity", assessment.getIdentifier().toString()));
       }
     }
     
@@ -370,17 +375,24 @@ public class TranscriptOfRecordsController {
     return null;
   }
 
-  public int countMandatoryCoursesForStudent(SchoolDataIdentifier studentIdentifier) {
-    StudentCourseStats stats = userSchoolDataController.getStudentCourseStats(studentIdentifier);
-    return stats.getNumMandatoryCompletedCourses();
+  public StudentCourseStats fetchStudentCourseStats(SchoolDataIdentifier studentIdentifier) {
+    return userSchoolDataController.getStudentCourseStats(studentIdentifier);
   }
-
+  
   public int getMandatoryCoursesRequiredForMatriculation() {
     String resultString = pluginSettingsController.getPluginSetting(
         "transcriptofrecords",
         "mandatoryCoursesRequiredForMatriculation");
     // Default is 20
     return StringUtils.isNotBlank(resultString) ? Integer.parseInt(resultString) : 20;
+  }
+
+  public double getMandatoryCreditPointsRequiredForMatriculation() {
+    String resultString = pluginSettingsController.getPluginSetting(
+        "transcriptofrecords",
+        "mandatoryCreditPointsRequiredForMatriculation");
+    // Default is 40
+    return StringUtils.isNotBlank(resultString) ? Double.parseDouble(resultString) : 40;
   }
 
   private SearchProvider getProvider(String name) {
@@ -457,5 +469,5 @@ public class TranscriptOfRecordsController {
     VopsLister.Result listerResult = lister.getResult();
     return listerResult;
   }
-  
+
 }

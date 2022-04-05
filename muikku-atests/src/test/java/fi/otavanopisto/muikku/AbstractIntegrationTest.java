@@ -35,6 +35,10 @@ import com.jayway.restassured.specification.RequestSpecification;
 
 public abstract class AbstractIntegrationTest {
 
+  public AbstractIntegrationTest() {
+    this.tools = new MuikkuTestTools(this);
+  }
+  
   @Rule
   public TestName testName = new TestName();
   
@@ -159,6 +163,25 @@ public abstract class AbstractIntegrationTest {
         user_id = results.getString("result");
       }
       return user_id;
+    } finally {
+      connection.close();
+    }
+  }
+  
+  protected String getLatestCeeposOrderId() throws SQLException, ClassNotFoundException {
+    Connection connection = getConnection();
+    try {
+      Statement statement = connection.createStatement();
+      statement.execute("SELECT id AS result "
+                  + "FROM ceeposOrder "
+                  + "ORDER BY ID DESC "
+                  + "LIMIT 1");
+      ResultSet results = statement.getResultSet();
+      String orderId = "";
+      while (results.next()) {              
+        orderId = results.getString("result");
+      }
+      return orderId;
     } finally {
       connection.close();
     }
@@ -372,6 +395,23 @@ public abstract class AbstractIntegrationTest {
     return null;
   }
   
+  protected Long getWorkspaceEntityIdForIdentifier(String identifier) throws SQLException, ClassNotFoundException {
+    Connection connection = getConnection();
+    try {
+      Statement statement = connection.createStatement();
+      statement.execute(String.format("select id from WorkspaceEntity where identifier = '%s'", identifier));
+      ResultSet results = statement.getResultSet();
+      if (results.next()) {              
+        Long id = results.getLong(1);
+        return id;
+      }
+    } finally {
+      connection.close();
+    }
+    
+    return null;
+  }
+  
   protected void dumpWorkspaceUsers() throws SQLException, ClassNotFoundException {
     System.out.println("Dumping all workspace users");
     
@@ -395,15 +435,40 @@ public abstract class AbstractIntegrationTest {
     }
   }
   
+  protected void dumpWorkspaces() throws SQLException, ClassNotFoundException {
+    System.out.println("Dumping all workspaces");
+    
+    Connection connection = getConnection();
+    try {
+      Statement statement = connection.createStatement();
+      statement.execute(String.format("SELECT id, identifier, archived FROM workspaceentity"));
+      ResultSet results = statement.getResultSet();
+      while (results.next()) {              
+        Long id = results.getLong(1);
+        String identifier = results.getString(2);
+        Boolean archived = results.getBoolean(3);
+        
+        System.out.println(String.format("#%d (%s), ar:%b", id, identifier, archived));
+      }
+    } finally {
+      connection.close();
+    }
+  }
+  
   enum RoleType {
     PSEUDO,
     ENVIRONMENT,
     WORKSPACE
   }
 
+  public MuikkuTestTools tools() {
+    return tools;
+  }
+  
   private String adminSessionId;
   private String managerSessionId;
   private String teacherSessionId;
   private String studentSessionId;
   private String everyoneSessionId;
+  private MuikkuTestTools tools;
 }

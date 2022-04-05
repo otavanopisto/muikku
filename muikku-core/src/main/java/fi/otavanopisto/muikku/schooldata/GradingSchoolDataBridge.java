@@ -8,6 +8,7 @@ import fi.otavanopisto.muikku.schooldata.entity.CompositeGradingScale;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScale;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
 import fi.otavanopisto.muikku.schooldata.entity.TransferCredit;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivity;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 
@@ -41,6 +42,10 @@ public interface GradingSchoolDataBridge {
 
   public List<GradingScaleItem> listGradingScaleItems(String gradingScaleIdentifier);
 
+  /* Workspace activity */
+  
+  public List<WorkspaceActivity> listWorkspaceActivities(String studentIdentifier, String workspaceIdentifier, boolean includeTransferCredits);
+  
   /* Workspace Assessments */
 
   /**

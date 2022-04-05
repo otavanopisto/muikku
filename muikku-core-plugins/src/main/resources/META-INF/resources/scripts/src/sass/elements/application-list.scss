@@ -5,14 +5,24 @@
 
 .application-list {
   @include text;
+
   height: 100%;
-  margin-bottom: 20px;
+
+  // margin-bottom: 20px;
   overflow: visible;
   width: 100%;
 
   &::-webkit-scrollbar {
     display: none;
   }
+}
+
+.application-list--dialog-users {
+  height: 234px;
+}
+
+.application-list--dialog-remove-users {
+  height: 285px;
 }
 
 .application-list__header-container {
@@ -40,6 +50,8 @@
 }
 
 .application-list__header--discussion {
+  align-items: center;
+  display: inline-flex;
   margin-bottom: 0;
   margin-left: 10px;
 
@@ -53,13 +65,6 @@
   margin-bottom: 0;
 }
 
-.application-list--workspace-staff-members {
-  display: flex;
-  flex-wrap: wrap;
-  height: auto;
-  padding: 0;
-}
-
 .application-list--workspace-users {
   display: flex;
   flex-direction: column;
@@ -68,8 +73,36 @@
 }
 
 .application-list--workspace-templates {
-  min-height: 260px;
+  min-height: 208px;
   overflow: hidden;
+}
+
+.application-list__content--workspace-staff-members {
+  display: block;
+  min-height: 0;
+  padding: 0;
+
+  @include breakpoint($breakpoint-pad) {
+    align-content: start;
+    display: flex;
+    flex-wrap: wrap;
+
+    &.state-FULL {
+      min-height: 330px;
+    }
+  }
+}
+
+.application-list__content--workspace-users {
+  @include breakpoint($breakpoint-pad) {
+    height: 660px;
+  }
+}
+
+.application-list__footer--organization {
+  align-items: center;
+  display: flex;
+  justify-content: center;
 }
 
 .application-list__title {
@@ -85,11 +118,9 @@
   font-size: 1.25rem;
   margin-right: 10px;
 
-  // scss-lint:disable SelectorFormat
   &.state-UNPUBLISHED {
     color: $color-disabled;
   }
-  // scss-lint:enable SelectorFormat
 }
 
 .application-list__header-icon--notification-1 {
@@ -112,6 +143,33 @@
   flex-shrink: 1;
   padding: 0 10px 0 0;
   word-wrap: break-word;
+}
+
+.application-list__header-primary--product {
+  flex-flow: column wrap;
+}
+
+.application-list__header-primary-title {
+  padding: 0 0 5px;
+}
+
+.application-list__header-primary-description {
+  font-size: 0.8125rem;
+  padding: 5px 0;
+}
+
+.application-list__header-primary-meta {
+  font-size: 0.75rem;
+  padding: 0 0 5px;
+
+  span {
+    display: inline-block;
+    margin: 0 10px 0 0;
+  }
+}
+
+.application-list__header-primary-actions {
+  padding: 5px 0;
 }
 
 .application-list__header-primary--announcement-meta {
@@ -187,7 +245,6 @@
   text-align: center;
   width: 1.875rem;
 
-  // scss-lint:disable SelectorFormat
   &.state-PASSED {
     background: $color-grade-passed;
   }
@@ -203,7 +260,6 @@
   &.state-NO-ASSESSMENT {
     background: $color-grade-not-assessed;
   }
-  // scss-lint:enable SelectorFormat
 }
 
 .application-list__indicator-badge--course {
@@ -249,21 +305,24 @@
     cursor: pointer;
   }
 
-  // scss-lint:disable SelectorFormat
   .state-DISABLED {
     color: $color-disabled;
     cursor: default;
   }
-  // scss-lint:enable SelectorFormat
 }
 
 .application-list__item-content-wrapper {
   align-items: flex-start;
   display: flex;
   flex-flow: row nowrap;
+
+  &.state-ENDED {
+    color: $color-disabled;
+  }
 }
 
-.application-list__item-content-wrapper--workspace-user {
+.application-list__item-content-wrapper--workspace-user,
+.application-list__item-content-wrapper--dialog-remove-users {
   align-items: center;
 }
 
@@ -303,8 +362,10 @@
     webkit ms o moz,
     background-color 0.2s ease-in-out
   );
+
   align-items: center;
   background-color: $color-application-list-item-background;
+
   // display: flex;
   position: relative;
 
@@ -362,6 +423,11 @@
       }
     }
   }
+
+  &.state-DISABLED {
+    background-color: $color-main-function-application-list-item-disabled-background;
+    color: $color-main-function-application-list-item-disabled-text;
+  }
 }
 
 .application-list__item--notification {
@@ -380,7 +446,7 @@
   &.course--open {
     background: $color-default;
     border-color: transparent;
-    box-shadow: 0 0 0 2px $color-application-list-item-course-border-selected;
+    box-shadow: 0 0 0 2px #000000;
     z-index: 10;
   }
 }
@@ -471,8 +537,6 @@
 
   input {
     align-items: center;
-    -moz-appearance: none;
-    -webkit-appearance: none;
     appearance: none;
     border: solid 2px $color-main-function-application-list-item-checkbox-border;
     border-radius: 3px;
@@ -484,19 +548,21 @@
 
   input:checked {
     background-color: $color-main-function-application-list-item-checkbox-checked-background;
-    border: solid 2px
+    border:
+      solid 2px
       $color-main-function-application-list-item-checkbox-checked-background;
   }
 
   input:checked::after {
     color: $color-main-function-application-list-item-checkbox-checked-mark;
     content: "\e639";
-    font-family: muikku;
+    font-family: "muikku";
     font-size: 0.875rem;
   }
 
   input[type="radio"] {
     border-radius: 50%;
+
     // this could be for any input inside the aside, but in communicator it is in the container
     margin-right: 5px;
   }
@@ -679,6 +745,8 @@
 }
 
 .application-list__item-header-main-content--discussion-message-creator {
+  align-items: center;
+  display: inline-flex;
   font-size: 0.875rem;
   font-weight: 600;
 
@@ -798,7 +866,6 @@
 }
 
 // Discussion
-
 .application-list__header-container--discussion {
   padding: 10px;
 
@@ -813,6 +880,10 @@
   @include breakpoint($breakpoint-pad) {
     padding: 20px 0;
   }
+}
+
+.application-list__item-header--discussion {
+  margin: 0 0 10px;
 }
 
 .application-list__item-text-body--discussion-message {
@@ -838,10 +909,11 @@
 }
 
 .application-list__item-text-body--discussion-message-overflow::before {
-  background: linear-gradient(
-    $color-application-list-item-fade-background 1rem,
-    $color-default
-  );
+  background:
+    linear-gradient(
+      $color-application-list-item-fade-background 1rem,
+      $color-default
+    );
   bottom: 0;
   content: "";
   height: 4rem;
@@ -883,7 +955,7 @@
 
 .application-list__item-footer--discussion-message {
   flex-flow: row wrap;
-  margin: 10px 0 0;
+  padding: 10px 0;
 }
 
 // Announcer
@@ -974,13 +1046,35 @@
   }
 }
 
+// Guider product
+.application-list__item--product {
+  border-top: 1px solid $color-message-border;
+
+  &:first-child {
+    border-color: transparent;
+  }
+}
+
+.application-list__item-header--product {
+  align-items: flex-start;
+  padding: 10px;
+}
+
 .application-list__item-body-meta-content {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   padding: 0 0 10px;
 
   label {
-    margin-right: 10px;
+    margin-right: 5px;
+  }
+
+  div {
+    padding: 5px 0;
+  }
+
+  span {
+    font-weight: 300;
   }
 }
 
@@ -1020,4 +1114,8 @@
 
 .application-list__item-header--studies-assignment {
   cursor: pointer;
+}
+
+.application-list__item-body--evaluation-assignment {
+  padding: 2px 8px;
 }

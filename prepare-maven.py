@@ -31,5 +31,5 @@ if (("OOM2_USER" in os.environ) and ("OOM2_PASSWORD" in os.environ)):
           encoding = 'utf-8',
           method = 'xml')
 else:
-  print("no secure environment variables available, skipping deployment")
-  sys.exit()
+ print("no secure environment variables available, skipping deployment")
+ sys.exit()

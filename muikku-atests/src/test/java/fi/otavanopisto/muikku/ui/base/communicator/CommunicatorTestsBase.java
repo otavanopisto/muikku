@@ -30,10 +30,61 @@ public class CommunicatorTestsBase extends AbstractUITest {
         navigate("/communicator", false);
         waitAndClick("a.button.button--primary-function");
         waitForPresent(".env-dialog__body .autocomplete--new-message .tag-input .tag-input__input");
+        waitAndClick(".env-dialog__body .autocomplete--new-message .tag-input .tag-input__input");
         sendKeys(".env-dialog__body .autocomplete--new-message .tag-input .tag-input__input", "Test");
         waitAndClick(".autocomplete__recipient");
+
         waitForVisible(".env-dialog__input--new-message-title");
-//      TODO: Recipient input hijacks input after first letter. What do?
+        waitAndClickWithAction(".env-dialog__input--new-message-title");
+        waitUntilElementGoesAway(".autocomplete__list", 5);
+        waitAndClickWithAction(".env-dialog__input--new-message-title");
+        sendKeys(".env-dialog__input--new-message-title", "Test message");
+        
+        waitForCKReady();
+        addTextToCKEditor("Communicator test");
+        waitAndClick(".button--dialog-execute");
+        waitForNotVisible(".env-dialog__wrapper");
+        getWebDriver().get("about:blank");
+        navigate("/communicator#sent", false);
+        waitForPresent(".application-list__item-body--communicator-message .application-list__header-item-body");
+        assertText(".application-list__item-body--communicator-message .application-list__header-item-body", "Test message");
+        logout();
+        mockBuilder.mockLogin(student);
+        login();
+        navigate("/communicator", false);
+        waitForPresent(".application-list__item-header--communicator-message .application-list__header-primary>span");
+        assertText(".application-list__item-header--communicator-message .application-list__header-primary>span", "Admin User");
+        waitForPresent(".application-list__item-body--communicator-message .application-list__header-item-body");
+        assertText(".application-list__item-body--communicator-message .application-list__header-item-body", "Test message");
+        
+        waitAndClick("div.application-list__item.message");
+        waitForPresent(".application-list__item-content-header");
+        assertText(".application-list__item-content-header", "Test message");
+        waitForPresent(".application-list__item-content-body");
+        assertText(".application-list__item-content-body", "Communicator test");
+      }finally{
+        deleteCommunicatorMessages();
+      }
+    }finally {
+      mockBuilder.wiremockReset();
+    } 
+  }
+  
+  @Test
+  public void communicatorStudentSendsMessageToTeacherTest() throws Exception {
+    MockStaffMember teacher = new MockStaffMember(3l, 3l, 1l, "Teacher", "User", UserRole.TEACHER, "221212-1234", "teacher@example.com", Sex.MALE);
+    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+    Builder mockBuilder = mocker();
+    mockBuilder.addStaffMember(teacher).addStudent(student).mockLogin(student).build();
+    try{
+      try{
+        login();
+        navigate("/communicator", false);
+        waitAndClick("a.button.button--primary-function");
+        waitForPresent(".env-dialog__body .autocomplete--new-message .tag-input .tag-input__input");
+        sendKeys(".env-dialog__body .autocomplete--new-message .tag-input .tag-input__input", "Teacher");
+        waitAndClick(".autocomplete__recipient");
+        waitForVisible(".env-dialog__input--new-message-title");
         sendKeys(".env-dialog__input--new-message-title", "T");
         waitAndClick("#cke_1_contents");
         addTextToCKEditor("Communicator test");
@@ -44,11 +95,11 @@ public class CommunicatorTestsBase extends AbstractUITest {
         waitForPresent(".application-list__item-body--communicator-message .application-list__header-item-body");
         assertText(".application-list__item-body--communicator-message .application-list__header-item-body", "T");
         logout();
-        mockBuilder.mockLogin(student);
+        mockBuilder.mockLogin(teacher);
         login();
         navigate("/communicator", false);
         waitForPresent(".application-list__item-header--communicator-message .application-list__header-primary>span");
-        assertText(".application-list__item-header--communicator-message .application-list__header-primary>span", "Admin User");
+        assertText(".application-list__item-header--communicator-message .application-list__header-primary>span", "Student Tester");
         waitForPresent(".application-list__item-body--communicator-message .application-list__header-item-body");
         assertText(".application-list__item-body--communicator-message .application-list__header-item-body", "T");
       }finally{
@@ -68,8 +119,9 @@ public class CommunicatorTestsBase extends AbstractUITest {
       mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
       login();
       try{
-        long sender = getUserIdByEmail("admin@example.com");
-        long recipient = getUserIdByEmail("student@example.com");
+        long sender = fetchUserIdByEmail(admin.getEmail());
+        long recipient = fetchUserIdByEmail(student.getEmail());
+
         for(int i = 0; i < 40; i++)
           createCommunicatorMesssage("Test " + i, "Test content " + i, sender, recipient);
         logout();
@@ -88,35 +140,6 @@ public class CommunicatorTestsBase extends AbstractUITest {
     }
   }
 
-  @Test 
-  public void communicatorReadMessageTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
-    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
-    Builder mockBuilder = mocker();
-    try{
-      mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
-      login();
-      try{
-        long sender = getUserIdByEmail("admin@example.com");
-        long recipient = getUserIdByEmail("student@example.com");
-        createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
-        logout();
-        mockBuilder.mockLogin(student);
-        login();
-        navigate("/communicator", false);
-        waitAndClick("div.application-list__item.message");
-        waitForPresent(".application-list__item-content-header");
-        assertText(".application-list__item-content-header", "Test caption");
-        waitForPresent(".application-list__item-content-body");
-        assertText(".application-list__item-content-body", "Test content.");
-      }finally{
-        deleteCommunicatorMessages(); 
-      }
-    }finally {
-      mockBuilder.wiremockReset();
-    }  
-  }
-  
   @Test
   public void communicatorLatestMessagesIndexWidget() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
@@ -126,8 +149,8 @@ public class CommunicatorTestsBase extends AbstractUITest {
       mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
       login();
       try{
-        long sender = getUserIdByEmail("admin@example.com");
-        long recipient = getUserIdByEmail("student@example.com");
+        long sender = fetchUserIdByEmail(admin.getEmail());
+        long recipient = fetchUserIdByEmail(student.getEmail());
         createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
         logout();
         mockBuilder.mockLogin(student);
@@ -157,8 +180,8 @@ public class CommunicatorTestsBase extends AbstractUITest {
       mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
       login();
       try{
-        long sender = getUserIdByEmail("admin@example.com");
-        long recipient = getUserIdByEmail("student@example.com");
+        long sender = fetchUserIdByEmail(admin.getEmail());
+        long recipient = fetchUserIdByEmail(student.getEmail());
         createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
         logout();
         mockBuilder.mockLogin(student);
@@ -186,15 +209,14 @@ public class CommunicatorTestsBase extends AbstractUITest {
     mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
     login();
     try{
-      long sender = getUserIdByEmail("admin@example.com");
-      long recipient = getUserIdByEmail("student@example.com");
+      long sender = fetchUserIdByEmail(admin.getEmail());
+      long recipient = fetchUserIdByEmail(student.getEmail());
       createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
       navigate("/communicator#sent", false);
       waitAndClick(".application-list__item-content-aside .message__select-container input");
       waitAndClick(".icon-trash");
       
       waitForPresent(".application-panel__main-container .empty");
-      String currentUrl = getWebDriver().getCurrentUrl();
       assertPresent(".application-panel__main-container .empty");
       }finally{
         deleteCommunicatorMessages(); 
@@ -217,10 +239,10 @@ public class CommunicatorTestsBase extends AbstractUITest {
         waitForVisible(".dropdown--communicator-labels input");
         sendKeys(".dropdown--communicator-labels input", "Test");
         waitAndClick(".dropdown--communicator-labels .link--full");
-        waitForPresent(".application-panel__helper-container a[href^='#label-'] span.item-list__text-body");
-        assertText(".application-panel__helper-container a[href^='#label-'] span.item-list__text-body", "Test");
+        waitForPresent(".application-panel__helper-container a[href^='#label-'] span.menu__item-link-text");
+        assertText(".application-panel__helper-container a[href^='#label-'] span.menu__item-link-text", "Test");
       }finally{
-        deleteCommunicatorUserLabels(admin.getId());
+        deleteCommunicatorUserLabels(getUserIdByEmail(admin.getEmail()));
       }
     }finally {
       mockBuilder.wiremockReset();
@@ -235,12 +257,12 @@ public class CommunicatorTestsBase extends AbstractUITest {
     try{
       mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
       login();
+      long recipient = fetchUserIdByEmail(admin.getEmail());
+      long sender = fetchUserIdByEmail(student.getEmail());
       try{
-        long recipient = getUserIdByEmail("admin@example.com");
-        long sender = getUserIdByEmail("student@example.com");
         createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
         createCommunicatorMesssage("Another one", "Another content.", sender, recipient);
-        createCommunicatorUserLabel(admin.getId(), "test");
+        createCommunicatorUserLabel(recipient, "test");
         navigate("/communicator", false);
 
         waitAndClick(".application-list__item-content-aside .message__select-container .message__selector");
@@ -256,7 +278,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
         waitForPresent(".application-list__item-body--communicator-message span");
         assertText(".application-list__item-body--communicator-message span", "Another one");
       }finally{
-        deleteCommunicatorUserLabels(admin.getId());
+        deleteCommunicatorUserLabels(recipient);
         deleteCommunicatorMessages();
       }
     }finally {
@@ -272,11 +294,11 @@ public class CommunicatorTestsBase extends AbstractUITest {
     try{
       mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
       login();
+      long recipient = fetchUserIdByEmail(admin.getEmail());
+      long sender = fetchUserIdByEmail(student.getEmail());
       try{
-        long recipient = getUserIdByEmail("admin@example.com");
-        long sender = getUserIdByEmail("student@example.com");
         createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
-        createCommunicatorUserLabel(admin.getId(), "test");
+        createCommunicatorUserLabel(recipient, "test");
         navigate("/communicator", false);
         waitAndClick("div.application-panel__content div.application-panel__helper-container a[href^='#label-'] .icon-pencil");
         waitForVisible(".dialog--visible .dialog__window--communicator-edit-label .form-element__input--communicator-label-name");
@@ -287,9 +309,9 @@ public class CommunicatorTestsBase extends AbstractUITest {
         sleep(500);
         waitForNotVisible(".dialog--visible .dialog__window--communicator-edit-label");
         waitForPresent("div.application-panel__content div.application-panel__helper-container a[href^='#label-']");
-        assertText("div.application-panel__content div.application-panel__helper-container a[href^='#label-'] .item-list__text-body", "Dun dun duun");
+        assertText("div.application-panel__content div.application-panel__helper-container a[href^='#label-'] .menu__item-link-text", "Dun dun duun");
       }finally{
-        deleteCommunicatorUserLabels(admin.getId());
+        deleteCommunicatorUserLabels(recipient);
         deleteCommunicatorMessages();
       }
     }finally {
@@ -305,11 +327,11 @@ public class CommunicatorTestsBase extends AbstractUITest {
     try{
       mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
       login();
+      long recipient = fetchUserIdByEmail(admin.getEmail());
+      long sender = fetchUserIdByEmail(student.getEmail());
       try{
-        long recipient = getUserIdByEmail("admin@example.com");
-        long sender = getUserIdByEmail("student@example.com");
         createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
-        createCommunicatorUserLabel(admin.getId(), "test");
+        createCommunicatorUserLabel(recipient, "test");
         navigate("/communicator", false);
         selectFinnishLocale();
         waitAndClick("div.application-panel__content div.application-panel__helper-container a[href^='#label-'] .icon-pencil");
@@ -326,7 +348,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
         waitForNotVisible("div>.dialog>.dialog__window");
         assertNotPresent("div.application-panel__content div.application-panel__helper-container a[href^='#label-'] ");
       }finally{
-        deleteCommunicatorUserLabels(admin.getId());
+        deleteCommunicatorUserLabels(recipient);
         deleteCommunicatorMessages();
       }
     }finally {
@@ -341,10 +363,10 @@ public class CommunicatorTestsBase extends AbstractUITest {
     Builder mockBuilder = mocker();
     mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
     try{
+      long recipient = fetchUserIdByEmail(admin.getEmail());
+      long sender = fetchUserIdByEmail(student.getEmail());
       try{
         login();
-        long recipient = getUserIdByEmail("admin@example.com");
-        long sender = getUserIdByEmail("student@example.com");
         createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
         createCommunicatorMesssage("Another one", "Another content.", sender, recipient);
         navigate("/communicator", false);
@@ -366,7 +388,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
         waitAndClick(".dropdown--communicator-labels .dropdown__container .link--communicator-label-dropdown.selected");
         assertGoesAway(".application-list__item-footer--communicator-message-labels .label__text", 5);
       }finally{
-        deleteCommunicatorUserLabels(admin.getId());
+        deleteCommunicatorUserLabels(recipient);
         deleteCommunicatorMessages();
       }
     }finally {
@@ -383,8 +405,8 @@ public class CommunicatorTestsBase extends AbstractUITest {
       mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
       login();
       try{
-        long recipient = getUserIdByEmail("admin@example.com");
-        long sender = getUserIdByEmail("student@example.com");
+        long recipient = fetchUserIdByEmail(admin.getEmail());
+        long sender = fetchUserIdByEmail(student.getEmail());
         createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
         navigate("/communicator", false);
         waitAndClick(".application-list__item-content-aside .message__select-container .message__selector");
@@ -400,6 +422,43 @@ public class CommunicatorTestsBase extends AbstractUITest {
     }finally {
       mockBuilder.wiremockReset();
     }
+  }
+  
+  @Test 
+  public void communicatorStudentReplyToTeacherTest() throws Exception {
+    MockStaffMember teacher = new MockStaffMember(5l, 5l, 1l, "Teacher", "User", UserRole.TEACHER, "121212-2334", "teacher@example.com", Sex.MALE);
+    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+    Builder mockBuilder = mocker();
+    try{
+      mockBuilder.addStaffMember(teacher).addStudent(student).mockLogin(teacher).build();
+      login();
+      try{
+        long sender = fetchUserIdByEmail(teacher.getEmail());
+        long recipient = fetchUserIdByEmail(student.getEmail());
+        createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
+        logout();
+        mockBuilder.mockLogin(student);
+        login();
+        navigate("/communicator", false);
+        waitAndClick("div.application-list__item.message");
+        waitForPresent(".application-list__item-content-header");
+        waitAndClick(".application-list__item-footer a:first-child");
+        
+        waitAndClick("#cke_1_contents");
+        addTextToCKEditor("Communicator reply test");
+        waitAndClick(".button--dialog-execute");
+        waitForNotVisible(".env-dialog__wrapper");
+        getWebDriver().get("about:blank");
+        navigate("/communicator#sent", false);
+        waitForPresent(".application-list__item-body--communicator-message .application-list__header-item-body");
+        assertText(".application-list__item-body--communicator-message .application-list__header-item-body", "Vs: Test caption");
+        
+      }finally{
+        deleteCommunicatorMessages(); 
+      }
+    }finally {
+      mockBuilder.wiremockReset();
+    }  
   }
   
 }

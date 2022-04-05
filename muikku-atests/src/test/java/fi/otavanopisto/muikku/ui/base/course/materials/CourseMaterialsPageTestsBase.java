@@ -2,11 +2,13 @@ package fi.otavanopisto.muikku.ui.base.course.materials;
 
 import static fi.otavanopisto.muikku.mock.PyramusMock.mocker;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
 import fi.otavanopisto.muikku.TestEnvironments;
@@ -21,6 +23,7 @@ import fi.otavanopisto.muikku.mock.model.MockStaffMember;
 import fi.otavanopisto.muikku.mock.model.MockStudent;
 import fi.otavanopisto.muikku.ui.AbstractUITest;
 import fi.otavanopisto.pyramus.rest.model.Course;
+import fi.otavanopisto.pyramus.rest.model.CourseActivityState;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
 import fi.otavanopisto.pyramus.rest.model.Sex;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
@@ -35,7 +38,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       TestEnvironments.Browser.FIREFOX,
     }
   )
-  public void fileFieldTestAdmin() throws Exception {
+  public void fileFieldTestStudent() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
@@ -51,13 +54,14 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
 
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
-      MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, course1.getId(), student.getId());
-      mockBuilder.addCourseStudent(workspace.getId(), mockCourseStudent).build();
-      mockBuilder
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
+     
+      MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+      mockBuilder.addCourseStudent(workspace.getId(), mockCourseStudent)
         .addCourseStaffMember(course1.getId(), courseStaffMember)
         .addCourseStudent(course1.getId(), mockCourseStudent)
         .build();
+            
       File testFile = getTestFile();
       try {
         WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
@@ -116,7 +120,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       .build();
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
       mockBuilder
         .addCourseStaffMember(course1.getId(), courseStaffMember)
         .build();
@@ -163,7 +167,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       .build();
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
       mockBuilder
         .addCourseStaffMember(course1.getId(), courseStaffMember)
         .build();
@@ -212,7 +216,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       .build();
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
       mockBuilder
         .addCourseStaffMember(course1.getId(), courseStaffMember)
         .build();
@@ -250,7 +254,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       .build();
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
       mockBuilder
         .addCourseStaffMember(course1.getId(), courseStaffMember)
         .build();
@@ -264,7 +268,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         selectFinnishLocale();
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(".button--muikku-check-exercises");
-        assertTextIgnoreCase(".button--muikku-check-exercises", "Palauta harjoitustehtävä");
+        assertTextIgnoreCase(".button--muikku-check-exercises", "Tarkasta harjoitustehtävä");
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial1.getId());
         deleteWorkspace(workspace.getId());
@@ -297,7 +301,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       .build();
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
       mockBuilder
         .addCourseStaffMember(course1.getId(), courseStaffMember)
         .build();
@@ -318,8 +322,8 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input", "field value");
         waitForNotVisible(".material-page__field-answer-synchronizer");
         waitAndClick(".button--muikku-check-exercises");
-        waitUntilContentChanged(".button--muikku-check-exercises", "Palauta harjoitustehtävä");
-        assertTextIgnoreCase(".button--muikku-check-exercises", "Harjoitustehtävä palautettu");
+        waitUntilContentChanged(".button--muikku-check-exercises", "Tarkasta harjoitustehtävä");
+        assertTextIgnoreCase(".button--muikku-check-exercises", "Harjoitustehtävä tarkastettu");
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input");
         waitForValue(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input");
@@ -358,8 +362,8 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       .build();
     login();
     Workspace workspace = createWorkspace(course1, Boolean.TRUE);
-    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
-    MockCourseStudent courseStudent = new MockCourseStudent(1l, course1.getId(), student.getId());
+    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
+    MockCourseStudent courseStudent = new MockCourseStudent(1l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
     mockBuilder
       .addCourseStaffMember(course1.getId(), courseStaffMember)
       .addCourseStudent(course1.getId(), courseStudent)
@@ -383,8 +387,8 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input", "field value");
           waitForNotVisible(".material-page__field-answer-synchronizer");
           waitAndClick(".button--muikku-check-exercises");
-          waitUntilContentChanged(".button--muikku-check-exercises", "Palauta harjoitustehtävä");
-          assertTextIgnoreCase(".button--muikku-check-exercises", "Harjoitustehtävä palautettu");
+          waitUntilContentChanged(".button--muikku-check-exercises", "Tarkasta harjoitustehtävä");
+          assertTextIgnoreCase(".button--muikku-check-exercises", "Harjoitustehtävä tarkastettu");
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input");
           waitForValue(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input");
@@ -422,7 +426,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       .build();
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
       mockBuilder
         .addCourseStaffMember(course1.getId(), courseStaffMember)
         .build();
@@ -477,8 +481,8 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     .build();
     login();
     Workspace workspace = createWorkspace(course1, Boolean.TRUE);
-    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
-    MockCourseStudent courseStudent = new MockCourseStudent(2l, course1.getId(), student.getId());
+    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
+    MockCourseStudent courseStudent = new MockCourseStudent(2l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
     mockBuilder
       .addCourseStaffMember(course1.getId(), courseStaffMember)
       .addCourseStudent(course1.getId(), courseStudent)
@@ -540,7 +544,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       .build();
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
       mockBuilder
         .addCourseStaffMember(course1.getId(), courseStaffMember)
         .build();
@@ -594,8 +598,8 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     .build();
     login();
     Workspace workspace = createWorkspace(course1, Boolean.TRUE);
-    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
-    MockCourseStudent courseStudent = new MockCourseStudent(4l, course1.getId(), student.getId());
+    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
+    MockCourseStudent courseStudent = new MockCourseStudent(4l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
     mockBuilder
       .addCourseStaffMember(course1.getId(), courseStaffMember)
       .addCourseStudent(course1.getId(), courseStudent)
@@ -652,7 +656,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       .build();
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
       mockBuilder
         .addCourseStaffMember(course1.getId(), courseStaffMember)
         .build();
@@ -761,7 +765,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       .build();
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
       mockBuilder
         .addCourseStaffMember(course1.getId(), courseStaffMember)
         .build();
@@ -772,7 +776,8 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           "Test", "text/html;editor=CKEditor", 
           "<p><object type=\"application/vnd.muikku.field.connect\"><param name=\"type\" value=\"application/json\"/><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-k08yrkwguDBhVbyFyqzvi0KB&quot;,&quot;fields&quot;:[{&quot;name&quot;:&quot;1&quot;,&quot;text&quot;:&quot;Nakki&quot;},{&quot;name&quot;:&quot;2&quot;,&quot;text&quot;:&quot;Peruna&quot;},{&quot;name&quot;:&quot;3&quot;,&quot;text&quot;:&quot;Juusto&quot;}],&quot;counterparts&quot;:[{&quot;name&quot;:&quot;A&quot;,&quot;text&quot;:&quot;Keppi&quot;},{&quot;name&quot;:&quot;B&quot;,&quot;text&quot;:&quot;Pulla&quot;},{&quot;name&quot;:&quot;C&quot;,&quot;text&quot;:&quot;Hampurilainen&quot;}],&quot;connections&quot;:[{&quot;field&quot;:&quot;1&quot;,&quot;counterpart&quot;:&quot;A&quot;},{&quot;field&quot;:&quot;2&quot;,&quot;counterpart&quot;:&quot;B&quot;},{&quot;field&quot;:&quot;3&quot;,&quot;counterpart&quot;:&quot;C&quot;}]}\"/></object><br/></p>", 
           "EXERCISE");
-      MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, course1.getId(), student.getId());
+
+      MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
       mockBuilder.addCourseStudent(workspace.getId(), mockCourseStudent).build();
       logout();
       mockBuilder.mockLogin(student);
@@ -835,7 +840,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       .build();
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
       mockBuilder
         .addCourseStaffMember(course1.getId(), courseStaffMember)
         .build();
@@ -846,7 +851,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           "Test", "text/html;editor=CKEditor", 
           "<p><object type=\"application/vnd.muikku.field.connect\"><param name=\"type\" value=\"application/json\"/><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-k08yrkwguDBhVbyFyqzvi0KB&quot;,&quot;fields&quot;:[{&quot;name&quot;:&quot;1&quot;,&quot;text&quot;:&quot;Nakki&quot;},{&quot;name&quot;:&quot;2&quot;,&quot;text&quot;:&quot;Peruna&quot;},{&quot;name&quot;:&quot;3&quot;,&quot;text&quot;:&quot;Juusto&quot;}],&quot;counterparts&quot;:[{&quot;name&quot;:&quot;A&quot;,&quot;text&quot;:&quot;Keppi&quot;},{&quot;name&quot;:&quot;B&quot;,&quot;text&quot;:&quot;Pulla&quot;},{&quot;name&quot;:&quot;C&quot;,&quot;text&quot;:&quot;Hampurilainen&quot;}],&quot;connections&quot;:[{&quot;field&quot;:&quot;1&quot;,&quot;counterpart&quot;:&quot;A&quot;},{&quot;field&quot;:&quot;2&quot;,&quot;counterpart&quot;:&quot;B&quot;},{&quot;field&quot;:&quot;3&quot;,&quot;counterpart&quot;:&quot;C&quot;}]}\"/></object><br/></p>", 
           "EXERCISE");
-      MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, course1.getId(), student.getId());
+      MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
       mockBuilder.addCourseStudent(workspace.getId(), mockCourseStudent).build();
       logout();
       mockBuilder.mockLogin(student);
@@ -863,78 +868,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         assertClassPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Nakki')]/parent::span/parent::span", "correct-answer");
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
-        deleteWorkspace(workspace.getId());
-      }
-    } finally {
-      mockBuilder.wiremockReset();
-    }
-  }
-
-  @Test
-  @TestEnvironments (
-    browsers = {
-      TestEnvironments.Browser.CHROME,
-      TestEnvironments.Browser.CHROME_HEADLESS,
-      TestEnvironments.Browser.FIREFOX,
-    }
-  )
-  public void fileFieldTestStudent() throws Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
-    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
-    Builder mockBuilder = mocker();
-
-    try {
-      Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
-      mockBuilder
-      .addStaffMember(admin)
-      .addStudent(student)
-      .mockLogin(admin)
-      .addCourse(course1)
-      .build();
-      login();
-      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
-
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
-      mockBuilder
-        .addCourseStaffMember(course1.getId(), courseStaffMember)
-        .build();
-      File testFile = getTestFile();
-      try {
-        WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
-        
-        WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
-            "Test", "text/html;editor=CKEditor", 
-            "<p><object type=\"application/vnd.muikku.field.file\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-lAEveKeKFmjD5wQwcMh4SW20&quot;}\" /><input name=\"muikku-field-lAEveKeKFmjD5wQwcMh4SW20\" type=\"file\" /></p>", 
-            "EXERCISE");
-        logout();
-        MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, course1.getId(), student.getId());
-        mockBuilder.addCourseStudent(workspace.getId(), mockCourseStudent).build();
-        mockBuilder.mockLogin(student);
-        login();
-        try {
-          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-          waitForPresent(".material-page__filefield-wrapper .file-uploader__field");
-          sendKeys(".material-page__filefield-wrapper .file-uploader__field", testFile.getAbsolutePath());
-          waitForPresent(".file-uploader__item--taskfield .file-uploader__item-download-icon");
-          waitForVisible(".notification-queue__item--success");
-          sleep(500);
-          
-          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-          assertTextIgnoreCase(".file-uploader__item-title", testFile.getName());
-          
-          waitForPresent(".file-uploader__item-delete-icon");
-          waitAndClick(".file-uploader__item-delete-icon");
-          waitForVisible(".dialog--confirm-remove-answer-dialog .button--standard-ok");
-          waitAndClick(".button--standard-ok");
-//        Timing problem where when debugging everything works fine, but at normal speed it gives error on saving empty field. Hence the sleep.
-          sleep(1500);
-          waitForVisible(".file-uploader__hint");
-          assertNotPresent(".file-uploader__item-title");
-        } finally {
-          deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
-        }
-        
-      } finally {
         deleteWorkspace(workspace.getId());
       }
     } finally {
@@ -968,7 +901,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
 
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
       mockBuilder
         .addCourseStaffMember(course1.getId(), courseStaffMember)
         .build();
@@ -985,7 +918,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
             + "Eu eam dictas ceteros petentium.<br />&nbsp;</p>",
             "EXERCISE");
         logout();
-        MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, course1.getId(), student.getId());
+        MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
         mockBuilder.addCourseStudent(workspace.getId(), mockCourseStudent).build();
         mockBuilder.mockLogin(student);
         login();
@@ -1003,9 +936,18 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           assertEquals("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mstyle displaystyle=\"true\"><mn>5</mn><mi>x</mi><mrow><mo>(</mo><mfrac><mi>a</mi><mrow><mi>a</mi><mo>+</mo><mi>c</mi></mrow></mfrac><mo>)</mo></mrow><mo>=</mo><mi>d</mi></mstyle></math>", mathml);
           sleep(1000);
           waitAndClick(".button--muikku-check-exercises");
-          waitForVisible(".material-page__field-answer-examples--sorterfield");
-          mathml = getAttributeValue(".material-page__field-answer-examples--sorterfield .MathJax_SVG", "data-mathml");
-          assertEquals("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mstyle displaystyle=\"true\"><mn>5</mn><mi>x</mi><mrow><mo>(</mo><mfrac><mi>a</mi><mrow><mi>a</mi><mo>+</mo><mi>c</mi></mrow></mfrac><mo>)</mo></mrow><mo>=</mo><mi>d</mi></mstyle></math>", mathml);
+          
+          waitForPresent(".material-page__correct-answers-data");
+          String correctAnswersCount = getElementText(".material-page__correct-answers-data");
+          if(StringUtils.equals(correctAnswersCount, "1 / 1")) {
+            assertTrue(true);
+          }else {
+            waitForVisible(".material-page__field-answer-examples--sorterfield");
+            waitForAttributeToHaveValue(".material-page__field-answer-examples--sorterfield .MathJax_SVG", "data-mathml");
+            mathml = getAttributeValue(".material-page__field-answer-examples--sorterfield .MathJax_SVG", "data-mathml");
+            assertEquals("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mstyle displaystyle=\"true\"><mn>5</mn><mi>x</mi><mrow><mo>(</mo><mfrac><mi>a</mi><mrow><mi>a</mi><mo>+</mo><mi>c</mi></mrow></mfrac><mo>)</mo></mrow><mo>=</mo><mi>d</mi></mstyle></math>", mathml);
+          }
+
         } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         }
@@ -1041,7 +983,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
   
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
       mockBuilder
         .addCourseStaffMember(course1.getId(), courseStaffMember)
         .build();
@@ -1112,7 +1054,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
 //      login();
 //      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
 //  
-//      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+//      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
 //      mockBuilder
 //        .addCourseStaffMember(course1.getId(), courseStaffMember)
 //        .build();
@@ -1186,8 +1128,8 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
 
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
-      MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, course1.getId(), student.getId());
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
+      MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
       mockBuilder.addCourseStudent(workspace.getId(), mockCourseStudent).build();
       mockBuilder
         .addCourseStaffMember(course1.getId(), courseStaffMember)
@@ -1212,7 +1154,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           waitForPresent(".content-panel__chapter-title-text");
           waitForElementToBeClickable(".cke_wysiwyg_div p");
           addTextToCKEditor(contentInput);
-          waitForPresent(".material-page__field-answer-synchronizer--saved");
+          waitForPresent(".material-page__memofield-wrapper.state-SAVED");
           navigate("/", false);
           waitForPresent(".panel__header-title");
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
@@ -1256,8 +1198,8 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
 
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
-      MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, course1.getId(), student.getId());
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
+      MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
       mockBuilder.addCourseStudent(workspace.getId(), mockCourseStudent).build();
       mockBuilder
         .addCourseStaffMember(course1.getId(), courseStaffMember)

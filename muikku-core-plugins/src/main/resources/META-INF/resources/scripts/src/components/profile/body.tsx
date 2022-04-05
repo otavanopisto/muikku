@@ -1,36 +1,24 @@
-import MainFunctionNavbar from '../base/main-function/navbar';
-import ScreenContainer from '../general/screen-container';
-import Application from './body/application';
+import MainFunctionNavbar from "../base/main-function/navbar";
 
-import * as React from 'react';
+import Aside from "./body/aside";
+import Application from "./body/application";
 
-import '~/sass/elements/profile-element.scss';
-import { StateType } from '~/reducers';
-import { Dispatch, connect } from 'react-redux';
-import { StatusType } from '~/reducers/base/status';
+import * as React from "react";
 
-class ProfileBody extends React.Component<{
-  status: StatusType
-},{}> {
-  render(){
-    return (<div>
-      <MainFunctionNavbar/>
-      <Application/>
-    </div>);
+/**
+ * ProfileBody
+ */
+export default class ProfileBody extends React.Component {
+  /**
+   * render
+   */
+  render() {
+    const aside = <Aside />;
+    return (
+      <div>
+        <MainFunctionNavbar navigation={aside} />
+        <Application aside={aside} />
+      </div>
+    );
   }
 }
-
-function mapStateToProps(state: StateType){
-  return {
-    status: state.status
-  }
-};
-
-function mapDispatchToProps(dispatch: Dispatch<any>){
-  return {};
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ProfileBody);

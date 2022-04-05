@@ -4,16 +4,16 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -21,6 +21,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusSchoolDataEntityFactory;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.PyramusClient;
+import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeInternalException;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceSchoolDataBridge;
@@ -28,17 +29,13 @@ import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceType;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser;
+import fi.otavanopisto.muikku.schooldata.payload.WorklistItemBilledPriceRestModel;
 import fi.otavanopisto.pyramus.rest.model.Course;
 import fi.otavanopisto.pyramus.rest.model.CourseDescription;
-import fi.otavanopisto.pyramus.rest.model.CourseEducationSubtype;
-import fi.otavanopisto.pyramus.rest.model.CourseEducationType;
 import fi.otavanopisto.pyramus.rest.model.CourseOptionality;
 import fi.otavanopisto.pyramus.rest.model.CourseParticipationType;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
 import fi.otavanopisto.pyramus.rest.model.CourseStudent;
-import fi.otavanopisto.pyramus.rest.model.EducationSubtype;
-import fi.otavanopisto.pyramus.rest.model.EducationType;
-import fi.otavanopisto.pyramus.rest.model.Subject;
 import fi.otavanopisto.pyramus.rest.model.course.CourseSignupStudentGroup;
 import fi.otavanopisto.pyramus.rest.model.course.CourseSignupStudyProgramme;
 
@@ -112,7 +109,7 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
       logger.severe(String.format("Organization identifier %s is not valid", destinationOrganizationIdentifier));
       return null;
     }
-    
+
     OffsetDateTime now = OffsetDateTime.now();
     
     Course courseCopy = new Course(
@@ -146,7 +143,9 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
         null, // variables are not copied
         copiedTags, // copy has its own tag list
         pyramusOrganizationId,
-        false // CourseTemplate - never a template when created from Muikku
+        false, // CourseTemplate - never a template when created from Muikku
+        course.getPrimaryEducationTypeId(),
+        course.getPrimaryEducationSubtypeId()
     ); // 
     
     Course createdCourse = pyramusClient.post("/courses/courses/", courseCopy);
@@ -348,80 +347,10 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
   }
   
   private Workspace createWorkspaceEntity(Course course) {
-    if (course == null)
+    if (course == null) {
       return null;
-    
-    SchoolDataIdentifier educationTypeIdentifier = null;
-    SchoolDataIdentifier educationSubtypeIdentifier = null;
-   
-    if (course.getSubjectId() != null) {
-      Subject subject = pyramusClient.get("/common/subjects/" + course.getSubjectId(), fi.otavanopisto.pyramus.rest.model.Subject.class);
-      if (subject == null) {
-        logger.severe(String.format("Subject with id %d not found", course.getSubjectId()));
-      }
-      else {
-        educationTypeIdentifier = identifierMapper.getEducationTypeIdentifier(subject.getEducationTypeId());
-      }
     }
-    
-    Map<String, List<String>> courseEducationTypeMap = new HashMap<String, List<String>>();
-    CourseEducationType[] courseEducationTypes = pyramusClient.get(
-        String.format("/courses/courses/%d/educationTypes", course.getId()),
-        CourseEducationType[].class);
-    
-    if (courseEducationTypes != null ) {
-      for (CourseEducationType courseEducationType: courseEducationTypes) {
-        
-        // #1632: if subject didn't determine education type and course only has one education type, use that instead
-        if (educationTypeIdentifier == null && courseEducationTypes.length == 1) {
-          educationTypeIdentifier = identifierMapper.getEducationTypeIdentifier(courseEducationTypes[0].getEducationTypeId());
-        }
-        
-        CourseEducationSubtype[] courseEducationSubtypes = pyramusClient.get(
-            String.format("/courses/courses/%d/educationTypes/%d/educationSubtypes", course.getId(), courseEducationType.getId()),
-            CourseEducationSubtype[].class);
-        
-        if (courseEducationSubtypes == null) {
-          continue;
-        }
-
-        if (educationSubtypeIdentifier == null && courseEducationSubtypes.length == 1) {
-          educationSubtypeIdentifier = identifierMapper.getEducationSubtypeIdentifier(courseEducationSubtypes[0].getEducationSubtypeId());
-        }
-        
-        EducationType educationType = pyramusClient.get(
-            String.format("/common/educationTypes/%d", courseEducationType.getEducationTypeId()),
-            EducationType.class);
-        
-        if (educationType == null) {
-          logger.severe(String.format("Could not find educationType %d", courseEducationType.getEducationTypeId()));
-          continue;
-        }
-        
-        String educationTypeCode = educationType.getCode();
-        List<String> courseEducationSubtypeList = new ArrayList<String>();
-        
-        for (CourseEducationSubtype courseEducationSubtype : courseEducationSubtypes) {
-          EducationSubtype educationSubtype = pyramusClient.get(
-              String.format(
-                  "/common/educationTypes/%d/subtypes/%d",
-                  educationType.getId(),
-                  courseEducationSubtype.getEducationSubtypeId()),
-              EducationSubtype.class);
-          
-          if (educationSubtype != null) {
-            String educationSubtypeCode = educationSubtype.getCode();
-            courseEducationSubtypeList.add(educationSubtypeCode);
-          } else {
-            logger.severe(String.format("Could not find education subtype %d from type %d", courseEducationSubtype.getEducationSubtypeId(), educationType.getId()));
-          }
-        }
-
-        courseEducationTypeMap.put(educationTypeCode, courseEducationSubtypeList);
-      }
-    }
-      
-    return entityFactory.createEntity(course, educationTypeIdentifier, educationSubtypeIdentifier, courseEducationTypeMap);
+    return entityFactory.createEntity(course);
   }
 
   @Override
@@ -513,12 +442,12 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
     switch (identifierMapper.getStudentGroupType(userGroupIdentifier.getIdentifier())) {
       case STUDYPROGRAMME:
         Long studyProgrammeId = identifierMapper.getPyramusStudyProgrammeId(userGroupIdentifier.getIdentifier());
-        CourseSignupStudyProgramme signupStudyProgramme = new CourseSignupStudyProgramme(null, courseId, studyProgrammeId, null);
+        CourseSignupStudyProgramme signupStudyProgramme = new CourseSignupStudyProgramme(null, courseId, studyProgrammeId, null, null);
         pyramusClient.post(String.format("/courses/courses/%d/signupStudyProgrammes", courseId), signupStudyProgramme);
       break;
       case STUDENTGROUP:
         Long studentGroupId = identifierMapper.getPyramusStudentGroupId(userGroupIdentifier.getIdentifier());
-        CourseSignupStudentGroup signupStudentGroup = new CourseSignupStudentGroup(null, courseId, studentGroupId, null);
+        CourseSignupStudentGroup signupStudentGroup = new CourseSignupStudentGroup(null, courseId, studentGroupId, null, null);
         pyramusClient.post(String.format("/courses/courses/%d/signupStudentGroups", courseId), signupStudentGroup);
       break;
     }
@@ -559,6 +488,48 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
         }
       break;
     }
+  }
+
+  @Override
+  public Double getWorkspaceBasePrice(String workspaceIdentifier) {
+    return pyramusClient.responseGet(String.format("/worklist/basePrice?course=%s", workspaceIdentifier), Double.class).getEntity();
+  }
+
+  @Override
+  public BridgeResponse<WorklistItemBilledPriceRestModel> getWorkspaceBilledPrice(String courseAssessmentIdentifier) {
+    Long courseAssessmentId = identifierMapper.getPyramusCourseAssessmentId(courseAssessmentIdentifier);
+    BridgeResponse<WorklistItemBilledPriceRestModel> response = pyramusClient.responseGet(
+        String.format("/worklist/billedPrice?courseAssessment=%d", courseAssessmentId),
+        WorklistItemBilledPriceRestModel.class);
+    if (response.getEntity() != null) {
+      response.getEntity().setAssessmentIdentifier(courseAssessmentIdentifier);
+    }
+    return response;
+  }
+  
+  @Override
+  public BridgeResponse<WorklistItemBilledPriceRestModel> updateWorkspaceBilledPrice(WorklistItemBilledPriceRestModel payload) {
+    
+    // Identifier to Pyramus id...
+    
+    SchoolDataIdentifier workspaceAssessmentIdentifier = SchoolDataIdentifier.fromId(payload.getAssessmentIdentifier());
+    String originalIdentifier = payload.getAssessmentIdentifier();
+    Long courseAssessmentId = identifierMapper.getPyramusCourseAssessmentId(workspaceAssessmentIdentifier.getIdentifier());
+    payload.setAssessmentIdentifier(courseAssessmentId.toString());
+    
+    // ...update...
+    
+    BridgeResponse<WorklistItemBilledPriceRestModel> response = pyramusClient.responsePut(
+        "/worklist/billedPrice",
+        Entity.entity(payload, MediaType.APPLICATION_JSON),
+        WorklistItemBilledPriceRestModel.class);
+    
+    // Pyramus id back to original identifier
+    
+    if (response.getEntity() != null) {
+      response.getEntity().setAssessmentIdentifier(originalIdentifier);
+    }
+    return response;
   }
 
 }

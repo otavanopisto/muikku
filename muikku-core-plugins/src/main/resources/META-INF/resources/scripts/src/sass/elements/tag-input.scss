@@ -44,7 +44,8 @@
   width: 100%;
 }
 
-.tag-input__input--new-message {
+.tag-input__input--new-message,
+.tag-input__input--new-announcement-recipients {
   border-color: $color-env-dialog-form-element-border;
   border-radius: 3px;
 }
@@ -66,6 +67,7 @@
   &.state-DISABLED {
     color: $color-disabled;
   }
+
   // scss-lint:enable SelectorFormat
 
   @include breakpoint($breakpoint-desktop) {
@@ -85,5 +87,6 @@
   &.state-DISABLED {
     color: $color-disabled;
   }
-    // scss-lint:enable SelectorFormat
+
+  // scss-lint:enable SelectorFormat
 }

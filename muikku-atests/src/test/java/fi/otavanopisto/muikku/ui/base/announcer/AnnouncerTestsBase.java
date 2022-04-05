@@ -39,7 +39,9 @@ public class AnnouncerTestsBase extends AbstractUITest {
         sendKeys(".env-dialog__form-element-container--datepicker:nth-child(2) .react-datepicker__input-container input", "21.12.2025");
         waitAndClick(".env-dialog__header");
         waitForNotVisible(".react-datepicker");
+        sleep(500);
         sendKeys(".env-dialog__form-element-container--title input", "Test title");
+        sleep(500);
         addTextToCKEditor("Announcer test announcement");
         waitAndClick(".button--dialog-execute");
         waitForNotVisible(".env-dialog");
@@ -105,6 +107,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
         waitForVisible(".item-list__item--announcements .item-list__announcement-date");
         assertTextIgnoreCase(".item-list__item--announcements .item-list__announcement-date", "12.11.2015");
       }finally{
+        archiveUserByEmail(student.getEmail());
         deleteAnnouncements();
       }
     }finally {
@@ -135,6 +138,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
         assertTextIgnoreCase(".reading-panel__main-container header.article__header + div", "12.11.2015");
         assertTextIgnoreCase(".reading-panel__main-container .article__body", "announcer test announcement");
       }finally{
+        archiveUserByEmail(student.getEmail());
         deleteAnnouncements();
       }
     }finally {
@@ -148,8 +152,9 @@ public class AnnouncerTestsBase extends AbstractUITest {
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
     try{
-      mockBuilder.addStaffMember(admin).addStudent(student).addStudentGroup(2l, 1l, "Test group", "Test group for users", 1l, false).addStudentToStudentGroup(2l, student).addStaffMemberToStudentGroup(2l, admin).mockLogin(admin).build();
+      mockBuilder.addStaffMember(admin).addStudent(student).addStudentGroup(2l, 1l, "Test group", "Test group for users", 1l, false, false).mockLogin(admin).build();
       login();
+      mockBuilder.addStudentToStudentGroup(2l, student).addStaffMemberToStudentGroup(2l, admin).mockPersons().mockStudents().mockStudyProgrammes().mockStudentGroups();
       try{
         List<Long> userGroups = new ArrayList<>();
         userGroups.add(2l);
@@ -165,7 +170,8 @@ public class AnnouncerTestsBase extends AbstractUITest {
         assertTextIgnoreCase(".item-list__item--announcements .item-list__announcement-date", "12.11.2015");
       }finally{
         deleteAnnouncements();
-        deleteUserGroup(2l);
+        deleteUserGroupUsers();
+        archiveUserByEmail(student.getEmail());
       }
     }finally {
       mockBuilder.wiremockReset();
@@ -178,8 +184,9 @@ public class AnnouncerTestsBase extends AbstractUITest {
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
     try {
-      mockBuilder.addStaffMember(admin).addStudent(student).addStudentGroup(2l, 1l, "Test group", "Test group for users", 1l, false).addStaffMemberToStudentGroup(2l, admin).mockLogin(admin).build();
+      mockBuilder.addStaffMember(admin).addStudent(student).addStudentGroup(2l, 1l, "Test group", "Test group for users", 1l, false, false).mockLogin(admin).build();
       login();
+      mockBuilder.addStaffMemberToStudentGroup(2l, admin).mockPersons().mockStudents().mockStudyProgrammes().mockStudentGroups();
       try{
         List<Long> userGroups = new ArrayList<>();
         userGroups.add(2l);
@@ -192,6 +199,8 @@ public class AnnouncerTestsBase extends AbstractUITest {
         assertTrue("Element found even though it shouldn't be there", isElementPresent(".item-list__item--announcements .item-list__announcement-caption") == false);
       }finally{
         deleteAnnouncements();
+        deleteUserGroupUsers();
+        archiveUserByEmail(student.getEmail());
       }
     }finally {
       mockBuilder.wiremockReset();
@@ -248,6 +257,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
       assertCount(".application-list__item-content-header" ,1);
     }finally{
       deleteAnnouncements();
+      archiveUserByEmail(student.getEmail());
       mockBuilder.wiremockReset();
     }
   }

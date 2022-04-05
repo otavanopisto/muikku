@@ -56,7 +56,7 @@
       <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/moment/2.10.6/moment-with-locales.min.js"/>    
       
       <!-- Notification Queue -->
-      <script defer="defer" type="text/javascript" jsf:name="/scripts/notificationqueue/notificationqueue.js"/>
+      <script defer="defer" type="text/javascript" src="#{request.contextPath}/scripts/notificationqueue/notificationqueue.js"/>
       
       <!-- Api resources -->
       <script defer="defer" type="text/javascript" src="#{request.contextPath}/rest/meta/resources?format=js"></script>
@@ -71,16 +71,13 @@
       <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jquery.rest/1.0.2/jquery.rest.min.js"></script>
       
       <!-- Api -->
-      <script defer="defer" type="text/javascript" jsf:name="/scripts/api/api.js"/>
+      <script defer="defer" type="text/javascript" src="#{request.contextPath}/scripts/api/api.js"/>
 
       <!-- Websocket -->
-      <script defer="defer" type="text/javascript" jsf:name="/scripts/widgets/controllers/websocket.js" />
+      <script defer="defer" type="text/javascript" src="#{request.contextPath}/scripts/widgets/controllers/websocket.js" />
 
       <!-- Heartbeat -->
       <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/heartbeat.js"/>
-      
-      <!-- Language -->
-      <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/language.js"/>
       
       <ui:insert name="scripts-main"></ui:insert>
       <ui:insert name="scripts"></ui:insert>

@@ -5,21 +5,40 @@
 
 .dialog {
   @include prefix(transition, moz ms webkit o, opacity 0.3s);
+
   align-items: center;
   background-color: $color-overlay-background;
   bottom: 0;
   display: flex;
   justify-content: center;
   left: 0;
-  opacity: 0;
+  opacity: 0%;
   position: fixed;
   right: 0;
   top: 0;
-  z-index: 9999;
+  z-index: 9990;
+}
+
+.dialog--matriculation {
+  .dialog__window {
+    @include breakpoint($breakpoint-pad) {
+      left: auto;
+      right: auto;
+      width: 728px;
+    }
+
+    @include breakpoint($breakpoint-desktop) {
+      width: 984px;
+    }
+
+    @include breakpoint($breakpoint-desktop-xl) {
+      width: 1160px;
+    }
+  }
 }
 
 .dialog--visible {
-  opacity: 1;
+  opacity: 100%;
 }
 
 .dialog__window {
@@ -56,12 +75,23 @@
   }
 }
 
+.dialog__window--edit-workspace,
+.dialog__window--edit-user-group {
+  @include breakpoint($breakpoint-pad) {
+    max-width: 815px;
+
+    .dialog__content {
+      height: 546px;
+    }
+  }
+}
+
 .dialog__window--new-workspace {
   @include breakpoint($breakpoint-pad) {
     max-width: 815px;
 
     .dialog__content {
-      height: 505px;
+      height: 420px;
     }
   }
 }
@@ -96,10 +126,16 @@
     bottom: 20px;
     display: flex;
     flex-direction: column;
-    left: 20px;
+    left: 5px;
     position: absolute;
-    right: 20px;
-    top: 20px;
+    right: 5px;
+    top: 0;
+
+    @include breakpoint($breakpoint-pad) {
+      left: 20px;
+      right: 20px;
+      top: 20px;
+    }
   }
 
   .wizard__content {
@@ -108,6 +144,7 @@
     flex-direction: column;
     flex-grow: 1;
     flex-shrink: 1;
+    overflow: auto;
   }
 }
 
@@ -123,7 +160,7 @@
   height: 100%;
   justify-content: center;
   left: 0;
-  opacity: 0.9;
+  opacity: 90%;
   position: absolute;
   width: 100%;
   z-index: 1000;
@@ -186,7 +223,6 @@
 }
 
 .dialog__header--wizard {
-
   @include breakpoint($breakpoint-pad) {
     align-items: center;
     background-color: $color-dialog-wizard-desktop-background;
@@ -224,12 +260,13 @@
 
 .dialog__close {
   @include prefix(transition, moz ms o webkit, background-color 0.3s);
+
   border-radius: $dialog-button-close-height;
   cursor: pointer;
   font-size: 18px;
   height: $dialog-button-close-height;
   line-height: $dialog-button-close-height;
-  margin-top: -#{$dialog-button-close-height / 2};
+  margin-top: calc(-#{$dialog-button-close-height} / 2);
   position: absolute;
   right: 5px;
   text-align: center;
@@ -251,6 +288,14 @@
   }
 }
 
+.dialog__content-row--user-search {
+  margin: 10px 0;
+}
+
+.dialog__content-row--dates {
+  display: flex;
+}
+
 .dialog__content-row--new-user {
   align-items: flex-start;
   display: flex;
@@ -261,9 +306,12 @@
 .dialog__content-row--new-workspace,
 .dialog__content-row--edit-workspace {
   display: flex;
+  flex-wrap: wrap;
 
-  .form-element:not(:first-child) {
-    margin-left: 20px;
+  @include breakpoint($breakpoint-pad) {
+    .form-element:not(:first-child) {
+      margin-left: 20px;
+    }
   }
 }
 
@@ -276,22 +324,44 @@
   justify-content: flex-start;
 }
 
-
-.dialog__content-row-label {
+.dialog__content-row-header-title {
   font-size: $label-large-font-size;
 }
 
-.dialog__content-row-content {
-  padding: 15px 0 0;
+.dialog__content-row-header-description {
+  font-weight: 300;
+  padding: 10px 0;
 }
 
-.dialog__content-row-content--new-workspace {
-  margin-left: 20px;
+.dialog__content-row-content {
+  padding: 2px 0 0;
+}
+
+.dialog__content-row-content--new-workspace,
+.dialog__content-row-content--edit-workspace,
+.dialog__content-row-content--summary-dates {
+  padding-left: 20px;
 
   span {
     margin-left: 10px;
   }
+}
 
+.dialog__content-row-content--summary {
+  padding-left: 20px;
+}
+
+.dialog__content-row-content--summary-dates span {
+  margin-left: 0;
+
+  &:not(:first-child) {
+    margin-left: 5px;
+
+    &::before {
+      content: "-";
+      margin-right: 5px;
+    }
+  }
 }
 
 .dialog__footer {
@@ -327,6 +397,31 @@
   }
 }
 
+.dialog--evaluation {
+  width: 100%;
+
+  .dialog__header--evaluation {
+    display: none;
+  }
+
+  .dialog__content {
+    height: 100%;
+    padding: 0;
+  }
+
+  .dialog__window--evaluation {
+    @include breakpoint($breakpoint-pad) {
+      bottom: 0;
+      left: 0;
+      margin: 0;
+      max-width: 100%;
+      position: fixed;
+      right: 0;
+      top: 0;
+    }
+  }
+}
+
 .dialog--enrollment {
   background: transparent;
   bottom: auto;
@@ -356,5 +451,41 @@
   &.state-DONE {
     color: $color-success;
   }
+
   // scss-lint:enable SelectorFormat
+}
+
+.dialog__state {
+  align-items: center;
+  border: 1px solid transparent;
+  border-left-width: 3px;
+  display: flex;
+  margin: 20px 0 5px;
+  padding: 7px;
+
+  // scss-lint:disable SelectorFormat
+  &.state-INFO {
+    border-color: $color-info;
+
+    .dialog__state-icon {
+      color: $color-info;
+    }
+  }
+
+  // scss-lint:enable SelectorFormat
+}
+
+.dialog__state-icon {
+  flex-basis: 20px;
+  flex-grow: 0;
+  flex-shrink: 0;
+  font-size: 35px;
+  margin: 0 7px 0 0;
+}
+
+.dialog__state-text {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  text-align: left;
 }

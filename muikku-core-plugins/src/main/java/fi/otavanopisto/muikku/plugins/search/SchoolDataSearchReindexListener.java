@@ -24,12 +24,9 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
-import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
-import fi.otavanopisto.muikku.search.SearchIndexer;
 import fi.otavanopisto.muikku.search.SearchReindexEvent;
 import fi.otavanopisto.muikku.search.SearchReindexEvent.Task;
 import fi.otavanopisto.muikku.users.UserEntityController;
-import fi.otavanopisto.muikku.users.UserGroupController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
 
 @ApplicationScoped
@@ -46,9 +43,6 @@ public class SchoolDataSearchReindexListener {
   private UserEntityController userEntityController;
 
   @Inject
-  private UserGroupController userGroupController;
-
-  @Inject
   private UserGroupEntityController userGroupEntityController;
 
   @Inject
@@ -58,17 +52,17 @@ public class SchoolDataSearchReindexListener {
   private CommunicatorController communicatorController;
 
   @Inject
-  private SearchIndexer indexer;
-
-  @Inject
   private UserIndexer userIndexer;
 
+  @Inject
+  private UserGroupIndexer userGroupIndexer;
+  
   @Inject
   private WorkspaceIndexer workspaceIndexer;
 
   @Inject
   private CommunicatorMessageIndexer communicatorMessageIndexer;
-
+  
   @Resource
   private TimerService timerService;
 
@@ -211,7 +205,7 @@ public class SchoolDataSearchReindexListener {
 
   private boolean reindexUserGroups() {
     try {
-      List<UserGroupEntity> userGroups = userGroupEntityController.listUserGroupEntities();
+      List<UserGroupEntity> userGroups = userGroupEntityController.listAllUserGroupEntities();
       int groupIndex = getOffset("groupIndex");
 
       if (groupIndex < userGroups.size()) {
@@ -219,14 +213,11 @@ public class SchoolDataSearchReindexListener {
 
         for (int i = groupIndex; i < last; i++) {
           UserGroupEntity groupEntity = userGroups.get(i);
-
-          UserGroup userGroup = userGroupController.findUserGroup(groupEntity.getSchoolDataSource(), groupEntity.getIdentifier());
-
           try {
-            indexer.index(UserGroup.INDEX_NAME, UserGroup.TYPE_NAME, userGroup);
+            userGroupIndexer.indexUserGroup(groupEntity);
           }
           catch (Exception e) {
-            logger.log(Level.WARNING, "could not index UserGroup #" + groupEntity.getSchoolDataSource() + '/' + groupEntity.getIdentifier(), e);
+            logger.log(Level.WARNING, "could not index UserGroup " + groupEntity.schoolDataIdentifier().toString(), e);
           }
         }
 

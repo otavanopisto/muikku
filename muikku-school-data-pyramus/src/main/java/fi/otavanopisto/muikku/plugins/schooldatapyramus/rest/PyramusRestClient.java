@@ -2,6 +2,7 @@ package fi.otavanopisto.muikku.plugins.schooldatapyramus.rest;
 
 import java.io.Serializable;
 import java.lang.reflect.Array;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,7 +29,6 @@ import fi.otavanopisto.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginD
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeException;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeUnauthorizedException;
-import fi.otavanopisto.muikku.session.SessionController;
 
 @Dependent
 class PyramusRestClient implements Serializable {
@@ -37,9 +37,6 @@ class PyramusRestClient implements Serializable {
 
   @Inject
   private Logger logger;
-
-  @Inject
-  private SessionController sessionController;
 
   @Inject
   private PluginSettingsController pluginSettingsController;
@@ -56,6 +53,9 @@ class PyramusRestClient implements Serializable {
     WebTarget target = client.target(url + path);
     Builder request = target.request();
     request.header("Authorization", "Bearer " + accssToken);
+    if (locale != null) {
+      request.header("Accept-Language", locale);
+    }
     Response response = request.post(entity);
     try {
       return createResponse(response, type, path);
@@ -69,6 +69,9 @@ class PyramusRestClient implements Serializable {
     WebTarget target = client.target(url + path);
     Builder request = target.request();
     request.header("Authorization", "Bearer " + accssToken);
+    if (locale != null) {
+      request.header("Accept-Language", locale);
+    }
     Response response = request.post(Entity.entity(entity, MediaType.APPLICATION_JSON));
     try {
       return (T) createResponse(response, entity.getClass(), path);
@@ -81,6 +84,9 @@ class PyramusRestClient implements Serializable {
     WebTarget target = client.target(url + path);
     Builder request = target.request();
     request.header("Authorization", "Bearer " + accssToken);
+    if (locale != null) {
+      request.header("Accept-Language", locale);
+    }
     Response response = request.put(entity);
     try {
       return createResponse(response, type, path);
@@ -94,6 +100,9 @@ class PyramusRestClient implements Serializable {
     WebTarget target = client.target(url + path);
     Builder request = target.request();
     request.header("Authorization", "Bearer " + accssToken);
+    if (locale != null) {
+      request.header("Accept-Language", locale);
+    }
     Response response = request.put(Entity.entity(entity, MediaType.APPLICATION_JSON));
     try {
       return (T) createResponse(response, entity.getClass(), path);
@@ -107,7 +116,9 @@ class PyramusRestClient implements Serializable {
     Builder request = target.request();
     request.accept(MediaType.APPLICATION_JSON_TYPE);
     request.header("Authorization", "Bearer " + accessToken);
-    request.header("Accept-Language", sessionController.getLocale());
+    if (locale != null) {
+      request.header("Accept-Language", locale);
+    }
     Response response = request.get();
     try {
       return createBridgeResponse(response, path, type);
@@ -122,7 +133,9 @@ class PyramusRestClient implements Serializable {
     Builder request = target.request();
     request.accept(MediaType.APPLICATION_JSON_TYPE);
     request.header("Authorization", "Bearer " + accessToken);
-    request.header("Accept-Language", sessionController.getLocale());
+    if (locale != null) {
+      request.header("Accept-Language", locale);
+    }
     Response response = request.put(payload);
     try {
       return createBridgeResponse(response, path, type);
@@ -137,7 +150,9 @@ class PyramusRestClient implements Serializable {
     Builder request = target.request();
     request.accept(MediaType.APPLICATION_JSON_TYPE);
     request.header("Authorization", "Bearer " + accessToken);
-    request.header("Accept-Language", sessionController.getLocale());
+    if (locale != null) {
+      request.header("Accept-Language", locale);
+    }
     Response response = request.post(payload);
     try {
       return createBridgeResponse(response, path, type);
@@ -150,9 +165,11 @@ class PyramusRestClient implements Serializable {
   public <T> T get(Client client, String accessToken, String path, Class<T> type) {
     WebTarget target = client.target(url + path);
     Builder request = target.request();
-    
-    request.accept(MediaType.APPLICATION_JSON_TYPE);
+    request.accept(MediaType.APPLICATION_JSON_TYPE, MediaType.TEXT_PLAIN_TYPE);
     request.header("Authorization", "Bearer " + accessToken);
+    if (locale != null) {
+      request.header("Accept-Language", locale);
+    }
     Response response = request.get();
     try {
       return createResponse(response, type, path);
@@ -165,6 +182,9 @@ class PyramusRestClient implements Serializable {
     WebTarget target = client.target(url + path);
     Builder request = target.request();
     request.header("Authorization", "Bearer " + accssToken);
+    if (locale != null) {
+      request.header("Accept-Language", locale);
+    }
     Response response = request.delete();
 
     try {
@@ -297,8 +317,13 @@ class PyramusRestClient implements Serializable {
     return new BridgeResponse<T>(statusCode, entity, message);
   }
   
+  public void setLocale(Locale locale) {
+    this.locale = locale;
+  }
+
   private String url;
   private String clientId;
   private String clientSecret;
   private String redirectUrl;
+  private Locale locale;
 }

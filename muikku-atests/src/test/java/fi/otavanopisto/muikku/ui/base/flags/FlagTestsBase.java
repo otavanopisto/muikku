@@ -1,11 +1,12 @@
 package fi.otavanopisto.muikku.ui.base.flags;
 
 import static fi.otavanopisto.muikku.mock.PyramusMock.mocker;
-import static org.junit.Assert.assertEquals;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+
 import org.junit.Test;
+
 import fi.otavanopisto.muikku.TestUtilities;
 import fi.otavanopisto.muikku.atests.Workspace;
 import fi.otavanopisto.muikku.mock.CourseBuilder;
@@ -15,6 +16,7 @@ import fi.otavanopisto.muikku.mock.model.MockStaffMember;
 import fi.otavanopisto.muikku.mock.model.MockStudent;
 import fi.otavanopisto.muikku.ui.AbstractUITest;
 import fi.otavanopisto.pyramus.rest.model.Course;
+import fi.otavanopisto.pyramus.rest.model.CourseActivityState;
 import fi.otavanopisto.pyramus.rest.model.Sex;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
 
@@ -24,22 +26,26 @@ public class FlagTestsBase extends AbstractUITest {
   public void createNewFlagTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(3l, 3l, "Second", "User", "teststudent@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+    MockStudent student2 = new MockStudent(4l, 4l, "Thirdester", "User", "testsostudent@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "030584-5656", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
-    Course course1 = new CourseBuilder().name("testcourse").id((long) 3).description("test course for testing").organizationId(1l).buildCourse();
-    Course course2 = new CourseBuilder().name("diffentscourse").id((long) 4).description("Second test course").organizationId(1l).buildCourse();
+    Course course1 = new CourseBuilder().name("testcourse").id((long) 3).organizationId(1l).description("test course for testing").buildCourse();
+    Course course2 = new CourseBuilder().name("diffentscourse").id((long) 4).organizationId(1l).description("Second test course").buildCourse();
     mockBuilder
-      .addStaffMember(admin)
-      .addStudent(student)
-      .mockLogin(admin)
-      .addCourse(course1)
-      .addCourse(course2)
-      .build();
+    .addStaffMember(admin)
+    .addStudent(student)
+    .addStudent(student2)
+    .mockLogin(admin)
+    .addCourse(course1)
+    .addCourse(course2)
+    .build();
     login();
-    Workspace workspace = createWorkspace(course1, true);
-    Workspace workspace2 = createWorkspace(course2, true);
-    MockCourseStudent mcs = new MockCourseStudent(3l, course1.getId(), student.getId());
+    Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+    Workspace workspace2 = createWorkspace(course2, Boolean.TRUE);
+    MockCourseStudent mcs = new MockCourseStudent(3l, workspace.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+    MockCourseStudent mcs2 = new MockCourseStudent(4l, workspace.getId(), student2.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
     mockBuilder.
-      addCourseStudent(course1.getId(), mcs).
+      addCourseStudent(workspace.getId(), mcs).
+      addCourseStudent(workspace.getId(), mcs2).
       build();
     try {
       navigate("/guider", false);
@@ -52,8 +58,8 @@ public class FlagTestsBase extends AbstractUITest {
       waitAndClick("div.dropdown--guider-labels .link--full");
       waitAndClick("div.application-panel__toolbar span.icon-flag");
       waitForVisible(".application-panel__helper-container .icon-flag");
-      waitForVisible(".application-panel__helper-container .icon-flag + span.item-list__text-body");
-      assertTextIgnoreCase(".application-panel__helper-container .icon-flag + span.item-list__text-body", "Test flag");
+      waitForVisible(".application-panel__helper-container .icon-flag + span.menu__item-link-text");
+      assertTextIgnoreCase(".application-panel__helper-container .icon-flag + span.menu__item-link-text", "Test flag");
     } finally {
       deleteFlags();
       deleteWorkspace(workspace.getId());
@@ -81,8 +87,8 @@ public class FlagTestsBase extends AbstractUITest {
     login();
     Workspace workspace = createWorkspace(course1, Boolean.TRUE);
     Workspace workspace2 = createWorkspace(course2, Boolean.TRUE);
-    MockCourseStudent mcs = new MockCourseStudent(3l, workspace.getId(), student.getId());
-    MockCourseStudent mcs2 = new MockCourseStudent(4l, workspace.getId(), student2.getId());
+    MockCourseStudent mcs = new MockCourseStudent(3l, workspace.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+    MockCourseStudent mcs2 = new MockCourseStudent(4l, workspace.getId(), student2.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
     mockBuilder.
       addCourseStudent(workspace.getId(), mcs).
       addCourseStudent(workspace.getId(), mcs2).
@@ -94,8 +100,8 @@ public class FlagTestsBase extends AbstractUITest {
       navigate("/guider", false);
     
       waitUntilElementCount(".user--guider", 2);
-      waitForVisible("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container > div > div:nth-child(1) > a");
-      click("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container > div > div:nth-child(1) > a");
+      waitForVisible(".application-panel__helper-container.application-panel__helper-container--guider .menu__item-link--aside-navigation-guider-flag");
+      click(".application-panel__helper-container.application-panel__helper-container--guider .menu__item-link--aside-navigation-guider-flag");
       
       waitUntilElementCount(".user--guider", 1);
       assertTextIgnoreCase(".user--guider .application-list__header-primary span", "Second User");
@@ -129,8 +135,8 @@ public class FlagTestsBase extends AbstractUITest {
     login();
     Workspace workspace = createWorkspace(course1, Boolean.TRUE);
     Workspace workspace2 = createWorkspace(course2, Boolean.TRUE);
-    MockCourseStudent mcs = new MockCourseStudent(3l, workspace.getId(), student.getId());
-    MockCourseStudent mcs2 = new MockCourseStudent(4l, workspace.getId(), student2.getId());
+    MockCourseStudent mcs = new MockCourseStudent(3l, workspace.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+    MockCourseStudent mcs2 = new MockCourseStudent(4l, workspace.getId(), student2.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
     mockBuilder.
       addCourseStudent(workspace.getId(), mcs).
       addCourseStudent(workspace.getId(), mcs2).
@@ -156,8 +162,8 @@ public class FlagTestsBase extends AbstractUITest {
       
       waitForNotVisible(".dialog--guider-edit-label");
       waitForVisible(".application-panel__helper-container .icon-flag");
-      waitForVisible(".application-panel__helper-container .icon-flag + span.item-list__text-body");
-      assertTextIgnoreCase(".application-panel__helper-container .icon-flag + span.item-list__text-body", "Edited title");
+      waitForVisible(".application-panel__helper-container .icon-flag + span.menu__item-link-text");
+      assertTextIgnoreCase(".application-panel__helper-container .icon-flag + span.menu__item-link-text", "Edited title");
     } finally {
       deleteFlags();
       deleteWorkspace(workspace.getId());
@@ -186,8 +192,8 @@ public class FlagTestsBase extends AbstractUITest {
     login();
     Workspace workspace = createWorkspace(course1, Boolean.TRUE);
     Workspace workspace2 = createWorkspace(course2, Boolean.TRUE);
-    MockCourseStudent mcs = new MockCourseStudent(3l, workspace.getId(), student.getId());
-    MockCourseStudent mcs2 = new MockCourseStudent(4l, workspace.getId(), student2.getId());
+    MockCourseStudent mcs = new MockCourseStudent(3l, workspace.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+    MockCourseStudent mcs2 = new MockCourseStudent(4l, workspace.getId(), student2.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
     mockBuilder.
       addCourseStudent(workspace.getId(), mcs).
       addCourseStudent(workspace.getId(), mcs2).
@@ -205,7 +211,7 @@ public class FlagTestsBase extends AbstractUITest {
       click(".dropdown--guider-labels.visible .link--guider-label-dropdown.selected");
       
       waitAndClick(".application-panel__helper-container .icon-flag");
-      waitForVisible(".application-panel__helper-container .item-list__item.active");
+      waitForVisible(".application-panel__helper-container .menu__item-link.active");
       
       assertNotPresent(".application-list__item-header--student");
     } finally {
@@ -238,8 +244,8 @@ public class FlagTestsBase extends AbstractUITest {
     login();
     Workspace workspace = createWorkspace(course1, Boolean.TRUE);
     Workspace workspace2 = createWorkspace(course2, Boolean.TRUE);
-    MockCourseStudent mcs = new MockCourseStudent(3l, workspace.getId(), student.getId());
-    MockCourseStudent mcs2 = new MockCourseStudent(4l, workspace.getId(), student2.getId());
+    MockCourseStudent mcs = new MockCourseStudent(3l, workspace.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+    MockCourseStudent mcs2 = new MockCourseStudent(4l, workspace.getId(), student2.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
     mockBuilder.
       addCourseStudent(workspace.getId(), mcs).
       addCourseStudent(workspace.getId(), mcs2).
@@ -254,20 +260,16 @@ public class FlagTestsBase extends AbstractUITest {
       waitAndClick("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container a > span.button-pill.button-pill--navigation-edit-label > span");
       waitUntilAnimationIsDone(".dialog--guider-edit-label");
       sleep(1000);
-      waitForVisible(".button--guider-share-label");
-      waitAndClick(".button--guider-share-label");
+      waitForVisible(".autocomplete__input input.tag-input__input--guider");
+      click(".autocomplete__input input.tag-input__input--guider");
 
-      waitForVisible(".autocomplete--guider .tag-input__input--guider");
-      waitAndClick(".autocomplete--guider .tag-input__input--guider");
-      sendKeys(".autocomplete--guider .tag-input__input--guider", "test");
+      sendKeys(".autocomplete__input input.tag-input__input--guider", "test");
       waitForVisible(".glyph--autocomplete-recipient");
 
       waitAndClick(".glyph--autocomplete-recipient");
 
-      waitAndClick(".dialog--guider-share-label .button--standard-ok");
-      waitForVisible(".button--guider-share-label");
-      waitForNotVisible(".dialog--guider-share-label");
-      waitAndClick(".dialog--guider-edit-label .button--standard-ok");
+      click(".dialog--guider-edit-label .button--standard-ok");
+      
       waitForNotVisible(".dialog--guider-edit-label");
       waitForPresent("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container a > span.button-pill.button-pill--navigation-edit-label > span");
       
@@ -277,8 +279,8 @@ public class FlagTestsBase extends AbstractUITest {
 
       navigate("/guider", false);
 
-      waitForVisible("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container .item-list__text-body");
-      assertTextIgnoreCase("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container .item-list__text-body", "Test Flaggi");
+      waitForVisible("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container .menu__item-link-text");
+      assertTextIgnoreCase("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container .menu__item-link-text", "Test Flaggi");
     } finally {
       deleteFlagShares(flagId);
       deleteFlags();
@@ -307,8 +309,8 @@ public class FlagTestsBase extends AbstractUITest {
     login();
     Workspace workspace = createWorkspace(course1, Boolean.TRUE);
     Workspace workspace2 = createWorkspace(course2, Boolean.TRUE);
-    MockCourseStudent mcs = new MockCourseStudent(3l, workspace.getId(), student.getId());
-    MockCourseStudent mcs2 = new MockCourseStudent(4l, workspace.getId(), student2.getId());
+    MockCourseStudent mcs = new MockCourseStudent(3l, workspace.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+    MockCourseStudent mcs2 = new MockCourseStudent(4l, workspace.getId(), student2.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
     mockBuilder.
       addCourseStudent(workspace.getId(), mcs).
       addCourseStudent(workspace.getId(), mcs2).
@@ -329,9 +331,8 @@ public class FlagTestsBase extends AbstractUITest {
       waitClassPresent(".button--guider-remove-label", "disabled");
       waitUntilAnimationIsDone(".button--guider-remove-label");
       waitUntilAnimationIsDone(".icon-flag");
-      assertTextIgnoreCase(".button--guider-remove-label", "Poistetaan");
+      assertTextIgnoreCase(".button--guider-remove-label", "Poisto tallennuksessa");
       sleep(500);
-      waitForClickable(".dialog--guider-edit-label .dialog__footer .button--standard-ok");
       waitAndClick(".dialog--guider-edit-label .dialog__footer .button--standard-ok");
       waitForNotVisible(".dialog--guider-edit-label");
       waitForNotVisible("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container a > span.button-pill.button-pill--navigation-edit-label > span");

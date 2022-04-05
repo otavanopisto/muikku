@@ -2,6 +2,7 @@ package fi.otavanopisto.muikku.schooldata;
 
 import java.util.List;
 
+import fi.otavanopisto.muikku.rest.OrganizationContactPerson;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
 import fi.otavanopisto.muikku.schooldata.entity.Role;
@@ -19,7 +20,9 @@ import fi.otavanopisto.muikku.schooldata.payload.StaffMemberPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupMembersPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentPayload;
+import fi.otavanopisto.muikku.schooldata.payload.WorklistApproverRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemRestModel;
+import fi.otavanopisto.muikku.schooldata.payload.WorklistItemStateChangeRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemTemplateRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistSummaryItemRestModel;
 
@@ -40,8 +43,12 @@ public interface UserSchoolDataBridge {
   public void removeWorklistItem(WorklistItemRestModel item);
   public BridgeResponse<List<WorklistItemRestModel>> listWorklistItemsByOwnerAndTimeframe(String identifier, String beginDate, String endDate);
   public BridgeResponse<List<WorklistSummaryItemRestModel>> getWorklistSummary(String identifier);
+  public void updateWorklistItemsState(WorklistItemStateChangeRestModel stateChange);
+  public BridgeResponse<List<WorklistApproverRestModel>> listWorklistApprovers();
   
   /* User */
+  
+  public BridgeResponse<List<OrganizationContactPerson>> listOrganizationContactPersonsByOrganization(String organizationIdentifier);
   
   public BridgeResponse<StaffMemberPayload> createStaffMember(StaffMemberPayload staffMember);
   public BridgeResponse<StaffMemberPayload> updateStaffMember(StaffMemberPayload staffMember);
@@ -105,6 +112,25 @@ public interface UserSchoolDataBridge {
    * @param identifier user's identifier to be removed
    */
   public void removeUser(String identifier);
+  
+  /**
+   * Returns the default email address of the given user.
+   * 
+   * @param userIdentifier User identifier
+   * 
+   * @return User's default email address
+   */
+  public String getUserDefaultEmailAddress(String userIdentifier);
+  
+  /**
+   * Increases student's study time end by given months.
+   * 
+   * @param studentIdentifier Student identifier 
+   * @param months Months to add to study time end
+   * 
+   * @return Updated user
+   */
+  public User increaseStudyTime(String studentIdentifier, int months);
   
   /* User Email */
 
@@ -291,5 +317,7 @@ public interface UserSchoolDataBridge {
       String educationSubtypeCode);
 
   public boolean isActiveUser(User user);
+
+  public String findUserSsn(SchoolDataIdentifier userIdentifier);
 
 }

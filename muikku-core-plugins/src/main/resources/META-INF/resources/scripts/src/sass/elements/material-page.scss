@@ -2,6 +2,7 @@
 @import "../base/mixins";
 @import "../base/vars";
 @import "../base/breakpoints";
+@import "cke-styles";
 
 .material-page {
   background-color: $color-application-panel-box-background;
@@ -9,8 +10,17 @@
   position: relative;
   width: 100%;
 
-  &.material-page--hidden {
-    opacity: 0.3;
+  &.state-HIDDEN {
+    opacity: 30%;
+  }
+
+  &.state-SUBMITTED.state-HIDDEN,
+  &.state-WITHDRAWN.state-HIDDEN,
+  &.state-ANSWERED.state-HIDDEN,
+  &.state-PASSED.state-HIDDEN,
+  &.state-FAILED.state-HIDDEN,
+  &.state-INCOMPLETE.state-HIDDEN {
+    opacity: 60%;
   }
 }
 
@@ -26,6 +36,16 @@
 
 // Studies View exeptions
 .material-page--studies-material-page {
+  border: 0;
+  padding: 0;
+
+  .material-page__content {
+    padding: 0;
+  }
+}
+
+// Evaluation View exeptions
+.material-page--evaluation-material-page {
   border: 0;
   padding: 0;
 
@@ -80,6 +100,12 @@
   }
 }
 
+.material-page__title-meta {
+  color: $color-info;
+  font-style: italic;
+  padding: 5px 20px;
+}
+
 .material-page__content {
   margin: 15px 0;
   padding: 0 10px;
@@ -92,8 +118,10 @@
 
 .material-page__content--view-restricted {
   align-items: center;
+
   // scss-lint:disable VariableForProperty
   color: darken($color-disabled, 30%);
+
   // scss-lint:enable VariableForProperty
   display: flex;
   font-size: 1rem;
@@ -266,7 +294,7 @@
     font-size: $text-mobile-font-size;
     font-weight: 400;
     margin: 2.25rem 0 0;
-    opacity: 0.9;
+    opacity: 90%;
     padding: 15px 10px;
   }
 
@@ -299,7 +327,6 @@
 
 // DISABLED CUSTOM TASK FIELDS
 .material-page__taskfield-disabled {
-
   .material-page__sorterfield-item,
   .material-page__organizerfield-category,
   .material-page__organizerfield-category-title,
@@ -410,9 +437,12 @@
 // FIELD'S EXAMPLES
 .material-page__field-answer-examples {
   @include text;
+
   align-items: center;
-  background: $color-example;
+  background: $color-default;
+  border: 1px solid $color-example-border;
   border-radius: 2px;
+  box-shadow: 0 3px 5px 2px $color-example-box-shadow;
   display: inline-flex;
   flex-flow: row wrap;
   margin: 4px;
@@ -434,7 +464,6 @@
 }
 
 .material-page__field-answer-examples-title {
-  font-style: italic;
   font-weight: 400;
   line-height: 1.15rem;
   padding: 2px 4px;
@@ -446,7 +475,6 @@
 
 .material-page__field-answer-example {
   border-radius: 2px;
-  font-style: italic;
   font-weight: 300;
   line-height: 1.15rem;
   margin: 0 4px 0 0;
@@ -477,7 +505,7 @@
   color: $color-default-contrast;
   display: block;
   max-width: 300px;
-  opacity: 0;
+  opacity: 0%;
   padding: 3px 6px;
   position: absolute;
   text-align: left;
@@ -495,6 +523,7 @@
 // Generic
 .material-page__checkable-label {
   @include taskfield-text;
+
   display: inline;
   padding: 0 0 0 6px;
 }
@@ -503,8 +532,9 @@
 .material-page__mathfield {
   @include taskfield-text;
   @include taskfield-defaults;
+
   box-sizing: content-box;
-  margin: 4px;
+  margin: 4px 0;
   max-width: calc(100% - 8px);
   min-height: 7.25rem;
   outline: none;
@@ -538,9 +568,8 @@
   position: relative;
 
   &:hover {
-
     .material-page__field-hint {
-      opacity: 0;
+      opacity: 0%;
       visibility: hidden;
       z-index: 2;
     }
@@ -557,6 +586,7 @@
   input {
     @include taskfield-text;
     @include taskfield-defaults;
+
     display: inline-flex;
     margin: 4px;
     max-width: calc(100% - 8px);
@@ -569,6 +599,27 @@
 
   &.incorrect-answer input {
     border-color: $color-incorrect-answer;
+  }
+}
+
+// Textfield style implementation for Evaluation view
+.material-page__textfield--evaluation {
+  @include taskfield-text;
+
+  background: $color-evaluation-readonly-taskfield-background;
+  border: 2px solid $color-evaluation-readonly-taskfield-background;
+  border-radius: 2px;
+  display: inline-block;
+  margin: 4px;
+  min-width: 30px;
+  padding: 0 6px;
+
+  &.correct-answer {
+    border: 2px solid $color-correct-answer;
+  }
+
+  &.incorrect-answer {
+    border: 2px solid $color-incorrect-answer;
   }
 }
 
@@ -587,6 +638,7 @@
 .material-page__selectfield {
   @include taskfield-text;
   @include taskfield-defaults;
+
   margin: 4px;
   padding: 3px;
 
@@ -601,6 +653,7 @@
 
 .material-page__selectfield-item-container {
   @include taskfield-text;
+
   padding: 2px 4px; // This affects only select element that has size attribute set (element is list)
 }
 
@@ -663,16 +716,14 @@
 
 .material-page__radiobutton {
   align-items: center;
-  -moz-appearance: none;
-  -webkit-appearance: none;
   appearance: none;
   border: solid 2px $taskfield-border-color;
   border-radius: 100%;
   display: inline-flex;
-  height: 1rem;
+  height: 1.125rem;
   justify-content: center;
-  min-width: 1rem;
-  width: 1rem;
+  min-width: 1.125rem;
+  width: 1.125rem;
 
   &:checked {
     background-color: $taskfield-border-color;
@@ -682,7 +733,7 @@
   &:checked::after {
     color: $color-default;
     content: "\e639";
-    font-family: muikku;
+    font-family: "muikku";
     font-size: 0.875rem;
   }
 }
@@ -703,17 +754,6 @@
   display: inline-flex;
   margin: 4px;
   padding: 4px;
-
-  &.correct-answer { // // If the whole taskfield is correct we then mark taskfield items as correct
-
-    .material-page__checkbox {
-      border-color: $color-correct-answer;
-
-      &:checked {
-        background-color: $color-correct-answer;
-      }
-    }
-  }
 }
 
 .material-page__checkbox-items-wrapper--vertical {
@@ -733,18 +773,17 @@
   padding: 2px;
 }
 
+// We compare student's answer to the task fields preset of correct answers and display correnct/incorrect state individually
 .material-page__checkbox {
   align-items: center;
-  -moz-appearance: none;
-  -webkit-appearance: none;
   appearance: none;
   border: solid 2px $taskfield-border-color;
   border-radius: 2px;
   display: inline-flex;
-  height: 1rem;
+  height: 1.125rem;
   justify-content: center;
-  min-width: 1rem;
-  width: 1rem;
+  min-width: 1.125rem;
+  width: 1.125rem;
 
   &:checked {
     background-color: $taskfield-border-color;
@@ -754,7 +793,7 @@
   &:checked::after {
     color: $color-default;
     content: "\e639";
-    font-family: muikku;
+    font-family: "muikku";
     font-size: 0.875rem;
   }
 
@@ -763,6 +802,7 @@
 
     &:checked {
       background-color: $color-correct-answer;
+      border-color: $color-correct-answer;
     }
   }
 
@@ -771,6 +811,7 @@
 
     &:checked {
       background-color: $color-incorrect-answer;
+      border-color: $color-incorrect-answer;
     }
   }
 }
@@ -787,11 +828,11 @@
 
   // Necessary evil as material editor uses the same class names to provide wysiwyg experience close to the actualy material page render
   // but unfortunately it does affect taskfields with ckeditors as well so this is needed to override padding rules.
-  // scss-lint:disable SelectorFormat
+
+  /* stylelint-disable selector-class-pattern */
   .cke_editable.cke_wysiwyg_div {
     padding: 0 8px;
   }
-  // scss-lint:enable SelectorFormat
 
   .cke { // This needs to be here so we can override the ckeditor's visuals/size partly
     background: $color-default;
@@ -803,16 +844,16 @@
     min-width: 100%;
   }
 
-  // scss-lint:disable SelectorFormat
   .cke_wysiwyg_div {
     min-height: 150px;
   }
-  // scss-lint:enable SelectorFormat
+  /* stylelint-enable selector-class-pattern */
 }
 
 .material-page__memofield {
   @include taskfield-text;
   @include taskfield-defaults;
+
   line-height: 1.25rem;
   margin: 4px 0 0;
   max-width: 100%;
@@ -825,9 +866,17 @@
   }
 }
 
+.material-page__memofield--evaluation { // This is for memofield replacement style in evaluation views
+  background: $color-evaluation-readonly-taskfield-background;
+  border: 0;
+  border-radius: 2px;
+  padding: 15px 20px;
+}
+
 .material-page__ckeditor-replacement { // This is for ckeditor replacement div
   @include taskfield-text;
   @include taskfield-defaults;
+
   display: block;
   line-height: 1.25rem;
   margin: 4px 0 0;
@@ -841,6 +890,12 @@
     line-height: 1.75rem;
     min-height: 2.75rem;
   }
+}
+
+.material-page__ckeditor-replacement--evaluation { // This is for ckeditor replacement div in evaluation views
+  background: $color-evaluation-readonly-taskfield-background;
+  border: 0;
+  border-radius: 2px;
 }
 
 // File field
@@ -862,6 +917,7 @@
 .material-page__audiofield {
   @include taskfield-text;
   @include taskfield-defaults;
+
   display: block;
   margin: 4px 0 0;
   position: relative;
@@ -923,10 +979,12 @@
 
 .material-page__audiofield-file {
   @include text;
+
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
   height: 1.75rem;
+  max-width: calc(100% - 74px);
 }
 
 .material-page__audiofield-file--recording,
@@ -936,6 +994,7 @@
 
 .material-page__audiofield-file-record-progressbar {
   @include text;
+
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
@@ -945,6 +1004,7 @@
 
 .material-page__audiofield-file-upload-progressbar {
   @include text;
+
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
@@ -976,6 +1036,7 @@
   .material-page__audiofield-start-record-button,
   .material-page__audiofield-stop-record-button {
     @include prefix(transition, moz ms o webkit, background 0.15s);
+
     align-items: center;
     border-radius: 20px;
     cursor: pointer;
@@ -1025,6 +1086,7 @@
   .material-page__audiofield-start-record-label,
   .material-page__audiofield-stop-record-label {
     @include text;
+
     padding: 0 0 0 4px;
   }
 
@@ -1086,6 +1148,7 @@
 .material-page__sorterfield-item {
   @include taskfield-text;
   @include taskfield-defaults;
+
   align-items: center;
   cursor: grab;
   display: flex;
@@ -1145,7 +1208,6 @@
   display: block;
 
   &.correct-answer {
-
     .material-page__organizerfield-category { // If the whole taskfield is correct we then mark taskfield's category and items as correct . This class inception is needed so we don't add styles to terms that are only available
       border-color: $color-correct-answer;
     }
@@ -1179,6 +1241,7 @@
 .material-page__organizerfield-term { // Single draggable term
   @include taskfield-text;
   @include taskfield-defaults;
+
   align-items: center;
   cursor: grab;
   display: inline-flex;
@@ -1219,9 +1282,9 @@
 
   .material-page__organizerfield-term-icon {
     @include rotate-icon-on-hover;
+
     cursor: pointer;
     padding: 6px;
-
   }
 
   .material-page__organizerfield-term-label {
@@ -1236,7 +1299,7 @@
 .material-page__organizerfield-term--missing {
   cursor: default;
   line-height: 1; // This prevents text misalignment in mobile views
-  opacity: 0.6;
+  opacity: 60%;
   padding: 4px 6px;
 
   @include breakpoint($breakpoint-pad) {
@@ -1280,6 +1343,7 @@
 
 .material-page__organizerfield-category { // Wrapper for single category
   @include taskfield-defaults;
+
   flex-basis: 100%;
   flex-grow: 0;
   flex-shrink: 1;
@@ -1344,6 +1408,7 @@
 .material-page__connectfield-term {
   @include taskfield-text;
   @include taskfield-defaults;
+
   align-items: center;
   cursor: pointer;
   display: flex;
@@ -1392,6 +1457,7 @@
 
 .material-page__connectfield-term-number {
   @include text;
+
   align-items: center;
   background: $color-default;
   border: 1px solid $taskfield-border-color;
@@ -1455,6 +1521,7 @@
 .material-page__connectfield-counterpart {
   @include taskfield-text;
   @include taskfield-defaults;
+
   align-items: center;
   cursor: grab;
   display: flex;
@@ -1503,6 +1570,7 @@
 
 .material-page__connectfield-counterpart-number {
   @include text;
+
   align-items: center;
   background: $color-default;
   border: 1px solid $taskfield-border-color;
@@ -1565,7 +1633,6 @@
 // is larger than what can be fitted in 1 row
 .material-page__connectfield-term--edited,
 .material-page__connectfield-counterpart--edited {
-
   .material-page__connectfield-term-data-container:hover,
   .material-page__connectfield-counterpart-data-container:hover {
     background: lighten($taskfield-border-color, 25%);
@@ -1574,7 +1641,6 @@
 
 .material-page__connectfield-term--selected,
 .material-page__connectfield-counterpart--selected {
-
   .material-page__connectfield-term-data-container:hover,
   .material-page__connectfield-counterpart-data-container:hover {
     background: $taskfield-border-color;
@@ -1737,18 +1803,22 @@ mark[data-muikku-word-definition] {
   flex-shrink: 0;
 }
 
-.material-page__assignment-assessment-literal-label {
+.material-page__assignment-assessment-literal-label,
+.material-page__assignment-assessment-verbal-label {
   @include assessment-text;
-  font-weight: bold;
+
+  font-weight: 600;
 }
 
 .material-page__assignment-assessment-literal-data {
   @include assessment-text;
+
   line-height: 1.375rem;
 }
 
 .material-page__assignment-assessment-grade {
   @include assessment-text;
+
   align-items: center;
   display: flex;
   flex-basis: 100;
@@ -1759,7 +1829,7 @@ mark[data-muikku-word-definition] {
 }
 
 .material-page__assignment-assessment-grade-label {
-  font-weight: bold;
+  font-weight: 600;
   padding: 0 10px 0 0;
 }
 
@@ -1778,7 +1848,7 @@ mark[data-muikku-word-definition] {
 .material-page__assignment-assessment-icon {
   font-size: 2rem;
   line-height: 1;
-  opacity: 0.3;
+  opacity: 30%;
   position: absolute;
   right: 20px;
   top: 20px;
@@ -1786,6 +1856,7 @@ mark[data-muikku-word-definition] {
 
 .material-page__assignment-assessment-date {
   @include assessment-text;
+
   align-items: center;
   display: flex;
   flex-basis: 100;
@@ -1796,12 +1867,13 @@ mark[data-muikku-word-definition] {
 }
 
 .material-page__assignment-assessment-date-label {
-  font-weight: bold;
+  font-weight: 600;
   padding: 0 10px 0 0;
 }
 
 .material-page__assignment-assessment-date-data {
   @include assessment-text;
+
   line-height: 1.375rem;
 }
 
@@ -1818,6 +1890,7 @@ mark[data-muikku-word-definition] {
   top: -20px;
   transition: background-color 0.2s ease-in-out;
   white-space: nowrap;
+  z-index: 2;
 }
 
 .material-page__field-answer-synchronizer--saving {
@@ -1838,15 +1911,16 @@ mark[data-muikku-word-definition] {
 // MATERIAL PAGE CUSTOM BOX STYLES
 // These classNames cannot be changed as they a part of material page html and already saved to DB
 .material-styles-block {
-  border-radius: 10px;
   box-sizing: content-box;
   font-size: inherit;
   margin: 20px 0;
-  min-height: 64px;
-  padding: 10px 15px 10px 85px;
+  min-height: 40px;
+  padding: 16px;
   position: relative;
 
   p:first-child,
+  h3:first-child,
+  h4:first-child,
   ul:first-child,
   ol:first-child,
   blockquote:first-child {
@@ -1854,153 +1928,301 @@ mark[data-muikku-word-definition] {
   }
 
   p:last-child,
+  h3:first-child,
+  h4:first-child,
   ul:last-child,
   ol:last-child,
   blockquote:last-child {
     margin-bottom: 0;
   }
 
-  &::after {
-    background-repeat: no-repeat;
+  // This represents the generic icon added to the material style boxes
+  &::before {
+    align-items: center;
+    border-bottom-left-radius: 10px;
+    border-top-right-radius: 10px;
+    color: $color-default;
     content: "";
-    height: 64px;
-    left: 10px;
+    display: flex;
+    font-family: "muikku";
+    font-size: 1.5rem;
+    height: 40px;
+    justify-content: center;
+    left: 16px;
     position: absolute;
-    top: 10px;
-    width: 64px;
-    z-index: 9;
-  }
-
-  a {
-    color: $color-info;
-    text-decoration: underline;
+    top: 16px;
+    width: 40px;
   }
 }
 
-// BASIC BOX
-.material-basicbox {
-  background-color: $color-material-basic-box-background;
-  border-top: 2px solid $color-material-basic-box-border;
-  color: $color-default-contrast;
-  padding: 12px 20px;
-
-  &::after {
-    display: none;
-  }
-}
-
-// GRAMMAR BOX
-.material-grammarbox {
-  background-color: $color-material-grammar-box-background;
-  border-top: 2px solid $color-material-grammar-box-border;
-  color: $color-default-contrast;
-  padding: 12px 20px;
-
-  &::after {
-    display: none;
-  }
-}
-
-// PONDERING BOX
-.material-thinkingbox {
-  background-color: $color-material-thinking-box-background;
-  border-top: 2px solid $color-material-thinking-box-border;
-  color: $color-default-contrast;
-  text-shadow: -1px 1px 15px $color-default, 1px -1px 15px $color-default;
-
-  &::after {
-    background-image: url("/gfx/icons/64x64/pondering-icon.png");
-  }
-}
-
-// OBJECTIVE BOX
-.material-objectivebox {
-  background-color: $color-material-objective-box-background;
-  border-top: 2px solid $color-material-objective-box-border;
-  color: $color-default-contrast;
-  text-shadow: -1px 1px 10px $color-default, 1px -1px 10px $color-default;
-
-  &::after {
-    background-image: url("/gfx/icons/64x64/objective-icon.png");
-  }
-}
-
-// INFORMATION BOX
-.material-infobox {
-  background-color: $color-material-info-box-background;
-  border-top: 2px solid $color-material-info-box-border;
-  color: $color-default-contrast;
-  text-shadow: -1px 1px 20px $color-default, 1px -1px 20px $color-default;
-
-  &::after {
-    background-image: url("/gfx/icons/64x64/info-icon.png");
-  }
-}
-
-// RECAP BOX
+// BASIC BOX & GRAMMAR BOX & RECAP BOX
+// GRAMMAR BOX & RECAP BOX styles are deprecated but CANNOT be removed from the css.
+// GRAMMAR BOX & RECAP BOX are removed from CKE dropdown and existing GRAMMAR BOXes & RECAP BOXes
+// inherits BASIC BOX styling
+.material-basicbox,
+.material-grammarbox,
 .material-recapbox {
-  background-color: $color-material-recap-box-background;
-  border-top: 2px solid $color-material-recap-box-border;
-  color: $color-default-contrast;
-  text-shadow: -1px 1px 15px $color-default, 1px -1px 15px $color-default;
+  background: $color-material-basic-box-background;
+  border: 1px solid $color-material-basic-box;
+  border-left-width: 1px;
 
-  &::after {
-    background-image: url("/gfx/icons/64x64/recap-icon.png");
+  &::before {
+    display: none;
   }
+}
+
+// THINKING BOX & JOURNAL BOX
+// Thinking box is deprecated style is deprecated but CANNOT be removed from the css.
+// Thinking box was primarily used to provide journal specific information
+// so new style has been added called JOURNAL BOX. Existing THINKINGBOXes
+// inherits JOURNAL BOX styling
+.material-thinkingbox,
+.material-journalbox {
+  border: 1px solid $color-material-journal-box;
+  border-left-width: 3px;
+  padding-left: 72px;
+
+  &::before {
+    background: $color-material-journal-box;
+    content: "\f02d";
+  }
+}
+
+// MATERIAL'S EXERCISE FEEDBACK BOX
+// This will be visible only after user submits exercise.
+.material-exercise-feedback {
+  background: $color-default;
+  border: 1px solid $color-example-border;
+  border-radius: 2px;
+  border-right-width: 10px;
+  box-shadow: 0 3px 5px 2px $color-example-box-shadow;
+  margin: 20px -30px 20px -20px;
 }
 
 // INSTRUCTION BOX
 .material-instructionbox {
-  background-color: $color-material-instruction-box-background;
-  border-top: 2px solid $color-material-instruction-box-border;
-  color: $color-default-contrast;
-  text-shadow: -1px 1px 15px $color-default, 1px -1px 15px $color-default;
+  border: 1px solid $color-material-instruction-box;
+  border-left-width: 3px;
+  padding-left: 72px;
 
-  &::after {
-    background-image: url("/gfx/icons/64x64/instruction-icon.png");
+  &::before {
+    background: $color-material-instruction-box;
+    content: "\e635";
+  }
+}
+
+// PONDER BOX
+.material-ponderbox {
+  border: 1px solid $color-material-ponder-box;
+  border-left-width: 3px;
+  padding-left: 72px;
+
+  &::before {
+    background: $color-material-ponder-box;
+    content: "\f0eb";
+  }
+}
+
+// EVALUATION CRITERIA BOX
+.material-assignmentbox {
+  border: 1px solid $color-assignment;
+  border-left-width: 3px;
+  padding-left: 72px;
+
+  &::before {
+    background: $color-assignment;
+    content: "\e63d";
+  }
+}
+
+// OBJECTIVE / GOAL BOX
+.material-objectivebox {
+  border: 1px solid $color-material-objective-box;
+  border-left-width: 3px;
+  padding-left: 72px;
+
+  &::before {
+    background: $color-material-objective-box;
+    content: "\f041";
+  }
+}
+
+// INFORMATION / ATTENTION BOX
+.material-infobox {
+  border: 1px solid $color-material-info-box;
+  border-left-width: 3px;
+  padding-left: 72px;
+
+  &::before {
+    background: $color-material-info-box;
+    content: "\f12a";
   }
 }
 
 // LINK BOX
 .material-linkbox {
-  background-color: $color-material-link-box-background;
-  border-top: 2px solid $color-material-link-box-border;
-  color: $color-default-contrast;
-  text-shadow: -1px 1px 20px $color-default, 1px -1px 20px $color-default;
+  border: 1px solid $color-material-link-box;
+  border-left-width: 3px;
+  padding-left: 72px;
 
-  &::after {
-    background-image: url("/gfx/icons/64x64/link-icon.png");
+  &::before {
+    background: $color-material-link-box;
+    content: "\e9cb";
+  }
+}
+
+// MUIKKU LINK BOX
+.material-muikkulinkbox {
+  border: 1px solid $color-material-muikkulink-box;
+  border-left-width: 3px;
+  padding-left: 72px;
+
+  &::before {
+    background: $color-material-muikkulink-box;
+    content: "\e92a";
   }
 }
 
 // AUDIO BOX
 .material-audiobox {
-  background-color: $color-material-audio-box-background;
-  border-top: 2 px solid $color-material-audio-box-border;
-  color: $color-default-contrast;
-  text-shadow: -1px 1px 20px $color-default, 1px -1px 20px $color-default;
+  border: 1px solid $color-material-audio-box;
+  border-left-width: 3px;
+  padding-left: 72px;
 
-
-  &::after {
-    background-image: url("/gfx/icons/64x64/sound-icon.png");
+  &::before {
+    background: $color-material-audio-box;
+    content: "\ea27";
   }
 }
 
 // FILE BOX
 .material-filebox {
-  background-color: $color-material-file-box-background;
-  border-top: 2px solid $color-material-file-box-border;
-  color: $color-default-contrast;
-  text-shadow: -1px 1px 20px $color-default, 1px -1px 20px $color-default;
+  border: 1px solid $color-material-file-box;
+  border-left-width: 3px;
+  padding-left: 72px;
 
-  &::after {
-    background-image: url("/gfx/icons/64x64/file-icon.png");
+  &::before {
+    background: $color-material-file-box;
+    content: "\e92c";
   }
+}
+
+// TABLE BOX - This style has preset visuals for table and it's elements
+.material-tablebox {
+  border: 0;
+  padding: 0;
+
+  // scss-lint:disable SelectorDepth, NestingDepth
+  table,
+  table[cellpadding],
+  table[cellspacing] {
+    border: 0;
+    border-collapse: collapse;
+    border-spacing: 0;
+    font-size: $text-desktop-richtext-font-size;
+    line-height: 1.35rem;
+    width: 100%;
+
+    caption {
+      font-size: 1.0625rem;
+      font-weight: 400;
+      padding: 8px;
+      text-align: left;
+    }
+
+    thead {
+      border-bottom: 1px solid $color-material-table-header-boder;
+    }
+
+    th {
+      font-weight: 400;
+      padding: 8px;
+      text-align: left;
+    }
+
+    tbody {
+      th[scope="row"] {
+        border-right: 1px solid $color-material-table-header-boder;
+      }
+    }
+
+    tr {
+      &:nth-child(even) {
+        background: $color-material-table-box-row-background;
+      }
+
+      &:nth-child(odd) {
+        background: $color-default;
+      }
+    }
+
+    td {
+      padding: 8px;
+    }
+  }
+
+  // scss-lint:enable SelectorDepth, NestingDepth
+}
+
+// TABLE BOX - This style has preset visuals for table and it's elements
+.material-tablebox-small {
+  border: 0;
+  padding: 0;
+
+  // scss-lint:disable SelectorDepth, NestingDepth
+  table,
+  table[cellpadding],
+  table[cellspacing] {
+    border: 0;
+    border-collapse: collapse;
+    border-spacing: 0;
+    font-size: $text-desktop-font-size;
+    line-height: 1.35rem;
+    width: 100%;
+
+    caption {
+      font-size: 1rem;
+      font-weight: 400;
+      padding: 8px;
+      text-align: left;
+    }
+
+    thead {
+      border-bottom: 1px solid $color-material-table-header-boder;
+    }
+
+    th {
+      font-weight: 400;
+      padding: 8px;
+      text-align: left;
+    }
+
+    tbody {
+      th[scope="row"] {
+        border-right: 1px solid $color-material-table-header-boder;
+      }
+    }
+
+    tr {
+      &:nth-child(even) {
+        background: $color-material-table-box-row-background;
+      }
+
+      &:nth-child(odd) {
+        background: $color-default;
+      }
+    }
+
+    td {
+      padding: 8px;
+    }
+  }
+
+  // scss-lint:enable SelectorDepth, NestingDepth
 }
 
 // MATERIAL TEXT STYLES
 .material-styles-text {
-  background-repeat: no-repeat;
   box-sizing: content-box;
   margin: 20px auto;
   max-width: 920px;
@@ -2008,6 +2230,8 @@ mark[data-muikku-word-definition] {
   position: relative;
 
   p:first-child,
+  h3:first-child,
+  h4:first-child,
   ul:first-child,
   ol:first-child,
   blockquote:first-child {
@@ -2015,6 +2239,8 @@ mark[data-muikku-word-definition] {
   }
 
   p:last-child,
+  h3:first-child,
+  h4:first-child,
   ul:last-child,
   ol:last-child,
   blockquote:last-child {
@@ -2049,33 +2275,30 @@ mark[data-muikku-word-definition] {
   padding: 10px 35px;
   quotes: "\201C""\201D";
 
+  > p {
+    display: inline;
+  }
+
   &::before {
     color: $color-material-citation-quote;
     content: open-quote;
     display: inline-block;
-    font-family: arial;
+    font-family: "Arial", sans-serif;
     font-size: 70px;
-    font-style: normal;
-    left: 0;
     line-height: 1px;
-    margin-right: 25px;
     vertical-align: -25px;
-    width: 0;
+    width: 28px;
   }
 
   &::after {
     color: $color-material-citation-quote;
     content: close-quote;
     display: inline-block;
-    font-family: arial;
+    font-family: "Arial", sans-serif;
     font-size: 70px;
-    font-style: normal;
-    left: 3px;
     line-height: 1px;
-    margin-left: 5px;
-    position: relative;
     vertical-align: -25px;
-    width: 1px;
+    width: 25px;
   }
 }
 
@@ -2085,7 +2308,7 @@ mark[data-muikku-word-definition] {
   box-shadow: none;
   color: $color-default-contrast;
   font-style: normal;
-  padding: 5px 10px 5px 40px;
+  padding: 12px 12px 12px 50px;
   position: relative;
   quotes: "\201C""\201D";
   text-shadow: none;
@@ -2093,11 +2316,11 @@ mark[data-muikku-word-definition] {
   &::before {
     color: $color-material-citation-quote;
     content: open-quote;
-    font-family: arial;
-    font-size: 55px;
-    left: 10px;
+    font-family: "Arial", sans-serif;
+    font-size: 60px;
+    left: 16px;
     position: absolute;
-    top: 20px;
+    top: 26px;
   }
 }
 
@@ -2119,4 +2342,23 @@ mark[data-muikku-word-definition] {
   color: $color-default-contrast;
   padding: 0 10px 4px 15px;
   text-shadow: none;
+
+  // THIS IS THE ONLY special rule for allowing material-feedback element to be placed
+  // inside anorther styles element.
+  .material-exercise-feedback {
+    margin: 20px -40px 20px 0;
+  }
+}
+
+.material-exercise-feedback[data-show="true"] {
+  display: block;
+}
+
+.material-exercise-feedback[data-show="false"] {
+  display: none;
+}
+
+// Generic AUDIO tag styling
+audio {
+  border-radius: 3px;
 }

@@ -1,66 +1,276 @@
-import '~/sass/elements/tabs.scss';
-import * as React from 'react';
+import "~/sass/elements/tabs.scss";
+import * as React from "react";
+import { connect } from "react-redux";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/scss";
+import "swiper/scss/a11y";
+import "swiper/scss/pagination";
+import { A11y, Pagination } from "swiper";
+import { i18nType } from "~/reducers/base/i18n";
+import { StateType } from "~/reducers";
+import variables from "~/sass/_exports.scss";
+import useIsAtBreakpoint from "~/hooks/useIsAtBreakpoint";
 
-export interface TabType {
-  id: string,
-  name: string,
-  type?: string,
-  component: ()=>React.ReactElement<any>
+/**
+ * Tab
+ */
+export interface Tab {
+  id: string;
+  name: string;
+  /**
+   * Hash from url
+   */
+  hash?: string;
+  /** Type Class modifier */
+  type?: string;
+  /** Tab spesific action or actions for the mobile UI*/
+  mobileAction?: JSX.Element | JSX.Element[];
+  component: () => JSX.Element;
 }
 
+/**
+ * TabsProps
+ */
 interface TabsProps {
-  onTabChange:(id: string)=>any,
-  activeTab: string,
-  modifier?: string,
-  tabs: Array<TabType>,
-  renderAllComponents?: boolean
+  onTabChange: (id: string, hash?: string | Tab) => void;
+  /** An array of all tab ids for swiper*/
+  allTabs: string[];
+  activeTab: string;
+  /** General class modifier */
+  modifier?: string;
+  /** Localization */
+  i18n: i18nType;
+  tabs: Array<Tab>;
+  /** If all of the tabs components should be rendered */
+  renderAllComponents?: boolean;
   children?: React.ReactNode;
+  /**
+   * If tabs changing needs to take account of hash changing also
+   * @default false
+   */
+  useWithHash?: boolean;
 }
 
-interface TabsState {
+/**
+ * MobileOnlyTabsProps
+ */
+interface MobileOnlyTabsProps {
+  onTabChange: (id: string, hash?: string) => void;
+  activeTab: string;
+  /** General class modifier */
+  modifier?: string;
+  tabs: Array<Tab>;
+  renderAllComponents?: boolean;
 }
 
-export default class Tabs extends React.Component<TabsProps, TabsState>{
-  render(){
-    return <div className={`tabs ${this.props.modifier ? "tabs--" + this.props.modifier : ""}`}>
-      <div className={`tabs__tab-labels ${this.props.modifier ? "tabs__tab-labels--" + this.props.modifier : ""}`}>
-        {this.props.tabs.map((tab, index)=>{
-          return <div className={`tabs__tab ${this.props.modifier ? "tabs__tab--" + this.props.modifier : ""} ${tab.type ? "tabs__tab--" + tab.type : ""} ${tab.id === this.props.activeTab ? "active" : ""}`}
-            key={tab.id} onClick={this.props.onTabChange.bind(this, tab.id)}>{tab.name}</div>
-        })}
-        {this.props.children}
-      </div>
-      <div className="tabs__tab-data-container">
-        {this.props.tabs.filter(t=>this.props.renderAllComponents || t.id===this.props.activeTab)
-          .map(t=><div key={t.id} className={`tabs__tab-data ${t.type ? "tabs__tab-data--" + t.type : ""}  ${t.id === this.props.activeTab ? "active" : ""}`}>
-          {t.component()}
-        </div>)}
-      </div>
+const defaultProps = {
+  useWithHash: false,
+};
+
+/**
+ * Tabs
+ * @param props Component props
+ * @returns JSX.Element
+ */
+export const Tabs: React.FC<TabsProps> = (props) => {
+  props = { ...defaultProps, ...props };
+
+  const {
+    modifier,
+    renderAllComponents,
+    activeTab,
+    onTabChange,
+    tabs,
+    children,
+    allTabs,
+    useWithHash,
+  } = props;
+
+  const [swiper, setSwiper] = React.useState(null);
+
+  /**
+   * This IS NOT good solution, but for now it will do
+   */
+  React.useEffect(() => {
+    if (swiper && useWithHash) {
+      const timer = setTimeout(() => {
+        const index = tabs.findIndex((t) => t.id === activeTab);
+
+        if (index) {
+          const initSlide = allTabs[index];
+          const initHash = tabs[index];
+
+          swiper.slideTo(index);
+          onTabChange(initSlide, initHash);
+        }
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [swiper, useWithHash]);
+
+  const mobileBreakpoint = parseInt(variables.mobileBreakpoint); //Parse a breakpoint from scss to a number
+
+  const isMobileWidth = useIsAtBreakpoint(mobileBreakpoint);
+
+  const a11yConfig = {
+    enabled: true,
+  };
+
+  const paginationConfig = {
+    el: ".tabs__pagination-container",
+    modifierClass: "tabs__pagination-container--",
+  };
+
+  const nextSlide = allTabs[allTabs.indexOf(activeTab) + 1];
+  const prevSlide = allTabs[allTabs.indexOf(activeTab) - 1];
+
+  const nextHash = tabs.find((tab) => tab.id === nextSlide);
+  const prevHash = tabs.find((tab) => tab.id === prevSlide);
+
+  return (
+    <div className={`tabs ${modifier ? "tabs--" + modifier : ""}`}>
+      {isMobileWidth ? (
+        <Swiper
+          onSwiper={(s) => useWithHash && setSwiper(s)}
+          onSlidePrevTransitionStart={onTabChange.bind(
+            this,
+            prevSlide,
+            prevHash
+          )}
+          onSlideNextTransitionStart={onTabChange.bind(
+            this,
+            nextSlide,
+            nextHash
+          )}
+          modules={[A11y, Pagination]}
+          a11y={a11yConfig}
+          pagination={paginationConfig}
+          className="tabs__tab-data-container tabs__tab-data-container--mobile"
+        >
+          {tabs.map((t: Tab) => (
+            <SwiperSlide key={t.id}>
+              <div className="tabs__mobile-tab">
+                <div className="tabs__pagination-container"> </div>
+                <div>{t.name}</div>
+                {t.mobileAction ? (
+                  t.mobileAction
+                ) : (
+                  <div className="tabs__mobile-tab-spacer" />
+                )}
+              </div>
+              {t.component()}
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      ) : (
+        <>
+          <div
+            className={`tabs__tab-labels ${
+              modifier ? "tabs__tab-labels--" + modifier : ""
+            }`}
+          >
+            {tabs.map((tab: Tab) => (
+              <div
+                className={`tabs__tab ${
+                  modifier ? "tabs__tab--" + modifier : ""
+                } ${tab.type ? "tabs__tab--" + tab.type : ""} ${
+                  tab.id === activeTab ? "active" : ""
+                }`}
+                key={tab.id}
+                onClick={onTabChange.bind(this, tab.id, tab.hash)}
+              >
+                {tab.name}
+              </div>
+            ))}
+            {children}
+          </div>
+          <div className="tabs__tab-data-container">
+            {tabs
+              .filter((t: Tab) => renderAllComponents || t.id === activeTab)
+              .map((t: Tab) => (
+                <div
+                  key={t.id}
+                  className={`tabs__tab-data ${
+                    t.type ? "tabs__tab-data--" + t.type : ""
+                  }  ${t.id === activeTab ? "active" : ""}`}
+                >
+                  {t.component()}
+                </div>
+              ))}
+          </div>
+        </>
+      )}
     </div>
-  }
-}
+  );
+};
 
-export class MobileOnlyTabs extends React.Component<TabsProps, TabsState>{
-  render(){
-    return <div className="tabs">
+/**
+ * Tabs that are only seen in mobile
+ * @param props Component props
+ * @returns JSX.element
+ */
+export const MobileOnlyTabs: React.FC<MobileOnlyTabsProps> = (props) => {
+  const { tabs, modifier, activeTab, onTabChange, renderAllComponents } = props;
+
+  return (
+    <div className="tabs">
       <div className="tabs__tab-labels tabs__tab-labels--mobile">
-        {this.props.tabs.map((tab, index)=>{
-          return <div className={`tabs__tab tabs__tab--mobile-only-tab ${this.props.modifier ? "tabs__tab--" + this.props.modifier : ""} ${tab.type ? "tabs__tab--" + tab.type : ""} ${tab.id === this.props.activeTab ? "active" : ""}`}
-            key={tab.id} onClick={this.props.onTabChange.bind(this, tab.id)}>{tab.name}</div>
-        })}
+        {tabs.map((tab, index) => (
+          <div
+            className={`tabs__tab tabs__tab--mobile-only-tab ${
+              modifier ? "tabs__tab--" + modifier : ""
+            } ${tab.type ? "tabs__tab--" + tab.type : ""} ${
+              tab.id === activeTab ? "active" : ""
+            }`}
+            key={tab.id}
+            onClick={onTabChange.bind(this, tab.id, tab.hash)}
+          >
+            {tab.name}
+          </div>
+        ))}
       </div>
       <div className="tabs__tab-labels tabs__tab-labels--desktop">
-        {this.props.tabs.map((tab, index)=>{
-          return <div className={`tabs__tab tabs__tab--mobile-only-tab ${this.props.modifier ? "tabs__tab--" + this.props.modifier : ""} ${tab.type ? "tabs__tab--" + tab.type : ""} ${tab.id === this.props.activeTab ? "active" : ""}`}
-            key={tab.id} onClick={this.props.onTabChange.bind(this, tab.id)}>{tab.name}</div>
-        })}
+        {tabs.map((tab, index) => (
+          <div
+            className={`tabs__tab tabs__tab--mobile-only-tab ${
+              modifier ? "tabs__tab--" + modifier : ""
+            } ${tab.type ? "tabs__tab--" + tab.type : ""} ${
+              tab.id === activeTab ? "active" : ""
+            }`}
+            key={tab.id}
+            onClick={onTabChange.bind(this, tab.id, tab.hash)}
+          >
+            {tab.name}
+          </div>
+        ))}
       </div>
-      <div className="tabs__tab-data-container">
-        {this.props.tabs.filter(t=>this.props.renderAllComponents || t.id===this.props.activeTab)
-          .map(t=><div key={t.id} className={`tabs__tab-data ${t.type ? "tabs__tab-data--" + t.type : ""}  ${t.id === this.props.activeTab ? "active" : ""}`}>
-          {t.component()}
-        </div>)}
+      <div className="tabs__tab-data-container tabs__tab-data-container--mobile-tabs">
+        {tabs
+          .filter((t) => renderAllComponents || t.id === activeTab)
+          .map((t) => (
+            <div
+              key={t.id}
+              className={`tabs__tab-data ${
+                t.type ? "tabs__tab-data--" + t.type : ""
+              }  ${t.id === activeTab ? "active" : ""}`}
+            >
+              {t.component()}
+            </div>
+          ))}
       </div>
     </div>
-  }
+  );
+};
+
+/**
+ * mapStateToProps
+ * @param state Redux state
+ */
+function mapStateToProps(state: StateType) {
+  return {
+    i18n: state.i18n,
+  };
 }
+
+export default connect(mapStateToProps)(Tabs);

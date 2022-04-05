@@ -3,15 +3,18 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
-
 .change-image {
   align-items: center;
-  display: block;
+  display: flex;
   justify-content: center;
   margin: 10px 0;
   min-width: 250px;
   position: relative;
   width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    justify-content: left;
+  }
 }
 
 .change-image__container {
@@ -28,7 +31,7 @@
     cursor: pointer;
     height: 100%;
     left: 0;
-    opacity: 0;
+    opacity: 0%;
     position: absolute;
     top: 0;
     width: 100%;
@@ -40,8 +43,11 @@
   }
 }
 
-.change-image__container--workspace {
+.change-image__container--profile {
+  border: solid 2px $color-form-element-border;
+}
 
+.change-image__container--workspace {
   @include breakpoint($breakpoint-pad) {
     background-position: center center;
     background-size: cover;
@@ -64,18 +70,19 @@
   display: flex;
   justify-content: space-between;
   left: 0;
+  padding: 2px;
   position: absolute;
   width: 100%;
 }
 
 .change-image__default-content {
   @include workspace-image-button;
+
   display: flex;
   padding: 10px;
 }
 
 .change-image__container--empty {
-
   &::before {
     color: $color-default;
     content: "\e114";

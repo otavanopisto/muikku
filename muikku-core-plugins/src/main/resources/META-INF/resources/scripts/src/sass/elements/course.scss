@@ -4,7 +4,7 @@
 @import "../base/breakpoints";
 
 .course {
-  border-top: 3px solid $color-message-border;
+  border-top: 1px solid $color-message-border;
   margin: 0 0 1px;
   padding: 0 10px; // Top and bottom paddings are added in application-list__item-header--course so clickable area is bigger when only header acts as cickable object
 
@@ -31,14 +31,12 @@
 }
 
 .course--studies {
-
   &:hover,
   &.hover,
   &:active,
   &.active {
-
     svg {
-      opacity: 0.9;
+      opacity: 90%;
     }
   }
 }

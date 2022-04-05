@@ -1,20 +1,14 @@
 package fi.otavanopisto.muikku.plugins.chat.dao;
 
-import java.util.List;
-
 import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
 import fi.otavanopisto.muikku.plugins.chat.model.WorkspaceChatSettings;
 import fi.otavanopisto.muikku.plugins.chat.model.WorkspaceChatSettings_;
 import fi.otavanopisto.muikku.plugins.chat.model.WorkspaceChatStatus;
-import fi.otavanopisto.muikku.plugins.forum.model.ForumMessage;
-import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 
 
 public class WorkspaceChatSettingsDAO extends CorePluginsDAO<WorkspaceChatSettings> {

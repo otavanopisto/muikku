@@ -28,6 +28,7 @@ import fi.otavanopisto.muikku.mock.model.MockStudent;
 import fi.otavanopisto.muikku.ui.AbstractUITest;
 import fi.otavanopisto.pyramus.rest.model.Course;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
+import fi.otavanopisto.pyramus.rest.model.OrganizationBasicInfo;
 import fi.otavanopisto.pyramus.rest.model.Sex;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
 import fi.otavanopisto.pyramus.rest.model.course.CourseSignupStudyProgramme;
@@ -59,7 +60,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
       .build();
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
       mockBuilder
         .addCourseStaffMember(course1.getId(), courseStaffMember)
         .build();
@@ -76,16 +77,11 @@ public class CourseManagementTestsBase extends AbstractUITest {
         OffsetDateTime begin = OffsetDateTime.of(2000, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
         OffsetDateTime end = OffsetDateTime.of(2050, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
 
-        waitForClickable(".application-sub-pane__button-container .button");
-        scrollIntoView(".application-sub-pane__button-container .button");
-        waitAndClick(".application-sub-pane__button-container .button");
-        waitForVisible(".notification-queue__items");
-        
         Course course = new Course(course1.getId(), "Testing course", created, created, "<p>test course for testing</p>\n", false, 1, 
             (long) 25, begin, end, "test extension", (double) 15, (double) 45, (double) 45,
             (double) 15, (double) 45, (double) 45, end, (long) 1,
             (long) 1, (long) 1, null, (double) 45, (long) 1, (long) 1, (long) 1, (long) 1, 
-            null, null, 1L, false);
+            null, null, 1L, false, 1L, 1L);
         String courseJson = objectMapper.writeValueAsString(course);        
         stubFor(put(urlEqualTo(String.format("/1/courses/courses/%d", course1.getId())))
             .willReturn(aResponse()
@@ -101,9 +97,14 @@ public class CourseManagementTestsBase extends AbstractUITest {
         
         String payload = objectMapper.writeValueAsString(new WebhookCourseCreatePayload(course.getId()));
         TestUtilities.webhookCall("http://dev.muikku.fi:" + System.getProperty("it.port.http") + "/pyramus/webhook", payload);
+
+        scrollIntoView(".application-sub-pane__button-container .button");
+        waitAndClick(".application-sub-pane__button-container .button");
+        waitForVisible(".notification-queue__items");
         
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
         waitForPresent(".hero__workspace-title");
+        waitUntilContentChanged(".hero__workspace-title", "");
         assertTextIgnoreCase(".hero__workspace-title", "Testing course");
       }finally{
         deleteWorkspace(workspace.getId());  
@@ -136,7 +137,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
       .build();
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
       mockBuilder
         .addCourseStaffMember(course1.getId(), courseStaffMember)
         .build();
@@ -185,17 +186,16 @@ public class CourseManagementTestsBase extends AbstractUITest {
       .build();
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
       mockBuilder
         .addCourseStaffMember(course1.getId(), courseStaffMember)
         .build();
       try{
         navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), false);
-        scrollIntoView("input[name=\"workspace-name-extension\"]");
+        scrollTo("input[name=\"workspace-name-extension\"]", 100);
         waitAndClick("input[name=\"workspace-name-extension\"]");
         clearElement("input[name=\"workspace-name-extension\"]");
         sendKeys("input[name=\"workspace-name-extension\"]", "For Test");
-        waitForClickable(".application-sub-pane__button-container .button");
         scrollIntoView(".application-sub-pane__button-container .button");
         waitAndClick(".application-sub-pane__button-container .button");
         waitForVisible(".notification-queue__items");
@@ -210,7 +210,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
             (long) 25, begin, end, "For Test", (double) 15, (double) 45, (double) 45,
             (double) 15, (double) 45, (double) 45, end, (long) 1,
             (long) 1, (long) 1, null, (double) 45, (long) 1, (long) 1, (long) 1, (long) 1, 
-            null, null, 1L, false);
+            null, null, 1L, false, 1L, 1L);
         String courseJson = objectMapper.writeValueAsString(course);        
         stubFor(put(urlEqualTo(String.format("/1/courses/courses/%d", course1.getId())))
             .willReturn(aResponse()
@@ -261,17 +261,16 @@ public class CourseManagementTestsBase extends AbstractUITest {
       .build();
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
       mockBuilder
         .addCourseStaffMember(course1.getId(), courseStaffMember)
         .build();
       try{
         navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), false);
         waitForPresent("select[name=\"workspace-type\"]");
-        scrollIntoView("select[name=\"workspace-type\"]");
+        scrollTo("select[name=\"workspace-type\"]", 100);
         selectOption("select[name=\"workspace-type\"]", "PYRAMUS-2");
-        waitForClickable(".application-sub-pane__button-container .button");
-        scrollIntoView(".application-sub-pane__button-container .button");
+        scrollTo(".application-sub-pane__button-container .button", 100);
         waitAndClick(".application-sub-pane__button-container .button");
         waitForVisible(".notification-queue__items");
         waitForNotVisible(".loading");
@@ -286,7 +285,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
             (long) 25, begin, end, "test extension", (double) 15, (double) 45, (double) 45,
             (double) 15, (double) 45, (double) 45, end, (long) 1,
             (long) 1, (long) 1, null, (double) 45, (long) 1, (long) 1, (long) 1, (long) 2, 
-            null, null, 1L, false);
+            null, null, 1L, false, 1L, 1L);
         String courseJson = objectMapper.writeValueAsString(course);
         stubFor(put(urlEqualTo(String.format("/1/courses/courses/%d", course1.getId())))
             .willReturn(aResponse()
@@ -337,7 +336,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
       .build();
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
       mockBuilder
         .addCourseStaffMember(course1.getId(), courseStaffMember)
         .build();
@@ -346,7 +345,6 @@ public class CourseManagementTestsBase extends AbstractUITest {
         waitForPresent(".license-selector select");
         scrollIntoView(".license-selector select");
         selectOption(".license-selector select", "CC3");
-        waitForClickable(".application-sub-pane__button-container .button");
         scrollIntoView(".application-sub-pane__button-container .button");
         waitAndClick(".application-sub-pane__button-container .button");
         waitForVisible(".notification-queue__items");
@@ -386,7 +384,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
       .build();
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
       mockBuilder
         .addCourseStaffMember(course1.getId(), courseStaffMember)
         .build();
@@ -398,7 +396,6 @@ public class CourseManagementTestsBase extends AbstractUITest {
         selectAllAndClear("input[name=\"add-producer\"]");
         sendKeys("input[name=\"add-producer\"]", "Mr. Tester");
         findElementByCssSelector("input[name=\"add-producer\"]").sendKeys(Keys.RETURN);
-        waitForClickable(".application-sub-pane__button-container .button");
         scrollIntoView(".application-sub-pane__button-container .button");
         waitAndClick(".application-sub-pane__button-container .button");
         waitForVisible(".notification-queue__items");
@@ -432,16 +429,16 @@ public class CourseManagementTestsBase extends AbstractUITest {
     try {
       mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
       Course course1 = new CourseBuilder().name("Test").id((long) 4).description("test course for testing").buildCourse();
-      CourseSignupStudyProgramme signupStudyProgramme = new CourseSignupStudyProgramme(1l, 4l, 1l, "welp");
+      CourseSignupStudyProgramme signupStudyProgramme = new CourseSignupStudyProgramme(1l, 4l, 1l, "welp", null);
       mockBuilder
         .addStaffMember(admin)
-        .mockLogin(admin)
         .addCourse(course1)
         .addSignupStudyProgramme(signupStudyProgramme)
+        .mockLogin(admin)
         .build();
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
       mockBuilder
         .addCourseStaffMember(course1.getId(), courseStaffMember)
         .build();
@@ -451,7 +448,6 @@ public class CourseManagementTestsBase extends AbstractUITest {
         waitForPresent("input#usergroup1");
         scrollIntoView("input#usergroup1");
         waitAndClick("input#usergroup1");
-        waitForClickable(".application-sub-pane__button-container .button");
         scrollIntoView(".application-sub-pane__button-container .button");
         waitAndClick(".application-sub-pane__button-container .button");
         waitForVisible(".notification-queue__items");

@@ -12,6 +12,7 @@ import javax.persistence.criteria.Root;
 import fi.otavanopisto.muikku.dao.CoreDAO;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource_;
+import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity_;
 import fi.otavanopisto.muikku.model.users.UserGroupUserEntity;
@@ -23,12 +24,13 @@ public class UserGroupEntityDAO extends CoreDAO<UserGroupEntity> {
 
   private static final long serialVersionUID = -2602347893195385174L;
 
-  public UserGroupEntity create(SchoolDataSource defaultSchoolDataSource, String defaultIdentifier, boolean archived) {
+  public UserGroupEntity create(SchoolDataSource defaultSchoolDataSource, String defaultIdentifier, OrganizationEntity organization, boolean archived) {
     UserGroupEntity userGroup = new UserGroupEntity();
     
     userGroup.setArchived(archived);
     userGroup.setSchoolDataSource(defaultSchoolDataSource);
     userGroup.setIdentifier(defaultIdentifier);
+    userGroup.setOrganization(organization);
 
     getEntityManager().persist(userGroup);
 
@@ -87,6 +89,11 @@ public class UserGroupEntityDAO extends CoreDAO<UserGroupEntity> {
    
     return getSingleResult(entityManager.createQuery(criteria));
   }
+
+  public UserGroupEntity updateOrganization(UserGroupEntity userGroupEntity, OrganizationEntity organization) {
+    userGroupEntity.setOrganization(organization);
+    return persist(userGroupEntity);
+  } 
 
   public UserGroupEntity updateArchived(UserGroupEntity userGroupEntity, Boolean archived) {
     userGroupEntity.setArchived(archived);

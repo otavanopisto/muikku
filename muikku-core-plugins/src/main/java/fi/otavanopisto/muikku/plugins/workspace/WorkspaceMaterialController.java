@@ -161,6 +161,11 @@ public class WorkspaceMaterialController {
     }
     return workspaceNode;
   }
+  
+  public WorkspaceNode moveUnderParent(WorkspaceNode workspaceNode, WorkspaceNode parent) {
+    Integer lastChildIndex = workspaceNodeDAO.getMaximumOrderNumber(parent);
+    return workspaceNodeDAO.updateParentAndOrderNumber(workspaceNode, parent, lastChildIndex == null ? 0 : lastChildIndex + 1);
+  }
 
   public WorkspaceNode findWorkspaceNodeNextSibling(WorkspaceNode referenceNode) {
     List<WorkspaceNode> nextSiblings = workspaceNodeDAO
@@ -694,6 +699,11 @@ public class WorkspaceMaterialController {
   public WorkspaceFolder createWorkspaceFolder(WorkspaceNode parent, String title, String urlName) {
     Integer index = workspaceNodeDAO.getMaximumOrderNumber(parent);
     index = index == null ? 0 : ++index;
+    return createWorkspaceFolder(parent, title, urlName, index, Boolean.FALSE, WorkspaceFolderType.DEFAULT,
+        MaterialViewRestrict.NONE);
+  }
+
+  public WorkspaceFolder createWorkspaceFolder(WorkspaceNode parent, String title, String urlName, Integer index) {
     return createWorkspaceFolder(parent, title, urlName, index, Boolean.FALSE, WorkspaceFolderType.DEFAULT,
         MaterialViewRestrict.NONE);
   }

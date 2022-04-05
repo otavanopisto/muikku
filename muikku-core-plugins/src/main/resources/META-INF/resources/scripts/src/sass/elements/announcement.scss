@@ -22,14 +22,12 @@
 }
 
 .announcement--environment {
-
   .glyph {
     color: $color-announcement-environment;
   }
 }
 
 .announcement--workspace {
-
   .glyph {
     color: $color-announcement-workspace;
   }
@@ -38,5 +36,29 @@
 .announcement__select-container {
   @include vp-align-items(center);
   @include vp-flexbox;
+
   padding: 2px 8px 2px 2px;
+}
+
+// These are for announcements panel-paginations spcific styles,
+// otherwise it uses same styles as Pager component
+.pagination {
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  list-style: none;
+  padding: 10px;
+}
+
+.pagination__link {
+  color: $color-pager-page-index-font;
+}
+
+.pagination__link--active {
+  color: $color-pager-selected-page-index-font;
+}
+
+.pagination__link,
+.pagination__link--active {
+  padding: 8px;
 }

@@ -1,6 +1,8 @@
 package fi.otavanopisto.muikku.users;
 
 import java.io.Serializable;
+import java.time.OffsetDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -24,7 +26,9 @@ import fi.otavanopisto.muikku.dao.users.UserEntityDAO;
 import fi.otavanopisto.muikku.dao.users.UserEntityPropertyDAO;
 import fi.otavanopisto.muikku.dao.users.UserIdentifierPropertyDAO;
 import fi.otavanopisto.muikku.dao.users.UserSchoolDataIdentifierDAO;
+import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.UserEmailEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
@@ -35,6 +39,7 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
+import fi.otavanopisto.muikku.session.SessionController;
 
 public class UserEntityController implements Serializable {
   
@@ -42,6 +47,15 @@ public class UserEntityController implements Serializable {
 
   @Inject
   private Logger logger;
+  
+  @Inject
+  private SessionController sessionController;
+
+  @Inject
+  private LocaleController localeController;
+
+  @Inject
+  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
 
   @Inject
   private UserEntityDAO userEntityDAO;
@@ -101,6 +115,47 @@ public class UserEntityController implements Serializable {
       }
     }
     return null;
+  }
+  
+  public String getStudyTimeEndAsString(OffsetDateTime studyTimeEnd) {
+    StringBuffer sb = new StringBuffer();
+    if (studyTimeEnd != null) {
+      OffsetDateTime now = OffsetDateTime.now();
+      Locale locale = sessionController.getLocale();
+      if (now.isBefore(studyTimeEnd)) {
+
+        long studyTimeLeftYears = now.until(studyTimeEnd, ChronoUnit.YEARS);
+        now = now.plusYears(studyTimeLeftYears);
+        if (studyTimeLeftYears > 0) {
+          sb.append(studyTimeLeftYears);
+          sb.append(" ");
+          sb.append(localeController.getText(locale, "plugin.profile.studyTimeEndShort.y"));
+        }
+
+        long studyTimeLeftMonths = now.until(studyTimeEnd, ChronoUnit.MONTHS);
+        now = now.plusMonths(studyTimeLeftMonths);
+        if (studyTimeLeftMonths > 0) {
+          if (sb.length() > 0) {
+            sb.append(" ");
+          }
+          sb.append(studyTimeLeftMonths);
+          sb.append(" ");
+          sb.append(localeController.getText(locale, "plugin.profile.studyTimeEndShort.m"));
+        }
+
+        long studyTimeLeftDays = now.until(studyTimeEnd, ChronoUnit.DAYS);
+        now = now.plusDays(studyTimeLeftDays);
+        if (studyTimeLeftDays > 0) {
+          if (sb.length() > 0) {
+            sb.append(" ");
+          }
+          sb.append(studyTimeLeftDays);
+          sb.append(" ");
+          sb.append(localeController.getText(locale, "plugin.profile.studyTimeEndShort.d"));
+        }
+      }
+    }
+    return sb.length() == 0 ? null : sb.toString();
   }
   
   public UserEntity findUserEntityById(Long id) {
@@ -233,6 +288,11 @@ public class UserEntityController implements Serializable {
   
   public List<UserSchoolDataIdentifier> listUserSchoolDataIdentifiersByDataSource(SchoolDataSource dataSource) {
     return userSchoolDataIdentifierDAO.listByDataSourceAndArchived(dataSource, Boolean.FALSE);
+  }
+
+  public boolean isStudent(UserEntity userEntity) {
+    EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(userEntity);
+    return roleEntity == null || roleEntity.getArchetype() == EnvironmentRoleArchetype.STUDENT;
   }
 
   public List<UserEntity> listUserEntities() {
