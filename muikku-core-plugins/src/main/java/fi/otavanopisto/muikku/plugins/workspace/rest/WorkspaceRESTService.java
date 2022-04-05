@@ -62,6 +62,7 @@ import org.jboss.resteasy.annotations.GZIP;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
+
 import fi.otavanopisto.muikku.controller.PermissionController;
 import fi.otavanopisto.muikku.controller.messaging.MessagingWidget;
 import fi.otavanopisto.muikku.files.TempFileUtils;
@@ -74,6 +75,8 @@ import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserEntityProperty;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
+import fi.otavanopisto.muikku.model.workspace.EducationTypeMapping;
+import fi.otavanopisto.muikku.model.workspace.Mandatority;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialProducer;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
@@ -364,6 +367,16 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Failed to create local copy of workspace %s", sourceWorkspaceId)).build();
     }
     
+    Mandatority mandatority = null;
+    SchoolDataIdentifier educationSubtypeId = workspace.getEducationSubtypeIdentifier();
+    
+    if (educationSubtypeId != null) {
+      EducationTypeMapping educationTypeMapping = workspaceEntityController.getEducationTypeMapping();
+      if (educationTypeMapping != null) {
+        mandatority = educationTypeMapping.getMandatority(educationSubtypeId);
+      }
+    }
+    
     // #2599: Also copy workspace default license and producers
     if (sourceWorkspaceEntity != null) {
       workspaceEntityController.updateDefaultMaterialLicense(workspaceEntity, sourceWorkspaceEntity.getDefaultMaterialLicense());
@@ -374,7 +387,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
 
     return Response
-        .ok(createRestModel(workspaceEntity, workspace.getName(), workspace.getNameExtension(), workspace.getDescription(), convertWorkspaceCurriculumIds(workspace), workspace.getSubjectIdentifier()))
+        .ok(createRestModel(workspaceEntity, workspace.getName(), workspace.getNameExtension(), workspace.getDescription(), convertWorkspaceCurriculumIds(workspace), workspace.getSubjectIdentifier(), mandatority))
         .build();
   }
 
@@ -591,7 +604,8 @@ public class WorkspaceRESTService extends PluginRESTService {
       }
       
       List<OrganizationRestriction> organizationRestrictions = organizationEntityController.listUserOrganizationRestrictions(loggedUserOrganizations, publicityRestriction, templateRestriction);
-      
+      EducationTypeMapping educationTypeMapping = workspaceEntityController.getEducationTypeMapping();
+
       searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, educationTypes, 
           curriculums, organizationRestrictions, searchString, null, null, firstResult, maxResults, sorts);
       
@@ -621,9 +635,22 @@ public class WorkspaceRESTService extends PluginRESTService {
                     logger.warning("curriculumIdentifier not of type String");
                 }
               }
+              String educationTypeId = (String) result.get("educationTypeIdentifier");
+
+              Mandatority mandatority = null;
+
+              if (StringUtils.isNotBlank(educationTypeId)) {
+                SchoolDataIdentifier educationSubtypeId = SchoolDataIdentifier.fromId((String) result.get("educationSubtypeIdentifier"));
+                
+                if (educationSubtypeId != null) {
+                  if (educationTypeMapping != null) {
+                    mandatority = educationTypeMapping.getMandatority(educationSubtypeId);
+                  }
+                }
+              }
               
               if (StringUtils.isNotBlank(name)) {
-                workspaces.add(createRestModel(workspaceEntity, name, nameExtension, description, curriculumIdentifiers, subjectIdentifier));
+                workspaces.add(createRestModel(workspaceEntity, name, nameExtension, description, curriculumIdentifiers, subjectIdentifier, mandatority));
               }
             }
           }
@@ -683,17 +710,28 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (workspace == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
-
+    Mandatority mandatority = null;
+    SchoolDataIdentifier educationSubtypeId = workspace.getEducationSubtypeIdentifier();
+    
+    if (educationSubtypeId != null) {
+      EducationTypeMapping educationTypeMapping = workspaceEntityController.getEducationTypeMapping();
+      
+      if (educationTypeMapping != null) {
+        mandatority = educationTypeMapping.getMandatority(educationSubtypeId);
+      }
+    }
+  
     return Response.ok(createRestModel(
         workspaceEntity,
         workspace.getName(),
         workspace.getNameExtension(),
         workspace.getDescription(),
         convertWorkspaceCurriculumIds(workspace),
-        workspace.getSubjectIdentifier()
+        workspace.getSubjectIdentifier(),
+        mandatority
     )).build();
   }
-  
+
   @GET
   @Path("/workspaces/{ID}/description")
   @RESTPermit (handling = Handling.INLINE)
@@ -1048,6 +1086,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
 
     Workspace workspace = null;
+    Mandatority mandatority = null;
     try {
       workspace = workspaceController.findWorkspace(workspaceEntity);
       if (workspace == null) {
@@ -1066,6 +1105,7 @@ public class WorkspaceRESTService extends PluginRESTService {
           workspace.setNameExtension(payload.getNameExtension());
           workspace.setDescription(payload.getDescription());
           workspace = workspaceController.updateWorkspace(workspace);
+          mandatority = payload.getMandatority();
         }
       } catch (Exception e) {
         return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Failed to update workspace data into school data source (%s)", e.getMessage())).build();
@@ -1101,7 +1141,8 @@ public class WorkspaceRESTService extends PluginRESTService {
         workspace.getNameExtension(),
         workspace.getDescription(),
         convertWorkspaceCurriculumIds(workspace),
-        workspace.getSubjectIdentifier()
+        workspace.getSubjectIdentifier(),
+        mandatority
     )).build();
   }
   
@@ -2422,7 +2463,8 @@ public class WorkspaceRESTService extends PluginRESTService {
       String nameExtension,
       String description,
       Set<String> curriculumIdentifiers,
-      String subjectIdentifier) {
+      String subjectIdentifier,
+      Mandatority mandatority) {
     Long numVisits = workspaceVisitController.getNumVisits(workspaceEntity);
     Date lastVisit = workspaceVisitController.getLastVisit(workspaceEntity);
     boolean hasCustomImage = workspaceEntityFileController.getHasCustomImage(workspaceEntity);
@@ -2437,6 +2479,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         nameExtension, 
         description, 
         workspaceEntity.getDefaultMaterialLicense(),
+        mandatority,
         numVisits, 
         lastVisit,
         curriculumIdentifiers,

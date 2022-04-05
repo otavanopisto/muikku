@@ -119,16 +119,14 @@ export const Tabs: React.FC<TabsProps> = (props) => {
     modifierClass: "tabs__pagination-container--",
   };
 
-    /**
+  /**
    * Creates an array from tab ids from given tabs
    * @param tabs array of tabs
    * @returns an array of strings
    */
-     const createAllTabs = (tabs: Tab[]) => {
-      return tabs.map((tab) => tab.id);
-    };
+  const createAllTabs = (tabs: Tab[]) => tabs.map((tab) => tab.id);
 
-    const allTabs = createAllTabs(tabs);
+  const allTabs = createAllTabs(tabs);
 
   const nextSlide = allTabs[allTabs.indexOf(activeTab) + 1];
   const prevSlide = allTabs[allTabs.indexOf(activeTab) - 1];
@@ -186,6 +184,7 @@ export const Tabs: React.FC<TabsProps> = (props) => {
                   tab.id === activeTab ? "active" : ""
                 }`}
                 key={tab.id}
+                id={tab.id}
                 onClick={onTabChange.bind(this, tab.id, tab.hash)}
               >
                 {tab.name}

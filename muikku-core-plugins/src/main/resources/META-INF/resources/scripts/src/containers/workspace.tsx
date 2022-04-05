@@ -38,6 +38,7 @@ import {
   loadCurrentWorkspaceUserGroupPermissions,
   loadWorkspaceChatStatus,
   loadWholeWorkspaceHelp,
+  setAvailableCurriculums,
 } from "~/actions/workspaces";
 import {
   loadAnnouncementsAsAClient,
@@ -374,7 +375,7 @@ export default class Workspace extends React.Component<
 
   /**
    * renderWorkspaceHome
-   * @param props
+   * @param props props
    * @returns JSX.Element
    */
   renderWorkspaceHome(props: RouteComponentProps<any>) {
@@ -409,6 +410,8 @@ export default class Workspace extends React.Component<
           },
         }) as Action
       );
+
+      this.props.store.dispatch(setAvailableCurriculums() as Action);
 
       if (
         state.status.loggedIn &&

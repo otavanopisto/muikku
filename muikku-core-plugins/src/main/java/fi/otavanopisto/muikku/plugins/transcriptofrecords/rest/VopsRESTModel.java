@@ -2,6 +2,8 @@ package fi.otavanopisto.muikku.plugins.transcriptofrecords.rest;
 
 import java.util.List;
 
+import fi.otavanopisto.muikku.model.workspace.Mandatority;
+
 public class VopsRESTModel {
   public static interface VopsEntry {
     
