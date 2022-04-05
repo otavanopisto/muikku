@@ -9,7 +9,7 @@ import "~/sass/elements/application-list.scss";
 import "~/sass/elements/application-sub-panel.scss";
 import "~/sass/elements/avatar.scss";
 import "~/sass/elements/workspace-activity.scss";
-import { getName } from "~/util/modifiers";
+import { getUserImageUrl, getName } from "~/util/modifiers";
 import Workspaces from "../workspaces";
 import Ceepos from "./state-of-studies/ceepos";
 import CeeposButton from "./state-of-studies/ceepos-button";
@@ -85,7 +85,7 @@ class StateOfStudies extends React.Component<
 
     /**
      * IsStudentPartOfProperStudyProgram
-     * @param studyProgramName studyprogramme name
+     * @param studyProgramName
      * @returns true or false
      */
     const IsStudentPartOfProperStudyProgram = (studyProgramName: string) => {
@@ -170,7 +170,7 @@ class StateOfStudies extends React.Component<
       );
 
     const studentBasicInfo = this.props.guider.currentStudent.basic && (
-      <div className="application-sub-panel__body">
+      <ApplicationSubPanel.Body>
         <ApplicationSubPanelItem
           title={this.props.i18n.text.get(
             "plugin.guider.user.details.label.studyStartDateTitle"
@@ -323,7 +323,7 @@ class StateOfStudies extends React.Component<
               </ApplicationSubPanelItem>;
             }
           )}
-      </div>
+      </ApplicationSubPanel.Body>
     );
 
     const studentWorkspaces = (
