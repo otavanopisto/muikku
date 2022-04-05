@@ -33,8 +33,6 @@ export interface Tab {
  */
 interface TabsProps {
   onTabChange: (id: string, hash?: string | Tab) => void;
-  /** An array of all tab ids for swiper*/
-  allTabs: string[];
   activeTab: string;
   /** General class modifier */
   modifier?: string;
@@ -108,25 +106,10 @@ export const Tabs: React.FC<TabsProps> = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [swiper, useWithHash]);
 
-  const mobileBreakpoint = parseInt(variables.mobileBreakpoint); //Parse a breakpoint from scss to a number
-
+  const mobileBreakpoint = parseInt(variables.mobilebreakpoint); //Parse a breakpoint from scss to a number
   const isMobileWidth = useIsAtBreakpoint(mobileBreakpoint);
-
   const a11yConfig = {
     enabled: true,
-  };
-
-  /**
-   * Creates an array from tab ids from given tabs
-   * @param tabs array of tabs
-   * @returns an array of strings
-   */
-  const createAllTabs = (tabs: Tab[]) => {
-    const tabStrings: string[] = [];
-    for (let i = 0; i < tabs.length; i++) {
-      tabStrings.push(tabs[i].id);
-    }
-    return tabStrings;
   };
 
   const paginationConfig = {
@@ -134,7 +117,15 @@ export const Tabs: React.FC<TabsProps> = (props) => {
     modifierClass: "tabs__pagination-container--",
   };
 
+  /**
+   * Creates an array from tab ids from given tabs
+   * @param tabs array of tabs
+   * @returns an array of strings
+   */
+  const createAllTabs = (tabs: Tab[]) => tabs.map((tab) => tab.id);
+
   const allTabs = createAllTabs(tabs);
+
   const nextSlide = allTabs[allTabs.indexOf(activeTab) + 1];
   const prevSlide = allTabs[allTabs.indexOf(activeTab) - 1];
 
@@ -185,13 +176,13 @@ export const Tabs: React.FC<TabsProps> = (props) => {
           >
             {tabs.map((tab: Tab) => (
               <div
-                id={tab.id}
                 className={`tabs__tab ${
                   modifier ? "tabs__tab--" + modifier : ""
                 } ${tab.type ? "tabs__tab--" + tab.type : ""} ${
                   tab.id === activeTab ? "active" : ""
                 }`}
                 key={tab.id}
+                id={tab.id}
                 onClick={onTabChange.bind(this, tab.id, tab.hash)}
               >
                 {tab.name}

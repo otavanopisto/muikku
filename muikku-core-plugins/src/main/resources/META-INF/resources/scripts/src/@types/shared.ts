@@ -224,3 +224,13 @@ export interface UploadingValue {
   progress?: number;
   file?: File;
 }
+
+/**
+ * OPSsuitability
+ */
+export interface OPSsuitability {
+  MANDATORY: string;
+  UNSPECIFIED_OPTIONAL: string;
+  NATIONAL_LEVEL_OPTIONAL: string;
+  SCHOOL_LEVEL_OPTIONAL: string;
+}

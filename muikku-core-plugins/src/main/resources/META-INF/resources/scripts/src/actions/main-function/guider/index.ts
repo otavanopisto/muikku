@@ -535,8 +535,8 @@ let loadStudent: LoadStudentTriggerType = function loadStudent(id) {
 
 /**
  * loadStudentHistory thunk function
- * @param id
- * @param forceLoad
+ * @param id student id
+ * @param forceLoad should the history load be forced
  */
 const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
   id,
