@@ -58,11 +58,6 @@ interface HopsCourseTableProps extends Partial<StudentActivityByStatus> {
  */
 const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
   /**
-   * Table ref
-   */
-  const tableRef = React.useRef(null);
-
-  /**
    * handleToggleChoiceClick
    * @param choiceParams choiceParams
    */
@@ -245,7 +240,7 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
             key={course.id}
             modifiers={modifiers}
             onClick={
-              props.user === "student"
+              !course.mandatory && props.user === "student"
                 ? handleToggleChoiceClick({
                     studentId: props.studentId,
                     courseNumber: course.courseNumber,
@@ -346,7 +341,7 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
   });
 
   return (
-    <Table ref={tableRef} modifiers={["course-matrix"]}>
+    <Table modifiers={["course-matrix"]}>
       <TableHead modifiers={["language-table"]}>
         <Tr modifiers={["language-table"]}>
           <Th modifiers={["subject"]}>Oppiaine</Th>

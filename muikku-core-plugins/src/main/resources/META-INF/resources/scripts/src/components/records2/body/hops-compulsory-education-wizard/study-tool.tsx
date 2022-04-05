@@ -141,7 +141,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
 
     const calculateGraduationDateFormated = localizedMoment()
       .add(totalTimeInDays, "day")
-      .format("l");
+      .format("MM-yyyy");
 
     /**
      * Own graduation date goal changed to moment form
@@ -162,7 +162,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
           } tuntia viikossa, valmistut arviolta ${calculateGraduationDateFormated}. Opinto-oikeutesi kuitenkin päättyy: ${localizedMoment(
             props.studyTimeEnd
           ).format(
-            "l"
+            "MM-yyyy"
           )}. Mieti, kuinka voisit järjestää itsellesi enemmän aikaa opiskelulle.`}
         />
       );
@@ -190,7 +190,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
           message={`Jos opiskelet ${
             studyHours.studyHourValue
           } tuntia viikossa, valmistut arviolta ${calculateGraduationDateFormated}. Valmistumiselle asettamasi tavoite on: ${ownGoal.format(
-            "l"
+            "MM-yyyy"
           )}. Voit joko valmistua myöhemmin tai etsiä itsellesi lisää aikaa opiskelemiseen. Pohdi asiaa vielä!`}
         />
       );
@@ -211,7 +211,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
           message={`Jos opiskelet ${
             studyHours.studyHourValue
           } tuntia viikossa, valmistut arviolta ${calculateGraduationDateFormated}. Sehän on nopeammin kuin ajattelit (${ownGoal.format(
-            "l"
+            "MM-yyyy"
           )})! Pieni jousto aikataulussa on kuitenkin hyvä juttu, koska elämässä aina sattuu ja tapahtuu.`}
         />
       );
@@ -231,7 +231,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
         <StudyToolCalculationInfoBox
           state="info_enough"
           message={`Erinomaista! Jos opiskelet tällä tahdilla, valmistuminen ${ownGoal.format(
-            "l"
+            "MM-yyyy"
           )} on täysin mahdollista!`}
         />
       );
