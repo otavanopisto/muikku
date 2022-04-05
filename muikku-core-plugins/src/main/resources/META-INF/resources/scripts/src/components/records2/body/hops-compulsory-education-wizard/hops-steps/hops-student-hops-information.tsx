@@ -52,66 +52,72 @@ class HopsStudentHopsInformation extends React.Component<
         {this.props.loading ? (
           <div className="loader-empty" />
         ) : (
-          <fieldset className="hops-container__fieldset">
-            <legend className="hops-container__subheader">Perustiedot:</legend>
+          <>
+            <fieldset className="hops-container__fieldset">
+              <legend className="hops-container__subheader">Perustiedot</legend>
 
-            <div className="hops-container__row">
-              <div className="hops__form-element-container">
-                <TextField
-                  label="Nimi:"
-                  type="text"
-                  placeholder="Nimi"
-                  value={this.props.basicInformation.name}
-                  disabled
-                  className="hops__input"
-                />
-              </div>
-            </div>
-            <div className="hops-container__row">
-              <div className="hops__form-element-container">
-                <TextField
-                  label="Ohjaaja:"
-                  type="text"
-                  placeholder="Ohjaaja"
-                  value={
-                    this.props.basicInformation.counselorList !== undefined &&
-                    this.props.basicInformation.counselorList.length > 0
-                      ? this.props.basicInformation.counselorList.join(", ")
-                      : "Ei ohjaaja"
-                  }
-                  disabled
-                  className="hops__input"
-                />
-              </div>
-            </div>
-            {this.props.basicInformation.updates &&
-            this.props.basicInformation.updates.length ? (
-              <div className="hops-container__info">
-                <h3 className="hops-container__subheader">Muokkaushistoria</h3>
-                <HopsHistory
-                  hopsUpdates={this.props.basicInformation.updates}
-                  loggedUserId={this.props.loggedUserId}
-                  loading={this.props.loadingHistoryEvents}
-                  superVisorModifies={this.props.superVisorModifies}
-                  onHistoryEventClick={this.props.onHistoryEventClick}
-                  status={this.props.status}
-                />
-                <div className="hops-container__row">
-                  <Button
-                    buttonModifiers={["load-all-hops-events"]}
-                    onClick={this.props.onLoadMOreHistoryEventsClick}
-                    disabled={
-                      this.props.allHistoryEventLoaded ||
-                      this.props.loadingHistoryEvents ||
-                      this.props.basicInformation.updates.length > 5
-                    }
-                  >
-                    Lataa kaikki
-                  </Button>
+              <div className="hops-container__row">
+                <div className="hops__form-element-container">
+                  <TextField
+                    label="Nimi:"
+                    type="text"
+                    placeholder="Nimi"
+                    value={this.props.basicInformation.name}
+                    disabled
+                    className="hops__input"
+                  />
                 </div>
               </div>
+              <div className="hops-container__row">
+                <div className="hops__form-element-container">
+                  <TextField
+                    label="Ohjaaja:"
+                    type="text"
+                    placeholder="Ohjaaja"
+                    value={
+                      this.props.basicInformation.counselorList !== undefined &&
+                      this.props.basicInformation.counselorList.length > 0
+                        ? this.props.basicInformation.counselorList.join(", ")
+                        : "Ei ohjaaja"
+                    }
+                    disabled
+                    className="hops__input"
+                  />
+                </div>
+              </div>
+            </fieldset>
+            {this.props.basicInformation.updates &&
+            this.props.basicInformation.updates.length ? (
+              <fieldset className="hops-container__fieldset">
+                <legend className="hops-container__subheader">
+                  Muokkaushistoria
+                </legend>
+                <div className="hops-container__info">
+                  <HopsHistory
+                    hopsUpdates={this.props.basicInformation.updates}
+                    loggedUserId={this.props.loggedUserId}
+                    loading={this.props.loadingHistoryEvents}
+                    superVisorModifies={this.props.superVisorModifies}
+                    onHistoryEventClick={this.props.onHistoryEventClick}
+                    status={this.props.status}
+                  />
+                  <div className="hops-container__row">
+                    <Button
+                      buttonModifiers={["load-all-hops-events"]}
+                      onClick={this.props.onLoadMOreHistoryEventsClick}
+                      disabled={
+                        this.props.allHistoryEventLoaded ||
+                        this.props.loadingHistoryEvents ||
+                        this.props.basicInformation.updates.length > 5
+                      }
+                    >
+                      Lataa kaikki
+                    </Button>
+                  </div>
+                </div>
+              </fieldset>
             ) : null}
-          </fieldset>
+          </>
         )}
       </section>
     );

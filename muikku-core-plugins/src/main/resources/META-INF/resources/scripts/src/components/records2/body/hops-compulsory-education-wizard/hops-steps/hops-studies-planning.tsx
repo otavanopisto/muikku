@@ -104,11 +104,11 @@ class HopsStudiesPlanning extends React.Component<
         <fieldset className="hops-container__fieldset">
           <legend className="hops-container__subheader">Opintolaskuri</legend>
           {!hasAccessToStudyTool ? (
-            <div className="hops-container__phase-info">
+            <div className="hops-container__info">
               Tämä osa lomakkeesta aktivoidaan ohjaajan toimesta.
             </div>
           ) : (
-            <>
+            <div className="hops-container__info">
               <div className="hops__form-element-container">
                 Opintoaikalaskuri vertaa valmistumiselle asettamaasi tavoitetta
                 aikaan, joka sinulla on viikoittain käytössäsi opiskeluun. Yhden
@@ -125,7 +125,7 @@ class HopsStudiesPlanning extends React.Component<
                 superVisorModifies={this.props.superVisorModifies}
                 onStudiesPlanningChange={this.props.onStudiesPlanningChange}
               />
-            </>
+            </div>
           )}
         </fieldset>
       </div>

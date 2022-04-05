@@ -118,7 +118,7 @@
   border: 0;
   border-bottom: 1px solid $color-default-separator-border;
   margin: 0 0 15px;
-  padding: 0 0 15px;
+  padding: 0 0 10px;
 }
 
 .hops-container__subheader {
@@ -135,23 +135,19 @@
 }
 
 .hops-container__info {
+  margin: 10px 0;
   width: 100%;
-
-  .hops-container__subheader {
-    margin: 15px 0 10px;
-  }
 }
 
 // HOPS history
 .hops-container__history {
   display: flex;
   flex-flow: column wrap;
-  margin: 0 0 10px;
 }
 
 .hops-container__history-event {
   align-items: flex-start;
-  border-bottom: 1px solid $color-default-separator-border;
+  border-bottom: 1px solid $color-default-item-separator-border;
   display: flex;
   flex-basis: 100%;
   flex-flow: column wrap;
@@ -177,7 +173,6 @@
 
 .hops-container__history-event-secondary {
   font-size: 0.8125rem;
-  font-style: italic;
 
   span {
     white-space: break-spaces;
@@ -185,7 +180,7 @@
 }
 
 .hops-container__history-event-action {
-  margin: 0 7px 0 7px;
+  margin: 0 7px;
 }
 
 .hops-container__history-event-text {
@@ -224,7 +219,7 @@
 .hops-container__row {
   display: flex;
   flex-flow: row wrap;
-  padding: 5px 0;
+  margin: 10px 0;
   position: relative;
   width: 100%;
 
@@ -255,6 +250,12 @@
   }
 }
 
+.hops-container__table-container {
+  width: 100%;
+}
+
+// HOPS form related styles.
+// Naming convention is wrong here and will be dealt in the future as matriculation form needs this refactoring also
 .hops__form-element-container {
   display: flex;
   flex-basis: auto;
@@ -375,7 +376,6 @@
 
 // HOPS textfield's disabled style overrides inside tables
 .hops__input--inside-table {
-
   &[disabled] {
     background-color: transparent;
     border-color: transparent;
@@ -436,10 +436,6 @@
   }
 }
 
-.hops__table-container {
-  width: 100%;
-}
-
 .hops-container__indicator-descriptions {
   display: flex;
   flex-flow: row wrap;
@@ -476,10 +472,6 @@
   margin: 5px;
 }
 
-.hops__divived {
-  margin: 5px;
-}
-
 .hops__activity-progressbar-label {
   background: $color-default;
   border: 1px solid $color-assignment;
@@ -506,41 +498,5 @@
 }
 
 .hops__activity-progressbar-label--assignment {
-  color: #ce01bd;
-}
-
-.hops__buttons {
-  display: flex;
-  flex-flow: wrap;
-  flex-grow: 1;
-}
-
-.hops__buttons--add {
-  justify-content: unset;
-
-  @include breakpoint($breakpoint-desktop) {
-    justify-content: flex-start;
-  }
-}
-
-.hops__buttons--remove {
-  justify-content: unset;
-
-  @include breakpoint($breakpoint-desktop) {
-    justify-content: flex-end;
-  }
-}
-
-.animate-height::before {
-  background-image: linear-gradient(180deg, #ffffff8c, #fffffff5);
-  bottom: 25px;
-  content: "";
-  height: 20px;
-  position: absolute;
-  transition: height 0.3s ease-in;
-  width: 100%;
-}
-
-.animate-height--open::before {
-  height: 0px;
+  color: $color-assignment;
 }

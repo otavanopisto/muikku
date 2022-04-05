@@ -824,49 +824,37 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
       )}
 
       {!studentActivity.isLoading && !studentChoices.isLoading && (
-        <div className="hops-container__row">
-          <StudyToolOptionalStudiesInfoBox
-            needMandatoryStudies={needMandatoryStudies}
-            selectedNumberOfOptional={studentChoices.studentChoices.length}
-            graduationGoal={followUpData.followUp.graduationGoal}
-          />
-        </div>
+        <StudyToolOptionalStudiesInfoBox
+          needMandatoryStudies={needMandatoryStudies}
+          selectedNumberOfOptional={studentChoices.studentChoices.length}
+          graduationGoal={followUpData.followUp.graduationGoal}
+        />
       )}
 
       {!studentActivity.isLoading &&
         !studentChoices.isLoading &&
         studentChoices.studentChoices &&
         studentChoices.studentChoices.length >= neededOptionalStudies && (
-          <div className="hops-container__row">
-            {compareGraduationGoalToNeededForMandatoryStudies()}
-          </div>
+          <>{compareGraduationGoalToNeededForMandatoryStudies()}</>
         )}
 
       {props.showIndicators && (
         <div className="hops-container__info">
-          <h3 className="hops-container__subheader">Opintojen edistyminen</h3>
-          <div>
+          <div className="hops-container__row">
             <ProgressBarLine
               containerClassName="hops-activity__progressbar-line hops-course-activity__progressbar-line hops-proggress-line"
               options={{
-                strokeWidth: 10,
+                strokeWidth: 1,
                 duration: 1000,
-                color: "#008000",
-                trailColor: "#808080",
-                easing: "easeInOut",
-                trailWidth: 10,
+                color: "#72d200",
+                trailColor: "#f5f5f5",
+                trailWidth: 1,
+                svgStyle: { width: "100%", height: "10px" },
                 initialAnimate: true,
-                svgStyle: {
-                  flexBasis: "100%",
-                  flexGrow: "0",
-                  flexShrink: "0",
-                  height: "30px",
-                },
                 text: {
                   style: {
                     width: "100%",
                     position: "absolute",
-                    color: "white",
                   },
                   className:
                     "hops-activity__progressbar-label hops-activity__progressbar-label--assignment  hops-activity__progressbar-label--workspace",
@@ -1023,7 +1011,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
           {studentActivity.isLoading || studentChoices.isLoading ? (
             <div className="loader-empty" />
           ) : (
-            <div className="hops__table-container">
+            <div className="hops-container__table-container">
               <CourseTable
                 disabled={props.disabled}
                 studentId={props.studentId}

@@ -230,7 +230,7 @@ class HopsStartingLevel extends React.Component<
           <legend className="hops-container__subheader">Kielitaito</legend>
 
           <div className="hops-container__row">
-            <div className="hops__table-container">
+            <div className="hops-container__table-container">
               <HopsLanguageGradeTable>
                 {this.props.studentStartingLevel.previousLanguageExperience.map(
                   (lngG, index) => (
