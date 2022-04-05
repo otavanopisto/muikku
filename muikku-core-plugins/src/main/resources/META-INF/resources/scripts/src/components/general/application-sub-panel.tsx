@@ -9,19 +9,11 @@ interface SubPanelProps {
 }
 
 /**
- * SubPanelState
- */
-interface SubPanelState {}
-
-/**
  * ApplicationSubPanel
- *
- * @param props properties
+ * @param props component props
  * @returns JSX.Element
- *
  * Has child components:
  * ApplicationSubpanel.Header, ApplicationSubpanel.Body
- *
  */
 const ApplicationSubPanel: React.FC<SubPanelProps> & {
   Header?: React.FC<{ modifier?: string }>;
@@ -45,6 +37,8 @@ const ApplicationSubPanel: React.FC<SubPanelProps> & {
 
 /**
  * ApplicationSubPanelHeader
+ * @param props component props
+ * @returns JSX.Element
  */
 const ApplicationSubPanelHeader: React.FC<{ modifier?: string }> = (props) => (
   <div
@@ -68,7 +62,7 @@ interface SubPanelViewHeaderProps {
 
 /**
  * ApplicationSubPanelViewHeader
- * @param props
+ * @param props component props
  * @returns JSX.Element
  */
 export const ApplicationSubPanelViewHeader: React.FC<
@@ -91,6 +85,7 @@ export const ApplicationSubPanelViewHeader: React.FC<
 
 /**
  * ApplicationSubpanelBody
+ * @param props comopnent props
  */
 const ApplicationSubPanelBody: React.FC<{ modifier?: string }> = (props) => (
   <div
