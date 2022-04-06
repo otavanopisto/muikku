@@ -211,7 +211,7 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
             sCourse.courseNumber === course.courseNumber
         )
       ) {
-        listItemIndicatormodifiers.push("SELECTED_OPTIONAL");
+        listItemIndicatormodifiers.push("OPTIONAL-SELECTED");
       }
 
       /**

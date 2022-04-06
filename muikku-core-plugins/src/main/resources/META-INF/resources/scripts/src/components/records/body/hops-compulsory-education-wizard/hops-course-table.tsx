@@ -14,14 +14,13 @@ import {
   Th,
 } from "~/components/general/table";
 import { schoolCourseTable } from "~/mock/mock-data";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import { HopsUser } from ".";
 import { StateType } from "~/reducers";
 import Dropdown from "~/components/general/dropdown";
 import { UpdateSuggestionParams } from "./hooks/useStudentActivity";
 import { UpdateStudentChoicesParams } from "./hooks/useStudentChoices";
 import HopsSuggestionList from "./hops-suggested-list";
-import { AnyActionType } from "~/actions";
 
 /**
  * CourseTableProps
@@ -134,9 +133,9 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
         }
 
         /**
-         * Default modifiers is always course
+         * Default modifier is always course
          */
-        modifiers.push("course", "course-matrix");
+        modifiers.push("course", "course-matrix", "centered");
 
         if (course.mandatory) {
           modifiers.push("MANDATORY");
@@ -163,7 +162,7 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
           )
         ) {
           selectedByStudent = true;
-          modifiers.push("SELECTED_OPTIONAL");
+          modifiers.push("OPTIONAL-SELECTED");
         }
 
         /**
@@ -250,6 +249,7 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
             }
           >
             <Dropdown
+              openByHover={props.user !== "supervisor" ? true : false}
               content={
                 <div>
                   <h4>{course.mandatory ? course.name : `${course.name}*`}</h4>
@@ -300,21 +300,14 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
                 </div>
               }
             >
-              <div
+              <span
                 tabIndex={0}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  height: "50%",
-                  width: "50%",
-                  margin: "auto",
-                }}
+                className="table__data-content-wrapper table__data-content-wrapper--course"
               >
                 {course.mandatory
                   ? course.courseNumber
                   : `${course.courseNumber}*`}
-              </div>
+              </span>
             </Dropdown>
           </Td>
         );

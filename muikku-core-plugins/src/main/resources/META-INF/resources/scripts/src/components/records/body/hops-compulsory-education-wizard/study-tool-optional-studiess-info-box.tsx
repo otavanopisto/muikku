@@ -35,9 +35,11 @@ const StudyToolOptionalStudiesInfoBox: React.FC<
             Sinulla ei ole valittuna riittävästi valinnaisia opintoja (
             {selectedNumberOfOptional}/
             {NEEDED_STUDIES_IN_TOTAL - needMandatoryStudies}). Valitse ainakin
-            {NEEDED_STUDIES_IN_TOTAL -
+            {` ${
+              NEEDED_STUDIES_IN_TOTAL -
               needMandatoryStudies -
-              selectedNumberOfOptional}
+              selectedNumberOfOptional
+            } `}
             kurssia.
           </div>
         </div>

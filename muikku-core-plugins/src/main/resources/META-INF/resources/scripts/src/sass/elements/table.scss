@@ -87,51 +87,82 @@
 
 .table__data--course {
   overflow: hidden;
+  text-align: center;
+}
+
+.table__data-content-wrapper--course {
+  align-items: center;
+  border: 2px solid transparent;
+  border-radius: 100%;
+  cursor: pointer;
+  display: flex;
+  height: 40px;
+  justify-content: center;
+  margin: 0 auto;
+  padding: 5px;
+  width: 40px;
 }
 
 .table__data--SUGGESTED {
-  border: 3px solid pink;
+  .table__data-content-wrapper--course {
+    background: $color-suggested;
+    border: 2px solid $color-default-contrast;
+  }
 }
 
 .table__data--MANDATORY {
-  background-color: #acacac;
+  .table__data-content-wrapper--course {
+    background: $color-default-helper;
+  }
 }
 
 .table__data--OPTIONAL {
-  background-color: lightblue;
+  .table__data-content-wrapper--course {
+    background: $color-tertiary;
+  }
+}
+
+.table__data--OPTIONAL-SELECTED {
+  .table__data-content-wrapper--course {
+    border: 2px solid $color-default-contrast;
+  }
 }
 
 .table__data--COMPLETED {
-  background-color: green;
+  .table__data-content-wrapper--course {
+    background: $color-success;
+  }
 }
 
 .table__data--INPROGRESS {
-  background-color: orange;
+  .table__data-content-wrapper--course {
+    background: $color-info;
+  }
 }
 
 .table__data--APPROVAL {
-  background-color: palegreen;
+  .table__data-content-wrapper--course {
+    background: $color-fatal;
+  }
 }
 
 .table__data--SELECTED {
-  background-color: cornsilk;
+  .table__data-content-wrapper--course {
+    background: $color-fatal;
+  }
 }
 
-.table-data--SELECTED_OPTIONAL {
-  background-color: #3ab8e1;
-}
-
-.tabl__-data--NEXT::after {
+.table__data--NEXT::after {
+  background: $color-fatal;
   content: "";
   display: block;
   height: 15px;
-  width: 15px;
-  background: pink;
   position: absolute;
+  right: -7px;
   top: 0;
   transform: skewX(45deg);
-  right: -7px;
   transition: right 0.3s ease-in;
+  width: 15px;
 }
 
 .table__data-content--empty {
