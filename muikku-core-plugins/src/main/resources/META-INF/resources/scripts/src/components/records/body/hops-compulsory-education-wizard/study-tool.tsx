@@ -1,5 +1,5 @@
 import * as React from "react";
-import { HopsPlanningStudies } from "../../../../@types/shared";
+import { HopsPlanningStudies, SchoolSubject } from "../../../../@types/shared";
 import { TextField } from "./text-field";
 import Dropdown from "../../../general/dropdown";
 import { HopsUser, NEEDED_STUDIES_IN_TOTAL } from ".";
@@ -19,8 +19,12 @@ import CourseTable from "./hops-course-table";
 import StudyToolOptionalStudiesInfoBox from "./study-tool-optional-studiess-info-box";
 import { useStudentChoices } from "./hooks/useStudentChoices";
 import { useStudentStudyHour } from "./hooks/useStudentStudyHours";
-import { useStudentAlternativeOptions } from "./hooks/useStudentAlternativeOptions";
+import {
+  AlternativeStudyObject,
+  useStudentAlternativeOptions,
+} from "./hooks/useStudentAlternativeOptions";
 import { i18nType } from "~/reducers/base/i18n";
+import { AnyActionType } from "~/actions";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const ProgressBarCircle = require("react-progress-bar.js").Circle;
@@ -77,30 +81,42 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
     props.displayNotification
   );
 
-  const { studyOptions, ...studyOptionHandlers } = useStudentAlternativeOptions(
+  const { studyOptions } = useStudentAlternativeOptions(
     props.studentId,
     props.websocketState,
     props.displayNotification
   );
 
-  const { followUpData, ...followUpHandlers } = useFollowUpGoal(
+  const { followUpData } = useFollowUpGoal(
     props.studentId,
     props.websocketState,
     props.displayNotification
+  );
+
+  const filteredSchoolCourseTable = filterSpecialSubjects(
+    schoolCourseTable,
+    studyOptions.options
   );
 
   /**
-   * compareGraduationGoalToNeededForMandatoryStudies
    * Compared graduation goal to need mandatory studies and shows indicator/message
    * if studieplan is good enough
+   *
    * @returns JSX.Element
    */
   const compareGraduationGoalToNeededForMandatoryStudies = () => {
     // All needed hours data needed
-    const allApprovedHours = calculateAllApprovedHours();
-    const optionalHoursCompleted = calculateCompletedOptionalHours();
-    const mandatoryHoursCompleted = calculateCompletedMandatoryHours();
-    const mandatoryHoursNeeded = calculateMandatoryHoursNeeded();
+    const allApprovedHours = calculateAllApprovedData().numberOfHoursCompleted;
+    const optionalHoursCompleted =
+      calculateAllOptionalData().numberOfHoursCompleted;
+    const mandatoryHoursCompleted =
+      calculateAllMandatoryData().numberOfhoursCompleted;
+
+    const mandatoryHoursNeeded =
+      calculateAllMandatoryData().numberOfHoursInTotalToComplete;
+
+    const optionalHoursSelected =
+      calculateAllOptionalData().numberOfSelectedHours;
 
     /**
      * Localized moment initialzied to variable
@@ -116,8 +132,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
     let selectedOptionalHours = 0;
 
     if (studentChoices.studentChoices.length > 0) {
-      selectedOptionalHours =
-        calculateSelectedOptionalHours() - optionalHoursCompleted;
+      selectedOptionalHours = optionalHoursSelected - optionalHoursCompleted;
     }
 
     const hoursInTotalToComplete =
@@ -161,9 +176,11 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
             studyHours.studyHourValue
           } tuntia viikossa, valmistut arviolta ${calculateGraduationDateFormated}. Opinto-oikeutesi kuitenkin päättyy: ${localizedMoment(
             props.studyTimeEnd
-          ).format(
-            "MM-yyyy"
-          )}. Mieti, kuinka voisit järjestää itsellesi enemmän aikaa opiskelulle.`}
+          )
+            .utc(false)
+            .format(
+              "MM-yyyy"
+            )}. Mieti, kuinka voisit järjestää itsellesi enemmän aikaa opiskelulle.`}
         />
       );
     }
@@ -239,312 +256,52 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
   };
 
   /**
-   * calculateSelectedOptionalHours
-   * @returns selected optional hours
+   * Calculates all approved related data
+   *
+   * @returns object containing number of all possible approved course hours and number of approved courses
    */
-  const calculateSelectedOptionalHours = (): number => {
-    let hoursSelected = 0;
+  const calculateAllApprovedData = () => {
+    let totalHoursApproved = 0;
+    let totalCourseApproved = 0;
 
-    if (studentChoices.studentChoices.length > 0) {
-      for (const sSubject of schoolCourseTable) {
-        let oneSubjectHours = 0;
-
-        for (const aCourse of sSubject.availableCourses) {
-          if (
-            studentChoices.studentChoices.find(
-              (sItem) =>
-                sItem.subject === sSubject.subjectCode &&
-                sItem.courseNumber === aCourse.courseNumber
-            )
-          ) {
-            oneSubjectHours += aCourse.length;
-          }
-        }
-
-        hoursSelected += oneSubjectHours;
-      }
-    }
-
-    return hoursSelected;
-  };
-
-  /**
-   * calculateMandatoryHoursNeeded
-   * @returns number of mandatory hours needed to complete all mandatory courses
-   */
-  const calculateMandatoryHoursNeeded = (): number => {
-    let hoursNeeded = 0;
-
-    for (const sSubject of schoolCourseTable) {
-      let oneSubjectMandatoryHours = 0;
-
-      /**
-       * Taking account of options for "special" subjects
-       */
-      if (
-        studyOptions.options.finnishAsLanguage &&
-        sSubject.subjectCode === "ai"
-      ) {
-        continue;
-      }
-      if (
-        !studyOptions.options.finnishAsLanguage &&
-        sSubject.subjectCode === "s2"
-      ) {
-        continue;
-      }
-      if (
-        studyOptions.options.religionAsEthics &&
-        sSubject.subjectCode === "ua"
-      ) {
-        continue;
-      }
-      if (
-        !studyOptions.options.religionAsEthics &&
-        sSubject.subjectCode === "ea"
-      ) {
-        continue;
-      }
-
-      for (const aCourse of sSubject.availableCourses) {
-        if (!aCourse.mandatory) {
-          continue;
-        }
-
-        oneSubjectMandatoryHours += aCourse.length;
-      }
-
-      hoursNeeded += oneSubjectMandatoryHours;
-    }
-    return hoursNeeded;
-  };
-
-  /**
-   * calculateNumberOfCompletedMandatoryCourses
-   * @returns number of completed mandatory courses
-   */
-  const calculateNumberOfCompletedMandatoryCourses = () => {
-    let completed = 0;
-
-    for (const sSubject of schoolCourseTable) {
-      /**
-       * Taking account of options for "special" subjects
-       */
-      if (
-        studyOptions.options.finnishAsLanguage &&
-        sSubject.subjectCode === "ai"
-      ) {
-        continue;
-      }
-      if (
-        !studyOptions.options.finnishAsLanguage &&
-        sSubject.subjectCode === "s2"
-      ) {
-        continue;
-      }
-      if (
-        studyOptions.options.religionAsEthics &&
-        sSubject.subjectCode === "ua"
-      ) {
-        continue;
-      }
-      if (
-        !studyOptions.options.religionAsEthics &&
-        sSubject.subjectCode === "ea"
-      ) {
-        continue;
-      }
-
-      for (const aCourse of sSubject.availableCourses) {
-        if (!aCourse.mandatory) {
-          continue;
-        }
-
-        if (studentActivity.gradedList || studentActivity.transferedList) {
-          if (
-            studentActivity.gradedList &&
-            studentActivity.gradedList.find(
-              (gCourse) =>
-                sSubject.subjectCode === gCourse.subject &&
-                gCourse.courseNumber === aCourse.courseNumber
-            )
-          ) {
-            completed++;
-          }
-          if (
-            studentActivity.transferedList &&
-            studentActivity.transferedList.find(
-              (tCourse) =>
-                sSubject.subjectCode === tCourse.subject &&
-                tCourse.courseNumber === aCourse.courseNumber
-            )
-          ) {
-            completed++;
-          }
-        }
-      }
-    }
-
-    return completed;
-  };
-
-  /**
-   * calculateAllApprovedHours
-   * @returns number of all possible approved course hours
-   */
-  const calculateAllApprovedHours = () => {
-    let hoursCompleted = 0;
-
-    for (const sSubject of schoolCourseTable) {
+    for (const sSubject of filteredSchoolCourseTable) {
       let oneSubjectHours = 0;
-
-      /**
-       * Taking account of options for "special" subjects
-       */
-      if (
-        studyOptions.options.finnishAsLanguage &&
-        sSubject.subjectCode === "ai"
-      ) {
-        continue;
-      }
-      if (
-        !studyOptions.options.finnishAsLanguage &&
-        sSubject.subjectCode === "s2"
-      ) {
-        continue;
-      }
-      if (
-        studyOptions.options.religionAsEthics &&
-        sSubject.subjectCode === "ua"
-      ) {
-        continue;
-      }
-      if (
-        !studyOptions.options.religionAsEthics &&
-        sSubject.subjectCode === "ea"
-      ) {
-        continue;
-      }
 
       for (const aCourse of sSubject.availableCourses) {
         if (
           studentActivity &&
-          studentActivity.transferedList.findIndex(
+          studentActivity.transferedList.find(
             (tCourse) =>
               sSubject.subjectCode === tCourse.subject &&
               tCourse.courseNumber === aCourse.courseNumber
-          ) !== -1
+          )
         ) {
           oneSubjectHours += aCourse.length;
+          totalCourseApproved++;
         }
       }
 
-      hoursCompleted += oneSubjectHours;
+      totalHoursApproved += oneSubjectHours;
     }
-    return hoursCompleted;
-  };
-
-  /**
-   * calculateNumberOfCompletedOptionalyCourses
-   * @returns number of completed optional courses
-   */
-  const calculateNumberOfCompletedOptionalyCourses = () => {
-    let completed = 0;
-
-    for (const sSubject of schoolCourseTable) {
-      /**
-       * Taking account of options for "special" subjects
-       */
-      if (
-        studyOptions.options.finnishAsLanguage &&
-        sSubject.subjectCode === "ai"
-      ) {
-        continue;
-      }
-      if (
-        !studyOptions.options.finnishAsLanguage &&
-        sSubject.subjectCode === "s2"
-      ) {
-        continue;
-      }
-      if (
-        studyOptions.options.religionAsEthics &&
-        sSubject.subjectCode === "ua"
-      ) {
-        continue;
-      }
-      if (
-        !studyOptions.options.religionAsEthics &&
-        sSubject.subjectCode === "ea"
-      ) {
-        continue;
-      }
-
-      for (const aCourse of sSubject.availableCourses) {
-        /**
-         * Skip mandatory courses
-         */
-        if (aCourse.mandatory) {
-          continue;
-        }
-
-        /**
-         * Check if there is completed optional courses
-         */
-        if (studentActivity.gradedList) {
-          if (
-            studentActivity.gradedList.find(
-              (gCourse) =>
-                sSubject.subjectCode === gCourse.subject &&
-                gCourse.courseNumber === aCourse.courseNumber
-            )
-          ) {
-            completed++;
-          }
-        }
-      }
-    }
-
-    return completed;
+    return {
+      numberOfHoursCompleted: totalHoursApproved,
+      numberOfCoursesCompleted: totalCourseApproved,
+    };
   };
 
   /**
    * calculateCompletedMandatoryHours
+   *
    * @returns completed mandatory course hours
    */
-  const calculateCompletedMandatoryHours = () => {
-    let hoursCompleted = 0;
+  const calculateAllMandatoryData = () => {
+    let totalHoursCompleted = 0;
+    let totalCourseCompleted = 0;
+    let totalNumberOfCourses = 0;
+    let totalHoursToComplete = 0;
 
-    for (const sSubject of schoolCourseTable) {
+    for (const sSubject of filteredSchoolCourseTable) {
       let oneSubjectMandatoryHours = 0;
-
-      /**
-       * Taking account of options for "special" subjects
-       */
-      if (
-        studyOptions.options.finnishAsLanguage &&
-        sSubject.subjectCode === "ai"
-      ) {
-        continue;
-      }
-      if (
-        !studyOptions.options.finnishAsLanguage &&
-        sSubject.subjectCode === "s2"
-      ) {
-        continue;
-      }
-      if (
-        studyOptions.options.religionAsEthics &&
-        sSubject.subjectCode === "ua"
-      ) {
-        continue;
-      }
-      if (
-        !studyOptions.options.religionAsEthics &&
-        sSubject.subjectCode === "ea"
-      ) {
-        continue;
-      }
 
       for (const aCourse of sSubject.availableCourses) {
         /**
@@ -553,61 +310,56 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
         if (!aCourse.mandatory) {
           continue;
         }
+        totalHoursToComplete += aCourse.length;
+        totalNumberOfCourses++;
 
         if (
           studentActivity.gradedList &&
-          studentActivity.gradedList.findIndex(
-            (gItem) =>
-              gItem.subject === sSubject.subjectCode &&
-              gItem.courseNumber === aCourse.courseNumber
-          ) !== -1
+          studentActivity.gradedList.find(
+            (gCourse) =>
+              sSubject.subjectCode === gCourse.subject &&
+              gCourse.courseNumber === aCourse.courseNumber
+          )
         ) {
           oneSubjectMandatoryHours += aCourse.length;
+          totalCourseCompleted++;
+        }
+        if (
+          studentActivity.transferedList &&
+          studentActivity.transferedList.find(
+            (tCourse) =>
+              sSubject.subjectCode === tCourse.subject &&
+              tCourse.courseNumber === aCourse.courseNumber
+          )
+        ) {
+          totalCourseCompleted++;
         }
       }
 
-      hoursCompleted += oneSubjectMandatoryHours;
+      totalHoursCompleted += oneSubjectMandatoryHours;
     }
-    return hoursCompleted;
+    return {
+      numberOfhoursCompleted: totalHoursCompleted,
+      numberOfCoursesCompleted: totalCourseCompleted,
+      numberOfCoursesInTotal: totalNumberOfCourses,
+      numberOfHoursInTotalToComplete: totalHoursToComplete,
+    };
   };
 
   /**
-   * calculateCompletedOptionalHours
+   * calculates
+   *
    * @returns number of completed optional course hours
    */
-  const calculateCompletedOptionalHours = () => {
-    let hoursCompleted = 0;
+  const calculateAllOptionalData = () => {
+    let totalHoursCompleted = 0;
+    let totalCourseCompleted = 0;
+    let totalNumberOfCourses = 0;
+    let totalHoursSelected = 0;
 
-    for (const sSubject of schoolCourseTable) {
+    for (const sSubject of filteredSchoolCourseTable) {
       let oneSubjectOptionalHours = 0;
-
-      /**
-       * Taking account of options for "special" subjects
-       */
-      if (
-        studyOptions.options.finnishAsLanguage &&
-        sSubject.subjectCode === "ai"
-      ) {
-        continue;
-      }
-      if (
-        !studyOptions.options.finnishAsLanguage &&
-        sSubject.subjectCode === "s2"
-      ) {
-        continue;
-      }
-      if (
-        studyOptions.options.religionAsEthics &&
-        sSubject.subjectCode === "ua"
-      ) {
-        continue;
-      }
-      if (
-        !studyOptions.options.religionAsEthics &&
-        sSubject.subjectCode === "ea"
-      ) {
-        continue;
-      }
+      let oneSubjectOptionalHoursSelected = 0;
 
       for (const aCourse of sSubject.availableCourses) {
         /**
@@ -617,80 +369,49 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
           continue;
         }
 
+        totalNumberOfCourses++;
+
         if (
           studentActivity.gradedList &&
-          studentActivity.gradedList.findIndex(
+          studentActivity.gradedList.find(
             (gItem) =>
               gItem.subject === sSubject.subjectCode &&
               gItem.courseNumber === aCourse.courseNumber
-          ) !== -1
+          )
         ) {
           oneSubjectOptionalHours += aCourse.length;
+          totalCourseCompleted++;
+        }
+
+        if (
+          studentChoices.studentChoices &&
+          studentChoices.studentChoices.find(
+            (sItem) =>
+              sItem.subject === sSubject.subjectCode &&
+              sItem.courseNumber === aCourse.courseNumber
+          )
+        ) {
+          oneSubjectOptionalHoursSelected += aCourse.length;
         }
       }
 
-      hoursCompleted += oneSubjectOptionalHours;
+      totalHoursCompleted += oneSubjectOptionalHours;
+      totalHoursSelected += oneSubjectOptionalHoursSelected;
     }
-    return hoursCompleted;
+    return {
+      numberOfHoursCompleted: totalHoursCompleted,
+      numberOfCoursesCompleted: totalCourseCompleted,
+      numberOfCoursesInTotal: totalNumberOfCourses,
+      numberOfSelectedHours: totalHoursSelected,
+    };
   };
 
   /**
-   * calculateMaxNumberOfMandatoryCourses
-   * Calculates max number of mandatory courses
-   * Takes account of possible "special" subjects
-   * @returns number of mandatory courses
-   */
-  const calculateMaxNumberOfMandatoryCourses = () => {
-    let amount = 0;
-
-    for (const sSubject of schoolCourseTable) {
-      /**
-       * Taking account of options for "special" subjects
-       */
-      if (
-        studyOptions.options.finnishAsLanguage &&
-        sSubject.subjectCode === "ai"
-      ) {
-        continue;
-      }
-      if (
-        !studyOptions.options.finnishAsLanguage &&
-        sSubject.subjectCode === "s2"
-      ) {
-        continue;
-      }
-      if (
-        studyOptions.options.religionAsEthics &&
-        sSubject.subjectCode === "ua"
-      ) {
-        continue;
-      }
-      if (
-        !studyOptions.options.religionAsEthics &&
-        sSubject.subjectCode === "ea"
-      ) {
-        continue;
-      }
-
-      for (const aCourse of sSubject.availableCourses) {
-        /**
-         * Skip non mandatory courses
-         */
-        if (!aCourse.mandatory) {
-          continue;
-        }
-
-        amount++;
-      }
-    }
-
-    return amount;
-  };
-
-  /**
-   * getTotalTime
-   * @param totalHours totalHours
-   * @param hoursPerWeek hoursPerWeek
+   * Gets total time in days
+   *
+   * @param totalHours total number of hours
+   * @param hoursPerWeek hours per week. Student studying speed
+   * @returns total time in days
    */
   const getTotalTimeInDays = (totalHours: number, hoursPerWeek: number) => {
     if (!hoursPerWeek || hoursPerWeek === 0) {
@@ -710,16 +431,41 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
    * @returns number of years + months
    */
   const showAsReadableTime = (nd: number) => {
-    const years = Math.floor(nd / 365);
-    const months = Math.floor((nd % 365) / 30);
+    const localizedMoment = props.i18n.time.getLocalizedMoment;
+    const momentDuration = props.i18n.time.duration;
 
-    const yearsDisplay = years > 0 ? `${years} y` : "";
-    const monthsDisplay = months > 0 ? `${months} kk` : "";
+    /**
+     * Current date
+     */
+    const start = localizedMoment();
+    /**
+     * Calculated end date
+     */
+    const end = localizedMoment().add(nd, "day");
+    /**
+     * Difference of these two dates
+     */
+    const diff = end.diff(start);
+
+    /**
+     * Duration in years, months, weeks and days
+     */
+    const theDiffObject = {
+      years: momentDuration(diff).years(),
+      months: momentDuration(diff).months(),
+      weeks: momentDuration(diff).weeks(),
+      days: momentDuration(diff).days(),
+    };
+
+    const yearsDisplay =
+      theDiffObject.years > 0 ? `${theDiffObject.years} v` : "";
+    const monthsDisplay =
+      theDiffObject.months > 0 ? `${theDiffObject.months} kk` : "";
     return `${yearsDisplay} ${monthsDisplay}`;
   };
 
   /**
-   * handleUsedHoursPerWeekChange
+   * Handles used hours per week change
    * @param e e
    */
   const handleUsedHoursPerWeekChange = (
@@ -731,60 +477,72 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
     );
   };
 
+  // All needed data
+  const allApprovedData = calculateAllApprovedData();
+  const allMandatoryData = calculateAllMandatoryData();
+  const allOptionalData = calculateAllOptionalData();
+
+  // All complete course data
+  const numberOfCompletedMandatoryCourses =
+    allMandatoryData.numberOfCoursesCompleted;
+  const numberOfCompletedOptionalCourses =
+    allOptionalData.numberOfCoursesCompleted;
+
+  // All complete hours data
+  const numberOfMandatoryHoursCompleted =
+    allMandatoryData.numberOfhoursCompleted;
+  const numberOfOptionalHoursCompleted =
+    allOptionalData.numberOfCoursesCompleted;
+  const numberOfApprovedHoursCompleted = allApprovedData.numberOfHoursCompleted;
+
+  const numberOfTotalSelectedOptionalHours =
+    allOptionalData.numberOfSelectedHours;
+
+  const needMandatoryCoursesInTotal = allMandatoryData.numberOfCoursesInTotal;
+
   /**
-   * hasValidAmountStudies
-   * @returns boolean whether there is enough valid studies
+   * number of mandatory hours in total needed
    */
-  /* const hasValidAmountStudies = (): boolean => {
-    const needMaxMandatoryStudies = calculateMaxNumberOfMandatoryCourses();
-    const needMaxOptionalStudies =
-      NEEDED_STUDIES_IN_TOTAL - calculateMaxNumberOfMandatoryCourses();
+  const neededMandatoryHours = allMandatoryData.numberOfHoursInTotalToComplete;
 
-    const completedMandatoryStudies =
-      calculateNumberOfCompletedMandatoryCourses();
-    const completedOptionalStudies =
-      calculateNumberOfCompletedOptionalyCourses();
+  /**
+   * Updated mandatory hours at the current moment. All mandatory needed hours - all completed mandatory hours
+   */
+  const updatedNeededMandatoryHours =
+    neededMandatoryHours - numberOfMandatoryHoursCompleted;
 
-    if (
-      completedMandatoryStudies >= needMaxMandatoryStudies &&
-      completedOptionalStudies >= needMaxOptionalStudies
-    ) {
-      return true;
-    }
+  const neededOptionalStudies =
+    NEEDED_STUDIES_IN_TOTAL - needMandatoryCoursesInTotal;
 
-    return false;
-  }; */
-
-  const allApprovedHours = calculateAllApprovedHours();
-  const optionalHoursCompleted = calculateCompletedOptionalHours();
-  const mandatoryHoursCompleted = calculateCompletedMandatoryHours();
-  const mandatoryHoursNeeded = calculateMandatoryHoursNeeded();
-
-  const updatedMandatoryHoursNeeded =
-    mandatoryHoursNeeded - mandatoryHoursCompleted;
-
+  /**
+   * Selected optional hours is default 0
+   * If there is optional selection, then calculate selected optional hours and substract from it
+   * all completed ooptional hours
+   */
   let selectedOptionalHours = 0;
 
   if (studentChoices.studentChoices.length > 0) {
     selectedOptionalHours =
-      calculateSelectedOptionalHours() - optionalHoursCompleted;
+      numberOfTotalSelectedOptionalHours - numberOfOptionalHoursCompleted;
   }
 
   const hoursInTotalToComplete =
-    updatedMandatoryHoursNeeded + selectedOptionalHours - allApprovedHours;
+    updatedNeededMandatoryHours +
+    selectedOptionalHours -
+    numberOfApprovedHoursCompleted;
 
-  const totalTimeInMonths = getTotalTimeInDays(
+  /**
+   * Time in days to study calculated from hours to complete and hours/week
+   */
+  const totalTimeInDays = getTotalTimeInDays(
     hoursInTotalToComplete,
     studyHours.studyHourValue
   );
 
-  const completedMandatoryStudies =
-    calculateNumberOfCompletedMandatoryCourses();
-  const completedOptionalStudies = calculateNumberOfCompletedOptionalyCourses();
-
-  const needMandatoryStudies = calculateMaxNumberOfMandatoryCourses();
-  const neededOptionalStudies = NEEDED_STUDIES_IN_TOTAL - needMandatoryStudies;
-
+  /**
+   * By default optional studies over required amount is zero
+   * and is only altered if student choises go up to that
+   */
   let optionalStudiesOverRequiredAmount = 0;
 
   if (
@@ -794,17 +552,18 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
     optionalStudiesOverRequiredAmount = studentChoices.studentChoices.length;
   }
 
-  let calculationDivider1 =
-    (completedMandatoryStudies + completedOptionalStudies) /
-    (needMandatoryStudies + neededOptionalStudies);
+  /**
+   * Total proggress of studies
+   */
+  let proggressOfStudies =
+    (numberOfCompletedMandatoryCourses + numberOfCompletedOptionalCourses) /
+    (needMandatoryCoursesInTotal + neededOptionalStudies);
 
-  if (completedOptionalStudies > neededOptionalStudies) {
-    calculationDivider1 =
-      (completedMandatoryStudies + neededOptionalStudies) /
-      (neededOptionalStudies + needMandatoryStudies);
+  if (numberOfOptionalHoursCompleted > neededOptionalStudies) {
+    proggressOfStudies =
+      (numberOfCompletedMandatoryCourses + neededOptionalStudies) /
+      (neededOptionalStudies + needMandatoryCoursesInTotal);
   }
-
-  const proggressOfStudies = calculationDivider1;
 
   return (
     <>
@@ -825,7 +584,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
 
       {!studentActivity.isLoading && !studentChoices.isLoading && (
         <StudyToolOptionalStudiesInfoBox
-          needMandatoryStudies={needMandatoryStudies}
+          needMandatoryStudies={needMandatoryCoursesInTotal}
           selectedNumberOfOptional={studentChoices.studentChoices.length}
           graduationGoal={followUpData.followUp.graduationGoal}
         />
@@ -861,7 +620,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
                 },
               }}
               text={`${Math.round(proggressOfStudies * 100)}%`}
-              progress={completedMandatoryStudies / needMandatoryStudies}
+              progress={proggressOfStudies}
             />
           </div>
 
@@ -879,7 +638,9 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
                 content={
                   <div>
                     <h4>Suoritetut kurssit</h4>
-                    <h5>Pakolliset: {completedMandatoryStudies} </h5>
+                    <h5>
+                      Pakolliset: {allMandatoryData.numberOfCoursesCompleted}{" "}
+                    </h5>
                   </div>
                 }
               >
@@ -906,8 +667,11 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
                           "hops-activity__progressbar-label hops-activity__progressbar-label--assignment  hops-activity__progressbar-label--workspace",
                       },
                     }}
-                    text={`${completedMandatoryStudies} / ${needMandatoryStudies}`}
-                    progress={completedMandatoryStudies / needMandatoryStudies}
+                    text={`${numberOfCompletedMandatoryCourses} / ${needMandatoryCoursesInTotal}`}
+                    progress={
+                      numberOfCompletedMandatoryCourses /
+                      needMandatoryCoursesInTotal
+                    }
                   />
                 </div>
               </Dropdown>
@@ -925,7 +689,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
                 content={
                   <div>
                     <h4>Suoritetut kurssit</h4>
-                    <h5>Valinnaiset: {completedOptionalStudies} </h5>
+                    <h5>Valinnaiset: {numberOfCompletedOptionalCourses} </h5>
                   </div>
                 }
               >
@@ -952,16 +716,16 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
                       },
                     }}
                     text={`
-                    ${completedOptionalStudies}
+                    ${numberOfCompletedOptionalCourses}
                     /
-                    ${NEEDED_STUDIES_IN_TOTAL - needMandatoryStudies} ${
+                    ${NEEDED_STUDIES_IN_TOTAL - needMandatoryCoursesInTotal} ${
                       optionalStudiesOverRequiredAmount > 0
                         ? `(${optionalStudiesOverRequiredAmount})`
                         : ""
                     }`}
                     progress={
-                      completedOptionalStudies /
-                      (NEEDED_STUDIES_IN_TOTAL - needMandatoryStudies)
+                      numberOfCompletedOptionalCourses /
+                      (NEEDED_STUDIES_IN_TOTAL - needMandatoryCoursesInTotal)
                     }
                   />
                 </div>
@@ -999,7 +763,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
                       "hops-activity__progressbar-label hops-activity__progressbar-label--assignment  hops-activity__progressbar-label--workspace",
                   },
                 }}
-                text={`${showAsReadableTime(totalTimeInMonths)}`}
+                text={`${showAsReadableTime(totalTimeInDays)}`}
               />
             </div>
           </div>
@@ -1090,6 +854,43 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
 };
 
 /**
+ * Filters special subjects away depending options selected by student
+ * or loaded from pyramus
+ *
+ * @param schoolCourseTable intial table that is altered depending options
+ * @param options options for special subjects
+ * @returns altered school course table with correct special subject included
+ */
+const filterSpecialSubjects = (
+  schoolCourseTable: SchoolSubject[],
+  options: AlternativeStudyObject
+) => {
+  let alteredShoolCourseTable = schoolCourseTable;
+
+  if (options.finnishAsLanguage) {
+    alteredShoolCourseTable = alteredShoolCourseTable.filter(
+      (sSubject) => sSubject.subjectCode !== "ai"
+    );
+  }
+  if (!options.finnishAsLanguage) {
+    alteredShoolCourseTable = alteredShoolCourseTable.filter(
+      (sSubject) => sSubject.subjectCode !== "s2"
+    );
+  }
+  if (options.religionAsEthics) {
+    alteredShoolCourseTable = alteredShoolCourseTable.filter(
+      (sSubject) => sSubject.subjectCode !== "ua"
+    );
+  }
+  if (!options.religionAsEthics) {
+    alteredShoolCourseTable = alteredShoolCourseTable.filter(
+      (sSubject) => sSubject.subjectCode !== "ea"
+    );
+  }
+  return alteredShoolCourseTable;
+};
+
+/**
  * mapStateToProps
  * @param state state
  */
@@ -1104,7 +905,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return { displayNotification };
 }
 
