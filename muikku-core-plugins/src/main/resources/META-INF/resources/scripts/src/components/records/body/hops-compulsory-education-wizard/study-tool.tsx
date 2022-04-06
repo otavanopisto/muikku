@@ -839,25 +839,33 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
         )}
 
       {props.showIndicators && (
-        <div className="hops-container__info">
-          <div className="hops-container__row">
+        <div className="hops-container__info hops-container__info--activity-progressbar">
+          <div className="hops-container__row hops-container__row--activity-progressbar">
+            <h3 className="hops-container__subheader hops-container__subheader--activity-title">
+              Opintojen eteneminen:
+            </h3>
             <ProgressBarLine
-              containerClassName="hops-activity__progressbar-line hops-course-activity__progressbar-line hops-proggress-line"
+              containerClassName="hops-container__activity-progressbar hops-container__activity-progressbar--line"
               options={{
                 strokeWidth: 1,
                 duration: 1000,
-                color: "#72d200",
-                trailColor: "#f5f5f5",
+                color: "#24c118",
+                trailColor: "#ffffff",
                 trailWidth: 1,
-                svgStyle: { width: "100%", height: "10px" },
+                svgStyle: {
+                  width: "100%",
+                  height: "20px",
+                  borderRadius: "10px",
+                },
                 initialAnimate: true,
                 text: {
                   style: {
-                    width: "100%",
+                    color: "#ffffff",
                     position: "absolute",
+                    left: `${Math.round(proggressOfStudies * 100)}%`,
                   },
                   className:
-                    "hops-activity__progressbar-label hops-activity__progressbar-label--assignment  hops-activity__progressbar-label--workspace",
+                    "hops-container__activity-label hops-container__activity-label--progressbar-line",
                 },
               }}
               text={`${Math.round(proggressOfStudies * 100)}%`}
@@ -865,138 +873,102 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
             />
           </div>
 
-          <div className="hops-container__row">
-            <div
-              style={{
-                backgroundColor: "antiquewhite",
-                padding: "5px",
-                boxShadow: "5px 5px 5px grey",
-              }}
-              className="hops__form-element-container hops__form-element-container--hops_indicators"
-            >
-              <h3>Suoritetut pakolliset opinnot:</h3>
-              <Dropdown
-                content={
-                  <div>
-                    <h4>Suoritetut kurssit</h4>
-                    <h5>Pakolliset: {completedMandatoryStudies} </h5>
-                  </div>
-                }
-              >
-                <div tabIndex={0}>
-                  <ProgressBarCircle
-                    containerClassName="hops-activity__progressbar-circle hops-course-activity__progressbar-circle"
-                    options={{
-                      strokeWidth: 10,
-                      duration: 1000,
-                      color: "#008000",
-                      trailColor: "#808080",
-                      easing: "easeInOut",
-                      trailWidth: 10,
-                      initialAnimate: true,
-                      svgStyle: {
-                        flexBasis: "100px",
-                        flexGrow: "0",
-                        flexShrink: "0",
-                        height: "100px",
-                      },
-                      text: {
-                        style: null,
-                        className:
-                          "hops-activity__progressbar-label hops-activity__progressbar-label--assignment  hops-activity__progressbar-label--workspace",
-                      },
-                    }}
-                    text={`${completedMandatoryStudies} / ${needMandatoryStudies}`}
-                    progress={completedMandatoryStudies / needMandatoryStudies}
-                  />
-                </div>
-              </Dropdown>
-            </div>
-            <div
-              style={{
-                backgroundColor: "antiquewhite",
-                padding: "5px",
-                boxShadow: "5px 5px 5px grey",
-              }}
-              className="hops__form-element-container hops__form-element-container--hops_indicators"
-            >
-              <h3>Suoritetut valinnaisopinnot:</h3>
-              <Dropdown
-                content={
-                  <div>
-                    <h4>Suoritetut kurssit</h4>
-                    <h5>Valinnaiset: {completedOptionalStudies} </h5>
-                  </div>
-                }
-              >
-                <div tabIndex={0}>
-                  <ProgressBarCircle
-                    containerClassName="hops-activity__progressbar-circle hops-course-activity__progressbar-circle"
-                    options={{
-                      strokeWidth: 10,
-                      duration: 1000,
-                      color: "#008000",
-                      trailColor: "#ADD8E6",
-                      easing: "easeInOut",
-                      trailWidth: 10,
-                      svgStyle: {
-                        flexBasis: "100px",
-                        flexGrow: "0",
-                        flexShrink: "0",
-                        height: "100px",
-                      },
-                      text: {
-                        style: null,
-                        className:
-                          "hops-activity__progressbar-label hops-activity__progressbar-label--assignment  hops-activity__progressbar-label--workspace",
-                      },
-                    }}
-                    text={`
-                    ${completedOptionalStudies}
-                    /
-                    ${NEEDED_STUDIES_IN_TOTAL - needMandatoryStudies} ${
-                      optionalStudiesOverRequiredAmount > 0
-                        ? `(${optionalStudiesOverRequiredAmount})`
-                        : ""
-                    }`}
-                    progress={
-                      completedOptionalStudies /
-                      (NEEDED_STUDIES_IN_TOTAL - needMandatoryStudies)
-                    }
-                  />
-                </div>
-              </Dropdown>
-            </div>
-
-            <div
-              style={{
-                backgroundColor: "antiquewhite",
-                padding: "5px",
-                boxShadow: "5px 5px 5px grey",
-              }}
-              className="hops__form-element-container hops__form-element-container--hops_indicators"
-            >
-              <h3>Arvioitu opintoaika (kk):</h3>
-
+          <div className="hops-container__row hops-container__row--activity-progressbar">
+            <div className="hops__form-element-container hops__form-element-container--progressbar">
+              <h3 className="hops-container__subheader hops-container__subheader--activity-title">
+                Suoritetut pakolliset opinnot:
+              </h3>
               <ProgressBarCircle
-                containerClassName="hops-activity__progressbar-circle hops-course-activity__progressbar-circle"
+                containerClassName="hops-container__activity-progressbar hops-container__activity-progressbar--circle"
                 options={{
-                  strokeWidth: 10,
+                  strokeWidth: 13,
                   duration: 1000,
-                  color: "grey",
-                  trailColor: "grey",
+                  color: "#0099ff",
+                  trailColor: "#ffffff",
                   easing: "easeInOut",
-                  trailWidth: 10,
+                  trailWidth: 15,
+                  initialAnimate: true,
                   svgStyle: {
-                    flexBasis: "100px",
+                    flexBasis: "80px",
                     flexGrow: "0",
                     flexShrink: "0",
-                    height: "100px",
+                    height: "80px",
                   },
                   text: {
                     style: null,
                     className:
-                      "hops-activity__progressbar-label hops-activity__progressbar-label--assignment  hops-activity__progressbar-label--workspace",
+                      "hops-container__activity-label hops-container__activity-label--progressbar-circle",
+                  },
+                }}
+                text={`${completedMandatoryStudies} / ${needMandatoryStudies}`}
+                progress={completedMandatoryStudies / needMandatoryStudies}
+              />
+            </div>
+            <div className="hops__form-element-container hops__form-element-container--progressbar">
+              <h3 className="hops-container__subheader hops-container__subheader--activity-title">
+                Suoritetut valinnaisopinnot:
+              </h3>
+
+              <ProgressBarCircle
+                containerClassName="hops-container__activity-progressbar hops-container__activity-progressbar--circle"
+                options={{
+                  strokeWidth: 13,
+                  duration: 1000,
+                  color: "#0099ff",
+                  trailColor: "#ffffff",
+                  easing: "easeInOut",
+                  trailWidth: 15,
+                  svgStyle: {
+                    flexBasis: "80px",
+                    flexGrow: "0",
+                    flexShrink: "0",
+                    height: "80px",
+                  },
+                  text: {
+                    style: null,
+                    className:
+                      "hops-container__activity-label hops-container__activity-label--progressbar-circle",
+                  },
+                }}
+                text={`
+                    ${completedOptionalStudies}
+                    /
+                    ${NEEDED_STUDIES_IN_TOTAL - needMandatoryStudies} ${
+                  optionalStudiesOverRequiredAmount > 0
+                    ? `(${optionalStudiesOverRequiredAmount})`
+                    : ""
+                }`}
+                progress={
+                  completedOptionalStudies /
+                  (NEEDED_STUDIES_IN_TOTAL - needMandatoryStudies)
+                }
+              />
+            </div>
+
+            <div className="hops__form-element-container hops__form-element-container--progressbar">
+              <h3 className="hops-container__subheader hops-container__subheader--activity-title">
+                Arvioitu opintoaika (kk):
+              </h3>
+
+              <ProgressBarCircle
+                containerClassName="hops-container__activity-progressbar hops-container__activity-progressbar--circle"
+                options={{
+                  strokeWidth: 13,
+                  duration: 1000,
+                  color: "#0099ff",
+                  trailColor: "#ffffff",
+                  easing: "easeInOut",
+                  trailWidth: 15,
+                  svgStyle: {
+                    flexBasis: "80px",
+                    flexGrow: "0",
+                    flexShrink: "0",
+                    height: "80px",
+                  },
+                  text: {
+                    style: null,
+                    className:
+                      "hops-container__activity-label hops-container__activity-label--progressbar-circle",
                   },
                 }}
                 text={`${showAsReadableTime(totalTimeInMonths)}`}
