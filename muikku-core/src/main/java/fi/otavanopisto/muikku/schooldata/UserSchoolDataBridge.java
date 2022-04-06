@@ -57,11 +57,9 @@ public interface UserSchoolDataBridge {
   public BridgeResponse<StudentContactLogEntryRestModel> updateStudentContactLogEntry(SchoolDataIdentifier userIdentifier, Long contactLogEntryId, StudentContactLogEntryRestModel payload);
   public void removeStudentContactLogEntry(SchoolDataIdentifier studentIdentifier, Long contactLogEntryId);
   
-  public BridgeResponse<List<StudentContactLogEntryCommentRestModel>> listStudentContactLogEntryCommentsByStudentAndId(
-      SchoolDataIdentifier userIdentifier, Long entryId);
   public   BridgeResponse<StudentContactLogEntryCommentRestModel> createStudentContactLogEntryComment(
-      SchoolDataIdentifier studentIdentifier, StudentContactLogEntryCommentRestModel payload);
-  public BridgeResponse<StudentContactLogEntryCommentRestModel> updateStudentContactLogEntryComment(SchoolDataIdentifier studentIdentifier, Long commentId, StudentContactLogEntryCommentRestModel payload);
+      SchoolDataIdentifier studentIdentifier, Long entryId, StudentContactLogEntryCommentRestModel payload);
+  public BridgeResponse<StudentContactLogEntryCommentRestModel> updateStudentContactLogEntryComment(SchoolDataIdentifier studentIdentifier, Long entryId, Long commentId, StudentContactLogEntryCommentRestModel payload);
   public void removeStudentContactLogEntryComment(SchoolDataIdentifier studentIdentifier, Long commentId);
   
   public BridgeResponse<StaffMemberPayload> createStaffMember(StaffMemberPayload staffMember);

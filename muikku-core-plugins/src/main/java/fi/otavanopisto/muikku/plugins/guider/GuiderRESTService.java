@@ -817,45 +817,12 @@ public class GuiderRESTService extends PluginRESTService {
   }
   
   /**
-   * GET mApi().guider.student.contactLog.comments.read(userEntityId, contactLogEntryId)
-   * @param userEntityId
-   * @param entryId
-   * @return
-   * 
-   * Returns a list of comments by contact log entry
-   * 
-   * Output: {
-   * id: 123
-   * entry: 1 (contactLogEntryId);
-   * commentDate: Date
-   * text: "plaaplaa";
-   * creatorName: "Etunimi Sukunimi"
-   * }
-   */
-  @GET
-  @Path("/student/{ID}/contactLog/{ENTRYID}/comments")
-  @RESTPermit (GuiderPermissions.GUIDER_VIEW)
-  public Response listStudentContactLogEntryCommentsByEntry(@PathParam("ID") Long userEntityId, @PathParam("ENTRYID") Long entryId) {
-    String dataSource = sessionController.getLoggedUserSchoolDataSource();
-    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
-    
-    BridgeResponse<List<StudentContactLogEntryCommentRestModel>> response = userSchoolDataController.listStudentContactLogEntryCommentsByStudentAndEntryId(dataSource, userEntity.defaultSchoolDataIdentifier(), entryId);
-    if (response.ok()) {
-      return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
-    }
-    else {
-      return Response.status(response.getStatusCode()).entity(response.getMessage()).build();
-    }    
-  }
-  
-  /**
    * 
    * POST mApi().guider.student.contactLog.comments.create(userEntityId, contactLogEntryId, payload)
    * 
    * payload: {
    * commentDate: Date
    * text: "plaaplaa";
-   * creatorName: "Etunimi Sukunimi"
    * }
    * 
    * @param userEntityId
@@ -865,11 +832,11 @@ public class GuiderRESTService extends PluginRESTService {
    */
   @POST
   @Path("/student/{ID}/contactLog/{ENTRYID}/comments")
-  @RESTPermit (GuiderPermissions.GUIDER_MANAGE_CONTACT_LOG)
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response createContactLogEntryComment(@PathParam("ID") Long userEntityId, @PathParam("ENTRYID") Long entryId, StudentContactLogEntryCommentRestModel payload) {
     String dataSource = sessionController.getLoggedUserSchoolDataSource();
     UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
-    BridgeResponse<StudentContactLogEntryCommentRestModel> response = userSchoolDataController.createStudentContactLogEntryComment(dataSource, userEntity.defaultSchoolDataIdentifier(), payload);
+    BridgeResponse<StudentContactLogEntryCommentRestModel> response = userSchoolDataController.createStudentContactLogEntryComment(dataSource, userEntity.defaultSchoolDataIdentifier(), entryId, payload);
     if (response.ok()) {
       return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
     }
@@ -897,12 +864,12 @@ public class GuiderRESTService extends PluginRESTService {
    */
   @PUT
   @Path("/student/{ID}/contactLog/{ENTRYID}/comments/{COMMENTID}")
-  @RESTPermit (GuiderPermissions.GUIDER_MANAGE_CONTACT_LOG)  
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response updateStudentContactLogComment(@PathParam("ID") Long userEntityId, @PathParam("ENTRYID") Long entryId, @PathParam("COMMENTID") Long commentId, StudentContactLogEntryCommentRestModel payload) {
     String dataSource = sessionController.getLoggedUserSchoolDataSource();
     UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
     
-    BridgeResponse<StudentContactLogEntryCommentRestModel> response = userSchoolDataController.updateStudentContactLogEntryComment(dataSource, userEntity.defaultSchoolDataIdentifier(), commentId, payload);
+    BridgeResponse<StudentContactLogEntryCommentRestModel> response = userSchoolDataController.updateStudentContactLogEntryComment(dataSource, userEntity.defaultSchoolDataIdentifier(), entryId, commentId, payload);
     if (response.ok()) {
       return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
     }
@@ -923,7 +890,7 @@ public class GuiderRESTService extends PluginRESTService {
    */
   @DELETE
   @Path("/student/{ID}/contactLog/{ENTRYID}/comments/{COMMENTID}")
-  @RESTPermit (GuiderPermissions.GUIDER_MANAGE_CONTACT_LOG)
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response archiveStudentContactLogComment(@PathParam("ID") Long userEntityId, @PathParam("ENTRYID") Long contactLogEntryId, @PathParam("COMMENTID") Long commentId) {
     String dataSource = sessionController.getLoggedUserSchoolDataSource();
     UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);

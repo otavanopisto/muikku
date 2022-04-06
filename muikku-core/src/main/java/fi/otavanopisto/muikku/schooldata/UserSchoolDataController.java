@@ -116,16 +116,12 @@ public class UserSchoolDataController {
     getUserBridge(dataSource).removeStudentContactLogEntry(studentIdentifier, contactLogEntryId);
   }
   
-  public BridgeResponse<List<StudentContactLogEntryCommentRestModel>> listStudentContactLogEntryCommentsByStudentAndEntryId(String dataSource, SchoolDataIdentifier userIdentifier, Long entryId) {
-    return getUserBridge(dataSource).listStudentContactLogEntryCommentsByStudentAndId(userIdentifier, entryId);
+  public BridgeResponse<StudentContactLogEntryCommentRestModel> createStudentContactLogEntryComment(String dataSource, SchoolDataIdentifier userIdentifier, Long entryId, StudentContactLogEntryCommentRestModel payload) {
+    return getUserBridge(dataSource).createStudentContactLogEntryComment(userIdentifier, entryId, payload);
   }
   
-  public BridgeResponse<StudentContactLogEntryCommentRestModel> createStudentContactLogEntryComment(String dataSource, SchoolDataIdentifier userIdentifier, StudentContactLogEntryCommentRestModel payload) {
-    return getUserBridge(dataSource).createStudentContactLogEntryComment(userIdentifier,payload);
-  }
-  
-  public BridgeResponse<StudentContactLogEntryCommentRestModel> updateStudentContactLogEntryComment(String dataSource, SchoolDataIdentifier userIdentifier, Long commentId, StudentContactLogEntryCommentRestModel payload) {
-    return getUserBridge(dataSource).updateStudentContactLogEntryComment(userIdentifier, commentId, payload);
+  public BridgeResponse<StudentContactLogEntryCommentRestModel> updateStudentContactLogEntryComment(String dataSource, SchoolDataIdentifier userIdentifier, Long entryId, Long commentId, StudentContactLogEntryCommentRestModel payload) {
+    return getUserBridge(dataSource).updateStudentContactLogEntryComment(userIdentifier, entryId, commentId, payload);
   }
   
   public void removeStudentContactLogEntryComment(String dataSource, SchoolDataIdentifier studentIdentifier, Long commentId) {

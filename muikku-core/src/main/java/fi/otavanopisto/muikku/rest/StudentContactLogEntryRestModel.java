@@ -8,13 +8,14 @@ public class StudentContactLogEntryRestModel {
     super();
   }
 
-  public StudentContactLogEntryRestModel(Long id, String text, String creatorName, OffsetDateTime entryDate, StudentContactLogEntryType type, Boolean archived) {
+  public StudentContactLogEntryRestModel(Long id, String text, String creatorName, OffsetDateTime entryDate, StudentContactLogEntryType type, Object comments, Boolean archived) {
     super();
     this.id = id;
     this.text = text;
     this.creatorName = creatorName;
     this.entryDate = entryDate;
     this.type = type;
+    this.comments = comments;
     this.archived = archived;
   }
 
@@ -58,6 +59,14 @@ public class StudentContactLogEntryRestModel {
     this.type = type;
   }
 
+  public Object getComments() {
+    return comments;
+  }
+
+  public void setComments(Object comments) {
+    this.comments = comments;
+  }
+
   public Boolean getArchived() {
     return archived;
   }
@@ -71,5 +80,6 @@ public class StudentContactLogEntryRestModel {
   private String creatorName;
   private OffsetDateTime entryDate;
   private StudentContactLogEntryType type;
+  private Object comments;
   private Boolean archived;
 }
