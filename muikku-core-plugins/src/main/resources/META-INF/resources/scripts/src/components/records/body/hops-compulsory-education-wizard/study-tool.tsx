@@ -635,7 +635,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
                   style: {
                     color: "#ffffff",
                     position: "absolute",
-                    left: `${Math.round(proggressOfStudies * 100)}%`,
+                    left: 0,
                   },
                   className:
                     "hops-container__activity-label hops-container__activity-label--progressbar-line",
