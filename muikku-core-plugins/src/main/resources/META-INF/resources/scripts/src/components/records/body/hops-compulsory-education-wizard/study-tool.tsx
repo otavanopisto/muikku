@@ -37,15 +37,29 @@ const ProgressBarLine = require("react-progress-bar.js").Line;
 interface StudyToolProps {
   i18n: i18nType;
   user: HopsUser;
+  /**
+   * Identifier of student
+   */
   studentId: string;
+  /**
+   * If all functionalities are disabled
+   * in read mode
+   */
   disabled: boolean;
+  /**
+   * Whether study incidator are shown
+   * @default true
+   */
   showIndicators?: boolean;
+  /**
+   * Whether supervisor is modifying student hops
+   * some of functionalities changes based on that
+   */
   superVisorModifies: boolean;
   studies: HopsPlanningStudies;
   studyTimeEnd: string | null;
   websocketState: WebsocketStateType;
   displayNotification: DisplayNotificationTriggerType;
-  onStudiesPlanningChange: (studies: HopsPlanningStudies) => void;
 }
 
 /**

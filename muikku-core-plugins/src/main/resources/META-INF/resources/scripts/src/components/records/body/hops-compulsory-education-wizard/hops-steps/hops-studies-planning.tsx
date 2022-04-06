@@ -18,7 +18,6 @@ interface HopsStudiesPlanningProps extends HopsBaseProps {
   studyTimeEnd: string | null;
   superVisorModifies: boolean;
   onStudiesPlanningChange: (studies: HopsPlanningStudies) => void;
-  onStudiesGoalsChange: (followUp: FollowUp) => void;
 }
 
 /**
@@ -123,7 +122,6 @@ class HopsStudiesPlanning extends React.Component<
                 studies={this.props.studies}
                 studyTimeEnd={this.props.studyTimeEnd}
                 superVisorModifies={this.props.superVisorModifies}
-                onStudiesPlanningChange={this.props.onStudiesPlanningChange}
               />
             </div>
           )}
