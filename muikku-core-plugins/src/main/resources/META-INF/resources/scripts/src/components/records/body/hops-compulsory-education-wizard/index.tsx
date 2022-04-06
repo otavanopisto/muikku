@@ -104,7 +104,8 @@ class CompulsoryEducationHopsWizard extends React.Component<
   CompulsoryEducationHopsWizardState
 > {
   /**
-   * constructor
+   * Constructor method
+   *
    * @param props props
    */
   constructor(props: CompulsoryEducationHopsWizardProps) {
@@ -129,12 +130,12 @@ class CompulsoryEducationHopsWizard extends React.Component<
   /**
    * componentDidMount
    */
-  async componentDidMount() {
+  componentDidMount() {
     this.loadHopsData();
   }
 
   /**
-   * loadMoreHistoryEvents
+   * Loads more history events
    */
   loadMoreHistoryEvents = async () => {
     this.setState({
@@ -195,7 +196,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
   };
 
   /**
-   * loadHopsData
+   * Loads hops data
    */
   loadHopsData = async () => {
     this.setState({
@@ -263,7 +264,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
   };
 
   /**
-   * handleUpdateHistoryEventDetails
+   * Update history event details
    */
   updateHistoryEventDetails = async () => {
     /**
@@ -309,7 +310,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
   };
 
   /**
-   * handleSaveHops
+   * Save hops
    */
   saveHops = async () => {
     this.setState({
@@ -361,7 +362,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
   };
 
   /**
-   * handleStartingLevelChange
+   * Handles starting level change
    * @param startingLevel startingLevel
    */
   handleStartingLevelChange = (startingLevel: HopsStudentStartingLevel) => {
@@ -374,7 +375,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
   };
 
   /**
-   * handleMotivationAndStudyChange
+   * Handles motivation and study change
    * @param motivationAndStudy motivationAndStudy
    */
   handleMotivationAndStudyChange = (
@@ -389,7 +390,8 @@ class CompulsoryEducationHopsWizard extends React.Component<
   };
 
   /**
-   * handleStudiesPlanningChange
+   * Handles studies planning changes
+   *
    * @param studiesPlanning studiesPlanning
    */
   handleStudiesPlanningChange = (studiesPlanning: HopsPlanningStudies) => {
@@ -397,30 +399,6 @@ class CompulsoryEducationHopsWizard extends React.Component<
       hopsCompulsory: {
         ...this.state.hopsCompulsory,
         studiesPlanning,
-      },
-    });
-  };
-
-  /**
-   * handleFollowUpChange
-   * @param followUp followUp
-   */
-  handleFollowUpChange = (followUp: FollowUp) => {
-    this.setState({
-      hopsFollowUp: followUp,
-    });
-  };
-
-  /**
-   * handleDeleteCourseSelections
-   */
-  handleDeleteCourseSelections = () => {
-    this.setState({
-      hopsCompulsory: {
-        ...this.state.hopsCompulsory,
-        studiesPlanning: {
-          ...this.state.hopsCompulsory.studiesPlanning,
-        },
       },
     });
   };
@@ -608,7 +586,6 @@ class CompulsoryEducationHopsWizard extends React.Component<
               this.state.hopsCompulsory.studiesPlanning.finnishAsSecondLanguage
             }
             onStudiesPlanningChange={this.handleStudiesPlanningChange}
-            onStudiesGoalsChange={this.handleFollowUpChange}
           />
         ),
       },
@@ -684,7 +661,6 @@ class CompulsoryEducationHopsWizard extends React.Component<
                   .finnishAsSecondLanguage
               }
               onStudiesPlanningChange={this.handleStudiesPlanningChange}
-              onStudiesGoalsChange={this.handleFollowUpChange}
             />
           ),
         },
