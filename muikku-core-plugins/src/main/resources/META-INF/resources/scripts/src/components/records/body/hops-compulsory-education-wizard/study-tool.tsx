@@ -883,7 +883,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
                 options={{
                   strokeWidth: 13,
                   duration: 1000,
-                  color: "#0099ff",
+                  color: "#009fe3",
                   trailColor: "#ffffff",
                   easing: "easeInOut",
                   trailWidth: 15,
@@ -914,7 +914,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
                 options={{
                   strokeWidth: 13,
                   duration: 1000,
-                  color: "#0099ff",
+                  color: "#62c3eb",
                   trailColor: "#ffffff",
                   easing: "easeInOut",
                   trailWidth: 15,
