@@ -32,7 +32,8 @@ export interface LoadCalendarEventsTriggerType {
     userEntityId: number,
     start: string,
     end: string,
-    type?: string
+    type: string,
+    reload?: boolean
   ): AnyActionType;
 }
 
@@ -71,6 +72,15 @@ export interface deleteCalendarEventTrigger {
 export interface LOAD_CALENDAR_GUIDANCE_EVENTS
   extends SpecificActionType<
     "LOAD_CALENDAR_GUIDANCE_EVENTS",
+    CalendarEvent[]
+  > {}
+
+/**
+ * Reload guidance events action type
+ */
+export interface RELOAD_CALENDAR_GUIDANCE_EVENTS
+  extends SpecificActionType<
+    "RELOAD_CALENDAR_GUIDANCE_EVENTS",
     CalendarEvent[]
   > {}
 
@@ -114,26 +124,37 @@ const loadCalendarEvents: LoadCalendarEventsTriggerType =
     userEntityId: number,
     start: string,
     end: string,
-    type: string
+    type: string,
+    reload?: boolean
   ) {
+    const reloadEvents = reload ? reload : false;
+
     return async (
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
     ) => {
       try {
+        const payload = <CalendarEvent[]>(
+          await promisify(
+            mApi().calendar.events.read({ userEntityId, start, end, type }),
+            "callback"
+          )()
+        );
         dispatch({
           type: "UPDATE_CALENDAR_EVENTS_STATUS",
           payload: <EventsState>"LOADING",
         });
-        dispatch({
-          type: "LOAD_CALENDAR_GUIDANCE_EVENTS",
-          payload: <CalendarEvent[]>(
-            await promisify(
-              mApi().calendar.events.read({ userEntityId, start, end, type }),
-              "callback"
-            )()
-          ),
-        });
+        if (reloadEvents) {
+          dispatch({
+            type: "RELOAD_CALENDAR_GUIDANCE_EVENTS",
+            payload: payload,
+          });
+        } else {
+          dispatch({
+            type: "LOAD_CALENDAR_GUIDANCE_EVENTS",
+            payload: payload,
+          });
+        }
         dispatch({
           type: "UPDATE_CALENDAR_EVENTS_STATUS",
           payload: <EventsState>"READY",

@@ -103,9 +103,13 @@ export default function calendar(
       const newEventsFiltered = newEvents.filter((event) =>
         evaluateEvents(event, state.guidanceEvents)
       );
-
       return Object.assign({}, state, {
         guidanceEvents: [...state.guidanceEvents, ...newEventsFiltered],
+      });
+    }
+    case "RELOAD_CALENDAR_GUIDANCE_EVENTS": {
+      return Object.assign({}, state, {
+        guidanceEvents: action.payload,
       });
     }
     case "ADD_CALENDAR_GUIDANCE_EVENT": {

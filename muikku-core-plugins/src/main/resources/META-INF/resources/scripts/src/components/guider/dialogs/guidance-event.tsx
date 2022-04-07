@@ -51,7 +51,6 @@ const GuidanceEvent: React.FC<GuidanceEventProps> = (props) => {
     i18n,
     guider,
     calendar,
-    // status,
     loadCalendarEvents,
     createCalendarEvent,
     children,
@@ -188,7 +187,7 @@ const GuidanceEvent: React.FC<GuidanceEventProps> = (props) => {
         ref={calendarRef}
         plugins={[timeGridPlugin, interactionPlugin]}
         initialView="timeGridWeek"
-        select={handleDateSelect}
+        select={(arg: DateSelectArg) => handleDateSelect(arg)}
         editable={true}
         selectable={true}
         events={events}

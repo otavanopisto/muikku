@@ -583,12 +583,22 @@ export default class MainFunction extends React.Component<
           this.props.store.getState().status.userId,
           moment().day(0).format(),
           moment().day(5).format(),
-          "guidance"
+          "guidance",
+          true
         ) as Action
       );
       this.loadChatSettings();
+    } else {
+      this.props.store.dispatch(
+        loadCalendarEvents(
+          this.props.store.getState().status.userId,
+          moment().day(0).format(),
+          moment().day(5).format(),
+          "guidance",
+          true
+        ) as Action
+      );
     }
-
     return <IndexBody />;
   }
 
