@@ -803,34 +803,46 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
         </div>
       </div>
 
-      <div className="hops-container__indicator-descriptions">
-        <div className="hops-container__course-mandatory">
-          <div className="hops-container__course-mandatory-indicator"></div>
-          <p>Pakollinen</p>
+      <div className="hops-container__study-tool-indicators">
+        <div className="hops-container__study-tool-indicator-container">
+          <div className="hops-container__indicator-item hops-container__indicator-item--mandatory"></div>
+          <div className="hops-container__indicator-item-label">Pakollinen</div>
         </div>
-        <div className="hops-container__course-optional">
-          <div className="hops-container__course-optional-indicator"></div>
-          <p>(*)-Valinnainen</p>
+        <div className="hops-container__study-tool-indicator-container ">
+          <div className="hops-container__indicator-item hops-container__indicator-item--optional"></div>
+          <div className="hops-container__indicator-item-label">
+            (*)-Valinnainen
+          </div>
         </div>
-        <div className="hops-container__course-approval">
-          <div className="hops-container__course-approval-indicator"></div>
-          <p>Hyväksiluettu</p>
+        <div className="hops-container__study-tool-indicator-container ">
+          <div className="hops-container__indicator-item hops-container__indicator-item--approval"></div>
+          <div className="hops-container__indicator-item-label">
+            Hyväksiluettu
+          </div>
         </div>
-        <div className="hops-container__course-completed">
-          <div className="hops-container__course-completed-indicator"></div>
-          <p>Suoritettu</p>
+        <div className="hops-container__study-tool-indicator-container ">
+          <div className="hops-container__indicator-item hops-container__indicator-item--completed"></div>
+          <div className="hops-container__indicator-item-label">Suoritettu</div>
         </div>
-        <div className="hops-container__course-inprogress">
-          <div className="hops-container__course-inprogress-indicator"></div>
-          <p>Kesken</p>
+        <div className="hops-container__study-tool-indicator-container ">
+          <div className="hops-container__indicator-item hops-container__indicator-item--inprogress"></div>
+          <div className="hops-container__indicator-item-label">Kesken</div>
         </div>
-        <div className="hops-container__course-suggested">
-          <div className="hops-container__course-suggested-indicator"></div>
-          <p>Ohjaajan ehdottama</p>
+        <div className="hops-container__study-tool-indicator-container ">
+          <div className="hops-container__indicator-item hops-container__indicator-item--selected"></div>
+          <div className="hops-container__indicator-item-label">Valittu</div>
         </div>
-        <div className="hops-container__course-selected">
-          <div className="hops-container__course-selected-indicator"></div>
-          <p>Valittu</p>
+        <div className="hops-container__study-tool-indicator-container ">
+          <div className="hops-container__indicator-item hops-container__indicator-item--suggested"></div>
+          <div className="hops-container__indicator-item-label">
+            Ohjaajan ehdottama
+          </div>
+        </div>
+        <div className="hops-container__study-tool-indicator-container ">
+          <div className="hops-container__indicator-item hops-container__indicator-item--next"></div>
+          <div className="hops-container__indicator-item-label">
+            Ohjaajan suraavaksi ehdottama
+          </div>
         </div>
       </div>
     </>

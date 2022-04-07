@@ -46,9 +46,11 @@ $color-list-hover-background: #e7fffc;
 $color-list-active-background: rgb(208 255 249 / 100%);
 $color-list-selected-background: #29b0c4;
 $color-suggested: #e464dc;
+$color-next: darken(#e464dc, 20%);
 $color-optional: #97dbf7;
 $color-optional-selected: #0099ff;
 $color-mandatory: #dbdada;
+$color-approval: darken(#24c118, 15%);
 
 // Search
 $color-search-clear-icon: $color-disabled;

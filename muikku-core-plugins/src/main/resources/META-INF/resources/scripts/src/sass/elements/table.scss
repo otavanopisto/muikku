@@ -98,7 +98,7 @@
 
 .table__data-content-wrapper--course {
   align-items: center;
-  border: 2px solid transparent;
+  border: 3px solid transparent;
   border-radius: 100%;
   cursor: pointer;
   display: flex;
@@ -144,6 +144,7 @@
 .table__data--APPROVAL {
   .table__data-content-wrapper--course {
     background: $color-success;
+    border-color: $color-approval;
     color: $color-default;
   }
 }
@@ -157,8 +158,8 @@
 
 .table__data--NEXT {
   .table__data-content-wrapper--course {
-    background: $color-fatal;
-    border-color: $color-default-contrast;
+    background: $color-next;
+    color: $color-default;
   }
 }
 

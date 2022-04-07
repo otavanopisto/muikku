@@ -338,7 +338,7 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
       <TableHead modifiers={["language-table"]}>
         <Tr modifiers={["language-table"]}>
           <Th modifiers={["subject"]}>Oppiaine</Th>
-          <Th colSpan={currentMaxCourses}>Opintojaksot</Th>
+          <Th colSpan={currentMaxCourses}>Kurssit</Th>
         </Tr>
       </TableHead>
       <Tbody>{renderRows}</Tbody>
