@@ -103,66 +103,57 @@
   width: 40px;
 }
 
-.table__data--SUGGESTED {
-  .table__data-content-wrapper--course {
-    background: $color-suggested;
-    border: 2px solid $color-default-contrast;
-  }
-}
-
 .table__data--MANDATORY {
   .table__data-content-wrapper--course {
-    background: $color-default-helper;
+    background: $color-mandatory;
   }
 }
 
 .table__data--OPTIONAL {
   .table__data-content-wrapper--course {
-    background: $color-tertiary;
+    background: $color-optional;
   }
 }
 
 .table__data--OPTIONAL-SELECTED {
   .table__data-content-wrapper--course {
-    border: 2px solid $color-default-contrast;
+    border-color: $color-optional-selected;
   }
 }
 
 .table__data--COMPLETED {
   .table__data-content-wrapper--course {
     background: $color-success;
+    color: $color-default;
   }
 }
 
 .table__data--INPROGRESS {
   .table__data-content-wrapper--course {
     background: $color-info;
+    color: $color-default;
   }
 }
 
 .table__data--APPROVAL {
   .table__data-content-wrapper--course {
-    background: $color-fatal;
+    background: $color-success;
+    color: $color-default;
   }
 }
 
-.table__data--SELECTED {
+.table__data--SUGGESTED {
+  .table__data-content-wrapper--course {
+    background: $color-suggested;
+    color: $color-default;
+  }
+}
+
+.table__data--NEXT {
   .table__data-content-wrapper--course {
     background: $color-fatal;
+    border-color: $color-default-contrast;
   }
-}
-
-.table__data--NEXT::after {
-  background: $color-fatal;
-  content: "";
-  display: block;
-  height: 15px;
-  position: absolute;
-  right: -7px;
-  top: 0;
-  transform: skewX(45deg);
-  transition: right 0.3s ease-in;
-  width: 15px;
 }
 
 .table__data-content--empty {
