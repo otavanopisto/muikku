@@ -1,18 +1,8 @@
 import * as React from "react";
 import { Textarea } from "../text-area";
-import { CheckboxGroupItem, ScaleInputGroup } from "../hops-input-groups";
 import AnimateHeight from "react-animate-height";
-import { InputGroup } from "../hops-input-groups";
 import { HopsMotivationAndStudy } from "~/@types/shared";
 import { HopsBaseProps } from "..";
-import {
-  Table,
-  TableHead,
-  Tbody,
-  Td,
-  Th,
-  Tr,
-} from "~/components/general/table";
 import { EmptyRow, HopsInputTable, InputRow } from "../hops-input-table";
 
 /**
@@ -26,20 +16,11 @@ interface HopsMotivationAndStudySkillsProps extends HopsBaseProps {
 }
 
 /**
- * MotivationAndStudySkillsState
- */
-interface HopsMotivationAndStudySkillsState {
-  someOtherWay: boolean;
-  someOtherMethod: boolean;
-  somethingElse: boolean;
-}
-
-/**
  * MotivationAndStudySkills
  */
 class HopsMotivationAndStudySkills extends React.Component<
   HopsMotivationAndStudySkillsProps,
-  HopsMotivationAndStudySkillsState
+  Record<string, unknown>
 > {
   /**
    * constructor
@@ -48,24 +29,8 @@ class HopsMotivationAndStudySkills extends React.Component<
   constructor(props: HopsMotivationAndStudySkillsProps) {
     super(props);
 
-    this.state = {
-      someOtherWay: false,
-      someOtherMethod: false,
-      somethingElse: false,
-    };
+    this.state = {};
   }
-
-  /**
-   * componentDidMount
-   */
-  componentDidMount = () => {
-    /* this.setState({
-      someOtherWay: this.props.motivationAndStudy.someOtherWay !== undefined,
-      someOtherMethod:
-        this.props.motivationAndStudy.someOtherMethod !== undefined,
-      somethingElse: this.props.motivationAndStudy.somethingElse !== undefined,
-    }); */
-  };
 
   /**
    * Handles textarea changes
@@ -81,25 +46,6 @@ class HopsMotivationAndStudySkills extends React.Component<
           ...this.props.motivationAndStudy[name],
           [e.currentTarget.name]: e.currentTarget.value,
         },
-      });
-    };
-
-  /**
-   * Handles checkbox else changes
-   *
-   * @param name keyof MotivationAndStudySkillsState
-   */
-  handleCheckboxElseChanges =
-    (name: keyof HopsMotivationAndStudySkillsState) =>
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      this.props.onMotivationAndStudyChange({
-        ...this.props.motivationAndStudy,
-        [name]: e.target.checked ? "" : undefined,
-      });
-
-      this.setState({
-        ...this.state,
-        [name]: e.target.checked,
       });
     };
 
