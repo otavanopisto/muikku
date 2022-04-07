@@ -71,8 +71,6 @@ class GuiderToolbar extends React.Component<
     };
 
     this.updateSearchWithQuery = this.updateSearchWithQuery.bind(this);
-    this.onGoBackClick = this.onGoBackClick.bind(this);
-    this.getBackByHash = this.getBackByHash.bind(this);
     this.onInputFocus = this.onInputFocus.bind(this);
     this.onInputBlur = this.onInputBlur.bind(this);
   }
@@ -231,53 +229,41 @@ class GuiderToolbar extends React.Component<
     return (
       <ApplicationPanelToolbar>
         <ApplicationPanelToolbarActionsMain>
-          {this.props.guider.currentStudent ? (
+          <NewMessage
+            extraNamespace="guider"
+            refreshInitialSelectedItemsOnOpen
+            onRecipientChange={this.onContactsChange}
+            initialSelectedItems={this.turnSelectedUsersToContacts(
+              this.props.guider.selectedStudents
+            )}
+          >
             <ButtonPill
-              icon="back"
-              buttonModifiers="go-back"
-              onClick={this.onGoBackClick}
-              disabled={this.props.guider.toolbarLock}
+              disabled={this.props.guider.selectedStudentsIds.length < 1}
+              icon="envelope"
+              buttonModifiers="new-message"
             />
-          ) : (
-            <>
-              <NewMessage
-                extraNamespace="guider"
-                refreshInitialSelectedItemsOnOpen
-                onRecipientChange={this.onContactsChange}
-                initialSelectedItems={this.turnSelectedUsersToContacts(
-                  this.props.guider.selectedStudents
-                )}
-              >
-                <ButtonPill
-                  disabled={this.props.guider.selectedStudentsIds.length < 1}
-                  icon="envelope"
-                  buttonModifiers="new-message"
-                />
-              </NewMessage>
-              <ButtonPill
-                buttonModifiers="toggle"
-                icon="check"
-                disabled={this.props.guider.students.length < 1}
-                onClick={this.props.toggleAllStudents}
-              />
-            </>
-          )}
+          </NewMessage>
+
+          <ButtonPill
+            buttonModifiers="toggle"
+            icon="check"
+            disabled={this.props.guider.students.length < 1}
+            onClick={this.props.toggleAllStudents}
+          />
           <GuiderToolbarLabels />
-          {this.props.guider.currentStudent ? null : (
-            <ApplicationPanelToolsContainer>
-              <SearchFormElement
-                updateField={this.updateSearchWithQuery}
-                name="guider-search"
-                id="searchUsers"
-                onFocus={this.onInputFocus}
-                onBlur={this.onInputBlur}
-                placeholder={this.props.i18n.text.get(
-                  "plugin.guider.search.placeholder"
-                )}
-                value={this.state.searchquery}
-              />
-            </ApplicationPanelToolsContainer>
-          )}
+          <ApplicationPanelToolsContainer>
+            <SearchFormElement
+              updateField={this.updateSearchWithQuery}
+              name="guider-search"
+              id="searchUsers"
+              onFocus={this.onInputFocus}
+              onBlur={this.onInputBlur}
+              placeholder={this.props.i18n.text.get(
+                "plugin.guider.search.placeholder"
+              )}
+              value={this.state.searchquery}
+            />
+          </ApplicationPanelToolsContainer>
         </ApplicationPanelToolbarActionsMain>
       </ApplicationPanelToolbar>
     );

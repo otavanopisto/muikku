@@ -110,6 +110,17 @@ $color-taskfield-hint-border: #d6d823;
 $color-taskfield-hint-background: #ffffe1;
 $color-mobile-toc-default-shadow: rgb(0 0 0 / 20%);
 
+// Calendar
+$color-approved: $color-passed;
+$color-declined: $color-failed;
+$color-waiting: $color-pending;
+$color-approved-background: #caffca;
+$color-declined-background: #df7171;
+$color-waiting-background: #fbe181;
+$color-unconfirmed-background: #f3f3f3;
+$color-timeline-background: #f0f0f0;
+$color-draggable-event-background: $color-default;
+
 // Evaluation
 $color-evaluation-request: $color-submitted;
 $color-grade-not-assessed: #b3b2b2;

@@ -94,7 +94,8 @@ export interface GuiderStudentUserProfileType {
   //  vops: VOPSDataType,
   hops: HOPSDataType;
   notifications: GuiderNotificationStudentsDataType;
-  workspaces: WorkspaceListType;
+  currentWorkspaces: WorkspaceListType;
+  pastWorkspaces: WorkspaceListType;
   activityLogs: ActivityLogType[];
   purchases: PurchaseType[];
   hopsPhase?: string;

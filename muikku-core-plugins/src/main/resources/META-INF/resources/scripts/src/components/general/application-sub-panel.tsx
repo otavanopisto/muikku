@@ -8,7 +8,6 @@ import "~/sass/elements/application-sub-panel.scss";
 interface SubPanelProps {
   modifier?: string;
   bodyModifier?: string;
-  i18n: i18nType;
   title: string;
 }
 
@@ -20,49 +19,37 @@ interface SubPanelState {}
 /**
  * ApplicationSubPanel
  */
-export default class ApplicationSubPanel extends React.Component<
-  SubPanelProps,
-  SubPanelState
-> {
+const ApplicationSubPanel: React.FC<SubPanelProps> = (props) => {
+  const { modifier, bodyModifier, title, children } = props;
   /**
    * Component render method
    * @returns JSX.Element
    */
-  render() {
-    return (
+  return (
+    <div
+      className={`application-sub-panel ${
+        modifier ? `application-sub-panel--${modifier}` : ""
+      }`}
+    >
       <div
-        className={`application-sub-panel ${
-          this.props.modifier
-            ? `application-sub-panel--${this.props.modifier}`
-            : ""
+        className={`application-sub-panel__header ${
+          modifier ? `application-sub-panel__header--${modifier}` : ""
         }`}
       >
-        <div
-          className={`application-sub-panel__header ${
-            this.props.modifier
-              ? `application-sub-panel__header--${this.props.modifier}`
-              : ""
-          }`}
-        >
-          {this.props.title}
-        </div>
-        <div
-          className={`application-sub-panel__body ${
-            this.props.modifier
-              ? `application-sub-panel__body--${this.props.modifier}`
-              : ""
-          } ${
-            this.props.bodyModifier
-              ? `application-sub-panel__body--${this.props.bodyModifier}`
-              : ""
-          }`}
-        >
-          {this.props.children}
-        </div>
+        {title}
       </div>
-    );
-  }
-}
+      <div
+        className={`application-sub-panel__body ${
+          modifier ? `application-sub-panel__body--${modifier}` : ""
+        } ${
+          bodyModifier ? `application-sub-panel__body--${bodyModifier}` : ""
+        }`}
+      >
+        {children}
+      </div>
+    </div>
+  );
+};
 
 /**
  * SubPanelItemDataProps
@@ -77,7 +64,7 @@ interface SubPanelItemDataProps {
  */
 interface SubPanelItemProps {
   modifier?: string;
-  title: string;
+  title: string | JSX.Element;
 }
 
 /**
@@ -174,3 +161,4 @@ const ApplicationSubPanelSubItem: React.FunctionComponent<{
 
 ApplicationSubPanelItem.Content = ApplicationSubPanelItemData;
 ApplicationSubPanelItem.SubItem = ApplicationSubPanelSubItem;
+export default ApplicationSubPanel;
