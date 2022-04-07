@@ -592,6 +592,14 @@
   padding: 4px 12px;
 }
 
+.button--guider-hops {
+  background-color: $color-button-primary-background;
+  border: 0;
+  color: $color-button-primary-text;
+  display: inline-flex;
+  margin: 0 0 10px;
+}
+
 .button-icon {
   @include prefix(user-select, moz o ms webkit, none);
   @include prefix(transition, moz o ms webkit, background-color 0.3s);

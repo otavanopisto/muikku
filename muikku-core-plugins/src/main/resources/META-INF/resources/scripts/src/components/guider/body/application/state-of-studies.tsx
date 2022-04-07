@@ -363,14 +363,14 @@ class StateOfStudies extends React.Component<
           <div className="application-sub-panel__item-title">
             Opintosuunnitelma
           </div>
-          <div className="application-sub-panel__item-data">
+          <div className="application-sub-panel__item-data form-element">
             <HopsCompulsoryEducationWizardDialog
               user="supervisor"
               disabled
               superVisorModifies={false}
               studyTimeEnd={this.props.guider.currentStudent.basic.studyTimeEnd}
             >
-              <Button>Opintosuunnitelma</Button>
+              <Button buttonModifiers={["guider-hops"]}>Opintosuunnitelma</Button>
             </HopsCompulsoryEducationWizardDialog>
             <HopsCompulsoryEducationWizardDialog
               user="supervisor"
@@ -378,9 +378,10 @@ class StateOfStudies extends React.Component<
               superVisorModifies
               studyTimeEnd={this.props.guider.currentStudent.basic.studyTimeEnd}
             >
-              <Button>Opintosuunnitelma (muokkaus)</Button>
+              <Button buttonModifiers={["guider-hops"]}>Opintosuunnitelma (muokkaus)</Button>
             </HopsCompulsoryEducationWizardDialog>
-            <select
+
+            <select className="form-element__select"
               value={this.props.guider.currentStudent.hopsPhase}
               onChange={this.handleHopsPhaseChange}
             >
