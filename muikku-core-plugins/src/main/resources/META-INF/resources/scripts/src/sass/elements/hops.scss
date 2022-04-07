@@ -534,7 +534,7 @@
 
 .hops-container__indicator-item--approval {
   background: $color-success;
-  border-color: darken($color-success, 15%);
+  border-color: $color-approval;
 }
 
 .hops-container__indicator-item--completed {
@@ -554,5 +554,5 @@
 }
 
 .hops-container__indicator-item--next {
-  background: darken($color-suggested, 15%);
+  background: $color-next;
 }
