@@ -672,19 +672,13 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
   }
   
   @Override
-  public BridgeResponse<List<StudentContactLogEntryCommentRestModel>> listStudentContactLogEntryCommentsByStudentAndId(
-      SchoolDataIdentifier studentIdentifier, Long entryId) {
-    throw new SchoolDataBridgeInternalException("Not supported");
-  }
-  
-  @Override
   public BridgeResponse<StudentContactLogEntryCommentRestModel> createStudentContactLogEntryComment(
-      SchoolDataIdentifier studentIdentifier, StudentContactLogEntryCommentRestModel payload) {
+      SchoolDataIdentifier studentIdentifier, Long entryId, StudentContactLogEntryCommentRestModel payload) {
     throw new SchoolDataBridgeInternalException("Not supported");
   }
   
   @Override
-  public BridgeResponse<StudentContactLogEntryCommentRestModel> updateStudentContactLogEntryComment(SchoolDataIdentifier userIdentifier,
+  public BridgeResponse<StudentContactLogEntryCommentRestModel> updateStudentContactLogEntryComment(SchoolDataIdentifier userIdentifier, Long entryId,
       Long commentId, StudentContactLogEntryCommentRestModel payload) {
     throw new SchoolDataBridgeInternalException("Not supported");
   }
