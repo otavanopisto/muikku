@@ -138,7 +138,7 @@
 .table__data--APPROVAL {
   .table__data-content-wrapper--course {
     background: $color-success;
-    border-color: darken($color-success, 20%);
+    border-color: darken($color-success, 15%);
     color: $color-default;
   }
 }
@@ -152,8 +152,8 @@
 
 .table__data--NEXT {
   .table__data-content-wrapper--course {
-    background: $color-fatal;
-    border-color: $color-default-contrast;
+    background: darken($color-suggested, 15%);
+    color: $color-default;
   }
 }
 
