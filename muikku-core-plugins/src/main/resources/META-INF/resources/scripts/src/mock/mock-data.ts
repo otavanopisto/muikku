@@ -320,7 +320,7 @@ import { SchoolSubject, Education, HopsCompulsory } from "../@types/shared";
 export const schoolCourseTable: SchoolSubject[] = [
   {
     name: "Äidinkieli",
-    subjectCode: "ai",
+    subjectCode: "äi",
     availableCourses: [
       {
         name: "Äidinkielen 1. Suomen kielen ja kirjallisuuden perusteet",

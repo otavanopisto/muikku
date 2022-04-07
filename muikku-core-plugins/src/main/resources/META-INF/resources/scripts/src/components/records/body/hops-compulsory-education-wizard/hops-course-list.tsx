@@ -150,7 +150,7 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
       }
     }
     if (props.finnishAsSecondLanguage) {
-      if (sSubject.subjectCode === "ai") {
+      if (sSubject.subjectCode === "äi") {
         return;
       }
     } else {

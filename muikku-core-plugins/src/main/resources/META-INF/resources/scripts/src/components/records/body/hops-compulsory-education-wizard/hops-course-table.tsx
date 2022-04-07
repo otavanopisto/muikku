@@ -90,7 +90,7 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
       }
     }
     if (props.finnishAsSecondLanguage) {
-      if (sSubject.subjectCode === "ai") {
+      if (sSubject.subjectCode === "äi") {
         return;
       }
     } else {

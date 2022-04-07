@@ -853,7 +853,7 @@ const filterSpecialSubjects = (
 
   if (options.finnishAsLanguage) {
     alteredShoolCourseTable = alteredShoolCourseTable.filter(
-      (sSubject) => sSubject.subjectCode !== "ai"
+      (sSubject) => sSubject.subjectCode !== "äi"
     );
   }
   if (!options.finnishAsLanguage) {
