@@ -262,6 +262,11 @@
   }
 }
 
+.application-sub-panel__body--guidance-relation {
+  display: flex;
+  flex-flow: wrap;
+}
+
 .application-sub-panel__notification-item {
   flex-basis: 100%;
 }
@@ -279,6 +284,35 @@
       margin: 0;
     }
   }
+}
+
+.application-sub-panel__section {
+  box-sizing: border-box;
+}
+
+.application-sub-panel__section--guidance-relation-contact-info {
+  flex-basis: 100%;
+
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 400px;
+    flex-grow: 1;
+    flex-shrink: 0;
+  }
+}
+
+.application-sub-panel__section--guidance-relation-contact-events {
+  flex-basis: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 50%;
+    flex-grow: 2;
+    flex-shrink: 1;
+  }
+}
+
+.application-sub-panel__section--guidance-relation-guidance-events {
+  flex-basis: 100%;
 }
 
 .application-sub-panel__notification-body--studies-yo-subjects {
