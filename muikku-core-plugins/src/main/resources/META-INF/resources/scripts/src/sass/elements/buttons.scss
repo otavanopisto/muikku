@@ -497,6 +497,10 @@
   }
 }
 
+.button--guider-student {
+  overflow: unset;
+}
+
 // Button that appears inside views component
 .button--primary-function-content {
   background-color: $color-button-primary-background;
@@ -841,6 +845,7 @@
 }
 
 .button-pill--delete,
+.button-pill--create-student-order,
 .button-pill--toggle,
 .button-pill--restore,
 .button-pill--edit,
@@ -963,7 +968,7 @@
   flex-basis: auto;
   flex-grow: 0;
   flex-shrink: 0;
-  margin: 0 10px 0 0;
+  margin: 0 10px;
   vertical-align: top;
 
   &:hover,
@@ -980,6 +985,10 @@
   &:disabled {
     background-color: $color-button-pill-background-disabled;
     color: $color-button-pill-text-disabled;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    margin: 0 10px 0 0;
   }
 }
 

@@ -102,6 +102,18 @@
   font-weight: 600;
 }
 
+.item-list__item-content {
+  padding: 5px;
+}
+
+.item-list__item-footer {
+  padding: 5px;
+
+  a:not(:first-child) {
+    margin-left: 10px;
+  }
+}
+
 // List item icons
 .item-list__icon {
   align-items: center;

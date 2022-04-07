@@ -40,7 +40,6 @@ import { AnyActionType } from "~/actions";
 interface GuiderToolbarLabelsProps {
   i18n: i18nType;
   guider: GuiderType;
-
   createGuiderFilterLabel: CreateGuiderFilterLabelTriggerType;
   addGuiderLabelToCurrentUser: AddGuiderLabelToCurrentUserTriggerType;
   removeGuiderLabelFromCurrentUser: RemoveGuiderLabelFromCurrentUserTriggerType;

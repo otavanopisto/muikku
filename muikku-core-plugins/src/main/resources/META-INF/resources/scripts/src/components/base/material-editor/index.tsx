@@ -30,9 +30,9 @@ import ConfirmPublishPageWithAnswersDialog from "./confirm-publish-page-with-ans
 import ConfirmRemovePageWithAnswersDialog from "./confirm-remove-page-with-answers-dialog";
 import ConfirmRemoveAttachment from "./confirm-remove-attachment";
 import ConfirmPublishPageWithLinkedMaterialDialog from "./confirm-publish-page-with-linked-material-dialog";
+import ConfirmPublishRemovePageWithLinkedAnswersDialog from "./confirm-remove-page-with-linked-answers-dialog";
 import equals = require("deep-equal");
 import Tabs, { Tab } from "~/components/general/tabs";
-import { createAllTabs } from "~/helper-functions/tabs";
 import AddProducer from "~/components/general/add-producer";
 import { LicenseSelector } from "~/components/general/license-selector";
 import FileUploader from "~/components/general/file-uploader";
@@ -888,10 +888,7 @@ class MaterialEditor extends React.Component<
         name: this.props.i18n.text.get(
           "plugin.workspace.materialsManagement.editorView.tabs.label.content"
         ),
-        /**
-         * component
-         */
-        component: () => (
+        component: (
           <div className="material-editor__content-wrapper">
             {editorButtonSet}
 
@@ -945,10 +942,7 @@ class MaterialEditor extends React.Component<
         name: this.props.i18n.text.get(
           "plugin.workspace.materialsManagement.editorView.tabs.label.metadata"
         ),
-        /**
-         * component
-         */
-        component: () => (
+        component: (
           <div className="material-editor__content-wrapper">
             {editorButtonSet}
 
@@ -1012,7 +1006,7 @@ class MaterialEditor extends React.Component<
         /**
          * component
          */
-        component: () => (
+        component: (
           <div className="material-editor__content-wrapper">
             {editorButtonSet}
 
@@ -1061,7 +1055,6 @@ class MaterialEditor extends React.Component<
         }`}
       >
         <Tabs
-          allTabs={createAllTabs(materialEditorTabs)}
           modifier="material-editor"
           activeTab={this.state.tab}
           onTabChange={this.onTabChange}
@@ -1076,6 +1069,7 @@ class MaterialEditor extends React.Component<
         <ConfirmPublishPageWithAnswersDialog />
         <ConfirmRemovePageWithAnswersDialog onDeleteSuccess={this.close} />
         <ConfirmPublishPageWithLinkedMaterialDialog />
+        <ConfirmPublishRemovePageWithLinkedAnswersDialog />
       </div>
     );
   }
