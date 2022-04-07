@@ -42,6 +42,12 @@
   }
 }
 
+.table__row--empty {
+  .table__data {
+    height: 15px;
+  }
+}
+
 .table__row--language-table,
 .table__row--course {
   &:last-child {

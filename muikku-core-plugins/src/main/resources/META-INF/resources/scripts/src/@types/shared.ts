@@ -340,16 +340,10 @@ export interface HopsStudentStartingLevel {
 /**
  * HopsMotivationAndStudy
  */
-export interface HopsMotivationAndStudy
-  extends WayToLearn,
-    StudentLearningMethod,
-    StudentSupportive {
-  scaleSize: number;
-  scaleName: string;
-  hardOrEasyInStudies?: string;
-  strengthsOrWeaknesses?: string;
-  interests?: string;
-  areasToAdvance?: string;
+export interface HopsMotivationAndStudy {
+  wayToLearn: WayToLearn;
+  studySupport: StudySupport;
+  selfImageAsStudent: StudentSelfImage;
 }
 
 /**
@@ -387,10 +381,44 @@ export interface FollowUp {
  * WayToLearn
  */
 export interface WayToLearn {
-  byReading: number;
-  byListening: number;
-  byDoing: number;
+  byReadingMaterials: number;
+  byTakingNotes: number;
+  byDoingExcercises: number;
+  byMemorizing: number;
+  byWatchingVideos: number;
+  byListeningTeaching: number;
+  byExplaining: number;
+  byDiscussing: number;
+  byWatchingOrDoingExamples: number;
   someOtherWay?: string;
+}
+
+/**
+ * StudySupport
+ */
+export interface StudySupport {
+  fromFamilyMember: boolean;
+  fromFriend: boolean;
+  fromSupportPerson: boolean;
+  noSupport: boolean;
+  somethingElse: boolean;
+  somethingElseWhat?: string;
+}
+
+export interface StudentSelfImage {
+  likeStudying: number;
+  haveGoals: number;
+  readyToAchieveGoals: number;
+  alwaysFinishJobs: number;
+  bePedantic: number;
+  studyingConcentration: number;
+  affectedByNoise: number;
+  canFollowInstructions: number;
+  canEvaluateOwnWork: number;
+  canTakeFeedback: number;
+  canUseBasicComputerFunctionalities: number;
+  somethingElse?: string;
+  wishesForTeachersAndSupervisors?: string;
 }
 
 /**

@@ -64,7 +64,6 @@ class StudentDialog extends React.Component<
    * constructor
    * @param props props for the constructor
    */
-
   constructor(props: StudentDialogProps) {
     super(props);
 

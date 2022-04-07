@@ -161,7 +161,7 @@ export const Tfooter: React.FC<TableFooterProps> = ({
 /**
  * TableRowProps
  */
-interface TableRowProps
+export interface TableRowProps
   extends React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLTableRowElement>,
     HTMLTableRowElement
