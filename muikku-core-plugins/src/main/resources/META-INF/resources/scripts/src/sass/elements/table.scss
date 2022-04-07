@@ -138,6 +138,7 @@
 .table__data--APPROVAL {
   .table__data-content-wrapper--course {
     background: $color-success;
+    border-color: darken($color-success, 20%);
     color: $color-default;
   }
 }
