@@ -119,6 +119,9 @@ export interface UPDATE_CALENDAR_EVENTS_STATUS
  * @param end end date string
  * @param type events type
  */
+
+// TODO needs a "range" evaluation to avoid unnecessary loads
+
 const loadCalendarEvents: LoadCalendarEventsTriggerType =
   function loadCalendarEvents(
     userEntityId: number,

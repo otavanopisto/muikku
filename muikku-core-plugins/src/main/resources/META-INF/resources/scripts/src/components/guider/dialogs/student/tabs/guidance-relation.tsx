@@ -6,6 +6,7 @@ import ApplicationSubPanel, {
   ApplicationSubPanelViewHeader,
   ApplicationSubPanelItem,
 } from "~/components/general/application-sub-panel";
+import GuidanceEvent from "~/components/index/body/guidance-events/guidance-event";
 
 /**
  * GuidanceRelationProps
@@ -104,6 +105,7 @@ const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
+    guidanceEvents: state.calendar.guidanceEvents,
   };
 }
 
