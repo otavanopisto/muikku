@@ -5,6 +5,7 @@ $color-default-item-separator-border: #f2f2f2;
 $color-default-separator-border: #ebebeb;
 $color-default-helper: #b3b2b2;
 $color-default-generic-background: #f2f2f2;
+$color-default-lighter-generic-background: #f8f8f8;
 $color-yo-sign-up: #75ce41;
 $color-yo-sign-up-contrast: $color-default;
 $color-inverse: $color-default-contrast;
@@ -44,6 +45,12 @@ $color-tertiary-contrast: $color-default;
 $color-list-hover-background: #e7fffc;
 $color-list-active-background: rgb(208 255 249 / 100%);
 $color-list-selected-background: #29b0c4;
+$color-suggested: #e464dc;
+$color-next: darken(#e464dc, 20%);
+$color-optional: #97dbf7;
+$color-optional-selected: #0099ff;
+$color-mandatory: #dbdada;
+$color-approval: darken(#24c118, 15%);
 
 // Search
 $color-search-clear-icon: $color-disabled;
@@ -104,6 +111,17 @@ $color-taskfield-explanation-background: #fafeff;
 $color-taskfield-hint-border: #d6d823;
 $color-taskfield-hint-background: #ffffe1;
 $color-mobile-toc-default-shadow: rgb(0 0 0 / 20%);
+
+// Calendar
+$color-approved: $color-passed;
+$color-declined: $color-failed;
+$color-waiting: $color-pending;
+$color-approved-background: #caffca;
+$color-declined-background: #df7171;
+$color-waiting-background: #fbe181;
+$color-unconfirmed-background: #f3f3f3;
+$color-timeline-background: #f0f0f0;
+$color-draggable-event-background: $color-default;
 
 // Evaluation
 $color-evaluation-request: $color-submitted;

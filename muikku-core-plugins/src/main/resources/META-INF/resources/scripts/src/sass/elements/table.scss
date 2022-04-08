@@ -6,6 +6,8 @@
 .table {
   border-collapse: collapse;
   font-family: "Open Sans", "Arial", sans-serif;
+  table-layout: fixed;
+  width: 100%;
 }
 
 .table--language-table {
@@ -17,7 +19,8 @@
   border-bottom: 2px solid $color-default-separator-border;
 }
 
-.table__thead--language-table {
+.table__thead--language-table,
+.table__thead--course {
   border-bottom-color: $color-hops-dialog-form-element-border;
 }
 
@@ -39,18 +42,33 @@
   }
 }
 
-.table__row--language-table {
+.table__row--empty {
+  .table__data {
+    height: 15px;
+  }
+}
+
+.table__row--language-table,
+.table__row--course {
   &:last-child {
     border-bottom-color: $color-hops-dialog-form-element-border;
   }
 }
 
 .table__row:nth-child(even) {
-  background-color: $color-default-generic-background;
+  background-color: $color-default-lighter-generic-background;
 }
 
 .table__head {
   color: $color-default-contrast;
+  font-weight: 600;
+}
+
+.tabble__head--language,
+.table__head--subject {
+  padding: 5px;
+  text-align: left;
+  width: 200px;
 }
 
 .table__head--centered,
@@ -60,56 +78,89 @@
 
 .table__data {
   padding: 5px;
-  width: 10%;
+  width: auto;
+}
+
+.table__data--language {
+  font-weight: 600;
+}
+
+.table__data--subject {
+  font-weight: 600;
+  max-width: 200px;
+  width: 200px;
 }
 
 .table__data--course {
   overflow: hidden;
+  text-align: center;
 }
 
-.table__data--SUGGESTED {
-  border: 3px solid pink;
+.table__data-content-wrapper--course {
+  align-items: center;
+  border: 3px solid transparent;
+  border-radius: 100%;
+  cursor: pointer;
+  display: flex;
+  height: 40px;
+  justify-content: center;
+  margin: 0 auto;
+  padding: 5px;
+  width: 40px;
 }
 
 .table__data--MANDATORY {
-  background-color: #acacac;
+  .table__data-content-wrapper--course {
+    background: $color-mandatory;
+  }
 }
 
 .table__data--OPTIONAL {
-  background-color: lightblue;
+  .table__data-content-wrapper--course {
+    background: $color-optional;
+  }
+}
+
+.table__data--OPTIONAL-SELECTED {
+  .table__data-content-wrapper--course {
+    border-color: $color-optional-selected;
+  }
 }
 
 .table__data--COMPLETED {
-  background-color: green;
+  .table__data-content-wrapper--course {
+    background: $color-success;
+    color: $color-default;
+  }
 }
 
 .table__data--INPROGRESS {
-  background-color: orange;
+  .table__data-content-wrapper--course {
+    background: $color-info;
+    color: $color-default;
+  }
 }
 
 .table__data--APPROVAL {
-  background-color: palegreen;
+  .table__data-content-wrapper--course {
+    background: $color-success;
+    border-color: $color-approval;
+    color: $color-default;
+  }
 }
 
-.table__data--SELECTED {
-  background-color: cornsilk;
+.table__data--SUGGESTED {
+  .table__data-content-wrapper--course {
+    background: $color-suggested;
+    color: $color-default;
+  }
 }
 
-.table-data--SELECTED_OPTIONAL {
-  background-color: #3ab8e1;
-}
-
-.tabl__-data--NEXT::after {
-  content: "";
-  display: block;
-  height: 15px;
-  width: 15px;
-  background: pink;
-  position: absolute;
-  top: 0;
-  transform: skewX(45deg);
-  right: -7px;
-  transition: right 0.3s ease-in;
+.table__data--NEXT {
+  .table__data-content-wrapper--course {
+    background: $color-next;
+    color: $color-default;
+  }
 }
 
 .table__data-content--empty {

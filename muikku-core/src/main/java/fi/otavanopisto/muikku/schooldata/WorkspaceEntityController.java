@@ -16,6 +16,9 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.dao.base.SchoolDataSourceDAO;
 import fi.otavanopisto.muikku.dao.users.UserGroupEntityDAO;
 import fi.otavanopisto.muikku.dao.users.UserGroupUserEntityDAO;
@@ -27,6 +30,7 @@ import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupUserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
+import fi.otavanopisto.muikku.model.workspace.EducationTypeMapping;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
@@ -58,6 +62,8 @@ public class WorkspaceEntityController {
   @Inject
   private UserSchoolDataIdentifierDAO userSchoolDataIdentifierDAO;
   
+  @Inject
+  private PluginSettingsController pluginSettingsController;
   @Inject
   @Any
   private Instance<SearchProvider> searchProviders;
@@ -272,6 +278,20 @@ public class WorkspaceEntityController {
         .map(userGroupIdentifier -> userGroupEntityDAO.findBySchoolDataIdentifier(userGroupIdentifier))
         .filter(Objects::nonNull)
         .anyMatch(userGroupEntity -> isSignupAllowed(workspaceEntity, userGroupEntity));
+  }
+  
+  public EducationTypeMapping getEducationTypeMapping() {
+    EducationTypeMapping educationTypeMapping = new EducationTypeMapping();
+    
+    String educationTypeMappingString = pluginSettingsController.getPluginSetting("transcriptofrecords", "educationTypeMapping");
+    if (educationTypeMappingString != null) {
+      try {
+        educationTypeMapping = new ObjectMapper().readValue(educationTypeMappingString, EducationTypeMapping.class); 
+      } catch (Exception e) {
+        logger.severe(String.format("Education type mapping failed with %s", educationTypeMappingString));
+      }
+    }
+    return educationTypeMapping;
   }
   
 }

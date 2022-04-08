@@ -91,7 +91,6 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
           </ApplicationSubPanelItem>
         </ApplicationSubPanel> */}
         <ApplicationSubPanel
-          i18n={this.props.i18n}
           modifier="organization-summary"
           title={this.props.i18n.text.get(
             "plugin.organization.summary.info.title"
@@ -120,7 +119,6 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
           </ApplicationSubPanelItem>
         </ApplicationSubPanel>
         <ApplicationSubPanel
-          i18n={this.props.i18n}
           modifier="organization-summary"
           title={this.props.i18n.text.get(
             "plugin.organization.summary.contact.title"

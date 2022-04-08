@@ -5,6 +5,7 @@ import { CopyWizardStoreType, CopyWizardStoreUpdateType } from "./";
 import DatePicker from "react-datepicker";
 import CKEditor from "~/components/general/ckeditor";
 import "~/sass/elements/form.scss";
+import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 
 /**
  * StepProps
@@ -67,7 +68,7 @@ export default class Step extends React.Component<StepProps, StepState> {
    * updateStartDate
    * @param newDate newDate
    */
-  updateStartDate(newDate: any) {
+  updateStartDate(newDate: Date) {
     this.props.updateStore({
       beginDate: newDate,
     });
@@ -77,7 +78,7 @@ export default class Step extends React.Component<StepProps, StepState> {
    * updateEndDate
    * @param newDate newDate
    */
-  updateEndDate(newDate: any) {
+  updateEndDate(newDate: Date) {
     this.props.updateStore({
       endDate: newDate,
     });
@@ -205,7 +206,7 @@ export default class Step extends React.Component<StepProps, StepState> {
                 </div>
               </div>
               <div className="form__row form__row--split">
-                <div className="form-element form-element--copy-workspace-start-date">
+                <div className="form-element form-element__copy-workspace-start-date">
                   <label htmlFor="workspaceStartDate">
                     {this.props.i18n.text.get(
                       "plugin.workspacecopywizard.workspaceStartDate.label"
@@ -216,11 +217,14 @@ export default class Step extends React.Component<StepProps, StepState> {
                     id="workspaceStartDate"
                     onChange={this.updateStartDate}
                     maxDate={this.props.getStore().endDate}
-                    locale={this.props.i18n.time.getLocale()}
+                    locale={outputCorrectDatePickerLocale(
+                      this.props.i18n.time.getLocale()
+                    )}
                     selected={this.props.getStore().beginDate}
+                    dateFormat="P"
                   />
                 </div>
-                <div className="form-element form-element--copy-workspace-end-date">
+                <div className="form-element form-element__copy-workspace-end-date">
                   <label htmlFor="workspaceEndDate">
                     {this.props.i18n.text.get(
                       "plugin.workspacecopywizard.workspaceEndDate.label"
@@ -231,8 +235,11 @@ export default class Step extends React.Component<StepProps, StepState> {
                     id="workspaceEndDate"
                     onChange={this.updateEndDate}
                     minDate={this.props.getStore().beginDate}
-                    locale={this.props.i18n.time.getLocale()}
+                    locale={outputCorrectDatePickerLocale(
+                      this.props.i18n.time.getLocale()
+                    )}
                     selected={this.props.getStore().endDate}
+                    dateFormat="P"
                   />
                 </div>
               </div>

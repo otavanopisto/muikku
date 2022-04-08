@@ -466,7 +466,6 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
           localUser.getFirstName(),
           localUser.getLastName(),
           null,
-          null,
           localUser.getFirstName() + ' ' + localUser.getLastName() + " (Local)",
           null,
           null,
@@ -705,6 +704,11 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
   @Override
   public BridgeResponse<List<StudyActivityItemRestModel>> getStudyActivity(String identifier) {
     throw new SchoolDataBridgeInternalException("Not supported");
+  }
+
+  @Override
+  public String findUserSsn(SchoolDataIdentifier userIdentifier) {
+    return null;
   }
 
 }

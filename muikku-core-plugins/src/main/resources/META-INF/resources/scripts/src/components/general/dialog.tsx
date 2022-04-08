@@ -10,7 +10,6 @@ import ApplicationList, {
   ApplicationListItemHeader,
 } from "~/components/general/application-list";
 import Tabs, { Tab } from "~/components/general/tabs";
-import { createAllTabs } from "~/helper-functions/tabs";
 import { UiSelectItem } from "../base/input-select-autofill";
 import { SelectItem } from "~/actions/workspaces/index";
 import Avatar from "~/components/general/avatar";
@@ -21,7 +20,7 @@ import PagerV2 from "~/components/general/pagerV2";
  */
 interface DialogProps {
   children?: React.ReactElement<any>;
-  title: string;
+  title: string | React.ReactElement<any>;
   executing?: boolean;
   executeContent?: React.ReactElement<any>;
   modifier?: string | Array<string>;
@@ -239,6 +238,52 @@ export class DialogRow extends React.Component<DialogRowProps, DialogRowState> {
     );
   }
 }
+
+/**
+ * DialogTitleContainerProps
+ */
+interface DialogTitleContainerProps {
+  modifier?: string;
+}
+
+/**
+ * DialogTitleContainer
+ * @param props DialogTitleContainerProps
+ * @returns  JSX.Element
+ */
+export const DialogTitleContainer: React.FC<DialogTitleContainerProps> = (
+  props
+) => (
+  <div
+    className={`dialog__title-sub-container ${
+      props.modifier ? "dialog__title-container--" + props.modifier : ""
+    }`}
+  >
+    {props.children}
+  </div>
+);
+
+/**
+ * DialogTitleProps
+ */
+interface DialogTitleProps {
+  modifier?: string;
+}
+
+/**
+ * DialogTitleItem
+ * @param props DialogTitleProps
+ * @returns JSX.Element
+ */
+export const DialogTitleItem: React.FC<DialogTitleProps> = (props) => (
+  <span
+    className={`dialog__title-item ${
+      props.modifier ? "dialog__title-item--" + props.modifier : ""
+    }`}
+  >
+    {props.children}
+  </span>
+);
 
 /**
  * DialogRowHeaderProps
@@ -556,12 +601,16 @@ export class DialogRemoveUsers extends React.Component<
    * @returns JSX.Element
    */
   render() {
+    const removePages = Math.ceil(
+      this.props.removeUsers.length / this.maxRemoveUsersPerPage
+    );
     const tabs: Tab[] = [
       {
         id: this.props.identifier + "-ALL",
         name: this.props.allTabTitle,
+
         // eslint-disable-next-line
-        component: () => (
+        component: (
           <DialogRow modifiers="user-search">
             <form>
               <SearchFormElement
@@ -646,11 +695,8 @@ export class DialogRemoveUsers extends React.Component<
         name: this.props.removeTabTitle,
 
         // eslint-disable-next-line
-        component: () => {
-          const removePages = Math.ceil(
-            this.props.removeUsers.length / this.maxRemoveUsersPerPage
-          );
-          return (
+        component: (
+          <DialogRow>
             <DialogRow>
               <DialogRow>
                 <ApplicationList modifiers="dialog-remove-users">
@@ -715,14 +761,30 @@ export class DialogRemoveUsers extends React.Component<
                 ) : null}
               </DialogRow>
             </DialogRow>
-          );
-        },
+            <DialogRow>
+              {this.props.removeUsers.length > 0 ? (
+                <PagerV2
+                  previousLabel=""
+                  nextLabel=""
+                  breakLabel="..."
+                  nextAriaLabel="Seuraava"
+                  previousAriaLabel="Edellinen"
+                  initialPage={this.state.currentRemovePage - 1}
+                  forcePage={this.state.currentRemovePage - 1}
+                  marginPagesDisplayed={1}
+                  pageCount={removePages}
+                  pageRangeDisplayed={2}
+                  onPageChange={this.handleRemoveUsersPagerChange}
+                />
+              ) : null}
+            </DialogRow>
+          </DialogRow>
+        ),
       },
     ];
 
     return (
       <Tabs
-        allTabs={createAllTabs(tabs)}
         onTabChange={this.onTabChange}
         renderAllComponents
         activeTab={this.state.activeTab}

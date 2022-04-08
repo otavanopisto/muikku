@@ -14,30 +14,30 @@ interface TableProps
 
 /**
  * Table
- * @return JSX.Element
+ * @param props props
+ * @returns JSX.Element
  */
-export const Table = React.forwardRef<HTMLTableElement, TableProps>(
-  ({ children, modifiers, className, ...rest }, ref) => {
-    let updatedClassName = "table";
+export const Table: React.FC<TableProps> = (props) => {
+  const { children, modifiers, className, ...rest } = props;
 
-    if (className) {
-      updatedClassName = className;
-    }
-    return (
-      <table
-        ref={ref}
-        className={`${updatedClassName} ${
-          modifiers
-            ? modifiers.map((m) => `${updatedClassName}--${m}`).join(" ")
-            : ""
-        }`}
-        {...rest}
-      >
-        {children}
-      </table>
-    );
+  let updatedClassName = "table";
+
+  if (className) {
+    updatedClassName = className;
   }
-);
+  return (
+    <table
+      className={`${updatedClassName} ${
+        modifiers
+          ? modifiers.map((m) => `${updatedClassName}--${m}`).join(" ")
+          : ""
+      }`}
+      {...rest}
+    >
+      {children}
+    </table>
+  );
+};
 
 /**
  * TableHeaderProps
@@ -52,15 +52,12 @@ interface TableHeaderProps
 
 /**
  * TableHead
- * @param param0
+ * @param props props
  * @returns JSX.Element
  */
-export const TableHead: React.FC<TableHeaderProps> = ({
-  children,
-  modifiers,
-  className,
-  ...rest
-}) => {
+export const TableHead: React.FC<TableHeaderProps> = (props) => {
+  const { children, modifiers, className, ...rest } = props;
+
   let updatedClassName = "table__thead";
 
   if (className) {
@@ -93,15 +90,12 @@ interface TableBodyProps
 
 /**
  * Tbody
- * @param param0
+ * @param props props
  * @returns JSX.Element
  */
-export const Tbody: React.FC<TableBodyProps> = ({
-  children,
-  modifiers,
-  className,
-  ...rest
-}) => {
+export const Tbody: React.FC<TableBodyProps> = (props) => {
+  const { children, modifiers, className, ...rest } = props;
+
   let updatedClassName = "table__tbody";
 
   if (className) {
@@ -167,7 +161,7 @@ export const Tfooter: React.FC<TableFooterProps> = ({
 /**
  * TableRowProps
  */
-interface TableRowProps
+export interface TableRowProps
   extends React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLTableRowElement>,
     HTMLTableRowElement

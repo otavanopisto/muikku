@@ -29,6 +29,7 @@ import { ProfileType } from "./main-function/profile";
 import { OrganizationSummaryType } from "./organization/summary";
 import { EvaluationState } from "./main-function/evaluation/index";
 import { CeeposState } from "./main-function/ceepos";
+import { Calendar } from "./main-function/calendar";
 
 /**
  * StateType
@@ -63,4 +64,5 @@ export interface StateType {
   profile?: ProfileType;
   evaluations?: EvaluationState;
   ceepos?: CeeposState;
+  calendar?: Calendar;
 }

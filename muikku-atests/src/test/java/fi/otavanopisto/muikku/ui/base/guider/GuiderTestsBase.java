@@ -163,6 +163,8 @@ public class GuiderTestsBase extends AbstractUITest {
     try {
       navigate("/guider", false);
       waitAndClick(".application-list__header-primary>span");
+      waitAndClick("#STUDY_HISTORY");
+      waitAndClick("#studyLibrary");      
       waitForPresent(".file-uploader input");
       scrollIntoView(".file-uploader input");
 
@@ -458,8 +460,8 @@ public class GuiderTestsBase extends AbstractUITest {
         navigate("/guider", false);
         waitForPresent(".application-list__item-footer--student .label--ENDING");
         waitAndClick(".application-list__header-primary>span");
-        scrollTo(".button--create-student-order", 150);
-        waitAndClickAndConfirm(".button--create-student-order", ".dropdown .link--purchasable-product-dropdown", 5, 500);
+        scrollTo(".button-pill--create-student-order", 150);
+        waitAndClickAndConfirm(".button-pill--create-student-order", ".dropdown .link--purchasable-product-dropdown", 5, 500);
         waitAndClickAndConfirm(".dropdown__container-item:first-child", ".dialog--dialog-confirm-order.dialog--visible", 5, 1000);
         waitAndClick(".button--standard-ok");
         assertTextIgnoreCase(".application-list__header-primary--product .application-list__header-primary-title b", "Nettilukion yksityisopiskelijan opiskelumaksu 6 kk");
@@ -557,8 +559,8 @@ public class GuiderTestsBase extends AbstractUITest {
         navigate("/guider", false);
         waitForPresent(".application-list__item-footer--student .label--ENDING");
         waitAndClick(".application-list__header-primary>span");
-        scrollTo(".button--create-student-order", 150);
-        waitAndClickAndConfirm(".button--create-student-order", ".dropdown .link--purchasable-product-dropdown", 5, 500);
+        scrollTo(".button-pill--create-student-order", 150);
+        waitAndClickAndConfirm(".button-pill--create-student-order", ".dropdown .link--purchasable-product-dropdown", 5, 500);
         waitAndClickAndConfirm(".dropdown__container-item:first-child", ".dialog--dialog-confirm-order.dialog--visible", 5, 1000);
         waitAndClick(".button--standard-ok");
         assertTextIgnoreCase(".application-list__header-primary--product .application-list__header-primary-title b", "Nettilukion yksityisopiskelijan opiskelumaksu 6 kk");
@@ -567,7 +569,7 @@ public class GuiderTestsBase extends AbstractUITest {
         waitAndClick(".application-list__header-primary--product .application-list__header-primary-actions .button--delete-student-order");
         waitAndClick(".dialog--dialog-delete-order.dialog--visible .button--fatal");
         waitForNotPresent(".application-list__header-primary--product .application-list__header-primary-actions .button--delete-student-order");
-        assertTextIgnoreCase(".button--create-student-order", "Luo uusi tilaus");
+//        assertTextIgnoreCase(".button-pill--create-student-order", "Luo uusi tilaus");
       }finally {
         deleteUserGroupUsers();
         archiveUserByEmail(student.getEmail());
@@ -615,8 +617,8 @@ public class GuiderTestsBase extends AbstractUITest {
         navigate("/guider", false);
         waitForPresent(".application-list__item-footer--student .label--ENDING");
         waitAndClick(".application-list__header-primary>span");
-        scrollTo(".button--create-student-order", 150);
-        waitAndClickAndConfirm(".button--create-student-order", ".dropdown .link--purchasable-product-dropdown", 5, 500);
+        scrollTo(".button-pill--create-student-order", 150);
+        waitAndClickAndConfirm(".button-pill--create-student-order", ".dropdown .link--purchasable-product-dropdown", 5, 500);
         waitAndClickAndConfirm(".dropdown__container-item:first-child", ".dialog--dialog-confirm-order.dialog--visible", 5, 1000);
         waitAndClick(".button--standard-ok");
         assertTextIgnoreCase(".application-list__header-primary--product .application-list__header-primary-title b", "Nettilukion yksityisopiskelijan opiskelumaksu 6 kk");
@@ -668,7 +670,7 @@ public class GuiderTestsBase extends AbstractUITest {
           navigate("/guider", false);
           waitForPresent(".application-list__item-footer--student .label--ENDING");
           waitAndClick(".application-list__header-primary>span");
-          scrollTo(".button--create-student-order", 150);
+          scrollTo(".button-pill--create-student-order", 150);
           assertTextIgnoreCase(".application-list__item--product .application-list__header-primary--product .application-list__header-primary-description", "Opiskelija peruutti tilauksen.");
         }else {
           assertTrue("paymentConfirmation status not 200", false);

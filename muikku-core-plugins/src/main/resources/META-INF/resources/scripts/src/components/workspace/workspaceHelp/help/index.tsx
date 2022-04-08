@@ -214,6 +214,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
       showRemoveAnswersDialogForPublish: false,
       showRemoveAnswersDialogForDelete: false,
       showUpdateLinkedMaterialsDialogForPublish: false,
+      showRemoveLinkedAnswersDialogForPublish: false,
       showUpdateLinkedMaterialsDialogForPublishCount: 0,
       canSetTitle: true,
     });

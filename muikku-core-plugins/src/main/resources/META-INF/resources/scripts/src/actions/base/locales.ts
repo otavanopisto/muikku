@@ -1,3 +1,4 @@
+import { setDefaultLocale } from "react-datepicker";
 import { SpecificActionType } from "~/actions";
 export type SET_LOCALE = SpecificActionType<"SET_LOCALE", string>;
 

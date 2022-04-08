@@ -15,7 +15,6 @@ import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
 import Button from "~/components/general/button";
 import Link from "~/components/general/link";
-import moment from "~/lib/moment";
 import DatePicker from "react-datepicker";
 import CKEditor from "~/components/general/ckeditor";
 import equals = require("deep-equal");
@@ -47,6 +46,9 @@ import {
 } from "~/actions/base/notifications";
 import { filterMatch, filterHighlight } from "~/util/modifiers";
 import { SearchFormElement } from "~/components/general/form-element";
+import * as moment from "moment";
+import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
+import { AnyActionType } from "~/actions/index";
 
 const PERMISSIONS_TO_EXTRACT = ["WORKSPACE_SIGNUP"];
 
@@ -74,8 +76,8 @@ interface ManagementPanelState {
   workspaceAccess: WorkspaceAccessType;
   workspaceExtension: string;
   workspaceType: string;
-  workspaceStartDate: any;
-  workspaceEndDate: any;
+  workspaceStartDate: Date | null;
+  workspaceEndDate: Date | null;
   workspaceProducers: Array<WorkspaceProducerType>;
   workspaceDescription: string;
   workspaceLicense: string;
@@ -123,11 +125,11 @@ class ManagementPanel extends React.Component<
           : null,
       workspaceStartDate:
         props.workspace && props.workspace.details
-          ? moment(props.workspace.details.beginDate)
+          ? moment(props.workspace.details.beginDate).toDate()
           : null,
       workspaceEndDate:
         props.workspace && props.workspace.details
-          ? moment(props.workspace.details.endDate)
+          ? moment(props.workspace.details.endDate).toDate()
           : null,
       workspaceProducers:
         props.workspace && props.workspace.producers
@@ -187,10 +189,11 @@ class ManagementPanel extends React.Component<
   }
 
   /**
-   * componentWillReceiveProps
+   * UNSAFE_componentWillReceiveProps
    * @param nextProps nextProps
    */
-  componentWillReceiveProps(nextProps: ManagementPanelProps) {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillReceiveProps(nextProps: ManagementPanelProps) {
     this.setState({
       workspaceName: nextProps.workspace ? nextProps.workspace.name : null,
       workspacePublished: nextProps.workspace
@@ -206,14 +209,14 @@ class ManagementPanel extends React.Component<
           : null,
       workspaceStartDate:
         nextProps.workspace && nextProps.workspace.details
-          ? nextProps.workspace.details.beginDate != null
-            ? moment(nextProps.workspace.details.beginDate)
+          ? nextProps.workspace.details.beginDate !== null
+            ? moment(nextProps.workspace.details.beginDate).toDate()
             : null
           : null,
       workspaceEndDate:
         nextProps.workspace && nextProps.workspace.details
-          ? nextProps.workspace.details.endDate != null
-            ? moment(nextProps.workspace.details.endDate)
+          ? nextProps.workspace.details.endDate !== null
+            ? moment(nextProps.workspace.details.endDate).toDate()
             : null
           : null,
       workspaceProducers:
@@ -303,7 +306,7 @@ class ManagementPanel extends React.Component<
    * updateStartDate
    * @param newDate newDate
    */
-  updateStartDate(newDate: any) {
+  updateStartDate(newDate: Date) {
     this.setState({
       workspaceStartDate: newDate,
     });
@@ -313,7 +316,7 @@ class ManagementPanel extends React.Component<
    * updateEndDate
    * @param newDate newDate
    */
-  updateEndDate(newDate: any) {
+  updateEndDate(newDate: Date) {
     this.setState({
       workspaceEndDate: newDate,
     });
@@ -992,7 +995,10 @@ class ManagementPanel extends React.Component<
                   </select>
                 </div>
                 <div className="form-element application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-start-date">
-                  <label htmlFor="workspaceStartDate">
+                  <label
+                    htmlFor="workspaceStartDate"
+                    className="application-sub-panel__item-header"
+                  >
                     {this.props.i18n.text.get(
                       "plugin.workspace.management.additionalInfo.startDate"
                     )}
@@ -1002,12 +1008,18 @@ class ManagementPanel extends React.Component<
                     className="form-element__input"
                     onChange={this.updateStartDate}
                     maxDate={this.state.workspaceEndDate}
-                    locale={this.props.i18n.time.getLocale()}
+                    locale={outputCorrectDatePickerLocale(
+                      this.props.i18n.time.getLocale()
+                    )}
                     selected={this.state.workspaceStartDate}
+                    dateFormat="P"
                   />
                 </div>
                 <div className="form-element application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-end-date">
-                  <label htmlFor="workspaceEndDate">
+                  <label
+                    htmlFor="workspaceEndDate"
+                    className="application-sub-panel__item-header"
+                  >
                     {this.props.i18n.text.get(
                       "plugin.workspace.management.additionalInfo.endDate"
                     )}
@@ -1017,8 +1029,11 @@ class ManagementPanel extends React.Component<
                     className="form-element__input"
                     onChange={this.updateEndDate}
                     minDate={this.state.workspaceStartDate}
-                    locale={this.props.i18n.time.getLocale()}
+                    locale={outputCorrectDatePickerLocale(
+                      this.props.i18n.time.getLocale()
+                    )}
                     selected={this.state.workspaceEndDate}
+                    dateFormat="P"
                   />
                 </div>
               </div>
@@ -1233,7 +1248,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     {
       updateWorkspace,

@@ -6,7 +6,7 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 
 public abstract class AbstractUser implements User {
   
-  public AbstractUser(String identifier, String firstName, String lastName, String ssn, String nickName, String displayName,
+  public AbstractUser(String identifier, String firstName, String lastName, String nickName, String displayName,
       String studyProgrammeName, SchoolDataIdentifier studyProgrammeIdentifier, String nationality, String language, String municipality, String school,
       OffsetDateTime studyStartDate, OffsetDateTime studyEndDate, OffsetDateTime studyTimeEnd, boolean hidden, 
       boolean evaluationFees, String curriculumIdentifier, SchoolDataIdentifier organizationIdentifier) {
@@ -14,7 +14,6 @@ public abstract class AbstractUser implements User {
     this.identifier = identifier;
     this.firstName = firstName;
     this.lastName = lastName;
-    this.ssn = ssn;
     this.nickName = nickName;
     this.displayName = displayName;
     this.studyProgrammeName = studyProgrammeName;
@@ -30,11 +29,6 @@ public abstract class AbstractUser implements User {
     this.evaluationFees = evaluationFees;
     this.curriculumIdentifier = curriculumIdentifier;
     this.organizationIdentifier = organizationIdentifier;
-  }
-
-  @Override
-  public String getSearchId() {
-    return getIdentifier() + "/" + getSchoolDataSource();
   }
 
   @Override
@@ -62,16 +56,6 @@ public abstract class AbstractUser implements User {
     return lastName;
   }
   
-  @Override
-  public String getSsn() {
-    return ssn;
-  }
-
-  @Override
-  public void setSsn(String ssn) {
-    this.ssn = ssn;
-  }
-
   @Override
   public String getDisplayName() {
     return displayName;
@@ -193,7 +177,6 @@ public abstract class AbstractUser implements User {
   private String identifier;
   private String firstName;
   private String lastName;
-  private String ssn;
   private String displayName;
   private String studyProgrammeName;
   private SchoolDataIdentifier studyProgrammeIdentifier;

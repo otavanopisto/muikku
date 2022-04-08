@@ -497,6 +497,10 @@
   }
 }
 
+.button--guider-student {
+  overflow: unset;
+}
+
 // Button that appears inside views component
 .button--primary-function-content {
   background-color: $color-button-primary-background;
@@ -588,6 +592,14 @@
   padding: 4px 12px;
 }
 
+.button--guider-hops {
+  background-color: $color-button-primary-background;
+  border: 0;
+  color: $color-button-primary-text;
+  display: inline-flex;
+  margin: 0 0 10px;
+}
+
 .button-icon {
   @include prefix(user-select, moz o ms webkit, none);
   @include prefix(transition, moz o ms webkit, background-color 0.3s);
@@ -637,6 +649,12 @@
     height: $button-pill-desktop-size;
     width: $button-pill-desktop-size;
   }
+}
+
+.button-icon--edit-hops-history-event-description {
+  font-size: 0.8125rem;
+  height: auto;
+  width: auto;
 }
 
 .button-icon--journal-central {
@@ -835,6 +853,7 @@
 }
 
 .button-pill--delete,
+.button-pill--create-student-order,
 .button-pill--toggle,
 .button-pill--restore,
 .button-pill--edit,
@@ -957,7 +976,7 @@
   flex-basis: auto;
   flex-grow: 0;
   flex-shrink: 0;
-  margin: 0 10px 0 0;
+  margin: 0 10px;
   vertical-align: top;
 
   &:hover,
@@ -974,6 +993,10 @@
   &:disabled {
     background-color: $color-button-pill-background-disabled;
     color: $color-button-pill-text-disabled;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    margin: 0 10px 0 0;
   }
 }
 
@@ -1812,11 +1835,25 @@
 }
 
 .button--add-matriculation-row,
-.button--add-hops-row {
+.button--add-hops-row,
+.button--load-all-hops-events,
+.button--back-to-hops-start {
   background: $color-default;
   border: 1px solid $color-default;
   color: $color-info;
   padding: 4px 6px;
+
+  &.disabled {
+    background: $color-default;
+    border: 1px solid $color-default;
+    color: $color-disabled;
+
+    &:hover {
+      background: $color-default;
+      border: 1px solid $color-default;
+      color: $color-disabled;
+    }
+  }
 }
 
 .button--remove-matriculation-row,
@@ -1836,6 +1873,19 @@
     margin: 0;
     padding: 5px;
     width: 2.25rem;
+  }
+
+  &.disabled {
+    background: transparent;
+
+    .icon-trash {
+      color: $color-disabled;
+    }
+
+    &:hover {
+      background: transparent;
+      color: $color-disabled;
+    }
   }
 }
 
