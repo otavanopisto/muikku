@@ -33,6 +33,7 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.hops.HopsController;
@@ -653,15 +654,20 @@ public class HopsRestService {
     User student = userSchoolDataController.findUser(schoolDataIdentifier);
     UserEntity studentEntity = userEntityController.findUserEntityByUser(student);
     User counselor;
-    schoolDataBridgeSessionController.startSystemSession();
     List<String> counselorList = new ArrayList<>();
-
+    String educationalLevel = null;
+    
+    schoolDataBridgeSessionController.startSystemSession();
     try {
       List<UserEntity> counselorEntities = hopsController.getGuidanceCouncelors(schoolDataIdentifier);
       for (UserEntity counselorEntity : counselorEntities) {
         counselor = userSchoolDataController.findUser(counselorEntity.defaultSchoolDataIdentifier());
         counselorList.add(counselor.getDisplayName());
       }
+      
+      // Get student's educational level from pyramus
+      educationalLevel = userSchoolDataController.findStudentEducationalLevel(sessionController.getLoggedUserEntity().getDefaultSchoolDataSource(), studentEntity.getId());
+
     }
     finally {
       schoolDataBridgeSessionController.endSystemSession();
@@ -671,6 +677,7 @@ public class HopsRestService {
         studentEntity.getId(),
         student.getFirstName(),
         student.getLastName(),
+        educationalLevel,
         counselorList
     )).build(); 
   }
@@ -679,11 +686,13 @@ public class HopsRestService {
       Long studentIdentifier,
       String firstName,
       String lastName,
+      String educationalLevel,
       List<String> counselorList) {
     return new fi.otavanopisto.muikku.plugins.hops.rest.StudentInformationRestModel(
         studentIdentifier,
         firstName, 
         lastName,
+        educationalLevel,
         counselorList);
   }
   

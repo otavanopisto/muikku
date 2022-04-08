@@ -8,12 +8,15 @@ public class StudentInformationRestModel {
       Long id,
       String firstName,
       String lastName,
+      String educationalLevel,
       List<String> counselorList) {
     super();
     this.id = id;
     this.firstName = firstName;
     this.lastName = lastName;
+    this.setEducationalLevel(educationalLevel);
     this.counselorList = counselorList;
+    
   }
 
   public Long getId() {
@@ -40,6 +43,14 @@ public class StudentInformationRestModel {
     this.lastName = lastName;
   }
 
+  public String getEducationalLevel() {
+    return educationalLevel;
+  }
+
+  public void setEducationalLevel(String educationalLevel) {
+    this.educationalLevel = educationalLevel;
+  }
+
   public List<String> getCounselorList() {
     return counselorList;
   }
@@ -51,5 +62,6 @@ public class StudentInformationRestModel {
   private Long id;
   private String firstName;
   private String lastName;
+  private String educationalLevel;
   private List<String> counselorList;
 }
