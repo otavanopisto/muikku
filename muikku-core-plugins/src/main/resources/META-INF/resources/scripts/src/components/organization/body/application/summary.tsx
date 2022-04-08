@@ -148,7 +148,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
 }
 
 /**
- * @param state
+ * @param state aplication state
  */
 function mapStateToProps(state: StateType) {
   return {

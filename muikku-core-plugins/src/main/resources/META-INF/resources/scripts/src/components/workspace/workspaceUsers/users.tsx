@@ -198,7 +198,7 @@ class WorkspaceUsers extends React.Component<
 
   /**
    * setStudentBeingToggledStatus
-   * @param student
+   * @param student student object
    */
   setStudentBeingToggledStatus(
     student: ShortWorkspaceUserWithActiveStatusType

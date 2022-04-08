@@ -9,19 +9,11 @@ interface SubPanelProps {
 }
 
 /**
- * SubPanelState
- */
-interface SubPanelState {}
-
-/**
  * ApplicationSubPanel
- *
- * @param props properties
+ * @param props component props
  * @returns JSX.Element
- *
  * Has child components:
  * ApplicationSubpanel.Header, ApplicationSubpanel.Body
- *
  */
 const ApplicationSubPanel: React.FC<SubPanelProps> & {
   Header?: React.FC<{ modifier?: string }>;
@@ -45,6 +37,8 @@ const ApplicationSubPanel: React.FC<SubPanelProps> & {
 
 /**
  * ApplicationSubPanelHeader
+ * @param props component props
+ * @returns JSX.Element
  */
 const ApplicationSubPanelHeader: React.FC<{ modifier?: string }> = (props) => (
   <div
@@ -63,34 +57,54 @@ interface SubPanelViewHeaderProps {
   title: string;
   titleDetail?: string;
   modifier?: string;
-  aside?: string | JSX.Element;
 }
 
 /**
  * ApplicationSubPanelViewHeader
- * @param props
+ * @param props SubPanelViewHeaderProps
  * @returns JSX.Element
  */
+
+// guider-profile-student-name
+//-guider-profile-student-email
+
 export const ApplicationSubPanelViewHeader: React.FC<
   SubPanelViewHeaderProps
 > = (props) => (
   <>
     <div className="application-sub-panel__header-main-container">
-      <h2 className="application-sub-panel__header-main application-sub-panel__header-main--guider-profile-student-name">
+      <h2
+        className={`application-sub-panel__header-main ${
+          props.modifier
+            ? `application-sub-panel__header-main--${props.modifier}`
+            : ""
+        } `}
+      >
         {props.title}
       </h2>
-      <div className="application-sub-panel__header-main application-sub-panel__header-main--guider-profile-student-email">
-        {props.titleDetail}
+      {props.titleDetail ? (
+        <div
+          className={`application-sub-panel__header-main-detail ${
+            props.modifier
+              ? `application-sub-panel__header-main-detail--${props.modifier}`
+              : ""
+          }`}
+        >
+          {props.titleDetail}
+        </div>
+      ) : null}
+    </div>
+    {props.children ? (
+      <div className="application-sub-panel__header-aside-container">
+        {props.children}
       </div>
-    </div>
-    <div className="application-sub-panel__header-aside-container">
-      {props.children}
-    </div>
+    ) : null}
   </>
 );
 
 /**
  * ApplicationSubpanelBody
+ * @param props comopnent props
  */
 const ApplicationSubPanelBody: React.FC<{ modifier?: string }> = (props) => (
   <div
