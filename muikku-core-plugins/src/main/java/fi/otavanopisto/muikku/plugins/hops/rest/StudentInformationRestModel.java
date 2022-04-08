@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.hops.rest;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 public class StudentInformationRestModel {
@@ -9,12 +10,14 @@ public class StudentInformationRestModel {
       String firstName,
       String lastName,
       String educationalLevel,
+      OffsetDateTime studyTimeEnd,
       List<String> counselorList) {
     super();
     this.id = id;
     this.firstName = firstName;
     this.lastName = lastName;
-    this.setEducationalLevel(educationalLevel);
+    this.educationalLevel=educationalLevel;
+    this.studyTimeEnd = studyTimeEnd;
     this.counselorList = counselorList;
     
   }
@@ -51,6 +54,14 @@ public class StudentInformationRestModel {
     this.educationalLevel = educationalLevel;
   }
 
+  public OffsetDateTime getStudyTimeEnd() {
+    return studyTimeEnd;
+  }
+
+  public void setStudyTimeEnd(OffsetDateTime studyTimeEnd) {
+    this.studyTimeEnd = studyTimeEnd;
+  }
+
   public List<String> getCounselorList() {
     return counselorList;
   }
@@ -63,5 +74,6 @@ public class StudentInformationRestModel {
   private String firstName;
   private String lastName;
   private String educationalLevel;
+  private OffsetDateTime studyTimeEnd;
   private List<String> counselorList;
 }
