@@ -320,6 +320,8 @@ public interface UserSchoolDataBridge {
       SchoolDataIdentifier studentIdentifier,
       String educationTypeCode,
       String educationSubtypeCode);
+  
+  public String findStudentEducationalLevel(Long studentEntityId);
 
   public boolean isActiveUser(User user);
 

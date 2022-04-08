@@ -1212,6 +1212,11 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     return new PyramusStudentCourseStats(courseStats.getNumberCompletedCourses(), courseStats.getNumberCreditPoints());
   }
   
+  @Override
+  public String findStudentEducationalLevel(Long studentId) {
+    return pyramusClient.get(String.format("/students/students/%d/educationalLevel", studentId), String.class); 
+  }
+  
   public boolean isActiveUser(User user) {
     // Student with set study end date has ended studies
     if (user.getStudyEndDate() != null) {
