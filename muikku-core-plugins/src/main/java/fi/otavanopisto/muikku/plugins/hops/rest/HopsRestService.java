@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.plugins.hops.rest;
 
 import java.io.IOException;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -678,6 +679,7 @@ public class HopsRestService {
         student.getFirstName(),
         student.getLastName(),
         educationalLevel,
+        student.getStudyEndDate(),
         counselorList
     )).build(); 
   }
@@ -687,12 +689,14 @@ public class HopsRestService {
       String firstName,
       String lastName,
       String educationalLevel,
+      OffsetDateTime studyEndDate,
       List<String> counselorList) {
     return new fi.otavanopisto.muikku.plugins.hops.rest.StudentInformationRestModel(
         studentIdentifier,
         firstName, 
         lastName,
         educationalLevel,
+        studyEndDate,
         counselorList);
   }
   
