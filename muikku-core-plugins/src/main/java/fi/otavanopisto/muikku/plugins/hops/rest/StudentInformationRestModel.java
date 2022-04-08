@@ -10,14 +10,14 @@ public class StudentInformationRestModel {
       String firstName,
       String lastName,
       String educationalLevel,
-      OffsetDateTime studyEndDate,
+      OffsetDateTime studyTimeEnd,
       List<String> counselorList) {
     super();
     this.id = id;
     this.firstName = firstName;
     this.lastName = lastName;
     this.educationalLevel=educationalLevel;
-    this.studyEndDate = studyEndDate;
+    this.studyTimeEnd = studyTimeEnd;
     this.counselorList = counselorList;
     
   }
@@ -54,12 +54,12 @@ public class StudentInformationRestModel {
     this.educationalLevel = educationalLevel;
   }
 
-  public OffsetDateTime getStudyEndDate() {
-    return studyEndDate;
+  public OffsetDateTime getStudyTimeEnd() {
+    return studyTimeEnd;
   }
 
-  public void setStudyEndDate(OffsetDateTime studyEndDate) {
-    this.studyEndDate = studyEndDate;
+  public void setStudyTimeEnd(OffsetDateTime studyTimeEnd) {
+    this.studyTimeEnd = studyTimeEnd;
   }
 
   public List<String> getCounselorList() {
@@ -74,6 +74,6 @@ public class StudentInformationRestModel {
   private String firstName;
   private String lastName;
   private String educationalLevel;
-  private OffsetDateTime studyEndDate;
+  private OffsetDateTime studyTimeEnd;
   private List<String> counselorList;
 }

@@ -689,14 +689,14 @@ public class HopsRestService {
       String firstName,
       String lastName,
       String educationalLevel,
-      OffsetDateTime studyEndDate,
+      OffsetDateTime studyTimeEnd,
       List<String> counselorList) {
     return new fi.otavanopisto.muikku.plugins.hops.rest.StudentInformationRestModel(
         studentIdentifier,
         firstName, 
         lastName,
         educationalLevel,
-        studyEndDate,
+        studyTimeEnd,
         counselorList);
   }
   
