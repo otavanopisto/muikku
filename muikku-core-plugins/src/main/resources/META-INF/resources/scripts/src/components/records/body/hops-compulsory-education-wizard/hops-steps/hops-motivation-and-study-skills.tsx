@@ -99,8 +99,11 @@ class HopsMotivationAndStudySkills extends React.Component<
 
           <div className="hops-container__row">
             <div className="hops-container__table-container">
-              <HopsInputTable>
+              <HopsInputTable scaleStart={1} scaleInterval={1} scaleLength={5}>
                 <InputRow
+                  scaleStart={1}
+                  scaleInterval={1}
+                  scaleLength={5}
                   label="Oppimateriaalin lukeminen"
                   selectedValue={wayToLearn.byReadingMaterials}
                   groupName="byReadingMaterials"
@@ -109,6 +112,9 @@ class HopsMotivationAndStudySkills extends React.Component<
                 />
                 <EmptyRow colSpan={6} modifiers={["empty"]} />
                 <InputRow
+                  scaleStart={1}
+                  scaleInterval={1}
+                  scaleLength={5}
                   label="Muistiinpanojen tekeminen (esim. miellekartat)"
                   selectedValue={wayToLearn.byTakingNotes}
                   groupName="byTakingNotes"
@@ -117,6 +123,9 @@ class HopsMotivationAndStudySkills extends React.Component<
                 />
                 <EmptyRow colSpan={6} modifiers={["empty"]} />
                 <InputRow
+                  scaleStart={1}
+                  scaleInterval={1}
+                  scaleLength={5}
                   label="Tehtävien tekeminen"
                   selectedValue={wayToLearn.byDoingExcercises}
                   groupName="byDoingExcercises"
@@ -125,6 +134,9 @@ class HopsMotivationAndStudySkills extends React.Component<
                 />
                 <EmptyRow colSpan={6} modifiers={["empty"]} />
                 <InputRow
+                  scaleStart={1}
+                  scaleInterval={1}
+                  scaleLength={5}
                   label="Asian ulkoa opetteleminen"
                   selectedValue={wayToLearn.byMemorizing}
                   groupName="byMemorizing"
@@ -133,6 +145,9 @@ class HopsMotivationAndStudySkills extends React.Component<
                 />
                 <EmptyRow colSpan={6} modifiers={["empty"]} />
                 <InputRow
+                  scaleStart={1}
+                  scaleInterval={1}
+                  scaleLength={5}
                   label="Videoiden katsominen"
                   selectedValue={wayToLearn.byWatchingVideos}
                   groupName="byWatchingVideos"
@@ -141,6 +156,9 @@ class HopsMotivationAndStudySkills extends React.Component<
                 />
                 <EmptyRow colSpan={6} modifiers={["empty"]} />
                 <InputRow
+                  scaleStart={1}
+                  scaleInterval={1}
+                  scaleLength={5}
                   label="Opetuksen kuunteleminen"
                   selectedValue={wayToLearn.byListeningTeaching}
                   groupName="byListeningTeaching"
@@ -149,6 +167,9 @@ class HopsMotivationAndStudySkills extends React.Component<
                 />
                 <EmptyRow colSpan={6} modifiers={["empty"]} />
                 <InputRow
+                  scaleStart={1}
+                  scaleInterval={1}
+                  scaleLength={5}
                   label="Asian selittäminen toiselle"
                   selectedValue={wayToLearn.byExplaining}
                   groupName="byExplaining"
@@ -157,6 +178,9 @@ class HopsMotivationAndStudySkills extends React.Component<
                 />
                 <EmptyRow colSpan={6} modifiers={["empty"]} />
                 <InputRow
+                  scaleStart={1}
+                  scaleInterval={1}
+                  scaleLength={5}
                   label="Muiden kanssa keskusteleminen"
                   selectedValue={wayToLearn.byDiscussing}
                   groupName="byDiscussing"
@@ -165,6 +189,9 @@ class HopsMotivationAndStudySkills extends React.Component<
                 />
                 <EmptyRow colSpan={6} modifiers={["empty"]} />
                 <InputRow
+                  scaleStart={1}
+                  scaleInterval={1}
+                  scaleLength={5}
                   label="Toisen tekemisen tai käytännön esimerkkien seuraaminen"
                   selectedValue={wayToLearn.byWatchingOrDoingExamples}
                   groupName="byWatchingOrDoingExamples"
@@ -282,8 +309,11 @@ class HopsMotivationAndStudySkills extends React.Component<
           </legend>
           <div className="hops-container__row">
             <div className="hops-container__table-container">
-              <HopsInputTable>
+              <HopsInputTable scaleStart={1} scaleInterval={1} scaleLength={5}>
                 <InputRow
+                  scaleStart={1}
+                  scaleInterval={1}
+                  scaleLength={5}
                   label="Opiskeleminen on minusta mukavaa"
                   selectedValue={selfImageAsStudent.likeStudying}
                   groupName="likeStudying"
@@ -294,6 +324,9 @@ class HopsMotivationAndStudySkills extends React.Component<
                 />
                 <EmptyRow colSpan={6} modifiers={["empty"]} />
                 <InputRow
+                  scaleStart={1}
+                  scaleInterval={1}
+                  scaleLength={5}
                   label="Minulla on tavoitteita opinnoilleni"
                   selectedValue={selfImageAsStudent.haveGoals}
                   groupName="haveGoals"
@@ -304,6 +337,9 @@ class HopsMotivationAndStudySkills extends React.Component<
                 />
                 <EmptyRow colSpan={6} modifiers={["empty"]} />
                 <InputRow
+                  scaleStart={1}
+                  scaleInterval={1}
+                  scaleLength={5}
                   label="Olen valmis tekemään töitä saavuttaakseni tavoitteeni"
                   selectedValue={selfImageAsStudent.readyToAchieveGoals}
                   groupName="readyToAchieveGoals"
@@ -314,6 +350,9 @@ class HopsMotivationAndStudySkills extends React.Component<
                 />
                 <EmptyRow colSpan={6} modifiers={["empty"]} />
                 <InputRow
+                  scaleStart={1}
+                  scaleInterval={1}
+                  scaleLength={5}
                   label="Teen aina aloittamani työt loppuun"
                   selectedValue={selfImageAsStudent.alwaysFinishJobs}
                   groupName="alwaysFinishJobs"
@@ -324,6 +363,9 @@ class HopsMotivationAndStudySkills extends React.Component<
                 />
                 <EmptyRow colSpan={6} modifiers={["empty"]} />
                 <InputRow
+                  scaleStart={1}
+                  scaleInterval={1}
+                  scaleLength={5}
                   label="Teen annetut tehtävät sovitussa aikataulussa"
                   selectedValue={selfImageAsStudent.bePedantic}
                   groupName="bePedantic"
@@ -334,6 +376,9 @@ class HopsMotivationAndStudySkills extends React.Component<
                 />
                 <EmptyRow colSpan={6} modifiers={["empty"]} />
                 <InputRow
+                  scaleStart={1}
+                  scaleInterval={1}
+                  scaleLength={5}
                   label="Ajatukseni ei lähde harhailemaan, kun opiskelen"
                   selectedValue={selfImageAsStudent.studyingConcentration}
                   groupName="studyingConcentration"
@@ -344,6 +389,9 @@ class HopsMotivationAndStudySkills extends React.Component<
                 />
                 <EmptyRow colSpan={6} modifiers={["empty"]} />
                 <InputRow
+                  scaleStart={1}
+                  scaleInterval={1}
+                  scaleLength={5}
                   label="Pystyn työskentelemään, vaikka ympärilläni olisi häiriöitä"
                   selectedValue={selfImageAsStudent.affectedByNoise}
                   groupName="affectedByNoise"
@@ -354,6 +402,9 @@ class HopsMotivationAndStudySkills extends React.Component<
                 />
                 <EmptyRow colSpan={6} modifiers={["empty"]} />
                 <InputRow
+                  scaleStart={1}
+                  scaleInterval={1}
+                  scaleLength={5}
                   label="Pystyn seuraamaan ohjeita ja toimimaan niiden mukaisesti"
                   selectedValue={selfImageAsStudent.canFollowInstructions}
                   groupName="canFollowInstructions"
@@ -364,6 +415,9 @@ class HopsMotivationAndStudySkills extends React.Component<
                 />
                 <EmptyRow colSpan={6} modifiers={["empty"]} />
                 <InputRow
+                  scaleStart={1}
+                  scaleInterval={1}
+                  scaleLength={5}
                   label="Osaan arvioida, missä olen onnistunut ja missä epäonnistunut"
                   selectedValue={selfImageAsStudent.canEvaluateOwnWork}
                   groupName="canEvaluateOwnWork"
@@ -374,6 +428,9 @@ class HopsMotivationAndStudySkills extends React.Component<
                 />
                 <EmptyRow colSpan={6} modifiers={["empty"]} />
                 <InputRow
+                  scaleStart={1}
+                  scaleInterval={1}
+                  scaleLength={5}
                   label="Otan mielelläni vastaan myös korjaavaa palautetta"
                   selectedValue={selfImageAsStudent.canTakeFeedback}
                   groupName="canTakeFeedback"
@@ -384,6 +441,9 @@ class HopsMotivationAndStudySkills extends React.Component<
                 />
                 <EmptyRow colSpan={6} modifiers={["empty"]} />
                 <InputRow
+                  scaleStart={1}
+                  scaleInterval={1}
+                  scaleLength={5}
                   label="Osaan käyttää tietokoneella yleisimpiä sovelluksia kuten internet-selainta ja sähköpostia"
                   selectedValue={
                     selfImageAsStudent.canUseBasicComputerFunctionalities
