@@ -13,6 +13,7 @@ import {
   Tr,
   Th,
 } from "~/components/general/table";
+import Button from "~/components/general/button";
 import { schoolCourseTable } from "~/mock/mock-data";
 import { connect } from "react-redux";
 import { HopsUser } from ".";
@@ -283,8 +284,10 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
             <Dropdown
               openByHover={props.user !== "supervisor"}
               content={
-                <div>
-                  <h4>{course.mandatory ? course.name : `${course.name}*`}</h4>
+                <div className="hops-container__study-tool-dropdown-container">
+                  <div className="hops-container__study-tool-dropdow-title">
+                    {course.mandatory ? course.name : `${course.name}*`}
+                  </div>
                   {course.mandatory ? (
                     <>
                       {showSuggestionList && (
@@ -313,7 +316,6 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
                             courseNumber: course.courseNumber,
                             subject: sSubject.subjectCode,
                           })}
-                          style={{ zIndex: 2 }}
                         >
                           {selectedByStudent
                             ? "Peru valinta"
@@ -377,8 +379,8 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
 
   return (
     <Table modifiers={["course-matrix"]}>
-      <TableHead modifiers={["language-table"]}>
-        <Tr modifiers={["language-table"]}>
+      <TableHead modifiers={["course-matrix"]}>
+        <Tr modifiers={["course-matrix"]}>
           <Th modifiers={["subject"]}>Oppiaine</Th>
           <Th colSpan={currentMaxCourses}>Kurssit</Th>
         </Tr>

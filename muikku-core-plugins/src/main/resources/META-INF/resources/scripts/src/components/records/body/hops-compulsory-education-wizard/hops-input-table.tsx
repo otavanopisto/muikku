@@ -37,7 +37,7 @@ const createArrayOfNumberIntervals = (
 };
 
 /**
- * LanguageGradeTableProps
+ * QuestionGradeTableProps
  */
 interface HopsInputTableProps {
   scaleStart: number;
@@ -54,11 +54,9 @@ export const HopsInputTable: React.FC<HopsInputTableProps> = (props) => {
   const { children, scaleStart, scaleInterval, scaleLength } = props;
 
   return (
-    <Table modifiers={["language-table"]}>
-      <TableHead modifiers={["language-table"]}>
-        <Tr modifiers={["language-table"]}>
-          <Th modifiers={["centered", "language"]}>Kysymys</Th>
-
+    <Table modifiers={["question-table"]}>
+      <TableHead modifiers={["question-table"]}>
+        <Tr modifiers={["question-table"]}>
           {createArrayOfNumberIntervals(
             scaleStart,
             scaleInterval,
@@ -76,7 +74,7 @@ export const HopsInputTable: React.FC<HopsInputTableProps> = (props) => {
 };
 
 /**
- * LanguageGradeRowProps
+ * QuestionGradeRowProps
  */
 interface InputRowProps {
   label: string;
@@ -86,6 +84,7 @@ interface InputRowProps {
   scaleStart: number;
   scaleInterval: number;
   scaleLength: number;
+  labelOnSeparateRow: boolean;
   onInputGroupChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -102,12 +101,44 @@ export const InputRow: React.FC<InputRowProps> = (props) => {
     scaleStart,
     scaleInterval,
     scaleLength,
+    labelOnSeparateRow,
     onInputGroupChange,
   } = props;
 
-  return (
-    <Tr modifiers={["language-table"]}>
-      <Td modifiers={["centered", "language"]}>
+  return labelOnSeparateRow ? (
+    <>
+      <Tr modifiers={["question-table"]}>
+        <Td
+          modifiers={["centered", "question", "merged"]}
+          colSpan={scaleLength}
+        >
+          <span className="table__alignment-helper">{label}</span>
+        </Td>
+      </Tr>
+      <Tr modifiers={["question-table"]}>
+        {createArrayOfNumberIntervals(
+          scaleStart,
+          scaleInterval,
+          scaleLength
+        ).map((v, i: number) => (
+          <Td key={i} modifiers={["centered"]}>
+            <span className="table__alignment-helper">
+              <input
+                name={groupName}
+                checked={selectedValue === v}
+                value={v}
+                onChange={onInputGroupChange}
+                type="radio"
+                className="hops__input hops__input--inside-table"
+              ></input>
+            </span>
+          </Td>
+        ))}
+      </Tr>
+    </>
+  ) : (
+    <Tr modifiers={["question-table"]}>
+      <Td modifiers={["centered", "question"]}>
         <span className="table__alignment-helper">{label}</span>
       </Td>
 
