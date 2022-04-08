@@ -161,9 +161,9 @@ const HopsSuggestionList = (props: HopsSuggestionListProps) => {
         );
       })
     ) : (
-      <div style={{ display: "flex", flexFlow: "column", margin: "5px 0px" }}>
-        <div style={{ display: "flex", flexFlow: "row" }}>
-          <h6> Ei kursseja. Tarkista kurssitarjonta!</h6>
+      <div className="hops-container__study-tool-dropdow-subsection">
+        <div className="hops-container__study-tool-dropdow-title">
+          Ei kursseja. Tarkista kurssitarjonta!
         </div>
       </div>
     );

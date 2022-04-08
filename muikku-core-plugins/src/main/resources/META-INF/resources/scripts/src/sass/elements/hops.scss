@@ -274,6 +274,29 @@
   width: 100%;
 }
 
+.hops-container__table-container--descriptions {
+  align-items: center;
+  background: $color-default-lighter-generic-background;
+  border-radius: 5px;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+  margin: 5px;
+  padding: 5px;
+}
+
+.hops-container__table-description-item {
+  align-items: center;
+  display: flex;
+  flex-basis: auto;
+  flex-flow: row nowrap;
+  flex-grow: 0;
+  flex-shrink: 0;
+  font-size: 0.8135rem;
+  justify-content: flex-start;
+  margin: 5px 10px;
+}
+
 // HOPS form related styles.
 // Naming convention is wrong here and will be dealt in the future as matriculation form needs this refactoring also
 .hops__form-element-container {
