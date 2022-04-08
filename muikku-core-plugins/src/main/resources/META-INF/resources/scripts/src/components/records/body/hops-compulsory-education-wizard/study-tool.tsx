@@ -1,7 +1,6 @@
 import * as React from "react";
 import { HopsPlanningStudies, SchoolSubject } from "../../../../@types/shared";
 import { TextField } from "./text-field";
-import Dropdown from "../../../general/dropdown";
 import { HopsUser, NEEDED_STUDIES_IN_TOTAL } from ".";
 import CourseList from "./hops-course-list";
 import { schoolCourseTable } from "../../../../mock/mock-data";
@@ -56,7 +55,6 @@ interface StudyToolProps {
    * some of functionalities changes based on that
    */
   superVisorModifies: boolean;
-  studies: HopsPlanningStudies;
   studyTimeEnd: string | null;
   websocketState: WebsocketStateType;
   displayNotification: DisplayNotificationTriggerType;
@@ -761,6 +759,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
           ) : (
             <div className="hops-container__table-container">
               <CourseTable
+                useCase="hops-planing"
                 disabled={props.disabled}
                 studentId={props.studentId}
                 user={props.user}

@@ -309,6 +309,8 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
                   subjectCode={sSubject.subjectCode}
                   updateSuggestion={props.updateSuggestion}
                   loadData={suggestionsOpen}
+                  canSuggestForNext={true}
+                  canSuggestForOptional={true}
                 />
               </AnimateHeight>
             </ListItem>
@@ -363,6 +365,8 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
                   subjectCode={sSubject.subjectCode}
                   updateSuggestion={props.updateSuggestion}
                   loadData={suggestionsOpen}
+                  canSuggestForNext={true}
+                  canSuggestForOptional={true}
                 />
               </AnimateHeight>
             </ListItem>

@@ -38,6 +38,7 @@ import {
   UpdateCurrentStudentHopsPhaseTriggerType,
   updateCurrentStudentHopsPhase,
 } from "~/actions/main-function/guider";
+import StudyMatrix from "./study-matrix";
 
 /**
  * StateOfStudiesProps
@@ -370,7 +371,9 @@ class StateOfStudies extends React.Component<
               superVisorModifies={false}
               studyTimeEnd={this.props.guider.currentStudent.basic.studyTimeEnd}
             >
-              <Button buttonModifiers={["guider-hops"]}>Opintosuunnitelma</Button>
+              <Button buttonModifiers={["guider-hops"]}>
+                Opintosuunnitelma
+              </Button>
             </HopsCompulsoryEducationWizardDialog>
             <HopsCompulsoryEducationWizardDialog
               user="supervisor"
@@ -378,10 +381,13 @@ class StateOfStudies extends React.Component<
               superVisorModifies
               studyTimeEnd={this.props.guider.currentStudent.basic.studyTimeEnd}
             >
-              <Button buttonModifiers={["guider-hops"]}>Opintosuunnitelma (muokkaus)</Button>
+              <Button buttonModifiers={["guider-hops"]}>
+                Opintosuunnitelma (muokkaus)
+              </Button>
             </HopsCompulsoryEducationWizardDialog>
 
-            <select className="form-element__select"
+            <select
+              className="form-element__select"
               value={this.props.guider.currentStudent.hopsPhase}
               onChange={this.handleHopsPhaseChange}
             >
@@ -485,6 +491,12 @@ class StateOfStudies extends React.Component<
           {this.props.guider.currentState === "LOADING" ? (
             <div className="application-sub-panel loader-empty" />
           ) : null}
+        </div>
+        <div
+          className="application-sub-panel application-sub-panel--student-data-container"
+          style={{ flexDirection: "column" }}
+        >
+          <StudyMatrix studentId={this.props.guider.currentStudent.basic.id} />
         </div>
       </>
     );

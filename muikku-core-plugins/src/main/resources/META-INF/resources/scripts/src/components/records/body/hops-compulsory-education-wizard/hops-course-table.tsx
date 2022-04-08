@@ -26,8 +26,18 @@ import HopsSuggestionList from "./hops-suggested-list";
  * CourseTableProps
  */
 interface HopsCourseTableProps extends Partial<StudentActivityByStatus> {
+  useCase: "study-matrix" | "hops-planing";
+  /**
+   * user
+   */
   user: HopsUser;
+  /**
+   * studentId
+   */
   studentId: string;
+  /**
+   * disabled
+   */
   disabled: boolean;
   /**
    * Boolean indicating that supervisor can modify values
@@ -45,9 +55,16 @@ interface HopsCourseTableProps extends Partial<StudentActivityByStatus> {
    * List of student choices
    */
   studentChoiceList?: StudentCourseChoice[];
+
   updateSuggestion: (params: UpdateSuggestionParams) => void;
   updateStudentChoice: (params: UpdateStudentChoicesParams) => void;
 }
+
+const defaultProps = {
+  canSuggestNext: true,
+  canSuggestAsOptional: true,
+  canChooseToBePartOfHops: true,
+};
 
 /**
  * CourseTable
@@ -56,6 +73,8 @@ interface HopsCourseTableProps extends Partial<StudentActivityByStatus> {
  * @returns JSX.Element
  */
 const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
+  props = { ...defaultProps, ...props };
+
   /**
    * handleToggleChoiceClick
    * @param choiceParams choiceParams
@@ -234,6 +253,19 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
           modifiers.push("INPROGRESS");
         }
 
+        /**
+         * Button is shown only if modifying user is supervisor
+         */
+        const showAddToHopsButton =
+          props.user === "supervisor" && props.superVisorModifies;
+
+        /**
+         * Suggestion list is shown only if not disabled, for supervisor only
+         * and there can be made selections
+         */
+        const showSuggestionList =
+          !props.disabled && props.user === "supervisor" && canBeSelected;
+
         return (
           <Td
             key={course.id}
@@ -249,28 +281,32 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
             }
           >
             <Dropdown
-              openByHover={props.user !== "supervisor" ? true : false}
+              openByHover={props.user !== "supervisor"}
               content={
                 <div>
                   <h4>{course.mandatory ? course.name : `${course.name}*`}</h4>
                   {course.mandatory ? (
                     <>
-                      {!props.disabled &&
-                      props.user === "supervisor" &&
-                      canBeSelected ? (
+                      {showSuggestionList && (
                         <HopsSuggestionList
                           studentId={props.studentId}
                           suggestedActivityCourses={courseSuggestions}
                           subjectCode={sSubject.subjectCode}
                           course={course}
                           updateSuggestion={props.updateSuggestion}
+                          canSuggestForNext={
+                            props.useCase === "hops-planing" ||
+                            props.useCase === "study-matrix"
+                          }
+                          canSuggestForOptional={
+                            props.useCase === "hops-planing"
+                          }
                         />
-                      ) : null}
+                      )}
                     </>
                   ) : (
                     <>
-                      {props.user === "supervisor" &&
-                      props.superVisorModifies ? (
+                      {showAddToHopsButton && (
                         <button
                           onClick={handleToggleChoiceClick({
                             studentId: props.studentId,
@@ -283,18 +319,24 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
                             ? "Peru valinta"
                             : "Valitse osaksi hopsia"}
                         </button>
-                      ) : undefined}
-                      {!props.disabled &&
-                      props.user === "supervisor" &&
-                      canBeSelected ? (
+                      )}
+
+                      {showSuggestionList && (
                         <HopsSuggestionList
                           studentId={props.studentId}
                           suggestedActivityCourses={courseSuggestions}
                           subjectCode={sSubject.subjectCode}
                           course={course}
                           updateSuggestion={props.updateSuggestion}
+                          canSuggestForNext={
+                            props.useCase === "hops-planing" ||
+                            props.useCase === "study-matrix"
+                          }
+                          canSuggestForOptional={
+                            props.useCase === "hops-planing"
+                          }
                         />
-                      ) : null}
+                      )}
                     </>
                   )}
                 </div>

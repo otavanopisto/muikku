@@ -119,9 +119,9 @@ class HopsStudiesPlanning extends React.Component<
                 user={this.props.user}
                 studentId={this.props.studentId}
                 disabled={this.props.disabled}
-                studies={this.props.studies}
                 studyTimeEnd={this.props.studyTimeEnd}
                 superVisorModifies={this.props.superVisorModifies}
+                showIndicators={false}
               />
             </div>
           )}

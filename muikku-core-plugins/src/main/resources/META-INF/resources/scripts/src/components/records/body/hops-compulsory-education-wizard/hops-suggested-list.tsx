@@ -23,6 +23,8 @@ interface HopsSuggestionListProps {
   studentId: string;
   displayNotification: DisplayNotificationTriggerType;
   loadData?: boolean;
+  canSuggestForNext: boolean;
+  canSuggestForOptional: boolean;
   onLoad?: () => void;
   updateSuggestion: (params: UpdateSuggestionParams) => void;
 }
@@ -131,19 +133,26 @@ const HopsSuggestionList = (props: HopsSuggestionListProps) => {
                   }}
                 >
                   <p style={{ fontSize: "1rem" }}>Ehdota:</p>
-                  <button
-                    style={{ margin: "5px 5px", cursor: "pointer", zIndex: 40 }}
-                    onClick={handleSuggestionClick(
-                      "NEXT",
-                      suggestionNextActionType,
-                      suggestion.id
-                    )}
-                  >
-                    {suggestionNextActionType === "remove"
-                      ? "Ehdotettu"
-                      : "Seuraavaksi?"}
-                  </button>
-                  {!props.course.mandatory ? (
+                  {props.canSuggestForNext && (
+                    <button
+                      style={{
+                        margin: "5px 5px",
+                        cursor: "pointer",
+                        zIndex: 40,
+                      }}
+                      onClick={handleSuggestionClick(
+                        "NEXT",
+                        suggestionNextActionType,
+                        suggestion.id
+                      )}
+                    >
+                      {suggestionNextActionType === "remove"
+                        ? "Ehdotettu"
+                        : "Seuraavaksi?"}
+                    </button>
+                  )}
+
+                  {props.canSuggestForOptional && !props.course.mandatory && (
                     <button
                       style={{
                         margin: "5px 5px",
@@ -160,7 +169,7 @@ const HopsSuggestionList = (props: HopsSuggestionListProps) => {
                         ? "Ehdotettu"
                         : "Valinnaiseksi?"}
                     </button>
-                  ) : null}
+                  )}
                 </div>
               </>
             )}
