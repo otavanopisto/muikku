@@ -166,51 +166,26 @@
 .application-sub-panel__header-main {
   flex-basis: 100%;
   flex-grow: 1;
-  flex-shrink: 1;
-
-  @include breakpoint($breakpoint-desktop) {
-    flex-basis: auto;
-    flex-grow: 1;
-    flex-shrink: 1;
-    font-size: 1.25rem;
-  }
-}
-
-.application-sub-panel__header-main--guider-profile-student-name {
-  flex-shrink: 0;
   font-size: 1.125rem;
   font-weight: 400;
 
   @include breakpoint($breakpoint-desktop) {
-    flex-basis: 0;
+    flex-basis: unset;
     flex-grow: 0;
-    flex-shrink: 1;
+    font-size: 1.25rem;
     margin: 0 10px 0 0;
     white-space: nowrap;
   }
 }
 
 .application-sub-panel__header-main-detail {
-  flex-basis: 100%;
-  flex-grow: 1;
-  flex-shrink: 1;
-
-  @include breakpoint($breakpoint-desktop) {
-    flex-basis: auto;
-    flex-grow: 1;
-    flex-shrink: 1;
-    font-size: 1.25rem;
-  }
-}
-
-.application-sub-panel__header-main-detail--guider-profile-student-email {
   color: $color-default-helper;
+  flex-basis: 100%;
   font-size: 1rem;
-  word-wrap: break-all;
 
   @include breakpoint($breakpoint-desktop) {
     flex-basis: auto;
-    flex-grow: 1;
+    font-size: 1.25rem;
   }
 }
 

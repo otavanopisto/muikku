@@ -57,12 +57,11 @@ interface SubPanelViewHeaderProps {
   title: string;
   titleDetail?: string;
   modifier?: string;
-  aside?: string | JSX.Element;
 }
 
 /**
  * ApplicationSubPanelViewHeader
- * @param props component props
+ * @param props SubPanelViewHeaderProps
  * @returns JSX.Element
  */
 
@@ -83,19 +82,23 @@ export const ApplicationSubPanelViewHeader: React.FC<
       >
         {props.title}
       </h2>
-      <div
-        className={`application-sub-panel__header-main-detail ${
-          props.modifier
-            ? `application-sub-panel__header-main-detail--${props.modifier}`
-            : ""
-        }`}
-      >
-        {props.titleDetail}
+      {props.titleDetail ? (
+        <div
+          className={`application-sub-panel__header-main-detail ${
+            props.modifier
+              ? `application-sub-panel__header-main-detail--${props.modifier}`
+              : ""
+          }`}
+        >
+          {props.titleDetail}
+        </div>
+      ) : null}
+    </div>
+    {props.children ? (
+      <div className="application-sub-panel__header-aside-container">
+        {props.children}
       </div>
-    </div>
-    <div className="application-sub-panel__header-aside-container">
-      {props.children}
-    </div>
+    ) : null}
   </>
 );
 
