@@ -154,28 +154,35 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
         case "history": {
           return (
             <>
-              <ApplicationSubPanel
-                title={i18n.text.get("plugin.guider.user.details.workspaces")}
-              >
-                {studentWorkspaces}
+              <ApplicationSubPanel>
+                <ApplicationSubPanel.Header>
+                  {i18n.text.get("plugin.guider.user.details.workspaces")}
+                </ApplicationSubPanel.Header>
+                <ApplicationSubPanel.Body>
+                  {studentWorkspaces}
+                </ApplicationSubPanel.Body>
               </ApplicationSubPanel>
-              <ApplicationSubPanel
-                title={i18n.text.get("plugin.guider.user.details.statistics")}
-              >
-                <MainChart
-                  workspaces={guider.currentStudent.pastWorkspaces}
-                  activityLogs={guider.currentStudent.activityLogs}
-                />
+              <ApplicationSubPanel>
+                <ApplicationSubPanel.Header>
+                  {i18n.text.get("plugin.guider.user.details.statistics")}
+                </ApplicationSubPanel.Header>
+                <ApplicationSubPanel.Body>
+                  <MainChart
+                    workspaces={guider.currentStudent.pastWorkspaces}
+                    activityLogs={guider.currentStudent.activityLogs}
+                  />
+                </ApplicationSubPanel.Body>
               </ApplicationSubPanel>
             </>
           );
         }
         case "library": {
           return (
-            <ApplicationSubPanel
-              title={i18n.text.get("plugin.guider.user.details.files")}
-            >
-              {files}
+            <ApplicationSubPanel>
+              <ApplicationSubPanel.Header>
+                {i18n.text.get("plugin.guider.user.details.files")}
+              </ApplicationSubPanel.Header>
+              <ApplicationSubPanel.Body>{files}</ApplicationSubPanel.Body>
             </ApplicationSubPanel>
           );
         }
@@ -183,24 +190,31 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
     } else {
       return (
         <>
-          <ApplicationSubPanel
-            title={i18n.text.get("plugin.guider.user.details.workspaces")}
-          >
-            {studentWorkspaces}
+          <ApplicationSubPanel>
+            <ApplicationSubPanel.Header>
+              {i18n.text.get("plugin.guider.user.details.workspaces")}
+            </ApplicationSubPanel.Header>
+            <ApplicationSubPanel.Body>
+              {studentWorkspaces}
+            </ApplicationSubPanel.Body>
           </ApplicationSubPanel>
-          <ApplicationSubPanel
-            title={i18n.text.get("plugin.guider.user.details.statistics")}
-          >
-            <MainChart
-              workspaces={guider.currentStudent.pastWorkspaces}
-              activityLogs={guider.currentStudent.activityLogs}
-            />
+          <ApplicationSubPanel>
+            <ApplicationSubPanel.Header>
+              {i18n.text.get("plugin.guider.user.details.statistics")}
+            </ApplicationSubPanel.Header>
+            <ApplicationSubPanel.Body>
+              <MainChart
+                workspaces={guider.currentStudent.pastWorkspaces}
+                activityLogs={guider.currentStudent.activityLogs}
+              />
+            </ApplicationSubPanel.Body>
           </ApplicationSubPanel>
 
-          <ApplicationSubPanel
-            title={i18n.text.get("plugin.guider.user.details.files")}
-          >
-            {files}
+          <ApplicationSubPanel>
+            <ApplicationSubPanel.Header>
+              {i18n.text.get("plugin.guider.user.details.files")}
+            </ApplicationSubPanel.Header>
+            <ApplicationSubPanel.Body>{files}</ApplicationSubPanel.Body>
           </ApplicationSubPanel>
         </>
       );

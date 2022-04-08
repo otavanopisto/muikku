@@ -106,62 +106,63 @@ export default class UserPanel extends React.Component<
   render() {
     const results = this.props.users.results as UsersListType;
     return (
-      <ApplicationSubPanel
-        modifier="organization-users"
-        bodyModifier="organization-users"
-        title={this.props.i18n.text.get(this.props.title)}
-      >
-        {this.props.users.results.length > 0 ? (
-          <ApplicationList>
-            {this.props.users &&
-              results.map((user) => {
-                const data = {
-                  firstName: user.firstName,
-                  lastName: user.lastName,
-                  email: user.email,
-                  id: user.id,
-                  role: user.role ? user.role : "STUDENT",
-                  studyProgrammeIdentifier: user.studyProgrammeIdentifier,
-                };
-                const actions =
-                  data.role == "STUDENT" ? (
-                    <div>
-                      <StudentDialog data={data}>
-                        <span className="icon-pencil"></span>
-                      </StudentDialog>
-                    </div>
-                  ) : data.role === "ADMINISTRATOR" ||
-                    data.role === "STUDY_PROGRAMME_LEADER" ? (
-                    <div title={data.role}>
-                      <span className="state-DISABLED icon-pencil"></span>
-                    </div>
-                  ) : (
-                    <div>
-                      <StaffDialog data={data}>
-                        <span className="icon-pencil"></span>
-                      </StaffDialog>
-                    </div>
-                  );
-                return <User key={user.id} user={user} actions={actions} />;
-              })}
-          </ApplicationList>
-        ) : (
-          <div className="empty">
-            <span>{this.props.i18n.text.get(this.props.onEmpty)}</span>
-          </div>
-        )}
+      <ApplicationSubPanel modifier="organization-users">
+        <ApplicationSubPanel.Header modifier="organization-users">
+          {this.props.i18n.text.get(this.props.title)}
+        </ApplicationSubPanel.Header>
+        <ApplicationSubPanel.Body modifier="organization-users">
+          {this.props.users.results.length > 0 ? (
+            <ApplicationList>
+              {this.props.users &&
+                results.map((user) => {
+                  const data = {
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    email: user.email,
+                    id: user.id,
+                    role: user.role ? user.role : "STUDENT",
+                    studyProgrammeIdentifier: user.studyProgrammeIdentifier,
+                  };
+                  const actions =
+                    data.role == "STUDENT" ? (
+                      <div>
+                        <StudentDialog data={data}>
+                          <span className="icon-pencil"></span>
+                        </StudentDialog>
+                      </div>
+                    ) : data.role === "ADMINISTRATOR" ||
+                      data.role === "STUDY_PROGRAMME_LEADER" ? (
+                      <div title={data.role}>
+                        <span className="state-DISABLED icon-pencil"></span>
+                      </div>
+                    ) : (
+                      <div>
+                        <StaffDialog data={data}>
+                          <span className="icon-pencil"></span>
+                        </StaffDialog>
+                      </div>
+                    );
+                  return <User key={user.id} user={user} actions={actions} />;
+                })}
+            </ApplicationList>
+          ) : (
+            <div className="empty">
+              <span>{this.props.i18n.text.get(this.props.onEmpty)}</span>
+            </div>
+          )}
 
-        <PagerV2
-          previousLabel=""
-          nextLabel=""
-          breakLabel="..."
-          initialPage={this.state.currentPage - 1}
-          forcePage={this.state.currentPage - 1}
-          marginPagesDisplayed={1}
-          pageCount={this.state.pages}
-          pageRangeDisplayed={2}
-          onPageChange={this.handlePagerChange}
-        />
+          <PagerV2
+            previousLabel=""
+            nextLabel=""
+            breakLabel="..."
+            initialPage={this.state.currentPage - 1}
+            forcePage={this.state.currentPage - 1}
+            marginPagesDisplayed={1}
+            pageCount={this.state.pages}
+            pageRangeDisplayed={2}
+            onPageChange={this.handlePagerChange}
+          />
+        </ApplicationSubPanel.Body>
       </ApplicationSubPanel>
     );
   }

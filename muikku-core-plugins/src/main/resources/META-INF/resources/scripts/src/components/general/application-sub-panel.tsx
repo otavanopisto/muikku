@@ -1,5 +1,4 @@
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/application-sub-panel.scss";
 
 /**
@@ -7,20 +6,20 @@ import "~/sass/elements/application-sub-panel.scss";
  */
 interface SubPanelProps {
   modifier?: string;
-  bodyModifier?: string;
-  title: string;
 }
 
 /**
- * SubPanelState
- */
-interface SubPanelState {}
-
-/**
  * ApplicationSubPanel
+ * @param props component props
+ * @returns JSX.Element
+ * Has child components:
+ * ApplicationSubpanel.Header, ApplicationSubpanel.Body
  */
-const ApplicationSubPanel: React.FC<SubPanelProps> = (props) => {
-  const { modifier, bodyModifier, title, children } = props;
+const ApplicationSubPanel: React.FC<SubPanelProps> & {
+  Header?: React.FC<{ modifier?: string }>;
+  Body?: React.FC<{ modifier?: string }>;
+} = (props) => {
+  const { modifier, children } = props;
   /**
    * Component render method
    * @returns JSX.Element
@@ -31,25 +30,92 @@ const ApplicationSubPanel: React.FC<SubPanelProps> = (props) => {
         modifier ? `application-sub-panel--${modifier}` : ""
       }`}
     >
-      <div
-        className={`application-sub-panel__header ${
-          modifier ? `application-sub-panel__header--${modifier}` : ""
-        }`}
-      >
-        {title}
-      </div>
-      <div
-        className={`application-sub-panel__body ${
-          modifier ? `application-sub-panel__body--${modifier}` : ""
-        } ${
-          bodyModifier ? `application-sub-panel__body--${bodyModifier}` : ""
-        }`}
-      >
-        {children}
-      </div>
+      {children}
     </div>
   );
 };
+
+/**
+ * ApplicationSubPanelHeader
+ * @param props component props
+ * @returns JSX.Element
+ */
+const ApplicationSubPanelHeader: React.FC<{ modifier?: string }> = (props) => (
+  <div
+    className={`application-sub-panel__header ${
+      props.modifier ? `application-sub-panel__header--${props.modifier}` : ""
+    }`}
+  >
+    {props.children}
+  </div>
+);
+
+/**
+ * SubPanelViewHeaderProps
+ */
+interface SubPanelViewHeaderProps {
+  title: string;
+  titleDetail?: string;
+  modifier?: string;
+}
+
+/**
+ * ApplicationSubPanelViewHeader
+ * @param props SubPanelViewHeaderProps
+ * @returns JSX.Element
+ */
+
+// guider-profile-student-name
+//-guider-profile-student-email
+
+export const ApplicationSubPanelViewHeader: React.FC<
+  SubPanelViewHeaderProps
+> = (props) => (
+  <>
+    <div className="application-sub-panel__header-main-container">
+      <h2
+        className={`application-sub-panel__header-main ${
+          props.modifier
+            ? `application-sub-panel__header-main--${props.modifier}`
+            : ""
+        } `}
+      >
+        {props.title}
+      </h2>
+      {props.titleDetail ? (
+        <div
+          className={`application-sub-panel__header-main-detail ${
+            props.modifier
+              ? `application-sub-panel__header-main-detail--${props.modifier}`
+              : ""
+          }`}
+        >
+          {props.titleDetail}
+        </div>
+      ) : null}
+    </div>
+    {props.children ? (
+      <div className="application-sub-panel__header-aside-container">
+        {props.children}
+      </div>
+    ) : null}
+  </>
+);
+
+/**
+ * ApplicationSubpanelBody
+ * @param props comopnent props
+ */
+const ApplicationSubPanelBody: React.FC<{ modifier?: string }> = (props) => (
+  <div
+    className={`application-sub-panel__body ${
+      props.modifier ? `application-sub-panel__body--${props.modifier}` : ""
+    }
+    `}
+  >
+    {props.children}
+  </div>
+);
 
 /**
  * SubPanelItemDataProps
@@ -70,9 +136,14 @@ interface SubPanelItemProps {
 /**
  * ApplicationSubPanelItem
  * @param props props
- * @returns JSX.Elemeent
+ * @returns JSX.Element
+ *
+ *
+ * Has child components:
+ *
+ * ApplicationSubPanelItem.Content, ApplicationSubPanelItem.Subitem
  */
-export const ApplicationSubPanelItem: React.FunctionComponent<SubPanelItemProps> & {
+export const ApplicationSubPanelItem: React.FC<SubPanelItemProps> & {
   Content?: React.FunctionComponent<SubPanelItemDataProps>;
   SubItem?: React.FunctionComponent<{ modifier?: string }>;
 } = (props) => (
@@ -107,9 +178,9 @@ export const ApplicationSubPanelItem: React.FunctionComponent<SubPanelItemProps>
  * @param props props
  * @returns JSX.Elemenet
  */
-const ApplicationSubPanelItemData: React.FunctionComponent<
-  SubPanelItemDataProps
-> = (props) => (
+const ApplicationSubPanelItemData: React.FC<SubPanelItemDataProps> = (
+  props
+) => (
   <div
     className={`application-sub-panel__item-data ${
       props.modifier
@@ -135,7 +206,13 @@ const ApplicationSubPanelItemData: React.FunctionComponent<
           : ""
       }`}
     >
-      {props.children}
+      {React.Children.count(props.children) > 1 ? (
+        props.children
+      ) : (
+        <span className="application-sub-panel__single-entry">
+          {props.children}
+        </span>
+      )}
     </div>
   </div>
 );
@@ -143,9 +220,9 @@ const ApplicationSubPanelItemData: React.FunctionComponent<
 /**
  * ApplicationSubPanelSubItem
  * @param props props
- * @returns JSX.Elemenet
+ * @returns JSX.Element
  */
-const ApplicationSubPanelSubItem: React.FunctionComponent<{
+const ApplicationSubPanelSubItem: React.FC<{
   modifier?: string;
 }> = (props) => (
   <div
@@ -159,6 +236,8 @@ const ApplicationSubPanelSubItem: React.FunctionComponent<{
   </div>
 );
 
+ApplicationSubPanel.Header = ApplicationSubPanelHeader;
+ApplicationSubPanel.Body = ApplicationSubPanelBody;
 ApplicationSubPanelItem.Content = ApplicationSubPanelItemData;
 ApplicationSubPanelItem.SubItem = ApplicationSubPanelSubItem;
 export default ApplicationSubPanel;
