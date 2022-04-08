@@ -679,7 +679,7 @@ public class HopsRestService {
         student.getFirstName(),
         student.getLastName(),
         educationalLevel,
-        student.getStudyEndDate(),
+        student.getStudyTimeEnd(),
         counselorList
     )).build(); 
   }
