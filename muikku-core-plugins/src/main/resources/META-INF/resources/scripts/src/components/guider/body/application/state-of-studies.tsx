@@ -381,7 +381,7 @@ class StateOfStudies extends React.Component<
               <Button buttonModifiers={["guider-hops"]}>Opintosuunnitelma (muokkaus)</Button>
             </HopsCompulsoryEducationWizardDialog>
 
-            <select className="form-element__select"
+            <select className="form-element__select form-element__select--guider-hops"
               value={this.props.guider.currentStudent.hopsPhase}
               onChange={this.handleHopsPhaseChange}
             >

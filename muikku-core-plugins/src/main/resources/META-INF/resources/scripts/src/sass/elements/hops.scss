@@ -333,6 +333,7 @@
   display: flex;
   height: 1.5rem;
   justify-content: center;
+  margin: 0 10px 0 0;
   width: 1.5rem;
 
   // Checked element
@@ -396,6 +397,8 @@
 
 // HOPS textfield's disabled style overrides inside tables
 .hops__input--inside-table {
+  margin: 0;
+
   &[disabled] {
     background-color: transparent;
     border-color: transparent;
@@ -524,7 +527,7 @@
   width: 20px;
 }
 
-.hops-container__indicator-item--mandatory{
+.hops-container__indicator-item--mandatory {
   background: $color-mandatory;
 }
 
