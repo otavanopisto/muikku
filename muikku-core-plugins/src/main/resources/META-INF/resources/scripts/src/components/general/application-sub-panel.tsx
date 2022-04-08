@@ -65,15 +65,31 @@ interface SubPanelViewHeaderProps {
  * @param props component props
  * @returns JSX.Element
  */
+
+// guider-profile-student-name
+//-guider-profile-student-email
+
 export const ApplicationSubPanelViewHeader: React.FC<
   SubPanelViewHeaderProps
 > = (props) => (
   <>
     <div className="application-sub-panel__header-main-container">
-      <h2 className="application-sub-panel__header-main application-sub-panel__header-main--guider-profile-student-name">
+      <h2
+        className={`application-sub-panel__header-main ${
+          props.modifier
+            ? `application-sub-panel__header-main--${props.modifier}`
+            : ""
+        } `}
+      >
         {props.title}
       </h2>
-      <div className="application-sub-panel__header-main application-sub-panel__header-main--guider-profile-student-email">
+      <div
+        className={`application-sub-panel__header-main-detail ${
+          props.modifier
+            ? `application-sub-panel__header-main-detail--${props.modifier}`
+            : ""
+        }`}
+      >
         {props.titleDetail}
       </div>
     </div>

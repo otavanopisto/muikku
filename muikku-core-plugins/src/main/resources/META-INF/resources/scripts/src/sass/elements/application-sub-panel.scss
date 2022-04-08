@@ -190,7 +190,20 @@
   }
 }
 
-.application-sub-panel__header-main--guider-profile-student-email {
+.application-sub-panel__header-main-detail {
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: auto;
+    flex-grow: 1;
+    flex-shrink: 1;
+    font-size: 1.25rem;
+  }
+}
+
+.application-sub-panel__header-main-detail--guider-profile-student-email {
   color: $color-default-helper;
   font-size: 1rem;
   word-wrap: break-all;
