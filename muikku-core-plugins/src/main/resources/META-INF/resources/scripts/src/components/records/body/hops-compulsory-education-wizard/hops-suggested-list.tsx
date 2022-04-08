@@ -11,6 +11,7 @@ import {
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 import { AnyActionType } from "~/actions";
+import Button from "~/components/general/button";
 
 /**
  * SuggestionListProps
@@ -69,7 +70,7 @@ const HopsSuggestionList = (props: HopsSuggestionListProps) => {
       actionType: "remove" | "add",
       suggestionId: number
     ) =>
-    (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
       props.updateSuggestion({
         goal: actionType,
         courseNumber: props.course.courseNumber,
@@ -112,27 +113,20 @@ const HopsSuggestionList = (props: HopsSuggestionListProps) => {
         }
 
         return (
-          <div
-            key={suggestion.id}
-            style={{ display: "flex", flexFlow: "column", margin: "5px 0px" }}
-          >
+          <div key={suggestion.id}>
             {isLoading ? (
               <div className="loader-empty" />
             ) : (
               <>
-                <div style={{ display: "flex", flexFlow: "row" }}>
-                  <h6>{suggestion.name}</h6>
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    flexFlow: "row",
-                    alignItems: "center",
-                  }}
-                >
-                  <p style={{ fontSize: "1rem" }}>Ehdota:</p>
-                  <button
-                    style={{ margin: "5px 5px", cursor: "pointer", zIndex: 40 }}
+                <div className="hops-container__study-tool-dropdow-subsection">
+                  <div className="hops-container__study-tool-dropdow-title">
+                    Ehdota:
+                  </div>
+                  <Button
+                    buttonModifiers={[
+                      "guider-hops-studytool",
+                      "guider-hops-studytool-next",
+                    ]}
                     onClick={handleSuggestionClick(
                       "NEXT",
                       suggestionNextActionType,
@@ -142,14 +136,13 @@ const HopsSuggestionList = (props: HopsSuggestionListProps) => {
                     {suggestionNextActionType === "remove"
                       ? "Ehdotettu"
                       : "Seuraavaksi?"}
-                  </button>
+                  </Button>
                   {!props.course.mandatory ? (
-                    <button
-                      style={{
-                        margin: "5px 5px",
-                        cursor: "pointer",
-                        zIndex: 40,
-                      }}
+                    <Button
+                      buttonModifiers={[
+                        "guider-hops-studytool",
+                        "guider-hops-studytool-suggested",
+                      ]}
                       onClick={handleSuggestionClick(
                         "OPTIONAL",
                         suggestionOptionalActionType,
@@ -159,7 +152,7 @@ const HopsSuggestionList = (props: HopsSuggestionListProps) => {
                       {suggestionOptionalActionType === "remove"
                         ? "Ehdotettu"
                         : "Valinnaiseksi?"}
-                    </button>
+                    </Button>
                   ) : null}
                 </div>
               </>

@@ -592,12 +592,26 @@
   padding: 4px 12px;
 }
 
-.button--guider-hops {
+.button--guider-hops,
+.button--guider-hops-studytool {
   background-color: $color-button-primary-background;
   border: 0;
   color: $color-button-primary-text;
   display: inline-flex;
   margin: 5px 10px 5px 0;
+}
+
+.button--guider-hops-studytool {
+  font-size: 0.75rem;
+  padding: 4px 10px;
+}
+
+.button--guider-hops-studytool-suggested {
+  background: $color-suggested;
+}
+
+.button--guider-hops-studytool-next {
+  background: $color-next;
 }
 
 .button-icon {
