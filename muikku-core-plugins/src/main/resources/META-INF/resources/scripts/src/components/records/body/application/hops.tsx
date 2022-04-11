@@ -13,7 +13,7 @@ import { bindActionCreators } from "redux";
 import { HOPSDataType, HOPSType } from "~/reducers/main-function/hops";
 import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
-import CompulsoryEducationHopsWizard from "../hops-compulsory-education-wizard";
+import CompulsoryEducationHopsWizard from "../../../general/hops-compulsory-education-wizard";
 
 /**
  * HopsProps
@@ -103,7 +103,6 @@ class Hops extends React.Component<HopsProps, HopsState> {
         user="student"
         disabled={false}
         superVisorModifies={false}
-        studyTimeEnd={this.props.status.profile.studyTimeEnd}
       />
     );
   };

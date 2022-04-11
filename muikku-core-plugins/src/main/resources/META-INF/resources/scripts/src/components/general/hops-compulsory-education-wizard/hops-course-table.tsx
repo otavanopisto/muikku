@@ -13,15 +13,14 @@ import {
   Tr,
   Th,
 } from "~/components/general/table";
-import Button from "~/components/general/button";
 import { schoolCourseTable } from "~/mock/mock-data";
 import { connect } from "react-redux";
 import { HopsUser } from ".";
 import { StateType } from "~/reducers";
 import Dropdown from "~/components/general/dropdown";
-import { UpdateSuggestionParams } from "./hooks/useStudentActivity";
-import { UpdateStudentChoicesParams } from "./hooks/useStudentChoices";
+import { UpdateSuggestionParams } from "../../../hooks/useStudentActivity";
 import HopsSuggestionList from "./hops-suggested-list";
+import { UpdateStudentChoicesParams } from "~/hooks/useStudentChoices";
 
 /**
  * CourseTableProps
@@ -362,15 +361,7 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
     return (
       <Tr key={sSubject.name} modifiers={rowMods}>
         <Td modifiers={["subject"]}>
-          <div
-            style={{
-              height: "100%",
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
-            {sSubject.name}
-          </div>
+          <div>{sSubject.name}</div>
         </Td>
         {courses}
       </Tr>

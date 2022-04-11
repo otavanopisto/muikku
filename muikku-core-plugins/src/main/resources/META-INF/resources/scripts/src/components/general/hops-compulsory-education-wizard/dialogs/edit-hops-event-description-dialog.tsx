@@ -6,7 +6,7 @@ import "~/sass/elements/form.scss";
 import "~/sass/elements/wizard.scss";
 import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
-import { Textarea } from "~/components/records/body/hops-compulsory-education-wizard/text-area";
+import { Textarea } from "~/components/general/hops-compulsory-education-wizard/text-area";
 
 /**
  * MatriculationExaminationWizardDialogProps

@@ -6,8 +6,8 @@ import {
   displayNotification,
 } from "~/actions/base/notifications";
 import { WebsocketStateType } from "~/reducers/util/websocket";
-import { useStudentAlternativeOptions } from "./hooks/useStudentAlternativeOptions";
 import { AnyActionType } from "~/actions";
+import { useStudentAlternativeOptions } from "~/hooks/useStudentAlternativeOptions";
 
 /**
  * AlternativeStudyOptionsProps

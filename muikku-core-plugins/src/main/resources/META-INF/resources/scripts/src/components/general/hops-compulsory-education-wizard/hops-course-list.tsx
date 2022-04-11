@@ -12,9 +12,9 @@ import {
   ListItem,
   ListItemIndicator,
 } from "~/components/general/list";
-import { UpdateSuggestionParams } from "./hooks/useStudentActivity";
+import { UpdateSuggestionParams } from "../../../hooks/useStudentActivity";
 import { HopsUser } from ".";
-import { UpdateStudentChoicesParams } from "./hooks/useStudentChoices";
+import { UpdateStudentChoicesParams } from "~/hooks/useStudentChoices";
 
 /**
  * CourseListProps

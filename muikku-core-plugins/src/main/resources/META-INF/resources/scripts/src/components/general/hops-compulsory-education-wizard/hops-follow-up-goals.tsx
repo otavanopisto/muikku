@@ -5,7 +5,7 @@ import {
   FollowUp,
   FollowUpStudies,
   FollowUpGoal,
-} from "../../../../@types/shared";
+} from "../../../@types/shared";
 import { useFollowUpGoal } from "./hooks/useFollowUp";
 import { StateType } from "~/reducers";
 import {

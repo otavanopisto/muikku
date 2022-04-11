@@ -5,7 +5,7 @@ import { connect, Dispatch } from "react-redux";
 import { Course, StudentActivityCourse } from "~/@types/shared";
 import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
-import { UpdateSuggestionParams } from "./hooks/useStudentActivity";
+import { UpdateSuggestionParams } from "../../../hooks/useStudentActivity";
 import {
   displayNotification,
   DisplayNotificationTriggerType,

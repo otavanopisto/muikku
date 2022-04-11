@@ -38,7 +38,7 @@ import {
   UpdateCurrentStudentHopsPhaseTriggerType,
   updateCurrentStudentHopsPhase,
 } from "~/actions/main-function/guider";
-import StudyMatrix from "./study-matrix";
+import StudySuggestionMatrix from "./study-suggestion-matrix";
 
 /**
  * StateOfStudiesProps
@@ -360,44 +360,6 @@ class StateOfStudies extends React.Component<
           </div>
         )}
 
-        <div className="application-sub-panel__item">
-          <div className="application-sub-panel__item-title">
-            Opintosuunnitelma
-          </div>
-          <div className="application-sub-panel__item-data form-element">
-            <HopsCompulsoryEducationWizardDialog
-              user="supervisor"
-              disabled
-              superVisorModifies={false}
-              studyTimeEnd={this.props.guider.currentStudent.basic.studyTimeEnd}
-            >
-              <Button buttonModifiers={["guider-hops"]}>
-                Opintosuunnitelma
-              </Button>
-            </HopsCompulsoryEducationWizardDialog>
-            <HopsCompulsoryEducationWizardDialog
-              user="supervisor"
-              disabled={false}
-              superVisorModifies
-              studyTimeEnd={this.props.guider.currentStudent.basic.studyTimeEnd}
-            >
-              <Button buttonModifiers={["guider-hops"]}>
-                Opintosuunnitelma (muokkaus)
-              </Button>
-            </HopsCompulsoryEducationWizardDialog>
-
-            <select
-              className="form-element__select"
-              value={this.props.guider.currentStudent.hopsPhase}
-              onChange={this.handleHopsPhaseChange}
-            >
-              <option value={0}>HOPS - Ei aktivoitu</option>
-              <option value={1}>HOPS - aktiivinen</option>
-              <option value={2}>HOPS - esitäyttö</option>
-              <option value={3}>HOPS - opintojen suunnittelu</option>
-            </select>
-          </div>
-        </div>
         {this.props.guider.currentStudent.notifications &&
           Object.keys(this.props.guider.currentStudent.notifications).map(
             (notification) => {
@@ -461,7 +423,10 @@ class StateOfStudies extends React.Component<
             {studentBasicInfo}
           </div>
 
-          <div className="application-sub-panel application-sub-panel--student-data-secondary">
+          <div
+            className="application-sub-panel application-sub-panel--student-data-secondary"
+            style={{ maxHeight: "450px", overflow: "auto" }}
+          >
             {this.props.guider.currentStudent.basic &&
             IsStudentPartOfProperStudyProgram(
               this.props.guider.currentStudent.basic.studyProgrammeName
@@ -496,7 +461,12 @@ class StateOfStudies extends React.Component<
           className="application-sub-panel application-sub-panel--student-data-container"
           style={{ flexDirection: "column" }}
         >
-          <StudyMatrix studentId={this.props.guider.currentStudent.basic.id} />
+          <div className="application-sub-panel__header">
+            Opintojen edistyminen
+          </div>
+          <StudySuggestionMatrix
+            studentId={this.props.guider.currentStudent.basic.id}
+          />
         </div>
       </>
     );

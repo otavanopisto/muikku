@@ -8,16 +8,16 @@ import {
 } from "~/actions/base/notifications";
 import { i18nType } from "~/reducers/base/i18n";
 import { AnyActionType } from "~/actions";
-import { useStudentActivity } from "~/components/records/body/hops-compulsory-education-wizard/hooks/useStudentActivity";
-import { useStudentChoices } from "~/components/records/body/hops-compulsory-education-wizard/hooks/useStudentChoices";
-import { useStudentAlternativeOptions } from "~/components/records/body/hops-compulsory-education-wizard/hooks/useStudentAlternativeOptions";
-import HopsCourseTable from "~/components/records/body/hops-compulsory-education-wizard/hops-course-table";
-import HopsCourseList from "~/components/records/body/hops-compulsory-education-wizard/hops-course-list";
+import { useStudentActivity } from "~/hooks/useStudentActivity";
+import HopsCourseTable from "~/components/general/hops-compulsory-education-wizard/hops-course-table";
+import HopsCourseList from "~/components/general/hops-compulsory-education-wizard/hops-course-list";
+import { useStudentChoices } from "~/hooks/useStudentChoices";
+import { useStudentAlternativeOptions } from "~/hooks/useStudentAlternativeOptions";
 
 /**
  * StudyToolProps
  */
-interface StudyMatrixProps {
+interface StudySuggestionMatrixProps {
   i18n: i18nType;
   /**
    * Identifier of student
@@ -32,7 +32,7 @@ interface StudyMatrixProps {
  * @param props props
  * @returns JSX.Element
  */
-const StudyMatrix: React.FC<StudyMatrixProps> = (props) => {
+const StudySuggestionMatrix: React.FC<StudySuggestionMatrixProps> = (props) => {
   const { studentActivity, ...studentActivityHandlers } = useStudentActivity(
     props.studentId,
     props.websocketState,
@@ -157,4 +157,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return { displayNotification };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(StudyMatrix);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(StudySuggestionMatrix);

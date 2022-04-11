@@ -71,6 +71,18 @@ class HopsStudentHopsInformation extends React.Component<
               <div className="hops-container__row">
                 <div className="hops__form-element-container">
                   <TextField
+                    label="Koulutusaste:"
+                    type="text"
+                    placeholder="Koulutusaste"
+                    value={this.props.basicInformation.educationalLevel}
+                    disabled
+                    className="hops__input"
+                  />
+                </div>
+              </div>
+              <div className="hops-container__row">
+                <div className="hops__form-element-container">
+                  <TextField
                     label="Ohjaaja:"
                     type="text"
                     placeholder="Ohjaaja"

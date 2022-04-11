@@ -1,14 +1,14 @@
 import * as React from "react";
-import { HopsPlanningStudies, SchoolSubject } from "../../../../@types/shared";
+import { HopsPlanningStudies, SchoolSubject } from "../../../@types/shared";
 import { TextField } from "./text-field";
 import { HopsUser, NEEDED_STUDIES_IN_TOTAL } from ".";
 import CourseList from "./hops-course-list";
-import { schoolCourseTable } from "../../../../mock/mock-data";
+import { schoolCourseTable } from "../../../mock/mock-data";
 import StudyToolCalculationInfoBox from "./study-tool-calculation-info-box";
-import { useStudentActivity } from "./hooks/useStudentActivity";
+import { useStudentActivity } from "../../../hooks/useStudentActivity";
 import { StateType } from "reducers";
 import { connect, Dispatch } from "react-redux";
-import { WebsocketStateType } from "../../../../reducers/util/websocket";
+import { WebsocketStateType } from "../../../reducers/util/websocket";
 import {
   displayNotification,
   DisplayNotificationTriggerType,
@@ -16,14 +16,14 @@ import {
 import { useFollowUpGoal } from "./hooks/useFollowUp";
 import CourseTable from "./hops-course-table";
 import StudyToolOptionalStudiesInfoBox from "./study-tool-optional-studiess-info-box";
-import { useStudentChoices } from "./hooks/useStudentChoices";
 import { useStudentStudyHour } from "./hooks/useStudentStudyHours";
+import { i18nType } from "~/reducers/base/i18n";
+import { AnyActionType } from "~/actions";
+import { useStudentChoices } from "~/hooks/useStudentChoices";
 import {
   AlternativeStudyObject,
   useStudentAlternativeOptions,
-} from "./hooks/useStudentAlternativeOptions";
-import { i18nType } from "~/reducers/base/i18n";
-import { AnyActionType } from "~/actions";
+} from "~/hooks/useStudentAlternativeOptions";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const ProgressBarCircle = require("react-progress-bar.js").Circle;
@@ -33,7 +33,7 @@ const ProgressBarLine = require("react-progress-bar.js").Line;
 /**
  * StudyToolProps
  */
-interface StudyToolProps {
+interface HopsPlanningToolProps {
   i18n: i18nType;
   user: HopsUser;
   /**
@@ -72,7 +72,7 @@ const defaultProps = {
  * @param props props
  * @returns JSX.Element
  */
-const StudyTool: React.FC<StudyToolProps> = (props) => {
+const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
   props = { ...defaultProps, ...props };
 
   const { studentActivity, ...studentActivityHandlers } = useStudentActivity(
@@ -779,7 +779,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
           )}
         </div>
 
-        <div className="hops__form-element-container hops__form-element-container--mobile">
+        {/* <div className="hops__form-element-container hops__form-element-container--mobile">
           {studentActivity.isLoading || studentChoices.isLoading ? (
             <div className="loader-empty" />
           ) : (
@@ -799,7 +799,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
               updateSuggestion={studentActivityHandlers.updateSuggestion}
             />
           )}
-        </div>
+        </div> */}
       </div>
 
       <div className="hops-container__study-tool-indicators">
@@ -904,4 +904,4 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return { displayNotification };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(StudyTool);
+export default connect(mapStateToProps, mapDispatchToProps)(HopsPlanningTool);

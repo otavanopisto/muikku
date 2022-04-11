@@ -18,7 +18,7 @@ export interface UpdateStudentChoicesParams {
 /**
  * UseStudentActivityState
  */
-export interface UseStudentActivityState {
+export interface UseStudentChoiceState {
   isLoading: boolean;
   studentChoices: StudentCourseChoice[];
 }
@@ -41,7 +41,7 @@ export const useStudentChoices = (
   displayNotification: DisplayNotificationTriggerType
 ) => {
   const [studentChoices, setStudentChoices] =
-    React.useState<UseStudentActivityState>({
+    React.useState<UseStudentChoiceState>({
       isLoading: true,
       studentChoices: [],
     });

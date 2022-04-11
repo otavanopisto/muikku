@@ -300,6 +300,8 @@ export interface BasicInformation {
   name: string;
   dateOfIssue?: Date;
   updates?: HopsUpdate[];
+  studyTimeEnd?: string | null;
+  educationalLevel?: string | null;
   counselorList?: string[];
 }
 
@@ -310,6 +312,8 @@ export interface StudentInfo {
   id: number;
   firstName: string;
   lastName: string;
+  studyTimeEnd: string | null;
+  educationalLevel: string | null;
   counselorList?: string[];
 }
 

@@ -1,5 +1,5 @@
 import * as React from "react";
-import StudyTool from "../study-tool";
+import HopsPlanningTool from "../hops-planning-tool";
 import FollowUpGoals from "../hops-follow-up-goals";
 import { HopsBaseProps, HopsUser } from "..";
 import AlternativeStudyOptions from "../hops-alternative-study-options";
@@ -115,7 +115,7 @@ class HopsStudiesPlanning extends React.Component<
                 valmistuminen ei ole mahdollista ajassa, jonka voit käyttää
                 opiskelemiseen, kannattaa asiaa pohtia uudelleen.
               </div>
-              <StudyTool
+              <HopsPlanningTool
                 user={this.props.user}
                 studentId={this.props.studentId}
                 disabled={this.props.disabled}

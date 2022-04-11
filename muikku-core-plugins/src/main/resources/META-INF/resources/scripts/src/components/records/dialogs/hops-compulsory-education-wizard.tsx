@@ -1,7 +1,7 @@
 import * as React from "react";
 import Dialog from "~/components/general/dialog";
-import { HopsUser } from "../body/hops-compulsory-education-wizard";
-import CompulsoryEducationHopsWizard from "../body/hops-compulsory-education-wizard";
+import { HopsUser } from "../../general/hops-compulsory-education-wizard";
+import CompulsoryEducationHopsWizard from "../../general/hops-compulsory-education-wizard";
 
 /**
  * HopsCompulsoruEducationWizardProps
@@ -51,7 +51,6 @@ class HopsCompulsoryEducationWizardDialog extends React.Component<
           user={this.props.user}
           disabled={this.props.disabled}
           superVisorModifies={this.props.superVisorModifies}
-          studyTimeEnd={this.props.studyTimeEnd}
         />
       </div>
     );
