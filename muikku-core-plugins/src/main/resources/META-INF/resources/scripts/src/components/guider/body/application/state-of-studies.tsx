@@ -9,7 +9,7 @@ import "~/sass/elements/application-list.scss";
 import "~/sass/elements/application-sub-panel.scss";
 import "~/sass/elements/avatar.scss";
 import "~/sass/elements/workspace-activity.scss";
-import { getUserImageUrl, getName } from "~/util/modifiers";
+import { getName } from "~/util/modifiers";
 import Workspaces from "./workspaces";
 import Ceepos from "./state-of-studies/ceepos";
 import CeeposButton from "./state-of-studies/ceepos-button";
@@ -23,6 +23,7 @@ import { StateType } from "~/reducers";
 import {
   GuiderType,
   GuiderStudentUserProfileLabelType,
+  GuiderNotificationStudentsDataType,
 } from "~/reducers/main-function/guider";
 import NewMessage from "~/components/communicator/dialogs/new-message";
 import { ButtonPill } from "~/components/general/button";
@@ -330,7 +331,7 @@ class StateOfStudies extends React.Component<
 
         {this.props.guider.currentStudent.notifications &&
           Object.keys(this.props.guider.currentStudent.notifications).map(
-            (notification) => {
+            (notification: keyof GuiderNotificationStudentsDataType) => {
               <ApplicationSubPanelItem
                 title={this.props.i18n.text.get(
                   "plugin.guider.user." + notification
@@ -340,9 +341,7 @@ class StateOfStudies extends React.Component<
               >
                 <ApplicationSubPanelItem.Content>
                   {this.props.i18n.time.format(
-                    (this.props.guider.currentStudent.notifications as any)[
-                      notification
-                    ]
+                    this.props.guider.currentStudent.notifications[notification]
                   )}
                 </ApplicationSubPanelItem.Content>
               </ApplicationSubPanelItem>;

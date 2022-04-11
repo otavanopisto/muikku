@@ -18,11 +18,11 @@ import { WebsocketStateType } from "~/reducers/util/websocket";
 import { AnyActionType } from "~/actions";
 import { Textarea } from "./text-area";
 import { TextField } from "./text-field";
-import AnimateHeight from "react-animate-height";
 import DatePicker from "react-datepicker";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import { i18nType } from "~/reducers/base/i18n";
 import * as moment from "moment";
+import AnimateHeight from "react-animate-height";
 
 /**
  * FollowUpGoalsProps

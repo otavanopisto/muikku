@@ -1,5 +1,4 @@
 import * as React from "react";
-import AnimateHeight from "react-animate-height";
 import { useSuggestionList } from "./hooks/useSuggestedList";
 import { connect, Dispatch } from "react-redux";
 import { Course, StudentActivityCourse } from "~/@types/shared";
@@ -12,6 +11,7 @@ import {
 } from "~/actions/base/notifications";
 import { AnyActionType } from "~/actions";
 import Button from "~/components/general/button";
+import AnimateHeight from "react-animate-height";
 
 /**
  * SuggestionListProps
