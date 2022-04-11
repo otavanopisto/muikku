@@ -198,7 +198,7 @@ class WorkspaceUsers extends React.Component<
 
   /**
    * setStudentBeingToggledStatus
-   * @param student
+   * @param student student object
    */
   setStudentBeingToggledStatus(
     student: ShortWorkspaceUserWithActiveStatusType
@@ -378,151 +378,151 @@ class WorkspaceUsers extends React.Component<
         modifier="workspace-users"
         title={this.props.i18n.text.get("plugin.workspace.users.pageTitle")}
       >
-        <ApplicationSubPanel
-          modifier="workspace-users"
-          title={this.props.i18n.text.get(
-            "plugin.workspace.users.teachers.title"
-          )}
-        >
-          <ApplicationList
-            footer={staffPager}
-            modifiers="workspace-staff-members"
-            contentState={staffPager ? "state-FULL" : ""}
-          >
-            {this.props.workspace &&
-              this.props.workspace.staffMembers &&
-              this.props.workspace.staffMembers.results.map((staff) => {
-                const staffActions = (
-                  <CommunicatorNewMessage
-                    extraNamespace="workspace-teachers"
-                    initialSelectedItems={[
-                      {
-                        type: "staff",
-                        value: {
-                          id: staff.userEntityId,
-                          name: getName(staff, true),
+        <ApplicationSubPanel modifier="workspace-users">
+          <ApplicationSubPanel.Header modifier="workspace-users">
+            {this.props.i18n.text.get("plugin.workspace.users.teachers.title")}
+          </ApplicationSubPanel.Header>
+          <ApplicationSubPanel.Body modifier="workspace-users">
+            <ApplicationList
+              footer={staffPager}
+              modifiers="workspace-staff-members"
+              contentState={staffPager ? "state-FULL" : ""}
+            >
+              {this.props.workspace &&
+                this.props.workspace.staffMembers &&
+                this.props.workspace.staffMembers.results.map((staff) => {
+                  const staffActions = (
+                    <CommunicatorNewMessage
+                      extraNamespace="workspace-teachers"
+                      initialSelectedItems={[
+                        {
+                          type: "staff",
+                          value: {
+                            id: staff.userEntityId,
+                            name: getName(staff, true),
+                          },
                         },
-                      },
-                    ]}
-                    initialSubject={getWorkspaceMessage(
-                      this.props.i18n,
-                      this.props.status,
-                      this.props.workspace
-                    )}
-                    initialMessage={getWorkspaceMessage(
-                      this.props.i18n,
-                      this.props.status,
-                      this.props.workspace,
-                      true
-                    )}
-                  >
-                    <IconButton
-                      buttonModifiers="workspace-users-contact"
-                      icon="envelope"
-                    />
-                  </CommunicatorNewMessage>
-                );
-                return (
-                  <ApplicationListItem
-                    key={staff.userEntityId}
-                    modifiers="workspace-staff-member"
-                  >
-                    <ApplicationListItemContentWrapper
-                      modifiers="workspace-user"
-                      asideModifiers="workspace-user"
-                      mainModifiers="workspace-user"
-                      actions={staffActions}
-                      aside={
-                        <div className="item-list__profile-picture">
-                          <Avatar
-                            id={staff.userEntityId}
-                            hasImage={staff.hasImage}
-                            firstName={staff.firstName}
-                          />
-                        </div>
-                      }
+                      ]}
+                      initialSubject={getWorkspaceMessage(
+                        this.props.i18n,
+                        this.props.status,
+                        this.props.workspace
+                      )}
+                      initialMessage={getWorkspaceMessage(
+                        this.props.i18n,
+                        this.props.status,
+                        this.props.workspace,
+                        true
+                      )}
                     >
-                      <div>{getName(staff, true)}</div>
-                      <div className="application-list__item-content-secondary-data">
-                        {staff.email}
-                      </div>
-                    </ApplicationListItemContentWrapper>
-                  </ApplicationListItem>
-                );
-              })}
-          </ApplicationList>
+                      <IconButton
+                        buttonModifiers="workspace-users-contact"
+                        icon="envelope"
+                      />
+                    </CommunicatorNewMessage>
+                  );
+                  return (
+                    <ApplicationListItem
+                      key={staff.userEntityId}
+                      modifiers="workspace-staff-member"
+                    >
+                      <ApplicationListItemContentWrapper
+                        modifiers="workspace-user"
+                        asideModifiers="workspace-user"
+                        mainModifiers="workspace-user"
+                        actions={staffActions}
+                        aside={
+                          <div className="item-list__profile-picture">
+                            <Avatar
+                              id={staff.userEntityId}
+                              hasImage={staff.hasImage}
+                              firstName={staff.firstName}
+                            />
+                          </div>
+                        }
+                      >
+                        <div>{getName(staff, true)}</div>
+                        <div className="application-list__item-content-secondary-data">
+                          {staff.email}
+                        </div>
+                      </ApplicationListItemContentWrapper>
+                    </ApplicationListItem>
+                  );
+                })}
+            </ApplicationList>
+          </ApplicationSubPanel.Body>
         </ApplicationSubPanel>
-        <ApplicationSubPanel
-          modifier="workspace-users"
-          title={this.props.i18n.text.get(
-            "plugin.workspace.users.students.title"
-          )}
-        >
-          <SearchFormElement
-            delay={0}
-            value={this.state.currentSearch}
-            updateField={this.updateSearch}
-            id="WorkspaceUserFilter"
-            name="workspace-user-filter"
-            placeholder={this.props.i18n.text.get(
-              "plugin.workspace.users.students.searchStudents"
-            )}
-          />
-          <MobileOnlyTabs
-            onTabChange={this.onTabChange}
-            renderAllComponents
-            activeTab={this.state.activeTab}
-            tabs={[
-              {
-                id: "ACTIVE",
-                name: this.props.i18n.text.get(
-                  "plugin.workspace.users.students.link.active"
-                ),
-                type: "workspace-students",
-                component: (
-                  <ApplicationList footer={pager} modifiers="workspace-users">
-                    {this.props.workspace && this.props.workspace.students ? (
-                      activeStudents.length ? (
-                        activeStudents
-                      ) : (
-                        <div className="loaded-empty">
-                          {this.props.i18n.text.get(
-                            "plugin.workspaces.users.activeStudents.empty"
-                          )}
-                        </div>
-                      )
-                    ) : null}
-                  </ApplicationList>
-                ),
-              },
-              {
-                id: "INACTIVE",
-                name: this.props.i18n.text.get(
-                  "plugin.workspace.users.students.link.inactive"
-                ),
-                type: "workspace-students",
-                component: (
-                  <ApplicationList
-                    footer={inActivePager}
-                    modifiers="workspace-users"
-                  >
-                    {this.props.workspace &&
-                    this.props.workspace.inactiveStudents ? (
-                      inactiveStudents.length ? (
-                        inactiveStudents
-                      ) : (
-                        <div className="loaded-empty">
-                          {this.props.i18n.text.get(
-                            "plugin.workspaces.users.inActiveStudents.empty"
-                          )}
-                        </div>
-                      )
-                    ) : null}
-                  </ApplicationList>
-                ),
-              },
-            ]}
-          />
+        <ApplicationSubPanel modifier="workspace-users">
+          <ApplicationSubPanel.Header modifier="workspace-users">
+            {this.props.i18n.text.get("plugin.workspace.users.students.title")}
+          </ApplicationSubPanel.Header>
+          <ApplicationSubPanel.Body modifier="workspace-users">
+            <SearchFormElement
+              delay={0}
+              value={this.state.currentSearch}
+              updateField={this.updateSearch}
+              id="WorkspaceUserFilter"
+              name="workspace-user-filter"
+              placeholder={this.props.i18n.text.get(
+                "plugin.workspace.users.students.searchStudents"
+              )}
+            />
+            <MobileOnlyTabs
+              onTabChange={this.onTabChange}
+              renderAllComponents
+              activeTab={this.state.activeTab}
+              tabs={[
+                {
+                  id: "ACTIVE",
+                  name: this.props.i18n.text.get(
+                    "plugin.workspace.users.students.link.active"
+                  ),
+                  type: "workspace-students",
+                  component: (
+                    <ApplicationList footer={pager} modifiers="workspace-users">
+                      {this.props.workspace && this.props.workspace.students ? (
+                        activeStudents.length ? (
+                          activeStudents
+                        ) : (
+                          <div className="loaded-empty">
+                            {this.props.i18n.text.get(
+                              "plugin.workspaces.users.activeStudents.empty"
+                            )}
+                          </div>
+                        )
+                      ) : null}
+                    </ApplicationList>
+                  ),
+                },
+                {
+                  id: "INACTIVE",
+                  name: this.props.i18n.text.get(
+                    "plugin.workspace.users.students.link.inactive"
+                  ),
+                  type: "workspace-students",
+                  component: (
+                    <ApplicationList
+                      footer={inActivePager}
+                      modifiers="workspace-users"
+                    >
+                      {this.props.workspace &&
+                      this.props.workspace.inactiveStudents ? (
+                        inactiveStudents.length ? (
+                          inactiveStudents
+                        ) : (
+                          <div className="loaded-empty">
+                            {this.props.i18n.text.get(
+                              "plugin.workspaces.users.inActiveStudents.empty"
+                            )}
+                          </div>
+                        )
+                      ) : null}
+                    </ApplicationList>
+                  ),
+                },
+              ]}
+            />
+          </ApplicationSubPanel.Body>
         </ApplicationSubPanel>
         {currentStudentBeingSentMessage ? (
           <CommunicatorNewMessage

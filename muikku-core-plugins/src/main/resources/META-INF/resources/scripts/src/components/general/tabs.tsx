@@ -111,9 +111,7 @@ export const Tabs: React.FC<TabsProps> = (props) => {
   }, [swiper, useWithHash]);
 
   const mobileBreakpoint = parseInt(variables.mobilebreakpoint); //Parse a breakpoint from scss to a number
-
   const isMobileWidth = useIsAtBreakpoint(mobileBreakpoint);
-
   const a11yConfig = {
     enabled: true,
   };

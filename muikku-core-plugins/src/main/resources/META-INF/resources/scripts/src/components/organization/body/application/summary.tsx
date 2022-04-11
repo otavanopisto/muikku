@@ -90,55 +90,57 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
             </ApplicationSubPanelItem.SubItem>
           </ApplicationSubPanelItem>
         </ApplicationSubPanel> */}
-        <ApplicationSubPanel
-          modifier="organization-summary"
-          title={this.props.i18n.text.get(
-            "plugin.organization.summary.info.title"
-          )}
-        >
-          <ApplicationSubPanelItem
-            modifier="organization-summary"
-            title={this.props.i18n.text.get(
-              "plugin.organization.summary.info.subtitle.activeInactive"
-            )}
-          >
-            <ApplicationSubPanelItem.Content modifier="primary">
-              {this.props.i18n.text.get(
-                "plugin.organization.summary.info.workspaces.publishedUnpublished.text",
-                summary.workspaces && summary.workspaces.publishedCount,
-                summary.workspaces && summary.workspaces.unpublishedCount
-              )}
-            </ApplicationSubPanelItem.Content>
-            <ApplicationSubPanelItem.Content modifier="primary">
-              {this.props.i18n.text.get(
-                "plugin.organization.summary.info.students.activeInactive.text",
-                summary.students && summary.students.activeStudents,
-                summary.students && summary.students.inactiveStudents
-              )}
-            </ApplicationSubPanelItem.Content>
-          </ApplicationSubPanelItem>
-        </ApplicationSubPanel>
-        <ApplicationSubPanel
-          modifier="organization-summary"
-          title={this.props.i18n.text.get(
-            "plugin.organization.summary.contact.title"
-          )}
-        >
-          {this.props.summary.contacts.map((contact) => (
+        <ApplicationSubPanel modifier="organization-summary">
+          <ApplicationSubPanel.Header modifier="organization-summary">
+            {this.props.i18n.text.get("plugin.organization.summary.info.title")}
+          </ApplicationSubPanel.Header>
+          <ApplicationSubPanel.Body modifier="organization-summary">
             <ApplicationSubPanelItem
-              key={"contact-" + contact.id}
-              modifier="organization-contact-information"
+              modifier="organization-summary"
               title={this.props.i18n.text.get(
-                "plugin.organization.summary.contact.subtitle." + contact.type
+                "plugin.organization.summary.info.subtitle.activeInactive"
               )}
             >
-              <ApplicationSubPanelItem.Content modifier="organization-contact-information">
-                <div>{contact.name}</div>
-                <div>{contact.phone}</div>
-                <div>{contact.email}</div>
+              <ApplicationSubPanelItem.Content modifier="primary">
+                {this.props.i18n.text.get(
+                  "plugin.organization.summary.info.workspaces.publishedUnpublished.text",
+                  summary.workspaces && summary.workspaces.publishedCount,
+                  summary.workspaces && summary.workspaces.unpublishedCount
+                )}
+              </ApplicationSubPanelItem.Content>
+              <ApplicationSubPanelItem.Content modifier="primary">
+                {this.props.i18n.text.get(
+                  "plugin.organization.summary.info.students.activeInactive.text",
+                  summary.students && summary.students.activeStudents,
+                  summary.students && summary.students.inactiveStudents
+                )}
               </ApplicationSubPanelItem.Content>
             </ApplicationSubPanelItem>
-          ))}
+          </ApplicationSubPanel.Body>
+        </ApplicationSubPanel>
+        <ApplicationSubPanel modifier="organization-summary">
+          <ApplicationSubPanel.Header modifier="organization-summary">
+            {this.props.i18n.text.get(
+              "plugin.organization.summary.contact.title"
+            )}
+          </ApplicationSubPanel.Header>
+          <ApplicationSubPanel.Body modifier="organization-summary">
+            {this.props.summary.contacts.map((contact) => (
+              <ApplicationSubPanelItem
+                key={"contact-" + contact.id}
+                modifier="organization-contact-information"
+                title={this.props.i18n.text.get(
+                  "plugin.organization.summary.contact.subtitle." + contact.type
+                )}
+              >
+                <ApplicationSubPanelItem.Content modifier="organization-contact-information">
+                  <div>{contact.name}</div>
+                  <div>{contact.phone}</div>
+                  <div>{contact.email}</div>
+                </ApplicationSubPanelItem.Content>
+              </ApplicationSubPanelItem>
+            ))}
+          </ApplicationSubPanel.Body>
         </ApplicationSubPanel>
       </div>
     );
@@ -146,7 +148,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
 }
 
 /**
- * @param state
+ * @param state aplication state
  */
 function mapStateToProps(state: StateType) {
   return {
