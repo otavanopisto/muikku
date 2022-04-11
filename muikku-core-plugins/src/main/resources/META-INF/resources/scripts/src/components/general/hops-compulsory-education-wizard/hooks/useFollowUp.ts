@@ -128,18 +128,20 @@ export const useFollowUpGoal = (
      * onAnswerSavedAtServer
      * @param data FollowUp. As its plain json, it needs to be parsed
      */
-    const onAnswerSavedAtServer = (data: any) => {
-      const followUp: FollowUp = JSON.parse(data);
+    const onAnswerSavedAtServer = (data: unknown) => {
+      if (typeof data === "string") {
+        const followUp: FollowUp = JSON.parse(data);
 
-      setFollowUpData((followUpData) => ({
-        ...followUpData,
-        followUp: {
-          ...followUp,
-          graduationGoal: followUp.graduationGoal
-            ? moment(followUp.graduationGoal).toDate()
-            : null,
-        },
-      }));
+        setFollowUpData((followUpData) => ({
+          ...followUpData,
+          followUp: {
+            ...followUp,
+            graduationGoal: followUp.graduationGoal
+              ? moment(followUp.graduationGoal).toDate()
+              : null,
+          },
+        }));
+      }
     };
 
     /**
