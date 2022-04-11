@@ -56,8 +56,8 @@ interface HopsCourseTableProps extends Partial<StudentActivityByStatus> {
    */
   studentChoiceList?: StudentCourseChoice[];
 
-  updateSuggestion: (params: UpdateSuggestionParams) => void;
-  updateStudentChoice: (params: UpdateStudentChoicesParams) => void;
+  updateSuggestion?: (params: UpdateSuggestionParams) => void;
+  updateStudentChoice?: (params: UpdateStudentChoicesParams) => void;
 }
 
 const defaultProps = {
@@ -82,7 +82,7 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
   const handleToggleChoiceClick =
     (choiceParams: UpdateStudentChoicesParams) =>
     (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
-      props.updateStudentChoice(choiceParams);
+      props.updateStudentChoice && props.updateStudentChoice(choiceParams);
     };
 
   /**
@@ -416,7 +416,6 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch dispatch
  */
 function mapDispatchToProps() {
   return {};

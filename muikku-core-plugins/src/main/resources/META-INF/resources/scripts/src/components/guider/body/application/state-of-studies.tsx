@@ -27,18 +27,17 @@ import {
 import NewMessage from "~/components/communicator/dialogs/new-message";
 import { ButtonPill } from "~/components/general/button";
 import GuiderToolbarLabels from "./toolbar/labels";
-import HopsCompulsoryEducationWizardDialog from "~/components/records/dialogs/hops-compulsory-education-wizard";
 
 // import GuidanceEvent from "../../dialogs/guidance-event";
 // import { CalendarEvent } from "~/reducers/main-function/calendar";
 // import { ResourceTimeline } from "../../../general/resource-timeline";
 // import { ExternalEventType } from "../../../general/resource-timeline";
-import Button from "~/components/general/button";
 import {
   UpdateCurrentStudentHopsPhaseTriggerType,
   updateCurrentStudentHopsPhase,
 } from "~/actions/main-function/guider";
 import StudySuggestionMatrix from "./study-suggestion-matrix";
+import { AnyActionType } from "~/actions";
 
 /**
  * StateOfStudiesProps
@@ -423,10 +422,7 @@ class StateOfStudies extends React.Component<
             {studentBasicInfo}
           </div>
 
-          <div
-            className="application-sub-panel application-sub-panel--student-data-secondary"
-            style={{ maxHeight: "450px", overflow: "auto" }}
-          >
+          <div className="application-sub-panel application-sub-panel--student-data-secondary">
             {this.props.guider.currentStudent.basic &&
             IsStudentPartOfProperStudyProgram(
               this.props.guider.currentStudent.basic.studyProgrammeName
@@ -464,9 +460,11 @@ class StateOfStudies extends React.Component<
           <div className="application-sub-panel__header">
             Opintojen edistyminen
           </div>
-          <StudySuggestionMatrix
-            studentId={this.props.guider.currentStudent.basic.id}
-          />
+          {this.props.guider.currentStudent && (
+            <StudySuggestionMatrix
+              studentId={this.props.guider.currentStudent.basic.id}
+            />
+          )}
         </div>
       </>
     );
@@ -489,7 +487,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     { displayNotification, updateCurrentStudentHopsPhase },
     dispatch

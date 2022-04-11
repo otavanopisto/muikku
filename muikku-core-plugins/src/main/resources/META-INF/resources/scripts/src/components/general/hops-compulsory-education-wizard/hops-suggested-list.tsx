@@ -27,7 +27,7 @@ interface HopsSuggestionListProps {
   canSuggestForNext: boolean;
   canSuggestForOptional: boolean;
   onLoad?: () => void;
-  updateSuggestion: (params: UpdateSuggestionParams) => void;
+  updateSuggestion?: (params: UpdateSuggestionParams) => void;
 }
 
 /**
@@ -73,14 +73,15 @@ const HopsSuggestionList = (props: HopsSuggestionListProps) => {
       suggestionId: number
     ) =>
     (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
-      props.updateSuggestion({
-        goal: actionType,
-        courseNumber: props.course.courseNumber,
-        subjectCode: props.subjectCode,
-        suggestionId: suggestionId,
-        studentId: props.studentId,
-        type: type,
-      });
+      props.updateSuggestion &&
+        props.updateSuggestion({
+          goal: actionType,
+          courseNumber: props.course.courseNumber,
+          subjectCode: props.subjectCode,
+          suggestionId: suggestionId,
+          studentId: props.studentId,
+          type: type,
+        });
     };
 
   /**

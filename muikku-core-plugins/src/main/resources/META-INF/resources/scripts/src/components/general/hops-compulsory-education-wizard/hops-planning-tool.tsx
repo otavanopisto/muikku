@@ -1,8 +1,7 @@
 import * as React from "react";
-import { HopsPlanningStudies, SchoolSubject } from "../../../@types/shared";
+import { SchoolSubject } from "../../../@types/shared";
 import { TextField } from "./text-field";
 import { HopsUser, NEEDED_STUDIES_IN_TOTAL } from ".";
-import CourseList from "./hops-course-list";
 import { schoolCourseTable } from "../../../mock/mock-data";
 import StudyToolCalculationInfoBox from "./study-tool-calculation-info-box";
 import { useStudentActivity } from "../../../hooks/useStudentActivity";
@@ -14,12 +13,13 @@ import {
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 import { useFollowUpGoal } from "./hooks/useFollowUp";
-import CourseTable from "./hops-course-table";
 import StudyToolOptionalStudiesInfoBox from "./study-tool-optional-studiess-info-box";
 import { useStudentStudyHour } from "./hooks/useStudentStudyHours";
 import { i18nType } from "~/reducers/base/i18n";
 import { AnyActionType } from "~/actions";
 import { useStudentChoices } from "~/hooks/useStudentChoices";
+import HopsCourseList from "~/components/general/hops-compulsory-education-wizard/hops-course-list";
+import HopsCourseTable from "~/components/general/hops-compulsory-education-wizard/hops-course-table";
 import {
   AlternativeStudyObject,
   useStudentAlternativeOptions,
@@ -753,12 +753,12 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
       )}
 
       <div className="hops-container__row">
-        <div className="hops__form-element-container hops__form-element-container--pad__upforwards">
+        <div className="hops__form-element-container hops__form-element-container--pad-upforwards">
           {studentActivity.isLoading || studentChoices.isLoading ? (
             <div className="loader-empty" />
           ) : (
             <div className="hops-container__table-container">
-              <CourseTable
+              <HopsCourseTable
                 useCase="hops-planing"
                 disabled={props.disabled}
                 studentId={props.studentId}
@@ -779,14 +779,16 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
           )}
         </div>
 
-        {/* <div className="hops__form-element-container hops__form-element-container--mobile">
+        <div className="hops__form-element-container hops__form-element-container--mobile">
           {studentActivity.isLoading || studentChoices.isLoading ? (
             <div className="loader-empty" />
           ) : (
-            <CourseList
+            <HopsCourseList
+              useCase="study-matrix"
               disabled={props.disabled}
               user={props.user}
               studentId={props.studentId}
+              superVisorModifies={props.superVisorModifies}
               ethicsSelected={studyOptions.options.religionAsEthics}
               finnishAsSecondLanguage={studyOptions.options.finnishAsLanguage}
               suggestedNextList={studentActivity.suggestedNextList}
@@ -799,7 +801,7 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
               updateSuggestion={studentActivityHandlers.updateSuggestion}
             />
           )}
-        </div> */}
+        </div>
       </div>
 
       <div className="hops-container__study-tool-indicators">

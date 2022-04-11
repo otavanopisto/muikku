@@ -22,14 +22,15 @@
   }
 }
 
-.list-container--course {
-  box-shadow: 3px 3px 3px grey;
-  margin-bottom: 10px;
+.list-container--subject__name {
+  display: flex;
+  flex-wrap: wrap;
+  font-weight: bold;
+}
 
-  @include breakpoint($breakpoint-mobile-xl) {
-    margin: 5px;
-    width: calc(20% - 10px);
-  }
+.list-container--subject__courses {
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .list-item--centered {
@@ -66,19 +67,14 @@
 .list-item {
   border-radius: 5px;
   overflow: hidden;
-  padding: 10px 5px 10px 5px;
+  padding: 10px 5px;
   position: relative;
   width: 100%;
 }
 
 .list-item--course {
-  background-color: #fbfbfb;
   border-radius: 0;
-  margin: 5px 0;
-}
-
-.list-item--course:nth-child(even) {
-  background-color: #f2f2f2;
+  width: auto;
 }
 
 .list-item--subject {
@@ -89,64 +85,6 @@
   justify-content: space-between;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.list-item--SUGGESTED {
-  border: 2px solid pink;
-}
-
-.list-item--MANDATORY {
-  background-color: #acacac;
-}
-
-.list-item--OPTIONAL {
-  background-color: lightblue;
-}
-
-.list-item--COMPLETED {
-  background-color: green;
-}
-
-.list-item--INPROGRESS {
-  background-color: orange;
-}
-
-.list-item--APPROVAL {
-  background-color: palegreen;
-}
-
-.list-item--SELECTED {
-  background-color: cornsilk;
-}
-
-.list-item--SELECTED_OPTIONAL {
-  background-color: #3ab8e1;
-}
-
-.list-item:after {
-  background: pink;
-  content: "";
-  display: block;
-  height: 15px;
-  position: absolute;
-  right: -22px;
-  top: 0;
-  transform: skewX(45deg);
-  transition: right 0.3s ease-in;
-  width: 15px;
-}
-
-.list-item--NEXT:after {
-  background: pink;
-  content: "";
-  display: block;
-  height: 15px;
-  position: absolute;
-  right: -7px;
-  top: 0;
-  transform: skewX(45deg);
-  transition: right 0.3s ease-in;
-  width: 15px;
 }
 
 .list-item--empty {
@@ -188,37 +126,52 @@
 }
 
 .list-item-indicator {
-  border-radius: 5px;
-  height: 30px;
-  margin: 0 5px;
-  transform: skew(-20deg);
-  width: 25px;
+  align-items: center;
+  border-radius: 50%;
+  display: flex;
+  height: 40px;
+  justify-content: center;
+  width: 40px;
 }
 
 .list-item-indicator--MANDATORY {
-  background-color: grey;
+  background-color: $color-mandatory;
 }
 
 .list-item-indicator--OPTIONAL {
-  background-color: lightblue;
+  background-color: $color-optional;
 }
 
 .list-item-indicator--COMPLETED {
-  background-color: green;
+  background-color: $color-success;
+  color: $color-default;
 }
 
 .list-item-indicator--INPROGRESS {
-  background-color: orange;
+  background: $color-info;
+  color: $color-default;
 }
 
 .list-item-indicator--APPROVAL {
-  background-color: palegreen;
+  background: $color-success;
+  border-color: $color-approval;
+  color: $color-default;
 }
 
-.list-item-indicator--SELECTED {
-  background-color: cornsilk;
+.list-item-indicator--SUGGESTED {
+  background: $color-suggested;
+  color: $color-default;
 }
+
+.list-item-indicator--NEXT {
+  background: $color-next;
+  color: $color-default;
+}
+
+/* .list-item-indicator--SELECTED {
+  background-color: cornsilk;
+} */
 
 .list-item-indicator--SELECTED_OPTIONAL {
-  background-color: #3ab8e1;
+  background-color: $color-optional-selected;
 }

@@ -11,7 +11,6 @@ import { AnyActionType } from "~/actions";
 import { useStudentActivity } from "~/hooks/useStudentActivity";
 import HopsCourseTable from "~/components/general/hops-compulsory-education-wizard/hops-course-table";
 import HopsCourseList from "~/components/general/hops-compulsory-education-wizard/hops-course-list";
-import { useStudentChoices } from "~/hooks/useStudentChoices";
 import { useStudentAlternativeOptions } from "~/hooks/useStudentAlternativeOptions";
 
 /**
@@ -39,12 +38,6 @@ const StudySuggestionMatrix: React.FC<StudySuggestionMatrixProps> = (props) => {
     props.displayNotification
   );
 
-  const { studentChoices, ...studentChoiceHandlers } = useStudentChoices(
-    props.studentId,
-    props.websocketState,
-    props.displayNotification
-  );
-
   const { studyOptions } = useStudentAlternativeOptions(
     props.studentId,
     props.websocketState,
@@ -54,8 +47,8 @@ const StudySuggestionMatrix: React.FC<StudySuggestionMatrixProps> = (props) => {
   return (
     <>
       <div className="hops-container__row">
-        <div className="hops__form-element-container hops__form-element-container--pad__upforwards">
-          {studentActivity.isLoading || studentChoices.isLoading ? (
+        <div className="hops__form-element-container hops__form-element-container--pad-upforwards">
+          {studentActivity.isLoading ? (
             <div className="loader-empty" />
           ) : (
             <div className="hops-container__table-container">
@@ -72,29 +65,27 @@ const StudySuggestionMatrix: React.FC<StudySuggestionMatrixProps> = (props) => {
                 gradedList={studentActivity.gradedList}
                 transferedList={studentActivity.transferedList}
                 updateSuggestion={studentActivityHandlers.updateSuggestion}
-                updateStudentChoice={studentChoiceHandlers.updateStudentChoice}
               />
             </div>
           )}
         </div>
 
         <div className="hops__form-element-container hops__form-element-container--mobile">
-          {studentActivity.isLoading || studentChoices.isLoading ? (
+          {studentActivity.isLoading ? (
             <div className="loader-empty" />
           ) : (
             <HopsCourseList
+              useCase="study-matrix"
               disabled={false}
               user="supervisor"
               studentId={props.studentId}
+              superVisorModifies={true}
               ethicsSelected={studyOptions.options.religionAsEthics}
               finnishAsSecondLanguage={studyOptions.options.finnishAsLanguage}
               suggestedNextList={studentActivity.suggestedNextList}
-              suggestedOptionalList={studentActivity.suggestedOptionalList}
               onGoingList={studentActivity.onGoingList}
               gradedList={studentActivity.gradedList}
               transferedList={studentActivity.transferedList}
-              studentChoiceList={studentChoices.studentChoices}
-              updateStudentChoice={studentChoiceHandlers.updateStudentChoice}
               updateSuggestion={studentActivityHandlers.updateSuggestion}
             />
           )}

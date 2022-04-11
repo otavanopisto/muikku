@@ -5,7 +5,6 @@ import {
   StudentCourseChoice,
 } from "~/@types/shared";
 import { schoolCourseTable } from "~/mock/mock-data";
-import AnimateHeight from "react-animate-height";
 import HopsSuggestionList from "./hops-suggested-list";
 import {
   ListContainer,
@@ -15,14 +14,20 @@ import {
 import { UpdateSuggestionParams } from "../../../hooks/useStudentActivity";
 import { HopsUser } from ".";
 import { UpdateStudentChoicesParams } from "~/hooks/useStudentChoices";
+import Dropdown from "~/components/general/dropdown";
 
 /**
  * CourseListProps
  */
 interface HopsCourseListProps extends Partial<StudentActivityByStatus> {
+  useCase: "study-matrix" | "hops-planing";
   user: HopsUser;
   studentId: string;
   disabled: boolean;
+  /**
+   * Boolean indicating that supervisor can modify values
+   */
+  superVisorModifies: boolean;
   /**
    * If ethic is selected besides religion
    */
@@ -35,8 +40,8 @@ interface HopsCourseListProps extends Partial<StudentActivityByStatus> {
    * List of student choices
    */
   studentChoiceList?: StudentCourseChoice[];
-  updateSuggestion: (params: UpdateSuggestionParams) => void;
-  updateStudentChoice: (params: UpdateStudentChoicesParams) => void;
+  updateSuggestion?: (params: UpdateSuggestionParams) => void;
+  updateStudentChoice?: (params: UpdateStudentChoicesParams) => void;
 }
 
 /**
@@ -46,13 +51,6 @@ interface HopsCourseListProps extends Partial<StudentActivityByStatus> {
  * @returns JSX.Element
  */
 const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
-  const [openedSubjectSelections, setOpenedSubjectSelections] = React.useState<
-    string[]
-  >([]);
-
-  const [openedSubjectSuggestions, setOpenedSubjectSuggestions] =
-    React.useState<number[]>([]);
-
   /**
    * handleToggleChoiceClick
    *
@@ -60,76 +58,8 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
    */
   const handleToggleChoiceClick =
     (choiceParams: UpdateStudentChoicesParams) =>
-    (e: React.MouseEvent<HTMLTableDataCellElement, MouseEvent>) => {
-      props.updateStudentChoice(choiceParams);
-    };
-
-  /**
-   * handleOpenSuggestionList
-   *
-   * @param user user
-   * @param courseId courseId
-   */
-  const handleOpenSuggestionList =
-    (user: HopsUser, courseId: number) =>
-    (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-      if (user === "supervisor") {
-        /**
-         * Old values
-         */
-        const updatedOpenedSubjectSelections = [...openedSubjectSuggestions];
-
-        /**
-         * Find index
-         */
-        const index = updatedOpenedSubjectSelections.findIndex(
-          (sId) => sId === courseId
-        );
-
-        /**
-         * If index is found, then splice it away, otherwise push id to updated list
-         */
-        if (index !== -1) {
-          updatedOpenedSubjectSelections.splice(index, 1);
-        } else {
-          updatedOpenedSubjectSelections.push(courseId);
-        }
-
-        setOpenedSubjectSuggestions(updatedOpenedSubjectSelections);
-      }
-    };
-
-  /**
-   * handleOpenSubjectCourseSelection
-   * Opens and closes subject course lists
-   *
-   * @param subjectName subjectName
-   */
-  const handleOpenSubjectCourseSelection =
-    (subjectName: string) =>
-    (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-      /**
-       * Old values
-       */
-      const updatedOpenedSubjectSelections = [...openedSubjectSelections];
-
-      /**
-       * Find index
-       */
-      const index = updatedOpenedSubjectSelections.findIndex(
-        (sId) => sId === subjectName
-      );
-
-      /**
-       * If index is found, then splice it away, otherwise push id to updated list
-       */
-      if (index !== -1) {
-        updatedOpenedSubjectSelections.splice(index, 1);
-      } else {
-        updatedOpenedSubjectSelections.push(subjectName);
-      }
-
-      setOpenedSubjectSelections(updatedOpenedSubjectSelections);
+    (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+      props.updateStudentChoice && props.updateStudentChoice(choiceParams);
     };
 
   /**
@@ -198,6 +128,8 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
       let canBeSelected = true;
       let courseSuggestions: StudentActivityCourse[] = [];
 
+      let selectedByStudent = false;
+
       /**
        * If any of these list are given, check whether course id is in
        * and push another modifier
@@ -211,6 +143,7 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
             sCourse.courseNumber === course.courseNumber
         )
       ) {
+        selectedByStudent = true;
         listItemIndicatormodifiers.push("OPTIONAL-SELECTED");
       }
 
@@ -231,7 +164,7 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
 
         courseSuggestions = courseSuggestions.concat(suggestedCourseDataNext);
 
-        listItemModifiers.push("NEXT");
+        listItemIndicatormodifiers.push("NEXT");
       } else if (
         props.suggestedOptionalList &&
         props.suggestedOptionalList.find(
@@ -248,7 +181,7 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
           suggestedCourseDataOptional
         );
 
-        listItemModifiers.push("SUGGESTED");
+        listItemIndicatormodifiers.push("SUGGESTED");
       } else if (
         props.transferedList &&
         props.transferedList.find(
@@ -282,120 +215,109 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
         listItemIndicatormodifiers.push("INPROGRESS");
       }
 
-      const suggestionsOpen = openedSubjectSuggestions.includes(course.id);
+      /**
+       * Button is shown only if modifying user is supervisor
+       */
+      const showAddToHopsButton =
+        props.user === "supervisor" && props.superVisorModifies;
 
-      if (course.mandatory) {
-        if (canBeSelected) {
-          return (
-            <ListItem key={course.id} modifiers={listItemModifiers}>
-              <div style={{ display: "flex", alignItems: "center" }}>
-                <ListItemIndicator modifiers={listItemIndicatormodifiers} />
-                <div
-                  onClick={handleOpenSuggestionList(props.user, course.id)}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    height: "30px",
-                  }}
+      /**
+       * Suggestion list is shown only if not disabled, for supervisor only
+       * and there can be made selections
+       */
+      const showSuggestionList =
+        !props.disabled && props.user === "supervisor" && canBeSelected;
+
+      return (
+        <ListItem key={course.id} modifiers={listItemModifiers}>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <ListItemIndicator
+              modifiers={listItemIndicatormodifiers}
+              onClick={
+                !course.mandatory && props.user === "student"
+                  ? handleToggleChoiceClick({
+                      studentId: props.studentId,
+                      courseNumber: course.courseNumber,
+                      subject: sSubject.subjectCode,
+                    })
+                  : undefined
+              }
+            >
+              <Dropdown
+                openByHover={props.user !== "supervisor"}
+                content={
+                  <div className="hops-container__study-tool-dropdown-container">
+                    <div className="hops-container__study-tool-dropdow-title">
+                      {course.mandatory ? course.name : `${course.name}*`}
+                    </div>
+                    {course.mandatory ? (
+                      <>
+                        {showSuggestionList && (
+                          <HopsSuggestionList
+                            studentId={props.studentId}
+                            suggestedActivityCourses={courseSuggestions}
+                            subjectCode={sSubject.subjectCode}
+                            course={course}
+                            updateSuggestion={props.updateSuggestion}
+                            canSuggestForNext={
+                              props.useCase === "hops-planing" ||
+                              props.useCase === "study-matrix"
+                            }
+                            canSuggestForOptional={
+                              props.useCase === "hops-planing"
+                            }
+                          />
+                        )}
+                      </>
+                    ) : (
+                      <>
+                        {showAddToHopsButton && (
+                          <button
+                            onClick={handleToggleChoiceClick({
+                              studentId: props.studentId,
+                              courseNumber: course.courseNumber,
+                              subject: sSubject.subjectCode,
+                            })}
+                          >
+                            {selectedByStudent
+                              ? "Peru valinta"
+                              : "Valitse osaksi hopsia"}
+                          </button>
+                        )}
+
+                        {showSuggestionList && (
+                          <HopsSuggestionList
+                            studentId={props.studentId}
+                            suggestedActivityCourses={courseSuggestions}
+                            subjectCode={sSubject.subjectCode}
+                            course={course}
+                            updateSuggestion={props.updateSuggestion}
+                            canSuggestForNext={
+                              props.useCase === "hops-planing" ||
+                              props.useCase === "study-matrix"
+                            }
+                            canSuggestForOptional={
+                              props.useCase === "hops-planing"
+                            }
+                          />
+                        )}
+                      </>
+                    )}
+                  </div>
+                }
+              >
+                <span
+                  tabIndex={0}
+                  className="table__data-content-wrapper table__data-content-wrapper--course"
                 >
-                  {course.courseNumber}. {course.name}
-                </div>
-              </div>
-              <AnimateHeight height={suggestionsOpen ? "auto" : 0}>
-                <HopsSuggestionList
-                  studentId={props.studentId}
-                  suggestedActivityCourses={courseSuggestions}
-                  course={course}
-                  subjectCode={sSubject.subjectCode}
-                  updateSuggestion={props.updateSuggestion}
-                  loadData={suggestionsOpen}
-                  canSuggestForNext={true}
-                  canSuggestForOptional={true}
-                />
-              </AnimateHeight>
-            </ListItem>
-          );
-        } else {
-          return (
-            <ListItem key={course.id} modifiers={listItemModifiers}>
-              <div style={{ display: "flex", alignItems: "center" }}>
-                <ListItemIndicator modifiers={listItemIndicatormodifiers} />
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    height: "30px",
-                  }}
-                >
-                  {course.courseNumber}. {course.name}
-                </div>
-              </div>
-            </ListItem>
-          );
-        }
-      } else {
-        if (canBeSelected) {
-          return (
-            <ListItem key={course.id} modifiers={listItemModifiers}>
-              <div style={{ display: "flex", alignItems: "center" }}>
-                <ListItemIndicator
-                  modifiers={listItemIndicatormodifiers}
-                  onClick={handleToggleChoiceClick({
-                    studentId: props.studentId,
-                    courseNumber: course.courseNumber,
-                    subject: sSubject.subjectCode,
-                  })}
-                />
-                <div
-                  onClick={handleOpenSuggestionList(props.user, course.id)}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    height: "30px",
-                  }}
-                >
-                  {course.courseNumber}*. {course.name}
-                </div>
-              </div>
-              <AnimateHeight height={suggestionsOpen ? "auto" : 0}>
-                <HopsSuggestionList
-                  studentId={props.studentId}
-                  suggestedActivityCourses={courseSuggestions}
-                  course={course}
-                  subjectCode={sSubject.subjectCode}
-                  updateSuggestion={props.updateSuggestion}
-                  loadData={suggestionsOpen}
-                  canSuggestForNext={true}
-                  canSuggestForOptional={true}
-                />
-              </AnimateHeight>
-            </ListItem>
-          );
-        } else {
-          return (
-            <ListItem key={course.id} modifiers={listItemModifiers}>
-              <div style={{ display: "flex", alignItems: "center" }}>
-                <ListItemIndicator modifiers={listItemIndicatormodifiers} />
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    height: "30px",
-                  }}
-                >
-                  {course.courseNumber}*. {course.name}
-                </div>
-              </div>
-            </ListItem>
-          );
-        }
-      }
+                  {course.courseNumber}
+                </span>
+              </Dropdown>
+            </ListItemIndicator>
+          </div>
+        </ListItem>
+      );
     });
-
-    /**
-     * Boolean value if subject list is open
-     */
-    const open = openedSubjectSelections.includes(sSubject.name);
 
     /**
      * Proggress value of completed mandatory courses
@@ -403,28 +325,20 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
     const mandatoryProggress = (completedCourseCount / mandatoryCount) * 100;
 
     return (
-      <ListContainer key={sSubject.name} modifiers={["course"]}>
-        <ListItem
-          className="list-subject-name"
-          onClick={handleOpenSubjectCourseSelection(sSubject.name)}
-        >
-          <div
-            className="list-subject-name-proggress"
-            style={{ width: `${mandatoryProggress}%` }}
-          />
-          <span style={{ zIndex: 10 }}>{sSubject.name}</span>
-          <div
-            className={`list-item-arrow ${open ? "arrow-down" : "arrow-right"}`}
-          />
-        </ListItem>
-
-        <AnimateHeight
-          height={open ? "auto" : 0}
-          className="list-subject-course__container"
-        >
+      <div key={sSubject.name}>
+        <ListContainer modifiers={["subject__name"]}>
+          <ListItem className="list-subject-name">
+            <div
+              className="list-subject-name-proggress"
+              style={{ width: `${mandatoryProggress}%` }}
+            />
+            <span style={{ zIndex: 10 }}>{sSubject.name}</span>
+          </ListItem>
+        </ListContainer>
+        <ListContainer modifiers={["subject__courses"]}>
           {courses}
-        </AnimateHeight>
-      </ListContainer>
+        </ListContainer>
+      </div>
     );
   });
 
