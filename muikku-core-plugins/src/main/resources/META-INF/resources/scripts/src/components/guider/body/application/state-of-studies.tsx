@@ -389,7 +389,7 @@ class StateOfStudies extends React.Component<
               {studentWorkspaces}
             </ApplicationSubPanel.Body>
           </ApplicationSubPanel>
-          {this.props.guider.currentState === "LOADING" ? (
+          {this.props.guider.currentStudentState === "LOADING" ? (
             <ApplicationSubPanel>
               <div className="loader-empty" />
             </ApplicationSubPanel>
