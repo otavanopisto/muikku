@@ -43,8 +43,8 @@ interface StudentDialogProps {
   student: GuiderStudentUserProfileType;
   guider: GuiderType;
   currentStudentStatus: GuiderCurrentStudentStateType;
-  onClose?: () => any;
-  onOpen?: (jotan: any) => any;
+  onClose?: () => void;
+  onOpen?: () => void;
   i18n: i18nType;
   status: StatusType;
   loadStudentHistory: LoadStudentTriggerType;
@@ -126,6 +126,12 @@ class StudentDialog extends React.Component<
    * @returns JSX.Element
    */
   render() {
+    const hopsModifyStateModifiers = ["modify-hops"];
+
+    if (this.state.editHops) {
+      hopsModifyStateModifiers.push("modify-hops-active");
+    }
+
     const tabs = [
       {
         id: "STUDIES",
@@ -165,8 +171,11 @@ class StudentDialog extends React.Component<
                     justifyContent: "center",
                   }}
                 >
-                  <Button onClick={this.onClickEditHops}>
-                    {this.state.editHops ? "Lukutila" : "Muokkaus tila"}
+                  <Button
+                    onClick={this.onClickEditHops}
+                    buttonModifiers={hopsModifyStateModifiers}
+                  >
+                    Muokkaustila
                   </Button>
 
                   <select

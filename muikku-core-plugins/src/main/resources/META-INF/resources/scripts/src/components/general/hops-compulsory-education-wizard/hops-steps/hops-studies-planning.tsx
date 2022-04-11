@@ -18,6 +18,12 @@ interface HopsStudiesPlanningProps extends HopsBaseProps {
   studyTimeEnd: string | null;
   superVisorModifies: boolean;
   onStudiesPlanningChange: (studies: HopsPlanningStudies) => void;
+  /**
+   * This is utility method to jump specific step. Doesn validate so use it carefully.
+   * Weird things is that StepZilla library doesn't support types. So this is need to "activate"
+   * this props, so it could work.
+   */
+  jumpToStep?: (step: number) => void;
 }
 
 /**
@@ -49,6 +55,16 @@ class HopsStudiesPlanning extends React.Component<
       selectNextIsActive: false,
       selectSuggestedOptionalActive: false,
     };
+  }
+
+  /**
+   * componentDidUpdate
+   * @param prevProps prevProps
+   */
+  componentDidUpdate(prevProps: Readonly<HopsStudiesPlanningProps>): void {
+    if (prevProps.disabled !== this.props.disabled) {
+      this.props.jumpToStep(0);
+    }
   }
 
   /**

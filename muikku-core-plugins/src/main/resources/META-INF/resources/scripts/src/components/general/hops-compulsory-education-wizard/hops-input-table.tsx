@@ -103,6 +103,7 @@ export const InputRow: React.FC<InputRowProps> = (props) => {
     scaleLength,
     labelOnSeparateRow,
     onInputGroupChange,
+    disabled,
   } = props;
 
   return labelOnSeparateRow ? (
@@ -127,6 +128,7 @@ export const InputRow: React.FC<InputRowProps> = (props) => {
                 name={groupName}
                 checked={selectedValue === v}
                 value={v}
+                disabled={disabled}
                 onChange={onInputGroupChange}
                 type="radio"
                 className="hops__input hops__input--inside-table"
@@ -152,6 +154,7 @@ export const InputRow: React.FC<InputRowProps> = (props) => {
                 value={v}
                 onChange={onInputGroupChange}
                 type="radio"
+                disabled={disabled}
                 className="hops__input hops__input--inside-table"
               ></input>
             </span>

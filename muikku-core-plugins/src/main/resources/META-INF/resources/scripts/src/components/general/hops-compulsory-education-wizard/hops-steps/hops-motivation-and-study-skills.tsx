@@ -1,9 +1,9 @@
 import * as React from "react";
 import { Textarea } from "../text-area";
-import AnimateHeight from "react-animate-height";
 import { HopsMotivationAndStudy } from "~/@types/shared";
 import { HopsBaseProps } from "..";
 import { EmptyRow, HopsInputTable, InputRow } from "../hops-input-table";
+import AnimateHeight from "react-animate-height";
 
 /**
  * MotivationAndStudySkillsProps
@@ -13,6 +13,12 @@ interface HopsMotivationAndStudySkillsProps extends HopsBaseProps {
     motivationAndStudy: HopsMotivationAndStudy
   ) => void;
   motivationAndStudy: HopsMotivationAndStudy;
+  /**
+   * This is utility method to jump specific step. Doesn validate so use it carefully.
+   * Weird things is that StepZilla library doesn't support types. So this is need to "activate"
+   * this props, so it could work.
+   */
+  jumpToStep?: (step: number) => void;
 }
 
 /**
@@ -30,6 +36,18 @@ class HopsMotivationAndStudySkills extends React.Component<
     super(props);
 
     this.state = {};
+  }
+
+  /**
+   * componentDidUpdate
+   * @param prevProps prevProps
+   */
+  componentDidUpdate(
+    prevProps: Readonly<HopsMotivationAndStudySkillsProps>
+  ): void {
+    if (prevProps.disabled !== this.props.disabled) {
+      this.props.jumpToStep(0);
+    }
   }
 
   /**
@@ -89,6 +107,7 @@ class HopsMotivationAndStudySkills extends React.Component<
    * @returns JSX.Element
    */
   render() {
+    const { disabled } = this.props;
     const { wayToLearn, studySupport, selfImageAsStudent } =
       this.props.motivationAndStudy;
 
@@ -127,7 +146,7 @@ class HopsMotivationAndStudySkills extends React.Component<
                   label="Oppimateriaalin lukeminen"
                   selectedValue={wayToLearn.byReadingMaterials}
                   groupName="byReadingMaterials"
-                  disabled={false}
+                  disabled={disabled}
                   onInputGroupChange={this.handleScaleRangeChange("wayToLearn")}
                 />
                 <InputRow
@@ -138,7 +157,7 @@ class HopsMotivationAndStudySkills extends React.Component<
                   label="Muistiinpanojen tekeminen (esim. miellekartat)"
                   selectedValue={wayToLearn.byTakingNotes}
                   groupName="byTakingNotes"
-                  disabled={false}
+                  disabled={disabled}
                   onInputGroupChange={this.handleScaleRangeChange("wayToLearn")}
                 />
                 <InputRow
@@ -149,7 +168,7 @@ class HopsMotivationAndStudySkills extends React.Component<
                   label="Tehtävien tekeminen"
                   selectedValue={wayToLearn.byDoingExcercises}
                   groupName="byDoingExcercises"
-                  disabled={false}
+                  disabled={disabled}
                   onInputGroupChange={this.handleScaleRangeChange("wayToLearn")}
                 />
                 <InputRow
@@ -160,7 +179,7 @@ class HopsMotivationAndStudySkills extends React.Component<
                   label="Asian ulkoa opetteleminen"
                   selectedValue={wayToLearn.byMemorizing}
                   groupName="byMemorizing"
-                  disabled={false}
+                  disabled={disabled}
                   onInputGroupChange={this.handleScaleRangeChange("wayToLearn")}
                 />
                 <InputRow
@@ -171,7 +190,7 @@ class HopsMotivationAndStudySkills extends React.Component<
                   label="Videoiden katsominen"
                   selectedValue={wayToLearn.byWatchingVideos}
                   groupName="byWatchingVideos"
-                  disabled={false}
+                  disabled={disabled}
                   onInputGroupChange={this.handleScaleRangeChange("wayToLearn")}
                 />
                 <InputRow
@@ -182,7 +201,7 @@ class HopsMotivationAndStudySkills extends React.Component<
                   label="Opetuksen kuunteleminen"
                   selectedValue={wayToLearn.byListeningTeaching}
                   groupName="byListeningTeaching"
-                  disabled={false}
+                  disabled={disabled}
                   onInputGroupChange={this.handleScaleRangeChange("wayToLearn")}
                 />
                 <InputRow
@@ -193,7 +212,7 @@ class HopsMotivationAndStudySkills extends React.Component<
                   label="Asian selittäminen toiselle"
                   selectedValue={wayToLearn.byExplaining}
                   groupName="byExplaining"
-                  disabled={false}
+                  disabled={disabled}
                   onInputGroupChange={this.handleScaleRangeChange("wayToLearn")}
                 />
                 <InputRow
@@ -204,7 +223,7 @@ class HopsMotivationAndStudySkills extends React.Component<
                   label="Muiden kanssa keskusteleminen"
                   selectedValue={wayToLearn.byDiscussing}
                   groupName="byDiscussing"
-                  disabled={false}
+                  disabled={disabled}
                   onInputGroupChange={this.handleScaleRangeChange("wayToLearn")}
                 />
                 <InputRow
@@ -215,7 +234,7 @@ class HopsMotivationAndStudySkills extends React.Component<
                   label="Toisen tekemisen tai käytännön esimerkkien seuraaminen"
                   selectedValue={wayToLearn.byWatchingOrDoingExamples}
                   groupName="byWatchingOrDoingExamples"
-                  disabled={false}
+                  disabled={disabled}
                   onInputGroupChange={this.handleScaleRangeChange("wayToLearn")}
                 />
                 <EmptyRow colSpan={5} modifiers={["empty", "question-table"]} />
@@ -340,7 +359,7 @@ class HopsMotivationAndStudySkills extends React.Component<
                   label="Opiskeleminen on minusta mukavaa"
                   selectedValue={selfImageAsStudent.likeStudying}
                   groupName="likeStudying"
-                  disabled={false}
+                  disabled={disabled}
                   onInputGroupChange={this.handleScaleRangeChange(
                     "selfImageAsStudent"
                   )}
@@ -353,7 +372,7 @@ class HopsMotivationAndStudySkills extends React.Component<
                   label="Minulla on tavoitteita opinnoilleni"
                   selectedValue={selfImageAsStudent.haveGoals}
                   groupName="haveGoals"
-                  disabled={false}
+                  disabled={disabled}
                   onInputGroupChange={this.handleScaleRangeChange(
                     "selfImageAsStudent"
                   )}
@@ -366,7 +385,7 @@ class HopsMotivationAndStudySkills extends React.Component<
                   label="Olen valmis tekemään töitä saavuttaakseni tavoitteeni"
                   selectedValue={selfImageAsStudent.readyToAchieveGoals}
                   groupName="readyToAchieveGoals"
-                  disabled={false}
+                  disabled={disabled}
                   onInputGroupChange={this.handleScaleRangeChange(
                     "selfImageAsStudent"
                   )}
@@ -379,7 +398,7 @@ class HopsMotivationAndStudySkills extends React.Component<
                   label="Teen aina aloittamani työt loppuun"
                   selectedValue={selfImageAsStudent.alwaysFinishJobs}
                   groupName="alwaysFinishJobs"
-                  disabled={false}
+                  disabled={disabled}
                   onInputGroupChange={this.handleScaleRangeChange(
                     "selfImageAsStudent"
                   )}
@@ -392,7 +411,7 @@ class HopsMotivationAndStudySkills extends React.Component<
                   label="Teen annetut tehtävät sovitussa aikataulussa"
                   selectedValue={selfImageAsStudent.bePedantic}
                   groupName="bePedantic"
-                  disabled={false}
+                  disabled={disabled}
                   onInputGroupChange={this.handleScaleRangeChange(
                     "selfImageAsStudent"
                   )}
@@ -405,7 +424,7 @@ class HopsMotivationAndStudySkills extends React.Component<
                   label="Ajatukseni ei lähde harhailemaan, kun opiskelen"
                   selectedValue={selfImageAsStudent.studyingConcentration}
                   groupName="studyingConcentration"
-                  disabled={false}
+                  disabled={disabled}
                   onInputGroupChange={this.handleScaleRangeChange(
                     "selfImageAsStudent"
                   )}
@@ -418,7 +437,7 @@ class HopsMotivationAndStudySkills extends React.Component<
                   label="Pystyn työskentelemään, vaikka ympärilläni olisi häiriöitä"
                   selectedValue={selfImageAsStudent.affectedByNoise}
                   groupName="affectedByNoise"
-                  disabled={false}
+                  disabled={disabled}
                   onInputGroupChange={this.handleScaleRangeChange(
                     "selfImageAsStudent"
                   )}
@@ -431,7 +450,7 @@ class HopsMotivationAndStudySkills extends React.Component<
                   label="Pystyn seuraamaan ohjeita ja toimimaan niiden mukaisesti"
                   selectedValue={selfImageAsStudent.canFollowInstructions}
                   groupName="canFollowInstructions"
-                  disabled={false}
+                  disabled={disabled}
                   onInputGroupChange={this.handleScaleRangeChange(
                     "selfImageAsStudent"
                   )}
@@ -444,7 +463,7 @@ class HopsMotivationAndStudySkills extends React.Component<
                   label="Osaan arvioida, missä olen onnistunut ja missä epäonnistunut"
                   selectedValue={selfImageAsStudent.canEvaluateOwnWork}
                   groupName="canEvaluateOwnWork"
-                  disabled={false}
+                  disabled={disabled}
                   onInputGroupChange={this.handleScaleRangeChange(
                     "selfImageAsStudent"
                   )}
@@ -457,7 +476,7 @@ class HopsMotivationAndStudySkills extends React.Component<
                   label="Otan mielelläni vastaan myös korjaavaa palautetta"
                   selectedValue={selfImageAsStudent.canTakeFeedback}
                   groupName="canTakeFeedback"
-                  disabled={false}
+                  disabled={disabled}
                   onInputGroupChange={this.handleScaleRangeChange(
                     "selfImageAsStudent"
                   )}
@@ -472,7 +491,7 @@ class HopsMotivationAndStudySkills extends React.Component<
                     selfImageAsStudent.canUseBasicComputerFunctionalities
                   }
                   groupName="canUseBasicComputerFunctionalities"
-                  disabled={false}
+                  disabled={disabled}
                   onInputGroupChange={this.handleScaleRangeChange(
                     "selfImageAsStudent"
                   )}

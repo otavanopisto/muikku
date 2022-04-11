@@ -20,6 +20,12 @@ interface HopsStudentHopsInformationProps extends HopsBaseProps {
   onHistoryEventClick: (eventId: number) => void;
   onLoadMOreHistoryEventsClick: () => void;
   status: StatusType;
+  /**
+   * This is utility method to jump specific step. Doesn validate so use it carefully.
+   * Weird things is that StepZilla library doesn't support types. So this is need to "activate"
+   * this props, so it could work.
+   */
+  jumpToStep?: (step: number) => void;
 }
 
 /**
@@ -40,6 +46,18 @@ class HopsStudentHopsInformation extends React.Component<
    */
   constructor(props: HopsStudentHopsInformationProps) {
     super(props);
+  }
+
+  /**
+   * componentDidUpdate
+   * @param prevProps prevProps
+   */
+  componentDidUpdate(
+    prevProps: Readonly<HopsStudentHopsInformationProps>
+  ): void {
+    if (prevProps.disabled !== this.props.disabled) {
+      this.props.jumpToStep(0);
+    }
   }
 
   /**

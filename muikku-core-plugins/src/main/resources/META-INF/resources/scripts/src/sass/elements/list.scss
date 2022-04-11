@@ -4,6 +4,8 @@
 @import "../base/breakpoints";
 
 .list-row__container {
+  border-bottom: 2px solid $color-default-separator-border;
+  border-top: 2px solid $color-hops-dialog-form-element-border;
   display: flex;
   flex-flow: column;
 
@@ -22,15 +24,18 @@
   }
 }
 
-.list-container--subject__name {
+.list-container--subject-name {
   display: flex;
   flex-wrap: wrap;
   font-weight: bold;
+  width: 100%;
 }
 
-.list-container--subject__courses {
+.list-container--subject-courses {
+  background-color: $color-default-lighter-generic-background;
   display: flex;
   flex-wrap: wrap;
+  width: 100%;
 }
 
 .list-item--centered {
@@ -39,14 +44,14 @@
 
 .list-subject-name {
   align-items: center;
-  background-color: aliceblue;
+  background-color: $color-default;
   border-radius: unset;
   cursor: pointer;
   display: flex;
   font-weight: bold;
   justify-content: space-between;
   overflow: hidden;
-  padding: 10px 5px 10px 5px;
+  padding: 10px 5px;
   position: relative;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -54,7 +59,7 @@
 }
 
 .list-subject-name-proggress {
-  background-color: green;
+  background-color: $color-success;
   bottom: 0;
   content: "\A";
   height: 5px;
@@ -67,7 +72,7 @@
 .list-item {
   border-radius: 5px;
   overflow: hidden;
-  padding: 10px 5px;
+  padding: 5px;
   position: relative;
   width: 100%;
 }
@@ -77,52 +82,12 @@
   width: auto;
 }
 
-.list-item--subject {
-  background-color: aliceblue;
-  border-radius: unset;
-  cursor: pointer;
-  font-weight: bold;
-  justify-content: space-between;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
 .list-item--empty {
   display: none;
 }
 
 .list-item--NOSTATUS {
   background-color: unset;
-}
-
-.list-item-arrow {
-  border-width: 0 3px 3px 0;
-  border: solid black;
-  display: inline-block;
-  padding: 3px;
-  position: relative;
-  right: 15px;
-  z-index: 10;
-}
-
-.arrow-right {
-  transform: rotate(0);
-  transition: transform 0.3s ease-in;
-}
-
-.arrow-left {
-  transform: rotate(0);
-  transition: transform 0.3s ease-in;
-}
-
-.arrow-up {
-  transform: rotate(-135deg);
-  transition: transform 0.3s ease-in;
-}
-
-.arrow-down {
-  transform: rotate(180);
-  transition: transform 0.3s ease-in;
 }
 
 .list-item-indicator {
@@ -172,6 +137,6 @@
   background-color: cornsilk;
 } */
 
-.list-item-indicator--SELECTED_OPTIONAL {
+.list-item-indicator--SELECTED-OPTIONAL {
   background-color: $color-optional-selected;
 }

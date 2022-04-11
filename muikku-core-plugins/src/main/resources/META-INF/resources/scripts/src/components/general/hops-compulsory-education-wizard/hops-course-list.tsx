@@ -325,20 +325,16 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
     const mandatoryProggress = (completedCourseCount / mandatoryCount) * 100;
 
     return (
-      <div key={sSubject.name}>
-        <ListContainer modifiers={["subject__name"]}>
-          <ListItem className="list-subject-name">
-            <div
-              className="list-subject-name-proggress"
-              style={{ width: `${mandatoryProggress}%` }}
-            />
-            <span style={{ zIndex: 10 }}>{sSubject.name}</span>
-          </ListItem>
-        </ListContainer>
-        <ListContainer modifiers={["subject__courses"]}>
-          {courses}
-        </ListContainer>
-      </div>
+      <ListContainer key={sSubject.name} modifiers={["subject-name"]}>
+        <ListItem className="list-subject-name">
+          <div
+            className="list-subject-name-proggress"
+            style={{ width: `${mandatoryProggress}%` }}
+          />
+          <span style={{ zIndex: 10 }}>{sSubject.name}</span>
+        </ListItem>
+        <ListContainer modifiers={["subject-courses"]}>{courses}</ListContainer>
+      </ListContainer>
     );
   });
 

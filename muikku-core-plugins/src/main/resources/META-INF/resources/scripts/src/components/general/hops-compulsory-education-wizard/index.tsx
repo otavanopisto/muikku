@@ -134,6 +134,21 @@ class CompulsoryEducationHopsWizard extends React.Component<
   }
 
   /**
+   * componentDidUpdate
+   * @param prevProps prevProps
+   */
+  componentDidUpdate(
+    prevProps: Readonly<CompulsoryEducationHopsWizardProps>
+  ): void {
+    /**
+     * If disabled props change, restore all data by loading it again
+     */
+    if (prevProps.disabled !== this.props.disabled) {
+      this.loadHopsData();
+    }
+  }
+
+  /**
    * Loads more history events
    */
   loadMoreHistoryEvents = async () => {
@@ -672,7 +687,8 @@ class CompulsoryEducationHopsWizard extends React.Component<
           {baseProps.disabled ? (
             <StepZilla
               steps={steps}
-              showNavigation={true}
+              showNavigation={!this.state.loading}
+              stepsNavigation={!this.state.loading}
               showSteps={true}
               preventEnterSubmission={true}
               prevBtnOnLastStep={true}
@@ -684,7 +700,8 @@ class CompulsoryEducationHopsWizard extends React.Component<
           ) : (
             <StepZilla
               steps={steps}
-              showNavigation={true}
+              showNavigation={!this.state.loading}
+              stepsNavigation={!this.state.loading}
               showSteps={true}
               preventEnterSubmission={true}
               prevBtnOnLastStep={true}

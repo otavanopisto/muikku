@@ -469,7 +469,7 @@
 .hops__form-element-container--pad-upforwards {
   display: none;
 
-  @include breakpoint($breakpoint-mobile-xl) {
+  @include breakpoint($breakpoint-desktop) {
     display: flex;
   }
 }
@@ -477,7 +477,7 @@
 .hops__form-element-container--mobile {
   display: flex;
 
-  @include breakpoint($breakpoint-mobile-xl) {
+  @include breakpoint($breakpoint-desktop) {
     display: none;
   }
 }

@@ -235,18 +235,20 @@ class StateOfStudies extends React.Component<
             )}
           >
             <ApplicationSubPanelItem.Content>
-              <span>
-                {this.props.guider.currentStudent.emails.length
-                  ? this.props.guider.currentStudent.emails.map((email) => (
-                      <>
-                        {email.defaultAddress ? `*` : null} {email.address} (
-                        {email.type})
-                      </>
-                    ))
-                  : this.props.i18n.text.get(
-                      "plugin.guider.user.details.label.unknown.email"
-                    )}
-              </span>
+              {this.props.guider.currentStudent.emails.length ? (
+                this.props.guider.currentStudent.emails.map((email, i) => (
+                  <span key={email.address}>
+                    {`${email.defaultAddress ? `*` : null} ${email.address} (
+                    ${email.type})`}
+                  </span>
+                ))
+              ) : (
+                <span>
+                  {this.props.i18n.text.get(
+                    "plugin.guider.user.details.label.unknown.email"
+                  )}
+                </span>
+              )}
             </ApplicationSubPanelItem.Content>
           </ApplicationSubPanelItem>
         )}
@@ -257,20 +259,20 @@ class StateOfStudies extends React.Component<
             )}
           >
             <ApplicationSubPanelItem.Content>
-              <span>
-                {this.props.guider.currentStudent.phoneNumbers.length
-                  ? this.props.guider.currentStudent.phoneNumbers.map(
-                      (phone) => (
-                        <>
-                          {phone.defaultNumber ? `*` : null} {phone.number} (
-                          {phone.type})
-                        </>
-                      )
-                    )
-                  : this.props.i18n.text.get(
-                      "plugin.guider.user.details.label.unknown.phoneNumber"
-                    )}
-              </span>
+              {this.props.guider.currentStudent.phoneNumbers.length ? (
+                this.props.guider.currentStudent.phoneNumbers.map((phone) => (
+                  <span key={phone.number}>
+                    {phone.defaultNumber ? `*` : null} {phone.number} (
+                    {phone.type})
+                  </span>
+                ))
+              ) : (
+                <span>
+                  {this.props.i18n.text.get(
+                    "plugin.guider.user.details.label.unknown.phoneNumber"
+                  )}
+                </span>
+              )}
             </ApplicationSubPanelItem.Content>
           </ApplicationSubPanelItem>
         )}
@@ -293,15 +295,19 @@ class StateOfStudies extends React.Component<
             )}
           >
             <ApplicationSubPanelItem.Content>
-              <span>
-                {this.props.guider.currentStudent.usergroups.length
-                  ? this.props.guider.currentStudent.usergroups.map(
-                      (usergroup, index) => usergroup.name + " "
-                    )
-                  : this.props.i18n.text.get(
-                      "plugin.guider.user.details.label.nostudentgroups"
-                    )}
-              </span>
+              {this.props.guider.currentStudent.usergroups.length ? (
+                this.props.guider.currentStudent.usergroups.map(
+                  (usergroup, index) => (
+                    <span key={usergroup.id}>{usergroup.name + " "}</span>
+                  )
+                )
+              ) : (
+                <span>
+                  {this.props.i18n.text.get(
+                    "plugin.guider.user.details.label.nostudentgroups"
+                  )}
+                </span>
+              )}
             </ApplicationSubPanelItem.Content>
           </ApplicationSubPanelItem>
         )}
@@ -413,12 +419,17 @@ class StateOfStudies extends React.Component<
             </ApplicationSubPanel>
           ) : null}
         </ApplicationSubPanel>
-        <ApplicationSubPanel modifier="student-data-container">
-          {this.props.guider.currentStudent && (
-            <StudySuggestionMatrix
-              studentId={this.props.guider.currentStudent.basic.id}
-            />
-          )}
+        <ApplicationSubPanel>
+          <ApplicationSubPanel.Header>
+            Opintojen edistyminen
+          </ApplicationSubPanel.Header>
+          {this.props.guider.currentStudent &&
+            this.props.guider.currentStudent.basic &&
+            this.props.guider.currentStudent.basic.id && (
+              <StudySuggestionMatrix
+                studentId={this.props.guider.currentStudent.basic.id}
+              />
+            )}
         </ApplicationSubPanel>
       </>
     );

@@ -37,6 +37,16 @@ class HopsDone extends React.Component<HopsDoneProps, HopsDonePropsState> {
   }
 
   /**
+   * componentDidUpdate
+   * @param prevProps prevProps
+   */
+  componentDidUpdate(prevProps: Readonly<HopsDoneProps>): void {
+    if (prevProps.disabled !== this.props.disabled) {
+      this.props.jumpToStep(0);
+    }
+  }
+
+  /**
    * Renders saving state message
    *
    * @param saveState saveState

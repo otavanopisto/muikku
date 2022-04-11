@@ -1960,3 +1960,15 @@
     color: $color-disabled;
   }
 }
+
+.button--modify-hops {
+  background-color: $color-success;
+  color: $color-default;
+  margin-right: 5px;
+}
+
+.button--modify-hops-active {
+  background-color: $color-warn;
+  color: $color-default;
+  margin-right: 5px;
+}

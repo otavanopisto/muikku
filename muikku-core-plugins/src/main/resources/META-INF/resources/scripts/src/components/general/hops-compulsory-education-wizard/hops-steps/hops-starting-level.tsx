@@ -20,6 +20,12 @@ import { HopsBaseProps } from "..";
 interface HopsStartingLevelProps extends HopsBaseProps {
   studentStartingLevel: HopsStudentStartingLevel;
   onStartingLevelChange: (startingLevel: HopsStudentStartingLevel) => void;
+  /**
+   * This is utility method to jump specific step. Doesn validate so use it carefully.
+   * Weird things is that StepZilla library doesn't support types. So this is need to "activate"
+   * this props, so it could work.
+   */
+  jumpToStep?: (step: number) => void;
 }
 
 /**
@@ -43,6 +49,16 @@ class HopsStartingLevel extends React.Component<
     super(props);
 
     this.state = {};
+  }
+
+  /**
+   * componentDidUpdate
+   * @param prevProps prevProps
+   */
+  componentDidUpdate(prevProps: Readonly<HopsStartingLevelProps>): void {
+    if (prevProps.disabled !== this.props.disabled) {
+      this.props.jumpToStep(0);
+    }
   }
 
   /**
