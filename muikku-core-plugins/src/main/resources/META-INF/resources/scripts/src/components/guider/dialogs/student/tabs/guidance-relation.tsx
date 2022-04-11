@@ -3,11 +3,11 @@ import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
 import { connect } from "react-redux";
 import ApplicationSubPanel, {
-  ApplicationSubPanelViewHeader,
   ApplicationSubPanelItem,
+  ApplicationSubPanelSection,
 } from "~/components/general/application-sub-panel";
 import GuidanceEvent from "~/components/index/body/guidance-events/guidance-event";
-
+import ContactEvent from "./contact-events/contact-event";
 /**
  * GuidanceRelationProps
  */
@@ -26,7 +26,7 @@ const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
     <ApplicationSubPanel>
       <ApplicationSubPanel.Header> Ohjussuhde</ApplicationSubPanel.Header>
       <ApplicationSubPanel.Body modifier="guidance-relation">
-        <div className="application-sub-panel__section application-sub-panel__section--guidance-relation-contact-info">
+        <ApplicationSubPanelSection modifier="guidance-relation-contact-info">
           <ApplicationSubPanelItem title="Muu">
             <ApplicationSubPanelItem.Content>
               Suxisuxieiluistamihingän
@@ -37,45 +37,41 @@ const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
               Warsinkinkunneiniitäole ensingän
             </ApplicationSubPanelItem.Content>
           </ApplicationSubPanelItem>
-        </div>
-        <div className="application-sub-panel__section  application-sub-panel__section--guidance-relation-contact-events">
-          <div className="application-sub-panel__section-header"></div>
-          <div className="application-sub-panel__section-content">
-            <ApplicationSubPanelItem.SubItem>
-              asdasd
-            </ApplicationSubPanelItem.SubItem>
-            <ApplicationSubPanelItem.SubItem>
-              asdasd
-            </ApplicationSubPanelItem.SubItem>
-            <ApplicationSubPanelItem.SubItem>
-              asdasd
-            </ApplicationSubPanelItem.SubItem>
-            <ApplicationSubPanelItem.SubItem>
-              asdasd
-            </ApplicationSubPanelItem.SubItem>
-            <ApplicationSubPanelItem.SubItem>
-              asdasd
-            </ApplicationSubPanelItem.SubItem>
-            <ApplicationSubPanelItem.SubItem>
-              asdasd
-            </ApplicationSubPanelItem.SubItem>
-            <ApplicationSubPanelItem.SubItem>
-              asdasd
-            </ApplicationSubPanelItem.SubItem>
-            <ApplicationSubPanelItem.SubItem>
-              asdasd
-            </ApplicationSubPanelItem.SubItem>
-            <ApplicationSubPanelItem.SubItem>
-              asdasd
-            </ApplicationSubPanelItem.SubItem>
-            <ApplicationSubPanelItem.SubItem>
-              asdasd
-            </ApplicationSubPanelItem.SubItem>
-            <ApplicationSubPanelItem.SubItem>
-              asdasd
-            </ApplicationSubPanelItem.SubItem>
-          </div>
-        </div>
+        </ApplicationSubPanelSection>
+        <ApplicationSubPanelSection modifier="guidance-relation-contact-events">
+          <ApplicationSubPanelSection.Header>
+            Heador
+          </ApplicationSubPanelSection.Header>
+          <ApplicationSubPanelSection.Body>
+            <ContactEvent
+              event={{
+                date: "Muu",
+                type: "Krije",
+                creator: "Untti A",
+                content:
+                  "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
+              }}
+            />
+            <ContactEvent
+              event={{
+                date: "Muu",
+                type: "Krije",
+                creator: "Untti A",
+                content:
+                  "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
+              }}
+            />
+            <ContactEvent
+              event={{
+                date: "Muu",
+                type: "Krije",
+                creator: "Untti A",
+                content:
+                  "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
+              }}
+            />
+          </ApplicationSubPanelSection.Body>
+        </ApplicationSubPanelSection>
         <div className="application-sub-panel__body-section application-sub-panel__body-section--guidance-relation-guidance-events">
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc eu
           ullamcorper leo. Sed interdum eros quis elementum vehicula. Fusce et

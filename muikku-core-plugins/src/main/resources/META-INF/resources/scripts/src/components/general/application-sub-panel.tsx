@@ -236,8 +236,69 @@ const ApplicationSubPanelSubItem: React.FC<{
   </div>
 );
 
+/**
+ * ApplicationSubPanelSection
+ * @param props props
+ * @returns JSX.Element
+ */
+
+export const ApplicationSubPanelSection: React.FC<{
+  modifier?: string;
+}> & {
+  Header: React.FC<{ modifier?: string }>;
+  Body: React.FC<{ modifier?: string }>;
+} = (props) => (
+  <div
+    className={`application-sub-panel__section  ${
+      props.modifier ? `application-sub-panel__section--${props.modifier}` : ""
+    }`}
+  >
+    {props.children}
+  </div>
+);
+
+/**
+ * ApplicationSubPanelSection
+ * @param props props
+ * @returns JSX.Element
+ */
+const ApplicationSubPanelSectionHeader: React.FC<{ modifier?: string }> = (
+  props
+) => (
+  <div
+    className={`application-sub-panel__section-header  ${
+      props.modifier
+        ? `application-sub-panel__section-header--${props.modifier}`
+        : ""
+    }`}
+  >
+    {props.children}
+  </div>
+);
+
+/**
+ * ApplicationSubPanelSection
+ * @param props props
+ * @returns JSX.Element
+ */
+const ApplicationSubPanelSectionBody: React.FC<{ modifier?: string }> = (
+  props
+) => (
+  <div
+    className={`application-sub-panel__section-content  ${
+      props.modifier
+        ? `application-sub-panel__section-content--${props.modifier}`
+        : ""
+    }`}
+  >
+    {props.children}
+  </div>
+);
+
 ApplicationSubPanel.Header = ApplicationSubPanelHeader;
 ApplicationSubPanel.Body = ApplicationSubPanelBody;
 ApplicationSubPanelItem.Content = ApplicationSubPanelItemData;
 ApplicationSubPanelItem.SubItem = ApplicationSubPanelSubItem;
+ApplicationSubPanelSection.Header = ApplicationSubPanelSectionHeader;
+ApplicationSubPanelSection.Body = ApplicationSubPanelSectionBody;
 export default ApplicationSubPanel;
