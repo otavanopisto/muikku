@@ -6,7 +6,7 @@ import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import { CourseStatus, StudentActivityCourse } from "~/@types/shared";
 import { Course } from "../course-carousel";
 import { schoolCourseTable } from "~/mock/mock-data";
-import { Suggestion } from "../../../../../../../@types/shared";
+import { Suggestion } from "../../../../@types/shared";
 
 /**
  * UpdateSuggestionParams

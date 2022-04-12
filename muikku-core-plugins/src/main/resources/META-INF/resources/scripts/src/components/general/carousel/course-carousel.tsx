@@ -6,12 +6,12 @@ import "~/sass/elements/application-sub-panel.scss";
 import "react-multi-carousel/lib/styles.css";
 import "~/sass/elements/carousel.scss";
 import * as React from "react";
-import Carousel from "react-multi-carousel";
 import Button from "~/components/general/button";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import { useCourseCarousel } from "./hooks/use-course-carousel";
 import WorkspaceSignup from "~/components/coursepicker/dialogs/workspace-signup";
-import { Suggestion } from "../../../../../../@types/shared";
+import { Suggestion } from "../../../@types/shared";
+import Carousel from "react-multi-carousel";
 
 const responsive = {
   desktop: {
