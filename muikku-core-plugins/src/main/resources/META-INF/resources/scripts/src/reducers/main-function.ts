@@ -25,6 +25,7 @@ import organizationSummary from "~/reducers/organization/summary";
 import { combineReducers } from "redux";
 import evaluations from "./main-function/evaluation/index";
 import ceepos from "./main-function/ceepos";
+import calendar from "./main-function/calendar";
 
 export default combineReducers({
   notifications,
@@ -54,4 +55,5 @@ export default combineReducers({
   profile,
   evaluations,
   ceepos,
+  calendar,
 });

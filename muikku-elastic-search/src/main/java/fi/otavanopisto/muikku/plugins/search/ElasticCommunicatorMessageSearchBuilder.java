@@ -25,7 +25,6 @@ public class ElasticCommunicatorMessageSearchBuilder implements CommunicatorMess
         getSenderId(),
         getSender(),
         getRecipients(),
-        getSearchId(),
         getCreated(),
         getTags(),
         getFirstResult(),
@@ -48,11 +47,6 @@ public class ElasticCommunicatorMessageSearchBuilder implements CommunicatorMess
   }
   
   @Override
-  public Long getSearchId() {
-    return searchId;
-  }
-  
-  @Override
   public long getSenderId() {
     return senderId;
   }
@@ -72,12 +66,6 @@ public class ElasticCommunicatorMessageSearchBuilder implements CommunicatorMess
   @Override
   public CommunicatorMessageSearchBuilder setSender(IndexedCommunicatorMessageSender sender) {
     this.sender = sender;
-    return this;
-  }
-  
-  @Override
-  public CommunicatorMessageSearchBuilder setSearchId(Long searchId) {
-    this.searchId = searchId;
     return this;
   }
   
@@ -159,7 +147,6 @@ public class ElasticCommunicatorMessageSearchBuilder implements CommunicatorMess
   private long senderId;
   private IndexedCommunicatorMessageSender sender;
   private List<IndexedCommunicatorMessageRecipient> recipients;
-  private Long searchId;
   private Date created;
   private Set<Long> tags;
   private List<Sort> sort;

@@ -445,20 +445,9 @@ export interface StudiesCourseData {
 }
 
 /**
- * UploadingValue
- */
-export interface UploadingValue {
-  name: string;
-  contentType: string;
-  failed?: boolean;
-  progress?: number;
-  file?: File;
-}
-
-/**
  * Suggestion
  */
-export interface Suggestion {
+ export interface Suggestion {
   id: number;
   name: string;
   subject: string;
@@ -513,4 +502,25 @@ export interface StudentActivityByStatus {
    * List of graded courses
    */
   gradedList: StudentActivityCourse[];
+}
+
+/**
+ * UploadingValue
+ */
+export interface UploadingValue {
+  name: string;
+  contentType: string;
+  failed?: boolean;
+  progress?: number;
+  file?: File;
+}
+
+/**
+ * OPSsuitability
+ */
+export interface OPSsuitability {
+  MANDATORY: string;
+  UNSPECIFIED_OPTIONAL: string;
+  NATIONAL_LEVEL_OPTIONAL: string;
+  SCHOOL_LEVEL_OPTIONAL: string;
 }

@@ -56,6 +56,7 @@ import {
   ToggleSelectAllMessageThreadsTriggerType,
   toggleAllMessageItems,
 } from "~/actions/main-function/messages/index";
+import { AnyActionType } from "~/actions";
 
 /**
  * CommunicatorToolbarProps
@@ -127,7 +128,8 @@ class CommunicatorToolbar extends React.Component<
    * @param nextProps nextProps
    * @param nextState nextState
    */
-  componentWillUpdate(
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillUpdate(
     nextProps: CommunicatorToolbarProps,
     nextState: CommunicatorToolbarState
   ) {
@@ -309,7 +311,10 @@ class CommunicatorToolbar extends React.Component<
             <Dropdown
               modifier="communicator-labels"
               items={[
-                <div key="update-label" className="form-element">
+                <div
+                  key="update-label"
+                  className="form-element form-element--new-label"
+                >
                   <input
                     className="form-element__input"
                     value={this.state.labelFilter}
@@ -476,7 +481,10 @@ class CommunicatorToolbar extends React.Component<
           onClose={this.resetLabelFilter}
           modifier="communicator-labels"
           items={[
-            <div key="update-label" className="form-element">
+            <div
+              key="update-label"
+              className="form-element form-element--new-label"
+            >
               <input
                 className="form-element__input"
                 value={this.state.labelFilter}
@@ -602,7 +610,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     {
       deleteCurrentMessageThread,

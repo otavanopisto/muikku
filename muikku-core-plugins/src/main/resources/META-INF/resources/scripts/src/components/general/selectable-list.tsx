@@ -197,7 +197,7 @@ export default class SelectableList extends React.Component<
    * @param e e
    */
   onKeyDown(item: SelectableItem, e: React.KeyboardEvent) {
-    if (e.key === "Enter" || e.key === " ") {
+    if (item.onEnter && (e.key === "Enter" || e.key === " ")) {
       item.onEnter();
     }
   }

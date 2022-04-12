@@ -232,6 +232,14 @@ public class UserSchoolDataController {
     return userSchoolDataIdentifier == null ? null : userSchoolDataIdentifier.getUserEntity();
   }
 
+  public String findUserSsn(SchoolDataIdentifier userIdentifier) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(userIdentifier.getDataSource());
+    if (schoolDataSource == null) {
+      throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", userIdentifier.getDataSource()));
+    }
+    return getUserBridge(schoolDataSource).findUserSsn(userIdentifier);
+  }
+
   /* User Emails */
 
   public List<UserEmail> listUserEmails(User user) {

@@ -37,6 +37,15 @@
   }
 }
 
+.dialog--guider-student {
+  background-color: $color-dialog-default-background;
+  overflow: auto;
+
+  @include breakpoint($breakpoint-pad) {
+    background-color: $color-overlay-background;
+  }
+}
+
 .dialog--visible {
   opacity: 100%;
 }
@@ -62,6 +71,18 @@
     position: relative;
     right: auto;
     top: auto;
+  }
+}
+
+.dialog__window--guider-student {
+  position: absolute;
+
+  @include breakpoint($breakpoint-pad) {
+    box-shadow: unset;
+    max-width: unset;
+    position: absolute;
+    top: 20px;
+    width: calc(100% - 40px);
   }
 }
 
@@ -222,6 +243,14 @@
   }
 }
 
+.dialog__header--guider-student {
+  @include breakpoint($breakpoint-pad) {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+}
+
 .dialog__header--wizard {
   @include breakpoint($breakpoint-pad) {
     align-items: center;
@@ -258,6 +287,20 @@
   }
 }
 
+.dialog__title-sub-container {
+  display: flex;
+}
+
+.dialog__title-item {
+  &:not(:first-child) {
+    margin-left: 10px;
+  }
+}
+
+.dialog__title-item--studyprogramme {
+  display: flex;
+}
+
 .dialog__close {
   @include prefix(transition, moz ms o webkit, background-color 0.3s);
 
@@ -266,7 +309,7 @@
   font-size: 18px;
   height: $dialog-button-close-height;
   line-height: $dialog-button-close-height;
-  margin-top: -#{$dialog-button-close-height / 2};
+  margin-top: calc(-#{$dialog-button-close-height} / 2);
   position: absolute;
   right: 5px;
   text-align: center;
@@ -275,7 +318,7 @@
 }
 
 .dialog__content {
-  padding: 20px;
+  padding: $dialog-content-padding;
   position: relative;
   width: 100%;
 }
