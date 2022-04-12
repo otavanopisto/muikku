@@ -111,7 +111,6 @@ import {
   loadCeeposPurchase,
   loadCeeposPurchaseAndPay,
 } from "~/actions/main-function/ceepos";
-import RecordsBody2 from "~/components/records2/body";
 import { registerLocale } from "react-datepicker";
 import { enGB, fi } from "date-fns/locale";
 registerLocale("fi", fi);
@@ -980,7 +979,7 @@ export default class MainFunction extends React.Component<
       this.loadChatSettings();
     }
 
-    return <RecordsBody2 />;
+    return <RecordsBody />;
   }
 
   /**

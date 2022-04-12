@@ -9,6 +9,7 @@ import {
 import DatePicker from "react-datepicker";
 import "~/sass/elements/datepicker/datepicker.scss";
 import { i18nType } from "~/reducers/base/i18n";
+import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 
 /**
  * JournalListEditorProps
@@ -126,21 +127,19 @@ const JournalListEditorEdit: React.FC<JournalListEditorEditProps> = (props) => {
 
         <div style={{ display: "flex", flexDirection: "column" }}>
           <label style={{ marginRight: "5px" }}>Alkamispäivä</label>
-          {/* <DatePicker
-            selected={journal.startDate && moment(journal.startDate)}
-            onChange={(date, e) =>
-              handleJournalChange("startDate", date && moment(date).toDate())
-            }
-            locale={i18n.time.getLocale()}
+          <DatePicker
+            selected={journal.startDate ? journal.startDate : undefined}
+            onChange={(date, e) => handleJournalChange("startDate", date)}
+            locale={outputCorrectDatePickerLocale(i18n.time.getLocale())}
+            dateFormat="P"
           />
           <label style={{ marginRight: "5px" }}>Päättymispäivä</label>
           <DatePicker
-            selected={journal.dueDate && moment(journal.dueDate)}
-            onChange={(date, e) =>
-              handleJournalChange("dueDate", date && moment(date).toDate())
-            }
-            locale={i18n.time.getLocale()}
-          /> */}
+            selected={journal.dueDate ? journal.dueDate : undefined}
+            onChange={(date, e) => handleJournalChange("dueDate", date)}
+            locale={outputCorrectDatePickerLocale(i18n.time.getLocale())}
+            dateFormat="P"
+          />
         </div>
 
         <div style={{ display: "flex", flexDirection: "column" }}>

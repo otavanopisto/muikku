@@ -9,6 +9,7 @@ import { JournalNoteCreate } from "../../../@types/journal-center";
 import { i18nType } from "~/reducers/base/i18n";
 import DatePicker from "react-datepicker";
 import "~/sass/elements/datepicker/datepicker.scss";
+import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 
 /**
  * JournalListEditorProps
@@ -33,7 +34,7 @@ interface JournalListEditorNewProps {
  * @returns JSX.Element
  */
 const JournalListEditorNew: React.FC<JournalListEditorNewProps> = (props) => {
-  const { onCancelClick, onJournalSaveClick, newNoteOwnerId } = props;
+  const { onCancelClick, onJournalSaveClick, newNoteOwnerId, i18n } = props;
 
   const [journal, setJournal] = React.useState<JournalNoteCreate>({
     title: "",
@@ -145,21 +146,19 @@ const JournalListEditorNew: React.FC<JournalListEditorNewProps> = (props) => {
 
         <div style={{ display: "flex", flexDirection: "column" }}>
           <label style={{ marginRight: "5px" }}>Alkamispäivä</label>
-          {/* <DatePicker
-            selected={journal.startDate && moment(journal.startDate)}
-            onChange={(date, e) =>
-              handleJournalChange("startDate", date && moment(date).toDate())
-            }
-            locale={props.i18n.time.getLocale()}
+          <DatePicker
+            selected={journal.startDate ? journal.startDate : undefined}
+            onChange={(date, e) => handleJournalChange("startDate", date)}
+            locale={outputCorrectDatePickerLocale(i18n.time.getLocale())}
+            dateFormat="P"
           />
           <label style={{ marginRight: "5px" }}>Päättymispäivä</label>
           <DatePicker
-            selected={journal.dueDate && moment(journal.dueDate)}
-            onChange={(date, e) =>
-              handleJournalChange("dueDate", date && moment(date).toDate())
-            }
-            locale={props.i18n.time.getLocale()}
-          /> */}
+            selected={journal.dueDate ? journal.dueDate : undefined}
+            onChange={(date, e) => handleJournalChange("dueDate", date)}
+            locale={outputCorrectDatePickerLocale(i18n.time.getLocale())}
+            dateFormat="P"
+          />
         </div>
 
         <div style={{ display: "flex", flexDirection: "column" }}>
