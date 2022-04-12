@@ -170,7 +170,7 @@ function sortOrders(a: PurchaseType, b: PurchaseType) {
 export default function guider(
   state: GuiderType = {
     studentsState: "LOADING",
-    currentStudentState: "READY",
+    currentStudentState: "LOADING",
     availableFilters: {
       labels: [],
       workspaces: [],
@@ -209,7 +209,7 @@ export default function guider(
     return Object.assign({}, state, action.payload);
   } else if (action.type === "UPDATE_GUIDER_STATE") {
     return Object.assign({}, state, {
-      state: action.payload,
+      studentsState: action.payload,
     });
   } else if (action.type === "ADD_TO_GUIDER_SELECTED_STUDENTS") {
     const student: GuiderStudentType = action.payload;
@@ -234,7 +234,7 @@ export default function guider(
   } else if (action.type === "SET_CURRENT_GUIDER_STUDENT_EMPTY_LOAD") {
     return Object.assign({}, state, {
       currentStudent: {},
-      currentState: "LOADING",
+      currentStudentState: "LOADING",
     });
   } else if (action.type === "SET_CURRENT_GUIDER_STUDENT_PROP") {
     const obj: any = {};
@@ -244,7 +244,7 @@ export default function guider(
     });
   } else if (action.type === "UPDATE_CURRENT_GUIDER_STUDENT_STATE") {
     return Object.assign({}, state, {
-      currentState: action.payload,
+      currentStudentState: action.payload,
     });
   } else if (
     action.type === "ADD_GUIDER_LABEL_TO_USER" ||
