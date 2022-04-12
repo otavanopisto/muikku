@@ -4,7 +4,7 @@ import ApplicationPanel from "~/components/general/application-panel/application
 import { i18nType } from "reducers/base/i18n";
 import Students from "./application/students";
 import Toolbar from "./application/toolbar";
-import CurrentStudent from "./application/current-student";
+import CurrentStudent from "./application/state-of-studies";
 import { StateType } from "~/reducers";
 
 /**
@@ -67,7 +67,6 @@ class GuiderApplication extends React.Component<
           asideBefore={this.props.aside}
         >
           <Students />
-          <CurrentStudent />
         </ApplicationPanel>
       </div>
     );

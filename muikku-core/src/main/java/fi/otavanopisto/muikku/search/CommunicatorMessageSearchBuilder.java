@@ -24,10 +24,6 @@ public interface CommunicatorMessageSearchBuilder {
   
   List<IndexedCommunicatorMessageRecipient> getRecipients();
   
-  Long getSearchId();
-  
-  CommunicatorMessageSearchBuilder setSearchId(Long searchId);
-  
   long getSenderId();
   
   IndexedCommunicatorMessageSender getSender();

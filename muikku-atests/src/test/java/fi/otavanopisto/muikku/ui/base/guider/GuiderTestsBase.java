@@ -141,7 +141,14 @@ public class GuiderTestsBase extends AbstractUITest {
     MockStudent student = new MockStudent(6l, 6l, "Second", "User", "teststueradsfdent@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Course course1 = new CourseBuilder().name("testcourse").id((long) 5).description("test course for testing").buildCourse();
     Builder mockBuilder = mocker();
-    mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).addCourse(course1).build();
+    mockBuilder
+    .addStaffMember(admin)
+    .addStudent(student)
+    .mockLogin(admin)
+    .addCourse(course1)
+    .mockStudentCourseStats(student.getId(), 25)
+    .mockMatriculationEligibility(false)
+    .build();
     login();
     
     Workspace workspace = createWorkspace(course1, Boolean.TRUE);
@@ -156,6 +163,8 @@ public class GuiderTestsBase extends AbstractUITest {
     try {
       navigate("/guider", false);
       waitAndClick(".application-list__header-primary>span");
+      waitAndClick("#STUDY_HISTORY");
+      waitAndClick("#studyLibrary");      
       waitForPresent(".file-uploader input");
       scrollIntoView(".file-uploader input");
 
@@ -166,7 +175,12 @@ public class GuiderTestsBase extends AbstractUITest {
       logout();
       mockBuilder.mockLogin(student);
       login();
-      navigate("/records#records", false);
+      navigate("/records", false);
+      
+      waitAndClick(".tabs--application-panel .tabs__tab--records");
+      
+      waitForVisible(".tabs__tab-data--records");
+      
       waitForPresent("a.link--studies-file-attachment");
       assertText("a.link--studies-file-attachment", "img_100x100_3x8bit_RGB_circles_center_0016.png");
     } finally {
@@ -446,8 +460,8 @@ public class GuiderTestsBase extends AbstractUITest {
         navigate("/guider", false);
         waitForPresent(".application-list__item-footer--student .label--ENDING");
         waitAndClick(".application-list__header-primary>span");
-        scrollTo(".button--create-student-order", 150);
-        waitAndClickAndConfirm(".button--create-student-order", ".dropdown .link--purchasable-product-dropdown", 5, 500);
+        scrollTo(".button-pill--create-student-order", 150);
+        waitAndClickAndConfirm(".button-pill--create-student-order", ".dropdown .link--purchasable-product-dropdown", 5, 500);
         waitAndClickAndConfirm(".dropdown__container-item:first-child", ".dialog--dialog-confirm-order.dialog--visible", 5, 1000);
         waitAndClick(".button--standard-ok");
         assertTextIgnoreCase(".application-list__header-primary--product .application-list__header-primary-title b", "Nettilukion yksityisopiskelijan opiskelumaksu 6 kk");
@@ -545,8 +559,8 @@ public class GuiderTestsBase extends AbstractUITest {
         navigate("/guider", false);
         waitForPresent(".application-list__item-footer--student .label--ENDING");
         waitAndClick(".application-list__header-primary>span");
-        scrollTo(".button--create-student-order", 150);
-        waitAndClickAndConfirm(".button--create-student-order", ".dropdown .link--purchasable-product-dropdown", 5, 500);
+        scrollTo(".button-pill--create-student-order", 150);
+        waitAndClickAndConfirm(".button-pill--create-student-order", ".dropdown .link--purchasable-product-dropdown", 5, 500);
         waitAndClickAndConfirm(".dropdown__container-item:first-child", ".dialog--dialog-confirm-order.dialog--visible", 5, 1000);
         waitAndClick(".button--standard-ok");
         assertTextIgnoreCase(".application-list__header-primary--product .application-list__header-primary-title b", "Nettilukion yksityisopiskelijan opiskelumaksu 6 kk");
@@ -555,7 +569,7 @@ public class GuiderTestsBase extends AbstractUITest {
         waitAndClick(".application-list__header-primary--product .application-list__header-primary-actions .button--delete-student-order");
         waitAndClick(".dialog--dialog-delete-order.dialog--visible .button--fatal");
         waitForNotPresent(".application-list__header-primary--product .application-list__header-primary-actions .button--delete-student-order");
-        assertTextIgnoreCase(".button--create-student-order", "Luo uusi tilaus");
+//        assertTextIgnoreCase(".button-pill--create-student-order", "Luo uusi tilaus");
       }finally {
         deleteUserGroupUsers();
         archiveUserByEmail(student.getEmail());
@@ -603,8 +617,8 @@ public class GuiderTestsBase extends AbstractUITest {
         navigate("/guider", false);
         waitForPresent(".application-list__item-footer--student .label--ENDING");
         waitAndClick(".application-list__header-primary>span");
-        scrollTo(".button--create-student-order", 150);
-        waitAndClickAndConfirm(".button--create-student-order", ".dropdown .link--purchasable-product-dropdown", 5, 500);
+        scrollTo(".button-pill--create-student-order", 150);
+        waitAndClickAndConfirm(".button-pill--create-student-order", ".dropdown .link--purchasable-product-dropdown", 5, 500);
         waitAndClickAndConfirm(".dropdown__container-item:first-child", ".dialog--dialog-confirm-order.dialog--visible", 5, 1000);
         waitAndClick(".button--standard-ok");
         assertTextIgnoreCase(".application-list__header-primary--product .application-list__header-primary-title b", "Nettilukion yksityisopiskelijan opiskelumaksu 6 kk");
@@ -656,7 +670,7 @@ public class GuiderTestsBase extends AbstractUITest {
           navigate("/guider", false);
           waitForPresent(".application-list__item-footer--student .label--ENDING");
           waitAndClick(".application-list__header-primary>span");
-          scrollTo(".button--create-student-order", 150);
+          scrollTo(".button-pill--create-student-order", 150);
           assertTextIgnoreCase(".application-list__item--product .application-list__header-primary--product .application-list__header-primary-description", "Opiskelija peruutti tilauksen.");
         }else {
           assertTrue("paymentConfirmation status not 200", false);
