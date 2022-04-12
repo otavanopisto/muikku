@@ -385,15 +385,15 @@ export interface FollowUp {
  * WayToLearn
  */
 export interface WayToLearn {
-  byReadingMaterials: number;
-  byTakingNotes: number;
-  byDoingExcercises: number;
-  byMemorizing: number;
-  byWatchingVideos: number;
-  byListeningTeaching: number;
-  byExplaining: number;
-  byDiscussing: number;
-  byWatchingOrDoingExamples: number;
+  byReadingMaterials?: number;
+  byTakingNotes?: number;
+  byDoingExcercises?: number;
+  byMemorizing?: number;
+  byWatchingVideos?: number;
+  byListeningTeaching?: number;
+  byExplaining?: number;
+  byDiscussing?: number;
+  byWatchingOrDoingExamples?: number;
   someOtherWay?: string;
 }
 
@@ -409,18 +409,21 @@ export interface StudySupport {
   somethingElseWhat?: string;
 }
 
+/**
+ * StudentSelfImage
+ */
 export interface StudentSelfImage {
-  likeStudying: number;
-  haveGoals: number;
-  readyToAchieveGoals: number;
-  alwaysFinishJobs: number;
-  bePedantic: number;
-  studyingConcentration: number;
-  affectedByNoise: number;
-  canFollowInstructions: number;
-  canEvaluateOwnWork: number;
-  canTakeFeedback: number;
-  canUseBasicComputerFunctionalities: number;
+  likeStudying?: number;
+  haveGoals?: number;
+  readyToAchieveGoals?: number;
+  alwaysFinishJobs?: number;
+  bePedantic?: number;
+  studyingConcentration?: number;
+  affectedByNoise?: number;
+  canFollowInstructions?: number;
+  canEvaluateOwnWork?: number;
+  canTakeFeedback?: number;
+  canUseBasicComputerFunctionalities?: number;
   somethingElse?: string;
   wishesForTeachersAndSupervisors?: string;
 }

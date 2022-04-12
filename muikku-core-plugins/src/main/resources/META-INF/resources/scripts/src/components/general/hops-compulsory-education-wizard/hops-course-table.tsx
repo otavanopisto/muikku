@@ -257,7 +257,9 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
          * Button is shown only if modifying user is supervisor
          */
         const showAddToHopsButton =
-          props.user === "supervisor" && props.superVisorModifies;
+          props.user === "supervisor" &&
+          props.superVisorModifies &&
+          props.useCase === "hops-planing";
 
         /**
          * Suggestion list is shown only if not disabled, for supervisor only

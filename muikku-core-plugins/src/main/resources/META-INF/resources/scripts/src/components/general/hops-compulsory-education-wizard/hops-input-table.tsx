@@ -79,7 +79,7 @@ export const HopsInputTable: React.FC<HopsInputTableProps> = (props) => {
 interface InputRowProps {
   label: string;
   groupName: string;
-  selectedValue: number;
+  selectedValue?: number;
   disabled: boolean;
   scaleStart: number;
   scaleInterval: number;
@@ -126,7 +126,7 @@ export const InputRow: React.FC<InputRowProps> = (props) => {
             <span className="table__alignment-helper">
               <input
                 name={groupName}
-                checked={selectedValue === v}
+                checked={selectedValue && selectedValue === v}
                 value={v}
                 disabled={disabled}
                 onChange={onInputGroupChange}
@@ -150,7 +150,7 @@ export const InputRow: React.FC<InputRowProps> = (props) => {
             <span className="table__alignment-helper">
               <input
                 name={groupName}
-                checked={selectedValue === v}
+                checked={selectedValue && selectedValue === v}
                 value={v}
                 onChange={onInputGroupChange}
                 type="radio"

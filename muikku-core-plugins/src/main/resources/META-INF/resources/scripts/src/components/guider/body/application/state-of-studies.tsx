@@ -95,6 +95,7 @@ class StateOfStudies extends React.Component<
     if (this.props.guider.currentStudent === null) {
       return null;
     }
+
     //Note that some properties are not available until later, that's because it does
     //step by step loading, make sure to show this in the way this is represented, ensure to have
     //a case where the property is not available
@@ -238,7 +239,10 @@ class StateOfStudies extends React.Component<
             <ApplicationSubPanelItem.Content>
               {this.props.guider.currentStudent.emails.length ? (
                 this.props.guider.currentStudent.emails.map((email, i) => (
-                  <span key={email.address}>
+                  <span
+                    key={email.address}
+                    className="application-sub-panel__single-entry"
+                  >
                     {`${email.defaultAddress ? `*` : null} ${email.address} (
                     ${email.type})`}
                   </span>
@@ -262,7 +266,10 @@ class StateOfStudies extends React.Component<
             <ApplicationSubPanelItem.Content>
               {this.props.guider.currentStudent.phoneNumbers.length ? (
                 this.props.guider.currentStudent.phoneNumbers.map((phone) => (
-                  <span key={phone.number}>
+                  <span
+                    key={phone.number}
+                    className="application-sub-panel__single-entry"
+                  >
                     {phone.defaultNumber ? `*` : null} {phone.number} (
                     {phone.type})
                   </span>
@@ -299,7 +306,12 @@ class StateOfStudies extends React.Component<
               {this.props.guider.currentStudent.usergroups.length ? (
                 this.props.guider.currentStudent.usergroups.map(
                   (usergroup, index) => (
-                    <span key={usergroup.id}>{usergroup.name + " "}</span>
+                    <span
+                      key={usergroup.id}
+                      className="application-sub-panel__single-entry"
+                    >
+                      {usergroup.name + " "}
+                    </span>
                   )
                 )
               ) : (
@@ -352,7 +364,14 @@ class StateOfStudies extends React.Component<
 
     const studentWorkspaces = (
       <Workspaces
-        workspaces={this.props.guider.currentStudent.currentWorkspaces}
+        workspaces={
+          this.props.guider.currentStudent.currentWorkspaces &&
+          this.props.guider.currentStudent.currentWorkspaces.filter(
+            (w) =>
+              w.studentActivity &&
+              w.studentActivity.assessmentState.grade === null
+          )
+        }
       />
     );
 
@@ -385,6 +404,7 @@ class StateOfStudies extends React.Component<
           <ApplicationSubPanel modifier="student-data-primary">
             {studentBasicInfo}
           </ApplicationSubPanel>
+
           <ApplicationSubPanel modifier="student-data-secondary">
             {this.props.guider.currentStudent.basic &&
             IsStudentPartOfProperStudyProgram(
@@ -401,7 +421,26 @@ class StateOfStudies extends React.Component<
                 </ApplicationSubPanel.Body>
               </ApplicationSubPanel>
             ) : null}
+          </ApplicationSubPanel>
+        </ApplicationSubPanel>
 
+        <ApplicationSubPanel modifier="student-data-container">
+          <ApplicationSubPanel modifier="student-data-primary">
+            <ApplicationSubPanel.Header>
+              Opintojen edistyminen
+            </ApplicationSubPanel.Header>
+            {this.props.guider.currentStudent &&
+              this.props.guider.currentStudent.basic &&
+              this.props.guider.currentStudent.basic.id && (
+                <StudySuggestionMatrix
+                  studentId={this.props.guider.currentStudent.basic.id}
+                />
+              )}
+          </ApplicationSubPanel>
+        </ApplicationSubPanel>
+
+        <ApplicationSubPanel modifier="student-data-container">
+          <ApplicationSubPanel modifier="student-data-primary">
             <ApplicationSubPanel.Header>
               {this.props.i18n.text.get(
                 "plugin.guider.user.details.workspaces"
@@ -412,23 +451,6 @@ class StateOfStudies extends React.Component<
               {studentWorkspaces}
             </ApplicationSubPanel.Body>
           </ApplicationSubPanel>
-          {this.props.guider.currentState === "LOADING" ? (
-            <ApplicationSubPanel>
-              <div className="loader-empty" />
-            </ApplicationSubPanel>
-          ) : null}
-        </ApplicationSubPanel>
-        <ApplicationSubPanel>
-          <ApplicationSubPanel.Header>
-            Opintojen edistyminen
-          </ApplicationSubPanel.Header>
-          {this.props.guider.currentStudent &&
-            this.props.guider.currentStudent.basic &&
-            this.props.guider.currentStudent.basic.id && (
-              <StudySuggestionMatrix
-                studentId={this.props.guider.currentStudent.basic.id}
-              />
-            )}
         </ApplicationSubPanel>
       </>
     );

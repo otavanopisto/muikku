@@ -219,7 +219,9 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
        * Button is shown only if modifying user is supervisor
        */
       const showAddToHopsButton =
-        props.user === "supervisor" && props.superVisorModifies;
+        props.user === "supervisor" &&
+        props.superVisorModifies &&
+        props.useCase === "hops-planing";
 
       /**
        * Suggestion list is shown only if not disabled, for supervisor only
@@ -310,7 +312,9 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
                   tabIndex={0}
                   className="table__data-content-wrapper table__data-content-wrapper--course"
                 >
-                  {course.courseNumber}
+                  {course.mandatory
+                    ? course.courseNumber
+                    : `${course.courseNumber}*`}
                 </span>
               </Dropdown>
             </ListItemIndicator>
