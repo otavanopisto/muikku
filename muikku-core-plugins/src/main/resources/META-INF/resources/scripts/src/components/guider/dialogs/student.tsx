@@ -155,14 +155,20 @@ class StudentDialog extends React.Component<
         type: "guider-student",
         component: <StudyHistory />,
       },
-      {
+    ];
+
+    if (
+      this.props.guider.currentStudent &&
+      this.props.guider.currentStudent.basic.studyProgrammeName ===
+        "Nettiperuskoulu"
+    )
+      tabs.push({
         id: "HOPS",
         name: "Hops",
         type: "guider-student",
         component: (
           <>
-            {this.props.guider.currentStudent &&
-              this.props.guider.currentStudent.hopsPhase &&
+            {this.props.guider.currentStudent.hopsPhase &&
               this.props.guider.currentStudent.hopsPhase !== null && (
                 <div
                   style={{
@@ -191,23 +197,26 @@ class StudentDialog extends React.Component<
                 </div>
               )}
 
-            {this.state.editHops ? (
-              <CompulsoryEducationHopsWizard
-                user="supervisor"
-                disabled={false}
-                superVisorModifies
-              />
-            ) : (
-              <CompulsoryEducationHopsWizard
-                user="supervisor"
-                disabled={true}
-                superVisorModifies={false}
-              />
-            )}
+            {this.props.guider.currentStudent.basic ? (
+              this.state.editHops ? (
+                <CompulsoryEducationHopsWizard
+                  user="supervisor"
+                  disabled={false}
+                  studentId={this.props.guider.currentStudent.basic.id}
+                  superVisorModifies
+                />
+              ) : (
+                <CompulsoryEducationHopsWizard
+                  user="supervisor"
+                  disabled={true}
+                  studentId={this.props.guider.currentStudent.basic.id}
+                  superVisorModifies={false}
+                />
+              )
+            ) : null}
           </>
         ),
-      },
-    ];
+      });
 
     //    If student has HOPS, we show the tab for it
 

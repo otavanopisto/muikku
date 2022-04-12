@@ -8,7 +8,6 @@ const StepZilla = require("react-stepzilla").default;
 
 import "~/sass/elements/wizard.scss";
 import { Step1, Step2, Step3, Step5, Step6 } from "./hops-steps";
-import { GuiderType } from "~/reducers/main-function/guider/index";
 import promisify from "~/util/promisify";
 import mApi from "~/lib/mApi";
 import {
@@ -67,6 +66,7 @@ export interface HopsBaseProps {
   phase?: number;
   disabled: boolean;
   superVisorModifies: boolean;
+  studentId: string;
 }
 
 /**
@@ -74,7 +74,6 @@ export interface HopsBaseProps {
  */
 interface CompulsoryEducationHopsWizardProps extends HopsBaseProps {
   i18n: i18nType;
-  guider: GuiderType;
   status: StatusType;
   displayNotification: DisplayNotificationTriggerType;
 }
@@ -159,12 +158,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
     /**
      * Student id get from guider or logged in student
      */
-    const studentId =
-      this.props.user === "supervisor"
-        ? this.props.guider.currentStudent.basic.id
-        : document
-            .querySelector('meta[name="muikku:loggedUser"]')
-            .getAttribute("value");
+    const studentId = this.props.studentId;
 
     try {
       /**
@@ -220,12 +214,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
     /**
      * Student id get from guider or logged in student
      */
-    const studentId =
-      this.props.user === "supervisor"
-        ? this.props.guider.currentStudent.basic.id
-        : document
-            .querySelector('meta[name="muikku:loggedUser"]')
-            .getAttribute("value");
+    const studentId = this.props.studentId;
 
     try {
       /**
@@ -284,12 +273,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
     /**
      * Student id get from guider or logged in student
      */
-    const studentId =
-      this.props.user === "supervisor"
-        ? this.props.guider.currentStudent.basic.id
-        : document
-            .querySelector('meta[name="muikku:loggedUser"]')
-            .getAttribute("value");
+    const studentId = this.props.studentId;
 
     try {
       const updatedEvent = (await promisify(
@@ -335,12 +319,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
     /**
      * Student id get from guider or logged in student
      */
-    const studentId =
-      this.props.user === "supervisor"
-        ? this.props.guider.currentStudent.basic.id
-        : document
-            .querySelector('meta[name="muikku:loggedUser"]')
-            .getAttribute("value");
+    const studentId = this.props.studentId;
 
     /**
      * Sleeper to delay data fetching if it happens faster than 1s
@@ -527,14 +506,8 @@ class CompulsoryEducationHopsWizard extends React.Component<
    * @returns JSX.Element
    */
   render() {
-    const {
-      i18n,
-      guider,
-      status,
-      displayNotification,
-      children,
-      ...baseProps
-    } = this.props;
+    const { i18n, status, displayNotification, children, ...baseProps } =
+      this.props;
 
     /**
      * Default steps
@@ -582,13 +555,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
         component: (
           <Step5
             {...baseProps}
-            studentId={
-              this.props.user === "supervisor"
-                ? this.props.guider.currentStudent.basic.id
-                : document
-                    .querySelector('meta[name="muikku:loggedUser"]')
-                    .getAttribute("value")
-            }
+            studentId={this.props.studentId}
             studyTimeEnd={this.state.basicInfo.studyTimeEnd}
             followUp={this.state.hopsFollowUp}
             studies={{
@@ -656,13 +623,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
           component: (
             <Step5
               {...baseProps}
-              studentId={
-                this.props.user === "supervisor"
-                  ? this.props.guider.currentStudent.basic.id
-                  : document
-                      .querySelector('meta[name="muikku:loggedUser"]')
-                      .getAttribute("value")
-              }
+              studentId={this.props.studentId}
               studyTimeEnd={this.state.basicInfo.studyTimeEnd}
               followUp={this.state.hopsFollowUp}
               studies={{
@@ -763,7 +724,6 @@ class CompulsoryEducationHopsWizard extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    guider: state.guider,
     status: state.status,
   };
 }

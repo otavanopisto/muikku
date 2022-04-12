@@ -14,6 +14,7 @@ import { HOPSDataType, HOPSType } from "~/reducers/main-function/hops";
 import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
 import CompulsoryEducationHopsWizard from "../../../general/hops-compulsory-education-wizard";
+import { AnyActionType } from "~/actions";
 
 /**
  * HopsProps
@@ -101,6 +102,9 @@ class Hops extends React.Component<HopsProps, HopsState> {
       <CompulsoryEducationHopsWizard
         phase={parseInt(this.props.hops.hopsPhase)}
         user="student"
+        studentId={document
+          .querySelector('meta[name="muikku:loggedUser"]')
+          .getAttribute("value")}
         disabled={false}
         superVisorModifies={false}
       />
@@ -154,7 +158,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ setHopsTo }, dispatch);
 }
 

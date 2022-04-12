@@ -51,6 +51,9 @@ class HopsCompulsoryEducationWizardDialog extends React.Component<
           user={this.props.user}
           disabled={this.props.disabled}
           superVisorModifies={this.props.superVisorModifies}
+          studentId={document
+            .querySelector('meta[name="muikku:loggedUser"]')
+            .getAttribute("value")}
         />
       </div>
     );
