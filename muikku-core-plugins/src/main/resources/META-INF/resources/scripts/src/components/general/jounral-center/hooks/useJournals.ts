@@ -12,7 +12,7 @@ import mApi from "~/lib/mApi";
 import {
   JournalPriority,
   JournalStatusType,
-} from "../../../../../../../@types/journal-center";
+} from "../../../../@types/journal-center";
 
 /**
  * initialState

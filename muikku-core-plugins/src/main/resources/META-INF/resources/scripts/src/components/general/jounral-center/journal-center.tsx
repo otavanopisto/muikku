@@ -9,7 +9,6 @@ import {
 } from "~/actions/base/notifications";
 import { IconButton } from "~/components/general/button";
 import Tabs, { Tab } from "~/components/general/tabs";
-import { createAllTabs } from "~/helper-functions/tabs";
 import { useJournals } from "./hooks/useJournals";
 import JournalListItemCurrent from "./journal-center-item-current";
 import SlideDrawer from "./slide-drawer";
@@ -187,7 +186,7 @@ const JournalCenter: React.FC<JournalCenterProps> = (props) => {
       /**
        * component
        */
-      component: () => (
+      component: (
         <JournalCentertContainer>
           <JournalList
             isLoadingList={journals.isLoadingList}
@@ -272,7 +271,7 @@ const JournalCenter: React.FC<JournalCenterProps> = (props) => {
       /**
        * component
        */
-      component: () => (
+      component: (
         <JournalCentertContainer>
           <JournalList
             isLoadingList={journals.isLoadingList}
@@ -320,7 +319,6 @@ const JournalCenter: React.FC<JournalCenterProps> = (props) => {
   return (
     <div>
       <Tabs
-        allTabs={createAllTabs(journallCenterTabs)}
         modifier="journal-center"
         activeTab={activeTab}
         onTabChange={handleTabChange}

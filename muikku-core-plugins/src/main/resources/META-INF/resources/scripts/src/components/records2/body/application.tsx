@@ -179,7 +179,7 @@ class StudiesApplication extends React.Component<
          * component
          * @returns JSX.Element
          */
-        component: () => (
+        component: (
           <ApplicationPanelBody modifier="tabs">
             <SummaryNew />
           </ApplicationPanelBody>
@@ -193,7 +193,7 @@ class StudiesApplication extends React.Component<
          * component
          * @returns JSX.Element
          */
-        component: () => (
+        component: (
           <ApplicationPanelBody modifier="tabs">
             <Records />
           </ApplicationPanelBody>
@@ -207,7 +207,7 @@ class StudiesApplication extends React.Component<
          * component
          * @returns JSX.Element
          */
-        component: () => (
+        component: (
           <ApplicationPanelBody modifier="tabs">
             <Hops />
           </ApplicationPanelBody>
@@ -221,7 +221,7 @@ class StudiesApplication extends React.Component<
          * component
          * @returns JSX.Element
          */
-        component: () => (
+        component: (
           <ApplicationPanelBody modifier="tabs">
             <YO />
           </ApplicationPanelBody>
@@ -235,7 +235,7 @@ class StudiesApplication extends React.Component<
          * component
          * @returns JSX.Element
          */
-        component: () => (
+        component: (
           <ApplicationPanelBody modifier="tabs">
             <StudyInfo />
           </ApplicationPanelBody>

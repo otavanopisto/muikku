@@ -1,5 +1,4 @@
 import * as React from "react";
-import { UseJournals } from "~/@types/journal-center";
 import calculateBoundingBoxes from "./helpers/calculateBoundingBoxes";
 import usePrevious from "./hooks/usePrevious";
 

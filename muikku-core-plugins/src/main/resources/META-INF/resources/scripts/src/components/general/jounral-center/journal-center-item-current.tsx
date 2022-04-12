@@ -4,7 +4,7 @@ import JournalPriorityChip from "./journal-item-list-filtters-chip";
 import {
   JournalNoteUpdate,
   JournalPriority,
-} from "../../../../../../@types/journal-center";
+} from "../../../@types/journal-center";
 import { UseJournals, JournalNoteRead } from "~/@types/journal-center";
 import JournalListEditorEdit from "./journal-center-item-current-edit";
 import { i18nType } from "~/reducers/base/i18n";

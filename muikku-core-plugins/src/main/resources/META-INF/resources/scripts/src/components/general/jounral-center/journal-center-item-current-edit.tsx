@@ -1,60 +1,49 @@
 import * as React from "react";
 import Button from "~/components/general/button";
 import {
-  JournalCreationType,
+  JournalNoteRead,
+  JournalNoteUpdate,
   JournalPriority,
   UseJournals,
 } from "~/@types/journal-center";
-import { JournalNoteCreate } from "../../../../../../@types/journal-center";
-import { i18nType } from "~/reducers/base/i18n";
 import DatePicker from "react-datepicker";
 import "~/sass/elements/datepicker/datepicker.scss";
-import * as moment from "moment";
+import { i18nType } from "~/reducers/base/i18n";
 
 /**
  * JournalListEditorProps
  */
-interface JournalListEditorNewProps {
-  /**
-   * Id of note owner (recipient)
-   */
-  newNoteOwnerId: number;
+interface JournalListEditorEditProps {
   journals: UseJournals;
+  selectedJournal?: JournalNoteRead;
   onCancelClick?: () => void;
-  onJournalSaveClick?: (
-    newJournal: JournalNoteCreate,
-    onSuccess?: () => void
-  ) => Promise<void>;
+  onJournalSaveUpdateClick?: (
+    journalId: number,
+    updatedJournal: JournalNoteUpdate
+  ) => void;
   i18n: i18nType;
 }
 
 /**
- * Creates journal list editor "new"
+ * Creates journal list editor "edit"
  * @param props props
  * @returns JSX.Element
  */
-const JournalListEditorNew: React.FC<JournalListEditorNewProps> = (props) => {
-  const { onCancelClick, onJournalSaveClick, newNoteOwnerId } = props;
+const JournalListEditorEdit: React.FC<JournalListEditorEditProps> = (props) => {
+  const { selectedJournal, onCancelClick, onJournalSaveUpdateClick, i18n } =
+    props;
 
-  const [journal, setJournal] = React.useState<JournalNoteCreate>({
-    title: "",
-    description: "",
-    type: JournalCreationType.MANUAL,
-    priority: JournalPriority.HIGH,
-    pinned: false,
-    owner: newNoteOwnerId,
-    startDate: null,
-    dueDate: null,
-  });
+  const [journal, setJournal] =
+    React.useState<JournalNoteUpdate>(selectedJournal);
 
   /**
    * Handles journal change
    * @param key name of updated property
    * @param value of updated property
    */
-  const handleJournalChange = <T extends keyof JournalNoteCreate>(
+  const handleJournalChange = <T extends keyof JournalNoteUpdate>(
     key: T,
-    value: JournalNoteCreate[T]
+    value: JournalNoteUpdate[T]
   ) => {
     const updateJournal = { ...journal };
 
@@ -64,21 +53,12 @@ const JournalListEditorNew: React.FC<JournalListEditorNewProps> = (props) => {
   };
 
   /**
-   * Handles save click
+   * handleSaveNewClick
    */
   const handleSaveClick = () => {
-    onJournalSaveClick(journal, () => {
-      setJournal({
-        title: "",
-        description: "",
-        type: JournalCreationType.MANUAL,
-        priority: JournalPriority.HIGH,
-        pinned: false,
-        owner: newNoteOwnerId,
-        startDate: null,
-        dueDate: null,
-      });
-    });
+    if (onJournalSaveUpdateClick) {
+      onJournalSaveUpdateClick(selectedJournal.id, journal);
+    }
   };
 
   return (
@@ -146,12 +126,12 @@ const JournalListEditorNew: React.FC<JournalListEditorNewProps> = (props) => {
 
         <div style={{ display: "flex", flexDirection: "column" }}>
           <label style={{ marginRight: "5px" }}>Alkamispäivä</label>
-          <DatePicker
+          {/* <DatePicker
             selected={journal.startDate && moment(journal.startDate)}
             onChange={(date, e) =>
               handleJournalChange("startDate", date && moment(date).toDate())
             }
-            locale={props.i18n.time.getLocale()}
+            locale={i18n.time.getLocale()}
           />
           <label style={{ marginRight: "5px" }}>Päättymispäivä</label>
           <DatePicker
@@ -159,8 +139,8 @@ const JournalListEditorNew: React.FC<JournalListEditorNewProps> = (props) => {
             onChange={(date, e) =>
               handleJournalChange("dueDate", date && moment(date).toDate())
             }
-            locale={props.i18n.time.getLocale()}
-          />
+            locale={i18n.time.getLocale()}
+          /> */}
         </div>
 
         <div style={{ display: "flex", flexDirection: "column" }}>
@@ -198,4 +178,4 @@ const JournalListEditorNew: React.FC<JournalListEditorNewProps> = (props) => {
   );
 };
 
-export default JournalListEditorNew;
+export default JournalListEditorEdit;
