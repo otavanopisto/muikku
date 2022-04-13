@@ -28,6 +28,7 @@ import ApplicationList, {
 import Button from "~/components/general/button";
 import RecordsAssignmentsListDialog from "../../dialogs/records-assignments-list-dialog";
 import { StatusType } from "~/reducers/base/status";
+import AnimateHeight from "react-animate-height";
 
 /**
  * RecordsProps
@@ -46,6 +47,7 @@ interface RecordsState {
   sortDirectionRecords?: string;
   sortedWorkspaces?: any;
   sortedRecords?: any;
+  workspacesContentOpened: number[];
 }
 
 const storedCurriculumIndex: any = {};
@@ -260,8 +262,33 @@ class Records extends React.Component<RecordsProps, RecordsState> {
     this.state = {
       sortDirectionWorkspaces: "desc",
       sortDirectionRecords: "desc",
+      workspacesContentOpened: [],
     };
   }
+
+  /**
+   * handleOpenWorkspaceContentClick
+   * @param workspaceId workspaceId
+   */
+  handleOpenWorkspaceContentClick =
+    (workspaceId: number) =>
+    (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+      const index = this.state.workspacesContentOpened.findIndex(
+        (w) => w === workspaceId
+      );
+
+      const updatedList = [...this.state.workspacesContentOpened];
+
+      if (index !== -1) {
+        updatedList.splice(index, 1);
+      } else {
+        updatedList.push(workspaceId);
+      }
+
+      this.setState({
+        workspacesContentOpened: updatedList,
+      });
+    };
 
   /**
    * goToWorkspace
@@ -412,14 +439,18 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                         ) {
                           extraClassNameState = "state-INCOMPLETE";
                         }
+
+                        const contentIsOpen =
+                          this.state.workspacesContentOpened.includes(
+                            workspace.id
+                          );
+
                         return (
                           <ApplicationListItem
                             className={`course course--studies ${extraClassNameState}`}
                             key={workspace.id}
-                            onClick={this.goToWorkspace.bind(
-                              this,
-                              user,
-                              workspace
+                            onClick={this.handleOpenWorkspaceContentClick(
+                              workspace.id
                             )}
                           >
                             <ApplicationListItemHeader
@@ -433,19 +464,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                                   ? "(" + workspace.nameExtension + ")"
                                   : null}
                               </span>
-                              <span className="application-list__header-primary">
-                                <RecordsAssignmentsListDialog
-                                  userEntityId={this.props.status.userId}
-                                  workspaceEntityId={workspace.id}
-                                  courseName={`${workspace.name} ${
-                                    workspace.nameExtension
-                                      ? `(${workspace.nameExtension})`
-                                      : null
-                                  }`}
-                                >
-                                  <Button>Nappi</Button>
-                                </RecordsAssignmentsListDialog>
-                              </span>
+
                               <div className="application-list__header-secondary">
                                 {getEvaluationRequestIfAvailable(
                                   this.props,
@@ -453,8 +472,40 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                                 )}
                                 {getAssessments(this.props, workspace)}
                                 {getActivity(this.props, workspace)}
+                                <span>
+                                  <RecordsAssignmentsListDialog
+                                    userEntityId={this.props.status.userId}
+                                    workspaceEntityId={workspace.id}
+                                    courseName={`${workspace.name} ${
+                                      workspace.nameExtension
+                                        ? `(${workspace.nameExtension})`
+                                        : null
+                                    }`}
+                                  >
+                                    <Button
+                                      buttonModifiers={["info", "assigments"]}
+                                    >
+                                      Tehtävät
+                                    </Button>
+                                  </RecordsAssignmentsListDialog>
+                                </span>
                               </div>
                             </ApplicationListItemHeader>
+                            <AnimateHeight height={contentIsOpen ? "auto" : 0}>
+                              Lorem Ipsum is simply dummy text of the printing
+                              and typesetting industry. Lorem Ipsum has been the
+                              industrys standard dummy text ever since the
+                              1500s, when an unknown printer took a galley of
+                              type and scrambled it to make a type specimen
+                              book. It has survived not only five centuries, but
+                              also the leap into electronic typesetting,
+                              remaining essentially unchanged. It was
+                              popularised in the 1960s with the release of
+                              Letraset sheets containing Lorem Ipsum passages,
+                              and more recently with desktop publishing software
+                              like Aldus PageMaker including versions of Lorem
+                              Ipsum.
+                            </AnimateHeight>
                           </ApplicationListItem>
                         );
                       })}
