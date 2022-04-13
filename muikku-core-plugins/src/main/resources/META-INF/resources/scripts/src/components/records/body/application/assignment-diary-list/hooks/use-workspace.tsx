@@ -1,14 +1,12 @@
 import * as React from "react";
-import { EvaluationStudyDiaryEvent } from "../../../../../../@types/evaluation";
 import promisify from "../../../../../../util/promisify";
 import mApi from "~/lib/mApi";
-import { MaterialCompositeRepliesType } from "../../../../../../reducers/workspaces/index";
 import { EvaluationWorkspace } from "~/@types/evaluation";
 
 /**
  * useWorkspace
  * Fetches and return diary data
- * @param userEntityId
+ * @param workspaceId workspaceId
  * @returns object containing state properties of loading, apiData and error
  */
 export const useWorkspace = (workspaceId: number) => {
@@ -22,6 +20,9 @@ export const useWorkspace = (workspaceId: number) => {
 
     let evaluationWorkspaces: EvaluationWorkspace;
 
+    /**
+     * fetchData
+     */
     const fetchData = async () => {
       try {
         evaluationWorkspaces = (await promisify(

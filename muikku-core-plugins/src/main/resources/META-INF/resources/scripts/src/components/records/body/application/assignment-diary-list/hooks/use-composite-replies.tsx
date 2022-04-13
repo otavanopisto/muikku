@@ -1,13 +1,13 @@
 import * as React from "react";
-import { EvaluationStudyDiaryEvent } from "../../../../../../@types/evaluation";
 import promisify from "../../../../../../util/promisify";
 import mApi from "~/lib/mApi";
 import { MaterialCompositeRepliesType } from "../../../../../../reducers/workspaces/index";
 
 /**
- * useDiary
- * Fetches and return diary data
- * @param userEntityId
+ * Fetches and return composite replies data
+ *
+ * @param userEntityId userEntityId
+ * @param workspaceId workspaceId
  * @returns object containing state properties of loading, apiData and error
  */
 export const useCompositeReplies = (
@@ -27,6 +27,9 @@ export const useCompositeReplies = (
 
     let evaluationCompositeReplies: MaterialCompositeRepliesType[] = [];
 
+    /**
+     * fetchData
+     */
     const fetchData = async () => {
       try {
         evaluationCompositeReplies = (await promisify(
@@ -45,7 +48,7 @@ export const useCompositeReplies = (
     };
 
     fetchData();
-  }, [userEntityId]);
+  }, [userEntityId, workspaceId]);
 
   return {
     loadingCompositeReplies,

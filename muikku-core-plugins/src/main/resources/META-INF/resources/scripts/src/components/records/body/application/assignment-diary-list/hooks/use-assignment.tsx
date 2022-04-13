@@ -4,9 +4,9 @@ import mApi from "~/lib/mApi";
 import { MaterialAssignmentType } from "~/reducers/workspaces";
 
 /**
- * useDiary
  * Fetches and return diary data
- * @param workspaceEntityId
+ *
+ * @param workspaceEntityId workspaceEntityId
  * @returns object containing state properties of loading, apiData and error
  */
 export const useAssignments = (workspaceEntityId: number) => {
@@ -19,11 +19,14 @@ export const useAssignments = (workspaceEntityId: number) => {
   React.useEffect(() => {
     setLoadingAssignments(true);
 
+    /**
+     * fetchData
+     */
     const fetchData = async () => {
       try {
-        let [assigments] = await Promise.all([
+        const [assigments] = await Promise.all([
           (async () => {
-            let assignmentsExcercise =
+            const assignmentsExcercise =
               ((await promisify(
                 mApi().workspace.workspaces.materials.read(workspaceEntityId, {
                   assignmentType: "EXERCISE",
@@ -31,7 +34,7 @@ export const useAssignments = (workspaceEntityId: number) => {
                 "callback"
               )()) as MaterialAssignmentType[]) || [];
 
-            let assignmentsEvaluated =
+            const assignmentsEvaluated =
               ((await promisify(
                 mApi().workspace.workspaces.materials.read(workspaceEntityId, {
                   assignmentType: "EVALUATED",
@@ -39,7 +42,7 @@ export const useAssignments = (workspaceEntityId: number) => {
                 "callback"
               )()) as MaterialAssignmentType[]) || [];
 
-            let assignments = [
+            const assignments = [
               ...assignmentsEvaluated,
               ...assignmentsExcercise,
             ];

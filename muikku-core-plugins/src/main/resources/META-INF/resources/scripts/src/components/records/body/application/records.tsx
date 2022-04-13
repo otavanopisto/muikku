@@ -25,6 +25,9 @@ import ApplicationList, {
   ApplicationListItem,
   ApplicationListItemHeader,
 } from "~/components/general/application-list";
+import Button from "~/components/general/button";
+import RecordsAssignmentsListDialog from "../../dialogs/records-assignments-list-dialog";
+import { StatusType } from "~/reducers/base/status";
 
 /**
  * RecordsProps
@@ -32,6 +35,7 @@ import ApplicationList, {
 interface RecordsProps {
   i18n: i18nType;
   records: RecordsType;
+  status: StatusType;
 }
 
 /**
@@ -429,6 +433,19 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                                   ? "(" + workspace.nameExtension + ")"
                                   : null}
                               </span>
+                              <span className="application-list__header-primary">
+                                <RecordsAssignmentsListDialog
+                                  userEntityId={this.props.status.userId}
+                                  workspaceEntityId={workspace.id}
+                                  courseName={`${workspace.name} ${
+                                    workspace.nameExtension
+                                      ? `(${workspace.nameExtension})`
+                                      : null
+                                  }`}
+                                >
+                                  <Button>Nappi</Button>
+                                </RecordsAssignmentsListDialog>
+                              </span>
                               <div className="application-list__header-secondary">
                                 {getEvaluationRequestIfAvailable(
                                   this.props,
@@ -554,6 +571,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     records: state.records,
+    status: state.status,
   };
 }
 

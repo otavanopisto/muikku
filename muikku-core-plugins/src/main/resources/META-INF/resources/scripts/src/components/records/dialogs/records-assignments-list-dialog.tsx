@@ -7,8 +7,9 @@ import "~/sass/elements/form.scss";
 import "~/sass/elements/dialog.scss";
 import "~/sass/elements/records.scss";
 import { StateType } from "~/reducers";
-import { StudyAssignmentsList } from "./study-list";
-import { DiaryList } from "./diary-list";
+import { StudyAssignmentsList } from "../body/application/assignment-diary-list/study-list";
+import { DiaryList } from "../body/application/assignment-diary-list/diary-list";
+import { AnyActionType } from "~/actions";
 
 /**
  * RecordsAssigmentsListDialogProps
@@ -89,7 +90,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 

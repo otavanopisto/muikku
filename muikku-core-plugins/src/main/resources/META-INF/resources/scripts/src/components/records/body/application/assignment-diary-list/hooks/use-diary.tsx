@@ -4,10 +4,10 @@ import promisify from "../../../../../../util/promisify";
 import mApi from "~/lib/mApi";
 
 /**
- * useDiary
  * Fetches and return diary data
- * @param userEntityId
- * @param workspaceEntityId
+ *
+ * @param userEntityId userEntityId
+ * @param workspaceEntityId workspaceEntityId
  * @returns object containing state properties of loading, apiData and error
  */
 export const useDiary = (userEntityId: number, workspaceEntityId: number) => {
@@ -22,6 +22,9 @@ export const useDiary = (userEntityId: number, workspaceEntityId: number) => {
 
     let studyDiaryEvents: EvaluationStudyDiaryEvent[] = [];
 
+    /**
+     * fetchData
+     */
     const fetchData = async () => {
       try {
         studyDiaryEvents = (await promisify(
@@ -42,7 +45,7 @@ export const useDiary = (userEntityId: number, workspaceEntityId: number) => {
     };
 
     fetchData();
-  }, [userEntityId]);
+  }, [userEntityId, workspaceEntityId]);
 
   return { loadingDiary, diaryData, serverError };
 };

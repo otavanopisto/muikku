@@ -74,6 +74,12 @@
   }
 }
 
+.dialog__window--assignments {
+  @include breakpoint($breakpoint-pad) {
+    max-width: 1000px;
+  }
+}
+
 .dialog__window--guider-student {
   position: absolute;
 
