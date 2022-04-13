@@ -7,8 +7,8 @@ import "~/sass/elements/form.scss";
 import "~/sass/elements/dialog.scss";
 import "~/sass/elements/records.scss";
 import { StateType } from "~/reducers";
-import { StudyAssignmentsList } from "../body/application/records/study-list";
-import { DiaryList } from "../body/application/records/diary-list";
+import { StudyAssignmentsList } from "./study-list";
+import { DiaryList } from "./diary-list";
 
 /**
  * RecordsAssigmentsListDialogProps

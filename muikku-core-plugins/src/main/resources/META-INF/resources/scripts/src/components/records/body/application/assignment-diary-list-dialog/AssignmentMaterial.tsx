@@ -60,19 +60,17 @@ export class AssignmentMaterial extends React.Component<
         usedAs={"evaluationTool"}
         userEntityId={this.props.userEntityId}
       >
-        {(props, state, stateConfiguration) => {
-          return (
-            <div className="evaluation-modal__item-body">
-              <MaterialLoaderContent
-                {...props}
-                {...state}
-                stateConfiguration={stateConfiguration}
-              />
+        {(props, state, stateConfiguration) => (
+          <div className="evaluation-modal__item-body">
+            <MaterialLoaderContent
+              {...props}
+              {...state}
+              stateConfiguration={stateConfiguration}
+            />
 
-              <MaterialLoaderCorrectAnswerCounter {...props} {...state} />
-            </div>
-          );
-        }}
+            <MaterialLoaderCorrectAnswerCounter {...props} {...state} />
+          </div>
+        )}
       </MaterialLoader>
     );
   }

@@ -208,8 +208,6 @@ export const DiaryListItem: React.FC<DiaryListItemProps> = ({
  * This should sanitize html
  * @param htmlString string that contains html
  */
-const createHtmlMarkup = (htmlString: string) => {
-  return {
-    __html: htmlString,
-  };
-};
+const createHtmlMarkup = (htmlString: string) => ({
+  __html: htmlString,
+});
