@@ -38,6 +38,7 @@ import {
   loadCurrentWorkspaceUserGroupPermissions,
   loadWorkspaceChatStatus,
   loadWholeWorkspaceHelp,
+  setAvailableCurriculums,
 } from "~/actions/workspaces";
 import {
   loadAnnouncementsAsAClient,
@@ -55,7 +56,6 @@ import { CKEDITOR_VERSION } from "~/lib/ckeditor";
 import { displayNotification } from "~/actions/base/notifications";
 import { loadProfileChatSettings } from "~/actions/main-function/profile";
 import WorkspaceEvaluationBody from "../components/workspace/workspaceEvaluation/index";
-import * as moment from "moment";
 import {
   loadEvaluationAssessmentRequestsFromServer,
   loadEvaluationGradingSystemFromServer,
@@ -65,6 +65,11 @@ import {
   loadListOfUnimportantAssessmentIdsFromServer,
   setSelectedWorkspaceId,
 } from "~/actions/main-function/evaluation/evaluationActions";
+import { registerLocale } from "react-datepicker";
+import * as moment from "moment";
+import { enGB, fi } from "date-fns/locale";
+registerLocale("fi", fi);
+registerLocale("enGB", enGB);
 
 moment.locale("fi");
 
@@ -370,7 +375,7 @@ export default class Workspace extends React.Component<
 
   /**
    * renderWorkspaceHome
-   * @param props
+   * @param props props
    * @returns JSX.Element
    */
   renderWorkspaceHome(props: RouteComponentProps<any>) {
@@ -405,6 +410,8 @@ export default class Workspace extends React.Component<
           },
         }) as Action
       );
+
+      this.props.store.dispatch(setAvailableCurriculums() as Action);
 
       if (
         state.status.loggedIn &&

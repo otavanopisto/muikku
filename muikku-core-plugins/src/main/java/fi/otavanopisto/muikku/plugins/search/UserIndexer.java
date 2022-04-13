@@ -1,9 +1,7 @@
 package fi.otavanopisto.muikku.plugins.search;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,6 +16,7 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.User;
+import fi.otavanopisto.muikku.search.IndexedUser;
 import fi.otavanopisto.muikku.search.SearchIndexer;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
@@ -58,6 +57,32 @@ public class UserIndexer {
     try {
       User user = userController.findUserByIdentifier(userIdentifier);
       if (user != null) {
+        IndexedUser indexedUser = new IndexedUser();
+        
+        indexedUser.setIdentifier(user.getIdentifier());
+        indexedUser.setSchoolDataSource(user.getSchoolDataSource());
+
+        indexedUser.setFirstName(user.getFirstName());
+        indexedUser.setLastName(user.getLastName());
+        indexedUser.setNickName(user.getNickName());  
+        indexedUser.setDisplayName(user.getDisplayName());
+
+        indexedUser.setCurriculumIdentifier(user.getCurriculumIdentifier());
+        indexedUser.setOrganizationIdentifier(user.getOrganizationIdentifier());
+
+        indexedUser.setStudyProgrammeName(user.getStudyProgrammeName());
+        indexedUser.setStudyProgrammeIdentifier(user.getStudyProgrammeIdentifier());
+        indexedUser.setStudyStartDate(user.getStudyStartDate());
+        indexedUser.setStudyEndDate(user.getStudyEndDate());
+        indexedUser.setStudyTimeEnd(user.getStudyTimeEnd());
+        indexedUser.setHasEvaluationFees(user.getHasEvaluationFees());
+        indexedUser.setHidden(user.getHidden());
+
+        indexedUser.setNationality(user.getNationality());
+        indexedUser.setLanguage(user.getLanguage());
+        indexedUser.setMunicipality(user.getMunicipality());
+        indexedUser.setSchool(user.getSchool());
+
         // TODO: we have only one role here but a user(entity) can have several roles via several userschooldataidentifiers
         UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(user.getSchoolDataSource(), user.getIdentifier());
         EnvironmentRoleArchetype archetype = ((userSchoolDataIdentifier != null) && (userSchoolDataIdentifier.getRole() != null)) ? 
@@ -69,10 +94,10 @@ public class UserIndexer {
           boolean isDefaultIdentifier = (userEntity.getDefaultIdentifier() != null && userEntity.getDefaultSchoolDataSource() != null) ?
               userEntity.getDefaultIdentifier().equals(user.getIdentifier()) && 
               userEntity.getDefaultSchoolDataSource().getIdentifier().equals(user.getSchoolDataSource()) : false;
-          Map<String, Object> extra = new HashMap<>();
-          extra.put("archetype", archetype);
-          extra.put("userEntityId", userEntity.getId());
-          extra.put("isDefaultIdentifier", isDefaultIdentifier);
+
+          indexedUser.setArchetype(archetype);
+          indexedUser.setUserEntityId(userEntity.getId());
+          indexedUser.setDefaultIdentifier(isDefaultIdentifier);
           
           Set<Long> workspaceEntityIds = new HashSet<Long>();
           Set<Long> userGroupIds = new HashSet<Long>();
@@ -82,15 +107,15 @@ public class UserIndexer {
           for (WorkspaceEntity workspace : workspaces) {
             workspaceEntityIds.add(workspace.getId());
           }
-            
-          extra.put("workspaces", workspaceEntityIds);
+
+          indexedUser.setWorkspaces(workspaceEntityIds);
           
           List<UserGroupEntity> userGroups = userGroupEntityController.listUserGroupsByUserIdentifier(userIdentifier);
           for (UserGroupEntity userGroup : userGroups) {
             userGroupIds.add(userGroup.getId());
           }
           
-          extra.put("groups", userGroupIds);
+          indexedUser.setGroups(userGroupIds);
 
           if (EnvironmentRoleArchetype.TEACHER.equals(archetype) ||
               EnvironmentRoleArchetype.STUDY_GUIDER.equals(archetype) ||
@@ -98,13 +123,11 @@ public class UserIndexer {
               EnvironmentRoleArchetype.MANAGER.equals(archetype) ||
               EnvironmentRoleArchetype.ADMINISTRATOR.equals(archetype)) {
             String userDefaultEmailAddress = userEmailEntityController.getUserDefaultEmailAddress(userEntity, false);
-            extra.put("email", userDefaultEmailAddress);
+            indexedUser.setEmail(userDefaultEmailAddress);
           }
-          
-          indexer.index(User.class.getSimpleName(), user, extra);
-        } else {
-          indexer.index(User.class.getSimpleName(), user);
         }
+        
+        indexer.index(User.class.getSimpleName(), indexedUser);
       } else {
         logger.info(String.format("Removing user %s/%s from index", identifier, dataSource));
         removeUser(dataSource, identifier);
@@ -139,7 +162,8 @@ public class UserIndexer {
 
   public void removeUser(String dataSource, String identifier) {
     try {
-      indexer.remove(User.class.getSimpleName(), String.format("%s/%s", identifier, dataSource));
+      final String INDEX_NAME = "User";
+      indexer.remove(INDEX_NAME, String.format("%s/%s", identifier, dataSource));
     } catch (Exception ex) {
       logger.log(Level.SEVERE, String.format("Removal of user %s/%s from index failed", dataSource, identifier), ex);
     } 

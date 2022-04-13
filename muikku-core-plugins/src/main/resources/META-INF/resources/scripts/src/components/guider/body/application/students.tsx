@@ -3,14 +3,12 @@ import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import * as queryString from "query-string";
 import { i18nType } from "~/reducers/base/i18n";
-
+import StudentDialog from "../../dialogs/student";
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
-
 import "~/sass/elements/label.scss";
 import "~/sass/elements/user.scss";
 import "~/sass/elements/application-list.scss";
-
 import BodyScrollLoader from "~/components/general/body-scroll-loader";
 import SelectableList from "~/components/general/selectable-list";
 import {
@@ -51,7 +49,9 @@ interface GuiderStudentsProps {
 /**
  * GuiderStudentsState
  */
-interface GuiderStudentsState {}
+interface GuiderStudentsState {
+  isOpen: boolean;
+}
 
 /**
  * GuiderStudents
@@ -75,9 +75,34 @@ class GuiderStudents extends BodyScrollLoader<
     this.loadMoreTriggerFunctionLocation = "loadMoreStudents";
     //Cancel loading more if that property exists
     this.cancellingLoadingPropertyLocation = "guiderStudentsCurrent";
+    this.state = {
+      isOpen: false,
+    };
 
     this.onStudentClick = this.onStudentClick.bind(this);
   }
+
+  /**
+   * getBackByHash clears the selectedStudent hash from the url
+   * @returns New hash string
+   */
+  getBackByHash = (): string => {
+    let locationData = queryString.parse(
+      document.location.hash.split("?")[1] || "",
+      { arrayFormat: "bracket" }
+    );
+    delete locationData.c;
+    return (
+      "#?" + queryString.stringify(locationData, { arrayFormat: "bracket" })
+    );
+  };
+
+  /**
+   * onStudentClose when the student is closed, the hash must be reset
+   */
+  onStudentClose = () => {
+    location.hash = this.getBackByHash();
+  };
 
   /**
    * onStudentClick
@@ -105,10 +130,7 @@ class GuiderStudents extends BodyScrollLoader<
           <span>{"ERROR"}</span>
         </div>
       );
-    } else if (
-      this.props.guiderStudentsState.length === 0 &&
-      !this.props.guiderStudentsCurrent
-    ) {
+    } else if (this.props.guider.students.length === 0) {
       return (
         <div className="empty">
           <span>
@@ -119,54 +141,60 @@ class GuiderStudents extends BodyScrollLoader<
     }
 
     return (
-      <BodyScrollKeeper hidden={!!this.props.guiderStudentsCurrent}>
-        <SelectableList
-          as={ApplicationList}
-          selectModeModifiers="select-mode"
-          extra={
-            this.props.guiderStudentsState === "LOADING_MORE" ? (
-              <div className="application-list__item loader-empty" />
-            ) : null
-          }
-          dataState={this.props.guiderStudentsState}
-        >
-          {this.props.guider.students.map(
-            (student: GuiderStudentType, index: number) => {
-              const isSelected = this.props.guider.selectedStudentsIds.includes(
-                student.id
-              );
-              return {
-                as: ApplicationListItem,
-                className: "user user--guider",
-                onSelect: this.props.addToGuiderSelectedStudents.bind(
-                  null,
-                  student
-                ),
-                onDeselect: this.props.removeFromGuiderSelectedStudents.bind(
-                  null,
-                  student
-                ),
-                onEnter: this.onStudentClick.bind(this, student),
-                isSelected,
-                key: student.id,
-                checkboxId: `user-select-${index}`,
-                checkboxClassName: "user__selector",
-                /**
-                 * contents
-                 * @param checkbox checkbox
-                 */
-                contents: (checkbox: React.ReactElement<any>) => (
-                  <Student
-                    index={index}
-                    checkbox={checkbox}
-                    student={student}
-                  />
-                ),
-              };
+      <>
+        <StudentDialog
+          student={this.props.guider.currentStudent}
+          isOpen={this.props.guider.currentStudent !== null}
+          onClose={this.onStudentClose}
+        />
+        <BodyScrollKeeper hidden={false}>
+          <SelectableList
+            as={ApplicationList}
+            selectModeModifiers="select-mode"
+            extra={
+              this.props.guiderStudentsState === "LOADING_MORE" ? (
+                <div className="application-list__item loader-empty" />
+              ) : null
             }
-          )}
-        </SelectableList>
-      </BodyScrollKeeper>
+            dataState={this.props.guiderStudentsState}
+          >
+            {this.props.guider.students.map(
+              (student: GuiderStudentType, index: number) => {
+                const isSelected =
+                  this.props.guider.selectedStudentsIds.includes(student.id);
+                return {
+                  as: ApplicationListItem,
+                  className: "user user--guider",
+                  onSelect: this.props.addToGuiderSelectedStudents.bind(
+                    null,
+                    student
+                  ),
+                  onDeselect: this.props.removeFromGuiderSelectedStudents.bind(
+                    null,
+                    student
+                  ),
+                  onEnter: this.onStudentClick.bind(this, student),
+                  isSelected,
+                  key: student.id,
+                  checkboxId: `user-select-${index}`,
+                  checkboxClassName: "user__selector",
+                  /**
+                   * contents
+                   * @param checkbox checkbox
+                   */
+                  contents: (checkbox: React.ReactElement<any>) => (
+                    <Student
+                      index={index}
+                      checkbox={checkbox}
+                      student={student}
+                    />
+                  ),
+                };
+              }
+            )}
+          </SelectableList>
+        </BodyScrollKeeper>
+      </>
     );
   }
 }

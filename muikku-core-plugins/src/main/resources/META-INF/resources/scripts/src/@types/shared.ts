@@ -456,61 +456,11 @@ export interface UploadingValue {
 }
 
 /**
- * Suggestion
+ * OPSsuitability
  */
-export interface Suggestion {
-  id: number;
-  name: string;
-  subject: string;
-  courseNumber: number;
-  urlName: string;
-  hasCustomImage: boolean;
-  nameExtension: string | null;
-  courseType: CourseType;
-  description?: string | null;
-}
-
-/**
- * FOR SOME REASON... backend's course type is defined
- * in finnish in the backend side
- */
-type CourseType = "Nonstop" | "Ryhmäkurssi";
-
-/**
- * SuggestionWithWorkspaceInfo
- */
-export interface SuggestionWithWorkspaceInfo extends Suggestion {}
-
-/**
- * StudentCourseChoice
- */
-export interface StudentCourseChoice {
-  subject: string;
-  courseNumber: number;
-}
-
-/**
- * StudentActivityByStatus
- */
-export interface StudentActivityByStatus {
-  /**
-   * List of ongoing courses
-   */
-  onGoingList: StudentActivityCourse[];
-  /**
-   * List of suggested courses for next
-   */
-  suggestedNextList: StudentActivityCourse[];
-  /**
-   * List of suggested optional courses
-   */
-  suggestedOptionalList: StudentActivityCourse[];
-  /**
-   * List of transfered courses
-   */
-  transferedList: StudentActivityCourse[];
-  /**
-   * List of graded courses
-   */
-  gradedList: StudentActivityCourse[];
+export interface OPSsuitability {
+  MANDATORY: string;
+  UNSPECIFIED_OPTIONAL: string;
+  NATIONAL_LEVEL_OPTIONAL: string;
+  SCHOOL_LEVEL_OPTIONAL: string;
 }

@@ -93,11 +93,12 @@ import {
 } from "~/actions/main-function/records/yo";
 import { updateSummary } from "~/actions/main-function/records/summary";
 import loadOrganizationSummary from "~/actions/organization/summary";
-
+import { loadCalendarEvents } from "~/actions/main-function/calendar";
 import Chat from "../components/chat/chat";
 import EvaluationBody from "../components/evaluation/body";
 import CeeposDone from "../components/ceepos/done";
 import CeeposPay from "../components/ceepos/pay";
+import * as moment from "moment";
 import {
   loadEvaluationAssessmentRequestsFromServer,
   loadEvaluationGradingSystemFromServer,
@@ -106,12 +107,14 @@ import {
   loadListOfImportantAssessmentIdsFromServer,
   loadListOfUnimportantAssessmentIdsFromServer,
 } from "~/actions/main-function/evaluation/evaluationActions";
-import * as moment from "moment";
 import {
   loadCeeposPurchase,
   loadCeeposPurchaseAndPay,
 } from "~/actions/main-function/ceepos";
-import RecordsBody2 from "~/components/records2/body";
+import { registerLocale } from "react-datepicker";
+import { enGB, fi } from "date-fns/locale";
+registerLocale("fi", fi);
+registerLocale("enGB", enGB);
 
 moment.locale("fi");
 
@@ -269,24 +272,20 @@ export default class MainFunction extends React.Component<
       { arrayFormat: "bracket" }
     );
 
-    if (!originalData.c) {
-      const filters: GuiderActiveFiltersType = {
-        workspaceFilters: (originalData.w || []).map((num: string) =>
-          parseInt(num)
-        ),
-        labelFilters: (originalData.l || []).map((num: string) =>
-          parseInt(num)
-        ),
-        userGroupFilters: (originalData.u || []).map((num: string) =>
-          parseInt(num)
-        ),
-        query: originalData.q || "",
-      };
-      this.props.store.dispatch(loadStudents(filters) as Action);
-      return;
+    const filters: GuiderActiveFiltersType = {
+      workspaceFilters: (originalData.w || []).map((num: string) =>
+        parseInt(num)
+      ),
+      labelFilters: (originalData.l || []).map((num: string) => parseInt(num)),
+      userGroupFilters: (originalData.u || []).map((num: string) =>
+        parseInt(num)
+      ),
+      query: originalData.q || "",
+    };
+    this.props.store.dispatch(loadStudents(filters) as Action);
+    if (originalData.c) {
+      this.props.store.dispatch(loadStudent(originalData.c) as Action);
     }
-
-    this.props.store.dispatch(loadStudent(originalData.c) as Action);
   }
 
   /**
@@ -585,6 +584,14 @@ export default class MainFunction extends React.Component<
         titleActions.updateTitle(
           this.props.store.getState().i18n.text.get("plugin.site.title")
         )
+      );
+      this.props.store.dispatch(
+        loadCalendarEvents(
+          this.props.store.getState().status.userId,
+          moment().day(0).format(),
+          moment().day(5).format(),
+          "guidance"
+        ) as Action
       );
       this.loadChatSettings();
     }
@@ -972,7 +979,7 @@ export default class MainFunction extends React.Component<
       this.loadChatSettings();
     }
 
-    return <RecordsBody2 />;
+    return <RecordsBody />;
   }
 
   /**

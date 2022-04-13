@@ -14,10 +14,7 @@ import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.OrganizationRestrict
 public interface SearchProvider {
   
   public String getName();
-  public SearchResult search(String query, String[] fields, int start, int maxResults, Class<?>... types);
-  public SearchResult freeTextSearch(String text, int start, int maxResults);
-  public SearchResult matchAllSearch(int start, int maxResults);
-  public SearchResult matchAllSearch(int start, int maxResults, Class<?>... types);
+
   public void init();
   public void deinit();
   
@@ -28,7 +25,7 @@ public interface SearchProvider {
   public SearchResult findWorkspace(SchoolDataIdentifier identifier); 
   
   public CommunicatorMessageSearchBuilder searchCommunicatorMessages();
-  public SearchResults<List<IndexedCommunicatorMessage>> searchCommunicatorMessages(String queryString, long senderId, IndexedCommunicatorMessageSender sender, List<IndexedCommunicatorMessageRecipient> recipients, Long searchId, Date created, Set<Long> tags, int start, int maxResults, List<Sort> sorts);
+  public SearchResults<List<IndexedCommunicatorMessage>> searchCommunicatorMessages(String queryString, long senderId, IndexedCommunicatorMessageSender sender, List<IndexedCommunicatorMessageRecipient> recipients, Date created, Set<Long> tags, int start, int maxResults, List<Sort> sorts);
 
   public SearchResult findUser(SchoolDataIdentifier identifier, boolean includeInactive);
   public SearchResult searchUsers(List<OrganizationEntity> organizations, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, Collection<Long> groups,

@@ -283,7 +283,7 @@ public class CalendarRESTService {
    * 
    * @param eventId Event id  
    * 
-   * @return Null if deleting own event, modified event if deleting participation
+   * @return 204 (no content)
    */
   @Path("/event/{EVENTID}")
   @DELETE
@@ -302,7 +302,6 @@ public class CalendarRESTService {
     
     if (event.getUserEntityId().equals(userEntityId)) {
       calendarController.deleteEvent(event);
-      event = null;
     }
     else {
       CalendarEventParticipant participant = calendarController.findParticipant(event, userEntityId);
@@ -314,7 +313,7 @@ public class CalendarRESTService {
       }
     }
     
-    return Response.ok(toRestModel(event)).build();
+    return Response.noContent().build();
   }
   
   /**
