@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.rest;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 
 public class StudentContactLogEntryRestModel {
 
@@ -8,10 +9,11 @@ public class StudentContactLogEntryRestModel {
     super();
   }
 
-  public StudentContactLogEntryRestModel(Long id, String text, String creatorName, OffsetDateTime entryDate, StudentContactLogEntryType type, Object comments, Boolean archived) {
+  public StudentContactLogEntryRestModel(Long id, String text, Long creatorId, String creatorName, OffsetDateTime entryDate, StudentContactLogEntryType type, List<StudentContactLogEntryCommentRestModel> comments, Boolean archived) {
     super();
     this.id = id;
     this.text = text;
+    this.setCreatorId(creatorId);
     this.creatorName = creatorName;
     this.entryDate = entryDate;
     this.type = type;
@@ -33,6 +35,14 @@ public class StudentContactLogEntryRestModel {
 
   public void setText(String text) {
     this.text = text;
+  }
+
+  public Long getCreatorId() {
+    return creatorId;
+  }
+
+  public void setCreatorId(Long creatorId) {
+    this.creatorId = creatorId;
   }
 
   public String getCreatorName() {
@@ -59,11 +69,11 @@ public class StudentContactLogEntryRestModel {
     this.type = type;
   }
 
-  public Object getComments() {
+  public List<StudentContactLogEntryCommentRestModel> getComments() {
     return comments;
   }
 
-  public void setComments(Object comments) {
+  public void setComments(List<StudentContactLogEntryCommentRestModel> comments) {
     this.comments = comments;
   }
 
@@ -77,9 +87,10 @@ public class StudentContactLogEntryRestModel {
 
   private Long id;
   private String text;
+  private Long creatorId;
   private String creatorName;
   private OffsetDateTime entryDate;
   private StudentContactLogEntryType type;
-  private Object comments;
+  private List<StudentContactLogEntryCommentRestModel> comments;
   private Boolean archived;
 }

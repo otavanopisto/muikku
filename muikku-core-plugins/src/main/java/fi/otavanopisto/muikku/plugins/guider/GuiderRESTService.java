@@ -715,6 +715,7 @@ public class GuiderRESTService extends PluginRESTService {
    * {
    * id: 123;
    * text: "something something",
+   * creatorId: 23,
    * creatorName: "Etunimi Sukunimi";
    * entryDate: 2021-02-15;
    * type: "PHONE";
@@ -741,7 +742,6 @@ public class GuiderRESTService extends PluginRESTService {
    * 
    * payload: {
    * text: "something something",
-   * creatorName: "Etunimi Sukunimi";
    * entryDate: 2021-02-15;
    * type: "PHONE";
    * }
@@ -772,17 +772,26 @@ public class GuiderRESTService extends PluginRESTService {
   /**
    * GET mApi().guider.users.contactLog(userEntityId)
    * 
-   * Returns a list of student's contact log entries
+   * Returns a list of student's contact log entries (comments included)
    * 
    * Output:
    * 
-   * StudentContactLogEntryRestModel: {
-   * id: 123, 
-   * text: "something something",
-   * creatorName: "Etunimi Sukunimi", 
-   * entryDate: 2021-02-15, 
-   * type: "FACE2FACE"
-   * }
+   StudentContactLogEntryRestModel: {
+     id: 123, 
+     text: "something something",
+     creatorId: 13,
+     creatorName: "Etunimi Sukunimi", 
+     entryDate: 2021-02-15, 
+     type: "FACE2FACE"
+     comments: [{
+       id: 12,
+       entry: 123,
+       text: "plaa",
+       creatorId: 2,
+       creatorName: Etunimi Sukunimi,
+       commentDate: 2022-04-03
+    }]
+}
    */
   @GET
   @Path("/users/{ID}/contactLog")
@@ -850,8 +859,7 @@ public class GuiderRESTService extends PluginRESTService {
    * 
    * payload: {
    * text: "plaa", 
-   * commentDate: Date, 
-   * creatorName: "Etunimi Sukunimi"
+   * commentDate: Date
    * }
    * 
    * @param userEntityId

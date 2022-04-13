@@ -15,6 +15,12 @@ public class StudentContactLogEntryCommentRestModel{
     return text;
   }
 
+  public Long getCreatorId() {
+    return creatorId;
+  }
+  public void setCreatorId(Long creatorId) {
+    this.creatorId = creatorId;
+  }
   public void setCommentDate(Date commentDate) {
     this.commentDate = commentDate;
   }
@@ -42,6 +48,7 @@ public class StudentContactLogEntryCommentRestModel{
   private Long id;
   private Long entry;
   private String text;
+  private Long creatorId;
   private String creatorName;
   private Date commentDate;
 }
