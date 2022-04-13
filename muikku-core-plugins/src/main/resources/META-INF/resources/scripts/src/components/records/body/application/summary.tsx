@@ -20,6 +20,7 @@ import moment from "~/lib/moment";
 import { StatusType } from "~/reducers/base/status";
 import Avatar from "~/components/general/avatar";
 import { getName } from "~/util/modifiers";
+import JournalCenter from "~/components/general/jounral-center/journal-center";
 
 /**
  * SummaryProps
@@ -263,6 +264,17 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
           {studentBasicInfo}
           {this.props.status.isActiveUser ? (
             <div className="react-container">
+              <div className="application-sub-panel">
+                <div className="application-sub-panel__header">
+                  Tehtävät ja omat muistutukset
+                </div>
+                <JournalCenter
+                  usePlace="records"
+                  showHistoryPanel
+                  userId={this.props.status.userId}
+                  studentId={this.props.status.userId}
+                />
+              </div>
               <div className="application-sub-panel">
                 <div className="application-sub-panel__header">
                   {this.props.i18n.text.get(
