@@ -3,16 +3,20 @@ import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
 import { connect } from "react-redux";
 import ApplicationSubPanel, {
+  ApplicationSubPanelViewHeader,
   ApplicationSubPanelItem,
   ApplicationSubPanelSection,
 } from "~/components/general/application-sub-panel";
 import GuidanceEvent from "~/components/index/body/guidance-events/guidance-event";
 import ContactEvent from "./contact-events/contact-event";
+import { StatusType } from "~/reducers/base/status";
+
 /**
  * GuidanceRelationProps
  */
 interface GuidanceRelationProps {
   i18n: i18nType;
+  status: StatusType;
 }
 
 /**
@@ -21,10 +25,12 @@ interface GuidanceRelationProps {
  * @returns JSX.element
  */
 const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
-  const { i18n } = props;
+  const { i18n, status } = props;
   return (
     <ApplicationSubPanel>
-      <ApplicationSubPanel.Header> Ohjussuhde</ApplicationSubPanel.Header>
+      <ApplicationSubPanel.ViewHeader title="Ohjuuussuhde">
+        <div>Greate new event</div>
+      </ApplicationSubPanel.ViewHeader>
       <ApplicationSubPanel.Body modifier="guidance-relation">
         <ApplicationSubPanelSection modifier="guidance-relation-contact-info">
           <ApplicationSubPanelItem title="Muu">
@@ -44,30 +50,72 @@ const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
           </ApplicationSubPanelSection.Header>
           <ApplicationSubPanelSection.Body>
             <ContactEvent
+              i18n={i18n}
               event={{
-                date: "Muu",
-                type: "Krije",
-                creator: "Untti A",
-                content:
-                  "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
+                entryDate: "Muu",
+                id: 1,
+                type: "LETTER",
+                creatorName: "Untti A",
+                creatorId: status.userId,
+                text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
+                comments: [
+                  {
+                    id: 1,
+                    entry: 1,
+                    commentDate: "Muu",
+                    creatorId: status.userId,
+                    creatorName: "Untti A",
+                    text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
+                  },
+                  {
+                    id: 2,
+                    entry: 1,
+                    commentDate: "Muu",
+                    creatorId: status.userId,
+                    creatorName: "Untti A",
+                    text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
+                  },
+                ],
               }}
             />
             <ContactEvent
+              i18n={i18n}
               event={{
-                date: "Muu",
-                type: "Krije",
-                creator: "Untti A",
-                content:
-                  "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
+                entryDate: "Muu",
+                id: 1,
+                type: "LETTER",
+                creatorName: "Untti A",
+                creatorId: status.userId,
+                text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
               }}
             />
             <ContactEvent
+              i18n={i18n}
               event={{
-                date: "Muu",
-                type: "Krije",
-                creator: "Untti A",
-                content:
-                  "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
+                entryDate: "Muu",
+                id: 1,
+                type: "LETTER",
+                creatorName: "Untti A",
+                creatorId: status.userId,
+                text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
+                comments: [
+                  {
+                    id: 1,
+                    entry: 1,
+                    commentDate: "Muu",
+                    creatorId: status.userId,
+                    creatorName: "Untti A",
+                    text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
+                  },
+                  {
+                    id: 2,
+                    entry: 1,
+                    commentDate: "Muu",
+                    creatorId: status.userId,
+                    creatorName: "Untti A",
+                    text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
+                  },
+                ],
               }}
             />
           </ApplicationSubPanelSection.Body>
@@ -102,6 +150,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     guidanceEvents: state.calendar.guidanceEvents,
+    status: state.status, // Temporary
   };
 }
 

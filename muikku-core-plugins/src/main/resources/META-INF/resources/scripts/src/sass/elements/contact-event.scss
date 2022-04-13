@@ -1,0 +1,37 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.contact-event {
+  padding: 20px 0 20px;
+  &:not(:last-child) {
+    border-bottom: 4px solid #ededed;
+  }
+}
+
+.contact-event__header {
+  display: flex;
+  padding: 10px;
+}
+
+.contact-event__body {
+  background-color: #fff;
+  padding: 10px;
+}
+
+.contact-event__header--reply {
+  font-size: 1.05 rem;
+}
+
+.contact-event__body--reply {
+  padding-left: 5px;
+}
+
+.contact-event__replies {
+  padding: 0 0 0 40px;
+}
+
+.contact-event__reply {
+  margin-top: 15px;
+}

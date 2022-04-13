@@ -220,10 +220,10 @@ class StateOfStudies extends React.Component<
               <span>
                 {this.props.guider.currentStudent.emails.length
                   ? this.props.guider.currentStudent.emails.map((email) => (
-                      <>
+                      <React.Fragment key={"email" + email.studentIdentifier}>
                         {email.defaultAddress ? `*` : null} {email.address} (
                         {email.type})
-                      </>
+                      </React.Fragment>
                     ))
                   : this.props.i18n.text.get(
                       "plugin.guider.user.details.label.unknown.email"
@@ -243,10 +243,10 @@ class StateOfStudies extends React.Component<
                 {this.props.guider.currentStudent.phoneNumbers.length
                   ? this.props.guider.currentStudent.phoneNumbers.map(
                       (phone) => (
-                        <>
+                        <React.Fragment key={"phone" + phone.studentIdentifier}>
                           {phone.defaultNumber ? `*` : null} {phone.number} (
                           {phone.type})
-                        </>
+                        </React.Fragment>
                       )
                     )
                   : this.props.i18n.text.get(
