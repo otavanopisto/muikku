@@ -1,6 +1,5 @@
 import * as React from "react";
 import mApi from "~/lib/mApi";
-import { sleep } from "~/helper-functions/shared";
 import promisify from "~/util/promisify";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import { CourseStatus, StudentActivityCourse } from "~/@types/shared";
@@ -57,11 +56,6 @@ export const useCourseCarousel = (
       }));
 
       try {
-        /**
-         * Sleeper to delay data fetching if it happens faster than 1s
-         */
-        const sleepPromise = await sleep(1000);
-
         /**
          * Loadeds course carousel data
          */
