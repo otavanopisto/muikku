@@ -31,7 +31,6 @@ import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
-import { sleep } from "~/helper-functions/shared";
 import { AnyActionType } from "~/actions";
 import NewHopsEventDescriptionDialog from "./dialogs/new-hops-event-description-dialog";
 import { Textarea } from "./text-area";
@@ -101,6 +100,8 @@ class CompulsoryEducationHopsWizard extends React.Component<
   CompulsoryEducationHopsWizardProps,
   CompulsoryEducationHopsWizardState
 > {
+  private isComponentMounted: boolean;
+
   /**
    * Constructor method
    *
@@ -123,12 +124,16 @@ class CompulsoryEducationHopsWizard extends React.Component<
       addHopsUpdateDetailsDialogOpen: false,
       hopsUpdateDetails: "",
     };
+
+    this.isComponentMounted = false;
   }
 
   /**
    * componentDidMount
    */
   componentDidMount() {
+    this.isComponentMounted = true;
+
     this.loadHopsData();
   }
 
@@ -148,6 +153,13 @@ class CompulsoryEducationHopsWizard extends React.Component<
   }
 
   /**
+   * componentWillUnmount
+   */
+  componentWillUnmount(): void {
+    this.isComponentMounted = false;
+  }
+
+  /**
    * Loads more history events
    */
   loadMoreHistoryEvents = async () => {
@@ -161,11 +173,6 @@ class CompulsoryEducationHopsWizard extends React.Component<
     const studentId = this.props.studentId;
 
     try {
-      /**
-       * Sleeper to delay data fetching if it happens faster than 1s
-       */
-      const sleepPromise = await sleep(1000);
-
       /**
        * loaded history data
        */
@@ -181,7 +188,6 @@ class CompulsoryEducationHopsWizard extends React.Component<
 
           return studentHopsHistory;
         })(),
-        sleepPromise,
       ]);
 
       const updatedList: HopsUpdate[] = [].concat(
@@ -189,17 +195,21 @@ class CompulsoryEducationHopsWizard extends React.Component<
         studentHopsHistory
       );
 
-      this.setState({
-        allHistoryEventsLoaded: true,
-        loadingHistoryEvents: false,
-        basicInfo: {
-          ...this.state.basicInfo,
-          updates: updatedList,
-        },
-      });
+      if (this.isComponentMounted) {
+        this.setState({
+          allHistoryEventsLoaded: true,
+          loadingHistoryEvents: false,
+          basicInfo: {
+            ...this.state.basicInfo,
+            updates: updatedList,
+          },
+        });
+      }
     } catch (err) {
-      this.props.displayNotification(`Hups errori ${err}`, "error");
-      this.setState({ loadingHistoryEvents: false });
+      if (this.isComponentMounted) {
+        this.props.displayNotification(`Hups errori ${err}`, "error");
+        this.setState({ loadingHistoryEvents: false });
+      }
     }
   };
 
@@ -217,11 +227,6 @@ class CompulsoryEducationHopsWizard extends React.Component<
     const studentId = this.props.studentId;
 
     try {
-      /**
-       * Sleeper to delay data fetching if it happens faster than 1s
-       */
-      const sleepPromise = await sleep(1000);
-
       /**
        * loaded hops data
        */
@@ -253,16 +258,19 @@ class CompulsoryEducationHopsWizard extends React.Component<
 
           return loadedHops;
         })(),
-        sleepPromise,
       ]);
 
-      this.setState({
-        loading: false,
-        ...loadedHops,
-      });
+      if (this.isComponentMounted) {
+        this.setState({
+          loading: false,
+          ...loadedHops,
+        });
+      }
     } catch (err) {
-      this.props.displayNotification(`Hups errori ${err}`, "error");
-      this.setState({ loading: false });
+      if (this.isComponentMounted) {
+        this.props.displayNotification(`Hups errori ${err}`, "error");
+        this.setState({ loading: false });
+      }
     }
   };
 
@@ -287,23 +295,33 @@ class CompulsoryEducationHopsWizard extends React.Component<
         "callback"
       )()) as HopsUpdate;
 
+      /**
+       * initialize list to be updated
+       */
       const updatedEventList = [...this.state.basicInfo.updates];
 
+      /**
+       * Index of edited item
+       */
       const indexOfEditedEvent = updatedEventList.findIndex(
         (item) => item.id === updatedEvent.id
       );
 
       updatedEventList[indexOfEditedEvent] = updatedEvent;
 
-      this.setState({
-        basicInfo: {
-          ...this.state.basicInfo,
-          updates: updatedEventList,
-        },
-      });
+      if (this.isComponentMounted) {
+        this.setState({
+          basicInfo: {
+            ...this.state.basicInfo,
+            updates: updatedEventList,
+          },
+        });
+      }
     } catch (err) {
-      this.props.displayNotification(`Hups errori ${err}`, "error");
-      this.setState({ loading: false });
+      if (this.isComponentMounted) {
+        this.props.displayNotification(`Hups errori ${err}`, "error");
+        this.setState({ loading: false });
+      }
     }
   };
 
@@ -321,11 +339,6 @@ class CompulsoryEducationHopsWizard extends React.Component<
      */
     const studentId = this.props.studentId;
 
-    /**
-     * Sleeper to delay data fetching if it happens faster than 1s
-     */
-    const sleepPromise = sleep(1000);
-
     try {
       Promise.all([
         (async () => {
@@ -337,20 +350,23 @@ class CompulsoryEducationHopsWizard extends React.Component<
             "callback"
           )();
         })(),
-        sleepPromise,
       ]).then(async () => {
-        this.loadHopsData().then(() => {
-          this.setState({
-            loading: false,
-            allHistoryEventsLoaded: false,
-            hopsUpdateDetails: "",
-            savingStatus: "SUCCESS",
+        if (this.isComponentMounted) {
+          this.loadHopsData().then(() => {
+            this.setState({
+              loading: false,
+              allHistoryEventsLoaded: false,
+              hopsUpdateDetails: "",
+              savingStatus: "SUCCESS",
+            });
           });
-        });
+        }
       });
     } catch (err) {
-      this.props.displayNotification(`Hups errori ${err}`, "error");
-      this.setState({ loading: false, savingStatus: "FAILED" });
+      if (this.isComponentMounted) {
+        this.props.displayNotification(`Hups errori ${err}`, "error");
+        this.setState({ loading: false, savingStatus: "FAILED" });
+      }
     }
   };
 
@@ -448,7 +464,9 @@ class CompulsoryEducationHopsWizard extends React.Component<
         });
       })
       .catch(() => {
-        this.setState({ addHopsUpdateDetailsDialogOpen: false });
+        if (this.isComponentMounted) {
+          this.setState({ addHopsUpdateDetailsDialogOpen: false });
+        }
       });
   };
 
@@ -473,6 +491,13 @@ class CompulsoryEducationHopsWizard extends React.Component<
   };
 
   /**
+   * Handles load more history events click
+   */
+  handleLoadMOreHistoryEventsClick = () => {
+    this.loadMoreHistoryEvents();
+  };
+
+  /**
    * Handles cancel click on updated history event dialog
    *
    */
@@ -488,7 +513,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
    *
    * @param steps steps
    */
-  handleStepChange = (steps: object[]) => (step: any) => {
+  handleStepChange = (steps: object[]) => (step: number) => {
     if (step === steps.length - 1) {
       if (this.props.superVisorModifies) {
         this.setState({

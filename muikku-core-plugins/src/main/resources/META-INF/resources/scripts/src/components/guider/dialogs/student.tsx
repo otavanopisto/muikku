@@ -159,6 +159,7 @@ class StudentDialog extends React.Component<
 
     if (
       this.props.guider.currentStudent &&
+      this.props.guider.currentStudent.basic &&
       this.props.guider.currentStudent.basic.studyProgrammeName ===
         "Nettiperuskoulu"
     )
@@ -197,23 +198,21 @@ class StudentDialog extends React.Component<
                 </div>
               )}
 
-            {this.props.guider.currentStudent.basic ? (
-              this.state.editHops ? (
-                <CompulsoryEducationHopsWizard
-                  user="supervisor"
-                  disabled={false}
-                  studentId={this.props.guider.currentStudent.basic.id}
-                  superVisorModifies
-                />
-              ) : (
-                <CompulsoryEducationHopsWizard
-                  user="supervisor"
-                  disabled={true}
-                  studentId={this.props.guider.currentStudent.basic.id}
-                  superVisorModifies={false}
-                />
-              )
-            ) : null}
+            {this.state.editHops ? (
+              <CompulsoryEducationHopsWizard
+                user="supervisor"
+                disabled={false}
+                studentId={this.props.guider.currentStudent.basic.id}
+                superVisorModifies
+              />
+            ) : (
+              <CompulsoryEducationHopsWizard
+                user="supervisor"
+                disabled={true}
+                studentId={this.props.guider.currentStudent.basic.id}
+                superVisorModifies={false}
+              />
+            )}
           </>
         ),
       });
