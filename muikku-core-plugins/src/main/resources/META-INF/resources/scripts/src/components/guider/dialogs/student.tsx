@@ -159,9 +159,7 @@ class StudentDialog extends React.Component<
 
     if (
       this.props.guider.currentStudent &&
-      this.props.guider.currentStudent.basic &&
-      this.props.guider.currentStudent.basic.studyProgrammeName ===
-        "Nettiperuskoulu"
+      this.props.guider.currentStudent.basic
     )
       tabs.push({
         id: "HOPS",
@@ -185,7 +183,11 @@ class StudentDialog extends React.Component<
 
               <select
                 className="form-element__select"
-                value={this.props.guider.currentStudent.hopsPhase}
+                value={
+                  this.props.guider.currentStudent.hopsPhase
+                    ? this.props.guider.currentStudent.hopsPhase
+                    : 0
+                }
                 onChange={this.handleHopsPhaseChange}
               >
                 <option value={0}>HOPS - Ei aktivoitu</option>
