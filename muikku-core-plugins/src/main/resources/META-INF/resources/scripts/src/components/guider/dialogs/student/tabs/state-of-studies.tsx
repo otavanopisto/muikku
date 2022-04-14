@@ -105,54 +105,56 @@ class StateOfStudies extends React.Component<
       this.props.guider.currentStudent.emails &&
       this.props.guider.currentStudent.emails.find((e) => e.defaultAddress);
 
+    const avatar = (
+      <Avatar
+        id={this.props.guider.currentStudent.basic.userEntityId}
+        hasImage={this.props.guider.currentStudent.basic.hasImage}
+        firstName={this.props.guider.currentStudent.basic.firstName}
+      ></Avatar>
+    );
+
     const studentBasicHeader = this.props.guider.currentStudent.basic && (
-      <ApplicationSubPanel.Header>
-        <Avatar
-          id={this.props.guider.currentStudent.basic.userEntityId}
-          hasImage={this.props.guider.currentStudent.basic.hasImage}
-          firstName={this.props.guider.currentStudent.basic.firstName}
-        ></Avatar>
-        <ApplicationSubPanelViewHeader
-          title={getName(this.props.guider.currentStudent.basic, true)}
-          titleDetail={
-            (defaultEmailAddress && defaultEmailAddress.address) ||
-            this.props.i18n.text.get(
-              "plugin.guider.user.details.label.unknown.email"
-            )
-          }
-        >
-          {this.props.guider.currentStudent.basic &&
-          IsStudentPartOfProperStudyProgram(
-            this.props.guider.currentStudent.basic.studyProgrammeName
-          ) ? (
-            <CeeposButton />
-          ) : null}
-          <NewMessage
-            extraNamespace="student-view"
-            initialSelectedItems={[
-              {
-                type: "user",
-                value: {
-                  id: this.props.guider.currentStudent.basic.userEntityId,
-                  name: getName(this.props.guider.currentStudent.basic, true),
-                },
+      <ApplicationSubPanelViewHeader
+        decoration={avatar}
+        title={getName(this.props.guider.currentStudent.basic, true)}
+        titleDetail={
+          (defaultEmailAddress && defaultEmailAddress.address) ||
+          this.props.i18n.text.get(
+            "plugin.guider.user.details.label.unknown.email"
+          )
+        }
+      >
+        {this.props.guider.currentStudent.basic &&
+        IsStudentPartOfProperStudyProgram(
+          this.props.guider.currentStudent.basic.studyProgrammeName
+        ) ? (
+          <CeeposButton />
+        ) : null}
+        <NewMessage
+          extraNamespace="student-view"
+          initialSelectedItems={[
+            {
+              type: "user",
+              value: {
+                id: this.props.guider.currentStudent.basic.userEntityId,
+                name: getName(this.props.guider.currentStudent.basic, true),
               },
-            ]}
-          >
-            <ButtonPill
-              icon="envelope"
-              buttonModifiers={["new-message", "guider-student"]}
-            />
-          </NewMessage>
-          <GuidanceEvent>
-            <ButtonPill
-              icon="bubbles"
-              buttonModifiers={["new-message", "guider-student"]}
-            />
-          </GuidanceEvent>
-          <GuiderToolbarLabels />
-        </ApplicationSubPanelViewHeader>
-      </ApplicationSubPanel.Header>
+            },
+          ]}
+        >
+          <ButtonPill
+            icon="envelope"
+            buttonModifiers={["new-message", "guider-student"]}
+          />
+        </NewMessage>
+        <GuidanceEvent>
+          <ButtonPill
+            icon="bubbles"
+            buttonModifiers={["new-message", "guider-student"]}
+          />
+        </GuidanceEvent>
+        <GuiderToolbarLabels />
+      </ApplicationSubPanelViewHeader>
     );
 
     const studentLabels =

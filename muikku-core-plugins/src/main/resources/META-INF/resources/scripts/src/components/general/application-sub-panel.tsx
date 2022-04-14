@@ -17,7 +17,7 @@ interface SubPanelProps {
  */
 const ApplicationSubPanel: React.FC<SubPanelProps> & {
   Header?: React.FC<{ modifier?: string }>;
-  ViewHeader?: React.FC<SubPanelViewHeaderProps>;
+  ViewHeader?: React.FC<{ modifier?: string }>;
   Body?: React.FC<{ modifier?: string }>;
 } = (props) => {
   const { modifier, children } = props;
@@ -56,6 +56,7 @@ const ApplicationSubPanelHeader: React.FC<{ modifier?: string }> = (props) => (
  */
 interface SubPanelViewHeaderProps {
   title: string;
+  decoration?: JSX.Element;
   titleDetail?: string;
   modifier?: string;
 }
@@ -74,6 +75,7 @@ export const ApplicationSubPanelViewHeader: React.FC<
       props.modifier ? `application-sub-panel__header--${props.modifier}` : ""
     }`}
   >
+    {props.decoration ? props.decoration : null}
     <div className="application-sub-panel__header-main-container">
       <h2
         className={`application-sub-panel__header-main ${

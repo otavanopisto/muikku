@@ -12,7 +12,15 @@
 
 .contact-event__header {
   display: flex;
-  padding: 10px;
+  padding: 10px 0;
+}
+
+.contact-event__title {
+  display:flex;
+}
+
+.contact-event__header-actions {
+  display:flex;
 }
 
 .contact-event__body {

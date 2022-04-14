@@ -28,9 +28,9 @@ const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
   const { i18n, status } = props;
   return (
     <ApplicationSubPanel>
-      <ApplicationSubPanel.ViewHeader title="Ohjuuussuhde">
+      <ApplicationSubPanelViewHeader title="Ohjuuussuhde">
         <div>Greate new event</div>
-      </ApplicationSubPanel.ViewHeader>
+      </ApplicationSubPanelViewHeader>
       <ApplicationSubPanel.Body modifier="guidance-relation">
         <ApplicationSubPanelSection modifier="guidance-relation-contact-info">
           <ApplicationSubPanelItem title="Muu">

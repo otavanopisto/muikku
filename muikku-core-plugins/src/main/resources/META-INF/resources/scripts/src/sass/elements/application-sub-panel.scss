@@ -154,8 +154,11 @@
   flex-flow: column wrap;
   flex-grow: 1;
   flex-shrink: 1;
-  margin-left: 15px;
   text-transform: none;
+
+  &:not(:first-child) {
+    margin-left: 15px;
+  }
 
   @include breakpoint($breakpoint-desktop) {
     align-items: center;
