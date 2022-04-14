@@ -1287,7 +1287,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier.getIdentifier());
     
     if (studentId == null) {
-      logger.severe(String.format("Student for identifier %s not found", studentIdentifier));
+      throw new SchoolDataBridgeInternalException(String.format("StudentId for identifier %s not found", studentIdentifier));
     }
     pyramusClient.delete("/students/students/" + studentId + "/contactLogEntries/" + contactLogEntryId);
   }
@@ -1331,7 +1331,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier.getIdentifier());
     
     if (studentId == null) {
-      logger.severe(String.format("Student for identifier %s not found", studentIdentifier));
+      throw new SchoolDataBridgeInternalException(String.format("StudentId for identifier %s not found", studentIdentifier));
     }
     pyramusClient.delete("/students/students/" + studentId + "/contactLogEntries/entryComments/" + commentId);
   }
