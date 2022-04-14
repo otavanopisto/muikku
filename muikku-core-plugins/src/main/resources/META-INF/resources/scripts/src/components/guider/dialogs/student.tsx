@@ -169,34 +169,31 @@ class StudentDialog extends React.Component<
         type: "guider-student",
         component: (
           <>
-            {this.props.guider.currentStudent.hopsPhase &&
-              this.props.guider.currentStudent.hopsPhase !== null && (
-                <div
-                  style={{
-                    display: "flex",
-                    alignContent: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Button
-                    onClick={this.onClickEditHops}
-                    buttonModifiers={hopsModifyStateModifiers}
-                  >
-                    Muokkaustila
-                  </Button>
+            <div
+              style={{
+                display: "flex",
+                alignContent: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Button
+                onClick={this.onClickEditHops}
+                buttonModifiers={hopsModifyStateModifiers}
+              >
+                Muokkaustila
+              </Button>
 
-                  <select
-                    className="form-element__select"
-                    value={this.props.guider.currentStudent.hopsPhase}
-                    onChange={this.handleHopsPhaseChange}
-                  >
-                    <option value={0}>HOPS - Ei aktivoitu</option>
-                    <option value={1}>HOPS - aktiivinen</option>
-                    <option value={2}>HOPS - esitäyttö</option>
-                    <option value={3}>HOPS - opintojen suunnittelu</option>
-                  </select>
-                </div>
-              )}
+              <select
+                className="form-element__select"
+                value={this.props.guider.currentStudent.hopsPhase}
+                onChange={this.handleHopsPhaseChange}
+              >
+                <option value={0}>HOPS - Ei aktivoitu</option>
+                <option value={1}>HOPS - aktiivinen</option>
+                <option value={2}>HOPS - esitäyttö</option>
+                <option value={3}>HOPS - opintojen suunnittelu</option>
+              </select>
+            </div>
 
             {this.state.editHops ? (
               <CompulsoryEducationHopsWizard
