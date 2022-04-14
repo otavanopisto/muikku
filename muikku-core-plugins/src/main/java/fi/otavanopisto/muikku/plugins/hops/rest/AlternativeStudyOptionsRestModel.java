@@ -2,41 +2,22 @@ package fi.otavanopisto.muikku.plugins.hops.rest;
 
 public class AlternativeStudyOptionsRestModel {
 
-  public Long getId() {
-    return id;
+  public String getNativeLanguageSelection() {
+    return nativeLanguageSelection;
   }
 
-  public void setId(Long id) {
-    this.id = id;
-  }
-  
-  public String getStudentIdentifier() {
-    return studentIdentifier;
+  public void setNativeLanguageSelection(String nativeLanguageSelection) {
+    this.nativeLanguageSelection = nativeLanguageSelection;
   }
 
-  public void setStudentIdentifier(String studentIdentifier) {
-    this.studentIdentifier = studentIdentifier;
+  public String getReligionSelection() {
+    return religionSelection;
   }
-  
-  public Boolean getFinnishAsLanguage() {
-    return finnishAsLanguage;
-  }
-  
-  public void setFinnishAsLanguage(Boolean finnishAsLanguage) {
-    this.finnishAsLanguage = finnishAsLanguage;
-  }
-  
-  public Boolean getReligionAsEthics() {
-    return religionAsEthics;
-  }
-  
-  public void setReligionAsEthics(Boolean religionAsEthics) {
-    this.religionAsEthics = religionAsEthics;
-  }
-  
-  private Long id;
-  private String studentIdentifier;
-  private Boolean finnishAsLanguage;
-  private Boolean religionAsEthics;
 
+  public void setReligionSelection(String religionSelection) {
+    this.religionSelection = religionSelection;
+  }
+
+  private String nativeLanguageSelection;
+  private String religionSelection;
 }

@@ -176,16 +176,19 @@ public class HopsController {
     return hopsStudyHours;
   }
   
+  @Deprecated // NOT USED
   public HopsAlternativeStudyOptions findHopsAlternativeStudyOptionsByStudentIdentifier(String studentIdentifier) {
     return hopsAlternativeStudyOptionsDAO.findByStudentIdentifier(studentIdentifier);
   }
   
+  @Deprecated // NOT USED
   public HopsAlternativeStudyOptions createHopsAlternativeStudyOptions(String studentIdentifier, Boolean finnishAsLanguage, Boolean religionAsEthics) {
     HopsAlternativeStudyOptions hopsAlternativeStudyOptions = hopsAlternativeStudyOptionsDAO.create(studentIdentifier, finnishAsLanguage, religionAsEthics);
 
     return hopsAlternativeStudyOptions;
   }
 
+  @Deprecated // NOT USED
   public HopsAlternativeStudyOptions updateHopsAlternativeStudyOptions(HopsAlternativeStudyOptions hopsAlternativeStudyOptions, String studentIdentifier, Boolean finnishAsLanguage, Boolean religionAsEthics) {
     hopsAlternativeStudyOptionsDAO.updateHopsAlternativeStudyOptions(hopsAlternativeStudyOptions, finnishAsLanguage, religionAsEthics);
     return hopsAlternativeStudyOptions;
