@@ -723,7 +723,7 @@ public class GuiderRESTService extends PluginRESTService {
    */
   @POST
   @Path("/student/{ID}/contactLog/")
-  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  @RESTPermit (GuiderPermissions.ACCESS_CONTACT_LOG)
   public Response createStudentContactLog(@PathParam("ID") Long userEntityId, StudentContactLogEntryRestModel payload) {
     String dataSource = sessionController.getLoggedUserSchoolDataSource();
     UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
@@ -744,6 +744,7 @@ public class GuiderRESTService extends PluginRESTService {
    * text: "something something",
    * entryDate: 2021-02-15;
    * type: "PHONE";
+   * creatorId: 2
    * }
    * @param userEntityId
    * @param contactLogEntryId
@@ -755,10 +756,14 @@ public class GuiderRESTService extends PluginRESTService {
   
   @PUT
   @Path("/student/{ID}/contactLog/{CONTACTLOGENTRYID}")
-  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  @RESTPermit (GuiderPermissions.ACCESS_CONTACT_LOG)
   public Response updateStudentContactLog(@PathParam("ID") Long userEntityId, @PathParam("CONTACTLOGENTRYID") Long contactLogEntryId, StudentContactLogEntryRestModel payload) {
     String dataSource = sessionController.getLoggedUserSchoolDataSource();
     UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+    
+    if (payload.getCreatorId() != sessionController.getLoggedUserEntity().getId()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
     
     BridgeResponse<StudentContactLogEntryRestModel> response = userSchoolDataController.updateStudentContactLogEntry(dataSource, userEntity.defaultSchoolDataIdentifier(), contactLogEntryId, payload);
     if (response.ok()) {
@@ -795,7 +800,7 @@ public class GuiderRESTService extends PluginRESTService {
    */
   @GET
   @Path("/users/{ID}/contactLog")
-  @RESTPermit (GuiderPermissions.GUIDER_VIEW)
+  @RESTPermit (GuiderPermissions.ACCESS_CONTACT_LOG)
   public Response listStudentContactLogEntries(@PathParam("ID") Long userEntityId) {
     String dataSource = sessionController.getLoggedUserSchoolDataSource();
     UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
@@ -814,7 +819,7 @@ public class GuiderRESTService extends PluginRESTService {
    */
   @DELETE
   @Path("/student/{ID}/contactLog/{CONTACTLOGENTRYID}")
-  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  @RESTPermit (GuiderPermissions.ACCESS_CONTACT_LOG)
   public Response archiveStudentContactLog(@PathParam("ID") Long userEntityId, @PathParam("CONTACTLOGENTRYID") Long contactLogEntryId) {
     String dataSource = sessionController.getLoggedUserSchoolDataSource();
     UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
@@ -841,7 +846,7 @@ public class GuiderRESTService extends PluginRESTService {
    */
   @POST
   @Path("/student/{ID}/contactLog/{ENTRYID}/comments")
-  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  @RESTPermit (GuiderPermissions.ACCESS_CONTACT_LOG)
   public Response createContactLogEntryComment(@PathParam("ID") Long userEntityId, @PathParam("ENTRYID") Long entryId, StudentContactLogEntryCommentRestModel payload) {
     String dataSource = sessionController.getLoggedUserSchoolDataSource();
     UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
@@ -859,7 +864,8 @@ public class GuiderRESTService extends PluginRESTService {
    * 
    * payload: {
    * text: "plaa", 
-   * commentDate: Date
+   * commentDate: Date,
+   * creatorId: 2
    * }
    * 
    * @param userEntityId
@@ -872,10 +878,14 @@ public class GuiderRESTService extends PluginRESTService {
    */
   @PUT
   @Path("/student/{ID}/contactLog/{ENTRYID}/comments/{COMMENTID}")
-  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  @RESTPermit (GuiderPermissions.ACCESS_CONTACT_LOG)
   public Response updateStudentContactLogComment(@PathParam("ID") Long userEntityId, @PathParam("ENTRYID") Long entryId, @PathParam("COMMENTID") Long commentId, StudentContactLogEntryCommentRestModel payload) {
     String dataSource = sessionController.getLoggedUserSchoolDataSource();
     UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+    
+    if (payload.getCreatorId() != sessionController.getLoggedUserEntity().getId()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
     
     BridgeResponse<StudentContactLogEntryCommentRestModel> response = userSchoolDataController.updateStudentContactLogEntryComment(dataSource, userEntity.defaultSchoolDataIdentifier(), entryId, commentId, payload);
     if (response.ok()) {
@@ -898,7 +908,7 @@ public class GuiderRESTService extends PluginRESTService {
    */
   @DELETE
   @Path("/student/{ID}/contactLog/{ENTRYID}/comments/{COMMENTID}")
-  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  @RESTPermit (GuiderPermissions.ACCESS_CONTACT_LOG)
   public Response archiveStudentContactLogComment(@PathParam("ID") Long userEntityId, @PathParam("ENTRYID") Long contactLogEntryId, @PathParam("COMMENTID") Long commentId) {
     String dataSource = sessionController.getLoggedUserSchoolDataSource();
     UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);

@@ -13,7 +13,7 @@ public class StudentContactLogEntryRestModel {
     super();
     this.id = id;
     this.text = text;
-    this.setCreatorId(creatorId);
+    this.creatorId = creatorId;
     this.creatorName = creatorName;
     this.entryDate = entryDate;
     this.type = type;
