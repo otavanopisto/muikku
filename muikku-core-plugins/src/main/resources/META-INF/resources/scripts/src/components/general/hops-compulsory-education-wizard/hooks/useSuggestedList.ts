@@ -55,7 +55,7 @@ export const useSuggestionList = (
         /**
          * Sleeper to delay data fetching if it happens faster than 1s
          */
-        const sleepPromise = await sleep(1000);
+        const sleepPromise = await sleep(500);
 
         const [loadedSuggestionListCourses] = await Promise.all([
           (async () => {
