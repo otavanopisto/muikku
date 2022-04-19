@@ -9,6 +9,7 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
+@Deprecated // NOT USED
 @Entity
 public class HopsAlternativeStudyOptions {
 

@@ -57,6 +57,7 @@ import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.Subject;
 import fi.otavanopisto.muikku.schooldata.entity.User;
+import fi.otavanopisto.muikku.schooldata.entity.UserProperty;
 import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemStatus;
 import fi.otavanopisto.muikku.search.SearchProvider;
@@ -64,6 +65,7 @@ import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.OrganizationEntityController;
+import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserEntityFileController;
 import fi.otavanopisto.muikku.users.UserEntityName;
@@ -98,6 +100,9 @@ public class HopsRestService {
   @Inject
   private WorkspaceEntityController workspaceEntityController;
 
+  @Inject
+  private UserController userController;
+  
   @Inject
   private UserSchoolDataController userSchoolDataController;
   
@@ -767,76 +772,71 @@ public class HopsRestService {
     return hopsStudyHours == null ? Response.noContent().build() : Response.ok(hopsStudyHours.getStudyHours()).build();  
   }
   
-  @POST
-  @Path("/student/{STUDENTIDENTIFIER}/alternativeStudyOptions")
-  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response createOrUpdateAlternativeStudyOptions(@PathParam("STUDENTIDENTIFIER") String studentIdentifier, AlternativeStudyOptionsRestModel payload) {
-    
-    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.HOPS_EDIT)) {
-      if (!StringUtils.equals(SchoolDataIdentifier.fromId(studentIdentifier).getIdentifier(), sessionController.getLoggedUserIdentifier())) {
-        return Response.status(Status.FORBIDDEN).build();
-      }
-    }
-    
-    SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifier);
-    UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(schoolDataIdentifier);
-    
-    schoolDataBridgeSessionController.startSystemSession();
-    List<UserEntity> recipients = new ArrayList<>();
-
-    try {
-      recipients = hopsController.getGuidanceCouncelors(schoolDataIdentifier);
-    }
-    finally {
-      schoolDataBridgeSessionController.endSystemSession();
-    }
-    
-    recipients.add(studentEntity);
-    HopsAlternativeStudyOptions hopsAlternativeStudyOptions = hopsController.findHopsAlternativeStudyOptionsByStudentIdentifier(studentIdentifier);
-    
-    
-    if (hopsAlternativeStudyOptions == null) {
-      hopsAlternativeStudyOptions = hopsController.createHopsAlternativeStudyOptions(studentIdentifier, payload.getFinnishAsLanguage(), payload.getReligionAsEthics());
-      
-    } else {
-      hopsController.updateHopsAlternativeStudyOptions(hopsAlternativeStudyOptions, studentIdentifier, payload.getFinnishAsLanguage(), payload.getReligionAsEthics());
-
-    }
-    AlternativeStudyOptionsRestModel alternativeStudyOptionsRestModel = new AlternativeStudyOptionsRestModel();
-    alternativeStudyOptionsRestModel.setFinnishAsLanguage(hopsAlternativeStudyOptions.getFinnishAsLanguage());
-    alternativeStudyOptionsRestModel.setReligionAsEthics(hopsAlternativeStudyOptions.getReligionAsEthics());
-    webSocketMessenger.sendMessage("hops:alternative-study-options", alternativeStudyOptionsRestModel, recipients);
-
-    return Response.ok(hopsAlternativeStudyOptions).build();
-  }
+//  @POST
+//  @Path("/student/{STUDENTIDENTIFIER}/alternativeStudyOptions")
+//  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+//  public Response createOrUpdateAlternativeStudyOptions(@PathParam("STUDENTIDENTIFIER") String studentIdentifier, AlternativeStudyOptionsRestModel payload) {
+//    
+//    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.HOPS_EDIT)) {
+//      if (!StringUtils.equals(SchoolDataIdentifier.fromId(studentIdentifier).getIdentifier(), sessionController.getLoggedUserIdentifier())) {
+//        return Response.status(Status.FORBIDDEN).build();
+//      }
+//    }
+//    
+//    SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifier);
+//    UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(schoolDataIdentifier);
+//    
+//    schoolDataBridgeSessionController.startSystemSession();
+//    List<UserEntity> recipients = new ArrayList<>();
+//
+//    try {
+//      recipients = hopsController.getGuidanceCouncelors(schoolDataIdentifier);
+//    }
+//    finally {
+//      schoolDataBridgeSessionController.endSystemSession();
+//    }
+//    
+//    recipients.add(studentEntity);
+//    HopsAlternativeStudyOptions hopsAlternativeStudyOptions = hopsController.findHopsAlternativeStudyOptionsByStudentIdentifier(studentIdentifier);
+//    
+//    
+//    if (hopsAlternativeStudyOptions == null) {
+//      hopsAlternativeStudyOptions = hopsController.createHopsAlternativeStudyOptions(studentIdentifier, payload.getFinnishAsLanguage(), payload.getReligionAsEthics());
+//      
+//    } else {
+//      hopsController.updateHopsAlternativeStudyOptions(hopsAlternativeStudyOptions, studentIdentifier, payload.getFinnishAsLanguage(), payload.getReligionAsEthics());
+//
+//    }
+//    AlternativeStudyOptionsRestModel alternativeStudyOptionsRestModel = new AlternativeStudyOptionsRestModel();
+//    alternativeStudyOptionsRestModel.setFinnishAsLanguage(hopsAlternativeStudyOptions.getFinnishAsLanguage());
+//    alternativeStudyOptionsRestModel.setReligionAsEthics(hopsAlternativeStudyOptions.getReligionAsEthics());
+//    webSocketMessenger.sendMessage("hops:alternative-study-options", alternativeStudyOptionsRestModel, recipients);
+//
+//    return Response.ok(hopsAlternativeStudyOptions).build();
+//  }
   
   @GET
   @Path("/student/{STUDENTIDENTIFIER}/alternativeStudyOptions")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response findAlternativeStudyOptions(@PathParam("STUDENTIDENTIFIER") String studentIdentifier) {
+  public Response findAlternativeStudyOptions(@PathParam("STUDENTIDENTIFIER") String studentIdentifierParam) {
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierParam);
     
     // Access check
     
     if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.HOPS_VIEW)) {
-      if (!StringUtils.equals(SchoolDataIdentifier.fromId(studentIdentifier).getIdentifier(), sessionController.getLoggedUserIdentifier())) {
+      if (!studentIdentifier.equals(sessionController.getLoggedUser())) {
         return Response.status(Status.FORBIDDEN).build();
       }
     }
     
-    HopsAlternativeStudyOptions hopsAlternativeStudyOptions = hopsController.findHopsAlternativeStudyOptionsByStudentIdentifier(studentIdentifier);
+    User user = userController.findUserByIdentifier(studentIdentifier);
+    UserProperty aidinkieli = userSchoolDataController.getUserProperty(user, "lukioAidinkieli");
+    UserProperty uskonto = userSchoolDataController.getUserProperty(user, "lukioUskonto");
     
-    if (hopsAlternativeStudyOptions == null) {
-      return Response.noContent().build();
-    } else {
-      
-      Boolean finnishAsLanguage = hopsAlternativeStudyOptions.getFinnishAsLanguage() == null ? false : hopsAlternativeStudyOptions.getFinnishAsLanguage();
-      Boolean religionAsEthics = hopsAlternativeStudyOptions.getReligionAsEthics() == null ? false : hopsAlternativeStudyOptions.getReligionAsEthics();
-
-      AlternativeStudyOptionsRestModel alternativeStudyOptionsRestModel = new AlternativeStudyOptionsRestModel();
-      alternativeStudyOptionsRestModel.setFinnishAsLanguage(finnishAsLanguage);
-      alternativeStudyOptionsRestModel.setReligionAsEthics(religionAsEthics);
-      
-      return Response.ok(alternativeStudyOptionsRestModel).build();
-    }
+    AlternativeStudyOptionsRestModel alternativeStudyOptionsRestModel = new AlternativeStudyOptionsRestModel();
+    alternativeStudyOptionsRestModel.setNativeLanguageSelection(aidinkieli != null ? aidinkieli.getValue() : null);
+    alternativeStudyOptionsRestModel.setReligionSelection(uskonto != null ? uskonto.getValue() : null);
+    
+    return Response.ok(alternativeStudyOptionsRestModel).build();
   }
 }

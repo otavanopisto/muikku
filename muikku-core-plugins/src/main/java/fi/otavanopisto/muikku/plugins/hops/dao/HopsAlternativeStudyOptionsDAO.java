@@ -9,6 +9,7 @@ import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsAlternativeStudyOptions;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsAlternativeStudyOptions_;
 
+@Deprecated // NOT USED
 public class HopsAlternativeStudyOptionsDAO extends CorePluginsDAO<HopsAlternativeStudyOptions> {
 
   private static final long serialVersionUID = 5126860643958960224L;
