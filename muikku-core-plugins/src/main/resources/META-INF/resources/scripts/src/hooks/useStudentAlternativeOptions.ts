@@ -9,8 +9,8 @@ import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
  * AlternativeStudyObject
  */
 export interface AlternativeStudyObject {
-  finnishAsLanguage: boolean;
-  religionAsEthics: boolean;
+  nativeLanguageSelection: string | null;
+  religionSelection: string | null;
 }
 
 /**
@@ -27,8 +27,8 @@ export interface UseStudentAlternativeOptions {
 const initialState: UseStudentAlternativeOptions = {
   isLoading: false,
   options: {
-    finnishAsLanguage: false,
-    religionAsEthics: false,
+    nativeLanguageSelection: null,
+    religionSelection: null,
   },
 };
 
@@ -126,16 +126,14 @@ export const useStudentAlternativeOptions = (
      * @param data.studentIdentifier studentIdentifier
      */
     const onAnswerSavedAtServer = (data: {
-      finnishAsLanguage: boolean;
-      id: number;
-      religionAsEthics: boolean;
-      studentIdentifier: string;
+      nativeLanguageSelection: string;
+      religionSelection: string;
     }) => {
       setStudyOptions((studyOptions) => ({
         ...studyOptions,
         options: {
-          finnishAsLanguage: data.finnishAsLanguage,
-          religionAsEthics: data.religionAsEthics,
+          nativeLanguageSelection: data.nativeLanguageSelection,
+          religionSelection: data.religionSelection,
         },
       }));
     };

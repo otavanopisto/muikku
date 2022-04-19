@@ -477,6 +477,7 @@ export interface Course {
  * StudentActivityCourse
  */
 export interface StudentActivityCourse {
+  subjectName: string | null;
   subject: string;
   courseId: number; // muikun työtilan id (jos kyseessä on arvioitu tai meneillään oleva kurssi)
   courseNumber: number;
@@ -570,13 +571,18 @@ export interface StudentActivityByStatus {
   /**
    * skillsAndArt
    */
-  skillsAndArt: SkillAndArtByKeys;
+  skillsAndArt: ActivityBySubject;
+
+  /**
+   * otherSubjects
+   */
+  otherSubjects: ActivityBySubject;
 }
 
 /**
  * SkillAndArtByKeys
  */
-export interface SkillAndArtByKeys {
+export interface ActivityBySubject {
   [key: string]: StudentActivityCourse[];
 }
 

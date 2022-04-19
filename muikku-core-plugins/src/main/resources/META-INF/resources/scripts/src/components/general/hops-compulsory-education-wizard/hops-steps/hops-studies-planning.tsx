@@ -2,7 +2,6 @@ import * as React from "react";
 import HopsPlanningTool from "../hops-planning-tool";
 import FollowUpGoals from "../hops-follow-up-goals";
 import { HopsBaseProps, HopsUser } from "..";
-import AlternativeStudyOptions from "../hops-alternative-study-options";
 import { FollowUp, HopsPlanningStudies } from "~/@types/shared";
 
 /**
@@ -106,16 +105,7 @@ class HopsStudiesPlanning extends React.Component<
             studyTimeEnd={this.props.studyTimeEnd}
           />
         </fieldset>
-        <fieldset className="hops-container__fieldset">
-          <legend className="hops-container__subheader">
-            Opintojen suunnittelu
-          </legend>
 
-          <AlternativeStudyOptions
-            studentId={this.props.studentId}
-            disabled={this.props.disabled}
-          />
-        </fieldset>
         <fieldset className="hops-container__fieldset">
           <legend className="hops-container__subheader">Opintolaskuri</legend>
           {!hasAccessToStudyTool ? (
@@ -137,7 +127,7 @@ class HopsStudiesPlanning extends React.Component<
                 disabled={this.props.disabled}
                 studyTimeEnd={this.props.studyTimeEnd}
                 superVisorModifies={this.props.superVisorModifies}
-                showIndicators={false}
+                showIndicators={true}
               />
             </div>
           )}

@@ -58,14 +58,17 @@ const StudySuggestionMatrix: React.FC<StudySuggestionMatrixProps> = (props) => {
                 studentId={props.studentId}
                 user="supervisor"
                 superVisorModifies={true}
-                ethicsSelected={studyOptions.options.religionAsEthics}
-                finnishAsSecondLanguage={studyOptions.options.finnishAsLanguage}
+                nativeLanguageSelection={
+                  studyOptions.options.nativeLanguageSelection
+                }
+                religionSelection={studyOptions.options.religionSelection}
                 suggestedNextList={studentActivity.suggestedNextList}
                 onGoingList={studentActivity.onGoingList}
                 gradedList={studentActivity.gradedList}
                 transferedList={studentActivity.transferedList}
                 updateSuggestion={studentActivityHandlers.updateSuggestion}
                 skillsAndArt={studentActivity.skillsAndArt}
+                otherSubjects={studentActivity.otherSubjects}
               />
             </div>
           )}
@@ -81,14 +84,17 @@ const StudySuggestionMatrix: React.FC<StudySuggestionMatrixProps> = (props) => {
               user="supervisor"
               studentId={props.studentId}
               superVisorModifies={true}
-              ethicsSelected={studyOptions.options.religionAsEthics}
-              finnishAsSecondLanguage={studyOptions.options.finnishAsLanguage}
+              nativeLanguageSelection={
+                studyOptions.options.nativeLanguageSelection
+              }
+              religionSelection={studyOptions.options.religionSelection}
               suggestedNextList={studentActivity.suggestedNextList}
               onGoingList={studentActivity.onGoingList}
               gradedList={studentActivity.gradedList}
               transferedList={studentActivity.transferedList}
               updateSuggestion={studentActivityHandlers.updateSuggestion}
               skillsAndArt={studentActivity.skillsAndArt}
+              otherSubjects={studentActivity.otherSubjects}
             />
           )}
         </div>

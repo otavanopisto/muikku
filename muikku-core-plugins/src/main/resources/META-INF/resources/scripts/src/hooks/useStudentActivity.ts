@@ -6,12 +6,13 @@ import promisify from "~/util/promisify";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import {
   CourseStatus,
-  SkillAndArtByKeys,
   StudentActivityByStatus,
   StudentActivityCourse,
 } from "~/@types/shared";
 
 export const SKILL_AND_ART_SUBJECTS: string[] = ["mu", "li"];
+
+export const OTHER_SUBJECT_OUTSIDE_HOPS: string[] = ["jab", "sab"];
 
 /**
  * UpdateSuggestionParams
@@ -52,6 +53,7 @@ export const useStudentActivity = (
       suggestedNextList: [],
       suggestedOptionalList: [],
       skillsAndArt: {},
+      otherSubjects: {},
     });
 
   const componentMounted = React.useRef(true);
@@ -99,9 +101,12 @@ export const useStudentActivity = (
             const skillAndArtCourses =
               filterSkillAndArtSubject(studentActivityList);
 
+            const otherSubjects = filterOtherSubjects(studentActivityList);
+
             const studentActivityByStatus = filterActivity(studentActivityList);
 
             return {
+              otherSubjects: otherSubjects,
               skillAndArtCourses: skillAndArtCourses,
               studentActivityByStatus: studentActivityByStatus,
             };
@@ -125,6 +130,7 @@ export const useStudentActivity = (
             transferedList:
               loadedStudentActivity.studentActivityByStatus.transferedList,
             skillsAndArt: { ...loadedStudentActivity.skillAndArtCourses },
+            otherSubjects: { ...loadedStudentActivity.otherSubjects },
           }));
         }
       } catch (err) {
@@ -316,7 +322,7 @@ export const useStudentActivity = (
  */
 const filterActivity = (
   list: StudentActivityCourse[]
-): Omit<StudentActivityByStatus, "skillsAndArt"> => {
+): Omit<StudentActivityByStatus, "skillsAndArt" | "otherSubjects"> => {
   const onGoingList = list.filter(
     (item) => item.status === CourseStatus.ONGOING
   );
@@ -347,6 +353,16 @@ const filterActivity = (
  */
 const filterSkillAndArtSubject = (list: StudentActivityCourse[]) =>
   SKILL_AND_ART_SUBJECTS.reduce(
+    (a, v) => ({ ...a, [v]: list.filter((c) => c.subject === v) }),
+    {}
+  );
+
+/**
+ * filterOtherSubjects
+ * @param list of studentactivity courses
+ */
+const filterOtherSubjects = (list: StudentActivityCourse[]) =>
+  OTHER_SUBJECT_OUTSIDE_HOPS.reduce(
     (a, v) => ({ ...a, [v]: list.filter((c) => c.subject === v) }),
     {}
   );

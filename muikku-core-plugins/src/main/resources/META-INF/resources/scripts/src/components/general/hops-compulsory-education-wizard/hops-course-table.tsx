@@ -19,6 +19,7 @@ import { HopsUser } from ".";
 import { StateType } from "~/reducers";
 import Dropdown from "~/components/general/dropdown";
 import {
+  OTHER_SUBJECT_OUTSIDE_HOPS,
   SKILL_AND_ART_SUBJECTS,
   UpdateSuggestionParams,
 } from "../../../hooks/useStudentActivity";
@@ -49,11 +50,11 @@ interface HopsCourseTableProps extends Partial<StudentActivityByStatus> {
   /**
    * If ethic is selected besides religion
    */
-  ethicsSelected: boolean;
+  nativeLanguageSelection: string;
   /**
    * If finnish is selected as secondary languages
    */
-  finnishAsSecondLanguage: boolean;
+  religionSelection: string;
   /**
    * List of student choices
    */
@@ -94,7 +95,7 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
      * If any of these options happens
      * just return; so skipping that subject
      */
-    if (props.ethicsSelected) {
+    if (props.religionSelection === "ea") {
       if (sSubject.subjectCode === "ua") {
         return;
       }
@@ -103,7 +104,7 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
         return;
       }
     }
-    if (props.finnishAsSecondLanguage) {
+    if (props.nativeLanguageSelection === "s2") {
       if (sSubject.subjectCode === "äi") {
         return;
       }
@@ -377,16 +378,79 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
         props.skillsAndArt[s].length !== 0 && (
           <Tr key={s} modifiers={["subject-name"]}>
             <Td modifiers={["subject"]}>
-              <div>{s}</div>
+              <div>{props.skillsAndArt[s][0].subjectName}</div>
             </Td>
 
-            {props.skillsAndArt[s].map((c) => {
+            {props.skillsAndArt[s].map((c, index) => {
               missingColumsCount--;
 
               const listItemModifiers = ["course", "APPROVAL"];
 
               return (
-                <Td key={c.courseId} modifiers={listItemModifiers}>
+                <Td key={index} modifiers={listItemModifiers}>
+                  <Dropdown
+                    openByHover={props.user !== "supervisor"}
+                    content={
+                      <div className="hops-container__study-tool-dropdown-container">
+                        <div className="hops-container__study-tool-dropdow-title">
+                          {c.courseName}
+                        </div>
+                      </div>
+                    }
+                  >
+                    <span
+                      tabIndex={0}
+                      className="table__data-content-wrapper table__data-content-wrapper--course"
+                    >
+                      {c.courseNumber}
+                    </span>
+                  </Dropdown>
+                </Td>
+              );
+            })}
+
+            {Array(missingColumsCount)
+              .fill(1)
+              .map((c, index) => {
+                const modifiers = ["centered", "course"];
+
+                return (
+                  <Td key={`empty-${index + 1}`} modifiers={modifiers}>
+                    <div
+                      className={`table-data-content table-data-content-centered table-data-content--empty`}
+                    >
+                      -
+                    </div>
+                  </Td>
+                );
+              })}
+          </Tr>
+        )
+      );
+    });
+
+  /**
+   * Subjects and courses related to skills and arts
+   */
+  const renderOtherSubjectsRows =
+    props.otherSubjects &&
+    OTHER_SUBJECT_OUTSIDE_HOPS.map((s) => {
+      let missingColumsCount = currentMaxCourses;
+
+      return (
+        props.otherSubjects[s].length !== 0 && (
+          <Tr key={s} modifiers={["subject-name"]}>
+            <Td modifiers={["subject"]}>
+              <div>{props.otherSubjects[s][0].subjectName}</div>
+            </Td>
+
+            {props.otherSubjects[s].map((c, index) => {
+              missingColumsCount--;
+
+              const listItemModifiers = ["course", "APPROVAL"];
+
+              return (
+                <Td key={index} modifiers={listItemModifiers}>
                   <Dropdown
                     openByHover={props.user !== "supervisor"}
                     content={
@@ -439,9 +503,19 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
       <Tbody>{renderRows}</Tbody>
       <Tbody>
         <Tr>
-          <Td colSpan={currentMaxCourses + 1}>Taito ja taideaineet</Td>
+          <Td modifiers={["subtitle"]} colSpan={currentMaxCourses + 1}>
+            Hyväksiluvut: Taito ja taideaineet
+          </Td>
         </Tr>
         {renderSkillsAndArtRows}
+      </Tbody>
+      <Tbody>
+        <Tr>
+          <Td modifiers={["subtitle"]} colSpan={currentMaxCourses + 1}>
+            Hyväksiluvut: Muut
+          </Td>
+        </Tr>
+        {renderOtherSubjectsRows}
       </Tbody>
     </Table>
   );

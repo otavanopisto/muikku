@@ -12,6 +12,7 @@ import {
   ListItemIndicator,
 } from "~/components/general/list";
 import {
+  OTHER_SUBJECT_OUTSIDE_HOPS,
   SKILL_AND_ART_SUBJECTS,
   UpdateSuggestionParams,
 } from "../../../hooks/useStudentActivity";
@@ -34,11 +35,11 @@ interface HopsCourseListProps extends Partial<StudentActivityByStatus> {
   /**
    * If ethic is selected besides religion
    */
-  ethicsSelected: boolean;
+  nativeLanguageSelection: string;
   /**
    * If finnish is selected as secondary languages
    */
-  finnishAsSecondLanguage: boolean;
+  religionSelection: string;
   /**
    * List of student choices
    */
@@ -73,7 +74,7 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
      * If any of these options happens
      * just return; so skipping that subject
      */
-    if (props.ethicsSelected) {
+    if (props.religionSelection === "ea") {
       if (sSubject.subjectCode === "ua") {
         return;
       }
@@ -82,7 +83,7 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
         return;
       }
     }
-    if (props.finnishAsSecondLanguage) {
+    if (props.nativeLanguageSelection === "s2") {
       if (sSubject.subjectCode === "äi") {
         return;
       }
@@ -334,10 +335,10 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
     return (
       <ListContainer key={sSubject.name} modifiers={["subject-name"]}>
         <ListItem className="list-subject-name">
-          <div
+          {/* <div
             className="list-subject-name-proggress"
             style={{ width: `${mandatoryProggress}%` }}
-          />
+          /> */}
           <span style={{ zIndex: 10 }}>{sSubject.name}</span>
         </ListItem>
         <ListContainer modifiers={["subject-courses"]}>{courses}</ListContainer>
@@ -356,15 +357,68 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
           <ListContainer key={s} modifiers={["subject-name"]}>
             <ListItem className="list-subject-name">
               <div className="list-subject-name-proggress" />
-              <span style={{ zIndex: 10 }}>{s}</span>
+              <span style={{ zIndex: 10 }}>
+                {props.skillsAndArt[s][0].subjectName}
+              </span>
             </ListItem>
             <ListContainer modifiers={["subject-courses"]}>
-              {props.skillsAndArt[s].map((c) => {
+              {props.skillsAndArt[s].map((c, index) => {
                 const listItemIndicatormodifiers = ["course", "APPROVAL"];
                 const listItemModifiers = ["course", "APPROVAL"];
 
                 return (
-                  <ListItem key={c.courseId} modifiers={listItemModifiers}>
+                  <ListItem key={index} modifiers={listItemModifiers}>
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      <ListItemIndicator modifiers={listItemIndicatormodifiers}>
+                        <Dropdown
+                          openByHover={props.user !== "supervisor"}
+                          content={
+                            <div className="hops-container__study-tool-dropdown-container">
+                              <div className="hops-container__study-tool-dropdow-title">
+                                {c.courseName}
+                              </div>
+                            </div>
+                          }
+                        >
+                          <span
+                            tabIndex={0}
+                            className="table__data-content-wrapper table__data-content-wrapper--course"
+                          >
+                            {c.courseNumber}
+                          </span>
+                        </Dropdown>
+                      </ListItemIndicator>
+                    </div>
+                  </ListItem>
+                );
+              })}
+            </ListContainer>
+          </ListContainer>
+        )
+    );
+
+  /**
+   * Subjects and courses related to skills and arts
+   */
+  const renderOtherSubjectsRows =
+    props.otherSubjects &&
+    OTHER_SUBJECT_OUTSIDE_HOPS.map(
+      (s) =>
+        props.otherSubjects[s].length !== 0 && (
+          <ListContainer key={s} modifiers={["subject-name"]}>
+            <ListItem className="list-subject-name">
+              <div className="list-subject-name-proggress" />
+              <span style={{ zIndex: 10 }}>
+                {props.otherSubjects[s][0].subjectName}
+              </span>
+            </ListItem>
+            <ListContainer modifiers={["subject-courses"]}>
+              {props.otherSubjects[s].map((c, index) => {
+                const listItemIndicatormodifiers = ["course", "APPROVAL"];
+                const listItemModifiers = ["course", "APPROVAL"];
+
+                return (
+                  <ListItem key={index} modifiers={listItemModifiers}>
                     <div style={{ display: "flex", alignItems: "center" }}>
                       <ListItemIndicator modifiers={listItemIndicatormodifiers}>
                         <Dropdown
@@ -398,10 +452,16 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
     <>
       <div className="list-row__container">{renderRows}</div>
       <div className="list-row__container">
-        <ListContainer>
-          <ListItem>Taito ja taideaineet</ListItem>
+        <ListContainer modifiers={["subtitle"]}>
+          <ListItem>Hyväksiluvut: Taito ja taideaineet</ListItem>
         </ListContainer>
         {renderSkillsAndArtRows}
+      </div>
+      <div className="list-row__container">
+        <ListContainer modifiers={["subtitle"]}>
+          <ListItem>Hyväksiluvut: Muut</ListItem>
+        </ListContainer>
+        {renderOtherSubjectsRows}
       </div>
     </>
   );

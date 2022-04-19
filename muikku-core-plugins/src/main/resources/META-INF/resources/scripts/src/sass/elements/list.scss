@@ -24,6 +24,23 @@
   }
 }
 
+.list-container--subtitle {
+  .list-item {
+    align-items: center;
+    background-color: $color-default;
+    border-radius: unset;
+    display: flex;
+    font-size: 1.25rem;
+    justify-content: space-between;
+    overflow: hidden;
+    padding: 10px 5px;
+    position: relative;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+  }
+}
+
 .list-container--subject-name {
   display: flex;
   flex-wrap: wrap;

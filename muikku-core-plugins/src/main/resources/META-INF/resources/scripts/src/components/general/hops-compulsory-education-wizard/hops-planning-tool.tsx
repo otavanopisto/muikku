@@ -4,7 +4,10 @@ import { TextField } from "./text-field";
 import { HopsUser, NEEDED_STUDIES_IN_TOTAL } from ".";
 import { schoolCourseTable } from "../../../mock/mock-data";
 import StudyToolCalculationInfoBox from "./study-tool-calculation-info-box";
-import { useStudentActivity } from "../../../hooks/useStudentActivity";
+import {
+  SKILL_AND_ART_SUBJECTS,
+  useStudentActivity,
+} from "../../../hooks/useStudentActivity";
 import { StateType } from "reducers";
 import { connect, Dispatch } from "react-redux";
 import { WebsocketStateType } from "../../../reducers/util/websocket";
@@ -117,8 +120,12 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
    * @returns JSX.Element
    */
   const compareGraduationGoalToNeededForMandatoryStudies = () => {
+    const approvedCoursesOutsideHops = calculateApprovedCoursedOutsideHops();
+
     // All needed hours data needed
-    const allApprovedHours = calculateAllApprovedData().numberOfHoursCompleted;
+    const allApprovedHours =
+      calculateAllApprovedData().numberOfHoursCompleted +
+      approvedCoursesOutsideHops * 28;
     const optionalHoursCompleted =
       calculateAllOptionalData().numberOfHoursCompleted;
     const mandatoryHoursCompleted =
@@ -265,6 +272,25 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
         />
       );
     }
+  };
+
+  /**
+   * calculateApprovedCoursedOutsideHops
+   */
+  const calculateApprovedCoursedOutsideHops = () => {
+    let count = 0;
+
+    if (studentActivity) {
+      for (const s of SKILL_AND_ART_SUBJECTS) {
+        for (const tc of studentActivity.transferedList) {
+          if (s === tc.subject) {
+            count++;
+          }
+        }
+      }
+    }
+
+    return count;
   };
 
   /**
@@ -494,18 +520,21 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
   const allMandatoryData = calculateAllMandatoryData();
   const allOptionalData = calculateAllOptionalData();
 
+  const approvedCountOutsideHops = calculateApprovedCoursedOutsideHops();
+
   // All complete course data
   const numberOfCompletedMandatoryCourses =
     allMandatoryData.numberOfCoursesCompleted;
   const numberOfCompletedOptionalCourses =
-    allOptionalData.numberOfCoursesCompleted;
+    allOptionalData.numberOfCoursesCompleted + approvedCountOutsideHops;
 
   // All complete hours data
   const numberOfMandatoryHoursCompleted =
     allMandatoryData.numberOfhoursCompleted;
   const numberOfOptionalHoursCompleted =
     allOptionalData.numberOfCoursesCompleted;
-  const numberOfApprovedHoursCompleted = allApprovedData.numberOfHoursCompleted;
+  const numberOfApprovedHoursCompleted =
+    allApprovedData.numberOfHoursCompleted + approvedCountOutsideHops * 28;
 
   const numberOfTotalSelectedOptionalHours =
     allOptionalData.numberOfSelectedHours;
@@ -764,13 +793,17 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
                 studentId={props.studentId}
                 user={props.user}
                 superVisorModifies={props.superVisorModifies}
-                ethicsSelected={studyOptions.options.religionAsEthics}
-                finnishAsSecondLanguage={studyOptions.options.finnishAsLanguage}
+                nativeLanguageSelection={
+                  studyOptions.options.nativeLanguageSelection
+                }
+                religionSelection={studyOptions.options.religionSelection}
                 suggestedNextList={studentActivity.suggestedNextList}
                 suggestedOptionalList={studentActivity.suggestedOptionalList}
                 onGoingList={studentActivity.onGoingList}
                 gradedList={studentActivity.gradedList}
                 transferedList={studentActivity.transferedList}
+                skillsAndArt={studentActivity.skillsAndArt}
+                otherSubjects={studentActivity.otherSubjects}
                 studentChoiceList={studentChoices.studentChoices}
                 updateSuggestion={studentActivityHandlers.updateSuggestion}
                 updateStudentChoice={studentChoiceHandlers.updateStudentChoice}
@@ -789,13 +822,17 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
               user={props.user}
               studentId={props.studentId}
               superVisorModifies={props.superVisorModifies}
-              ethicsSelected={studyOptions.options.religionAsEthics}
-              finnishAsSecondLanguage={studyOptions.options.finnishAsLanguage}
+              nativeLanguageSelection={
+                studyOptions.options.nativeLanguageSelection
+              }
+              religionSelection={studyOptions.options.religionSelection}
               suggestedNextList={studentActivity.suggestedNextList}
               suggestedOptionalList={studentActivity.suggestedOptionalList}
               onGoingList={studentActivity.onGoingList}
               gradedList={studentActivity.gradedList}
               transferedList={studentActivity.transferedList}
+              skillsAndArt={studentActivity.skillsAndArt}
+              otherSubjects={studentActivity.otherSubjects}
               studentChoiceList={studentChoices.studentChoices}
               updateStudentChoice={studentChoiceHandlers.updateStudentChoice}
               updateSuggestion={studentActivityHandlers.updateSuggestion}
@@ -864,22 +901,20 @@ const filterSpecialSubjects = (
 ) => {
   let alteredShoolCourseTable = schoolCourseTable;
 
-  if (options.finnishAsLanguage) {
+  if (options.nativeLanguageSelection === "s2") {
     alteredShoolCourseTable = alteredShoolCourseTable.filter(
       (sSubject) => sSubject.subjectCode !== "äi"
     );
-  }
-  if (!options.finnishAsLanguage) {
+  } else if (options.nativeLanguageSelection === "äi") {
     alteredShoolCourseTable = alteredShoolCourseTable.filter(
       (sSubject) => sSubject.subjectCode !== "s2"
     );
   }
-  if (options.religionAsEthics) {
+  if (options.religionSelection === "ea") {
     alteredShoolCourseTable = alteredShoolCourseTable.filter(
       (sSubject) => sSubject.subjectCode !== "ua"
     );
-  }
-  if (!options.religionAsEthics) {
+  } else if (options.religionSelection === "ua") {
     alteredShoolCourseTable = alteredShoolCourseTable.filter(
       (sSubject) => sSubject.subjectCode !== "ea"
     );
