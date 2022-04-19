@@ -65,6 +65,7 @@ const StudySuggestionMatrix: React.FC<StudySuggestionMatrixProps> = (props) => {
                 gradedList={studentActivity.gradedList}
                 transferedList={studentActivity.transferedList}
                 updateSuggestion={studentActivityHandlers.updateSuggestion}
+                skillsAndArt={studentActivity.skillsAndArt}
               />
             </div>
           )}
@@ -87,6 +88,7 @@ const StudySuggestionMatrix: React.FC<StudySuggestionMatrixProps> = (props) => {
               gradedList={studentActivity.gradedList}
               transferedList={studentActivity.transferedList}
               updateSuggestion={studentActivityHandlers.updateSuggestion}
+              skillsAndArt={studentActivity.skillsAndArt}
             />
           )}
         </div>

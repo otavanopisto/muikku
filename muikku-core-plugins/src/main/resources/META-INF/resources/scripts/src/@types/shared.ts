@@ -567,6 +567,17 @@ export interface StudentActivityByStatus {
    * List of graded courses
    */
   gradedList: StudentActivityCourse[];
+  /**
+   * skillsAndArt
+   */
+  skillsAndArt: SkillAndArtByKeys;
+}
+
+/**
+ * SkillAndArtByKeys
+ */
+export interface SkillAndArtByKeys {
+  [key: string]: StudentActivityCourse[];
 }
 
 /**

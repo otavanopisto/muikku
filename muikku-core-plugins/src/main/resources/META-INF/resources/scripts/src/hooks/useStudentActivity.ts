@@ -6,9 +6,12 @@ import promisify from "~/util/promisify";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import {
   CourseStatus,
+  SkillAndArtByKeys,
   StudentActivityByStatus,
   StudentActivityCourse,
 } from "~/@types/shared";
+
+export const SKILL_AND_ART_SUBJECTS: string[] = ["mu", "li"];
 
 /**
  * UpdateSuggestionParams
@@ -48,6 +51,7 @@ export const useStudentActivity = (
       gradedList: [],
       suggestedNextList: [],
       suggestedOptionalList: [],
+      skillsAndArt: {},
     });
 
   const componentMounted = React.useRef(true);
@@ -92,9 +96,15 @@ export const useStudentActivity = (
               "callback"
             )()) as StudentActivityCourse[];
 
+            const skillAndArtCourses =
+              filterSkillAndArtSubject(studentActivityList);
+
             const studentActivityByStatus = filterActivity(studentActivityList);
 
-            return studentActivityByStatus;
+            return {
+              skillAndArtCourses: skillAndArtCourses,
+              studentActivityByStatus: studentActivityByStatus,
+            };
           })(),
           sleepPromise,
         ]);
@@ -103,11 +113,18 @@ export const useStudentActivity = (
           setStudentActivity((studentActivity) => ({
             ...studentActivity,
             isLoading: false,
-            suggestedNextList: loadedStudentActivity.suggestedNextList,
-            suggestedOptionalList: loadedStudentActivity.suggestedOptionalList,
-            onGoingList: loadedStudentActivity.onGoingList,
-            gradedList: loadedStudentActivity.gradedList,
-            transferedList: loadedStudentActivity.transferedList,
+            suggestedNextList:
+              loadedStudentActivity.studentActivityByStatus.suggestedNextList,
+            suggestedOptionalList:
+              loadedStudentActivity.studentActivityByStatus
+                .suggestedOptionalList,
+            onGoingList:
+              loadedStudentActivity.studentActivityByStatus.onGoingList,
+            gradedList:
+              loadedStudentActivity.studentActivityByStatus.gradedList,
+            transferedList:
+              loadedStudentActivity.studentActivityByStatus.transferedList,
+            skillsAndArt: { ...loadedStudentActivity.skillAndArtCourses },
           }));
         }
       } catch (err) {
@@ -196,6 +213,10 @@ export const useStudentActivity = (
         }
       }
 
+      const skillAndArtCourses = filterSkillAndArtSubject(
+        arrayOfStudentActivityCourses
+      );
+
       /**
        * Filtered activity courses by status
        */
@@ -211,6 +232,7 @@ export const useStudentActivity = (
         onGoingList: studentActivityByStatus.onGoingList,
         gradedList: studentActivityByStatus.gradedList,
         transferedList: studentActivityByStatus.transferedList,
+        skillsAndArt: { ...skillAndArtCourses },
       }));
     };
 
@@ -294,7 +316,7 @@ export const useStudentActivity = (
  */
 const filterActivity = (
   list: StudentActivityCourse[]
-): StudentActivityByStatus => {
+): Omit<StudentActivityByStatus, "skillsAndArt"> => {
   const onGoingList = list.filter(
     (item) => item.status === CourseStatus.ONGOING
   );
@@ -318,3 +340,13 @@ const filterActivity = (
     gradedList,
   };
 };
+
+/**
+ * filterSkillAndArtSubject
+ * @param list of studentactivity courses
+ */
+const filterSkillAndArtSubject = (list: StudentActivityCourse[]) =>
+  SKILL_AND_ART_SUBJECTS.reduce(
+    (a, v) => ({ ...a, [v]: list.filter((c) => c.subject === v) }),
+    {}
+  );

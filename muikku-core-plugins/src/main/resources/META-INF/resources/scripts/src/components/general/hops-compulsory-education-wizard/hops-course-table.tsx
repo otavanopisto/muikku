@@ -18,7 +18,10 @@ import { connect } from "react-redux";
 import { HopsUser } from ".";
 import { StateType } from "~/reducers";
 import Dropdown from "~/components/general/dropdown";
-import { UpdateSuggestionParams } from "../../../hooks/useStudentActivity";
+import {
+  SKILL_AND_ART_SUBJECTS,
+  UpdateSuggestionParams,
+} from "../../../hooks/useStudentActivity";
 import HopsSuggestionList from "./hops-suggested-list";
 import { UpdateStudentChoicesParams } from "~/hooks/useStudentChoices";
 
@@ -60,12 +63,6 @@ interface HopsCourseTableProps extends Partial<StudentActivityByStatus> {
   updateStudentChoice?: (params: UpdateStudentChoicesParams) => void;
 }
 
-const defaultProps = {
-  canSuggestNext: true,
-  canSuggestAsOptional: true,
-  canChooseToBePartOfHops: true,
-};
-
 /**
  * CourseTable
  * Renders courses as table
@@ -73,8 +70,6 @@ const defaultProps = {
  * @returns JSX.Element
  */
 const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
-  props = { ...defaultProps, ...props };
-
   /**
    * handleToggleChoiceClick
    * @param choiceParams choiceParams
@@ -370,6 +365,69 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
     );
   });
 
+  /**
+   * Subjects and courses related to skills and arts
+   */
+  const renderSkillsAndArtRows =
+    props.skillsAndArt &&
+    SKILL_AND_ART_SUBJECTS.map((s) => {
+      let missingColumsCount = currentMaxCourses;
+
+      return (
+        props.skillsAndArt[s].length !== 0 && (
+          <Tr key={s} modifiers={["subject-name"]}>
+            <Td modifiers={["subject"]}>
+              <div>{s}</div>
+            </Td>
+
+            {props.skillsAndArt[s].map((c) => {
+              missingColumsCount--;
+
+              const listItemModifiers = ["course", "APPROVAL"];
+
+              return (
+                <Td key={c.courseId} modifiers={listItemModifiers}>
+                  <Dropdown
+                    openByHover={props.user !== "supervisor"}
+                    content={
+                      <div className="hops-container__study-tool-dropdown-container">
+                        <div className="hops-container__study-tool-dropdow-title">
+                          {c.courseName}
+                        </div>
+                      </div>
+                    }
+                  >
+                    <span
+                      tabIndex={0}
+                      className="table__data-content-wrapper table__data-content-wrapper--course"
+                    >
+                      {c.courseNumber}
+                    </span>
+                  </Dropdown>
+                </Td>
+              );
+            })}
+
+            {Array(missingColumsCount)
+              .fill(1)
+              .map((c, index) => {
+                const modifiers = ["centered", "course"];
+
+                return (
+                  <Td key={`empty-${index + 1}`} modifiers={modifiers}>
+                    <div
+                      className={`table-data-content table-data-content-centered table-data-content--empty`}
+                    >
+                      -
+                    </div>
+                  </Td>
+                );
+              })}
+          </Tr>
+        )
+      );
+    });
+
   return (
     <Table modifiers={["course-matrix"]}>
       <TableHead modifiers={["course-matrix"]}>
@@ -379,6 +437,12 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
         </Tr>
       </TableHead>
       <Tbody>{renderRows}</Tbody>
+      <Tbody>
+        <Tr>
+          <Td colSpan={currentMaxCourses + 1}>Taito ja taideaineet</Td>
+        </Tr>
+        {renderSkillsAndArtRows}
+      </Tbody>
     </Table>
   );
 };

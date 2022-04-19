@@ -11,7 +11,10 @@ import {
   ListItem,
   ListItemIndicator,
 } from "~/components/general/list";
-import { UpdateSuggestionParams } from "../../../hooks/useStudentActivity";
+import {
+  SKILL_AND_ART_SUBJECTS,
+  UpdateSuggestionParams,
+} from "../../../hooks/useStudentActivity";
 import { HopsUser } from ".";
 import { UpdateStudentChoicesParams } from "~/hooks/useStudentChoices";
 import Dropdown from "~/components/general/dropdown";
@@ -342,7 +345,66 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
     );
   });
 
-  return <div className="list-row__container">{renderRows}</div>;
+  /**
+   * Subjects and courses related to skills and arts
+   */
+  const renderSkillsAndArtRows =
+    props.skillsAndArt &&
+    SKILL_AND_ART_SUBJECTS.map(
+      (s) =>
+        props.skillsAndArt[s].length !== 0 && (
+          <ListContainer key={s} modifiers={["subject-name"]}>
+            <ListItem className="list-subject-name">
+              <div className="list-subject-name-proggress" />
+              <span style={{ zIndex: 10 }}>{s}</span>
+            </ListItem>
+            <ListContainer modifiers={["subject-courses"]}>
+              {props.skillsAndArt[s].map((c) => {
+                const listItemIndicatormodifiers = ["course", "APPROVAL"];
+                const listItemModifiers = ["course", "APPROVAL"];
+
+                return (
+                  <ListItem key={c.courseId} modifiers={listItemModifiers}>
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      <ListItemIndicator modifiers={listItemIndicatormodifiers}>
+                        <Dropdown
+                          openByHover={props.user !== "supervisor"}
+                          content={
+                            <div className="hops-container__study-tool-dropdown-container">
+                              <div className="hops-container__study-tool-dropdow-title">
+                                {c.courseName}
+                              </div>
+                            </div>
+                          }
+                        >
+                          <span
+                            tabIndex={0}
+                            className="table__data-content-wrapper table__data-content-wrapper--course"
+                          >
+                            {c.courseNumber}
+                          </span>
+                        </Dropdown>
+                      </ListItemIndicator>
+                    </div>
+                  </ListItem>
+                );
+              })}
+            </ListContainer>
+          </ListContainer>
+        )
+    );
+
+  return (
+    <>
+      <div className="list-row__container">{renderRows}</div>
+      <div className="list-row__container">
+        <ListContainer>
+          <ListItem>Taito ja taideaineet</ListItem>
+        </ListContainer>
+        {renderSkillsAndArtRows}
+      </div>
+    </>
+  );
 };
 
 export default HopsCourseList;
