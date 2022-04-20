@@ -107,7 +107,7 @@ class Course extends React.Component<CourseProps, CourseState> {
     /**
      * If OPS data and workspace mandatority property is present
      */
-    if (OPS && this.props.workspace.mandatority) {
+    if (OPS && this.props.workspace.mandatority && this.props.workspace.educationTypeName) {
       /**
        * Create map property from education type name and OPS name that was passed
        * Strings are changes to lowercase form and any empty spaces are removed
