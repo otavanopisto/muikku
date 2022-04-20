@@ -770,7 +770,7 @@ public class ElasticSearchProvider implements SearchProvider {
         sorts.forEach(sort -> searchSourceBuilder.sort(sort.getField(), SortOrder.valueOf(sort.getOrder().name())));
       }
       
-      SearchRequest searchRequest = Requests.searchRequest(MUIKKU_USER_INDEX);
+      SearchRequest searchRequest = Requests.searchRequest(MUIKKU_WORKSPACE_INDEX);
       searchRequest.source(searchSourceBuilder);
       
       SearchResponse response = elasticClient.search(searchRequest, RequestOptions.DEFAULT);
