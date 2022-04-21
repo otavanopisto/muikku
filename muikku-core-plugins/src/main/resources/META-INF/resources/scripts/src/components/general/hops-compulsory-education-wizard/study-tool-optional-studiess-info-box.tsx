@@ -1,11 +1,11 @@
 import * as React from "react";
-import { NEEDED_STUDIES_IN_TOTAL } from ".";
 
 /**
  * OptionalStudiesInfoBoxProps
  */
 interface StudyToolOptionalStudiesInfoBoxProps {
-  needMandatoryStudies: number;
+  totalOptionalStudiesNeeded: number;
+  totalOptionalStudiesCompleted: number;
   selectedNumberOfOptional: number;
   graduationGoal: Date | null;
 }
@@ -18,54 +18,95 @@ interface StudyToolOptionalStudiesInfoBoxProps {
 const StudyToolOptionalStudiesInfoBox: React.FC<
   StudyToolOptionalStudiesInfoBoxProps
 > = (props) => {
-  const { needMandatoryStudies, selectedNumberOfOptional, graduationGoal } =
-    props;
+  const {
+    totalOptionalStudiesCompleted,
+    totalOptionalStudiesNeeded,
+    selectedNumberOfOptional,
+    graduationGoal,
+  } = props;
 
-  if (
-    selectedNumberOfOptional < NEEDED_STUDIES_IN_TOTAL - needMandatoryStudies ||
-    (selectedNumberOfOptional <
-      NEEDED_STUDIES_IN_TOTAL - needMandatoryStudies &&
-      graduationGoal === null)
-  ) {
+  if (totalOptionalStudiesCompleted >= totalOptionalStudiesNeeded) {
     return (
       <div className="hops-container__info">
-        <div className="hops-container__state state-WARNING">
+        <div className="hops-container__state state-SUCCESS">
           <div className="hops-container__state-icon icon-notification"></div>
           <div className="hops-container__state-text">
-            Sinulla ei ole valittuna riittävästi valinnaisia opintoja (
-            {selectedNumberOfOptional}/
-            {NEEDED_STUDIES_IN_TOTAL - needMandatoryStudies}). Valitse ainakin
-            {` ${
-              NEEDED_STUDIES_IN_TOTAL -
-              needMandatoryStudies -
-              selectedNumberOfOptional
-            } `}
-            kurssia.
+            Olet suorittanut tarvittavan vähittäismäärän (
+            {totalOptionalStudiesNeeded}) valinnaisopintoja tutkintoosi.
+            Halutessasi voit valita ja suorittaa lisää kursseja, silloin
+            oppimäärän suorittamiseen kuluva aika saattaa tosin pidentyä.
           </div>
         </div>
       </div>
     );
-  } else if (
-    selectedNumberOfOptional >
-    NEEDED_STUDIES_IN_TOTAL - needMandatoryStudies
-  ) {
+  }
+
+  if (selectedNumberOfOptional > totalOptionalStudiesNeeded) {
     return (
       <div className="hops-container__info">
         <div className="hops-container__state state-INFO">
           <div className="hops-container__state-icon icon-notification"></div>
           <div className="hops-container__state-text">
             Jee! Olet valinnut itsellesi riittävän määrän valinnaisia opintoja (
-            {selectedNumberOfOptional}/
-            {NEEDED_STUDIES_IN_TOTAL - needMandatoryStudies}). Jos haluat, voit
-            suorittaa valinnaisia opintoja enemmänkin. Silloin oppimäärän
-            suorittamiseen kuluva aika saattaa tosin pidentyä.
+            {selectedNumberOfOptional}/{totalOptionalStudiesNeeded}). Jos
+            haluat, voit suorittaa valinnaisia opintoja enemmänkin. Silloin
+            oppimäärän suorittamiseen kuluva aika saattaa tosin pidentyä.
           </div>
         </div>
       </div>
     );
-  } else {
-    return null;
   }
+
+  if (
+    selectedNumberOfOptional <
+      totalOptionalStudiesNeeded - totalOptionalStudiesCompleted ||
+    (selectedNumberOfOptional <
+      totalOptionalStudiesNeeded - totalOptionalStudiesCompleted &&
+      graduationGoal === null)
+  ) {
+    if (totalOptionalStudiesCompleted > 0) {
+      return (
+        <div className="hops-container__info">
+          <div className="hops-container__state state-WARNING">
+            <div className="hops-container__state-icon icon-notification"></div>
+            <div className="hops-container__state-text">
+              Olet suorittanut {totalOptionalStudiesCompleted}/
+              {totalOptionalStudiesNeeded} valinnaiskursseja ja valinnut
+              suoritettavaksi {selectedNumberOfOptional}/
+              {totalOptionalStudiesNeeded} kurssia. Valitse vielä
+              {` ${
+                totalOptionalStudiesNeeded -
+                selectedNumberOfOptional -
+                totalOptionalStudiesCompleted
+              } `}
+              kurssia. Voit pyytää ohjaajaltasi apua kurssien valintaan.
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="hops-container__info">
+        <div className="hops-container__state state-WARNING">
+          <div className="hops-container__state-icon icon-notification"></div>
+          <div className="hops-container__state-text">
+            Sinulla ei ole valittuna riittävästi valinnaisia opintoja. Valitse
+            vielä
+            {` ${
+              totalOptionalStudiesNeeded -
+              selectedNumberOfOptional -
+              totalOptionalStudiesCompleted
+            } `}
+            kurssia osaksi suunnitelmaa. Voit pyytää ohjaajaltasi apua kurssien
+            valintaan.
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return null;
 };
 
 export default StudyToolOptionalStudiesInfoBox;

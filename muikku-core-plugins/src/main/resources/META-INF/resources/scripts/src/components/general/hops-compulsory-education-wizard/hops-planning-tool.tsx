@@ -1,10 +1,11 @@
 import * as React from "react";
-import { SchoolSubject } from "../../../@types/shared";
 import { TextField } from "./text-field";
 import { HopsUser, NEEDED_STUDIES_IN_TOTAL } from ".";
 import { schoolCourseTable } from "../../../mock/mock-data";
 import StudyToolCalculationInfoBox from "./study-tool-calculation-info-box";
 import {
+  LANGUAGE_SUBJECTS,
+  OTHER_SUBJECT_OUTSIDE_HOPS,
   SKILL_AND_ART_SUBJECTS,
   useStudentActivity,
 } from "../../../hooks/useStudentActivity";
@@ -23,10 +24,8 @@ import { AnyActionType } from "~/actions";
 import { useStudentChoices } from "~/hooks/useStudentChoices";
 import HopsCourseList from "~/components/general/hops-compulsory-education-wizard/hops-course-list";
 import HopsCourseTable from "~/components/general/hops-compulsory-education-wizard/hops-course-table";
-import {
-  AlternativeStudyObject,
-  useStudentAlternativeOptions,
-} from "~/hooks/useStudentAlternativeOptions";
+import { useStudentAlternativeOptions } from "~/hooks/useStudentAlternativeOptions";
+import { filterSpecialSubjects } from "~/helper-functions/shared";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const ProgressBarCircle = require("react-progress-bar.js").Circle;
@@ -288,6 +287,20 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
           }
         }
       }
+      for (const s of LANGUAGE_SUBJECTS) {
+        for (const tc of studentActivity.transferedList) {
+          if (s === tc.subject) {
+            count++;
+          }
+        }
+      }
+      for (const s of OTHER_SUBJECT_OUTSIDE_HOPS) {
+        for (const tc of studentActivity.transferedList) {
+          if (s === tc.subject) {
+            count++;
+          }
+        }
+      }
     }
 
     return count;
@@ -531,8 +544,7 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
   // All complete hours data
   const numberOfMandatoryHoursCompleted =
     allMandatoryData.numberOfhoursCompleted;
-  const numberOfOptionalHoursCompleted =
-    allOptionalData.numberOfCoursesCompleted;
+  const numberOfOptionalHoursCompleted = allOptionalData.numberOfHoursCompleted;
   const numberOfApprovedHoursCompleted =
     allApprovedData.numberOfHoursCompleted + approvedCountOutsideHops * 28;
 
@@ -581,29 +593,34 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
   );
 
   /**
-   * By default optional studies over required amount is zero
-   * and is only altered if student choises go up to that
+   * Total proggress of studies. Only take count number of completed mandatory and optional courses
+   * IF there is optional courses completed more than required then using required amount in calculation
    */
-  let optionalStudiesOverRequiredAmount = 0;
-
-  if (
-    studentChoices.studentChoices &&
-    studentChoices.studentChoices.length > neededOptionalStudies
-  ) {
-    optionalStudiesOverRequiredAmount = studentChoices.studentChoices.length;
-  }
-
-  /**
-   * Total proggress of studies
-   */
-  let proggressOfStudies =
-    (numberOfCompletedMandatoryCourses + numberOfCompletedOptionalCourses) /
+  const proggressOfStudies =
+    (numberOfCompletedMandatoryCourses +
+      (numberOfCompletedOptionalCourses > neededOptionalStudies
+        ? neededOptionalStudies
+        : numberOfCompletedOptionalCourses)) /
     (needMandatoryCoursesInTotal + neededOptionalStudies);
 
-  if (numberOfOptionalHoursCompleted > neededOptionalStudies) {
-    proggressOfStudies =
-      (numberOfCompletedMandatoryCourses + neededOptionalStudies) /
-      (neededOptionalStudies + needMandatoryCoursesInTotal);
+  /**
+   * mandatoryCourseProggress
+   */
+  let mandatoryCourseProggress =
+    numberOfCompletedMandatoryCourses / needMandatoryCoursesInTotal;
+
+  /**
+   * optionalCourseProggress
+   */
+  let optionalCourseProggress =
+    numberOfCompletedOptionalCourses / neededOptionalStudies;
+
+  if (mandatoryCourseProggress > 1) {
+    mandatoryCourseProggress = 1;
+  }
+
+  if (optionalCourseProggress > 1) {
+    optionalCourseProggress = 1;
   }
 
   return (
@@ -625,18 +642,20 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
 
       {!studentActivity.isLoading && !studentChoices.isLoading && (
         <StudyToolOptionalStudiesInfoBox
-          needMandatoryStudies={needMandatoryCoursesInTotal}
+          totalOptionalStudiesNeeded={neededOptionalStudies}
+          totalOptionalStudiesCompleted={numberOfCompletedOptionalCourses}
           selectedNumberOfOptional={studentChoices.studentChoices.length}
           graduationGoal={followUpData.followUp.graduationGoal}
         />
       )}
 
-      {!studentActivity.isLoading &&
+      {((!studentActivity.isLoading &&
         !studentChoices.isLoading &&
         studentChoices.studentChoices &&
-        studentChoices.studentChoices.length >= neededOptionalStudies && (
-          <>{compareGraduationGoalToNeededForMandatoryStudies()}</>
-        )}
+        numberOfCompletedOptionalCourses >= neededOptionalStudies) ||
+        studentChoices.studentChoices.length >=
+          neededOptionalStudies - approvedCountOutsideHops) &&
+        compareGraduationGoalToNeededForMandatoryStudies()}
 
       {props.showIndicators && (
         <div className="hops-container__info hops-container__info--activity-progressbar">
@@ -701,12 +720,10 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
                   },
                 }}
                 text={`${numberOfCompletedMandatoryCourses} / ${needMandatoryCoursesInTotal}`}
-                progress={
-                  numberOfCompletedMandatoryCourses /
-                  needMandatoryCoursesInTotal
-                }
+                progress={mandatoryCourseProggress}
               />
             </div>
+
             <div className="hops__form-element-container hops__form-element-container--progressbar">
               <h3 className="hops-container__subheader hops-container__subheader--activity-title">
                 Suoritetut valinnaisopinnot:
@@ -734,17 +751,10 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
                   },
                 }}
                 text={`
-                    ${numberOfCompletedOptionalCourses}
-                    /
-                    ${NEEDED_STUDIES_IN_TOTAL - needMandatoryCoursesInTotal} ${
-                  optionalStudiesOverRequiredAmount > 0
-                    ? `(${optionalStudiesOverRequiredAmount})`
-                    : ""
+                    ${numberOfCompletedOptionalCourses} / ${
+                  NEEDED_STUDIES_IN_TOTAL - needMandatoryCoursesInTotal
                 }`}
-                progress={
-                  numberOfCompletedOptionalCourses /
-                  (NEEDED_STUDIES_IN_TOTAL - needMandatoryCoursesInTotal)
-                }
+                progress={optionalCourseProggress}
               />
             </div>
 
@@ -788,15 +798,12 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
           ) : (
             <div className="hops-container__table-container">
               <HopsCourseTable
+                matrix={filteredSchoolCourseTable}
                 useCase="hops-planing"
                 disabled={props.disabled}
                 studentId={props.studentId}
                 user={props.user}
                 superVisorModifies={props.superVisorModifies}
-                nativeLanguageSelection={
-                  studyOptions.options.nativeLanguageSelection
-                }
-                religionSelection={studyOptions.options.religionSelection}
                 suggestedNextList={studentActivity.suggestedNextList}
                 suggestedOptionalList={studentActivity.suggestedOptionalList}
                 onGoingList={studentActivity.onGoingList}
@@ -804,6 +811,7 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
                 transferedList={studentActivity.transferedList}
                 skillsAndArt={studentActivity.skillsAndArt}
                 otherSubjects={studentActivity.otherSubjects}
+                otherLanguageSubjects={studentActivity.otherLanguageSubjects}
                 studentChoiceList={studentChoices.studentChoices}
                 updateSuggestion={studentActivityHandlers.updateSuggestion}
                 updateStudentChoice={studentChoiceHandlers.updateStudentChoice}
@@ -817,15 +825,12 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
             <div className="loader-empty" />
           ) : (
             <HopsCourseList
-              useCase="study-matrix"
+              matrix={filteredSchoolCourseTable}
+              useCase="hops-planing"
               disabled={props.disabled}
               user={props.user}
               studentId={props.studentId}
               superVisorModifies={props.superVisorModifies}
-              nativeLanguageSelection={
-                studyOptions.options.nativeLanguageSelection
-              }
-              religionSelection={studyOptions.options.religionSelection}
               suggestedNextList={studentActivity.suggestedNextList}
               suggestedOptionalList={studentActivity.suggestedOptionalList}
               onGoingList={studentActivity.onGoingList}
@@ -833,6 +838,7 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
               transferedList={studentActivity.transferedList}
               skillsAndArt={studentActivity.skillsAndArt}
               otherSubjects={studentActivity.otherSubjects}
+              otherLanguageSubjects={studentActivity.otherLanguageSubjects}
               studentChoiceList={studentChoices.studentChoices}
               updateStudentChoice={studentChoiceHandlers.updateStudentChoice}
               updateSuggestion={studentActivityHandlers.updateSuggestion}
@@ -879,47 +885,12 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
         <div className="hops-container__study-tool-indicator-container ">
           <div className="hops-container__indicator-item hops-container__indicator-item--next"></div>
           <div className="hops-container__indicator-item-label">
-            Ohjaajan suraavaksi ehdottama
+            Ohjaajan seuraavaksi ehdottama
           </div>
         </div>
       </div>
     </>
   );
-};
-
-/**
- * Filters special subjects away depending options selected by student
- * or loaded from pyramus
- *
- * @param schoolCourseTable intial table that is altered depending options
- * @param options options for special subjects
- * @returns altered school course table with correct special subject included
- */
-const filterSpecialSubjects = (
-  schoolCourseTable: SchoolSubject[],
-  options: AlternativeStudyObject
-) => {
-  let alteredShoolCourseTable = schoolCourseTable;
-
-  if (options.nativeLanguageSelection === "s2") {
-    alteredShoolCourseTable = alteredShoolCourseTable.filter(
-      (sSubject) => sSubject.subjectCode !== "äi"
-    );
-  } else if (options.nativeLanguageSelection === "äi") {
-    alteredShoolCourseTable = alteredShoolCourseTable.filter(
-      (sSubject) => sSubject.subjectCode !== "s2"
-    );
-  }
-  if (options.religionSelection === "ea") {
-    alteredShoolCourseTable = alteredShoolCourseTable.filter(
-      (sSubject) => sSubject.subjectCode !== "ua"
-    );
-  } else if (options.religionSelection === "ua") {
-    alteredShoolCourseTable = alteredShoolCourseTable.filter(
-      (sSubject) => sSubject.subjectCode !== "ea"
-    );
-  }
-  return alteredShoolCourseTable;
 };
 
 /**

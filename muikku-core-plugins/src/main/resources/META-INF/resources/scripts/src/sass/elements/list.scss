@@ -64,6 +64,7 @@
   background-color: $color-default;
   border-radius: unset;
   display: flex;
+  font-size: 1.1rem;
   font-weight: bold;
   justify-content: space-between;
   overflow: hidden;
@@ -122,6 +123,10 @@
 
 .list-item-indicator--OPTIONAL {
   background-color: $color-optional;
+}
+
+.list-item-indicator--OPTIONAL-SELECTED {
+  border-color: $color-optional-selected;
 }
 
 .list-item-indicator--COMPLETED {

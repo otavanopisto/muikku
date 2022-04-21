@@ -10,9 +10,11 @@ import {
   StudentActivityCourse,
 } from "~/@types/shared";
 
-export const SKILL_AND_ART_SUBJECTS: string[] = ["mu", "li"];
+export const SKILL_AND_ART_SUBJECTS: string[] = ["mu", "li", "ks", "ku", "ko"];
 
-export const OTHER_SUBJECT_OUTSIDE_HOPS: string[] = ["jab", "sab"];
+export const OTHER_SUBJECT_OUTSIDE_HOPS: string[] = ["MUU"];
+
+export const LANGUAGE_SUBJECTS: string[] = ["rab", "sab", "eab2", "lab"];
 
 /**
  * UpdateSuggestionParams
@@ -53,6 +55,7 @@ export const useStudentActivity = (
       suggestedNextList: [],
       suggestedOptionalList: [],
       skillsAndArt: {},
+      otherLanguageSubjects: {},
       otherSubjects: {},
     });
 
@@ -98,15 +101,26 @@ export const useStudentActivity = (
               "callback"
             )()) as StudentActivityCourse[];
 
-            const skillAndArtCourses =
-              filterSkillAndArtSubject(studentActivityList);
+            const skillAndArtCourses = filterActivityBySubjects(
+              SKILL_AND_ART_SUBJECTS,
+              studentActivityList
+            );
 
-            const otherSubjects = filterOtherSubjects(studentActivityList);
+            const otherLanguageSubjects = filterActivityBySubjects(
+              LANGUAGE_SUBJECTS,
+              studentActivityList
+            );
+
+            const otherSubjects = filterActivityBySubjects(
+              OTHER_SUBJECT_OUTSIDE_HOPS,
+              studentActivityList
+            );
 
             const studentActivityByStatus = filterActivity(studentActivityList);
 
             return {
               otherSubjects: otherSubjects,
+              otherLanguageSubjects: otherLanguageSubjects,
               skillAndArtCourses: skillAndArtCourses,
               studentActivityByStatus: studentActivityByStatus,
             };
@@ -130,6 +144,9 @@ export const useStudentActivity = (
             transferedList:
               loadedStudentActivity.studentActivityByStatus.transferedList,
             skillsAndArt: { ...loadedStudentActivity.skillAndArtCourses },
+            otherLanguageSubjects: {
+              ...loadedStudentActivity.otherLanguageSubjects,
+            },
             otherSubjects: { ...loadedStudentActivity.otherSubjects },
           }));
         }
@@ -219,7 +236,18 @@ export const useStudentActivity = (
         }
       }
 
-      const skillAndArtCourses = filterSkillAndArtSubject(
+      const skillAndArtCourses = filterActivityBySubjects(
+        SKILL_AND_ART_SUBJECTS,
+        arrayOfStudentActivityCourses
+      );
+
+      const otherLanguageSubjects = filterActivityBySubjects(
+        LANGUAGE_SUBJECTS,
+        arrayOfStudentActivityCourses
+      );
+
+      const otherSubjects = filterActivityBySubjects(
+        OTHER_SUBJECT_OUTSIDE_HOPS,
         arrayOfStudentActivityCourses
       );
 
@@ -230,6 +258,8 @@ export const useStudentActivity = (
         arrayOfStudentActivityCourses
       );
 
+      console.log(studentActivityByStatus);
+
       setStudentActivity((studentActivity) => ({
         ...studentActivity,
         isLoading: false,
@@ -239,6 +269,8 @@ export const useStudentActivity = (
         gradedList: studentActivityByStatus.gradedList,
         transferedList: studentActivityByStatus.transferedList,
         skillsAndArt: { ...skillAndArtCourses },
+        otherLanguageSubjects: { ...otherLanguageSubjects },
+        otherSubjects: { ...otherSubjects },
       }));
     };
 
@@ -322,7 +354,10 @@ export const useStudentActivity = (
  */
 const filterActivity = (
   list: StudentActivityCourse[]
-): Omit<StudentActivityByStatus, "skillsAndArt" | "otherSubjects"> => {
+): Omit<
+  StudentActivityByStatus,
+  "skillsAndArt" | "otherLanguageSubjects" | "otherSubjects"
+> => {
   const onGoingList = list.filter(
     (item) => item.status === CourseStatus.ONGOING
   );
@@ -349,20 +384,19 @@ const filterActivity = (
 
 /**
  * filterSkillAndArtSubject
+ * @param subjectsList of studentactivity courses
  * @param list of studentactivity courses
  */
-const filterSkillAndArtSubject = (list: StudentActivityCourse[]) =>
-  SKILL_AND_ART_SUBJECTS.reduce(
-    (a, v) => ({ ...a, [v]: list.filter((c) => c.subject === v) }),
-    {}
-  );
-
-/**
- * filterOtherSubjects
- * @param list of studentactivity courses
- */
-const filterOtherSubjects = (list: StudentActivityCourse[]) =>
-  OTHER_SUBJECT_OUTSIDE_HOPS.reduce(
-    (a, v) => ({ ...a, [v]: list.filter((c) => c.subject === v) }),
+const filterActivityBySubjects = (
+  subjectsList: string[],
+  list: StudentActivityCourse[]
+) =>
+  subjectsList.reduce(
+    (a, v) => ({
+      ...a,
+      [v]: list
+        .filter((c) => c.subject === v)
+        .sort((a, b) => a.courseNumber - b.courseNumber),
+    }),
     {}
   );

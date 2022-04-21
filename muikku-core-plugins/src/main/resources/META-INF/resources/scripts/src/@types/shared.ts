@@ -470,7 +470,6 @@ export interface Course {
   courseNumber: number;
   length: number;
   mandatory: boolean;
-  id: number;
 }
 
 /**
@@ -572,7 +571,10 @@ export interface StudentActivityByStatus {
    * skillsAndArt
    */
   skillsAndArt: ActivityBySubject;
-
+  /**
+   * otherLanguageSubjects
+   */
+  otherLanguageSubjects: ActivityBySubject;
   /**
    * otherSubjects
    */

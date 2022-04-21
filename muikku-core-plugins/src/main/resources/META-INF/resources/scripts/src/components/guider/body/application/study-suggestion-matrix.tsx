@@ -12,6 +12,8 @@ import { useStudentActivity } from "~/hooks/useStudentActivity";
 import HopsCourseTable from "~/components/general/hops-compulsory-education-wizard/hops-course-table";
 import HopsCourseList from "~/components/general/hops-compulsory-education-wizard/hops-course-list";
 import { useStudentAlternativeOptions } from "~/hooks/useStudentAlternativeOptions";
+import { schoolCourseTable } from "~/mock/mock-data";
+import { filterSpecialSubjects } from "~/helper-functions/shared";
 
 /**
  * StudyToolProps
@@ -44,6 +46,11 @@ const StudySuggestionMatrix: React.FC<StudySuggestionMatrixProps> = (props) => {
     props.displayNotification
   );
 
+  const filteredSchoolCourseTable = filterSpecialSubjects(
+    schoolCourseTable,
+    studyOptions.options
+  );
+
   return (
     <>
       <div className="hops-container__row">
@@ -53,15 +60,12 @@ const StudySuggestionMatrix: React.FC<StudySuggestionMatrixProps> = (props) => {
           ) : (
             <div className="hops-container__table-container">
               <HopsCourseTable
+                matrix={filteredSchoolCourseTable}
                 useCase="study-matrix"
                 disabled={false}
                 studentId={props.studentId}
                 user="supervisor"
                 superVisorModifies={true}
-                nativeLanguageSelection={
-                  studyOptions.options.nativeLanguageSelection
-                }
-                religionSelection={studyOptions.options.religionSelection}
                 suggestedNextList={studentActivity.suggestedNextList}
                 onGoingList={studentActivity.onGoingList}
                 gradedList={studentActivity.gradedList}
@@ -69,6 +73,7 @@ const StudySuggestionMatrix: React.FC<StudySuggestionMatrixProps> = (props) => {
                 updateSuggestion={studentActivityHandlers.updateSuggestion}
                 skillsAndArt={studentActivity.skillsAndArt}
                 otherSubjects={studentActivity.otherSubjects}
+                otherLanguageSubjects={studentActivity.otherLanguageSubjects}
               />
             </div>
           )}
@@ -79,15 +84,12 @@ const StudySuggestionMatrix: React.FC<StudySuggestionMatrixProps> = (props) => {
             <div className="loader-empty" />
           ) : (
             <HopsCourseList
+              matrix={filteredSchoolCourseTable}
               useCase="study-matrix"
               disabled={false}
               user="supervisor"
               studentId={props.studentId}
               superVisorModifies={true}
-              nativeLanguageSelection={
-                studyOptions.options.nativeLanguageSelection
-              }
-              religionSelection={studyOptions.options.religionSelection}
               suggestedNextList={studentActivity.suggestedNextList}
               onGoingList={studentActivity.onGoingList}
               gradedList={studentActivity.gradedList}
@@ -95,6 +97,7 @@ const StudySuggestionMatrix: React.FC<StudySuggestionMatrixProps> = (props) => {
               updateSuggestion={studentActivityHandlers.updateSuggestion}
               skillsAndArt={studentActivity.skillsAndArt}
               otherSubjects={studentActivity.otherSubjects}
+              otherLanguageSubjects={studentActivity.otherLanguageSubjects}
             />
           )}
         </div>
