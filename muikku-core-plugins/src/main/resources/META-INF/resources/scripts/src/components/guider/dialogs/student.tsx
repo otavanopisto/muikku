@@ -269,6 +269,7 @@ class StudentDialog extends React.Component<
         modifier="guider-student"
         title={dialogTitle}
         content={content}
+        closeOnOverlayClick={false}
         disableScroll
       />
     );

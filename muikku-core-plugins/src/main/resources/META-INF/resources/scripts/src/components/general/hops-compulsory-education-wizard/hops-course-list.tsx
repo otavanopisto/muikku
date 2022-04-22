@@ -344,6 +344,7 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
                               className="table__data-content-wrapper table__data-content-wrapper--course"
                             >
                               {c.courseNumber}
+                              {!c.transferCreditMandatory ? "*" : null}
                             </span>
                           </Dropdown>
                         </ListItemIndicator>
@@ -398,6 +399,7 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
                               className="table__data-content-wrapper table__data-content-wrapper--course"
                             >
                               {c.courseNumber}
+                              {!c.transferCreditMandatory ? "*" : null}
                             </span>
                           </Dropdown>
                         </ListItemIndicator>
@@ -425,7 +427,10 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
             return (
               <ListContainer key={c.courseName} modifiers={["subject-name"]}>
                 <ListItem className="list-subject-name">
-                  <span style={{ zIndex: 10 }}>{c.courseName}</span>
+                  <span style={{ zIndex: 10 }}>
+                    {c.courseName}
+                    {!c.transferCreditMandatory ? "*" : null}
+                  </span>
                 </ListItem>
               </ListContainer>
             );

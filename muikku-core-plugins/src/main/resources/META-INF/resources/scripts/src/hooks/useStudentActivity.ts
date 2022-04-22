@@ -258,8 +258,6 @@ export const useStudentActivity = (
         arrayOfStudentActivityCourses
       );
 
-      console.log(studentActivityByStatus);
-
       setStudentActivity((studentActivity) => ({
         ...studentActivity,
         isLoading: false,

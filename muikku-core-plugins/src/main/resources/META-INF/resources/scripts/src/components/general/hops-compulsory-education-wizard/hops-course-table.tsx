@@ -380,6 +380,7 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
                         className="table__data-content-wrapper table__data-content-wrapper--course"
                       >
                         {c.courseNumber}
+                        {!c.transferCreditMandatory ? "*" : null}
                       </span>
                     </Dropdown>
                   </Td>
@@ -443,6 +444,7 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
                         className="table__data-content-wrapper table__data-content-wrapper--course"
                       >
                         {c.courseNumber}
+                        {!c.transferCreditMandatory ? "*" : null}
                       </span>
                     </Dropdown>
                   </Td>
@@ -488,6 +490,7 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
                 >
                   <div className="hops-container__study-tool-dropdow-title">
                     {c.courseName}
+                    {!c.transferCreditMandatory ? "*" : null}
                   </div>
                 </Td>
               </Tr>

@@ -41,7 +41,28 @@ const StudyToolOptionalStudiesInfoBox: React.FC<
     );
   }
 
-  if (selectedNumberOfOptional > totalOptionalStudiesNeeded) {
+  if (
+    selectedNumberOfOptional + totalOptionalStudiesCompleted ===
+    totalOptionalStudiesNeeded
+  ) {
+    if (totalOptionalStudiesCompleted > 0) {
+      return (
+        <div className="hops-container__info">
+          <div className="hops-container__state state-INFO">
+            <div className="hops-container__state-icon icon-notification"></div>
+            <div className="hops-container__state-text">
+              Jee! Olet suorittanut {totalOptionalStudiesCompleted}/
+              {totalOptionalStudiesNeeded} valinnaiskursseja ja valinnut
+              suoritettavaksi {selectedNumberOfOptional}/
+              {totalOptionalStudiesNeeded}, mikä on riittävästi kursseja. Jos
+              haluat, voit suorittaa valinnaisia opintoja enemmänkin. Silloin
+              oppimäärän suorittamiseen kuluva aika saattaa tosin pidentyä.
+            </div>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className="hops-container__info">
         <div className="hops-container__state state-INFO">
@@ -58,10 +79,48 @@ const StudyToolOptionalStudiesInfoBox: React.FC<
   }
 
   if (
-    selectedNumberOfOptional <
-      totalOptionalStudiesNeeded - totalOptionalStudiesCompleted ||
-    (selectedNumberOfOptional <
-      totalOptionalStudiesNeeded - totalOptionalStudiesCompleted &&
+    selectedNumberOfOptional + totalOptionalStudiesCompleted >
+    totalOptionalStudiesNeeded
+  ) {
+    if (totalOptionalStudiesCompleted > 0) {
+      return (
+        <div className="hops-container__info">
+          <div className="hops-container__state state-INFO">
+            <div className="hops-container__state-icon icon-notification"></div>
+            <div className="hops-container__state-text">
+              Jee! Olet suorittanut {totalOptionalStudiesCompleted}/
+              {totalOptionalStudiesNeeded} valinnaiskursseja ja valinnut
+              suoritettavaksi {selectedNumberOfOptional}/
+              {totalOptionalStudiesNeeded} kurssia. Tämä on enemmän kuin
+              oppimääräsi velvoittaa. Jos haluat, voit suorittaa valinnaisia
+              opintoja enemmänkin. Silloin oppimäärän suorittamiseen kuluva aika
+              saattaa tosin pidentyä.
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="hops-container__info">
+        <div className="hops-container__state state-INFO">
+          <div className="hops-container__state-icon icon-notification"></div>
+          <div className="hops-container__state-text">
+            Jee! Olet valinnut itsellesi riittävän määrän valinnaisia opintoja (
+            {selectedNumberOfOptional}/{totalOptionalStudiesNeeded}). Jos
+            haluat, voit suorittaa valinnaisia opintoja enemmänkin. Silloin
+            oppimäärän suorittamiseen kuluva aika saattaa tosin pidentyä.
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (
+    selectedNumberOfOptional + totalOptionalStudiesCompleted <
+      totalOptionalStudiesNeeded ||
+    (selectedNumberOfOptional + totalOptionalStudiesCompleted <
+      totalOptionalStudiesNeeded &&
       graduationGoal === null)
   ) {
     if (totalOptionalStudiesCompleted > 0) {

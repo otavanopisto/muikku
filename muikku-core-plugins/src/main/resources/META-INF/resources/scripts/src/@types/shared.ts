@@ -484,6 +484,7 @@ export interface StudentActivityCourse {
   grade: number; // jos on arvioitu tahi hyväksiluettu
   status: CourseStatus;
   date: string;
+  transferCreditMandatory: boolean | null;
 }
 
 /**
