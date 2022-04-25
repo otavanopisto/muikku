@@ -26,6 +26,7 @@ import HopsCourseList from "~/components/general/hops-compulsory-education-wizar
 import HopsCourseTable from "~/components/general/hops-compulsory-education-wizard/hops-course-table";
 import { useStudentAlternativeOptions } from "~/hooks/useStudentAlternativeOptions";
 import { filterSpecialSubjects } from "~/helper-functions/shared";
+import Dropdown from "../dropdown";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const ProgressBarCircle = require("react-progress-bar.js").Circle;
@@ -705,33 +706,48 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
             <h3 className="hops-container__subheader hops-container__subheader--activity-title">
               Opintojen eteneminen:
             </h3>
-            <ProgressBarLine
-              containerClassName="hops-container__activity-progressbar hops-container__activity-progressbar--line"
-              options={{
-                strokeWidth: 1,
-                duration: 1000,
-                color: "#24c118",
-                trailColor: "#ffffff",
-                trailWidth: 1,
-                svgStyle: {
-                  width: "100%",
-                  height: "20px",
-                  borderRadius: "10px",
-                },
-                initialAnimate: true,
-                text: {
-                  style: {
-                    color: "#ffffff",
-                    position: "absolute",
-                    left: 0,
-                  },
-                  className:
-                    "hops-container__activity-label hops-container__activity-label--progressbar-line",
-                },
-              }}
-              text={`${Math.round(proggressOfStudies * 100)}%`}
-              progress={proggressOfStudies}
-            />
+            <Dropdown
+              openByHover
+              content={
+                <div className="hops-planning__activity-proggressbar-tooltip">
+                  Opintojen etenemistä kuvaava palkki huomioi vain aikuisten
+                  perusopetuksen päättövaiheen oppimäärään sisältyvän
+                  kurssimäärän (46 kurssia). Jos olet suorittanut
+                  vapaaehtoisesti enemmän valinnaisia opintoja, niitä ei
+                  huomioida etenemistä kuvaavassa palkissa.
+                </div>
+              }
+            >
+              <div tabIndex={0}>
+                <ProgressBarLine
+                  containerClassName="hops-container__activity-progressbar hops-container__activity-progressbar--line"
+                  options={{
+                    strokeWidth: 1,
+                    duration: 1000,
+                    color: "#24c118",
+                    trailColor: "#ffffff",
+                    trailWidth: 1,
+                    svgStyle: {
+                      width: "100%",
+                      height: "20px",
+                      borderRadius: "10px",
+                    },
+                    initialAnimate: true,
+                    text: {
+                      style: {
+                        color: "#ffffff",
+                        position: "absolute",
+                        left: 0,
+                      },
+                      className:
+                        "hops-container__activity-label hops-container__activity-label--progressbar-line",
+                    },
+                  }}
+                  text={`${Math.round(proggressOfStudies * 100)}%`}
+                  progress={proggressOfStudies}
+                />
+              </div>
+            </Dropdown>
           </div>
 
           <div className="hops-container__row hops-container__row--activity-progressbar">
@@ -807,34 +823,48 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
                 Arvioitu opintoaika (kk):
               </h3>
 
-              <ProgressBarCircle
-                containerClassName="hops-container__activity-progressbar hops-container__activity-progressbar--circle"
-                options={{
-                  strokeWidth: 13,
-                  duration: 1000,
-                  color: "#24c118",
-                  trailColor: "#ffffff",
-                  easing: "easeInOut",
-                  trailWidth: 15,
-                  svgStyle: {
-                    flexBasis: "80px",
-                    flexGrow: "0",
-                    flexShrink: "0",
-                    height: "80px",
-                  },
-                  text: {
-                    style: null,
-                    className:
-                      "hops-container__activity-label hops-container__activity-label--progressbar-circle",
-                  },
-                }}
-                text={`${showAsReadableTime(
-                  getTotalTimeInDays(
-                    hoursInTotalToComplete,
-                    studyHours.studyHourValue
-                  )
-                )}`}
-              />
+              <Dropdown
+                openByHover
+                content={
+                  <div className="hops-planning__activity-proggressbar-tooltip">
+                    Arvioitu opintoaika kuvaa oletuksena pakollisiin opintoihin
+                    tarvittavaa aikaa, joka lasketaan 46 kurssin määrästä. Jos
+                    valitset enemmän valinnaisopintoja kuin pakollinen
+                    kurssimäärä edellyttää, niin opintoaikasi saattaa pidentyä.
+                  </div>
+                }
+              >
+                <div tabIndex={0}>
+                  <ProgressBarCircle
+                    containerClassName="hops-container__activity-progressbar hops-container__activity-progressbar--circle"
+                    options={{
+                      strokeWidth: 13,
+                      duration: 1000,
+                      color: "#24c118",
+                      trailColor: "#ffffff",
+                      easing: "easeInOut",
+                      trailWidth: 15,
+                      svgStyle: {
+                        flexBasis: "80px",
+                        flexGrow: "0",
+                        flexShrink: "0",
+                        height: "80px",
+                      },
+                      text: {
+                        style: null,
+                        className:
+                          "hops-container__activity-label hops-container__activity-label--progressbar-circle",
+                      },
+                    }}
+                    text={`${showAsReadableTime(
+                      getTotalTimeInDays(
+                        hoursInTotalToComplete,
+                        studyHours.studyHourValue
+                      )
+                    )}`}
+                  />
+                </div>
+              </Dropdown>
             </div>
           </div>
         </div>
