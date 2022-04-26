@@ -78,6 +78,39 @@ export interface GuiderNotificationStudentsDataType {
   nopassedcourses?: string;
   assessmentrequest?: string;
 }
+/**
+ * ContactEvent
+ */
+export interface IContactEvent {
+  id: number;
+  entryDate: string;
+  type:
+    | "OTHER"
+    | "LETTER"
+    | "EMAIL"
+    | "PHONE"
+    | "CHATLOG"
+    | "SKYPE"
+    | "FACE2FACE"
+    | "ABSENCE"
+    | "MUIKKU";
+  creatorId: number;
+  creatorName: string;
+  text: string;
+  comments?: contactEventComment[];
+}
+
+/**
+ * contactEventComment
+ */
+export type contactEventComment = {
+  id: number;
+  entry: number;
+  commentDate: string;
+  creatorId: number;
+  creatorName: string;
+  text: string;
+};
 
 /**
  * GuiderStudentUserProfileType
@@ -94,6 +127,7 @@ export interface GuiderStudentUserProfileType {
   //  vops: VOPSDataType,
   hops: HOPSDataType;
   notifications: GuiderNotificationStudentsDataType;
+  contactLogs: IContactEvent[];
   currentWorkspaces: WorkspaceListType;
   pastWorkspaces: WorkspaceListType;
   activityLogs: ActivityLogType[];

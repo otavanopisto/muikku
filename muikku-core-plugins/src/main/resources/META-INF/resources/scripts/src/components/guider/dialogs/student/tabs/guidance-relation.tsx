@@ -1,7 +1,8 @@
 import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
-import { connect } from "react-redux";
+import { connect, Dispatch } from "react-redux";
+import { bindActionCreators } from "redux";
 import ApplicationSubPanel, {
   ApplicationSubPanelViewHeader,
   ApplicationSubPanelItem,
@@ -10,6 +11,7 @@ import ApplicationSubPanel, {
 import GuidanceEvent from "~/components/index/body/guidance-events/guidance-event";
 import ContactEvent from "./contact-events/contact-event";
 import { StatusType } from "~/reducers/base/status";
+import { IContactEvent } from "~/reducers/main-function/guider/";
 
 /**
  * GuidanceRelationProps
@@ -17,6 +19,7 @@ import { StatusType } from "~/reducers/base/status";
 interface GuidanceRelationProps {
   i18n: i18nType;
   status: StatusType;
+  contactLogs: IContactEvent[];
 }
 
 /**
@@ -25,7 +28,7 @@ interface GuidanceRelationProps {
  * @returns JSX.element
  */
 const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
-  const { i18n, status } = props;
+  const { i18n, status, contactLogs } = props;
   return (
     <ApplicationSubPanel>
       <ApplicationSubPanelViewHeader title="Ohjuuussuhde">
@@ -46,78 +49,20 @@ const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
         </ApplicationSubPanelSection>
         <ApplicationSubPanelSection modifier="guidance-relation-contact-events">
           <ApplicationSubPanelSection.Header>
-            Heador
+            Yhteydenotot
           </ApplicationSubPanelSection.Header>
           <ApplicationSubPanelSection.Body>
-            <ContactEvent
-              i18n={i18n}
-              event={{
-                entryDate: "Muu",
-                id: 1,
-                type: "LETTER",
-                creatorName: "Untti A",
-                creatorId: status.userId,
-                text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
-                comments: [
-                  {
-                    id: 1,
-                    entry: 1,
-                    commentDate: "Muu",
-                    creatorId: status.userId,
-                    creatorName: "Untti A",
-                    text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
-                  },
-                  {
-                    id: 2,
-                    entry: 1,
-                    commentDate: "Muu",
-                    creatorId: status.userId,
-                    creatorName: "Untti A",
-                    text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
-                  },
-                ],
-              }}
-            />
-            <ContactEvent
-              i18n={i18n}
-              event={{
-                entryDate: "Muu",
-                id: 1,
-                type: "LETTER",
-                creatorName: "Untti A",
-                creatorId: status.userId,
-                text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
-              }}
-            />
-            <ContactEvent
-              i18n={i18n}
-              event={{
-                entryDate: "Muu",
-                id: 1,
-                type: "LETTER",
-                creatorName: "Untti A",
-                creatorId: status.userId,
-                text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
-                comments: [
-                  {
-                    id: 1,
-                    entry: 1,
-                    commentDate: "Muu",
-                    creatorId: status.userId,
-                    creatorName: "Untti A",
-                    text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
-                  },
-                  {
-                    id: 2,
-                    entry: 1,
-                    commentDate: "Muu",
-                    creatorId: status.userId,
-                    creatorName: "Untti A",
-                    text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
-                  },
-                ],
-              }}
-            />
+            {contactLogs && contactLogs.length > 0 ? (
+              contactLogs.map((contactEvent) => (
+                <ContactEvent
+                  key={contactEvent.id}
+                  event={contactEvent}
+                  i18n={i18n}
+                />
+              ))
+            ) : (
+              <div>No logs</div>
+            )}
           </ApplicationSubPanelSection.Body>
         </ApplicationSubPanelSection>
         <div className="application-sub-panel__body-section application-sub-panel__body-section--guidance-relation-guidance-events">
@@ -151,6 +96,7 @@ function mapStateToProps(state: StateType) {
     i18n: state.i18n,
     guidanceEvents: state.calendar.guidanceEvents,
     status: state.status, // Temporary
+    contactLogs: state.guider.currentStudent.contactLogs,
   };
 }
 

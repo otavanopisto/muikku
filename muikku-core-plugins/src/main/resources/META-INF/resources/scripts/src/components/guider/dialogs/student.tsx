@@ -24,6 +24,8 @@ import GuidanceRelation from "./student/tabs/guidance-relation";
 import {
   loadStudentHistory,
   LoadStudentTriggerType,
+  loadStudentGuiderRelations,
+  LoadStudentDataTriggerType,
 } from "~/actions/main-function/guider";
 import { getName } from "~/util/modifiers";
 
@@ -46,6 +48,7 @@ interface StudentDialogProps {
   i18n: i18nType;
   status: StatusType;
   loadStudentHistory: LoadStudentTriggerType;
+  loadStudentGuiderRelations: LoadStudentDataTriggerType;
 }
 
 /**
@@ -81,10 +84,15 @@ class StudentDialog extends React.Component<
    */
   onTabChange = (id: tabs) => {
     const studentId = this.props.student.basic.id;
+    const studentUserEntityId = this.props.student.basic.userEntityId;
     this.setState({ activeTab: id });
     switch (id) {
       case "STUDY_HISTORY": {
         this.props.loadStudentHistory(studentId);
+        break;
+      }
+      case "GUIDANCE_RELATIONS": {
+        this.props.loadStudentGuiderRelations(studentUserEntityId);
         break;
       }
     }
@@ -210,6 +218,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     {
       loadStudentHistory,
+      loadStudentGuiderRelations,
     },
     dispatch
   );

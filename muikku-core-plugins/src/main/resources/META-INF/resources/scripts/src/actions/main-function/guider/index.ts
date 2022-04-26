@@ -26,6 +26,7 @@ import {
   GuiderUserLabelListType,
   GuiderWorkspaceListType,
   GuiderUserGroupListType,
+  IContactEvent,
 } from "~/reducers/main-function/guider";
 import {
   WorkspaceListType,
@@ -177,6 +178,10 @@ export interface LoadMoreStudentsTriggerType {
 
 export interface LoadStudentTriggerType {
   (id: string, forceLoad?: boolean): AnyActionType;
+}
+
+export interface LoadStudentDataTriggerType {
+  (id: number, forceLoad?: boolean): AnyActionType;
 }
 
 export interface AddToGuiderSelectedStudentsTriggerType {
@@ -668,6 +673,78 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
     }
   };
 };
+
+/**
+ * loadStudentGuiderRelations thunk function
+ * @param id student id
+ * @param forceLoad should the guiderRelation load be forced
+ */
+const loadStudentGuiderRelations: LoadStudentDataTriggerType =
+  function loadStudentGuiderRelations(id, forceLoad) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      try {
+        const contactLogsLoaded =
+          !!getState().guider.currentStudent.contactLogs;
+
+        if (contactLogsLoaded && !forceLoad) {
+          return;
+        }
+
+        dispatch({
+          type: "LOCK_TOOLBAR",
+          payload: null,
+        });
+
+        dispatch({
+          type: "UPDATE_CURRENT_GUIDER_STUDENT_STATE",
+          payload: <GuiderCurrentStudentStateType>"LOADING",
+        });
+
+        await promisify(
+          mApi().guider.users.contactLog.read(id),
+          "callback"
+        )().then((contactLogs: IContactEvent[]) => {
+          dispatch({
+            type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+            payload: { property: "contactLogs", value: contactLogs },
+          });
+        });
+
+        dispatch({
+          type: "UPDATE_CURRENT_GUIDER_STUDENT_STATE",
+          payload: <GuiderCurrentStudentStateType>"READY",
+        });
+
+        dispatch({
+          type: "UNLOCK_TOOLBAR",
+          payload: null,
+        });
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          notificationActions.displayNotification(
+            getState().i18n.text.get("plugin.guider.errormessage.user"),
+            "error"
+          )
+        );
+        dispatch({
+          type: "UPDATE_GUIDER_ALL_PROPS",
+          payload: {
+            currentState: <GuiderCurrentStudentStateType>"ERROR",
+          },
+        });
+        dispatch({
+          type: "UNLOCK_TOOLBAR",
+          payload: null,
+        });
+      }
+    };
+  };
 
 async function removeLabelFromUserUtil(
   student: GuiderStudentType,
@@ -1190,6 +1267,7 @@ export {
   loadMoreStudents,
   loadStudent,
   loadStudentHistory,
+  loadStudentGuiderRelations,
   addToGuiderSelectedStudents,
   removeFromGuiderSelectedStudents,
   addGuiderLabelToCurrentUser,
