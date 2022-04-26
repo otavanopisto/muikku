@@ -1962,13 +1962,13 @@
 }
 
 .button--modify-hops {
-  background-color: $color-success;
+  background-color: $color-info;
   color: $color-default;
-  margin-right: 5px;
+  margin-right: 10px;
 }
 
 .button--modify-hops-active {
-  background-color: $color-warn;
+  background-color: $color-fatal;
   color: $color-default;
-  margin-right: 5px;
+  margin-right: 10px;
 }

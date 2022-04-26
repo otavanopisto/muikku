@@ -77,6 +77,7 @@ class HopsStudentHopsInformation extends React.Component<
               <div className="hops-container__row">
                 <div className="hops__form-element-container">
                   <TextField
+                    id="studentName"
                     label="Nimi:"
                     type="text"
                     placeholder="Nimi"
@@ -89,6 +90,7 @@ class HopsStudentHopsInformation extends React.Component<
               <div className="hops-container__row">
                 <div className="hops__form-element-container">
                   <TextField
+                    id="educationLevel"
                     label="Koulutusaste:"
                     type="text"
                     placeholder="Koulutusaste"
@@ -101,6 +103,7 @@ class HopsStudentHopsInformation extends React.Component<
               <div className="hops-container__row">
                 <div className="hops__form-element-container">
                   <TextField
+                    id="guidanceCouncelor"
                     label="Ohjaaja:"
                     type="text"
                     placeholder="Ohjaaja"

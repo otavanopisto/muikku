@@ -128,7 +128,7 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
         /**
          * Default modifier is always course
          */
-        modifiers.push("course", "course-matrix", "centered");
+        modifiers.push("course", "centered");
 
         if (course.mandatory) {
           modifiers.push("MANDATORY");
@@ -332,10 +332,8 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
         );
       });
 
-    const rowMods = ["course"];
-
     return (
-      <Tr key={sSubject.name} modifiers={rowMods}>
+      <Tr key={sSubject.name} modifiers={["course"]}>
         <Td modifiers={["subject"]}>
           <div>{sSubject.name}</div>
         </Td>
@@ -353,7 +351,7 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
 
         if (props.skillsAndArt[s].length !== 0) {
           return (
-            <Tr key={s} modifiers={["subject-name"]}>
+            <Tr key={s} modifiers={["course"]}>
               <Td modifiers={["subject"]}>
                 <div>{props.skillsAndArt[s][0].subjectName}</div>
               </Td>
@@ -361,7 +359,7 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
               {props.skillsAndArt[s].map((c, index) => {
                 missingColumsCount--;
 
-                const listItemModifiers = ["course", "APPROVAL"];
+                const listItemModifiers = ["course", "centered", "APPROVAL"];
 
                 return (
                   <Td key={index} modifiers={listItemModifiers}>
@@ -417,7 +415,7 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
 
         if (props.otherLanguageSubjects[s].length !== 0) {
           return (
-            <Tr key={s} modifiers={["subject-name"]}>
+            <Tr key={s} modifiers={["course"]}>
               <Td modifiers={["subject"]}>
                 <div>{props.otherLanguageSubjects[s][0].subjectName}</div>
               </Td>
@@ -425,7 +423,7 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
               {props.otherLanguageSubjects[s].map((c, index) => {
                 missingColumsCount--;
 
-                const listItemModifiers = ["course", "APPROVAL"];
+                const listItemModifiers = ["course", "centered", "APPROVAL"];
 
                 return (
                   <Td key={index} modifiers={listItemModifiers}>
@@ -479,16 +477,15 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
     ? OTHER_SUBJECT_OUTSIDE_HOPS.map((s) => {
         if (props.otherSubjects[s].length !== 0) {
           return props.otherSubjects[s].map((c, index) => {
-            const listItemModifiers = ["course", "APPROVAL"];
+            const listItemModifiers = ["subject"];
 
             return (
-              <Tr key={index} modifiers={listItemModifiers}>
+              <Tr key={index} modifiers={["course"]}>
                 <Td
                   colSpan={currentMaxCourses + 1}
-                  className="hops-container__study-tool-dropdown-container"
                   modifiers={listItemModifiers}
                 >
-                  <div className="hops-container__study-tool-dropdow-title">
+                  <div>
                     {c.courseName}
                     {!c.transferCreditMandatory ? "*" : null}
                   </div>
@@ -501,9 +498,9 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
     : undefined;
 
   return (
-    <Table modifiers={["course-matrix"]}>
-      <TableHead modifiers={["course-matrix"]}>
-        <Tr modifiers={["course-matrix"]}>
+    <Table modifiers={["course"]}>
+      <TableHead modifiers={["course"]}>
+        <Tr modifiers={["course"]}>
           <Th modifiers={["subject"]}>Oppiaine</Th>
           <Th colSpan={currentMaxCourses}>Kurssit</Th>
         </Tr>

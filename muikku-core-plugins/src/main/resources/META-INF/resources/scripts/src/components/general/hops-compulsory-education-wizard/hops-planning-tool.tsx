@@ -675,6 +675,7 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
         <div className="hops-container__row">
           <div className="hops__form-element-container">
             <TextField
+              id="studyHourPerWeek"
               type="number"
               label="Kuinka monta tuntia ehdit opiskella viikossa?"
               onChange={handleUsedHoursPerWeekChange}
@@ -827,10 +828,15 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
                 openByHover
                 content={
                   <div className="hops-planning__activity-proggressbar-tooltip">
-                    Arvioitu opintoaika kuvaa oletuksena pakollisiin opintoihin
-                    tarvittavaa aikaa, joka lasketaan 46 kurssin määrästä. Jos
-                    valitset enemmän valinnaisopintoja kuin pakollinen
-                    kurssimäärä edellyttää, niin opintoaikasi saattaa pidentyä.
+                    Arvioitu opintoaika kuvaa suuntaa antavasti aikaa, joka
+                    sinulla menee opintojen suorittamiseen tämän hetkisen
+                    tilanteen mukaan. Opintoaika lasketaan oletuksena aikuisten
+                    perusopetuksen päättövaiheen oppimäärän eli 46 kurssin
+                    mukaan. Yhden kurssin laajuus on 28 tuntia. Opintoajan
+                    määrittelyssä huomioidaan oma arviosi siitä, kuinka paljon
+                    ehdit opiskella viikoittain. Jos valitset enemmän
+                    valinnaisopintoja kuin pakollinen kurssimäärä edellyttää,
+                    opintoaikasi todennäköisesti pitenee.
                   </div>
                 }
               >

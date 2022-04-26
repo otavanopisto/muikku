@@ -5,6 +5,7 @@ import * as React from "react";
  */
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string;
+  id: string;
   labelAria?: string;
 }
 
@@ -17,13 +18,14 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
  */
 export const TextField: React.FC<InputProps> = ({
   label,
+  id,
   labelAria,
   ...rest
 }) => (
   <>
-    <label className="hops__label" aria-label={labelAria}>
+    <label htmlFor={id} className="hops__label" aria-label={labelAria}>
       {label}
     </label>
-    <input className="hops__input" {...rest} />
+    <input id={id} className="hops__input" {...rest} />
   </>
 );

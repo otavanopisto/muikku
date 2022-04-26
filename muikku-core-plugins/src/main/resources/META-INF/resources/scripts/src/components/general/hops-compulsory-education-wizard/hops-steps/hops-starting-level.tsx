@@ -161,8 +161,11 @@ class HopsStartingLevel extends React.Component<
 
           <div className="hops-container__row">
             <div className="hops__form-element-container">
-              <label className="hops__label">Aiempi koulutus</label>
+              <label htmlFor="previousEducation" className="hops__label">
+                Aiempi koulutus
+              </label>
               <select
+                id="previousEducation"
                 className="hops__select"
                 value={this.props.studentStartingLevel.previousEducation}
                 onChange={this.handleSelectsChange("previousEducation")}
@@ -183,6 +186,7 @@ class HopsStartingLevel extends React.Component<
             Education.SOMETHING_ELSE ? (
               <div className="hops__form-element-container">
                 <TextField
+                  id="previousEducationElse"
                   label="Mikä?"
                   className="hops__input"
                   onChange={this.handleTextAreaChange("previousEducationElse")}
@@ -196,6 +200,7 @@ class HopsStartingLevel extends React.Component<
           <div className="hops-container__row">
             <div className="hops__form-element-container">
               <TextField
+                id="previousYearsUsedInStudies"
                 label="Opintoihin käytetyt vuodet?"
                 className="hops__input"
                 onChange={this.handleTextAreaChange(
@@ -211,8 +216,11 @@ class HopsStartingLevel extends React.Component<
 
           <div className="hops-container__row">
             <div className="hops__form-element-container">
-              <label className="hops__label">Työkokemus:</label>
+              <label htmlFor="previousWorkExperience" className="hops__label">
+                Työkokemus:
+              </label>
               <select
+                id="previousWorkExperience"
                 className="hops__select"
                 value={this.props.studentStartingLevel.previousWorkExperience}
                 onChange={this.handleSelectsChange("previousWorkExperience")}
@@ -229,6 +237,7 @@ class HopsStartingLevel extends React.Component<
           <div className="hops-container__row">
             <div className="hops__form-element-container">
               <TextField
+                id="previousWorkExperienceField"
                 label="Miltä alalta työkokemuksesi on?"
                 className="hops__input"
                 onChange={this.handleTextAreaChange(
