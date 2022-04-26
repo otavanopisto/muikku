@@ -16,6 +16,7 @@ import {
 import { schoolCourseTable } from "~/mock/mock-data";
 import { connect } from "react-redux";
 import { HopsUser } from ".";
+import Button from "~/components/general/button";
 import { StateType } from "~/reducers";
 import Dropdown from "~/components/general/dropdown";
 import {
@@ -285,17 +286,18 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
                   ) : (
                     <>
                       {showAddToHopsButton && (
-                        <button
+                        <Button
                           onClick={handleToggleChoiceClick({
                             studentId: props.studentId,
                             courseNumber: course.courseNumber,
                             subject: sSubject.subjectCode,
                           })}
+                          buttonModifiers={["guider-hops-studytool"]}
                         >
                           {selectedByStudent
                             ? "Peru valinta"
                             : "Valitse osaksi hopsia"}
-                        </button>
+                        </Button>
                       )}
 
                       {showSuggestionList && (
