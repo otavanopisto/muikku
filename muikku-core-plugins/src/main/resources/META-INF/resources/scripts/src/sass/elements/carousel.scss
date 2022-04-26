@@ -74,7 +74,7 @@
 }
 
 .custom-dot-list-style {
-  bottom: 25px;
+  position: relative;
 }
 
 .react-multiple-carousel__arrow--right {
@@ -86,20 +86,19 @@
 }
 
 .carousel-item--courses {
-  padding: 0;
   display: flex;
   justify-content: center;
-  margin: 10px 0;
+  padding: 0;
 }
 
 .carousel-itemV2--courses {
+  background-color: white;
+  box-shadow: 0 5px 5px $color-workspace-hero-shadow;
   display: flex;
   flex-flow: column;
-  background-color: white;
   flex-grow: 1;
-  width: calc(100% - 20px);
   margin: 0 5px;
-  box-shadow: 0 5px 5px $color-workspace-hero-shadow;
+  width: calc(100% - 20px);
 }
 
 .carousel-itemV2__image-section--courses {
@@ -117,7 +116,7 @@
     border-top-right-radius: 5px;
     box-shadow: 15px 0 10px $color-workspace-hero-shadow;
     display: flex;
-    font-size: 1.35rem;
+    font-size: 1.1rem;
     font-weight: 300;
     padding: 5px 10px 5px 5px;
     width: fit-content;
@@ -130,7 +129,7 @@
     border-top-right-radius: 5px;
     box-shadow: 15px 0 10px $color-workspace-hero-shadow;
     color: #fff;
-    font-size: 1rem;
+    font-size: 0.9rem;
     font-weight: 400;
     margin: 10px 0 0;
     padding: 5px 10px;

@@ -63,7 +63,8 @@ const CourseCarousel: React.FC<CourseCarouselProps> = (props) => {
       autoPlay={false}
       swipeable={true}
       draggable={true}
-      showDots={false}
+      showDots
+      renderDotsOutside
       responsive={responsive}
       infinite={true}
       autoPlaySpeed={2000}
@@ -100,15 +101,6 @@ interface CourseCarouselItemProps {
 const CourseCarouselItem: React.FC<CourseCarouselItemProps> = (props) => {
   const { course } = props;
 
-  /**
-   * createHtmlMarkup
-   * This should sanitize html
-   * @param htmlString string that contains html
-   */
-  const createHtmlMarkup = (htmlString: string) => ({
-    __html: htmlString,
-  });
-
   const courseImage = course.hasCustomImage
     ? `url(/rest/workspace/workspaces/${course.id}/workspacefile/workspace-frontpage-image-cropped)`
     : "url(/gfx/workspace-default-header.jpg)";
@@ -122,19 +114,22 @@ const CourseCarouselItem: React.FC<CourseCarouselItemProps> = (props) => {
         <h3>{course.name}</h3>
 
         {course.nameExtension !== null && <h2>{course.nameExtension}</h2>}
-      </div>
 
-      <div className="carousel-itemV2__container-section--courses">
-        <div className="carousel-itemV2__container-content--courses">
-          {course.description ? (
-            <div
-              dangerouslySetInnerHTML={createHtmlMarkup(course.description)}
-            />
-          ) : (
-            <p>-</p>
-          )}
-        </div>
         <div className="carousel-itemV2__container-functions--courses">
+          {/* {course.description && (
+            <WorkspaceDescriptionDialog course={course}>
+              <Button
+                aria-label={course.name}
+                buttonModifiers={[
+                  "primary-function-content",
+                  "coursepicker-course-action",
+                ]}
+              >
+                Kuvaus
+              </Button>
+            </WorkspaceDescriptionDialog>
+          )} */}
+
           <Button
             aria-label={course.name}
             buttonModifiers={[

@@ -447,7 +447,7 @@ export interface StudiesCourseData {
 /**
  * Suggestion
  */
- export interface Suggestion {
+export interface Suggestion {
   id: number;
   name: string;
   subject: string;
