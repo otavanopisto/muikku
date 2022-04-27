@@ -603,11 +603,17 @@
 }
 
 .button--guider-hops-studytool-suggested {
-  background: $color-suggested;
+  background: $color-default;
+  border: 2px solid $color-suggested;
+  color: $color-suggested;
+  font-weight: 600;
 }
 
 .button--guider-hops-studytool-next {
-  background: $color-next;
+  background: $color-default;
+  border: 2px solid $color-next;
+  color: $color-next;
+  font-weight: 600;
 }
 
 .button-icon {
