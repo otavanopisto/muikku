@@ -592,17 +592,13 @@
   padding: 4px 12px;
 }
 
-.button--guider-hops,
 .button--guider-hops-studytool {
   background-color: $color-button-primary-background;
   border: 0;
   color: $color-button-primary-text;
   display: inline-flex;
-  margin: 5px 10px 5px 0;
-}
-
-.button--guider-hops-studytool {
   font-size: 0.75rem;
+  margin: 5px 10px 5px 0;
   padding: 4px 10px;
 }
 
@@ -1962,13 +1958,13 @@
 }
 
 .button--modify-hops {
-  background-color: $color-success;
+  background-color: $color-info;
   color: $color-default;
-  margin-right: 5px;
+  margin-right: 10px;
 }
 
 .button--modify-hops-active {
-  background-color: $color-warn;
+  background-color: $color-fatal;
   color: $color-default;
-  margin-right: 5px;
+  margin-right: 10px;
 }

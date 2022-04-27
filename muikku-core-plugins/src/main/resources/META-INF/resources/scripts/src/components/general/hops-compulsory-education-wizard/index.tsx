@@ -252,7 +252,8 @@ class CompulsoryEducationHopsWizard extends React.Component<
               name: `${studentBasicInfo.firstName} ${studentBasicInfo.lastName}`,
               updates: studentHopsHistory,
               counselorList: studentBasicInfo.counselorList,
-            },
+              studyTimeEnd: studentBasicInfo.studyTimeEnd,
+            } as BasicInformation,
             hopsCompulsory: hops !== undefined ? hops : initializeHops(),
           };
 
@@ -705,6 +706,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
             <div className="hops-container__row">
               <div className="hops__form-element-container">
                 <Textarea
+                  id="hopsUpdateDetailsExplanation"
                   label="Vapaa kuvaus tapahtuman muutoksista"
                   className="form-element__textarea form-element__textarea--resize__vertically"
                   onChange={this.handleHopsUpdateDetailsChange}
@@ -722,6 +724,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
             <div className="hops-container__row">
               <div className="hops__form-element-container">
                 <Textarea
+                  id="updateEventToBeEditedExplanation"
                   label="Muokkaa tapahtuman kuvausta"
                   className="form-element__textarea form-element__textarea--resize__vertically"
                   onChange={this.handleHopsEditingHistoryEventDetailsChange}

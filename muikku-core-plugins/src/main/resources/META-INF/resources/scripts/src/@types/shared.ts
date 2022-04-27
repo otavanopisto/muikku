@@ -470,7 +470,6 @@ export interface Course {
   courseNumber: number;
   length: number;
   mandatory: boolean;
-  id: number;
 }
 
 /**
@@ -485,6 +484,7 @@ export interface StudentActivityCourse {
   grade: number; // jos on arvioitu tahi hyväksiluettu
   status: CourseStatus;
   date: string;
+  transferCreditMandatory: boolean | null;
 }
 
 /**
@@ -572,7 +572,10 @@ export interface StudentActivityByStatus {
    * skillsAndArt
    */
   skillsAndArt: ActivityBySubject;
-
+  /**
+   * otherLanguageSubjects
+   */
+  otherLanguageSubjects: ActivityBySubject;
   /**
    * otherSubjects
    */

@@ -74,8 +74,11 @@ const HopsFollowUpGoals: React.FC<HopsFollowUpGoalsProps> = (props) => {
     <>
       <div className="hops-container__row">
         <div className="hops__form-element-container">
-          <label className="hops__label">Milloin haluat valmistua?</label>
+          <label htmlFor="graduationGoalMonth" className="hops__label">
+            Milloin haluat valmistua?
+          </label>
           <DatePicker
+            id="graduationGoalMonth"
             onChange={(date) => handleGoalsChange("graduationGoal", date)}
             selected={followUpData.followUp.graduationGoal}
             locale={outputCorrectDatePickerLocale(i18n.time.getLocale())}
@@ -93,10 +96,11 @@ const HopsFollowUpGoals: React.FC<HopsFollowUpGoalsProps> = (props) => {
 
       <div className="hops-container__row">
         <div className="hops__form-element-container">
-          <label className="hops__label">
+          <label htmlFor="followUpGoal" className="hops__label">
             Mitä aiot tehdä Nettiperuskoulun jälkeen:
           </label>
           <select
+            id="followUpGoal"
             value={followUpData.followUp.followUpGoal}
             onChange={(e) =>
               handleGoalsChange("followUpGoal", e.currentTarget.value)
@@ -127,8 +131,11 @@ const HopsFollowUpGoals: React.FC<HopsFollowUpGoalsProps> = (props) => {
           className="hops-container__row hops-container__row--dependant-of-above"
         >
           <div className="hops__form-element-container">
-            <label className="hops__label">Mihin aiot hakea:</label>
+            <label htmlFor="followUpStudies" className="hops__label">
+              Mihin aiot hakea:
+            </label>
             <select
+              id="followUpStudies"
               value={followUpData.followUp.followUpStudies}
               onChange={(e) =>
                 handleGoalsChange("followUpStudies", e.currentTarget.value)
@@ -161,6 +168,7 @@ const HopsFollowUpGoals: React.FC<HopsFollowUpGoalsProps> = (props) => {
           >
             <div className="hops__form-element-container">
               <TextField
+                id="followUpStudiesElse"
                 label="Kerro tarkemmin"
                 defaultValue={followUpData.followUp.followUpStudiesElse}
                 disabled={disabled}
@@ -186,8 +194,11 @@ const HopsFollowUpGoals: React.FC<HopsFollowUpGoalsProps> = (props) => {
           className="hops-container__row hops-container__row--dependant-of-above"
         >
           <div className="hops__form-element-container">
-            <label className="hops__label">Koulutusala:</label>
+            <label htmlFor="studySector" className="hops__label">
+              Koulutusala:
+            </label>
             <select
+              id="studySector"
               value={followUpData.followUp.studySector}
               onChange={(e) =>
                 handleGoalsChange("studySector", e.currentTarget.value)
@@ -220,6 +231,7 @@ const HopsFollowUpGoals: React.FC<HopsFollowUpGoalsProps> = (props) => {
           >
             <div className="hops__form-element-container">
               <TextField
+                id="studySectorElse"
                 label="Kerro tarkemmin"
                 defaultValue={followUpData.followUp.studySectorElse}
                 disabled={disabled}
@@ -235,6 +247,7 @@ const HopsFollowUpGoals: React.FC<HopsFollowUpGoalsProps> = (props) => {
       <div className="hops-container__row">
         <div className="hops__form-element-container">
           <Textarea
+            id="followUpPlanExtraInfo"
             className="hops__textarea"
             label="Voit kertoa tarkemmin jatkosuunnitelmistasi:"
             disabled={disabled}

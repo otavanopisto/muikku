@@ -120,10 +120,8 @@ export const useStudentAlternativeOptions = (
     /**
      * onAnswerSavedAtServer
      * @param data data
-     * @param data.finnishAsLanguage finnishAsLanguage
-     * @param data.id id
-     * @param data.religionAsEthics religionAsEthics
-     * @param data.studentIdentifier studentIdentifier
+     * @param data.nativeLanguageSelection nativeLanguageSelection
+     * @param data.religionSelection religionSelection
      */
     const onAnswerSavedAtServer = (data: {
       nativeLanguageSelection: string;

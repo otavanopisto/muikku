@@ -1,10 +1,11 @@
 import * as React from "react";
-import { SchoolSubject } from "../../../@types/shared";
 import { TextField } from "./text-field";
 import { HopsUser, NEEDED_STUDIES_IN_TOTAL } from ".";
 import { schoolCourseTable } from "../../../mock/mock-data";
 import StudyToolCalculationInfoBox from "./study-tool-calculation-info-box";
 import {
+  LANGUAGE_SUBJECTS,
+  OTHER_SUBJECT_OUTSIDE_HOPS,
   SKILL_AND_ART_SUBJECTS,
   useStudentActivity,
 } from "../../../hooks/useStudentActivity";
@@ -23,10 +24,9 @@ import { AnyActionType } from "~/actions";
 import { useStudentChoices } from "~/hooks/useStudentChoices";
 import HopsCourseList from "~/components/general/hops-compulsory-education-wizard/hops-course-list";
 import HopsCourseTable from "~/components/general/hops-compulsory-education-wizard/hops-course-table";
-import {
-  AlternativeStudyObject,
-  useStudentAlternativeOptions,
-} from "~/hooks/useStudentAlternativeOptions";
+import { useStudentAlternativeOptions } from "~/hooks/useStudentAlternativeOptions";
+import { filterSpecialSubjects } from "~/helper-functions/shared";
+import Dropdown from "../dropdown";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const ProgressBarCircle = require("react-progress-bar.js").Circle;
@@ -117,45 +117,16 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
    * Compared graduation goal to need mandatory studies and shows indicator/message
    * if studieplan is good enough
    *
+   * @param hoursInTotalToComplete hoursInTotalToComplete
    * @returns JSX.Element
    */
-  const compareGraduationGoalToNeededForMandatoryStudies = () => {
-    const approvedCoursesOutsideHops = calculateApprovedCoursedOutsideHops();
-
-    // All needed hours data needed
-    const allApprovedHours =
-      calculateAllApprovedData().numberOfHoursCompleted +
-      approvedCoursesOutsideHops * 28;
-    const optionalHoursCompleted =
-      calculateAllOptionalData().numberOfHoursCompleted;
-    const mandatoryHoursCompleted =
-      calculateAllMandatoryData().numberOfhoursCompleted;
-
-    const mandatoryHoursNeeded =
-      calculateAllMandatoryData().numberOfHoursInTotalToComplete;
-
-    const optionalHoursSelected =
-      calculateAllOptionalData().numberOfSelectedHours;
-
+  const compareGraduationGoalToNeededForMandatoryStudies = (
+    hoursInTotalToComplete: number
+  ) => {
     /**
      * Localized moment initialzied to variable
      */
     const localizedMoment = props.i18n.time.getLocalizedMoment;
-
-    /**
-     * Mandatory hours minus completed mandatory hours
-     */
-    const updatedMandatoryHoursNeeded =
-      mandatoryHoursNeeded - mandatoryHoursCompleted;
-
-    let selectedOptionalHours = 0;
-
-    if (studentChoices.studentChoices.length > 0) {
-      selectedOptionalHours = optionalHoursSelected - optionalHoursCompleted;
-    }
-
-    const hoursInTotalToComplete =
-      updatedMandatoryHoursNeeded + selectedOptionalHours - allApprovedHours;
 
     /**
      * Time in months need to be study. Based on calculation from hours total to complete and study hours per week
@@ -278,19 +249,58 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
    * calculateApprovedCoursedOutsideHops
    */
   const calculateApprovedCoursedOutsideHops = () => {
-    let count = 0;
+    let numberOfMandatoryTransferedOutsideHops = 0;
+    let numberOfOptionalTransferedOutsideHops = 0;
 
     if (studentActivity) {
       for (const s of SKILL_AND_ART_SUBJECTS) {
         for (const tc of studentActivity.transferedList) {
           if (s === tc.subject) {
-            count++;
+            if (
+              tc.transferCreditMandatory !== null &&
+              tc.transferCreditMandatory
+            ) {
+              numberOfMandatoryTransferedOutsideHops++;
+            } else {
+              numberOfOptionalTransferedOutsideHops++;
+            }
+          }
+        }
+      }
+      for (const s of LANGUAGE_SUBJECTS) {
+        for (const tc of studentActivity.transferedList) {
+          if (s === tc.subject) {
+            if (
+              tc.transferCreditMandatory !== null &&
+              tc.transferCreditMandatory
+            ) {
+              numberOfMandatoryTransferedOutsideHops++;
+            } else {
+              numberOfOptionalTransferedOutsideHops++;
+            }
+          }
+        }
+      }
+      for (const s of OTHER_SUBJECT_OUTSIDE_HOPS) {
+        for (const tc of studentActivity.transferedList) {
+          if (s === tc.subject) {
+            if (
+              tc.transferCreditMandatory !== null &&
+              tc.transferCreditMandatory
+            ) {
+              numberOfMandatoryTransferedOutsideHops++;
+            } else {
+              numberOfOptionalTransferedOutsideHops++;
+            }
           }
         }
       }
     }
 
-    return count;
+    return {
+      numberOfMandatoryTransferedOutsideHops,
+      numberOfOptionalTransferedOutsideHops,
+    };
   };
 
   /**
@@ -298,13 +308,14 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
    *
    * @returns object containing number of all possible approved course hours and number of approved courses
    */
-  const calculateAllApprovedData = () => {
-    let totalHoursApproved = 0;
-    let totalCourseApproved = 0;
+  const calculateAllTransferedData = () => {
+    let totalMandatoryHoursTransfered = 0;
+    let totalOptionalHoursTransfered = 0;
+
+    let totalNumberMandatoryCoursesTransfered = 0;
+    let totalNumberOptionalCoursesTransfered = 0;
 
     for (const sSubject of filteredSchoolCourseTable) {
-      let oneSubjectHours = 0;
-
       for (const aCourse of sSubject.availableCourses) {
         if (
           studentActivity &&
@@ -314,16 +325,23 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
               tCourse.courseNumber === aCourse.courseNumber
           )
         ) {
-          oneSubjectHours += aCourse.length;
-          totalCourseApproved++;
+          if (aCourse.mandatory) {
+            totalMandatoryHoursTransfered += aCourse.length;
+            totalNumberMandatoryCoursesTransfered++;
+          } else {
+            totalOptionalHoursTransfered += aCourse.length;
+            totalNumberOptionalCoursesTransfered++;
+          }
         }
       }
-
-      totalHoursApproved += oneSubjectHours;
     }
     return {
-      numberOfHoursCompleted: totalHoursApproved,
-      numberOfCoursesCompleted: totalCourseApproved,
+      numberOfTotalMandatoryTransferedHours: totalMandatoryHoursTransfered,
+      numberOfTotalOptionalTransferedHours: totalOptionalHoursTransfered,
+      numberOfTotalMandatoryTransferedCourses:
+        totalNumberMandatoryCoursesTransfered,
+      numberOfTotalOptionalTransferedCourses:
+        totalNumberOptionalCoursesTransfered,
     };
   };
 
@@ -377,10 +395,10 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
       totalHoursCompleted += oneSubjectMandatoryHours;
     }
     return {
-      numberOfhoursCompleted: totalHoursCompleted,
-      numberOfCoursesCompleted: totalCourseCompleted,
-      numberOfCoursesInTotal: totalNumberOfCourses,
-      numberOfHoursInTotalToComplete: totalHoursToComplete,
+      numberOfMandatoryHoursCompleted: totalHoursCompleted,
+      numberOfMandatoryCoursesCompleted: totalCourseCompleted,
+      numberOfMandatoryCoursesInTotal: totalNumberOfCourses,
+      numberOfMandatoryHoursInTotalToComplete: totalHoursToComplete,
     };
   };
 
@@ -393,11 +411,9 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
     let totalHoursCompleted = 0;
     let totalCourseCompleted = 0;
     let totalNumberOfCourses = 0;
-    let totalHoursSelected = 0;
 
     for (const sSubject of filteredSchoolCourseTable) {
       let oneSubjectOptionalHours = 0;
-      let oneSubjectOptionalHoursSelected = 0;
 
       for (const aCourse of sSubject.availableCourses) {
         /**
@@ -420,27 +436,20 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
           oneSubjectOptionalHours += aCourse.length;
           totalCourseCompleted++;
         }
-
-        if (
-          studentChoices.studentChoices &&
-          studentChoices.studentChoices.find(
-            (sItem) =>
-              sItem.subject === sSubject.subjectCode &&
-              sItem.courseNumber === aCourse.courseNumber
-          )
-        ) {
-          oneSubjectOptionalHoursSelected += aCourse.length;
-        }
       }
 
       totalHoursCompleted += oneSubjectOptionalHours;
-      totalHoursSelected += oneSubjectOptionalHoursSelected;
     }
     return {
-      numberOfHoursCompleted: totalHoursCompleted,
-      numberOfCoursesCompleted: totalCourseCompleted,
-      numberOfCoursesInTotal: totalNumberOfCourses,
-      numberOfSelectedHours: totalHoursSelected,
+      numberOfOptionalHoursCompleted: totalHoursCompleted,
+      numberOfOptionalCoursesCompleted: totalCourseCompleted,
+      numberOfOptionalCoursesInTotal: totalNumberOfCourses,
+      numberOfOptionalSelectedHours: studentChoices.studentChoices
+        ? studentChoices.studentChoices.length * 28
+        : 0,
+      numberOfOptionalSelectedCourses: studentChoices.studentChoices
+        ? studentChoices.studentChoices.length
+        : 0,
     };
   };
 
@@ -516,95 +525,149 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
   };
 
   // All needed data
-  const allApprovedData = calculateAllApprovedData();
-  const allMandatoryData = calculateAllMandatoryData();
-  const allOptionalData = calculateAllOptionalData();
+  const {
+    numberOfTotalMandatoryTransferedHours,
+    numberOfTotalOptionalTransferedHours,
+    numberOfTotalMandatoryTransferedCourses,
+    numberOfTotalOptionalTransferedCourses,
+  } = calculateAllTransferedData();
 
-  const approvedCountOutsideHops = calculateApprovedCoursedOutsideHops();
+  const {
+    numberOfMandatoryHoursCompleted,
+    numberOfMandatoryCoursesCompleted,
+    numberOfMandatoryCoursesInTotal,
+    numberOfMandatoryHoursInTotalToComplete,
+  } = calculateAllMandatoryData();
 
-  // All complete course data
-  const numberOfCompletedMandatoryCourses =
-    allMandatoryData.numberOfCoursesCompleted;
-  const numberOfCompletedOptionalCourses =
-    allOptionalData.numberOfCoursesCompleted + approvedCountOutsideHops;
+  const {
+    numberOfOptionalCoursesCompleted,
+    numberOfOptionalHoursCompleted,
+    numberOfOptionalSelectedCourses,
+  } = calculateAllOptionalData();
 
-  // All complete hours data
-  const numberOfMandatoryHoursCompleted =
-    allMandatoryData.numberOfhoursCompleted;
-  const numberOfOptionalHoursCompleted =
-    allOptionalData.numberOfCoursesCompleted;
-  const numberOfApprovedHoursCompleted =
-    allApprovedData.numberOfHoursCompleted + approvedCountOutsideHops * 28;
-
-  const numberOfTotalSelectedOptionalHours =
-    allOptionalData.numberOfSelectedHours;
-
-  const needMandatoryCoursesInTotal = allMandatoryData.numberOfCoursesInTotal;
+  const {
+    numberOfMandatoryTransferedOutsideHops,
+    numberOfOptionalTransferedOutsideHops,
+  } = calculateApprovedCoursedOutsideHops();
 
   /**
-   * number of mandatory hours in total needed
+   * CONSTANT value 46 - number of mandatory coursed needed
    */
-  const neededMandatoryHours = allMandatoryData.numberOfHoursInTotalToComplete;
+  const neededOptionalStudies =
+    NEEDED_STUDIES_IN_TOTAL - numberOfMandatoryCoursesInTotal;
 
   /**
-   * Updated mandatory hours at the current moment. All mandatory needed hours - all completed mandatory hours
+   * Value depending of mandatory courses. One course is multiplited by 28
+   */
+  const neededOptionalStudyHours = neededOptionalStudies * 28;
+
+  /**
+   * Updated mandatory hours needed.
+   * All mandatory needed hours minus following values:
+   * - all completed mandatory hours
+   * - all completed mandatory hours outside of hops (rare case)
    */
   const updatedNeededMandatoryHours =
-    neededMandatoryHours - numberOfMandatoryHoursCompleted;
-
-  const neededOptionalStudies =
-    NEEDED_STUDIES_IN_TOTAL - needMandatoryCoursesInTotal;
+    numberOfMandatoryHoursInTotalToComplete -
+    numberOfMandatoryHoursCompleted -
+    numberOfTotalMandatoryTransferedHours -
+    numberOfMandatoryTransferedOutsideHops * 28;
 
   /**
-   * Selected optional hours is default 0
-   * If there is optional selection, then calculate selected optional hours and substract from it
-   * all completed ooptional hours
+   * Updated optional hours at needed.
+   * All optional needed hours minus following values:
+   * - all completed optional hours
+   * - all completed optional hours outside of hops (rare case)
    */
-  let selectedOptionalHours = 0;
+  const updatedNeededOptionalHours =
+    neededOptionalStudyHours -
+    numberOfOptionalHoursCompleted -
+    numberOfTotalOptionalTransferedHours -
+    numberOfOptionalTransferedOutsideHops * 28;
 
-  if (studentChoices.studentChoices.length > 0) {
-    selectedOptionalHours =
-      numberOfTotalSelectedOptionalHours - numberOfOptionalHoursCompleted;
+  /**
+   * Updated completed mandatory courses at the current moment.
+   * All mandatory needed hours minus following values:
+   * - all completed mandatory courses
+   * - all completed mandatory courses outside of hops (rare case)
+   */
+  const updatedCompletedMandatoryCourses =
+    numberOfMandatoryCoursesCompleted +
+    numberOfTotalMandatoryTransferedCourses +
+    numberOfMandatoryTransferedOutsideHops;
+
+  /**
+   * Updated completed optional courses at the current moment.
+   * All optional needed hours minus following values:
+   * - all completed optional courses
+   * - all completed optional courses outside of hops (rare case)
+   */
+  const updatedCompletedOptionalCourses =
+    numberOfOptionalCoursesCompleted +
+    numberOfTotalOptionalTransferedCourses +
+    numberOfOptionalTransferedOutsideHops;
+
+  /**
+   * Default is 0
+   */
+  let selectedHoursOverObligatoryAmount = 0;
+
+  /**
+   * ...If student has completed/transfered optional studies and
+   * this combined with selected optional studies is more than needed
+   * then with these two difference multiplied 28 we get actual hour value that overflows
+   * student obligatory optional studies
+   */
+  if (
+    numberOfOptionalSelectedCourses + updatedCompletedOptionalCourses >
+    neededOptionalStudies
+  ) {
+    const diff =
+      numberOfOptionalSelectedCourses +
+      updatedCompletedOptionalCourses -
+      neededOptionalStudies;
+
+    selectedHoursOverObligatoryAmount = diff * 28;
   }
 
+  /**
+   * Combined hours. Includes mandatory + optional + selected overflowing hours
+   */
   const hoursInTotalToComplete =
     updatedNeededMandatoryHours +
-    selectedOptionalHours -
-    numberOfApprovedHoursCompleted;
+    updatedNeededOptionalHours +
+    selectedHoursOverObligatoryAmount;
 
   /**
-   * Time in days to study calculated from hours to complete and hours/week
+   * Total proggress of studies. Only take count number of completed mandatory and optional courses
+   * IF there is optional courses completed more than required then using required amount in calculation
    */
-  const totalTimeInDays = getTotalTimeInDays(
-    hoursInTotalToComplete,
-    studyHours.studyHourValue
-  );
+  const proggressOfStudies =
+    (updatedCompletedMandatoryCourses +
+      (updatedCompletedOptionalCourses > neededOptionalStudies
+        ? neededOptionalStudies
+        : updatedCompletedOptionalCourses)) /
+    (numberOfMandatoryCoursesInTotal + neededOptionalStudies);
 
-  /**
-   * By default optional studies over required amount is zero
-   * and is only altered if student choises go up to that
-   */
-  let optionalStudiesOverRequiredAmount = 0;
+  // Proggress indicator values
+  const mandatoryCourseProggress =
+    updatedCompletedMandatoryCourses / numberOfMandatoryCoursesInTotal;
+  const optionalCourseProggress =
+    updatedCompletedOptionalCourses / neededOptionalStudies;
 
-  if (
-    studentChoices.studentChoices &&
-    studentChoices.studentChoices.length > neededOptionalStudies
-  ) {
-    optionalStudiesOverRequiredAmount = studentChoices.studentChoices.length;
-  }
+  const isLoading =
+    studyHours.isLoading ||
+    studentActivity.isLoading ||
+    studentChoices.isLoading ||
+    studyOptions.isLoading ||
+    followUpData.isLoading;
 
-  /**
-   * Total proggress of studies
-   */
-  let proggressOfStudies =
-    (numberOfCompletedMandatoryCourses + numberOfCompletedOptionalCourses) /
-    (needMandatoryCoursesInTotal + neededOptionalStudies);
-
-  if (numberOfOptionalHoursCompleted > neededOptionalStudies) {
-    proggressOfStudies =
-      (numberOfCompletedMandatoryCourses + neededOptionalStudies) /
-      (neededOptionalStudies + needMandatoryCoursesInTotal);
-  }
+  const showTimeComparison =
+    !isLoading &&
+    numberOfOptionalSelectedCourses !== 0 &&
+    (updatedCompletedOptionalCourses >= neededOptionalStudies ||
+      numberOfOptionalSelectedCourses + updatedCompletedOptionalCourses >=
+        neededOptionalStudies);
 
   return (
     <>
@@ -612,6 +675,7 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
         <div className="hops-container__row">
           <div className="hops__form-element-container">
             <TextField
+              id="studyHourPerWeek"
               type="number"
               label="Kuinka monta tuntia ehdit opiskella viikossa?"
               onChange={handleUsedHoursPerWeekChange}
@@ -623,19 +687,18 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
         </div>
       )}
 
-      {!studentActivity.isLoading && !studentChoices.isLoading && (
+      {!isLoading && (
         <StudyToolOptionalStudiesInfoBox
-          needMandatoryStudies={needMandatoryCoursesInTotal}
+          totalOptionalStudiesNeeded={neededOptionalStudies}
+          totalOptionalStudiesCompleted={updatedCompletedOptionalCourses}
           selectedNumberOfOptional={studentChoices.studentChoices.length}
           graduationGoal={followUpData.followUp.graduationGoal}
         />
       )}
 
-      {!studentActivity.isLoading &&
-        !studentChoices.isLoading &&
-        studentChoices.studentChoices &&
-        studentChoices.studentChoices.length >= neededOptionalStudies && (
-          <>{compareGraduationGoalToNeededForMandatoryStudies()}</>
+      {showTimeComparison &&
+        compareGraduationGoalToNeededForMandatoryStudies(
+          hoursInTotalToComplete
         )}
 
       {props.showIndicators && (
@@ -644,33 +707,48 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
             <h3 className="hops-container__subheader hops-container__subheader--activity-title">
               Opintojen eteneminen:
             </h3>
-            <ProgressBarLine
-              containerClassName="hops-container__activity-progressbar hops-container__activity-progressbar--line"
-              options={{
-                strokeWidth: 1,
-                duration: 1000,
-                color: "#24c118",
-                trailColor: "#ffffff",
-                trailWidth: 1,
-                svgStyle: {
-                  width: "100%",
-                  height: "20px",
-                  borderRadius: "10px",
-                },
-                initialAnimate: true,
-                text: {
-                  style: {
-                    color: "#ffffff",
-                    position: "absolute",
-                    left: 0,
-                  },
-                  className:
-                    "hops-container__activity-label hops-container__activity-label--progressbar-line",
-                },
-              }}
-              text={`${Math.round(proggressOfStudies * 100)}%`}
-              progress={proggressOfStudies}
-            />
+            <Dropdown
+              openByHover
+              content={
+                <div className="hops-planning__activity-proggressbar-tooltip">
+                  Opintojen etenemistä kuvaava palkki huomioi vain aikuisten
+                  perusopetuksen päättövaiheen oppimäärään sisältyvän
+                  kurssimäärän (46 kurssia). Jos olet suorittanut
+                  vapaaehtoisesti enemmän valinnaisia opintoja, niitä ei
+                  huomioida etenemistä kuvaavassa palkissa.
+                </div>
+              }
+            >
+              <div tabIndex={0}>
+                <ProgressBarLine
+                  containerClassName="hops-container__activity-progressbar hops-container__activity-progressbar--line"
+                  options={{
+                    strokeWidth: 1,
+                    duration: 1000,
+                    color: "#24c118",
+                    trailColor: "#ffffff",
+                    trailWidth: 1,
+                    svgStyle: {
+                      width: "100%",
+                      height: "20px",
+                      borderRadius: "10px",
+                    },
+                    initialAnimate: true,
+                    text: {
+                      style: {
+                        color: "#ffffff",
+                        position: "absolute",
+                        left: 0,
+                      },
+                      className:
+                        "hops-container__activity-label hops-container__activity-label--progressbar-line",
+                    },
+                  }}
+                  text={`${Math.round(proggressOfStudies * 100)}%`}
+                  progress={proggressOfStudies}
+                />
+              </div>
+            </Dropdown>
           </div>
 
           <div className="hops-container__row hops-container__row--activity-progressbar">
@@ -700,13 +778,13 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
                       "hops-container__activity-label hops-container__activity-label--progressbar-circle",
                   },
                 }}
-                text={`${numberOfCompletedMandatoryCourses} / ${needMandatoryCoursesInTotal}`}
+                text={`${updatedCompletedMandatoryCourses} / ${numberOfMandatoryCoursesInTotal}`}
                 progress={
-                  numberOfCompletedMandatoryCourses /
-                  needMandatoryCoursesInTotal
+                  mandatoryCourseProggress > 1 ? 1 : mandatoryCourseProggress
                 }
               />
             </div>
+
             <div className="hops__form-element-container hops__form-element-container--progressbar">
               <h3 className="hops-container__subheader hops-container__subheader--activity-title">
                 Suoritetut valinnaisopinnot:
@@ -734,16 +812,9 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
                   },
                 }}
                 text={`
-                    ${numberOfCompletedOptionalCourses}
-                    /
-                    ${NEEDED_STUDIES_IN_TOTAL - needMandatoryCoursesInTotal} ${
-                  optionalStudiesOverRequiredAmount > 0
-                    ? `(${optionalStudiesOverRequiredAmount})`
-                    : ""
-                }`}
+                    ${updatedCompletedOptionalCourses} / ${neededOptionalStudies}`}
                 progress={
-                  numberOfCompletedOptionalCourses /
-                  (NEEDED_STUDIES_IN_TOTAL - needMandatoryCoursesInTotal)
+                  optionalCourseProggress > 1 ? 1 : optionalCourseProggress
                 }
               />
             </div>
@@ -753,29 +824,53 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
                 Arvioitu opintoaika (kk):
               </h3>
 
-              <ProgressBarCircle
-                containerClassName="hops-container__activity-progressbar hops-container__activity-progressbar--circle"
-                options={{
-                  strokeWidth: 13,
-                  duration: 1000,
-                  color: "#24c118",
-                  trailColor: "#ffffff",
-                  easing: "easeInOut",
-                  trailWidth: 15,
-                  svgStyle: {
-                    flexBasis: "80px",
-                    flexGrow: "0",
-                    flexShrink: "0",
-                    height: "80px",
-                  },
-                  text: {
-                    style: null,
-                    className:
-                      "hops-container__activity-label hops-container__activity-label--progressbar-circle",
-                  },
-                }}
-                text={`${showAsReadableTime(totalTimeInDays)}`}
-              />
+              <Dropdown
+                openByHover
+                content={
+                  <div className="hops-planning__activity-proggressbar-tooltip">
+                    Arvioitu opintoaika kuvaa suuntaa antavasti aikaa, joka
+                    sinulla menee opintojen suorittamiseen tämän hetkisen
+                    tilanteen mukaan. Opintoaika lasketaan oletuksena aikuisten
+                    perusopetuksen päättövaiheen oppimäärän eli 46 kurssin
+                    mukaan. Yhden kurssin laajuus on 28 tuntia. Opintoajan
+                    määrittelyssä huomioidaan oma arviosi siitä, kuinka paljon
+                    ehdit opiskella viikoittain. Jos valitset enemmän
+                    valinnaisopintoja kuin pakollinen kurssimäärä edellyttää,
+                    opintoaikasi todennäköisesti pitenee.
+                  </div>
+                }
+              >
+                <div tabIndex={0}>
+                  <ProgressBarCircle
+                    containerClassName="hops-container__activity-progressbar hops-container__activity-progressbar--circle"
+                    options={{
+                      strokeWidth: 13,
+                      duration: 1000,
+                      color: "#24c118",
+                      trailColor: "#ffffff",
+                      easing: "easeInOut",
+                      trailWidth: 15,
+                      svgStyle: {
+                        flexBasis: "80px",
+                        flexGrow: "0",
+                        flexShrink: "0",
+                        height: "80px",
+                      },
+                      text: {
+                        style: null,
+                        className:
+                          "hops-container__activity-label hops-container__activity-label--progressbar-circle",
+                      },
+                    }}
+                    text={`${showAsReadableTime(
+                      getTotalTimeInDays(
+                        hoursInTotalToComplete,
+                        studyHours.studyHourValue
+                      )
+                    )}`}
+                  />
+                </div>
+              </Dropdown>
             </div>
           </div>
         </div>
@@ -783,20 +878,17 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
 
       <div className="hops-container__row">
         <div className="hops__form-element-container hops__form-element-container--pad-upforwards">
-          {studentActivity.isLoading || studentChoices.isLoading ? (
+          {isLoading ? (
             <div className="loader-empty" />
           ) : (
             <div className="hops-container__table-container">
               <HopsCourseTable
+                matrix={filteredSchoolCourseTable}
                 useCase="hops-planing"
                 disabled={props.disabled}
                 studentId={props.studentId}
                 user={props.user}
                 superVisorModifies={props.superVisorModifies}
-                nativeLanguageSelection={
-                  studyOptions.options.nativeLanguageSelection
-                }
-                religionSelection={studyOptions.options.religionSelection}
                 suggestedNextList={studentActivity.suggestedNextList}
                 suggestedOptionalList={studentActivity.suggestedOptionalList}
                 onGoingList={studentActivity.onGoingList}
@@ -804,6 +896,7 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
                 transferedList={studentActivity.transferedList}
                 skillsAndArt={studentActivity.skillsAndArt}
                 otherSubjects={studentActivity.otherSubjects}
+                otherLanguageSubjects={studentActivity.otherLanguageSubjects}
                 studentChoiceList={studentChoices.studentChoices}
                 updateSuggestion={studentActivityHandlers.updateSuggestion}
                 updateStudentChoice={studentChoiceHandlers.updateStudentChoice}
@@ -813,19 +906,16 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
         </div>
 
         <div className="hops__form-element-container hops__form-element-container--mobile">
-          {studentActivity.isLoading || studentChoices.isLoading ? (
+          {isLoading ? (
             <div className="loader-empty" />
           ) : (
             <HopsCourseList
-              useCase="study-matrix"
+              matrix={filteredSchoolCourseTable}
+              useCase="hops-planing"
               disabled={props.disabled}
               user={props.user}
               studentId={props.studentId}
               superVisorModifies={props.superVisorModifies}
-              nativeLanguageSelection={
-                studyOptions.options.nativeLanguageSelection
-              }
-              religionSelection={studyOptions.options.religionSelection}
               suggestedNextList={studentActivity.suggestedNextList}
               suggestedOptionalList={studentActivity.suggestedOptionalList}
               onGoingList={studentActivity.onGoingList}
@@ -833,6 +923,7 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
               transferedList={studentActivity.transferedList}
               skillsAndArt={studentActivity.skillsAndArt}
               otherSubjects={studentActivity.otherSubjects}
+              otherLanguageSubjects={studentActivity.otherLanguageSubjects}
               studentChoiceList={studentChoices.studentChoices}
               updateStudentChoice={studentChoiceHandlers.updateStudentChoice}
               updateSuggestion={studentActivityHandlers.updateSuggestion}
@@ -879,47 +970,12 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
         <div className="hops-container__study-tool-indicator-container ">
           <div className="hops-container__indicator-item hops-container__indicator-item--next"></div>
           <div className="hops-container__indicator-item-label">
-            Ohjaajan suraavaksi ehdottama
+            Ohjaajan seuraavaksi ehdottama
           </div>
         </div>
       </div>
     </>
   );
-};
-
-/**
- * Filters special subjects away depending options selected by student
- * or loaded from pyramus
- *
- * @param schoolCourseTable intial table that is altered depending options
- * @param options options for special subjects
- * @returns altered school course table with correct special subject included
- */
-const filterSpecialSubjects = (
-  schoolCourseTable: SchoolSubject[],
-  options: AlternativeStudyObject
-) => {
-  let alteredShoolCourseTable = schoolCourseTable;
-
-  if (options.nativeLanguageSelection === "s2") {
-    alteredShoolCourseTable = alteredShoolCourseTable.filter(
-      (sSubject) => sSubject.subjectCode !== "äi"
-    );
-  } else if (options.nativeLanguageSelection === "äi") {
-    alteredShoolCourseTable = alteredShoolCourseTable.filter(
-      (sSubject) => sSubject.subjectCode !== "s2"
-    );
-  }
-  if (options.religionSelection === "ea") {
-    alteredShoolCourseTable = alteredShoolCourseTable.filter(
-      (sSubject) => sSubject.subjectCode !== "ua"
-    );
-  } else if (options.religionSelection === "ua") {
-    alteredShoolCourseTable = alteredShoolCourseTable.filter(
-      (sSubject) => sSubject.subjectCode !== "ea"
-    );
-  }
-  return alteredShoolCourseTable;
 };
 
 /**

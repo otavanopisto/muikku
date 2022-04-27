@@ -16,14 +16,9 @@
   width: calc(100% - 10px);
 }
 
-.table__thead {
-  border-bottom: 2px solid $color-default-separator-border;
-}
-
-.table__thead--language-table,
-.table__thead--course,
-.table__thead--question-table {
-  border-bottom-color: $color-hops-dialog-form-element-border;
+.table__thead,
+.table__tbody {
+  border-bottom: 2px solid $color-hops-dialog-form-element-border;
 }
 
 // This is span element and is necessary wrapper for the flex elements alignment inside TD's
@@ -38,10 +33,6 @@
 
 .table__row {
   background-color: $color-default;
-
-  &:last-child {
-    border-bottom: 2px solid $color-default-separator-border;
-  }
 }
 
 .table__row--empty {
@@ -49,14 +40,6 @@
 
   .table__data {
     height: 20px;
-  }
-}
-
-.table__row--language-table,
-.table__row--course-matrix,
-.table__row--question-table {
-  &:last-child {
-    border-bottom-color: $color-hops-dialog-form-element-border;
   }
 }
 
@@ -87,7 +70,8 @@
 }
 
 .table__data--subtitle {
-  font-size: 1.25rem;
+  font-size: 1rem;
+  font-weight: 600;
 }
 
 .table__data--merged {

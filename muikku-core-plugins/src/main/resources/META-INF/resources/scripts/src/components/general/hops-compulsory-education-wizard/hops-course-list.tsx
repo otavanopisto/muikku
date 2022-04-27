@@ -1,10 +1,10 @@
 import * as React from "react";
 import {
+  SchoolSubject,
   StudentActivityByStatus,
   StudentActivityCourse,
   StudentCourseChoice,
 } from "~/@types/shared";
-import { schoolCourseTable } from "~/mock/mock-data";
 import HopsSuggestionList from "./hops-suggested-list";
 import {
   ListContainer,
@@ -12,6 +12,7 @@ import {
   ListItemIndicator,
 } from "~/components/general/list";
 import {
+  LANGUAGE_SUBJECTS,
   OTHER_SUBJECT_OUTSIDE_HOPS,
   SKILL_AND_ART_SUBJECTS,
   UpdateSuggestionParams,
@@ -24,22 +25,30 @@ import Dropdown from "~/components/general/dropdown";
  * CourseListProps
  */
 interface HopsCourseListProps extends Partial<StudentActivityByStatus> {
+  /**
+   * matrix
+   */
+  matrix: SchoolSubject[];
+  /**
+   * useCase
+   */
   useCase: "study-matrix" | "hops-planing";
+  /**
+   * user
+   */
   user: HopsUser;
+  /**
+   * studentId
+   */
   studentId: string;
+  /**
+   * disabled
+   */
   disabled: boolean;
   /**
    * Boolean indicating that supervisor can modify values
    */
   superVisorModifies: boolean;
-  /**
-   * If ethic is selected besides religion
-   */
-  nativeLanguageSelection: string;
-  /**
-   * If finnish is selected as secondary languages
-   */
-  religionSelection: string;
   /**
    * List of student choices
    */
@@ -69,34 +78,7 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
   /**
    * renderRows
    */
-  const renderRows = schoolCourseTable.map((sSubject, i) => {
-    /**
-     * If any of these options happens
-     * just return; so skipping that subject
-     */
-    if (props.religionSelection === "ea") {
-      if (sSubject.subjectCode === "ua") {
-        return;
-      }
-    } else {
-      if (sSubject.subjectCode === "ea") {
-        return;
-      }
-    }
-    if (props.nativeLanguageSelection === "s2") {
-      if (sSubject.subjectCode === "äi") {
-        return;
-      }
-    } else {
-      if (sSubject.subjectCode === "s2") {
-        return;
-      }
-    }
-
-    // Counters
-    let mandatoryCount = 0;
-    let completedCourseCount = 0;
-
+  const renderRows = props.matrix.map((sSubject, i) => {
     /**
      * Renders courses
      */
@@ -106,24 +88,7 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
       const listItemModifiers = ["course"];
 
       if (course.mandatory) {
-        mandatoryCount++;
         listItemIndicatormodifiers.push("MANDATORY");
-        if (
-          (props.gradedList &&
-            props.gradedList.find(
-              (gCourse) =>
-                gCourse.subject === sSubject.subjectCode &&
-                gCourse.courseNumber === course.courseNumber
-            )) ||
-          (props.transferedList &&
-            props.transferedList.find(
-              (tCourse) =>
-                tCourse.subject === sSubject.subjectCode &&
-                tCourse.courseNumber === course.courseNumber
-            ))
-        ) {
-          completedCourseCount++;
-        }
       } else {
         listItemIndicatormodifiers.push("OPTIONAL");
       }
@@ -204,7 +169,6 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
             gCourse.courseNumber === course.courseNumber
         )
       ) {
-        completedCourseCount++;
         canBeSelected = false;
         listItemIndicatormodifiers.push("COMPLETED");
       } else if (
@@ -235,7 +199,10 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
         !props.disabled && props.user === "supervisor" && canBeSelected;
 
       return (
-        <ListItem key={course.id} modifiers={listItemModifiers}>
+        <ListItem
+          key={`${sSubject.subjectCode}-${course.courseNumber}`}
+          modifiers={listItemModifiers}
+        >
           <div style={{ display: "flex", alignItems: "center" }}>
             <ListItemIndicator
               modifiers={listItemIndicatormodifiers}
@@ -327,18 +294,9 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
       );
     });
 
-    /**
-     * Proggress value of completed mandatory courses
-     */
-    const mandatoryProggress = (completedCourseCount / mandatoryCount) * 100;
-
     return (
       <ListContainer key={sSubject.name} modifiers={["subject-name"]}>
         <ListItem className="list-subject-name">
-          {/* <div
-            className="list-subject-name-proggress"
-            style={{ width: `${mandatoryProggress}%` }}
-          /> */}
           <span style={{ zIndex: 10 }}>{sSubject.name}</span>
         </ListItem>
         <ListContainer modifiers={["subject-courses"]}>{courses}</ListContainer>
@@ -349,120 +307,168 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
   /**
    * Subjects and courses related to skills and arts
    */
-  const renderSkillsAndArtRows =
-    props.skillsAndArt &&
-    SKILL_AND_ART_SUBJECTS.map(
-      (s) =>
-        props.skillsAndArt[s].length !== 0 && (
-          <ListContainer key={s} modifiers={["subject-name"]}>
-            <ListItem className="list-subject-name">
-              <div className="list-subject-name-proggress" />
-              <span style={{ zIndex: 10 }}>
-                {props.skillsAndArt[s][0].subjectName}
-              </span>
-            </ListItem>
-            <ListContainer modifiers={["subject-courses"]}>
-              {props.skillsAndArt[s].map((c, index) => {
-                const listItemIndicatormodifiers = ["course", "APPROVAL"];
-                const listItemModifiers = ["course", "APPROVAL"];
+  const renderSkillsAndArtRows = props.skillsAndArt
+    ? SKILL_AND_ART_SUBJECTS.map((s) => {
+        if (props.skillsAndArt[s].length !== 0) {
+          return (
+            <ListContainer key={s} modifiers={["subject-name"]}>
+              <ListItem className="list-subject-name">
+                <div className="list-subject-name-proggress" />
+                <span style={{ zIndex: 10 }}>
+                  {props.skillsAndArt[s][0].subjectName}
+                </span>
+              </ListItem>
+              <ListContainer modifiers={["subject-courses"]}>
+                {props.skillsAndArt[s].map((c, index) => {
+                  const listItemIndicatormodifiers = ["course", "APPROVAL"];
+                  const listItemModifiers = ["course", "APPROVAL"];
 
-                return (
-                  <ListItem key={index} modifiers={listItemModifiers}>
-                    <div style={{ display: "flex", alignItems: "center" }}>
-                      <ListItemIndicator modifiers={listItemIndicatormodifiers}>
-                        <Dropdown
-                          openByHover={props.user !== "supervisor"}
-                          content={
-                            <div className="hops-container__study-tool-dropdown-container">
-                              <div className="hops-container__study-tool-dropdow-title">
-                                {c.courseName}
-                              </div>
-                            </div>
-                          }
+                  return (
+                    <ListItem key={index} modifiers={listItemModifiers}>
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        <ListItemIndicator
+                          modifiers={listItemIndicatormodifiers}
                         >
-                          <span
-                            tabIndex={0}
-                            className="table__data-content-wrapper table__data-content-wrapper--course"
+                          <Dropdown
+                            openByHover={props.user !== "supervisor"}
+                            content={
+                              <div className="hops-container__study-tool-dropdown-container">
+                                <div className="hops-container__study-tool-dropdow-title">
+                                  {c.courseName}
+                                </div>
+                              </div>
+                            }
                           >
-                            {c.courseNumber}
-                          </span>
-                        </Dropdown>
-                      </ListItemIndicator>
-                    </div>
-                  </ListItem>
-                );
-              })}
+                            <span
+                              tabIndex={0}
+                              className="table__data-content-wrapper table__data-content-wrapper--course"
+                            >
+                              {c.courseNumber}
+                              {!c.transferCreditMandatory ? "*" : null}
+                            </span>
+                          </Dropdown>
+                        </ListItemIndicator>
+                      </div>
+                    </ListItem>
+                  );
+                })}
+              </ListContainer>
             </ListContainer>
-          </ListContainer>
-        )
-    );
+          );
+        }
+      }).filter(Boolean)
+    : undefined;
 
   /**
    * Subjects and courses related to skills and arts
    */
-  const renderOtherSubjectsRows =
-    props.otherSubjects &&
-    OTHER_SUBJECT_OUTSIDE_HOPS.map(
-      (s) =>
-        props.otherSubjects[s].length !== 0 && (
-          <ListContainer key={s} modifiers={["subject-name"]}>
-            <ListItem className="list-subject-name">
-              <div className="list-subject-name-proggress" />
-              <span style={{ zIndex: 10 }}>
-                {props.otherSubjects[s][0].subjectName}
-              </span>
-            </ListItem>
-            <ListContainer modifiers={["subject-courses"]}>
-              {props.otherSubjects[s].map((c, index) => {
-                const listItemIndicatormodifiers = ["course", "APPROVAL"];
-                const listItemModifiers = ["course", "APPROVAL"];
+  const renderOtherLanguageSubjectsRows = props.otherLanguageSubjects
+    ? LANGUAGE_SUBJECTS.map((s) => {
+        if (props.otherLanguageSubjects[s].length !== 0) {
+          return (
+            <ListContainer key={s} modifiers={["subject-name"]}>
+              <ListItem className="list-subject-name">
+                <div className="list-subject-name-proggress" />
+                <span style={{ zIndex: 10 }}>
+                  {props.otherLanguageSubjects[s][0].subjectName}
+                </span>
+              </ListItem>
+              <ListContainer modifiers={["subject-courses"]}>
+                {props.otherLanguageSubjects[s].map((c, index) => {
+                  const listItemIndicatormodifiers = ["course", "APPROVAL"];
+                  const listItemModifiers = ["course", "APPROVAL"];
 
-                return (
-                  <ListItem key={index} modifiers={listItemModifiers}>
-                    <div style={{ display: "flex", alignItems: "center" }}>
-                      <ListItemIndicator modifiers={listItemIndicatormodifiers}>
-                        <Dropdown
-                          openByHover={props.user !== "supervisor"}
-                          content={
-                            <div className="hops-container__study-tool-dropdown-container">
-                              <div className="hops-container__study-tool-dropdow-title">
-                                {c.courseName}
-                              </div>
-                            </div>
-                          }
+                  return (
+                    <ListItem key={index} modifiers={listItemModifiers}>
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        <ListItemIndicator
+                          modifiers={listItemIndicatormodifiers}
                         >
-                          <span
-                            tabIndex={0}
-                            className="table__data-content-wrapper table__data-content-wrapper--course"
+                          <Dropdown
+                            openByHover={props.user !== "supervisor"}
+                            content={
+                              <div className="hops-container__study-tool-dropdown-container">
+                                <div className="hops-container__study-tool-dropdow-title">
+                                  {c.courseName}
+                                </div>
+                              </div>
+                            }
                           >
-                            {c.courseNumber}
-                          </span>
-                        </Dropdown>
-                      </ListItemIndicator>
-                    </div>
-                  </ListItem>
-                );
-              })}
+                            <span
+                              tabIndex={0}
+                              className="table__data-content-wrapper table__data-content-wrapper--course"
+                            >
+                              {c.courseNumber}
+                              {!c.transferCreditMandatory ? "*" : null}
+                            </span>
+                          </Dropdown>
+                        </ListItemIndicator>
+                      </div>
+                    </ListItem>
+                  );
+                })}
+              </ListContainer>
             </ListContainer>
-          </ListContainer>
-        )
-    );
+          );
+        }
+      }).filter(Boolean)
+    : undefined;
+
+  /**
+   * Subjects and courses related to skills and arts
+   */
+  const renderOtherSubjectsRows = props.otherSubjects
+    ? OTHER_SUBJECT_OUTSIDE_HOPS.map((s) => {
+        if (props.otherSubjects[s].length !== 0) {
+          return props.otherSubjects[s].map((c, index) => {
+            const listItemIndicatormodifiers = ["course", "APPROVAL"];
+            const listItemModifiers = ["course", "APPROVAL"];
+
+            return (
+              <ListContainer key={c.courseName} modifiers={["subject-name"]}>
+                <ListItem className="list-subject-name">
+                  <span style={{ zIndex: 10 }}>
+                    {c.courseName}
+                    {!c.transferCreditMandatory ? "*" : null}
+                  </span>
+                </ListItem>
+              </ListContainer>
+            );
+          });
+        }
+      }).filter(Boolean)
+    : undefined;
 
   return (
     <>
       <div className="list-row__container">{renderRows}</div>
-      <div className="list-row__container">
-        <ListContainer modifiers={["subtitle"]}>
-          <ListItem>Hyväksiluvut: Taito ja taideaineet</ListItem>
-        </ListContainer>
-        {renderSkillsAndArtRows}
-      </div>
-      <div className="list-row__container">
-        <ListContainer modifiers={["subtitle"]}>
-          <ListItem>Hyväksiluvut: Muut</ListItem>
-        </ListContainer>
-        {renderOtherSubjectsRows}
-      </div>
+      {renderSkillsAndArtRows && renderSkillsAndArtRows.length !== 0 && (
+        <div className="list-row__container">
+          <ListContainer modifiers={["subtitle"]}>
+            <ListItem>Hyväksiluvut: Taito ja taideaineet</ListItem>
+          </ListContainer>
+          {renderSkillsAndArtRows}
+        </div>
+      )}
+
+      {renderOtherLanguageSubjectsRows &&
+        renderOtherLanguageSubjectsRows.length !== 0 && (
+          <div className="list-row__container">
+            <ListContainer modifiers={["subtitle"]}>
+              <ListItem>Hyväksiluvut: Vieraat kielet</ListItem>
+            </ListContainer>
+            {renderOtherLanguageSubjectsRows}
+          </div>
+        )}
+
+      {renderOtherSubjectsRows && renderOtherSubjectsRows.length !== 0 && (
+        <div className="list-row__container">
+          <ListContainer modifiers={["subtitle"]}>
+            <ListItem>Hyväksiluvut: Muut</ListItem>
+          </ListContainer>
+          {renderOtherSubjectsRows}
+        </div>
+      )}
     </>
   );
 };

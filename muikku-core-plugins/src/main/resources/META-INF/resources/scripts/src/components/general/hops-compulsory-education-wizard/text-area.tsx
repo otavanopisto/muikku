@@ -9,6 +9,7 @@ interface TextareaProps
     HTMLTextAreaElement
   > {
   label?: string;
+  id: string;
 }
 
 /**
@@ -19,12 +20,15 @@ interface TextareaProps
  */
 export const Textarea: React.FC<TextareaProps> = ({
   label,
+  id,
   ...textareaProps
 }) => (
   <>
-    <label className="hops__label">{label}</label>
+    <label htmlFor={id} className="hops__label">
+      {label}
+    </label>
     <div className="form-element__textarea-container">
-      <textarea {...textareaProps} />
+      <textarea id={id} {...textareaProps} />
     </div>
   </>
 );

@@ -40,19 +40,25 @@
 }
 
 .application-sub-panel--student-data-primary {
+  border: 0;
   flex-basis: 100%;
+  margin: 0 0 30px;
 
   @include breakpoint($breakpoint-desktop-xl) {
-    flex-basis: 100%;
+    flex-basis: 45%;
+    margin: 0;
   }
 }
 
 .application-sub-panel--student-data-secondary {
+  border: 0;
   flex-basis: 100%;
+  margin: 0 0 30px;
 
   @include breakpoint($breakpoint-desktop-xl) {
     flex-basis: auto;
     flex-grow: 1;
+    margin: 0;
     padding: 0 0 0 20px;
   }
 }

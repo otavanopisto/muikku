@@ -167,13 +167,7 @@ class StudentDialog extends React.Component<
         type: "guider-student",
         component: (
           <>
-            <div
-              style={{
-                display: "flex",
-                alignContent: "center",
-                justifyContent: "center",
-              }}
-            >
+            <div className="tabs__header-actions tabs__header-actions--hops">
               <Button
                 onClick={this.onClickEditHops}
                 buttonModifiers={hopsModifyStateModifiers}
@@ -269,6 +263,7 @@ class StudentDialog extends React.Component<
         modifier="guider-student"
         title={dialogTitle}
         content={content}
+        closeOnOverlayClick={false}
         disableScroll
       />
     );

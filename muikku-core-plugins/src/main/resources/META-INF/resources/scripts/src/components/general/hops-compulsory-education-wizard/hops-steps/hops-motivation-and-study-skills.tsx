@@ -245,6 +245,7 @@ class HopsMotivationAndStudySkills extends React.Component<
           <div className="hops-container__row">
             <div className="hops__form-element-container">
               <Textarea
+                id="wayToLearnSomeOtherWayExplanation"
                 label="Jos haluat, voit kertoa tarkemmin itsellesi sopivista opiskelutavoista"
                 name="someOtherWay"
                 value={wayToLearn.someOtherWay}
@@ -265,6 +266,7 @@ class HopsMotivationAndStudySkills extends React.Component<
           <div className="hops-container__row">
             <div className="hops__form-element-container hops__form-element-container--single-row">
               <input
+                id="fromFamilyMember"
                 type="checkbox"
                 name="fromFamilyMember"
                 className="hops__input"
@@ -272,12 +274,15 @@ class HopsMotivationAndStudySkills extends React.Component<
                 onChange={this.handleCheckboxItemChange("studySupport")}
                 disabled={this.props.disabled}
               ></input>
-              <label className="hops__label">Perheenjäseneltä</label>
+              <label htmlFor="fromFamilyMember" className="hops__label">
+                Perheenjäseneltä
+              </label>
             </div>
           </div>
           <div className="hops-container__row">
             <div className="hops__form-element-container hops__form-element-container--single-row">
               <input
+                id="fromFriend"
                 type="checkbox"
                 name="fromFriend"
                 className="hops__input"
@@ -285,12 +290,15 @@ class HopsMotivationAndStudySkills extends React.Component<
                 onChange={this.handleCheckboxItemChange("studySupport")}
                 disabled={this.props.disabled}
               ></input>
-              <label className="hops__label">Ystävältä</label>
+              <label htmlFor="fromFriend" className="hops__label">
+                Ystävältä
+              </label>
             </div>
           </div>
           <div className="hops-container__row">
             <div className="hops__form-element-container hops__form-element-container--single-row">
               <input
+                id="fromSupportPerson"
                 type="checkbox"
                 name="fromSupportPerson"
                 className="hops__input"
@@ -298,12 +306,15 @@ class HopsMotivationAndStudySkills extends React.Component<
                 onChange={this.handleCheckboxItemChange("studySupport")}
                 disabled={this.props.disabled}
               ></input>
-              <label className="hops__label">Tukihenkilöltä</label>
+              <label htmlFor="fromSupportPerson" className="hops__label">
+                Tukihenkilöltä
+              </label>
             </div>
           </div>
           <div className="hops-container__row">
             <div className="hops__form-element-container hops__form-element-container--single-row">
               <input
+                id="noSupport"
                 type="checkbox"
                 name="noSupport"
                 className="hops__input"
@@ -311,12 +322,15 @@ class HopsMotivationAndStudySkills extends React.Component<
                 onChange={this.handleCheckboxItemChange("studySupport")}
                 disabled={this.props.disabled}
               ></input>
-              <label className="hops__label">En saa tukea</label>
+              <label htmlFor="noSupport" className="hops__label">
+                En saa tukea
+              </label>
             </div>
           </div>
           <div className="hops-container__row">
             <div className="hops__form-element-container hops__form-element-container--single-row">
               <input
+                id="somethingElseStudySupport"
                 type="checkbox"
                 name="somethingElse"
                 className="hops__input"
@@ -324,13 +338,16 @@ class HopsMotivationAndStudySkills extends React.Component<
                 onChange={this.handleCheckboxItemChange("studySupport")}
                 disabled={this.props.disabled}
               ></input>
-              <label className="hops__label">Joku muu</label>
+              <label htmlFor="somethingElse" className="hops__label">
+                Joku muu
+              </label>
             </div>
           </div>
 
           <AnimateHeight height={studySupport.somethingElse ? "auto" : 0}>
             <div className="hops__form-element-container">
               <Textarea
+                id="somethingElseStudySupportExplanation"
                 label="Kerro tarkemmin"
                 name="somethingElseWhat"
                 value={studySupport.somethingElseWhat}
@@ -504,6 +521,7 @@ class HopsMotivationAndStudySkills extends React.Component<
           <div className="hops-container__row">
             <div className="hops__form-element-container">
               <Textarea
+                id="somethingElseSelfImageAsStudentExplanation"
                 label="Jos haluat, voit kertoa tarkemmin sinusta opiskelijana"
                 name="somethingElse"
                 value={selfImageAsStudent.somethingElse}
@@ -517,6 +535,7 @@ class HopsMotivationAndStudySkills extends React.Component<
           <div className="hops-container__row">
             <div className="hops__form-element-container">
               <Textarea
+                id="wishesForTeachersAndSupervisors"
                 label="Millaista tukea toivot Nettiperuskoulun ohjaajalta ja opettajilta?"
                 name="wishesForTeachersAndSupervisors"
                 value={selfImageAsStudent.wishesForTeachersAndSupervisors}

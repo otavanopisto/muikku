@@ -402,7 +402,7 @@ class StateOfStudies extends React.Component<
         </ApplicationSubPanel>
         <ApplicationSubPanel modifier="student-data-container">
           <ApplicationSubPanel modifier="student-data-primary">
-            {studentBasicInfo}
+            <ApplicationSubPanel>{studentBasicInfo}</ApplicationSubPanel>
           </ApplicationSubPanel>
 
           <ApplicationSubPanel modifier="student-data-secondary">
@@ -421,36 +421,31 @@ class StateOfStudies extends React.Component<
                 </ApplicationSubPanel.Body>
               </ApplicationSubPanel>
             ) : null}
+
+            <ApplicationSubPanel>
+              <ApplicationSubPanel.Header>
+                {this.props.i18n.text.get(
+                  "plugin.guider.user.details.workspaces"
+                )}
+              </ApplicationSubPanel.Header>
+              <ApplicationSubPanel.Body>
+                {studentWorkspaces}
+              </ApplicationSubPanel.Body>
+            </ApplicationSubPanel>
           </ApplicationSubPanel>
         </ApplicationSubPanel>
 
-        <ApplicationSubPanel modifier="student-data-container">
-          <ApplicationSubPanel modifier="student-data-primary">
-            <ApplicationSubPanel.Header>
-              Opintojen edistyminen
-            </ApplicationSubPanel.Header>
-            {this.props.guider.currentStudent &&
-              this.props.guider.currentStudent.basic &&
-              this.props.guider.currentStudent.basic.id && (
-                <StudySuggestionMatrix
-                  studentId={this.props.guider.currentStudent.basic.id}
-                />
-              )}
-          </ApplicationSubPanel>
-        </ApplicationSubPanel>
-
-        <ApplicationSubPanel modifier="student-data-container">
-          <ApplicationSubPanel modifier="student-data-primary">
-            <ApplicationSubPanel.Header>
-              {this.props.i18n.text.get(
-                "plugin.guider.user.details.workspaces"
-              )}
-            </ApplicationSubPanel.Header>
-
-            <ApplicationSubPanel.Body>
-              {studentWorkspaces}
-            </ApplicationSubPanel.Body>
-          </ApplicationSubPanel>
+        <ApplicationSubPanel>
+          <ApplicationSubPanel.Header>
+            {this.props.i18n.text.get("plugin.guider.user.details.progress")}
+          </ApplicationSubPanel.Header>
+          {this.props.guider.currentStudent &&
+            this.props.guider.currentStudent.basic &&
+            this.props.guider.currentStudent.basic.id && (
+              <StudySuggestionMatrix
+                studentId={this.props.guider.currentStudent.basic.id}
+              />
+            )}
         </ApplicationSubPanel>
       </>
     );

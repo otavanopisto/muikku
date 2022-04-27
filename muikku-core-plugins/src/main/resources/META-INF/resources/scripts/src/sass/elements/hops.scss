@@ -13,7 +13,6 @@
 .hops-container {
   flex-basis: 100%;
   overflow: auto;
-  padding: 0 10px;
   width: 100%;
 }
 
@@ -595,4 +594,9 @@
 .hops-container__study-tool-dropdow-title {
   font-size: 1rem;
   font-weight: 400;
+}
+
+.hops-planning__activity-proggressbar-tooltip {
+  max-width: 300px;
+  text-align: start;
 }
