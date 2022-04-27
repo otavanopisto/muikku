@@ -13,7 +13,12 @@
 .hops-container {
   flex-basis: 100%;
   overflow: auto;
+  padding: 10px;
   width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 0;
+  }
 }
 
 .hops-container__state {

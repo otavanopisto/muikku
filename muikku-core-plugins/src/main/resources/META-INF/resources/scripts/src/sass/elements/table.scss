@@ -56,7 +56,11 @@
 .table__head--subject {
   padding: 5px;
   text-align: left;
-  width: 200px;
+  width: auto;
+
+  @include breakpoint($breakpoint-pad) {
+    width: 200px;
+  }
 }
 
 .table__head--centered,
