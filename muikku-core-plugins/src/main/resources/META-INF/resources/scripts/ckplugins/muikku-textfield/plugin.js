@@ -1,7 +1,7 @@
 (function() {
-  
+
   /* global CKEDITOR:true */
-  
+
   function isMuikkuTextField(element) {
     var attributes = element.attributes;
     return (attributes.type == 'application/vnd.muikku.field.text');
@@ -280,7 +280,7 @@
               type: 'checkbox',
               label: editor.lang['muikku-textfield'].propertiesDialogAutoGrow,
               setup: function(json) {
-                this.setValue(json.autogrow === false ? false : true);
+                this.setValue(typeof json.autogrow === 'boolean' && json.autogrow ? json.autogrow : false);
               }
             },
             {
