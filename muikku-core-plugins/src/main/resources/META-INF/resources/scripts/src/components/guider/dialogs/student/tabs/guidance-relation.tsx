@@ -12,6 +12,7 @@ import GuidanceEvent from "~/components/index/body/guidance-events/guidance-even
 import ContactEvent from "./contact-events/contact-event";
 import { StatusType } from "~/reducers/base/status";
 import { IContactEvent } from "~/reducers/main-function/guider/";
+import NewContactEvent from "../../new-contact-event";
 
 /**
  * GuidanceRelationProps
@@ -32,18 +33,20 @@ const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
   return (
     <ApplicationSubPanel>
       <ApplicationSubPanelViewHeader title="Ohjuuussuhde">
-        <div>Greate new event</div>
+        <NewContactEvent>
+          <div>Luo uusi yhteydenotto</div>
+        </NewContactEvent>
       </ApplicationSubPanelViewHeader>
       <ApplicationSubPanel.Body modifier="guidance-relation">
         <ApplicationSubPanelSection modifier="guidance-relation-contact-info">
-          <ApplicationSubPanelItem title="Muu">
+          <ApplicationSubPanelItem title="Otsikko">
             <ApplicationSubPanelItem.Content>
-              Suxisuxieiluistamihingän
+              Sisältö
             </ApplicationSubPanelItem.Content>
           </ApplicationSubPanelItem>
-          <ApplicationSubPanelItem title="Huu">
+          <ApplicationSubPanelItem title="Otsikko">
             <ApplicationSubPanelItem.Content>
-              Warsinkinkunneiniitäole ensingän
+              Sisältö
             </ApplicationSubPanelItem.Content>
           </ApplicationSubPanelItem>
         </ApplicationSubPanelSection>

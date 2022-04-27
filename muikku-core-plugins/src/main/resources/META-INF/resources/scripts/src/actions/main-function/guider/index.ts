@@ -184,6 +184,13 @@ export interface LoadStudentDataTriggerType {
   (id: number, forceLoad?: boolean): AnyActionType;
 }
 
+export interface CreateContactEventTriggerType {
+  (
+    userEntityId: number,
+    payload: { text: string; entryDate: string; creatorName: string }
+  ): AnyActionType;
+}
+
 export interface AddToGuiderSelectedStudentsTriggerType {
   (student: GuiderStudentType): AnyActionType;
 }
@@ -746,6 +753,54 @@ const loadStudentGuiderRelations: LoadStudentDataTriggerType =
     };
   };
 
+/** createContactEvent thunk function
+ * @param id student id
+ * @param forceLoad should the guiderRelation load be forced
+ */
+const createContactEvent: CreateContactEventTriggerType =
+  function loadStudentGuiderRelations(userEntityId, payload) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      try {
+        const contactLogs = getState().guider.currentStudent.contactLogs;
+        await promisify(
+          mApi().guider.student.contactLog.create(userEntityId, payload),
+          "callback"
+        )().then((contactLog: IContactEvent) => {
+          dispatch({
+            type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+            payload: {
+              property: "contactLogs",
+              value: [...contactLogs, ...[contactLog]],
+            },
+          });
+        });
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          notificationActions.displayNotification(
+            getState().i18n.text.get("plugin.guider.errormessage.user"),
+            "error"
+          )
+        );
+        dispatch({
+          type: "UPDATE_GUIDER_ALL_PROPS",
+          payload: {
+            currentState: <GuiderCurrentStudentStateType>"ERROR",
+          },
+        });
+        dispatch({
+          type: "UNLOCK_TOOLBAR",
+          payload: null,
+        });
+      }
+    };
+  };
+
 async function removeLabelFromUserUtil(
   student: GuiderStudentType,
   flags: Array<GuiderStudentUserProfileLabelType>,
@@ -1268,6 +1323,7 @@ export {
   loadStudent,
   loadStudentHistory,
   loadStudentGuiderRelations,
+  createContactEvent,
   addToGuiderSelectedStudents,
   removeFromGuiderSelectedStudents,
   addGuiderLabelToCurrentUser,

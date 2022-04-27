@@ -130,6 +130,10 @@
   margin-bottom: 10px;
 }
 
+.env-dialog__row--new-contact-event {
+  display: flex;
+}
+
 .env-dialog__row--ckeditor {
   display: flex;
   flex-basis: auto;
@@ -188,6 +192,9 @@
       margin-left: 20px;
     }
   }
+}
+.env-dialog__form-element-container--new-contact-event {
+  flex-grow: 0;
 }
 
 .env-dialog__form-element-container--datepicker {

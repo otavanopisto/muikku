@@ -17,10 +17,29 @@
 
 .contact-event__title {
   display:flex;
+  flex-grow: 1;
+}
+
+.contact-event__creator {
+  font-weight: 600;
+  margin-right: 10px;
+}
+
+.contact-event__type {
+  padding: 0 5px;
+  background-color: #ededed;
+  margin-right: 10px;
+}
+
+.contact-event__date {
+  color: #787878;
 }
 
 .contact-event__header-actions {
   display:flex;
+  & > div:not(:first-child), span:not(:first-child) {
+    margin-left: 10px;
+  }
 }
 
 .contact-event__body {

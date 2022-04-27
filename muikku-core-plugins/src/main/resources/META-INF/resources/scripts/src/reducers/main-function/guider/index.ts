@@ -78,22 +78,34 @@ export interface GuiderNotificationStudentsDataType {
   nopassedcourses?: string;
   assessmentrequest?: string;
 }
+
+/**
+ * ContactTypesArray for dropdowns etc.
+ */
+export const contactTypesArray = [
+  "OTHER",
+  "LETTER",
+  "EMAIL",
+  "PHONE",
+  "CHATLOG",
+  "SKYPE",
+  "FACE2FACE",
+  "ABSENCE",
+  "MUIKKU",
+] as const;
+
+/**
+ *  ContactTypes created from the ContactTypesArray
+ */
+export type ContactTypes = typeof contactTypesArray[number];
+
 /**
  * ContactEvent
  */
 export interface IContactEvent {
   id: number;
   entryDate: string;
-  type:
-    | "OTHER"
-    | "LETTER"
-    | "EMAIL"
-    | "PHONE"
-    | "CHATLOG"
-    | "SKYPE"
-    | "FACE2FACE"
-    | "ABSENCE"
-    | "MUIKKU";
+  type: ContactTypes;
   creatorId: number;
   creatorName: string;
   text: string;
