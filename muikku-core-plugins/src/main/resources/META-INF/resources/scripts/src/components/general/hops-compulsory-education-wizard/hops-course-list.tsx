@@ -20,6 +20,7 @@ import {
 import { HopsUser } from ".";
 import { UpdateStudentChoicesParams } from "~/hooks/useStudentChoices";
 import Dropdown from "~/components/general/dropdown";
+import Button from "~/components/general/button";
 
 /**
  * CourseListProps
@@ -245,17 +246,18 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
                     ) : (
                       <>
                         {showAddToHopsButton && (
-                          <button
+                          <Button
                             onClick={handleToggleChoiceClick({
                               studentId: props.studentId,
                               courseNumber: course.courseNumber,
                               subject: sSubject.subjectCode,
                             })}
+                            buttonModifiers={["guider-hops-studytool"]}
                           >
                             {selectedByStudent
                               ? "Peru valinta"
                               : "Valitse osaksi hopsia"}
-                          </button>
+                          </Button>
                         )}
 
                         {showSuggestionList && (
@@ -420,21 +422,16 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
   const renderOtherSubjectsRows = props.otherSubjects
     ? OTHER_SUBJECT_OUTSIDE_HOPS.map((s) => {
         if (props.otherSubjects[s].length !== 0) {
-          return props.otherSubjects[s].map((c, index) => {
-            const listItemIndicatormodifiers = ["course", "APPROVAL"];
-            const listItemModifiers = ["course", "APPROVAL"];
-
-            return (
-              <ListContainer key={c.courseName} modifiers={["subject-name"]}>
-                <ListItem className="list-subject-name">
-                  <span style={{ zIndex: 10 }}>
-                    {c.courseName}
-                    {!c.transferCreditMandatory ? "*" : null}
-                  </span>
-                </ListItem>
-              </ListContainer>
-            );
-          });
+          return props.otherSubjects[s].map((c, index) => (
+            <ListContainer key={c.courseName} modifiers={["subject-name"]}>
+              <ListItem className="list-subject-name">
+                <span style={{ zIndex: 10 }}>
+                  {c.courseName}
+                  {!c.transferCreditMandatory ? "*" : null}
+                </span>
+              </ListItem>
+            </ListContainer>
+          ));
         }
       }).filter(Boolean)
     : undefined;

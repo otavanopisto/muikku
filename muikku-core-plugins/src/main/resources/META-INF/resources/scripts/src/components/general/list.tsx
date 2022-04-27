@@ -1,6 +1,9 @@
 import * as React from "react";
 import "~/sass/elements/list.scss";
 
+/**
+ * ListContainerProps
+ */
 interface ListContainerProps
   extends React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLDivElement>,
@@ -11,15 +14,12 @@ interface ListContainerProps
 
 /**
  * ListContainer
- * @param param0
+ * @param props props
  * @returns JSX.Element
  */
-export const ListContainer: React.FC<ListContainerProps> = ({
-  modifiers,
-  children,
-  className,
-  ...rest
-}) => {
+export const ListContainer: React.FC<ListContainerProps> = (props) => {
+  const { modifiers, children, className, ...rest } = props;
+
   let updatedClassName = "list-container";
 
   if (className) {
@@ -40,6 +40,9 @@ export const ListContainer: React.FC<ListContainerProps> = ({
   );
 };
 
+/**
+ * ListItemProps
+ */
 interface ListItemProps
   extends React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLDivElement>,
@@ -50,15 +53,12 @@ interface ListItemProps
 
 /**
  * ListItem
- * @param param0
+ * @param props props
  * @returns JSX.Element
  */
-export const ListItem: React.FC<ListItemProps> = ({
-  modifiers,
-  className,
-  children,
-  ...rest
-}) => {
+export const ListItem: React.FC<ListItemProps> = (props) => {
+  const { modifiers, className, children, ...rest } = props;
+
   let updatedClassName = "list-item";
 
   if (className) {
@@ -92,15 +92,12 @@ interface ListItemIndicator
 
 /**
  * ListItemIndicator
- * @param param0
+ * @param props props
  * @returns JSX.Element
  */
-export const ListItemIndicator: React.FC<ListItemIndicator> = ({
-  modifiers,
-  children,
-  className,
-  ...rest
-}) => {
+export const ListItemIndicator: React.FC<ListItemIndicator> = (props) => {
+  const { modifiers, children, className, ...rest } = props;
+
   let updatedClassName = "list-item-indicator";
 
   if (className) {

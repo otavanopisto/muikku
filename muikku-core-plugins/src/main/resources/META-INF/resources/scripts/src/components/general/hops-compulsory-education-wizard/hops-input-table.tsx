@@ -40,9 +40,7 @@ const createArrayOfNumberIntervals = (
  * QuestionGradeTableProps
  */
 interface HopsInputTableProps {
-  scaleStart: number;
-  scaleInterval: number;
-  scaleLength: number;
+  tableHeader: JSX.Element;
 }
 
 /**
@@ -51,23 +49,11 @@ interface HopsInputTableProps {
  * @returns JSX.Element. Language grade table component
  */
 export const HopsInputTable: React.FC<HopsInputTableProps> = (props) => {
-  const { children, scaleStart, scaleInterval, scaleLength } = props;
+  const { children, tableHeader } = props;
 
   return (
     <Table modifiers={["question-table"]}>
-      <TableHead modifiers={["question-table"]}>
-        <Tr modifiers={["question-table"]}>
-          {createArrayOfNumberIntervals(
-            scaleStart,
-            scaleInterval,
-            scaleLength
-          ).map((v, i: number) => (
-            <Th key={i} modifiers={["centered"]}>
-              {v}
-            </Th>
-          ))}
-        </Tr>
-      </TableHead>
+      {tableHeader}
       <Tbody>{children}</Tbody>
     </Table>
   );

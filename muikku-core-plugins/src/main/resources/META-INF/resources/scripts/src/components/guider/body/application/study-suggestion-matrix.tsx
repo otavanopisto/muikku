@@ -54,7 +54,7 @@ const StudySuggestionMatrix: React.FC<StudySuggestionMatrixProps> = (props) => {
   return (
     <>
       <div className="hops-container__row">
-        <div className="hops__form-element-container hops__form-element-container--pad-upforwards">
+        <div className="hops__form-element-container hops__form-element-container--pad-upforwards swiper-no-swiping">
           {studentActivity.isLoading ? (
             <div className="loader-empty" />
           ) : (
@@ -79,7 +79,7 @@ const StudySuggestionMatrix: React.FC<StudySuggestionMatrixProps> = (props) => {
           )}
         </div>
 
-        <div className="hops__form-element-container hops__form-element-container--mobile">
+        <div className="hops__form-element-container hops__form-element-container--mobile swiper-no-swiping">
           {studentActivity.isLoading ? (
             <div className="loader-empty" />
           ) : (
