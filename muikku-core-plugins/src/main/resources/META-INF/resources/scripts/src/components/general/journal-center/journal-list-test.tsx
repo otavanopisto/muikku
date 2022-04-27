@@ -1,11 +1,10 @@
 import * as React from "react";
-import { UseJournals } from "~/@types/journal-center";
 
 /**
  * JournalListProps
  */
 interface JournalListProps {
-  journals: UseJournals;
+  isLoadingList: boolean;
 }
 
 /**
@@ -13,11 +12,15 @@ interface JournalListProps {
  * @param props props
  * @returns JSX.Element
  */
-const JournalList: React.FC<JournalListProps> = (props) => {
-  const { children, journals } = props;
+const JournalListWithoutAnimation: React.FC<JournalListProps> = (props) => {
+  const { children, isLoadingList } = props;
 
-  if (journals.isLoadingList) {
+  if (isLoadingList) {
     return <div className="loader-empty" />;
+  }
+
+  if (React.Children.count(children) === 0) {
+    return <div>Ei nootteja</div>;
   }
 
   return (
@@ -34,4 +37,4 @@ const JournalList: React.FC<JournalListProps> = (props) => {
     </div>
   );
 };
-export default JournalList;
+export default JournalListWithoutAnimation;

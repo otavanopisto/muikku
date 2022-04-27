@@ -79,8 +79,6 @@ const JournalListAnimated: React.FC<JournalListAnimatedProps> = (props) => {
   }
 
   return (
-    //const { children } = props;
-
     <div ref={listElementRef} className="journal-list-container">
       {children}
     </div>

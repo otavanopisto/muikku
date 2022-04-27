@@ -32,6 +32,7 @@ import ApplicationSubPanel, {
   ApplicationSubPanelItem,
 } from "~/components/general/application-sub-panel";
 import Avatar from "~/components/general/avatar";
+import JournalCenter from "~/components/general/journal-center/journal-center";
 
 // import GuidanceEvent from "../../dialogs/guidance-event";
 // import { CalendarEvent } from "~/reducers/main-function/calendar";
@@ -395,6 +396,17 @@ class StateOfStudies extends React.Component<
             </ApplicationSubPanel>
           ) : null}
         </ApplicationSubPanel>
+        {this.props.guider.currentStudent &&
+          this.props.guider.currentStudent.basic && (
+            <ApplicationSubPanel modifier="student-data-container">
+              <JournalCenter
+                usePlace="guider"
+                userId={this.props.status.userId}
+                studentId={this.props.guider.currentStudent.basic.userEntityId}
+                showHistoryPanel
+              />
+            </ApplicationSubPanel>
+          )}
       </>
     );
   }

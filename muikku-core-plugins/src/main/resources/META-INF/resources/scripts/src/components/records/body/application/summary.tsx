@@ -20,7 +20,7 @@ import moment from "~/lib/moment";
 import { StatusType } from "~/reducers/base/status";
 import Avatar from "~/components/general/avatar";
 import { getName } from "~/util/modifiers";
-import JournalCenter from "~/components/general/jounral-center/journal-center";
+import JournalCenter from "~/components/general/journal-center/journal-center";
 
 /**
  * SummaryProps

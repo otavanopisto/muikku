@@ -7,6 +7,7 @@ import {
 import Button, { ButtonPill, IconButton } from "~/components/general/button";
 import * as moment from "moment";
 import Dropdown from "~/components/general/dropdown";
+import JournalCenterItemEdit from "./journal-center-item-edit";
 
 /**
  * JournalListProps
@@ -19,12 +20,15 @@ interface JournalListItemProps {
   loggedUserIsOwner?: boolean;
   onArchiveClick?: (journalId: number) => void;
   onReturnArchivedClick?: (journalId: number) => void;
-  onEditClick?: (journalId: number) => void;
   onPinJournalClick?: (journalId: number, journal: JournalNoteUpdate) => void;
-  onJournalClick?: (journalId: number) => void;
   onUpdateJournalStatus?: (
     journalId: number,
     newStatus: JournalStatusType
+  ) => void;
+  onJournalSaveUpdateClick?: (
+    journalId: number,
+    updatedJournal: JournalNoteUpdate,
+    onSuccess?: () => void
   ) => void;
 }
 
@@ -44,12 +48,11 @@ const JournalListItem = React.forwardRef<HTMLDivElement, JournalListItemProps>(
     const myRef = React.useRef<HTMLDivElement>(null);
     const {
       journal,
-      onJournalClick,
-      onEditClick,
       onArchiveClick,
       onReturnArchivedClick,
       onPinJournalClick,
       onUpdateJournalStatus,
+      onJournalSaveUpdateClick,
       loggedUserIsCreator,
       loggedUserIsOwner,
       active,
@@ -69,27 +72,6 @@ const JournalListItem = React.forwardRef<HTMLDivElement, JournalListItemProps>(
     } = journal;
 
     const updatedModifiers = [];
-
-    /**
-     * Handles journal click
-     * @param journalId journalId
-     */
-    const handleJournalClick =
-      (journalId: number) =>
-      (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-        onJournalClick(journalId);
-      };
-
-    /**
-     * Handles journal click to open it in edit mode
-     * @param journalId journalId
-     */
-    const handleJournalOpenInEditModeClick =
-      (journalId: number) =>
-      (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-        e.stopPropagation();
-        onEditClick(journalId);
-      };
 
     /**
      * Handles journal pin click
@@ -343,7 +325,7 @@ const JournalListItem = React.forwardRef<HTMLDivElement, JournalListItemProps>(
     };
 
     return (
-      <div ref={ref} style={{ width: "100%" }} onClick={handleJournalClick(id)}>
+      <div ref={ref} style={{ width: "100%" }}>
         <div
           ref={myRef}
           className={`journal-list-item-content ${
@@ -380,11 +362,13 @@ const JournalListItem = React.forwardRef<HTMLDivElement, JournalListItemProps>(
                 }}
               >
                 <div style={{ display: "flex" }}>
-                  {loggedUserIsCreator && onEditClick && (
-                    <IconButton
-                      onClick={handleJournalOpenInEditModeClick(id)}
-                      icon="pencil"
-                    />
+                  {loggedUserIsCreator && onJournalSaveUpdateClick && (
+                    <JournalCenterItemEdit
+                      selectedJournal={journal}
+                      onJournalSaveUpdateClick={onJournalSaveUpdateClick}
+                    >
+                      <IconButton icon="pencil" />
+                    </JournalCenterItemEdit>
                   )}
 
                   {loggedUserIsOwner && onPinJournalClick && (

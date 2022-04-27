@@ -146,6 +146,7 @@
 
 .journal-center-container {
   display: flex;
+  flex-direction: column;
   height: 800px;
   padding: 10px 0;
 }
@@ -153,7 +154,7 @@
 .journal-list-content {
   overflow: hidden;
   padding-right: 10px;
-  width: 40%;
+  width: 100%;
 }
 
 .journal-list-container {

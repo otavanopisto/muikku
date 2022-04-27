@@ -5,13 +5,12 @@ import {
   JournalNoteRead,
   JournalNoteUpdate,
   JournalStatusType,
-  SelectedJournal,
 } from "~/@types/journal-center";
 import { sortJournalsBy } from "./helpers/filters";
 import { JournalFunctionsBar } from "./journal-center";
-import JournalListAnimated from "./journal-item-list-animated";
 import JournalListFiltters from "./journal-item-list-filtters";
 import JournalListItem from "./journal-item-list-item";
+import JournalListWithoutAnimation from "./journal-list-test";
 
 /**
  * JournalContentContainerProps
@@ -20,16 +19,18 @@ interface JournalListContentProps {
   journals: JournalNoteRead[];
   usePlace: JournalCenterUsePlaceType;
   userId: number;
-  selectedJournal: SelectedJournal;
   isLoadingList: boolean;
   onArchiveClick?: (journalId: number) => void;
   onReturnArchivedClick?: (journalId: number) => void;
-  onEditClick?: (journalId: number) => void;
   onPinJournalClick?: (journalId: number, journal: JournalNoteUpdate) => void;
-  onJournalClick?: (journalId: number) => void;
   onUpdateJournalStatus?: (
     journalId: number,
     newStatus: JournalStatusType
+  ) => void;
+  onJournalSaveUpdateClick?: (
+    journalId: number,
+    updatedJournal: JournalNoteUpdate,
+    onSuccess?: () => void
   ) => void;
 }
 
@@ -44,13 +45,11 @@ const JournalList: React.FC<JournalListContentProps> = (props) => {
     userId,
     journals,
     isLoadingList,
-    selectedJournal,
-    onJournalClick,
-    onEditClick,
     onArchiveClick,
     onReturnArchivedClick,
     onPinJournalClick,
     onUpdateJournalStatus,
+    onJournalSaveUpdateClick,
   } = props;
 
   const [filters, setFilters] = React.useState<JournalFilters>({
@@ -84,27 +83,23 @@ const JournalList: React.FC<JournalListContentProps> = (props) => {
         />
       </JournalFunctionsBar>
 
-      <JournalListAnimated isLoadingList={isLoadingList}>
+      <JournalListWithoutAnimation isLoadingList={isLoadingList}>
         {filteredJournalList.map((j) => (
           <JournalListItem
             key={j.id}
             ref={React.createRef()}
             journal={j}
-            active={
-              selectedJournal.journal && selectedJournal.journal.id === j.id
-            }
             archived={j.isArchived}
             loggedUserIsCreator={j.creator === userId}
             loggedUserIsOwner={j.owner === userId}
             onPinJournalClick={onPinJournalClick}
             onArchiveClick={onArchiveClick}
             onUpdateJournalStatus={onUpdateJournalStatus}
-            onEditClick={onEditClick}
-            onJournalClick={onJournalClick}
             onReturnArchivedClick={onReturnArchivedClick}
+            onJournalSaveUpdateClick={onJournalSaveUpdateClick}
           />
         ))}
-      </JournalListAnimated>
+      </JournalListWithoutAnimation>
     </div>
   );
 };
