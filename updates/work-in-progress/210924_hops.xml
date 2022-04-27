@@ -17,7 +17,4 @@
 
   <sql>create table HopsStudyHours (id bigint not null auto_increment, studyHours integer, studentIdentifier varchar(255) not null, primary key (id));</sql>
   <sql>create unique index ind_hstu_hours on HopsStudyHours (studentIdentifier);</sql>
-
-  <sql>create table HopsAlternativeStudyOptions (id bigint not null auto_increment, studentIdentifier varchar(255) not null, finnishAsLanguage boolean not null, religionAsEthics boolean not null, primary key (id));</sql>
-  <sql>create unique index ind_halt_options on HopsAlternativeStudyOptions (studentIdentifier);</sql>
 </update> 

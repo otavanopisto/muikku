@@ -39,7 +39,6 @@ import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.hops.HopsController;
 import fi.otavanopisto.muikku.plugins.hops.model.Hops;
-import fi.otavanopisto.muikku.plugins.hops.model.HopsAlternativeStudyOptions;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsGoals;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsHistory;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsStudentChoice;
@@ -771,49 +770,6 @@ public class HopsRestService {
     HopsStudyHours hopsStudyHours = hopsController.findHopsStudyHoursByStudentIdentifier(studentIdentifier);
     return hopsStudyHours == null ? Response.noContent().build() : Response.ok(hopsStudyHours.getStudyHours()).build();  
   }
-  
-//  @POST
-//  @Path("/student/{STUDENTIDENTIFIER}/alternativeStudyOptions")
-//  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-//  public Response createOrUpdateAlternativeStudyOptions(@PathParam("STUDENTIDENTIFIER") String studentIdentifier, AlternativeStudyOptionsRestModel payload) {
-//    
-//    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.HOPS_EDIT)) {
-//      if (!StringUtils.equals(SchoolDataIdentifier.fromId(studentIdentifier).getIdentifier(), sessionController.getLoggedUserIdentifier())) {
-//        return Response.status(Status.FORBIDDEN).build();
-//      }
-//    }
-//    
-//    SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifier);
-//    UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(schoolDataIdentifier);
-//    
-//    schoolDataBridgeSessionController.startSystemSession();
-//    List<UserEntity> recipients = new ArrayList<>();
-//
-//    try {
-//      recipients = hopsController.getGuidanceCouncelors(schoolDataIdentifier);
-//    }
-//    finally {
-//      schoolDataBridgeSessionController.endSystemSession();
-//    }
-//    
-//    recipients.add(studentEntity);
-//    HopsAlternativeStudyOptions hopsAlternativeStudyOptions = hopsController.findHopsAlternativeStudyOptionsByStudentIdentifier(studentIdentifier);
-//    
-//    
-//    if (hopsAlternativeStudyOptions == null) {
-//      hopsAlternativeStudyOptions = hopsController.createHopsAlternativeStudyOptions(studentIdentifier, payload.getFinnishAsLanguage(), payload.getReligionAsEthics());
-//      
-//    } else {
-//      hopsController.updateHopsAlternativeStudyOptions(hopsAlternativeStudyOptions, studentIdentifier, payload.getFinnishAsLanguage(), payload.getReligionAsEthics());
-//
-//    }
-//    AlternativeStudyOptionsRestModel alternativeStudyOptionsRestModel = new AlternativeStudyOptionsRestModel();
-//    alternativeStudyOptionsRestModel.setFinnishAsLanguage(hopsAlternativeStudyOptions.getFinnishAsLanguage());
-//    alternativeStudyOptionsRestModel.setReligionAsEthics(hopsAlternativeStudyOptions.getReligionAsEthics());
-//    webSocketMessenger.sendMessage("hops:alternative-study-options", alternativeStudyOptionsRestModel, recipients);
-//
-//    return Response.ok(hopsAlternativeStudyOptions).build();
-//  }
   
   @GET
   @Path("/student/{STUDENTIDENTIFIER}/alternativeStudyOptions")
