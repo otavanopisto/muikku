@@ -280,7 +280,11 @@
               type: 'checkbox',
               label: editor.lang['muikku-textfield'].propertiesDialogAutoGrow,
               setup: function(json) {
-                this.setValue(typeof json.autogrow === 'boolean' && json.autogrow ? json.autogrow : false);
+                if (isEmpty(json)) {
+                  this.setValue(true);
+                } else {
+                  this.setValue(typeof json.autogrow === 'boolean' && json.autogrow ? json.autogrow : false);
+                }
               }
             },
             {
