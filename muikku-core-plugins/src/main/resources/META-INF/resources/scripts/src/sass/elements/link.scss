@@ -451,3 +451,11 @@
   padding: 0 5px;
   text-decoration: underline;
 }
+
+.link--download-pdf {
+  display: block;
+
+  @include breakpoint($breakpoint-desktop) {
+    display: none;
+  }
+}
