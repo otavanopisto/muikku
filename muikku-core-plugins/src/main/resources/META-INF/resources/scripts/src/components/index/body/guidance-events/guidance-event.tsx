@@ -60,9 +60,11 @@ const GuidanceEvent: React.FC<GuidanceEventProps> = (props) => {
   const handleEventCancel = (eventId: number): void => {
     deleteCalendarEvent(eventId);
   };
-  const participation = event.participants.filter(
-    (participant) => participant.userEntityId === status.userId
-  );
+  const participation = event.participants
+    ? event.participants.filter(
+        (participant) => participant.userEntityId === status.userId
+      )
+    : [];
   const studentParticipation =
     participation.length !== 0 && participation[0].attendance === "UNCONFIRMED";
 
@@ -72,7 +74,7 @@ const GuidanceEvent: React.FC<GuidanceEventProps> = (props) => {
    * @returns JSX.element
    */
   const getParticipants = (event: CalendarEvent) => {
-    if (event.participants.length > 0) {
+    if (event.participants && event.participants.length > 0) {
       return event.participants.map((participant) => (
         <span
           className={`state-${participant.attendance}`}

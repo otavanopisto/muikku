@@ -13,6 +13,7 @@ import ContactEvent from "./contact-events/contact-event";
 import { StatusType } from "~/reducers/base/status";
 import { IContactEvent } from "~/reducers/main-function/guider/";
 import NewContactEvent from "../../new-contact-event";
+import moment from "~/lib/moment";
 
 /**
  * GuidanceRelationProps
@@ -32,24 +33,39 @@ const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
   const { i18n, status, contactLogs } = props;
   return (
     <ApplicationSubPanel>
-      <ApplicationSubPanelViewHeader title="Ohjuuussuhde">
+      <ApplicationSubPanelViewHeader title="Ohjaussuhde">
         <NewContactEvent>
           <div>Luo uusi yhteydenotto</div>
         </NewContactEvent>
       </ApplicationSubPanelViewHeader>
       <ApplicationSubPanel.Body modifier="guidance-relation">
         <ApplicationSubPanelSection modifier="guidance-relation-contact-info">
-          <ApplicationSubPanelItem title="Otsikko">
+          <ApplicationSubPanelItem title="Opiskelijan yhteystiedot">
             <ApplicationSubPanelItem.Content>
-              Sisältö
+              <div>Puhelinnumero</div>
+              <div>Sähköposti</div>
             </ApplicationSubPanelItem.Content>
           </ApplicationSubPanelItem>
-          <ApplicationSubPanelItem title="Otsikko">
+          <ApplicationSubPanelItem title="Yhteyshenkilö / huoltaja">
             <ApplicationSubPanelItem.Content>
-              Sisältö
+              <div>Puhelinnumero</div>
+              <div>Sähköposti</div>
             </ApplicationSubPanelItem.Content>
           </ApplicationSubPanelItem>
+          <ApplicationSubPanelSection.Body>
+            <div>Ohjauspyynnöt</div>
+            <GuidanceEvent
+              i18n={props.i18n}
+              status={props.status}
+              event={{
+                id: 12,
+                title: "Ohjauskeskustelu",
+                start: moment().format(),
+              }}
+            />
+          </ApplicationSubPanelSection.Body>
         </ApplicationSubPanelSection>
+
         <ApplicationSubPanelSection modifier="guidance-relation-contact-events">
           <ApplicationSubPanelSection.Header>
             Yhteydenotot
@@ -68,23 +84,6 @@ const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
             )}
           </ApplicationSubPanelSection.Body>
         </ApplicationSubPanelSection>
-        <div className="application-sub-panel__body-section application-sub-panel__body-section--guidance-relation-guidance-events">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc eu
-          ullamcorper leo. Sed interdum eros quis elementum vehicula. Fusce et
-          ante lacus. Proin nisl nulla, pellentesque vel lectus in, porta
-          dapibus velit. Vivamus interdum posuere purus, et pulvinar dui
-          ullamcorper ut. Aenean eu justo tempor, aliquam orci eu, fermentum
-          lectus. Praesent eget pretium sapien, sed placerat augue. Maecenas
-          nibh metus, sagittis ut nisl ac, feugiat molestie quam. Suspendisse ut
-          ipsum arcu. Morbi vitae nisi imperdiet, hendrerit lacus sit amet,
-          interdum odio. Fusce lectus arcu, hendrerit eget varius ut, egestas
-          vitae elit. In aliquam tincidunt justo, eu efficitur orci pellentesque
-          sit amet. Duis odio nisl, dapibus a varius ac, sagittis at ante. Fusce
-          tristique facilisis lacus et mollis. Morbi ultricies sapien in purus
-          ornare pulvinar. Quisque vehicula sed ligula et aliquet. Cras euismod
-          sapien id dictum ultrices. Aliquam volutpat, sem nec tempor consequat,
-          arcu augue convallis urna, ut gravida neque enim ultricies metus.
-        </div>
       </ApplicationSubPanel.Body>
     </ApplicationSubPanel>
   );

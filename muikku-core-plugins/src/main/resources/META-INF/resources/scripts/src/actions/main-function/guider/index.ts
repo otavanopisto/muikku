@@ -27,6 +27,7 @@ import {
   GuiderWorkspaceListType,
   GuiderUserGroupListType,
   IContactEvent,
+  ContactTypes,
 } from "~/reducers/main-function/guider";
 import {
   WorkspaceListType,
@@ -187,7 +188,7 @@ export interface LoadStudentDataTriggerType {
 export interface CreateContactEventTriggerType {
   (
     userEntityId: number,
-    payload: { text: string; entryDate: string; creatorName: string }
+    payload: { text: string; entryDate: string; creatorName: string, type: ContactTypes }
   ): AnyActionType;
 }
 

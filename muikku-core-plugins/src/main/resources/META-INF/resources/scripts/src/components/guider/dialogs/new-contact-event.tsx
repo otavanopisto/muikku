@@ -15,7 +15,14 @@ import SessionStateComponent from "~/components/general/session-state-component"
 import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
 import DatePicker from "react-datepicker";
-import { contactTypesArray } from "~/reducers/main-function/guider";
+import {
+  ContactTypes,
+  contactTypesArray,
+  GuiderStudentType,
+} from "~/reducers/main-function/guider";
+import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
+import moment from "~/lib/moment";
+import { StatusType } from "~/reducers/base/status";
 
 /**
  * NewContactEventProps
@@ -24,9 +31,12 @@ interface NewContactEventProps {
   children?: React.ReactElement<any>;
   i18n: i18nType;
   createContactEvent: CreateContactEventTriggerType;
-  initialDate?: string;
+  currentStudent: GuiderStudentType;
+  status: StatusType
+  initialDate?: Date;
+  initialSender?: string;
   initialMessage?: string;
-  initialType?: string;
+  initialType?: ContactTypes;
   onOpen?: () => any;
   onClose?: () => any;
   isOpen?: boolean;
@@ -36,9 +46,10 @@ interface NewContactEventProps {
  * NewContactEventState
  */
 interface NewContactEventState {
-  message: string;
-  date: string;
-  type: string;
+  text: string;
+  sender: string;
+  date: Date;
+  type: ContactTypes;
   locked: boolean;
 }
 
@@ -50,6 +61,7 @@ class NewContactEvent extends SessionStateComponent<
   NewContactEventState
 > {
   private avoidCKEditorTriggeringChangeForNoReasonAtAll: boolean;
+  private nameSpace: string = "new-contact-event";
   /**
    * constructor
    * @param props props
@@ -58,9 +70,10 @@ class NewContactEvent extends SessionStateComponent<
     super(props, "new-contact-event");
 
     this.state = this.getRecoverStoredState({
-      message: props.initialMessage || "",
-      date: props.initialDate || "",
-      type: props.initialType || "",
+      text: props.initialMessage || "",
+      sender: props.initialSender || "",
+      date: props.initialDate || new Date(),
+      type: props.initialType || "OTHER",
       locked: false,
     });
   }
@@ -70,7 +83,10 @@ class NewContactEvent extends SessionStateComponent<
    */
   checkAgainstStoredState = () => {
     this.checkStoredAgainstThisState({
-      message: this.props.initialMessage || "",
+      text: this.props.initialMessage || "",
+      sender: this.props.initialSender || "",
+      date: this.props.initialDate || new Date(),
+      type: this.props.initialType || "OTHER",
       locked: false,
     });
 
@@ -82,17 +98,25 @@ class NewContactEvent extends SessionStateComponent<
    * @param text
    * @returns
    */
-  onCKEditorChange = (message: string) => {
+  onCKEditorChange = (text: string) => {
     if (this.avoidCKEditorTriggeringChangeForNoReasonAtAll) {
       this.avoidCKEditorTriggeringChangeForNoReasonAtAll = false;
       return;
     }
-    this.setStateAndStore({ message });
+    this.setStateAndStore({ text }, this.nameSpace);
   };
 
-  onDateChange = () => {};
-  onSenderChange = () => {};
-  onTypeChange = () => {};
+  onDateChange = (date: Date) => {
+    this.setStateAndStore({ date: date }, this.nameSpace);
+  };
+
+  onSenderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    this.setStateAndStore({ sender: e.target.value }, this.nameSpace);
+  };
+
+  onTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    this.setStateAndStore({ type: e.target.value as ContactTypes }, this.nameSpace);
+  };
 
   /**
    * saveContactEvent
@@ -101,6 +125,18 @@ class NewContactEvent extends SessionStateComponent<
   saveContactEvent = (closeDialog: () => any) => {
     this.setState({
       locked: true,
+    });
+    this.props.createContactEvent(
+      this.props.currentStudent.userEntityId,
+      {
+        text: this.state.text,
+        entryDate: moment(this.state.date).format(),
+        creatorName: this.state.sender,
+        type: this.state.type,
+      }
+    );
+    this.setState({
+      locked: false,
     });
   };
 
@@ -113,7 +149,7 @@ class NewContactEvent extends SessionStateComponent<
       this.avoidCKEditorTriggeringChangeForNoReasonAtAll = false;
     }, 100);
     this.setStateAndClear({
-      message: this.props.initialMessage || "",
+      text: this.props.initialMessage || "",
       locked: false,
     });
   };
@@ -142,20 +178,33 @@ class NewContactEvent extends SessionStateComponent<
             </label>
             <DatePicker
               id="contactEventdate"
-              onChange={() => console.log("Muu")}
+              onChange={(date: Date) => this.onDateChange(date)}
+              locale={outputCorrectDatePickerLocale(
+                this.props.i18n.time.getLocale()
+              )}
+              selected={this.state.date ? new Date(this.state.date) : null}
             ></DatePicker>
           </div>
           <div className="env-dialog__form-element-container env-dialog__form-element-container--new-contact-event">
             <label htmlFor="contactEventAuthor" className="env-dialog__label">
               {this.props.i18n.text.get("TODO: Lähettäjä ")}
             </label>
-            <input id="contactEventAuthor" type="text"></input>
+            <input
+              id="contactEventAuthor"
+              onChange={(event) => this.onSenderChange(event)}
+              value={this.state.sender}
+              type="text"
+            ></input>
           </div>
           <div className="env-dialog__form-element-container">
             <label htmlFor="contactEventTypes" className="env-dialog__label">
               {this.props.i18n.text.get("TODO: Tyyppi ")}
             </label>
-            <select id="contactEventTypes">
+            <select
+              id="contactEventTypes"
+              onChange={(event) => this.onTypeChange(event)}
+              value={this.state.type}
+            >
               {contactTypesArray.map((contactType) => (
                 <option key={contactType}>{contactType}</option>
               ))}
@@ -172,7 +221,7 @@ class NewContactEvent extends SessionStateComponent<
               editorTitle={editorTitle}
               onChange={this.onCKEditorChange}
             >
-              {this.state.message}
+              {this.state.text}
             </CKEditor>
           </div>
         </div>
@@ -240,6 +289,8 @@ class NewContactEvent extends SessionStateComponent<
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
+    status: state.status,
+    currentStudent: state.guider.currentStudent.basic,
   };
 }
 
