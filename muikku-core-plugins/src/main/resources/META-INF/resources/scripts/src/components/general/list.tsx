@@ -20,7 +20,46 @@ interface ListContainerProps
 export const ListContainer: React.FC<ListContainerProps> = (props) => {
   const { modifiers, children, className, ...rest } = props;
 
-  let updatedClassName = "list-container";
+  let updatedClassName = "list__container";
+
+  if (className) {
+    updatedClassName = className;
+  }
+
+  return (
+    <div
+      className={`${updatedClassName} ${
+        modifiers
+          ? modifiers.map((m) => `${updatedClassName}--${m}`).join(" ")
+          : ""
+      }`}
+      {...rest}
+    >
+      {children}
+    </div>
+  );
+};
+
+/**
+ * ListHeaderProps
+ */
+interface ListHeaderProps
+  extends React.DetailedHTMLProps<
+    React.HTMLAttributes<HTMLDivElement>,
+    HTMLDivElement
+  > {
+  modifiers?: string[];
+}
+
+/**
+ * ListHeader
+ * @param props props
+ * @returns JSX.Element
+ */
+export const ListHeader: React.FC<ListHeaderProps> = (props) => {
+  const { modifiers, className, children, ...rest } = props;
+
+  let updatedClassName = "list__header";
 
   if (className) {
     updatedClassName = className;
@@ -59,7 +98,7 @@ interface ListItemProps
 export const ListItem: React.FC<ListItemProps> = (props) => {
   const { modifiers, className, children, ...rest } = props;
 
-  let updatedClassName = "list-item";
+  let updatedClassName = "list__item";
 
   if (className) {
     updatedClassName = className;
@@ -98,7 +137,7 @@ interface ListItemIndicator
 export const ListItemIndicator: React.FC<ListItemIndicator> = (props) => {
   const { modifiers, children, className, ...rest } = props;
 
-  let updatedClassName = "list-item-indicator";
+  let updatedClassName = "list__indicator";
 
   if (className) {
     updatedClassName = className;

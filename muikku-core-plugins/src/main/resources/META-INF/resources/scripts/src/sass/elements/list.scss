@@ -3,76 +3,41 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
-.list-row__container {
-  border-bottom: 2px solid $color-default-separator-border;
+.list__container--section {
   border-top: 2px solid $color-hops-dialog-form-element-border;
   display: flex;
-  flex-flow: column;
-
-  @include breakpoint($breakpoint-mobile-xl) {
-    flex-flow: wrap;
-  }
-}
-
-.list-subject-course__container {
-  max-height: initial;
-  overflow: unset;
-
-  @include breakpoint($breakpoint-mobile-xl) {
-    max-height: 225px;
-    overflow: auto;
-  }
-}
-
-.list-container--subtitle {
-  .list-item {
-    align-items: center;
-    background-color: $color-default;
-    border-radius: unset;
-    display: flex;
-    font-size: 1.25rem;
-    justify-content: space-between;
-    overflow: hidden;
-    padding: 10px 5px;
-    position: relative;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    width: 100%;
-  }
-}
-
-.list-container--subject-name {
-  display: flex;
-  flex-wrap: wrap;
-  font-weight: bold;
+  flex-flow: column wrap;
+  padding: 5px 0;
   width: 100%;
+
+  &:last-child {
+    border-bottom: 2px solid $color-hops-dialog-form-element-border;
+  }
 }
 
-.list-container--subject-courses {
-  background-color: $color-default-lighter-generic-background;
-  display: flex;
-  flex-wrap: wrap;
-  width: 100%;
+.list__container--subject {
+  margin: 5px 0;
 }
 
-.list-item--centered {
-  text-align: center;
-}
-
-.list-subject-name {
+.list__container--row {
   align-items: center;
-  background-color: $color-default;
-  border-radius: unset;
   display: flex;
-  font-size: 1.1rem;
-  font-weight: bold;
-  justify-content: space-between;
-  overflow: hidden;
-  padding: 10px 5px;
-  position: relative;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  width: 100%;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+  margin: 5px 0;
+}
+
+.list__header {
+  font-weight: 600;
+}
+
+.list__header--subtitle {
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.list__header--subject-name {
+  font-weight: 600;
 }
 
 .list-subject-name-proggress {
@@ -86,7 +51,7 @@
   width: 0;
 }
 
-.list-item {
+.list__item {
   border-radius: 5px;
   overflow: hidden;
   padding: 5px;
@@ -94,71 +59,80 @@
   width: 100%;
 }
 
-.list-item--course {
+.list__item--centered {
+  text-align: center;
+}
+
+.list__item--course {
   border-radius: 0;
   width: auto;
 }
 
-.list-item--empty {
+.list__item--empty {
   display: none;
 }
 
-.list-item--NOSTATUS {
+.list__item--NOSTATUS {
   background-color: unset;
 }
 
-.list-item-indicator {
+.list__indicator {
   align-items: center;
   border: 3px solid transparent;
-  border-radius: 50%;
+  border-radius: 100%;
+  cursor: pointer;
   display: flex;
-  height: 40px;
+  height: 35px;
   justify-content: center;
-  width: 40px;
+  width: 35px;
 }
 
-.list-item-indicator--MANDATORY {
+.list__indicator-data-wapper {
+  align-items: center;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  width: 100%;
+}
+
+.list__indicator--MANDATORY {
   background-color: $color-mandatory;
 }
 
-.list-item-indicator--OPTIONAL {
+.list__indicator--OPTIONAL {
   background-color: $color-optional;
 }
 
-.list-item-indicator--OPTIONAL-SELECTED {
+.list__indicator--OPTIONAL-SELECTED {
   border-color: $color-optional-selected;
 }
 
-.list-item-indicator--COMPLETED {
+.list__indicator--COMPLETED {
   background-color: $color-success;
   color: $color-default;
 }
 
-.list-item-indicator--INPROGRESS {
+.list__indicator--INPROGRESS {
   background: $color-info;
   color: $color-default;
 }
 
-.list-item-indicator--APPROVAL {
+.list__indicator--APPROVAL {
   background: $color-success;
   border-color: $color-approval;
   color: $color-default;
 }
 
-.list-item-indicator--SUGGESTED {
+.list__indicator--SUGGESTED {
   background: $color-suggested;
   color: $color-default;
 }
 
-.list-item-indicator--NEXT {
+.list__indicator--NEXT {
   background: $color-next;
   color: $color-default;
 }
 
-/* .list-item-indicator--SELECTED {
-  background-color: cornsilk;
-} */
-
-.list-item-indicator--SELECTED-OPTIONAL {
+.list__indicator--SELECTED-OPTIONAL {
   background-color: $color-optional-selected;
 }

@@ -567,7 +567,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
         ),
       },
       {
-        name: "Opiskelutaidot ja Motivaatio",
+        name: "Opiskelutaidot ja motivaatio",
         component: (
           <Step3
             {...baseProps}
@@ -635,7 +635,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
           ),
         },
         {
-          name: "Opiskelutaidot ja Motivaatio",
+          name: "Opiskelutaidot ja motivaatio",
           component: (
             <Step3
               {...baseProps}

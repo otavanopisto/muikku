@@ -512,7 +512,7 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
         <Tbody>
           <Tr>
             <Td modifiers={["subtitle"]} colSpan={currentMaxCourses + 1}>
-              Hyväksiluvut: Taito ja taideaineet
+              Hyväksiluvut: Taito- ja taideaineet
             </Td>
           </Tr>
           {renderSkillsAndArtRows}

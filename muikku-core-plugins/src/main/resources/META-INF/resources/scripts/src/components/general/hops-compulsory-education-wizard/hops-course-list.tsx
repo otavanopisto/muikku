@@ -8,6 +8,7 @@ import {
 import HopsSuggestionList from "./hops-suggested-list";
 import {
   ListContainer,
+  ListHeader,
   ListItem,
   ListItemIndicator,
 } from "~/components/general/list";
@@ -204,104 +205,99 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
           key={`${sSubject.subjectCode}-${course.courseNumber}`}
           modifiers={listItemModifiers}
         >
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <ListItemIndicator
-              modifiers={listItemIndicatormodifiers}
-              onClick={
-                !course.mandatory && props.user === "student"
-                  ? handleToggleChoiceClick({
-                      studentId: props.studentId,
-                      courseNumber: course.courseNumber,
-                      subject: sSubject.subjectCode,
-                    })
-                  : undefined
+          <ListItemIndicator
+            modifiers={listItemIndicatormodifiers}
+            onClick={
+              !course.mandatory && props.user === "student"
+                ? handleToggleChoiceClick({
+                    studentId: props.studentId,
+                    courseNumber: course.courseNumber,
+                    subject: sSubject.subjectCode,
+                  })
+                : undefined
+            }
+          >
+            <Dropdown
+              openByHover={props.user !== "supervisor"}
+              content={
+                <div className="hops-container__study-tool-dropdown-container">
+                  <div className="hops-container__study-tool-dropdow-title">
+                    {course.mandatory ? course.name : `${course.name}*`}
+                  </div>
+                  {course.mandatory ? (
+                    <>
+                      {showSuggestionList && (
+                        <HopsSuggestionList
+                          studentId={props.studentId}
+                          suggestedActivityCourses={courseSuggestions}
+                          subjectCode={sSubject.subjectCode}
+                          course={course}
+                          updateSuggestion={props.updateSuggestion}
+                          canSuggestForNext={
+                            props.useCase === "hops-planing" ||
+                            props.useCase === "study-matrix"
+                          }
+                          canSuggestForOptional={
+                            props.useCase === "hops-planing"
+                          }
+                        />
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      {showAddToHopsButton && (
+                        <Button
+                          onClick={handleToggleChoiceClick({
+                            studentId: props.studentId,
+                            courseNumber: course.courseNumber,
+                            subject: sSubject.subjectCode,
+                          })}
+                          buttonModifiers={["guider-hops-studytool"]}
+                        >
+                          {selectedByStudent
+                            ? "Peru valinta"
+                            : "Valitse osaksi hopsia"}
+                        </Button>
+                      )}
+
+                      {showSuggestionList && (
+                        <HopsSuggestionList
+                          studentId={props.studentId}
+                          suggestedActivityCourses={courseSuggestions}
+                          subjectCode={sSubject.subjectCode}
+                          course={course}
+                          updateSuggestion={props.updateSuggestion}
+                          canSuggestForNext={
+                            props.useCase === "hops-planing" ||
+                            props.useCase === "study-matrix"
+                          }
+                          canSuggestForOptional={
+                            props.useCase === "hops-planing"
+                          }
+                        />
+                      )}
+                    </>
+                  )}
+                </div>
               }
             >
-              <Dropdown
-                openByHover={props.user !== "supervisor"}
-                content={
-                  <div className="hops-container__study-tool-dropdown-container">
-                    <div className="hops-container__study-tool-dropdow-title">
-                      {course.mandatory ? course.name : `${course.name}*`}
-                    </div>
-                    {course.mandatory ? (
-                      <>
-                        {showSuggestionList && (
-                          <HopsSuggestionList
-                            studentId={props.studentId}
-                            suggestedActivityCourses={courseSuggestions}
-                            subjectCode={sSubject.subjectCode}
-                            course={course}
-                            updateSuggestion={props.updateSuggestion}
-                            canSuggestForNext={
-                              props.useCase === "hops-planing" ||
-                              props.useCase === "study-matrix"
-                            }
-                            canSuggestForOptional={
-                              props.useCase === "hops-planing"
-                            }
-                          />
-                        )}
-                      </>
-                    ) : (
-                      <>
-                        {showAddToHopsButton && (
-                          <Button
-                            onClick={handleToggleChoiceClick({
-                              studentId: props.studentId,
-                              courseNumber: course.courseNumber,
-                              subject: sSubject.subjectCode,
-                            })}
-                            buttonModifiers={["guider-hops-studytool"]}
-                          >
-                            {selectedByStudent
-                              ? "Peru valinta"
-                              : "Valitse osaksi hopsia"}
-                          </Button>
-                        )}
-
-                        {showSuggestionList && (
-                          <HopsSuggestionList
-                            studentId={props.studentId}
-                            suggestedActivityCourses={courseSuggestions}
-                            subjectCode={sSubject.subjectCode}
-                            course={course}
-                            updateSuggestion={props.updateSuggestion}
-                            canSuggestForNext={
-                              props.useCase === "hops-planing" ||
-                              props.useCase === "study-matrix"
-                            }
-                            canSuggestForOptional={
-                              props.useCase === "hops-planing"
-                            }
-                          />
-                        )}
-                      </>
-                    )}
-                  </div>
-                }
-              >
-                <span
-                  tabIndex={0}
-                  className="table__data-content-wrapper table__data-content-wrapper--course"
-                >
-                  {course.mandatory
-                    ? course.courseNumber
-                    : `${course.courseNumber}*`}
-                </span>
-              </Dropdown>
-            </ListItemIndicator>
-          </div>
+              <span tabIndex={0} className="list__indicator-data-wapper">
+                {course.mandatory
+                  ? course.courseNumber
+                  : `${course.courseNumber}*`}
+              </span>
+            </Dropdown>
+          </ListItemIndicator>
         </ListItem>
       );
     });
 
     return (
-      <ListContainer key={sSubject.name} modifiers={["subject-name"]}>
-        <ListItem className="list-subject-name">
-          <span style={{ zIndex: 10 }}>{sSubject.name}</span>
-        </ListItem>
-        <ListContainer modifiers={["subject-courses"]}>{courses}</ListContainer>
+      <ListContainer key={sSubject.name} modifiers={["subject"]}>
+        <ListContainer modifiers={["row"]}>
+          <ListHeader modifiers={["subject-name"]}>{sSubject.name}</ListHeader>
+        </ListContainer>
+        <ListContainer modifiers={["row"]}>{courses}</ListContainer>
       </ListContainer>
     );
   });
@@ -313,44 +309,39 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
     ? SKILL_AND_ART_SUBJECTS.map((s) => {
         if (props.skillsAndArt[s].length !== 0) {
           return (
-            <ListContainer key={s} modifiers={["subject-name"]}>
-              <ListItem className="list-subject-name">
-                <div className="list-subject-name-proggress" />
-                <span style={{ zIndex: 10 }}>
+            <ListContainer key={s} modifiers={["subject"]}>
+              <ListContainer modifiers={["row"]}>
+                <ListHeader modifiers={["subject-name"]}>
                   {props.skillsAndArt[s][0].subjectName}
-                </span>
-              </ListItem>
-              <ListContainer modifiers={["subject-courses"]}>
+                </ListHeader>
+              </ListContainer>
+              <ListContainer modifiers={["row"]}>
                 {props.skillsAndArt[s].map((c, index) => {
                   const listItemIndicatormodifiers = ["course", "APPROVAL"];
                   const listItemModifiers = ["course", "APPROVAL"];
 
                   return (
                     <ListItem key={index} modifiers={listItemModifiers}>
-                      <div style={{ display: "flex", alignItems: "center" }}>
-                        <ListItemIndicator
-                          modifiers={listItemIndicatormodifiers}
-                        >
-                          <Dropdown
-                            openByHover={props.user !== "supervisor"}
-                            content={
-                              <div className="hops-container__study-tool-dropdown-container">
-                                <div className="hops-container__study-tool-dropdow-title">
-                                  {c.courseName}
-                                </div>
+                      <ListItemIndicator modifiers={listItemIndicatormodifiers}>
+                        <Dropdown
+                          openByHover={props.user !== "supervisor"}
+                          content={
+                            <div className="hops-container__study-tool-dropdown-container">
+                              <div className="hops-container__study-tool-dropdow-title">
+                                {c.courseName}
                               </div>
-                            }
+                            </div>
+                          }
+                        >
+                          <span
+                            tabIndex={0}
+                            className="list__indicator-data-wapper"
                           >
-                            <span
-                              tabIndex={0}
-                              className="table__data-content-wrapper table__data-content-wrapper--course"
-                            >
-                              {c.courseNumber}
-                              {!c.transferCreditMandatory ? "*" : null}
-                            </span>
-                          </Dropdown>
-                        </ListItemIndicator>
-                      </div>
+                            {c.courseNumber}
+                            {!c.transferCreditMandatory ? "*" : null}
+                          </span>
+                        </Dropdown>
+                      </ListItemIndicator>
                     </ListItem>
                   );
                 })}
@@ -368,44 +359,36 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
     ? LANGUAGE_SUBJECTS.map((s) => {
         if (props.otherLanguageSubjects[s].length !== 0) {
           return (
-            <ListContainer key={s} modifiers={["subject-name"]}>
-              <ListItem className="list-subject-name">
-                <div className="list-subject-name-proggress" />
-                <span style={{ zIndex: 10 }}>
+            <ListContainer key={s} modifiers={["subject"]}>
+              <ListContainer modifiers={["row"]}>
+                <ListHeader modifiers={["subject-name"]}>
                   {props.otherLanguageSubjects[s][0].subjectName}
-                </span>
-              </ListItem>
-              <ListContainer modifiers={["subject-courses"]}>
+                </ListHeader>
+              </ListContainer>
+              <ListContainer modifiers={["row"]}>
                 {props.otherLanguageSubjects[s].map((c, index) => {
                   const listItemIndicatormodifiers = ["course", "APPROVAL"];
                   const listItemModifiers = ["course", "APPROVAL"];
 
                   return (
                     <ListItem key={index} modifiers={listItemModifiers}>
-                      <div style={{ display: "flex", alignItems: "center" }}>
-                        <ListItemIndicator
-                          modifiers={listItemIndicatormodifiers}
-                        >
-                          <Dropdown
-                            openByHover={props.user !== "supervisor"}
-                            content={
-                              <div className="hops-container__study-tool-dropdown-container">
-                                <div className="hops-container__study-tool-dropdow-title">
-                                  {c.courseName}
-                                </div>
+                      <ListItemIndicator modifiers={listItemIndicatormodifiers}>
+                        <Dropdown
+                          openByHover={props.user !== "supervisor"}
+                          content={
+                            <div className="hops-container__study-tool-dropdown-container">
+                              <div className="hops-container__study-tool-dropdow-title">
+                                {c.courseName}
                               </div>
-                            }
-                          >
-                            <span
-                              tabIndex={0}
-                              className="table__data-content-wrapper table__data-content-wrapper--course"
-                            >
-                              {c.courseNumber}
-                              {!c.transferCreditMandatory ? "*" : null}
-                            </span>
-                          </Dropdown>
-                        </ListItemIndicator>
-                      </div>
+                            </div>
+                          }
+                        >
+                          <span tabIndex={0} className="list__item-data-wapper">
+                            {c.courseNumber}
+                            {!c.transferCreditMandatory ? "*" : null}
+                          </span>
+                        </Dropdown>
+                      </ListItemIndicator>
                     </ListItem>
                   );
                 })}
@@ -422,14 +405,12 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
   const renderOtherSubjectsRows = props.otherSubjects
     ? OTHER_SUBJECT_OUTSIDE_HOPS.map((s) => {
         if (props.otherSubjects[s].length !== 0) {
-          return props.otherSubjects[s].map((c, index) => (
-            <ListContainer key={c.courseName} modifiers={["subject-name"]}>
-              <ListItem className="list-subject-name">
-                <span style={{ zIndex: 10 }}>
-                  {c.courseName}
-                  {!c.transferCreditMandatory ? "*" : null}
-                </span>
-              </ListItem>
+          return props.otherSubjects[s].map((c) => (
+            <ListContainer key={c.courseName} modifiers={["row"]}>
+              <ListHeader modifiers={["subject-name"]}>
+                {c.courseName}
+                {!c.transferCreditMandatory ? "*" : null}
+              </ListHeader>
             </ListContainer>
           ));
         }
@@ -437,36 +418,41 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
     : undefined;
 
   return (
-    <>
-      <div className="list-row__container">{renderRows}</div>
+    <div className="list">
+      <ListContainer modifiers={["section"]}>{renderRows}</ListContainer>
+
       {renderSkillsAndArtRows && renderSkillsAndArtRows.length !== 0 && (
-        <div className="list-row__container">
-          <ListContainer modifiers={["subtitle"]}>
-            <ListItem>Hyväksiluvut: Taito ja taideaineet</ListItem>
+        <ListContainer modifiers={["section"]}>
+          <ListContainer modifiers={["row"]}>
+            <ListHeader modifiers={["subtitle"]}>
+              Hyväksiluvut: Taito- ja taideaineet
+            </ListHeader>
           </ListContainer>
           {renderSkillsAndArtRows}
-        </div>
+        </ListContainer>
       )}
 
       {renderOtherLanguageSubjectsRows &&
         renderOtherLanguageSubjectsRows.length !== 0 && (
-          <div className="list-row__container">
-            <ListContainer modifiers={["subtitle"]}>
-              <ListItem>Hyväksiluvut: Vieraat kielet</ListItem>
+          <ListContainer modifiers={["section"]}>
+            <ListContainer modifiers={["row"]}>
+              <ListHeader modifiers={["subtitle"]}>
+                Hyväksiluvut: Vieraat kielet
+              </ListHeader>
             </ListContainer>
             {renderOtherLanguageSubjectsRows}
-          </div>
+          </ListContainer>
         )}
 
       {renderOtherSubjectsRows && renderOtherSubjectsRows.length !== 0 && (
-        <div className="list-row__container">
-          <ListContainer modifiers={["subtitle"]}>
-            <ListItem>Hyväksiluvut: Muut</ListItem>
+        <ListContainer modifiers={["section"]}>
+          <ListContainer modifiers={["row"]}>
+            <ListHeader modifiers={["subtitle"]}>Hyväksiluvut: Muut</ListHeader>
           </ListContainer>
           {renderOtherSubjectsRows}
-        </div>
+        </ListContainer>
       )}
-    </>
+    </div>
   );
 };
 
