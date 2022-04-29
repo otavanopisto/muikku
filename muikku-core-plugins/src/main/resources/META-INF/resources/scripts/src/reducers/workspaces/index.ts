@@ -39,6 +39,9 @@ export type WorkspaceAssessementStateType =
   | "fail"
   | "incomplete";
 
+/**
+ * Assessment
+ */
 export interface Assessment {
   date: string;
   state: WorkspaceAssessementStateType;
@@ -47,6 +50,9 @@ export interface Assessment {
   workspaceSubjectIdentifier: string | null;
 }
 
+/**
+ * WorkspaceActivityType
+ */
 export interface WorkspaceActivityType {
   assessmentState: Assessment[];
   evaluablesAnswered: number;
@@ -73,6 +79,9 @@ export interface WorkspaceActivityType {
   numVisits: number;
 }
 
+/**
+ * WorkspaceStudentActivityType
+ */
 export interface WorkspaceStudentActivityType {
   assessmentState: Assessment;
   evaluablesAnswered: number;
@@ -211,6 +220,9 @@ export interface WorkspaceAssessmentRequestType {
   userEntityId: number;
 }
 
+/**
+ * WorkspaceSubjectType
+ */
 export interface WorkspaceSubjectType {
   code: string;
   identifier: string;
@@ -218,6 +230,9 @@ export interface WorkspaceSubjectType {
   schoolDataSource: string;
 }
 
+/**
+ * WorkspaceCourseLengthSymbolType
+ */
 export interface WorkspaceCourseLengthSymbolType {
   id: string;
   name: string;
@@ -225,13 +240,20 @@ export interface WorkspaceCourseLengthSymbolType {
   symbol: string;
 }
 
+/**
+ * WorkspaceSubject
+ */
 export interface WorkspaceSubject {
   identifier: string;
   subject?: WorkspaceSubjectType;
+  courseNumber?: number;
   courseLength?: string;
   courseLengthSymbol?: WorkspaceCourseLengthSymbolType;
 }
 
+/**
+ * WorkspaceAdditionalInfoType
+ */
 export interface WorkspaceAdditionalInfoType {
   beginDate: string;
   endDate: string;

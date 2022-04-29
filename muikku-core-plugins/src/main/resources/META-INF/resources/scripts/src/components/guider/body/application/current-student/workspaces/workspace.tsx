@@ -21,6 +21,7 @@ import {
   ApplicationListItemHeader,
 } from "~/components/general/application-list";
 import { getShortenGradeExtension, shortenGrade } from "~/util/modifiers";
+import { AnyActionType } from "~/actions";
 
 /**
  * StudentWorkspaceProps
@@ -149,7 +150,6 @@ class StudentWorkspace extends React.Component<
 
     /**
      * Renders combination subject assessesments
-     * @param assessments assessments
      * @returns JSX.Element
      */
     const renderCombinationSubjectAssessments = () => (
@@ -169,15 +169,19 @@ class StudentWorkspace extends React.Component<
             return;
           }
 
+          const codeSubjectString = `${subjectData.subject.code.toUpperCase()}${
+            subjectData.courseNumber ? subjectData.courseNumber : ""
+          } - ${subjectData.subject.name} (${subjectData.courseLength}${
+            subjectData.courseLengthSymbol.symbol
+          })`;
+
           return (
             <div
               className="application-list__item-content-single-item"
               key={a.workspaceSubjectIdentifier}
             >
               <span className="application-list__item-content-single-item-primary">
-                {subjectData.subject.code.toUpperCase()} -{" "}
-                {subjectData.subject.name} ({subjectData.courseLength}
-                {subjectData.courseLengthSymbol.symbol})
+                {codeSubjectString}
               </span>
 
               <GuiderAssessment i18n={this.props.i18n} assessment={a} />
@@ -242,6 +246,9 @@ class StudentWorkspace extends React.Component<
       </div>
     );
 
+    const courseNameString = `${workspace.name}
+    ${workspace.nameExtension ? ` (${workspace.nameExtension})` : ""}`;
+
     return (
       <ApplicationListItem
         className={`course ${
@@ -258,53 +265,54 @@ class StudentWorkspace extends React.Component<
         >
           <span className="application-list__header-icon icon-books"></span>
           <span className="application-list__header-primary">
-            {workspace.name}
-            {workspace.nameExtension
-              ? "(" + workspace.nameExtension + ")"
-              : null}
+            {courseNameString}
           </span>
           <span className="application-list__header-secondary">
             <span className="activity-badge activity-badge--percent">
-              {/**
-               * Show percent if method return true
-               */}
-              {this.showWorkspacePercents(
-                this.props.workspace.activity.assessmentState
-              ) ? (
-                <>
-                  <GuiderWorkspacePercents
-                    i18n={this.props.i18n}
-                    activity={this.props.workspace.activity}
-                  />
-
-                  {!isCombinationWorkspace ? (
-                    /**
-                     * Only show assessment in header line if its not combination workspace
-                     */
-                    <GuiderAssessment
+              {
+                /**
+                 * Show percent if method return true
+                 */
+                this.showWorkspacePercents(
+                  this.props.workspace.activity.assessmentState
+                ) ? (
+                  <>
+                    <GuiderWorkspacePercents
                       i18n={this.props.i18n}
-                      assessment={
-                        this.props.workspace.activity.assessmentState[0]
-                      }
+                      activity={this.props.workspace.activity}
                     />
-                  ) : null}
-                </>
-              ) : null}
+
+                    {!isCombinationWorkspace ? (
+                      /**
+                       * Only show assessment in header line if its not combination workspace
+                       */
+                      <GuiderAssessment
+                        i18n={this.props.i18n}
+                        assessment={
+                          this.props.workspace.activity.assessmentState[0]
+                        }
+                      />
+                    ) : null}
+                  </>
+                ) : null
+              }
             </span>
             <Dropdown
               persistent
               modifier={"workspace-chart workspace-" + workspace.id}
-              items={[<WorkspaceChart workspace={workspace} />]}
+              items={[<WorkspaceChart key={0} workspace={workspace} />]}
             >
               <span className="icon-statistics chart__activator chart__activator--workspace-chart"></span>
             </Dropdown>
           </span>
         </ApplicationListItemHeader>
 
-        {/**
-         * Only shows list of assessments here if its comibinations workspace
-         */}
-        {isCombinationWorkspace ? renderCombinationSubjectAssessments() : null}
+        {
+          /**
+           * Only shows list of assessments here if its comibinations workspace
+           */
+          isCombinationWorkspace ? renderCombinationSubjectAssessments() : null
+        }
 
         {this.state.activitiesVisible ? (
           <div className="application-sub-panel text">
@@ -434,7 +442,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 

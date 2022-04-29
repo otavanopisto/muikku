@@ -1163,14 +1163,20 @@ export class Evaluation extends React.Component<
                           "plugin.evaluation.evaluationModal.events.selectSubject"
                         )}
                       </option>
-                      {this.props.selectedAssessment.subjects.map((subject) => (
-                        <option
-                          key={subject.identifier}
-                          value={subject.identifier}
-                        >
-                          {subject.subject.name}
-                        </option>
-                      ))}
+                      {this.props.selectedAssessment.subjects.map((subject) => {
+                        const selectItemName = `${subject.subject.code}${
+                          subject.courseNumber ? subject.courseNumber : ""
+                        } - ${subject.subject.name}`;
+
+                        return (
+                          <option
+                            key={subject.identifier}
+                            value={subject.identifier}
+                          >
+                            {selectItemName}
+                          </option>
+                        );
+                      })}
                     </select>
                   ) : null}
                 </div>

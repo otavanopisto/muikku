@@ -12,6 +12,7 @@ import {
 } from "~/actions/workspaces";
 import "~/sass/elements/hero.scss";
 import "~/sass/elements/meta.scss";
+import { AnyActionType } from "~/actions";
 
 /**
  * WorkspaceHomeHeaderProps
@@ -88,17 +89,24 @@ class WorkspaceHomeHeader extends React.Component<
       ) : (
         <>
           {this.props.workspace.additionalInfo.subjects.map(
-            (subject, index) => (
-              <span key={index} className="meta__item-description">
-                {`(${subject.subject.code}) `}
-                {this.props.i18n.text.get(
-                  "plugin.workspace.index.courseLength",
-                  subject.courseLength,
-                  subject.courseLengthSymbol.symbol
-                )}
-                {subjectsListLastIndex !== index && ","}
-              </span>
-            )
+            (subject, index) => {
+              const codeString = `${subject.subject.code}${
+                subject.courseNumber ? subject.courseNumber : ""
+              }`;
+
+              const codeWithLength = `${codeString} ${this.props.i18n.text.get(
+                "plugin.workspace.index.courseLength",
+                subject.courseLength,
+                subject.courseLengthSymbol.symbol
+              )}`;
+
+              return (
+                <span key={index} className="meta__item-description">
+                  {codeWithLength}
+                  {subjectsListLastIndex !== index && ","}
+                </span>
+              );
+            }
           )}
         </>
       );
@@ -226,7 +234,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ updateWorkspace }, dispatch);
 }
 

@@ -394,8 +394,8 @@ class Records extends React.Component<RecordsProps, RecordsState> {
     const studentRecords = (
       <div className="application-sub-panel">
         {this.props.records.userData.map((data) => {
-          let user = data.user;
-          let records = data.records;
+          const user = data.user;
+          const records = data.records;
           return (
             <div className="react-required-container" key={data.user.id}>
               <div className="application-sub-panel__header">
@@ -403,221 +403,212 @@ class Records extends React.Component<RecordsProps, RecordsState> {
               </div>
               <div className="application-sub-panel__body">
                 {records.length ? (
-                  records.map((record, index) => {
+                  records.map((record, index) => (
                     // TODO this sorting is not right, this needs to be a part of the application list component
-                    return (
-                      <ApplicationList
-                        key={record.groupCurriculumIdentifier || index}
-                      >
-                        {record.groupCurriculumIdentifier ? (
+                    <ApplicationList
+                      key={record.groupCurriculumIdentifier || index}
+                    >
+                      {record.groupCurriculumIdentifier ? (
+                        <div
+                          onClick={this.sortWorkspaces.bind(
+                            this,
+                            record.workspaces
+                          )}
+                          className="application-list__header-container application-list__header-container--sorter"
+                        >
+                          <h3 className="application-list__header application-list__header--sorter">
+                            {record.groupCurriculumIdentifier
+                              ? storedCurriculumIndex[
+                                  record.groupCurriculumIdentifier
+                                ]
+                              : null}
+                          </h3>
                           <div
-                            onClick={this.sortWorkspaces.bind(
+                            className={`icon-sort-alpha-${
+                              this.state.sortDirectionWorkspaces === "asc"
+                                ? "desc"
+                                : "asc"
+                            }`}
+                          ></div>
+                        </div>
+                      ) : null}
+                      {record.workspaces.map((workspace) => {
+                        // By default every workspace is not combination
+                        let isCombinationWorkspace = false;
+
+                        if (workspace.subjects) {
+                          // If assessmentState contains more than 1 items, then its is combination
+                          isCombinationWorkspace =
+                            workspace.subjects.length > 1;
+                        }
+
+                        // By default this is undefined so ApplicationListItemHeader won't get empty list
+                        // item as part of its modifiers when course is non combined version
+                        let applicationListWorkspaceTypeMod = undefined;
+
+                        if (isCombinationWorkspace) {
+                          applicationListWorkspaceTypeMod =
+                            "combination-course";
+                        }
+
+                        return (
+                          <ApplicationListItem
+                            className="course course--studies"
+                            key={workspace.id}
+                            onClick={this.goToWorkspace.bind(
                               this,
-                              record.workspaces
+                              user,
+                              workspace
                             )}
-                            className="application-list__header-container application-list__header-container--sorter"
                           >
-                            <h3 className="application-list__header application-list__header--sorter">
-                              {record.groupCurriculumIdentifier
-                                ? storedCurriculumIndex[
-                                    record.groupCurriculumIdentifier
-                                  ]
-                                : null}
-                            </h3>
-                            <div
-                              className={`icon-sort-alpha-${
-                                this.state.sortDirectionWorkspaces === "asc"
-                                  ? "desc"
-                                  : "asc"
-                              }`}
-                            ></div>
-                          </div>
-                        ) : null}
-                        {record.workspaces.map((workspace) => {
-                          // By default every workspace is not combination
-                          let isCombinationWorkspace = false;
-
-                          if (workspace.subjects) {
-                            // If assessmentState contains more than 1 items, then its is combination
-                            isCombinationWorkspace =
-                              workspace.subjects.length > 1;
-                          }
-
-                          // By default this is undefined so ApplicationListItemHeader won't get empty list
-                          // item as part of its modifiers when course is non combined version
-                          let applicationListWorkspaceTypeMod = undefined;
-
-                          if (isCombinationWorkspace) {
-                            applicationListWorkspaceTypeMod =
-                              "combination-course";
-                          }
-
-                          return (
-                            <ApplicationListItem
-                              className="course course--studies"
+                            <ApplicationListItemHeader
+                              modifiers={
+                                applicationListWorkspaceTypeMod
+                                  ? ["course", applicationListWorkspaceTypeMod]
+                                  : ["course"]
+                              }
                               key={workspace.id}
-                              onClick={this.goToWorkspace.bind(
-                                this,
-                                user,
-                                workspace
-                              )}
                             >
-                              <ApplicationListItemHeader
-                                modifiers={
-                                  applicationListWorkspaceTypeMod
-                                    ? [
-                                        "course",
-                                        applicationListWorkspaceTypeMod,
-                                      ]
-                                    : ["course"]
-                                }
-                                key={workspace.id}
-                              >
-                                <span className="application-list__header-icon icon-books"></span>
-                                <span className="application-list__header-primary">
-                                  {workspace.name}{" "}
-                                  {workspace.nameExtension
-                                    ? "(" + workspace.nameExtension + ")"
-                                    : null}
-                                </span>
-                                <div className="application-list__header-secondary">
-                                  {!isCombinationWorkspace ? (
-                                    // So "legasy" case where there is only one module, render indicator etc next to workspace name
-                                    <>
+                              <span className="application-list__header-icon icon-books"></span>
+                              <span className="application-list__header-primary">
+                                {workspace.name}{" "}
+                                {workspace.nameExtension
+                                  ? "(" + workspace.nameExtension + ")"
+                                  : null}
+                              </span>
+                              <div className="application-list__header-secondary">
+                                {!isCombinationWorkspace ? (
+                                  // So "legasy" case where there is only one module, render indicator etc next to workspace name
+                                  <>
+                                    <AssessmentRequestIndicator
+                                      {...this.props}
+                                      assessment={
+                                        workspace.activity.assessmentState[0]
+                                      }
+                                    />
+                                    <RecordsAssessment
+                                      {...this.props}
+                                      assessment={
+                                        workspace.activity.assessmentState[0]
+                                      }
+                                      isCombinationWorkspace={
+                                        isCombinationWorkspace
+                                      }
+                                    />
+                                  </>
+                                ) : null}
+                                <ActivityIndicator
+                                  {...this.props}
+                                  workspace={workspace}
+                                />
+                              </div>
+                            </ApplicationListItemHeader>
+
+                            {isCombinationWorkspace ? (
+                              // If combinatin workspace render module assessments below workspace name
+                              <ApplicationListItemContentContainer modifiers="combination-course">
+                                {workspace.activity.assessmentState.map((a) => {
+                                  /**
+                                   * Find subject data, that contains basic information about that subject
+                                   */
+                                  const subjectData = workspace.subjects.find(
+                                    (s) =>
+                                      s.identifier ===
+                                      a.workspaceSubjectIdentifier
+                                  );
+
+                                  /**
+                                   * If not found, return nothing
+                                   */
+                                  if (!subjectData) {
+                                    return;
+                                  }
+
+                                  const codeSubjectString = `${subjectData.subject.code.toUpperCase()}${
+                                    subjectData.courseNumber
+                                      ? subjectData.courseNumber
+                                      : ""
+                                  } - ${subjectData.subject.name} (${
+                                    subjectData.courseLength
+                                  }${subjectData.courseLengthSymbol.symbol})`;
+
+                                  return (
+                                    <div
+                                      key={a.workspaceSubjectIdentifier}
+                                      className="application-list__item-content-single-item"
+                                    >
+                                      <span className="application-list__item-content-single-item-primary">
+                                        {codeSubjectString}
+                                      </span>
+
                                       <AssessmentRequestIndicator
                                         {...this.props}
-                                        assessment={
-                                          workspace.activity.assessmentState[0]
-                                        }
+                                        assessment={a}
                                       />
+
                                       <RecordsAssessment
                                         {...this.props}
-                                        assessment={
-                                          workspace.activity.assessmentState[0]
-                                        }
+                                        assessment={a}
                                         isCombinationWorkspace={
                                           isCombinationWorkspace
                                         }
                                       />
-                                    </>
-                                  ) : null}
-                                  <ActivityIndicator
-                                    {...this.props}
-                                    workspace={workspace}
-                                  />
-                                </div>
-                              </ApplicationListItemHeader>
-
-                              {isCombinationWorkspace ? (
-                                // If combinatin workspace render module assessments below workspace name
-                                <ApplicationListItemContentContainer modifiers="combination-course">
-                                  {workspace.activity.assessmentState.map(
-                                    (a) => {
-                                      /**
-                                       * Find subject data, that contains basic information about that subject
-                                       */
-                                      const subjectData =
-                                        workspace.subjects.find(
-                                          (s) =>
-                                            s.identifier ===
-                                            a.workspaceSubjectIdentifier
-                                        );
-
-                                      /**
-                                       * If not found, return nothing
-                                       */
-                                      if (!subjectData) {
-                                        return;
-                                      }
-
-                                      return (
-                                        <div
-                                          key={a.workspaceSubjectIdentifier}
-                                          className="application-list__item-content-single-item"
-                                        >
-                                          <span className="application-list__item-content-single-item-primary">
-                                            {subjectData.subject.code.toUpperCase()}{" "}
-                                            - {subjectData.subject.name} (
-                                            {subjectData.courseLength}
-                                            {
-                                              subjectData.courseLengthSymbol
-                                                .symbol
-                                            }
-                                            )
-                                          </span>
-
-                                          <AssessmentRequestIndicator
-                                            {...this.props}
-                                            assessment={a}
-                                          />
-
-                                          <RecordsAssessment
-                                            {...this.props}
-                                            assessment={a}
-                                            isCombinationWorkspace={
-                                              isCombinationWorkspace
-                                            }
-                                          />
-                                        </div>
-                                      );
-                                    }
-                                  )}
-                                </ApplicationListItemContentContainer>
-                              ) : null}
-                            </ApplicationListItem>
-                          );
-                        })}
-                        {record.transferCredits.length ? (
+                                    </div>
+                                  );
+                                })}
+                              </ApplicationListItemContentContainer>
+                            ) : null}
+                          </ApplicationListItem>
+                        );
+                      })}
+                      {record.transferCredits.length ? (
+                        <div
+                          className="application-list__header-container application-list__header-container--sorter"
+                          onClick={this.sortRecords.bind(
+                            this,
+                            record.transferCredits
+                          )}
+                        >
+                          <h3 className="application-list__header application-list__header--sorter">
+                            {this.props.i18n.text.get(
+                              "plugin.records.transferCredits"
+                            )}{" "}
+                            {record.groupCurriculumIdentifier
+                              ? storedCurriculumIndex[
+                                  record.groupCurriculumIdentifier
+                                ]
+                              : null}
+                          </h3>
                           <div
-                            className="application-list__header-container application-list__header-container--sorter"
-                            onClick={this.sortRecords.bind(
-                              this,
-                              record.transferCredits
-                            )}
-                          >
-                            <h3 className="application-list__header application-list__header--sorter">
-                              {this.props.i18n.text.get(
-                                "plugin.records.transferCredits"
-                              )}{" "}
-                              {record.groupCurriculumIdentifier
-                                ? storedCurriculumIndex[
-                                    record.groupCurriculumIdentifier
-                                  ]
-                                : null}
-                            </h3>
-                            <div
-                              className={`icon-sort-alpha-${
-                                this.state.sortDirectionRecords === "asc"
-                                  ? "desc"
-                                  : "asc"
-                              }`}
-                            ></div>
-                          </div>
-                        ) : null}
-                        {record.transferCredits.map((credit) => {
-                          return (
-                            <ApplicationListItem
-                              className="course course--credits"
-                              key={credit.identifier}
-                            >
-                              <ApplicationListItemHeader modifiers="course">
-                                <span className="application-list__header-icon icon-books"></span>
-                                <span className="application-list__header-primary">
-                                  {credit.courseName}
-                                </span>
-                                <div className="application-list__header-secondary">
-                                  <TransfereCreditValueIndicator
-                                    {...this.props}
-                                    transferCredit={credit}
-                                  />
-                                </div>
-                              </ApplicationListItemHeader>
-                            </ApplicationListItem>
-                          );
-                        })}
-                      </ApplicationList>
-                    );
-                  })
+                            className={`icon-sort-alpha-${
+                              this.state.sortDirectionRecords === "asc"
+                                ? "desc"
+                                : "asc"
+                            }`}
+                          ></div>
+                        </div>
+                      ) : null}
+                      {record.transferCredits.map((credit) => (
+                        <ApplicationListItem
+                          className="course course--credits"
+                          key={credit.identifier}
+                        >
+                          <ApplicationListItemHeader modifiers="course">
+                            <span className="application-list__header-icon icon-books"></span>
+                            <span className="application-list__header-primary">
+                              {credit.courseName}
+                            </span>
+                            <div className="application-list__header-secondary">
+                              <TransfereCreditValueIndicator
+                                {...this.props}
+                                transferCredit={credit}
+                              />
+                            </div>
+                          </ApplicationListItemHeader>
+                        </ApplicationListItem>
+                      ))}
+                    </ApplicationList>
+                  ))
                 ) : (
                   <div className="application-sub-panel__item application-sub-panel__item--empty">
                     {this.props.i18n.text.get("plugin.records.courses.empty")}
