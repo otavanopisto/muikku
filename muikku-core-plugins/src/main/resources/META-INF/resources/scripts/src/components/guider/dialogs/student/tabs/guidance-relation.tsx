@@ -9,6 +9,8 @@ import ApplicationSubPanel, {
   ApplicationSubPanelSection,
 } from "~/components/general/application-sub-panel";
 import GuidanceEvent from "~/components/index/body/guidance-events/guidance-event";
+import { GuiderStudentType } from "~/reducers/main-function/guider";
+import { CalendarEvent } from "~/reducers/main-function/calendar";
 import ContactEvent from "./contact-events/contact-event";
 import { StatusType } from "~/reducers/base/status";
 import { IContactEvent } from "~/reducers/main-function/guider/";
@@ -22,6 +24,7 @@ interface GuidanceRelationProps {
   i18n: i18nType;
   status: StatusType;
   contactLogs: IContactEvent[];
+  studentBasicInfo: GuiderStudentType;
 }
 
 /**
@@ -30,7 +33,7 @@ interface GuidanceRelationProps {
  * @returns JSX.element
  */
 const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
-  const { i18n, status, contactLogs } = props;
+  const { i18n, status, contactLogs,studentBasicInfo } = props;
   return (
     <ApplicationSubPanel>
       <ApplicationSubPanelViewHeader title="Ohjaussuhde">
@@ -42,8 +45,7 @@ const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
         <ApplicationSubPanelSection modifier="guidance-relation-contact-info">
           <ApplicationSubPanelItem title="Opiskelijan yhteystiedot">
             <ApplicationSubPanelItem.Content>
-              <div>Puhelinnumero</div>
-              <div>Sähköposti</div>
+              <div>{studentBasicInfo.email}</div>
             </ApplicationSubPanelItem.Content>
           </ApplicationSubPanelItem>
           <ApplicationSubPanelItem title="Yhteyshenkilö / huoltaja">
@@ -52,20 +54,7 @@ const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
               <div>Sähköposti</div>
             </ApplicationSubPanelItem.Content>
           </ApplicationSubPanelItem>
-          <ApplicationSubPanelSection.Body>
-            <div>Ohjauspyynnöt</div>
-            <GuidanceEvent
-              i18n={props.i18n}
-              status={props.status}
-              event={{
-                id: 12,
-                title: "Ohjauskeskustelu",
-                start: moment().format(),
-              }}
-            />
-          </ApplicationSubPanelSection.Body>
         </ApplicationSubPanelSection>
-
         <ApplicationSubPanelSection modifier="guidance-relation-contact-events">
           <ApplicationSubPanelSection.Header>
             Yhteydenotot
@@ -98,6 +87,7 @@ function mapStateToProps(state: StateType) {
     i18n: state.i18n,
     guidanceEvents: state.calendar.guidanceEvents,
     status: state.status, // Temporary
+    studentBasicInfo: state.guider.currentStudent.basic,
     contactLogs: state.guider.currentStudent.contactLogs,
   };
 }

@@ -188,7 +188,7 @@ export interface LoadStudentDataTriggerType {
 export interface CreateContactEventTriggerType {
   (
     userEntityId: number,
-    payload: { text: string; entryDate: string; creatorName: string, type: ContactTypes }
+    payload: { text: string, entryDate: string, type: ContactTypes }
   ): AnyActionType;
 }
 

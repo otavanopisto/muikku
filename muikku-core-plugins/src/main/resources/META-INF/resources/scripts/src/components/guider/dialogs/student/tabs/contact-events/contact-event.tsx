@@ -31,12 +31,16 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
           </div>
         </div>
         <div className="contact-event__header-actions">
+          <span>Kommentoi</span>
           <span>Muokkaa</span>
           <span>Poista</span>
         </div>
       </div>
-      <div className="contact-event__body">{text}</div>
-      {/* {comments ? (
+      <div
+        className="contact-event__body"
+        dangerouslySetInnerHTML={{ __html: text }}
+      ></div>
+      {comments ? (
         <div className="contact-event__replies">
           {comments.map((comment) => (
             <div key={comment.id} className="contact-event__reply">
@@ -46,31 +50,14 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
                   {comment.creatorName}
                 </div>
               </div>
-              <div className="contact-event__body contact-event__body--reply">
-                {comment.text}
-              </div>
+              <div
+                className="contact-event__body contact-event__body--reply"
+                dangerouslySetInnerHTML={{ __html: comment.text }}
+              ></div>
             </div>
           ))}
         </div>
-      ) : null} */}
-      <div className="contact-event__replies">
-        <div className="contact-event__reply">
-          <div className="contact-event__header contact-event__header--reply">
-            <div className="contact-event__creator">Kerkko Kommentoija</div>
-            <div className="contact-event__date">
-              {moment().format("dddd, MMMM Do YYYY")}
-            </div>
-          </div>
-          <div className="contact-event__body contact-event__body--reply">
-            Niit' ennen isoni lauloi kirvesvartta vuollessansa; niitä äitini
-            opetti väätessänsä värttinätä, minun lasna lattialla eessä polven
-            pyöriessä, maitopartana pahaisna, piimäsuuna pikkaraisna. Sampo ei
-            puuttunut sanoja eikä Louhi luottehia: vanheni sanoihin sampo, katoi
-            Louhi luottehisin, virsihin Vipunen kuoli, Lemminkäinen
-            leikkilöihin.
-          </div>
-        </div>
-      </div>
+      ) : null}
     </div>
   );
 };

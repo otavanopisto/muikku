@@ -706,7 +706,7 @@ public class GuiderRESTService extends PluginRESTService {
    * 
    * {text: "something something",
    *  entryDate: 2021-02-15
-   *  creatorName: "Etunimi Sukunomi",
+
    *  type: "OTHER"/"LETTER"/"EMAIL"/"PHONE"/"CHATLOG"/"SKYPE"/"FACE2FACE"/"ABSENCE"/"MUIKKU"
    * }
    *  

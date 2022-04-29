@@ -32,7 +32,7 @@ interface NewContactEventProps {
   i18n: i18nType;
   createContactEvent: CreateContactEventTriggerType;
   currentStudent: GuiderStudentType;
-  status: StatusType
+  status: StatusType;
   initialDate?: Date;
   initialSender?: string;
   initialMessage?: string;
@@ -110,12 +110,11 @@ class NewContactEvent extends SessionStateComponent<
     this.setStateAndStore({ date: date }, this.nameSpace);
   };
 
-  onSenderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setStateAndStore({ sender: e.target.value }, this.nameSpace);
-  };
-
   onTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    this.setStateAndStore({ type: e.target.value as ContactTypes }, this.nameSpace);
+    this.setStateAndStore(
+      { type: e.target.value as ContactTypes },
+      this.nameSpace
+    );
   };
 
   /**
@@ -126,18 +125,16 @@ class NewContactEvent extends SessionStateComponent<
     this.setState({
       locked: true,
     });
-    this.props.createContactEvent(
-      this.props.currentStudent.userEntityId,
-      {
-        text: this.state.text,
-        entryDate: moment(this.state.date).format(),
-        creatorName: this.state.sender,
-        type: this.state.type,
-      }
-    );
+    this.props.createContactEvent(this.props.currentStudent.userEntityId, {
+      text: this.state.text,
+      entryDate: moment(this.state.date).format(),
+      type: this.state.type,
+    });
     this.setState({
       locked: false,
     });
+
+    closeDialog();
   };
 
   /**
@@ -160,7 +157,9 @@ class NewContactEvent extends SessionStateComponent<
    */
   render() {
     const editorTitle =
-      this.props.i18n.text.get("TODO: Luo uusi yhteydenotto") +
+      this.props.i18n.text.get(
+        "plugin.guider.user.dialog.createContactEvent.title"
+      ) +
       " - " +
       this.props.i18n.text.get(
         "plugin.communicator.createmessage.title.content"
@@ -174,7 +173,9 @@ class NewContactEvent extends SessionStateComponent<
         <div className="env-dialog__row env-dialog__row--new-contact-event">
           <div className="env-dialog__form-element-container env-dialog__form-element-container--new-contact-event">
             <label htmlFor="contactEventdate" className="env-dialog__label">
-              {this.props.i18n.text.get("TODO: Päivämäärä ")}
+              {this.props.i18n.text.get(
+                "plugin.guider.user.dialog.createContactEvent.date"
+              )}
             </label>
             <DatePicker
               id="contactEventdate"
@@ -185,28 +186,23 @@ class NewContactEvent extends SessionStateComponent<
               selected={this.state.date ? new Date(this.state.date) : null}
             ></DatePicker>
           </div>
-          <div className="env-dialog__form-element-container env-dialog__form-element-container--new-contact-event">
-            <label htmlFor="contactEventAuthor" className="env-dialog__label">
-              {this.props.i18n.text.get("TODO: Lähettäjä ")}
-            </label>
-            <input
-              id="contactEventAuthor"
-              onChange={(event) => this.onSenderChange(event)}
-              value={this.state.sender}
-              type="text"
-            ></input>
-          </div>
           <div className="env-dialog__form-element-container">
             <label htmlFor="contactEventTypes" className="env-dialog__label">
-              {this.props.i18n.text.get("TODO: Tyyppi ")}
+              {this.props.i18n.text.get(
+                "plugin.guider.user.dialog.createContactEvent.type"
+              )}
             </label>
             <select
               id="contactEventTypes"
-              onChange={(event) => this.onTypeChange(event)}
+              onChange={this.onTypeChange}
               value={this.state.type}
             >
               {contactTypesArray.map((contactType) => (
-                <option key={contactType}>{contactType}</option>
+                <option key={contactType} value={contactType}>
+                  {this.props.i18n.text.get(
+                    "plugin.guider.contact.type." + contactType
+                  )}
+                </option>
               ))}
             </select>
           </div>
@@ -215,7 +211,9 @@ class NewContactEvent extends SessionStateComponent<
         <div className="env-dialog__row env-dialog__row--ckeditor">
           <div className="env-dialog__form-element-container">
             <label className="env-dialog__label">
-              {this.props.i18n.text.get("TODO: Viesti")}
+              {this.props.i18n.text.get(
+                "plugin.guider.user.dialog.createContactEvent.text"
+              )}
             </label>
             <CKEditor
               editorTitle={editorTitle}
@@ -268,7 +266,9 @@ class NewContactEvent extends SessionStateComponent<
     return (
       <EnvironmentDialog
         modifier="new-contact-event"
-        title={this.props.i18n.text.get("TODO: Uusi yhteydenotto")}
+        title={this.props.i18n.text.get(
+          "plugin.guider.user.dialog.createContactEvent.title"
+        )}
         content={content}
         footer={footer}
         onOpen={this.checkAgainstStoredState}
