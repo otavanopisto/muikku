@@ -144,7 +144,7 @@ public class WorkspaceRestModels {
       workspaceLengthUnit = lengthUnit != null ? new WorkspaceLengthUnitRestModel(lengthUnit.getIdentifier(), lengthUnit.getSymbol(), lengthUnit.getName()) : null;
     }
 
-    return new WorkspaceSubjectRestModel(workspaceSubject.getIdentifier(), subject, workspaceSubject.getLength(), workspaceLengthUnit);
+    return new WorkspaceSubjectRestModel(workspaceSubject.getIdentifier(), subject, workspaceSubject.getCourseNumber(), workspaceSubject.getLength(), workspaceLengthUnit);
   }
   
   public WorkspaceSubjectRestModel toRestModel(WorkspaceSubject workspaceSubject) {
@@ -157,7 +157,7 @@ public class WorkspaceRestModels {
       workspaceLengthUnit = lengthUnit != null ? new WorkspaceLengthUnitRestModel(lengthUnit.getIdentifier(), lengthUnit.getSymbol(), lengthUnit.getName()) : null;
     }
 
-    return new WorkspaceSubjectRestModel(workspaceSubject.getIdentifier(), subject, workspaceSubject.getLength(), workspaceLengthUnit);
+    return new WorkspaceSubjectRestModel(workspaceSubject.getIdentifier(), subject, workspaceSubject.getCourseNumber(), workspaceSubject.getLength(), workspaceLengthUnit);
   }
   
   public GuiderStudentWorkspaceActivityRestModel toRestModel(GuiderStudentWorkspaceActivity activity, List<WorkspaceAssessmentState> assessmentStates) {

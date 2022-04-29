@@ -7,9 +7,10 @@ public class WorkspaceSubjectRestModel {
   public WorkspaceSubjectRestModel() {
   }
   
-  public WorkspaceSubjectRestModel(SchoolDataIdentifier identifier, SubjectRestModel subject, Double courseLength, WorkspaceLengthUnitRestModel courseLengthSymbol) {
+  public WorkspaceSubjectRestModel(SchoolDataIdentifier identifier, SubjectRestModel subject, Integer courseNumber, Double courseLength, WorkspaceLengthUnitRestModel courseLengthSymbol) {
     this.identifier = identifier.toId();
     this.subject = subject;
+    this.courseNumber = courseNumber;
     this.courseLength = courseLength;
     this.courseLengthSymbol = courseLengthSymbol;
   }
@@ -46,8 +47,17 @@ public class WorkspaceSubjectRestModel {
     this.identifier = identifier;
   }
 
+  public Integer getCourseNumber() {
+    return courseNumber;
+  }
+
+  public void setCourseNumber(Integer courseNumber) {
+    this.courseNumber = courseNumber;
+  }
+
   private String identifier;
   private SubjectRestModel subject;
+  private Integer courseNumber;
   private Double courseLength;
   private WorkspaceLengthUnitRestModel courseLengthSymbol;
 }
