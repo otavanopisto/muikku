@@ -767,10 +767,11 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
                   trailWidth: 15,
                   initialAnimate: true,
                   svgStyle: {
-                    flexBasis: "80px",
+                    flexBasis: "72px",
                     flexGrow: "0",
                     flexShrink: "0",
-                    height: "80px",
+                    height: "72px",
+                    margin: "4px",
                   },
                   text: {
                     style: null,
@@ -800,10 +801,11 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
                   easing: "easeInOut",
                   trailWidth: 15,
                   svgStyle: {
-                    flexBasis: "80px",
+                    flexBasis: "72px",
                     flexGrow: "0",
                     flexShrink: "0",
-                    height: "80px",
+                    height: "72px",
+                    margin: "4px",
                   },
                   text: {
                     style: null,
@@ -840,35 +842,16 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
                   </div>
                 }
               >
-                <div tabIndex={0}>
-                  <ProgressBarCircle
-                    containerClassName="hops-container__activity-progressbar hops-container__activity-progressbar--circle"
-                    options={{
-                      strokeWidth: 13,
-                      duration: 1000,
-                      color: "#24c118",
-                      trailColor: "#ffffff",
-                      easing: "easeInOut",
-                      trailWidth: 15,
-                      svgStyle: {
-                        flexBasis: "80px",
-                        flexGrow: "0",
-                        flexShrink: "0",
-                        height: "80px",
-                      },
-                      text: {
-                        style: null,
-                        className:
-                          "hops-container__activity-label hops-container__activity-label--progressbar-circle",
-                      },
-                    }}
-                    text={`${showAsReadableTime(
+                <div className="hops-container__activity-progressbar hops-container__activity-progressbar--total-study-time">
+                  <div className="hops-container__activity-progressbar-icon icon-clock1"></div>
+                  <div className="hops-container__activity-label">
+                    {showAsReadableTime(
                       getTotalTimeInDays(
                         hoursInTotalToComplete,
                         studyHours.studyHourValue
                       )
-                    )}`}
-                  />
+                    )}
+                  </div>
                 </div>
               </Dropdown>
             </div>

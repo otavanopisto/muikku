@@ -521,11 +521,21 @@
   display: flex;
   flex-flow: column wrap;
   justify-content: flex-start;
-  margin: 5px;
+  margin: 0 5px 5px 5px;
   width: 100%;
 }
 
-.hops-container__activity-progressbar--circle {
+.hops-container__activity-progressbar-icon {
+  align-items: center;
+  color: $color-success;
+  display: flex;
+  font-size: 5rem;
+  height: 80px;
+  width: 80px;
+}
+
+.hops-container__activity-progressbar--circle,
+.hops-container__activity-progressbar--total-study-time {
   align-items: center;
 }
 
