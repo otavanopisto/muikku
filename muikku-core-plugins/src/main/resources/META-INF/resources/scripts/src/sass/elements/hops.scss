@@ -547,7 +547,7 @@
 }
 
 .hops-container__study-tool-indicator-container--legend-title {
-  flex-basis: 100%;
+  flex-basis: calc(100% - 20px);
   flex-grow: 1;
   flex-shrink: 0;
   font-weight: 600;
