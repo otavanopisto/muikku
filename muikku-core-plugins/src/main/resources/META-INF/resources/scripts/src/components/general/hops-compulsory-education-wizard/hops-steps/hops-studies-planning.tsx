@@ -110,7 +110,9 @@ class HopsStudiesPlanning extends React.Component<
           <legend className="hops-container__subheader">Opintolaskuri</legend>
           {!hasAccessToStudyTool ? (
             <div className="hops-container__info">
-              Tämä osa lomakkeesta aktivoidaan ohjaajan toimesta.
+              <div className="hops-container__not-available">
+                Tämä osa lomakkeesta aktivoidaan ohjaajan toimesta.
+              </div>
             </div>
           ) : (
             <div className="hops-container__info">

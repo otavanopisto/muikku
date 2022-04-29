@@ -146,8 +146,13 @@
 }
 
 .hops-container__info {
-  margin: 10px 5px;
-  width: calc(100% - 10px);
+  margin: 10px 0;
+  width: 100%;
+}
+
+// Not available section
+.hops-container__not-available {
+  margin: 0 5px;
 }
 
 // HOPS progressbar's container modifier
@@ -174,7 +179,7 @@
   flex-grow: 1;
   flex-shrink: 1;
   justify-content: flex-start;
-  margin: 0;
+  margin: 0 5px;
   padding: 10px 0;
 }
 
