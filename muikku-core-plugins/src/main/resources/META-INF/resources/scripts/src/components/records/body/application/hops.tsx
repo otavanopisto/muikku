@@ -5,7 +5,7 @@ import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/application-panel.scss";
-import "~/sass/elements/message.scss";
+import "~/sass/elements/empty.scss";
 import { RecordsType } from "~/reducers/main-function/records";
 import HopsGraph from "~/components/base/hops_editable";
 import { SetHopsToTriggerType, setHopsTo } from "~/actions/main-function/hops";
@@ -83,17 +83,8 @@ class Hops extends React.Component<HopsProps, HopsState> {
       this.props.hops.hopsPhase === "0"
     ) {
       return (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            height: "100px",
-            fontSize: "2rem",
-            fontStyle: "italic",
-          }}
-        >
-          Hopsia ei ole aktivoitu ohjaajan toimesta!
+        <div className="empty">
+          <span>Hopsia ei ole aktivoitu ohjaajan toimesta!</span>
         </div>
       );
     }
