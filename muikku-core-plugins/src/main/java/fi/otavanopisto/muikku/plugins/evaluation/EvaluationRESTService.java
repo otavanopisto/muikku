@@ -1,11 +1,9 @@
 package fi.otavanopisto.muikku.plugins.evaluation;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -23,8 +21,6 @@ import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang3.StringUtils;
 
-import fi.otavanopisto.muikku.i18n.LocaleController;
-import fi.otavanopisto.muikku.model.base.Tag;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
@@ -32,8 +28,6 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestController;
 import fi.otavanopisto.muikku.plugins.assessmentrequest.WorkspaceAssessmentState;
-import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageCategory;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluationAudioClip;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssignmentEvaluationAudioClip;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.WorkspaceAssessment;
@@ -109,12 +103,6 @@ public class EvaluationRESTService extends PluginRESTService {
   @Inject
   private EvaluationController evaluationController;
 
-  @Inject
-  private CommunicatorController communicatorController;
-  
-  @Inject
-  private LocaleController localeController;
-  
   @Inject
   private AssessmentRequestController assessmentRequestController;
   
@@ -290,7 +278,8 @@ public class EvaluationRESTService extends PluginRESTService {
         evaluated);
     
     if (student != null && workspace != null && assessment != null) {
-      sendAssessmentNotification(workspaceEntity, payload, assessor, student, workspace, grade.getName());
+      boolean multiSubjectWorkspace = workspace.getSubjects().size() > 1;
+      evaluationController.sendAssessmentNotification(workspaceEntity, workspaceSubject, assessment, assessor, student, workspace, grade.getName(), multiSubjectWorkspace);
     }
     
     return Response.ok(createRestModel(workspaceEntity, assessment)).build();
@@ -666,26 +655,4 @@ public class EvaluationRESTService extends PluginRESTService {
     ); 
   }
   
-  private void sendAssessmentNotification(WorkspaceEntity workspaceEntity, WorkspaceAssessment payload, UserEntity evaluator, UserEntity student, Workspace workspace, String grade) {
-    String workspaceUrl = String.format("%s/workspace/%s/materials", baseUrl, workspaceEntity.getUrlName());
-    Locale locale = userEntityController.getLocale(student);
-    CommunicatorMessageCategory category = communicatorController.persistCategory("assessments");
-    communicatorController.createMessage(
-        communicatorController.createMessageId(),
-        evaluator,
-        Arrays.asList(student),
-        null,
-        null,
-        null,
-        category,
-        localeController.getText(
-            locale,
-            "plugin.workspace.assessment.notificationTitle",
-            new Object[] {workspace.getName(), grade}),
-        localeController.getText(
-            locale,
-            "plugin.workspace.assessment.notificationContent",
-            new Object[] {workspaceUrl, workspace.getName(), grade, payload.getVerbalAssessment()}),
-        Collections.<Tag>emptySet());
-  }
 }

@@ -1,20 +1,16 @@
 package fi.otavanopisto.muikku.plugins.evaluation;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
-import javax.enterprise.event.Event;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -32,19 +28,13 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.model.base.BooleanPredicate;
-import fi.otavanopisto.muikku.model.base.Tag;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugins.activitylog.ActivityLogController;
 import fi.otavanopisto.muikku.plugins.activitylog.model.ActivityLogType;
-import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
-import fi.otavanopisto.muikku.plugins.communicator.events.CommunicatorMessageSent;
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageCategory;
 import fi.otavanopisto.muikku.plugins.evaluation.model.SupplementationRequest;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluationAudioClip;
@@ -110,13 +100,7 @@ public class Evaluation2RESTService {
   private Logger logger;
 
   @Inject
-  private LocaleController localeController;
-
-  @Inject
   private SessionController sessionController;
-
-  @Inject
-  private CommunicatorController communicatorController;
 
   @Inject
   private GradingController gradingController;
@@ -149,9 +133,6 @@ public class Evaluation2RESTService {
   @Any
   private Instance<SearchProvider> searchProviders;
 
-  @Inject
-  private Event<CommunicatorMessageSent> communicatorMessageSentEvent;
-  
   @Inject
   private ActivityLogController activityLogController;
 
@@ -1056,7 +1037,8 @@ public class Evaluation2RESTService {
     
     // Notification
     
-    sendAssessmentNotification(workspaceEntity, workspaceAssessment, assessingUserEntity, studentEntity, workspace, gradingScaleItem.getName());
+    boolean multiSubjectWorkspace = workspace.getSubjects().size() > 1;
+    evaluationController.sendAssessmentNotification(workspaceEntity, workspaceSubject, workspaceAssessment, assessingUserEntity, studentEntity, workspace, gradingScaleItem.getName(), multiSubjectWorkspace);
     
     // Log workspace assessment event
     if (gradingScaleItem.isPassingGrade()) {
@@ -1363,30 +1345,6 @@ public class Evaluation2RESTService {
     restAssessmentRequest.setSubjects(subjects);
     
     return restAssessmentRequest;
-  }
-
-  private void sendAssessmentNotification(WorkspaceEntity workspaceEntity, WorkspaceAssessment workspaceAssessment, UserEntity evaluator, UserEntity student, Workspace workspace, String grade) {
-    String workspaceUrl = String.format("%s/workspace/%s/materials", baseUrl, workspaceEntity.getUrlName());
-    Locale locale = userEntityController.getLocale(student);
-    CommunicatorMessageCategory category = communicatorController.persistCategory("assessments");
-    CommunicatorMessage communicatorMessage = communicatorController.createMessage(
-        communicatorController.createMessageId(),
-        evaluator,
-        Arrays.asList(student),
-        null,
-        null,
-        null,
-        category,
-        localeController.getText(
-            locale,
-            "plugin.workspace.assessment.notificationTitle",
-            new Object[] {workspace.getName(), grade}),
-        localeController.getText(
-            locale,
-            "plugin.workspace.assessment.notificationContent",
-            new Object[] {workspaceUrl, workspace.getName(), grade, workspaceAssessment.getVerbalAssessment()}),
-        Collections.<Tag>emptySet());
-    communicatorMessageSentEvent.fire(new CommunicatorMessageSent(communicatorMessage.getId(), student.getId(), baseUrl));
   }
 
 }

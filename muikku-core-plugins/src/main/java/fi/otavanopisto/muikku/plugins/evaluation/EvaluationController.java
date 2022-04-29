@@ -44,6 +44,7 @@ import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReplyState;
+import fi.otavanopisto.muikku.schooldata.CourseMetaController;
 import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -51,10 +52,13 @@ import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScale;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
+import fi.otavanopisto.muikku.schooldata.entity.Subject;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivity;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivityState;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceSubject;
 import fi.otavanopisto.muikku.servlet.BaseUrl;
 import fi.otavanopisto.muikku.users.UserEntityController;
 
@@ -108,6 +112,9 @@ public class EvaluationController {
 
   @Inject
   private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
+
+  @Inject
+  private CourseMetaController courseMetaController;
   
   /* Workspace activity */
   
@@ -614,4 +621,66 @@ public class EvaluationController {
     }
   }
   
+  protected void sendAssessmentNotification(WorkspaceEntity workspaceEntity, WorkspaceSubject workspaceSubject, WorkspaceAssessment workspaceAssessment, UserEntity evaluator, UserEntity student, Workspace workspace, String grade, boolean isMultiSubjectWorkspace) {
+    String workspaceUrl = String.format("%s/workspace/%s/materials", baseUrl, workspaceEntity.getUrlName());
+    Locale locale = userEntityController.getLocale(student);
+
+    Subject subject = null;
+    
+    // If workspaceSubject or subject cannot be resolved, revert back to non-multiSubjectWorkspace handling
+    isMultiSubjectWorkspace = 
+        isMultiSubjectWorkspace 
+        && (workspaceSubject != null) 
+        && ((subject = courseMetaController.findSubject(workspaceSubject.getSubjectIdentifier())) != null) 
+        && (StringUtils.isNotBlank(subject.getCode()));
+
+    String messageTitle;
+    String messageContent;
+    
+    if (isMultiSubjectWorkspace) {
+      // Workspace has multiple WorkspaceSubjects and workspaceSubject, subject and subject.code all exist
+
+      StringBuilder workspaceSubjectDescription = new StringBuilder();
+      workspaceSubjectDescription.append(subject.getCode());
+
+      if (workspaceSubject.getCourseNumber() != null) {
+        workspaceSubjectDescription.append(workspaceSubject.getCourseNumber());
+      }
+
+      messageTitle = localeController.getText(
+          locale,
+          "plugin.workspace.assessment.notificationTitleMultiSubject",
+          new Object[] {workspace.getName(), grade});
+      
+      messageContent = localeController.getText(
+          locale,
+          "plugin.workspace.assessment.notificationContentMultiSubject",
+          new Object[] {workspaceUrl, workspace.getName(), grade, workspaceAssessment.getVerbalAssessment(), workspaceSubjectDescription.toString()});
+    } else {
+      messageTitle = localeController.getText(
+          locale,
+          "plugin.workspace.assessment.notificationTitle",
+          new Object[] {workspace.getName(), grade});
+      
+      messageContent = localeController.getText(
+          locale,
+          "plugin.workspace.assessment.notificationContent",
+          new Object[] {workspaceUrl, workspace.getName(), grade, workspaceAssessment.getVerbalAssessment()});
+    }
+    
+    CommunicatorMessageCategory category = communicatorController.persistCategory("assessments");
+    CommunicatorMessage communicatorMessage = communicatorController.createMessage(
+        communicatorController.createMessageId(),
+        evaluator,
+        Arrays.asList(student),
+        null,
+        null,
+        null,
+        category,
+        messageTitle,
+        messageContent,
+        Collections.<Tag>emptySet());
+    communicatorMessageSentEvent.fire(new CommunicatorMessageSent(communicatorMessage.getId(), student.getId(), baseUrl));
+  }
+
 }
