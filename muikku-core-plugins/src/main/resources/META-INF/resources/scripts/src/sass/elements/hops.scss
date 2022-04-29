@@ -526,9 +526,13 @@
 
 .hops-container__study-tool-indicators {
   align-items: center;
+  background: $color-default-lighter-generic-background;
+  border-radius: 3px;
   display: flex;
   flex-flow: row wrap;
   justify-content: flex-start;
+  margin: 5px;
+  width: 100%;
 }
 
 .hops-container__study-tool-indicator-container {
@@ -539,6 +543,14 @@
   flex-grow: 0;
   flex-shrink: 0;
   justify-content: flex-start;
+  margin: 10px;
+}
+
+.hops-container__study-tool-indicator-container--legend-title {
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 0;
+  font-weight: 600;
   margin: 10px;
 }
 
