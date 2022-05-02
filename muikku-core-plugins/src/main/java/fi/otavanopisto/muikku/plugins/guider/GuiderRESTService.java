@@ -20,6 +20,8 @@ import javax.inject.Inject;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -61,10 +63,14 @@ import fi.otavanopisto.muikku.plugins.timed.notifications.model.NoPassedCoursesN
 import fi.otavanopisto.muikku.plugins.timed.notifications.model.StudyTimeNotification;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsFileController;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.TranscriptOfRecordsFile;
+import fi.otavanopisto.muikku.rest.StudentContactLogEntryCommentRestModel;
+import fi.otavanopisto.muikku.rest.StudentContactLogEntryRestModel;
 import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
 import fi.otavanopisto.muikku.rest.model.Student;
+import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivity;
@@ -146,6 +152,9 @@ public class GuiderRESTService extends PluginRESTService {
 
   @Inject
   private FlagController flagController;
+  
+  @Inject
+  private UserSchoolDataController userSchoolDataController;
   
   @Inject
   @Any
@@ -687,6 +696,226 @@ public class GuiderRESTService extends PluginRESTService {
         activity.getExercises().getAnsweredLastDate(),
         assessmentState);
     return model;
+  }
+  /**
+   * POST mApi().guider.student.contactLog.create(userEntityId, payload)
+   * 
+   * Creates a new contact log entry from the given payload and studentEntityId.
+   * 
+   * Payload: 
+   * 
+   * {text: "something something",
+   *  entryDate: 2021-02-15
+   *  creatorName: "Etunimi Sukunomi",
+   *  type: "OTHER"/"LETTER"/"EMAIL"/"PHONE"/"CHATLOG"/"SKYPE"/"FACE2FACE"/"ABSENCE"/"MUIKKU"
+   * }
+   *  
+   * Output: Created student contact log entry
+   * 
+   * {
+   * id: 123;
+   * text: "something something",
+   * creatorId: 23,
+   * creatorName: "Etunimi Sukunimi";
+   * entryDate: 2021-02-15;
+   * type: "PHONE";
+   * }
+   */
+  @POST
+  @Path("/student/{ID}/contactLog/")
+  @RESTPermit (GuiderPermissions.ACCESS_CONTACT_LOG)
+  public Response createStudentContactLog(@PathParam("ID") Long userEntityId, StudentContactLogEntryRestModel payload) {
+    String dataSource = sessionController.getLoggedUserSchoolDataSource();
+    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+    
+    BridgeResponse<StudentContactLogEntryRestModel> response = userSchoolDataController.createStudentContactLogEntry(dataSource, userEntity.defaultSchoolDataIdentifier(), payload);
+    if (response.ok()) {
+      return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
+    }
+    else {
+      return Response.status(response.getStatusCode()).entity(response.getMessage()).build();
+    }
+  }
+  
+  /**
+   * PUT mApi().guider.student.contactLog.update(userEntityId, contactLogEntryId, payload)
+   * 
+   * payload: {
+   * text: "something something",
+   * entryDate: 2021-02-15;
+   * type: "PHONE";
+   * creatorId: 2
+   * }
+   * @param userEntityId
+   * @param contactLogEntryId
+   * @param payload
+   * @return
+   * 
+   * Returns updated contact log entry
+   */
+  
+  @PUT
+  @Path("/student/{ID}/contactLog/{CONTACTLOGENTRYID}")
+  @RESTPermit (GuiderPermissions.ACCESS_CONTACT_LOG)
+  public Response updateStudentContactLog(@PathParam("ID") Long userEntityId, @PathParam("CONTACTLOGENTRYID") Long contactLogEntryId, StudentContactLogEntryRestModel payload) {
+    String dataSource = sessionController.getLoggedUserSchoolDataSource();
+    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+    
+    if (payload.getCreatorId() != sessionController.getLoggedUserEntity().getId()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    BridgeResponse<StudentContactLogEntryRestModel> response = userSchoolDataController.updateStudentContactLogEntry(dataSource, userEntity.defaultSchoolDataIdentifier(), contactLogEntryId, payload);
+    if (response.ok()) {
+      return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
+    }
+    else {
+      return Response.status(response.getStatusCode()).entity(response.getMessage()).build();
+      
+    }
+  }
+  /**
+   * GET mApi().guider.users.contactLog(userEntityId)
+   * 
+   * Returns a list of student's contact log entries (comments included)
+   * 
+   * Output:
+   * 
+   StudentContactLogEntryRestModel: {
+     id: 123, 
+     text: "something something",
+     creatorId: 13,
+     creatorName: "Etunimi Sukunimi", 
+     entryDate: 2021-02-15, 
+     type: "FACE2FACE"
+     comments: [{
+       id: 12,
+       entry: 123,
+       text: "plaa",
+       creatorId: 2,
+       creatorName: Etunimi Sukunimi,
+       commentDate: 2022-04-03
+    }]
+}
+   */
+  @GET
+  @Path("/users/{ID}/contactLog")
+  @RESTPermit (GuiderPermissions.ACCESS_CONTACT_LOG)
+  public Response listStudentContactLogEntries(@PathParam("ID") Long userEntityId) {
+    String dataSource = sessionController.getLoggedUserSchoolDataSource();
+    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+    
+    BridgeResponse<List<StudentContactLogEntryRestModel>> response = userSchoolDataController.listStudentContactLogEntries(dataSource, userEntity.defaultSchoolDataIdentifier());
+    if (response.ok()) {
+      return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
+    } else {
+      return Response.status(response.getStatusCode()).entity(response.getMessage()).build();
+    }
+  }
+  /**
+   * DELETE mApi().guider.student.contactLog.del(userEntityId, contactLogEntryId)
+   * 
+   * Output: 204 (no content)
+   */
+  @DELETE
+  @Path("/student/{ID}/contactLog/{CONTACTLOGENTRYID}")
+  @RESTPermit (GuiderPermissions.ACCESS_CONTACT_LOG)
+  public Response archiveStudentContactLog(@PathParam("ID") Long userEntityId, @PathParam("CONTACTLOGENTRYID") Long contactLogEntryId) {
+    String dataSource = sessionController.getLoggedUserSchoolDataSource();
+    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+    
+    userSchoolDataController.removeStudentContactLogEntry(dataSource, userEntity.defaultSchoolDataIdentifier(), contactLogEntryId);
+    
+    return Response.noContent().build();
+
+  }
+  
+  /**
+   * 
+   * POST mApi().guider.student.contactLog.comments.create(userEntityId, contactLogEntryId, payload)
+   * 
+   * payload: {
+   * commentDate: Date
+   * text: "plaaplaa";
+   * }
+   * 
+   * @param userEntityId
+   * @param entryId
+   * @param payload
+   * @return
+   */
+  @POST
+  @Path("/student/{ID}/contactLog/{ENTRYID}/comments")
+  @RESTPermit (GuiderPermissions.ACCESS_CONTACT_LOG)
+  public Response createContactLogEntryComment(@PathParam("ID") Long userEntityId, @PathParam("ENTRYID") Long entryId, StudentContactLogEntryCommentRestModel payload) {
+    String dataSource = sessionController.getLoggedUserSchoolDataSource();
+    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+    BridgeResponse<StudentContactLogEntryCommentRestModel> response = userSchoolDataController.createStudentContactLogEntryComment(dataSource, userEntity.defaultSchoolDataIdentifier(), entryId, payload);
+    if (response.ok()) {
+      return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
+    }
+    else {
+      return Response.status(response.getStatusCode()).entity(response.getMessage()).build();
+    }    
+  }
+  
+  /**
+   * PUT mApi().guider.student.contactLog.comments.update(userEntityId, entryId, commentId, payload)
+   * 
+   * payload: {
+   * text: "plaa", 
+   * commentDate: Date,
+   * creatorId: 2
+   * }
+   * 
+   * @param userEntityId
+   * @param entryId
+   * @param commentId
+   * @param payload
+   * @return
+   * 
+   * Output: Updated StudentContactLogEntryCommentRestModel
+   */
+  @PUT
+  @Path("/student/{ID}/contactLog/{ENTRYID}/comments/{COMMENTID}")
+  @RESTPermit (GuiderPermissions.ACCESS_CONTACT_LOG)
+  public Response updateStudentContactLogComment(@PathParam("ID") Long userEntityId, @PathParam("ENTRYID") Long entryId, @PathParam("COMMENTID") Long commentId, StudentContactLogEntryCommentRestModel payload) {
+    String dataSource = sessionController.getLoggedUserSchoolDataSource();
+    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+    
+    if (payload.getCreatorId() != sessionController.getLoggedUserEntity().getId()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    BridgeResponse<StudentContactLogEntryCommentRestModel> response = userSchoolDataController.updateStudentContactLogEntryComment(dataSource, userEntity.defaultSchoolDataIdentifier(), entryId, commentId, payload);
+    if (response.ok()) {
+      return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
+    }
+    else {
+      return Response.status(response.getStatusCode()).entity(response.getMessage()).build();
+    }
+  }
+  
+  /**
+   * DELETE mApi.guider.student.contactLog.comments.del(userEntityId, contactLogEntryId, commentId)
+   * 
+   * @param userEntityId
+   * @param contactLogEntryId
+   * @param commentId
+   * @return
+   * 
+   * Output: 204 no-content
+   */
+  @DELETE
+  @Path("/student/{ID}/contactLog/{ENTRYID}/comments/{COMMENTID}")
+  @RESTPermit (GuiderPermissions.ACCESS_CONTACT_LOG)
+  public Response archiveStudentContactLogComment(@PathParam("ID") Long userEntityId, @PathParam("ENTRYID") Long contactLogEntryId, @PathParam("COMMENTID") Long commentId) {
+    String dataSource = sessionController.getLoggedUserSchoolDataSource();
+    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+    userSchoolDataController.removeStudentContactLogEntryComment(dataSource, userEntity.defaultSchoolDataIdentifier(), commentId);
+    
+    return Response.noContent().build();
+
   }
   
   private List<fi.otavanopisto.muikku.rest.model.StudentFlag> createRestModel(FlagStudent[] flagStudents) {
