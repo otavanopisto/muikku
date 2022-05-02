@@ -264,7 +264,11 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       
       String curriculumIdentifier = student.getCurriculumId() != null ? identifierMapper.getCurriculumIdentifier(student.getCurriculumId()).toId() : null;
       SchoolDataIdentifier organizationIdentifier = (studyProgramme != null && studyProgramme.getOrganizationId() != null) ? identifierMapper.getOrganizationIdentifier(studyProgramme.getOrganizationId()) : null;
-      
+      fi.otavanopisto.pyramus.rest.model.StudentMatriculationEligibility studentMatriculationEligibility = new fi.otavanopisto.pyramus.rest.model.StudentMatriculationEligibility();
+
+      if (student.getMatriculationEligibility() != null) {
+        studentMatriculationEligibility.setEligible(student.getMatriculationEligibility().isUpperSecondarySchoolCurriculum());
+      }
       boolean evaluationFees = studyProgramme != null && Boolean.TRUE.equals(studyProgramme.getHasEvaluationFees());
       
       users.add(entityFactory.createEntity(
@@ -280,7 +284,8 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
           evaluationFees,
           hidden,
           curriculumIdentifier,
-          organizationIdentifier));
+          organizationIdentifier,
+          studentMatriculationEligibility.getEligible()));
     }
     
     return users;
