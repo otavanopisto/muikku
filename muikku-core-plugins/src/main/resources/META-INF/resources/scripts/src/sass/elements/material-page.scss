@@ -1710,6 +1710,23 @@
 .material-page__iframe-wrapper {
   display: block;
   max-width: 100%;
+  position: relative;
+}
+
+.material-page__iframe-wrapper-overlay {
+  background: $color-default;
+  bottom: 0;
+  display: block;
+  left: 0;
+  opacity: 80%;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 2;
+
+  @include breakpoint($breakpoint-desktop) {
+    display: none;
+  }
 }
 
 // Table Wrapper
