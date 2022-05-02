@@ -918,7 +918,7 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
             <div className="hops-container__table-container">
               <HopsCourseTable
                 matrix={filteredSchoolCourseTable}
-                useCase="hops-planing"
+                useCase="hops-planning"
                 disabled={props.disabled}
                 studentId={props.studentId}
                 user={props.user}
@@ -945,7 +945,7 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
           ) : (
             <HopsCourseList
               matrix={filteredSchoolCourseTable}
-              useCase="hops-planing"
+              useCase="hops-planning"
               disabled={props.disabled}
               user={props.user}
               studentId={props.studentId}

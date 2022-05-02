@@ -39,7 +39,7 @@ interface HopsCourseTableProps extends Partial<StudentActivityByStatus> {
   /**
    * useCase
    */
-  useCase: "study-matrix" | "hops-planing";
+  useCase: "study-matrix" | "hops-planning";
   /**
    * user
    */
@@ -234,7 +234,7 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
         const showAddToHopsButton =
           props.user === "supervisor" &&
           props.superVisorModifies &&
-          props.useCase === "hops-planing";
+          props.useCase === "hops-planning";
 
         /**
          * Suggestion list is shown only if not disabled, for supervisor only
@@ -274,11 +274,11 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
                           course={course}
                           updateSuggestion={props.updateSuggestion}
                           canSuggestForNext={
-                            props.useCase === "hops-planing" ||
+                            props.useCase === "hops-planning" ||
                             props.useCase === "study-matrix"
                           }
                           canSuggestForOptional={
-                            props.useCase === "hops-planing"
+                            props.useCase === "hops-planning"
                           }
                         />
                       )}
@@ -308,11 +308,11 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
                           course={course}
                           updateSuggestion={props.updateSuggestion}
                           canSuggestForNext={
-                            props.useCase === "hops-planing" ||
+                            props.useCase === "hops-planning" ||
                             props.useCase === "study-matrix"
                           }
                           canSuggestForOptional={
-                            props.useCase === "hops-planing"
+                            props.useCase === "hops-planning"
                           }
                         />
                       )}
