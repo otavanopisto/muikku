@@ -118,21 +118,12 @@
   }
 }
 
-.env-dialog__close {
-  @include prefix(transition, moz ms o webkit, background-color 0.3s);
-
-  border-radius: $dialog-button-close-height;
+.env-dialog__guidance-event {
   cursor: pointer;
-  font-size: 18px;
-  height: $dialog-button-close-height;
-  line-height: $dialog-button-close-height;
-  margin-top: -#{$dialog-button-close-height / 2};
-  position: absolute;
-  right: -6px;
-  text-align: center;
-  top: 50%;
-  vertical-align: center;
-  width: $dialog-button-close-height;
+}
+
+.env-dialog__actions--guidance-event {
+  margin-top: 20px;
 }
 
 .env-dialog__row {

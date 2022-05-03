@@ -29,9 +29,9 @@ import ConfirmPublishPageWithAnswersDialog from "./confirm-publish-page-with-ans
 import ConfirmRemovePageWithAnswersDialog from "./confirm-remove-page-with-answers-dialog";
 import ConfirmRemoveAttachment from "./confirm-remove-attachment";
 import ConfirmPublishPageWithLinkedMaterialDialog from "./confirm-publish-page-with-linked-material-dialog";
+import ConfirmPublishRemovePageWithLinkedAnswersDialog from "./confirm-remove-page-with-linked-answers-dialog";
 import equals = require("deep-equal");
 import Tabs, { Tab } from "~/components/general/tabs";
-import { createAllTabs } from "~/helper-functions/tabs";
 import AddProducer from "~/components/general/add-producer";
 import { LicenseSelector } from "~/components/general/license-selector";
 import FileUploader from "~/components/general/file-uploader";
@@ -102,6 +102,8 @@ const CKEditorConfig = (
   mathJaxLib:
     "//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_SVG",
   mathJaxClass: "math-tex", // This CANNOT be changed as cke saves this to database as part of documents html (wraps the formula in a span with specified className). Don't touch it! ... STOP TOUCHING IT!
+  disallowedContent:
+    "*(dialog*, bubble*, button*, avatar*, pager*, panel*, tab*, zoom*, card*, carousel*, course*, message*, drawer*, filter*, footer*, label*, link*, menu*, meta*, navbar*, toc*, application*); *[on*]; *{white-space}; *{flex*};",
   toolbar: [
     { name: "document", items: ["Source"] },
     {
@@ -185,6 +187,7 @@ const CKEditorConfig = (
         "-",
         "Outdent",
         "Indent",
+        "Blockquote",
         "-",
         "JustifyLeft",
         "JustifyCenter",
@@ -884,10 +887,7 @@ class MaterialEditor extends React.Component<
         name: this.props.i18n.text.get(
           "plugin.workspace.materialsManagement.editorView.tabs.label.content"
         ),
-        /**
-         * component
-         */
-        component: () => (
+        component: (
           <div className="material-editor__content-wrapper">
             {editorButtonSet}
 
@@ -939,10 +939,7 @@ class MaterialEditor extends React.Component<
         name: this.props.i18n.text.get(
           "plugin.workspace.materialsManagement.editorView.tabs.label.metadata"
         ),
-        /**
-         * component
-         */
-        component: () => (
+        component: (
           <div className="material-editor__content-wrapper">
             {editorButtonSet}
 
@@ -1006,7 +1003,7 @@ class MaterialEditor extends React.Component<
         /**
          * component
          */
-        component: () => (
+        component: (
           <div className="material-editor__content-wrapper">
             {editorButtonSet}
 
@@ -1055,7 +1052,6 @@ class MaterialEditor extends React.Component<
         }`}
       >
         <Tabs
-          allTabs={createAllTabs(materialEditorTabs)}
           modifier="material-editor"
           activeTab={this.state.tab}
           onTabChange={this.onTabChange}
@@ -1070,6 +1066,7 @@ class MaterialEditor extends React.Component<
         <ConfirmPublishPageWithAnswersDialog />
         <ConfirmRemovePageWithAnswersDialog onDeleteSuccess={this.close} />
         <ConfirmPublishPageWithLinkedMaterialDialog />
+        <ConfirmPublishRemovePageWithLinkedAnswersDialog />
       </div>
     );
   }

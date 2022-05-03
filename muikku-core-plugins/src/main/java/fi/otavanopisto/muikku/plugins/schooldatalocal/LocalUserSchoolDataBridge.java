@@ -24,6 +24,8 @@ import fi.otavanopisto.muikku.plugins.schooldatalocal.model.LocalUserEmail;
 import fi.otavanopisto.muikku.plugins.schooldatalocal.model.LocalUserImage;
 import fi.otavanopisto.muikku.plugins.schooldatalocal.model.LocalUserProperty;
 import fi.otavanopisto.muikku.rest.OrganizationContactPerson;
+import fi.otavanopisto.muikku.rest.StudentContactLogEntryCommentRestModel;
+import fi.otavanopisto.muikku.rest.StudentContactLogEntryRestModel;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeInternalException;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -465,7 +467,6 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
           localUser.getFirstName(), 
           localUser.getLastName(),
           null,
-          null,
           localUser.getFirstName() + ' ' + localUser.getLastName() + " (Local)",
           null,
           null,
@@ -644,7 +645,48 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
       String organizationIdentifier) {
     throw new SchoolDataBridgeInternalException("Not supported");
   }
-
+  
+  @Override
+  public BridgeResponse<List<StudentContactLogEntryRestModel>> listStudentContactLogEntriesByStudent(
+      SchoolDataIdentifier studentIdentifier) {
+    throw new SchoolDataBridgeInternalException("Not supported");
+  }
+  
+  @Override
+  public BridgeResponse<StudentContactLogEntryRestModel> createStudentContactLogEntry(SchoolDataIdentifier userIdentifier,
+      StudentContactLogEntryRestModel payload) {
+    throw new SchoolDataBridgeInternalException("Not supported");
+  }
+  
+  @Override
+  public BridgeResponse<StudentContactLogEntryRestModel> updateStudentContactLogEntry(SchoolDataIdentifier userIdentifier,
+      Long contactLogEntryId, StudentContactLogEntryRestModel payload) {
+    throw new SchoolDataBridgeInternalException("Not supported");
+  }
+  
+  @Override
+  public void removeStudentContactLogEntry(SchoolDataIdentifier userIdentifier,
+      Long contactLogEntryId) {
+    throw new SchoolDataBridgeInternalException("Not supported");
+  }
+  
+  @Override
+  public BridgeResponse<StudentContactLogEntryCommentRestModel> createStudentContactLogEntryComment(
+      SchoolDataIdentifier studentIdentifier, Long entryId, StudentContactLogEntryCommentRestModel payload) {
+    throw new SchoolDataBridgeInternalException("Not supported");
+  }
+  
+  @Override
+  public BridgeResponse<StudentContactLogEntryCommentRestModel> updateStudentContactLogEntryComment(SchoolDataIdentifier userIdentifier, Long entryId,
+      Long commentId, StudentContactLogEntryCommentRestModel payload) {
+    throw new SchoolDataBridgeInternalException("Not supported");
+  }
+  
+  @Override
+  public void removeStudentContactLogEntryComment(SchoolDataIdentifier userIdentifier, Long commentId) {
+    throw new SchoolDataBridgeInternalException("Not supported");
+  }
+  
   @Override
   public BridgeResponse<List<WorklistItemTemplateRestModel>> getWorklistTemplates() {
     throw new SchoolDataBridgeInternalException("Not supported");
@@ -693,6 +735,11 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
   @Override
   public String getUserDefaultEmailAddress(String userIdentifier) {
     throw new SchoolDataBridgeInternalException("Not supported");
+  }
+
+  @Override
+  public String findUserSsn(SchoolDataIdentifier userIdentifier) {
+    return null;
   }
 
 }

@@ -24,9 +24,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
+import fi.otavanopisto.muikku.model.workspace.EducationTypeMapping;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
-import fi.otavanopisto.muikku.plugins.transcriptofrecords.rest.EducationTypeMapping;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.subjects.MatriculationSubjects;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.subjects.StudentMatriculationSubjects;
 import fi.otavanopisto.muikku.schooldata.CourseMetaController;
