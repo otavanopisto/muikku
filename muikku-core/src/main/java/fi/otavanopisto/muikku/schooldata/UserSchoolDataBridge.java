@@ -3,6 +3,8 @@ package fi.otavanopisto.muikku.schooldata;
 import java.util.List;
 
 import fi.otavanopisto.muikku.rest.OrganizationContactPerson;
+import fi.otavanopisto.muikku.rest.StudentContactLogEntryCommentRestModel;
+import fi.otavanopisto.muikku.rest.StudentContactLogEntryRestModel;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
 import fi.otavanopisto.muikku.schooldata.entity.Role;
@@ -49,6 +51,15 @@ public interface UserSchoolDataBridge {
   /* User */
   
   public BridgeResponse<List<OrganizationContactPerson>> listOrganizationContactPersonsByOrganization(String organizationIdentifier);
+  
+  public BridgeResponse<List<StudentContactLogEntryRestModel>> listStudentContactLogEntriesByStudent(SchoolDataIdentifier userIdentifier);
+  public BridgeResponse<StudentContactLogEntryRestModel> createStudentContactLogEntry(SchoolDataIdentifier userIdentifier, StudentContactLogEntryRestModel payload);
+  public BridgeResponse<StudentContactLogEntryRestModel> updateStudentContactLogEntry(SchoolDataIdentifier userIdentifier, Long contactLogEntryId, StudentContactLogEntryRestModel payload);
+  public void removeStudentContactLogEntry(SchoolDataIdentifier studentIdentifier, Long contactLogEntryId);
+  
+  public BridgeResponse<StudentContactLogEntryCommentRestModel> createStudentContactLogEntryComment(SchoolDataIdentifier studentIdentifier, Long entryId, StudentContactLogEntryCommentRestModel payload);
+  public BridgeResponse<StudentContactLogEntryCommentRestModel> updateStudentContactLogEntryComment(SchoolDataIdentifier studentIdentifier, Long entryId, Long commentId, StudentContactLogEntryCommentRestModel payload);
+  public void removeStudentContactLogEntryComment(SchoolDataIdentifier studentIdentifier, Long commentId);
   
   public BridgeResponse<StaffMemberPayload> createStaffMember(StaffMemberPayload staffMember);
   public BridgeResponse<StaffMemberPayload> updateStaffMember(StaffMemberPayload staffMember);
