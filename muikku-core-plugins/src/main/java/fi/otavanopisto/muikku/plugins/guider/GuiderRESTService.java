@@ -65,7 +65,6 @@ import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.TranscriptOfReco
 import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
 import fi.otavanopisto.muikku.rest.model.Student;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
-import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
@@ -152,9 +151,6 @@ public class GuiderRESTService extends PluginRESTService {
 
   @Inject
   private FlagController flagController;
-  
-  @Inject
-  private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
   
   @Inject
   @Any
@@ -684,6 +680,13 @@ public class GuiderRESTService extends PluginRESTService {
   @Path("/students/{ID}/studyTime")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response increaseStudyTime(@PathParam("ID") Long userEntityId, @QueryParam("months") Integer months) {
+
+    EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUser());
+
+    if (roleEntity == null || roleEntity.getArchetype().equals(EnvironmentRoleArchetype.STUDENT)) {
+      logger.severe("Logged user does not have permission");
+      return Response.status(Status.FORBIDDEN).entity("Logged user does not have permission").build();
+    }
     
     // Validation
     if (months == null || months <= 0) {
@@ -697,17 +700,12 @@ public class GuiderRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).entity("Student not found").build();
     }
     
-    schoolDataBridgeSessionController.startSystemSession();
-    try {
-      User student = userSchoolDataController.increaseStudyTime(studentEntity.defaultSchoolDataIdentifier(), months);
-      if (student != null) {
-        return Response.status(Status.OK).entity(student.getStudyTimeEnd()).build();
-      }
-      else {
-        return Response.status(Status.NOT_FOUND).build();
-      }
-    } finally {
-      schoolDataBridgeSessionController.endSystemSession();
+    User student = userSchoolDataController.increaseStudyTime(studentEntity.defaultSchoolDataIdentifier(), months);
+    if (student != null) {
+      return Response.status(Status.OK).entity(student.getStudyTimeEnd()).build();
+    }
+    else {
+      return Response.status(Status.NOT_FOUND).build();
     }
   }
   
