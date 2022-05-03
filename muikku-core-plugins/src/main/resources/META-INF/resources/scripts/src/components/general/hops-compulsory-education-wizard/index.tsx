@@ -675,7 +675,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
             <StepZilla
               steps={steps}
               showNavigation={!this.state.loading}
-              stepsNavigation={!this.state.loading}
+              stepsNavigation={false}
               showSteps={true}
               preventEnterSubmission={true}
               prevBtnOnLastStep={true}
@@ -688,7 +688,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
             <StepZilla
               steps={steps}
               showNavigation={!this.state.loading}
-              stepsNavigation={!this.state.loading}
+              stepsNavigation={false}
               showSteps={true}
               preventEnterSubmission={true}
               prevBtnOnLastStep={true}
