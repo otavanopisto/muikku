@@ -16,6 +16,7 @@ import { StatusType } from "~/reducers/base/status";
 import { IContactEvent } from "~/reducers/main-function/guider/";
 import NewContactEvent from "../../new-contact-event";
 import moment from "~/lib/moment";
+import student from "../../student";
 
 /**
  * GuidanceRelationProps
@@ -33,7 +34,7 @@ interface GuidanceRelationProps {
  * @returns JSX.element
  */
 const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
-  const { i18n, status, contactLogs,studentBasicInfo } = props;
+  const { i18n, status, contactLogs, studentBasicInfo } = props;
   return (
     <ApplicationSubPanel>
       <ApplicationSubPanelViewHeader title="Ohjaussuhde">
@@ -64,6 +65,7 @@ const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
               contactLogs.map((contactEvent) => (
                 <ContactEvent
                   key={contactEvent.id}
+                  studentId={studentBasicInfo.userEntityId}
                   event={contactEvent}
                   i18n={i18n}
                 />

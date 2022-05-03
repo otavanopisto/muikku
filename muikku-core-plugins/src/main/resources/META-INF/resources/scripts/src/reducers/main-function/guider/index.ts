@@ -109,13 +109,13 @@ export interface IContactEvent {
   creatorId: number;
   creatorName: string;
   text: string;
-  comments?: contactEventComment[];
+  comments?: IContactEventComment[];
 }
 
 /**
  * contactEventComment
  */
-export type contactEventComment = {
+export type IContactEventComment = {
   id: number;
   entry: number;
   commentDate: string;

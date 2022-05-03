@@ -1,0 +1,296 @@
+import { i18nType } from "~/reducers/base/i18n";
+import * as React from "react";
+import { DiscussionThreadReplyType } from "~/reducers/discussion";
+import { Dispatch, connect } from "react-redux";
+import { AnyActionType } from "~/actions";
+import { bindActionCreators } from "redux";
+import CKEditor from "~/components/general/ckeditor";
+import {
+  editContactEvent,
+  EditContactEventTriggerType,
+} from "~/actions/main-function/guider";
+import {
+  ContactTypes,
+  contactTypesArray,
+} from "~/reducers/main-function/guider";
+import { StateType } from "~/reducers";
+import SessionStateComponent from "~/components/general/session-state-component";
+import Button from "~/components/general/button";
+import "~/sass/elements/form-elements.scss";
+import "~/sass/elements/form.scss";
+import DatePicker from "react-datepicker";
+import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
+import moment from "~/lib/moment";
+import { StatusType } from "~/reducers/base/status";
+import { IContactEvent } from "~/reducers/main-function/guider";
+
+/**
+ * TODO: maybe make this more generic,
+ * since there is need for this kind of a reply outside discussion,
+ * for example in the communicator and the guider
+ * */
+
+/**
+ * ReplyThreadDrawerProps
+ */
+interface CommentContactEventProps {
+  i18n: i18nType;
+  status: StatusType;
+  quote?: string;
+  quoteAuthor?: string;
+  contactEvent: IContactEvent;
+  studentUserEntityId: number;
+  editContactEvent: EditContactEventTriggerType;
+  onClickCancel: () => void;
+}
+
+/**
+ * CommentContactEventState
+ */
+interface CommentContactEventState {
+  text: string;
+  date: Date;
+  type: ContactTypes;
+  openReplyType?: "answer" | "modify" | "quote";
+  locked: boolean;
+}
+
+/**
+ * CommentContactEvent
+ */
+class CommentContactEvent extends SessionStateComponent<
+  CommentContactEventProps,
+  CommentContactEventState
+> {
+  /**
+   * constructor
+   * @param props props
+   */
+  constructor(props: CommentContactEventProps) {
+    super(props, "contact-event-comment");
+
+    this.onCKEditorChange = this.onCKEditorChange.bind(this);
+    this.clearUp = this.clearUp.bind(this);
+
+    this.state = this.getRecoverStoredState(
+      {
+        locked: false,
+        date: new Date(this.props.contactEvent.entryDate),
+        text: this.props.contactEvent.text,
+        type: this.props.contactEvent.type,
+      },
+      props.contactEvent.id + (props.quote ? "-q" : "")
+    );
+  }
+
+  /**
+   * onCKEditorChange
+   * @param text text
+   */
+  onCKEditorChange(text: string) {
+    this.setStateAndStore(
+      { text },
+      this.props.contactEvent.id + (this.props.quote ? "-q" : "")
+    );
+  }
+
+  onDateChange = (date: Date) => {
+    this.setStateAndStore({ date: date }, this.props.contactEvent.id);
+  };
+
+  onTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    this.setStateAndStore(
+      { type: e.target.value as ContactTypes },
+      this.props.contactEvent.id
+    );
+  };
+
+  /**
+   * clearUp
+   */
+  clearUp() {
+    this.setStateAndClear(
+      {
+        text:
+          this.props.quote && this.props.quoteAuthor
+            ? "<blockquote><p><strong>" +
+              this.props.quoteAuthor +
+              "</strong></p>" +
+              this.props.quote +
+              "</blockquote> <p></p>"
+            : "",
+      },
+      this.props.contactEvent.id + (this.props.quote ? "-q" : "")
+    );
+  }
+
+  /**
+   * createReply
+   */
+  editContactEvent() {
+    this.setState({
+      locked: true,
+    });
+    this.props.editContactEvent(
+      this.props.studentUserEntityId,
+      this.props.contactEvent.id,
+      {
+        creatorId: this.props.status.userId,
+        text: this.state.text,
+        entryDate: moment(this.state.date).format(),
+        type: this.state.type,
+      }
+    );
+    this.setState({
+      locked: true,
+    });
+
+    this.handleOnCancelClick();
+  }
+
+  /**
+   * handleOnCancelClick
+   */
+  handleOnCancelClick = () => {
+    this.props.onClickCancel && this.props.onClickCancel();
+  };
+
+  /**
+   * render
+   * @returns JSX.Element
+   */
+  render() {
+    const editorTitle =
+      this.props.i18n.text.get("plugin.discussion.answertomessage.topic") +
+      " - " +
+      this.props.i18n.text.get("plugin.discussion.createmessage.content");
+
+    const content = (
+      <>
+        <div className="env-dialog__row env-dialog__row--new-contact-event">
+          <div className="env-dialog__form-element-container env-dialog__form-element-container--new-contact-event">
+            <label htmlFor="contactEventdate" className="env-dialog__label">
+              {this.props.i18n.text.get(
+                "plugin.guider.user.dialog.createContactEvent.date"
+              )}
+            </label>
+            <DatePicker
+              id="contactEventdate"
+              onChange={(date: Date) => this.onDateChange(date)}
+              locale={outputCorrectDatePickerLocale(
+                this.props.i18n.time.getLocale()
+              )}
+              selected={this.state.date}
+            ></DatePicker>
+          </div>
+          <div className="env-dialog__form-element-container">
+            <label htmlFor="contactEventTypes" className="env-dialog__label">
+              {this.props.i18n.text.get(
+                "plugin.guider.user.dialog.createContactEvent.type"
+              )}
+            </label>
+            <select
+              id="contactEventTypes"
+              onChange={this.onTypeChange}
+              value={this.state.type}
+            >
+              {contactTypesArray.map((contactType) => (
+                <option key={contactType} value={contactType}>
+                  {this.props.i18n.text.get(
+                    "plugin.guider.contact.type." + contactType
+                  )}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+        <div className="env-dialog__row"></div>
+        <div className="env-dialog__row env-dialog__row--ckeditor">
+          <div className="env-dialog__form-element-container">
+            <label className="env-dialog__label">
+              {this.props.i18n.text.get(
+                "plugin.guider.user.dialog.createContactEvent.text"
+              )}
+            </label>
+            <CKEditor
+              editorTitle={editorTitle}
+              onChange={this.onCKEditorChange}
+            >
+              {this.state.text}
+            </CKEditor>
+          </div>
+        </div>
+      </>
+    );
+
+    const footer = (
+      <div className="env-dialog__actions">
+        <Button
+          buttonModifiers="dialog-execute"
+          onClick={this.editContactEvent.bind(this)}
+          disabled={this.state.locked}
+        >
+          {this.props.i18n.text.get("plugin.discussion.createmessage.send")}
+        </Button>
+        <Button
+          buttonModifiers="dialog-cancel"
+          onClick={this.handleOnCancelClick}
+          disabled={this.state.locked}
+        >
+          {this.props.i18n.text.get("plugin.discussion.createmessage.cancel")}
+        </Button>
+        {this.recovered ? (
+          <Button
+            buttonModifiers="dialog-clear"
+            onClick={this.clearUp}
+            disabled={this.state.locked}
+          >
+            {this.props.i18n.text.get(
+              "plugin.discussion.createmessage.clearDraft"
+            )}
+          </Button>
+        ) : null}
+      </div>
+    );
+
+    return (
+      <div className="env-dialog env-dialog--mainfunction env-dialog--reply-message">
+        <section className="env-dialog__wrapper">
+          <div className="env-dialog__content">
+            <header className="env-dialog__header">
+              {this.props.i18n.text.get("TODO: Muokkaa yhteydenottoa")}
+            </header>
+            <section className="env-dialog__body">{content}</section>
+            <footer className="env-dialog__footer">{footer}</footer>
+          </div>
+        </section>
+      </div>
+    );
+  }
+}
+
+/**
+ * mapStateToProps
+ * @param state state
+ * @returns object
+ */
+function mapStateToProps(state: StateType) {
+  return {
+    i18n: state.i18n,
+    status: state.status,
+  };
+}
+
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ * @returns object
+ */
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+  return bindActionCreators({ editContactEvent }, dispatch);
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(CommentContactEvent);

@@ -27,6 +27,7 @@ import {
   GuiderWorkspaceListType,
   GuiderUserGroupListType,
   IContactEvent,
+  IContactEventComment,
   ContactTypes,
 } from "~/reducers/main-function/guider";
 import {
@@ -188,7 +189,34 @@ export interface LoadStudentDataTriggerType {
 export interface CreateContactEventTriggerType {
   (
     userEntityId: number,
-    payload: { text: string, entryDate: string, type: ContactTypes }
+    payload: {
+      text: string;
+      entryDate: string;
+      type: ContactTypes;
+    }
+  ): AnyActionType;
+}
+export interface EditContactEventTriggerType {
+  (
+    userEntityId: number,
+    contactLogEntryId: number,
+    payload: {
+      text: string;
+      entryDate: string;
+      type: ContactTypes;
+      creatorId: number;
+    }
+  ): AnyActionType;
+}
+
+export interface CreateContactEventCommentTriggerType {
+  (
+    userEntityId: number,
+    entryId: number,
+    payload: {
+      text: string;
+      commentDate: string;
+    }
   ): AnyActionType;
 }
 
@@ -290,7 +318,13 @@ let addFileToCurrentStudent: AddFileToCurrentStudentTriggerType =
     };
   };
 
-let removeFileFromCurrentStudent: RemoveFileFromCurrentStudentTriggerType =
+/**
+ *
+ * @param file
+ * @returns a thunk function
+ */
+
+const removeFileFromCurrentStudent: RemoveFileFromCurrentStudentTriggerType =
   function removeFileFromCurrentStudent(file) {
     return async (
       dispatch: (arg: AnyActionType) => any,
@@ -343,7 +377,12 @@ let removeFromGuiderSelectedStudents: RemoveFromGuiderSelectedStudentsTriggerTyp
     };
   };
 
-let loadStudent: LoadStudentTriggerType = function loadStudent(id) {
+/**
+ * loadStudent thunk action creator
+ * @param id
+ * @returns a thunk function
+ */
+const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
   return async (
     dispatch: (arg: AnyActionType) => any,
     getState: () => StateType
@@ -547,9 +586,10 @@ let loadStudent: LoadStudentTriggerType = function loadStudent(id) {
 };
 
 /**
- * loadStudentHistory thunk function
+ * loadStudentHistory thunk action creator
  * @param id student id
  * @param forceLoad should the history load be forced
+ * @returns a thunk function
  */
 const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
   id,
@@ -683,9 +723,10 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
 };
 
 /**
- * loadStudentGuiderRelations thunk function
+ * loadStudentGuiderRelations thunk action creator
  * @param id student id
  * @param forceLoad should the guiderRelation load be forced
+ * @returns a thunk function
  */
 const loadStudentGuiderRelations: LoadStudentDataTriggerType =
   function loadStudentGuiderRelations(id, forceLoad) {
@@ -754,12 +795,13 @@ const loadStudentGuiderRelations: LoadStudentDataTriggerType =
     };
   };
 
-/** createContactEvent thunk function
- * @param id student id
- * @param forceLoad should the guiderRelation load be forced
+/** createContactEvent thunk action creator
+ * @param userEntityId id for the user in subject
+ * @param payload event data payload
+ * @returns a thunk function
  */
 const createContactEvent: CreateContactEventTriggerType =
-  function loadStudentGuiderRelations(userEntityId, payload) {
+  function createContactEvent(userEntityId, payload) {
     return async (
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
@@ -775,6 +817,137 @@ const createContactEvent: CreateContactEventTriggerType =
             payload: {
               property: "contactLogs",
               value: [...contactLogs, ...[contactLog]],
+            },
+          });
+        });
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          notificationActions.displayNotification(
+            getState().i18n.text.get("plugin.guider.errormessage.user"),
+            "error"
+          )
+        );
+        dispatch({
+          type: "UPDATE_GUIDER_ALL_PROPS",
+          payload: {
+            currentState: <GuiderCurrentStudentStateType>"ERROR",
+          },
+        });
+        dispatch({
+          type: "UNLOCK_TOOLBAR",
+          payload: null,
+        });
+      }
+    };
+  };
+
+/**
+ * editContactEvent thunk action creator
+ * @param userEntityId student user id
+ * @param contactLogEntryId id of the edited contact log
+ * @param payload edit payload
+ * @returns a thunk function
+ */
+const editContactEvent: EditContactEventTriggerType = function editContactEvent(
+  userEntityId,
+  contactLogEntryId,
+  payload
+) {
+  return async (
+    dispatch: (arg: AnyActionType) => any,
+    getState: () => StateType
+  ) => {
+    try {
+      const contactLogs = getState().guider.currentStudent.contactLogs;
+      await promisify(
+        mApi().guider.student.contactLog.update(
+          userEntityId,
+          contactLogEntryId,
+          payload
+        ),
+        "callback"
+      )().then((contactLog: IContactEvent) => {
+        // Find the index of the edited contactLog
+        const contactLogIndex = contactLogs.findIndex(
+          (log) => (log.id = contactLog.id)
+        );
+        // Replace the edited contactLog with a new one
+        contactLogs.splice(contactLogIndex, 1, contactLog);
+
+        dispatch({
+          type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+          payload: {
+            property: "contactLogs",
+            value: contactLogs,
+          },
+        });
+      });
+    } catch (err) {
+      if (!(err instanceof MApiError)) {
+        throw err;
+      }
+      dispatch(
+        notificationActions.displayNotification(
+          getState().i18n.text.get("plugin.guider.errormessage.user"),
+          "error"
+        )
+      );
+      dispatch({
+        type: "UPDATE_GUIDER_ALL_PROPS",
+        payload: {
+          currentState: <GuiderCurrentStudentStateType>"ERROR",
+        },
+      });
+      dispatch({
+        type: "UNLOCK_TOOLBAR",
+        payload: null,
+      });
+    }
+  };
+};
+
+/** createContactEventComment thunk action creator
+ * @param userEntityId id for the user in subject
+ * @param entryId id for the entry to be replied
+ * @param payload event data payload
+ * @returns a thunk function
+ */
+const createContactEventComment: CreateContactEventCommentTriggerType =
+  function createContactEventComment(userEntityId, entryId, payload) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      try {
+        const contactLogs = getState().guider.currentStudent.contactLogs;
+        await promisify(
+          mApi().guider.student.contactLog.comments.create(
+            userEntityId,
+            entryId,
+            payload
+          ),
+          "callback"
+        )().then((comment: IContactEventComment) => {
+          // Add the new comment to the current contactEvent
+          const contactEvent = contactLogs.find(
+            (log) => log.id === comment.entry
+          );
+          contactEvent.comments.push(comment);
+
+          // Remove the existing contactEvent to avoid duplicates
+          //TODO: Could be done with splice for more consistent output
+          const newContactLogs = contactLogs.filter(
+            (log) => log.id !== contactEvent.id
+          );
+
+          dispatch({
+            type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+            payload: {
+              property: "contactLogs",
+              value: [...newContactLogs, ...[contactEvent]],
             },
           });
         });
@@ -1325,6 +1498,8 @@ export {
   loadStudentHistory,
   loadStudentGuiderRelations,
   createContactEvent,
+  editContactEvent,
+  createContactEventComment,
   addToGuiderSelectedStudents,
   removeFromGuiderSelectedStudents,
   addGuiderLabelToCurrentUser,
