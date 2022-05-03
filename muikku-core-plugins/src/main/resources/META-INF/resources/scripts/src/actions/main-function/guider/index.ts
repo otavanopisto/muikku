@@ -176,7 +176,7 @@ export interface LoadMoreStudentsTriggerType {
 }
 
 export interface LoadStudentTriggerType {
-  (id: string): AnyActionType;
+  (id: string, forceLoad?: boolean): AnyActionType;
 }
 
 export interface AddToGuiderSelectedStudentsTriggerType {
@@ -336,7 +336,7 @@ let loadStudent: LoadStudentTriggerType = function loadStudent(id) {
     getState: () => StateType
   ) => {
     try {
-      let currentUserSchoolDataIdentifier =
+      const currentUserSchoolDataIdentifier =
         getState().status.userSchoolDataIdentifier;
 
       const canListUserOrders = getState().status.permissions.LIST_USER_ORDERS;
@@ -347,8 +347,8 @@ let loadStudent: LoadStudentTriggerType = function loadStudent(id) {
       });
 
       dispatch({
-        type: "SET_CURRENT_GUIDER_STUDENT_EMPTY_LOAD",
-        payload: null,
+        type: "UPDATE_CURRENT_GUIDER_STUDENT_STATE",
+        payload: <GuiderCurrentStudentStateType>"LOADING",
       });
 
       await Promise.all([
@@ -433,7 +433,7 @@ let loadStudent: LoadStudentTriggerType = function loadStudent(id) {
         promisify(
           mApi().workspace.workspaces.read({
             userIdentifier: id,
-            includeInactiveWorkspaces: true,
+            includeInactiveWorkspaces: false,
           }),
           "callback"
         )().then(async (workspaces: WorkspaceListType) => {
@@ -486,7 +486,141 @@ let loadStudent: LoadStudentTriggerType = function loadStudent(id) {
           }
           dispatch({
             type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-            payload: { property: "workspaces", value: workspaces },
+            payload: { property: "currentWorkspaces", value: workspaces },
+          });
+        }),
+        canListUserOrders &&
+          promisify(mApi().ceepos.user.orders.read(id), "callback")().then(
+            (pOrders: PurchaseType[]) => {
+              dispatch({
+                type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+                payload: { property: "purchases", value: pOrders },
+              });
+            }
+          ),
+      ]);
+
+      dispatch({
+        type: "UPDATE_CURRENT_GUIDER_STUDENT_STATE",
+        payload: <GuiderCurrentStudentStateType>"READY",
+      });
+
+      dispatch({
+        type: "UNLOCK_TOOLBAR",
+        payload: null,
+      });
+    } catch (err) {
+      if (!(err instanceof MApiError)) {
+        throw err;
+      }
+      dispatch(
+        notificationActions.displayNotification(
+          getState().i18n.text.get("plugin.guider.errormessage.user"),
+          "error"
+        )
+      );
+      dispatch({
+        type: "UPDATE_GUIDER_ALL_PROPS",
+        payload: {
+          currentState: <GuiderCurrentStudentStateType>"ERROR",
+        },
+      });
+      dispatch({
+        type: "UNLOCK_TOOLBAR",
+        payload: null,
+      });
+    }
+  };
+};
+
+/**
+ * loadStudentHistory thunk function
+ * @param id student id
+ * @param forceLoad should the history load be forced
+ */
+const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
+  id,
+  forceLoad
+) {
+  return async (
+    dispatch: (arg: AnyActionType) => any,
+    getState: () => StateType
+  ) => {
+    try {
+      const historyLoaded = !!getState().guider.currentStudent.pastWorkspaces;
+
+      if (historyLoaded && !forceLoad) {
+        return;
+      }
+
+      dispatch({
+        type: "LOCK_TOOLBAR",
+        payload: null,
+      });
+
+      dispatch({
+        type: "UPDATE_CURRENT_GUIDER_STUDENT_STATE",
+        payload: <GuiderCurrentStudentStateType>"LOADING",
+      });
+
+      await Promise.all([
+        promisify(
+          mApi().workspace.workspaces.read({
+            userIdentifier: id,
+            includeInactiveWorkspaces: true,
+          }),
+          "callback"
+        )().then(async (workspaces: WorkspaceListType) => {
+          if (workspaces && workspaces.length) {
+            await Promise.all([
+              Promise.all(
+                workspaces.map(async (workspace, index) => {
+                  const activity: WorkspaceStudentActivityType = <
+                    WorkspaceStudentActivityType
+                  >await promisify(
+                    mApi().guider.workspaces.studentactivity.read(
+                      workspace.id,
+                      id
+                    ),
+                    "callback"
+                  )();
+                  workspaces[index].studentActivity = activity;
+                })
+              ),
+              Promise.all(
+                workspaces.map(async (workspace, index) => {
+                  const statistics: WorkspaceForumStatisticsType = <
+                    WorkspaceForumStatisticsType
+                  >await promisify(
+                    mApi().workspace.workspaces.forumStatistics.read(
+                      workspace.id,
+                      { userIdentifier: id }
+                    ),
+                    "callback"
+                  )();
+                  workspaces[index].forumStatistics = statistics;
+                })
+              ),
+              Promise.all(
+                workspaces.map(async (workspace, index) => {
+                  const activityLogs: ActivityLogType[] = <ActivityLogType[]>(
+                    await promisify(
+                      mApi().activitylogs.user.workspace.read(id, {
+                        workspaceEntityId: workspace.id,
+                        from: new Date(new Date().getFullYear() - 2, 0),
+                        to: new Date(),
+                      }),
+                      "callback"
+                    )()
+                  );
+                  workspaces[index].activityLogs = activityLogs;
+                })
+              ),
+            ]);
+          }
+          dispatch({
+            type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+            payload: { property: "pastWorkspaces", value: workspaces },
           });
         }),
         promisify(
@@ -501,18 +635,7 @@ let loadStudent: LoadStudentTriggerType = function loadStudent(id) {
             payload: { property: "activityLogs", value: activityLogs },
           });
         }),
-
-        canListUserOrders &&
-          promisify(mApi().ceepos.user.orders.read(id), "callback")().then(
-            (pOrders: PurchaseType[]) => {
-              dispatch({
-                type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-                payload: { property: "purchases", value: pOrders },
-              });
-            }
-          ),
       ]);
-
       dispatch({
         type: "UPDATE_CURRENT_GUIDER_STUDENT_STATE",
         payload: <GuiderCurrentStudentStateType>"READY",
@@ -1066,6 +1189,7 @@ export {
   loadStudents,
   loadMoreStudents,
   loadStudent,
+  loadStudentHistory,
   addToGuiderSelectedStudents,
   removeFromGuiderSelectedStudents,
   addGuiderLabelToCurrentUser,

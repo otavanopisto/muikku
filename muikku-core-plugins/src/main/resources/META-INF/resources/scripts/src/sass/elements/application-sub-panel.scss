@@ -13,6 +13,50 @@
   }
 }
 
+.application-sub-panel--header-main {
+  align-items: flex-start;
+  border-bottom: none;
+  display: flex;
+  flex-basis: auto;
+  flex-flow: column wrap;
+  flex-grow: 1;
+  flex-shrink: 1;
+  margin: 0 0 0 15px;
+  text-transform: none;
+
+  @include breakpoint($breakpoint-desktop) {
+    align-items: center;
+    flex-flow: row wrap;
+  }
+}
+
+.application-sub-panel--student-data-container {
+  display: flex;
+  flex-wrap: wrap;
+
+  @include breakpoint($breakpoint-desktop-xl) {
+    flex-wrap: unset;
+  }
+}
+
+.application-sub-panel--student-data-primary {
+  flex-basis: 100%;
+
+  @include breakpoint($breakpoint-desktop-xl) {
+    flex-basis: 45%;
+  }
+}
+
+.application-sub-panel--student-data-secondary {
+  flex-basis: 100%;
+
+  @include breakpoint($breakpoint-desktop-xl) {
+    flex-basis: auto;
+    flex-grow: 1;
+    padding: 0 0 0 20px;
+  }
+}
+
 .application-sub-panel--worklist {
   border: 0;
   margin: 0 0 15px;
@@ -122,38 +166,26 @@
 .application-sub-panel__header-main {
   flex-basis: 100%;
   flex-grow: 1;
-  flex-shrink: 1;
-
-  @include breakpoint($breakpoint-desktop) {
-    flex-basis: auto;
-    flex-grow: 1;
-    flex-shrink: 1;
-    font-size: 1.25rem;
-  }
-}
-
-.application-sub-panel__header-main--guider-profile-student-name {
-  flex-shrink: 0;
   font-size: 1.125rem;
   font-weight: 400;
 
   @include breakpoint($breakpoint-desktop) {
-    flex-basis: 0;
+    flex-basis: unset;
     flex-grow: 0;
-    flex-shrink: 1;
+    font-size: 1.25rem;
     margin: 0 10px 0 0;
     white-space: nowrap;
   }
 }
 
-.application-sub-panel__header-main--guider-profile-student-email {
+.application-sub-panel__header-main-detail {
   color: $color-default-helper;
+  flex-basis: 100%;
   font-size: 1rem;
-  word-wrap: break-all;
 
   @include breakpoint($breakpoint-desktop) {
     flex-basis: auto;
-    flex-grow: 1;
+    font-size: 1.25rem;
   }
 }
 
@@ -166,6 +198,10 @@
   font-size: $text-capitalized-mobile-font-size;
   justify-content: flex-end;
   text-transform: uppercase;
+
+  a:not(:first-child) {
+    margin-left: 20px;
+  }
 
   @include breakpoint($breakpoint-pad) {
     font-size: $text-capitalized-desktop-font-size;
@@ -642,6 +678,10 @@
   @include breakpoint($breakpoint-desktop) {
     flex-flow: row nowrap;
   }
+}
+
+.application-sub-panel__item--guider-student {
+  border-bottom: unset;
 }
 
 .application-sub-panel__item--organization-previous-bills,
