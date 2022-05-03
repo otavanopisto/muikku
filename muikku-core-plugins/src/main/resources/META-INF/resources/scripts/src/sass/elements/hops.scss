@@ -283,15 +283,19 @@
   width: 100%;
 }
 
-.hops-container__table-container--descriptions {
-  align-items: center;
+.hops-container__table-container-descriptions {
+  align-items: flex-start;
   background: $color-default-lighter-generic-background;
   border-radius: 5px;
   display: flex;
-  flex-flow: row wrap;
+  flex-flow: column nowrap;
   justify-content: flex-start;
   margin: 5px;
   padding: 5px;
+
+  @include breakpoint($breakpoint-pad) {
+    display: none;
+  }
 }
 
 .hops-container__table-description-item {
@@ -304,6 +308,26 @@
   font-size: 0.8135rem;
   justify-content: flex-start;
   margin: 5px 10px;
+}
+
+.hops-container__table-head-description--long {
+  display: none;
+
+  @include breakpoint($breakpoint-pad) {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+  }
+}
+
+.hops-container__table-head-description--short {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+
+  @include breakpoint($breakpoint-pad) {
+    display: none;
+  }
 }
 
 // HOPS form related styles.
@@ -521,7 +545,7 @@
   display: flex;
   flex-flow: column wrap;
   justify-content: flex-start;
-  margin: 0 5px 5px 5px;
+  margin: 0 5px 5px;
   width: 100%;
 }
 

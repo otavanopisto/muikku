@@ -112,18 +112,6 @@ class HopsMotivationAndStudySkills extends React.Component<
     const { wayToLearn, studySupport, selfImageAsStudent } =
       this.props.motivationAndStudy;
 
-    const tableHeader: JSX.Element = (
-      <TableHead>
-        <Tr>
-          <Th>Erittäin huonosti</Th>
-          <Th>Huonosti</Th>
-          <Th>Ei hyvin eikä huonosti</Th>
-          <Th>Hyvin</Th>
-          <Th>Erittäin hyvin</Th>
-        </Tr>
-      </TableHead>
-    );
-
     return (
       <div className="hops-container">
         <fieldset className="hops-container__fieldset">
@@ -131,7 +119,7 @@ class HopsMotivationAndStudySkills extends React.Component<
 
           <div className="hops-container__row">
             <div className="hops-container__table-container">
-              <HopsInputTable tableHeader={tableHeader}>
+              <HopsInputTable>
                 <InputRow
                   scaleStart={1}
                   scaleInterval={1}
@@ -360,7 +348,7 @@ class HopsMotivationAndStudySkills extends React.Component<
           </legend>
           <div className="hops-container__row">
             <div className="hops-container__table-container">
-              <HopsInputTable tableHeader={tableHeader}>
+              <HopsInputTable>
                 <InputRow
                   scaleStart={1}
                   scaleInterval={1}
