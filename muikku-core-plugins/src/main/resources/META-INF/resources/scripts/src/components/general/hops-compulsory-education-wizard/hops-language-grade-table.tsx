@@ -86,7 +86,7 @@ export const HopsLanguageGradeTable: React.FC<HopsLanguageGradeTableProps> = ({
               5
             </span>
           </Th>
-          <Th style={{ maxWidth: "50px", textAlign: "center" }}></Th>
+          <Th></Th>
         </Tr>
       </TableHead>
       <Tbody>{children}</Tbody>
