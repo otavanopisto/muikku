@@ -3,7 +3,6 @@ import {
   Education,
   HopsStudentStartingLevel,
   LanguageGrade,
-  LanguageGradeEnum,
 } from "~/@types/shared";
 import "~/sass/elements/hops.scss";
 import {
@@ -62,6 +61,29 @@ class HopsStartingLevel extends React.Component<
   }
 
   /**
+   * This is for StepZilla way to validated "step"
+   * that locks users way to get further in form
+   * before all data is given and valitated
+   * @returns boolean
+   */
+  isValidated = () => !this.isInvalid();
+
+  /**
+   * isInvalid
+   */
+  isInvalid = () =>
+    this.props.user === "student" &&
+    this.hopsPreviousLanguageExperienceHasUndefinedValues();
+
+  /**
+   * hopsPreviousLanguageExperienceHasUndefinedValues
+   */
+  hopsPreviousLanguageExperienceHasUndefinedValues = () =>
+    this.props.studentStartingLevel.previousLanguageExperience.some(
+      (lng) => lng.grade === undefined || lng.name === ""
+    );
+
+  /**
    * Handles selects changes
    *
    * @param name keyof of HopsStudentStartingLevel
@@ -99,7 +121,7 @@ class HopsStartingLevel extends React.Component<
 
     updatedLngGrades.push({
       name: "",
-      grade: LanguageGradeEnum.NOT_STUDIED,
+      grade: undefined,
       hardCoded: false,
     });
 
@@ -252,7 +274,9 @@ class HopsStartingLevel extends React.Component<
           </div>
         </fieldset>
         <fieldset className="hops-container__fieldset">
-          <legend className="hops-container__subheader">Kielitaito</legend>
+          <legend className="hops-container__subheader hops-container__subheader--required">
+            Kielitaito
+          </legend>
 
           <div className="hops-container__row">
             <div className="hops-container__table-container">

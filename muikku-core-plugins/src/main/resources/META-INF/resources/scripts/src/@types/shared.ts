@@ -272,7 +272,7 @@ export enum CourseStatus {
  */
 export interface LanguageGrade {
   name: string;
-  grade: LanguageGradeEnum;
+  grade?: LanguageGradeEnum;
   hardCoded: boolean;
 }
 
@@ -401,11 +401,11 @@ export interface WayToLearn {
  * StudySupport
  */
 export interface StudySupport {
-  fromFamilyMember: boolean;
-  fromFriend: boolean;
-  fromSupportPerson: boolean;
-  noSupport: boolean;
-  somethingElse: boolean;
+  fromFamilyMember?: boolean;
+  fromFriend?: boolean;
+  fromSupportPerson?: boolean;
+  noSupport?: boolean;
+  somethingElse?: boolean;
   somethingElseWhat?: string;
 }
 

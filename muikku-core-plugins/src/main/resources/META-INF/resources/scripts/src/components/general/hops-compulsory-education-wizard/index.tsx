@@ -16,7 +16,6 @@ import {
   SaveState,
   FollowUp,
   StudentInfo,
-  LanguageGradeEnum,
 } from "~/@types/shared";
 import {
   HopsCompulsory,
@@ -674,10 +673,11 @@ class CompulsoryEducationHopsWizard extends React.Component<
           {baseProps.disabled ? (
             <StepZilla
               steps={steps}
-              showNavigation={!this.state.loading}
-              stepsNavigation={!this.state.loading}
-              showSteps={true}
+              dontValidate={false}
               preventEnterSubmission={true}
+              stepsNavigation={this.props.user === "supervisor"}
+              showNavigation={!this.state.loading}
+              showSteps={true}
               prevBtnOnLastStep={true}
               nextButtonCls="button button--wizard"
               backButtonCls="button button--wizard"
@@ -687,10 +687,11 @@ class CompulsoryEducationHopsWizard extends React.Component<
           ) : (
             <StepZilla
               steps={steps}
-              showNavigation={!this.state.loading}
-              stepsNavigation={!this.state.loading}
-              showSteps={true}
+              dontValidate={false}
               preventEnterSubmission={true}
+              stepsNavigation={this.props.user === "supervisor"}
+              showNavigation={!this.state.loading}
+              showSteps={true}
               prevBtnOnLastStep={true}
               nextTextOnFinalActionStep="Tallenna"
               nextButtonCls="button button--wizard"
@@ -784,17 +785,14 @@ const initializeHops = (): HopsCompulsory => ({
     previousLanguageExperience: [
       {
         name: "suomi",
-        grade: LanguageGradeEnum.NOT_STUDIED,
         hardCoded: true,
       },
       {
         name: "ruotsi",
-        grade: LanguageGradeEnum.NOT_STUDIED,
         hardCoded: true,
       },
       {
         name: "englanti",
-        grade: LanguageGradeEnum.NOT_STUDIED,
         hardCoded: true,
       },
     ],
@@ -810,7 +808,7 @@ const initializeHops = (): HopsCompulsory => ({
       byExplaining: undefined,
       byDiscussing: undefined,
       byWatchingOrDoingExamples: undefined,
-      someOtherWay: undefined,
+      someOtherWay: "",
     },
 
     studySupport: {

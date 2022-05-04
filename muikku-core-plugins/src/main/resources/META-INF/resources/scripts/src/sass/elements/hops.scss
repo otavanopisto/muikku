@@ -138,6 +138,11 @@
   }
 }
 
+.hops-container__subheader--required::after {
+  color: $color-fatal;
+  content: " *";
+}
+
 // HOPS progressbar's title modifier
 .hops-container__subheader--activity-title {
   font-size: 1rem;
@@ -521,7 +526,7 @@
   display: flex;
   flex-flow: column wrap;
   justify-content: flex-start;
-  margin: 0 5px 5px 5px;
+  margin: 0 5px 5px;
   width: 100%;
 }
 

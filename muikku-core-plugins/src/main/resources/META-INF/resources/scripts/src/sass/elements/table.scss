@@ -26,6 +26,11 @@
   display: inline-block;
 }
 
+.table__alignment-helper--required::after {
+  color: $color-fatal;
+  content: " *";
+}
+
 .table__data,
 .table__head {
   height: 50px;

@@ -48,7 +48,7 @@ export const HopsLanguageGradeTable: React.FC<HopsLanguageGradeTableProps> = ({
 interface LanguageGradeRowProps {
   index: number;
   disabled: boolean;
-  lng?: LanguageGrade;
+  lng: LanguageGrade;
   onDeleteRowClick?: (index: number) => void;
   onLanguageRowChange?: (updatedLng: LanguageGrade, index: number) => void;
 }
@@ -116,7 +116,11 @@ export const LanguageGradeRow: React.FC<LanguageGradeRowProps> = ({
         <span className="table__alignment-helper">
           <input
             type="radio"
-            checked={lng.grade === LanguageGradeEnum.NATIVE_LANGUAGE}
+            checked={
+              lng.grade
+                ? lng.grade === LanguageGradeEnum.NATIVE_LANGUAGE
+                : false
+            }
             onChange={handleRadioInputChange(LanguageGradeEnum.NATIVE_LANGUAGE)}
             className="hops__input hops__input--inside-table"
             disabled={disabled}
@@ -127,7 +131,9 @@ export const LanguageGradeRow: React.FC<LanguageGradeRowProps> = ({
         <span className="table__alignment-helper">
           <input
             type="radio"
-            checked={lng.grade === LanguageGradeEnum.EXCELLENT}
+            checked={
+              lng.grade ? lng.grade === LanguageGradeEnum.EXCELLENT : false
+            }
             onChange={handleRadioInputChange(LanguageGradeEnum.EXCELLENT)}
             className="hops__input hops__input--inside-table"
             disabled={disabled}
@@ -138,7 +144,7 @@ export const LanguageGradeRow: React.FC<LanguageGradeRowProps> = ({
         <span className="table__alignment-helper">
           <input
             type="radio"
-            checked={lng.grade === LanguageGradeEnum.GOOD}
+            checked={lng.grade ? lng.grade === LanguageGradeEnum.GOOD : false}
             onChange={handleRadioInputChange(LanguageGradeEnum.GOOD)}
             className="hops__input hops__input--inside-table"
             disabled={disabled}
@@ -149,7 +155,9 @@ export const LanguageGradeRow: React.FC<LanguageGradeRowProps> = ({
         <span className="table__alignment-helper">
           <input
             type="radio"
-            checked={lng.grade === LanguageGradeEnum.SATISFYING}
+            checked={
+              lng.grade ? lng.grade === LanguageGradeEnum.SATISFYING : false
+            }
             onChange={handleRadioInputChange(LanguageGradeEnum.SATISFYING)}
             className="hops__input hops__input--inside-table"
             disabled={disabled}
@@ -160,7 +168,9 @@ export const LanguageGradeRow: React.FC<LanguageGradeRowProps> = ({
         <span className="table__alignment-helper">
           <input
             type="radio"
-            checked={lng.grade === LanguageGradeEnum.NOT_STUDIED}
+            checked={
+              lng.grade ? lng.grade === LanguageGradeEnum.NOT_STUDIED : false
+            }
             onChange={handleRadioInputChange(LanguageGradeEnum.NOT_STUDIED)}
             className="hops__input hops__input--inside-table"
             disabled={disabled}

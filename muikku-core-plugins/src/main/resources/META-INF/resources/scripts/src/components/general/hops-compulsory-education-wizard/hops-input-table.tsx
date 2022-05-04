@@ -1,11 +1,9 @@
 import * as React from "react";
 import {
   Table,
-  TableHead,
   TableRowProps,
   Tbody,
   Td,
-  Th,
   Tr,
 } from "~/components/general/table";
 
@@ -71,8 +69,13 @@ interface InputRowProps {
   scaleInterval: number;
   scaleLength: number;
   labelOnSeparateRow: boolean;
+  required?: boolean;
   onInputGroupChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
+
+const defaultProps = {
+  required: false,
+};
 
 /**
  * InputRow
@@ -80,6 +83,8 @@ interface InputRowProps {
  * @returns JSX.Element
  */
 export const InputRow: React.FC<InputRowProps> = (props) => {
+  props = { ...defaultProps, ...props };
+
   const {
     label,
     selectedValue,
@@ -90,7 +95,12 @@ export const InputRow: React.FC<InputRowProps> = (props) => {
     labelOnSeparateRow,
     onInputGroupChange,
     disabled,
+    required,
   } = props;
+
+  const labelClassName = required
+    ? "table__alignment-helper table__alignment-helper--required"
+    : "table__alignment-helper";
 
   return labelOnSeparateRow ? (
     <>
@@ -99,7 +109,7 @@ export const InputRow: React.FC<InputRowProps> = (props) => {
           modifiers={["centered", "question", "merged"]}
           colSpan={scaleLength}
         >
-          <span className="table__alignment-helper">{label}</span>
+          <span className={labelClassName}>{label}</span>
         </Td>
       </Tr>
       <Tr modifiers={["question-table"]}>
@@ -112,7 +122,7 @@ export const InputRow: React.FC<InputRowProps> = (props) => {
             <span className="table__alignment-helper">
               <input
                 name={groupName}
-                checked={selectedValue && selectedValue === v}
+                checked={selectedValue ? selectedValue === v : false}
                 value={v}
                 disabled={disabled}
                 onChange={onInputGroupChange}
@@ -127,7 +137,7 @@ export const InputRow: React.FC<InputRowProps> = (props) => {
   ) : (
     <Tr modifiers={["question-table"]}>
       <Td modifiers={["centered", "question"]}>
-        <span className="table__alignment-helper">{label}</span>
+        <span className={labelClassName}>{label}</span>
       </Td>
 
       {createArrayOfNumberIntervals(scaleStart, scaleInterval, scaleLength).map(
@@ -136,7 +146,7 @@ export const InputRow: React.FC<InputRowProps> = (props) => {
             <span className="table__alignment-helper">
               <input
                 name={groupName}
-                checked={selectedValue && selectedValue === v}
+                checked={selectedValue ? selectedValue === v : false}
                 value={v}
                 onChange={onInputGroupChange}
                 type="radio"

@@ -37,6 +37,8 @@ class HopsMotivationAndStudySkills extends React.Component<
     super(props);
 
     this.state = {};
+
+    this.isValidated = this.isValidated.bind(this);
   }
 
   /**
@@ -50,6 +52,37 @@ class HopsMotivationAndStudySkills extends React.Component<
       this.props.jumpToStep(0);
     }
   }
+
+  /**
+   * This is for StepZilla way to validated "step"
+   * that locks users way to get further in form
+   * before all data is given and valitated
+   * @returns boolean
+   */
+  isValidated = () => !this.isInvalid();
+
+  /**
+   * Checks if form is invalid
+   * @returns boolean
+   */
+  isInvalid = () =>
+    this.props.user === "student" &&
+    (this.hopsMotivationAndStudyPropertyHasUndefinedValues("wayToLearn") ||
+      this.hopsMotivationAndStudyPropertyHasUndefinedValues("studySupport"));
+
+  /**
+   * HopsMotivationAndStudyPropertyHasUndefinedValues
+   * @param property property
+   */
+  hopsMotivationAndStudyPropertyHasUndefinedValues = (
+    property: keyof HopsMotivationAndStudy
+  ) => {
+    const includedUndefineValues = Object.values(
+      this.props.motivationAndStudy[property]
+    ).includes(undefined);
+
+    return includedUndefineValues;
+  };
 
   /**
    * Handles textarea changes
@@ -127,7 +160,9 @@ class HopsMotivationAndStudySkills extends React.Component<
     return (
       <div className="hops-container">
         <fieldset className="hops-container__fieldset">
-          <legend className="hops-container__subheader">Opiskelutavat</legend>
+          <legend className="hops-container__subheader hops-container__subheader--required">
+            Opiskelutavat
+          </legend>
 
           <div className="hops-container__row">
             <div className="hops-container__table-container">
@@ -142,6 +177,7 @@ class HopsMotivationAndStudySkills extends React.Component<
                   groupName="byReadingMaterials"
                   disabled={disabled}
                   onInputGroupChange={this.handleScaleRangeChange("wayToLearn")}
+                  required
                 />
                 <InputRow
                   scaleStart={1}
@@ -153,6 +189,7 @@ class HopsMotivationAndStudySkills extends React.Component<
                   groupName="byTakingNotes"
                   disabled={disabled}
                   onInputGroupChange={this.handleScaleRangeChange("wayToLearn")}
+                  required
                 />
                 <InputRow
                   scaleStart={1}
@@ -164,6 +201,7 @@ class HopsMotivationAndStudySkills extends React.Component<
                   groupName="byDoingExcercises"
                   disabled={disabled}
                   onInputGroupChange={this.handleScaleRangeChange("wayToLearn")}
+                  required
                 />
                 <InputRow
                   scaleStart={1}
@@ -175,6 +213,7 @@ class HopsMotivationAndStudySkills extends React.Component<
                   groupName="byMemorizing"
                   disabled={disabled}
                   onInputGroupChange={this.handleScaleRangeChange("wayToLearn")}
+                  required
                 />
                 <InputRow
                   scaleStart={1}
@@ -186,6 +225,7 @@ class HopsMotivationAndStudySkills extends React.Component<
                   groupName="byWatchingVideos"
                   disabled={disabled}
                   onInputGroupChange={this.handleScaleRangeChange("wayToLearn")}
+                  required
                 />
                 <InputRow
                   scaleStart={1}
@@ -197,6 +237,7 @@ class HopsMotivationAndStudySkills extends React.Component<
                   groupName="byListeningTeaching"
                   disabled={disabled}
                   onInputGroupChange={this.handleScaleRangeChange("wayToLearn")}
+                  required
                 />
                 <InputRow
                   scaleStart={1}
@@ -208,6 +249,7 @@ class HopsMotivationAndStudySkills extends React.Component<
                   groupName="byExplaining"
                   disabled={disabled}
                   onInputGroupChange={this.handleScaleRangeChange("wayToLearn")}
+                  required
                 />
                 <InputRow
                   scaleStart={1}
@@ -219,6 +261,7 @@ class HopsMotivationAndStudySkills extends React.Component<
                   groupName="byDiscussing"
                   disabled={disabled}
                   onInputGroupChange={this.handleScaleRangeChange("wayToLearn")}
+                  required
                 />
                 <InputRow
                   scaleStart={1}
@@ -230,6 +273,7 @@ class HopsMotivationAndStudySkills extends React.Component<
                   groupName="byWatchingOrDoingExamples"
                   disabled={disabled}
                   onInputGroupChange={this.handleScaleRangeChange("wayToLearn")}
+                  required
                 />
                 <EmptyRow colSpan={5} modifiers={["empty", "question-table"]} />
               </HopsInputTable>
@@ -264,7 +308,7 @@ class HopsMotivationAndStudySkills extends React.Component<
                 type="checkbox"
                 name="fromFamilyMember"
                 className="hops__input"
-                checked={studySupport.fromFamilyMember}
+                checked={!!studySupport.fromFamilyMember}
                 onChange={this.handleCheckboxItemChange("studySupport")}
                 disabled={this.props.disabled}
               ></input>
@@ -280,7 +324,7 @@ class HopsMotivationAndStudySkills extends React.Component<
                 type="checkbox"
                 name="fromFriend"
                 className="hops__input"
-                checked={studySupport.fromFriend}
+                checked={!!studySupport.fromFriend}
                 onChange={this.handleCheckboxItemChange("studySupport")}
                 disabled={this.props.disabled}
               ></input>
@@ -296,7 +340,7 @@ class HopsMotivationAndStudySkills extends React.Component<
                 type="checkbox"
                 name="fromSupportPerson"
                 className="hops__input"
-                checked={studySupport.fromSupportPerson}
+                checked={!!studySupport.fromSupportPerson}
                 onChange={this.handleCheckboxItemChange("studySupport")}
                 disabled={this.props.disabled}
               ></input>
@@ -312,7 +356,7 @@ class HopsMotivationAndStudySkills extends React.Component<
                 type="checkbox"
                 name="noSupport"
                 className="hops__input"
-                checked={studySupport.noSupport}
+                checked={!!studySupport.noSupport}
                 onChange={this.handleCheckboxItemChange("studySupport")}
                 disabled={this.props.disabled}
               ></input>
@@ -328,7 +372,7 @@ class HopsMotivationAndStudySkills extends React.Component<
                 type="checkbox"
                 name="somethingElse"
                 className="hops__input"
-                checked={studySupport.somethingElse}
+                checked={!!studySupport.somethingElse}
                 onChange={this.handleCheckboxItemChange("studySupport")}
                 disabled={this.props.disabled}
               ></input>
@@ -354,7 +398,7 @@ class HopsMotivationAndStudySkills extends React.Component<
         </fieldset>
 
         <fieldset className="hops-container__fieldset">
-          <legend className="hops-container__subheader">
+          <legend className="hops-container__subheader hops-container__subheader--required">
             Arvioi, miten hyvin tai huonosti seuraavat väitteet kuvaavat sinua
             opiskelijana:
           </legend>
@@ -373,6 +417,7 @@ class HopsMotivationAndStudySkills extends React.Component<
                   onInputGroupChange={this.handleScaleRangeChange(
                     "selfImageAsStudent"
                   )}
+                  required
                 />
                 <InputRow
                   scaleStart={1}
@@ -386,6 +431,7 @@ class HopsMotivationAndStudySkills extends React.Component<
                   onInputGroupChange={this.handleScaleRangeChange(
                     "selfImageAsStudent"
                   )}
+                  required
                 />
                 <InputRow
                   scaleStart={1}
@@ -399,6 +445,7 @@ class HopsMotivationAndStudySkills extends React.Component<
                   onInputGroupChange={this.handleScaleRangeChange(
                     "selfImageAsStudent"
                   )}
+                  required
                 />
                 <InputRow
                   scaleStart={1}
@@ -412,6 +459,7 @@ class HopsMotivationAndStudySkills extends React.Component<
                   onInputGroupChange={this.handleScaleRangeChange(
                     "selfImageAsStudent"
                   )}
+                  required
                 />
                 <InputRow
                   scaleStart={1}
@@ -425,6 +473,7 @@ class HopsMotivationAndStudySkills extends React.Component<
                   onInputGroupChange={this.handleScaleRangeChange(
                     "selfImageAsStudent"
                   )}
+                  required
                 />
                 <InputRow
                   scaleStart={1}
@@ -438,6 +487,7 @@ class HopsMotivationAndStudySkills extends React.Component<
                   onInputGroupChange={this.handleScaleRangeChange(
                     "selfImageAsStudent"
                   )}
+                  required
                 />
                 <InputRow
                   scaleStart={1}
@@ -451,6 +501,7 @@ class HopsMotivationAndStudySkills extends React.Component<
                   onInputGroupChange={this.handleScaleRangeChange(
                     "selfImageAsStudent"
                   )}
+                  required
                 />
                 <InputRow
                   scaleStart={1}
@@ -464,6 +515,7 @@ class HopsMotivationAndStudySkills extends React.Component<
                   onInputGroupChange={this.handleScaleRangeChange(
                     "selfImageAsStudent"
                   )}
+                  required
                 />
                 <InputRow
                   scaleStart={1}
@@ -477,6 +529,7 @@ class HopsMotivationAndStudySkills extends React.Component<
                   onInputGroupChange={this.handleScaleRangeChange(
                     "selfImageAsStudent"
                   )}
+                  required
                 />
                 <InputRow
                   scaleStart={1}
@@ -490,6 +543,7 @@ class HopsMotivationAndStudySkills extends React.Component<
                   onInputGroupChange={this.handleScaleRangeChange(
                     "selfImageAsStudent"
                   )}
+                  required
                 />
                 <InputRow
                   scaleStart={1}
@@ -505,6 +559,7 @@ class HopsMotivationAndStudySkills extends React.Component<
                   onInputGroupChange={this.handleScaleRangeChange(
                     "selfImageAsStudent"
                   )}
+                  required
                 />
                 <EmptyRow colSpan={5} modifiers={["empty", "question-table"]} />
               </HopsInputTable>
