@@ -1,0 +1,116 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.guidance-event {
+  align-items: flex-start;
+  display: flex;
+  flex-flow: row wrap;
+  width: 100%;
+}
+
+.guidance-event__item {
+  align-items: flex-start;
+  background-color: $color-item-list-item-background;
+  color: $color-text-default;
+  cursor: pointer;
+  display: flex;
+  padding: 10px;
+  position: relative;
+}
+
+.guidance-event__icon {
+  align-items: center;
+  color: $color-index-item-list-item-panel-announcements-icon;
+  display: flex;
+  flex-basis: 16px;
+  flex-grow: 0;
+  flex-shrink: 0;
+  font-size: $item-list-icon-font-size;
+  justify-content: center;
+  padding: 2px 0 0;
+
+  // scss-lint:disable SelectorFormat
+  &.state-YES {
+    color: $color-approved;
+  }
+
+  &.state-NO {
+    color: $color-declined;
+  }
+
+  &.state-MAYBE {
+    color: $color-waiting;
+  }
+
+  // scss-lint:enable SelectorFormat
+}
+
+.guidance-event__body {
+  flex-flow: column wrap;
+  margin-left: 5px;
+}
+
+.guidance-event__body-header {
+  // scss-lint:disable SelectorFormat
+  &.state-YES {
+    color: $color-approved;
+  }
+
+  &.state-NO {
+    color: $color-declined;
+  }
+
+  &.state-MAYBE {
+    color: $color-waiting;
+  }
+
+  // scss-lint:enable SelectorFormat
+}
+
+.guidance-event__body-content {
+  padding: 5px 0;
+}
+
+.guidance-event__body-description {
+  padding: 5px;
+}
+
+.guidance-event__body-participants {
+  span {
+    display: inline-block;
+    padding: 5px;
+
+    &:not(:first-child) {
+      margin-left: 10px;
+    }
+
+    // scss-lint:disable SelectorFormat
+    &.state-YES {
+      background-color: $color-approved-background;
+    }
+
+    &.state-NO {
+      background-color: $color-declined-background;
+    }
+
+    &.state-MAYBE {
+      background-color: $color-waiting-background;
+    }
+
+    &.state-UNCONFIRMED {
+      background-color: $color-unconfirmed-background;
+    }
+
+    // scss-lint:enable SelectorFormat
+  }
+}
+
+.guidance-event__body-footer {
+  padding: 5px 0;
+
+  a:not(:first-child) {
+    margin-left: 10px;
+  }
+}

@@ -5,10 +5,10 @@
   <parent>
     <groupId>fi.otavanopisto.muikku</groupId>
     <artifactId>parent</artifactId>
-    <version>1.1.181-SNAPSHOT</version>
+    <version>1.1.182-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
-  
+
   <artifactId>atests</artifactId>
   <packaging>jar</packaging>
   <name>Muikku atests</name>
@@ -16,7 +16,7 @@
 
   <properties>
     <!-- Selenium -->
-    <selenium-java.version>4.0.0</selenium-java.version>
+    <selenium-java.version>4.1.3</selenium-java.version>
     <wiremock.version>2.6.0</wiremock.version>
   </properties>
 
@@ -36,30 +36,29 @@
       <scope>test</scope>
     </dependency>
 
-	<!-- https://mvnrepository.com/artifact/com.deque.html.axe-core/selenium -->
-	<dependency>
-	  <groupId>com.deque.html.axe-core</groupId>
-	  <artifactId>selenium</artifactId>
-	  <version>4.1.1</version>
-	  <scope>test</scope>
-	</dependency>
-
-		
+    <!-- https://mvnrepository.com/artifact/com.deque.html.axe-core/selenium -->
     <dependency>
-	    <groupId>com.google.guava</groupId>
-	    <artifactId>guava</artifactId>
-	    <version>25.0-jre</version>
-	    <scope>test</scope>
-	  </dependency>
+      <groupId>com.deque.html.axe-core</groupId>
+      <artifactId>selenium</artifactId>
+      <version>4.1.1</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>31.1-jre</version>
+      <scope>test</scope>
+    </dependency>
 
     <!-- RestEasy -->
-    
+
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jaxrs</artifactId>
       <scope>provided</scope>
     </dependency>
-    
+
     <dependency>
       <groupId>org.jboss.spec.javax.ws.rs</groupId>
       <artifactId>jboss-jaxrs-api_2.0_spec</artifactId>
@@ -71,7 +70,7 @@
       <artifactId>resteasy-jackson2-provider</artifactId>
       <scope>provided</scope>
     </dependency>
-    
+
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-client</artifactId>
@@ -79,14 +78,14 @@
     </dependency>
 
     <!-- Jackson -->
-    
+
     <!--
 
     <dependency>
       <groupId>com.fasterxml.jackson.jaxrs</groupId>
       <artifactId>jackson-jaxrs-json-provider</artifactId>
     </dependency>
-    
+
     -->
 
     <dependency>
@@ -98,14 +97,14 @@
     <dependency>
       <groupId>fi.otavanopisto.pyramus</groupId>
       <artifactId>rest-model</artifactId>
-      <version>0.7.175-SNAPSHOT</version>
+      <version>0.7.176-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>fi.otavanopisto.pyramus</groupId>
       <artifactId>pyramus-webhooks</artifactId>
-      <version>0.7.175-SNAPSHOT</version>
+      <version>0.7.176-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
 
@@ -144,7 +143,7 @@
       <version>1.0.0</version>
       <scope>test</scope>
     </dependency>
-    
+
     <dependency>
       <groupId>fi.otavanopisto.muikku</groupId>
       <artifactId>persistence</artifactId>
@@ -154,17 +153,17 @@
       <groupId>fi.otavanopisto.muikku</groupId>
       <artifactId>core</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>fi.otavanopisto.muikku</groupId>
       <artifactId>core-plugins-persistence</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>fi.otavanopisto.muikku</groupId>
       <artifactId>muikku-school-data-pyramus-persistence</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>fi.otavanopisto.muikku</groupId>
       <artifactId>forum-plugin-rest-model</artifactId>
@@ -174,13 +173,13 @@
       <groupId>fi.otavanopisto.muikku</groupId>
       <artifactId>timed-notifications-plugin-persistence</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>fi.otavanopisto.muikku</groupId>
       <artifactId>atests-plugin-rest-model</artifactId>
       <version>${project.version}</version>
-    </dependency>    
-    
+    </dependency>
+
     <dependency>
       <groupId>javax.enterprise</groupId>
       <artifactId>cdi-api</artifactId>
@@ -189,25 +188,25 @@
       <groupId>org.jboss.spec.javax.servlet</groupId>
       <artifactId>jboss-servlet-api_3.1_spec</artifactId>
     </dependency>
-    
+
     <dependency>
       <artifactId>httpclient</artifactId>
       <groupId>org.apache.httpcomponents</groupId>
       <version>4.3.6</version>
     </dependency>
-    
+
     <dependency>
       <artifactId>httpmime</artifactId>
       <groupId>org.apache.httpcomponents</groupId>
       <version>4.3.1</version>
     </dependency>
-    
+
     <dependency>
       <artifactId>httpcore</artifactId>
       <groupId>org.apache.httpcomponents</groupId>
       <version>4.3.1</version>
     </dependency>
-    
+
     <dependency>
       <groupId>org.skyscreamer</groupId>
       <artifactId>jsonassert</artifactId>
@@ -413,8 +412,8 @@
               </execution>
             </executions>
           </plugin>
-          
-          
+
+
           <plugin>
             <groupId>com.github.alexcojocaru</groupId>
             <artifactId>elasticsearch-maven-plugin</artifactId>
@@ -464,7 +463,7 @@
               </dependency>
             </dependencies>
           </plugin>
-          
+
           <plugin>
             <groupId>org.codehaus.cargo</groupId>
             <artifactId>cargo-maven2-plugin</artifactId>
@@ -503,7 +502,7 @@
               </configuration>
 
             </configuration>
-            <executions> 
+            <executions>
               <execution>
                 <id>start-cargo</id>
                 <phase>pre-integration-test</phase>
@@ -555,7 +554,7 @@
                   </execute-commands>
                 </configuration>
               </execution>
-              
+
               <execution>
                 <id>deploy-muikku</id>
                 <phase>pre-integration-test</phase>
@@ -594,7 +593,7 @@
         </plugins>
       </build>
     </profile>
-    
+
     <profile>
       <id>sauce-it</id>
       <activation>
@@ -939,7 +938,7 @@
                   </execute-commands>
                 </configuration>
               </execution>
-              
+
               <execution>
                 <id>deploy-muikku</id>
                 <phase>pre-integration-test</phase>
@@ -952,7 +951,7 @@
               </execution>
             </executions>
           </plugin>
-          
+
           <plugin>
             <groupId>org.sonatype.plugins</groupId>
             <artifactId>wait-maven-plugin</artifactId>
@@ -978,7 +977,7 @@
         </plugins>
       </build>
     </profile>
-    
+
     <profile>
       <id>travis</id>
       <activation>
@@ -1323,7 +1322,7 @@
                   </execute-commands>
                 </configuration>
               </execution>
-              
+
               <execution>
                 <id>deploy-muikku</id>
                 <phase>pre-integration-test</phase>
@@ -1362,7 +1361,7 @@
         </plugins>
       </build>
     </profile>
-    
+
     <profile>
       <id>rest-it</id>
       <activation>
@@ -1690,7 +1689,7 @@
                   </execute-commands>
                 </configuration>
               </execution>
-              
+
               <execution>
                 <id>deploy-muikku</id>
                 <phase>pre-integration-test</phase>
@@ -1774,7 +1773,7 @@
                 <it.selenium.version>${selenium-java.version}</it.selenium.version>
                 <it.test.file>${it.test.file}</it.test.file>
                 <it.port.http>${it.port.http}</it.port.http>
-                <it.port.https>${it.port.https}</it.port.https>               
+                <it.port.https>${it.port.https}</it.port.https>
                 <it.host>${it.host}</it.host>
                 <it.browser>${it.browser}</it.browser>
                 <it.profile>${it.profile}</it.profile>

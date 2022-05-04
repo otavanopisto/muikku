@@ -22,7 +22,6 @@ export default combineReducers({
   websocket,
   title,
   profile,
-
   workspaces,
   announcements,
   discussion,

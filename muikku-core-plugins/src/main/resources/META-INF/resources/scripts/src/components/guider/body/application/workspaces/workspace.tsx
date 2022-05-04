@@ -27,6 +27,7 @@ import { AnyActionType } from "~/actions";
  * StudentWorkspaceProps
  */
 interface StudentWorkspaceProps {
+  /**Localization */
   i18n: i18nType;
   workspace: WorkspaceType;
 }
@@ -35,6 +36,7 @@ interface StudentWorkspaceProps {
  * StudentWorkspaceState
  */
 interface StudentWorkspaceState {
+  /** if the student activities are visible or not */
   activitiesVisible: boolean;
 }
 

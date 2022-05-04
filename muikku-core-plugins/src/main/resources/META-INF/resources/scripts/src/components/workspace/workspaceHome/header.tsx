@@ -1,7 +1,10 @@
 import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
 import * as React from "react";
-import { WorkspaceType } from "~/reducers/workspaces";
+import {
+  WorkspaceCurriculumFilterListType,
+  WorkspaceType,
+} from "~/reducers/workspaces";
 import { i18nType } from "~/reducers/base/i18n";
 import ProgressData from "../progressData";
 import { StatusType } from "~/reducers/base/status";
@@ -13,12 +16,14 @@ import {
 import "~/sass/elements/hero.scss";
 import "~/sass/elements/meta.scss";
 import { AnyActionType } from "~/actions";
+import { suitabilityMap } from "~/@shared/suitability";
 
 /**
  * WorkspaceHomeHeaderProps
  */
 interface WorkspaceHomeHeaderProps {
   workspace: WorkspaceType;
+  availableCurriculums: WorkspaceCurriculumFilterListType;
   i18n: i18nType;
   status: StatusType;
   updateWorkspace: UpdateWorkspaceTriggerType;
@@ -45,8 +50,88 @@ class WorkspaceHomeHeader extends React.Component<
   }
 
   /**
-   * Component render method
-   * @returns JSX.Element
+   * Returns OPS information by curriculum identifier
+   *
+   * @returns OPS information
+   */
+  getOPSInformation = () => {
+    /**
+     * If workspace and available curriculums are loaded and are present
+     */
+    if (this.props.workspace && this.props.availableCurriculums) {
+      /**
+       * Course only contains ONE active curriculum even though
+       * current property is list. So we pick first item that list contains
+       */
+      const activeCurriculumnIdentifier =
+        this.props.workspace.curriculumIdentifiers[0];
+
+      /**
+       * Then checking if we can find OPS data with that identifier from
+       * available curriculums
+       */
+      const OPS = this.props.availableCurriculums.find(
+        (aC) => aC.identifier === activeCurriculumnIdentifier
+      );
+
+      return OPS;
+    } else {
+      return undefined;
+    }
+  };
+
+  /**
+   * Depending what mandatority value is, returns description
+   *
+   * @returns mandatority description
+   */
+  renderMandatorityDescription = () => {
+    /**
+     * Get OPS data
+     */
+    const OPS = this.getOPSInformation();
+
+    /**
+     * If OPS data and workspace mandatority property is present
+     */
+    if (OPS && this.props.workspace.mandatority) {
+      /**
+       * Create map property from education type name and OPS name that was passed
+       * Strings are changes to lowercase form and any empty spaces are removed
+       */
+      const education = `${this.props.workspace.additionalInfo.educationType.name
+        .toLowerCase()
+        .replace(/ /g, "")}${OPS.name.replace(/ /g, "")}`;
+
+      /**
+       * Check if our map contains data with just created education string
+       * Otherwise just return null. There might not be all included values by every OPS created...
+       */
+      if (!suitabilityMap.has(education)) {
+        return null;
+      }
+
+      /**
+       * Then get correct local string from map by suitability enum value
+       */
+      const localString =
+        suitabilityMap.get(education)[this.props.workspace.mandatority];
+
+      return localString ? (
+        <div className="meta__item">
+          <span className="meta__item-label">Pakollisuus:</span>
+          <span className="meta__item-description">
+            {this.props.i18n.text.get(localString)}
+          </span>
+        </div>
+      ) : null;
+    }
+
+    return null;
+  };
+
+  /**
+   * render
    */
   render() {
     if (!this.props.workspace) {
@@ -225,6 +310,7 @@ class WorkspaceHomeHeader extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
+    availableCurriculums: state.workspaces.availableCurriculums,
     workspace: state.workspaces.currentWorkspace,
     status: state.status,
   };

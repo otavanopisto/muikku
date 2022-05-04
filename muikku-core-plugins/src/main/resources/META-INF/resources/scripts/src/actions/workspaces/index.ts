@@ -15,6 +15,7 @@ import {
   WorkspacesPatchType,
   WorkspaceAdditionalInfoType,
   WorkspaceUpdateType,
+  WorkspaceCurriculumFilterType,
   WorkspaceActivityType,
 } from "~/reducers/workspaces";
 import {
@@ -50,6 +51,11 @@ import equals = require("deep-equal");
 import $ from "~/lib/jquery";
 import { UploadingValue } from "~/@types/shared";
 import { Role } from "../../reducers/base/status";
+
+export type UPDATE_AVAILABLE_CURRICULUMS = SpecificActionType<
+  "UPDATE_AVAILABLE_CURRICULUMS",
+  WorkspaceCurriculumFilterType[]
+>;
 
 export type UPDATE_USER_WORKSPACES = SpecificActionType<
   "UPDATE_USER_WORKSPACES",
@@ -451,6 +457,13 @@ export interface SetCurrentWorkspaceTriggerType {
     fail?: () => any;
     loadDetails?: boolean;
   }): AnyActionType;
+}
+
+/**
+ * SetAvailableCurriculumsTriggerType
+ */
+export interface SetAvailableCurriculumsTriggerType {
+  (): AnyActionType;
 }
 
 /**
@@ -883,92 +896,36 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
   };
 
 /**
- * UpdateCurrentWorkspaceActivityTriggerType
+ * setAvailableCurriculums
+ * @returns Promise<void>
  */
-export interface UpdateCurrentWorkspaceActivityTriggerType {
-  (data: { success?: () => any; fail?: () => any }): AnyActionType;
-}
-
-/**
- * updateCurrentWorkspaceActivity
- */
-const updateCurrentWorkspaceActivity: UpdateCurrentWorkspaceActivityTriggerType =
-  function updateCurrentWorkspaceActivity(data) {
+const setAvailableCurriculums: SetAvailableCurriculumsTriggerType =
+  function setAvailableCurriculums() {
     return async (
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
     ) => {
-      if (getState().status.loggedIn) {
-        try {
-          const activity = <WorkspaceActivityType>(
-            await promisify(
-              mApi()
-                .workspace.workspaces.students.activity.cacheClear()
-                .read(
-                  getState().workspaces.currentWorkspace.id,
-                  getState().status.userSchoolDataIdentifier
-                ),
-              "callback"
-            )()
-          );
+      try {
+        const curriculums = <WorkspaceCurriculumFilterListType>(
+          await promisify(mApi().coursepicker.curriculums.read(), "callback")()
+        );
 
-          dispatch({
-            type: "UPDATE_CURRENT_WORKSPACE_ACTIVITY",
-            payload: activity,
-          });
-        } catch (err) {
-          dispatch(
-            actions.displayNotification(
-              "Virhe päivitettäessä activity tietoja",
-              "error"
-            )
-          );
+        dispatch({
+          type: "UPDATE_AVAILABLE_CURRICULUMS",
+          payload: curriculums,
+        });
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
         }
-      }
-    };
-  };
-
-/**
- * UpdateCurrentWorkspaceAssessmentRequestTriggerType
- */
-export interface UpdateCurrentWorkspaceAssessmentRequestTriggerType {
-  (data: { success?: () => any; fail?: () => any }): AnyActionType;
-}
-
-/**
- * updateCurrentWorkspaceAssessmentRequest
- */
-const updateCurrentWorkspaceAssessmentRequest: UpdateCurrentWorkspaceAssessmentRequestTriggerType =
-  function updateCurrentWorkspaceAssessmentRequest(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType
-    ) => {
-      if (getState().status.loggedIn) {
-        try {
-          const assessmentRequests = <WorkspaceAssessmentRequestType[]>(
-            await promisify(
-              mApi()
-                .assessmentrequest.workspace.assessmentRequests.cacheClear()
-                .read(getState().workspaces.currentWorkspace.id, {
-                  studentIdentifier: getState().status.userSchoolDataIdentifier,
-                }),
-              "callback"
-            )()
-          );
-
-          dispatch({
-            type: "UPDATE_CURRENT_WORKSPACE_ASESSMENT_REQUESTS",
-            payload: assessmentRequests,
-          });
-        } catch (err) {
-          dispatch(
-            actions.displayNotification(
-              "Virhe päivitettäessä arviointipyyntötietoja tietoja",
-              "error"
-            )
-          );
-        }
+        dispatch(
+          actions.displayNotification(
+            getState().i18n.text.get(
+              "plugin.workspace.errormessage.requestAssessmentFail"
+            ),
+            "error"
+          )
+        );
       }
     };
   };
@@ -1040,12 +997,12 @@ const requestAssessmentAtWorkspace: RequestAssessmentAtWorkspaceTriggerType =
          * In future changing state locally is better options one combination workspace module specific
          * request are implemented
          */
-        dispatch(updateCurrentWorkspaceActivity({}));
+        /* dispatch(updateCurrentWorkspaceActivity({})); */
 
         /**
          * Same here
          */
-        dispatch(updateCurrentWorkspaceAssessmentRequest({}));
+        /* dispatch(updateCurrentWorkspaceAssessmentRequest({})); */
 
         dispatch(
           actions.displayNotification(
@@ -1151,12 +1108,12 @@ const cancelAssessmentAtWorkspace: CancelAssessmentAtWorkspaceTriggerType =
          * In future changing state locally is better options one combination workspace module specific
          * request are implemented
          */
-        dispatch(updateCurrentWorkspaceActivity({}));
+        /* dispatch(updateCurrentWorkspaceActivity({})); */
 
         /**
          * Same here
          */
-        dispatch(updateCurrentWorkspaceAssessmentRequest({}));
+        /* dispatch(updateCurrentWorkspaceAssessmentRequest({})); */
 
         dispatch(
           actions.displayNotification(
@@ -4490,7 +4447,8 @@ export {
   loadTemplatesFromServer,
   updateWorkspaceEditModeState,
   loadWholeWorkspaceHelp,
-  updateCurrentWorkspaceActivity,
-  updateCurrentWorkspaceAssessmentRequest,
+  /* updateCurrentWorkspaceActivity,
+  updateCurrentWorkspaceAssessmentRequest, */
   setWholeWorkspaceHelp,
+  setAvailableCurriculums,
 };

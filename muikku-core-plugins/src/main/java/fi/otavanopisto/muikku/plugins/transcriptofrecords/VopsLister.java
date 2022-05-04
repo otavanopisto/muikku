@@ -17,12 +17,12 @@ import org.jsoup.safety.Cleaner;
 import org.jsoup.safety.Whitelist;
 
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
+import fi.otavanopisto.muikku.model.workspace.EducationTypeMapping;
+import fi.otavanopisto.muikku.model.workspace.Mandatority;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.StudiesViewCourseChoice;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.rest.CourseCompletionState;
-import fi.otavanopisto.muikku.plugins.transcriptofrecords.rest.EducationTypeMapping;
-import fi.otavanopisto.muikku.plugins.transcriptofrecords.rest.Mandatority;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.rest.VopsRESTModel;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.rest.VopsRESTModel.VopsRow;
 import fi.otavanopisto.muikku.schooldata.GradingController;

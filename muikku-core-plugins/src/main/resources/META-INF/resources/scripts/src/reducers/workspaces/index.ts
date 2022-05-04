@@ -300,6 +300,13 @@ export interface WorkspaceDetailsType {
   indexFolderId: number;
 }
 
+export enum WorkspaceMandatority {
+  MANDATORY = "MANDATORY",
+  SCHOOL_LEVEL_OPTIONAL = "SCHOOL_LEVEL_OPTIONAL",
+  NATIONAL_LEVEL_OPTIONAL = "NATIONAL_LEVEL_OPTIONAL",
+  UNSPECIFIED_OPTIONAL = "UNSPECIFIED_OPTIONAL",
+}
+
 export type WorkspaceAccessType = "MEMBERS_ONLY" | "LOGGED_IN" | "ANYONE";
 
 /**
@@ -383,7 +390,7 @@ export interface WorkspaceType {
   studentsSelect?: UserSelectType;
   details?: WorkspaceDetailsType;
   permissions?: WorkspacePermissionsType[];
-
+  mandatority?: WorkspaceMandatority | null;
   //Fancy stuff in here
   journals?: WorkspaceJournalsType;
 
@@ -555,6 +562,7 @@ export interface WorkspaceMaterialEditorType {
  * WorkspacesType
  */
 export interface WorkspacesType {
+  availableCurriculums?: WorkspaceCurriculumFilterListType;
   availableWorkspaces: WorkspaceListType;
   availableFilters: WorkspacesavailableFiltersType;
   templateWorkspaces: TemplateWorkspaceType[];
@@ -829,6 +837,10 @@ export default function workspaces(
   if (action.type === "UPDATE_USER_WORKSPACES") {
     return <WorkspacesType>Object.assign({}, state, {
       userWorkspaces: action.payload,
+    });
+  } else if (action.type === "UPDATE_AVAILABLE_CURRICULUMS") {
+    return Object.assign({}, state, {
+      availableCurriculums: action.payload,
     });
   } else if (action.type === "UPDATE_LAST_WORKSPACE") {
     return Object.assign({}, state, {

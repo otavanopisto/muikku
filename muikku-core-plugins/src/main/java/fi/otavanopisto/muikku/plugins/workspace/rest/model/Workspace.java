@@ -3,6 +3,7 @@ package fi.otavanopisto.muikku.plugins.workspace.rest.model;
 import java.util.Date;
 import java.util.Set;
 
+import fi.otavanopisto.muikku.model.workspace.Mandatority;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 
 public class Workspace {
@@ -21,6 +22,7 @@ public class Workspace {
       String nameExtension,
       String description,
       String materialDefaultLicense,
+      Mandatority mandatority,
       Long numVisits,
       Date lastVisit,
       Set<String> curriculumIdentifiers,
@@ -36,6 +38,7 @@ public class Workspace {
     this.name = name;
     this.nameExtension = nameExtension;
     this.description = description;
+    this.setMandatority(mandatority);
     this.numVisits = numVisits;
     this.lastVisit = lastVisit;
     this.curriculumIdentifiers = curriculumIdentifiers;
@@ -97,35 +100,35 @@ public class Workspace {
   public void setLastVisit(Date lastVisit) {
     this.lastVisit = lastVisit;
   }
-  
+
   public WorkspaceAccess getAccess() {
     return access;
   }
-  
+
   public void setAccess(WorkspaceAccess access) {
     this.access = access;
   }
-  
+
   public String getMaterialDefaultLicense() {
     return materialDefaultLicense;
   }
-  
+
   public void setMaterialDefaultLicense(String materialDefaultLicense) {
     this.materialDefaultLicense = materialDefaultLicense;
   }
-  
+
   public Boolean getPublished() {
     return published;
   }
-  
+
   public void setPublished(Boolean published) {
     this.published = published;
   }
-  
+
   public String getNameExtension() {
     return nameExtension;
   }
-  
+
   public void setNameExtension(String nameExtension) {
     this.nameExtension = nameExtension;
   }
@@ -137,7 +140,23 @@ public class Workspace {
   public void setCurriculumIdentifiers(Set<String> curriculumIdentifiers) {
     this.curriculumIdentifiers = curriculumIdentifiers;
   }
-  
+
+  public String getSubjectIdentifier() {
+    return subjectIdentifier;
+  }
+
+  public void setSubjectIdentifier(String subjectIdentifier) {
+    this.subjectIdentifier = subjectIdentifier;
+  }
+
+  public Mandatority getMandatority() {
+    return mandatority;
+  }
+
+  public void setMandatority(Mandatority mandatority) {
+    this.mandatority = mandatority;
+  }
+
   public boolean getHasCustomImage() {
     return hasCustomImage;
   }
@@ -161,6 +180,7 @@ public class Workspace {
   private String name;
   private String nameExtension;
   private String description;
+  private Mandatority mandatority;
   private Long numVisits;
   private Date lastVisit;
   private WorkspaceAccess access;
