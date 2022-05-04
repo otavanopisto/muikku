@@ -1,6 +1,5 @@
 import { i18nType } from "~/reducers/base/i18n";
 import * as React from "react";
-import { DiscussionThreadReplyType } from "~/reducers/discussion";
 import { Dispatch, connect } from "react-redux";
 import { AnyActionType } from "~/actions";
 import { bindActionCreators } from "redux";
@@ -36,8 +35,8 @@ import { IContactEvent } from "~/reducers/main-function/guider";
 interface CommentContactEventProps {
   i18n: i18nType;
   status: StatusType;
-  quote?: string;
-  quoteAuthor?: string;
+  // quote?: string;
+  // quoteAuthor?: string;
   contactEvent: IContactEvent;
   studentUserEntityId: number;
   editContactEvent: EditContactEventTriggerType;
@@ -68,10 +67,6 @@ class CommentContactEvent extends SessionStateComponent<
    */
   constructor(props: CommentContactEventProps) {
     super(props, "contact-event-comment");
-
-    this.onCKEditorChange = this.onCKEditorChange.bind(this);
-    this.clearUp = this.clearUp.bind(this);
-
     this.state = this.getRecoverStoredState(
       {
         locked: false,
@@ -79,7 +74,7 @@ class CommentContactEvent extends SessionStateComponent<
         text: this.props.contactEvent.text,
         type: this.props.contactEvent.type,
       },
-      props.contactEvent.id + "-edit"
+      props.contactEvent.id + "-edit-contact-event"
     );
   }
 
@@ -87,39 +82,50 @@ class CommentContactEvent extends SessionStateComponent<
    * onCKEditorChange
    * @param text text
    */
-  onCKEditorChange(text: string) {
-    this.setStateAndStore({ text }, this.props.contactEvent.id + "-edit");
-  }
+  onCKEditorChange = (text: string) => {
+    this.setStateAndStore(
+      { text },
+      this.props.contactEvent.id + "-edit-contact-event"
+    );
+  };
 
+  /**
+   * onDateChange
+   * @param date a Date
+   */
   onDateChange = (date: Date) => {
     this.setStateAndStore({ date: date }, this.props.contactEvent.id);
   };
 
+  /**
+   * onTypeChange
+   * @param e event
+   */
   onTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     this.setStateAndStore(
       { type: e.target.value as ContactTypes },
-      this.props.contactEvent.id + "-edit"
+      this.props.contactEvent.id + "-edit-contact-event"
     );
   };
 
   /**
    * clearUp
    */
-  clearUp() {
+  clearUp = () => {
     this.setStateAndClear(
       {
         date: new Date(this.props.contactEvent.entryDate),
         text: this.props.contactEvent.text,
         type: this.props.contactEvent.type,
       },
-      this.props.contactEvent.id + "-edit"
+      this.props.contactEvent.id + "-edit-contact-event"
     );
-  }
+  };
 
   /**
    * createReply
    */
-  editContactEvent() {
+  editContactEvent = () => {
     this.setState({
       locked: true,
     });
@@ -136,9 +142,8 @@ class CommentContactEvent extends SessionStateComponent<
     this.setState({
       locked: true,
     });
-    this.forceUpdate();
     this.handleOnCancelClick();
-  }
+  };
 
   /**
    * handleOnCancelClick

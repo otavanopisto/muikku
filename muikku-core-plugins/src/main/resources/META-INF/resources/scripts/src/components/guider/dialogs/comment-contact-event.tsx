@@ -1,6 +1,5 @@
 import { i18nType } from "~/reducers/base/i18n";
 import * as React from "react";
-import { DiscussionThreadReplyType } from "~/reducers/discussion";
 import { Dispatch, connect } from "react-redux";
 import { AnyActionType } from "~/actions";
 import { bindActionCreators } from "redux";
@@ -15,21 +14,12 @@ import Button from "~/components/general/button";
 import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
 import moment from "~/lib/moment";
-import { timeStamp } from "console";
-
-/**
- * TODO: maybe make this more generic,
- * since there is need for this kind of a reply outside discussion,
- * for example in the communicator and the guider
- * */
 
 /**
  * ReplyThreadDrawerProps
  */
 interface CommentContactEventProps {
   i18n: i18nType;
-  quote?: string;
-  quoteAuthor?: string;
   contactEventtId: number;
   studentUserEntityId: number;
   createContactEventComment: CreateContactEventCommentTriggerType;
@@ -41,7 +31,6 @@ interface CommentContactEventProps {
  */
 interface CommentContactEventState {
   text: string;
-  openReplyType?: "answer" | "modify" | "quote";
   locked: boolean;
 }
 
@@ -58,24 +47,12 @@ class CommentContactEvent extends SessionStateComponent<
    */
   constructor(props: CommentContactEventProps) {
     super(props, "contact-event-comment");
-
-    this.onCKEditorChange = this.onCKEditorChange.bind(this);
-    this.createReply = this.createReply.bind(this);
-    this.clearUp = this.clearUp.bind(this);
-
     this.state = this.getRecoverStoredState(
       {
         locked: false,
-        text:
-          props.quote && props.quoteAuthor
-            ? "<blockquote><p><strong>" +
-              props.quoteAuthor +
-              "</strong></p>" +
-              props.quote +
-              "</blockquote> <p></p>"
-            : "",
+        text: "",
       },
-      props.contactEventtId + (props.quote ? "-q" : "")
+      props.contactEventtId + "comment-contact-event"
     );
   }
 
@@ -83,36 +60,29 @@ class CommentContactEvent extends SessionStateComponent<
    * onCKEditorChange
    * @param text text
    */
-  onCKEditorChange(text: string) {
+  onCKEditorChange = (text: string): void => {
     this.setStateAndStore(
       { text },
-      this.props.contactEventtId + (this.props.quote ? "-q" : "")
+      this.props.contactEventtId + "comment-contact-event"
     );
-  }
+  };
 
   /**
    * clearUp
    */
-  clearUp() {
+  clearUp = (): void => {
     this.setStateAndClear(
       {
-        text:
-          this.props.quote && this.props.quoteAuthor
-            ? "<blockquote><p><strong>" +
-              this.props.quoteAuthor +
-              "</strong></p>" +
-              this.props.quote +
-              "</blockquote> <p></p>"
-            : "",
+        text: "",
       },
-      this.props.contactEventtId + (this.props.quote ? "-q" : "")
+      this.props.contactEventtId + "comment-contact-event"
     );
-  }
+  };
 
   /**
    * createReply
    */
-  createReply() {
+  createReply = (): void => {
     this.setState({
       locked: true,
     });
@@ -127,14 +97,13 @@ class CommentContactEvent extends SessionStateComponent<
     this.setState({
       locked: true,
     });
-    this.forceUpdate();
     this.handleOnCancelClick();
-  }
+  };
 
   /**
    * handleOnCancelClick
    */
-  handleOnCancelClick = () => {
+  handleOnCancelClick = (): void => {
     this.props.onClickCancel && this.props.onClickCancel();
   };
 

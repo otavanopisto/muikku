@@ -9,26 +9,16 @@ import {
   editContactEventComment,
   EditContactEventCommentTriggerType,
 } from "~/actions/main-function/guider";
-import {
-  ContactTypes,
-  contactTypesArray,
-} from "~/reducers/main-function/guider";
+import { ContactTypes } from "~/reducers/main-function/guider";
 import { StateType } from "~/reducers";
 import SessionStateComponent from "~/components/general/session-state-component";
 import Button from "~/components/general/button";
 import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
-import DatePicker from "react-datepicker";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import moment from "~/lib/moment";
 import { StatusType } from "~/reducers/base/status";
 import { IContactEventComment } from "~/reducers/main-function/guider";
-
-/**
- * TODO: maybe make this more generic,
- * since there is need for this kind of a reply outside discussion,
- * for example in the communicator and the guider
- * */
 
 /**
  * EditContactEventCommentStateProps
@@ -36,8 +26,8 @@ import { IContactEventComment } from "~/reducers/main-function/guider";
 interface EditContactEventCommentProps {
   i18n: i18nType;
   status: StatusType;
-  quote?: string;
-  quoteAuthor?: string;
+  // quote?: string;
+  // quoteAuthor?: string;
   comment: IContactEventComment;
   studentUserEntityId: number;
   editContactEventComment: EditContactEventCommentTriggerType;
@@ -51,7 +41,6 @@ interface EditContactEventCommentState {
   text: string;
   date: Date;
   type: ContactTypes;
-  openReplyType?: "answer" | "modify" | "quote";
   locked: boolean;
 }
 
@@ -68,17 +57,13 @@ class EditContactEventComment extends SessionStateComponent<
    */
   constructor(props: EditContactEventCommentProps) {
     super(props, "contact-event-comment");
-
-    this.onCKEditorChange = this.onCKEditorChange.bind(this);
-    this.clearUp = this.clearUp.bind(this);
-
     this.state = this.getRecoverStoredState(
       {
         locked: false,
         date: new Date(this.props.comment.commentDate),
         text: this.props.comment.text,
       },
-      props.comment.id + "-edit"
+      props.comment.id + "-edit-comment"
     );
   }
 
@@ -86,38 +71,42 @@ class EditContactEventComment extends SessionStateComponent<
    * onCKEditorChange
    * @param text text
    */
-  onCKEditorChange(text: string) {
-    this.setStateAndStore({ text }, this.props.comment.id + "-edit");
-  }
+  onCKEditorChange = (text: string): void => {
+    this.setStateAndStore({ text }, this.props.comment.id + "-edit-comment");
+  };
 
-  onDateChange = (date: Date) => {
+  /**
+   * onDateChange
+   * @param date
+   */
+  onDateChange = (date: Date): void => {
     this.setStateAndStore({ date: date }, this.props.comment.id);
   };
 
-  onTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  onTypeChange = (e: React.ChangeEvent<HTMLSelectElement>): void => {
     this.setStateAndStore(
       { type: e.target.value as ContactTypes },
-      this.props.comment.id + "-edit"
+      this.props.comment.id + "-edit-comment"
     );
   };
 
   /**
    * clearUp
    */
-  clearUp() {
+  clearUp = (): void => {
     this.setStateAndClear(
       {
         date: new Date(this.props.comment.commentDate),
         text: this.props.comment.text,
       },
-      this.props.comment.id + "-edit"
+      this.props.comment.id + "-edit-comment"
     );
-  }
+  };
 
   /**
-   * createReply
+   * editContactEventComment
    */
-  editContactEventComment() {
+  editContactEventComment = (): void => {
     this.setState({
       locked: true,
     });
@@ -136,12 +125,12 @@ class EditContactEventComment extends SessionStateComponent<
     });
 
     this.handleOnCancelClick();
-  }
+  };
 
   /**
    * handleOnCancelClick
    */
-  handleOnCancelClick = () => {
+  handleOnCancelClick = (): void => {
     this.props.onClickCancel && this.props.onClickCancel();
   };
 
@@ -155,24 +144,24 @@ class EditContactEventComment extends SessionStateComponent<
       " - " +
       this.props.i18n.text.get("plugin.discussion.createmessage.content");
 
-      const content = (
-        <div className="env-dialog__row env-dialog__row--ckeditor">
-          <div className="env-dialog__form-element-container">
-            <label className="env-dialog__label">
-              {this.props.i18n.text.get(
-                "plugin.discussion.createmessage.content"
-              )}
-            </label>
-            <CKEditor
-              editorTitle={editorTitle}
-              autofocus
-              onChange={this.onCKEditorChange}
-            >
-              {this.state.text}
-            </CKEditor>
-          </div>
+    const content = (
+      <div className="env-dialog__row env-dialog__row--ckeditor">
+        <div className="env-dialog__form-element-container">
+          <label className="env-dialog__label">
+            {this.props.i18n.text.get(
+              "plugin.discussion.createmessage.content"
+            )}
+          </label>
+          <CKEditor
+            editorTitle={editorTitle}
+            autofocus
+            onChange={this.onCKEditorChange}
+          >
+            {this.state.text}
+          </CKEditor>
         </div>
-      );
+      </div>
+    );
 
     const footer = (
       <div className="env-dialog__actions">
