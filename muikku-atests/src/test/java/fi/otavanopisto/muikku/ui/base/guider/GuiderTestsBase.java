@@ -433,7 +433,7 @@ public class GuiderTestsBase extends AbstractUITest {
         .addStaffMember(admin)
         .addStudent(student)
         .mockLogin(admin)
-        .addStudyProgramme(new StudyProgramme(2l, 1l, "test_lukio", "Aineopiskelu/lukio", 1l, false, false))
+        .addStudyProgramme(new StudyProgramme(2l, 1l, "test_lukio", "Aineopiskelu/yo-tutkinto", 1l, false, false))
         .addStudentToStudentGroup(2l, student)
         .mockPersons()
         .mockStudents()
@@ -459,7 +459,6 @@ public class GuiderTestsBase extends AbstractUITest {
         navigate("/guider", false);
         waitForPresent(".application-list__item-footer--student .label--ENDING");
         waitAndClick(".application-list__header-primary>span");
-        scrollTo(".button-pill--create-student-order", 150);
         waitAndClickAndConfirm(".button-pill--create-student-order", ".dropdown .link--purchasable-product-dropdown", 5, 500);
         waitAndClickAndConfirm(".dropdown__container-item:first-child", ".dialog--dialog-confirm-order.dialog--visible", 5, 1000);
         waitAndClick(".button--standard-ok");
@@ -532,7 +531,7 @@ public class GuiderTestsBase extends AbstractUITest {
       .addStaffMember(admin)
       .addStudent(student)
       .mockLogin(admin)
-      .addStudyProgramme(new StudyProgramme(2l, 1l, "test_lukio", "Aineopiskelu/lukio", 1l, false, false))
+      .addStudyProgramme(new StudyProgramme(2l, 1l, "test_lukio", "Aineopiskelu/yo-tutkinto", 1l, false, false))
       .addStudentToStudentGroup(2l, student)
       .mockPersons()
       .mockStudents()
@@ -558,7 +557,6 @@ public class GuiderTestsBase extends AbstractUITest {
         navigate("/guider", false);
         waitForPresent(".application-list__item-footer--student .label--ENDING");
         waitAndClick(".application-list__header-primary>span");
-        scrollTo(".button-pill--create-student-order", 150);
         waitAndClickAndConfirm(".button-pill--create-student-order", ".dropdown .link--purchasable-product-dropdown", 5, 500);
         waitAndClickAndConfirm(".dropdown__container-item:first-child", ".dialog--dialog-confirm-order.dialog--visible", 5, 1000);
         waitAndClick(".button--standard-ok");
@@ -590,7 +588,7 @@ public class GuiderTestsBase extends AbstractUITest {
         .addStaffMember(admin)
         .addStudent(student)
         .mockLogin(admin)
-        .addStudyProgramme(new StudyProgramme(2l, 1l, "test_lukio", "Aineopiskelu/lukio", 1l, false, false))
+        .addStudyProgramme(new StudyProgramme(2l, 1l, "test_lukio", "Aineopiskelu/yo-tutkinto", 1l, false, false))
         .addStudentToStudentGroup(2l, student)
         .mockPersons()
         .mockStudents()
@@ -616,7 +614,6 @@ public class GuiderTestsBase extends AbstractUITest {
         navigate("/guider", false);
         waitForPresent(".application-list__item-footer--student .label--ENDING");
         waitAndClick(".application-list__header-primary>span");
-        scrollTo(".button-pill--create-student-order", 150);
         waitAndClickAndConfirm(".button-pill--create-student-order", ".dropdown .link--purchasable-product-dropdown", 5, 500);
         waitAndClickAndConfirm(".dropdown__container-item:first-child", ".dialog--dialog-confirm-order.dialog--visible", 5, 1000);
         waitAndClick(".button--standard-ok");
