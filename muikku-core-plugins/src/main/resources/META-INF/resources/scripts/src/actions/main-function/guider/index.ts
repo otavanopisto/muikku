@@ -212,10 +212,23 @@ export interface EditContactEventTriggerType {
 export interface CreateContactEventCommentTriggerType {
   (
     userEntityId: number,
-    entryId: number,
+    contactLogEntryId: number,
     payload: {
       text: string;
       commentDate: string;
+    }
+  ): AnyActionType;
+}
+
+export interface EditContactEventCommentTriggerType {
+  (
+    userEntityId: number,
+    contactLogEntryId: number,
+    commentId: number,
+    payload: {
+      text: string;
+      commentDate: string;
+      creatorId: number;
     }
   ): AnyActionType;
 }
@@ -861,7 +874,11 @@ const editContactEvent: EditContactEventTriggerType = function editContactEvent(
     getState: () => StateType
   ) => {
     try {
-      const contactLogs = getState().guider.currentStudent.contactLogs;
+      dispatch({
+        type: "LOCK_TOOLBAR",
+        payload: null,
+      });
+
       await promisify(
         mApi().guider.student.contactLog.update(
           userEntityId,
@@ -870,11 +887,15 @@ const editContactEvent: EditContactEventTriggerType = function editContactEvent(
         ),
         "callback"
       )().then((contactLog: IContactEvent) => {
+        // Make a shallow copy of the current state of contactLogs
+        const contactLogs = [...getState().guider.currentStudent.contactLogs];
+
         // Find the index of the edited contactLog
         const contactLogIndex = contactLogs.findIndex(
-          (log) => (log.id = contactLog.id)
+          (log) => log.id === contactLog.id
         );
-        // Replace the edited contactLog with a new one
+
+        // Replace the edited contactLog with the new one
         contactLogs.splice(contactLogIndex, 1, contactLog);
 
         dispatch({
@@ -922,7 +943,11 @@ const createContactEventComment: CreateContactEventCommentTriggerType =
       getState: () => StateType
     ) => {
       try {
-        const contactLogs = getState().guider.currentStudent.contactLogs;
+        dispatch({
+          type: "LOCK_TOOLBAR",
+          payload: null,
+        });
+
         await promisify(
           mApi().guider.student.contactLog.comments.create(
             userEntityId,
@@ -931,25 +956,125 @@ const createContactEventComment: CreateContactEventCommentTriggerType =
           ),
           "callback"
         )().then((comment: IContactEventComment) => {
+          // Make a shallow copy of the current state contactLogs
+          const contactLogs = [...getState().guider.currentStudent.contactLogs];
+
           // Add the new comment to the current contactEvent
           const contactEvent = contactLogs.find(
             (log) => log.id === comment.entry
           );
           contactEvent.comments.push(comment);
 
-          // Remove the existing contactEvent to avoid duplicates
-          //TODO: Could be done with splice for more consistent output
-          const newContactLogs = contactLogs.filter(
-            (log) => log.id !== contactEvent.id
+          // Find the index of the updated contactevent
+          const contactEventIndex = contactLogs.findIndex(
+            (log) => (log.id = contactEvent.id)
           );
+
+          // Replace the existing contactEvent at the correct index
+          contactLogs.splice(contactEventIndex, 1, contactEvent);
 
           dispatch({
             type: "SET_CURRENT_GUIDER_STUDENT_PROP",
             payload: {
               property: "contactLogs",
-              value: [...newContactLogs, ...[contactEvent]],
+              value: contactLogs,
             },
           });
+        });
+        dispatch({
+          type: "UNLOCK_TOOLBAR",
+          payload: null,
+        });
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          notificationActions.displayNotification(
+            getState().i18n.text.get("plugin.guider.errormessage.user"),
+            "error"
+          )
+        );
+        dispatch({
+          type: "UPDATE_GUIDER_ALL_PROPS",
+          payload: {
+            currentState: <GuiderCurrentStudentStateType>"ERROR",
+          },
+        });
+        dispatch({
+          type: "UNLOCK_TOOLBAR",
+          payload: null,
+        });
+      }
+    };
+  };
+
+/** editContactEventComment thunk action creator
+ * @param userEntityId id for the user in subject
+ * @param entryId id for the entry to be replied
+ * @param payload event data payload
+ * @returns a thunk function
+ */
+const editContactEventComment: EditContactEventCommentTriggerType =
+  function editContactEventComment(
+    userEntityId,
+    contactLogEntryId,
+    commentId,
+    payload
+  ) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      try {
+        dispatch({
+          type: "LOCK_TOOLBAR",
+          payload: null,
+        });
+        await promisify(
+          mApi().guider.student.contactLog.comments.update(
+            userEntityId,
+            contactLogEntryId,
+            commentId,
+            payload
+          ),
+          "callback"
+        )().then((comment: IContactEventComment) => {
+          // Make a shallow copy of the current state contactLogs
+          const contactLogs = [...getState().guider.currentStudent.contactLogs];
+
+          // find the current contactEvent
+          const contactEvent = contactLogs.find(
+            (log) => log.id === comment.entry
+          );
+
+          // get the index number of the commen inside the contactEvent
+          const commmentIndex = contactEvent.comments.findIndex(
+            (c) => c.id === comment.id
+          );
+
+          // replace the comment with the updated comment
+          contactEvent.comments.splice(commmentIndex, 1, comment);
+
+          // find the index of the current contactevent
+          const contactEventIndex = contactLogs.findIndex(
+            (log) => (log.id = contactEvent.id)
+          );
+
+          // Replace the existing contactEvent at the correct index
+          contactLogs.splice(contactEventIndex, 1, contactEvent);
+
+          dispatch({
+            type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+            payload: {
+              property: "contactLogs",
+              value: contactLogs,
+            },
+          });
+        });
+        dispatch({
+          type: "UNLOCK_TOOLBAR",
+          payload: null,
         });
       } catch (err) {
         if (!(err instanceof MApiError)) {
@@ -1500,6 +1625,7 @@ export {
   createContactEvent,
   editContactEvent,
   createContactEventComment,
+  editContactEventComment,
   addToGuiderSelectedStudents,
   removeFromGuiderSelectedStudents,
   addGuiderLabelToCurrentUser,

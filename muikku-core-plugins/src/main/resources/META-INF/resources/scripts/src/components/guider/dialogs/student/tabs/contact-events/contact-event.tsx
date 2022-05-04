@@ -5,7 +5,10 @@ import { i18nType } from "~/reducers/base/i18n";
 import { IContactEvent } from "~/reducers/main-function/guider";
 import CommentContactEvent from "../../../comment-contact-event";
 import EditContactEvent from "../../../edit-contact-event";
+import EditContactEventComment from "../../../edit-contact-event-comment";
 import * as moment from "moment";
+
+
 /**
  *
  */
@@ -24,8 +27,9 @@ interface ContactEventProps {
 const ContactEvent: React.FC<ContactEventProps> = (props) => {
   const { entryDate, type, creatorName, text, comments, id } = props.event;
   const { modifier, studentId, i18n } = props;
-  const [commentOpen, setCommentOpen] = React.useState<boolean>(false);
-  const [editOpen, setEditOpen] = React.useState<boolean>(false);
+  const [commentOpen, setCreateCommentOpen] = React.useState<boolean>(false);
+  const [eventEditOpen, setEventEditOpen] = React.useState<boolean>(false);
+  const [commentEditOpen, setCommentEditOpen] = React.useState<number>(null);
 
   return (
     <div
@@ -44,17 +48,17 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
           </div>
         </div>
         <div className="contact-event__header-actions">
-          <span onClick={() => setCommentOpen(true)}>Kommentoi</span>
-          <span onClick={() => setEditOpen(true)}>Muokkaa</span>
+          <span onClick={() => setCreateCommentOpen(true)}>Kommentoi</span>
+          <span onClick={() => setEventEditOpen(true)}>Muokkaa</span>
           <span>Poista</span>
         </div>
       </div>
-      {editOpen ? (
+      {eventEditOpen ? (
         <div className="contact-event__body">
           <EditContactEvent
             contactEvent={props.event}
             studentUserEntityId={studentId}
-            onClickCancel={() => setEditOpen(false)}
+            onClickCancel={() => setEventEditOpen(false)}
           ></EditContactEvent>
         </div>
       ) : (
@@ -67,7 +71,7 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
         <CommentContactEvent
           contactEventtId={id}
           studentUserEntityId={studentId}
-          onClickCancel={() => setCommentOpen(false)}
+          onClickCancel={() => setCreateCommentOpen(false)}
         ></CommentContactEvent>
       ) : null}
       {comments ? (
@@ -75,17 +79,33 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
           {comments.map((comment) => (
             <div key={comment.id} className="contact-event__reply">
               <div className="contact-event__header contact-event__header--reply">
-                <div className="contact-event__creator">
-                  {comment.creatorName}
+                <div className="contact-event__title">
+                  <div className="contact-event__creator">
+                    {comment.creatorName}
+                  </div>
+                  <div className="contact-event__date">
+                    {moment(comment.commentDate).format("dddd, MMMM Do YYYY")}
+                  </div>
                 </div>
-                <div className="contact-event__date">
-                  {moment(entryDate).format("dddd, MMMM Do YYYY")}
+                <div className="contact-event__header-actions">
+                  <span onClick={() => setCommentEditOpen(comment.id)}>Muokkaa</span>
+                  <span>Poista</span>
                 </div>
               </div>
-              <div
-                className="contact-event__body contact-event__body--reply"
-                dangerouslySetInnerHTML={{ __html: comment.text }}
-              ></div>
+              {commentEditOpen === comment.id ? (
+                <div className="contact-event__body contact-event__body--reply">
+                  <EditContactEventComment
+                    comment={comment}
+                    studentUserEntityId={studentId}
+                    onClickCancel={() => setCommentEditOpen(null)}
+                  />
+                </div>
+              ) : (
+                <div
+                  className="contact-event__body contact-event__body--reply"
+                  dangerouslySetInnerHTML={{ __html: comment.text }}
+                ></div>
+              )}
             </div>
           ))}
         </div>
@@ -95,3 +115,4 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
 };
 
 export default ContactEvent;
+

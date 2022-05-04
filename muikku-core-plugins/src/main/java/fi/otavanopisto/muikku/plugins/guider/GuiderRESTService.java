@@ -835,14 +835,14 @@ public class GuiderRESTService extends PluginRESTService {
    * POST mApi().guider.student.contactLog.comments.create(userEntityId, contactLogEntryId, payload)
    * 
    * payload: {
-   * commentDate: Date
+   * commentDate: "date"
    * text: "plaaplaa";
    * }
    * 
    * @param userEntityId
    * @param entryId
    * @param payload
-   * @return
+   * @return comment
    */
   @POST
   @Path("/student/{ID}/contactLog/{ENTRYID}/comments")
@@ -864,7 +864,7 @@ public class GuiderRESTService extends PluginRESTService {
    * 
    * payload: {
    * text: "plaa", 
-   * commentDate: Date,
+   * commentDate: "date"
    * creatorId: 2
    * }
    * 

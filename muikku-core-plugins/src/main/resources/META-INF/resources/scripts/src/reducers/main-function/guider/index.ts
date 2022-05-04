@@ -282,10 +282,13 @@ export default function guider(
       currentState: "LOADING",
     });
   } else if (action.type === "SET_CURRENT_GUIDER_STUDENT_PROP") {
-    const obj: any = {};
-    obj[action.payload.property] = action.payload.value;
+    const updatedCurrentStudent = {
+      ...state.currentStudent,
+      [action.payload.property] : action.payload.value
+     };
+
     return Object.assign({}, state, {
-      currentStudent: Object.assign({}, state.currentStudent, obj),
+      currentStudent: updatedCurrentStudent,
     });
   } else if (action.type === "UPDATE_CURRENT_GUIDER_STUDENT_STATE") {
     return Object.assign({}, state, {

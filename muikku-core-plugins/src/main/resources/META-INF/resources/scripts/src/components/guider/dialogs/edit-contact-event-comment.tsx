@@ -6,16 +6,23 @@ import { AnyActionType } from "~/actions";
 import { bindActionCreators } from "redux";
 import CKEditor from "~/components/general/ckeditor";
 import {
-  createContactEventComment,
-  CreateContactEventCommentTriggerType,
+  editContactEventComment,
+  EditContactEventCommentTriggerType,
 } from "~/actions/main-function/guider";
+import {
+  ContactTypes,
+  contactTypesArray,
+} from "~/reducers/main-function/guider";
 import { StateType } from "~/reducers";
 import SessionStateComponent from "~/components/general/session-state-component";
 import Button from "~/components/general/button";
 import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
+import DatePicker from "react-datepicker";
+import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import moment from "~/lib/moment";
-import { timeStamp } from "console";
+import { StatusType } from "~/reducers/base/status";
+import { IContactEventComment } from "~/reducers/main-function/guider";
 
 /**
  * TODO: maybe make this more generic,
@@ -24,58 +31,54 @@ import { timeStamp } from "console";
  * */
 
 /**
- * ReplyThreadDrawerProps
+ * EditContactEventCommentStateProps
  */
-interface CommentContactEventProps {
+interface EditContactEventCommentProps {
   i18n: i18nType;
+  status: StatusType;
   quote?: string;
   quoteAuthor?: string;
-  contactEventtId: number;
+  comment: IContactEventComment;
   studentUserEntityId: number;
-  createContactEventComment: CreateContactEventCommentTriggerType;
+  editContactEventComment: EditContactEventCommentTriggerType;
   onClickCancel: () => void;
 }
 
 /**
- * CommentContactEventState
+ * EditContactEventCommentState
  */
-interface CommentContactEventState {
+interface EditContactEventCommentState {
   text: string;
+  date: Date;
+  type: ContactTypes;
   openReplyType?: "answer" | "modify" | "quote";
   locked: boolean;
 }
 
 /**
- * CommentContactEvent
+ * EditContactEventComment
  */
-class CommentContactEvent extends SessionStateComponent<
-  CommentContactEventProps,
-  CommentContactEventState
+class EditContactEventComment extends SessionStateComponent<
+  EditContactEventCommentProps,
+  EditContactEventCommentState
 > {
   /**
    * constructor
    * @param props props
    */
-  constructor(props: CommentContactEventProps) {
+  constructor(props: EditContactEventCommentProps) {
     super(props, "contact-event-comment");
 
     this.onCKEditorChange = this.onCKEditorChange.bind(this);
-    this.createReply = this.createReply.bind(this);
     this.clearUp = this.clearUp.bind(this);
 
     this.state = this.getRecoverStoredState(
       {
         locked: false,
-        text:
-          props.quote && props.quoteAuthor
-            ? "<blockquote><p><strong>" +
-              props.quoteAuthor +
-              "</strong></p>" +
-              props.quote +
-              "</blockquote> <p></p>"
-            : "",
+        date: new Date(this.props.comment.commentDate),
+        text: this.props.comment.text,
       },
-      props.contactEventtId + (props.quote ? "-q" : "")
+      props.comment.id + "-edit"
     );
   }
 
@@ -84,11 +87,19 @@ class CommentContactEvent extends SessionStateComponent<
    * @param text text
    */
   onCKEditorChange(text: string) {
-    this.setStateAndStore(
-      { text },
-      this.props.contactEventtId + (this.props.quote ? "-q" : "")
-    );
+    this.setStateAndStore({ text }, this.props.comment.id + "-edit");
   }
+
+  onDateChange = (date: Date) => {
+    this.setStateAndStore({ date: date }, this.props.comment.id);
+  };
+
+  onTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    this.setStateAndStore(
+      { type: e.target.value as ContactTypes },
+      this.props.comment.id + "-edit"
+    );
+  };
 
   /**
    * clearUp
@@ -96,38 +107,34 @@ class CommentContactEvent extends SessionStateComponent<
   clearUp() {
     this.setStateAndClear(
       {
-        text:
-          this.props.quote && this.props.quoteAuthor
-            ? "<blockquote><p><strong>" +
-              this.props.quoteAuthor +
-              "</strong></p>" +
-              this.props.quote +
-              "</blockquote> <p></p>"
-            : "",
+        date: new Date(this.props.comment.commentDate),
+        text: this.props.comment.text,
       },
-      this.props.contactEventtId + (this.props.quote ? "-q" : "")
+      this.props.comment.id + "-edit"
     );
   }
 
   /**
    * createReply
    */
-  createReply() {
+  editContactEventComment() {
     this.setState({
       locked: true,
     });
-    this.props.createContactEventComment(
+    this.props.editContactEventComment(
       this.props.studentUserEntityId,
-      this.props.contactEventtId,
+      this.props.comment.entry,
+      this.props.comment.id,
       {
-        commentDate: moment().format(),
+        creatorId: this.props.status.userId,
         text: this.state.text,
+        commentDate: moment(this.state.date).format(),
       }
     );
     this.setState({
       locked: true,
     });
-    this.forceUpdate();
+
     this.handleOnCancelClick();
   }
 
@@ -148,30 +155,30 @@ class CommentContactEvent extends SessionStateComponent<
       " - " +
       this.props.i18n.text.get("plugin.discussion.createmessage.content");
 
-    const content = (
-      <div className="env-dialog__row env-dialog__row--ckeditor">
-        <div className="env-dialog__form-element-container">
-          <label className="env-dialog__label">
-            {this.props.i18n.text.get(
-              "plugin.discussion.createmessage.content"
-            )}
-          </label>
-          <CKEditor
-            editorTitle={editorTitle}
-            autofocus
-            onChange={this.onCKEditorChange}
-          >
-            {this.state.text}
-          </CKEditor>
+      const content = (
+        <div className="env-dialog__row env-dialog__row--ckeditor">
+          <div className="env-dialog__form-element-container">
+            <label className="env-dialog__label">
+              {this.props.i18n.text.get(
+                "plugin.discussion.createmessage.content"
+              )}
+            </label>
+            <CKEditor
+              editorTitle={editorTitle}
+              autofocus
+              onChange={this.onCKEditorChange}
+            >
+              {this.state.text}
+            </CKEditor>
+          </div>
         </div>
-      </div>
-    );
+      );
 
     const footer = (
       <div className="env-dialog__actions">
         <Button
           buttonModifiers="dialog-execute"
-          onClick={this.createReply.bind(this)}
+          onClick={this.editContactEventComment.bind(this)}
           disabled={this.state.locked}
         >
           {this.props.i18n.text.get("plugin.discussion.createmessage.send")}
@@ -202,7 +209,7 @@ class CommentContactEvent extends SessionStateComponent<
         <section className="env-dialog__wrapper">
           <div className="env-dialog__content">
             <header className="env-dialog__header">
-              {this.props.i18n.text.get("TODO: kommentoi yhteydenottoa")}
+              {this.props.i18n.text.get("TODO: Muokkaa yhteydenottoa")}
             </header>
             <section className="env-dialog__body">{content}</section>
             <footer className="env-dialog__footer">{footer}</footer>
@@ -221,6 +228,7 @@ class CommentContactEvent extends SessionStateComponent<
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
+    status: state.status,
   };
 }
 
@@ -230,10 +238,10 @@ function mapStateToProps(state: StateType) {
  * @returns object
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return bindActionCreators({ createContactEventComment }, dispatch);
+  return bindActionCreators({ editContactEventComment }, dispatch);
 }
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(CommentContactEvent);
+)(EditContactEventComment);

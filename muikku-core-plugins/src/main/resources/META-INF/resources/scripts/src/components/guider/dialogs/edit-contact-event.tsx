@@ -79,7 +79,7 @@ class CommentContactEvent extends SessionStateComponent<
         text: this.props.contactEvent.text,
         type: this.props.contactEvent.type,
       },
-      props.contactEvent.id + (props.quote ? "-q" : "")
+      props.contactEvent.id + "-edit"
     );
   }
 
@@ -88,10 +88,7 @@ class CommentContactEvent extends SessionStateComponent<
    * @param text text
    */
   onCKEditorChange(text: string) {
-    this.setStateAndStore(
-      { text },
-      this.props.contactEvent.id + (this.props.quote ? "-q" : "")
-    );
+    this.setStateAndStore({ text }, this.props.contactEvent.id + "-edit");
   }
 
   onDateChange = (date: Date) => {
@@ -101,7 +98,7 @@ class CommentContactEvent extends SessionStateComponent<
   onTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     this.setStateAndStore(
       { type: e.target.value as ContactTypes },
-      this.props.contactEvent.id
+      this.props.contactEvent.id + "-edit"
     );
   };
 
@@ -111,16 +108,11 @@ class CommentContactEvent extends SessionStateComponent<
   clearUp() {
     this.setStateAndClear(
       {
-        text:
-          this.props.quote && this.props.quoteAuthor
-            ? "<blockquote><p><strong>" +
-              this.props.quoteAuthor +
-              "</strong></p>" +
-              this.props.quote +
-              "</blockquote> <p></p>"
-            : "",
+        date: new Date(this.props.contactEvent.entryDate),
+        text: this.props.contactEvent.text,
+        type: this.props.contactEvent.type,
       },
-      this.props.contactEvent.id + (this.props.quote ? "-q" : "")
+      this.props.contactEvent.id + "-edit"
     );
   }
 
@@ -144,7 +136,7 @@ class CommentContactEvent extends SessionStateComponent<
     this.setState({
       locked: true,
     });
-
+    this.forceUpdate();
     this.handleOnCancelClick();
   }
 
