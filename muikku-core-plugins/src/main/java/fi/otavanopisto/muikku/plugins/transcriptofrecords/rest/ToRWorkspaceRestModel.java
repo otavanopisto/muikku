@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import fi.otavanopisto.muikku.model.workspace.Mandatority;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.plugins.guider.GuiderStudentWorkspaceActivityRestModel;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace;
@@ -25,6 +26,7 @@ public class ToRWorkspaceRestModel extends Workspace {
       String nameExtension,
       String description,
       String materialDefaultLicense,
+      Mandatority mandatority,
       Long numVisits,
       Date lastVisit,
       Set<String> curriculumIdentifiers,
@@ -42,6 +44,7 @@ public class ToRWorkspaceRestModel extends Workspace {
         nameExtension, 
         description, 
         materialDefaultLicense, 
+        mandatority,
         numVisits, 
         lastVisit, 
         curriculumIdentifiers,

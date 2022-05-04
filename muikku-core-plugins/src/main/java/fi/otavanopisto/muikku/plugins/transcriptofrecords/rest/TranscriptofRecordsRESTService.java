@@ -45,7 +45,6 @@ import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserIdentifierProperty;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
-import fi.otavanopisto.muikku.model.workspace.Mandatority;
 import fi.otavanopisto.muikku.model.workspace.EducationTypeMapping;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
@@ -592,59 +591,10 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
 
       List<IndexedWorkspace> indexedWorkspaces = searchResult.getResults();
 
-      for (IndexedWorkspace indexedWorkspace : indexedWorkspaces) {
-        workspaces.add(workspaceRestModels.createRestModelWithActivity(userIdentifier, indexedWorkspace));
-        .search();
-
       EducationTypeMapping educationTypeMapping = workspaceEntityController.getEducationTypeMapping();
-
-      List<Map<String, Object>> results = searchResult.getResults();
-      for (Map<String, Object> result : results) {
-        String searchId = (String) result.get("id");
-        if (StringUtils.isNotBlank(searchId)) {
-          String[] id = searchId.split("/", 2);
-          if (id.length == 2) {
-            String dataSource = id[1];
-            String identifier = id[0];
-            WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(dataSource, identifier);
-            if (workspaceEntity != null) {
-              String name = (String) result.get("name");
-              String description = (String) result.get("description");
-              String nameExtension = (String) result.get("nameExtension");
-              String subjectIdentifier = (String) result.get("subjectIdentifier");
-
-              Object curriculumIdentifiersObject = result.get("curriculumIdentifiers");
-              Set<String> curriculumIdentifiers = new HashSet<String>();
-              if (curriculumIdentifiersObject instanceof Collection) {
-                Collection<?> curriculumIdentifierCollection = (Collection<?>) curriculumIdentifiersObject;
-                for (Object o : curriculumIdentifierCollection) {
-                  if (o instanceof String)
-                    curriculumIdentifiers.add((String) o);
-                  else
-                    logger.warning("curriculumIdentifier not of type String");
-                }
-              }
-
-              String educationTypeId = (String) result.get("educationTypeIdentifier");
-
-              Mandatority mandatority = null;
-
-              if (StringUtils.isNotBlank(educationTypeId)) {
-                SchoolDataIdentifier educationSubtypeId = SchoolDataIdentifier.fromId((String) result.get("educationSubtypeIdentifier"));
-
-                if (educationSubtypeId != null) {
-                  if (educationTypeMapping != null) {
-                    mandatority = educationTypeMapping.getMandatority(educationSubtypeId);
-                  }
-                }
-              }
-
-              if (StringUtils.isNotBlank(name)) {
-                workspaces.add(createRestModel(workspaceEntity, name, nameExtension, description, curriculumIdentifiers, subjectIdentifier, mandatority));
-              }
-            }
-          }
-        }
+      
+      for (IndexedWorkspace indexedWorkspace : indexedWorkspaces) {
+        workspaces.add(workspaceRestModels.createRestModelWithActivity(userIdentifier, indexedWorkspace, educationTypeMapping));
       }
     } else {
       return Response.status(Status.INTERNAL_SERVER_ERROR).build();
@@ -668,36 +618,8 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
 
-    return Response.ok(workspaceRestModels.createRestModelWithActivity(sessionController.getLoggedUser(), workspaceEntity, workspace)).build();
-
-  private fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace createRestModel(
-      WorkspaceEntity workspaceEntity,
-      String name,
-      String nameExtension,
-      String description,
-      Set<String> curriculumIdentifiers,
-      String subjectIdentifier,
-      Mandatority mandatority) {
-    Long numVisits = workspaceVisitController.getNumVisits(workspaceEntity);
-    Date lastVisit = workspaceVisitController.getLastVisit(workspaceEntity);
-    boolean hasCustomImage = workspaceEntityFileController.getHasCustomImage(workspaceEntity);
-
-    return new fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace(workspaceEntity.getId(),
-        workspaceEntity.getOrganizationEntity() == null ? null : workspaceEntity.getOrganizationEntity().getId(),
-        workspaceEntity.getUrlName(),
-        workspaceEntity.getAccess(),
-        workspaceEntity.getArchived(),
-        workspaceEntity.getPublished(),
-        name,
-        nameExtension,
-        description,
-        workspaceEntity.getDefaultMaterialLicense(),
-        mandatority,
-        numVisits,
-        lastVisit,
-        curriculumIdentifiers,
-        subjectIdentifier,
-        hasCustomImage);
+    EducationTypeMapping educationTypeMapping = workspaceEntityController.getEducationTypeMapping();
+    return Response.ok(workspaceRestModels.createRestModelWithActivity(sessionController.getLoggedUser(), workspaceEntity, workspace, educationTypeMapping)).build();
   }
-
+  
 }

@@ -48,6 +48,7 @@ import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
+import fi.otavanopisto.muikku.model.workspace.EducationTypeMapping;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
@@ -158,6 +159,9 @@ public class GuiderRESTService extends PluginRESTService {
   @Inject
   private OrganizationEntityController organizationEntityController;
 
+  @Inject
+  private WorkspaceEntityController workspaceEntityController;
+  
   @Inject
   @Any
   private Instance<SearchProvider> searchProviders;
@@ -546,8 +550,9 @@ public class GuiderRESTService extends PluginRESTService {
 
       List<IndexedWorkspace> indexedWorkspaces = searchResults.getResults();
 
+      EducationTypeMapping educationTypeMapping = workspaceEntityController.getEducationTypeMapping();
       for (IndexedWorkspace indexedWorkspace : indexedWorkspaces) {
-        workspaces.add(workspaceRestModels.createRestModelWithActivity(userIdentifier, indexedWorkspace));
+        workspaces.add(workspaceRestModels.createRestModelWithActivity(userIdentifier, indexedWorkspace, educationTypeMapping));
       }
     } else {
       return Response.status(Status.INTERNAL_SERVER_ERROR).build();
@@ -718,31 +723,6 @@ public class GuiderRESTService extends PluginRESTService {
     return new OrganizationRESTModel(organizationEntity.getId(), organizationEntity.getName());
   }
 
-  private GuiderStudentWorkspaceActivityRestModel toRestModel(GuiderStudentWorkspaceActivity activity, WorkspaceAssessmentState assessmentState) {
-    GuiderStudentWorkspaceActivityRestModel model = new GuiderStudentWorkspaceActivityRestModel(
-        activity.getLastVisit(),
-        activity.getNumVisits(),
-        activity.getJournalEntryCount(),
-        activity.getLastJournalEntry(),
-        activity.getEvaluables().getUnanswered(),
-        activity.getEvaluables().getAnswered(),
-        activity.getEvaluables().getAnsweredLastDate(),
-        activity.getEvaluables().getSubmitted(),
-        activity.getEvaluables().getSubmittedLastDate(),
-        activity.getEvaluables().getWithdrawn(),
-        activity.getEvaluables().getWithdrawnLastDate(),
-        activity.getEvaluables().getPassed(),
-        activity.getEvaluables().getPassedLastDate(),
-        activity.getEvaluables().getFailed(),
-        activity.getEvaluables().getFailedLastDate(),
-        activity.getEvaluables().getIncomplete(),
-        activity.getEvaluables().getIncompleteLastDate(),
-        activity.getExercises().getUnanswered(),
-        activity.getExercises().getAnswered(),
-        activity.getExercises().getAnsweredLastDate(),
-        assessmentState);
-    return model;
-  }
   /**
    * POST mApi().guider.student.contactLog.create(userEntityId, payload)
    *

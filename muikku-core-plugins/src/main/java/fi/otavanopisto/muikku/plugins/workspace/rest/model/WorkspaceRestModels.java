@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
+import fi.otavanopisto.muikku.model.workspace.EducationTypeMapping;
+import fi.otavanopisto.muikku.model.workspace.Mandatority;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
@@ -52,7 +54,7 @@ public class WorkspaceRestModels {
   @Inject
   private WorkspaceEntityFileController workspaceEntityFileController;
 
-  public ToRWorkspaceRestModel createRestModelWithActivity(SchoolDataIdentifier userIdentifier, WorkspaceEntity workspaceEntity, fi.otavanopisto.muikku.schooldata.entity.Workspace workspace) {
+  public ToRWorkspaceRestModel createRestModelWithActivity(SchoolDataIdentifier userIdentifier, WorkspaceEntity workspaceEntity, fi.otavanopisto.muikku.schooldata.entity.Workspace workspace, EducationTypeMapping educationTypeMapping) {
     Long numVisits = workspaceVisitController.getNumVisits(workspaceEntity);
     Date lastVisit = workspaceVisitController.getLastVisit(workspaceEntity);
     boolean hasCustomImage = workspaceEntityFileController.getHasCustomImage(workspaceEntity);
@@ -74,6 +76,9 @@ public class WorkspaceRestModels {
     
     GuiderStudentWorkspaceActivityRestModel guiderStudentWorkspaceActivityRestModel = toRestModel(activity, assessmentStates);
     
+    Mandatority mandatority = (educationTypeMapping != null && workspace.getEducationSubtypeIdentifier() != null) 
+        ? educationTypeMapping.getMandatority(workspace.getEducationSubtypeIdentifier()) : null;
+    
     return new ToRWorkspaceRestModel(workspaceEntity.getId(),
         workspaceEntity.getOrganizationEntity() == null ? null : workspaceEntity.getOrganizationEntity().getId(),
         workspaceEntity.getUrlName(),
@@ -84,6 +89,7 @@ public class WorkspaceRestModels {
         workspace.getNameExtension(), 
         workspace.getDescription(), 
         workspaceEntity.getDefaultMaterialLicense(),
+        mandatority,
         numVisits, 
         lastVisit,
         curriculumIdentifiers,
@@ -92,7 +98,7 @@ public class WorkspaceRestModels {
         guiderStudentWorkspaceActivityRestModel);
   }
   
-  public ToRWorkspaceRestModel createRestModelWithActivity(SchoolDataIdentifier userIdentifier, IndexedWorkspace indexedWorkspace) {
+  public ToRWorkspaceRestModel createRestModelWithActivity(SchoolDataIdentifier userIdentifier, IndexedWorkspace indexedWorkspace, EducationTypeMapping educationTypeMapping) {
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByIdentifier(indexedWorkspace.getIdentifier());
     
     Long numVisits = workspaceVisitController.getNumVisits(workspaceEntity);
@@ -116,6 +122,9 @@ public class WorkspaceRestModels {
     
     GuiderStudentWorkspaceActivityRestModel guiderStudentWorkspaceActivityRestModel = toRestModel(activity, assessmentStates);
     
+    Mandatority mandatority = (educationTypeMapping != null && indexedWorkspace.getEducationSubtypeIdentifier() != null) 
+        ? educationTypeMapping.getMandatority(indexedWorkspace.getEducationSubtypeIdentifier()) : null;
+    
     return new ToRWorkspaceRestModel(workspaceEntity.getId(),
         workspaceEntity.getOrganizationEntity() == null ? null : workspaceEntity.getOrganizationEntity().getId(),
         workspaceEntity.getUrlName(),
@@ -126,6 +135,7 @@ public class WorkspaceRestModels {
         indexedWorkspace.getNameExtension(), 
         indexedWorkspace.getDescription(), 
         workspaceEntity.getDefaultMaterialLicense(),
+        mandatority,
         numVisits, 
         lastVisit,
         curriculumIdentifiers,

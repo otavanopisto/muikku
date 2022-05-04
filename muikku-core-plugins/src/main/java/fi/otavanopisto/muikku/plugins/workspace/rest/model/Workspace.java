@@ -38,7 +38,7 @@ public class Workspace {
     this.name = name;
     this.nameExtension = nameExtension;
     this.description = description;
-    this.setMandatority(mandatority);
+    this.mandatority = mandatority;
     this.numVisits = numVisits;
     this.lastVisit = lastVisit;
     this.curriculumIdentifiers = curriculumIdentifiers;
@@ -139,14 +139,6 @@ public class Workspace {
 
   public void setCurriculumIdentifiers(Set<String> curriculumIdentifiers) {
     this.curriculumIdentifiers = curriculumIdentifiers;
-  }
-
-  public String getSubjectIdentifier() {
-    return subjectIdentifier;
-  }
-
-  public void setSubjectIdentifier(String subjectIdentifier) {
-    this.subjectIdentifier = subjectIdentifier;
   }
 
   public Mandatority getMandatority() {
