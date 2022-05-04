@@ -115,7 +115,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
     
     Student student = new Student((long) 1, (long) 1, "Test", "User", null, null, null, null, null, null, null, null,
       null, null, null, (long) 1, null, null, null,
-      false, null, null, null, null, variables, tags, null, null);
+      false, null, null, null, null, variables, tags, false, null);
     
     String studentJson = objectMapper.writeValueAsString(student);
     
