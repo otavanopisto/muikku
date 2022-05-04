@@ -91,9 +91,6 @@ class StateOfStudies extends React.Component<
     const IsStudentPartOfProperStudyProgram = (studyProgramName: string) => {
       switch (studyProgramName) {
         case "Nettilukio/yksityisopiskelu (aineopintoina)":
-        case "Nettilukio/yksityisopiskelu (tutkinto)":
-        case "Aineopiskelu/lukio":
-        case "Aineopiskelu/peruskoulu":
         case "Aineopiskelu/yo-tutkinto":
           return true;
         default:
