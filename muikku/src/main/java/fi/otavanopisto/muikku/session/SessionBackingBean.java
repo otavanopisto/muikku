@@ -12,7 +12,6 @@ import javax.inject.Named;
 
 import org.apache.commons.lang3.StringUtils;
 
-import fi.otavanopisto.muikku.controller.SystemSettingsController;
 import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
@@ -36,9 +35,6 @@ public class SessionBackingBean {
   private UserController userController;
 
   @Inject
-  private SystemSettingsController systemSettingsController;
-
-  @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
   
   @Inject
@@ -49,10 +45,6 @@ public class SessionBackingBean {
   public void init() {
     loggedUserRoleArchetype = null;
     loggedUserName = null;
-    // TODO testsRunning and bugsnag referenced by (hopefully deprecated) flex-base.xhtml
-    testsRunning = StringUtils.equals("true", System.getProperty("tests.running"));
-    bugsnagApiKey = systemSettingsController.getSetting("bugsnagApiKey");
-    bugsnagEnabled = StringUtils.isNotBlank(bugsnagApiKey);
     loggedUserId = null;
     loggedUser = null;
 
@@ -135,18 +127,6 @@ public class SessionBackingBean {
     return localeController.resolveLocale(sessionController.getLocale());
   }
 
-  public boolean getTestsRunning() {
-    return testsRunning;
-  }
-
-  public String getBugsnagApiKey() {
-    return bugsnagApiKey;
-  }
-
-  public boolean getBugsnagEnabled() {
-    return bugsnagEnabled;
-  }
-
   public boolean getHasFees() {
     return hasFees;
   }
@@ -175,9 +155,6 @@ public class SessionBackingBean {
   private Long loggedUserId;
   private EnvironmentRoleArchetype loggedUserRoleArchetype;
   private String loggedUserName;
-  private boolean testsRunning;
-  private String bugsnagApiKey;
-  private boolean bugsnagEnabled;
   private boolean hasFees;
 
 }
