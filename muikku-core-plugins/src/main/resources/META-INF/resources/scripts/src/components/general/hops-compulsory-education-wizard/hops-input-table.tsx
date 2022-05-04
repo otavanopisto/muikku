@@ -37,9 +37,7 @@ const createArrayOfNumberIntervals = (
 /**
  * QuestionGradeTableProps
  */
-interface HopsInputTableProps {
-  tableHeader: JSX.Element;
-}
+interface HopsInputTableProps {}
 
 /**
  * HopsInputTable
@@ -47,13 +45,73 @@ interface HopsInputTableProps {
  * @returns JSX.Element. Language grade table component
  */
 export const HopsInputTable: React.FC<HopsInputTableProps> = (props) => {
-  const { children, tableHeader } = props;
+  const { children } = props;
 
   return (
-    <Table modifiers={["question-table"]}>
-      {tableHeader}
-      <Tbody>{children}</Tbody>
-    </Table>
+    <>
+      <div className="hops-container__table-container-descriptions">
+        <div className="hops-container__table-description-item">
+          1 = Erittäin hyvin
+        </div>
+        <div className="hops-container__table-description-item">2 = Hyvin</div>
+        <div className="hops-container__table-description-item">
+          3 = Ei hyvin eikä huonosti
+        </div>
+        <div className="hops-container__table-description-item">
+          4 = Huonosti
+        </div>
+        <div className="hops-container__table-description-item">
+          5 = Erittäin huonosti
+        </div>
+      </div>
+      <Table modifiers={["question-table"]}>
+        <TableHead>
+          <Tr>
+            <Th modifiers={["centered"]}>
+              <span className="hops-container__table-head-container hops-container__table-head-description--long">
+                Erittäin hyvin
+              </span>
+              <span className="hops-container__table-head-container hops-container__table-head-description--short">
+                1
+              </span>
+            </Th>
+            <Th modifiers={["centered"]}>
+              <span className="hops-container__table-head-container hops-container__table-head-description--long">
+                Hyvin
+              </span>
+              <span className="hops-container__table-head-container hops-container__table-head-description--short">
+                2
+              </span>
+            </Th>
+            <Th modifiers={["centered"]}>
+              <span className="hops-container__table-head-container hops-container__table-head-description--long">
+                Ei hyvin eikä huonosti
+              </span>
+              <span className="hops-container__table-head-container hops-container__table-head-description--short">
+                3
+              </span>
+            </Th>
+            <Th modifiers={["centered"]}>
+              <span className="hops-container__table-head-container hops-container__table-head-description--long">
+                Huonosti
+              </span>
+              <span className="hops-container__table-head-container hops-container__table-head-description--short">
+                4
+              </span>
+            </Th>
+            <Th modifiers={["centered"]}>
+              <span className="hops-container__table-head-container hops-container__table-head-description--long">
+                Erittäin huonosti
+              </span>
+              <span className="hops-container__table-head-container hops-container__table-head-description--short">
+                5
+              </span>
+            </Th>
+          </Tr>
+        </TableHead>
+        <Tbody>{children}</Tbody>
+      </Table>
+    </>
   );
 };
 

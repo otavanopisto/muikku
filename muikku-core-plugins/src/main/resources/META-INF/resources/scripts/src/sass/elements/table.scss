@@ -64,6 +64,10 @@
   width: 100px;
 
   @include breakpoint($breakpoint-pad) {
+    width: 150px;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
     width: 200px;
   }
 }
