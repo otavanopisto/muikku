@@ -13,7 +13,9 @@ public class GuiderStudentRestModel extends Student {
       String school, String email, Date studyStartDate, Date studyEndDate, Date studyTimeEnd, Date lastLogin,
       String curriculumIdentifier, boolean updatedByStudent, Long userEntityId, List<StudentFlag> flags,
       OrganizationRESTModel organization, boolean isUpperSecondarySchoolCurriculum) {
-    super();
+    super(id, firstName, lastName, nickName, studyProgrammeName, studyProgrammeIdentifier, hasImage, nationality, language, municipality,
+        school, email, studyStartDate, studyEndDate, studyTimeEnd, lastLogin,
+        curriculumIdentifier, updatedByStudent, userEntityId, flags, organization);
     this.isUpperSecondarySchoolCurriculum = isUpperSecondarySchoolCurriculum;
   }
    
