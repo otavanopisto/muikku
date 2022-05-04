@@ -63,10 +63,10 @@ import fi.otavanopisto.muikku.plugins.timed.notifications.model.NoPassedCoursesN
 import fi.otavanopisto.muikku.plugins.timed.notifications.model.StudyTimeNotification;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsFileController;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.TranscriptOfRecordsFile;
+import fi.otavanopisto.muikku.rest.model.GuiderStudentRestModel;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryCommentRestModel;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryRestModel;
 import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
-import fi.otavanopisto.muikku.rest.model.Student;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -525,7 +525,7 @@ public class GuiderRESTService extends PluginRESTService {
       organizationRESTModel = new OrganizationRESTModel(organizationEntity.getId(), organizationEntity.getName());
     }
 
-    Student student = new Student(
+    GuiderStudentRestModel student = new GuiderStudentRestModel(
         studentIdentifier.toId(), 
         user.getFirstName(), 
         user.getLastName(),
@@ -546,7 +546,8 @@ public class GuiderRESTService extends PluginRESTService {
         userEntity == null ? false : userEntity.getUpdatedByStudent(),
         userEntity == null ? -1 : userEntity.getId(),
         null,
-        organizationRESTModel
+        organizationRESTModel,
+        user.getMatriculationEligibility()
     );
     
     return Response
