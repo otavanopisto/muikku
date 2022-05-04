@@ -61,8 +61,4 @@ public class SystemSettingsController {
     }
   }
 
-  public String getHelpWorkspaceUrlName() {
-    return getSetting("helpWorkspaceUrlName");
-  }
-
 }
