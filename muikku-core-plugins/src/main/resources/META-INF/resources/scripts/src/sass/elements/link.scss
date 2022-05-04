@@ -454,8 +454,10 @@
 
 .link--download-pdf {
   display: block;
+  padding: 20px;
 
   @include breakpoint($breakpoint-desktop) {
     display: none;
+    padding: 0;
   }
 }
