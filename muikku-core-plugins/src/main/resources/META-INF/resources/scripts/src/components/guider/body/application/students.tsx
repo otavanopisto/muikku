@@ -206,7 +206,7 @@ class GuiderStudents extends BodyScrollLoader<
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    guiderStudentsState: state.guider.state,
+    guiderStudentsState: state.guider.studentsState,
     guiderStudentsHasMore: state.guider.hasMore,
     guiderStudentsCurrent: state.guider.currentStudent,
     guider: state.guider,
