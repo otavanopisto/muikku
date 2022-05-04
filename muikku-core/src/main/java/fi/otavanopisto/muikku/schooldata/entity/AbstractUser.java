@@ -9,7 +9,7 @@ public abstract class AbstractUser implements User {
   public AbstractUser(String identifier, String firstName, String lastName, String nickName, String displayName,
       String studyProgrammeName, SchoolDataIdentifier studyProgrammeIdentifier, String nationality, String language, String municipality, String school,
       OffsetDateTime studyStartDate, OffsetDateTime studyEndDate, OffsetDateTime studyTimeEnd, boolean hidden, 
-      boolean evaluationFees, String curriculumIdentifier, SchoolDataIdentifier organizationIdentifier, Boolean upperSecondarySchoolCurriculum) {
+      boolean evaluationFees, String curriculumIdentifier, SchoolDataIdentifier organizationIdentifier, boolean upperSecondarySchoolCurriculum) {
     super();
     this.identifier = identifier;
     this.firstName = firstName;
