@@ -39,6 +39,10 @@ public class GuiderPermissions extends AbstractMuikkuPermissionCollection implem
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.TEACHER } )
   public static final String GUIDER_GET_TORFILE_CONTENT = "GUIDER_GET_TORFILE_CONTENT";
 
+  @Scope (PermissionScope.ENVIRONMENT)
+  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.TEACHER, EnvironmentRoleArchetype.STUDY_GUIDER } )
+  public static final String ACCESS_CONTACT_LOG = "ACCESS_CONTACT_LOG";
+  
   @Override
   public List<String> listPermissions() {
     return listPermissions(GuiderPermissions.class);
