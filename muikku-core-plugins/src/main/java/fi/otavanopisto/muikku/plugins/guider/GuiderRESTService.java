@@ -547,7 +547,7 @@ public class GuiderRESTService extends PluginRESTService {
         userEntity == null ? -1 : userEntity.getId(),
         null,
         organizationRESTModel,
-        user.getEligibility()
+        user.getMatriculationEligibility()
     );
     
     return Response

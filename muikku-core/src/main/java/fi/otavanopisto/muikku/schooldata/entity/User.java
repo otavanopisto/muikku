@@ -56,5 +56,5 @@ public interface User extends SchoolDataEntity {
 
   public String getNickName();  
   
-  public boolean getEligibility();
+  public boolean getMatriculationEligibility();
 }

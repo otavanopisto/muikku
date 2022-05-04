@@ -26,7 +26,7 @@ public class PyramusUser extends AbstractUser implements User {
                      OffsetDateTime studyTimeEnd,
                      boolean evaluationFees,
                      boolean hidden,
-                     boolean matriculationEligibilities) {
+                     boolean matriculationEligibility) {
     
     super(identifier, 
         firstName, 
@@ -46,7 +46,7 @@ public class PyramusUser extends AbstractUser implements User {
         evaluationFees,
         curriculumIdentifier,
         organizationIdentifier,
-        matriculationEligibilities);
+        matriculationEligibility);
   }
 
   @Override

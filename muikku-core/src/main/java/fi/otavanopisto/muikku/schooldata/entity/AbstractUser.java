@@ -9,7 +9,7 @@ public abstract class AbstractUser implements User {
   public AbstractUser(String identifier, String firstName, String lastName, String nickName, String displayName,
       String studyProgrammeName, SchoolDataIdentifier studyProgrammeIdentifier, String nationality, String language, String municipality, String school,
       OffsetDateTime studyStartDate, OffsetDateTime studyEndDate, OffsetDateTime studyTimeEnd, boolean hidden, 
-      boolean evaluationFees, String curriculumIdentifier, SchoolDataIdentifier organizationIdentifier, boolean upperSecondarySchoolCurriculum) {
+      boolean evaluationFees, String curriculumIdentifier, SchoolDataIdentifier organizationIdentifier, boolean matriculationEligibility) {
     super();
     this.identifier = identifier;
     this.firstName = firstName;
@@ -29,7 +29,7 @@ public abstract class AbstractUser implements User {
     this.evaluationFees = evaluationFees;
     this.curriculumIdentifier = curriculumIdentifier;
     this.organizationIdentifier = organizationIdentifier;
-    this.upperSecondarySchoolCurriculum = upperSecondarySchoolCurriculum;
+    this.matriculationEligibility = matriculationEligibility;
   }
 
   @Override
@@ -175,12 +175,12 @@ public abstract class AbstractUser implements User {
     this.organizationIdentifier = organizationIdentifier;
   }
 
-  public boolean getEligibility() {
-    return upperSecondarySchoolCurriculum;
+  public boolean getMatriculationEligibility() {
+    return matriculationEligibility;
   }
 
-  public void setEligibility(boolean upperSecondarySchoolCurriculum) {
-    this.upperSecondarySchoolCurriculum = upperSecondarySchoolCurriculum;
+  public void setMatriculationEligibility(boolean matriculationEligibility) {
+    this.matriculationEligibility = matriculationEligibility;
   }
 
   private String identifier;
@@ -201,5 +201,5 @@ public abstract class AbstractUser implements User {
   private String curriculumIdentifier;
   private SchoolDataIdentifier organizationIdentifier;
   private String nickName;
-  private boolean upperSecondarySchoolCurriculum;
+  private boolean matriculationEligibility;
 }

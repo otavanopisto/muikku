@@ -10,9 +10,9 @@ public class LocalUserImpl  extends AbstractUser implements User {
 
   public LocalUserImpl(String identifier, String firstName, String lastName, String nickName, String displayName,
       String studyProgrammeName, SchoolDataIdentifier studyProgrammeIdentifier, String nationality, String language, String municipality, String school,
-      OffsetDateTime studyStartDate, OffsetDateTime studyEndDate, OffsetDateTime studyTimeEnd, String curriculumIdentifier, SchoolDataIdentifier organizationIdentifier, boolean eligibility) {
+      OffsetDateTime studyStartDate, OffsetDateTime studyEndDate, OffsetDateTime studyTimeEnd, String curriculumIdentifier, SchoolDataIdentifier organizationIdentifier, boolean matriculationEligibility) {
     super(identifier, firstName, lastName, nickName, displayName, studyProgrammeName, studyProgrammeIdentifier, nationality, language, municipality, school,
-        studyStartDate, studyEndDate, studyTimeEnd, false, false, curriculumIdentifier, organizationIdentifier, eligibility);
+        studyStartDate, studyEndDate, studyTimeEnd, false, false, curriculumIdentifier, organizationIdentifier, matriculationEligibility);
   }
 
   @Override
