@@ -142,6 +142,9 @@ public class GuiderRESTService extends PluginRESTService {
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
   
   @Inject
+  private UserSchoolDataController userSchoolDataController;
+  
+  @Inject
   private NoPassedCoursesNotificationController noPassedCoursesNotificationController;
 
   @Inject
@@ -152,9 +155,6 @@ public class GuiderRESTService extends PluginRESTService {
 
   @Inject
   private FlagController flagController;
-  
-  @Inject
-  private UserSchoolDataController userSchoolDataController;
   
   @Inject
   @Any
@@ -667,6 +667,51 @@ public class GuiderRESTService extends PluginRESTService {
     String contentType = file.getContentType();
     
     return Response.ok().type(contentType).entity(output).build();
+  }
+  
+  /**
+   * POST mApi().guider.students.studyTime.create(16, {months: 3})
+   * 
+   * Increases student's study time end by given months.
+   * 
+   * @param userEntityId
+   * @param months
+   * @return 
+   * 
+   * returns increased studyTimeEnd
+   */
+  
+  @POST
+  @Path("/students/{ID}/studyTime")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response increaseStudyTime(@PathParam("ID") Long userEntityId, @QueryParam("months") Integer months) {
+
+    EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUser());
+
+    if (roleEntity == null || roleEntity.getArchetype().equals(EnvironmentRoleArchetype.STUDENT)) {
+      logger.severe("Logged user does not have permission");
+      return Response.status(Status.FORBIDDEN).entity("Logged user does not have permission").build();
+    }
+    
+    // Validation
+    if (months == null || months <= 0) {
+      logger.severe("Invalid months");
+      return Response.status(Status.BAD_REQUEST).entity("Invalid months").build();
+    }
+    UserEntity studentEntity = userEntityController.findUserEntityById(userEntityId);
+    
+    if (studentEntity == null) {
+      logger.severe("Student not found");
+      return Response.status(Status.BAD_REQUEST).entity("Student not found").build();
+    }
+    
+    User student = userSchoolDataController.increaseStudyTime(studentEntity.defaultSchoolDataIdentifier(), months);
+    if (student != null) {
+      return Response.status(Status.OK).entity(student.getStudyTimeEnd()).build();
+    }
+    else {
+      return Response.status(Status.NOT_FOUND).build();
+    }
   }
   
   private OrganizationRESTModel toRestModel(OrganizationEntity organizationEntity) {
