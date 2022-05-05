@@ -1,6 +1,5 @@
 import { i18nType } from "~/reducers/base/i18n";
 import * as React from "react";
-import { DiscussionThreadReplyType } from "~/reducers/discussion";
 import { Dispatch, connect } from "react-redux";
 import { AnyActionType } from "~/actions";
 import { bindActionCreators } from "redux";

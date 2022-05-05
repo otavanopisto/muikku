@@ -3,11 +3,11 @@ import "~/sass/elements/contact-event.scss";
 import "~/sass/elements/rich-text.scss";
 import { i18nType } from "~/reducers/base/i18n";
 import { IContactEvent } from "~/reducers/main-function/guider";
-import CommentContactEvent from "../../../comment-contact-event";
-import EditContactEvent from "../../../edit-contact-event";
-import EditContactEventComment from "../../../edit-contact-event-comment";
+import CommentContactEvent from "../../../contact-event-new-comment";
+import EditContactEvent from "../../../contact-event-edit";
+import EditContactEventComment from "../../../contact-event-edit-comment";
+import ContactEventDeletePrompt from "../../../contact-event-delete-prompt";
 import * as moment from "moment";
-
 
 /**
  *
@@ -50,7 +50,12 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
         <div className="contact-event__header-actions">
           <span onClick={() => setCreateCommentOpen(true)}>Kommentoi</span>
           <span onClick={() => setEventEditOpen(true)}>Muokkaa</span>
-          <span>Poista</span>
+          <ContactEventDeletePrompt
+            studentUserEntityId={studentId}
+            contactLogEntryId={id}
+          >
+            <span>Poista</span>
+          </ContactEventDeletePrompt>
         </div>
       </div>
       {eventEditOpen ? (
@@ -88,7 +93,9 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
                   </div>
                 </div>
                 <div className="contact-event__header-actions">
-                  <span onClick={() => setCommentEditOpen(comment.id)}>Muokkaa</span>
+                  <span onClick={() => setCommentEditOpen(comment.id)}>
+                    Muokkaa
+                  </span>
                   <span>Poista</span>
                 </div>
               </div>
@@ -115,4 +122,3 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
 };
 
 export default ContactEvent;
-

@@ -170,6 +170,16 @@ export type TOGGLE_ALL_STUDENTS = SpecificActionType<
   undefined
 >;
 
+export type DELETE_CONTACT_EVENT = SpecificActionType<
+  "DELETE_CONTACT_EVENT",
+  number
+>;
+
+export type DELETE_CONTACT_EVENT_COMMENT = SpecificActionType<
+  "DELETE_CONTACT_EVENT_COMMENT",
+  { contactLogEntryId: number; commentId: number }
+>;
+
 export interface LoadStudentsTriggerType {
   (filters: GuiderActiveFiltersType): AnyActionType;
 }
@@ -196,6 +206,10 @@ export interface CreateContactEventTriggerType {
     }
   ): AnyActionType;
 }
+
+export interface DeleteContactEventTriggerType {
+  (studentUserEntityId: number, contactLogEntryId: number): AnyActionType;
+}
 export interface EditContactEventTriggerType {
   (
     userEntityId: number,
@@ -220,6 +234,10 @@ export interface CreateContactEventCommentTriggerType {
   ): AnyActionType;
 }
 
+export interface DeleteContactEventCommentTriggerType {
+  userEntityId: number;
+  contactLogEntryId: number;
+}
 export interface EditContactEventCommentTriggerType {
   (
     userEntityId: number,
@@ -857,6 +875,52 @@ const createContactEvent: CreateContactEventTriggerType =
     };
   };
 
+/** createContactEvent thunk action creator
+ * @param userEntityId id for the user in subject
+ * @param payload event data payload
+ * @returns a thunk function
+ */
+const deleteContactEvent: DeleteContactEventTriggerType =
+  function deleteContactEvent(studentUserEntityId, contactLogEntryId) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      try {
+        await promisify(
+          mApi().guider.student.contactLog.del(
+            studentUserEntityId,
+            contactLogEntryId
+          ),
+          "callback"
+        )();
+
+        dispatch(
+          notificationActions.displayNotification(
+            getState().i18n.text.get("TODO"),
+            "success"
+          )
+        );
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          notificationActions.displayNotification(
+            getState().i18n.text.get("TODO"),
+            "error"
+          )
+        );
+        dispatch({
+          type: "UPDATE_GUIDER_ALL_PROPS",
+          payload: {
+            currentState: <GuiderCurrentStudentStateType>"ERROR",
+          },
+        });
+      }
+    };
+  };
+
 /**
  * editContactEvent thunk action creator
  * @param userEntityId student user id
@@ -905,6 +969,10 @@ const editContactEvent: EditContactEventTriggerType = function editContactEvent(
             value: contactLogs,
           },
         });
+      });
+      dispatch({
+        type: "UNLOCK_TOOLBAR",
+        payload: null,
       });
     } catch (err) {
       if (!(err instanceof MApiError)) {
@@ -1623,6 +1691,7 @@ export {
   loadStudentHistory,
   loadStudentGuiderRelations,
   createContactEvent,
+  deleteContactEvent,
   editContactEvent,
   createContactEventComment,
   editContactEventComment,

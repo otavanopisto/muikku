@@ -14,7 +14,7 @@ import { CalendarEvent } from "~/reducers/main-function/calendar";
 import ContactEvent from "./contact-events/contact-event";
 import { StatusType } from "~/reducers/base/status";
 import { IContactEvent } from "~/reducers/main-function/guider/";
-import NewContactEvent from "../../new-contact-event";
+import NewContactEvent from "../../contact-event-new-event";
 import moment from "~/lib/moment";
 import student from "../../student";
 
