@@ -222,7 +222,13 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
 
   return (
     <ApplicationPanelBody modifier="guider-student" asideBefore={aside}>
-      {historyDataLoaded ? studyHistoryContent() : null}
+      {historyDataLoaded ? (
+        studyHistoryContent()
+      ) : (
+        <ApplicationSubPanel>
+          <div className="loader-empty" />
+        </ApplicationSubPanel>
+      )}
     </ApplicationPanelBody>
   );
 };

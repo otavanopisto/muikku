@@ -104,9 +104,18 @@ class StateOfStudies extends React.Component<
 
     const avatar = (
       <Avatar
-        id={this.props.guider.currentStudent.basic.userEntityId}
-        hasImage={this.props.guider.currentStudent.basic.hasImage}
-        firstName={this.props.guider.currentStudent.basic.firstName}
+        id={
+          this.props.guider.currentStudent.basic &&
+          this.props.guider.currentStudent.basic.userEntityId
+        }
+        hasImage={
+          this.props.guider.currentStudent.basic &&
+          this.props.guider.currentStudent.basic.hasImage
+        }
+        firstName={
+          this.props.guider.currentStudent.basic &&
+          this.props.guider.currentStudent.basic.firstName
+        }
       ></Avatar>
     );
 
