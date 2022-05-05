@@ -5,8 +5,8 @@
   template="/WEB-INF/templates/base.xhtml">
   
   <ui:define name="scripts">
-    <script defer="defer" jsf:name="scripts/dist/vendor.js" />
-    <script defer="defer" jsf:name="scripts/dist/index.frontpage.js" />
+    <script defer="defer" src="#{request.contextPath}/scripts/dist/vendor.js" />
+    <script defer="defer" src="#{request.contextPath}/scripts/dist/index.frontpage.js" />
   </ui:define>
   
   <ui:define name="styles">
