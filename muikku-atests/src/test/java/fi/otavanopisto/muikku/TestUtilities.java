@@ -19,7 +19,6 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONObject;
 
 import fi.otavanopisto.muikku.mock.model.MockCourse;
 import fi.otavanopisto.muikku.mock.model.MockCourseStudent;
@@ -108,7 +107,8 @@ public class TestUtilities {
         null,
         variables,
         tags,
-        false);
+        false,
+        null);
     return student;
   }
   

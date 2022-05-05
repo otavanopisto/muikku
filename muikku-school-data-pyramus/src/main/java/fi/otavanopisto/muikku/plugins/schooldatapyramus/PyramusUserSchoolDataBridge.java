@@ -317,7 +317,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       
       String curriculumIdentifier = student.getCurriculumId() != null ? identifierMapper.getCurriculumIdentifier(student.getCurriculumId()).toId() : null;
       SchoolDataIdentifier organizationIdentifier = (studyProgramme != null && studyProgramme.getOrganizationId() != null) ? identifierMapper.getOrganizationIdentifier(studyProgramme.getOrganizationId()) : null;
-      
+
       boolean evaluationFees = studyProgramme != null && Boolean.TRUE.equals(studyProgramme.getHasEvaluationFees());
       
       users.add(entityFactory.createEntity(
@@ -333,7 +333,8 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
           evaluationFees,
           hidden,
           curriculumIdentifier,
-          organizationIdentifier));
+          organizationIdentifier,
+          student.getMatriculationEligibility() != null ? student.getMatriculationEligibility().isUpperSecondarySchoolCurriculum() : false));
     }
     
     return users;

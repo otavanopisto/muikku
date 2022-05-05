@@ -135,14 +135,12 @@
   padding: 0;
 
   object {
+    display: none;
     height: 520px;
     width: 100%;
 
-    @include breakpoint($breakpoint-pad) {
-      height: 966px;
-    }
-
     @include breakpoint($breakpoint-desktop) {
+      display: inline;
       height: 840px;
     }
 
