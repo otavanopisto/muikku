@@ -5,6 +5,7 @@ import "~/sass/elements/click-outside-listener.scss";
  * OutsideAlerterProps
  */
 interface OutsideClickListenerProps {
+  containerStyle?: React.CSSProperties;
   modifiers?: string[];
   onClickOutside: () => void;
 }
@@ -49,7 +50,7 @@ class OutsideClickListener extends React.Component<
   }
 
   /**
-   * Alert if clicked on outside of element
+   * if clicked on outside of element
    * @param event event
    */
   handleClickOutside(event: MouseEvent) {
@@ -76,6 +77,7 @@ class OutsideClickListener extends React.Component<
             : ""
         }`}
         ref={this.wrapperRef}
+        style={this.props.containerStyle}
       >
         {this.props.children}
       </div>

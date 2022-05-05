@@ -161,15 +161,18 @@ export default class Iframe extends React.Component<IframeProps, IframeState> {
           const iframeProps = { ...elementProps };
           const isYoutube =
             elementProps.src && elementProps.src.includes("//www.youtube.com");
-          let containerStyle: any = {
+
+          let containerStyle: React.CSSProperties = {
             height: elementProps.height + "px" || "160px",
             width: "100%",
           };
+
           delete iframeProps.height;
           if (isYoutube) {
             delete iframeProps.width;
             containerStyle = {
               ...containerStyle,
+              paddingTop: "56.25%",
               position: "relative",
             };
             iframeProps.allowFullScreen = true;
@@ -191,11 +194,11 @@ export default class Iframe extends React.Component<IframeProps, IframeState> {
           }
 
           return (
-            <span
-              className="material-page__iframe-wrapper"
-              style={containerStyle}
-            >
-              <OutsideClickListener onClickOutside={this.handleClickOutside}>
+            <span className="material-page__iframe-wrapper">
+              <OutsideClickListener
+                containerStyle={containerStyle}
+                onClickOutside={this.handleClickOutside}
+              >
                 {!this.state.active && (
                   <div
                     onClick={this.handleOverlayClick}
