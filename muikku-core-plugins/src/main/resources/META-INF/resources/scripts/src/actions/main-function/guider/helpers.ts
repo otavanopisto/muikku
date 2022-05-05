@@ -43,7 +43,7 @@ export async function loadStudentsHelper(
   if (
     initial &&
     equals(filters, guider.activeFilters) &&
-    guider.state === "READY"
+    guider.studentsState === "READY"
   ) {
     return;
   }
@@ -63,7 +63,7 @@ export async function loadStudentsHelper(
   dispatch({
     type: "UPDATE_GUIDER_ALL_PROPS",
     payload: {
-      state: guiderStudentsNextState,
+      studentsState: guiderStudentsNextState,
       activeFilters: actualFilters,
     },
   });
@@ -110,7 +110,7 @@ export async function loadStudentsHelper(
 
     //Create the payload for updating all the communicator properties
     const payload: GuiderPatchType = {
-      state: "READY",
+      studentsState: "READY",
       students: concat
         ? guider.students.concat(actualStudents)
         : actualStudents,

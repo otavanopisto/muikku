@@ -184,7 +184,10 @@ public class DiscussionTestsBase extends AbstractUITest {
       }
     )
   public void discussionReplyReplyTest() throws Exception {
-    loginAdmin();
+    MockStaffMember admin = new MockStaffMember(4l, 4l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    Builder mockBuilder = mocker();
+    mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+    login();
 
     DiscussionGroup discussionGroup = createDiscussionGroup("test group");
     try {
@@ -212,7 +215,7 @@ public class DiscussionTestsBase extends AbstractUITest {
       }
     } finally {
       deleteDiscussionGroup(discussionGroup.getId());
-      WireMock.reset();
+      mockBuilder.wiremockReset();
     }
   }
 
