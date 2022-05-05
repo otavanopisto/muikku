@@ -112,10 +112,9 @@ class CommentContactEvent extends SessionStateComponent<
    * @returns JSX.Element
    */
   render() {
-    const editorTitle =
-      this.props.i18n.text.get("plugin.discussion.answertomessage.topic") +
-      " - " +
-      this.props.i18n.text.get("plugin.discussion.createmessage.content");
+    const editorTitle = this.props.i18n.text.get(
+      "plugin.guider.user.dialog.newComment.title"
+    );
 
     const content = (
       <div className="env-dialog__row env-dialog__row--ckeditor">
@@ -171,7 +170,9 @@ class CommentContactEvent extends SessionStateComponent<
         <section className="env-dialog__wrapper">
           <div className="env-dialog__content">
             <header className="env-dialog__header">
-              {this.props.i18n.text.get("TODO: kommentoi yhteydenottoa")}
+              {this.props.i18n.text.get(
+                "plugin.guider.user.dialog.newComment.title"
+              )}
             </header>
             <section className="env-dialog__body">{content}</section>
             <footer className="env-dialog__footer">{footer}</footer>

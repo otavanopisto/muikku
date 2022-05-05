@@ -87,8 +87,12 @@ class ContactEventDeletePrompt extends React.Component<
     const content = (closeDialog: () => any) => (
       <div>
         {this.props.commentId
-          ? this.props.i18n.text.get("TODO: poista konmenttti")
-          : this.props.i18n.text.get("TODO: poista eventti")}
+          ? this.props.i18n.text.get(
+              "plugin.guider.user.dialog.removePrompt.comment.content"
+            )
+          : this.props.i18n.text.get(
+              "plugin.guider.user.dialog.removePrompt.entry.content"
+            )}
       </div>
     );
 
@@ -122,8 +126,12 @@ class ContactEventDeletePrompt extends React.Component<
         modifier="delete-area"
         title={
           this.props.commentId
-            ? this.props.i18n.text.get("TODO: Poista kommentti")
-            : this.props.i18n.text.get("TODO: poistaPoistayhteystietomerkintä")
+            ? this.props.i18n.text.get(
+                "plugin.guider.user.dialog.removePrompt.comment.title"
+              )
+            : this.props.i18n.text.get(
+                "plugin.guider.user.dialog.removePrompt.entry.title"
+              )
         }
         content={content}
         footer={footer}

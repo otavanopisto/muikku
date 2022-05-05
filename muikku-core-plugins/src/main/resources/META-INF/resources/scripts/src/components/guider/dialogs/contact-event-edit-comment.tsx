@@ -197,7 +197,9 @@ class EditContactEventComment extends SessionStateComponent<
         <section className="env-dialog__wrapper">
           <div className="env-dialog__content">
             <header className="env-dialog__header">
-              {this.props.i18n.text.get("TODO: Muokkaa yhteydenottoa")}
+              {this.props.i18n.text.get(
+                "plugin.guider.user.dialog.editContactLogComment.title"
+              )}
             </header>
             <section className="env-dialog__body">{content}</section>
             <footer className="env-dialog__footer">{footer}</footer>

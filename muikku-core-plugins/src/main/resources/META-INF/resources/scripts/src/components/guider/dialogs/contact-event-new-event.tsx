@@ -156,14 +156,9 @@ class NewContactEvent extends SessionStateComponent<
    * @returns
    */
   render() {
-    const editorTitle =
-      this.props.i18n.text.get(
-        "plugin.guider.user.dialog.createContactEvent.title"
-      ) +
-      " - " +
-      this.props.i18n.text.get(
-        "plugin.communicator.createmessage.title.content"
-      );
+    const editorTitle = this.props.i18n.text.get(
+      "plugin.guider.user.dialog.createContactEvent.title"
+    );
 
     /**
      * @param closeDialog
