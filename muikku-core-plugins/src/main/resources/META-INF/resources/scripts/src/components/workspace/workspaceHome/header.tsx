@@ -285,6 +285,9 @@ class WorkspaceHomeHeader extends React.Component<
               </span>
             </div>
           ) : null}
+
+          {this.renderMandatorityDescription()}
+
           {this.props.workspace.activity ? (
             <div className="meta__item meta__item--progress-data">
               <ProgressData
