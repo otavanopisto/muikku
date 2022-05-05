@@ -235,8 +235,11 @@ export interface CreateContactEventCommentTriggerType {
 }
 
 export interface DeleteContactEventCommentTriggerType {
-  userEntityId: number;
-  contactLogEntryId: number;
+  (
+    studentUserEntityId: number,
+    contactLogEntryId: number,
+    commentId: number
+  ): AnyActionType;
 }
 export interface EditContactEventCommentTriggerType {
   (
@@ -875,7 +878,7 @@ const createContactEvent: CreateContactEventTriggerType =
     };
   };
 
-/** createContactEvent thunk action creator
+/** deleteContactEvent thunk action creator
  * @param userEntityId id for the user in subject
  * @param payload event data payload
  * @returns a thunk function
@@ -894,6 +897,11 @@ const deleteContactEvent: DeleteContactEventTriggerType =
           ),
           "callback"
         )();
+
+        dispatch({
+          type: "DELETE_CONTACT_EVENT",
+          payload: contactLogEntryId,
+        });
 
         dispatch(
           notificationActions.displayNotification(
@@ -1035,7 +1043,7 @@ const createContactEventComment: CreateContactEventCommentTriggerType =
 
           // Find the index of the updated contactevent
           const contactEventIndex = contactLogs.findIndex(
-            (log) => (log.id = contactEvent.id)
+            (log) => log.id === contactEvent.id
           );
 
           // Replace the existing contactEvent at the correct index
@@ -1072,6 +1080,63 @@ const createContactEventComment: CreateContactEventCommentTriggerType =
         dispatch({
           type: "UNLOCK_TOOLBAR",
           payload: null,
+        });
+      }
+    };
+  };
+
+/** deleteContactEventComment thunk action creator
+ * @param studentUserEntityId id for the user in subject
+ * @param contactLogEntryId id of the contactLogEntry
+ * @param commentId id for the comment
+ * @returns a thunk function
+ */
+const deleteContactEventComment: DeleteContactEventCommentTriggerType =
+  function deleteContactEventComment(
+    studentUserEntityId,
+    contactLogEntryId,
+    commentId
+  ) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      try {
+        await promisify(
+          mApi().guider.student.contactLog.comments.del(
+            studentUserEntityId,
+            contactLogEntryId,
+            commentId
+          ),
+          "callback"
+        )();
+
+        dispatch({
+          type: "DELETE_CONTACT_EVENT_COMMENT",
+          payload: { contactLogEntryId, commentId },
+        });
+
+        dispatch(
+          notificationActions.displayNotification(
+            getState().i18n.text.get("TODO"),
+            "success"
+          )
+        );
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          notificationActions.displayNotification(
+            getState().i18n.text.get("TODO"),
+            "error"
+          )
+        );
+        dispatch({
+          type: "UPDATE_GUIDER_ALL_PROPS",
+          payload: {
+            currentState: <GuiderCurrentStudentStateType>"ERROR",
+          },
         });
       }
     };
@@ -1116,7 +1181,7 @@ const editContactEventComment: EditContactEventCommentTriggerType =
             (log) => log.id === comment.entry
           );
 
-          // get the index number of the commen inside the contactEvent
+          // get the index number of the comment inside the contactEvent
           const commmentIndex = contactEvent.comments.findIndex(
             (c) => c.id === comment.id
           );
@@ -1124,9 +1189,9 @@ const editContactEventComment: EditContactEventCommentTriggerType =
           // replace the comment with the updated comment
           contactEvent.comments.splice(commmentIndex, 1, comment);
 
-          // find the index of the current contactevent
+          // find the index of the current contactEvent
           const contactEventIndex = contactLogs.findIndex(
-            (log) => (log.id = contactEvent.id)
+            (log) => log.id === contactEvent.id
           );
 
           // Replace the existing contactEvent at the correct index
@@ -1694,6 +1759,7 @@ export {
   deleteContactEvent,
   editContactEvent,
   createContactEventComment,
+  deleteContactEventComment,
   editContactEventComment,
   addToGuiderSelectedStudents,
   removeFromGuiderSelectedStudents,

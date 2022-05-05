@@ -13,6 +13,8 @@ import Button from "~/components/general/button";
 import {
   deleteContactEvent,
   DeleteContactEventTriggerType,
+  deleteContactEventComment,
+  DeleteContactEventCommentTriggerType,
 } from "~/actions/main-function/guider";
 import { StateType } from "~/reducers";
 
@@ -25,6 +27,7 @@ interface ContactEventDeletePromptProps {
   contactLogEntryId: number;
   studentUserEntityId: number;
   deleteContactEvent: DeleteContactEventTriggerType;
+  deleteContactEventComment: DeleteContactEventCommentTriggerType;
   children: React.ReactElement<any>;
 }
 
@@ -65,7 +68,11 @@ class ContactEventDeletePrompt extends React.Component<
         this.props.contactLogEntryId
       );
     } else {
-      console.log("Muu");
+      this.props.deleteContactEventComment(
+        this.props.studentUserEntityId,
+        this.props.contactLogEntryId,
+        this.props.commentId
+      );
     }
   };
 
@@ -142,7 +149,10 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return bindActionCreators({ deleteContactEvent }, dispatch);
+  return bindActionCreators(
+    { deleteContactEvent, deleteContactEventComment },
+    dispatch
+  );
 }
 
 export default connect(

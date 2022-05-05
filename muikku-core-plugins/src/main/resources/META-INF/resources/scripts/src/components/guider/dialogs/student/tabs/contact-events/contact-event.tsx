@@ -96,7 +96,13 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
                   <span onClick={() => setCommentEditOpen(comment.id)}>
                     Muokkaa
                   </span>
-                  <span>Poista</span>
+                  <ContactEventDeletePrompt
+                    studentUserEntityId={studentId}
+                    contactLogEntryId={id}
+                    commentId={comment.id}
+                  >
+                    <span>Poista</span>
+                  </ContactEventDeletePrompt>
                 </div>
               </div>
               {commentEditOpen === comment.id ? (

@@ -526,7 +526,7 @@ export default function guider(
   } else if (action.type === "DELETE_CONTACT_EVENT_COMMENT") {
     const contactLogs = [...state.currentStudent.contactLogs];
     const currentContactLog = contactLogs.find(
-      (log) => (log.id = action.payload.contactLogEntryId)
+      (log) => log.id === action.payload.contactLogEntryId
     );
     const currentContactLogIndex = contactLogs.findIndex(
       (log) => log.id === currentContactLog.id
