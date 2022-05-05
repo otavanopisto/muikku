@@ -841,6 +841,10 @@ const createContactEvent: CreateContactEventTriggerType =
       getState: () => StateType
     ) => {
       try {
+        dispatch({
+          type: "LOCK_TOOLBAR",
+          payload: null,
+        });
         const contactLogs = getState().guider.currentStudent.contactLogs;
         await promisify(
           mApi().guider.student.contactLog.create(userEntityId, payload),
@@ -854,13 +858,27 @@ const createContactEvent: CreateContactEventTriggerType =
             },
           });
         });
+        dispatch(
+          notificationActions.displayNotification(
+            getState().i18n.text.get(
+              "plugin.guider.successMessage.contactLogs.contactLog.onCreate"
+            ),
+            "success"
+          )
+        );
+        dispatch({
+          type: "UNLOCK_TOOLBAR",
+          payload: null,
+        });
       } catch (err) {
         if (!(err instanceof MApiError)) {
           throw err;
         }
         dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get("plugin.guider.errormessage.user"),
+            getState().i18n.text.get(
+              "plugin.guider.errorMessage.contactLogs.contactLog.onCreate"
+            ),
             "error"
           )
         );
@@ -905,7 +923,9 @@ const deleteContactEvent: DeleteContactEventTriggerType =
 
         dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get("TODO"),
+            getState().i18n.text.get(
+              "plugin.guider.successMessage.contactLogs.contactLog.onDelete"
+            ),
             "success"
           )
         );
@@ -915,7 +935,9 @@ const deleteContactEvent: DeleteContactEventTriggerType =
         }
         dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get("TODO"),
+            getState().i18n.text.get(
+              "plugin.guider.errorMessage.contactLogs.contactLog.onDelete"
+            ),
             "error"
           )
         );
@@ -978,6 +1000,14 @@ const editContactEvent: EditContactEventTriggerType = function editContactEvent(
           },
         });
       });
+      dispatch(
+        notificationActions.displayNotification(
+          getState().i18n.text.get(
+            "plugin.guider.successMessage.contactLogs.contactLog.onEdit"
+          ),
+          "success"
+        )
+      );
       dispatch({
         type: "UNLOCK_TOOLBAR",
         payload: null,
@@ -988,7 +1018,9 @@ const editContactEvent: EditContactEventTriggerType = function editContactEvent(
       }
       dispatch(
         notificationActions.displayNotification(
-          getState().i18n.text.get("plugin.guider.errormessage.user"),
+          getState().i18n.text.get(
+            "plugin.guider.successMessage.contactLogs.contactLog.onEdit"
+          ),
           "error"
         )
       );
@@ -1057,6 +1089,14 @@ const createContactEventComment: CreateContactEventCommentTriggerType =
             },
           });
         });
+        dispatch(
+          notificationActions.displayNotification(
+            getState().i18n.text.get(
+              "plugin.guider.successMessage.contactLogs.contactLogComment.onCreate"
+            ),
+            "success"
+          )
+        );
         dispatch({
           type: "UNLOCK_TOOLBAR",
           payload: null,
@@ -1067,7 +1107,9 @@ const createContactEventComment: CreateContactEventCommentTriggerType =
         }
         dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get("plugin.guider.errormessage.user"),
+            getState().i18n.text.get(
+              "plugin.guider.errorMessage.contactLogs.contactLogComment.onCreate"
+            ),
             "error"
           )
         );
@@ -1118,7 +1160,9 @@ const deleteContactEventComment: DeleteContactEventCommentTriggerType =
 
         dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get("TODO"),
+            getState().i18n.text.get(
+              "plugin.guider.successMessage.contactLogs.contactLogComment.onDelete"
+            ),
             "success"
           )
         );
@@ -1128,7 +1172,9 @@ const deleteContactEventComment: DeleteContactEventCommentTriggerType =
         }
         dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get("TODO"),
+            getState().i18n.text.get(
+              "plugin.guider.errorMessage.contactLogs.contactLogComment.onDelete"
+            ),
             "error"
           )
         );
@@ -1204,6 +1250,15 @@ const editContactEventComment: EditContactEventCommentTriggerType =
               value: contactLogs,
             },
           });
+
+          dispatch(
+            notificationActions.displayNotification(
+              getState().i18n.text.get(
+                "plugin.guider.successMessage.contactLogs.contactLogComment.onEdit"
+              ),
+              "success"
+            )
+          );
         });
         dispatch({
           type: "UNLOCK_TOOLBAR",
@@ -1215,7 +1270,9 @@ const editContactEventComment: EditContactEventCommentTriggerType =
         }
         dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get("plugin.guider.errormessage.user"),
+            getState().i18n.text.get(
+              "plugin.guider.errormessage.contactLogs.contactLogComment.onEdit"
+            ),
             "error"
           )
         );
