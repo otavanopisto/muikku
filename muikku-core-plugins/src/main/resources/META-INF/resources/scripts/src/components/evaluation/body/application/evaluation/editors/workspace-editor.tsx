@@ -19,6 +19,7 @@ import {
   AssessmentRequest,
   BilledPrice,
   EvaluationEnum,
+  EvaluationWorkspaceSubject,
 } from "~/@types/evaluation";
 import { i18nType } from "~/reducers/base/i18n";
 import {
@@ -340,6 +341,20 @@ class WorkspaceEditor extends SessionStateComponent<
     );
 
     return existingBilledPriceObject;
+  };
+
+  /**
+   * combinationWorkspaceUsesSameSubject
+   * @param subjects subjects
+   */
+  combinationWorkspaceUsesSameSubject = (
+    subjects: EvaluationWorkspaceSubject[]
+  ) => {
+    const allModuleSubjectIdentifiers = subjects.map(
+      (s) => s.subject && s.subject.identifier
+    );
+
+    return new Set(allModuleSubjectIdentifiers).size !== subjects.length;
   };
 
   /**
@@ -835,6 +850,17 @@ class WorkspaceEditor extends SessionStateComponent<
    */
   render() {
     const { existingBilledPriceObject } = this.state;
+    const { selectedAssessment } = this.props;
+
+    const isCombinationWorkspace = selectedAssessment.subjects.length > 1;
+
+    let combinationPaymentWarning = false;
+
+    if (isCombinationWorkspace) {
+      combinationPaymentWarning = this.combinationWorkspaceUsesSameSubject(
+        selectedAssessment.subjects
+      );
+    }
 
     const options = this.renderSelectOptions();
 
@@ -906,7 +932,7 @@ class WorkspaceEditor extends SessionStateComponent<
             </label>
             <select
               id="workspaceEvaluationBilling"
-              className=" form-element__select form-element__select--evaluation"
+              className="form-element__select form-element__select--evaluation"
               onChange={this.handleSelectPriceChange}
               value={this.state.selectedPriceOption}
               disabled={billingPriceDisabled}
@@ -915,6 +941,14 @@ class WorkspaceEditor extends SessionStateComponent<
             </select>
           </div>
         ) : null}
+
+        {combinationPaymentWarning && (
+          <div className="evaluation-modal__evaluate-drawer-row evaluation-modal__evaluate-drawer-row--payment-warning">
+            Huomioikaa laskutuksessa yhdistelmäopintojaksojen hinnoittelu.
+            Toiminto joka hoitaa asian lisätään myöhemmin sovittavana
+            ajankohtana!
+          </div>
+        )}
 
         <div className="evaluation-modal__evaluate-drawer-row evaluation-modal__evaluate-drawer-row--buttons">
           <Button
