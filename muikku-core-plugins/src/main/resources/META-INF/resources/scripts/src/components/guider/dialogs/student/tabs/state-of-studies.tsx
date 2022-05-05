@@ -91,9 +91,6 @@ class StateOfStudies extends React.Component<
     const IsStudentPartOfProperStudyProgram = (studyProgramName: string) => {
       switch (studyProgramName) {
         case "Nettilukio/yksityisopiskelu (aineopintoina)":
-        case "Nettilukio/yksityisopiskelu (tutkinto)":
-        case "Aineopiskelu/lukio":
-        case "Aineopiskelu/peruskoulu":
         case "Aineopiskelu/yo-tutkinto":
           return true;
         default:
@@ -350,52 +347,55 @@ class StateOfStudies extends React.Component<
 
     return (
       <>
-        <ApplicationSubPanel modifier="guider-student-header">
-          {studentBasicHeader}
-          {this.props.guider.currentStudent.labels &&
-          this.props.guider.currentStudent.labels.length ? (
-            <ApplicationSubPanel.Body modifier="labels">
-              <div className="labels">{studentLabels}</div>
-            </ApplicationSubPanel.Body>
-          ) : null}
-        </ApplicationSubPanel>
-        <ApplicationSubPanel modifier="student-data-container">
-          <ApplicationSubPanel modifier="student-data-primary">
-            {studentBasicInfo}
+        {this.props.guider.currentStudentState === "LOADING" ? (
+          <ApplicationSubPanel>
+            <div className="loader-empty" />
           </ApplicationSubPanel>
-          <ApplicationSubPanel modifier="student-data-secondary">
-            {this.props.guider.currentStudent.basic &&
-            IsStudentPartOfProperStudyProgram(
-              this.props.guider.currentStudent.basic.studyProgrammeName
-            ) ? (
-              <ApplicationSubPanel>
+        ) : (
+          <>
+            <ApplicationSubPanel modifier="guider-student-header">
+              {studentBasicHeader}
+              {this.props.guider.currentStudent.labels &&
+              this.props.guider.currentStudent.labels.length ? (
+                <ApplicationSubPanel.Body modifier="labels">
+                  <div className="labels">{studentLabels}</div>
+                </ApplicationSubPanel.Body>
+              ) : null}
+            </ApplicationSubPanel>
+            <ApplicationSubPanel modifier="student-data-container">
+              <ApplicationSubPanel modifier="student-data-primary">
+                {studentBasicInfo}
+              </ApplicationSubPanel>
+              <ApplicationSubPanel modifier="student-data-secondary">
+                {this.props.guider.currentStudent.basic &&
+                IsStudentPartOfProperStudyProgram(
+                  this.props.guider.currentStudent.basic.studyProgrammeName
+                ) ? (
+                  <ApplicationSubPanel>
+                    <ApplicationSubPanel.Header>
+                      {this.props.i18n.text.get(
+                        "plugin.guider.user.details.purchases"
+                      )}
+                    </ApplicationSubPanel.Header>
+                    <ApplicationSubPanel.Body>
+                      <Ceepos />
+                    </ApplicationSubPanel.Body>
+                  </ApplicationSubPanel>
+                ) : null}
+
                 <ApplicationSubPanel.Header>
                   {this.props.i18n.text.get(
-                    "plugin.guider.user.details.purchases"
+                    "plugin.guider.user.details.workspaces"
                   )}
                 </ApplicationSubPanel.Header>
+
                 <ApplicationSubPanel.Body>
-                  <Ceepos />
+                  {studentWorkspaces}
                 </ApplicationSubPanel.Body>
               </ApplicationSubPanel>
-            ) : null}
-
-            <ApplicationSubPanel.Header>
-              {this.props.i18n.text.get(
-                "plugin.guider.user.details.workspaces"
-              )}
-            </ApplicationSubPanel.Header>
-
-            <ApplicationSubPanel.Body>
-              {studentWorkspaces}
-            </ApplicationSubPanel.Body>
-          </ApplicationSubPanel>
-          {this.props.guider.currentState === "LOADING" ? (
-            <ApplicationSubPanel>
-              <div className="loader-empty" />
             </ApplicationSubPanel>
-          ) : null}
-        </ApplicationSubPanel>
+          </>
+        )}
       </>
     );
   }
