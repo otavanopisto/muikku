@@ -830,12 +830,12 @@ const loadStudentGuiderRelations: LoadStudentDataTriggerType =
   };
 
 /** createContactEvent thunk action creator
- * @param userEntityId id for the user in subject
+ * @param studentUserEntityId id for the student in subject
  * @param payload event data payload
  * @returns a thunk function
  */
 const createContactEvent: CreateContactEventTriggerType =
-  function createContactEvent(userEntityId, payload) {
+  function createContactEvent(studentUserEntityId, payload) {
     return async (
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
@@ -847,7 +847,7 @@ const createContactEvent: CreateContactEventTriggerType =
         });
         const contactLogs = getState().guider.currentStudent.contactLogs;
         await promisify(
-          mApi().guider.student.contactLog.create(userEntityId, payload),
+          mApi().guider.student.contactLog.create(studentUserEntityId, payload),
           "callback"
         )().then((contactLog: IContactEvent) => {
           dispatch({
@@ -897,7 +897,8 @@ const createContactEvent: CreateContactEventTriggerType =
   };
 
 /** deleteContactEvent thunk action creator
- * @param userEntityId id for the user in subject
+ * @param studentUserEntityId id for the user in subject
+ * @param contactLogEntryId contact log entry to be deleted
  * @param payload event data payload
  * @returns a thunk function
  */
@@ -953,13 +954,13 @@ const deleteContactEvent: DeleteContactEventTriggerType =
 
 /**
  * editContactEvent thunk action creator
- * @param userEntityId student user id
+ * @param studentUserEntityId student user id
  * @param contactLogEntryId id of the edited contact log
  * @param payload edit payload
  * @returns a thunk function
  */
 const editContactEvent: EditContactEventTriggerType = function editContactEvent(
-  userEntityId,
+  studentUserEntityId,
   contactLogEntryId,
   payload
 ) {
@@ -975,7 +976,7 @@ const editContactEvent: EditContactEventTriggerType = function editContactEvent(
 
       await promisify(
         mApi().guider.student.contactLog.update(
-          userEntityId,
+          studentUserEntityId,
           contactLogEntryId,
           payload
         ),
@@ -1039,13 +1040,13 @@ const editContactEvent: EditContactEventTriggerType = function editContactEvent(
 };
 
 /** createContactEventComment thunk action creator
- * @param userEntityId id for the user in subject
- * @param entryId id for the entry to be replied
+ * @param studentUserEntityId id for the user in subject
+ * @param contactLogEntryId id for the parent entry
  * @param payload event data payload
  * @returns a thunk function
  */
 const createContactEventComment: CreateContactEventCommentTriggerType =
-  function createContactEventComment(userEntityId, entryId, payload) {
+  function createContactEventComment(studentUserEntityId, contactLogEntryId, payload) {
     return async (
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
@@ -1058,8 +1059,8 @@ const createContactEventComment: CreateContactEventCommentTriggerType =
 
         await promisify(
           mApi().guider.student.contactLog.comments.create(
-            userEntityId,
-            entryId,
+            studentUserEntityId,
+            contactLogEntryId,
             payload
           ),
           "callback"
@@ -1129,7 +1130,7 @@ const createContactEventComment: CreateContactEventCommentTriggerType =
 
 /** deleteContactEventComment thunk action creator
  * @param studentUserEntityId id for the user in subject
- * @param contactLogEntryId id of the contactLogEntry
+ * @param contactLogEntryId id of the parent entry
  * @param commentId id for the comment
  * @returns a thunk function
  */
@@ -1189,14 +1190,15 @@ const deleteContactEventComment: DeleteContactEventCommentTriggerType =
   };
 
 /** editContactEventComment thunk action creator
- * @param userEntityId id for the user in subject
- * @param entryId id for the entry to be replied
+ * @param studentUserEntityId id for the user in subject
+ * @param contactLogEntryId id for the parent entry
+ * @param commentId id for the comment to be edited
  * @param payload event data payload
  * @returns a thunk function
  */
 const editContactEventComment: EditContactEventCommentTriggerType =
   function editContactEventComment(
-    userEntityId,
+    studentUserEntityId,
     contactLogEntryId,
     commentId,
     payload
@@ -1212,7 +1214,7 @@ const editContactEventComment: EditContactEventCommentTriggerType =
         });
         await promisify(
           mApi().guider.student.contactLog.comments.update(
-            userEntityId,
+            studentUserEntityId,
             contactLogEntryId,
             commentId,
             payload
