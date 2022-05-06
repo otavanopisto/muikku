@@ -516,32 +516,43 @@ export default function guider(
         : [],
     });
   } else if (action.type === "DELETE_CONTACT_EVENT") {
-    const contactLogs = [...state.currentStudent.contactLogs];
+    const contactLogs = state.currentStudent.contactLogs;
     const newContactLogs = contactLogs.filter(
       (log) => log.id !== action.payload
     );
 
-    return Object.assign({}, state, {
+    return {
+      ...state,
       currentStudent: { ...state.currentStudent, contactLogs: newContactLogs },
-    });
+    };
   } else if (action.type === "DELETE_CONTACT_EVENT_COMMENT") {
+    // Make a shallow copy of the contact logs
     const contactLogs = [...state.currentStudent.contactLogs];
+
+    // Find the current contact log
     const currentContactLog = contactLogs.find(
       (log) => log.id === action.payload.contactLogEntryId
     );
+
+    // Get the array index for the current contact log
     const currentContactLogIndex = contactLogs.findIndex(
       (log) => log.id === currentContactLog.id
     );
+    // Get the index of the comment to be deleted from the current contact log
     const contactLogCommentIndex = currentContactLog.comments.findIndex(
       (comment) => comment.id === action.payload.commentId
     );
 
+    // Remove the comment by index
     currentContactLog.comments.splice(contactLogCommentIndex, 1);
+
+    // Replace the the contact log entry with the new one
     contactLogs.splice(currentContactLogIndex, 1, currentContactLog);
 
-    return Object.assign({}, state, {
+    return {
+      ...state,
       currentStudent: { ...state.currentStudent, contactLogs: contactLogs },
-    });
+    };
   }
   return state;
 }
