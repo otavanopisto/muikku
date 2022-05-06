@@ -77,12 +77,12 @@ public class StudyActivityItemRestModel {
   }
 
   private String subject;
+  private String subjectName;
   private Long courseId;
   private Integer courseNumber;
   private String courseName;
   private String grade;
   private StudyActivityItemStatus status;
   private Date date;
-  private String subjectName;
   private Boolean transferCreditMandatory;
 }
