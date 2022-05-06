@@ -1,9 +1,11 @@
 import * as React from "react";
 import {
   Table,
+  TableHead,
   TableRowProps,
   Tbody,
   Td,
+  Th,
   Tr,
 } from "~/components/general/table";
 
