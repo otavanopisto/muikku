@@ -944,9 +944,9 @@ class WorkspaceEditor extends SessionStateComponent<
 
         {combinationPaymentWarning && (
           <div className="evaluation-modal__evaluate-drawer-row evaluation-modal__evaluate-drawer-row--payment-warning">
-            Huomioikaa laskutuksessa yhdistelmäopintojaksojen hinnoittelu.
-            Toiminto joka hoitaa asian lisätään myöhemmin sovittavana
-            ajankohtana!
+            Huomio! Yhdistelmäopintojaksojen palkkiot määräytyvät eri tavalla
+            kuin muut palkkiot. Ilmoita Annukalle, että olet arvioinut
+            yhdistelmäopintojaksoa. Annukka pystyy korjaamaan palkkiot oikeiksi.
           </div>
         )}
 
