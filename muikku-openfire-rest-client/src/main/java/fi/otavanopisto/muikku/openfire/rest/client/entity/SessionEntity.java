@@ -2,9 +2,9 @@ package fi.otavanopisto.muikku.openfire.rest.client.entity;
 
 import java.util.Date;
 
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 @XmlRootElement(name = "session")
 @XmlType(propOrder = { "sessionId", "username", "ressource", "node", "sessionStatus", "presenceStatus", "priority",

@@ -1,6 +1,6 @@
 package fi.otavanopisto.muikku.openfire.rest.client.entity;
 
-import jakarta.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlAttribute;
 
 /**
  * The Class UserProperty.

@@ -28,9 +28,8 @@
     </dependency>
 
     <dependency>
-      <groupId>jakarta.xml.bind</groupId>
-      <artifactId>jakarta.xml.bind-api</artifactId>
-      <scope>provided</scope>
+      <groupId>org.jboss.spec.javax.xml.bind</groupId>
+      <artifactId>jboss-jaxb-api_2.3_spec</artifactId>
     </dependency>
 
     <!-- Servlet -->
@@ -147,13 +146,6 @@
       <scope>provided</scope>
     </dependency>
     
-    <!-- Neko -->
-
-    <dependency>
-        <groupId>net.sourceforge.nekohtml</groupId>
-      <artifactId>nekohtml</artifactId>
-    </dependency>
-
     <!-- Commons -->
 
     <dependency>

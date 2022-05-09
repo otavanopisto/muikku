@@ -69,28 +69,22 @@
       <scope>provided</scope>
     </dependency>
 
-<!--     <dependency> -->
-<!--       <groupId>com.sun.faces</groupId> -->
-<!--       <artifactId>jsf-impl</artifactId> -->
-<!--       <scope>provided</scope> -->
-<!--     </dependency> -->
-
     <!-- Rewrite -->
 
-    <dependency>
-      <groupId>org.ocpsoft.rewrite</groupId>
-      <artifactId>rewrite-servlet</artifactId>
-    </dependency>
+<!--     <dependency> -->
+<!--       <groupId>org.ocpsoft.rewrite</groupId> -->
+<!--       <artifactId>rewrite-servlet</artifactId> -->
+<!--     </dependency> -->
 
-    <dependency>
-      <groupId>org.ocpsoft.rewrite</groupId>
-      <artifactId>rewrite-integration-faces</artifactId>
-    </dependency>
+<!--     <dependency> -->
+<!--       <groupId>org.ocpsoft.rewrite</groupId> -->
+<!--       <artifactId>rewrite-integration-faces</artifactId> -->
+<!--     </dependency> -->
 
-    <dependency>
-      <groupId>org.ocpsoft.rewrite</groupId>
-      <artifactId>rewrite-integration-cdi</artifactId>
-    </dependency>
+<!--     <dependency> -->
+<!--       <groupId>org.ocpsoft.rewrite</groupId> -->
+<!--       <artifactId>rewrite-integration-cdi</artifactId> -->
+<!--     </dependency> -->
 
     <!-- Hibernate -->
 
@@ -154,11 +148,11 @@
       <scope>provided</scope>
     </dependency>
 
-    <dependency>
-      <groupId>org.jboss.resteasy</groupId>
-      <artifactId>resteasy-jaxrs</artifactId>
-      <scope>provided</scope>
-    </dependency>
+<!--     <dependency> -->
+<!--       <groupId>org.jboss.resteasy</groupId> -->
+<!--       <artifactId>resteasy-jaxrs</artifactId> -->
+<!--       <scope>provided</scope> -->
+<!--     </dependency> -->
 
     <dependency>
       <groupId>org.jboss.resteasy</groupId>

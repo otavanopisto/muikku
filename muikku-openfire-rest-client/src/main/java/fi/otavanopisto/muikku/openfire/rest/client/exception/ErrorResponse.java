@@ -1,6 +1,6 @@
 package fi.otavanopisto.muikku.openfire.rest.client.exception;
 
-import jakarta.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * The Class ErrorResponse.

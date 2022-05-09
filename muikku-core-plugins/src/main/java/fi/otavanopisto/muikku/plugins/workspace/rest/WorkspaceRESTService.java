@@ -52,7 +52,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.StreamingOutput;
-import jakarta.xml.bind.DatatypeConverter;
+import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
@@ -1338,7 +1338,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     List<WorkspaceMaterial> evaluatedAssignments = workspaceMaterialController.listVisibleWorkspaceMaterialsByAssignmentType(
         workspaceEntity,
         WorkspaceMaterialAssignmentType.EVALUATED);
-    result.put("assignmentsTotal", new Long(evaluatedAssignments.size()));
+    result.put("assignmentsTotal", Long.valueOf(evaluatedAssignments.size()));
     
     // Done number of evaluated assignments  
 
