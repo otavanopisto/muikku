@@ -697,7 +697,7 @@ export const schoolCourseTable: SchoolSubject[] = [
   },
   {
     name: "Yhteiskuntaoppi",
-    subjectCode: "yo",
+    subjectCode: "yh",
     availableCourses: [
       {
         name: "Yhteiskuntaoppi 1. Yhteiskuntajärjestelmä sekä julkiset palvelut",
@@ -756,7 +756,7 @@ export const schoolCourseTable: SchoolSubject[] = [
     ],
   },
   {
-    name: "Bioliogia",
+    name: "Biologia",
     subjectCode: "bi",
     availableCourses: [
       {

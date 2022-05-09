@@ -73,10 +73,6 @@
   }
 }
 
-.custom-dot-list-style {
-  position: relative;
-}
-
 .react-multiple-carousel__arrow--right {
   right: calc(1% + 1px);
 }
@@ -85,121 +81,55 @@
   left: calc(1% + 1px);
 }
 
-.carousel-item--courses {
-  display: flex;
-  justify-content: center;
-  padding: 0;
-}
-
-.carousel-itemV2--courses {
-  background-color: white;
-  box-shadow: 0 5px 5px $color-workspace-hero-shadow;
-  display: flex;
-  flex-flow: column;
-  flex-grow: 1;
-  margin: 0 5px;
-  width: calc(100% - 20px);
-}
-
-.carousel-itemV2__image-section--courses {
-  height: 200px;
-  width: 100%;
-  background-size: cover;
-  display: flex;
-  justify-content: flex-start;
-  flex-direction: column;
-  padding: 15px 0;
-
-  h3 {
-    background: #ffffffe3;
-    border-bottom-right-radius: 5px;
-    border-top-right-radius: 5px;
-    box-shadow: 15px 0 10px $color-workspace-hero-shadow;
-    display: flex;
-    font-size: 1.1rem;
-    font-weight: 300;
-    padding: 5px 10px 5px 5px;
-    width: fit-content;
-    max-width: 90%;
-  }
-
-  h2 {
-    background: #4ee23a;
-    border-bottom-right-radius: 5px;
-    border-top-right-radius: 5px;
-    box-shadow: 15px 0 10px $color-workspace-hero-shadow;
-    color: #fff;
-    font-size: 0.9rem;
-    font-weight: 400;
-    margin: 10px 0 0;
-    padding: 5px 10px;
-    width: fit-content;
-    max-width: 60%;
-  }
-}
-
-.carousel-itemV2__image-section--courses img {
-  width: inherit;
-  height: inherit;
-  object-fit: cover;
-}
-
-.carousel-itemV2__container-section--courses {
-  display: flex;
-  flex-flow: column;
-  justify-content: space-between;
-  margin: 5px 10px;
-}
-
-.carousel-itemV2__container-content--courses {
-  display: flex;
-  flex-flow: column;
-  height: 120px;
-  margin: 5px 0;
-  max-height: 120px;
-  overflow: hidden;
+// Studies view's carousel styles
+.custom-dot-list-style {
+  padding: 10px 0 20px;
   position: relative;
-  text-align: initial;
-
-  p {
-    margin: 5px;
-  }
-
 }
 
-.carousel-itemV2__container-content--courses::before {
-  background-image: linear-gradient(180deg, #ffffff8c, #fffffff5);
-  bottom: 0;
-  content: "";
-  height: 20px;
-  position: absolute;
-  width: 100%;
+.carousel__item-container {
+  border-radius: 5px;
+  margin: 0 10px;
 }
 
-.carousel-itemV2__container-functions--courses {
-  margin: 5px 0;
-}
-
-.carousel-item--achievement {
-  padding: 10 10px;
-}
-
-.carousel-itemV2--achievement {
-  display: flex;
-  flex-flow: column;
-  width: 100%;
-  padding: 5px;
-}
-
-.carousel-itemV2__image-section--achievement {
+.carousel__item-image {
+  background-position: center center;
+  background-size: cover;
+  border-radius: 5px;
   height: 100px;
   width: 100%;
-  background-color: blue;
-  margin: 5px 0;
+
+  @include breakpoint($breakpoint-pad) {
+    height: 110px;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    height: 120px;
+  }
+
+  @include breakpoint($breakpoint-desktop-xl) {
+    height: 140px;
+  }
 }
 
-.carousel-itemV2__image-section--achievement img {
-  width: inherit;
-  height: inherit;
-  object-fit: cover;
+.carousel__item-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 10px;
+
+  @include breakpoint($breakpoint-desktop) {
+    font-size: 1rem;
+  }
+}
+
+.carousel__item-details {
+  align-items: flex-start;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-between;
+  min-height: 120px;
+}
+
+.carousel__item-actions {
+  padding: 10px;
 }

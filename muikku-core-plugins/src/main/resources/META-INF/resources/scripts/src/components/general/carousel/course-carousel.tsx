@@ -10,7 +10,7 @@ import Button from "~/components/general/button";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import { useCourseCarousel } from "./hooks/use-course-carousel";
 import WorkspaceSignup from "~/components/coursepicker/dialogs/workspace-signup";
-import { Suggestion } from "../../../@types/shared";
+import { Suggestion } from "~/@types/shared";
 import Carousel from "react-multi-carousel";
 
 const responsive = {
@@ -20,12 +20,17 @@ const responsive = {
     slidesToSlide: 3, // optional, default to 1.
   },
   tablet: {
-    breakpoint: { max: 1024, min: 640 },
+    breakpoint: { max: 1023, min: 768 },
+    items: 2,
+    slidesToSlide: 2, // optional, default to 1.
+  },
+  mobilexl: {
+    breakpoint: { max: 767, min: 640 },
     items: 2,
     slidesToSlide: 2, // optional, default to 1.
   },
   mobile: {
-    breakpoint: { max: 640, min: 0 },
+    breakpoint: { max: 639, min: 0 },
     items: 1,
     slidesToSlide: 1, // optional, default to 1.
   },
@@ -70,10 +75,10 @@ const CourseCarousel: React.FC<CourseCarouselProps> = (props) => {
       autoPlaySpeed={2000}
       keyBoardControl={true}
       transitionDuration={2000}
-      containerClass="carousel-container"
+      containerClass="carousel"
       removeArrowOnDeviceType={["tablet", "mobile"]}
       dotListClass="custom-dot-list-style"
-      itemClass="carousel-item--courses"
+      itemClass="carousel__item carousel__item--course"
     >
       {carouselItems}
     </Carousel>
@@ -106,16 +111,21 @@ const CourseCarouselItem: React.FC<CourseCarouselItemProps> = (props) => {
     : "url(/gfx/workspace-default-header.jpg)";
 
   return (
-    <div className="carousel-itemV2--courses">
+    <div className="carousel__item-container">
       <div
-        className="carousel-itemV2__image-section--courses"
+        className="carousel__item-image carousel__item-image--course"
         style={{ backgroundImage: courseImage }}
-      >
-        <h3>{course.name}</h3>
-
-        {course.nameExtension !== null && <h2>{course.nameExtension}</h2>}
-
-        <div className="carousel-itemV2__container-functions--courses">
+      ></div>
+      <div className="carousel__item-details">
+        <div className="carousel__item-title carousel__item-title--course">
+          {course.name}{" "}
+          {course.nameExtension !== null && (
+            <span className="carousel__item-additional-title">
+              ({course.nameExtension})
+            </span>
+          )}
+        </div>
+        <div className="carousel__item-actions carousel__item-actions--course">
           {/* {course.description && (
             <WorkspaceDescriptionDialog course={course}>
               <Button
