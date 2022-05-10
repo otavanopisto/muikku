@@ -39,7 +39,7 @@ interface ContactEventDeletePromptState {
 }
 
 /**
- * ContactEventDeletePrompt
+ * A prompt for deleting a contact log entry or comment
  */
 class ContactEventDeletePrompt extends React.Component<
   ContactEventDeletePromptProps,
@@ -74,6 +74,7 @@ class ContactEventDeletePrompt extends React.Component<
         this.props.commentId
       );
     }
+    closeDialog();
   };
 
   /**

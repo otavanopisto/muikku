@@ -82,13 +82,16 @@ class NewContactEvent extends SessionStateComponent<
    * checkAgainstStoredState
    */
   checkAgainstStoredState = () => {
-    this.checkStoredAgainstThisState({
-      text: this.props.initialMessage || "",
-      sender: this.props.initialSender || "",
-      date: this.props.initialDate || new Date(),
-      type: this.props.initialType || "OTHER",
-      locked: false,
-    });
+    this.checkStoredAgainstThisState(
+      {
+        text: this.props.initialMessage || "",
+        sender: this.props.initialSender || "",
+        date: this.props.initialDate || new Date(),
+        type: this.props.initialType || "OTHER",
+        locked: false,
+      },
+      this.nameSpace
+    );
 
     this.props.onOpen && this.props.onOpen();
   };
@@ -147,6 +150,9 @@ class NewContactEvent extends SessionStateComponent<
     }, 100);
     this.setStateAndClear({
       text: this.props.initialMessage || "",
+      sender: this.props.initialSender || "",
+      date: this.props.initialDate || new Date(),
+      type: this.props.initialType || "OTHER",
       locked: false,
     });
   };

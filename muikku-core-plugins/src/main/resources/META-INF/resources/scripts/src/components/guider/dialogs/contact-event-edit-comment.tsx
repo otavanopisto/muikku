@@ -25,8 +25,6 @@ import { IContactEventComment } from "~/reducers/main-function/guider";
 interface EditContactEventCommentProps {
   i18n: i18nType;
   status: StatusType;
-  // quote?: string;
-  // quoteAuthor?: string;
   comment: IContactEventComment;
   studentUserEntityId: number;
   editContactEventComment: EditContactEventCommentTriggerType;
@@ -44,7 +42,7 @@ interface EditContactEventCommentState {
 }
 
 /**
- * EditContactEventComment
+ * Editor for the contactLog entry comment
  */
 class EditContactEventComment extends SessionStateComponent<
   EditContactEventCommentProps,
@@ -95,6 +93,7 @@ class EditContactEventComment extends SessionStateComponent<
   clearUp = (): void => {
     this.setStateAndClear(
       {
+        locked: false,
         date: new Date(this.props.comment.commentDate),
         text: this.props.comment.text,
       },
