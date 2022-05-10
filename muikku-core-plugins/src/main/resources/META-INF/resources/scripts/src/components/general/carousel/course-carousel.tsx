@@ -12,6 +12,7 @@ import { useCourseCarousel } from "./hooks/use-course-carousel";
 import WorkspaceSignup from "~/components/coursepicker/dialogs/workspace-signup";
 import { Suggestion } from "~/@types/shared";
 import Carousel from "react-multi-carousel";
+import WorkspaceDescriptionDialog from "./workspace-description-dialog";
 
 const responsive = {
   desktop: {
@@ -77,7 +78,7 @@ const CourseCarousel: React.FC<CourseCarouselProps> = (props) => {
       transitionDuration={2000}
       containerClass="carousel"
       removeArrowOnDeviceType={["tablet", "mobile"]}
-      dotListClass="custom-dot-list-style"
+      dotListClass="carousel__dots-list"
       itemClass="carousel__item carousel__item--course"
     >
       {carouselItems}
@@ -112,10 +113,12 @@ const CourseCarouselItem: React.FC<CourseCarouselItemProps> = (props) => {
 
   return (
     <div className="carousel__item-container">
-      <div
-        className="carousel__item-image carousel__item-image--course"
-        style={{ backgroundImage: courseImage }}
-      ></div>
+      <div className="carousel__item-hero">
+        <div
+          className="carousel__item-image carousel__item-image--course"
+          style={{ backgroundImage: courseImage }}
+        ></div>
+      </div>
       <div className="carousel__item-details">
         <div className="carousel__item-title carousel__item-title--course">
           {course.name}{" "}
@@ -125,27 +128,22 @@ const CourseCarouselItem: React.FC<CourseCarouselItemProps> = (props) => {
             </span>
           )}
         </div>
+
         <div className="carousel__item-actions carousel__item-actions--course">
-          {/* {course.description && (
+          {course.description && (
             <WorkspaceDescriptionDialog course={course}>
               <Button
                 aria-label={course.name}
-                buttonModifiers={[
-                  "primary-function-content",
-                  "coursepicker-course-action",
-                ]}
+                buttonModifiers={["studies-course-action"]}
               >
                 Kuvaus
               </Button>
             </WorkspaceDescriptionDialog>
-          )} */}
+          )}
 
           <Button
             aria-label={course.name}
-            buttonModifiers={[
-              "primary-function-content ",
-              "coursepicker-course-action",
-            ]}
+            buttonModifiers={["studies-course-action"]}
             href={`/workspace/${course.urlName}`}
           >
             Tutustu
@@ -161,10 +159,7 @@ const CourseCarouselItem: React.FC<CourseCarouselItemProps> = (props) => {
           >
             <Button
               aria-label={course.name}
-              buttonModifiers={[
-                "primary-function-content",
-                "coursepicker-course-action",
-              ]}
+              buttonModifiers={["studies-course-action"]}
             >
               Ilmoittaudu
             </Button>

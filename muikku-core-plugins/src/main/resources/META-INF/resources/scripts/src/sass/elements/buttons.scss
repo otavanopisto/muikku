@@ -92,6 +92,25 @@
   margin: 0 10px 0 0;
 }
 
+.button--studies-course-action {
+  background: $color-default;
+  border: 1px solid $color-primary;
+  color: $color-primary;
+  font-size: 0.75rem;
+  margin: 0 10px 0 0;
+  padding: 4px 10px;
+
+  &:last-child {
+    margin: 0;
+  }
+
+  &:hover {
+    background: $color-primary;
+    border: 1px solid $color-primary;
+    color: $color-default;
+  }
+}
+
 .button--execute {
   background-color: $color-button-execute-background;
   color: $color-button-execute-text;

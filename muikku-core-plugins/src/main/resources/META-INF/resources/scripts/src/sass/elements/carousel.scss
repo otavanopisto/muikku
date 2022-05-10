@@ -74,30 +74,48 @@
 }
 
 .react-multiple-carousel__arrow--right {
+  display: none;
   right: calc(1% + 1px);
 }
 
 .react-multiple-carousel__arrow--left {
+  display: none;
   left: calc(1% + 1px);
 }
 
 // Studies view's carousel styles
-.custom-dot-list-style {
-  padding: 10px 0 20px;
+.carousel__dots-list {
+  padding: 20px 0;
   position: relative;
+
+  > li {
+    display: flex;
+  }
+
+  .react-multi-carousel-dot button {
+    border: none;
+    margin-right: 10px;
+  }
+
+  .react-multi-carousel-dot--active button {
+    background: $color-info;
+  }
 }
 
 .carousel__item-container {
-  border-radius: 5px;
+  border: 1px solid $color-default-separator-border;
+  border-radius: 52x;
   margin: 0 10px;
+  padding: 4px;
 }
 
-.carousel__item-image {
-  background-position: center center;
-  background-size: cover;
-  border-radius: 5px;
+.carousel__item-hero {
+  align-items: flex-start;
+  display: flex;
+  flex-flow: column nowrap;
   height: 100px;
-  width: 100%;
+  justify-content: center;
+  position: relative;
 
   @include breakpoint($breakpoint-pad) {
     height: 110px;
@@ -112,13 +130,25 @@
   }
 }
 
+.carousel__item-image {
+  background-position: center center;
+  background-size: cover;
+  border-radius: 2px;
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
 .carousel__item-title {
   font-size: 0.875rem;
-  font-weight: 600;
-  padding: 10px;
+  font-weight: 400;
+  padding: 5px;
+  width: 100%;
 
   @include breakpoint($breakpoint-desktop) {
-    font-size: 1rem;
+    font-size: 0.935rem;
   }
 }
 
@@ -127,9 +157,15 @@
   display: flex;
   flex-flow: column nowrap;
   justify-content: space-between;
-  min-height: 120px;
+  min-height: 115px;
+  padding: 10px;
 }
 
 .carousel__item-actions {
-  padding: 10px;
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  padding: 5px;
+  width: 100%;
 }
