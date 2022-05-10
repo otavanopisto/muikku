@@ -38,7 +38,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
-import fi.otavanopisto.muikku.plugins.chat.rest.ChatRoomRESTModel;
 import fi.otavanopisto.muikku.plugins.hops.HopsController;
 import fi.otavanopisto.muikku.plugins.hops.model.Hops;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsGoals;
@@ -521,18 +520,19 @@ public class HopsRestService {
         return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Workspace entity %d not found", payload.getId())).build();
       }
       hopsSuggestion = hopsController.suggestWorkspace(studentIdentifier, payload.getSubject(), payload.getType(), payload.getCourseNumber(), payload.getWorkspaceEntityId());
-      StudyActivityItemRestModel item = new StudyActivityItemRestModel();
+      HopsSuggestionRestModel item = new HopsSuggestionRestModel();
       
       if (payload.getType().toLowerCase().contains("optional")) {
-        item.setStatus(StudyActivityItemStatus.SUGGESTED_OPTIONAL);
+        item.setType(StudyActivityItemStatus.SUGGESTED_OPTIONAL.name());
       } else {
-        item.setStatus(StudyActivityItemStatus.SUGGESTED_NEXT);
-        item.setCourseId(hopsSuggestion.getWorkspaceEntityId());
-        item.setCourseName(workspaceEntityController.getName(workspaceEntity));
+        item.setType(StudyActivityItemStatus.SUGGESTED_NEXT.name());
+        item.setWorkspaceEntityId(hopsSuggestion.getWorkspaceEntityId());
+        item.setName(workspaceEntityController.getName(workspaceEntity));
       }
-  
+      
+      item.setId(hopsSuggestion.getId());
       item.setCourseNumber(hopsSuggestion.getCourseNumber());
-      item.setDate(hopsSuggestion.getCreated());
+      item.setCreated(hopsSuggestion.getCreated());
       item.setSubject(hopsSuggestion.getSubject());
       
       webSocketMessenger.sendMessage("hops:workspace-suggested", item, Arrays.asList(studentEntity, counselorEntity));
@@ -547,18 +547,21 @@ public class HopsRestService {
       }
       hopsController.suggestWorkspace(studentIdentifier, payload.getSubject(), payload.getType(), payload.getCourseNumber(), workspaceEntity != null ? workspaceEntity.getId() : null);
       
-      StudyActivityItemRestModel item = new StudyActivityItemRestModel();
-      item.setCourseNumber(hopsSuggestion.getCourseNumber());
-      item.setDate(hopsSuggestion.getCreated());
-      item.setSubject(hopsSuggestion.getSubject());
+      HopsSuggestionRestModel item = new HopsSuggestionRestModel();
       
       if (payload.getType().toLowerCase().contains("optional")) {
-        item.setStatus(StudyActivityItemStatus.SUGGESTED_OPTIONAL);
+        item.setType(StudyActivityItemStatus.SUGGESTED_OPTIONAL.name());
       } else {
-        item.setCourseId(hopsSuggestion.getWorkspaceEntityId());
-        item.setCourseName(workspaceEntityController.getName(workspaceEntity));
-        item.setStatus(StudyActivityItemStatus.SUGGESTED_NEXT);
+        item.setType(StudyActivityItemStatus.SUGGESTED_NEXT.name());
+        item.setWorkspaceEntityId(hopsSuggestion.getWorkspaceEntityId());
+        item.setName(workspaceEntityController.getName(workspaceEntity));
       }
+  
+      item.setId(hopsSuggestion.getId());
+      item.setCourseNumber(hopsSuggestion.getCourseNumber());
+      item.setCreated(hopsSuggestion.getCreated());
+      item.setSubject(hopsSuggestion.getSubject());
+      
       webSocketMessenger.sendMessage("hops:workspace-suggested", item, Arrays.asList(studentEntity, counselorEntity));
 
       return Response.ok(item).build();

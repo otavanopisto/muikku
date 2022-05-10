@@ -1,9 +1,15 @@
 package fi.otavanopisto.muikku.plugins.hops.rest;
 
+import java.util.Date;
+
 public class HopsSuggestionRestModel {
 
   public Long getId() {
     return id;
+  }
+  
+  public void setId(Long id) {
+    this.id = id;
   }
 
   public String getName() {
@@ -22,14 +28,6 @@ public class HopsSuggestionRestModel {
     this.subject = subject;
   }
   
-  public String getUrlName() {
-    return urlName;
-  }
-  
-  public void setUrlName(String urlName) {
-    this.urlName = urlName;
-  }
-
   public Integer getCourseNumber() {
     return courseNumber;
   }
@@ -45,23 +43,7 @@ public class HopsSuggestionRestModel {
   public void setType(String type) {
     this.type = type;
   }
-  
-  public Boolean getHasCustomImage() {
-    return hasCustomImage;
-  }
-  
-  public void setHasCustomImage(Boolean hasCustomImage) {
-    this.hasCustomImage = hasCustomImage;
-  }
-  
-  public String getNameExtension() {
-    return nameExtension;
-  }
-  
-  public void setNameExtension(String nameExtension) {
-    this.nameExtension = nameExtension;
-  }
-  
+ 
   public String getDescription() {
     return description;
   }
@@ -78,15 +60,21 @@ public class HopsSuggestionRestModel {
     this.workspaceEntityId = workspaceEntityId;
   }
 
+  public Date getCreated() {
+    return created;
+  }
+
+  public void setCreated(Date created) {
+    this.created = created;
+  }
+
   private Long id;
   private String name;
   private String subject;
-  private String urlName;
   private Integer courseNumber;
   private String type; // optional/next
-  private Boolean hasCustomImage;
-  private String nameExtension;
   private String description;
   private Long workspaceEntityId;
+  private Date created;
 
 }
