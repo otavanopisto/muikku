@@ -43,6 +43,7 @@ import {
   PurchaseProductType,
   PurchaseType,
 } from "~/reducers/main-function/profile";
+import { Dispatch } from "react-redux";
 
 export type UPDATE_GUIDER_ACTIVE_FILTERS = SpecificActionType<
   "UPDATE_GUIDER_ACTIVE_FILTERS",
@@ -361,7 +362,7 @@ let addFileToCurrentStudent: AddFileToCurrentStudentTriggerType =
 const removeFileFromCurrentStudent: RemoveFileFromCurrentStudentTriggerType =
   function removeFileFromCurrentStudent(file) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       try {
@@ -418,7 +419,7 @@ let removeFromGuiderSelectedStudents: RemoveFromGuiderSelectedStudentsTriggerTyp
  */
 const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
   return async (
-    dispatch: (arg: AnyActionType) => any,
+    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
     try {
@@ -630,7 +631,7 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
   forceLoad
 ) {
   return async (
-    dispatch: (arg: AnyActionType) => any,
+    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
     try {
@@ -765,7 +766,7 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
 const loadStudentGuiderRelations: LoadStudentDataTriggerType =
   function loadStudentGuiderRelations(id, forceLoad) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       try {
@@ -837,7 +838,7 @@ const loadStudentGuiderRelations: LoadStudentDataTriggerType =
 const createContactEvent: CreateContactEventTriggerType =
   function createContactEvent(studentUserEntityId, payload) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       try {
@@ -905,7 +906,7 @@ const createContactEvent: CreateContactEventTriggerType =
 const deleteContactEvent: DeleteContactEventTriggerType =
   function deleteContactEvent(studentUserEntityId, contactLogEntryId) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       try {
@@ -1046,9 +1047,13 @@ const editContactEvent: EditContactEventTriggerType = function editContactEvent(
  * @returns a thunk function
  */
 const createContactEventComment: CreateContactEventCommentTriggerType =
-  function createContactEventComment(studentUserEntityId, contactLogEntryId, payload) {
+  function createContactEventComment(
+    studentUserEntityId,
+    contactLogEntryId,
+    payload
+  ) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       try {
@@ -1141,7 +1146,7 @@ const deleteContactEventComment: DeleteContactEventCommentTriggerType =
     commentId
   ) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       try {
@@ -1204,7 +1209,7 @@ const editContactEventComment: EditContactEventCommentTriggerType =
     payload
   ) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       try {
@@ -1296,7 +1301,7 @@ async function removeLabelFromUserUtil(
   student: GuiderStudentType,
   flags: Array<GuiderStudentUserProfileLabelType>,
   label: GuiderUserLabelType,
-  dispatch: (arg: AnyActionType) => any,
+  dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
   getState: () => StateType
 ) {
   try {
@@ -1333,7 +1338,7 @@ async function addLabelToUserUtil(
   student: GuiderStudentType,
   flags: Array<GuiderStudentUserProfileLabelType>,
   label: GuiderUserLabelType,
-  dispatch: (arg: AnyActionType) => any,
+  dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
   getState: () => StateType
 ) {
   try {
@@ -1374,7 +1379,7 @@ async function addLabelToUserUtil(
 let addGuiderLabelToCurrentUser: AddGuiderLabelToCurrentUserTriggerType =
   function addGuiderLabelToCurrentUser(label) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       let guider: GuiderType = getState().guider;
@@ -1392,7 +1397,7 @@ let addGuiderLabelToCurrentUser: AddGuiderLabelToCurrentUserTriggerType =
 let removeGuiderLabelFromCurrentUser: RemoveGuiderLabelFromCurrentUserTriggerType =
   function removeGuiderLabelFromCurrentUser(label) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       let guider: GuiderType = getState().guider;
@@ -1410,7 +1415,7 @@ let removeGuiderLabelFromCurrentUser: RemoveGuiderLabelFromCurrentUserTriggerTyp
 let addGuiderLabelToSelectedUsers: AddGuiderLabelToSelectedUsersTriggerType =
   function addGuiderLabelToSelectedUsers(label) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       let guider: GuiderType = getState().guider;
@@ -1423,7 +1428,7 @@ let addGuiderLabelToSelectedUsers: AddGuiderLabelToSelectedUsersTriggerType =
 let removeGuiderLabelFromSelectedUsers: RemoveGuiderLabelFromSelectedUsersTriggerType =
   function removeGuiderLabelFromSelectedUsers(label) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       let guider: GuiderType = getState().guider;
@@ -1442,7 +1447,7 @@ let removeGuiderLabelFromSelectedUsers: RemoveGuiderLabelFromSelectedUsersTrigge
 let updateLabelFilters: UpdateLabelFiltersTriggerType =
   function updateLabelFilters() {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       let currentUser = getState().status.userSchoolDataIdentifier;
@@ -1473,7 +1478,7 @@ let updateLabelFilters: UpdateLabelFiltersTriggerType =
 let updateWorkspaceFilters: UpdateWorkspaceFiltersTriggerType =
   function updateWorkspaceFilters() {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       let currentUser = getState().status.userSchoolDataIdentifier;
@@ -1507,7 +1512,7 @@ let updateWorkspaceFilters: UpdateWorkspaceFiltersTriggerType =
 let updateUserGroupFilters: UpdateWorkspaceFiltersTriggerType =
   function updateUserGroupFilters() {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       let currentUser = getState().status.userSchoolDataIdentifier;
@@ -1539,7 +1544,7 @@ let updateUserGroupFilters: UpdateWorkspaceFiltersTriggerType =
 let createGuiderFilterLabel: CreateGuiderFilterLabelTriggerType =
   function createGuiderFilterLabel(name) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       if (!name) {
@@ -1589,7 +1594,7 @@ let createGuiderFilterLabel: CreateGuiderFilterLabelTriggerType =
 let updateGuiderFilterLabel: UpdateGuiderFilterLabelTriggerType =
   function updateGuiderFilterLabel(data) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       if (!data.name) {
@@ -1655,7 +1660,7 @@ let updateGuiderFilterLabel: UpdateGuiderFilterLabelTriggerType =
 let removeGuiderFilterLabel: RemoveGuiderFilterLabelTriggerType =
   function removeGuiderFilterLabel(data) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       try {
@@ -1687,7 +1692,7 @@ let removeGuiderFilterLabel: RemoveGuiderFilterLabelTriggerType =
 const updateAvailablePurchaseProducts: UpdateAvailablePurchaseProductsTriggerType =
   function updateAvailablePurchaseProducts() {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       try {
@@ -1718,7 +1723,7 @@ const updateAvailablePurchaseProducts: UpdateAvailablePurchaseProductsTriggerTyp
 const doOrderForCurrentStudent: DoOrderForCurrentStudentTriggerType =
   function doOrderForCurrentStudent(order: PurchaseProductType) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       try {
@@ -1753,7 +1758,7 @@ const doOrderForCurrentStudent: DoOrderForCurrentStudentTriggerType =
 const deleteOrderFromCurrentStudent: DeleteOrderFromCurrentStudentTriggerType =
   function deleteOrderFromCurrentStudent(order: PurchaseType) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       try {
@@ -1779,7 +1784,7 @@ const deleteOrderFromCurrentStudent: DeleteOrderFromCurrentStudentTriggerType =
 const completeOrderFromCurrentStudent: CompleteOrderFromCurrentStudentTriggerType =
   function completeOrderFromCurrentStudent(order: PurchaseType) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       try {
