@@ -204,12 +204,19 @@ export interface CreateContactEventTriggerType {
       text: string;
       entryDate: string;
       type: ContactTypes;
-    }
+    },
+    onSuccess?: () => void,
+    onFail?: () => void
   ): AnyActionType;
 }
 
 export interface DeleteContactEventTriggerType {
-  (studentUserEntityId: number, contactLogEntryId: number): AnyActionType;
+  (
+    studentUserEntityId: number,
+    contactLogEntryId: number,
+    onSuccess?: () => void,
+    onFail?: () => void
+  ): AnyActionType;
 }
 export interface EditContactEventTriggerType {
   (
@@ -220,7 +227,9 @@ export interface EditContactEventTriggerType {
       entryDate: string;
       type: ContactTypes;
       creatorId: number;
-    }
+    },
+    onSuccess?: () => void,
+    onFail?: () => void
   ): AnyActionType;
 }
 
@@ -231,7 +240,9 @@ export interface CreateContactEventCommentTriggerType {
     payload: {
       text: string;
       commentDate: string;
-    }
+    },
+    onSuccess?: () => void,
+    onFail?: () => void
   ): AnyActionType;
 }
 
@@ -239,7 +250,9 @@ export interface DeleteContactEventCommentTriggerType {
   (
     studentUserEntityId: number,
     contactLogEntryId: number,
-    commentId: number
+    commentId: number,
+    onSuccess?: () => void,
+    onFail?: () => void
   ): AnyActionType;
 }
 export interface EditContactEventCommentTriggerType {
@@ -251,7 +264,9 @@ export interface EditContactEventCommentTriggerType {
       text: string;
       commentDate: string;
       creatorId: number;
-    }
+    },
+    onSuccess?: () => void,
+    onFail?: () => void
   ): AnyActionType;
 }
 
@@ -836,7 +851,7 @@ const loadStudentGuiderRelations: LoadStudentDataTriggerType =
  * @returns a thunk function
  */
 const createContactEvent: CreateContactEventTriggerType =
-  function createContactEvent(studentUserEntityId, payload) {
+  function createContactEvent(studentUserEntityId, payload, onSuccess, onFail) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
@@ -867,6 +882,7 @@ const createContactEvent: CreateContactEventTriggerType =
             "success"
           )
         );
+        onSuccess && onSuccess();
         dispatch({
           type: "UNLOCK_TOOLBAR",
           payload: null,
@@ -889,6 +905,7 @@ const createContactEvent: CreateContactEventTriggerType =
             currentState: <GuiderCurrentStudentStateType>"ERROR",
           },
         });
+        onFail && onFail();
         dispatch({
           type: "UNLOCK_TOOLBAR",
           payload: null,
@@ -904,7 +921,12 @@ const createContactEvent: CreateContactEventTriggerType =
  * @returns a thunk function
  */
 const deleteContactEvent: DeleteContactEventTriggerType =
-  function deleteContactEvent(studentUserEntityId, contactLogEntryId) {
+  function deleteContactEvent(
+    studentUserEntityId,
+    contactLogEntryId,
+    onSuccess,
+    onFail
+  ) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
@@ -931,6 +953,7 @@ const deleteContactEvent: DeleteContactEventTriggerType =
             "success"
           )
         );
+        onSuccess && onSuccess();
       } catch (err) {
         if (!(err instanceof MApiError)) {
           throw err;
@@ -949,6 +972,7 @@ const deleteContactEvent: DeleteContactEventTriggerType =
             currentState: <GuiderCurrentStudentStateType>"ERROR",
           },
         });
+        onFail && onFail();
       }
     };
   };
@@ -963,7 +987,9 @@ const deleteContactEvent: DeleteContactEventTriggerType =
 const editContactEvent: EditContactEventTriggerType = function editContactEvent(
   studentUserEntityId,
   contactLogEntryId,
-  payload
+  payload,
+  onSuccess,
+  onFail
 ) {
   return async (
     dispatch: (arg: AnyActionType) => any,
@@ -1014,6 +1040,7 @@ const editContactEvent: EditContactEventTriggerType = function editContactEvent(
         type: "UNLOCK_TOOLBAR",
         payload: null,
       });
+      onSuccess && onSuccess();
     } catch (err) {
       if (!(err instanceof MApiError)) {
         throw err;
@@ -1036,6 +1063,7 @@ const editContactEvent: EditContactEventTriggerType = function editContactEvent(
         type: "UNLOCK_TOOLBAR",
         payload: null,
       });
+      onFail && onFail();
     }
   };
 };
@@ -1050,7 +1078,9 @@ const createContactEventComment: CreateContactEventCommentTriggerType =
   function createContactEventComment(
     studentUserEntityId,
     contactLogEntryId,
-    payload
+    payload,
+    onSuccess,
+    onFail
   ) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
@@ -1107,6 +1137,7 @@ const createContactEventComment: CreateContactEventCommentTriggerType =
           type: "UNLOCK_TOOLBAR",
           payload: null,
         });
+        onSuccess && onSuccess();
       } catch (err) {
         if (!(err instanceof MApiError)) {
           throw err;
@@ -1129,6 +1160,7 @@ const createContactEventComment: CreateContactEventCommentTriggerType =
           type: "UNLOCK_TOOLBAR",
           payload: null,
         });
+        onFail && onFail();
       }
     };
   };
@@ -1143,7 +1175,9 @@ const deleteContactEventComment: DeleteContactEventCommentTriggerType =
   function deleteContactEventComment(
     studentUserEntityId,
     contactLogEntryId,
-    commentId
+    commentId,
+    onSuccess,
+    onFail
   ) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
@@ -1172,6 +1206,7 @@ const deleteContactEventComment: DeleteContactEventCommentTriggerType =
             "success"
           )
         );
+        onSuccess && onSuccess();
       } catch (err) {
         if (!(err instanceof MApiError)) {
           throw err;
@@ -1190,6 +1225,7 @@ const deleteContactEventComment: DeleteContactEventCommentTriggerType =
             currentState: <GuiderCurrentStudentStateType>"ERROR",
           },
         });
+        onFail && onFail();
       }
     };
   };
@@ -1206,7 +1242,9 @@ const editContactEventComment: EditContactEventCommentTriggerType =
     studentUserEntityId,
     contactLogEntryId,
     commentId,
-    payload
+    payload,
+    onSuccess,
+    onFail
   ) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
@@ -1266,6 +1304,7 @@ const editContactEventComment: EditContactEventCommentTriggerType =
               "success"
             )
           );
+          onSuccess && onSuccess();
         });
         dispatch({
           type: "UNLOCK_TOOLBAR",
@@ -1293,6 +1332,7 @@ const editContactEventComment: EditContactEventCommentTriggerType =
           type: "UNLOCK_TOOLBAR",
           payload: null,
         });
+        onFail && onFail();
       }
     };
   };
