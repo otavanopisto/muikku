@@ -68,15 +68,15 @@ const CourseCarousel: React.FC<CourseCarouselProps> = (props) => {
     <Carousel
       autoPlay={false}
       swipeable={true}
-      draggable={true}
+      draggable={false}
       showDots
       renderDotsOutside
       responsive={responsive}
       infinite={true}
       autoPlaySpeed={2000}
       keyBoardControl={true}
-      transitionDuration={2000}
-      containerClass="carousel"
+      transitionDuration={100}
+      containerClass="carousel swiper-no-swiping"
       removeArrowOnDeviceType={["tablet", "mobile"]}
       dotListClass="carousel__dots-list"
       itemClass="carousel__item carousel__item--course"
@@ -130,17 +130,6 @@ const CourseCarouselItem: React.FC<CourseCarouselItemProps> = (props) => {
         </div>
 
         <div className="carousel__item-actions carousel__item-actions--course">
-          {course.description && (
-            <WorkspaceDescriptionDialog course={course}>
-              <Button
-                aria-label={course.name}
-                buttonModifiers={["studies-course-action"]}
-              >
-                Kuvaus
-              </Button>
-            </WorkspaceDescriptionDialog>
-          )}
-
           <Button
             aria-label={course.name}
             buttonModifiers={["studies-course-action"]}
@@ -164,6 +153,17 @@ const CourseCarouselItem: React.FC<CourseCarouselItemProps> = (props) => {
               Ilmoittaudu
             </Button>
           </WorkspaceSignup>
+
+          {course.description && (
+            <WorkspaceDescriptionDialog course={course}>
+              <Button
+                aria-label={course.name}
+                buttonModifiers={["studies-course-action"]}
+              >
+                Kuvaus
+              </Button>
+            </WorkspaceDescriptionDialog>
+          )}
         </div>
       </div>
     </div>

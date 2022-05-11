@@ -6,6 +6,42 @@
 .carousel {
   position: relative;
   width: 100%;
+
+  .react-multiple-carousel__arrow--right {
+    background: $color-default;
+    box-shadow: 0 0 20px rgba(0 0 0 / 30%);
+    opacity: 100%;
+    right: 30px;
+    top: 50px;
+
+    &::before {
+      color: $color-workspace;
+      content: "\f105";
+      font-family: "muikku";
+    }
+
+    &:hover {
+      background: $color-default;
+    }
+  }
+
+  .react-multiple-carousel__arrow--left {
+    background: $color-default;
+    box-shadow: 0 0 20px rgba(0 0 0 / 30%);
+    left: 30px;
+    opacity: 100%;
+    top: 50px;
+
+    &::before {
+      color: $color-workspace;
+      content: "\f104";
+      font-family: "muikku";
+    }
+
+    &:hover {
+      background: $color-default;
+    }
+  }
 }
 
 .carousel__item {
@@ -73,16 +109,6 @@
   }
 }
 
-.react-multiple-carousel__arrow--right {
-  display: none;
-  right: calc(1% + 1px);
-}
-
-.react-multiple-carousel__arrow--left {
-  display: none;
-  left: calc(1% + 1px);
-}
-
 // Studies view's carousel styles
 .carousel__dots-list {
   padding: 20px 0;
@@ -95,16 +121,24 @@
   .react-multi-carousel-dot button {
     border: none;
     margin-right: 10px;
+
+    &:hover {
+      background: lighten($color-info, 20%);
+    }
   }
 
   .react-multi-carousel-dot--active button {
     background: $color-info;
+
+    &:hover {
+      background: $color-info;
+    }
   }
 }
 
 .carousel__item-container {
-  border: 1px solid $color-default-separator-border;
-  border-radius: 52x;
+  border: 1px solid lighten($color-workspace, 20%);
+  border-radius: 5px;
   margin: 0 10px;
   padding: 4px;
 }
@@ -157,7 +191,7 @@
   display: flex;
   flex-flow: column nowrap;
   justify-content: space-between;
-  min-height: 115px;
+  min-height: 120px;
   padding: 10px;
 }
 

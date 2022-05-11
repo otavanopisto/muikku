@@ -83,7 +83,10 @@ class WorkspaceDescriptionDialog extends React.Component<
      */
     const footer = (closeDialog: () => void) => (
       <div className="dialog__button-set">
-        <Button onClick={closeDialog} buttonModifiers={["standard-ok", "info"]}>
+        <Button
+          onClick={closeDialog}
+          buttonModifiers={["standard-ok", "cancel"]}
+        >
           Sulje
         </Button>
       </div>
@@ -91,8 +94,10 @@ class WorkspaceDescriptionDialog extends React.Component<
 
     return (
       <Dialog
-        modifier="workspace-signup-dialog"
-        title={this.props.i18n.text.get("plugin.workspaceSignUp.title")}
+        modifier="course-description"
+        title={this.props.i18n.text.get(
+          "plugin.records.descriptionDialog.title"
+        )}
         content={content}
         footer={footer}
         isOpen={this.props.isOpen}

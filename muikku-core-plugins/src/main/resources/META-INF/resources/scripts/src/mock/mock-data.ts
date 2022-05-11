@@ -630,7 +630,7 @@ export const schoolCourseTable: SchoolSubject[] = [
   },
   {
     name: "Uskonto",
-    subjectCode: "ua",
+    subjectCode: "ue",
     availableCourses: [
       {
         name: "Uskonto 1. Uskonnot maailmassa",
@@ -670,7 +670,7 @@ export const schoolCourseTable: SchoolSubject[] = [
   },
   {
     name: "Historia",
-    subjectCode: "hy",
+    subjectCode: "hi",
     availableCourses: [
       {
         name: "Historia 1. Suomen historian käännekohdat",
@@ -784,7 +784,7 @@ export const schoolCourseTable: SchoolSubject[] = [
   },
   {
     name: "Maantieto",
-    subjectCode: "man",
+    subjectCode: "ge",
     availableCourses: [
       {
         name: "Maantieto 1. Muuttuva maapallo ja kestävä tulevaisuus",
@@ -801,14 +801,14 @@ export const schoolCourseTable: SchoolSubject[] = [
         mandatory: false,
       },
       {
-        name: "Maantieto 3. Valinnainen",
+        name: "Maantieto 3. Maapallo ihmisen elinympäristönä",
         courseNumber: 3,
         length: 35,
         id: 59,
         mandatory: false,
       },
       {
-        name: "Maantieto 4. Valinnainen",
+        name: "Maantieto 4. Eurooppa",
         courseNumber: 4,
         length: 35,
         id: 60,

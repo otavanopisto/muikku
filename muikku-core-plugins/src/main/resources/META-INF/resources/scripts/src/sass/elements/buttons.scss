@@ -94,8 +94,8 @@
 
 .button--studies-course-action {
   background: $color-default;
-  border: 1px solid $color-primary;
-  color: $color-primary;
+  border: 1px solid darken($color-workspace, 10%);
+  color: darken($color-workspace, 15%);
   font-size: 0.75rem;
   margin: 0 10px 0 0;
   padding: 4px 10px;
@@ -105,8 +105,8 @@
   }
 
   &:hover {
-    background: $color-primary;
-    border: 1px solid $color-primary;
+    background: darken($color-workspace, 15%);
+    border: 1px solid darken($color-workspace, 15%);
     color: $color-default;
   }
 }
