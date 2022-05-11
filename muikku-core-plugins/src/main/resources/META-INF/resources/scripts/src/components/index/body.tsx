@@ -2,7 +2,6 @@ import MainFunctionNavbar from "../base/main-function/navbar";
 import ScreenContainer from "../general/screen-container";
 import AnnouncementsPanel from "./body/announcements-panel";
 import ContinueStudiesPanel from "./body/continue-studies-panel";
-import GuidanceEventsPanel from "./body/guidance-events-panel";
 import LastMessagesPanel from "./body/latest-messages-panel";
 import WorkspacesPanel from "./body/workspaces-panel";
 import { i18nType } from "~/reducers/base/i18n";
@@ -48,7 +47,6 @@ class IndexBody extends React.Component<
               <WorkspacesPanel />
             </div>
             <LastMessagesPanel />
-            <GuidanceEventsPanel />
             <AnnouncementsPanel overflow={true} />
           </ScreenContainer>
         ) : (

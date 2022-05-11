@@ -33,11 +33,6 @@ import ApplicationSubPanel, {
 } from "~/components/general/application-sub-panel";
 import Avatar from "~/components/general/avatar";
 
-import GuidanceEvent from "../../guidance-event";
-// import { CalendarEvent } from "~/reducers/main-function/calendar";
-// import { ResourceTimeline } from "../../../general/resource-timeline";
-// import { ExternalEventType } from "../../../general/resource-timeline";
-
 /**
  * StateOfStudiesProps
  */
@@ -153,12 +148,6 @@ class StateOfStudies extends React.Component<
             buttonModifiers={["new-message", "guider-student"]}
           />
         </NewMessage>
-        <GuidanceEvent>
-          <ButtonPill
-            icon="bubbles"
-            buttonModifiers={["new-message", "guider-student"]}
-          />
-        </GuidanceEvent>
         <GuiderToolbarLabels />
       </ApplicationSubPanelViewHeader>
     );

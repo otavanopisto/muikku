@@ -63,7 +63,7 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
           <EditContactEvent
             contactEvent={props.event}
             studentUserEntityId={studentId}
-            onClickCancel={() => setEventEditOpen(false)}
+            closeEditor={() => setEventEditOpen(false)}
           ></EditContactEvent>
         </div>
       ) : (
@@ -76,7 +76,7 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
         <CommentContactEvent
           contactEventtId={id}
           studentUserEntityId={studentId}
-          onClickCancel={() => setCreateCommentOpen(false)}
+          closeEditor={() => setCreateCommentOpen(false)}
         ></CommentContactEvent>
       ) : null}
       {comments ? (
@@ -110,7 +110,7 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
                   <EditContactEventComment
                     comment={comment}
                     studentUserEntityId={studentId}
-                    onClickCancel={() => setCommentEditOpen(null)}
+                    closeEditor={() => setCommentEditOpen(null)}
                   />
                 </div>
               ) : (

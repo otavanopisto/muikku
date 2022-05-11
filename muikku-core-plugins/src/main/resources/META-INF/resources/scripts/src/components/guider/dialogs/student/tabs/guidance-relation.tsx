@@ -8,22 +8,17 @@ import ApplicationSubPanel, {
   ApplicationSubPanelItem,
   ApplicationSubPanelSection,
 } from "~/components/general/application-sub-panel";
-import GuidanceEvent from "~/components/index/body/guidance-events/guidance-event";
 import { GuiderStudentType } from "~/reducers/main-function/guider";
-import { CalendarEvent } from "~/reducers/main-function/calendar";
 import ContactEvent from "./contact-events/contact-event";
 import { StatusType } from "~/reducers/base/status";
 import { IContactEvent } from "~/reducers/main-function/guider/";
 import NewContactEvent from "../../contact-event-new-event";
-import moment from "~/lib/moment";
-import student from "../../student";
 
 /**
  * GuidanceRelationProps
  */
 interface GuidanceRelationProps {
   i18n: i18nType;
-  status: StatusType;
   contactLogs: IContactEvent[];
   studentBasicInfo: GuiderStudentType;
 }
@@ -34,7 +29,7 @@ interface GuidanceRelationProps {
  * @returns JSX.element
  */
 const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
-  const { i18n, status, contactLogs, studentBasicInfo } = props;
+  const { i18n, contactLogs, studentBasicInfo } = props;
   return (
     <ApplicationSubPanel>
       <ApplicationSubPanelViewHeader title="Ohjaussuhde">
@@ -88,7 +83,6 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     guidanceEvents: state.calendar.guidanceEvents,
-    status: state.status, // Temporary
     studentBasicInfo: state.guider.currentStudent.basic,
     contactLogs: state.guider.currentStudent.contactLogs,
   };
