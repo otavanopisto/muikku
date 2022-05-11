@@ -1,8 +1,7 @@
 import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
-import { connect, Dispatch } from "react-redux";
-import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
 import ApplicationSubPanel, {
   ApplicationSubPanelViewHeader,
   ApplicationSubPanelItem,
@@ -10,9 +9,9 @@ import ApplicationSubPanel, {
 } from "~/components/general/application-sub-panel";
 import { GuiderStudentType } from "~/reducers/main-function/guider";
 import ContactEvent from "./contact-events/contact-event";
-import { StatusType } from "~/reducers/base/status";
 import { IContactEvent } from "~/reducers/main-function/guider/";
-import NewContactEvent from "../../contact-event-new-event";
+import NewContactEvent from "./contact-events/editors/new-event";
+import { ButtonPill } from "~/components/general/button";
 
 /**
  * GuidanceRelationProps
@@ -34,26 +33,38 @@ const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
     <ApplicationSubPanel>
       <ApplicationSubPanelViewHeader title="Ohjaussuhde">
         <NewContactEvent>
-          <div>Luo uusi yhteydenotto</div>
+          <ButtonPill icon="bubbles"></ButtonPill>
         </NewContactEvent>
       </ApplicationSubPanelViewHeader>
       <ApplicationSubPanel.Body modifier="guidance-relation">
         <ApplicationSubPanelSection modifier="guidance-relation-contact-info">
-          <ApplicationSubPanelItem title="Opiskelijan yhteystiedot">
+          <ApplicationSubPanelItem
+            title={i18n.text.get(
+              "plugin.guider.user.details.contactInfo.student.label"
+            )}
+          >
             <ApplicationSubPanelItem.Content>
               <div>{studentBasicInfo.email}</div>
             </ApplicationSubPanelItem.Content>
           </ApplicationSubPanelItem>
-          <ApplicationSubPanelItem title="Yhteyshenkilö / huoltaja">
+          <ApplicationSubPanelItem
+            title={i18n.text.get(
+              "plugin.guider.user.details.contactInfo.guardian.label"
+            )}
+          >
             <ApplicationSubPanelItem.Content>
-              <div>Puhelinnumero</div>
-              <div>Sähköposti</div>
+              <div>
+                {i18n.text.get("plugin.guider.user.details.label.phoneNumber")}
+              </div>
+              <div>
+                {i18n.text.get("plugin.guider.user.details.label.email")}
+              </div>
             </ApplicationSubPanelItem.Content>
           </ApplicationSubPanelItem>
         </ApplicationSubPanelSection>
         <ApplicationSubPanelSection modifier="guidance-relation-contact-events">
           <ApplicationSubPanelSection.Header>
-            Yhteydenotot
+            {i18n.text.get("plugin.guider.user.contactLog.title")}
           </ApplicationSubPanelSection.Header>
           <ApplicationSubPanelSection.Body>
             {contactLogs && contactLogs.length > 0 ? (
@@ -66,7 +77,9 @@ const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
                 />
               ))
             ) : (
-              <div>No logs</div>
+              <div className="empty">
+                {i18n.text.get("plugin.guider.user.contactLog.empty")}
+              </div>
             )}
           </ApplicationSubPanelSection.Body>
         </ApplicationSubPanelSection>

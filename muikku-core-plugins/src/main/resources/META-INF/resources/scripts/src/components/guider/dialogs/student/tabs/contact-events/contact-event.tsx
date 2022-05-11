@@ -3,10 +3,10 @@ import "~/sass/elements/contact-event.scss";
 import "~/sass/elements/rich-text.scss";
 import { i18nType } from "~/reducers/base/i18n";
 import { IContactEvent } from "~/reducers/main-function/guider";
-import CommentContactEvent from "../../../contact-event-new-comment";
-import EditContactEvent from "../../../contact-event-edit";
-import EditContactEventComment from "../../../contact-event-edit-comment";
-import ContactEventDeletePrompt from "../../../contact-event-delete-prompt";
+import CommentContactEvent from "./editors/new-comment";
+import EditContactEvent from "./editors/edit-event";
+import EditContactEventComment from "./editors/edit-comment";
+import ContactEventDeletePrompt from "./editors/delete-prompt";
 import * as moment from "moment";
 
 /**
