@@ -110,7 +110,12 @@ const StudySuggestionMatrix: React.FC<StudySuggestionMatrixProps> = (props) => {
                 onGoingList={studentActivity.onGoingList}
                 gradedList={studentActivity.gradedList}
                 transferedList={studentActivity.transferedList}
-                updateSuggestion={studentActivityHandlers.updateSuggestion}
+                updateSuggestionNext={
+                  studentActivityHandlers.updateSuggestionNext
+                }
+                updateSuggestionOptional={
+                  studentActivityHandlers.updateSuggestionOptional
+                }
                 skillsAndArt={studentActivity.skillsAndArt}
                 otherSubjects={studentActivity.otherSubjects}
                 otherLanguageSubjects={studentActivity.otherLanguageSubjects}
@@ -134,7 +139,12 @@ const StudySuggestionMatrix: React.FC<StudySuggestionMatrixProps> = (props) => {
               onGoingList={studentActivity.onGoingList}
               gradedList={studentActivity.gradedList}
               transferedList={studentActivity.transferedList}
-              updateSuggestion={studentActivityHandlers.updateSuggestion}
+              updateSuggestionNext={
+                studentActivityHandlers.updateSuggestionNext
+              }
+              updateSuggestionOptional={
+                studentActivityHandlers.updateSuggestionOptional
+              }
               skillsAndArt={studentActivity.skillsAndArt}
               otherSubjects={studentActivity.otherSubjects}
               otherLanguageSubjects={studentActivity.otherLanguageSubjects}

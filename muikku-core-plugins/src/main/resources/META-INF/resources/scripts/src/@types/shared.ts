@@ -478,13 +478,14 @@ export interface Course {
 export interface StudentActivityCourse {
   subjectName: string | null;
   subject: string;
-  courseId: number; // muikun työtilan id (jos kyseessä on arvioitu tai meneillään oleva kurssi)
+  courseId: number | null; // muikun työtilan id (jos kyseessä on arvioitu tai meneillään oleva kurssi)
   courseNumber: number;
   courseName: string;
   grade: number; // jos on arvioitu tahi hyväksiluettu
   status: CourseStatus;
   date: string;
   transferCreditMandatory: boolean | null;
+  id: number | null;
 }
 
 /**

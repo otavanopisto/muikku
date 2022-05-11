@@ -666,7 +666,7 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
     !isLoading &&
     numberOfOptionalSelectedCourses !== 0 &&
     (updatedCompletedOptionalCourses >= neededOptionalStudies ||
-      numberOfOptionalSelectedCourses + updatedCompletedOptionalCourses >=
+      numberOfOptionalSelectedCourses + updatedCompletedOptionalCourses >
         neededOptionalStudies);
 
   return (
@@ -932,7 +932,12 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
                 otherSubjects={studentActivity.otherSubjects}
                 otherLanguageSubjects={studentActivity.otherLanguageSubjects}
                 studentChoiceList={studentChoices.studentChoices}
-                updateSuggestion={studentActivityHandlers.updateSuggestion}
+                updateSuggestionOptional={
+                  studentActivityHandlers.updateSuggestionOptional
+                }
+                updateSuggestionNext={
+                  studentActivityHandlers.updateSuggestionNext
+                }
                 updateStudentChoice={studentChoiceHandlers.updateStudentChoice}
               />
             </div>
@@ -960,7 +965,12 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
               otherLanguageSubjects={studentActivity.otherLanguageSubjects}
               studentChoiceList={studentChoices.studentChoices}
               updateStudentChoice={studentChoiceHandlers.updateStudentChoice}
-              updateSuggestion={studentActivityHandlers.updateSuggestion}
+              updateSuggestionOptional={
+                studentActivityHandlers.updateSuggestionOptional
+              }
+              updateSuggestionNext={
+                studentActivityHandlers.updateSuggestionNext
+              }
             />
           )}
         </div>

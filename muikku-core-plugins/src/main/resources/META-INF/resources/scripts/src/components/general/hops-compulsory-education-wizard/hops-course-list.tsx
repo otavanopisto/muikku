@@ -55,7 +55,8 @@ interface HopsCourseListProps extends Partial<StudentActivityByStatus> {
    * List of student choices
    */
   studentChoiceList?: StudentCourseChoice[];
-  updateSuggestion?: (params: UpdateSuggestionParams) => void;
+  updateSuggestionNext?: (params: UpdateSuggestionParams) => void;
+  updateSuggestionOptional?: (params: UpdateSuggestionParams) => void;
   updateStudentChoice?: (params: UpdateStudentChoicesParams) => void;
 }
 
@@ -75,6 +76,16 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
     (choiceParams: UpdateStudentChoicesParams) =>
     (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
       props.updateStudentChoice && props.updateStudentChoice(choiceParams);
+    };
+
+  /**
+   * handleToggleSuggestOptionalNext
+   * @param params params
+   */
+  const handleToggleSuggestOptional =
+    (params: UpdateSuggestionParams) =>
+    (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+      props.updateSuggestionOptional && props.updateSuggestionOptional(params);
     };
 
   /**
@@ -100,6 +111,7 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
       let courseSuggestions: StudentActivityCourse[] = [];
 
       let selectedByStudent = false;
+      let suggestionOptionalActionType: "add" | "remove" = "add";
 
       /**
        * If any of these list are given, check whether course id is in
@@ -152,6 +164,8 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
           suggestedCourseDataOptional
         );
 
+        suggestionOptionalActionType = "remove";
+
         listItemIndicatormodifiers.push("SUGGESTED");
       } else if (
         props.transferedList &&
@@ -188,7 +202,7 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
       /**
        * Button is shown only if modifying user is supervisor
        */
-      const showAddToHopsButton =
+      const showSuggestAndAddToHopsButtons =
         props.user === "supervisor" &&
         props.superVisorModifies &&
         props.useCase === "hops-planning";
@@ -232,20 +246,17 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
                           suggestedActivityCourses={courseSuggestions}
                           subjectCode={sSubject.subjectCode}
                           course={course}
-                          updateSuggestion={props.updateSuggestion}
+                          updateSuggestionNext={props.updateSuggestionNext}
                           canSuggestForNext={
                             props.useCase === "hops-planning" ||
                             props.useCase === "study-matrix"
-                          }
-                          canSuggestForOptional={
-                            props.useCase === "hops-planning"
                           }
                         />
                       )}
                     </>
                   ) : (
                     <>
-                      {showAddToHopsButton && (
+                      {showSuggestAndAddToHopsButtons && (
                         <Button
                           onClick={handleToggleChoiceClick({
                             studentId: props.studentId,
@@ -260,19 +271,37 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
                         </Button>
                       )}
 
+                      {showSuggestAndAddToHopsButtons &&
+                        props.useCase === "hops-planning" && (
+                          <Button
+                            buttonModifiers={[
+                              "guider-hops-studytool",
+                              "guider-hops-studytool-suggested",
+                            ]}
+                            onClick={handleToggleSuggestOptional({
+                              goal: suggestionOptionalActionType,
+                              courseNumber: course.courseNumber,
+                              subjectCode: sSubject.subjectCode,
+                              studentId: props.studentId,
+                              status: "OPTIONAL",
+                            })}
+                          >
+                            {suggestionOptionalActionType === "remove"
+                              ? "Ehdotettu"
+                              : "Ehdota valinnaiseksi?"}
+                          </Button>
+                        )}
+
                       {showSuggestionList && (
                         <HopsSuggestionList
                           studentId={props.studentId}
                           suggestedActivityCourses={courseSuggestions}
                           subjectCode={sSubject.subjectCode}
                           course={course}
-                          updateSuggestion={props.updateSuggestion}
+                          updateSuggestionNext={props.updateSuggestionNext}
                           canSuggestForNext={
                             props.useCase === "hops-planning" ||
                             props.useCase === "study-matrix"
-                          }
-                          canSuggestForOptional={
-                            props.useCase === "hops-planning"
                           }
                         />
                       )}
