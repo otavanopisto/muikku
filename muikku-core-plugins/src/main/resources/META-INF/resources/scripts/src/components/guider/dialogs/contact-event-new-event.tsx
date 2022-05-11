@@ -128,16 +128,26 @@ class NewContactEvent extends SessionStateComponent<
     this.setState({
       locked: true,
     });
-    this.props.createContactEvent(this.props.currentStudent.userEntityId, {
-      text: this.state.text,
-      entryDate: moment(this.state.date).format(),
-      type: this.state.type,
-    });
-    this.setState({
-      locked: false,
-    });
-
-    closeDialog();
+    this.props.createContactEvent(
+      this.props.currentStudent.userEntityId,
+      /**
+       * payload
+       */
+      {
+        text: this.state.text,
+        entryDate: moment(this.state.date).format(),
+        type: this.state.type,
+      },
+      /**
+       * onSuccess
+       */
+      () => {
+        this.setState({
+          locked: false,
+        });
+        closeDialog();
+      }
+    );
   };
 
   /**

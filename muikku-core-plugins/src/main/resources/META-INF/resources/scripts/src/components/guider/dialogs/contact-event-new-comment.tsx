@@ -23,7 +23,7 @@ interface CommentContactEventProps {
   contactEventtId: number;
   studentUserEntityId: number;
   createContactEventComment: CreateContactEventCommentTriggerType;
-  onClickCancel: () => void;
+  closeEditor: () => void;
 }
 
 /**
@@ -80,31 +80,40 @@ class CommentContactEvent extends SessionStateComponent<
   };
 
   /**
-   * createReply
+   * createComment
    */
-  createReply = (): void => {
+  createComment = (): void => {
     this.setState({
       locked: true,
     });
     this.props.createContactEventComment(
       this.props.studentUserEntityId,
       this.props.contactEventtId,
+      /**
+       * payload
+       */
       {
         commentDate: moment().format(),
         text: this.state.text,
+      },
+      /**
+       * onSuccess
+       */
+      () => {
+        this.clearUp();
+        this.handleOnEditorClose();
       }
     );
     this.setState({
-      locked: true,
+      locked: false,
     });
-    this.handleOnCancelClick();
   };
 
   /**
-   * handleOnCancelClick
+   * handleOnEditorClose
    */
-  handleOnCancelClick = (): void => {
-    this.props.onClickCancel && this.props.onClickCancel();
+  handleOnEditorClose = (): void => {
+    this.props.closeEditor && this.props.closeEditor();
   };
 
   /**
@@ -139,14 +148,14 @@ class CommentContactEvent extends SessionStateComponent<
       <div className="env-dialog__actions">
         <Button
           buttonModifiers="dialog-execute"
-          onClick={this.createReply.bind(this)}
+          onClick={this.createComment.bind(this)}
           disabled={this.state.locked}
         >
           {this.props.i18n.text.get("plugin.discussion.createmessage.send")}
         </Button>
         <Button
           buttonModifiers="dialog-cancel"
-          onClick={this.handleOnCancelClick}
+          onClick={this.handleOnEditorClose}
           disabled={this.state.locked}
         >
           {this.props.i18n.text.get("plugin.discussion.createmessage.cancel")}

@@ -40,7 +40,7 @@ interface CommentContactEventProps {
   contactEvent: IContactEvent;
   studentUserEntityId: number;
   editContactEvent: EditContactEventTriggerType;
-  onClickCancel: () => void;
+  closeEditor: () => void;
 }
 
 /**
@@ -123,7 +123,7 @@ class CommentContactEvent extends SessionStateComponent<
   };
 
   /**
-   * createReply
+   * editContactEvent
    */
   editContactEvent = () => {
     this.setState({
@@ -132,24 +132,32 @@ class CommentContactEvent extends SessionStateComponent<
     this.props.editContactEvent(
       this.props.studentUserEntityId,
       this.props.contactEvent.id,
+      /**
+       * payload
+       */
       {
         creatorId: this.props.status.userId,
         text: this.state.text,
         entryDate: moment(this.state.date).format(),
         type: this.state.type,
+      },
+      /**
+       * onSuccess
+       */
+      () => {
+        this.setState({
+          locked: false,
+        });
+        this.handleOnEditorClose();
       }
     );
-    this.setState({
-      locked: true,
-    });
-    this.handleOnCancelClick();
   };
 
   /**
-   * handleOnCancelClick
+   * handleCloseEditor
    */
-  handleOnCancelClick = () => {
-    this.props.onClickCancel && this.props.onClickCancel();
+  handleOnEditorClose = () => {
+    this.props.closeEditor && this.props.closeEditor();
   };
 
   /**
@@ -231,7 +239,7 @@ class CommentContactEvent extends SessionStateComponent<
         </Button>
         <Button
           buttonModifiers="dialog-cancel"
-          onClick={this.handleOnCancelClick}
+          onClick={this.handleOnEditorClose}
           disabled={this.state.locked}
         >
           {this.props.i18n.text.get("plugin.discussion.createmessage.cancel")}

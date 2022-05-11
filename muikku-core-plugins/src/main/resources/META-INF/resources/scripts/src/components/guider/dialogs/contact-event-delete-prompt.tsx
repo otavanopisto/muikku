@@ -57,24 +57,35 @@ class ContactEventDeletePrompt extends React.Component<
   }
 
   /**
-   * deleteComponent
+   * handleOnDelete
    * @param closeDialog closeDialog
    */
-  deleteComponent = (closeDialog: () => any) => {
+  handleOnDelete = (closeDialog: () => any) => {
     this.setState({ locked: true });
     if (!this.props.commentId) {
       this.props.deleteContactEvent(
         this.props.studentUserEntityId,
-        this.props.contactLogEntryId
+        this.props.contactLogEntryId,
+        /**
+         * onSuccess
+         */
+        () => {
+          closeDialog();
+        }
       );
     } else {
       this.props.deleteContactEventComment(
         this.props.studentUserEntityId,
         this.props.contactLogEntryId,
-        this.props.commentId
+        this.props.commentId,
+        /**
+         * onSuccess
+         */
+        () => {
+          closeDialog();
+        }
       );
     }
-    closeDialog();
   };
 
   /**
@@ -104,7 +115,7 @@ class ContactEventDeletePrompt extends React.Component<
       <div className="dialog__button-set">
         <Button
           buttonModifiers={["fatal", "standard-ok"]}
-          onClick={this.deleteComponent.bind(this, closeDialog)}
+          onClick={this.handleOnDelete.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
           {this.props.i18n.text.get(

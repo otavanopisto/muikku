@@ -28,7 +28,7 @@ interface EditContactEventCommentProps {
   comment: IContactEventComment;
   studentUserEntityId: number;
   editContactEventComment: EditContactEventCommentTriggerType;
-  onClickCancel: () => void;
+  closeEditor: () => void;
 }
 
 /**
@@ -66,7 +66,7 @@ class EditContactEventComment extends SessionStateComponent<
 
   /**
    * onCKEditorChange
-   * @param text text
+   * @param text text content
    */
   onCKEditorChange = (text: string): void => {
     this.setStateAndStore({ text }, this.props.comment.id + "-edit-comment");
@@ -116,20 +116,25 @@ class EditContactEventComment extends SessionStateComponent<
         creatorId: this.props.status.userId,
         text: this.state.text,
         commentDate: moment(this.state.date).format(),
+      },
+
+      /**
+       * onSuccess
+       */
+      () => {
+        this.setState({
+          locked: false,
+        });
+        this.handleOnEditorClose();
       }
     );
-    this.setState({
-      locked: true,
-    });
-
-    this.handleOnCancelClick();
   };
 
   /**
-   * handleOnCancelClick
+   * handleOnEditorClose
    */
-  handleOnCancelClick = (): void => {
-    this.props.onClickCancel && this.props.onClickCancel();
+  handleOnEditorClose = (): void => {
+    this.props.closeEditor && this.props.closeEditor();
   };
 
   /**
@@ -172,7 +177,7 @@ class EditContactEventComment extends SessionStateComponent<
         </Button>
         <Button
           buttonModifiers="dialog-cancel"
-          onClick={this.handleOnCancelClick}
+          onClick={this.handleOnEditorClose}
           disabled={this.state.locked}
         >
           {this.props.i18n.text.get("plugin.discussion.createmessage.cancel")}
