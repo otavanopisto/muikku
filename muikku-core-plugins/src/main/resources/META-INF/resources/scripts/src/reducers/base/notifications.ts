@@ -1,4 +1,5 @@
 import { ActionType } from "~/actions";
+import { Reducer } from "redux";
 
 export type NotificationSeverityType =
   | "error"
@@ -23,12 +24,39 @@ export interface NotificationType {
 
 export type NotificationListType = Array<NotificationType>;
 
+const initialNotificationState: NotificationListType = [];
+
+/**
+ * Reducer function for notifications
+ *
+ * @param state state
+ * @param action action
+ * @returns State of notifications
+ */
+export const notifications: Reducer<NotificationListType> = (
+  state = initialNotificationState,
+  action: ActionType
+) => {
+  switch (action.type) {
+    case "ADD_NOTIFICATION":
+      return state.concat(action.payload);
+
+    case "HIDE_NOTIFICATION":
+      return state.filter(
+        (element: NotificationType) => element.id !== action.payload.id
+      );
+
+    default:
+      return state;
+  }
+};
+
 /**
  * notifications
  * @param state state
  * @param action action
  */
-export default function notifications(
+/* export default function notifications(
   state: NotificationListType = [],
   action: ActionType
 ) {
@@ -41,4 +69,4 @@ export default function notifications(
     );
   }
   return state;
-}
+} */

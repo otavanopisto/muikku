@@ -1,5 +1,6 @@
 import { ActionType } from "~/actions";
 import { i18nType } from "~/reducers/base/i18n";
+import { Reducer } from "redux";
 
 /**
  * AnnouncerNavigationItemType
@@ -151,11 +152,135 @@ export interface AnnouncementsPatchType {
 }
 
 /**
+ * initialAnnouncementsState
+ */
+const initialAnnouncementsState: AnnouncementsType = {
+  state: "LOADING",
+  announcements: [],
+  current: null,
+  selected: [],
+  selectedIds: [],
+  location: "",
+  toolbarLock: false,
+  navigation: defaultNavigation,
+  workspaceId: null,
+};
+
+/**
+ * Reducer function for announcements
+ *
+ * @param state state
+ * @param action action
+ * @returns State of announcements
+ */
+export const announcements: Reducer<AnnouncementsType> = (
+  state = initialAnnouncementsState,
+  action: ActionType
+) => {
+  switch (action.type) {
+    case "UPDATE_ANNOUNCEMENTS":
+      return { ...state, announcements: action.payload };
+
+    case "UPDATE_ANNOUNCEMENTS_STATE":
+      return { ...state, state: action.payload };
+
+    case "UPDATE_ANNOUNCEMENTS_ALL_PROPERTIES": {
+      const newAllProperties: AnnouncementsPatchType = action.payload;
+      return Object.assign({}, state, newAllProperties);
+    }
+
+    case "UPDATE_SELECTED_ANNOUNCEMENTS":
+      return {
+        ...state,
+        selected: action.payload,
+        selectedIds: action.payload.map((s: AnnouncementType) => s.id),
+      };
+
+    case "ADD_TO_ANNOUNCEMENTS_SELECTED":
+      return {
+        ...state,
+        selected: state.selected.concat([action.payload]),
+        selectedIds: state.selectedIds.concat([action.payload.id]),
+      };
+
+    case "REMOVE_FROM_ANNOUNCEMENTS_SELECTED":
+      return {
+        ...state,
+        selected: state.selected.filter(
+          (selected: AnnouncementType) => selected.id !== action.payload.id
+        ),
+        selectedIds: state.selectedIds.filter(
+          (id: number) => id !== action.payload.id
+        ),
+      };
+
+    case "UPDATE_ONE_ANNOUNCEMENT": {
+      const update: AnnouncementUpdateType = action.payload.update;
+      const oldAnnouncement: AnnouncementType = action.payload.announcement;
+      const newAnnouncement: AnnouncementType = Object.assign(
+        {},
+        oldAnnouncement,
+        update
+      );
+      let newCurrent = state.current;
+      if (newCurrent && newCurrent.id === newAnnouncement.id) {
+        newCurrent = newAnnouncement;
+      }
+
+      return {
+        ...state,
+        selected: state.selected.map((selected: AnnouncementType) => {
+          if (selected.id === oldAnnouncement.id) {
+            return newAnnouncement;
+          }
+          return selected;
+        }),
+        announcements: state.announcements.map(
+          (announcement: AnnouncementType) => {
+            if (announcement.id === oldAnnouncement.id) {
+              return newAnnouncement;
+            }
+            return announcement;
+          }
+        ),
+        current: newCurrent,
+      };
+    }
+    case "LOCK_TOOLBAR":
+      return { ...state, toolbarLock: true };
+
+    case "UNLOCK_TOOLBAR":
+      return { ...state, toolbarLock: false };
+
+    case "DELETE_ANNOUNCEMENT":
+      return {
+        ...state,
+        selected: state.selected.filter(
+          (selected: AnnouncementType) => selected.id !== action.payload.id
+        ),
+        announcements: state.announcements.filter(
+          (announcement: AnnouncementType) =>
+            announcement.id !== action.payload.id
+        ),
+        selectedIds: state.selectedIds.filter(
+          (id: number) => id !== action.payload.id
+        ),
+      };
+
+    case "SET_CURRENT_ANNOUNCEMENT":
+      return { ...state, current: action.payload };
+
+    default:
+      return state;
+  }
+};
+
+/**
  * announcements
  * @param state state
  * @param action action
  */
-export default function announcements(
+/* export default function announcements(
   state: AnnouncementsType = {
     state: "LOADING",
     announcements: [],
@@ -248,4 +373,4 @@ export default function announcements(
     return Object.assign({}, state, { current: action.payload });
   }
   return state;
-}
+} */

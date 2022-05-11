@@ -1,4 +1,5 @@
 import { ActionType } from "actions";
+import { Reducer } from "redux";
 
 export type HOPSStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
 
@@ -45,11 +46,46 @@ export interface HOPSType {
 }
 
 /**
+ * initialHopsState
+ */
+const initialHopsState: HOPSType = {
+  status: "WAIT",
+  eligibility: null,
+  value: null,
+};
+
+/**
+ * Reducer function for hops
+ *
+ * @param state state
+ * @param action action
+ * @returns State of hops
+ */
+export const hops: Reducer<HOPSType> = (
+  state = initialHopsState,
+  action: ActionType
+) => {
+  switch (action.type) {
+    case "UPDATE_HOPS_STATUS":
+      return { ...state, status: action.payload };
+
+    case "UPDATE_HOPS":
+      return { ...state, value: action.payload };
+
+    case "UPDATE_HOPS_ELIGIBILITY":
+      return { ...state, eligibility: action.payload };
+
+    default:
+      return state;
+  }
+};
+
+/**
  * hops
  * @param state state
  * @param action action
  */
-export default function hops(
+/* export default function hops(
   state: HOPSType = {
     status: "WAIT",
     eligibility: null,
@@ -71,4 +107,24 @@ export default function hops(
     });
   }
   return state;
-}
+} */
+
+/**
+ * Reducer function for reducer
+ *
+ * @param state state
+ * @param action action
+ * @returns State of reducer
+ */
+/* const reducerFunctions: Reducer<HOPSType> = (
+  state = initialState,
+  action: ActionType
+) => {
+  switch (action.type) {
+    case "":
+      return { ...state };
+
+    default:
+      return state;
+  }
+}; */

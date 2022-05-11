@@ -17,7 +17,7 @@ import { StateType } from "~/reducers";
 
 export type UPDATE_STUDIES_YO = SpecificActionType<
   "UPDATE_STUDIES_YO",
-  YOEnrollmentType
+  YOEnrollmentType[]
 >;
 export type UPDATE_STUDIES_YO_ELIGIBILITY_STATUS = SpecificActionType<
   "UPDATE_STUDIES_YO_ELIGIBILITY_STATUS",
@@ -29,7 +29,7 @@ export type UPDATE_STUDIES_YO_ELIGIBILITY = SpecificActionType<
 >;
 export type UPDATE_STUDIES_YO_SUBJECTS = SpecificActionType<
   "UPDATE_STUDIES_YO_SUBJECTS",
-  YOMatriculationSubjectType
+  YOMatriculationSubjectType[]
 >;
 export type UPDATE_STUDIES_YO_STATUS = SpecificActionType<
   "UPDATE_STUDIES_YO_STATUS",
@@ -164,10 +164,10 @@ const updateYO: updateYOTriggerType = function updateYO() {
     try {
       //      let exams:any =  await promisify (mApi().matriculation.exams.read({}), 'callback')();
       //      let now: Number = new Date().getTime();
-      const matriculationExamData: any = await promisify(
+      const matriculationExamData = (await promisify(
         mApi().matriculation.exams.read({}),
         "callback"
-      )();
+      )()) as YOEnrollmentType[];
 
       dispatch({
         type: "UPDATE_STUDIES_YO",
@@ -179,12 +179,12 @@ const updateYO: updateYOTriggerType = function updateYO() {
         payload: <YOStatusType>"LOADING",
       });
 
-      const subjects: YOMatriculationSubjectType = (await promisify(
+      const subjects = (await promisify(
         mApi().records.matriculationSubjects.read({
           matriculationSubjectsLoaded: true,
         }),
         "callback"
-      )()) as YOMatriculationSubjectType;
+      )()) as YOMatriculationSubjectType[];
 
       dispatch({
         type: "UPDATE_STUDIES_YO_SUBJECTS",

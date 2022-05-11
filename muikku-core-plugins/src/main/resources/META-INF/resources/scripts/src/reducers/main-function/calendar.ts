@@ -1,4 +1,5 @@
 import { ActionType } from "~/actions";
+import { Reducer } from "redux";
 
 /**
  *  Participant
@@ -80,13 +81,94 @@ export const evaluateEvents = (
 };
 
 /**
+ * initialCalendarState
+ */
+const initialCalendarState: Calendar = {
+  state: "LOADING",
+  guidanceEvents: [],
+};
+
+/**
+ * Reducer function for calendar
+ *
+ * @param state state
+ * @param action action
+ * @returns State of calendar
+ */
+export const calendar: Reducer<Calendar> = (
+  state = initialCalendarState,
+  action: ActionType
+) => {
+  switch (action.type) {
+    case "UPDATE_CALENDAR_EVENTS_STATUS":
+      return { ...state, state: action.payload };
+
+    case "LOAD_CALENDAR_GUIDANCE_EVENTS": {
+      const newEventsFiltered = action.payload.filter((event) =>
+        evaluateEvents(event, state.guidanceEvents)
+      );
+
+      return {
+        ...state,
+        guidanceEvents: [...state.guidanceEvents, ...newEventsFiltered],
+      };
+    }
+
+    case "ADD_CALENDAR_GUIDANCE_EVENT": {
+      const updateGuidanceEvents = [...state.guidanceEvents];
+
+      updateGuidanceEvents.push(action.payload);
+
+      return {
+        ...state,
+        guidanceEvents: updateGuidanceEvents,
+      };
+    }
+
+    case "UPDATE_CALENDAR_GUIDANCE_EVENT": {
+      const filteredState = state.guidanceEvents.filter(
+        (event) => event.id !== action.payload.id
+      );
+
+      const updatedGuidanceEvents = [...filteredState];
+
+      updatedGuidanceEvents.push(action.payload);
+
+      return { ...state, guidanceEvents: updatedGuidanceEvents };
+    }
+
+    case "DELETE_CALENDAR_GUIDANCE_EVENT": {
+      if (typeof action.payload === "number") {
+        return Object.assign({}, state, {
+          guidanceEvents: state.guidanceEvents.filter(
+            (event: CalendarEvent) => event.id !== (action.payload as number)
+          ),
+        });
+      }
+
+      const guidanceEvents = state.guidanceEvents;
+      const currentEventObject = action.payload as CalendarEvent;
+      const currentEventIndex = guidanceEvents.findIndex(
+        (event) => event.id === currentEventObject.id
+      );
+      guidanceEvents[currentEventIndex] = currentEventObject;
+
+      return { ...state, guidanceEvents: guidanceEvents };
+    }
+
+    default:
+      return state;
+  }
+};
+
+/**
  * Reducer function for calendar
  *
  * @param state
  * @param action
  * @returns returns state
  */
-export default function calendar(
+/* export default function calendar(
   state: Calendar = {
     state: "LOADING",
     guidanceEvents: [],
@@ -146,4 +228,4 @@ export default function calendar(
     default:
       return state;
   }
-}
+} */

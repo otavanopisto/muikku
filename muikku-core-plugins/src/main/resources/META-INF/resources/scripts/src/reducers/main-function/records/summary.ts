@@ -1,5 +1,6 @@
 import { ActionType } from "actions";
 import { WorkspaceListType, ActivityLogType } from "~/reducers/workspaces";
+import { Reducer } from "redux";
 
 export type SummaryStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
 export type SummaryWorkspaceListType = WorkspaceListType;
@@ -13,12 +14,16 @@ export interface SummaryStudyTime {
   studyEndDate: string;
 }
 
+/**
+ * SummaryStudentsGuidanceCouncelorsType
+ */
 export interface SummaryStudentsGuidanceCouncelorsType {
   firstName: string;
   lastName: string;
   email: string;
   userEntityId: number;
   id: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   properties: any;
   hasImage: boolean;
 }
@@ -53,11 +58,47 @@ export interface GraphDataType {
 }
 
 /**
+ * initialState
+ */
+export const initialState: SummaryType = {
+  status: "WAIT",
+  data: null,
+};
+
+/**
+ * summaryReducer
+ * @param state state
+ * @param action action
+ * @returns State of sumary
+ */
+export const summary: Reducer<SummaryType> = (
+  state = initialState,
+  action: ActionType
+) => {
+  switch (action.type) {
+    case "UPDATE_STUDIES_SUMMARY_STATUS":
+      return {
+        ...state,
+        status: action.payload,
+      };
+
+    case "UPDATE_STUDIES_SUMMARY":
+      return {
+        ...state,
+        data: action.payload,
+      };
+
+    default:
+      return state;
+  }
+};
+
+/**
  * summary
  * @param state state
  * @param action action
  */
-export default function summary(
+/* export default function summary(
   state: SummaryType = {
     status: "WAIT",
     data: null,
@@ -74,4 +115,4 @@ export default function summary(
     });
   }
   return state;
-}
+} */

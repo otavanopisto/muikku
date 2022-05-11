@@ -1,4 +1,5 @@
 import { ActionType } from "~/actions";
+import { Reducer } from "redux";
 import {
   StudentUserAddressType,
   UserWithSchoolDataType,
@@ -136,11 +137,73 @@ export interface ProfileType {
 }
 
 /**
+ * initialProfileState
+ */
+const initialProfileState: ProfileType = {
+  properties: {},
+  username: null,
+  addresses: null,
+  chatSettings: null,
+  location: null,
+  worklistTemplates: null,
+  worklist: null,
+  purchases: null,
+};
+
+/**
+ * Reducer function for profileReducer
+ *
+ * @param state state
+ * @param action action
+ * @returns State of profileReducer
+ */
+export const profile: Reducer<ProfileType> = (
+  state = initialProfileState,
+  action: ActionType
+) => {
+  switch (action.type) {
+    case "SET_PROFILE_USER_PROPERTY": {
+      const newProperties = { ...state.properties };
+      newProperties[action.payload.key] = action.payload.value;
+
+      return { ...state, properties: newProperties };
+    }
+
+    case "SET_PROFILE_USERNAME":
+      return { ...state, username: action.payload };
+
+    case "SET_PROFILE_ADDRESSES":
+      return { ...state, addresses: action.payload };
+
+    case "SET_PROFILE_STUDENT":
+      return { ...state, student: action.payload };
+
+    case "SET_PROFILE_CHAT_SETTINGS":
+      return { ...state, chatSettings: action.payload };
+
+    case "SET_PROFILE_LOCATION":
+      return { ...state, location: action.payload };
+
+    case "SET_WORKLIST_TEMPLATES":
+      return { ...state, worklistTemplates: action.payload };
+
+    case "SET_WORKLIST":
+      return { ...state, worklist: action.payload };
+
+    case "SET_PURCHASE_HISTORY":
+      return { ...state, purchases: action.payload };
+
+    default:
+      return state;
+  }
+};
+
+/**
  * profile
  * @param state state
  * @param action action
  */
-export default function profile(
+/* export default function profile(
   state: ProfileType = {
     properties: {},
     username: null,
@@ -221,3 +284,4 @@ export default function profile(
   }
   return state;
 }
+ */
