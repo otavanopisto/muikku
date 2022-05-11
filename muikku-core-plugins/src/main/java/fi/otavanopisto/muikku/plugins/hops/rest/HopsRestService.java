@@ -516,16 +516,16 @@ public class HopsRestService {
     UserEntity counselorEntity = sessionController.getLoggedUserEntity();
     
     if (hopsSuggestion == null) { // create new suggestion
-      if (workspaceEntity == null && !payload.getType().toLowerCase().contains("optional")) {
+      if (workspaceEntity == null && !payload.getStatus().toLowerCase().contains("optional")) {
         return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Workspace entity %d not found", payload.getId())).build();
       }
-      hopsSuggestion = hopsController.suggestWorkspace(studentIdentifier, payload.getSubject(), payload.getType(), payload.getCourseNumber(), payload.getWorkspaceEntityId());
+      hopsSuggestion = hopsController.suggestWorkspace(studentIdentifier, payload.getSubject(), payload.getStatus(), payload.getCourseNumber(), payload.getWorkspaceEntityId());
       HopsSuggestionRestModel item = new HopsSuggestionRestModel();
       
-      if (payload.getType().toLowerCase().contains("optional")) {
-        item.setType(StudyActivityItemStatus.SUGGESTED_OPTIONAL.name());
+      if (payload.getStatus().toLowerCase().contains("optional")) {
+        item.setStatus(StudyActivityItemStatus.SUGGESTED_OPTIONAL.name());
       } else {
-        item.setType(StudyActivityItemStatus.SUGGESTED_NEXT.name());
+        item.setStatus(StudyActivityItemStatus.SUGGESTED_NEXT.name());
         item.setWorkspaceEntityId(hopsSuggestion.getWorkspaceEntityId());
         item.setName(workspaceEntityController.getName(workspaceEntity));
       }
@@ -545,14 +545,14 @@ public class HopsRestService {
         logger.log(Level.WARNING, String.format("Can not update suggestion", payload));
         return Response.noContent().build();
       }
-      hopsController.suggestWorkspace(studentIdentifier, payload.getSubject(), payload.getType(), payload.getCourseNumber(), workspaceEntity != null ? workspaceEntity.getId() : null);
+      hopsController.suggestWorkspace(studentIdentifier, payload.getSubject(), payload.getStatus(), payload.getCourseNumber(), workspaceEntity != null ? workspaceEntity.getId() : null);
       
       HopsSuggestionRestModel item = new HopsSuggestionRestModel();
       
-      if (payload.getType().toLowerCase().contains("optional")) {
-        item.setType(StudyActivityItemStatus.SUGGESTED_OPTIONAL.name());
+      if (payload.getStatus().toLowerCase().contains("optional")) {
+        item.setStatus(StudyActivityItemStatus.SUGGESTED_OPTIONAL.name());
       } else {
-        item.setType(StudyActivityItemStatus.SUGGESTED_NEXT.name());
+        item.setStatus(StudyActivityItemStatus.SUGGESTED_NEXT.name());
         item.setWorkspaceEntityId(hopsSuggestion.getWorkspaceEntityId());
         item.setName(workspaceEntityController.getName(workspaceEntity));
       }

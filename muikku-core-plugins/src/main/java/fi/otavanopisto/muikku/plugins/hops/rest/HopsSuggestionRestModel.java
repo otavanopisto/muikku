@@ -36,12 +36,12 @@ public class HopsSuggestionRestModel {
     this.courseNumber = courseNumber;
   }
   
-  public String getType() {
-    return type;
+  public String getStatus() {
+    return status;
   }
-  
-  public void setType(String type) {
-    this.type = type;
+
+  public void setStatus(String status) {
+    this.status = status;
   }
  
   public String getDescription() {
@@ -72,7 +72,7 @@ public class HopsSuggestionRestModel {
   private String name;
   private String subject;
   private Integer courseNumber;
-  private String type; // optional/next
+  private String status; // optional/next
   private String description;
   private Long workspaceEntityId;
   private Date created;
