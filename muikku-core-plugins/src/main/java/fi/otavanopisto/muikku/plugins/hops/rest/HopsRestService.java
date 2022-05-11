@@ -507,8 +507,8 @@ public class HopsRestService {
     
     WorkspaceEntity workspaceEntity = null;
     
-    if (payload.getWorkspaceEntityId() != null) {
-      workspaceEntity = workspaceEntityController.findWorkspaceEntityById(payload.getWorkspaceEntityId());
+    if (payload.getCourseId() != null) {
+      workspaceEntity = workspaceEntityController.findWorkspaceEntityById(payload.getCourseId());
     }
     
     SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifier);
@@ -519,14 +519,14 @@ public class HopsRestService {
       if (workspaceEntity == null && !payload.getStatus().toLowerCase().contains("optional")) {
         return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Workspace entity %d not found", payload.getId())).build();
       }
-      hopsSuggestion = hopsController.suggestWorkspace(studentIdentifier, payload.getSubject(), payload.getStatus(), payload.getCourseNumber(), payload.getWorkspaceEntityId());
+      hopsSuggestion = hopsController.suggestWorkspace(studentIdentifier, payload.getSubject(), payload.getStatus(), payload.getCourseNumber(), payload.getCourseId());
       HopsSuggestionRestModel item = new HopsSuggestionRestModel();
       
       if (payload.getStatus().toLowerCase().contains("optional")) {
         item.setStatus(StudyActivityItemStatus.SUGGESTED_OPTIONAL.name());
       } else {
         item.setStatus(StudyActivityItemStatus.SUGGESTED_NEXT.name());
-        item.setWorkspaceEntityId(hopsSuggestion.getWorkspaceEntityId());
+        item.setCourseId(hopsSuggestion.getWorkspaceEntityId());
         item.setName(workspaceEntityController.getName(workspaceEntity));
       }
       
@@ -553,7 +553,7 @@ public class HopsRestService {
         item.setStatus(StudyActivityItemStatus.SUGGESTED_OPTIONAL.name());
       } else {
         item.setStatus(StudyActivityItemStatus.SUGGESTED_NEXT.name());
-        item.setWorkspaceEntityId(hopsSuggestion.getWorkspaceEntityId());
+        item.setCourseId(hopsSuggestion.getWorkspaceEntityId());
         item.setName(workspaceEntityController.getName(workspaceEntity));
       }
   

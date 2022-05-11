@@ -52,14 +52,14 @@ public class HopsSuggestionRestModel {
     this.description = description;
   }
 
-  public Long getWorkspaceEntityId() {
-    return workspaceEntityId;
+  public Long getCourseId() {
+    return courseId;
   }
 
-  public void setWorkspaceEntityId(Long workspaceEntityId) {
-    this.workspaceEntityId = workspaceEntityId;
+  public void setCourseId(Long courseId) {
+    this.courseId = courseId;
   }
-
+  
   public Date getCreated() {
     return created;
   }
@@ -74,7 +74,7 @@ public class HopsSuggestionRestModel {
   private Integer courseNumber;
   private String status; // optional/next
   private String description;
-  private Long workspaceEntityId;
+  private Long courseId;
   private Date created;
 
 }
