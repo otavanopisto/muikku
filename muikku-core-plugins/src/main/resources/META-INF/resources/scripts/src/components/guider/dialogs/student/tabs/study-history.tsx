@@ -2,8 +2,9 @@ import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
 import { GuiderType } from "~/reducers/main-function/guider";
 import { StateType } from "~/reducers";
+import { AnyActionType } from "~/actions/index";
 import { connect, Dispatch } from "react-redux";
-import FileDeleteDialog from "../../file-delete";
+import FileDeleteDialog from "../../../dialogs/file-delete";
 import FileUploader from "~/components/general/file-uploader";
 import { bindActionCreators } from "redux";
 import { UserFileType } from "~/reducers/user-index";
@@ -36,10 +37,10 @@ interface StudyHistoryProps {
  * @returns JSX.Element
  */
 const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
+  const mobileBreakpoint = parseInt(variables.mobilebreakpoint); //Parse a breakpoint from scss to a number
+  const isAtMobileWidth = useIsAtBreakpoint(mobileBreakpoint);
   const [navigationActive, setNavigationActive] =
     React.useState<studyHistoryAside>("history");
-  const mobileBreakpoint = parseInt(variables.mobileBreakpoint); //Parse a breakpoint from scss to a number
-  const isAtMobileWidth = useIsAtBreakpoint(mobileBreakpoint);
 
   if (
     !props.guider.currentStudent ||
@@ -57,7 +58,7 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
 
   /**
    * Switches the active navigaton state
-   * @param id
+   * @param id study history aside id
    */
   const handleNavigationClick = (id: studyHistoryAside) => {
     switch (id) {
@@ -79,20 +80,21 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
     <Navigation>
       <NavigationElement
         id={"studyHistory"}
-        onClick={handleNavigationClick.bind(this, "history")}
+        onClick={() => handleNavigationClick("history")}
         isActive={navigationActive === "history" ? true : false}
       >
         {i18n.text.get("plugin.guider.user.tabs.studyHistory.aside.history")}
       </NavigationElement>
       <NavigationElement
         id={"studyLibrary"}
-        onClick={handleNavigationClick.bind(this, "library")}
+        onClick={() => handleNavigationClick("library")}
         isActive={navigationActive === "library" ? true : false}
       >
         {i18n.text.get("plugin.guider.user.tabs.studyHistory.aside.library")}
       </NavigationElement>
     </Navigation>
   );
+
   /**
    * historyDataLoaded
    */
@@ -144,7 +146,7 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
   );
 
   /**
-   * studyHisrtoryContent switches the corrent component
+   * studyHistoryContent switches the corrent component
    * @returns JSX.element
    */
   const studyHistoryContent = () => {
@@ -237,7 +239,7 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ addFileToCurrentStudent }, dispatch);
 }
 
