@@ -288,17 +288,6 @@
 }
 
 // FRONTPAGE
-.button--forgotpassword-dialog-submit {
-  display: inline-flex;
-  font-weight: 400; // This element is actually <label> so we need to reset font-weight
-  margin: 0 0 0 10px;
-}
-
-.button--forgotpassword-dialog-cancel {
-  display: inline-flex;
-  margin: 0 0 0 10px;
-}
-
 .button--login {
   background-color: $color-frontpage-button-login-background;
   color: $color-frontpage-button-login-text;

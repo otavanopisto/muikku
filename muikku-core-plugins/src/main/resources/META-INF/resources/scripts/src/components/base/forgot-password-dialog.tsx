@@ -1,7 +1,7 @@
 import Dialog from "~/components/general/dialog";
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import Link from "~/components/general/link";
+import Button from "~/components/general/button";
 import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
 import mApi, { MApiError } from "~/lib/mApi";
@@ -170,23 +170,23 @@ class ForgotPasswordDialog extends React.Component<
      * @param closeDialog closeDialog
      */
     const footer = (closeDialog: () => any) => (
-      <div>
-        <Link
-          className="button button--forgotpassword-dialog-cancel button--cancel"
+      <div className="dialog__button-set">
+        <Button
+          buttonModifiers={["standard-cancel", "cancel"]}
           onClick={closeDialog}
         >
           {this.props.i18n.text.get(
             "plugin.forgotpassword.forgotPasswordDialog.cancelButtonLabel"
           )}
-        </Link>
-        <Link
-          className="button button--forgotpassword-dialog-submit button--success"
+        </Button>
+        <Button
+          buttonModifiers={["standard-ok", "success"]}
           onClick={this.resetPassword.bind(this, closeDialog)}
         >
           {this.props.i18n.text.get(
             "plugin.forgotpassword.forgotPasswordDialog.sendButtonLabel"
           )}
-        </Link>
+        </Button>
       </div>
     );
     return (
