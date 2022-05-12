@@ -31,9 +31,46 @@
 }
 
 .contact-event__type {
-  padding: 0 5px;
+  padding: 3px 10px;
   background-color: #ededed;
   margin-right: 10px;
+  border-radius: 12px;
+
+  &.type-OTHER {
+    background-color: lighten($color-category-1, 35%);
+  }
+
+  &.type-LETTER {
+    background-color: lighten($color-category-2, 35%);
+  }
+
+  &.type-EMAIL {
+    background-color: lighten($color-category-3, 35%);
+  }
+
+  &.type-PHONE {
+    background-color: lighten($color-category-4, 35%);
+  }
+
+  &.type-CHATLOG {
+    background-color: lighten($color-category-5, 35%);
+  }
+
+  &.type-SKYPE {
+    background-color: lighten($color-category-6, 35%);
+  }
+
+  &.type-FACE2FACE {
+    background-color: lighten($color-category-7, 35%);
+  }
+
+  &.type-ABSENCE {
+    background-color: lighten($color-category-8, 35%);
+  }
+
+  &.type-MUIKKU {
+    background-color: lighten($color-category-9, 35%);
+  }
 }
 
 .contact-event__date {
@@ -43,6 +80,10 @@
 .contact-event__header-actions {
   align-items: center;
   display: flex;
+
+  span {
+    cursor: pointer;
+  }
 
   & > div:not(:first-child), span:not(:first-child) {
     margin-left: 10px;

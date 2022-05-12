@@ -34,8 +34,8 @@ const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
       <ApplicationSubPanelViewHeader title="Ohjaussuhde">
         <NewContactEvent>
           <ButtonPill
-            buttonModifiers={["create-contact-event"]}
             icon="bubbles"
+            buttonModifiers="create-contact-log-entry"
           ></ButtonPill>
         </NewContactEvent>
       </ApplicationSubPanelViewHeader>
