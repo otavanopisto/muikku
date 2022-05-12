@@ -34,7 +34,7 @@
   padding: 3px 10px;
   background-color: #ededed;
   margin-right: 10px;
-  border-radius: 10px;
+  border-radius: 12px;
 
   &.type-OTHER {
     background-color: lighten($color-category-1, 35%);
@@ -80,6 +80,10 @@
 .contact-event__header-actions {
   align-items: center;
   display: flex;
+
+  span {
+    cursor: pointer;
+  }
 
   & > div:not(:first-child), span:not(:first-child) {
     margin-left: 10px;
