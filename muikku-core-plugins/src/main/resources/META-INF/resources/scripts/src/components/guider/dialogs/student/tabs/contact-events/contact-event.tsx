@@ -52,7 +52,7 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
         ></Avatar>{" "}
         <div className="contact-event__title">
           <div className="contact-event__creator">{creatorName}</div>
-          <div className="contact-event__type">
+          <div className={`contact-event__type type-${type}`}>
             {i18n.text.get("plugin.guider.contact.type." + type)}
           </div>
           <div className="contact-event__date">
