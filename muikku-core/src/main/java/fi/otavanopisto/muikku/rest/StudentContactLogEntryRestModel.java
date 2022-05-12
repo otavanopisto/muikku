@@ -9,7 +9,7 @@ public class StudentContactLogEntryRestModel {
     super();
   }
 
-  public StudentContactLogEntryRestModel(Long id, String text, Long creatorId, String creatorName, OffsetDateTime entryDate, StudentContactLogEntryType type, List<StudentContactLogEntryCommentRestModel> comments, Boolean archived) {
+  public StudentContactLogEntryRestModel(Long id, String text, Long creatorId, String creatorName, OffsetDateTime entryDate, StudentContactLogEntryType type, List<StudentContactLogEntryCommentRestModel> comments, Boolean archived, Boolean hasImage) {
     super();
     this.id = id;
     this.text = text;
@@ -19,6 +19,7 @@ public class StudentContactLogEntryRestModel {
     this.type = type;
     this.comments = comments;
     this.archived = archived;
+    this.hasImage = hasImage;
   }
 
   public Long getId() {
@@ -85,6 +86,14 @@ public class StudentContactLogEntryRestModel {
     this.archived = archived;
   }
 
+  public Boolean getHasImage() {
+    return hasImage;
+  }
+
+  public void setHasImage(Boolean hasImage) {
+    this.hasImage = hasImage;
+  }
+
   private Long id;
   private String text;
   private Long creatorId;
@@ -93,4 +102,5 @@ public class StudentContactLogEntryRestModel {
   private StudentContactLogEntryType type;
   private List<StudentContactLogEntryCommentRestModel> comments;
   private Boolean archived;
+  private Boolean hasImage;
 }
