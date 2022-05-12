@@ -8,6 +8,10 @@ import EditContactEvent from "./editors/edit-event";
 import EditContactEventComment from "./editors/edit-comment";
 import ContactEventDeletePrompt from "./editors/delete-prompt";
 import * as moment from "moment";
+import Avatar from "~/components/general/avatar";
+import { connect } from "react-redux";
+import { StateType } from "~/reducers";
+import { StatusType } from "~/reducers/base/status";
 
 /**
  *
@@ -17,6 +21,7 @@ interface ContactEventProps {
   studentId: number;
   modifier?: string;
   i18n: i18nType;
+  status: StatusType;
 }
 
 /**
@@ -25,8 +30,9 @@ interface ContactEventProps {
  * @returns
  */
 const ContactEvent: React.FC<ContactEventProps> = (props) => {
-  const { entryDate, type, creatorName, text, comments, id } = props.event;
-  const { modifier, studentId, i18n } = props;
+  const { entryDate, type, creatorName, text, comments, creatorId, id } =
+    props.event;
+  const { modifier, studentId, i18n, status } = props;
   const [commentOpen, setCreateCommentOpen] = React.useState<boolean>(false);
   const [eventEditOpen, setEventEditOpen] = React.useState<boolean>(false);
   const [commentEditOpen, setCommentEditOpen] = React.useState<number>(null);
@@ -38,6 +44,12 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
       }`}
     >
       <div className="contact-event__header">
+        <Avatar
+          id={creatorId}
+          hasImage={false}
+          size="small"
+          firstName={creatorName}
+        ></Avatar>{" "}
         <div className="contact-event__title">
           <div className="contact-event__creator">{creatorName}</div>
           <div className="contact-event__type">
@@ -49,13 +61,17 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
         </div>
         <div className="contact-event__header-actions">
           <span onClick={() => setCreateCommentOpen(true)}>Kommentoi</span>
-          <span onClick={() => setEventEditOpen(true)}>Muokkaa</span>
-          <ContactEventDeletePrompt
-            studentUserEntityId={studentId}
-            contactLogEntryId={id}
-          >
-            <span>Poista</span>
-          </ContactEventDeletePrompt>
+          {creatorId === status.userId ? (
+            <>
+              <span onClick={() => setEventEditOpen(true)}>Muokkaa</span>
+              <ContactEventDeletePrompt
+                studentUserEntityId={studentId}
+                contactLogEntryId={id}
+              >
+                <span>Poista</span>
+              </ContactEventDeletePrompt>
+            </>
+          ) : null}
         </div>
       </div>
       {eventEditOpen ? (
@@ -84,6 +100,12 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
           {comments.map((comment) => (
             <div key={comment.id} className="contact-event__reply">
               <div className="contact-event__header contact-event__header--reply">
+                <Avatar
+                  id={comment.creatorId}
+                  hasImage={false}
+                  size="small"
+                  firstName={comment.creatorName}
+                ></Avatar>{" "}
                 <div className="contact-event__title">
                   <div className="contact-event__creator">
                     {comment.creatorName}
@@ -92,18 +114,20 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
                     {moment(comment.commentDate).format("dddd, MMMM Do YYYY")}
                   </div>
                 </div>
-                <div className="contact-event__header-actions">
-                  <span onClick={() => setCommentEditOpen(comment.id)}>
-                    Muokkaa
-                  </span>
-                  <ContactEventDeletePrompt
-                    studentUserEntityId={studentId}
-                    contactLogEntryId={id}
-                    commentId={comment.id}
-                  >
-                    <span>Poista</span>
-                  </ContactEventDeletePrompt>
-                </div>
+                {creatorId === status.userId ? (
+                  <div className="contact-event__header-actions">
+                    <span onClick={() => setCommentEditOpen(comment.id)}>
+                      Muokkaa
+                    </span>
+                    <ContactEventDeletePrompt
+                      studentUserEntityId={studentId}
+                      contactLogEntryId={id}
+                      commentId={comment.id}
+                    >
+                      <span>Poista</span>
+                    </ContactEventDeletePrompt>
+                  </div>
+                ) : null}
               </div>
               {commentEditOpen === comment.id ? (
                 <div className="contact-event__body contact-event__body--reply">
@@ -127,4 +151,15 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
   );
 };
 
-export default ContactEvent;
+/**
+ * mapStateToProps
+ * @param state state
+ */
+function mapStateToProps(state: StateType) {
+  return {
+    i18n: state.i18n,
+    status: state.status,
+  };
+}
+
+export default connect(mapStateToProps)(ContactEvent);

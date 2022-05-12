@@ -16,8 +16,13 @@
 }
 
 .contact-event__title {
+  align-items: center;
   display:flex;
   flex-grow: 1;
+
+  &:not(:first-child) {
+    margin-left: 10px;
+  }
 }
 
 .contact-event__creator {
@@ -36,7 +41,9 @@
 }
 
 .contact-event__header-actions {
-  display:flex;
+  align-items: center;
+  display: flex;
+
   & > div:not(:first-child), span:not(:first-child) {
     margin-left: 10px;
   }

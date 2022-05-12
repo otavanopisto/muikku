@@ -1,5 +1,6 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
+import { StateType } from "~/reducers";
 import { bindActionCreators } from "redux";
 import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/link.scss";
@@ -18,8 +19,6 @@ import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
-
-import { StateType } from "~/reducers";
 import {
   GuiderType,
   GuiderStudentUserProfileLabelType,

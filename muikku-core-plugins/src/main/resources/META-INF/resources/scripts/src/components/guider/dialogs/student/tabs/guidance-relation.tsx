@@ -73,7 +73,6 @@ const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
                   key={contactEvent.id}
                   studentId={studentBasicInfo.userEntityId}
                   event={contactEvent}
-                  i18n={i18n}
                 />
               ))
             ) : (
