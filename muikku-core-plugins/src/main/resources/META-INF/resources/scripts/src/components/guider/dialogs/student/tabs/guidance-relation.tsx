@@ -50,6 +50,8 @@ const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
               <div>{studentBasicInfo.email}</div>
             </ApplicationSubPanelItem.Content>
           </ApplicationSubPanelItem>
+          {/* Removed for later
+
           <ApplicationSubPanelItem
             title={i18n.text.get(
               "plugin.guider.user.details.contactInfo.guardian.label"
@@ -63,7 +65,7 @@ const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
                 {i18n.text.get("plugin.guider.user.details.label.email")}
               </div>
             </ApplicationSubPanelItem.Content>
-          </ApplicationSubPanelItem>
+          </ApplicationSubPanelItem> */}
         </ApplicationSubPanelSection>
         <ApplicationSubPanelSection modifier="guidance-relation-contact-events">
           <ApplicationSubPanelSection.Header>
