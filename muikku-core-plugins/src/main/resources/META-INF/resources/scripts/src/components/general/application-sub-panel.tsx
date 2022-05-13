@@ -13,7 +13,7 @@ interface SubPanelProps {
  * @param props component props
  * @returns JSX.Element
  * Has child components:
- * ApplicationSubpanel.Header, ApplicationSubpanel.Body
+ * ApplicationSubpanel.Header, ApplicationSubpanel.Body, ApplicationSubpanel.ViewHeader
  */
 const ApplicationSubPanel: React.FC<SubPanelProps> & {
   Header?: React.FC<{ modifier?: string }>;
