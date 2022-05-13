@@ -528,9 +528,9 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                                     subjectData.courseNumber
                                       ? subjectData.courseNumber
                                       : ""
-                                  } - ${subjectData.subject.name} (${
-                                    subjectData.courseLength
-                                  }${subjectData.courseLengthSymbol.symbol})`;
+                                  } (${subjectData.courseLength} ${
+                                    subjectData.courseLengthSymbol.symbol
+                                  }) - ${subjectData.subject.name}`;
 
                                   return (
                                     <div
