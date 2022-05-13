@@ -100,6 +100,7 @@ class WorkspaceNavbar extends React.Component<
 
   /**
    * onRequestEvaluationOrCancel
+   * @param canCancel canCancel
    */
   onRequestEvaluationOrCancel(canCancel: boolean) {
     if (canCancel) {
@@ -491,6 +492,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(WorkspaceNavbar);
 /**
  * Get text by assessment state
  *
+ * @param canCancelRequest canCancelRequest
  * @param state state
  * @param i18n i18n
  * @returns localized text

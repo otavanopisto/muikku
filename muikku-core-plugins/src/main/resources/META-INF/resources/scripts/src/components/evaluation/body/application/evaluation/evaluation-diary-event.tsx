@@ -29,10 +29,10 @@ const EvaluationDiaryEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
   }, [open]);
 
   /**
-   * createHtmlMarkup
    * This should sanitize html
    *
    * @param htmlString string that contains html
+   * @returns object containing __html property
    */
   const createHtmlMarkup = (htmlString: string) => ({
     __html: htmlString,

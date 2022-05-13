@@ -369,6 +369,7 @@ class AssignmentEditor extends SessionStateComponent<
   ) => {
     const { evaluationGradeSystem } = this.props.evaluations;
     const { grade } = this.state;
+    const { workspaceEntityId, userEntityId } = this.props.selectedAssessment;
 
     const usedGradeSystem = this.getUsedGradingScaleByGradeId(grade);
     const defaultGrade = `${evaluationGradeSystem[0].grades[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`;
@@ -380,8 +381,8 @@ class AssignmentEditor extends SessionStateComponent<
       const gradingScaleIdentifier = `${usedGradeSystem.dataSource}-${usedGradeSystem.id}`;
 
       await this.saveAssignmentEvaluationGradeToServer({
-        workspaceEntityId: this.props.selectedAssessment.workspaceEntityId,
-        userEntityId: this.props.selectedAssessment.userEntityId,
+        workspaceEntityId: workspaceEntityId,
+        userEntityId: userEntityId,
         workspaceMaterialId: this.props.materialAssignment.id,
         dataToSave: {
           assessorIdentifier: this.props.status.userSchoolDataIdentifier,
@@ -396,12 +397,12 @@ class AssignmentEditor extends SessionStateComponent<
       });
     } else if (this.state.assignmentEvaluationType === "INCOMPLETE") {
       this.saveAssignmentEvaluationSupplementationToServer({
-        workspaceEntityId: this.props.selectedAssessment.workspaceEntityId,
-        userEntityId: this.props.selectedAssessment.userEntityId,
+        workspaceEntityId: workspaceEntityId,
+        userEntityId: userEntityId,
         workspaceMaterialId: this.props.materialAssignment.id,
         dataToSave: {
           userEntityId: this.props.status.userId,
-          studentEntityId: this.props.selectedAssessment.userEntityId,
+          studentEntityId: userEntityId,
           workspaceMaterialId: this.props.materialAssignment.id.toString(),
           requestDate: new Date().getTime(),
           requestText: this.state.literalEvaluation,

@@ -125,7 +125,11 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
   );
 
   if (selectedAssessment.subjects.length > 1 && subject) {
-    subjectTitle = subject.subject && subject.subject.name;
+    subjectTitle = subject.subject
+      ? `${subject.subject.code}${
+          subject.courseNumber ? subject.courseNumber : ""
+        }`
+      : undefined;
   }
 
   /**

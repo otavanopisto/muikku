@@ -86,9 +86,11 @@ class ExcerciseEditor extends SessionStateComponent<
   constructor(props: AssignmentEditorProps) {
     super(props, `excercise-editor`);
 
-    const { compositeReplies, selectedAssessment } = props;
+    const { compositeReplies, selectedAssessment, materialAssignment } = props;
 
-    const draftId = `${selectedAssessment.userEntityId}-${props.materialAssignment.id}`;
+    const { userEntityId } = selectedAssessment;
+
+    const draftId = `${userEntityId}-${materialAssignment.id}`;
 
     this.state = {
       ...this.getRecoverStoredState(
@@ -306,13 +308,15 @@ class ExcerciseEditor extends SessionStateComponent<
   handleSaveAssignment = (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
   ) => {
+    const { workspaceEntityId, userEntityId } = this.props.selectedAssessment;
+
     /**
      * Backend endpoint is different for normal grade evalution and supplementation
      */
     if (!this.state.needsSupplementation) {
       this.saveAssignmentEvaluationGradeToServer({
-        workspaceEntityId: this.props.selectedAssessment.workspaceEntityId,
-        userEntityId: this.props.selectedAssessment.userEntityId,
+        workspaceEntityId: workspaceEntityId,
+        userEntityId: userEntityId,
         workspaceMaterialId: this.props.materialAssignment.id,
         dataToSave: {
           assessorIdentifier: this.props.status.userSchoolDataIdentifier,
@@ -326,12 +330,12 @@ class ExcerciseEditor extends SessionStateComponent<
       });
     } else {
       this.saveAssignmentEvaluationSupplementationToServer({
-        workspaceEntityId: this.props.selectedAssessment.workspaceEntityId,
-        userEntityId: this.props.selectedAssessment.userEntityId,
+        workspaceEntityId: workspaceEntityId,
+        userEntityId: userEntityId,
         workspaceMaterialId: this.props.materialAssignment.id,
         dataToSave: {
           userEntityId: this.props.status.userId,
-          studentEntityId: this.props.selectedAssessment.userEntityId,
+          studentEntityId: userEntityId,
           workspaceMaterialId: this.props.materialAssignment.id.toString(),
           requestDate: new Date().getTime(),
           requestText: this.state.literalEvaluation,

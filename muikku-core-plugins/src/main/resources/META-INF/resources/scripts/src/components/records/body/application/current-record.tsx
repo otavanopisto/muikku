@@ -148,6 +148,12 @@ class CurrentRecord extends React.Component<
               return;
             }
 
+            const subjectCodeString = subjectData.subject
+              ? `(${subjectData.subject.name.toUpperCase()}, ${subjectData.subject.code.toUpperCase()}${
+                  subjectData.courseNumber ? subjectData.courseNumber : ""
+                })`
+              : undefined;
+
             return !assessmentIsUnassessed && !assessmentIsPending ? (
               <div
                 key={a.workspaceSubjectIdentifier}
@@ -156,11 +162,14 @@ class CurrentRecord extends React.Component<
                 <div
                   className={`workspace-assessment__icon ${evalStateIcon}`}
                 ></div>
-                <div className="workspace-assessment__date">
-                  <span className="workspace-assessment__date-data">
-                    {`(${subjectData.subject.name.toUpperCase()})`}
-                  </span>
-                </div>
+                {subjectCodeString && (
+                  <div className="workspace-assessment__date">
+                    <span className="workspace-assessment__date-data">
+                      {subjectCodeString}
+                    </span>
+                  </div>
+                )}
+
                 <div className="workspace-assessment__date">
                   <span className="workspace-assessment__date-label">
                     {this.props.i18n.text.get(
