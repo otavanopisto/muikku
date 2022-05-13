@@ -689,7 +689,9 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
     ) => {
-      const current: WorkspaceType = getState().workspaces.currentWorkspace;
+      const state = getState();
+
+      const current: WorkspaceType = state.workspaces.currentWorkspace;
       if (
         current &&
         current.id === data.workspaceId &&
@@ -702,10 +704,10 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
 
       try {
         let workspace: WorkspaceType =
-          getState().workspaces.userWorkspaces.find(
+          state.workspaces.userWorkspaces.find(
             (w) => w.id === data.workspaceId
           ) ||
-          getState().workspaces.availableWorkspaces.find(
+          state.workspaces.availableWorkspaces.find(
             (w) => w.id === data.workspaceId
           );
         if (current && current.id === data.workspaceId) {
@@ -723,11 +725,10 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
         let journals: WorkspaceJournalsType;
         let details: WorkspaceDetailsType;
         let chatStatus: WorkspaceChatStatusType;
-        const status = getState().status;
+        const status = state.status;
 
         [
           workspace,
-          /* assesments, */
           assessmentRequests,
           activity,
           additionalInfo,
@@ -745,19 +746,6 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
             )()
           ),
 
-          /* reuseExistantValue(
-            status.permissions.WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT,
-            workspace && workspace.studentAssessments,
-            () =>
-              promisify(
-                mApi()
-                  // merge activity and assessments -> .workspace.workspaces.students.activity.cacheClear()
-                  .workspace.workspaces.students.assessments.cacheClear()
-                  .read(data.workspaceId, status.userSchoolDataIdentifier),
-                "callback"
-              )()
-          ),
-          */
           reuseExistantValue(
             status.permissions.WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT,
             workspace && workspace.assessmentRequests,
@@ -766,14 +754,13 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
                 mApi()
                   .assessmentrequest.workspace.assessmentRequests.cacheClear()
                   .read(data.workspaceId, {
-                    studentIdentifier:
-                      getState().status.userSchoolDataIdentifier,
+                    studentIdentifier: state.status.userSchoolDataIdentifier,
                   }),
                 "callback"
               )()
           ),
 
-          getState().status.loggedIn && getState().status.role === Role.STUDENT
+          state.status.loggedIn && state.status.role === Role.STUDENT
             ? // The way refresh works is by never giving an existant value to the reuse existant value function that way it will think that there's no value
               // And rerequest
               reuseExistantValue(
@@ -788,7 +775,7 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
                       .workspace.workspaces.students.activity.cacheClear()
                       .read(
                         data.workspaceId,
-                        getState().status.userSchoolDataIdentifier
+                        state.status.userSchoolDataIdentifier
                       ),
                     "callback"
                   )()
@@ -825,7 +812,7 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
             )()
           ),
 
-          getState().status.loggedIn
+          state.status.loggedIn
             ? reuseExistantValue(
                 true,
                 workspace &&
@@ -852,7 +839,7 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
               )
             : null,
 
-          getState().status.loggedIn
+          state.status.loggedIn
             ? reuseExistantValue(true, workspace && workspace.chatStatus, () =>
                 promisify(
                   mApi().chat.workspaceChatSettings.read(data.workspaceId),
@@ -861,7 +848,6 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
               )
             : null,
         ])) as any;
-        /* workspace.studentAssessments = assesments; */
         workspace.assessmentRequests = assessmentRequests;
         workspace.activity = activity;
         workspace.additionalInfo = additionalInfo;
@@ -884,7 +870,7 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
         }
         dispatch(
           actions.displayNotification(
-            getState().i18n.text.get(
+            state.i18n.text.get(
               "plugin.workspace.errormessage.workspaceLoadFailed"
             ),
             "error"
@@ -905,6 +891,8 @@ const setAvailableCurriculums: SetAvailableCurriculumsTriggerType =
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
     ) => {
+      const state = getState();
+
       try {
         const curriculums = <WorkspaceCurriculumFilterListType>(
           await promisify(mApi().coursepicker.curriculums.read(), "callback")()
@@ -920,7 +908,7 @@ const setAvailableCurriculums: SetAvailableCurriculumsTriggerType =
         }
         dispatch(
           actions.displayNotification(
-            getState().i18n.text.get(
+            state.i18n.text.get(
               "plugin.workspace.errormessage.requestAssessmentFail"
             ),
             "error"
@@ -938,8 +926,10 @@ export interface UpdateCurrentWorkspaceActivityTriggerType {
 }
 
 /**
- * updateCurrentWorkspaceActivity
+ * This is a thunk action creator that returns a thunk function
+ *
  * @param data data
+ * @returns a thunk function
  */
 const updateCurrentWorkspaceActivity: UpdateCurrentWorkspaceActivityTriggerType =
   function updateCurrentWorkspaceActivity(data) {
@@ -947,15 +937,17 @@ const updateCurrentWorkspaceActivity: UpdateCurrentWorkspaceActivityTriggerType 
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
     ) => {
-      if (getState().status.loggedIn) {
+      const state = getState();
+
+      if (state.status.loggedIn) {
         try {
           const activity = <WorkspaceActivityType>(
             await promisify(
               mApi()
                 .workspace.workspaces.students.activity.cacheClear()
                 .read(
-                  getState().workspaces.currentWorkspace.id,
-                  getState().status.userSchoolDataIdentifier
+                  state.workspaces.currentWorkspace.id,
+                  state.status.userSchoolDataIdentifier
                 ),
               "callback"
             )()
@@ -968,7 +960,9 @@ const updateCurrentWorkspaceActivity: UpdateCurrentWorkspaceActivityTriggerType 
         } catch (err) {
           dispatch(
             actions.displayNotification(
-              "Virhe päivitettäessä activity tietoja",
+              state.i18n.text.get(
+                "plugin.workspace.errormessage.workspaceActivityLoadFailed"
+              ),
               "error"
             )
           );
@@ -985,8 +979,10 @@ export interface UpdateCurrentWorkspaceAssessmentRequestTriggerType {
 }
 
 /**
- * updateCurrentWorkspaceAssessmentRequest
+ * This is a thunk action creator for updateCurrentWorkspaceAssessmentRequest
+ *
  * @param data data
+ * @returns a thunk function
  */
 const updateCurrentWorkspaceAssessmentRequest: UpdateCurrentWorkspaceAssessmentRequestTriggerType =
   function updateCurrentWorkspaceAssessmentRequest(data) {
@@ -994,14 +990,16 @@ const updateCurrentWorkspaceAssessmentRequest: UpdateCurrentWorkspaceAssessmentR
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
     ) => {
-      if (getState().status.loggedIn) {
+      const state = getState();
+
+      if (state.status.loggedIn) {
         try {
           const assessmentRequests = <WorkspaceAssessmentRequestType[]>(
             await promisify(
               mApi()
                 .assessmentrequest.workspace.assessmentRequests.cacheClear()
-                .read(getState().workspaces.currentWorkspace.id, {
-                  studentIdentifier: getState().status.userSchoolDataIdentifier,
+                .read(state.workspaces.currentWorkspace.id, {
+                  studentIdentifier: state.status.userSchoolDataIdentifier,
                 }),
               "callback"
             )()
@@ -1014,7 +1012,9 @@ const updateCurrentWorkspaceAssessmentRequest: UpdateCurrentWorkspaceAssessmentR
         } catch (err) {
           dispatch(
             actions.displayNotification(
-              "Virhe päivitettäessä arviointipyyntötietoja tietoja",
+              state.i18n.text.get(
+                "plugin.workspace.errormessage.workspaceAssessmentRequestFailed"
+              ),
               "error"
             )
           );
@@ -1061,6 +1061,8 @@ const requestAssessmentAtWorkspace: RequestAssessmentAtWorkspaceTriggerType =
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
     ) => {
+      const state = getState();
+
       try {
         const assessmentRequest: WorkspaceAssessmentRequestType = <
           WorkspaceAssessmentRequestType
@@ -1105,7 +1107,7 @@ const requestAssessmentAtWorkspace: RequestAssessmentAtWorkspaceTriggerType =
 
         dispatch(
           actions.displayNotification(
-            getState().i18n.text.get(
+            state.i18n.text.get(
               "plugin.workspace.evaluation.requestEvaluation.notificationText"
             ),
             "success"
@@ -1118,7 +1120,7 @@ const requestAssessmentAtWorkspace: RequestAssessmentAtWorkspaceTriggerType =
         }
         dispatch(
           actions.displayNotification(
-            getState().i18n.text.get(
+            state.i18n.text.get(
               "plugin.workspace.errormessage.requestAssessmentFail"
             ),
             "error"
@@ -1150,6 +1152,8 @@ const cancelAssessmentAtWorkspace: CancelAssessmentAtWorkspaceTriggerType =
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
     ) => {
+      const state = getState();
+
       try {
         const assessmentRequest: WorkspaceAssessmentRequestType =
           data.workspace.assessmentRequests[
@@ -1158,7 +1162,7 @@ const cancelAssessmentAtWorkspace: CancelAssessmentAtWorkspaceTriggerType =
         if (!assessmentRequest) {
           dispatch(
             actions.displayNotification(
-              getState().i18n.text.get(
+              state.i18n.text.get(
                 "plugin.workspace.errormessage.cancelAssessmentFail"
               ),
               "error"
@@ -1204,7 +1208,7 @@ const cancelAssessmentAtWorkspace: CancelAssessmentAtWorkspaceTriggerType =
 
         dispatch(
           actions.displayNotification(
-            getState().i18n.text.get(
+            state.i18n.text.get(
               "plugin.workspace.evaluation.cancelEvaluation.notificationText"
             ),
             "success"
@@ -1217,7 +1221,7 @@ const cancelAssessmentAtWorkspace: CancelAssessmentAtWorkspaceTriggerType =
         }
         dispatch(
           actions.displayNotification(
-            getState().i18n.text.get(
+            state.i18n.text.get(
               "plugin.workspace.errormessage.cancelAssessmentFail"
             ),
             "error"
@@ -4533,8 +4537,8 @@ export {
   loadTemplatesFromServer,
   updateWorkspaceEditModeState,
   loadWholeWorkspaceHelp,
-  /* updateCurrentWorkspaceActivity,
-  updateCurrentWorkspaceAssessmentRequest, */
+  updateCurrentWorkspaceActivity,
+  updateCurrentWorkspaceAssessmentRequest,
   setWholeWorkspaceHelp,
   setAvailableCurriculums,
 };
