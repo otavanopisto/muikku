@@ -198,6 +198,7 @@ class NewContactEvent extends SessionStateComponent<
               )}
             </label>
             <DatePicker
+              className="env-dialog__input"
               id="contactEventdate"
               onChange={(date: Date) => this.onDateChange(date)}
               locale={outputCorrectDatePickerLocale(
@@ -215,6 +216,7 @@ class NewContactEvent extends SessionStateComponent<
             </label>
             <select
               id="contactEventTypes"
+              className="env-dialog__select"
               onChange={this.onTypeChange}
               value={this.state.type}
             >

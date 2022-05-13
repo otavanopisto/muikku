@@ -35,8 +35,6 @@ import { IContactEvent } from "~/reducers/main-function/guider";
 interface CommentContactEventProps {
   i18n: i18nType;
   status: StatusType;
-  // quote?: string;
-  // quoteAuthor?: string;
   contactEvent: IContactEvent;
   studentUserEntityId: number;
   editContactEvent: EditContactEventTriggerType;
@@ -50,7 +48,6 @@ interface CommentContactEventState {
   text: string;
   date: Date;
   type: ContactTypes;
-  openReplyType?: "answer" | "modify" | "quote";
   locked: boolean;
 }
 
@@ -67,10 +64,13 @@ class CommentContactEvent extends SessionStateComponent<
    */
   constructor(props: CommentContactEventProps) {
     super(props, "contact-event-comment");
+
     this.state = this.getRecoverStoredState(
       {
         locked: false,
-        date: new Date(this.props.contactEvent.entryDate),
+        date: props.i18n.time
+          .getLocalizedMoment(this.props.contactEvent.entryDate)
+          .toDate(),
         text: this.props.contactEvent.text,
         type: this.props.contactEvent.type,
       },
@@ -114,7 +114,9 @@ class CommentContactEvent extends SessionStateComponent<
   clearUp = () => {
     this.setStateAndClear(
       {
-        date: new Date(this.props.contactEvent.entryDate),
+        date: this.props.i18n.time
+          .getLocalizedMoment(this.props.contactEvent.entryDate)
+          .toDate(),
         text: this.props.contactEvent.text,
         type: this.props.contactEvent.type,
       },
@@ -149,6 +151,7 @@ class CommentContactEvent extends SessionStateComponent<
           locked: false,
         });
         this.handleOnEditorClose();
+        this.clearUp();
       }
     );
   };
@@ -180,11 +183,13 @@ class CommentContactEvent extends SessionStateComponent<
               )}
             </label>
             <DatePicker
+              className="env-dialog__input"
               id="contactEventdate"
               onChange={(date: Date) => this.onDateChange(date)}
               locale={outputCorrectDatePickerLocale(
                 this.props.i18n.time.getLocale()
               )}
+              dateFormat="P"
               selected={this.state.date}
             ></DatePicker>
           </div>
@@ -196,6 +201,7 @@ class CommentContactEvent extends SessionStateComponent<
             </label>
             <select
               id="contactEventTypes"
+              className="env-dialog__select"
               onChange={this.onTypeChange}
               value={this.state.type}
             >
