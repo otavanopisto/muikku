@@ -157,32 +157,43 @@ class WorkspaceHomeHeader extends React.Component<
     let workspaceSubjectNameOrNames: undefined | JSX.Element;
 
     if (this.props.workspace.additionalInfo) {
-      const subjectsListLastIndex =
-        this.props.workspace.additionalInfo.subjects.length - 1;
+      const { subjects } = this.props.workspace.additionalInfo;
+
+      const subjectsListLastIndex = subjects.length - 1;
 
       isCombinationWorkspace = subjectsListLastIndex > 0;
 
+      // If workspace is not combination, just put first object from array.
+      // Otherwise first sort by ascending names a -> ö and then by ascending course number order
       workspaceLengthOrLengths = !isCombinationWorkspace ? (
         <span className="meta__item-description">
           {this.props.i18n.text.get(
             "plugin.workspace.index.courseLength",
-            this.props.workspace.additionalInfo.subjects[0].courseLength,
-            this.props.workspace.additionalInfo.subjects[0].courseLengthSymbol
-              .symbol
+            subjects[0].courseLength,
+            subjects[0].courseLengthSymbol.symbol
           )}
         </span>
       ) : (
         <>
-          {this.props.workspace.additionalInfo.subjects.map(
-            (subject, index) => {
-              const codeString = `${subject.subject.code}${
-                subject.courseNumber ? subject.courseNumber : ""
+          {subjects
+            .sort(
+              (a, b) =>
+                (a.subject &&
+                  b.subject &&
+                  a.subject.code.localeCompare(b.subject.code)) ||
+                (b.courseNumber &&
+                  a.courseNumber &&
+                  a.courseNumber - b.courseNumber)
+            )
+            .map((s, index) => {
+              const codeString = `${s.subject.code}${
+                s.courseNumber ? s.courseNumber : ""
               }`;
 
               const codeWithLength = `${codeString} ${this.props.i18n.text.get(
                 "plugin.workspace.index.courseLength",
-                subject.courseLength,
-                subject.courseLengthSymbol.symbol
+                s.courseLength,
+                s.courseLengthSymbol.symbol
               )}`;
 
               return (
@@ -191,25 +202,40 @@ class WorkspaceHomeHeader extends React.Component<
                   {subjectsListLastIndex !== index && ","}
                 </span>
               );
-            }
-          )}
+            })}
         </>
       );
 
+      // If workspace is not combination, just put first object from array.
+      // Otherwise filter possible dublicated subject away before mapping subjects
       workspaceSubjectNameOrNames = !isCombinationWorkspace ? (
         <span className="meta__item-description">
-          {this.props.workspace.additionalInfo.subjects[0].subject.name}
+          {subjects[0].subject.name}
         </span>
       ) : (
         <>
-          {this.props.workspace.additionalInfo.subjects.map(
-            (subject, index) => (
+          {subjects
+            .filter(
+              (wS, i, a) =>
+                a.findIndex(
+                  (wS2) =>
+                    wS2.subject &&
+                    wS.subject &&
+                    wS2.subject.identifier === wS.subject.identifier
+                ) === i
+            )
+            .sort(
+              (a, b) =>
+                a.subject &&
+                b.subject &&
+                a.subject.code.localeCompare(b.subject.code)
+            )
+            .map((s, index) => (
               <span key={index} className="meta__item-description">
-                {subject.subject.name}
+                {s.subject.name}
                 {subjectsListLastIndex !== index && ","}
               </span>
-            )
-          )}
+            ))}
         </>
       );
     }
