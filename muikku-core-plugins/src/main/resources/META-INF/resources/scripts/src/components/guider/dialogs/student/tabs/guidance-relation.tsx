@@ -5,7 +5,6 @@ import { connect } from "react-redux";
 import ApplicationSubPanel, {
   ApplicationSubPanelViewHeader,
   ApplicationSubPanelItem,
-  ApplicationSubPanelSection,
 } from "~/components/general/application-sub-panel";
 import { GuiderStudentType } from "~/reducers/main-function/guider";
 import ContactEvent from "./contact-events/contact-event";
@@ -31,7 +30,9 @@ const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
   const { i18n, contactLogs, studentBasicInfo } = props;
   return (
     <ApplicationSubPanel>
-      <ApplicationSubPanelViewHeader title="Ohjaussuhde">
+      <ApplicationSubPanelViewHeader
+        title={i18n.text.get("plugin.guider.user.tabs.title.guidanceRelations")}
+      >
         <NewContactEvent>
           <ButtonPill
             icon="bubbles"
@@ -40,7 +41,7 @@ const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
         </NewContactEvent>
       </ApplicationSubPanelViewHeader>
       <ApplicationSubPanel.Body modifier="guidance-relation">
-        <ApplicationSubPanelSection modifier="guidance-relation-contact-info">
+        <ApplicationSubPanel modifier="guidance-relation-contact-info">
           <ApplicationSubPanelItem
             title={i18n.text.get(
               "plugin.guider.user.details.contactInfo.student.label"
@@ -66,12 +67,12 @@ const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
               </div>
             </ApplicationSubPanelItem.Content>
           </ApplicationSubPanelItem> */}
-        </ApplicationSubPanelSection>
-        <ApplicationSubPanelSection modifier="guidance-relation-contact-events">
-          <ApplicationSubPanelSection.Header>
+        </ApplicationSubPanel>
+        <ApplicationSubPanel modifier="guidance-relation-contact-events">
+          <ApplicationSubPanel.Header>
             {i18n.text.get("plugin.guider.user.contactLog.title")}
-          </ApplicationSubPanelSection.Header>
-          <ApplicationSubPanelSection.Body>
+          </ApplicationSubPanel.Header>
+          <ApplicationSubPanel.Body>
             {contactLogs && contactLogs.length > 0 ? (
               contactLogs.map((contactEvent) => (
                 <ContactEvent
@@ -85,8 +86,8 @@ const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
                 {i18n.text.get("plugin.guider.user.contactLog.empty")}
               </div>
             )}
-          </ApplicationSubPanelSection.Body>
-        </ApplicationSubPanelSection>
+          </ApplicationSubPanel.Body>
+        </ApplicationSubPanel>
       </ApplicationSubPanel.Body>
     </ApplicationSubPanel>
   );
