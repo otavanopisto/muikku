@@ -870,7 +870,7 @@ const createContactEvent: CreateContactEventTriggerType =
             type: "SET_CURRENT_GUIDER_STUDENT_PROP",
             payload: {
               property: "contactLogs",
-              value: [...contactLogs, ...[contactLog]],
+              value: [...[contactLog], ...contactLogs],
             },
           });
         });
