@@ -15,7 +15,7 @@ import { StatusType } from "~/reducers/base/status";
 import Link from "~/components/general/link";
 
 /**
- *
+ * ContactEventProps
  */
 interface ContactEventProps {
   event: IContactEvent;
@@ -26,7 +26,7 @@ interface ContactEventProps {
 }
 
 /**
- *
+ * ContactEvent
  * @param props
  * @returns
  */
