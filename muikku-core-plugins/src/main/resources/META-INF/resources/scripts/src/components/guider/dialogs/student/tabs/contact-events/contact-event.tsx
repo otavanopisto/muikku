@@ -81,7 +81,7 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
           className="link link--contact-event-footer"
           onClick={() => setCreateCommentOpen(true)}
         >
-          Kommentoi
+          {i18n.text.get("plugin.guider.user.contactLog.actions.comment")}
         </Link>
         {creatorId === status.userId ? (
           <>
@@ -89,13 +89,15 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
               className="link link--contact-event-footer"
               onClick={() => setEventEditOpen(true)}
             >
-              Muokkaa
+              {i18n.text.get("plugin.guider.user.contactLog.actions.edit")}
             </Link>
             <ContactEventDeletePrompt
               studentUserEntityId={studentId}
               contactLogEntryId={id}
             >
-              <Link className="link link--contact-event-footer">Poista</Link>
+              <Link className="link link--contact-event-footer">
+                {i18n.text.get("plugin.guider.user.contactLog.actions.delete")}
+              </Link>
             </ContactEventDeletePrompt>
           </>
         ) : null}
@@ -147,7 +149,9 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
                     className="link link--contact-event-footer"
                     onClick={() => setCommentEditOpen(comment.id)}
                   >
-                    Muokkaa
+                    {i18n.text.get(
+                      "plugin.guider.user.contactLog.actions.edit"
+                    )}
                   </Link>
                   <ContactEventDeletePrompt
                     studentUserEntityId={studentId}
@@ -155,7 +159,9 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
                     commentId={comment.id}
                   >
                     <Link className="link link--contact-event-footer">
-                      Poista
+                      {i18n.text.get(
+                        "plugin.guider.user.contactLog.actions.delete"
+                      )}
                     </Link>
                   </ContactEventDeletePrompt>
                 </div>
