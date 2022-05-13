@@ -72,7 +72,9 @@ class NewContactEvent extends SessionStateComponent<
     this.state = this.getRecoverStoredState({
       text: props.initialMessage || "",
       sender: props.initialSender || "",
-      date: props.initialDate || new Date(),
+      date:
+        props.i18n.time.getLocalizedMoment(props.initialDate).toDate() ||
+        props.i18n.time.getLocalizedMoment().toDate(),
       type: props.initialType || "OTHER",
       locked: false,
     });
@@ -86,7 +88,10 @@ class NewContactEvent extends SessionStateComponent<
       {
         text: this.props.initialMessage || "",
         sender: this.props.initialSender || "",
-        date: this.props.initialDate || new Date(),
+        date:
+          this.props.i18n.time
+            .getLocalizedMoment(this.props.initialDate)
+            .toDate() || this.props.i18n.time.getLocalizedMoment().toDate(),
         type: this.props.initialType || "OTHER",
         locked: false,
       },
@@ -146,6 +151,7 @@ class NewContactEvent extends SessionStateComponent<
           locked: false,
         });
         closeDialog();
+        this.clearUp();
       }
     );
   };
@@ -161,7 +167,10 @@ class NewContactEvent extends SessionStateComponent<
     this.setStateAndClear({
       text: this.props.initialMessage || "",
       sender: this.props.initialSender || "",
-      date: this.props.initialDate || new Date(),
+      date:
+        this.props.i18n.time
+          .getLocalizedMoment(this.props.initialDate)
+          .toDate() || this.props.i18n.time.getLocalizedMoment().toDate(),
       type: this.props.initialType || "OTHER",
       locked: false,
     });
@@ -189,12 +198,14 @@ class NewContactEvent extends SessionStateComponent<
               )}
             </label>
             <DatePicker
+              className="env-dialog__input"
               id="contactEventdate"
               onChange={(date: Date) => this.onDateChange(date)}
               locale={outputCorrectDatePickerLocale(
                 this.props.i18n.time.getLocale()
               )}
-              selected={this.state.date ? new Date(this.state.date) : null}
+              selected={this.state.date}
+              dateFormat="P"
             ></DatePicker>
           </div>
           <div className="env-dialog__form-element-container">
@@ -205,6 +216,7 @@ class NewContactEvent extends SessionStateComponent<
             </label>
             <select
               id="contactEventTypes"
+              className="env-dialog__select"
               onChange={this.onTypeChange}
               value={this.state.type}
             >
