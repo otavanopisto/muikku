@@ -77,15 +77,16 @@
   color: #787878;
 }
 
-.contact-event__header-actions {
+.contact-event__footer {
   align-items: center;
   display: flex;
+  padding: 10px;
 
-  span {
+  a {
     cursor: pointer;
   }
 
-  & > div:not(:first-child), span:not(:first-child) {
+  & > div:not(:first-child), a:not(:first-child) {
     margin-left: 10px;
   }
 }

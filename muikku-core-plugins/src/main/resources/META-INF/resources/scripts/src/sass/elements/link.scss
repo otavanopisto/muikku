@@ -368,7 +368,8 @@
   }
 }
 
-.link--application-list-item-footer {
+.link--application-list-item-footer,
+.link--contact-event-footer {
   color: $color-link-application-item-footer;
   cursor: pointer;
   text-decoration: underline;

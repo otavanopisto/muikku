@@ -12,6 +12,7 @@ import Avatar from "~/components/general/avatar";
 import { connect } from "react-redux";
 import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
+import Link from "~/components/general/link";
 
 /**
  *
@@ -59,21 +60,8 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
             {moment(entryDate).format("dddd, MMMM Do YYYY")}
           </div>
         </div>
-        <div className="contact-event__header-actions">
-          <span onClick={() => setCreateCommentOpen(true)}>Kommentoi</span>
-          {creatorId === status.userId ? (
-            <>
-              <span onClick={() => setEventEditOpen(true)}>Muokkaa</span>
-              <ContactEventDeletePrompt
-                studentUserEntityId={studentId}
-                contactLogEntryId={id}
-              >
-                <span>Poista</span>
-              </ContactEventDeletePrompt>
-            </>
-          ) : null}
-        </div>
       </div>
+
       {eventEditOpen ? (
         <div className="contact-event__body">
           <EditContactEvent
@@ -88,6 +76,30 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
           dangerouslySetInnerHTML={{ __html: text }}
         ></div>
       )}
+      <div className="contact-event__footer">
+        <Link
+          className="link link--contact-event-footer"
+          onClick={() => setCreateCommentOpen(true)}
+        >
+          Kommentoi
+        </Link>
+        {creatorId === status.userId ? (
+          <>
+            <Link
+              className="link link--contact-event-footer"
+              onClick={() => setEventEditOpen(true)}
+            >
+              Muokkaa
+            </Link>
+            <ContactEventDeletePrompt
+              studentUserEntityId={studentId}
+              contactLogEntryId={id}
+            >
+              <Link className="link link--contact-event-footer">Poista</Link>
+            </ContactEventDeletePrompt>
+          </>
+        ) : null}
+      </div>
       {commentOpen ? (
         <CommentContactEvent
           contactEventtId={id}
@@ -114,20 +126,6 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
                     {moment(comment.commentDate).format("dddd, MMMM Do YYYY")}
                   </div>
                 </div>
-                {creatorId === status.userId ? (
-                  <div className="contact-event__header-actions">
-                    <span onClick={() => setCommentEditOpen(comment.id)}>
-                      Muokkaa
-                    </span>
-                    <ContactEventDeletePrompt
-                      studentUserEntityId={studentId}
-                      contactLogEntryId={id}
-                      commentId={comment.id}
-                    >
-                      <span>Poista</span>
-                    </ContactEventDeletePrompt>
-                  </div>
-                ) : null}
               </div>
               {commentEditOpen === comment.id ? (
                 <div className="contact-event__body contact-event__body--reply">
@@ -143,6 +141,25 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
                   dangerouslySetInnerHTML={{ __html: comment.text }}
                 ></div>
               )}
+              {creatorId === status.userId ? (
+                <div className="contact-event__footer">
+                  <Link
+                    className="link link--contact-event-footer"
+                    onClick={() => setCommentEditOpen(comment.id)}
+                  >
+                    Muokkaa
+                  </Link>
+                  <ContactEventDeletePrompt
+                    studentUserEntityId={studentId}
+                    contactLogEntryId={id}
+                    commentId={comment.id}
+                  >
+                    <Link className="link link--contact-event-footer">
+                      Poista
+                    </Link>
+                  </ContactEventDeletePrompt>
+                </div>
+              ) : null}
             </div>
           ))}
         </div>
