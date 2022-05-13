@@ -72,7 +72,7 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
         </div>
       ) : (
         <div
-          className="contact-event__body"
+          className="contact-event__body rich-text rich-text--contact-event"
           dangerouslySetInnerHTML={{ __html: text }}
         ></div>
       )}
@@ -108,7 +108,7 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
         ></CommentContactEvent>
       ) : null}
       {comments ? (
-        <div className="contact-event__replies">
+        <div className="contact-event__replies rich-text rich-text--contact-event">
           {comments.map((comment) => (
             <div key={comment.id} className="contact-event__reply">
               <div className="contact-event__header contact-event__header--reply">

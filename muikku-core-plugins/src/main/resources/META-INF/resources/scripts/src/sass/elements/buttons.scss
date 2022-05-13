@@ -834,8 +834,7 @@
 .button-pill--edit,
 .button-pill--create-contact-log-entry,
 .button-pill--new-message,
-.button-pill--filter,
-.button-pill--create-contact-event {
+.button-pill--filter {
   background-color: $color-main-function-button-pill-delete-background;
   color: $color-main-function-button-pill-delete-text;
   flex-basis: auto;
