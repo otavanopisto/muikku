@@ -4,9 +4,10 @@
 @import "../base/breakpoints";
 
 .contact-event {
-  padding: 20px 0 20px;
+  padding: 20px 0;
+
   &:not(:last-child) {
-    border-bottom: 4px solid #ededed;
+    border-bottom: 4px solid $color-default-separator-border;
   }
 }
 
@@ -17,7 +18,8 @@
 
 .contact-event__title {
   align-items: center;
-  display:flex;
+  display: flex;
+  flex-flow: row wrap;
   flex-grow: 1;
 
   &:not(:first-child) {
@@ -27,14 +29,17 @@
 
 .contact-event__creator {
   font-weight: 600;
+  line-height: 1;
   margin-right: 10px;
 }
 
 .contact-event__type {
-  padding: 3px 10px;
-  background-color: #ededed;
-  margin-right: 10px;
+  background-color: transparent;
   border-radius: 12px;
+  font-size: 0.6875rem;
+  margin-right: 10px;
+  padding: 2px 8px;
+  text-transform: uppercase;
 
   &.type-OTHER {
     background-color: lighten($color-category-1, 35%);
@@ -74,7 +79,16 @@
 }
 
 .contact-event__date {
-  color: #787878;
+  color: darken($color-default-helper, 20%);
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  margin: 2px 0;
+}
+
+.contact-event__body {
+  background-color: $color-default;
+  padding: 0 10px;
 }
 
 .contact-event__footer {
@@ -86,22 +100,14 @@
     cursor: pointer;
   }
 
-  & > div:not(:first-child), a:not(:first-child) {
+  & > div:not(:first-child),
+  a:not(:first-child) {
     margin-left: 10px;
   }
 }
 
-.contact-event__body {
-  background-color: #fff;
-  padding: 10px;
-}
-
 .contact-event__header--reply {
   font-size: 1.05 rem;
-}
-
-.contact-event__body--reply {
-  padding-left: 5px;
 }
 
 .contact-event__replies {
@@ -109,5 +115,5 @@
 }
 
 .contact-event__reply {
-  margin-top: 15px;
+  margin-top: 20px;
 }
