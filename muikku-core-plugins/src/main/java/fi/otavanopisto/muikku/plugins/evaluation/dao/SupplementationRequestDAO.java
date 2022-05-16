@@ -7,6 +7,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
@@ -113,14 +114,21 @@ public class SupplementationRequestDAO extends CorePluginsDAO<SupplementationReq
     CriteriaQuery<SupplementationRequest> criteria = criteriaBuilder.createQuery(SupplementationRequest.class);
     Root<SupplementationRequest> root = criteria.from(SupplementationRequest.class);
     criteria.select(root);
+
+    // If workspaceSubjectIdentifier is null, restrict to SupplementationRequests that have null workspaceSubjectIdentifier
+    // else return SupplementationRequests that match the subjectIdentifier or have null identifier (for backwards compatibility)
+    Predicate workspaceSubjectPredicate = workspaceSubjectIdentifier == null
+        ? criteriaBuilder.isNull(root.get(SupplementationRequest_.workspaceSubjectIdentifier))
+        : criteriaBuilder.or(
+              criteriaBuilder.equal(root.get(SupplementationRequest_.workspaceSubjectIdentifier), workspaceSubjectIdentifier.toId()),
+              criteriaBuilder.isNull(root.get(SupplementationRequest_.workspaceSubjectIdentifier))
+          );
+    
     criteria.where(
       criteriaBuilder.and(
         criteriaBuilder.equal(root.get(SupplementationRequest_.studentEntityId), studentEntityId),
         criteriaBuilder.equal(root.get(SupplementationRequest_.workspaceEntityId), workspaceEntityId),
-        criteriaBuilder.or(
-            criteriaBuilder.equal(root.get(SupplementationRequest_.workspaceSubjectIdentifier), workspaceSubjectIdentifier.toId()),
-            criteriaBuilder.isNull(root.get(SupplementationRequest_.workspaceSubjectIdentifier))
-        ),
+        workspaceSubjectPredicate,
         criteriaBuilder.equal(root.get(SupplementationRequest_.archived), archived)
       )
     );
