@@ -217,7 +217,7 @@ class EditContactEventComment extends SessionStateComponent<
 /**
  * mapStateToProps
  * @param state state
- * @returns object
+ * @returns props from state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -229,7 +229,7 @@ function mapStateToProps(state: StateType) {
 /**
  * mapDispatchToProps
  * @param dispatch dispatch
- * @returns object
+ * @returns dispatch function
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ editContactEventComment }, dispatch);
