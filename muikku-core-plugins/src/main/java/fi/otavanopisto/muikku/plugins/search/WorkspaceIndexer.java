@@ -176,13 +176,17 @@ public class WorkspaceIndexer {
       indexedWorkspaceSubject.setLengthUnitIdentifier(workspaceSubject.getLengthUnitIdentifier());
       indexedWorkspaceSubject.setSubjectIdentifier(workspaceSubject.getSubjectIdentifier());
       
-      Subject subject = courseMetaController.findSubject(workspaceSubject.getSubjectIdentifier());
-      indexedWorkspaceSubject.setSubjectName(subject.getName());
-      indexedWorkspaceSubject.setSubjectCode(subject.getCode());
+      Subject subject = workspaceSubject.getSubjectIdentifier() != null ? courseMetaController.findSubject(workspaceSubject.getSubjectIdentifier()) : null;
+      if (subject != null) {
+        indexedWorkspaceSubject.setSubjectName(subject.getName());
+        indexedWorkspaceSubject.setSubjectCode(subject.getCode());
+      }
       
-      CourseLengthUnit courseLengthUnit = courseMetaController.findCourseLengthUnit(workspaceSubject.getLengthUnitIdentifier());
-      indexedWorkspaceSubject.setLengthUnitSymbol(courseLengthUnit.getSymbol());
-      indexedWorkspaceSubject.setLengthUnitName(courseLengthUnit.getName());
+      CourseLengthUnit courseLengthUnit = workspaceSubject.getLengthUnitIdentifier() != null ? courseMetaController.findCourseLengthUnit(workspaceSubject.getLengthUnitIdentifier()) : null;
+      if (courseLengthUnit != null) {
+        indexedWorkspaceSubject.setLengthUnitSymbol(courseLengthUnit.getSymbol());
+        indexedWorkspaceSubject.setLengthUnitName(courseLengthUnit.getName());
+      }
       
       indexedWorkspace.addSubject(indexedWorkspaceSubject);
     }
