@@ -176,8 +176,8 @@ class JournalCenterItemEdit extends SessionStateComponent<
           <DatePicker
             className="form-element__input"
             selected={
-              this.state.journal.startDate
-                ? this.state.journal.startDate
+              this.state.journal.startDate !== null
+                ? new Date(this.state.journal.startDate)
                 : undefined
             }
             onChange={(date, e) => this.handleJournalChange("startDate", date)}
@@ -190,8 +190,8 @@ class JournalCenterItemEdit extends SessionStateComponent<
           <DatePicker
             className="form-element__input"
             selected={
-              this.state.journal.dueDate
-                ? this.state.journal.dueDate
+              this.state.journal.dueDate !== null
+                ? new Date(this.state.journal.dueDate)
                 : undefined
             }
             onChange={(date, e) => this.handleJournalChange("dueDate", date)}
