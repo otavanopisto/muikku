@@ -95,6 +95,7 @@ class ContactEventDeletePrompt extends React.Component<
     /**
      * content
      * @param closeDialog closeDialog
+     * @returns JSX.Element
      */
     const content = (closeDialog: () => any) => (
       <div>
@@ -109,7 +110,9 @@ class ContactEventDeletePrompt extends React.Component<
     );
 
     /**
+     * footer
      * @param closeDialog
+     * @returns JSX.Element
      */
     const footer = (closeDialog: () => any) => (
       <div className="dialog__button-set">
@@ -157,6 +160,7 @@ class ContactEventDeletePrompt extends React.Component<
 /**
  * mapStateToProps
  * @param state state
+ * @returns props from state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -167,6 +171,7 @@ function mapStateToProps(state: StateType) {
 /**
  * mapDispatchToProps
  * @param dispatch dispatch
+ * @returns dispatch function
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
