@@ -566,6 +566,11 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
             type: "SET_CURRENT_GUIDER_STUDENT_PROP",
             payload: { property: "currentWorkspaces", value: workspaces },
           });
+
+          dispatch({
+            type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+            payload: { property: "pastWorkspaces", value: workspaces },
+          });
         }),
         canListUserOrders &&
           promisify(mApi().ceepos.user.orders.read(id), "callback")().then(
@@ -627,10 +632,6 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
     try {
       const historyLoaded = !!getState().guider.currentStudent.pastWorkspaces;
 
-      if (historyLoaded && !forceLoad) {
-        return;
-      }
-
       dispatch({
         type: "LOCK_TOOLBAR",
         payload: null,
@@ -641,16 +642,7 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
         payload: <GuiderCurrentStudentStateType>"LOADING",
       });
 
-      await Promise.all([
-        promisify(
-          mApi().guider.students.workspaces.read(id),
-          "callback"
-        )().then(async (workspaces: WorkspaceListType) => {
-          dispatch({
-            type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-            payload: { property: "pastWorkspaces", value: workspaces },
-          });
-        }),
+      const promises = [
         promisify(
           mApi().activitylogs.user.workspace.read(id, {
             from: new Date(new Date().getFullYear() - 2, 0),
@@ -663,7 +655,24 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
             payload: { property: "activityLogs", value: activityLogs },
           });
         }),
-      ]);
+      ];
+
+      if (!historyLoaded) {
+        promises.push(
+          promisify(
+            mApi().guider.students.workspaces.read(id),
+            "callback"
+          )().then(async (workspaces: WorkspaceListType) => {
+            dispatch({
+              type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+              payload: { property: "pastWorkspaces", value: workspaces },
+            });
+          })
+        );
+      }
+
+      await Promise.all([promises]);
+
       dispatch({
         type: "UPDATE_CURRENT_GUIDER_STUDENT_STATE",
         payload: <GuiderCurrentStudentStateType>"READY",
