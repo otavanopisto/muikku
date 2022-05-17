@@ -364,6 +364,10 @@ public class GuiderRESTService extends PluginRESTService {
           }
           String emailAddress = "";
           User student = userController.findUserByIdentifier(studentIdentifier);
+          if (student == null) {
+            logger.severe(String.format("Couldn't fetch user %s found in search index", studentIdentifier));
+            continue;
+          }
           if (!Boolean.TRUE.equals(student.getHidden())) {
             emailAddress = userEmailEntityController.getUserDefaultEmailAddress(userEntity, true);
           }
