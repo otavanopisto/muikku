@@ -96,6 +96,7 @@ const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
 /**
  * mapStateToProps
  * @param state state
+ * @returns state from props
  */
 function mapStateToProps(state: StateType) {
   return {

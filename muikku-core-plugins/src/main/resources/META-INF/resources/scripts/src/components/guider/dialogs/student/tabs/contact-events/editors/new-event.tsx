@@ -178,7 +178,7 @@ class NewContactEvent extends SessionStateComponent<
 
   /**
    * render
-   * @returns
+   * @returns JSX.Element
    */
   render() {
     const editorTitle = this.props.i18n.text.get(
@@ -307,7 +307,7 @@ class NewContactEvent extends SessionStateComponent<
 /**
  * mapStateToProps
  * @param state state
- * @returns
+ * @returns state from props
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -320,7 +320,7 @@ function mapStateToProps(state: StateType) {
 /**
  * mapDispatchToProps
  * @param dispatch dispatch
- * @returns
+ * @returns dispatch functions
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ createContactEvent }, dispatch);

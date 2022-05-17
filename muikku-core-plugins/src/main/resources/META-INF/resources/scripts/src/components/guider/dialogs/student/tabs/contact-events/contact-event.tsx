@@ -116,6 +116,7 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
               <div className="contact-event__header contact-event__header--reply">
                 <Avatar
                   id={comment.creatorId}
+                  // Lacking hasImage from the backend
                   hasImage={false}
                   size="small"
                   firstName={comment.creatorName}
@@ -129,7 +130,7 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
                   </div>
                 </div>
               </div>
-              {commentEditOpen === comment.id ? (
+              {commentEditOpen === id ? (
                 <div className="contact-event__body contact-event__body--reply">
                   <EditContactEventComment
                     comment={comment}

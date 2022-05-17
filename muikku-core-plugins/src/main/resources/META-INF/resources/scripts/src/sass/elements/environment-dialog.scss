@@ -188,6 +188,7 @@
   }
 
   &:not(:first-child) {
+
     @include breakpoint($breakpoint-pad) {
       margin-left: 20px;
     }

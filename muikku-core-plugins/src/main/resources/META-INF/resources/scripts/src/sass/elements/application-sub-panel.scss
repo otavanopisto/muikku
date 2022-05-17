@@ -16,7 +16,6 @@
 .application-sub-panel--guidance-relation-contact-info {
   flex-basis: 100%;
 
-
   @include breakpoint($breakpoint-pad) {
     flex-basis: 400px;
     flex-grow: 1;
@@ -37,7 +36,6 @@
 .application-sub-panel--guidance-relation-guidance-events {
   flex-basis: 100%;
 }
-
 
 .application-sub-panel--header-main {
   align-items: flex-start;
