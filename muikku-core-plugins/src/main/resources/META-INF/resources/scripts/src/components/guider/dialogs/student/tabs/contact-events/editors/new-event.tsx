@@ -28,7 +28,7 @@ import { StatusType } from "~/reducers/base/status";
  * NewContactEventProps
  */
 interface NewContactEventProps {
-  children?: React.ReactElement<any>;
+  children?: JSX.Element;
   i18n: i18nType;
   createContactEvent: CreateContactEventTriggerType;
   currentStudent: GuiderStudentType;
@@ -37,8 +37,8 @@ interface NewContactEventProps {
   initialSender?: string;
   initialMessage?: string;
   initialType?: ContactTypes;
-  onOpen?: () => any;
-  onClose?: () => any;
+  onOpen?: () => void;
+  onClose?: () => void;
   isOpen?: boolean;
 }
 
@@ -61,7 +61,7 @@ class NewContactEvent extends SessionStateComponent<
   NewContactEventState
 > {
   private avoidCKEditorTriggeringChangeForNoReasonAtAll: boolean;
-  private nameSpace: string = "new-contact-event";
+  private nameSpace = "new-contact-event";
   /**
    * constructor
    * @param props props
@@ -102,9 +102,8 @@ class NewContactEvent extends SessionStateComponent<
   };
 
   /**
-   * onCKEditorChange
-   * @param text
-   * @returns
+   * onCKEditorChange handler
+   * @param text ckeditor text
    */
   onCKEditorChange = (text: string) => {
     if (this.avoidCKEditorTriggeringChangeForNoReasonAtAll) {
@@ -114,10 +113,18 @@ class NewContactEvent extends SessionStateComponent<
     this.setStateAndStore({ text }, this.nameSpace);
   };
 
+  /**
+   * onDateChange handler
+   * @param date Date
+   */
   onDateChange = (date: Date) => {
     this.setStateAndStore({ date: date }, this.nameSpace);
   };
 
+  /**
+   * onTypeChange handler
+   * @param e event
+   */
   onTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     this.setStateAndStore(
       { type: e.target.value as ContactTypes },
@@ -129,7 +136,7 @@ class NewContactEvent extends SessionStateComponent<
    * saveContactEvent
    * @param closeDialog closeDialog
    */
-  saveContactEvent = (closeDialog: () => any) => {
+  saveContactEvent = (closeDialog: () => void) => {
     this.setState({
       locked: true,
     });
@@ -186,9 +193,10 @@ class NewContactEvent extends SessionStateComponent<
     );
 
     /**
-     * @param closeDialog
+     * content
+     * @param closeDialog closeDialog function
      */
-    const content = (closeDialog: () => any) => (
+    const content = (closeDialog: () => void) => (
       <>
         <div className="env-dialog__row env-dialog__row--new-contact-event">
           <div className="env-dialog__form-element-container env-dialog__form-element-container--new-contact-event">
@@ -252,7 +260,7 @@ class NewContactEvent extends SessionStateComponent<
      * footer
      * @param closeDialog closeDialog
      */
-    const footer = (closeDialog: () => any) => (
+    const footer = (closeDialog: () => void) => (
       <div className="env-dialog__actions">
         <Button
           buttonModifiers="dialog-execute"

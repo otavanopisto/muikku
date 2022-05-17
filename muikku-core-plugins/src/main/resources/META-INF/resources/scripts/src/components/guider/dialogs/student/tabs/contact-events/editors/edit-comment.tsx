@@ -14,7 +14,6 @@ import SessionStateComponent from "~/components/general/session-state-component"
 import Button from "~/components/general/button";
 import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
-import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import moment from "~/lib/moment";
 import { StatusType } from "~/reducers/base/status";
 import { IContactEventComment } from "~/reducers/main-function/guider";
@@ -65,7 +64,7 @@ class EditContactEventComment extends SessionStateComponent<
   }
 
   /**
-   * onCKEditorChange
+   * onCKEditorChange handler
    * @param text text content
    */
   onCKEditorChange = (text: string): void => {
@@ -73,13 +72,16 @@ class EditContactEventComment extends SessionStateComponent<
   };
 
   /**
-   * onDateChange
-   * @param date
+   * onDateChange handler
+   * @param date Date
    */
   onDateChange = (date: Date): void => {
     this.setStateAndStore({ date: date }, this.props.comment.id);
   };
-
+  /**
+   * onTypeChange handler
+   * @param e event
+   */
   onTypeChange = (e: React.ChangeEvent<HTMLSelectElement>): void => {
     this.setStateAndStore(
       { type: e.target.value as ContactTypes },

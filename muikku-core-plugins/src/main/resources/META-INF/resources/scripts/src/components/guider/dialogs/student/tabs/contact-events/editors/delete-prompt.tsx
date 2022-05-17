@@ -28,7 +28,7 @@ interface ContactEventDeletePromptProps {
   studentUserEntityId: number;
   deleteContactEvent: DeleteContactEventTriggerType;
   deleteContactEventComment: DeleteContactEventCommentTriggerType;
-  children: React.ReactElement<any>;
+  children: JSX.Element;
 }
 
 /**
@@ -60,7 +60,7 @@ class ContactEventDeletePrompt extends React.Component<
    * handleOnDelete
    * @param closeDialog closeDialog
    */
-  handleOnDelete = (closeDialog: () => any) => {
+  handleOnDelete = (closeDialog: () => void) => {
     this.setState({ locked: true });
     if (!this.props.commentId) {
       this.props.deleteContactEvent(
@@ -97,7 +97,7 @@ class ContactEventDeletePrompt extends React.Component<
      * @param closeDialog closeDialog
      * @returns JSX.Element
      */
-    const content = (closeDialog: () => any) => (
+    const content = (closeDialog: () => void) => (
       <div>
         {this.props.commentId
           ? this.props.i18n.text.get(
@@ -111,10 +111,10 @@ class ContactEventDeletePrompt extends React.Component<
 
     /**
      * footer
-     * @param closeDialog
+     * @param closeDialog close dialog function
      * @returns JSX.Element
      */
-    const footer = (closeDialog: () => any) => (
+    const footer = (closeDialog: () => void) => (
       <div className="dialog__button-set">
         <Button
           buttonModifiers={["fatal", "standard-ok"]}

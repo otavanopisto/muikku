@@ -5,7 +5,7 @@ import { i18nType } from "~/reducers/base/i18n";
 import { GuiderType } from "~/reducers/main-function/guider";
 import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
-
+import { AnyActionType } from "~/actions";
 import "~/sass/elements/application-list.scss";
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/glyph.scss";
@@ -86,7 +86,10 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
    * @param p product
    * @param closeDropdown closeDropdown
    */
-  beginOrderCreationProcess(p: PurchaseProductType, closeDropdown?: () => any) {
+  beginOrderCreationProcess(
+    p: PurchaseProductType,
+    closeDropdown?: () => void
+  ) {
     this.setState({
       isConfirmDialogOpenFor: p,
     });
@@ -162,7 +165,7 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
      * orderDeleteDialogContent
      * @param closeDialog closeDialog
      */
-    const orderDeleteDialogContent = (closeDialog: () => any) => (
+    const orderDeleteDialogContent = (closeDialog: () => void) => (
       <div>
         <span>
           {this.props.i18n.text.get(
@@ -176,7 +179,7 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
      * orderDeleteDialogFooter
      * @param closeDialog closeDialog
      */
-    const orderDeleteDialogFooter = (closeDialog: () => any) => (
+    const orderDeleteDialogFooter = (closeDialog: () => void) => (
       <div className="dialog__button-set">
         <Button
           buttonModifiers={["standard-ok", "fatal"]}
@@ -199,7 +202,7 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
      * orderCompleteDialogContent
      * @param closeDialog closeDialog
      */
-    const orderCompleteDialogContent = (closeDialog: () => any) => (
+    const orderCompleteDialogContent = (closeDialog: () => void) => (
       <div>
         <span>
           {this.props.i18n.text.get(
@@ -213,7 +216,7 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
      * orderCompleteDialogFooter
      * @param closeDialog closeDialog
      */
-    const orderCompleteDialogFooter = (closeDialog: () => any) => (
+    const orderCompleteDialogFooter = (closeDialog: () => void) => (
       <div className="dialog__button-set">
         <Button
           buttonModifiers={["standard-ok", "execute"]}
@@ -242,14 +245,14 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
      * IsOrderCreationDisabled
      * @returns true or false
      */
-    const IsOrderCreationDisabled =
-      this.props.guider.currentStudent.purchases &&
-      this.props.guider.currentStudent.purchases.filter(
-        (purchase) =>
-          purchase.state === "CREATED" ||
-          purchase.state === "ONGOING" ||
-          purchase.state === "ERRORED"
-      ).length > 0;
+    // const IsOrderCreationDisabled =
+    //   this.props.guider.currentStudent.purchases &&
+    //   this.props.guider.currentStudent.purchases.filter(
+    //     (purchase) =>
+    //       purchase.state === "CREATED" ||
+    //       purchase.state === "ONGOING" ||
+    //       purchase.state === "ERRORED"
+    //   ).length > 0;
 
     /**
      * Logic for whether already created order can be deleted
@@ -439,7 +442,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     {
       deleteOrderFromCurrentStudent,

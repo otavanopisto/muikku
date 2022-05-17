@@ -18,6 +18,7 @@ import Dialog from "~/components/general/dialog";
 import Dropdown from "~/components/general/dropdown";
 import Link from "~/components/general/link";
 import Button from "~/components/general/button";
+import { AnyActionType } from "~/actions";
 
 /**
  * CeeposButtonProps
@@ -31,7 +32,7 @@ interface CeeposButtonProps {
 
 /**
  * CeeposButton
- * @param props
+ * @param props CeeposButtonProps
  * @returns JSX.elenment
  */
 export const CeeposButton: React.FC<CeeposButtonProps> = (props) => {
@@ -60,7 +61,7 @@ export const CeeposButton: React.FC<CeeposButtonProps> = (props) => {
    * orderConfirmDialogContent
    * @param closeDialog closeDialog
    */
-  const orderConfirmDialogContent = (closeDialog: () => any) => (
+  const orderConfirmDialogContent = (closeDialog: () => void) => (
     <div>
       <span>
         <b>{isConfirmDialogOpenFor && isConfirmDialogOpenFor.Description}</b>
@@ -92,7 +93,7 @@ export const CeeposButton: React.FC<CeeposButtonProps> = (props) => {
    * orderConfirmDialogFooter
    * @param closeDialog closeDialog
    */
-  const orderConfirmDialogFooter = (closeDialog: () => any) => (
+  const orderConfirmDialogFooter = (closeDialog: () => void) => (
     <div className="dialog__button-set">
       <Button
         buttonModifiers={["standard-ok", "execute"]}
@@ -115,7 +116,7 @@ export const CeeposButton: React.FC<CeeposButtonProps> = (props) => {
    */
   const beginOrderCreationProcess = (
     p: PurchaseProductType,
-    closeDropdown?: () => any
+    closeDropdown?: () => void
   ) => {
     setIsConfirmDialogOpenFor(p);
     closeDropdown && closeDropdown();
@@ -127,7 +128,7 @@ export const CeeposButton: React.FC<CeeposButtonProps> = (props) => {
      * @param closeDropdown prop drilling for portal
      * @returns a link
      */
-    const link = (closeDropdown: () => any) => (
+    const link = (closeDropdown: () => void) => (
       <Link
         key={p.Code}
         className="link link--full link--purchasable-product-dropdown"
@@ -189,7 +190,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     {
       doOrderForCurrentStudent,

@@ -27,7 +27,7 @@ import { IContactEvent } from "~/reducers/main-function/guider";
  * TODO: maybe make this more generic,
  * since there is need for this kind of a reply outside discussion,
  * for example in the communicator and the guider
- * */
+ */
 
 /**
  * ReplyThreadDrawerProps
