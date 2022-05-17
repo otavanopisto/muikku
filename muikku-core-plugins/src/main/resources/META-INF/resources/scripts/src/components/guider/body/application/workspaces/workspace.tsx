@@ -270,39 +270,38 @@ class StudentWorkspace extends React.Component<
             {courseNameString}
           </span>
           <span className="application-list__header-secondary">
-            <span className="activity-badge activity-badge--percent">
-              {
-                /**
-                 * Show percent if method return true
-                 */
-                this.showWorkspacePercents(
-                  this.props.workspace.activity.assessmentState
-                ) ? (
+            {
+              /**
+               * Show percent if method return true
+               */
+              this.showWorkspacePercents(
+                this.props.workspace.activity.assessmentState
+              ) ? (
+                <span className="activity-badge activity-badge--percent">
                   <GuiderWorkspacePercents
                     i18n={this.props.i18n}
                     activity={this.props.workspace.activity}
                   />
-                ) : null
-              }
-
-              {!isCombinationWorkspace ? (
-                /**
-                 * Only show assessment in header line if its not combination workspace
-                 */
-                <GuiderAssessment
-                  i18n={this.props.i18n}
-                  assessment={this.props.workspace.activity.assessmentState[0]}
-                />
-              ) : null}
-            </span>
-            <Dropdown
-              persistent
-              modifier={"workspace-chart workspace-" + workspace.id}
-              items={[<WorkspaceChart key={0} workspace={workspace} />]}
-            >
-              <span className="icon-statistics chart__activator chart__activator--workspace-chart"></span>
-            </Dropdown>
+                </span>
+              ) : null
+            }
+            {!isCombinationWorkspace ? (
+              /**
+               * Only show assessment in header line if its not combination workspace
+               */
+              <GuiderAssessment
+                i18n={this.props.i18n}
+                assessment={this.props.workspace.activity.assessmentState[0]}
+              />
+            ) : null}
           </span>
+          <Dropdown
+            persistent
+            modifier={"workspace-chart workspace-" + workspace.id}
+            items={[<WorkspaceChart key={0} workspace={workspace} />]}
+          >
+            <span className="icon-statistics chart__activator chart__activator--workspace-chart"></span>
+          </Dropdown>
         </ApplicationListItemHeader>
 
         {
