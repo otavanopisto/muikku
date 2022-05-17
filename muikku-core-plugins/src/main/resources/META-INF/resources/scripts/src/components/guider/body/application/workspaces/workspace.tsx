@@ -278,26 +278,22 @@ class StudentWorkspace extends React.Component<
                 this.showWorkspacePercents(
                   this.props.workspace.activity.assessmentState
                 ) ? (
-                  <>
-                    <GuiderWorkspacePercents
-                      i18n={this.props.i18n}
-                      activity={this.props.workspace.activity}
-                    />
-
-                    {!isCombinationWorkspace ? (
-                      /**
-                       * Only show assessment in header line if its not combination workspace
-                       */
-                      <GuiderAssessment
-                        i18n={this.props.i18n}
-                        assessment={
-                          this.props.workspace.activity.assessmentState[0]
-                        }
-                      />
-                    ) : null}
-                  </>
+                  <GuiderWorkspacePercents
+                    i18n={this.props.i18n}
+                    activity={this.props.workspace.activity}
+                  />
                 ) : null
               }
+
+              {!isCombinationWorkspace ? (
+                /**
+                 * Only show assessment in header line if its not combination workspace
+                 */
+                <GuiderAssessment
+                  i18n={this.props.i18n}
+                  assessment={this.props.workspace.activity.assessmentState[0]}
+                />
+              ) : null}
             </span>
             <Dropdown
               persistent
