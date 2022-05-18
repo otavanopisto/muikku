@@ -53,6 +53,7 @@ public class ToRTestsBase extends AbstractUITest {
       
       CourseActivity ca = new CourseActivity();
       ca.setCourseId(course1.getId());
+      ca.setCourseModuleId(course1.getCourseModules().iterator().next().getId());
       ca.setCourseName(course1.getName());
       ca.setGrade("Excellent");
       ca.setPassingGrade(true);
@@ -60,7 +61,6 @@ public class ToRTestsBase extends AbstractUITest {
       ca.setText("Test evaluation.");
       ca.setActivityDate(TestUtilities.toDate(TestUtilities.getLastWeek()));
       ca.setState(CourseActivityState.GRADED);
-      
       
       List<CourseActivity> courseActivities = new ArrayList<>();
       courseActivities.add(ca);
