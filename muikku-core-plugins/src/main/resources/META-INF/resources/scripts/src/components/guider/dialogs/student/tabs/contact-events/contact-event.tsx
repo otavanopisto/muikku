@@ -36,7 +36,7 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
   const { modifier, studentId, i18n, status } = props;
   const [commentOpen, setCreateCommentOpen] = React.useState<boolean>(false);
   const [eventEditOpen, setEventEditOpen] = React.useState<boolean>(false);
-  const [commentEditOpen, setCommentEditOpen] = React.useState<number>(null);
+  const [commentEditOpen, setCommentEditOpen] = React.useState<number[]>([]);
 
   return (
     <div
@@ -130,12 +130,18 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
                   </div>
                 </div>
               </div>
-              {commentEditOpen === id ? (
+              {commentEditOpen.includes(comment.id) ? (
                 <div className="contact-event__body contact-event__body--reply">
                   <EditContactEventComment
                     comment={comment}
                     studentUserEntityId={studentId}
-                    closeEditor={() => setCommentEditOpen(null)}
+                    closeEditor={() =>
+                      setCommentEditOpen(
+                        commentEditOpen.filter(
+                          (editorOpenId) => editorOpenId !== comment.id
+                        )
+                      )
+                    }
                   />
                 </div>
               ) : (
@@ -148,7 +154,9 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
                 <div className="contact-event__footer">
                   <Link
                     className="link link--contact-event-footer"
-                    onClick={() => setCommentEditOpen(comment.id)}
+                    onClick={() =>
+                      setCommentEditOpen([...commentEditOpen, ...[comment.id]])
+                    }
                   >
                     {i18n.text.get(
                       "plugin.guider.user.contactLog.actions.edit"
