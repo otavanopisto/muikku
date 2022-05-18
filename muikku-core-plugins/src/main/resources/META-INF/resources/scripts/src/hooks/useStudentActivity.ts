@@ -23,9 +23,9 @@ export interface UpdateSuggestionParams {
   goal: "add" | "remove";
   courseNumber: number;
   subjectCode: string;
-  suggestionId?: number;
+  courseId?: number;
   studentId: string;
-  type: "OPTIONAL" | "NEXT";
+  status: "OPTIONAL" | "NEXT";
 }
 
 /**
@@ -185,21 +185,18 @@ export const useStudentActivity = (
       } = ref.current;
 
       /**
-       * Concated list of different filter lists together
+       * Concated list of different suggestions
        */
-      const arrayOfStudentActivityCourses: StudentActivityCourse[] = [].concat(
+      let arrayOfStudentActivityCourses: StudentActivityCourse[] = [].concat(
         suggestedNextList,
-        suggestedOptionalList,
-        onGoingList,
-        gradedList,
-        transferedList
+        suggestedOptionalList
       );
 
       /**
        * If course id is null, meaning that delete existing activity course by
        * finding that specific course with subject code and course number and splice it out
        */
-      if (data.courseId === null) {
+      if (data.id === null) {
         const indexOfCourse = arrayOfStudentActivityCourses.findIndex(
           (item) =>
             item.subject === data.subject &&
@@ -235,6 +232,15 @@ export const useStudentActivity = (
           arrayOfStudentActivityCourses.push(data);
         }
       }
+
+      /**
+       * After possible suggestion checking is done, then concat other lists also
+       */
+      arrayOfStudentActivityCourses = arrayOfStudentActivityCourses.concat(
+        onGoingList,
+        gradedList,
+        transferedList
+      );
 
       const skillAndArtCourses = filterActivityBySubjects(
         SKILL_AND_ART_SUBJECTS,
@@ -293,21 +299,21 @@ export const useStudentActivity = (
   }, [websocketState.websocket]);
 
   /**
-   * updateSuggestion
+   * updateSuggestionForOptional
    * @param params params
    */
-  const updateSuggestion = async (params: UpdateSuggestionParams) => {
-    const { goal, type, suggestionId, subjectCode, courseNumber, studentId } =
-      params;
+  const updateSuggestionForOptional = async (
+    params: UpdateSuggestionParams
+  ) => {
+    const { goal, status, subjectCode, courseNumber, studentId } = params;
 
     if (goal === "add") {
       try {
         await promisify(
           mApi().hops.student.toggleSuggestion.create(studentId, {
-            id: suggestionId,
             subject: subjectCode,
             courseNumber: courseNumber,
-            type: type,
+            status: status,
           }),
           "callback"
         )();
@@ -317,10 +323,49 @@ export const useStudentActivity = (
     } else {
       try {
         await promisify(
-          mApi().hops.student.toggleSuggestion.create(studentId, {
+          mApi().hops.student.toggleSuggestion.del(studentId, {
             subject: subjectCode,
             courseNumber: courseNumber,
-            type: type,
+          }),
+          "callback"
+        )();
+      } catch (err) {
+        displayNotification(
+          `Update remove suggestion:, ${err.message}`,
+          "error"
+        );
+      }
+    }
+  };
+
+  /**
+   * updateSuggestion
+   * @param params params
+   */
+  const updateSuggestionForNext = async (params: UpdateSuggestionParams) => {
+    const { goal, status, courseId, subjectCode, courseNumber, studentId } =
+      params;
+
+    if (goal === "add") {
+      try {
+        await promisify(
+          mApi().hops.student.toggleSuggestion.create(studentId, {
+            courseId: courseId,
+            subject: subjectCode,
+            courseNumber: courseNumber,
+            status: status,
+          }),
+          "callback"
+        )();
+      } catch (err) {
+        displayNotification(`Update add suggestion:, ${err.message}`, "error");
+      }
+    } else {
+      try {
+        await promisify(
+          mApi().hops.student.toggleSuggestion.del(studentId, {
+            subject: subjectCode,
+            courseNumber: courseNumber,
           }),
           "callback"
         )();
@@ -339,8 +384,14 @@ export const useStudentActivity = (
      * updateSuggestion
      * @param params params
      */
-    updateSuggestion: (params: UpdateSuggestionParams) =>
-      updateSuggestion(params),
+    updateSuggestionNext: (params: UpdateSuggestionParams) =>
+      updateSuggestionForNext(params),
+    /**
+     * updateSuggestionOptional
+     * @param params params
+     */
+    updateSuggestionOptional: (params: UpdateSuggestionParams) =>
+      updateSuggestionForOptional(params),
   };
 };
 

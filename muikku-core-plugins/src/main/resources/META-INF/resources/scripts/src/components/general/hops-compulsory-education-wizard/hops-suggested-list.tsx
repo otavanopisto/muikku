@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useSuggestionList } from "./hooks/useSuggestedList";
 import { connect, Dispatch } from "react-redux";
-import { Course, StudentActivityCourse } from "~/@types/shared";
+import { Course, CourseStatus, StudentActivityCourse } from "~/@types/shared";
 import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
 import { UpdateSuggestionParams } from "../../../hooks/useStudentActivity";
@@ -25,9 +25,9 @@ interface HopsSuggestionListProps {
   displayNotification: DisplayNotificationTriggerType;
   loadData?: boolean;
   canSuggestForNext: boolean;
-  canSuggestForOptional: boolean;
   onLoad?: () => void;
-  updateSuggestion?: (params: UpdateSuggestionParams) => void;
+  updateSuggestionNext?: (params: UpdateSuggestionParams) => void;
+  updateSuggestionOptional?: (params: UpdateSuggestionParams) => void;
 }
 
 /**
@@ -61,27 +61,13 @@ const HopsSuggestionList = (props: HopsSuggestionListProps) => {
   }, [isLoading, onLoad]);
 
   /**
-   * handleSuggestionClick
-   * @param type Suggestion type
-   * @param actionType Action type aka "delete" or "add"
-   * @param suggestionId Suggestion id
+   * handleSuggestionNextClick
+   * @param params params
    */
-  const handleSuggestionClick =
-    (
-      type: "NEXT" | "OPTIONAL",
-      actionType: "remove" | "add",
-      suggestionId: number
-    ) =>
+  const handleSuggestionNextClick =
+    (params: UpdateSuggestionParams) =>
     (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
-      props.updateSuggestion &&
-        props.updateSuggestion({
-          goal: actionType,
-          courseNumber: props.course.courseNumber,
-          subjectCode: props.subjectCode,
-          suggestionId: suggestionId,
-          studentId: props.studentId,
-          type: type,
-        });
+      props.updateSuggestionNext && props.updateSuggestionNext(params);
     };
 
   /**
@@ -92,7 +78,6 @@ const HopsSuggestionList = (props: HopsSuggestionListProps) => {
       suggestionsList.map((suggestion) => {
         // By default action type is always add
         let suggestionNextActionType: "add" | "remove" = "add";
-        let suggestionOptionalActionType: "add" | "remove" = "add";
 
         /**
          * If there is suggested activity courses
@@ -105,13 +90,11 @@ const HopsSuggestionList = (props: HopsSuggestionListProps) => {
           /**
            * If any of these condition happens, changes respectivily action type
            */
-          if (suggestedCourse && suggestedCourse.status === "SUGGESTED_NEXT") {
-            suggestionNextActionType = "remove";
-          } else if (
+          if (
             suggestedCourse &&
-            suggestedCourse.status === "SUGGESTED_OPTIONAL"
+            suggestedCourse.status === CourseStatus.SUGGESTED_NEXT
           ) {
-            suggestionOptionalActionType = "remove";
+            suggestionNextActionType = "remove";
           }
         }
 
@@ -130,33 +113,19 @@ const HopsSuggestionList = (props: HopsSuggestionListProps) => {
                       "guider-hops-studytool",
                       "guider-hops-studytool-next",
                     ]}
-                    onClick={handleSuggestionClick(
-                      "NEXT",
-                      suggestionNextActionType,
-                      suggestion.id
-                    )}
+                    onClick={handleSuggestionNextClick({
+                      goal: suggestionNextActionType,
+                      courseNumber: props.course.courseNumber,
+                      subjectCode: props.subjectCode,
+                      courseId: suggestion.id,
+                      studentId: props.studentId,
+                      status: "NEXT",
+                    })}
                   >
                     {suggestionNextActionType === "remove"
                       ? "Ehdotettu"
                       : "Seuraavaksi?"}
                   </Button>
-                  {props.canSuggestForOptional && !props.course.mandatory && (
-                    <Button
-                      buttonModifiers={[
-                        "guider-hops-studytool",
-                        "guider-hops-studytool-suggested",
-                      ]}
-                      onClick={handleSuggestionClick(
-                        "OPTIONAL",
-                        suggestionOptionalActionType,
-                        suggestion.id
-                      )}
-                    >
-                      {suggestionOptionalActionType === "remove"
-                        ? "Ehdotettu"
-                        : "Valinnaiseksi?"}
-                    </Button>
-                  )}
                 </div>
               </>
             )}
