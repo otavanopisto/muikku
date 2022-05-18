@@ -31,6 +31,7 @@ import fi.otavanopisto.pyramus.rest.model.CourseActivityState;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
 import fi.otavanopisto.pyramus.rest.model.Sex;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
+import fi.otavanopisto.pyramus.rest.model.worklist.WorklistBasePriceRestModel;
 
 public class NewEvaluationTestsBase extends AbstractUITest {
   
@@ -53,7 +54,10 @@ public class NewEvaluationTestsBase extends AbstractUITest {
     Builder mockBuilder = mocker();
     try{
       mockBuilder.addStudent(student).addStaffMember(admin).mockLogin(admin).addCourse(course1).build();
+
       Double price = new Double(75);
+      WorklistBasePriceRestModel courseBasePrices = new WorklistBasePriceRestModel();
+      courseBasePrices.put(course1.getCourseModules().iterator().next().getId(), price);
       
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
@@ -95,7 +99,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         .mockCompositeCourseAssessmentRequests()
         .addStaffCompositeAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, course1, student, admin.getId(), dateNow, false)
         .mockStaffCompositeCourseAssessmentRequests()
-        .mockWorkspaceBasePrice(workspace.getIdentifier(), price)
+        .mockWorkspaceBasePrice(course1.getId(), courseBasePrices)
         .mockWorkspaceBilledPriceUpdate(String.valueOf(price/2));
       
       logout();

@@ -158,7 +158,7 @@ public class WorkspaceRestModels {
   }
   
   public WorkspaceSubjectRestModel toRestModel(WorkspaceSubject workspaceSubject) {
-    Subject subjectObject = courseMetaController.findSubject(workspaceSubject.getSubjectIdentifier());
+    Subject subjectObject = workspaceSubject.getSubjectIdentifier() != null ? courseMetaController.findSubject(workspaceSubject.getSubjectIdentifier()) : null;
     SubjectRestModel subject = subjectObject != null ? new SubjectRestModel(subjectObject.getIdentifier(), subjectObject.getName(), subjectObject.getCode()) : null;
 
     WorkspaceLengthUnitRestModel workspaceLengthUnit = null;

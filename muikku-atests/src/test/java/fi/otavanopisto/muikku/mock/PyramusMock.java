@@ -81,6 +81,7 @@ import fi.otavanopisto.pyramus.rest.model.composite.CompositeGradingScale;
 import fi.otavanopisto.pyramus.rest.model.course.CourseSignupStudentGroup;
 import fi.otavanopisto.pyramus.rest.model.course.CourseSignupStudyProgramme;
 import fi.otavanopisto.pyramus.rest.model.muikku.CredentialResetPayload;
+import fi.otavanopisto.pyramus.rest.model.worklist.WorklistBasePriceRestModel;
 import fi.otavanopisto.pyramus.rest.model.worklist.WorklistItemBilledPriceRestModel;
 import fi.otavanopisto.pyramus.webhooks.WebhookCourseCreatePayload;
 import fi.otavanopisto.pyramus.webhooks.WebhookCourseStaffMemberCreatePayload;
@@ -1299,10 +1300,10 @@ public class PyramusMock {
         return this;
       }
       
-      public Builder mockWorkspaceBasePrice(String workspaceIdentifier, Double price) throws JsonProcessingException {
-        String priceJson = pmock.objectMapper.writeValueAsString(price);
+      public Builder mockWorkspaceBasePrice(Long courseId, WorklistBasePriceRestModel basePrices) throws JsonProcessingException {
+        String priceJson = pmock.objectMapper.writeValueAsString(basePrices);
 
-        stubFor(get(urlEqualTo(String.format("/1/worklist/basePrice?course=%s", workspaceIdentifier)))
+        stubFor(get(urlEqualTo(String.format("/1/worklist/basePrice?course=%s", courseId)))
             .willReturn(aResponse()
               .withHeader("Content-Type", "application/json")
               .withBody(priceJson)
