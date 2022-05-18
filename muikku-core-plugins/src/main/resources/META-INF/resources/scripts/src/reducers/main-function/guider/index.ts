@@ -206,13 +206,24 @@ function sortLabels(labelA: GuiderUserLabelType, labelB: GuiderUserLabelType) {
     ? 1
     : 0;
 }
-
+/**
+ * Sort for ceepos orders
+ * @param a a type of purchase
+ * @param b a second type of purchas
+ * @returns date sorted orders
+ */
 function sortOrders(a: PurchaseType, b: PurchaseType) {
   const dateA = new Date(a.created).getTime();
   const dateB = new Date(b.created).getTime();
   return dateA > dateB ? -1 : 1;
 }
 
+/**
+ * guider reducer function
+ * @param state app state
+ * @param action redux action
+ * @returns new app state
+ */
 export default function guider(
   state: GuiderType = {
     studentsState: "LOADING",
