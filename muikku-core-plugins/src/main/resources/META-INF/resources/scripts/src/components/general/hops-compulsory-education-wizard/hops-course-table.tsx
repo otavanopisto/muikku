@@ -4,6 +4,7 @@ import {
   StudentActivityByStatus,
   StudentActivityCourse,
   StudentCourseChoice,
+  SupervisorOptionalSuggestion,
 } from "~/@types/shared";
 import {
   Table,
@@ -27,6 +28,7 @@ import {
 } from "../../../hooks/useStudentActivity";
 import HopsSuggestionList from "./hops-suggested-list";
 import { UpdateStudentChoicesParams } from "~/hooks/useStudentChoices";
+import { UpdateSupervisorOptionalSuggestionParams } from "~/hooks/useSupervisorOptionalSuggestion";
 
 /**
  * CourseTableProps
@@ -62,8 +64,15 @@ interface HopsCourseTableProps extends Partial<StudentActivityByStatus> {
    */
   studentChoiceList?: StudentCourseChoice[];
 
+  /**
+   * List of student choices
+   */
+  supervisorOptionalSuggestionsList?: SupervisorOptionalSuggestion[];
+
   updateSuggestionNext?: (params: UpdateSuggestionParams) => void;
-  updateSuggestionOptional?: (params: UpdateSuggestionParams) => void;
+  updateSuggestionOptional?: (
+    params: UpdateSupervisorOptionalSuggestionParams
+  ) => void;
   updateStudentChoice?: (params: UpdateStudentChoicesParams) => void;
 }
 
@@ -89,7 +98,7 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
    * @param params params
    */
   const handleToggleSuggestOptional =
-    (params: UpdateSuggestionParams) =>
+    (params: UpdateSupervisorOptionalSuggestionParams) =>
     (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
       props.updateSuggestionOptional && props.updateSuggestionOptional(params);
     };
@@ -153,7 +162,7 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
         let courseSuggestions: StudentActivityCourse[] = [];
 
         let selectedByStudent = false;
-        let suggestionOptionalActionType: "add" | "remove" = "add";
+        let suggestedBySupervisor = false;
 
         /**
          * If any of these list are given, check whether course is in
@@ -191,23 +200,23 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
 
           modifiers.push("NEXT");
         } else if (
-          props.suggestedOptionalList &&
-          props.suggestedOptionalList.find(
+          props.supervisorOptionalSuggestionsList &&
+          props.supervisorOptionalSuggestionsList.find(
             (sOCourse) =>
               sOCourse.subject === sSubject.subjectCode &&
               sOCourse.courseNumber === course.courseNumber
           )
         ) {
-          const suggestedCourseDataOptional =
+          /* const suggestedCourseDataOptional =
             props.suggestedOptionalList.filter(
               (oCourse) => oCourse.subject === sSubject.subjectCode
-            );
+            ); */
 
-          courseSuggestions = courseSuggestions.concat(
+          /* courseSuggestions = courseSuggestions.concat(
             suggestedCourseDataOptional
-          );
+          ); */
 
-          suggestionOptionalActionType = "remove";
+          suggestedBySupervisor = true;
 
           modifiers.push("SUGGESTED");
         } else if (
@@ -318,14 +327,12 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
                             "guider-hops-studytool-suggested",
                           ]}
                           onClick={handleToggleSuggestOptional({
-                            goal: suggestionOptionalActionType,
                             courseNumber: course.courseNumber,
-                            subjectCode: sSubject.subjectCode,
+                            subject: sSubject.subjectCode,
                             studentId: props.studentId,
-                            status: "OPTIONAL",
                           })}
                         >
-                          {suggestionOptionalActionType === "remove"
+                          {suggestedBySupervisor
                             ? "Ehdotettu"
                             : "Ehdota valinnaiseksi?"}
                         </Button>

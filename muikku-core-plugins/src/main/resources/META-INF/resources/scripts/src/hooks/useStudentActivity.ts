@@ -20,12 +20,11 @@ export const LANGUAGE_SUBJECTS: string[] = ["rab", "sab", "eab2", "lab"];
  * UpdateSuggestionParams
  */
 export interface UpdateSuggestionParams {
-  goal: "add" | "remove";
+  actionType: "add" | "remove";
   courseNumber: number;
   subjectCode: string;
   courseId?: number;
   studentId: string;
-  status: "OPTIONAL" | "NEXT";
 }
 
 /**
@@ -53,7 +52,6 @@ export const useStudentActivity = (
       transferedList: [],
       gradedList: [],
       suggestedNextList: [],
-      suggestedOptionalList: [],
       skillsAndArt: {},
       otherLanguageSubjects: {},
       otherSubjects: {},
@@ -134,9 +132,6 @@ export const useStudentActivity = (
             isLoading: false,
             suggestedNextList:
               loadedStudentActivity.studentActivityByStatus.suggestedNextList,
-            suggestedOptionalList:
-              loadedStudentActivity.studentActivityByStatus
-                .suggestedOptionalList,
             onGoingList:
               loadedStudentActivity.studentActivityByStatus.onGoingList,
             gradedList:
@@ -176,55 +171,27 @@ export const useStudentActivity = (
      * @param data Websocket data
      */
     const onAnswerSavedAtServer = (data: StudentActivityCourse) => {
-      const {
-        suggestedNextList,
-        suggestedOptionalList,
-        onGoingList,
-        gradedList,
-        transferedList,
-      } = ref.current;
+      const { suggestedNextList, onGoingList, gradedList, transferedList } =
+        ref.current;
 
       /**
        * Concated list of different suggestions
        */
       let arrayOfStudentActivityCourses: StudentActivityCourse[] = [].concat(
-        suggestedNextList,
-        suggestedOptionalList
+        suggestedNextList
       );
 
       /**
        * If course id is null, meaning that delete existing activity course by
        * finding that specific course with subject code and course number and splice it out
        */
-      if (data.id === null) {
+      if (data.courseId) {
         const indexOfCourse = arrayOfStudentActivityCourses.findIndex(
-          (item) =>
-            item.subject === data.subject &&
-            item.courseNumber === data.courseNumber
+          (item) => item.courseId === data.courseId
         );
 
         if (indexOfCourse !== -1) {
           arrayOfStudentActivityCourses.splice(indexOfCourse, 1);
-        }
-      } else {
-        /**
-         * Else we are replacing suggestion with another or just adding new alltogether
-         */
-
-        /**
-         * Index of existing course
-         */
-        const indexOfCourse = arrayOfStudentActivityCourses.findIndex(
-          (aCourse) =>
-            aCourse.courseNumber === data.courseNumber &&
-            aCourse.subject === data.subject
-        );
-
-        /**
-         * Replace
-         */
-        if (indexOfCourse !== -1) {
-          arrayOfStudentActivityCourses.splice(indexOfCourse, 1, data);
         } else {
           /**
            * Add new
@@ -268,7 +235,6 @@ export const useStudentActivity = (
         ...studentActivity,
         isLoading: false,
         suggestedNextList: studentActivityByStatus.suggestedNextList,
-        suggestedOptionalList: studentActivityByStatus.suggestedOptionalList,
         onGoingList: studentActivityByStatus.onGoingList,
         gradedList: studentActivityByStatus.gradedList,
         transferedList: studentActivityByStatus.transferedList,
@@ -299,61 +265,20 @@ export const useStudentActivity = (
   }, [websocketState.websocket]);
 
   /**
-   * updateSuggestionForOptional
-   * @param params params
-   */
-  const updateSuggestionForOptional = async (
-    params: UpdateSuggestionParams
-  ) => {
-    const { goal, status, subjectCode, courseNumber, studentId } = params;
-
-    if (goal === "add") {
-      try {
-        await promisify(
-          mApi().hops.student.toggleSuggestion.create(studentId, {
-            subject: subjectCode,
-            courseNumber: courseNumber,
-            status: status,
-          }),
-          "callback"
-        )();
-      } catch (err) {
-        displayNotification(`Update add suggestion:, ${err.message}`, "error");
-      }
-    } else {
-      try {
-        await promisify(
-          mApi().hops.student.toggleSuggestion.del(studentId, {
-            subject: subjectCode,
-            courseNumber: courseNumber,
-          }),
-          "callback"
-        )();
-      } catch (err) {
-        displayNotification(
-          `Update remove suggestion:, ${err.message}`,
-          "error"
-        );
-      }
-    }
-  };
-
-  /**
    * updateSuggestion
    * @param params params
    */
   const updateSuggestionForNext = async (params: UpdateSuggestionParams) => {
-    const { goal, status, courseId, subjectCode, courseNumber, studentId } =
+    const { actionType, courseId, subjectCode, courseNumber, studentId } =
       params;
 
-    if (goal === "add") {
+    if (actionType === "add") {
       try {
         await promisify(
           mApi().hops.student.toggleSuggestion.create(studentId, {
             courseId: courseId,
             subject: subjectCode,
             courseNumber: courseNumber,
-            status: status,
           }),
           "callback"
         )();
@@ -366,6 +291,7 @@ export const useStudentActivity = (
           mApi().hops.student.toggleSuggestion.del(studentId, {
             subject: subjectCode,
             courseNumber: courseNumber,
+            courseId: courseId,
           }),
           "callback"
         )();
@@ -386,12 +312,6 @@ export const useStudentActivity = (
      */
     updateSuggestionNext: (params: UpdateSuggestionParams) =>
       updateSuggestionForNext(params),
-    /**
-     * updateSuggestionOptional
-     * @param params params
-     */
-    updateSuggestionOptional: (params: UpdateSuggestionParams) =>
-      updateSuggestionForOptional(params),
   };
 };
 
@@ -413,9 +333,6 @@ const filterActivity = (
   const suggestedNextList = list.filter(
     (item) => item.status === CourseStatus.SUGGESTED_NEXT
   );
-  const suggestedOptionalList = list.filter(
-    (item) => item.status === CourseStatus.SUGGESTED_OPTIONAL
-  );
 
   const transferedList = list.filter(
     (item) => item.status === CourseStatus.TRANSFERRED
@@ -425,7 +342,6 @@ const filterActivity = (
   return {
     onGoingList,
     suggestedNextList,
-    suggestedOptionalList,
     transferedList,
     gradedList,
   };

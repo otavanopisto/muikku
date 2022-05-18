@@ -546,6 +546,14 @@ export interface StudentCourseChoice {
 }
 
 /**
+ * SupervisorOptionalSuggestion
+ */
+export interface SupervisorOptionalSuggestion {
+  subject: string;
+  courseNumber: number;
+}
+
+/**
  * StudentActivityByStatus
  */
 export interface StudentActivityByStatus {
@@ -557,10 +565,6 @@ export interface StudentActivityByStatus {
    * List of suggested courses for next
    */
   suggestedNextList: StudentActivityCourse[];
-  /**
-   * List of suggested optional courses
-   */
-  suggestedOptionalList: StudentActivityCourse[];
   /**
    * List of transfered courses
    */

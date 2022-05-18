@@ -114,12 +114,11 @@ const HopsSuggestionList = (props: HopsSuggestionListProps) => {
                       "guider-hops-studytool-next",
                     ]}
                     onClick={handleSuggestionNextClick({
-                      goal: suggestionNextActionType,
+                      actionType: suggestionNextActionType,
                       courseNumber: props.course.courseNumber,
                       subjectCode: props.subjectCode,
                       courseId: suggestion.id,
                       studentId: props.studentId,
-                      status: "NEXT",
                     })}
                   >
                     {suggestionNextActionType === "remove"

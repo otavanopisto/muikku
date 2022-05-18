@@ -27,6 +27,7 @@ import HopsCourseTable from "~/components/general/hops-compulsory-education-wiza
 import { useStudentAlternativeOptions } from "~/hooks/useStudentAlternativeOptions";
 import { filterSpecialSubjects } from "~/helper-functions/shared";
 import Dropdown from "../dropdown";
+import { useSupervisorOptionalSuggestions } from "~/hooks/useSupervisorOptionalSuggestion";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const ProgressBarCircle = require("react-progress-bar.js").Circle;
@@ -85,6 +86,15 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
   );
 
   const { studentChoices, ...studentChoiceHandlers } = useStudentChoices(
+    props.studentId,
+    props.websocketState,
+    props.displayNotification
+  );
+
+  const {
+    supervisorOptionalSuggestions,
+    ...supervisorOptionalSuggestionsHandlers
+  } = useSupervisorOptionalSuggestions(
     props.studentId,
     props.websocketState,
     props.displayNotification
@@ -660,6 +670,7 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
     studentActivity.isLoading ||
     studentChoices.isLoading ||
     studyOptions.isLoading ||
+    supervisorOptionalSuggestions.isLoading ||
     followUpData.isLoading;
 
   const showTimeComparison =
@@ -924,7 +935,6 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
                 user={props.user}
                 superVisorModifies={props.superVisorModifies}
                 suggestedNextList={studentActivity.suggestedNextList}
-                suggestedOptionalList={studentActivity.suggestedOptionalList}
                 onGoingList={studentActivity.onGoingList}
                 gradedList={studentActivity.gradedList}
                 transferedList={studentActivity.transferedList}
@@ -932,8 +942,11 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
                 otherSubjects={studentActivity.otherSubjects}
                 otherLanguageSubjects={studentActivity.otherLanguageSubjects}
                 studentChoiceList={studentChoices.studentChoices}
+                supervisorOptionalSuggestionsList={
+                  supervisorOptionalSuggestions.supervisorOptionalSuggestions
+                }
                 updateSuggestionOptional={
-                  studentActivityHandlers.updateSuggestionOptional
+                  supervisorOptionalSuggestionsHandlers.updateSupervisorOptionalSuggestion
                 }
                 updateSuggestionNext={
                   studentActivityHandlers.updateSuggestionNext
@@ -956,7 +969,6 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
               studentId={props.studentId}
               superVisorModifies={props.superVisorModifies}
               suggestedNextList={studentActivity.suggestedNextList}
-              suggestedOptionalList={studentActivity.suggestedOptionalList}
               onGoingList={studentActivity.onGoingList}
               gradedList={studentActivity.gradedList}
               transferedList={studentActivity.transferedList}
@@ -964,9 +976,12 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
               otherSubjects={studentActivity.otherSubjects}
               otherLanguageSubjects={studentActivity.otherLanguageSubjects}
               studentChoiceList={studentChoices.studentChoices}
+              supervisorOptionalSuggestionsList={
+                supervisorOptionalSuggestions.supervisorOptionalSuggestions
+              }
               updateStudentChoice={studentChoiceHandlers.updateStudentChoice}
               updateSuggestionOptional={
-                studentActivityHandlers.updateSuggestionOptional
+                supervisorOptionalSuggestionsHandlers.updateSupervisorOptionalSuggestion
               }
               updateSuggestionNext={
                 studentActivityHandlers.updateSuggestionNext
