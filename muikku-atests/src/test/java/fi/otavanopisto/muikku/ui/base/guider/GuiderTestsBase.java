@@ -218,6 +218,7 @@ public class GuiderTestsBase extends AbstractUITest {
       
       CourseActivity ca = new CourseActivity();
       ca.setCourseId(course1.getId());
+      ca.setCourseModuleId(course1.getCourseModules().iterator().next().getId());
       ca.setCourseName(course1.getName());
       ca.setGrade("Excellent");
       ca.setPassingGrade(true);

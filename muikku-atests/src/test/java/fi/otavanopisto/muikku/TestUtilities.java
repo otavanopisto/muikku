@@ -206,6 +206,7 @@ public class TestUtilities {
     List<CourseActivity> courseActivities = new ArrayList<>();
     CourseActivity ca = new CourseActivity();
     ca.setCourseId(course.getId());
+    ca.setCourseModuleId(course.getCourseModules().iterator().next().getId());
     ca.setCourseName(course.getName());
     ca.setState(courseActivityState);
     ca.setActivityDate(TestUtilities.toDate(TestUtilities.getLastWeek()));
