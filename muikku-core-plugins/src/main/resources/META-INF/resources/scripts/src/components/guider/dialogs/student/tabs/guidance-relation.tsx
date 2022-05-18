@@ -76,7 +76,7 @@ const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
             {contactLogs && contactLogs.length > 0 ? (
               contactLogs.map((contactEvent) => (
                 <ContactEvent
-                  key={contactEvent.id}
+                  key={"contact-event-" + contactEvent.id}
                   studentId={studentBasicInfo.userEntityId}
                   event={contactEvent}
                 />

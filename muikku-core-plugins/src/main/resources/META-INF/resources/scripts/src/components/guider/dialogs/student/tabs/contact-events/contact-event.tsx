@@ -112,7 +112,7 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
       {comments ? (
         <div className="contact-event__replies rich-text rich-text--contact-event">
           {comments.map((comment) => (
-            <div key={comment.id} className="contact-event__reply">
+            <div key={"comment-" + comment.id} className="contact-event__reply">
               <div className="contact-event__header contact-event__header--reply">
                 <Avatar
                   id={comment.creatorId}
