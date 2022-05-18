@@ -18,7 +18,7 @@ import moment from "~/lib/moment";
 /**
  * ReplyThreadDrawerProps
  */
-interface CommentContactEventProps {
+interface NewContactLogEventCommentProps {
   i18n: i18nType;
   contactEventtId: number;
   studentUserEntityId: number;
@@ -27,9 +27,9 @@ interface CommentContactEventProps {
 }
 
 /**
- * CommentContactEventState
+ * NewContactLogEventCommentState
  */
-interface CommentContactEventState {
+interface NewContactLogEventCommentState {
   text: string;
   locked: boolean;
 }
@@ -37,15 +37,15 @@ interface CommentContactEventState {
 /**
  * CommentContactEvent
  */
-class CommentContactEvent extends SessionStateComponent<
-  CommentContactEventProps,
-  CommentContactEventState
+class NewContactLogEventComment extends SessionStateComponent<
+  NewContactLogEventCommentProps,
+  NewContactLogEventCommentState
 > {
   /**
    * constructor
    * @param props props
    */
-  constructor(props: CommentContactEventProps) {
+  constructor(props: NewContactLogEventCommentProps) {
     super(props, "contact-event-comment");
     this.state = this.getRecoverStoredState(
       {
@@ -215,4 +215,4 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(CommentContactEvent);
+)(NewContactLogEventComment);

@@ -16,24 +16,24 @@ import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
 import moment from "~/lib/moment";
 import { StatusType } from "~/reducers/base/status";
-import { IContactEventComment } from "~/reducers/main-function/guider";
+import { IContactLogEventComment } from "~/reducers/main-function/guider";
 
 /**
- * EditContactEventCommentStateProps
+ * EditContactLogEventCommentStateProps
  */
-interface EditContactEventCommentProps {
+interface EditContactLogEventCommentProps {
   i18n: i18nType;
   status: StatusType;
-  comment: IContactEventComment;
+  comment: IContactLogEventComment;
   studentUserEntityId: number;
   editContactEventComment: EditContactEventCommentTriggerType;
   closeEditor: () => void;
 }
 
 /**
- * EditContactEventCommentState
+ * EditContactLogEventCommentState
  */
-interface EditContactEventCommentState {
+interface EditContactLogEventCommentState {
   text: string;
   date: Date;
   type: ContactTypes;
@@ -43,15 +43,15 @@ interface EditContactEventCommentState {
 /**
  * Editor for the contactLog entry comment
  */
-class EditContactEventComment extends SessionStateComponent<
-  EditContactEventCommentProps,
-  EditContactEventCommentState
+class EditContactLogEventComment extends SessionStateComponent<
+  EditContactLogEventCommentProps,
+  EditContactLogEventCommentState
 > {
   /**
    * constructor
    * @param props props
    */
-  constructor(props: EditContactEventCommentProps) {
+  constructor(props: EditContactLogEventCommentProps) {
     super(props, "contact-event-comment");
     this.state = this.getRecoverStoredState(
       {
@@ -240,4 +240,4 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(EditContactEventComment);
+)(EditContactLogEventComment);

@@ -8,7 +8,7 @@ import ApplicationSubPanel, {
 } from "~/components/general/application-sub-panel";
 import { GuiderStudentType } from "~/reducers/main-function/guider";
 import ContactEvent from "./contact-events/contact-event";
-import { IContactEvent } from "~/reducers/main-function/guider/";
+import { IContactLogEvent } from "~/reducers/main-function/guider/";
 import NewContactEvent from "./contact-events/editors/new-event";
 import { ButtonPill } from "~/components/general/button";
 
@@ -17,7 +17,7 @@ import { ButtonPill } from "~/components/general/button";
  */
 interface GuidanceRelationProps {
   i18n: i18nType;
-  contactLogs: IContactEvent[];
+  contactLogs: IContactLogEvent[];
   studentBasicInfo: GuiderStudentType;
 }
 

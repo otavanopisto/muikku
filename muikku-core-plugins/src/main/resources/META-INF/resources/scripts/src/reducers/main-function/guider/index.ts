@@ -102,20 +102,20 @@ export type ContactTypes = typeof contactTypesArray[number];
 /**
  * ContactEvent
  */
-export interface IContactEvent {
+export interface IContactLogEvent {
   id: number;
   entryDate: string;
   type: ContactTypes;
   creatorId: number;
   creatorName: string;
   text: string;
-  comments?: IContactEventComment[];
+  comments?: IContactLogEventComment[];
 }
 
 /**
  * contactEventComment
  */
-export type IContactEventComment = {
+export type IContactLogEventComment = {
   id: number;
   entry: number;
   commentDate: string;
@@ -139,7 +139,7 @@ export interface GuiderStudentUserProfileType {
   //  vops: VOPSDataType,
   hops: HOPSDataType;
   notifications: GuiderNotificationStudentsDataType;
-  contactLogs: IContactEvent[];
+  contactLogs: IContactLogEvent[];
   currentWorkspaces: WorkspaceListType;
   pastWorkspaces: WorkspaceListType;
   activityLogs: ActivityLogType[];
@@ -210,7 +210,7 @@ function sortLabels(labelA: GuiderUserLabelType, labelB: GuiderUserLabelType) {
  * Sort for ceepos orders
  * @param a a type of purchase
  * @param b a second type of purchas
- * @returns date sorted orders
+ * @returns sorted orders by date
  */
 function sortOrders(a: PurchaseType, b: PurchaseType) {
   const dateA = new Date(a.created).getTime();

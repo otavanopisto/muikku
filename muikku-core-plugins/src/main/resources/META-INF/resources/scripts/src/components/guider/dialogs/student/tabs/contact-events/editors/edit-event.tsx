@@ -21,7 +21,7 @@ import DatePicker from "react-datepicker";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import moment from "~/lib/moment";
 import { StatusType } from "~/reducers/base/status";
-import { IContactEvent } from "~/reducers/main-function/guider";
+import { IContactLogEvent } from "~/reducers/main-function/guider";
 
 /**
  * TODO: maybe make this more generic,
@@ -32,19 +32,19 @@ import { IContactEvent } from "~/reducers/main-function/guider";
 /**
  * ReplyThreadDrawerProps
  */
-interface CommentContactEventProps {
+interface EditContactLogEventProps {
   i18n: i18nType;
   status: StatusType;
-  contactEvent: IContactEvent;
+  contactEvent: IContactLogEvent;
   studentUserEntityId: number;
   editContactEvent: EditContactEventTriggerType;
   closeEditor: () => void;
 }
 
 /**
- * CommentContactEventState
+ * EditContactLogEventEventState
  */
-interface CommentContactEventState {
+interface EditContactLogEventState {
   text: string;
   date: Date;
   type: ContactTypes;
@@ -52,17 +52,17 @@ interface CommentContactEventState {
 }
 
 /**
- * CommentContactEvent
+ * EditContactLogEventEvent
  */
-class CommentContactEvent extends SessionStateComponent<
-  CommentContactEventProps,
-  CommentContactEventState
+class EditContactLogEventEvent extends SessionStateComponent<
+  EditContactLogEventProps,
+  EditContactLogEventState
 > {
   /**
    * constructor
    * @param props props
    */
-  constructor(props: CommentContactEventProps) {
+  constructor(props: EditContactLogEventProps) {
     super(props, "contact-event-comment");
 
     this.state = this.getRecoverStoredState(
@@ -306,4 +306,4 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(CommentContactEvent);
+)(EditContactLogEventEvent);
