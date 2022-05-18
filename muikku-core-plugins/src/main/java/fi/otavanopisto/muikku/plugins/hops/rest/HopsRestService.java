@@ -42,6 +42,7 @@ import fi.otavanopisto.muikku.plugins.hops.HopsController;
 import fi.otavanopisto.muikku.plugins.hops.model.Hops;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsGoals;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsHistory;
+import fi.otavanopisto.muikku.plugins.hops.model.HopsOptionalSuggestion;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsStudentChoice;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsStudyHours;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsSuggestion;
@@ -500,10 +501,11 @@ public class HopsRestService {
     }
     
     // Find a previous suggestion with subject + course number and toggle accordingly
-    HopsSuggestion hopsSuggestion = hopsController.findSuggestionByStudentIdentifierAndSubjectAndCourseNumber(
+    HopsSuggestion hopsSuggestion = hopsController.findSuggestionByStudentIdentifierAndSubjectAndCourseNumberAndWorkspaceEntityId(
         studentIdentifier,
         payload.getSubject(),
-        payload.getCourseNumber());
+        payload.getCourseNumber(),
+        payload.getCourseId());
     
     WorkspaceEntity workspaceEntity = null;
     
@@ -515,21 +517,16 @@ public class HopsRestService {
     UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(schoolDataIdentifier);
     UserEntity counselorEntity = sessionController.getLoggedUserEntity();
     
-    if (hopsSuggestion == null) { // create new suggestion
-      if (workspaceEntity == null && !payload.getStatus().toLowerCase().contains("optional")) {
+    if (hopsSuggestion == null || !hopsSuggestion.getWorkspaceEntityId().equals(payload.getCourseId())) { // create new suggestion
+      if (workspaceEntity == null) {
         return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Workspace entity %d not found", payload.getId())).build();
       }
-      hopsSuggestion = hopsController.suggestWorkspace(studentIdentifier, payload.getSubject(), payload.getStatus(), payload.getCourseNumber(), payload.getCourseId());
+      hopsSuggestion = hopsController.suggestWorkspace(studentIdentifier, payload.getSubject(), StudyActivityItemStatus.SUGGESTED_NEXT.name(), payload.getCourseNumber(), payload.getCourseId());
       HopsSuggestionRestModel item = new HopsSuggestionRestModel();
       
-      if (payload.getStatus().toLowerCase().contains("optional")) {
-        item.setStatus(StudyActivityItemStatus.SUGGESTED_OPTIONAL.name());
-      } else {
-        item.setStatus(StudyActivityItemStatus.SUGGESTED_NEXT.name());
-        item.setCourseId(hopsSuggestion.getWorkspaceEntityId());
-        item.setName(workspaceEntityController.getName(workspaceEntity));
-      }
-      
+      item.setStatus(StudyActivityItemStatus.SUGGESTED_NEXT.name());
+      item.setCourseId(hopsSuggestion.getWorkspaceEntityId());
+      item.setName(workspaceEntityController.getName(workspaceEntity));
       item.setId(hopsSuggestion.getId());
       item.setCourseNumber(hopsSuggestion.getCourseNumber());
       item.setCreated(hopsSuggestion.getCreated());
@@ -541,22 +538,18 @@ public class HopsRestService {
       
     } else { // update suggestion
       
-      if (hopsSuggestion == null || payload.getCourseNumber() == null || payload.getSubject() == null) {
+      if (hopsSuggestion == null || !hopsSuggestion.getWorkspaceEntityId().equals(payload.getCourseId()) || payload.getCourseNumber() == null || payload.getSubject() == null) {
         logger.log(Level.WARNING, String.format("Can not update suggestion", payload));
         return Response.noContent().build();
       }
-      hopsController.suggestWorkspace(studentIdentifier, payload.getSubject(), payload.getStatus(), payload.getCourseNumber(), workspaceEntity != null ? workspaceEntity.getId() : null);
+      
+      hopsController.suggestWorkspace(studentIdentifier, payload.getSubject(), StudyActivityItemStatus.SUGGESTED_NEXT.name(), payload.getCourseNumber(), workspaceEntity != null ? workspaceEntity.getId() : null);
       
       HopsSuggestionRestModel item = new HopsSuggestionRestModel();
       
-      if (payload.getStatus().toLowerCase().contains("optional")) {
-        item.setStatus(StudyActivityItemStatus.SUGGESTED_OPTIONAL.name());
-      } else {
-        item.setStatus(StudyActivityItemStatus.SUGGESTED_NEXT.name());
-        item.setCourseId(hopsSuggestion.getWorkspaceEntityId());
-        item.setName(workspaceEntityController.getName(workspaceEntity));
-      }
-  
+      item.setStatus(StudyActivityItemStatus.SUGGESTED_NEXT.name());
+      item.setCourseId(hopsSuggestion.getWorkspaceEntityId());
+      item.setName(workspaceEntityController.getName(workspaceEntity));
       item.setId(hopsSuggestion.getId());
       item.setCourseNumber(hopsSuggestion.getCourseNumber());
       item.setCreated(hopsSuggestion.getCreated());
@@ -579,7 +572,7 @@ public class HopsRestService {
     if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.HOPS_SUGGEST_WORKSPACES)) {
       return Response.status(Status.FORBIDDEN).build();
     }
-    hopsController.unsuggestWorkspace(studentIdentifier, payload.getSubject(), payload.getCourseNumber());
+    hopsController.unsuggestWorkspace(studentIdentifier, payload.getSubject(), payload.getCourseNumber(), payload.getCourseId());
     
     SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifier);
     UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(schoolDataIdentifier);
@@ -597,6 +590,72 @@ public class HopsRestService {
       }
     }
     return null;
+  }
+  
+  @POST
+  @Path("/student/{STUDENTIDENTIFIER}/optionalSuggestion")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response toggleOptionalSuggestions(@Context Request request, @PathParam("STUDENTIDENTIFIER") String studentIdentifier, HopsOptionalSuggestionRestModel payload) {
+    
+    // Create or remove
+    
+    SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifier);
+    UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(schoolDataIdentifier);
+    
+    schoolDataBridgeSessionController.startSystemSession();
+    List<UserEntity> recipients = new ArrayList<>();
+
+    try {
+      recipients = hopsController.getGuidanceCouncelors(schoolDataIdentifier);
+    }
+    finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
+    
+    recipients.add(studentEntity);
+    HopsOptionalSuggestion hopsOptionalSuggestion = hopsController.findOptionalSuggestionByStudentIdentifier(studentIdentifier, payload.getSubject(), payload.getCourseNumber());
+    
+    
+    if (hopsOptionalSuggestion == null) {
+      hopsOptionalSuggestion = hopsController.createOptionalSuggestion(studentIdentifier, payload.getSubject(), payload.getCourseNumber());
+      
+      HopsOptionalSuggestionRestModel hopsOptionalSuggestionRestModel = new HopsOptionalSuggestionRestModel();
+      hopsOptionalSuggestionRestModel.setCourseNumber(hopsOptionalSuggestion.getCourseNumber());
+      hopsOptionalSuggestionRestModel.setSubject(hopsOptionalSuggestion.getSubject());
+      webSocketMessenger.sendMessage("hops:optionalsuggestion-updated", hopsOptionalSuggestionRestModel, recipients);
+
+      return Response.ok(hopsOptionalSuggestionRestModel).build();
+    }
+    else {
+      hopsController.removeOptionalSuggestion(studentIdentifier, payload.getSubject(), payload.getCourseNumber());
+      HopsOptionalSuggestionRestModel hopsOptionalSuggestionRestModel = new HopsOptionalSuggestionRestModel();
+      hopsOptionalSuggestionRestModel.setCourseNumber(hopsOptionalSuggestion.getCourseNumber());
+      hopsOptionalSuggestionRestModel.setSubject(hopsOptionalSuggestion.getSubject());
+      webSocketMessenger.sendMessage("hops:optionalsuggestion-updated", hopsOptionalSuggestionRestModel, recipients);
+
+      return Response.noContent().build();
+    }
+  }
+  
+  @GET
+  @Path("/student/{STUDENTIDENTIFIER}/optionalSuggestions")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response listOptionalSuggestions(@PathParam("STUDENTIDENTIFIER") String studentIdentifier) {
+    
+    List<HopsOptionalSuggestionRestModel> optionalSuggestions = new ArrayList<>();
+    List<HopsOptionalSuggestion> optionalSuggestionsFromDB = hopsController.listOptionalSuggestionsByStudentIdentifier(studentIdentifier);
+    
+    if (optionalSuggestionsFromDB != null) {
+      for (HopsOptionalSuggestion optionalSuggestion : optionalSuggestionsFromDB) {
+        HopsOptionalSuggestionRestModel hopsOptionalSuggestionRestModel = new HopsOptionalSuggestionRestModel();
+        
+        hopsOptionalSuggestionRestModel.setCourseNumber(optionalSuggestion.getCourseNumber());
+        hopsOptionalSuggestionRestModel.setSubject(optionalSuggestion.getSubject());
+        
+        optionalSuggestions.add(hopsOptionalSuggestionRestModel);
+      }
+    }
+    return Response.ok(optionalSuggestions).build();
   }
 
   @POST

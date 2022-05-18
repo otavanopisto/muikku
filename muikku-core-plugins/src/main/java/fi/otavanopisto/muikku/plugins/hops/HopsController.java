@@ -21,12 +21,14 @@ import fi.otavanopisto.muikku.plugins.assessmentrequest.WorkspaceAssessmentState
 import fi.otavanopisto.muikku.plugins.hops.dao.HopsDAO;
 import fi.otavanopisto.muikku.plugins.hops.dao.HopsGoalsDAO;
 import fi.otavanopisto.muikku.plugins.hops.dao.HopsHistoryDAO;
+import fi.otavanopisto.muikku.plugins.hops.dao.HopsOptionalSuggestionDAO;
 import fi.otavanopisto.muikku.plugins.hops.dao.HopsStudentChoiceDAO;
 import fi.otavanopisto.muikku.plugins.hops.dao.HopsStudyHoursDAO;
 import fi.otavanopisto.muikku.plugins.hops.dao.HopsSuggestionDAO;
 import fi.otavanopisto.muikku.plugins.hops.model.Hops;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsGoals;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsHistory;
+import fi.otavanopisto.muikku.plugins.hops.model.HopsOptionalSuggestion;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsStudentChoice;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsStudyHours;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsSuggestion;
@@ -67,6 +69,9 @@ public class HopsController {
   
   @Inject
   private HopsStudyHoursDAO hopsStudyHoursDAO;
+  
+  @Inject
+  private HopsOptionalSuggestionDAO hopsOptionalSuggestionDAO;
   
   @Inject
   private UserGroupEntityController userGroupEntityController;
@@ -197,6 +202,32 @@ public class HopsController {
     }
   }
   
+  public List<HopsOptionalSuggestion> listOptionalSuggestionsByStudentIdentifier(String studentIdentifeir) {
+    return hopsOptionalSuggestionDAO.listByStudentIdentifier(studentIdentifeir);
+  }
+  
+  public HopsOptionalSuggestion findOptionalSuggestionByStudentIdentifier(String studentIdentifier, String subject, Integer courseNumber) {
+    return hopsOptionalSuggestionDAO.findByStudentIdentifierAndSubjectAndCourseNumber(studentIdentifier, subject, courseNumber);
+  }
+  
+  public HopsOptionalSuggestion createOptionalSuggestion(String studentIdentifier, String subject, Integer courseNumber) {
+    HopsOptionalSuggestion hopsOptionalSuggestion = hopsOptionalSuggestionDAO.findByStudentIdentifierAndSubjectAndCourseNumber(studentIdentifier, subject, courseNumber);
+    if (hopsOptionalSuggestion != null) {
+      hopsOptionalSuggestion = hopsOptionalSuggestionDAO.update(hopsOptionalSuggestion, studentIdentifier, subject, courseNumber);
+    }
+    else {
+      hopsOptionalSuggestion = hopsOptionalSuggestionDAO.create(studentIdentifier, subject, courseNumber);
+    }
+    return hopsOptionalSuggestion;
+  }
+  
+  public void removeOptionalSuggestion(String studentIdentifier, String subject, Integer courseNumber) {
+    HopsOptionalSuggestion hopsOptionalSuggestion = hopsOptionalSuggestionDAO.findByStudentIdentifierAndSubjectAndCourseNumber(studentIdentifier, subject, courseNumber);
+    if (hopsOptionalSuggestion != null) {
+      hopsOptionalSuggestionDAO.delete(hopsOptionalSuggestion);
+    }
+  }
+  
   public List<HopsHistory> listHistoryByStudentIdentifier(String studentIdentifier, int firstResult, int maxResults) {
     List<HopsHistory> history = hopsHistoryDAO.listByStudentIdentifier(studentIdentifier, firstResult, maxResults);
     history.sort(Comparator.comparing(HopsHistory::getDate));
@@ -211,12 +242,12 @@ public class HopsController {
     hopsSuggestionDAO.delete(hopsSuggestion);
   }
   
-  public HopsSuggestion findSuggestionByStudentIdentifierAndSubjectAndCourseNumber(String studentIdentifier, String subject, Integer courseNumber) {
-    return hopsSuggestionDAO.findByStudentIdentifierAndSubjectAndCourseNumber(studentIdentifier, subject, courseNumber);
+  public HopsSuggestion findSuggestionByStudentIdentifierAndSubjectAndCourseNumberAndWorkspaceEntityId(String studentIdentifier, String subject, Integer courseNumber, Long workspaceEntityId) {
+    return hopsSuggestionDAO.findByStudentIdentifierAndSubjectAndCourseNumberAndWorkspaceEntityId(studentIdentifier, subject, courseNumber, workspaceEntityId);
   }
   
   public HopsSuggestion suggestWorkspace(String studentIdentifier, String subject, String type, Integer courseNumber, Long workspaceEntityId) {
-    HopsSuggestion hopsSuggestion = hopsSuggestionDAO.findByStudentIdentifierAndSubjectAndCourseNumber(studentIdentifier, subject, courseNumber);
+    HopsSuggestion hopsSuggestion = hopsSuggestionDAO.findByStudentIdentifierAndSubjectAndCourseNumberAndWorkspaceEntityId(studentIdentifier, subject, courseNumber, workspaceEntityId);
     if (hopsSuggestion != null) {
       hopsSuggestion = hopsSuggestionDAO.update(hopsSuggestion, studentIdentifier, subject, type, courseNumber, workspaceEntityId);
     }
@@ -226,8 +257,8 @@ public class HopsController {
     return hopsSuggestion;
   }
 
-  public void unsuggestWorkspace(String studentIdentifier, String subject, Integer courseNumber) {
-    HopsSuggestion hopsSuggestion = hopsSuggestionDAO.findByStudentIdentifierAndSubjectAndCourseNumber(studentIdentifier, subject, courseNumber);
+  public void unsuggestWorkspace(String studentIdentifier, String subject, Integer courseNumber, Long workspaceEntityId) {
+    HopsSuggestion hopsSuggestion = hopsSuggestionDAO.findByStudentIdentifierAndSubjectAndCourseNumberAndWorkspaceEntityId(studentIdentifier, subject, courseNumber, workspaceEntityId);
     if (hopsSuggestion != null) {
       hopsSuggestionDAO.delete(hopsSuggestion);
     }
