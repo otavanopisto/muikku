@@ -914,12 +914,14 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
               Ohjaajan ehdottama
             </div>
           </div>
-          <div className="hops-container__study-tool-indicator-container ">
-            <div className="hops-container__indicator-item hops-container__indicator-item--next"></div>
-            <div className="hops-container__indicator-item-label">
-              Ohjaajan seuraavaksi ehdottama
+          {props.user === "supervisor" && (
+            <div className="hops-container__study-tool-indicator-container ">
+              <div className="hops-container__indicator-item hops-container__indicator-item--next"></div>
+              <div className="hops-container__indicator-item-label">
+                Ohjaajan seuraavaksi ehdottama
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         <div className="hops__form-element-container hops__form-element-container--pad-upforwards swiper-no-swiping">

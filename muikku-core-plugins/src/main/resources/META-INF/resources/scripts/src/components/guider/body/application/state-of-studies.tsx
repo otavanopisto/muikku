@@ -418,6 +418,18 @@ class StateOfStudies extends React.Component<
                 </ApplicationSubPanel.Body>
               </ApplicationSubPanel>
             </ApplicationSubPanel>
+            <ApplicationSubPanel modifier="student-data-container">
+              <ApplicationSubPanel>
+                <ApplicationSubPanel.Header>
+                  Opintojen edistyminen
+                </ApplicationSubPanel.Header>
+                <ApplicationSubPanel.Body>
+                  <StudySuggestionMatrix
+                    studentId={this.props.guider.currentStudent.basic.id}
+                  />
+                </ApplicationSubPanel.Body>
+              </ApplicationSubPanel>
+            </ApplicationSubPanel>
           </>
         )}
       </>
