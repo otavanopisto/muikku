@@ -207,7 +207,7 @@ export interface LoadStudentDataTriggerType {
 /**
  * action creator type
  */
-export interface CreateContactEventTriggerType {
+export interface CreateContactLogEventTriggerType {
   (
     userEntityId: number,
     payload: {
@@ -223,7 +223,7 @@ export interface CreateContactEventTriggerType {
 /**
  * action creator type
  */
-export interface DeleteContactEventTriggerType {
+export interface DeleteContactLogEventTriggerType {
   (
     studentUserEntityId: number,
     contactLogEntryId: number,
@@ -234,7 +234,7 @@ export interface DeleteContactEventTriggerType {
 /**
  * action creator type
  */
-export interface EditContactEventTriggerType {
+export interface EditContactLogEventTriggerType {
   (
     userEntityId: number,
     contactLogEntryId: number,
@@ -251,7 +251,7 @@ export interface EditContactEventTriggerType {
 /**
  * action creator type
  */
-export interface CreateContactEventCommentTriggerType {
+export interface CreateContactLogEventCommentTriggerType {
   (
     userEntityId: number,
     contactLogEntryId: number,
@@ -266,7 +266,7 @@ export interface CreateContactEventCommentTriggerType {
 /**
  * action creator type
  */
-export interface DeleteContactEventCommentTriggerType {
+export interface DeleteContactLogEventCommentTriggerType {
   (
     studentUserEntityId: number,
     contactLogEntryId: number,
@@ -278,7 +278,7 @@ export interface DeleteContactEventCommentTriggerType {
 /**
  * action creator type
  */
-export interface EditContactEventCommentTriggerType {
+export interface EditContactLogEventCommentTriggerType {
   (
     userEntityId: number,
     contactLogEntryId: number,
@@ -430,7 +430,7 @@ export interface ToggleAllStudentsTriggerType {
 
 /**
  * toggleAllStudents thunk action creator
- * @returns a thunk function
+ * @returns a thunk function for toggling all students selection
  */
 const toggleAllStudents: ToggleAllStudentsTriggerType =
   function toggleAllStudents() {
@@ -443,7 +443,7 @@ const toggleAllStudents: ToggleAllStudentsTriggerType =
 /**
  * addFileToCurrentStudent thunk action creator
  * @param file file to be added
- * @returns thunk action
+ * @returns thunk action for adding a file to a student
  */
 const addFileToCurrentStudent: AddFileToCurrentStudentTriggerType =
   function addFileToCurrentStudent(file) {
@@ -456,7 +456,7 @@ const addFileToCurrentStudent: AddFileToCurrentStudentTriggerType =
 /**
  * removeFileFromCurrentStudent thunk action creator
  * @param file file to be removed
- * @returns a thunk function
+ * @returns a thunk function for removing a file from a student
  */
 const removeFileFromCurrentStudent: RemoveFileFromCurrentStudentTriggerType =
   function removeFileFromCurrentStudent(file) {
@@ -488,7 +488,7 @@ const removeFileFromCurrentStudent: RemoveFileFromCurrentStudentTriggerType =
 /**
  * loadStudents thunk action creator
  * @param filters filters to be applied
- * @returns a thunk function through helper
+ * @returns a thunk function through helper to load students
  */
 const loadStudents: LoadStudentsTriggerType = function loadStudents(filters) {
   return loadStudentsHelper.bind(this, filters, true);
@@ -496,7 +496,7 @@ const loadStudents: LoadStudentsTriggerType = function loadStudents(filters) {
 
 /**
  * loadMoreStudents thunk action creator
- * @returns a thunk function
+ * @returns a thunk function for loading more students
  */
 const loadMoreStudents: LoadMoreStudentsTriggerType =
   function loadMoreStudents() {
@@ -506,7 +506,7 @@ const loadMoreStudents: LoadMoreStudentsTriggerType =
 /**
  * addToGuiderSelectedStudents thunk action creator
  * @param student student to be added
- * @returns a thunk function
+ * @returns a thunk function for selecting a student
  */
 const addToGuiderSelectedStudents: AddToGuiderSelectedStudentsTriggerType =
   function addToGuiderSelectedStudents(student) {
@@ -519,7 +519,7 @@ const addToGuiderSelectedStudents: AddToGuiderSelectedStudentsTriggerType =
 /**
  * removeFromGuiderSelectedStudents thunk action creator
  * @param student student to be removed
- * @returns a thunk function
+ * @returns a thunk function for removing from student selection
  */
 const removeFromGuiderSelectedStudents: RemoveFromGuiderSelectedStudentsTriggerType =
   function removeFromGuiderSelectedStudents(student) {
@@ -532,7 +532,7 @@ const removeFromGuiderSelectedStudents: RemoveFromGuiderSelectedStudentsTriggerT
 /**
  * loadStudent thunk action creator
  * @param id student id
- * @returns a thunk function
+ * @returns a thunk function for loading the student data
  */
 const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
   return async (
@@ -741,7 +741,7 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
  * loadStudentHistory thunk action creator
  * @param id student id
  * @param forceLoad should the history load be forced
- * @returns a thunk function
+ * @returns a thunk function for loading the student history tab
  */
 const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
   id,
@@ -878,7 +878,7 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
  * loadStudentGuiderRelations thunk action creator
  * @param id student id
  * @param forceLoad should the guiderRelation load be forced
- * @returns a thunk function
+ * @returns a thunk function for loading guidance relations tab
  */
 const loadStudentGuiderRelations: LoadStudentDataTriggerType =
   function loadStudentGuiderRelations(id, forceLoad) {
@@ -948,15 +948,15 @@ const loadStudentGuiderRelations: LoadStudentDataTriggerType =
   };
 
 /**
- * createContactEvent thunk action creator
+ * createContactLogEvent thunk action creator
  * @param studentUserEntityId id for the student in subject
  * @param payload event data payload
  * @param onSuccess callback
  * @param onFail callback
- * @returns a thunk function
+ * @returns a thunk function for creating a contact log event
  */
-const createContactEvent: CreateContactEventTriggerType =
-  function createContactEvent(studentUserEntityId, payload, onSuccess, onFail) {
+const createContactLogEvent: CreateContactLogEventTriggerType =
+  function createContactLogEvent(studentUserEntityId, payload, onSuccess, onFail) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
@@ -1020,15 +1020,15 @@ const createContactEvent: CreateContactEventTriggerType =
   };
 
 /**
- * deleteContactEvent thunk action creator
+ * deleteContactLogEvent thunk action creator
  * @param studentUserEntityId id for the user in subject
  * @param contactLogEntryId contact log entry to be deleted
  * @param onSuccess callback
  * @param onFail callback
- * @returns a thunk function
+ * @returns a thunk function for deleting a contact log event
  */
-const deleteContactEvent: DeleteContactEventTriggerType =
-  function deleteContactEvent(
+const deleteContactLogEvent: DeleteContactLogEventTriggerType =
+  function deleteContactLogEvent(
     studentUserEntityId,
     contactLogEntryId,
     onSuccess,
@@ -1085,15 +1085,15 @@ const deleteContactEvent: DeleteContactEventTriggerType =
   };
 
 /**
- * editContactEvent thunk action creator
+ * editContactLogEvent thunk action creator
  * @param studentUserEntityId student user id
  * @param contactLogEntryId id of the edited contact log
  * @param payload edit payload
  * @param onSuccess callback
  * @param onFail callback
- * @returns a thunk function
+ * @returns a thunk function for editing a contact log event
  */
-const editContactEvent: EditContactEventTriggerType = function editContactEvent(
+const editContactLogEvent: EditContactLogEventTriggerType = function editContactLogEvent(
   studentUserEntityId,
   contactLogEntryId,
   payload,
@@ -1178,16 +1178,16 @@ const editContactEvent: EditContactEventTriggerType = function editContactEvent(
 };
 
 /**
- * createContactEventComment thunk action creator
+ * createContactLogEventComment thunk action creator
  * @param studentUserEntityId id for the user in subject
  * @param contactLogEntryId id for the parent entry
  * @param payload event data payload
  * @param onSuccess callback
  * @param onFail callback
- * @returns a thunk function
+ * @returns a thunk function for creating a contact log event comment
  */
-const createContactEventComment: CreateContactEventCommentTriggerType =
-  function createContactEventComment(
+const createContactLogEventComment: CreateContactLogEventCommentTriggerType =
+  function createContactLogEventComment(
     studentUserEntityId,
     contactLogEntryId,
     payload,
@@ -1278,16 +1278,16 @@ const createContactEventComment: CreateContactEventCommentTriggerType =
   };
 
 /**
- * deleteContactEventComment thunk action creator
+ * deleteContactLogEventComment thunk action creator
  * @param studentUserEntityId id for the user in subject
  * @param contactLogEntryId id of the parent entry
  * @param commentId id for the comment
  * @param onSuccess callback
  * @param onFail callback
- * @returns a thunk function
+ * @returns a thunk function for deleting a contact log event comment
  */
-const deleteContactEventComment: DeleteContactEventCommentTriggerType =
-  function deleteContactEventComment(
+const deleteContactLogEventComment: DeleteContactLogEventCommentTriggerType =
+  function deleteContactLogEventComment(
     studentUserEntityId,
     contactLogEntryId,
     commentId,
@@ -1346,17 +1346,17 @@ const deleteContactEventComment: DeleteContactEventCommentTriggerType =
   };
 
 /**
- * editContactEventComment thunk action creator
+ * editContactLogEventComment thunk action creator
  * @param studentUserEntityId id for the user in subject
  * @param contactLogEntryId id for the parent entry
  * @param commentId id for the comment to be edited
  * @param payload event data payload
  * @param onSuccess callback
  * @param onFail callback
- * @returns a thunk function
+ * @returns a thunk function for editing a contact log event
  */
-const editContactEventComment: EditContactEventCommentTriggerType =
-  function editContactEventComment(
+const editContactLogEventComment: EditContactLogEventCommentTriggerType =
+  function editContactLogEventComment(
     studentUserEntityId,
     contactLogEntryId,
     commentId,
@@ -1553,7 +1553,7 @@ async function addLabelToUserUtil(
 /**
  * addGuiderLabelToCurrentUser thunk action creator
  * @param label to be added
- * @returns a thunk function
+ * @returns a thunk function for adding labels to a user
  */
 const addGuiderLabelToCurrentUser: AddGuiderLabelToCurrentUserTriggerType =
   function addGuiderLabelToCurrentUser(label) {
@@ -1576,7 +1576,7 @@ const addGuiderLabelToCurrentUser: AddGuiderLabelToCurrentUserTriggerType =
 /**
  * removeGuiderLabelFromCurrentUser thunk action creator
  * @param label label to be removed
- * @returns a thunk function
+ * @returns a thunk function for removing the label
  */
 const removeGuiderLabelFromCurrentUser: RemoveGuiderLabelFromCurrentUserTriggerType =
   function removeGuiderLabelFromCurrentUser(label) {
@@ -1599,7 +1599,7 @@ const removeGuiderLabelFromCurrentUser: RemoveGuiderLabelFromCurrentUserTriggerT
 /**
  * addGuiderLabelToSelectedUsers thunk action creator
  * @param label label to be added
- * @returns a thunk function
+ * @returns a thunk function for adding a label
  */
 const addGuiderLabelToSelectedUsers: AddGuiderLabelToSelectedUsersTriggerType =
   function addGuiderLabelToSelectedUsers(label) {
@@ -1616,7 +1616,7 @@ const addGuiderLabelToSelectedUsers: AddGuiderLabelToSelectedUsersTriggerType =
 /**
  * removeGuiderLabelFromSelectedUsers thunk action creator
  * @param label to be added
- * @returns a thunk function
+ * @returns a thunk function for deleting a label
  */
 const removeGuiderLabelFromSelectedUsers: RemoveGuiderLabelFromSelectedUsersTriggerType =
   function removeGuiderLabelFromSelectedUsers(label) {
@@ -1639,7 +1639,7 @@ const removeGuiderLabelFromSelectedUsers: RemoveGuiderLabelFromSelectedUsersTrig
 
 /**
  *updateLabelFilters thunk action creator
- * @returns a thunk function
+ * @returns a thunk function for updating the label filters
  */
 const updateLabelFilters: UpdateLabelFiltersTriggerType =
   function updateLabelFilters() {
@@ -1674,7 +1674,7 @@ const updateLabelFilters: UpdateLabelFiltersTriggerType =
 
 /**
  * updateWorkspaceFilters thunk action creator
- * @returns a thunk function
+ * @returns a thunk function for updating the workspace filters
  */
 const updateWorkspaceFilters: UpdateWorkspaceFiltersTriggerType =
   function updateWorkspaceFilters() {
@@ -1712,7 +1712,7 @@ const updateWorkspaceFilters: UpdateWorkspaceFiltersTriggerType =
 
 /**
  * updateUserGroupFilters thunk action creator
- * @returns a thunk function
+ * @returns a thunk function for updating the usergroup filters
  */
 const updateUserGroupFilters: UpdateWorkspaceFiltersTriggerType =
   function updateUserGroupFilters() {
@@ -2057,12 +2057,12 @@ export {
   loadStudent,
   loadStudentHistory,
   loadStudentGuiderRelations,
-  createContactEvent,
-  deleteContactEvent,
-  editContactEvent,
-  createContactEventComment,
-  deleteContactEventComment,
-  editContactEventComment,
+  createContactLogEvent,
+  deleteContactLogEvent,
+  editContactLogEvent,
+  createContactLogEventComment,
+  deleteContactLogEventComment,
+  editContactLogEventComment,
   addToGuiderSelectedStudents,
   removeFromGuiderSelectedStudents,
   addGuiderLabelToCurrentUser,
