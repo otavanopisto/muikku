@@ -298,7 +298,7 @@ public class UserEntityController implements Serializable {
     EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(userEntity);
     return roleEntity == null || roleEntity.getArchetype() == EnvironmentRoleArchetype.STUDENT;
   }
-
+  
   public List<UserEntity> listUserEntities() {
     return userEntityDAO.listAll();
   }

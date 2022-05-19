@@ -7,24 +7,24 @@ import Button from "~/components/general/button";
 import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import "~/sass/elements/form.scss";
-import { AssessmentRequest } from "../../../@types/evaluation";
-import { EvaluationState } from "../../../reducers/main-function/evaluation/index";
+import { AssessmentRequest } from "~/@types/evaluation";
+import { EvaluationState } from "~/reducers/main-function/evaluation/index";
 import {
   UpdateNeedsReloadEvaluationRequests,
   updateNeedsReloadEvaluationRequests,
-} from "../../../actions/main-function/evaluation/evaluationActions";
+} from "~/actions/main-function/evaluation/evaluationActions";
 import {
   LoadEvaluationAssessmentRequest,
   loadEvaluationAssessmentRequestsFromServer,
-} from "../../../actions/main-function/evaluation/evaluationActions";
+} from "~/actions/main-function/evaluation/evaluationActions";
 import {
   LoadEvaluationAssessmentEvent,
   loadEvaluationAssessmentEventsFromServer,
-} from "../../../actions/main-function/evaluation/evaluationActions";
+} from "~/actions/main-function/evaluation/evaluationActions";
 import {
   ArchiveStudent,
   archiveStudent,
-} from "../../../actions/main-function/evaluation/evaluationActions";
+} from "~/actions/main-function/evaluation/evaluationActions";
 
 /**
  * ArchiveDialogProps

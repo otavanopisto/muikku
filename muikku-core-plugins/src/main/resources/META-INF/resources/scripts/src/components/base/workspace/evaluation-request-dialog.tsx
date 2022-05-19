@@ -43,7 +43,7 @@ class EvaluationRequestDialog extends React.Component<
 > {
   /**
    * constructor method
-   * @param props
+   * @param props props
    */
   constructor(props: EvaluationRequestDialogProps) {
     super(props);
@@ -58,7 +58,7 @@ class EvaluationRequestDialog extends React.Component<
 
   /**
    * updateMessage
-   * @param e
+   * @param e e
    */
   updateMessage(e: React.ChangeEvent<HTMLTextAreaElement>) {
     this.setState({ message: e.target.value });
@@ -66,7 +66,7 @@ class EvaluationRequestDialog extends React.Component<
 
   /**
    * request
-   * @param closeDialog
+   * @param closeDialog closeDialog
    */
   request(closeDialog: () => any) {
     this.setState({
@@ -140,7 +140,8 @@ class EvaluationRequestDialog extends React.Component<
     );
 
     /**
-     * @param closeDialog
+     * footer
+     * @param closeDialog closeDialog
      */
     const footer = (closeDialog: () => any) => (
       <div className="dialog__button-set">
@@ -182,7 +183,7 @@ class EvaluationRequestDialog extends React.Component<
 
 /**
  * mapStateToProps
- * @param state
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -193,8 +194,8 @@ function mapStateToProps(state: StateType) {
 }
 
 /**
- *
- * @param dispatch
+ * mapDispatchToProps
+ * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ requestAssessmentAtWorkspace }, dispatch);

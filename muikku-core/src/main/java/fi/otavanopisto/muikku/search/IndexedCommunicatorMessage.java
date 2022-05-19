@@ -9,9 +9,15 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import fi.otavanopisto.muikku.search.annotations.IndexId;
 import fi.otavanopisto.muikku.search.annotations.Indexable;
 
-@Indexable (name = "IndexedCommunicatorMessage")
+@Indexable (
+    indexName = IndexedCommunicatorMessage.INDEX_NAME,
+    typeName = IndexedCommunicatorMessage.TYPE_NAME
+)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class IndexedCommunicatorMessage {
+  
+  public static final String INDEX_NAME = "muikku";
+  public static final String TYPE_NAME = "IndexedCommunicatorMessage";
   
   public String getMessage() {
     return this.message;

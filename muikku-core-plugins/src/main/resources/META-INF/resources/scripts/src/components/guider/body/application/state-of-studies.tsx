@@ -110,9 +110,6 @@ class StateOfStudies extends React.Component<
     const IsStudentPartOfProperStudyProgram = (studyProgramName: string) => {
       switch (studyProgramName) {
         case "Nettilukio/yksityisopiskelu (aineopintoina)":
-        case "Nettilukio/yksityisopiskelu (tutkinto)":
-        case "Aineopiskelu/lukio":
-        case "Aineopiskelu/peruskoulu":
         case "Aineopiskelu/yo-tutkinto":
           return true;
         default:
@@ -237,23 +234,18 @@ class StateOfStudies extends React.Component<
             )}
           >
             <ApplicationSubPanelItem.Content>
-              {this.props.guider.currentStudent.emails.length ? (
-                this.props.guider.currentStudent.emails.map((email, i) => (
-                  <span
-                    key={email.address}
-                    className="application-sub-panel__single-entry"
-                  >
-                    {`${email.defaultAddress ? `*` : null} ${email.address} (
-                    ${email.type})`}
-                  </span>
-                ))
-              ) : (
-                <span>
-                  {this.props.i18n.text.get(
+              {this.props.guider.currentStudent.emails.length
+                ? this.props.guider.currentStudent.emails.map(
+                    (email, index) => (
+                      <React.Fragment key={index}>
+                        {email.defaultAddress ? `*` : null} {email.address} (
+                        {email.type})
+                      </React.Fragment>
+                    )
+                  )
+                : this.props.i18n.text.get(
                     "plugin.guider.user.details.label.unknown.email"
                   )}
-                </span>
-              )}
             </ApplicationSubPanelItem.Content>
           </ApplicationSubPanelItem>
         )}
@@ -264,23 +256,18 @@ class StateOfStudies extends React.Component<
             )}
           >
             <ApplicationSubPanelItem.Content>
-              {this.props.guider.currentStudent.phoneNumbers.length ? (
-                this.props.guider.currentStudent.phoneNumbers.map((phone) => (
-                  <span
-                    key={phone.number}
-                    className="application-sub-panel__single-entry"
-                  >
-                    {phone.defaultNumber ? `*` : null} {phone.number} (
-                    {phone.type})
-                  </span>
-                ))
-              ) : (
-                <span>
-                  {this.props.i18n.text.get(
+              {this.props.guider.currentStudent.phoneNumbers.length
+                ? this.props.guider.currentStudent.phoneNumbers.map(
+                    (phone, index) => (
+                      <React.Fragment key={index}>
+                        {phone.defaultNumber ? `*` : null} {phone.number} (
+                        {phone.type})
+                      </React.Fragment>
+                    )
+                  )
+                : this.props.i18n.text.get(
                     "plugin.guider.user.details.label.unknown.phoneNumber"
                   )}
-                </span>
-              )}
             </ApplicationSubPanelItem.Content>
           </ApplicationSubPanelItem>
         )}
@@ -303,24 +290,17 @@ class StateOfStudies extends React.Component<
             )}
           >
             <ApplicationSubPanelItem.Content>
-              {this.props.guider.currentStudent.usergroups.length ? (
-                this.props.guider.currentStudent.usergroups.map(
-                  (usergroup, index) => (
-                    <span
-                      key={usergroup.id}
-                      className="application-sub-panel__single-entry"
-                    >
-                      {usergroup.name + " "}
-                    </span>
+              {this.props.guider.currentStudent.usergroups.length
+                ? this.props.guider.currentStudent.usergroups.map(
+                    (usergroup, index) => (
+                      <React.Fragment key={index}>
+                        {usergroup.name}{" "}
+                      </React.Fragment>
+                    )
                   )
-                )
-              ) : (
-                <span>
-                  {this.props.i18n.text.get(
+                : this.props.i18n.text.get(
                     "plugin.guider.user.details.label.nostudentgroups"
                   )}
-                </span>
-              )}
             </ApplicationSubPanelItem.Content>
           </ApplicationSubPanelItem>
         )}
@@ -391,62 +371,55 @@ class StateOfStudies extends React.Component<
 
     return (
       <>
-        <ApplicationSubPanel modifier="guider-student-header">
-          {studentBasicHeader}
-          {this.props.guider.currentStudent.labels &&
-          this.props.guider.currentStudent.labels.length ? (
-            <ApplicationSubPanel.Body modifier="labels">
-              <div className="labels">{studentLabels}</div>
-            </ApplicationSubPanel.Body>
-          ) : null}
-        </ApplicationSubPanel>
-        <ApplicationSubPanel modifier="student-data-container">
-          <ApplicationSubPanel modifier="student-data-primary">
-            <ApplicationSubPanel>{studentBasicInfo}</ApplicationSubPanel>
+        {this.props.guider.currentStudentState === "LOADING" ? (
+          <ApplicationSubPanel>
+            <div className="loader-empty" />
           </ApplicationSubPanel>
+        ) : (
+          <>
+            <ApplicationSubPanel modifier="guider-student-header">
+              {studentBasicHeader}
+              {this.props.guider.currentStudent.labels &&
+              this.props.guider.currentStudent.labels.length ? (
+                <ApplicationSubPanel.Body modifier="labels">
+                  <div className="labels">{studentLabels}</div>
+                </ApplicationSubPanel.Body>
+              ) : null}
+            </ApplicationSubPanel>
+            <ApplicationSubPanel modifier="student-data-container">
+              <ApplicationSubPanel modifier="student-data-primary">
+                {studentBasicInfo}
+              </ApplicationSubPanel>
+              <ApplicationSubPanel modifier="student-data-secondary">
+                {this.props.guider.currentStudent.basic &&
+                IsStudentPartOfProperStudyProgram(
+                  this.props.guider.currentStudent.basic.studyProgrammeName
+                ) ? (
+                  <ApplicationSubPanel>
+                    <ApplicationSubPanel.Header>
+                      {this.props.i18n.text.get(
+                        "plugin.guider.user.details.purchases"
+                      )}
+                    </ApplicationSubPanel.Header>
+                    <ApplicationSubPanel.Body>
+                      <Ceepos />
+                    </ApplicationSubPanel.Body>
+                  </ApplicationSubPanel>
+                ) : null}
 
-          <ApplicationSubPanel modifier="student-data-secondary">
-            {this.props.guider.currentStudent.basic &&
-            IsStudentPartOfProperStudyProgram(
-              this.props.guider.currentStudent.basic.studyProgrammeName
-            ) ? (
-              <ApplicationSubPanel>
                 <ApplicationSubPanel.Header>
                   {this.props.i18n.text.get(
-                    "plugin.guider.user.details.purchases"
+                    "plugin.guider.user.details.workspaces"
                   )}
                 </ApplicationSubPanel.Header>
+
                 <ApplicationSubPanel.Body>
-                  <Ceepos />
+                  {studentWorkspaces}
                 </ApplicationSubPanel.Body>
               </ApplicationSubPanel>
-            ) : null}
-
-            <ApplicationSubPanel>
-              <ApplicationSubPanel.Header>
-                {this.props.i18n.text.get(
-                  "plugin.guider.user.details.workspaces"
-                )}
-              </ApplicationSubPanel.Header>
-              <ApplicationSubPanel.Body>
-                {studentWorkspaces}
-              </ApplicationSubPanel.Body>
             </ApplicationSubPanel>
-          </ApplicationSubPanel>
-        </ApplicationSubPanel>
-
-        <ApplicationSubPanel>
-          <ApplicationSubPanel.Header>
-            {this.props.i18n.text.get("plugin.guider.user.details.progress")}
-          </ApplicationSubPanel.Header>
-          {this.props.guider.currentStudent &&
-            this.props.guider.currentStudent.basic &&
-            this.props.guider.currentStudent.basic.id && (
-              <StudySuggestionMatrix
-                studentId={this.props.guider.currentStudent.basic.id}
-              />
-            )}
-        </ApplicationSubPanel>
+          </>
+        )}
       </>
     );
   }

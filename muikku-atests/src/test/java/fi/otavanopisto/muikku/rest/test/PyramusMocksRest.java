@@ -8,9 +8,10 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-
+import java.util.Set;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
@@ -23,6 +24,8 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import fi.otavanopisto.muikku.AbstractPyramusMocks;
 import fi.otavanopisto.pyramus.rest.model.ContactType;
 import fi.otavanopisto.pyramus.rest.model.Course;
+import fi.otavanopisto.pyramus.rest.model.CourseLength;
+import fi.otavanopisto.pyramus.rest.model.CourseModule;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMemberRole;
 import fi.otavanopisto.pyramus.rest.model.CourseStudent;
@@ -358,7 +361,8 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
         null,
         variables,
         tags,
-        false);
+        false,
+        null);
     
     String studentJson = objectMapper.writeValueAsString(student);
     
@@ -479,6 +483,18 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
     OffsetDateTime begin = OffsetDateTime.of(2000, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
     OffsetDateTime end = OffsetDateTime.of(2050, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
 
+    Set<CourseModule> courseModules = new HashSet<>();
+    Subject subject_ = new Subject(1L, null, null, null, null);
+    EducationalTimeUnit unit = new EducationalTimeUnit(1L, null, null, null, null);
+    CourseLength courseLength = new CourseLength(id, 1d, 45d, unit);
+    courseModules.add(new CourseModule(
+        id,                             // id
+        subject_,                       // subject
+        1,                              // courseNumber 
+        courseLength                    // courseLength
+      )
+    );
+    
     Course course = new Course(
         id,
         "testCourse",
@@ -486,7 +502,6 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
         created,
         "test course for testing",
         false,
-        1, 
        (long) 25,
        begin,
        end,
@@ -500,10 +515,7 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
        end,
        (long) 1,
        (long) 1,
-       (long) 1,
        null,
-       (double) 45,
-       (long) 1,
        (long) 1,
        (long) 1,
        (long) 1,
@@ -512,7 +524,8 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
        1L,
        false,
        1L, 
-       1L);
+       1L,
+       courseModules);
   
     String courseJson = objectMapper.writeValueAsString(course);
     

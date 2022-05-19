@@ -11,7 +11,7 @@
   height: calc(100% - 55px);
   margin: 55px 0 0;
   overflow: auto;
-  padding: 0 0 40px;
+  padding: 0 0 75px;
 
   @include breakpoint($breakpoint-desktop) {
     flex-direction: row;
@@ -124,21 +124,40 @@
   }
 }
 
-.evaluation-modal__content-buttonset {
-  align-items: center;
-  bottom: 10px;
+.evaluation-modal__content-footer {
+  background: $color-default;
+  border-top: 1px solid $color-default-separator-border;
+  bottom: 0;
   display: flex;
-  justify-content: center;
+  flex-flow: column nowrap;
   left: 0;
+  padding: 10px 0 5px;
   position: fixed;
   right: 0;
 
   @include breakpoint($breakpoint-desktop) {
+    background: transparent;
     bottom: unset;
+    box-shadow: none;
     left: unset;
     position: static;
     right: unset;
   }
+}
+
+.evaluation-modal__content-selector {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  margin: 0 0 5px;
+  width: 100%;
+}
+
+.evaluation-modal__content-buttonset {
+  align-items: center;
+  display: flex;
+  justify-content: center;
 }
 
 // Evaluation assessment events
@@ -566,4 +585,52 @@
   overflow: auto;
   overscroll-behavior: contain;
   padding: 10px;
+}
+
+.evaluation-modal__evaluate-drawer-row {
+  margin: 10px 0 15px;
+}
+
+.evaluation-modal__evaluate-drawer-row--payment-warning {
+  color: $color-fatal;
+  font-size: 1rem;
+}
+
+.evaluation-modal__evaluate-drawer-row--recording-warning {
+  font-size: 1rem;
+  justify-content: center;
+
+  .recording-warning {
+    color: $color-failed;
+    display: flex;
+    justify-content: center;
+  }
+}
+
+.evaluation-modal__evaluate-drawer-row--buttons {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
+.evaluation-modal__evaluate-drawer-row-label {
+  display: block;
+  font-weight: 600;
+  padding: 0 0 5px;
+}
+
+.evaluation-modal__evaluate-drawer-row-data {
+  align-items: flex-start;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+}
+
+.evaluation-modal__evaluate-drawer-row-item {
+  align-items: center;
+  display: flex;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  margin: 5px;
 }

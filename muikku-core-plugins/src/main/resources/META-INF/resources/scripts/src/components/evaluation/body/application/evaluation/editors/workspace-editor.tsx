@@ -15,7 +15,12 @@ import { cleanWorkspaceAndSupplementationDrafts } from "../../../../dialogs/dele
 import Button from "~/components/general/button";
 import promisify from "~/util/promisify";
 import mApi from "~/lib/mApi";
-import { BilledPrice, EvaluationEnum } from "~/@types/evaluation";
+import {
+  AssessmentRequest,
+  BilledPrice,
+  EvaluationEnum,
+  EvaluationWorkspaceSubject,
+} from "~/@types/evaluation";
 import { i18nType } from "~/reducers/base/i18n";
 import {
   UpdateNeedsReloadEvaluationRequests,
@@ -33,9 +38,11 @@ interface WorkspaceEditorProps {
   status: StatusType;
   evaluations: EvaluationState;
   locale: LocaleListType;
+  selectedAssessment: AssessmentRequest;
   type?: "new" | "edit";
   editorLabel?: string;
   eventId?: string;
+  workspaceSubjectToBeEvaluatedIdentifier: string;
   onSuccesfulSave?: () => void;
   onClose?: () => void;
   updateWorkspaceEvaluationToServer: UpdateWorkspaceEvaluation;
@@ -65,8 +72,6 @@ interface EvaluationPriceObject {
 
 /**
  * WorkspaceEditor
- * @param param0
- * @returns
  */
 class WorkspaceEditor extends SessionStateComponent<
   WorkspaceEditorProps,
@@ -82,19 +87,25 @@ class WorkspaceEditor extends SessionStateComponent<
      */
     super(props, `workspace-editor-${props.type ? props.type : "new"}`);
 
-    const {
-      evaluationAssessmentEvents,
-      evaluationSelectedAssessmentId,
-      basePrice,
-      evaluationGradeSystem,
-    } = props.evaluations;
+    const { evaluationAssessmentEvents, basePrice, evaluationGradeSystem } =
+      props.evaluations;
+
+    const { selectedAssessment, workspaceSubjectToBeEvaluatedIdentifier } =
+      props;
+
+    const { userEntityId, workspaceEntityId, subjects } = selectedAssessment;
 
     /**
      * When there is not existing event data we use only user id and workspace id as
      * draft id. There must be at least user id and workspace id, so if making changes to multiple workspace
      * that have same user evaluations, so draft won't class together
      */
-    let draftId = `${evaluationSelectedAssessmentId.userEntityId}-${evaluationSelectedAssessmentId.workspaceEntityId}`;
+    let draftId = `${userEntityId}-${workspaceEntityId}-${workspaceSubjectToBeEvaluatedIdentifier}`;
+
+    /**
+     * Workspace basePriceId
+     */
+    const basePriceId = subjects[0].subject && subjects[0].identifier;
 
     /**
      * If we have evaluation data or we have data and editing existing event
@@ -143,14 +154,14 @@ class WorkspaceEditor extends SessionStateComponent<
       /**
        * As default but + latest event id
        */
-      draftId = `${evaluationSelectedAssessmentId.userEntityId}-${evaluationSelectedAssessmentId.workspaceEntityId}-${eventId}`;
+      draftId = `${userEntityId}-${workspaceEntityId}-${workspaceSubjectToBeEvaluatedIdentifier}-${eventId}`;
 
       this.state = {
         ...this.getRecoverStoredState(
           {
             literalEvaluation: latestEvent.text,
             draftId,
-            basePriceFromServer: basePrice.data,
+            basePriceFromServer: basePrice.data[basePriceId],
             grade: `${usedGrade.dataSource}-${usedGrade.id}`,
           },
           draftId
@@ -163,7 +174,7 @@ class WorkspaceEditor extends SessionStateComponent<
           {
             literalEvaluation: "",
             draftId,
-            basePriceFromServer: basePrice.data,
+            basePriceFromServer: basePrice.data[basePriceId],
             grade: `${evaluationGradeSystem[0].grades[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`,
           },
           draftId
@@ -334,7 +345,23 @@ class WorkspaceEditor extends SessionStateComponent<
   };
 
   /**
-   * handleCKEditorChange
+   * combinationWorkspaceUsesSameSubject
+   *
+   * @param subjects subjects
+   * @returns boolean if combination workspace uses same subject twice
+   */
+  combinationWorkspaceUsesSameSubject = (
+    subjects: EvaluationWorkspaceSubject[]
+  ) => {
+    const allModuleSubjectIdentifiers = subjects.map(
+      (s) => s.subject && s.subject.identifier
+    );
+
+    return new Set(allModuleSubjectIdentifiers).size !== subjects.length;
+  };
+
+  /**
+   * Handles CKEditor changes
    * @param e e
    */
   handleCKEditorChange = (e: string) => {
@@ -342,7 +369,7 @@ class WorkspaceEditor extends SessionStateComponent<
   };
 
   /**
-   * handleSelectGradeChange
+   * Handles select grade changes
    * @param e e
    */
   handleSelectGradeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -350,7 +377,7 @@ class WorkspaceEditor extends SessionStateComponent<
   };
 
   /**
-   * handleSelectGradeChange
+   * Handles select price changes
    * @param e e
    */
   handleSelectPriceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -361,7 +388,7 @@ class WorkspaceEditor extends SessionStateComponent<
   };
 
   /**
-   * handleEvaluationSave
+   * Handles evaluation saving
    * @param e e
    */
   handleEvaluationSave = (
@@ -373,6 +400,7 @@ class WorkspaceEditor extends SessionStateComponent<
       status,
       onClose,
       onSuccesfulSave,
+      workspaceSubjectToBeEvaluatedIdentifier,
     } = this.props;
 
     this.setState({
@@ -408,6 +436,7 @@ class WorkspaceEditor extends SessionStateComponent<
             gradeIdentifier: grade,
             verbalAssessment: literalEvaluation,
             assessmentDate: new Date().getTime().toString(),
+            workspaceSubjectIdentifier: workspaceSubjectToBeEvaluatedIdentifier,
           },
           /**
            * onSuccess
@@ -465,6 +494,7 @@ class WorkspaceEditor extends SessionStateComponent<
             gradeIdentifier: grade,
             verbalAssessment: literalEvaluation,
             assessmentDate: latestEvent.date,
+            workspaceSubjectIdentifier: workspaceSubjectToBeEvaluatedIdentifier,
           },
           /**
            * onSuccess
@@ -517,6 +547,7 @@ class WorkspaceEditor extends SessionStateComponent<
           gradeIdentifier: grade,
           verbalAssessment: literalEvaluation,
           assessmentDate: new Date().getTime().toString(),
+          workspaceSubjectIdentifier: workspaceSubjectToBeEvaluatedIdentifier,
         },
         /**
          * onSuccess
@@ -545,7 +576,7 @@ class WorkspaceEditor extends SessionStateComponent<
   };
 
   /**
-   * handleDeleteEditorDraft
+   * Handles deleting drafts
    */
   handleDeleteEditorDraft = () => {
     const { evaluationAssessmentEvents, evaluationGradeSystem } =
@@ -556,12 +587,21 @@ class WorkspaceEditor extends SessionStateComponent<
       /**
        * Latest event data
        */
-      const latestEvent =
+      let latestEvent =
         evaluationAssessmentEvents.data[
           evaluationAssessmentEvents.data.length - 1
         ];
 
       if (type === "edit") {
+        /**
+         * If editing existing event, we need to find that specific event from event list by its' id
+         */
+        if (this.props.eventId) {
+          latestEvent = evaluationAssessmentEvents.data.find(
+            (eItem) => eItem.identifier === this.props.eventId
+          );
+        }
+
         /**
          * If editing we clear draft and set all back to default values from latest event
          * and if pricing enabled, existing price
@@ -643,15 +683,20 @@ class WorkspaceEditor extends SessionStateComponent<
     type === EvaluationEnum.EVALUATION_IMPROVED;
 
   /**
-   * hasGradedEvaluations
+   * Check if evaluation is graded
    * @returns boolean if there is previously graded evaluations
    */
   hasGradedEvaluations = () => {
     const { evaluationAssessmentEvents } = this.props.evaluations;
+    const { workspaceSubjectToBeEvaluatedIdentifier } = this.props;
 
     if (evaluationAssessmentEvents.data) {
       for (const event of evaluationAssessmentEvents.data) {
-        if (this.isGraded(event.type)) {
+        if (
+          event.workspaceSubjectIdentifier ===
+            workspaceSubjectToBeEvaluatedIdentifier &&
+          this.isGraded(event.type)
+        ) {
           return true;
         }
       }
@@ -669,7 +714,7 @@ class WorkspaceEditor extends SessionStateComponent<
    * @returns Array of price options
    */
   parsePriceOptions = (): EvaluationPriceObject[] | undefined => {
-    const { i18n, type } = this.props;
+    const { i18n, type, workspaceSubjectToBeEvaluatedIdentifier } = this.props;
     const { evaluationAssessmentEvents } = this.props.evaluations;
     let { basePriceFromServer } = this.state;
 
@@ -680,10 +725,11 @@ class WorkspaceEditor extends SessionStateComponent<
     /**
      * We want to get latest event data
      */
-    let latestEvent =
-      evaluationAssessmentEvents.data[
-        evaluationAssessmentEvents.data.length - 1
-      ];
+    let latestEvent = evaluationAssessmentEvents.data.find(
+      (event) =>
+        event.workspaceSubjectIdentifier ===
+        workspaceSubjectToBeEvaluatedIdentifier
+    );
 
     /**
      * If editing existing event, we need to find that specific event from event list by its' id
@@ -782,7 +828,7 @@ class WorkspaceEditor extends SessionStateComponent<
   };
 
   /**
-   * renderSelectOptions
+   * Creates select options
    * @returns List of options
    */
   renderSelectOptions = (): JSX.Element[] | undefined => {
@@ -807,6 +853,17 @@ class WorkspaceEditor extends SessionStateComponent<
    */
   render() {
     const { existingBilledPriceObject } = this.state;
+    const { selectedAssessment } = this.props;
+
+    const isCombinationWorkspace = selectedAssessment.subjects.length > 1;
+
+    let combinationPaymentWarning = false;
+
+    if (isCombinationWorkspace) {
+      combinationPaymentWarning = this.combinationWorkspaceUsesSameSubject(
+        selectedAssessment.subjects
+      );
+    }
 
     const options = this.renderSelectOptions();
 
@@ -864,27 +921,36 @@ class WorkspaceEditor extends SessionStateComponent<
           options.length > 0 &&
           this.state.existingBilledPriceObject &&
           this.props.type === "edit") ? (
-          <div className="form__row">
-            <div className="form-element">
-              <label htmlFor="workspaceEvaluationBilling">
-                {this.props.i18n.text.get(
-                  "plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingLabel"
-                )}
-              </label>
-              <select
-                id="workspaceEvaluationBilling"
-                className=" form-element__select"
-                onChange={this.handleSelectPriceChange}
-                value={this.state.selectedPriceOption}
-                disabled={billingPriceDisabled}
-              >
-                {options}
-              </select>
-            </div>
+          <div className="evaluation-modal__evaluate-drawer-row form-element">
+            <label
+              htmlFor="workspaceEvaluationBilling"
+              className="evaluation-modal__evaluate-drawer-row-label"
+            >
+              {this.props.i18n.text.get(
+                "plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingLabel"
+              )}
+            </label>
+            <select
+              id="workspaceEvaluationBilling"
+              className="form-element__select form-element__select--evaluation"
+              onChange={this.handleSelectPriceChange}
+              value={this.state.selectedPriceOption}
+              disabled={billingPriceDisabled}
+            >
+              {options}
+            </select>
           </div>
         ) : null}
 
-        <div className="form__buttons form__buttons--evaluation">
+        {combinationPaymentWarning && (
+          <div className="evaluation-modal__evaluate-drawer-row evaluation-modal__evaluate-drawer-row--payment-warning">
+            Huomio! Yhdistelmäopintojaksojen palkkiot määräytyvät eri tavalla
+            kuin muut palkkiot. Ilmoita Annukalle, että olet arvioinut
+            yhdistelmäopintojaksoa. Annukka pystyy korjaamaan palkkiot oikeiksi.
+          </div>
+        )}
+
+        <div className="evaluation-modal__evaluate-drawer-row evaluation-modal__evaluate-drawer-row--buttons">
           <Button
             buttonModifiers="evaluate-workspace"
             onClick={this.handleEvaluationSave}

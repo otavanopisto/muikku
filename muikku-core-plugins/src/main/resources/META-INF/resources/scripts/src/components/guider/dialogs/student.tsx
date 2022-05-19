@@ -278,7 +278,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     status: state.status,
-    currentStudentStatus: state.guider.currentState,
+    currentStudentStatus: state.guider.currentStudentState,
     guider: state.guider,
   };
 }
