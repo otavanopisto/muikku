@@ -35,6 +35,7 @@ import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistApproverRestModel;
+import fi.otavanopisto.muikku.schooldata.payload.WorklistBasePriceRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemBilledPriceRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemStateChangeRestModel;
@@ -478,7 +479,7 @@ public class WorklistRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
     
-    Double price = null;
+    WorklistBasePriceRestModel price = null;
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();

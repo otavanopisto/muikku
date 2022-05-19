@@ -29,7 +29,6 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceSettings;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserSignup;
-import fi.otavanopisto.muikku.schooldata.entity.CourseIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.Role;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
@@ -71,12 +70,6 @@ public class WorkspaceController {
 
   /* Workspace */
 
-  public Workspace createWorkspace(String schoolDataSource, String name, String description, WorkspaceType type,
-      String courseIdentifierIdentifier) {
-    return workspaceSchoolDataController.createWorkspace(schoolDataSource, name, description, type,
-        courseIdentifierIdentifier);
-  }
-
   public Workspace findWorkspace(WorkspaceEntity workspaceEntity) {
     return workspaceSchoolDataController.findWorkspace(workspaceEntity);
   }
@@ -97,10 +90,6 @@ public class WorkspaceController {
 
   public List<Workspace> listWorkspaces() {
     return workspaceSchoolDataController.listWorkspaces();
-  }
-
-  public List<Workspace> listWorkspacesByCourseIdentifier(CourseIdentifier courseIdentifier) {
-    return workspaceSchoolDataController.listWorkspacesByCourseIdentifier(courseIdentifier);
   }
 
   public List<Workspace> listWorkspaces(String schoolDataSource) {

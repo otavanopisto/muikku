@@ -17,11 +17,11 @@ import fi.otavanopisto.muikku.dao.workspace.WorkspaceEntityDAO;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
-import fi.otavanopisto.muikku.schooldata.entity.CourseIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceType;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser;
+import fi.otavanopisto.muikku.schooldata.payload.WorklistBasePriceRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemBilledPriceRestModel;
 
 public class WorkspaceSchoolDataController { 
@@ -44,19 +44,6 @@ public class WorkspaceSchoolDataController {
   
   /* Workspaces */
 
-  public Workspace createWorkspace(String schoolDataSourceIdentifier, String name, String description, WorkspaceType type, String courseIdentifierIdentifier) {
-    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSourceIdentifier);
-    
-    WorkspaceSchoolDataBridge workspaceBridge = getWorkspaceBridge(schoolDataSource);
-    if (workspaceBridge != null) {
-      return workspaceBridge.createWorkspace(name, description, type, courseIdentifierIdentifier);
-    } else {
-      logger.log(Level.SEVERE, "School Data Bridge not found: " + schoolDataSource);
-    }
-    
-    return null;
-  }
-  
   public Workspace findWorkspace(WorkspaceEntity workspaceEntity) {
     return findWorkspace(workspaceEntity.getDataSource(), workspaceEntity.getIdentifier());
   }
@@ -126,22 +113,6 @@ public class WorkspaceSchoolDataController {
     }
   }
 
-  public List<Workspace> listWorkspacesByCourseIdentifier(CourseIdentifier courseIdentifier) {
-    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(courseIdentifier.getSchoolDataSource());
-    if (schoolDataSource != null) {
-      WorkspaceSchoolDataBridge workspaceBridge = getWorkspaceBridge(schoolDataSource);
-      if (workspaceBridge != null) {
-        return workspaceBridge.listWorkspacesByCourseIdentifier(courseIdentifier.getIdentifier());
-      } else {
-        logger.log(Level.SEVERE, "School Data Bridge not found: " + courseIdentifier.getSchoolDataSource());
-      }
-    } else {
-      logger.log(Level.SEVERE, "School Data Source not found: " + courseIdentifier.getSchoolDataSource());
-    }
-    
-    return null;
-  }
-  
   /* Workspace Entities */
   
   public WorkspaceEntity findWorkspaceEntity(Workspace workspace) {
@@ -375,7 +346,7 @@ public class WorkspaceSchoolDataController {
     return null;
   }
   
-  public Double getWorkspaceBasePrice(WorkspaceEntity workspaceEntity) {
+  public WorklistBasePriceRestModel getWorkspaceBasePrice(WorkspaceEntity workspaceEntity) {
     WorkspaceSchoolDataBridge workspaceBridge = getWorkspaceBridge(workspaceEntity.getDataSource());
     return workspaceBridge.getWorkspaceBasePrice(workspaceEntity.getIdentifier());
   }

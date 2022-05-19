@@ -28,6 +28,7 @@ import fi.otavanopisto.muikku.search.SearchIndexUpdater;
 import fi.otavanopisto.muikku.search.annotations.Indexable;
 import fi.otavanopisto.muikku.search.annotations.IndexableFieldMultiField;
 import fi.otavanopisto.muikku.search.annotations.IndexableFieldOption;
+import fi.otavanopisto.muikku.search.annotations.IndexableSubObject;
 
 @ApplicationScoped
 public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
@@ -76,89 +77,127 @@ public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
       return;
     }
         
-    if (!indexExists()) {
-      createIndex();      
-    }
-    
     for (Indexable indexable : IndexableEntityVault.getEntities()) {
-      String propertyName = indexable.name();
+      String indexName = indexable.indexName();
+      
+      if (!indexExists(indexName)) {
+        createIndex(indexName);
+      }
+
+      String typeName = indexable.typeName();
+      
       Map<String, ElasticMappingProperty> properties = new HashMap<>();
 
-      if (StringUtils.isNotBlank(propertyName)) {
+      if (StringUtils.isNotBlank(typeName)) {
         IndexableFieldOption[] fieldOptions = indexable.options();
         if (fieldOptions != null) {
           for (IndexableFieldOption fieldOption : fieldOptions) {
-            switch (fieldOption.type()) {
-              case "multi_field":
-                if (StringUtils.isNotBlank(fieldOption.type())) {
-                  IndexableFieldMultiField[] multiFields = fieldOption.multiFields();
-                  Map<String, ElasticMappingPropertyOptionField> fields = null;
-
-                  if (multiFields != null && multiFields.length > 0) {
-                    fields = new HashMap<>();
-                    for (IndexableFieldMultiField multiField : multiFields) {
-                      fields.put(multiField.name(), new ElasticMappingPropertyOptionField(multiField.type(), multiField.index()));
-                    }
-                  }
-
-                  properties.put(fieldOption.name(), new ElasticMappingMultifieldProperty(fields));
+            TypedElasticMappingProperty property = fieldOptionToMapping(fieldOption);
+            if (property != null) {
+              properties.put(fieldOption.name(), property);
+            }
+          }
+        }
+        
+        IndexableSubObject[] subObjects = indexable.subObjects();
+        if (subObjects != null) {
+          for (IndexableSubObject subObject : subObjects) {
+            IndexableFieldOption[] subObjectOptions = subObject.options();
+            
+            if (subObjectOptions != null) {
+              Map<String, ElasticMappingProperty> subObjectProperties = new HashMap<>();
+              
+              for (IndexableFieldOption subObjectOption : subObject.options()) {
+                TypedElasticMappingProperty property = fieldOptionToMapping(subObjectOption);
+                if (property != null) {
+                  subObjectProperties.put(subObjectOption.name(), property);
                 }
-              break;
-              case "string":
-                properties.put(fieldOption.name(), new ElasticMappingStringProperty(fieldOption.index()));
-              break;
-              default:
-                logger.severe(String.format("Unknown field type %s", fieldOption.type()));
-              break;
+              }
+              
+              if (!subObjectProperties.isEmpty()) {
+                properties.put(subObject.name(), new ElasticMappingProperties(subObjectProperties));
+              }
             }
           }
         }
 
         if (!properties.isEmpty()) {
-          updateMapping(propertyName, new ElasticMappingProperties(properties));
+          updateMapping(indexName, typeName, new ElasticMappingProperties(properties));
         }
       }
     }
   }
+
+  private TypedElasticMappingProperty fieldOptionToMapping(IndexableFieldOption fieldOption) {
+    switch (fieldOption.type()) {
+      case "multi_field":
+        if (StringUtils.isNotBlank(fieldOption.type())) {
+          IndexableFieldMultiField[] multiFields = fieldOption.multiFields();
+          Map<String, ElasticMappingPropertyOptionField> fields = null;
+
+          if (multiFields != null && multiFields.length > 0) {
+            fields = new HashMap<>();
+            for (IndexableFieldMultiField multiField : multiFields) {
+              fields.put(multiField.name(), new ElasticMappingPropertyOptionField(multiField.type(), multiField.index()));
+            }
+          }
+
+          return new ElasticMappingMultifieldProperty(fields);
+        }
+      break;
+      case "string":
+        return new ElasticMappingStringProperty(fieldOption.index());
+      default:
+        logger.severe(String.format("Unknown field type %s", fieldOption.type()));
+      break;
+    }
+    
+    return null;
+  }
   
-  private void createIndex() {
+  private void createIndex(String indexName) {
+    logger.info(String.format("Creating elastic index %s", indexName));
     elasticClient
       .admin()
       .indices()
-      .prepareCreate("muikku")
+      .prepareCreate(indexName)
       .execute()
       .actionGet();
   }
 
-  private boolean indexExists() {
+  private boolean indexExists(String indexName) {
     return elasticClient
       .admin()
       .indices()
-      .prepareExists("muikku")
+      .prepareExists(indexName)
       .execute()
       .actionGet()
       .isExists();
   }
 
-  private void updateMapping(String propertyName, ElasticMappingProperties properties) {
+  private void updateMapping(String indexName, String typeName, ElasticMappingProperties properties) {
     try {
       Map<String, ElasticMappingProperties> mappings = new HashMap<>();
-      mappings.put(propertyName, properties);
+      mappings.put(typeName, properties);
       String mapping = new ObjectMapper()
+        .writerWithDefaultPrettyPrinter()
         .writeValueAsString(mappings);
-      
+
       elasticClient.admin().indices()
-          .preparePutMapping("muikku")
-          .setType(propertyName)
+          .preparePutMapping(indexName)
+          .setType(typeName)
           .setSource(mapping)
           .execute()
           .actionGet();
     } catch (IOException e) {
-      logger.severe("Failed to update ElasticSearch mappings");
+      logger.log(Level.SEVERE, "Failed to update ElasticSearch mappings", e);
     }
   }
 
-  public static class ElasticMappingProperties {
+  public abstract static class ElasticMappingProperty {
+  }
+
+  public static class ElasticMappingProperties extends ElasticMappingProperty {
 
     public ElasticMappingProperties(Map<String, ElasticMappingProperty> properties) {
       super();
@@ -172,9 +211,9 @@ public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
     private Map<String, ElasticMappingProperty> properties;
   }
   
-  public abstract static class ElasticMappingProperty {
+  public abstract static class TypedElasticMappingProperty extends ElasticMappingProperty {
 
-    public ElasticMappingProperty(String type) {
+    public TypedElasticMappingProperty(String type) {
       this.type = type;
     }
     
@@ -185,7 +224,7 @@ public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
     private String type;
   }
 
-  public static class ElasticMappingStringProperty extends ElasticMappingProperty {
+  public static class ElasticMappingStringProperty extends TypedElasticMappingProperty {
 
     public ElasticMappingStringProperty(String index) {
       super("string");
@@ -199,7 +238,7 @@ public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
     private String index;
   }
   
-  public static class ElasticMappingMultifieldProperty extends ElasticMappingProperty {
+  public static class ElasticMappingMultifieldProperty extends TypedElasticMappingProperty {
 
     public ElasticMappingMultifieldProperty(Map<String, ElasticMappingPropertyOptionField> fields) {
       super("multi_field");
@@ -240,7 +279,7 @@ public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
   }
 
   @Override
-  public void addOrUpdateIndex(String typeName, Map<String, Object> entity) {
+  public void addOrUpdateIndex(String indexName, String typeName, Map<String, Object> entity) {
     ObjectMapper mapper = new ObjectMapper();
     mapper.registerModule(new JSR310Module());
     
@@ -249,16 +288,16 @@ public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
       json = mapper.writeValueAsString(entity);
       String id = entity.get("id").toString();
       @SuppressWarnings("unused")
-      IndexResponse response = elasticClient.prepareIndex("muikku", typeName, id).setSource(json).execute().actionGet();
+      IndexResponse response = elasticClient.prepareIndex(indexName, typeName, id).setSource(json).execute().actionGet();
     } catch (IOException e) {
       logger.log(Level.WARNING, "Adding to index failed because of exception", e);
     }
   }
 
   @Override
-  public void deleteFromIndex(String typeName, String id) {
+  public void deleteFromIndex(String indexName, String typeName, String id) {
     @SuppressWarnings("unused")
-    DeleteResponse response = elasticClient.prepareDelete("muikku", typeName, id).execute().actionGet();
+    DeleteResponse response = elasticClient.prepareDelete(indexName, typeName, id).execute().actionGet();
   }
 
   @Override

@@ -15,13 +15,12 @@ import {
 import { UserFileType, UserWithSchoolDataType } from "~/reducers/user-index";
 import {
   WorkspaceType,
-  WorkspaceStudentAssessmentStateType,
-  WorkspaceStudentActivityType,
   WorkspaceJournalListType,
   MaterialContentNodeType,
   MaterialEvaluationType,
   MaterialAssignmentType,
   MaterialCompositeRepliesType,
+  WorkspaceActivityType,
 } from "~/reducers/workspaces";
 
 export type UPDATE_RECORDS_ALL_STUDENT_USERS_DATA = SpecificActionType<
@@ -199,18 +198,12 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
             //Now we need to get into one by one workspace per that specific user
             await Promise.all(
               workspaceSet.map(async (workspace) => {
-                workspace.studentAssessmentState = <
-                  WorkspaceStudentAssessmentStateType
-                >await promisify(
-                  mApi().workspace.workspaces.students.assessmentstate.read(
-                    workspace.id,
-                    user.id
-                  ),
-                  "callback"
-                )();
-                workspace.studentActivity = <WorkspaceStudentActivityType>(
+                workspace.activity = <WorkspaceActivityType>(
                   await promisify(
-                    mApi().guider.workspaces.activity.read(workspace.id),
+                    mApi().workspace.workspaces.students.activity.read(
+                      workspace.id,
+                      getState().status.userSchoolDataIdentifier
+                    ),
                     "callback"
                   )()
                 );
@@ -414,22 +407,7 @@ const setCurrentStudentUserViewAndWorkspace: SetCurrentStudentUserViewAndWorkspa
               if (!wasFoundInMemory) {
                 workspace = <WorkspaceType>(
                   await promisify(
-                    mApi().workspace.workspaces.read(workspaceId),
-                    "callback"
-                  )()
-                );
-                workspace.studentAssessmentState = <
-                  WorkspaceStudentAssessmentStateType
-                >await promisify(
-                  mApi().workspace.workspaces.students.assessmentstate.read(
-                    workspace.id,
-                    userId
-                  ),
-                  "callback"
-                )();
-                workspace.studentActivity = <WorkspaceStudentActivityType>(
-                  await promisify(
-                    mApi().guider.workspaces.activity.read(workspace.id),
+                    mApi().records.workspaces.read(workspaceId),
                     "callback"
                   )()
                 );

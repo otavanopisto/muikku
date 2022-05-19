@@ -40,15 +40,50 @@ export type WorkspaceAssessementStateType =
   | "incomplete";
 
 /**
+ * Assessment
+ */
+export interface Assessment {
+  date: string;
+  state: WorkspaceAssessementStateType;
+  grade: string;
+  text: string;
+  workspaceSubjectIdentifier: string | null;
+}
+
+/**
+ * WorkspaceActivityType
+ */
+export interface WorkspaceActivityType {
+  assessmentState: Assessment[];
+  evaluablesAnswered: number;
+  evaluablesAnsweredLastDate: string;
+  evaluablesDonePercent: number;
+  evaluablesFailed: number;
+  evaluablesFailedLastDate?: string;
+  evaluablesIncomplete: number;
+  evaluablesIncompleteLastDate?: string;
+  evaluablesPassed: number;
+  evaluablesPassedLastDate?: string;
+  evaluablesSubmitted: number;
+  evaluablesSubmittedLastDate?: string;
+  evaluablesTotal: number;
+  evaluablesUnanswered: number;
+  exercisesAnswered: number;
+  exercisesAnsweredLastDate: string;
+  exercisesDonePercent: number;
+  exercisesTotal: number;
+  exercisesUnanswered: number;
+  journalEntryCount: number;
+  lastJournalEntry?: string;
+  lastVisit?: string;
+  numVisits: number;
+}
+
+/**
  * WorkspaceStudentActivityType
  */
 export interface WorkspaceStudentActivityType {
-  assessmentState: {
-    date: string;
-    state: WorkspaceAssessementStateType;
-    grade: string;
-    text: string;
-  };
+  assessmentState: Assessment;
   evaluablesAnswered: number;
   evaluablesAnsweredLastDate: string;
   evaluablesDonePercent: number;
@@ -186,6 +221,37 @@ export interface WorkspaceAssessmentRequestType {
 }
 
 /**
+ * WorkspaceSubjectType
+ */
+export interface WorkspaceSubjectType {
+  code: string;
+  identifier: string;
+  name: string;
+  schoolDataSource: string;
+}
+
+/**
+ * WorkspaceCourseLengthSymbolType
+ */
+export interface WorkspaceCourseLengthSymbolType {
+  id: string;
+  name: string;
+  schoolDataSource: string;
+  symbol: string;
+}
+
+/**
+ * WorkspaceSubject
+ */
+export interface WorkspaceSubject {
+  identifier: string;
+  subject?: WorkspaceSubjectType;
+  courseNumber?: number;
+  courseLength?: string;
+  courseLengthSymbol?: WorkspaceCourseLengthSymbolType;
+}
+
+/**
  * WorkspaceAdditionalInfoType
  */
 export interface WorkspaceAdditionalInfoType {
@@ -194,19 +260,6 @@ export interface WorkspaceAdditionalInfoType {
   viewLink: string;
   workspaceTypeId?: string;
   workspaceType?: string;
-  courseLengthSymbol?: {
-    id: string;
-    name: string;
-    schoolDataSource: string;
-    symbol: string;
-  };
-  courseLength?: string;
-  subject?: {
-    code: string;
-    identifier: string;
-    name: string;
-    schoolDataSource: string;
-  };
   educationType?: {
     identifier: {
       dataSource: string;
@@ -215,6 +268,7 @@ export interface WorkspaceAdditionalInfoType {
     name: string;
     schoolDataSource: string;
   };
+  subjects: WorkspaceSubject[];
 }
 
 /**
@@ -303,7 +357,6 @@ export interface WorkspaceType {
   nameExtension?: string | null;
   numVisits: number;
   published: boolean;
-  subjectIdentifier: string | number;
   urlName: string;
   chatStatus?: WorkspaceChatStatusType;
   //These are usually part of the workspace but don't appear in certain occassions
@@ -314,11 +367,16 @@ export interface WorkspaceType {
   isCourseMember?: boolean;
   educationTypeName?: string;
 
+  /**
+   * aka "modules", always contains at least one or more if it is combination workspace
+   */
+  subjects?: WorkspaceSubject[];
+
   //These are optional addons, and are usually not available
+  activity?: WorkspaceActivityType;
   studentActivity?: WorkspaceStudentActivityType;
   forumStatistics?: WorkspaceForumStatisticsType;
   studentAssessments?: WorkspaceStudentAssessmentsType;
-  studentAssessmentState?: WorkspaceStudentAssessmentStateType;
   activityStatistics?: WorkspaceActivityStatisticsType;
   assessmentRequests?: Array<WorkspaceAssessmentRequestType>;
   additionalInfo?: WorkspaceAdditionalInfoType;
@@ -662,16 +720,7 @@ export interface MaterialEvaluationType {
 
 export type MaterialContentNodeListType = Array<MaterialContentNodeType>;
 
-/**
- * processWorkspaceToHaveNewAssessmentStateAndDate
- * @param id id
- * @param assessmentState assessmentState
- * @param date date
- * @param assessmentRequestObject assessmentRequestObject
- * @param deleteAssessmentRequestObject deleteAssessmentRequestObject
- * @param workspace workspace
- */
-function processWorkspaceToHaveNewAssessmentStateAndDate(
+/* function processWorkspaceToHaveNewAssessmentStateAndDate(
   id: number,
   assessmentState: WorkspaceAssessementStateType,
   date: string,
@@ -679,7 +728,8 @@ function processWorkspaceToHaveNewAssessmentStateAndDate(
   deleteAssessmentRequestObject: boolean,
   workspace: WorkspaceType
 ) {
-  const replacement =
+
+  let replacement =
     workspace && workspace.id === id ? { ...workspace } : workspace;
   if (replacement && replacement.id === id) {
     if (replacement.studentActivity) {
@@ -717,7 +767,7 @@ function processWorkspaceToHaveNewAssessmentStateAndDate(
     }
   }
   return replacement;
-}
+} */
 
 /**
  * workspaces
@@ -800,7 +850,23 @@ export default function workspaces(
     return Object.assign({}, state, {
       currentWorkspace: <WorkspaceType>action.payload,
     });
-  } else if (action.type === "UPDATE_WORKSPACE_ASSESSMENT_STATE") {
+  } else if (action.type === "UPDATE_CURRENT_WORKSPACE_ACTIVITY") {
+    return Object.assign({}, state, {
+      currentWorkspace: {
+        ...state.currentWorkspace,
+        activity: action.payload,
+      },
+    });
+  } else if (action.type === "UPDATE_CURRENT_WORKSPACE_ASESSMENT_REQUESTS") {
+    return Object.assign({}, state, {
+      currentWorkspace: {
+        ...state.currentWorkspace,
+        assessmentRequests: action.payload,
+      },
+    });
+  }
+  // Will be changed once module spefic assessment request are implemented
+  /* else if (action.type === "UPDATE_WORKSPACE_ASSESSMENT_STATE") {
     return Object.assign({}, state, {
       currentWorkspace: processWorkspaceToHaveNewAssessmentStateAndDate(
         action.payload.workspace.id,
@@ -830,7 +896,8 @@ export default function workspaces(
         )
       ),
     });
-  } else if (
+  } */
+  else if (
     action.type === "UPDATE_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES"
   ) {
     return Object.assign({}, state, {
