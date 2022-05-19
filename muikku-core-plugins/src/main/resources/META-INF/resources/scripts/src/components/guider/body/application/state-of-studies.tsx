@@ -215,18 +215,18 @@ class StateOfStudies extends React.Component<
             )}
           >
             <ApplicationSubPanelItem.Content>
-              <span>
-                {this.props.guider.currentStudent.emails.length
-                  ? this.props.guider.currentStudent.emails.map((email) => (
-                      <>
+              {this.props.guider.currentStudent.emails.length
+                ? this.props.guider.currentStudent.emails.map(
+                    (email, index) => (
+                      <React.Fragment key={index}>
                         {email.defaultAddress ? `*` : null} {email.address} (
                         {email.type})
-                      </>
-                    ))
-                  : this.props.i18n.text.get(
-                      "plugin.guider.user.details.label.unknown.email"
-                    )}
-              </span>
+                      </React.Fragment>
+                    )
+                  )
+                : this.props.i18n.text.get(
+                    "plugin.guider.user.details.label.unknown.email"
+                  )}
             </ApplicationSubPanelItem.Content>
           </ApplicationSubPanelItem>
         )}
@@ -237,20 +237,18 @@ class StateOfStudies extends React.Component<
             )}
           >
             <ApplicationSubPanelItem.Content>
-              <span>
-                {this.props.guider.currentStudent.phoneNumbers.length
-                  ? this.props.guider.currentStudent.phoneNumbers.map(
-                      (phone) => (
-                        <>
-                          {phone.defaultNumber ? `*` : null} {phone.number} (
-                          {phone.type})
-                        </>
-                      )
+              {this.props.guider.currentStudent.phoneNumbers.length
+                ? this.props.guider.currentStudent.phoneNumbers.map(
+                    (phone, index) => (
+                      <React.Fragment key={index}>
+                        {phone.defaultNumber ? `*` : null} {phone.number} (
+                        {phone.type})
+                      </React.Fragment>
                     )
-                  : this.props.i18n.text.get(
-                      "plugin.guider.user.details.label.unknown.phoneNumber"
-                    )}
-              </span>
+                  )
+                : this.props.i18n.text.get(
+                    "plugin.guider.user.details.label.unknown.phoneNumber"
+                  )}
             </ApplicationSubPanelItem.Content>
           </ApplicationSubPanelItem>
         )}
@@ -273,15 +271,17 @@ class StateOfStudies extends React.Component<
             )}
           >
             <ApplicationSubPanelItem.Content>
-              <span>
-                {this.props.guider.currentStudent.usergroups.length
-                  ? this.props.guider.currentStudent.usergroups.map(
-                      (usergroup, index) => usergroup.name + " "
+              {this.props.guider.currentStudent.usergroups.length
+                ? this.props.guider.currentStudent.usergroups.map(
+                    (usergroup, index) => (
+                      <React.Fragment key={index}>
+                        {usergroup.name}{" "}
+                      </React.Fragment>
                     )
-                  : this.props.i18n.text.get(
-                      "plugin.guider.user.details.label.nostudentgroups"
-                    )}
-              </span>
+                  )
+                : this.props.i18n.text.get(
+                    "plugin.guider.user.details.label.nostudentgroups"
+                  )}
             </ApplicationSubPanelItem.Content>
           </ApplicationSubPanelItem>
         )}

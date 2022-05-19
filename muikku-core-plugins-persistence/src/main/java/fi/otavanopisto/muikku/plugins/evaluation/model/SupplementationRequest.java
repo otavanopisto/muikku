@@ -7,19 +7,20 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
 @Entity
 @Table (
-  uniqueConstraints = {
-    @UniqueConstraint (columnNames = { "studentEntityId", "workspaceEntityId" }),
-    @UniqueConstraint (columnNames = { "studentEntityId", "workspaceMaterialId" })
-  }    
+  indexes = {
+    @Index ( name = "sr_student_workspace", columnList = "studentEntityId, workspaceEntityId" ),
+    @Index ( name = "sr_student_workspace_subject", columnList = "studentEntityId, workspaceEntityId, workspaceSubjectIdentifier" ),
+    @Index ( name = "sr_student_material", columnList = "studentEntityId, workspaceMaterialId" )
+  }
 )
 public class SupplementationRequest {
 
@@ -87,6 +88,14 @@ public class SupplementationRequest {
     this.archived = archived;
   }
 
+  public String getWorkspaceSubjectIdentifier() {
+    return workspaceSubjectIdentifier;
+  }
+
+  public void setWorkspaceSubjectIdentifier(String workspaceSubjectIdentifier) {
+    this.workspaceSubjectIdentifier = workspaceSubjectIdentifier;
+  }
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -100,6 +109,8 @@ public class SupplementationRequest {
   private Long studentEntityId;
 
   private Long workspaceEntityId;
+  
+  private String workspaceSubjectIdentifier;
   
   private Long workspaceMaterialId;
 

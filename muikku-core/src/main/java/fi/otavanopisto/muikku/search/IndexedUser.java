@@ -12,7 +12,8 @@ import fi.otavanopisto.muikku.search.annotations.IndexableFieldMultiField;
 import fi.otavanopisto.muikku.search.annotations.IndexableFieldOption;
 
 @Indexable (
-  name = "User",
+  indexName = IndexedUser.INDEX_NAME,
+  typeName = IndexedUser.TYPE_NAME,
   options = {
     @IndexableFieldOption (
       name = "email",
@@ -31,6 +32,9 @@ import fi.otavanopisto.muikku.search.annotations.IndexableFieldOption;
 )
 public class IndexedUser {
 
+  public static final String INDEX_NAME = "muikku";
+  public static final String TYPE_NAME = "User";
+  
   public IndexedUser() {
   }
 

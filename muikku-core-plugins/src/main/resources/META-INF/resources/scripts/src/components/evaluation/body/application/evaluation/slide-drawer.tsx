@@ -23,6 +23,7 @@ const defaultProps = {
 
 /**
  * SlideDrawer
+ *
  * @param props props
  * @returns JSX.Element
  */

@@ -206,13 +206,9 @@ const ApplicationSubPanelItemData: React.FC<SubPanelItemDataProps> = (
           : ""
       }`}
     >
-      {React.Children.count(props.children) > 1 ? (
-        props.children
-      ) : (
-        <span className="application-sub-panel__single-entry">
-          {props.children}
-        </span>
-      )}
+      {React.Children.map(props.children, (child) => (
+        <span className="application-sub-panel__single-entry">{child}</span>
+      ))}
     </div>
   </div>
 );

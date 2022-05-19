@@ -19,9 +19,11 @@ public interface SearchProvider {
   public void deinit();
   
   public WorkspaceSearchBuilder searchWorkspaces();
-  public SearchResult searchWorkspaces(String schoolDataSource, List<String> subjects, List<String> identifiers, List<SchoolDataIdentifier> educationTypeIdentifiers, List<SchoolDataIdentifier> curriculumIdentifiers, 
+  public SearchResults<List<IndexedWorkspace>> searchIndexedWorkspaces(List<SchoolDataIdentifier> subjects, List<SchoolDataIdentifier> identifiers, List<SchoolDataIdentifier> educationTypeIdentifiers, List<SchoolDataIdentifier> curriculumIdentifiers, 
       Collection<OrganizationRestriction> organizationRestrictions, String freeText, Collection<WorkspaceAccess> accesses, SchoolDataIdentifier accessUser, int start, int maxResults, List<Sort> sorts);
-  public SearchResult searchWorkspaces(String schoolDataSource, String subject, int courseNumber);
+  public SearchResult searchWorkspaces(List<SchoolDataIdentifier> subjects, List<SchoolDataIdentifier> identifiers, List<SchoolDataIdentifier> educationTypeIdentifiers, List<SchoolDataIdentifier> curriculumIdentifiers, 
+      Collection<OrganizationRestriction> organizationRestrictions, String freeText, Collection<WorkspaceAccess> accesses, SchoolDataIdentifier accessUser, int start, int maxResults, List<Sort> sorts);
+  public SearchResult searchWorkspaces(SchoolDataIdentifier subjectIdentifier, int courseNumber);
   public SearchResult findWorkspace(SchoolDataIdentifier identifier); 
   
   public CommunicatorMessageSearchBuilder searchCommunicatorMessages();

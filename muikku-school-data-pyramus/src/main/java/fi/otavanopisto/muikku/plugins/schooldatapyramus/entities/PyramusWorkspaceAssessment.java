@@ -8,7 +8,7 @@ import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
 
 public class PyramusWorkspaceAssessment implements WorkspaceAssessment {
   
-  public PyramusWorkspaceAssessment(String identifier, String workSpaceUserIdentifier, String assessingUserIdentifier, String gradeIdentifier, String gradingScaleIdentifier,
+  public PyramusWorkspaceAssessment(String identifier, SchoolDataIdentifier workspaceSubjectIdentifier, String workSpaceUserIdentifier, String assessingUserIdentifier, String gradeIdentifier, String gradingScaleIdentifier,
       String verbalAssessment, Date date, Boolean passing) {
     super();
     this.identifier = new SchoolDataIdentifier(identifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
@@ -16,6 +16,7 @@ public class PyramusWorkspaceAssessment implements WorkspaceAssessment {
     this.assessingUserIdentifier = new SchoolDataIdentifier(assessingUserIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
     this.gradeIdentifier = new SchoolDataIdentifier(gradeIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
     this.gradingScaleIdentifier = new SchoolDataIdentifier(gradingScaleIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
+    this.workspaceSubjectIdentifier = workspaceSubjectIdentifier;
     this.verbalAssessment = verbalAssessment;
     this.date = date;
     this.passing = passing;
@@ -66,13 +67,18 @@ public class PyramusWorkspaceAssessment implements WorkspaceAssessment {
     return passing;
   }
 
+  @Override
+  public SchoolDataIdentifier getWorkspaceSubjectIdentifier() {
+    return workspaceSubjectIdentifier;
+  }
+  
   private SchoolDataIdentifier identifier;
   private SchoolDataIdentifier workSpaceUserIdentifier;
   private SchoolDataIdentifier assessingUserIdentifier;
   private SchoolDataIdentifier gradeIdentifier;
   private SchoolDataIdentifier gradingScaleIdentifier;
+  private SchoolDataIdentifier workspaceSubjectIdentifier;
   private String verbalAssessment;
   private Date date;
   private Boolean passing;
-  
 }

@@ -36,6 +36,10 @@ public class CourseMetaController {
   
   /* Subjects */
 
+  public Subject findSubject(SchoolDataIdentifier subjectIdentifier) {
+    return findSubject(subjectIdentifier.getDataSource(), subjectIdentifier.getIdentifier());
+  }
+
   public Subject findSubject(String schoolDataSource, String identifier) {
     SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
     if (dataSource != null) {
@@ -111,6 +115,10 @@ public class CourseMetaController {
   
   /* CourseLenthUnit */
   
+  public CourseLengthUnit findCourseLengthUnit(SchoolDataIdentifier courseLengthUnitIdentifier) {
+    return findCourseLengthUnit(courseLengthUnitIdentifier.getDataSource(), courseLengthUnitIdentifier.getIdentifier());
+  }
+  
   public CourseLengthUnit findCourseLengthUnit(String schoolDataSource, String identifier) {
     SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
     if (dataSource != null) {
@@ -152,34 +160,6 @@ public class CourseMetaController {
       return findCourseIdentifier(dataSource, identifier);
     } else {
       logger.log(Level.SEVERE, "School Data Source could not be found by identifier:  " + schoolDataSource);
-    }
-
-    return null;
-  }
-  
-  public List<CourseIdentifier> listCourseIdentifiers() {
-    List<CourseIdentifier> result = new ArrayList<>();
-    
-    for (CourseMetaSchoolDataBridge courseMetaBridge : getCourseMetaBridges()) {
-      try {
-        result.addAll(courseMetaBridge.listCourseIdentifiers());
-      } catch (SchoolDataBridgeInternalException e) {
-        logger.log(Level.SEVERE, "School Data Bridge reported a problem while listing course identifiers", e);
-      } 
-    }
-
-    return result;
-  }
-  
-  public List<CourseIdentifier> listCourseIdentifiersBySubject(Subject subject) {
-    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(subject.getSchoolDataSource());
-    if (schoolDataSource != null) {
-      CourseMetaSchoolDataBridge schoolDataBridge = getCourseMetaBridge(schoolDataSource);
-      if (schoolDataBridge != null) {
-        return schoolDataBridge.listCourseIdentifiersBySubject(subject.getIdentifier());
-      } else {
-        logger.log(Level.SEVERE, "School Data Bridge not found: " + schoolDataSource.getIdentifier());
-      }
     }
 
     return null;

@@ -216,7 +216,7 @@ public class CoursePickerRESTService extends PluginRESTService {
   @RESTPermitUnimplemented
   public Response listWorkspaces(
         @QueryParam("q") String searchString,
-        @QueryParam("subjects") List<String> subjects,
+        @QueryParam("subjects") List<String> subjectIds,
         @QueryParam("educationTypes") List<String> educationTypeIds,
         @QueryParam("curriculums") List<String> curriculumIds,
         @QueryParam("organizations") List<String> organizationIds,
@@ -234,8 +234,7 @@ public class CoursePickerRESTService extends PluginRESTService {
     boolean doMinVisitFilter = minVisits != null;
     UserEntity userEntity = myWorkspaces ? sessionController.getLoggedUserEntity() : null;
     List<WorkspaceEntity> workspaceEntities = null;
-    String schoolDataSourceFilter = null;
-    List<String> workspaceIdentifierFilters = null;
+    List<SchoolDataIdentifier> workspaceIdentifierFilters = null;
     
     if (doMinVisitFilter) {
       if (userEntity != null) {
@@ -277,11 +276,7 @@ public class CoursePickerRESTService extends PluginRESTService {
         workspaceIdentifierFilters = new ArrayList<>();
         
         for (WorkspaceEntity workspaceEntity : workspaceEntities) {
-          if (schoolDataSourceFilter == null) {
-            schoolDataSourceFilter = workspaceEntity.getDataSource().getIdentifier();
-          }
-          
-          workspaceIdentifierFilters.add(workspaceEntity.getIdentifier());
+          workspaceIdentifierFilters.add(workspaceEntity.schoolDataIdentifier());
         }
       }
 
@@ -324,6 +319,19 @@ public class CoursePickerRESTService extends PluginRESTService {
         }
       }
 
+      List<SchoolDataIdentifier> subjects = null;
+      if (subjectIds != null) {
+        subjects = new ArrayList<>(subjectIds.size());
+        for (String subjectId : subjectIds) {
+          SchoolDataIdentifier subjectIdentifier = SchoolDataIdentifier.fromId(subjectId);
+          if (subjectIdentifier != null) {
+            subjects.add(subjectIdentifier);
+          } else {
+            return Response.status(Status.BAD_REQUEST).entity(String.format("Malformed subject identifier", subjectId)).build();
+          }
+        }
+      }
+      
       final List<SchoolDataIdentifier> organizationIdentifiers = organizationIds != null ? new ArrayList<>(organizationIds.size()) : null;
       if (organizationIds != null) {
         for (String organizationId : organizationIds) {
@@ -339,10 +347,9 @@ public class CoursePickerRESTService extends PluginRESTService {
       List<OrganizationEntity> organizations = coursePickerController.listAccessibleOrganizations();
       organizations.removeIf(organization -> CollectionUtils.isNotEmpty(organizationIdentifiers) && !organizationIdentifiers.contains(organization.schoolDataIdentifier()));
       
-      List<OrganizationRestriction> organizationRestrictions = organizationEntityController.listUserOrganizationRestrictions(organizations , publicityRestriction, templateRestriction);
+      List<OrganizationRestriction> organizationRestrictions = organizationEntityController.listUserOrganizationRestrictions(organizations, publicityRestriction, templateRestriction);
 
       searchResult = searchProvider.searchWorkspaces()
-        .setSchoolDataSource(schoolDataSourceFilter)
         .setSubjects(subjects)
         .setWorkspaceIdentifiers(workspaceIdentifierFilters)
         .setEducationTypeIdentifiers(educationTypes)
@@ -669,9 +676,12 @@ public class CoursePickerRESTService extends PluginRESTService {
         WorkspaceRoleEntity workspaceRoleEntity = workspaceUserEntity.getWorkspaceUserRole();
         WorkspaceRoleArchetype archetype = workspaceRoleEntity.getArchetype();
         if (archetype.equals(WorkspaceRoleArchetype.STUDENT)) {
-          WorkspaceAssessmentState assessmentState = assessmentRequestController.getWorkspaceAssessmentState(workspaceUserEntity);
-          if (assessmentState.getState() == WorkspaceAssessmentState.PASS || assessmentState.getState() == WorkspaceAssessmentState.FAIL) {
-            isEvaluated = true;
+          List<WorkspaceAssessmentState> assessmentStates = assessmentRequestController.getAllWorkspaceAssessmentStates(workspaceUserEntity);
+          for (WorkspaceAssessmentState assessmentState : assessmentStates) {
+            if (assessmentState.getState() == WorkspaceAssessmentState.PASS || assessmentState.getState() == WorkspaceAssessmentState.FAIL) {
+              isEvaluated = true;
+              break;
+            }
           }
         }  
       }
