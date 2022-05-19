@@ -19,6 +19,7 @@ import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
+import { AnyActionType } from "~/actions";
 import {
   GuiderType,
   GuiderStudentUserProfileLabelType,
@@ -411,7 +412,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ displayNotification }, dispatch);
 }
 
