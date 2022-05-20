@@ -33,7 +33,7 @@ interface ContactEventProps {
 const ContactEvent: React.FC<ContactEventProps> = (props) => {
   const { entryDate, type, creatorName, text, comments, creatorId, id } =
     props.event;
-  const { modifier, studentId, i18n, status } = props;
+  const { modifier, studentId, i18n } = props;
   const [commentOpen, setCreateCommentOpen] = React.useState<boolean>(false);
   const [eventEditOpen, setEventEditOpen] = React.useState<boolean>(false);
   const [commentEditOpen, setCommentEditOpen] = React.useState<number[]>([]);
@@ -83,24 +83,20 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
         >
           {i18n.text.get("plugin.guider.user.contactLog.actions.comment")}
         </Link>
-        {creatorId === status.userId ? (
-          <>
-            <Link
-              className="link link--contact-event-footer"
-              onClick={() => setEventEditOpen(true)}
-            >
-              {i18n.text.get("plugin.guider.user.contactLog.actions.edit")}
-            </Link>
-            <ContactEventDeletePrompt
-              studentUserEntityId={studentId}
-              contactLogEntryId={id}
-            >
-              <Link className="link link--contact-event-footer">
-                {i18n.text.get("plugin.guider.user.contactLog.actions.delete")}
-              </Link>
-            </ContactEventDeletePrompt>
-          </>
-        ) : null}
+        <Link
+          className="link link--contact-event-footer"
+          onClick={() => setEventEditOpen(true)}
+        >
+          {i18n.text.get("plugin.guider.user.contactLog.actions.edit")}
+        </Link>
+        <ContactEventDeletePrompt
+          studentUserEntityId={studentId}
+          contactLogEntryId={id}
+        >
+          <Link className="link link--contact-event-footer">
+            {i18n.text.get("plugin.guider.user.contactLog.actions.delete")}
+          </Link>
+        </ContactEventDeletePrompt>
       </div>
       {commentOpen ? (
         <CommentContactEvent
@@ -150,31 +146,27 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
                   dangerouslySetInnerHTML={{ __html: comment.text }}
                 ></div>
               )}
-              {creatorId === status.userId ? (
-                <div className="contact-event__footer">
-                  <Link
-                    className="link link--contact-event-footer"
-                    onClick={() =>
-                      setCommentEditOpen([...commentEditOpen, ...[comment.id]])
-                    }
-                  >
+              <div className="contact-event__footer">
+                <Link
+                  className="link link--contact-event-footer"
+                  onClick={() =>
+                    setCommentEditOpen([...commentEditOpen, ...[comment.id]])
+                  }
+                >
+                  {i18n.text.get("plugin.guider.user.contactLog.actions.edit")}
+                </Link>
+                <ContactEventDeletePrompt
+                  studentUserEntityId={studentId}
+                  contactLogEntryId={id}
+                  commentId={comment.id}
+                >
+                  <Link className="link link--contact-event-footer">
                     {i18n.text.get(
-                      "plugin.guider.user.contactLog.actions.edit"
+                      "plugin.guider.user.contactLog.actions.delete"
                     )}
                   </Link>
-                  <ContactEventDeletePrompt
-                    studentUserEntityId={studentId}
-                    contactLogEntryId={id}
-                    commentId={comment.id}
-                  >
-                    <Link className="link link--contact-event-footer">
-                      {i18n.text.get(
-                        "plugin.guider.user.contactLog.actions.delete"
-                      )}
-                    </Link>
-                  </ContactEventDeletePrompt>
-                </div>
-              ) : null}
+                </ContactEventDeletePrompt>
+              </div>
             </div>
           ))}
         </div>
