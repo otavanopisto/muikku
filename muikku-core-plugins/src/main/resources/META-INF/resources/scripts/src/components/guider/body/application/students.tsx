@@ -31,6 +31,7 @@ import {
 import ApplicationList, {
   ApplicationListItem,
 } from "~/components/general/application-list";
+import { AnyActionType } from "~/actions";
 
 /**
  * GuiderStudentsProps
@@ -87,7 +88,7 @@ class GuiderStudents extends BodyScrollLoader<
    * @returns New hash string
    */
   getBackByHash = (): string => {
-    let locationData = queryString.parse(
+    const locationData = queryString.parse(
       document.location.hash.split("?")[1] || "",
       { arrayFormat: "bracket" }
     );
@@ -182,7 +183,9 @@ class GuiderStudents extends BodyScrollLoader<
                    * contents
                    * @param checkbox checkbox
                    */
-                  contents: (checkbox: React.ReactElement<any>) => (
+                  contents: (
+                    checkbox: React.ReactElement<HTMLInputElement>
+                  ) => (
                     <Student
                       index={index}
                       checkbox={checkbox}
@@ -217,7 +220,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     {
       loadMoreStudents,

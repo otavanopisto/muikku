@@ -50,11 +50,15 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
     return null;
   }
 
-  const { i18n, guider, addFileToCurrentStudent } = props;
-
-  const studentWorkspaces = (
-    <Workspaces workspaces={guider.currentStudent.pastWorkspaces} />
-  );
+  const { i18n, addFileToCurrentStudent } = props;
+  const {
+    activityLogs,
+    activityLogState,
+    pastWorkspaces,
+    pastWorkspacesState,
+    basic,
+    files,
+  } = props.guider.currentStudent;
 
   /**
    * Switches the active navigaton state
@@ -96,13 +100,6 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
   );
 
   /**
-   * historyDataLoaded
-   */
-  const historyDataLoaded =
-    guider.currentStudent.activityLogs && guider.currentStudent.pastWorkspaces
-      ? true
-      : false;
-  /**
    * formDataGenerator
    * @param file file
    * @param formData formData
@@ -111,10 +108,10 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
     formData.append("upload", file);
     formData.append("title", file.name);
     formData.append("description", "");
-    formData.append("userIdentifier", guider.currentStudent.basic.id);
+    formData.append("userIdentifier", basic.id);
   };
 
-  const files = guider.currentStudent.basic && (
+  const userFiles = basic && (
     <div className="application-sub-panel__body">
       <FileUploader
         url="/transcriptofrecordsfileupload/"
@@ -127,7 +124,7 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
         fileTooLargeErrorText={i18n.text.get(
           "plugin.guider.user.details.files.fileFieldUpload.fileSizeTooLarge"
         )}
-        files={guider.currentStudent.files}
+        files={files}
         fileIdKey="id"
         fileNameKey="title"
         fileUrlGenerator={(f) => `/rest/guider/files/${f.id}/content`}
@@ -160,7 +157,11 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
                   {i18n.text.get("plugin.guider.user.details.workspaces")}
                 </ApplicationSubPanel.Header>
                 <ApplicationSubPanel.Body>
-                  {studentWorkspaces}
+                  {pastWorkspacesState === "READY" ? (
+                    <Workspaces workspaces={pastWorkspaces} />
+                  ) : (
+                    <div className="loader-empty" />
+                  )}
                 </ApplicationSubPanel.Body>
               </ApplicationSubPanel>
               <ApplicationSubPanel>
@@ -168,10 +169,14 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
                   {i18n.text.get("plugin.guider.user.details.statistics")}
                 </ApplicationSubPanel.Header>
                 <ApplicationSubPanel.Body>
-                  <MainChart
-                    workspaces={guider.currentStudent.pastWorkspaces}
-                    activityLogs={guider.currentStudent.activityLogs}
-                  />
+                  {activityLogState === "READY" ? (
+                    <MainChart
+                      workspaces={pastWorkspaces}
+                      activityLogs={activityLogs}
+                    />
+                  ) : (
+                    <div className="loader-empty" />
+                  )}
                 </ApplicationSubPanel.Body>
               </ApplicationSubPanel>
             </>
@@ -183,7 +188,7 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
               <ApplicationSubPanel.Header>
                 {i18n.text.get("plugin.guider.user.details.files")}
               </ApplicationSubPanel.Header>
-              <ApplicationSubPanel.Body>{files}</ApplicationSubPanel.Body>
+              <ApplicationSubPanel.Body>{userFiles}</ApplicationSubPanel.Body>
             </ApplicationSubPanel>
           );
         }
@@ -196,7 +201,11 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
               {i18n.text.get("plugin.guider.user.details.workspaces")}
             </ApplicationSubPanel.Header>
             <ApplicationSubPanel.Body>
-              {studentWorkspaces}
+              {pastWorkspacesState === "READY" ? (
+                <Workspaces workspaces={pastWorkspaces} />
+              ) : (
+                <div className="loader-empty" />
+              )}
             </ApplicationSubPanel.Body>
           </ApplicationSubPanel>
           <ApplicationSubPanel>
@@ -204,18 +213,21 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
               {i18n.text.get("plugin.guider.user.details.statistics")}
             </ApplicationSubPanel.Header>
             <ApplicationSubPanel.Body>
-              <MainChart
-                workspaces={guider.currentStudent.pastWorkspaces}
-                activityLogs={guider.currentStudent.activityLogs}
-              />
+              {activityLogState === "READY" ? (
+                <MainChart
+                  workspaces={pastWorkspaces}
+                  activityLogs={activityLogs}
+                />
+              ) : (
+                <div className="loader-empty" />
+              )}
             </ApplicationSubPanel.Body>
           </ApplicationSubPanel>
-
           <ApplicationSubPanel>
             <ApplicationSubPanel.Header>
               {i18n.text.get("plugin.guider.user.details.files")}
             </ApplicationSubPanel.Header>
-            <ApplicationSubPanel.Body>{files}</ApplicationSubPanel.Body>
+            <ApplicationSubPanel.Body>{userFiles}</ApplicationSubPanel.Body>
           </ApplicationSubPanel>
         </>
       );
@@ -224,13 +236,7 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
 
   return (
     <ApplicationPanelBody modifier="guider-student" asideBefore={aside}>
-      {historyDataLoaded ? (
-        studyHistoryContent()
-      ) : (
-        <ApplicationSubPanel>
-          <div className="loader-empty" />
-        </ApplicationSubPanel>
-      )}
+      {studyHistoryContent()}
     </ApplicationPanelBody>
   );
 };

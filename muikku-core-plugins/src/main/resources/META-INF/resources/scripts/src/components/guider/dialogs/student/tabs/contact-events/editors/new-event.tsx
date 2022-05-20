@@ -4,8 +4,8 @@ import { bindActionCreators } from "redux";
 import CKEditor from "~/components/general/ckeditor";
 import EnvironmentDialog from "~/components/general/environment-dialog";
 import {
-  createContactEvent,
-  CreateContactEventTriggerType,
+  createContactLogEvent,
+  CreateContactLogEventTriggerType,
 } from "~/actions/main-function/guider";
 import { AnyActionType } from "~/actions";
 import { i18nType } from "~/reducers/base/i18n";
@@ -30,7 +30,7 @@ import { StatusType } from "~/reducers/base/status";
 interface NewContactEventProps {
   children?: JSX.Element;
   i18n: i18nType;
-  createContactEvent: CreateContactEventTriggerType;
+  createContactLogEvent: CreateContactLogEventTriggerType;
   currentStudent: GuiderStudentType;
   status: StatusType;
   initialDate?: Date;
@@ -140,7 +140,7 @@ class NewContactEvent extends SessionStateComponent<
     this.setState({
       locked: true,
     });
-    this.props.createContactEvent(
+    this.props.createContactLogEvent(
       this.props.currentStudent.userEntityId,
       /**
        * payload
@@ -331,7 +331,7 @@ function mapStateToProps(state: StateType) {
  * @returns dispatch functions
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return bindActionCreators({ createContactEvent }, dispatch);
+  return bindActionCreators({ createContactLogEvent }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(NewContactEvent);

@@ -6,7 +6,10 @@ import ApplicationSubPanel, {
   ApplicationSubPanelViewHeader,
   ApplicationSubPanelItem,
 } from "~/components/general/application-sub-panel";
-import { GuiderStudentType } from "~/reducers/main-function/guider";
+import {
+  GuiderStudentType,
+  GuiderStudentUserProfileType,
+} from "~/reducers/main-function/guider";
 import ContactEvent from "./contact-events/contact-event";
 import { IContactLogEvent } from "~/reducers/main-function/guider/";
 import NewContactEvent from "./contact-events/editors/new-event";
@@ -17,6 +20,7 @@ import { ButtonPill } from "~/components/general/button";
  */
 interface GuidanceRelationProps {
   i18n: i18nType;
+  currentStudent: GuiderStudentUserProfileType;
   contactLogs: IContactLogEvent[];
   studentBasicInfo: GuiderStudentType;
 }
@@ -27,7 +31,8 @@ interface GuidanceRelationProps {
  * @returns JSX.element
  */
 const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
-  const { i18n, contactLogs, studentBasicInfo } = props;
+  const { i18n, studentBasicInfo } = props;
+  const { contactLogs, contactLogState } = props.currentStudent;
   return (
     <ApplicationSubPanel>
       <ApplicationSubPanelViewHeader
@@ -73,7 +78,9 @@ const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
             {i18n.text.get("plugin.guider.user.contactLog.title")}
           </ApplicationSubPanel.Header>
           <ApplicationSubPanel.Body>
-            {contactLogs && contactLogs.length > 0 ? (
+            {contactLogState && contactLogState === "LOADING" ? (
+              <div className="loader-empty" />
+            ) : contactLogs && contactLogs.length > 0 ? (
               contactLogs.map((contactEvent) => (
                 <ContactEvent
                   key={"contact-event-" + contactEvent.id}
@@ -102,6 +109,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     guidanceEvents: state.calendar.guidanceEvents,
+    currentStudent: state.guider.currentStudent,
     studentBasicInfo: state.guider.currentStudent.basic,
     contactLogs: state.guider.currentStudent.contactLogs,
   };

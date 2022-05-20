@@ -14,7 +14,7 @@ import {
 } from "~/reducers/workspaces";
 import { HOPSDataType } from "~/reducers/main-function/hops";
 import { PurchaseType, PurchaseProductType } from "../profile";
-
+import { LoadingState } from "~/@types/shared";
 /**
  * GuiderUserLabelType
  */
@@ -128,6 +128,10 @@ export type IContactLogEventComment = {
  * GuiderStudentUserProfileType
  */
 export interface GuiderStudentUserProfileType {
+  contactLogState: LoadingState;
+  currentWorkspacesState: LoadingState;
+  pastWorkspacesState: LoadingState;
+  activityLogState: LoadingState;
   basic: GuiderStudentType;
   labels: Array<GuiderStudentUserProfileLabelType>;
   emails: Array<StudentUserProfileEmailType>;

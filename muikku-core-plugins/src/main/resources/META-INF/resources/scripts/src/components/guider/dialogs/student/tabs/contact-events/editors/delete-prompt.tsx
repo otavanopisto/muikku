@@ -11,10 +11,10 @@ import { i18nType } from "~/reducers/base/i18n";
 import Dialog from "~/components/general/dialog";
 import Button from "~/components/general/button";
 import {
-  deleteContactEvent,
-  DeleteContactEventTriggerType,
-  deleteContactEventComment,
-  DeleteContactEventCommentTriggerType,
+  deleteContactLogEvent,
+  DeleteContactLogEventTriggerType,
+  deleteContactLogEventComment,
+  DeleteContactLogEventCommentTriggerType,
 } from "~/actions/main-function/guider";
 import { StateType } from "~/reducers";
 
@@ -26,8 +26,8 @@ interface ContactEventDeletePromptProps {
   commentId?: number;
   contactLogEntryId: number;
   studentUserEntityId: number;
-  deleteContactEvent: DeleteContactEventTriggerType;
-  deleteContactEventComment: DeleteContactEventCommentTriggerType;
+  deleteContactLogEvent: DeleteContactLogEventTriggerType;
+  deleteContactLogEventComment: DeleteContactLogEventCommentTriggerType;
   children: JSX.Element;
 }
 
@@ -63,7 +63,7 @@ class ContactEventDeletePrompt extends React.Component<
   handleOnDelete = (closeDialog: () => void) => {
     this.setState({ locked: true });
     if (!this.props.commentId) {
-      this.props.deleteContactEvent(
+      this.props.deleteContactLogEvent(
         this.props.studentUserEntityId,
         this.props.contactLogEntryId,
         /**
@@ -74,7 +74,7 @@ class ContactEventDeletePrompt extends React.Component<
         }
       );
     } else {
-      this.props.deleteContactEventComment(
+      this.props.deleteContactLogEventComment(
         this.props.studentUserEntityId,
         this.props.contactLogEntryId,
         this.props.commentId,
@@ -175,7 +175,7 @@ function mapStateToProps(state: StateType) {
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
-    { deleteContactEvent, deleteContactEventComment },
+    { deleteContactLogEvent, deleteContactLogEventComment },
     dispatch
   );
 }

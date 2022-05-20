@@ -5,8 +5,8 @@ import { AnyActionType } from "~/actions";
 import { bindActionCreators } from "redux";
 import CKEditor from "~/components/general/ckeditor";
 import {
-  createContactEventComment,
-  CreateContactEventCommentTriggerType,
+  createContactLogEventComment,
+  CreateContactLogEventCommentTriggerType,
 } from "~/actions/main-function/guider";
 import { StateType } from "~/reducers";
 import SessionStateComponent from "~/components/general/session-state-component";
@@ -22,7 +22,7 @@ interface NewContactLogEventCommentProps {
   i18n: i18nType;
   contactEventtId: number;
   studentUserEntityId: number;
-  createContactEventComment: CreateContactEventCommentTriggerType;
+  createContactLogEventComment: CreateContactLogEventCommentTriggerType;
   closeEditor: () => void;
 }
 
@@ -86,7 +86,7 @@ class NewContactLogEventComment extends SessionStateComponent<
     this.setState({
       locked: true,
     });
-    this.props.createContactEventComment(
+    this.props.createContactLogEventComment(
       this.props.studentUserEntityId,
       this.props.contactEventtId,
       /**
@@ -209,7 +209,7 @@ function mapStateToProps(state: StateType) {
  * @returns dispatch functions
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return bindActionCreators({ createContactEventComment }, dispatch);
+  return bindActionCreators({ createContactLogEventComment }, dispatch);
 }
 
 export default connect(

@@ -44,6 +44,7 @@ import {
   PurchaseType,
 } from "~/reducers/main-function/profile";
 import { Dispatch } from "react-redux";
+import { LoadingState } from "~/@types/shared";
 
 export type UPDATE_GUIDER_ACTIVE_FILTERS = SpecificActionType<
   "UPDATE_GUIDER_ACTIVE_FILTERS",
@@ -764,8 +765,19 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
       });
 
       dispatch({
-        type: "UPDATE_CURRENT_GUIDER_STUDENT_STATE",
-        payload: <GuiderCurrentStudentStateType>"LOADING",
+        type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+        payload: {
+          property: "pastWorkspacesState",
+          value: <LoadingState>"LOADING",
+        },
+      });
+
+      dispatch({
+        type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+        payload: {
+          property: "activityLogState",
+          value: <LoadingState>"LOADING",
+        },
       });
 
       await Promise.all([
@@ -827,7 +839,15 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
             type: "SET_CURRENT_GUIDER_STUDENT_PROP",
             payload: { property: "pastWorkspaces", value: workspaces },
           });
+          dispatch({
+            type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+            payload: {
+              property: "pastWorkspacesState",
+              value: <LoadingState>"READY",
+            },
+          });
         }),
+
         promisify(
           mApi().activitylogs.user.workspace.read(id, {
             from: new Date(new Date().getFullYear() - 2, 0),
@@ -839,12 +859,15 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
             type: "SET_CURRENT_GUIDER_STUDENT_PROP",
             payload: { property: "activityLogs", value: activityLogs },
           });
+          dispatch({
+            type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+            payload: {
+              property: "activityLogState",
+              value: <LoadingState>"READY",
+            },
+          });
         }),
       ]);
-      dispatch({
-        type: "UPDATE_CURRENT_GUIDER_STUDENT_STATE",
-        payload: <GuiderCurrentStudentStateType>"READY",
-      });
 
       dispatch({
         type: "UNLOCK_TOOLBAR",
@@ -861,9 +884,17 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
         )
       );
       dispatch({
-        type: "UPDATE_GUIDER_ALL_PROPS",
+        type: "SET_CURRENT_GUIDER_STUDENT_PROP",
         payload: {
-          currentState: <GuiderCurrentStudentStateType>"ERROR",
+          property: "pastWorkspacesState",
+          value: <LoadingState>"ERROR",
+        },
+      });
+      dispatch({
+        type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+        payload: {
+          property: "activityLogState",
+          value: <LoadingState>"ERROR",
         },
       });
       dispatch({
@@ -888,7 +919,7 @@ const loadStudentGuiderRelations: LoadStudentDataTriggerType =
     ) => {
       try {
         const contactLogsLoaded =
-          !!getState().guider.currentStudent.contactLogs;
+          getState().guider.currentStudent.contactLogState === "READY";
 
         if (contactLogsLoaded && !forceLoad) {
           return;
@@ -900,8 +931,11 @@ const loadStudentGuiderRelations: LoadStudentDataTriggerType =
         });
 
         dispatch({
-          type: "UPDATE_CURRENT_GUIDER_STUDENT_STATE",
-          payload: <GuiderCurrentStudentStateType>"LOADING",
+          type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+          payload: {
+            property: "contactLogState",
+            value: <LoadingState>"LOADING",
+          },
         });
 
         await promisify(
@@ -915,8 +949,11 @@ const loadStudentGuiderRelations: LoadStudentDataTriggerType =
         });
 
         dispatch({
-          type: "UPDATE_CURRENT_GUIDER_STUDENT_STATE",
-          payload: <GuiderCurrentStudentStateType>"READY",
+          type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+          payload: {
+            property: "contactLogState",
+            value: <LoadingState>"READY",
+          },
         });
 
         dispatch({
@@ -934,9 +971,10 @@ const loadStudentGuiderRelations: LoadStudentDataTriggerType =
           )
         );
         dispatch({
-          type: "UPDATE_GUIDER_ALL_PROPS",
+          type: "SET_CURRENT_GUIDER_STUDENT_PROP",
           payload: {
-            currentState: <GuiderCurrentStudentStateType>"ERROR",
+            property: "contactLogState",
+            value: <LoadingState>"ERROR",
           },
         });
         dispatch({
@@ -956,7 +994,12 @@ const loadStudentGuiderRelations: LoadStudentDataTriggerType =
  * @returns a thunk function for creating a contact log event
  */
 const createContactLogEvent: CreateContactLogEventTriggerType =
-  function createContactLogEvent(studentUserEntityId, payload, onSuccess, onFail) {
+  function createContactLogEvent(
+    studentUserEntityId,
+    payload,
+    onSuccess,
+    onFail
+  ) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
@@ -1093,89 +1136,90 @@ const deleteContactLogEvent: DeleteContactLogEventTriggerType =
  * @param onFail callback
  * @returns a thunk function for editing a contact log event
  */
-const editContactLogEvent: EditContactLogEventTriggerType = function editContactLogEvent(
-  studentUserEntityId,
-  contactLogEntryId,
-  payload,
-  onSuccess,
-  onFail
-) {
-  return async (
-    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
-    getState: () => StateType
-  ) => {
-    try {
-      dispatch({
-        type: "LOCK_TOOLBAR",
-        payload: null,
-      });
-
-      await promisify(
-        mApi().guider.student.contactLog.update(
-          studentUserEntityId,
-          contactLogEntryId,
-          payload
-        ),
-        "callback"
-      )().then((contactLog: IContactLogEvent) => {
-        // Make a shallow copy of the current state of contactLogs
-        const contactLogs = [...getState().guider.currentStudent.contactLogs];
-
-        // Find the index of the edited contactLog
-        const contactLogIndex = contactLogs.findIndex(
-          (log) => log.id === contactLog.id
-        );
-
-        // Replace the edited contactLog with the new one
-        contactLogs.splice(contactLogIndex, 1, contactLog);
-
+const editContactLogEvent: EditContactLogEventTriggerType =
+  function editContactLogEvent(
+    studentUserEntityId,
+    contactLogEntryId,
+    payload,
+    onSuccess,
+    onFail
+  ) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      try {
         dispatch({
-          type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+          type: "LOCK_TOOLBAR",
+          payload: null,
+        });
+
+        await promisify(
+          mApi().guider.student.contactLog.update(
+            studentUserEntityId,
+            contactLogEntryId,
+            payload
+          ),
+          "callback"
+        )().then((contactLog: IContactLogEvent) => {
+          // Make a shallow copy of the current state of contactLogs
+          const contactLogs = [...getState().guider.currentStudent.contactLogs];
+
+          // Find the index of the edited contactLog
+          const contactLogIndex = contactLogs.findIndex(
+            (log) => log.id === contactLog.id
+          );
+
+          // Replace the edited contactLog with the new one
+          contactLogs.splice(contactLogIndex, 1, contactLog);
+
+          dispatch({
+            type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+            payload: {
+              property: "contactLogs",
+              value: contactLogs,
+            },
+          });
+        });
+        dispatch(
+          notificationActions.displayNotification(
+            getState().i18n.text.get(
+              "plugin.guider.successMessage.contactLogs.contactLog.onEdit"
+            ),
+            "success"
+          )
+        );
+        dispatch({
+          type: "UNLOCK_TOOLBAR",
+          payload: null,
+        });
+        onSuccess && onSuccess();
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          notificationActions.displayNotification(
+            getState().i18n.text.get(
+              "plugin.guider.successMessage.contactLogs.contactLog.onEdit"
+            ),
+            "error"
+          )
+        );
+        dispatch({
+          type: "UPDATE_GUIDER_ALL_PROPS",
           payload: {
-            property: "contactLogs",
-            value: contactLogs,
+            currentState: <GuiderCurrentStudentStateType>"ERROR",
           },
         });
-      });
-      dispatch(
-        notificationActions.displayNotification(
-          getState().i18n.text.get(
-            "plugin.guider.successMessage.contactLogs.contactLog.onEdit"
-          ),
-          "success"
-        )
-      );
-      dispatch({
-        type: "UNLOCK_TOOLBAR",
-        payload: null,
-      });
-      onSuccess && onSuccess();
-    } catch (err) {
-      if (!(err instanceof MApiError)) {
-        throw err;
+        dispatch({
+          type: "UNLOCK_TOOLBAR",
+          payload: null,
+        });
+        onFail && onFail();
       }
-      dispatch(
-        notificationActions.displayNotification(
-          getState().i18n.text.get(
-            "plugin.guider.successMessage.contactLogs.contactLog.onEdit"
-          ),
-          "error"
-        )
-      );
-      dispatch({
-        type: "UPDATE_GUIDER_ALL_PROPS",
-        payload: {
-          currentState: <GuiderCurrentStudentStateType>"ERROR",
-        },
-      });
-      dispatch({
-        type: "UNLOCK_TOOLBAR",
-        payload: null,
-      });
-      onFail && onFail();
-    }
+    };
   };
-};
 
 /**
  * createContactLogEventComment thunk action creator

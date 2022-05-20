@@ -5,8 +5,8 @@ import { AnyActionType } from "~/actions";
 import { bindActionCreators } from "redux";
 import CKEditor from "~/components/general/ckeditor";
 import {
-  editContactEvent,
-  EditContactEventTriggerType,
+  editContactLogEvent,
+  EditContactLogEventTriggerType,
 } from "~/actions/main-function/guider";
 import {
   ContactTypes,
@@ -37,7 +37,7 @@ interface EditContactLogEventProps {
   status: StatusType;
   contactEvent: IContactLogEvent;
   studentUserEntityId: number;
-  editContactEvent: EditContactEventTriggerType;
+  editContactLogEvent: EditContactLogEventTriggerType;
   closeEditor: () => void;
 }
 
@@ -131,7 +131,7 @@ class EditContactLogEventEvent extends SessionStateComponent<
     this.setState({
       locked: true,
     });
-    this.props.editContactEvent(
+    this.props.editContactLogEvent(
       this.props.studentUserEntityId,
       this.props.contactEvent.id,
       /**
@@ -300,7 +300,7 @@ function mapStateToProps(state: StateType) {
  * @returns dispatch functions
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return bindActionCreators({ editContactEvent }, dispatch);
+  return bindActionCreators({ editContactLogEvent }, dispatch);
 }
 
 export default connect(

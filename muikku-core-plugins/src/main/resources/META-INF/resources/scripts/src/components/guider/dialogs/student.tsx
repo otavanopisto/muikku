@@ -43,8 +43,7 @@ interface StudentDialogProps {
   student: GuiderStudentUserProfileType;
   guider: GuiderType;
   currentStudentStatus: GuiderCurrentStudentStateType;
-  onClose?: () => any;
-  onOpen?: (jotan: any) => any;
+  onClose?: () => void;
   i18n: i18nType;
   status: StatusType;
   loadStudentHistory: LoadStudentTriggerType;
@@ -70,6 +69,10 @@ class StudentDialog extends React.Component<
    * @param props props for the constructor
    */
 
+  /**
+   * constructor
+   * @param props StudentDialogProps
+   */
   constructor(props: StudentDialogProps) {
     super(props);
 
