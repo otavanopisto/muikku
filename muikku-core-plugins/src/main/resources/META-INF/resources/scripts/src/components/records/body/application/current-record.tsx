@@ -17,7 +17,10 @@ import ApplicationList, {
   ApplicationListItemHeader,
 } from "~/components/general/application-list";
 import { StatusType } from "~/reducers/base/status";
-import { Assessment } from "~/reducers/workspaces";
+import {
+  Assessment,
+  MaterialCompositeRepliesType,
+} from "~/reducers/workspaces";
 
 /**
  * CurrentRecordProps
@@ -257,13 +260,13 @@ class CurrentRecord extends React.Component<
         {this.props.records.current.materials.map((material) => {
           let showHiddenAssignment = false;
 
-          if (material.assignment && material.assignment.hidden) {
-            const compositeReply =
-              this.props.records.current &&
-              this.props.records.current.compositeReplies.find(
-                (cItem) => cItem.workspaceMaterialId === material.assignment.id
-              );
+          const compositeReply: MaterialCompositeRepliesType =
+            this.props.records.current &&
+            this.props.records.current.compositeReplies.find(
+              (cItem) => cItem.workspaceMaterialId === material.assignment.id
+            );
 
+          if (material.assignment && material.assignment.hidden) {
             if (compositeReply && compositeReply.submitted !== null) {
               showHiddenAssignment = true;
             }
@@ -283,6 +286,7 @@ class CurrentRecord extends React.Component<
               i18n={this.props.i18n}
               workspace={this.props.records.current.workspace}
               status={this.props.status}
+              compositeReply={compositeReply}
             />
           );
         })}

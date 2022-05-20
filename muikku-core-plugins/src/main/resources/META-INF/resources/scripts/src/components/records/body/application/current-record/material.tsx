@@ -1,6 +1,10 @@
 import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
-import { MaterialContentNodeType, WorkspaceType } from "~/reducers/workspaces";
+import {
+  MaterialCompositeRepliesType,
+  MaterialContentNodeType,
+  WorkspaceType,
+} from "~/reducers/workspaces";
 
 import MaterialLoader from "~/components/base/material-loader";
 import { shortenGrade, getShortenGradeExtension } from "~/util/modifiers";
@@ -14,12 +18,14 @@ import {
   ApplicationListItemHeader,
   ApplicationListItemBody,
 } from "~/components/general/application-list";
+import Dropdown from "~/components/general/dropdown";
 
 /**
  * MaterialProps
  */
 interface MaterialProps {
   material: MaterialContentNodeType;
+  compositeReply?: MaterialCompositeRepliesType;
   workspace: WorkspaceType;
   i18n: i18nType;
   status: StatusType;
@@ -75,40 +81,116 @@ export default class Material extends React.Component<
   }
 
   /**
+   * indicatorClassModifier
+   */
+  checkIndicatorClassModifier = () => {
+    const { compositeReply } = this.props;
+
+    if (compositeReply) {
+      switch (compositeReply.state) {
+        case "PASSED":
+          return "state-PASSED";
+
+        case "FAILED":
+          return "state-FAILED";
+
+        default:
+          return "";
+      }
+    }
+
+    return "";
+  };
+
+  /**
+   * renderIndicator
+   * @returns JSX.Element
+   */
+  renderIndicator = () => {
+    const { compositeReply } = this.props;
+
+    if (compositeReply && compositeReply.evaluationInfo) {
+      switch (compositeReply.state) {
+        case "PASSED":
+        case "FAILED":
+          return (
+            <Dropdown
+              openByHover
+              content={
+                <span>
+                  {this.props.i18n.time.format(
+                    compositeReply.evaluationInfo.date
+                  )}
+                </span>
+              }
+            >
+              <span
+                className={`application-list__indicator-badge application-list__indicator-badge--task ${this.checkIndicatorClassModifier()}`}
+              >
+                {shortenGrade(compositeReply.evaluationInfo.grade)}
+              </span>
+            </Dropdown>
+          );
+
+        case "INCOMPLETE":
+          return (
+            <Dropdown
+              openByHover
+              content={
+                <span>
+                  {this.props.i18n.time.format(
+                    compositeReply.evaluationInfo.date
+                  )}
+                </span>
+              }
+            >
+              <span
+                className={`application-list__indicator-badge application-list__indicator-badge--task state-INCOMPLETE`}
+              >
+                T
+              </span>
+            </Dropdown>
+          );
+
+        default:
+          return (
+            <span
+              className={`application-list__indicator-badge application-list__indicator-badge--task state-NO-ASSESSMENT`}
+            >
+              N
+            </span>
+          );
+      }
+    }
+
+    return (
+      <span
+        className={`application-list__indicator-badge application-list__indicator-badge--task state-NO-ASSESSMENT`}
+      >
+        N
+      </span>
+    );
+  };
+
+  /**
    * render
    */
   render() {
-    const evaluation = this.props.material.evaluation;
     return (
       <ApplicationListItem
         key={this.props.material.id}
         className={`application-list__item assignment ${
-          this.props.material.evaluation ? "" : "state-NO-ASSESSMENT"
+          this.props.compositeReply &&
+          this.props.compositeReply.state !== "UNANSWERED"
+            ? ""
+            : "state-NO-ASSESSMENT"
         }`}
       >
         <ApplicationListItemHeader
           modifiers="studies-assignment"
           onClick={this.toggleOpened}
         >
-          {evaluation ? (
-            <span
-              title={
-                evaluation.gradingScale +
-                getShortenGradeExtension(evaluation.grade)
-              }
-              className={`application-list__indicator-badge application-list__indicator-badge--task ${
-                evaluation.passed ? "state-PASSED" : "state-FAILED"
-              }`}
-            >
-              {shortenGrade(evaluation.grade)}
-            </span>
-          ) : (
-            <span
-              className={`application-list__indicator-badge application-list__indicator-badge--task state-NO-ASSESSMENT`}
-            >
-              N
-            </span>
-          )}
+          {this.renderIndicator()}
           <span className="application-list__header-primary">
             {this.props.material.assignment.title}
           </span>

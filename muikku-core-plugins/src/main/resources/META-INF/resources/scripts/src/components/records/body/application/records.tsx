@@ -22,6 +22,7 @@ import ApplicationList, {
   ApplicationListItemContentContainer,
   ApplicationListItemHeader,
 } from "~/components/general/application-list";
+import Dropdown from "~/components/general/dropdown";
 
 /**
  * RecordsProps
@@ -103,19 +104,25 @@ const TransfereCreditValueIndicator: React.FC<
   }
 
   return (
-    <span
-      title={
-        i18n.text.get(
-          "plugin.records.transferCreditsDate",
-          i18n.time.format(transferCredit.date)
-        ) + getShortenGradeExtension(transferCredit.grade)
+    <Dropdown
+      content={
+        <span>
+          {i18n.text.get(
+            "plugin.records.transferCreditsDate",
+            i18n.time.format(transferCredit.date)
+          ) + getShortenGradeExtension(transferCredit.grade)}
+        </span>
       }
-      className={`application-list__indicator-badge application-list__indicator-badge-course ${
-        transferCredit.passed ? "state-PASSED" : "state-FAILED"
-      }`}
+      openByHover
     >
-      {shortenGrade(transferCredit.grade)}
-    </span>
+      <span
+        className={`application-list__indicator-badge application-list__indicator-badge-course ${
+          transferCredit.passed ? "state-PASSED" : "state-FAILED"
+        }`}
+      >
+        {shortenGrade(transferCredit.grade)}
+      </span>
+    </Dropdown>
   );
 };
 
@@ -143,21 +150,27 @@ const RecordsAssessment: React.FC<AssessmentProps> = (props) => {
   // as it has been evaluated as incomplete after evaluated as PASSED
   if (assessment.grade && assessment.state !== "incomplete") {
     return (
-      <span
-        title={
-          i18n.text.get(
-            "plugin.records.workspace.evaluated",
-            i18n.time.format(assessment.date)
-          ) + getShortenGradeExtension(assessment.grade)
+      <Dropdown
+        content={
+          <span>
+            {i18n.text.get(
+              "plugin.records.workspace.evaluated",
+              i18n.time.format(assessment.date)
+            ) + getShortenGradeExtension(assessment.grade)}
+          </span>
         }
-        className={`application-list__indicator-badge application-list__indicator-badge--course ${
-          assessment.state === "pass" || assessment.state === "pending_pass"
-            ? "state-PASSED"
-            : "state-FAILED"
-        }`}
+        openByHover
       >
-        {shortenGrade(assessment.grade)}
-      </span>
+        <span
+          className={`application-list__indicator-badge application-list__indicator-badge--course ${
+            assessment.state === "pass" || assessment.state === "pending_pass"
+              ? "state-PASSED"
+              : "state-FAILED"
+          }`}
+        >
+          {shortenGrade(assessment.grade)}
+        </span>
+      </Dropdown>
     );
   } else if (assessment.state === "incomplete") {
     const status = i18n.text.get(
@@ -167,43 +180,55 @@ const RecordsAssessment: React.FC<AssessmentProps> = (props) => {
     );
 
     return (
-      <span
-        title={
-          i18n.text.get(
-            "plugin.records.workspace.evaluated",
-            i18n.time.format(assessment.date)
-          ) +
-          " - " +
-          status
+      <Dropdown
+        content={
+          <span>
+            {i18n.text.get(
+              "plugin.records.workspace.evaluated",
+              i18n.time.format(assessment.date)
+            ) +
+              " - " +
+              status}
+          </span>
         }
-        className={`application-list__indicator-badge application-list__indicator-badge--course ${
-          assessment.state === "incomplete"
-            ? "state-INCOMPLETE"
-            : "state-FAILED"
-        }`}
+        openByHover
       >
-        {status[0].toLocaleUpperCase()}
-      </span>
+        <span
+          className={`application-list__indicator-badge application-list__indicator-badge--course ${
+            assessment.state === "incomplete"
+              ? "state-INCOMPLETE"
+              : "state-FAILED"
+          }`}
+        >
+          {status[0].toLocaleUpperCase()}
+        </span>
+      </Dropdown>
     );
   } else {
     if (isCombinationWorkspace) {
       return (
-        <span
-          title={
-            assessment.grade
-              ? i18n.text.get(
-                  "plugin.records.workspace.evaluated",
-                  i18n.time.format(assessment.date)
-                ) + getShortenGradeExtension(assessment.grade)
-              : ""
+        <Dropdown
+          content={
+            <span>
+              {assessment.grade
+                ? i18n.text.get(
+                    "plugin.records.workspace.evaluated",
+                    i18n.time.format(assessment.date)
+                  ) + getShortenGradeExtension(assessment.grade)
+                : ""}
+            </span>
           }
-          className={`application-list__indicator-badge application-list__indicator-badge--course ${
-            assessment.state === "unassessed" ? "state-UNASSESSED" : ""
-          }`}
-          style={{ color: "#000" }}
+          openByHover
         >
-          -
-        </span>
+          <span
+            className={`application-list__indicator-badge application-list__indicator-badge--course ${
+              assessment.state === "unassessed" ? "state-UNASSESSED" : ""
+            }`}
+            style={{ color: "#000" }}
+          >
+            -
+          </span>
+        </Dropdown>
       );
     }
   }
@@ -239,38 +264,50 @@ const ActivityIndicator: React.FC<ActivityIndicatorProps> = (props) => {
   return (
     <div className="activity-badge">
       {workspace.activity.evaluablesTotal ? (
-        <div
-          title={i18n.text.get(
-            "plugin.records.workspace.activity.assignment.title",
-            workspace.activity.evaluablesDonePercent
-          )}
-          className="activity-badge__item activity-badge__item--assignment"
+        <Dropdown
+          content={
+            <span>
+              {i18n.text.get(
+                "plugin.records.workspace.activity.assignment.title",
+                workspace.activity.evaluablesDonePercent
+              )}
+            </span>
+          }
+          openByHover
         >
-          <div
-            className={
-              "activity-badge__unit-bar activity-badge__unit-bar--" +
-              workspace.activity.evaluablesDonePercent
-            }
-          ></div>
-        </div>
+          <div className="activity-badge__item activity-badge__item--assignment">
+            <div
+              className={
+                "activity-badge__unit-bar activity-badge__unit-bar--" +
+                workspace.activity.evaluablesDonePercent
+              }
+            ></div>
+          </div>
+        </Dropdown>
       ) : (
         <div className="activity-badge__item activity-badge__item--empty"></div>
       )}
       {workspace.activity.exercisesTotal ? (
-        <div
-          title={i18n.text.get(
-            "plugin.records.workspace.activity.exercise.title",
-            workspace.activity.exercisesDonePercent
-          )}
-          className="activity-badge__item activity-badge__item--exercise"
+        <Dropdown
+          content={
+            <span>
+              {i18n.text.get(
+                "plugin.records.workspace.activity.exercise.title",
+                workspace.activity.exercisesDonePercent
+              )}
+            </span>
+          }
+          openByHover
         >
-          <div
-            className={
-              "activity-badge__unit-bar activity-badge__unit-bar--" +
-              workspace.activity.exercisesDonePercent
-            }
-          ></div>
-        </div>
+          <div className="activity-badge__item activity-badge__item--exercise">
+            <div
+              className={
+                "activity-badge__unit-bar activity-badge__unit-bar--" +
+                workspace.activity.exercisesDonePercent
+              }
+            ></div>
+          </div>
+        </Dropdown>
       ) : (
         <div className="activity-badge__item activity-badge__item--empty"></div>
       )}
