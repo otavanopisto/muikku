@@ -39,7 +39,7 @@ public class UserGroupIndexer {
     try {
       UserGroup userGroup = userGroupController.findUserGroup(userGroupIdentifier);
       if (userGroup != null) {
-        indexer.index(UserGroup.class.getSimpleName(), userGroup);
+        indexer.index(UserGroup.INDEX_NAME, UserGroup.TYPE_NAME, userGroup);
       } else {
         logger.info(String.format("Removing user group %s from index (not found from school data source)", userGroupIdentifier));
         removeUserGroup(userGroupIdentifier);
@@ -53,7 +53,7 @@ public class UserGroupIndexer {
 
   public void removeUserGroup(SchoolDataIdentifier userGroupIdentifier) {
     try {
-      indexer.remove(UserGroup.class.getSimpleName(), String.format("%s/%s", userGroupIdentifier.getIdentifier(), userGroupIdentifier.getDataSource()));
+      indexer.remove(UserGroup.INDEX_NAME, UserGroup.TYPE_NAME, String.format("%s/%s", userGroupIdentifier.getIdentifier(), userGroupIdentifier.getDataSource()));
     } catch (Exception ex) {
       logger.log(Level.SEVERE, String.format("Removal of user %s/%s from index failed", userGroupIdentifier.getDataSource(), userGroupIdentifier.getIdentifier()), ex);
     } 

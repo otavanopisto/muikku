@@ -53,6 +53,7 @@ public class ToRTestsBase extends AbstractUITest {
       
       CourseActivity ca = new CourseActivity();
       ca.setCourseId(course1.getId());
+      ca.setCourseModuleId(course1.getCourseModules().iterator().next().getId());
       ca.setCourseName(course1.getName());
       ca.setGrade("Excellent");
       ca.setPassingGrade(true);
@@ -60,7 +61,6 @@ public class ToRTestsBase extends AbstractUITest {
       ca.setText("Test evaluation.");
       ca.setActivityDate(TestUtilities.toDate(TestUtilities.getLastWeek()));
       ca.setState(CourseActivityState.GRADED);
-      
       
       List<CourseActivity> courseActivities = new ArrayList<>();
       courseActivities.add(ca);
@@ -88,7 +88,7 @@ public class ToRTestsBase extends AbstractUITest {
           .addStaffCompositeAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, true, course1, student, admin.getId(), date, true)
           .mockStaffCompositeCourseAssessmentRequests()
           .mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello! I'd like to get assessment.", false, true, date)
-          .mockCourseAssessments(courseStudent, admin)
+          .mockCourseAssessments(course1, courseStudent, admin)
           .mockStudentCourseStats(student.getId(), 10).build();
         
         logout();

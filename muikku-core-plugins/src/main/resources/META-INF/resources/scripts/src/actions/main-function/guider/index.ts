@@ -32,13 +32,14 @@ import {
 } from "~/reducers/main-function/guider";
 import {
   WorkspaceListType,
-  WorkspaceStudentActivityType,
   WorkspaceForumStatisticsType,
   ActivityLogType,
+  WorkspaceStudentActivityType,
 } from "~/reducers/workspaces";
 import { HOPSDataType } from "~/reducers/main-function/hops";
 import { StateType } from "~/reducers";
 import { colorIntToHex } from "~/util/modifiers";
+import { Dispatch } from "react-redux";
 import {
   PurchaseProductType,
   PurchaseType,
@@ -182,19 +183,19 @@ export type DELETE_CONTACT_EVENT_COMMENT = SpecificActionType<
   { contactLogEntryId: number; commentId: number }
 >;
 /**
- * action creator type
+ * LoadStudentsTriggerType action creator type
  */
 export interface LoadStudentsTriggerType {
   (filters: GuiderActiveFiltersType): AnyActionType;
 }
 /**
- * action creator type
+ * LoadMoreStudentsTriggerType action creator type
  */
 export interface LoadMoreStudentsTriggerType {
   (): AnyActionType;
 }
 /**
- * action creator type
+ * LoadStudentTriggerType action creator type
  */
 export interface LoadStudentTriggerType {
   (id: string, forceLoad?: boolean): AnyActionType;
@@ -222,7 +223,7 @@ export interface CreateContactLogEventTriggerType {
 }
 
 /**
- * action creator type
+ * DeleteContactLogEventTriggerType action creator type
  */
 export interface DeleteContactLogEventTriggerType {
   (
@@ -233,7 +234,7 @@ export interface DeleteContactLogEventTriggerType {
   ): AnyActionType;
 }
 /**
- * action creator type
+ * EditContactLogEventTriggerType action creator type
  */
 export interface EditContactLogEventTriggerType {
   (
@@ -250,7 +251,7 @@ export interface EditContactLogEventTriggerType {
   ): AnyActionType;
 }
 /**
- * action creator type
+ * CreateContactLogEventCommentTriggerType action creator type
  */
 export interface CreateContactLogEventCommentTriggerType {
   (
@@ -265,7 +266,7 @@ export interface CreateContactLogEventCommentTriggerType {
   ): AnyActionType;
 }
 /**
- * action creator type
+ * DeleteContactLogEventCommentTriggerType action creator type
  */
 export interface DeleteContactLogEventCommentTriggerType {
   (
@@ -277,7 +278,7 @@ export interface DeleteContactLogEventCommentTriggerType {
   ): AnyActionType;
 }
 /**
- * action creator type
+ * EditContactLogEventCommentTriggerType action creator type
  */
 export interface EditContactLogEventCommentTriggerType {
   (
@@ -295,83 +296,83 @@ export interface EditContactLogEventCommentTriggerType {
 }
 
 /**
- * action creator type
+ * AddToGuiderSelectedStudentsTriggerType action creator type
  */
 export interface AddToGuiderSelectedStudentsTriggerType {
   (student: GuiderStudentType): AnyActionType;
 }
 
 /**
- * action creator type
+ * RemoveFromGuiderSelectedStudentsTriggerType action creator type
  */
 export interface RemoveFromGuiderSelectedStudentsTriggerType {
   (student: GuiderStudentType): AnyActionType;
 }
 
 /**
- * action creator type
+ * AddGuiderLabelToCurrentUserTriggerType action creator type
  */
 export interface AddGuiderLabelToCurrentUserTriggerType {
   (label: GuiderUserLabelType): AnyActionType;
 }
 
 /**
- * action creator type
+ * RemoveGuiderLabelFromCurrentUserTriggerType action creator type
  */
 export interface RemoveGuiderLabelFromCurrentUserTriggerType {
   (label: GuiderUserLabelType): AnyActionType;
 }
 /**
- * action creator type
+ * AddGuiderLabelToSelectedUsersTriggerType action creator type
  */
 export interface AddGuiderLabelToSelectedUsersTriggerType {
   (label: GuiderUserLabelType): AnyActionType;
 }
 
 /**
- * action creator type
+ * RemoveGuiderLabelFromSelectedUsersTriggerType action creator type
  */
 export interface RemoveGuiderLabelFromSelectedUsersTriggerType {
   (label: GuiderUserLabelType): AnyActionType;
 }
 
 /**
- * action creator type
+ * AddFileToCurrentStudentTriggerType action creator type
  */
 export interface AddFileToCurrentStudentTriggerType {
   (file: UserFileType): AnyActionType;
 }
 
 /**
- * action creator type
+ * RemoveFileFromCurrentStudentTriggerType action creator type
  */
 export interface RemoveFileFromCurrentStudentTriggerType {
   (file: UserFileType): AnyActionType;
 }
 
 /**
- * action creator type
+ * UpdateLabelFiltersTriggerType action creator type
  */
 export interface UpdateLabelFiltersTriggerType {
   (): AnyActionType;
 }
 
 /**
- * action creator type
+ * UpdateWorkspaceFiltersTriggerType action creator type
  */
 export interface UpdateWorkspaceFiltersTriggerType {
   (): AnyActionType;
 }
 
 /**
- * action creator type
+ * CreateGuiderFilterLabelTriggerType action creator type
  */
 export interface CreateGuiderFilterLabelTriggerType {
   (name: string): AnyActionType;
 }
 
 /**
- * action creator type
+ * UpdateGuiderFilterLabelTriggerType action creator type
  */
 export interface UpdateGuiderFilterLabelTriggerType {
   (data: {
@@ -385,7 +386,7 @@ export interface UpdateGuiderFilterLabelTriggerType {
 }
 
 /**
- * action creator type
+ * RemoveGuiderFilterLabelTriggerType action creator type
  */
 export interface RemoveGuiderFilterLabelTriggerType {
   (data: {
@@ -396,7 +397,7 @@ export interface RemoveGuiderFilterLabelTriggerType {
 }
 
 /**
- * action creator type
+ * UpdateAvailablePurchaseProductsTriggerType action creator type
  */
 export interface UpdateAvailablePurchaseProductsTriggerType {
   (): AnyActionType;
@@ -422,6 +423,7 @@ export interface DeleteOrderFromCurrentStudentTriggerType {
 export interface CompleteOrderFromCurrentStudentTriggerType {
   (order: PurchaseType): AnyActionType;
 }
+
 /**
  * ToggleAllStudentsTriggerType
  */
@@ -636,28 +638,11 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
           });
         }),
         promisify(
-          mApi().workspace.workspaces.read({
-            userIdentifier: id,
-            includeInactiveWorkspaces: false,
-          }),
+          mApi().guider.students.workspaces.read(id),
           "callback"
         )().then(async (workspaces: WorkspaceListType) => {
           if (workspaces && workspaces.length) {
             await Promise.all([
-              Promise.all(
-                workspaces.map(async (workspace, index) => {
-                  const activity: WorkspaceStudentActivityType = <
-                    WorkspaceStudentActivityType
-                  >await promisify(
-                    mApi().guider.workspaces.studentactivity.read(
-                      workspace.id,
-                      id
-                    ),
-                    "callback"
-                  )();
-                  workspaces[index].studentActivity = activity;
-                })
-              ),
               Promise.all(
                 workspaces.map(async (workspace, index) => {
                   const statistics: WorkspaceForumStatisticsType = <
@@ -692,6 +677,11 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
           dispatch({
             type: "SET_CURRENT_GUIDER_STUDENT_PROP",
             payload: { property: "currentWorkspaces", value: workspaces },
+          });
+
+          dispatch({
+            type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+            payload: { property: "pastWorkspaces", value: workspaces },
           });
         }),
         canListUserOrders &&
@@ -755,10 +745,6 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
     try {
       const historyLoaded = !!getState().guider.currentStudent.pastWorkspaces;
 
-      if (historyLoaded && !forceLoad) {
-        return;
-      }
-
       dispatch({
         type: "LOCK_TOOLBAR",
         payload: null,
@@ -780,74 +766,7 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
         },
       });
 
-      await Promise.all([
-        promisify(
-          mApi().workspace.workspaces.read({
-            userIdentifier: id,
-            includeInactiveWorkspaces: true,
-          }),
-          "callback"
-        )().then(async (workspaces: WorkspaceListType) => {
-          if (workspaces && workspaces.length) {
-            await Promise.all([
-              Promise.all(
-                workspaces.map(async (workspace, index) => {
-                  const activity: WorkspaceStudentActivityType = <
-                    WorkspaceStudentActivityType
-                  >await promisify(
-                    mApi().guider.workspaces.studentactivity.read(
-                      workspace.id,
-                      id
-                    ),
-                    "callback"
-                  )();
-                  workspaces[index].studentActivity = activity;
-                })
-              ),
-              Promise.all(
-                workspaces.map(async (workspace, index) => {
-                  const statistics: WorkspaceForumStatisticsType = <
-                    WorkspaceForumStatisticsType
-                  >await promisify(
-                    mApi().workspace.workspaces.forumStatistics.read(
-                      workspace.id,
-                      { userIdentifier: id }
-                    ),
-                    "callback"
-                  )();
-                  workspaces[index].forumStatistics = statistics;
-                })
-              ),
-              Promise.all(
-                workspaces.map(async (workspace, index) => {
-                  const activityLogs: ActivityLogType[] = <ActivityLogType[]>(
-                    await promisify(
-                      mApi().activitylogs.user.workspace.read(id, {
-                        workspaceEntityId: workspace.id,
-                        from: new Date(new Date().getFullYear() - 2, 0),
-                        to: new Date(),
-                      }),
-                      "callback"
-                    )()
-                  );
-                  workspaces[index].activityLogs = activityLogs;
-                })
-              ),
-            ]);
-          }
-          dispatch({
-            type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-            payload: { property: "pastWorkspaces", value: workspaces },
-          });
-          dispatch({
-            type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-            payload: {
-              property: "pastWorkspacesState",
-              value: <LoadingState>"READY",
-            },
-          });
-        }),
-
+      const promises = [
         promisify(
           mApi().activitylogs.user.workspace.read(id, {
             from: new Date(new Date().getFullYear() - 2, 0),
@@ -867,7 +786,28 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
             },
           });
         }),
-      ]);
+      ];
+
+      if (!historyLoaded || forceLoad) {
+        promises.push(
+          promisify(
+            mApi().guider.students.workspaces.read(id),
+            "callback"
+          )().then(async (workspaces: WorkspaceListType) => {
+            dispatch({
+              type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+              payload: { property: "pastWorkspaces", value: workspaces },
+            });
+          })
+        );
+      }
+
+      await Promise.all([promises]);
+
+      dispatch({
+        type: "UPDATE_CURRENT_GUIDER_STUDENT_STATE",
+        payload: <GuiderCurrentStudentStateType>"READY",
+      });
 
       dispatch({
         type: "UNLOCK_TOOLBAR",
