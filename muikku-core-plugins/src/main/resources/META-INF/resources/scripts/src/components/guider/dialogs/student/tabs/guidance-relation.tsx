@@ -6,12 +6,8 @@ import ApplicationSubPanel, {
   ApplicationSubPanelViewHeader,
   ApplicationSubPanelItem,
 } from "~/components/general/application-sub-panel";
-import {
-  GuiderStudentType,
-  GuiderStudentUserProfileType,
-} from "~/reducers/main-function/guider";
+import { GuiderStudentUserProfileType } from "~/reducers/main-function/guider";
 import ContactEvent from "./contact-events/contact-event";
-import { IContactLogEvent } from "~/reducers/main-function/guider/";
 import NewContactEvent from "./contact-events/editors/new-event";
 import { ButtonPill } from "~/components/general/button";
 
@@ -21,8 +17,6 @@ import { ButtonPill } from "~/components/general/button";
 interface GuidanceRelationProps {
   i18n: i18nType;
   currentStudent: GuiderStudentUserProfileType;
-  contactLogs: IContactLogEvent[];
-  studentBasicInfo: GuiderStudentType;
 }
 
 /**
@@ -31,8 +25,14 @@ interface GuidanceRelationProps {
  * @returns JSX.element
  */
 const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
-  const { i18n, studentBasicInfo } = props;
-  const { contactLogs, contactLogState } = props.currentStudent;
+  const { i18n, currentStudent } = props;
+
+  if (!currentStudent) {
+    return null;
+  }
+
+  const { contactLogs, contactLogState, basic } = props.currentStudent;
+
   return (
     <ApplicationSubPanel>
       <ApplicationSubPanelViewHeader
@@ -53,7 +53,7 @@ const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
             )}
           >
             <ApplicationSubPanelItem.Content>
-              <div>{studentBasicInfo.email}</div>
+              <div>{basic && basic.email}</div>
             </ApplicationSubPanelItem.Content>
           </ApplicationSubPanelItem>
           {/* Removed for later
@@ -84,7 +84,7 @@ const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
               contactLogs.map((contactEvent) => (
                 <ContactEvent
                   key={"contact-event-" + contactEvent.id}
-                  studentId={studentBasicInfo.userEntityId}
+                  studentId={basic.userEntityId}
                   event={contactEvent}
                 />
               ))
@@ -108,10 +108,7 @@ const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    guidanceEvents: state.calendar.guidanceEvents,
     currentStudent: state.guider.currentStudent,
-    studentBasicInfo: state.guider.currentStudent.basic,
-    contactLogs: state.guider.currentStudent.contactLogs,
   };
 }
 

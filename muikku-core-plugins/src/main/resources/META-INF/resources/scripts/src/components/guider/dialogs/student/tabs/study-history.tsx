@@ -142,6 +142,49 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
     </div>
   );
 
+  const historyComponent = (
+    <React.Fragment key="history-component">
+      <ApplicationSubPanel>
+        <ApplicationSubPanel.Header>
+          {i18n.text.get("plugin.guider.user.details.workspaces")}
+        </ApplicationSubPanel.Header>
+        <ApplicationSubPanel.Body>
+          {pastWorkspacesState === "READY" ? (
+            <Workspaces workspaces={pastWorkspaces} />
+          ) : (
+            <div className="loader-empty" />
+          )}
+        </ApplicationSubPanel.Body>
+      </ApplicationSubPanel>
+      <ApplicationSubPanel>
+        <ApplicationSubPanel.Header>
+          {i18n.text.get("plugin.guider.user.details.statistics")}
+        </ApplicationSubPanel.Header>
+        <ApplicationSubPanel.Body>
+          {activityLogState === "READY" ? (
+            <MainChart
+              workspaces={pastWorkspaces}
+              activityLogs={activityLogs}
+            />
+          ) : (
+            <div className="loader-empty" />
+          )}
+        </ApplicationSubPanel.Body>
+      </ApplicationSubPanel>
+    </React.Fragment>
+  );
+
+  const libraryComponent = (
+    <ApplicationSubPanel key="library-component">
+      <ApplicationSubPanel.Header>
+        {i18n.text.get("plugin.guider.user.details.files")}
+      </ApplicationSubPanel.Header>
+      <ApplicationSubPanel.Body>{userFiles}</ApplicationSubPanel.Body>
+    </ApplicationSubPanel>
+  );
+
+  const allComponents = [historyComponent, libraryComponent];
+
   /**
    * studyHistoryContent switches the corrent component
    * @returns JSX.element
@@ -150,87 +193,14 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
     if (!isAtMobileWidth) {
       switch (navigationActive) {
         case "history": {
-          return (
-            <>
-              <ApplicationSubPanel>
-                <ApplicationSubPanel.Header>
-                  {i18n.text.get("plugin.guider.user.details.workspaces")}
-                </ApplicationSubPanel.Header>
-                <ApplicationSubPanel.Body>
-                  {pastWorkspacesState === "READY" ? (
-                    <Workspaces workspaces={pastWorkspaces} />
-                  ) : (
-                    <div className="loader-empty" />
-                  )}
-                </ApplicationSubPanel.Body>
-              </ApplicationSubPanel>
-              <ApplicationSubPanel>
-                <ApplicationSubPanel.Header>
-                  {i18n.text.get("plugin.guider.user.details.statistics")}
-                </ApplicationSubPanel.Header>
-                <ApplicationSubPanel.Body>
-                  {activityLogState === "READY" ? (
-                    <MainChart
-                      workspaces={pastWorkspaces}
-                      activityLogs={activityLogs}
-                    />
-                  ) : (
-                    <div className="loader-empty" />
-                  )}
-                </ApplicationSubPanel.Body>
-              </ApplicationSubPanel>
-            </>
-          );
+          return historyComponent;
         }
         case "library": {
-          return (
-            <ApplicationSubPanel>
-              <ApplicationSubPanel.Header>
-                {i18n.text.get("plugin.guider.user.details.files")}
-              </ApplicationSubPanel.Header>
-              <ApplicationSubPanel.Body>{userFiles}</ApplicationSubPanel.Body>
-            </ApplicationSubPanel>
-          );
+          return libraryComponent;
         }
       }
     } else {
-      return (
-        <>
-          <ApplicationSubPanel>
-            <ApplicationSubPanel.Header>
-              {i18n.text.get("plugin.guider.user.details.workspaces")}
-            </ApplicationSubPanel.Header>
-            <ApplicationSubPanel.Body>
-              {pastWorkspacesState === "READY" ? (
-                <Workspaces workspaces={pastWorkspaces} />
-              ) : (
-                <div className="loader-empty" />
-              )}
-            </ApplicationSubPanel.Body>
-          </ApplicationSubPanel>
-          <ApplicationSubPanel>
-            <ApplicationSubPanel.Header>
-              {i18n.text.get("plugin.guider.user.details.statistics")}
-            </ApplicationSubPanel.Header>
-            <ApplicationSubPanel.Body>
-              {activityLogState === "READY" ? (
-                <MainChart
-                  workspaces={pastWorkspaces}
-                  activityLogs={activityLogs}
-                />
-              ) : (
-                <div className="loader-empty" />
-              )}
-            </ApplicationSubPanel.Body>
-          </ApplicationSubPanel>
-          <ApplicationSubPanel>
-            <ApplicationSubPanel.Header>
-              {i18n.text.get("plugin.guider.user.details.files")}
-            </ApplicationSubPanel.Header>
-            <ApplicationSubPanel.Body>{userFiles}</ApplicationSubPanel.Body>
-          </ApplicationSubPanel>
-        </>
-      );
+      return [historyComponent, libraryComponent];
     }
   };
 
