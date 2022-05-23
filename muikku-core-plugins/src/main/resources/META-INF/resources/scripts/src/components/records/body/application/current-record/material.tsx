@@ -201,8 +201,8 @@ export default class Material extends React.Component<
               material={this.props.material}
               workspace={this.props.workspace}
               readOnly
-              loadCompositeReplies
               modifiers="studies-material-page"
+              compositeReplies={this.props.compositeReply}
             >
               {(props, state, stateConfiguration) => {
                 let evalStateClassName = "";
