@@ -1317,7 +1317,8 @@ public class UserRESTService extends AbstractRESTService {
               userEntity.getId(), 
               (String) o.get("firstName"),
               (String) o.get("lastName"), 
-              (String) o.get("nickName"), 
+              (String) o.get("nickName"),
+              (String) o.get("studyProgrammeName"),
               hasImage,
               (String) o.get("nationality"),
               (String) o.get("language"), 
@@ -1898,7 +1899,7 @@ public class UserRESTService extends AbstractRESTService {
     Date endDate = user.getStudyTimeEnd() != null ? Date.from(user.getStudyTimeEnd().toInstant()) : null;
     
     return new fi.otavanopisto.muikku.rest.model.User(userEntity.getId(),
-        user.getFirstName(), user.getLastName(), user.getNickName(), hasImage,
+        user.getFirstName(), user.getLastName(), user.getNickName(), user.getStudyProgrammeName(), hasImage,
         user.getNationality(), user.getLanguage(),
         user.getMunicipality(), user.getSchool(), emailAddress,
         startDate, endDate);

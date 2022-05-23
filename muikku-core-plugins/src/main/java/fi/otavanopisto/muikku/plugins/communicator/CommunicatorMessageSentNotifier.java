@@ -57,7 +57,7 @@ public class CommunicatorMessageSentNotifier {
       if (!Objects.equals(sender.getId(), recipient.getId())) {
         Map<String, Object> params = new HashMap<String, Object>();
         User senderUser = userController.findUserByUserEntityDefaults(sender);
-        params.put("sender", String.format("%s %s", senderUser.getFirstName(), senderUser.getLastName()));
+        params.put("sender", String.format("%s", senderUser.getDisplayName()));
         params.put("subject", communicatorMessage.getCaption());
         params.put("content", communicatorMessage.getContent());
         params.put("url", String.format("%s/communicator", event.getBaseUrl()));
