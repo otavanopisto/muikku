@@ -314,7 +314,7 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
                   ></span>
                   <span className="application-list__header-primary application-list__header-primary--product">
                     <span className="application-list__header-primary-title">
-                      <b>{p.product.Description}</b>
+                      {p.product.Description}
                     </span>
                     <span className="application-list__header-primary-description">
                       {this.props.i18n.text.get(
