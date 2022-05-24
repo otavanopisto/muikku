@@ -21,6 +21,7 @@ interface NotesItemListContentProps {
   usePlace: NotesLocation;
   userId: number;
   isLoadingList: boolean;
+  filters: NotesItemFilters;
   onArchiveClick?: (notesItemd: number) => void;
   onReturnArchivedClick?: (notesItemId: number) => void;
   onPinNotesItemClick?: (
@@ -46,7 +47,8 @@ interface NotesItemListContentProps {
  */
 const NotesItemList: React.FC<NotesItemListContentProps> = (props) => {
   const {
-    usePlace,
+    i18n,
+    filters,
     userId,
     notesItems,
     isLoadingList,
@@ -57,21 +59,21 @@ const NotesItemList: React.FC<NotesItemListContentProps> = (props) => {
     onNotesItemSaveUpdateClick,
   } = props;
 
-  const [filters, setFilters] = React.useState<NotesItemFilters>({
+  /* const [filters, setFilters] = React.useState<NotesItemFilters>({
     high: false,
     normal: false,
     low: false,
     own: false,
     guider: false,
-  });
+  }); */
 
   /**
    * handleFilttersChange
    * @param updatedFilters name
    */
-  const handleFiltersChange = (updatedFilters: NotesItemFilters) => {
+  /* const handleFiltersChange = (updatedFilters: NotesItemFilters) => {
     setFilters(updatedFilters);
-  };
+  }; */
 
   const filteredNotesItemList = React.useMemo(
     () => sortNotesItemsBy(notesItems, filters, userId),
@@ -80,18 +82,19 @@ const NotesItemList: React.FC<NotesItemListContentProps> = (props) => {
 
   return (
     <>
-      <NotesToolbar>
+      {/* <NotesToolbar>
         <NotesItemListFiltters
           i18n={props.i18n}
           usePlace={usePlace}
           filters={filters}
           onFilttersChange={handleFiltersChange}
         />
-      </NotesToolbar>
+      </NotesToolbar> */}
       <div className="notes__content">
         <NotesItemListWithoutAnimation isLoadingList={isLoadingList}>
           {filteredNotesItemList.map((j) => (
             <NotesListItem
+              i18n={i18n}
               key={j.id}
               ref={React.createRef()}
               notesItem={j}

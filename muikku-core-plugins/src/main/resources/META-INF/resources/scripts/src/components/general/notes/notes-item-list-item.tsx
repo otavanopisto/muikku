@@ -8,6 +8,7 @@ import Button, { ButtonPill, IconButton } from "~/components/general/button";
 import * as moment from "moment";
 import Dropdown from "~/components/general/dropdown";
 import NotesItemEdit from "./notes-item-edit";
+import { i18nType } from "~/reducers/base/i18n";
 
 /**
  * NotesListItemProps
@@ -33,6 +34,7 @@ interface NotesListItemProps {
     updatedNotesItem: NotesItemUpdate,
     onSuccess?: () => void
   ) => void;
+  i18n: i18nType;
 }
 
 const defaultProps = {

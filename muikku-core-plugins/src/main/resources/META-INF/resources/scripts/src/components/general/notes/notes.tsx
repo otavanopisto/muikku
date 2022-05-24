@@ -1,5 +1,5 @@
 import * as React from "react";
-import { NotesLocation } from "~/@types/notes";
+import { NotesItemFilters, NotesLocation } from "~/@types/notes";
 import {
   DisplayNotificationTriggerType,
   displayNotification,
@@ -14,6 +14,7 @@ import { i18nType } from "~/reducers/base/i18n";
 import NotesItemList from "./notes-item-list";
 import { ButtonPill } from "~/components/general/button";
 import NotesItemNew from "./notes-item-new";
+import NotesItemListFiltters from "./notes-item-list-filtters";
 
 /**
  * NotesProps
@@ -75,12 +76,46 @@ const Notes: React.FC<NotesProps> = (props) => {
     pinNotesItem,
   } = useNotesItem(studentId, displayNotification);
 
+  const [activeNoteFilters, setActiveNoteFilters] =
+    React.useState<NotesItemFilters>({
+      high: false,
+      normal: false,
+      low: false,
+      own: false,
+      guider: false,
+    });
+
+  const [nonActiveNoteFilters, setNoneActiveNoteFilters] =
+    React.useState<NotesItemFilters>({
+      high: false,
+      normal: false,
+      low: false,
+      own: false,
+      guider: false,
+    });
+
   /**
    * Handles tab change
    * @param tab tab
    */
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
+  };
+
+  /**
+   * handleFilttersChange
+   * @param updatedFilters name
+   */
+  const handleActiveFiltersChange = (updatedFilters: NotesItemFilters) => {
+    setActiveNoteFilters(updatedFilters);
+  };
+
+  /**
+   * handleFilttersChange
+   * @param updatedFilters name
+   */
+  const handleNonActiveFiltersChange = (updatedFilters: NotesItemFilters) => {
+    setNoneActiveNoteFilters(updatedFilters);
   };
 
   /**
@@ -103,9 +138,17 @@ const Notes: React.FC<NotesProps> = (props) => {
             >
               <ButtonPill buttonModifiers="add-note" icon="plus" />
             </NotesItemNew>
+
+            <NotesItemListFiltters
+              i18n={i18n}
+              usePlace={usePlace}
+              filters={activeNoteFilters}
+              onFilttersChange={handleActiveFiltersChange}
+            />
           </NotesToolbar>
           <NotesItemList
-            i18n={props.i18n}
+            i18n={i18n}
+            filters={activeNoteFilters}
             isLoadingList={notesItems.isLoadingList}
             notesItems={notesItems.notesItemList}
             userId={userId}
@@ -130,8 +173,17 @@ const Notes: React.FC<NotesProps> = (props) => {
        */
       component: (
         <NotesContainer>
+          <NotesToolbar>
+            <NotesItemListFiltters
+              i18n={props.i18n}
+              usePlace={usePlace}
+              filters={activeNoteFilters}
+              onFilttersChange={handleNonActiveFiltersChange}
+            />
+          </NotesToolbar>
           <NotesItemList
             i18n={props.i18n}
+            filters={nonActiveNoteFilters}
             isLoadingList={notesItems.isLoadingList}
             notesItems={notesItems.notesArchivedItemList}
             userId={userId}
