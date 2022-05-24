@@ -13,12 +13,10 @@
 
 .notes__toolbar {
   align-items: center;
-  border-bottom: 1px solid $color-default-separator-border;
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;
-  margin: 0 0 15px;
-  padding: 15px 8px;
+  padding: 0 8px;
   width: 100%;
 }
 
