@@ -119,7 +119,7 @@ const NotesItemListFiltters: React.FC<NotesItemListFilttersProps> = (props) => {
           }
         >
           <div tabIndex={0}>
-            <IconButton icon="cogs" />
+            <IconButton icon="filter" />
           </div>
         </Dropdown>
       </div>
