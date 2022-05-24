@@ -108,6 +108,7 @@ export interface IContactLogEvent {
   type: ContactTypes;
   creatorId: number;
   creatorName: string;
+  hasImage: boolean;
   text: string;
   comments?: IContactLogEventComment[];
 }

@@ -31,8 +31,16 @@ interface ContactEventProps {
  * @returns JSX.Element
  */
 const ContactEvent: React.FC<ContactEventProps> = (props) => {
-  const { entryDate, type, creatorName, text, comments, creatorId, id } =
-    props.event;
+  const {
+    entryDate,
+    type,
+    creatorName,
+    text,
+    comments,
+    hasImage,
+    creatorId,
+    id,
+  } = props.event;
   const { modifier, studentId, i18n } = props;
   const [commentOpen, setCreateCommentOpen] = React.useState<boolean>(false);
   const [eventEditOpen, setEventEditOpen] = React.useState<boolean>(false);
@@ -47,7 +55,7 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
       <div className="contact-event__header">
         <Avatar
           id={creatorId}
-          hasImage={false}
+          hasImage={hasImage}
           size="small"
           firstName={creatorName}
         ></Avatar>{" "}

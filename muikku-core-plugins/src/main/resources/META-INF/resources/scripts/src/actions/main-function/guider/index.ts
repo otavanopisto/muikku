@@ -44,7 +44,6 @@ import {
   PurchaseProductType,
   PurchaseType,
 } from "~/reducers/main-function/profile";
-import { Dispatch } from "react-redux";
 import { LoadingState } from "~/@types/shared";
 
 export type UPDATE_GUIDER_ACTIVE_FILTERS = SpecificActionType<
@@ -678,11 +677,6 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
             type: "SET_CURRENT_GUIDER_STUDENT_PROP",
             payload: { property: "currentWorkspaces", value: workspaces },
           });
-
-          dispatch({
-            type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-            payload: { property: "pastWorkspaces", value: workspaces },
-          });
         }),
         canListUserOrders &&
           promisify(mApi().ceepos.user.orders.read(id), "callback")().then(
@@ -753,14 +747,6 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
       dispatch({
         type: "SET_CURRENT_GUIDER_STUDENT_PROP",
         payload: {
-          property: "pastWorkspacesState",
-          value: <LoadingState>"LOADING",
-        },
-      });
-
-      dispatch({
-        type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-        payload: {
           property: "activityLogState",
           value: <LoadingState>"LOADING",
         },
@@ -787,27 +773,36 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
           });
         }),
       ];
-
       if (!historyLoaded || forceLoad) {
+        dispatch({
+          type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+          payload: {
+            property: "pastWorkspacesState",
+            value: <LoadingState>"LOADING",
+          },
+        });
         promises.push(
           promisify(
             mApi().guider.students.workspaces.read(id),
             "callback"
           )().then(async (workspaces: WorkspaceListType) => {
+
             dispatch({
               type: "SET_CURRENT_GUIDER_STUDENT_PROP",
               payload: { property: "pastWorkspaces", value: workspaces },
+            });
+            dispatch({
+              type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+              payload: {
+                property: "pastWorkspacesState",
+                value: <LoadingState>"READY",
+              },
             });
           })
         );
       }
 
       await Promise.all([promises]);
-
-      dispatch({
-        type: "UPDATE_CURRENT_GUIDER_STUDENT_STATE",
-        payload: <GuiderCurrentStudentStateType>"READY",
-      });
 
       dispatch({
         type: "UNLOCK_TOOLBAR",
