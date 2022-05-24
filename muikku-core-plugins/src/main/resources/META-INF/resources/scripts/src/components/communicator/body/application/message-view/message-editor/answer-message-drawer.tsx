@@ -327,7 +327,7 @@ class AnswerMessageDrawer extends SessionStateComponent<
         {this.props.signature ? (
           <div
             key="new-message-4"
-            className="env-dialog__row env-dialog__row--communicator-signature"
+            className="env-dialog__row env-dialog__row--options"
           >
             <input
               id="messageSignature"

@@ -104,19 +104,6 @@
   }
 }
 
-// Used in journal center component
-
-.tabs__tab--journal-center {
-  border: none;
-  flex-grow: unset;
-  margin: 0 5px;
-  width: fit-content;
-
-  &.active {
-    border: none;
-  }
-}
-
 .tabs__tab-data--guider-student {
   padding: 10px;
 }

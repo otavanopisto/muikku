@@ -20,7 +20,7 @@ import moment from "~/lib/moment";
 import { StatusType } from "~/reducers/base/status";
 import Avatar from "~/components/general/avatar";
 import { getName } from "~/util/modifiers";
-import JournalCenter from "~/components/general/journal-center/journal-center";
+import Notes from "~/components/general/notes/notes";
 
 /**
  * SummaryProps
@@ -268,7 +268,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                 <div className="application-sub-panel__header">
                   Tehtävät ja omat muistutukset
                 </div>
-                <JournalCenter
+                <Notes
                   usePlace="records"
                   showHistoryPanel
                   userId={this.props.status.userId}

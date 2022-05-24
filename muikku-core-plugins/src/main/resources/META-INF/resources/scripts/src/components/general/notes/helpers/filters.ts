@@ -1,8 +1,8 @@
 import {
-  JournalFilters,
-  JournalNoteRead,
-  JournalPriority,
-} from "~/@types/journal-center";
+  NotesItemFilters,
+  NotesItemRead,
+  NotesItemPriority,
+} from "~/@types/notes";
 
 /**
  * Finds deselected items based on two arrays
@@ -11,9 +11,9 @@ import {
  */
 export const findDeselectedSorterItems = (currentArray: string[]) => {
   const filtersStrings: string[] = [
-    JournalPriority.HIGH,
-    JournalPriority.NORMAL,
-    JournalPriority.LOW,
+    NotesItemPriority.HIGH,
+    NotesItemPriority.NORMAL,
+    NotesItemPriority.LOW,
   ];
 
   const deSelectedItems: string[] = [];
@@ -30,16 +30,16 @@ export const findDeselectedSorterItems = (currentArray: string[]) => {
 };
 
 /**
- * Sorts journals by pinned status
- * @param journalList journalList
+ * Sorts noptesItems by pinned status
+ * @param notesItemList journalList
  * @returns two list, pinnend and non pinned lists
  */
-export const sortByPinned = (journalList: JournalNoteRead[]) => {
-  const pinnedList: JournalNoteRead[] = [];
+export const sortByPinned = (notesItemList: NotesItemRead[]) => {
+  const pinnedList: NotesItemRead[] = [];
 
-  const nonPinnedList: JournalNoteRead[] = [];
+  const nonPinnedList: NotesItemRead[] = [];
 
-  journalList.map((j) => {
+  notesItemList.map((j) => {
     if (j.pinned) {
       pinnedList.push(j);
     } else {
@@ -54,22 +54,22 @@ export const sortByPinned = (journalList: JournalNoteRead[]) => {
 };
 
 /**
- * sortByJournalPriority
- * @param journalList journalList
+ * sortByNotesItemPriority
+ * @param notesItemList notesItemList
  * @param filters filtters
- * @returns list of journal sorted by priority
+ * @returns list of notesItem sorted by priority
  */
-export const sortByJournalPriority = (
-  journalList: JournalNoteRead[],
-  filters: JournalFilters
+export const sortByNotesItemPriority = (
+  notesItemList: NotesItemRead[],
+  filters: NotesItemFilters
 ) => {
   /**
    * Default order is always follow
    */
   let order: string[] = [
-    JournalPriority.HIGH,
-    JournalPriority.NORMAL,
-    JournalPriority.LOW,
+    NotesItemPriority.HIGH,
+    NotesItemPriority.NORMAL,
+    NotesItemPriority.LOW,
   ];
 
   /**
@@ -80,19 +80,19 @@ export const sortByJournalPriority = (
     order = [];
 
     if (filters.high) {
-      order.push(JournalPriority.HIGH);
+      order.push(NotesItemPriority.HIGH);
     }
     if (filters.normal) {
-      order.push(JournalPriority.NORMAL);
+      order.push(NotesItemPriority.NORMAL);
     }
     if (filters.low) {
-      order.push(JournalPriority.LOW);
+      order.push(NotesItemPriority.LOW);
     }
   }
 
   /**
    * This finds those deactive priorites sorters and pushes those to ordering array
-   * which is needed to correctly sort whole journal list
+   * which is needed to correctly sort whole notesItem list
    */
   const missing = findDeselectedSorterItems(order);
 
@@ -102,25 +102,25 @@ export const sortByJournalPriority = (
     }
   }
 
-  return journalList.sort(
+  return notesItemList.sort(
     (a, b) => order.indexOf(a.priority) - order.indexOf(b.priority)
   );
 };
 
 /**
  * sortByMadeByMe
- * @param journalList journalList
+ * @param notesItemList notesItemList
  * @param userId userId
- * @returns journal list sorted by logged user own journals first
+ * @returns notesItem list sorted by logged user own notesItems first
  */
 export const sortByMadeByMe = (
-  journalList: JournalNoteRead[],
+  notesItemList: NotesItemRead[],
   userId: number
 ) => {
-  const madeByMe: JournalNoteRead[] = [];
-  const madeByOthers: JournalNoteRead[] = [];
+  const madeByMe: NotesItemRead[] = [];
+  const madeByOthers: NotesItemRead[] = [];
 
-  journalList.map((j) =>
+  notesItemList.map((j) =>
     j.creator === userId ? madeByMe.push(j) : madeByOthers.push(j)
   );
 
@@ -129,17 +129,17 @@ export const sortByMadeByMe = (
 
 /**
  * filterByMaker
- * @param journalList journalList
+ * @param notesItemList notesItemList
  * @param filters filters
  * @param creator creator
- * @returns list of filtered journals
+ * @returns list of filtered notesItems
  */
 export const filterByCreator = (
-  journalList: JournalNoteRead[],
-  filters: JournalFilters,
+  notesItemList: NotesItemRead[],
+  filters: NotesItemFilters,
   creator: number
-): JournalNoteRead[] => {
-  const updatedList = journalList.filter((j) => {
+): NotesItemRead[] => {
+  const updatedList = notesItemList.filter((j) => {
     if (
       (filters.own && creator === j.creator) ||
       (filters.guider && creator !== j.creator)
@@ -152,21 +152,21 @@ export const filterByCreator = (
 };
 
 /**
- * sortJournalsByPriority
- * @param journalList journalList
+ * sortNotesItemsBy
+ * @param notesItemList journalList
  * @param filters filters
  * @param userId userId
- * @returns sorted journal list if there is priorities selected
+ * @returns sorted notesItem list if there is priorities selected
  */
-export const sortJournalsBy = (
-  journalList: JournalNoteRead[],
-  filters: JournalFilters,
+export const sortNotesItemsBy = (
+  notesItemList: NotesItemRead[],
+  filters: NotesItemFilters,
   userId: number
-): JournalNoteRead[] => {
-  let { pinnedList, nonPinnedList } = sortByPinned(journalList);
+): NotesItemRead[] => {
+  let { pinnedList, nonPinnedList } = sortByPinned(notesItemList);
 
   /**
-   * Filters journals by creator
+   * Filters notesItems by creator
    */
   if (filters.own || filters.guider) {
     pinnedList = filterByCreator(pinnedList, filters, userId);
@@ -176,11 +176,11 @@ export const sortJournalsBy = (
   /**
    * Sorts by default priority order or by active priority order
    */
-  pinnedList = sortByJournalPriority(pinnedList, filters);
-  nonPinnedList = sortByJournalPriority(nonPinnedList, filters);
+  pinnedList = sortByNotesItemPriority(pinnedList, filters);
+  nonPinnedList = sortByNotesItemPriority(nonPinnedList, filters);
 
   /* if (filtters.own) {
-      journalListSorted = sortByMadeByMe(journalListSorted);
+      notesItemListSorted = sortByMadeByMe(notesItemListSorted);
     } */
 
   return [...pinnedList, ...nonPinnedList];

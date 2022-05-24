@@ -3,18 +3,18 @@ import calculateBoundingBoxes from "./helpers/calculateBoundingBoxes";
 import usePrevious from "./hooks/usePrevious";
 
 /**
- * JournalListProps
+ * NotesItemListProps
  */
-interface JournalListAnimatedProps {
+interface NotesItemListAnimatedProps {
   isLoadingList: boolean;
 }
 
 /**
- * Creater Journal list component
+ * Creater NotesItem list component
  * @param props props
  * @returns JSX.Element
  */
-const JournalListAnimated: React.FC<JournalListAnimatedProps> = (props) => {
+const NotesItemListAnimated: React.FC<NotesItemListAnimatedProps> = (props) => {
   const { children, isLoadingList } = props;
 
   const listElementRef = React.useRef();
@@ -78,10 +78,6 @@ const JournalListAnimated: React.FC<JournalListAnimatedProps> = (props) => {
     return <div className="loader-empty" />;
   }
 
-  return (
-    <div ref={listElementRef} className="journal-list-container">
-      {children}
-    </div>
-  );
+  return <div ref={listElementRef}>{children}</div>;
 };
-export default JournalListAnimated;
+export default NotesItemListAnimated;
