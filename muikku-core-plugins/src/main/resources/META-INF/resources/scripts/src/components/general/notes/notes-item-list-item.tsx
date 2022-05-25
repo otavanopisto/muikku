@@ -218,14 +218,14 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
         case NotesItemStatus.ONGOING:
           return (
             <div className="notes__item-status notes__item-status--ongoing">
-              Kesken
+              {props.i18n.text.get("plugin.records.notes.status.ongoing")}
             </div>
           );
 
         case NotesItemStatus.APPROVAL_PENDING:
           return (
             <div className="notes__item-status notes__item-status--pending">
-              Odottaa käsittelyä
+              {props.i18n.text.get("plugin.records.notes.status.pending")}
             </div>
           );
 
@@ -233,7 +233,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
           return (
             <div className="notes__item-status notes__item-status--done">
               <span className="notes__item-status-indicator icon-check"></span>
-              Tehty
+              {props.i18n.text.get("plugin.records.notes.status.ongoing")}
             </div>
           );
 
