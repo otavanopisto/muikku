@@ -41,6 +41,7 @@ class HopsStudiesPlanning extends React.Component<
   HopsStudiesPlanningProps,
   HopsStudiesPlanningState
 > {
+  private myRef: HTMLDivElement = undefined;
   /**
    * Constructor method
    *
@@ -54,6 +55,15 @@ class HopsStudiesPlanning extends React.Component<
       selectNextIsActive: false,
       selectSuggestedOptionalActive: false,
     };
+  }
+
+  /**
+   * componentDidMount
+   */
+  componentDidMount(): void {
+    window.dispatchEvent(new Event("resize"));
+
+    this.myRef.scrollIntoView({ behavior: "smooth" });
   }
 
   /**
@@ -92,10 +102,10 @@ class HopsStudiesPlanning extends React.Component<
      */
     const hasAccessToStudyTool =
       this.props.user === "supervisor" ||
-      (this.props.phase && this.props.phase >= 3);
+      (this.props.phase && this.props.phase >= 2);
 
     return (
-      <div className="hops-container">
+      <div className="hops-container" ref={(ref) => (this.myRef = ref)}>
         <fieldset className="hops-container__fieldset">
           <legend className="hops-container__subheader">Tavoitteet</legend>
 

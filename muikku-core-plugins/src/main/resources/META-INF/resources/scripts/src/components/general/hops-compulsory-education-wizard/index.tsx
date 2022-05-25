@@ -675,7 +675,6 @@ class CompulsoryEducationHopsWizard extends React.Component<
               steps={steps}
               dontValidate={false}
               preventEnterSubmission={true}
-              stepsNavigation={this.props.user === "supervisor"}
               showNavigation={!this.state.loading}
               showSteps={true}
               prevBtnOnLastStep={true}
@@ -689,7 +688,6 @@ class CompulsoryEducationHopsWizard extends React.Component<
               steps={steps}
               dontValidate={false}
               preventEnterSubmission={true}
-              stepsNavigation={this.props.user === "supervisor"}
               showNavigation={!this.state.loading}
               showSteps={true}
               prevBtnOnLastStep={true}

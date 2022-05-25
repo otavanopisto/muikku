@@ -372,7 +372,7 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
     return (
       <Tr key={sSubject.name} modifiers={["course"]}>
         <Td modifiers={["subject"]}>
-          <div>{sSubject.name}</div>
+          <div>{`${sSubject.name} (${sSubject.subjectCode})`}</div>
         </Td>
         {courses}
       </Tr>

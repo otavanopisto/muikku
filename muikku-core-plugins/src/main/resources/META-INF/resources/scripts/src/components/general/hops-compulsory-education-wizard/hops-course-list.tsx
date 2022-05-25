@@ -330,7 +330,9 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
     return (
       <ListContainer key={sSubject.name} modifiers={["subject"]}>
         <ListContainer modifiers={["row"]}>
-          <ListHeader modifiers={["subject-name"]}>{sSubject.name}</ListHeader>
+          <ListHeader
+            modifiers={["subject-name"]}
+          >{`${sSubject.name} (${sSubject.subjectCode})`}</ListHeader>
         </ListContainer>
         <ListContainer modifiers={["row"]}>{courses}</ListContainer>
       </ListContainer>

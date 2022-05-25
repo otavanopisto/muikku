@@ -90,7 +90,7 @@ const StudySuggestionMatrix: React.FC<StudySuggestionMatrixProps> = (props) => {
           <div className="hops-container__study-tool-indicator-container ">
             <div className="hops-container__indicator-item hops-container__indicator-item--next"></div>
             <div className="hops-container__indicator-item-label">
-              Ohjaajan suraavaksi ehdottama
+              Ohjaajan seuraavaksi ehdottama
             </div>
           </div>
         </div>

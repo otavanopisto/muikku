@@ -39,6 +39,7 @@ class HopsStartingLevel extends React.Component<
   HopsStartingLevelProps,
   HopsStartingLevelState
 > {
+  private myRef: HTMLDivElement = undefined;
   /**
    * Constructor method
    *
@@ -48,6 +49,15 @@ class HopsStartingLevel extends React.Component<
     super(props);
 
     this.state = {};
+  }
+
+  /**
+   * componentDidMount
+   */
+  componentDidMount(): void {
+    window.dispatchEvent(new Event("resize"));
+
+    this.myRef.scrollIntoView({ behavior: "smooth" });
   }
 
   /**
@@ -175,7 +185,7 @@ class HopsStartingLevel extends React.Component<
    */
   render() {
     return (
-      <div className="hops-container">
+      <div className="hops-container" ref={(ref) => (this.myRef = ref)}>
         <fieldset className="hops-container__fieldset">
           <legend className="hops-container__subheader">
             Aikaisemmat opinnot ja työkokemus

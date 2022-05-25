@@ -677,7 +677,7 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
     !isLoading &&
     numberOfOptionalSelectedCourses !== 0 &&
     (updatedCompletedOptionalCourses >= neededOptionalStudies ||
-      numberOfOptionalSelectedCourses + updatedCompletedOptionalCourses >
+      numberOfOptionalSelectedCourses + updatedCompletedOptionalCourses >=
         neededOptionalStudies);
 
   return (

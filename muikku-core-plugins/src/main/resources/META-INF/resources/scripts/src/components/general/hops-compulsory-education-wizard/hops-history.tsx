@@ -76,7 +76,7 @@ const HopsHistoryEvent: React.FC<HopsHistoryEventProps> = (props) => {
         <div className="hops-container__history-event hops-container__history-event--created-by-me">
           <div className="hops-container__history-event-primary">
             <span className="hops-container__history-event-text">
-              Muokkasit HOPS:sia
+              Muokkasit HOPS:ia
             </span>
             <span className="hops-container__history-event-date">
               {moment(props.hopsUpdate.date).format("l")}

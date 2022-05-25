@@ -768,7 +768,7 @@ const updateCurrentStudentHopsPhase: UpdateCurrentStudentHopsPhaseTriggerType =
 
         dispatch(
           notificationActions.displayNotification(
-            "Käyttäjän hops vaihe päivitetty onnistuneesti",
+            "HOPS-vaiheen päivittäminen onnistui.",
             "success"
           )
         );

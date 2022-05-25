@@ -185,9 +185,8 @@ class StudentDialog extends React.Component<
                 onChange={this.handleHopsPhaseChange}
               >
                 <option value={0}>HOPS - Ei aktivoitu</option>
-                <option value={1}>HOPS - aktiivinen</option>
-                <option value={2}>HOPS - esitäyttö</option>
-                <option value={3}>HOPS - opintojen suunnittelu</option>
+                <option value={1}>HOPS - esitäyttö</option>
+                <option value={2}>HOPS - opintojen suunnittelu</option>
               </select>
             </div>
 
