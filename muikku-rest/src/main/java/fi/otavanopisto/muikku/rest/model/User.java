@@ -11,7 +11,7 @@ public class User {
               String firstName,
               String lastName,
               String nickName,
-              String studyProgramme,
+              String studyProgrammeName,
               boolean hasImage,
               String nationality,
               String language,
@@ -26,7 +26,7 @@ public class User {
     this.firstName = firstName;
     this.lastName = lastName;
     this.nickName = nickName;
-    this.studyProgramme = studyProgramme;
+    this.studyProgrammeName = studyProgrammeName;
     this.hasImage = hasImage;
     this.nationality = nationality;
     this.language = language;
@@ -133,19 +133,19 @@ public class User {
     this.nickName = nickName;
   }
 
-  public String getStudyProgramme() {
-    return studyProgramme;
+  public String getStudyProgrammeName() {
+    return studyProgrammeName;
   }
 
-  public void setStudyProgramme(String studyProgramme) {
-    this.studyProgramme = studyProgramme;
+  public void setStudyProgrammeName(String studyProgrammeName) {
+    this.studyProgrammeName = studyProgrammeName;
   }
 
   private Long id;
   private String firstName;
   private String lastName;
   private String nickName;
-  private String studyProgramme;
+  private String studyProgrammeName;
   private boolean hasImage;
   private String nationality;
   private String language;
