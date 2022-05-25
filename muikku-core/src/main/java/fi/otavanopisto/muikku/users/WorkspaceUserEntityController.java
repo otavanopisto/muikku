@@ -163,6 +163,19 @@ public class WorkspaceUserEntityController {
     }
   }
   
+  public List<WorkspaceUserEntity> listInactiveWorkspaceUserEntitiesByUserIdentifier(SchoolDataIdentifier userIdentifier) {
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.
+        findUserSchoolDataIdentifierByDataSourceAndIdentifier(userIdentifier.getDataSource(), userIdentifier.getIdentifier());
+    
+    if (userSchoolDataIdentifier != null) {
+      return workspaceUserEntityDAO.listByUserSchoolDataIdentifierAndActiveAndArchived(userSchoolDataIdentifier, Boolean.FALSE, Boolean.FALSE);
+    }
+    else {
+      logger.severe(String.format("Could not find UserSchoolDataIdentifier by %s", userIdentifier));
+      return Collections.emptyList();
+    }
+  }
+  
   @Deprecated
   public List<WorkspaceUserEntity> listActiveWorkspaceUserEntitiesByUserEntity(UserEntity userEntity) {
     UserSchoolDataIdentifier userSchoolDataIdentifier = toUserSchoolDataIdentifier(userEntity);
@@ -229,6 +242,16 @@ public class WorkspaceUserEntityController {
     SchoolDataIdentifier schoolDataIdentifier = toSchoolDataIdentifier(userEntity);
     List<WorkspaceEntity> result = new ArrayList<>();
     List<WorkspaceUserEntity> workspaceUserEntities = listActiveWorkspaceUserEntitiesByUserIdentifier(schoolDataIdentifier);
+    for (WorkspaceUserEntity workspaceUserEntity : workspaceUserEntities) {
+      result.add(workspaceUserEntity.getWorkspaceEntity());
+    }
+    return result;
+  }
+
+  public List<WorkspaceEntity> listInactiveWorkspaceEntitiesByUserEntity(UserEntity userEntity) {
+    SchoolDataIdentifier schoolDataIdentifier = toSchoolDataIdentifier(userEntity);
+    List<WorkspaceEntity> result = new ArrayList<>();
+    List<WorkspaceUserEntity> workspaceUserEntities = listInactiveWorkspaceUserEntitiesByUserIdentifier(schoolDataIdentifier);
     for (WorkspaceUserEntity workspaceUserEntity : workspaceUserEntities) {
       result.add(workspaceUserEntity.getWorkspaceEntity());
     }
