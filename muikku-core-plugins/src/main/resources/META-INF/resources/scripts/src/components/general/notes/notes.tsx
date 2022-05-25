@@ -132,12 +132,17 @@ const Notes: React.FC<NotesProps> = (props) => {
       component: (
         <NotesContainer>
           <NotesToolbar>
-            <NotesItemNew
-              newNoteOwnerId={studentId}
-              onNotesItemSaveClick={createNotesItem}
-            >
-              <ButtonPill buttonModifiers="add-note" icon="plus" />
-            </NotesItemNew>
+            <div className="notes__toolbar-section">
+              <NotesItemNew
+                newNoteOwnerId={studentId}
+                onNotesItemSaveClick={createNotesItem}
+              >
+                <ButtonPill
+                  buttonModifiers={["add-note", "within-content"]}
+                  icon="plus"
+                />
+              </NotesItemNew>
+            </div>
 
             <NotesItemListFiltters
               i18n={i18n}
@@ -174,6 +179,18 @@ const Notes: React.FC<NotesProps> = (props) => {
       component: (
         <NotesContainer>
           <NotesToolbar>
+            <div className="notes__toolbar-section">
+              <NotesItemNew
+                newNoteOwnerId={studentId}
+                onNotesItemSaveClick={createNotesItem}
+              >
+                <ButtonPill
+                  buttonModifiers={["add-note", "within-content"]}
+                  icon="plus"
+                  disabled={true}
+                />
+              </NotesItemNew>
+            </div>
             <NotesItemListFiltters
               i18n={props.i18n}
               usePlace={usePlace}

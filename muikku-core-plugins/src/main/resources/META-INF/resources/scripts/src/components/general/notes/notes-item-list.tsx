@@ -7,8 +7,6 @@ import {
   NotesItemStatus,
 } from "~/@types/notes";
 import { sortNotesItemsBy } from "./helpers/filters";
-import { NotesToolbar } from "./notes";
-import NotesItemListFiltters from "./notes-item-list-filtters";
 import NotesListItem from "./notes-item-list-item";
 import NotesItemListWithoutAnimation from "./notes-list-test";
 import { i18nType } from "~/reducers/base/i18n";
@@ -91,7 +89,10 @@ const NotesItemList: React.FC<NotesItemListContentProps> = (props) => {
         />
       </NotesToolbar> */}
       <div className="notes__content">
-        <NotesItemListWithoutAnimation isLoadingList={isLoadingList}>
+        <NotesItemListWithoutAnimation
+          isLoadingList={isLoadingList}
+          i18n={i18n}
+        >
           {filteredNotesItemList.map((j) => (
             <NotesListItem
               i18n={i18n}

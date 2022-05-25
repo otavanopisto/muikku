@@ -216,13 +216,26 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
     const renderStatus = () => {
       switch (status) {
         case NotesItemStatus.ONGOING:
-          return <ButtonPill />;
+          return (
+            <div className="notes__item-status notes__item-status--ongoing">
+              Kesken
+            </div>
+          );
 
         case NotesItemStatus.APPROVAL_PENDING:
-          return <ButtonPill icon="assessment-pending" />;
+          return (
+            <div className="notes__item-status notes__item-status--pending">
+              Odottaa käsittelyä
+            </div>
+          );
 
         case NotesItemStatus.APPROVED:
-          return <ButtonPill />;
+          return (
+            <div className="notes__item-status notes__item-status--done">
+              <span className="notes__item-status-indicator icon-check"></span>
+              Tehty
+            </div>
+          );
 
         default:
           break;
@@ -398,10 +411,10 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
         {description ? (
           <div className="notes__item-body">{description}</div>
         ) : null}
-        <div className="notes__item-status">{renderStatus()}</div>
         <div className="notes__item-author">
-          {loggedUserIsCreator ? "you made this!" : creatorName}
+          {!loggedUserIsCreator ? creatorName : null}
         </div>
+        <div className="notes__item-footer">{renderStatus()}</div>
       </div>
     );
   }

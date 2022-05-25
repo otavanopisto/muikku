@@ -5,6 +5,8 @@ import Dropdown from "~/components/general/dropdown";
 import NotesItemPriorityChip from "./notes-item-list-filtters-chip";
 import { i18nType } from "~/reducers/base/i18n";
 
+import "~/sass/elements/filter.scss";
+
 /**
  * NotesItemListProps
  */
@@ -82,41 +84,44 @@ const NotesItemListFiltters: React.FC<NotesItemListFilttersProps> = (props) => {
       </div>
       <div className="notes__toolbar-section">
         <Dropdown
-          content={
-            <div>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  margin: "5px 0px",
-                }}
-              >
-                <label style={{ marginRight: "5px" }}>Omat</label>
+          items={[
+            <div key="filterTitle" className="filter-category">
+              <div className="filter-category__label">
+                {props.i18n.text.get("plugin.records.notes.filter.label")}
+              </div>
+            </div>,
+
+            <div key="filterMyOwn" className="filter-item">
+              <input
+                type="checkbox"
+                id="notesFilterMyOwn"
+                onChange={handleCheckboxesChange("own")}
+                checked={filters.own}
+              />
+              <label htmlFor="notesFilterMyOwn" className="filter-item__label">
+                {props.i18n.text.get("plugin.records.notes.filter.createdbyme")}
+              </label>
+            </div>,
+
+            usePlace === "records" && (
+              <div key="filterFromGuider" className="filter-item">
                 <input
                   type="checkbox"
-                  onChange={handleCheckboxesChange("own")}
-                  checked={filters.own}
+                  id="notesFilterFromGuider"
+                  onChange={handleCheckboxesChange("guider")}
+                  checked={filters.guider}
                 />
-              </div>
-
-              {usePlace === "records" && (
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    margin: "5px 0px",
-                  }}
+                <label
+                  htmlFor="notesFilterFromGuider"
+                  className="filter-item__label"
                 >
-                  <label style={{ marginRight: "5px" }}>Ohjaajien</label>
-                  <input
-                    type="checkbox"
-                    onChange={handleCheckboxesChange("guider")}
-                    checked={filters.guider}
-                  />
-                </div>
-              )}
-            </div>
-          }
+                  {props.i18n.text.get(
+                    "plugin.records.notes.filter.createdbyguidanceCounselor"
+                  )}
+                </label>
+              </div>
+            ),
+          ]}
         >
           <div tabIndex={0}>
             <IconButton icon="more_vert" />

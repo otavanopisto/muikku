@@ -923,6 +923,13 @@
   }
 }
 
+// Slightly smaller button-pill to be used amongst other page elements a.k.a within content
+.button-pill--within-content {
+  font-size: 1rem;
+  height: 2rem;
+  width: 2rem;
+}
+
 .button-pill--filter {
   background-color: $color-main-function-button-pill-delete-background;
   color: $color-main-function-button-pill-delete-text;
