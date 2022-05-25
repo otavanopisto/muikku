@@ -283,7 +283,7 @@ public class HopsRestService {
 
         long matches = items
             .stream()
-            .filter(s -> s.getSubject().equals(suggestion.getSubject()) && Objects.equals(s.getCourseNumber(), suggestion.getCourseNumber()))
+            .filter(s -> s.getSubject().equals(suggestion.getSubject()) && Objects.equals(s.getCourseNumber(), suggestion.getCourseNumber()) && Objects.equals(s.getCourseId(), suggestion.getWorkspaceEntityId()))
             .count();
         if (matches == 0) {
           WorkspaceEntity workspaceEntity = null;
@@ -291,7 +291,7 @@ public class HopsRestService {
             workspaceEntity = workspaceEntityController.findWorkspaceEntityById(suggestion.getWorkspaceEntityId());
           }
 
-          if (workspaceEntity == null && !suggestion.getType().toLowerCase().contains("optional")) {
+          if (workspaceEntity == null) {
             logger.warning("Removing suggested workspace %d as it was not found");
             hopsController.removeSuggestion(suggestion);
           }
