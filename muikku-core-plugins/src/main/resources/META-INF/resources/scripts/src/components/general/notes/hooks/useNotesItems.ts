@@ -531,12 +531,12 @@ export const useNotesItem = (
       }));
 
       displayNotification(
-        `What am I? Where am I? WHO ARE YOU? Why am I needed?`,
+        i18n.text.get("plugin.records.notes.notification.status.success"),
         "success"
       );
     } catch (err) {
       displayNotification(
-        `What am I? Where am I? WHO ARE YOU? Why am I needed? ${err}`,
+        i18n.text.get("plugin.records.notes.notification.status.error", err),
         "error"
       );
       setNotesItem((notesItems) => ({
