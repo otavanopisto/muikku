@@ -639,7 +639,7 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
         promisify(
           mApi().workspace.workspaces.read({
             userIdentifier: id,
-            includeInactiveWorkspaces: false,
+            // includeInactiveWorkspaces: false,
           }),
           "callback"
         )().then(async (workspaces: WorkspaceListType) => {
