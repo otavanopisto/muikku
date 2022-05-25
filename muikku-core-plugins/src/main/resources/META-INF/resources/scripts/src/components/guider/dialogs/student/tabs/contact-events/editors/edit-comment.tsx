@@ -107,6 +107,7 @@ class EditContactLogEventComment extends SessionStateComponent<
    * editContactEventComment
    */
   editContactEventComment = (): void => {
+
     this.setState({
       locked: true,
     });

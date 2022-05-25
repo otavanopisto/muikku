@@ -637,10 +637,7 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
           });
         }),
         promisify(
-          mApi().workspace.workspaces.read({
-            userIdentifier: id,
-            // includeInactiveWorkspaces: false,
-          }),
+          mApi().guider.students.workspaces.read(id),
           "callback"
         )().then(async (workspaces: WorkspaceListType) => {
           if (workspaces && workspaces.length) {

@@ -251,26 +251,7 @@ export default function guider(
     selectedStudents: [],
     selectedStudentsIds: [],
     toggleAllStudentsActive: false,
-    currentStudent: {
-      contactLogState: "LOADING",
-      currentWorkspacesState: "LOADING",
-      pastWorkspacesState: "LOADING",
-      activityLogState: "LOADING",
-      basic: null,
-      labels: [],
-      emails: [],
-      phoneNumbers: [],
-      addresses: [],
-      files: [],
-      usergroups: [],
-      hops: null,
-      notifications: null,
-      contactLogs: [],
-      currentWorkspaces: [],
-      pastWorkspaces: [],
-      activityLogs: [],
-      purchases: [],
-    },
+    currentStudent: null,
   },
   action: ActionType
 ): GuiderType {
@@ -561,8 +542,8 @@ export default function guider(
       currentStudent: { ...state.currentStudent, contactLogs: newContactLogs },
     };
   } else if (action.type === "DELETE_CONTACT_EVENT_COMMENT") {
-    // Make a shallow copy of the contact logs
-    const contactLogs = [...state.currentStudent.contactLogs];
+    // Make a fast deep copy of the contact logs natively since there are no complex types involved
+    const contactLogs = JSON.parse(JSON.stringify(state.currentStudent.contactLogs)) as IContactLogEvent[];
 
     // Find the current contact log
     const currentContactLog = contactLogs.find(
@@ -583,6 +564,7 @@ export default function guider(
 
     // Replace the the contact log entry with the new one
     contactLogs.splice(currentContactLogIndex, 1, currentContactLog);
+
 
     return {
       ...state,
