@@ -39,6 +39,7 @@ export interface HOPSEligibilityType {
  * HOPSType
  */
 export interface HOPSType {
+  hopsPhase?: string;
   eligibility: HOPSEligibilityType;
   status: HOPSStatusType;
   value: HOPSDataType;
@@ -68,6 +69,10 @@ export default function hops(
   } else if (action.type === "UPDATE_HOPS_ELIGIBILITY") {
     return Object.assign({}, state, {
       eligibility: action.payload,
+    });
+  } else if (action.type === "SET_HOPS_PHASE") {
+    return Object.assign({}, state, {
+      hopsPhase: action.payload,
     });
   }
   return state;

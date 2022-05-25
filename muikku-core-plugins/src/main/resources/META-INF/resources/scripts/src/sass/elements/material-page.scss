@@ -118,11 +118,7 @@
 
 .material-page__content--view-restricted {
   align-items: center;
-
-  // scss-lint:disable VariableForProperty
   color: darken($color-disabled, 30%);
-
-  // scss-lint:enable VariableForProperty
   display: flex;
   font-size: 1rem;
   font-style: italic;
@@ -2127,7 +2123,6 @@ mark[data-muikku-word-definition] {
   border: 0;
   padding: 0;
 
-  // scss-lint:disable SelectorDepth, NestingDepth
   table,
   table[cellpadding],
   table[cellspacing] {
@@ -2175,8 +2170,6 @@ mark[data-muikku-word-definition] {
       padding: 8px;
     }
   }
-
-  // scss-lint:enable SelectorDepth, NestingDepth
 }
 
 // TABLE BOX - This style has preset visuals for table and it's elements
@@ -2184,7 +2177,6 @@ mark[data-muikku-word-definition] {
   border: 0;
   padding: 0;
 
-  // scss-lint:disable SelectorDepth, NestingDepth
   table,
   table[cellpadding],
   table[cellspacing] {
@@ -2232,8 +2224,6 @@ mark[data-muikku-word-definition] {
       padding: 8px;
     }
   }
-
-  // scss-lint:enable SelectorDepth, NestingDepth
 }
 
 // MATERIAL TEXT STYLES

@@ -411,6 +411,12 @@ export interface WorkspaceMaterialReferenceType {
 }
 
 export type WorkspaceListType = Array<WorkspaceType>;
+export interface WorkspaceSignUpDetails {
+  id: number;
+  name: string;
+  nameExtension: string | null;
+  urlName: string;
+}
 
 export type WorkspaceBaseFilterType =
   | "ALL_COURSES"

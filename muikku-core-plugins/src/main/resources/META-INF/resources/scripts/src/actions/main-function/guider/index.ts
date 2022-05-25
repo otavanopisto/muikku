@@ -78,6 +78,12 @@ export type SET_CURRENT_GUIDER_STUDENT_PROP = SpecificActionType<
   "SET_CURRENT_GUIDER_STUDENT_PROP",
   { property: string; value: unknown }
 >;
+
+export type UPDATE_CURRENT_GUIDER_STUDENT_HOPS_PHASE = SpecificActionType<
+  "UPDATE_CURRENT_GUIDER_STUDENT_HOPS_PHASE",
+  { property: "hopsPhase"; value: number }
+>;
+
 export type UPDATE_CURRENT_GUIDER_STUDENT_STATE = SpecificActionType<
   "UPDATE_CURRENT_GUIDER_STUDENT_STATE",
   GuiderCurrentStudentStateType
@@ -385,6 +391,13 @@ export interface UpdateGuiderFilterLabelTriggerType {
 }
 
 /**
+ * UpdateCurrentStudentHopsPhaseTriggerType action creator type
+ */
+export interface UpdateCurrentStudentHopsPhaseTriggerType {
+  (data: { value: string }): AnyActionType;
+}
+
+/**
  * RemoveGuiderFilterLabelTriggerType action creator type
  */
 export interface RemoveGuiderFilterLabelTriggerType {
@@ -564,8 +577,25 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
               type: "SET_CURRENT_GUIDER_STUDENT_PROP",
               payload: { property: "basic", value: basic },
             });
+
+            /**
+             * after basic data is loaded, need to check if hopsPhase property
+             * is used and what values it contains
+             */
+            promisify(
+              mApi().user.properties.read(basic.userEntityId, {
+                properties: "hopsPhase",
+              }),
+              "callback"
+            )().then((properties: any) => {
+              dispatch({
+                type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+                payload: { property: "hopsPhase", value: properties[0].value },
+              });
+            });
           }
         ),
+
         promisify(
           mApi().usergroup.groups.read({ userIdentifier: id }),
           "callback"
@@ -1435,6 +1465,54 @@ const editContactLogEventComment: EditContactLogEventCommentTriggerType =
   };
 
 /**
+ *
+ * Updates and return hops phase for current student
+ *
+ * @param data data
+ */
+const updateCurrentStudentHopsPhase: UpdateCurrentStudentHopsPhaseTriggerType =
+  function updateCurrentStudentHopsPhase(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const properties: any = await promisify(
+          mApi().user.property.create({
+            key: "hopsPhase",
+            value: data.value,
+            userEntityId: getState().guider.currentStudent.basic.userEntityId,
+          }),
+          "callback"
+        )();
+
+        dispatch({
+          type: "UPDATE_CURRENT_GUIDER_STUDENT_HOPS_PHASE",
+          payload: {
+            property: "hopsPhase",
+            value: properties.value,
+          },
+        });
+
+        dispatch(
+          notificationActions.displayNotification(
+            "Käyttäjän hops vaihe päivitetty onnistuneesti",
+            "success"
+          )
+        );
+      } catch (error) {
+        dispatch(
+          notificationActions.displayNotification(
+            "Hupsista error hops phasing yhteydessä",
+            "error"
+          )
+        );
+      }
+    };
+  };
+
+/**
  * removeLabelFromUserUtil utility function
  * @param student student
  * @param flags student flags
@@ -2052,6 +2130,7 @@ export {
   removeFileFromCurrentStudent,
   updateLabelFilters,
   updateWorkspaceFilters,
+  updateCurrentStudentHopsPhase,
   createGuiderFilterLabel,
   updateGuiderFilterLabel,
   removeGuiderFilterLabel,

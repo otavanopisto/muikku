@@ -1,0 +1,81 @@
+.studies-info__section {
+  display: flex;
+  width: 100%;
+}
+
+.basic-info {
+  display: flex;
+  width: 350px;
+  flex-direction: column;
+}
+
+.basic-info-header {
+  display: flex;
+  width: 100%;
+  height: 50px;
+  border: 1px solid black;
+  border-bottom: none;
+}
+
+.basic-info-content {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid black;
+  padding: 10px 0;
+}
+
+.study-options {
+  display: flex;
+  flex-grow: 1;
+}
+
+.basic-info-content-data {
+  display: flex;
+  margin: 0 10px;
+}
+
+.basic-info-content-data-asessor-avatar {
+  display: flex;
+  flex-grow: 1;
+  background-color: red;
+}
+
+.basic-info-content-data-asessor-info {
+  display: flex;
+  flex-grow: 1;
+}
+
+.basic-info-header-info-text {
+  display: flex;
+  flex-grow: 1;
+  align-items: center;
+  justify-content: center;
+}
+
+.basic-info-header-info-date {
+  display: flex;
+  flex-grow: 1;
+  align-items: center;
+  justify-content: center;
+}
+
+.basic-info-content-header {
+  height: 25px;
+}
+
+.basic-info-content-data-asessor-info-row {
+  height: 25px;
+  display: flex;
+  width: 100%;
+  border: 1px solid black;
+}
+
+.basic-info-content-data-asessor-info-row--asessor-name {
+  border: none;
+  font-weight: bold;
+}
+
+.basic-info-content-data-asessor-info-container {
+  width: 100%;
+  margin-left: 10px;
+}

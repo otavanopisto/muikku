@@ -11,6 +11,7 @@ import javax.persistence.criteria.Root;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
 import fi.otavanopisto.muikku.plugins.notes.model.Note;
 import fi.otavanopisto.muikku.plugins.notes.model.NotePriority;
+import fi.otavanopisto.muikku.plugins.notes.model.NoteStatus;
 import fi.otavanopisto.muikku.plugins.notes.model.NoteType;
 import fi.otavanopisto.muikku.plugins.notes.model.Note_;
 
@@ -20,7 +21,7 @@ public class NoteDAO extends CorePluginsDAO<Note> {
   
   private static final long serialVersionUID = 1265008061182482207L;
 
-  public Note create(String title, String description, NoteType type, NotePriority priority, Boolean pinned, Long owner, Long creator, Long lastModifier){
+  public Note create(String title, String description, NoteType type, NotePriority priority, Boolean pinned, Long owner, Long creator, Long lastModifier, Date dueDate, NoteStatus status){
     Note note = new Note();
     note.setTitle(title);
     note.setDescription(description);
@@ -33,16 +34,20 @@ public class NoteDAO extends CorePluginsDAO<Note> {
     note.setLastModifier(lastModifier);
     note.setLastModified(new Date());
     note.setArchived(false);
+    note.setDueDate(dueDate);
+    note.setStatus(status);
     return persist(note);
   }
   
-  public Note update(Note note, String title, String description, NotePriority priority, Boolean pinned, Long lastModifier){
+  public Note update(Note note, String title, String description, NotePriority priority, Boolean pinned, Long lastModifier, Date dueDate, NoteStatus status){
     note.setTitle(title);
     note.setDescription(description);
     note.setPriority(priority);
     note.setPinned(pinned);
     note.setLastModifier(lastModifier);
     note.setLastModified(new Date());
+    note.setDueDate(dueDate);
+    note.setStatus(status);
     return persist(note);
   }
   

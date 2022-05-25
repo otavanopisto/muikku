@@ -418,38 +418,36 @@ class ExcerciseEditor extends SessionStateComponent<
    */
   render() {
     return (
-      <>
-        <div className="evaluation-modal__evaluate-drawer-row form-element">
-          {this.props.editorLabel && (
-            <label className="evaluation-modal__evaluate-drawer-row-label">
-              {this.props.editorLabel}
-            </label>
-          )}
+      <div className="form" role="form">
+        <div className="form__row">
+          <div className="form-element">
+            {this.props.editorLabel && <label>{this.props.editorLabel}</label>}
 
-          <CKEditor onChange={this.handleCKEditorChange}>
-            {this.state.literalEvaluation}
-          </CKEditor>
+            <CKEditor onChange={this.handleCKEditorChange}>
+              {this.state.literalEvaluation}
+            </CKEditor>
+          </div>
         </div>
-
-        <div className="evaluation-modal__evaluate-drawer-row  form-element">
-          <AnimateHeight height={!this.state.needsSupplementation ? "auto" : 0}>
-            <label
-              htmlFor="assignmentEvaluationGrade"
-              className="evaluation-modal__evaluate-drawer-row-label"
+        <div className="form__row">
+          <div className="form-element">
+            <AnimateHeight
+              height={!this.state.needsSupplementation ? "auto" : 0}
             >
-              {this.props.i18n.text.get(
-                "plugin.evaluation.evaluationModal.audioAssessments"
-              )}
-            </label>
-            <Recorder
-              onIsRecordingChange={this.props.onIsRecordingChange}
-              onChange={this.handleAudioAssessmentChange}
-              values={this.state.audioAssessments}
-            />
-          </AnimateHeight>
+              <label htmlFor="assignmentEvaluationGrade">
+                {this.props.i18n.text.get(
+                  "plugin.evaluation.evaluationModal.audioAssessments"
+                )}
+              </label>
+              <Recorder
+                onIsRecordingChange={this.props.onIsRecordingChange}
+                onChange={this.handleAudioAssessmentChange}
+                values={this.state.audioAssessments}
+              />
+            </AnimateHeight>
+          </div>
         </div>
 
-        <div className="evaluation-modal__evaluate-drawer-row evaluation-modal__evaluate-drawer-row--buttons">
+        <div className="form__buttons form__buttons--evaluation">
           <Button
             buttonModifiers="evaluate-assignment"
             onClick={this.handleSaveAssignment}
@@ -496,7 +494,7 @@ class ExcerciseEditor extends SessionStateComponent<
         </div>
 
         {this.props.isRecording && (
-          <div className="evaluation-modal__evaluate-drawer-row evaluation-modal__evaluate-drawer-row--recording-warning">
+          <div className="form__row form__row--evaluation-warning">
             <div className="recording-warning">
               {this.props.i18n.text.get(
                 "plugin.evaluation.evaluationModal.assignmentEvaluationForm.isRecordingWarning"
@@ -504,7 +502,7 @@ class ExcerciseEditor extends SessionStateComponent<
             </div>
           </div>
         )}
-      </>
+      </div>
     );
   }
 }

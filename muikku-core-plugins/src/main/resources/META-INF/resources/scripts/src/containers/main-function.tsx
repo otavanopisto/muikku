@@ -81,6 +81,7 @@ import {
   setLocationToYoInTranscriptOfRecords,
   setLocationToSummaryInTranscriptOfRecords,
   setLocationToStatisticsInTranscriptOfRecords,
+  setLocationToInfoInTranscriptOfRecords,
 } from "~/actions/main-function/records";
 import { CKEDITOR_VERSION } from "~/lib/ckeditor";
 import { updateVops } from "~/actions/main-function/vops";
@@ -293,6 +294,7 @@ export default class MainFunction extends React.Component<
    */
   loadRecordsData(dataSplitted: string[]) {
     const givenLocation = dataSplitted[0].split("/")[0];
+
     const originalData: any = queryString.parse(dataSplitted[1] || "", {
       arrayFormat: "bracket",
     });
@@ -346,6 +348,11 @@ export default class MainFunction extends React.Component<
         setLocationToStatisticsInTranscriptOfRecords() as Action
       );
       this.props.store.dispatch(updateStatistics() as Action);
+    } else if (givenLocation === "info") {
+      this.props.store.dispatch(
+        setLocationToInfoInTranscriptOfRecords() as Action
+      );
+      this.props.store.dispatch(updateSummary() as Action);
     }
     this.props.store.dispatch(updateHops() as Action);
   }
@@ -977,6 +984,7 @@ export default class MainFunction extends React.Component<
         loadUserWorkspaceCurriculumFiltersFromServer(false) as Action
       );
       this.props.store.dispatch(updateTranscriptOfRecordsFiles() as Action);
+
       this.loadRecordsData(window.location.hash.replace("#", "").split("?"));
       this.loadChatSettings();
     }

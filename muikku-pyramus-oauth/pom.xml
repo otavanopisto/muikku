@@ -15,7 +15,7 @@
   <description>Plugin that provides Pyramus OAuth login support </description>
 
   <dependencies>
-  
+
     <!-- CDI -->
 
     <dependency>
@@ -29,7 +29,7 @@
       <artifactId>jboss-interceptors-api_1.2_spec</artifactId>
       <scope>provided</scope>
     </dependency>
-    
+
     <!-- EJB -->
 
     <dependency>
@@ -37,7 +37,7 @@
       <artifactId>jboss-ejb-api_3.2_spec</artifactId>
       <scope>provided</scope>
     </dependency>
-  
+
     <!-- Faces -->
 
     <dependency>
@@ -51,14 +51,14 @@
       <artifactId>jsf-impl</artifactId>
       <scope>provided</scope>
     </dependency>
-    
+
     <!-- Muikku -->
 
     <dependency>
       <groupId>fi.otavanopisto.muikku</groupId>
       <artifactId>plugin</artifactId>
     </dependency>
-    
+
     <!-- Pyramus -->
 
     <dependency>
@@ -66,7 +66,7 @@
       <artifactId>rest-model</artifactId>
       <version>0.7.178-SNAPSHOT</version>
     </dependency>
-    
+
   </dependencies>
- 
+
 </project>

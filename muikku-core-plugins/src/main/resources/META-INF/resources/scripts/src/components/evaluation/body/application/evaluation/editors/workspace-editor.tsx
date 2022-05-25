@@ -26,7 +26,7 @@ import {
   UpdateNeedsReloadEvaluationRequests,
   updateNeedsReloadEvaluationRequests,
 } from "~/actions/main-function/evaluation/evaluationActions";
-import "~/sass/elements/form-elements.scss";
+import "~/sass/elements/form.scss";
 import { LocaleListType } from "~/reducers/base/locales";
 import { CKEditorConfig } from "../evaluation";
 
@@ -882,40 +882,37 @@ class WorkspaceEditor extends SessionStateComponent<
       ));
 
     return (
-      <>
-        <div className="evaluation-modal__evaluate-drawer-row form-element">
-          {this.props.editorLabel && (
-            <label className="evaluation-modal__evaluate-drawer-row-label">
-              {this.props.editorLabel}
+      <div className="form" role="form">
+        <div className="form__row">
+          <div className="form-element">
+            {this.props.editorLabel && <label>{this.props.editorLabel}</label>}
+
+            <CKEditor
+              onChange={this.handleCKEditorChange}
+              configuration={CKEditorConfig(this.props.locale.current)}
+            >
+              {this.state.literalEvaluation}
+            </CKEditor>
+          </div>
+        </div>
+        <div className="form__row">
+          <div className="form-element">
+            <label htmlFor="workspaceEvaluationGrade">
+              {this.props.i18n.text.get(
+                "plugin.evaluation.evaluationModal.assignmentGradeLabel"
+              )}
             </label>
-          )}
-
-          <CKEditor
-            onChange={this.handleCKEditorChange}
-            configuration={CKEditorConfig(this.props.locale.current)}
-          >
-            {this.state.literalEvaluation}
-          </CKEditor>
+            <select
+              id="workspaceEvaluationGrade"
+              className="form-element__select"
+              onChange={this.handleSelectGradeChange}
+              value={this.state.grade}
+            >
+              {renderGradingOptions}
+            </select>
+          </div>
         </div>
 
-        <div className="evaluation-modal__evaluate-drawer-row form-element">
-          <label
-            htmlFor="workspaceEvaluationGrade"
-            className="evaluation-modal__evaluate-drawer-row-label"
-          >
-            {this.props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.assignmentGradeLabel"
-            )}
-          </label>
-          <select
-            id="workspaceEvaluationGrade"
-            className="form-element__select form-element__select--evaluation"
-            onChange={this.handleSelectGradeChange}
-            value={this.state.grade}
-          >
-            {renderGradingOptions}
-          </select>
-        </div>
         {(options &&
           options.length > 0 &&
           this.state.basePriceFromServer &&
@@ -984,7 +981,7 @@ class WorkspaceEditor extends SessionStateComponent<
             </Button>
           )}
         </div>
-      </>
+      </div>
     );
   }
 }

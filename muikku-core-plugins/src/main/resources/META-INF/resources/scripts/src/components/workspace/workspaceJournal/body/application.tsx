@@ -6,7 +6,6 @@ import Toolbar from "./application/toolbar";
 import WorkspaceJournals from "./application/journals";
 import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/link.scss";
-import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/wcag.scss";
 import { StateType } from "~/reducers";

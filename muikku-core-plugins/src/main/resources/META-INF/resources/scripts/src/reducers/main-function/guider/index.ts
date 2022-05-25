@@ -149,6 +149,7 @@ export interface GuiderStudentUserProfileType {
   pastWorkspaces: WorkspaceListType;
   activityLogs: ActivityLogType[];
   purchases: PurchaseType[];
+  hopsPhase?: string;
 }
 
 /**
@@ -303,7 +304,6 @@ export default function guider(
       ...state.currentStudent,
       [action.payload.property]: action.payload.value,
     };
-
     return Object.assign({}, state, {
       currentStudent: updatedCurrentStudent,
     });
@@ -480,6 +480,13 @@ export default function guider(
           .sort(sortLabels),
       }),
     });
+  } else if (action.type === "UPDATE_CURRENT_GUIDER_STUDENT_HOPS_PHASE") {
+    return Object.assign({}, state, {
+      currentStudent: {
+        ...state.currentStudent,
+        hopsPhase: action.payload.value,
+      },
+    });
   } else if (action.type === "DELETE_GUIDER_AVAILABLE_FILTER_LABEL") {
     return Object.assign({}, state, {
       availableFilters: Object.assign({}, state.availableFilters, {
@@ -543,7 +550,9 @@ export default function guider(
     };
   } else if (action.type === "DELETE_CONTACT_EVENT_COMMENT") {
     // Make a fast deep copy of the contact logs natively since there are no complex types involved
-    const contactLogs = JSON.parse(JSON.stringify(state.currentStudent.contactLogs)) as IContactLogEvent[];
+    const contactLogs = JSON.parse(
+      JSON.stringify(state.currentStudent.contactLogs)
+    ) as IContactLogEvent[];
 
     // Find the current contact log
     const currentContactLog = contactLogs.find(
@@ -564,7 +573,6 @@ export default function guider(
 
     // Replace the the contact log entry with the new one
     contactLogs.splice(currentContactLogIndex, 1, currentContactLog);
-
 
     return {
       ...state,

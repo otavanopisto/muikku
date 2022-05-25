@@ -22,7 +22,7 @@
 
   @include breakpoint($breakpoint-desktop) {
     flex-basis: 33.333%;
-    flex-flow: column nowrap;
+    flex-flow: row wrap;
     max-width: 33.333%;
   }
 }

@@ -68,7 +68,7 @@ class GeneralInformation extends React.Component<
 
     return (
       <section>
-        <form>
+        <form className="form">
           <h2 className="application-panel__content-header">
             {this.props.i18n.text.get(
               "plugin.profile.titles.generalInformation"
@@ -76,7 +76,10 @@ class GeneralInformation extends React.Component<
           </h2>
           <div className="application-sub-panel">
             <div className="application-sub-panel__body">
-              <ProfilePicture />
+              <div className="form__row">
+                <ProfilePicture />
+              </div>
+
               <ProfileProperty
                 modifier="study-start-date"
                 i18n={this.props.i18n}

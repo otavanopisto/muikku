@@ -117,43 +117,47 @@ export default class AddProducer extends React.Component<
           </h3>
         ) : null}
         <div className="add-producer__functionality-container">
-          <div
-            className={`form-element form-element--add-producer ${
-              this.props.modifier ? "form-element--" + this.props.modifier : ""
-            }`}
-          >
-            <label
-              className="visually-hidden"
-              htmlFor={this.props.wcagLabel && this.props.wcagLabel}
-            >
-              {this.props.i18n.text.get(
-                "plugin.workspace.materialsManagement.editorView.addProducers.placeHolder"
-              )}
-            </label>
-            <input
-              id={this.props.wcagLabel && this.props.wcagLabel}
-              name="add-producer"
-              className={`form-element__input form-element__input--add-producer ${
+          <div className="form__row">
+            <div
+              className={`form-element form-element--add-producer ${
                 this.props.modifier
-                  ? "form-element__input--" + this.props.modifier
+                  ? "form-element--" + this.props.modifier
                   : ""
               }`}
-              value={this.state.currentInputValue}
-              onKeyUp={this.checkIfEnterKeyIsPressedAndAddProducer}
-              onChange={this.updateInputValue}
-              placeholder={this.props.i18n.text.get(
-                "plugin.workspace.materialsManagement.editorView.addProducers.placeHolder"
-              )}
-              type="text"
-            />
-            <div
-              className={`form-element__input-decoration form-element__input-decoration--add-producer ${
-                this.props.modifier
-                  ? "form-element__input-decoration--" + this.props.modifier
-                  : ""
-              } icon-plus`}
-              onClick={this.addProducerByClick}
-            ></div>
+            >
+              <label
+                className="visually-hidden"
+                htmlFor={this.props.wcagLabel && this.props.wcagLabel}
+              >
+                {this.props.i18n.text.get(
+                  "plugin.workspace.materialsManagement.editorView.addProducers.placeHolder"
+                )}
+              </label>
+              <input
+                id={this.props.wcagLabel && this.props.wcagLabel}
+                name="add-producer"
+                className={`form-element__input form-element__input--add-producer ${
+                  this.props.modifier
+                    ? "form-element__input--" + this.props.modifier
+                    : ""
+                }`}
+                value={this.state.currentInputValue}
+                onKeyUp={this.checkIfEnterKeyIsPressedAndAddProducer}
+                onChange={this.updateInputValue}
+                placeholder={this.props.i18n.text.get(
+                  "plugin.workspace.materialsManagement.editorView.addProducers.placeHolder"
+                )}
+                type="text"
+              />
+              <div
+                className={`form-element__input-decoration form-element__input-decoration--add-producer ${
+                  this.props.modifier
+                    ? "form-element__input-decoration--" + this.props.modifier
+                    : ""
+                } icon-plus`}
+                onClick={this.addProducerByClick}
+              ></div>
+            </div>
           </div>
         </div>
         <div className="add-producer__list-container">

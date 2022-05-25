@@ -22,6 +22,7 @@ import fi.otavanopisto.muikku.schooldata.payload.StaffMemberPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupMembersPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentPayload;
+import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistApproverRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemStateChangeRestModel;
@@ -36,6 +37,10 @@ public interface UserSchoolDataBridge {
    * @return school data source identifier
    */
   public String getSchoolDataSource();
+  
+  /* HOPS */
+
+  public BridgeResponse<List<StudyActivityItemRestModel>> getStudyActivity(String identifier);
   
   /* Worklist */
   
@@ -326,6 +331,8 @@ public interface UserSchoolDataBridge {
       SchoolDataIdentifier studentIdentifier,
       String educationTypeCode,
       String educationSubtypeCode);
+  
+  public String findStudentEducationalLevel(Long studentEntityId);
 
   public boolean isActiveUser(User user);
 
