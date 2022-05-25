@@ -1,7 +1,7 @@
 import * as React from "react";
 import { StateType } from "reducers";
 import { connect, Dispatch } from "react-redux";
-import { WebsocketStateType } from "../../../../reducers/util/websocket";
+import { WebsocketStateType } from "~/reducers/util/websocket";
 import {
   displayNotification,
   DisplayNotificationTriggerType,

@@ -19,7 +19,6 @@ import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
-import { AnyActionType } from "~/actions";
 import {
   GuiderType,
   GuiderStudentUserProfileLabelType,
@@ -33,6 +32,12 @@ import ApplicationSubPanel, {
   ApplicationSubPanelItem,
 } from "~/components/general/application-sub-panel";
 import Avatar from "~/components/general/avatar";
+import {
+  UpdateCurrentStudentHopsPhaseTriggerType,
+  updateCurrentStudentHopsPhase,
+} from "~/actions/main-function/guider";
+import StudySuggestionMatrix from "./state-of-studies/study-suggestion-matrix";
+import { AnyActionType } from "~/actions";
 
 /**
  * StateOfStudiesProps
@@ -42,6 +47,7 @@ interface StateOfStudiesProps {
   guider: GuiderType;
   status: StatusType;
 
+  updateCurrentStudentHopsPhase: UpdateCurrentStudentHopsPhaseTriggerType;
   displayNotification: DisplayNotificationTriggerType;
 }
 
@@ -64,6 +70,15 @@ class StateOfStudies extends React.Component<
   constructor(props: StateOfStudiesProps) {
     super(props);
   }
+  /**
+   * handleHopsPhaseChange
+   * @param e e
+   */
+  handleHopsPhaseChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    this.props.updateCurrentStudentHopsPhase({
+      value: e.currentTarget.value,
+    });
+  };
 
   //TODO doesn't anyone notice that nor assessment requested, nor no passed courses etc... is available in this view
   /**
@@ -303,7 +318,7 @@ class StateOfStudies extends React.Component<
         )}
         {this.props.guider.currentStudent.notifications &&
           Object.keys(this.props.guider.currentStudent.notifications).map(
-            (notification) => {
+            (notification: keyof GuiderNotificationStudentsDataType) => {
               <ApplicationSubPanelItem
                 title={this.props.i18n.text.get(
                   "plugin.guider.user." + notification
@@ -312,7 +327,9 @@ class StateOfStudies extends React.Component<
                 key={notification}
               >
                 <ApplicationSubPanelItem.Content>
-                  {this.props.i18n.time.format(notification)}
+                  {this.props.i18n.time.format(
+                    this.props.guider.currentStudent.notifications[notification]
+                  )}
                 </ApplicationSubPanelItem.Content>
               </ApplicationSubPanelItem>;
             }
@@ -322,7 +339,14 @@ class StateOfStudies extends React.Component<
 
     const studentWorkspaces = (
       <Workspaces
-        workspaces={this.props.guider.currentStudent.currentWorkspaces}
+        workspaces={
+          this.props.guider.currentStudent.currentWorkspaces &&
+          this.props.guider.currentStudent.currentWorkspaces.filter(
+            (w) =>
+              w.studentActivity &&
+              w.studentActivity.assessmentState.grade === null
+          )
+        }
       />
     );
 
@@ -389,6 +413,18 @@ class StateOfStudies extends React.Component<
                 </ApplicationSubPanel.Body>
               </ApplicationSubPanel>
             </ApplicationSubPanel>
+            <ApplicationSubPanel modifier="student-data-container">
+              <ApplicationSubPanel>
+                <ApplicationSubPanel.Header>
+                  Opintojen edistyminen
+                </ApplicationSubPanel.Header>
+                <ApplicationSubPanel.Body>
+                  <StudySuggestionMatrix
+                    studentId={this.props.guider.currentStudent.basic.id}
+                  />
+                </ApplicationSubPanel.Body>
+              </ApplicationSubPanel>
+            </ApplicationSubPanel>
           </>
         )}
       </>
@@ -413,7 +449,10 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return bindActionCreators({ displayNotification }, dispatch);
+  return bindActionCreators(
+    { displayNotification, updateCurrentStudentHopsPhase },
+    dispatch
+  );
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(StateOfStudies);
