@@ -233,7 +233,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
           return (
             <div className="notes__item-status notes__item-status--done">
               <span className="notes__item-status-indicator icon-check"></span>
-              {props.i18n.text.get("plugin.records.notes.status.ongoing")}
+              {props.i18n.text.get("plugin.records.notes.status.done")}
             </div>
           );
 

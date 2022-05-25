@@ -74,7 +74,7 @@ const Notes: React.FC<NotesProps> = (props) => {
     returnArchivedNotesItem,
     updateNotesItemStatus,
     pinNotesItem,
-  } = useNotesItem(studentId, displayNotification);
+  } = useNotesItem(studentId, i18n, displayNotification);
 
   const [activeNoteFilters, setActiveNoteFilters] =
     React.useState<NotesItemFilters>({

@@ -9,7 +9,8 @@ import {
 } from "~/@types/notes";
 import promisify from "~/util/promisify";
 import mApi from "~/lib/mApi";
-import { NotesItemPriority, NotesItemStatus } from "../../../../@types/notes";
+import { NotesItemPriority, NotesItemStatus } from "~/@types/notes";
+import { i18nType } from "~/reducers/base/i18n";
 
 /**
  * initialState
@@ -30,6 +31,7 @@ const initialState: UseNotesItem = {
  */
 export const useNotesItem = (
   studentId: number,
+  i18n: i18nType,
   displayNotification: DisplayNotificationTriggerType
 ) => {
   const [notesItems, setNotesItem] = React.useState<UseNotesItem>(initialState);
@@ -84,7 +86,10 @@ export const useNotesItem = (
         }
       } catch (err) {
         if (componentMounted.current) {
-          displayNotification(`Hups errori ${err}`, "error");
+          displayNotification(
+            i18n.text.get("plugin.records.notes.notification.load.error", err),
+            "error"
+          );
           setNotesItem((notesItems) => ({
             ...notesItems,
             isLoadingList: false,
@@ -166,7 +171,7 @@ export const useNotesItem = (
         }));
 
         displayNotification(
-          `Lappu luotu onnistuneesti ja siirrety arkistoituihin`,
+          i18n.text.get("plugin.records.notes.notification.create.success"),
           "success"
         );
       } else {
@@ -188,10 +193,16 @@ export const useNotesItem = (
 
         onSuccess && onSuccess();
 
-        displayNotification(`Lappu luotu onnistuneesti`, "success");
+        displayNotification(
+          i18n.text.get("plugin.records.notes.notification.create.success"),
+          "success"
+        );
       }
     } catch (err) {
-      displayNotification(`Hups errori luonti ${err}`, "error");
+      displayNotification(
+        i18n.text.get("plugin.records.notes.notification.create.error", err),
+        "error"
+      );
       setNotesItem((notesItem) => ({
         ...notesItem,
         isUpdatingList: false,
@@ -249,9 +260,15 @@ export const useNotesItem = (
 
       onSuccess && onSuccess();
 
-      displayNotification(`Lappu päivitetty onnistuneesti`, "success");
+      displayNotification(
+        i18n.text.get("plugin.records.notes.notification.edit.success"),
+        "success"
+      );
     } catch (err) {
-      displayNotification(`Hups errori päivitys ${err}`, "error");
+      displayNotification(
+        i18n.text.get("plugin.records.notes.notification.edit.error", err),
+        "error"
+      );
       setNotesItem((notesItems) => ({
         ...notesItems,
         isUpdatingList: false,
@@ -317,7 +334,10 @@ export const useNotesItem = (
 
       onSuccess && onSuccess();
     } catch (err) {
-      displayNotification(`Hups errori pinnaus ${err}`, "error");
+      displayNotification(
+        i18n.text.get("plugin.records.notes.notification.pinn.error", err),
+        "error"
+      );
       setNotesItem((notesItems) => ({
         ...notesItems,
         isUpdatingList: false,
@@ -380,9 +400,15 @@ export const useNotesItem = (
 
       onSuccess && onSuccess();
 
-      displayNotification(`Lappu poistettu onnistuneesti`, "success");
+      displayNotification(
+        i18n.text.get("plugin.records.notes.notification.archive.success"),
+        "success"
+      );
     } catch (err) {
-      displayNotification(`Hups errori poisto ${err}`, "error");
+      displayNotification(
+        i18n.text.get("plugin.records.notes.notification.archive.error", err),
+        "error"
+      );
       setNotesItem((notesItems) => ({
         ...notesItems,
         isUpdatingList: false,
@@ -445,9 +471,15 @@ export const useNotesItem = (
 
       onSuccess && onSuccess();
 
-      displayNotification(`Lappu palautettu onnistuneesti`, "success");
+      displayNotification(
+        i18n.text.get("plugin.records.notes.notification.unarchive.success"),
+        "success"
+      );
     } catch (err) {
-      displayNotification(`Hups errori palautus ${err}`, "error");
+      displayNotification(
+        i18n.text.get("plugin.records.notes.notification.unarchive.error", err),
+        "error"
+      );
       setNotesItem((notesItems) => ({
         ...notesItems,
         isUpdatingList: false,
@@ -498,9 +530,15 @@ export const useNotesItem = (
         isUpdatingList: false,
       }));
 
-      displayNotification(`Lappu palautettu onnistuneesti`, "success");
+      displayNotification(
+        `What am I? Where am I? WHO ARE YOU? Why am I needed?`,
+        "success"
+      );
     } catch (err) {
-      displayNotification(`Hups errori palautus ${err}`, "error");
+      displayNotification(
+        `What am I? Where am I? WHO ARE YOU? Why am I needed? ${err}`,
+        "error"
+      );
       setNotesItem((notesItems) => ({
         ...notesItems,
         isUpdatingList: false,
