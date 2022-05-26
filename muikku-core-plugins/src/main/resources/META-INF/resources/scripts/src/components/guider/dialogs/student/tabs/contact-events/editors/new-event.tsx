@@ -12,8 +12,6 @@ import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
 import SessionStateComponent from "~/components/general/session-state-component";
-import "~/sass/elements/form-elements.scss";
-import "~/sass/elements/form.scss";
 import DatePicker from "react-datepicker";
 import {
   ContactTypes,

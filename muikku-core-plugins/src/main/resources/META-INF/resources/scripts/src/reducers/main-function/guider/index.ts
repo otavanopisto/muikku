@@ -122,6 +122,7 @@ export type IContactLogEventComment = {
   commentDate: string;
   creatorId: number;
   creatorName: string;
+  hasImage: boolean;
   text: string;
 };
 

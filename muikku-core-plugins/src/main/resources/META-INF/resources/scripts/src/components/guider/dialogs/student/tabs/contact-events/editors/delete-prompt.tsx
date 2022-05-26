@@ -1,9 +1,3 @@
-import "~/sass/elements/link.scss";
-import "~/sass/elements/form-elements.scss";
-import "~/sass/elements/form.scss";
-import "~/sass/elements/buttons.scss";
-
-import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AnyActionType } from "~/actions";
@@ -17,7 +11,7 @@ import {
   DeleteContactLogEventCommentTriggerType,
 } from "~/actions/main-function/guider";
 import { StateType } from "~/reducers";
-
+import * as React from "react";
 /**
  * ContactEventDeletePromptProps
  */

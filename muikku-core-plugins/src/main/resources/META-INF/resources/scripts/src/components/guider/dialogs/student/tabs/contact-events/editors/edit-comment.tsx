@@ -12,8 +12,6 @@ import { ContactTypes } from "~/reducers/main-function/guider";
 import { StateType } from "~/reducers";
 import SessionStateComponent from "~/components/general/session-state-component";
 import Button from "~/components/general/button";
-import "~/sass/elements/form-elements.scss";
-import "~/sass/elements/form.scss";
 import moment from "~/lib/moment";
 import { StatusType } from "~/reducers/base/status";
 import { IContactLogEventComment } from "~/reducers/main-function/guider";
@@ -107,7 +105,6 @@ class EditContactLogEventComment extends SessionStateComponent<
    * editContactEventComment
    */
   editContactEventComment = (): void => {
-
     this.setState({
       locked: true,
     });

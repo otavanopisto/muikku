@@ -113,6 +113,7 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
           closeEditor={() => setCreateCommentOpen(false)}
         ></CommentContactEvent>
       ) : null}
+
       {comments ? (
         <div className="contact-event__replies rich-text rich-text--contact-event">
           {comments.map((comment) => (
@@ -120,11 +121,10 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
               <div className="contact-event__header contact-event__header--reply">
                 <Avatar
                   id={comment.creatorId}
-                  // Lacking hasImage from the backend
-                  hasImage={false}
+                  hasImage={comment.hasImage}
                   size="small"
                   firstName={comment.creatorName}
-                ></Avatar>{" "}
+                ></Avatar>
                 <div className="contact-event__title">
                   <div className="contact-event__creator">
                     {comment.creatorName}
