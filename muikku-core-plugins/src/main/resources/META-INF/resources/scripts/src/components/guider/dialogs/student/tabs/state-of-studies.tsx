@@ -343,8 +343,8 @@ class StateOfStudies extends React.Component<
           this.props.guider.currentStudent.currentWorkspaces &&
           this.props.guider.currentStudent.currentWorkspaces.filter(
             (w) =>
-              w.studentActivity &&
-              w.studentActivity.assessmentState.grade === null
+              w.activity &&
+              w.activity.assessmentState.find((assesmentState) => assesmentState.state === "unassessed" )
           )
         }
       />
