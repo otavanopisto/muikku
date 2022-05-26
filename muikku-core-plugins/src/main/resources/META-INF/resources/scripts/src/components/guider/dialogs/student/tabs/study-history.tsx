@@ -150,7 +150,15 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
         </ApplicationSubPanel.Header>
         <ApplicationSubPanel.Body>
           {pastWorkspacesState === "READY" ? (
-            <Workspaces workspaces={pastWorkspaces} />
+            <Workspaces
+              workspaces={pastWorkspaces.filter(
+                (w) =>
+                  w.activity &&
+                  w.activity.assessmentState.find(
+                    (assesmentState) => assesmentState.state !== "unassessed"
+                  )
+              )}
+            />
           ) : (
             <div className="loader-empty" />
           )}
