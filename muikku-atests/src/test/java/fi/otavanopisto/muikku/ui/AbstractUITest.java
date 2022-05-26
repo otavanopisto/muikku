@@ -1,6 +1,9 @@
 package fi.otavanopisto.muikku.ui;
 
-import static com.jayway.restassured.RestAssured.certificate;
+import static io.restassured.RestAssured.certificate;
+import static io.restassured.RestAssured.*;
+import static io.restassured.matcher.RestAssuredMatchers.*;
+import static org.hamcrest.Matchers.*;
 import static fi.otavanopisto.muikku.mock.PyramusMock.mocker;
 import static java.lang.Math.toIntExact;
 import static org.junit.Assert.assertEquals;
@@ -76,11 +79,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import com.jayway.restassured.RestAssured;
-import com.jayway.restassured.config.ObjectMapperConfig;
-import com.jayway.restassured.config.RestAssuredConfig;
-import com.jayway.restassured.mapper.factory.Jackson2ObjectMapperFactory;
-import com.jayway.restassured.response.Response;
+
+import io.restassured.RestAssured;
+import io.restassured.config.ObjectMapperConfig;
+import io.restassured.config.RestAssuredConfig;
+import io.restassured.mapper.ObjectMapperDeserializationContext;
+import io.restassured.mapper.ObjectMapperSerializationContext;
+import io.restassured.path.json.mapper.factory.DefaultJackson2ObjectMapperFactory;
+
+import io.restassured.response.Response;
 import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 
 import fi.otavanopisto.muikku.AbstractIntegrationTest;
@@ -239,18 +246,15 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     RestAssured.port = getPortHttps();
     RestAssured.authentication = certificate(getKeystoreFile(), getKeystorePass());
 
-    RestAssured.config = RestAssuredConfig.config().objectMapperConfig(
-      ObjectMapperConfig.objectMapperConfig().jackson2ObjectMapperFactory(new Jackson2ObjectMapperFactory() {
-
-        @SuppressWarnings("rawtypes")
-        @Override
-        public com.fasterxml.jackson.databind.ObjectMapper create(Class cls, String charset) {
-          com.fasterxml.jackson.databind.ObjectMapper objectMapper = new com.fasterxml.jackson.databind.ObjectMapper();
-          objectMapper.registerModule(new JSR310Module());
-          objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-          return objectMapper;
-        }
-      }));
+    com.fasterxml.jackson.databind.ObjectMapper objectMapper = new com.fasterxml.jackson.databind.ObjectMapper();
+    objectMapper.registerModule(new JSR310Module());
+    objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+    
+    RestAssured.config
+    .objectMapperConfig(new ObjectMapperConfig().jackson2ObjectMapperFactory((type, s) -> new ObjectMapper()
+            .registerModule(new JSR310Module())
+            .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)));
+   
   }
 
   @After
