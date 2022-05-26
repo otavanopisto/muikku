@@ -173,14 +173,10 @@
   padding: 2px 8px;
 }
 
-.notes__item-status--ongoing {
+.notes__item-status--ongoing,
+.notes__item-status--pending {
   background-color: lighten($color-cancel, 42%);
   color: darken($color-cancel, 15%);
-}
-
-.notes__item-status--pending {
-  background-color: lighten($color-info, 52%);
-  color: darken($color-info, 15%);
 }
 
 .notes__item-status--done {
