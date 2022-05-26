@@ -46,17 +46,18 @@ const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
         </NewContactEvent>
       </ApplicationSubPanelViewHeader>
       <ApplicationSubPanel.Body modifier="guidance-relation">
-        <ApplicationSubPanel modifier="guidance-relation-contact-info">
-          <ApplicationSubPanelItem
-            title={i18n.text.get(
-              "plugin.guider.user.details.contactInfo.student.label"
-            )}
-          >
-            <ApplicationSubPanelItem.Content>
-              <div>{basic && basic.email}</div>
-            </ApplicationSubPanelItem.Content>
-          </ApplicationSubPanelItem>
-          {/* Removed for later
+        {basic && basic.email ? (
+          <ApplicationSubPanel modifier="guidance-relation-contact-info">
+            <ApplicationSubPanelItem
+              title={i18n.text.get(
+                "plugin.guider.user.details.contactInfo.student.label"
+              )}
+            >
+              <ApplicationSubPanelItem.Content>
+                <div>{basic.email}</div>
+              </ApplicationSubPanelItem.Content>
+            </ApplicationSubPanelItem>
+            {/* Removed for later
 
           <ApplicationSubPanelItem
             title={i18n.text.get(
@@ -72,7 +73,8 @@ const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
               </div>
             </ApplicationSubPanelItem.Content>
           </ApplicationSubPanelItem> */}
-        </ApplicationSubPanel>
+          </ApplicationSubPanel>
+        ) : null}
         <ApplicationSubPanel modifier="guidance-relation-contact-events">
           <ApplicationSubPanel.Header>
             {i18n.text.get("plugin.guider.user.contactLog.title")}
