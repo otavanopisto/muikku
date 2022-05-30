@@ -202,7 +202,7 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
                   await promisify(
                     mApi().workspace.workspaces.students.activity.read(
                       workspace.id,
-                      getState().status.userSchoolDataIdentifier
+                      user.id
                     ),
                     "callback"
                   )()
