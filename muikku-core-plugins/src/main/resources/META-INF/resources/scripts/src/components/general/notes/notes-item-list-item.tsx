@@ -4,18 +4,21 @@ import {
   NotesItemUpdate,
   NotesItemStatus,
 } from "~/@types/notes";
-import Button, { ButtonPill, IconButton } from "~/components/general/button";
+import Button, { IconButton } from "~/components/general/button";
 import * as moment from "moment";
 import Dropdown from "~/components/general/dropdown";
 import NotesItemEdit from "./notes-item-edit";
 import { i18nType } from "~/reducers/base/i18n";
+import NoteInformationDialog from "./dialogs/note-information-dialog";
 
 /**
  * NotesListItemProps
  */
-interface NotesListItemProps {
+export interface NotesListItemProps {
+  i18n: i18nType;
   archived: boolean;
   notesItem: NotesItemRead;
+  containerModifier?: string[];
   active?: boolean;
   loggedUserIsCreator?: boolean;
   loggedUserIsOwner?: boolean;
@@ -34,13 +37,14 @@ interface NotesListItemProps {
     updatedNotesItem: NotesItemUpdate,
     onSuccess?: () => void
   ) => void;
-  i18n: i18nType;
+  openInformationToDialog?: boolean;
 }
 
 const defaultProps = {
   active: false,
   loggedUserIsCreator: false,
   loggedUserIsOwner: false,
+  openInformationToDialog: true,
 };
 
 /**
@@ -62,6 +66,8 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
       loggedUserIsOwner,
       active,
       archived,
+      openInformationToDialog,
+      containerModifier,
     } = props;
 
     const {
@@ -70,13 +76,16 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
       priority,
       creatorName,
       description,
-      pinned,
       startDate,
       dueDate,
       status,
     } = notesItem;
 
     const updatedModifiers = [];
+
+    if (containerModifier && containerModifier.length > 0) {
+      updatedModifiers.push(containerModifier);
+    }
 
     /**
      * Handles notesItem pin click
@@ -284,7 +293,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
             <div>
               <Button
                 onClick={handleUpdateNotesItemStatusClick(
-                  NotesItemStatus.APPROVAL_PENDING
+                  NotesItemStatus.ONGOING
                 )}
               >
                 Peruuta pyyntö
@@ -407,7 +416,26 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
         </div>
 
         <div className="notes__item-dates">{renderDates()}</div>
-        <div className="notes__item-header">{title}</div>
+        <div className="notes__item-header">
+          {openInformationToDialog ? (
+            <NoteInformationDialog
+              notesItem={notesItem}
+              archived={archived}
+              loggedUserIsCreator={loggedUserIsCreator}
+              loggedUserIsOwner={loggedUserIsOwner}
+              onPinNotesItemClick={onPinNotesItemClick}
+              onArchiveClick={onArchiveClick}
+              onUpdateNotesItemStatus={onUpdateNotesItemStatus}
+              onReturnArchivedClick={onReturnArchivedClick}
+              onNotesItemSaveUpdateClick={onNotesItemSaveUpdateClick}
+            >
+              <span>{title}</span>
+            </NoteInformationDialog>
+          ) : (
+            <span>{title}</span>
+          )}
+        </div>
+
         {description ? (
           <div className="notes__item-body">{description}</div>
         ) : null}

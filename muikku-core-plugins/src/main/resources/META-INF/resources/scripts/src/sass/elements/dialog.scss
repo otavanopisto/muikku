@@ -117,6 +117,12 @@
   }
 }
 
+.dialog__window--note-information {
+  .dialog__content {
+    padding: 10px 0;
+  }
+}
+
 .dialog__window--wizard {
   bottom: 0;
   display: flex;

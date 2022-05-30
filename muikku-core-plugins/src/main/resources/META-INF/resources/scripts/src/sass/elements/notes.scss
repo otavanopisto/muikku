@@ -71,6 +71,15 @@
   }
 }
 
+.notes__item--dialog-information {
+  flex-basis: 100%;
+  max-width: 100%;
+
+  .notes__item-body::before {
+    display: none;
+  }
+}
+
 .notes__item--high {
   border-top-color: $color-priority-high;
 }
