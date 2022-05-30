@@ -54,7 +54,7 @@ public class HopsSuggestionDAO extends CorePluginsDAO<HopsSuggestion> {
     return entityManager.createQuery(criteria).getResultList();
   }
   
-  public HopsSuggestion findByStudentIdentifierAndSubjectAndCourseNumber(String studentIdentifier, String subject, Integer courseNumber) {
+  public HopsSuggestion findByStudentIdentifierAndSubjectAndCourseNumberAndWorkspaceEntityId(String studentIdentifier, String subject, Integer courseNumber, Long workspaceEntityId) {
     EntityManager entityManager = getEntityManager();
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -65,7 +65,8 @@ public class HopsSuggestionDAO extends CorePluginsDAO<HopsSuggestion> {
       criteriaBuilder.and(
         criteriaBuilder.equal(root.get(HopsSuggestion_.studentIdentifier), studentIdentifier),
         criteriaBuilder.equal(root.get(HopsSuggestion_.subject), subject),
-        criteriaBuilder.equal(root.get(HopsSuggestion_.courseNumber), courseNumber)
+        criteriaBuilder.equal(root.get(HopsSuggestion_.courseNumber), courseNumber),
+        criteriaBuilder.equal(root.get(HopsSuggestion_.workspaceEntityId), workspaceEntityId)
       )
     );
 

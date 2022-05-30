@@ -14,30 +14,30 @@ interface TableProps
 
 /**
  * Table
- * @return JSX.Element
+ * @param props props
+ * @returns JSX.Element
  */
-export const Table = React.forwardRef<HTMLTableElement, TableProps>(
-  ({ children, modifiers, className, ...rest }, ref) => {
-    let updatedClassName = "table";
+export const Table: React.FC<TableProps> = (props) => {
+  const { children, modifiers, className, ...rest } = props;
 
-    if (className) {
-      updatedClassName = className;
-    }
-    return (
-      <table
-        ref={ref}
-        className={`${updatedClassName} ${
-          modifiers
-            ? modifiers.map((m) => `${updatedClassName}--${m}`).join(" ")
-            : ""
-        }`}
-        {...rest}
-      >
-        {children}
-      </table>
-    );
+  let updatedClassName = "table";
+
+  if (className) {
+    updatedClassName = className;
   }
-);
+  return (
+    <table
+      className={`${updatedClassName} ${
+        modifiers
+          ? modifiers.map((m) => `${updatedClassName}--${m}`).join(" ")
+          : ""
+      }`}
+      {...rest}
+    >
+      {children}
+    </table>
+  );
+};
 
 /**
  * TableHeaderProps
@@ -52,16 +52,13 @@ interface TableHeaderProps
 
 /**
  * TableHead
- * @param param0
+ * @param props props
  * @returns JSX.Element
  */
-export const TableHead: React.FC<TableHeaderProps> = ({
-  children,
-  modifiers,
-  className,
-  ...rest
-}) => {
-  let updatedClassName = "table-thead";
+export const TableHead: React.FC<TableHeaderProps> = (props) => {
+  const { children, modifiers, className, ...rest } = props;
+
+  let updatedClassName = "table__thead";
 
   if (className) {
     updatedClassName = className;
@@ -93,16 +90,13 @@ interface TableBodyProps
 
 /**
  * Tbody
- * @param param0
+ * @param props props
  * @returns JSX.Element
  */
-export const Tbody: React.FC<TableBodyProps> = ({
-  children,
-  modifiers,
-  className,
-  ...rest
-}) => {
-  let updatedClassName = "table-tbody";
+export const Tbody: React.FC<TableBodyProps> = (props) => {
+  const { children, modifiers, className, ...rest } = props;
+
+  let updatedClassName = "table__tbody";
 
   if (className) {
     updatedClassName = className;
@@ -144,7 +138,7 @@ export const Tfooter: React.FC<TableFooterProps> = ({
   className,
   ...rest
 }) => {
-  let updatedClassName = "table-tfoot";
+  let updatedClassName = "table__tfoot";
 
   if (className) {
     updatedClassName = className;
@@ -167,7 +161,7 @@ export const Tfooter: React.FC<TableFooterProps> = ({
 /**
  * TableRowProps
  */
-interface TableRowProps
+export interface TableRowProps
   extends React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLTableRowElement>,
     HTMLTableRowElement
@@ -186,7 +180,7 @@ export const Tr: React.FC<TableRowProps> = ({
   className,
   ...rest
 }) => {
-  let updatedClassName = "table-row";
+  let updatedClassName = "table__row";
 
   if (className) {
     updatedClassName = className;
@@ -228,7 +222,7 @@ export const Th: React.FC<TableHeadProps> = ({
   className,
   ...rest
 }) => {
-  let updatedClassName = "table-head";
+  let updatedClassName = "table__head";
 
   if (className) {
     updatedClassName = className;
@@ -270,7 +264,7 @@ export const Td: React.FC<TableDataProps> = ({
   className,
   ...rest
 }) => {
-  let updatedClassName = "table-data";
+  let updatedClassName = "table__data";
 
   if (className) {
     updatedClassName = className;

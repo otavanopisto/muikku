@@ -18,23 +18,12 @@ public abstract class AbstractWorkspaceSearchBuilder implements WorkspaceSearchB
   public abstract SearchResult search();
   
   @Override
-  public String getSchoolDataSource() {
-    return schoolDataSource;
-  }
-  
-  @Override
-  public WorkspaceSearchBuilder setSchoolDataSource(String schoolDataSource) {
-    this.schoolDataSource = schoolDataSource;
-    return this;
-  }
-  
-  @Override
-  public List<String> getSubjects() {
+  public List<SchoolDataIdentifier> getSubjects() {
     return subjects;
   }
   
   @Override
-  public WorkspaceSearchBuilder addSubject(String subject) {
+  public WorkspaceSearchBuilder addSubject(SchoolDataIdentifier subject) {
     if (this.subjects == null) {
       this.subjects = new ArrayList<>();
     }
@@ -43,18 +32,18 @@ public abstract class AbstractWorkspaceSearchBuilder implements WorkspaceSearchB
   }
   
   @Override
-  public WorkspaceSearchBuilder setSubjects(List<String> subjects) {
+  public WorkspaceSearchBuilder setSubjects(List<SchoolDataIdentifier> subjects) {
     this.subjects = subjects;
     return this;
   }
   
   @Override
-  public List<String> getWorkspaceIdentifiers() {
+  public List<SchoolDataIdentifier> getWorkspaceIdentifiers() {
     return workspaceIdentifiers;
   }
   
   @Override
-  public WorkspaceSearchBuilder addWorkspaceIdentifier(String identifier) {
+  public WorkspaceSearchBuilder addWorkspaceIdentifier(SchoolDataIdentifier identifier) {
     if (this.workspaceIdentifiers == null) {
       this.workspaceIdentifiers = new ArrayList<>();
     }
@@ -63,7 +52,7 @@ public abstract class AbstractWorkspaceSearchBuilder implements WorkspaceSearchB
   }
   
   @Override
-  public WorkspaceSearchBuilder setWorkspaceIdentifiers(List<String> identifiers) {
+  public WorkspaceSearchBuilder setWorkspaceIdentifiers(List<SchoolDataIdentifier> identifiers) {
     this.workspaceIdentifiers = identifiers;
     return this;
   }
@@ -213,9 +202,8 @@ public abstract class AbstractWorkspaceSearchBuilder implements WorkspaceSearchB
   }
   
   private String freeText;
-  private String schoolDataSource;
-  private List<String> workspaceIdentifiers = null;
-  private List<String> subjects = null;
+  private List<SchoolDataIdentifier> workspaceIdentifiers = null;
+  private List<SchoolDataIdentifier> subjects = null;
   private List<SchoolDataIdentifier> educationTypeIdentifiers = null; 
   private List<SchoolDataIdentifier> curriculumIdentifiers = null;
   private List<OrganizationRestriction> organizationRestrictions;

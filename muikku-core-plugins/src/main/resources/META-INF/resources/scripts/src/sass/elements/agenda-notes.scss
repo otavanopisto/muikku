@@ -21,16 +21,16 @@
 .agenda-notes-list-items {
   display: flex;
   flex-wrap: wrap;
-  position: relative;
-  overflow-y: scroll;
   height: 360px;
+  overflow-y: scroll;
   padding: 15px;
+  position: relative;
 }
 
 .agenda-note-pinned {
-  width: 25%;
   display: flex;
   flex-direction: column;
+  width: 25%;
 }
 
 .agenda-note-pinned-header {
@@ -48,16 +48,15 @@
 }
 
 .agenda__note {
-  display: flex;
-  height: 250px;
-  width: calc((100% / 3) - 20px);
   background-color: antiquewhite;
-
-  margin: 10px;
   box-shadow: 3px 3px 3px #525252;
+  display: flex;
   flex-direction: column;
+  height: 250px;
+  margin: 10px;
   transform: scale(1) rotate(-6deg);
   transition: transform 0.4s ease-in;
+  width: calc((100% / 3) - 20px);
 
   .agenda__note-header {
     background-color: #e6d7c3;
@@ -77,8 +76,8 @@
 }
 
 .agenda__note:hover {
-  transform: scale(1.15);
   position: relative;
+  transform: scale(1.15);
   transition: transform 0.4s ease-in;
 }
 
@@ -124,24 +123,24 @@
 }
 
 .agenda__note-header-pin {
-  width: 25px;
-  height: 25px;
-  border-radius: 50px;
   background-color: green;
+  border-radius: 50px;
   cursor: pointer;
+  height: 25px;
+  width: 25px;
 }
 
 .agenda__note-content {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   height: 100%;
+  justify-content: space-between;
   padding: 15px;
 }
 
 .agenda__note-content-text {
-  margin: 10px 0;
   font-size: 1rem;
+  margin: 10px 0;
 }
 
 .agenda__note-content-tasks {
@@ -150,10 +149,10 @@
 }
 
 .agenda__note-content-tasks-item {
-  display: flex;
   align-items: center;
-  margin: 5px;
+  display: flex;
   font-size: 1rem;
+  margin: 5px;
 }
 
 .agenda__note-content-tasks-item-check {
@@ -166,6 +165,6 @@
 
 .agenda__note-content-sender {
   display: flex;
-  justify-content: flex-end;
   font-style: italic;
+  justify-content: flex-end;
 }

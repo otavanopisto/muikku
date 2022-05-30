@@ -4,10 +4,10 @@
   <sql>create table Hops (id bigint not null auto_increment, formData longtext not null, studentIdentifier varchar(255) not null, primary key (id));</sql>
   <sql>create unique index ind_hops_student on Hops (studentIdentifier);</sql>
 
-  <sql>create table HopsHistory (id bigint not null auto_increment, date datetime not null, modifier varchar(255) not null, studentIdentifier varchar(255) not null, primary key (id));</sql>
+  <sql>create table HopsHistory (id bigint not null auto_increment, date datetime not null, details longtext, modifier varchar(255) not null, studentIdentifier varchar(255) not null, primary key (id));</sql>
   <sql>create index ind_hhis_student on HopsHistory (studentIdentifier);</sql>
   
-  <sql>create table HopsSuggestion (id bigint not null auto_increment, courseNumber integer, created datetime not null, studentIdentifier varchar(255) not null, subject varchar(255) not null, type varchar(255) not null, workspaceEntityId bigint not null, primary key (id));</sql>
+  <sql>create table HopsSuggestion (id bigint not null auto_increment, courseNumber integer, created datetime not null, studentIdentifier varchar(255) not null, subject varchar(255) not null, type varchar(255) not null, workspaceEntityId bigint, primary key (id));</sql>
   <sql>create unique index ind_hsug_suggestion on HopsSuggestion (studentIdentifier);</sql>
 
   <sql>create table HopsGoals (id bigint not null auto_increment, goals longtext not null, studentIdentifier varchar(255) not null, primary key (id));</sql>
@@ -18,6 +18,7 @@
   <sql>create table HopsStudyHours (id bigint not null auto_increment, studyHours integer, studentIdentifier varchar(255) not null, primary key (id));</sql>
   <sql>create unique index ind_hstu_hours on HopsStudyHours (studentIdentifier);</sql>
 
-  <sql>create table HopsAlternativeStudyOptions (id bigint not null auto_increment, studentIdentifier varchar(255) not null, finnishAsLanguage boolean not null, religionAsEthics boolean not null, primary key (id));</sql>
-  <sql>create unique index ind_halt_options on HopsAlternativeStudyOptions (studentIdentifier);</sql>
+  <sql>create table HopsOptionalSuggestion (id bigint not null auto_increment, courseNumber integer, studentIdentifier varchar(255) not null, subject varchar(255) not null, primary key (id));</sql>
+
+  <sql>drop index ind_hsug_suggestion on hopsSuggestion;</sql>
 </update> 

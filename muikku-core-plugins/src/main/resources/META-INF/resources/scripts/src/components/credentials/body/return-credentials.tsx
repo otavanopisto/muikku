@@ -1,8 +1,6 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import Panel from "~/components/general/panel";
 import Button from "~/components/general/button";
-import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
 import {
   displayNotification,
@@ -134,7 +132,7 @@ class ReturnCredentials extends React.Component<
   render() {
     const credentialsContent =
       this.props.credentials.state == "READY" ? (
-        <div className="form form--forgot-password">
+        <div className="form">
           <div className="form-row">
             <div className="form-element form-element--forgot-password">
               <label htmlFor="resetCredentialsUsername">
@@ -209,7 +207,7 @@ class ReturnCredentials extends React.Component<
         </div>
       );
 
-    return <Panel>{credentialsContent}</Panel>;
+    return <>{credentialsContent}</>;
   }
 }
 

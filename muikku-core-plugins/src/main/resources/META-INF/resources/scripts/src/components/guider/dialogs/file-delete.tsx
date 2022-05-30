@@ -13,7 +13,6 @@ import {
 } from "~/actions/main-function/guider";
 import { UserFileType } from "~/reducers/user-index";
 
-import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
 
 /**

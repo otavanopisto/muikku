@@ -3,57 +3,45 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
-.list-row__container {
+.list__container--section {
+  border-top: 2px solid $color-hops-dialog-form-element-border;
   display: flex;
-  flex-flow: column;
-
-  @include breakpoint($breakpoint-mobile-xl) {
-    flex-flow: wrap;
-  }
-}
-
-.list-subject-course__container {
-  max-height: initial;
-  overflow: unset;
-
-  @include breakpoint($breakpoint-mobile-xl) {
-    max-height: 225px;
-    overflow: auto;
-  }
-}
-
-.list-container--course {
-  box-shadow: 3px 3px 3px grey;
-  margin-bottom: 10px;
-
-  @include breakpoint($breakpoint-mobile-xl) {
-    margin: 5px;
-    width: calc(20% - 10px);
-  }
-}
-
-.list-item--centered {
-  text-align: center;
-}
-
-.list-subject-name {
-  align-items: center;
-  background-color: aliceblue;
-  border-radius: unset;
-  cursor: pointer;
-  display: flex;
-  font-weight: bold;
-  justify-content: space-between;
-  overflow: hidden;
-  padding: 10px 5px 10px 5px;
-  position: relative;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  flex-flow: column wrap;
+  padding: 5px 0;
   width: 100%;
+
+  &:last-child {
+    border-bottom: 2px solid $color-hops-dialog-form-element-border;
+  }
+}
+
+.list__container--subject {
+  margin: 5px 0;
+}
+
+.list__container--row {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+  margin: 5px 0;
+}
+
+.list__header {
+  font-weight: 600;
+}
+
+.list__header--subtitle {
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.list__header--subject-name {
+  font-weight: 600;
 }
 
 .list-subject-name-proggress {
-  background-color: green;
+  background-color: $color-success;
   bottom: 0;
   content: "\A";
   height: 5px;
@@ -63,162 +51,88 @@
   width: 0;
 }
 
-.list-item {
+.list__item {
   border-radius: 5px;
   overflow: hidden;
-  padding: 10px 5px 10px 5px;
+  padding: 5px;
   position: relative;
   width: 100%;
 }
 
-.list-item--course {
-  background-color: #fbfbfb;
+.list__item--centered {
+  text-align: center;
+}
+
+.list__item--course {
   border-radius: 0;
-  margin: 5px 0;
+  width: auto;
 }
 
-.list-item--course:nth-child(even) {
-  background-color: #f2f2f2;
-}
-
-.list-item--subject {
-  background-color: aliceblue;
-  border-radius: unset;
-  cursor: pointer;
-  font-weight: bold;
-  justify-content: space-between;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.list-item--SUGGESTED {
-  border: 2px solid pink;
-}
-
-.list-item--MANDATORY {
-  background-color: #acacac;
-}
-
-.list-item--OPTIONAL {
-  background-color: lightblue;
-}
-
-.list-item--COMPLETED {
-  background-color: green;
-}
-
-.list-item--INPROGRESS {
-  background-color: orange;
-}
-
-.list-item--APPROVAL {
-  background-color: palegreen;
-}
-
-.list-item--SELECTED {
-  background-color: cornsilk;
-}
-
-.list-item--SELECTED_OPTIONAL {
-  background-color: #3ab8e1;
-}
-
-.list-item:after {
-  background: pink;
-  content: "";
-  display: block;
-  height: 15px;
-  position: absolute;
-  right: -22px;
-  top: 0;
-  transform: skewX(45deg);
-  transition: right 0.3s ease-in;
-  width: 15px;
-}
-
-.list-item--NEXT:after {
-  background: pink;
-  content: "";
-  display: block;
-  height: 15px;
-  position: absolute;
-  right: -7px;
-  top: 0;
-  transform: skewX(45deg);
-  transition: right 0.3s ease-in;
-  width: 15px;
-}
-
-.list-item--empty {
+.list__item--empty {
   display: none;
 }
 
-.list-item--NOSTATUS {
+.list__item--NOSTATUS {
   background-color: unset;
 }
 
-.list-item-arrow {
-  border-width: 0 3px 3px 0;
-  border: solid black;
-  display: inline-block;
-  padding: 3px;
-  position: relative;
-  right: 15px;
-  z-index: 10;
+.list__indicator {
+  align-items: center;
+  border: 3px solid transparent;
+  border-radius: 100%;
+  cursor: pointer;
+  display: flex;
+  height: 35px;
+  justify-content: center;
+  width: 35px;
 }
 
-.arrow-right {
-  transform: rotate(0);
-  transition: transform 0.3s ease-in;
+.list__indicator-data-wapper {
+  align-items: center;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  width: 100%;
 }
 
-.arrow-left {
-  transform: rotate(0);
-  transition: transform 0.3s ease-in;
+.list__indicator--MANDATORY {
+  background-color: $color-mandatory;
 }
 
-.arrow-up {
-  transform: rotate(-135deg);
-  transition: transform 0.3s ease-in;
+.list__indicator--OPTIONAL {
+  background-color: $color-optional;
 }
 
-.arrow-down {
-  transform: rotate(180);
-  transition: transform 0.3s ease-in;
+.list__indicator--OPTIONAL-SELECTED {
+  border-color: $color-optional-selected;
 }
 
-.list-item-indicator {
-  border-radius: 5px;
-  height: 30px;
-  margin: 0 5px;
-  transform: skew(-20deg);
-  width: 25px;
+.list__indicator--COMPLETED {
+  background-color: $color-success;
+  color: $color-default;
 }
 
-.list-item-indicator--MANDATORY {
-  background-color: grey;
+.list__indicator--INPROGRESS {
+  background: $color-info;
+  color: $color-default;
 }
 
-.list-item-indicator--OPTIONAL {
-  background-color: lightblue;
+.list__indicator--APPROVAL {
+  background: $color-success;
+  border-color: $color-approval;
+  color: $color-default;
 }
 
-.list-item-indicator--COMPLETED {
-  background-color: green;
+.list__indicator--SUGGESTED {
+  background: $color-suggested;
+  color: $color-default;
 }
 
-.list-item-indicator--INPROGRESS {
-  background-color: orange;
+.list__indicator--NEXT {
+  background: $color-next;
+  color: $color-default;
 }
 
-.list-item-indicator--APPROVAL {
-  background-color: palegreen;
-}
-
-.list-item-indicator--SELECTED {
-  background-color: cornsilk;
-}
-
-.list-item-indicator--SELECTED_OPTIONAL {
-  background-color: #3ab8e1;
+.list__indicator--SELECTED-OPTIONAL {
+  background-color: $color-optional-selected;
 }

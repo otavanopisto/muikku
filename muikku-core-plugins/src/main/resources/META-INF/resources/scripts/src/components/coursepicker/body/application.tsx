@@ -6,7 +6,6 @@ import CoursepickerWorkspaces from "./application/courses";
 import { i18nType } from "~/reducers/base/i18n";
 import * as queryString from "query-string";
 import "~/sass/elements/link.scss";
-import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
 
 import { StateType } from "~/reducers";

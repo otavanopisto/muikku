@@ -20,20 +20,20 @@ import fi.otavanopisto.muikku.schooldata.entity.EducationType;
 import fi.otavanopisto.muikku.schooldata.entity.Subject;
 
 public class CourseMetaController {
-  
-  // TODO: Caching 
+
+  // TODO: Caching
   // TODO: Events
-  
+
   @Inject
   private Logger logger;
-  
+
   @Inject
   @Any
   private Instance<CourseMetaSchoolDataBridge> courseMetaBridges;
 
   @Inject
   private SchoolDataSourceDAO schoolDataSourceDAO;
-  
+
   /* Subjects */
 
   public Subject findSubjectByCode(String schoolDataSource, String code) {
@@ -45,6 +45,9 @@ public class CourseMetaController {
       }
     }
     return null;
+  }
+  public Subject findSubject(SchoolDataIdentifier subjectIdentifier) {
+    return findSubject(subjectIdentifier.getDataSource(), subjectIdentifier.getIdentifier());
   }
 
   public Subject findSubject(String schoolDataSource, String identifier) {
@@ -67,10 +70,10 @@ public class CourseMetaController {
     }
     return null;
   }
-  
+
   public List<Subject> listSubjects() {
     List<Subject> result = new ArrayList<>();
-    
+
     for (CourseMetaSchoolDataBridge courseMetaBridge : getCourseMetaBridges()) {
       try {
         result.addAll(courseMetaBridge.listSubjects());
@@ -78,16 +81,16 @@ public class CourseMetaController {
         logger.log(Level.SEVERE, "School Data Bridge reported a problem while listing subjects", e);
       }
     }
-    
+
     return result;
   }
-  
+
   /* EducationType */
 
   public EducationType findEducationType(SchoolDataIdentifier identifier) {
     return findEducationType(identifier.getDataSource(), identifier.getIdentifier());
   }
-   
+
   public EducationType findEducationType(String schoolDataSource, String identifier) {
     SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
     if (dataSource != null) {
@@ -106,22 +109,26 @@ public class CourseMetaController {
     } else {
       logger.log(Level.SEVERE, "School Data Bridge could not be found for data source: "  + schoolDataSource.getIdentifier());
     }
-  
+
     return null;
   }
 
   public List<EducationType> listEducationTypes() {
     List<EducationType> result = new ArrayList<>();
-    
+
     for (CourseMetaSchoolDataBridge courseMetaBridge : getCourseMetaBridges()) {
       result.addAll(courseMetaBridge.listEducationTypes());
     }
 
     return result;
   }
-  
+
   /* CourseLenthUnit */
-  
+
+  public CourseLengthUnit findCourseLengthUnit(SchoolDataIdentifier courseLengthUnitIdentifier) {
+    return findCourseLengthUnit(courseLengthUnitIdentifier.getDataSource(), courseLengthUnitIdentifier.getIdentifier());
+  }
+
   public CourseLengthUnit findCourseLengthUnit(String schoolDataSource, String identifier) {
     SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
     if (dataSource != null) {
@@ -140,12 +147,12 @@ public class CourseMetaController {
     } else {
       logger.log(Level.SEVERE, "School Data Bridge could not be found for data source: "  + schoolDataSource.getIdentifier());
     }
-  
+
     return null;
   }
-  
+
   /* CourseIdentifier */
-  
+
   public CourseIdentifier findCourseIdentifier(SchoolDataSource schoolDataSource, String identifier) {
     CourseMetaSchoolDataBridge schoolDataBridge = getCourseMetaBridge(schoolDataSource);
     if (schoolDataBridge != null) {
@@ -153,7 +160,7 @@ public class CourseMetaController {
     } else {
       logger.log(Level.SEVERE, "School Data Bridge could not be found for data source: "  + schoolDataSource.getIdentifier());
     }
-  
+
     return null;
   }
 
@@ -167,46 +174,18 @@ public class CourseMetaController {
 
     return null;
   }
-  
-  public List<CourseIdentifier> listCourseIdentifiers() {
-    List<CourseIdentifier> result = new ArrayList<>();
-    
-    for (CourseMetaSchoolDataBridge courseMetaBridge : getCourseMetaBridges()) {
-      try {
-        result.addAll(courseMetaBridge.listCourseIdentifiers());
-      } catch (SchoolDataBridgeInternalException e) {
-        logger.log(Level.SEVERE, "School Data Bridge reported a problem while listing course identifiers", e);
-      } 
-    }
 
-    return result;
-  }
-  
-  public List<CourseIdentifier> listCourseIdentifiersBySubject(Subject subject) {
-    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(subject.getSchoolDataSource());
-    if (schoolDataSource != null) {
-      CourseMetaSchoolDataBridge schoolDataBridge = getCourseMetaBridge(schoolDataSource);
-      if (schoolDataBridge != null) {
-        return schoolDataBridge.listCourseIdentifiersBySubject(subject.getIdentifier());
-      } else {
-        logger.log(Level.SEVERE, "School Data Bridge not found: " + schoolDataSource.getIdentifier());
-      }
-    }
-
-    return null;
-  }
-  
   private List<CourseMetaSchoolDataBridge> getCourseMetaBridges() {
     List<CourseMetaSchoolDataBridge> result = new ArrayList<>();
-    
+
     Iterator<CourseMetaSchoolDataBridge> iterator = courseMetaBridges.iterator();
     while (iterator.hasNext()) {
       result.add(iterator.next());
     }
-    
+
     return Collections.unmodifiableList(result);
   }
-  
+
   private CourseMetaSchoolDataBridge getCourseMetaBridge(SchoolDataSource schoolDataSource) {
     Iterator<CourseMetaSchoolDataBridge> iterator = courseMetaBridges.iterator();
     while (iterator.hasNext()) {
@@ -215,7 +194,7 @@ public class CourseMetaController {
         return schoolDataBridge;
       }
     }
-    
+
     return null;
   }
 
@@ -224,7 +203,7 @@ public class CourseMetaController {
   public Curriculum findCurriculum(SchoolDataIdentifier identifier) {
     return findCurriculum(identifier.getDataSource(), identifier.getIdentifier());
   }
-   
+
   public Curriculum findCurriculum(String schoolDataSource, String identifier) {
     SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
     if (dataSource != null) {
@@ -243,18 +222,18 @@ public class CourseMetaController {
     } else {
       logger.log(Level.SEVERE, "School Data Bridge could not be found for data source: "  + schoolDataSource.getIdentifier());
     }
-  
+
     return null;
   }
 
   public List<Curriculum> listCurriculums() {
     List<Curriculum> result = new ArrayList<>();
-    
+
     for (CourseMetaSchoolDataBridge courseMetaBridge : getCourseMetaBridges()) {
       result.addAll(courseMetaBridge.listCurriculums());
     }
 
     return result;
   }
-  
+
 }

@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -37,6 +38,7 @@ import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceRole;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceRoleArchetype;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceSubject;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceType;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser;
 import fi.otavanopisto.pyramus.rest.model.Address;
@@ -44,6 +46,8 @@ import fi.otavanopisto.pyramus.rest.model.ContactType;
 import fi.otavanopisto.pyramus.rest.model.Course;
 import fi.otavanopisto.pyramus.rest.model.CourseAssessment;
 import fi.otavanopisto.pyramus.rest.model.CourseAssessmentRequest;
+import fi.otavanopisto.pyramus.rest.model.CourseLength;
+import fi.otavanopisto.pyramus.rest.model.CourseModule;
 import fi.otavanopisto.pyramus.rest.model.CourseOptionality;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMemberRole;
@@ -56,6 +60,7 @@ import fi.otavanopisto.pyramus.rest.model.PhoneNumber;
 import fi.otavanopisto.pyramus.rest.model.StudentGroup;
 import fi.otavanopisto.pyramus.rest.model.StudentGroupStudent;
 import fi.otavanopisto.pyramus.rest.model.StudentGroupUser;
+import fi.otavanopisto.pyramus.rest.model.Subject;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
 
 @ApplicationScoped
@@ -283,9 +288,6 @@ public class PyramusSchoolDataEntityFactory {
       modified = course.getCreated();
     }
     
-    // #5124: Courses no longer have logic related to evaluation fees, only line being studied matters
-    boolean courseFeeApplicable = false;
-
     String viewLink = String.format("https://%s/courses/viewcourse.page?course=%d", pyramusHost, course.getId());
     
     Set<SchoolDataIdentifier> curriculumIdentifiers = new HashSet<>();
@@ -295,28 +297,41 @@ public class PyramusSchoolDataEntityFactory {
       }
     }
     
+    Set<CourseModule> courseModules = course.getCourseModules();
+    
+    List<WorkspaceSubject> subjects = courseModules.stream().map(courseModule -> {
+      CourseLength courseLength = courseModule.getCourseLength();
+      EducationalTimeUnit courseLengthUnit = courseLength != null ? courseLength.getUnit() : null;
+      Subject subject = courseModule.getSubject();
+      
+      return new PyramusWorkspaceSubject(
+          identifierMapper.getCourseModuleIdentifier(courseModule.getId()),
+          subject != null ? toIdentifier(identifierMapper.getSubjectIdentifier(subject.getId())) : null,
+          courseModule.getCourseNumber(),
+          courseLength != null ? courseLength.getUnits() : null,
+          courseLengthUnit != null ? toIdentifier(identifierMapper.getCourseLengthUnitIdentifier(courseLengthUnit.getId())) : null
+        );
+    }).collect(Collectors.toList());
+    
+    SchoolDataIdentifier workspaceIdentifier = toIdentifier(identifierMapper.getWorkspaceIdentifier(course.getId()));
+    
     return new PyramusWorkspace(
-        identifierMapper.getWorkspaceIdentifier(course.getId()),
+        workspaceIdentifier,
         course.getName(),
         course.getNameExtension(),
         viewLink,
         identifierMapper.getWorkspaceTypeIdentifier(course.getTypeId()),
-        identifierMapper.getWorkspaceCourseIdentifier(course.getSubjectId(), course.getCourseNumber()),
         course.getDescription(),
-        identifierMapper.getSubjectIdentifier(course.getSubjectId()), 
         identifierMapper.getEducationTypeIdentifier(course.getPrimaryEducationTypeId()),
         modified != null ? Date.from(modified.toInstant()) : null, 
-        course.getLength(), 
-        identifierMapper.getCourseLengthUnitIdentifier(course.getLengthUnitId()),
         course.getBeginDate(), 
         course.getEndDate(), 
         course.getArchived(), 
-        courseFeeApplicable,
         curriculumIdentifiers,
-        course.getCourseNumber(),
         identifierMapper.getEducationSubtypeIdentifier(course.getPrimaryEducationSubtypeId()),
         identifierMapper.getOrganizationIdentifier(course.getOrganizationId()),
-        course.isCourseTemplate());
+        course.isCourseTemplate(),
+        subjects);
   }
 
   public WorkspaceType createEntity(CourseType courseType) {
@@ -343,6 +358,7 @@ public class PyramusSchoolDataEntityFactory {
     }
     
     return new PyramusWorkspaceAssessment(courseAssessment.getId().toString(),
+        identifierMapper.getCourseModuleIdentifier(courseAssessment.getCourseModuleId()),
         identifierMapper.getWorkspaceStudentIdentifier(courseAssessment.getCourseStudentId()),
         identifierMapper.getStaffIdentifier(courseAssessment.getAssessorId()).getIdentifier(),
         gradeIdentifier == null ? null : gradeIdentifier.getIdentifier(),
@@ -369,6 +385,7 @@ public class PyramusSchoolDataEntityFactory {
     }
     
     return new PyramusWorkspaceAssessment(identifier.getIdentifier(),
+        identifierMapper.getCourseModuleIdentifier(courseAssessment.getCourseModuleId()),
         identifierMapper.getWorkspaceStudentIdentifier(courseAssessment.getCourseStudentId()),
         identifierMapper.getStaffIdentifier(courseAssessment.getAssessorId()).getIdentifier(),
         gradeIdentifier == null ? null : gradeIdentifier.getIdentifier(),

@@ -9,6 +9,8 @@ import "~/sass/elements/loaders.scss";
 import "~/sass/elements/label.scss";
 import "~/sass/elements/user.scss";
 import "~/sass/elements/application-list.scss";
+import "~/sass/elements/form.scss";
+
 import BodyScrollLoader from "~/components/general/body-scroll-loader";
 import SelectableList from "~/components/general/selectable-list";
 import {

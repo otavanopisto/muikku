@@ -127,7 +127,7 @@ public class UserIndexer {
           }
         }
         
-        indexer.index(User.class.getSimpleName(), indexedUser);
+        indexer.index(IndexedUser.INDEX_NAME, IndexedUser.TYPE_NAME, indexedUser);
       } else {
         logger.info(String.format("Removing user %s/%s from index", identifier, dataSource));
         removeUser(dataSource, identifier);
@@ -162,8 +162,7 @@ public class UserIndexer {
 
   public void removeUser(String dataSource, String identifier) {
     try {
-      final String INDEX_NAME = "User";
-      indexer.remove(INDEX_NAME, String.format("%s/%s", identifier, dataSource));
+      indexer.remove(IndexedUser.INDEX_NAME, IndexedUser.TYPE_NAME, String.format("%s/%s", identifier, dataSource));
     } catch (Exception ex) {
       logger.log(Level.SEVERE, String.format("Removal of user %s/%s from index failed", dataSource, identifier), ex);
     } 

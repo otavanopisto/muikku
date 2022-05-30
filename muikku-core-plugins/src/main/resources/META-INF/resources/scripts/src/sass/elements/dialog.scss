@@ -502,12 +502,9 @@
 }
 
 .dialog__executer {
-  // scss-lint:disable SelectorFormat
   &.state-DONE {
     color: $color-success;
   }
-
-  // scss-lint:enable SelectorFormat
 }
 
 .dialog--hops {
@@ -536,7 +533,6 @@
   margin: 20px 0 5px;
   padding: 7px;
 
-  // scss-lint:disable SelectorFormat
   &.state-INFO {
     border-color: $color-info;
 
@@ -544,8 +540,6 @@
       color: $color-info;
     }
   }
-
-  // scss-lint:enable SelectorFormat
 }
 
 .dialog__state-icon {

@@ -212,7 +212,7 @@ public class UserRESTService extends AbstractRESTService {
   public Response getUserEntityProperty(@PathParam("KEY") String key) {
     UserEntity loggedUserEntity = sessionController.getLoggedUserEntity();
     UserEntityProperty property = userEntityController.getUserEntityPropertyByKey(loggedUserEntity, key);
-    return Response.ok(new fi.otavanopisto.muikku.rest.model.UserEntityProperty(key, property == null ? null : property.getValue())).build();
+    return Response.ok(new fi.otavanopisto.muikku.rest.model.UserEntityProperty(key, property == null ? null : property.getValue(), property == null ? null : property.getUserEntity().getId())).build();
   }
   
   @GET
@@ -248,7 +248,7 @@ public class UserRESTService extends AbstractRESTService {
     if (StringUtils.isBlank(keys)) {
       storedProperties = userEntityController.listUserEntityProperties(userEntity);
       for (UserEntityProperty property : storedProperties) {
-        restProperties.add(new fi.otavanopisto.muikku.rest.model.UserEntityProperty(property.getKey(), property.getValue()));
+        restProperties.add(new fi.otavanopisto.muikku.rest.model.UserEntityProperty(property.getKey(), property.getValue(), userEntityId));
       }
     }
     else {
@@ -257,7 +257,8 @@ public class UserRESTService extends AbstractRESTService {
       for (int i = 0; i < keyArray.length; i++) {
         storedProperty = userEntityController.getUserEntityPropertyByKey(userEntity, keyArray[i]);
         String value = storedProperty == null ? null : storedProperty.getValue();
-        restProperties.add(new fi.otavanopisto.muikku.rest.model.UserEntityProperty(keyArray[i], value));
+
+        restProperties.add(new fi.otavanopisto.muikku.rest.model.UserEntityProperty(keyArray[i], value, userEntityId));
       }
     }
     return Response.ok(restProperties).build();
@@ -268,7 +269,20 @@ public class UserRESTService extends AbstractRESTService {
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response setUserEntityProperty(fi.otavanopisto.muikku.rest.model.UserEntityProperty payload) {
     UserEntity loggedUserEntity = sessionController.getLoggedUserEntity();
-    userEntityController.setUserEntityProperty(loggedUserEntity, payload.getKey(), payload.getValue());
+    UserEntity userEntity = userEntityController.findUserEntityById(payload.getUserEntityId());
+    Boolean isStudent = userEntityController.isStudent(userEntity);
+    Boolean isLoggedUserStudent = userEntityController.isStudent(loggedUserEntity);
+
+    if (payload.getUserEntityId() != null && payload.getKey().equals("hopsPhase")) { // This is for hops.phase. Only staff members can set phases.
+      if (isStudent && !isLoggedUserStudent) { // If userEntity from payload is student & logged user is not student
+        userEntityController.setUserEntityProperty(userEntity, payload.getKey(), payload.getValue());
+      }
+      
+    } else if (payload.getUserEntityId() != null) { // This is for student graduation date goal
+      userEntityController.setUserEntityProperty(userEntity, payload.getKey(), payload.getValue());
+    } else {
+      userEntityController.setUserEntityProperty(loggedUserEntity, payload.getKey(), payload.getValue());
+    }
     return Response.ok(payload).build();
   }
   

@@ -31,6 +31,7 @@
 }
 
 .application-sub-panel--student-data-container {
+  align-items: flex-start;
   display: flex;
   flex-wrap: wrap;
 
@@ -40,19 +41,25 @@
 }
 
 .application-sub-panel--student-data-primary {
+  border: 0;
   flex-basis: 100%;
+  margin: 0 0 30px;
 
   @include breakpoint($breakpoint-desktop-xl) {
     flex-basis: 45%;
+    margin: 0;
   }
 }
 
 .application-sub-panel--student-data-secondary {
+  border: 0;
   flex-basis: 100%;
+  margin: 0 0 30px;
 
   @include breakpoint($breakpoint-desktop-xl) {
     flex-basis: auto;
     flex-grow: 1;
+    margin: 0;
     padding: 0 0 0 20px;
   }
 }
@@ -1044,15 +1051,6 @@
   justify-content: flex-end;
 }
 
-.application-sub-panel__item-data--workspace-management {
-  align-items: flex-start;
-  flex-flow: column nowrap;
-
-  @include breakpoint($breakpoint-pad) {
-    flex-flow: row wrap;
-  }
-}
-
 .application-sub-panel__item-data--study-start-date.application-sub-panel__single-entry {
   background-color: $color-sub-panel-data-1-background;
 }
@@ -1088,15 +1086,6 @@
   display: inline-block;
   margin: 2px 5px 2px 0;
   padding: 4px;
-}
-
-.application-sub-panel__item-description {
-  flex-basis: 100%;
-  flex-grow: 1;
-  flex-shrink: 1;
-  font-size: 0.8125rem;
-  font-style: italic;
-  margin: 10px 0 0;
 }
 
 // HOPS in Guider in readable state
@@ -1138,7 +1127,7 @@
 // Profile view
 .application-sub-panel__item--profile {
   align-items: flex-start;
-  flex-flow: row wrap;
+  flex-flow: column wrap;
 
   .application-sub-panel__item-title {
     flex-basis: 100%;

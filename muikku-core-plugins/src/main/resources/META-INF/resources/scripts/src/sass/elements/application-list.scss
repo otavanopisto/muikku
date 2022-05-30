@@ -238,12 +238,13 @@
   color: $color-default;
   cursor: help;
   display: flex;
-  font-size: 1rem;
-  height: 1.875rem;
+  font-size: $text-desktop-font-size;
+  font-weight: 600;
+  height: 1.375rem;
   justify-content: center;
   margin: 0 0 0 10px;
   text-align: center;
-  width: 1.875rem;
+  width: 1.375rem;
 
   &.state-PASSED {
     background: $color-grade-passed;
@@ -260,17 +261,14 @@
   &.state-NO-ASSESSMENT {
     background: $color-grade-not-assessed;
   }
+
+  &.state-UNASSESSED {
+    cursor: default;
+  }
 }
 
 .application-list__indicator-badge--course {
   margin: 0 0 0 10px;
-}
-
-.application-list__indicator-badge--course-in-guider {
-  font-size: $text-desktop-font-size;
-  font-weight: 600;
-  height: 1.25rem;
-  width: 1.25rem;
 }
 
 .application-list__indicator-badge--task {
@@ -279,6 +277,8 @@
 
 .application-list__indicator-badge--evaluation-request {
   background-color: $color-evaluation-request;
+  font-size: 1rem;
+  font-weight: 400;
 }
 
 .application-list__header-item-date {
@@ -324,6 +324,40 @@
 .application-list__item-content-wrapper--workspace-user,
 .application-list__item-content-wrapper--dialog-remove-users {
   align-items: center;
+}
+
+.application-list__item-content-container--combination-course {
+  padding: 0 0 10px 33px;
+  position: relative;
+
+  &::after {
+    border-bottom: 1px solid lighten($color-workspace, 10%);
+    border-left: 1px solid lighten($color-workspace, 10%);
+    content: " ";
+    display: block;
+    height: 25px;
+    left: 10px;
+    position: absolute;
+    top: 5px;
+    width: 15px;
+  }
+}
+
+.application-list__item-content-single-item {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  padding: 4px 0;
+}
+
+.application-list__item-content-single-item-primary {
+  display: flex;
+  flex-basis: auto;
+  flex-flow: row nowrap;
+  flex-grow: 1;
+  flex-shrink: 1;
+  font-size: 0.8125rem;
 }
 
 .application-list__item--workspace-staff-member {
@@ -535,38 +569,6 @@
 .application-list__item-content-aside {
   display: none;
 
-  input {
-    align-items: center;
-    appearance: none;
-    border: solid 2px $color-main-function-application-list-item-checkbox-border;
-    border-radius: 3px;
-    display: flex;
-    height: 1rem;
-    justify-content: center;
-    width: 1rem;
-  }
-
-  input:checked {
-    background-color: $color-main-function-application-list-item-checkbox-checked-background;
-    border:
-      solid 2px
-      $color-main-function-application-list-item-checkbox-checked-background;
-  }
-
-  input:checked::after {
-    color: $color-main-function-application-list-item-checkbox-checked-mark;
-    content: "\e639";
-    font-family: "muikku";
-    font-size: 0.875rem;
-  }
-
-  input[type="radio"] {
-    border-radius: 50%;
-
-    // this could be for any input inside the aside, but in communicator it is in the container
-    margin-right: 5px;
-  }
-
   @include breakpoint($breakpoint-pad) {
     align-items: flex-start;
     display: flex;
@@ -578,10 +580,6 @@
 
 .application-list__item-content-aside--course {
   padding: 15px 0;
-
-  input[type="radio"] {
-    padding: 8px;
-  }
 }
 
 .application-list__item-content-aside--workspace-user {
@@ -1035,6 +1033,14 @@
 
   @include breakpoint($breakpoint-pad) {
     padding: 15px 0;
+  }
+}
+
+.application-list__item-header--combination-course {
+  padding: 10px 0 5px;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 15px 0 5px;
   }
 }
 

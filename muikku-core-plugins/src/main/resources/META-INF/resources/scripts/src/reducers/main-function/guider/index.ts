@@ -98,6 +98,7 @@ export interface GuiderStudentUserProfileType {
   pastWorkspaces: WorkspaceListType;
   activityLogs: ActivityLogType[];
   purchases: PurchaseType[];
+  hopsPhase?: string;
 }
 
 /**
@@ -239,6 +240,7 @@ export default function guider(
   } else if (action.type === "SET_CURRENT_GUIDER_STUDENT_PROP") {
     const obj: any = {};
     obj[action.payload.property] = action.payload.value;
+
     return Object.assign({}, state, {
       currentStudent: Object.assign({}, state.currentStudent, obj),
     });
@@ -414,6 +416,13 @@ export default function guider(
           })
           .sort(sortLabels),
       }),
+    });
+  } else if (action.type === "UPDATE_CURRENT_GUIDER_STUDENT_HOPS_PHASE") {
+    return Object.assign({}, state, {
+      currentStudent: {
+        ...state.currentStudent,
+        hopsPhase: action.payload.value,
+      },
     });
   } else if (action.type === "DELETE_GUIDER_AVAILABLE_FILTER_LABEL") {
     return Object.assign({}, state, {

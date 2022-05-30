@@ -8,8 +8,10 @@ import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpPost;
@@ -26,8 +28,12 @@ import fi.otavanopisto.muikku.mock.model.MockStudent;
 import fi.otavanopisto.pyramus.rest.model.Course;
 import fi.otavanopisto.pyramus.rest.model.CourseActivity;
 import fi.otavanopisto.pyramus.rest.model.CourseActivityState;
+import fi.otavanopisto.pyramus.rest.model.CourseLength;
+import fi.otavanopisto.pyramus.rest.model.CourseModule;
 import fi.otavanopisto.pyramus.rest.model.CourseStudent;
+import fi.otavanopisto.pyramus.rest.model.EducationalTimeUnit;
 import fi.otavanopisto.pyramus.rest.model.Student;
+import fi.otavanopisto.pyramus.rest.model.Subject;
 
 public class TestUtilities {
   
@@ -113,40 +119,51 @@ public class TestUtilities {
   }
   
   public static Course courseFromMockCourse(MockCourse mockCourse) {
+    Set<CourseModule> courseModules = new HashSet<>();
+    Subject subject = new Subject(1L, null, null, null, null);
+    EducationalTimeUnit unit = new EducationalTimeUnit(1L, null, null, null, null);
+    CourseLength courseLength = new CourseLength(mockCourse.getId(), 1d, 45d, unit);
+    courseModules.add(new CourseModule(
+        mockCourse.getId(),             // id
+        subject,                        // subject
+        1,                              // courseNumber 
+        courseLength                    // courseLength
+      )
+    );
+    
     Course course = new Course(
         mockCourse.getId(),
-        mockCourse.getName(),
-        mockCourse.getCreated(),
-        mockCourse.getCreated(),
-        mockCourse.getDescription(),
-        false,
-        1, 
-       (long) 25,
-       mockCourse.getBegin(),
-       mockCourse.getEnd(),
-       "test extension",
-       (double) 15,
-       (double) 45,
-       (double) 45,
-       (double) 15,
-       (double) 45,
-       (double) 45,
-       mockCourse.getEnd(),
-       (long) 1,
-       (long) 1,
-       (long) 1,
-       null,
-       (double) 45,
-       (long) 1,
-       (long) 1,
-       (long) 1,
-       (long) 1, 
-       null,
-       null,
-       1L,
-       false,
-       1L,
-       1L);
+        mockCourse.getName(),           // name
+        mockCourse.getCreated(),        // created
+        mockCourse.getCreated(),        // lastModified
+        mockCourse.getDescription(),    // description
+        false,                          // archived
+        (long) 25,                      // maxParticipantCount
+        mockCourse.getBegin(),          // beginDate
+        mockCourse.getEnd(),            // endDate
+        "test extension",               // nameExtension
+        (double) 15,                    // localTeachingDays
+        (double) 45,                    // teachingHours
+        (double) 45,                    // distanceTeachingHours
+        (double) 15,                    // distanceTeachingDays
+        (double) 45,                    // assessingHours
+       
+        (double) 45,                    // planningHours
+        mockCourse.getEnd(),            // enrolmentTimeEnd
+        (long) 1,                       // creatorId
+        (long) 1,                       // lastModifierId
+        null,                           // curriculumIds
+        (long) 1,                       // moduleId
+        (long) 1,                       // stateId
+        (long) 1,                       // typeId
+        null,                           // variables
+        null,                           // tags
+        1L,                             // organizationId
+        false,                          // courseTemplate
+        1L,                             // primaryEducationTypeId
+        1L,                             // primaryEducationSubtypeId
+        courseModules                   // courseModules
+    );
     
     return course;
   }
@@ -189,6 +206,7 @@ public class TestUtilities {
     List<CourseActivity> courseActivities = new ArrayList<>();
     CourseActivity ca = new CourseActivity();
     ca.setCourseId(course.getId());
+    ca.setCourseModuleId(course.getCourseModules().iterator().next().getId());
     ca.setCourseName(course.getName());
     ca.setState(courseActivityState);
     ca.setActivityDate(TestUtilities.toDate(TestUtilities.getLastWeek()));

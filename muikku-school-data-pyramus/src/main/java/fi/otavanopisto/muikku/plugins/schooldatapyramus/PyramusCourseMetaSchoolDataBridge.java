@@ -21,7 +21,6 @@ import fi.otavanopisto.muikku.schooldata.entity.CourseLengthUnit;
 import fi.otavanopisto.muikku.schooldata.entity.Curriculum;
 import fi.otavanopisto.muikku.schooldata.entity.EducationType;
 import fi.otavanopisto.muikku.schooldata.entity.Subject;
-import fi.otavanopisto.pyramus.rest.model.Course;
 
 public class PyramusCourseMetaSchoolDataBridge implements CourseMetaSchoolDataBridge {
 
@@ -73,69 +72,6 @@ public class PyramusCourseMetaSchoolDataBridge implements CourseMetaSchoolDataBr
         fi.otavanopisto.pyramus.rest.model.Subject.class);
 
     return new PyramusCourseIdentifier(identifier, subject.getCode() + idParts[1], subject.getId().toString());
-  }
-
-  @Override
-  public List<CourseIdentifier> listCourseIdentifiers() {
-    List<CourseIdentifier> result = new ArrayList<>();
-    fi.otavanopisto.pyramus.rest.model.Subject[] subjects = pyramusClient.get("/common/subjects/", fi.otavanopisto.pyramus.rest.model.Subject[].class);
-    if (subjects != null) {
-  
-      // TODO Ugly workaround to Pyramus Course IDs
-  
-      for (fi.otavanopisto.pyramus.rest.model.Subject subject : subjects) {
-        List<String> courseNumbers = new ArrayList<String>();
-        String identifier = subject.getId().toString();
-        Course[] courses = pyramusClient.get("/common/subjects/" + identifier + "/courses", fi.otavanopisto.pyramus.rest.model.Course[].class);
-  
-        if (courses != null) {
-          for (Course course : courses) {
-            String courseNumber = course.getCourseNumber() != null ? course.getCourseNumber().toString() : "null";
-    
-            if (!courseNumbers.contains(courseNumber))
-              courseNumbers.add(courseNumber);
-          }
-    
-          for (String cn : courseNumbers) {
-            result.add(new PyramusCourseIdentifier(subject.getId().toString() + "/" + cn, subject.getCode(), subject
-                .getId().toString()));
-          }
-        }
-      }
-    }
-    return result;
-  }
-
-  @Override
-  public List<CourseIdentifier> listCourseIdentifiersBySubject(String subjectIdentifier) {
-    if (!StringUtils.isNumeric(subjectIdentifier)) {
-      throw new SchoolDataBridgeInternalException("Identifier has to be numeric");
-    }
-
-    // TODO Fix workaround
-
-    fi.otavanopisto.pyramus.rest.model.Subject subject = pyramusClient.get("/common/subjects/" + subjectIdentifier,
-        fi.otavanopisto.pyramus.rest.model.Subject.class);
-
-    List<CourseIdentifier> result = new ArrayList<>();
-    List<String> courseNumbers = new ArrayList<String>();
-    String identifier = subject.getId().toString();
-    Course[] courses = pyramusClient.get("/common/subjects/" + identifier + "/courses",
-        fi.otavanopisto.pyramus.rest.model.Course[].class);
-
-    for (Course course : courses) {
-      String courseNumber = course.getCourseNumber() != null ? course.getCourseNumber().toString() : "null";
-
-      if (!courseNumbers.contains(courseNumber))
-        courseNumbers.add(courseNumber);
-    }
-
-    for (String cn : courseNumbers) {
-      result.add(new PyramusCourseIdentifier(subject.getId().toString() + "/" + cn, subject.getCode(), subject.getId()
-          .toString()));
-    }
-
-    return result;
   }
 
   private Subject createSubjectEntity(fi.otavanopisto.pyramus.rest.model.Subject s) {
