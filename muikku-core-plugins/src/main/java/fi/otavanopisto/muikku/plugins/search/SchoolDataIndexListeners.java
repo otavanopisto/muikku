@@ -14,7 +14,6 @@ import javax.inject.Inject;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
-import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.events.SchoolDataUserEventIdentifier;
 import fi.otavanopisto.muikku.schooldata.events.SchoolDataUserGroupDiscoveredEvent;
 import fi.otavanopisto.muikku.schooldata.events.SchoolDataUserGroupRemovedEvent;
@@ -29,6 +28,7 @@ import fi.otavanopisto.muikku.schooldata.events.SchoolDataWorkspaceUpdatedEvent;
 import fi.otavanopisto.muikku.schooldata.events.SchoolDataWorkspaceUserDiscoveredEvent;
 import fi.otavanopisto.muikku.schooldata.events.SchoolDataWorkspaceUserRemovedEvent;
 import fi.otavanopisto.muikku.schooldata.events.SchoolDataWorkspaceUserUpdatedEvent;
+import fi.otavanopisto.muikku.search.IndexedWorkspace;
 import fi.otavanopisto.muikku.search.SearchIndexer;
 import fi.otavanopisto.muikku.users.UserGroupController;
 
@@ -62,7 +62,7 @@ public class SchoolDataIndexListeners {
   }
   
   public void onSchoolDataWorkspaceRemovedEvent(@Observes SchoolDataWorkspaceRemovedEvent event) {
-    indexer.remove(Workspace.class.getSimpleName(), event.getSearchId());
+    indexer.remove(IndexedWorkspace.INDEX_NAME, IndexedWorkspace.TYPE_NAME, event.getSearchId());
   }
   
   @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -101,7 +101,7 @@ public class SchoolDataIndexListeners {
     try {
       UserGroup userGroup = userGroupController.findUserGroup(event.getDataSource(), event.getIdentifier());
       if (userGroup != null) {
-        indexer.index(UserGroup.class.getSimpleName(), userGroup);
+        indexer.index(UserGroup.INDEX_NAME, UserGroup.TYPE_NAME, userGroup);
       } else {
         logger.warning("could not index user group because user group '" + event.getIdentifier() + '/' + event.getDataSource() +  "' could not be found");
       }
@@ -111,7 +111,7 @@ public class SchoolDataIndexListeners {
   }  
 
   public void onSchoolDataUserGroupRemovedEvent(@Observes SchoolDataUserGroupRemovedEvent event) {
-    indexer.remove(UserGroup.class.getSimpleName(), event.getSearchId());
+    indexer.remove(UserGroup.INDEX_NAME, UserGroup.TYPE_NAME, event.getSearchId());
   }  
 
   public void onSchoolDataUserGroupUpdatedEvent(@Observes SchoolDataUserGroupUpdatedEvent event) {
@@ -119,7 +119,7 @@ public class SchoolDataIndexListeners {
     try {
       UserGroup userGroup = userGroupController.findUserGroup(event.getDataSource(), event.getIdentifier());
       if (userGroup != null) {
-        indexer.index(UserGroup.class.getSimpleName(), userGroup);
+        indexer.index(UserGroup.INDEX_NAME, UserGroup.TYPE_NAME, userGroup);
       } else {
         logger.warning("could not index user group because user group '" + event.getIdentifier() + '/' + event.getDataSource() +  "' could not be found");
       }

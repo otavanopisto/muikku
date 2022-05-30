@@ -43,22 +43,21 @@ import fi.otavanopisto.muikku.schooldata.entity.UserProperty;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
-import fi.otavanopisto.muikku.users.OrganizationEntityController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 
 public class TranscriptOfRecordsController {
-  
+
   private static final String MATRICULATION_SUBJECTS_PLUGIN_SETTING_KEY = "matriculation.subjects";
   private static final String USER_MATRICULATION_SUBJECTS_USER_PROPERTY = "hops.matriculation-subjects";
-  
+
   @Inject
   private Logger logger;
-  
+
   @Inject
   private UserSchoolDataController userSchoolDataController;
-  
+
   @Inject
   private WorkspaceUserEntityController workspaceUserEntityController;
 
@@ -85,27 +84,24 @@ public class TranscriptOfRecordsController {
 
   @Inject
   private GradingController gradingController;
-  
-  @Inject
-  private OrganizationEntityController organizationEntityController;
 
   @Inject
   @Any
   private Instance<SearchProvider> searchProviders;
 
   private static final Pattern UPPER_SECONDARY_SCHOOL_SUBJECT_PATTERN = Pattern.compile("^[A-ZÅÄÖ0-9]+$");
-  
+
   public boolean subjectAppliesToStudent(User student, Subject subject) {
     if (subject.getCode() == null) {
       return false;
     }
-    
+
     if (!UPPER_SECONDARY_SCHOOL_SUBJECT_PATTERN.matcher(subject.getCode()).matches()) {
       return false;
     }
 
     TranscriptofRecordsUserProperties userProperties = loadUserProperties(student);
-    
+
     String mathSyllabus = userProperties.asString("mathSyllabus");
     String finnish = userProperties.asString("finnish");
     boolean german = userProperties.asBoolean("german");
@@ -115,7 +111,7 @@ public class TranscriptOfRecordsController {
     String religion = userProperties.asString("religion");
 
     String code = subject.getCode();
-    
+
     if ("MUU".equals(code)) {
       return false;
     }
@@ -124,7 +120,7 @@ public class TranscriptOfRecordsController {
     if ("RUB".equals(code)) {
       return false;
     }
-    
+
     if ("MAA".equals(mathSyllabus) && "MAB".equals(code)) {
       return false;
     }
@@ -193,20 +189,20 @@ public class TranscriptOfRecordsController {
 
   public TranscriptofRecordsUserProperties loadUserProperties(User user) {
     List<UserProperty> userProperties = userSchoolDataController.listUserProperties(user);
-    
+
     StudentMatriculationSubjects studentMatriculationSubjects = unserializeStudentMatriculationSubjects(userProperties.stream()
       .filter(userProperty -> USER_MATRICULATION_SUBJECTS_USER_PROPERTY.equals(userProperty.getKey()))
       .findFirst()
       .orElse(null));
-  
+
     return new TranscriptofRecordsUserProperties(userProperties, studentMatriculationSubjects);
   }
 
-  public List<VopsWorkspace> listWorkspaceIdentifiersBySubjectIdentifierAndCourseNumber(String schoolDataSource, String subjectIdentifier, int courseNumber) {
+  public List<VopsWorkspace> listWorkspaceIdentifiersBySubjectIdentifierAndCourseNumber(SchoolDataIdentifier subjectIdentifier, int courseNumber) {
     List<VopsWorkspace> retval = new ArrayList<>();
     SearchProvider searchProvider = getProvider("elastic-search");
     if (searchProvider != null) {
-      SearchResult sr = searchProvider.searchWorkspaces(organizationEntityController.listLoggedUserOrganizations(), subjectIdentifier, courseNumber);
+      SearchResult sr = searchProvider.searchWorkspaces(subjectIdentifier, courseNumber);
       List<Map<String, Object>> results = sr.getResults();
       for (Map<String, Object> result : results) {
         String searchId = (String) result.get("id");
@@ -220,15 +216,15 @@ public class TranscriptOfRecordsController {
             String description = (String) result.get("description");
             @SuppressWarnings("unchecked")
             ArrayList<String> curriculums = (ArrayList<String>) result.get("curriculumIdentifiers");
-            
+
             SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(identifier, dataSource);
             SchoolDataIdentifier educationSubtypeIdentifier = SchoolDataIdentifier.fromId(educationTypeId);
             Set<SchoolDataIdentifier> curriculumIdentifiers = new HashSet<>();
-            
+
             for (String curriculum : curriculums) {
               curriculumIdentifiers.add(SchoolDataIdentifier.fromId(curriculum));
             }
-            
+
             retval.add(
                 new VopsWorkspace(
                     workspaceIdentifier,
@@ -247,7 +243,7 @@ public class TranscriptOfRecordsController {
 
   public Map<SchoolDataIdentifier, WorkspaceAssessment> listStudentAssessments(SchoolDataIdentifier studentIdentifier) {
     List<WorkspaceAssessment> assessmentsByStudent = gradingController.listAssessmentsByStudent(studentIdentifier);
-    
+
     Map<SchoolDataIdentifier, WorkspaceAssessment> result = new HashMap<>();
     for (WorkspaceAssessment assessment : assessmentsByStudent) {
       WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifier(assessment.getWorkspaceUserIdentifier());
@@ -269,27 +265,27 @@ public class TranscriptOfRecordsController {
         logger.warning(String.format("Workspace assessment %s has no corresponding WorkspaceUserEntity", assessment.getIdentifier().toString()));
       }
     }
-    
+
     return result;
   }
-  
+
   /**
    * Returns a list of configured matriculation subjects.
-   * 
+   *
    * @return list of configured matriculation subjects or empty list if setting is not configured.
    */
   public MatriculationSubjects listMatriculationSubjects() {
     String subjectsJson = pluginSettingsController.getPluginSetting("transcriptofrecords", MATRICULATION_SUBJECTS_PLUGIN_SETTING_KEY);
     if (StringUtils.isNotBlank(subjectsJson)) {
-      return unserializeObject(subjectsJson, MatriculationSubjects.class);   
+      return unserializeObject(subjectsJson, MatriculationSubjects.class);
     }
 
     return unserializeObject(getClass().getClassLoader().getResourceAsStream("fi/otavanopisto/muikku/plugins/transcriptofrecords/default-matriculation-subjects.json"), MatriculationSubjects.class);
   }
-  
+
   /**
    * Saves a list of student's matriculation subjects
-   * 
+   *
    * @param student student
    * @param matriculationSubjects list of student's matriculation subjects
    */
@@ -299,17 +295,17 @@ public class TranscriptOfRecordsController {
 
   /**
    * Unserializes student's matriculation subjects from user property
-   * 
+   *
    * @param userProperty user property
    * @return unserialized student's matriculation subjects
    */
   private StudentMatriculationSubjects unserializeStudentMatriculationSubjects(UserProperty userProperty) {
     return unserializeStudentMatriculationSubjects(userProperty != null ? userProperty.getValue() : null);
   }
-  
+
   /**
    * Unserializes student's matriculation subjects from string
-   * 
+   *
    * @param value string value
    * @return unserialized student's matriculation subjects
    */
@@ -318,13 +314,13 @@ public class TranscriptOfRecordsController {
     if (result != null) {
       return result;
     }
-    
+
     return new StudentMatriculationSubjects();
   }
-  
+
   /**
    * Unserialized object from a JSON string
-   * 
+   *
    * @param string string representation
    * @return unserialized object or null if unserialization fails
    */
@@ -337,13 +333,13 @@ public class TranscriptOfRecordsController {
         logger.log(Level.SEVERE, "Failed to unserialize object", e);
       }
     }
-    
+
     return null;
   }
-  
+
   /**
    * Unserialized object from input stream
-   * 
+   *
    * @param inputStream input stream
    * @return unserialized object or null if unserialization fails
    */
@@ -354,13 +350,13 @@ public class TranscriptOfRecordsController {
     } catch (IOException e) {
       logger.log(Level.SEVERE, "Failed to unserialize object", e);
     }
-    
+
     return null;
   }
-  
+
   /**
    * Writes an object as JSON string
-   * 
+   *
    * @param entity to be serialized
    * @return serialized string
    */
@@ -375,14 +371,14 @@ public class TranscriptOfRecordsController {
     } catch (JsonProcessingException e) {
       logger.log(Level.SEVERE, "Failed to serialize an entity", e);
     }
-    
+
     return null;
   }
 
   public StudentCourseStats fetchStudentCourseStats(SchoolDataIdentifier studentIdentifier) {
     return userSchoolDataController.getStudentCourseStats(studentIdentifier);
   }
-  
+
   public int getMandatoryCoursesRequiredForMatriculation() {
     String resultString = pluginSettingsController.getPluginSetting(
         "transcriptofrecords",
@@ -451,7 +447,7 @@ public class TranscriptOfRecordsController {
         throw new EducationTypeMappingNotSetException();
       }
     }
-    
+
     VopsLister lister = new VopsLister(
       subjects,
       this,

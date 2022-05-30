@@ -1,0 +1,11 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+@import "cke-styles";
+
+.click-outside-listener {
+  height: inherit;
+  position: relative;
+  width: inherit;
+}

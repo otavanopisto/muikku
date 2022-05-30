@@ -33,13 +33,6 @@
   }
 }
 
-.announcement__select-container {
-  @include vp-align-items(center);
-  @include vp-flexbox;
-
-  padding: 2px 8px 2px 2px;
-}
-
 // These are for announcements panel-paginations spcific styles,
 // otherwise it uses same styles as Pager component
 .pagination {

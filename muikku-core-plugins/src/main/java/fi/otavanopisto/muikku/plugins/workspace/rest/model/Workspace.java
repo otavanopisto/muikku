@@ -26,7 +26,6 @@ public class Workspace {
       Long numVisits,
       Date lastVisit,
       Set<String> curriculumIdentifiers,
-      String subjectIdentifier,
       boolean hasCustomImage) {
     super();
     this.id = id;
@@ -39,11 +38,10 @@ public class Workspace {
     this.name = name;
     this.nameExtension = nameExtension;
     this.description = description;
-    this.setMandatority(mandatority);
+    this.mandatority = mandatority;
     this.numVisits = numVisits;
     this.lastVisit = lastVisit;
     this.curriculumIdentifiers = curriculumIdentifiers;
-    this.subjectIdentifier = subjectIdentifier;
     this.hasCustomImage = hasCustomImage;
   }
 
@@ -102,35 +100,35 @@ public class Workspace {
   public void setLastVisit(Date lastVisit) {
     this.lastVisit = lastVisit;
   }
-  
+
   public WorkspaceAccess getAccess() {
     return access;
   }
-  
+
   public void setAccess(WorkspaceAccess access) {
     this.access = access;
   }
-  
+
   public String getMaterialDefaultLicense() {
     return materialDefaultLicense;
   }
-  
+
   public void setMaterialDefaultLicense(String materialDefaultLicense) {
     this.materialDefaultLicense = materialDefaultLicense;
   }
-  
+
   public Boolean getPublished() {
     return published;
   }
-  
+
   public void setPublished(Boolean published) {
     this.published = published;
   }
-  
+
   public String getNameExtension() {
     return nameExtension;
   }
-  
+
   public void setNameExtension(String nameExtension) {
     this.nameExtension = nameExtension;
   }
@@ -141,14 +139,6 @@ public class Workspace {
 
   public void setCurriculumIdentifiers(Set<String> curriculumIdentifiers) {
     this.curriculumIdentifiers = curriculumIdentifiers;
-  }
-  
-  public String getSubjectIdentifier() {
-    return subjectIdentifier;
-  }
-  
-  public void setSubjectIdentifier(String subjectIdentifier) {
-    this.subjectIdentifier = subjectIdentifier;
   }
 
   public Mandatority getMandatority() {
@@ -189,6 +179,5 @@ public class Workspace {
   private String materialDefaultLicense;
   private Boolean published;
   private Set<String> curriculumIdentifiers;
-  private String subjectIdentifier;
   private boolean hasCustomImage;
 }

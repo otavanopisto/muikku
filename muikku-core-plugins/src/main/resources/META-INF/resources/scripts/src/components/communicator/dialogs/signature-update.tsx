@@ -12,7 +12,6 @@ import { MessageSignatureType } from "~/reducers/main-function/messages";
 import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
-import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
 
 const KEYCODES = {

@@ -180,7 +180,6 @@
   z-index: 99;
 
   // Math Quill overrides, YAY!
-  // scss-lint:disable SelectorFormat
   .mq-editable-field {
     border: 1px solid $color-default;
     padding: 5px 10px;
@@ -192,8 +191,6 @@
       box-shadow: none;
     }
   }
-
-  // scss-lint:enable SelectorFormat
 
   @include breakpoint($breakpoint-pad) {
     flex-basis: auto;

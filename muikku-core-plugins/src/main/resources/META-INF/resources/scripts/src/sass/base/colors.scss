@@ -5,6 +5,7 @@ $color-default-item-separator-border: #f2f2f2;
 $color-default-separator-border: #ebebeb;
 $color-default-helper: #b3b2b2;
 $color-default-generic-background: #f2f2f2;
+$color-default-lighter-generic-background: #f8f8f8;
 $color-yo-sign-up: #75ce41;
 $color-yo-sign-up-contrast: $color-default;
 $color-inverse: $color-default-contrast;
@@ -50,6 +51,12 @@ $color-priority-low: #009fe3;
 
 // Notes
 $color-notes-action-button: #7391a7;
+$color-suggested: #e464dc;
+$color-next: darken(#e464dc, 20%);
+$color-optional: #97dbf7;
+$color-optional-selected: #0099ff;
+$color-mandatory: #dbdada;
+$color-approval: darken(#24c118, 15%);
 
 // Search
 $color-search-clear-icon: $color-disabled;
@@ -423,6 +430,9 @@ $color-env-dialog-form-element-border: #f8a1ce;
 
 // Matriculation Exam form elements
 $color-matriculation-dialog-form-element-border: #f8a1ce;
+
+// HOPS form elements
+$color-hops-dialog-form-element-border: #f8a1ce;
 
 // Autocomplete
 $color-autocomplete-list-border: #dcdcdc;

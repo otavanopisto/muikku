@@ -285,9 +285,13 @@
   border: 2px solid $color-env-dialog-form-element-border;
   border-radius: 3px;
   display: inline-block;
-  height: $input-height;
+  height: $input-height-mobile;
   padding: 4px 8px;
   width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    height: $input-height-desktop;
+  }
 }
 
 .env-dialog__input-label {
@@ -342,12 +346,13 @@
   display: inline-block;
   font-family: $text-font-family;
   font-size: $text-mobile-font-size;
-  height: $input-height;
+  height: $select-height-mobile;
   padding: 3px 6px;
   width: 100%;
 
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;
+    height: $select-height-desktop;
   }
 }
 
@@ -365,12 +370,6 @@
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;
   }
-}
-
-// Used in forgotpassword dialog
-.text-field--forgotpassword-email {
-  font-size: $text-forgotpassword-font-size;
-  width: 100%;
 }
 
 // Reply Message "Non-dialog"

@@ -18,7 +18,6 @@ import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
 import SessionStateComponent from "~/components/general/session-state-component";
 import { StatusType } from "~/reducers/base/status";
-import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
 
 /**

@@ -221,6 +221,7 @@ export enum Education {
   VOCATIONAL_SCHOOL = "VOCATIONAL_SHOOL",
   HOME_SCHOOL = "HOME_SCHOOL",
   COMPULSORY_SCHOOL = "COMPULSORY_SCHOOL",
+  NO_PREVIOUS_EDUCATION = "NO_PREVIOUS_EDUCATION",
   SOMETHING_ELSE = "SOMETHING_ELSE",
 }
 
@@ -232,6 +233,7 @@ export enum FollowUpStudies {
   VOCATIONAL_SCHOOL = "VOCATIONAL_SCHOOL",
   UPPER_SECONDARY_SCHOOL = "UPPER_SECONDARY_SCHOOL",
   UNIVERSITY_STUDIES = "UNIVERSITY_STUDIES",
+  SOMETHING_ELSE = "SOMETHING_ELSE",
 }
 
 /**
@@ -244,6 +246,7 @@ export enum StudySector {
   EDUCATION_SECTOR = "EDUCATION_SECTOR",
   INDUSTRY_SECTOR = "INDUSTRY_SECTOR",
   ART_SECTOR = "ART_SECTOR",
+  SOMETHING_ELSE = "SOMETHING_ELSE",
 }
 
 /**
@@ -253,6 +256,7 @@ export enum FollowUpGoal {
   POSTGRADUATE_STUDIES = "POSTGRADUATE_STUDIES",
   WORKING_LIFE = "WORKING_LIFE",
   NO_FOLLOW_UP_GOALS = "NO_FOLLOW_UP_GOALS",
+  DONT_KNOW = "DONT_KNOW",
 }
 
 export enum CourseStatus {
@@ -268,8 +272,16 @@ export enum CourseStatus {
  */
 export interface LanguageGrade {
   name: string;
-  grade: number;
+  grade?: LanguageGradeEnum;
   hardCoded: boolean;
+}
+
+export enum LanguageGradeEnum {
+  NATIVE_LANGUAGE = "NATIVE_LANGUAGE",
+  EXCELLENT = "EXCELLENT",
+  GOOD = "GOOD",
+  SATISFYING = "SATISFYING",
+  NOT_STUDIED = "NOT_STUDIED",
 }
 
 /**
@@ -287,7 +299,9 @@ export interface HopsCompulsory {
 export interface BasicInformation {
   name: string;
   dateOfIssue?: Date;
-  updates?: HopsUpdates[];
+  updates?: HopsUpdate[];
+  studyTimeEnd?: string | null;
+  educationalLevel?: string | null;
   counselorList?: string[];
 }
 
@@ -298,15 +312,21 @@ export interface StudentInfo {
   id: number;
   firstName: string;
   lastName: string;
+  studyTimeEnd: string | null;
+  educationalLevel: string | null;
   counselorList?: string[];
 }
 
 /**
  * HopsUpdates
  */
-export interface HopsUpdates {
+export interface HopsUpdate {
   date: Date;
+  details: string | null;
+  id: number;
   modifier: string;
+  modifierHasImage: boolean;
+  modifierId: number;
 }
 
 /**
@@ -316,24 +336,18 @@ export interface HopsStudentStartingLevel {
   previousEducation: string;
   previousEducationElse?: string;
   previousWorkExperience: string;
+  previousWorkExperienceField: string;
   previousYearsUsedInStudies: string;
-  finnishAsMainOrSecondaryLng: boolean;
   previousLanguageExperience: LanguageGrade[];
 }
 
 /**
  * HopsMotivationAndStudy
  */
-export interface HopsMotivationAndStudy
-  extends WayToLearn,
-    StudentLearningMethod,
-    StudentSupportive {
-  scaleSize: number;
-  scaleName: string;
-  hardOrEasyInStudies?: string;
-  strengthsOrWeaknesses?: string;
-  interests?: string;
-  areasToAdvance?: string;
+export interface HopsMotivationAndStudy {
+  wayToLearn: WayToLearn;
+  studySupport: StudySupport;
+  selfImageAsStudent: StudentSelfImage;
 }
 
 /**
@@ -358,20 +372,60 @@ export interface HopsPlanningStudies {
  * FollowUpGoal
  */
 export interface FollowUp {
-  graduationGoal: string;
+  graduationGoal: Date | null;
   followUpGoal: string;
   followUpStudies?: string;
+  followUpStudiesElse?: string;
   studySector?: string;
+  studySectorElse?: string;
+  followUpPlanExtraInfo?: string;
 }
 
 /**
  * WayToLearn
  */
 export interface WayToLearn {
-  byReading: number;
-  byListening: number;
-  byDoing: number;
+  byReadingMaterials?: number;
+  byTakingNotes?: number;
+  byDoingExcercises?: number;
+  byMemorizing?: number;
+  byWatchingVideos?: number;
+  byListeningTeaching?: number;
+  byExplaining?: number;
+  byDiscussing?: number;
+  byWatchingOrDoingExamples?: number;
   someOtherWay?: string;
+}
+
+/**
+ * StudySupport
+ */
+export interface StudySupport {
+  fromFamilyMember?: boolean;
+  fromFriend?: boolean;
+  fromSupportPerson?: boolean;
+  noSupport?: boolean;
+  somethingElse?: boolean;
+  somethingElseWhat?: string;
+}
+
+/**
+ * StudentSelfImage
+ */
+export interface StudentSelfImage {
+  likeStudying?: number;
+  haveGoals?: number;
+  readyToAchieveGoals?: number;
+  alwaysFinishJobs?: number;
+  bePedantic?: number;
+  studyingConcentration?: number;
+  affectedByNoise?: number;
+  canFollowInstructions?: number;
+  canEvaluateOwnWork?: number;
+  canTakeFeedback?: number;
+  canUseBasicComputerFunctionalities?: number;
+  somethingElse?: string;
+  wishesForTeachersAndSupervisors?: string;
 }
 
 /**
@@ -416,20 +470,22 @@ export interface Course {
   courseNumber: number;
   length: number;
   mandatory: boolean;
-  id: number;
 }
 
 /**
  * StudentActivityCourse
  */
 export interface StudentActivityCourse {
+  subjectName: string | null;
   subject: string;
-  courseId: number; // muikun työtilan id (jos kyseessä on arvioitu tai meneillään oleva kurssi)
+  courseId: number | null; // muikun työtilan id (jos kyseessä on arvioitu tai meneillään oleva kurssi)
   courseNumber: number;
   courseName: string;
   grade: number; // jos on arvioitu tahi hyväksiluettu
   status: CourseStatus;
   date: string;
+  transferCreditMandatory: boolean | null;
+  id: number | null;
 }
 
 /**
@@ -490,6 +546,14 @@ export interface StudentCourseChoice {
 }
 
 /**
+ * SupervisorOptionalSuggestion
+ */
+export interface SupervisorOptionalSuggestion {
+  subject: string;
+  courseNumber: number;
+}
+
+/**
  * StudentActivityByStatus
  */
 export interface StudentActivityByStatus {
@@ -502,10 +566,6 @@ export interface StudentActivityByStatus {
    */
   suggestedNextList: StudentActivityCourse[];
   /**
-   * List of suggested optional courses
-   */
-  suggestedOptionalList: StudentActivityCourse[];
-  /**
    * List of transfered courses
    */
   transferedList: StudentActivityCourse[];
@@ -513,6 +573,25 @@ export interface StudentActivityByStatus {
    * List of graded courses
    */
   gradedList: StudentActivityCourse[];
+  /**
+   * skillsAndArt
+   */
+  skillsAndArt: ActivityBySubject;
+  /**
+   * otherLanguageSubjects
+   */
+  otherLanguageSubjects: ActivityBySubject;
+  /**
+   * otherSubjects
+   */
+  otherSubjects: ActivityBySubject;
+}
+
+/**
+ * SkillAndArtByKeys
+ */
+export interface ActivityBySubject {
+  [key: string]: StudentActivityCourse[];
 }
 
 /**

@@ -113,6 +113,8 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
   @Inject
   private WorkspaceEntityController workspaceEntityController;
+
+  @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
 
   @Override
@@ -329,7 +331,8 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
           evaluationFees,
           hidden,
           curriculumIdentifier,
-          organizationIdentifier));
+          organizationIdentifier,
+          student.getMatriculationEligibility() != null ? student.getMatriculationEligibility().isUpperSecondarySchoolCurriculum() : false));
     }
 
     return users;
@@ -1215,6 +1218,11 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
             educationTypeCode,
             educationSubtypeCode), StudentCourseStats.class);
     return new PyramusStudentCourseStats(courseStats.getNumberCompletedCourses(), courseStats.getNumberCreditPoints());
+  }
+
+  @Override
+  public String findStudentEducationalLevel(Long studentId) {
+    return pyramusClient.get(String.format("/students/students/%d/educationalLevel", studentId), String.class);
   }
 
   public boolean isActiveUser(User user) {

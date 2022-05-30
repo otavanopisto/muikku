@@ -4,242 +4,178 @@
 @import "../base/breakpoints";
 
 .table {
-  border-collapse: separate;
-  font-family: Arial, Helvetica, sans-serif;
-  box-shadow: 5px 5px 5px grey;
+  border-collapse: collapse;
+  font-family: "Open Sans", "Arial", sans-serif;
+  table-layout: fixed;
   width: 100%;
 }
 
-.table-data,
-.table-head {
+.table--language-table,
+.table--question-table {
+  margin: 5px;
+  width: calc(100% - 10px);
+}
+
+.table__thead,
+.table__tbody {
+  border-bottom: 2px solid $color-hops-dialog-form-element-border;
+}
+
+// This is span element and is necessary wrapper for the flex elements alignment inside TD's
+.table__alignment-helper {
+  display: inline-block;
+}
+
+.table__alignment-helper--required::after {
+  color: $color-fatal;
+  content: " *";
+}
+
+.table__data,
+.table__head {
   height: 50px;
 }
 
-.table-row {
-  background-color: #fbfbfb;
+.table__row {
+  background-color: $color-default;
 }
 
-.table-row:nth-child(even) {
-  display: none;
-  background-color: #f2f2f2;
+.table__row--empty {
+  background: transparent;
 
-  @include breakpoint($breakpoint-mobile-xl) {
-    display: table-row;
+  .table__data {
+    height: 20px;
   }
 }
 
-.table-row--course {
-  margin-bottom: 10px;
-  background-color: #fbfbfb;
-
-  @include breakpoint($breakpoint-mobile-xl) {
-    margin-bottom: revert;
-  }
+.table__row:nth-child(even) {
+  background-color: $color-default-lighter-generic-background;
 }
 
-/* .table__row:hover {
-  background-color: #ddd;
-} */
+.table__head {
+  color: $color-default-contrast;
+  font-weight: 600;
+}
 
-/* .table__row--course:hover {
-  background-color: none;
-} */
-
-.table-head {
-  background-color: aliceblue;
-  color: black;
-  padding-top: 12px;
-  padding-bottom: 12px;
+.table__head--language,
+.table__head--subject {
+  padding: 5px;
   text-align: left;
+  width: 100px;
+
+  @include breakpoint($breakpoint-pad) {
+    width: 150px;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    width: 200px;
+  }
 }
 
-.table-head--centered {
+.table__head--centered,
+.table__data--centered {
   text-align: center;
 }
 
-.table-data {
-  position: relative;
-  width: 10%;
-  border-radius: 5px;
-
-  @include breakpoint($breakpoint-mobile-xl) {
-    min-width: 40px;
-    width: 5%;
-  }
-}
-
-.table-data-content {
-  display: flex;
-  align-items: center;
-  /* justify-content: center; */
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  overflow: hidden;
-  top: 0;
-  white-space: nowrap;
-  transition-property: width, height, z-index;
-  transition-duration: 0.33s, 0.33s;
-  transition-delay: 0.33s, 0s, 0.66s;
-  transition-timing-function: linear;
-  z-index: 20;
-}
-
-.table-data-content-centered {
-  justify-content: center;
-}
-
-.table-data-content--from__left {
-  left: 0;
-  padding-left: 25%;
-}
-
-.table-data-content--from__right {
-  right: 0;
-  padding-left: 25%;
-}
-
-.table-data-content--from__bottom {
-  top: unset;
-  bottom: 0;
-}
-
-.table-data-content--course__hover.table-data-content--from__left {
-  flex-direction: row;
-  justify-content: flex-end;
-}
-
-.table-data-content--course__hover.table-data-content--from__right {
-  flex-direction: row-reverse;
-  justify-content: flex-end;
-}
-
-.table-data-content--course__hover {
-  height: 100%;
-  width: 350px;
-  z-index: 30;
-  padding: 10px;
-  border: 2px solid black;
-  box-shadow: 5px 5px 5px grey;
-  transition-property: width, height;
-  transition-duration: 0.33s, 0.33s;
-  transition-delay: 0s, 0.33s;
-  transition-timing-function: linear;
-}
-
-.table-data-content--course span {
-  top: initial;
-  left: initial;
-  opacity: 1;
-  transition: all 0.33s ease-in;
-}
-
-.table-data-content--course__hover span {
-  top: 0;
-  left: 0;
-  /* font-size: 20px; */
-  width: 0;
-  opacity: 0;
-  display: none;
-  transition: all 0.5s ease-in-out;
-}
-
-.table-data-content--course .table-data-content-course-content {
-  opacity: 0;
-  visibility: hidden;
-  position: relative;
-  /* overflow: hidden; */
-  white-space: nowrap;
-  font-size: 20px;
-  transition: all 0.5s ease-in;
-}
-
-.table-data-content--course__hover .table-data-content-course-content {
-  opacity: 1;
-  position: relative;
-  visibility: inherit;
-  transition: all 0.5s ease-in-out;
-}
-
-.table-data--subject {
-  text-overflow: ellipsis;
-  border-radius: unset;
-  background-color: aliceblue;
-  font-weight: bold;
-  cursor: pointer;
+.table__data {
   padding: 5px;
+  width: auto;
+}
 
-  @include breakpoint($breakpoint-mobile-xl) {
-    margin-bottom: revert;
-    cursor: revert;
+.table__data--subtitle {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.table__data--merged {
+  font-weight: 600;
+  padding: 10px 5px 5px;
+  text-align: left;
+}
+
+.table__data--language {
+  font-weight: 600;
+}
+
+.table__data--subject {
+  font-weight: 600;
+  max-width: 200px;
+  width: 200px;
+}
+
+.table__data--course {
+  overflow: hidden;
+  text-align: center;
+}
+
+.table__data-content-wrapper--course {
+  align-items: center;
+  border: 3px solid transparent;
+  border-radius: 100%;
+  cursor: pointer;
+  display: flex;
+  height: 35px;
+  justify-content: center;
+  margin: 0 auto;
+  padding: 5px;
+  width: 35px;
+}
+
+.table__data--MANDATORY {
+  .table__data-content-wrapper--course {
+    background: $color-mandatory;
   }
 }
 
-.table-data-content--SUGGESTED::before {
-  border: 3px solid pink;
-  content: "";
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
+.table__data--OPTIONAL {
+  .table__data-content-wrapper--course {
+    background: $color-optional;
+  }
 }
 
-.table-data-content--MANDATORY {
-  background-color: #acacac;
+.table__data--OPTIONAL-SELECTED {
+  .table__data-content-wrapper--course {
+    border-color: $color-optional-selected;
+  }
 }
 
-.table-data-content--OPTIONAL {
-  background-color: lightblue;
+.table__data--COMPLETED {
+  .table__data-content-wrapper--course {
+    background: $color-success;
+    color: $color-default;
+  }
 }
 
-.table-data-content--COMPLETED {
-  background-color: green;
+.table__data--INPROGRESS {
+  .table__data-content-wrapper--course {
+    background: $color-info;
+    color: $color-default;
+  }
 }
 
-.table-data-content--INPROGRESS {
-  background-color: orange;
+.table__data--APPROVAL {
+  .table__data-content-wrapper--course {
+    background: $color-success;
+    border-color: $color-approval;
+    color: $color-default;
+  }
 }
 
-.table-data-content--APPROVAL {
-  background-color: palegreen;
+.table__data--SUGGESTED {
+  .table__data-content-wrapper--course {
+    background: $color-suggested;
+    color: $color-default;
+  }
 }
 
-.table-data-content--SELECTED {
-  background-color: cornsilk;
+.table__data--NEXT {
+  .table__data-content-wrapper--course {
+    background: $color-next;
+    color: $color-default;
+  }
 }
 
-.table-data-content--SELECTED_OPTIONAL {
-  background-color: #3ab8e1;
-}
-
-.table-data-content:after {
-  content: "";
-  display: block;
-  height: 15px;
-  width: 15px;
-  background: pink;
-  position: absolute;
-  top: 0;
-  transform: skewX(45deg);
-  right: -22px;
-  transition: right 0.3s ease-in;
-}
-
-.table-data-content--NEXT:after {
-  content: "";
-  display: block;
-  height: 15px;
-  width: 15px;
-  background: pink;
-  position: absolute;
-  top: 0;
-  transform: skewX(45deg);
-  right: -7px;
-  transition: right 0.3s ease-in;
-}
-
-table td.table-data-content--empty {
+.table__data-content--empty {
   display: none;
 
   @include breakpoint($breakpoint-mobile-xl) {
@@ -247,6 +183,6 @@ table td.table-data-content--empty {
   }
 }
 
-.table-data--NOSTATUS {
+.table__data--NOSTATUS {
   background-color: unset;
 }

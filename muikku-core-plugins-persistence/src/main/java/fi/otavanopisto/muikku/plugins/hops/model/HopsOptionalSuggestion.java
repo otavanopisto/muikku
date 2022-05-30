@@ -10,16 +10,12 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
-public class HopsAlternativeStudyOptions {
+public class HopsOptionalSuggestion {
 
   public Long getId() {
     return id;
   }
 
-  public void setId(Long id) {
-    this.id = id;
-  }
-  
   public String getStudentIdentifier() {
     return studentIdentifier;
   }
@@ -27,35 +23,37 @@ public class HopsAlternativeStudyOptions {
   public void setStudentIdentifier(String studentIdentifier) {
     this.studentIdentifier = studentIdentifier;
   }
-  
-  public Boolean getFinnishAsLanguage() {
-    return finnishAsLanguage;
+
+  public String getSubject() {
+    return subject;
   }
-  
-  public void setFinnishAsLanguage(Boolean finnishAsLanguage) {
-    this.finnishAsLanguage = finnishAsLanguage;
+
+  public void setSubject(String subject) {
+    this.subject = subject;
   }
-  
-  public Boolean getReligionAsEthics() {
-    return religionAsEthics;
+
+  public Integer getCourseNumber() {
+    return courseNumber;
   }
-  
-  public void setReligionAsEthics(Boolean religionAsEthics) {
-    this.religionAsEthics = religionAsEthics;
+
+  public void setCourseNumber(Integer courseNumber) {
+    this.courseNumber = courseNumber;
   }
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
-
+  
   @NotNull
   @NotEmpty
-  @Column(nullable = false)
+  @Column (nullable = false)
   private String studentIdentifier;
-
+  
+  @NotNull
+  @NotEmpty
+  @Column (nullable = false)
+  private String subject;
+  
   @Column
-  private Boolean finnishAsLanguage;
-
-  @Column
-  private Boolean religionAsEthics;
+  private Integer courseNumber;
 }

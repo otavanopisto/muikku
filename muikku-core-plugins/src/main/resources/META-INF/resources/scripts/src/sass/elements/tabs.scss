@@ -24,6 +24,17 @@
   padding: 1px 0 0;
 }
 
+.tabs__header-actions {
+  align-items: center;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.tabs__header-actions--hops {
+  justify-content: center;
+  padding: 5px 0;
+}
+
 .tabs__tab-labels {
   align-items: center;
   border-bottom: 1px solid $color-tab-border;
@@ -81,7 +92,7 @@
     border-top: 1px solid $color-tab-border;
     color: $color-tab-focus-font;
     margin-bottom: -1px;
-    padding: 9px 10px 11px;
+    padding: 10px 10px 11px;
   }
 
   @include breakpoint($breakpoint-pad) {

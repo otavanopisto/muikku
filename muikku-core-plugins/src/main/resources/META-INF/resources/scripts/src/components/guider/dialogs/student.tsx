@@ -9,7 +9,6 @@ import { bindActionCreators } from "redux";
 import { i18nType } from "~/reducers/base/i18n";
 import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
-import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
 import { StatusType } from "~/reducers/base/status";
 import {
@@ -23,8 +22,12 @@ import StudyPlan from "../body/application/study-plan";
 import {
   loadStudentHistory,
   LoadStudentTriggerType,
+  UpdateCurrentStudentHopsPhaseTriggerType,
+  updateCurrentStudentHopsPhase,
 } from "~/actions/main-function/guider";
 import { getName } from "~/util/modifiers";
+import CompulsoryEducationHopsWizard from "../../general/hops-compulsory-education-wizard";
+import Button from "~/components/general/button";
 
 export type tabs =
   | "STUDIES"
@@ -40,11 +43,12 @@ interface StudentDialogProps {
   student: GuiderStudentUserProfileType;
   guider: GuiderType;
   currentStudentStatus: GuiderCurrentStudentStateType;
-  onClose?: () => any;
-  onOpen?: (jotan: any) => any;
+  onClose?: () => void;
+  onOpen?: () => void;
   i18n: i18nType;
   status: StatusType;
   loadStudentHistory: LoadStudentTriggerType;
+  updateCurrentStudentHopsPhase: UpdateCurrentStudentHopsPhaseTriggerType;
 }
 
 /**
@@ -52,6 +56,7 @@ interface StudentDialogProps {
  */
 interface StudentDialogState {
   activeTab: string;
+  editHops: boolean;
 }
 
 /**
@@ -65,14 +70,24 @@ class StudentDialog extends React.Component<
    * constructor
    * @param props props for the constructor
    */
-
   constructor(props: StudentDialogProps) {
     super(props);
 
     this.state = {
       activeTab: "STUDIES",
+      editHops: false,
     };
   }
+
+  /**
+   * handleHopsPhaseChange
+   * @param e e
+   */
+  handleHopsPhaseChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    this.props.updateCurrentStudentHopsPhase({
+      value: e.currentTarget.value,
+    });
+  };
 
   /**
    * Tab change function
@@ -90,6 +105,15 @@ class StudentDialog extends React.Component<
   };
 
   /**
+   * onClickEditHops
+   */
+  onClickEditHops = () => {
+    this.setState({
+      editHops: !this.state.editHops,
+    });
+  };
+
+  /**
    * closeDialog resets the component state and forwards onClose()
    */
   closeDialog = () => {
@@ -102,6 +126,12 @@ class StudentDialog extends React.Component<
    * @returns JSX.Element
    */
   render() {
+    const hopsModifyStateModifiers = ["modify-hops"];
+
+    if (this.state.editHops) {
+      hopsModifyStateModifiers.push("modify-hops-active");
+    }
+
     const tabs = [
       {
         id: "STUDIES",
@@ -126,6 +156,58 @@ class StudentDialog extends React.Component<
         component: <StudyHistory />,
       },
     ];
+
+    if (
+      this.props.guider.currentStudent &&
+      this.props.guider.currentStudent.basic
+    )
+      tabs.push({
+        id: "HOPS",
+        name: "Hops",
+        type: "guider-student",
+        component: (
+          <>
+            <div className="tabs__header-actions tabs__header-actions--hops">
+              <Button
+                onClick={this.onClickEditHops}
+                buttonModifiers={hopsModifyStateModifiers}
+              >
+                Muokkaustila
+              </Button>
+
+              <select
+                className="form-element__select"
+                value={
+                  this.props.guider.currentStudent.hopsPhase
+                    ? this.props.guider.currentStudent.hopsPhase
+                    : 0
+                }
+                onChange={this.handleHopsPhaseChange}
+              >
+                <option value={0}>HOPS - Ei aktivoitu</option>
+                <option value={1}>HOPS - esitäyttö</option>
+                <option value={2}>HOPS - opintojen suunnittelu</option>
+              </select>
+            </div>
+
+            {this.state.editHops ? (
+              <CompulsoryEducationHopsWizard
+                user="supervisor"
+                disabled={false}
+                studentId={this.props.guider.currentStudent.basic.id}
+                superVisorModifies
+              />
+            ) : (
+              <CompulsoryEducationHopsWizard
+                user="supervisor"
+                disabled={true}
+                studentId={this.props.guider.currentStudent.basic.id}
+                superVisorModifies={false}
+              />
+            )}
+          </>
+        ),
+      });
 
     //    If student has HOPS, we show the tab for it
 
@@ -180,6 +262,7 @@ class StudentDialog extends React.Component<
         modifier="guider-student"
         title={dialogTitle}
         content={content}
+        closeOnOverlayClick={false}
         disableScroll
       />
     );
@@ -194,7 +277,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     status: state.status,
-    currentStudentStatus: state.guider.currentState,
+    currentStudentStatus: state.guider.currentStudentState,
     guider: state.guider,
   };
 }
@@ -207,6 +290,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     {
       loadStudentHistory,
+      updateCurrentStudentHopsPhase,
     },
     dispatch
   );

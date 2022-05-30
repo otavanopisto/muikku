@@ -6,7 +6,7 @@ import { StateType } from "~/reducers";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/application-panel.scss";
 import "~/sass/elements/buttons.scss";
-import "~/sass/elements/form-elements.scss";
+import "~/sass/elements/form.scss";
 import { AnnouncementsType, AnnouncementType } from "~/reducers/announcements";
 import DeleteAnnouncementDialog from "../../dialogs/delete-announcement";
 import NewEditAnnouncement from "../../dialogs/new-edit-announcement";

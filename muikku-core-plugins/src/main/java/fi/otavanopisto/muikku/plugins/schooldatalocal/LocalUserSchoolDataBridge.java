@@ -479,7 +479,8 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
           null,
           null,
           null,
-          null);
+          null, 
+          false);
     }
 
     return null;
@@ -633,6 +634,12 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
   @Override
   public StudentCourseStats getStudentCourseStats(SchoolDataIdentifier studentIdentifier, String educationTypeCode,
       String educationSubtypeCode) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+  
+  @Override
+  public String findStudentEducationalLevel(Long studentEntityId) {
     // TODO Auto-generated method stub
     return null;
   }

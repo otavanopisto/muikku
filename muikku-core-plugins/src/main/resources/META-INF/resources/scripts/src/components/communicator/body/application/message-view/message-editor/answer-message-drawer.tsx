@@ -18,7 +18,6 @@ import SessionStateComponent from "~/components/general/session-state-component"
 import promisify from "~/util/promisify";
 import mApi from "~/lib/mApi";
 
-import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/environment-dialog.scss";
 

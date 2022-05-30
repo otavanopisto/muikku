@@ -98,34 +98,36 @@ export interface GuiderStudentUserProfileType {
   pastWorkspaces: WorkspaceListType;
   activityLogs: ActivityLogType[];
   purchases: PurchaseType[];
+  hopsPhase?: string;
 }
 
 /**
  * GuiderType
  */
 export interface GuiderType {
-  state: GuiderStudentsStateType;
+  students: GuiderStudentListType;
+  studentsState: GuiderStudentsStateType;
   activeFilters: GuiderActiveFiltersType;
   availablePurchaseProducts: PurchaseProductType[];
   availableFilters: GuiderFiltersType;
-  students: GuiderStudentListType;
   hasMore: boolean;
   toolbarLock: boolean;
   currentStudent: GuiderStudentUserProfileType;
+  currentStudentState: GuiderCurrentStudentStateType;
   selectedStudents: GuiderStudentListType;
   selectedStudentsIds: Array<string>;
   toggleAllStudentsActive: boolean;
-  currentState: GuiderCurrentStudentStateType;
 }
 
 /**
  * GuiderPatchType
  */
 export interface GuiderPatchType {
-  state?: GuiderStudentsStateType;
+  students?: GuiderStudentListType;
+  studentsState?: GuiderStudentsStateType;
   activeFilters?: GuiderActiveFiltersType;
   availableFilters?: GuiderFiltersType;
-  students?: GuiderStudentListType;
+
   hasMore?: boolean;
   toolbarLock?: boolean;
   currentStudent?: GuiderStudentUserProfileType;
@@ -168,8 +170,8 @@ function sortOrders(a: PurchaseType, b: PurchaseType) {
 
 export default function guider(
   state: GuiderType = {
-    state: "LOADING",
-    currentState: "READY",
+    studentsState: "LOADING",
+    currentStudentState: "LOADING",
     availableFilters: {
       labels: [],
       workspaces: [],
@@ -208,7 +210,7 @@ export default function guider(
     return Object.assign({}, state, action.payload);
   } else if (action.type === "UPDATE_GUIDER_STATE") {
     return Object.assign({}, state, {
-      state: action.payload,
+      studentsState: action.payload,
     });
   } else if (action.type === "ADD_TO_GUIDER_SELECTED_STUDENTS") {
     const student: GuiderStudentType = action.payload;
@@ -233,17 +235,18 @@ export default function guider(
   } else if (action.type === "SET_CURRENT_GUIDER_STUDENT_EMPTY_LOAD") {
     return Object.assign({}, state, {
       currentStudent: {},
-      currentState: "LOADING",
+      currentStudentState: "LOADING",
     });
   } else if (action.type === "SET_CURRENT_GUIDER_STUDENT_PROP") {
     const obj: any = {};
     obj[action.payload.property] = action.payload.value;
+
     return Object.assign({}, state, {
       currentStudent: Object.assign({}, state.currentStudent, obj),
     });
   } else if (action.type === "UPDATE_CURRENT_GUIDER_STUDENT_STATE") {
     return Object.assign({}, state, {
-      currentState: action.payload,
+      currentStudentState: action.payload,
     });
   } else if (
     action.type === "ADD_GUIDER_LABEL_TO_USER" ||
@@ -413,6 +416,13 @@ export default function guider(
           })
           .sort(sortLabels),
       }),
+    });
+  } else if (action.type === "UPDATE_CURRENT_GUIDER_STUDENT_HOPS_PHASE") {
+    return Object.assign({}, state, {
+      currentStudent: {
+        ...state.currentStudent,
+        hopsPhase: action.payload.value,
+      },
     });
   } else if (action.type === "DELETE_GUIDER_AVAILABLE_FILTER_LABEL") {
     return Object.assign({}, state, {

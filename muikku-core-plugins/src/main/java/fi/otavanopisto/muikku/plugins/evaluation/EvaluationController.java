@@ -44,6 +44,7 @@ import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReplyState;
+import fi.otavanopisto.muikku.schooldata.CourseMetaController;
 import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -51,10 +52,13 @@ import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScale;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
+import fi.otavanopisto.muikku.schooldata.entity.Subject;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivity;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivityState;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceSubject;
 import fi.otavanopisto.muikku.servlet.BaseUrl;
 import fi.otavanopisto.muikku.users.UserEntityController;
 
@@ -108,6 +112,9 @@ public class EvaluationController {
 
   @Inject
   private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
+
+  @Inject
+  private CourseMetaController courseMetaController;
   
   /* Workspace activity */
   
@@ -143,6 +150,8 @@ public class EvaluationController {
         continue;
       }
       
+      SchoolDataIdentifier workspaceSubjectIdentifier = SchoolDataIdentifier.fromId(activity.getWorkspaceSubjectIdentifier());
+      
       // WorkspaceEntityId
       
       WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(dataSource, activity.getIdentifier());
@@ -155,7 +164,7 @@ public class EvaluationController {
       // Supplementation request, if one exists and is newer than activity date so far
       
       SupplementationRequest supplementationRequest = findLatestSupplementationRequestByStudentAndWorkspaceAndArchived(
-          userEntity.getId(), workspaceEntity.getId(), Boolean.FALSE);
+          userEntity.getId(), workspaceEntity.getId(), workspaceSubjectIdentifier, Boolean.FALSE);
       if (supplementationRequest != null && supplementationRequest.getRequestDate().after(activity.getDate())) {
         activity.setText(supplementationRequest.getRequestText());
         activity.setDate(supplementationRequest.getRequestDate());
@@ -223,17 +232,18 @@ public class EvaluationController {
     return activities;
   }
   
-  public SupplementationRequest createSupplementationRequest(Long userEntityId, Long studentEntityId, Long workspaceEntityId, Long workspaceMaterialId, Date requestDate, String requestText) {
+  public SupplementationRequest createSupplementationRequest(Long userEntityId, Long studentEntityId, Long workspaceEntityId, SchoolDataIdentifier workspaceSubjectIdentifier, Long workspaceMaterialId, Date requestDate, String requestText) {
     SupplementationRequest supplementationRequest = supplementationRequestDAO.createSupplementationRequest(
         userEntityId,
         studentEntityId,
         workspaceEntityId,
+        workspaceSubjectIdentifier,
         workspaceMaterialId,
         requestDate,
         requestText);
     // For workspace supplementation requests, mark respective workspace assessment requests as handled 
     if (studentEntityId != null && workspaceEntityId != null) {
-      markWorkspaceAssessmentRequestsAsHandled(studentEntityId, workspaceEntityId);      
+      markWorkspaceAssessmentRequestsAsHandled(studentEntityId, workspaceEntityId, requestDate);      
     }
     handleSupplementationNotifications(supplementationRequest);    
     return supplementationRequest;
@@ -291,8 +301,16 @@ public class EvaluationController {
     return supplementationRequestDAO.listByStudentAndWorkspaceAndArchived(studentEntityId, workspaceEntityId, archived);
   }
   
+  public List<SupplementationRequest> listSupplementationRequestsByStudentAndWorkspaceAndArchived(Long studentEntityId, Long workspaceEntityId, SchoolDataIdentifier workspaceSubjectIdentifier, Boolean archived) {
+    return supplementationRequestDAO.listByStudentAndWorkspaceAndArchived(studentEntityId, workspaceEntityId, workspaceSubjectIdentifier, archived);
+  }
+  
   public SupplementationRequest findLatestSupplementationRequestByStudentAndWorkspaceAndArchived(Long studentEntityId, Long workspaceEntityId, Boolean archived) {
     return supplementationRequestDAO.findLatestByStudentAndWorkspaceAndArchived(studentEntityId, workspaceEntityId, archived);
+  }
+
+  public SupplementationRequest findLatestSupplementationRequestByStudentAndWorkspaceAndArchived(Long studentEntityId, Long workspaceEntityId, SchoolDataIdentifier workspaceSubjectIdentifier, Boolean archived) {
+    return supplementationRequestDAO.findLatestByStudentAndWorkspaceAndArchived(studentEntityId, workspaceEntityId, workspaceSubjectIdentifier, archived);
   }
 
   public SupplementationRequest findLatestSupplementationRequestByStudentAndWorkspaceMaterialAndArchived(Long studentEntityId, Long workspaceMaterialId, Boolean archived) {
@@ -326,18 +344,20 @@ public class EvaluationController {
   }
 
   public SupplementationRequest updateSupplementationRequest(SupplementationRequest supplementationRequest, Long userEntityId, Date requestDate, String requestText) {
+    SchoolDataIdentifier workspaceSubjectIdentifier = supplementationRequest.getWorkspaceSubjectIdentifier() != null ? SchoolDataIdentifier.fromId(supplementationRequest.getWorkspaceSubjectIdentifier()) : null;
     supplementationRequest = supplementationRequestDAO.updateSupplementationRequest(
         supplementationRequest,
         userEntityId,
         supplementationRequest.getStudentEntityId(),
         supplementationRequest.getWorkspaceEntityId(),
+        workspaceSubjectIdentifier,
         supplementationRequest.getWorkspaceMaterialId(),
         requestDate,
         requestText,
         Boolean.FALSE);
     // For workspace supplementation requests, mark respective workspace assessment requests as handled 
     if (supplementationRequest.getStudentEntityId() != null && supplementationRequest.getWorkspaceEntityId() != null) {
-      markWorkspaceAssessmentRequestsAsHandled(supplementationRequest.getStudentEntityId(), supplementationRequest.getWorkspaceEntityId());
+      markWorkspaceAssessmentRequestsAsHandled(supplementationRequest.getStudentEntityId(), supplementationRequest.getWorkspaceEntityId(), requestDate);
     }
     handleSupplementationNotifications(supplementationRequest);
     return supplementationRequest;
@@ -433,7 +453,7 @@ public class EvaluationController {
    * @param userEntityId Student id (in Muikku)
    * @param workspaceEntityId Workspace id (in Muikku)
    */
-  private void markWorkspaceAssessmentRequestsAsHandled(Long userEntityId, Long workspaceEntityId) {
+  private void markWorkspaceAssessmentRequestsAsHandled(Long userEntityId, Long workspaceEntityId, Date when) {
     // TODO Performance bottleneck?
     UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
@@ -452,6 +472,16 @@ public class EvaluationController {
       if (assessmentRequest.getHandled()) {
         continue;
       }
+      
+      /**
+       * If assessment request date is after the given date, skip it - this is so that 
+       * the assessment requests are not changed if a supplementation request is edited 
+       * and there are later assessment requests. 
+       */
+      if (assessmentRequest.getDate() != null && assessmentRequest.getDate().after(when)) {
+        continue;
+      }
+      
       gradingController.updateWorkspaceAssessmentRequest(
           assessmentRequest.getSchoolDataSource(),
           assessmentRequest.getIdentifier(),
@@ -591,4 +621,66 @@ public class EvaluationController {
     }
   }
   
+  protected void sendAssessmentNotification(WorkspaceEntity workspaceEntity, WorkspaceSubject workspaceSubject, WorkspaceAssessment workspaceAssessment, UserEntity evaluator, UserEntity student, Workspace workspace, String grade, boolean isMultiSubjectWorkspace) {
+    String workspaceUrl = String.format("%s/workspace/%s/materials", baseUrl, workspaceEntity.getUrlName());
+    Locale locale = userEntityController.getLocale(student);
+
+    Subject subject = null;
+    
+    // If workspaceSubject or subject cannot be resolved, revert back to non-multiSubjectWorkspace handling
+    isMultiSubjectWorkspace = 
+        isMultiSubjectWorkspace 
+        && (workspaceSubject != null) 
+        && ((subject = courseMetaController.findSubject(workspaceSubject.getSubjectIdentifier())) != null) 
+        && (StringUtils.isNotBlank(subject.getCode()));
+
+    String messageTitle;
+    String messageContent;
+    
+    if (isMultiSubjectWorkspace) {
+      // Workspace has multiple WorkspaceSubjects and workspaceSubject, subject and subject.code all exist
+
+      StringBuilder workspaceSubjectDescription = new StringBuilder();
+      workspaceSubjectDescription.append(subject.getCode());
+
+      if (workspaceSubject.getCourseNumber() != null) {
+        workspaceSubjectDescription.append(workspaceSubject.getCourseNumber());
+      }
+
+      messageTitle = localeController.getText(
+          locale,
+          "plugin.workspace.assessment.notificationTitleMultiSubject",
+          new Object[] {workspace.getName(), grade});
+      
+      messageContent = localeController.getText(
+          locale,
+          "plugin.workspace.assessment.notificationContentMultiSubject",
+          new Object[] {workspaceUrl, workspace.getName(), grade, workspaceAssessment.getVerbalAssessment(), workspaceSubjectDescription.toString()});
+    } else {
+      messageTitle = localeController.getText(
+          locale,
+          "plugin.workspace.assessment.notificationTitle",
+          new Object[] {workspace.getName(), grade});
+      
+      messageContent = localeController.getText(
+          locale,
+          "plugin.workspace.assessment.notificationContent",
+          new Object[] {workspaceUrl, workspace.getName(), grade, workspaceAssessment.getVerbalAssessment()});
+    }
+    
+    CommunicatorMessageCategory category = communicatorController.persistCategory("assessments");
+    CommunicatorMessage communicatorMessage = communicatorController.createMessage(
+        communicatorController.createMessageId(),
+        evaluator,
+        Arrays.asList(student),
+        null,
+        null,
+        null,
+        category,
+        messageTitle,
+        messageContent,
+        Collections.<Tag>emptySet());
+    communicatorMessageSentEvent.fire(new CommunicatorMessageSent(communicatorMessage.getId(), student.getId(), baseUrl));
+  }
+
 }
