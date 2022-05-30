@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.search;
 
+import java.time.OffsetDateTime;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -279,6 +280,22 @@ public class IndexedWorkspace {
     this.educationTypeName = educationTypeName;
   }
 
+  public OffsetDateTime getBeginDate() {
+    return beginDate;
+  }
+
+  public void setBeginDate(OffsetDateTime beginDate) {
+    this.beginDate = beginDate;
+  }
+
+  public OffsetDateTime getEndDate() {
+    return endDate;
+  }
+
+  public void setEndDate(OffsetDateTime endDate) {
+    this.endDate = endDate;
+  }
+
   @JsonDeserialize(using = IndexedSchoolDataIdentifierAsIdDeserializer.class)
   private SchoolDataIdentifier identifier;
   private String name;
@@ -303,6 +320,8 @@ public class IndexedWorkspace {
   
   private WorkspaceAccess access;
   private boolean published;
+  private OffsetDateTime beginDate;
+  private OffsetDateTime endDate;
   private Set<IndexedWorkspaceUser> staffMembers = new HashSet<>();
   @JsonDeserialize(contentUsing = IndexedSchoolDataIdentifierAsIdDeserializer.class)
   private Set<SchoolDataIdentifier> signupPermissionGroups = new HashSet<>();
