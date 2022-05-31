@@ -97,8 +97,20 @@
     flex-grow: 0;
     flex-shrink: 1;
     height: auto;
-    overflow: auto;
+    overflow-y: auto;
+    padding: 0 5px 0 0;
+    scrollbar-color: lighten($color-default-contrast, 35%) $color-default;
+    scrollbar-width: thin;
     white-space: pre-line;
+
+    &::-webkit-scrollbar {
+      background-color: $color-default;
+      width: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: lighten($color-default-contrast, 35%);
+    }
   }
 
   // This removes the item's cnntent's fading effect
@@ -125,6 +137,7 @@
   flex-flow: row nowrap;
   justify-content: flex-end;
   margin: 5px 0;
+  width: 100%;
 }
 
 .notes__item-header {
