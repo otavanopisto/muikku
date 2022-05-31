@@ -71,10 +71,37 @@
   }
 }
 
+// Used in dialog where we load the full note information
 .notes__item--dialog-information {
-  flex-basis: 100%;
+  align-items: flex-start;
+  border-width: 4px 0 0;
+  box-shadow: none;
+  display: flex;
+  flex-flow: column nowrap;
+  height: auto;
+  justify-content: flex-start;
+  margin: 0;
   max-width: 100%;
+  padding: 0;
 
+  // This returns header's normal wrapping behavior
+  .notes__item-header {
+    flex-basis: auto;
+    flex-grow: 0;
+    flex-shrink: 0;
+    white-space: normal;
+  }
+
+  .notes__item-body {
+    flex-basis: auto;
+    flex-grow: 0;
+    flex-shrink: 1;
+    height: auto;
+    overflow: auto;
+    white-space: pre-line;
+  }
+
+  // This removes the item's cnntent's fading effect
   .notes__item-body::before {
     display: none;
   }
@@ -107,6 +134,10 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.notes__item-header--open-details {
+  cursor: pointer;
 }
 
 .notes__item-dates {

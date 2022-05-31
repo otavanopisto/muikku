@@ -61,21 +61,25 @@ const NotesItemListFiltters: React.FC<NotesItemListFilttersProps> = (props) => {
     <>
       <div className="notes__toolbar-section">
         <NotesItemPriorityChip
-          label={props.i18n.text.get("plugin.records.priority.high.label")}
+          label={props.i18n.text.get(
+            "plugin.records.notes.priority.high.label"
+          )}
           modifier="note-priority-high"
           activeModifier={filters.high ? "active" : null}
           name="high"
           onChipClick={handleFiltterChipClick}
         />
         <NotesItemPriorityChip
-          label={props.i18n.text.get("plugin.records.priority.normal.label")}
+          label={props.i18n.text.get(
+            "plugin.records.notes.priority.normal.label"
+          )}
           modifier="note-priority-normal"
           activeModifier={filters.normal ? "active" : null}
           name="normal"
           onChipClick={handleFiltterChipClick}
         />
         <NotesItemPriorityChip
-          label={props.i18n.text.get("plugin.records.priority.low.label")}
+          label={props.i18n.text.get("plugin.records.notes.priority.low.label")}
           modifier="note-priority-low"
           activeModifier={filters.low ? "active" : null}
           name="low"

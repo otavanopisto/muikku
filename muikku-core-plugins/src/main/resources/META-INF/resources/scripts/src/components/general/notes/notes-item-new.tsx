@@ -133,7 +133,7 @@ class NotesItemNew extends SessionStateComponent<
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
             {this.props.i18n.text.get(
-              "plugin.records.createEditnote.title.label"
+              "plugin.records.notes.createEditnote.title.label"
             )}
           </label>
           <input
@@ -148,7 +148,7 @@ class NotesItemNew extends SessionStateComponent<
 
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
-            {this.props.i18n.text.get("plugin.records.priority.label")}
+            {this.props.i18n.text.get("plugin.records.notes.priority.label")}
           </label>
           <select
             className="env-dialog__select"
@@ -161,13 +161,19 @@ class NotesItemNew extends SessionStateComponent<
             value={this.state.notesItem.priority}
           >
             <option value={NotesItemPriority.HIGH}>
-              {this.props.i18n.text.get("plugin.records.priority.high.label")}
+              {this.props.i18n.text.get(
+                "plugin.records.notes.priority.high.label"
+              )}
             </option>
             <option value={NotesItemPriority.NORMAL}>
-              {this.props.i18n.text.get("plugin.records.priority.normal.label")}
+              {this.props.i18n.text.get(
+                "plugin.records.notes.priority.normal.label"
+              )}
             </option>
             <option value={NotesItemPriority.LOW}>
-              {this.props.i18n.text.get("plugin.records.priority.low.label")}
+              {this.props.i18n.text.get(
+                "plugin.records.notes.priority.low.label"
+              )}
             </option>
           </select>
         </div>
@@ -176,7 +182,7 @@ class NotesItemNew extends SessionStateComponent<
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
             {this.props.i18n.text.get(
-              "plugin.records.createEditnote.startdate.label"
+              "plugin.records.notes.createEditnote.startdate.label"
             )}
           </label>
           <DatePicker
@@ -198,7 +204,7 @@ class NotesItemNew extends SessionStateComponent<
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
             {this.props.i18n.text.get(
-              "plugin.records.createEditnote.enddate.label"
+              "plugin.records.notes.createEditnote.enddate.label"
             )}
           </label>
           <DatePicker
@@ -220,7 +226,7 @@ class NotesItemNew extends SessionStateComponent<
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
             {this.props.i18n.text.get(
-              "plugin.records.createEditnote.content.label"
+              "plugin.records.notes.createEditnote.content.label"
             )}
           </label>
           <textarea
@@ -254,7 +260,9 @@ class NotesItemNew extends SessionStateComponent<
     return (
       <EnvironmentDialog
         modifier="add-note"
-        title={this.props.i18n.text.get("plugin.records.createnote.topic")}
+        title={this.props.i18n.text.get(
+          "plugin.records.notes.createnote.topic"
+        )}
         content={content}
         footer={footer}
         onOpen={this.clearUp}

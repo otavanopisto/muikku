@@ -51,10 +51,14 @@
 }
 
 .dialog__window {
+  align-items: flex-start;
   background-color: $color-dialog-default-background;
   bottom: 0;
+  display: flex;
+  flex-flow: column nowrap;
   font-family: $text-font-family;
   font-size: $text-mobile-font-size;
+  justify-content: flex-start;
   left: 0;
   position: fixed;
   right: 0;
@@ -80,7 +84,6 @@
   @include breakpoint($breakpoint-pad) {
     box-shadow: unset;
     max-width: unset;
-    position: absolute;
     top: 20px;
     width: calc(100% - 40px);
   }
@@ -114,12 +117,6 @@
     .dialog__content {
       height: 420px;
     }
-  }
-}
-
-.dialog__window--note-information {
-  .dialog__content {
-    padding: 10px 0;
   }
 }
 
@@ -172,6 +169,15 @@
     flex-grow: 1;
     flex-shrink: 1;
     overflow: auto;
+  }
+}
+
+.dialog__window--note-information {
+  max-height: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    border-radius: 20px;
+    max-height: calc(100% - 30px);
   }
 }
 
@@ -232,20 +238,22 @@
 }
 
 .dialog__header {
+  align-items: center;
   background-color: $color-dialog-mobile-background;
   color: $color-dialog-mobile-text;
-  padding: 15px 20px;
+  display: flex;
+  flex-basis: 3rem;
+  flex-grow: 0;
+  flex-shrink: 0;
+  height: 3rem;
+  padding: 0 50px 0 20px;
   position: relative;
   width: 100%;
 
   @include breakpoint($breakpoint-pad) {
-    align-items: center;
     background-color: $color-dialog-desktop-background;
     border-radius: 3px 3px 0 0;
     color: $color-dialog-desktop-text;
-    display: flex;
-    height: 3rem;
-    padding: 0 20px;
   }
 }
 
@@ -267,6 +275,15 @@
     display: flex;
     height: 3rem;
     padding: 0 20px;
+  }
+}
+
+.dialog__header--note-information {
+  @include breakpoint($breakpoint-pad) {
+    background: $color-default;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    color: $color-default-contrast;
   }
 }
 
@@ -324,6 +341,12 @@
 }
 
 .dialog__content {
+  display: flex;
+  flex-basis: calc(100% - 6rem - 20px);
+  flex-grow: 1;
+  flex-shrink: 1;
+  max-height: calc(100% - 6rem - 20px);
+  min-height: 0;
   padding: $dialog-content-padding;
   position: relative;
   width: 100%;
@@ -455,6 +478,7 @@
 
   .dialog__content {
     height: 100%;
+    max-height: 100%;
     padding: 0;
   }
 

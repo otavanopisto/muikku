@@ -416,7 +416,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
         </div>
 
         <div className="notes__item-dates">{renderDates()}</div>
-        <div className="notes__item-header">
+        <div className={`notes__item-header ${openInformationToDialog ? "notes__item-header--open-details" : ""}`}>
           {openInformationToDialog ? (
             <NoteInformationDialog
               notesItem={notesItem}
