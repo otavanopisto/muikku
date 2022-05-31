@@ -90,9 +90,6 @@ public class HopsRestService {
   private HopsController hopsController;
 
   @Inject
-  private OrganizationEntityController organizationEntityController;
-
-  @Inject
   private UserEntityController userEntityController;
 
   @Inject
@@ -754,7 +751,7 @@ public class HopsRestService {
       }
 
       // Get student's educational level from pyramus
-      educationalLevel = userSchoolDataController.findStudentEducationalLevel(sessionController.getLoggedUserEntity().getDefaultSchoolDataSource(), studentEntity.getId());
+      educationalLevel = userSchoolDataController.findStudentEducationalLevel(sessionController.getLoggedUserEntity().getDefaultSchoolDataSource(), student.getIdentifier());
 
     }
     finally {

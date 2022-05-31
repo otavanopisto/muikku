@@ -639,7 +639,7 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
   }
   
   @Override
-  public String findStudentEducationalLevel(Long studentEntityId) {
+  public String findStudentEducationalLevel(String studentIdentifier) {
     // TODO Auto-generated method stub
     return null;
   }

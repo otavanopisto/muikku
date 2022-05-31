@@ -1221,7 +1221,8 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   }
 
   @Override
-  public String findStudentEducationalLevel(Long studentId) {
+  public String findStudentEducationalLevel(String studentIdentifier) {
+    Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
     return pyramusClient.get(String.format("/students/students/%d/educationalLevel", studentId), String.class);
   }
 
