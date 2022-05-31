@@ -84,6 +84,7 @@ export interface UserWithSchoolDataType {
   lastLogin?: string;
   updatedByStudent: boolean;
   userEntityId: number;
+  matriculationEligibility: boolean;
 }
 
 /**
