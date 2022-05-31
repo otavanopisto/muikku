@@ -63,6 +63,7 @@ import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.TranscriptOfReco
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.rest.ToRWorkspaceRestModel;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRestModels;
 import fi.otavanopisto.muikku.rest.model.GuiderStudentRestModel;
+import fi.otavanopisto.muikku.rest.StudentContactLogEntryBatch;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryCommentRestModel;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryRestModel;
 import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
@@ -806,37 +807,48 @@ public class GuiderRESTService extends PluginRESTService {
     }
   }
   /**
-   * GET mApi().guider.users.contactLog(userEntityId)
+   * GET mApi().guider.users.contactLog(userEntityId, resultsPerPage, page)
    *
-   * Returns a list of student's contact log entries (comments included)
+   * Returns a list of student's contact log entries (comments included) and totalHitCount + firstResult
    *
    * Output:
    *
-   StudentContactLogEntryRestModel: {
-     id: 123,
-     text: "something something",
-     creatorId: 13,
-     creatorName: "Etunimi Sukunimi",
-     entryDate: 2021-02-15,
-     type: "FACE2FACE"
-     comments: [{
-       id: 12,
-       entry: 123,
-       text: "plaa",
-       creatorId: 2,
-       creatorName: Etunimi Sukunimi,
-       commentDate: 2022-04-03
-    }]
+   *
+   StudentContactLigEntryBatch: {
+     totalHitCount: 55,
+     firstResult: 12,
+     contactLogEntries: [{
+       StudentContactLogEntryRestModel: {
+         id: 123,
+         text: "something something",
+         creatorId: 13,
+         creatorName: "Etunimi Sukunimi",
+         hasImage: true,
+         entryDate: 2021-02-15,
+         type: "FACE2FACE"
+         comments: [{
+           id: 12,
+           entry: 123,
+           text: "plaa",
+           creatorId: 2,
+           creatorName: Etunimi Sukunimi,
+           commentDate: 2022-04-03
+          }]
+        }
+      }]
+    }
 }
    */
   @GET
   @Path("/users/{ID}/contactLog")
   @RESTPermit (GuiderPermissions.ACCESS_CONTACT_LOG)
-  public Response listStudentContactLogEntries(@PathParam("ID") Long userEntityId) {
+  public Response listStudentContactLogEntries(@PathParam("ID") Long userEntityId,
+      @QueryParam("resultsPerPage") @DefaultValue("10") Integer resultsPerPage,
+      @QueryParam("page") @DefaultValue("1") Integer page) {
     String dataSource = sessionController.getLoggedUserSchoolDataSource();
     UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
 
-    BridgeResponse<List<StudentContactLogEntryRestModel>> response = userSchoolDataController.listStudentContactLogEntries(dataSource, userEntity.defaultSchoolDataIdentifier());
+    BridgeResponse<StudentContactLogEntryBatch> response = userSchoolDataController.listStudentContactLogEntries(dataSource, userEntity.defaultSchoolDataIdentifier(), resultsPerPage, page);
     if (response.ok()) {
       return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
     } else {
