@@ -411,6 +411,10 @@ export interface WorkspaceMaterialReferenceType {
 }
 
 export type WorkspaceListType = Array<WorkspaceType>;
+
+/**
+ * WorkspaceSignUpDetails
+ */
 export interface WorkspaceSignUpDetails {
   id: number;
   name: string;
