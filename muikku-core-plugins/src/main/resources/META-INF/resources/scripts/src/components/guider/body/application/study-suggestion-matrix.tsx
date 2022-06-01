@@ -102,7 +102,7 @@ const StudySuggestionMatrix: React.FC<StudySuggestionMatrixProps> = (props) => {
               <HopsCourseTable
                 matrix={filteredSchoolCourseTable}
                 useCase="study-matrix"
-                stickyHeader={false}
+                usePlace="guider"
                 disabled={false}
                 studentId={props.studentId}
                 user="supervisor"

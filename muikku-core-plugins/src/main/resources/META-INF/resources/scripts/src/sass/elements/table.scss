@@ -5,7 +5,7 @@
 
 .table {
   border-collapse: separate;
-  border-spacing: 0;;
+  border-spacing: 0;
   font-family: "Open Sans", "Arial", sans-serif;
   table-layout: fixed;
   width: 100%;
@@ -34,6 +34,11 @@
     position: sticky;
     top: $navbar-desktop-height;
   }
+}
+
+.table__thead--sticky-inside-dialog th {
+  position: sticky;
+  top: $dialog-title-height;
 }
 
 // This is span element and is necessary wrapper for the flex elements alignment inside TD's

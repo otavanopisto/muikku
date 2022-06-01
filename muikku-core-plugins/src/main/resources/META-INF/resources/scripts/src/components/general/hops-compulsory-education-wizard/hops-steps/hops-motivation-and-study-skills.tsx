@@ -150,7 +150,7 @@ class HopsMotivationAndStudySkills extends React.Component<
    * @returns JSX.Element
    */
   render() {
-    const { disabled, useCase } = this.props;
+    const { disabled, usePlace } = this.props;
     const { wayToLearn, studySupport, selfImageAsStudent } =
       this.props.motivationAndStudy;
 
@@ -166,7 +166,7 @@ class HopsMotivationAndStudySkills extends React.Component<
 
           <div className="hops-container__row">
             <div className="hops-container__table-container">
-              <HopsInputTable stickyHeader={useCase === "guider"}>
+              <HopsInputTable usePlace={usePlace}>
                 <InputRow
                   scaleStart={1}
                   scaleInterval={1}
@@ -409,7 +409,7 @@ class HopsMotivationAndStudySkills extends React.Component<
 
           <div className="hops-container__row">
             <div className="hops-container__table-container">
-              <HopsInputTable stickyHeader={useCase === "guider"}>
+              <HopsInputTable usePlace={usePlace}>
                 <InputRow
                   scaleStart={1}
                   scaleInterval={1}

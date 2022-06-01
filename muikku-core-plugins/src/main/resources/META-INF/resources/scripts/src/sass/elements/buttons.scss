@@ -4,7 +4,6 @@
 @import "../base/breakpoints";
 
 .button {
-  @include prefix(user-select, moz o ms webkit, none);
   @include prefix(transition, moz o ms webkit, background-color 0.3s);
 
   align-items: center;
@@ -21,7 +20,7 @@
   text-decoration: none;
   text-overflow: ellipsis;
   text-transform: uppercase;
-  user-select: none;
+  user-select: text;
   white-space: nowrap;
 
   @include breakpoint($breakpoint-pad) {

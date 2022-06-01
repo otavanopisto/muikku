@@ -226,20 +226,19 @@
 }
 
 .dialog__header {
+  align-items: center;
   background-color: $color-dialog-mobile-background;
   color: $color-dialog-mobile-text;
+  display: flex;
+  height: $dialog-title-height;
   padding: 15px 20px;
   position: relative;
   width: 100%;
 
   @include breakpoint($breakpoint-pad) {
-    align-items: center;
     background-color: $color-dialog-desktop-background;
     border-radius: 3px 3px 0 0;
     color: $color-dialog-desktop-text;
-    display: flex;
-    height: 3rem;
-    padding: 0 20px;
   }
 }
 

@@ -135,7 +135,7 @@ class HopsStudiesPlanning extends React.Component<
               </div>
               <HopsPlanningTool
                 user={this.props.user}
-                useCase={this.props.useCase}
+                usePlace={this.props.usePlace}
                 studentId={this.props.studentId}
                 disabled={this.props.disabled}
                 studyTimeEnd={this.props.studyTimeEnd}
