@@ -8,7 +8,7 @@
     <version>1.1.181-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
-  
+
   <artifactId>atests</artifactId>
   <packaging>jar</packaging>
   <name>Muikku atests</name>
@@ -20,196 +20,196 @@
     <mysql-connector-java.version>5.1.49</mysql-connector-java.version>
   </properties>
 
-	<dependencies>
+  <dependencies>
 
-		<dependency>
-			<groupId>org.seleniumhq.selenium</groupId>
-			<artifactId>selenium-java</artifactId>
-			<version>${selenium-java.version}</version>
-			<scope>test</scope>
-		</dependency>
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium-java</artifactId>
+      <version>${selenium-java.version}</version>
+      <scope>test</scope>
+    </dependency>
 
-		<dependency>
-			<groupId>com.saucelabs</groupId>
-			<artifactId>sauce_junit</artifactId>
-			<version>2.1.21</version>
-			<scope>test</scope>
-		</dependency>
+    <dependency>
+      <groupId>com.saucelabs</groupId>
+      <artifactId>sauce_junit</artifactId>
+      <version>2.1.21</version>
+      <scope>test</scope>
+    </dependency>
 
-		<!-- https://mvnrepository.com/artifact/com.deque.html.axe-core/selenium -->
-		<dependency>
-			<groupId>com.deque.html.axe-core</groupId>
-			<artifactId>selenium</artifactId>
-			<version>4.1.1</version>
-			<scope>test</scope>
-		</dependency>
+    <!-- https://mvnrepository.com/artifact/com.deque.html.axe-core/selenium -->
+    <dependency>
+      <groupId>com.deque.html.axe-core</groupId>
+      <artifactId>selenium</artifactId>
+      <version>4.1.1</version>
+      <scope>test</scope>
+    </dependency>
 
 
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<scope>test</scope>
-		</dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <scope>test</scope>
+    </dependency>
 
-		<!-- RestEasy -->
+    <!-- RestEasy -->
 
-		<dependency>
-			<groupId>org.jboss.spec.javax.ws.rs</groupId>
-			<artifactId>jboss-jaxrs-api_2.1_spec</artifactId>
-			<scope>provided</scope>
-		</dependency>
+    <dependency>
+      <groupId>org.jboss.spec.javax.ws.rs</groupId>
+      <artifactId>jboss-jaxrs-api_2.1_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
-		<dependency>
-			<groupId>org.jboss.resteasy</groupId>
-			<artifactId>resteasy-jackson2-provider</artifactId>
-			<scope>provided</scope>
-		</dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-jackson2-provider</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
-		<dependency>
-			<groupId>org.jboss.resteasy</groupId>
-			<artifactId>resteasy-client</artifactId>
-			<scope>provided</scope>
-		</dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-client</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
-		<!-- Jackson -->
+    <!-- Jackson -->
 
-		<!-- <dependency> <groupId>com.fasterxml.jackson.jaxrs</groupId> <artifactId>jackson-jaxrs-json-provider</artifactId> 
-			</dependency> -->
+    <!-- <dependency> <groupId>com.fasterxml.jackson.jaxrs</groupId> <artifactId>jackson-jaxrs-json-provider</artifactId> 
+      </dependency> -->
 
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
 
-		<dependency>
-			<groupId>fi.otavanopisto.pyramus</groupId>
-			<artifactId>rest-model</artifactId>
-			<version>0.7.174-SNAPSHOT</version>
-			<scope>test</scope>
-		</dependency>
+    <dependency>
+      <groupId>fi.otavanopisto.pyramus</groupId>
+      <artifactId>rest-model</artifactId>
+      <version>0.7.174-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
 
-		<dependency>
-			<groupId>fi.otavanopisto.pyramus</groupId>
-			<artifactId>pyramus-webhooks</artifactId>
-			<version>0.7.174-SNAPSHOT</version>
-			<scope>test</scope>
-		</dependency>
+    <dependency>
+      <groupId>fi.otavanopisto.pyramus</groupId>
+      <artifactId>pyramus-webhooks</artifactId>
+      <version>0.7.174-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
 
-		<dependency>
-			<groupId>com.github.tomakehurst</groupId>
-			<artifactId>wiremock</artifactId>
-			<version>${wiremock.version}</version>
-			<scope>test</scope>
-		</dependency>
+    <dependency>
+      <groupId>com.github.tomakehurst</groupId>
+      <artifactId>wiremock</artifactId>
+      <version>${wiremock.version}</version>
+      <scope>test</scope>
+    </dependency>
 
-		<!-- https://mvnrepository.com/artifact/io.rest-assured/rest-assured -->
-		<dependency>
-			<groupId>io.rest-assured</groupId>
-			<artifactId>rest-assured</artifactId>
-			<version>5.1.0</version>
-			<scope>test</scope>
-		</dependency>
+    <!-- https://mvnrepository.com/artifact/io.rest-assured/rest-assured -->
+    <dependency>
+      <groupId>io.rest-assured</groupId>
+      <artifactId>rest-assured</artifactId>
+      <version>5.1.0</version>
+      <scope>test</scope>
+    </dependency>
 
-		<dependency>
-			<groupId>org.apache.oltu.oauth2</groupId>
-			<artifactId>org.apache.oltu.oauth2.common</artifactId>
-			<version>1.0.0</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.oltu.oauth2</groupId>
-			<artifactId>org.apache.oltu.oauth2.authzserver</artifactId>
-			<version>1.0.0</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.oltu.oauth2</groupId>
-			<artifactId>org.apache.oltu.oauth2.resourceserver</artifactId>
-			<version>1.0.0</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.oltu.oauth2</groupId>
-			<artifactId>org.apache.oltu.oauth2.client</artifactId>
-			<version>1.0.0</version>
-			<scope>test</scope>
-		</dependency>
+    <dependency>
+      <groupId>org.apache.oltu.oauth2</groupId>
+      <artifactId>org.apache.oltu.oauth2.common</artifactId>
+      <version>1.0.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.oltu.oauth2</groupId>
+      <artifactId>org.apache.oltu.oauth2.authzserver</artifactId>
+      <version>1.0.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.oltu.oauth2</groupId>
+      <artifactId>org.apache.oltu.oauth2.resourceserver</artifactId>
+      <version>1.0.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.oltu.oauth2</groupId>
+      <artifactId>org.apache.oltu.oauth2.client</artifactId>
+      <version>1.0.0</version>
+      <scope>test</scope>
+    </dependency>
 
-		<dependency>
-			<groupId>fi.otavanopisto.muikku</groupId>
-			<artifactId>persistence</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>fi.otavanopisto.muikku</groupId>
+      <artifactId>persistence</artifactId>
+    </dependency>
 
-		<dependency>
-			<groupId>fi.otavanopisto.muikku</groupId>
-			<artifactId>core</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>fi.otavanopisto.muikku</groupId>
+      <artifactId>core</artifactId>
+    </dependency>
 
-		<dependency>
-			<groupId>fi.otavanopisto.muikku</groupId>
-			<artifactId>core-plugins-persistence</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>fi.otavanopisto.muikku</groupId>
+      <artifactId>core-plugins-persistence</artifactId>
+    </dependency>
 
-		<dependency>
-			<groupId>fi.otavanopisto.muikku</groupId>
-			<artifactId>muikku-school-data-pyramus-persistence</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>fi.otavanopisto.muikku</groupId>
+      <artifactId>muikku-school-data-pyramus-persistence</artifactId>
+    </dependency>
 
-		<dependency>
-			<groupId>fi.otavanopisto.muikku</groupId>
-			<artifactId>forum-plugin-rest-model</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>fi.otavanopisto.muikku</groupId>
+      <artifactId>forum-plugin-rest-model</artifactId>
+    </dependency>
 
-		<dependency>
-			<groupId>fi.otavanopisto.muikku</groupId>
-			<artifactId>timed-notifications-plugin-persistence</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>fi.otavanopisto.muikku</groupId>
+      <artifactId>timed-notifications-plugin-persistence</artifactId>
+    </dependency>
 
-		<dependency>
-			<groupId>fi.otavanopisto.muikku</groupId>
-			<artifactId>atests-plugin-rest-model</artifactId>
-			<version>${project.version}</version>
-		</dependency>
+    <dependency>
+      <groupId>fi.otavanopisto.muikku</groupId>
+      <artifactId>atests-plugin-rest-model</artifactId>
+      <version>${project.version}</version>
+    </dependency>
 
-		<dependency>
-			<groupId>jakarta.enterprise</groupId>
-			<artifactId>jakarta.enterprise.cdi-api</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>jakarta.enterprise</groupId>
+      <artifactId>jakarta.enterprise.cdi-api</artifactId>
+    </dependency>
 
-		<dependency>
-			<groupId>org.jboss.spec.javax.servlet</groupId>
-			<artifactId>jboss-servlet-api_4.0_spec</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>org.jboss.spec.javax.servlet</groupId>
+      <artifactId>jboss-servlet-api_4.0_spec</artifactId>
+    </dependency>
 
-		<dependency>
-			<artifactId>httpclient</artifactId>
-			<groupId>org.apache.httpcomponents</groupId>
-		</dependency>
+    <dependency>
+      <artifactId>httpclient</artifactId>
+      <groupId>org.apache.httpcomponents</groupId>
+    </dependency>
 
-		<dependency>
-			<artifactId>httpmime</artifactId>
-			<groupId>org.apache.httpcomponents</groupId>
-			<version>4.3.1</version>
-		</dependency>
+    <dependency>
+      <artifactId>httpmime</artifactId>
+      <groupId>org.apache.httpcomponents</groupId>
+      <version>4.3.1</version>
+    </dependency>
 
-		<dependency>
-			<artifactId>httpcore</artifactId>
-			<groupId>org.apache.httpcomponents</groupId>
-		</dependency>
+    <dependency>
+      <artifactId>httpcore</artifactId>
+      <groupId>org.apache.httpcomponents</groupId>
+    </dependency>
 
-		<dependency>
-			<groupId>org.skyscreamer</groupId>
-			<artifactId>jsonassert</artifactId>
-			<version>1.2.3</version>
-		</dependency>
+    <dependency>
+      <groupId>org.skyscreamer</groupId>
+      <artifactId>jsonassert</artifactId>
+      <version>1.2.3</version>
+    </dependency>
 
-		<dependency>
-			<groupId>com.fasterxml.jackson.datatype</groupId>
-			<artifactId>jackson-datatype-jsr310</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.datatype</groupId>
+      <artifactId>jackson-datatype-jsr310</artifactId>
+    </dependency>
 
-	</dependencies>
+  </dependencies>
 
   <profiles>
     <profile>
@@ -244,15 +244,15 @@
         <it.profile>ui-it</it.profile>
       </properties>
 
-			<dependencies>
-				<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
-				<dependency>
-					<groupId>mysql</groupId>
-					<artifactId>mysql-connector-java</artifactId>
-					<version>${mysql-connector-java.version}</version>
-				</dependency>
-			</dependencies>
-      
+      <dependencies>
+        <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+        <dependency>
+          <groupId>mysql</groupId>
+          <artifactId>mysql-connector-java</artifactId>
+          <version>${mysql-connector-java.version}</version>
+        </dependency>
+      </dependencies>
+
       <build>
         <plugins>
           <plugin>
@@ -308,12 +308,14 @@
               </execution>
             </executions>
           </plugin>
-          
-<!--           <plugin>
+
+     <!-- 
+          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
+            <artifactId>maven-surefire-plugin</artifactId> 
             <version>2.14.1</version>
-          </plugin> -->
+          </plugin>
+     -->
 
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
@@ -350,19 +352,19 @@
                 <it.profile>${it.profile}</it.profile>
                 <it.hibernate.dialect>${it.hibernate.dialect}</it.hibernate.dialect>
                 <elasticsearch.http.port>${elasticsearch.http.port}</elasticsearch.http.port>
-				        <elasticsearch.node.port>${elasticsearch.node.port}</elasticsearch.node.port>
-				        <elasticsearch.cluster.name>${elasticsearch.cluster.name}</elasticsearch.cluster.name>
+                <elasticsearch.node.port>${elasticsearch.node.port}</elasticsearch.node.port>
+                <elasticsearch.cluster.name>${elasticsearch.cluster.name}</elasticsearch.cluster.name>
               </systemPropertyVariables>
             </configuration>
             <executions>
               <execution>
-              <id>failsafe-integration-tests</id>
-              <phase>integration-test</phase>
-              <goals>
-                <goal>integration-test</goal>
-              </goals>
-            </execution>
-            <execution>
+                <id>failsafe-integration-tests</id>
+                <phase>integration-test</phase>
+                <goals>
+                  <goal>integration-test</goal>
+                </goals>
+              </execution>
+              <execution>
                 <id>failsafe-verify</id>
                 <phase>verify</phase>
                 <goals>
@@ -371,82 +373,82 @@
               </execution>
             </executions>
           </plugin>
- 
-		      <plugin>
-				    <groupId>de.jpdigital</groupId>
-		    		<artifactId>hibernate53-ddl-maven-plugin</artifactId>
-		    		<version>2.5.0</version>
-		        <dependencies>
-					    <dependency>
-		            <groupId>mysql</groupId>
-		            <artifactId>mysql-connector-java</artifactId>
-		            <version>${mysql-connector-java.version}</version>
-					    </dependency>
-		        </dependencies>
-				    <configuration>
-				      <dialects>
-				          <param>${it.hibernate.dialect}</param>
-				      </dialects>
-				      <outputDirectory>${basedir}/target/sql/ddl</outputDirectory>
-				      <persistenceXml>${basedir}/src/test/resources/persistence_for_generation_purpose.xml</persistenceXml>
-				      <createDropStatements>false</createDropStatements>
-				      <omitDialectFromFileName>true</omitDialectFromFileName>
-				      <outputFileNamePrefix></outputFileNamePrefix>
-				      <outputFileNameSuffix>createDatabase</outputFileNameSuffix>
-		          <packages>
+
+          <plugin>
+            <groupId>de.jpdigital</groupId>
+            <artifactId>hibernate53-ddl-maven-plugin</artifactId>
+            <version>2.5.0</version>
+            <dependencies>
+              <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql-connector-java.version}</version>
+              </dependency>
+            </dependencies>
+            <configuration>
+              <dialects>
+                <param>${it.hibernate.dialect}</param>
+              </dialects>
+              <outputDirectory>${basedir}/target/sql/ddl</outputDirectory>
+              <persistenceXml>${basedir}/src/test/resources/persistence_for_generation_purpose.xml</persistenceXml>
+              <createDropStatements>false</createDropStatements>
+              <omitDialectFromFileName>true</omitDialectFromFileName>
+              <outputFileNamePrefix></outputFileNamePrefix>
+              <outputFileNameSuffix>createDatabase</outputFileNameSuffix>
+              <packages>
                 <param>fi.otavanopisto.muikku.plugins.schooldatapyramus.model</param>
                 <param>fi.otavanopisto.muikku.plugins</param>
                 <param>fi.otavanopisto.muikku.model</param>
-				      </packages>
-				    </configuration>
-				    <executions>
-				      <execution>
-				        <id>generate-ddl</id>
-				        <phase>process-classes</phase>
-				        <goals>
-				          <goal>gen-ddl</goal>
-				        </goals>
-				      </execution>
-				    </executions>
-	        </plugin>
-				
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>sql-maven-plugin</artifactId>
-						<version>1.5</version>
-				
-						<dependencies>
-							<!-- specify the dependent jdbc driver here -->
-							<dependency>
-								<groupId>mysql</groupId>
-								<artifactId>mysql-connector-java</artifactId>
-								<version>${mysql-connector-java.version}</version>
-							</dependency>
-						</dependencies>
-						<!-- common configuration shared by all executions -->
-						<configuration>
-							<driver>${it.jdbc.driver}</driver>
-							<url><![CDATA[${it.jdbc.url}]]></url>
-							<username>${it.jdbc.username}</username>
-							<password>${it.jdbc.password}</password>
-						</configuration>
-				
-						<executions>				
-							<execution>
-								<id>create-schema</id>
-								<phase>pre-integration-test</phase>
-								<goals>
-									<goal>execute</goal>
-								</goals>
-								<configuration>
-									<autocommit>true</autocommit>
-									<srcFiles>
-										<srcFile>${basedir}/target/sql/ddl/createDatabase.sql</srcFile>
-									</srcFiles>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
+              </packages>
+            </configuration>
+            <executions>
+              <execution>
+                <id>generate-ddl</id>
+                <phase>process-classes</phase>
+                <goals>
+                  <goal>gen-ddl</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>sql-maven-plugin</artifactId>
+            <version>1.5</version>
+
+            <dependencies>
+              <!-- specify the dependent jdbc driver here -->
+              <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql-connector-java.version}</version>
+              </dependency>
+            </dependencies>
+            <!-- common configuration shared by all executions -->
+            <configuration>
+              <driver>${it.jdbc.driver}</driver>
+              <url><![CDATA[${it.jdbc.url}]]></url>
+              <username>${it.jdbc.username}</username>
+              <password>${it.jdbc.password}</password>
+            </configuration>
+
+            <executions>
+              <execution>
+                <id>create-schema</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>execute</goal>
+                </goals>
+                <configuration>
+                  <autocommit>true</autocommit>
+                  <srcFiles>
+                    <srcFile>${basedir}/target/sql/ddl/createDatabase.sql</srcFile>
+                  </srcFiles>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
 
           <plugin>
             <groupId>com.github.alexcojocaru</groupId>
@@ -477,7 +479,7 @@
               </execution>
             </executions>
           </plugin>
-          
+
           <plugin>
             <groupId>org.codehaus.cargo</groupId>
             <artifactId>cargo-maven3-plugin</artifactId>
@@ -493,10 +495,10 @@
                   <extractDir>${project.basedir}/.cargo/extracts</extractDir>
                 </zipUrlInstaller>
                 <dependencies>
-					        <dependency>
-					          <groupId>mysql</groupId>
-					          <artifactId>mysql-connector-java</artifactId>
-					        </dependency>
+                  <dependency>
+                    <groupId>mysql</groupId>
+                    <artifactId>mysql-connector-java</artifactId>
+                  </dependency>
                 </dependencies>
               </container>
               <configuration>
@@ -516,8 +518,8 @@
               </configuration>
 
             </configuration>
-            <executions> 
-              <execution> 
+            <executions>
+              <execution>
                 <id>start-cargo</id>
                 <phase>pre-integration-test</phase>
                 <goals>
@@ -543,18 +545,20 @@
             <version>3.0.0.Final</version>
             <executions>
               <execution>
-	              <id>configure-wildfly</id>
-	              <phase>pre-integration-test</phase>
+                <id>configure-wildfly</id>
+                <phase>pre-integration-test</phase>
                 <goals>
                   <goal>execute-commands</goal>
                 </goals>
-	              <configuration>
-	                <commands>
-  	                <command>/system-property=muikku-data:add(value="${it.build.directory}/../src/test/resources/muikku-data/muikku-data-ui.xml")</command>
-  	                <command>/system-property=jsf.project.stage:add(value="Production")</command>
+                <configuration>
+                  <commands>
+                    <command>/system-property=muikku-data:add(value="${it.build.directory}/../src/test/resources/muikku-data/muikku-data-ui.xml")</command>
+                    <command>/system-property=jsf.project.stage:add(value="Production")</command>
                     <command>/system-property=tests.running:add(value="true")</command>
                     <command>/system-property=elasticsearch.cluster.name:add(value="${elasticsearch.cluster.name}")</command>
-                    <!-- Below node.port = http.port because elasticsearch http port is read from elasticsearch.node.port property instead of elasticsearch.http.port in the code. -->
+                    <!-- Below node.port = http.port because elasticsearch 
+                      http port is read from elasticsearch.node.port property instead of elasticsearch.http.port 
+                      in the code. -->
                     <command>/system-property=elasticsearch.node.port:add(value="${elasticsearch.http.port}")</command>
                     <command>/subsystem=undertow/server=default-server/host=muikku:add()</command>
                     <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=alias,value=["${it.host}"])</command>
@@ -564,8 +568,8 @@
                     <command>/subsystem=undertow/configuration=handler/file=welcome-content:remove</command>
                     <command>/subsystem=logging/logger=fi.otavanopisto.muikku.facelets.WidgetComponentHandler:add(level=FATAL)</command>
                     <command>:reload</command>
-	                </commands>
-	              </configuration>
+                  </commands>
+                </configuration>
               </execution>
               <execution>
                 <id>deploy-muikku</id>
@@ -606,8 +610,8 @@
         </plugins>
       </build>
     </profile>
-    
-     <profile>
+
+    <profile>
       <id>rest-it</id>
       <activation>
         <activeByDefault>false</activeByDefault>
@@ -934,7 +938,7 @@
                   </execute-commands>
                 </configuration>
               </execution>
-              
+
               <execution>
                 <id>deploy-muikku</id>
                 <phase>pre-integration-test</phase>
@@ -974,7 +978,7 @@
       </build>
     </profile>
 
-    <profile> 
+    <profile>
       <id>wcag</id>
       <activation>
         <activeByDefault>false</activeByDefault>
@@ -1018,7 +1022,7 @@
                 <it.selenium.version>${selenium-java.version}</it.selenium.version>
                 <it.test.file>${it.test.file}</it.test.file>
                 <it.port.http>${it.port.http}</it.port.http>
-                <it.port.https>${it.port.https}</it.port.https>               
+                <it.port.https>${it.port.https}</it.port.https>
                 <it.host>${it.host}</it.host>
                 <it.browser>${it.browser}</it.browser>
                 <it.profile>${it.profile}</it.profile>
@@ -1047,7 +1051,7 @@
         </plugins>
       </build>
     </profile>
-    
+
     <profile>
       <id>sauce-it</id>
       <activation>
