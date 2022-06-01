@@ -39,7 +39,9 @@ const createArrayOfNumberIntervals = (
 /**
  * QuestionGradeTableProps
  */
-interface HopsInputTableProps {}
+interface HopsInputTableProps {
+  stickyHeader: boolean;
+}
 
 /**
  * HopsInputTable
@@ -47,7 +49,13 @@ interface HopsInputTableProps {}
  * @returns JSX.Element. Language grade table component
  */
 export const HopsInputTable: React.FC<HopsInputTableProps> = (props) => {
-  const { children } = props;
+  const { children, stickyHeader } = props;
+
+  const uTableHeadModifiers = [];
+
+  if (stickyHeader) {
+    uTableHeadModifiers.push("sticky");
+  }
 
   return (
     <>
@@ -67,7 +75,7 @@ export const HopsInputTable: React.FC<HopsInputTableProps> = (props) => {
         </div>
       </div>
       <Table modifiers={["question-table"]}>
-        <TableHead>
+        <TableHead modifiers={uTableHeadModifiers}>
           <Tr>
             <Th modifiers={["centered"]}>
               <span className="hops-container__table-head-container hops-container__table-head-description--long">

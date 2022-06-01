@@ -49,6 +49,7 @@ class HopsCompulsoryEducationWizardDialog extends React.Component<
       <div>
         <CompulsoryEducationHopsWizard
           user={this.props.user}
+          useCase="studies"
           disabled={this.props.disabled}
           superVisorModifies={this.props.superVisorModifies}
           studentId={document

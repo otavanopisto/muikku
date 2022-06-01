@@ -9,90 +9,100 @@ import {
   Tr,
 } from "~/components/general/table";
 import { LanguageGrade, LanguageGradeEnum } from "~/@types/shared";
-
 import "~/sass/elements/wcag.scss";
 
 /**
  * LanguageGradeTableProps
  */
-interface HopsLanguageGradeTableProps {}
+interface HopsLanguageGradeTableProps {
+  stickyHeader: boolean;
+}
 
 /**
  * LanguageGradeTable
- * @param param0 param0
- * @param param0.children children
+ * @param props props
  * @returns JSX.Element. Language grade table component
  */
-export const HopsLanguageGradeTable: React.FC<HopsLanguageGradeTableProps> = ({
-  children,
-}) => (
-  <>
-    <div className="hops-container__table-container-descriptions">
-      <div className="hops-container__table-description-item">
-        1 = Äidinkieli
+export const HopsLanguageGradeTable: React.FC<HopsLanguageGradeTableProps> = (
+  props
+) => {
+  const { children, stickyHeader } = props;
+
+  const uTableHeadModifiers = ["language-table"];
+
+  if (stickyHeader) {
+    uTableHeadModifiers.push("sticky");
+  }
+
+  return (
+    <>
+      <div className="hops-container__table-container-descriptions">
+        <div className="hops-container__table-description-item">
+          1 = Äidinkieli
+        </div>
+        <div className="hops-container__table-description-item">
+          2 = Erinomainen / Kiitettävä
+        </div>
+        <div className="hops-container__table-description-item">3 = Hyvä</div>
+        <div className="hops-container__table-description-item">
+          4 = Tyydyttävä / Alkeet
+        </div>
+        <div className="hops-container__table-description-item">
+          5 = En ole opiskellut
+        </div>
       </div>
-      <div className="hops-container__table-description-item">
-        2 = Erinomainen / Kiitettävä
-      </div>
-      <div className="hops-container__table-description-item">3 = Hyvä</div>
-      <div className="hops-container__table-description-item">
-        4 = Tyydyttävä / Alkeet
-      </div>
-      <div className="hops-container__table-description-item">
-        5 = En ole opiskellut
-      </div>
-    </div>
-    <Table modifiers={["language-table"]}>
-      <TableHead modifiers={["language-table"]}>
-        <Tr modifiers={["language-table"]}>
-          <Th modifiers={["centered", "language"]}>Kieli</Th>
-          <Th modifiers={["centered"]}>
-            <span className="hops-container__table-head-container hops-container__table-head-description--long">
-              Äidinkieli
-            </span>
-            <span className="hops-container__table-head-container hops-container__table-head-description--short">
-              1
-            </span>
-          </Th>
-          <Th modifiers={["centered"]}>
-            <span className="hops-container__table-head-container hops-container__table-head-description--long">
-              Erinomainen / Kiitettävä
-            </span>
-            <span className="hops-container__table-head-container hops-container__table-head-description--short">
-              2
-            </span>
-          </Th>
-          <Th modifiers={["centered"]}>
-            <span className="hops-container__table-head-container hops-container__table-head-description--long">
-              Hyvä
-            </span>
-            <span className="hops-container__table-head-container hops-container__table-head-description--short">
-              3
-            </span>
-          </Th>
-          <Th modifiers={["centered"]}>
-            <span className="hops-container__table-head-container hops-container__table-head-description--long">
-              Tyydyttävä / Alkeet
-            </span>
-            <span className="hops-container__table-head-container hops-container__table-head-description--short">
-              4
-            </span>
-          </Th>
-          <Th modifiers={["centered"]}>
-            <span className="hops-container__table-head-container hops-container__table-head-description--long">
-              En ole opiskellut
-            </span>
-            <span className="hops-container__table-head-container hops-container__table-head-description--short">
-              5
-            </span>
-          </Th>
-          <Th></Th>
-        </Tr>
-      </TableHead>
-      <Tbody>{children}</Tbody>
-    </Table>
-  </>
-);
+      <Table modifiers={["language-table"]}>
+        <TableHead modifiers={uTableHeadModifiers}>
+          <Tr modifiers={["language-table"]}>
+            <Th modifiers={["centered", "language"]}>Kieli</Th>
+            <Th modifiers={["centered"]}>
+              <span className="hops-container__table-head-container hops-container__table-head-description--long">
+                Äidinkieli
+              </span>
+              <span className="hops-container__table-head-container hops-container__table-head-description--short">
+                1
+              </span>
+            </Th>
+            <Th modifiers={["centered"]}>
+              <span className="hops-container__table-head-container hops-container__table-head-description--long">
+                Erinomainen / Kiitettävä
+              </span>
+              <span className="hops-container__table-head-container hops-container__table-head-description--short">
+                2
+              </span>
+            </Th>
+            <Th modifiers={["centered"]}>
+              <span className="hops-container__table-head-container hops-container__table-head-description--long">
+                Hyvä
+              </span>
+              <span className="hops-container__table-head-container hops-container__table-head-description--short">
+                3
+              </span>
+            </Th>
+            <Th modifiers={["centered"]}>
+              <span className="hops-container__table-head-container hops-container__table-head-description--long">
+                Tyydyttävä / Alkeet
+              </span>
+              <span className="hops-container__table-head-container hops-container__table-head-description--short">
+                4
+              </span>
+            </Th>
+            <Th modifiers={["centered"]}>
+              <span className="hops-container__table-head-container hops-container__table-head-description--long">
+                En ole opiskellut
+              </span>
+              <span className="hops-container__table-head-container hops-container__table-head-description--short">
+                5
+              </span>
+            </Th>
+            <Th></Th>
+          </Tr>
+        </TableHead>
+        <Tbody>{children}</Tbody>
+      </Table>
+    </>
+  );
+};
 
 /**
  * LanguageGradeRowProps

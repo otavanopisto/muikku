@@ -43,6 +43,10 @@ interface HopsCourseTableProps extends Partial<StudentActivityByStatus> {
    */
   useCase: "study-matrix" | "hops-planning";
   /**
+   * Table uses sticky header
+   */
+  stickyHeader: boolean;
+  /**
    * user
    */
   user: HopsUser;
@@ -534,9 +538,15 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
       }).filter(Boolean)
     : undefined;
 
+  const uTableHeadModifiers = ["course"];
+
+  if (props.stickyHeader) {
+    uTableHeadModifiers.push("sticky");
+  }
+
   return (
     <Table modifiers={["course"]}>
-      <TableHead modifiers={["course"]}>
+      <TableHead modifiers={uTableHeadModifiers}>
         <Tr modifiers={["course"]}>
           <Th modifiers={["subject"]}>Oppiaine</Th>
           <Th colSpan={currentMaxCourses}>Kurssit</Th>
