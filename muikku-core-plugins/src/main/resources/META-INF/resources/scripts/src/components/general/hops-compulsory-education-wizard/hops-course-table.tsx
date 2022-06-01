@@ -270,6 +270,9 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
         const showSuggestionList =
           !props.disabled && props.user === "supervisor" && canBeSelected;
 
+        const courseDropdownName =
+          sSubject.subjectCode + course.courseNumber + " - " + course.name;
+
         return (
           <Td
             key={`${sSubject.subjectCode}-${course.courseNumber}`}
@@ -289,7 +292,9 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
               content={
                 <div className="hops-container__study-tool-dropdown-container">
                   <div className="hops-container__study-tool-dropdow-title">
-                    {course.mandatory ? course.name : `${course.name}*`}
+                    {course.mandatory
+                      ? `${courseDropdownName}`
+                      : `${courseDropdownName}*`}
                   </div>
                   {course.mandatory ? (
                     <>

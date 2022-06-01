@@ -388,13 +388,13 @@ export const schoolCourseTable: SchoolSubject[] = [
         mandatory: true,
       },
       {
-        name: "Valinnainen",
+        name: "Teollisuusyhteiskunnan synnystä nykyaikaan",
         courseNumber: 2,
         length: 28,
         mandatory: false,
       },
       {
-        name: "Valinnainen",
+        name: "Antiikista uuden ajan murrokseen",
         courseNumber: 3,
         length: 28,
         mandatory: false,
