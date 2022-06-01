@@ -16,7 +16,7 @@ import {
 } from "~/components/general/table";
 import { schoolCourseTable } from "~/mock/mock-data";
 import { connect } from "react-redux";
-import { HopsUser } from ".";
+import { HopsUsePlace, HopsUser } from ".";
 import Button from "~/components/general/button";
 import { StateType } from "~/reducers";
 import Dropdown from "~/components/general/dropdown";
@@ -45,7 +45,7 @@ interface HopsCourseTableProps extends Partial<StudentActivityByStatus> {
   /**
    * Table uses sticky header
    */
-  stickyHeader: boolean;
+  usePlace: HopsUsePlace;
   /**
    * user
    */
@@ -540,8 +540,10 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
 
   const uTableHeadModifiers = ["course"];
 
-  if (props.stickyHeader) {
+  if (props.usePlace === "studies") {
     uTableHeadModifiers.push("sticky");
+  } else if (props.usePlace === "guider") {
+    uTableHeadModifiers.push("sticky-inside-dialog");
   }
 
   return (

@@ -10,12 +10,13 @@ import {
 } from "~/components/general/table";
 import { LanguageGrade, LanguageGradeEnum } from "~/@types/shared";
 import "~/sass/elements/wcag.scss";
+import { HopsUsePlace } from "./index";
 
 /**
  * LanguageGradeTableProps
  */
 interface HopsLanguageGradeTableProps {
-  stickyHeader: boolean;
+  usePlace: HopsUsePlace;
 }
 
 /**
@@ -26,12 +27,14 @@ interface HopsLanguageGradeTableProps {
 export const HopsLanguageGradeTable: React.FC<HopsLanguageGradeTableProps> = (
   props
 ) => {
-  const { children, stickyHeader } = props;
+  const { children, usePlace } = props;
 
   const uTableHeadModifiers = ["language-table"];
 
-  if (stickyHeader) {
+  if (usePlace === "studies") {
     uTableHeadModifiers.push("sticky");
+  } else if (usePlace === "guider") {
+    uTableHeadModifiers.push("sticky-inside-dialog");
   }
 
   return (

@@ -290,9 +290,7 @@ class HopsStartingLevel extends React.Component<
 
           <div className="hops-container__row">
             <div className="hops-container__table-container">
-              <HopsLanguageGradeTable
-                stickyHeader={this.props.useCase === "guider"}
-              >
+              <HopsLanguageGradeTable usePlace={this.props.usePlace}>
                 {this.props.studentStartingLevel.previousLanguageExperience.map(
                   (lngG, index) => (
                     <LanguageGradeRow

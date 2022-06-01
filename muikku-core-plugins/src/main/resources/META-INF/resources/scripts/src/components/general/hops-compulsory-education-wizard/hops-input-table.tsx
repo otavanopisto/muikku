@@ -10,6 +10,7 @@ import {
 } from "~/components/general/table";
 
 import "~/sass/elements/wcag.scss";
+import { HopsUsePlace } from "./index";
 
 /**
  * createArrayOfNumberIntervals
@@ -40,7 +41,7 @@ const createArrayOfNumberIntervals = (
  * QuestionGradeTableProps
  */
 interface HopsInputTableProps {
-  stickyHeader: boolean;
+  usePlace: HopsUsePlace;
 }
 
 /**
@@ -49,12 +50,14 @@ interface HopsInputTableProps {
  * @returns JSX.Element. Language grade table component
  */
 export const HopsInputTable: React.FC<HopsInputTableProps> = (props) => {
-  const { children, stickyHeader } = props;
+  const { children, usePlace } = props;
 
   const uTableHeadModifiers = [];
 
-  if (stickyHeader) {
+  if (usePlace === "studies") {
     uTableHeadModifiers.push("sticky");
+  } else if (usePlace === "guider") {
+    uTableHeadModifiers.push("sticky-inside-dialog");
   }
 
   return (

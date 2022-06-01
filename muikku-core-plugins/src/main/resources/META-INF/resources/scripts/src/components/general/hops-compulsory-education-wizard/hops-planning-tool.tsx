@@ -28,7 +28,7 @@ import { useStudentAlternativeOptions } from "~/hooks/useStudentAlternativeOptio
 import { filterSpecialSubjects } from "~/helper-functions/shared";
 import Dropdown from "../dropdown";
 import { useSupervisorOptionalSuggestions } from "~/hooks/useSupervisorOptionalSuggestion";
-import { HopsUseCase } from "./index";
+import { HopsUsePlace } from "./index";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const ProgressBarCircle = require("react-progress-bar.js").Circle;
@@ -41,7 +41,7 @@ const ProgressBarLine = require("react-progress-bar.js").Line;
 interface HopsPlanningToolProps {
   i18n: i18nType;
   user: HopsUser;
-  useCase: HopsUseCase;
+  usePlace: HopsUsePlace;
   /**
    * Identifier of student
    */
@@ -934,7 +934,7 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
               <HopsCourseTable
                 matrix={filteredSchoolCourseTable}
                 useCase="hops-planning"
-                stickyHeader={props.useCase === "guider"}
+                usePlace={props.usePlace}
                 disabled={props.disabled}
                 studentId={props.studentId}
                 user={props.user}
