@@ -536,7 +536,7 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
 
   return (
     <Table modifiers={["course"]}>
-      <TableHead modifiers={["course"]}>
+      <TableHead modifiers={["course", "sticky"]}>
         <Tr modifiers={["course"]}>
           <Th modifiers={["subject"]}>Oppiaine</Th>
           <Th colSpan={currentMaxCourses}>Kurssit</Th>

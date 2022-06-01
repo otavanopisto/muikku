@@ -43,7 +43,7 @@ export const HopsLanguageGradeTable: React.FC<HopsLanguageGradeTableProps> = ({
       </div>
     </div>
     <Table modifiers={["language-table"]}>
-      <TableHead modifiers={["language-table"]}>
+      <TableHead modifiers={["language-table", "sticky"]}>
         <Tr modifiers={["language-table"]}>
           <Th modifiers={["centered", "language"]}>Kieli</Th>
           <Th modifiers={["centered"]}>

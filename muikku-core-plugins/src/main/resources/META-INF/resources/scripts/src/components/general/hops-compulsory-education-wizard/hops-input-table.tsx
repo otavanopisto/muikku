@@ -67,7 +67,7 @@ export const HopsInputTable: React.FC<HopsInputTableProps> = (props) => {
         </div>
       </div>
       <Table modifiers={["question-table"]}>
-        <TableHead>
+        <TableHead modifiers={["sticky"]}>
           <Tr>
             <Th modifiers={["centered"]}>
               <span className="hops-container__table-head-container hops-container__table-head-description--long">
