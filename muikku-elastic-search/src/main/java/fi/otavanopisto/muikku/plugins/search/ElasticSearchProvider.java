@@ -49,6 +49,7 @@ import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.sort.SortOrder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
@@ -686,6 +687,7 @@ public class ElasticSearchProvider implements SearchProvider {
       long totalHitCount = searchHits.getTotalHits();
 
       ObjectMapper objectMapper = new ObjectMapper();
+      objectMapper.registerModule(new JSR310Module());
       SearchHit[] results = searchHits.getHits();
       List<IndexedWorkspace> searchResults = Arrays.stream(results)
           .map(hit -> {

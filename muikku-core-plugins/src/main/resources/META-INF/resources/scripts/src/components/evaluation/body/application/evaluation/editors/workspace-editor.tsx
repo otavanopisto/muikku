@@ -19,6 +19,7 @@ import {
   AssessmentRequest,
   BilledPrice,
   EvaluationEnum,
+  EvaluationGradeSystem,
   EvaluationWorkspaceSubject,
 } from "~/@types/evaluation";
 import { i18nType } from "~/reducers/base/i18n";
@@ -77,6 +78,8 @@ class WorkspaceEditor extends SessionStateComponent<
   WorkspaceEditorProps,
   WorkspaceEditorState
 > {
+  private unknownGradeSystemIsUsed: EvaluationGradeSystem;
+
   /**
    * constructor
    * @param props props
@@ -142,6 +145,10 @@ class WorkspaceEditor extends SessionStateComponent<
         (gSystem) =>
           gSystem.id === latestEvent.gradeIdentifier.split("@")[0].split("-")[1]
       );
+
+      if (!usedGradeSystem.active) {
+        this.unknownGradeSystemIsUsed = usedGradeSystem;
+      }
 
       /**
        * Find what grade is selected when editing existing
@@ -870,16 +877,49 @@ class WorkspaceEditor extends SessionStateComponent<
     const billingPriceDisabled =
       existingBilledPriceObject && !existingBilledPriceObject.editable;
 
+    /**
+     * Grading scale and grade options.
+     */
     const renderGradingOptions =
-      this.props.evaluations.evaluationGradeSystem.map((gScale) => (
-        <optgroup key={`${gScale.dataSource}-${gScale.id}`} label={gScale.name}>
-          {gScale.grades.map((grade) => (
-            <option key={grade.id} value={`${gScale.dataSource}-${grade.id}`}>
+      this.props.evaluations.evaluationGradeSystem.map(
+        (gScale) =>
+          gScale.active && (
+            <optgroup
+              key={`${gScale.dataSource}-${gScale.id}`}
+              label={gScale.name}
+            >
+              {gScale.grades.map((grade) => (
+                <option
+                  key={grade.id}
+                  value={`${gScale.dataSource}-${grade.id}`}
+                >
+                  {grade.name}
+                </option>
+              ))}
+            </optgroup>
+          )
+      );
+
+    // IF evaluation uses some unknown grade system that is not normally showed, then we add it to options also
+    if (this.unknownGradeSystemIsUsed) {
+      const missingOption = (
+        <optgroup
+          key={`${this.unknownGradeSystemIsUsed.dataSource}-${this.unknownGradeSystemIsUsed.id}`}
+          label={this.unknownGradeSystemIsUsed.name}
+        >
+          {this.unknownGradeSystemIsUsed.grades.map((grade) => (
+            <option
+              key={grade.id}
+              value={`${this.unknownGradeSystemIsUsed.dataSource}-${grade.id}`}
+            >
               {grade.name}
             </option>
           ))}
         </optgroup>
-      ));
+      );
+
+      renderGradingOptions.push(missingOption);
+    }
 
     return (
       <div className="form" role="form">
