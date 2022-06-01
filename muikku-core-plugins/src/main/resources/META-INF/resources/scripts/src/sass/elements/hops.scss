@@ -648,7 +648,16 @@
 }
 
 .hops-container__study-tool-dropdow-subsection {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
   margin: 10px 0 0;
+
+  .hops-container__study-tool-dropdow-title {
+    font-size: 0.875rem;
+
+  }
 }
 
 .hops-container__study-tool-dropdow-title {
