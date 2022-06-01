@@ -32,7 +32,7 @@
 
   @include breakpoint($breakpoint-pad) {
     position: sticky;
-    top: $navbar-desktop-heightx;
+    top: $navbar-desktop-height;
   }
 }
 
