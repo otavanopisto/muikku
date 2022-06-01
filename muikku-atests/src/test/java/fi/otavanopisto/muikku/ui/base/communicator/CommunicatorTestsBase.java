@@ -275,8 +275,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
         waitAndClick("div.application-panel__content div.application-panel__helper-container a[href^='#label-']");
         waitForPresent(".application-list__item-header--communicator-message .application-list__header-primary span");
         assertText(".application-list__item-header--communicator-message .application-list__header-primary span", "Student Tester");
-        waitForPresent(".application-list__item-body--communicator-message span");
-        assertText(".application-list__item-body--communicator-message span", "Another one");
+        assertElementCount(".application-list__item-header--communicator-message", 1);
       }finally{
         deleteCommunicatorUserLabels(recipient);
         deleteCommunicatorMessages();

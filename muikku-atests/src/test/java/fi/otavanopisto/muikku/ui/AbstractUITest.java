@@ -1248,7 +1248,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void assertElementCount(String cssSelector, int countToExpect) {
-    assertEquals(countElements(cssSelector), countToExpect);
+    assertEquals(countToExpect, countElements(cssSelector));
   }
   
   protected void loginAdmin() throws JsonProcessingException, Exception {
