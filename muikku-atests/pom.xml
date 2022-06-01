@@ -15,206 +15,201 @@
   <description>Muikku acceptance tests</description>
 
   <properties>
-    <!-- Selenium -->
     <selenium-java.version>4.0.0</selenium-java.version>
     <wiremock.version>2.6.0</wiremock.version>
     <mysql-connector-java.version>5.1.49</mysql-connector-java.version>
   </properties>
 
-  <dependencies>
+	<dependencies>
 
-    <dependency>
-      <groupId>org.seleniumhq.selenium</groupId>
-      <artifactId>selenium-java</artifactId>
-      <version>${selenium-java.version}</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>com.saucelabs</groupId>
-      <artifactId>sauce_junit</artifactId>
-      <version>2.1.21</version>
-      <scope>test</scope>
-    </dependency>
-
-	<!-- https://mvnrepository.com/artifact/com.deque.html.axe-core/selenium -->
-	<dependency>
-	  <groupId>com.deque.html.axe-core</groupId>
-	  <artifactId>selenium</artifactId>
-	  <version>4.1.1</version>
-	  <scope>test</scope>
-	</dependency>
-
-		
-    <dependency>
-      <groupId>com.google.guava</groupId>
-	  <artifactId>guava</artifactId>
-	  <scope>test</scope>
-	</dependency>
-
-    <!-- RestEasy -->
-    
-    <dependency>
-      <groupId>org.jboss.spec.javax.ws.rs</groupId>
-      <artifactId>jboss-jaxrs-api_2.1_spec</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jboss.resteasy</groupId>
-      <artifactId>resteasy-jackson2-provider</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    
-    <dependency>
-      <groupId>org.jboss.resteasy</groupId>
-      <artifactId>resteasy-client</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <!-- Jackson -->
-    
-    <!--
-
-    <dependency>
-      <groupId>com.fasterxml.jackson.jaxrs</groupId>
-      <artifactId>jackson-jaxrs-json-provider</artifactId>
-    </dependency>
-    
-    -->
-
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>fi.otavanopisto.pyramus</groupId>
-      <artifactId>rest-model</artifactId>
-      <version>0.7.174-SNAPSHOT</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>fi.otavanopisto.pyramus</groupId>
-      <artifactId>pyramus-webhooks</artifactId>
-      <version>0.7.174-SNAPSHOT</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>com.github.tomakehurst</groupId>
-      <artifactId>wiremock</artifactId>
-      <version>${wiremock.version}</version>
-      <scope>test</scope>
-    </dependency>
-		<!-- https://mvnrepository.com/artifact/io.rest-assured/rest-assured -->
 		<dependency>
-	    <groupId>io.rest-assured</groupId>
-	    <artifactId>rest-assured</artifactId>
-	    <version>5.1.0</version>
-	    <scope>test</scope>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-java</artifactId>
+			<version>${selenium-java.version}</version>
+			<scope>test</scope>
 		</dependency>
 
-    <dependency>
-      <groupId>org.apache.oltu.oauth2</groupId>
-      <artifactId>org.apache.oltu.oauth2.common</artifactId>
-      <version>1.0.0</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.oltu.oauth2</groupId>
-      <artifactId>org.apache.oltu.oauth2.authzserver</artifactId>
-      <version>1.0.0</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.oltu.oauth2</groupId>
-      <artifactId>org.apache.oltu.oauth2.resourceserver</artifactId>
-      <version>1.0.0</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.oltu.oauth2</groupId>
-      <artifactId>org.apache.oltu.oauth2.client</artifactId>
-      <version>1.0.0</version>
-      <scope>test</scope>
-    </dependency>
-    
-    <dependency>
-      <groupId>fi.otavanopisto.muikku</groupId>
-      <artifactId>persistence</artifactId>
-    </dependency>
+		<dependency>
+			<groupId>com.saucelabs</groupId>
+			<artifactId>sauce_junit</artifactId>
+			<version>2.1.21</version>
+			<scope>test</scope>
+		</dependency>
 
-    <dependency>
-      <groupId>fi.otavanopisto.muikku</groupId>
-      <artifactId>core</artifactId>
-    </dependency>
-    
-    <dependency>
-      <groupId>fi.otavanopisto.muikku</groupId>
-      <artifactId>core-plugins-persistence</artifactId>
-    </dependency>
-    
-    <dependency>
-      <groupId>fi.otavanopisto.muikku</groupId>
-      <artifactId>muikku-school-data-pyramus-persistence</artifactId>
-    </dependency>
-    
-    <dependency>
-      <groupId>fi.otavanopisto.muikku</groupId>
-      <artifactId>forum-plugin-rest-model</artifactId>
-    </dependency>
+		<!-- https://mvnrepository.com/artifact/com.deque.html.axe-core/selenium -->
+		<dependency>
+			<groupId>com.deque.html.axe-core</groupId>
+			<artifactId>selenium</artifactId>
+			<version>4.1.1</version>
+			<scope>test</scope>
+		</dependency>
 
-    <dependency>
-      <groupId>fi.otavanopisto.muikku</groupId>
-      <artifactId>timed-notifications-plugin-persistence</artifactId>
-    </dependency>
-    
-    <dependency>
-      <groupId>fi.otavanopisto.muikku</groupId>
-      <artifactId>atests-plugin-rest-model</artifactId>
-      <version>${project.version}</version>
-    </dependency>    
-    
-    <dependency>
-      <groupId>jakarta.enterprise</groupId>
-      <artifactId>jakarta.enterprise.cdi-api</artifactId>
-    </dependency>
-    
-    <dependency>
-      <groupId>org.jboss.spec.javax.servlet</groupId>
-      <artifactId>jboss-servlet-api_4.0_spec</artifactId>
-    </dependency>
-    
-    <dependency>
-      <artifactId>httpclient</artifactId>
-      <groupId>org.apache.httpcomponents</groupId>
-    </dependency>
-    
-    <dependency>
-      <artifactId>httpmime</artifactId>
-      <groupId>org.apache.httpcomponents</groupId>
-      <version>4.3.1</version>
-    </dependency>
-    
-    <dependency>
-      <artifactId>httpcore</artifactId>
-      <groupId>org.apache.httpcomponents</groupId>
-    </dependency>
-    
-    <dependency>
-      <groupId>org.skyscreamer</groupId>
-      <artifactId>jsonassert</artifactId>
-      <version>1.2.3</version>
-    </dependency>
 
-    <dependency>
-      <groupId>com.fasterxml.jackson.datatype</groupId>
-      <artifactId>jackson-datatype-jsr310</artifactId>
-    </dependency>
-  </dependencies>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- RestEasy -->
+
+		<dependency>
+			<groupId>org.jboss.spec.javax.ws.rs</groupId>
+			<artifactId>jboss-jaxrs-api_2.1_spec</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jackson2-provider</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-client</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- Jackson -->
+
+		<!-- <dependency> <groupId>com.fasterxml.jackson.jaxrs</groupId> <artifactId>jackson-jaxrs-json-provider</artifactId> 
+			</dependency> -->
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>fi.otavanopisto.pyramus</groupId>
+			<artifactId>rest-model</artifactId>
+			<version>0.7.174-SNAPSHOT</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>fi.otavanopisto.pyramus</groupId>
+			<artifactId>pyramus-webhooks</artifactId>
+			<version>0.7.174-SNAPSHOT</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.github.tomakehurst</groupId>
+			<artifactId>wiremock</artifactId>
+			<version>${wiremock.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/io.rest-assured/rest-assured -->
+		<dependency>
+			<groupId>io.rest-assured</groupId>
+			<artifactId>rest-assured</artifactId>
+			<version>5.1.0</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.oltu.oauth2</groupId>
+			<artifactId>org.apache.oltu.oauth2.common</artifactId>
+			<version>1.0.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.oltu.oauth2</groupId>
+			<artifactId>org.apache.oltu.oauth2.authzserver</artifactId>
+			<version>1.0.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.oltu.oauth2</groupId>
+			<artifactId>org.apache.oltu.oauth2.resourceserver</artifactId>
+			<version>1.0.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.oltu.oauth2</groupId>
+			<artifactId>org.apache.oltu.oauth2.client</artifactId>
+			<version>1.0.0</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>fi.otavanopisto.muikku</groupId>
+			<artifactId>persistence</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>fi.otavanopisto.muikku</groupId>
+			<artifactId>core</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>fi.otavanopisto.muikku</groupId>
+			<artifactId>core-plugins-persistence</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>fi.otavanopisto.muikku</groupId>
+			<artifactId>muikku-school-data-pyramus-persistence</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>fi.otavanopisto.muikku</groupId>
+			<artifactId>forum-plugin-rest-model</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>fi.otavanopisto.muikku</groupId>
+			<artifactId>timed-notifications-plugin-persistence</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>fi.otavanopisto.muikku</groupId>
+			<artifactId>atests-plugin-rest-model</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>jakarta.enterprise</groupId>
+			<artifactId>jakarta.enterprise.cdi-api</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.spec.javax.servlet</groupId>
+			<artifactId>jboss-servlet-api_4.0_spec</artifactId>
+		</dependency>
+
+		<dependency>
+			<artifactId>httpclient</artifactId>
+			<groupId>org.apache.httpcomponents</groupId>
+		</dependency>
+
+		<dependency>
+			<artifactId>httpmime</artifactId>
+			<groupId>org.apache.httpcomponents</groupId>
+			<version>4.3.1</version>
+		</dependency>
+
+		<dependency>
+			<artifactId>httpcore</artifactId>
+			<groupId>org.apache.httpcomponents</groupId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.skyscreamer</groupId>
+			<artifactId>jsonassert</artifactId>
+			<version>1.2.3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-jsr310</artifactId>
+		</dependency>
+
+	</dependencies>
 
   <profiles>
     <profile>
@@ -223,14 +218,12 @@
         <activeByDefault>false</activeByDefault>
       </activation>
       <properties>
-        <h2.version>2.1.212</h2.version>
         <it.port.http>8081</it.port.http>
         <it.port.https>8443</it.port.https>
         <it.host>dev.muikku.fi</it.host>
         <it.build.directory>${project.build.directory}</it.build.directory>
         <it.database.name>testdb</it.database.name>
         <it.jdbc.driver>com.mysql.jdbc.Driver</it.jdbc.driver>
-<!--         <it.jdbc.url>jdbc:mysql://localhost:@mysql.port@/test_db</it.jdbc.url> -->
         <it.jdbc.url>jdbc:mysql://localhost:5555/testdb</it.jdbc.url>
         <it.jdbc.jndi>java:/jdbc/muikku</it.jdbc.jndi>
         <it.jdbc.username>sa</it.jdbc.username>
@@ -262,26 +255,6 @@
       
       <build>
         <plugins>
-<!--           <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>build-helper-maven-plugin</artifactId>
-            <version>3.3.0</version>  
-            <executions>
-              <execution>
-                 <id>reserve-network-port</id>
-                 <goals>
-                   <goal>reserve-network-port</goal>
-                 </goals>
-                 <phase>process-resources</phase>
-                 <configuration>
-                   <portNames>
-                     <portName>mysql.port</portName>
-                   </portNames>
-                 </configuration>
-              </execution>
-            </executions>
-          </plugin> -->
-        
           <plugin>
             <groupId>io.fabric8</groupId>
             <artifactId>docker-maven-plugin</artifactId>
@@ -354,9 +327,6 @@
               <includes>
                 <include>fi/otavanopisto/muikku/ui/local/${it.package}/*IT.java</include>
               </includes>
-              <argLine>
-                --add-opens java.base/jdk.internal.reflect=ALL-UNNAMED 
-							</argLine>
               <systemPropertyVariables>
                 <it.project.version>${project.version}</it.project.version>
                 <it.host>${it.host}</it.host>
@@ -461,32 +431,7 @@
 							<password>${it.jdbc.password}</password>
 						</configuration>
 				
-						<executions>
-							<!-- <execution> <id>drop-db-before-test-if-any</id> <phase>process-test-resources</phase> 
-								<goals> <goal>execute</goal> </goals> <configuration> need another database 
-								to drop the targeted one <url>java:/jdbc/test</url> <autocommit>true</autocommit> 
-								<sqlCommand>drop schema muikku</sqlCommand> ignore error when database is 
-								not avaiable <onError>continue</onError> </configuration> </execution> -->
-				
-<!-- 							<execution>
-								<id>create-db</id>
-								<phase>pre-integration-test</phase>
-								<goals>
-									<goal>execute</goal>
-								</goals>
-								<configuration>
-									<driver>com.mysql.jdbc.Driver</driver>
-									<url><![CDATA[${it.jdbc.url}]]></url>
-									<dialect>${it.hibernate.dialect}</dialect>
-									<url><![CDATA[${it.jdbc.url}]]></url>
-									<username>${it.jdbc.username}</username>
-									<password>${it.jdbc.password}</password>
-									no transaction
-									<autocommit>true</autocommit>
-									<sqlCommand>create database muikku</sqlCommand>
-								</configuration>
-							</execution> -->
-				
+						<executions>				
 							<execution>
 								<id>create-schema</id>
 								<phase>pre-integration-test</phase>
@@ -500,88 +445,9 @@
 									</srcFiles>
 								</configuration>
 							</execution>
-				
-							<!-- <execution> <id>create-data</id> <phase>process-test-resources</phase> 
-								<goals> <goal>execute</goal> </goals> <configuration> <orderFile>ascending</orderFile> 
-								<fileset> <basedir>${basedir}</basedir> <includes> <include>sql/ddl/createDataBase.sql</include> 
-								</includes> </fileset> </configuration> </execution> -->
-							<!-- drop db after test -->
-<!-- 							<execution>
-								<id>drop-db-after-test</id>
-								<phase>test</phase>
-								<goals>
-									<goal>execute</goal>
-								</goals>
-								<configuration>
-									<autocommit>true</autocommit>
-									<sqlCommand>drop database testdb</sqlCommand>
-								</configuration>
-							</execution> -->
 						</executions>
 					</plugin>
 
-<!--           <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>keytool-maven-plugin</artifactId>
-            <version>1.5</version>
-            <executions>
-              <execution>
-                <phase>pre-integration-test</phase>
-                <id>keyclean</id>
-                <goals>
-                  <goal>clean</goal>
-                </goals>
-                <configuration>
-                  <keystore>${it.keystore.file}</keystore>
-                </configuration>
-              </execution>
-              <execution>
-                <phase>pre-integration-test</phase>
-                <id>genkey</id>
-                <goals>
-                  <goal>generateKeyPair</goal>
-                </goals>
-                <configuration>
-                  <keystore>${it.keystore.file}</keystore>
-                  <dname>cn=${it.host}, ou=None, L=Test, ST=Test, o=Test, c=TE</dname>
-                  <storepass>${it.keystore.pass}</storepass>
-                  <alias>${it.keystore.alias}</alias>
-                  <keyalg>RSA</keyalg>
-                  <keysize>2048</keysize>
-                </configuration>
-              </execution>
-              <execution>
-                <phase>pre-integration-test</phase>
-                <id>exportkey</id>
-                <goals>
-                  <goal>exportCertificate</goal>
-                </goals>
-                <configuration>
-                  <keystore>${it.keystore.file}</keystore>
-                  <alias>${it.keystore.alias}</alias>
-                  <file>${project.build.directory}/pyrit.crt</file>
-                  <storepass>${it.keystore.pass}</storepass>
-                </configuration>
-              </execution>
-              <execution>
-                <phase>pre-integration-test</phase>
-                <id>importkey</id>
-                <goals>
-                  <goal>importCertificate</goal>
-                </goals>
-                <configuration>
-                  <keystore>${it.keystore.file}</keystore>
-                  <alias>root</alias>
-                  <file>${project.build.directory}/pyrit.crt</file>
-                  <storepass>${it.keystore.pass}</storepass>
-                  <noprompt>true</noprompt>
-                  <trustcacerts>true</trustcacerts>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin> -->
-
-          
           <plugin>
             <groupId>com.github.alexcojocaru</groupId>
             <artifactId>elasticsearch-maven-plugin</artifactId>
@@ -589,7 +455,6 @@
             <configuration>
               <version>${elasticsearch.version}</version>
               <clusterName>${elasticsearch.cluster.name}</clusterName>
-              <!-- <transportPort>${elasticsearch.node.port}</transportPort> -->
               <httpPort>${elasticsearch.http.port}</httpPort>
               <autoCreateIndex>true</autoCreateIndex>
               <downloadUrl>https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.12.1-linux-x86_64.tar.gz</downloadUrl>
@@ -689,6 +554,7 @@
   	                <command>/system-property=jsf.project.stage:add(value="Production")</command>
                     <command>/system-property=tests.running:add(value="true")</command>
                     <command>/system-property=elasticsearch.cluster.name:add(value="${elasticsearch.cluster.name}")</command>
+                    <!-- Below node.port = http.port because elasticsearch http port is read from elasticsearch.node.port property instead of elasticsearch.http.port in the code. -->
                     <command>/system-property=elasticsearch.node.port:add(value="${elasticsearch.http.port}")</command>
                     <command>/subsystem=undertow/server=default-server/host=muikku:add()</command>
                     <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=alias,value=["${it.host}"])</command>
@@ -709,391 +575,7 @@
                 </goals>
                 <configuration>
                   <filename>../../muikku/target/muikku-${project.version}.war</filename>
-                  <hostname>dev.muikku.fi</hostname>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-
-          <plugin>
-            <groupId>org.sonatype.plugins</groupId>
-            <artifactId>wait-maven-plugin</artifactId>
-            <version>1.0</version>
-            <executions>
-              <execution>
-                <id>wait-rest</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>wait</goal>
-                </goals>
-                <configuration>
-                  <protocol>http</protocol>
-                  <host>${it.host}</host>
-                  <port>${it.port.http}</port>
-                  <file>/rest/system/ping</file>
-                  <maxcount>10</maxcount>
-                  <timeout>10000</timeout>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    
-    <profile>
-      <id>sauce-it</id>
-      <activation>
-        <activeByDefault>false</activeByDefault>
-      </activation>
-      <properties>
-        <h2.version>1.4.177</h2.version>
-        <it.port.http>8081</it.port.http>
-        <it.port.https>8443</it.port.https>
-        <it.host>dev.muikku.fi</it.host>
-        <it.build.directory>${project.build.directory}</it.build.directory>
-        <it.jdbc.driver>org.h2.Driver</it.jdbc.driver>
-        <it.jdbc.url>jdbc:h2:file:${project.build.directory}/h2;AUTO_SERVER=TRUE</it.jdbc.url>
-        <it.jdbc.jndi>java:/jdbc/muikku</it.jdbc.jndi>
-        <it.jdbc.username>sa</it.jdbc.username>
-        <it.jdbc.password>sa</it.jdbc.password>
-        <it.hibernate.dialect>org.hibernate.dialect.H2Dialect</it.hibernate.dialect>
-        <it.keystore.alias>pyrit</it.keystore.alias>
-        <it.keystore.pass>storepass</it.keystore.pass>
-        <it.keystore.file>${it.build.directory}/pyrit.keystore</it.keystore.file>
-        <it.wiremock.port>8089</it.wiremock.port>
-        <it.report.directory>${project.build.directory}/failsafe-reports/</it.report.directory>
-        <it.sauce.username>${env.SAUCE_USERNAME}</it.sauce.username>
-        <it.sauce.accessKey>${env.SAUCE_ACCESS_KEY}</it.sauce.accessKey>
-        <it.sauce.tunnelId>${env.GITHUB_ACTION}</it.sauce.tunnelId>
-        <it.browser />
-        <it.browser.version />
-        <it.browser.resolution />
-        <it.platform />
-        <it.package>**</it.package>
-        <it.test.file>${project.basedir}/img_100x100_3x8bit_RGB_circles_center_0016.png</it.test.file>
-        <elasticsearch.http.port>9201</elasticsearch.http.port>
-        <elasticsearch.node.port>9301</elasticsearch.node.port>
-        <elasticsearch.cluster.name>elasticsearch_atests</elasticsearch.cluster.name>
-        <it.profile>sauce-it</it.profile>
-      </properties>
-
-      <dependencies>
-        <dependency>
-          <groupId>com.h2database</groupId>
-          <artifactId>h2</artifactId>
-          <version>${h2.version}</version>
-          <scope>test</scope>
-        </dependency>
-      </dependencies>
-      <build>
-
-        <plugins>
-
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <version>2.14.1</version>
-          </plugin>
-
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-failsafe-plugin</artifactId>
-            <version>2.16</version>
-            <configuration>
-
-              <dependenciesToScan>
-                <dependency>fi.otavanopisto.muikku:core-plugins</dependency>
-              </dependenciesToScan>
-
-              <includes>
-                <include>fi/otavanopisto/muikku/ui/sauce/${it.package}/*IT.java</include>
-              </includes>
-              <systemPropertyVariables>
-                <it.project.version>${project.version}</it.project.version>
-                <it.host>${it.host}</it.host>
-                <it.port.http>${it.port.http}</it.port.http>
-                <it.port.https>${it.port.https}</it.port.https>
-                <it.jdbc.driver>${it.jdbc.driver}</it.jdbc.driver>
-                <it.jdbc.url>${it.jdbc.url}</it.jdbc.url>
-                <it.jdbc.jndi>${it.jdbc.jndi}</it.jdbc.jndi>
-                <it.jdbc.username>${it.jdbc.username}</it.jdbc.username>
-                <it.jdbc.password>${it.jdbc.password}</it.jdbc.password>
-                <it.keystore.file>${it.keystore.file}</it.keystore.file>
-                <it.keystore.alias>${it.keystore.alias}</it.keystore.alias>
-                <it.keystore.storepass>${it.keystore.pass}</it.keystore.storepass>
-                <it.wiremock.port>${it.wiremock.port}</it.wiremock.port>
-                <it.report.directory>${it.report.directory}</it.report.directory>
-                <it.build.directory>${it.build.directory}</it.build.directory>
-                <it.sauce.username>${it.sauce.username}</it.sauce.username>
-                <it.sauce.accessKey>${it.sauce.accessKey}</it.sauce.accessKey>
-                <it.sauce.tunnelId>${it.sauce.tunnelId}</it.sauce.tunnelId>
-                <it.selenium.version>${selenium-java.version}</it.selenium.version>
-                <it.browser>${it.browser}</it.browser>
-                <it.browser.version>${it.browser.version}</it.browser.version>
-                <it.browser.resolution>${it.browser.resolution}</it.browser.resolution>
-                <it.platform>${it.platform}</it.platform>
-                <it.selenium.version>${selenium-java.version}</it.selenium.version>
-                <it.test.file>${it.test.file}</it.test.file>
-                <it.profile>${it.profile}</it.profile>
-              </systemPropertyVariables>
-            </configuration>
-            <executions>
-              <execution>
-                <id>integration-test</id>
-                <goals>
-                  <goal>integration-test</goal>
-                </goals>
-              </execution>
-              <execution>
-                <id>verify</id>
-                <goals>
-                  <goal>verify</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-
-          <plugin>
-            <groupId>de.juplo</groupId>
-            <artifactId>hibernate-maven-plugin</artifactId>
-            <version>2.0.0</version>
-            <dependencies>
-              <dependency>
-                <groupId>com.h2database</groupId>
-                <artifactId>h2</artifactId>
-                <version>${h2.version}</version>
-              </dependency>
-            </dependencies>
-            <configuration>
-              <driver>${it.jdbc.driver}</driver>
-              <dialect>${it.hibernate.dialect}</dialect>
-              <url><![CDATA[${it.jdbc.url}]]></url>
-              <username>${it.jdbc.username}</username>
-              <password>${it.jdbc.password}</password>
-            </configuration>
-            <executions>
-              <execution>
-                <id>create-schema</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>drop</goal>
-                  <goal>create</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>keytool-maven-plugin</artifactId>
-            <version>1.5</version>
-            <executions>
-              <execution>
-                <phase>pre-integration-test</phase>
-                <id>keyclean</id>
-                <goals>
-                  <goal>clean</goal>
-                </goals>
-                <configuration>
-                  <keystore>${it.keystore.file}</keystore>
-                </configuration>
-              </execution>
-              <execution>
-                <phase>pre-integration-test</phase>
-                <id>genkey</id>
-                <goals>
-                  <goal>generateKeyPair</goal>
-                </goals>
-                <configuration>
-                  <keystore>${it.keystore.file}</keystore>
-                  <dname>cn=${it.host}, ou=None, L=Test, ST=Test, o=Test, c=TE</dname>
-                  <storepass>${it.keystore.pass}</storepass>
-                  <alias>${it.keystore.alias}</alias>
-                  <keyalg>RSA</keyalg>
-                  <keysize>2048</keysize>
-                </configuration>
-              </execution>
-              <execution>
-                <phase>pre-integration-test</phase>
-                <id>exportkey</id>
-                <goals>
-                  <goal>exportCertificate</goal>
-                </goals>
-                <configuration>
-                  <keystore>${it.keystore.file}</keystore>
-                  <alias>${it.keystore.alias}</alias>
-                  <file>${project.build.directory}/pyrit.crt</file>
-                  <storepass>${it.keystore.pass}</storepass>
-                </configuration>
-              </execution>
-              <execution>
-                <phase>pre-integration-test</phase>
-                <id>importkey</id>
-                <goals>
-                  <goal>importCertificate</goal>
-                </goals>
-                <configuration>
-                  <keystore>${it.keystore.file}</keystore>
-                  <alias>root</alias>
-                  <file>${project.build.directory}/pyrit.crt</file>
-                  <storepass>${it.keystore.pass}</storepass>
-                  <noprompt>true</noprompt>
-                  <trustcacerts>true</trustcacerts>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-
-          <plugin>
-            <groupId>com.github.alexcojocaru</groupId>
-            <artifactId>elasticsearch-maven-plugin</artifactId>
-            <version>2.0</version>
-            <configuration>
-              <clusterName>${elasticsearch.cluster.name}</clusterName>
-              <tcpPort>${elasticsearch.node.port}</tcpPort>
-              <httpPort>${elasticsearch.http.port}</httpPort>
-              <autoCreateIndex>true</autoCreateIndex>
-            </configuration>
-            <executions>
-              <execution>
-                <id>start-elasticsearch</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>start</goal>
-                </goals>
-              </execution>
-              <execution>
-                <id>init-elasticsearch</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>load</goal>
-                </goals>
-                <configuration>
-                  <scriptFile>${project.basedir}/src/test/resources/elasticsearch/init_script.txt</scriptFile>
-                </configuration>
-              </execution>
-              <execution>
-                <id>stop-elasticsearch</id>
-                <phase>post-integration-test</phase>
-                <goals>
-                  <goal>stop</goal>
-                </goals>
-              </execution>
-            </executions>
-            <dependencies>
-              <dependency>
-                <groupId>org.elasticsearch</groupId>
-                <artifactId>elasticsearch</artifactId>
-                <version>${elasticsearch.version}</version>
-              </dependency>
-              <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-simple</artifactId>
-                <version>1.7.21</version>
-              </dependency>
-            </dependencies>
-          </plugin>
-
-          <plugin>
-            <groupId>org.codehaus.cargo</groupId>
-            <artifactId>cargo-maven2-plugin</artifactId>
-            <version>1.6.2</version>
-            <configuration>
-              <container>
-                <containerId>wildfly10x</containerId>
-                <log>${project.basedir}/target/cargo.log</log>
-                <output>${project.basedir}/target/jboss.log</output>
-                <zipUrlInstaller>
-                  <url>https://download.jboss.org/wildfly/10.0.0.Final/wildfly-10.0.0.Final.zip</url>
-                  <downloadDir>${project.basedir}/.cargo/downloads</downloadDir>
-                  <extractDir>${project.basedir}/.cargo/extracts</extractDir>
-                </zipUrlInstaller>
-                <dependencies>
-                  <dependency>
-                    <groupId>com.h2database</groupId>
-                    <artifactId>h2</artifactId>
-                  </dependency>
-                </dependencies>
-              </container>
-              <configuration>
-                <properties>
-                  <cargo.servlet.port>${it.port.http}</cargo.servlet.port>
-                  <cargo.jboss.configuration>standalone</cargo.jboss.configuration>
-                  <cargo.jvmargs>-Xms64m -Xmx1152m -XX:MaxPermSize=512m</cargo.jvmargs>
-                  <cargo.datasource.datasource.pyrit>
-                    cargo.datasource.driver=${it.jdbc.driver}|
-                    cargo.datasource.url=${it.jdbc.url}|
-                    cargo.datasource.jndi=${it.jdbc.jndi}|
-                    cargo.datasource.username=${it.jdbc.username}|
-                    cargo.datasource.password=${it.jdbc.password}|
-                    cargo.datasource.transactionsupport=LOCAL_TRANSACTION
-                  </cargo.datasource.datasource.pyrit>
-                </properties>
-              </configuration>
-
-            </configuration>
-            <executions>
-              <execution>
-                <id>start-cargo</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>start</goal>
-                </goals>
-              </execution>
-              <execution>
-                <id>stop-cargo</id>
-                <phase>post-integration-test</phase>
-                <goals>
-                  <goal>stop</goal>
-                </goals>
-                <configuration>
-                  <timeout>${it.cargo.stop.timeout}</timeout>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-
-          <plugin>
-            <groupId>org.wildfly.plugins</groupId>
-            <artifactId>wildfly-maven-plugin</artifactId>
-            <version>1.0.2.Final</version>
-            <executions>
-              <execution>
-                <id>configure-wildfly</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>execute-commands</goal>
-                </goals>
-                <configuration>
-                  <execute-commands>
-                    <batch>true</batch>
-                    <commands>
-                      <command>/system-property=muikku-data:add(value="${it.build.directory}/../src/test/resources/muikku-data/muikku-data-ui.xml")</command>
-                      <command>/system-property=jsf.project.stage:add(value="Production")</command>
-                      <command>/system-property=tests.running:add(value="true")</command>
-                      <command>/system-property=elasticsearch.cluster.name:add(value="${elasticsearch.cluster.name}")</command>
-                      <command>/system-property=elasticsearch.node.port:add(value="${elasticsearch.node.port}")</command>
-                      <command>/core-service=management/security-realm=ssl-realm:add()</command>
-                      <command>/core-service=management/security-realm=ssl-realm/server-identity=ssl:add(keystore-path="${it.keystore.file}",keystore-password="${it.keystore.pass}",alias="${it.keystore.alias}")</command>
-                      <command>/subsystem=undertow/server=default-server/host=muikku:add()</command>
-                      <command>/subsystem=undertow/server=default-server/https-listener=https:add(socket-binding="https",security-realm="ssl-realm")</command>
-                      <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=alias,value=["${it.host}"])</command>
-                      <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=default-web-module,value=ROOT.war)</command>
-                      <command>/subsystem=logging/logger=fi.otavanopisto.muikku.facelets.WidgetComponentHandler:add(level=FATAL)</command>
-                    </commands>
-                  </execute-commands>
-                </configuration>
-              </execution>
-
-              <execution>
-                <id>deploy-muikku</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>deploy</goal>
-                </goals>
-                <configuration>
-                  <filename>../../muikku/target/muikku-${project.version}.war</filename>
+                  <hostname>${it.host}</hostname>
                 </configuration>
               </execution>
             </executions>

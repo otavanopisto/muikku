@@ -1,9 +1,5 @@
 package fi.otavanopisto.muikku.ui;
 
-import static io.restassured.RestAssured.certificate;
-import static io.restassured.RestAssured.*;
-import static io.restassured.matcher.RestAssuredMatchers.*;
-import static org.hamcrest.Matchers.*;
 import static fi.otavanopisto.muikku.mock.PyramusMock.mocker;
 import static java.lang.Math.toIntExact;
 import static org.junit.Assert.assertEquals;
@@ -17,6 +13,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
@@ -61,7 +58,6 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
-import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.safari.SafariOptions;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -78,16 +74,8 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-
-import io.restassured.RestAssured;
-import io.restassured.config.ObjectMapperConfig;
-import io.restassured.config.RestAssuredConfig;
-import io.restassured.mapper.ObjectMapperDeserializationContext;
-import io.restassured.mapper.ObjectMapperSerializationContext;
-import io.restassured.path.json.mapper.factory.DefaultJackson2ObjectMapperFactory;
-
-import io.restassured.response.Response;
 import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 
 import fi.otavanopisto.muikku.AbstractIntegrationTest;
@@ -111,6 +99,10 @@ import fi.otavanopisto.muikku.wcag.AbstractWCAGTest;
 import fi.otavanopisto.pyramus.rest.model.Course;
 import fi.otavanopisto.pyramus.webhooks.WebhookPersonCreatePayload;
 import fi.otavanopisto.pyramus.webhooks.WebhookStudentCreatePayload;
+import io.restassured.RestAssured;
+import io.restassured.config.ObjectMapperConfig;
+import io.restassured.path.json.mapper.factory.Jackson2ObjectMapperFactory;
+import io.restassured.response.Response;
 
 public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDemandSessionIdProvider {
   
@@ -241,26 +233,25 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   
   @Before
   public void setupRestAssured() {
-
-    RestAssured.baseURI = getAppUrl(true) + "/rest";
-    RestAssured.port = getPortHttps();
-    RestAssured.authentication = certificate(getKeystoreFile(), getKeystorePass());
-
-    com.fasterxml.jackson.databind.ObjectMapper objectMapper = new com.fasterxml.jackson.databind.ObjectMapper();
-    objectMapper.registerModule(new JSR310Module());
-    objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-    
-    RestAssured.config
-    .objectMapperConfig(new ObjectMapperConfig().jackson2ObjectMapperFactory((type, s) -> new ObjectMapper()
-            .registerModule(new JSR310Module())
-            .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)));
-   
+    RestAssured.baseURI = getAppUrl(false) + "/rest";
+    RestAssured.port = getPortHttp();
+//    RestAssured.authentication = certificate(getKeystoreFile(), getKeystorePass());
+    RestAssured.config = RestAssured.config
+      .objectMapperConfig(new ObjectMapperConfig().jackson2ObjectMapperFactory(new Jackson2ObjectMapperFactory() {
+  		
+        @Override
+      	public ObjectMapper create(Type cls, String charset) {
+      	  return new ObjectMapper()
+    		    .registerModule(new JavaTimeModule())
+    		    .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+      	}
+    	}));
   }
 
   @After
   public void flushCaches() {
     asAdmin()
-      .baseUri(getAppUrl(true))
+      .baseUri(getAppUrl(false))
       .get("/system/cache/flush");
   }
   

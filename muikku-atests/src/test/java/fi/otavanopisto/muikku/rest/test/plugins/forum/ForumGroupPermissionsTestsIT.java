@@ -2,7 +2,7 @@ package fi.otavanopisto.muikku.rest.test.plugins.forum;
 
 import org.junit.Test;
 
-import com.jayway.restassured.response.Response;
+import io.restassured.response.Response;
 
 import fi.otavanopisto.muikku.plugins.forum.rest.ForumAreaGroupRESTModel;
 

@@ -5,7 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
-import com.jayway.restassured.response.Response;
+import io.restassured.response.Response;
 
 import fi.otavanopisto.muikku.AbstractRESTTest;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
