@@ -28,11 +28,11 @@
 
 .table__thead--sticky th {
   position: sticky;
-  top: 56px;
+  top: $navbar-mobile-height;
 
   @include breakpoint($breakpoint-pad) {
     position: sticky;
-    top: 67px;
+    top: $navbar-desktop-heightx;
   }
 }
 
