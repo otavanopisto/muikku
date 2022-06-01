@@ -92,7 +92,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
     return (
       <CompulsoryEducationHopsWizard
         user="student"
-        useCase="studies"
+        usePlace="studies"
         studentId={document
           .querySelector('meta[name="muikku:loggedUser"]')
           .getAttribute("value")}

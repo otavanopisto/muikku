@@ -195,7 +195,7 @@ class StudentDialog extends React.Component<
             {this.state.editHops ? (
               <CompulsoryEducationHopsWizard
                 user="supervisor"
-                useCase="guider"
+                usePlace="guider"
                 disabled={false}
                 studentId={this.props.guider.currentStudent.basic.id}
                 superVisorModifies
@@ -203,7 +203,7 @@ class StudentDialog extends React.Component<
             ) : (
               <CompulsoryEducationHopsWizard
                 user="supervisor"
-                useCase="guider"
+                usePlace="guider"
                 disabled={true}
                 studentId={this.props.guider.currentStudent.basic.id}
                 superVisorModifies={false}
