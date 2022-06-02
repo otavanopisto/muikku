@@ -478,6 +478,7 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
           null,
           null,
           null,
+          null,
           null, 
           false);
     }
