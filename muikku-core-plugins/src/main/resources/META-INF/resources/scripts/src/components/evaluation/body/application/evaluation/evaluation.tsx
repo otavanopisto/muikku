@@ -974,7 +974,7 @@ export class Evaluation extends React.Component<
                   <div className="loader-empty" />
                 )}
 
-                {this.props.selectedAssessment.subjects.length > 1 ? (
+                {isCombinationWorkspace ? (
                   this.props.selectedAssessment.subjects.map((subject) => {
                     let workspaceEditorOpen = false;
                     let supplementationEditorOpen = false;
@@ -986,13 +986,14 @@ export class Evaluation extends React.Component<
                       /**
                        * Normal evaluation proces, there must be selected subject
                        */
-                      if (this.state.subjectToBeEvaluated) {
+                      if (!edit && this.state.subjectToBeEvaluated) {
                         workspaceEditorOpen =
                           this.state.subjectToBeEvaluated.identifier ===
                           subject.identifier;
                       } else if (
+                        edit &&
                         this.state.subjectEvaluationToBeEditedIdentifier !==
-                        null
+                          null
                       ) {
                         /**
                          * When editing existing workspace event
@@ -1010,13 +1011,14 @@ export class Evaluation extends React.Component<
                       /**
                        * Normal evaluation process, there must be selected subject
                        */
-                      if (this.state.subjectToBeEvaluated) {
+                      if (!edit && this.state.subjectToBeEvaluated) {
                         supplementationEditorOpen =
                           this.state.subjectToBeEvaluated.identifier ===
                           subject.identifier;
                       } else if (
+                        edit &&
                         this.state.subjectEvaluationToBeEditedIdentifier !==
-                        null
+                          null
                       ) {
                         /**
                          * When editing existing supplementation event
@@ -1095,7 +1097,7 @@ export class Evaluation extends React.Component<
                       </div>
                     );
                   })
-                ) : subjectToBeEvaluated ? (
+                ) : (
                   <>
                     <div>
                       <SlideDrawer
@@ -1148,7 +1150,7 @@ export class Evaluation extends React.Component<
                       />
                     </SlideDrawer>
                   </>
-                ) : null}
+                )}
               </div>
 
               <div className="evaluation-modal__content-footer">
