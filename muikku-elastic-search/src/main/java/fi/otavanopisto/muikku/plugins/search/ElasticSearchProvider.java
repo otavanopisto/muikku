@@ -757,6 +757,48 @@ public class ElasticSearchProvider implements SearchProvider {
   }
   
   @Override
+  public IndexedCommunicatorMessage findCommunicatorMessage(Long communicatorMessageId) {
+    if (communicatorMessageId == null) {
+      throw new IllegalArgumentException();
+    }
+    
+    IdsQueryBuilder query = idsQuery(IndexedCommunicatorMessage.TYPE_NAME);
+    query.addIds(String.valueOf(communicatorMessageId));
+    
+    SearchResponse response = elasticClient
+      .prepareSearch(IndexedCommunicatorMessage.INDEX_NAME)
+      .setTypes(IndexedCommunicatorMessage.TYPE_NAME)
+      .setQuery(query)
+      .setSize(1)
+      .execute()
+      .actionGet();
+    
+    SearchHit[] results = response.getHits().getHits();
+
+    // Technically never possible, but check anyways for errors
+    if (results.length > 1) {
+      logger.log(Level.SEVERE, String.format("Found multiple messages (id: %d)", communicatorMessageId));
+      return null;
+    }
+
+    if (results.length == 1) {
+      SearchHit hit = results[0];
+      String source = hit.getSourceAsString();
+      try {
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.readValue(source, IndexedCommunicatorMessage.class);
+      }
+      catch (Exception e) {
+        String documentId = hit != null ? hit.getId() : null;
+        logger.log(Level.SEVERE, String.format("Couldn't parse indexed communicator message (id: %s)", documentId), e);
+        return null;
+      }
+    }
+    
+    return null;
+  }
+
+  @Override
   public SearchResults<List<IndexedCommunicatorMessage>> searchCommunicatorMessages(
       String queryString,
       long senderId,
