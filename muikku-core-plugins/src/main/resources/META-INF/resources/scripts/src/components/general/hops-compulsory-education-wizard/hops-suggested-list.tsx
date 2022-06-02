@@ -106,7 +106,7 @@ const HopsSuggestionList = (props: HopsSuggestionListProps) => {
               <>
                 <div className="hops-container__study-tool-dropdow-subsection">
                   <div className="hops-container__study-tool-dropdow-title">
-                    {suggestion.name} {suggestion.nameExtension}
+                    {suggestion.name} ({suggestion.nameExtension})
                   </div>
                   <Button
                     buttonModifiers={[
