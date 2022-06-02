@@ -844,7 +844,7 @@ public class GuiderRESTService extends PluginRESTService {
   @RESTPermit (GuiderPermissions.ACCESS_CONTACT_LOG)
   public Response listStudentContactLogEntries(@PathParam("ID") Long userEntityId,
       @QueryParam("resultsPerPage") @DefaultValue("10") Integer resultsPerPage,
-      @QueryParam("page") @DefaultValue("1") Integer page) {
+      @QueryParam("page") @DefaultValue("0") Integer page) {
     String dataSource = sessionController.getLoggedUserSchoolDataSource();
     UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
 
