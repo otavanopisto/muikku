@@ -96,7 +96,7 @@ class WorkspaceEditor extends SessionStateComponent<
     const { selectedAssessment, workspaceSubjectToBeEvaluatedIdentifier } =
       props;
 
-    const { userEntityId, workspaceEntityId, subjects } = selectedAssessment;
+    const { userEntityId, workspaceEntityId } = selectedAssessment;
 
     /**
      * When there is not existing event data we use only user id and workspace id as
@@ -108,7 +108,7 @@ class WorkspaceEditor extends SessionStateComponent<
     /**
      * Workspace basePriceId
      */
-    const basePriceId = subjects[0].subject && subjects[0].identifier;
+    const basePriceSubjectId = workspaceSubjectToBeEvaluatedIdentifier;
 
     /**
      * If we have evaluation data or we have data and editing existing event
@@ -168,7 +168,7 @@ class WorkspaceEditor extends SessionStateComponent<
           {
             literalEvaluation: latestEvent.text,
             draftId,
-            basePriceFromServer: basePrice.data[basePriceId],
+            basePriceFromServer: basePrice.data[basePriceSubjectId],
             grade: `${usedGrade.dataSource}-${usedGrade.id}`,
           },
           draftId
@@ -181,7 +181,7 @@ class WorkspaceEditor extends SessionStateComponent<
           {
             literalEvaluation: "",
             draftId,
-            basePriceFromServer: basePrice.data[basePriceId],
+            basePriceFromServer: basePrice.data[basePriceSubjectId],
             grade: `${evaluationGradeSystem[0].grades[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`,
           },
           draftId
