@@ -1976,8 +1976,6 @@ const loadBasePriceFromServer: LoadBasePrice =
         }
       );
 
-      console.log("basePrice update", basePrice);
-
       dispatch({
         type: "SET_BASE_PRICE",
         payload: basePrice,

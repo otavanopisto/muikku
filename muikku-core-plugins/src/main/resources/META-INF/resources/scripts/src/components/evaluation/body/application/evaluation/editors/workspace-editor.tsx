@@ -20,7 +20,6 @@ import {
   BilledPrice,
   EvaluationEnum,
   EvaluationGradeSystem,
-  EvaluationWorkspaceSubject,
 } from "~/@types/evaluation";
 import { i18nType } from "~/reducers/base/i18n";
 import {
