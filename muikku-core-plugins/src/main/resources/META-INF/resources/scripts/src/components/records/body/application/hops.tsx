@@ -79,7 +79,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
    */
   renderHops = () => {
     if (
-      this.props.hops.hopsPhase === undefined ||
+      this.props.hops.hopsPhase === null ||
       this.props.hops.hopsPhase === "0"
     ) {
       return (

@@ -106,7 +106,7 @@ const HopsSuggestionList = (props: HopsSuggestionListProps) => {
               <>
                 <div className="hops-container__study-tool-dropdow-subsection">
                   <div className="hops-container__study-tool-dropdow-title">
-                    Ehdota: {suggestion.name}
+                    {suggestion.name} {suggestion.nameExtension}
                   </div>
                   <Button
                     buttonModifiers={[
@@ -123,7 +123,7 @@ const HopsSuggestionList = (props: HopsSuggestionListProps) => {
                   >
                     {suggestionNextActionType === "remove"
                       ? "Ehdotettu"
-                      : "Seuraavaksi?"}
+                      : "Ehdota seuraavaksi"}
                   </Button>
                 </div>
               </>

@@ -130,7 +130,7 @@ const StudyToolOptionalStudiesInfoBox: React.FC<
             <div className="hops-container__state-icon icon-notification"></div>
             <div className="hops-container__state-text">
               Olet suorittanut {totalOptionalStudiesCompleted}/
-              {totalOptionalStudiesNeeded} valinnaiskursseja ja valinnut
+              {totalOptionalStudiesNeeded} valinnaiskurssia ja valinnut
               suoritettavaksi {selectedNumberOfOptional}/
               {totalOptionalStudiesNeeded} kurssia. Valitse vielä
               {` ${

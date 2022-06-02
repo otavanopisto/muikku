@@ -403,7 +403,7 @@ export const schoolCourseTable: SchoolSubject[] = [
   },
   {
     name: "Yhteiskuntaoppi",
-    subjectCode: "yo",
+    subjectCode: "yh",
     availableCourses: [
       {
         name: "Yhteiskuntajärjestelmä sekä julkiset palvelut",
