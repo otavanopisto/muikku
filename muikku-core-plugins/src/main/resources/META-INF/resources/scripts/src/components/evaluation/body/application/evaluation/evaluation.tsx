@@ -1097,7 +1097,7 @@ export class Evaluation extends React.Component<
                       </div>
                     );
                   })
-                ) : (
+                ) : subjectToBeEvaluated ? (
                   <>
                     <div>
                       <SlideDrawer
@@ -1150,7 +1150,7 @@ export class Evaluation extends React.Component<
                       />
                     </SlideDrawer>
                   </>
-                )}
+                ) : null}
               </div>
 
               <div className="evaluation-modal__content-footer">
