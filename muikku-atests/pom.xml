@@ -582,7 +582,7 @@
                     <command>/system-property=elasticsearch.node.port:add(value="${elasticsearch.http.port}")</command>
                     <command>/subsystem=undertow/server=default-server/host=muikku:add()</command>
                     <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=alias,value=["${it.host}"])</command>
-                    <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=default-web-module,value=muikku-${project.version}.war)</command>
+                    <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=default-web-module,value=muikku-ROOT.war)</command>
                     <command>/subsystem=undertow:write-attribute(name=default-virtual-host,value="muikku")</command>
                     <command>/subsystem=undertow/server=default-server/host=default-host:remove()</command>
                     <command>/subsystem=undertow/configuration=handler/file=welcome-content:remove</command>
