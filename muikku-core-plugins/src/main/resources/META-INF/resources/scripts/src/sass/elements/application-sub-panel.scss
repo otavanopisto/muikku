@@ -6,6 +6,7 @@
 .application-sub-panel {
   border-bottom: 1px solid $color-subpanel-border;
   margin: 0 0 30px;
+  width: 100%;
 
   &:last-child {
     border: 0;
@@ -44,6 +45,7 @@
   border: 0;
   flex-basis: 100%;
   margin: 0 0 30px;
+  width: auto;
 
   @include breakpoint($breakpoint-desktop-xl) {
     flex-basis: 45%;
@@ -55,6 +57,7 @@
   border: 0;
   flex-basis: 100%;
   margin: 0 0 30px;
+  width: auto;
 
   @include breakpoint($breakpoint-desktop-xl) {
     flex-basis: auto;
@@ -71,7 +74,6 @@
 
 .application-sub-panel--yo-status-container {
   border-bottom: 0;
-  flex-basis: 50%;
 }
 
 .application-sub-panel--workspace-settings {
