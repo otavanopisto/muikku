@@ -55,17 +55,18 @@ import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
+import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.Subject;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserProperty;
+import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemStatus;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
-import fi.otavanopisto.muikku.users.OrganizationEntityController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserEntityFileController;
@@ -115,6 +116,9 @@ public class HopsRestService {
 
   @Inject
   private WorkspaceEntityFileController workspaceEntityFileController;
+  
+  @Inject
+  private WorkspaceController workspaceController;
 
   @Inject
   @Any
@@ -518,6 +522,17 @@ public class HopsRestService {
       if (workspaceEntity == null) {
         return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Workspace entity %d not found", payload.getId())).build();
       }
+      
+      Boolean canSignUp = workspaceEntityController.canSignup(schoolDataIdentifier, workspaceEntity);
+      Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+      
+      // return if student doesn't have sign up permission/ Course is unpublished/ Course begin date is earlier than today
+      if (!canSignUp || !workspaceEntity.getPublished()) {
+        return Response.status(Status.FORBIDDEN).entity(String.format("Student does not have sign up permission to course %d", workspaceEntity.getId())).build();
+      } else if (workspace.getBeginDate() != null && !workspace.getBeginDate().isAfter(OffsetDateTime.now())) {
+        return Response.status(Status.FORBIDDEN).entity(String.format("The course %d has already begun", workspaceEntity.getId())).build();
+      }
+      
       hopsSuggestion = hopsController.suggestWorkspace(studentIdentifier, payload.getSubject(), StudyActivityItemStatus.SUGGESTED_NEXT.name(), payload.getCourseNumber(), payload.getCourseId());
       HopsSuggestionRestModel item = new HopsSuggestionRestModel();
 
