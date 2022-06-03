@@ -24,6 +24,7 @@ import fi.otavanopisto.muikku.plugins.schooldatalocal.model.LocalUserEmail;
 import fi.otavanopisto.muikku.plugins.schooldatalocal.model.LocalUserImage;
 import fi.otavanopisto.muikku.plugins.schooldatalocal.model.LocalUserProperty;
 import fi.otavanopisto.muikku.rest.OrganizationContactPerson;
+import fi.otavanopisto.muikku.rest.StudentContactLogEntryBatch;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryCommentRestModel;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryRestModel;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
@@ -649,8 +650,8 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
   }
   
   @Override
-  public BridgeResponse<List<StudentContactLogEntryRestModel>> listStudentContactLogEntriesByStudent(
-      SchoolDataIdentifier studentIdentifier) {
+  public BridgeResponse<StudentContactLogEntryBatch> listStudentContactLogEntriesByStudent(
+      SchoolDataIdentifier studentIdentifier, Integer resultsPerPage, Integer page) {
     throw new SchoolDataBridgeInternalException("Not supported");
   }
   
