@@ -284,46 +284,6 @@ public class EvaluationRESTService extends PluginRESTService {
     
     return Response.ok(createRestModel(workspaceEntity, assessment)).build();
   }
-
-  @GET
-  @Path("/workspaces/{WORKSPACEENTITYID}/gradingScales")
-  @RESTPermit(handling = Handling.INLINE)
-  public Response listWorkspaceGrades(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId) {
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.UNAUTHORIZED).build();
-    }
-    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
-    if (workspaceEntity == null) {
-      return Response.status(Status.NOT_FOUND).build();
-    }
-    
-    if (!sessionController.hasWorkspacePermission(EvaluationResourcePermissionCollection.EVALUATION_LISTGRADINGSCALES, workspaceEntity)) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
-
-    List<WorkspaceGradingScale> result = new ArrayList<>();
-    
-    List<GradingScale> gradingScales = gradingController.listGradingScales();
-    for (GradingScale gradingScale : gradingScales) {
-      List<GradingScaleItem> gradingScaleItems = gradingController.listGradingScaleItems(gradingScale);
-      List<WorkspaceGrade> workspaceGrades = new ArrayList<>();
-      for (GradingScaleItem gradingScaleItem : gradingScaleItems) {
-        workspaceGrades.add(
-            new WorkspaceGrade(
-                gradingScaleItem.getName(),
-                gradingScaleItem.getIdentifier(),
-                gradingScaleItem.getSchoolDataSource()));
-      }
-      result.add(
-          new WorkspaceGradingScale(
-              gradingScale.getName(),
-              gradingScale.getIdentifier(),
-              gradingScale.getSchoolDataSource(),
-              workspaceGrades));
-    }
-    
-    return Response.ok(result).build();
-  }
   
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/evaluations/")

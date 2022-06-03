@@ -9,5 +9,7 @@ public interface CompositeGradingScale extends SchoolDataEntity {
 	public String getScaleName();
 	
 	public List<CompositeGrade> getGrades();
+	
+	public boolean isActive();
 
 }
