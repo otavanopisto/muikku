@@ -79,7 +79,7 @@ export const schoolCourseTable: SchoolSubject[] = [
         mandatory: true,
       },
       {
-        name: "Luonnontieteen tekstit tutummuksi",
+        name: "Luonnontieteen tekstit tutummiksi",
         courseNumber: 2,
         length: 28,
         mandatory: false,
