@@ -313,7 +313,7 @@ export interface StudentInfo {
   firstName: string;
   lastName: string;
   studyTimeEnd: string | null;
-  educationalLevel: string | null;
+  studyProgrammeEducationType: string | null;
   counselorList?: string[];
 }
 

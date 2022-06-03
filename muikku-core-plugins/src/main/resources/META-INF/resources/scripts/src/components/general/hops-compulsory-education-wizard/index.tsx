@@ -263,8 +263,8 @@ class CompulsoryEducationHopsWizard extends React.Component<
               updates: studentHopsHistory,
               counselorList: studentBasicInfo.counselorList,
               studyTimeEnd: studentBasicInfo.studyTimeEnd,
-              educationalLevel: studentBasicInfo.educationalLevel
-                ? studentBasicInfo.educationalLevel
+              educationalLevel: studentBasicInfo.studyProgrammeEducationType
+                ? studentBasicInfo.studyProgrammeEducationType
                 : "Ei asetettu",
             } as BasicInformation,
             hopsCompulsory: hops !== undefined ? hops : initializeHops(),
