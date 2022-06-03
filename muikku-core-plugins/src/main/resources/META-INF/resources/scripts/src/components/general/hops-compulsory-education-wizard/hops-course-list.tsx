@@ -137,6 +137,17 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
         selectedByStudent = true;
         listItemIndicatormodifiers.push("OPTIONAL-SELECTED");
       }
+      if (
+        props.supervisorOptionalSuggestionsList &&
+        props.supervisorOptionalSuggestionsList.find(
+          (sOCourse) =>
+            sOCourse.subject === sSubject.subjectCode &&
+            sOCourse.courseNumber === course.courseNumber
+        )
+      ) {
+        suggestedBySupervisor = true;
+        listItemIndicatormodifiers.push("SUGGESTED");
+      }
 
       /**
        * Only one of these can happen
@@ -156,25 +167,6 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
         courseSuggestions = courseSuggestions.concat(suggestedCourseDataNext);
 
         listItemIndicatormodifiers.push("NEXT");
-      } else if (
-        props.supervisorOptionalSuggestionsList &&
-        props.supervisorOptionalSuggestionsList.find(
-          (sOCourse) =>
-            sOCourse.subject === sSubject.subjectCode &&
-            sOCourse.courseNumber === course.courseNumber
-        )
-      ) {
-        /* const suggestedCourseDataOptional = props.suggestedOptionalList.filter(
-          (oCourse) => oCourse.subject === sSubject.subjectCode
-        );
-
-        courseSuggestions = courseSuggestions.concat(
-          suggestedCourseDataOptional
-        ); */
-
-        suggestedBySupervisor = true;
-
-        listItemIndicatormodifiers.push("SUGGESTED");
       } else if (
         props.transferedList &&
         props.transferedList.find(

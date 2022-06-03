@@ -183,6 +183,17 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
           selectedByStudent = true;
           modifiers.push("OPTIONAL-SELECTED");
         }
+        if (
+          props.supervisorOptionalSuggestionsList &&
+          props.supervisorOptionalSuggestionsList.find(
+            (sOCourse) =>
+              sOCourse.subject === sSubject.subjectCode &&
+              sOCourse.courseNumber === course.courseNumber
+          )
+        ) {
+          suggestedBySupervisor = true;
+          modifiers.push("SUGGESTED");
+        }
 
         /**
          * Only one of these can happen
@@ -203,26 +214,6 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
           courseSuggestions = courseSuggestions.concat(suggestedCourseDataNext);
 
           modifiers.push("NEXT");
-        } else if (
-          props.supervisorOptionalSuggestionsList &&
-          props.supervisorOptionalSuggestionsList.find(
-            (sOCourse) =>
-              sOCourse.subject === sSubject.subjectCode &&
-              sOCourse.courseNumber === course.courseNumber
-          )
-        ) {
-          /* const suggestedCourseDataOptional =
-            props.suggestedOptionalList.filter(
-              (oCourse) => oCourse.subject === sSubject.subjectCode
-            ); */
-
-          /* courseSuggestions = courseSuggestions.concat(
-            suggestedCourseDataOptional
-          ); */
-
-          suggestedBySupervisor = true;
-
-          modifiers.push("SUGGESTED");
         } else if (
           props.transferedList &&
           props.transferedList.find(
