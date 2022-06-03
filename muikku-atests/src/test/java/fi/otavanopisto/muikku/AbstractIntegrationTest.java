@@ -173,7 +173,7 @@ public abstract class AbstractIntegrationTest {
     try {
       Statement statement = connection.createStatement();
       statement.execute("SELECT id AS result "
-                  + "FROM ceeposOrder "
+                  + "FROM CeeposOrder "
                   + "ORDER BY ID DESC "
                   + "LIMIT 1");
       ResultSet results = statement.getResultSet();
@@ -193,7 +193,7 @@ public abstract class AbstractIntegrationTest {
       Statement statement = connection.createStatement();
       statement.execute(
           String.format(
-              "UPDATE workspaceentity "
+              "UPDATE WorkspaceEntity "
                   + "SET access = '%s'"
                   + "WHERE urlName = '%s'",
                   access, urlName));

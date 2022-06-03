@@ -101,6 +101,7 @@ import fi.otavanopisto.pyramus.webhooks.WebhookPersonCreatePayload;
 import fi.otavanopisto.pyramus.webhooks.WebhookStudentCreatePayload;
 import io.restassured.RestAssured;
 import io.restassured.config.ObjectMapperConfig;
+import io.restassured.http.ContentType;
 import io.restassured.path.json.mapper.factory.Jackson2ObjectMapperFactory;
 import io.restassured.response.Response;
 
@@ -1736,9 +1737,12 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
 
   protected void createPasswordChange(String email) throws Exception {
     asAdmin()
+      .contentType(ContentType.JSON)
+      .body("{}")
       .post("/test/passwordchange/{EMAIL}", email)
       .then()
       .statusCode(204);
+      
   }
   
   protected void deletePasswordChange(String email) {
@@ -1795,6 +1799,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     Response response = asAdmin()
       .contentType("application/json")
+      .body("{}")
       .post("/test/students/{ID}/flags/{FLAGID}", studentId, flagId);
     
     response.then()
