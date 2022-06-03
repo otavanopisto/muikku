@@ -228,6 +228,7 @@ class StateOfStudies extends React.Component<
             title={this.props.i18n.text.get(
               "plugin.guider.user.details.label.email"
             )}
+            modifier="currentstudent-emails-list"
           >
             {this.props.guider.currentStudent.emails.length ? (
               this.props.guider.currentStudent.emails.map((email, index) => {
@@ -238,6 +239,7 @@ class StateOfStudies extends React.Component<
                 return (
                   <ApplicationSubPanelItem.Content
                     key={`email-${index}-${email.studentIdentifier}`}
+                    modifier="currentstudent-email-item"
                   >
                     {emailString}
                   </ApplicationSubPanelItem.Content>
@@ -257,6 +259,7 @@ class StateOfStudies extends React.Component<
             title={this.props.i18n.text.get(
               "plugin.guider.user.details.label.phoneNumber"
             )}
+            modifier="currentstudent-phonenumbers-list"
           >
             {this.props.guider.currentStudent.phoneNumbers.length ? (
               this.props.guider.currentStudent.phoneNumbers.map(
@@ -268,6 +271,7 @@ class StateOfStudies extends React.Component<
                   return (
                     <ApplicationSubPanelItem.Content
                       key={`phone-${index}-${phone.studentIdentifier}`}
+                      modifier="currentstudent-phonenumber-item"
                     >
                       {phoneString}
                     </ApplicationSubPanelItem.Content>
@@ -300,10 +304,14 @@ class StateOfStudies extends React.Component<
             title={this.props.i18n.text.get(
               "plugin.guider.user.details.label.studentgroups"
             )}
+            modifier="currentstudent-usergroups-list"
           >
             {this.props.guider.currentStudent.usergroups.length ? (
               this.props.guider.currentStudent.usergroups.map((usergroup) => (
-                <ApplicationSubPanelItem.Content key={`group-${usergroup.id}`}>
+                <ApplicationSubPanelItem.Content
+                  key={`group-${usergroup.id}`}
+                  modifier="currentstudent-usergroup-item"
+                >
                   {`${usergroup.name} `}
                 </ApplicationSubPanelItem.Content>
               ))

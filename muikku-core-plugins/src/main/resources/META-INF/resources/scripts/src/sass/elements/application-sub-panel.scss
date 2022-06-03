@@ -1247,6 +1247,18 @@
   padding: 10px 0;
 }
 
+.application-sub-panel__item-data-container--currentstudent-emails-list,
+.application-sub-panel__item-data-container--currentstudent-phonenumbers-list,
+.application-sub-panel__item-data-container--currentstudent-usergroups-list {
+  flex-wrap: wrap;
+}
+
+.application-sub-panel__item-data--currentstudent-email-item,
+.application-sub-panel__item-data--currentstudent-phonenumber-item,
+.application-sub-panel__item-data--currentstudent-usergroup-item {
+  width: 100%;
+}
+
 // This is related to matriculation enrollment and needs to be done different when Studies view gets integrated to devel
 
 .application-sub-panel--matriculation-enrollment {
