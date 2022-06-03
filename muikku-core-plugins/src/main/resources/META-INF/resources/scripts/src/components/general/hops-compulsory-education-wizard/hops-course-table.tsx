@@ -16,7 +16,7 @@ import {
 } from "~/components/general/table";
 import { schoolCourseTable } from "~/mock/mock-data";
 import { connect } from "react-redux";
-import { HopsUser } from ".";
+import { HopsUsePlace, HopsUser } from ".";
 import Button from "~/components/general/button";
 import { StateType } from "~/reducers";
 import Dropdown from "~/components/general/dropdown";
@@ -42,6 +42,10 @@ interface HopsCourseTableProps extends Partial<StudentActivityByStatus> {
    * useCase
    */
   useCase: "study-matrix" | "hops-planning";
+  /**
+   * Table uses sticky header
+   */
+  usePlace: HopsUsePlace;
   /**
    * user
    */
@@ -266,6 +270,9 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
         const showSuggestionList =
           !props.disabled && props.user === "supervisor" && canBeSelected;
 
+        const courseDropdownName =
+          sSubject.subjectCode + course.courseNumber + " - " + course.name;
+
         return (
           <Td
             key={`${sSubject.subjectCode}-${course.courseNumber}`}
@@ -285,7 +292,9 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
               content={
                 <div className="hops-container__study-tool-dropdown-container">
                   <div className="hops-container__study-tool-dropdow-title">
-                    {course.mandatory ? course.name : `${course.name}*`}
+                    {course.mandatory
+                      ? `${courseDropdownName}`
+                      : `${courseDropdownName}*`}
                   </div>
                   {course.mandatory ? (
                     <>
@@ -307,21 +316,6 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
                     <>
                       {showSuggestAndAddToHopsButtons && (
                         <Button
-                          onClick={handleToggleChoiceClick({
-                            studentId: props.studentId,
-                            courseNumber: course.courseNumber,
-                            subject: sSubject.subjectCode,
-                          })}
-                          buttonModifiers={["guider-hops-studytool"]}
-                        >
-                          {selectedByStudent
-                            ? "Peru valinta"
-                            : "Valitse osaksi hopsia"}
-                        </Button>
-                      )}
-
-                      {showSuggestAndAddToHopsButtons && (
-                        <Button
                           buttonModifiers={[
                             "guider-hops-studytool",
                             "guider-hops-studytool-suggested",
@@ -334,7 +328,22 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
                         >
                           {suggestedBySupervisor
                             ? "Ehdotettu"
-                            : "Ehdota valinnaiseksi?"}
+                            : "Ehdota valinnaiseksi"}
+                        </Button>
+                      )}
+
+                      {showSuggestAndAddToHopsButtons && (
+                        <Button
+                          onClick={handleToggleChoiceClick({
+                            studentId: props.studentId,
+                            courseNumber: course.courseNumber,
+                            subject: sSubject.subjectCode,
+                          })}
+                          buttonModifiers={["guider-hops-studytool"]}
+                        >
+                          {selectedByStudent
+                            ? "Peru valinta"
+                            : "Valitse osaksi hopsia"}
                         </Button>
                       )}
 
@@ -534,9 +543,17 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
       }).filter(Boolean)
     : undefined;
 
+  const uTableHeadModifiers = ["course"];
+
+  if (props.usePlace === "studies") {
+    uTableHeadModifiers.push("sticky");
+  } else if (props.usePlace === "guider") {
+    uTableHeadModifiers.push("sticky-inside-dialog");
+  }
+
   return (
     <Table modifiers={["course"]}>
-      <TableHead modifiers={["course"]}>
+      <TableHead modifiers={uTableHeadModifiers}>
         <Tr modifiers={["course"]}>
           <Th modifiers={["subject"]}>Oppiaine</Th>
           <Th colSpan={currentMaxCourses}>Kurssit</Th>

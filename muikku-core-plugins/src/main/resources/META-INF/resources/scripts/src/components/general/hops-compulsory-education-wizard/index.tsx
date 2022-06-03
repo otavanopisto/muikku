@@ -52,11 +52,22 @@ export const NEEDED_STUDIES_IN_TOTAL = 46;
  */
 export type HopsUser = "supervisor" | "student";
 
+export type HopsUsePlace = "guider" | "studies";
+
 /**
  * HopsSteps
  */
 export interface HopsBaseProps {
+  /**
+   * User of hops. Difference between functionalities
+   * with specific users
+   */
   user: HopsUser;
+  /**
+   * Use case of hops. Difference between functionalities with
+   * specific use places/cases
+   */
+  usePlace: HopsUsePlace;
   /**
    * phase limits what parts and features are available
    * for student depending what phase is on

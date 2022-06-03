@@ -150,7 +150,7 @@ class HopsMotivationAndStudySkills extends React.Component<
    * @returns JSX.Element
    */
   render() {
-    const { disabled } = this.props;
+    const { disabled, usePlace } = this.props;
     const { wayToLearn, studySupport, selfImageAsStudent } =
       this.props.motivationAndStudy;
 
@@ -166,7 +166,7 @@ class HopsMotivationAndStudySkills extends React.Component<
 
           <div className="hops-container__row">
             <div className="hops-container__table-container">
-              <HopsInputTable>
+              <HopsInputTable usePlace={usePlace}>
                 <InputRow
                   scaleStart={1}
                   scaleInterval={1}
@@ -296,7 +296,7 @@ class HopsMotivationAndStudySkills extends React.Component<
         </fieldset>
 
         <fieldset className="hops-container__fieldset">
-          <legend className="hops-container__subheader">
+          <legend className="hops-container__subheader hops-container__subheader--required">
             Keneltä saat tukea opiskeluusi Nettiperuskoulun ohjaajien ja
             opettajien lisäksi?
           </legend>
@@ -409,7 +409,7 @@ class HopsMotivationAndStudySkills extends React.Component<
 
           <div className="hops-container__row">
             <div className="hops-container__table-container">
-              <HopsInputTable>
+              <HopsInputTable usePlace={usePlace}>
                 <InputRow
                   scaleStart={1}
                   scaleInterval={1}

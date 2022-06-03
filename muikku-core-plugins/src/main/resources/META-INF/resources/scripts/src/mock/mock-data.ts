@@ -69,7 +69,7 @@ export const schoolCourseTable: SchoolSubject[] = [
     ],
   },
   {
-    name: "Suomi toisena kielenä ja kirjallisuus (s2)",
+    name: "Suomi toisena kielenä ja kirjallisuus",
     subjectCode: "s2",
     availableCourses: [
       {
@@ -79,7 +79,7 @@ export const schoolCourseTable: SchoolSubject[] = [
         mandatory: true,
       },
       {
-        name: "Luonnontieteen tekstit tutummuksi",
+        name: "Luonnontieteen tekstit tutummiksi",
         courseNumber: 2,
         length: 28,
         mandatory: false,
@@ -388,13 +388,13 @@ export const schoolCourseTable: SchoolSubject[] = [
         mandatory: true,
       },
       {
-        name: "Valinnainen",
+        name: "Teollisuusyhteiskunnan synnystä nykyaikaan",
         courseNumber: 2,
         length: 28,
         mandatory: false,
       },
       {
-        name: "Valinnainen",
+        name: "Antiikista uuden ajan murrokseen",
         courseNumber: 3,
         length: 28,
         mandatory: false,
@@ -403,7 +403,7 @@ export const schoolCourseTable: SchoolSubject[] = [
   },
   {
     name: "Yhteiskuntaoppi",
-    subjectCode: "yo",
+    subjectCode: "yh",
     availableCourses: [
       {
         name: "Yhteiskuntajärjestelmä sekä julkiset palvelut",
@@ -456,6 +456,12 @@ export const schoolCourseTable: SchoolSubject[] = [
       {
         name: "Kemia maailmankuvan rakentajana",
         courseNumber: 2,
+        length: 28,
+        mandatory: false,
+      },
+      {
+        name: "Kemia yhteiskunnassa",
+        courseNumber: 3,
         length: 28,
         mandatory: false,
       },

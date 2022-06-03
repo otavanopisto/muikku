@@ -157,9 +157,11 @@ class StudentDialog extends React.Component<
       },
     ];
 
+    // COmpulsory hops is shown only if basic info is there and matriculation eligiblity is false
     if (
       this.props.guider.currentStudent &&
-      this.props.guider.currentStudent.basic
+      this.props.guider.currentStudent.basic &&
+      !this.props.guider.currentStudent.basic.matriculationEligibility
     )
       tabs.push({
         id: "HOPS",
@@ -193,6 +195,7 @@ class StudentDialog extends React.Component<
             {this.state.editHops ? (
               <CompulsoryEducationHopsWizard
                 user="supervisor"
+                usePlace="guider"
                 disabled={false}
                 studentId={this.props.guider.currentStudent.basic.id}
                 superVisorModifies
@@ -200,6 +203,7 @@ class StudentDialog extends React.Component<
             ) : (
               <CompulsoryEducationHopsWizard
                 user="supervisor"
+                usePlace="guider"
                 disabled={true}
                 studentId={this.props.guider.currentStudent.basic.id}
                 superVisorModifies={false}

@@ -264,21 +264,6 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
                     </>
                   ) : (
                     <>
-                      {showSuggestAndAddToHopsButtons && (
-                        <Button
-                          onClick={handleToggleChoiceClick({
-                            studentId: props.studentId,
-                            courseNumber: course.courseNumber,
-                            subject: sSubject.subjectCode,
-                          })}
-                          buttonModifiers={["guider-hops-studytool"]}
-                        >
-                          {selectedByStudent
-                            ? "Peru valinta"
-                            : "Valitse osaksi hopsia"}
-                        </Button>
-                      )}
-
                       {showSuggestAndAddToHopsButtons &&
                         props.useCase === "hops-planning" && (
                           <Button
@@ -294,9 +279,24 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
                           >
                             {suggestedBySupervisor
                               ? "Ehdotettu"
-                              : "Ehdota valinnaiseksi?"}
+                              : "Ehdota valinnaiseksi"}
                           </Button>
                         )}
+
+                      {showSuggestAndAddToHopsButtons && (
+                        <Button
+                          onClick={handleToggleChoiceClick({
+                            studentId: props.studentId,
+                            courseNumber: course.courseNumber,
+                            subject: sSubject.subjectCode,
+                          })}
+                          buttonModifiers={["guider-hops-studytool"]}
+                        >
+                          {selectedByStudent
+                            ? "Peru valinta"
+                            : "Valitse osaksi hopsia"}
+                        </Button>
+                      )}
 
                       {showSuggestionList && (
                         <HopsSuggestionList

@@ -509,7 +509,8 @@ public class GuiderRESTService extends PluginRESTService {
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response listWorkspaces(
         @Context Request request,
-        @PathParam("ID") String userIdentifierParam
+        @PathParam("ID") String userIdentifierParam,
+        @QueryParam("active") Boolean active
       ) {
     SchoolDataIdentifier userIdentifier = SchoolDataIdentifier.fromId(userIdentifierParam);
     if (userIdentifier == null) {
@@ -524,7 +525,18 @@ public class GuiderRESTService extends PluginRESTService {
 
     TemplateRestriction templateRestriction = TemplateRestriction.ONLY_WORKSPACES;
     PublicityRestriction publicityRestriction = PublicityRestriction.LIST_ALL;
-    List<WorkspaceEntity> workspaceEntities = workspaceUserEntityController.listWorkspaceEntitiesByUserEntity(userEntity);
+    
+    // #6126: Filter support to optionally only list active or inactive workspaces
+    
+    List<WorkspaceEntity> workspaceEntities;
+    if (active == null) {
+      workspaceEntities = workspaceUserEntityController.listWorkspaceEntitiesByUserEntity(userEntity);
+    }
+    else {
+      workspaceEntities = active
+          ? workspaceUserEntityController.listActiveWorkspaceEntitiesByUserEntity(userEntity)
+          : workspaceUserEntityController.listInactiveWorkspaceEntitiesByUserEntity(userEntity);
+    }
 
     if (CollectionUtils.isEmpty(workspaceEntities)) {
       return Response.ok(Collections.emptyList()).build();
