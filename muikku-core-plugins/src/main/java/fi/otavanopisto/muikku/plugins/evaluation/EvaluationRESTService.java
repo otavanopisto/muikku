@@ -130,11 +130,6 @@ public class EvaluationRESTService extends PluginRESTService {
         .build();
     }
     
-    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserIdentifier(workspaceEntity, studentIdentifier);
-    if (workspaceUserEntity == null) {
-      return Response.status(Status.NOT_FOUND).entity("WorkspaceUserEntity not found").build();
-    }
-    
     UserEntity studentUserEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);
     if (studentUserEntity == null) {
       return Response.status(Status.NOT_FOUND)
@@ -149,9 +144,10 @@ public class EvaluationRESTService extends PluginRESTService {
     }
 
     GuiderStudentWorkspaceActivity activity = guiderController.getStudentWorkspaceActivity(workspaceEntity, studentIdentifier);
-    
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserIdentifier(workspaceEntity, studentIdentifier);    
+
     List<WorkspaceAssessmentState> assessmentStates = new ArrayList<>();
-    if (workspaceUserEntity.getWorkspaceUserRole().getArchetype() == WorkspaceRoleArchetype.STUDENT) {
+    if ((workspaceUserEntity != null) && (workspaceUserEntity.getWorkspaceUserRole().getArchetype() == WorkspaceRoleArchetype.STUDENT)) {
       assessmentStates = assessmentRequestController.getAllWorkspaceAssessmentStates(workspaceUserEntity);
     }
     
