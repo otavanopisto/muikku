@@ -20,7 +20,6 @@ import {
   BilledPrice,
   EvaluationEnum,
   EvaluationGradeSystem,
-  EvaluationWorkspaceSubject,
 } from "~/@types/evaluation";
 import { i18nType } from "~/reducers/base/i18n";
 import {
@@ -96,7 +95,7 @@ class WorkspaceEditor extends SessionStateComponent<
     const { selectedAssessment, workspaceSubjectToBeEvaluatedIdentifier } =
       props;
 
-    const { userEntityId, workspaceEntityId, subjects } = selectedAssessment;
+    const { userEntityId, workspaceEntityId } = selectedAssessment;
 
     /**
      * When there is not existing event data we use only user id and workspace id as
@@ -108,7 +107,7 @@ class WorkspaceEditor extends SessionStateComponent<
     /**
      * Workspace basePriceId
      */
-    const basePriceId = subjects[0].subject && subjects[0].identifier;
+    const basePriceSubjectId = workspaceSubjectToBeEvaluatedIdentifier;
 
     /**
      * If we have evaluation data or we have data and editing existing event
@@ -168,7 +167,7 @@ class WorkspaceEditor extends SessionStateComponent<
           {
             literalEvaluation: latestEvent.text,
             draftId,
-            basePriceFromServer: basePrice.data[basePriceId],
+            basePriceFromServer: basePrice.data[basePriceSubjectId],
             grade: `${usedGrade.dataSource}-${usedGrade.id}`,
           },
           draftId
@@ -181,7 +180,7 @@ class WorkspaceEditor extends SessionStateComponent<
           {
             literalEvaluation: "",
             draftId,
-            basePriceFromServer: basePrice.data[basePriceId],
+            basePriceFromServer: basePrice.data[basePriceSubjectId],
             grade: `${evaluationGradeSystem[0].grades[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`,
           },
           draftId
@@ -349,22 +348,6 @@ class WorkspaceEditor extends SessionStateComponent<
     );
 
     return existingBilledPriceObject;
-  };
-
-  /**
-   * combinationWorkspaceUsesSameSubject
-   *
-   * @param subjects subjects
-   * @returns boolean if combination workspace uses same subject twice
-   */
-  combinationWorkspaceUsesSameSubject = (
-    subjects: EvaluationWorkspaceSubject[]
-  ) => {
-    const allModuleSubjectIdentifiers = subjects.map(
-      (s) => s.subject && s.subject.identifier
-    );
-
-    return new Set(allModuleSubjectIdentifiers).size !== subjects.length;
   };
 
   /**
@@ -860,17 +843,6 @@ class WorkspaceEditor extends SessionStateComponent<
    */
   render() {
     const { existingBilledPriceObject } = this.state;
-    const { selectedAssessment } = this.props;
-
-    const isCombinationWorkspace = selectedAssessment.subjects.length > 1;
-
-    let combinationPaymentWarning = false;
-
-    if (isCombinationWorkspace) {
-      combinationPaymentWarning = this.combinationWorkspaceUsesSameSubject(
-        selectedAssessment.subjects
-      );
-    }
 
     const options = this.renderSelectOptions();
 
@@ -984,14 +956,6 @@ class WorkspaceEditor extends SessionStateComponent<
             </select>
           </div>
         ) : null}
-
-        {combinationPaymentWarning && (
-          <div className="evaluation-modal__evaluate-drawer-row evaluation-modal__evaluate-drawer-row--payment-warning">
-            Huomio! Yhdistelmäopintojaksojen palkkiot määräytyvät eri tavalla
-            kuin muut palkkiot. Ilmoita Annukalle, että olet arvioinut
-            yhdistelmäopintojaksoa. Annukka pystyy korjaamaan palkkiot oikeiksi.
-          </div>
-        )}
 
         <div className="evaluation-modal__evaluate-drawer-row evaluation-modal__evaluate-drawer-row--buttons">
           <Button

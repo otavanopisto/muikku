@@ -80,7 +80,7 @@ export type UPDATE_EVALUATION_SELECTED_ASSESSMENT_ASSIGNMENTS_STATE =
     EvaluationStateType
   >;
 
-export type SET_BASE_PRICE = SpecificActionType<"SET_BASE_PRICE", number>;
+export type SET_BASE_PRICE = SpecificActionType<"SET_BASE_PRICE", object>;
 
 export type SET_IMPORTANT_ASSESSMENTS = SpecificActionType<
   "SET_IMPORTANT_ASSESSMENTS",
@@ -1188,6 +1188,16 @@ const updateWorkspaceEvaluationToServer: UpdateWorkspaceEvaluation =
                 })
               );
             }
+
+            // Base price has to be loaded again because combination workspace
+            // price changes. This only happens after creating new evaluation
+            dispatch(
+              loadBasePriceFromServer({
+                workspaceEntityId:
+                  state.evaluations.evaluationSelectedAssessmentId
+                    .workspaceEntityId,
+              })
+            );
           });
         } catch (err) {
           dispatch(
@@ -1398,6 +1408,16 @@ const removeWorkspaceEventFromServer: RemoveWorkspaceEvent =
               })
             );
 
+            // Base price has to be loaded again because combination workspace
+            // price changes. This only happens after creating new evaluation
+            dispatch(
+              loadBasePriceFromServer({
+                workspaceEntityId:
+                  state.evaluations.evaluationSelectedAssessmentId
+                    .workspaceEntityId,
+              })
+            );
+
             dispatch({
               type: "UPDATE_EVALUATION_STATE",
               payload: <EvaluationStateType>"READY",
@@ -1436,6 +1456,16 @@ const removeWorkspaceEventFromServer: RemoveWorkspaceEvent =
             dispatch(
               loadEvaluationAssessmentEventsFromServer({
                 assessment: state.evaluations.evaluationSelectedAssessmentId,
+              })
+            );
+
+            // Base price has to be loaded again because combination workspace
+            // price changes. This only happens after creating new evaluation
+            dispatch(
+              loadBasePriceFromServer({
+                workspaceEntityId:
+                  state.evaluations.evaluationSelectedAssessmentId
+                    .workspaceEntityId,
               })
             );
 
@@ -1925,7 +1955,7 @@ const loadBasePriceFromServer: LoadBasePrice =
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>
     ) => {
-      let basePrice: number | undefined = undefined;
+      let basePrice: object | undefined = undefined;
 
       dispatch({
         type: "UPDATE_BASE_PRICE_STATE",
@@ -1933,13 +1963,13 @@ const loadBasePriceFromServer: LoadBasePrice =
       });
 
       await promisify(
-        mApi().worklist.basePrice.read({
+        mApi().worklist.basePrice.cacheClear().read({
           workspaceEntityId: workspaceEntityId,
         }),
         "callback"
       )().then(
         (data) => {
-          basePrice = data as number;
+          basePrice = data as object;
         },
         () => {
           basePrice = undefined;
