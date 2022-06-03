@@ -53,15 +53,6 @@ public class EvaluationResourcePermissionCollection extends AbstractMuikkuPermis
   @DefaultWorkspacePermissionRoles({WorkspaceRoleArchetype.TEACHER})
   public static final String EVALUATION_UPDATEWORKSPACEMATERIALEVALUATION = "EVALUATION_UPDATEWORKSPACEMATERIALEVALUATION";
 
-  /**
-   * Grading scales
-   */
-  
-  @Scope (PermissionScope.WORKSPACE)
-  @DefaultEnvironmentPermissionRoles({EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.TEACHER })
-  @DefaultWorkspacePermissionRoles({WorkspaceRoleArchetype.TEACHER})
-  public static final String EVALUATION_LISTGRADINGSCALES = "EVALUATION_LISTGRADINGSCALES";
-
   @Override
   public List<String> listPermissions() {
     return listPermissions(EvaluationResourcePermissionCollection.class);

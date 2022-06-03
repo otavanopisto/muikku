@@ -41,4 +41,15 @@ export const suitabilityMap = new Map<string, OPSsuitability>([
         "plugin.workspace.mandatority.SCHOOL_LEVEL_OPTIONAL",
     },
   ],
+  [
+    "perusopetusOPS2018",
+    {
+      MANDATORY: "plugin.workspace.mandatority.MANDATORY",
+      UNSPECIFIED_OPTIONAL: "plugin.workspace.mandatority.UNSPECIFIED_OPTIONAL",
+      NATIONAL_LEVEL_OPTIONAL:
+        "plugin.workspace.mandatority.NATIONAL_LEVEL_OPTIONAL",
+      SCHOOL_LEVEL_OPTIONAL:
+        "plugin.workspace.mandatority.SCHOOL_LEVEL_OPTIONAL",
+    },
+  ],
 ]);

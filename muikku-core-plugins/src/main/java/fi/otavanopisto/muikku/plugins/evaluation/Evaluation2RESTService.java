@@ -1166,7 +1166,8 @@ public class Evaluation2RESTService {
           gradingScale.getScaleName(),
           gradingScale.getScaleIdentifier(),
           gradingScale.getSchoolDataSource(),
-          restGrades));
+          restGrades,
+          gradingScale.isActive()));
     }
     return Response.ok(restGradingScales).build();
   }
