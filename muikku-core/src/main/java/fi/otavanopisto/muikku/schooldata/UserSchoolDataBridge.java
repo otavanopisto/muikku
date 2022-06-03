@@ -331,8 +331,6 @@ public interface UserSchoolDataBridge {
       SchoolDataIdentifier studentIdentifier,
       String educationTypeCode,
       String educationSubtypeCode);
-  
-  public String findStudentEducationalLevel(String studentIdentifier);
 
   public boolean isActiveUser(User user);
 

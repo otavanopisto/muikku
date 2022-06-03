@@ -755,7 +755,6 @@ public class HopsRestService {
     UserEntity studentEntity = userEntityController.findUserEntityByUser(student);
     User counselor;
     List<String> counselorList = new ArrayList<>();
-    String educationalLevel = null;
 
     schoolDataBridgeSessionController.startSystemSession();
     try {
@@ -764,10 +763,6 @@ public class HopsRestService {
         counselor = userSchoolDataController.findUser(counselorEntity.defaultSchoolDataIdentifier());
         counselorList.add(counselor.getDisplayName());
       }
-
-      // Get student's educational level from pyramus
-      educationalLevel = userSchoolDataController.findStudentEducationalLevel(sessionController.getLoggedUserEntity().getDefaultSchoolDataSource(), student.getIdentifier());
-
     }
     finally {
       schoolDataBridgeSessionController.endSystemSession();
@@ -777,7 +772,7 @@ public class HopsRestService {
         studentEntity.getId(),
         student.getFirstName(),
         student.getLastName(),
-        educationalLevel,
+        student.getStudyProgrammeEducationType(),
         student.getStudyTimeEnd(),
         counselorList
     )).build();
@@ -787,14 +782,14 @@ public class HopsRestService {
       Long studentIdentifier,
       String firstName,
       String lastName,
-      String educationalLevel,
+      String studyProgrammeEducationType,
       OffsetDateTime studyTimeEnd,
       List<String> counselorList) {
     return new fi.otavanopisto.muikku.plugins.hops.rest.StudentInformationRestModel(
         studentIdentifier,
         firstName,
         lastName,
-        educationalLevel,
+        studyProgrammeEducationType,
         studyTimeEnd,
         counselorList);
   }

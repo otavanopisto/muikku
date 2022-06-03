@@ -533,8 +533,4 @@ public class UserSchoolDataController {
     );
   }
   
-  public String findStudentEducationalLevel(SchoolDataSource schoolDataSource, String studentIdentifier) {
-    return getUserBridge(schoolDataSource).findStudentEducationalLevel(studentIdentifier);
-  }
-  
 }
