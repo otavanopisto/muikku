@@ -26,6 +26,7 @@ public interface SearchProvider {
   public SearchResult searchWorkspaces(SchoolDataIdentifier subjectIdentifier, int courseNumber);
   public SearchResult findWorkspace(SchoolDataIdentifier identifier); 
   
+  public IndexedCommunicatorMessage findCommunicatorMessage(Long communicatorMessageId);
   public CommunicatorMessageSearchBuilder searchCommunicatorMessages();
   public SearchResults<List<IndexedCommunicatorMessage>> searchCommunicatorMessages(String queryString, long senderId, IndexedCommunicatorMessageSender sender, List<IndexedCommunicatorMessageRecipient> recipients, Date created, Set<Long> tags, int start, int maxResults, List<Sort> sorts);
 
