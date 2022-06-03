@@ -217,7 +217,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
       }
     } catch (err) {
       if (this.isComponentMounted) {
-        this.props.displayNotification(`Hups errori ${err}`, "error");
+        this.props.displayNotification(err.message, "error");
         this.setState({ loadingHistoryEvents: false });
       }
     }
@@ -282,7 +282,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
       }
     } catch (err) {
       if (this.isComponentMounted) {
-        this.props.displayNotification(`Hups errori ${err}`, "error");
+        this.props.displayNotification(err.message, "error");
         this.setState({ loading: false });
       }
     }
@@ -333,7 +333,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
       }
     } catch (err) {
       if (this.isComponentMounted) {
-        this.props.displayNotification(`Hups errori ${err}`, "error");
+        this.props.displayNotification(err.message, "error");
         this.setState({ loading: false });
       }
     }
@@ -378,7 +378,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
       });
     } catch (err) {
       if (this.isComponentMounted) {
-        this.props.displayNotification(`Hups errori ${err}`, "error");
+        this.props.displayNotification(err.message, "error");
         this.setState({ loading: false, savingStatus: "FAILED" });
       }
     }

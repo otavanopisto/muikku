@@ -81,7 +81,7 @@ export const useSuggestionList = (
         }
       } catch (err) {
         if (componentMounted.current) {
-          displayNotification(`Hups errori ${err}`, "error");
+          displayNotification(err.message, "error");
           setSuggestins((suggestions) => ({
             ...suggestions,
             isLoading: false,

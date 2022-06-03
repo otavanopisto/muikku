@@ -772,12 +772,9 @@ const updateCurrentStudentHopsPhase: UpdateCurrentStudentHopsPhaseTriggerType =
             "success"
           )
         );
-      } catch (error) {
+      } catch (err) {
         dispatch(
-          notificationActions.displayNotification(
-            "Hupsista error hops phasing yhteydessä",
-            "error"
-          )
+          notificationActions.displayNotification(err.message, "error")
         );
       }
     };

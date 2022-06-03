@@ -154,15 +154,17 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     if (response.getEntity() != null) {
       items = new ArrayList<>();
       for (StudyActivityItemRestModel item : response.getEntity()) {
-        WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(
-            getSchoolDataSource(),
-            identifierMapper.getWorkspaceIdentifier(item.getCourseId()));
-        if (workspaceEntity == null) {
-          item.setCourseId(null);
-          logger.severe(String.format("Pyramus course %d not found in Muikku", item.getCourseId()));
-        }
-        else {
-          item.setCourseId(workspaceEntity.getId());
+        if (item.getCourseId() != null) {
+          WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(
+              getSchoolDataSource(),
+              identifierMapper.getWorkspaceIdentifier(item.getCourseId()));
+          if (workspaceEntity == null) {
+            logger.severe(String.format("Pyramus course %d not found in Muikku", item.getCourseId()));
+            item.setCourseId(null);
+          }
+          else {
+            item.setCourseId(workspaceEntity.getId());
+          }
         }
         items.add(item);
       }
