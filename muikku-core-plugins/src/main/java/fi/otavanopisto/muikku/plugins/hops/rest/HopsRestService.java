@@ -37,6 +37,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.hops.HopsController;
@@ -72,6 +74,7 @@ import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserEntityFileController;
 import fi.otavanopisto.muikku.users.UserEntityName;
+import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
@@ -120,6 +123,9 @@ public class HopsRestService {
   
   @Inject
   private WorkspaceController workspaceController;
+  
+  @Inject
+  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
 
   @Inject
   @Any
@@ -441,8 +447,18 @@ public class HopsRestService {
   @GET
   @Path("/listWorkspaceSuggestions")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response listWorkspaceSuggestions(@QueryParam("subject") String subject, @QueryParam("courseNumber") Integer courseNumber, @QueryParam("onlySignupWorkspaces") @DefaultValue ("false") Boolean onlySignupWorkspaces) {
+  public Response listWorkspaceSuggestions(@QueryParam("subject") String subject, @QueryParam("courseNumber") Integer courseNumber, @QueryParam("onlySignupWorkspaces") @DefaultValue ("false") Boolean onlySignupWorkspaces, @QueryParam("userEntityId") Long userEntityId) {
 
+    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+    
+    // Permission checks
+    if (userEntity != null && !sessionController.getLoggedUserEntity().getId().equals(userEntity.getId())) {
+      EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUserEntity());
+
+      if (roleEntity.getArchetype().equals(EnvironmentRoleArchetype.STUDENT)) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    }
     List<SuggestedWorkspaceRestModel> suggestedWorkspaces = new ArrayList<>();
 
     // Turn code into a Pyramus subject identifier because Elastic index only has that :(
@@ -469,7 +485,8 @@ public class HopsRestService {
             SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(identifier, dataSource);
             WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(workspaceIdentifier.getDataSource(), workspaceIdentifier.getIdentifier());
             if (workspaceEntity != null) {
-              if (onlySignupWorkspaces && !hopsController.canSignup(workspaceEntity)) {
+              onlySignupWorkspaces = true;
+              if (onlySignupWorkspaces && !hopsController.canSignup(workspaceEntity, userEntity)) {
                 continue;
               }
               
@@ -482,6 +499,13 @@ public class HopsRestService {
                   continue;
                 }
               }
+              
+              Boolean published = (Boolean) result.get("published");
+              
+              if (!published) {
+                continue;
+              }
+              
               SuggestedWorkspaceRestModel suggestedWorkspace = new SuggestedWorkspaceRestModel();
               suggestedWorkspace.setId(workspaceEntity.getId());
               suggestedWorkspace.setName((String) result.get("name"));

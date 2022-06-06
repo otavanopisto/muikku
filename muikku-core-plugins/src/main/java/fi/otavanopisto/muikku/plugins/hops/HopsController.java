@@ -91,20 +91,23 @@ public class HopsController {
   @Inject 
   private UserGroupController userGroupController;
   
-  public boolean canSignup(WorkspaceEntity workspaceEntity) {
+  public boolean canSignup(WorkspaceEntity workspaceEntity, UserEntity studentEntity) {
     boolean canSignUp = false;
     
+    if (studentEntity == null) {
+      return canSignUp;
+    }
     // Check that user isn't already in the workspace. If not, check if they could sign up
     
     if (sessionController.isLoggedIn() && currentUserSession.isActive()) {
-      WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, sessionController.getLoggedUser());
-      canSignUp = workspaceUserEntity == null && workspaceEntityController.canSignup(sessionController.getLoggedUser(), workspaceEntity);
+      WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, studentEntity.defaultSchoolDataIdentifier());
+      canSignUp = workspaceUserEntity == null && workspaceEntityController.canSignup(studentEntity.defaultSchoolDataIdentifier(), workspaceEntity);
     }
     
     // If user could sign up, revoke that if they have already been evaluated
     
     if (canSignUp) {
-      WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, sessionController.getLoggedUserEntity().defaultSchoolDataIdentifier());
+      WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, studentEntity.defaultSchoolDataIdentifier());
       if (workspaceUserEntity != null) {
         WorkspaceRoleEntity workspaceRoleEntity = workspaceUserEntity.getWorkspaceUserRole();
         WorkspaceRoleArchetype archetype = workspaceRoleEntity.getArchetype();
