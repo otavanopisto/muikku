@@ -25,6 +25,7 @@ const initialState: UseSuggestion = {
  * Custom hook for suggestion list
  * @param subjectCode subjectCode
  * @param course course
+ * @param userEntityId userEntityId
  * @param displayNotification displayNotification
  * @param loadData loadData
  * @returns suggestion list
@@ -32,6 +33,7 @@ const initialState: UseSuggestion = {
 export const useSuggestionList = (
   subjectCode: string,
   course: Course,
+  userEntityId: number,
   displayNotification: DisplayNotificationTriggerType,
   loadData?: boolean
 ) => {
@@ -63,6 +65,7 @@ export const useSuggestionList = (
               mApi().hops.listWorkspaceSuggestions.read({
                 subject: subjectCode,
                 courseNumber: course.courseNumber,
+                userEntityId: userEntityId,
               }),
               "callback"
             )()) as Suggestion[];
@@ -93,7 +96,7 @@ export const useSuggestionList = (
     if (loadData) {
       loadSuggestionListData(subjectCode, course);
     }
-  }, [course, subjectCode, loadData, displayNotification]);
+  }, [course, subjectCode, userEntityId, loadData, displayNotification]);
 
   React.useEffect(
     () => () => {

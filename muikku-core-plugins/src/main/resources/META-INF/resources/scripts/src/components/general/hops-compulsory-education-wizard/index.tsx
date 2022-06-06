@@ -127,6 +127,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
       savingStatus: undefined,
       basicInfo: {
         name: "",
+        studentUserEntityId: null,
       },
       hopsCompulsory: {
         ...initializeHops(),
@@ -259,6 +260,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
 
           const loadedHops = {
             basicInfo: {
+              studentUserEntityId: studentBasicInfo.id,
               name: `${studentBasicInfo.firstName} ${studentBasicInfo.lastName}`,
               updates: studentHopsHistory,
               counselorList: studentBasicInfo.counselorList,
@@ -594,7 +596,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
         component: (
           <Step5
             {...baseProps}
-            studentId={this.props.studentId}
+            studentsUserEntityId={this.state.basicInfo.studentUserEntityId}
             studyTimeEnd={this.state.basicInfo.studyTimeEnd}
             followUp={this.state.hopsFollowUp}
             studies={{
@@ -662,7 +664,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
           component: (
             <Step5
               {...baseProps}
-              studentId={this.props.studentId}
+              studentsUserEntityId={this.state.basicInfo.studentUserEntityId}
               studyTimeEnd={this.state.basicInfo.studyTimeEnd}
               followUp={this.state.hopsFollowUp}
               studies={{

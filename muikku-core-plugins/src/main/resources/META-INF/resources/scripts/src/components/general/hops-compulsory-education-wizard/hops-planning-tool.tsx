@@ -46,6 +46,7 @@ interface HopsPlanningToolProps {
    * Identifier of student
    */
   studentId: string;
+  studentsUserEntityId: number;
   /**
    * If all functionalities are disabled
    * in read mode
@@ -949,6 +950,7 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
                 usePlace={props.usePlace}
                 disabled={props.disabled}
                 studentId={props.studentId}
+                studentsUserEntityId={props.studentsUserEntityId}
                 user={props.user}
                 superVisorModifies={props.superVisorModifies}
                 suggestedNextList={studentActivity.suggestedNextList}
@@ -984,6 +986,7 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
               disabled={props.disabled}
               user={props.user}
               studentId={props.studentId}
+              studentsUserEntityId={props.studentsUserEntityId}
               superVisorModifies={props.superVisorModifies}
               suggestedNextList={studentActivity.suggestedNextList}
               onGoingList={studentActivity.onGoingList}

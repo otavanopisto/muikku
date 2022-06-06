@@ -22,6 +22,7 @@ interface HopsSuggestionListProps {
   course: Course;
   i18n: i18nType;
   studentId: string;
+  studentsUserEntityId: number;
   displayNotification: DisplayNotificationTriggerType;
   loadData?: boolean;
   canSuggestForNext: boolean;
@@ -50,6 +51,7 @@ const HopsSuggestionList = (props: HopsSuggestionListProps) => {
   const { isLoading, suggestionsList } = useSuggestionList(
     props.subjectCode,
     props.course,
+    props.studentsUserEntityId,
     props.displayNotification,
     props.loadData
   );

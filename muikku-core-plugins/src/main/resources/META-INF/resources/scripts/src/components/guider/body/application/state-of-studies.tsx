@@ -422,6 +422,9 @@ class StateOfStudies extends React.Component<
                 <ApplicationSubPanel.Body>
                   <StudySuggestionMatrix
                     studentId={this.props.guider.currentStudent.basic.id}
+                    studentUserEntityId={
+                      this.props.guider.currentStudent.basic.userEntityId
+                    }
                   />
                 </ApplicationSubPanel.Body>
               </ApplicationSubPanel>

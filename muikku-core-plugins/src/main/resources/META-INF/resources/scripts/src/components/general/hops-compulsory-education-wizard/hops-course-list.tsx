@@ -45,6 +45,7 @@ interface HopsCourseListProps extends Partial<StudentActivityByStatus> {
    * studentId
    */
   studentId: string;
+  studentsUserEntityId: number;
   /**
    * disabled
    */
@@ -243,6 +244,7 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
                       {showSuggestionList && (
                         <HopsSuggestionList
                           studentId={props.studentId}
+                          studentsUserEntityId={props.studentsUserEntityId}
                           suggestedActivityCourses={courseSuggestions}
                           subjectCode={sSubject.subjectCode}
                           course={course}
@@ -293,6 +295,7 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
                       {showSuggestionList && (
                         <HopsSuggestionList
                           studentId={props.studentId}
+                          studentsUserEntityId={props.studentsUserEntityId}
                           suggestedActivityCourses={courseSuggestions}
                           subjectCode={sSubject.subjectCode}
                           course={course}

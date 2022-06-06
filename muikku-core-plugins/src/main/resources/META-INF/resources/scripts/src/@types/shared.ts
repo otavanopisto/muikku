@@ -297,6 +297,7 @@ export interface HopsCompulsory {
  * BasicStudies
  */
 export interface BasicInformation {
+  studentUserEntityId: number;
   name: string;
   dateOfIssue?: Date;
   updates?: HopsUpdate[];

@@ -24,6 +24,7 @@ interface StudySuggestionMatrixProps {
    * Identifier of student
    */
   studentId: string;
+  studentUserEntityId: number;
   websocketState: WebsocketStateType;
   displayNotification: DisplayNotificationTriggerType;
 }
@@ -105,6 +106,7 @@ const StudySuggestionMatrix: React.FC<StudySuggestionMatrixProps> = (props) => {
                 usePlace="guider"
                 disabled={false}
                 studentId={props.studentId}
+                studentsUserEntityId={props.studentUserEntityId}
                 user="supervisor"
                 superVisorModifies={true}
                 suggestedNextList={studentActivity.suggestedNextList}
@@ -132,6 +134,7 @@ const StudySuggestionMatrix: React.FC<StudySuggestionMatrixProps> = (props) => {
               disabled={false}
               user="supervisor"
               studentId={props.studentId}
+              studentsUserEntityId={props.studentUserEntityId}
               superVisorModifies={true}
               suggestedNextList={studentActivity.suggestedNextList}
               onGoingList={studentActivity.onGoingList}
