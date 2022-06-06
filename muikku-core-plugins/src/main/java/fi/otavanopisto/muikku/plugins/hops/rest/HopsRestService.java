@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -470,6 +471,16 @@ public class HopsRestService {
             if (workspaceEntity != null) {
               if (onlySignupWorkspaces && !hopsController.canSignup(workspaceEntity)) {
                 continue;
+              }
+              
+              Double beginDateDouble = (Double) result.get("beginDate");
+              
+              if (beginDateDouble != null) {
+                long itemLong = (long) (beginDateDouble * 1000);
+                Date beginDate = new Date(itemLong);
+                if (beginDate != null && !beginDate.after(new Date())) {
+                  continue;
+                }
               }
               SuggestedWorkspaceRestModel suggestedWorkspace = new SuggestedWorkspaceRestModel();
               suggestedWorkspace.setId(workspaceEntity.getId());
