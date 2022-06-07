@@ -202,7 +202,7 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
                   await promisify(
                     mApi().workspace.workspaces.students.activity.read(
                       workspace.id,
-                      getState().status.userSchoolDataIdentifier
+                      user.id
                     ),
                     "callback"
                   )()
@@ -568,6 +568,17 @@ const setLocationToHopsInTranscriptOfRecords: SetLocationToHopsInTranscriptOfRec
   };
 
 /**
+ * setLocationToInfoInTranscriptOfRecords
+ */
+const setLocationToInfoInTranscriptOfRecords: SetLocationToHopsInTranscriptOfRecordsTriggerType =
+  function setLocationToHopsInTranscriptOfRecords() {
+    return {
+      type: "UPDATE_RECORDS_LOCATION",
+      payload: <TranscriptOfRecordLocationType>"info",
+    };
+  };
+
+/**
  * updateTranscriptOfRecordsFiles
  */
 const updateTranscriptOfRecordsFiles: UpdateTranscriptOfRecordsFilesTriggerType =
@@ -600,5 +611,6 @@ export {
   setLocationToYoInTranscriptOfRecords,
   setLocationToHopsInTranscriptOfRecords,
   setLocationToSummaryInTranscriptOfRecords,
+  setLocationToInfoInTranscriptOfRecords,
   updateTranscriptOfRecordsFiles,
 };

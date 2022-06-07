@@ -17,6 +17,7 @@ import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.rest.OrganizationContactPerson;
+import fi.otavanopisto.muikku.rest.StudentContactLogEntryBatch;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryCommentRestModel;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryRestModel;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
@@ -36,6 +37,7 @@ import fi.otavanopisto.muikku.schooldata.payload.StaffMemberPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupMembersPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentPayload;
+import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistApproverRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemStateChangeRestModel;
@@ -62,6 +64,12 @@ public class UserSchoolDataController {
 
   public boolean isActiveUser(User user) {
     return getUserBridge(user.getSchoolDataSource()).isActiveUser(user);
+  }
+  
+  /* HOPS */
+  
+  public BridgeResponse<List<StudyActivityItemRestModel>> getStudyActivity(String dataSource, String identifier) {
+    return getUserBridge(dataSource).getStudyActivity(identifier);
   }
   
   /* Worklist */
@@ -100,8 +108,8 @@ public class UserSchoolDataController {
   
   /* User */
   
-  public BridgeResponse<List<StudentContactLogEntryRestModel>> listStudentContactLogEntries(String dataSource, SchoolDataIdentifier userIdentifier) {
-    return getUserBridge(dataSource).listStudentContactLogEntriesByStudent(userIdentifier);
+  public BridgeResponse<StudentContactLogEntryBatch> listStudentContactLogEntries(String dataSource, SchoolDataIdentifier userIdentifier, Integer resultsPerPage, Integer page) {
+    return getUserBridge(dataSource).listStudentContactLogEntriesByStudent(userIdentifier, resultsPerPage, page);
   }
   
   public BridgeResponse<StudentContactLogEntryRestModel> createStudentContactLogEntry(String dataSource, SchoolDataIdentifier userIdentifier, StudentContactLogEntryRestModel payload) {

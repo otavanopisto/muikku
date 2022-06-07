@@ -110,6 +110,31 @@ public class Note {
   public void setArchived(Boolean archived) {
     this.archived = archived;
   }
+  
+  public Date getStartDate() {
+    return startDate;
+  }
+
+  public void setStartDate(Date startDate) {
+    this.startDate = startDate;
+  }
+  
+  public Date getDueDate() {
+    return dueDate;
+  }
+
+  public void setDueDate(Date dueDate) {
+    this.dueDate = dueDate;
+  }
+  
+  public NoteStatus getStatus() {
+    return status;
+  }
+  
+  public void setStatus(NoteStatus status) {
+    this.status = status;
+  }
+  
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
@@ -155,6 +180,17 @@ public class Note {
 
   @Column (nullable = false)
   private Boolean archived = Boolean.FALSE;
+  
+  @Temporal (value=TemporalType.TIMESTAMP)
+  private Date startDate;
+  
+  @Temporal (value=TemporalType.TIMESTAMP)
+  private Date dueDate;
+  
+  @NotNull
+  @Column (nullable=false)
+  @Enumerated (EnumType.STRING)
+  private NoteStatus status;
 }
 
   

@@ -16,6 +16,7 @@ import ApplicationList, {
 } from "~/components/general/application-list";
 import { AnyActionType } from "~/actions";
 import RecordsGroup from "./records-group/records-group";
+import { StatusType } from "~/reducers/base/status";
 
 /**
  * RecordsProps
@@ -23,6 +24,7 @@ import RecordsGroup from "./records-group/records-group";
 interface RecordsProps {
   i18n: i18nType;
   records: RecordsType;
+  status: StatusType;
 }
 
 /**
@@ -171,6 +173,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     records: state.records,
+    status: state.status,
   };
 }
 

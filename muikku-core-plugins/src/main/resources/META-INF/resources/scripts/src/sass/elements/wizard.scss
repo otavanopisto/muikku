@@ -39,7 +39,7 @@
 
         display: none;
         padding: 0;
-
+        width: auto;
         @include breakpoint($breakpoint-mobile-xl) {
           display: flex;
         }

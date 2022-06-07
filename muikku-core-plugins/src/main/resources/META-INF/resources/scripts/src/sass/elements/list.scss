@@ -1,0 +1,224 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.list-row__container {
+  display: flex;
+  flex-flow: column;
+
+  @include breakpoint($breakpoint-mobile-xl) {
+    flex-flow: wrap;
+  }
+}
+
+.list-subject-course__container {
+  max-height: initial;
+  overflow: unset;
+
+  @include breakpoint($breakpoint-mobile-xl) {
+    max-height: 225px;
+    overflow: auto;
+  }
+}
+
+.list-container--course {
+  box-shadow: 3px 3px 3px grey;
+  margin-bottom: 10px;
+
+  @include breakpoint($breakpoint-mobile-xl) {
+    margin: 5px;
+    width: calc(20% - 10px);
+  }
+}
+
+.list-item--centered {
+  text-align: center;
+}
+
+.list-subject-name {
+  align-items: center;
+  background-color: aliceblue;
+  border-radius: unset;
+  cursor: pointer;
+  display: flex;
+  font-weight: bold;
+  justify-content: space-between;
+  overflow: hidden;
+  padding: 10px 5px 10px 5px;
+  position: relative;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
+}
+
+.list-subject-name-proggress {
+  background-color: green;
+  bottom: 0;
+  content: "\A";
+  height: 5px;
+  left: 0;
+  position: absolute;
+  transition: all 2s;
+  width: 0;
+}
+
+.list-item {
+  border-radius: 5px;
+  overflow: hidden;
+  padding: 10px 5px 10px 5px;
+  position: relative;
+  width: 100%;
+}
+
+.list-item--course {
+  background-color: #fbfbfb;
+  border-radius: 0;
+  margin: 5px 0;
+}
+
+.list-item--course:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.list-item--subject {
+  background-color: aliceblue;
+  border-radius: unset;
+  cursor: pointer;
+  font-weight: bold;
+  justify-content: space-between;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.list-item--SUGGESTED {
+  border: 2px solid pink;
+}
+
+.list-item--MANDATORY {
+  background-color: #acacac;
+}
+
+.list-item--OPTIONAL {
+  background-color: lightblue;
+}
+
+.list-item--COMPLETED {
+  background-color: green;
+}
+
+.list-item--INPROGRESS {
+  background-color: orange;
+}
+
+.list-item--APPROVAL {
+  background-color: palegreen;
+}
+
+.list-item--SELECTED {
+  background-color: cornsilk;
+}
+
+.list-item--SELECTED_OPTIONAL {
+  background-color: #3ab8e1;
+}
+
+.list-item:after {
+  background: pink;
+  content: "";
+  display: block;
+  height: 15px;
+  position: absolute;
+  right: -22px;
+  top: 0;
+  transform: skewX(45deg);
+  transition: right 0.3s ease-in;
+  width: 15px;
+}
+
+.list-item--NEXT:after {
+  background: pink;
+  content: "";
+  display: block;
+  height: 15px;
+  position: absolute;
+  right: -7px;
+  top: 0;
+  transform: skewX(45deg);
+  transition: right 0.3s ease-in;
+  width: 15px;
+}
+
+.list-item--empty {
+  display: none;
+}
+
+.list-item--NOSTATUS {
+  background-color: unset;
+}
+
+.list-item-arrow {
+  border-width: 0 3px 3px 0;
+  border: solid black;
+  display: inline-block;
+  padding: 3px;
+  position: relative;
+  right: 15px;
+  z-index: 10;
+}
+
+.arrow-right {
+  transform: rotate(0);
+  transition: transform 0.3s ease-in;
+}
+
+.arrow-left {
+  transform: rotate(0);
+  transition: transform 0.3s ease-in;
+}
+
+.arrow-up {
+  transform: rotate(-135deg);
+  transition: transform 0.3s ease-in;
+}
+
+.arrow-down {
+  transform: rotate(180);
+  transition: transform 0.3s ease-in;
+}
+
+.list-item-indicator {
+  border-radius: 5px;
+  height: 30px;
+  margin: 0 5px;
+  transform: skew(-20deg);
+  width: 25px;
+}
+
+.list-item-indicator--MANDATORY {
+  background-color: grey;
+}
+
+.list-item-indicator--OPTIONAL {
+  background-color: lightblue;
+}
+
+.list-item-indicator--COMPLETED {
+  background-color: green;
+}
+
+.list-item-indicator--INPROGRESS {
+  background-color: orange;
+}
+
+.list-item-indicator--APPROVAL {
+  background-color: palegreen;
+}
+
+.list-item-indicator--SELECTED {
+  background-color: cornsilk;
+}
+
+.list-item-indicator--SELECTED_OPTIONAL {
+  background-color: #3ab8e1;
+}

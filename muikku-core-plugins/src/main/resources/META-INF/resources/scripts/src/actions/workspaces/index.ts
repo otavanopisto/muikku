@@ -15,6 +15,7 @@ import {
   WorkspacesPatchType,
   WorkspaceAdditionalInfoType,
   WorkspaceUpdateType,
+  WorkspaceSignUpDetails,
   WorkspaceCurriculumFilterType,
   WorkspaceActivityType,
 } from "~/reducers/workspaces";
@@ -760,9 +761,7 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
               )()
           ),
 
-          status.loggedIn &&
-          status.role === Role.STUDENT &&
-          status.permissions.WORKSPACE_IS_WORKSPACE_STUDENT
+          status.loggedIn
             ? // The way refresh works is by never giving an existant value to the reuse existant value function that way it will think that there's no value
               // And rerequest
               reuseExistantValue(
@@ -1299,7 +1298,7 @@ export interface SignupIntoWorkspaceTriggerType {
   (data: {
     success: () => any;
     fail: () => any;
-    workspace: WorkspaceType;
+    workspace: WorkspaceSignUpDetails;
     message: string;
   }): AnyActionType;
 }

@@ -34,6 +34,7 @@ export interface MessageSearchResult {
     firstName: string;
     lastName: string;
     nickName: string;
+    studyProgrammeName?: string;
   };
   senderId: number;
   tags: any;

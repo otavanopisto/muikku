@@ -228,6 +228,17 @@
 .application-sub-panel__body--studies-summary-info {
   display: flex;
   flex-flow: column nowrap;
+  width: 50%;
+}
+
+.application-sub-panel__body--studies-options {
+  align-items: center;
+  background-color: $color-info;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  text-align: center;
+  width: 50%;
 }
 
 .application-sub-panel__body--studies-summary-cards {
@@ -1044,11 +1055,11 @@
   }
 }
 
-.application-sub-panel__item-data--study-start-date .application-sub-panel__single-entry {
+.application-sub-panel__item-data--study-start-date.application-sub-panel__single-entry {
   background-color: $color-sub-panel-data-1-background;
 }
 
-.application-sub-panel__item-data--study-end-date .application-sub-panel__single-entry {
+.application-sub-panel__item-data--study-end-date.application-sub-panel__single-entry {
   background-color: $color-sub-panel-data-2-background;
   color: $color-default;
 }
