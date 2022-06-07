@@ -1,4 +1,5 @@
 import * as React from "react";
+import OutsideClickListener from "~/components/general/outside-click-listener";
 import { prepareH5POn } from "~/lib/h5p";
 import { i18nType } from "~/reducers/base/i18n";
 import {
@@ -21,14 +22,19 @@ interface IframeProps {
 }
 
 /**
+ * IframeState
+ */
+interface IframeState {
+  active: boolean;
+}
+
+/**
  * Iframe
  */
-export default class Iframe extends React.Component<
-  IframeProps,
-  Record<string, unknown>
-> {
+export default class Iframe extends React.Component<IframeProps, IframeState> {
   private mainParentRef: React.RefObject<HTMLDivElement>;
   private loadedH5P = false;
+
   /**
    * constructor
    * @param props props
@@ -39,13 +45,10 @@ export default class Iframe extends React.Component<
     this.mainParentRef = React.createRef();
 
     this.loadH5PIfNecessary = this.loadH5PIfNecessary.bind(this);
-  }
 
-  /**
-   * componentDidMount
-   */
-  componentDidMount() {
-    this.loadH5PIfNecessary();
+    this.state = {
+      active: false,
+    };
   }
 
   /**
@@ -54,6 +57,25 @@ export default class Iframe extends React.Component<
   componentDidUpdate() {
     this.loadH5PIfNecessary();
   }
+
+  /**
+   * iframeClickEventListener
+   * @param e e
+   */
+  handleOverlayClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    this.setState({
+      active: true,
+    });
+  };
+
+  /**
+   * Alert if clicked on outside of element
+   */
+  handleClickOutside = () => {
+    this.setState({
+      active: false,
+    });
+  };
 
   /**
    * loadH5PIfNecessary
@@ -67,6 +89,7 @@ export default class Iframe extends React.Component<
         iframe.addEventListener("load", () => {
           prepareH5POn(iframe);
         });
+
         this.loadedH5P = true;
       }
     }
@@ -138,10 +161,12 @@ export default class Iframe extends React.Component<
           const iframeProps = { ...elementProps };
           const isYoutube =
             elementProps.src && elementProps.src.includes("//www.youtube.com");
-          let containerStyle: any = {
+
+          let containerStyle: React.CSSProperties = {
             height: elementProps.height + "px" || "160px",
             width: "100%",
           };
+
           delete iframeProps.height;
           if (isYoutube) {
             delete iframeProps.width;
@@ -167,12 +192,22 @@ export default class Iframe extends React.Component<
               width: !iframeProps.width ? "100%" : null,
             };
           }
+
           return (
-            <span
-              className="material-page__iframe-wrapper"
-              style={containerStyle}
-            >
-              <Tag {...iframeProps}>{children}</Tag>
+            <span className="material-page__iframe-wrapper">
+              <OutsideClickListener
+                containerStyle={containerStyle}
+                onClickOutside={this.handleClickOutside}
+              >
+                {!this.state.active && (
+                  <div
+                    onClick={this.handleOverlayClick}
+                    className="material-page__iframe-wrapper-overlay"
+                  />
+                )}
+
+                <Tag {...iframeProps}>{children}</Tag>
+              </OutsideClickListener>
             </span>
           );
         },

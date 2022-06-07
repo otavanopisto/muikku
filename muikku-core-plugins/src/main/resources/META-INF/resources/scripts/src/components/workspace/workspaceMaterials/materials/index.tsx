@@ -733,14 +733,14 @@ class WorkspaceMaterials extends React.Component<
     });
 
     const progressData =
-      this.props.workspace && this.props.workspace.studentActivity ? (
+      this.props.workspace && this.props.workspace.activity ? (
         <ProgressData
           modifier="workspace-materials"
           title={this.props.i18n.text.get(
             "plugin.workspace.index.courseProgressLabel"
           )}
           i18n={this.props.i18n}
-          activity={this.props.workspace.studentActivity}
+          activity={this.props.workspace.activity}
         />
       ) : null;
 

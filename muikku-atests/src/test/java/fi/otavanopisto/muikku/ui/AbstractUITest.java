@@ -58,7 +58,6 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
-import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.safari.SafariOptions;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -85,7 +84,6 @@ import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 
 import fi.otavanopisto.muikku.AbstractIntegrationTest;
 import fi.otavanopisto.muikku.TestEnvironments;
-import fi.otavanopisto.muikku.TestUtilities;
 import fi.otavanopisto.muikku.atests.Announcement;
 import fi.otavanopisto.muikku.atests.CommunicatorMessage;
 import fi.otavanopisto.muikku.atests.CommunicatorUserLabelRESTModel;
@@ -102,8 +100,6 @@ import fi.otavanopisto.muikku.mock.CourseBuilder;
 import fi.otavanopisto.muikku.mock.PyramusMock.Builder;
 import fi.otavanopisto.muikku.wcag.AbstractWCAGTest;
 import fi.otavanopisto.pyramus.rest.model.Course;
-import fi.otavanopisto.pyramus.webhooks.WebhookPersonCreatePayload;
-import fi.otavanopisto.pyramus.webhooks.WebhookStudentCreatePayload;
 
 public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDemandSessionIdProvider {
   
@@ -1277,31 +1273,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     waitAndClick(".login-button");
     waitForVisible(".navbar .button-pill--profile");
   }
-  
-  protected void loginStudent1() throws JsonProcessingException, Exception {
-    PyramusMocks.student1LoginMock();
-    PyramusMocks.personsPyramusMocks();
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-    String payload = objectMapper.writeValueAsString(new WebhookStudentCreatePayload((long) 1));
-    TestUtilities.webhookCall("http://dev.muikku.fi:" + getPortHttp() + "/pyramus/webhook", payload);
-    payload = objectMapper.writeValueAsString(new WebhookPersonCreatePayload((long) 1));
-    TestUtilities.webhookCall("http://dev.muikku.fi:" + getPortHttp() + "/pyramus/webhook", payload);
-    navigate("/login?authSourceId=1", false);
-    waitForPresent(".index");
-  }
-  
-  protected void loginStudent2() throws JsonProcessingException, Exception {
-    PyramusMocks.student2LoginMock();
-    PyramusMocks.personsPyramusMocks();
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-    String payload = objectMapper.writeValueAsString(new WebhookStudentCreatePayload((long) 2));
-    webhookCall("http://dev.muikku.fi:" + getPortHttp() + "/pyramus/webhook", payload);
-    payload = objectMapper.writeValueAsString(new WebhookPersonCreatePayload((long) 2));
-    webhookCall("http://dev.muikku.fi:" + getPortHttp() + "/pyramus/webhook", payload);
-    navigate("/login?authSourceId=1", false);
-    waitForPresent(".index");
-  }
-  
+   
   protected void logout() {
     navigate("/", false);
     waitAndClick(".button-pill--profile");
@@ -1877,14 +1849,6 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void dragAndDropWithOffSetAndTimeout(String source, String target, int x, int y){  
     WebElement sourceElement = findElement(source); 
     WebElement targetElement = findElement(target);
-
-//    (new Actions(getWebDriver()))
-//      .moveToElement(sourceElement)
-//      .clickAndHold()
-//      .moveToElement(targetElement, x, y)
-//      .release()
-//      .build()
-//      .perform();
     (new Actions(getWebDriver()))
       .clickAndHold(sourceElement)
       .moveToElement(targetElement, x, y)

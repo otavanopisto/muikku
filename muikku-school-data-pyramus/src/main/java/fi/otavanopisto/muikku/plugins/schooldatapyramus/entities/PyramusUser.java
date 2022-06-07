@@ -14,6 +14,7 @@ public class PyramusUser extends AbstractUser implements User {
                      String nickName,
                      String displayName,
                      String studyProgrammeName,
+                     String studyProgrammeEducationType,
                      SchoolDataIdentifier studyProgrammeIdentifier,
                      String nationality,
                      String language,
@@ -25,7 +26,8 @@ public class PyramusUser extends AbstractUser implements User {
                      OffsetDateTime studyEndDate,
                      OffsetDateTime studyTimeEnd,
                      boolean evaluationFees,
-                     boolean hidden) {
+                     boolean hidden,
+                     boolean matriculationEligibility) {
     
     super(identifier, 
         firstName, 
@@ -33,6 +35,7 @@ public class PyramusUser extends AbstractUser implements User {
         nickName,
         displayName, 
         studyProgrammeName, 
+        studyProgrammeEducationType,
         studyProgrammeIdentifier,
         nationality, 
         language, 
@@ -44,7 +47,8 @@ public class PyramusUser extends AbstractUser implements User {
         hidden, 
         evaluationFees,
         curriculumIdentifier,
-        organizationIdentifier);
+        organizationIdentifier,
+        matriculationEligibility);
   }
 
   @Override

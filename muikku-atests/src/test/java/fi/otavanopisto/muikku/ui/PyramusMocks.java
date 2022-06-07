@@ -10,8 +10,10 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,6 +26,8 @@ import fi.otavanopisto.muikku.mock.model.MockCourseStudent;
 import fi.otavanopisto.pyramus.rest.model.ContactType;
 import fi.otavanopisto.pyramus.rest.model.Course;
 import fi.otavanopisto.pyramus.rest.model.CourseAssessment;
+import fi.otavanopisto.pyramus.rest.model.CourseLength;
+import fi.otavanopisto.pyramus.rest.model.CourseModule;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMemberRole;
 import fi.otavanopisto.pyramus.rest.model.CourseStudent;
@@ -115,7 +119,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
     
     Student student = new Student((long) 1, (long) 1, "Test", "User", null, null, null, null, null, null, null, null,
       null, null, null, (long) 1, null, null, null,
-      false, null, null, null, null, variables, tags, false);
+      false, null, null, null, null, variables, tags, false, null);
     
     String studentJson = objectMapper.writeValueAsString(student);
     
@@ -150,7 +154,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
     
     Student student2 = new Student((long) 5, (long) 5, "Second", "User", null, null, null, null, null, null, null, null,
       null, null, null, (long) 1, null, null, null,
-      false, null, null, null, null, variables, tags, false);
+      false, null, null, null, null, variables, tags, false, null);
     
     String student2Json = objectMapper.writeValueAsString(student2);
     
@@ -409,7 +413,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
         .withStatus(200)));
     
     OffsetDateTime assessmentCreated = OffsetDateTime.of(2015, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC);
-    CourseAssessment courseAssessment = new CourseAssessment(1l, courseStudent.getId(), 1l, 1l, 4l, assessmentCreated, "Test evaluation.", Boolean.TRUE);
+    CourseAssessment courseAssessment = new CourseAssessment(1l, courseStudent.getId(), 1l, 1l, 1l, 4l, assessmentCreated, "Test evaluation.", Boolean.TRUE);
     
     stubFor(post(urlMatching(String.format("/1/students/students/%d/courses/%d/assessments/", student.getId(), courseStudent.getCourseId())))
       .willReturn(aResponse()
@@ -446,7 +450,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
         .withBody(courseStudenJson2)
         .withStatus(200)));
 
-    CourseAssessment courseAssessment2 = new CourseAssessment(1l, courseStudent.getId(), 1l, 1l, 4l, assessmentCreated, "", Boolean.TRUE);
+    CourseAssessment courseAssessment2 = new CourseAssessment(1l, courseStudent.getId(), 1l, 1l, 1l, 4l, assessmentCreated, "", Boolean.TRUE);
     stubFor(get(urlMatching(String.format("/1/students/students/%d/courses/%d/assessments/", student2.getId(), courseStudent2.getCourseId())))
       .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
@@ -536,7 +540,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     
     StudyProgrammeCategory spc = new StudyProgrammeCategory(1l, "All Study Programmes", 1l, false);
-    StudyProgramme sp = new StudyProgramme(1l, 1l, "test", "Test Study Programme", 1l, false, false);
+    StudyProgramme sp = new StudyProgramme(1l, 1l, "test", "Test Study Programme", 1l, null, false, false);
     
     StudyProgramme[] sps = { sp };
     StudyProgrammeCategory[] spcs = { spc };
@@ -576,11 +580,23 @@ public class PyramusMocks extends AbstractPyramusMocks {
     OffsetDateTime begin = OffsetDateTime.of(2000, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
     OffsetDateTime end = OffsetDateTime.of(2050, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
 
-    Course course = new Course(id, name, created, created, description, false, 1, 
+    Set<CourseModule> courseModules = new HashSet<>();
+    Subject subject = new Subject(1L, null, null, null, null);
+    EducationalTimeUnit unit = new EducationalTimeUnit(1L, null, null, null, null);
+    CourseLength courseLength = new CourseLength(id, 1d, 45d, unit);
+    courseModules.add(new CourseModule(
+        id,                             // id
+        subject,                        // subject
+        1,                              // courseNumber 
+        courseLength                    // courseLength
+      )
+    );
+    
+    Course course = new Course(id, name, created, created, description, false,
       (long) 25, begin, end, "test extension", (double) 15, (double) 45, (double) 45,
       (double) 15, (double) 45, (double) 45, end, (long) 1,
-      (long) 1, (long) 1, null, (double) 45, (long) 1, (long) 1, (long) 1, (long) 1, 
-      null, null, 1L, false, 1L, 1L);
+      (long) 1, null, (long) 1, (long) 1, (long) 1, 
+      null, null, 1L, false, 1L, 1L, courseModules);
   
     String courseJson = objectMapper.writeValueAsString(course);
     
@@ -885,7 +901,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 //    CourseStudent courseStudent = new CourseStudent(3l, 1l, 1l, OffsetDateTime.of(2010, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), false, null, null, null, null, null);
     OffsetDateTime assessmentCreated = OffsetDateTime.of(2015, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC);
-    CourseAssessment courseAssessment = new CourseAssessment(1l, courseStudent.getId(), 1l, 1l, assessorId, assessmentCreated, "Test evaluation.", Boolean.TRUE);
+    CourseAssessment courseAssessment = new CourseAssessment(1l, courseStudent.getId(), 1l, 1l, 1l, assessorId, assessmentCreated, "Test evaluation.", Boolean.TRUE);
     List<CourseAssessment> courseAssessments = new ArrayList<CourseAssessment>();
     courseAssessments.add(courseAssessment);
     stubFor(get(urlEqualTo(String.format("/1/students/students/%d/courses/%d/assessments/", courseStudent.getStudentId(), courseStudent.getCourseId())))

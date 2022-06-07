@@ -19,11 +19,16 @@ public interface SearchProvider {
   public void deinit();
   
   public WorkspaceSearchBuilder searchWorkspaces();
-  public SearchResult searchWorkspaces(String schoolDataSource, List<String> subjects, List<String> identifiers, List<SchoolDataIdentifier> educationTypeIdentifiers, List<SchoolDataIdentifier> curriculumIdentifiers, 
+  public SearchResults<List<IndexedWorkspace>> searchIndexedWorkspaces(List<SchoolDataIdentifier> subjects, List<SchoolDataIdentifier> identifiers, List<SchoolDataIdentifier> educationTypeIdentifiers, List<SchoolDataIdentifier> curriculumIdentifiers, 
       Collection<OrganizationRestriction> organizationRestrictions, String freeText, Collection<WorkspaceAccess> accesses, SchoolDataIdentifier accessUser, int start, int maxResults, List<Sort> sorts);
-  public SearchResult searchWorkspaces(List<OrganizationEntity> organizations, String subjectIdentifier, Integer courseNumber);
+
+  public SearchResult searchWorkspaces(List<SchoolDataIdentifier> subjects, List<SchoolDataIdentifier> identifiers, List<SchoolDataIdentifier> educationTypeIdentifiers, List<SchoolDataIdentifier> curriculumIdentifiers, 
+      Collection<OrganizationRestriction> organizationRestrictions, String freeText, Collection<WorkspaceAccess> accesses, SchoolDataIdentifier accessUser, int start, int maxResults, List<Sort> sorts);
+  public SearchResult searchWorkspaces(SchoolDataIdentifier subjectIdentifier, int courseNumber);
+
   public SearchResult findWorkspace(SchoolDataIdentifier identifier); 
   
+  public IndexedCommunicatorMessage findCommunicatorMessage(Long communicatorMessageId);
   public CommunicatorMessageSearchBuilder searchCommunicatorMessages();
   public SearchResults<List<IndexedCommunicatorMessage>> searchCommunicatorMessages(String queryString, long senderId, IndexedCommunicatorMessageSender sender, List<IndexedCommunicatorMessageRecipient> recipients, Date created, Set<Long> tags, int start, int maxResults, List<Sort> sorts);
 
@@ -44,6 +49,7 @@ public interface SearchProvider {
       Collection<String> fields, Collection<SchoolDataIdentifier> excludeSchoolDataIdentifiers, Date startedStudiesBefore,
       Date studyTimeEndsBefore);
 
+  public SearchResult findUserGroup(SchoolDataIdentifier identifier);
   public SearchResult searchUserGroups(String searchTerm, String archetype, List<OrganizationEntity> organizations, int start, int maxResults);
   public long countActiveStudents(OrganizationEntity organizationEntity);
   public long countInactiveStudents(OrganizationEntity organizationEntity);

@@ -43,7 +43,6 @@ import fi.otavanopisto.muikku.schooldata.entity.UserProperty;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
-import fi.otavanopisto.muikku.users.OrganizationEntityController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
@@ -85,9 +84,6 @@ public class TranscriptOfRecordsController {
 
   @Inject
   private GradingController gradingController;
-  
-  @Inject
-  private OrganizationEntityController organizationEntityController;
 
   @Inject
   @Any
@@ -202,11 +198,11 @@ public class TranscriptOfRecordsController {
     return new TranscriptofRecordsUserProperties(userProperties, studentMatriculationSubjects);
   }
 
-  public List<VopsWorkspace> listWorkspaceIdentifiersBySubjectIdentifierAndCourseNumber(String schoolDataSource, String subjectIdentifier, int courseNumber) {
+  public List<VopsWorkspace> listWorkspaceIdentifiersBySubjectIdentifierAndCourseNumber(SchoolDataIdentifier subjectIdentifier, int courseNumber) {
     List<VopsWorkspace> retval = new ArrayList<>();
     SearchProvider searchProvider = getProvider("elastic-search");
     if (searchProvider != null) {
-      SearchResult sr = searchProvider.searchWorkspaces(organizationEntityController.listLoggedUserOrganizations(), subjectIdentifier, courseNumber);
+      SearchResult sr = searchProvider.searchWorkspaces(subjectIdentifier, courseNumber);
       List<Map<String, Object>> results = sr.getResults();
       for (Map<String, Object> result : results) {
         String searchId = (String) result.get("id");

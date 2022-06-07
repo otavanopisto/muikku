@@ -65,7 +65,6 @@ class StudentDialog extends React.Component<
    * constructor
    * @param props props for the constructor
    */
-
   constructor(props: StudentDialogProps) {
     super(props);
 
@@ -194,7 +193,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     status: state.status,
-    currentStudentStatus: state.guider.currentState,
+    currentStudentStatus: state.guider.currentStudentState,
     guider: state.guider,
   };
 }

@@ -44,53 +44,75 @@ public class IndexEntityProcessor {
       Map<String, Object> indexObject = new HashMap<String, Object>();
       
       indexObject.put("id", id);
-      
-      for (Method indexableGetter : getIndexableGetters(entity)) {
-        String fieldName = StringUtils.uncapitalize(indexableGetter.getName().substring(3));
-        IndexField indexField = findIndexField(indexableGetter);
-        
-        if (indexField != null) {
-          if (indexField.skip()) {
-            continue;
-          }
-          
-          String name = indexField.name();
-          if (StringUtils.isNotBlank(name)) {
-            fieldName = name;
-          }
-        }
-        
-        Object fieldValue = indexableGetter.invoke(entity);
-        if (indexField != null && indexField.toId()) {
-          if (fieldValue != null) {
-            if (fieldValue instanceof Collection) {
-              Collection<?> collection = (Collection<?>) fieldValue;
-              Set<String> ids = new HashSet<String>();
-              for (Object o : collection) {
-                if (o != null) {
-                  if (o instanceof SchoolDataIdentifier)
-                    ids.add(((SchoolDataIdentifier) o).toId());
-                  else {
-                    logger.severe(String.format("@Indexable toId for Collection must be Collection<SchoolDataIdentifier> but was Collection<%s>", o.getClass().getName()));
-                  }
-                }
-              }
-              fieldValue = ids;
-            } else if (fieldValue instanceof SchoolDataIdentifier) {
-              fieldValue = ((SchoolDataIdentifier) fieldValue).toId();
-            } else {
-              logger.severe(String.format("@Indexable toId must be SchoolDataIdentifier but was %s", fieldValue.getClass().getName()));
-            }
-          }
-        }
-        
-        indexObject.put(fieldName, fieldValue);
-      }
 
-      return indexObject;
+      return processObject(entity, indexObject);
     }
 
     return null;
+  }
+  
+  private Map<String, Object> processObject(Object entity, Map<String, Object> properties) throws IllegalArgumentException, IllegalAccessException, IntrospectionException, InvocationTargetException {
+    
+    for (Method indexableGetter : getIndexableGetters(entity)) {
+      int getterPrefixSubstrIndex = StringUtils.startsWith(indexableGetter.getName(), "is") ? 2 : 3;
+      
+      String fieldName = StringUtils.uncapitalize(indexableGetter.getName().substring(getterPrefixSubstrIndex));
+      IndexField indexField = findIndexField(indexableGetter);
+      
+      if (indexField != null) {
+        if (indexField.skip()) {
+          continue;
+        }
+        
+        String name = indexField.name();
+        if (StringUtils.isNotBlank(name)) {
+          fieldName = name;
+        }
+      }
+      
+      Object fieldValue = indexableGetter.invoke(entity);
+      if ((indexField != null) && (fieldValue != null)) {
+        
+        if (indexField.toId()) {
+          if (fieldValue instanceof Collection) {
+            Collection<?> collection = (Collection<?>) fieldValue;
+            Set<String> ids = new HashSet<String>();
+            for (Object o : collection) {
+              if (o != null) {
+                if (o instanceof SchoolDataIdentifier)
+                  ids.add(((SchoolDataIdentifier) o).toId());
+                else {
+                  logger.severe(String.format("@Indexable toId for Collection must be Collection<SchoolDataIdentifier> but was Collection<%s>", o.getClass().getName()));
+                }
+              }
+            }
+            fieldValue = ids;
+          } else if (fieldValue instanceof SchoolDataIdentifier) {
+            fieldValue = ((SchoolDataIdentifier) fieldValue).toId();
+          } else {
+            logger.severe(String.format("@Indexable toId must be SchoolDataIdentifier but was %s", fieldValue.getClass().getName()));
+          }
+        } 
+        else if (indexField.collection() && (fieldValue instanceof Collection)) {
+          Collection<?> collection = (Collection<?>) fieldValue;
+          List<Map<String, Object>> processed = new ArrayList<>();
+          
+          for (Object obj : collection) {
+            Map<String, Object> processObject = processObject(obj, new HashMap<String, Object>());
+            
+            if (processObject != null && !processObject.isEmpty()) {
+              processed.add(processObject);
+            }
+          }
+
+          fieldValue = processed;
+        }
+      }
+      
+      properties.put(fieldName, fieldValue);
+    }
+
+    return properties;
   }
   
   private IndexField findIndexField(Method method) {
@@ -215,7 +237,7 @@ public class IndexEntityProcessor {
           continue;
         }
         
-        if (StringUtils.startsWith(method.getName(), "get")) {
+        if (StringUtils.startsWith(method.getName(), "get") || StringUtils.startsWith(method.getName(), "is")) {
           result.add(method);
         }
       }

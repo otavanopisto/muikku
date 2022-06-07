@@ -2,6 +2,7 @@ import {
   WorkspaceType,
   MaterialContentNodeListType,
   MaterialAssignmentType,
+  WorkspaceSubject,
 } from "../reducers/workspaces/index";
 /**
  * EvaluationEnum
@@ -34,12 +35,14 @@ export interface EvaluationEvent {
   student: string;
   text: string;
   type: EvaluationEnum;
+  workspaceSubjectIdentifier: string | null;
 }
 
 /**
  * EvaluationAssignmentContent
  */
 export interface EvaluationAssignmentContent {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   answers: any[];
   created: string | null;
   lastModified: string | null;
@@ -92,6 +95,13 @@ export interface EvaluationStudyDiaryEvent {
 }
 
 /**
+ * EvaluationWorkspaceSubject
+ */
+export interface EvaluationWorkspaceSubject extends WorkspaceSubject {
+  datasource: string;
+}
+
+/**
  * AssessmentRequest
  */
 export interface AssessmentRequest {
@@ -112,7 +122,21 @@ export interface AssessmentRequest {
   workspaceUrlName: string;
   workspaceUserEntityId: number;
   workspaceUserIdentifier: string;
+  subjects: EvaluationWorkspaceSubject[];
 }
+
+/**
+ * Interface for latest evaluation per subject
+ */
+export interface EvaluationLatestSubjectEvaluationIndex {
+  [subjectIdentifier: string]: number;
+}
+
+/**
+ * Interface for last evaluation per subject
+ */
+export interface EvaluationLastSubjectEvaluationIndex
+  extends EvaluationLatestSubjectEvaluationIndex {}
 
 /**
  * Interface for grading system
@@ -122,6 +146,7 @@ export interface EvaluationGradeSystem {
   id: string;
   name: string;
   grades: EvaluationGrade[];
+  active: boolean;
 }
 
 /**
@@ -144,6 +169,13 @@ export type EvaluationWorkspace = WorkspaceType;
 export interface EvaluationStatus {
   key: string;
   value: string;
+}
+
+/**
+ * BasePriceById
+ */
+export interface EvaluationBasePriceById {
+  [id: string]: number;
 }
 
 /**
@@ -215,6 +247,7 @@ export interface WorkspaceEvaluationSaveRequest {
   gradeIdentifier: string;
   verbalAssessment: string;
   assessmentDate: string;
+  workspaceSubjectIdentifier: string;
 }
 
 /**
@@ -248,6 +281,7 @@ export interface AssignmentEvaluationSaveReturn {
  */
 export interface WorkspaceSupplementationSaveRequest {
   id?: string;
+  workspaceSubjectIdentifier: string;
   requestDate: string;
   requestText: string;
 }

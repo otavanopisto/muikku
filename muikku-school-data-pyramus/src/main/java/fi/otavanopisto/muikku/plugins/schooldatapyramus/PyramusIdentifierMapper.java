@@ -29,6 +29,7 @@ public class PyramusIdentifierMapper {
   private static final String TRANSFERCREDIT_PREFIX = "STC-";
   private static final String SCHOOL_PREFIX = "SC-";
   private static final String CREDITLINK_PREFIX = "CREDITLINK-";
+  private static final String COURSEMODULE_PREFIX = "COURSEMODULE-";
 
   public String getWorkspaceIdentifier(Long courseId) {
     return courseId != null ? courseId.toString() : null;
@@ -172,10 +173,6 @@ public class PyramusIdentifierMapper {
 
   public Long getPyramusCourseTypeId(SchoolDataIdentifier workspaceTypeIdentifier) {
     return workspaceTypeIdentifier != null ? NumberUtils.createLong(workspaceTypeIdentifier.getIdentifier()) : null;
-  }
-  
-  public String getWorkspaceCourseIdentifier(Long subjectId, Integer courseNumber) {
-    return (subjectId == null)||(courseNumber == null) ? null : String.format("%d/%d", subjectId, courseNumber);
   }
   
   public Long getPyramusStudentGroupId(String studentGroupIdentifier){
@@ -383,6 +380,18 @@ public class PyramusIdentifierMapper {
 
   public SchoolDataIdentifier getCreditLinkIdentifier(Long creditLinkId) {
     return creditLinkId != null ? new SchoolDataIdentifier(String.format("%s%d", CREDITLINK_PREFIX, creditLinkId), SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE) : null; 
+  }
+
+  public Long getPyramusCourseModuleId(String workspaceSubjectIdentifier) {
+    if (StringUtils.startsWith(workspaceSubjectIdentifier, COURSEMODULE_PREFIX)) {
+      return NumberUtils.createLong(StringUtils.substring(workspaceSubjectIdentifier, COURSEMODULE_PREFIX.length()));
+    }
+    
+    return null;
+  }
+  
+  public SchoolDataIdentifier getCourseModuleIdentifier(Long courseModuleId) {
+    return courseModuleId != null ? new SchoolDataIdentifier(String.format("%s%d", COURSEMODULE_PREFIX, courseModuleId), SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE) : null; 
   }
 
 }

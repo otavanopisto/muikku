@@ -48,14 +48,12 @@ import fi.otavanopisto.muikku.plugins.organizationmanagement.rest.model.Organiza
 import fi.otavanopisto.muikku.plugins.search.UserIndexer;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceEntityFileController;
 import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
-import fi.otavanopisto.muikku.schooldata.CourseMetaController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.RoleController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
-import fi.otavanopisto.muikku.schooldata.entity.EducationType;
 import fi.otavanopisto.muikku.schooldata.entity.Role;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
@@ -108,9 +106,6 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
   private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
 
   @Inject
-  private CourseMetaController courseMetaController;
-
-  @Inject
   private WorkspaceEntityFileController workspaceEntityFileController;
   
   @Inject
@@ -142,7 +137,7 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
   @RESTPermit(OrganizationManagementPermissions.ORGANIZATION_MANAGE_WORKSPACES)
   public Response listWorkspaces(
         @QueryParam("q") String searchString,
-        @QueryParam("subjects") List<String> subjects,
+        @QueryParam("subjects") List<String> subjectIds,
         @QueryParam("educationTypes") List<String> educationTypeIds,
         @QueryParam("curriculums") List<String> curriculumIds,
         @QueryParam("publicity") @DefaultValue ("ONLY_PUBLISHED") PublicityRestriction publicityRestriction,
@@ -153,8 +148,7 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
         @Context Request request) {
     
     SchoolDataIdentifier loggedUser = sessionController.getLoggedUser();
-    String schoolDataSourceFilter = null;
-    List<String> workspaceIdentifierFilters = null;
+    List<SchoolDataIdentifier> workspaceIdentifierFilters = null;
     
     SearchProvider searchProvider = searchProviderInstance.get();
     if (searchProvider == null) {
@@ -180,7 +174,7 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
         if (sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_OWN_UNPUBLISHED_WORKSPACES)) {
           // List only from workspaces the user is member of
           workspaceIdentifierFilters = workspaceUserEntityController.listActiveWorkspaceEntitiesByUserEntity(sessionController.getLoggedUserEntity()).stream()
-              .map(WorkspaceEntity::getIdentifier)
+              .map(WorkspaceEntity::schoolDataIdentifier)
               .collect(Collectors.toList());
         } else {
           return Response.status(Status.FORBIDDEN).entity("You have no permission to list unpublished workspaces.").build();
@@ -225,6 +219,19 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
       }
     }
 
+    List<SchoolDataIdentifier> subjects = null;
+    if (subjectIds != null) {
+      subjects = new ArrayList<>(subjectIds.size());
+      for (String subjectId : subjectIds) {
+        SchoolDataIdentifier subjectIdentifier = SchoolDataIdentifier.fromId(subjectId);
+        if (subjectIdentifier != null) {
+          subjects.add(subjectIdentifier);
+        } else {
+          return Response.status(Status.BAD_REQUEST).entity(String.format("Malformed subject identifier", subjectId)).build();
+        }
+      }
+    }
+    
     // Restrict search to the organizations of the user
     
     UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
@@ -233,7 +240,6 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
     List<OrganizationRestriction> organizationRestrictions = organizationEntityController.listUserOrganizationRestrictions(organizations, publicityRestriction, templateRestriction);
     
     SearchResult searchResult = searchProvider.searchWorkspaces()
-        .setSchoolDataSource(schoolDataSourceFilter)
         .setSubjects(subjects)
         .setWorkspaceIdentifiers(workspaceIdentifierFilters)
         .setEducationTypeIdentifiers(educationTypes)
