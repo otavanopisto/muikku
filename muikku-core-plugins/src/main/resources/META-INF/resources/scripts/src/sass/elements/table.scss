@@ -4,7 +4,8 @@
 @import "../base/breakpoints";
 
 .table {
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
   font-family: "Open Sans", "Arial", sans-serif;
   table-layout: fixed;
   width: 100%;
@@ -16,9 +17,28 @@
   width: calc(100% - 10px);
 }
 
-.table__thead,
 .table__tbody {
   border-bottom: 2px solid $color-hops-dialog-form-element-border;
+}
+
+.table__thead th {
+  background: $color-default;
+  border-bottom: 2px solid $color-hops-dialog-form-element-border;
+}
+
+.table__thead--sticky th {
+  position: sticky;
+  top: $navbar-mobile-height;
+
+  @include breakpoint($breakpoint-pad) {
+    position: sticky;
+    top: $navbar-desktop-height;
+  }
+}
+
+.table__thead--sticky-inside-dialog th {
+  position: sticky;
+  top: $dialog-title-height;
 }
 
 // This is span element and is necessary wrapper for the flex elements alignment inside TD's

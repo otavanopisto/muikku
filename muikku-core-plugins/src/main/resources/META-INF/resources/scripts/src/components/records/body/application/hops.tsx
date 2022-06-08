@@ -79,7 +79,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
    */
   renderHops = () => {
     if (
-      this.props.hops.hopsPhase === undefined ||
+      this.props.hops.hopsPhase === null ||
       this.props.hops.hopsPhase === "0"
     ) {
       return (
@@ -91,11 +91,12 @@ class Hops extends React.Component<HopsProps, HopsState> {
 
     return (
       <CompulsoryEducationHopsWizard
-        phase={parseInt(this.props.hops.hopsPhase)}
         user="student"
+        usePlace="studies"
         studentId={document
           .querySelector('meta[name="muikku:loggedUser"]')
           .getAttribute("value")}
+        phase={parseInt(this.props.hops.hopsPhase)}
         disabled={false}
         superVisorModifies={false}
       />

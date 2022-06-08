@@ -14,6 +14,7 @@ interface HopsStudiesPlanningProps extends HopsBaseProps {
   followUp: FollowUp;
   studies: HopsPlanningStudies;
   studentId: string;
+  studentsUserEntityId: number;
   studyTimeEnd: string | null;
   superVisorModifies: boolean;
   onStudiesPlanningChange: (studies: HopsPlanningStudies) => void;
@@ -135,7 +136,9 @@ class HopsStudiesPlanning extends React.Component<
               </div>
               <HopsPlanningTool
                 user={this.props.user}
+                usePlace={this.props.usePlace}
                 studentId={this.props.studentId}
+                studentsUserEntityId={this.props.studentsUserEntityId}
                 disabled={this.props.disabled}
                 studyTimeEnd={this.props.studyTimeEnd}
                 superVisorModifies={this.props.superVisorModifies}

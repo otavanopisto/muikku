@@ -640,12 +640,6 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
     return null;
   }
   
-  @Override
-  public String findStudentEducationalLevel(Long studentEntityId) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
   public boolean isActiveUser(User user) {
     return user.getStudyEndDate() == null;
   }
@@ -755,6 +749,11 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
   @Override
   public String findUserSsn(SchoolDataIdentifier userIdentifier) {
     return null;
+  }
+
+  @Override
+  public boolean amICounselor(String studentIdentifier) {
+    return false;
   }
 
 }
