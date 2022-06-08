@@ -9,7 +9,8 @@ public class CommunicatorUserBasicInfo {
               Long userEntityId,
               String firstName,
               String lastName,
-              String nickName, 
+              String nickName,
+              String studyProgrammeName,
               boolean archived,
               boolean studiesEnded 
               ) {
@@ -18,6 +19,7 @@ public class CommunicatorUserBasicInfo {
     this.firstName = firstName;
     this.lastName = lastName;
     this.nickName = nickName;
+    this.studyProgrammeName = studyProgrammeName;
     this.archived = archived;
     this.studiesEnded = studiesEnded;
   }
@@ -70,10 +72,19 @@ public class CommunicatorUserBasicInfo {
     this.userEntityId = userEntityId;
   }
 
+  public String getStudyProgrammeName() {
+    return studyProgrammeName;
+  }
+
+  public void setStudyProgrammeName(String studyProgrammeName) {
+    this.studyProgrammeName = studyProgrammeName;
+  }
+
   private Long userEntityId;
   private String firstName;
   private String lastName;
   private String nickName;
+  private String studyProgrammeName;
   private boolean archived;
   private boolean studiesEnded;
 }

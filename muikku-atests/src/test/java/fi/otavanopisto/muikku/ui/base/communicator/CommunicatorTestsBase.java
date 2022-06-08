@@ -99,7 +99,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
         login();
         navigate("/communicator", false);
         waitForPresent(".application-list__item-header--communicator-message .application-list__header-primary>span");
-        assertText(".application-list__item-header--communicator-message .application-list__header-primary>span", "Student Tester");
+        assertText(".application-list__item-header--communicator-message .application-list__header-primary>span", "Student Tester (Test Study Programme)");
         waitForPresent(".application-list__item-body--communicator-message .application-list__header-item-body");
         assertText(".application-list__item-body--communicator-message .application-list__header-item-body", "T");
       }finally{
@@ -274,7 +274,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
         
         waitAndClick("div.application-panel__content div.application-panel__helper-container a[href^='#label-']");
         waitForPresent(".application-list__item-header--communicator-message .application-list__header-primary span");
-        assertText(".application-list__item-header--communicator-message .application-list__header-primary span", "Student Tester");
+        assertText(".application-list__item-header--communicator-message .application-list__header-primary span", "Student Tester (Test Study Programme)");
         waitForPresent(".application-list__item-body--communicator-message span");
         assertText(".application-list__item-body--communicator-message span", "Another one");
       }finally{

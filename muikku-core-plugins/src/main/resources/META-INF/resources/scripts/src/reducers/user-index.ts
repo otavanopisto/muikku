@@ -176,6 +176,7 @@ export interface ContactRecipientType {
     archived?: boolean;
     studiesEnded?: boolean;
     identifier?: string;
+    studyProgrammeName?: string;
   };
 }
 

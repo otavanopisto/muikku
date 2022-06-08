@@ -194,6 +194,7 @@ public class CommunicatorRecipientsRESTService extends PluginRESTService {
             (String) o.get("firstName"),
             (String) o.get("lastName"), 
             (String) o.get("nickName"), 
+            (String) o.get("studyProgrammeName"), 
             hasImage,
             (String) o.get("nationality"),
             (String) o.get("language"), 

@@ -134,6 +134,8 @@ public class WorkspaceIndexer {
     indexedWorkspace.setTemplate(workspace.isTemplate());
     indexedWorkspace.setAccess(workspaceEntity.getAccess());
     indexedWorkspace.setPublished(workspaceEntity.getPublished());
+    indexedWorkspace.setBeginDate(workspace.getBeginDate());
+    indexedWorkspace.setEndDate(workspace.getEndDate());
     
     Set<SchoolDataIdentifier> curriculumIdentifiers = workspace.getCurriculumIdentifiers() != null
         ? new HashSet<>(workspace.getCurriculumIdentifiers()) : null;

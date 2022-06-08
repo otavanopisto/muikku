@@ -303,6 +303,7 @@ export default class c extends React.Component<
           id: item.id,
           name: getName(item, this.props.showFullNames),
           email: item.email,
+          studyProgrammeName: item.studyProgrammeName,
         },
       })
     );
@@ -426,6 +427,9 @@ export default class c extends React.Component<
             <span className="autocomplete__selected-item">
               <span className="glyph glyph--selected-recipient icon-user" />
               {item.value.name}
+              {item.value.studyProgrammeName
+                ? ` (${item.value.studyProgrammeName})`
+                : ""}
               {checkHasPermission(this.props.showEmails) ? (
                 <i>{item.value.email}</i>
               ) : null}
@@ -462,10 +466,16 @@ export default class c extends React.Component<
     const autocompleteItems = this.state.autocompleteSearchItems.map((item) => {
       let node;
       if (item.type === "user" || item.type === "staff") {
+        let recipientName = item.value.name;
+
+        if (item.value.studyProgrammeName) {
+          recipientName = `${item.value.name} (${item.value.studyProgrammeName})`;
+        }
+
         node = (
           <div className="autocomplete__recipient">
             <span className="glyph glyph--autocomplete-recipient icon-user"></span>
-            {filterHighlight(item.value.name, this.state.textInput)}{" "}
+            {filterHighlight(recipientName, this.state.textInput)}{" "}
             {checkHasPermission(this.props.showEmails) ? (
               <i>{item.value.email}</i>
             ) : null}
