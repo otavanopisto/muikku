@@ -5,7 +5,8 @@ import static org.junit.Assert.assertNotNull;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
 import io.restassured.response.Response;
 
 import fi.otavanopisto.muikku.atests.Workspace;
@@ -21,7 +22,7 @@ public class MuikkuTestTools {
   }
   
   public Workspace createWorkspace(Course course, Boolean published) throws Exception {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
     Builder mockBuilder = mocker();
     
