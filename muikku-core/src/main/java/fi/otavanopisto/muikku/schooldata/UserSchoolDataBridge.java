@@ -337,4 +337,6 @@ public interface UserSchoolDataBridge {
 
   public String findUserSsn(SchoolDataIdentifier userIdentifier);
 
+  public boolean amICounselor(String studentIdentifier);
+
 }
