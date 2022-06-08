@@ -18,10 +18,13 @@ import { StatusType } from "../../../../../reducers/base/status";
 import Material from "../current-record/material";
 import Journal from "../current-record/journal";
 import Tabs, { Tab } from "~/components/general/tabs";
-import ApplicationPanelBody from "~/components/general/application-panel/components/application-panel-body";
+import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import { useExcerciseAssignments } from "./hooks/useExcercises";
 import { useCompositeReply } from "./hooks/useCompositeReply";
-import Button from "~/components/general/button";
+import Link from "~/components/general/link";
+
+import "~/sass/elements/empty.scss";
+import "~/sass/elements/application-sub-panel.scss";
 
 /**
  * AssignmentsAndDiariesProps
@@ -327,103 +330,137 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
    * @returns JSX.Element
    */
   const renderJournalsList = (
-    <div className="application-list_item-wrapper">
-      {journalsData.journals.length ? (
-        journalsData.journals.map((journal) => {
-          const isOpen = journalsOpen.includes(journal.id);
+    <ApplicationSubPanel modifier="studies-journal-entries">
+      <ApplicationSubPanel.Header modifier="studies-journal-entries">
+        <span>Oppimispäiväkirjamerkinnät</span>
+        <span>
+          <Link
+            className="link link--studies-close-open"
+            disabled={
+              journalsData.isLoading || journalsData.journals.length === 0
+            }
+            onClick={handleOpenAllJournalsClick}
+          >
+            Avaa kaikki
+          </Link>
+          <Link
+            className="link link--studies-close-open"
+            disabled={
+              journalsData.isLoading || journalsData.journals.length === 0
+            }
+            onClick={handleCloseAllJournalsClick}
+          >
+            Sulje kaikki
+          </Link>
+        </span>
+      </ApplicationSubPanel.Header>
+      <ApplicationSubPanel.Body>
+        {journalsData.journals.length ? (
+          journalsData.journals.map((journal) => {
+            const isOpen = journalsOpen.includes(journal.id);
 
-          return (
-            <Journal
-              key={journal.id}
-              journal={journal}
-              open={isOpen}
-              onJournalClick={handleJournalClick}
-            />
-          );
-        })
-      ) : (
-        <ApplicationListItem>
-          <ApplicationListItemHeader className="application-list__item-header--journal-entry">
-            <div className="application-list__item-header-main application-list__item-header-main--journal-entry">
-              <span className="application-list__item-header-main-content application-list__item-header-main-content--journal-entry-title">
-                Ei päiväkirjamerkintöjä
-              </span>
-            </div>
-          </ApplicationListItemHeader>
-        </ApplicationListItem>
-      )}
-    </div>
+            return (
+              <Journal
+                key={journal.id}
+                journal={journal}
+                open={isOpen}
+                onJournalClick={handleJournalClick}
+              />
+            );
+          })
+        ) : (
+          <div className="empty">
+            <span>Ei päiväkirjamerkintöjä</span>
+          </div>
+        )}
+      </ApplicationSubPanel.Body>
+    </ApplicationSubPanel>
   );
 
   const panelTabs: Tab[] = [
     {
       id: "EVALUATED",
       name: "Arvioitavat tehtävät",
-      type: "evaluated",
+      type: "assignments",
       component: (
-        <ApplicationPanelBody modifier="tabs">
-          <Button
-            buttonModifiers="info"
-            disabled={
-              evaluatedAssignmentsData.isLoading ||
-              evaluatedAssignmentsData.evaluatedAssignments.length === 0
-            }
-            onClick={handleOpenAllAssignmentsByTypeClick("EVALUATED")}
-          >
-            Avaa kaikki
-          </Button>
-          <Button
-            buttonModifiers="warn"
-            disabled={
-              evaluatedAssignmentsData.isLoading ||
-              evaluatedAssignmentsData.evaluatedAssignments.length === 0
-            }
-            onClick={handleCloseAllAssignmentsByTypeClick("EVALUATED")}
-          >
-            Sulje kaikki
-          </Button>
-          {evaluatedAssignmentsData.isLoading ||
-          compositeReplyData.isLoading ? (
-            <div className="loader-empty" />
-          ) : (
-            renderEvaluatedMaterialsList
-          )}
-        </ApplicationPanelBody>
+        <ApplicationSubPanel modifier="studies-assignments">
+          <ApplicationSubPanel.Header modifier="studies-assignments">
+            <span>Arvioitavat tehtävät</span>
+            <span>
+              <Link
+                className="link link--studies-close-open"
+                disabled={
+                  evaluatedAssignmentsData.isLoading ||
+                  evaluatedAssignmentsData.evaluatedAssignments.length === 0
+                }
+                onClick={handleOpenAllAssignmentsByTypeClick("EVALUATED")}
+              >
+                Avaa kaikki
+              </Link>
+              <Link
+                className="link link--studies-close-open"
+                disabled={
+                  evaluatedAssignmentsData.isLoading ||
+                  evaluatedAssignmentsData.evaluatedAssignments.length === 0
+                }
+                onClick={handleCloseAllAssignmentsByTypeClick("EVALUATED")}
+              >
+                Sulje kaikki
+              </Link>
+            </span>
+          </ApplicationSubPanel.Header>
+          <ApplicationSubPanel.Body>
+            {evaluatedAssignmentsData.isLoading ||
+            compositeReplyData.isLoading ? (
+              <div className="loader-empty" />
+            ) : (
+              renderEvaluatedMaterialsList
+            )}
+          </ApplicationSubPanel.Body>
+        </ApplicationSubPanel>
       ),
     },
     {
       id: "EXCERCISE",
-      name: "Harjoitus tehtävät",
-      type: "excercise",
+      name: "Harjoitustehtävät",
+      type: "excercises",
       component: (
-        <ApplicationPanelBody modifier="tabs">
-          <Button
-            buttonModifiers="info"
-            disabled={
-              excerciseAssignmentsData.isLoading ||
-              excerciseAssignmentsData.excerciseAssignments.length === 0
-            }
-            onClick={handleOpenAllAssignmentsByTypeClick("EXERCISE")}
-          >
-            Avaa kaikki
-          </Button>
-          <Button
-            buttonModifiers="warn"
-            disabled={
-              excerciseAssignmentsData.isLoading ||
-              excerciseAssignmentsData.excerciseAssignments.length === 0
-            }
-            onClick={handleCloseAllAssignmentsByTypeClick("EXERCISE")}
-          >
-            Sulje kaikki
-          </Button>
-          {excerciseAssignmentsData.isLoading ||
-          compositeReplyData.isLoading ? (
-            <div className="loader-empty" />
-          ) : (
-            renderExcerciseMaterialsList
-          )}
-        </ApplicationPanelBody>
+        <ApplicationSubPanel modifier="studies-exercises">
+          <ApplicationSubPanel.Header modifier="studies-exercises">
+            <span>Harjoitustehtävät</span>
+            <span>
+              <Link
+                className="link link--studies-close-open"
+                disabled={
+                  excerciseAssignmentsData.isLoading ||
+                  excerciseAssignmentsData.excerciseAssignments.length === 0
+                }
+                onClick={handleOpenAllAssignmentsByTypeClick("EXERCISE")}
+              >
+                Avaa kaikki
+              </Link>
+              <Link
+                className="link link--studies-close-open"
+                disabled={
+                  excerciseAssignmentsData.isLoading ||
+                  excerciseAssignmentsData.excerciseAssignments.length === 0
+                }
+                onClick={handleCloseAllAssignmentsByTypeClick("EXERCISE")}
+              >
+                Sulje kaikki
+              </Link>
+            </span>
+          </ApplicationSubPanel.Header>
+
+          <ApplicationSubPanel.Body>
+            {excerciseAssignmentsData.isLoading ||
+            compositeReplyData.isLoading ? (
+              <div className="loader-empty" />
+            ) : (
+              renderExcerciseMaterialsList
+            )}
+          </ApplicationSubPanel.Body>
+        </ApplicationSubPanel>
       ),
     },
   ];
@@ -432,33 +469,13 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
     <div>
       <section>
         <Tabs
-          modifier="application-panel"
+          modifier="studies-assignments"
           tabs={panelTabs}
           onTabChange={onTabChange}
           activeTab={activeTab}
         />
       </section>
-      <section>
-        <Button
-          buttonModifiers="info"
-          disabled={
-            journalsData.isLoading || journalsData.journals.length === 0
-          }
-          onClick={handleOpenAllJournalsClick}
-        >
-          Avaa kaikki
-        </Button>
-        <Button
-          buttonModifiers="warn"
-          disabled={
-            journalsData.isLoading || journalsData.journals.length === 0
-          }
-          onClick={handleCloseAllJournalsClick}
-        >
-          Sulje kaikki
-        </Button>
-        {renderJournalsList}
-      </section>
+      <section>{renderJournalsList}</section>
     </div>
   );
 };

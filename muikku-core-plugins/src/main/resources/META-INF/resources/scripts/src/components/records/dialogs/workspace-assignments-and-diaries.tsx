@@ -53,9 +53,9 @@ class WorkspaceAssignmentsAndDiaryDialog extends React.Component<
     return (
       <Dialog
         disableScroll={true}
-        title="Tehtävät ja päiväkirjamerkinnät"
+        title={`${this.props.workspace.name} (${this.props.workspace.nameExtension})`}
         content={content}
-        modifier={["wizard", "records"]}
+        modifier={["studies"]}
       >
         {this.props.children}
       </Dialog>
