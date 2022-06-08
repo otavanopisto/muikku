@@ -45,10 +45,18 @@ public class StudentContactLogEntryCommentRestModel{
     return entry;
   }
 
+  public Boolean getHasImage() {
+    return hasImage;
+  }
+  public void setHasImage(Boolean hasImage) {
+    this.hasImage = hasImage;
+  }
+
   private Long id;
   private Long entry;
   private String text;
   private Long creatorId;
   private String creatorName;
   private Date commentDate;
+  private Boolean hasImage;
 }

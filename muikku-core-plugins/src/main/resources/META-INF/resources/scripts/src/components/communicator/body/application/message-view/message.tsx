@@ -54,9 +54,8 @@ class Message extends React.Component<MessageProps, MessageState> {
 
   /**
    * getMessageSender
-   * @param sender
-   * @returns
-   * Returns span element with sender name
+   * @param sender sender
+   * @returns Returns span element with sender name
    */
   getMessageSender(sender: UserType): JSX.Element {
     if (sender.archived === true) {
@@ -66,18 +65,23 @@ class Message extends React.Component<MessageProps, MessageState> {
         </span>
       );
     }
+
+    let name = `${getName(sender as any, !this.props.status.isStudent)}`;
+
+    if (sender.studyProgrammeName) {
+      name = `${getName(sender as any, !this.props.status.isStudent)} (${
+        sender.studyProgrammeName
+      })`;
+    }
+
     if (sender.studiesEnded === true) {
       return (
         <span key={sender.userEntityId} className="message__user-studies-ended">
-          {getName(sender as any, !this.props.status.isStudent)}
+          {name}
         </span>
       );
     }
-    return (
-      <span key={sender.userEntityId}>
-        {getName(sender as any, !this.props.status.isStudent)}
-      </span>
-    );
+    return <span key={sender.userEntityId}>{name}</span>;
   }
 
   /**
@@ -141,7 +145,7 @@ class Message extends React.Component<MessageProps, MessageState> {
    * sets state new message type to indicating that with type there
    * is new message editor visible/open. If clicking second time
    * same then close exixting dialog
-   * @param type
+   * @param type type
    */
   handleOpenNewMessage =
     (type: "person" | "all") =>
@@ -165,7 +169,7 @@ class Message extends React.Component<MessageProps, MessageState> {
 
   /**
    * render
-   * @returns
+   * @returns JSX.Element
    */
   render() {
     /**

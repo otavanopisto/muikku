@@ -49,6 +49,7 @@ import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.sort.SortOrder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
@@ -686,6 +687,7 @@ public class ElasticSearchProvider implements SearchProvider {
       long totalHitCount = searchHits.getTotalHits();
 
       ObjectMapper objectMapper = new ObjectMapper();
+      objectMapper.registerModule(new JSR310Module());
       SearchHit[] results = searchHits.getHits();
       List<IndexedWorkspace> searchResults = Arrays.stream(results)
           .map(hit -> {
@@ -752,6 +754,48 @@ public class ElasticSearchProvider implements SearchProvider {
   @Override
   public CommunicatorMessageSearchBuilder searchCommunicatorMessages() {
     return new ElasticCommunicatorMessageSearchBuilder(this);
+  }
+
+  @Override
+  public IndexedCommunicatorMessage findCommunicatorMessage(Long communicatorMessageId) {
+    if (communicatorMessageId == null) {
+      throw new IllegalArgumentException();
+    }
+    
+    IdsQueryBuilder query = idsQuery(IndexedCommunicatorMessage.TYPE_NAME);
+    query.addIds(String.valueOf(communicatorMessageId));
+    
+    SearchResponse response = elasticClient
+      .prepareSearch(IndexedCommunicatorMessage.INDEX_NAME)
+      .setTypes(IndexedCommunicatorMessage.TYPE_NAME)
+      .setQuery(query)
+      .setSize(1)
+      .execute()
+      .actionGet();
+    
+    SearchHit[] results = response.getHits().getHits();
+
+    // Technically never possible, but check anyways for errors
+    if (results.length > 1) {
+      logger.log(Level.SEVERE, String.format("Found multiple messages (id: %d)", communicatorMessageId));
+      return null;
+    }
+
+    if (results.length == 1) {
+      SearchHit hit = results[0];
+      String source = hit.getSourceAsString();
+      try {
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.readValue(source, IndexedCommunicatorMessage.class);
+      }
+      catch (Exception e) {
+        String documentId = hit != null ? hit.getId() : null;
+        logger.log(Level.SEVERE, String.format("Couldn't parse indexed communicator message (id: %s)", documentId), e);
+        return null;
+      }
+    }
+    
+    return null;
   }
 
   @Override

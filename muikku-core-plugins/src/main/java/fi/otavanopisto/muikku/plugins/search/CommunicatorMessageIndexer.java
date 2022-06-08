@@ -3,6 +3,7 @@ package fi.otavanopisto.muikku.plugins.search;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -33,6 +34,7 @@ import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageRecipient;
 import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageRecipientGroup;
 import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageSender;
 import fi.otavanopisto.muikku.search.SearchIndexer;
+import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserEntityName;
 import fi.otavanopisto.muikku.users.UserGroupController;
@@ -45,6 +47,9 @@ public class CommunicatorMessageIndexer {
 
   @Inject
   private SearchIndexer indexer;
+  
+  @Inject
+  private SearchProvider search;
   
   @Inject 
   private UserEntityController userEntityController;
@@ -224,6 +229,7 @@ public class CommunicatorMessageIndexer {
     if (recipientName != null) {
       IndexedCommunicatorMessageRecipient recipientData = new IndexedCommunicatorMessageRecipient();
       
+      recipientData.setId(recipient.getId());
       recipientData.setUserEntityId(recipientId);
       recipientData.setFirstName(recipientName.getFirstName());
       recipientData.setLastName(recipientName.getLastName());
@@ -261,6 +267,41 @@ public class CommunicatorMessageIndexer {
     } catch (Exception e) {
       Long communicatorMessageId = indexedCommunicatorMessage != null ? indexedCommunicatorMessage.getId() : null;
       logger.log(Level.WARNING, String.format("Could not index communicator message %d", communicatorMessageId), e);
+    }
+  }
+
+  /**
+   * Updates the indexed message in place so that only the readByReceiver information for given receiver is updated.
+   * 
+   * @param communicatorMessageRecipient recipient who's status needs to be updated
+   */
+  public void updateIndexMessageReadByReceiver(CommunicatorMessageRecipient communicatorMessageRecipient) {
+    boolean readByReceiver = communicatorMessageRecipient.getReadByReceiver();
+    
+    CommunicatorMessage communicatorMessage = communicatorMessageRecipient.getCommunicatorMessage();
+    IndexedCommunicatorMessage indexedCommunicatorMessage = search.findCommunicatorMessage(communicatorMessage.getId());
+    if (indexedCommunicatorMessage != null) {
+      Long recipientId = communicatorMessageRecipient.getId();
+      
+      if (indexedCommunicatorMessage.getRecipients() != null) {
+        indexedCommunicatorMessage.getRecipients().stream()
+          .filter(indexedRecipient -> Objects.equals(indexedRecipient.getId(), recipientId))
+          .forEach(indexedRecipient -> indexedRecipient.setReadByReceiver(readByReceiver));
+      }
+
+      if (indexedCommunicatorMessage.getGroupRecipients() != null) {
+        for (IndexedCommunicatorMessageRecipientGroup recipientGroup : indexedCommunicatorMessage.getGroupRecipients()) {
+          if (recipientGroup.getRecipients() != null) {
+            recipientGroup.getRecipients().stream()
+              .filter(indexedRecipient -> Objects.equals(indexedRecipient.getId(), recipientId))
+              .forEach(indexedRecipient -> indexedRecipient.setReadByReceiver(readByReceiver));
+          }
+        }
+      }
+      
+      indexCommunicatorMessage(indexedCommunicatorMessage);
+    } else {
+      logger.log(Level.WARNING, String.format("Could not find communicator message %d for reindexing", communicatorMessage.getId()));
     }
   }
 }

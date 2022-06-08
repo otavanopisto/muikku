@@ -146,6 +146,7 @@ export interface EvaluationGradeSystem {
   id: string;
   name: string;
   grades: EvaluationGrade[];
+  active: boolean;
 }
 
 /**

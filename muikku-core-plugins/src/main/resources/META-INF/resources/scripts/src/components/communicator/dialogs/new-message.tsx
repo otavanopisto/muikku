@@ -164,8 +164,7 @@ class CommunicatorNewMessage extends SessionStateComponent<
 
   /**
    * onCKEditorChange
-   * @param text
-   * @returns
+   * @param text text
    */
   onCKEditorChange(text: string) {
     if (this.avoidCKEditorTriggeringChangeForNoReasonAtAll) {
@@ -177,7 +176,7 @@ class CommunicatorNewMessage extends SessionStateComponent<
 
   /**
    * setSelectedItems
-   * @param selectedItems
+   * @param selectedItems selectedItems
    */
   setSelectedItems(selectedItems: Array<ContactRecipientType>) {
     this.setStateAndStore({ selectedItems }, getStateIdentifier(this.props));
@@ -186,7 +185,7 @@ class CommunicatorNewMessage extends SessionStateComponent<
 
   /**
    * onSubjectChange
-   * @param e
+   * @param e e
    */
   onSubjectChange(e: React.ChangeEvent<HTMLInputElement>) {
     this.setStateAndStore(
@@ -273,7 +272,6 @@ class CommunicatorNewMessage extends SessionStateComponent<
 
   /**
    * inputContactsAutofillLoaders
-   * @returns
    */
   inputContactsAutofillLoaders() {
     return {
@@ -306,7 +304,7 @@ class CommunicatorNewMessage extends SessionStateComponent<
 
   /**
    * render
-   * @returns
+   * @returns JSX.Element
    */
   render() {
     const editorTitle =
@@ -317,7 +315,8 @@ class CommunicatorNewMessage extends SessionStateComponent<
       );
 
     /**
-     * @param closeDialog
+     * content
+     * @param closeDialog closeDialog
      */
     const content = (closeDialog: () => any) => [
       <InputContactsAutofill
