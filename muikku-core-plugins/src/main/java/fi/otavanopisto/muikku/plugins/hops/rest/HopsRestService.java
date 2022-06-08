@@ -479,11 +479,12 @@ public class HopsRestService {
   @Path("/listWorkspaceSuggestions")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response listWorkspaceSuggestions(@QueryParam("subject") String subject, @QueryParam("courseNumber") Integer courseNumber, @QueryParam("onlySignupWorkspaces") @DefaultValue ("false") Boolean onlySignupWorkspaces, @QueryParam("userEntityId") Long userEntityId) {
-
+    
     UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
     
+    SchoolDataIdentifier userIdentifier = userEntity.defaultSchoolDataIdentifier();
     // Permission checks
-    if(userEntity == null || !hopsController.isHopsAvailable(userEntity.defaultSchoolDataIdentifier().toString())) {
+    if(userEntity == null || !hopsController.isHopsAvailable(userIdentifier.getDataSource() + "-" + userIdentifier.getIdentifier())) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
