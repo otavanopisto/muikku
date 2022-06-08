@@ -100,7 +100,7 @@ export const useSupervisorOptionalSuggestions = (
         }
       } catch (err) {
         if (componentMounted.current) {
-          displayNotification(`Hups errori, ${err.message}`, "error");
+          displayNotification(err.message, "error");
           setSupervisorOptionalSuggestions((supervisorOptionalSuggestions) => ({
             ...supervisorOptionalSuggestions,
             isLoading: false,
@@ -191,7 +191,7 @@ export const useSupervisorOptionalSuggestions = (
         "callback"
       )();
     } catch (err) {
-      displayNotification(`Hups päivitys errori, ${err.message}`, "error");
+      displayNotification(err.message, "error");
     }
   };
 

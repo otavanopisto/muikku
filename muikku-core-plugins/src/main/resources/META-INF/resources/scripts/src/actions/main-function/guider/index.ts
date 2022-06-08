@@ -72,7 +72,7 @@ export type SET_CURRENT_GUIDER_STUDENT_EMPTY_LOAD = SpecificActionType<
 >;
 export type SET_CURRENT_GUIDER_STUDENT_PROP = SpecificActionType<
   "SET_CURRENT_GUIDER_STUDENT_PROP",
-  { property: string; value: any }
+  { property: keyof GuiderStudentUserProfileType; value: any }
 >;
 
 export type UPDATE_CURRENT_GUIDER_STUDENT_HOPS_PHASE = SpecificActionType<
@@ -467,21 +467,36 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
               payload: { property: "basic", value: basic },
             });
 
-            /**
-             * after basic data is loaded, need to check if hopsPhase property
-             * is used and what values it contains
-             */
-            promisify(
-              mApi().user.properties.read(basic.userEntityId, {
-                properties: "hopsPhase",
-              }),
-              "callback"
-            )().then((properties: any) => {
-              dispatch({
-                type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-                payload: { property: "hopsPhase", value: properties[0].value },
-              });
-            });
+            // After basjc data is loaded, check if current user of guider has permissions
+            // to see/use current student hops
+            promisify(mApi().hops.isHopsAvailable.read(id), "callback")().then(
+              (hopsAvailable: boolean) => {
+                dispatch({
+                  type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+                  payload: {
+                    property: "hopsAvailable",
+                    value: hopsAvailable,
+                  },
+                });
+
+                // after basic data is loaded and hops availability checked, then check if hopsPhase property
+                // is used and what values it contains
+                promisify(
+                  mApi().user.properties.read(basic.userEntityId, {
+                    properties: "hopsPhase",
+                  }),
+                  "callback"
+                )().then((properties: any) => {
+                  dispatch({
+                    type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+                    payload: {
+                      property: "hopsPhase",
+                      value: properties[0].value,
+                    },
+                  });
+                });
+              }
+            );
           }
         ),
 
@@ -772,13 +787,8 @@ const updateCurrentStudentHopsPhase: UpdateCurrentStudentHopsPhaseTriggerType =
             "success"
           )
         );
-      } catch (error) {
-        dispatch(
-          notificationActions.displayNotification(
-            "Hupsista error hops phasing yhteydessä",
-            "error"
-          )
-        );
+      } catch (err) {
+        dispatch(notificationActions.displayNotification(err.message, "error"));
       }
     };
   };

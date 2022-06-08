@@ -534,8 +534,12 @@ public class UserSchoolDataController {
     );
   }
   
-  public String findStudentEducationalLevel(SchoolDataSource schoolDataSource, Long studentEntityId) {
-    return getUserBridge(schoolDataSource).findStudentEducationalLevel(studentEntityId);
+  public boolean amICounselor(SchoolDataIdentifier studentIdentifier) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(studentIdentifier.getDataSource());
+    if (schoolDataSource == null) {
+      throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", studentIdentifier.getDataSource()));
+    }
+    return getUserBridge(schoolDataSource).amICounselor(studentIdentifier.getIdentifier());
   }
   
 }

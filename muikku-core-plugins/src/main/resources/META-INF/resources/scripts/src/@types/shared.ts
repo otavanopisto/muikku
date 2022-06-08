@@ -297,6 +297,7 @@ export interface HopsCompulsory {
  * BasicStudies
  */
 export interface BasicInformation {
+  studentUserEntityId: number;
   name: string;
   dateOfIssue?: Date;
   updates?: HopsUpdate[];
@@ -313,7 +314,7 @@ export interface StudentInfo {
   firstName: string;
   lastName: string;
   studyTimeEnd: string | null;
-  educationalLevel: string | null;
+  studyProgrammeEducationType: string | null;
   counselorList?: string[];
 }
 

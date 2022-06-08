@@ -16,7 +16,7 @@ import {
 } from "~/components/general/table";
 import { schoolCourseTable } from "~/mock/mock-data";
 import { connect } from "react-redux";
-import { HopsUser } from ".";
+import { HopsUsePlace, HopsUser } from ".";
 import Button from "~/components/general/button";
 import { StateType } from "~/reducers";
 import Dropdown from "~/components/general/dropdown";
@@ -43,6 +43,10 @@ interface HopsCourseTableProps extends Partial<StudentActivityByStatus> {
    */
   useCase: "study-matrix" | "hops-planning";
   /**
+   * Table uses sticky header
+   */
+  usePlace: HopsUsePlace;
+  /**
    * user
    */
   user: HopsUser;
@@ -50,6 +54,7 @@ interface HopsCourseTableProps extends Partial<StudentActivityByStatus> {
    * studentId
    */
   studentId: string;
+  studentsUserEntityId: number;
   /**
    * disabled
    */
@@ -179,6 +184,17 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
           selectedByStudent = true;
           modifiers.push("OPTIONAL-SELECTED");
         }
+        if (
+          props.supervisorOptionalSuggestionsList &&
+          props.supervisorOptionalSuggestionsList.find(
+            (sOCourse) =>
+              sOCourse.subject === sSubject.subjectCode &&
+              sOCourse.courseNumber === course.courseNumber
+          )
+        ) {
+          suggestedBySupervisor = true;
+          modifiers.push("SUGGESTED");
+        }
 
         /**
          * Only one of these can happen
@@ -199,26 +215,6 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
           courseSuggestions = courseSuggestions.concat(suggestedCourseDataNext);
 
           modifiers.push("NEXT");
-        } else if (
-          props.supervisorOptionalSuggestionsList &&
-          props.supervisorOptionalSuggestionsList.find(
-            (sOCourse) =>
-              sOCourse.subject === sSubject.subjectCode &&
-              sOCourse.courseNumber === course.courseNumber
-          )
-        ) {
-          /* const suggestedCourseDataOptional =
-            props.suggestedOptionalList.filter(
-              (oCourse) => oCourse.subject === sSubject.subjectCode
-            ); */
-
-          /* courseSuggestions = courseSuggestions.concat(
-            suggestedCourseDataOptional
-          ); */
-
-          suggestedBySupervisor = true;
-
-          modifiers.push("SUGGESTED");
         } else if (
           props.transferedList &&
           props.transferedList.find(
@@ -266,6 +262,9 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
         const showSuggestionList =
           !props.disabled && props.user === "supervisor" && canBeSelected;
 
+        const courseDropdownName =
+          sSubject.subjectCode + course.courseNumber + " - " + course.name;
+
         return (
           <Td
             key={`${sSubject.subjectCode}-${course.courseNumber}`}
@@ -285,13 +284,16 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
               content={
                 <div className="hops-container__study-tool-dropdown-container">
                   <div className="hops-container__study-tool-dropdow-title">
-                    {course.mandatory ? course.name : `${course.name}*`}
+                    {course.mandatory
+                      ? `${courseDropdownName}`
+                      : `${courseDropdownName}*`}
                   </div>
                   {course.mandatory ? (
                     <>
                       {showSuggestionList && (
                         <HopsSuggestionList
                           studentId={props.studentId}
+                          studentsUserEntityId={props.studentsUserEntityId}
                           suggestedActivityCourses={courseSuggestions}
                           subjectCode={sSubject.subjectCode}
                           course={course}
@@ -307,6 +309,24 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
                     <>
                       {showSuggestAndAddToHopsButtons && (
                         <Button
+                          buttonModifiers={[
+                            "guider-hops-studytool",
+                            "guider-hops-studytool-suggested",
+                          ]}
+                          onClick={handleToggleSuggestOptional({
+                            courseNumber: course.courseNumber,
+                            subject: sSubject.subjectCode,
+                            studentId: props.studentId,
+                          })}
+                        >
+                          {suggestedBySupervisor
+                            ? "Ehdotettu"
+                            : "Ehdota valinnaiseksi"}
+                        </Button>
+                      )}
+
+                      {showSuggestAndAddToHopsButtons && (
+                        <Button
                           onClick={handleToggleChoiceClick({
                             studentId: props.studentId,
                             courseNumber: course.courseNumber,
@@ -320,27 +340,10 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
                         </Button>
                       )}
 
-                      {showSuggestAndAddToHopsButtons && (
-                        <Button
-                          buttonModifiers={[
-                            "guider-hops-studytool",
-                            "guider-hops-studytool-suggested",
-                          ]}
-                          onClick={handleToggleSuggestOptional({
-                            courseNumber: course.courseNumber,
-                            subject: sSubject.subjectCode,
-                            studentId: props.studentId,
-                          })}
-                        >
-                          {suggestedBySupervisor
-                            ? "Ehdotettu"
-                            : "Ehdota valinnaiseksi?"}
-                        </Button>
-                      )}
-
                       {showSuggestionList && (
                         <HopsSuggestionList
                           studentId={props.studentId}
+                          studentsUserEntityId={props.studentsUserEntityId}
                           suggestedActivityCourses={courseSuggestions}
                           subjectCode={sSubject.subjectCode}
                           course={course}
@@ -534,9 +537,17 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
       }).filter(Boolean)
     : undefined;
 
+  const uTableHeadModifiers = ["course"];
+
+  if (props.usePlace === "studies") {
+    uTableHeadModifiers.push("sticky");
+  } else if (props.usePlace === "guider") {
+    uTableHeadModifiers.push("sticky-inside-dialog");
+  }
+
   return (
     <Table modifiers={["course"]}>
-      <TableHead modifiers={["course"]}>
+      <TableHead modifiers={uTableHeadModifiers}>
         <Tr modifiers={["course"]}>
           <Th modifiers={["subject"]}>Oppiaine</Th>
           <Th colSpan={currentMaxCourses}>Kurssit</Th>

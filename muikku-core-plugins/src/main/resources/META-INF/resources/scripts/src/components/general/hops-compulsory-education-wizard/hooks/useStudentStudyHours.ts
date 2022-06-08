@@ -88,7 +88,7 @@ export const useStudentStudyHour = (
         }
       } catch (err) {
         if (componentMounted.current) {
-          displayNotification(`Hups errori, ${err.message}`, "error");
+          displayNotification(err.message, "error");
           setStudyHours((studyHours) => ({
             ...studyHours,
             isLoading: false,
@@ -159,7 +159,7 @@ export const useStudentStudyHour = (
         "callback"
       )();
     } catch (err) {
-      displayNotification(`Hups errori, ${err.message}`, "error");
+      displayNotification(err.message, "error");
     }
   };
 

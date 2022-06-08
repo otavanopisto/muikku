@@ -288,9 +288,11 @@ class HopsStartingLevel extends React.Component<
             Kielitaito
           </legend>
 
+          <span>Tähdellä (*) merkityt kentät ovat pakollisia.</span>
+
           <div className="hops-container__row">
             <div className="hops-container__table-container">
-              <HopsLanguageGradeTable>
+              <HopsLanguageGradeTable usePlace={this.props.usePlace}>
                 {this.props.studentStartingLevel.previousLanguageExperience.map(
                   (lngG, index) => (
                     <LanguageGradeRow

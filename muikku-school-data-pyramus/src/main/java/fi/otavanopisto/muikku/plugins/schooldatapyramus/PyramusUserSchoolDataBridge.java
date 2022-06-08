@@ -154,15 +154,17 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     if (response.getEntity() != null) {
       items = new ArrayList<>();
       for (StudyActivityItemRestModel item : response.getEntity()) {
-        WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(
-            getSchoolDataSource(),
-            identifierMapper.getWorkspaceIdentifier(item.getCourseId()));
-        if (workspaceEntity == null) {
-          item.setCourseId(null);
-          logger.severe(String.format("Pyramus course %d not found in Muikku", item.getCourseId()));
-        }
-        else {
-          item.setCourseId(workspaceEntity.getId());
+        if (item.getCourseId() != null) {
+          WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(
+              getSchoolDataSource(),
+              identifierMapper.getWorkspaceIdentifier(item.getCourseId()));
+          if (workspaceEntity == null) {
+            logger.severe(String.format("Pyramus course %d not found in Muikku", item.getCourseId()));
+            item.setCourseId(null);
+          }
+          else {
+            item.setCourseId(workspaceEntity.getId());
+          }
         }
         items.add(item);
       }
@@ -1230,11 +1232,6 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     return new PyramusStudentCourseStats(courseStats.getNumberCompletedCourses(), courseStats.getNumberCreditPoints());
   }
 
-  @Override
-  public String findStudentEducationalLevel(Long studentId) {
-    return pyramusClient.get(String.format("/students/students/%d/educationalLevel", studentId), String.class);
-  }
-
   public boolean isActiveUser(User user) {
     // Student with set study end date has ended studies
     if (user.getStudyEndDate() != null) {
@@ -1340,15 +1337,13 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
                 hasProfileImage = userEntityFileController.hasProfilePicture(userEntity);
               }
               comment.setHasImage(hasProfileImage);
-  
             }
-            
             contactLogEntries.add(contactLogEntry);
           }
+          
           studentContactLogEntryBatch.setFirstResult(response.getEntity().getFirstResult());
           studentContactLogEntryBatch.setResults(contactLogEntries);
           studentContactLogEntryBatch.setTotalHitCount(response.getEntity().getTotalHitCount());
-
         }
       }
       return new BridgeResponse<StudentContactLogEntryBatch>(response.getStatusCode(), studentContactLogEntryBatch);
@@ -1457,7 +1452,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       return null;
     }
     BridgeResponse<StudentContactLogEntryCommentRestModel> response = pyramusClient.responsePut(String.format("/students/students/%d/contactLogEntries/%d/comments/%d", studentId, entryId, commentId), Entity.entity(payload, MediaType.APPLICATION_JSON), StudentContactLogEntryCommentRestModel.class);
-    
+
     if (response.getEntity() != null && response.getEntity().getCreatorId() != null) {
       response.getEntity().setCreatorId(toUserEntityId(response.getEntity().getCreatorId()));
 
@@ -1627,5 +1622,19 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     }
     return pyramusClient.get(String.format("/users/users/%d/defaultEmailAddress", userId), String.class);
   }
+  
+  @Override
+  public boolean amICounselor(String studentIdentifier) {
+    
+    Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
+    if (studentId == null) {
+      logger.severe(String.format("Student for identifier %s not found", studentIdentifier));
+      return false;
+    }
+    
+    return pyramusClient.get(String.format("/students/students/%d/amICounselor", studentId), Boolean.class);
 
+  }
+  
+  
 }

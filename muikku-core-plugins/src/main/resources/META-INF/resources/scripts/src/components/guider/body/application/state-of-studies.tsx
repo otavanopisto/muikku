@@ -346,11 +346,7 @@ class StateOfStudies extends React.Component<
       <Workspaces
         workspaces={
           this.props.guider.currentStudent.currentWorkspaces &&
-          this.props.guider.currentStudent.currentWorkspaces.filter(
-            (w) =>
-              w.studentActivity &&
-              w.studentActivity.assessmentState.grade === null
-          )
+          this.props.guider.currentStudent.currentWorkspaces
         }
       />
     );
@@ -418,18 +414,23 @@ class StateOfStudies extends React.Component<
                 </ApplicationSubPanel.Body>
               </ApplicationSubPanel>
             </ApplicationSubPanel>
-            <ApplicationSubPanel modifier="student-data-container">
-              <ApplicationSubPanel>
-                <ApplicationSubPanel.Header>
-                  Opintojen edistyminen
-                </ApplicationSubPanel.Header>
-                <ApplicationSubPanel.Body>
-                  <StudySuggestionMatrix
-                    studentId={this.props.guider.currentStudent.basic.id}
-                  />
-                </ApplicationSubPanel.Body>
+            {this.props.guider.currentStudent.hopsAvailable ? (
+              <ApplicationSubPanel modifier="student-data-container">
+                <ApplicationSubPanel>
+                  <ApplicationSubPanel.Header>
+                    Opintojen edistyminen
+                  </ApplicationSubPanel.Header>
+                  <ApplicationSubPanel.Body>
+                    <StudySuggestionMatrix
+                      studentId={this.props.guider.currentStudent.basic.id}
+                      studentUserEntityId={
+                        this.props.guider.currentStudent.basic.userEntityId
+                      }
+                    />
+                  </ApplicationSubPanel.Body>
+                </ApplicationSubPanel>
               </ApplicationSubPanel>
-            </ApplicationSubPanel>
+            ) : null}
           </>
         )}
       </>
