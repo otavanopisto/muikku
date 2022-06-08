@@ -157,10 +157,12 @@ class StudentDialog extends React.Component<
       },
     ];
 
-    // COmpulsory hops is shown only if basic info is there and matriculation eligiblity is false
+    // Compulsory hops is shown only if basic info is there, current guider has permissions to use/see
+    // and matriculation eligiblity is false
     if (
       this.props.guider.currentStudent &&
       this.props.guider.currentStudent.basic &&
+      this.props.guider.currentStudent.hopsAvailable &&
       !this.props.guider.currentStudent.basic.matriculationEligibility
     )
       tabs.push({
