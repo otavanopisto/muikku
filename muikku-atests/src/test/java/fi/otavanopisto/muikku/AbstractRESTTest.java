@@ -1,7 +1,5 @@
 package fi.otavanopisto.muikku;
 
-import static io.restassured.RestAssured.certificate;
-
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -43,9 +41,9 @@ public abstract class AbstractRESTTest extends AbstractIntegrationTest {
   
   @Before
   public void setupRestAssured() throws JsonProcessingException {
-      RestAssured.baseURI = getAppUrl(true) + "/rest";
-      RestAssured.port = getPortHttps();
-      RestAssured.authentication = certificate(getKeystoreFile(), getKeystorePass());
+      RestAssured.baseURI = getAppUrl(false) + "/rest";
+      RestAssured.port = getPortHttp();
+
       RestAssured.config = RestAssured.config
         .objectMapperConfig(new ObjectMapperConfig().jackson2ObjectMapperFactory(new Jackson2ObjectMapperFactory() {
         

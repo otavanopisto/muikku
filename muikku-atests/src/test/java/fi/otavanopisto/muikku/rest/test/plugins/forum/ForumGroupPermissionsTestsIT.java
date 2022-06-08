@@ -20,7 +20,7 @@ public class ForumGroupPermissionsTestsIT extends AbstractForumRESTTestsIT {
     response.then()
       .statusCode(200);
     
-    permanentDeleteAreaGroup(new Long(response.body().jsonPath().getInt("id")));
+    permanentDeleteAreaGroup(Long.valueOf(response.body().jsonPath().getInt("id")));
   }
   
   @Test
@@ -35,7 +35,7 @@ public class ForumGroupPermissionsTestsIT extends AbstractForumRESTTestsIT {
     response.then()
       .statusCode(200);
     
-    permanentDeleteAreaGroup(new Long(response.body().jsonPath().getInt("id")));
+    permanentDeleteAreaGroup(Long.valueOf(response.body().jsonPath().getInt("id")));
   }
   
   @Test
@@ -50,7 +50,7 @@ public class ForumGroupPermissionsTestsIT extends AbstractForumRESTTestsIT {
     response.then()
       .statusCode(200);
     
-    permanentDeleteAreaGroup(new Long(response.body().jsonPath().getInt("id")));
+    permanentDeleteAreaGroup(Long.valueOf(response.body().jsonPath().getInt("id")));
   }
   
   @Test
@@ -106,7 +106,7 @@ public class ForumGroupPermissionsTestsIT extends AbstractForumRESTTestsIT {
       .body(areaGroup)
       .post("/forum/areagroups");
     
-    Long areaGroupId = new Long(response.body().jsonPath().getInt("id"));
+    Long areaGroupId = Long.valueOf(response.body().jsonPath().getInt("id"));
     
     asAdmin()
       .get("/forum/areagroups/{ID}", areaGroupId)
@@ -125,7 +125,7 @@ public class ForumGroupPermissionsTestsIT extends AbstractForumRESTTestsIT {
       .body(areaGroup)
       .post("/forum/areagroups");
     
-    Long areaGroupId = new Long(response.body().jsonPath().getInt("id"));
+    Long areaGroupId = Long.valueOf(response.body().jsonPath().getInt("id"));
     
     asManager()
       .get("/forum/areagroups/{ID}", areaGroupId)
@@ -144,7 +144,7 @@ public class ForumGroupPermissionsTestsIT extends AbstractForumRESTTestsIT {
       .body(areaGroup)
       .post("/forum/areagroups");
     
-    Long areaGroupId = new Long(response.body().jsonPath().getInt("id"));
+    Long areaGroupId = Long.valueOf(response.body().jsonPath().getInt("id"));
     
     asTeacher()
       .get("/forum/areagroups/{ID}", areaGroupId)
@@ -163,7 +163,7 @@ public class ForumGroupPermissionsTestsIT extends AbstractForumRESTTestsIT {
       .body(areaGroup)
       .post("/forum/areagroups");
     
-    Long areaGroupId = new Long(response.body().jsonPath().getInt("id"));
+    Long areaGroupId = Long.valueOf(response.body().jsonPath().getInt("id"));
     
     asStudent()
       .get("/forum/areagroups/{ID}", areaGroupId)
@@ -182,7 +182,7 @@ public class ForumGroupPermissionsTestsIT extends AbstractForumRESTTestsIT {
       .body(areaGroup)
       .post("/forum/areagroups");
     
-    Long id = new Long(response.body().jsonPath().getInt("id"));
+    Long id = Long.valueOf(response.body().jsonPath().getInt("id"));
 
     asAdmin()
       .delete("/forum/areagroups/{ID}", id)
@@ -201,7 +201,7 @@ public class ForumGroupPermissionsTestsIT extends AbstractForumRESTTestsIT {
       .body(areaGroup)
       .post("/forum/areagroups");
     
-    Long id = new Long(response.body().jsonPath().getInt("id"));
+    Long id = Long.valueOf(response.body().jsonPath().getInt("id"));
 
     asStudent()
       .delete("/forum/areagroups/{ID}", id)
@@ -220,7 +220,7 @@ public class ForumGroupPermissionsTestsIT extends AbstractForumRESTTestsIT {
       .body(areaGroup)
       .post("/forum/areagroups");
     
-    Long id = new Long(response.body().jsonPath().getInt("id"));
+    Long id = Long.valueOf(response.body().jsonPath().getInt("id"));
 
     asManager()
       .delete("/forum/areagroups/{ID}", id)
@@ -239,7 +239,7 @@ public class ForumGroupPermissionsTestsIT extends AbstractForumRESTTestsIT {
       .body(areaGroup)
       .post("/forum/areagroups");
     
-    Long id = new Long(response.body().jsonPath().getInt("id"));
+    Long id = Long.valueOf(response.body().jsonPath().getInt("id"));
 
     asTeacher()
       .delete("/forum/areagroups/{ID}", id)
