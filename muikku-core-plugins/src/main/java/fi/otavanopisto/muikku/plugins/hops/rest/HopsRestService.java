@@ -482,8 +482,9 @@ public class HopsRestService {
 
     UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
     
+    SchoolDataIdentifier userIdentifier = userEntity.defaultSchoolDataIdentifier();
     // Permission checks
-    if(userEntity == null || !hopsController.isHopsAvailable(userEntity.defaultSchoolDataIdentifier().toString())) {
+    if(userEntity == null || !hopsController.isHopsAvailable(userIdentifier.getDataSource() + "-" + userIdentifier.getIdentifier())) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
