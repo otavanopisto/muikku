@@ -14,13 +14,12 @@
   position: relative;
 
   @include breakpoint($breakpoint-pad) {
-    margin: 20px 0 0;
     padding: 20px;
   }
 }
 
 .workspace-assessment--studies-details {
-  margin: 0 0 20px;
+  margin: 0 0 20px 10px;
 }
 
 .workspace-assessment--incomplete {
