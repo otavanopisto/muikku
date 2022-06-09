@@ -271,16 +271,19 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
           {studentBasicInfo}
           {this.props.status.isActiveUser ? (
             <div className="react-container">
-              <div className="application-sub-panel">
-                <div className="application-sub-panel__header">
-                  Kursseja sinulle
-                </div>
-                <CourseCarousel
-                  studentId={this.props.status.userSchoolDataIdentifier}
-                  studentUserEntityId={this.props.status.userId}
-                  displayNotification={this.props.displayNotification}
-                />
-              </div>
+              {this.props.hops.eligibility &&
+                !this.props.hops.eligibility.upperSecondarySchoolCurriculum && (
+                  <div className="application-sub-panel">
+                    <div className="application-sub-panel__header">
+                      Kursseja sinulle
+                    </div>
+                    <CourseCarousel
+                      studentId={this.props.status.userSchoolDataIdentifier}
+                      studentUserEntityId={this.props.status.userId}
+                      displayNotification={this.props.displayNotification}
+                    />
+                  </div>
+                )}
 
               <div className="application-sub-panel">
                 <div className="application-sub-panel__header">
