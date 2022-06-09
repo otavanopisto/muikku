@@ -42,6 +42,7 @@ const responsive = {
  */
 interface CourseCarouselProps {
   studentId: string;
+  studentUserEntityId: number;
   displayNotification: DisplayNotificationTriggerType;
 }
 
@@ -53,6 +54,7 @@ interface CourseCarouselProps {
 const CourseCarousel: React.FC<CourseCarouselProps> = (props) => {
   const { courseCarousel } = useCourseCarousel(
     props.studentId,
+    props.studentUserEntityId,
     props.displayNotification
   );
 
@@ -72,7 +74,7 @@ const CourseCarousel: React.FC<CourseCarouselProps> = (props) => {
       showDots
       renderDotsOutside
       responsive={responsive}
-      infinite={true}
+      infinite={false}
       autoPlaySpeed={2000}
       keyBoardControl={true}
       transitionDuration={100}
@@ -89,7 +91,9 @@ const CourseCarousel: React.FC<CourseCarouselProps> = (props) => {
 /**
  * Course
  */
-export interface Course extends Suggestion {}
+export interface Course extends Suggestion {
+  suggestedAsNext: boolean;
+}
 
 /**
  * CourseCarouselItemProps
@@ -164,6 +168,7 @@ const CourseCarouselItem: React.FC<CourseCarouselItemProps> = (props) => {
               </Button>
             </WorkspaceDescriptionDialog>
           )}
+          {course.suggestedAsNext && <span>Ohjaajan ehdottama!</span>}
         </div>
       </div>
     </div>

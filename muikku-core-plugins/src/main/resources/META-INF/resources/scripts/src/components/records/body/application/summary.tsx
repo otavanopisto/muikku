@@ -277,6 +277,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                 </div>
                 <CourseCarousel
                   studentId={this.props.status.userSchoolDataIdentifier}
+                  studentUserEntityId={this.props.status.userId}
                   displayNotification={this.props.displayNotification}
                 />
               </div>

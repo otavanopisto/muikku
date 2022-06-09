@@ -577,15 +577,15 @@ export interface StudentActivityByStatus {
   /**
    * skillsAndArt
    */
-   skillsAndArt: ActivityBySubject;
-   /**
-    * otherLanguageSubjects
-    */
-   otherLanguageSubjects: ActivityBySubject;
-   /**
-    * otherSubjects
-    */
-   otherSubjects: ActivityBySubject;
+  skillsAndArt: ActivityBySubject;
+  /**
+   * otherLanguageSubjects
+   */
+  otherLanguageSubjects: ActivityBySubject;
+  /**
+   * otherSubjects
+   */
+  otherSubjects: ActivityBySubject;
 }
 
 /**
