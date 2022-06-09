@@ -225,7 +225,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
    * Renders materials
    * @returns JSX.Element
    */
-  const renderEvaluatedMaterialsList = (
+  const renderAssignmentMaterialsList = (
     <ApplicationList>
       {evaluatedAssignmentsData.evaluatedAssignments.length ? (
         evaluatedAssignmentsData.evaluatedAssignments.map((m) => {
@@ -264,7 +264,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
           <ApplicationListItemHeader className="application-list__item-header--journal-entry">
             <div className="application-list__item-header-main application-list__item-header-main--journal-entry">
               <span className="application-list__item-header-main-content application-list__item-header-main-content--journal-entry-title">
-                Ei Tehtäviä
+                {props.i18n.text.get("plugin.records.noassignments")}
               </span>
             </div>
           </ApplicationListItemHeader>
@@ -316,7 +316,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
           <ApplicationListItemHeader className="application-list__item-header--journal-entry">
             <div className="application-list__item-header-main application-list__item-header-main--journal-entry">
               <span className="application-list__item-header-main-content application-list__item-header-main-content--journal-entry-title">
-                Ei Tehtäviä
+                {props.i18n.text.get("plugin.records.noexercises")}
               </span>
             </div>
           </ApplicationListItemHeader>
@@ -332,7 +332,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
   const renderJournalsList = (
     <ApplicationSubPanel modifier="studies-journal-entries">
       <ApplicationSubPanel.Header modifier="studies-journal-entries">
-        <span>Oppimispäiväkirjamerkinnät</span>
+        <span>{props.i18n.text.get("plugin.records.journal.title")}</span>
         <span>
           <Link
             className="link link--studies-close-open"
@@ -341,7 +341,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
             }
             onClick={handleOpenAllJournalsClick}
           >
-            Avaa kaikki
+            {props.i18n.text.get("plugin.records.openClose.openAll")}
           </Link>
           <Link
             className="link link--studies-close-open"
@@ -350,7 +350,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
             }
             onClick={handleCloseAllJournalsClick}
           >
-            Sulje kaikki
+            {props.i18n.text.get("plugin.records.openClose.closeAll")}
           </Link>
         </span>
       </ApplicationSubPanel.Header>
@@ -370,7 +370,9 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
           })
         ) : (
           <div className="empty">
-            <span>Ei päiväkirjamerkintöjä</span>
+            <span>
+              {props.i18n.text.get("plugin.records.nojournalentries")}
+            </span>
           </div>
         )}
       </ApplicationSubPanel.Body>
@@ -380,12 +382,14 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
   const panelTabs: Tab[] = [
     {
       id: "EVALUATED",
-      name: "Arvioitavat tehtävät",
+      name: props.i18n.text.get("plugin.records.assignments.title"),
       type: "assignments",
       component: (
         <ApplicationSubPanel modifier="studies-assignments">
           <ApplicationSubPanel.Header modifier="studies-assignments">
-            <span>Arvioitavat tehtävät</span>
+            <span>
+              {props.i18n.text.get("plugin.records.assignments.title")}
+            </span>
             <span>
               <Link
                 className="link link--studies-close-open"
@@ -395,7 +399,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
                 }
                 onClick={handleOpenAllAssignmentsByTypeClick("EVALUATED")}
               >
-                Avaa kaikki
+                {props.i18n.text.get("plugin.records.openClose.openAll")}
               </Link>
               <Link
                 className="link link--studies-close-open"
@@ -405,7 +409,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
                 }
                 onClick={handleCloseAllAssignmentsByTypeClick("EVALUATED")}
               >
-                Sulje kaikki
+                {props.i18n.text.get("plugin.records.openClose.closeAll")}
               </Link>
             </span>
           </ApplicationSubPanel.Header>
@@ -414,7 +418,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
             compositeReplyData.isLoading ? (
               <div className="loader-empty" />
             ) : (
-              renderEvaluatedMaterialsList
+              renderAssignmentMaterialsList
             )}
           </ApplicationSubPanel.Body>
         </ApplicationSubPanel>
@@ -422,12 +426,12 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
     },
     {
       id: "EXCERCISE",
-      name: "Harjoitustehtävät",
+      name: props.i18n.text.get("plugin.records.exercises.title"),
       type: "excercises",
       component: (
         <ApplicationSubPanel modifier="studies-exercises">
           <ApplicationSubPanel.Header modifier="studies-exercises">
-            <span>Harjoitustehtävät</span>
+            <span>{props.i18n.text.get("plugin.records.exercises.title")}</span>
             <span>
               <Link
                 className="link link--studies-close-open"
@@ -437,7 +441,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
                 }
                 onClick={handleOpenAllAssignmentsByTypeClick("EXERCISE")}
               >
-                Avaa kaikki
+                {props.i18n.text.get("plugin.records.openClose.openAll")}
               </Link>
               <Link
                 className="link link--studies-close-open"
@@ -447,7 +451,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
                 }
                 onClick={handleCloseAllAssignmentsByTypeClick("EXERCISE")}
               >
-                Sulje kaikki
+                {props.i18n.text.get("plugin.records.openClose.closeAll")}
               </Link>
             </span>
           </ApplicationSubPanel.Header>

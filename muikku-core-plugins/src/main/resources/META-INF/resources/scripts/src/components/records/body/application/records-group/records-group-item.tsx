@@ -253,7 +253,11 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
               workspaceId={workspace.id}
               workspace={workspace}
             >
-              <Button buttonModifiers="info">Tehtävät</Button>
+              <Button buttonModifiers="info">
+                {props.i18n.text.get(
+                  "plugin.records.assignmentsAndExercisesButton.label"
+                )}
+              </Button>
             </WorkspaceAssignmentsAndDiaryDialog>
           </span>
 

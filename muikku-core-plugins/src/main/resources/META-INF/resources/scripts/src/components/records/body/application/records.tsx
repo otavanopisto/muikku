@@ -17,9 +17,7 @@ import ApplicationList, {
 import { AnyActionType } from "~/actions";
 import RecordsGroup from "./records-group/records-group";
 import { StatusType } from "~/reducers/base/status";
-import ApplicationSubPanel, {
-  ApplicationSubPanelItem,
-} from "~/components/general/application-sub-panel";
+import ApplicationSubPanel from "~/components/general/application-sub-panel";
 
 /**
  * RecordsProps
