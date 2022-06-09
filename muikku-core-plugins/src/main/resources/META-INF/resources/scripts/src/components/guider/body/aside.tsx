@@ -46,7 +46,7 @@ class NavigationAside extends React.Component<
     );
     return (
       <Navigation>
-        {this.props.guider.availableFilters.labels.length !== 0 ? (
+        {this.props.guider.availableFilters.labels.length > 0 && (
           <NavigationTopic
             name={this.props.i18n.text.get("plugin.guider.filters.flags")}
           >
@@ -91,90 +91,96 @@ class NavigationAside extends React.Component<
               }
             )}
           </NavigationTopic>
-        ) : null}
-        <NavigationTopic
-          name={this.props.i18n.text.get("plugin.guider.filters.workspaces")}
-        >
-          {this.props.guider.availableFilters.workspaces.map(
-            (workspace: GuiderWorkspaceType) => {
-              const isActive =
-                this.props.guider.activeFilters.workspaceFilters.includes(
-                  workspace.id
-                );
-              const hash = isActive
-                ? queryString.stringify(
-                    Object.assign({}, locationData, {
-                      c: "",
-                      w: (locationData.w || []).filter(
-                        (w: string) => parseInt(w) !== workspace.id
-                      ),
-                    }),
-                    { arrayFormat: "bracket" }
-                  )
-                : queryString.stringify(
-                    Object.assign({}, locationData, {
-                      c: "",
-                      w: (locationData.w || []).concat(workspace.id),
-                    }),
-                    { arrayFormat: "bracket" }
+        )}
+
+        {this.props.guider.availableFilters.workspaces.length > 0 && (
+          <NavigationTopic
+            name={this.props.i18n.text.get("plugin.guider.filters.workspaces")}
+          >
+            {this.props.guider.availableFilters.workspaces.map(
+              (workspace: GuiderWorkspaceType) => {
+                const isActive =
+                  this.props.guider.activeFilters.workspaceFilters.includes(
+                    workspace.id
                   );
-              return (
-                <NavigationElement
-                  modifiers="aside-navigation-guider-course"
-                  icon="books"
-                  key={workspace.id}
-                  isActive={isActive}
-                  hash={"?" + hash}
-                >
-                  {workspace.name +
-                    (workspace.nameExtension
-                      ? " (" + workspace.nameExtension + ")"
-                      : "")}
-                </NavigationElement>
-              );
-            }
-          )}
-        </NavigationTopic>
-        <NavigationTopic
-          name={this.props.i18n.text.get("plugin.guider.filters.userGroups")}
-        >
-          {this.props.guider.availableFilters.userGroups.map(
-            (userGroup: UserGroupType) => {
-              const isActive =
-                this.props.guider.activeFilters.userGroupFilters.includes(
-                  userGroup.id
+                const hash = isActive
+                  ? queryString.stringify(
+                      Object.assign({}, locationData, {
+                        c: "",
+                        w: (locationData.w || []).filter(
+                          (w: string) => parseInt(w) !== workspace.id
+                        ),
+                      }),
+                      { arrayFormat: "bracket" }
+                    )
+                  : queryString.stringify(
+                      Object.assign({}, locationData, {
+                        c: "",
+                        w: (locationData.w || []).concat(workspace.id),
+                      }),
+                      { arrayFormat: "bracket" }
+                    );
+                return (
+                  <NavigationElement
+                    modifiers="aside-navigation-guider-course"
+                    icon="books"
+                    key={workspace.id}
+                    isActive={isActive}
+                    hash={"?" + hash}
+                  >
+                    {workspace.name +
+                      (workspace.nameExtension
+                        ? " (" + workspace.nameExtension + ")"
+                        : "")}
+                  </NavigationElement>
                 );
-              const hash = isActive
-                ? queryString.stringify(
-                    Object.assign({}, locationData, {
-                      c: "",
-                      u: (locationData.u || []).filter(
-                        (u: string) => parseInt(u) !== userGroup.id
-                      ),
-                    }),
-                    { arrayFormat: "bracket" }
-                  )
-                : queryString.stringify(
-                    Object.assign({}, locationData, {
-                      c: "",
-                      u: (locationData.u || []).concat(userGroup.id),
-                    }),
-                    { arrayFormat: "bracket" }
+              }
+            )}
+          </NavigationTopic>
+        )}
+
+        {this.props.guider.availableFilters.userGroups.length > 0 && (
+          <NavigationTopic
+            name={this.props.i18n.text.get("plugin.guider.filters.userGroups")}
+          >
+            {this.props.guider.availableFilters.userGroups.map(
+              (userGroup: UserGroupType) => {
+                const isActive =
+                  this.props.guider.activeFilters.userGroupFilters.includes(
+                    userGroup.id
                   );
-              return (
-                <NavigationElement
-                  modifiers="aside-navigation-guider-user-group"
-                  icon="users"
-                  key={userGroup.id}
-                  isActive={isActive}
-                  hash={"?" + hash}
-                >
-                  {userGroup.name}
-                </NavigationElement>
-              );
-            }
-          )}
-        </NavigationTopic>
+                const hash = isActive
+                  ? queryString.stringify(
+                      Object.assign({}, locationData, {
+                        c: "",
+                        u: (locationData.u || []).filter(
+                          (u: string) => parseInt(u) !== userGroup.id
+                        ),
+                      }),
+                      { arrayFormat: "bracket" }
+                    )
+                  : queryString.stringify(
+                      Object.assign({}, locationData, {
+                        c: "",
+                        u: (locationData.u || []).concat(userGroup.id),
+                      }),
+                      { arrayFormat: "bracket" }
+                    );
+                return (
+                  <NavigationElement
+                    modifiers="aside-navigation-guider-user-group"
+                    icon="users"
+                    key={userGroup.id}
+                    isActive={isActive}
+                    hash={"?" + hash}
+                  >
+                    {userGroup.name}
+                  </NavigationElement>
+                );
+              }
+            )}
+          </NavigationTopic>
+        )}
       </Navigation>
     );
   }
