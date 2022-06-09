@@ -542,12 +542,20 @@ public class HopsRestService {
                 continue;
               }
               
+              Integer courseNum = null;
+              
+              @SuppressWarnings("unchecked")
+              List<Map<String, Object>> subjects = (List<Map<String, Object>>) result.get("subjects");
+              for (Map<String, Object> s : subjects) {
+                courseNum = (Integer) s.get("courseNumber");
+              }
+              
               SuggestedWorkspaceRestModel suggestedWorkspace = new SuggestedWorkspaceRestModel();
               suggestedWorkspace.setId(workspaceEntity.getId());
               suggestedWorkspace.setName((String) result.get("name"));
               suggestedWorkspace.setNameExtension((String) result.get("nameExtension"));
               suggestedWorkspace.setSubject(subjectObject.getCode());
-              suggestedWorkspace.setCourseNumber((Integer) result.get("courseNumber"));
+              suggestedWorkspace.setCourseNumber(courseNum);
               suggestedWorkspace.setUrlName(workspaceEntity.getUrlName());
               suggestedWorkspace.setHasCustomImage(workspaceEntityFileController.getHasCustomImage(workspaceEntity));
               suggestedWorkspace.setDescription((String) result.get("description"));
