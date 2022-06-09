@@ -17,6 +17,9 @@ import ApplicationList, {
 import { AnyActionType } from "~/actions";
 import RecordsGroup from "./records-group/records-group";
 import { StatusType } from "~/reducers/base/status";
+import ApplicationSubPanel, {
+  ApplicationSubPanelItem,
+} from "~/components/general/application-sub-panel";
 
 /**
  * RecordsProps
@@ -86,16 +89,16 @@ class Records extends React.Component<RecordsProps, RecordsState> {
      * studentRecords
      */
     const studentRecords = (
-      <div className="application-sub-panel">
+      <ApplicationSubPanel>
         {this.props.records.userData.map((data) => {
           const user = data.user;
           const records = data.records;
           return (
             <div className="react-required-container" key={data.user.id}>
-              <div className="application-sub-panel__header">
+              <ApplicationSubPanel.Header>
                 {user.studyProgrammeName}
-              </div>
-              <div className="application-sub-panel__body">
+              </ApplicationSubPanel.Header>
+              <ApplicationSubPanel.Body>
                 {records.length ? (
                   records.map((rG, i) => (
                     <RecordsGroup
@@ -106,15 +109,17 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                     />
                   ))
                 ) : (
-                  <div className="application-sub-panel__item application-sub-panel__item--empty">
-                    {this.props.i18n.text.get("plugin.records.courses.empty")}
+                  <div className="empty">
+                    <span>
+                      {this.props.i18n.text.get("plugin.records.courses.empty")}
+                    </span>
                   </div>
                 )}
-              </div>
+              </ApplicationSubPanel.Body>
             </div>
           );
         })}
-      </div>
+      </ApplicationSubPanel>
     );
     // Todo fix the first sub-panel border-bottom stuff from guider. It should be removed from title only.
 
@@ -130,11 +135,11 @@ class Records extends React.Component<RecordsProps, RecordsState> {
         </h2>
 
         {studentRecords}
-        <div className="application-sub-panel">
-          <div className="application-sub-panel__header">
+        <ApplicationSubPanel>
+          <ApplicationSubPanel.Header>
             {this.props.i18n.text.get("plugin.records.files.title")}
-          </div>
-          <div className="application-sub-panel__body">
+          </ApplicationSubPanel.Header>
+          <ApplicationSubPanel.Body>
             {this.props.records.files.length ? (
               <ApplicationList>
                 {this.props.records.files.map((file) => (
@@ -154,12 +159,14 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                 ))}
               </ApplicationList>
             ) : (
-              <ApplicationListItem className="application-list__item application-list__item--studies-file-attacment">
-                {this.props.i18n.text.get("plugin.records.files.empty")}
-              </ApplicationListItem>
+              <div className="empty">
+                <span>
+                  {this.props.i18n.text.get("plugin.records.files.empty")}
+                </span>
+              </div>
             )}
-          </div>
-        </div>
+          </ApplicationSubPanel.Body>
+        </ApplicationSubPanel>
       </BodyScrollKeeper>
     );
   }

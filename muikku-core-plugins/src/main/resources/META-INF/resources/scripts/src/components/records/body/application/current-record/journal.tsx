@@ -39,7 +39,7 @@ const Journal: React.FC<JournalProps> = (props) => {
     >
       <ApplicationListItemHeader className="application-list__item-header--journal-entry">
         <div className="application-list__item-header-main application-list__item-header-main--journal-entry">
-          <span className="application-list__item-header-main-content application-list__item-header-main-content--journal-entry-title">
+          <span className="application-list__item-header-main-content application-list__item-header-main-content--journal-entry-title-in-studies">
             {journal.title}
           </span>
         </div>
