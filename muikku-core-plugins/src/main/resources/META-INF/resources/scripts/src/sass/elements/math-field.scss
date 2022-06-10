@@ -71,18 +71,24 @@
 // Labels for symbol groups and math
 .material-page__mathfield-toolbar-symbol-group-label,
 .material-page__mathfield-toolbar-math-label {
+  align-content: center;
+  display: flex;
+  flex-direction: column;
   font-size: 0.8125rem;
   font-weight: 400;
+  justify-content: center;
   line-height: 1.125rem;
   padding-bottom: 5px;
-  width: 100%;
 }
 
 .material-page__mathfield-toolbar-symbol-group,
 .material-page__mathfield-toolbar-math-formula-group {
+  display: flex;
+  flex-wrap: initial;
   margin-right: 40px;
-  padding: 10px;
+  padding: 5px 10px;
   position: relative;
+  width: 100%;
 }
 
 .material-page__mathfield-toolbar-symbol,
