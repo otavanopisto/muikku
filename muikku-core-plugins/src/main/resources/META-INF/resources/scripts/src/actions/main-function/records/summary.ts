@@ -203,7 +203,7 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
       };
 
       /* Does have matriculation examination in goals? */
-      const summaryData:SummaryDataType = {
+      const summaryData: SummaryDataType = {
         eligibilityStatus: eligibility.coursesCompleted,
         activity: activityLogs.general.length,
         returnedExercises: assignmentsDone.length,
