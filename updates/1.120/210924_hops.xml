@@ -8,7 +8,6 @@
   <sql>create index ind_hhis_student on HopsHistory (studentIdentifier);</sql>
   
   <sql>create table HopsSuggestion (id bigint not null auto_increment, courseNumber integer, created datetime not null, studentIdentifier varchar(255) not null, subject varchar(255) not null, type varchar(255) not null, workspaceEntityId bigint, primary key (id));</sql>
-  <sql>create unique index ind_hsug_suggestion on HopsSuggestion (studentIdentifier);</sql>
 
   <sql>create table HopsGoals (id bigint not null auto_increment, goals longtext not null, studentIdentifier varchar(255) not null, primary key (id));</sql>
   <sql>create unique index ind_hgoa_student on HopsGoals (studentIdentifier);</sql>
@@ -19,6 +18,4 @@
   <sql>create unique index ind_hstu_hours on HopsStudyHours (studentIdentifier);</sql>
 
   <sql>create table HopsOptionalSuggestion (id bigint not null auto_increment, courseNumber integer, studentIdentifier varchar(255) not null, subject varchar(255) not null, primary key (id));</sql>
-
-  <sql>drop index ind_hsug_suggestion on hopsSuggestion;</sql>
 </update> 
