@@ -66,7 +66,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
         createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), date(125, 10, 12), false, true, null, null);
         navigate("/announcer", false);
         waitForPresent(".application-list__item-content-header");
-        waitAndClick(".announcement__select-container input");
+        waitAndClick(".application-list__item-content-aside .form-element--item-selection-container input");
         waitAndClick("span.button-pill__icon.icon-trash");
         waitForVisible(".dialog a.button--standard-ok");
         sleep(500);
