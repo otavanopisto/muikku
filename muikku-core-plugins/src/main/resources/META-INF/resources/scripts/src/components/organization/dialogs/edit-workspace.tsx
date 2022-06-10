@@ -755,7 +755,7 @@ class OrganizationEditWorkspace extends React.Component<
                 <div className="form__fieldset-content  form__fieldset-content--horizontal">
                   <div className="form-element form-element--checkbox-radiobutton">
                     <input
-                      id="access-members"
+                      id="accessMembers"
                       name="access-members"
                       type="radio"
                       checked={this.state.workspaceAccess === "MEMBERS_ONLY"}
@@ -764,7 +764,7 @@ class OrganizationEditWorkspace extends React.Component<
                         "MEMBERS_ONLY"
                       )}
                     />
-                    <label htmlFor="access-members">
+                    <label htmlFor="accessMembers">
                       {this.props.i18n.text.get(
                         "plugin.workspace.management.settings.access.membersOnly"
                       )}
@@ -772,13 +772,13 @@ class OrganizationEditWorkspace extends React.Component<
                   </div>
                   <div className="form-element form-element--checkbox-radiobutton">
                     <input
-                      id="access-loggedin"
+                      id="accessLoggedin"
                       name="access-loggedin"
                       type="radio"
                       checked={this.state.workspaceAccess === "LOGGED_IN"}
                       onChange={this.setWorkspaceAccess.bind(this, "LOGGED_IN")}
                     />
-                    <label htmlFor="access-loggedin">
+                    <label htmlFor="accessLoggedin">
                       {this.props.i18n.text.get(
                         "plugin.workspace.management.settings.access.loggedIn"
                       )}
@@ -786,13 +786,13 @@ class OrganizationEditWorkspace extends React.Component<
                   </div>
                   <div className="form-element form-element--checkbox-radiobutton">
                     <input
-                      id="access-anyone"
+                      id="accessAnyone"
                       name="access-anyone"
                       type="radio"
                       checked={this.state.workspaceAccess === "ANYONE"}
                       onChange={this.setWorkspaceAccess.bind(this, "ANYONE")}
                     />
-                    <label htmlFor="access-anyone">
+                    <label htmlFor="accessAnyone">
                       {this.props.i18n.text.get(
                         "plugin.workspace.management.settings.access.anyone"
                       )}
