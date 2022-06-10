@@ -131,6 +131,15 @@ public class HopsRestService {
   @Any
   private Instance<SearchProvider> searchProviders;
 
+  @GET
+  @Path("/isHopsAvailable/{STUDENTIDENTIFIER}")
+  @RESTPermit(handling = Handling.INLINE)
+  public Response getIsAvailable(@PathParam("STUDENTIDENTIFIER") String studentIdentifier) {
+    
+    boolean available = hopsController.isHopsAvailable(studentIdentifier) && sessionController.hasEnvironmentPermission(MuikkuPermissions.HOPS_STUDENT_INFO);
+
+    return Response.ok(available).build(); 
+  }
 
   @GET
   @Path("/student/{STUDENTIDENTIFIER}")
@@ -138,7 +147,10 @@ public class HopsRestService {
   public Response findHops(@PathParam("STUDENTIDENTIFIER") String studentIdentifier) {
 
     // Access check
-
+    if(!hopsController.isHopsAvailable(studentIdentifier)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
     if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.HOPS_VIEW)) {
       if (!StringUtils.equals(SchoolDataIdentifier.fromId(studentIdentifier).getIdentifier(), sessionController.getLoggedUserIdentifier())) {
         return Response.status(Status.FORBIDDEN).build();
@@ -155,7 +167,10 @@ public class HopsRestService {
   public Response createOrUpdateHops(@PathParam("STUDENTIDENTIFIER") String studentIdentifier, HopsData payload) {
 
     // Access check
-
+    if(!hopsController.isHopsAvailable(studentIdentifier)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
     if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.HOPS_EDIT)) {
       if (!StringUtils.equals(SchoolDataIdentifier.fromId(studentIdentifier).getIdentifier(), sessionController.getLoggedUserIdentifier())) {
         return Response.status(Status.FORBIDDEN).build();
@@ -196,7 +211,10 @@ public class HopsRestService {
   public Response findHopsGoals(@PathParam("STUDENTIDENTIFIER") String studentIdentifier) {
 
     // Access check
-
+    if(!hopsController.isHopsAvailable(studentIdentifier)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
     if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.HOPS_VIEW)) {
       if (!StringUtils.equals(SchoolDataIdentifier.fromId(studentIdentifier).getIdentifier(), sessionController.getLoggedUserIdentifier())) {
         return Response.status(Status.FORBIDDEN).build();
@@ -213,7 +231,10 @@ public class HopsRestService {
   public Response createOrUpdateHopsGoals(@PathParam("STUDENTIDENTIFIER") String studentIdentifier, String goals) {
 
     // Access check
-
+    if(!hopsController.isHopsAvailable(studentIdentifier)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
     if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.HOPS_EDIT)) {
       if (!StringUtils.equals(SchoolDataIdentifier.fromId(studentIdentifier).getIdentifier(), sessionController.getLoggedUserIdentifier())) {
         return Response.status(Status.FORBIDDEN).build();
@@ -266,7 +287,10 @@ public class HopsRestService {
   public Response getStudyActivity(@PathParam("STUDENTIDENTIFIER") String studentIdentifier) {
 
     // Access check
-
+    if(!hopsController.isHopsAvailable(studentIdentifier)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
     if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.HOPS_GET_STUDENT_STUDY_ACTIVITY)) {
       if (!StringUtils.equals(SchoolDataIdentifier.fromId(studentIdentifier).getIdentifier(), sessionController.getLoggedUserIdentifier())) {
         return Response.status(Status.FORBIDDEN).build();
@@ -343,7 +367,10 @@ public class HopsRestService {
       @QueryParam("maxResults") @DefaultValue("5") Integer maxResults) {
 
     // Access check
-
+    if(!hopsController.isHopsAvailable(studentIdentifier)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
     if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.HOPS_EDIT)) {
       if (!StringUtils.equals(SchoolDataIdentifier.fromId(studentIdentifier).getIdentifier(), sessionController.getLoggedUserIdentifier())) {
         return Response.status(Status.FORBIDDEN).build();
@@ -407,6 +434,10 @@ public class HopsRestService {
       return Response.status(Status.BAD_REQUEST).build();
     }
 
+    if(!hopsController.isHopsAvailable(studentIdentifier)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
     HopsHistory history = hopsController.findHistoryById(historyId);
 
     if (history == null) {
@@ -451,7 +482,12 @@ public class HopsRestService {
 
     UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
     
+    SchoolDataIdentifier userIdentifier = userEntity.defaultSchoolDataIdentifier();
     // Permission checks
+    if(userEntity == null || !hopsController.isHopsAvailable(userIdentifier.getDataSource() + "-" + userIdentifier.getIdentifier())) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
     if (userEntity != null && !sessionController.getLoggedUserEntity().getId().equals(userEntity.getId())) {
       EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUserEntity());
 
@@ -531,7 +567,10 @@ public class HopsRestService {
   public Response toggleSuggestion(@Context Request request, @PathParam("STUDENTIDENTIFIER") String studentIdentifier, HopsSuggestionRestModel payload) {
 
     // Access check
-
+    if(!hopsController.isHopsAvailable(studentIdentifier)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
     if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.HOPS_SUGGEST_WORKSPACES)) {
       return Response.status(Status.FORBIDDEN).build();
     }
@@ -615,7 +654,10 @@ public class HopsRestService {
   public Response removeSuggestion(@PathParam("STUDENTIDENTIFIER") String studentIdentifier, HopsSuggestionRestModel payload) {
 
     // Access check
-
+    if(!hopsController.isHopsAvailable(studentIdentifier)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
     if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.HOPS_SUGGEST_WORKSPACES)) {
       return Response.status(Status.FORBIDDEN).build();
     }
@@ -646,6 +688,10 @@ public class HopsRestService {
 
     // Create or remove
 
+    if(!hopsController.isHopsAvailable(studentIdentifier)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
     SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifier);
     UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(schoolDataIdentifier);
 
@@ -689,6 +735,10 @@ public class HopsRestService {
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response listOptionalSuggestions(@PathParam("STUDENTIDENTIFIER") String studentIdentifier) {
 
+    if(!hopsController.isHopsAvailable(studentIdentifier)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
     List<HopsOptionalSuggestionRestModel> optionalSuggestions = new ArrayList<>();
     List<HopsOptionalSuggestion> optionalSuggestionsFromDB = hopsController.listOptionalSuggestionsByStudentIdentifier(studentIdentifier);
 
@@ -710,6 +760,10 @@ public class HopsRestService {
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response toggleStudentChoices(@Context Request request, @PathParam("STUDENTIDENTIFIER") String studentIdentifier, StudentChoiceRestModel payload) {
 
+    if(!hopsController.isHopsAvailable(studentIdentifier)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
     // Create or remove
 
     SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifier);
@@ -755,6 +809,10 @@ public class HopsRestService {
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response listStudentChoices(@PathParam("STUDENTIDENTIFIER") String studentIdentifier) {
 
+    if(!hopsController.isHopsAvailable(studentIdentifier)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
     List<StudentChoiceRestModel> studentChoices = new ArrayList<>();
     List<HopsStudentChoice> studentChoicesFromDB = hopsController.listStudentChoiceByStudentIdentifier(studentIdentifier);
 
@@ -777,7 +835,10 @@ public class HopsRestService {
   public Response getStudentInformation(@PathParam("STUDENTIDENTIFIER") String studentIdentifier) {
 
     // Access check
-
+    if(!hopsController.isHopsAvailable(studentIdentifier)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
     if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.HOPS_VIEW)) {
       if (!StringUtils.equals(SchoolDataIdentifier.fromId(studentIdentifier).getIdentifier(), sessionController.getLoggedUserIdentifier())) {
         return Response.status(Status.FORBIDDEN).build();
@@ -833,7 +894,11 @@ public class HopsRestService {
   @Path("/student/{STUDENTIDENTIFIER}/studyHours")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response createOrUpdateStudyHours(@PathParam("STUDENTIDENTIFIER") String studentIdentifier, StudyHoursRestModel payload) {
-
+    
+    if(!hopsController.isHopsAvailable(studentIdentifier)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
     if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.HOPS_EDIT)) {
       if (!StringUtils.equals(SchoolDataIdentifier.fromId(studentIdentifier).getIdentifier(), sessionController.getLoggedUserIdentifier())) {
         return Response.status(Status.FORBIDDEN).build();
@@ -885,7 +950,10 @@ public class HopsRestService {
   public Response findStudyHours(@PathParam("STUDENTIDENTIFIER") String studentIdentifier) {
 
     // Access check
-
+    if(!hopsController.isHopsAvailable(studentIdentifier)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
     if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.HOPS_VIEW)) {
       if (!StringUtils.equals(SchoolDataIdentifier.fromId(studentIdentifier).getIdentifier(), sessionController.getLoggedUserIdentifier())) {
         return Response.status(Status.FORBIDDEN).build();
@@ -900,6 +968,11 @@ public class HopsRestService {
   @Path("/student/{STUDENTIDENTIFIER}/alternativeStudyOptions")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response findAlternativeStudyOptions(@PathParam("STUDENTIDENTIFIER") String studentIdentifierParam) {
+    
+    if(!hopsController.isHopsAvailable(studentIdentifierParam)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
     SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierParam);
 
     // Access check

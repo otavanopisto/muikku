@@ -99,6 +99,7 @@ export interface GuiderStudentUserProfileType {
   activityLogs: ActivityLogType[];
   purchases: PurchaseType[];
   hopsPhase?: string;
+  hopsAvailable: boolean;
 }
 
 /**
@@ -162,6 +163,13 @@ function sortLabels(labelA: GuiderUserLabelType, labelB: GuiderUserLabelType) {
     : 0;
 }
 
+/**
+ * sortOrders
+ *
+ * @param a a
+ * @param b b
+ * @returns sort
+ */
 function sortOrders(a: PurchaseType, b: PurchaseType) {
   const dateA = new Date(a.created).getTime();
   const dateB = new Date(b.created).getTime();

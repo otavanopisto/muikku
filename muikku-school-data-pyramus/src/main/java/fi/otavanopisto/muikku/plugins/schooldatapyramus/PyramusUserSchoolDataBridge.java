@@ -1613,5 +1613,19 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     }
     return pyramusClient.get(String.format("/users/users/%d/defaultEmailAddress", userId), String.class);
   }
+  
+  @Override
+  public boolean amICounselor(String studentIdentifier) {
+    
+    Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
+    if (studentId == null) {
+      logger.severe(String.format("Student for identifier %s not found", studentIdentifier));
+      return false;
+    }
+    
+    return pyramusClient.get(String.format("/students/students/%d/amICounselor", studentId), Boolean.class);
 
+  }
+  
+  
 }

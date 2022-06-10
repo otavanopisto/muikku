@@ -751,4 +751,9 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
     return null;
   }
 
+  @Override
+  public boolean amICounselor(String studentIdentifier) {
+    return false;
+  }
+
 }
