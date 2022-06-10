@@ -69,7 +69,7 @@ public class NoteDAO extends CorePluginsDAO<Note> {
   }
   
   
-  public Note updateArchived(Note note, boolean archived) {
+  public Note toggleArchived(Note note, boolean archived) {
     note.setArchived(archived);
     note.setLastModified(new Date());
     

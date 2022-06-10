@@ -8,7 +8,6 @@ import java.util.List;
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -95,7 +94,7 @@ public class NotesRESTService extends PluginRESTService {
   // Editable fields are title, description, priority, pinned, dueDate & status)
   @PUT
   @Path ("/note/{NOTEID}")
-  @RESTPermit(handling = Handling.INLINE)
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response updateNote(@PathParam ("NOTEID") Long noteId, NoteRestModel restModel) {
     
     Note note = notesController.findNoteById(noteId);
@@ -172,21 +171,13 @@ public class NotesRESTService extends PluginRESTService {
       
       if (Boolean.TRUE.equals(listArchived)) {
         if (!note.getLastModified().before(Date.from(inLastTwoWeeks.toInstant()))) {
-          if (loggedUserRole.equals(EnvironmentRoleArchetype.STUDENT)) {
+          if (loggedUserRole.equals(EnvironmentRoleArchetype.STUDENT) || !creatorUserRole.equals(EnvironmentRoleArchetype.STUDENT)) {
             notesList.add(noteRest);
-          } else {
-            if (!creatorUserRole.equals(EnvironmentRoleArchetype.STUDENT)) {
-              notesList.add(noteRest);
-            }
           }
         }
       } else {
-        if (loggedUserRole.equals(EnvironmentRoleArchetype.STUDENT)) {
-          notesList.add(noteRest);
-        } else {
-          if (!creatorUserRole.equals(EnvironmentRoleArchetype.STUDENT)) {
-            notesList.add(noteRest);
-          } 
+        if (loggedUserRole.equals(EnvironmentRoleArchetype.STUDENT) || !creatorUserRole.equals(EnvironmentRoleArchetype.STUDENT)) {
+          notesList.add(noteRest);    
         }
       }
     }
@@ -200,12 +191,12 @@ public class NotesRESTService extends PluginRESTService {
     return userRoleArchetype;
   }
   
-  // mApi() call (mApi().notes.note.archive.update(noteId))
+  // mApi() call (mApi().notes.note.toggleArchived.update(noteId))
   // In this case archiving means moving note to 'trash'. So it's only update method and user can restore the note.
   @PUT
-  @Path ("/note/{NOTEID}/archive")
-  @RESTPermit(handling = Handling.INLINE)
-  public Response updateArchived(@PathParam ("NOTEID") Long noteId) {
+  @Path ("/note/{NOTEID}/toggleArchived")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response toggleArchived(@PathParam ("NOTEID") Long noteId) {
     Note note = notesController.findNoteById(noteId);
     
     if (note == null) {
@@ -219,7 +210,7 @@ public class NotesRESTService extends PluginRESTService {
       }
     }
 
-    Note updatedNote = notesController.updateArchived(note);
+    Note updatedNote = notesController.toggleArchived(note);
     if(note.getArchived().equals(Boolean.FALSE)) {
       note.setDueDate(null);
     }

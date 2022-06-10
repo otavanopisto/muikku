@@ -279,6 +279,9 @@ public class UserRESTService extends AbstractRESTService {
       }
       
     } else if (payload.getUserEntityId() != null) { // This is for student graduation date goal
+      if (isLoggedUserStudent && !payload.getUserEntityId().equals(loggedUserEntity.getId())) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
       userEntityController.setUserEntityProperty(userEntity, payload.getKey(), payload.getValue());
     } else {
       userEntityController.setUserEntityProperty(loggedUserEntity, payload.getKey(), payload.getValue());
