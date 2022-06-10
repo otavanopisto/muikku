@@ -997,7 +997,7 @@ export class DateFormElement extends React.Component<
         }`}
       >
         {labels.label ? (
-          <label htmlFor={id} className="form-element__label">
+          <label htmlFor={id}>
             {labels.label}
           </label>
         ) : (
