@@ -449,7 +449,7 @@ class ContactInformation extends React.Component<
                     htmlFor="profileExtraInfo"
                     className="application-sub-panel__item-title"
                   >
-                    Lisätietoa
+                    {this.props.i18n.text.get("plugin.profile.extraInfo.label")}
                   </label>
                   <div className="application-sub-panel__item-data form-element">
                     <textarea
