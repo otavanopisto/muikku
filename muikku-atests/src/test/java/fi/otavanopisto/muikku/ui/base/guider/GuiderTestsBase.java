@@ -408,7 +408,7 @@ public class GuiderTestsBase extends AbstractUITest {
       try {
         selectFinnishLocale();
         navigate("/guider", false);
-        waitAndClick(".user .user__select-container input");
+        waitAndClick(".application-list__item-content-aside .form-element--item-selection-container input");
         waitAndClick(".button-pill--new-message:not(.disabled)");
         sendKeys("#messageTitle", "Message from guider.");
         addTextToCKEditor("Hello from guider!");
@@ -461,7 +461,7 @@ public class GuiderTestsBase extends AbstractUITest {
         waitForPresent(".application-list__item-footer--student .label--ENDING");
         waitAndClick(".application-list__header-primary>span");
         waitAndClickAndConfirm(".button-pill--create-student-order", ".dropdown .link--purchasable-product-dropdown", 5, 500);
-        waitAndClickAndConfirm(".dropdown__container-item:first-child", ".dialog--dialog-confirm-order.dialog--visible", 5, 1000);
+        waitAndClickAndConfirm(".dropdown__container-item:first-child .link--purchasable-product-dropdown", ".dialog--dialog-confirm-order.dialog--visible", 5, 1000);
         waitAndClick(".button--standard-ok");
         assertTextIgnoreCase(".application-list__header-primary--product .application-list__header-primary-title", "Nettilukion opiskelumaksu 6 kk");
         assertTextIgnoreCase(".application-list__header-primary--product .application-list__header-primary-description", "Tilaus on luotu ja opiskelijalle on toimitettu sähköpostitse ohjeet maksamista varten.");
@@ -559,7 +559,7 @@ public class GuiderTestsBase extends AbstractUITest {
         waitForPresent(".application-list__item-footer--student .label--ENDING");
         waitAndClick(".application-list__header-primary>span");
         waitAndClickAndConfirm(".button-pill--create-student-order", ".dropdown .link--purchasable-product-dropdown", 5, 500);
-        waitAndClickAndConfirm(".dropdown__container-item:first-child", ".dialog--dialog-confirm-order.dialog--visible", 5, 1000);
+        waitAndClickAndConfirm(".dropdown__container-item:first-child .link--purchasable-product-dropdown", ".dialog--dialog-confirm-order.dialog--visible", 5, 1000);
         waitAndClick(".button--standard-ok");
         assertTextIgnoreCase(".application-list__header-primary--product .application-list__header-primary-title", "Nettilukion opiskelumaksu 6 kk");
         assertTextIgnoreCase(".application-list__header-primary--product .application-list__header-primary-description", "Tilaus on luotu ja opiskelijalle on toimitettu sähköpostitse ohjeet maksamista varten.");
@@ -616,7 +616,7 @@ public class GuiderTestsBase extends AbstractUITest {
         waitForPresent(".application-list__item-footer--student .label--ENDING");
         waitAndClick(".application-list__header-primary>span");
         waitAndClickAndConfirm(".button-pill--create-student-order", ".dropdown .link--purchasable-product-dropdown", 5, 500);
-        waitAndClickAndConfirm(".dropdown__container-item:first-child", ".dialog--dialog-confirm-order.dialog--visible", 5, 1000);
+        waitAndClickAndConfirm(".dropdown__container-item:first-child .link--purchasable-product-dropdown", ".dialog--dialog-confirm-order.dialog--visible", 5, 1000);
         waitAndClick(".button--standard-ok");
         assertTextIgnoreCase(".application-list__header-primary--product .application-list__header-primary-title", "Nettilukion opiskelumaksu 6 kk");
         assertTextIgnoreCase(".application-list__header-primary--product .application-list__header-primary-description", "Tilaus on luotu ja opiskelijalle on toimitettu sähköpostitse ohjeet maksamista varten.");
