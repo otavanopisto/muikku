@@ -2111,7 +2111,7 @@ const loadStaffMembersOfWorkspace: LoadUsersOfWorkspaceTriggerType =
           mApi().user.staffMembers.read({
             workspaceEntityId: data.workspace.id,
             properties:
-              "profile-phone,profile-vacation-start,profile-vacation-end",
+              "profile-phone,profile-extraInfo,profile-whatsapp,profile-vacation-start,profile-vacation-end",
             firstResult: data.payload ? data.payload.firstResult : 0,
             maxResults: data.payload ? data.payload.maxResults : 10,
           }),

@@ -589,6 +589,7 @@
 
 .button--contact-teacher {
   font-size: 0.75rem;
+  max-height: 25px;
   padding: 4px 12px;
 }
 
@@ -1884,4 +1885,17 @@
     background-color: transparent;
     color: $color-disabled;
   }
+}
+
+.button-icon--whatsapp-me {
+  font-size: 1.75rem;
+  transition: 0.3s;
+
+  &:hover {
+    color: $color-whatsapp-icon;
+  }
+}
+
+.button-icon--whatsapp-active {
+  color: $color-whatsapp-icon;
 }
