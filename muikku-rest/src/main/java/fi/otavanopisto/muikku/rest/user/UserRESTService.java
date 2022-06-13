@@ -269,8 +269,15 @@ public class UserRESTService extends AbstractRESTService {
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response setUserEntityProperty(fi.otavanopisto.muikku.rest.model.UserEntityProperty payload) {
     UserEntity loggedUserEntity = sessionController.getLoggedUserEntity();
-    UserEntity userEntity = userEntityController.findUserEntityById(payload.getUserEntityId());
-    Boolean isStudent = userEntityController.isStudent(userEntity);
+    UserEntity userEntity = null;
+    
+    Boolean isStudent = false;
+    
+    if (payload.getUserEntityId() != null) {
+      userEntity = userEntityController.findUserEntityById(payload.getUserEntityId());
+      isStudent = userEntityController.isStudent(userEntity);
+    }
+    
     Boolean isLoggedUserStudent = userEntityController.isStudent(loggedUserEntity);
 
     if (payload.getUserEntityId() != null && payload.getKey().equals("hopsPhase")) { // This is for hops.phase. Only staff members can set phases.
