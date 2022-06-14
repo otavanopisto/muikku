@@ -18,7 +18,7 @@ import org.openqa.selenium.WebElement;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.hash.Hashing;
 
 import fi.otavanopisto.muikku.TestEnvironments;
@@ -423,7 +423,7 @@ public class GuiderTestsBase extends AbstractUITest {
   
   @Test
   public void addStudyTimeTest() throws Exception {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     MockStaffMember admin = new MockStaffMember(1l, 1l, DEFAULT_ORGANIZATION_ID, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
     MockStudent student = new MockStudent(10l, 10l, "Eastern", "Ibex", "ibexofeast@example.com", 2l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "101010-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextWeek());
@@ -580,7 +580,7 @@ public class GuiderTestsBase extends AbstractUITest {
   
   @Test
   public void cancelStudyTimeTest() throws Exception {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     MockStaffMember admin = new MockStaffMember(1l, 1l, DEFAULT_ORGANIZATION_ID, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
     MockStudent student = new MockStudent(12l, 12l, "Southeastern", "Stinger", "sting@example.com", 2l, OffsetDateTime.of(1991, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121091-1211", Sex.MALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextWeek());

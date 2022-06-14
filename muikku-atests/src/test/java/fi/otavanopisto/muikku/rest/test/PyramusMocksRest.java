@@ -17,7 +17,7 @@ import java.time.ZoneOffset;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.tomakehurst.wiremock.client.WireMock;
 
 import fi.otavanopisto.muikku.AbstractPyramusMocks;
@@ -100,7 +100,7 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
   
   private static final Long DEFAULT_ORGANIZATION_ID = 1l;
 
-  private static ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+  private static ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
   
   public static void mockDefaults(List<String> payloads) throws JsonProcessingException {
     mockOrganizations(payloads);

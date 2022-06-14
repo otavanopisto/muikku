@@ -1,4 +1,4 @@
-SET REFERENTIAL_INTEGRITY FALSE;
+SET foreign_key_checks = 0;
 insert into RoleEntity (id, name) values 
   (1, 'GUEST'),
   (2, 'USER'),
@@ -20,7 +20,7 @@ insert into EnvironmentRoleEntity (id, archetype) values
   (5, 'STUDENT'),
   (6, 'CUSTOM');
   
-INSERT INTO ROLESCHOOLDATAIDENTIFIER (id, identifier, datasource_id, roleentity_id) values 
+INSERT INTO RoleSchoolDataIdentifier (id, identifier, datasource_id, roleentity_id) values 
   (1, 'ENV-GUEST',  2, 1),
   (2, 'ENV-USER', 2, 2),
   (3, 'ENV-MANAGER', 2, 3),
@@ -38,4 +38,4 @@ insert into WorkspaceRoleEntity (id, archetype) values (7, 'TEACHER'), (8, 'CUST
 insert into UserGroupEntity (id, schoolDataSource_id, identifier, archived) values
   (1, 2, 'STUDYPROGRAMME-1', false);
 
-SET REFERENTIAL_INTEGRITY TRUE;
+SET foreign_key_checks = 1;

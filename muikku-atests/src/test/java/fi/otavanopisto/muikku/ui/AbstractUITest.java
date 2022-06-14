@@ -1,6 +1,5 @@
 package fi.otavanopisto.muikku.ui;
 
-import static com.jayway.restassured.RestAssured.certificate;
 import static fi.otavanopisto.muikku.mock.PyramusMock.mocker;
 import static java.lang.Math.toIntExact;
 import static org.junit.Assert.assertEquals;
@@ -14,6 +13,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
@@ -58,7 +58,6 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
-import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.safari.SafariOptions;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -74,13 +73,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import com.jayway.restassured.RestAssured;
-import com.jayway.restassured.config.ObjectMapperConfig;
-import com.jayway.restassured.config.RestAssuredConfig;
-import com.jayway.restassured.mapper.factory.Jackson2ObjectMapperFactory;
-import com.jayway.restassured.response.Response;
 import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 
 import fi.otavanopisto.muikku.AbstractIntegrationTest;
@@ -104,6 +98,11 @@ import fi.otavanopisto.muikku.wcag.AbstractWCAGTest;
 import fi.otavanopisto.pyramus.rest.model.Course;
 import fi.otavanopisto.pyramus.webhooks.WebhookPersonCreatePayload;
 import fi.otavanopisto.pyramus.webhooks.WebhookStudentCreatePayload;
+import io.restassured.RestAssured;
+import io.restassured.config.ObjectMapperConfig;
+import io.restassured.http.ContentType;
+import io.restassured.path.json.mapper.factory.Jackson2ObjectMapperFactory;
+import io.restassured.response.Response;
 
 public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDemandSessionIdProvider {
   
@@ -234,29 +233,25 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   
   @Before
   public void setupRestAssured() {
-
-    RestAssured.baseURI = getAppUrl(true) + "/rest";
-    RestAssured.port = getPortHttps();
-    RestAssured.authentication = certificate(getKeystoreFile(), getKeystorePass());
-
-    RestAssured.config = RestAssuredConfig.config().objectMapperConfig(
-      ObjectMapperConfig.objectMapperConfig().jackson2ObjectMapperFactory(new Jackson2ObjectMapperFactory() {
-
-        @SuppressWarnings("rawtypes")
+    RestAssured.baseURI = getAppUrl(false) + "/rest";
+    RestAssured.port = getPortHttp();
+//    RestAssured.authentication = certificate(getKeystoreFile(), getKeystorePass());
+    RestAssured.config = RestAssured.config
+      .objectMapperConfig(new ObjectMapperConfig().jackson2ObjectMapperFactory(new Jackson2ObjectMapperFactory() {
+  		
         @Override
-        public com.fasterxml.jackson.databind.ObjectMapper create(Class cls, String charset) {
-          com.fasterxml.jackson.databind.ObjectMapper objectMapper = new com.fasterxml.jackson.databind.ObjectMapper();
-          objectMapper.registerModule(new JSR310Module());
-          objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-          return objectMapper;
-        }
-      }));
+      	public ObjectMapper create(Type cls, String charset) {
+      	  return new ObjectMapper()
+    		    .registerModule(new JavaTimeModule())
+    		    .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+      	}
+    	}));
   }
 
   @After
   public void flushCaches() {
     asAdmin()
-      .baseUri(getAppUrl(true))
+      .baseUri(getAppUrl(false))
       .get("/system/cache/flush");
   }
   
@@ -1253,7 +1248,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void assertElementCount(String cssSelector, int countToExpect) {
-    assertEquals(countElements(cssSelector), countToExpect);
+    assertEquals(countToExpect, countElements(cssSelector));
   }
   
   protected void loginAdmin() throws JsonProcessingException, Exception {
@@ -1281,7 +1276,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void loginStudent1() throws JsonProcessingException, Exception {
     PyramusMocks.student1LoginMock();
     PyramusMocks.personsPyramusMocks();
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     String payload = objectMapper.writeValueAsString(new WebhookStudentCreatePayload((long) 1));
     TestUtilities.webhookCall("http://dev.muikku.fi:" + getPortHttp() + "/pyramus/webhook", payload);
     payload = objectMapper.writeValueAsString(new WebhookPersonCreatePayload((long) 1));
@@ -1293,7 +1288,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void loginStudent2() throws JsonProcessingException, Exception {
     PyramusMocks.student2LoginMock();
     PyramusMocks.personsPyramusMocks();
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     String payload = objectMapper.writeValueAsString(new WebhookStudentCreatePayload((long) 2));
     webhookCall("http://dev.muikku.fi:" + getPortHttp() + "/pyramus/webhook", payload);
     payload = objectMapper.writeValueAsString(new WebhookPersonCreatePayload((long) 2));
@@ -1312,7 +1307,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
 
   protected Workspace createWorkspace(String name, String description, String identifier, Boolean published) throws Exception {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     Builder mockBuilder = mocker();
     
     Course course = new CourseBuilder().name(name).id(Long.parseLong(identifier)).description(description).buildCourse();
@@ -1337,7 +1332,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected Workspace createWorkspace(Course course, Boolean published) throws Exception {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     
     Workspace payload = new Workspace(null, course.getName(), null, "PYRAMUS", String.valueOf(course.getId()), published);
     Response response = asAdmin()
@@ -1356,7 +1351,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected DiscussionGroup createWorkspaceDiscussionGroup(Long workspaceEntityId, String name) throws IOException {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     
     DiscussionGroup payload = new DiscussionGroup(null, name);
     Response response = asAdmin()
@@ -1382,7 +1377,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected Discussion createWorkspaceDiscussion(Long workspaceEntityId, Long groupId, String name) throws IOException {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     
     Discussion payload = new Discussion(null, name, null, groupId);
     Response response = asAdmin()
@@ -1408,7 +1403,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected DiscussionThread createWorkspaceDiscussionThread(Long workspaceEntityId, Long groupId, Long discussionId, String title, String message, Boolean sticky, Boolean locked) throws IOException {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     
     DiscussionThread payload = new DiscussionThread(null, title, message, sticky, locked);
     Response response = asAdmin()
@@ -1434,7 +1429,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
 
   protected DiscussionGroup createDiscussionGroup(String name) throws IOException {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     
     DiscussionGroup payload = new DiscussionGroup(null, name);
     Response response = asAdmin()
@@ -1460,7 +1455,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected Discussion createDiscussion(Long groupId, String name) throws IOException {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     
     Discussion payload = new Discussion(null, name, null, groupId);
     Response response = asAdmin()
@@ -1493,7 +1488,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected DiscussionThread createDiscussionThread(Long groupId, Long discussionId, String title, String message, Boolean sticky, Boolean locked) throws IOException {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     
     DiscussionThread payload = new DiscussionThread(null, title, message, sticky, locked);
     Response response = asAdmin()
@@ -1519,7 +1514,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   } 
 
   protected WorkspaceJournalEntry createJournalEntry(Long workspaceId, String userEmail, String html, String title) throws JsonParseException, JsonMappingException, IOException {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     
     WorkspaceJournalEntry payload = new WorkspaceJournalEntry();
     payload.setWorkspaceEntityId(workspaceId);
@@ -1579,7 +1574,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected WorkspaceFolder createWorkspaceFolder(Long workspaceEntityId, Long parentId, Boolean hidden, Integer orderNumber, String title, String folderType) throws IOException {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     
     WorkspaceFolder payload = new WorkspaceFolder(null, hidden, orderNumber, null, title, parentId);
     Response response = asAdmin()
@@ -1598,11 +1593,11 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected WorkspaceHtmlMaterial createWorkspaceHtmlMaterial(Long workspaceEntityId, Long parentId, String title, String contentType, String html, String assignmentType) throws IOException {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     
     WorkspaceHtmlMaterial payload = new WorkspaceHtmlMaterial(null, parentId, title, contentType, html, assignmentType, null);
     Response response = asAdmin()
-      .contentType("application/json;charset=UTF-8")
+      .contentType(ContentType.JSON)
       .body(payload)
       .post("/test/workspaces/{WORKSPACEENTITYIID}/htmlmaterials", workspaceEntityId);
     
@@ -1649,7 +1644,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void createCommunicatorMesssage(String caption, String content, Long sender, Long recipient) throws JsonParseException, JsonMappingException, IOException {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     Date created = new Date();
     Set<String> tags = new HashSet<>();
     List<Long> recipientIds = new ArrayList<>();
@@ -1677,7 +1672,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected Long createAnnouncement(Long publisherUserEntityId, String caption, String content, Date startDate, Date endDate, Boolean archived, Boolean publiclyVisible, List<Long> userGroupIds, List<Long> workspaceEntityIds) throws Exception {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     Announcement payload = new Announcement(null, publisherUserEntityId, userGroupIds, workspaceEntityIds, caption, content, new Date(), startDate, endDate, archived, publiclyVisible);                 
     Response response = asAdmin()
       .contentType("application/json")
@@ -1699,7 +1694,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected long fetchUserIdByEmail(String email) throws JsonParseException, JsonMappingException, IOException {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     Response response = asAdmin()
         .contentType("application/json")
         .get("/test/users/id/{EMAIL}", email);
@@ -1741,9 +1736,12 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
 
   protected void createPasswordChange(String email) throws Exception {
     asAdmin()
+      .contentType(ContentType.JSON)
+      .body("{}")
       .post("/test/passwordchange/{EMAIL}", email)
       .then()
       .statusCode(204);
+      
   }
   
   protected void deletePasswordChange(String email) {
@@ -1754,7 +1752,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected Long createFlag(String name, String color, String description) throws JsonParseException, JsonMappingException, IOException {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     Flag flag = new Flag(null, name, color, description, "STAFF-1/PYRAMUS");
     Response response = asAdmin()
     .contentType("application/json")
@@ -1797,9 +1795,10 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   } 
   
   protected Long flagStudent(Long studentId, Long flagId) throws JsonParseException, JsonMappingException, IOException {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     Response response = asAdmin()
       .contentType("application/json")
+      .body("{}")
       .post("/test/students/{ID}/flags/{FLAGID}", studentId, flagId);
     
     response.then()

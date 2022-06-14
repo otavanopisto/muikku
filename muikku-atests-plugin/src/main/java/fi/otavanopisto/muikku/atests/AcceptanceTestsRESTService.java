@@ -812,19 +812,19 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   @RESTPermit (handling = Handling.UNSECURED)
   public Response createPasswordChangeEntry(@PathParam ("EMAIL") String email) {
     UserEntity userEntity = userEntityController.findUserEntityByEmailAddress(email);
-    if (userEntity == null)
+    if (userEntity == null) 
       return Response.status(Status.NOT_FOUND).build();
-     
-      String confirmationHash = "testtesttest";
-      userPendingPasswordChangeDAO.create(userEntity, confirmationHash, DateUtils.addHours(new Date(), 2));
-      return Response.noContent().build();
+        
+    String confirmationHash = "testtesttest";
+    userPendingPasswordChangeDAO.create(userEntity, confirmationHash, DateUtils.addHours(new Date(), 2));
+    return Response.noContent().build();
   }
   
   @DELETE
   @Path("/passwordchange/{EMAIL}")
   @RESTPermit (handling = Handling.UNSECURED)
   public Response deletePasswordChangeEntry(@PathParam ("EMAIL") String email) {
-    UserEntity userEntity = userEntityController.findUserEntityByEmailAddress(email); 
+    UserEntity userEntity = userEntityController.findUserEntityByEmailAddress(email);
     if (userEntity == null)
       return Response.status(Status.NOT_FOUND).build();
     
