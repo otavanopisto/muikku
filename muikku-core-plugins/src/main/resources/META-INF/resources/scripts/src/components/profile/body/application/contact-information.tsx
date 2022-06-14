@@ -428,6 +428,18 @@ class ContactInformation extends React.Component<
                       }
                       value={this.state.phoneNumber}
                     />
+                  </div>
+                </div>
+              ) : null}
+
+              {!this.props.status.isStudent ? (
+                <div className="application-sub-panel__item application-sub-panel__item--profile">
+                  <label className="application-sub-panel__item-title">
+                    {this.props.i18n.text.get(
+                      "plugin.profile.whatsappIntegration.label"
+                    )}
+                  </label>
+                  <div className="application-sub-panel__item-data form-element">
                     <IconButton
                       icon="whatsapp"
                       buttonModifiers={[
@@ -435,10 +447,29 @@ class ContactInformation extends React.Component<
                         this.props.profile.properties["profile-whatsapp"] ===
                         "true"
                           ? "whatsapp-active"
-                          : "",
+                          : "whatsapp-inactive",
                       ]}
                       onClick={this.handleActivateWhatsappClick}
                     />
+                    {this.props.profile.properties["profile-whatsapp"] ===
+                    "true" ? (
+                      <span>
+                        {this.props.i18n.text.get(
+                          "plugin.profile.whatsappIntegration.on.label"
+                        )}
+                      </span>
+                    ) : (
+                      <span>
+                        {this.props.i18n.text.get(
+                          "plugin.profile.whatsappIntegration.off.label"
+                        )}
+                      </span>
+                    )}
+                  </div>
+                  <div className="application-sub-panel__item-description">
+                    {this.props.i18n.text.get(
+                      "plugin.profile.whatsappIntegration.description"
+                    )}
                   </div>
                 </div>
               ) : null}

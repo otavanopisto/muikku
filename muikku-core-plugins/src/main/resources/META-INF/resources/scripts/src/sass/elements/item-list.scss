@@ -156,8 +156,8 @@
 }
 
 .item-list__user-extra-info {
+  font-size: 0.8125rem;
   margin: 4px 0;
-  opacity: 75%;
 }
 
 .item-list__user-vacation-period {
@@ -173,6 +173,7 @@
 .item-list__user-contact-me {
   align-items: center;
   display: flex;
+  margin: 4px 0;
 }
 
 .item-list__user-email,

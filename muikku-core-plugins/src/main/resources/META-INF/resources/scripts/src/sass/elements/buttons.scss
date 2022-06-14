@@ -1859,6 +1859,12 @@
   margin: 0 5px;
 }
 
+.button--whatsapp-me {
+  background: linear-gradient($color-whatsapp-light, $color-whatsapp-dark);
+  color: $color-default;
+  margin: 0 0 0 10px;
+}
+
 .button-icon--evaluation {
   &.button-icon--excercise-drawer-close {
     color: $color-default-contrast;
@@ -1889,13 +1895,20 @@
 
 .button-icon--whatsapp-me {
   font-size: 1.75rem;
+  height: 1.75rem;
+  margin: 0 5px 0 0;
   transition: 0.3s;
+  width: 1.75rem;
 
   &:hover {
-    color: $color-whatsapp-icon;
+    color: $color-whatsapp-light;
   }
 }
 
 .button-icon--whatsapp-active {
-  color: $color-whatsapp-icon;
+  color: $color-whatsapp-dark;
+}
+
+.button-icon--whatsapp-inactive {
+  color: $color-disabled;
 }

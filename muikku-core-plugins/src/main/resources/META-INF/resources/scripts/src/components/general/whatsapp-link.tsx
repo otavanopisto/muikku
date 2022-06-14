@@ -1,11 +1,13 @@
 import * as React from "react";
-import { IconButton } from "./button";
+import Button from "./button";
+import { i18nType } from "~/reducers/base/i18n";
 
 /**
  * WhatsappLinkProps
  */
 interface WhatsappLinkProps {
   mobileNumber?: string;
+  i18n: i18nType;
 }
 
 /**
@@ -14,7 +16,7 @@ interface WhatsappLinkProps {
  * @returns JSX.Element
  */
 export const WhatsappLink: React.FC<WhatsappLinkProps> = (props) => {
-  const { mobileNumber } = props;
+  const { mobileNumber, i18n } = props;
 
   /**
    * handleOpenLinkClick
@@ -38,10 +40,12 @@ export const WhatsappLink: React.FC<WhatsappLinkProps> = (props) => {
   };
 
   return (
-    <IconButton
+    <Button
       icon="whatsapp"
       buttonModifiers="whatsapp-me"
       onClick={handleOpenLinkClick}
-    />
+    >
+      {i18n.text.get("plugin.profile.whatsappIntegration.button.label")}
+    </Button>
   );
 };

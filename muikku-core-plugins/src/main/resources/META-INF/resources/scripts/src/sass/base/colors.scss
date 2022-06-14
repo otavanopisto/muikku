@@ -586,7 +586,8 @@ $color-chat-panel-header-shadow: rgb(0 0 0 / 15%);
 $color-chat-message-notification: #ffa500;
 
 // WHATSAPP
-$color-whatsapp-icon: #25d366;
+$color-whatsapp-light: #25d366;
+$color-whatsapp-dark: #2bb741;
 
 @import "colors/frontpage";
 @import "colors/main-function";

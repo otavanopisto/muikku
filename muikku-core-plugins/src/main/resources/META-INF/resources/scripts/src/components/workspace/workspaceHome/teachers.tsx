@@ -170,6 +170,7 @@ class WorkspaceTeachers extends React.Component<
                           teacher.properties["profile-phone"] !== null &&
                           teacher.properties["profile-whatsapp"] === "true" && (
                             <WhatsappLink
+                              i18n={this.props.i18n}
                               mobileNumber={teacher.properties["profile-phone"]}
                             />
                           )}
