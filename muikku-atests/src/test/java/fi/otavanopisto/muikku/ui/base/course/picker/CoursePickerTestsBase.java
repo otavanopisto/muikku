@@ -161,7 +161,7 @@ public class CoursePickerTestsBase extends AbstractUITest {
         waitAndSendKeys(".application-panel__toolbar-actions-main input", "ato");
         waitUntilElementCount(".application-list__item-header--course", 1);
         waitForVisible(".application-list__item-header--course .application-list__header-primary");
-        assertTextIgnoreCase(".application-list__item-header--course .application-list__header-primary", "testcourse (test extension)");
+        assertTextIgnoreCase(".application-list__item-header--course .application-list__header-primary", "potato course (test extension)");
       }finally {
         deleteWorkspace(workspace1.getId());
         deleteWorkspace(workspace2.getId());

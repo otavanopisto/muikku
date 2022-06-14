@@ -440,6 +440,7 @@ public class GuiderTestsBase extends AbstractUITest {
         .mockStudents()
         .mockStudyProgrammes()
         .mockStudentGroups()
+        .mockEmptyStudyActivity()
         .build();
       Course course1 = new CourseBuilder().name("aasdgz").id((long) 10).description("test coursemus for testing").buildCourse();
       mockBuilder
@@ -538,6 +539,7 @@ public class GuiderTestsBase extends AbstractUITest {
       .mockStudents()
       .mockStudyProgrammes()
       .mockStudentGroups()
+      .mockEmptyStudyActivity()
       .build();
       Course course1 = new CourseBuilder().name("aasdgz").id((long) 12).description("test coursemus for testing").buildCourse();
       mockBuilder
@@ -567,7 +569,7 @@ public class GuiderTestsBase extends AbstractUITest {
         waitAndClick(".application-list__header-primary--product .application-list__header-primary-actions .button--delete-student-order");
         waitAndClick(".dialog--dialog-delete-order.dialog--visible .button--fatal");
         waitForNotPresent(".application-list__header-primary--product .application-list__header-primary-actions .button--delete-student-order");
-//        assertTextIgnoreCase(".button-pill--create-student-order", "Luo uusi tilaus");
+        assertPresent(".icon-cart-plus");
       }finally {
         deleteUserGroupUsers();
         archiveUserByEmail(student.getEmail());
@@ -595,6 +597,7 @@ public class GuiderTestsBase extends AbstractUITest {
         .mockStudents()
         .mockStudyProgrammes()
         .mockStudentGroups()
+        .mockEmptyStudyActivity()
         .build();
       Course course1 = new CourseBuilder().name("Tests").id((long) 13).description("test coursemus for testing").buildCourse();
       mockBuilder

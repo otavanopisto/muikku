@@ -933,28 +933,27 @@ class WorkspaceEditor extends SessionStateComponent<
           options.length > 0 &&
           this.state.existingBilledPriceObject &&
           this.props.type === "edit") ? (
-          <div className="evaluation-modal__evaluate-drawer-row form-element">
-            <label
-              htmlFor="workspaceEvaluationBilling"
-              className="evaluation-modal__evaluate-drawer-row-label"
-            >
-              {this.props.i18n.text.get(
-                "plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingLabel"
-              )}
-            </label>
-            <select
-              id="workspaceEvaluationBilling"
-              className="form-element__select form-element__select--evaluation"
-              onChange={this.handleSelectPriceChange}
-              value={this.state.selectedPriceOption}
-              disabled={billingPriceDisabled}
-            >
-              {options}
-            </select>
+          <div className="form__row">
+            <div className="form-element">
+              <label htmlFor="workspaceEvaluationBilling">
+                {this.props.i18n.text.get(
+                  "plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingLabel"
+                )}
+              </label>
+              <select
+                id="workspaceEvaluationBilling"
+                className="form-element__select"
+                onChange={this.handleSelectPriceChange}
+                value={this.state.selectedPriceOption}
+                disabled={billingPriceDisabled}
+              >
+                {options}
+              </select>
+            </div>
           </div>
         ) : null}
 
-        <div className="evaluation-modal__evaluate-drawer-row evaluation-modal__evaluate-drawer-row--buttons">
+        <div className="form__buttons form__buttons--evaluation">
           <Button
             buttonModifiers="evaluate-workspace"
             onClick={this.handleEvaluationSave}
