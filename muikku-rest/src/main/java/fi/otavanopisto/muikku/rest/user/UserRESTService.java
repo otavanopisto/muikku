@@ -269,8 +269,6 @@ public class UserRESTService extends AbstractRESTService {
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response setUserEntityProperty(fi.otavanopisto.muikku.rest.model.UserEntityProperty payload) {
     UserEntity loggedUserEntity = sessionController.getLoggedUserEntity();
-    UserEntity userEntity = null;
-    Boolean isStudent = false;
     
     Boolean isLoggedUserStudent = userEntityController.isStudent(loggedUserEntity);
     
@@ -283,12 +281,12 @@ public class UserRESTService extends AbstractRESTService {
     }
     else {
       
-      if (payload.getUserEntityId() != null) {
-        userEntity = userEntityController.findUserEntityById(payload.getUserEntityId());
-        isStudent = userEntityController.isStudent(userEntity);
+      if (isLoggedUserStudent) {
+        return Response.status(Status.FORBIDDEN).build();
       }
+      UserEntity userEntity = userEntityController.findUserEntityById(payload.getUserEntityId());
       
-      if (isLoggedUserStudent || !isStudent) {
+      if (!userEntityController.isStudent(userEntity)) {
         return Response.status(Status.FORBIDDEN).build();
       }
       userEntityController.setUserEntityProperty(userEntity, payload.getKey(), payload.getValue());
