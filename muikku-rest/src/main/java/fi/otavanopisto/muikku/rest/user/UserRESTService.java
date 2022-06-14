@@ -270,30 +270,30 @@ public class UserRESTService extends AbstractRESTService {
   public Response setUserEntityProperty(fi.otavanopisto.muikku.rest.model.UserEntityProperty payload) {
     UserEntity loggedUserEntity = sessionController.getLoggedUserEntity();
     UserEntity userEntity = null;
-    
     Boolean isStudent = false;
     
-    if (payload.getUserEntityId() != null) {
-      userEntity = userEntityController.findUserEntityById(payload.getUserEntityId());
-      isStudent = userEntityController.isStudent(userEntity);
-    }
-    
     Boolean isLoggedUserStudent = userEntityController.isStudent(loggedUserEntity);
-
-    if (payload.getUserEntityId() != null && payload.getKey().equals("hopsPhase")) { // This is for hops.phase. Only staff members can set phases.
-      if (isStudent && !isLoggedUserStudent) { // If userEntity from payload is student & logged user is not student
-        userEntityController.setUserEntityProperty(userEntity, payload.getKey(), payload.getValue());
+    
+    if (payload.getUserEntityId() == null || payload.getUserEntityId().equals(loggedUserEntity.getId())) {
+      if (StringUtils.equals(payload.getKey(), "hopsPhase") && isLoggedUserStudent) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+      userEntityController.setUserEntityProperty(loggedUserEntity, payload.getKey(), payload.getValue());
+      return Response.ok(payload).build();
+    }
+    else {
+      
+      if (payload.getUserEntityId() != null) {
+        userEntity = userEntityController.findUserEntityById(payload.getUserEntityId());
+        isStudent = userEntityController.isStudent(userEntity);
       }
       
-    } else if (payload.getUserEntityId() != null) { // This is for student graduation date goal
-      if (isLoggedUserStudent && !payload.getUserEntityId().equals(loggedUserEntity.getId())) {
+      if (isLoggedUserStudent || !isStudent) {
         return Response.status(Status.FORBIDDEN).build();
       }
       userEntityController.setUserEntityProperty(userEntity, payload.getKey(), payload.getValue());
-    } else {
-      userEntityController.setUserEntityProperty(loggedUserEntity, payload.getKey(), payload.getValue());
+      return Response.ok(payload).build();
     }
-    return Response.ok(payload).build();
   }
   
   @GET
