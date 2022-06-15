@@ -17,13 +17,17 @@ import useIsAtBreakpoint from "~/hooks/useIsAtBreakpoint";
 export interface Tab {
   id: string;
   name: string;
-  /** Type Class modifier */
-  type?: string;
   /**
    * Hash from url
    */
   hash?: string;
-  /** Tab spesific action or actions for the mobile UI*/
+  /**
+   * Type Class modifier
+   */
+  type?: string;
+  /**
+   * Tab spesific action or actions for the mobile UI
+   */
   mobileAction?: JSX.Element | JSX.Element[];
   component: JSX.Element;
 }

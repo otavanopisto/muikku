@@ -72,8 +72,14 @@ export type SET_CURRENT_GUIDER_STUDENT_EMPTY_LOAD = SpecificActionType<
 >;
 export type SET_CURRENT_GUIDER_STUDENT_PROP = SpecificActionType<
   "SET_CURRENT_GUIDER_STUDENT_PROP",
-  { property: string; value: any }
+  { property: keyof GuiderStudentUserProfileType; value: any }
 >;
+
+export type UPDATE_CURRENT_GUIDER_STUDENT_HOPS_PHASE = SpecificActionType<
+  "UPDATE_CURRENT_GUIDER_STUDENT_HOPS_PHASE",
+  { property: "hopsPhase"; value: number }
+>;
+
 export type UPDATE_CURRENT_GUIDER_STUDENT_STATE = SpecificActionType<
   "UPDATE_CURRENT_GUIDER_STUDENT_STATE",
   GuiderCurrentStudentStateType
@@ -281,6 +287,13 @@ export interface UpdateGuiderFilterLabelTriggerType {
 }
 
 /**
+ * UpdateCurrentStudentHopsPhaseTriggerType
+ */
+export interface UpdateCurrentStudentHopsPhaseTriggerType {
+  (data: { value: string }): AnyActionType;
+}
+
+/**
  * RemoveGuiderFilterLabelTriggerType
  */
 export interface RemoveGuiderFilterLabelTriggerType {
@@ -453,8 +466,40 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
               type: "SET_CURRENT_GUIDER_STUDENT_PROP",
               payload: { property: "basic", value: basic },
             });
+
+            // After basic data is loaded, check if current user of guider has permissions
+            // to see/use current student hops
+            promisify(mApi().hops.isHopsAvailable.read(id), "callback")().then(
+              (hopsAvailable: boolean) => {
+                dispatch({
+                  type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+                  payload: {
+                    property: "hopsAvailable",
+                    value: hopsAvailable,
+                  },
+                });
+
+                // after basic data is loaded and hops availability checked, then check if hopsPhase property
+                // is used and what values it contains
+                promisify(
+                  mApi().user.properties.read(basic.userEntityId, {
+                    properties: "hopsPhase",
+                  }),
+                  "callback"
+                )().then((properties: any) => {
+                  dispatch({
+                    type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+                    payload: {
+                      property: "hopsPhase",
+                      value: properties[0].value,
+                    },
+                  });
+                });
+              }
+            );
           }
         ),
+
         promisify(
           mApi().usergroup.groups.read({ userIdentifier: id }),
           "callback"
@@ -705,6 +750,48 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
     }
   };
 };
+
+/**
+ * Updates and return hops phase for current student
+ *
+ * @param data data
+ */
+const updateCurrentStudentHopsPhase: UpdateCurrentStudentHopsPhaseTriggerType =
+  function updateCurrentStudentHopsPhase(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const properties: any = await promisify(
+          mApi().user.property.create({
+            key: "hopsPhase",
+            value: data.value,
+            userEntityId: getState().guider.currentStudent.basic.userEntityId,
+          }),
+          "callback"
+        )();
+
+        dispatch({
+          type: "UPDATE_CURRENT_GUIDER_STUDENT_HOPS_PHASE",
+          payload: {
+            property: "hopsPhase",
+            value: properties.value,
+          },
+        });
+
+        dispatch(
+          notificationActions.displayNotification(
+            "HOPS-vaiheen päivittäminen onnistui.",
+            "success"
+          )
+        );
+      } catch (err) {
+        dispatch(notificationActions.displayNotification(err.message, "error"));
+      }
+    };
+  };
 
 /**
  * removeLabelFromUserUtil
@@ -1305,6 +1392,7 @@ export {
   removeFileFromCurrentStudent,
   updateLabelFilters,
   updateWorkspaceFilters,
+  updateCurrentStudentHopsPhase,
   createGuiderFilterLabel,
   updateGuiderFilterLabel,
   removeGuiderFilterLabel,

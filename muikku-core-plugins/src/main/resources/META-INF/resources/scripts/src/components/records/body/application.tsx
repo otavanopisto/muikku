@@ -122,12 +122,6 @@ class StudiesApplication extends React.Component<
    */
   isVisible(id: string) {
     switch (id) {
-      case "HOPS":
-        return (
-          this.props.status.isActiveUser &&
-          this.props.hops.eligibility &&
-          this.props.hops.eligibility.upperSecondarySchoolCurriculum
-        );
       case "VOPS":
       case "YO":
         return (

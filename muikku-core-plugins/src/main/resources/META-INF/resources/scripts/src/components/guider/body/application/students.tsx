@@ -9,6 +9,8 @@ import "~/sass/elements/loaders.scss";
 import "~/sass/elements/label.scss";
 import "~/sass/elements/user.scss";
 import "~/sass/elements/application-list.scss";
+import "~/sass/elements/form.scss";
+
 import BodyScrollLoader from "~/components/general/body-scroll-loader";
 import SelectableList from "~/components/general/selectable-list";
 import {
@@ -127,14 +129,14 @@ class GuiderStudents extends BodyScrollLoader<
     } else if (this.props.guiderStudentsState === "ERROR") {
       return (
         <div className="empty">
-          <span>{"ERROR"}</span>
+          {this.props.i18n.text.get("plugin.guider.errormessage.users")}
         </div>
       );
     } else if (this.props.guider.students.length === 0) {
       return (
         <div className="empty">
           <span>
-            {this.props.i18n.text.get("plugin.guider.errormessage.users")}
+            {this.props.i18n.text.get("plugin.guider.errormessage.nostudents")}
           </span>
         </div>
       );

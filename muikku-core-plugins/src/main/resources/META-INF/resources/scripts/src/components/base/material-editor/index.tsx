@@ -1,5 +1,6 @@
 import * as React from "react";
 import "~/sass/elements/material-editor.scss";
+import "~/sass/elements/form.scss";
 import { bindActionCreators } from "redux";
 import {
   setWorkspaceMaterialEditorState,
@@ -892,12 +893,14 @@ class MaterialEditor extends React.Component<
             {editorButtonSet}
 
             {this.props.editorState.canSetTitle ? (
-              <div className="material-editor__title-container">
-                <input
-                  className="material-editor__title"
-                  onChange={this.updateTitle}
-                  value={this.props.editorState.currentDraftNodeValue.title}
-                ></input>
+              <div className="form__row">
+                <div className="form-element">
+                  <input
+                    className="form-element__input form-element__input--material-editor-title"
+                    onChange={this.updateTitle}
+                    value={this.props.editorState.currentDraftNodeValue.title}
+                  ></input>
+                </div>
               </div>
             ) : null}
             {!this.props.editorState.section &&

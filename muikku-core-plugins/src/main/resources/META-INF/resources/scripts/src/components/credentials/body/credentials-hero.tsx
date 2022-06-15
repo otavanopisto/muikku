@@ -36,6 +36,15 @@ export default class CredentialsHero extends React.Component<
    * render
    */
   render() {
-    return <div className="credentials__hero"></div>;
+    return (
+      <div className="credentials__hero">
+        <img
+          className="credentials__hero-muikku-logo"
+          src="/gfx/oo-branded-site-logo.png"
+          role="presentation"
+        ></img>
+        <span className="credentials__hero-muikku-logo-text">Muikku</span>
+      </div>
+    );
   }
 }

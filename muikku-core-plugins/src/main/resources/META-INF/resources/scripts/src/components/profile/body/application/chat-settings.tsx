@@ -180,20 +180,17 @@ class ChatSettings extends React.Component<
 
     return (
       <section>
-        <form>
+        <form className="form">
           <h2 className="application-panel__content-header">
             {this.props.i18n.text.get("plugin.profile.titles.chatSettings")}
           </h2>
           <div className="application-sub-panel">
             <div className="application-sub-panel__body">
-              <div className="application-sub-panel__item application-sub-panel__item--profile">
-                <label
-                  htmlFor="chatVisibility"
-                  className="application-sub-panel__item-title"
-                >
-                  {this.props.i18n.text.get("plugin.profile.chat.visibility")}
-                </label>
-                <div className="application-sub-panel__item-data form-element">
+              <div className="form__row">
+                <div className="form-element">
+                  <label htmlFor="chatVisibility">
+                    {this.props.i18n.text.get("plugin.profile.chat.visibility")}
+                  </label>
                   <select
                     id="chatVisibility"
                     className="form-element__select"
@@ -215,15 +212,11 @@ class ChatSettings extends React.Component<
                   </select>
                 </div>
               </div>
-
-              <div className="application-sub-panel__item application-sub-panel__item--profile">
-                <label
-                  htmlFor="chatNickname"
-                  className="application-sub-panel__item-title"
-                >
-                  {this.props.i18n.text.get("plugin.profile.chat.setNick")}
-                </label>
-                <div className="application-sub-panel__item-data form-element">
+              <div className="form__row">
+                <div className="form-element">
+                  <label htmlFor="chatNickname">
+                    {this.props.i18n.text.get("plugin.profile.chat.setNick")}
+                  </label>
                   <input
                     id="chatNickname"
                     className="form-element__input"
@@ -236,14 +229,15 @@ class ChatSettings extends React.Component<
                     }
                   />
                 </div>
-                <div className="application-sub-panel__item-description">
+
+                <div className="form-element__description">
                   {this.props.i18n.text.get(
                     "plugin.profile.chat.setNickDescription"
                   )}
                 </div>
               </div>
 
-              <div className="application-sub-panel__item-actions">
+              <div className="form__buttons">
                 <Button
                   buttonModifiers="primary-function-save"
                   onClick={this.save}

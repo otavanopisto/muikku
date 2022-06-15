@@ -138,7 +138,7 @@ public class CoursePickerTestsBase extends AbstractUITest {
     Builder mockBuilder = mocker();
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     try{
-      Course course1 = new CourseBuilder().name("testcourse hurhur").id((long) 102).description("test course for testing").buildCourse();
+      Course course1 = new CourseBuilder().name("testcourse").id((long) 102).description("test course for testing").buildCourse();
       Course course2 = new CourseBuilder().name("WIENER course").id((long) 103).description("wiener course for testing").buildCourse();
       Course course3 = new CourseBuilder().name("potato course").id((long) 104).description("potato course for testing").buildCourse();
       mockBuilder

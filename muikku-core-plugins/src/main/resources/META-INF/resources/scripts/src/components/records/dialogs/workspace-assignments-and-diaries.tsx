@@ -2,7 +2,6 @@ import Dialog from "~/components/general/dialog";
 import * as React from "react";
 import { connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
-import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/wizard.scss";
 import { StateType } from "~/reducers";

@@ -1,3 +1,4 @@
+import { UPDATE_CURRENT_GUIDER_STUDENT_HOPS_PHASE } from "./main-function/guider/index";
 /**
  * SpecificActionType
  */
@@ -213,6 +214,7 @@ import {
   UPDATE_HOPS,
   UPDATE_HOPS_STATUS,
   UPDATE_HOPS_ELIGIBILITY,
+  SET_HOPS_PHASE,
 } from "./main-function/hops";
 import { LOAD_CREDENTIALS, CREDENTIALS_STATE } from "./base/credentials";
 import { UPDATE_ERROR } from "./base/error";
@@ -489,6 +491,8 @@ export type ActionType =
   | UPDATE_CEEPOS_STATE
   | UPDATE_CEEPOS_PAY_STATUS
   | UPDATE_CEEPOS_PURCHASE
+  | UPDATE_CURRENT_GUIDER_STUDENT_HOPS_PHASE
+  | SET_HOPS_PHASE
   | UPDATE_CURRENT_WORKSPACE_ACTIVITY
   | UPDATE_CURRENT_WORKSPACE_ASESSMENT_REQUESTS
   | LOAD_CALENDAR_GUIDANCE_EVENTS

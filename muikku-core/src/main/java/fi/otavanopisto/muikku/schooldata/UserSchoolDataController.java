@@ -534,4 +534,12 @@ public class UserSchoolDataController {
     );
   }
   
+  public boolean amICounselor(SchoolDataIdentifier studentIdentifier) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(studentIdentifier.getDataSource());
+    if (schoolDataSource == null) {
+      throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", studentIdentifier.getDataSource()));
+    }
+    return getUserBridge(schoolDataSource).amICounselor(studentIdentifier.getIdentifier());
+  }
+  
 }
