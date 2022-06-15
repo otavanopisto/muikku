@@ -461,10 +461,7 @@ class ContactInformation extends React.Component<
               {!this.props.status.isStudent ? (
                 <div className="form__row">
                   <div className="form-element">
-                    <label
-                      htmlFor="profileExtraInfo"
-                      className="application-sub-panel__item-title"
-                    >
+                    <label htmlFor="profileExtraInfo">
                       {this.props.i18n.text.get(
                         "plugin.profile.extraInfo.label"
                       )}
@@ -472,7 +469,7 @@ class ContactInformation extends React.Component<
                     <div className="form-element__textarea-container">
                       <textarea
                         id="profileExtraInfo"
-                        className="form-element__textarea form-element__textarea--profile-extraInfo"
+                        className="form-element__textarea form-element__textarea--profile-extra-info"
                         onChange={(e) =>
                           this.updateField("extraInfo", e.target.value)
                         }
