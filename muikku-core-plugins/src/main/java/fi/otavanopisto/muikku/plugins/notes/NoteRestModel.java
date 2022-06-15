@@ -4,6 +4,7 @@ import java.util.Date;
 
 
 import fi.otavanopisto.muikku.plugins.notes.model.NotePriority;
+import fi.otavanopisto.muikku.plugins.notes.model.NoteStatus;
 import fi.otavanopisto.muikku.plugins.notes.model.NoteType;
 
 public class NoteRestModel {
@@ -88,6 +89,22 @@ public class NoteRestModel {
     this.created = created;
   }
 
+  public Date getDueDate() {
+    return dueDate;
+  }
+
+  public void setDueDate(Date dueDate) {
+    this.dueDate = dueDate;
+  }
+
+  public NoteStatus getStatus() {
+    return status;
+  }
+
+  public void setStatus(NoteStatus status) {
+    this.status = status;
+  }
+
   private Long id;
   private String title;
   private String description;
@@ -98,4 +115,6 @@ public class NoteRestModel {
   private Long creator;
   private String creatorName;
   private Date created;
+  private Date dueDate;
+  private NoteStatus status;
 }

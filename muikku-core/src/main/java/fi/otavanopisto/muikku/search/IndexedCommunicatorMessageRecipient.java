@@ -68,20 +68,21 @@ public class IndexedCommunicatorMessageRecipient{
     this.archivedByReceiver = archivedByReceiver;
   }
 
-  
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  private Long id;
   private Long userEntityId;
-
   private String firstName;
-  
   private String lastName;
-  
   private String nickName;
-
   private Boolean readByReceiver;
-  
   private Boolean archivedByReceiver;
-  
   private List<IndexedCommunicatorMessageLabels> labels;
-  
   private String studyProgrammeName;
 }

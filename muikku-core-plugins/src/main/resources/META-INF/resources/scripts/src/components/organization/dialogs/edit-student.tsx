@@ -220,6 +220,8 @@ class OrganizationUser extends React.Component<
             )}
             updateField={this.updateField}
           />
+        </DialogRow>
+        <DialogRow modifiers="new-user">
           <EmailFormElement
             value={this.state.user.email}
             modifiers={["new-user", "new-user-email"]}

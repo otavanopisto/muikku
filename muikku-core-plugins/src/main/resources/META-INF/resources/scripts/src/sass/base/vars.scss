@@ -4,8 +4,12 @@ $dialog-loader-size: 220px;
 $loader-border-width: 10px;
 
 // Input
+$input-height-mobile: 2.25rem;
+$input-height-desktop: 2.5rem;
 
-$input-height: 2.25rem;
+// Select
+$select-height-mobile: 2.25rem;
+$select-height-desktop: 2.5rem;
 
 // Menu
 $menu-width-pad: 400px;
@@ -50,6 +54,7 @@ $dialog-content-padding: 20px;
 $dialog-button-close-height: 40px;
 $dialog-title-mobile-font-size: 1rem;
 $dialog-title-desktop-font-size: 1.1rem;
+$dialog-title-height: 3rem;
 
 // Environment Dialog
 $env-dialog-box-shadow: 0 -5px 20px rgb(0 0 0 / 15%);

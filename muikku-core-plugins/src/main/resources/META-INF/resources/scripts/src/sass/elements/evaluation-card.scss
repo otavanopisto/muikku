@@ -33,7 +33,6 @@
     width: calc(33.333% - 10px);
   }
 
-  // scss-lint:disable SelectorFormat
   &.state-REQUESTED {
     border: 1px solid $color-evaluation-request;
   }
@@ -61,8 +60,6 @@
       background: $color-grade-incomplete;
     }
   }
-
-  // scss-lint:enable SelectorFormat
 }
 
 .evaluation-card__header {

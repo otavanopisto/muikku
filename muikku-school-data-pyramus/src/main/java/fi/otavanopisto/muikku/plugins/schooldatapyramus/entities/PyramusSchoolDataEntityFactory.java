@@ -103,6 +103,7 @@ public class PyramusSchoolDataEntityFactory {
         null,
         null,
         null,
+        null,
         organizationIdentifier,
         null, // studyStartDate
         null, // studyEndDate
@@ -130,6 +131,7 @@ public class PyramusSchoolDataEntityFactory {
     displayName.append(student.getFirstName()).append(' ').append(student.getLastName());
 
     String studyProgrammeName = studyProgramme != null ? studyProgramme.getName() : null;
+    String studyProgrammeEducationType = studyProgramme != null ? studyProgramme.getOfficialEducationType() : null;
     SchoolDataIdentifier studyProgrammeIdentifier = studyProgramme != null
         ? identifierMapper.getStudyProgrammeIdentifier(studyProgramme.getId())
         : null;
@@ -145,6 +147,7 @@ public class PyramusSchoolDataEntityFactory {
         student.getNickname(),
         displayName.toString(),
         studyProgrammeName,
+        studyProgrammeEducationType,
         studyProgrammeIdentifier,
         nationality,
         language,

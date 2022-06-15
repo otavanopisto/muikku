@@ -248,12 +248,13 @@ public class UserGroupRESTService extends AbstractRESTService {
       }
 
       // Check for group-user-only roles - no shared groups, no rights
-      if (sessionController.hasEnvironmentPermission(RoleFeatures.ACCESS_ONLY_GROUP_STUDENTS) && !userGroupEntityController.haveSharedUserGroups(loggedUserEntity, userEntity)) {
-        return Response.status(Status.FORBIDDEN).build();
-      }
-      
-      if (!(loggedUserEntity.getId().equals(userEntity.getId()) || sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_USER_USERGROUPS))) {
-        return Response.status(Status.FORBIDDEN).build();
+      if (!loggedUserEntity.getId().equals(userEntity.getId())) {
+        if (sessionController.hasEnvironmentPermission(RoleFeatures.ACCESS_ONLY_GROUP_STUDENTS) && !userGroupEntityController.haveSharedUserGroups(loggedUserEntity, userEntity)) {
+          return Response.status(Status.FORBIDDEN).build();
+        }
+        if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_USER_USERGROUPS)) {
+          return Response.status(Status.FORBIDDEN).build();
+        }
       }
       
       if (identifier != null) {

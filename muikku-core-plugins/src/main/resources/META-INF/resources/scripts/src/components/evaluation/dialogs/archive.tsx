@@ -6,7 +6,6 @@ import { i18nType } from "~/reducers/base/i18n";
 import Button from "~/components/general/button";
 import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
-import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
 import { AssessmentRequest } from "~/@types/evaluation";
 import { EvaluationState } from "~/reducers/main-function/evaluation/index";

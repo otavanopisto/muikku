@@ -6,7 +6,7 @@ import GuiderToolbarLabels from "./toolbar/labels";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/application-panel.scss";
 import "~/sass/elements/buttons.scss";
-import "~/sass/elements/form-elements.scss";
+import "~/sass/elements/form.scss";
 import {
   GuiderType,
   GuiderStudentListType,

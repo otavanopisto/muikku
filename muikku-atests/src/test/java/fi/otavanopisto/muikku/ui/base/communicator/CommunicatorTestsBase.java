@@ -187,7 +187,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
         mockBuilder.mockLogin(student);
         login();
         navigate("/communicator", false);
-        waitAndClick(".application-list__item-content-aside .message__select-container input");
+        waitAndClick(".application-list__item-content-aside .form-element--item-selection-container input");
         
         waitAndClick(".icon-trash");
         waitForPresent(".application-panel__main-container .empty");
@@ -213,7 +213,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
       long recipient = fetchUserIdByEmail(student.getEmail());
       createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
       navigate("/communicator#sent", false);
-      waitAndClick(".application-list__item-content-aside .message__select-container input");
+      waitAndClick(".application-list__item-content-aside .form-element--item-selection-container input");
       waitAndClick(".icon-trash");
       
       waitForPresent(".application-panel__main-container .empty");
@@ -265,7 +265,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
         createCommunicatorUserLabel(recipient, "test");
         navigate("/communicator", false);
 
-        waitAndClick(".application-list__item-content-aside .message__select-container .message__selector");
+        waitAndClick(".application-list__item-content-aside .form-element--item-selection-container input");
         waitAndClick(".button-pill--label");
         waitAndClick("a.link--communicator-label-dropdown");
         waitAndClick(".button-pill--label");
@@ -376,7 +376,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
         waitAndClick(".dropdown--communicator-labels .link--full");
         waitForPresent("div.application-panel__content div.application-panel__helper-container a[href^='#label-']");
     
-        waitAndClick(".application-list__item-content-aside .message__select-container .message__selector");
+        waitAndClick(".application-list__item-content-aside .form-element--item-selection-container input");
         sleep(500);
         waitAndClick(".button-pill--label");
         waitAndClick("a.link--communicator-label-dropdown");
@@ -409,7 +409,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
         long sender = fetchUserIdByEmail(student.getEmail());
         createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
         navigate("/communicator", false);
-        waitAndClick(".application-list__item-content-aside .message__select-container .message__selector");
+        waitAndClick(".application-list__item-content-aside .form-element--item-selection-container input");
         
         waitAndClick(".button-pill__icon.icon-trash");
         assertGoesAway(".application-list__item-content-aside .message__select-container .message__selector", 5);

@@ -569,38 +569,6 @@
 .application-list__item-content-aside {
   display: none;
 
-  input {
-    align-items: center;
-    appearance: none;
-    border: solid 2px $color-main-function-application-list-item-checkbox-border;
-    border-radius: 3px;
-    display: flex;
-    height: 1rem;
-    justify-content: center;
-    width: 1rem;
-  }
-
-  input:checked {
-    background-color: $color-main-function-application-list-item-checkbox-checked-background;
-    border:
-      solid 2px
-      $color-main-function-application-list-item-checkbox-checked-background;
-  }
-
-  input:checked::after {
-    color: $color-main-function-application-list-item-checkbox-checked-mark;
-    content: "\e639";
-    font-family: "muikku";
-    font-size: 0.875rem;
-  }
-
-  input[type="radio"] {
-    border-radius: 50%;
-
-    // this could be for any input inside the aside, but in communicator it is in the container
-    margin-right: 5px;
-  }
-
   @include breakpoint($breakpoint-pad) {
     align-items: flex-start;
     display: flex;
@@ -612,10 +580,6 @@
 
 .application-list__item-content-aside--course {
   padding: 15px 0;
-
-  input[type="radio"] {
-    padding: 8px;
-  }
 }
 
 .application-list__item-content-aside--workspace-user {

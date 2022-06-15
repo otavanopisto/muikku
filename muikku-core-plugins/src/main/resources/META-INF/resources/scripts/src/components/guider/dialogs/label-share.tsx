@@ -6,7 +6,6 @@ import { AnyActionType } from "~/actions";
 import { i18nType } from "~/reducers/base/i18n";
 import mApi from "~/lib/mApi";
 import "~/sass/elements/buttons.scss";
-import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
 import { GuiderUserLabelType } from "~/reducers/main-function/guider";
 import InputContactsAutofill from "~/components/base/input-contacts-autofill";

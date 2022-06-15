@@ -182,22 +182,19 @@ class Security extends React.Component<SecurityProps, SecurityState> {
 
     return (
       <section>
-        <form>
+        <form className="form">
           <h2 className="application-panel__content-header">
             {this.props.i18n.text.get("plugin.profile.titles.security")}
           </h2>
           <div className="application-sub-panel">
             <div className="application-sub-panel__body">
-              <div className="application-sub-panel__item application-sub-panel__item--profile">
-                <label
-                  htmlFor="profileUsername"
-                  className="application-sub-panel__item-title"
-                >
-                  {this.props.i18n.text.get(
-                    "plugin.profile.changePassword.dialog.usernameField.label"
-                  )}
-                </label>
-                <div className="application-sub-panel__item-data form-element">
+              <div className="form__row">
+                <div className="form-element">
+                  <label htmlFor="profileUsername">
+                    {this.props.i18n.text.get(
+                      "plugin.profile.changePassword.dialog.usernameField.label"
+                    )}
+                  </label>
                   <input
                     id="profileUsername"
                     type="text"
@@ -207,17 +204,13 @@ class Security extends React.Component<SecurityProps, SecurityState> {
                   />
                 </div>
               </div>
-
-              <div className="application-sub-panel__item application-sub-panel__item--profile">
-                <label
-                  htmlFor="profileOldPassword"
-                  className="application-sub-panel__item-title"
-                >
-                  {this.props.i18n.text.get(
-                    "plugin.profile.changePassword.dialog.oldPasswordField.label"
-                  )}
-                </label>
-                <div className="application-sub-panel__item-data form-element">
+              <div className="form__row">
+                <div className="form-element">
+                  <label htmlFor="profileOldPassword">
+                    {this.props.i18n.text.get(
+                      "plugin.profile.changePassword.dialog.oldPasswordField.label"
+                    )}
+                  </label>
                   <input
                     id="profileOldPassword"
                     type="password"
@@ -228,16 +221,13 @@ class Security extends React.Component<SecurityProps, SecurityState> {
                 </div>
               </div>
 
-              <div className="application-sub-panel__item application-sub-panel__item--profile">
-                <label
-                  htmlFor="profileNewPassword1"
-                  className="application-sub-panel__item-title"
-                >
-                  {this.props.i18n.text.get(
-                    "plugin.profile.changePassword.dialog.newPasswordField1.label"
-                  )}
-                </label>
-                <div className="application-sub-panel__item-data form-element">
+              <div className="form__row">
+                <div className="form-element">
+                  <label htmlFor="profileNewPassword1">
+                    {this.props.i18n.text.get(
+                      "plugin.profile.changePassword.dialog.newPasswordField1.label"
+                    )}
+                  </label>
                   <input
                     id="profileNewPassword1"
                     type="password"
@@ -247,17 +237,13 @@ class Security extends React.Component<SecurityProps, SecurityState> {
                   />
                 </div>
               </div>
-
-              <div className="application-sub-panel__item application-sub-panel__item--profile">
-                <label
-                  htmlFor="profileNewPassword2"
-                  className="application-sub-panel__item-title"
-                >
-                  {this.props.i18n.text.get(
-                    "plugin.profile.changePassword.dialog.newPasswordField2.label"
-                  )}
-                </label>
-                <div className="application-sub-panel__item-data form-element">
+              <div className="form__row">
+                <div className="form-element">
+                  <label htmlFor="profileNewPassword2">
+                    {this.props.i18n.text.get(
+                      "plugin.profile.changePassword.dialog.newPasswordField2.label"
+                    )}
+                  </label>
                   <input
                     id="profileNewPassword2"
                     type="password"
@@ -272,7 +258,7 @@ class Security extends React.Component<SecurityProps, SecurityState> {
                 </div>
               </div>
 
-              <div className="application-sub-panel__item-actions">
+              <div className="form__buttons">
                 <Button
                   buttonModifiers="primary-function-save"
                   onClick={this.update}

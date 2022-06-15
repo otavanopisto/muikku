@@ -21,9 +21,13 @@ export interface Tab {
    * Hash from url
    */
   hash?: string;
-  /** Type Class modifier */
+  /**
+   * Type Class modifier
+   */
   type?: string;
-  /** Tab spesific action or actions for the mobile UI*/
+  /**
+   * Tab spesific action or actions for the mobile UI
+   */
   mobileAction?: JSX.Element | JSX.Element[];
   component: JSX.Element;
 }
