@@ -145,7 +145,7 @@ class ForgotPasswordDialog extends React.Component<
         >
           <div className="form__row">
             <div className="form-element">
-              <label htmlFor="forgotpassword-email">
+              <label htmlFor="forgotpasswordEmail">
                 {this.props.i18n.text.get(
                   "plugin.forgotpassword.forgotPasswordDialog.email"
                 )}
@@ -153,6 +153,7 @@ class ForgotPasswordDialog extends React.Component<
               <input
                 type="text"
                 name="email"
+                id="forgotpasswordEmail"
                 value={this.state.email}
                 onChange={this.updateEmail}
                 className="form-element__input form-element__input--forgotpassword"

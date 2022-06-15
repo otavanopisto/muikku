@@ -371,13 +371,13 @@ export class LicenseSelector extends React.Component<
           {!currentLicense.value ? (
             <div className="license-selector__options-container">
               <div className="form-element">
-                <label htmlFor="workspace-license-link-or-text">
+                <label htmlFor="workspaceLicenseLinkOrText">
                   {this.props.i18n.text.get(
                     "plugin.workspace.materialsManagement.editorView.license.textOrLink"
                   )}
                 </label>
                 <input
-                  id="workspace-license-link-or-text"
+                  id="workspaceLicenseLinkOrText"
                   type="text"
                   className={`form-element__input ${
                     this.props.modifier

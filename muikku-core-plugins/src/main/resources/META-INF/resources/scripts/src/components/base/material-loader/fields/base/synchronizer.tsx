@@ -40,7 +40,7 @@ export default class Synchronizer extends React.PureComponent<
 
   /**
    * componentWillReceiveProps
-   * @param nextProps
+   * @param nextProps nextProps
    */
   componentWillReceiveProps(nextProps: SynchronizerProps) {
     if (nextProps.synced && !this.props.synced && !nextProps.syncError) {
@@ -58,7 +58,7 @@ export default class Synchronizer extends React.PureComponent<
 
   /**
    * render
-   * @returns
+   * @returns JSX.Element
    */
   render() {
     if (

@@ -467,7 +467,7 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
               payload: { property: "basic", value: basic },
             });
 
-            // After basjc data is loaded, check if current user of guider has permissions
+            // After basic data is loaded, check if current user of guider has permissions
             // to see/use current student hops
             promisify(mApi().hops.isHopsAvailable.read(id), "callback")().then(
               (hopsAvailable: boolean) => {
