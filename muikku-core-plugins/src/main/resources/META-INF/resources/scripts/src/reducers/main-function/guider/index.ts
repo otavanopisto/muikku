@@ -151,6 +151,7 @@ export interface GuiderStudentUserProfileType {
   activityLogs: ActivityLogType[];
   purchases: PurchaseType[];
   hopsPhase?: string;
+  hopsAvailable: boolean;
 }
 
 /**
@@ -213,6 +214,7 @@ function sortLabels(labelA: GuiderUserLabelType, labelB: GuiderUserLabelType) {
     ? 1
     : 0;
 }
+
 /**
  * Sort for ceepos orders
  * @param a a type of purchase

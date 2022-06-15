@@ -32,13 +32,13 @@ export const filterSpecialSubjects = (
     );
   }
 
-  if (options.religionSelection === "ea") {
+  if (options.religionSelection === "et") {
     alteredShoolCourseTable = alteredShoolCourseTable.filter(
       (sSubject) => sSubject.subjectCode !== "ue"
     );
   } else if (options.religionSelection === "ue") {
     alteredShoolCourseTable = alteredShoolCourseTable.filter(
-      (sSubject) => sSubject.subjectCode !== "ea"
+      (sSubject) => sSubject.subjectCode !== "et"
     );
   }
 

@@ -484,13 +484,7 @@ public class WorklistRESTService {
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
-    schoolDataBridgeSessionController.startSystemSession();
-    try {
-      price = workspaceSchoolDataController.getWorkspaceBasePrice(workspaceEntity);
-    }
-    finally {
-      schoolDataBridgeSessionController.endSystemSession();
-    }
+    price = workspaceSchoolDataController.getWorkspaceBasePrice(workspaceEntity);
     return price == null ? Response.status(Status.NOT_FOUND).build() : Response.ok(price).build();
   }
 

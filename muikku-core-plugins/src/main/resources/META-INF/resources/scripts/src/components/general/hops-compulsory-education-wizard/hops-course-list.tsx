@@ -45,6 +45,7 @@ interface HopsCourseListProps extends Partial<StudentActivityByStatus> {
    * studentId
    */
   studentId: string;
+  studentsUserEntityId: number;
   /**
    * disabled
    */
@@ -137,6 +138,17 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
         selectedByStudent = true;
         listItemIndicatormodifiers.push("OPTIONAL-SELECTED");
       }
+      if (
+        props.supervisorOptionalSuggestionsList &&
+        props.supervisorOptionalSuggestionsList.find(
+          (sOCourse) =>
+            sOCourse.subject === sSubject.subjectCode &&
+            sOCourse.courseNumber === course.courseNumber
+        )
+      ) {
+        suggestedBySupervisor = true;
+        listItemIndicatormodifiers.push("SUGGESTED");
+      }
 
       /**
        * Only one of these can happen
@@ -156,25 +168,6 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
         courseSuggestions = courseSuggestions.concat(suggestedCourseDataNext);
 
         listItemIndicatormodifiers.push("NEXT");
-      } else if (
-        props.supervisorOptionalSuggestionsList &&
-        props.supervisorOptionalSuggestionsList.find(
-          (sOCourse) =>
-            sOCourse.subject === sSubject.subjectCode &&
-            sOCourse.courseNumber === course.courseNumber
-        )
-      ) {
-        /* const suggestedCourseDataOptional = props.suggestedOptionalList.filter(
-          (oCourse) => oCourse.subject === sSubject.subjectCode
-        );
-
-        courseSuggestions = courseSuggestions.concat(
-          suggestedCourseDataOptional
-        ); */
-
-        suggestedBySupervisor = true;
-
-        listItemIndicatormodifiers.push("SUGGESTED");
       } else if (
         props.transferedList &&
         props.transferedList.find(
@@ -251,6 +244,7 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
                       {showSuggestionList && (
                         <HopsSuggestionList
                           studentId={props.studentId}
+                          studentsUserEntityId={props.studentsUserEntityId}
                           suggestedActivityCourses={courseSuggestions}
                           subjectCode={sSubject.subjectCode}
                           course={course}
@@ -264,21 +258,6 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
                     </>
                   ) : (
                     <>
-                      {showSuggestAndAddToHopsButtons && (
-                        <Button
-                          onClick={handleToggleChoiceClick({
-                            studentId: props.studentId,
-                            courseNumber: course.courseNumber,
-                            subject: sSubject.subjectCode,
-                          })}
-                          buttonModifiers={["guider-hops-studytool"]}
-                        >
-                          {selectedByStudent
-                            ? "Peru valinta"
-                            : "Valitse osaksi hopsia"}
-                        </Button>
-                      )}
-
                       {showSuggestAndAddToHopsButtons &&
                         props.useCase === "hops-planning" && (
                           <Button
@@ -294,13 +273,29 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
                           >
                             {suggestedBySupervisor
                               ? "Ehdotettu"
-                              : "Ehdota valinnaiseksi?"}
+                              : "Ehdota valinnaiseksi"}
                           </Button>
                         )}
+
+                      {showSuggestAndAddToHopsButtons && (
+                        <Button
+                          onClick={handleToggleChoiceClick({
+                            studentId: props.studentId,
+                            courseNumber: course.courseNumber,
+                            subject: sSubject.subjectCode,
+                          })}
+                          buttonModifiers={["guider-hops-studytool"]}
+                        >
+                          {selectedByStudent
+                            ? "Peru valinta"
+                            : "Valitse osaksi hopsia"}
+                        </Button>
+                      )}
 
                       {showSuggestionList && (
                         <HopsSuggestionList
                           studentId={props.studentId}
+                          studentsUserEntityId={props.studentsUserEntityId}
                           suggestedActivityCourses={courseSuggestions}
                           subjectCode={sSubject.subjectCode}
                           course={course}
@@ -330,7 +325,9 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
     return (
       <ListContainer key={sSubject.name} modifiers={["subject"]}>
         <ListContainer modifiers={["row"]}>
-          <ListHeader modifiers={["subject-name"]}>{sSubject.name}</ListHeader>
+          <ListHeader
+            modifiers={["subject-name"]}
+          >{`${sSubject.name} (${sSubject.subjectCode})`}</ListHeader>
         </ListContainer>
         <ListContainer modifiers={["row"]}>{courses}</ListContainer>
       </ListContainer>

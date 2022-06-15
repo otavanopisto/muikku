@@ -14,6 +14,7 @@ interface HopsStudiesPlanningProps extends HopsBaseProps {
   followUp: FollowUp;
   studies: HopsPlanningStudies;
   studentId: string;
+  studentsUserEntityId: number;
   studyTimeEnd: string | null;
   superVisorModifies: boolean;
   onStudiesPlanningChange: (studies: HopsPlanningStudies) => void;
@@ -41,6 +42,7 @@ class HopsStudiesPlanning extends React.Component<
   HopsStudiesPlanningProps,
   HopsStudiesPlanningState
 > {
+  private myRef: HTMLDivElement = undefined;
   /**
    * Constructor method
    *
@@ -54,6 +56,15 @@ class HopsStudiesPlanning extends React.Component<
       selectNextIsActive: false,
       selectSuggestedOptionalActive: false,
     };
+  }
+
+  /**
+   * componentDidMount
+   */
+  componentDidMount(): void {
+    window.dispatchEvent(new Event("resize"));
+
+    this.myRef.scrollIntoView({ behavior: "smooth" });
   }
 
   /**
@@ -92,10 +103,10 @@ class HopsStudiesPlanning extends React.Component<
      */
     const hasAccessToStudyTool =
       this.props.user === "supervisor" ||
-      (this.props.phase && this.props.phase >= 3);
+      (this.props.phase && this.props.phase >= 2);
 
     return (
-      <div className="hops-container">
+      <div className="hops-container" ref={(ref) => (this.myRef = ref)}>
         <fieldset className="hops-container__fieldset">
           <legend className="hops-container__subheader">Tavoitteet</legend>
 
@@ -125,7 +136,9 @@ class HopsStudiesPlanning extends React.Component<
               </div>
               <HopsPlanningTool
                 user={this.props.user}
+                usePlace={this.props.usePlace}
                 studentId={this.props.studentId}
+                studentsUserEntityId={this.props.studentsUserEntityId}
                 disabled={this.props.disabled}
                 studyTimeEnd={this.props.studyTimeEnd}
                 superVisorModifies={this.props.superVisorModifies}

@@ -559,7 +559,7 @@ public class CommunicatorController {
   
   public CommunicatorMessageRecipient updateReadByReceiver(CommunicatorMessageRecipient recipient, boolean value) {
     CommunicatorMessageRecipient communicatorMessageRecipient = communicatorMessageRecipientDAO.updateReadByReceiver(recipient, value);
-    communicatorMessageIndexer.indexMessage(communicatorMessageRecipient.getCommunicatorMessage());
+    communicatorMessageIndexer.updateIndexMessageReadByReceiver(communicatorMessageRecipient);
     return communicatorMessageRecipient;
   }
 

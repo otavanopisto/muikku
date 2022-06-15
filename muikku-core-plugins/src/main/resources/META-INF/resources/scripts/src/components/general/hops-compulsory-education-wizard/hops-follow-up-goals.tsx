@@ -113,9 +113,7 @@ const HopsFollowUpGoals: React.FC<HopsFollowUpGoalsProps> = (props) => {
               Jatko-opinnot
             </option>
             <option value={FollowUpGoal.WORKING_LIFE}>Aion mennä töihin</option>
-            {/* <option value={FollowUpGoal.NO_FOLLOW_UP_GOALS}>
-              Ei muita tavotteita
-            </option> */}
+
             <option value={FollowUpGoal.DONT_KNOW}>En tiedä vielä</option>
           </select>
         </div>
@@ -184,9 +182,8 @@ const HopsFollowUpGoals: React.FC<HopsFollowUpGoalsProps> = (props) => {
         </AnimateHeight>
         <AnimateHeight
           height={
-            followUpData.followUp.followUpGoal ===
-              FollowUpGoal.POSTGRADUATE_STUDIES ||
-            followUpData.followUp.followUpGoal === FollowUpGoal.WORKING_LIFE
+            followUpData.followUp.followUpStudies ===
+            FollowUpStudies.VOCATIONAL_SCHOOL
               ? "auto"
               : 0
           }

@@ -173,9 +173,13 @@ class StudentDialog extends React.Component<
       },
     ];
 
+    // Compulsory hops is shown only if basic info is there, current guider has permissions to use/see
+    // and matriculation eligiblity is false
     if (
       this.props.guider.currentStudent &&
-      this.props.guider.currentStudent.basic
+      this.props.guider.currentStudent.basic &&
+      this.props.guider.currentStudent.hopsAvailable &&
+      !this.props.guider.currentStudent.basic.matriculationEligibility
     )
       tabs.push({
         id: "HOPS",
@@ -201,15 +205,15 @@ class StudentDialog extends React.Component<
                 onChange={this.handleHopsPhaseChange}
               >
                 <option value={0}>HOPS - Ei aktivoitu</option>
-                <option value={1}>HOPS - aktiivinen</option>
-                <option value={2}>HOPS - esitäyttö</option>
-                <option value={3}>HOPS - opintojen suunnittelu</option>
+                <option value={1}>HOPS - esitäyttö</option>
+                <option value={2}>HOPS - opintojen suunnittelu</option>
               </select>
             </div>
 
             {this.state.editHops ? (
               <CompulsoryEducationHopsWizard
                 user="supervisor"
+                usePlace="guider"
                 disabled={false}
                 studentId={this.props.guider.currentStudent.basic.id}
                 superVisorModifies
@@ -217,6 +221,7 @@ class StudentDialog extends React.Component<
             ) : (
               <CompulsoryEducationHopsWizard
                 user="supervisor"
+                usePlace="guider"
                 disabled={true}
                 studentId={this.props.guider.currentStudent.basic.id}
                 superVisorModifies={false}

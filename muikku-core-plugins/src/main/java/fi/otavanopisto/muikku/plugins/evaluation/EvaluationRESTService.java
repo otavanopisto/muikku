@@ -130,11 +130,6 @@ public class EvaluationRESTService extends PluginRESTService {
         .build();
     }
     
-    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserIdentifier(workspaceEntity, studentIdentifier);
-    if (workspaceUserEntity == null) {
-      return Response.status(Status.NOT_FOUND).entity("WorkspaceUserEntity not found").build();
-    }
-    
     UserEntity studentUserEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);
     if (studentUserEntity == null) {
       return Response.status(Status.NOT_FOUND)
@@ -149,9 +144,10 @@ public class EvaluationRESTService extends PluginRESTService {
     }
 
     GuiderStudentWorkspaceActivity activity = guiderController.getStudentWorkspaceActivity(workspaceEntity, studentIdentifier);
-    
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserIdentifier(workspaceEntity, studentIdentifier);    
+
     List<WorkspaceAssessmentState> assessmentStates = new ArrayList<>();
-    if (workspaceUserEntity.getWorkspaceUserRole().getArchetype() == WorkspaceRoleArchetype.STUDENT) {
+    if ((workspaceUserEntity != null) && (workspaceUserEntity.getWorkspaceUserRole().getArchetype() == WorkspaceRoleArchetype.STUDENT)) {
       assessmentStates = assessmentRequestController.getAllWorkspaceAssessmentStates(workspaceUserEntity);
     }
     
@@ -283,46 +279,6 @@ public class EvaluationRESTService extends PluginRESTService {
     }
     
     return Response.ok(createRestModel(workspaceEntity, assessment)).build();
-  }
-
-  @GET
-  @Path("/workspaces/{WORKSPACEENTITYID}/gradingScales")
-  @RESTPermit(handling = Handling.INLINE)
-  public Response listWorkspaceGrades(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId) {
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.UNAUTHORIZED).build();
-    }
-    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
-    if (workspaceEntity == null) {
-      return Response.status(Status.NOT_FOUND).build();
-    }
-    
-    if (!sessionController.hasWorkspacePermission(EvaluationResourcePermissionCollection.EVALUATION_LISTGRADINGSCALES, workspaceEntity)) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
-
-    List<WorkspaceGradingScale> result = new ArrayList<>();
-    
-    List<GradingScale> gradingScales = gradingController.listGradingScales();
-    for (GradingScale gradingScale : gradingScales) {
-      List<GradingScaleItem> gradingScaleItems = gradingController.listGradingScaleItems(gradingScale);
-      List<WorkspaceGrade> workspaceGrades = new ArrayList<>();
-      for (GradingScaleItem gradingScaleItem : gradingScaleItems) {
-        workspaceGrades.add(
-            new WorkspaceGrade(
-                gradingScaleItem.getName(),
-                gradingScaleItem.getIdentifier(),
-                gradingScaleItem.getSchoolDataSource()));
-      }
-      result.add(
-          new WorkspaceGradingScale(
-              gradingScale.getName(),
-              gradingScale.getIdentifier(),
-              gradingScale.getSchoolDataSource(),
-              workspaceGrades));
-    }
-    
-    return Response.ok(result).build();
   }
   
   @GET

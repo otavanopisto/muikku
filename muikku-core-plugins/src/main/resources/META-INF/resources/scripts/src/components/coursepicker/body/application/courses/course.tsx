@@ -252,7 +252,15 @@ class Course extends React.Component<CourseProps, CourseState> {
                     )}
               </Button>
               {this.state.canSignUp && this.props.status.loggedIn ? (
-                <WorkspaceSignupDialog workspace={this.props.workspace}>
+                <WorkspaceSignupDialog
+                  workspace={this.props.workspace}
+                  workspaceSignUpDetails={{
+                    id: this.props.workspace.id,
+                    name: this.props.workspace.name,
+                    nameExtension: this.props.workspace.nameExtension,
+                    urlName: this.props.workspace.urlName,
+                  }}
+                >
                   <Button
                     aria-label={this.props.workspace.name}
                     buttonModifiers={[

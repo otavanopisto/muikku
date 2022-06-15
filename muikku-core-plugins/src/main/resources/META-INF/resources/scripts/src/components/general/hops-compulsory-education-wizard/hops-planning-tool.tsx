@@ -28,6 +28,7 @@ import { useStudentAlternativeOptions } from "~/hooks/useStudentAlternativeOptio
 import { filterSpecialSubjects } from "~/helper-functions/shared";
 import Dropdown from "../dropdown";
 import { useSupervisorOptionalSuggestions } from "~/hooks/useSupervisorOptionalSuggestion";
+import { HopsUsePlace } from "./index";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const ProgressBarCircle = require("react-progress-bar.js").Circle;
@@ -40,10 +41,12 @@ const ProgressBarLine = require("react-progress-bar.js").Line;
 interface HopsPlanningToolProps {
   i18n: i18nType;
   user: HopsUser;
+  usePlace: HopsUsePlace;
   /**
    * Identifier of student
    */
   studentId: string;
+  studentsUserEntityId: number;
   /**
    * If all functionalities are disabled
    * in read mode
@@ -154,6 +157,12 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
       "day"
     );
 
+    /**
+     * Student's inputted studyhour's value must be valid for message boxes to appear
+     */
+    const validStudyHours =
+      studyHours.studyHourValue > 0 && studyHours.studyHourValue !== null;
+
     const calculateGraduationDateFormated = localizedMoment()
       .add(totalTimeInDays, "day")
       .format("MM-yyyy");
@@ -167,7 +176,8 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
 
     if (
       props.studyTimeEnd &&
-      calculateGraduationDate.isAfter(localizedMoment(props.studyTimeEnd))
+      calculateGraduationDate.isAfter(localizedMoment(props.studyTimeEnd)) &&
+      validStudyHours
     ) {
       return (
         <StudyToolCalculationInfoBox
@@ -185,7 +195,7 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
       );
     }
 
-    if (followUpData.followUp.graduationGoal === null) {
+    if (followUpData.followUp.graduationGoal === null && validStudyHours) {
       return (
         <StudyToolCalculationInfoBox
           message={`Jos opiskelet ${studyHours.studyHourValue} tuntia viikossa, valmistut arviolta ${calculateGraduationDateFormated}`}
@@ -199,7 +209,8 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
     if (
       localizedMoment()
         .add(totalTimeInDays, "day")
-        .isAfter(ownGoal.endOf("month"))
+        .isAfter(ownGoal.endOf("month")) &&
+      validStudyHours
     ) {
       return (
         <StudyToolCalculationInfoBox
@@ -220,7 +231,8 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
       localizedMoment()
         .add(totalTimeInDays, "day")
         .endOf("month")
-        .isBefore(ownGoal.endOf("month"))
+        .isBefore(ownGoal.endOf("month")) &&
+      validStudyHours
     ) {
       return (
         <StudyToolCalculationInfoBox
@@ -242,7 +254,8 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
       localizedMoment()
         .add(totalTimeInDays, "day")
         .endOf("month")
-        .isSame(ownGoal.endOf("month"))
+        .isSame(ownGoal.endOf("month")) &&
+      validStudyHours
     ) {
       return (
         <StudyToolCalculationInfoBox
@@ -673,13 +686,6 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
     supervisorOptionalSuggestions.isLoading ||
     followUpData.isLoading;
 
-  const showTimeComparison =
-    !isLoading &&
-    numberOfOptionalSelectedCourses !== 0 &&
-    (updatedCompletedOptionalCourses >= neededOptionalStudies ||
-      numberOfOptionalSelectedCourses + updatedCompletedOptionalCourses >
-        neededOptionalStudies);
-
   return (
     <>
       {!studyHours.isLoading && (
@@ -688,6 +694,7 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
             <TextField
               id="studyHourPerWeek"
               type="number"
+              min={0}
               label="Kuinka monta tuntia ehdit opiskella viikossa?"
               onChange={handleUsedHoursPerWeekChange}
               value={studyHours.studyHourValue}
@@ -707,10 +714,7 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
         />
       )}
 
-      {showTimeComparison &&
-        compareGraduationGoalToNeededForMandatoryStudies(
-          hoursInTotalToComplete
-        )}
+      {compareGraduationGoalToNeededForMandatoryStudies(hoursInTotalToComplete)}
 
       {props.showIndicators && (
         <div className="hops-container__info hops-container__info--activity-progressbar">
@@ -932,8 +936,10 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
               <HopsCourseTable
                 matrix={filteredSchoolCourseTable}
                 useCase="hops-planning"
+                usePlace={props.usePlace}
                 disabled={props.disabled}
                 studentId={props.studentId}
+                studentsUserEntityId={props.studentsUserEntityId}
                 user={props.user}
                 superVisorModifies={props.superVisorModifies}
                 suggestedNextList={studentActivity.suggestedNextList}
@@ -969,6 +975,7 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
               disabled={props.disabled}
               user={props.user}
               studentId={props.studentId}
+              studentsUserEntityId={props.studentsUserEntityId}
               superVisorModifies={props.superVisorModifies}
               suggestedNextList={studentActivity.suggestedNextList}
               onGoingList={studentActivity.onGoingList}

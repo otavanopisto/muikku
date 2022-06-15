@@ -113,16 +113,19 @@ class CommunicatorMessages extends BodyScrollLoader<
           </span>
         );
       }
-      if (thread.sender.studiesEnded === true) {
-        return (
-          <span className="message__user-studies-ended">
-            {getName(thread.sender, !this.props.status.isStudent)}
-          </span>
-        );
+
+      let name = `${getName(thread.sender, !this.props.status.isStudent)}`;
+
+      if (thread.sender.studyProgrammeName) {
+        name = `${getName(thread.sender, !this.props.status.isStudent)} (${
+          thread.sender.studyProgrammeName
+        })`;
       }
-      return (
-        <span>{getName(thread.sender, !this.props.status.isStudent)}</span>
-      );
+
+      if (thread.sender.studiesEnded === true) {
+        return <span className="message__user-studies-ended">{name}</span>;
+      }
+      return <span>{name}</span>;
     }
 
     const messageRecipientsList = thread.recipients.map((recipient) => {
@@ -240,6 +243,18 @@ class CommunicatorMessages extends BodyScrollLoader<
               );
             }
 
+            let senderName = `${message.sender.firstName} ${
+              message.sender.nickName ? message.sender.nickName : ""
+            } ${message.sender.lastName}`;
+
+            if (message.sender.studyProgrammeName) {
+              senderName = `${message.sender.firstName} ${
+                message.sender.nickName ? message.sender.nickName : ""
+              } ${message.sender.lastName} (${
+                message.sender.studyProgrammeName
+              })`;
+            }
+
             return (
               <ApplicationListItem
                 key={message.id}
@@ -253,10 +268,7 @@ class CommunicatorMessages extends BodyScrollLoader<
                 <ApplicationListItemHeader modifiers="communicator-message">
                   <div className={`application-list__header-primary`}>
                     <span className="application-list__header-primary-sender">
-                      {message.sender.firstName}{" "}
-                      {message.sender.nickName &&
-                        '"' + message.sender.nickName + '"'}{" "}
-                      {message.sender.lastName}
+                      {senderName}
                     </span>
                     <span className="application-list__header-recipients">
                       {message.recipients.map((recipient) => (

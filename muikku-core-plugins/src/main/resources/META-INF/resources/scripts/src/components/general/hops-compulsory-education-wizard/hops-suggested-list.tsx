@@ -22,6 +22,7 @@ interface HopsSuggestionListProps {
   course: Course;
   i18n: i18nType;
   studentId: string;
+  studentsUserEntityId: number;
   displayNotification: DisplayNotificationTriggerType;
   loadData?: boolean;
   canSuggestForNext: boolean;
@@ -50,6 +51,7 @@ const HopsSuggestionList = (props: HopsSuggestionListProps) => {
   const { isLoading, suggestionsList } = useSuggestionList(
     props.subjectCode,
     props.course,
+    props.studentsUserEntityId,
     props.displayNotification,
     props.loadData
   );
@@ -106,7 +108,7 @@ const HopsSuggestionList = (props: HopsSuggestionListProps) => {
               <>
                 <div className="hops-container__study-tool-dropdow-subsection">
                   <div className="hops-container__study-tool-dropdow-title">
-                    Ehdota: {suggestion.name}
+                    {suggestion.name} ({suggestion.nameExtension})
                   </div>
                   <Button
                     buttonModifiers={[
@@ -123,7 +125,7 @@ const HopsSuggestionList = (props: HopsSuggestionListProps) => {
                   >
                     {suggestionNextActionType === "remove"
                       ? "Ehdotettu"
-                      : "Seuraavaksi?"}
+                      : "Ehdota seuraavaksi"}
                   </Button>
                 </div>
               </>

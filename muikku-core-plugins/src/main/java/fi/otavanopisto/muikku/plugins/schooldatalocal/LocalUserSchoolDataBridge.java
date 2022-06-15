@@ -24,6 +24,7 @@ import fi.otavanopisto.muikku.plugins.schooldatalocal.model.LocalUserEmail;
 import fi.otavanopisto.muikku.plugins.schooldatalocal.model.LocalUserImage;
 import fi.otavanopisto.muikku.plugins.schooldatalocal.model.LocalUserProperty;
 import fi.otavanopisto.muikku.rest.OrganizationContactPerson;
+import fi.otavanopisto.muikku.rest.StudentContactLogEntryBatch;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryCommentRestModel;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryRestModel;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
@@ -479,6 +480,7 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
           null,
           null,
           null,
+          null,
           null, 
           false);
     }
@@ -638,12 +640,6 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
     return null;
   }
   
-  @Override
-  public String findStudentEducationalLevel(Long studentEntityId) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
   public boolean isActiveUser(User user) {
     return user.getStudyEndDate() == null;
   }
@@ -655,8 +651,8 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
   }
   
   @Override
-  public BridgeResponse<List<StudentContactLogEntryRestModel>> listStudentContactLogEntriesByStudent(
-      SchoolDataIdentifier studentIdentifier) {
+  public BridgeResponse<StudentContactLogEntryBatch> listStudentContactLogEntriesByStudent(
+      SchoolDataIdentifier studentIdentifier, Integer resultsPerPage, Integer page) {
     throw new SchoolDataBridgeInternalException("Not supported");
   }
   
@@ -753,6 +749,11 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
   @Override
   public String findUserSsn(SchoolDataIdentifier userIdentifier) {
     return null;
+  }
+
+  @Override
+  public boolean amICounselor(String studentIdentifier) {
+    return false;
   }
 
 }

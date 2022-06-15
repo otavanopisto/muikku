@@ -4,7 +4,6 @@ import { HopsMotivationAndStudy } from "~/@types/shared";
 import { HopsBaseProps } from "..";
 import { EmptyRow, HopsInputTable, InputRow } from "../hops-input-table";
 import AnimateHeight from "react-animate-height";
-import { TableHead, Th, Tr } from "../../table";
 
 /**
  * MotivationAndStudySkillsProps
@@ -29,6 +28,7 @@ class HopsMotivationAndStudySkills extends React.Component<
   HopsMotivationAndStudySkillsProps,
   Record<string, unknown>
 > {
+  private myRef: HTMLDivElement = undefined;
   /**
    * constructor
    * @param props props
@@ -39,6 +39,15 @@ class HopsMotivationAndStudySkills extends React.Component<
     this.state = {};
 
     this.isValidated = this.isValidated.bind(this);
+  }
+
+  /**
+   * componentDidMount
+   */
+  componentDidMount(): void {
+    window.dispatchEvent(new Event("resize"));
+
+    this.myRef.scrollIntoView({ behavior: "smooth" });
   }
 
   /**
@@ -141,20 +150,23 @@ class HopsMotivationAndStudySkills extends React.Component<
    * @returns JSX.Element
    */
   render() {
-    const { disabled } = this.props;
+    const { disabled, usePlace } = this.props;
     const { wayToLearn, studySupport, selfImageAsStudent } =
       this.props.motivationAndStudy;
 
     return (
-      <div className="hops-container">
+      <div className="hops-container" ref={(ref) => (this.myRef = ref)}>
         <fieldset className="hops-container__fieldset">
           <legend className="hops-container__subheader hops-container__subheader--required">
-            Opiskelutavat
+            Arvioi, miten hyvin tai huonosti seuraavat opiskelutavat auttavat
+            sinua opiskelussa:
           </legend>
+
+          <span>Tähdellä (*) merkityt kentät ovat pakollisia.</span>
 
           <div className="hops-container__row">
             <div className="hops-container__table-container">
-              <HopsInputTable>
+              <HopsInputTable usePlace={usePlace}>
                 <InputRow
                   scaleStart={1}
                   scaleInterval={1}
@@ -272,7 +284,7 @@ class HopsMotivationAndStudySkills extends React.Component<
             <div className="hops__form-element-container">
               <Textarea
                 id="wayToLearnSomeOtherWayExplanation"
-                label="Jos haluat, voit kertoa tarkemmin itsellesi sopivista opiskelutavoista"
+                label="Jos haluat, voit kertoa tarkemmin itsellesi sopivista opiskelutavoista:"
                 name="someOtherWay"
                 value={wayToLearn.someOtherWay}
                 className="hops__textarea"
@@ -284,10 +296,12 @@ class HopsMotivationAndStudySkills extends React.Component<
         </fieldset>
 
         <fieldset className="hops-container__fieldset">
-          <legend className="hops-container__subheader">
+          <legend className="hops-container__subheader hops-container__subheader--required">
             Keneltä saat tukea opiskeluusi Nettiperuskoulun ohjaajien ja
             opettajien lisäksi?
           </legend>
+
+          <span>Tähdellä (*) merkityt kentät ovat pakollisia.</span>
 
           <div className="hops-container__row">
             <div className="hops__form-element-container hops__form-element-container--single-row">
@@ -390,9 +404,12 @@ class HopsMotivationAndStudySkills extends React.Component<
             Arvioi, miten hyvin tai huonosti seuraavat väitteet kuvaavat sinua
             opiskelijana:
           </legend>
+
+          <span>Tähdellä (*) merkityt kentät ovat pakollisia.</span>
+
           <div className="hops-container__row">
             <div className="hops-container__table-container">
-              <HopsInputTable>
+              <HopsInputTable usePlace={usePlace}>
                 <InputRow
                   scaleStart={1}
                   scaleInterval={1}
@@ -558,7 +575,7 @@ class HopsMotivationAndStudySkills extends React.Component<
             <div className="hops__form-element-container">
               <Textarea
                 id="somethingElseSelfImageAsStudentExplanation"
-                label="Jos haluat, voit kertoa tarkemmin sinusta opiskelijana"
+                label="Jos haluat, voit kertoa tarkemmin sinusta opiskelijana:"
                 name="somethingElse"
                 value={selfImageAsStudent.somethingElse}
                 className="hops__textarea"
