@@ -161,9 +161,7 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
      * Student's inputted studyhour's value must be valid for message boxes to appear
      */
     const validStudyHours =
-      studyHours.studyHourValue !== 0 &&
-      studyHours.studyHourValue > 0 &&
-      studyHours.studyHourValue !== null;
+      studyHours.studyHourValue > 0 && studyHours.studyHourValue !== null;
 
     const calculateGraduationDateFormated = localizedMoment()
       .add(totalTimeInDays, "day")
@@ -688,13 +686,6 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
     supervisorOptionalSuggestions.isLoading ||
     followUpData.isLoading;
 
-  const showTimeComparison =
-    !isLoading &&
-    numberOfOptionalSelectedCourses !== 0 &&
-    (updatedCompletedOptionalCourses >= neededOptionalStudies ||
-      numberOfOptionalSelectedCourses + updatedCompletedOptionalCourses >=
-        neededOptionalStudies);
-
   return (
     <>
       {!studyHours.isLoading && (
@@ -703,6 +694,7 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
             <TextField
               id="studyHourPerWeek"
               type="number"
+              min={0}
               label="Kuinka monta tuntia ehdit opiskella viikossa?"
               onChange={handleUsedHoursPerWeekChange}
               value={studyHours.studyHourValue}
@@ -722,10 +714,7 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
         />
       )}
 
-      {showTimeComparison &&
-        compareGraduationGoalToNeededForMandatoryStudies(
-          hoursInTotalToComplete
-        )}
+      {compareGraduationGoalToNeededForMandatoryStudies(hoursInTotalToComplete)}
 
       {props.showIndicators && (
         <div className="hops-container__info hops-container__info--activity-progressbar">

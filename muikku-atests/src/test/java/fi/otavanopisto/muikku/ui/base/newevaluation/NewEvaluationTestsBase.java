@@ -142,7 +142,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         .addCourseStudent(course1.getId(), courseStudent)
         .mockCourseActivities();
       
-      waitAndClick(".evaluation-modal__evaluate-drawer-row--buttons .button--evaluate-workspace");
+      waitAndClick(".form__buttons--evaluation .button--evaluate-workspace");
       waitForPresent(".dialog--evaluation-archive-student.dialog--visible .button--standard-ok");
       waitAndClickAndConfirmVisibilityGoesAway(".button--standard-ok", ".dialog--evaluation-archive-student.dialog--visible", 3, 2000);
       assertText(".evaluation-modal__event .evaluation-modal__event-grade.state-PASSED", "Excellent");
@@ -496,7 +496,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         waitForPresent(".evaluation-modal__evaluate-drawer .evaluation-modal__evaluate-drawer-content--workspace .cke_contents");
         addTextToCKEditor("Test supplementation request.");
 
-        waitAndClick(".evaluation-modal__evaluate-drawer-row--buttons a.button--evaluate-supplementation");
+        waitAndClick(".form__buttons--evaluation a.button--evaluate-supplementation");
         waitForNotVisible(".evaluation-modal__evaluate-drawer");
         waitForVisible(".evaluation-modal__header-title");
         assertTextIgnoreCase(".evaluation-modal__event:nth-child(2) .evaluation-modal__event-meta", "Admin User pyysi täydennystä");
