@@ -585,6 +585,17 @@ const setLocationToHopsInTranscriptOfRecords: SetLocationToHopsInTranscriptOfRec
   };
 
 /**
+ * setLocationToInfoInTranscriptOfRecords
+ */
+const setLocationToInfoInTranscriptOfRecords: SetLocationToHopsInTranscriptOfRecordsTriggerType =
+  function setLocationToHopsInTranscriptOfRecords() {
+    return {
+      type: "UPDATE_RECORDS_LOCATION",
+      payload: <TranscriptOfRecordLocationType>"info",
+    };
+  };
+
+/**
  * updateTranscriptOfRecordsFiles
  */
 const updateTranscriptOfRecordsFiles: UpdateTranscriptOfRecordsFilesTriggerType =
@@ -617,5 +628,6 @@ export {
   setLocationToYoInTranscriptOfRecords,
   setLocationToHopsInTranscriptOfRecords,
   setLocationToSummaryInTranscriptOfRecords,
+  setLocationToInfoInTranscriptOfRecords,
   updateTranscriptOfRecordsFiles,
 };

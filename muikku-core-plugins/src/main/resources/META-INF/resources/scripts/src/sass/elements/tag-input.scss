@@ -39,9 +39,13 @@
   display: inline-block;
   font-family: $text-font-family;
   font-size: $text-mobile-font-size;
-  height: $input-height;
+  height: $input-height-mobile;
   padding: 4px 8px;
   width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    height: $input-height-desktop;
+  }
 }
 
 .tag-input__input--new-message,
@@ -63,12 +67,9 @@
   position: relative;
   white-space: nowrap;
 
-  // scss-lint:disable SelectorFormat
   &.state-DISABLED {
     color: $color-disabled;
   }
-
-  // scss-lint:enable SelectorFormat
 
   @include breakpoint($breakpoint-desktop) {
     height: 32px;
@@ -83,10 +84,7 @@
   font-size: 0.75rem; // Will be same size for mobile and desktop
   margin: 0 0 0 10px;
 
-  // scss-lint:disable SelectorFormat
   &.state-DISABLED {
     color: $color-disabled;
   }
-
-  // scss-lint:enable SelectorFormat
 }

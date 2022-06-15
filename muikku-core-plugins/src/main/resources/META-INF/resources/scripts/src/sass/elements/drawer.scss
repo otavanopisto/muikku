@@ -17,7 +17,6 @@
   top: 0;
   z-index: 9999;
 
-  // scss-lint:disable SelectorFormat
   &.state-DISPLAYED {
     display: block;
   }
@@ -37,8 +36,6 @@
       transition: none;
     }
   }
-
-  // scss-lint:enable SelectorFormat
 
   // When main function aside menu is cloned to the mobile menu drawer we change the rendering
   .menu-wrapper {

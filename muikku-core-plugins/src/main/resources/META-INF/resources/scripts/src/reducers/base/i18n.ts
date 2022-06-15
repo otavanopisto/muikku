@@ -37,10 +37,24 @@ export interface i18nType {
      * add
      */
     add(date?: Date | string, input?: number, value?: string): string;
+
+    /**
+     * duration
+     * @param inp inp
+     * @param unit unit
+     */
+    duration(
+      inp?: moment.DurationInputArg1,
+      unit?: moment.unitOfTime.DurationConstructor
+    ): moment.Duration;
+
     /**
      * getLocalizedMoment
      */
-    getLocalizedMoment(...args: any[]): moment.Moment;
+    getLocalizedMoment(
+      inp?: moment.MomentInput,
+      strict?: boolean
+    ): moment.Moment;
     /**
      * getLocale
      */
@@ -126,12 +140,28 @@ export default function i18n(
       ) {
         return moment(date).add(input, value).calendar();
       },
+
+      /**
+       * duration
+       * @param inp inp
+       * @param unit unit
+       * @returns moment duration
+       */
+      duration(
+        inp?: moment.DurationInputArg1,
+        unit?: moment.unitOfTime.DurationConstructor
+      ) {
+        return moment.duration(inp, unit);
+      },
+
       /**
        * getLocalizedMoment
-       * @param {...any} args args
+       * @param inp inp
+       * @param strict strict
+       * @returns localized moment
        */
-      getLocalizedMoment(...args: any[]) {
-        return moment(...args).locale(
+      getLocalizedMoment(inp?: moment.MomentInput, strict?: boolean) {
+        return moment(inp, strict).locale(
           outputCorrectMomentLocale(lang.toLowerCase())
         );
       },

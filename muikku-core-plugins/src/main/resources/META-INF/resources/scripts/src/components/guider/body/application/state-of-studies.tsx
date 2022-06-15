@@ -9,7 +9,7 @@ import "~/sass/elements/application-list.scss";
 import "~/sass/elements/application-sub-panel.scss";
 import "~/sass/elements/avatar.scss";
 import "~/sass/elements/workspace-activity.scss";
-import { getUserImageUrl, getName } from "~/util/modifiers";
+import { getName } from "~/util/modifiers";
 import Workspaces from "./workspaces";
 import Ceepos from "./state-of-studies/ceepos";
 import CeeposButton from "./state-of-studies/ceepos-button";
@@ -23,6 +23,7 @@ import { StateType } from "~/reducers";
 import {
   GuiderType,
   GuiderStudentUserProfileLabelType,
+  GuiderNotificationStudentsDataType,
 } from "~/reducers/main-function/guider";
 import NewMessage from "~/components/communicator/dialogs/new-message";
 import { ButtonPill } from "~/components/general/button";
@@ -37,6 +38,12 @@ import Avatar from "~/components/general/avatar";
 // import { CalendarEvent } from "~/reducers/main-function/calendar";
 // import { ResourceTimeline } from "../../../general/resource-timeline";
 // import { ExternalEventType } from "../../../general/resource-timeline";
+import {
+  UpdateCurrentStudentHopsPhaseTriggerType,
+  updateCurrentStudentHopsPhase,
+} from "~/actions/main-function/guider";
+import StudySuggestionMatrix from "./study-suggestion-matrix";
+import { AnyActionType } from "~/actions";
 
 /**
  * StateOfStudiesProps
@@ -47,6 +54,7 @@ interface StateOfStudiesProps {
   status: StatusType;
 
   displayNotification: DisplayNotificationTriggerType;
+  updateCurrentStudentHopsPhase: UpdateCurrentStudentHopsPhaseTriggerType;
 }
 
 /**
@@ -69,6 +77,16 @@ class StateOfStudies extends React.Component<
     super(props);
   }
 
+  /**
+   * handleHopsPhaseChange
+   * @param e e
+   */
+  handleHopsPhaseChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    this.props.updateCurrentStudentHopsPhase({
+      value: e.currentTarget.value,
+    });
+  };
+
   //TODO doesn't anyone notice that nor assessment requested, nor no passed courses etc... is available in this view
   /**
    * render
@@ -77,6 +95,7 @@ class StateOfStudies extends React.Component<
     if (this.props.guider.currentStudent === null) {
       return null;
     }
+
     //Note that some properties are not available until later, that's because it does
     //step by step loading, make sure to show this in the way this is represented, ensure to have
     //a case where the property is not available
@@ -301,9 +320,10 @@ class StateOfStudies extends React.Component<
             </ApplicationSubPanelItem.Content>
           </ApplicationSubPanelItem>
         )}
+
         {this.props.guider.currentStudent.notifications &&
           Object.keys(this.props.guider.currentStudent.notifications).map(
-            (notification) => {
+            (notification: keyof GuiderNotificationStudentsDataType) => {
               <ApplicationSubPanelItem
                 title={this.props.i18n.text.get(
                   "plugin.guider.user." + notification
@@ -313,9 +333,7 @@ class StateOfStudies extends React.Component<
               >
                 <ApplicationSubPanelItem.Content>
                   {this.props.i18n.time.format(
-                    (this.props.guider.currentStudent.notifications as any)[
-                      notification
-                    ]
+                    this.props.guider.currentStudent.notifications[notification]
                   )}
                 </ApplicationSubPanelItem.Content>
               </ApplicationSubPanelItem>;
@@ -326,7 +344,10 @@ class StateOfStudies extends React.Component<
 
     const studentWorkspaces = (
       <Workspaces
-        workspaces={this.props.guider.currentStudent.currentWorkspaces}
+        workspaces={
+          this.props.guider.currentStudent.currentWorkspaces &&
+          this.props.guider.currentStudent.currentWorkspaces
+        }
       />
     );
 
@@ -393,6 +414,23 @@ class StateOfStudies extends React.Component<
                 </ApplicationSubPanel.Body>
               </ApplicationSubPanel>
             </ApplicationSubPanel>
+            {this.props.guider.currentStudent.hopsAvailable ? (
+              <ApplicationSubPanel modifier="student-data-container">
+                <ApplicationSubPanel>
+                  <ApplicationSubPanel.Header>
+                    Opintojen edistyminen
+                  </ApplicationSubPanel.Header>
+                  <ApplicationSubPanel.Body>
+                    <StudySuggestionMatrix
+                      studentId={this.props.guider.currentStudent.basic.id}
+                      studentUserEntityId={
+                        this.props.guider.currentStudent.basic.userEntityId
+                      }
+                    />
+                  </ApplicationSubPanel.Body>
+                </ApplicationSubPanel>
+              </ApplicationSubPanel>
+            ) : null}
           </>
         )}
       </>
@@ -416,8 +454,11 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
-  return bindActionCreators({ displayNotification }, dispatch);
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+  return bindActionCreators(
+    { displayNotification, updateCurrentStudentHopsPhase },
+    dispatch
+  );
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(StateOfStudies);
