@@ -589,8 +589,6 @@
 
 .button--contact-teacher {
   font-size: 0.75rem;
-  max-height: 25px;
-  padding: 4px 12px;
 }
 
 .button-icon {
@@ -1862,6 +1860,7 @@
 .button--whatsapp-me {
   background: linear-gradient($color-whatsapp-light, $color-whatsapp-dark);
   color: $color-default;
+  font-size: 0.75rem;
   margin: 0 0 0 10px;
 }
 
