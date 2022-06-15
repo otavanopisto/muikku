@@ -3,7 +3,6 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
-import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/image-editor.scss";

@@ -37,7 +37,12 @@ public class PyramusCourseMetaSchoolDataBridge implements CourseMetaSchoolDataBr
   public String getSchoolDataSource() {
     return SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE;
   }
-
+  
+  @Override
+  public Subject findSubjectByCode(String code) {
+    return createSubjectEntity(pyramusClient.get("/common/subjectByCode/" + code, fi.otavanopisto.pyramus.rest.model.Subject.class));
+  }
+  
   @Override
   public Subject findSubject(String identifier) {
     Long subjectId = pyramusIdentifierMapper.getPyramusSubjectId(identifier);

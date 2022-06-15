@@ -11,17 +11,23 @@
 }
 
 .material-admin-panel--page-functions {
-  border-bottom: 1px dashed $color-default-separator-border;
+  background: $color-default;
+  border-bottom: 1px solid $color-application-panel-box-border;
   padding: 10px 0;
+  position: sticky;
   text-align: left;
+  top: 56px;
+  z-index: 9;
 
   @include breakpoint($breakpoint-pad) {
     padding: 10px;
+    top: 67px;
   }
 }
 
 .material-admin-panel--chapter-functions {
-  border-bottom: 1px dashed $color-default-separator-border;
+  background: $color-default;
+  border-bottom: 1px solid $color-application-panel-box-border;
   margin: 0;
   padding: 10px 0;
   text-align: left;

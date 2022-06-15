@@ -226,20 +226,19 @@
 }
 
 .dialog__header {
+  align-items: center;
   background-color: $color-dialog-mobile-background;
   color: $color-dialog-mobile-text;
+  display: flex;
+  height: $dialog-title-height;
   padding: 15px 20px;
   position: relative;
   width: 100%;
 
   @include breakpoint($breakpoint-pad) {
-    align-items: center;
     background-color: $color-dialog-desktop-background;
     border-radius: 3px 3px 0 0;
     color: $color-dialog-desktop-text;
-    display: flex;
-    height: 3rem;
-    padding: 0 20px;
   }
 }
 
@@ -490,12 +489,27 @@
 }
 
 .dialog__executer {
-  // scss-lint:disable SelectorFormat
   &.state-DONE {
     color: $color-success;
   }
+}
 
-  // scss-lint:enable SelectorFormat
+.dialog--hops {
+  .dialog__window {
+    @include breakpoint($breakpoint-pad) {
+      left: auto;
+      right: auto;
+      width: 728px;
+    }
+
+    @include breakpoint($breakpoint-desktop) {
+      width: 984px;
+    }
+
+    @include breakpoint($breakpoint-desktop-xl) {
+      width: 1160px;
+    }
+  }
 }
 
 .dialog__state {
@@ -506,7 +520,6 @@
   margin: 20px 0 5px;
   padding: 7px;
 
-  // scss-lint:disable SelectorFormat
   &.state-INFO {
     border-color: $color-info;
 
@@ -514,8 +527,6 @@
       color: $color-info;
     }
   }
-
-  // scss-lint:enable SelectorFormat
 }
 
 .dialog__state-icon {

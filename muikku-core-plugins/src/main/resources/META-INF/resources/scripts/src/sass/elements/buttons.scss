@@ -4,7 +4,6 @@
 @import "../base/breakpoints";
 
 .button {
-  @include prefix(user-select, moz o ms webkit, none);
   @include prefix(transition, moz o ms webkit, background-color 0.3s);
 
   align-items: center;
@@ -21,7 +20,7 @@
   text-decoration: none;
   text-overflow: ellipsis;
   text-transform: uppercase;
-  user-select: none;
+  user-select: text;
   white-space: nowrap;
 
   @include breakpoint($breakpoint-pad) {
@@ -592,6 +591,31 @@
   padding: 4px 12px;
 }
 
+.button--guider-hops-studytool {
+  background-color: $color-button-primary-background;
+  border: 0;
+  color: $color-button-primary-text;
+  display: inline-flex;
+  font-size: 0.75rem;
+  margin: 5px 10px 5px 0;
+  padding: 4px 10px;
+}
+
+.button--guider-hops-studytool-suggested {
+  background: $color-default;
+  border: 2px solid $color-suggested;
+  color: $color-suggested;
+  font-weight: 600;
+}
+
+.button--guider-hops-studytool-next {
+  background: $color-default;
+  border: 2px solid $color-next;
+  color: $color-next;
+  font-weight: 600;
+  margin: 5px 0 5px 10px;
+}
+
 .button-icon {
   @include prefix(user-select, moz o ms webkit, none);
   @include prefix(transition, moz o ms webkit, background-color 0.3s);
@@ -641,6 +665,18 @@
     height: $button-pill-desktop-size;
     width: $button-pill-desktop-size;
   }
+}
+
+.button-icon--edit-hops-history-event-description {
+  font-size: 0.8125rem;
+  height: auto;
+  width: auto;
+}
+
+.button-icon--journal-central {
+  font-size: 2rem;
+  height: 2.5rem;
+  width: 2.5rem;
 }
 
 .button-icon--workspace-users-contact {
@@ -801,6 +837,11 @@
   .button-pill__icon {
     color: $color-environment-button-pill-icon-search;
   }
+}
+
+.button-pill--hops {
+  height: 1.5rem;
+  width: 1.5rem;
 }
 
 .button-pill--settings {
@@ -1809,23 +1850,59 @@
   }
 }
 
-.button--add-matriculation-row {
+.button--add-matriculation-row,
+.button--add-hops-row,
+.button--load-all-hops-events,
+.button--back-to-hops-start {
   background: $color-default;
   border: 1px solid $color-default;
   color: $color-info;
   padding: 4px 6px;
+
+  &.disabled {
+    background: $color-default;
+    border: 1px solid $color-default;
+    color: $color-disabled;
+
+    &:hover {
+      background: $color-default;
+      border: 1px solid $color-default;
+      color: $color-disabled;
+    }
+  }
 }
 
-.button--remove-matriculation-row {
-  align-items: center;
+.button--remove-matriculation-row,
+.button--remove-hops-row {
   background: transparent;
-  color: $color-fatal;
-  display: flex;
-  font-size: 1.25rem;
   height: 2.25rem;
-  justify-content: center;
   padding: 5px;
   width: 2.25rem;
+
+  .icon-trash {
+    align-items: center;
+    color: $color-fatal;
+    display: flex;
+    font-size: 1.25rem;
+    height: 2.25rem;
+    justify-content: center;
+    margin: 0;
+    padding: 5px;
+    width: 2.25rem;
+  }
+
+  &.disabled {
+    background: transparent;
+
+    .icon-trash {
+      color: $color-disabled;
+    }
+
+    &:hover {
+      background: transparent;
+      color: $color-disabled;
+    }
+  }
 }
 
 .button--evaluate-assignment {
@@ -1884,4 +1961,16 @@
     background-color: transparent;
     color: $color-disabled;
   }
+}
+
+.button--modify-hops {
+  background-color: $color-info;
+  color: $color-default;
+  margin-right: 10px;
+}
+
+.button--modify-hops-active {
+  background-color: $color-fatal;
+  color: $color-default;
+  margin-right: 10px;
 }

@@ -27,7 +27,7 @@ import {
 
 import "~/sass/elements/link.scss";
 
-import "~/sass/elements/form-elements.scss";
+import "~/sass/elements/form.scss";
 import { bindActionCreators } from "redux";
 import { StateType } from "~/reducers";
 import { GuiderType, GuiderStudentType } from "~/reducers/main-function/guider";

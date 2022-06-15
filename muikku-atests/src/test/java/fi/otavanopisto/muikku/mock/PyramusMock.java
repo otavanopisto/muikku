@@ -80,6 +80,7 @@ import fi.otavanopisto.pyramus.rest.model.composite.CompositeGrade;
 import fi.otavanopisto.pyramus.rest.model.composite.CompositeGradingScale;
 import fi.otavanopisto.pyramus.rest.model.course.CourseSignupStudentGroup;
 import fi.otavanopisto.pyramus.rest.model.course.CourseSignupStudyProgramme;
+import fi.otavanopisto.pyramus.rest.model.hops.StudyActivityItemRestModel;
 import fi.otavanopisto.pyramus.rest.model.muikku.CredentialResetPayload;
 import fi.otavanopisto.pyramus.rest.model.worklist.WorklistBasePriceRestModel;
 import fi.otavanopisto.pyramus.rest.model.worklist.WorklistItemBilledPriceRestModel;
@@ -1393,6 +1394,17 @@ public class PyramusMock {
             .withHeader("Content-Type", "application/json")
             .withBody(pmock.objectMapper.writeValueAsString(response))
             .withStatus(200)));
+        return this;
+      }
+      
+      public Builder mockEmptyStudyActivity () throws JsonProcessingException {
+        UrlPathPattern urlPattern = new UrlPathPattern(matching("/1/muikku/students/.*/studyActivity"), true);
+        List<StudyActivityItemRestModel> sair = new ArrayList<>();
+        stubFor(get(urlPattern)
+            .willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(pmock.objectMapper.writeValueAsString(sair))
+                .withStatus(200)));
         return this;
       }
       

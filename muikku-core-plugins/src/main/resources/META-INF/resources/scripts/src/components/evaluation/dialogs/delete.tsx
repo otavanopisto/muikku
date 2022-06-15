@@ -5,7 +5,6 @@ import { bindActionCreators } from "redux";
 import Button from "~/components/general/button";
 import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
-import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
 import { EvaluationState } from "~/reducers/main-function/evaluation/index";
 import {

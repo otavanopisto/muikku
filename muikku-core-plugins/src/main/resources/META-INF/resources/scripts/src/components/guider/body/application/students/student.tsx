@@ -74,7 +74,7 @@ class Student extends React.Component<StudentProps, StudentState> {
       <ApplicationListItemContentWrapper
         className={"state-" + studyTimeEndState}
         aside={
-          <div className="user__select-container">
+          <div className="form-element form-element--item-selection-container">
             <label
               htmlFor={`userSelect-` + this.props.index}
               className="visually-hidden"

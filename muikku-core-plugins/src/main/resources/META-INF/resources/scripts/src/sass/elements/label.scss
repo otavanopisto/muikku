@@ -34,12 +34,10 @@
   padding: 2px 4px;
 }
 
-// scss-lint:disable SelectorFormat
 .label--ENDING {
   background-color: $color-label-background-highlight;
 }
 
-// scss-lint:enable SelectorFormat
 .label--folder {
   background-color: $color-label-background;
   color: $color-default-contrast;
@@ -51,13 +49,10 @@
   font-size: 0.8125rem;
   padding: 0 5px 0 0;
 
-  // scss-lint:disable SelectorFormat
   &.state-ENDING,
   &.state-ENDED {
     color: $color-label-alert;
   }
-
-  // scss-lint:enable SelectorFormat
 }
 
 .label__icon--announcement-workspace {
