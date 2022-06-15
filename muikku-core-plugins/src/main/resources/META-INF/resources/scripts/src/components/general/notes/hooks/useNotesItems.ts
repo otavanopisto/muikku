@@ -26,6 +26,7 @@ const initialState: UseNotesItem = {
  * Custom hook notesItems list
  *
  * @param studentId "userId"
+ * @param i18n i18n
  * @param displayNotification displayNotification
  * @returns notesItems lists and methods to create, update, pin, archive and return archived notesItems
  */
@@ -99,7 +100,7 @@ export const useNotesItem = (
     };
 
     loadNotesItemListData();
-  }, [displayNotification, studentId]);
+  }, [displayNotification, studentId, i18n]);
 
   React.useEffect(
     () => () => {
@@ -363,7 +364,7 @@ export const useNotesItem = (
        */
       const updatedNotesItem = <NotesItemRead>(
         await promisify(
-          mApi().notes.note.archive.update(notesItemId),
+          mApi().notes.note.toggleArchived.update(notesItemId),
           "callback"
         )()
       );
@@ -419,7 +420,7 @@ export const useNotesItem = (
   /**
    * Returns archived notesItems from archived list
    *
-   * @param notesItemsId notesItemsId
+   * @param notesItemId notesItemId
    * @param onSuccess onSuccess
    */
   const returnArchivedNotesItem = async (
@@ -434,7 +435,7 @@ export const useNotesItem = (
        */
       const updatedNotesItem = <NotesItemRead>(
         await promisify(
-          mApi().notes.note.archive.update(notesItemId),
+          mApi().notes.note.toggleArchived.update(notesItemId),
           "callback"
         )()
       );
