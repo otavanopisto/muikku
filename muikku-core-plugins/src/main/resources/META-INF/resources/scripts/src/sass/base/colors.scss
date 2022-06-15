@@ -5,6 +5,7 @@ $color-default-item-separator-border: #f2f2f2;
 $color-default-separator-border: #ebebeb;
 $color-default-helper: #b3b2b2;
 $color-default-generic-background: #f2f2f2;
+$color-default-lighter-generic-background: #f8f8f8;
 $color-yo-sign-up: #75ce41;
 $color-yo-sign-up-contrast: $color-default;
 $color-inverse: $color-default-contrast;
@@ -44,6 +45,12 @@ $color-tertiary-contrast: $color-default;
 $color-list-hover-background: #e7fffc;
 $color-list-active-background: rgb(208 255 249 / 100%);
 $color-list-selected-background: #29b0c4;
+$color-suggested: #e464dc;
+$color-next: #bd0174;
+$color-optional: #97dbf7;
+$color-optional-selected: #0099ff;
+$color-mandatory: #dbdada;
+$color-approval: darken(#24c118, 15%);
 
 // Search
 $color-search-clear-icon: $color-disabled;
@@ -417,6 +424,9 @@ $color-env-dialog-form-element-border: #f8a1ce;
 
 // Matriculation Exam form elements
 $color-matriculation-dialog-form-element-border: #f8a1ce;
+
+// HOPS form elements
+$color-hops-dialog-form-element-border: #f8a1ce;
 
 // Autocomplete
 $color-autocomplete-list-border: #dcdcdc;

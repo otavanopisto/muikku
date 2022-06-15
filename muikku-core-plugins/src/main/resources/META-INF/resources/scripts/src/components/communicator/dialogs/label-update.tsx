@@ -17,7 +17,6 @@ import { AnyActionType } from "~/actions";
 import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
 
-import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
 import Button from "~/components/general/button";
 import "~/sass/elements/glyph.scss";

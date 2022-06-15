@@ -1,8 +1,6 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import Panel from "~/components/general/panel";
 import Button from "~/components/general/button";
-import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
 import {
   displayNotification,
@@ -134,8 +132,8 @@ class ReturnCredentials extends React.Component<
   render() {
     const credentialsContent =
       this.props.credentials.state == "READY" ? (
-        <div className="form form--forgot-password">
-          <div className="form-row">
+        <div className="form">
+          <div className="form__row">
             <div className="form-element form-element--forgot-password">
               <label htmlFor="resetCredentialsUsername">
                 {this.props.i18n.text.get(
@@ -151,7 +149,7 @@ class ReturnCredentials extends React.Component<
               />
             </div>
           </div>
-          <div className="form-row">
+          <div className="form__row">
             <div className="form-element form-element--forgot-password">
               <label htmlFor="resetCredentialsPassword1">
                 {this.props.i18n.text.get(
@@ -167,7 +165,7 @@ class ReturnCredentials extends React.Component<
               />
             </div>
           </div>
-          <div className="form-row">
+          <div className="form__row">
             <div className="form-element form-element--forgot-password">
               <label htmlFor="resetCredentialsPassword2">
                 {this.props.i18n.text.get(
@@ -183,7 +181,7 @@ class ReturnCredentials extends React.Component<
               />
             </div>
           </div>
-          <div className="form-row">
+          <div className="form__row">
             <div className="form-element form-element--button-container">
               <Button
                 onClick={this.handleNewCredentials.bind(this)}
@@ -209,7 +207,7 @@ class ReturnCredentials extends React.Component<
         </div>
       );
 
-    return <Panel>{credentialsContent}</Panel>;
+    return <>{credentialsContent}</>;
   }
 }
 

@@ -259,7 +259,7 @@ class ContactInformation extends React.Component<
 
     return (
       <section>
-        <form>
+        <form className="form">
           <h2 className="application-panel__content-header">
             {this.props.i18n.text.get(
               "plugin.profile.titles.contactInformation"
@@ -278,16 +278,13 @@ class ContactInformation extends React.Component<
               value={this.props.status.profile.addresses} />
             */}
               {this.props.status.isStudent && (
-                <div className="application-sub-panel__item application-sub-panel__item--profile">
-                  <label
-                    htmlFor="profileStreetAddress"
-                    className="application-sub-panel__item-title"
-                  >
-                    {this.props.i18n.text.get(
-                      "plugin.profile.changeAddressMunicipality.dialog.streetField.label"
-                    )}
-                  </label>
-                  <div className="application-sub-panel__item-data form-element">
+                <div className="form__row">
+                  <div className="form-element">
+                    <label htmlFor="profileStreetAddress">
+                      {this.props.i18n.text.get(
+                        "plugin.profile.changeAddressMunicipality.dialog.streetField.label"
+                      )}
+                    </label>
                     <input
                       id="profileStreetAddress"
                       type="text"
@@ -303,16 +300,13 @@ class ContactInformation extends React.Component<
               )}
 
               {this.props.status.isStudent && (
-                <div className="application-sub-panel__item application-sub-panel__item--profile">
-                  <label
-                    htmlFor="profilePostalCode"
-                    className="application-sub-panel__item-title"
-                  >
-                    {this.props.i18n.text.get(
-                      "plugin.profile.changeAddressMunicipality.dialog.postalCodeField.label"
-                    )}
-                  </label>
-                  <div className="application-sub-panel__item-data form-element">
+                <div className="form__row">
+                  <div className="form-element">
+                    <label htmlFor="profilePostalCode">
+                      {this.props.i18n.text.get(
+                        "plugin.profile.changeAddressMunicipality.dialog.postalCodeField.label"
+                      )}
+                    </label>
                     <input
                       id="profilePostalCode"
                       type="text"
@@ -328,16 +322,13 @@ class ContactInformation extends React.Component<
               )}
 
               {this.props.status.isStudent && (
-                <div className="application-sub-panel__item application-sub-panel__item--profile">
-                  <label
-                    htmlFor="profileCity"
-                    className="application-sub-panel__item-title"
-                  >
-                    {this.props.i18n.text.get(
-                      "plugin.profile.changeAddressMunicipality.dialog.cityField.label"
-                    )}
-                  </label>
-                  <div className="application-sub-panel__item-data form-element">
+                <div className="form__row">
+                  <div className="form-element">
+                    <label htmlFor="profileCity">
+                      {this.props.i18n.text.get(
+                        "plugin.profile.changeAddressMunicipality.dialog.cityField.label"
+                      )}
+                    </label>
                     <input
                       id="profileCity"
                       type="text"
@@ -351,16 +342,13 @@ class ContactInformation extends React.Component<
               )}
 
               {this.props.status.isStudent && (
-                <div className="application-sub-panel__item application-sub-panel__item--profile">
-                  <label
-                    htmlFor="profileCountry"
-                    className="application-sub-panel__item-title"
-                  >
-                    {this.props.i18n.text.get(
-                      "plugin.profile.changeAddressMunicipality.dialog.countryField.label"
-                    )}
-                  </label>
-                  <div className="application-sub-panel__item-data form-element">
+                <div className="form__row">
+                  <div className="form-element">
+                    <label htmlFor="profileCountry">
+                      {this.props.i18n.text.get(
+                        "plugin.profile.changeAddressMunicipality.dialog.countryField.label"
+                      )}
+                    </label>
                     <input
                       id="profileCountry"
                       type="text"
@@ -376,16 +364,13 @@ class ContactInformation extends React.Component<
               )}
 
               {this.props.status.isStudent && (
-                <div className="application-sub-panel__item application-sub-panel__item--profile">
-                  <label
-                    htmlFor="profileMunicipality"
-                    className="application-sub-panel__item-title"
-                  >
-                    {this.props.i18n.text.get(
-                      "plugin.profile.changeAddressMunicipality.dialog.municipalityField.label"
-                    )}
-                  </label>
-                  <div className="application-sub-panel__item-data form-element">
+                <div className="form__row">
+                  <div className="form-element">
+                    <label htmlFor="profileMunicipality">
+                      {this.props.i18n.text.get(
+                        "plugin.profile.changeAddressMunicipality.dialog.municipalityField.label"
+                      )}
+                    </label>
                     <input
                       id="profileMunicipality"
                       type="text"
@@ -408,16 +393,13 @@ class ContactInformation extends React.Component<
               />
 
               {!this.props.status.isStudent ? (
-                <div className="application-sub-panel__item application-sub-panel__item--profile">
-                  <label
-                    htmlFor="profilePhoneNumber"
-                    className="application-sub-panel__item-title"
-                  >
-                    {this.props.i18n.text.get(
-                      "plugin.profile.phoneNumber.label"
-                    )}
-                  </label>
-                  <div className="application-sub-panel__item-data form-element">
+                <div className="form__row">
+                  <div className="form-element">
+                    <label htmlFor="profilePhoneNumber">
+                      {this.props.i18n.text.get(
+                        "plugin.profile.phoneNumber.label"
+                      )}
+                    </label>
                     <input
                       id="profilePhoneNumber"
                       className="form-element__input"
@@ -433,69 +415,75 @@ class ContactInformation extends React.Component<
               ) : null}
 
               {!this.props.status.isStudent ? (
-                <div className="application-sub-panel__item application-sub-panel__item--profile">
-                  <label className="application-sub-panel__item-title">
-                    {this.props.i18n.text.get(
-                      "plugin.profile.whatsappIntegration.label"
-                    )}
-                  </label>
-                  <div className="application-sub-panel__item-data form-element">
-                    <IconButton
-                      icon="whatsapp"
-                      buttonModifiers={[
-                        "whatsapp-me",
-                        this.props.profile.properties["profile-whatsapp"] ===
-                        "true"
-                          ? "whatsapp-active"
-                          : "whatsapp-inactive",
-                      ]}
-                      onClick={this.handleActivateWhatsappClick}
-                    />
-                    {this.props.profile.properties["profile-whatsapp"] ===
-                    "true" ? (
-                      <span>
-                        {this.props.i18n.text.get(
-                          "plugin.profile.whatsappIntegration.on.label"
-                        )}
-                      </span>
-                    ) : (
-                      <span>
-                        {this.props.i18n.text.get(
-                          "plugin.profile.whatsappIntegration.off.label"
-                        )}
-                      </span>
-                    )}
-                  </div>
-                  <div className="application-sub-panel__item-description">
-                    {this.props.i18n.text.get(
-                      "plugin.profile.whatsappIntegration.description"
-                    )}
+                <div className="form__row">
+                  <div className="form-element">
+                    <label>
+                      {this.props.i18n.text.get(
+                        "plugin.profile.whatsappIntegration.label"
+                      )}
+                    </label>
+                    <div className="form-element form-element--icon-with-label">
+                      <IconButton
+                        icon="whatsapp"
+                        buttonModifiers={[
+                          "whatsapp-me",
+                          this.props.profile.properties["profile-whatsapp"] ===
+                          "true"
+                            ? "whatsapp-active"
+                            : "whatsapp-inactive",
+                        ]}
+                        onClick={this.handleActivateWhatsappClick}
+                      />
+                      {this.props.profile.properties["profile-whatsapp"] ===
+                      "true" ? (
+                        <span>
+                          {this.props.i18n.text.get(
+                            "plugin.profile.whatsappIntegration.on.label"
+                          )}
+                        </span>
+                      ) : (
+                        <span>
+                          {this.props.i18n.text.get(
+                            "plugin.profile.whatsappIntegration.off.label"
+                          )}
+                        </span>
+                      )}
+                    </div>
+                    <div className="form-element__description">
+                      {this.props.i18n.text.get(
+                        "plugin.profile.whatsappIntegration.description"
+                      )}
+                    </div>
                   </div>
                 </div>
               ) : null}
 
               {!this.props.status.isStudent ? (
-                <div className="application-sub-panel__item application-sub-panel__item--profile">
-                  <label
-                    htmlFor="profileExtraInfo"
-                    className="application-sub-panel__item-title"
-                  >
-                    {this.props.i18n.text.get("plugin.profile.extraInfo.label")}
-                  </label>
-                  <div className="application-sub-panel__item-data form-element">
-                    <textarea
-                      id="profileExtraInfo"
-                      className="form-element__textarea form-element__textarea--profile-extraInfo"
-                      onChange={(e) =>
-                        this.updateField("extraInfo", e.target.value)
-                      }
-                      value={this.state.extraInfo}
-                    />
+                <div className="form__row">
+                  <div className="form-element">
+                    <label
+                      htmlFor="profileExtraInfo"
+                      className="application-sub-panel__item-title"
+                    >
+                      {this.props.i18n.text.get(
+                        "plugin.profile.extraInfo.label"
+                      )}
+                    </label>
+                    <div className="form-element__textarea-container">
+                      <textarea
+                        id="profileExtraInfo"
+                        className="form-element__textarea form-element__textarea--profile-extraInfo"
+                        onChange={(e) =>
+                          this.updateField("extraInfo", e.target.value)
+                        }
+                        value={this.state.extraInfo}
+                      />
+                    </div>
                   </div>
                 </div>
               ) : null}
 
-              <div className="application-sub-panel__item-actions">
+              <div className="form__buttons">
                 <Button
                   buttonModifiers="primary-function-save"
                   onClick={this.save}

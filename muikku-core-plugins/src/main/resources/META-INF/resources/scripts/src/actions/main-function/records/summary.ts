@@ -3,6 +3,7 @@ import promisify from "~/util/promisify";
 import mApi, { MApiError } from "~/lib/mApi";
 import { AnyActionType, SpecificActionType } from "~/actions";
 import {
+  SummarStudentDetails,
   SummaryDataType,
   SummaryStatusType,
   SummaryStudentsGuidanceCouncelorsType,
@@ -69,7 +70,7 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
       const coursesDone: Record<string, unknown>[] = [];
 
       /* Student's study time */
-      const studentsDetails = <SummaryStudyTime>(
+      const studentsDetails = <SummarStudentDetails>(
         await promisify(mApi().user.students.read(pyramusId), "callback")()
       );
 
@@ -202,7 +203,7 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
       };
 
       /* Does have matriculation examination in goals? */
-      const summaryData = {
+      const summaryData: SummaryDataType = {
         eligibilityStatus: eligibility.coursesCompleted,
         activity: activityLogs.general.length,
         returnedExercises: assignmentsDone.length,

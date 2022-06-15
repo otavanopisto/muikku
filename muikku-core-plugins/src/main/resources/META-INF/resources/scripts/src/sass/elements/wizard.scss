@@ -33,19 +33,23 @@
       line-height: normal;
       position: relative;
 
-      // scss-lint:disable NestingDepth, SelectorDepth
       span {
         @include step-title;
 
         display: none;
         padding: 0;
+        width: auto;
 
         @include breakpoint($breakpoint-mobile-xl) {
           display: flex;
+          padding: 0 5px;
+          text-align: center;
         }
       }
+    }
 
-      // scss-lint:enable NestingDepth, SelectorDepth
+    li.no-hl {
+      cursor: default;
     }
 
     .progtrckr-todo {

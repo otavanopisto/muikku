@@ -6,7 +6,6 @@ import { Dispatch } from "redux";
 import { HOPSDataType } from "~/reducers/main-function/hops";
 import { StateType } from "~/reducers";
 
-import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
 
 /**

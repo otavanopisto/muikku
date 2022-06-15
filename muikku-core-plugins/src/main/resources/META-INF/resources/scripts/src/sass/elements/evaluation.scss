@@ -186,7 +186,6 @@
   margin: 5px;
   padding: 3px;
 
-  // scss-lint:disable SelectorFormat
   &.state-REQUESTED {
     color: $color-evaluation-request;
   }
@@ -206,8 +205,6 @@
   &.state-INCOMPLETE {
     color: $color-incomplete;
   }
-
-  // scss-lint:enable SelectorFormat
 }
 
 .evaluation-modal__event-arrow--right {
@@ -242,7 +239,6 @@
 .evaluation-modal__event-type {
   font-weight: 600;
 
-  // scss-lint:disable SelectorFormat
   &.state-REQUESTED {
     color: $color-evaluation-request;
   }
@@ -262,8 +258,6 @@
   &.state-INCOMPLETE {
     color: $color-incomplete;
   }
-
-  // scss-lint:enable SelectorFormat
 }
 
 .evaluation-modal__event-grade {
@@ -283,7 +277,6 @@
   min-width: 1.375rem;
   padding: 4px;
 
-  // scss-lint:disable SelectorFormat
   &.state-REQUESTED {
     background: $color-evaluation-request;
   }
@@ -303,8 +296,6 @@
   &.state-INCOMPLETE {
     background: $color-incomplete;
   }
-
-  // scss-lint:enable SelectorFormat
 }
 
 .evaluation-modal__event-literal-assessment,
@@ -366,7 +357,6 @@
   justify-content: space-between;
   padding: 10px 0;
 
-  // scss-lint:disable SelectorFormat
   &.state-EVALUATED {
     .button-pill--evaluate {
       background: $color-passed;
@@ -384,8 +374,6 @@
       background: $color-incomplete;
     }
   }
-
-  // scss-lint:enable SelectorFormat
 }
 
 .evaluation-modal__item-header-title {
@@ -461,7 +449,6 @@
   min-width: 1.375rem;
   padding: 4px;
 
-  // scss-lint:disable SelectorFormat
   &.state-EVALUATED {
     background: $color-passed;
     border-radius: 2px;
@@ -481,8 +468,6 @@
     border-radius: 2px;
     color: $color-default;
   }
-
-  // scss-lint:enable SelectorFormat
 }
 
 .evaluation-modal__item-functions {
@@ -533,14 +518,11 @@
     width: calc(50%);
   }
 
-  // scss-lint:disable SelectorFormat
   &.state-OPEN {
     box-shadow: 0 25px 25px;
     opacity: 100%;
     transform: translateX(0);
   }
-
-  // scss-lint:enable SelectorFormat
 }
 
 .evaluation-modal__evaluate-drawer--assignment,
