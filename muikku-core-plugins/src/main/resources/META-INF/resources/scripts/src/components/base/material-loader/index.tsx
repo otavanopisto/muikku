@@ -55,7 +55,7 @@ const STATES = [
     //when an exercise is in the state unanswered answered or withdrawn then it doesn't
     //display this button
     "displays-hide-show-answers-on-request-button-if-allowed": false,
-    "button-class": "muikku-check-exercises",
+    "button-class": "muikku-submit-exercise",
 
     //This is what by default appears on the button
     "button-text": "plugin.workspace.materialsLoader.sendExerciseButton",
@@ -76,7 +76,7 @@ const STATES = [
     //With this property active whenever in this state the answers will be checked
     "checks-answers": true,
     "displays-hide-show-answers-on-request-button-if-allowed": true,
-    "button-class": "muikku-check-exercises",
+    "button-class": "muikku-submit-exercise",
     "button-text": "plugin.workspace.materialsLoader.exerciseSentButton",
     "button-disabled": false,
 
