@@ -199,7 +199,8 @@ legend {
 }
 
 // CHECKBOX or RADIOBUTTON form-element wrapper
-.form-element--checkbox-radiobutton {
+.form-element--checkbox-radiobutton,
+.form-element--icon-with-label {
   align-items: center;
   background-color: transparent;
   border-radius: 0;
@@ -616,19 +617,13 @@ legend {
   border-radius: 2px;
   font-family: $text-font-family;
   font-size: $text-mobile-font-size;
-  margin-top: 10px;
   min-height: 150px;
-  padding: 6px;
+  padding: 8px 10px;
   width: 100%;
 
   @include breakpoint($breakpoint-desktop) {
     font-size: $text-desktop-font-size;
   }
-}
-
-.form-element__textarea--edit-label,
-.form-element__textarea--profile-auto-reply {
-  margin: 0;
 }
 
 .form-element__dropdown-selection-container {
