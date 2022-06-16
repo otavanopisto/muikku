@@ -35,6 +35,7 @@ import {
   UpdateWorkspaceMaterialContentNodeTriggerType,
 } from "~/actions/workspaces";
 import { Redirect } from "react-router-dom";
+import DisconnectedWarningDialog from "../dialogs/disconnect-warning";
 
 /**
  * WorkspaceMaterialsProps
@@ -760,6 +761,7 @@ class WorkspaceMaterials extends React.Component<
           {emptyMessage}
           {createSectionElementWhenEmpty}
         </ContentPanel>
+        <DisconnectedWarningDialog />
       </div>
     );
   }

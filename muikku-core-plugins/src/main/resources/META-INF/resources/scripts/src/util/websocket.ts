@@ -487,12 +487,13 @@ export default class MuikkuWebsocket {
           this.discarded = true;
           this.discardCurrentWebSocket(true);
           // TODO localization
-          this.store.dispatch(
+          this.store.dispatch(actions.openNotificationDialog() as Action);
+          /* this.store.dispatch(
             actions.displayNotification(
               "Muikkuun ei saada yhteyttä. Ole hyvä ja lataa sivu uudelleen. Jos olet vastaamassa tehtäviin, kopioi varmuuden vuoksi vastauksesi talteen omalle koneellesi.",
               "error"
             ) as Action
-          );
+          ); */
         } else {
           // Reconnect retry failed, retry after reconnectInterval
           this.reconnectHandler = setTimeout(() => {
