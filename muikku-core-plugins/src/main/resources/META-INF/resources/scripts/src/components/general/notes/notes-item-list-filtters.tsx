@@ -87,27 +87,32 @@ const NotesItemListFiltters: React.FC<NotesItemListFilttersProps> = (props) => {
         />
       </div>
       <div className="notes__toolbar-section">
-        <Dropdown
-          items={[
-            <div key="filterTitle" className="filter-category">
-              <div className="filter-category__label">
-                {props.i18n.text.get("plugin.records.notes.filter.label")}
-              </div>
-            </div>,
+        {usePlace === "records" ? (
+          <Dropdown
+            items={[
+              <div key="filterTitle" className="filter-category">
+                <div className="filter-category__label">
+                  {props.i18n.text.get("plugin.records.notes.filter.label")}
+                </div>
+              </div>,
 
-            <div key="filterMyOwn" className="filter-item">
-              <input
-                type="checkbox"
-                id="notesFilterMyOwn"
-                onChange={handleCheckboxesChange("own")}
-                checked={filters.own}
-              />
-              <label htmlFor="notesFilterMyOwn" className="filter-item__label">
-                {props.i18n.text.get("plugin.records.notes.filter.createdbyme")}
-              </label>
-            </div>,
+              <div key="filterMyOwn" className="filter-item">
+                <input
+                  type="checkbox"
+                  id="notesFilterMyOwn"
+                  onChange={handleCheckboxesChange("own")}
+                  checked={filters.own}
+                />
+                <label
+                  htmlFor="notesFilterMyOwn"
+                  className="filter-item__label"
+                >
+                  {props.i18n.text.get(
+                    "plugin.records.notes.filter.createdbyme"
+                  )}
+                </label>
+              </div>,
 
-            usePlace === "records" && (
               <div key="filterFromGuider" className="filter-item">
                 <input
                   type="checkbox"
@@ -123,14 +128,14 @@ const NotesItemListFiltters: React.FC<NotesItemListFilttersProps> = (props) => {
                     "plugin.records.notes.filter.createdbyguidanceCounselor"
                   )}
                 </label>
-              </div>
-            ),
-          ]}
-        >
-          <div tabIndex={0}>
-            <IconButton icon="more_vert" />
-          </div>
-        </Dropdown>
+              </div>,
+            ]}
+          >
+            <div tabIndex={0}>
+              <IconButton icon="more_vert" />
+            </div>
+          </Dropdown>
+        ) : null}
       </div>
     </>
   );

@@ -178,6 +178,14 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
     }
 
     /**
+     * createHtmlMarkup
+     * @param htmlString string that contains html
+     */
+    const createHtmlMarkup = (htmlString: string) => ({
+      __html: htmlString,
+    });
+
+    /**
      * Renders dates. Date or date range string
      *
      * @returns JSX.Element
@@ -416,7 +424,11 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
         </div>
 
         <div className="notes__item-dates">{renderDates()}</div>
-        <div className={`notes__item-header ${openInformationToDialog ? "notes__item-header--open-details" : ""}`}>
+        <div
+          className={`notes__item-header ${
+            openInformationToDialog ? "notes__item-header--open-details" : ""
+          }`}
+        >
           {openInformationToDialog ? (
             <NoteInformationDialog
               notesItem={notesItem}
@@ -437,7 +449,10 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
         </div>
 
         {description ? (
-          <div className="notes__item-body">{description}</div>
+          <div
+            className="notes__item-body"
+            dangerouslySetInnerHTML={createHtmlMarkup(description)}
+          />
         ) : null}
         <div className="notes__item-author">
           {!loggedUserIsCreator ? creatorName : null}

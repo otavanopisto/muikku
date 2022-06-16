@@ -16,6 +16,7 @@ import {
 } from "~/@types/notes";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import "~/sass/elements/notes.scss";
+import CKEditor from "../ckeditor";
 
 /**
  * NotesItemNewProps
@@ -25,7 +26,7 @@ interface NotesItemNewProps {
    * Id of note owner (recipient)
    */
   newNoteOwnerId: number;
-  children: React.ReactElement<any>;
+  children: React.ReactElement;
   i18n: i18nType;
   onNotesItemSaveClick?: (
     newNotesItem: NotesItemCreate,
@@ -128,7 +129,7 @@ class NotesItemNew extends SessionStateComponent<
      * content
      * @param closeDialog closeDialog
      */
-    const content = (closeDialog: () => any) => [
+    const content = (closeDialog: () => never) => [
       <div key="new-note-1" className="env-dialog__row env-dialog__row--titles">
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
@@ -229,13 +230,11 @@ class NotesItemNew extends SessionStateComponent<
               "plugin.records.notes.createEditnote.content.label"
             )}
           </label>
-          <textarea
-            className="env-dialog__textarea"
-            onChange={(e) =>
-              this.handleNotesItemChange("description", e.currentTarget.value)
-            }
-            value={this.state.notesItem.description}
-          />
+          <CKEditor
+            onChange={(e) => this.handleNotesItemChange("description", e)}
+          >
+            {this.state.notesItem.description}
+          </CKEditor>
         </div>
       </div>,
     ];
@@ -243,7 +242,7 @@ class NotesItemNew extends SessionStateComponent<
      * footer
      * @param closeDialog closeDialog
      */
-    const footer = (closeDialog: () => any) => (
+    const footer = (closeDialog: () => never) => (
       <div className="env-dialog__actions">
         <Button
           buttonModifiers={["dialog-execute"]}

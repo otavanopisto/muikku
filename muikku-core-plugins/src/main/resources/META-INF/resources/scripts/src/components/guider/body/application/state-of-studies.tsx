@@ -419,7 +419,9 @@ class StateOfStudies extends React.Component<
               <ApplicationSubPanel modifier="student-data-container">
                 <ApplicationSubPanel>
                   <ApplicationSubPanel.Header>
-                    Opintojen edistyminen
+                    {this.props.i18n.text.get(
+                      "plugin.guider.user.details.proggressOfStudies"
+                    )}
                   </ApplicationSubPanel.Header>
                   <ApplicationSubPanel.Body>
                     <StudySuggestionMatrix
@@ -432,6 +434,24 @@ class StateOfStudies extends React.Component<
                 </ApplicationSubPanel>
               </ApplicationSubPanel>
             ) : null}
+
+            <ApplicationSubPanel modifier="student-data-container">
+              <ApplicationSubPanel>
+                <ApplicationSubPanel.Header>
+                  {this.props.i18n.text.get("plugin.guider.user.details.notes")}
+                </ApplicationSubPanel.Header>
+                <ApplicationSubPanel.Body>
+                  <Notes
+                    userId={this.props.status.userId}
+                    usePlace="guider"
+                    studentId={
+                      this.props.guider.currentStudent.basic.userEntityId
+                    }
+                    showHistoryPanel
+                  />
+                </ApplicationSubPanel.Body>
+              </ApplicationSubPanel>
+            </ApplicationSubPanel>
           </>
         )}
       </>

@@ -16,13 +16,14 @@ import {
 } from "~/@types/notes";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import "~/sass/elements/notes.scss";
+import CKEditor from "../ckeditor";
 
 /**
  * NotesItemEditProps
  */
 interface NotesItemEditProps {
   selectedNotesItem?: NotesItemRead;
-  children: React.ReactElement<any>;
+  children: React.ReactElement;
   i18n: i18nType;
   onNotesItemSaveUpdateClick?: (
     journalId: number,
@@ -217,13 +218,11 @@ class NotesItemEdit extends SessionStateComponent<
               "plugin.records.notes.createEditnote.content.label"
             )}
           </label>
-          <textarea
-            className="env-dialog__textarea"
-            onChange={(e) =>
-              this.handleNotesItemChange("description", e.currentTarget.value)
-            }
-            value={this.state.notesItem.description}
-          />
+          <CKEditor
+            onChange={(e) => this.handleNotesItemChange("description", e)}
+          >
+            {this.state.notesItem.description}
+          </CKEditor>
         </div>
       </div>,
     ];

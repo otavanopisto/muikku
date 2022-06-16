@@ -14,7 +14,7 @@ import { AnyActionType } from "~/actions";
  */
 interface NoteInformationDialogProps extends NotesListItemProps {
   i18n: i18nType;
-  children?: React.ReactElement<any>;
+  children?: React.ReactElement;
 }
 
 /**
@@ -34,27 +34,26 @@ class NoteInformationDialog extends React.Component<
    * @returns JSX.Element
    */
   render() {
+    const { children, ...item } = this.props;
+
     /**
      * content
      * @param closeDialog closeDialog
      * @returns JSX.Element
      */
-    const content = (closeDialog: () => any) => {
-      const { children, ...item } = this.props;
-      return (
-        <NotesListItem
-          {...item}
-          containerModifier={["dialog-information"]}
-          openInformationToDialog={false}
-        />
-      );
-    };
+    const content = (closeDialog: () => never) => (
+      <NotesListItem
+        {...item}
+        containerModifier={["dialog-information"]}
+        openInformationToDialog={false}
+      />
+    );
 
     /**
      * footer
      * @param closeDialog closeDialog
      */
-    const footer = (closeDialog: () => any) => (
+    const footer = (closeDialog: () => never) => (
       <div className="dialog__button-set">
         <Button
           buttonModifiers={["standard-cancel", "cancel"]}
@@ -76,7 +75,7 @@ class NoteInformationDialog extends React.Component<
         footer={footer}
         closeOnOverlayClick={false}
       >
-        {this.props.children}
+        {children}
       </Dialog>
     );
   }
