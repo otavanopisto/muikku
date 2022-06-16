@@ -114,7 +114,6 @@ export default class Dropdown extends React.Component<
     const $target = $(activator);
     const $arrow = $(this.refs["arrow"]);
     const $dropdown = $(this.refs["dropdown"]);
-
     const position = activator.getBoundingClientRect();
     const windowWidth = $(window).width();
     const windowHeight = $(window).height();

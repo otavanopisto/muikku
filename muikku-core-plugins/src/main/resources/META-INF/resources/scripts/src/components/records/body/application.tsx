@@ -177,7 +177,7 @@ class StudiesApplication extends React.Component<
          * component
          * @returns JSX.Element
          */
-        component: () => (
+        component: (
           <ApplicationPanelBody modifier="tabs">
             <Summary />
           </ApplicationPanelBody>
@@ -188,11 +188,7 @@ class StudiesApplication extends React.Component<
         name: this.props.i18n.text.get("plugin.records.category.records"),
         hash: "records",
         type: "records",
-        /**
-         * component
-         * @returns JSX.Element
-         */
-        component: () => (
+        component: (
           <ApplicationPanelBody modifier="tabs">
             <Records />
             <CurrentRecord />
@@ -204,11 +200,7 @@ class StudiesApplication extends React.Component<
         name: this.props.i18n.text.get("plugin.records.category.hops"),
         hash: "hops",
         type: "hops",
-        /**
-         * component
-         * @returns JSX.Element
-         */
-        component: () => (
+        component: (
           <ApplicationPanelBody modifier="tabs">
             <Hops />
           </ApplicationPanelBody>
@@ -219,11 +211,7 @@ class StudiesApplication extends React.Component<
         name: this.props.i18n.text.get("plugin.records.category.yo"),
         hash: "yo",
         type: "yo",
-        /**
-         * component
-         * @returns JSX.Element
-         */
-        component: () => (
+        component: (
           <ApplicationPanelBody modifier="tabs">
             <YO />
           </ApplicationPanelBody>

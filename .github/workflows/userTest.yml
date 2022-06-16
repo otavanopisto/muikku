@@ -1,9 +1,7 @@
 name: User headless tests
 on: 
   pull_request:
-    branches: [devel]
-  push:
-    branches: [j11-testing]
+    branches: [devel, master]
 jobs:
   testing:
     env:

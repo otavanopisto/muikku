@@ -5,7 +5,7 @@
   <parent>
     <groupId>fi.otavanopisto.muikku</groupId>
     <artifactId>parent</artifactId>
-    <version>1.1.181-SNAPSHOT</version>
+    <version>1.1.185-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -15,7 +15,8 @@
   <description>Muikku acceptance tests</description>
 
   <properties>
-    <selenium-java.version>4.0.0</selenium-java.version>
+    <!-- Selenium -->
+    <selenium-java.version>4.1.3</selenium-java.version>
     <wiremock.version>2.6.0</wiremock.version>
     <mysql-connector-java.version>5.1.49</mysql-connector-java.version>
   </properties>
@@ -44,14 +45,11 @@
       <scope>test</scope>
     </dependency>
 
-
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
       <scope>test</scope>
     </dependency>
-
-    <!-- RestEasy -->
 
     <dependency>
       <groupId>org.jboss.spec.javax.ws.rs</groupId>
@@ -73,8 +71,14 @@
 
     <!-- Jackson -->
 
-    <!-- <dependency> <groupId>com.fasterxml.jackson.jaxrs</groupId> <artifactId>jackson-jaxrs-json-provider</artifactId> 
-      </dependency> -->
+    <!--
+
+    <dependency>
+      <groupId>com.fasterxml.jackson.jaxrs</groupId>
+      <artifactId>jackson-jaxrs-json-provider</artifactId>
+    </dependency>
+
+    -->
 
     <dependency>
       <groupId>junit</groupId>
@@ -85,14 +89,14 @@
     <dependency>
       <groupId>fi.otavanopisto.pyramus</groupId>
       <artifactId>rest-model</artifactId>
-      <version>0.7.174-SNAPSHOT</version>
+      <version>0.7.179-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>fi.otavanopisto.pyramus</groupId>
       <artifactId>pyramus-webhooks</artifactId>
-      <version>0.7.174-SNAPSHOT</version>
+      <version>0.7.179-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
 
@@ -422,7 +426,7 @@
               </execution>
             </executions>
           </plugin>
-          
+
           <plugin>
             <groupId>com.github.alexcojocaru</groupId>
             <artifactId>elasticsearch-maven-plugin</artifactId>

@@ -79,7 +79,6 @@ import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 
 import fi.otavanopisto.muikku.AbstractIntegrationTest;
 import fi.otavanopisto.muikku.TestEnvironments;
-import fi.otavanopisto.muikku.TestUtilities;
 import fi.otavanopisto.muikku.atests.Announcement;
 import fi.otavanopisto.muikku.atests.CommunicatorMessage;
 import fi.otavanopisto.muikku.atests.CommunicatorUserLabelRESTModel;
@@ -1272,31 +1271,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     waitAndClick(".login-button");
     waitForVisible(".navbar .button-pill--profile");
   }
-  
-  protected void loginStudent1() throws JsonProcessingException, Exception {
-    PyramusMocks.student1LoginMock();
-    PyramusMocks.personsPyramusMocks();
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-    String payload = objectMapper.writeValueAsString(new WebhookStudentCreatePayload((long) 1));
-    TestUtilities.webhookCall("http://dev.muikku.fi:" + getPortHttp() + "/pyramus/webhook", payload);
-    payload = objectMapper.writeValueAsString(new WebhookPersonCreatePayload((long) 1));
-    TestUtilities.webhookCall("http://dev.muikku.fi:" + getPortHttp() + "/pyramus/webhook", payload);
-    navigate("/login?authSourceId=1", false);
-    waitForPresent(".index");
-  }
-  
-  protected void loginStudent2() throws JsonProcessingException, Exception {
-    PyramusMocks.student2LoginMock();
-    PyramusMocks.personsPyramusMocks();
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-    String payload = objectMapper.writeValueAsString(new WebhookStudentCreatePayload((long) 2));
-    webhookCall("http://dev.muikku.fi:" + getPortHttp() + "/pyramus/webhook", payload);
-    payload = objectMapper.writeValueAsString(new WebhookPersonCreatePayload((long) 2));
-    webhookCall("http://dev.muikku.fi:" + getPortHttp() + "/pyramus/webhook", payload);
-    navigate("/login?authSourceId=1", false);
-    waitForPresent(".index");
-  }
-  
+
   protected void logout() {
     navigate("/", false);
     waitAndClick(".button-pill--profile");
@@ -1876,14 +1851,6 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void dragAndDropWithOffSetAndTimeout(String source, String target, int x, int y){  
     WebElement sourceElement = findElement(source); 
     WebElement targetElement = findElement(target);
-
-//    (new Actions(getWebDriver()))
-//      .moveToElement(sourceElement)
-//      .clickAndHold()
-//      .moveToElement(targetElement, x, y)
-//      .release()
-//      .build()
-//      .perform();
     (new Actions(getWebDriver()))
       .clickAndHold(sourceElement)
       .moveToElement(targetElement, x, y)

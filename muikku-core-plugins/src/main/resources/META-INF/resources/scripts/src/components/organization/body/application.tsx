@@ -239,7 +239,7 @@ class OrganizationManagementApplication extends React.Component<
             /**
              * component
              */
-            component: () => (
+            component: (
               <ApplicationPanelBody modifier="tabs">
                 <Summary />
               </ApplicationPanelBody>
@@ -251,10 +251,7 @@ class OrganizationManagementApplication extends React.Component<
               "plugin.organization.tab.title.users"
             ),
             mobileAction: usersPrimaryActionMobile,
-            /**
-             * component
-             */
-            component: () => (
+            component: (
               <ApplicationPanelBody
                 primaryOption={usersPrimaryAction}
                 toolbar={usersToolbar}
@@ -270,10 +267,7 @@ class OrganizationManagementApplication extends React.Component<
               "plugin.organization.tab.title.userGroups"
             ),
             mobileAction: userGroupsPrimaryActionMobile,
-            /**
-             * component
-             */
-            component: () => (
+            component: (
               <ApplicationPanelBody
                 primaryOption={userGroupsPrimaryAction}
                 toolbar={userGroupsToolbar}
@@ -289,10 +283,7 @@ class OrganizationManagementApplication extends React.Component<
               "plugin.organization.tab.title.courses"
             ),
             mobileAction: coursesPrimaryActionMobile,
-            /**
-             * component
-             */
-            component: () => (
+            component: (
               <ApplicationPanelBody
                 primaryOption={coursesPrimaryAction}
                 toolbar={coursesToolbar}

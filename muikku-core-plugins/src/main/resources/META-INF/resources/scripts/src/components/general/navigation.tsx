@@ -77,6 +77,7 @@ interface NavigationElementProps {
   className?: string;
   modifiers?: string | Array<string>;
   hash?: number | string;
+  id?: string;
   href?: string;
   onClick?: (parameter?: any) => any;
   children: string;
@@ -146,7 +147,7 @@ export class NavigationElement extends React.Component<
     }
 
     return (
-      <li className="menu__item">
+      <li id={this.props.id ? this.props.id : null} className="menu__item">
         <Link
           className={`menu__item-link ${this.props.isActive ? "active" : ""} ${
             this.props.className ? this.props.className : ""

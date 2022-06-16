@@ -20,8 +20,6 @@ public interface CourseMetaSchoolDataBridge {
 	/* CourseIdentifier */
 
 	public CourseIdentifier findCourseIdentifier(String identifier);
-	public List<CourseIdentifier> listCourseIdentifiers();
-	public List<CourseIdentifier> listCourseIdentifiersBySubject(String subjectIdentifier);
 	
 	/* EducationType */
 	

@@ -1,5 +1,9 @@
 import * as React from "react";
-import { EvaluationEvent, EvaluationEnum } from "~/@types/evaluation";
+import {
+  EvaluationEvent,
+  EvaluationEnum,
+  AssessmentRequest,
+} from "~/@types/evaluation";
 import * as moment from "moment";
 import AnimateHeight from "react-animate-height";
 import DeleteDialog from "../../../dialogs/delete";
@@ -9,7 +13,6 @@ import { Dispatch, bindActionCreators } from "redux";
 import { AnyActionType } from "~/actions/index";
 import { connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
-import { EvaluationState } from "~/reducers/main-function/evaluation/index";
 import "~/sass/elements/rich-text.scss";
 
 /**
@@ -17,16 +20,19 @@ import "~/sass/elements/rich-text.scss";
  */
 interface EvaluationEventContentCardProps extends EvaluationEvent {
   i18n: i18nType;
-  showDeleteAndModify: boolean;
-  evaluations: EvaluationState;
+  showModifyLink: boolean;
+  showDeleteLink: boolean;
+  selectedAssessment: AssessmentRequest;
   onClickEdit: (
     eventId: string,
+    workspaceSubjectIdentifier: string | null,
     supplementation?: boolean
   ) => (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void;
 }
 
 /**
  * EvaluationEventContentCard
+ *
  * @param props props
  */
 const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
@@ -34,12 +40,28 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
 ) => {
   const [height, setHeight] = React.useState<0 | "auto">(0);
 
-  const { i18n, showDeleteAndModify, onClickEdit, ...event } = props;
+  const {
+    i18n,
+    showModifyLink,
+    showDeleteLink,
+    onClickEdit,
+    selectedAssessment,
+    ...event
+  } = props;
 
-  const { author, text, date, type, grade, identifier } = event;
+  const {
+    author,
+    text,
+    date,
+    type,
+    grade,
+    identifier,
+    workspaceSubjectIdentifier,
+  } = event;
 
   /**
    * arrowClassMod
+   *
    * @param typeMsg typeMsg
    * @returns arrow class modifier
    */
@@ -96,6 +118,20 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
           type
         )} evaluation-modal__event-arrow--down `;
 
+  let subjectTitle: string | undefined = undefined;
+
+  const subject = selectedAssessment.subjects.find(
+    (subject) => subject.identifier === workspaceSubjectIdentifier
+  );
+
+  if (selectedAssessment.subjects.length > 1 && subject) {
+    subjectTitle = subject.subject
+      ? `${subject.subject.code}${
+          subject.courseNumber ? subject.courseNumber : ""
+        }`
+      : undefined;
+  }
+
   /**
    * renderTypeMessage
    * @param typeMsg typeMsg
@@ -126,6 +162,11 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
               {i18n.text.get(
                 "plugin.evaluation.evaluationModal.events.gradePass.1"
               )}{" "}
+              {subjectTitle ? (
+                <span className="evaluation-modal__event-author">
+                  {`(${subjectTitle}) `}
+                </span>
+              ) : null}
               <span className="evaluation-modal__event-type state-PASSED">
                 {i18n.text.get(
                   "plugin.evaluation.evaluationModal.events.gradePass.2"
@@ -148,6 +189,11 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
               {i18n.text.get(
                 "plugin.evaluation.evaluationModal.events.gradeFail.1"
               )}{" "}
+              {subjectTitle ? (
+                <span className="evaluation-modal__event-author">
+                  {`(${subjectTitle}) `}
+                </span>
+              ) : null}
               <span className="evaluation-modal__event-type state-FAILED">
                 {i18n.text.get(
                   "plugin.evaluation.evaluationModal.events.gradeFail.2"
@@ -170,6 +216,11 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
               {i18n.text.get(
                 "plugin.evaluation.evaluationModal.events.gradeImproved.1"
               )}{" "}
+              {subjectTitle ? (
+                <span className="evaluation-modal__event-author">
+                  {`(${subjectTitle}) `}
+                </span>
+              ) : null}
               <span className="evaluation-modal__event-type state-IMPROVED">
                 {i18n.text.get(
                   "plugin.evaluation.evaluationModal.events.gradeImproved.2"
@@ -192,6 +243,11 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
               {i18n.text.get(
                 "plugin.evaluation.evaluationModal.events.supplementationRequest.1"
               )}{" "}
+              {subjectTitle ? (
+                <span className="evaluation-modal__event-author">
+                  {`(${subjectTitle}) `}
+                </span>
+              ) : null}
               <span className="evaluation-modal__event-type state-INCOMPLETE">
                 {i18n.text.get(
                   "plugin.evaluation.evaluationModal.events.supplementationRequest.2"
@@ -233,26 +289,32 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
           />
         </AnimateHeight>
 
-        {showDeleteAndModify ? (
+        {showModifyLink || showDeleteLink ? (
           <div className="evaluation-modal__event-buttonset">
-            <Link
-              className="link link--evaluation-event-edit"
-              onClick={onClickEdit(
-                identifier,
-                type === EvaluationEnum.SUPPLEMENTATION_REQUEST
-              )}
-            >
-              {i18n.text.get(
-                "plugin.evaluation.evaluationModal.events.editButton"
-              )}
-            </Link>
-            <DeleteDialog eventData={event}>
-              <Link className="link link--evaluation-event-delete">
+            {showModifyLink && (
+              <Link
+                className="link link--evaluation-event-edit"
+                onClick={onClickEdit(
+                  identifier,
+                  workspaceSubjectIdentifier,
+                  type === EvaluationEnum.SUPPLEMENTATION_REQUEST
+                )}
+              >
                 {i18n.text.get(
-                  "plugin.evaluation.evaluationModal.events.deleteButton"
+                  "plugin.evaluation.evaluationModal.events.editButton"
                 )}
               </Link>
-            </DeleteDialog>
+            )}
+
+            {showDeleteLink && (
+              <DeleteDialog eventData={event}>
+                <Link className="link link--evaluation-event-delete">
+                  {i18n.text.get(
+                    "plugin.evaluation.evaluationModal.events.deleteButton"
+                  )}
+                </Link>
+              </DeleteDialog>
+            )}
           </div>
         ) : null}
       </div>
@@ -267,7 +329,6 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    evaluations: state.evaluations,
   };
 }
 

@@ -11,7 +11,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONObject;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -163,6 +162,8 @@ public class GuiderTestsBase extends AbstractUITest {
     try {
       navigate("/guider", false);
       waitAndClick(".application-list__header-primary>span");
+      waitAndClick("#STUDY_HISTORY");
+      waitAndClick("#studyLibrary");      
       waitForPresent(".file-uploader input");
       scrollIntoView(".file-uploader input");
 
@@ -217,6 +218,7 @@ public class GuiderTestsBase extends AbstractUITest {
       
       CourseActivity ca = new CourseActivity();
       ca.setCourseId(course1.getId());
+      ca.setCourseModuleId(course1.getCourseModules().iterator().next().getId());
       ca.setCourseName(course1.getName());
       ca.setGrade("Excellent");
       ca.setPassingGrade(true);
@@ -273,12 +275,12 @@ public class GuiderTestsBase extends AbstractUITest {
         .mockStaffCompositeCourseAssessmentRequests()
         .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, true, date);
       
-        mockBuilder.mockCourseAssessments(courseStudent, admin);          
+        mockBuilder.mockCourseAssessments(course1, courseStudent, admin);          
 
         navigate("/guider", false);
         waitAndClick(".application-list__header-primary>span");
-        waitForPresent(".application-list__header-secondary.workspace-activity .workspace-student__assessment-state>span>span");
-        assertText(".application-list__header-secondary.workspace-activity .workspace-student__assessment-state>span>span", "E");
+        waitForPresent(".application-list__header-secondary .application-list__indicator-badge");
+        assertText(".application-list__header-secondary .application-list__indicator-badge", "E");
       }finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         deleteWorkspace(workspace.getId());
@@ -432,7 +434,7 @@ public class GuiderTestsBase extends AbstractUITest {
         .addStaffMember(admin)
         .addStudent(student)
         .mockLogin(admin)
-        .addStudyProgramme(new StudyProgramme(2l, 1l, "test_lukio", "Aineopiskelu/lukio", 1l, false, false))
+        .addStudyProgramme(new StudyProgramme(2l, 1l, "test_lukio", "Aineopiskelu/yo-tutkinto", 1l, null, false, false))
         .addStudentToStudentGroup(2l, student)
         .mockPersons()
         .mockStudents()
@@ -458,11 +460,10 @@ public class GuiderTestsBase extends AbstractUITest {
         navigate("/guider", false);
         waitForPresent(".application-list__item-footer--student .label--ENDING");
         waitAndClick(".application-list__header-primary>span");
-        scrollTo(".button--create-student-order", 150);
-        waitAndClickAndConfirm(".button--create-student-order", ".dropdown .link--purchasable-product-dropdown", 5, 500);
+        waitAndClickAndConfirm(".button-pill--create-student-order", ".dropdown .link--purchasable-product-dropdown", 5, 500);
         waitAndClickAndConfirm(".dropdown__container-item:first-child", ".dialog--dialog-confirm-order.dialog--visible", 5, 1000);
         waitAndClick(".button--standard-ok");
-        assertTextIgnoreCase(".application-list__header-primary--product .application-list__header-primary-title b", "Nettilukion yksityisopiskelijan opiskelumaksu 6 kk");
+        assertTextIgnoreCase(".application-list__header-primary--product .application-list__header-primary-title", "Nettilukion opiskelumaksu 6 kk");
         assertTextIgnoreCase(".application-list__header-primary--product .application-list__header-primary-description", "Tilaus on luotu ja opiskelijalle on toimitettu sähköpostitse ohjeet maksamista varten.");
         assertPresent(".application-list__header-primary--product .application-list__header-primary-actions .button--delete-student-order");
         logout();
@@ -485,7 +486,7 @@ public class GuiderTestsBase extends AbstractUITest {
         login();
         selectFinnishLocale();
         navigate("/profile#purchases", false);
-        assertTextIgnoreCase(".application-list__item--product .application-list__header-primary-title b", "Nettilukion yksityisopiskelijan opiskelumaksu 6 kk");
+        assertTextIgnoreCase(".application-list__item--product .application-list__header-primary-title", "Nettilukion opiskelumaksu 6 kk");
         assertTextIgnoreCase(".application-list__header-primary-description", "Tilaus on luotu ja sinulle on toimitettu sähköpostitse ohjeet maksamista varten.");
         assertPresent(".application-list__header-primary-actions .button--pay-student-order");
         click(".application-list__header-primary-actions .button--pay-student-order");
@@ -531,7 +532,7 @@ public class GuiderTestsBase extends AbstractUITest {
       .addStaffMember(admin)
       .addStudent(student)
       .mockLogin(admin)
-      .addStudyProgramme(new StudyProgramme(2l, 1l, "test_lukio", "Aineopiskelu/lukio", 1l, false, false))
+      .addStudyProgramme(new StudyProgramme(2l, 1l, "test_lukio", "Aineopiskelu/yo-tutkinto", 1l, null, false, false))
       .addStudentToStudentGroup(2l, student)
       .mockPersons()
       .mockStudents()
@@ -557,17 +558,16 @@ public class GuiderTestsBase extends AbstractUITest {
         navigate("/guider", false);
         waitForPresent(".application-list__item-footer--student .label--ENDING");
         waitAndClick(".application-list__header-primary>span");
-        scrollTo(".button--create-student-order", 150);
-        waitAndClickAndConfirm(".button--create-student-order", ".dropdown .link--purchasable-product-dropdown", 5, 500);
+        waitAndClickAndConfirm(".button-pill--create-student-order", ".dropdown .link--purchasable-product-dropdown", 5, 500);
         waitAndClickAndConfirm(".dropdown__container-item:first-child", ".dialog--dialog-confirm-order.dialog--visible", 5, 1000);
         waitAndClick(".button--standard-ok");
-        assertTextIgnoreCase(".application-list__header-primary--product .application-list__header-primary-title b", "Nettilukion yksityisopiskelijan opiskelumaksu 6 kk");
+        assertTextIgnoreCase(".application-list__header-primary--product .application-list__header-primary-title", "Nettilukion opiskelumaksu 6 kk");
         assertTextIgnoreCase(".application-list__header-primary--product .application-list__header-primary-description", "Tilaus on luotu ja opiskelijalle on toimitettu sähköpostitse ohjeet maksamista varten.");
         assertPresent(".application-list__header-primary--product .application-list__header-primary-actions .button--delete-student-order");
         waitAndClick(".application-list__header-primary--product .application-list__header-primary-actions .button--delete-student-order");
         waitAndClick(".dialog--dialog-delete-order.dialog--visible .button--fatal");
         waitForNotPresent(".application-list__header-primary--product .application-list__header-primary-actions .button--delete-student-order");
-        assertTextIgnoreCase(".button--create-student-order", "Luo uusi tilaus");
+//        assertTextIgnoreCase(".button-pill--create-student-order", "Luo uusi tilaus");
       }finally {
         deleteUserGroupUsers();
         archiveUserByEmail(student.getEmail());
@@ -589,7 +589,7 @@ public class GuiderTestsBase extends AbstractUITest {
         .addStaffMember(admin)
         .addStudent(student)
         .mockLogin(admin)
-        .addStudyProgramme(new StudyProgramme(2l, 1l, "test_lukio", "Aineopiskelu/lukio", 1l, false, false))
+        .addStudyProgramme(new StudyProgramme(2l, 1l, "test_lukio", "Aineopiskelu/yo-tutkinto", 1l, null, false, false))
         .addStudentToStudentGroup(2l, student)
         .mockPersons()
         .mockStudents()
@@ -615,11 +615,10 @@ public class GuiderTestsBase extends AbstractUITest {
         navigate("/guider", false);
         waitForPresent(".application-list__item-footer--student .label--ENDING");
         waitAndClick(".application-list__header-primary>span");
-        scrollTo(".button--create-student-order", 150);
-        waitAndClickAndConfirm(".button--create-student-order", ".dropdown .link--purchasable-product-dropdown", 5, 500);
+        waitAndClickAndConfirm(".button-pill--create-student-order", ".dropdown .link--purchasable-product-dropdown", 5, 500);
         waitAndClickAndConfirm(".dropdown__container-item:first-child", ".dialog--dialog-confirm-order.dialog--visible", 5, 1000);
         waitAndClick(".button--standard-ok");
-        assertTextIgnoreCase(".application-list__header-primary--product .application-list__header-primary-title b", "Nettilukion yksityisopiskelijan opiskelumaksu 6 kk");
+        assertTextIgnoreCase(".application-list__header-primary--product .application-list__header-primary-title", "Nettilukion opiskelumaksu 6 kk");
         assertTextIgnoreCase(".application-list__header-primary--product .application-list__header-primary-description", "Tilaus on luotu ja opiskelijalle on toimitettu sähköpostitse ohjeet maksamista varten.");
         assertPresent(".application-list__header-primary--product .application-list__header-primary-actions .button--delete-student-order");
         logout();
@@ -642,7 +641,7 @@ public class GuiderTestsBase extends AbstractUITest {
         login();
         selectFinnishLocale();
         navigate("/profile#purchases", false);
-        assertTextIgnoreCase(".application-list__item--product .application-list__header-primary-title b", "Nettilukion yksityisopiskelijan opiskelumaksu 6 kk");
+        assertTextIgnoreCase(".application-list__item--product .application-list__header-primary-title", "Nettilukion opiskelumaksu 6 kk");
         assertTextIgnoreCase(".application-list__header-primary-description", "Tilaus on luotu ja sinulle on toimitettu sähköpostitse ohjeet maksamista varten.");
         assertPresent(".application-list__header-primary-actions .button--pay-student-order");
         click(".application-list__header-primary-actions .button--pay-student-order");
@@ -668,7 +667,7 @@ public class GuiderTestsBase extends AbstractUITest {
           navigate("/guider", false);
           waitForPresent(".application-list__item-footer--student .label--ENDING");
           waitAndClick(".application-list__header-primary>span");
-          scrollTo(".button--create-student-order", 150);
+          scrollTo(".button-pill--create-student-order", 150);
           assertTextIgnoreCase(".application-list__item--product .application-list__header-primary--product .application-list__header-primary-description", "Opiskelija peruutti tilauksen.");
         }else {
           assertTrue("paymentConfirmation status not 200", false);

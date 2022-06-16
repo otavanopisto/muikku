@@ -9,8 +9,8 @@
 	  MUIKKU_ERROR_TITLE = "#{errorTitle}";
 	  MUIKKU_ERROR_DESCRIPTION = "#{errorDescription}";
     </script>
-    <script defer="defer" jsf:name="scripts/dist/vendor.js" />
-    <script defer="defer" jsf:name="scripts/dist/error.js" />
+    <script defer="defer" src="#{request.contextPath}/scripts/dist/vendor.js" />
+    <script defer="defer" src="#{request.contextPath}/scripts/dist/error.js" />
   </ui:define>
   
   <ui:define name="styles">

@@ -137,6 +137,7 @@ public class CommunicatorRESTModels {
             null, 
             null,
             null,
+            null,
             archived,
             studiesEnded
         );
@@ -164,6 +165,7 @@ public class CommunicatorRESTModels {
           user.getFirstName(), 
           user.getLastName(), 
           user.getNickName(),
+          user.getStudyProgrammeName(),
           archived,
           studiesEnded
       );

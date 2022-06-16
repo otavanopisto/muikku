@@ -14,17 +14,11 @@ import javax.inject.Named;
 import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
-import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
-import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestController;
-import fi.otavanopisto.muikku.plugins.assessmentrequest.WorkspaceAssessmentState;
-import fi.otavanopisto.muikku.plugins.forum.ForumResourcePermissionCollection;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
-import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.session.local.LocalSession;
-import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 
 @Named
 @Stateful
@@ -34,18 +28,9 @@ public class WorkspaceBackingBean {
   @Inject
   private WorkspaceController workspaceController;
 
-  @Inject
-  private WorkspaceUserEntityController workspaceUserEntityController;
-
   @LocalSession
   @Inject
   private SessionController sessionController;
-
-  @Inject
-  private AssessmentRequestController assessmentRequestController;
-  
-  @Inject
-  private WorkspaceToolSettingsController workspaceToolSettingsController;
 
   @Inject
   @Any
@@ -53,14 +38,7 @@ public class WorkspaceBackingBean {
   
   @PostConstruct
   public void init() {
-    homeVisible = true;
-    guidesVisible = true;
-    materialsVisible = true;
-    discussionsVisible = true;
-    usersVisible = true;
-    journalVisible = true;
     workspaceEntityId = null;
-    assessmentState = null;
   }
   
   public String getWorkspaceUrlName() {
@@ -92,24 +70,6 @@ public class WorkspaceBackingBean {
       this.workspaceUrlName = workspaceEntity.getUrlName();
     }
     
-    homeVisible = workspaceToolSettingsController.getToolVisible(workspaceEntity, "home");
-    guidesVisible = workspaceToolSettingsController.getToolVisible(workspaceEntity, "guides");
-    materialsVisible = workspaceToolSettingsController.getToolVisible(workspaceEntity, "materials");
-    discussionsVisible = sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_ACCESSWORKSPACEFORUMS, workspaceEntity) && workspaceToolSettingsController.getToolVisible(workspaceEntity, "discussions");
-    usersVisible = sessionController.hasWorkspacePermission(MuikkuPermissions.MANAGE_WORKSPACE_MEMBERS, workspaceEntity) && workspaceToolSettingsController.getToolVisible(workspaceEntity, "users");
-    journalVisible = sessionController.hasWorkspacePermission(MuikkuPermissions.ACCESS_WORKSPACE_JOURNAL, workspaceEntity) && workspaceToolSettingsController.getToolVisible(workspaceEntity, "journal");
-    // Assessment state
-    if (sessionController.isLoggedIn() && sessionController.hasWorkspacePermission(MuikkuPermissions.REQUEST_WORKSPACE_ASSESSMENT, workspaceEntity)) {
-      WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, sessionController.getLoggedUser());
-      if (workspaceUserEntity != null) {
-        WorkspaceAssessmentState workspaceAssessmentState = assessmentRequestController.getWorkspaceAssessmentState(workspaceUserEntity);
-        this.assessmentState = workspaceAssessmentState == null ? null : workspaceAssessmentState.getState();
-      }
-    }
-    else {
-      this.assessmentState = null;
-    }
-    
     // Workspace name and extension via Elastic
 
     for (SearchProvider searchProvider : searchProviders) {
@@ -138,34 +98,6 @@ public class WorkspaceBackingBean {
     return workspaceEntity;
   }
 
-  public String getAssessmentState() {
-    return this.assessmentState;
-  }
-
-  public boolean getHomeVisible() {
-    return homeVisible;
-  }
-
-  public boolean isGuidesVisible() {
-    return guidesVisible;
-  }
-
-  public boolean isMaterialsVisible() {
-    return materialsVisible;
-  }
-
-  public boolean isDiscussionsVisible() {
-    return discussionsVisible;
-  }
-
-  public boolean isUsersVisible() {
-    return usersVisible;
-  }
-
-  public boolean isJournalVisible() {
-    return journalVisible;
-  }
-
   public String getWorkspaceName() {
     return workspaceName;
   }
@@ -179,12 +111,5 @@ public class WorkspaceBackingBean {
   private String workspaceUrlName;
   private String workspaceName;
   private String workspaceNameExtension;
-  private boolean homeVisible;
-  private boolean guidesVisible;
-  private boolean materialsVisible;
-  private boolean discussionsVisible;
-  private boolean usersVisible;
-  private boolean journalVisible;
-  private String assessmentState;
 
 }

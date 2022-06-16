@@ -12,5 +12,7 @@ public @interface IndexField {
   String name() default "";
   boolean skip() default false;
   boolean toId() default false;
+  // Instruct the processor to handle this as a collection of ("complex") objects
+  boolean collection() default false;
   
 }

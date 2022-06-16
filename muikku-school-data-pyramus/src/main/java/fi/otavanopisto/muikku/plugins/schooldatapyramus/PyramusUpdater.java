@@ -916,13 +916,13 @@ public class PyramusUpdater {
           Email[] studentEmails = pyramusClient.get().get("/students/students/" + student.getId() + "/emails", Email[].class);
           if (studentEmails != null) {
             for (Email studentEmail : studentEmails) {
-              if (studentEmail.getContactTypeId() != null) {
-                ContactType contactType = pyramusClient.get().get("/common/contactTypes/" + studentEmail.getContactTypeId(), ContactType.class);
+              ContactType contactType = studentEmail.getContactTypeId() != null ? pyramusClient.get().get("/common/contactTypes/" + studentEmail.getContactTypeId(), ContactType.class) : null;
+              if (contactType != null) {
                 if (!contactType.getNonUnique() && !identifierEmails.contains(studentEmail.getAddress())) {
                   identifierEmails.add(studentEmail.getAddress());
                 }
               } else {
-                logger.log(Level.WARNING, "ContactType of email is null - email is ignored");
+                logger.log(Level.WARNING, String.format("ContactType of email was not found by id (%d) - email is ignored", studentEmail.getContactTypeId()));
               }
             }
           }

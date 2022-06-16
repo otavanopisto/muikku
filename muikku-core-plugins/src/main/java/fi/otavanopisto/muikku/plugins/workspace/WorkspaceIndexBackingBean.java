@@ -23,9 +23,7 @@ import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.otavanopisto.muikku.schooldata.CourseMetaController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
-import fi.otavanopisto.muikku.schooldata.entity.CourseLengthUnit;
 import fi.otavanopisto.muikku.schooldata.entity.EducationType;
-import fi.otavanopisto.muikku.schooldata.entity.Subject;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceType;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
@@ -113,22 +111,11 @@ public class WorkspaceIndexBackingBean extends AbstractWorkspaceBackingBean {
       
       WorkspaceType workspaceType = workspaceController.findWorkspaceType(workspace.getWorkspaceTypeId()); 
       EducationType educationTypeObject = workspace.getEducationTypeIdentifier() == null ? null : courseMetaController.findEducationType(workspace.getEducationTypeIdentifier());
-      Subject subjectObject = courseMetaController.findSubject(workspace.getSchoolDataSource(), workspace.getSubjectIdentifier());
-      CourseLengthUnit lengthUnit = null;
-      if ((workspace.getLength() != null) && (workspace.getLengthUnitIdentifier() != null)) {
-        lengthUnit = courseMetaController.findCourseLengthUnit(workspace.getSchoolDataSource(), workspace.getLengthUnitIdentifier());
-      }
       
       workspaceId = workspaceEntity.getId();
       workspaceName = workspace.getName();
       workspaceNameExtension = workspace.getNameExtension();
-      subject = subjectObject != null ? subjectObject.getName() : null;
       educationType = educationTypeObject != null ? educationTypeObject.getName() : null;
-      
-      if (lengthUnit != null) {
-        courseLength = workspace.getLength();
-        courseLengthSymbol = lengthUnit.getSymbol();
-      }
       
       beginDate = workspace.getBeginDate() != null ? Date.from(workspace.getBeginDate().toInstant()) : null;
       endDate = workspace.getEndDate() != null ? Date.from(workspace.getEndDate().toInstant()) : null;
@@ -221,20 +208,8 @@ public class WorkspaceIndexBackingBean extends AbstractWorkspaceBackingBean {
     return workspaceType;
   }
   
-  public String getSubject() {
-    return subject;
-  }
-  
   public String getEducationType() {
     return educationType;
-  }
-  
-  public Double getCourseLength() {
-    return courseLength;
-  }
-  
-  public String getCourseLengthSymbol() {
-    return courseLengthSymbol;
   }
   
   public Boolean getPublished() {
@@ -295,10 +270,7 @@ public class WorkspaceIndexBackingBean extends AbstractWorkspaceBackingBean {
   private String materialType;
   private String materialTitle;
   private String workspaceType;
-  private String subject;
   private String educationType;
-  private Double courseLength;
-  private String courseLengthSymbol;
   private Boolean published;
   private Boolean canPublish;
   private Date beginDate;

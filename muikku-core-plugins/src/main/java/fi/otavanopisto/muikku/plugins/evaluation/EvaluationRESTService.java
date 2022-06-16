@@ -1,11 +1,9 @@
 package fi.otavanopisto.muikku.plugins.evaluation;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -23,25 +21,26 @@ import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang3.StringUtils;
 
-import fi.otavanopisto.muikku.i18n.LocaleController;
-import fi.otavanopisto.muikku.model.base.Tag;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestController;
 import fi.otavanopisto.muikku.plugins.assessmentrequest.WorkspaceAssessmentState;
-import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageCategory;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluationAudioClip;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssignmentEvaluationAudioClip;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.WorkspaceAssessment;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.WorkspaceGrade;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.WorkspaceGradingScale;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.WorkspaceMaterialEvaluation;
+import fi.otavanopisto.muikku.plugins.guider.GuiderController;
+import fi.otavanopisto.muikku.plugins.guider.GuiderStudentWorkspaceActivity;
+import fi.otavanopisto.muikku.plugins.guider.GuiderStudentWorkspaceActivityRestModel;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceRootFolder;
+import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRestModels;
 import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -51,6 +50,7 @@ import fi.otavanopisto.muikku.schooldata.entity.GradingScale;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceSubject;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.servlet.BaseUrl;
 import fi.otavanopisto.muikku.session.SessionController;
@@ -104,18 +104,18 @@ public class EvaluationRESTService extends PluginRESTService {
   private EvaluationController evaluationController;
 
   @Inject
-  private CommunicatorController communicatorController;
-  
-  @Inject
-  private LocaleController localeController;
-  
-  @Inject
   private AssessmentRequestController assessmentRequestController;
   
+  @Inject
+  private GuiderController guiderController;
+  
+  @Inject
+  private WorkspaceRestModels workspaceRestModels;
+  
   @GET
-  @Path("/workspaces/{WORKSPACEENTITYID}/students/{STUDENTID}/assessmentstate")
+  @Path("/workspaces/{WORKSPACEENTITYID}/students/{STUDENTID}/activity")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response getWorkspaceAssessmentState(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("STUDENTID") String studentId) {
+  public Response getWorkspaceStudentActivity(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("STUDENTID") String studentId) {
     SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentId);
     if (studentIdentifier == null) {
       return Response.status(Status.BAD_REQUEST)
@@ -128,11 +128,6 @@ public class EvaluationRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND)
         .entity(String.format("Could not find workspace entity %d", workspaceEntityId))
         .build();
-    }
-    
-    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserIdentifier(workspaceEntity, studentIdentifier);
-    if (workspaceUserEntity == null) {
-      return Response.status(Status.NOT_FOUND).entity("WorkspaceUserEntity not found").build();
     }
     
     UserEntity studentUserEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);
@@ -148,62 +143,19 @@ public class EvaluationRESTService extends PluginRESTService {
       }
     }
 
-    WorkspaceAssessmentState assessmentState = assessmentRequestController.getWorkspaceAssessmentState(workspaceUserEntity);
-    return Response.ok(assessmentState).build();
+    GuiderStudentWorkspaceActivity activity = guiderController.getStudentWorkspaceActivity(workspaceEntity, studentIdentifier);
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserIdentifier(workspaceEntity, studentIdentifier);    
+
+    List<WorkspaceAssessmentState> assessmentStates = new ArrayList<>();
+    if ((workspaceUserEntity != null) && (workspaceUserEntity.getWorkspaceUserRole().getArchetype() == WorkspaceRoleArchetype.STUDENT)) {
+      assessmentStates = assessmentRequestController.getAllWorkspaceAssessmentStates(workspaceUserEntity);
+    }
+    
+    GuiderStudentWorkspaceActivityRestModel guiderStudentWorkspaceActivityRestModel = workspaceRestModels.toRestModel(activity, assessmentStates);
+
+    return Response.ok(guiderStudentWorkspaceActivityRestModel).build();
   }
 
-  @GET
-  @Path("/workspaces/{WORKSPACEENTITYID}/students/{STUDENTID}/assessments")
-  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  @Deprecated // Use /workspaces/{WORKSPACEENTITYID}/students/{STUDENTID}/assessmentstate instead
-  public Response listWorkspaceStudentAssessments(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("STUDENTID") String studentId) {
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.UNAUTHORIZED).build();
-    }
-
-    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentId);
-    if (studentIdentifier == null) {
-      return Response.status(Status.BAD_REQUEST)
-        .entity(String.format("Malformed student identifier %s", studentId))
-        .build();
-    }
-    
-    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
-    if (workspaceEntity == null) {
-      return Response.status(Status.NOT_FOUND)
-        .entity(String.format("Could not find workspace entity %d", workspaceEntityId))
-        .build();
-    }
-    
-    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserIdentifier(workspaceEntity, studentIdentifier);
-    if (workspaceUserEntity == null) {
-      return Response.status(Status.NOT_FOUND).entity("WorkspaceUserEntity not found").build();
-    }
-    
-    WorkspaceAssessmentState assessmentState = assessmentRequestController.getWorkspaceAssessmentState(workspaceUserEntity);
-    
-    UserEntity studentUserEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);
-    if (studentUserEntity == null) {
-      return Response.status(Status.NOT_FOUND)
-          .entity(String.format("Could not find user entity for student identifier %s", studentIdentifier))
-          .build();
-    }
-    
-    if (!sessionController.getLoggedUserEntity().getId().equals(studentUserEntity.getId())) {
-      if (!sessionController.hasWorkspacePermission(MuikkuPermissions.VIEW_USER_EVALUATION, workspaceEntity)) {
-        return Response.status(Status.FORBIDDEN).build();
-      }
-    }
-
-    SchoolDataIdentifier workspaceIdentifier = workspaceEntity.schoolDataIdentifier();
-    List<fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment> assessments = gradingController.listWorkspaceAssessments(workspaceIdentifier, studentIdentifier);
-    if (assessments == null) {
-      assessments = new ArrayList<fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment>();
-    }
-    
-    return Response.ok(createRestModel(workspaceEntity, assessmentState, assessments.toArray(new fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment[0]))).build();
-  }
-    
   @PUT
   @Path("/workspaces/{WORKSPACEENTITYID}/students/{STUDENTID}/assessments/{EVALUATIONID}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
@@ -299,59 +251,34 @@ public class EvaluationRESTService extends PluginRESTService {
     Date evaluated = payload.getEvaluated();
     UserEntity student = userEntityController.findUserEntityByUserIdentifier(workspaceStudent.getUserIdentifier());
     Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+
+    // WorkspaceSubject
+    
+    SchoolDataIdentifier workspaceSubjectIdentifier = SchoolDataIdentifier.fromId(payload.getWorkspaceSubjectIdentifier());
+    WorkspaceSubject workspaceSubject = workspace.getSubjects().stream()
+      .filter(workspaceSubject_ -> workspaceSubject_.getIdentifier().equals(workspaceSubjectIdentifier))
+      .findFirst()
+      .orElse(null);
+
+    if (workspaceSubject == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
     fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment assessment =  gradingController.updateWorkspaceAssessment(
         workspaceAssesmentIdentifier,
         workspaceStudent,
+        workspaceSubject,
         assessingUser,
         grade,
         payload.getVerbalAssessment(),
         evaluated);
     
     if (student != null && workspace != null && assessment != null) {
-      sendAssessmentNotification(workspaceEntity, payload, assessor, student, workspace, grade.getName());
+      boolean multiSubjectWorkspace = workspace.getSubjects().size() > 1;
+      evaluationController.sendAssessmentNotification(workspaceEntity, workspaceSubject, assessment, assessor, student, workspace, grade.getName(), multiSubjectWorkspace);
     }
     
     return Response.ok(createRestModel(workspaceEntity, assessment)).build();
-  }
-
-  @GET
-  @Path("/workspaces/{WORKSPACEENTITYID}/gradingScales")
-  @RESTPermit(handling = Handling.INLINE)
-  public Response listWorkspaceGrades(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId) {
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.UNAUTHORIZED).build();
-    }
-    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
-    if (workspaceEntity == null) {
-      return Response.status(Status.NOT_FOUND).build();
-    }
-    
-    if (!sessionController.hasWorkspacePermission(EvaluationResourcePermissionCollection.EVALUATION_LISTGRADINGSCALES, workspaceEntity)) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
-
-    List<WorkspaceGradingScale> result = new ArrayList<>();
-    
-    List<GradingScale> gradingScales = gradingController.listGradingScales();
-    for (GradingScale gradingScale : gradingScales) {
-      List<GradingScaleItem> gradingScaleItems = gradingController.listGradingScaleItems(gradingScale);
-      List<WorkspaceGrade> workspaceGrades = new ArrayList<>();
-      for (GradingScaleItem gradingScaleItem : gradingScaleItems) {
-        workspaceGrades.add(
-            new WorkspaceGrade(
-                gradingScaleItem.getName(),
-                gradingScaleItem.getIdentifier(),
-                gradingScaleItem.getSchoolDataSource()));
-      }
-      result.add(
-          new WorkspaceGradingScale(
-              gradingScale.getName(),
-              gradingScale.getIdentifier(),
-              gradingScale.getSchoolDataSource(),
-              workspaceGrades));
-    }
-    
-    return Response.ok(result).build();
   }
   
   @GET
@@ -669,6 +596,7 @@ public class EvaluationRESTService extends PluginRESTService {
     
     return new fi.otavanopisto.muikku.plugins.evaluation.rest.model.WorkspaceAssessment(
       entry.getIdentifier().toId(),
+      entry.getWorkspaceSubjectIdentifier().toId(),
       entry.getDate(),
       assessor != null ? assessor.getId() : null,
       entry.getWorkspaceUserIdentifier().toId(),
@@ -683,39 +611,4 @@ public class EvaluationRESTService extends PluginRESTService {
     ); 
   }
   
-  private fi.otavanopisto.muikku.plugins.evaluation.WorkspaceAssessments createRestModel(WorkspaceEntity workspaceEntity, WorkspaceAssessmentState assessmentState, fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment... entries) {
-    List<fi.otavanopisto.muikku.plugins.evaluation.rest.model.WorkspaceAssessment> result = new ArrayList<>();
-
-    for (fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment entry : entries) {
-      result.add(createRestModel(workspaceEntity, entry));
-    }
-    
-    fi.otavanopisto.muikku.plugins.evaluation.WorkspaceAssessments assesments = 
-        new fi.otavanopisto.muikku.plugins.evaluation.WorkspaceAssessments(assessmentState.getState(), assessmentState.getDate(), result);
-
-    return assesments;
-  }
-
-  private void sendAssessmentNotification(WorkspaceEntity workspaceEntity, WorkspaceAssessment payload, UserEntity evaluator, UserEntity student, Workspace workspace, String grade) {
-    String workspaceUrl = String.format("%s/workspace/%s/materials", baseUrl, workspaceEntity.getUrlName());
-    Locale locale = userEntityController.getLocale(student);
-    CommunicatorMessageCategory category = communicatorController.persistCategory("assessments");
-    communicatorController.createMessage(
-        communicatorController.createMessageId(),
-        evaluator,
-        Arrays.asList(student),
-        null,
-        null,
-        null,
-        category,
-        localeController.getText(
-            locale,
-            "plugin.workspace.assessment.notificationTitle",
-            new Object[] {workspace.getName(), grade}),
-        localeController.getText(
-            locale,
-            "plugin.workspace.assessment.notificationContent",
-            new Object[] {workspaceUrl, workspace.getName(), grade, payload.getVerbalAssessment()}),
-        Collections.<Tag>emptySet());
-  }
 }

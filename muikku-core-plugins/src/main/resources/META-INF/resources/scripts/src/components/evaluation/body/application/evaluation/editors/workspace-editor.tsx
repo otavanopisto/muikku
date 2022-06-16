@@ -15,7 +15,12 @@ import { cleanWorkspaceAndSupplementationDrafts } from "../../../../dialogs/dele
 import Button from "~/components/general/button";
 import promisify from "~/util/promisify";
 import mApi from "~/lib/mApi";
-import { BilledPrice, EvaluationEnum } from "~/@types/evaluation";
+import {
+  AssessmentRequest,
+  BilledPrice,
+  EvaluationEnum,
+  EvaluationGradeSystem,
+} from "~/@types/evaluation";
 import { i18nType } from "~/reducers/base/i18n";
 import {
   UpdateNeedsReloadEvaluationRequests,
@@ -33,9 +38,11 @@ interface WorkspaceEditorProps {
   status: StatusType;
   evaluations: EvaluationState;
   locale: LocaleListType;
+  selectedAssessment: AssessmentRequest;
   type?: "new" | "edit";
   editorLabel?: string;
   eventId?: string;
+  workspaceSubjectToBeEvaluatedIdentifier: string;
   onSuccesfulSave?: () => void;
   onClose?: () => void;
   updateWorkspaceEvaluationToServer: UpdateWorkspaceEvaluation;
@@ -65,13 +72,13 @@ interface EvaluationPriceObject {
 
 /**
  * WorkspaceEditor
- * @param param0
- * @returns
  */
 class WorkspaceEditor extends SessionStateComponent<
   WorkspaceEditorProps,
   WorkspaceEditorState
 > {
+  private unknownGradeSystemIsUsed: EvaluationGradeSystem;
+
   /**
    * constructor
    * @param props props
@@ -82,19 +89,25 @@ class WorkspaceEditor extends SessionStateComponent<
      */
     super(props, `workspace-editor-${props.type ? props.type : "new"}`);
 
-    const {
-      evaluationAssessmentEvents,
-      evaluationSelectedAssessmentId,
-      basePrice,
-      evaluationGradeSystem,
-    } = props.evaluations;
+    const { evaluationAssessmentEvents, basePrice, evaluationGradeSystem } =
+      props.evaluations;
+
+    const { selectedAssessment, workspaceSubjectToBeEvaluatedIdentifier } =
+      props;
+
+    const { userEntityId, workspaceEntityId } = selectedAssessment;
 
     /**
      * When there is not existing event data we use only user id and workspace id as
      * draft id. There must be at least user id and workspace id, so if making changes to multiple workspace
      * that have same user evaluations, so draft won't class together
      */
-    let draftId = `${evaluationSelectedAssessmentId.userEntityId}-${evaluationSelectedAssessmentId.workspaceEntityId}`;
+    let draftId = `${userEntityId}-${workspaceEntityId}-${workspaceSubjectToBeEvaluatedIdentifier}`;
+
+    /**
+     * Workspace basePriceId
+     */
+    const basePriceSubjectId = workspaceSubjectToBeEvaluatedIdentifier;
 
     /**
      * If we have evaluation data or we have data and editing existing event
@@ -132,6 +145,10 @@ class WorkspaceEditor extends SessionStateComponent<
           gSystem.id === latestEvent.gradeIdentifier.split("@")[0].split("-")[1]
       );
 
+      if (!usedGradeSystem.active) {
+        this.unknownGradeSystemIsUsed = usedGradeSystem;
+      }
+
       /**
        * Find what grade is selected when editing existing
        */
@@ -143,14 +160,14 @@ class WorkspaceEditor extends SessionStateComponent<
       /**
        * As default but + latest event id
        */
-      draftId = `${evaluationSelectedAssessmentId.userEntityId}-${evaluationSelectedAssessmentId.workspaceEntityId}-${eventId}`;
+      draftId = `${userEntityId}-${workspaceEntityId}-${workspaceSubjectToBeEvaluatedIdentifier}-${eventId}`;
 
       this.state = {
         ...this.getRecoverStoredState(
           {
             literalEvaluation: latestEvent.text,
             draftId,
-            basePriceFromServer: basePrice.data,
+            basePriceFromServer: basePrice.data[basePriceSubjectId],
             grade: `${usedGrade.dataSource}-${usedGrade.id}`,
           },
           draftId
@@ -163,7 +180,7 @@ class WorkspaceEditor extends SessionStateComponent<
           {
             literalEvaluation: "",
             draftId,
-            basePriceFromServer: basePrice.data,
+            basePriceFromServer: basePrice.data[basePriceSubjectId],
             grade: `${evaluationGradeSystem[0].grades[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`,
           },
           draftId
@@ -334,7 +351,7 @@ class WorkspaceEditor extends SessionStateComponent<
   };
 
   /**
-   * handleCKEditorChange
+   * Handles CKEditor changes
    * @param e e
    */
   handleCKEditorChange = (e: string) => {
@@ -342,7 +359,7 @@ class WorkspaceEditor extends SessionStateComponent<
   };
 
   /**
-   * handleSelectGradeChange
+   * Handles select grade changes
    * @param e e
    */
   handleSelectGradeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -350,7 +367,7 @@ class WorkspaceEditor extends SessionStateComponent<
   };
 
   /**
-   * handleSelectGradeChange
+   * Handles select price changes
    * @param e e
    */
   handleSelectPriceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -361,7 +378,7 @@ class WorkspaceEditor extends SessionStateComponent<
   };
 
   /**
-   * handleEvaluationSave
+   * Handles evaluation saving
    * @param e e
    */
   handleEvaluationSave = (
@@ -373,6 +390,7 @@ class WorkspaceEditor extends SessionStateComponent<
       status,
       onClose,
       onSuccesfulSave,
+      workspaceSubjectToBeEvaluatedIdentifier,
     } = this.props;
 
     this.setState({
@@ -408,6 +426,7 @@ class WorkspaceEditor extends SessionStateComponent<
             gradeIdentifier: grade,
             verbalAssessment: literalEvaluation,
             assessmentDate: new Date().getTime().toString(),
+            workspaceSubjectIdentifier: workspaceSubjectToBeEvaluatedIdentifier,
           },
           /**
            * onSuccess
@@ -465,6 +484,7 @@ class WorkspaceEditor extends SessionStateComponent<
             gradeIdentifier: grade,
             verbalAssessment: literalEvaluation,
             assessmentDate: latestEvent.date,
+            workspaceSubjectIdentifier: workspaceSubjectToBeEvaluatedIdentifier,
           },
           /**
            * onSuccess
@@ -517,6 +537,7 @@ class WorkspaceEditor extends SessionStateComponent<
           gradeIdentifier: grade,
           verbalAssessment: literalEvaluation,
           assessmentDate: new Date().getTime().toString(),
+          workspaceSubjectIdentifier: workspaceSubjectToBeEvaluatedIdentifier,
         },
         /**
          * onSuccess
@@ -545,7 +566,7 @@ class WorkspaceEditor extends SessionStateComponent<
   };
 
   /**
-   * handleDeleteEditorDraft
+   * Handles deleting drafts
    */
   handleDeleteEditorDraft = () => {
     const { evaluationAssessmentEvents, evaluationGradeSystem } =
@@ -556,12 +577,21 @@ class WorkspaceEditor extends SessionStateComponent<
       /**
        * Latest event data
        */
-      const latestEvent =
+      let latestEvent =
         evaluationAssessmentEvents.data[
           evaluationAssessmentEvents.data.length - 1
         ];
 
       if (type === "edit") {
+        /**
+         * If editing existing event, we need to find that specific event from event list by its' id
+         */
+        if (this.props.eventId) {
+          latestEvent = evaluationAssessmentEvents.data.find(
+            (eItem) => eItem.identifier === this.props.eventId
+          );
+        }
+
         /**
          * If editing we clear draft and set all back to default values from latest event
          * and if pricing enabled, existing price
@@ -643,15 +673,20 @@ class WorkspaceEditor extends SessionStateComponent<
     type === EvaluationEnum.EVALUATION_IMPROVED;
 
   /**
-   * hasGradedEvaluations
+   * Check if evaluation is graded
    * @returns boolean if there is previously graded evaluations
    */
   hasGradedEvaluations = () => {
     const { evaluationAssessmentEvents } = this.props.evaluations;
+    const { workspaceSubjectToBeEvaluatedIdentifier } = this.props;
 
     if (evaluationAssessmentEvents.data) {
       for (const event of evaluationAssessmentEvents.data) {
-        if (this.isGraded(event.type)) {
+        if (
+          event.workspaceSubjectIdentifier ===
+            workspaceSubjectToBeEvaluatedIdentifier &&
+          this.isGraded(event.type)
+        ) {
           return true;
         }
       }
@@ -669,7 +704,7 @@ class WorkspaceEditor extends SessionStateComponent<
    * @returns Array of price options
    */
   parsePriceOptions = (): EvaluationPriceObject[] | undefined => {
-    const { i18n, type } = this.props;
+    const { i18n, type, workspaceSubjectToBeEvaluatedIdentifier } = this.props;
     const { evaluationAssessmentEvents } = this.props.evaluations;
     let { basePriceFromServer } = this.state;
 
@@ -680,10 +715,11 @@ class WorkspaceEditor extends SessionStateComponent<
     /**
      * We want to get latest event data
      */
-    let latestEvent =
-      evaluationAssessmentEvents.data[
-        evaluationAssessmentEvents.data.length - 1
-      ];
+    let latestEvent = evaluationAssessmentEvents.data.find(
+      (event) =>
+        event.workspaceSubjectIdentifier ===
+        workspaceSubjectToBeEvaluatedIdentifier
+    );
 
     /**
      * If editing existing event, we need to find that specific event from event list by its' id
@@ -782,7 +818,7 @@ class WorkspaceEditor extends SessionStateComponent<
   };
 
   /**
-   * renderSelectOptions
+   * Creates select options
    * @returns List of options
    */
   renderSelectOptions = (): JSX.Element[] | undefined => {
@@ -813,16 +849,49 @@ class WorkspaceEditor extends SessionStateComponent<
     const billingPriceDisabled =
       existingBilledPriceObject && !existingBilledPriceObject.editable;
 
+    /**
+     * Grading scale and grade options.
+     */
     const renderGradingOptions =
-      this.props.evaluations.evaluationGradeSystem.map((gScale) => (
-        <optgroup key={`${gScale.dataSource}-${gScale.id}`} label={gScale.name}>
-          {gScale.grades.map((grade) => (
-            <option key={grade.id} value={`${gScale.dataSource}-${grade.id}`}>
+      this.props.evaluations.evaluationGradeSystem.map(
+        (gScale) =>
+          gScale.active && (
+            <optgroup
+              key={`${gScale.dataSource}-${gScale.id}`}
+              label={gScale.name}
+            >
+              {gScale.grades.map((grade) => (
+                <option
+                  key={grade.id}
+                  value={`${gScale.dataSource}-${grade.id}`}
+                >
+                  {grade.name}
+                </option>
+              ))}
+            </optgroup>
+          )
+      );
+
+    // IF evaluation uses some unknown grade system that is not normally showed, then we add it to options also
+    if (this.unknownGradeSystemIsUsed) {
+      const missingOption = (
+        <optgroup
+          key={`${this.unknownGradeSystemIsUsed.dataSource}-${this.unknownGradeSystemIsUsed.id}`}
+          label={this.unknownGradeSystemIsUsed.name}
+        >
+          {this.unknownGradeSystemIsUsed.grades.map((grade) => (
+            <option
+              key={grade.id}
+              value={`${this.unknownGradeSystemIsUsed.dataSource}-${grade.id}`}
+            >
               {grade.name}
             </option>
           ))}
         </optgroup>
-      ));
+      );
+
+      renderGradingOptions.push(missingOption);
+    }
 
     return (
       <>
@@ -878,7 +947,7 @@ class WorkspaceEditor extends SessionStateComponent<
             </label>
             <select
               id="workspaceEvaluationBilling"
-              className=" form-element__select form-element__select--evaluation"
+              className="form-element__select form-element__select--evaluation"
               onChange={this.handleSelectPriceChange}
               value={this.state.selectedPriceOption}
               disabled={billingPriceDisabled}

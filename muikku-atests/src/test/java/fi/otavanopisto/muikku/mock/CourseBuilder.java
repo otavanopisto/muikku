@@ -2,6 +2,7 @@ package fi.otavanopisto.muikku.mock;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -9,6 +10,10 @@ import java.util.Set;
 import com.google.common.base.Strings;
 
 import fi.otavanopisto.pyramus.rest.model.Course;
+import fi.otavanopisto.pyramus.rest.model.CourseLength;
+import fi.otavanopisto.pyramus.rest.model.CourseModule;
+import fi.otavanopisto.pyramus.rest.model.EducationalTimeUnit;
+import fi.otavanopisto.pyramus.rest.model.Subject;
 
 public class CourseBuilder {
 
@@ -53,10 +58,22 @@ public class CourseBuilder {
     if(Strings.isNullOrEmpty(name) || id == null || Strings.isNullOrEmpty(description))
       throw new Exception("Class is missing required property(ies).");
     
-    return new Course(id, name, created, lastModified, description, archived, courseNumber, maxParticipantCount, beginDate,
+    Set<CourseModule> courseModules = new HashSet<>();
+    Subject subject = new Subject(subjectId, null, null, null, null);
+    EducationalTimeUnit unit = new EducationalTimeUnit(lengthUnitId, null, null, null, null);
+    CourseLength courseLength = new CourseLength(id, 1d, length, unit);
+    courseModules.add(new CourseModule(
+        id,                             // id
+        subject,                        // subject
+        courseNumber,                   // courseNumber 
+        courseLength                    // courseLength
+      )
+    );
+    
+    return new Course(id, name, created, lastModified, description, archived, maxParticipantCount, beginDate,
         endDate, nameExtension, localTeachingDays, teachingHours, distanceTeachingHours, distanceTeachingDays,
-        assessingHours, planningHours, enrolmentTimeEnd, creatorId, lastModifierId, subjectId, curriculumIds, length,
-        lengthUnitId, moduleId, stateId, typeId, variables, tags, organizationId, courseTemplate, primaryEducationTypeId, primaryEducationSubtypeId);
+        assessingHours, planningHours, enrolmentTimeEnd, creatorId, lastModifierId, curriculumIds, 
+        moduleId, stateId, typeId, variables, tags, organizationId, courseTemplate, primaryEducationTypeId, primaryEducationSubtypeId, courseModules);
   }
 
   public CourseBuilder name(String name)
