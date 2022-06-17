@@ -59,10 +59,12 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
+import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
 import fi.otavanopisto.muikku.search.CommunicatorMessageSearchBuilder;
 import fi.otavanopisto.muikku.search.IndexedCommunicatorMessage;
 import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageRecipient;
 import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageSender;
+import fi.otavanopisto.muikku.search.IndexedUser;
 import fi.otavanopisto.muikku.search.IndexedWorkspace;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
@@ -74,10 +76,10 @@ import fi.otavanopisto.muikku.session.SessionController;
 @ApplicationScoped
 public class ElasticSearchProvider implements SearchProvider {
   
-  public static final String MUIKKU_COMMUNICATORMESSAGE_INDEX = "muikku_communicatormessage";
-  public static final String MUIKKU_USER_INDEX = "muikku_user";
-  public static final String MUIKKU_USERGROUP_INDEX = "muikku_usergroup";
-  public static final String MUIKKU_WORKSPACE_INDEX = "muikku_workspace";
+  public static final String MUIKKU_COMMUNICATORMESSAGE_INDEX = IndexedCommunicatorMessage.INDEX_NAME;
+  public static final String MUIKKU_USER_INDEX = IndexedUser.INDEX_NAME;
+  public static final String MUIKKU_USERGROUP_INDEX = UserGroup.INDEX_NAME;
+  public static final String MUIKKU_WORKSPACE_INDEX = IndexedWorkspace.INDEX_NAME;
   
   @Inject
   private Logger logger;

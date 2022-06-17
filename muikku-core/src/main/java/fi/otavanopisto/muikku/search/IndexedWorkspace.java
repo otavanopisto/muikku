@@ -108,7 +108,7 @@ import fi.otavanopisto.muikku.search.annotations.IndexableSubObject;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class IndexedWorkspace {
 
-  public static final String INDEX_NAME = "muikku_workspaces";
+  public static final String INDEX_NAME = "muikku_workspace";
   public static final String TYPE_NAME = "Workspace";
   
   @IndexId
