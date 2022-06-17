@@ -14,6 +14,7 @@ import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -43,6 +44,7 @@ import org.elasticsearch.common.document.DocumentField;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.IdsQueryBuilder;
 import org.elasticsearch.index.query.Operator;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
@@ -92,13 +94,6 @@ public class ElasticSearchProvider implements SearchProvider {
   
   @Override
   public void init() {
-//    String clusterName = pluginSettingsController.getPluginSetting("elastic-search", "clusterName");
-//    if (clusterName == null) {
-//      clusterName = System.getProperty("elasticsearch.cluster.name");
-//    }
-//    if (clusterName == null) {
-//      clusterName = "elasticsearch";
-//    }
     String portNumberProperty = System.getProperty("elasticsearch.node.port");
     int portNumber;
     if (portNumberProperty != null) {
@@ -108,19 +103,7 @@ public class ElasticSearchProvider implements SearchProvider {
     }
 
     elasticClient = new RestHighLevelClient(
-        RestClient.builder(
-                new HttpHost("localhost", portNumber, "http")));    
-    
-//    Settings settings = Settings.settingsBuilder()
-//        .put("cluster.name", clusterName).build();
-//    try {
-//      elasticClient = TransportClient.builder().settings(settings).build()
-//          .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("127.0.0.1"), portNumber));
-//    } catch (UnknownHostException e) {
-//      logger.log(Level.SEVERE, "Failed to connect to elasticsearch cluster", e);
-//      return;
-//    }
-    
+        RestClient.builder(new HttpHost("localhost", portNumber, "http")));    
   }
   
   @Override
@@ -128,10 +111,8 @@ public class ElasticSearchProvider implements SearchProvider {
     try {
       elasticClient.close();
     } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      logger.log(Level.SEVERE, "Failed to shutdown elastic connection.", e);
     }
-    //node.close();
   }
   
   private String sanitizeSearchString(String query) {
@@ -153,71 +134,65 @@ public class ElasticSearchProvider implements SearchProvider {
     return ret;
   }
 
-//  private static SearchRequest searchRequest(String index, QueryBuilder query) {
-//    SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-//    searchSourceBuilder.query(query);
-//    
-//    SearchRequest searchRequest = Requests.searchRequest(index);
-//    searchRequest.source(searchSourceBuilder);
-//    
-//    return searchRequest;
-//  }
-//
-//  private static SearchRequest searchRequest(String index, QueryBuilder query, int from, int numberOfHits) {
-//    SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder()
-//        .query(query)
-//        .from(from)
-//        .size(numberOfHits);
-//    
-//    SearchRequest searchRequest = Requests.searchRequest(index);
-//    searchRequest.source(searchSourceBuilder);
-//    
-//    return searchRequest;
-//  }
+  /**
+   * Shortcut to run a search with elasticClient when searchSourceBuilder needs to be modified (f.ex. sorts).
+   */
+  private SearchResponse searchRequest(String index, SearchSourceBuilder searchSourceBuilder) throws IOException {
+    SearchRequest searchRequest = Requests.searchRequest(index);
+    searchRequest.source(searchSourceBuilder);
 
-  @Override
-  public SearchResult findWorkspace(SchoolDataIdentifier identifier) {
-    
-//    GetRequest getRequest = Requests.getRequest(MUIKKU_WORKSPACE_INDEX);
-//    getRequest.id()
-    
-    BoolQueryBuilder query = boolQuery().must(termQuery("identifier", identifier.getIdentifier()));
+    return elasticClient.search(searchRequest, RequestOptions.DEFAULT);
+  }
 
-    // Elastic Search API block
-    
+  /**
+   * Shortcut for the most basic search - search with given query from given index
+   */
+  private SearchResponse searchRequest(String index, QueryBuilder query) throws IOException {
     SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder()
         .query(query);
 
-    SearchRequest searchRequest = Requests.searchRequest(MUIKKU_WORKSPACE_INDEX);
-    searchRequest.source(searchSourceBuilder);
-    
-    SearchResponse response;
-    try {
-      response = elasticClient.search(searchRequest, RequestOptions.DEFAULT);
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-      throw new RuntimeException("KÄÄK");
-    }
-    
-    // Elastic Search API block
+    return searchRequest(index, searchSourceBuilder);
+  }
 
-    List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
-    SearchHits searchHits = response.getHits();
-    long totalHitCount = searchHits.getTotalHits().value;
-    SearchHit[] results = searchHits.getHits();
-    for (SearchHit hit : results) {
-      Map<String, Object> hitSource = hit.getSourceAsMap();
-      if (hitSource == null){
-        hitSource = new HashMap<>();
-        for(String key : hit.getFields().keySet()){
-          hitSource.put(key, hit.getFields().get(key).getValue().toString());
+  /**
+   * Shortcut for search with given query from given index with paging parameters.
+   */
+  private SearchResponse searchRequest(String index, QueryBuilder query, int from, int size) throws IOException {
+    SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder()
+        .query(query)
+        .from(from)
+        .size(size);
+    
+    return searchRequest(index, searchSourceBuilder);
+  }
+
+  @Override
+  public SearchResult findWorkspace(SchoolDataIdentifier identifier) {
+    BoolQueryBuilder query = boolQuery().must(termQuery("identifier", identifier.getIdentifier()));
+
+    try {
+      SearchResponse response = searchRequest(MUIKKU_WORKSPACE_INDEX, query);
+
+      List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
+      SearchHits searchHits = response.getHits();
+      long totalHitCount = searchHits.getTotalHits().value;
+      SearchHit[] results = searchHits.getHits();
+      for (SearchHit hit : results) {
+        Map<String, Object> hitSource = hit.getSourceAsMap();
+        if (hitSource == null){
+          hitSource = new HashMap<>();
+          for(String key : hit.getFields().keySet()){
+            hitSource.put(key, hit.getFields().get(key).getValue().toString());
+          }
         }
+        hitSource.put("indexType", "Workspace");
+        searchResults.add(hitSource);
       }
-      hitSource.put("indexType", "Workspace");
-      searchResults.add(hitSource);
+      return new SearchResult(0, searchResults, totalHitCount);
+    } catch (IOException e) {
+      logger.log(Level.SEVERE, String.format("Workspace not found with identifier %s.", identifier), e);
+      return new SearchResult(0, new ArrayList<Map<String, Object>>(), 0);
     }
-    return new SearchResult(0, searchResults, totalHitCount);
   }
   
   @Override
@@ -234,49 +209,29 @@ public class ElasticSearchProvider implements SearchProvider {
     includeIdsQuery.addIds(String.format("%s/%s", identifier.getIdentifier(), identifier.getDataSource()));
     query.must(includeIdsQuery);
     
-//    // Search
-//    
-//    SearchRequest searchRequest = searchRequest(MUIKKU_USER_INDEX, query);
-//    
-//    // Results processing
-//
-//    SearchResponse response = elasticClient.search(searchRequest, RequestOptions.DEFAULT);
-
-    // Elastic Search API block
-    
-    SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder()
-        .query(query);
-
-    SearchRequest searchRequest = Requests.searchRequest(MUIKKU_USER_INDEX);
-    searchRequest.source(searchSourceBuilder);
-    
-    SearchResponse response;
     try {
-      response = elasticClient.search(searchRequest, RequestOptions.DEFAULT);
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-      throw new RuntimeException("KÄÄK");
-    }
-    
-    // Elastic Search API block
+      SearchResponse response = searchRequest(MUIKKU_USER_INDEX, query);
 
-    List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
-    SearchHits searchHits = response.getHits();
-    long totalHitCount = searchHits.getTotalHits().value;
-    SearchHit[] results = searchHits.getHits();
-    for (SearchHit hit : results) {
-      Map<String, Object> hitSource = hit.getSourceAsMap();
-      if(hitSource == null){
-        hitSource = new HashMap<>();
-        for(String key : hit.getFields().keySet()){
-          hitSource.put(key, hit.getFields().get(key).getValue().toString());
+      List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
+      SearchHits searchHits = response.getHits();
+      long totalHitCount = searchHits.getTotalHits().value;
+      SearchHit[] results = searchHits.getHits();
+      for (SearchHit hit : results) {
+        Map<String, Object> hitSource = hit.getSourceAsMap();
+        if(hitSource == null){
+          hitSource = new HashMap<>();
+          for(String key : hit.getFields().keySet()){
+            hitSource.put(key, hit.getFields().get(key).getValue().toString());
+          }
         }
+        hitSource.put("indexType", "User");
+        searchResults.add(hitSource);
       }
-      hitSource.put("indexType", "User");
-      searchResults.add(hitSource);
+      return new SearchResult(0, searchResults, totalHitCount);
+    } catch (IOException e) {
+      logger.log(Level.SEVERE, String.format("User not found by identifier %s.", identifier), e);
+      return new SearchResult(0, Collections.emptyList(), 0);
     }
-    return new SearchResult(0, searchResults, totalHitCount);
   }
 
   @Override
@@ -415,8 +370,6 @@ public class ElasticSearchProvider implements SearchProvider {
         );
       }
             
-      // Elastic Search API block
-      
       SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder()
           .query(query)
           .from(start)
@@ -429,13 +382,8 @@ public class ElasticSearchProvider implements SearchProvider {
         fields.forEach(field -> searchSourceBuilder.fetchField(field)); // TODO Stored vs docfield vs fetchfield?
       }
       
-      SearchRequest searchRequest = Requests.searchRequest(MUIKKU_USER_INDEX);
-      searchRequest.source(searchSourceBuilder);
+      SearchResponse response = searchRequest(MUIKKU_USER_INDEX, searchSourceBuilder);
       
-      SearchResponse response = elasticClient.search(searchRequest, RequestOptions.DEFAULT);
-      
-      // Elastic Search API block
-
       List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
       SearchHits searchHits = response.getHits();
       long totalHitCount = searchHits.getTotalHits().value;
@@ -506,42 +454,33 @@ public class ElasticSearchProvider implements SearchProvider {
         )
     );
 
-    // Elastic Search API block
-    
-    // TODO: to list all, use Scroll API
+    // TODO: this very likely needs to use Scroll API
     
     SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder()
         .query(query)
-        .fetchSource(false)       // Previously .setNoFields()
-        .size(10000); // Integer.MAX_VALUE
+        .fetchSource(false)
+        .size(10000);
 
-    SearchRequest searchRequest = Requests.searchRequest(MUIKKU_WORKSPACE_INDEX);
-    searchRequest.source(searchSourceBuilder);
-    
-    SearchResponse response;
     try {
-      response = elasticClient.search(searchRequest, RequestOptions.DEFAULT);
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-      throw new RuntimeException("KÄÄK");
-    }
-    
-    // Elastic Search API block
-    
-    SearchHit[] hits = response.getHits().getHits();
-    Set<SchoolDataIdentifier> identifiers = new HashSet<>();
-    
-    for (SearchHit hit : hits) {
-      String[] id = hit.getId().split("/", 2);
-      if (id.length == 2) {
-        String dataSource = id[1];
-        String identifier = id[0];
-        identifiers.add(new SchoolDataIdentifier(identifier, dataSource));
+      SearchResponse response = searchRequest(MUIKKU_WORKSPACE_INDEX, searchSourceBuilder);
+
+      SearchHit[] hits = response.getHits().getHits();
+      Set<SchoolDataIdentifier> identifiers = new HashSet<>();
+      
+      for (SearchHit hit : hits) {
+        String[] id = hit.getId().split("/", 2);
+        if (id.length == 2) {
+          String dataSource = id[1];
+          String identifier = id[0];
+          identifiers.add(new SchoolDataIdentifier(identifier, dataSource));
+        }
       }
+      
+      return workspaceEntityController.findWorkspaceEntityIdsByIdentifiers(identifiers);
+    } catch (IOException e) {
+      logger.log(Level.SEVERE, "Failed to fetch active workspaces.", e);
+      return Collections.emptySet();
     }
-    
-    return workspaceEntityController.findWorkspaceEntityIdsByIdentifiers(identifiers);
   }
 
   @Override
@@ -552,39 +491,24 @@ public class ElasticSearchProvider implements SearchProvider {
     query.must(termQuery("subjects.courseNumber", courseNumber));
     // query.must(termQuery("access", WorkspaceAccess.LOGGED_IN));
     
-    // Elastic Search API block
-    
-    SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder()
-        .query(query)
-        .from(0)
-        .size(50);
-
-    SearchRequest searchRequest = Requests.searchRequest(MUIKKU_USER_INDEX);
-    searchRequest.source(searchSourceBuilder);
-    
-    SearchResponse response;
     try {
-      response = elasticClient.search(searchRequest, RequestOptions.DEFAULT);
+      SearchResponse response = searchRequest(MUIKKU_WORKSPACE_INDEX, query, 0, 50);
+      
+      List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
+      SearchHits searchHits = response.getHits();
+      SearchHit[] results = searchHits.getHits();
+      long totalHits = searchHits.getTotalHits().value;
+      for (SearchHit hit : results) {
+        Map<String, Object> hitSource = hit.getSourceAsMap();
+        hitSource.put("indexType", "Workspace");
+        searchResults.add(hitSource);
+      }
+      
+      return new SearchResult(0, searchResults, totalHits);
     } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-      throw new RuntimeException("KÄÄK");
+      logger.log(Level.SEVERE, String.format("Failed to search workspaces for subject %s.", subjectIdentifier), e);
+      return new SearchResult(0, Collections.emptyList(), 0);
     }
-    
-    // Elastic Search API block
-    
-    List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
-    SearchHits searchHits = response.getHits();
-    SearchHit[] results = searchHits.getHits();
-    long totalHits = searchHits.getTotalHits().value;
-    for (SearchHit hit : results) {
-      Map<String, Object> hitSource = hit.getSourceAsMap();
-      hitSource.put("indexType", "Workspace");
-      searchResults.add(hitSource);
-    }
-    
-    SearchResult result = new SearchResult(0, searchResults, totalHits);
-    return result;
   }
   
   private BoolQueryBuilder prepareWorkspaceSearchQuery(
@@ -611,7 +535,7 @@ public class ElasticSearchProvider implements SearchProvider {
           break;
           case MEMBERS_ONLY:
             BoolQueryBuilder memberQuery = boolQuery();
-            IdsQueryBuilder idsQuery = idsQuery(IndexedWorkspace.INDEX_NAME);
+            IdsQueryBuilder idsQuery = idsQuery();
             for (SchoolDataIdentifier userWorkspace : getUserWorkspaces(accessUser)) {
               idsQuery.addIds(String.format("%s/%s", userWorkspace.getIdentifier(), userWorkspace.getDataSource()));
             }
@@ -702,189 +626,6 @@ public class ElasticSearchProvider implements SearchProvider {
     return query;
   }
 
-//  private BoolQueryBuilder prepareWorkspaceSearchQuery(
-//      List<SchoolDataIdentifier> subjects, 
-//      List<SchoolDataIdentifier> identifiers, 
-//      List<SchoolDataIdentifier> educationTypes, 
-//      List<SchoolDataIdentifier> curriculumIdentifiers, 
-//      Collection<OrganizationRestriction> organizationRestrictions,
-//      String freeText, 
-//      Collection<WorkspaceAccess> accesses, 
-//      SchoolDataIdentifier accessUser) {
-//    
-//    BoolQueryBuilder query = boolQuery();
-//    
-//    freeText = sanitizeSearchString(freeText);
-//
-//    try {
-//      
-//      if (accesses != null) {
-//        BoolQueryBuilder accessQuery = boolQuery();
-//        for (WorkspaceAccess access : accesses) {
-//          switch (access) {
-//            case LOGGED_IN:  
-//            case ANYONE:
-//              accessQuery.should(termQuery("access", access));
-//            break;
-//            case MEMBERS_ONLY:
-//              BoolQueryBuilder memberQuery = boolQuery();
-//              IdsQueryBuilder idsQuery = idsQuery();
-//              for (SchoolDataIdentifier userWorkspace : getUserWorkspaces(accessUser)) {
-//                idsQuery.addIds(String.format("%s/%s", userWorkspace.getIdentifier(), userWorkspace.getDataSource()));
-//              }
-//              memberQuery.must(idsQuery);
-//              memberQuery.must(termQuery("access", access));
-//              accessQuery.should(memberQuery);
-//            break;
-//          }
-//        }
-//        query.must(accessQuery);
-//      }
-//      
-//      if (StringUtils.isNotBlank(schoolDataSource)) {
-//        query.must(termQuery("schoolDataSource", schoolDataSource.toLowerCase()));
-//      }
-//      
-//      if (subjects != null && !subjects.isEmpty()) {
-//        query.must(termsQuery("subjectIdentifier", subjects));
-//      }
-//      
-//      if (educationTypes != null && !educationTypes.isEmpty()) {
-//        List<String> educationTypeIds = new ArrayList<>(educationTypes.size());
-//        for (SchoolDataIdentifier educationType : educationTypes) {
-//          educationTypeIds.add(educationType.toId());
-//        }
-//      }
-//      query.must(accessQuery);
-//    }
-//    
-//    if (CollectionUtils.isNotEmpty(subjects)) {
-//      List<String> subjectIds = subjects.stream().map(SchoolDataIdentifier::toId).collect(Collectors.toList());
-//      query.must(termsQuery("subjects.subjectIdentifier.untouched", subjectIds));
-//    }
-//    
-//    if (CollectionUtils.isNotEmpty(educationTypes)) {
-//      List<String> educationTypeIds = educationTypes.stream().map(SchoolDataIdentifier::toId).collect(Collectors.toList());
-//      query.must(termsQuery("educationTypeIdentifier.untouched", educationTypeIds));
-//    }
-//
-//    if (CollectionUtils.isNotEmpty(curriculumIdentifiers)) {
-//      List<String> curriculumIds = curriculumIdentifiers.stream().map(SchoolDataIdentifier::toId).collect(Collectors.toList());
-//      query.must(boolQuery()
-//          .should(termsQuery("curriculumIdentifiers.untouched", curriculumIds))
-//          .should(boolQuery().mustNot(existsQuery("curriculumIdentifiers")))
-//          .minimumNumberShouldMatch(1));
-//    }
-//
-////<<<<<<< HEAD
-////        query.must(boolQuery()
-////            .should(termsQuery("curriculumIdentifiers.untouched", curriculumIds))
-////            .should(boolQuery().mustNot(existsQuery("curriculumIdentifiers")))
-////            .minimumShouldMatch(1));
-////      }
-////=======
-//    BoolQueryBuilder organizationQuery = boolQuery();
-//    
-//    for (OrganizationRestriction organizationRestriction : organizationRestrictions) {
-//      SchoolDataIdentifier organizationIdentifier = organizationRestriction.getOrganizationIdentifier();
-////>>>>>>> devel
-//
-//      BoolQueryBuilder organizationRestrictionQuery = boolQuery().must(termQuery("organizationIdentifier.untouched", organizationIdentifier.toId()));
-//      
-//      switch (organizationRestriction.getPublicityRestriction()) {
-//        case ONLY_PUBLISHED:
-//          organizationRestrictionQuery = organizationRestrictionQuery.must(termQuery("published", Boolean.TRUE));
-//        break;
-//        case ONLY_UNPUBLISHED:
-//          organizationRestrictionQuery = organizationRestrictionQuery.must(termQuery("published", Boolean.FALSE));
-//        break;
-//        case LIST_ALL:
-//        break;
-//      }
-//      
-////<<<<<<< HEAD
-////      query.must(organizationQuery.minimumShouldMatch(1));
-////      
-////      if (identifiers != null) {
-////        query.must(termsQuery("identifier", identifiers));
-////=======
-//      switch (organizationRestriction.getTemplateRestriction()) {
-//        case ONLY_WORKSPACES:
-//          organizationRestrictionQuery.must(termQuery("isTemplate", Boolean.FALSE));
-//        break;
-//        case ONLY_TEMPLATES:
-//          organizationRestrictionQuery.must(termQuery("isTemplate", Boolean.TRUE));
-//        break;
-//        case LIST_ALL:
-//          // No restrictions
-//        break;
-////>>>>>>> devel
-//      }
-//      
-//      organizationQuery.should(organizationRestrictionQuery);
-//    }
-//    
-//    query.must(organizationQuery.minimumNumberShouldMatch(1));
-//    
-//    if (identifiers != null) {
-//      List<String> identifiersStrList = identifiers.stream()
-//          .map(SchoolDataIdentifier::toId)
-//          .collect(Collectors.toList());
-//      query.must(termsQuery("identifier.untouched", identifiersStrList));
-//    }
-//
-//    if (StringUtils.isNotBlank(freeText)) {
-//      String[] words = freeText.split(" ");
-//      for (int i = 0; i < words.length; i++) {
-//        if (StringUtils.isNotBlank(words[i])) {
-//          query.must(boolQuery()
-//              .should(prefixQuery("name", words[i]))
-//              .should(prefixQuery("description", words[i]))
-//              .should(prefixQuery("subjects.subjectName", words[i]))
-//              .should(prefixQuery("staffMembers.firstName", words[i]))
-//              .should(prefixQuery("staffMembers.lastName", words[i]))
-//              );
-//        }
-//      }
-////<<<<<<< HEAD
-////
-////      // Elastic Search API block
-////      
-////      SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder()
-////          .query(query)
-////          .from(start)
-////          .size(maxResults);
-////
-////      if (CollectionUtils.isNotEmpty(sorts)) {
-////        sorts.forEach(sort -> searchSourceBuilder.sort(sort.getField(), SortOrder.valueOf(sort.getOrder().name())));
-////      }
-////      
-////      SearchRequest searchRequest = Requests.searchRequest(MUIKKU_WORKSPACE_INDEX);
-////      searchRequest.source(searchSourceBuilder);
-////      
-////      SearchResponse response = elasticClient.search(searchRequest, RequestOptions.DEFAULT);
-////      
-////      // Elastic Search API block
-////
-//////      SearchRequestBuilder requestBuilder = elasticClient
-//////        .prepareSearch(MUIKKU_WORKSPACE_INDEX)
-////////        .setTypes("Workspace")
-//////        .setFrom(start)
-//////        .setSize(maxResults);
-//////      
-//////      if (sorts != null && !sorts.isEmpty()) {
-//////        for (Sort sort : sorts) {
-//////          requestBuilder.addSort(sort.getField(), SortOrder.valueOf(sort.getOrder().name()));
-//////        }
-//////      }
-//////      
-//////      SearchResponse response = requestBuilder.setQuery(query).execute().actionGet();
-////=======
-//    }
-//
-//    return query;
-//  }
-    
   @Override
   public SearchResult searchWorkspaces(
       List<SchoolDataIdentifier> subjects, 
@@ -906,8 +647,6 @@ public class ElasticSearchProvider implements SearchProvider {
     BoolQueryBuilder query = prepareWorkspaceSearchQuery(subjects, identifiers, educationTypes, curriculumIdentifiers, organizationRestrictions, freeText, accesses, accessUser);
 
     try {
-      // Elastic Search API block
-      
       SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder()
           .query(query)
           .from(start)
@@ -919,13 +658,8 @@ public class ElasticSearchProvider implements SearchProvider {
         }
       }
 
-      SearchRequest searchRequest = Requests.searchRequest(IndexedWorkspace.INDEX_NAME);
-      searchRequest.source(searchSourceBuilder);
+      SearchResponse response = searchRequest(MUIKKU_WORKSPACE_INDEX, searchSourceBuilder);
       
-      SearchResponse response = elasticClient.search(searchRequest, RequestOptions.DEFAULT);
-      
-      // Elastic Search API block
-
       List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
       SearchHits searchHits = response.getHits();
       long totalHitCount = searchHits.getTotalHits().value;
@@ -965,8 +699,6 @@ public class ElasticSearchProvider implements SearchProvider {
     try {
       BoolQueryBuilder query = prepareWorkspaceSearchQuery(subjects, identifiers, educationTypes, curriculumIdentifiers, organizationRestrictions, freeText, accesses, accessUser);
 
-      // Elastic Search API block
-      
       SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder()
           .query(query)
           .from(start)
@@ -978,12 +710,7 @@ public class ElasticSearchProvider implements SearchProvider {
         }
       }
 
-      SearchRequest searchRequest = Requests.searchRequest(IndexedWorkspace.INDEX_NAME);
-      searchRequest.source(searchSourceBuilder);
-      
-      SearchResponse response = elasticClient.search(searchRequest, RequestOptions.DEFAULT);
-      
-      // Elastic Search API block
+      SearchResponse response = searchRequest(MUIKKU_WORKSPACE_INDEX, searchSourceBuilder);
       
       SearchHits searchHits = response.getHits();
       long totalHitCount = searchHits.getTotalHits().value;
@@ -1024,45 +751,36 @@ public class ElasticSearchProvider implements SearchProvider {
     IdsQueryBuilder query = idsQuery();
     query.addIds(String.format("%s/%s", userIdentifier.getIdentifier(), userIdentifier.getDataSource()));
 
-    // Elastic Search API block
-    
     SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder()
         .query(query)
         .fetchField("workspaces") // fetch/stored/docvalue?
         .size(1);
 
-    SearchRequest searchRequest = Requests.searchRequest(MUIKKU_USER_INDEX);
-    searchRequest.source(searchSourceBuilder);
-    
-    SearchResponse response;
     try {
-      response = elasticClient.search(searchRequest, RequestOptions.DEFAULT);
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-      throw new RuntimeException("KÄÄK");
-    }
-    
-    // Elastic Search API block
+      SearchResponse response = searchRequest(MUIKKU_USER_INDEX, searchSourceBuilder);
 
-    SearchHit[] hits = response.getHits().getHits();
-    for (SearchHit hit : hits) {
-      Map<String, DocumentField> fields = hit.getFields();
-      DocumentField workspaceField = fields.get("workspaces");
-      if (workspaceField != null && workspaceField.getValues() != null) {
-        for (Object value : workspaceField.getValues()) {
-          if (value instanceof Number) {
-            Long workspaceEntityId = ((Number) value).longValue();
-            WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
-            if (workspaceEntity != null) {
-              result.add(workspaceEntity.schoolDataIdentifier());
+      SearchHit[] hits = response.getHits().getHits();
+      for (SearchHit hit : hits) {
+        Map<String, DocumentField> fields = hit.getFields();
+        DocumentField workspaceField = fields.get("workspaces");
+        if (workspaceField != null && workspaceField.getValues() != null) {
+          for (Object value : workspaceField.getValues()) {
+            if (value instanceof Number) {
+              Long workspaceEntityId = ((Number) value).longValue();
+              WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+              if (workspaceEntity != null) {
+                result.add(workspaceEntity.schoolDataIdentifier());
+              }
             }
           }
         }
       }
+      
+      return result;
+    } catch (IOException e) {
+      logger.log(Level.SEVERE, String.format("Failed to fetch workspaces for user %s.", userIdentifier));
+      return null;
     }
-    
-    return result;
   }
   
   @Override
@@ -1076,49 +794,39 @@ public class ElasticSearchProvider implements SearchProvider {
       throw new IllegalArgumentException();
     }
     
-    IdsQueryBuilder query = idsQuery(IndexedCommunicatorMessage.TYPE_NAME);
+    IdsQueryBuilder query = idsQuery();
     query.addIds(String.valueOf(communicatorMessageId));
-    
-    // Elastic Search API block
     
     SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder()
         .query(query)
         .size(1);
 
-    SearchRequest searchRequest = Requests.searchRequest(MUIKKU_COMMUNICATORMESSAGE_INDEX);
-    searchRequest.source(searchSourceBuilder);
-    
-    SearchResponse response;
     try {
-      response = elasticClient.search(searchRequest, RequestOptions.DEFAULT);
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-      throw new RuntimeException("KÄÄK");
-    }
-    
-    // Elastic Search API block
-    
-    SearchHit[] results = response.getHits().getHits();
+      SearchResponse response = searchRequest(MUIKKU_COMMUNICATORMESSAGE_INDEX, searchSourceBuilder);
 
-    // Technically never possible, but check anyways for errors
-    if (results.length > 1) {
-      logger.log(Level.SEVERE, String.format("Found multiple messages (id: %d)", communicatorMessageId));
-      return null;
-    }
+      SearchHit[] results = response.getHits().getHits();
 
-    if (results.length == 1) {
-      SearchHit hit = results[0];
-      String source = hit.getSourceAsString();
-      try {
-        ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.readValue(source, IndexedCommunicatorMessage.class);
-      }
-      catch (Exception e) {
-        String documentId = hit != null ? hit.getId() : null;
-        logger.log(Level.SEVERE, String.format("Couldn't parse indexed communicator message (id: %s)", documentId), e);
+      // Technically never possible, but check anyways for errors
+      if (results.length > 1) {
+        logger.log(Level.SEVERE, String.format("Found multiple messages (id: %d)", communicatorMessageId));
         return null;
       }
+
+      if (results.length == 1) {
+        SearchHit hit = results[0];
+        String source = hit.getSourceAsString();
+        try {
+          ObjectMapper objectMapper = new ObjectMapper();
+          return objectMapper.readValue(source, IndexedCommunicatorMessage.class);
+        }
+        catch (Exception e) {
+          String documentId = hit != null ? hit.getId() : null;
+          logger.log(Level.SEVERE, String.format("Couldn't parse indexed communicator message (id: %s)", documentId), e);
+          return null;
+        }
+      }
+    } catch (IOException e) {
+      logger.log(Level.SEVERE, "ElasticSearch query failed unexpectedly", e);
     }
     
     return null;
@@ -1228,9 +936,6 @@ public class ElasticSearchProvider implements SearchProvider {
         .minimumShouldMatch(1));
     
     try {
-
-      // Elastic Search API block
-      
       SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder()
           .query(query)
           .from(start)
@@ -1240,13 +945,8 @@ public class ElasticSearchProvider implements SearchProvider {
         sorts.forEach(sort -> searchSourceBuilder.sort(sort.getField(), SortOrder.valueOf(sort.getOrder().name())));
       }
       
-      SearchRequest searchRequest = Requests.searchRequest(MUIKKU_COMMUNICATORMESSAGE_INDEX);
-      searchRequest.source(searchSourceBuilder);
+      SearchResponse response = searchRequest(MUIKKU_COMMUNICATORMESSAGE_INDEX, searchSourceBuilder);
       
-      SearchResponse response = elasticClient.search(searchRequest, RequestOptions.DEFAULT);
-      
-      // Elastic Search API block
-
       SearchHits searchHits = response.getHits();
       long totalHitCount = searchHits.getTotalHits().value;
       
@@ -1288,49 +988,35 @@ public class ElasticSearchProvider implements SearchProvider {
   public SearchResult findUserGroup(SchoolDataIdentifier identifier) {
     
     BoolQueryBuilder query = boolQuery();
-    IdsQueryBuilder includeIdsQuery = idsQuery("UserGroup");
+    IdsQueryBuilder includeIdsQuery = idsQuery();
     includeIdsQuery.addIds(String.format("%s/%s", identifier.getIdentifier(), identifier.getDataSource()));
     query.must(includeIdsQuery);
     
     // Search
     
-    // Elastic Search API block
-    
-    SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder()
-        .query(query);
-
-    SearchRequest searchRequest = Requests.searchRequest(MUIKKU_USERGROUP_INDEX);
-    searchRequest.source(searchSourceBuilder);
-    
-    SearchResponse response;
     try {
-      response = elasticClient.search(searchRequest, RequestOptions.DEFAULT);
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-      throw new RuntimeException("KÄÄK");
-    }
-    
-    // Elastic Search API block
-    
-    // Results processing
-    
-    List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
-    SearchHits searchHits = response.getHits();
-    long totalHitCount = searchHits.getTotalHits().value;
-    SearchHit[] results = searchHits.getHits();
-    for (SearchHit hit : results) {
-      Map<String, Object> hitSource = hit.getSourceAsMap();
-      if(hitSource == null){
-        hitSource = new HashMap<>();
-        for(String key : hit.getFields().keySet()){
-          hitSource.put(key, hit.getFields().get(key).getValue().toString());
+      SearchResponse response = searchRequest(MUIKKU_USERGROUP_INDEX, query);
+
+      List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
+      SearchHits searchHits = response.getHits();
+      long totalHitCount = searchHits.getTotalHits().value;
+      SearchHit[] results = searchHits.getHits();
+      for (SearchHit hit : results) {
+        Map<String, Object> hitSource = hit.getSourceAsMap();
+        if(hitSource == null){
+          hitSource = new HashMap<>();
+          for(String key : hit.getFields().keySet()){
+            hitSource.put(key, hit.getFields().get(key).getValue().toString());
+          }
         }
+        hitSource.put("indexType", "UserGroup");
+        searchResults.add(hitSource);
       }
-      hitSource.put("indexType", hit.getType());
-      searchResults.add(hitSource);
+      return new SearchResult(0, searchResults, totalHitCount);
+    } catch (IOException e) {
+      logger.log(Level.SEVERE, String.format("UserGroup not found by identifier %s.", identifier), e);
+      return new SearchResult(0, Collections.emptyList(), 0);
     }
-    return new SearchResult(0, searchResults, totalHitCount);
   }
 
   @Override
@@ -1365,20 +1051,8 @@ public class ElasticSearchProvider implements SearchProvider {
         boolQuery.must(termsQuery("organizationIdentifier", organizationIdentifiers.toArray()));
       }
 
-      // Elastic Search API block
+      SearchResponse response = searchRequest(MUIKKU_USERGROUP_INDEX, boolQuery, start, maxResults);
       
-      SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder()
-          .query(boolQuery)
-          .from(start)
-          .size(maxResults);
-
-      SearchRequest searchRequest = Requests.searchRequest(MUIKKU_USERGROUP_INDEX);
-      searchRequest.source(searchSourceBuilder);
-      
-      SearchResponse response = elasticClient.search(searchRequest, RequestOptions.DEFAULT);
-      
-      // Elastic Search API block
-
       List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
       SearchHits searchHits = response.getHits();
       long totalHitCount = searchHits.getTotalHits().value;
@@ -1430,15 +1104,7 @@ public class ElasticSearchProvider implements SearchProvider {
     );
 
     try {
-      SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder()
-          .query(query)
-          .from(0)
-          .size(1);
-  
-      SearchRequest searchRequest = Requests.searchRequest(MUIKKU_USER_INDEX);
-      searchRequest.source(searchSourceBuilder);
-      
-      SearchResponse response = elasticClient.search(searchRequest, RequestOptions.DEFAULT);
+      SearchResponse response = searchRequest(MUIKKU_USER_INDEX, query, 0, 1);
   
       return response.getHits().getTotalHits().value;
     } catch (Exception e) {
@@ -1478,15 +1144,7 @@ public class ElasticSearchProvider implements SearchProvider {
     );
 
     try {
-      SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder()
-          .query(query)
-          .from(0)
-          .size(1);
-  
-      SearchRequest searchRequest = Requests.searchRequest(MUIKKU_USER_INDEX);
-      searchRequest.source(searchSourceBuilder);
-      
-      SearchResponse response = elasticClient.search(searchRequest, RequestOptions.DEFAULT);
+      SearchResponse response = searchRequest(MUIKKU_USER_INDEX, query, 0, 1);
       
       return response.getHits().getTotalHits().value;
     } catch (Exception e) {
