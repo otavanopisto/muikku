@@ -101,6 +101,8 @@ async function loadWhoAMI(
         studyStartDate: whoAmI.studyStartDate,
         studyTimeEnd: whoAmI.studyTimeEnd,
         studyTimeLeftStr: whoAmI.studyTimeLeftStr,
+        studyProgrammeName: whoAmI.studyProgrammeName,
+        studyProgrammeIdentifier: whoAmI.studyProgrammeIdentifier,
         permissions: whoAmI.permissions,
       },
     },
