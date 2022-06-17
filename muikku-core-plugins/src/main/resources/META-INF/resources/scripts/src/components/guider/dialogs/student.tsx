@@ -28,6 +28,7 @@ import {
 import { getName } from "~/util/modifiers";
 import CompulsoryEducationHopsWizard from "../../general/hops-compulsory-education-wizard";
 import Button from "~/components/general/button";
+import { COMPULSORY_HOPS_VISIBLITY } from "../../general/hops-compulsory-education-wizard/index";
 
 export type tabs =
   | "STUDIES"
@@ -163,7 +164,9 @@ class StudentDialog extends React.Component<
       this.props.guider.currentStudent &&
       this.props.guider.currentStudent.basic &&
       this.props.guider.currentStudent.hopsAvailable &&
-      !this.props.guider.currentStudent.basic.matriculationEligibility
+      COMPULSORY_HOPS_VISIBLITY.includes(
+        this.props.guider.currentStudent.basic.studyProgrammeName
+      )
     )
       tabs.push({
         id: "HOPS",

@@ -36,6 +36,12 @@ import { Textarea } from "./text-area";
 import { StatusType } from "~/reducers/base/status";
 import EditHopsEventDescriptionDialog from "./dialogs/edit-hops-event-description-dialog";
 
+export const COMPULSORY_HOPS_VISIBLITY = [
+  "Nettiperuskoulu",
+  "Aikuisten perusopetuksen päättövaihe",
+  "Nettiperuskoulu/yksityisopiskelu",
+];
+
 /**
  * Total needed optional studies without modifiers to graduate
  */
