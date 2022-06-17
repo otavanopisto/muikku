@@ -588,7 +588,6 @@
 
 .button--contact-teacher {
   font-size: 0.75rem;
-  padding: 4px 12px;
 }
 
 .button--guider-hops-studytool {
@@ -1329,7 +1328,7 @@
 }
 
 // Buttons used in Material pages
-.button--muikku-check-exercises,
+.button--muikku-submit-exercise,
 .button--muikku-show-correct-answers-button,
 .button--muikku-submit-assignment,
 .button--muikku-withdraw-assignment,
@@ -1343,7 +1342,7 @@
   }
 }
 
-.button--muikku-check-exercises {
+.button--muikku-submit-exercise {
   background: $color-exercise;
 }
 
@@ -1935,6 +1934,13 @@
   margin: 0 5px;
 }
 
+.button--whatsapp-me {
+  background: linear-gradient($color-whatsapp-light, $color-whatsapp-dark);
+  color: $color-default;
+  font-size: 0.75rem;
+  margin: 0 0 0 10px;
+}
+
 .button-icon--evaluation {
   &.button-icon--excercise-drawer-close {
     color: $color-default-contrast;
@@ -1961,6 +1967,26 @@
     background-color: transparent;
     color: $color-disabled;
   }
+}
+
+.button-icon--whatsapp-me {
+  font-size: 1.75rem;
+  height: 1.75rem;
+  margin: 0 5px 0 0;
+  transition: 0.3s;
+  width: 1.75rem;
+
+  &:hover {
+    color: $color-whatsapp-light;
+  }
+}
+
+.button-icon--whatsapp-active {
+  color: $color-whatsapp-dark;
+}
+
+.button-icon--whatsapp-inactive {
+  color: $color-disabled;
 }
 
 .button--modify-hops {

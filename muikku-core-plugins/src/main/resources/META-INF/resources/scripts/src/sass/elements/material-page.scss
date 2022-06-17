@@ -1891,6 +1891,7 @@ mark[data-muikku-word-definition] {
 // MATERIAL PAGE FIELD ANSWER SYNCHRONIZER
 .material-page__field-answer-synchronizer {
   border-radius: 3px;
+  bottom: -20px;
   display: block;
   font-size: 0.8125rem;
   font-weight: 400;
@@ -1898,7 +1899,6 @@ mark[data-muikku-word-definition] {
   line-height: 1;
   padding: 5px;
   position: absolute;
-  top: -20px;
   transition: background-color 0.2s ease-in-out;
   white-space: nowrap;
   z-index: 2;
