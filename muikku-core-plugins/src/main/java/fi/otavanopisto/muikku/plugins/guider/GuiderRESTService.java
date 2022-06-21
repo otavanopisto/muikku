@@ -270,6 +270,8 @@ public class GuiderRESTService extends PluginRESTService {
       } else {
         userGroupFilters.addAll(accessibleUserGroupEntityIds);
       }
+      // Study guiders only have access to their groups' students, so even if group and workspace filters would
+      // be in effect, they are used to create an intersection result rather than a join result 
       joinGroupsAndWorkspaces = false;
     }
 
