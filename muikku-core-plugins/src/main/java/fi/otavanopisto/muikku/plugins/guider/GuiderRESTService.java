@@ -224,14 +224,14 @@ public class GuiderRESTService extends PluginRESTService {
     Set<Long> workspaceFilters = null;
 
     // #4585: By default, teachers should only see their own students
-    // #6170: Teachers and managers should only be able to see their own students (either via workspace or usergroup)
+    // #6170: Teachers should only be able to see their own students (either via workspace or usergroup)
     
     boolean joinGroupsAndWorkspaces = false;
     EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUser());
     if (roleEntity == null) {
       return Response.status(Status.BAD_REQUEST).entity("Unknown role").build();
     }
-    if (roleEntity.getArchetype() == EnvironmentRoleArchetype.TEACHER || roleEntity.getArchetype() == EnvironmentRoleArchetype.MANAGER) {
+    if (roleEntity.getArchetype() == EnvironmentRoleArchetype.TEACHER) {
       myUserGroups = CollectionUtils.isEmpty(userGroupIds) && CollectionUtils.isEmpty(workspaceIds);
       myWorkspaces = CollectionUtils.isEmpty(userGroupIds) && CollectionUtils.isEmpty(workspaceIds);
       joinGroupsAndWorkspaces = myUserGroups && myWorkspaces;
