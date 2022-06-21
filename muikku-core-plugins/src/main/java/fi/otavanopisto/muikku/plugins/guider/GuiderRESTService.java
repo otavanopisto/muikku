@@ -224,7 +224,7 @@ public class GuiderRESTService extends PluginRESTService {
     Set<Long> workspaceFilters = null;
 
     // #4585: By default, teachers should only see their own students
-    // #6170: Teachers used to see only their own workspaces' students. They shoud also see their own groups' students
+    // #6170: Teachers used to see only their own workspaces' students. They should also see their own groups' students
     
     boolean joinGroupsAndWorkspaces = false;
     EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUser());
