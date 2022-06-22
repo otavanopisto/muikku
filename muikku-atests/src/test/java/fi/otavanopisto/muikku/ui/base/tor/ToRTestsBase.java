@@ -103,7 +103,7 @@ public class ToRTestsBase extends AbstractUITest {
         assertText(".application-list__item-header--course .application-list__indicator-badge--course", "E");
         
         waitAndClick(".application-list__item-header--course");
-        waitForPresent(".workspace-assessment__literal .workspace-assessment__literal-data");
+        waitForContent(".workspace-assessment__literal .workspace-assessment__literal-data", 5);
         assertText(".workspace-assessment__literal .workspace-assessment__literal-data", "Test evaluation.");
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
