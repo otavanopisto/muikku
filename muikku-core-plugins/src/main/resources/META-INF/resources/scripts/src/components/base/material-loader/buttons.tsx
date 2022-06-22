@@ -36,13 +36,7 @@ export function MaterialLoaderButtons(props: MaterialLoaderButtonsProps) {
           buttonModifiers={props.stateConfiguration["button-class"]}
           onClick={props.onPushAnswer}
         >
-          {props.i18n.text.get(
-            props.answerCheckable &&
-              props.material.assignmentType === "EXERCISE" &&
-              (props.material.correctAnswers || "ALWAYS") === "ALWAYS"
-              ? props.stateConfiguration["button-check-text"]
-              : props.stateConfiguration["button-text"]
-          )}
+          {props.i18n.text.get(props.stateConfiguration["button-text"])}
         </Button>
       ) : null}
       {props.stateConfiguration[

@@ -44,6 +44,7 @@ import {
 } from "~/actions/main-function/guider";
 import StudySuggestionMatrix from "./study-suggestion-matrix";
 import { AnyActionType } from "~/actions";
+import { COMPULSORY_HOPS_VISIBLITY } from "~/components/general/hops-compulsory-education-wizard";
 
 /**
  * StateOfStudiesProps
@@ -414,7 +415,10 @@ class StateOfStudies extends React.Component<
                 </ApplicationSubPanel.Body>
               </ApplicationSubPanel>
             </ApplicationSubPanel>
-            {this.props.guider.currentStudent.hopsAvailable ? (
+            {this.props.guider.currentStudent.hopsAvailable &&
+            COMPULSORY_HOPS_VISIBLITY.includes(
+              this.props.guider.currentStudent.basic.studyProgrammeName
+            ) ? (
               <ApplicationSubPanel modifier="student-data-container">
                 <ApplicationSubPanel>
                   <ApplicationSubPanel.Header>

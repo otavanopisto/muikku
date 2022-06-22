@@ -23,6 +23,7 @@ import "~/sass/elements/rich-text.scss";
 import "~/sass/elements/application-list.scss";
 import "~/sass/elements/journal.scss";
 import "~/sass/elements/workspace-assessment.scss";
+import { COMPULSORY_HOPS_VISIBLITY } from "~/components/general/hops-compulsory-education-wizard";
 
 /**
  * StudiesApplicationProps
@@ -122,6 +123,16 @@ class StudiesApplication extends React.Component<
    */
   isVisible(id: string) {
     switch (id) {
+      case "HOPS":
+        return (
+          this.props.status.isActiveUser &&
+          (COMPULSORY_HOPS_VISIBLITY.includes(
+            this.props.status.profile.studyProgrammeName
+          ) ||
+            (this.props.hops.eligibility &&
+              this.props.hops.eligibility.upperSecondarySchoolCurriculum ===
+                true))
+        );
       case "VOPS":
       case "YO":
         return (
