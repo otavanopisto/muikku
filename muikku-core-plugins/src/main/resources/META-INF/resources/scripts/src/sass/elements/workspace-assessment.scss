@@ -127,7 +127,8 @@
   top: 20px;
 }
 
-.workspace-assessment__date {
+.workspace-assessment__date,
+.workspace-assessment__subject {
   @include assessment-text;
 
   align-items: center;
@@ -144,7 +145,8 @@
   padding: 0 10px 0 0;
 }
 
-.workspace-assessment__date-data {
+.workspace-assessment__date-data,
+.workspace-assessment__subject-data {
   @include assessment-text;
 
   line-height: 1.375rem;

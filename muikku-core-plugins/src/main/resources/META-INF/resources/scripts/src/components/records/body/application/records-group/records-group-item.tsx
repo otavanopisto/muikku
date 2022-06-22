@@ -122,7 +122,9 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
           }
 
           const subjectCodeString = subjectData.subject
-            ? `(${subjectData.subject.name.toUpperCase()}, ${subjectData.subject.code.toUpperCase()}${
+            ? `(${
+                subjectData.subject.name
+              }, ${subjectData.subject.code.toUpperCase()}${
                 subjectData.courseNumber ? subjectData.courseNumber : ""
               })`
             : undefined;
@@ -136,8 +138,8 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
                 className={`workspace-assessment__icon ${evalStateIcon}`}
               ></div>
               {subjectCodeString && (
-                <div className="workspace-assessment__date">
-                  <span className="workspace-assessment__date-data">
+                <div className="workspace-assessment__subject">
+                  <span className="workspace-assessment__subject-data">
                     {subjectCodeString}
                   </span>
                 </div>
@@ -231,13 +233,10 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
   const animateOpen = showE ? "auto" : 0;
 
   return (
-    <ApplicationListItem
-      key={workspace.id}
-      className="course course--studies"
-      onClick={handleShowEvaluationClick}
-    >
+    <ApplicationListItem key={workspace.id} className="course course--studies">
       <ApplicationListItemHeader
         key={workspace.id}
+        onClick={handleShowEvaluationClick}
         modifiers={
           isCombinationWorkspace ? ["course", "combination-course"] : ["course"]
         }
@@ -253,7 +252,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
               workspaceId={workspace.id}
               workspace={workspace}
             >
-              <Button buttonModifiers="info">
+              <Button buttonModifiers={["info", "assignments-and-exercieses"]}>
                 {props.i18n.text.get(
                   "plugin.records.assignmentsAndExercisesButton.label"
                 )}

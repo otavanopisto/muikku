@@ -9,10 +9,7 @@ import {
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 import { i18nType } from "~/reducers/base/i18n";
-import ApplicationList, {
-  ApplicationListItem,
-  ApplicationListItemHeader,
-} from "~/components/general/application-list";
+import ApplicationList from "~/components/general/application-list";
 import { WorkspaceType } from "~/reducers/workspaces";
 import { StatusType } from "../../../../../reducers/base/status";
 import Material from "../current-record/material";
@@ -260,15 +257,9 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
           );
         })
       ) : (
-        <ApplicationListItem>
-          <ApplicationListItemHeader className="application-list__item-header--journal-entry">
-            <div className="application-list__item-header-main application-list__item-header-main--journal-entry">
-              <span className="application-list__item-header-main-content application-list__item-header-main-content--journal-entry-title">
-                {props.i18n.text.get("plugin.records.noassignments")}
-              </span>
-            </div>
-          </ApplicationListItemHeader>
-        </ApplicationListItem>
+        <div className="empty">
+          <span>{props.i18n.text.get("plugin.records.noassignments")}</span>
+        </div>
       )}
     </ApplicationList>
   );
@@ -312,15 +303,9 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
           );
         })
       ) : (
-        <ApplicationListItem>
-          <ApplicationListItemHeader className="application-list__item-header--journal-entry">
-            <div className="application-list__item-header-main application-list__item-header-main--journal-entry">
-              <span className="application-list__item-header-main-content application-list__item-header-main-content--journal-entry-title">
-                {props.i18n.text.get("plugin.records.noexercises")}
-              </span>
-            </div>
-          </ApplicationListItemHeader>
-        </ApplicationListItem>
+        <div className="empty">
+          <span>{props.i18n.text.get("plugin.records.noexercises")}</span>
+        </div>
       )}
     </ApplicationList>
   );
