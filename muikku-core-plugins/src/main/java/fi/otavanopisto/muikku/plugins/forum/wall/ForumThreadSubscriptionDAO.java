@@ -6,14 +6,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-
-import fi.otavanopisto.muikku.plugins.forum.wall.ForumThreadSubscription_;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
 import fi.otavanopisto.muikku.plugins.forum.model.ForumThread;
 import fi.otavanopisto.muikku.plugins.forum.wall.ForumThreadSubscription;
-
-
 
 public class ForumThreadSubscriptionDAO extends CorePluginsDAO<ForumThreadSubscription> {
 
@@ -41,22 +37,39 @@ public class ForumThreadSubscriptionDAO extends CorePluginsDAO<ForumThreadSubscr
     
     return entityManager.createQuery(criteria).getResultList();
   }
+  
+  public List<ForumThreadSubscription> listByThread(ForumThread forumThread) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<ForumThreadSubscription> criteria = criteriaBuilder.createQuery(ForumThreadSubscription.class);
+    Root<ForumThreadSubscription> root = criteria.from(ForumThreadSubscription.class);
+    criteria.select(root);
+    criteria.where(criteriaBuilder.equal(root.get(ForumThreadSubscription_.forumThread), forumThread.getId()));
+    
+    return entityManager.createQuery(criteria).getResultList();
+  }
 
-//  public ForumThreadSubscription findByUserAndForumArea(UserEntity user, ForumArea forumArea) {
-//    EntityManager entityManager = getEntityManager(); 
-//    
-//    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-//    CriteriaQuery<ForumAreaSubscription> criteria = criteriaBuilder.createQuery(ForumAreaSubscription.class);
-//    Root<ForumAreaSubscription> root = criteria.from(ForumAreaSubscription.class);
-//    criteria.select(root);
-//    criteria.where(
-//        criteriaBuilder.and(
-//            criteriaBuilder.equal(root.get(ForumAreaSubscription_.user), user.getId()),
-//            criteriaBuilder.equal(root.get(ForumAreaSubscription_.forumArea), forumArea)
-//        )
-//    );
-//    
-//    return getSingleResult(entityManager.createQuery(criteria));
-//  }
+  public ForumThreadSubscription findByUserAndForumThread(UserEntity user, ForumThread forumThread) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<ForumThreadSubscription> criteria = criteriaBuilder.createQuery(ForumThreadSubscription.class);
+    Root<ForumThreadSubscription> root = criteria.from(ForumThreadSubscription.class);
+    criteria.select(root);
+    criteria.where(
+        criteriaBuilder.and(
+            criteriaBuilder.equal(root.get(ForumThreadSubscription_.user), user.getId()),
+            criteriaBuilder.equal(root.get(ForumThreadSubscription_.forumThread), forumThread)
+        )
+    );
+    
+    return getSingleResult(entityManager.createQuery(criteria));
+  }
+  
+  @Override
+  public void delete(ForumThreadSubscription forumThreadSubscription) {
+    super.delete(forumThreadSubscription);
+  }
   
 }

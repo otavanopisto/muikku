@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -34,17 +35,23 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Entities.EscapeMode;
 import org.jsoup.safety.Whitelist;
 
+import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.forum.ForumController;
 import fi.otavanopisto.muikku.plugins.forum.ForumResourcePermissionCollection;
+import fi.otavanopisto.muikku.plugins.forum.ForumThreadSubsciptionController;
+import fi.otavanopisto.muikku.plugins.forum.events.ForumThreadMessageSent;
 import fi.otavanopisto.muikku.plugins.forum.model.EnvironmentForumArea;
 import fi.otavanopisto.muikku.plugins.forum.model.ForumArea;
 import fi.otavanopisto.muikku.plugins.forum.model.ForumAreaGroup;
 import fi.otavanopisto.muikku.plugins.forum.model.ForumThread;
 import fi.otavanopisto.muikku.plugins.forum.model.ForumThreadReply;
+import fi.otavanopisto.muikku.plugins.forum.wall.ForumThreadSubscription;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
+import fi.otavanopisto.muikku.servlet.BaseUrl;
 import fi.otavanopisto.muikku.session.CurrentUserSession;
 import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
@@ -57,10 +64,17 @@ public class ForumRESTService extends PluginRESTService {
   private static final long serialVersionUID = 687114723532731651L;
 
   @Inject
+  @BaseUrl
+  private String baseUrl;
+  
+  @Inject
   private Logger logger;
   
   @Inject
   private ForumController forumController;
+  
+  @Inject
+  private ForumThreadSubsciptionController forumThreadSubscriptionController;
 
   @Inject
   private SessionController sessionController;
@@ -70,6 +84,12 @@ public class ForumRESTService extends PluginRESTService {
 
   @Inject
   private ForumRESTModels restModels;
+  
+  @Inject
+  private Event<ForumThreadMessageSent> forumThreadMessageSent;
+  
+  @Inject
+  private UserEntityController userEntityController;
   
   /**
    * GET mapi().forum.isAvailable
@@ -740,6 +760,8 @@ public class ForumRESTService extends PluginRESTService {
           }
         }
         
+        forumThreadMessageSent.fire(new ForumThreadMessageSent(forumThread.getId(), sessionController.getLoggedUserEntity().getId(), baseUrl));
+        
         return Response.ok(createRestModel(forumController.createForumThreadReply(forumThread, newReply.getMessage(), parentReply))).build();
       } else {
         return Response.status(Status.FORBIDDEN).build();
@@ -802,6 +824,97 @@ public class ForumRESTService extends PluginRESTService {
 
     for (ForumThreadReply entry : entries) {
       result.add(createRestModel(entry));
+    }
+
+    return result;
+  }
+  
+  /**
+   * mApi().forum.areas.threads.toggleSubscription.create(2,5)
+   * 
+   * @param areaId
+   * @param threadId
+   * @return
+   */
+  @POST
+  @Path("/areas/{AREAID}/threads/{THREADID}/toggleSubscription")
+  @RESTPermit(handling = Handling.INLINE)
+  public Response toggleForumThreadSubscription(@PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId) {
+    try {
+      ForumArea forumArea = forumController.getForumArea(areaId);
+      if (forumArea == null) {
+        return Response.status(Status.NOT_FOUND).entity("Forum area not found").build();
+      }
+      
+      ForumThread forumThread = forumController.getForumThread(threadId);
+      if (forumThread == null) {
+        return Response.status(Status.NOT_FOUND).entity("Forum thread not found").build();
+      }
+      
+      if (!forumArea.getId().equals(forumThread.getForumArea().getId())) {
+        return Response.status(Status.NOT_FOUND).entity("Forum thread not found from the specified area").build();
+      }
+      
+      if (forumThread.getLocked()) {
+        return Response.status(Status.BAD_REQUEST).entity("Forum thread is locked").build();
+      }
+      
+      UserEntity loggedUSerEntity = sessionController.getLoggedUserEntity();
+      ForumThreadSubscription forumThreadSubscription = forumThreadSubscriptionController.findByThreadAndUserEntity(forumThread, loggedUSerEntity);
+      if (forumThreadSubscription == null) {
+        ForumThreadSubscription forumSubscription = forumThreadSubscriptionController.createForumThreadSubsciption(forumThread, loggedUSerEntity);
+        ForumThreadRESTModel threadRest = restModels.restModel(forumSubscription.getForumThread());
+        return Response.ok(new ForumThreadSubscriptionRESTModel(forumSubscription.getId(), forumSubscription.getForumThread().getId(), forumSubscription.getUser(), threadRest)).build();
+      } else {
+        forumThreadSubscriptionController.deleteSubscription(forumThreadSubscription);
+        return Response.noContent().build();
+      }
+      
+    } catch (Exception e) {
+      logger.log(Level.SEVERE, "Failed to create forum thread subscription", e);
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+    }
+  }
+  /**
+   * mApi().forum.subscriptions.threads.read(13)
+   * 
+   * @param userEntityId
+   * @return
+   * 
+   * returns a list of user's subscripted threads
+   */
+  @GET
+  @Path ("/subscriptions/threads/{USERID}")
+  @RESTPermit(handling = Handling.INLINE)
+  public Response listThreadSubscriptionsByUser(@PathParam ("USERID") Long userId) {
+    
+    UserEntity userEntity = userEntityController.findUserEntityById(userId);
+    
+    if (userEntity == null) {
+      return Response.status(Status.NOT_FOUND).entity("User entity not found").build();
+    }
+    
+    if (sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_READ_ENVIRONMENT_MESSAGES)) {
+      if (userEntityController.isStudent(sessionController.getLoggedUserEntity()) && !sessionController.getLoggedUserEntity().getId().equals(userEntity.getId())) {
+        return Response.status(Status.FORBIDDEN).entity("You can list your own subscriptions only").build();
+      }
+      
+      return Response.ok(createThreadSubscriptionRestModel(forumThreadSubscriptionController.listByUser(userEntity).toArray(new ForumThreadSubscription[0]))).build();
+    } else
+      return Response.status(Status.FORBIDDEN).build();
+  }
+  
+  private ForumThreadSubscriptionRESTModel createThreadSubscriptionRestModel(ForumThreadSubscription entity) {
+    ForumThreadRESTModel threadRest = restModels.restModel(entity.getForumThread());
+    
+    return new ForumThreadSubscriptionRESTModel(entity.getId(), entity.getForumThread().getId(), entity.getUser(), threadRest);
+  }
+  
+  private List<ForumThreadSubscriptionRESTModel> createThreadSubscriptionRestModel(ForumThreadSubscription... entries) {
+    List<ForumThreadSubscriptionRESTModel> result = new ArrayList<>();
+
+    for (ForumThreadSubscription entry : entries) {
+      result.add(createThreadSubscriptionRestModel(entry));
     }
 
     return result;
