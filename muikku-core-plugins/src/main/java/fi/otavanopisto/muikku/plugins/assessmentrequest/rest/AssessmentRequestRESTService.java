@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.plugins.assessmentrequest.rest;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,6 +27,7 @@ import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestControl
 import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestPermissions;
 import fi.otavanopisto.muikku.plugins.assessmentrequest.rest.model.AssessmentRequestRESTModel;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorAssessmentRequestController;
+import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
 import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -33,6 +35,7 @@ import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.session.local.LocalSession;
+import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
@@ -64,6 +67,12 @@ public class AssessmentRequestRESTService extends PluginRESTService {
 
   @Inject
   private CommunicatorAssessmentRequestController communicatorAssessmentRequestController;
+  
+  @Inject
+  private UserEntityController userEntityController;
+  
+  @Inject
+  private EvaluationController evaluationController;
 
   @POST
   @Path("/workspace/{WORKSPACEENTITYID}/assessmentRequests")
@@ -166,13 +175,14 @@ public class AssessmentRequestRESTService extends PluginRESTService {
     }
     
     SchoolDataIdentifier workspaceStudentIdentifier = new SchoolDataIdentifier(workspaceUserEntity.getIdentifier(), workspaceUserEntity.getUserSchoolDataIdentifier().getDataSource().getIdentifier());
-    
+    UserEntity studentEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(workspaceUserEntity.getUserSchoolDataIdentifier().getDataSource(), workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier());
     WorkspaceAssessmentRequest assessmentRequest = assessmentRequestController.findWorkspaceAssessmentRequest(assessmentRequestIdentifier, workspaceIdentifier, studentIdentifier);
     if (assessmentRequest != null) {
       SchoolDataIdentifier assessmentRequestWorkspaceUserIdentifier = new SchoolDataIdentifier(assessmentRequest.getWorkspaceUserIdentifier(), assessmentRequest.getSchoolDataSource());
       if (assessmentRequestWorkspaceUserIdentifier.equals(workspaceStudentIdentifier)) {
         assessmentRequestController.deleteWorkspaceAssessmentRequest(workspaceUserEntity, assessmentRequestIdentifier);
         communicatorAssessmentRequestController.sendAssessmentRequestCancelledMessage(workspaceUserEntity);
+        evaluationController.createAssessmentRequestCancellation(studentEntity.getId(), workspaceEntityId, new Date());
       } else {
         return Response.status(Status.FORBIDDEN).build();
       }

@@ -22,6 +22,7 @@ import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.model.base.Tag;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestCancellationDAO;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
 import fi.otavanopisto.muikku.plugins.communicator.events.CommunicatorMessageSent;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
@@ -29,6 +30,7 @@ import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageCate
 import fi.otavanopisto.muikku.plugins.evaluation.dao.SupplementationRequestDAO;
 import fi.otavanopisto.muikku.plugins.evaluation.dao.WorkspaceMaterialEvaluationAudioClipDAO;
 import fi.otavanopisto.muikku.plugins.evaluation.dao.WorkspaceMaterialEvaluationDAO;
+import fi.otavanopisto.muikku.plugins.evaluation.model.AssessmentRequestCancellation;
 import fi.otavanopisto.muikku.plugins.evaluation.model.SupplementationRequest;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluationAudioClip;
@@ -115,6 +117,9 @@ public class EvaluationController {
 
   @Inject
   private CourseMetaController courseMetaController;
+  
+  @Inject
+  private AssessmentRequestCancellationDAO assessmentRequestCancellationDAO;
   
   /* Workspace activity */
   
@@ -247,6 +252,23 @@ public class EvaluationController {
     }
     handleSupplementationNotifications(supplementationRequest);    
     return supplementationRequest;
+  }
+  
+  public AssessmentRequestCancellation createAssessmentRequestCancellation(Long studentEntityId, Long workspaceEntityId, Date cancellationDate) {
+    AssessmentRequestCancellation assessmentRequestCancellation = assessmentRequestCancellationDAO.createAssessmentRequestCancellation(
+        studentEntityId, 
+        workspaceEntityId, 
+        cancellationDate);
+    
+    return assessmentRequestCancellation;
+  }
+  
+  public void deleteAssessmentRequestCancellation(AssessmentRequestCancellation assessmentRequestCancellation) {
+    assessmentRequestCancellationDAO.delete(assessmentRequestCancellation);
+  }
+  
+  public List<AssessmentRequestCancellation> listAssessmentRequestCancellationsByStudentAndWorkspace(Long studentEntityId, Long workspaceEntityId){
+    return assessmentRequestCancellationDAO.listByStudentAndWorkspace(studentEntityId, workspaceEntityId);
   }
 
   public WorkspaceMaterialEvaluation createWorkspaceMaterialEvaluation(UserEntity student, WorkspaceMaterial workspaceMaterial, GradingScale gradingScale, GradingScaleItem grade, UserEntity assessor, Date evaluated, String verbalAssessment) {

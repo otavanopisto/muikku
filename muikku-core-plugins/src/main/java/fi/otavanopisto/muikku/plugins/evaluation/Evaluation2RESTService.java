@@ -35,6 +35,7 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugins.activitylog.ActivityLogController;
 import fi.otavanopisto.muikku.plugins.activitylog.model.ActivityLogType;
+import fi.otavanopisto.muikku.plugins.evaluation.model.AssessmentRequestCancellation;
 import fi.otavanopisto.muikku.plugins.evaluation.model.SupplementationRequest;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluationAudioClip;
@@ -220,6 +221,24 @@ public class Evaluation2RESTService {
     // Result object
     
     List<RestEvaluationEvent> events = new ArrayList<RestEvaluationEvent>();
+    
+    
+    // Cancelled assessment request
+    
+    List<AssessmentRequestCancellation> assessmentRequestCancellations = evaluationController.listAssessmentRequestCancellationsByStudentAndWorkspace(studentEntity.getId(), workspaceEntity.getId());
+    
+    for (AssessmentRequestCancellation assessmentRequestCancellation : assessmentRequestCancellations) {
+        
+      RestEvaluationEvent event = new RestEvaluationEvent();
+      event.setWorkspaceSubjectIdentifier(null);
+      event.setStudent(studentName.getDisplayName());
+      event.setAuthor(null);
+      event.setDate(assessmentRequestCancellation.getCancellationDate());
+      event.setIdentifier(workspaceUserEntityId.toString());
+      event.setText(null);
+      event.setType(RestEvaluationEventType.EVALUATION_REQUEST_CANCELLED);
+      events.add(event);
+    }
     
     // Assessments
     
@@ -1264,6 +1283,13 @@ public class Evaluation2RESTService {
           request.getDate(),
           Boolean.TRUE, // archived
           request.getHandled());
+      }
+      
+      UserEntity studentEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(workspaceUserEntity.getUserSchoolDataIdentifier().getDataSource(), workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier());
+      List<AssessmentRequestCancellation> assessmentRequestCancellations = evaluationController.listAssessmentRequestCancellationsByStudentAndWorkspace(studentEntity.getId(), workspaceEntity.getId());
+      
+      for (AssessmentRequestCancellation cancellation : assessmentRequestCancellations) {
+        evaluationController.deleteAssessmentRequestCancellation(cancellation);
       }
       return Response.noContent().build();
     }
