@@ -262,6 +262,34 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
             ) : null}
           </>
         );
+
+      case EvaluationEnum.EVALUATION_REQUEST_CANCELLED:
+        return (
+          <>
+            <div className="evaluation-modal__event-meta">
+              <span className="evaluation-modal__event-author">{author}</span>{" "}
+              {i18n.text.get(
+                "plugin.evaluation.evaluationModal.events.evaluationRequestCancel.1"
+              )}{" "}
+              {subjectTitle ? (
+                <span className="evaluation-modal__event-author">
+                  {`(${subjectTitle}) `}
+                </span>
+              ) : null}
+              <span className="evaluation-modal__event-type state-CANCELLED">
+                {i18n.text.get(
+                  "plugin.evaluation.evaluationModal.events.evaluationRequestCancel.2"
+                )}
+              </span>
+            </div>
+            {grade !== null ||
+            type === EvaluationEnum.SUPPLEMENTATION_REQUEST ? (
+              <div className="evaluation-modal__event-grade state-INCOMPLETE">
+                {EvaluationEnum.SUPPLEMENTATION_REQUEST ? "T" : grade}
+              </div>
+            ) : null}
+          </>
+        );
       default:
         return;
     }

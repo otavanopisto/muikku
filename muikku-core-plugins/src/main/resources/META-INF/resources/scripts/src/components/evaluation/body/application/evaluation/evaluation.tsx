@@ -658,7 +658,9 @@ export class Evaluation extends React.Component<
           /**
            * Is not evaluation request boolean
            */
-          const isNotRequest = eItem.type !== EvaluationEnum.EVALUATION_REQUEST;
+          const isRequestOrCancelled =
+            eItem.type === EvaluationEnum.EVALUATION_REQUEST ||
+            eItem.type === EvaluationEnum.EVALUATION_REQUEST_CANCELLED;
 
           /**
            * Is supplementation request boolean
@@ -729,9 +731,11 @@ export class Evaluation extends React.Component<
                 key={index}
                 selectedAssessment={this.props.selectedAssessment}
                 {...eItem}
-                showModifyLink={isNotRequest || isSupplementationRequest}
+                showModifyLink={
+                  !isRequestOrCancelled || isSupplementationRequest
+                }
                 showDeleteLink={
-                  (isNotRequest &&
+                  (!isRequestOrCancelled &&
                     nextIsNotRequest &&
                     isLatestEvaluationForModule &&
                     !latestEventIsSupplementationRequest) ||
@@ -755,8 +759,8 @@ export class Evaluation extends React.Component<
               key={index}
               selectedAssessment={this.props.selectedAssessment}
               {...eItem}
-              showModifyLink={isNotRequest}
-              showDeleteLink={isNotRequest && isLatestEvent}
+              showModifyLink={!isRequestOrCancelled}
+              showDeleteLink={!isRequestOrCancelled && isLatestEvent}
             />
           );
         })
