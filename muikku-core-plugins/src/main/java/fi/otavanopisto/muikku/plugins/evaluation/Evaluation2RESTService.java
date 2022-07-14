@@ -232,7 +232,7 @@ public class Evaluation2RESTService {
       RestEvaluationEvent event = new RestEvaluationEvent();
       event.setWorkspaceSubjectIdentifier(null);
       event.setStudent(studentName.getDisplayName());
-      event.setAuthor(null);
+      event.setAuthor(studentName.getDisplayName());
       event.setDate(assessmentRequestCancellation.getCancellationDate());
       event.setIdentifier(workspaceUserEntityId.toString());
       event.setText(null);
