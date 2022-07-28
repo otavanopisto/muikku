@@ -9,7 +9,7 @@ import "~/sass/elements/screen-container.scss";
 
 /**
 interface FrontpageStudyingProps {
- * 
+ *
  */
 interface FrontpageStudyingProps {
   i18n: i18nType;
@@ -63,6 +63,8 @@ export default class FrontpageStudying extends React.Component<
               </div>
               <div className="card__footer">
                 <Button
+                  icon="external-link"
+                  iconPosition="right"
                   openInNewTab="_blank"
                   href="https://nettilukio.fi"
                   buttonModifiers={[
@@ -97,6 +99,8 @@ export default class FrontpageStudying extends React.Component<
               </div>
               <div className="card__footer">
                 <Button
+                  icon="external-link"
+                  iconPosition="right"
                   openInNewTab="_blank"
                   href="https://nettiperuskoulu.fi"
                   buttonModifiers={[
@@ -133,6 +137,8 @@ export default class FrontpageStudying extends React.Component<
               </div>
               <div className="card__footer">
                 <Button
+                  icon="external-link"
+                  iconPosition="right"
                   openInNewTab="_blank"
                   href="https://nettilukio.fi/aineopiskelu"
                   buttonModifiers={[
@@ -145,6 +151,8 @@ export default class FrontpageStudying extends React.Component<
                   )}
                 </Button>
                 <Button
+                  icon="external-link"
+                  iconPosition="right"
                   openInNewTab="_blank"
                   href="https://nettiperuskoulu.fi/aineopiskelu"
                   buttonModifiers={[

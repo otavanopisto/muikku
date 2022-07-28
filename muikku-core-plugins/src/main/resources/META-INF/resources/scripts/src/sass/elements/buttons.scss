@@ -32,11 +32,6 @@
     background-color: $color-button-disabled-background;
     cursor: not-allowed;
   }
-
-  > [class^="icon-"],
-  > [class*=" icon-"] {
-    margin-right: 5px;
-  }
 }
 
 .button__icon {
@@ -439,7 +434,7 @@
 }
 
 .button--frontpage-bubble {
-  height: auto;
+  height: 40px;
   letter-spacing: 1px;
   overflow-wrap: break-word;
   padding-bottom: 5px;
@@ -664,6 +659,16 @@
     height: $button-pill-desktop-size;
     width: $button-pill-desktop-size;
   }
+}
+
+.button__icon--left {
+  margin-left: 0;
+  margin-right: 5px;
+}
+
+.button__icon--right {
+  margin-left: 5px;
+  margin-right: 0;
 }
 
 .button-icon--edit-hops-history-event-description {
@@ -1999,4 +2004,12 @@
   background-color: $color-fatal;
   color: $color-default;
   margin-right: 10px;
+}
+
+.button__screen-reader-text {
+  clip: rect(1px, 1px, 1px, 1px);
+  height: 0.0625rem;
+  overflow: hidden;
+  position: absolute;
+  width: 0.0625rem;
 }

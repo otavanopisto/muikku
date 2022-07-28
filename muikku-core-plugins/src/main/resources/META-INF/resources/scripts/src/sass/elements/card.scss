@@ -264,3 +264,15 @@
     margin: 5px;
   }
 }
+
+.card__meta-external {
+  margin-left: 5px;
+}
+
+.card__meta-screen-reader-text {
+  clip: rect(1px, 1px, 1px, 1px);
+  height: 0.0625rem;
+  overflow: hidden;
+  position: absolute;
+  width: 0.0625rem;
+}

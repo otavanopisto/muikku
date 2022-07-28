@@ -85,6 +85,8 @@ export default class FrontpageOrganization extends React.Component<
                   }}
                 ></div>
                 <Button
+                  icon="external-link"
+                  iconPosition="right"
                   href="http://www.otavia.fi"
                   openInNewTab="_blank"
                   buttonModifiers={["branded", "frontpage-website"]}

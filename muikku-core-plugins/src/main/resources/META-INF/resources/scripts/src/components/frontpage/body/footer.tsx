@@ -66,6 +66,10 @@ export default class FrontpageFooter extends React.Component<
                 {this.props.i18n.text.get(
                   "plugin.footer.ooPrivacyPolicy.label"
                 )}
+                <span className="link__screen-reader-text">
+                  Avautuu uuteen välilehteen
+                </span>
+                <span className="link__icon link__icon--external-right icon-external-link" />
               </a>
             </p>
             <p className="footer__subitem footer__subitem--accessibility-statement">
@@ -78,6 +82,7 @@ export default class FrontpageFooter extends React.Component<
                 {this.props.i18n.text.get(
                   "plugin.footer.accesibilityStatement.text"
                 )}
+                <span className="link__icon link__icon--external-right icon-external-link" />
               </a>
             </p>
           </div>

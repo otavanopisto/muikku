@@ -182,3 +182,15 @@
 .feed__item-label--nettiperuskoulu {
   color: $color-frontpage-card-secondary-school-title;
 }
+
+.feed__item-external {
+  margin-left: 5px;
+}
+
+.feed__item-screen-reader-text {
+  clip: rect(1px, 1px, 1px, 1px);
+  height: 0.0625rem;
+  overflow: hidden;
+  position: absolute;
+  width: 0.0625rem;
+}

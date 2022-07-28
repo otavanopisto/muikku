@@ -45,6 +45,8 @@ export default class FrontpageHero extends React.Component<
               )}
             >
               <Button
+                icon="external-link"
+                iconPosition="right"
                 buttonModifiers={["branded", "frontpage-bubble", "warn"]}
                 href="https://pyramus.otavanopisto.fi/applications/index.page"
                 openInNewTab="_blank"

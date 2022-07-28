@@ -67,6 +67,10 @@ export default class FrontpageInstagram extends React.Component<
                       >
                         <span className="visually-hidden">Instagram </span>
                         muikkuofficial
+                        <span className="card__meta-screen-reader-text">
+                          Avautuu uuteen välilehteen
+                        </span>
+                        <span className="card__meta-external icon-external-link" />
                       </a>
                     </div>
                     <div className="card__meta-body-description">
