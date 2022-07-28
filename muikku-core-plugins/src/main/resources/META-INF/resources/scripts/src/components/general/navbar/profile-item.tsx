@@ -79,6 +79,15 @@ class ProfileItem extends React.Component<ProfileItemProps, ProfileItemState> {
           >
             <span className={`link__icon icon-${item.icon}`}></span>
             <span>{this.props.i18n.text.get(item.text)}</span>
+
+            {item.openInNewTab && (
+              <>
+                <span className="link__screen-reader-text">
+                  Avautuu uuuteen välilehteen
+                </span>
+                <span className="link__icon link__icon--external-right icon-external-link" />
+              </>
+            )}
           </Link>
         ))}
       >

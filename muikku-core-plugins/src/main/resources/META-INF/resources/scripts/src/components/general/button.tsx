@@ -42,6 +42,11 @@ interface ButtonProps
   to?: string;
   openInNewTab?: string;
   icon?: string;
+  /**
+   * Whether icon initial position is left or right side of element
+   * By default is set to "left"
+   */
+  iconPosition?: "left" | "right";
 }
 
 /**
@@ -53,6 +58,10 @@ interface ButtonState {}
  * Button
  */
 export default class Button extends React.Component<ButtonProps, ButtonState> {
+  static defaultProps = {
+    iconPosition: "left",
+  };
+
   /**
    * Component render method
    * @returns JSX.Element
@@ -64,6 +73,7 @@ export default class Button extends React.Component<ButtonProps, ButtonState> {
     delete elementProps["buttonModifiers"];
     delete elementProps["className"];
     delete elementProps["icon"];
+    delete elementProps["iconPosition"];
 
     const modifiers: Array<string> =
       typeof this.props.buttonModifiers === "string"
@@ -87,10 +97,24 @@ export default class Button extends React.Component<ButtonProps, ButtonState> {
           .map((s) => `button--${s}`)
           .join(" ")}`}
       >
-        {this.props.icon && (
-          <span className={`button__icon icon-${this.props.icon}`}></span>
+        {this.props.icon && this.props.iconPosition === "left" && (
+          <span
+            className={`button__icon icon-${this.props.icon} button__icon--left `}
+          />
         )}
         {this.props.children}
+
+        {this.props.openInNewTab && (
+          <span className="button__screen-reader-text">
+            Avautuu uuteen välilehteen
+          </span>
+        )}
+
+        {this.props.icon && this.props.iconPosition === "right" && (
+          <span
+            className={`button__icon icon-${this.props.icon} button__icon--right`}
+          />
+        )}
       </Element>
     );
   }
@@ -155,6 +179,7 @@ export class ButtonPill extends React.Component<ButtonPillProps, ButtonState> {
     delete elementProps["buttonModifiers"];
     delete elementProps["className"];
     delete elementProps["icon"];
+    delete elementProps["iconPosition"];
 
     const modifiers: Array<string> =
       typeof this.props.buttonModifiers === "string"
@@ -205,6 +230,7 @@ export class IconButton extends React.Component<IconButtonProps, ButtonState> {
     delete elementProps["buttonModifiers"];
     delete elementProps["className"];
     delete elementProps["icon"];
+    delete elementProps["iconPosition"];
 
     const modifiers: Array<string> =
       typeof this.props.buttonModifiers === "string"

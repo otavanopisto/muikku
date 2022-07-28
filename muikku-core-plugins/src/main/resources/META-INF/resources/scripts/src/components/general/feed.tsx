@@ -70,6 +70,10 @@ class Feed extends React.Component<FeedProps, FeedState> {
                   rel="noreferrer"
                 >
                   {entry.title}
+                  <span className="feed__item-external icon-external-link" />
+                  <span className="feed__item-screen-reader-text">
+                    Avautuu uuteen välilehteen
+                  </span>
                 </a>
               ) : (
                 <a
@@ -79,6 +83,10 @@ class Feed extends React.Component<FeedProps, FeedState> {
                   rel="noreferrer"
                 >
                   {entry.title}
+                  <span className="feed__item-external icon-external-link" />
+                  <span className="feed__item-screen-reader-text">
+                    Avautuu uuteen välilehteen
+                  </span>
                 </a>
               )}
               <div
@@ -98,6 +106,10 @@ class Feed extends React.Component<FeedProps, FeedState> {
                     rel="noreferrer"
                   >
                     nettilukio.fi
+                    <span className="feed__item-external icon-external-link" />
+                    <span className="feed__item-screen-reader-text">
+                      Avautuu uuteen välilehteen
+                    </span>
                   </a>
                 ) : (
                   <a
@@ -107,6 +119,10 @@ class Feed extends React.Component<FeedProps, FeedState> {
                     rel="noreferrer"
                   >
                     nettiperuskoulu.fi
+                    <span className="feed__item-external icon-external-link" />
+                    <span className="feed__item-screen-reader-text">
+                      Avautuu uuteen välilehteen
+                    </span>
                   </a>
                 )}
               </div>
