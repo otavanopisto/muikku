@@ -1196,7 +1196,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         false,                                                    // only default users
         firstResult,                                              // first result
         maxResults,                                               // max results
-        false);                                                   // join gruops and workspaces
+        false);                                                   // join groups and workspaces
 
     List<Map<String, Object>> elasticUsers = searchResult.getResults();
 
