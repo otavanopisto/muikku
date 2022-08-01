@@ -37,6 +37,7 @@ import {
   updateCurrentStudentHopsPhase,
 } from "~/actions/main-function/guider";
 import StudySuggestionMatrix from "./state-of-studies/study-suggestion-matrix";
+import { COMPULSORY_HOPS_VISIBLITY } from "~/components/general/hops-compulsory-education-wizard";
 import { AnyActionType } from "~/actions";
 
 /**
@@ -350,20 +351,6 @@ class StateOfStudies extends React.Component<
       />
     );
 
-    // const headerToolbar = {
-    //   left: "today prev,next",
-    //   center: "title",
-    //   right: "resourceTimelineMonth,resourceTimelineYear",
-    // };
-
-    // const externalEvents: ExternalEventType[] =
-    //   this.props.guider.currentStudent.currentWorkspaces &&
-    //   this.props.guider.currentStudent.currentWorkspaces.map((workspace) => ({
-    //     id: workspace.id,
-    //     title: workspace.name,
-    //     duration: "36:00:00",
-    //   }));
-
     return (
       <>
         {this.props.guider.currentStudentState === "LOADING" ? (
@@ -413,18 +400,26 @@ class StateOfStudies extends React.Component<
                 </ApplicationSubPanel.Body>
               </ApplicationSubPanel>
             </ApplicationSubPanel>
-            <ApplicationSubPanel modifier="student-data-container">
-              <ApplicationSubPanel>
-                <ApplicationSubPanel.Header>
-                  Opintojen edistyminen
-                </ApplicationSubPanel.Header>
-                <ApplicationSubPanel.Body>
-                  <StudySuggestionMatrix
-                    studentId={this.props.guider.currentStudent.basic.id}
-                  />
-                </ApplicationSubPanel.Body>
+            {this.props.guider.currentStudent.hopsAvailable &&
+            COMPULSORY_HOPS_VISIBLITY.includes(
+              this.props.guider.currentStudent.basic.studyProgrammeName
+            ) ? (
+              <ApplicationSubPanel modifier="student-data-container">
+                <ApplicationSubPanel>
+                  <ApplicationSubPanel.Header>
+                    Opintojen edistyminen
+                  </ApplicationSubPanel.Header>
+                  <ApplicationSubPanel.Body>
+                    <StudySuggestionMatrix
+                      studentId={this.props.guider.currentStudent.basic.id}
+                      studentUserEntityId={
+                        this.props.guider.currentStudent.basic.userEntityId
+                      }
+                    />
+                  </ApplicationSubPanel.Body>
+                </ApplicationSubPanel>
               </ApplicationSubPanel>
-            </ApplicationSubPanel>
+            ) : null}
           </>
         )}
       </>
