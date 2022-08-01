@@ -1315,21 +1315,13 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       List<StudentContactLogEntryRestModel> contactLogEntries = null;
       if(response.getEntity() != null) {
         contactLogEntries = new ArrayList<>();
-        for (StudentContactLogEntryRestModel contactLogEntry : response.getEntity()) {
-          boolean hasImage = false;
-          if (contactLogEntry.getCreatorId() != null) {
-            contactLogEntry.setCreatorId(toUserEntityId(contactLogEntry.getCreatorId()));
 
-            UserEntity userEntity = userEntityController.findUserEntityById(contactLogEntry.getCreatorId());
-            hasImage = userEntityFileController.hasProfilePicture(userEntity);
-          }
-          contactLogEntry.setHasImage(hasImage);
+        if (response.getEntity().getResults() != null) {
+          for (StudentContactLogEntryRestModel contactLogEntry : response.getEntity().getResults()) {
+            boolean hasImage = false;
+            if (contactLogEntry.getCreatorId() != null) {
+              contactLogEntry.setCreatorId(toUserEntityId(contactLogEntry.getCreatorId()));
 
-          List<StudentContactLogEntryCommentRestModel> comments = contactLogEntry.getComments();
-
-          for (StudentContactLogEntryCommentRestModel comment : comments) {
-            boolean hasProfileImage = false;
-            if (comment.getCreatorId() != null) {
               UserEntity userEntity = userEntityController.findUserEntityById(contactLogEntry.getCreatorId());
               hasImage = userEntityFileController.hasProfilePicture(userEntity);
             }

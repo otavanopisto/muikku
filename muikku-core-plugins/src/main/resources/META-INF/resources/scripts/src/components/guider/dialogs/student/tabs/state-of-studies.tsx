@@ -229,21 +229,30 @@ class StateOfStudies extends React.Component<
             title={this.props.i18n.text.get(
               "plugin.guider.user.details.label.email"
             )}
+            modifier="currentstudent-emails-list"
           >
-            <ApplicationSubPanelItem.Content>
-              <span>
-                {this.props.guider.currentStudent.emails.length
-                  ? this.props.guider.currentStudent.emails.map((email) => (
-                      <React.Fragment key={"email" + email.studentIdentifier}>
-                        {email.defaultAddress ? `*` : null} {email.address} (
-                        {email.type})
-                      </React.Fragment>
-                    ))
-                  : this.props.i18n.text.get(
-                      "plugin.guider.user.details.label.unknown.email"
-                    )}
-              </span>
-            </ApplicationSubPanelItem.Content>
+            {this.props.guider.currentStudent.emails.length ? (
+              this.props.guider.currentStudent.emails.map((email, index) => {
+                const emailString = `${email.defaultAddress ? "*" : ""}${
+                  email.address
+                } (${email.type})`;
+
+                return (
+                  <ApplicationSubPanelItem.Content
+                    key={`email-${index}-${email.studentIdentifier}`}
+                    modifier="currentstudent-email-item"
+                  >
+                    {emailString}
+                  </ApplicationSubPanelItem.Content>
+                );
+              })
+            ) : (
+              <ApplicationSubPanelItem.Content>
+                {this.props.i18n.text.get(
+                  "plugin.guider.user.details.label.unknown.email"
+                )}
+              </ApplicationSubPanelItem.Content>
+            )}
           </ApplicationSubPanelItem>
         )}
         {this.props.guider.currentStudent.phoneNumbers && (
@@ -251,23 +260,32 @@ class StateOfStudies extends React.Component<
             title={this.props.i18n.text.get(
               "plugin.guider.user.details.label.phoneNumber"
             )}
+            modifier="currentstudent-phonenumbers-list"
           >
-            <ApplicationSubPanelItem.Content>
-              <span>
-                {this.props.guider.currentStudent.phoneNumbers.length
-                  ? this.props.guider.currentStudent.phoneNumbers.map(
-                      (phone) => (
-                        <React.Fragment key={"phone" + phone.studentIdentifier}>
-                          {phone.defaultNumber ? `*` : null} {phone.number} (
-                          {phone.type})
-                        </React.Fragment>
-                      )
-                    )
-                  : this.props.i18n.text.get(
-                      "plugin.guider.user.details.label.unknown.phoneNumber"
-                    )}
-              </span>
-            </ApplicationSubPanelItem.Content>
+            {this.props.guider.currentStudent.phoneNumbers.length ? (
+              this.props.guider.currentStudent.phoneNumbers.map(
+                (phone, index) => {
+                  const phoneString = `${phone.defaultNumber ? "*" : ""}${
+                    phone.number
+                  } (${phone.type})`;
+
+                  return (
+                    <ApplicationSubPanelItem.Content
+                      key={`phone-${index}-${phone.studentIdentifier}`}
+                      modifier="currentstudent-phonenumber-item"
+                    >
+                      {phoneString}
+                    </ApplicationSubPanelItem.Content>
+                  );
+                }
+              )
+            ) : (
+              <ApplicationSubPanelItem.Content>
+                {this.props.i18n.text.get(
+                  "plugin.guider.user.details.label.unknown.phoneNumber"
+                )}
+              </ApplicationSubPanelItem.Content>
+            )}
           </ApplicationSubPanelItem>
         )}
         <ApplicationSubPanelItem
@@ -287,18 +305,24 @@ class StateOfStudies extends React.Component<
             title={this.props.i18n.text.get(
               "plugin.guider.user.details.label.studentgroups"
             )}
+            modifier="currentstudent-usergroups-list"
           >
-            <ApplicationSubPanelItem.Content>
-              <span>
-                {this.props.guider.currentStudent.usergroups.length
-                  ? this.props.guider.currentStudent.usergroups.map(
-                      (usergroup, index) => usergroup.name + " "
-                    )
-                  : this.props.i18n.text.get(
-                      "plugin.guider.user.details.label.nostudentgroups"
-                    )}
-              </span>
-            </ApplicationSubPanelItem.Content>
+            {this.props.guider.currentStudent.usergroups.length ? (
+              this.props.guider.currentStudent.usergroups.map((usergroup) => (
+                <ApplicationSubPanelItem.Content
+                  key={`group-${usergroup.id}`}
+                  modifier="currentstudent-usergroup-item"
+                >
+                  {`${usergroup.name} `}
+                </ApplicationSubPanelItem.Content>
+              ))
+            ) : (
+              <ApplicationSubPanelItem.Content>
+                {this.props.i18n.text.get(
+                  "plugin.guider.user.details.label.nostudentgroups"
+                )}
+              </ApplicationSubPanelItem.Content>
+            )}
           </ApplicationSubPanelItem>
         )}
         {this.props.guider.currentStudent.basic && (
@@ -345,7 +369,9 @@ class StateOfStudies extends React.Component<
           this.props.guider.currentStudent.currentWorkspaces.filter(
             (w) =>
               w.activity &&
-              w.activity.assessmentState.find((assesmentState) => assesmentState.state === "unassessed" )
+              w.activity.assessmentState.find(
+                (assesmentState) => assesmentState.state === "unassessed"
+              )
           )
         }
       />
