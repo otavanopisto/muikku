@@ -36,6 +36,12 @@ import { Textarea } from "./text-area";
 import { StatusType } from "~/reducers/base/status";
 import EditHopsEventDescriptionDialog from "./dialogs/edit-hops-event-description-dialog";
 
+export const COMPULSORY_HOPS_VISIBLITY = [
+  "Nettiperuskoulu",
+  "Aikuisten perusopetuksen päättövaihe",
+  "Nettiperuskoulu/yksityisopiskelu",
+];
+
 /**
  * Total needed optional studies without modifiers to graduate
  */
@@ -52,11 +58,22 @@ export const NEEDED_STUDIES_IN_TOTAL = 46;
  */
 export type HopsUser = "supervisor" | "student";
 
+export type HopsUsePlace = "guider" | "studies";
+
 /**
  * HopsSteps
  */
 export interface HopsBaseProps {
+  /**
+   * User of hops. Difference between functionalities
+   * with specific users
+   */
   user: HopsUser;
+  /**
+   * Use case of hops. Difference between functionalities with
+   * specific use places/cases
+   */
+  usePlace: HopsUsePlace;
   /**
    * phase limits what parts and features are available
    * for student depending what phase is on
@@ -116,6 +133,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
       savingStatus: undefined,
       basicInfo: {
         name: "",
+        studentUserEntityId: null,
       },
       hopsCompulsory: {
         ...initializeHops(),
@@ -206,7 +224,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
       }
     } catch (err) {
       if (this.isComponentMounted) {
-        this.props.displayNotification(`Hups errori ${err}`, "error");
+        this.props.displayNotification(err.message, "error");
         this.setState({ loadingHistoryEvents: false });
       }
     }
@@ -248,10 +266,14 @@ class CompulsoryEducationHopsWizard extends React.Component<
 
           const loadedHops = {
             basicInfo: {
+              studentUserEntityId: studentBasicInfo.id,
               name: `${studentBasicInfo.firstName} ${studentBasicInfo.lastName}`,
               updates: studentHopsHistory,
               counselorList: studentBasicInfo.counselorList,
               studyTimeEnd: studentBasicInfo.studyTimeEnd,
+              educationalLevel: studentBasicInfo.studyProgrammeEducationType
+                ? studentBasicInfo.studyProgrammeEducationType
+                : "Ei asetettu",
             } as BasicInformation,
             hopsCompulsory: hops !== undefined ? hops : initializeHops(),
           };
@@ -268,7 +290,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
       }
     } catch (err) {
       if (this.isComponentMounted) {
-        this.props.displayNotification(`Hups errori ${err}`, "error");
+        this.props.displayNotification(err.message, "error");
         this.setState({ loading: false });
       }
     }
@@ -319,7 +341,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
       }
     } catch (err) {
       if (this.isComponentMounted) {
-        this.props.displayNotification(`Hups errori ${err}`, "error");
+        this.props.displayNotification(err.message, "error");
         this.setState({ loading: false });
       }
     }
@@ -364,7 +386,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
       });
     } catch (err) {
       if (this.isComponentMounted) {
-        this.props.displayNotification(`Hups errori ${err}`, "error");
+        this.props.displayNotification(err.message, "error");
         this.setState({ loading: false, savingStatus: "FAILED" });
       }
     }
@@ -580,7 +602,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
         component: (
           <Step5
             {...baseProps}
-            studentId={this.props.studentId}
+            studentsUserEntityId={this.state.basicInfo.studentUserEntityId}
             studyTimeEnd={this.state.basicInfo.studyTimeEnd}
             followUp={this.state.hopsFollowUp}
             studies={{
@@ -648,7 +670,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
           component: (
             <Step5
               {...baseProps}
-              studentId={this.props.studentId}
+              studentsUserEntityId={this.state.basicInfo.studentUserEntityId}
               studyTimeEnd={this.state.basicInfo.studyTimeEnd}
               followUp={this.state.hopsFollowUp}
               studies={{
@@ -675,7 +697,6 @@ class CompulsoryEducationHopsWizard extends React.Component<
               steps={steps}
               dontValidate={false}
               preventEnterSubmission={true}
-              stepsNavigation={this.props.user === "supervisor"}
               showNavigation={!this.state.loading}
               showSteps={true}
               prevBtnOnLastStep={true}
@@ -689,7 +710,6 @@ class CompulsoryEducationHopsWizard extends React.Component<
               steps={steps}
               dontValidate={false}
               preventEnterSubmission={true}
-              stepsNavigation={this.props.user === "supervisor"}
               showNavigation={!this.state.loading}
               showSteps={true}
               prevBtnOnLastStep={true}

@@ -17,6 +17,7 @@ import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.rest.OrganizationContactPerson;
+import fi.otavanopisto.muikku.rest.StudentContactLogEntryBatch;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryCommentRestModel;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryRestModel;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
@@ -107,8 +108,8 @@ public class UserSchoolDataController {
   
   /* User */
   
-  public BridgeResponse<List<StudentContactLogEntryRestModel>> listStudentContactLogEntries(String dataSource, SchoolDataIdentifier userIdentifier) {
-    return getUserBridge(dataSource).listStudentContactLogEntriesByStudent(userIdentifier);
+  public BridgeResponse<StudentContactLogEntryBatch> listStudentContactLogEntries(String dataSource, SchoolDataIdentifier userIdentifier, Integer resultsPerPage, Integer page) {
+    return getUserBridge(dataSource).listStudentContactLogEntriesByStudent(userIdentifier, resultsPerPage, page);
   }
   
   public BridgeResponse<StudentContactLogEntryRestModel> createStudentContactLogEntry(String dataSource, SchoolDataIdentifier userIdentifier, StudentContactLogEntryRestModel payload) {
@@ -533,8 +534,12 @@ public class UserSchoolDataController {
     );
   }
   
-  public String findStudentEducationalLevel(SchoolDataSource schoolDataSource, Long studentEntityId) {
-    return getUserBridge(schoolDataSource).findStudentEducationalLevel(studentEntityId);
+  public boolean amICounselor(SchoolDataIdentifier studentIdentifier) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(studentIdentifier.getDataSource());
+    if (schoolDataSource == null) {
+      throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", studentIdentifier.getDataSource()));
+    }
+    return getUserBridge(schoolDataSource).amICounselor(studentIdentifier.getIdentifier());
   }
   
 }

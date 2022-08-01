@@ -761,9 +761,7 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
               )()
           ),
 
-          status.loggedIn &&
-          status.role === Role.STUDENT &&
-          status.permissions.WORKSPACE_IS_WORKSPACE_STUDENT
+          status.loggedIn
             ? // The way refresh works is by never giving an existant value to the reuse existant value function that way it will think that there's no value
               // And rerequest
               reuseExistantValue(
@@ -2114,7 +2112,7 @@ const loadStaffMembersOfWorkspace: LoadUsersOfWorkspaceTriggerType =
           mApi().user.staffMembers.read({
             workspaceEntityId: data.workspace.id,
             properties:
-              "profile-phone,profile-vacation-start,profile-vacation-end",
+              "profile-phone,profile-extraInfo,profile-whatsapp,profile-vacation-start,profile-vacation-end",
             firstResult: data.payload ? data.payload.firstResult : 0,
             maxResults: data.payload ? data.payload.maxResults : 10,
           }),

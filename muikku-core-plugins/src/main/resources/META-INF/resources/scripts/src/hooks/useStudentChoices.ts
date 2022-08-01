@@ -102,7 +102,7 @@ export const useStudentChoices = (
         }
       } catch (err) {
         if (componentMounted.current) {
-          displayNotification(`Hups errori, ${err.message}`, "error");
+          displayNotification(err.message, "error");
           setStudentChoices((studentChoices) => ({
             ...studentChoices,
             isLoading: false,
@@ -191,7 +191,7 @@ export const useStudentChoices = (
         "callback"
       )();
     } catch (err) {
-      displayNotification(`Hups päivitys errori, ${err.message}`, "error");
+      displayNotification(err.message, "error");
     }
   };
 

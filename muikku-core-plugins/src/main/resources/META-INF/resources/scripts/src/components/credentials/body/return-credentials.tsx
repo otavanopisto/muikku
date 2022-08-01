@@ -133,7 +133,7 @@ class ReturnCredentials extends React.Component<
     const credentialsContent =
       this.props.credentials.state == "READY" ? (
         <div className="form">
-          <div className="form-row">
+          <div className="form__row">
             <div className="form-element form-element--forgot-password">
               <label htmlFor="resetCredentialsUsername">
                 {this.props.i18n.text.get(
@@ -149,7 +149,7 @@ class ReturnCredentials extends React.Component<
               />
             </div>
           </div>
-          <div className="form-row">
+          <div className="form__row">
             <div className="form-element form-element--forgot-password">
               <label htmlFor="resetCredentialsPassword1">
                 {this.props.i18n.text.get(
@@ -165,7 +165,7 @@ class ReturnCredentials extends React.Component<
               />
             </div>
           </div>
-          <div className="form-row">
+          <div className="form__row">
             <div className="form-element form-element--forgot-password">
               <label htmlFor="resetCredentialsPassword2">
                 {this.props.i18n.text.get(
@@ -181,7 +181,7 @@ class ReturnCredentials extends React.Component<
               />
             </div>
           </div>
-          <div className="form-row">
+          <div className="form__row">
             <div className="form-element form-element--button-container">
               <Button
                 onClick={this.handleNewCredentials.bind(this)}

@@ -1148,7 +1148,7 @@
   display: flex;
   flex-flow: row nowrap;
   margin: 4px;
-  user-select: none;
+  user-select: text;
 
   &.correct-answer {
     border-color: $color-correct-answer;
@@ -1241,7 +1241,7 @@
   display: inline-flex;
   flex-flow: row nowrap;
   margin: 4px;
-  user-select: none;
+  user-select: text;
 
   &.correct-answer {
     background: $color-default;
@@ -1410,7 +1410,7 @@
   height: 2.5rem;
   margin: 8px 4px;
   position: relative;
-  user-select: none;
+  user-select: text;
 
   &.correct-answer { // Unfortunate class inception here as we want to separate selected element visually after taskfield has been checked for answers
     background: $color-default;
@@ -1523,7 +1523,7 @@
   height: 2.5rem;
   margin: 8px 4px;
   position: relative;
-  user-select: none;
+  user-select: text;
 
   &.correct-answer { // Unfortunate class inception here as we want to separate selected element visually after taskfield has been checked for answers
     background: $color-default;
@@ -1891,6 +1891,7 @@ mark[data-muikku-word-definition] {
 // MATERIAL PAGE FIELD ANSWER SYNCHRONIZER
 .material-page__field-answer-synchronizer {
   border-radius: 3px;
+  bottom: -20px;
   display: block;
   font-size: 0.8125rem;
   font-weight: 400;
@@ -1898,7 +1899,6 @@ mark[data-muikku-word-definition] {
   line-height: 1;
   padding: 5px;
   position: absolute;
-  top: -20px;
   transition: background-color 0.2s ease-in-out;
   white-space: nowrap;
   z-index: 2;

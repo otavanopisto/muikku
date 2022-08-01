@@ -119,13 +119,18 @@ export interface WorklistSection {
 }
 
 /**
+ * ProfileProperty
+ */
+export interface ProfileProperty {
+  [key: string]: string;
+}
+
+/**
  * ProfileType
  */
 export interface ProfileType {
   location: string;
-  properties: {
-    [key: string]: string;
-  };
+  properties: ProfileProperty;
   username?: string;
   addresses?: Array<StudentUserAddressType>;
   student?: UserWithSchoolDataType;

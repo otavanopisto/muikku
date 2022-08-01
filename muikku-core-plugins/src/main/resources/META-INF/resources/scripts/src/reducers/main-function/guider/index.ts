@@ -151,6 +151,7 @@ export interface GuiderStudentUserProfileType {
   activityLogs: ActivityLogType[];
   purchases: PurchaseType[];
   hopsPhase?: string;
+  hopsAvailable: boolean;
 }
 
 /**

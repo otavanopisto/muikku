@@ -12,8 +12,8 @@
 
 .hops-container {
   flex-basis: 100%;
-  overflow: auto;
   padding: 10px;
+  scroll-margin-top: 150px;
   width: 100%;
 
   @include breakpoint($breakpoint-pad) {
@@ -509,6 +509,7 @@
 
   @include breakpoint($breakpoint-desktop) {
     display: flex;
+    min-height: 600px;
   }
 }
 
@@ -649,7 +650,15 @@
 }
 
 .hops-container__study-tool-dropdow-subsection {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
   margin: 10px 0 0;
+
+  .hops-container__study-tool-dropdow-title {
+    font-size: 0.875rem;
+  }
 }
 
 .hops-container__study-tool-dropdow-title {

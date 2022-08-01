@@ -93,8 +93,8 @@ public class CourseManagementTestsBase extends AbstractUITest {
         String payload = objectMapper.writeValueAsString(new WebhookCourseCreatePayload(course.getId()));
         TestUtilities.webhookCall("http://dev.muikku.fi:" + System.getProperty("it.port.http") + "/pyramus/webhook", payload);
 
-        scrollIntoView(".application-sub-pane__button-container .button");
-        waitAndClick(".application-sub-pane__button-container .button");
+        scrollIntoView(".button--primary-function-save");
+        waitAndClick(".button--primary-function-save");
         waitForVisible(".notification-queue__items");
         
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
@@ -139,9 +139,9 @@ public class CourseManagementTestsBase extends AbstractUITest {
       try{
         navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), false);
         
-        waitForPresent(".application-sub-panel__item-data--workspace-management input[name=\"unpublish\"]");
-        scrollTo(".application-sub-panel__item-data--workspace-management input[name=\"unpublish\"]", 150);
-        waitAndClick(".application-sub-panel__item-data--workspace-management input[name=\"unpublish\"]");
+        waitForPresent("input#workspaceUnpublish");
+        scrollTo("input#workspaceUnpublish", 150);
+        waitAndClick("input#workspaceUnpublish");
         scrollIntoView(".button--primary-function-save");
         sleep(500);
         waitAndClick(".button--primary-function-save");
@@ -191,8 +191,8 @@ public class CourseManagementTestsBase extends AbstractUITest {
         waitAndClick("input[name=\"workspace-name-extension\"]");
         clearElement("input[name=\"workspace-name-extension\"]");
         sendKeys("input[name=\"workspace-name-extension\"]", "For Test");
-        scrollIntoView(".application-sub-pane__button-container .button");
-        waitAndClick(".application-sub-pane__button-container .button");
+        scrollIntoView(".button--primary-function-save");
+        waitAndClick(".button--primary-function-save");
         waitForVisible(".notification-queue__items");
         waitForNotVisible(".loading");
         
@@ -261,8 +261,8 @@ public class CourseManagementTestsBase extends AbstractUITest {
         waitForPresent("select[name=\"workspace-type\"]");
         scrollTo("select[name=\"workspace-type\"]", 100);
         selectOption("select[name=\"workspace-type\"]", "PYRAMUS-2");
-        scrollTo(".application-sub-pane__button-container .button", 100);
-        waitAndClick(".application-sub-pane__button-container .button");
+        scrollTo(".button--primary-function-save", 100);
+        waitAndClick(".button--primary-function-save");
         waitForVisible(".notification-queue__items");
         waitForNotVisible(".loading");
         
@@ -332,8 +332,8 @@ public class CourseManagementTestsBase extends AbstractUITest {
         waitForPresent(".license-selector select");
         scrollIntoView(".license-selector select");
         selectOption(".license-selector select", "CC3");
-        scrollIntoView(".application-sub-pane__button-container .button");
-        waitAndClick(".application-sub-pane__button-container .button");
+        scrollIntoView(".button--primary-function-save");
+        waitAndClick(".button--primary-function-save");
         waitForVisible(".notification-queue__items");
         waitForNotVisible(".loading");
         
@@ -383,8 +383,8 @@ public class CourseManagementTestsBase extends AbstractUITest {
         selectAllAndClear("input[name=\"add-producer\"]");
         sendKeys("input[name=\"add-producer\"]", "Mr. Tester");
         findElementByCssSelector("input[name=\"add-producer\"]").sendKeys(Keys.RETURN);
-        scrollIntoView(".application-sub-pane__button-container .button");
-        waitAndClick(".application-sub-pane__button-container .button");
+        scrollIntoView(".button--primary-function-save");
+        waitAndClick(".button--primary-function-save");
         waitForVisible(".notification-queue__items");
         waitForNotVisible(".loading");
         
@@ -435,8 +435,8 @@ public class CourseManagementTestsBase extends AbstractUITest {
         waitForPresent("input#usergroup1");
         scrollIntoView("input#usergroup1");
         waitAndClick("input#usergroup1");
-        scrollIntoView(".application-sub-pane__button-container .button");
-        waitAndClick(".application-sub-pane__button-container .button");
+        scrollIntoView(".button--primary-function-save");
+        waitAndClick(".button--primary-function-save");
         waitForVisible(".notification-queue__items");
         waitForNotVisible(".loading");
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);

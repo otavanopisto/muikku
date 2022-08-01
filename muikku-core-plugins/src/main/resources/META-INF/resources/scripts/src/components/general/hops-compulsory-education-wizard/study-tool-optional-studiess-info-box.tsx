@@ -52,7 +52,7 @@ const StudyToolOptionalStudiesInfoBox: React.FC<
             <div className="hops-container__state-icon icon-notification"></div>
             <div className="hops-container__state-text">
               Jee! Olet suorittanut {totalOptionalStudiesCompleted}/
-              {totalOptionalStudiesNeeded} valinnaiskursseja ja valinnut
+              {totalOptionalStudiesNeeded} valinnaiskurssia ja valinnut
               suoritettavaksi {selectedNumberOfOptional}/
               {totalOptionalStudiesNeeded}, mikä on riittävästi kursseja. Jos
               haluat, voit suorittaa valinnaisia opintoja enemmänkin. Silloin
@@ -89,7 +89,7 @@ const StudyToolOptionalStudiesInfoBox: React.FC<
             <div className="hops-container__state-icon icon-notification"></div>
             <div className="hops-container__state-text">
               Jee! Olet suorittanut {totalOptionalStudiesCompleted}/
-              {totalOptionalStudiesNeeded} valinnaiskursseja ja valinnut
+              {totalOptionalStudiesNeeded} valinnaiskurssia ja valinnut
               suoritettavaksi {selectedNumberOfOptional}/
               {totalOptionalStudiesNeeded} kurssia. Tämä on enemmän kuin
               oppimääräsi velvoittaa. Jos haluat, voit suorittaa valinnaisia
@@ -130,7 +130,7 @@ const StudyToolOptionalStudiesInfoBox: React.FC<
             <div className="hops-container__state-icon icon-notification"></div>
             <div className="hops-container__state-text">
               Olet suorittanut {totalOptionalStudiesCompleted}/
-              {totalOptionalStudiesNeeded} valinnaiskursseja ja valinnut
+              {totalOptionalStudiesNeeded} valinnaiskurssia ja valinnut
               suoritettavaksi {selectedNumberOfOptional}/
               {totalOptionalStudiesNeeded} kurssia. Valitse vielä
               {` ${

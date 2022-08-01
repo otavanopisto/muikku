@@ -4,7 +4,6 @@
 @import "../base/breakpoints";
 
 .button {
-  @include prefix(user-select, moz o ms webkit, none);
   @include prefix(transition, moz o ms webkit, background-color 0.3s);
 
   align-items: center;
@@ -21,7 +20,7 @@
   text-decoration: none;
   text-overflow: ellipsis;
   text-transform: uppercase;
-  user-select: none;
+  user-select: text;
   white-space: nowrap;
 
   @include breakpoint($breakpoint-pad) {
@@ -589,7 +588,6 @@
 
 .button--contact-teacher {
   font-size: 0.75rem;
-  padding: 4px 12px;
 }
 
 .button--guider-hops-studytool {
@@ -614,6 +612,7 @@
   border: 2px solid $color-next;
   color: $color-next;
   font-weight: 600;
+  margin: 5px 0 5px 10px;
 }
 
 .button-icon {
@@ -1330,7 +1329,7 @@
 }
 
 // Buttons used in Material pages
-.button--muikku-check-exercises,
+.button--muikku-submit-exercise,
 .button--muikku-show-correct-answers-button,
 .button--muikku-submit-assignment,
 .button--muikku-withdraw-assignment,
@@ -1344,7 +1343,7 @@
   }
 }
 
-.button--muikku-check-exercises {
+.button--muikku-submit-exercise {
   background: $color-exercise;
 }
 
@@ -1936,6 +1935,13 @@
   margin: 0 5px;
 }
 
+.button--whatsapp-me {
+  background: linear-gradient($color-whatsapp-light, $color-whatsapp-dark);
+  color: $color-default;
+  font-size: 0.75rem;
+  margin: 0 0 0 10px;
+}
+
 .button-icon--evaluation {
   &.button-icon--excercise-drawer-close {
     color: $color-default-contrast;
@@ -1962,6 +1968,26 @@
     background-color: transparent;
     color: $color-disabled;
   }
+}
+
+.button-icon--whatsapp-me {
+  font-size: 1.75rem;
+  height: 1.75rem;
+  margin: 0 5px 0 0;
+  transition: 0.3s;
+  width: 1.75rem;
+
+  &:hover {
+    color: $color-whatsapp-light;
+  }
+}
+
+.button-icon--whatsapp-active {
+  color: $color-whatsapp-dark;
+}
+
+.button-icon--whatsapp-inactive {
+  color: $color-disabled;
 }
 
 .button--modify-hops {

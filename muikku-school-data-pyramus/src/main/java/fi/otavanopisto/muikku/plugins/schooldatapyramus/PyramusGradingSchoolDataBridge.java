@@ -79,9 +79,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
         fi.otavanopisto.pyramus.rest.model.composite.CompositeGradingScale[].class);
     Set<Long> gradingScaleFilter = getGradingScaleFilter();
     for (int i = 0; i < restGradingScales.length; i++) {
-      if (!gradingScaleFilter.isEmpty() && !gradingScaleFilter.contains(restGradingScales[i].getScaleId())) {
-        continue;
-      }
+      boolean active = gradingScaleFilter.isEmpty() || gradingScaleFilter.contains(restGradingScales[i].getScaleId());
       List<CompositeGrade> localGrades = new ArrayList<CompositeGrade>();
       List<fi.otavanopisto.pyramus.rest.model.composite.CompositeGrade> restGrades = restGradingScales[i].getGrades();
       for (fi.otavanopisto.pyramus.rest.model.composite.CompositeGrade restGrade : restGrades) {
@@ -92,7 +90,8 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
       localGradingScales.add(new PyramusCompositeGradingScale(
         gradingScaleIdentifier.getIdentifier(),
         restGradingScales[i].getScaleName(),
-        localGrades));
+        localGrades,
+        active));
     }
     return localGradingScales;
   }

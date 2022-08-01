@@ -233,7 +233,7 @@ public class ToRTestsBase extends AbstractUITest {
       login();
       selectFinnishLocale();
       navigate("/records#hops", false);
-      waitAndClick(".form-element__radio-option-container #goalMatriculationExamyes");
+      waitAndClick(".form-element--checkbox-radiobutton #goalMatriculationExamyes");
       waitAndClick(".button--add-subject-row");
       waitForVisible(".form-element__select--matriculation-exam");
       selectOption(".form-element__select--matriculation-exam", "A");
@@ -276,7 +276,7 @@ public class ToRTestsBase extends AbstractUITest {
       login();
       selectFinnishLocale();
       navigate("/records#hops", false);
-      waitAndClick(".form-element__radio-option-container #goalMatriculationExamyes");
+      waitAndClick(".form-element--checkbox-radiobutton #goalMatriculationExamyes");
       waitAndClick(".button--add-subject-row");
       waitForVisible(".form-element__select--matriculation-exam");
       waitAndClick(".tabs--application-panel .tabs__tab--yo");

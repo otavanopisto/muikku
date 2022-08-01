@@ -55,15 +55,10 @@ const STATES = [
     //when an exercise is in the state unanswered answered or withdrawn then it doesn't
     //display this button
     "displays-hide-show-answers-on-request-button-if-allowed": false,
-    "button-class": "muikku-check-exercises",
+    "button-class": "muikku-submit-exercise",
 
     //This is what by default appears on the button
     "button-text": "plugin.workspace.materialsLoader.sendExerciseButton",
-
-    //This is what appears when the answer can be checked
-    //this appears when at least one of the entry fields are checkable
-    //in the page
-    "button-check-text": "plugin.workspace.materialsLoader.checkExerciseButton",
 
     //Buttons are not disabled
     "button-disabled": false,
@@ -81,10 +76,8 @@ const STATES = [
     //With this property active whenever in this state the answers will be checked
     "checks-answers": true,
     "displays-hide-show-answers-on-request-button-if-allowed": true,
-    "button-class": "muikku-check-exercises",
+    "button-class": "muikku-submit-exercise",
     "button-text": "plugin.workspace.materialsLoader.exerciseSentButton",
-    "button-check-text":
-      "plugin.workspace.materialsLoader.exerciseCheckedButton",
     "button-disabled": false,
 
     //This is for when the fields are modified, the exercise rolls back to be answered rather than submitted
@@ -297,7 +290,7 @@ class MaterialLoader extends React.Component<
       answersChecked: false,
 
       //assume true, as it is usually true; this is
-      //basically only in used for exercises to show button-check-text instead
+      //basically only used for exercises to show button-check-text instead
       //of just the normal text that doesn't check
       answerCheckable: true,
 

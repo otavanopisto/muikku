@@ -16,6 +16,8 @@ import { HOPSType } from "../../../reducers/main-function/hops";
 import { StatusType } from "../../../reducers/base/status";
 import { Tab } from "~/components/general/tabs";
 import CurrentRecord from "./application/current-record";
+import { COMPULSORY_HOPS_VISIBLITY } from "~/components/general/hops-compulsory-education-wizard";
+import { AnyActionType } from "~/actions";
 
 /**
  * StudiesApplicationProps
@@ -115,12 +117,16 @@ class StudiesApplication extends React.Component<
    */
   isVisible(id: string) {
     switch (id) {
-      /* case "HOPS":
+      case "HOPS":
         return (
           this.props.status.isActiveUser &&
-          this.props.hops.eligibility &&
-          this.props.hops.eligibility.upperSecondarySchoolCurriculum
-        ); */
+          (COMPULSORY_HOPS_VISIBLITY.includes(
+            this.props.status.profile.studyProgrammeName
+          ) ||
+            (this.props.hops.eligibility &&
+              this.props.hops.eligibility.upperSecondarySchoolCurriculum ===
+                true))
+        );
       case "VOPS":
       case "YO":
         return (
@@ -259,7 +265,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 
