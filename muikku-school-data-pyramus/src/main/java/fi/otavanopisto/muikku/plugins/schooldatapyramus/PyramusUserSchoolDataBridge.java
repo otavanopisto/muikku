@@ -120,6 +120,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
   @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
+  
   @Inject
   private UserEntityFileController userEntityFileController;
 

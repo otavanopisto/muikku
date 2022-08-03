@@ -191,8 +191,6 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
     </ApplicationSubPanel>
   );
 
-  const allComponents = [historyComponent, libraryComponent];
-
   /**
    * studyHistoryContent switches the corrent component
    * @returns JSX.element

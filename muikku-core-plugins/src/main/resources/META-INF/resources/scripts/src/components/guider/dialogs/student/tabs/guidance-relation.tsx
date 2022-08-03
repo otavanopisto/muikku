@@ -82,8 +82,8 @@ const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
           <ApplicationSubPanel.Body>
             {contactLogState && contactLogState === "LOADING" ? (
               <div className="loader-empty" />
-            ) : contactLogs && contactLogs.length > 0 ? (
-              contactLogs.map((contactEvent) => (
+            ) : contactLogs && contactLogs.results.length > 0 ? (
+              contactLogs.results.map((contactEvent) => (
                 <ContactEvent
                   key={"contact-event-" + contactEvent.id}
                   studentId={basic.userEntityId}

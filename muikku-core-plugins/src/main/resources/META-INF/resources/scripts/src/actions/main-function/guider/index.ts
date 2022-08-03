@@ -27,6 +27,7 @@ import {
   GuiderWorkspaceListType,
   GuiderUserGroupListType,
   IContactLogEvent,
+  IContactLogs,
   IContactLogEventComment,
   ContactTypes,
 } from "~/reducers/main-function/guider";
@@ -831,7 +832,6 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
             mApi().guider.students.workspaces.read(id),
             "callback"
           )().then(async (workspaces: WorkspaceListType) => {
-
             dispatch({
               type: "SET_CURRENT_GUIDER_STUDENT_PROP",
               payload: { property: "pastWorkspaces", value: workspaces },
@@ -921,7 +921,7 @@ const loadStudentGuiderRelations: LoadStudentDataTriggerType =
         await promisify(
           mApi().guider.users.contactLog.read(id),
           "callback"
-        )().then((contactLogs: IContactLogEvent[]) => {
+        )().then((contactLogs: IContactLogs) => {
           dispatch({
             type: "SET_CURRENT_GUIDER_STUDENT_PROP",
             payload: { property: "contactLogs", value: contactLogs },
@@ -989,16 +989,22 @@ const createContactLogEvent: CreateContactLogEventTriggerType =
           type: "LOCK_TOOLBAR",
           payload: null,
         });
-        const contactLogs = getState().guider.currentStudent.contactLogs;
+        const contactLogs = JSON.parse(
+          JSON.stringify(getState().guider.currentStudent.contactLogs)
+        ) as IContactLogs;
+
         await promisify(
           mApi().guider.student.contactLog.create(studentUserEntityId, payload),
           "callback"
         )().then((contactLog: IContactLogEvent) => {
+          contactLogs.results = [...[contactLog], ...contactLogs.results];
+          contactLogs.totalHitCount = contactLogs.totalHitCount + 1;
+
           dispatch({
             type: "SET_CURRENT_GUIDER_STUDENT_PROP",
             payload: {
               property: "contactLogs",
-              value: [...[contactLog], ...contactLogs],
+              value: contactLogs,
             },
           });
         });
@@ -1142,16 +1148,18 @@ const editContactLogEvent: EditContactLogEventTriggerType =
           ),
           "callback"
         )().then((contactLog: IContactLogEvent) => {
-          // Make a shallow copy of the current state of contactLogs
-          const contactLogs = [...getState().guider.currentStudent.contactLogs];
+          // Make a deep copy of the current state of contactLogs
+          const contactLogs = JSON.parse(
+            JSON.stringify(getState().guider.currentStudent.contactLogs)
+          ) as IContactLogs;
 
           // Find the index of the edited contactLog
-          const contactLogIndex = contactLogs.findIndex(
+          const contactLogIndex = contactLogs.results.findIndex(
             (log) => log.id === contactLog.id
           );
 
           // Replace the edited contactLog with the new one
-          contactLogs.splice(contactLogIndex, 1, contactLog);
+          contactLogs.results.splice(contactLogIndex, 1, contactLog);
 
           dispatch({
             type: "SET_CURRENT_GUIDER_STUDENT_PROP",
@@ -1236,22 +1244,27 @@ const createContactLogEventComment: CreateContactLogEventCommentTriggerType =
           ),
           "callback"
         )().then((comment: IContactLogEventComment) => {
-          // Make a shallow copy of the current state contactLogs
-          const contactLogs = [...getState().guider.currentStudent.contactLogs];
+          // Make a deep copy of the current state contactLogs
+
+          const contactLogs = JSON.parse(
+            JSON.stringify(getState().guider.currentStudent.contactLogs)
+          ) as IContactLogs;
+
+          const contactLogResults = contactLogs.results;
 
           // Add the new comment to the current contactEvent
-          const contactEvent = contactLogs.find(
+          const contactEvent = contactLogResults.find(
             (log) => log.id === comment.entry
           );
           contactEvent.comments.push(comment);
 
           // Find the index of the updated contactevent
-          const contactEventIndex = contactLogs.findIndex(
+          const contactEventIndex = contactLogResults.findIndex(
             (log) => log.id === contactEvent.id
           );
 
           // Replace the existing contactEvent at the correct index
-          contactLogs.splice(contactEventIndex, 1, contactEvent);
+          contactLogResults.splice(contactEventIndex, 1, contactEvent);
 
           dispatch({
             type: "SET_CURRENT_GUIDER_STUDENT_PROP",
@@ -1406,11 +1419,18 @@ const editContactLogEventComment: EditContactLogEventCommentTriggerType =
           ),
           "callback"
         )().then((comment: IContactLogEventComment) => {
-          // Make a shallow copy of the current state contactLogs
-          const contactLogs = [...getState().guider.currentStudent.contactLogs];
+          // Make a deep copy of the current state contactLogs
+
+          const contactLogs = JSON.parse(
+            JSON.stringify(getState().guider.currentStudent.contactLogs)
+          ) as IContactLogs;
+
+          const contactLogsResults = [
+            ...getState().guider.currentStudent.contactLogs.results,
+          ];
 
           // find the current contactEvent
-          const contactEvent = contactLogs.find(
+          const contactEvent = contactLogsResults.find(
             (log) => log.id === comment.entry
           );
 
@@ -1423,12 +1443,12 @@ const editContactLogEventComment: EditContactLogEventCommentTriggerType =
           contactEvent.comments.splice(commmentIndex, 1, comment);
 
           // find the index of the current contactEvent
-          const contactEventIndex = contactLogs.findIndex(
+          const contactEventIndex = contactLogsResults.findIndex(
             (log) => log.id === contactEvent.id
           );
 
           // Replace the existing contactEvent at the correct index
-          contactLogs.splice(contactEventIndex, 1, contactEvent);
+          contactLogsResults.splice(contactEventIndex, 1, contactEvent);
 
           dispatch({
             type: "SET_CURRENT_GUIDER_STUDENT_PROP",

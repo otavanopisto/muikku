@@ -100,7 +100,7 @@ export const contactTypesArray = [
 export type ContactTypes = typeof contactTypesArray[number];
 
 /**
- * ContactEvent
+ * IContactLogEvent
  */
 export interface IContactLogEvent {
   id: number;
@@ -111,6 +111,15 @@ export interface IContactLogEvent {
   hasImage: boolean;
   text: string;
   comments?: IContactLogEventComment[];
+}
+
+/**
+ * IContactLogs
+ */
+export interface IContactLogs {
+  totalHitCount: number;
+  firstResult: number;
+  results: IContactLogEvent[];
 }
 
 /**
@@ -145,7 +154,7 @@ export interface GuiderStudentUserProfileType {
   //  vops: VOPSDataType,
   hops: HOPSDataType;
   notifications: GuiderNotificationStudentsDataType;
-  contactLogs: IContactLogEvent[];
+  contactLogs: IContactLogs;
   currentWorkspaces: WorkspaceListType;
   pastWorkspaces: WorkspaceListType;
   activityLogs: ActivityLogType[];
@@ -542,39 +551,50 @@ export default function guider(
     });
   } else if (action.type === "DELETE_CONTACT_EVENT") {
     const contactLogs = state.currentStudent.contactLogs;
-    const newContactLogs = contactLogs.filter(
+    const newContactLogsResults = contactLogs.results.filter(
       (log) => log.id !== action.payload
     );
+    const newContactLogs = contactLogs;
+    newContactLogs.results = newContactLogsResults;
 
     return {
       ...state,
       currentStudent: { ...state.currentStudent, contactLogs: newContactLogs },
     };
   } else if (action.type === "DELETE_CONTACT_EVENT_COMMENT") {
-    // Make a fast deep copy of the contact logs natively since there are no complex types involved
+    // Make a deep copy of the contact logs natively since there are no complex types involved
+
     const contactLogs = JSON.parse(
       JSON.stringify(state.currentStudent.contactLogs)
-    ) as IContactLogEvent[];
+    ) as IContactLogs;
+
+    const contactLogsResults = contactLogs.results;
 
     // Find the current contact log
-    const currentContactLog = contactLogs.find(
+    const currentContactLogResult = contactLogsResults.find(
       (log) => log.id === action.payload.contactLogEntryId
     );
 
     // Get the array index for the current contact log
-    const currentContactLogIndex = contactLogs.findIndex(
-      (log) => log.id === currentContactLog.id
+    const currentContactLogIndex = contactLogsResults.findIndex(
+      (log) => log.id === currentContactLogResult.id
     );
     // Get the index of the comment to be deleted from the current contact log
-    const contactLogCommentIndex = currentContactLog.comments.findIndex(
+    const contactLogCommentIndex = currentContactLogResult.comments.findIndex(
       (comment) => comment.id === action.payload.commentId
     );
 
     // Remove the comment by index
-    currentContactLog.comments.splice(contactLogCommentIndex, 1);
+    currentContactLogResult.comments.splice(contactLogCommentIndex, 1);
 
     // Replace the the contact log entry with the new one
-    contactLogs.splice(currentContactLogIndex, 1, currentContactLog);
+    contactLogsResults.splice(
+      currentContactLogIndex,
+      1,
+      currentContactLogResult
+    );
+
+    contactLogs.results = contactLogsResults;
 
     return {
       ...state,
