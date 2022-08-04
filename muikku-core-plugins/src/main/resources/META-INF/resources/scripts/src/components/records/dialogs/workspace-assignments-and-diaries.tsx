@@ -15,6 +15,7 @@ interface WorkspaceAssignmentsAndDiaryDialogProps {
   workspace: WorkspaceType;
   workspaceId: number;
   i18n: i18nType;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: React.ReactElement<any>;
 }
 
@@ -41,6 +42,7 @@ class WorkspaceAssignmentsAndDiaryDialog extends React.Component<
      * content
      * @param closeDialog closeDialog
      */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const content = (closeDialog: () => any) => (
       <div>
         <AssignmentsAndDiaries
@@ -49,10 +51,17 @@ class WorkspaceAssignmentsAndDiaryDialog extends React.Component<
         />
       </div>
     );
+
+    let title = this.props.workspace.name;
+
+    if (this.props.workspace.nameExtension) {
+      title = `${this.props.workspace.name} (${this.props.workspace.nameExtension})`;
+    }
+
     return (
       <Dialog
         disableScroll={true}
-        title={`${this.props.workspace.name} (${this.props.workspace.nameExtension})`}
+        title={title}
         content={content}
         modifier={["studies"]}
       >

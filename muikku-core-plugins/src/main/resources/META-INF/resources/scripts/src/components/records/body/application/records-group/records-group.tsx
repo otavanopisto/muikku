@@ -83,7 +83,7 @@ export const RecordsGroup: React.FC<RecordsGroupProps> = (props) => {
           <h3 className="application-list__header application-list__header--sorter">
             {recordGroup.groupCurriculumIdentifier
               ? storedCurriculumIndex[recordGroup.groupCurriculumIdentifier]
-              : null}
+              : ""}
           </h3>
           <div
             className={`icon-sort-alpha-${
