@@ -100,7 +100,7 @@ const RecordsAssessmentIndicator: React.FC<RecordsAssessmentIndicatorProps> = (
                     "plugin.records.workspace.evaluated",
                     i18n.time.format(assessment.date)
                   ) + getShortenGradeExtension(assessment.grade)
-                : ""}
+                : i18n.text.get("plugin.records.workspace.notEvaluated")}
             </span>
           }
         >
@@ -108,7 +108,6 @@ const RecordsAssessmentIndicator: React.FC<RecordsAssessmentIndicatorProps> = (
             className={`application-list__indicator-badge application-list__indicator-badge--course ${
               assessment.state === "unassessed" ? "state-UNASSESSED" : ""
             }`}
-            style={{ color: "#000" }}
           >
             -
           </span>
