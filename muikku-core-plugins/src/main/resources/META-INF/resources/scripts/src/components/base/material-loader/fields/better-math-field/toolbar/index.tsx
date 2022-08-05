@@ -131,7 +131,7 @@ export default class MathFieldToolbar extends React.Component<
               key={c.label}
             >
               <div className={this.props.className + "-symbol-group-label"}>
-                {(this.props.i18n as any)[c.label]}
+                {(this.props.i18n as any)[c.label]}:
               </div>
               <div className={this.props.className + "-symbol-group-content"}>
                 {(c.characters as any)
@@ -191,23 +191,25 @@ export default class MathFieldToolbar extends React.Component<
             </button>
           )}
           {this.props.isMathExpanded && (
-            <div className={this.props.className + "-math-formula-group"}>
-              <div className={this.props.className + "-math-label"}>
-                {this.props.i18n.operators}
+            <div className={this.props.className + "-symbol-group"}>
+              <div className={this.props.className + "-symbol-group-label"}>
+                {this.props.i18n.operators}:
               </div>
-              {this.props.isMathExpanded &&
-                latexCommands.map((c: LatexCommandType) => (
-                  <ToolbarButton
-                    key={c.action}
-                    className={this.props.className + "-math-operation"}
-                    image={c.svg}
-                    onTrigger={this.triggerCommandOn.bind(this, c)}
-                    tooltipClassName={
-                      this.props.className + "-math-operation-tooltip"
-                    }
-                    tooltip={c.action}
-                  />
-                ))}
+              <div className={this.props.className + "-symbol-group-content"}>
+                {this.props.isMathExpanded &&
+                  latexCommands.map((c: LatexCommandType) => (
+                    <ToolbarButton
+                      key={c.action}
+                      className={this.props.className + "-math-operation"}
+                      image={c.svg}
+                      onTrigger={this.triggerCommandOn.bind(this, c)}
+                      tooltipClassName={
+                        this.props.className + "-math-operation-tooltip"
+                      }
+                      tooltip={c.action}
+                    />
+                  ))}
+              </div>
             </div>
           )}
         </div>
