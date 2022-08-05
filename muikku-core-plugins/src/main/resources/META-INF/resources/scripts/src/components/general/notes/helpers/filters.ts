@@ -63,19 +63,15 @@ export const sortByNotesItemPriority = (
   notesItemList: NotesItemRead[],
   filters: NotesItemFilters
 ) => {
-  /**
-   * Default order is always follow
-   */
+  // Default order is always follow
   let order: string[] = [
     NotesItemPriority.HIGH,
     NotesItemPriority.NORMAL,
     NotesItemPriority.LOW,
   ];
 
-  /**
-   * If any of priority sorters are active default ordering
-   * is reseted and build depending what sorters are active
-   */
+  // If any of priority sorters are active default ordering
+  // is reseted and build depending what sorters are active
   if (filters.high || filters.normal || filters.low) {
     order = [];
 
@@ -90,10 +86,8 @@ export const sortByNotesItemPriority = (
     }
   }
 
-  /**
-   * This finds those deactive priorites sorters and pushes those to ordering array
-   * which is needed to correctly sort whole notesItem list
-   */
+  // This finds those deactive priorites sorters and pushes those to ordering array
+  // which is needed to correctly sort whole notesItem list
   const missing = findDeselectedSorterItems(order);
 
   if (missing && missing.length > 0) {
@@ -165,23 +159,15 @@ export const sortNotesItemsBy = (
 ): NotesItemRead[] => {
   let { pinnedList, nonPinnedList } = sortByPinned(notesItemList);
 
-  /**
-   * Filters notesItems by creator
-   */
+  // Filters notesItems by creator
   if (filters.own || filters.guider) {
     pinnedList = filterByCreator(pinnedList, filters, userId);
     nonPinnedList = filterByCreator(nonPinnedList, filters, userId);
   }
 
-  /**
-   * Sorts by default priority order or by active priority order
-   */
+  // Sorts by default priority order or by active priority order
   pinnedList = sortByNotesItemPriority(pinnedList, filters);
   nonPinnedList = sortByNotesItemPriority(nonPinnedList, filters);
-
-  /* if (filtters.own) {
-      notesItemListSorted = sortByMadeByMe(notesItemListSorted);
-    } */
 
   return [...pinnedList, ...nonPinnedList];
 };

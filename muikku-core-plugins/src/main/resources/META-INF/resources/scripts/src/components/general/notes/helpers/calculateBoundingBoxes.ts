@@ -6,11 +6,13 @@ import * as React from "react";
  * @param currentParentElement children
  */
 const calculateBoundingBoxes = (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: any,
   currentParentElement: React.MutableRefObject<HTMLDivElement>
 ) => {
   const boundingBoxes: Record<string, DOMRect> = {};
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   React.Children.forEach(children, (child: any) => {
     const domNode = child.ref.current;
 

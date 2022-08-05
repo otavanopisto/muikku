@@ -26,7 +26,7 @@ const NotesItemListFiltters: React.FC<NotesItemListFilttersProps> = (props) => {
   const { filters, onFilttersChange, usePlace } = props;
 
   /**
-   * handleFiltterChipClick
+   * Handles filter chip click
    * @param name name
    */
   const handleFiltterChipClick = (name: keyof NotesItemFilters) => {
@@ -41,7 +41,7 @@ const NotesItemListFiltters: React.FC<NotesItemListFilttersProps> = (props) => {
   };
 
   /**
-   * handleFiltersChange
+   * Handles checkbox change
    * @param name name
    */
   const handleCheckboxesChange =

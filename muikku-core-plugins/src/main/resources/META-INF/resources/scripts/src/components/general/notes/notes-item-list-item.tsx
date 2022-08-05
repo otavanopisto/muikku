@@ -196,7 +196,9 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
       if (startDate && dueDate) {
         dateOrDateRange = (
           <span className="notes__item-dates-date-range">
-            <span className="notes__item-dates-text">Voimassa</span>
+            <span className="notes__item-dates-text">
+              {props.i18n.text.get("plugin.records.notes.dates.active")}
+            </span>
             <span className="notes__item-dates-date">
               {moment(startDate).format("l")} - {moment(dueDate).format("l")}
             </span>
@@ -205,7 +207,9 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
       } else if (startDate) {
         dateOrDateRange = (
           <span className="notes__item-dates-date-range">
-            <span className="notes__item-dates-text">Voimassa</span>
+            <span className="notes__item-dates-text">
+              {props.i18n.text.get("plugin.records.notes.dates.active")}
+            </span>
             <span className="notes__item-dates-date">
               {moment(startDate).format("l")}
             </span>
@@ -215,7 +219,9 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
       } else if (dueDate) {
         dateOrDateRange = (
           <span className="notes__item-dates-date-range">
-            <span className="notes__item-dates-text">Voimassa</span>
+            <span className="notes__item-dates-text">
+              {props.i18n.text.get("plugin.records.notes.dates.active")}
+            </span>
             <span className="notes__item-dates-indicator icon-long-arrow-right"></span>
             <span className="notes__item-dates-date">
               {moment(dueDate).format("l")}
@@ -278,7 +284,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
                   NotesItemStatus.APPROVAL_PENDING
                 )}
               >
-                Pyydä arviointia
+                {props.i18n.text.get("plugin.records.notes.status.askapproval")}
               </Button>
             </div>
           );
@@ -290,7 +296,9 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
                     NotesItemStatus.APPROVED
                   )}
                 >
-                  Merkkaa tehdyksi
+                  {props.i18n.text.get(
+                    "plugin.records.notes.status.markasdone"
+                  )}
                 </Button>
               </div>
             );
@@ -304,7 +312,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
                   NotesItemStatus.ONGOING
                 )}
               >
-                Peruuta pyyntö
+                {props.i18n.text.get("plugin.records.notes.status.cancel")}
               </Button>
             </div>
           );
@@ -318,7 +326,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
                   NotesItemStatus.ONGOING
                 )}
               >
-                Kesken?
+                {props.i18n.text.get("plugin.records.notes.status.ongoing")}?
               </Button>
             </div>
           );
@@ -335,14 +343,14 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
                   NotesItemStatus.APPROVED
                 )}
               >
-                Hyväksy
+                {props.i18n.text.get("plugin.records.notes.status.approve")}
               </Button>
               <Button
                 onClick={handleUpdateNotesItemStatusClick(
                   NotesItemStatus.ONGOING
                 )}
               >
-                Peruuta pyyntö
+                {props.i18n.text.get("plugin.records.notes.status.cancel")}
               </Button>
             </div>
           );
@@ -355,7 +363,9 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
                   NotesItemStatus.APPROVAL_PENDING
                 )}
               >
-                Peruuta arviointi
+                {props.i18n.text.get(
+                  "plugin.records.notes.status.cancelapproval"
+                )}
               </Button>
             </div>
           );
@@ -463,6 +473,6 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
   }
 );
 
-NotesListItem.displayName = "JournalListItem";
+NotesListItem.displayName = "NotesListItem";
 
 export default React.memo(NotesListItem);

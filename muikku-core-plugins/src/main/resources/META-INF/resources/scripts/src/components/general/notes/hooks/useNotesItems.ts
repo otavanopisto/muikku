@@ -46,14 +46,10 @@ export const useNotesItem = (
       setNotesItem((notesItem) => ({ ...notesItem, isLoadingList: true }));
 
       try {
-        /**
-         * Sleeper to delay data fetching if it happens faster than 1s
-         */
+        // Sleeper to delay data fetching if it happens faster than 1s
         const sleepPromise = await sleep(1000);
 
-        /**
-         * Loaded notesItem list
-         */
+        // Loaded notesItem list
         const [loadedNotesItemList, loadedArchivedNotesItemList] =
           await Promise.all([
             (async () => {
@@ -116,9 +112,7 @@ export const useNotesItem = (
    * @returns Sorted notesItems list in default priority order
    */
   const setToDefaultSortingOrder = (notesItemList: NotesItemRead[]) => {
-    /**
-     * Default sort order
-     */
+    // Default sort order
     const order: string[] = [
       NotesItemPriority.HIGH,
       NotesItemPriority.NORMAL,
@@ -143,24 +137,18 @@ export const useNotesItem = (
     setNotesItem((notesItems) => ({ ...notesItems, isUpdatingList: true }));
 
     try {
-      /**
-       * Creating and getting created notesItem
-       */
+      // Creating and getting created notesItem
       const createdNotesItem = <NotesItemRead>(
         await promisify(mApi().notes.note.create(newNotesItem), "callback")()
       );
 
       if (createdNotesItem.isArchived) {
-        /**
-         * Initializing list
-         */
+        // Initializing list
         const updatedArchivedNotesItemList = [
           ...notesItems.notesArchivedItemList,
         ];
 
-        /**
-         * Update list
-         */
+        // Update list
         updatedArchivedNotesItemList.push(createdNotesItem);
 
         setNotesItem((notesItems) => ({
@@ -176,14 +164,10 @@ export const useNotesItem = (
           "success"
         );
       } else {
-        /**
-         * Initializing list
-         */
+        // Initializing list
         const updatedNotesItemList = [...notesItems.notesItemList];
 
-        /**
-         * Update list
-         */
+        // Update list
         updatedNotesItemList.push(createdNotesItem);
 
         setNotesItem((notesItem) => ({
@@ -226,9 +210,7 @@ export const useNotesItem = (
     setNotesItem((notesItems) => ({ ...notesItems, isUpdatingList: true }));
 
     try {
-      /**
-       * Updating and getting updated notesItem
-       */
+      // Updating and getting updated notesItem
       const updatedNotesItem = <NotesItemRead>(
         await promisify(
           mApi().notes.note.update(notesItemId, notesItemToBeUpdated),
@@ -236,21 +218,15 @@ export const useNotesItem = (
         )()
       );
 
-      /**
-       * Initializing list
-       */
+      // Initializing list
       const updatedNotesItemList = [...notesItems.notesItemList];
 
-      /**
-       * Finding index of notesItem which got updated
-       */
+      // Finding index of notesItem which got updated
       const indexOfOldNote = updatedNotesItemList.findIndex(
         (j) => j.id === notesItemId
       );
 
-      /**
-       * Splice it out and replace with updated one
-       */
+      // Splice it out and replace with updated one
       updatedNotesItemList.splice(indexOfOldNote, 1, updatedNotesItem);
 
       setNotesItem((notesItems) => ({
@@ -291,18 +267,14 @@ export const useNotesItem = (
   ) => {
     setNotesItem((notesItems) => ({ ...notesItems, isUpdatingList: true }));
 
-    /**
-     * Creating notesItem object where pinned property has changed
-     */
+    // Creating notesItem object where pinned property has changed
     const notesItemToPin = {
       ...notesItem,
       pinned: !notesItem.pinned,
     };
 
     try {
-      /**
-       * Updating and getting updated noteItem
-       */
+      // Updating and getting updated noteItem
       const updatedNotesItem = <NotesItemRead>(
         await promisify(
           mApi().notes.note.update(notesItemId, notesItemToPin),
@@ -310,21 +282,15 @@ export const useNotesItem = (
         )()
       );
 
-      /**
-       * Initializing list
-       */
+      // Initializing list
       const updatedNotesItemList = [...notesItems.notesItemList];
 
-      /**
-       * Finding index of notesItem which got updated
-       */
+      // Finding index of notesItem which got updated
       const indexOfOldNote = updatedNotesItemList.findIndex(
         (j) => j.id === notesItemId
       );
 
-      /**
-       * Splice it out and replace with updated one
-       */
+      // Splice it out and replace with updated one
       updatedNotesItemList.splice(indexOfOldNote, 1, updatedNotesItem);
 
       setNotesItem((notesItems) => ({
@@ -359,9 +325,7 @@ export const useNotesItem = (
     setNotesItem((notesItems) => ({ ...notesItems, isUpdatingList: true }));
 
     try {
-      /**
-       * Updating and getting updated notesItem
-       */
+      // Updating and getting updated notesItem
       const updatedNotesItem = <NotesItemRead>(
         await promisify(
           mApi().notes.note.toggleArchived.update(notesItemId),
@@ -369,24 +333,18 @@ export const useNotesItem = (
         )()
       );
 
-      /**
-       * Initializing list
-       */
+      // Initializing list
       const updatedNotesItemList = [...notesItems.notesItemList];
       const updatedNotesArchivedItemList = [
         ...notesItems.notesArchivedItemList,
       ];
 
-      /**
-       * Finding index of notesItem that was just updated
-       */
+      // Finding index of notesItem that was just updated
       const indexOfOldNote = updatedNotesItemList.findIndex(
         (j) => j.id === notesItemId
       );
 
-      /**
-       * Update lists by removing and adding updated notesItem
-       */
+      // Update lists by removing and adding updated notesItem
       updatedNotesItemList.splice(indexOfOldNote, 1);
       updatedNotesArchivedItemList.push(updatedNotesItem);
 
@@ -430,9 +388,7 @@ export const useNotesItem = (
     setNotesItem((notesItems) => ({ ...notesItems, isUpdatingList: true }));
 
     try {
-      /**
-       * Updating and getting updated notesItem
-       */
+      // Updating and getting updated notesItem
       const updatedNotesItem = <NotesItemRead>(
         await promisify(
           mApi().notes.note.toggleArchived.update(notesItemId),
@@ -440,24 +396,18 @@ export const useNotesItem = (
         )()
       );
 
-      /**
-       * Initializing list
-       */
+      // Initializing list
       const updatedNotesItemList = [...notesItems.notesItemList];
       const updatedNotesArchivedItemList = [
         ...notesItems.notesArchivedItemList,
       ];
 
-      /**
-       * Finding index of notesItem that was just updated
-       */
+      // Finding index of notesItem that was just updated
       const indexOfOldNote = updatedNotesArchivedItemList.findIndex(
         (j) => j.id === notesItemId
       );
 
-      /**
-       * Update lists by removing and adding updated notesItem
-       */
+      // Update lists by removing and adding updated notesItem
       updatedNotesItemList.push(updatedNotesItem);
       updatedNotesArchivedItemList.splice(indexOfOldNote, 1);
 
@@ -508,9 +458,7 @@ export const useNotesItem = (
 
       notesItemToUpdate.status = newStatus;
 
-      /**
-       * Updating and getting updated journal
-       */
+      // Updating and getting updated journal
       const updatedNotesItem = <NotesItemRead>(
         await promisify(
           mApi().notes.note.update(notesItemId, notesItemToUpdate),
@@ -518,9 +466,7 @@ export const useNotesItem = (
         )()
       );
 
-      /**
-       * Initializing list
-       */
+      // Initializing list
       const updatedNotesItemList = [...notesItems.notesItemList];
 
       updatedNotesItemList.splice(indexOfNotesItem, 1, updatedNotesItem);

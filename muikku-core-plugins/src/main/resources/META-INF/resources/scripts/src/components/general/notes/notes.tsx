@@ -103,7 +103,7 @@ const Notes: React.FC<NotesProps> = (props) => {
   };
 
   /**
-   * handleFilttersChange
+   * Handles active filters changes
    * @param updatedFilters name
    */
   const handleActiveFiltersChange = (updatedFilters: NotesItemFilters) => {
@@ -111,7 +111,7 @@ const Notes: React.FC<NotesProps> = (props) => {
   };
 
   /**
-   * handleFilttersChange
+   * Handles non active filters changes
    * @param updatedFilters name
    */
   const handleNonActiveFiltersChange = (updatedFilters: NotesItemFilters) => {
