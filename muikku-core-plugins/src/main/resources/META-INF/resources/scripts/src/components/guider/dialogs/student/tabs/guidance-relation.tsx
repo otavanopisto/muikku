@@ -1,7 +1,9 @@
 import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
-import { connect } from "react-redux";
+import { connect, Dispatch } from "react-redux";
+import { bindActionCreators } from "redux";
+import { AnyActionType } from "~/actions";
 import ApplicationSubPanel, {
   ApplicationSubPanelViewHeader,
   ApplicationSubPanelItem,
@@ -10,6 +12,13 @@ import { GuiderStudentUserProfileType } from "~/reducers/main-function/guider";
 import ContactEvent from "./contact-events/contact-event";
 import NewContactEvent from "./contact-events/editors/new-event";
 import { ButtonPill } from "~/components/general/button";
+import PagerV2 from "~/components/general/pagerV2";
+import {
+  loadStudentGuiderRelations,
+  LoadStudentDataTriggerType,
+  loadStudentContactLogs,
+  LoadContactLogsTriggerType,
+} from "~/actions/main-function/guider";
 
 /**
  * GuidanceRelationProps
@@ -17,6 +26,8 @@ import { ButtonPill } from "~/components/general/button";
 interface GuidanceRelationProps {
   i18n: i18nType;
   currentStudent: GuiderStudentUserProfileType;
+  loadStudentGuiderRelations: LoadStudentDataTriggerType;
+  loadStudentContactLogs: LoadContactLogsTriggerType;
 }
 
 /**
@@ -26,12 +37,25 @@ interface GuidanceRelationProps {
  */
 const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
   const { i18n, currentStudent } = props;
+  const [currentPage, setCurrentPage] = React.useState<number>(1);
+  const itemsPerPage = 10;
 
   if (!currentStudent) {
     return null;
   }
 
+  const handlePagerChange = (selectedItem: { selected: number }) => {
+    props.loadStudentContactLogs(
+      currentStudent.basic.userEntityId,
+      10,
+      selectedItem.selected,
+      true
+    );
+    setCurrentPage(selectedItem.selected);
+  };
+
   const { contactLogs, contactLogState, basic } = props.currentStudent;
+  const pages = Math.ceil( contactLogs && contactLogs.totalHitCount / itemsPerPage);
 
   return (
     <ApplicationSubPanel>
@@ -83,13 +107,25 @@ const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
             {contactLogState && contactLogState === "LOADING" ? (
               <div className="loader-empty" />
             ) : contactLogs && contactLogs.results.length > 0 ? (
-              contactLogs.results.map((contactEvent) => (
-                <ContactEvent
-                  key={"contact-event-" + contactEvent.id}
-                  studentId={basic.userEntityId}
-                  event={contactEvent}
+              <>
+                {contactLogs.results.map((contactEvent) => (
+                  <ContactEvent
+                    key={"contact-event-" + contactEvent.id}
+                    studentId={basic.userEntityId}
+                    event={contactEvent}
+                  />
+                ))}
+                <PagerV2
+                  previousLabel=""
+                  nextLabel=""
+                  breakLabel="..."
+                  forcePage={currentPage}
+                  pageCount={pages}
+                  onPageChange={handlePagerChange}
+                  marginPagesDisplayed={1}
+                  pageRangeDisplayed={2}
                 />
-              ))
+              </>
             ) : (
               <div className="empty">
                 {i18n.text.get("plugin.guider.user.contactLog.empty")}
@@ -114,4 +150,18 @@ function mapStateToProps(state: StateType) {
   };
 }
 
-export default connect(mapStateToProps)(GuidanceRelation);
+/**
+ * mapDispatchToProps
+ * @param dispatch action dispatch
+ */
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+  return bindActionCreators(
+    {
+      loadStudentGuiderRelations,
+      loadStudentContactLogs,
+    },
+    dispatch
+  );
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(GuidanceRelation);

@@ -212,6 +212,18 @@ export interface LoadStudentTriggerType {
 export interface LoadStudentDataTriggerType {
   (id: number, forceLoad?: boolean): AnyActionType;
 }
+
+/**
+ * action creator type
+ */
+export interface LoadContactLogsTriggerType {
+  (
+    id: number,
+    resultsPerPage: number,
+    page: number,
+    forceLoad?: boolean
+  ): AnyActionType;
+}
 /**
  * action creator type
  */
@@ -928,6 +940,85 @@ const loadStudentGuiderRelations: LoadStudentDataTriggerType =
           });
         });
 
+        dispatch({
+          type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+          payload: {
+            property: "contactLogState",
+            value: <LoadingState>"READY",
+          },
+        });
+
+        dispatch({
+          type: "UNLOCK_TOOLBAR",
+          payload: null,
+        });
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          notificationActions.displayNotification(
+            getState().i18n.text.get("plugin.guider.errormessage.user"),
+            "error"
+          )
+        );
+        dispatch({
+          type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+          payload: {
+            property: "contactLogState",
+            value: <LoadingState>"ERROR",
+          },
+        });
+        dispatch({
+          type: "UNLOCK_TOOLBAR",
+          payload: null,
+        });
+      }
+    };
+  };
+
+/**
+ * loadStudentContactLogs thunk action creator
+ * @param id student id
+ * @param resultsPerPage results per page
+ * @param page results per page
+ * @param forceLoad forces the load
+ * @returns a thunk function for loading guidance relations tab
+ */
+const loadStudentContactLogs: LoadContactLogsTriggerType =
+  function loadStudentContactLogs(id, resultsPerPage, page, forceLoad) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      try {
+        const contactLogsLoaded =
+          getState().guider.currentStudent.contactLogState === "READY";
+
+        if (contactLogsLoaded && !forceLoad) {
+          return;
+        }
+
+        dispatch({
+          type: "LOCK_TOOLBAR",
+          payload: null,
+        });
+        dispatch({
+          type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+          payload: {
+            property: "contactLogState",
+            value: <LoadingState>"LOADING",
+          },
+        });
+        await promisify(
+          mApi().guider.users.contactLog.read(id, { resultsPerPage, page }),
+          "callback"
+        )().then((contactLogs: IContactLogs) => {
+          dispatch({
+            type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+            payload: { property: "contactLogs", value: contactLogs },
+          });
+        });
         dispatch({
           type: "SET_CURRENT_GUIDER_STUDENT_PROP",
           payload: {
@@ -2144,6 +2235,7 @@ export {
   loadStudent,
   loadStudentHistory,
   loadStudentGuiderRelations,
+  loadStudentContactLogs,
   createContactLogEvent,
   deleteContactLogEvent,
   editContactLogEvent,

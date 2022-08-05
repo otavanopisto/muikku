@@ -25,6 +25,8 @@ import {
   LoadStudentTriggerType,
   loadStudentGuiderRelations,
   LoadStudentDataTriggerType,
+  loadStudentContactLogs,
+  LoadContactLogsTriggerType,
   UpdateCurrentStudentHopsPhaseTriggerType,
   updateCurrentStudentHopsPhase,
 } from "~/actions/main-function/guider";
@@ -53,6 +55,7 @@ interface StudentDialogProps {
   status: StatusType;
   loadStudentHistory: LoadStudentTriggerType;
   loadStudentGuiderRelations: LoadStudentDataTriggerType;
+  loadStudentContactLogs: LoadContactLogsTriggerType;
   updateCurrentStudentHopsPhase: UpdateCurrentStudentHopsPhaseTriggerType;
 }
 
@@ -113,7 +116,7 @@ class StudentDialog extends React.Component<
         break;
       }
       case "GUIDANCE_RELATIONS": {
-        this.props.loadStudentGuiderRelations(studentUserEntityId);
+        this.props.loadStudentContactLogs(studentUserEntityId, 10, 1);
         break;
       }
     }
@@ -315,6 +318,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     {
       loadStudentHistory,
+      loadStudentContactLogs,
       loadStudentGuiderRelations,
       updateCurrentStudentHopsPhase,
     },
