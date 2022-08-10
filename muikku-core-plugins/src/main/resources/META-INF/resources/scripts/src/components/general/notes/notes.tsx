@@ -14,7 +14,7 @@ import { i18nType } from "~/reducers/base/i18n";
 import NotesItemList from "./notes-item-list";
 import { ButtonPill } from "~/components/general/button";
 import NotesItemNew from "./notes-item-new";
-import NotesItemListFiltters from "./notes-item-list-filtters";
+import NotesItemListFilters from "./notes-item-list-filters";
 
 /**
  * NotesProps
@@ -144,7 +144,7 @@ const Notes: React.FC<NotesProps> = (props) => {
               </NotesItemNew>
             </div>
 
-            <NotesItemListFiltters
+            <NotesItemListFilters
               i18n={i18n}
               usePlace={usePlace}
               filters={activeNoteFilters}
@@ -191,7 +191,7 @@ const Notes: React.FC<NotesProps> = (props) => {
                 />
               </NotesItemNew>
             </div>
-            <NotesItemListFiltters
+            <NotesItemListFilters
               i18n={props.i18n}
               usePlace={usePlace}
               filters={activeNoteFilters}

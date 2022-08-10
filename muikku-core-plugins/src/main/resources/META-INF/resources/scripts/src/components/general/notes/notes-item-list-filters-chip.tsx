@@ -18,11 +18,11 @@ const defaultProps = {
 };
 
 /**
- * Creater NotesItem list component
+ * Creater NotesItemPriorityChip component
  * @param props props
  * @returns JSX.Element
  */
-const NotesItemPriorityChip: React.FC<NotesItemListFiltterChipProps> = (
+const NotesItemFilterChip: React.FC<NotesItemListFiltterChipProps> = (
   props
 ) => {
   props = { ...defaultProps, ...props };
@@ -59,4 +59,4 @@ const NotesItemPriorityChip: React.FC<NotesItemListFiltterChipProps> = (
   );
 };
 
-export default NotesItemPriorityChip;
+export default NotesItemFilterChip;

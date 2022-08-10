@@ -2,7 +2,7 @@ import * as React from "react";
 import { NotesLocation, NotesItemFilters } from "~/@types/notes";
 import { IconButton } from "~/components/general/button";
 import Dropdown from "~/components/general/dropdown";
-import NotesItemPriorityChip from "./notes-item-list-filtters-chip";
+import NotesItemFilterChip from "./notes-item-list-filters-chip";
 import { i18nType } from "~/reducers/base/i18n";
 
 import "~/sass/elements/filter.scss";
@@ -22,14 +22,14 @@ interface NotesItemListFilttersProps {
  * @param props props
  * @returns JSX.Element
  */
-const NotesItemListFiltters: React.FC<NotesItemListFilttersProps> = (props) => {
+const NotesItemListFilters: React.FC<NotesItemListFilttersProps> = (props) => {
   const { filters, onFilttersChange, usePlace } = props;
 
   /**
    * Handles filter chip click
    * @param name name
    */
-  const handleFiltterChipClick = (name: keyof NotesItemFilters) => {
+  const handleFilterChipClick = (name: keyof NotesItemFilters) => {
     const updatedFilters: NotesItemFilters = {
       ...filters,
       [name]: !filters[name],
@@ -60,30 +60,30 @@ const NotesItemListFiltters: React.FC<NotesItemListFilttersProps> = (props) => {
   return (
     <>
       <div className="notes__toolbar-section">
-        <NotesItemPriorityChip
+        <NotesItemFilterChip
           label={props.i18n.text.get(
             "plugin.records.notes.priority.high.label"
           )}
           modifier="note-priority-high"
           activeModifier={filters.high ? "active" : null}
           name="high"
-          onChipClick={handleFiltterChipClick}
+          onChipClick={handleFilterChipClick}
         />
-        <NotesItemPriorityChip
+        <NotesItemFilterChip
           label={props.i18n.text.get(
             "plugin.records.notes.priority.normal.label"
           )}
           modifier="note-priority-normal"
           activeModifier={filters.normal ? "active" : null}
           name="normal"
-          onChipClick={handleFiltterChipClick}
+          onChipClick={handleFilterChipClick}
         />
-        <NotesItemPriorityChip
+        <NotesItemFilterChip
           label={props.i18n.text.get("plugin.records.notes.priority.low.label")}
           modifier="note-priority-low"
           activeModifier={filters.low ? "active" : null}
           name="low"
-          onChipClick={handleFiltterChipClick}
+          onChipClick={handleFilterChipClick}
         />
       </div>
       <div className="notes__toolbar-section">
@@ -140,4 +140,4 @@ const NotesItemListFiltters: React.FC<NotesItemListFilttersProps> = (props) => {
     </>
   );
 };
-export default NotesItemListFiltters;
+export default NotesItemListFilters;
