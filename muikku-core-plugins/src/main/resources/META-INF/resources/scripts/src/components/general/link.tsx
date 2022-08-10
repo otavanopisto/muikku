@@ -5,6 +5,7 @@
  */
 
 import * as React from "react";
+import { HTMLAttributeAnchorTarget } from "react";
 import { Redirect } from "react-router-dom";
 import "~/sass/elements/link.scss";
 import { scrollToSection } from "~/util/modifiers";
@@ -184,6 +185,28 @@ export default class Link extends React.Component<LinkProps, LinkState> {
   }
 
   /**
+   * renderAccessibilityIndicator
+   * @param target target
+   * @returns target accessibility indicator
+   */
+  renderAccessibilityIndicatorByTarget = (
+    target: HTMLAttributeAnchorTarget
+  ) => {
+    switch (target) {
+      case "_blank":
+        return (
+          <>
+            <span className="icon-external-link"></span>
+            <span className="visually-hidden">Opens to new tab</span>
+          </>
+        );
+
+      default:
+        return null;
+    }
+  };
+
+  /**
    * Component render method
    * @returns JSX.Element
    */
@@ -211,6 +234,35 @@ export default class Link extends React.Component<LinkProps, LinkState> {
       (typeof elementProps.tabIndex === "undefined" && Element !== "a")
     ) {
       elementProps.tabIndex = 0;
+    }
+
+    if (Element === "a") {
+      return (
+        <Element
+          ref="element"
+          {...elementProps}
+          onKeyDown={this.onKeyDown}
+          className={
+            (this.props.className || "") +
+            (this.state.active ? " active" : "") +
+            (this.props.disabled ? " disabled" : "")
+          }
+          onClick={this.onClick}
+          onTouchStart={this.onTouchStart}
+          onTouchEnd={this.onTouchEnd}
+          onTouchMove={this.onTouchMove}
+        >
+          {elementProps.children}
+          {this.props.target ? (
+            this.renderAccessibilityIndicatorByTarget(this.props.target)
+          ) : this.props.openInNewTab ? (
+            <>
+              <span className="icon-external-link"></span>
+              <span className="visually-hidden">Opens to new tab</span>
+            </>
+          ) : null}
+        </Element>
+      );
     }
 
     return (

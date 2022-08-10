@@ -40,7 +40,9 @@ export default class Link extends React.Component<
    * @param target target
    * @returns target accessibility indicator
    */
-  renderAccessibilityIndicator = (target: HTMLAttributeAnchorTarget) => {
+  renderAccessibilityIndicatorByTarget = (
+    target: HTMLAttributeAnchorTarget
+  ) => {
     switch (target) {
       case "_blank":
         return (
@@ -102,7 +104,8 @@ export default class Link extends React.Component<
         if (props.target) {
           return (
             <Tag {...props}>
-              {children} {this.renderAccessibilityIndicator(props.target)}
+              {children}{" "}
+              {this.renderAccessibilityIndicatorByTarget(props.target)}
             </Tag>
           );
         }
