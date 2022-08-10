@@ -1,4 +1,5 @@
 import * as React from "react";
+import { HTMLAttributeAnchorTarget } from "react";
 import { i18nType } from "~/reducers/base/i18n";
 import {
   HTMLtoReactComponent,
@@ -35,6 +36,26 @@ export default class Link extends React.Component<
   }
 
   /**
+   * renderAccessibilityIndicator
+   * @param target target
+   * @returns target accessibility indicator
+   */
+  renderAccessibilityIndicator = (target: HTMLAttributeAnchorTarget) => {
+    switch (target) {
+      case "_blank":
+        return (
+          <>
+            <span className="icon-external-link"></span>
+            <span className="visually-hidden">Opens to new tab</span>
+          </>
+        );
+
+      default:
+        return null;
+    }
+  };
+
+  /**
    * render
    */
   render() {
@@ -67,6 +88,26 @@ export default class Link extends React.Component<
         if (!isAbsolute) {
           props.href = this.props.path + "/" + props.href;
         }
+      },
+
+      /**
+       * processingFunction
+       * @param Tag Tag
+       * @param props props
+       * @param children children
+       * @param element element
+       * @returns any
+       */
+      processingFunction: (Tag, props, children, element) => {
+        if (props.target) {
+          return (
+            <Tag {...props}>
+              {children} {this.renderAccessibilityIndicator(props.target)}
+            </Tag>
+          );
+        }
+
+        return <Tag {...props}>{children}</Tag>;
       },
     });
     return HTMLtoReactComponent(this.props.element, newRules);
