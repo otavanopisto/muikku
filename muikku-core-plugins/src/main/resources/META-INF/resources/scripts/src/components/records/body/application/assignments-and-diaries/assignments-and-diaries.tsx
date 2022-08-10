@@ -62,24 +62,28 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
   const { evaluatedAssignmentsData } = useEvaluatedAssignments(
     workspaceId,
     activeTab,
+    i18n,
     displayNotification
   );
 
   const { excerciseAssignmentsData } = useExcerciseAssignments(
     workspaceId,
     activeTab,
+    i18n,
     displayNotification
   );
 
   const { compositeReplyData } = useCompositeReply(
     userEntityId,
     workspaceId,
+    i18n,
     displayNotification
   );
 
   const { journalsData } = useJournals(
     userEntityId,
     workspaceId,
+    i18n,
     displayNotification
   );
 

@@ -3,6 +3,7 @@ import mApi from "~/lib/mApi";
 import promisify from "~/util/promisify";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import { WorkspaceJournalType } from "~/reducers/workspaces";
+import { i18nType } from "~/reducers/base/i18n";
 
 /**
  * UseFollowUpGoalsState
@@ -24,12 +25,14 @@ const initialState: UseDiariesState = {
  * Custom hook for student study hours
  * @param userEntityId userEntityId
  * @param workspaceId workspaceId
+ * @param i18n i18nType
  * @param displayNotification displayNotification
  * @returns student study hours
  */
 export const useJournals = (
   userEntityId: number,
   workspaceId: number,
+  i18n: i18nType,
   displayNotification: DisplayNotificationTriggerType
 ) => {
   const [journalsData, setJournalsData] = React.useState(initialState);
@@ -81,7 +84,12 @@ export const useJournals = (
         }
       } catch (err) {
         if (!isCancelled) {
-          displayNotification(`Hups errori, ${err.message}`, "error");
+          displayNotification(
+            `${i18n.text.get(
+              "plugin.records.errormessage.workspaceDiaryLoadFailed"
+            )}, ${err.message}`,
+            "error"
+          );
           setJournalsData((journalsData) => ({
             ...journalsData,
             isLoading: false,
@@ -95,7 +103,7 @@ export const useJournals = (
     return () => {
       isCancelled = true;
     };
-  }, [userEntityId, workspaceId, displayNotification]);
+  }, [userEntityId, workspaceId, displayNotification, i18n]);
 
   return {
     journalsData,
