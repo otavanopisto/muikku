@@ -26,6 +26,7 @@ import {
 interface GuidanceRelationProps {
   i18n: i18nType;
   currentStudent: GuiderStudentUserProfileType;
+  contactLogsPerPage: number;
   loadStudentGuiderRelations: LoadStudentDataTriggerType;
   loadStudentContactLogs: LoadContactLogsTriggerType;
 }
@@ -36,18 +37,22 @@ interface GuidanceRelationProps {
  * @returns JSX.element
  */
 const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
-  const { i18n, currentStudent } = props;
-  const [currentPage, setCurrentPage] = React.useState<number>(1);
-  const itemsPerPage = 10;
+  const { i18n, currentStudent, contactLogsPerPage } = props;
+  const [currentPage, setCurrentPage] = React.useState<number>(0);
 
   if (!currentStudent) {
     return null;
   }
 
-  const handlePagerChange = (selectedItem: { selected: number }) => {
+  /**
+   * HandlePageChange handles page change
+   * @param selectedItem selected item
+   * @param selectedItem.selected selected paging item number
+   */
+  const handlePageChange = (selectedItem: { selected: number }) => {
     props.loadStudentContactLogs(
       currentStudent.basic.userEntityId,
-      10,
+      contactLogsPerPage,
       selectedItem.selected,
       true
     );
@@ -55,7 +60,9 @@ const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
   };
 
   const { contactLogs, contactLogState, basic } = props.currentStudent;
-  const pages = Math.ceil( contactLogs && contactLogs.totalHitCount / itemsPerPage);
+  const pages = Math.ceil(
+    contactLogs && contactLogs.totalHitCount / contactLogsPerPage
+  );
 
   return (
     <ApplicationSubPanel>
@@ -121,7 +128,7 @@ const GuidanceRelation: React.FC<GuidanceRelationProps> = (props) => {
                   breakLabel="..."
                   forcePage={currentPage}
                   pageCount={pages}
-                  onPageChange={handlePagerChange}
+                  onPageChange={handlePageChange}
                   marginPagesDisplayed={1}
                   pageRangeDisplayed={2}
                 />

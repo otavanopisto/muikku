@@ -74,6 +74,8 @@ class StudentDialog extends React.Component<
   StudentDialogProps,
   StudentDialogState
 > {
+  private contactLogsPerPage = 10;
+
   /**
    * constructor
    * @param props props for the constructor
@@ -116,7 +118,11 @@ class StudentDialog extends React.Component<
         break;
       }
       case "GUIDANCE_RELATIONS": {
-        this.props.loadStudentContactLogs(studentUserEntityId, 10, 1);
+        this.props.loadStudentContactLogs(
+          studentUserEntityId,
+          this.contactLogsPerPage,
+          0
+        );
         break;
       }
     }
@@ -165,7 +171,9 @@ class StudentDialog extends React.Component<
           "plugin.guider.user.tabs.title.guidanceRelations"
         ),
         type: "guider-student",
-        component: <GuidanceRelation />,
+        component: (
+          <GuidanceRelation contactLogsPerPage={this.contactLogsPerPage} />
+        ),
       },
       {
         id: "STUDY_HISTORY",
