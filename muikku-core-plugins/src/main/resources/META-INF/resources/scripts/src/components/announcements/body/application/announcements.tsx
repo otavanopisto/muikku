@@ -10,6 +10,7 @@ import "~/sass/elements/rich-text.scss";
 import { AnnouncementType } from "~/reducers/announcements";
 import { StateType } from "~/reducers";
 import { UserIndexType } from "~/reducers/user-index";
+import CkeditorLoaderContent from "../../../base/ckeditor-loader/content";
 
 /**
  * AnnouncementProps
@@ -89,12 +90,9 @@ class Announcement extends React.Component<
           <div className="article__date">
             {this.props.i18n.time.format(this.props.announcement.startDate)}
           </div>
-          <section
-            className="article__body rich-text"
-            dangerouslySetInnerHTML={{
-              __html: this.props.announcement.content,
-            }}
-          ></section>
+          <section className="article__body rich-text">
+            <CkeditorLoaderContent html={this.props.announcement.content} />
+          </section>
         </article>
       </section>
     );
